@@ -52,45 +52,50 @@ public class IdSchema {
     public IdSchema(int optionMode, int bitsInTime, int timeSecOffset, int bitsInGlobalCounter,
                     int bitsInLocalCounter, int numberOfShards) {
         this.optionMode = optionMode;
-        if(optionMode != 1) {
-            throw new IllegalArgumentException("unsupported optionMode " + optionMode);
+        if(optionMode == 1) {
+            if (bitsInTime < 0 || bitsInTime > 31) {
+                throw new IllegalArgumentException("bitsInTime " + bitsInTime + " should be 0..31");
+            }
+
+            this.bitsInTime = bitsInTime;
+            this.timeSecOffset = timeSecOffset;
+            this.masksInTime = masks(bitsInTime);
+
+
+            if (bitsInGlobalCounter < 0 || bitsInGlobalCounter > 31) {
+                throw new IllegalArgumentException("bitsInGlobalCounter " + bitsInGlobalCounter + " should be 0..31");
+            }
+
+            this.bitsInGlobalCounter = bitsInGlobalCounter;
+            this.masksInGlobalCounter = masks(bitsInGlobalCounter);
+
+
+            if (bitsInLocalCounter < 0 || bitsInLocalCounter > 31) {
+                throw new IllegalArgumentException("bitsInLocalCounter " + bitsInLocalCounter + " should be 0..31");
+            }
+
+            this.bitsInLocalCounter = bitsInLocalCounter;
+            this.masksInLocalCounter = masks(bitsInLocalCounter);
+
+
+            int bitsInShard = bits(numberOfShards);
+            if (bitsInShard < 0 || bitsInShard > 31) {
+                throw new IllegalArgumentException("numberOfShards " + numberOfShards + " should be 0..31");
+            }
+
+            this.numberOfShards = numberOfShards;
+
+
+            int totalBits = bitsInTime + bitsInGlobalCounter + bitsInLocalCounter + bitsInShard;
+            if (totalBits > 63) {
+                throw new IllegalArgumentException("totalBits of IdSchema " + totalBits + " should be <= 63");
+            }
         }
-        if (bitsInTime < 0 || bitsInTime > 31) {
-            throw new IllegalArgumentException("bitsInTime " + bitsInTime + " should be 0..31");
-        }
-
-        this.bitsInTime = bitsInTime;
-        this.timeSecOffset = timeSecOffset;
-        this.masksInTime = masks(bitsInTime);
-
-
-        if (bitsInGlobalCounter < 0 || bitsInGlobalCounter > 31) {
-            throw new IllegalArgumentException("bitsInGlobalCounter " + bitsInGlobalCounter + " should be 0..31");
-        }
-
-        this.bitsInGlobalCounter = bitsInGlobalCounter;
-        this.masksInGlobalCounter = masks(bitsInGlobalCounter);
-
-
-        if (bitsInLocalCounter < 0 || bitsInLocalCounter > 31) {
-            throw new IllegalArgumentException("bitsInLocalCounter " + bitsInLocalCounter + " should be 0..31");
-        }
-
-        this.bitsInLocalCounter = bitsInLocalCounter;
-        this.masksInLocalCounter = masks(bitsInLocalCounter);
-
-
-        int bitsInShard = bits(numberOfShards);
-        if (bitsInShard < 0 || bitsInShard > 31) {
-            throw new IllegalArgumentException("numberOfShards " + numberOfShards + " should be 0..31");
-        }
-
-        this.numberOfShards = numberOfShards;
-
-
-        int totalBits = bitsInTime + bitsInGlobalCounter + bitsInLocalCounter + bitsInShard;
-        if (totalBits > 63) {
-            throw new IllegalArgumentException("totalBits of IdSchema " + totalBits + " should be <= 63");
+        else {
+            this.bitsInTime = this.timeSecOffset = this.masksInTime = INVALID;
+            this.bitsInGlobalCounter = this.masksInGlobalCounter = INVALID;
+            this.bitsInLocalCounter = this.masksInLocalCounter = INVALID;
+            this.numberOfShards = INVALID;
         }
         this.dataCenterId = INVALID;
         this.bitsInDataCenterId = INVALID;
@@ -103,7 +108,7 @@ public class IdSchema {
 
     public IdSchema(int optionMode, int dataCenterId, int bitsInDataCenterId, int bitsInGlobalCounter,
                     int bitsInLocalCounter, int idVersion, int bitsInIdVersion,
-                    int idSignificant, int bitsInIdSignificant, int bitsInShardParam) {
+                    int idSignificant, int bitsInIdSignificant, int bitsInShardParam, int numberOfShards) {
         this.optionMode = optionMode;
         if(optionMode == 2) {
             // Oculus 48 version
@@ -113,12 +118,12 @@ public class IdSchema {
             this.bitsInGlobalCounter = bitsInGlobalCounter;
             this.masksInGlobalCounter = masks(bitsInGlobalCounter);
 
-            if(bitsInLocalCounter < 0 || bitsInLocalCounter < 34) {
+            if(bitsInLocalCounter < 0 || bitsInLocalCounter > 34) {
                 throw new IllegalArgumentException("bitsInLocalCounter " + bitsInLocalCounter + " should be 0..34.");
             }
             this.bitsInLocalCounter = bitsInLocalCounter;
             this.masksInLocalCounter = masks(bitsInLocalCounter);
-            this.numberOfShards = INVALID;
+            this.numberOfShards = numberOfShards;
             this.bitsInShard = bitsInShardParam;
 
             int dataCenterInShard = bits(dataCenterId);
@@ -169,7 +174,7 @@ public class IdSchema {
             }
             this.bitsInLocalCounter = bitsInLocalCounter;
             this.masksInLocalCounter = masks(bitsInLocalCounter);
-            this.numberOfShards = INVALID;
+            this.numberOfShards = numberOfShards;
             this.bitsInShard = bitsInShardParam;
 
             int dataCenterInShard = bits(dataCenterId);
