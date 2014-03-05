@@ -87,4 +87,9 @@ public interface AppClientExceptions {
     @ErrorDef(httpStatusCode = 400, code = "40018",
             description = "The payment instrument type {0} is not allowed as default", field = "type")
     AppError invalidTypeForDefault(String piType);
+
+    @ErrorDef(httpStatusCode = 400, code = "40019",
+            description = "only accept format: yyyy-MM or yyyy-MM-dd", field = "expire_date")
+    AppError invalidExpireDateFormat(String date);
+
 }

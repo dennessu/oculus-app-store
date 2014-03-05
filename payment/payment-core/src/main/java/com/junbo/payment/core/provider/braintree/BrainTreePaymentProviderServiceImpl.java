@@ -8,6 +8,7 @@ package com.junbo.payment.core.provider.braintree;
 
 import com.braintreegateway.*;
 import com.junbo.langur.core.promise.Promise;
+import com.junbo.payment.core.exception.AppClientExceptions;
 import com.junbo.payment.core.exception.AppServerExceptions;
 import com.junbo.payment.core.provider.PaymentProviderService;
 import com.junbo.payment.core.util.PaymentUtil;
@@ -15,8 +16,6 @@ import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentTransaction;
 import org.springframework.beans.factory.InitializingBean;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 /**
  * brain tree sdk implementation.
@@ -55,13 +54,16 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
         request.getCreditCardRequest().setCommercial("UNKNOW");
         //test use only
          */
-        Calendar expireDate = new GregorianCalendar();
-        expireDate.setTime(request.getCreditCardRequest().getExpireDate());
+        String expireDate = request.getCreditCardRequest().getExpireDate();
+        String[] tokens = expireDate.split("-");
+        if(tokens == null || tokens.length < 2){
+            throw AppClientExceptions.INSTANCE.invalidExpireDateFormat(expireDate).exception();
+        }
         CreditCardRequest ccRequest = new CreditCardRequest()
                 .customerId(getCustomerId())
                 .number(request.getAccountNum())
-                .expirationMonth(String.valueOf(expireDate.get(Calendar.MONTH)))
-                .expirationYear(String.valueOf(expireDate.get(Calendar.YEAR)))
+                .expirationMonth(String.valueOf(tokens[1]))
+                .expirationYear(String.valueOf(tokens[0]))
                 .cardholderName(request.getAccountName())
                 .cvv(request.getCreditCardRequest().getEncryptedCvmCode())
                 .options()

@@ -131,7 +131,7 @@ public class PaymentServiceTest extends BaseTest {
         request.setCreditCardRequest(new CreditCardRequest(){
             {
                 setEncryptedCvmCode("111");
-                setExpireDate(new Date());
+                setExpireDate("2025-11");
             }
         });
 

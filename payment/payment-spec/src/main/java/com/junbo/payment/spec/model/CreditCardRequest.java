@@ -17,7 +17,7 @@ import java.util.Date;
  */
 public class CreditCardRequest {
     private Long id;
-    private Date expireDate;
+    private String expireDate;
     private String encryptedCvmCode;
     //response only
     private Date lastBillingDate;
@@ -36,11 +36,11 @@ public class CreditCardRequest {
         this.id = id;
     }
 
-    public Date getExpireDate() {
+    public String getExpireDate() {
         return expireDate;
     }
 
-    public void setExpireDate(Date expireDate) {
+    public void setExpireDate(String expireDate) {
         this.expireDate = expireDate;
     }
 

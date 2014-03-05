@@ -32,8 +32,7 @@ public class CreditCardPaymentInstrumentEntity extends GenericEntity {
     private CreditCardType type;
 
     @Column(name = "expire_time")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date expireDate;
+    private String expireDate;
 
     @Column(name = "last_billing_time")
     @Temporal(TemporalType.TIMESTAMP)
@@ -70,11 +69,11 @@ public class CreditCardPaymentInstrumentEntity extends GenericEntity {
         this.type = type;
     }
 
-    public Date getExpireDate() {
+    public String getExpireDate() {
         return expireDate;
     }
 
-    public void setExpireDate(Date expireDate) {
+    public void setExpireDate(String expireDate) {
         this.expireDate = expireDate;
     }
 

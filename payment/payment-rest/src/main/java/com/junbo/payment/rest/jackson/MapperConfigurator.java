@@ -9,12 +9,12 @@ package com.junbo.payment.rest.jackson;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import com.junbo.common.jackson.deserializer.ResourceAwareDeserializationContext;
 import com.junbo.common.jackson.serializer.ResourceAwareSerializerProvider;
 
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;
-import java.text.SimpleDateFormat;
 
 /**
  * mapper configuration for serialize and deserialize.
@@ -31,9 +31,10 @@ public class MapperConfigurator implements ContextResolver<ObjectMapper> {
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        //mapper.setDateFormat(new ISO8601DateFormat());
-        mapper.getSerializationConfig().with(new SimpleDateFormat());
-        mapper.getDeserializationConfig().with(new SimpleDateFormat());
+
+        mapper.setDateFormat(new ISO8601DateFormat());
+        //mapper.getSerializationConfig().with(new SimpleDateFormat());
+        //mapper.getDeserializationConfig().with(new SimpleDateFormat());
     }
 
     @Override

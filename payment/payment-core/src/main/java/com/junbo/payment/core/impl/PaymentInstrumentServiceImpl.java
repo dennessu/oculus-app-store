@@ -200,6 +200,7 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
             throw AppClientExceptions.INSTANCE.invalidTypeForDefault(request.getType().toString()).exception();
         }
         validateAddress(request);
+        validateCreditCard(request);
     }
 
     private void validateAddress(PaymentInstrument request) {
@@ -212,6 +213,17 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
             }
             if(request.getAddress().getPostalCode() == null || request.getAddress().getPostalCode().isEmpty()){
                 throw AppClientExceptions.INSTANCE.missingPostalCode().exception();
+            }
+        }
+    }
+
+    private void validateCreditCard(PaymentInstrument request){
+        if(request.getType().equalsIgnoreCase(PIType.CREDITCARD.toString()) &&
+                request.getCreditCardRequest() != null){
+            String expireDate = request.getCreditCardRequest().getExpireDate();
+            if (!expireDate.matches("\\d{4}-\\d{2}-\\d{2}")
+                    && !expireDate.matches("\\d{4}-\\d{2}")) {
+                throw AppClientExceptions.INSTANCE.invalidExpireDateFormat(expireDate).exception();
             }
         }
     }
