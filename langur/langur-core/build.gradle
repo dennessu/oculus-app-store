@@ -6,4 +6,6 @@ dependencies {
 
     compile (libraries.jersey_server)
     compile (libraries.jersey_spring3)
+
+    compile (libraries.spring_tx)
 }

@@ -8,11 +8,16 @@ public void ${methodName}([#list parameters as parameter][@includeModel model=pa
 
     com.junbo.langur.core.promise.Promise<${returnType}> future;
 
-    future = __adaptee.${methodName}(
-        [#list parameters as parameter]
-        ${parameter.paramName}[#if parameter_has_next],[/#if]
-        [/#list]
-    );
+    try {
+        future = __adaptee.${methodName}(
+            [#list parameters as parameter]
+            ${parameter.paramName}[#if parameter_has_next],[/#if]
+            [/#list]
+        );
+    } catch (Throwable ex) {
+        __asyncResponse.resume(ex);
+        return;
+    }
 
     future.onSuccess(new com.junbo.langur.core.promise.Promise.Callback<${returnType}>() {
         @Override

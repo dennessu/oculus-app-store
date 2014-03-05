@@ -127,6 +127,8 @@ public final class Promise<T> {
         });
     }
 
+    // it could introduce multiple threads using the same thread local. Disable for now
+    @Deprecated
     public static <T> Promise<List<T>> all(Iterable<Promise<? extends T>> promises) {
         List<ListenableFuture<? extends T>> futures = new ArrayList<>();
 
@@ -137,6 +139,8 @@ public final class Promise<T> {
         return wrap(Futures.allAsList(futures));
     }
 
+    // it could introduce multiple threads using the same thread local. Disable for now
+    @Deprecated
     @SafeVarargs
     public static <T> Promise<List<T>> all(Promise<? extends T>... promises) {
         return all(Arrays.asList(promises));
@@ -247,6 +251,8 @@ public final class Promise<T> {
         });
     }
 
+    // the sequence of the invocation is not guaranteed. Disable for now.
+    @Deprecated
     public void onSuccess(final Callback<? super T> action) {
         final Callback<? super T> wrapped = Wrapper.wrap(action);
 
@@ -262,6 +268,8 @@ public final class Promise<T> {
         });
     }
 
+    // the sequence of the invocation is not guaranteed. Disable for now.
+    @Deprecated
     public void onSuccess(final Closure closure) {
         onSuccess(new Callback<T>() {
             @Override
@@ -271,6 +279,8 @@ public final class Promise<T> {
         });
     }
 
+    // the sequence of the invocation is not guaranteed. Disable for now.
+    @Deprecated
     public void onFailure(final Callback<Throwable> action) {
         final Callback<Throwable> wrapped = Wrapper.wrap(action);
 
@@ -286,6 +296,8 @@ public final class Promise<T> {
         });
     }
 
+    // the sequence of the invocation is not guaranteed. Disable for now.
+    @Deprecated
     public void onFailure(final Closure closure) {
         onFailure(new Callback<Throwable>() {
             @Override
