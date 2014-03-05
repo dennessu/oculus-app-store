@@ -46,13 +46,14 @@ public class MultiTenantConnectionProviderImpl extends AbstractDataSourceBasedMu
      */
     @Override
     public Connection getConnection(String tenantIdentifier) throws SQLException {
-        // getAnyConnection() allows access to the database metadata of the underlying database(s) in situations where we do not have a
+        // getAnyConnection() allows access to the database metadata of the underlying database(s)
+        // in situations where we do not have a
         // tenant id (like startup processing, for example).
         final Connection connection = getAnyConnection();
         try {
-            connection.createStatement().execute( "set search_path=" + tenantIdentifier );
+            connection.createStatement().execute("set search_path=" + tenantIdentifier);
         }
-        catch ( SQLException e ) {
+        catch (SQLException e) {
             throw new HibernateException(
                     "Could not alter JDBC connection to specified schema [" +
                             tenantIdentifier + "]",
