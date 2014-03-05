@@ -18,6 +18,100 @@
     </bean>
 
     <bean id="generateResponse" class="com.junbo.oauth.core.action.webflow.GenerateAccessTokenResponse"/>
+
+    <bean id="authenticateClientWebflow" class="com.junbo.oauth.core.action.webflow.AuthenticateClient">
+        <property name="appClientRepository" ref="appClientRepository"/>
+    </bean>
+
+    <bean id="authenticateUserWebflow" class="com.junbo.oauth.core.action.webflow.AuthenticateUser">
+        <property name="userResource" ref="identityUserClient"/>
+    </bean>
+
+    <bean id="buildRedirectUriWebflow" class="com.junbo.oauth.core.action.webflow.BuildRedirectUri"/>
+
+    <bean id="generateAccessTokenResponseWebflow" class="com.junbo.oauth.core.action.webflow.GenerateAccessTokenResponse"/>
+
+    <bean id="getAccessTokenInfoWebflow" class="com.junbo.oauth.core.action.webflow.GetAccessTokenInfo">
+        <property name="tokenGenerationService" ref="tokenGenerationService"/>
+    </bean>
+
+    <bean id="getAppClientWebflow" class="com.junbo.oauth.core.action.webflow.GetAppClient">
+        <property name="appClientRepository" ref="appClientRepository"/>
+    </bean>
+
+    <bean id="grantAuthorizationCodeWebflow" class="com.junbo.oauth.core.action.webflow.GrantAuthorizationCode">
+        <property name="authorizationCodeRepository" ref="authorizationCodeRepository"/>
+        <property name="defaultExpiration" value="${oauth.core.authorizationCode.default.expiration}"/>
+    </bean>
+
+    <bean id="grantIdTokenWebflow" class="com.junbo.oauth.core.action.webflow.GrantIdToken">
+        <property name="tokenGenerationService" ref="tokenGenerationService"/>
+    </bean>
+
+    <bean id="grantImplicitAccessTokenWebflow" class="com.junbo.oauth.core.action.webflow.GrantImplicitAccessToken">
+        <property name="tokenGenerationService" ref="tokenGenerationService"/>
+    </bean>
+
+    <bean id="grantRefreshTokenWebflow" class="com.junbo.oauth.core.action.webflow.GrantRefreshToken">
+        <property name="tokenGenerationService" ref="tokenGenerationService"/>
+    </bean>
+
+    <bean id="grantRememberMeTokenWebflow" class="com.junbo.oauth.core.action.webflow.GrantRememberMeToken">
+        <property name="rememberMeTokenRepository" ref="rememberMeTokenRepository"/>
+        <property name="defaultRememberMeTokenExpiration" value="${oauth.core.rememberMeToken.default.expiration}"/>
+    </bean>
+
+    <bean id="grantTokenByCodeWebflow" class="com.junbo.oauth.core.action.webflow.GrantTokenByCode">
+        <property name="tokenGenerationService" ref="tokenGenerationService"/>
+        <property name="authorizationCodeRepository" ref="authorizationCodeRepository"/>
+    </bean>
+
+    <bean id="grantTokenByPasswordWebflow" class="com.junbo.oauth.core.action.webflow.GrantTokenByPassword">
+        <property name="tokenGenerationService" ref="tokenGenerationService"/>
+    </bean>
+
+    <bean id="grantTokenByRefreshTokenWebflow" class="com.junbo.oauth.core.action.webflow.GrantTokenByRefreshToken">
+        <property name="tokenGenerationService" ref="tokenGenerationService"/>
+    </bean>
+
+    <bean id="loadIdTokenHintWebflow" class="com.junbo.oauth.core.action.webflow.LoadIdTokenHint">
+        <property name="tokenGenerationService" ref="tokenGenerationService"/>
+    </bean>
+
+    <bean id="loadLoginStateWebflow" class="com.junbo.oauth.core.action.webflow.LoadLoginState">
+        <property name="loginStateRepository" ref="loginStateRepository"/>
+    </bean>
+
+    <bean id="loadRememberMeTokenWebflow" class="com.junbo.oauth.core.action.webflow.LoadRememberMeToken">
+        <property name="rememberMeTokenRepository" ref="rememberMeTokenRepository"/>
+    </bean>
+
+    <bean id="redirectWebflow" class="com.junbo.oauth.core.action.webflow.Redirect"/>
+
+    <bean id="saveLoginStateWebflow" class="com.junbo.oauth.core.action.webflow.SaveLoginState">
+        <property name="loginStateRepository" ref="loginStateRepository"/>
+    </bean>
+
+    <bean id="validateDisplayWebflow" class="com.junbo.oauth.core.action.webflow.ValidateDisplay">
+        <property name="defaultDisplay" value="PAGE"/>
+    </bean>
+
+    <bean id="validateGrantTypeWebflow" class="com.junbo.oauth.core.action.webflow.ValidateGrantType"/>
+
+    <bean id="validateLoginStateWebflow" class="com.junbo.oauth.core.action.webflow.ValidateLoginState">
+        <property name="loginUri" value="${oauth.core.portal.loginUri}"/>
+    </bean>
+
+    <bean id="validateMaxAgeWebflow" class="com.junbo.oauth.core.action.webflow.ValidateMaxAge"/>
+
+    <bean id="validatePromptWebflow" class="com.junbo.oauth.core.action.webflow.ValidatePrompt"/>
+
+    <bean id="validateRedirectUriWebflow" class="com.junbo.oauth.core.action.webflow.ValidateRedirectUri"/>
+
+    <bean id="validateResponseTypeWebflow" class="com.junbo.oauth.core.action.webflow.ValidateResponseType"/>
+
+    <bean id="validateScopeWebflow" class="com.junbo.oauth.core.action.webflow.ValidateScope"/>
+    
     <wf:flow id="grantTokenFlow">
         <wf:view-state id="grantTokenActionState" view="123">
             <wf:on-render>
@@ -26,4 +120,51 @@
         </wf:view-state>
     </wf:flow>
 
+    <wf:flow id="authorizeFlow">
+        <wf:action-state id="validationAction">
+            <wf:action ref="getAppClientWebflow"/>
+            <wf:action ref="validateScopeWebflow"/>
+            <wf:action ref="validateRedirectUriWebflow"/>
+            <wf:action ref="validateResponseTypeWebflow"/>
+            <wf:action ref="validateDisplayWebflow"/>
+            <wf:action ref="validatePromptWebflow"/>
+            <wf:action ref="validateMaxAgeWebflow"/>
+            <wf:transition on="*" to="loadLoginStateAction"/>
+        </wf:action-state>
+
+        <wf:action-state id="loadLoginStateAction">
+            <wf:action ref="loadIdTokenHintWebflow"/>
+            <wf:action ref="loadLoginStateWebflow"/>
+            <wf:action ref="loadRememberMeTokenWebflow"/>
+            <wf:transition on="*" to="validateLoginStateAction"/>
+        </wf:action-state>
+
+        <wf:action-state id="authenticateUserAction">
+            <wf:action ref="authenticateUserWebflow"/>
+            <wf:transition on="*" to="validateLoginStateAction"/>
+        </wf:action-state>
+
+        <wf:action-state id="validateLoginStateAction">
+            <wf:action ref="validateLoginStateWebflow"/>
+            <wf:action ref="saveLoginStateWebflow"/>
+            <wf:transition on="redirectLogin" to="redirectView"/>
+            <wf:transition on="*" to="grantAuthorizationCodeAction"/>
+        </wf:action-state>
+
+        <wf:action-state id="grantAuthorizationCodeAction">
+            <wf:action ref="grantAuthorizationCodeWebflow"/>
+            <wf:action ref="grantImplicitAccessTokenWebflow"/>
+            <wf:action ref="grantRememberMeTokenWebflow"/>
+            <wf:action ref="grantIdTokenWebflow"/>
+            <wf:action ref="buildRedirectUriWebflow"/>
+            <wf:transition on="*" to="redirectView"/>
+        </wf:action-state>
+
+        <wf:view-state id="redirectView">
+            <wf:on-render>
+                <wf:action ref="redirectWebflow"/>
+            </wf:on-render>
+            <wf:transition on="login" to="authenticateUserAction"/>
+        </wf:view-state>
+    </wf:flow>
 </beans>

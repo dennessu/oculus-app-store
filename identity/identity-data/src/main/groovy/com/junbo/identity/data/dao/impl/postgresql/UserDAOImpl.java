@@ -234,7 +234,7 @@ public class UserDAOImpl implements UserDAO {
         List result = currentSession().
                 createSQLQuery("select * from user_password where user_id = :userId and status = :status").
                 addEntity(UserPasswordEntity.class).setParameter("userId", activeUser.getId().getValue()).
-                setParameter("status", UserPasswordStatus.ACTIVE.toString()).list();
+                setParameter("status", UserPasswordStatus.ACTIVE.getId()).list();
 
         if(CollectionUtils.isEmpty(result) || result.size() > 1) {
             throw AppErrors.INSTANCE.userStatusError("userName = " + userName).exception();

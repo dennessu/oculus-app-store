@@ -43,6 +43,13 @@ class LoadIdTokenHint implements Action {
 
         Assert.notNull(appClient, 'appClient is null')
 
+        String nonce = parameterMap.getFirst(OAuthParameters.NONCE)
+
+        if (StringUtils.hasText(nonce)) {
+            def oauthInfo = contextWrapper.oauthInfo
+            oauthInfo.nonce = nonce
+        }
+
         String idTokenHint = parameterMap.getFirst(OAuthParameters.ID_TOKEN_HINT)
 
         if (!StringUtils.hasText(idTokenHint)) {

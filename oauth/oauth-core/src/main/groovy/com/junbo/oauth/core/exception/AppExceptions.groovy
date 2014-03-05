@@ -155,4 +155,8 @@ interface AppExceptions {
     @ErrorDef(httpStatusCode = 400, code = '20037', description = 'The Authorization header is invalid',
             field = 'authorization')
     AppError invalidAuthorization()
+
+    @ErrorDef(httpStatusCode = 400, code = '20038', description = 'The conversationId is missing',
+            field = 'conversationId')
+    AppError missingConversationId()
 }

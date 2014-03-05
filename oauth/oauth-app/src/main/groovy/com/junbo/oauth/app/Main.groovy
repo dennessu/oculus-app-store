@@ -19,7 +19,14 @@ import org.slf4j.bridge.SLF4JBridgeHandler
  */
 @CompileStatic
 class Main {
-    private static final Logger LOGGER = LoggerFactory.getLogger(Main)
+
+    static {
+        System.setProperty('net.spy.log.LoggerImpl', 'net.spy.memcached.compat.log.SLF4JLogger')
+        System.setProperty('logback.configurationFile', 'logback-identity.xml')
+        LOGGER = LoggerFactory.getLogger(Main)
+    }
+
+    private static final Logger LOGGER
 
     static HttpServer startServer() {
         def resourceConfig = new ResourceConfig()
@@ -36,9 +43,6 @@ class Main {
 
         SLF4JBridgeHandler.removeHandlersForRootLogger()
         SLF4JBridgeHandler.install()
-
-        System.setProperty('net.spy.log.LoggerImpl', 'net.spy.memcached.compat.log.SLF4JLogger')
-        System.setProperty('logback.configurationFile', 'logback-identity.xml')
 
         def server = startServer()
 

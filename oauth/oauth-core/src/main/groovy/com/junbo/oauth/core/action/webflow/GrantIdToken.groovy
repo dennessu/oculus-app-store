@@ -36,7 +36,6 @@ class GrantIdToken implements Action {
     Promise<ActionResult> execute(ActionContext context) {
         def contextWrapper = new ActionContextWrapper(context)
 
-        def parameterMap = contextWrapper.parameterMap
         def oauthInfo = contextWrapper.oauthInfo
         def appClient = contextWrapper.appClient
         def authorizationCode = contextWrapper.authorizationCode
@@ -47,11 +46,7 @@ class GrantIdToken implements Action {
             return Promise.pure(null)
         }
 
-        String nonce = parameterMap.getFirst(OAuthParameters.NONCE)
-
-        if (!StringUtils.hasText(nonce)) {
-            nonce = oauthInfo.nonce
-        }
+        String nonce = oauthInfo.nonce
 
         if (!StringUtils.hasText(nonce)) {
             throw AppExceptions.INSTANCE.missingNonce().exception()
@@ -59,9 +54,7 @@ class GrantIdToken implements Action {
 
         Date lastAuthDate = null
 
-        String maxAge = parameterMap.getFirst(OAuthParameters.MAX_AGE)
-
-        if (StringUtils.hasText(maxAge)) {
+        if (oauthInfo.maxAge != null) {
             lastAuthDate = loginState.lastAuthDate
         }
 

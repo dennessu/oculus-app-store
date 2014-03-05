@@ -27,16 +27,9 @@ import org.springframework.util.StringUtils
 class AuthenticateUser implements Action {
     private UserResource userResource
 
-    private StateRepository stateRepository
-
     @Required
     void setUserResource(UserResource userResource) {
         this.userResource = userResource
-    }
-
-    @Required
-    void setStateRepository(StateRepository stateRepository) {
-        this.stateRepository = stateRepository
     }
 
     @Override

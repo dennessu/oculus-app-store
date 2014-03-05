@@ -42,15 +42,19 @@ class ValidateLoginState implements Action {
 
         if (prompts.contains(Prompt.LOGIN)) {
             redirectToLogin(contextWrapper)
-            return Promise.pure(new ActionResult('redirect'))
+            return Promise.pure(new ActionResult('redirectLogin'))
         } else if (prompts.contains(Prompt.NONE)) {
             if (loginState == null) {
                 throw AppExceptions.INSTANCE.loginRequired().exception()
             }
+        } else if (oauthInfo.maxAge != null
+                && loginState.lastAuthDate.time + oauthInfo.maxAge * 1000 < System.currentTimeMillis()) {
+            redirectToLogin(contextWrapper)
+            return Promise.pure(new ActionResult('redirectLogin'))
         } else {
             if (loginState == null) {
                 redirectToLogin(contextWrapper)
-                return Promise.pure(new ActionResult('redirect'))
+                return Promise.pure(new ActionResult('redirectLogin'))
             }
         }
 
@@ -59,16 +63,12 @@ class ValidateLoginState implements Action {
 
     private void redirectToLogin(ActionContextWrapper context) {
 
-        def responseBuilder = Response.status(Response.Status.FOUND).location(generateLoginUri(context.conversationId))
-        context.responseBuilder = responseBuilder
-    }
-
-    private URI generateLoginUri(String conversationId) {
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(loginUri)
 
-        uriBuilder.queryParam(OAuthParameters.CONVERSATION_ID, conversationId)
+        uriBuilder.queryParam(OAuthParameters.CONVERSATION_ID, context.conversationId)
         uriBuilder.queryParam(OAuthParameters.EVENT, 'login')
 
-        return uriBuilder.build().toUri()
+        context.redirectUriBuilder = uriBuilder
     }
+
 }

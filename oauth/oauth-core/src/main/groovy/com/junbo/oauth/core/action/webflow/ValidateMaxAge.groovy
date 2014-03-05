@@ -42,12 +42,6 @@ class ValidateMaxAge implements Action {
         def oauthInfo = contextWrapper.oauthInfo
         oauthInfo.maxAge = maxAge
 
-        def loginState = contextWrapper.loginState
-
-        if (loginState != null && loginState.lastAuthDate.time + maxAge * 1000 < System.currentTimeMillis()) {
-            contextWrapper.loginState = null
-        }
-
         return Promise.pure(null)
     }
 }
