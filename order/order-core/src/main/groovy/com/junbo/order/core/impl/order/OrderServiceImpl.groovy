@@ -60,7 +60,7 @@ class OrderServiceImpl implements OrderService {
     Promise<List<Order>> settleQuote(Order order, ApiContext context) {
         expandOrder(order).syncThen { OrderServiceContext orderServiceContext ->
             return flowSelector.select(
-                    orderServiceContext, OrderServiceOperation.CREATE)?.execute(orderServiceContext)
+                    orderServiceContext, OrderServiceOperation.UPDATE)?.execute(orderServiceContext)
         }
     }
 
