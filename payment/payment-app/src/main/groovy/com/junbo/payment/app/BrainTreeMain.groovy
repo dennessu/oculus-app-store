@@ -18,8 +18,8 @@ class BrainTreeMain {
     static {
         SLF4JBridgeHandler.removeHandlersForRootLogger()
         SLF4JBridgeHandler.install()
-        System.setProperty("net.spy.log.LoggerImpl", "net.spy.memcached.compat.log.SLF4JLogger")
-        System.setProperty("logback.configurationFile", "logback-identity.xml")
+        System.setProperty('net.spy.log.LoggerImpl', 'net.spy.memcached.compat.log.SLF4JLogger')
+        System.setProperty('logback.configurationFile', 'logback-identity.xml')
         LOGGER = LoggerFactory.getLogger(Main)
     }
     private static final Logger LOGGER
