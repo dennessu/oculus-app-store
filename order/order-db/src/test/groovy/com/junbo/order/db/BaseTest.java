@@ -6,10 +6,12 @@
 
 package com.junbo.order.db;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 
+import javax.sql.DataSource;
 import java.util.UUID;
 
 /**
@@ -40,5 +42,17 @@ public abstract class BaseTest extends AbstractTransactionalTestNGSpringContextT
 
     protected long generateLong() {
         return System.currentTimeMillis();
+    }
+
+    /**
+     * Set the {@code DataSource}, typically provided via Dependency Injection.
+     * <p>This method also instantiates the {@link #jdbcTemplate} instance variable.
+     *
+     * @param dataSource
+     */
+    @Override
+    @Qualifier("orderDataSource")
+    public void setDataSource(DataSource dataSource) {
+        super.setDataSource(dataSource);
     }
 }
