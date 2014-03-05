@@ -3,6 +3,7 @@ package com.junbo.order.core.orderservice
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.core.BaseTest
 import com.junbo.order.core.FlowSelector
+import com.junbo.order.core.FlowType
 import com.junbo.order.core.OrderFlow
 import com.junbo.order.core.OrderServiceOperation
 import com.junbo.order.core.common.TestBuilder
@@ -43,8 +44,8 @@ class OrderServiceTest extends BaseTest {
 
         flowSelector = new FlowSelector() {
             @Override
-            OrderFlow select(OrderServiceContext expOrder, OrderServiceOperation operation) {
-                return orderFlow
+            FlowType select(OrderServiceContext expOrder, OrderServiceOperation operation) {
+                return FlowType.FREE_SETTLE
             }
         }
 

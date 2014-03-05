@@ -1,3 +1,9 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
+ */
+
 package com.junbo.order.core.impl.order
 
 import com.junbo.billing.spec.model.Balance
@@ -13,6 +19,7 @@ import com.junbo.order.core.FlowSelector
 import com.junbo.order.core.OrderService
 import com.junbo.order.core.OrderServiceOperation
 import com.junbo.order.core.impl.common.CoreBuilder
+import com.junbo.order.core.FlowExecutor
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.*
@@ -41,6 +48,8 @@ class OrderServiceImpl implements OrderService {
     OrderRepository orderRepository
     @Autowired
     FlowSelector flowSelector
+    @Autowired
+    FlowExecutor flowExecutor
 
     void setFlowSelector(FlowSelector flowSelector) {
         this.flowSelector = flowSelector
@@ -51,16 +60,16 @@ class OrderServiceImpl implements OrderService {
         // TODO: split orders
         // TODO: expand external resources
         expandOrder(order).syncThen { OrderServiceContext orderServiceContext ->
-            return flowSelector.select(
-                    orderServiceContext, OrderServiceOperation.CREATE)?.execute(orderServiceContext)
+            return flowExecutor.executeFlow(flowSelector.select(orderServiceContext, OrderServiceOperation.CREATE),
+                    orderServiceContext)
         }
     }
 
     @Override
     Promise<List<Order>> settleQuote(Order order, ApiContext context) {
         expandOrder(order).syncThen { OrderServiceContext orderServiceContext ->
-            return flowSelector.select(
-                    orderServiceContext, OrderServiceOperation.UPDATE_TENTATIVE)?.execute(orderServiceContext)
+            return flowExecutor.executeFlow(flowSelector.select(
+                    orderServiceContext, OrderServiceOperation.UPDATE_TENTATIVE), orderServiceContext)
         }
     }
 
@@ -111,7 +120,8 @@ class OrderServiceImpl implements OrderService {
     Promise<Order> getOrderByOrderId(Long orderId) {
         expandOrder(null).syncThen { OrderServiceContext context ->
             context.setOrderId(orderId)
-            flowSelector.select(context, OrderServiceOperation.GET)?.execute(context).syncThen { List<Order> orders ->
+            flowExecutor.executeFlow(flowSelector.select(context, OrderServiceOperation.GET), context)
+                    .syncThen { List<Order> orders ->
                 if (CollectionUtils.isEmpty(orders)) {
                     return Promise.pure(null)
                 }

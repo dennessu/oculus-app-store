@@ -2,11 +2,13 @@ package com.junbo.order.core.common
 
 import com.junbo.common.id.PaymentInstrumentId
 import com.junbo.common.id.UserId
+import com.junbo.order.core.impl.order.OrderServiceContext
 import com.junbo.order.spec.model.ItemType
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderItem
 import com.junbo.order.spec.model.OrderType
 import com.junbo.order.spec.model.ShippingInfo
+import com.junbo.payment.spec.model.PaymentInstrument
 import groovy.transform.CompileStatic
 
 /**
@@ -49,5 +51,17 @@ class TestBuilder {
         orderItem.setOffer(generateLong())
         orderItem.setOfferRevision('1')
         return orderItem
+    }
+
+    static PaymentInstrument buildCreditCartPI() {
+        def pi = new PaymentInstrument()
+        pi.type = 'CREDIT_CARD'
+        return pi
+    }
+
+    static OrderServiceContext buildDefaultContext() {
+        def context = new OrderServiceContext()
+        context.order = buildOrderRequest()
+        return context
     }
 }

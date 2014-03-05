@@ -1,6 +1,13 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
+ */
+
 package com.junbo.order.core.impl.orderflow
 
 import com.junbo.order.core.FlowSelector
+import com.junbo.order.core.FlowType
 import com.junbo.order.core.OrderFlow
 import com.junbo.order.core.OrderServiceOperation
 import com.junbo.order.core.impl.order.OrderServiceContext
@@ -17,18 +24,18 @@ import org.springframework.stereotype.Component
 class DefaultFlowSelector implements FlowSelector {
 
     @Override
-    OrderFlow select(OrderServiceContext expOrder, OrderServiceOperation operation) {
+    FlowType select(OrderServiceContext expOrder, OrderServiceOperation operation) {
         switch (operation) {
             case OrderServiceOperation.CREATE:
                 return selectCreateOrderFlow(expOrder)
             case OrderServiceOperation.GET:
-                return new GetOrderFlow()
+                return FlowType.GET_ORDER
             default:
                 return null
         }
     }
 
-    private static OrderFlow selectCreateOrderFlow(OrderServiceContext expOrder) {
+    private static FlowType selectCreateOrderFlow(OrderServiceContext expOrder) {
         switch (expOrder.order?.type) {
             case OrderType.PAY_IN.toString():
                 return selectPayInFlow(expOrder)
@@ -38,7 +45,7 @@ class DefaultFlowSelector implements FlowSelector {
         return null
     }
 
-    private static OrderFlow selectPayInFlow(OrderServiceContext expOrder) {
+    private static FlowType selectPayInFlow(OrderServiceContext expOrder) {
 
         if (expOrder == null) {
             return null
@@ -46,7 +53,7 @@ class DefaultFlowSelector implements FlowSelector {
 
         // select order flow per payment info and product item info
         if (expOrder.paymentInstruments == null || expOrder.paymentInstruments.isEmpty()) {
-            return new FreeSettleFlow()
+            return FlowType.FREE_SETTLE
         }
 
         // TODO: do not support multiple payment methods now
@@ -56,9 +63,9 @@ class DefaultFlowSelector implements FlowSelector {
                 // TODO: do not support mixed order containing both physical item & digital item now
                 switch (expOrder.order.orderItems[0]?.type) {
                     case ItemType.DIGITAL.toString():
-                        return new ImmediateSettleFlow()
+                        return FlowType.IMMEDIATE_SETTLE
                     case ItemType.PHYSICAL.toString():
-                        return new AuthSettleFlow()
+                        return FlowType.AUTH_SETTLE
                     default:
                         return null
                 }

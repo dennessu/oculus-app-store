@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xmlns:wf="http://www.junbo.com/schema/webflow"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.junbo.com/schema/webflow http://www.junbo.com/schema/webflow-config/webflow.xsd">
+
+    <bean id="flowDefLoader" class="com.junbo.langur.core.webflow.definition.FlowDefLoaderImpl"/>
+
+    <bean id="stateRepository" class="com.junbo.langur.core.webflow.state.InMemoryStateRepository"/>
+
+    <bean id="stateExecutorFactory" class="com.junbo.langur.core.webflow.executor.StateExecutorFactoryImpl"/>
+
+    <bean id="flowExecutor" class="com.junbo.langur.core.webflow.executor.FlowExecutorImpl">
+        <property name="flowDefLoader" ref="flowDefLoader"/>
+        <property name="stateExecutorFactory" ref="stateExecutorFactory"/>
+        <property name="stateRepository" ref="stateRepository"/>
+    </bean>
+
+    <bean id="orderFlowExecutor" class="com.junbo.order.core.impl.orderflow.FlowExecutorImpl">
+        <property name="flowExecutor" ref="flowExecutor"/>
+    </bean>
+
+    <bean id="authSettleAction" class="com.junbo.order.core.impl.orderaction.adapter.ActionAdapter">
+        <property name="orderActionClass" value="com.junbo.order.core.impl.orderaction.AuthSettleAction"/>
+    </bean>
+
+    <bean id="createOrderAction" class="com.junbo.order.core.impl.orderaction.adapter.ActionAdapter">
+        <property name="orderActionClass" value="com.junbo.order.core.impl.orderaction.CreateOrderAction"/>
+    </bean>
+
+    <bean id="fulfillmentAction" class="com.junbo.order.core.impl.orderaction.adapter.ActionAdapter">
+        <property name="orderActionClass" value="com.junbo.order.core.impl.orderaction.FulfillmentAction"/>
+    </bean>
+
+    <bean id="getOrderAction" class="com.junbo.order.core.impl.orderaction.adapter.ActionAdapter">
+        <property name="orderActionClass" value="com.junbo.order.core.impl.orderaction.GetOrderAction"/>
+    </bean>
+
+    <bean id="immediateSettleAction" class="com.junbo.order.core.impl.orderaction.adapter.ActionAdapter">
+        <property name="orderActionClass" value="com.junbo.order.core.impl.orderaction.ImmediateSettleAction"/>
+    </bean>
+
+    <bean id="ratingAction" class="com.junbo.order.core.impl.orderaction.adapter.ActionAdapter">
+        <property name="orderActionClass" value="com.junbo.order.core.impl.orderaction.RatingAction"/>
+    </bean>
+
+    <bean id="updateFulfillmentAction" class="com.junbo.order.core.impl.orderaction.adapter.ActionAdapter">
+        <property name="orderActionClass" value="com.junbo.order.core.impl.orderaction.UpdateFulfillmentAction"/>
+    </bean>
+
+    <bean id="validateAction" class="com.junbo.order.core.impl.orderaction.adapter.ActionAdapter">
+        <property name="orderActionClass" value="com.junbo.order.core.impl.orderaction.ValidateAction"/>
+    </bean>
+
+    <wf:flow id="IMMEDIATE_SETTLE">
+        <wf:action-state id="IMMEDIATE_SETTLE_immediateSettle">
+            <wf:action ref="validateAction"/>
+     <!--       <wf:action ref="ratingAction"/> -->
+        </wf:action-state>
+    </wf:flow>
+
+    <wf:flow id="FREE_SETTLE">
+        <wf:action-state id="FREE_SETTLE_immediateSettle">
+            <wf:action ref="validateAction"/>
+            <!--       <wf:action ref="ratingAction"/> -->
+        </wf:action-state>
+    </wf:flow>
+</beans>

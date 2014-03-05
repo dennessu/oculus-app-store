@@ -1,5 +1,6 @@
 package com.junbo.order.core.orderflow
 import com.junbo.order.core.BaseTest
+import com.junbo.order.core.FlowType
 import com.junbo.order.core.OrderService
 import com.junbo.order.core.OrderServiceOperation
 import com.junbo.order.core.common.TestBuilder
@@ -17,29 +18,20 @@ import org.testng.annotations.Test
 @CompileStatic
 class FlowSelectorTest extends BaseTest {
 
-    @Autowired
-    OrderService orderService
-
     @Test
     void testSelector_CREATE_PayIn_CreditCard_Digital() {
-        def order = TestBuilder.buildOrderRequest()
-        orderService.expandOrder(order).syncThen { OrderServiceContext expandedOrder ->
-            def flow = new ImmediateSettleFlow()
-            assert(new DefaultFlowSelector().select(expandedOrder,
-                    OrderServiceOperation.CREATE).name == flow.name)
-        }
+        def context = TestBuilder.buildDefaultContext()
+        context.paymentInstruments = [TestBuilder.buildCreditCartPI()]
+        assert(new DefaultFlowSelector().select(context,
+                    OrderServiceOperation.CREATE) == FlowType.IMMEDIATE_SETTLE)
     }
 
     @Test
     void testSelector_CREATE_PayIn_NoPI_Digital() {
-
-        def order = TestBuilder.buildOrderRequest()
-        order.setPaymentInstruments(null)
-        def expandedOrder = orderService.expandOrder(order).syncThen { OrderServiceContext expandedOrder ->
-            def flow = new FreeSettleFlow()
-            assert(new DefaultFlowSelector().select(expandedOrder,
-                    OrderServiceOperation.CREATE).name == flow.name)
-        }
+        def context = TestBuilder.buildDefaultContext()
+        context.order.paymentInstruments = null
+        assert(new DefaultFlowSelector().select(context,
+                    OrderServiceOperation.CREATE) == FlowType.FREE_SETTLE)
     }
 
 }
