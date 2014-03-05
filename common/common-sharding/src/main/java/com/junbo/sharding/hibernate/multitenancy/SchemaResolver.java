@@ -15,7 +15,7 @@ public class SchemaResolver implements CurrentTenantIdentifierResolver {
     @Override
     public String resolveCurrentTenantIdentifier() {
         //TODO: Implement service to identify shard
-        return "public";
+        return "shard_0";
     }
 
     @Override

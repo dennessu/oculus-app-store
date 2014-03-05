@@ -47,8 +47,7 @@ public class MultiTenantConnectionProviderImpl extends AbstractDataSourceBasedMu
     @Override
     public Connection getConnection(String tenantIdentifier) throws SQLException {
         // getAnyConnection() allows access to the database metadata of the underlying database(s)
-        // in situations where we do not have a
-        // tenant id (like startup processing, for example).
+        // in situations where we do not have a tenant id (like startup processing, for example).
         final Connection connection = getAnyConnection();
         try {
             connection.createStatement().execute("set search_path=" + tenantIdentifier);

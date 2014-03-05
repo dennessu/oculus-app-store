@@ -13,7 +13,6 @@ import org.testng.annotations.Test;
  */
 @ContextConfiguration(locations = {
         "/spring/sharding-context-test.xml"})
-@TransactionConfiguration(defaultRollback = false)
 public class ShardDAOTest extends AbstractTransactionalTestNGSpringContextTests {
     @Autowired
     private ShardDAO shardDao;
@@ -21,7 +20,7 @@ public class ShardDAOTest extends AbstractTransactionalTestNGSpringContextTests 
     @Test(enabled = false)
     public void shardDaoTest() {
         ShardEntity entity = new ShardEntity();
-        entity.setId(136L);
+        entity.setId(121L);
         shardDao.saveShard(entity);
     }
 }
