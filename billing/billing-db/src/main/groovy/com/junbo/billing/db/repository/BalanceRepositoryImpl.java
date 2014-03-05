@@ -6,6 +6,7 @@
 
 package com.junbo.billing.db.repository;
 
+import com.junbo.billing.spec.enums.BalanceStatus;
 import com.junbo.oom.core.MappingContext;
 import com.junbo.billing.db.balance.*;
 import com.junbo.billing.db.dao.*;
@@ -143,5 +144,18 @@ public class BalanceRepositoryImpl implements BalanceRepository {
         }
 
         return balances;
+    }
+
+    @Override
+    public Balance updateBalanceStatus(Long balanceId, BalanceStatus balanceStatus) {
+        Balance balance = getBalance(balanceId);
+        balance.setStatus(balanceStatus.name());
+        BalanceEntity balanceEntity = modelMapper.toBalanceEntity(balance, new MappingContext());
+        balanceEntity.setModifiedBy("Billing");
+        balanceEntity.setModifiedDate(new Date());
+        balanceEntityDao.update(balanceEntity);
+        balanceEntityDao.flush();
+
+        return balance;
     }
 }

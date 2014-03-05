@@ -13,13 +13,15 @@ import com.junbo.common.util.Identifiable;
  */
 public enum BalanceStatus implements Identifiable<Short> {
     INIT((short)0),
-    UNCONFIRMED((short)1),
-    OPEN((short)2),
-    PENDING_CAPTURE((short)3),
-    PENDING_PAYMENT((short)4),
-    CLOSED((short)5),
+    UNCONFIRMED((short)10),
+
+    PENDING_CAPTURE((short)50),
+
+    AWAITING_PAYMENT((short)80),
+    COMPLETE((short)100),
 
     FAILED((short)999),
+    CANCELLED((short)1000),
     ERROR((short)-1);
 
     private final Short id;

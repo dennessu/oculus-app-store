@@ -31,6 +31,7 @@ public class BalanceEntity extends BaseEntity {
     private Boolean taxIncluded;
     private String currency;
     private String country;
+    private Short statusId;
     private Date dueDate;
     private Long shippingAddressId;
     private Long originalBalanceId;
@@ -110,6 +111,15 @@ public class BalanceEntity extends BaseEntity {
     }
     public void setCountry(String country) {
         this.country = country;
+    }
+
+    @Column(name = "status_id")
+    @NotEmpty(message = EntityValidationCode.MISSING_VALUE)
+    public Short getStatusId() {
+        return statusId;
+    }
+    public void setStatusId(Short statusId) {
+        this.statusId = statusId;
     }
 
     @Column(name = "due_date")

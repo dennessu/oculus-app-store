@@ -24,9 +24,11 @@ public class TransactionEntity extends BaseEntity {
     private Long transactionId;
     private Long piId;
     private Long balanceId;
+    private Short typeId;
     private String paymentRefId;
     private BigDecimal amount;
     private String currency;
+    private Short statusId;
 
     @Id
     @Column(name = "transaction_id")
@@ -55,6 +57,15 @@ public class TransactionEntity extends BaseEntity {
         this.piId = piId;
     }
 
+    @Column(name = "type_id")
+    @NotEmpty(message = EntityValidationCode.MISSING_VALUE)
+    public Short getTypeId() {
+        return typeId;
+    }
+    public void setTypeId(Short typeId) {
+        this.typeId = typeId;
+    }
+
     @Column(name = "payment_ref_id")
     @NotNull(message = EntityValidationCode.MISSING_VALUE)
     public String getPaymentRefId() {
@@ -81,5 +92,14 @@ public class TransactionEntity extends BaseEntity {
     }
     public void setCurrency(String currency) {
         this.currency = currency;
+    }
+
+    @Column(name = "status_id")
+    @NotEmpty(message = EntityValidationCode.MISSING_VALUE)
+    public Short getStatusId() {
+        return statusId;
+    }
+    public void setStatusId(Short statusId) {
+        this.statusId = statusId;
     }
 }

@@ -7,11 +7,12 @@
 package com.junbo.billing.core.service;
 
 import com.junbo.billing.spec.model.Balance;
+import com.junbo.billing.spec.model.Transaction;
 
 /**
  * Created by xmchen on 14-2-19.
  */
 public interface TransactionService {
 
-    void processBalance(Balance balance);
+    Transaction processBalance(Balance balance);
 }

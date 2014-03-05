@@ -6,6 +6,7 @@
 
 package com.junbo.billing.db.repository;
 
+import com.junbo.billing.spec.enums.BalanceStatus;
 import com.junbo.billing.spec.model.Balance;
 
 import java.util.List;
@@ -19,4 +20,6 @@ public interface BalanceRepository {
     Balance getBalance(Long balanceId);
 
     List<Balance> getBalances(Long orderId);
+
+    Balance updateBalanceStatus(Long balanceId, BalanceStatus balanceStatus);
 }

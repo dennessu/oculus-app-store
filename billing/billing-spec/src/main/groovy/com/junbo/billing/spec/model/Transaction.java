@@ -21,9 +21,9 @@ public class Transaction {
     private TransactionId transactionId;
     private BalanceId balanceId;
     private PaymentInstrumentId piId;
-    private String transactionType;
+    private String type;
     private String paymentRefId;
-    private String transactonStatus;
+    private String status;
     private BigDecimal amount;
     private String currency;
 
@@ -51,12 +51,12 @@ public class Transaction {
         this.piId = piId;
     }
 
-    public String getTransactionType() {
-        return transactionType;
+    public String getType() {
+        return type;
     }
 
-    public void setTransactionType(String transactionType) {
-        this.transactionType = transactionType;
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getPaymentRefId() {
@@ -67,12 +67,12 @@ public class Transaction {
         this.paymentRefId = paymentRefId;
     }
 
-    public String getTransactonStatus() {
-        return transactonStatus;
+    public String getStatus() {
+        return status;
     }
 
-    public void setTransactonStatus(String transactonStatus) {
-        this.transactonStatus = transactonStatus;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public BigDecimal getAmount() {

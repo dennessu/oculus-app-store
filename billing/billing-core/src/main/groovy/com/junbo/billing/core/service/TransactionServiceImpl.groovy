@@ -37,7 +37,7 @@ class TransactionServiceImpl implements TransactionService {
     PaymentFacade paymentFacade
 
     @Override
-    void processBalance(Balance balance) {
+    Transaction processBalance(Balance balance) {
 
         def paymentTransaction = generatePaymentTransaction(balance)
         TransactionType transactionType
@@ -55,14 +55,14 @@ class TransactionServiceImpl implements TransactionService {
             default:
                 throw AppErrors.INSTANCE.invalidBalanceType(balance.type).exception()
         }
-        promiseResponse?.then { PaymentTransaction pt ->
 
-            def transaction = new Transaction()
+        def transaction = new Transaction()
+        promiseResponse?.then { PaymentTransaction pt ->
             transaction.setBalanceId(balance.balanceId)
             transaction.setAmount(pt.chargeInfo.amount)
             transaction.setCurrency(pt.chargeInfo.currency)
             transaction.setPiId(new PaymentInstrumentId(pt.paymentInstrumentId))
-            transaction.setTransactionType(transactionType.name())
+            transaction.setType(transactionType.name())
 
             transaction.setPaymentRefId(pt.paymentId.toString())
 
@@ -71,19 +71,20 @@ class TransactionServiceImpl implements TransactionService {
                 case PaymentStatus.AUTHORIZED:
                 case PaymentStatus.SETTLEMENT_SUBMITTED:
                 case PaymentStatus.REVERSED:
-                    transaction.setTransactonStatus(TransactionStatus.SUCCESS.name())
+                    transaction.setStatus(TransactionStatus.SUCCESS.name())
                     break
                 case PaymentStatus.AUTH_DECLINED:
                 case PaymentStatus.REVERSE_DECLINED:
                 case PaymentStatus.SETTLEMENT_DECLINED:
-                    transaction.setTransactonStatus(TransactionStatus.DECLINE.name())
+                    transaction.setStatus(TransactionStatus.DECLINE.name())
                     break
                 default:
-                    transaction.setTransactonStatus(TransactionStatus.ERROR.name())
+                    transaction.setStatus(TransactionStatus.ERROR.name())
                     break
             }
             transactionRepository.saveTransaction(transaction)
         }
+        return transaction
     }
 
     private PaymentTransaction generatePaymentTransaction(Balance balance) {

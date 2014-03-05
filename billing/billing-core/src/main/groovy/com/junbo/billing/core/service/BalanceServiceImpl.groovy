@@ -9,12 +9,16 @@ package com.junbo.billing.core.service
 import com.junbo.billing.clientproxy.IdentityFacade
 import com.junbo.billing.clientproxy.PaymentFacade
 import com.junbo.billing.db.repository.BalanceRepository
+import com.junbo.billing.spec.enums.BalanceStatus
+import com.junbo.billing.spec.enums.TransactionStatus
+import com.junbo.billing.spec.enums.TransactionType
 import com.junbo.billing.spec.error.AppErrors
 import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.BalanceItem
 import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.model.DiscountItem
 import com.junbo.billing.spec.model.TaxItem
+import com.junbo.billing.spec.model.Transaction
 import com.junbo.identity.spec.model.user.User
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
@@ -75,12 +79,42 @@ class BalanceServiceImpl implements BalanceService {
         computeTotal(balance)
         validateBalanceTotal(balance)
 
+        // set the balance status to INIT
+        balance.setStatus(BalanceStatus.INIT.name())
+
         //persist the balance entity
-        Balance result = balanceRepository.saveBalance(balance)
+        Balance resultBalance = balanceRepository.saveBalance(balance)
 
-        transactionService.processBalance(result)
+        Transaction transaction = transactionService.processBalance(resultBalance)
 
-        return Promise.pure(result)
+        TransactionStatus transactionStatus = TransactionStatus.valueOf(transaction.status)
+        BalanceStatus balanceStatus
+        switch (transactionStatus) {
+            case TransactionStatus.DECLINE:
+                balanceStatus = BalanceStatus.FAILED
+                break
+            case TransactionStatus.SUCCESS:
+                TransactionType transactionType = TransactionType.valueOf(transaction.type)
+                switch (transactionType) {
+                    case TransactionType.AUTHORIZE:
+                        balanceStatus = BalanceStatus.PENDING_CAPTURE
+                        break
+                    case TransactionType.CAPTURE:
+                    case TransactionType.CHARGE:
+                        balanceStatus = BalanceStatus.AWAITING_PAYMENT
+                        break
+                    case TransactionType.REVERSE:
+                        balanceStatus = BalanceStatus.CANCELLED
+                        break
+                }
+                break
+            default:
+                balanceStatus = BalanceStatus.ERROR
+                break
+        }
+        resultBalance = balanceRepository.updateBalanceStatus(resultBalance.balanceId.value, balanceStatus)
+
+        return Promise.pure(resultBalance)
     }
 
     @Override

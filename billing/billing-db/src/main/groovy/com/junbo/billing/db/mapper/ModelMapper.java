@@ -47,6 +47,7 @@ public interface ModelMapper {
 
     @Mappings({
             @Mapping(source = "type", target = "typeId", explicitMethod = "convertBalanceType"),
+            @Mapping(source = "status", target = "statusId", explicitMethod = "convertBalanceStatus"),
             @Mapping(source = "createdTime", target = "insertedDate", excluded = true, bidirectional = false),
             @Mapping(source = "updatedTime", target = "updatedDate", excluded = true, bidirectional = false),
     })
@@ -73,6 +74,7 @@ public interface ModelMapper {
 
     @Mappings({
             @Mapping(source = "typeId", target = "type", explicitMethod = "convertBalanceType"),
+            @Mapping(source = "statusId", target = "status", explicitMethod = "convertBalanceStatus"),
             @Mapping(source = "createdTime", target = "insertedDate", excluded = true, bidirectional = false),
             @Mapping(source = "updatedTime", target = "updatedDate", excluded = true, bidirectional = false),
     })
@@ -98,12 +100,16 @@ public interface ModelMapper {
     DiscountItem toDiscountItem(DiscountItemEntity entity, MappingContext context);
 
     @Mappings({
+            @Mapping(source = "typeId", target = "type", explicitMethod = "convertTransactionType"),
+            @Mapping(source = "statusId", target = "status", explicitMethod = "convertTransactionStatus"),
             @Mapping(source = "createdTime", target = "insertedDate", excluded = true, bidirectional = false),
             @Mapping(source = "updatedTime", target = "updatedDate", excluded = true, bidirectional = false),
     })
     Transaction toTransaction(TransactionEntity entity, MappingContext context);
 
     @Mappings({
+            @Mapping(source = "type", target = "typeId", explicitMethod = "convertTransactionType"),
+            @Mapping(source = "status", target = "statusId", explicitMethod = "convertTransactionStatus"),
             @Mapping(source = "createdTime", target = "insertedDate", excluded = true, bidirectional = false),
             @Mapping(source = "updatedTime", target = "updatedDate", excluded = true, bidirectional = false),
     })

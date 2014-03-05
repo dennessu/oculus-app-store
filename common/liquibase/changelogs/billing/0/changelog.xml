@@ -18,6 +18,7 @@
 				tax_included BOOLEAN,
 				currency CHAR(3) NOT NULL,
 				country_code CHAR(2),
+				status_id SMALLINT NOT NULL,
 				due_date DATE,
 				retry_count INT NOT NULL DEFAULT(0),
 				decline_count INT NOT NULL DEFAULT(0),
@@ -33,6 +34,7 @@
 			);
 			CREATE INDEX balance_user_id_idx ON balance (user_id);
 			CREATE INDEX balance_pi_id_idx ON balance (pi_id);
+			CREATE INDEX balance_status_id_idx ON balance (status_id);
 			CREATE INDEX balance_due_date_idx ON balance (due_date);
 			CREATE INDEX balance_original_balance_id_idx ON balance (original_balance_id);
 
@@ -149,10 +151,11 @@
 				transaction_id BIGINT NOT NULL,
 				balance_id BIGINT NOT NULL,
 				pi_id BIGINT NOT NULL,
-				transaction_type_id SMALLINT NOT NULL,
+				type_id SMALLINT NOT NULL,
 				payment_ref_id VARCHAR(128) NOT NULL,
 				amount DECIMAL NOT NULL,
 				currency CHAR(3) NOT NULL,
+				status_id SMALLINT NOT NULL,
 				created_date TIMESTAMP NOT NULL,
 				created_by VARCHAR(64) NOT NULL,
 				modified_date TIMESTAMP,

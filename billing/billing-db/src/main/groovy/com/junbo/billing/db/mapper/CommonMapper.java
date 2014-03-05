@@ -6,8 +6,7 @@
 
 package com.junbo.billing.db.mapper;
 
-import com.junbo.billing.spec.enums.BalanceType;
-import com.junbo.billing.spec.enums.TaxAuthority;
+import com.junbo.billing.spec.enums.*;
 import com.junbo.common.id.*;
 import com.junbo.common.util.EnumRegistry;
 import org.springframework.util.StringUtils;
@@ -40,6 +39,45 @@ public class CommonMapper {
     public String explicitMethod_convertTaxAuthority(Short taxAuthorityId) {
         TaxAuthority tax = EnumRegistry.resolve(taxAuthorityId, TaxAuthority.class);
         return tax.toString();
+    }
+
+    public Short explicitMethod_convertTransactionType(String type) {
+        if(!StringUtils.isEmpty(type)) {
+            TransactionType transactionType = TransactionType.valueOf(type);
+            return transactionType.getId();
+        }
+        return null;
+    }
+
+    public String explicitMethod_convertTransactionType(Short typeId) {
+        TransactionType transactionType = EnumRegistry.resolve(typeId, TransactionType.class);
+        return transactionType.toString();
+    }
+
+    public Short explicitMethod_convertBalanceStatus(String status) {
+        if(!StringUtils.isEmpty(status)) {
+            BalanceStatus balanceStatus = BalanceStatus.valueOf(status);
+            return balanceStatus.getId();
+        }
+        return null;
+    }
+
+    public String explicitMethod_convertBalanceStatus(Short statusId) {
+        BalanceStatus balanceStatus = EnumRegistry.resolve(statusId, BalanceStatus.class);
+        return balanceStatus.toString();
+    }
+
+    public Short explicitMethod_convertTransactionStatus(String status) {
+        if(!StringUtils.isEmpty(status)) {
+            TransactionStatus transactionStatus = TransactionStatus.valueOf(status);
+            return transactionStatus.getId();
+        }
+        return null;
+    }
+
+    public String explicitMethod_convertTransactionStatus(Short statusId) {
+        TransactionStatus transactionStatus = EnumRegistry.resolve(statusId, TransactionStatus.class);
+        return transactionStatus.toString();
     }
 
     public Long toBalanceIdLong(BalanceId id) {
