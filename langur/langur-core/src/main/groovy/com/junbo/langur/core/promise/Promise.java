@@ -164,7 +164,7 @@ public final class Promise<T> {
             lastPromise = lastPromise.then(new Func<Object, Promise<Object>>() {
                 @Override
                 public Promise<Object> apply(Object obj) {
-                    return wrap(func.apply(e).wrapped());
+                    return func.apply(e);
                 }
             });
         }
