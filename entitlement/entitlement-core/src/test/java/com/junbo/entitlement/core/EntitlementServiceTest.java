@@ -15,6 +15,7 @@ import com.junbo.entitlement.db.entity.def.EntitlementType;
 import com.junbo.entitlement.spec.model.*;
 import com.junbo.sharding.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
@@ -22,6 +23,7 @@ import org.testng.Assert;
 import org.testng.annotations.ExpectedExceptions;
 import org.testng.annotations.Test;
 
+import javax.sql.DataSource;
 import java.util.Date;
 import java.util.List;
 
@@ -37,6 +39,13 @@ public class EntitlementServiceTest extends AbstractTransactionalTestNGSpringCon
     private EntitlementService entitlementService;
     @Autowired
     private EntitlementDefinitionService entitlementDefinitionService;
+
+    @Override
+    @Autowired
+    @Qualifier("entitlementDataSource")
+    public void setDataSource(DataSource dataSource) {
+        super.setDataSource(dataSource);
+    }
 
     @Test
     public void testAddEntitlement() {

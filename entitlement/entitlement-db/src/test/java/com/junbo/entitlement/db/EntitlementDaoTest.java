@@ -17,12 +17,14 @@ import com.junbo.entitlement.spec.model.EntitlementSearchParam;
 import com.junbo.entitlement.spec.model.PageMetadata;
 import com.junbo.sharding.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import javax.sql.DataSource;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -40,6 +42,13 @@ public class EntitlementDaoTest extends AbstractTransactionalTestNGSpringContext
     private EntitlementRepository entitlementRepository;
     @Autowired
     private EntitlementDefinitionRepository entitlementDefinitionRepository;
+
+    @Override
+    @Autowired
+    @Qualifier("entitlementDataSource")
+    public void setDataSource(DataSource dataSource) {
+        super.setDataSource(dataSource);
+    }
 
     @Test
     public void testInsert() {

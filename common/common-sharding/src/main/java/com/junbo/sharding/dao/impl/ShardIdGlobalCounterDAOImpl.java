@@ -52,6 +52,7 @@ public class ShardIdGlobalCounterDAOImpl implements ShardIdGlobalCounterDAO {
     @Override
     public ShardIdGlobalCounterEntity saveOrUpdate(ShardIdGlobalCounterEntity entity) {
         ShardIdGlobalCounterEntity entityInDB = get(entity.getOptionMode(), entity.getShardId());
+        currentSession().evict(entityInDB);
         if(entityInDB == null) {
             currentSession().save(entity);
         }
