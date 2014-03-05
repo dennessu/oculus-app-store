@@ -67,7 +67,6 @@ public class CatalogGatewayImpl implements CatalogGateway {
 
         // fill offer base info
         result.setOfferId(offer.getId());
-        result.setRevision(offer.getRevision());
 
         // fill sub offers info
         if (offer.getSubOffers() != null) {

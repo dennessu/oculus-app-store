@@ -13,7 +13,6 @@ import java.util.List;
  */
 public class Offer {
     private Long offerId;
-    private Integer revision;
 
     private List<OfferAction> actions;
     private List<LinkedEntry> items;
@@ -43,14 +42,6 @@ public class Offer {
 
     public void setOfferId(Long offerId) {
         this.offerId = offerId;
-    }
-
-    public Integer getRevision() {
-        return revision;
-    }
-
-    public void setRevision(Integer revision) {
-        this.revision = revision;
     }
 
     public List<OfferAction> getActions() {

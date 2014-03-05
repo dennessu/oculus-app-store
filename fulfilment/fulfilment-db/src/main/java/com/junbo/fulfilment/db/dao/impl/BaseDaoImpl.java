@@ -10,6 +10,8 @@ import com.junbo.fulfilment.common.util.Constant;
 import com.junbo.fulfilment.common.util.Utils;
 import com.junbo.fulfilment.db.dao.BaseDao;
 import com.junbo.fulfilment.db.entity.BaseEntity;
+import com.junbo.fulfilment.db.entity.ShardAware;
+import com.junbo.sharding.IdGenerator;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -26,6 +28,9 @@ public abstract class BaseDaoImpl<T extends BaseEntity> implements BaseDao<T> {
     @Autowired
     private SessionFactory sessionFactory;
 
+    @Autowired
+    private IdGenerator idGenerator;
+
     private Class<T> entityType;
 
     protected Session currentSession() {
@@ -33,8 +38,7 @@ public abstract class BaseDaoImpl<T extends BaseEntity> implements BaseDao<T> {
     }
 
     public Long create(T entity) {
-        // remove it later
-        entity.setId(genSimpleId());
+        entity.setId(idGenerator.nextId(entity.getShardMasterId()));
 
         entity.setCreatedTime(Utils.now());
         entity.setCreatedBy(Constant.SYSTEM_INTERNAL);
@@ -82,15 +86,5 @@ public abstract class BaseDaoImpl<T extends BaseEntity> implements BaseDao<T> {
 
     public void setEntityType(Class<T> entityType) {
         this.entityType = entityType;
-    }
-
-    private long genSimpleId() {
-        try {
-            Thread.sleep(10);
-        } catch (InterruptedException e) {
-            //ignore
-        }
-
-        return System.currentTimeMillis();
     }
 }

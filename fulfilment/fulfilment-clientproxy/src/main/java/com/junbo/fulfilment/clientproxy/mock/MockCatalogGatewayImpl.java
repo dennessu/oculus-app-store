@@ -50,7 +50,6 @@ public class MockCatalogGatewayImpl extends CatalogGatewayImpl {
     private Offer getOffer100() {
         Offer offer = new Offer();
         offer.setId(100L);
-        offer.setRevision(1);
         offer.setName("offer100");
 
         offer.setSubOffers(new ArrayList<OfferEntry>() {{
@@ -111,7 +110,6 @@ public class MockCatalogGatewayImpl extends CatalogGatewayImpl {
         Offer offer = new Offer();
         offer.setId(200L);
         offer.setName("offer200");
-        offer.setRevision(1);
 
         offer.setItems(new ArrayList<ItemEntry>() {{
             add(new ItemEntry() {{
@@ -152,8 +150,6 @@ public class MockCatalogGatewayImpl extends CatalogGatewayImpl {
         Offer offer = new Offer();
         offer.setId(300L);
         offer.setName("offer300");
-        offer.setRevision(1);
-
 
         offer.setSubOffers(new ArrayList<OfferEntry>() {{
             add(new OfferEntry() {{
@@ -195,7 +191,6 @@ public class MockCatalogGatewayImpl extends CatalogGatewayImpl {
         Offer offer = new Offer();
         offer.setId(400L);
         offer.setName("offer400");
-        offer.setRevision(1);
 
         offer.setItems(new ArrayList<ItemEntry>() {{
             add(new ItemEntry() {{

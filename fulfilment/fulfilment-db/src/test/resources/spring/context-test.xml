@@ -6,4 +6,5 @@
 
     <import resource="classpath*:spring/*-context.xml"/>
 
+    <bean id="idGenerator" class="com.junbo.fulfilment.db.mock.MockIdGenerator" />
 </beans>

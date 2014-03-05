@@ -10,10 +10,7 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * FulfilmentActionEntity.
@@ -83,5 +80,11 @@ public class FulfilmentActionEntity extends BaseEntity {
 
     public void setResult(String result) {
         this.result = result;
+    }
+
+    @Override
+    @Transient
+    public Long getShardMasterId() {
+        return fulfilmentId;
     }
 }

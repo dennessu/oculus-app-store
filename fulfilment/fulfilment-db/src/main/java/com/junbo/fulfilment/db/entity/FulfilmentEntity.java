@@ -10,10 +10,7 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * FulfilmentEntity.
@@ -53,5 +50,11 @@ public class FulfilmentEntity extends BaseEntity {
 
     public void setPayload(String payload) {
         this.payload = payload;
+    }
+
+    @Override
+    @Transient
+    public Long getShardMasterId() {
+        return requestId;
     }
 }

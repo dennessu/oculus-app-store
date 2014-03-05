@@ -63,4 +63,10 @@ public class FulfilmentRequestEntity extends BaseEntity {
     public void setOrderId(Long orderId) {
         this.orderId = orderId;
     }
+
+    @Override
+    @Transient
+    public Long getShardMasterId() {
+        return orderId;
+    }
 }

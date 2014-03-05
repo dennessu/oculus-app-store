@@ -15,7 +15,7 @@ import java.util.Date;
  * BaseEntity.
  */
 @MappedSuperclass
-public abstract class BaseEntity implements Serializable {
+public abstract class BaseEntity implements Serializable, ShardAware {
     private Date createdTime;
     private String createdBy;
     private Date updatedTime;
@@ -56,6 +56,9 @@ public abstract class BaseEntity implements Serializable {
     public void setUpdatedBy(String updatedBy) {
         this.updatedBy = updatedBy;
     }
+
+    @Transient
+    public abstract Long getShardMasterId();
 
     @Transient
     public abstract Long getId();
