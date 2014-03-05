@@ -10,8 +10,5 @@
     "ejs": "*",
     "express-partials": "0.2.0",
     "guid": "0.0.12"
-      "store-model": "*",
-      "store-data-provider": "*"
-
   }
 }

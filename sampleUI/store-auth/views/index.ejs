@@ -35,7 +35,7 @@
 <script type="text/x-handlebars" data-template-name="register">
     <h3>{{title}}</h3>
     {{#if isValid}}
-    <strong>errMessage</strong>
+    <strong>{{errMessage}}</strong>
     {{/if}}
     <form id="Register" {{action "Submit" on="submit"}}>
         <dl>
