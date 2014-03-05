@@ -1,0 +1,27 @@
+apply plugin: 'groovy'
+
+dependencies {
+    compile (libraries.servlet_api)
+    compile (libraries.jersey_spring3)
+    compile (libraries.jackson_jaxrs_json_provider)
+    compile (libraries.jackson_annotations)
+    compile (libraries.common_beanutils)
+
+    compile (libraries.spring_aop)
+    compile (libraries.spring_context)
+    compile (libraries.spring_core)
+    compile (libraries.spring_expression)
+    compile (libraries.spring_tx)
+    compile (libraries.spring_web)
+
+    compile (libraries.asyncclient)
+    compile (libraries.oom_processor)
+    compile (libraries.oom)
+    compile (libraries.jersey_common)
+
+    compile project(':subscription-spec')
+    compile project(':subscription-db')
+    compile project(':subscription-common')
+    compile project(':subscription-clientproxy')
+    compile project(':subscription-core')
+}

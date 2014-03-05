@@ -1,0 +1,30 @@
+apply plugin: 'groovy'
+
+dependencies {
+    compile project(":catalog-spec")
+    compile project(":catalog-common")
+
+    compile (libraries.persistence_api)
+    compile (libraries.validation_api)
+
+    compile (libraries.spring_aop)
+    compile (libraries.spring_context)
+    compile (libraries.spring_core)
+    compile (libraries.spring_expression)
+    compile (libraries.spring_tx)
+    compile (libraries.spring_jdbc)
+    compile (libraries.spring_orm)
+
+    compile (libraries.hibernate_core)
+    compile (libraries.hibernate_entitymanager)
+    compile (libraries.hibernate_annotation)
+    compile (libraries.hibernate_validator)
+    compile (libraries.postgresql)
+
+    compile (libraries.bonecp_spring)
+
+    compile (libraries.common_lib)
+    compile (libraries.common_configuration)
+
+    testCompile (libraries.spring_test)
+}

@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title><%= title%></title>
+</head>
+<body onload="authform.submit();">
+    <form id="authform" method="post" action="<%= Post_Back_Url%>">
+        <input type="hidden" name="access_token" value="<%= FormList.access_token%>">
+        <input type="hidden" name="id_token" value="<%= FormList.id_token%>">
+    </form>
+</body>
+</html>

@@ -1,0 +1,25 @@
+apply plugin: 'groovy'
+
+dependencies {
+    compile project(":drm-spec")
+    compile project(":drm-common")
+
+    compile 'javax.persistence:persistence-api:1.0.2'
+    compile 'javax.validation:validation-api:1.1.0.Final'
+
+    compile 'org.springframework:spring-aop:3.2.4.RELEASE'
+    compile 'org.springframework:spring-context:3.2.4.RELEASE'
+    compile 'org.springframework:spring-core:3.2.4.RELEASE'
+    compile 'org.springframework:spring-expression:3.2.4.RELEASE'
+    compile 'org.springframework:spring-tx:3.2.4.RELEASE'
+    compile 'org.springframework:spring-jdbc:3.2.4.RELEASE'
+    compile 'org.springframework:spring-orm:3.2.4.RELEASE'
+
+    compile 'org.hibernate:hibernate-core:4.1.7.Final'
+    compile 'org.hibernate:hibernate-entitymanager:4.1.7.Final'
+    compile 'org.hibernate.common:hibernate-commons-annotations:4.0.1.Final'
+    compile 'org.hibernate:hibernate-validator:5.0.2.Final'
+    compile 'org.postgresql:postgresql:9.3-1100-jdbc41'
+
+    testCompile 'org.springframework:spring-test:4.0.0.RELEASE'
+}

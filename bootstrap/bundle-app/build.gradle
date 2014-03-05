@@ -1,0 +1,9 @@
+apply plugin: 'application'
+apply plugin: 'groovy'
+
+mainClassName = "com.junbo.bootstrap.IdentityMain"
+
+dependencies {
+    compile 'com.junbo.identity:identity-app:0.0.1-SNAPSHOT'
+    compile 'com.junbo.oauth:oauth-app:0.0.1-SNAPSHOT'
+}

@@ -1,0 +1,3 @@
+com.junbo.oom.processor.handler.ParseMapper
+com.junbo.oom.processor.handler.CreateMapper
+com.junbo.oom.processor.handler.RenderMapper

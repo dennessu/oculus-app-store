@@ -1,0 +1,10 @@
+include 'entitlement-spec'
+
+include 'entitlement-common'
+include 'entitlement-db'
+include 'entitlement-core'
+include 'entitlement-rest'
+
+include 'entitlement-clientproxy'
+
+include 'entitlement-app'

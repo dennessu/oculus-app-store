@@ -1,0 +1,10 @@
+include 'payment-spec'
+
+include 'payment-common'
+include 'payment-db'
+include 'payment-core'
+include 'payment-rest'
+
+include 'payment-clientproxy'
+
+include 'payment-app'

@@ -1,0 +1,8 @@
+apply plugin: 'groovy'
+
+dependencies {
+    compile project(':ewallet-rest')
+
+    compile(libraries.jersey_container_grizzly2_http)
+    compile(libraries.jersey_spring3)
+}

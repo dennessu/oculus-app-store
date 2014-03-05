@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script type="text/javascript" src="/scripts/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript">
+        function JQueryRedirect(){
+            $.ajax({
+                type: "POST",
+                url: "/rest/Authenticate",
+                success: function(data, textStatus, jqXHR){
+                    alert(jqXHR.status + "\n" + data);
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown){
+                    alert(XMLHttpRequest.status);
+                }
+            });
+        }
+
+        var xmlhttp;
+        function OriginalRedirect() {
+
+            var url = "/rest/Authenticate";
+            xmlhttp = null;
+            if (window.XMLHttpRequest) {// code for all new browsers
+                xmlhttp = new XMLHttpRequest();
+            }
+            else if (window.ActiveXObject) {// code for IE5 and IE6
+                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            if (xmlhttp != null) {
+                xmlhttp.onreadystatechange = state_Change;
+                xmlhttp.open("POST", url, true);
+                xmlhttp.send(null);
+            }
+        }
+
+        function state_Change() {
+            if (xmlhttp.readyState == 4) {
+                alert(xmlhttp.status +"\n"+ xmlhttp.responseText);
+                if (xmlhttp.status == 200) {
+
+                }else {
+
+                }
+            }
+        }
+
+
+    </script>
+  </head>
+  <body>
+    <h1><%= title %></h1>
+    <p>Welcome to <%= title %></p>
+    <button onclick="JQueryRedirect();">JQuery 302</button><button onclick="OriginalRedirect();">Original 302</button>
+  </body>
+</html>

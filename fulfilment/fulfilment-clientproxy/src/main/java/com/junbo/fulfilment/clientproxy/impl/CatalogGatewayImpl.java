@@ -1,0 +1,118 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
+ */
+package com.junbo.fulfilment.clientproxy.impl;
+
+import com.junbo.catalog.spec.model.common.EntityGetOptions;
+import com.junbo.catalog.spec.model.offer.Action;
+import com.junbo.catalog.spec.model.offer.Event;
+import com.junbo.catalog.spec.model.offer.ItemEntry;
+import com.junbo.catalog.spec.model.offer.OfferEntry;
+import com.junbo.catalog.spec.resource.OfferResource;
+import com.junbo.fulfilment.clientproxy.CatalogGateway;
+import com.junbo.fulfilment.common.collection.SevereMap;
+import com.junbo.fulfilment.common.exception.CatalogGatewayException;
+import com.junbo.fulfilment.common.exception.ResourceNotFoundException;
+import com.junbo.fulfilment.common.util.Utils;
+import com.junbo.fulfilment.spec.fusion.*;
+import org.springframework.beans.factory.annotation.Autowired;
+
+/**
+ * CatalogGatewayImpl.
+ */
+public class CatalogGatewayImpl implements CatalogGateway {
+    private static final String PURCHASE_EVENT = "PURCHASE_EVENT";
+    private static final Integer OFFER_REVISION_NOT_SPECIFIED = -1;
+
+    @Autowired
+    private OfferResource offerResource;
+
+    @Override
+    public com.junbo.fulfilment.spec.fusion.Offer getOffer(Long offerId, Integer offerRevision) {
+        return wash(retrieve(offerId, offerRevision));
+    }
+
+    @Override
+    public com.junbo.fulfilment.spec.fusion.Offer getOffer(Long offerId) {
+        return wash(retrieve(offerId, OFFER_REVISION_NOT_SPECIFIED));
+    }
+
+    @Override
+    public ShippingMethod getShippingMethod(Long shippingMethodId) {
+        //TODO
+        return new ShippingMethod();
+    }
+
+    protected com.junbo.catalog.spec.model.offer.Offer retrieve(Long offerId, Integer offerRevision) {
+        try {
+            com.junbo.catalog.spec.model.offer.Offer offer =
+                    offerResource.getOffer(offerId, EntityGetOptions.getDefault()).wrapped().get();
+
+            if (offer == null) {
+                throw new ResourceNotFoundException(
+                        "Offer [" + offerId + "] with revision [" + offerRevision + "] does not exist");
+            }
+
+            return offer;
+        } catch (Exception e) {
+            throw new CatalogGatewayException("Error occurred during calling [Catalog] component service.", e);
+        }
+    }
+
+    protected Offer wash(com.junbo.catalog.spec.model.offer.Offer offer) {
+        Offer result = new com.junbo.fulfilment.spec.fusion.Offer();
+
+        // fill offer base info
+        result.setOfferId(offer.getId());
+        result.setRevision(offer.getRevision());
+
+        // fill sub offers info
+        if (offer.getSubOffers() != null) {
+            for (OfferEntry entry : offer.getSubOffers()) {
+                LinkedEntry subOffer = new LinkedEntry();
+
+                subOffer.setEntityType(CatalogEntityType.OFFER);
+                subOffer.setId(entry.getOfferId());
+                subOffer.setQuantity(entry.getQuantity());
+
+                result.addSubOffer(subOffer);
+            }
+        }
+
+        // fill items info
+        if (offer.getItems() != null) {
+            for (ItemEntry entry : offer.getItems()) {
+                LinkedEntry item = new LinkedEntry();
+
+                item.setEntityType(CatalogEntityType.ITEM);
+                item.setId(entry.getItemId());
+                item.setQuantity(entry.getQuantity());
+                item.setSku(entry.getSku());
+
+                result.addItem(item);
+            }
+        }
+
+        // fill fulfilment actions
+        for (Event event : offer.getEvents()) {
+            if (!Utils.equals(PURCHASE_EVENT, event.getName())) {
+                continue;
+            }
+
+            for (Action action : event.getActions()) {
+                OfferAction offerAction = new OfferAction();
+                offerAction.setType(action.getType());
+                offerAction.setProperties(new SevereMap<>(action.getProperties()));
+
+                // fill item info for physical delivery action
+                offerAction.setItems(result.getItems());
+
+                result.addFulfilmentAction(offerAction);
+            }
+        }
+
+        return result;
+    }
+}

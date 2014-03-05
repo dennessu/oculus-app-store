@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!-- Shard db configuration -->
+    <bean id="identityDataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
+        <property name="driverClass" value="${sharding.db.driverClassName}"/>
+        <property name="jdbcUrl" value="${sharding.db.url}"/>
+        <property name="username" value="${sharding.db.username}"/>
+        <property name="password" value="${sharding.db.password}"/>
+        <property name="maxConnectionsPerPartition" value="${sharding.db.maxConnectionsPerPartition}"/>
+        <property name="minConnectionsPerPartition" value="${sharding.db.minConnectionsPerPartition}"/>
+        <property name="partitionCount" value="${sharding.db.partitionCount}"/>
+        <property name="acquireIncrement" value="${sharding.db.acquireIncrement}"/>
+        <property name="statementsCacheSize" value="${sharding.db.statementsCacheSize}"/>
+        <property name="releaseHelperThreads" value="${sharding.db.releaseHelperThreads}"/>
+    </bean>
+
+    <!-- SessonFactory for Hibernate -->
+    <bean id="sessionFactory"
+          class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="dataSource" ref="identityDataSource"/>
+        <property name="packagesToScan" value="com.junbo.sharding.*" />
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">${sharding.hibernate.dialect}</prop>
+                <prop key="hibernate.max_fetch_depth">${sharding.hibernate.max_fetch_depth}</prop>
+                <prop key="hibernate.jdbc.fetch_size">${sharding.hibernate.jdbc.fetch_size}</prop>
+                <prop key="hibernate.jdbc.batch_size">${sharding.hibernate.jdbc.batch_size}</prop>
+                <prop key="hibernate.show_sql">${sharding.hibernate.show_sql}</prop>
+            </props>
+        </property>
+    </bean>
+
+    <tx:annotation-driven transaction-manager="shardingTransactionManager"/>
+
+    <!-- Transaction Manager -->
+    <bean id="shardingTransactionManager"
+          class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <bean id="shardIdGlobalCounterDAO" class="com.junbo.sharding.dao.impl.ShardIdGlobalCounterDAOImpl" />
+
+    <!-- Id generate -->
+    <!-- All those configurations will be replaced in future configurationData -->
+    <bean id="idSchema" class="com.junbo.sharding.IdSchema">
+        <constructor-arg name="bitsInTime" value="${sharding.sharding.bitsInTime}"/>
+        <constructor-arg name="timeSecOffset" value="${sharding.sharding.timeSecOffset}"/> <!-- This value is calculated as: (int) (new Date(2014, 01, 01).getTime() / 1000)  -->
+        <constructor-arg name="bitsInGlobalCounter" value="${sharding.sharding.bitsInGlobalCounter}"/>
+        <constructor-arg name="bitsInLocalCounter" value="${sharding.sharding.bitsInLocalCounter}"/>
+        <constructor-arg name="numberOfShards" value="${sharding.sharding.numberOfShards}"/>
+    </bean>
+    <bean id="timeGenerator" class="com.junbo.sharding.impl.TimeGeneratorImpl" />
+
+    <bean id="connectionFactoryBuilder" class="net.spy.memcached.ConnectionFactoryBuilder">
+        <property name="protocol" value="BINARY"/>
+        <property name="opTimeout" value="${sharding.memcached.operationTimeout}"/>
+    </bean>
+    <bean id="idGeneratorClient" class="com.junbo.common.memcached.MemcachedClientFactoryBean">
+        <property name="connectionFactoryBuilder" ref="connectionFactoryBuilder"/>
+        <property name="servers" value="${sharding.memcached.servers}"/>
+    </bean>
+
+    <bean id="globalCounterInMemory" class="com.junbo.sharding.impl.GlobalCounterInMemoryImpl" />
+    <bean id="globalCounterMemcached" class="com.junbo.sharding.impl.GlobalCounterMemcachedImpl">
+        <constructor-arg ref="idGeneratorClient" />
+        <constructor-arg value="${sharding.memcached.secondsToTrack}" />
+    </bean>
+    <bean id="idGenerator" class="com.junbo.sharding.impl.IdGeneratorImpl">
+        <constructor-arg ref="idSchema" />
+        <constructor-arg ref="timeGenerator" />
+        <constructor-arg ref="${sharding.memcached.globalCounter}" />
+    </bean>
+</beans>

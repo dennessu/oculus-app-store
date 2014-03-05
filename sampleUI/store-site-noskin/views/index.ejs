@@ -1,0 +1,13 @@
+<script type="text/x-handlebars" data-template-name="index">
+    <hr>
+    <section>
+        <hgroup><h3>Product List</h3></hgroup>
+
+        <%for(var i=0; i < Products.length; ++i){%>
+        <dl>
+            <dd>Name: {{#link-to 'product' <%= Products[i].id%>}}<%= Products[i].name%>{{/link-to}}</dd>
+            <dd>Price: $ <%= Products[i].price%></dd>
+        </dl>
+        <%}%>
+    </section>
+</script>

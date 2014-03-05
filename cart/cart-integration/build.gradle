@@ -1,0 +1,27 @@
+apply plugin: 'groovy'
+
+dependencies {
+    compile (libraries.testng)
+    compile (libraries.asyncclient)
+    compile (libraries.common_lang)
+    compile (libraries.spring_test)
+    compile (libraries.spring_core)
+    compile (libraries.spring_expression)
+    compile (libraries.spring_tx)
+    compile (libraries.spring_aop)
+    compile (libraries.spring_context)
+    compile 'com.junbo.cart:cart-spec:0.0.1-SNAPSHOT'
+    compile 'com.junbo.identity:identity-spec:0.0.1-SNAPSHOT'
+}
+
+def enableIntegration = hasProperty('cart-integration')
+
+test {
+    useTestNG() {
+        if(!enableIntegration) {
+            println 'skip integration test'
+            includeGroups '___dummy'
+        }
+        systemProperties['test.env'] = System.properties['test.env']
+    }
+}

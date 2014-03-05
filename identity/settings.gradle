@@ -1,0 +1,7 @@
+include 'identity-spec'
+
+include 'identity-common'
+include 'identity-data'
+include 'identity-core'
+include 'identity-rest'
+include 'identity-app'

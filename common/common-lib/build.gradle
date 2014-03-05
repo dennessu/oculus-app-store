@@ -1,0 +1,25 @@
+apply plugin: 'java'
+
+dependencies {
+    compile (libraries.common_configuration)
+
+    compile (libraries.rs_api)
+    compile (libraries.spring_context)
+    compile (libraries.spring_core)
+    compile (libraries.spring_beans)
+    compile (libraries.jackson_jaxrs_json_provider)
+    compile (libraries.jackson_core)
+    compile (libraries.jackson_annotations)
+    compile (libraries.jackson_databind)
+    compile (libraries.langur_processor)
+
+    compile (libraries.slf4j_api)
+    compile (libraries.log4j_over_slf4j)
+    compile (libraries.jcl_over_slf4j)
+    compile (libraries.jul_to_slf4j)
+
+    compile (libraries.logback_classic)
+    compile (libraries.logback_core)
+
+    compile (libraries.spy_memcached)
+}

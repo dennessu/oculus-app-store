@@ -1,0 +1,322 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
+ */
+package com.junbo.cart.core.service.impl
+
+import com.junbo.cart.core.client.IdentityClient
+import com.junbo.cart.core.service.CartPersistService
+import com.junbo.cart.core.service.CartService
+import com.junbo.cart.core.validation.Validation
+import com.junbo.cart.spec.error.AppErrors
+import com.junbo.cart.spec.model.Cart
+import com.junbo.cart.spec.model.item.CartItem
+import com.junbo.cart.spec.model.item.CouponItem
+import com.junbo.cart.spec.model.item.OfferItem
+import com.junbo.common.id.CartId
+import com.junbo.common.id.CartItemId
+import com.junbo.common.id.UserId
+import com.junbo.identity.spec.model.user.User
+import com.junbo.langur.core.promise.Promise
+import groovy.transform.CompileStatic
+import org.springframework.util.CollectionUtils
+
+/**
+ * Created by fzhang@wan-san.com on 14-2-14.
+ */
+@CompileStatic
+class CartServiceImpl implements CartService {
+
+    public final static String CART_NAME_PRIMARY = '__primary'
+
+    private Validation validation
+
+    private CartPersistService cartPersistService
+
+    private IdentityClient identityClient
+
+    void setValidation(Validation validation) {
+        this.validation = validation
+    }
+
+    void setCartPersistService(CartPersistService cartPersistService) {
+        this.cartPersistService = cartPersistService
+    }
+
+    void setIdentityClient(IdentityClient userClient) {
+        this.identityClient = userClient
+    }
+
+    @Override
+    Promise<Cart> addCart(Cart cart, String clientId, UserId userId) {
+        return identityClient.getUser(userId).then {
+            User user = (User) it
+            validation.validateUser(user).validateCartAdd(clientId, userId, cart)
+            cart.clientId = clientId
+            cart.user = userId
+            cart.userLoggedIn = true // todo : set from user
+            processCartForAddOrUpdate(cart, null)
+            cartPersistService.saveNewCart(cart)
+            return Promise.pure(cart)
+        }
+    }
+
+    @Override
+    Promise<Cart> getCart(UserId userId, CartId cartId) {
+        return identityClient.getUser(userId).then {
+            validation.validateUser((User) it)
+            Cart cart = cartPersistService.getCart(cartId, true)
+            if (cart == null) {
+                throw AppErrors.INSTANCE.cartNotFound().exception()
+            }
+            validation.validateCartOwner(cart, userId)
+            return Promise.pure(cart)
+        }
+    }
+
+    @Override
+    Promise<Cart> getCartByName(String clientId, String cartName, UserId userId) {
+        return identityClient.getUser(userId).then {
+            validation.validateUser((User) it)
+            Cart cart = cartPersistService.getCart(clientId, cartName, userId, true)
+            if (cart == null) {
+                throw AppErrors.INSTANCE.cartNotFound().exception()
+            }
+            validation.validateCartOwner(cart, userId)
+            return Promise.pure(cart)
+        }
+    }
+
+    @Override
+    Promise<Cart> getCartPrimary(String clientId, UserId userId) {
+        return identityClient.getUser(userId).then {
+            validation.validateUser((User) it)
+            Cart cart = cartPersistService.getCart(clientId, CART_NAME_PRIMARY, userId, true)
+            if (cart == null) {
+                cart = new Cart()
+                cart.cartName = CART_NAME_PRIMARY
+                cart.user = userId
+                cart.userLoggedIn = true // todo : set from user
+                cart.clientId = clientId
+                cartPersistService.saveNewCart(cart)
+            }
+            return Promise.pure(cart)
+        }
+    }
+
+    @Override
+    Promise<Cart> updateCart(UserId userId, CartId cartId, Cart cart) {
+        return getCart(userId, cartId).then {
+            Cart oldCart = (Cart) it
+            validation.validateCartUpdate(cart, oldCart)
+            processCartForAddOrUpdate(cart, oldCart)
+            cart.id = cartId
+            cart.cartName = oldCart.cartName
+            cart.user = oldCart.user
+            cart.clientId = oldCart.clientId
+            cart.userLoggedIn = oldCart.userLoggedIn
+            cart.createdTime = oldCart.createdTime
+            cartPersistService.updateCart(cart)
+            return Promise.pure(cart)
+        }
+    }
+
+    @Override
+    Promise<Cart> mergeCart(UserId userId, CartId cartId, Cart fromCart) {
+        validation.validateMerge(fromCart)
+        return getCart(userId, cartId).then { Cart destCart ->
+            return getCart(fromCart.user, fromCart.id).syncThen { Cart cart ->
+                destCart.offers.each {
+                    ((OfferItem) it).selected = false
+                }
+                cart.offers.each {
+                    ((CartItem) it).id = null
+                }
+                cart.coupons.each {
+                    ((CartItem) it).id = null
+                }
+                addCartItems(destCart, cart.offers, cart.coupons)
+                cart.offers = Collections.EMPTY_LIST
+                cart.coupons = Collections.EMPTY_LIST
+                cartPersistService.updateCart(cart)
+                cartPersistService.updateCart(destCart)
+                return destCart
+            }
+        }
+    }
+
+    @Override
+    Promise<Cart> addOfferItem(UserId userId, CartId cartId, OfferItem offerItem) {
+        return getCart(userId, cartId).then {
+            Cart cart = (Cart) it
+            validation.validateOfferAdd(offerItem)
+            if (offerItem.selected == null) {
+                offerItem.selected = true
+            }
+            addCartItems(cart, [offerItem], [])
+            cartPersistService.updateCart(cart)
+            return Promise.pure(cart)
+        }
+    }
+
+    @Override
+    Promise<Cart> updateOfferItem(UserId userId, CartId cartId, CartItemId offerItemId, OfferItem offerItem) {
+        return getCart(userId, cartId).then {
+            Cart cart = (Cart) it
+            OfferItem o = cart.offers.find {
+                return ((OfferItem) it).id == offerItemId
+            }
+            if (o == null) {
+                throw AppErrors.INSTANCE.cartItemNotFound().exception()
+            }
+            if (offerItem.selected == null) {
+                offerItem.selected = true
+            }
+            validation.validateOfferUpdate(offerItem)
+            // update the offer and save
+            o.offer = offerItem.offer
+            o.quantity = offerItem.quantity
+            o.selected = offerItem.selected
+            cart.offers = mergeOffers(cart.offers)
+            cartPersistService.updateCart(cart)
+            return Promise.pure(cart)
+        }
+    }
+
+    @Override
+    Promise<Cart> deleteOfferItem(UserId userId, CartId cartId, CartItemId offerItemId) {
+        return getCart(userId, cartId).then {
+            Cart cart = (Cart) it
+            if (lookupAndRemoveItem((List<CartItem>) cart.offers, offerItemId) == null) {
+                throw AppErrors.INSTANCE.cartItemNotFound().exception()
+            }
+            cartPersistService.updateCart(cart)
+            return Promise.pure(cart)
+        }
+    }
+
+    @Override
+    Promise<Cart> addCouponItem(UserId userId, CartId cartId, CouponItem couponItem) {
+        validation.validateCouponAdd(couponItem)
+        return getCart(userId, cartId).then {
+            Cart cart = (Cart) it
+            addCartItems(cart, [], [couponItem])
+            cartPersistService.updateCart(cart)
+            return Promise.pure(cart)
+        }
+    }
+
+    @Override
+    Promise<Cart> deleteCouponItem(UserId userId, CartId cartId, CartItemId couponItemId) {
+        return getCart(userId, cartId).then {
+            Cart cart = (Cart) it
+            if (lookupAndRemoveItem((List<CartItem>) cart.coupons, couponItemId) == null) {
+                throw AppErrors.INSTANCE.cartItemNotFound().exception()
+            }
+            cartPersistService.updateCart(cart)
+            return Promise.pure(null)
+        }
+    }
+
+    private List<OfferItem> mergeOffers(List<OfferItem> offers) {
+        Map<Long, OfferItem> offersMap = new HashMap<Long, OfferItem>()
+        offers.each {
+            OfferItem e = (OfferItem) it
+            OfferItem current = offersMap[e.offer.id]
+            if (current == null) {
+                offersMap[e.offer.id] = e
+            } else {
+                current.quantity += e.quantity
+                current.selected |= e.selected
+                if (current.id == null && e.id != null) {
+                    current.id = e.id
+                }
+            }
+        }
+        return removeZeroQuantityOffer(new ArrayList<OfferItem>(offersMap.values()))
+    }
+
+    private static List<CouponItem> mergeCoupons(List<CouponItem> coupons) {
+        Map<String, CouponItem> couponsMap = new HashMap<String, CouponItem>()
+        coupons.each {
+            CouponItem e = (CouponItem) it
+            CouponItem current = couponsMap[e.coupon.id]
+            if (current == null) {
+                couponsMap[e.coupon.id] = e
+            } else {
+                if (current.id == null && e.id != null) {
+                    current.id = e.id
+                }
+            }
+        }
+        return new ArrayList<CouponItem>(couponsMap.values())
+    }
+
+    private void addCartItems(Cart cart, List<OfferItem> offers, List<CouponItem> coupons) {
+        if (offers != null) {
+            cart.offers.addAll(offers)
+        }
+        cart.offers = mergeOffers(cart.offers)
+        if (coupons != null) {
+            cart.coupons.addAll(coupons)
+        }
+        cart.coupons = mergeCoupons(cart.coupons)
+    }
+
+    private static List<OfferItem> removeZeroQuantityOffer(List<OfferItem> offers) {
+        if (!CollectionUtils.isEmpty(offers)) {
+            Iterator<OfferItem> it = offers.iterator()
+            while (it.hasNext()) {
+                if (it.next().quantity <= 0) {
+                    it.remove()
+                }
+            }
+        }
+        return offers
+    }
+
+    private CartItem lookupAndRemoveItem(List<CartItem> items, CartItemId cartItemId) {
+        Iterator<CartItem> it = items.iterator()
+        while (it.hasNext()) {
+            CartItem e = it.next()
+            if (e.id == cartItemId) {
+                it.remove()
+                return e
+            }
+        }
+        return null
+    }
+
+    private Cart processCartForAddOrUpdate(Cart cart, Cart oldCart) {
+        setCartItemId((List<CartItem>) cart.offers,
+                (List<CartItem>) (oldCart == null ? null : oldCart.offers))
+        setCartItemId((List<CartItem>) cart.coupons,
+                (List<CartItem>) (oldCart == null ? null : oldCart.coupons))
+        cart.offers.each {
+            if (((OfferItem) it).selected == null) {
+                ((OfferItem) it).selected = true
+            }
+        }
+        cart.offers = mergeOffers(cart.offers)
+        cart.coupons = mergeCoupons(cart.coupons)
+        removeZeroQuantityOffer(cart.offers)
+        return cart
+    }
+
+    private static void setCartItemId(List<CartItem> itemsUpdate, List<CartItem> itemsExists) {
+        def existId = [] as Set
+        if (itemsExists != null) {
+            itemsExists.each {
+                existId << ((CartItem) it).id
+            }
+        }
+        itemsUpdate.each {
+            CartItem item = (CartItem) it
+            if (item.id != null && !existId.contains(item.id)) {
+                item.id = null
+            }
+        }
+    }
+}
+

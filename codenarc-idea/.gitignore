@@ -1,0 +1,6 @@
+# IDE Files
+!*.iml
+!*.ipr
+
+# lib Files
+!lib/*

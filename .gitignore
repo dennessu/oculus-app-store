@@ -1,0 +1,39 @@
+# Hidden files
+.*
+!.gitignore
+
+# Build outputs
+**/build/**
+**/target/**
+
+# OS files
+Thumbs.db
+Desktop.ini
+
+# Package files
+*.jar
+*.war
+!common/liquibase/lib/*
+!identity/identity-data/src/test/resources/*
+
+# Output files
+*.class
+**/classes/**
+
+# IDE Files
+*.iws
+*.iml
+*.ipr
+
+# python execute Files
+*.pyc
+
+# Node modules
+**/node_modules/**
+
+# tmux log
+tmux-*.log
+
+# log file
+*.log
+*.log

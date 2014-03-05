@@ -1,0 +1,3 @@
+#!/bin/sh
+cd cart-integration
+gradle clean build install -Pcart-integration -Dtest.env=local

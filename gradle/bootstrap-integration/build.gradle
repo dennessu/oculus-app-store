@@ -1,0 +1,19 @@
+apply plugin: 'bootstrap'
+
+buildscript {
+    repositories {
+		mavenLocal()
+        maven {
+            credentials {
+                username "${artifactory_user}"
+                password "${artifactory_password}"
+            }
+
+            url "${artifactory_contextUrl}/repo"
+        }
+    }
+
+    dependencies {
+        classpath 'com.junbo.gradle:bootstrap:0.0.1-SNAPSHOT'
+    }
+}

@@ -1,0 +1,12 @@
+apply plugin: 'java'
+
+dependencies {
+    compile project(":payment-db")
+    compile project(":payment-spec")
+    compile project(":payment-clientproxy")
+
+	compile 'com.braintreepayments.gateway:braintree-java:2.22.1'
+	
+	testCompile(libraries.spring_test)
+    testCompile(libraries.common_configuration_data)
+}

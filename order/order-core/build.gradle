@@ -1,0 +1,9 @@
+apply plugin: 'groovy'
+
+dependencies {
+    compile project(":order-spec")
+    compile project(":order-clientproxy")
+    compile project(":order-db")
+    testCompile (libraries.spring_test)
+    testCompile (libraries.easy_mock)
+}

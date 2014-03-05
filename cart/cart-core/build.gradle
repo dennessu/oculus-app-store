@@ -1,0 +1,28 @@
+apply plugin: 'groovy'
+
+dependencies {
+
+    compile (libraries.common_beanutils)
+
+    compile (libraries.spring_core)
+    compile (libraries.spring_expression)
+    compile (libraries.spring_tx)
+    compile (libraries.spring_aop)
+    compile (libraries.spring_context)
+    compile (libraries.spring_web)
+    compile (libraries.hibernate_core)
+
+    compile (libraries.hibernate_validator)
+    compile (libraries.el_api)
+    compile (libraries.el)
+    compile (libraries.log4j)
+
+    compile (libraries.common_lang)
+    compile 'com.junbo.identity:identity-spec:0.0.1-SNAPSHOT'
+
+    compile project(':cart-spec')
+    compile project(':cart-common')
+
+    testCompile (libraries.spring_test)
+    testCompile (libraries.common_lang)
+}

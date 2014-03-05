@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <context:component-scan base-package="com.junbo.ewallet.db"/>
+
+    <!-- dataSource -->
+    <bean id="ewalletDataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
+        <property name="driverClass" value="${ewallet.db.driverClassName}"/>
+        <property name="jdbcUrl" value="${ewallet.db.url}"/>
+        <property name="username" value="${ewallet.db.username}"/>
+        <property name="password" value="${ewallet.db.password}"/>
+        <property name="maxConnectionsPerPartition" value="${ewallet.db.maxConnectionsPerPartition}"/>
+        <property name="minConnectionsPerPartition" value="${ewallet.db.minConnectionsPerPartition}"/>
+        <property name="partitionCount" value="${ewallet.db.partitionCount}"/>
+        <property name="acquireIncrement" value="${ewallet.db.acquireIncrement}"/>
+        <property name="statementsCacheSize" value="${ewallet.db.statementsCacheSize}"/>
+        <property name="releaseHelperThreads" value="${ewallet.db.releaseHelperThreads}"/>
+    </bean>
+
+    <!-- SessonFactory for Hibernate -->
+    <bean id="sessionFactory"
+          class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="dataSource" ref="ewalletDataSource"/>
+        <property name="packagesToScan" value="com.junbo.ewallet.db.entity"/>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">${ewallet.hibernate.dialect}</prop>
+                <prop key="hibernate.max_fetch_depth">${ewallet.hibernate.max_fetch_depth}</prop>
+                <prop key="hibernate.jdbc.fetch_size">${ewallet.hibernate.fetch_size}</prop>
+                <prop key="hibernate.jdbc.batch_size">${ewallet.hibernate.batch_size}</prop>
+                <prop key="hibernate.show_sql">${ewallet.hibernate.show_sql}</prop>
+            </props>
+        </property>
+    </bean>
+
+    <!-- Transaction Manager -->
+    <bean id="transactionManager"
+          class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <tx:annotation-driven/>
+
+    <!-- Dao -->
+    <bean id="baseTransactionDao" class="com.junbo.ewallet.db.dao.hibernate.TransactionBaseDao" abstract="true"/>
+    <bean id="transactionDao" class="com.junbo.ewallet.db.dao.hibernate.TransactionDaoImpl" parent="baseTransactionDao">
+        <property name="entityType" value="com.junbo.ewallet.db.entity.hibernate.TransactionEntity"/>
+    </bean>
+    <bean id="lotTransactionDao" class="com.junbo.ewallet.db.dao.hibernate.LotTransactionDaoImpl" parent="baseTransactionDao">
+        <property name="entityType" value="com.junbo.ewallet.db.entity.hibernate.LotTransactionEntity"/>
+    </bean>
+
+    <bean id="baseDao" class="com.junbo.ewallet.db.dao.hibernate.BaseDao" abstract="true" parent="baseTransactionDao"/>
+    <bean id="walletDao" class="com.junbo.ewallet.db.dao.hibernate.WalletDaoImpl" parent="baseDao">
+        <property name="entityType" value="com.junbo.ewallet.db.entity.hibernate.WalletEntity"/>
+    </bean>
+    <bean id="walletLotDao" class="com.junbo.ewallet.db.dao.hibernate.WalletLotDaoImpl" parent="baseDao">
+        <property name="entityType" value="com.junbo.ewallet.db.entity.hibernate.WalletLotEntity"/>
+    </bean>
+
+</beans>

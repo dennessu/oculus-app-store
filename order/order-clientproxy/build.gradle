@@ -1,0 +1,30 @@
+apply plugin: 'groovy'
+
+dependencies {
+    compile project(":order-spec")
+    compile project(":order-mock")
+    compile (libraries.rs_api)
+    compile (libraries.langur)
+    compile (libraries.spring_beans)
+    compile (libraries.spring_context)
+    compile (libraries.common_lib)
+    compile (libraries.jersey_common)
+    compile 'com.junbo.identity:identity-spec:0.0.1-SNAPSHOT'
+    compile 'com.junbo.billing:billing-spec:0.0.1-SNAPSHOT'
+    compile 'com.junbo.catalog:catalog-spec:0.0.1-SNAPSHOT'
+    compile 'com.junbo.rating:rating-spec:0.0.1-SNAPSHOT'
+    compile 'com.junbo.fulfilment:fulfilment-spec:0.0.1-SNAPSHOT'
+    compile 'com.junbo.payment:payment-spec:0.0.1-SNAPSHOT'
+    compile 'net.sf.ehcache:ehcache-core:2.6.6'
+    compile 'org.springframework:spring-context-support:4.0.2.RELEASE'
+    compile 'javax.transaction:jta:1.1'
+
+    testCompile (libraries.spring_test)
+
+    processor (libraries.langur_processor)
+    processor (libraries.log4j)
+}
+
+ext {
+    processorClass = 'com.junbo.langur.processor.ClientProxyProcessor'
+}

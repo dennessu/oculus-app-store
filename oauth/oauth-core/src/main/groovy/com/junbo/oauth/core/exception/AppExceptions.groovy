@@ -1,0 +1,158 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
+ */
+package com.junbo.oauth.core.exception
+
+import com.junbo.common.error.AppError
+import com.junbo.common.error.ErrorDef
+import com.junbo.common.error.ErrorProxy
+import groovy.transform.CompileStatic
+
+/**
+ * AppExceptions.
+ */
+@CompileStatic
+interface AppExceptions {
+    static final AppExceptions INSTANCE = ErrorProxy.newProxyInstance(AppExceptions)
+
+    @ErrorDef(httpStatusCode = 400, code = '20001', description = 'The client_id {0} is invalid', field = 'client_id')
+    AppError invalidClientId(String clientId)
+
+    @ErrorDef(httpStatusCode = 400, code = '20002', description = 'The client_id parameter is missing',
+            field = 'client_id')
+    AppError missingClientId()
+
+    @ErrorDef(httpStatusCode = 400, code = '20003',
+            description = 'The refresh token\'s client id {0} is different from the parameter client_id {1}',
+            field = 'client_id')
+    AppError differentClientId(String tokenClientId, String paramClientId)
+
+    @ErrorDef(httpStatusCode = 400, code = '20004', description = 'The client_secret {0} is invalid',
+            field = 'client_secret')
+    AppError invalidClientSecret(String clientSecret)
+
+    @ErrorDef(httpStatusCode = 400, code = '20005', description = 'The client_secret parameter is missing',
+            field = 'client_secret')
+    AppError missingClientSecret()
+
+    @ErrorDef(httpStatusCode = 400, code = '20006', description = 'The scope {0} is invalid', field = 'scope')
+    AppError invalidScope(String scopes)
+
+    @ErrorDef(httpStatusCode = 400, code = '20007', description = 'The scope parameter is missing', field = 'scope')
+    AppError missingScope()
+
+    @ErrorDef(httpStatusCode = 400, code = '20008',
+            description = 'The scope parameter must be a subset of the original access token\'s scopes',
+            field = 'scope')
+    AppError outboundScope()
+
+    @ErrorDef(httpStatusCode = 400, code = '20009', description = 'The redirect_uri {0} is invalid',
+            field = 'redirect_uri')
+    AppError invalidRedirectUri(String redirectUri)
+
+    @ErrorDef(httpStatusCode = 400, code = '20010', description = 'The redirect_uri parameter is missing',
+            field = 'redirect_uri')
+    AppError missingRedirectUri()
+
+    @ErrorDef(httpStatusCode = 400, code = '20011', description = 'The prompt {0} is invalid', field = 'prompt')
+    AppError invalidPrompt(String prompt)
+
+    @ErrorDef(httpStatusCode = 400, code = '20012', description = 'The display {0} is invalid', field = 'display')
+    AppError invalidDisplay(String display)
+
+    @ErrorDef(httpStatusCode = 400, code = '20013', description = 'The flow state {0} is invalid', field = 'fs')
+    AppError invalidFlowState(String flowState)
+
+    @ErrorDef(httpStatusCode = 400, code = '20014', description = 'The login is required')
+    AppError loginRequired()
+
+    @ErrorDef(httpStatusCode = 400, code = '20015', description = 'The response_type {0} is invalid',
+            field = 'response_type')
+    AppError invalidResponseType(String responseType)
+
+    @ErrorDef(httpStatusCode = 400, code = '20016', description = 'The response_type parameter is missing',
+            field = 'response_type')
+    AppError missingResponseType()
+
+    @ErrorDef(httpStatusCode = 400, code = '20017', description = 'The nonce parameter is missing',
+            field = 'nonce')
+    AppError missingNonce()
+
+    @ErrorDef(httpStatusCode = 400, code = '20018', description = 'The grant_type {0} is invalid',
+            field = 'grant_type')
+    AppError invalidGrantType(String grantType)
+
+    @ErrorDef(httpStatusCode = 400, code = '20019', description = 'The grant_type parameter is missing',
+            field = 'grant_type')
+    AppError missingGrantType()
+
+    @ErrorDef(httpStatusCode = 400, code = '20020', description = 'The code {0} is invalid', field = 'code')
+    AppError invalidCode(String code)
+
+    @ErrorDef(httpStatusCode = 400, code = '20021', description = 'The code parameter is missing', field = 'code')
+    AppError missingCode()
+
+    @ErrorDef(httpStatusCode = 400, code = '20022', description = 'The username parameter is missing',
+            field = 'username')
+    AppError missingUsername()
+
+    @ErrorDef(httpStatusCode = 400, code = '20023', description = 'The password parameter is missing',
+            field = 'password')
+    AppError missingPassword()
+
+    @ErrorDef(httpStatusCode = 400, code = '20024', description = 'The user credential is invalid',
+            field = 'username, password')
+    AppError invalidCredential()
+
+    @ErrorDef(httpStatusCode = 400, code = '20025', description = 'The refresh_token {0} is invalid',
+            field = 'refresh_token')
+    AppError invalidRefreshToken(String refreshToken)
+
+    @ErrorDef(httpStatusCode = 400, code = '20026', description = 'The refresh_token parameter is missing',
+            field = 'refresh_token')
+    AppError missingRefreshToken()
+
+    @ErrorDef(httpStatusCode = 400, code = '20027', description = 'The refresh_token {0} is already expired',
+            field = 'refresh_token')
+    AppError expiredRefreshToken(String refreshToken)
+
+    @ErrorDef(httpStatusCode = 400, code = '20028', description = 'The issuer of the id token is invalid',
+            field = 'id_token_hint')
+    AppError invalidIdTokenIssuer()
+
+    @ErrorDef(httpStatusCode = 400, code = '20029',
+            description = 'The audience of the id token doesn not contain the client id {0}', field = 'id_token_hint')
+    AppError invalidIdTokenAudience(String clientId)
+
+    @ErrorDef(httpStatusCode = 400, code = '20030', description = 'The id token is already expired',
+            field = 'id_token_hint')
+    AppError expiredIdToken()
+
+    @ErrorDef(httpStatusCode = 400, code = '20031', description = 'The id token is invalid', field = 'id_token_hint')
+    AppError invalidIdToken()
+
+    @ErrorDef(httpStatusCode = 400, code = '20032', description = 'The max_age {0} is invalid', field = 'max_age')
+    AppError invalidMaxAge(String maxAge)
+
+    @ErrorDef(httpStatusCode = 400, code = '20033', description = 'The access_token parameter is missing',
+            field = 'access_token')
+    AppError missingAccessToken()
+
+    @ErrorDef(httpStatusCode = 400, code = '20034', description = 'The access_token {0} is invalid',
+            field = 'access_token')
+    AppError invalidAccessToken()
+
+    @ErrorDef(httpStatusCode = 400, code = '20035', description = 'The access_token {0} is already expired',
+            field = 'access_token')
+    AppError expiredAccessToken()
+
+    @ErrorDef(httpStatusCode = 400, code = '20036', description = 'The Authorization header is missing',
+            field = 'authorization')
+    AppError missingAuthorization()
+
+    @ErrorDef(httpStatusCode = 400, code = '20037', description = 'The Authorization header is invalid',
+            field = 'authorization')
+    AppError invalidAuthorization()
+}

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xmlns:wf="http://www.junbo.com/schema/webflow"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.junbo.com/schema/webflow http://www.junbo.com/schema/webflow-config/webflow.xsd">
+
+    <bean id="flowDefLoader" class="com.junbo.langur.core.webflow.definition.FlowDefLoaderImpl"/>
+
+    <bean id="stateRepository" class="com.junbo.langur.core.webflow.state.InMemoryStateRepository"/>
+
+    <bean id="stateExecutorFactory" class="com.junbo.langur.core.webflow.executor.StateExecutorFactoryImpl"/>
+
+    <bean id="flowExecutor" class="com.junbo.langur.core.webflow.executor.FlowExecutorImpl">
+        <property name="flowDefLoader" ref="flowDefLoader"/>
+        <property name="stateExecutorFactory" ref="stateExecutorFactory"/>
+        <property name="stateRepository" ref="stateRepository"/>
+    </bean>
+
+    <bean id="generateResponse" class="com.junbo.oauth.core.action.webflow.GenerateAccessTokenResponse"/>
+    <wf:flow id="grantTokenFlow">
+        <wf:view-state id="grantTokenActionState" view="123">
+            <wf:on-render>
+                <wf:action ref="generateResponse"/>
+            </wf:on-render>
+        </wf:view-state>
+    </wf:flow>
+
+</beans>

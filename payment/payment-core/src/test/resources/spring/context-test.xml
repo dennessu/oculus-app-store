@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <import resource="classpath*:spring/*-context.xml"/>
+
+    <!-- fusion mock -->
+    <bean id="mockPaymentProviderService" class="com.junbo.payment.core.mock.MockPaymentProviderServiceImpl"/>
+    <bean id="mockProviderRoutingService" class="com.junbo.payment.core.mock.MockProviderRoutingServiceImpl"/>
+    <!-- payment method serivce -->
+    <bean id="mockPaymentInstrumentService" class="com.junbo.payment.core.impl.PaymentInstrumentServiceImpl">
+        <property name="providerRoutingService" ref="mockProviderRoutingService"  />
+    </bean>
+
+    <bean id="mockPaymentService" class="com.junbo.payment.core.impl.PaymentTransactionServiceImpl">
+        <property name="providerRoutingService" ref="mockProviderRoutingService"  />
+        <property name="paymentInstrumentService" ref="mockPaymentInstrumentService"  />
+    </bean>
+
+</beans>

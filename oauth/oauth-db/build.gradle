@@ -1,0 +1,19 @@
+apply plugin: 'groovy'
+
+dependencies {
+    compile(libraries.spring_aop)
+    compile(libraries.spring_context)
+    compile(libraries.spring_core)
+    compile(libraries.spring_expression)
+    compile(libraries.spring_tx)
+    compile(libraries.spring_jdbc)
+    compile(libraries.spring_orm)
+    compile(libraries.spring_beans)
+
+    compile(libraries.common_codec)
+
+    compile "redis.clients:jedis:2.2.1"
+
+    compile project(':oauth-spec')
+    compile project(':oauth-common')
+}

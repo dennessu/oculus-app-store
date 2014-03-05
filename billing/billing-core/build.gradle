@@ -1,0 +1,7 @@
+apply plugin: 'groovy'
+
+dependencies {
+    compile project(':billing-db')
+    compile project(':billing-spec')
+    compile project(':billing-clientproxy')
+}

@@ -1,0 +1,12 @@
+apply plugin: 'java'
+
+dependencies {
+    compile (libraries.kryo)
+    compile (libraries.jackson_databind)
+    compile (libraries.jackson_core)
+    compile (libraries.rs_api)
+    compile (libraries.spring_core)
+    compile (libraries.spring_expression)
+    compile (libraries.spring_tx)
+    compile (libraries.langur)
+}

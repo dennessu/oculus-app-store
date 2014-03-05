@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd   http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <context:component-scan base-package="com.junbo.rating.clientproxy"/>
+
+    <tx:annotation-driven/>
+
+    <!-- fusion -->
+    <!--bean id="catalogGateway" class="com.junbo.rating.clientproxy.impl.CatalogGatewayImpl"/-->
+
+    <!--mock-->
+    <bean id="mockCatalogGateway" class="com.junbo.rating.clientproxy.mock.MockCatalogGatewayImpl"/>
+
+    <!-- async http client -->
+    <bean id="asyncHttpClient" class="com.ning.http.client.AsyncHttpClient"/>
+
+    <bean id="offerClient" class="com.junbo.catalog.spec.resource.proxy.OfferResourceClientProxy">
+        <constructor-arg name="client" ref="asyncHttpClient"/>
+        <constructor-arg name="target" value="http://localhost:8080/rest"/>
+        <constructor-arg name="transcoder">
+            <bean class="com.junbo.common.json.JsonMessageTranscoder"/>
+        </constructor-arg>
+    </bean>
+
+    <bean id="promotionClient" class="com.junbo.catalog.spec.resource.proxy.PromotionResourceClientProxy">
+        <constructor-arg name="client" ref="asyncHttpClient"/>
+        <constructor-arg name="target" value="http://localhost:8080/rest"/>
+        <constructor-arg name="transcoder">
+            <bean class="com.junbo.common.json.JsonMessageTranscoder"/>
+        </constructor-arg>
+    </bean>
+</beans>

@@ -1,0 +1,21 @@
+apply plugin: 'groovy'
+
+dependencies {
+    compile 'javax.ws.rs:javax.ws.rs-api:2.0'
+    compile 'com.junbo.langur:langur-core:0.0.1-SNAPSHOT'
+
+    compile 'org.springframework:spring-beans:3.2.4.RELEASE'
+    compile 'org.springframework:spring-context:3.2.4.RELEASE'
+    compile 'com.google.guava:guava:15.0'
+
+    compile 'com.junbo.identity:identity-spec:0.0.1-SNAPSHOT'
+
+    processor 'com.junbo.langur:langur-processor:0.0.1-SNAPSHOT'
+    processor 'log4j:log4j:1.2.17'
+
+}
+
+ext {
+    processorClass = 'com.junbo.langur.processor.ClientProxyProcessor'
+}
+

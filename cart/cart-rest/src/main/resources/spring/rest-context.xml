@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <context:component-scan base-package="com.junbo.oom.core.builtin"/>
+    <!--<context:component-scan base-package="com.junbo.catalog.rest.mapper"/>-->
+    <context:component-scan base-package="com.junbo.cart.spec.resource.adapter" />
+
+    <!-- Config service -->
+    <bean id="configService" class="com.junbo.configuration.impl.ConfigServiceImpl" />
+    <bean id="configPropertyPlaceholderConfigurer" class="com.junbo.configuration.impl.ConfigPropertyPlaceholderConfigurer">
+        <property name="configService" ref="configService" />
+    </bean>
+    <bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
+        <property name="converters">
+            <set>
+                <bean class="com.junbo.configuration.reloadable.impl.ReloadableConfigConverterFactory">
+                    <property name="configService" ref="configService" />
+                </bean>
+            </set>
+        </property>
+    </bean>
+
+    <bean id="defaultCartResource" class="com.junbo.cart.rest.resource.CartResourceImpl" scope="prototype">
+        <property name="cartService" ref="cartService"/>
+    </bean>
+
+    <bean id="identityClient" class="com.junbo.cart.core.client.impl.IdentityClientImpl">
+        <property name="identityUrl" value="${cart.client.identity.url}"/>
+    </bean>
+
+    <bean id="mockUserClient" class="com.junbo.cart.core.client.impl.MockUserClientImpl">
+    </bean>
+
+    <bean id="cartService" class="com.junbo.cart.core.service.impl.CartServiceImpl">
+        <property name="cartPersistService" ref="cartPersistService"/>
+        <property name="validation" ref="validation"/>
+        <property name="identityClient" ref="identityClient"/>
+    </bean>
+
+    <bean id="validation" class="com.junbo.cart.core.validation.ValidationImpl">
+        <property name="cartPersistService" ref="cartPersistService"/>
+    </bean>
+
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+</beans>

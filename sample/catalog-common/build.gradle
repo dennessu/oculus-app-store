@@ -1,0 +1,13 @@
+apply plugin: 'java'
+apply plugin: 'application'
+dependencies {
+    compile 'org.springframework:spring-core:3.2.4.RELEASE'
+    compile 'org.springframework:spring-expression:3.2.4.RELEASE'
+    compile 'org.springframework:spring-tx:3.2.4.RELEASE'
+}
+
+task copyToLib(type: Sync) {
+    from configurations.runtime
+    into "$buildDir/output/libs"
+
+}

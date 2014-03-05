@@ -1,0 +1,12 @@
+apply plugin: 'groovy'
+
+dependencies {
+    compile 'com.goshop.langur:langur-core:0.0.1-SNAPSHOT'
+
+    compile 'javax.ws.rs:javax.ws.rs-api:2.0'
+
+    compile 'org.freemarker:freemarker:2.3.20'
+
+    testCompile 'org.springframework:spring-beans:3.2.4.RELEASE'
+    testCompile 'org.springframework:spring-context:3.2.4.RELEASE'
+}

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!-- Config service -->
+    <bean id="configService" class="com.junbo.configuration.impl.ConfigServiceImpl" />
+    <bean id="configPropertyPlaceholderConfigurer" class="com.junbo.configuration.impl.ConfigPropertyPlaceholderConfigurer">
+        <property name="configService" ref="configService" />
+    </bean>
+    <bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
+        <property name="converters">
+            <set>
+                <bean class="com.junbo.configuration.reloadable.impl.ReloadableConfigConverterFactory">
+                    <property name="configService" ref="configService" />
+                </bean>
+            </set>
+        </property>
+    </bean>
+
+    <bean id="cartPersistService" class="com.junbo.cart.db.persist.CartPersistServiceImpl">
+        <property name="couponItemDao" ref="couponItemDao"/>
+        <property name="cartDao" ref="cartDao"/>
+        <property name="offerItemDao" ref="offerItemDao"/>
+        <property name="systemOperation" ref="systemOperation"/>
+        <property name="dataMapper" ref="dataMapper"/>
+    </bean>
+
+    <bean id="dataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
+        <property name="driverClass" value="${cart.db.driver}"/>
+        <property name="jdbcUrl" value="${cart.db.url}"/>
+        <property name="username" value="${cart.db.username}"/>
+        <property name="password" value="${cart.db.password}"/>
+        <property name="maxConnectionsPerPartition" value="${cart.db.maxConnectionsPerPartition}"/>
+        <property name="minConnectionsPerPartition" value="${cart.db.minConnectionsPerPartition}"/>
+        <property name="partitionCount" value="${cart.db.partitionCount}"/>
+        <property name="acquireIncrement" value="${cart.db.acquireIncrement}"/>
+        <property name="statementsCacheSize" value="${cart.db.statementsCacheSize}"/>
+        <property name="releaseHelperThreads" value="${cart.db.releaseHelperThreads}"/>
+    </bean>
+
+    <!-- SessonFactory for Hibernate -->
+    <bean id="sessionFactory"
+          class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="packagesToScan" value="com.junbo.cart.db.entity"/>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">${cart.hibernate.dialect}</prop>
+                <prop key="hibernate.max_fetch_depth">${cart.hibernate.max_fetch_depth}</prop>
+                <prop key="hibernate.jdbc.fetch_size">${cart.hibernate.jdbc.fetch_size}</prop>
+                <prop key="hibernate.jdbc.batch_size">${cart.hibernate.jdbc.batch_size}</prop>
+                <prop key="hibernate.show_sql">${cart.hibernate.show_sql}</prop>
+            </props>
+        </property>
+    </bean>
+
+    <!-- Transaction Manager -->
+    <bean id="transactionManager"
+          class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <bean id="abstractDao" class="com.junbo.cart.db.dao.impl.AbstractDao" abstract="true">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <bean id="cartDao" class="com.junbo.cart.db.dao.impl.CartDaoImpl" parent="abstractDao">
+    </bean>
+
+    <bean id="offerItemDao" class="com.junbo.cart.db.dao.impl.CartItemDaoImpl" parent="abstractDao">
+        <property name="entityClass" value="com.junbo.cart.db.entity.OfferItemEntity"/>
+    </bean>
+
+    <bean id="couponItemDao" class="com.junbo.cart.db.dao.impl.CartItemDaoImpl" parent="abstractDao">
+        <property name="entityClass" value="com.junbo.cart.db.entity.CouponItemEntity"/>
+    </bean>
+
+    <bean id="dataMapper" class="com.junbo.cart.db.mapper.CartMapperImpl"/>
+
+    <bean id="systemOperation" class="com.junbo.cart.common.util.SystemOperationImpl"/>
+
+    <context:component-scan base-package="com.junbo.cart.db, com.junbo.oom.core.builtin"/>
+</beans>

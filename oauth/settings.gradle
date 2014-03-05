@@ -1,0 +1,10 @@
+include 'oauth-spec'
+
+include 'oauth-common'
+include 'oauth-db'
+include 'oauth-core'
+include 'oauth-api'
+
+include 'oauth-clientproxy'
+
+include 'oauth-app'

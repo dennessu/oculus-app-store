@@ -1,0 +1,42 @@
+<script type="text/x-handlebars" data-template-name="index">
+<div class="container page home-page">
+    <div class="row">
+        <div class="col-md-3 sidebar">
+            <%include warpers/HomeSidebar%>
+        </div>
+        <div class="col-md-9 main">
+
+            <div id="hero-carousel" class="carousel crossfade">
+                <div class="carousel-inner">
+                    <div class="item"><a href="#"><div class="cover"></div><img src="/images/d3x.jpg" width="868" height="310" alt="Diablo III: Reaper of Souls, Available 03.25.14, Pre-Purchase Now" /></a> </div>
+                    <div class="item active"><a href="#"><div class="cover"></div><img src="/images/wow.jpg" width="868" height="310" alt="World of Warcraft, Your Epic Quest Begins Here" /></a> </div>
+                    <div class="item"><a href="#"><div class="cover"></div><img src="/images/sc2.jpg" width="868" height="310" alt="StarCraft II: Heart of the Swarm, Welcome to the hive mind" /></a> </div>
+                    <div class="item"><a href="#"><div class="cover"></div><img src="/images/wow-pet-mounts.jpg" width="868" height="310" alt="World of Warcraft - Shop Pets, Mounts, and more" /></a> </div>
+                </div>
+                <div class="carousel-controls">
+                    <button class="left" href="#hero-carousel" data-slide="prev"><span></span></button>
+                    <button class="right" href="#hero-carousel" data-slide="next"><span></span></button>
+                </div>
+            </div>
+
+            <dl class="row products">
+                <%for(var i=0; i < Products.length; ++i){%>
+                <dd class="col-sm-6 col-md-3 item">
+                    {{#link-to 'product' <%= Products[i].id%>}}
+                    <div class="cover"></div>
+                    <div class="thumbnail">
+                        <img src="<%= Products[i].picture_url%>">
+                        <div class="caption">
+                            <h3><%= Products[i].name%></h3>
+                            <p>$ <%= Products[i].price%></p>
+                        </div>
+                    </div>
+                    {{/link-to}}
+                </dd>
+                <%}%>
+            </dl>
+
+        </div>
+    </div>
+</div>
+</script>

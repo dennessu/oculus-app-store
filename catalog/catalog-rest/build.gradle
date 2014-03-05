@@ -1,0 +1,31 @@
+apply plugin: 'groovy'
+
+dependencies {
+    compile (libraries.servlet_api)
+    compile (libraries.jersey_spring3)
+    compile (libraries.jackson_jaxrs_json_provider)
+    compile (libraries.jackson_annotations)
+    compile (libraries.common_beanutils)
+
+    compile (libraries.spring_aop)
+    compile (libraries.spring_context)
+    compile (libraries.spring_core)
+    compile (libraries.spring_expression)
+    compile (libraries.spring_tx)
+    compile (libraries.spring_web)
+
+    compile (libraries.asyncclient)
+    compile (libraries.oom_processor)
+    compile (libraries.oom)
+    compile (libraries.jersey_common)
+
+    compile (libraries.common_io)
+
+    compile project(':catalog-spec')
+    compile project(':catalog-db')
+    compile project(':catalog-common')
+    compile project(':catalog-clientproxy')
+    compile project(':catalog-core')
+
+    processor (libraries.langur_processor)
+}

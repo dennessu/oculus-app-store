@@ -1,0 +1,80 @@
+task createWrapper(type: Wrapper) {
+    gradleVersion = '1.10'
+}
+
+apply plugin: 'idea'
+apply plugin: 'maven'
+apply plugin: 'groovy'
+
+group = "com.junbo.gradle"
+version = property("${project.name}-version")
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    jcenter()
+
+    maven {
+        credentials {
+            username "${artifactory_user}"
+            password "${artifactory_password}"
+        }
+
+        url "${artifactory_contextUrl}/repo"
+    }
+
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: "${artifactory_contextUrl}/libs-release-local") {
+                authentication(userName: "${artifactory_user}", password: "${artifactory_password}")
+            }
+
+            snapshotRepository(url: "${artifactory_contextUrl}/libs-snapshot-local") {
+                authentication(userName: "${artifactory_user}", password: "${artifactory_password}")
+            }
+        }
+    }
+}
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource, "$buildDir/generated-src"
+}
+
+artifacts {
+    archives sourcesJar
+}
+
+dependencies {
+    compile gradleApi()
+    compile localGroovy()
+
+    testCompile 'org.testng:testng:6.8.7'
+}
+
+test {
+    useTestNG()
+}
+
+idea {
+    project {
+        jdkName = 1.7
+        languageLevel = 1.7
+    }
+
+    module {
+        excludeDirs -= file("$buildDir")
+        sourceDirs += file("$buildDir/generated-src")
+
+        sourceDirs += file('src/main/java')
+        sourceDirs += file('src/main/groovy')
+        sourceDirs += file('src/main/resources')
+        sourceDirs += file('src/main/webapp')
+    }
+}

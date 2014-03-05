@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title><%= title %></title>
+    <script type="text/javascript" src="/scripts/app/config/config.js"></script>
+    <script type="text/javascript" src="/scripts/libs/require/require.js" data-main="/scripts/app/app.js"></script>
+</head>
+<body>
+<script type="text/x-handlebars">
+    <h1 class="logo">STORE DEMO</h1>
+    <nav>
+        {{#link-to "login"}}Login{{/link-to}}&nbsp;&nbsp;{{#link-to "register"}}register{{/link-to}}
+    </nav>
+    <hr>
+    <div id="BodyContainer">
+        {{outlet}}
+    </div>
+</script>
+
+<script type="text/x-handlebars" data-template-name="login">
+    <h3>{{title}}</h3>
+    <form id="Login" {{action "Submit" on="submit"}}>
+    <dl>
+        <dd>{{#if isValid}}
+            <p><strong>Email or Password invalid</strong></p>
+            {{/if}}</dd>
+        <dd>Username: {{input type="email" class="{required:true,email:true}" name="Email" id="LEmail" autofocus="true" value=content.email}}</dd>
+        <dd>Password: {{input type="password" class="{required:true,maxlength:20}" name="Password" id="LPassword" value=content.password}}</dd>
+        <dd><p><button type="submit">Sign In</button></p></dd>
+    </dl>
+    </form>
+</script>
+
+<script type="text/x-handlebars" data-template-name="register">
+    <h3>{{title}}</h3>
+    {{#if isValid}}
+    <strong>errMessage</strong>
+    {{/if}}
+    <form id="Register" {{action "Submit" on="submit"}}>
+        <dl>
+            <dd>First Name: {{input type="text" class="{required:true,maxlength:20}" name="Firstname" id="RFirstname" value=content.firstname}}</dd>
+            <dd>Last Name: {{input type="text" class="{required:true,maxlength:20}" name="Lastname" id="RLastname" value=content.lastname}}</dd>
+            <dd>Email: {{input type="email" class="{required:true,email:true}" name="Email" id="REmail" value=content.email}}</dd>
+            <dd>Password: {{input type="password" class="{required:true,maxlength:20}" name="Password" id="RPassword" value=content.password}}</dd>
+            <dd>Confirm Password: {{input type="password" class="{required:true,equalTo:'#RPassword'}" id="RConfirmPassword"}}</dd>
+            <dd>Birthday: {{view Ember.Select content=months optionValuePath="content.v" optionLabelPath="content.t" value=month id="RMonth" name="Month" class="{required:true, Birthday:true}"}}
+                {{view Ember.Select content=days optionValuePath="content.v" optionLabelPath="content.t" value=day id="RDay" name="Day" class="{required:true, Birthday:true}"}}
+                {{view Ember.Select content=years optionValuePath="content.v" optionLabelPath="content.t" value=year id="RYear" name="Year" class="{required:true, Birthday:true}"}}</dd>
+            <dd><p><button type="submit" class="btn btn-success">Submit</button></p></dd>
+        </dl>
+    </form>
+</script>
+
+
+<script type="text/x-handlebars" data-template-name="captcha">
+    <h3>{{title}}</h3>
+    {{#if isValid}}
+    <p>Please try again later.</p>
+    {{/if}}
+    <form method="post" {{action "Submit" on="submit"}}>
+        <div id="captchadiv"></div>
+        <br>
+        <input type="hidden" name="privatekey" value="6LeKhO4SAAAAACP5W0NoL7YV9dZAs3-5Z-T4Dl5i">
+        <button type="submit" class="btn btn-success">Submit</button>
+    </form>
+</script>
+
+
+</body>
+</html>

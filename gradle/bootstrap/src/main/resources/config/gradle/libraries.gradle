@@ -1,0 +1,119 @@
+// build a map of the dependency artifacts to use.
+// Allows centralized definition of the version of artifacts to use.
+ext {
+    junboVersion = '0.0.1-SNAPSHOT'
+    jerseyVersion = '2.5.1'
+    springVersion = '4.0.0.RELEASE'
+    jacksonVersion = '2.2.3'
+    slf4jVersion = '1.7.6'
+    logbackVersion = '1.1.1'
+
+
+    libraries = [
+            // junbo
+            common_configuration:   "com.junbo.common:common-configuration:${junboVersion}",
+            common_lib:             "com.junbo.common:common-lib:${junboVersion}",
+            common_sharding:        "com.junbo.common:common-sharding:${junboVersion}",
+            common_configuration_data:"com.junbo.common:configuration-data:${junboVersion}",
+            langur:                 "com.junbo.langur:langur-core:${junboVersion}",
+            langur_processor:       "com.junbo.langur:langur-processor:${junboVersion}",
+            oom:                    "com.junbo.oom:oom-core:${junboVersion}",
+            oom_processor:          "com.junbo.oom:oom-processor:${junboVersion}",
+
+            // jersey
+            jersey_container_grizzly2_http:     "org.glassfish.jersey.containers:jersey-container-grizzly2-http:${jerseyVersion}",
+            jersey_spring3:          "org.glassfish.jersey.ext:jersey-spring3:${jerseyVersion}",
+            jersey_common:           "org.glassfish.jersey.core:jersey-common:${jerseyVersion}",
+            jersey_server:           "org.glassfish.jersey.core:jersey-server:${jerseyVersion}",
+            jersey_bean_validation:  "org.glassfish.jersey.ext:jersey-bean-validation:${jerseyVersion}",
+
+            // spring
+            spring_beans:           "org.springframework:spring-beans:${springVersion}",
+            spring_context:         "org.springframework:spring-context:${springVersion}",
+            spring_aop:             "org.springframework:spring-aop:${springVersion}",
+            spring_core:            "org.springframework:spring-core:${springVersion}",
+            spring_expression:      "org.springframework:spring-expression:${springVersion}",
+            spring_tx:              "org.springframework:spring-tx:${springVersion}",
+            spring_jdbc:            "org.springframework:spring-jdbc:${springVersion}",
+            spring_orm:             "org.springframework:spring-orm:${springVersion}",
+            spring_test:            "org.springframework:spring-test:${springVersion}",
+            spring_web:             "org.springframework:spring-web:${springVersion}",
+
+            common_beanutils:       'commons-beanutils:commons-beanutils:1.8.3',
+
+            // javax
+            rs_api:                 'javax.ws.rs:javax.ws.rs-api:2.0',
+            servlet_api:            'javax.servlet:javax.servlet-api:3.1.0',
+            persistence_api:        'javax.persistence:persistence-api:1.0.2',
+            validation_api:         'javax.validation:validation-api:1.1.0.Final',
+            el_api:                 'javax.el:javax.el-api:2.2.4',
+            el:                     'org.glassfish.web:javax.el:2.2.4',
+
+            // jackson 2.X
+            jackson_databind:       "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}",
+            jackson_core:           "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}",
+            jackson_jaxrs_json_provider: "com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:${jacksonVersion}",
+            jackson_annotations:    "com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}",
+
+            // hibernate
+            hibernate_core:              'org.hibernate:hibernate-core:4.1.7.Final',
+            hibernate_entitymanager:     'org.hibernate:hibernate-entitymanager:4.1.7.Final',
+            hibernate_annotation:        'org.hibernate.common:hibernate-commons-annotations:4.0.1.Final',
+            hibernate_validator:         'org.hibernate:hibernate-validator:5.0.2.Final',
+
+            // postgresql
+            postgresql:             'org.postgresql:postgresql:9.3-1100-jdbc41',
+
+            // datasource
+            bonecp_spring:          'com.jolbox:bonecp-spring:0.8.0-rc1',
+
+            // log4j
+            log4j:                  'log4j:log4j:1.2.17',
+
+            // slf4j
+            slf4j_api:              "org.slf4j:slf4j-api:${slf4jVersion}",
+            log4j_over_slf4j:       "org.slf4j:log4j-over-slf4j:${slf4jVersion}",
+            jul_to_slf4j:           "org.slf4j:jul-to-slf4j:${slf4jVersion}",
+            jcl_over_slf4j:         "org.slf4j:jcl-over-slf4j:${slf4jVersion}",
+
+            // logback
+            logback_classic:        "ch.qos.logback:logback-classic:${logbackVersion}",
+            logback_core:           "ch.qos.logback:logback-core:${logbackVersion}",
+
+            // google
+            guava:                  'com.google.guava:guava:15.0',
+
+            // asyc client
+            asyncclient:            'org.apache.httpcomponents:httpcomponents-asyncclient:4.0',
+            async_http_client:      'com.ning:async-http-client:1.7.22',
+
+            // free marker
+            freemarker:             'org.freemarker:freemarker:2.3.20',
+
+            // groovy
+            groovy:                 'org.codehaus.groovy:groovy-all:2.2.0',
+
+            //hickory
+            hickory:                'com.jolira:hickory:1.0.0',
+
+            //common beanutils
+            beanutils:              'commons-beanutils:commons-beanutils:1.8.3',
+
+            //testng
+            testng:                 'org.testng:testng:6.8.7',
+
+            //json lib
+            jsonlib:                'net.sf.json-lib:json-lib:2.4',
+
+            kryo:                   'com.esotericsoftware.kryo:kryo:2.22',
+
+            common_codec:           'commons-codec:commons-codec:1.6',
+            common_lang:            'commons-lang:commons-lang:2.5',
+            common_io:              'commons-io:commons-io:2.4',
+            json_path:              'com.jayway.jsonpath:json-path:0.9.1',
+            fastjson:               'com.alibaba:fastjson:1.1.15',
+
+            spy_memcached:          'net.spy:spymemcached:2.10.4',
+            easy_mock:              'org.easymock:easymock:3.2'
+    ]
+}

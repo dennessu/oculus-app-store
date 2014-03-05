@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+       ">
+
+    <context:annotation-config />
+
+    <tx:annotation-driven />
+    <context:component-scan base-package="com.junbo.identity.data" />
+
+    <bean id="identityDataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
+        <property name="driverClass" value="${identity.db.driverClassName}"/>
+        <property name="jdbcUrl" value="${identity.db.url}"/>
+        <property name="username" value="${identity.db.username}"/>
+        <property name="password" value="${identity.db.password}"/>
+        <property name="maxConnectionsPerPartition" value="${identity.db.maxConnectionsPerPartition}"/>
+        <property name="minConnectionsPerPartition" value="${identity.db.minConnectionsPerPartition}"/>
+        <property name="partitionCount" value="${identity.db.partitionCount}"/>
+        <property name="acquireIncrement" value="${identity.db.acquireIncrement}"/>
+        <property name="statementsCacheSize" value="${identity.db.statementsCacheSize}"/>
+        <property name="releaseHelperThreads" value="${identity.db.releaseHelperThreads}"/>
+    </bean>
+
+    <!-- SessonFactory for Hibernate -->
+    <bean id="sessionFactory"
+          class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="dataSource" ref="identityDataSource"/>
+        <property name="packagesToScan" value="com.junbo.identity.data.*" />
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">${identity.hibernate.dialect}</prop>
+                <prop key="hibernate.max_fetch_depth">${identity.hibernate.max_fetch_depth}</prop>
+                <prop key="hibernate.jdbc.fetch_size">${identity.hibernate.jdbc.fetch_size}</prop>
+                <prop key="hibernate.jdbc.batch_size">${identity.hibernate.jdbc.batch_size}</prop>
+                <prop key="hibernate.show_sql">${identity.hibernate.show_sql}</prop>
+            </props>
+        </property>
+    </bean>
+
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <!-- Transaction Manager -->
+    <bean id="transactionManager"
+          class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <bean id="modelMapperImpl" class="com.junbo.identity.data.mapper.ModelMapperImpl" />
+    <bean id="userDAO" class="com.junbo.identity.data.dao.impl.postgresql.UserDAOImpl">
+        <property name="maxRetryCount" value="${identity.conf.maxPasswordRetryCount}" />
+    </bean>
+    <bean id="userProfileDAO" class="com.junbo.identity.data.dao.impl.postgresql.UserProfileDAOImpl" />
+    <bean id="userDeviceProfileDAO" class="com.junbo.identity.data.dao.impl.postgresql.UserDeviceProfileDAOImpl" />
+    <bean id="userFederationDAO" class="com.junbo.identity.data.dao.impl.postgresql.UserFederationDAOImpl" />
+    <bean id="userOptInDAO" class="com.junbo.identity.data.dao.impl.postgresql.UserOptInDAOImpl" />
+    <bean id="appDAO" class="com.junbo.identity.data.dao.impl.postgresql.AppDAOImpl" />
+    <bean id="userTosAcceptanceDAO" class="com.junbo.identity.data.dao.impl.postgresql.UserTosAcceptanceDAOImpl" />
+    <bean id="passwordDAO" class="com.junbo.identity.data.dao.impl.postgresql.PasswordDAOImpl" />
+</beans>

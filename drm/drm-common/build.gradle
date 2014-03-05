@@ -1,0 +1,7 @@
+apply plugin: 'java'
+
+dependencies {
+    compile 'org.springframework:spring-core:3.2.4.RELEASE'
+    compile 'org.springframework:spring-expression:3.2.4.RELEASE'
+    compile 'org.springframework:spring-tx:3.2.4.RELEASE'
+}

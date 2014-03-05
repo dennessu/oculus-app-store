@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <context:component-scan base-package="com.junbo.entitlement.db"/>
+
+    <!-- dataSource -->
+    <bean id="entitlementDataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
+        <property name="driverClass" value="${entitlement.db.driverClassName}"/>
+        <property name="jdbcUrl" value="${entitlement.db.url}"/>
+        <property name="username" value="${entitlement.db.username}"/>
+        <property name="password" value="${entitlement.db.password}"/>
+        <property name="maxConnectionsPerPartition" value="${entitlement.db.maxConnectionsPerPartition}"/>
+        <property name="minConnectionsPerPartition" value="${entitlement.db.minConnectionsPerPartition}"/>
+        <property name="partitionCount" value="${entitlement.db.partitionCount}"/>
+        <property name="acquireIncrement" value="${entitlement.db.acquireIncrement}"/>
+        <property name="statementsCacheSize" value="${entitlement.db.statementsCacheSize}"/>
+        <property name="releaseHelperThreads" value="${entitlement.db.releaseHelperThreads}"/>
+    </bean>
+
+    <!-- SessonFactory for Hibernate -->
+    <bean id="sessionFactory"
+          class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="dataSource" ref="entitlementDataSource"/>
+        <property name="packagesToScan" value="com.junbo.entitlement.db.entity"/>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">${entitlement.hibernate.dialect}</prop>
+                <prop key="hibernate.max_fetch_depth">${entitlement.hibernate.max_fetch_depth}</prop>
+                <prop key="hibernate.jdbc.fetch_size">${entitlement.hibernate.fetch_size}</prop>
+                <prop key="hibernate.jdbc.batch_size">${entitlement.hibernate.batch_size}</prop>
+                <prop key="hibernate.show_sql">${entitlement.hibernate.show_sql}</prop>
+            </props>
+        </property>
+    </bean>
+
+    <!-- Transaction Manager -->
+    <bean id="transactionManager"
+          class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <bean id="jedisInstance" class="redis.clients.jedis.Jedis">
+        <constructor-arg name="host" value="localhost"/>
+        <constructor-arg name="port" value="6379"/>
+    </bean>
+
+    <tx:annotation-driven/>
+
+    <!-- Dao -->
+    <bean id="baseDao" class="com.junbo.entitlement.db.dao.hibernate.BaseDao" abstract="true"/>
+    <bean id="entitlementDao" class="com.junbo.entitlement.db.dao.hibernate.EntitlementDaoImpl" parent="baseDao">
+        <property name="entityType" value="com.junbo.entitlement.db.entity.EntitlementEntity"/>
+    </bean>
+    <bean id="entitlementDefinitionDao" class="com.junbo.entitlement.db.dao.hibernate.EntitlementDefinitionDaoImpl" parent="baseDao">
+        <property name="entityType" value="com.junbo.entitlement.db.entity.EntitlementDefinitionEntity"/>
+    </bean>
+    <bean id="entitlementHistoryDao" class="com.junbo.entitlement.db.dao.hibernate.EntitlementHistoryDaoImpl"/>
+
+    <bean id="entitlementRedisDao" class="com.junbo.entitlement.db.dao.redis.EntitlementDaoImpl"/>
+
+    <!-- repository -->
+    <bean id="entitlementRepository" class="com.junbo.entitlement.db.repository.EntitlementRepository"/>
+    <bean id="entitlementDefinitionRepository" class="com.junbo.entitlement.db.repository.EntitlementDefinitionRepository"/>
+</beans>

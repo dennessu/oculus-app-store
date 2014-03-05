@@ -1,0 +1,10 @@
+include 'subscription-spec'
+
+include 'subscription-common'
+include 'subscription-db'
+include 'subscription-core'
+include 'subscription-rest'
+
+include 'subscription-clientproxy'
+
+include 'subscription-app'

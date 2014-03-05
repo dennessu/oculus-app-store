@@ -1,0 +1,10 @@
+include 'ewallet-spec'
+
+include 'ewallet-common'
+include 'ewallet-db'
+include 'ewallet-core'
+include 'ewallet-rest'
+
+include 'ewallet-clientproxy'
+
+include 'ewallet-app'

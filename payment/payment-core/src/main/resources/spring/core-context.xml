@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <context:component-scan base-package="com.junbo.payment.core"/>
+
+    <tx:annotation-driven/>
+
+    <!-- payment method serivce -->
+    <bean id="paymentInstrumentService" class="com.junbo.payment.core.impl.PaymentInstrumentServiceImpl">
+    </bean>
+
+    <bean id="paymentService" class="com.junbo.payment.core.impl.PaymentTransactionServiceImpl">
+    </bean>
+
+    <bean id="brainTreePaymentProviderService" class="com.junbo.payment.core.provider.braintree.BrainTreePaymentProviderServiceImpl">
+        <property name="environment" value="SANDBOX"/>
+        <property name="merchantId" value="ptgjsbtqxwzgnq2b"/>
+        <property name="publicKey" value="mdmtg4v67mbyh68m"/>
+        <property name="privateKey" value="30b76bb47abf0b424fcb079a9d5978b3"/>
+    </bean>
+
+    <bean id="brainTreeRestProviderService" class="com.junbo.payment.core.provider.braintree.BrainTreeRestProviderServiceImpl">
+        <property name="brainTreeResource" ref="brainTreeClient"/>
+    </bean>
+
+    <bean id="providerRoutingService" class="com.junbo.payment.core.provider.impl.ProviderRoutingServiceImpl"/>
+
+    <!-- regiester brainTreeRestProviderService for async and brainTreePaymentProviderService for sync call -->
+    <bean id="handlerRegistry" class="com.junbo.payment.core.provider.impl.PaymentProviderRegistry">
+        <property name="registry">
+            <util:map id="handlerRegistryMap">
+                <entry key="BrainTree" value-ref="brainTreeRestProviderService"/>
+            </util:map>
+        </property>
+    </bean>
+
+</beans>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo.xsd">
+
+    <mongo:db-factory id="catalogDbFactory" uri="mongodb://localhost/catalog"/>
+
+    <mongo:template id="catalogTemplate" db-factory-ref="catalogDbFactory" converter-ref="catalogMappingConverter"/>
+
+    <mongo:repositories base-package="com.goshop.catalog.db.dao" mongo-template-ref="catalogTemplate"/>
+
+    <mongo:mapping-converter id="catalogMappingConverter" db-factory-ref="catalogDbFactory">
+        <mongo:custom-converters base-package="com.goshop.catalog.db.converter"/>
+    </mongo:mapping-converter>
+
+    <bean id="entityEventListener" class="com.goshop.catalog.db.listener.EntityEventListener"/>
+    <bean id="entityHistEventListener" class="com.goshop.catalog.db.listener.EntityHistEventListener"/>
+
+</beans>

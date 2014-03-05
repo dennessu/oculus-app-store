@@ -1,0 +1,9 @@
+apply plugin: 'java'
+
+dependencies {
+    compile (libraries.spring_core)
+    compile (libraries.spring_expression)
+    compile (libraries.spring_tx)
+    compile (libraries.hibernate_core)
+    compile (libraries.common_lib)
+}

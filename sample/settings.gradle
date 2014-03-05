@@ -1,0 +1,10 @@
+include 'catalog-spec'
+
+include 'catalog-common'
+include 'catalog-db'
+include 'catalog-core'
+include 'catalog-rest'
+
+include 'catalog-clientproxy'
+
+include 'catalog-app'

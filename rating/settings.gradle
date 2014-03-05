@@ -1,0 +1,9 @@
+include 'rating-spec'
+
+include 'rating-common'
+include 'rating-core'
+include 'rating-rest'
+
+include 'rating-clientproxy'
+
+include 'rating-app'

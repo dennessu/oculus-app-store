@@ -1,0 +1,41 @@
+{
+    "name": "3D Parking Simulator",
+    "ownerId": {
+        "href": "http://api.oculusvr.com/v1/User/3234",
+        "id": "3234"
+    },
+    "prices": {
+        "US": {
+            "amount": 9.99,
+            "currency": "USD"
+        }
+    },
+    "subOffers": [],
+    "restriction": null,
+    "events": [
+        {
+            "name": "PURCHASE_EVENT",
+            "actions": [
+                {
+                    "type": "GRANT_DOWNLOAD_ENTITLEMENT",
+                    "properties": {
+                        "duration": "3Month",
+                        "tag": "item001_ANGRY.BIRD_ONLINE_ACCESS",
+                        "type": "ONLINE_ACCESS",
+                        "group": "Angry Bird"
+                    }
+                }
+            ]
+        }
+    ],
+    "eligibleCountries": null,
+    "countryProperties": null,
+    "localeProperties": {
+        "DEFAULT": {
+            "description": "3D Parking Simulator is a VR driving simulator specialized for parking. Currently you can practice car parking in 5 small courses. You can see stereoscopic rear-view and door mirrors. Both left and right driving seats are supported (switch by 'C' key)."
+        }
+    },
+    "properties": {
+        "mainImage": "the img url"
+    }
+}

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="asyncHttpClient" class="com.ning.http.client.AsyncHttpClient"/>
+
+    <bean id="transcoder" class="com.junbo.common.json.JsonMessageTranscoder"/>
+
+    <bean id="identityUserClient" class="com.junbo.identity.spec.resource.proxy.UserResourceClientProxy">
+        <constructor-arg name="client" ref="asyncHttpClient"/>
+        <constructor-arg name="target" value="${oauth.clientproxy.identity.url}"/>
+        <constructor-arg name="transcoder" ref="transcoder"/>
+    </bean>
+
+    <bean id="identityUserProfileClient" class="com.junbo.identity.spec.resource.proxy.UserProfileResourceClientProxy">
+        <constructor-arg name="client" ref="asyncHttpClient"/>
+        <constructor-arg name="target" value="${oauth.clientproxy.identity.url}"/>
+        <constructor-arg name="transcoder" ref="transcoder"/>
+    </bean>
+
+</beans>

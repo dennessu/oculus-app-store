@@ -1,0 +1,7 @@
+apply plugin: 'java'
+
+dependencies {
+    compile project(":fulfilment-db")
+    compile project(":fulfilment-clientproxy")
+    testCompile (libraries.spring_test)
+}

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <context:component-scan base-package="com.junbo.oom.core.builtin"/>
+    <context:component-scan base-package="com.junbo.billing.db"/>
+
+    <!--Data source has the database information -->
+    <bean id="billingDataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
+        <property name="driverClass" value="${billing.db.driverClassName}"/>
+        <property name="jdbcUrl" value="${billing.db.url}"/>
+        <property name="username" value="${billing.db.username}"/>
+        <property name="password" value="${billing.db.password}"/>
+        <property name="maxConnectionsPerPartition" value="${billing.db.maxConnectionsPerPartition}"/>
+        <property name="minConnectionsPerPartition" value="${billing.db.minConnectionsPerPartition}"/>
+        <property name="partitionCount" value="${billing.db.partitionCount}"/>
+        <property name="acquireIncrement" value="${billing.db.acquireIncrement}"/>
+        <property name="statementsCacheSize" value="${billing.db.statementsCacheSize}"/>
+        <property name="releaseHelperThreads" value="${billing.db.releaseHelperThreads}"/>
+    </bean>
+
+    <!-- SessonFactory for Hibernate -->
+    <bean id="sessionFactory"
+          class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="dataSource" ref="billingDataSource"/>
+        <property name="packagesToScan" value="com.junbo.billing.db.*" />
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">${billing.hibernate.dialect}</prop>
+                <prop key="hibernate.max_fetch_depth">${billing.hibernate.max_fetch_depth}</prop>
+                <prop key="hibernate.jdbc.fetch_size">${billing.hibernate.jdbc.fetch_size}</prop>
+                <prop key="hibernate.jdbc.batch_size">${billing.hibernate.jdbc.batch_size}</prop>
+                <prop key="hibernate.show_sql">${billing.hibernate.show_sql}</prop>
+            </props>
+        </property>
+    </bean>
+
+    <!-- Transaction Manager -->
+    <bean id="transactionManager"
+                class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <tx:annotation-driven transaction-manager="transactionManager" />
+
+    <!-- Dao -->
+    <bean id="baseDao"
+          class="com.junbo.billing.db.BaseDaoImpl" abstract="true">
+    </bean>
+
+    <bean id="shippingAddressEntityDao"
+          class="com.junbo.billing.db.dao.impl.ShippingAddressEntityDaoImpl" parent="baseDao">
+        <property name="entityType" value="com.junbo.billing.db.address.ShippingAddressEntity"/>
+    </bean>
+
+    <bean id="currencyEntityDao"
+          class="com.junbo.billing.db.dao.impl.CurrencyEntityDaoImpl" parent="baseDao">
+        <property name="entityType" value="com.junbo.billing.db.currency.CurrencyEntity"/>
+    </bean>
+
+    <bean id="balanceEntityDao"
+          class="com.junbo.billing.db.dao.impl.BalanceEntityDaoImpl" parent="baseDao">
+        <property name="entityType" value="com.junbo.billing.db.balance.BalanceEntity"/>
+    </bean>
+
+    <bean id="balanceEventEntityDao"
+          class="com.junbo.billing.db.dao.impl.BalanceEventEntityDaoImpl" parent="baseDao">
+        <property name="entityType" value="com.junbo.billing.db.balance.BalanceEventEntity"/>
+    </bean>
+
+    <bean id="balanceItemEntityDao"
+          class="com.junbo.billing.db.dao.impl.BalanceItemEntityDaoImpl" parent="baseDao">
+        <property name="entityType" value="com.junbo.billing.db.balance.BalanceItemEntity"/>
+    </bean>
+
+    <bean id="discountItemEntityDao"
+          class="com.junbo.billing.db.dao.impl.DiscountItemEntityDaoImpl" parent="baseDao">
+        <property name="entityType" value="com.junbo.billing.db.balance.DiscountItemEntity"/>
+    </bean>
+
+    <bean id="taxItemEntityDao"
+          class="com.junbo.billing.db.dao.impl.TaxItemEntityDaoImpl" parent="baseDao">
+        <property name="entityType" value="com.junbo.billing.db.balance.TaxItemEntity"/>
+    </bean>
+
+    <bean id="orderBalanceLinkEntityDao"
+          class="com.junbo.billing.db.dao.impl.OrderBalanceLinkEntityDaoImpl" parent="baseDao">
+        <property name="entityType" value="com.junbo.billing.db.balance.OrderBalanceLinkEntity"/>
+    </bean>
+
+    <bean id="transactionEntityDao"
+          class="com.junbo.billing.db.dao.impl.TransactionEntityDaoImpl" parent="baseDao">
+        <property name="entityType" value="com.junbo.billing.db.transaction.TransactionEntity"/>
+    </bean>
+
+    <bean id="transactionEventEntityDao"
+          class="com.junbo.billing.db.dao.impl.TransactionEventEntityDaoImpl" parent="baseDao">
+        <property name="entityType" value="com.junbo.billing.db.transaction.TransactionEventEntity"/>
+    </bean>
+
+    <!--Mapper-->
+    <bean class="com.junbo.billing.db.mapper.CommonMapper" />
+    <bean id="modelMapper" class="com.junbo.billing.db.mapper.ModelMapperImpl"/>
+
+    <!--repository-->
+    <bean id="shippingAddressRepository" class="com.junbo.billing.db.repository.ShippingAddressRepositoryImpl"/>
+    <bean id="balanceRepository" class="com.junbo.billing.db.repository.BalanceRepositoryImpl"/>
+    <bean id="currencyRepository" class="com.junbo.billing.db.repository.CurrencyRepositoryImpl"/>
+</beans>

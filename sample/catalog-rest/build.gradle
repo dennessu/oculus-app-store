@@ -1,0 +1,28 @@
+apply plugin: 'groovy'
+
+dependencies {
+    compile 'javax.servlet:javax.servlet-api:3.1.0'
+
+    compile 'org.glassfish.jersey.containers:jersey-container-servlet:2.3.1'
+    compile 'org.glassfish.jersey.ext:jersey-spring3:2.3.1'
+    compile 'com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.2.3'
+    compile 'commons-beanutils:commons-beanutils:1.8.3'
+
+    compile 'org.springframework:spring-aop:3.2.4.RELEASE'
+    compile 'org.springframework:spring-context:3.2.4.RELEASE'
+    compile 'org.springframework:spring-core:3.2.4.RELEASE'
+    compile 'org.springframework:spring-expression:3.2.4.RELEASE'
+    compile 'org.springframework:spring-tx:3.2.4.RELEASE'
+    compile 'org.springframework:spring-web:3.2.4.RELEASE'
+
+    compile 'org.apache.httpcomponents:httpcomponents-asyncclient:4.0'
+
+    compile project(':catalog-spec')
+    compile project(':catalog-db')
+    compile project(':catalog-common')
+    compile project(':catalog-clientproxy')
+
+    compile 'com.goshop.oom:oom-core:0.0.1-SNAPSHOT'
+
+    processor 'com.goshop.oom:oom-processor:0.0.1-SNAPSHOT'
+}

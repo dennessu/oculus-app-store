@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author='baojing' context="PREDEPLOY">
+        <sql><![CDATA[
+            create table category_draft (
+              category_id            bigint             not null,
+              parent_id              bigint             default null,
+              category_name          varchar(64)        not null,
+              status                 varchar(64)        not null,
+              revision               bigint             not null,
+              payload                json               not null,
+              created_by             varchar(64)        not null,
+              created_time           timestamp          not null,
+              updated_by             varchar(64)        default null,
+              updated_time           timestamp          default null,
+
+              primary key (category_id)
+            );
+
+            create table category (
+              id                     bigint             not null,
+              category_id            bigint             not null,
+              parent_id              bigint             default null,
+              category_name          varchar(64)        not null,
+              status                 varchar(64)        not null,
+              revision               bigint             not null,
+              payload                json               not null,
+              created_by             varchar(64)        not null,
+              created_time           timestamp          not null,
+              updated_by             varchar(64)        default null,
+              updated_time           timestamp          default null,
+
+              primary key (id)
+            );
+
+            create table item_draft (
+              item_id                 bigint            not null,
+              revision                bigint            not null,
+              type                    varchar(64)       not null,
+              item_name               varchar(64)       not null,
+              status                  varchar(64)       not null,
+              owner_id                bigint            not null,
+              payload                 json              not null,
+              created_by              varchar(64)       not null,
+              created_time            timestamp         not null,
+              updated_by              varchar(64)       default null,
+              updated_time            timestamp         default null,
+
+              primary key (item_id)
+            );
+
+            create table item (
+              id                      bigint            not null,
+              item_id                 bigint            not null,
+              revision                bigint            not null,
+              type                    varchar(64)       not null,
+              item_name               varchar(64)       not null,
+              status                  varchar(64)       not null,
+              owner_id                bigint            not null,
+              payload                 json              not null,
+              created_by              varchar(64)       not null,
+              created_time            timestamp         not null,
+              updated_by              varchar(64)       default null,
+              updated_time            timestamp         default null,
+
+              primary key (id)
+            );
+
+            create table offer_draft (
+              offer_id                bigint            not null,
+              revision                bigint            not null,
+              offer_name              varchar(64)       not null,
+              status                  varchar(64)       not null,
+              owner_id                bigint            not null,
+              payload                 json              not null,
+              created_by              varchar(64)       not null,
+              created_time            timestamp         not null,
+              updated_by              varchar(64)       default null,
+              updated_time            timestamp         default null,
+
+              primary key (offer_id)
+            );
+
+            create table offer (
+              id                      bigint            not null,
+              offer_id                bigint            not null,
+              revision                bigint            not null,
+              offer_name              varchar(64)       not null,
+              status                  varchar(64)       not null,
+              owner_id                bigint            not null,
+              payload                 json              not null,
+              created_by              varchar(64)       not null,
+              created_time            timestamp         not null,
+              updated_by              varchar(64)       default null,
+              updated_time            timestamp         default null,
+
+              primary key (id)
+            );
+                ]]>
+        </sql>
+    </changeSet>
+    <changeSet id="2" author='lizwu' context="PREDEPLOY">
+        <sql><![CDATA[
+            create table promotion_draft (
+            promotion_id            bigint            not null,
+            revision                bigint            not null,
+            promotion_name          varchar(64)       not null,
+            type                    varchar(64)       not null,
+            status                  varchar(64)       not null,
+            start_date              timestamp         not null,
+            end_date                timestamp         not null,
+            payload                 json              not null,
+            created_by              varchar(64)       not null,
+            created_time            timestamp         not null,
+            updated_by              varchar(64)       not null,
+            updated_time            timestamp         not null,
+            
+            primary key (promotion_id)
+            );
+            
+            create table promotion (
+            id                      bigint            not null,
+            promotion_id            bigint            not null,
+            revision                bigint            not null,
+            promotion_name          varchar(64)       not null,
+            type                    varchar(64)       not null,
+            status                  varchar(64)       not null,
+            start_date              timestamp         not null,
+            end_date                timestamp         not null,
+            payload                 json              not null,
+            created_by              varchar(64)       not null,
+            created_time            timestamp         not null,
+            updated_by              varchar(64)       not null,
+            updated_time            timestamp         not null,
+            
+            primary key (id)
+            );
+        ]]>
+        </sql>
+    </changeSet>
+</databaseChangeLog>

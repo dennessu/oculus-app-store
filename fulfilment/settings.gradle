@@ -1,0 +1,11 @@
+include 'fulfilment-spec'
+
+include 'fulfilment-common'
+include 'fulfilment-db'
+include 'fulfilment-core'
+include 'fulfilment-rest'
+
+include 'fulfilment-clientproxy'
+
+include 'fulfilment-app'
+1

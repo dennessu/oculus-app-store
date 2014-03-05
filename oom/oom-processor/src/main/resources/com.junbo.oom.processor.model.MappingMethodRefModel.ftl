@@ -1,0 +1,2 @@
+[#-- @ftlvariable name="" type="com.junbo.oom.processor.model.MappingMethodRefModel" --]
+[#if declaringMapper??]${declaringMapper.variableName}.[/#if]${name}(${params.source}[#if hasContextParameter && params.context??], ${params.context}[/#if])

@@ -1,0 +1,9 @@
+apply plugin: 'java'
+
+dependencies {
+    compile project(":rating-common")
+    compile project(":rating-spec")
+    compile project(':rating-clientproxy')
+
+    testCompile (libraries.spring_test)
+}

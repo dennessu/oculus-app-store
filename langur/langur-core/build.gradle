@@ -1,0 +1,9 @@
+apply plugin: 'groovy'
+
+dependencies {
+    compile (libraries.guava)
+    compile (libraries.async_http_client)
+
+    compile (libraries.jersey_server)
+    compile (libraries.jersey_spring3)
+}

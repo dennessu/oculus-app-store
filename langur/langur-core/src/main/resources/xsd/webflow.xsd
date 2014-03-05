@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xsd:schema xmlns="http://www.junbo.com/schema/webflow"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://www.junbo.com/schema/webflow"
+            elementFormDefault="qualified">
+
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+
+    <!-- Top level element -->
+    <xsd:element name="flow">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="on-start" minOccurs="0">
+                    <xsd:complexType>
+                        <xsd:group ref="actionTypes" maxOccurs="unbounded"/>
+                    </xsd:complexType>
+                </xsd:element>
+                <xsd:choice minOccurs="0" maxOccurs="unbounded">
+                    <xsd:element name="action-state">
+                        <xsd:complexType>
+                            <xsd:sequence minOccurs="0">
+                                <xsd:element name="on-entry" minOccurs="0">
+                                    <xsd:complexType>
+                                        <xsd:group ref="actionTypes" maxOccurs="unbounded"/>
+                                    </xsd:complexType>
+                                </xsd:element>
+                                <xsd:group ref="actionTypes" minOccurs="0" maxOccurs="unbounded"/>
+                                <xsd:element name="transition" type="transition" minOccurs="0" maxOccurs="unbounded">
+                                </xsd:element>
+                                <xsd:element name="on-exit" minOccurs="0">
+                                    <xsd:complexType>
+                                        <xsd:group ref="actionTypes" maxOccurs="unbounded"/>
+                                    </xsd:complexType>
+                                </xsd:element>
+                            </xsd:sequence>
+                            <xsd:attribute name="id" type="xsd:ID" use="required">
+                            </xsd:attribute>
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name="view-state">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="on-entry" minOccurs="0">
+                                    <xsd:complexType>
+                                        <xsd:group ref="actionTypes" maxOccurs="unbounded"/>
+                                    </xsd:complexType>
+                                </xsd:element>
+                                <xsd:element name="on-render" minOccurs="0">
+                                    <xsd:complexType>
+                                        <xsd:group ref="actionTypes" maxOccurs="unbounded"/>
+                                    </xsd:complexType>
+                                </xsd:element>
+                                <xsd:element name="transition" type="transition" minOccurs="0" maxOccurs="unbounded">
+                                </xsd:element>
+                                <xsd:element name="on-exit" minOccurs="0">
+                                    <xsd:complexType>
+                                        <xsd:group ref="actionTypes" maxOccurs="unbounded"/>
+                                    </xsd:complexType>
+                                </xsd:element>
+                            </xsd:sequence>
+                            <xsd:attribute name="id" type="xsd:ID" use="required">
+                            </xsd:attribute>
+                            <xsd:attribute name="view" type="xsd:string">
+                            </xsd:attribute>
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name="subflow-state">
+                        <xsd:complexType>
+                            <xsd:sequence minOccurs="0">
+                                <xsd:element name="on-entry" minOccurs="0">
+                                    <xsd:complexType>
+                                        <xsd:group ref="actionTypes" maxOccurs="unbounded"/>
+                                    </xsd:complexType>
+                                </xsd:element>
+                                <xsd:element name="transition" type="transition" minOccurs="0" maxOccurs="unbounded">
+                                </xsd:element>
+                                <xsd:element name="on-exit" minOccurs="0">
+                                    <xsd:complexType>
+                                        <xsd:group ref="actionTypes" maxOccurs="unbounded"/>
+                                    </xsd:complexType>
+                                </xsd:element>
+                            </xsd:sequence>
+                            <xsd:attribute name="id" type="xsd:ID" use="required">
+                            </xsd:attribute>
+                            <xsd:attribute name="subflow" type="xsd:string">
+                            </xsd:attribute>
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name="end-state">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="on-entry" minOccurs="0">
+                                    <xsd:complexType>
+                                        <xsd:group ref="actionTypes" maxOccurs="unbounded"/>
+                                    </xsd:complexType>
+                                </xsd:element>
+                            </xsd:sequence>
+                            <xsd:attribute name="id" type="xsd:ID" use="required">
+                            </xsd:attribute>
+                            <xsd:attribute name="view" type="xsd:string">
+                            </xsd:attribute>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+                <xsd:element name="on-end" minOccurs="0">
+                    <xsd:complexType>
+                        <xsd:group ref="actionTypes" maxOccurs="unbounded"/>
+                    </xsd:complexType>
+                </xsd:element>
+            </xsd:sequence>
+            <xsd:attribute name="id" type="xsd:ID" use="required">
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:group name="actionTypes">
+        <xsd:choice>
+            <xsd:element name="action">
+                <xsd:complexType>
+                    <xsd:attribute name="ref" type="xsd:ID" use="required">
+                    </xsd:attribute>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:choice>
+    </xsd:group>
+
+    <xsd:complexType name="transition">
+        <xsd:sequence>
+            <xsd:group ref="actionTypes" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+        <xsd:attribute name="on" type="xsd:string">
+        </xsd:attribute>
+        <xsd:attribute name="to" type="xsd:ID" use="optional">
+        </xsd:attribute>
+    </xsd:complexType>
+</xsd:schema>

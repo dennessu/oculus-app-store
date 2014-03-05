@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <context:component-scan base-package="com.junbo.oom.core.builtin"/>
+    <context:component-scan base-package="com.junbo.order.db"/>
+
+    <!--Data source has the database information -->
+    <bean id="orderDataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
+        <property name="driverClass" value="${order.db.driverClassName}"/>
+        <property name="jdbcUrl" value="${order.db.url}"/>
+        <property name="username" value="${order.db.username}"/>
+        <property name="password" value="${order.db.password}"/>
+        <property name="maxConnectionsPerPartition" value="${order.db.maxConnectionsPerPartition}"/>
+        <property name="minConnectionsPerPartition" value="${order.db.minConnectionsPerPartition}"/>
+        <property name="partitionCount" value="${order.db.partitionCount}"/>
+        <property name="acquireIncrement" value="${order.db.acquireIncrement}"/>
+        <property name="statementsCacheSize" value="${order.db.statementsCacheSize}"/>
+        <property name="releaseHelperThreads" value="${order.db.releaseHelperThreads}"/>
+    </bean>
+
+    <!-- SessonFactory for Hibernate -->
+    <bean id="sessionFactory"
+                class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="dataSource" ref="orderDataSource"/>
+        <property name="packagesToScan" value="com.junbo.order.db.entity"/>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">${order.hibernate.dialect}</prop>
+                <prop key="hibernate.max_fetch_depth">${order.hibernate.max_fetch_depth}</prop>
+                <prop key="hibernate.jdbc.fetch_size">${order.hibernate.jdbc.fetch_size}</prop>
+                <prop key="hibernate.jdbc.batch_size">${order.hibernate.jdbc.batch_size}</prop>
+                <prop key="hibernate.show_sql">${order.hibernate.show_sql}</prop>
+            </props>
+        </property>
+    </bean>
+
+    <!-- Transaction Manager -->
+    <bean id="transactionManager"
+                class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <tx:annotation-driven/>
+
+</beans>

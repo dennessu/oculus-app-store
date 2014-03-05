@@ -1,0 +1,44 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
+ */
+
+package com.junbo.billing.clientproxy.impl
+
+import com.junbo.common.json.JsonMessageTranscoder
+import com.junbo.identity.spec.model.user.User
+import com.junbo.identity.spec.resource.proxy.UserResourceClientProxy
+import com.junbo.langur.core.promise.Promise
+import com.junbo.billing.clientproxy.IdentityFacade
+import com.ning.http.client.AsyncHttpClient
+import com.ning.http.client.AsyncHttpClientConfigBean
+import groovy.transform.CompileStatic
+import org.springframework.beans.factory.annotation.Autowired
+
+/**
+ * Created by xmchen on 14-2-20.
+ */
+@CompileStatic
+class IdentityFacadeImpl implements IdentityFacade {
+
+    @Autowired
+    private final AsyncHttpClient asyncHttpClient
+
+    private String url
+
+    void setUrl(String url) {
+        this.url = url
+    }
+
+    IdentityFacadeImpl() {
+        if (asyncHttpClient == null) {
+            asyncHttpClient = new AsyncHttpClient(new AsyncHttpClientConfigBean())
+        }
+    }
+
+    @Override
+    Promise<User> getUser(Long userId) {
+        return new UserResourceClientProxy(asyncHttpClient, new JsonMessageTranscoder(), url).getUser(userId)
+    }
+}

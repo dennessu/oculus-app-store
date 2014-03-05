@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:cache="http://www.springframework.org/schema/cache"
+       xmlns:util="http://www.springframework.org/schema/util" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <context:component-scan base-package="com.junbo.order.clientproxy"/>
+
+    <!-- <tx:annotation-driven/> -->
+
+    <!-- proxy -->
+    <bean id="asyncHttpClient" class="com.ning.http.client.AsyncHttpClient" />
+
+    <bean id="identityUserClient" class="com.junbo.identity.spec.resource.proxy.UserResourceClientProxy">
+        <constructor-arg name="client" ref="asyncHttpClient"/>
+        <constructor-arg name="target" value="http://localhost:8080/rest"/>
+        <constructor-arg name="transcoder">
+            <bean class="com.junbo.common.json.JsonMessageTranscoder"/>
+        </constructor-arg>
+    </bean>
+
+    <bean id="billingBalanceClient" class="com.junbo.billing.spec.resource.proxy.BalanceResourceClientProxy">
+        <constructor-arg name="client" ref="asyncHttpClient"/>
+        <constructor-arg name="target" value="http://localhost:8080/rest"/>
+        <constructor-arg name="transcoder">
+            <bean class="com.junbo.common.json.JsonMessageTranscoder"/>
+        </constructor-arg>
+    </bean>
+
+    <bean id="billingShippingAddressClient" class="com.junbo.billing.spec.resource.proxy.ShippingAddressResourceClientProxy">
+        <constructor-arg name="client" ref="asyncHttpClient"/>
+        <constructor-arg name="target" value="http://localhost:8080/rest"/>
+        <constructor-arg name="transcoder">
+            <bean class="com.junbo.common.json.JsonMessageTranscoder"/>
+        </constructor-arg>
+    </bean>
+
+    <bean id="ratingClient" class="com.junbo.rating.spec.resource.proxy.RatingResourceClientProxy">
+        <constructor-arg name="client" ref="asyncHttpClient"/>
+        <constructor-arg name="target" value="http://localhost:8080/rest"/>
+        <constructor-arg name="transcoder">
+            <bean class="com.junbo.common.json.JsonMessageTranscoder"/>
+        </constructor-arg>
+    </bean>
+
+    <bean id="offerClient" class="com.junbo.catalog.spec.resource.proxy.OfferResourceClientProxy">
+        <constructor-arg name="client" ref="asyncHttpClient"/>
+        <constructor-arg name="target" value="http://localhost:8080/rest"/>
+        <constructor-arg name="transcoder">
+            <bean class="com.junbo.common.json.JsonMessageTranscoder"/>
+        </constructor-arg>
+    </bean>
+
+    <bean id="fulfilmentClient" class="com.junbo.fulfilment.spec.resource.proxy.FulfilmentResourceClientProxy">
+        <constructor-arg name="client" ref="asyncHttpClient"/>
+        <constructor-arg name="target" value="http://localhost:8080/rest"/>
+        <constructor-arg name="transcoder">
+            <bean class="com.junbo.common.json.JsonMessageTranscoder"/>
+        </constructor-arg>
+    </bean>
+
+    <bean id="paymentInstrumentClient" class="com.junbo.payment.spec.resource.proxy.PaymentInstrumentResourceClientProxy">
+        <constructor-arg name="client" ref="asyncHttpClient"/>
+        <constructor-arg name="target" value="http://localhost:8080/rest"/>
+        <constructor-arg name="transcoder">
+            <bean class="com.junbo.common.json.JsonMessageTranscoder"/>
+        </constructor-arg>
+    </bean>
+
+    <!-- cache -->
+    <bean id="cacheManagerFactory" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+        <property name="configLocation">
+            <value>ehcache/ehcache.xml</value>
+        </property>
+    </bean>
+    <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
+        <property name="cacheManager" ref="cacheManagerFactory"/>
+    </bean>
+    <bean id="cachedCatalogFacade" class="com.junbo.order.clientproxy.cache.CachedCatalogFacadeImpl">
+        <constructor-arg name="ehCacheCacheManager" ref="cacheManager"/>
+    </bean>
+
+</beans>

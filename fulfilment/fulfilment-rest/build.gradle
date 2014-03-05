@@ -1,0 +1,30 @@
+apply plugin: 'groovy'
+
+dependencies {
+    compile (libraries.servlet_api)
+
+    compile (libraries.jersey_spring3)
+
+    compile (libraries.common_beanutils)
+
+    compile (libraries.spring_aop)
+    compile (libraries.spring_context)
+    compile (libraries.spring_core)
+    compile (libraries.spring_expression)
+    compile (libraries.spring_tx)
+    compile (libraries.spring_web)
+
+    compile (libraries.asyncclient)
+    compile (libraries.common_io)
+
+    compile (libraries.jackson_jaxrs_json_provider)
+    compile (libraries.oom)
+
+    compile project(':fulfilment-spec')
+    compile project(':fulfilment-db')
+    compile project(':fulfilment-common')
+    compile project(':fulfilment-clientproxy')
+    compile project(':fulfilment-core')
+
+    processor (libraries.langur_processor)
+}

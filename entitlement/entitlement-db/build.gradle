@@ -1,0 +1,39 @@
+apply plugin: 'groovy'
+apply plugin: 'java'
+
+dependencies {
+    compile project(":entitlement-spec")
+    compile project(":entitlement-common")
+
+    compile (libraries.common_lib)
+    compile (libraries.common_sharding)
+    compile (libraries.common_configuration)
+
+    compile (libraries.persistence_api)
+    compile (libraries.validation_api)
+
+    compile (libraries.spring_aop)
+    compile (libraries.spring_context)
+    compile (libraries.spring_core)
+    compile (libraries.spring_expression)
+    compile (libraries.spring_tx)
+    compile (libraries.spring_jdbc)
+    compile (libraries.spring_orm)
+    compile (libraries.spring_beans)
+
+    compile (libraries.hibernate_core)
+    compile (libraries.hibernate_entitymanager)
+    compile (libraries.hibernate_annotation)
+    compile (libraries.hibernate_validator)
+
+    compile "redis.clients:jedis:2.2.1"
+    compile "com.amazonaws:aws-java-sdk:1.7.2"
+
+    compile (libraries.bonecp_spring)
+    compile (libraries.postgresql)
+
+    compile (libraries.rs_api)
+
+    testCompile (libraries.guava)
+    testCompile (libraries.spring_test)
+}

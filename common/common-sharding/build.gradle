@@ -1,0 +1,28 @@
+apply plugin: 'java'
+
+dependencies {
+    compile project(':common-lib')
+
+    compile (libraries.spring_beans)
+    compile (libraries.spring_context)
+    compile (libraries.spring_orm)
+    compile (libraries.spring_tx)
+    compile (libraries.spring_aop)
+    compile (libraries.spring_context)
+    compile (libraries.spring_jdbc)
+
+    compile (libraries.log4j)
+    compile (libraries.spy_memcached)
+    compile (libraries.postgresql)
+    compile (libraries.bonecp_spring)
+    compile (libraries.spring_orm)
+
+    compile (libraries.hibernate_core)
+    compile (libraries.hibernate_entitymanager)
+    compile (libraries.hibernate_annotation)
+    compile (libraries.postgresql)
+
+    compile (libraries.bonecp_spring)
+
+    testCompile (libraries.spring_test)
+}

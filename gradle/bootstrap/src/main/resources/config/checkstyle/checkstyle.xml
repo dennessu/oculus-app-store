@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE module PUBLIC "-//Puppy Crawl//DTD Check Configuration 1.1//EN" "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
+<module name="Checker">
+
+    <module name="FileTabCharacter">
+        <property name="eachLine" value="true"/>
+    </module>
+
+    <module name="RegexpSingleline">
+        <property name="format" value="\S+\s+$"/>
+        <property name="message" value="Non-empty line has trailing spaces."/>
+    </module>
+
+    <module name="RegexpHeader">
+        <property name="headerFile" value="${headerFile}"/>
+    </module>
+
+    <module name="TreeWalker">
+
+        <!--
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            Annotation checks
+
+            See http://checkstyle.sourceforge.net/config_annotation.html
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        -->
+        <module name="MissingDeprecated" />
+        <module name="MissingOverride" />
+        <module name="PackageAnnotation" />
+
+
+        <!--
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            Block checks
+
+            See http://checkstyle.sourceforge.net/config_blocks.html
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        -->
+        <module name="AvoidNestedBlocks">
+            <property name="allowInSwitchCase" value="true" />
+            <property name="severity" value="warning" />
+        </module>
+        <module name="NeedBraces" />
+        <module name="LeftCurly">
+            <property name="option" value="eol" />
+        </module>
+        <!--module name="RightCurly">
+            <property name="option" value="alone" />
+        </module-->
+
+
+        <!--
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            Design checks
+
+            See http://checkstyle.sourceforge.net/config_design.html
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        -->
+        <module name="HideUtilityClassConstructor">
+            <!-- Some classes in o.h.metamodel on master do this -->
+            <property name="severity" value="warning" />
+        </module>
+        <module name="MutableException" />
+
+
+        <!--
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            Coding checks
+
+            See http://checkstyle.sourceforge.net/config_coding.html
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        -->
+        <module name="EmptyStatement">
+            <property name="severity" value="warning" />
+        </module>
+        <module name="EqualsHashCode" />
+        <!--module name="FinalLocalVariable">
+            <property name="severity" value="warning" />
+        </module-->
+        <module name="MissingSwitchDefault">
+            <property name="severity" value="warning" />
+        </module>
+        <module name="DefaultComesLast" />
+        <module name="ModifiedControlVariable">
+            <property name="severity" value="warning" />
+        </module>
+        <module name="SimplifyBooleanExpression" />
+        <module name="SimplifyBooleanReturn" />
+        <module name="StringLiteralEquality" />
+        <module name="NoFinalizer" />
+        <module name="ExplicitInitialization">
+            <property name="severity" value="warning" />
+        </module>
+        <module name="FallThrough" />
+        <module name="OneStatementPerLine" />
+
+
+        <!--
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            Import checks
+
+            See http://checkstyle.sourceforge.net/config_imports.html
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        -->
+        <!--module name="AvoidStarImport" /-->
+        <module name="RedundantImport" />
+        <module name="UnusedImports" />
+
+
+        <!--
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            Misc checks
+
+            See http://checkstyle.sourceforge.net/config_misc.html
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        -->
+        <module name="UpperEll" />
+        <module name="ArrayTypeStyle">
+            <!-- Some classes in o.h.metamodel on master do this -->
+            <property name="severity" value="warning" />
+        </module>
+        <module name="TrailingComment">
+            <property name="severity" value="warning" />
+        </module>
+
+
+        <!--
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            Modifier checks
+
+            See http://checkstyle.sourceforge.net/config_modifier.html
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        -->
+        <module name="ModifierOrder"/>
+        <module name="RedundantModifier"/>
+
+
+        <!--
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            Naming checks
+
+            See http://checkstyle.sourceforge.net/config_naming.html
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        -->
+        <module name="AbstractClassName">
+            <!-- we are just using this to make sure that classes matching the pattern (Abstract*) have the abstract modifier -->
+            <property name="format" value="^Abstract.*$" />
+            <property name="ignoreName" value="true" />
+        </module>
+        <module name="ClassTypeParameterName">
+            <property name="format" value="^[A-Z][A-Z0-9]*$" />
+        </module>
+        <module name="ConstantName">
+            <property name="format" value="^[A-Z](_?[A-Z0-9]+)*$|log" />
+            <!-- Some classes in o.h.metamodel on master violate this -->
+            <property name="severity" value="warning" />
+        </module>
+        <module name="LocalFinalVariableName" />
+        <module name="LocalVariableName">
+            <!-- Some classes in o.h.metamodel on master violate this -->
+            <property name="severity" value="warning" />
+        </module>
+        <module name="MemberName" />
+        <module name="MethodTypeParameterName">
+            <property name="format" value="^[A-Z][A-Z0-9]*$" />
+        </module>
+        <module name="PackageName" />
+        <module name="ParameterName" />
+        <module name="StaticVariableName" />
+        <module name="TypeName" />
+
+
+        <!--
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            Whitespace checks
+
+            See http://checkstyle.sourceforge.net/config_whitespace.html
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        -->
+        <module name="MethodParamPad" />
+        <module name="TypecastParenPad" />
+        <module name="ParenPad" />
+
+        <module name="GenericWhitespace"/>
+
+
+        <!-- Checks for Javadoc comments.                     -->
+        <!-- See http://checkstyle.sf.net/config_javadoc.html -->
+        <module name="JavadocType">
+            <property name="scope" value="protected"/>
+        </module>
+        <!--module name="JavadocMethod">
+            <property name="scope" value="protected"/>
+        </module>
+        <module name="JavadocVariable">
+            <property name="scope" value="protected"/>
+        </module-->
+        <module name="JavadocStyle"/>
+
+        <!-- Checks for Size Violations.                    -->
+        <!-- See http://checkstyle.sf.net/config_sizes.html -->
+        <module name="LineLength">
+            <property name="max" value="120"/>
+            <property name="ignorePattern" value="@version|@see|@todo|TODO"/>
+        </module>
+        <module name="MethodLength"/>
+        <module name="ParameterNumber"/>
+
+        <module name="FileContentsHolder"/>
+
+        <!-- very liberal values for metrics, perhaps tighten some later -->
+        <module name="JavaNCSS">
+            <property name="methodMaximum" value="80"/>
+            <property name="classMaximum" value="300"/>
+        </module>
+        <module name="ClassFanOutComplexity">
+            <property name="max" value="22"/>
+        </module>
+        <module name="ClassDataAbstractionCoupling">
+            <property name="max" value="14"/>
+        </module>
+        <module name="CyclomaticComplexity">
+            <property name="max" value="14"/>
+        </module>
+    </module>
+
+
+    <!--
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        Javadoc checks
+
+        See http://checkstyle.sourceforge.net/config_javadoc.html
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    -->
+    <!--module name="JavadocPackage" /-->
+
+
+    <!--
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        Misc checks
+
+        See http://checkstyle.sourceforge.net/config_misc.html
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    -->
+    <module name="NewlineAtEndOfFile">
+        <property name="lineSeparator" value="lf" />
+    </module>
+
+    <module name="FileLength"/>
+    
+    <module name="SuppressionCommentFilter"/>
+</module>

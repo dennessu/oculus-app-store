@@ -1,0 +1,16 @@
+<header>
+    <a href="#"><h1>STORE DEMO</h1></a>
+
+    <nav>
+        <ul>
+            <%if(PageModel.Header.IsAuthenticate == true){%>
+            <%= PageModel.Header.Username%> &nbsp;&nbsp; <a href="/auth/logout">Logout</a>
+            <%}else{%>
+            <a href="<%= PageModel.Header.LoginLink%>">Login</a><span> or </span><a href="<%= PageModel.Header.RegisterLink%>">Create an Account</a>
+            <%}%>
+            &nbsp;&nbsp;<a href="#">Product List</a>
+            &nbsp;&nbsp;<a href="/#/cart">Cart</a>
+        </ul>
+    </nav>
+
+</header>

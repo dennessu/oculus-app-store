@@ -1,0 +1,17 @@
+CheckStyle-IDEA
+---------------
+(c) Copyright 2006-2013 CheckStyle-IDEA Contributors
+
+https://github.com/jshiell/checkstyle-idea
+
+A plug-in for JetBrains' IntelliJ IDEA 12 which provides real-time feedback
+against a given CheckStyle (http://checkstyle.sourceforge.net/)
+profile by way of an inspection.
+
+Released under a BSD-style licence - please see the LICENCE file for details.
+
+
+Use
+---
+
+This is exported from CheckStyle-IDEA plugin but with CodeNarc as the checker.

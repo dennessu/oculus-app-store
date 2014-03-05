@@ -1,0 +1,9 @@
+include 'order-spec'
+
+include 'order-db'
+include 'order-clientproxy'
+include 'order-core'
+include 'order-rest'
+include 'order-mock'
+include 'order-jobs'
+include 'order-app'

@@ -1,0 +1,15 @@
+apply plugin: 'groovy'
+
+dependencies {
+    compile (libraries.groovy)
+    compile (libraries.hickory)
+    compile (libraries.freemarker)
+    compile (libraries.log4j)
+
+    compile (libraries.spring_beans)
+    compile (libraries.spring_context)
+
+    compile project(':oom-core')
+
+    testCompile (libraries.testng)
+}

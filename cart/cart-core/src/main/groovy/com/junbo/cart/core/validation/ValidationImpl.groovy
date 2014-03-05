@@ -1,0 +1,113 @@
+package com.junbo.cart.core.validation
+
+import com.junbo.cart.common.validate.Group
+import com.junbo.cart.core.service.CartPersistService
+import com.junbo.cart.core.service.impl.CartServiceImpl
+import com.junbo.cart.spec.error.AppErrors
+import com.junbo.cart.spec.model.Cart
+import com.junbo.cart.spec.model.item.CouponItem
+import com.junbo.cart.spec.model.item.OfferItem
+import com.junbo.common.id.UserId
+import com.junbo.identity.spec.model.user.User
+import groovy.transform.CompileStatic
+import org.hibernate.validator.HibernateValidator
+
+import javax.validation.ValidationProviderResolver
+import javax.validation.Validator
+import javax.validation.ValidatorFactory
+import javax.validation.spi.ValidationProvider
+
+/**
+ * Created by fzhang@wan-san.com on 14-1-23.
+ */
+@CompileStatic
+class ValidationImpl implements Validation {
+
+    private CartPersistService cartPersistService
+
+    private static Validator validator
+
+    static {
+        ValidatorFactory validatorFactory = javax.validation.Validation.byDefaultProvider()
+                .providerResolver( new OsgiServiceDiscoverer() )
+                .configure()
+                .buildValidatorFactory()
+        validator = validatorFactory.validator
+    }
+
+    static class OsgiServiceDiscoverer implements ValidationProviderResolver {
+
+        @Override
+        List<ValidationProvider<?>> getValidationProviders() {
+            return Collections.singletonList(new HibernateValidator())
+        }
+    }
+
+    void setCartPersistService(CartPersistService cartPersistService) {
+        this.cartPersistService = cartPersistService
+    }
+
+    @Override
+    Validation validateUser(User user) {
+        if (user == null) {
+            throw AppErrors.INSTANCE.userNotFound().exception()
+        }
+        if (user.status != 'ACTIVE') {
+            throw AppErrors.INSTANCE.userStatusInvalid().exception()
+        }
+        return this
+    }
+
+    @Override
+    Validation validateCartAdd(String clientId, UserId userId, Cart cart) {
+        validateField(cart, Group.CartCreate, Group.CartItem)
+        if (cart.cartName == CartServiceImpl.CART_NAME_PRIMARY) {
+            throw AppErrors.INSTANCE.fieldInvalid('cartName').exception()
+        }
+        // validate if cart with the name already exist
+        if (cartPersistService.getCart(clientId, cart.cartName, userId, false) != null) {
+            throw AppErrors.INSTANCE.cartAlreadyExists(userId.value, cart.cartName).exception()
+        }
+        return this
+    }
+
+    @Override
+    Validation validateCartUpdate(Cart newCart, Cart oldCart) {
+        validateField(newCart, Group.CartUpdate, Group.CartItem)
+    }
+
+    @Override
+    Validation validateCartOwner(Cart cart, UserId userId) {
+        if (cart.user != userId) {
+            throw AppErrors.INSTANCE.cartNotFound().exception()
+        }
+    }
+
+    @Override
+    Validation validateMerge(Cart mergeCart) {
+        validateField(mergeCart, Group.CartMerge)
+    }
+
+    @Override
+    Validation validateOfferAdd(OfferItem offerItem) {
+        validateField(offerItem, Group.CartItem)
+    }
+
+    @Override
+    Validation validateOfferUpdate(OfferItem offerItem) {
+        validateField(offerItem, Group.CartItem)
+    }
+
+    @Override
+    Validation validateCouponAdd(CouponItem couponItem) {
+        validateField(couponItem, Group.CartItem)
+    }
+
+    private static void validateField(Object obj, Class... group) {
+        def result = validator.validate(obj, group)
+        if (!result.isEmpty()) {
+            def error = result.iterator().next()
+            throw AppErrors.INSTANCE.fieldInvalid(error.propertyPath.toString(), error.message).exception()
+        }
+    }
+}

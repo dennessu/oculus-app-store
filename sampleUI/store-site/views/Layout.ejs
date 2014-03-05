@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <meta charset="utf-8">
+      <title><%= PageModel.Title %></title>
+      <link type="text/css" href="/css/bootstrap.min.css" rel="stylesheet">
+      <link type="text/css" href="/css/bootstrap-theme.css" rel="stylesheet">
+      <link type="text/css" href="/css/styles.css" rel="stylesheet">
+      <script type="text/javascript" src="/scripts/app/config/Config.js"></script>
+      <script type="text/javascript" src="/scripts/libs/require/require.js" data-main="/scripts/app/App.js"></script>
+  </head>
+  <body class="<%= PageModel.BodyClass %>">
+
+  <%include warpers/Header %>
+  <div id="AppContainer"><%- body%></div>
+  <%include warpers/Footer %>
+  </body>
+</html>

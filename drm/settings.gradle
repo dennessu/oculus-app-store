@@ -1,0 +1,11 @@
+include 'drm-spec'
+
+include 'drm-common'
+include 'drm-db'
+include 'drm-core'
+include 'drm-rest'
+
+include 'drm-clientproxy'
+
+include 'drm-app'
+1

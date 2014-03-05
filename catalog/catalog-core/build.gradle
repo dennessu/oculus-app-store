@@ -1,0 +1,7 @@
+apply plugin: 'java'
+
+dependencies {
+    compile project(":catalog-db")
+
+    testCompile (libraries.spring_test)
+}
