@@ -4,15 +4,22 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
+    <import resource="classpath*:spring/common-context.xml"/>
+    
     <context:component-scan base-package="com.junbo.fulfilment.db"/>
 
-    <!--Data source has the database information -->
-    <bean id="dataSource"
-          class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="driverClassName" value="org.postgresql.Driver"/>
-        <property name="url" value="jdbc:postgresql://localhost:5432/fulfilment"/>
-        <property name="username" value="postgres"/>
-        <property name="password" value="#Bugsfor$"/>
+    <!-- dataSource -->
+    <bean id="dataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
+        <property name="driverClass" value="${fulfilment.db.driverClassName}"/>
+        <property name="jdbcUrl" value="${fulfilment.db.url}"/>
+        <property name="username" value="${fulfilment.db.username}"/>
+        <property name="password" value="${fulfilment.db.password}"/>
+        <property name="maxConnectionsPerPartition" value="${fulfilment.db.maxConnectionsPerPartition}"/>
+        <property name="minConnectionsPerPartition" value="${fulfilment.db.minConnectionsPerPartition}"/>
+        <property name="partitionCount" value="${fulfilment.db.partitionCount}"/>
+        <property name="acquireIncrement" value="${fulfilment.db.acquireIncrement}"/>
+        <property name="statementsCacheSize" value="${fulfilment.db.statementsCacheSize}"/>
+        <property name="releaseHelperThreads" value="${fulfilment.db.releaseHelperThreads}"/>
     </bean>
 
     <!-- SessonFactory for Hibernate -->
@@ -22,11 +29,11 @@
         <property name="packagesToScan" value="com.junbo.fulfilment.db.entity"/>
         <property name="hibernateProperties">
             <props>
-                <prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</prop>
-                <prop key="hibernate.max_fetch_depth">3</prop>
-                <prop key="hibernate.jdbc.fetch_size">50</prop>
-                <prop key="hibernate.jdbc.batch_size">10</prop>
-                <prop key="hibernate.show_sql">true</prop>
+                <prop key="hibernate.dialect">${fulfilment.hibernate.dialect}</prop>
+                <prop key="hibernate.max_fetch_depth">${fulfilment.hibernate.max_fetch_depth}</prop>
+                <prop key="hibernate.jdbc.fetch_size">${fulfilment.hibernate.fetch_size}</prop>
+                <prop key="hibernate.jdbc.batch_size">${fulfilment.hibernate.batch_size}</prop>
+                <prop key="hibernate.show_sql">${fulfilment.hibernate.show_sql}</prop>
             </props>
         </property>
     </bean>

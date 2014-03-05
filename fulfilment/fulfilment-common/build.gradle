@@ -8,5 +8,8 @@ dependencies {
     compile (libraries.json_path)
     compile (libraries.fastjson)
 
+    compile (libraries.common_lib)
+    compile (libraries.common_configuration)
+
     compile ('ma.glasnost.orika:orika-core:1.1.4')
 }
