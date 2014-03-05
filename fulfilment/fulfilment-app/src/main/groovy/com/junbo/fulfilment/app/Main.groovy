@@ -24,7 +24,6 @@ class Main {
         resourceConfig
                 .packages('com.junbo.fulfilment.spec.resource.adapter')
                 .property(ServerProperties.BV_SEND_ERROR_IN_RESPONSE, true)
-                .property(ServerProperties.RESPONSE_SET_STATUS_OVER_SEND_ERROR, true)
                 .property(ServerProperties.TRACING, 'ALL')
                 .property('contextConfigLocation', 'classpath*:/spring/*.xml')
                 .register(MapperConfigurator)

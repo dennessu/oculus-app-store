@@ -59,13 +59,13 @@ public class FulfilmentServiceTest extends BaseTest {
         request.setItems(new ArrayList() {{
             add(new FulfilmentItem() {{
                 setOfferId(100L);
-                setOfferRevision(1);
+                setTimestamp(System.currentTimeMillis());
                 setQuantity(2);
                 setOrderItemId(10000L);
             }});
             add(new FulfilmentItem() {{
                 setOfferId(400L);
-                setOfferRevision(1);
+                setTimestamp(System.currentTimeMillis());
                 setQuantity(3);
                 setOrderItemId(20000L);
             }});

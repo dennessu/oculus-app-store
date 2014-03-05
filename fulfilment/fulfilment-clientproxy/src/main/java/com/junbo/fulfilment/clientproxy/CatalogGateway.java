@@ -12,7 +12,7 @@ import com.junbo.fulfilment.spec.fusion.ShippingMethod;
  * CatalogGateway.
  */
 public interface CatalogGateway {
-    Offer getOffer(Long offerId, Integer offerRevision);
+    Offer getOffer(Long offerId, Long timestamp);
 
     Offer getOffer(Long offerId);
 

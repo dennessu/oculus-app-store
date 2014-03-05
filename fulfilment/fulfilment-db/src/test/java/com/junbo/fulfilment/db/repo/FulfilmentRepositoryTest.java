@@ -24,7 +24,7 @@ public class FulfilmentRepositoryTest extends BaseTest {
         item.setRequestId(123L);
         item.setOrderItemId(100L);
         item.setOfferId(12345L);
-        item.setOfferRevision(1);
+        item.setTimestamp(System.currentTimeMillis());
         item.setQuantity(10);
 
         return item;

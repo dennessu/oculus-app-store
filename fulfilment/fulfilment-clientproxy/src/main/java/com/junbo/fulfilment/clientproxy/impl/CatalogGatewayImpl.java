@@ -24,19 +24,19 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class CatalogGatewayImpl implements CatalogGateway {
     private static final String PURCHASE_EVENT = "PURCHASE_EVENT";
-    private static final Integer OFFER_REVISION_NOT_SPECIFIED = -1;
+    private static final Long OFFER_TIMESTAMP_NOT_SPECIFIED = -1L;
 
     @Autowired
     private OfferResource offerResource;
 
     @Override
-    public com.junbo.fulfilment.spec.fusion.Offer getOffer(Long offerId, Integer offerRevision) {
-        return wash(retrieve(offerId, offerRevision));
+    public com.junbo.fulfilment.spec.fusion.Offer getOffer(Long offerId, Long timestamp) {
+        return wash(retrieve(offerId, timestamp));
     }
 
     @Override
     public com.junbo.fulfilment.spec.fusion.Offer getOffer(Long offerId) {
-        return wash(retrieve(offerId, OFFER_REVISION_NOT_SPECIFIED));
+        return wash(retrieve(offerId, OFFER_TIMESTAMP_NOT_SPECIFIED));
     }
 
     @Override
@@ -45,14 +45,15 @@ public class CatalogGatewayImpl implements CatalogGateway {
         return new ShippingMethod();
     }
 
-    protected com.junbo.catalog.spec.model.offer.Offer retrieve(Long offerId, Integer offerRevision) {
+    protected com.junbo.catalog.spec.model.offer.Offer retrieve(Long offerId, Long timestamp) {
         try {
+            // TODO
             com.junbo.catalog.spec.model.offer.Offer offer =
                     offerResource.getOffer(offerId, EntityGetOptions.getDefault()).wrapped().get();
 
             if (offer == null) {
                 throw new ResourceNotFoundException(
-                        "Offer [" + offerId + "] with revision [" + offerRevision + "] does not exist");
+                        "Offer [" + offerId + "] with timestamp [" + timestamp + "] does not exist");
             }
 
             return offer;

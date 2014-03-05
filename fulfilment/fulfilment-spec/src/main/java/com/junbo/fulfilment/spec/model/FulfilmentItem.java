@@ -31,7 +31,7 @@ public class FulfilmentItem {
     @OfferId
     private Long offerId;
 
-    private Integer offerRevision;
+    private Long timestamp;
     private Integer quantity;
 
     @JsonIgnore
@@ -87,12 +87,12 @@ public class FulfilmentItem {
         this.offerId = offerId;
     }
 
-    public Integer getOfferRevision() {
-        return offerRevision;
+    public Long getTimestamp() {
+        return timestamp;
     }
 
-    public void setOfferRevision(Integer offerRevision) {
-        this.offerRevision = offerRevision;
+    public void setTimestamp(Long timestamp) {
+        this.timestamp = timestamp;
     }
 
     public Integer getQuantity() {
