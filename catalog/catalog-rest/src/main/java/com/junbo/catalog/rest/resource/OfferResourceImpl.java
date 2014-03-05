@@ -71,7 +71,8 @@ public class OfferResourceImpl implements OfferResource{
 
     @Override
     public Promise<Offer> rejectOffer(Long offerId) {
-        return null;
+        Offer updatedOffer = offerService.rejectOffer(offerId);
+        return Promise.pure(updatedOffer);
     }
 
     @Override

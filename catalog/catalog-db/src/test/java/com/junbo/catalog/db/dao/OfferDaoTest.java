@@ -26,16 +26,6 @@ public class OfferDaoTest extends BaseTest {
         Assert.assertNotNull(offerDao.get(entity.getId()), "Entity should not be null.");
     }
 
-    @Test
-    public void testGetRevisions() {
-        OfferEntity entity = buildOfferHistoryEntity();
-        offerDao.create(entity);
-        List<Integer> revisions = offerDao.getRevisions(entity.getOfferId());
-        Assert.assertNotNull(revisions);
-        Assert.assertEquals(revisions.size(), 1, "There should 1 revision.");
-        Assert.assertEquals(revisions.get(0), Constants.INITIAL_CREATION_REVISION, "The revision should match.");
-    }
-
     private OfferEntity buildOfferHistoryEntity() {
         OfferEntity entity = new OfferEntity();
         entity.setId(generateId());
@@ -44,6 +34,7 @@ public class OfferDaoTest extends BaseTest {
         entity.setStatus("test");
         entity.setRevision(1);
         entity.setOwnerId(generateId());
+        entity.setTimestamp(generateId());
         entity.setPayload("{\"name\": \"test\"}");
 
         return entity;

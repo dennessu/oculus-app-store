@@ -18,14 +18,11 @@ import javax.ws.rs.QueryParam;
  * Entity get options.
  */
 public class EntityGetOptions {
-    // if revision is specified, status will be ignored
-    @QueryParam("revision")
-    private Integer revision;
-    @QueryParam("status")
-    private String status;
-
     @QueryParam("timestamp")
     private Long timestamp;
+
+    @QueryParam("status")
+    private String status;
 
     public static EntityGetOptions getDefault() {
         EntityGetOptions options = new EntityGetOptions();
@@ -48,11 +45,17 @@ public class EntityGetOptions {
         return options;
     }
 
-    public static EntityGetOptions getHistory(int revision) {
+    public static EntityGetOptions getHistory(Long timestamp) {
         EntityGetOptions options = new EntityGetOptions();
-        options.setRevision(revision);
+        options.setTimestamp(timestamp);
 
         return options;
+    }
+
+    public boolean isFromDraft() {
+        return Status.DRAFT.equals(status)
+                || Status.PENDING_REVIEW.equals(status)
+                || Status.REJECTED.equals(status);
     }
 
     public String getStatus() {
@@ -61,14 +64,6 @@ public class EntityGetOptions {
 
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    public Integer getRevision() {
-        return revision;
-    }
-
-    public void setRevision(Integer revision) {
-        this.revision = revision;
     }
 
     public Long getTimestamp() {

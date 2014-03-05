@@ -65,6 +65,7 @@ public class OfferDraftDaoTest extends BaseTest {
         entity.setStatus("test");
         entity.setRevision(1);
         entity.setOwnerId(generateId());
+        entity.setTimestamp(generateId());
         entity.setPayload("{\"name\": \"test\"}");
 
         return entity;

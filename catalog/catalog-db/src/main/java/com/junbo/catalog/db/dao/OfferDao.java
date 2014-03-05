@@ -8,13 +8,9 @@ package com.junbo.catalog.db.dao;
 
 import com.junbo.catalog.db.entity.OfferEntity;
 
-import java.util.List;
-
 /**
  * Offer DAO definition.
  */
 public interface OfferDao extends BaseDao<OfferEntity>  {
-    OfferEntity getOffer(long offerId);
-    OfferEntity getOffer(long offerId, int revision);
-    List<Integer> getRevisions(long offerId);
+    OfferEntity getOffer(Long offerId, Long timestamp);
 }

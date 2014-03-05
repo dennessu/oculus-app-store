@@ -22,6 +22,10 @@ public class Utils {
         return new Date();
     }
 
+    public static Long currentTimestamp() {
+        return System.currentTimeMillis();
+    }
+
     public static String toJson(Object input) {
         return JSON.toJSONString(input);
     }

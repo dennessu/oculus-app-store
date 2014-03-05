@@ -77,6 +77,7 @@ public class PromotionDraftDaoTest extends BaseTest {
         promotion.setStatus(Status.ACTIVE);
         promotion.setStartDate(generateDate("2013-01-01 08:00:00"));
         promotion.setEndDate(generateDate("2013-01-10 08:00:00"));
+        promotion.setTimestamp(generateId());
         promotion.setPayload("{\"ruleId\":\"promotion001\"}");
         return promotion;
     }

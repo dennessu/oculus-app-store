@@ -36,6 +36,7 @@ public abstract class BaseDaoImpl<T extends BaseEntity> implements BaseDao<T> {
         // remove it later
         entity.setId(genSimpleId());
 
+        entity.setTimestamp(Utils.currentTimestamp());
         entity.setCreatedTime(Utils.now());
         entity.setCreatedBy(Constants.SYSTEM_INTERNAL);
         entity.setUpdatedTime(Utils.now());
@@ -49,6 +50,7 @@ public abstract class BaseDaoImpl<T extends BaseEntity> implements BaseDao<T> {
     }
 
     public Long update(T entity) {
+        entity.setTimestamp(Utils.currentTimestamp());
         entity.setUpdatedTime(Utils.now());
         entity.setUpdatedBy(Constants.SYSTEM_INTERNAL);
 

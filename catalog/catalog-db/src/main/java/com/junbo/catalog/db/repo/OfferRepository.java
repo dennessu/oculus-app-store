@@ -25,13 +25,8 @@ public class OfferRepository {
         return offerDao.create(entity);
     }
 
-    public Offer get(Long offerId, Integer revision) {
-        OfferEntity entity = offerDao.getOffer(offerId, revision);
-        return OfferConverter.toModel(entity);
-    }
-
-    public Offer get(Long offerId) {
-        OfferEntity entity = offerDao.getOffer(offerId);
+    public Offer get(Long offerId, Long timestamp) {
+        OfferEntity entity = offerDao.getOffer(offerId, timestamp);
         return OfferConverter.toModel(entity);
     }
 

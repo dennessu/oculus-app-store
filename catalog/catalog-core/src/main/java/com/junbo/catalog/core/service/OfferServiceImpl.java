@@ -30,24 +30,19 @@ public class OfferServiceImpl implements OfferService {
     @Override
     public Offer getOffer(Long offerId, EntityGetOptions options) {
         Offer offer;
-        if (options.getRevision() == null) {
-            offer = offerRepository.get(offerId);
+        if (options.isFromDraft()) {
+            offer = offerDraftRepository.get(offerId);
+            if (!options.getStatus().equals(Status.DRAFT) && !options.getStatus().equals(offer.getStatus())) {
+                throw new NotFoundException("offer", offerId);
+            }
         } else {
-            offer = offerRepository.get(offerId, options.getRevision());
+            offer = offerRepository.get(offerId, options.getTimestamp());
         }
 
         checkOfferNotNull(offerId, offer);
 
         return offer;
     }
-
-   /* @Override
-    public Offer getDraftOffer(Long offerId) {
-        Offer offer = offerDraftRepository.get(offerId);
-        checkOfferNotNull(offerId, offer);
-
-        return offer;
-    }*/
 
     @Override
     public List<Offer> getOffers(int start, int size) {
@@ -81,7 +76,7 @@ public class OfferServiceImpl implements OfferService {
         checkOfferNotNull(offerId, offer);
         offer.setStatus(Status.PENDING_REVIEW);
         offerDraftRepository.update(offer);
-        return offerRepository.get(offerId);
+        return offerRepository.get(offerId, null);
     }
 
     @Override
@@ -91,20 +86,39 @@ public class OfferServiceImpl implements OfferService {
         offer.setStatus(Status.ACTIVE);
         offerRepository.create(offer);
         offerDraftRepository.update(offer);
-        return offerRepository.get(offerId);
+        return offerRepository.get(offerId, null);
     }
 
     @Override
-    public Long removeOffer(Long offerId) {
-        /*Offer offer = offerRepository.get(offerId);
+    public Offer rejectOffer(Long offerId) {
+        Offer offer = offerDraftRepository.get(offerId);
         checkOfferNotNull(offerId, offer);
-        offer.setStatus(Status.REMOVED);
-        offerRepository.create(offer);
-        return offer.getId();*/
-        //TODO
-        return null;
+        offer.setStatus(Status.REJECTED);
+        offerDraftRepository.update(offer);
+        return offerRepository.get(offerId, null);
     }
 
+    /**
+     * Remove offer from listing. The draft offer is still kept.
+     *
+     * @param offerId the id of offer to be removed.
+     * @return the id of removed offer.
+     */
+    @Override
+    public Long removeOffer(Long offerId) {
+        Offer offer = offerRepository.get(offerId, null);
+        checkOfferNotNull(offerId, offer);
+        offer.setStatus(Status.DELETED);
+        offerRepository.create(offer);
+        return offer.getId();
+    }
+
+    /**
+     * Delete both draft and published offer.
+     *
+     * @param offerId the id of offer to be deleted.
+     * @return the id of deleted offer.
+     */
     @Override
     public Long deleteOffer(Long offerId) {
         Offer offer = offerDraftRepository.get(offerId);

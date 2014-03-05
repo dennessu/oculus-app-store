@@ -62,7 +62,7 @@ public interface OfferResource {
      * @return the offer to be published.
      */
     @POST
-    @Path("/{offerId}/publish")
+    @Path("/{offerId}/release")
     Promise<Offer> publishOffer(@PathParam("offerId") Long offerId);
 
     /**
@@ -81,8 +81,8 @@ public interface OfferResource {
      * @param offerId the id of offer to be removed.
      * @return the removed offer id.
      */
-    @POST
-    @Path("/{offerId}/remove")
+    @DELETE
+    @Path("/{offerId}/release")
     Promise<Long> removeOffer(@PathParam("offerId") Long offerId);
 
     /**
