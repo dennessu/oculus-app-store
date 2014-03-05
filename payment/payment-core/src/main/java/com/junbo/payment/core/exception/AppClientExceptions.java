@@ -64,7 +64,8 @@ public interface AppClientExceptions {
     AppError missingCountry();
 
     @ErrorDef(httpStatusCode = 400, code = "40013",
-            description = "The country {0} is invalid or not allowed", field = "payment_instrument_type")
+            description = "The payment instrument type {0} is invalid or not allowed"
+            , field = "payment_instrument_type")
     AppError invalidPIType(String piType);
 
     @ErrorDef(httpStatusCode = 400, code = "40014",

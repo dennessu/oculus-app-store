@@ -1,6 +1,7 @@
 package com.junbo.payment.app
 
 import com.fasterxml.jackson.jaxrs.base.JsonMappingExceptionMapper
+import com.junbo.payment.core.exception.RestExceptionMapper
 import com.junbo.payment.rest.jackson.JacksonFeature
 import com.junbo.payment.rest.jackson.MapperConfigurator
 import org.glassfish.grizzly.http.server.HttpServer
@@ -31,6 +32,7 @@ class BrainTreeMain {
         resourceConfig.register(JacksonFeature)
         resourceConfig.register(MapperConfigurator)
         resourceConfig.register(JsonMappingExceptionMapper)
+        resourceConfig.register(RestExceptionMapper)
         resourceConfig.property(ServerProperties.BV_SEND_ERROR_IN_RESPONSE, true)
         resourceConfig.property(ServerProperties.TRACING, 'ALL')
         resourceConfig.packages('com.junbo.payment.spec.internal.adapter')

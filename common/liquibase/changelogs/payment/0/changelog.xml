@@ -113,7 +113,7 @@
             create table phone
             (
               phone_id                  bigint              not null,
-              phone_type_id             smallint            not null,              
+              phone_type_id             smallint                null,
               phone_area_code           varchar(10)             null,
               phone_local_number        varchar(15)         not null,
               phone_extension           varchar(10)             null,
@@ -263,11 +263,29 @@
 
     <changeSet id="12" author='WenhongZhu' context="PREDEPLOY">
         <sql>
+            <![CDATA[
+            create table tenant
+                (
+                    tenant_id                     int                 not null,
+                    name                          varchar(128)        not null,
+                    description                   varchar(1024)       not null,
+                    created_time                  date                not null,
+                    created_by                    varchar(64)         not null,
+
+                    constraint tenant_id_pk primary key (tenant_id)
+                );
+        ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet id="120" author='WenhongZhu' context="PREDEPLOY">
+        <sql>
         <![CDATA[
             create table merchant_account
                 (
                   merchant_account_id            int                not null,
 				  merchant_account_ref           varchar(50)        not null,
+				  tenant_id                      int                    null,
                   payment_provider_id            smallint           not null,
                   payment_instrument_type_id     smallint               null,
                   country_code                   char(3)                null,
@@ -905,12 +923,20 @@
         ]]>
         </sql>
     </changeSet>
+
+    <changeSet id="28" author='WenhongZhu' context="PREDEPLOY">
+        <sql>
+            <![CDATA[
+            insert into tenant values (0, 'OVR','Oculus Vitual Reality', '2014-02-10','wenhongzhu');
+        ]]>
+        </sql>
+    </changeSet>
 	
-	<changeSet id="28" author='WenhongZhu' context="PREDEPLOY">
+	<changeSet id="280" author='WenhongZhu' context="PREDEPLOY">
         <sql>
         <![CDATA[
-            insert into merchant_account values (0, '8qnzm4r4ytckyf4d', 0, null, null, 'USD', '2014-02-10','wenhongzhu')
-			                                   ,(1, 'jb_GBP', 0, null, null, 826, '2014-02-10','wenhongzhu');
+            insert into merchant_account values (0, '8qnzm4r4ytckyf4d', 0, 0, null, null, 'USD', '2014-02-10','wenhongzhu')
+			                                   ,(1, 'jb_GBP', 0, 0, null, null, 'GBP', '2014-02-10','wenhongzhu');
         ]]>
         </sql>
     </changeSet>

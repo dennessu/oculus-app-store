@@ -30,7 +30,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
-
 import java.util.Date;
 import java.util.List;
 
@@ -150,9 +149,6 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
         }
         paymentInstrumentRepository.update(request);
         if(CommonUtil.toBool(request.getIsDefault()) && !CommonUtil.toBool(piTarget.getIsDefault())){
-            if(piTarget.getType().toString().equalsIgnoreCase(PIType.CREDITCARD.toString())){
-                throw AppClientExceptions.INSTANCE.invalidTypeForDefault(piTarget.getType().toString()).exception();
-            }
             paymentInstrumentRepository.setDefault(request.getId());
         }
     }
@@ -199,6 +195,14 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
             throw AppClientExceptions.INSTANCE.missingPIType().exception();
         }
         PaymentUtil.getPIType(request.getType());
+        if(CommonUtil.toBool(request.getIsDefault()) &&
+                !request.getType().toString().equalsIgnoreCase(PIType.CREDITCARD.toString())){
+            throw AppClientExceptions.INSTANCE.invalidTypeForDefault(request.getType().toString()).exception();
+        }
+        validateAddress(request);
+    }
+
+    private void validateAddress(PaymentInstrument request) {
         if(request.getAddress() != null){
             if(request.getAddress().getCountry() == null || request.getAddress().getCountry().isEmpty()){
                 throw AppClientExceptions.INSTANCE.missingCountry().exception();

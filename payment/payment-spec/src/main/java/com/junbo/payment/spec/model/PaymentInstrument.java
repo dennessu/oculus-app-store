@@ -12,7 +12,9 @@ import com.junbo.common.jackson.annotation.UserId;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -24,9 +26,11 @@ public class PaymentInstrument {
     @PaymentInstrumentId
     private Long id;
     private UUID trackingUuid;
-    @NotNull
     @UserId
     private Long userId;
+    @NotNull
+    @UserId
+    private List<Long> admins;
     private boolean isValidated;
     private Date lastValidatedTime;
     private String isDefault;
@@ -54,13 +58,23 @@ public class PaymentInstrument {
     public void setTrackingUuid(UUID trackingUuid) {
         this.trackingUuid = trackingUuid;
     }
-
+    @JsonIgnore
     public Long getUserId() {
         return userId;
     }
-
+    @JsonIgnore
     public void setUserId(Long userId) {
         this.userId = userId;
+        this.setAdmins(Arrays.asList(userId));
+    }
+
+    public List<Long> getAdmins() {
+        return admins;
+    }
+
+    public void setAdmins(List<Long> admins) {
+        this.admins = admins;
+        this.userId = admins.get(0);
     }
 
     public CreditCardRequest getCreditCardRequest() {

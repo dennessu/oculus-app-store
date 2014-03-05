@@ -27,6 +27,9 @@ public class MerchantAccountEntity {
     @Column(name = "merchant_account_ref")
     private String merchantAccountRef;
 
+    @Column(name = "tenant_id")
+    private Integer tenantId;
+
     @Column(name = "payment_provider_id")
     private Integer paymentProviderId;
 
@@ -60,6 +63,14 @@ public class MerchantAccountEntity {
 
     public void setMerchantAccountRef(String merchantAccountRef) {
         this.merchantAccountRef = merchantAccountRef;
+    }
+
+    public Integer getTenantId() {
+        return tenantId;
+    }
+
+    public void setTenantId(Integer tenantId) {
+        this.tenantId = tenantId;
     }
 
     public Integer getPaymentProviderId() {
