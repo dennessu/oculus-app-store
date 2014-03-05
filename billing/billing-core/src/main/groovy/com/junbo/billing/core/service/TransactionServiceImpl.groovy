@@ -40,56 +40,50 @@ class TransactionServiceImpl implements TransactionService {
     void processBalance(Balance balance) {
 
         def paymentTransaction = generatePaymentTransaction(balance)
-        final TXN_TYPE
-        Promise<PaymentTransaction> promiseResponse = null
+        TransactionType transactionType
+        Promise<PaymentTransaction> promiseResponse
         BalanceType balanceType = BalanceType.valueOf(balance.type)
         switch (balanceType) {
             case BalanceType.DEBIT:
                 promiseResponse = paymentFacade.postPaymentCharge(paymentTransaction)
-                TXN_TYPE = TransactionType.CHARGE
+                transactionType = TransactionType.CHARGE
                 break
             case BalanceType.DELAY_DEBIT:
                 promiseResponse = paymentFacade.postPaymentAuthorization(paymentTransaction)
-                TXN_TYPE = TransactionType.AUTHORIZE
+                transactionType = TransactionType.AUTHORIZE
                 break
             default:
                 throw AppErrors.INSTANCE.invalidBalanceType(balance.type).exception()
-
         }
-        promiseResponse?.then(new Promise.Func<PaymentTransaction, Promise>() {
-            @Override
-            Promise apply(PaymentTransaction responsePaymentTransaction) {
+        promiseResponse?.then { PaymentTransaction pt ->
 
-                def transaction = new Transaction()
-                transaction.setBalanceId(balance.balanceId)
-                transaction.setAmount(responsePaymentTransaction.chargeInfo.amount)
-                transaction.setCurrency(responsePaymentTransaction.chargeInfo.currency)
-                transaction.setPiId(new PaymentInstrumentId(responsePaymentTransaction.paymentInstrumentId))
-                transaction.setTransactionType(TXN_TYPE.name())
+            def transaction = new Transaction()
+            transaction.setBalanceId(balance.balanceId)
+            transaction.setAmount(pt.chargeInfo.amount)
+            transaction.setCurrency(pt.chargeInfo.currency)
+            transaction.setPiId(new PaymentInstrumentId(pt.paymentInstrumentId))
+            transaction.setTransactionType(transactionType.name())
 
-                transaction.setPaymentRefId(responsePaymentTransaction.paymentId.toString())
+            transaction.setPaymentRefId(pt.paymentId.toString())
 
-                PaymentStatus paymentStatus = PaymentStatus.valueOf(responsePaymentTransaction.status)
-                switch (paymentStatus) {
-                    case PaymentStatus.AUTHORIZED:
-                    case PaymentStatus.SETTLEMENT_SUBMITTED:
-                    case PaymentStatus.REVERSED:
-                        transaction.setTransactonStatus(TransactionStatus.SUCCESS.name())
-                        break
-                    case PaymentStatus.AUTH_DECLINED:
-                    case PaymentStatus.REVERSE_DECLINED:
-                    case PaymentStatus.SETTLEMENT_DECLINED:
-                        transaction.setTransactonStatus(TransactionStatus.DECLINE.name())
-                        break
-                    default:
-                        transaction.setTransactonStatus(TransactionStatus.ERROR.name())
-                        break
-                }
-                transactionRepository.saveTransaction(transaction)
+            PaymentStatus paymentStatus = PaymentStatus.valueOf(pt.status)
+            switch (paymentStatus) {
+                case PaymentStatus.AUTHORIZED:
+                case PaymentStatus.SETTLEMENT_SUBMITTED:
+                case PaymentStatus.REVERSED:
+                    transaction.setTransactonStatus(TransactionStatus.SUCCESS.name())
+                    break
+                case PaymentStatus.AUTH_DECLINED:
+                case PaymentStatus.REVERSE_DECLINED:
+                case PaymentStatus.SETTLEMENT_DECLINED:
+                    transaction.setTransactonStatus(TransactionStatus.DECLINE.name())
+                    break
+                default:
+                    transaction.setTransactonStatus(TransactionStatus.ERROR.name())
+                    break
             }
-        } )
-
-
+            transactionRepository.saveTransaction(transaction)
+        }
     }
 
     private PaymentTransaction generatePaymentTransaction(Balance balance) {
