@@ -19,8 +19,10 @@ public class ShardDAOTest extends AbstractTransactionalTestNGSpringContextTests 
 
     @Test(enabled = false)
     public void shardDaoTest() {
-        ShardEntity entity = new ShardEntity();
-        entity.setId(121L);
-        shardDao.saveShard(entity);
+        for (int i = 0; i < 100; i++) {
+            ShardEntity entity = new ShardEntity();
+            entity.setId(new Long(i));
+            shardDao.saveShard(entity);
+        }
     }
 }

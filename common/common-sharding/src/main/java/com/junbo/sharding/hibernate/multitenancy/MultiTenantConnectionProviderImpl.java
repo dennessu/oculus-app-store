@@ -13,7 +13,10 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
- * Created by minhao on 3/3/14.
+ * http://docs.jboss.org/hibernate/orm/4.1/devguide/en-US/html/ch16.html
+ *
+ * Using hibernate with multi-tenant to switch postgresql schema by execute
+ * set search_path to simulate physical shard switch
  */
 @SuppressWarnings("serial")
 public class MultiTenantConnectionProviderImpl extends AbstractDataSourceBasedMultiTenantConnectionProviderImpl {
