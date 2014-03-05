@@ -17,8 +17,6 @@ import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.web.util.UriComponentsBuilder
 
-import javax.ws.rs.core.Response
-
 /**
  * ValidateLoginState.
  */

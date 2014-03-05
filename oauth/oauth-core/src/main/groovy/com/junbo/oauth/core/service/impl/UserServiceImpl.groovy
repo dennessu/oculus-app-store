@@ -84,7 +84,8 @@ class UserServiceImpl implements UserService {
                 email: user.userName
         )
 
-        Promise<ResultList<UserProfile>> userProfilePromise = userProfileResource.getUserProfiles(accessToken.userId, 'PAYIN', 0, 1)
+        Promise<ResultList<UserProfile>> userProfilePromise = userProfileResource.getUserProfiles(accessToken.userId,
+                'PAYIN', 0, 1)
 
         if (userProfileResource != null && userProfilePromise.wrapped().get() != null
                 && !userProfilePromise.wrapped().get().items.isEmpty()) {
