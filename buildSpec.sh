@@ -21,5 +21,7 @@ cd ../../cart/cart-spec
 gradle clean install -x test
 cd ../../billing/billing-spec
 gradle clean install -x test
+cd ../../ewallet/ewallet-spec
+gradle clean install -x test
 cd ../../order/order-spec
 gradle clean install -x test
