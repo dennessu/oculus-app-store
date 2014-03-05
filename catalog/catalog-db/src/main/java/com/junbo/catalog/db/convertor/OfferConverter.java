@@ -40,6 +40,7 @@ public class OfferConverter {
         model.setRevision(entity.getRevision());
         model.setStatus(entity.getStatus());
         model.setOwnerId(entity.getOwnerId());
+        model.setTimestamp(entity.getTimestamp());
         model.setCreatedBy(entity.getCreatedBy());
         model.setCreatedTime(entity.getCreatedTime());
         model.setUpdatedBy(entity.getUpdatedBy());
@@ -72,6 +73,7 @@ public class OfferConverter {
         model.setStatus(entity.getStatus());
         model.setRevision(entity.getRevision());
         model.setOwnerId(entity.getOwnerId());
+        model.setTimestamp(entity.getTimestamp());
         model.setCreatedBy(entity.getCreatedBy());
         model.setCreatedTime(entity.getCreatedTime());
         model.setUpdatedBy(entity.getUpdatedBy());

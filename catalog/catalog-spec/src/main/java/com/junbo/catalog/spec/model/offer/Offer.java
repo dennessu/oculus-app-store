@@ -28,6 +28,8 @@ public class Offer extends BaseModel {
     @UserId
     private Long ownerId;
 
+    private String type;
+
     private Integer priceTier;
     private Map<String, Price> prices;
 
@@ -61,6 +63,13 @@ public class Offer extends BaseModel {
         this.ownerId = ownerId;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public Integer getPriceTier() {
         return priceTier;

@@ -24,6 +24,8 @@ public class EntitiesGetOptions {
     // if entityIds is specified, paging params will be ignored.
     @QueryParam("id")
     private List<Long> entityIds;
+    @QueryParam("timestamp")
+    private Long timestamp;
 
     public EntitiesGetOptions ensurePagingValid() {
         if (start == null || size == null) {

@@ -6,6 +6,8 @@
 
 package com.junbo.catalog.spec.model.common;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import java.util.Date;
@@ -15,6 +17,8 @@ import java.util.Date;
  */
 public abstract class BaseModel {
     @Null
+    private Long timestamp;
+    @JsonIgnore
     private Integer revision;
     @NotNull
     private String name;
@@ -29,6 +33,13 @@ public abstract class BaseModel {
     @Null
     private String updatedBy;
 
+    public Long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Long timestamp) {
+        this.timestamp = timestamp;
+    }
 
     public Integer getRevision() {
         return revision;

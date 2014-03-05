@@ -21,8 +21,11 @@ public class EntityGetOptions {
     // if revision is specified, status will be ignored
     @QueryParam("revision")
     private Integer revision;
-    @QueryParam("revision")
+    @QueryParam("status")
     private String status;
+
+    @QueryParam("timestamp")
+    private Long timestamp;
 
     public static EntityGetOptions getDefault() {
         EntityGetOptions options = new EntityGetOptions();
@@ -66,5 +69,13 @@ public class EntityGetOptions {
 
     public void setRevision(Integer revision) {
         this.revision = revision;
+    }
+
+    public Long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Long timestamp) {
+        this.timestamp = timestamp;
     }
 }

@@ -17,10 +17,20 @@ import java.util.Date;
  */
 @MappedSuperclass
 public abstract class BaseEntity implements Serializable {
+    private Long timestamp;
     private Date createdTime;
     private String createdBy;
     private Date updatedTime;
     private String updatedBy;
+
+    @Column(name = "timestamp")
+    public Long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Long timestamp) {
+        this.timestamp = timestamp;
+    }
 
     @Column(name = "created_time")
     public Date getCreatedTime() {
