@@ -58,7 +58,10 @@ class OrderServiceImpl implements OrderService {
 
     @Override
     Promise<List<Order>> settleQuote(Order order, ApiContext context) {
-        return null
+        expandOrder(order).syncThen { OrderServiceContext orderServiceContext ->
+            return flowSelector.select(
+                    orderServiceContext, OrderServiceOperation.CREATE)?.execute(orderServiceContext)
+        }
     }
 
     @Override
