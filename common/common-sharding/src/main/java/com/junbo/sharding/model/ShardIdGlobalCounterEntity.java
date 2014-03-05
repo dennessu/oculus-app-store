@@ -7,6 +7,8 @@
 package com.junbo.sharding.model;
 
 import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 /**
@@ -14,8 +16,12 @@ import javax.persistence.Id;
  */
 public class ShardIdGlobalCounterEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Long id;
+
+    @Column(name = "option_mode")
+    private Long optionMode;
 
     @Column(name = "shard_id")
     private Long shardId;
@@ -29,6 +35,14 @@ public class ShardIdGlobalCounterEntity {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getOptionMode() {
+        return optionMode;
+    }
+
+    public void setOptionMode(Long optionMode) {
+        this.optionMode = optionMode;
     }
 
     public Long getShardId() {

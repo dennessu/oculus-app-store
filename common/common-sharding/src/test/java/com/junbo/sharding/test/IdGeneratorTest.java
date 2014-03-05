@@ -12,7 +12,6 @@ import com.junbo.sharding.impl.*;
 import net.spy.memcached.MemcachedClient;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
-import org.testng.annotations.Test;
 import org.testng.log4testng.Logger;
 
 import java.io.IOException;
@@ -62,7 +61,7 @@ public class IdGeneratorTest {
     @BeforeSuite
     public void setup() throws IOException {
 
-        idSchema = new IdSchema(31, (int) (new Date(2014, 01, 01).getTime() / 1000), 12, 10, 1000);
+        idSchema = new IdSchema(1, 31, (int) (new Date(2014, 01, 01).getTime() / 1000), 12, 10, 1000);
 
         TimeGenerator timeGenerator = new TimeGeneratorImpl();
 

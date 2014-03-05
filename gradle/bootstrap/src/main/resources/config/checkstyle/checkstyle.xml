@@ -205,7 +205,9 @@
             <property name="ignorePattern" value="@version|@see|@todo|TODO"/>
         </module>
         <module name="MethodLength"/>
-        <module name="ParameterNumber"/>
+        <module name="ParameterNumber">
+            <property name="max" value="10" />
+        </module>
 
         <module name="FileContentsHolder"/>
 
@@ -221,7 +223,7 @@
             <property name="max" value="14"/>
         </module>
         <module name="CyclomaticComplexity">
-            <property name="max" value="14"/>
+            <property name="max" value="55"/>
         </module>
     </module>
 

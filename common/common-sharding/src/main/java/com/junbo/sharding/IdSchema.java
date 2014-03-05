@@ -12,18 +12,35 @@ import java.util.Date;
  * Java doc for IdSchema.
  */
 public class IdSchema {
+    public static final int INVALID = -1;
 
+    private final int optionMode;
+
+    // 1): Option 1:  Time & memcached server configuration
     private final int bitsInTime;
 
     private final int masksInTime;
 
     private final int timeSecOffset;
 
+    // 2): Option 2: Id generator proposed by oculus rift(48 version)
 
+    // 3): option 3: order Id generator proposed by oculus rift(40 version)
+    private final int dataCenterId;
+    private final int bitsInDataCenterId;
+
+    private final int idVersion;
+    private final int bitsInIdVersion;
+
+    private final int idSignificant;
+    private final int bitsInIdSignificant;
+
+    private final int bitsInShard;
+
+    // Common parts
     private final int bitsInGlobalCounter;
 
     private final int masksInGlobalCounter;
-
 
     private final int bitsInLocalCounter;
 
@@ -32,8 +49,12 @@ public class IdSchema {
 
     private final int numberOfShards;
 
-    public IdSchema(int bitsInTime, int timeSecOffset, int bitsInGlobalCounter,
+    public IdSchema(int optionMode, int bitsInTime, int timeSecOffset, int bitsInGlobalCounter,
                     int bitsInLocalCounter, int numberOfShards) {
+        this.optionMode = optionMode;
+        if(optionMode != 1) {
+            throw new IllegalArgumentException("unsupported optionMode " + optionMode);
+        }
         if (bitsInTime < 0 || bitsInTime > 31) {
             throw new IllegalArgumentException("bitsInTime " + bitsInTime + " should be 0..31");
         }
@@ -71,6 +92,129 @@ public class IdSchema {
         if (totalBits > 63) {
             throw new IllegalArgumentException("totalBits of IdSchema " + totalBits + " should be <= 63");
         }
+        this.dataCenterId = INVALID;
+        this.bitsInDataCenterId = INVALID;
+        this.idVersion = INVALID;
+        this.bitsInIdVersion = INVALID;
+        this.idSignificant = INVALID;
+        this.bitsInIdSignificant = INVALID;
+        this.bitsInShard = INVALID;
+    }
+
+    public IdSchema(int optionMode, int dataCenterId, int bitsInDataCenterId, int bitsInGlobalCounter,
+                    int bitsInLocalCounter, int idVersion, int bitsInIdVersion,
+                    int idSignificant, int bitsInIdSignificant, int bitsInShardParam) {
+        this.optionMode = optionMode;
+        if(optionMode == 2) {
+            // Oculus 48 version
+            if(bitsInGlobalCounter < 0 || bitsInGlobalCounter > 34) {
+                throw new IllegalArgumentException("bitsInGlobalCounter " + bitsInGlobalCounter + " should be 0..34.");
+            }
+            this.bitsInGlobalCounter = bitsInGlobalCounter;
+            this.masksInGlobalCounter = masks(bitsInGlobalCounter);
+
+            if(bitsInLocalCounter < 0 || bitsInLocalCounter < 34) {
+                throw new IllegalArgumentException("bitsInLocalCounter " + bitsInLocalCounter + " should be 0..34.");
+            }
+            this.bitsInLocalCounter = bitsInLocalCounter;
+            this.masksInLocalCounter = masks(bitsInLocalCounter);
+            this.numberOfShards = INVALID;
+            this.bitsInShard = bitsInShardParam;
+
+            int dataCenterInShard = bits(dataCenterId);
+            if(dataCenterInShard < 0 || dataCenterInShard > bitsInDataCenterId) {
+                throw new IllegalArgumentException("dataCenterId " + dataCenterId + " should be 0..4");
+            }
+            if(bitsInDataCenterId < 0 || bitsInDataCenterId > 4) {
+                throw new IllegalArgumentException("bitsInDataCenterId " + bitsInDataCenterId + " should be 0..4");
+            }
+            this.dataCenterId = dataCenterId;
+            this.bitsInDataCenterId = bitsInDataCenterId;
+
+            int idVersionInShard = bits(idVersion);
+            if(idVersionInShard < 0 || idVersionInShard > bitsInIdVersion) {
+                throw new IllegalArgumentException("idVersion " + idVersion + " should be 0..1");
+            }
+            if(bitsInIdVersion < 0 || bitsInIdVersion > 1) {
+                throw new IllegalArgumentException("bitsInIdVersion " + bitsInIdVersion + " should be 0..1");
+            }
+            this.idVersion = idVersion;
+            this.bitsInIdVersion = bitsInIdVersion;
+
+            int idSignificantInShard = bits(idSignificant);
+            if(idSignificantInShard < 0 || idSignificantInShard > bitsInIdSignificant) {
+                throw new IllegalArgumentException("idSignificant " + idSignificant + " should be 0..1.");
+            }
+            if(bitsInIdSignificant < 0 || bitsInIdSignificant > 1) {
+                throw new IllegalArgumentException("bitsInIdSignificant " + bitsInIdSignificant + " should be 0..1.");
+            }
+            this.idSignificant = idSignificant;
+            this.bitsInIdSignificant = bitsInIdSignificant;
+
+            int totalBits = bitsInGlobalCounter + bitsInLocalCounter +
+                    bitsInShardParam + bitsInIdVersion + bitsInIdSignificant;
+            if(totalBits > 48) {
+                throw new IllegalArgumentException("totalBits of IdSchema " + totalBits + " should be 0..48");
+            }
+        }
+        else if(optionMode == 3) {
+            if(bitsInGlobalCounter < 0 || bitsInGlobalCounter > 25) {
+                throw new IllegalArgumentException("bitsInGlobalCounter " + bitsInGlobalCounter + " should be 0..25.");
+            }
+            this.bitsInGlobalCounter = bitsInGlobalCounter;
+            this.masksInGlobalCounter = masks(bitsInGlobalCounter);
+
+            if(bitsInLocalCounter < 0 || bitsInLocalCounter > 25) {
+                throw new IllegalArgumentException("bitsInLocalCounter " + bitsInLocalCounter + " should be 0..25.");
+            }
+            this.bitsInLocalCounter = bitsInLocalCounter;
+            this.masksInLocalCounter = masks(bitsInLocalCounter);
+            this.numberOfShards = INVALID;
+            this.bitsInShard = bitsInShardParam;
+
+            int dataCenterInShard = bits(dataCenterId);
+            if(dataCenterInShard < 0 || dataCenterInShard > bitsInDataCenterId) {
+                throw new IllegalArgumentException("dataCenterId " + dataCenterId + " should be 0..4");
+            }
+            if(bitsInDataCenterId < 0 || bitsInDataCenterId > 4) {
+                throw new IllegalArgumentException("bitsInDataCenterId " + bitsInDataCenterId + " should be 0..4");
+            }
+            this.dataCenterId = dataCenterId;
+            this.bitsInDataCenterId = bitsInDataCenterId;
+
+            int idVersionInShard = bits(idVersion);
+            if(idVersionInShard < 0 || idVersionInShard > bitsInIdVersion) {
+                throw new IllegalArgumentException("idVersion " + idVersion + " should be 0..1");
+            }
+            if(bitsInIdVersion < 0 || bitsInIdVersion > 1) {
+                throw new IllegalArgumentException("bitsInIdVersion " + bitsInIdVersion + " should be 0..1");
+            }
+            this.idVersion = idVersion;
+            this.bitsInIdVersion = bitsInIdVersion;
+
+            int idSignificantInShard = bits(idSignificant);
+            if(idSignificantInShard < 0 || idSignificantInShard > bitsInIdSignificant) {
+                throw new IllegalArgumentException("idSignificant " + idSignificant + " should be 0..1.");
+            }
+            if(bitsInIdSignificant < 0 || bitsInIdSignificant > 1) {
+                throw new IllegalArgumentException("bitsInIdSignificant " + bitsInIdSignificant + " should be 0..1.");
+            }
+            this.idSignificant = idSignificant;
+            this.bitsInIdSignificant = bitsInIdSignificant;
+
+            int totalBits = bitsInGlobalCounter + bitsInLocalCounter +
+                    bitsInShardParam + idVersionInShard + idSignificantInShard;
+            if(totalBits > 40) {
+                throw new IllegalArgumentException("totalBits of IdSchema " + totalBits + " should be 0..40");
+            }
+        }
+        else {
+            this.bitsInGlobalCounter = this.masksInGlobalCounter = this.bitsInLocalCounter = INVALID;
+            this.masksInLocalCounter = INVALID;
+            this.numberOfShards = this.bitsInShard =  this.dataCenterId = this.bitsInDataCenterId = INVALID;
+            this.idVersion = this.bitsInIdVersion = this.idSignificant = this.bitsInIdSignificant = INVALID;
+        }
+        this.bitsInTime = this.timeSecOffset = this.masksInTime = INVALID;
     }
 
     public int getBitsInTime() {
@@ -101,8 +245,40 @@ public class IdSchema {
         return masksInLocalCounter;
     }
 
+    public int getOptionMode() {
+        return optionMode;
+    }
+
+    public int getDataCenterId() {
+        return dataCenterId;
+    }
+
+    public int getBitsInDataCenterId() {
+        return bitsInDataCenterId;
+    }
+
+    public int getIdVersion() {
+        return idVersion;
+    }
+
+    public int getBitsInIdVersion() {
+        return bitsInIdVersion;
+    }
+
+    public int getIdSignificant() {
+        return idSignificant;
+    }
+
+    public int getBitsInIdSignificant() {
+        return bitsInIdSignificant;
+    }
+
     public int getNumberOfShards() {
         return numberOfShards;
+    }
+
+    public int getBitsInShard() {
+        return bitsInShard;
     }
 
     public ObjectId parseObjectId(long value) {

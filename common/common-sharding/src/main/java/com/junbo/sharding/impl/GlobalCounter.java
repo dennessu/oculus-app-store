@@ -11,5 +11,5 @@ package com.junbo.sharding.impl;
  */
 public interface GlobalCounter {
 
-    int getAndIncrease(int shardId, int timeSec);
+    int getAndIncrease(int shardId, int timeSec, int optionMode);
 }

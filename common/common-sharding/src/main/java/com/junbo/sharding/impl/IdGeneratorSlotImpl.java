@@ -68,7 +68,7 @@ public class IdGeneratorSlotImpl implements IdGeneratorSlot {
 
             if (current <= idSchema.getMasksInLocalCounter()) {
                 if (slotData.localCounter.compareAndSet(current, current + 1)) {
-                    return nextId(slotData, current);
+                    return nextId(slotData, current, idSchema.getOptionMode());
                 }
             }
             else {
@@ -88,37 +88,54 @@ public class IdGeneratorSlotImpl implements IdGeneratorSlot {
         }
     }
 
-    private long nextId(SlotData slotData, int localCounter) {
-        long value = slotData.timeSec;
-
-        value = (value << idSchema.getBitsInGlobalCounter()) + slotData.globalCounter;
-
-        value = (value << idSchema.getBitsInLocalCounter()) + localCounter;
-
-        value = value * idSchema.getNumberOfShards() + shardId;
-
-        return value;
+    private long nextId(SlotData slotData, int localCounter, int optionMode) {
+        if(optionMode == 1) {
+            long value = slotData.timeSec;
+            value = (value << idSchema.getBitsInGlobalCounter()) + slotData.globalCounter;
+            value = (value << idSchema.getBitsInLocalCounter()) + localCounter;
+            value = value * idSchema.getNumberOfShards() + shardId;
+            return value;
+        } else if (optionMode == 2 || optionMode == 3) {
+            long value = 0;
+            value = (value << idSchema.getBitsInIdSignificant()) + slotData.idSignificant;
+            value = (value << idSchema.getBitsInIdVersion()) + slotData.idVersion;
+            value = (value << idSchema.getDataCenterId()) + slotData.dataCenterId;
+            value = (value << idSchema.getBitsInShard()) + shardId;
+            value = (value << idSchema.getBitsInGlobalCounter()) + slotData.globalCounter;
+            value = (value << idSchema.getBitsInLocalCounter()) + slotData.localCounter.intValue();
+            return value;
+        } else {
+            throw new IllegalArgumentException("unsupported optionMode.");
+        }
     }
 
     private SlotData newSlotData() {
 
         int currentTimeSec = timeGenerator.currentTimeSec(idSchema.getTimeSecOffset()) & idSchema.getMasksInTime();
 
-        int count = globalCounter.getAndIncrease(shardId, currentTimeSec) & idSchema.getMasksInGlobalCounter();
+        int count = globalCounter.getAndIncrease(shardId, currentTimeSec, idSchema.getOptionMode())
+                & idSchema.getMasksInGlobalCounter();
 
-        return new SlotData(currentTimeSec, count);
+        return new SlotData(currentTimeSec, count, idSchema.getDataCenterId(),
+                idSchema.getIdVersion(), idSchema.getIdSignificant());
     }
 
     private static class SlotData {
 
         private final int timeSec;
         private final int globalCounter;
+        private final int dataCenterId;
+        private final int idVersion;
+        private final int idSignificant;
 
         private final AtomicInteger localCounter;
 
-        private SlotData(int timeSec, int globalCounter) {
+        private SlotData(int timeSec, int globalCounter, int dataCenterId, int idVersion, int idSignificant) {
             this.timeSec = timeSec;
             this.globalCounter = globalCounter;
+            this.dataCenterId = dataCenterId;
+            this.idVersion = idVersion;
+            this.idSignificant = idSignificant;
 
             localCounter = new AtomicInteger();
         }

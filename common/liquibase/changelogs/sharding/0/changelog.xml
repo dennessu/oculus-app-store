@@ -9,13 +9,14 @@
                 create table shard_id_global_counter (
                     id bigint not null,
                     
+					option_mode bigint not null,
 					shard_id bigint not null,
 					global_count bigint not null,
 					
 					primary key (id)
                 );
 				
-				CREATE UNIQUE INDEX shard_id_index ON shard_id_global_counter (shard_id);
+				CREATE INDEX shard_id_index ON shard_id_global_counter (shard_id);
              ]]>
         </sql>
     </changeSet>

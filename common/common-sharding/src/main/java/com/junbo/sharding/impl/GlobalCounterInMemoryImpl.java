@@ -18,7 +18,7 @@ public class GlobalCounterInMemoryImpl implements GlobalCounter {
     }
 
     @Override
-    public int getAndIncrease(int shardId, int timeSec) {
+    public int getAndIncrease(int optionMode, int shardId, int timeSec) {
         long value = shardValue.getAndIncrement();
 
         return (int) (value & Integer.MAX_VALUE);

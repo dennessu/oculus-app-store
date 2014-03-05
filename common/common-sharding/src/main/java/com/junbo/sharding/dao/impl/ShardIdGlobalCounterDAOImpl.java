@@ -28,10 +28,10 @@ public class ShardIdGlobalCounterDAOImpl implements ShardIdGlobalCounterDAO {
     }
 
     @Override
-    public ShardIdGlobalCounterEntity get(Long shardId) {
-        String query = "select * from shard_id_global_counter where shard_id = :shardId";
+    public ShardIdGlobalCounterEntity get(Long optionMode, Long shardId) {
+        String query = "select * from shard_id_global_counter where shard_id = :shardId and option_mode = :optionMode";
         List<ShardIdGlobalCounterEntity> entities = currentSession().createSQLQuery(query)
-                .addEntity(ShardIdGlobalCounterEntity.class)
+                .addEntity(ShardIdGlobalCounterEntity.class).setParameter("optionMode", optionMode)
                 .setParameter("shardId", shardId).list();
 
         if(CollectionUtils.isEmpty(entities)) {
@@ -46,8 +46,8 @@ public class ShardIdGlobalCounterDAOImpl implements ShardIdGlobalCounterDAO {
     }
 
     @Override
-    public ShardIdGlobalCounterEntity save(ShardIdGlobalCounterEntity entity) {
-        ShardIdGlobalCounterEntity entityInDB = get(entity.getShardId());
+    public ShardIdGlobalCounterEntity saveOrUpdate(ShardIdGlobalCounterEntity entity) {
+        ShardIdGlobalCounterEntity entityInDB = get(entity.getOptionMode(), entity.getShardId());
         if(entityInDB == null) {
             currentSession().save(entity);
         }
@@ -58,12 +58,12 @@ public class ShardIdGlobalCounterDAOImpl implements ShardIdGlobalCounterDAO {
             update(entity);
         }
 
-        return get(entity.getShardId());
+        return get(entity.getOptionMode(), entity.getShardId());
     }
 
     @Override
     public ShardIdGlobalCounterEntity update(ShardIdGlobalCounterEntity entity) {
         currentSession().update(entity);
-        return get(entity.getShardId());
+        return get(entity.getOptionMode(), entity.getShardId());
     }
 }

@@ -11,7 +11,7 @@ import com.junbo.sharding.model.ShardIdGlobalCounterEntity;
  * Created by liangfu on 3/5/14.
  */
 public interface ShardIdGlobalCounterDAO {
-    ShardIdGlobalCounterEntity get(Long shareId);
-    ShardIdGlobalCounterEntity save(ShardIdGlobalCounterEntity entity);
+    ShardIdGlobalCounterEntity get(Long optionMode, Long shareId);
+    ShardIdGlobalCounterEntity saveOrUpdate(ShardIdGlobalCounterEntity entity);
     ShardIdGlobalCounterEntity update(ShardIdGlobalCounterEntity entity);
 }
