@@ -113,11 +113,11 @@ class ActionContextWrapper {
     }
 
     AppClient getAppClient() {
-        return (AppClient) actionContext.requestScope[APP_CLIENT]
+        return (AppClient) actionContext.flowScope[APP_CLIENT]
     }
 
     void setAppClient(AppClient appClient) {
-        actionContext.requestScope[APP_CLIENT] = appClient
+        actionContext.flowScope[APP_CLIENT] = appClient
     }
 
     String getClientId() {

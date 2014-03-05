@@ -147,7 +147,7 @@
         <wf:action-state id="validateLoginStateAction">
             <wf:action ref="validateLoginStateWebflow"/>
             <wf:action ref="saveLoginStateWebflow"/>
-            <wf:transition on="redirectLogin" to="redirectView"/>
+            <wf:transition on="redirectLogin" to="redirectLogin"/>
             <wf:transition on="*" to="grantAuthorizationCodeAction"/>
         </wf:action-state>
 
@@ -157,14 +157,20 @@
             <wf:action ref="grantRememberMeTokenWebflow"/>
             <wf:action ref="grantIdTokenWebflow"/>
             <wf:action ref="buildRedirectUriWebflow"/>
-            <wf:transition on="*" to="redirectView"/>
+            <wf:transition on="*" to="endRedirect"/>
         </wf:action-state>
 
-        <wf:view-state id="redirectView">
+        <wf:view-state id="redirectLogin">
             <wf:on-render>
                 <wf:action ref="redirectWebflow"/>
             </wf:on-render>
             <wf:transition on="login" to="authenticateUserAction"/>
         </wf:view-state>
+
+        <wf:end-state id="endRedirect">
+            <wf:on-entry>
+                <wf:action ref="redirectWebflow"/>
+            </wf:on-entry>
+        </wf:end-state>
     </wf:flow>
 </beans>

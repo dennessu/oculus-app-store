@@ -117,7 +117,7 @@
         <xsd:choice>
             <xsd:element name="action">
                 <xsd:complexType>
-                    <xsd:attribute name="ref" type="xsd:ID" use="required">
+                    <xsd:attribute name="ref" type="xsd:string" use="required">
                     </xsd:attribute>
                 </xsd:complexType>
             </xsd:element>

@@ -48,7 +48,7 @@ class WebflowAuthenticateEndpointImpl implements AuthenticateEndpoint {
             throw AppExceptions.INSTANCE.missingConversationId().exception()
         }
 
-        flowExecutor.resume(conversationId, "login", requestScope).then { ActionContext context ->
+        flowExecutor.resume(conversationId, 'login', requestScope).then { ActionContext context ->
             ActionContextWrapper wrapper = new ActionContextWrapper(context)
             def responseBuilder = wrapper.responseBuilder
             def cookieList = wrapper.responseCookieList
