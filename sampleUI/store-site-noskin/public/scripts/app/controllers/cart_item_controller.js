@@ -28,12 +28,26 @@ define([
 
           change: function(value){
               if(value != undefined && !isNaN(value) && value > 0){
+
                   if(Ember.App.AuthManager.isAuthenticated()){
                       var userId = Ember.App.AuthManager.getUserId();
-                      $.post("/api/UPdateCartItem", { userId: userId, productId: this.get("model.product_id"), count:qty } );
+                      var productId = this.get("model.product_id");
+
+                      $.ajax({
+                          type: "POST",
+                          url: "/api/UPdateCartItem",
+                          async: true,
+                          cache: false,
+                          contentType: "application/json; charset=utf-8",
+                          dataType: 'json',
+                          data: JSON.stringify({"cartitems": [{ product_id: productId, count: value}], user_id: userId}),
+                          success: function (data) {
+                              return true;
+                          }
+                      });
+                  }else{
+                      this.get('model').save();
                   }
-              }else{
-                  this.set("model.count", 1);
               }
           },
 
@@ -46,7 +60,18 @@ define([
               if(Ember.App.AuthManager.isAuthenticated()){
                   var userId = Ember.App.AuthManager.getUserId();
 
-                  $.post("/api/RemoveCartItem", { userId: userId, productId: productId} );
+                  $.ajax({
+                      type: "POST",
+                      url: "/api/RemoveCartItem",
+                      async: true,
+                      cache: false,
+                      contentType: "application/json; charset=utf-8",
+                      dataType: 'json',
+                      data: JSON.stringify({"cartitems": [{ product_id: productId, count: 1}], user_id: Ember.App.AuthManager.getUserId()}),
+                      success: function (data) {
+                          return true;
+                      }
+                  });
               }
           }
       }

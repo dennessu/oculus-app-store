@@ -9,6 +9,16 @@ var C = require('../../config/configuration');
 
 var API = {};
 
+API._getIndexByOffers = function(offerId, offers){
+    for(var i = 0; i < offers.length; ++i){
+        var currentOfferId = offers[i].offer.id;
+        if(currentOfferId == offerId){
+            return i;
+        }
+    }
+    return -1;
+};
+
 API.Products = function(req, res){
     var dataProvider = new CatalogDataProvider(C.Catalog_API_Host, C.Catalog_API_Port);
 
@@ -121,28 +131,43 @@ API.GetCartItems = function(req, res){
 };
 
 API.MergeCartItem = function(req, res){
+
     API.CartProcess(req, res, 'merge');
 };
 API.UPdateCartItem = function(req, res){
+
     API.CartProcess(req, res, 'update');
 };
 
 API.AddCartItem = function(req, res){
+
     API.CartProcess(req, res, 'add');
 };
 API.RemoveCartItem = function(req, res){
+
     API.CartProcess(req, res, 'remove');
 };
 
-API.CartProcess = function(req, res, action){
+API.CartProcess = function(req, res, action, userId, offerItems){
 
-    var userId = req.body["userId"];
-    var offerId = req.body["productId"];
-    var quantity = req.body["count"];
+    var userId = req.body["user_id"];
+    var cartItems = req.body["cartitems"];
 
-    var offerItem = new OfferItemModel();
-    offerItem.offer.id = offerId;
-    offerItem.quantity = quantity;
+    if(userId == undefined || cartItems == undefined || userId == null || cartItems == null){
+        var resModel = new DomainModel.ResponseModel();
+        resModel.action = DomainModel.ResponseModelActionsEnum.Error;
+        res.json(resModel);
+        res.end();
+        return;
+    }
+
+    if(cartItems.length <= 0){
+        var resModel = new DomainModel.ResponseModel();
+        resModel.action = DomainModel.ResponseModelActionsEnum.Normal;
+        res.json(resModel);
+        res.end();
+        return;
+    }
 
     var dataProvider = new CartDataProvider(C.Cart_API_Host, C.Cart_API_Port);
     Async.waterfall([
@@ -167,57 +192,57 @@ API.CartProcess = function(req, res, action){
         function(data, cb){
             var cartObj = JSON.parse(data);
             var cartId = cartObj.self.id;
-            offerItem.self.id = cartId;
 
-            var isExists = false;
-            var needUpdate = false;
-            var itemIndex = -1;
+            var offerItems = new Array();
+            for(var i = 0; i < cartItems.length; ++i){
+                var offer = new OfferItemModel();
+                offer.self.id = cartId;
+                offer.offer.id = cartItems[i].product_id;
+                offer.quantity = cartItems[i].count;
 
-            for(var i = 0; i < cartObj.offers.length; ++i){
-                var item = cartObj.offers[i];
-                if(item.offer.id == offerItem.offer.id){
-                    isExists = true;
-                    itemIndex = i;
-                    break;
-                }
+                offerItems.push(offer);
             }
 
-            switch (action){
-                case "merge":
-                    if(itemIndex != -1){
-                        needUpdate = false;
-                    }else{
-                        cartObj.offers.push(offerItem);
+            var needUpdate = false;
+            for(var i = 0; i < offerItems.length; ++i){
+                var currentOffer = offerItems[i];
+                var offerIndex = API._getIndexByOffers(currentOffer.offer.id, cartObj.offers);
+
+                switch (action){
+                    case "merge":
+                        if(offerIndex == -1){
+                            cartObj.offers.push(currentOffer);
+                            needUpdate = true;
+                        }
+                        break;
+
+                    case "update":
+                        if(offerIndex == -1){
+                            cartObj.offers.push(currentOffer);
+                        }else{
+                            cartObj.offers[offerIndex].quantity = currentOffer.quantity;
+                        }
                         needUpdate = true;
-                    }
-                    break;
+                        break;
 
-                case "update":
-                    if(itemIndex != -1){
-                        cartObj.offers[itemIndex].quantity = offerItem.quantity;
-                    }else{
-                        cartObj.offers.push(offerItem);
-                    }
-                    needUpdate = true;
-                    break;
-
-                case "add":
-                    if(itemIndex != -1){
-                        cartObj.offers[itemIndex].quantity += parseInt(offerItem.quantity);
-                    }else{
-                        cartObj.offers.push(offerItem);
-                    }
-                    needUpdate = true;
-                    break;
-
-                case "remove":
-                    if(itemIndex != -1){
+                    case "add":
+                        if(offerIndex == -1){
+                            cartObj.offers.push(currentOffer);
+                        }else{
+                            cartObj.offers[offerIndex].quantity += parseInt(currentOffer.quantity);
+                        }
                         needUpdate = true;
-                        cartObj.offers.splice(itemIndex, 1);
-                    }else{
-                        needUpdate = false;
-                    }
-                    break;
+                        break;
+
+                    case "remove":
+                        if(offerIndex == -1){
+                            needUpdate = false;
+                        }else{
+                            needUpdate = true;
+                            cartObj.offers.splice(offerIndex, 1);
+                        }
+                        break;
+                }
             }
 
             if(needUpdate){

@@ -17,23 +17,30 @@ define([
           if(Ember.App.AuthManager.isAuthenticated()){
               console.log("Merge Cart");
               this.store.find("CartItem").then(function(records){
-                  var arr = new Array();
+                  var localCartItems = new Array();
 
                   records.forEach(function(item){
-                      arr[arr.length] = {
+                      localCartItems[localCartItems.length] = {
                           product_id: item.get("product_id"),
-                          count: item.get("count"),
-                          user_id: Ember.App.AuthManager.getUserId()
+                          count: item.get("count")
                       };
                   });
                   records.invoke("deleteRecord");
                   records.invoke("save");
 
-                  for(var i = 0; i<arr.length; ++i){
-                      console.log("Merge to server, Product Id: " ,arr[i].product_id);
-                      $.post("/api/MergeCart", { userId: arr[i].user_id, productId: arr[i].product_id, count: arr[i].count } );
-                  }
-              });
+                  $.ajax({
+                      type: "POST",
+                      url: "/api/MergeCart",
+                      async: false,
+                      cache: false,
+                      contentType: "application/json; charset=utf-8",
+                      dataType: 'json',
+                      data: JSON.stringify({"cartitems": localCartItems, user_id: Ember.App.AuthManager.getUserId()}),
+                      success: function (data) {
+                          return true;
+                      }
+                   });
+            });
           }
       },
         actions: {

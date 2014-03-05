@@ -49,10 +49,12 @@ define([
 
                   $.ajax({
                       type: "POST",
-                      url: "/api/addcartitem",
+                      url: "/api/AddCartItem",
                       async: false,
                       cache: false,
-                      data: { userId: userId, productId: currentId, count: defaultCount},
+                      contentType: "application/json; charset=utf-8",
+                      dataType: 'json',
+                      data: JSON.stringify({"cartitems": [{ "product_id": currentId, "count": defaultCount}], "user_id": userId}),
                       success: function (data) {
                           _self.transitionToRoute('cart');
                           return true;

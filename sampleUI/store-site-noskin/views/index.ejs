@@ -1,13 +1,59 @@
-<script type="text/x-handlebars" data-template-name="index">
-    <hr>
-    <section>
-        <hgroup><h3>Product List</h3></hgroup>
+<!DOCTYPE html>
+<html>
+  <head>
+      <meta charset="utf-8">
+      <title><%= PageModel.Title %></title>
+      <script type="text/javascript" src="/scripts/app/config/config.js"></script>
+      <script type="text/javascript" src="/scripts/libs/require/require.js" data-main="/scripts/app/app.js"></script>
+  </head>
+  <body>
+  <%include warpers/header %>
+  <div id="AppContainer"></div>
 
-        <%for(var i=0; i < Products.length; ++i){%>
-        <dl>
-            <dd>Name: {{#link-to 'product' <%= Products[i].id%>}}<%= Products[i].name%>{{/link-to}}</dd>
-            <dd>Price: $ <%= Products[i].price%></dd>
-        </dl>
-        <%}%>
-    </section>
-</script>
+  <script type="text/x-handlebars" data-template-name="index">
+      <hr>
+      <section>
+          <hgroup><h3>Product List</h3></hgroup>
+
+          <%for(var i=0; i < Products.length; ++i){%>
+          <dl>
+              <dd>Name: {{#link-to 'product' <%= Products[i].id%>}}<%= Products[i].name%>{{/link-to}}</dd>
+              <dd>Price: $ <%= Products[i].price%></dd>
+          </dl>
+          <%}%>
+      </section>
+  </script>
+
+  <script type="text/x-handlebars" data-template-name="cart">
+      <hr>
+      <section>
+          <hgroup><h2>Items in Your Cart</h2></hgroup>
+
+          {{#each itemController="CartItem"}}
+          <dl>
+              <dd>Name: {{product.name}}</dd>
+              <dd>Price: $ {{product.price}}</dd>
+              <dd>Qty: {{input class="input-text" type="number" value=count focus-out="change"}}</dd>
+              <dd>Subtotal: ${{itemSubtotal}}</dd>
+              <dd><a href="#" {{action "removeItem"}}>Remove</a></dd>
+          </dl>
+          {{/each}}
+
+      </section>
+      <hr/>
+      <section>
+          <hgroup><h3>Cart Info</h3></hgroup>
+          <p>Total: $ {{subTotal}}</p>
+      </section>
+   </script>
+
+  <script type="text/x-handlebars" data-template-name="product">
+      <hr>
+      <section>
+          <hgroup>Name: {{name}}</hgroup>
+          <p>Price: $ {{price}}</p>
+          <p><button {{action 'AddToCart'}}>Add to Cart</button></p>
+      </section>
+  </script>
+  </body>
+</html>

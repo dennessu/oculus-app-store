@@ -12,13 +12,13 @@ define([
     }),
 
     CartView: Ember.View.extend({
-      template: setting.GetView("/Cart", "cart"),
+      templateName: "cart",
         didInsertElement: function(){
         }
     }),
 
     ProductView: Ember.View.extend({
-      template: setting.GetView("/Product", "product"),
+      templateName: "product",
         didInsertElement: function(){
 
         }

@@ -30,7 +30,7 @@ RestClient.prototype.Request = function(options, data, cb){
 
   // Fill options
   var requestOpts = RestClient.GetDefaultOptions();
-  requestOpts = Utils.MoreFilling(requestOpts, options);
+  requestOpts = utils.MoreFilling(requestOpts, options);
 
   // Handle data type
   if(data != null
