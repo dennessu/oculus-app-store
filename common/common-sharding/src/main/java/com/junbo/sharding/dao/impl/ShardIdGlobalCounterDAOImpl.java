@@ -10,7 +10,9 @@ import com.junbo.sharding.model.ShardIdGlobalCounterEntity;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
@@ -19,8 +21,10 @@ import java.util.List;
  * Created by liangfu on 3/5/14.
  */
 @Component
+@Transactional("shardingTransactionManager")
 public class ShardIdGlobalCounterDAOImpl implements ShardIdGlobalCounterDAO {
     @Autowired
+    @Qualifier("shardingSessionFactory")
     private SessionFactory sessionFactory;
 
     private Session currentSession() {

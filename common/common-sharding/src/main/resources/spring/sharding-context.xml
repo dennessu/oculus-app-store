@@ -21,7 +21,7 @@
 
     <!-- SessonFactory for Hibernate -->
     <bean id="shardingSessionFactory"
-          class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+          class="org.springframework.orm.hibernate4.LocalSessionFactoryBean" lazy-init="false">
         <property name="dataSource" ref="shardingDataSource"/>
         <property name="packagesToScan" value="com.junbo.sharding.*" />
         <property name="hibernateProperties">

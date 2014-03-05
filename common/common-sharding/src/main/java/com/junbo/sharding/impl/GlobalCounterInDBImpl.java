@@ -25,6 +25,7 @@ public class GlobalCounterInDBImpl implements GlobalCounter {
 
         if(entity == null) {
             entity = new ShardIdGlobalCounterEntity();
+            entity.setOptionMode((long)optionMode);
             entity.setShardId((long)shardId);
             entity.setGlobalCounter(0L);
         }

@@ -6,17 +6,19 @@
 
 package com.junbo.sharding.model;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import org.hibernate.annotations.GenericGenerator;
+
+import javax.persistence.*;
 
 /**
  * Created by liangfu on 3/5/14.
  */
+@Entity
+@Table(name = "shard_id_global_counter")
 public class ShardIdGlobalCounterEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GenericGenerator(name="gen",strategy="increment")
+    @GeneratedValue(generator="gen")
     @Column(name = "id")
     private Long id;
 

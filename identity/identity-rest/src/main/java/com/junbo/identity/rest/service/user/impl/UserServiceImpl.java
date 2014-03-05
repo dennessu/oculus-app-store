@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Component
-@Transactional
+@Transactional("transactionManager")
 class UserServiceImpl implements UserService {
     @Autowired
     private UserDAO userDAO;
