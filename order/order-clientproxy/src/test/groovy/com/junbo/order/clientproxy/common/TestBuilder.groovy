@@ -1,7 +1,7 @@
 package com.junbo.order.clientproxy.common
 
 import com.junbo.billing.spec.model.Balance
-import com.junbo.billing.spec.model.BalanceType
+import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.common.id.OrderId
 import com.junbo.common.id.PaymentInstrumentId
 import com.junbo.common.id.UserId

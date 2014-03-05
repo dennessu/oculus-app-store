@@ -1,7 +1,7 @@
 package com.junbo.order.core.impl.order
 
 import com.junbo.billing.spec.model.Balance
-import com.junbo.billing.spec.model.BalanceType
+import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.model.ShippingAddress
 import com.junbo.common.id.PaymentInstrumentId
 import com.junbo.langur.core.promise.Promise
@@ -60,7 +60,7 @@ class OrderServiceImpl implements OrderService {
     Promise<List<Order>> settleQuote(Order order, ApiContext context) {
         expandOrder(order).syncThen { OrderServiceContext orderServiceContext ->
             return flowSelector.select(
-                    orderServiceContext, OrderServiceOperation.CREATE)?.execute(orderServiceContext)
+                    orderServiceContext, OrderServiceOperation.UPDATE_TENTATIVE)?.execute(orderServiceContext)
         }
     }
 

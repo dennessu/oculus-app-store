@@ -1,7 +1,7 @@
 package com.junbo.order.core.impl.orderaction
 
 import com.junbo.billing.spec.model.Balance
-import com.junbo.billing.spec.model.BalanceType
+import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.core.OrderAction
 import com.junbo.order.core.impl.common.CoreBuilder

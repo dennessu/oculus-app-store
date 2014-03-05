@@ -12,6 +12,8 @@ package com.junbo.order.core;
 public enum OrderServiceOperation {
     CREATE,
     GET,
+    UPDATE_TENTATIVE,
     UPDATE,
-    DELETE
+    CANCEL,
+    ADJUST
 }

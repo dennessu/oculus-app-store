@@ -2,7 +2,7 @@ package com.junbo.order.core.impl.common
 
 import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.BalanceItem
-import com.junbo.billing.spec.model.BalanceType
+import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.model.DiscountItem
 import com.junbo.common.id.OrderId
 import com.junbo.order.core.impl.order.OrderServiceContext
