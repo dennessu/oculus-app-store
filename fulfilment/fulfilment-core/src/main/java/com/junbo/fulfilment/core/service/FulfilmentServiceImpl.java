@@ -101,7 +101,7 @@ public class FulfilmentServiceImpl extends TransactionSupport implements Fulfilm
 
     public void distill(FulfilmentRequest request) {
         for (FulfilmentItem item : request.getItems()) {
-            Offer offer = catalogGateway.getOffer(item.getOfferId(), item.getOfferRevision());
+            Offer offer = catalogGateway.getOffer(item.getOfferId(), item.getTimestamp());
             distill(offer, item.getQuantity(), item);
         }
     }

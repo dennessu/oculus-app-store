@@ -27,7 +27,7 @@ public class MockCatalogGatewayImpl extends CatalogGatewayImpl {
     }
 
     @Override
-    protected Offer retrieve(Long offerId, Integer offerRevision) {
+    protected Offer retrieve(Long offerId, Long timestamp) {
         Offer mockOffer = mockOffers.get(offerId);
         if (mockOffer == null) {
             throw new RuntimeException("offer [" + offerId + "] not prepared in mock");
