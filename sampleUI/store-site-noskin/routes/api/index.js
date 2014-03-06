@@ -212,8 +212,10 @@ API.CartProcess = function(req, res, action, userId, offerItems){
                     case "merge":
                         if(offerIndex == -1){
                             cartObj.offers.push(currentOffer);
-                            needUpdate = true;
+                        }else{
+                            cartObj.offers(offerIndex).quantity == currentOffer.quantity;
                         }
+                        needUpdate = true;
                         break;
 
                     case "update":
