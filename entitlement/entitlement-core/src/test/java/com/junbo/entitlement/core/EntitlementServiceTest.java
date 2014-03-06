@@ -163,9 +163,9 @@ public class EntitlementServiceTest extends AbstractTransactionalTestNGSpringCon
         entitlement = entitlementService.addEntitlement(entitlement);
         EntitlementDefinition entitlementDefinition = entitlementDefinitionService.getEntitlementDefinition(entitlement.getEntitlementDefinitionId());
         entitlementDefinition.setGroup("ANOTHER_GROUP");
-        try{
+        try {
             entitlementDefinitionService.updateEntitlementDefinition(entitlementDefinition.getEntitlementDefinitionId(), entitlementDefinition);
-        } catch (Exception e){
+        } catch (Exception e) {
             Assert.assertEquals(e.getClass(), AppErrorException.class);
         }
 

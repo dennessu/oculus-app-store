@@ -33,22 +33,17 @@ public class EntitlementRepository {
     @Qualifier("entitlementDao")
     private EntitlementDao entitlementDao;
     @Autowired
-    @Qualifier("entitlementRedisDao")
-    private EntitlementDao entitlementRedisDao;
-    @Autowired
     private EntitlementHistoryDao entitlementHistoryDao;
     @Autowired
     private EntitlementMapper entitlementMapper;
 
     public Entitlement get(Long entitlementId) {
-//        return entitlementMapper.toEntitlement(entitlementRedisDao.get(entitlementId));
         return entitlementMapper.toEntitlement(entitlementDao.get(entitlementId));
     }
 
     public Entitlement insert(Entitlement entitlement) {
         Long id = entitlementDao.insert(entitlementMapper.toEntitlementEntity(entitlement));
         EntitlementEntity result = entitlementDao.get(id);
-//        entitlementRedisDao.insert(result);
         entitlementHistoryDao.insert(new EntitlementHistoryEntity(CREATE, result));
         return entitlementMapper.toEntitlement(result);
     }
@@ -80,21 +75,17 @@ public class EntitlementRepository {
         entitlementEntity.setUseCount(0);
         entitlementHistoryDao.insert(new EntitlementHistoryEntity(DELETE, entitlementEntity));
         entitlementDao.update(entitlementEntity);
-//        entitlementRedisDao.update(entitlementEntity);
     }
 
     public Entitlement getByTrackingUuid(UUID trackingUuid) {
-//        return entitlementMapper.toEntitlement(entitlementRedisDao.getByTrackingUuid(trackingUuid));
         return entitlementMapper.toEntitlement(entitlementDao.getByTrackingUuid(trackingUuid));
     }
 
     public Entitlement getExistingManagedEntitlement(Long userId, Long definitionId) {
-//        return entitlementMapper.toEntitlement(entitlementRedisDao.getExistingManagedEntitlement(
-//          userId, definitionId));
         return entitlementMapper.toEntitlement(entitlementDao.getExistingManagedEntitlement(userId, definitionId));
     }
 
-    public Boolean existWithEntitlementDefinition(Long definitionId){
+    public Boolean existWithEntitlementDefinition(Long definitionId) {
         return entitlementDao.existEntitlementDefinition(definitionId);
     }
 }
