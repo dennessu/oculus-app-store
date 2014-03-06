@@ -17,11 +17,11 @@ import java.util.UUID;
  * Interface of Entitlement Dao.
  */
 public interface EntitlementDao {
-    Long insert(EntitlementEntity entitlement);
+    EntitlementEntity insert(EntitlementEntity entitlement);
 
     EntitlementEntity get(Long entitlementId);
 
-    Long update(EntitlementEntity entitlement);
+    EntitlementEntity update(EntitlementEntity entitlement);
 
     List<EntitlementEntity> getBySearchParam(EntitlementSearchParam entitlementSearchParam,
                                              PageMetadata pageMetadata);

@@ -43,7 +43,7 @@ public class EntitlementDaoImpl extends BaseDao<EntitlementEntity> implements En
                                 StringBuilder queryStringBuilder,
                                 Map<String, Object> params) {
         if (entitlementSearchParam.getStatus() != null) {
-            Date now = EntitlementContext.now();
+            Date now = EntitlementContext.current().getNow();
             EntitlementStatus status = EntitlementStatus.valueOf(entitlementSearchParam.getStatus());
             if (EntitlementStatus.LIFECYCLE_NOT_MANAGED_STATUS.contains(status)) {
                 queryStringBuilder.append(" and status = (:status)");
