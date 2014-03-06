@@ -92,4 +92,8 @@ public interface AppClientExceptions {
             description = "only accept format: yyyy-MM or yyyy-MM-dd", field = "expire_date")
     AppError invalidExpireDateFormat(String date);
 
+    @ErrorDef(httpStatusCode = 400, code = "40020",
+            description = "the payment id {0} is invalid", field = "payment_id")
+    AppError invalidPaymentId(String paymentId);
+
 }
