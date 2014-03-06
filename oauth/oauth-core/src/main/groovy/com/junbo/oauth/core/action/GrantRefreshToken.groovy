@@ -37,14 +37,14 @@ class GrantRefreshToken implements Action {
 
         def parameterMap = contextWrapper.parameterMap
         def accessToken = contextWrapper.accessToken
-        def appClient = contextWrapper.appClient
+        def client = contextWrapper.client
 
         Assert.notNull(accessToken, 'accessToken is null')
-        Assert.notNull(appClient, 'appClient is null')
+        Assert.notNull(client, 'client is null')
 
         if (accessToken.scopes.contains(OAuthInfoUtil.OFFLINE_SCOPE)) {
             String salt = parameterMap.getFirst(OAuthParameters.SALT)
-            RefreshToken refreshToken = tokenGenerationService.generateRefreshToken(appClient, accessToken, salt)
+            RefreshToken refreshToken = tokenGenerationService.generateRefreshToken(client, accessToken, salt)
 
             contextWrapper.refreshToken = refreshToken
         }

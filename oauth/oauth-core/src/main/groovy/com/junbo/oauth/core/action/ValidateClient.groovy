@@ -11,24 +11,24 @@ import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.exception.AppExceptions
-import com.junbo.oauth.db.repo.AppClientRepository
-import com.junbo.oauth.spec.model.AppClient
+import com.junbo.oauth.db.repo.ClientRepository
+import com.junbo.oauth.spec.model.Client
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.StringUtils
 
 /**
- * GetAppClient
+ * ValidateClient
  */
 @CompileStatic
-class GetAppClient implements Action {
+class ValidateClient implements Action {
 
-    private AppClientRepository appClientRepository
+    private ClientRepository clientRepository
 
     @Required
-    void setAppClientRepository(AppClientRepository appClientRepository) {
-        this.appClientRepository = appClientRepository
+    void setClientRepository(ClientRepository clientRepository) {
+        this.clientRepository = clientRepository
     }
 
     @Override
@@ -41,9 +41,9 @@ class GetAppClient implements Action {
             throw AppExceptions.INSTANCE.missingClientId().exception()
         }
 
-        AppClient appClient = appClientRepository.getAppClient(clientId)
+        Client client = clientRepository.getClient(clientId)
 
-        contextWrapper.appClient = appClient
+        contextWrapper.client = client
 
         return Promise.pure(null)
     }

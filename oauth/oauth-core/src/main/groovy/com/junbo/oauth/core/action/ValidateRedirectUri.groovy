@@ -26,19 +26,19 @@ class ValidateRedirectUri implements Action {
         def contextWrapper = new ActionContextWrapper(context)
 
         def parameterMap = contextWrapper.parameterMap
-        def appClient = contextWrapper.appClient
+        def client = contextWrapper.client
 
         String redirectUri = parameterMap.getFirst(OAuthParameters.REDIRECT_URI)
 
         if (redirectUri == null) {
-            redirectUri = appClient.defaultRedirectUri
+            redirectUri = client.defaultRedirectUri
         }
 
         if (redirectUri == null) {
             throw AppExceptions.INSTANCE.invalidRedirectUri(redirectUri).exception()
         }
 
-        boolean allowed = appClient.allowedRedirectUris.any {
+        boolean allowed = client.allowedRedirectUris.any {
             String allowedRedirectUri -> match(redirectUri, allowedRedirectUri)
         }
 

@@ -36,7 +36,7 @@ class GrantIdToken implements Action {
         def contextWrapper = new ActionContextWrapper(context)
 
         def oauthInfo = contextWrapper.oauthInfo
-        def appClient = contextWrapper.appClient
+        def client = contextWrapper.client
         def authorizationCode = contextWrapper.authorizationCode
         def accessToken = contextWrapper.accessToken
         def loginState = contextWrapper.loginState
@@ -57,7 +57,7 @@ class GrantIdToken implements Action {
             lastAuthDate = loginState.lastAuthDate
         }
 
-        IdToken idToken = tokenGenerationService.generateIdToken(appClient, appClient.idTokenIssuer,
+        IdToken idToken = tokenGenerationService.generateIdToken(client, client.idTokenIssuer,
                 loginState.userId, nonce, lastAuthDate, authorizationCode, accessToken)
 
         contextWrapper.idToken = idToken

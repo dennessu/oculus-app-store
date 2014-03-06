@@ -39,9 +39,9 @@ class LoadIdTokenHint implements Action {
         def contextWrapper = new ActionContextWrapper(context)
 
         def parameterMap = contextWrapper.parameterMap
-        def appClient = contextWrapper.appClient
+        def client = contextWrapper.client
 
-        Assert.notNull(appClient, 'appClient is null')
+        Assert.notNull(client, 'client is null')
 
         String nonce = parameterMap.getFirst(OAuthParameters.NONCE)
 
@@ -56,16 +56,16 @@ class LoadIdTokenHint implements Action {
             return Promise.pure(null)
         }
 
-        IdToken idToken = tokenGenerationService.parseIdToken(appClient, idTokenHint)
+        IdToken idToken = tokenGenerationService.parseIdToken(client, idTokenHint)
 
-        String issuer = appClient.idTokenIssuer
+        String issuer = client.idTokenIssuer
 
         if (issuer != idToken.iss) {
             throw AppExceptions.INSTANCE.invalidIdTokenIssuer().exception()
         }
 
-        if (!idToken.aud.contains(appClient.clientId)) {
-            throw AppExceptions.INSTANCE.invalidIdTokenAudience(appClient.clientId).exception()
+        if (!idToken.aud.contains(client.clientId)) {
+            throw AppExceptions.INSTANCE.invalidIdTokenAudience(client.clientId).exception()
         }
 
         if (idToken.exp < System.currentTimeMillis() / MILLISECONDS_PER_SECOND) {

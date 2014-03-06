@@ -47,7 +47,7 @@
         <property name="namespace" value="${oauth.db.rememberMeTokenPostfix}:"/>
     </bean>
 
-    <!--<bean id="appClientDAO" class="com.junbo.oauth.db.dao.redis.RedisAppClientDAOImpl" parent="baseDAO">-->
+    <!--<bean id="appClientDAO" class="com.junbo.oauth.db.dao.redis.RedisClientDAOImplarent="baseDAO">-->
     <!--<property name="namespace" value="${oauth.db.redis.appclient.namespace}:"/>-->
     <!--</bean>-->
 
@@ -59,11 +59,7 @@
         <property name="namespace" value="${oauth.db.loginStatePostfix}:"/>
     </bean>
 
-    <!--<bean id="appClientRepository" class="com.junbo.oauth.db.repo.impl.AppClientRepositoryImpl">-->
-    <!--<property name="appClientDAO" ref="appClientDAO"/>-->
-    <!--</bean>-->
-
-    <bean id="appClientRepository" class="com.junbo.oauth.db.repo.impl.HackAppClientRepo"/>
+    <bean id="clientRepository" class="com.junbo.oauth.db.repo.impl.HackClientRepo"/>
 
     <bean id="flowStateRepository" class="com.junbo.oauth.db.repo.impl.FlowStateRepositoryImpl">
         <property name="flowStateDAO" ref="flowStateDAO"/>
