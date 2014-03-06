@@ -10,13 +10,13 @@ import com.junbo.catalog.core.ItemService;
 import com.junbo.catalog.spec.model.common.EntitiesGetOptions;
 import com.junbo.catalog.spec.model.common.EntityGetOptions;
 import com.junbo.catalog.spec.model.common.ResultList;
-import com.junbo.catalog.spec.model.common.Status;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.resource.ItemResource;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
+import javax.validation.Valid;
+import javax.ws.rs.BeanParam;
 import java.util.List;
 
 /**
@@ -28,16 +28,7 @@ public class ItemResourceImpl implements ItemResource {
 
     @Override
     public Promise<ResultList<Item>> getItems(EntitiesGetOptions options) {
-        List<Item> items;
-        if (options.getEntityIds() != null && options.getEntityIds().size() > 0) {
-            items = new ArrayList<>();
-            for (Long itemId : options.getEntityIds()) {
-                items.add(itemService.getItem(itemId, EntityGetOptions.getDefault()));
-            }
-        } else {
-            options.ensurePagingValid();
-            items = itemService.getItems(options.getStart(), options.getSize());
-        }
+        List<Item> items = itemService.getItems(options);
         ResultList<Item> resultList = new ResultList<>();
         resultList.setResults(items);
         resultList.setHref("href TODO");
@@ -46,28 +37,42 @@ public class ItemResourceImpl implements ItemResource {
     }
 
     @Override
-    public Promise<Item> getItem(Long itemId, EntityGetOptions options) {
+    public Promise<Item> getItem(Long itemId, @BeanParam EntityGetOptions options) {
         return Promise.pure(itemService.getItem(itemId, options));
     }
 
     @Override
-    public Promise<Item> createItem(Item item) {
+    public Promise<Item> createItem(@Valid Item item) {
         return Promise.pure(itemService.createItem(item));
     }
 
     @Override
-    public Promise<Item> createReview(Long itemId) {
-        Item item = itemService.getItem(itemId, EntityGetOptions.getDefault());
-        item.setStatus(Status.PENDING_REVIEW);
-        // save the updated item
-        return Promise.pure(item);
+    public Promise<Item> updateItem(@Valid Item item) {
+        return Promise.pure(itemService.updateItem(item));
     }
 
     @Override
-    public Promise<Item> publishItem(Long itemId) {
-        Item item = itemService.getItem(itemId, EntityGetOptions.getDefault());
-        item.setStatus(Status.RELEASED);
-        // save the updated item
-        return Promise.pure(item);
+    public Promise<Item> createReview(Long itemId) {
+        return Promise.pure(itemService.reviewItem(itemId));
+    }
+
+    @Override
+    public Promise<Item> releaseItem(Long itemId) {
+        return Promise.pure(itemService.releaseItem(itemId));
+    }
+
+    @Override
+    public Promise<Item> rejectItem(Long itemId) {
+        return Promise.pure(itemService.rejectItem(itemId));
+    }
+
+    @Override
+    public Promise<Long> removeItem(Long itemId) {
+        return Promise.pure(itemService.removeItem(itemId));
+    }
+
+    @Override
+    public Promise<Long> deleteItem(Long itemId) {
+        return Promise.pure(itemService.deleteItem(itemId));
     }
 }

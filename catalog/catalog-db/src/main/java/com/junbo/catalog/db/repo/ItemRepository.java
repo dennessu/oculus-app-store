@@ -24,8 +24,8 @@ public class ItemRepository {
         return itemDao.create(entity);
     }
 
-    public Item get(Long id, Integer revision) {
-        ItemEntity entity = itemDao.getItem(id, revision);
+    public Item get(Long id, Long timestamp) {
+        ItemEntity entity = itemDao.getItem(id, timestamp);
         return ItemConverter.toModel(entity);
     }
 }

@@ -29,17 +29,4 @@ public class OfferRepository {
         OfferEntity entity = offerDao.getOffer(offerId, timestamp);
         return OfferConverter.toModel(entity);
     }
-
-  /*  public Long update(Offer offer) {
-        OfferEntity entity = offerDao.get(offer.getId());
-        // TODO: validations
-        entity.setName(offer.getName());
-        entity.setRevision(offer.getRevision());
-        entity.setStatus(offer.getStatus());
-        entity.setOwnerId(offer.getOwnerId());
-        entity.setPayload(Utils.toJson(offer));
-
-        return offerDao.update(entity);
-    }*/
-
 }

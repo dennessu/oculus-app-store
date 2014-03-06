@@ -23,7 +23,7 @@ public interface OfferService {
     Offer createOffer(Offer offer);
     Offer updateOffer(Offer offer);
     Offer reviewOffer(Long offerId);
-    Offer publishOffer(Long offerId);
+    Offer releaseOffer(Long offerId);
     Offer rejectOffer(Long offerId);
     Long removeOffer(Long offerId);
     Long deleteOffer(Long offerId);
