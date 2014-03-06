@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * Java doc.
+ * ResourceIdDeserializer.
  */
 public class ResourceIdDeserializer extends JsonDeserializer<Object> implements ResourceCollectionAware {
     private static final String ID_FIELD = "id";
@@ -23,10 +23,10 @@ public class ResourceIdDeserializer extends JsonDeserializer<Object> implements 
     // thread safe
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
-    private Class<?> collectionType;
+    private Class<? extends Collection> collectionType;
 
     @Override
-    public void injectCollectionType(Class<?> collectionType) {
+    public void injectCollectionType(Class<? extends Collection> collectionType) {
         this.collectionType = collectionType;
     }
 
@@ -48,13 +48,12 @@ public class ResourceIdDeserializer extends JsonDeserializer<Object> implements 
     }
 
     private Object handleCollection(JsonParser jsonParser) throws IOException {
-        Iterator mappingIterator = (Iterator) MAPPER.readValues(jsonParser, collectionType);
         Collection<Long> results = createEmptyCollection(collectionType);
+        Collection<ResourceRef> references = MAPPER.readValue(jsonParser,
+                MAPPER.getTypeFactory().constructCollectionType(collectionType, ResourceRef.class));
 
-        // hack however works, maybe can be improved in the future >_<
-        Iterator it = ((Iterable) mappingIterator.next()).iterator();
-        while (it.hasNext()) {
-            results.add(Long.valueOf(((Map) it.next()).get(ID_FIELD).toString()));
+        for (ResourceRef ref : references) {
+            results.add(Long.valueOf(ref.getId()));
         }
 
         return results;
