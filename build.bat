@@ -141,7 +141,7 @@ if %errorlevel% == 1 (
 popd
 
 pushd "bootstrap"
-call gradle %gradle_arg%
+call gradle %gradle_arg% -x test
 if %errorlevel% == 1 (
 	popd
 	goto END
