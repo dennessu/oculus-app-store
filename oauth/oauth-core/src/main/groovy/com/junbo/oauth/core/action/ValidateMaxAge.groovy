@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.oauth.core.action.webflow
+package com.junbo.oauth.core.action
 
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
@@ -11,43 +11,36 @@ import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.exception.AppExceptions
-import com.junbo.oauth.spec.model.Display
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.StringUtils
 
 /**
- * ValidateDisplay.
+ * ValidateMaxAge.
  */
 @CompileStatic
-class ValidateDisplay implements Action {
-
-    private Display defaultDisplay
-
-    @Required
-    void setDefaultDisplay(Display defaultDisplay) {
-        this.defaultDisplay = defaultDisplay
-    }
-
+class ValidateMaxAge implements Action {
     @Override
     Promise<ActionResult> execute(ActionContext context) {
         def contextWrapper = new ActionContextWrapper(context)
+
         def parameterMap = contextWrapper.parameterMap
 
-        String displayParam = parameterMap.getFirst(OAuthParameters.DISPLAY)
+        String maxAgeStr = parameterMap.getFirst(OAuthParameters.MAX_AGE)
 
-        Display display = defaultDisplay
-        if (StringUtils.hasText(displayParam)) {
-            if (!Display.isValid(displayParam)) {
-                throw AppExceptions.INSTANCE.invalidDisplay(displayParam).exception()
-            }
+        if (!StringUtils.hasText(maxAgeStr)) {
+            return Promise.pure(null)
+        }
 
-            display = Display.valueOf(displayParam.toUpperCase())
+        Long maxAge = Long.MAX_VALUE
+        try {
+            maxAge = Long.parseLong(maxAgeStr)
+        } catch (NumberFormatException e) {
+            throw AppExceptions.INSTANCE.invalidMaxAge(maxAgeStr).exception()
         }
 
         def oauthInfo = contextWrapper.oauthInfo
-        oauthInfo.display = display
+        oauthInfo.maxAge = maxAge
 
         return Promise.pure(null)
     }

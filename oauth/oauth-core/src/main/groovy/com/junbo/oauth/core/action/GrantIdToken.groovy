@@ -3,24 +3,26 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.oauth.core.action.webflow
+package com.junbo.oauth.core.action
 
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
+import com.junbo.oauth.core.exception.AppExceptions
 import com.junbo.oauth.core.service.TokenGenerationService
-import com.junbo.oauth.spec.model.AccessToken
+import com.junbo.oauth.core.util.OAuthInfoUtil
+import com.junbo.oauth.spec.model.IdToken
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
-import org.springframework.util.Assert
+import org.springframework.util.StringUtils
 
 /**
- * GrantTokenByPassword.
+ * GrantIdToken.
  */
 @CompileStatic
-class GrantTokenByPassword implements Action {
+class GrantIdToken implements Action {
 
     private TokenGenerationService tokenGenerationService
 
@@ -35,16 +37,30 @@ class GrantTokenByPassword implements Action {
 
         def oauthInfo = contextWrapper.oauthInfo
         def appClient = contextWrapper.appClient
+        def authorizationCode = contextWrapper.authorizationCode
+        def accessToken = contextWrapper.accessToken
         def loginState = contextWrapper.loginState
 
-        Assert.notNull(oauthInfo, 'oauthInfo is null')
-        Assert.notNull(appClient, 'appClient is null')
-        Assert.notNull(loginState, 'loginState is null')
+        if (!OAuthInfoUtil.isIdTokenNeeded(oauthInfo)) {
+            return Promise.pure(null)
+        }
 
-        AccessToken accessToken = tokenGenerationService.generateAccessToken(appClient,
-                loginState.userId, oauthInfo.scopes)
+        String nonce = oauthInfo.nonce
 
-        contextWrapper.accessToken = accessToken
+        if (!StringUtils.hasText(nonce)) {
+            throw AppExceptions.INSTANCE.missingNonce().exception()
+        }
+
+        Date lastAuthDate = null
+
+        if (oauthInfo.maxAge != null) {
+            lastAuthDate = loginState.lastAuthDate
+        }
+
+        IdToken idToken = tokenGenerationService.generateIdToken(appClient, appClient.idTokenIssuer,
+                loginState.userId, nonce, lastAuthDate, authorizationCode, accessToken)
+
+        contextWrapper.idToken = idToken
 
         return Promise.pure(null)
     }

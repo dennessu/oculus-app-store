@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.oauth.core.action.webflow
+package com.junbo.oauth.core.action
 
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
@@ -11,43 +11,43 @@ import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.exception.AppExceptions
-import com.junbo.oauth.spec.model.Prompt
+import com.junbo.oauth.spec.model.Display
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
+import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.StringUtils
 
 /**
- * ValidatePrompt.
+ * ValidateDisplay.
  */
 @CompileStatic
-class ValidatePrompt implements Action {
+class ValidateDisplay implements Action {
+
+    private Display defaultDisplay
+
+    @Required
+    void setDefaultDisplay(Display defaultDisplay) {
+        this.defaultDisplay = defaultDisplay
+    }
+
     @Override
     Promise<ActionResult> execute(ActionContext context) {
         def contextWrapper = new ActionContextWrapper(context)
-
         def parameterMap = contextWrapper.parameterMap
 
-        String prompt = parameterMap.getFirst(OAuthParameters.PROMPT)
+        String displayParam = parameterMap.getFirst(OAuthParameters.DISPLAY)
 
-        Set<String> promptSet = []
-
-        if (StringUtils.hasText(prompt)) {
-            String[] prompts = prompt.split(' ')
-            boolean isValid = prompts.every {
-                String promptToken -> Prompt.isValid(promptToken)
+        Display display = defaultDisplay
+        if (StringUtils.hasText(displayParam)) {
+            if (!Display.isValid(displayParam)) {
+                throw AppExceptions.INSTANCE.invalidDisplay(displayParam).exception()
             }
 
-            if (!isValid) {
-                throw AppExceptions.INSTANCE.invalidPrompt(prompt).exception()
-            }
-
-            promptSet.addAll(prompts)
+            display = Display.valueOf(displayParam.toUpperCase())
         }
 
         def oauthInfo = contextWrapper.oauthInfo
-        oauthInfo.setPrompts(promptSet.collect {
-            String promptStr -> Prompt.valueOf(prompt.toUpperCase())
-        }.toSet())
+        oauthInfo.display = display
 
         return Promise.pure(null)
     }
