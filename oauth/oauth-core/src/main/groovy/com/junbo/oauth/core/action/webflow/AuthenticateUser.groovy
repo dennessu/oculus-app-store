@@ -79,10 +79,10 @@ class AuthenticateUser implements Action {
 
                 contextWrapper.redirectUriBuilder = builder
 
-                return Promise.pure(new ActionResult('loginSuccess'))
+                return Promise.pure(new ActionResult('success'))
             }
 
-            return Promise.pure(null)
+            return Promise.pure(new ActionResult('success'))
         }
     }
 }
