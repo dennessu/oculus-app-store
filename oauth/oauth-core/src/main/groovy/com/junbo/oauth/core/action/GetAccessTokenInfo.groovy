@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.oauth.core.action.webflow
+package com.junbo.oauth.core.action
 
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action

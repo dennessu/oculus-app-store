@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.oauth.core.action.webflow
+package com.junbo.oauth.core.action
 
 import com.junbo.identity.spec.model.user.User
 import com.junbo.identity.spec.resource.UserResource

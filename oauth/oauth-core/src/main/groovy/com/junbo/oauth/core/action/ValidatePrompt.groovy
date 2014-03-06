@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.oauth.core.action.webflow
+package com.junbo.oauth.core.action
 
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
@@ -11,36 +11,43 @@ import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.exception.AppExceptions
+import com.junbo.oauth.spec.model.Prompt
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
 import org.springframework.util.StringUtils
 
 /**
- * ValidateMaxAge.
+ * ValidatePrompt.
  */
 @CompileStatic
-class ValidateMaxAge implements Action {
+class ValidatePrompt implements Action {
     @Override
     Promise<ActionResult> execute(ActionContext context) {
         def contextWrapper = new ActionContextWrapper(context)
 
         def parameterMap = contextWrapper.parameterMap
 
-        String maxAgeStr = parameterMap.getFirst(OAuthParameters.MAX_AGE)
+        String prompt = parameterMap.getFirst(OAuthParameters.PROMPT)
 
-        if (!StringUtils.hasText(maxAgeStr)) {
-            return Promise.pure(null)
-        }
+        Set<String> promptSet = []
 
-        Long maxAge = Long.MAX_VALUE
-        try {
-            maxAge = Long.parseLong(maxAgeStr)
-        } catch (NumberFormatException e) {
-            throw AppExceptions.INSTANCE.invalidMaxAge(maxAgeStr).exception()
+        if (StringUtils.hasText(prompt)) {
+            String[] prompts = prompt.split(' ')
+            boolean isValid = prompts.every {
+                String promptToken -> Prompt.isValid(promptToken)
+            }
+
+            if (!isValid) {
+                throw AppExceptions.INSTANCE.invalidPrompt(prompt).exception()
+            }
+
+            promptSet.addAll(prompts)
         }
 
         def oauthInfo = contextWrapper.oauthInfo
-        oauthInfo.maxAge = maxAge
+        oauthInfo.setPrompts(promptSet.collect {
+            String promptStr -> Prompt.valueOf(prompt.toUpperCase())
+        }.toSet())
 
         return Promise.pure(null)
     }
