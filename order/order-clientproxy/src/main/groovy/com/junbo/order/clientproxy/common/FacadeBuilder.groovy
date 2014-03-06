@@ -36,7 +36,7 @@ class FacadeBuilder {
         return item
     }
 
-    static OrderRatingRequest buildOrderRatingRequest(Order order, String shipToCountry) {
+    static OrderRatingRequest buildOrderRatingRequest(Order order) {
         OrderRatingRequest request = new OrderRatingRequest()
         request.country = order.country
         List<String> coupons = []
@@ -48,7 +48,7 @@ class FacadeBuilder {
         request.couponCodes = ((String[])coupons?.toArray()) as Set
         request.currency = order.currency
         request.userId = order.user?.value
-        request.country = shipToCountry
+        request.country = order.country
         request.shippingMethodId = order.shippingMethodId
         List<OrderRatingItem> ratingItems = []
         order.orderItems?.each { OrderItem item ->

@@ -5,10 +5,8 @@
  */
 
 package com.junbo.order.core.impl.order
-
 import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.model.Balance
-import com.junbo.billing.spec.model.ShippingAddress
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.executor.FlowExecutor
@@ -30,7 +28,6 @@ import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.util.CollectionUtils
-
 /**
  * Created by chriszhu on 2/7/14.
  */
@@ -61,7 +58,6 @@ class OrderServiceImpl implements OrderService {
     @Override
     Promise<List<Order>> createOrders(Order order, ApiContext context) {
         // TODO: split orders
-        // TODO: expand external resources
         flowSelector.select(orderServiceContext, OrderServiceOperation.CREATE).syncThen { FlowType flowType ->
             executeFlow(flowType, orderServiceContext, null)
         }
@@ -89,32 +85,30 @@ class OrderServiceImpl implements OrderService {
             throw AppErrors.INSTANCE.fieldInvalid('tentative', 'tentative should be true').exception()
         }
 
-        // Expand the passed in ids
-        orderServiceContext.shippingAddress.syncThen { ShippingAddress sa ->
-            // Call rating to get the price and discount
-            ratingFacade.rateOrder(
-                order, sa?.country).syncThen { OrderRatingRequest request ->
-                    CoreBuilder.fillRatingInfo(order, request)
-                    // TODO append returned promotions to order
-            }
-
-            // Create order event for this operation
-            OrderEvent orderEvent = new OrderEvent()
-            orderEvent.status = EventStatus.COMPLETED.toString()
-            orderEvent.action = OrderActionType.RATE.toString()
-
-            // Persist order
-            orderRepository.createOrder(order, orderEvent)
-
-            // Calculate Tax
-            def balanceRequest = CoreBuilder.buildBalance(orderServiceContext, BalanceType.DEBIT)
-            billingFacade.quoteBalance(balanceRequest).syncThen { Balance balance ->
-                order.isTaxInclusive = balance.taxIncluded
-                order.totalTax = balance.taxAmount
-                // TODO append item level tax
-            }
-            orders.add(order)
+        // Call rating to get the price and discount
+        ratingFacade.rateOrder(
+            order).syncThen { OrderRatingRequest request ->
+                CoreBuilder.fillRatingInfo(order, request)
+                // TODO append returned promotions to order
         }
+
+        // Create order event for this operation
+        OrderEvent orderEvent = new OrderEvent()
+        orderEvent.status = EventStatus.COMPLETED.toString()
+        orderEvent.action = OrderActionType.RATE.toString()
+
+        // Persist order
+        orderRepository.createOrder(order, orderEvent)
+
+        // Calculate Tax
+        def balanceRequest = CoreBuilder.buildBalance(orderServiceContext, BalanceType.DEBIT)
+        billingFacade.quoteBalance(balanceRequest).syncThen { Balance balance ->
+            order.isTaxInclusive = balance.taxIncluded
+            order.totalTax = balance.taxAmount
+            // TODO append item level tax
+        }
+        orders.add(order)
+
         return Promise.pure(orders)
     }
 

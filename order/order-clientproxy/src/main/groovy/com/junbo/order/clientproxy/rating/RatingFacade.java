@@ -15,5 +15,5 @@ import com.junbo.rating.spec.model.request.OrderRatingRequest;
  */
 public interface RatingFacade {
 
-    Promise<OrderRatingRequest> rateOrder(Order order, String shipToCountry);
+    Promise<OrderRatingRequest> rateOrder(Order order);
 }

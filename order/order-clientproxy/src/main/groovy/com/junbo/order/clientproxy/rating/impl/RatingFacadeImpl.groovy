@@ -29,8 +29,8 @@ class RatingFacadeImpl implements RatingFacade {
     RatingResource ratingResource
 
     @Override
-    Promise<OrderRatingRequest> rateOrder(Order order, String shipToCountry) {
-        OrderRatingRequest request = FacadeBuilder.buildOrderRatingRequest(order, shipToCountry)
+    Promise<OrderRatingRequest> rateOrder(Order order) {
+        OrderRatingRequest request = FacadeBuilder.buildOrderRatingRequest(order)
         return ratingResource.orderRating(request)
     }
 }
