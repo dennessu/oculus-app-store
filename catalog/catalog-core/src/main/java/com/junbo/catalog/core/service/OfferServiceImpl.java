@@ -6,6 +6,7 @@
 
 package com.junbo.catalog.core.service;
 
+import com.junbo.catalog.common.exception.CatalogException;
 import com.junbo.catalog.common.exception.NotFoundException;
 import com.junbo.catalog.common.util.Constants;
 import com.junbo.catalog.core.OfferService;
@@ -85,33 +86,25 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Override
-    public List<Offer> getOffers(int start, int size) {
-        List<Offer> draftOffers = offerDraftRepository.getOffers(start, size);
-        List<Offer> result = new ArrayList<>();
-        for (Offer draftOffer : draftOffers) {
-            result.add(offerRepository.get(draftOffer.getId(), null));
-        }
-
-        return result;
-    }
-
-    @Override
     public Offer createOffer(Offer offer) {
-        // TODO: validations
+        if (offer == null) {
+            throw new CatalogException("TODO");
+        }
 
         offer.setRevision(Constants.INITIAL_CREATION_REVISION);
         offer.setStatus(Status.DESIGN);
 
         Long offerId = offerDraftRepository.create(offer);
-        //offer.setId(offerId);
-        //offerRepository.create(offer);
 
         return offerDraftRepository.get(offerId);
     }
 
     @Override
     public Offer updateOffer(Offer offer) {
-        // TODO: validations
+        if (offer == null) {
+            throw new CatalogException("TODO");
+        }
+
         offerDraftRepository.update(offer);
         return offerDraftRepository.get(offer.getId());
     }

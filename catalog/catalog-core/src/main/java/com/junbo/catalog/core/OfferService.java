@@ -19,7 +19,6 @@ import java.util.List;
 @Transactional
 public interface OfferService {
     Offer getOffer(Long offerId, EntityGetOptions options);
-    List<Offer> getOffers(int start, int size);
     List<Offer> getOffers(EntitiesGetOptions options);
     Offer createOffer(Offer offer);
     Offer updateOffer(Offer offer);
