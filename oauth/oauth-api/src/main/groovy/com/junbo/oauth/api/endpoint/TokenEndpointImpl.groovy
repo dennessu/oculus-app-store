@@ -6,9 +6,9 @@
 package com.junbo.oauth.api.endpoint
 
 import com.junbo.langur.core.promise.Promise
-import com.junbo.oauth.core.context.ServiceContext
-import com.junbo.oauth.core.service.TokenService
-import com.junbo.oauth.core.util.ServiceContextUtil
+import com.junbo.langur.core.webflow.action.ActionContext
+import com.junbo.langur.core.webflow.executor.FlowExecutor
+import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.spec.endpoint.TokenEndpoint
 import com.junbo.oauth.spec.model.AccessTokenResponse
 import groovy.transform.CompileStatic
@@ -27,26 +27,32 @@ import javax.ws.rs.core.MultivaluedMap
 @CompileStatic
 @Scope('prototype')
 class TokenEndpointImpl implements TokenEndpoint {
-
-    private TokenService tokenService
+    private FlowExecutor flowExecutor
+    private String grantTokenFlow
 
     @Required
-    void setTokenService(TokenService tokenService) {
-        this.tokenService = tokenService
+    void setFlowExecutor(FlowExecutor flowExecutor) {
+        this.flowExecutor = flowExecutor
+    }
+
+    @Required
+    void setGrantTokenFlow(String grantTokenFlow) {
+        this.grantTokenFlow = grantTokenFlow
     }
 
     @Override
-    Promise<AccessTokenResponse> postToken(HttpHeaders httpHeaders, MultivaluedMap<String, String> formParams,
+    Promise<AccessTokenResponse> postToken(HttpHeaders httpHeaders,
+                                           MultivaluedMap<String, String> formParams,
                                            ContainerRequestContext request) {
-        ServiceContext context = new ServiceContext()
+        Map<String, Object> requestScope = new HashMap<>()
+        requestScope[ActionContextWrapper.REQUEST] = request
+        requestScope[ActionContextWrapper.PARAMETER_MAP] = formParams
+        requestScope[ActionContextWrapper.HEADER_MAP] = httpHeaders.requestHeaders
+        requestScope[ActionContextWrapper.COOKIE_MAP] = httpHeaders.cookies
 
-        ServiceContextUtil.setParameterMap(context, formParams)
-        ServiceContextUtil.setHeaderMap(context, httpHeaders.requestHeaders)
-        ServiceContextUtil.setCookieMap(context, httpHeaders.cookies)
-        ServiceContextUtil.setRequest(context, request)
-
-        tokenService.grantAccessToken(context)
-
-        return Promise.pure(ServiceContextUtil.getAccessTokenResponse(context))
+        flowExecutor.start(grantTokenFlow, requestScope).then { ActionContext context ->
+            ActionContextWrapper wrapper = new ActionContextWrapper(context)
+            return Promise.pure(wrapper.accessTokenResponse)
+        }
     }
 }

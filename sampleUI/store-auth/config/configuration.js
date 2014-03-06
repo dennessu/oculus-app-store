@@ -10,10 +10,11 @@ module.exports = {
     EnabledCaptcha: true,
     CookiesTimeout: 10 * 60 * 1000,
 
-    SaveQueryStringArray: ["redirect_url", "fs"],
+    SaveQueryStringArray: ["redirect_url", "cid", "event"],
     QueryStringConstants: {
         RedirectUrl: "redirect_url",
-        FlowState: "fs"
+        ConversationId: "cid",
+        Event: "event"
     },
     CookiesKeyConstants: {
         AccessToken: "access_token",
