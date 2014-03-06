@@ -88,7 +88,7 @@ class CoreBuilder {
         return item
     }
 
-    static OrderEvent buildOrderEvent(OrderId orderId, OrderAction action, EventStatus status) {
+    static OrderEvent buildOrderEvent(OrderId orderId, OrderActionType action, EventStatus status) {
         def event = new OrderEvent()
         event.order = orderId
         event.action = action

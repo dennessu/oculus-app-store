@@ -23,5 +23,4 @@ public interface BillingFacade {
     Promise<List<Balance>> getBalancesByOrderId(Long orderId);
     Promise<ShippingAddress> getShippingAddress(Long shippingAddressId);
     Promise<Balance> quoteBalance(Balance balance);
-
 }

@@ -17,22 +17,23 @@ import java.util.List;
 /**
  * Created by xmchen on 14-1-26.
  */
-@Path("/shipping-addresses")
+@Path("/users/{userId}/ship-to-info")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 @RestResource
 public interface ShippingAddressResource {
     @POST
-    Promise<ShippingAddress> postShippingAddress(ShippingAddress address);
+    Promise<ShippingAddress> postShippingAddress(@PathParam("userId") Long userId, ShippingAddress address);
 
     @GET
-    Promise<List<ShippingAddress>> getShippingAddresses(@QueryParam("userId") Long userId);
+    Promise<List<ShippingAddress>> getShippingAddresses(@PathParam("userId") Long userId);
 
     @GET
     @Path("/{addressId}")
-    Promise<ShippingAddress> getShippingAddress(@PathParam("addressId") Long addressId);
+    Promise<ShippingAddress> getShippingAddress(@PathParam("userId") Long userId,
+                                                @PathParam("addressId") Long addressId);
 
     @DELETE
     @Path("/{addressId}")
-    Promise<Void> deleteShippingAddress(@PathParam("addressId") Long addressId);
+    Promise<Void> deleteShippingAddress(@PathParam("userId") Long userId, @PathParam("addressId") Long addressId);
 }

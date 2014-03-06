@@ -147,12 +147,12 @@ public class EntitlementDaoTest extends AbstractTransactionalTestNGSpringContext
         List<Entitlement> list2 = entitlementRepository.getBySearchParam(searchParam, pageMetadata);
         Assert.assertEquals(list2.size(), 48);
 
-        EntitlementContext.setNow(new Date(114, 0, 25));
+        EntitlementContext.current().setNow(new Date(114, 0, 25));
         searchParam.setStatus(EntitlementStatus.ACTIVE.toString());
         List<Entitlement> list3 = entitlementRepository.getBySearchParam(searchParam, pageMetadata);
         Assert.assertEquals(list3.size(), 48);
 
-        EntitlementContext.setNow(new Date(114, 0, 1));
+        EntitlementContext.current().setNow(new Date(114, 0, 1));
         searchParam.setStatus(EntitlementStatus.PENDING.toString());
         List<Entitlement> list4 = entitlementRepository.getBySearchParam(searchParam, pageMetadata);
         Assert.assertEquals(list4.size(), 48);

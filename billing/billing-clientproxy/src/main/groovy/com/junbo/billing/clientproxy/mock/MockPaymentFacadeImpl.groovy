@@ -8,6 +8,8 @@ package com.junbo.billing.clientproxy.mock
 
 import com.junbo.billing.clientproxy.PaymentFacade
 import com.junbo.langur.core.promise.Promise
+import com.junbo.payment.spec.enums.PaymentStatus
+import com.junbo.payment.spec.enums.PaymentType
 import com.junbo.payment.spec.model.PaymentInstrument
 import com.junbo.payment.spec.model.PaymentTransaction
 
@@ -25,11 +27,21 @@ class MockPaymentFacadeImpl implements PaymentFacade {
 
     @Override
     Promise<PaymentTransaction> postPaymentCharge(PaymentTransaction request) {
-        return null
+        request.setPaymentId(1111111)
+        request.setMerchantAccount('JUNBO')
+        request.setStatus(PaymentStatus.SETTLEMENT_SUBMITTED.name())
+        request.setType(PaymentType.CHARGE.name())
+        request.setPaymentProvider('MOCK')
+        return Promise.pure(request)
     }
 
     @Override
     Promise<PaymentTransaction> postPaymentAuthorization(PaymentTransaction request) {
-        return null
+        request.setPaymentId(33333333)
+        request.setMerchantAccount('JUNBO')
+        request.setStatus(PaymentStatus.AUTHORIZED.name())
+        request.setType(PaymentType.AUTHORIZE.name())
+        request.setPaymentProvider('MOCK')
+        return Promise.pure(request)
     }
 }

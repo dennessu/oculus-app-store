@@ -14,5 +14,5 @@ import com.junbo.billing.spec.model.Transaction;
  */
 public interface TransactionService {
 
-    Transaction processBalance(Balance balance);
+    Balance processBalance(Balance balance);
 }

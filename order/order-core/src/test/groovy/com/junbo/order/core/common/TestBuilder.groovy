@@ -1,16 +1,14 @@
 package com.junbo.order.core.common
-
 import com.junbo.common.id.PaymentInstrumentId
+import com.junbo.common.id.ShippingAddressId
 import com.junbo.common.id.UserId
 import com.junbo.order.core.impl.order.OrderServiceContext
 import com.junbo.order.spec.model.ItemType
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderItem
 import com.junbo.order.spec.model.OrderType
-import com.junbo.order.spec.model.ShippingInfo
 import com.junbo.payment.spec.model.PaymentInstrument
 import groovy.transform.CompileStatic
-
 /**
  * Created by chriszhu on 2/14/14.
  */
@@ -37,7 +35,7 @@ class TestBuilder {
         order.setUser(userId)
         order.setPaymentInstruments([])
         order.paymentInstruments.add(new PaymentInstrumentId(generateLong()))
-        order.setShippingAddressId(generateLong())
+        order.setShippingAddressId(new ShippingAddressId(generateLong()))
         order.setShippingMethodId(generateLong())
         order.setTentative(true)
         order.setTrackingUuid(generateUUID())

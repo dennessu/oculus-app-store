@@ -15,11 +15,11 @@ import java.util.List;
  * Created by xmchen on 14-1-26.
  */
 public interface ShippingAddressService {
-    Promise<ShippingAddress> addShippingAddress(ShippingAddress address);
+    Promise<ShippingAddress> addShippingAddress(Long userId, ShippingAddress address);
 
     Promise<List<ShippingAddress>> getShippingAddresses(Long userId);
 
-    Promise<ShippingAddress> getShippingAddress(Long addressId);
+    Promise<ShippingAddress> getShippingAddress(Long userId, Long addressId);
 
-    void deleteShippingAddress(Long addressId);
+    void deleteShippingAddress(Long userId, Long addressId);
 }

@@ -20,6 +20,4 @@ public interface BalanceRepository {
     Balance getBalance(Long balanceId);
 
     List<Balance> getBalances(Long orderId);
-
-    Balance updateBalanceStatus(Long balanceId, BalanceStatus balanceStatus);
 }

@@ -49,4 +49,12 @@ public interface BrainTreeResource {
     @PUT
     @Path("/payment/{paymentId}/reverse")
     Promise<Response> reverse(@PathParam("paymentId") String transactionToken);
+
+    @GET
+    @Path("/payment/{paymentId}")
+    Promise<PaymentTransaction> getById(@PathParam("paymentId") String transactionToken);
+
+    @GET
+    @Path("/payment/search")
+    Promise<PaymentTransaction> getByOrderId(@QueryParam("orderId") String orderId);
 }

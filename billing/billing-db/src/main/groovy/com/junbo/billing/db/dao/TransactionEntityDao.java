@@ -9,8 +9,11 @@ package com.junbo.billing.db.dao;
 import com.junbo.billing.db.BaseDao;
 import com.junbo.billing.db.transaction.TransactionEntity;
 
+import java.util.List;
+
 /**
  * Created by xmchen on 14-1-21.
  */
 public interface TransactionEntityDao extends BaseDao<TransactionEntity, Long> {
+    List<TransactionEntity> findByBalanceId(Long balanceId);
 }

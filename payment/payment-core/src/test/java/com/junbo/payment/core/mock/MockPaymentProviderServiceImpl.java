@@ -72,4 +72,14 @@ public class MockPaymentProviderServiceImpl implements PaymentProviderService {
     public void refund(String transactionId, PaymentTransaction request) {
 
     }
+
+    @Override
+    public Promise<PaymentTransaction> getByOrderId(String orderId) {
+        return null;
+    }
+
+    @Override
+    public Promise<PaymentTransaction> getByTransactionToken(String token) {
+        return null;
+    }
 }

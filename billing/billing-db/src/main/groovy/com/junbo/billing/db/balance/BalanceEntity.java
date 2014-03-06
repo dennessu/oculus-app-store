@@ -114,7 +114,7 @@ public class BalanceEntity extends BaseEntity {
     }
 
     @Column(name = "status_id")
-    @NotEmpty(message = EntityValidationCode.MISSING_VALUE)
+    @NotNull(message = EntityValidationCode.MISSING_VALUE)
     public Short getStatusId() {
         return statusId;
     }
