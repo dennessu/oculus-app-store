@@ -162,7 +162,7 @@ public class CommonMapper {
         return EventStatus.valueOf(status);
     }
 
-    public String fromOrderActionToString(OrderAction action) {
+    public String fromOrderActionTypeToString(OrderActionType action) {
         if (action == null) {
             return null;
         }
@@ -170,12 +170,12 @@ public class CommonMapper {
         return action.toString();
     }
 
-    public OrderAction fromStringToOrderAction(String action) {
+    public OrderActionType fromStringToOrderActionType(String action) {
         if (action == null) {
             return null;
         }
 
-        return OrderAction.valueOf(action);
+        return OrderActionType.valueOf(action);
     }
 
     public Long fromOrderEventIdToLong(OrderEventId orderEventId) {

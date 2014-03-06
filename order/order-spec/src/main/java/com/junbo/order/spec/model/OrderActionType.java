@@ -8,7 +8,7 @@ package com.junbo.order.spec.model;
 /**
  * Created by LinYi on 2/10/14.
  */
-public enum OrderAction {
+public enum OrderActionType {
     RATE,
     CHARGE,
     AUTHORIZE,

@@ -95,7 +95,7 @@ class TestHelper {
         OrderEventEntity orderEventEntity = new OrderEventEntity()
         orderEventEntity.setOrderId(generateId())
         orderEventEntity.setEventId(generateLong())
-        orderEventEntity.setActionId(OrderAction.FULFILL)
+        orderEventEntity.setActionId(OrderActionType.FULFILL)
         orderEventEntity.setStatusId(EventStatus.COMPLETED)
         return orderEventEntity
     }
