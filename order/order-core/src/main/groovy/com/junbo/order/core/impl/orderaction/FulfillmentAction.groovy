@@ -44,7 +44,7 @@ class FulfillmentAction implements Action {
             if (fulfilmentResult == null) { // error in post fulfillment
                 serviceContext.orderRepository.createOrderEvent(
                         CoreBuilder.buildOrderEvent(order.id,
-                                com.junbo.order.spec.model.OrderAction.FULFILL, EventStatus.ERROR))
+                                com.junbo.order.spec.model.OrderActionType.FULFILL, EventStatus.ERROR))
             } else {
                 EventStatus orderEventStatus = null
                 fulfilmentResult.items.each { FulfilmentItem fulfilmentItem ->
@@ -59,7 +59,7 @@ class FulfillmentAction implements Action {
                 }
                 serviceContext.orderRepository.createOrderEvent(
                         CoreBuilder.buildOrderEvent(order.id,
-                                com.junbo.order.spec.model.OrderAction.FULFILL, orderEventStatus))
+                                com.junbo.order.spec.model.OrderActionType.FULFILL, orderEventStatus))
             }
             return ActionUtils.DEFAULT_RESULT
         }

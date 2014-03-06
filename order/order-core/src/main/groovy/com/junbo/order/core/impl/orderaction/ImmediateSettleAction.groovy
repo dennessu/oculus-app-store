@@ -39,13 +39,10 @@ class ImmediateSettleAction implements Action {
                 // todo: log order charge action error?
                 LOGGER.info('fail to create balance')
             } else {
-                if (context.orderServiceContext.balances == null) {
-                    context.orderServiceContext.balances = []
-                }
-                context.orderServiceContext.balances.add(resultBalance)
                 context.orderServiceContext.orderRepository.saveBillingEvent(
                         order.id, balance.balanceId,
                         BillingAction.CHARGE, billingEventStatus)
+                context.orderServiceContext.refreshBalances()
                 // TODO: update order status according to balance status.
             }
             return ActionUtils.DEFAULT_RESULT

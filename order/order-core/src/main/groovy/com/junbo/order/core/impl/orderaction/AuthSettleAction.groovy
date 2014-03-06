@@ -25,10 +25,7 @@ class AuthSettleAction implements Action {
         promise.then(new Promise.Func<Balance, Promise>() {
             @Override
             Promise apply(Balance b) {
-                if (context.orderServiceContext.balances == null) {
-                    context.orderServiceContext.balances = []
-                }
-                context.orderServiceContext.balances.add(b)
+                context.orderServiceContext.refreshBalances()
                 return Promise.pure(b)
             }
         } ).syncThen { // TODO: update order status according to balance status.

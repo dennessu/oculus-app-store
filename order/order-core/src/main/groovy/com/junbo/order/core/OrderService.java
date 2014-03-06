@@ -7,8 +7,9 @@
 package com.junbo.order.core;
 
 import com.junbo.langur.core.promise.Promise;
-import com.junbo.order.core.impl.order.OrderServiceContext;
-import com.junbo.order.spec.model.*;
+import com.junbo.order.spec.model.ApiContext;
+import com.junbo.order.spec.model.Order;
+import com.junbo.order.spec.model.OrderEvent;
 
 import java.util.List;
 
@@ -34,10 +35,6 @@ public interface OrderService {
     Promise<OrderEvent> updateOrderBillingStatus(OrderEvent event);
 
     Promise<OrderEvent> updateOrderFulfillmentStatus(OrderEvent event);
-
-    Promise<OrderServiceContext> expandOrder(Order order);
-
-    Promise<OrderServiceContext> expandTentativeOrder(Order order);
 
     Promise<Order> updateTentativeOrder(Order order, ApiContext context);
 
