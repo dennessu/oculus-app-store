@@ -74,7 +74,7 @@ public class PromotionDraftDaoTest extends BaseTest {
         promotion.setId(generateId());
         promotion.setName("10% off for cart");
         promotion.setType(PromotionType.ORDER_PROMOTION);
-        promotion.setStatus(Status.ACTIVE);
+        promotion.setStatus(Status.RELEASED);
         promotion.setStartDate(generateDate("2013-01-01 08:00:00"));
         promotion.setEndDate(generateDate("2013-01-10 08:00:00"));
         promotion.setTimestamp(generateId());

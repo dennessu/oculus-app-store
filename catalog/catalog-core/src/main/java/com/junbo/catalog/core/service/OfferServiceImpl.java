@@ -16,6 +16,7 @@ import com.junbo.catalog.spec.model.common.Status;
 import com.junbo.catalog.spec.model.offer.Offer;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,7 +33,7 @@ public class OfferServiceImpl implements OfferService {
         Offer offer;
         if (options.isFromDraft()) {
             offer = offerDraftRepository.get(offerId);
-            if (!options.getStatus().equals(Status.DRAFT) && !options.getStatus().equals(offer.getStatus())) {
+            if (!options.getStatus().equalsIgnoreCase(offer.getStatus())) {
                 throw new NotFoundException("offer", offerId);
             }
         } else {
@@ -46,7 +47,13 @@ public class OfferServiceImpl implements OfferService {
 
     @Override
     public List<Offer> getOffers(int start, int size) {
-        return offerDraftRepository.getOffers(start, size);
+        List<Offer> draftOffers = offerDraftRepository.getOffers(start, size);
+        List<Offer> result = new ArrayList<>();
+        for (Offer draftOffer : draftOffers) {
+            result.add(offerRepository.get(draftOffer.getId(), null));
+        }
+
+        return result;
     }
 
     @Override
@@ -54,7 +61,7 @@ public class OfferServiceImpl implements OfferService {
         // TODO: validations
 
         offer.setRevision(Constants.INITIAL_CREATION_REVISION);
-        offer.setStatus(Status.DRAFT);
+        offer.setStatus(Status.DESIGN);
 
         Long offerId = offerDraftRepository.create(offer);
         //offer.setId(offerId);
@@ -83,7 +90,7 @@ public class OfferServiceImpl implements OfferService {
     public Offer publishOffer(Long offerId) {
         Offer offer = offerDraftRepository.get(offerId);
         checkOfferNotNull(offerId, offer);
-        offer.setStatus(Status.ACTIVE);
+        offer.setStatus(Status.RELEASED);
         offerRepository.create(offer);
         offerDraftRepository.update(offer);
         return offerRepository.get(offerId, null);

@@ -10,9 +10,9 @@ package com.junbo.catalog.spec.model.common;
  * Entity status.
  */
 public final class Status {
-    public static final String DRAFT = "Draft";
+    public static final String DESIGN = "Design";
     public static final String PENDING_REVIEW = "PendingReview";
-    public static final String ACTIVE = "Active";
+    public static final String RELEASED = "Released";
     public static final String REJECTED = "Rejected";
     public static final String DELETED = "Deleted";
 

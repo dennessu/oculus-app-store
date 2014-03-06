@@ -30,7 +30,7 @@ public class PromotionServiceImpl implements PromotionService{
     @Override
     public Promotion createPromotion(Promotion promotion) {
         promotion.setRevision(Constants.INITIAL_CREATION_REVISION);
-        promotion.setStatus(Status.DRAFT);
+        promotion.setStatus(Status.DESIGN);
         Long promotionId = promotionDraftRepository.createPromotion(promotion);
         promotion.setId(promotionId);
         promotionRepository.create(promotion);
