@@ -242,7 +242,7 @@ public class CommonMapper {
         return fulfillmentEventId.getValue();
     }
 
-    public SellerId fromLongToSellderId(Long sellerId) {
+    public SellerId fromLongToSellerId(Long sellerId) {
         if (sellerId == null) {
             return null;
         }
@@ -321,4 +321,21 @@ public class CommonMapper {
 
         return BillingAction.valueOf(action);
     }
+
+    public ShippingAddressId fromLongToShippingAddressId(Long shippingAddressId) {
+        if (shippingAddressId == null) {
+            return null;
+        }
+
+        return new ShippingAddressId(shippingAddressId);
+    }
+
+    public Long fromShippingAddressIdToLong(ShippingAddressId shippingAddressId) {
+        if (shippingAddressId == null) {
+            return null;
+        }
+
+        return shippingAddressId.getValue();
+    }
+
 }
