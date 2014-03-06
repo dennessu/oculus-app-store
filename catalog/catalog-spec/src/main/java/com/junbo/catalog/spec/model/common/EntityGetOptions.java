@@ -26,14 +26,14 @@ public class EntityGetOptions {
 
     public static EntityGetOptions getDefault() {
         EntityGetOptions options = new EntityGetOptions();
-        options.setStatus(Status.ACTIVE);
+        options.setStatus(Status.RELEASED);
 
         return options;
     }
 
     public static EntityGetOptions getDraft() {
         EntityGetOptions options = new EntityGetOptions();
-        options.setStatus(Status.DRAFT);
+        options.setStatus(Status.DESIGN);
 
         return options;
     }
@@ -53,9 +53,10 @@ public class EntityGetOptions {
     }
 
     public boolean isFromDraft() {
-        return Status.DRAFT.equals(status)
-                || Status.PENDING_REVIEW.equals(status)
-                || Status.REJECTED.equals(status);
+        return status != null
+                && (Status.DESIGN.equalsIgnoreCase(status)
+                    || Status.PENDING_REVIEW.equalsIgnoreCase(status)
+                    || Status.REJECTED.equalsIgnoreCase(status));
     }
 
     public String getStatus() {

@@ -40,7 +40,7 @@ public class CategoryServiceImpl implements CategoryService {
         // TODO: validations
 
         category.setRevision(Constants.INITIAL_CREATION_REVISION);
-        category.setStatus(Status.DRAFT);
+        category.setStatus(Status.DESIGN);
 
         Long categoryId = categoryDraftRepository.create(category);
         category.setId(categoryId);

@@ -30,7 +30,7 @@ public class OfferDaoImpl extends BaseDaoImpl<OfferEntity> implements OfferDao {
             }
         });
 
-        if (Status.DELETED.equals(offerEntity.getStatus())) {
+        if (offerEntity!=null && Status.DELETED.equalsIgnoreCase(offerEntity.getStatus())) {
             offerEntity = null;
         }
 

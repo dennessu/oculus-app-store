@@ -40,7 +40,7 @@ public class ItemServiceImpl implements ItemService {
         // TODO: validations
 
         item.setRevision(Constants.INITIAL_CREATION_REVISION);
-        item.setStatus(Status.DRAFT);
+        item.setStatus(Status.DESIGN);
 
         Long itemId = itemDraftRepository.create(item);
         item.setId(itemId);

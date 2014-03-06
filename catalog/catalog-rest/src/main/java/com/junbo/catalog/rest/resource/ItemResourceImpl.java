@@ -66,7 +66,7 @@ public class ItemResourceImpl implements ItemResource {
     @Override
     public Promise<Item> publishItem(Long itemId) {
         Item item = itemService.getItem(itemId, EntityGetOptions.getDefault());
-        item.setStatus(Status.ACTIVE);
+        item.setStatus(Status.RELEASED);
         // save the updated item
         return Promise.pure(item);
     }
