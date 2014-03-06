@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Java doc.
+ * JacksonCustomizationTest.
  */
 public class JacksonCustomizationTest {
     private ObjectMapper mapper =

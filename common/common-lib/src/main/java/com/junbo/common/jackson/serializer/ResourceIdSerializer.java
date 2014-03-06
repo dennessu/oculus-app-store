@@ -20,7 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Java doc.
+ * ResourceIdSerializer.
  */
 public class ResourceIdSerializer extends JsonSerializer<Object> implements ResourceAware {
     // thread safe
