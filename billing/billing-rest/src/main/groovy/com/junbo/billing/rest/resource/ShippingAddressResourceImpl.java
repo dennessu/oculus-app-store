@@ -25,8 +25,8 @@ public class ShippingAddressResourceImpl implements ShippingAddressResource {
     private ShippingAddressService shippingAddressService;
 
     @Override
-    public Promise<ShippingAddress> postShippingAddress(ShippingAddress address) {
-        return shippingAddressService.addShippingAddress(address);
+    public Promise<ShippingAddress> postShippingAddress(Long userId, ShippingAddress address) {
+        return shippingAddressService.addShippingAddress(userId, address);
     }
 
     @Override
@@ -35,13 +35,13 @@ public class ShippingAddressResourceImpl implements ShippingAddressResource {
     }
 
     @Override
-    public Promise<ShippingAddress> getShippingAddress(Long addressId) {
-        return shippingAddressService.getShippingAddress(addressId);
+    public Promise<ShippingAddress> getShippingAddress(Long userId, Long addressId) {
+        return shippingAddressService.getShippingAddress(userId, addressId);
     }
 
     @Override
-    public Promise<Void> deleteShippingAddress(Long addressId) {
-        shippingAddressService.deleteShippingAddress(addressId);
+    public Promise<Void> deleteShippingAddress(Long userId, Long addressId) {
+        shippingAddressService.deleteShippingAddress(userId, addressId);
         return null;
     }
 }

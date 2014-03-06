@@ -106,6 +106,9 @@ class BalanceServiceImpl implements BalanceService {
                     case TransactionType.REVERSE:
                         balanceStatus = BalanceStatus.CANCELLED
                         break
+                    default:
+                        balanceStatus = BalanceStatus.ERROR
+                        break
                 }
                 break
             default:
