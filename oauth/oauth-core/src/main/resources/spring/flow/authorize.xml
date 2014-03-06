@@ -27,7 +27,7 @@
         <wf:action-state id="validateLoginStateAction">
             <wf:action ref="validateLoginStateWebflow"/>
             <wf:action ref="saveLoginStateWebflow"/>
-            <wf:transition on="redirectLogin" to="redirectLogin"/>
+            <wf:transition on="redirectLogin" to="redirectToLogin"/>
             <wf:transition on="*" to="grantAuthorizationCodeAction"/>
         </wf:action-state>
 
@@ -40,14 +40,20 @@
             <wf:transition on="*" to="endRedirect"/>
         </wf:action-state>
 
-        <wf:view-state id="redirectLogin">
+        <wf:view-state id="redirectToLogin">
             <wf:on-render>
                 <wf:action ref="redirectWebflow"/>
             </wf:on-render>
-            <wf:transition on="login" to="redirectLogin">
+            <wf:transition on="login" to="redirectToAuth">
                 <wf:action ref="authenticateUserWebflow"/>
             </wf:transition>
-            <wf:transition on="loginSuccess" to="validateLoginStateAction"/>
+        </wf:view-state>
+
+        <wf:view-state id="redirectToAuth">
+            <wf:on-render>
+                <wf:action ref="redirectWebflow"/>
+            </wf:on-render>
+            <wf:transition on="*" to="validateLoginStateAction"/>
         </wf:view-state>
 
         <wf:end-state id="endRedirect">
