@@ -8,12 +8,12 @@ package com.junbo.entitlement.db.entity;
 
 import com.junbo.entitlement.db.entity.def.EntitlementStatus;
 import com.junbo.entitlement.db.entity.def.EntitlementType;
-import org.hibernate.annotations.GenericGenerator;
+import com.junbo.entitlement.db.entity.def.Shardable;
 
 import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.Date;
 
 /**
@@ -21,7 +21,7 @@ import java.util.Date;
  */
 @javax.persistence.Entity
 @Table(name = "entitlement_history")
-public class EntitlementHistoryEntity {
+public class EntitlementHistoryEntity implements Shardable {
     public static final String CREATE_ACTION = "CREATE";
     public static final String UPDATE_ACTION = "UPDATE";
 
@@ -74,11 +74,6 @@ public class EntitlementHistoryEntity {
     }
 
     @Id
-    @GenericGenerator(name = "idGenerator", strategy = "sequence",
-            parameters = {@org.hibernate.annotations.Parameter
-                    (name = "sequence",
-                            value = "entitlement_history_id_sequence")})
-    @GeneratedValue(generator = "idGenerator")
     @Column(name = "entitlement_history_id")
     public Long getEntitlementHistoryId() {
         return entitlementHistoryId;
@@ -266,5 +261,11 @@ public class EntitlementHistoryEntity {
 
     public void setType(EntitlementType type) {
         this.type = type;
+    }
+
+    @Transient
+    @Override
+    public Long getShardMasterId() {
+        return entitlementId;
     }
 }

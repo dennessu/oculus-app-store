@@ -10,5 +10,5 @@ package com.junbo.entitlement.db.entity.def;
  * Interface to get ShardId.
  */
 public interface Shardable {
-    Long getShardId();
+    Long getShardMasterId();
 }

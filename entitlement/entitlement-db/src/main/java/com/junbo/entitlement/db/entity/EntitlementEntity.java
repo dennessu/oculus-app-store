@@ -189,7 +189,7 @@ public class EntitlementEntity extends Entity {
     @JsonIgnore
     @Transient
     @Override
-    public Long getShardId() {
+    public Long getShardMasterId() {
         return userId;
     }
 }
