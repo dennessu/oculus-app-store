@@ -54,8 +54,8 @@ public class OfferResourceImpl implements OfferResource{
     }
 
     @Override
-    public Promise<Offer> publishOffer(Long offerId) {
-        Offer offer = offerService.publishOffer(offerId);
+    public Promise<Offer> releaseOffer(Long offerId) {
+        Offer offer = offerService.releaseOffer(offerId);
         return Promise.pure(offer);
     }
 

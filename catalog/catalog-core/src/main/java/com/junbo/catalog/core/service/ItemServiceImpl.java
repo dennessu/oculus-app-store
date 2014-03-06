@@ -10,6 +10,7 @@ import com.junbo.catalog.common.util.Constants;
 import com.junbo.catalog.core.ItemService;
 import com.junbo.catalog.db.repo.ItemDraftRepository;
 import com.junbo.catalog.db.repo.ItemRepository;
+import com.junbo.catalog.spec.model.common.EntitiesGetOptions;
 import com.junbo.catalog.spec.model.common.EntityGetOptions;
 import com.junbo.catalog.spec.model.common.Status;
 import com.junbo.catalog.spec.model.item.Item;
@@ -31,11 +32,6 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<Item> getItems(int start, int size) {
-        return itemDraftRepository.getItems(start, size);
-    }
-
-    @Override
     public Item createItem(Item item) {
         // TODO: validations
 
@@ -47,5 +43,40 @@ public class ItemServiceImpl implements ItemService {
         itemRepository.create(item);
 
         return itemDraftRepository.get(itemId);
+    }
+
+    @Override
+    public List<Item> getItems(EntitiesGetOptions options) {
+        return null;
+    }
+
+    @Override
+    public Item updateItem(Item item) {
+        return null;
+    }
+
+    @Override
+    public Item reviewItem(Long itemId) {
+        return null;
+    }
+
+    @Override
+    public Item releaseItem(Long itemId) {
+        return null;
+    }
+
+    @Override
+    public Item rejectItem(Long itemId) {
+        return null;
+    }
+
+    @Override
+    public Long removeItem(Long itemId) {
+        return null;
+    }
+
+    @Override
+    public Long deleteItem(Long itemId) {
+        return null;
     }
 }

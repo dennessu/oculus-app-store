@@ -119,7 +119,7 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Override
-    public Offer publishOffer(Long offerId) {
+    public Offer releaseOffer(Long offerId) {
         Offer offer = offerDraftRepository.get(offerId);
         checkOfferNotNull(offerId, offer);
         offer.setStatus(Status.RELEASED);
