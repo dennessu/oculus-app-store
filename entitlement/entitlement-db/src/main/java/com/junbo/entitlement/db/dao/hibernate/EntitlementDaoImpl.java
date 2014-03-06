@@ -118,10 +118,28 @@ public class EntitlementDaoImpl extends BaseDao<EntitlementEntity> implements En
                 " and userId = (:userId)" +
                 " and entitlementDefinitionId = (:definitionId)" +
                 " and status not in (:notManagedStatus)";
+        List<Integer> notManagedStatus = new ArrayList<Integer>();
+        notManagedStatus.add(EntitlementStatus.BANNED.ordinal());
+        notManagedStatus.add(EntitlementStatus.DELETED.ordinal());
         Query q = currentSession().createQuery(queryString)
                 .setLong("userId", userId)
                 .setLong("definitionId", definitionId)
-                .setParameterList("notManagedStatus", EntitlementStatus.LIFECYCLE_NOT_MANAGED_STATUS);
+                .setParameterList("notManagedStatus", notManagedStatus);
         return (EntitlementEntity) q.uniqueResult();
+    }
+
+    @Override
+    public Boolean existEntitlementDefinition(Long definitionId) {
+        String queryString = "select * from entitlement" +
+                " where entitlement_definition_id = (:definitionId)" +
+                " and status not in (:notManagedStatus)";
+        List<Integer> notManagedStatus = new ArrayList<Integer>();
+        notManagedStatus.add(EntitlementStatus.BANNED.ordinal());
+        notManagedStatus.add(EntitlementStatus.DELETED.ordinal());
+        Query q = currentSession().createSQLQuery(queryString)
+                .addEntity(EntitlementEntity.class)
+                .setLong("definitionId", definitionId)
+                .setParameterList("notManagedStatus", notManagedStatus);
+        return q.list().size() != 0;
     }
 }

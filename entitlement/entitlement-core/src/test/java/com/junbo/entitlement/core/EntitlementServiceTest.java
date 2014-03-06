@@ -6,6 +6,7 @@
 
 package com.junbo.entitlement.core;
 
+import com.junbo.common.error.AppErrorException;
 import com.junbo.entitlement.common.def.EntitlementStatusReason;
 import com.junbo.entitlement.common.lib.CloneUtils;
 import com.junbo.entitlement.common.lib.EntitlementContext;
@@ -19,11 +20,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.testng.Assert;
-import org.testng.annotations.ExpectedExceptions;
 import org.testng.annotations.Test;
 
 import javax.sql.DataSource;
-import javax.ws.rs.WebApplicationException;
 import java.util.Date;
 import java.util.List;
 
@@ -54,15 +53,13 @@ public class EntitlementServiceTest extends AbstractTransactionalTestNGSpringCon
         Assert.assertEquals(addedEntitlement.getOfferId(), entitlement.getOfferId());
     }
 
-    @Test
-    @ExpectedExceptions(WebApplicationException.class)
+    @Test(expectedExceptions = AppErrorException.class)
     public void testAddWrongDateEntitlement() {
         Entitlement entitlement = buildAnEntitlement();
         Date currentDate = new Date();
         entitlement.setGrantTime(currentDate);
         entitlement.setExpirationTime(new Date(currentDate.getTime() - 6000));
-        Entitlement addedEntitlement = entitlementService.addEntitlement(entitlement);
-        Assert.assertEquals(addedEntitlement.getOfferId(), entitlement.getOfferId());
+        entitlementService.addEntitlement(entitlement);
     }
 
     @Test
@@ -158,6 +155,24 @@ public class EntitlementServiceTest extends AbstractTransactionalTestNGSpringCon
         Assert.assertEquals(addedEntitlement.getEntitlementId(), entitlement2.getEntitlementId());
         Assert.assertEquals(entitlement2.getStatus(), EntitlementStatus.ACTIVE.toString());
         Assert.assertEquals(entitlement2.getUseCount().intValue(), 40);
+    }
+
+    @Test
+    public void testUpdateUsedEntitlementDefinition() {
+        Entitlement entitlement = buildAnEntitlement();
+        entitlement = entitlementService.addEntitlement(entitlement);
+        EntitlementDefinition entitlementDefinition = entitlementDefinitionService.getEntitlementDefinition(entitlement.getEntitlementDefinitionId());
+        entitlementDefinition.setGroup("ANOTHER_GROUP");
+        try{
+            entitlementDefinitionService.updateEntitlementDefinition(entitlementDefinition.getEntitlementDefinitionId(), entitlementDefinition);
+        } catch (Exception e){
+            Assert.assertEquals(e.getClass(), AppErrorException.class);
+        }
+
+        entitlement.setStatus("BANNED");
+        entitlementService.updateEntitlement(entitlement.getEntitlementId(), entitlement);
+        entitlementDefinition = entitlementDefinitionService.updateEntitlementDefinition(entitlementDefinition.getEntitlementDefinitionId(), entitlementDefinition);
+        Assert.assertEquals(entitlementDefinition.getGroup(), "ANOTHER_GROUP");
     }
 
     private Entitlement buildAnEntitlement() {

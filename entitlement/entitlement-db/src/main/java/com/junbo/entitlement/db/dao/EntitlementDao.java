@@ -29,4 +29,6 @@ public interface EntitlementDao {
     EntitlementEntity getByTrackingUuid(UUID trackingUuid);
 
     EntitlementEntity getExistingManagedEntitlement(Long userId, Long definitionId);
+
+    Boolean existEntitlementDefinition(Long definitionId);
 }

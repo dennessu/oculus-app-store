@@ -79,6 +79,11 @@ public class EntitlementDaoImpl implements EntitlementDao {
         return getById(id);
     }
 
+    @Override
+    public Boolean existEntitlementDefinition(Long definitionId) {
+        return null;
+    }
+
     private EntitlementEntity getById(String id) {
         if (!StringUtils.isEmpty(id)) {
             return JsonMarshaller.unmarshall(

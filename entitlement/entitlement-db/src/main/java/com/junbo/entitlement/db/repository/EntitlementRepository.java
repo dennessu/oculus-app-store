@@ -93,4 +93,8 @@ public class EntitlementRepository {
 //          userId, definitionId));
         return entitlementMapper.toEntitlement(entitlementDao.getExistingManagedEntitlement(userId, definitionId));
     }
+
+    public Boolean existWithEntitlementDefinition(Long definitionId){
+        return entitlementDao.existEntitlementDefinition(definitionId);
+    }
 }

@@ -8,6 +8,7 @@ package com.junbo.entitlement.core.service;
 
 import com.junbo.entitlement.core.EntitlementDefinitionService;
 import com.junbo.entitlement.db.repository.EntitlementDefinitionRepository;
+import com.junbo.entitlement.db.repository.EntitlementRepository;
 import com.junbo.entitlement.spec.error.AppErrors;
 import com.junbo.entitlement.spec.model.EntitlementDefinition;
 import com.junbo.entitlement.spec.model.PageMetadata;
@@ -23,6 +24,8 @@ import java.util.UUID;
 public class EntitlementDefinitionServiceImpl extends BaseService implements EntitlementDefinitionService {
     @Autowired
     private EntitlementDefinitionRepository entitlementDefinitionRepository;
+    @Autowired
+    private EntitlementRepository entitlementRepository;
 
     @Override
     @Transactional
@@ -57,6 +60,8 @@ public class EntitlementDefinitionServiceImpl extends BaseService implements Ent
     @Transactional
     public EntitlementDefinition updateEntitlementDefinition(Long entitlementDefinitionId,
                                                              EntitlementDefinition entitlementDefinition) {
+        checkUnUsed(entitlementDefinitionId);
+
         EntitlementDefinition existingEntitlementDefinition =
                 entitlementDefinitionRepository.get(entitlementDefinitionId);
 
@@ -81,6 +86,7 @@ public class EntitlementDefinitionServiceImpl extends BaseService implements Ent
     @Override
     @Transactional
     public void deleteEntitlement(Long entitlementDefinitionId) {
+        checkUnUsed(entitlementDefinitionId);
         EntitlementDefinition existingEntitlementDefinition =
                 entitlementDefinitionRepository.get(entitlementDefinitionId);
         if (existingEntitlementDefinition == null) {
@@ -94,5 +100,14 @@ public class EntitlementDefinitionServiceImpl extends BaseService implements Ent
     @Transactional
     public EntitlementDefinition getByTrackingUuid(UUID trackingUuid) {
         return entitlementDefinitionRepository.getByTrackingUuid(trackingUuid);
+    }
+
+    private void checkUnUsed(Long entitlementDefinitionId) {
+        if (entitlementRepository.existWithEntitlementDefinition(entitlementDefinitionId)) {
+            throw AppErrors.INSTANCE.common("entitlementDefinition [" +
+                    entitlementDefinitionId +
+                    "] can not be modified." +
+                    " There have been entitlements with the entitlementDefinition").exception();
+        }
     }
 }
