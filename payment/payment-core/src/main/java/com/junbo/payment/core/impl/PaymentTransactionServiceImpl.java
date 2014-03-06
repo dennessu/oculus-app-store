@@ -125,6 +125,10 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
         final PaymentAPI api = PaymentAPI.Capture;
         request.setPaymentId(paymentId);
         final PaymentTransaction existedTransaction = getPaymentById(paymentId);
+        if(existedTransaction == null){
+            LOGGER.error("the payment id is invalid for the event.");
+            throw AppClientExceptions.INSTANCE.invalidPaymentId(paymentId.toString()).exception();
+        }
         if(request.getChargeInfo() != null && request.getChargeInfo().getAmount() != null &&
           existedTransaction.getChargeInfo().getAmount().compareTo(request.getChargeInfo().getAmount()) < 0){
             throw AppClientExceptions.INSTANCE.invalidAmount(
@@ -287,10 +291,21 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
 
     @Override
     public PaymentTransaction getById(Long paymentId) {
-        PaymentTransaction request = paymentRepository.getByPaymentId(paymentId);
+        PaymentTransaction request = getPaymentById(paymentId);
         List<PaymentEvent> events = paymentRepository.getPaymentEventsByPaymentId(paymentId);
         request.setPaymentEvents(events);
         return request;
+    }
+
+    @Override
+    public void reportPaymentEvent(PaymentEvent event) {
+        if(event.getPaymentId() == null){
+            LOGGER.error("the payment id is missing for the event.");
+            throw AppClientExceptions.INSTANCE.invalidPaymentId(event.getPaymentId().toString()).exception();
+        }
+        paymentRepository.updatePayment(event.getPaymentId()
+                    , PaymentUtil.getPaymentStatus(event.getStatus()), null);
+        paymentRepository.savePaymentEvent(event.getPaymentId(), Arrays.asList(event));
     }
 
     @Override
@@ -331,7 +346,12 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
     }
 
     private PaymentTransaction getPaymentById(Long paymentId){
-        return paymentRepository.getByPaymentId(paymentId);
+        PaymentTransaction existedTransaction = paymentRepository.getByPaymentId(paymentId);
+        if(existedTransaction == null){
+            LOGGER.error("the payment id is invalid for the event.");
+            throw AppClientExceptions.INSTANCE.invalidPaymentId(paymentId.toString()).exception();
+        }
+        return existedTransaction;
     }
 
     private void saveOrUpdateTrackingUuid(PaymentTransaction request, PaymentAPI api){
