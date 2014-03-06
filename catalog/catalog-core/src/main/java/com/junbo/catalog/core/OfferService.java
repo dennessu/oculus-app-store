@@ -6,6 +6,7 @@
 
 package com.junbo.catalog.core;
 
+import com.junbo.catalog.spec.model.common.EntitiesGetOptions;
 import com.junbo.catalog.spec.model.common.EntityGetOptions;
 import com.junbo.catalog.spec.model.offer.Offer;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,7 @@ import java.util.List;
 public interface OfferService {
     Offer getOffer(Long offerId, EntityGetOptions options);
     List<Offer> getOffers(int start, int size);
+    List<Offer> getOffers(EntitiesGetOptions options);
     Offer createOffer(Offer offer);
     Offer updateOffer(Offer offer);
     Offer reviewOffer(Long offerId);

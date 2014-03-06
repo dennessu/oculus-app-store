@@ -24,8 +24,14 @@ public class EntitiesGetOptions {
     // if entityIds is specified, paging params will be ignored.
     @QueryParam("id")
     private List<Long> entityIds;
+
+    // this parameter only applies for 'Released' entities
     @QueryParam("timestamp")
     private Long timestamp;
+
+    // defaults to get 'Released' entities
+    @QueryParam("status")
+    private String status;
 
     public EntitiesGetOptions ensurePagingValid() {
         if (start == null || size == null) {
@@ -58,5 +64,21 @@ public class EntitiesGetOptions {
 
     public void setEntityIds(List<Long> entityIds) {
         this.entityIds = entityIds;
+    }
+
+    public Long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Long timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

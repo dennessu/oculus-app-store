@@ -11,10 +11,12 @@ import com.junbo.catalog.common.util.Constants;
 import com.junbo.catalog.core.OfferService;
 import com.junbo.catalog.db.repo.OfferDraftRepository;
 import com.junbo.catalog.db.repo.OfferRepository;
+import com.junbo.catalog.spec.model.common.EntitiesGetOptions;
 import com.junbo.catalog.spec.model.common.EntityGetOptions;
 import com.junbo.catalog.spec.model.common.Status;
 import com.junbo.catalog.spec.model.offer.Offer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +45,43 @@ public class OfferServiceImpl implements OfferService {
         checkOfferNotNull(offerId, offer);
 
         return offer;
+    }
+
+    @Override
+    public List<Offer> getOffers(EntitiesGetOptions options) {
+        if (CollectionUtils.isEmpty(options.getEntityIds())) {
+            List<Offer> offers = new ArrayList<>();
+
+            for (Long offerId : options.getEntityIds()) {
+                Offer offer;
+                if (Status.RELEASED.equalsIgnoreCase(options.getStatus())) {
+                    offer = offerRepository.get(offerId, options.getTimestamp());
+                } else {
+                    offer = offerDraftRepository.get(offerId);
+                }
+
+                if (offer != null) {
+                    offers.add(offer);
+                }
+            }
+            return offers;
+        } else {
+            options.ensurePagingValid();
+            List<Offer> draftOffers = offerDraftRepository.getOffers(options.getStart(), options.getSize());
+            if (!Status.RELEASED.equalsIgnoreCase(options.getStatus())) {
+                return draftOffers;
+            }
+
+            List<Offer> offers = new ArrayList<>();
+            for (Offer draftOffer : draftOffers) {
+                Offer offer = offerRepository.get(draftOffer.getId(), options.getTimestamp());
+                if (offer != null) {
+                    offers.add(offer);
+                }
+            }
+
+            return offers;
+        }
     }
 
     @Override
