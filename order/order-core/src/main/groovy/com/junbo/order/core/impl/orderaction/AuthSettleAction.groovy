@@ -29,7 +29,7 @@ class AuthSettleAction implements Action {
                 return Promise.pure(b)
             }
         } ).syncThen { // TODO: update order status according to balance status.
-            ActionUtils.DEFAULT_RESULT
+            return null
         }
     }
 }

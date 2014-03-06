@@ -12,6 +12,10 @@
             <wf:action ref="createOrderAction"/>
             <wf:action ref="immediateSettleAction"/>
             <wf:action ref="fulfillmentAction"/>
+            <wf:transition on="*" to="endOrder"/>
         </wf:action-state>
+
+        <wf:end-state id="endOrder">
+        </wf:end-state>
     </wf:flow>
 </beans>

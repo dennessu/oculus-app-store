@@ -30,6 +30,8 @@ class MockPaymentInstrumentResource extends BaseMock implements PaymentInstrumen
         pi.isValidated = true
         pi.status = 'ACTIVE'
         pi.type = 'CREDIT_CARD'
+        pi.admins = [generateLong()]
+        pi.userId = pi.admins[0]
         return Promise.pure(pi)
     }
 

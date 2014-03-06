@@ -26,6 +26,6 @@ class CreateOrderAction implements Action {
         def orderWithId = context.orderServiceContext.orderRepository.createOrder(
                 context.orderServiceContext.order, orderEvent)
         context.orderServiceContext.setOrder(orderWithId)
-        return Promise.pure(ActionUtils.DEFAULT_RESULT)
+        return Promise.pure(null)
     }
 }
