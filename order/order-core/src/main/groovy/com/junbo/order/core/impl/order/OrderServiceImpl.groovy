@@ -118,28 +118,28 @@ class OrderServiceImpl implements OrderService {
 
     @Override
     Promise<Order> getOrderByOrderId(Long orderId) {
-        expandOrder(null).syncThen { OrderServiceContext context ->
-            context.setOrderId(orderId)
-            flowExecutor.executeFlow(flowSelector.select(context, OrderServiceOperation.GET), context)
-                    .syncThen { List<Order> orders ->
-                if (CollectionUtils.isEmpty(orders)) {
-                    return Promise.pure(null)
-                }
-                def order = orders.get(0)
-                // order items
-                order.setOrderItems(orderRepository.getOrderItems(orderId))
-                // rating info
-                order.totalAmount = 0
-                order.orderItems?.each { OrderItem orderItem ->
-                    if (orderItem.totalAmount != null) {
-                        order.totalAmount += orderItem.totalAmount
-                    }
-                }
-                // payment instrument
-                order.setPaymentInstruments(orderRepository.getPaymentInstrumentIds(orderId))
-                // discount
-                order.setDiscounts(orderRepository.getDiscounts(orderId))
+        OrderServiceContext context = new OrderServiceContext()
+        context.setOrderId(orderId)
+        context.setOrderRepository(orderRepository)
+        flowExecutor.executeFlow(flowSelector.select(context, OrderServiceOperation.GET), context)
+                .syncThen { List<Order> orders ->
+            if (CollectionUtils.isEmpty(orders)) {
+                return Promise.pure(null)
             }
+            def order = orders.get(0)
+            // order items
+            order.setOrderItems(orderRepository.getOrderItems(orderId))
+            // rating info
+            order.totalAmount = 0
+            order.orderItems?.each { OrderItem orderItem ->
+                if (orderItem.totalAmount != null) {
+                    order.totalAmount += orderItem.totalAmount
+                }
+            }
+            // payment instrument
+            order.setPaymentInstruments(orderRepository.getPaymentInstrumentIds(orderId))
+            // discount
+            order.setDiscounts(orderRepository.getDiscounts(orderId))
         }
     }
 
