@@ -1,0 +1,49 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
+ */
+package com.junbo.entitlement.rest.exceptionmapper;
+
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
+import com.junbo.entitlement.spec.error.AppErrors;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.ValidationException;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.ExceptionMapper;
+
+/**
+ * Common exception mapper. Convert exceptions to json error message.
+ */
+public class RestExceptionMapper implements ExceptionMapper<Exception> {
+    @Override
+    public Response toResponse(Exception e) {
+        if (e instanceof WebApplicationException) {    //common service exception
+            return ((WebApplicationException) e).getResponse();
+        } else if (e instanceof UnrecognizedPropertyException) {    //unnecessary field exception
+            return AppErrors.INSTANCE.unnecessaryField(
+                    ((UnrecognizedPropertyException) e).getUnrecognizedPropertyName()).exception().getResponse();
+        } else if (e instanceof InvalidFormatException) {    //field invalid format exception
+            return AppErrors.INSTANCE.fieldNotCorrect(
+                    ((InvalidFormatException) e).getPathReference(), e.getMessage()).exception().getResponse();
+        } else if (e instanceof ValidationException) {    //validation exception
+            if (e instanceof ConstraintViolationException) {
+                ConstraintViolationException ex = (ConstraintViolationException) e;
+                StringBuilder sb = new StringBuilder();
+                for (ConstraintViolation cv : ex.getConstraintViolations()) {
+                    sb.append(cv.getPropertyPath()).append(" ")
+                            .append(cv.getMessage()).append(". ");
+                }
+                return AppErrors.INSTANCE.validation(sb.toString()).exception().getResponse();
+            } else {
+                return AppErrors.INSTANCE.validation(e.getMessage()).exception().getResponse();
+            }
+        } else {    //other exceptions
+            return AppErrors.INSTANCE.unCaught(e.getMessage()).exception().getResponse();
+        }
+    }
+}

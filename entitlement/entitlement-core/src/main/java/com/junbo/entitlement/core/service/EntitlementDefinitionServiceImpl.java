@@ -6,11 +6,9 @@
 
 package com.junbo.entitlement.core.service;
 
-import com.junbo.entitlement.common.exception.FieldNotMatchException;
-import com.junbo.entitlement.common.exception.MissingFieldException;
-import com.junbo.entitlement.common.exception.NotFoundException;
 import com.junbo.entitlement.core.EntitlementDefinitionService;
 import com.junbo.entitlement.db.repository.EntitlementDefinitionRepository;
+import com.junbo.entitlement.spec.error.AppErrors;
 import com.junbo.entitlement.spec.model.EntitlementDefinition;
 import com.junbo.entitlement.spec.model.PageMetadata;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +29,7 @@ public class EntitlementDefinitionServiceImpl extends BaseService implements Ent
     public EntitlementDefinition getEntitlementDefinition(Long entitlementDefinitionId) {
         EntitlementDefinition entitlementDefinition = entitlementDefinitionRepository.get(entitlementDefinitionId);
         if (entitlementDefinition == null) {
-            throw new NotFoundException("entitlementDefinition", entitlementDefinitionId);
+            throw AppErrors.INSTANCE.notFound("entitlementDefinition", entitlementDefinitionId).exception();
         }
         checkDeveloper(entitlementDefinition.getDeveloperId());
         return entitlementDefinition;
@@ -42,7 +40,7 @@ public class EntitlementDefinitionServiceImpl extends BaseService implements Ent
     public List<EntitlementDefinition> getEntitlementDefinitions(Long developerId, String group, String tag,
                                                                  String type, PageMetadata pageMetadata) {
         if (developerId == null) {
-            throw new MissingFieldException("developerId");
+            throw AppErrors.INSTANCE.missingField("developerId").exception();
         }
         checkDeveloper(developerId);
         return entitlementDefinitionRepository.getByParams(developerId, group, tag, type, pageMetadata);
@@ -63,14 +61,14 @@ public class EntitlementDefinitionServiceImpl extends BaseService implements Ent
                 entitlementDefinitionRepository.get(entitlementDefinitionId);
 
         if (existingEntitlementDefinition == null) {
-            throw new NotFoundException("entitlementDefinition", entitlementDefinitionId);
+            throw AppErrors.INSTANCE.notFound("entitlementDefinition", entitlementDefinitionId).exception();
         }
 
         checkDeveloper(existingEntitlementDefinition.getDeveloperId());
 
         if (!existingEntitlementDefinition.getDeveloperId().equals(entitlementDefinition.getDeveloperId())) {
-            throw new FieldNotMatchException("developerId", entitlementDefinition.getDeveloperId().toString(),
-                    existingEntitlementDefinition.getDeveloperId().toString());
+            throw AppErrors.INSTANCE.fieldNotMatch("developerId", entitlementDefinition.getDeveloperId().toString(),
+                    existingEntitlementDefinition.getDeveloperId().toString()).exception();
         }
 
         existingEntitlementDefinition.setTag(entitlementDefinition.getTag());
@@ -86,7 +84,7 @@ public class EntitlementDefinitionServiceImpl extends BaseService implements Ent
         EntitlementDefinition existingEntitlementDefinition =
                 entitlementDefinitionRepository.get(entitlementDefinitionId);
         if (existingEntitlementDefinition == null) {
-            throw new NotFoundException("entitlementDefinition", entitlementDefinitionId);
+            throw AppErrors.INSTANCE.notFound("entitlementDefinition", entitlementDefinitionId).exception();
         }
         checkDeveloper(existingEntitlementDefinition.getDeveloperId());
         entitlementDefinitionRepository.delete(existingEntitlementDefinition);

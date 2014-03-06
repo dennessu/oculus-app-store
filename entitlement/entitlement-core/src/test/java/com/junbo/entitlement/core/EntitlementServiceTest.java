@@ -7,7 +7,6 @@
 package com.junbo.entitlement.core;
 
 import com.junbo.entitlement.common.def.EntitlementStatusReason;
-import com.junbo.entitlement.common.exception.ExpirationTimeBeforeGrantTimeException;
 import com.junbo.entitlement.common.lib.CloneUtils;
 import com.junbo.entitlement.common.lib.EntitlementContext;
 import com.junbo.entitlement.db.entity.def.EntitlementStatus;
@@ -24,6 +23,7 @@ import org.testng.annotations.ExpectedExceptions;
 import org.testng.annotations.Test;
 
 import javax.sql.DataSource;
+import javax.ws.rs.WebApplicationException;
 import java.util.Date;
 import java.util.List;
 
@@ -55,7 +55,7 @@ public class EntitlementServiceTest extends AbstractTransactionalTestNGSpringCon
     }
 
     @Test
-    @ExpectedExceptions(ExpirationTimeBeforeGrantTimeException.class)
+    @ExpectedExceptions(WebApplicationException.class)
     public void testAddWrongDateEntitlement() {
         Entitlement entitlement = buildAnEntitlement();
         Date currentDate = new Date();
