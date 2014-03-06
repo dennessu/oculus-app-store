@@ -26,7 +26,7 @@ class ValidateResponseType implements Action {
         def contextWrapper = new ActionContextWrapper(context)
 
         def parameterMap = contextWrapper.parameterMap
-        def appClient = contextWrapper.appClient
+        def client = contextWrapper.client
 
         String responseTypeParam = parameterMap.getFirst(OAuthParameters.RESPONSE_TYPE)
 
@@ -37,7 +37,7 @@ class ValidateResponseType implements Action {
             responseTypes.each { String responseTypeStr ->
                 if (ResponseType.isValid(responseTypeStr)) {
                     ResponseType responseType = ResponseType.valueOf(responseTypeStr.toUpperCase())
-                    if (appClient.allowedResponseTypes.contains(responseType)) {
+                    if (client.allowedResponseTypes.contains(responseType)) {
                         responseTypeSet.add(responseType)
                     } else {
                         throw AppExceptions.INSTANCE.invalidResponseType(responseTypeParam).exception()

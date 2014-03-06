@@ -12,7 +12,7 @@ import groovy.transform.CompileStatic
  * Javadoc.
  */
 @CompileStatic
-class AppClientEntity extends BaseEntity {
+class ClientEntity extends BaseEntity {
     String clientId
     String clientSecret
     Set<String> allowedRedirectUris

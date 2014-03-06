@@ -6,34 +6,34 @@
 package com.junbo.oauth.db.dao.redis
 
 import com.junbo.oauth.common.JsonMarshaller
-import com.junbo.oauth.db.dao.AppClientDAO
-import com.junbo.oauth.db.entity.AppClientEntity
+import com.junbo.oauth.db.dao.ClientDAO
+import com.junbo.oauth.db.entity.ClientEntity
 import groovy.transform.CompileStatic
 
 /**
  * Javadoc.
  */
 @CompileStatic
-class RedisAppClientDAOImpl extends RedisBaseDAO implements AppClientDAO {
+class RedisClientDAOImpl extends RedisBaseDAO implements ClientDAO {
 
     @Override
-    AppClientEntity save(AppClientEntity entity) {
+    ClientEntity save(ClientEntity entity) {
         jedis.set(namespace + entity.clientId, JsonMarshaller.marshall(entity))
         return entity
     }
 
     @Override
-    AppClientEntity get(String id) {
+    ClientEntity get(String id) {
         String entityString = jedis.get(namespace + id)
         if (entityString != null) {
-            return JsonMarshaller.unmarshall(AppClientEntity, entityString)
+            return JsonMarshaller.unmarshall(ClientEntity, entityString)
         }
 
         return null
     }
 
     @Override
-    AppClientEntity update(AppClientEntity entity) {
+    ClientEntity update(ClientEntity entity) {
         jedis.set(namespace + entity.clientId, JsonMarshaller.marshall(entity))
         return entity
     }

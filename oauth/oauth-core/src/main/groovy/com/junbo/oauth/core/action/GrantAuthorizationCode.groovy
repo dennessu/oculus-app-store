@@ -47,7 +47,7 @@ class GrantAuthorizationCode implements Action {
         def parameterMap = contextWrapper.parameterMap
 
         if (oauthInfo.responseTypes.contains(ResponseType.CODE)) {
-            def appClient = contextWrapper.appClient
+            def client = contextWrapper.client
             def loginState = contextWrapper.loginState
 
             String nonce = null
@@ -59,7 +59,7 @@ class GrantAuthorizationCode implements Action {
             }
 
             AuthorizationCode authorizationCode = new AuthorizationCode(
-                    clientId: appClient.clientId,
+                    clientId: client.clientId,
                     userId: loginState.userId,
                     scopes: oauthInfo.scopes,
                     nonce: nonce,

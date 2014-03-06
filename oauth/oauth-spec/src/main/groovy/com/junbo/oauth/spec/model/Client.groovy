@@ -8,10 +8,10 @@ package com.junbo.oauth.spec.model
 import groovy.transform.CompileStatic
 
 /**
- * AppClient.
+ * Client.
  */
 @CompileStatic
-class AppClient {
+class Client {
     String clientId
     String clientSecret
     Set<String> allowedRedirectUris

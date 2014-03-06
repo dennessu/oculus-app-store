@@ -3,14 +3,15 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.oauth.db.dao
+package com.junbo.oauth.db.repo
 
-import com.junbo.oauth.db.entity.AppClientEntity
+import com.junbo.oauth.spec.model.Client
 import groovy.transform.CompileStatic
 
 /**
  * Javadoc.
  */
 @CompileStatic
-interface AppClientDAO extends BaseDAO<AppClientEntity, String> {
+interface ClientRepository {
+    Client getClient(String clientId)
 }

@@ -5,8 +5,8 @@
  */
 package com.junbo.oauth.db.repo.impl
 
-import com.junbo.oauth.db.repo.AppClientRepository
-import com.junbo.oauth.spec.model.AppClient
+import com.junbo.oauth.db.repo.ClientRepository
+import com.junbo.oauth.spec.model.Client
 import com.junbo.oauth.spec.model.ResponseType
 import groovy.transform.CompileStatic
 
@@ -14,11 +14,11 @@ import groovy.transform.CompileStatic
  * Javadoc.
  */
 @CompileStatic
-class HackAppClientRepo implements AppClientRepository {
-    private final AppClient appClient
+class HackClientRepo implements ClientRepository {
+    private final Client client
 
-    HackAppClientRepo() {
-        appClient = new AppClient(
+    HackClientRepo() {
+        client = new Client(
                 clientId: 'client',
                 clientSecret: 'secret',
                 defaultRedirectUri: 'http://localhost'
@@ -27,26 +27,26 @@ class HackAppClientRepo implements AppClientRepository {
         Set<String> redirectUris = []
         redirectUris.add('http://localhost')
         redirectUris.add('*')
-        appClient.setAllowedRedirectUris(redirectUris)
+        client.setAllowedRedirectUris(redirectUris)
 
         Set<String> scopes = []
         scopes.add('openid')
         scopes.add('identity')
-        appClient.setAllowedScopes(scopes)
+        client.setAllowedScopes(scopes)
 
         Set<ResponseType> responseTypes = []
         responseTypes.add(ResponseType.CODE)
         responseTypes.add(ResponseType.ID_TOKEN)
         responseTypes.add(ResponseType.TOKEN)
-        appClient.setAllowedResponseTypes(responseTypes)
+        client.setAllowedResponseTypes(responseTypes)
 
-        appClient.idTokenIssuer = 'www.junbo.com'
+        client.idTokenIssuer = 'www.junbo.com'
     }
 
     @Override
-    AppClient getAppClient(String clientId) {
-        if (clientId == appClient.clientId) {
-            return appClient
+    Client getClient(String clientId) {
+        if (clientId == client.clientId) {
+            return client
         }
         return null
     }
