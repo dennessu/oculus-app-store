@@ -7,13 +7,13 @@
 package com.junbo.order.core;
 
 import com.junbo.langur.core.promise.Promise;
-import com.junbo.order.core.impl.orderaction.context.BaseContext;
+import com.junbo.order.core.impl.orderaction.context.OrderActionContext;
 
 /**
  * @param <T> this describes type parameter
  * Created by chriszhu on 2/7/14.
  */
-public interface OrderAction<T extends BaseContext> {
+public interface OrderAction<T extends OrderActionContext> {
 
     Promise<T> execute(T context);
 }

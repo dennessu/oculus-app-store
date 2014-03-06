@@ -1,11 +1,12 @@
 package com.junbo.order.core.impl.orderaction
 
-import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.enums.BalanceType
+import com.junbo.billing.spec.model.Balance
 import com.junbo.langur.core.promise.Promise
-import com.junbo.order.core.OrderAction
+import com.junbo.langur.core.webflow.action.Action
+import com.junbo.langur.core.webflow.action.ActionContext
+import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.core.impl.common.CoreBuilder
-import com.junbo.order.core.impl.orderaction.context.BaseContext
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 
@@ -14,10 +15,11 @@ import groovy.transform.TypeChecked
  */
 @CompileStatic
 @TypeChecked
-class AuthSettleAction implements OrderAction<BaseContext> {
+class AuthSettleAction implements Action {
 
     @Override
-    Promise<BaseContext> execute(BaseContext context) {
+    Promise<ActionResult> execute(ActionContext actionContext) {
+        def context = ActionUtils.getOrderActionContext(actionContext)
         Balance balance = CoreBuilder.buildBalance(context.orderServiceContext, BalanceType.DELAY_DEBIT)
         Promise promise = context.orderServiceContext.billingFacade?.createBalance(balance)
         promise.then(new Promise.Func<Balance, Promise>() {
@@ -29,9 +31,8 @@ class AuthSettleAction implements OrderAction<BaseContext> {
                 context.orderServiceContext.balances.add(b)
                 return Promise.pure(b)
             }
-        } )
-
-        // TODO: update order status according to balance status.
-        return Promise.pure(context)
+        } ).syncThen { // TODO: update order status according to balance status.
+            ActionUtils.DEFAULT_RESULT
+        }
     }
 }

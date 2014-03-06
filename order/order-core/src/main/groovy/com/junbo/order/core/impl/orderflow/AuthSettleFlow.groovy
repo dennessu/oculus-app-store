@@ -8,7 +8,7 @@ import com.junbo.order.core.impl.orderaction.CreateOrderAction
 import com.junbo.order.core.impl.orderaction.FulfillmentAction
 import com.junbo.order.core.impl.orderaction.RatingAction
 import com.junbo.order.core.impl.orderaction.ValidateAction
-import com.junbo.order.core.impl.orderaction.context.BaseContext
+import com.junbo.order.core.impl.orderaction.context.OrderActionContext
 import com.junbo.order.spec.model.Order
 import groovy.transform.CompileStatic
 
@@ -24,7 +24,7 @@ class AuthSettleFlow extends BaseSettleFlow {
 
     @Override
     Promise<List<Order>> execute(OrderServiceContext order) {
-        BaseContext context = new BaseContext()
+        OrderActionContext context = new OrderActionContext()
         context.setOrderServiceContext(order)
 
         return execute(order,  (List<OrderAction>) [

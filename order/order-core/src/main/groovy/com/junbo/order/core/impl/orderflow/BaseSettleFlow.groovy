@@ -4,7 +4,7 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.order.core.OrderAction
 import com.junbo.order.core.OrderFlow
 import com.junbo.order.core.impl.order.OrderServiceContext
-import com.junbo.order.core.impl.orderaction.context.BaseContext
+import com.junbo.order.core.impl.orderaction.context.OrderActionContext
 import com.junbo.order.spec.model.Order
 import groovy.transform.CompileStatic
 import org.springframework.util.Assert
@@ -25,16 +25,16 @@ abstract class BaseSettleFlow implements OrderFlow {
 
     protected Promise<List<Order>> execute(OrderServiceContext order, List<OrderAction> orderActions) {
         Assert.notEmpty(orderActions, 'orderActions could not be empty')
-        BaseContext context = new BaseContext()
+        OrderActionContext context = new OrderActionContext()
         context.setOrderServiceContext(order)
-        Promise<BaseContext> lastPromise = Promise.pure(context)
+        Promise<OrderActionContext> lastPromise = Promise.pure(context)
         orderActions.each { OrderAction action ->
             lastPromise = lastPromise.then {
                 action.execute(context)
             }
         }
-        lastPromise.syncThen { BaseContext result ->
-            [((BaseContext)result).orderServiceContext.order]
+        lastPromise.syncThen { OrderActionContext result ->
+            [((OrderActionContext)result).orderServiceContext.order]
         }
     }
 }
