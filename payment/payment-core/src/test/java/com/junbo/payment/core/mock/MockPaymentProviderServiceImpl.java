@@ -28,7 +28,7 @@ public class MockPaymentProviderServiceImpl implements PaymentProviderService {
         request.setAccountNum("1111");
         request.setStatus(PIStatus.ACTIVE.toString());
         request.getCreditCardRequest().setExternalToken(piExternalToken);
-        request.getCreditCardRequest().setType(CreditCardType.Visa.toString());
+        request.getCreditCardRequest().setType(CreditCardType.VISA.toString());
         request.getCreditCardRequest().setCommercial("UNKNOW");
         request.getCreditCardRequest().setDebit("UNKNOW");
         request.getCreditCardRequest().setPrepaid("UNKNOW");

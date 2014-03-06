@@ -14,6 +14,8 @@ import com.junbo.payment.core.provider.PaymentProviderService;
 import com.junbo.payment.core.util.PaymentUtil;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentTransaction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
 
@@ -23,6 +25,7 @@ import org.springframework.beans.factory.InitializingBean;
 public class BrainTreePaymentProviderServiceImpl implements PaymentProviderService, InitializingBean {
     private static final String PROVIDER_NAME = "BrainTree";
     private static final String CUSTOMER_ID = "junbo_inc_bt_customerId";
+    private static final Logger LOGGER = LoggerFactory.getLogger(BrainTreePaymentProviderServiceImpl.class);
     private static BraintreeGateway gateway;
     private String environment;
     private String merchantId;
@@ -35,6 +38,8 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
             env = Environment.valueOf(environment);
         }catch(Exception ex){
             //TODO: handle exception
+            LOGGER.error("not able to get the right environment");
+            throw AppServerExceptions.INSTANCE.invalidProviderRequest(PROVIDER_NAME).exception();
         }
         gateway = new BraintreeGateway(env, merchantId, publicKey, privateKey);
     }
@@ -84,10 +89,10 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
         try {
             result = gateway.creditCard().create(ccRequest);
         }catch (Exception ex){
-            throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, ex.getMessage()).exception();
+            handleProviderException(ex);
         }
         if(result.isSuccess()){
-            request.setAccountNum(result.getTarget().getLast4());
+            request.setAccountNum(result.getTarget().getMaskedNumber());
             request.getCreditCardRequest().setExternalToken(result.getTarget().getToken());
             request.getCreditCardRequest().setType(
                     PaymentUtil.getCreditCardType(result.getTarget().getCardType()).toString());
@@ -107,7 +112,7 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
         try{
             result = gateway.creditCard().delete(token);
         }catch(Exception ex){
-            throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, ex.getMessage()).exception();
+            handleProviderException(ex);
         }
         if(!result.isSuccess()){
             handleProviderError(result);
@@ -122,7 +127,7 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
         try{
             result = gateway.transaction().sale(request);
         }catch (Exception ex){
-            throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, ex.getMessage()).exception();
+            handleProviderException(ex);
         }
         if(result.isSuccess()){
             paymentRequest.setExternalToken(result.getTarget().getId());
@@ -143,7 +148,7 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
                 result = gateway.transaction().submitForSettlement(transactionId, request.getChargeInfo().getAmount());
             }
         }catch (Exception ex){
-            throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, ex.getMessage()).exception();
+            handleProviderException(ex);
         }
         if (result.isSuccess()) {
             // transaction successfully submitted for settlement
@@ -163,7 +168,7 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
         try{
             result = gateway.transaction().sale(request);
         }catch (Exception ex){
-            throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, ex.getMessage()).exception();
+            handleProviderException(ex);
         }
         if(result.isSuccess()){
             paymentRequest.setExternalToken(result.getTarget().getId());
@@ -179,7 +184,7 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
         try{
             result = gateway.transaction().voidTransaction(transactionId);
         }catch(Exception ex){
-            throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, ex.getMessage()).exception();
+            handleProviderException(ex);
         }
         if (result.isSuccess()) {
             // transaction successfully voided
@@ -194,7 +199,13 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
         for (ValidationError error : result.getErrors().getAllDeepValidationErrors()) {
             sbErrorCodes.append(error.getCode() + "_");
         }
+        LOGGER.error("gateway validations errors with codes: " + sbErrorCodes.toString());
         throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, sbErrorCodes.toString()).exception();
+    }
+
+    private void handleProviderException(Exception ex){
+        LOGGER.error("provider:" + PROVIDER_NAME + "gateway exception: " + ex.toString());
+        throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, ex.toString()).exception();
     }
 
     @Override
@@ -236,6 +247,7 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
         try{
             dummyCustomer = gateway.customer().create(request);
         }catch (Exception ex){
+            LOGGER.error("gateway exception: " + ex.getMessage());
             throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, ex.getMessage()).exception();
         }
         if(dummyCustomer.isSuccess()){

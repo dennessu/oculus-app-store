@@ -7,6 +7,7 @@
 package com.junbo.payment.core.impl;
 
 import com.junbo.langur.core.promise.Promise;
+import com.junbo.langur.core.transaction.AsyncTransactionTemplate;
 import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.core.PaymentInstrumentService;
 import com.junbo.payment.core.PaymentTransactionService;
@@ -78,9 +79,7 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
         }
         final PaymentProviderService provider = providerRoutingService.getPaymentProvider(
                 PaymentUtil.getPIType(pi.getType()));
-        String merchantRef = merchantAccountRepository.getMerchantAccountRef(
-                paymentProviderRepository.getProviderId(provider.getProviderName())
-                , request.getChargeInfo().getCurrency());
+        String merchantRef = getMerchantRef(request, provider.getProviderName());
         request.setPaymentProvider(provider.getProviderName());
         request.setMerchantAccount(merchantRef);
         request.setStatus(PaymentStatus.AUTH_CREATED.toString());
@@ -190,9 +189,7 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
         }
         final PaymentProviderService provider = providerRoutingService.getPaymentProvider(
                 PaymentUtil.getPIType(pi.getType()));
-        String merchantRef = merchantAccountRepository.getMerchantAccountRef(
-                paymentProviderRepository.getProviderId(provider.getProviderName())
-                , request.getChargeInfo().getCurrency());
+        String merchantRef = getMerchantRef(request, provider.getProviderName());
         request.setPaymentProvider(provider.getProviderName());
         request.setMerchantAccount(merchantRef);
         request.setStatus(PaymentStatus.SETTLE_CREATED.toString());
@@ -389,7 +386,8 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
     }
 
     private PaymentTransaction saveAndCommitPayment(final PaymentTransaction request, final PaymentAPI api) {
-        TransactionTemplate template = new TransactionTemplate(transactionManager);
+        //TransactionTemplate template = new TransactionTemplate(transactionManager);
+        AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager);
         template.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRES_NEW);
         return template.execute(new TransactionCallback<PaymentTransaction>() {
             public PaymentTransaction doInTransaction(TransactionStatus txnStatus) {
@@ -402,7 +400,7 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
 
     private List<PaymentEvent> updatePaymentAndSaveEvent(final PaymentTransaction payment,
               final List<PaymentEvent> request, final PaymentAPI api, final PaymentStatus status){
-        TransactionTemplate template = new TransactionTemplate(transactionManager);
+        AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager);
         template.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRES_NEW);
         return template.execute(new TransactionCallback<List<PaymentEvent>>() {
             public List<PaymentEvent> doInTransaction(TransactionStatus txnStatus) {
@@ -415,6 +413,17 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
                 return request;
             }
         });
+    }
+
+    private String getMerchantRef(PaymentTransaction request, String providerName){
+        String merchantRef = merchantAccountRepository.getMerchantAccountRef(
+                paymentProviderRepository.getProviderId(providerName)
+                , request.getChargeInfo().getCurrency());
+        if(merchantRef == null || merchantRef.isEmpty()){
+            throw AppServerExceptions.INSTANCE.merchantRefNotAvailable(
+                    request.getChargeInfo().getCurrency()).exception();
+        }
+        return merchantRef;
     }
 
 }

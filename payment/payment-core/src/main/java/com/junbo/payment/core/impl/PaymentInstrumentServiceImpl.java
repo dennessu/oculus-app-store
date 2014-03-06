@@ -7,6 +7,7 @@
 package com.junbo.payment.core.impl;
 
 import com.junbo.langur.core.promise.Promise;
+import com.junbo.langur.core.transaction.AsyncTransactionTemplate;
 import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.core.exception.AppClientExceptions;
 import com.junbo.payment.core.exception.AppServerExceptions;
@@ -30,6 +31,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
+
 import java.util.Date;
 import java.util.List;
 
@@ -87,7 +89,7 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
     }
 
     private void saveAndCommitPI(final PaymentInstrument request) {
-        TransactionTemplate template = new TransactionTemplate(transactionManager);
+        AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager);
         template.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRES_NEW);
         template.execute(new TransactionCallback<Void>() {
             public Void doInTransaction(TransactionStatus txnStatus) {
@@ -107,13 +109,15 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
         if(piRequest == null){
             throw AppClientExceptions.INSTANCE.invalidPaymentInstrumentId(paymentInstrumentId.toString()).exception();
         }
+        paymentInstrumentRepository.delete(paymentInstrumentId);
+        /*TODO: need to evaluate whether to delete the PI in BrainTree Side.
         PaymentProviderService provider = providerRoutingService.getPaymentProvider(
                 PaymentUtil.getPIType(piRequest.getType()));
         provider.delete(piRequest.getCreditCardRequest().getExternalToken())
                 .then(new Promise.Func<Void, Promise<Void>>() {
                     @Override
                     public Promise<Void> apply(Void aVoid) {
-                        TransactionTemplate template = new TransactionTemplate(transactionManager);
+                        AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager);
                         template.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRES_NEW);
                         template.execute(new TransactionCallback<Void>() {
                             @Override
@@ -125,6 +129,7 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
                         return null;
                     }
                 });
+                */
     }
 
     @Override

@@ -7,12 +7,19 @@
 package com.junbo.payment.spec.enums;
 
 /**
- * credit type enum.
+ * credit credit type enum.
  */
 public enum CreditCardType {
-    Visa,
-    MasterCard,
-    AmericanExpress,
-    Discover,
-    JCB
+        AMEX,
+        CARTE_BLANCHE,
+        CHINA_UNION_PAY,
+        DINERS_CLUB_INTERNATIONAL,
+        DISCOVER,
+        JCB,
+        LASER,
+        MAESTRO,
+        MASTER_CARD,
+        SOLO,
+        SWITCH,
+        VISA;
 }

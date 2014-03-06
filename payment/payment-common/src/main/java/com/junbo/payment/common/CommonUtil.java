@@ -48,4 +48,14 @@ public final class CommonUtil {
     public static boolean toBool(String value){
         return value.equalsIgnoreCase("Yes") || value.equalsIgnoreCase("True");
     }
+
+    public static <T> List<T> filter(List<T> target, IPredicate<T> predicate) {
+        List<T> result = new ArrayList<T>();
+        for (T element: target) {
+            if (predicate.apply(element)) {
+                result.add(element);
+            }
+        }
+        return result;
+    }
 }
