@@ -9,10 +9,12 @@ import com.junbo.order.core.impl.order.OrderServiceContext
 import com.junbo.order.spec.model.*
 import com.junbo.rating.spec.model.request.OrderRatingItem
 import com.junbo.rating.spec.model.request.OrderRatingRequest
+import groovy.transform.CompileStatic
 
 /**
  * Created by chriszhu on 2/24/14.
  */
+@CompileStatic
 class CoreBuilder {
 
     static Balance buildBalance(OrderServiceContext context, BalanceType balanceType) {
@@ -50,25 +52,18 @@ class CoreBuilder {
     }
 
     static void fillRatingInfo(Order order, OrderRatingRequest ratingRequest) {
-        order.ratingInfo = buildRatingInfo(ratingRequest)
+        order.totalAmount = ratingRequest.orderBenefit.finalAmount
+        order.totalDiscount = ratingRequest.orderBenefit.discountAmount
+        order.totalShippingFeeDiscount = null
+        // TODO the shipping discount is not exposed by rating yet
+        order.totalShippingFeeDiscount = BigDecimal.ZERO
+        // TODO the honorUntilTime is not exposed by rating yet
+        order.honorUntilTime = null
+        // TODO support preorder amount
         for (OrderItem i in order.orderItems) {
-            i = CoreBuilder.buildItemRatingInfo(i, ratingRequest)
+            CoreBuilder.buildItemRatingInfo(i, ratingRequest)
         }
         // TODO append returned promotions to order
-    }
-
-    static RatingInfo buildRatingInfo(OrderRatingRequest ratingRequest) {
-        RatingInfo ratingInfo = new RatingInfo()
-        ratingInfo.totalAmount = ratingRequest.orderBenefit?.finalAmount
-        ratingInfo.totalDiscount = ratingRequest.orderBenefit?.discountAmount
-        ratingInfo.totalShippingFee = ratingRequest.shippingFee
-        // TODO the shipping discount is not exposed by rating yet
-        ratingInfo.totalShippingFeeDiscount = BigDecimal.ZERO
-        // TODO the honorUntilTime is not exposed by rating yet
-        ratingInfo.honorUntilTime = null
-        // TODO support preorder amount
-
-        return ratingInfo
     }
 
     static OrderItem buildItemRatingInfo(OrderItem item, OrderRatingRequest ratingRequest) {

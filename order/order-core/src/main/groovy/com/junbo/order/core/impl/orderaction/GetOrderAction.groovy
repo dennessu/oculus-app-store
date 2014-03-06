@@ -21,6 +21,6 @@ class GetOrderAction implements Action {
             context.orderServiceContext.setOrder(order)
         }
 
-        return Promise.pure(ActionUtils.DEFAULT_RESULT)
+        return Promise.pure(null)
     }
 }

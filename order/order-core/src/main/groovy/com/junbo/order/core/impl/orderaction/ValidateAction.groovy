@@ -21,7 +21,7 @@ class ValidateAction implements Action {
     Promise<ActionResult> execute(ActionContext actionContext) {
         def context = ActionUtils.getOrderActionContext(actionContext)
         validateUser(context).syncThen {
-            ActionUtils.DEFAULT_RESULT
+            return null
         }
     }
 
@@ -29,10 +29,11 @@ class ValidateAction implements Action {
         def order = context.orderServiceContext.order
         validatePayment(context) // validate payment
         // validate user
-        return context.orderServiceContext.identityFacade.getUser(order.user.value).then { User user ->
+        return context.orderServiceContext.identityFacade.getUser(order.user.value).syncThen { User user ->
             if (user.status != 'ACTIVE') {
                 throw AppErrors.INSTANCE.userStatusInvalid().exception()
             }
+            return null
         }
     }
 
@@ -43,6 +44,4 @@ class ValidateAction implements Action {
             throw AppErrors.INSTANCE.paymentStatusInvalid().exception()
         }
     }
-
-
 }

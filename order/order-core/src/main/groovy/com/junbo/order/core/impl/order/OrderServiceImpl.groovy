@@ -8,7 +8,6 @@ package com.junbo.order.core.impl.order
 import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.model.Balance
 import com.junbo.langur.core.promise.Promise
-import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.executor.FlowExecutor
 import com.junbo.order.clientproxy.billing.BillingFacade
 import com.junbo.order.clientproxy.identity.IdentityFacade
@@ -48,8 +47,6 @@ class OrderServiceImpl implements OrderService {
     FlowSelector flowSelector
     @Autowired
     FlowExecutor flowExecutor
-    @Autowired
-    OrderServiceContext orderServiceContext
 
     void setFlowSelector(FlowSelector flowSelector) {
         this.flowSelector = flowSelector
@@ -58,16 +55,22 @@ class OrderServiceImpl implements OrderService {
     @Override
     Promise<List<Order>> createOrders(Order order, ApiContext context) {
         // TODO: split orders
-        flowSelector.select(orderServiceContext, OrderServiceOperation.CREATE).syncThen { FlowType flowType ->
+        // TODO: expand external resources
+        def orderServiceContext = initOrderServiceContext(order, null)
+        flowSelector.select(orderServiceContext, OrderServiceOperation.CREATE).then { FlowType flowType ->
             executeFlow(flowType, orderServiceContext, null)
+        }.syncThen {
+            return [orderServiceContext.order]
         }
     }
 
     @Override
     Promise<List<Order>> settleQuote(Order order, ApiContext context) {
-        flowSelector.select(orderServiceContext, OrderServiceOperation.UPDATE_TENTATIVE).syncThen { FlowType flowType ->
+        def orderServiceContext = initOrderServiceContext(order, null)
+        flowSelector.select(orderServiceContext, OrderServiceOperation.UPDATE_TENTATIVE).then { FlowType flowType ->
             executeFlow(flowType, orderServiceContext, null)
-
+        }.syncThen {
+            return [orderServiceContext.order]
         }
     }
 
@@ -101,7 +104,7 @@ class OrderServiceImpl implements OrderService {
         orderRepository.createOrder(order, orderEvent)
 
         // Calculate Tax
-        def balanceRequest = CoreBuilder.buildBalance(orderServiceContext, BalanceType.DEBIT)
+        def balanceRequest = CoreBuilder.buildBalance(initOrderServiceContext(order, null), BalanceType.DEBIT)
         billingFacade.quoteBalance(balanceRequest).syncThen { Balance balance ->
             order.isTaxInclusive = balance.taxIncluded
             order.totalTax = balance.taxAmount
@@ -114,7 +117,7 @@ class OrderServiceImpl implements OrderService {
 
     @Override
     Promise<Order> getOrderByOrderId(Long orderId) {
-        orderServiceContext.orderId = orderId
+        def orderServiceContext = initOrderServiceContext(null, orderId)
         flowSelector.select(orderServiceContext, OrderServiceOperation.GET).syncThen { FlowType flowType ->
 
             executeFlow(flowType, orderServiceContext, null).syncThen { List<Order> orders ->
@@ -167,8 +170,14 @@ class OrderServiceImpl implements OrderService {
     private Promise<OrderServiceContext> executeFlow(FlowType flowType, OrderServiceContext context,
                                                      Map<String, Object> requestScope) {
         return flowExecutor.start(flowType.name(), ActionUtils.initRequestScope(context, requestScope)).syncThen {
-            ActionContext actionContext
-            return ActionUtils.getOrderActionContext(actionContext).orderServiceContext
+            return context
         }
+    }
+
+    private OrderServiceContext initOrderServiceContext(Order order, Long orderId) {
+        OrderServiceContext context = new OrderServiceContext()
+        context.order = order
+        context.orderId = orderId
+        return context
     }
 }

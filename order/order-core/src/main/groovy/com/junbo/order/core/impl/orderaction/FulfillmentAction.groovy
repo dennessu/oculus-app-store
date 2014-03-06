@@ -86,6 +86,6 @@ class FulfillmentAction implements Action {
         }
         LOGGER.warn('name=Unknown_Fulfillment_Status, fulfilmentId={}, orderItemId={}, status={}',
                 [fulfilmentItem.fulfilmentId.toString(), fulfilmentItem.orderItemId.toString(), fulfilmentItem.status])
-        return EventStatus.PROCESSING
+        return null
     }
 }
