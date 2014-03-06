@@ -144,9 +144,9 @@ class TokenGenerationServiceImpl implements TokenGenerationService {
     @Override
     IdToken generateIdToken(AppClient client, String issuer, Long userId, String nonce, Date lastAuthDate,
                             AuthorizationCode code, AccessToken accessToken) {
-        Assert.notNull(client)
-        Assert.notNull(issuer)
-        Assert.notNull(userId)
+        Assert.notNull(client, 'client is null')
+        Assert.notNull(issuer, 'issuer is null')
+        Assert.notNull(userId, 'userId is null')
 
         IdToken idToken = new IdToken(
                 iss: issuer,

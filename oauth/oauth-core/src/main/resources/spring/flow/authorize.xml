@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xmlns:wf="http://www.junbo.com/schema/webflow"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.junbo.com/schema/webflow http://www.junbo.com/schema/webflow-config/webflow.xsd">
+
+    <wf:flow id="authorizeFlow">
+        <wf:action-state id="validation">
+            <wf:action ref="getAppClientWebflow"/>
+            <wf:action ref="validateScopeWebflow"/>
+            <wf:action ref="validateRedirectUriWebflow"/>
+            <wf:action ref="validateResponseTypeWebflow"/>
+            <wf:action ref="validateDisplayWebflow"/>
+            <wf:action ref="validatePromptWebflow"/>
+            <wf:action ref="validateMaxAgeWebflow"/>
+            <wf:transition on="*" to="loadLoginState"/>
+        </wf:action-state>
+
+        <wf:action-state id="loadLoginState">
+            <wf:action ref="loadIdTokenHintWebflow"/>
+            <wf:action ref="loadLoginStateWebflow"/>
+            <wf:action ref="loadRememberMeTokenWebflow"/>
+            <wf:transition on="*" to="validateLoginStateAction"/>
+        </wf:action-state>
+
+        <wf:action-state id="validateLoginStateAction">
+            <wf:action ref="validateLoginStateWebflow"/>
+            <wf:action ref="saveLoginStateWebflow"/>
+            <wf:transition on="redirectLogin" to="redirectLogin"/>
+            <wf:transition on="*" to="grantAuthorizationCodeAction"/>
+        </wf:action-state>
+
+        <wf:action-state id="grantAuthorizationCodeAction">
+            <wf:action ref="grantAuthorizationCodeWebflow"/>
+            <wf:action ref="grantImplicitAccessTokenWebflow"/>
+            <wf:action ref="grantRememberMeTokenWebflow"/>
+            <wf:action ref="grantIdTokenWebflow"/>
+            <wf:action ref="buildRedirectUriWebflow"/>
+            <wf:transition on="*" to="endRedirect"/>
+        </wf:action-state>
+
+        <wf:view-state id="redirectLogin">
+            <wf:on-render>
+                <wf:action ref="redirectWebflow"/>
+            </wf:on-render>
+            <wf:transition on="login" to="redirectLogin">
+                <wf:action ref="authenticateUserWebflow"/>
+            </wf:transition>
+            <wf:transition on="loginSuccess" to="validateLoginStateAction"/>
+        </wf:view-state>
+
+        <wf:end-state id="endRedirect">
+            <wf:on-entry>
+                <wf:action ref="redirectWebflow"/>
+            </wf:on-entry>
+        </wf:end-state>
+    </wf:flow>
+
+</beans>

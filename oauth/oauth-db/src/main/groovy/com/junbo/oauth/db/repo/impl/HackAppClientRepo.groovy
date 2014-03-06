@@ -39,6 +39,8 @@ class HackAppClientRepo implements AppClientRepository {
         responseTypes.add(ResponseType.ID_TOKEN)
         responseTypes.add(ResponseType.TOKEN)
         appClient.setAllowedResponseTypes(responseTypes)
+
+        appClient.idTokenIssuer = 'www.junbo.com'
     }
 
     @Override

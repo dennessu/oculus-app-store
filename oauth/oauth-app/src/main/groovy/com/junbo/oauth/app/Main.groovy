@@ -32,7 +32,7 @@ class Main {
         def resourceConfig = new ResourceConfig()
 
         resourceConfig.packages('com.junbo.oauth.spec.endpoint.adapter')
-        resourceConfig.property('contextConfigLocation', 'classpath*:/spring/*.xml')
+        resourceConfig.property('contextConfigLocation', 'classpath*:/spring/**/*.xml')
         resourceConfig.register(RestExceptionMapper)
 
         def uri = URI.create('http://0.0.0.0:8082/oauth')

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xmlns:wf="http://www.junbo.com/schema/webflow"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.junbo.com/schema/webflow http://www.junbo.com/schema/webflow-config/webflow.xsd">
+
+    <wf:flow id="grantTokenFlow">
+        <wf:action-state id="validation">
+            <wf:action ref="authenticateClientWebflow"/>
+            <wf:action ref="validateGrantTypeWebflow"/>
+            <wf:transition on="AUTHORIZATION_CODE" to="authorizationCodeBranch"/>
+            <wf:transition on="PASSWORD" to="passwordBranch"/>
+            <wf:transition on="REFRESH_TOKEN" to="refreshTokenBranch"/>
+        </wf:action-state>
+
+        <wf:action-state id="authorizationCodeBranch">
+            <wf:action ref="grantTokenByCodeWebflow"/>
+            <wf:action ref="grantIdTokenWebflow"/>
+            <wf:transition on="*" to="grantRefreshToken"/>
+        </wf:action-state>
+
+        <wf:action-state id="passwordBranch">
+            <wf:action ref="validateScopeWebflow"/>
+            <wf:action ref="authenticateUserWebflow"/>
+            <wf:action ref="grantTokenByPasswordWebflow"/>
+            <wf:transition on="*" to="grantRefreshToken"/>
+        </wf:action-state>
+
+        <wf:action-state id="refreshTokenBranch">
+            <wf:action ref="validateScopeWebflow"/>
+            <wf:action ref="grantTokenByRefreshTokenWebflow"/>
+            <wf:transition on="*" to="grantRefreshToken"/>
+        </wf:action-state>
+
+        <wf:action-state id="grantRefreshToken">
+            <wf:action ref="grantRefreshTokenWebflow"/>
+            <wf:transition on="*" to="generateTokenResponse"/>
+        </wf:action-state>
+
+        <wf:end-state id="generateTokenResponse">
+            <wf:on-entry>
+                <wf:action ref="generateAccessTokenResponseWebflow"/>
+            </wf:on-entry>
+        </wf:end-state>
+    </wf:flow>
+
+</beans>

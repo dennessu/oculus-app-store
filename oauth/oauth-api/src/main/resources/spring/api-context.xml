@@ -16,6 +16,11 @@
         <property name="authorizationService" ref="authorizationService"/>
     </bean>
 
+    <!--<bean id="defaultAuthorizeEndpoint" class="com.junbo.oauth.api.endpoint.WebflowAuthorizeEndpointImpl">-->
+    <!--<property name="authorizeFlow" value="authorizeFlow"/>-->
+    <!--<property name="flowExecutor" ref="flowExecutor"/>-->
+    <!--</bean>-->
+
     <bean id="defaultTokenEndpoint" class="com.junbo.oauth.api.endpoint.TokenEndpointImpl">
         <property name="tokenService" ref="tokenService"/>
     </bean>

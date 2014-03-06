@@ -16,10 +16,7 @@ import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 
 import javax.ws.rs.container.ContainerRequestContext
-import javax.ws.rs.core.HttpHeaders
-import javax.ws.rs.core.NewCookie
-import javax.ws.rs.core.Response
-import javax.ws.rs.core.UriInfo
+import javax.ws.rs.core.*
 
 /**
  * Javadoc.
@@ -60,5 +57,11 @@ class AuthorizeEndpointImpl implements AuthorizeEndpoint {
         }
 
         return Promise.pure(responseBuilder.build())
+    }
+
+    @Override
+    Promise<Response> postAuthorize(HttpHeaders httpHeaders, MultivaluedMap<String, String> formParams,
+                                    ContainerRequestContext request) {
+        return Promise.pure(null)
     }
 }

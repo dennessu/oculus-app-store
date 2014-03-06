@@ -41,6 +41,6 @@ class ValidateGrantType implements Action {
         def oauthInfo = contextWrapper.oauthInfo
         oauthInfo.grantType = grantType
 
-        return Promise.pure(null)
+        return Promise.pure(new ActionResult(grantType.name()))
     }
 }

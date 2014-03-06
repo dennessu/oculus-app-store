@@ -16,8 +16,10 @@ import com.junbo.oauth.core.exception.AppExceptions
 import com.junbo.oauth.spec.model.LoginState
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
+import org.glassfish.jersey.server.ContainerRequest
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.StringUtils
+import org.springframework.web.util.UriComponentsBuilder
 
 /**
  * AuthenticateUser
@@ -66,6 +68,16 @@ class AuthenticateUser implements Action {
                 if ('TRUE'.equalsIgnoreCase(rememberMe)) {
                     contextWrapper.needRememberMe = true
                 }
+
+                def request = (ContainerRequest) contextWrapper.request
+
+                UriComponentsBuilder builder = UriComponentsBuilder.fromUri(request.baseUri)
+                builder.path(request.getPath(true))
+
+                builder.queryParam(OAuthParameters.CONVERSATION_ID, contextWrapper.conversationId)
+                builder.queryParam(OAuthParameters.EVENT, 'loginSuccess')
+
+                contextWrapper.redirectUriBuilder = builder
 
                 return Promise.pure(new ActionResult('loginSuccess'))
             }
