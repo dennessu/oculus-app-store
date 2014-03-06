@@ -38,7 +38,7 @@ public class BaseDao<T extends Entity> {
     }
 
     public Long insert(T t) {
-        t.setId(generateId(t.getShardId()));
+        t.setId(generateId(t.getShardMasterId()));
         Date now = EntitlementContext.now();
         t.setCreatedBy("DEFAULT");  //TODO
         t.setCreatedTime(now);

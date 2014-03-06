@@ -43,11 +43,6 @@
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
-    <bean id="jedisInstance" class="redis.clients.jedis.Jedis">
-        <constructor-arg name="host" value="localhost"/>
-        <constructor-arg name="port" value="6379"/>
-    </bean>
-
     <tx:annotation-driven/>
 
     <!-- Dao -->
@@ -59,8 +54,6 @@
         <property name="entityType" value="com.junbo.entitlement.db.entity.EntitlementDefinitionEntity"/>
     </bean>
     <bean id="entitlementHistoryDao" class="com.junbo.entitlement.db.dao.hibernate.EntitlementHistoryDaoImpl"/>
-
-    <bean id="entitlementRedisDao" class="com.junbo.entitlement.db.dao.redis.EntitlementDaoImpl"/>
 
     <!-- repository -->
     <bean id="entitlementRepository" class="com.junbo.entitlement.db.repository.EntitlementRepository"/>

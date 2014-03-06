@@ -46,7 +46,7 @@
               primary key (entitlement_id)
             );
             create table entitlement_history (
-              entitlement_history_id SERIAL,
+              entitlement_history_id bigint not null,
               action varchar(32) not null,
               entitlement_id bigint not null,
               entitlement_definition_id bigint not null,
@@ -69,7 +69,6 @@
               modified_time timestamp not null,
               primary key (entitlement_history_id)
             );
-            create sequence entitlement_history_id_sequence increment by 1 minvalue 1 no maxvalue start with 1;
                 ]]>
         </sql>
     </changeSet>

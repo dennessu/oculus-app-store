@@ -7,12 +7,12 @@
 package com.junbo.entitlement.core.service;
 
 import com.junbo.entitlement.common.def.EntitlementStatusReason;
-import com.junbo.entitlement.common.exception.*;
 import com.junbo.entitlement.common.lib.CloneUtils;
 import com.junbo.entitlement.core.EntitlementService;
 import com.junbo.entitlement.db.entity.def.EntitlementStatus;
 import com.junbo.entitlement.db.repository.EntitlementDefinitionRepository;
 import com.junbo.entitlement.db.repository.EntitlementRepository;
+import com.junbo.entitlement.spec.error.AppErrors;
 import com.junbo.entitlement.spec.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,7 +35,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     public Entitlement getEntitlement(Long entitlementId) {
         Entitlement entitlement = entitlementRepository.get(entitlementId);
         if (entitlement == null) {
-            throw new NotFoundException("entitlement", entitlementId);
+            throw AppErrors.INSTANCE.notFound("entitlement", entitlementId).exception();
         }
         return entitlement;
     }
@@ -48,7 +48,8 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
 
         if (EntitlementStatus.LIFECYCLE_NOT_MANAGED_STATUS.contains(
                 EntitlementStatus.valueOf(entitlement.getStatus()))) {
-            throw new FieldNotCorrectException("status", "status can not be DELETED or BANNED when created");
+            throw AppErrors.INSTANCE.fieldNotCorrect("status",
+                    "status can not be DELETED or BANNED when created").exception();
         }
 
         checkEntitlementDefinition(entitlement.getEntitlementDefinitionId());
@@ -69,11 +70,6 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
             Entitlement existingEntitlement = entitlementRepository.getExistingManagedEntitlement(
                     entitlement.getUserId(), entitlement.getEntitlementDefinitionId());
             if (existingEntitlement != null) {
-                if (!existingEntitlement.getManagedLifecycle()) {
-                    throw new EntitlementException("There is already a entitlement with lifecycleManaged, " +
-                            "set existing entitlement's lifecycleManaged to false " +
-                            "or set the new entitlement's lifecycleManaged to false");
-                }
                 if (entitlement.getExpirationTime() != null) {
                     existingEntitlement.setExpirationTime(new Date(existingEntitlement.getExpirationTime().getTime()
                             + entitlement.getExpirationTime().getTime()
@@ -94,7 +90,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     private void checkEntitlementDefinition(Long entitlementDefinitionId) {
         EntitlementDefinition entitlementDefinition = entitlementDefinitionRepository.get(entitlementDefinitionId);
         if (entitlementDefinition == null) {
-            throw new NotFoundException("entitlementDefinition", entitlementDefinitionId);
+            throw AppErrors.INSTANCE.notFound("entitlementDefinition", entitlementDefinitionId).exception();
         }
     }
 
@@ -104,29 +100,29 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
         Entitlement existingEntitlement = entitlementRepository.get(entitlementId);
 
         if (existingEntitlement == null) {
-            throw new NotFoundException("entitlement", entitlementId);
+            throw AppErrors.INSTANCE.notFound("entitlement", entitlementId).exception();
         }
 
         checkUser(existingEntitlement.getUserId());
 
         if (!existingEntitlement.getUserId().equals(entitlement.getUserId())) {
-            throw new FieldNotMatchException("userId", entitlement.getUserId().toString(),
-                    existingEntitlement.getUserId().toString());
+            throw AppErrors.INSTANCE.fieldNotMatch("userId", entitlement.getUserId().toString(),
+                    existingEntitlement.getUserId().toString()).exception();
         }
         if (!existingEntitlement.getOfferId().equals(entitlement.getOfferId())) {
-            throw new FieldNotMatchException("offerId", entitlement.getOfferId().toString(),
-                    existingEntitlement.getOfferId().toString());
+            throw AppErrors.INSTANCE.fieldNotMatch("offerId", entitlement.getOfferId().toString(),
+                    existingEntitlement.getOfferId().toString()).exception();
         }
         if (!existingEntitlement.getEntitlementDefinitionId().equals(entitlement.getEntitlementDefinitionId())) {
-            throw new FieldNotMatchException("EntitlementDefinitionId",
+            throw AppErrors.INSTANCE.fieldNotMatch("EntitlementDefinitionId",
                     entitlement.getEntitlementDefinitionId().toString(),
-                    existingEntitlement.getEntitlementDefinitionId().toString());
+                    existingEntitlement.getEntitlementDefinitionId().toString()).exception();
         }
 
         if (existingEntitlement.getGrantTime().compareTo(entitlement.getGrantTime()) != 0) {
-            throw new FieldNotMatchException("grantTime",
+            throw AppErrors.INSTANCE.fieldNotMatch("grantTime",
                     entitlement.getGrantTime().toString(),
-                    existingEntitlement.getGrantTime().toString());
+                    existingEntitlement.getGrantTime().toString()).exception();
         }
 
         existingEntitlement.setExpirationTime(entitlement.getExpirationTime());
@@ -163,7 +159,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     public void deleteEntitlement(Long entitlementId, String reason) {
         Entitlement existingEntitlement = entitlementRepository.get(entitlementId);
         if (existingEntitlement == null) {
-            throw new NotFoundException("entitlement", entitlementId);
+            throw AppErrors.INSTANCE.notFound("entitlement", entitlementId).exception();
         }
         checkUser(existingEntitlement.getUserId());
         entitlementRepository.delete(existingEntitlement, reason);
@@ -174,10 +170,10 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     public List<Entitlement> searchEntitlement(EntitlementSearchParam entitlementSearchParam,
                                                PageMetadata pageMetadata) {
         if (entitlementSearchParam.getUserId() == null) {
-            throw new MissingFieldException("userId");
+            throw AppErrors.INSTANCE.missingField("userId").exception();
         }
         if (entitlementSearchParam.getDeveloperId() == null) {
-            throw new MissingFieldException("developerId");
+            throw AppErrors.INSTANCE.missingField("developerId").exception();
         }
         checkUser(entitlementSearchParam.getUserId());
         checkDeveloper(entitlementSearchParam.getDeveloperId());
@@ -190,13 +186,13 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     @Transactional
     public Entitlement transferEntitlement(EntitlementTransfer entitlementTransfer) {
         if (entitlementTransfer.getUserId() == null) {
-            throw new MissingFieldException("userId");
+            throw AppErrors.INSTANCE.missingField("userId").exception();
         }
         if (entitlementTransfer.getEntitlementId() == null) {
-            throw new MissingFieldException("entitlementId");
+            throw AppErrors.INSTANCE.missingField("entitlementId").exception();
         }
         if (entitlementTransfer.getTargetUserId() == null) {
-            throw new MissingFieldException("targetUserId");
+            throw AppErrors.INSTANCE.missingField("targetUserId").exception();
         }
 
         checkUser(entitlementTransfer.getUserId());
@@ -204,8 +200,11 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
         Entitlement existingEntitlement = getEntitlement(entitlementTransfer.getEntitlementId());
 
         if (EntitlementStatus.NOT_TRANSFERABLE.contains(existingEntitlement.getStatus())) {
-            throw new NotTransferableException(existingEntitlement.getEntitlementId(),
-                    "Entitlement with status " + existingEntitlement.getStatus() + " can not be transferred");
+            throw AppErrors.INSTANCE.notTransferable(existingEntitlement.getEntitlementId(),
+                    "Entitlement with status " +
+                            existingEntitlement.getStatus() +
+                            " can not be transferred")
+                    .exception();
         }
 
         Entitlement newEntitlement = CloneUtils.clone(existingEntitlement);
@@ -220,7 +219,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     private void validateGrantTimeBeforeExpirationTime(Entitlement entitlement) {
         if (entitlement.getExpirationTime() != null) {
             if (entitlement.getGrantTime().after(entitlement.getExpirationTime())) {
-                throw new ExpirationTimeBeforeGrantTimeException();
+                throw AppErrors.INSTANCE.expirationTimeBeforeGrantTime().exception();
             }
         }
     }

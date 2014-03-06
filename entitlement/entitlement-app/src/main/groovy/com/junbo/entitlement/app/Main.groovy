@@ -8,9 +8,7 @@ package com.junbo.entitlement.app
 
 import com.junbo.common.json.JacksonFeature
 import com.junbo.common.json.ObjectMapperProvider
-import com.junbo.entitlement.rest.exceptionmapper.EntitlementExceptionMapper
-import com.junbo.entitlement.rest.exceptionmapper.JsonMappingExceptionMapper
-import com.junbo.entitlement.rest.exceptionmapper.ValidationExceptionMapper
+import com.junbo.entitlement.rest.exceptionmapper.RestExceptionMapper
 import org.glassfish.grizzly.http.server.HttpServer
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory
 import org.glassfish.jersey.server.ResourceConfig
@@ -26,9 +24,7 @@ class Main {
 
         resourceConfig.register(JacksonFeature)
         resourceConfig.register(ObjectMapperProvider)
-        resourceConfig.register(JsonMappingExceptionMapper)
-        resourceConfig.register(EntitlementExceptionMapper)
-        resourceConfig.register(ValidationExceptionMapper)
+        resourceConfig.register(RestExceptionMapper)
 
         SLF4JBridgeHandler.removeHandlersForRootLogger()
         SLF4JBridgeHandler.install()
@@ -36,7 +32,6 @@ class Main {
         System.setProperty('net.spy.log.LoggerImpl', 'net.spy.memcached.compat.log.SLF4JLogger')
         System.setProperty('logback.configurationFile', 'logback-identity.xml')
 
-        resourceConfig.property(ServerProperties.RESPONSE_SET_STATUS_OVER_SEND_ERROR, true)
         resourceConfig.property(ServerProperties.TRACING, 'ALL')
         resourceConfig.packages('com.junbo.entitlement.spec.resource.adapter')
         resourceConfig.property('contextConfigLocation', 'classpath*:/spring/*.xml')

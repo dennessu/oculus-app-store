@@ -116,10 +116,23 @@ public class EntitlementDaoImpl extends BaseDao<EntitlementEntity> implements En
         String queryString = "from EntitlementEntity" +
                 " where managedLifecycle = true" +
                 " and userId = (:userId)" +
-                " and entitlementDefinitionId = (:definitionId)";
+                " and entitlementDefinitionId = (:definitionId)" +
+                " and status not in (:notManagedStatus)";
         Query q = currentSession().createQuery(queryString)
                 .setLong("userId", userId)
-                .setLong("definitionId", definitionId);
+                .setLong("definitionId", definitionId)
+                .setParameterList("notManagedStatus", EntitlementStatus.LIFECYCLE_NOT_MANAGED_STATUS);
         return (EntitlementEntity) q.uniqueResult();
+    }
+
+    @Override
+    public Boolean existEntitlementDefinition(Long definitionId) {
+        String queryString = "from EntitlementEntity" +
+                " where entitlementDefinitionId = (:definitionId)" +
+                " and status not in (:notManagedStatus)";
+        Query q = currentSession().createQuery(queryString)
+                .setLong("definitionId", definitionId)
+                .setParameterList("notManagedStatus", EntitlementStatus.LIFECYCLE_NOT_MANAGED_STATUS);
+        return q.list().size() != 0;
     }
 }
