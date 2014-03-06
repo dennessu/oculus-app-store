@@ -152,7 +152,7 @@ public class EntitlementMapper {
         }
         if (entitlementEntity.getManagedLifecycle() != null
                 && entitlementEntity.getManagedLifecycle()) {
-            Date now = EntitlementContext.now();
+            Date now = EntitlementContext.current().getNow();
             if (entitlementEntity.getConsumable()
                     && entitlementEntity.getUseCount() < 1) {
                 return EntitlementStatus.DISABLED;

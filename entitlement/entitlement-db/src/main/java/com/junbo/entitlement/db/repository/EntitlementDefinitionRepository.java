@@ -33,15 +33,13 @@ public class EntitlementDefinitionRepository {
     }
 
     public EntitlementDefinition insert(EntitlementDefinition entitlementDefinition) {
-        Long id = entitlementDefinitionDao.insert(
-                entitlementMapper.toEntitlementDefinitionEntity(entitlementDefinition));
-        return entitlementMapper.toEntitlementDefinition(entitlementDefinitionDao.get(id));
+        return entitlementMapper.toEntitlementDefinition(entitlementDefinitionDao.insert(
+                entitlementMapper.toEntitlementDefinitionEntity(entitlementDefinition)));
     }
 
     public EntitlementDefinition update(EntitlementDefinition entitlementDefinition) {
-        Long id = entitlementDefinitionDao.update(
-                entitlementMapper.toEntitlementDefinitionEntity(entitlementDefinition));
-        return entitlementMapper.toEntitlementDefinition(entitlementDefinitionDao.get(id));
+        return entitlementMapper.toEntitlementDefinition(entitlementDefinitionDao.update(
+                entitlementMapper.toEntitlementDefinitionEntity(entitlementDefinition)));
     }
 
     public void delete(EntitlementDefinition entitlementDefinition) {
