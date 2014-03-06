@@ -11,11 +11,11 @@ import java.math.BigDecimal;
 /**
  * Created by lizwu on 2/12/14.
  */
-public class RatingPrice {
+public class Price {
     private BigDecimal price;
     private String currency;
 
-    public RatingPrice(BigDecimal price, String currency) {
+    public Price(BigDecimal price, String currency) {
         this.price = price;
         this.currency = currency;
     }

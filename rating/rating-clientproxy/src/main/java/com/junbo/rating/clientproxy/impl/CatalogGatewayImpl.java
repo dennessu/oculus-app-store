@@ -8,15 +8,18 @@ package com.junbo.rating.clientproxy.impl;
 
 import com.junbo.catalog.spec.model.common.EntitiesGetOptions;
 import com.junbo.catalog.spec.model.common.EntityGetOptions;
+import com.junbo.catalog.spec.model.offer.ItemEntry;
 import com.junbo.catalog.spec.model.offer.Offer;
-import com.junbo.catalog.spec.model.offer.Price;
+import com.junbo.catalog.spec.model.offer.OfferEntry;
 import com.junbo.catalog.spec.model.promotion.Promotion;
 import com.junbo.catalog.spec.resource.OfferResource;
 import com.junbo.catalog.spec.resource.PromotionResource;
 import com.junbo.rating.clientproxy.CatalogGateway;
 import com.junbo.rating.common.util.Constants;
+import com.junbo.rating.spec.fusion.EntryType;
+import com.junbo.rating.spec.fusion.LinkedEntry;
+import com.junbo.rating.spec.fusion.Price;
 import com.junbo.rating.spec.fusion.RatingOffer;
-import com.junbo.rating.spec.fusion.RatingPrice;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -46,9 +49,29 @@ public class CatalogGatewayImpl implements CatalogGateway{
         result.setId(offer.getId());
         result.getCategories().addAll(offer.getCategories());
         for (String country : offer.getPrices().keySet()) {
-            Price price = offer.getPrices().get(country);
-            RatingPrice ratingPrice = new RatingPrice(price.getAmount(), price.getCurrency());
+            com.junbo.catalog.spec.model.offer.Price price = offer.getPrices().get(country);
+            Price ratingPrice = new Price(price.getAmount(), price.getCurrency());
             result.getPrices().put(country, ratingPrice);
+        }
+
+        if (offer.getItems() != null) {
+            for (ItemEntry entry : offer.getItems()) {
+                LinkedEntry item = new LinkedEntry();
+                item.setEntryId(entry.getItemId());
+                item.setType(EntryType.ITEM);
+                item.setQuantity(entry.getQuantity());
+                result.getItems().add(item);
+            }
+        }
+
+        if (offer.getSubOffers() != null) {
+            for (OfferEntry entry : offer.getSubOffers()) {
+                LinkedEntry subOffer = new LinkedEntry();
+                subOffer.setEntryId(entry.getOfferId());
+                subOffer.setType(EntryType.OFFER);
+                subOffer.setQuantity(entry.getQuantity());
+                result.getSubOffers().add(subOffer);
+            }
         }
         return result;
     }

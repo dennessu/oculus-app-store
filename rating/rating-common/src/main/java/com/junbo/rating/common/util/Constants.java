@@ -11,6 +11,7 @@ package com.junbo.rating.common.util;
 public class Constants {
     public static final Integer DEFAULT_PAGE_START = 0;
     public static final Integer DEFAULT_PAGE_SIZE = 20;
+    public static final String ENTITLEMENT_SEPARATOR = "#";
 
     private Constants() {
     }

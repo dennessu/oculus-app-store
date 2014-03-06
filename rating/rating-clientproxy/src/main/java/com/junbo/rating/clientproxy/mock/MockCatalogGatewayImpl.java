@@ -8,8 +8,8 @@ package com.junbo.rating.clientproxy.mock;
 
 import com.junbo.catalog.spec.model.promotion.*;
 import com.junbo.rating.clientproxy.CatalogGateway;
+import com.junbo.rating.spec.fusion.Price;
 import com.junbo.rating.spec.fusion.RatingOffer;
-import com.junbo.rating.spec.fusion.RatingPrice;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -33,11 +33,11 @@ public class MockCatalogGatewayImpl implements CatalogGateway {
     }
 
     private RatingOffer generateOffer() {
-        final RatingPrice price = new RatingPrice(new BigDecimal("9.99"), "USD");
+        final Price price = new Price(new BigDecimal("9.99"), "USD");
 
         return new RatingOffer() {{
             setId(System.currentTimeMillis());
-            setPrices(new HashMap<String, RatingPrice>() {{
+            setPrices(new HashMap<String, Price>() {{
                 put("US", price);
             }});
             setCategories(new HashSet<Long>());
@@ -83,7 +83,6 @@ public class MockCatalogGatewayImpl implements CatalogGateway {
         try {
             date = formatter.parse(myDate);
         } catch (ParseException e) {
-            e.printStackTrace();
         }
         return date;
     }

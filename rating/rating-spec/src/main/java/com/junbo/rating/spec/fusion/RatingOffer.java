@@ -6,10 +6,7 @@
 
 package com.junbo.rating.spec.fusion;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by lizwu on 1/28/14.
@@ -17,12 +14,17 @@ import java.util.Set;
 public class RatingOffer {
     private Long id;
 
-    private Map<String, RatingPrice> prices;
+    private Map<String, Price> prices;
     private Set<Long> categories;
 
+    private List<LinkedEntry> items;
+    private List<LinkedEntry> subOffers;
+
     public RatingOffer() {
-        prices = new HashMap<String, RatingPrice>();
+        prices = new HashMap<String, Price>();
         categories = new HashSet<Long>();
+        items = new ArrayList<LinkedEntry>();
+        subOffers = new ArrayList<LinkedEntry>();
     }
 
     public Long getId() {
@@ -33,11 +35,11 @@ public class RatingOffer {
         this.id = id;
     }
 
-    public Map<String, RatingPrice> getPrices() {
+    public Map<String, Price> getPrices() {
         return prices;
     }
 
-    public void setPrices(Map<String, RatingPrice> prices) {
+    public void setPrices(Map<String, Price> prices) {
         this.prices = prices;
     }
 
@@ -47,5 +49,21 @@ public class RatingOffer {
 
     public void setCategories(Set<Long> categories) {
         this.categories = categories;
+    }
+
+    public List<LinkedEntry> getItems() {
+        return items;
+    }
+
+    public void setItems(List<LinkedEntry> items) {
+        this.items = items;
+    }
+
+    public List<LinkedEntry> getSubOffers() {
+        return subOffers;
+    }
+
+    public void setSubOffers(List<LinkedEntry> subOffers) {
+        this.subOffers = subOffers;
     }
 }

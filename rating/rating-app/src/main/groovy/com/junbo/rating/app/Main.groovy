@@ -15,7 +15,6 @@ class Main {
 
         resourceConfig.packages('com.junbo.rating.spec.resource.adapter')
         resourceConfig.property('contextConfigLocation', 'classpath*:/spring/*.xml')
-        resourceConfig.property(ServerProperties.RESPONSE_SET_STATUS_OVER_SEND_ERROR, true)
         resourceConfig.property(ServerProperties.TRACING, 'ALL')
         resourceConfig.register(MapperConfigurator)
         resourceConfig.register(JacksonFeature)

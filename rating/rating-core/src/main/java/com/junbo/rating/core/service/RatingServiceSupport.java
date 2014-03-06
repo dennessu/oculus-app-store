@@ -130,12 +130,12 @@ public abstract class RatingServiceSupport implements RatingService{
     }
 
     protected Money getPrice(RatingOffer offer, String country, String currency) {
-        Map<String, RatingPrice> priceMap = offer.getPrices();
+        Map<String, Price> priceMap = offer.getPrices();
         if (!priceMap.containsKey(country)) {
             return Money.NOT_FOUND;
         }
 
-        RatingPrice price = priceMap.get(country);
+        Price price = priceMap.get(country);
         if (currency.equalsIgnoreCase(price.getCurrency())) {
             return new Money(price.getPrice(), price.getCurrency());
         }
@@ -155,7 +155,7 @@ public abstract class RatingServiceSupport implements RatingService{
                 result.setValue(original.getValue().subtract(benefit.getValue()));
                 break;
             default:
-                break;
+                return Money.NOT_FOUND;
             }
         return result;
     }

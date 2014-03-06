@@ -18,7 +18,6 @@ import java.math.BigDecimal;
 public class OrderCriterionHandler implements CriterionHandler<OrderCriterion> {
     @Override
     public boolean validate(OrderCriterion criterion, RatingContext context) {
-        //TODO: validate the result after offer level promotion calculation
         switch (criterion.getPredicate()) {
             case ORDER_ABSOLUTE_VALUE_ABOVE:
                 BigDecimal totalAmount = context.getOrderResultEntry().getOriginalAmount().getValue();

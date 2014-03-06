@@ -34,7 +34,6 @@ public abstract class BaseTest extends AbstractTestNGSpringContextTests {
         try {
             date = formatter.parse(myDate);
         } catch (ParseException e) {
-            e.printStackTrace();
         }
         return date;
     }
