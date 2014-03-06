@@ -4,7 +4,7 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.order.core.OrderFlow
 import com.junbo.order.core.impl.order.OrderServiceContext
 import com.junbo.order.core.impl.orderaction.GetOrderAction
-import com.junbo.order.core.impl.orderaction.context.BaseContext
+import com.junbo.order.core.impl.orderaction.context.OrderActionContext
 import com.junbo.order.spec.model.Order
 
 /**
@@ -18,13 +18,13 @@ class GetOrderFlow implements OrderFlow {
 
     @Override
     Promise<List<Order>> execute(OrderServiceContext order) {
-        BaseContext context = new BaseContext()
+        OrderActionContext context = new OrderActionContext()
         context.setOrderServiceContext(order)
 
         def currentAction = new GetOrderAction()
-        Promise<BaseContext> promise = currentAction.execute(context)
+        Promise<OrderActionContext> promise = currentAction.execute(context)
 
         def result = promise.wrapped().get()
-        return [((BaseContext)result).orderServiceContext.order]
+        return [((OrderActionContext)result).orderServiceContext.order]
     }
 }

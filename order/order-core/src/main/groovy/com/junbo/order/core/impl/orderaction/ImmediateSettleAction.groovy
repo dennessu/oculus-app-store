@@ -3,9 +3,12 @@ package com.junbo.order.core.impl.orderaction
 import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.langur.core.promise.Promise
+import com.junbo.langur.core.webflow.action.Action
+import com.junbo.langur.core.webflow.action.ActionContext
+import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.core.OrderAction
 import com.junbo.order.core.impl.common.CoreBuilder
-import com.junbo.order.core.impl.orderaction.context.BaseContext
+import com.junbo.order.core.impl.orderaction.context.OrderActionContext
 import com.junbo.order.spec.model.BillingAction
 import com.junbo.order.spec.model.EventStatus
 import groovy.transform.CompileStatic
@@ -18,14 +21,15 @@ import org.slf4j.LoggerFactory
  */
 @CompileStatic
 @TypeChecked
-class ImmediateSettleAction implements OrderAction<BaseContext> {
+class ImmediateSettleAction implements Action {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ImmediateSettleAction)
 
     @Override
-    Promise<BaseContext> execute(BaseContext context) {
+    Promise<ActionResult> execute(ActionContext actionContext) {
+        def context = ActionUtils.getOrderActionContext(actionContext)
         def order = context.orderServiceContext.order
-        Balance balance = CoreBuilder.buildBalance(context.orderServiceContext, BalanceType.DEBIT)
+        def balance = CoreBuilder.buildBalance(context.orderServiceContext, BalanceType.DEBIT)
         Promise promise = context.orderServiceContext.billingFacade?.createBalance(balance)
         return promise.syncRecover { Throwable throwable ->
             LOGGER.error('name=Order_ImmediateSettle_Error', throwable)
@@ -44,7 +48,7 @@ class ImmediateSettleAction implements OrderAction<BaseContext> {
                         BillingAction.CHARGE, billingEventStatus)
                 // TODO: update order status according to balance status.
             }
-            return context
+            return ActionUtils.DEFAULT_RESULT
         }
     }
 

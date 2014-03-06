@@ -6,20 +6,23 @@
 
 package com.junbo.order.core.impl.order
 
-import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.enums.BalanceType
+import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.ShippingAddress
 import com.junbo.common.id.PaymentInstrumentId
 import com.junbo.langur.core.promise.Promise
+import com.junbo.langur.core.webflow.action.ActionContext
+import com.junbo.langur.core.webflow.executor.FlowExecutor
 import com.junbo.order.clientproxy.billing.BillingFacade
 import com.junbo.order.clientproxy.identity.IdentityFacade
 import com.junbo.order.clientproxy.payment.PaymentFacade
 import com.junbo.order.clientproxy.rating.RatingFacade
 import com.junbo.order.core.FlowSelector
+import com.junbo.order.core.FlowType
 import com.junbo.order.core.OrderService
 import com.junbo.order.core.OrderServiceOperation
 import com.junbo.order.core.impl.common.CoreBuilder
-import com.junbo.order.core.FlowExecutor
+import com.junbo.order.core.impl.orderaction.ActionUtils
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.*
@@ -28,7 +31,6 @@ import com.junbo.rating.spec.model.request.OrderRatingRequest
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import org.springframework.util.CollectionUtils
 
 /**
  * Created by chriszhu on 2/7/14.
@@ -60,16 +62,16 @@ class OrderServiceImpl implements OrderService {
         // TODO: split orders
         // TODO: expand external resources
         expandOrder(order).syncThen { OrderServiceContext orderServiceContext ->
-            return flowExecutor.executeFlow(flowSelector.select(orderServiceContext, OrderServiceOperation.CREATE),
-                    orderServiceContext)
+            return executeFlow(flowSelector.select(orderServiceContext, OrderServiceOperation.CREATE),
+                    orderServiceContext, null)
         }
     }
 
     @Override
     Promise<List<Order>> settleQuote(Order order, ApiContext context) {
         expandOrder(order).syncThen { OrderServiceContext orderServiceContext ->
-            return flowExecutor.executeFlow(flowSelector.select(
-                    orderServiceContext, OrderServiceOperation.UPDATE_TENTATIVE), orderServiceContext)
+            return executeFlow(flowSelector.select(orderServiceContext, OrderServiceOperation.UPDATE_TENTATIVE),
+                    orderServiceContext, null)
         }
     }
 
@@ -118,28 +120,27 @@ class OrderServiceImpl implements OrderService {
 
     @Override
     Promise<Order> getOrderByOrderId(Long orderId) {
-        OrderServiceContext context = new OrderServiceContext()
-        context.setOrderId(orderId)
-        context.setOrderRepository(orderRepository)
-        flowExecutor.executeFlow(flowSelector.select(context, OrderServiceOperation.GET), context)
-                .syncThen { List<Order> orders ->
-            if (CollectionUtils.isEmpty(orders)) {
-                return Promise.pure(null)
-            }
-            def order = orders.get(0)
-            // order items
-            order.setOrderItems(orderRepository.getOrderItems(orderId))
-            // rating info
-            order.totalAmount = 0
-            order.orderItems?.each { OrderItem orderItem ->
-                if (orderItem.totalAmount != null) {
-                    order.totalAmount += orderItem.totalAmount
+        expandOrder(null).syncThen { OrderServiceContext context ->
+            context.setOrderId(orderId)
+            executeFlow(flowSelector.select(context, OrderServiceOperation.GET), context, null).syncThen {
+                if (context.order == null) {
+                    return Promise.pure(null)
                 }
+                def order = context.order
+                // order items
+                order.setOrderItems(orderRepository.getOrderItems(orderId))
+                // rating info
+                order.totalAmount = 0
+                order.orderItems?.each { OrderItem orderItem ->
+                    if (orderItem.totalAmount != null) {
+                        order.totalAmount += orderItem.totalAmount
+                    }
+                }
+                // payment instrument
+                order.setPaymentInstruments(orderRepository.getPaymentInstrumentIds(orderId))
+                // discount
+                order.setDiscounts(orderRepository.getDiscounts(orderId))
             }
-            // payment instrument
-            order.setPaymentInstruments(orderRepository.getPaymentInstrumentIds(orderId))
-            // discount
-            order.setDiscounts(orderRepository.getDiscounts(orderId))
         }
     }
 
@@ -204,4 +205,13 @@ class OrderServiceImpl implements OrderService {
         } )
         return Promise.pure(context)
     }
+
+    private Promise<OrderServiceContext> executeFlow(FlowType flowType, OrderServiceContext context,
+                                                     Map<String, Object> requestScope) {
+        return flowExecutor.start(flowType.name(), ActionUtils.initRequestScope(context, requestScope)).syncThen {
+            ActionContext actionContext
+            return ActionUtils.getOrderActionContext(actionContext).orderServiceContext
+        }
+    }
+
 }

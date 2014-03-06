@@ -5,9 +5,12 @@ import com.junbo.fulfilment.spec.constant.FulfilmentStatus
 import com.junbo.fulfilment.spec.model.FulfilmentItem
 import com.junbo.fulfilment.spec.model.FulfilmentRequest
 import com.junbo.langur.core.promise.Promise
+import com.junbo.langur.core.webflow.action.Action
+import com.junbo.langur.core.webflow.action.ActionContext
+import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.core.OrderAction
 import com.junbo.order.core.impl.common.CoreBuilder
-import com.junbo.order.core.impl.orderaction.context.BaseContext
+import com.junbo.order.core.impl.orderaction.context.OrderActionContext
 import com.junbo.order.spec.model.EventStatus
 import com.junbo.order.spec.model.FulfillmentEvent
 import groovy.transform.CompileStatic
@@ -18,7 +21,7 @@ import org.slf4j.LoggerFactory
  * Created by fzhang on 14-2-25.
  */
 @CompileStatic
-class FulfillmentAction implements OrderAction<BaseContext> {
+class FulfillmentAction implements Action {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FulfillmentAction)
 
@@ -29,8 +32,9 @@ class FulfillmentAction implements OrderAction<BaseContext> {
         ]
 
     @Override
-    Promise<BaseContext> execute(BaseContext request) {
-        def serviceContext = request.orderServiceContext
+    Promise<ActionResult> execute(ActionContext actionContext) {
+        def context = ActionUtils.getOrderActionContext(actionContext)
+        def serviceContext = context.orderServiceContext
         def order = serviceContext.order
 
         serviceContext.fulfillmentFacade.postFulfillment(order).syncRecover { Throwable throwable ->
@@ -57,7 +61,7 @@ class FulfillmentAction implements OrderAction<BaseContext> {
                         CoreBuilder.buildOrderEvent(order.id,
                                 com.junbo.order.spec.model.OrderAction.FULFILL, orderEventStatus))
             }
-            return request
+            return ActionUtils.DEFAULT_RESULT
         }
     }
 

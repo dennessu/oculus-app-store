@@ -1,9 +1,12 @@
 package com.junbo.order.core.impl.orderaction
 
 import com.junbo.langur.core.promise.Promise
+import com.junbo.langur.core.webflow.action.Action
+import com.junbo.langur.core.webflow.action.ActionContext
+import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.core.OrderAction
 import com.junbo.order.core.impl.common.CoreBuilder
-import com.junbo.order.core.impl.orderaction.context.BaseContext
+import com.junbo.order.core.impl.orderaction.context.OrderActionContext
 import com.junbo.order.spec.model.EventStatus
 import com.junbo.rating.spec.model.request.OrderRatingRequest
 import groovy.transform.CompileStatic
@@ -14,12 +17,13 @@ import org.slf4j.LoggerFactory
  * Created by fzhang on 14-2-25.
  */
 @CompileStatic
-class RatingAction implements OrderAction<BaseContext> {
+class RatingAction implements Action {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RatingAction)
 
     @Override
-    Promise<BaseContext> execute(BaseContext context) {
+    Promise<ActionResult> execute(ActionContext actionContext) {
+        def context = ActionUtils.getOrderActionContext(actionContext)
         def order = context.orderServiceContext.order
         def serviceContext = context.orderServiceContext
         return serviceContext.ratingFacade.
@@ -38,8 +42,8 @@ class RatingAction implements OrderAction<BaseContext> {
                 serviceContext.orderRepository.createOrderEvent(
                         CoreBuilder.buildOrderEvent(order.id,
                                 com.junbo.order.spec.model.OrderAction.RATE, ratingStatus))
-                return context
             }
+            return ActionUtils.DEFAULT_RESULT
         }
     }
 }
