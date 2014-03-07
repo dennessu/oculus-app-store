@@ -19,18 +19,25 @@ import java.util.List;
 /**
  * Item draft repository.
  */
-public class ItemDraftRepository {
+public class ItemDraftRepository implements EntityDraftRepository<Item> {
     @Autowired
     private ItemDraftDao itemDraftDao;
 
+    @Override
     public Long create(Item item) {
         ItemDraftEntity entity = ItemConverter.toDraftEntity(item);
         return itemDraftDao.create(entity);
     }
 
+    @Override
     public Item get(Long itemId) {
         ItemDraftEntity entity = itemDraftDao.get(itemId);
         return ItemConverter.toModel(entity);
+    }
+
+    @Override
+    public List<Item> getEntities(int start, int size) {
+        return getItems(start, size);
     }
 
     public List<Item> getItems(int start, int size) {

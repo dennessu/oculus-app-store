@@ -14,8 +14,8 @@ import javax.persistence.*;
  * Created by liangfu on 3/5/14.
  */
 @Entity
-@Table(name = "shard_id_global_counter")
-public class ShardIdGlobalCounterEntity {
+@Table(name = "id_global_counter")
+public class IdGlobalCounterEntity {
     @Id
     @GenericGenerator(name="gen",strategy="increment")
     @GeneratedValue(generator="gen")

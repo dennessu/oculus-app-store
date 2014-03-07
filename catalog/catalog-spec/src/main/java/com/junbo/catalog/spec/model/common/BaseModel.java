@@ -33,6 +33,8 @@ public abstract class BaseModel {
     @Null
     private String updatedBy;
 
+    public abstract Long getId();
+
     public Long getTimestamp() {
         return timestamp;
     }

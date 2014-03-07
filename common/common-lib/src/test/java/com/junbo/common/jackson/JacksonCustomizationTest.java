@@ -6,10 +6,12 @@
 
 package com.junbo.common.jackson;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.junbo.common.jackson.deserializer.ResourceAwareDeserializationContext;
 import com.junbo.common.jackson.serializer.ResourceAwareSerializerProvider;
 import org.testng.Assert;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;
@@ -23,6 +25,11 @@ import java.util.Set;
 public class JacksonCustomizationTest {
     private ObjectMapper mapper =
             new ObjectMapper(null, new ResourceAwareSerializerProvider(), new ResourceAwareDeserializationContext());
+
+    @BeforeClass
+    public void setUp() {
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+    }
 
     @Test
     public void testBVT() throws Exception {
@@ -62,5 +69,14 @@ public class JacksonCustomizationTest {
         Assert.assertEquals(parents.size(), user2.getParents().size(), "parents size should match.");
         Assert.assertEquals(friends.size(), user2.getFriends().size(), "friends size should match.");
         Assert.assertEquals(opponents.size(), user2.getOpponents().size(), "opponents size should match.");
+    }
+
+    @Test
+    public void testNull() throws Exception {
+        User user = new User();
+        user.setUserId(123L);
+
+        String json = mapper.writeValueAsString(user);
+        Assert.assertFalse(json.contains("No null occurred."));
     }
 }
