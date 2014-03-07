@@ -6,6 +6,7 @@
 
 package com.junbo.billing.clientproxy.impl
 
+import com.junbo.common.id.UserId
 import com.junbo.common.json.JsonMessageTranscoder
 import com.junbo.identity.spec.model.user.User
 import com.junbo.identity.spec.resource.proxy.UserResourceClientProxy
@@ -39,6 +40,7 @@ class IdentityFacadeImpl implements IdentityFacade {
 
     @Override
     Promise<User> getUser(Long userId) {
-        return new UserResourceClientProxy(asyncHttpClient, new JsonMessageTranscoder(), url).getUser(userId)
+        return new UserResourceClientProxy(asyncHttpClient,
+                new JsonMessageTranscoder(), url).getUser(new UserId(userId))
     }
 }
