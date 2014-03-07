@@ -164,6 +164,8 @@
                   account_number                    varchar(100)            null,
                   address_id                        bigint                  null,
                   phone_id                          bigint                  null,
+                  email                             varchar(64)             null,
+                  relation_to_holder              varchar(32)             null,
                   status_id                         smallint            not null,				  
 				  last_validated_time               date                    null,
 				  is_default                        varchar(16)             null,

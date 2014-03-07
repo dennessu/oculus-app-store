@@ -56,6 +56,12 @@ public class PaymentInstrumentEntity extends GenericEntity {
     @Column(name = "phone_id")
     private Long phoneId;
 
+    @Column(name = "email")
+    private String email;
+
+    @Column(name = "relation_to_holder")
+    private String relationToHolder;
+
     @Column(name = "status_id")
     private PIStatus status;
 
@@ -128,6 +134,22 @@ public class PaymentInstrumentEntity extends GenericEntity {
 
     public void setPhoneId(Long phoneId) {
         this.phoneId = phoneId;
+    }
+
+    public String getRelationToHolder() {
+        return relationToHolder;
+    }
+
+    public void setRelationToHolder(String relationToHolder) {
+        this.relationToHolder = relationToHolder;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public PIStatus getStatus() {
