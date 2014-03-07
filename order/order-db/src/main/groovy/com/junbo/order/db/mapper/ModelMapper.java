@@ -73,13 +73,15 @@ public interface ModelMapper {
 
     @Mappings({
             @Mapping(source = "action", target = "actionId", excluded = false, bidirectional = false),
-            @Mapping(source = "status", target = "statusId", excluded = false, bidirectional = false)
+            @Mapping(source = "status", target = "statusId", excluded = false, bidirectional = false),
+            @Mapping(source = "order", target = "orderId", excluded = false, bidirectional = false)
     })
     OrderEventEntity toOrderEventEntity(OrderEvent orderEvent, MappingContext context);
 
     @Mappings({
             @Mapping(source = "actionId", target = "action", excluded = false, bidirectional = false),
-            @Mapping(source = "statusId", target = "status", excluded = false, bidirectional = false)
+            @Mapping(source = "statusId", target = "status", excluded = false, bidirectional = false),
+            @Mapping(source = "orderId", target = "order", excluded = false, bidirectional = false)
     })
     OrderEvent toOrderEventModel(OrderEventEntity orderEventEntity, MappingContext context);
 
@@ -87,13 +89,16 @@ public interface ModelMapper {
     PaymentInstrumentId toPaymentInstrumentId(OrderPaymentInfoEntity orderPaymentInfoEntity, MappingContext context);
 
     @Mappings({
-            @Mapping(source = "id", target = "eventId", excluded = false, bidirectional = false)
+            @Mapping(source = "id", target = "eventId", excluded = false, bidirectional = false),
+            @Mapping(source = "orderItem", target = "orderItemId", excluded = false, bidirectional = false)
     })
     OrderItemFulfillmentEventEntity toOrderItemFulfillmentEventEntity(FulfillmentEvent fulfillmentEvent,
                                                                       MappingContext context);
 
     @Mappings({
-            @Mapping(source = "eventId", target = "id", excluded = false, bidirectional = false)
+            @Mapping(source = "eventId", target = "id", excluded = false, bidirectional = false),
+            @Mapping(source = "orderItemId", target = "orderItem", excluded = false, bidirectional = false)
+
     })
     FulfillmentEvent toFulfillmentEventModel(OrderItemFulfillmentEventEntity orderItemFulfillmentEventEntity,
                                              MappingContext context);

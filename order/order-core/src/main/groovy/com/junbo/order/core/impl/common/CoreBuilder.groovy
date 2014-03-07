@@ -28,6 +28,7 @@ class CoreBuilder {
         balance.country = context.order.country
         balance.currency = context.order.currency
         balance.orderId = context.order.id
+        balance.userId = context.order.user
         balance.piId = context.order.paymentInstruments?.get(0)
         balance.type = balanceType.toString()
 

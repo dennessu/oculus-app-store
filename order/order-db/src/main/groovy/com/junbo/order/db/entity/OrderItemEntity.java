@@ -31,7 +31,6 @@ public class OrderItemEntity extends CommonDbEntityWithDate{
     private Long orderId;
     private ItemType orderItemType;
     private String productItemId;
-    private String productSkuId;
     private String productItemVersion;
     private BigDecimal unitPrice;
     private Integer quantity;
@@ -79,17 +78,6 @@ public class OrderItemEntity extends CommonDbEntityWithDate{
 
     public void setProductItemId(String productItemId) {
         this.productItemId = productItemId;
-    }
-
-    @Column(name = "PRODUCT_SKU_ID")
-    @NotEmpty(message = ValidationMessages.MISSING_VALUE)
-    @Length(max=128, message=ValidationMessages.TOO_LONG)
-    public String getProductSkuId() {
-        return productSkuId;
-    }
-
-    public void setProductSkuId(String productSkuId) {
-        this.productSkuId = productSkuId;
     }
 
     @Column(name = "PRODUCT_ITEM_VERSION")

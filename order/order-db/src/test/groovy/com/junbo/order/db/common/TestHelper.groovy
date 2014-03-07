@@ -69,7 +69,6 @@ class TestHelper {
         entity.setOrderId(rand.nextLong())
         entity.setOrderItemType(ItemType.DIGITAL)
         entity.setProductItemId('123')
-        entity.setProductSkuId('TestProductSkuId')
         entity.setProductItemVersion('TestProductItemVersion')
         entity.setUnitPrice(BigDecimal.valueOf(DEFAULT_PRICE))
         entity.setQuantity(Integer.valueOf(DEFAULT_QUANTITY))

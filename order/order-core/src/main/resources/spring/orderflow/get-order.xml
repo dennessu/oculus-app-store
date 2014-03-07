@@ -5,14 +5,10 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.junbo.com/schema/webflow http://www.junbo.com/schema/webflow-config/webflow.xsd">
 
-    <wf:flow id="IMMEDIATE_SETTLE">
+    <wf:flow id="GET_ORDER">
         <wf:end-state id="endState">
             <wf:on-entry>
-                <wf:action ref="validateAction"/>
-                <wf:action ref="ratingAction"/>
-                <wf:action ref="createOrderAction"/>
-                <wf:action ref="immediateSettleAction"/>
-                <wf:action ref="fulfillmentAction"/>
+                <wf:action ref="getOrderAction"/>
             </wf:on-entry>
         </wf:end-state>
     </wf:flow>

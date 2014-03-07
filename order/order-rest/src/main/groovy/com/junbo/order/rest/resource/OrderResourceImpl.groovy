@@ -34,7 +34,7 @@ class OrderResourceImpl implements OrderResource {
     @Override
     @Transactional
     Promise<Order> getOrderByOrderId(OrderId orderId, HttpHeaders httpHeaders) {
-        return orderService.getOrderByOrderId(orderId.getValue())
+        return orderService.getOrderByOrderId(orderId.value)
     }
 
     @Override
@@ -49,7 +49,7 @@ class OrderResourceImpl implements OrderResource {
 
     @Override
     Promise<List<Order>> updateOrderByOrderId(OrderId orderId, Order order, HttpHeaders httpHeaders) {
-        orderService.getOrderByOrderId(orderId.getValue()).syncThen { Order o ->
+        orderService.getOrderByOrderId(orderId.value).syncThen { Order o ->
             // handle the update request per scenario
             // handle settle order scenario: the tentative flag is updated from false to true
             if (o.tentative == false && order.tentative == true) {

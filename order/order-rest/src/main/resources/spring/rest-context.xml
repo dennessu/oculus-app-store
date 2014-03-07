@@ -16,4 +16,6 @@
     <bean id="defaultRatingResource" class="com.junbo.order.mock.MockRatingResource"/>
     <bean id="defaultPaymentInstrumentResource" class="com.junbo.order.mock.MockPaymentInstrumentResource"/>
     <bean id="defaultShippingAddressResource" class="com.junbo.order.mock.MockShippingAddressResource"/>
+    <bean id="defaultFulfilmentResource" class="com.junbo.order.mock.MockFulfillmentResource"/>
+
 </beans>
