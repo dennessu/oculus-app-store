@@ -47,6 +47,8 @@
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
+    <tx:annotation-driven/>
+
     <!-- Dao -->
     <bean id="baseDao"
           class="com.junbo.fulfilment.db.dao.impl.BaseDaoImpl" abstract="true">
