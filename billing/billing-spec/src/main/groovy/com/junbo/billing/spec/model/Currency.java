@@ -6,6 +6,8 @@
 
 package com.junbo.billing.spec.model;
 
+import java.math.BigDecimal;
+
 /**
  * Created by xmchen on 14-2-13.
  */
@@ -108,5 +110,24 @@ public class Currency {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public BigDecimal getValueByBaseUnits(BigDecimal value) {
+        int baseUnits = getBaseUnits();
+        int scale;
+        if (baseUnits > 999) {
+            scale = 3;
+            while (baseUnits > 9999) {
+                ++scale;
+                baseUnits /= 10;
+            }
+        } else if (baseUnits > 99) {
+            scale = 2;
+        } else if (baseUnits > 9) {
+            scale = 1;
+        } else {
+            scale = 0;
+        }
+        return value.setScale(scale, BigDecimal.ROUND_HALF_EVEN);
     }
 }
