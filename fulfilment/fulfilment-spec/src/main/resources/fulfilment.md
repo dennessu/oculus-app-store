@@ -8,40 +8,40 @@ post new fulfilments
 + Request (application/json)
 
         {
-            "userId": {"href": "http://api.wan-san.com/v1/users/12345", "actionId": "12345"},
-            "orderId": {"href": "http://api.wan-san.com/v1/orders/12345", "actionId": "12345"},
+            "userId": {"href": "http://api.wan-san.com/v1/users/12345", "id": "12345"},
+            "orderId": {"href": "http://api.wan-san.com/v1/orders/12345", "id": "12345"},
             "trackingGuid": "151907d5-807e-4a69-83e6-e709b6f75359",
             "items":[
                 {
-                    "orderItemId": {"href": "http://api.wan-san.com/v1/billing-lineitems/100000001", "actionId": "100000001"},
-                    "offerId": {"href": "http://api.wan-san.com/v1/offers/11111", "actionId": "11111"},
+                    "orderItemId": {"href": "http://api.wan-san.com/v1/billing-lineitems/100000001", "id": "100000001"},
+                    "offerId": {"href": "http://api.wan-san.com/v1/offers/11111", "id": "11111"},
                     "timestamp": 10000000000000,
                     "quantity": 1
                 },
                 {
-                    "orderItemId": {"href": "http://api.wan-san.com/v1/billing-lineitems/100000002", "actionId": "100000002"},
-                    "offerId": {"href": "http://api.wan-san.com/v1/offers/22222", "actionId": "22222"},
+                    "orderItemId": {"href": "http://api.wan-san.com/v1/billing-lineitems/100000002", "id": "100000002"},
+                    "offerId": {"href": "http://api.wan-san.com/v1/offers/22222", "id": "22222"},
                     "timestamp": 10000000000000,
                     "quantity": 10
                 }
             ],
-            "shippingAddressId": {"href": "http://api.wan-san.com/v1/shipping-addresses/12345", "actionId": "12345"},
-            "shippingMethodId": {"href": "http://api.wan-san.com/v1/shipping-methods/12345", "actionId": "12345"}
+            "shippingAddressId": {"href": "http://api.wan-san.com/v1/shipping-addresses/12345", "id": "12345"},
+            "shippingMethodId": {"href": "http://api.wan-san.com/v1/shipping-methods/12345", "id": "12345"}
         }
 
 
 + Response 200 (application/json)
 
         {
-            "self": {"href": "http://api.wan-san.com/v1/fulfilments?orderId=123456789, "actionId":""},
-            "userId": {"href": "http://api.wan-san.com/v1/users/12345", "actionId": "12345"},
-            "orderId": {"href": "http://api.wan-san.com/v1/orders/12345", "actionId": "12345"},
+            "self": {"href": "http://api.wan-san.com/v1/fulfilments?orderId=123456789, "id":""},
+            "userId": {"href": "http://api.wan-san.com/v1/users/12345", "id": "12345"},
+            "orderId": {"href": "http://api.wan-san.com/v1/orders/12345", "id": "12345"},
             "trackingGuid": "151907d5-807e-4a69-83e6-e709b6f75359",
             "items":[
                 {
-                    "self": {"href": "http://api.wan-san.com/v1/fulfilments/11111", "actionId": "11111"},
-                    "orderItemId": {"href": "http://api.wan-san.com/v1/billing-lineitems/100000001", "actionId": "100000001"},
-                    "offerId": {"href": "http://api.wan-san.com/v1/offers/11111", "actionId": "11111"},
+                    "self": {"href": "http://api.wan-san.com/v1/fulfilments/11111", "id": "11111"},
+                    "orderItemId": {"href": "http://api.wan-san.com/v1/billing-lineitems/100000001", "id": "100000001"},
+                    "offerId": {"href": "http://api.wan-san.com/v1/offers/11111", "id": "11111"},
                     "timestamp": 10000000000000,
                     "quantity": 1,
                     "status": "SUCCEED",
@@ -54,9 +54,9 @@ post new fulfilments
                     ]
                 },
                 {
-                    "self": {"href": "http://api.wan-san.com/v1/fulfilments/22222", "actionId": "22222"},
-                    "orderItemId": {"href": "http://api.wan-san.com/v1/billing-lineitems/100000002", "actionId": "100000002"},
-                    "offerId": {"href": "http://api.wan-san.com/v1/offers/22222", "actionId": "22222"},
+                    "self": {"href": "http://api.wan-san.com/v1/fulfilments/22222", "id": "22222"},
+                    "orderItemId": {"href": "http://api.wan-san.com/v1/billing-lineitems/100000002", "id": "100000002"},
+                    "offerId": {"href": "http://api.wan-san.com/v1/offers/22222", "id": "22222"},
                     "timestamp": 10000000000000,
                     "quantity": 10,
                     "status": "PENDING",
@@ -79,8 +79,8 @@ post new fulfilments
                     ]
                 }
             ],
-            "shippingAddressId": {"href": "http://api.wan-san.com/v1/shipping-addresses/12345", "actionId": "12345"},
-            "shippingMethodId": {"href": "http://api.wan-san.com/v1/shipping-methods/12345", "actionId": "12345"}
+            "shippingAddressId": {"href": "http://api.wan-san.com/v1/shipping-addresses/12345", "id": "12345"},
+            "shippingMethodId": {"href": "http://api.wan-san.com/v1/shipping-methods/12345", "id": "12345"}
 
         }
 
@@ -91,9 +91,9 @@ get fulfilment detail
 + Response 200 (application/json)
 
         {
-            "self": {"href": "http://api.wan-san.com/v1/fulfilments/11111", "actionId": "11111"},
-            "orderItemId": {"href": "http://api.wan-san.com/v1/billing-lineitems/100000001", "actionId": "100000001"},
-            "offerId": {"href": "http://api.wan-san.com/v1/offers/11111", "actionId": "11111"},
+            "self": {"href": "http://api.wan-san.com/v1/fulfilments/11111", "id": "11111"},
+            "orderItemId": {"href": "http://api.wan-san.com/v1/billing-lineitems/100000001", "id": "100000001"},
+            "offerId": {"href": "http://api.wan-san.com/v1/offers/11111", "id": "11111"},
             "timestamp": 10000000000000,
             "quantity": 1,
             "status": "SUCCEED",
@@ -117,15 +117,15 @@ get fulfilments by billing order addressId
 + Response 200 (application/json)
 
         {
-            "self": {"href": "http://api.wan-san.com/v1/fulfilments?orderId=123456789, "actionId":""},
-            "userId": {"href": "http://api.wan-san.com/v1/users/12345", "actionId": "12345"},
-            "orderId": {"href": "http://api.wan-san.com/v1/orders/123456789", "actionId": "123456789"},
+            "self": {"href": "http://api.wan-san.com/v1/fulfilments?orderId=123456789, "id":""},
+            "userId": {"href": "http://api.wan-san.com/v1/users/12345", "id": "12345"},
+            "orderId": {"href": "http://api.wan-san.com/v1/orders/123456789", "id": "123456789"},
             "trackingGuid": "151907d5-807e-4a69-83e6-e709b6f75359",
             "items":[
                 {
-                    "self": {"href": "http://api.wan-san.com/v1/fulfilments/11111", "actionId": "11111"},
-                    "orderItemId": {"href": "http://api.wan-san.com/v1/billing-lineitems/100000001", "actionId": "100000001"},
-                    "offerId": "{"href": "http://api.wan-san.com/v1/offers/11111", "actionId": "11111"},
+                    "self": {"href": "http://api.wan-san.com/v1/fulfilments/11111", "id": "11111"},
+                    "orderItemId": {"href": "http://api.wan-san.com/v1/billing-lineitems/100000001", "id": "100000001"},
+                    "offerId": "{"href": "http://api.wan-san.com/v1/offers/11111", "id": "11111"},
                     "timestamp": 10000000000000,
                     "quantity": 10,
                     "status": "SUCCEED",
@@ -138,9 +138,9 @@ get fulfilments by billing order addressId
                     ]
                 },
                 {
-                    "self": {"href": "http://api.wan-san.com/v1/fulfilments/22222", "actionId": "22222"},
-                    "orderItemId": {"href": "http://api.wan-san.com/v1/billing-lineitems/100000002", "actionId": "100000002"},
-                    "offerId": {"href": "http://api.wan-san.com/v1/offers/22222", "actionId": "22222"},
+                    "self": {"href": "http://api.wan-san.com/v1/fulfilments/22222", "id": "22222"},
+                    "orderItemId": {"href": "http://api.wan-san.com/v1/billing-lineitems/100000002", "id": "100000002"},
+                    "offerId": {"href": "http://api.wan-san.com/v1/offers/22222", "id": "22222"},
                     "timestamp": 10000000000000,
                     "quantity": 10,
                     "status": "PENDING",
@@ -163,6 +163,6 @@ get fulfilments by billing order addressId
                     ]
                 }
             ],
-            "shippingAddressId": {"href": "http://api.wan-san.com/v1/shipping-addresses/12345", "actionId": "12345"},
-            "shippingMethodId": {"href": "http://api.wan-san.com/v1/shipping-methods/12345", "actionId": "12345"}
+            "shippingAddressId": {"href": "http://api.wan-san.com/v1/shipping-addresses/12345", "id": "12345"},
+            "shippingMethodId": {"href": "http://api.wan-san.com/v1/shipping-methods/12345", "id": "12345"}
         }
