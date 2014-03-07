@@ -15,18 +15,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 /**
  * Category repository.
  */
-public class CategoryRepository {
+public class CategoryRepository implements EntityRepository<Category> {
     @Autowired
     private CategoryDao categoryDao;
 
+    @Override
     public Long create(Category category) {
         CategoryEntity entity = CategoryConverter.toEntity(category);
         return categoryDao.create(entity);
     }
 
-    public Category get(Long id, Integer revision) {
-        CategoryEntity entity = categoryDao.getCategory(id, revision);
-        Category category = CategoryConverter.toModel(entity);
-        return category;
+    @Override
+    public Category get(Long id, Long timestamp) {
+        //CategoryEntity entity = categoryDao.getCategory(id, revision);
+        //Category category = CategoryConverter.toModel(entity);
+        //return category;
+        return null;
     }
 }
