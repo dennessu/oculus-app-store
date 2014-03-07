@@ -63,6 +63,9 @@ class OrderServiceImpl implements OrderService {
     Promise<List<Order>> createOrders(Order order, ApiContext context) {
         // TODO: split orders
         // TODO: expand external resources
+        // TODO: change this flow to 2 steps:
+        //      1. createQuote
+        //      2. settleQuote
         def orderServiceContext = initOrderServiceContext(order)
         flowSelector.select(
                 new OrderServiceContext(order), OrderServiceOperation.CREATE).syncThen { FlowType flowType ->

@@ -36,4 +36,6 @@ public interface OrderRepository {
     List<Discount> getDiscounts(Long orderId);
 
     List<PaymentInstrumentId> getPaymentInstrumentIds(Long orderId);
+
+    Order updateOrder(Order order, OrderEvent orderEvent);
 }

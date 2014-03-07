@@ -9,6 +9,7 @@ package com.junbo.billing.spec.resource;
 
 import com.junbo.billing.spec.model.Balance;
 import com.junbo.common.id.BalanceId;
+import com.junbo.common.id.OrderId;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 
@@ -36,5 +37,5 @@ public interface BalanceResource {
     Promise<Balance> getBalance(@PathParam("balanceId") BalanceId balanceId);
 
     @GET
-    Promise<List<Balance>> getBalances(@QueryParam("orderId") BalanceId orderId);
+    Promise<List<Balance>> getBalances(@QueryParam("orderId") OrderId orderId);
 }
