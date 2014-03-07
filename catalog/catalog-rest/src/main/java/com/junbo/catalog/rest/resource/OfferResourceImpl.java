@@ -15,7 +15,6 @@ import com.junbo.catalog.spec.resource.OfferResource;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -27,7 +26,7 @@ public class OfferResourceImpl implements OfferResource{
 
     @Override
     public Promise<ResultList<Offer>> getOffers(EntitiesGetOptions options) {
-        List<Offer> offers = offerService.getOffers(options);
+        List<Offer> offers = offerService.getEntities(options);
         ResultList<Offer> resultList = new ResultList<>();
         resultList.setResults(offers);
         resultList.setHref("href TODO");
@@ -37,49 +36,49 @@ public class OfferResourceImpl implements OfferResource{
 
     @Override
     public Promise<Offer> getOffer(Long offerId, EntityGetOptions options) {
-        Offer offer = offerService.getOffer(offerId, options);
+        Offer offer = offerService.get(offerId, options);
         return Promise.pure(offer);
     }
 
     @Override
     public Promise<Offer> createOffer(Offer offer) {
-        Offer result = offerService.createOffer(offer);
+        Offer result = offerService.create(offer);
         return Promise.pure(result);
     }
 
     @Override
     public Promise<Offer> createReview(Long offerId) {
-        Offer offer = offerService.reviewOffer(offerId);
+        Offer offer = offerService.review(offerId);
         return Promise.pure(offer);
     }
 
     @Override
     public Promise<Offer> releaseOffer(Long offerId) {
-        Offer offer = offerService.releaseOffer(offerId);
+        Offer offer = offerService.release(offerId);
         return Promise.pure(offer);
     }
 
     @Override
     public Promise<Offer> rejectOffer(Long offerId) {
-        Offer updatedOffer = offerService.rejectOffer(offerId);
+        Offer updatedOffer = offerService.reject(offerId);
         return Promise.pure(updatedOffer);
     }
 
     @Override
-    public Promise<Offer> updateOffer(@Valid Offer offer) {
-        Offer updatedOffer = offerService.updateOffer(offer);
+    public Promise<Offer> updateOffer(Offer offer) {
+        Offer updatedOffer = offerService.update(offer);
         return Promise.pure(updatedOffer);
     }
 
     @Override
     public Promise<Long> removeOffer(Long offerId) {
-        Long removedOfferId = offerService.removeOffer(offerId);
+        Long removedOfferId = offerService.remove(offerId);
         return Promise.pure(removedOfferId);
     }
 
     @Override
     public Promise<Long> deleteOffer(Long offerId) {
-        Long deletedOfferId = offerService.deleteOffer(offerId);
+        Long deletedOfferId = offerService.delete(offerId);
         return Promise.pure(deletedOfferId);
     }
 }

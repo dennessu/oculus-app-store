@@ -28,13 +28,13 @@ public class PromotionResourceImpl implements PromotionResource{
 
     @POST
     public Promise<Promotion> createPromotion(Promotion promotion) {
-        Promotion newPromotion = promotionService.createPromotion(promotion);
+        Promotion newPromotion = promotionService.create(promotion);
         return Promise.pure(newPromotion);
     }
 
     @Override
     public Promise<Promotion> getPromotion(Long promotionId, EntityGetOptions options) {
-        Promotion promotion = promotionService.getPromotion(promotionId, options);
+        Promotion promotion = promotionService.get(promotionId, options);
         return Promise.pure(promotion);
     }
 
@@ -44,11 +44,11 @@ public class PromotionResourceImpl implements PromotionResource{
         if (options.getEntityIds() != null && options.getEntityIds().size() > 0) {
             promotions = new ArrayList<>();
             for (Long promotionId : options.getEntityIds()) {
-                promotions.add(promotionService.getPromotion(promotionId, EntityGetOptions.getDefault()));
+                promotions.add(promotionService.get(promotionId, EntityGetOptions.getDefault()));
             }
         } else {
             options.ensurePagingValid();
-            promotions = promotionService.getEffectivePromotions(options.getStart(), options.getSize());
+            promotions = promotionService.getEntities(options);
         }
         ResultList<Promotion> resultList = new ResultList<>();
         resultList.setResults(promotions);

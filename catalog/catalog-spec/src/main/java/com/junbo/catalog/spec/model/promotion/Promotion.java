@@ -90,4 +90,9 @@ public class Promotion extends BaseModel {
     public boolean isEffective(Date current) {
         return startDate.before(current) && endDate.after(current);
     }
+
+    @Override
+    public String getEntityType() {
+        return "Promotion";
+    }
 }
