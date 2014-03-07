@@ -28,6 +28,7 @@ public class BalanceItemEntity extends BaseEntity {
     private Long orderItemId;
     private BigDecimal amount;
     private BigDecimal taxAmount;
+    private BigDecimal discountAmount;
     private Boolean taxIncluded;
     private String financeId;
     private Boolean isTaxExempt;
@@ -84,6 +85,15 @@ public class BalanceItemEntity extends BaseEntity {
     }
     public void setTaxIncluded(Boolean taxIncluded) {
         this.taxIncluded = taxIncluded;
+    }
+
+    @Column(name = "discount_amount")
+    @NotNull(message = EntityValidationCode.MISSING_VALUE)
+    public BigDecimal getDiscountAmount() {
+        return discountAmount;
+    }
+    public void setDiscountAmount(BigDecimal discountAmount) {
+        this.discountAmount = discountAmount;
     }
 
     @Column(name = "finance_id")
