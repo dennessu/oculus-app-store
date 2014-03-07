@@ -12,6 +12,8 @@ import com.junbo.entitlement.db.repository.EntitlementRepository;
 import com.junbo.entitlement.spec.error.AppErrors;
 import com.junbo.entitlement.spec.model.EntitlementDefinition;
 import com.junbo.entitlement.spec.model.PageMetadata;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +24,7 @@ import java.util.UUID;
  * Service for EntitlementDefinition.
  */
 public class EntitlementDefinitionServiceImpl extends BaseService implements EntitlementDefinitionService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(EntitlementDefinitionService.class);
     @Autowired
     private EntitlementDefinitionRepository entitlementDefinitionRepository;
     @Autowired
@@ -104,6 +107,8 @@ public class EntitlementDefinitionServiceImpl extends BaseService implements Ent
 
     private void checkUnUsed(Long entitlementDefinitionId) {
         if (entitlementRepository.existWithEntitlementDefinition(entitlementDefinitionId)) {
+            LOGGER.error("Try to modify used entitlementDefinition [{}]" +
+                    " which is not permitted.", entitlementDefinitionId);
             throw AppErrors.INSTANCE.common("entitlementDefinition [" +
                     entitlementDefinitionId +
                     "] can not be modified." +
