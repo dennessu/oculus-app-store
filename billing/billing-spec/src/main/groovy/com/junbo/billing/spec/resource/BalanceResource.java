@@ -7,8 +7,10 @@
 package com.junbo.billing.spec.resource;
 
 
-import com.junbo.langur.core.RestResource;
 import com.junbo.billing.spec.model.Balance;
+import com.junbo.common.id.BalanceId;
+import com.junbo.common.id.OrderId;
+import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 
 import javax.ws.rs.*;
@@ -32,8 +34,8 @@ public interface BalanceResource {
 
     @GET
     @Path("/{balanceId}")
-    Promise<Balance> getBalance(@PathParam("balanceId") Long balanceId);
+    Promise<Balance> getBalance(@PathParam("balanceId") BalanceId balanceId);
 
     @GET
-    Promise<List<Balance>> getBalances(@QueryParam("orderId") Long orderId);
+    Promise<List<Balance>> getBalances(@QueryParam("orderId") OrderId orderId);
 }

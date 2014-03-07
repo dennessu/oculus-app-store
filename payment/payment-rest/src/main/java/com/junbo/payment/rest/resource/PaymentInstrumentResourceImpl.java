@@ -6,6 +6,7 @@
 
 package com.junbo.payment.rest.resource;
 
+import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.core.PaymentInstrumentService;
 import com.junbo.payment.spec.model.PageMetaData;
@@ -32,20 +33,20 @@ public class PaymentInstrumentResourceImpl implements PaymentInstrumentResource 
     }
 
     @Override
-    public Promise<PaymentInstrument> getById(Long paymentInstrumentId) {
-        PaymentInstrument result = piService.getById(paymentInstrumentId);
+    public Promise<PaymentInstrument> getById(PaymentInstrumentId paymentInstrumentId) {
+        PaymentInstrument result = piService.getById(paymentInstrumentId.getValue());
         return Promise.pure(result);
     }
 
     @Override
-    public Promise<Response> delete(Long paymentInstrumentId) {
-        piService.delete(paymentInstrumentId);
+    public Promise<Response> delete(PaymentInstrumentId paymentInstrumentId) {
+        piService.delete(paymentInstrumentId.getValue());
         return Promise.pure(Response.status(204).build());
     }
 
     @Override
-    public Promise<PaymentInstrument> update(Long paymentInstrumentId, PaymentInstrument request) {
-        request.setId(paymentInstrumentId);
+    public Promise<PaymentInstrument> update(PaymentInstrumentId paymentInstrumentId, PaymentInstrument request) {
+        request.setId(paymentInstrumentId.getValue());
         piService.update(request);
         return Promise.pure(request);
     }

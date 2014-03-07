@@ -15,18 +15,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 /**
  * Promotion repository.
  */
-public class PromotionRepository {
+public class PromotionRepository implements EntityRepository<Promotion> {
     @Autowired
     private PromotionDao promotionDao;
 
+    @Override
     public Long create(Promotion promotion) {
         PromotionEntity entity = PromotionConverter.toEntity(promotion);
 
         return promotionDao.create(entity);
     }
 
-    public Promotion get(Long offerId, Integer revision) {
-        PromotionEntity entity = promotionDao.getPromotion(offerId, revision);
-        return PromotionConverter.toModel(entity);
+    @Override
+    public Promotion get(Long offerId, Long timestamp) {
+        //PromotionEntity entity = promotionDao.getPromotion(offerId, timestamp);
+        //return PromotionConverter.toModel(entity);
+        return null;
     }
 }

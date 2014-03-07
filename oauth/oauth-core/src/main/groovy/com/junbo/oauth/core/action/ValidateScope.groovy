@@ -25,7 +25,7 @@ class ValidateScope implements Action {
         def contextWrapper = new ActionContextWrapper(context)
 
         def parameterMap = contextWrapper.parameterMap
-        def appClient = contextWrapper.appClient
+        def client = contextWrapper.client
 
         String scopeStr = parameterMap.getFirst(OAuthParameters.SCOPE)
 
@@ -34,7 +34,7 @@ class ValidateScope implements Action {
         if (StringUtils.hasText(scopeStr)) {
             String[] scopeTokens = scopeStr.split(' ')
             String[] invalidScopes = scopeTokens.findAll {
-                String scope -> !appClient.allowedScopes.contains(scope)
+                String scope -> !client.allowedScopes.contains(scope)
             }
 
             if (invalidScopes.length > 0) {
@@ -43,8 +43,8 @@ class ValidateScope implements Action {
             }
 
             scopes.addAll(scopeTokens)
-        } else if (appClient.defaultScopes != null) {
-            scopes = appClient.defaultScopes
+        } else if (client.defaultScopes != null) {
+            scopes = client.defaultScopes
         } else {
             throw AppExceptions.INSTANCE.missingScope().exception()
         }

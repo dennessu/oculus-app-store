@@ -34,14 +34,14 @@ class GrantTokenByPassword implements Action {
         def contextWrapper = new ActionContextWrapper(context)
 
         def oauthInfo = contextWrapper.oauthInfo
-        def appClient = contextWrapper.appClient
+        def client = contextWrapper.client
         def loginState = contextWrapper.loginState
 
         Assert.notNull(oauthInfo, 'oauthInfo is null')
-        Assert.notNull(appClient, 'appClient is null')
+        Assert.notNull(client, 'client is null')
         Assert.notNull(loginState, 'loginState is null')
 
-        AccessToken accessToken = tokenGenerationService.generateAccessToken(appClient,
+        AccessToken accessToken = tokenGenerationService.generateAccessToken(client,
                 loginState.userId, oauthInfo.scopes)
 
         contextWrapper.accessToken = accessToken

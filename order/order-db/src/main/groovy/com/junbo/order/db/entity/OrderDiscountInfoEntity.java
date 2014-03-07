@@ -7,7 +7,8 @@
 package com.junbo.order.db.entity;
 
 import com.junbo.order.db.ValidationMessages;
-import com.junbo.order.spec.model.DiscountType;
+import com.junbo.order.db.entity.enums.DiscountType;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -60,6 +61,7 @@ public class OrderDiscountInfoEntity extends CommonDbEntityWithDate {
 
     @Column(name = "DISCOUNT_TYPE")
     @NotNull(message = ValidationMessages.MISSING_VALUE)
+    @Type(type = "com.junbo.order.db.entity.type.DiscountEnumType")
     public DiscountType getDiscountType() {
         return discountType;
     }

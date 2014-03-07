@@ -34,18 +34,18 @@ public interface OfferResource {
     Promise<Offer> getOffer(@PathParam("offerId") Long offerId, @BeanParam EntityGetOptions options);
 
     /**
-     * Create a draft offer, the created offer is not purchasable until it is published.
+     * Create a draft offer, the created offer is not purchasable until it is released.
      *
      * @param offer the offer to be created.
      * @return the created offer.
      */
     @POST
     @Path("/")
-    Promise<Offer> createOffer(@Valid Offer offer);
+    Promise<Offer> create(@Valid Offer offer);
 
     @PUT
     @Path("/{offerId}")
-    Promise<Offer> updateOffer(@Valid Offer offer);
+    Promise<Offer> update(@Valid Offer offer);
 
     /**
      * Developer submit an draft offer for review.
@@ -54,26 +54,26 @@ public interface OfferResource {
      */
     @POST
     @Path("/{offerId}/review")
-    Promise<Offer> createReview(@PathParam("offerId") Long offerId);
+    Promise<Offer> review(@PathParam("offerId") Long offerId);
 
     /**
      * Admin publishes an offer, makes it purchasable.
-     * @param offerId the id of offer to be published.
-     * @return the offer to be published.
+     * @param offerId the id of offer to be released.
+     * @return the offer to be released.
      */
     @POST
     @Path("/{offerId}/release")
-    Promise<Offer> publishOffer(@PathParam("offerId") Long offerId);
+    Promise<Offer> release(@PathParam("offerId") Long offerId);
 
     /**
      * Admin rejects an offer, developer may update and submit review later.
-     * @param offerId the id of offer to be published.
-     * @return the offer to be published.
+     * @param offerId the id of offer to be released.
+     * @return the offer to be released.
      */
     // TODO: add review notes
     @POST
     @Path("/{offerId}/reject")
-    Promise<Offer> rejectOffer(@PathParam("offerId") Long offerId);
+    Promise<Offer> reject(@PathParam("offerId") Long offerId);
 
     /**
      * Remove an offer, makes it not purchasable. The draft version is still kept.
@@ -83,15 +83,15 @@ public interface OfferResource {
      */
     @DELETE
     @Path("/{offerId}/release")
-    Promise<Long> removeOffer(@PathParam("offerId") Long offerId);
+    Promise<Long> remove(@PathParam("offerId") Long offerId);
 
     /**
-     * Delete an offer, delete both draft and published version.
+     * Delete an offer, delete both draft and released version.
      * Developer cannot operate this offer again in future.
      * @param offerId the id of offer to be deleted.
      * @return the deleted offer id.
      */
     @DELETE
     @Path("/{offerId}")
-    Promise<Long> deleteOffer(@PathParam("offerId") Long offerId);
+    Promise<Long> delete(@PathParam("offerId") Long offerId);
 }

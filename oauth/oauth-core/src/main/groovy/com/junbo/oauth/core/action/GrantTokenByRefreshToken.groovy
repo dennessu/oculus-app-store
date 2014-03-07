@@ -39,7 +39,7 @@ class GrantTokenByRefreshToken implements Action {
         def contextWrapper = new ActionContextWrapper(context)
 
         def parameterMap = contextWrapper.parameterMap
-        def appClient = contextWrapper.appClient
+        def client = contextWrapper.client
         def oauthInfo = contextWrapper.oauthInfo
 
         String token = parameterMap.getFirst(OAuthParameters.REFRESH_TOKEN)
@@ -60,8 +60,8 @@ class GrantTokenByRefreshToken implements Action {
         AccessToken accessToken = refreshToken.accessToken
         Assert.notNull(accessToken)
 
-        if (refreshToken.clientId != appClient.clientId) {
-            throw AppExceptions.INSTANCE.differentClientId(refreshToken.clientId, appClient.clientId).exception()
+        if (refreshToken.clientId != client.clientId) {
+            throw AppExceptions.INSTANCE.differentClientId(refreshToken.clientId, client.clientId).exception()
         }
 
         Set<String> scopesParam = oauthInfo.scopes
@@ -80,10 +80,10 @@ class GrantTokenByRefreshToken implements Action {
         )
         contextWrapper.loginState = loginState
 
-        def newAccessToken = tokenGenerationService.generateAccessToken(appClient, refreshToken.userId, scopesParam)
+        def newAccessToken = tokenGenerationService.generateAccessToken(client, refreshToken.userId, scopesParam)
         contextWrapper.accessToken = newAccessToken
 
-        def newRefreshToken = tokenGenerationService.generateRefreshToken(appClient, newAccessToken, refreshToken)
+        def newRefreshToken = tokenGenerationService.generateRefreshToken(client, newAccessToken, refreshToken)
         contextWrapper.refreshToken = newRefreshToken
 
         return Promise.pure(null)

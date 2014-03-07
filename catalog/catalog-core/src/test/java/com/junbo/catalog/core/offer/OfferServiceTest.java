@@ -20,7 +20,7 @@ public class OfferServiceTest extends BaseTest {
     @Test
     public void testCreate() {
         Offer offer = buildOffer();
-        Offer result = offerService.createOffer(offer);
+        Offer result = offerService.create(offer);
         Assert.assertNotNull(result.getId(), "Entity id should not be null.");
     }
 

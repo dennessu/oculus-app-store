@@ -46,7 +46,7 @@ class GrantTokenByCode implements Action {
         def contextWrapper = new ActionContextWrapper(context)
 
         def parameterMap = contextWrapper.parameterMap
-        def appClient = contextWrapper.appClient
+        def client = contextWrapper.client
 
         String code = parameterMap.getFirst(OAuthParameters.CODE)
         String redirectUri = parameterMap.getFirst(OAuthParameters.REDIRECT_URI)
@@ -69,7 +69,7 @@ class GrantTokenByCode implements Action {
             throw AppExceptions.INSTANCE.invalidRedirectUri(redirectUri).exception()
         }
 
-        AccessToken accessToken = tokenGenerationService.generateAccessToken(appClient,
+        AccessToken accessToken = tokenGenerationService.generateAccessToken(client,
                 authorizationCode.userId, authorizationCode.scopes)
 
         LoginState loginState = new LoginState(

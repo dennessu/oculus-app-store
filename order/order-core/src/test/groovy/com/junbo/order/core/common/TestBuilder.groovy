@@ -3,10 +3,10 @@ import com.junbo.common.id.PaymentInstrumentId
 import com.junbo.common.id.ShippingAddressId
 import com.junbo.common.id.UserId
 import com.junbo.order.core.impl.order.OrderServiceContext
-import com.junbo.order.spec.model.ItemType
+import com.junbo.order.db.entity.enums.ItemType
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderItem
-import com.junbo.order.spec.model.OrderType
+import com.junbo.order.db.entity.enums.OrderType
 import com.junbo.payment.spec.model.PaymentInstrument
 import groovy.transform.CompileStatic
 /**
@@ -58,8 +58,7 @@ class TestBuilder {
     }
 
     static OrderServiceContext buildDefaultContext() {
-        def context = new OrderServiceContext()
-        context.order = buildOrderRequest()
+        def context = new OrderServiceContext(buildOrderRequest())
         return context
     }
 }

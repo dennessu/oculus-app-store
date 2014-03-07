@@ -5,6 +5,7 @@
  */
 package com.junbo.fulfilment.app
 
+import com.junbo.common.id.provider.IdTypeFromStringProvider
 import com.junbo.fulfilment.rest.exception.RestExceptionMapper
 import com.junbo.fulfilment.rest.jackson.JacksonFeature
 import com.junbo.fulfilment.rest.jackson.JsonMappingExceptionMapper
@@ -30,6 +31,7 @@ class Main {
                 .register(JacksonFeature)
                 .register(JsonMappingExceptionMapper)
                 .register(RestExceptionMapper)
+                .register(IdTypeFromStringProvider)
 
         def uri = URI.create('http://localhost:8080/rest')
         return GrizzlyHttpServerFactory.createHttpServer(uri, resourceConfig)

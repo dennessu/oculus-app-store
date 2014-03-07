@@ -6,6 +6,8 @@
 
 package com.junbo.ewallet.spec.resource;
 
+import com.junbo.common.id.UserId;
+import com.junbo.common.id.WalletId;
 import com.junbo.ewallet.spec.model.ResultList;
 import com.junbo.ewallet.spec.model.Wallet;
 import com.junbo.langur.core.RestResource;
@@ -24,15 +26,15 @@ import javax.ws.rs.core.MediaType;
 public interface WalletResource {
     @GET
     @Path("wallets/{walletId}")
-    Promise<Wallet> getWallet(@PathParam("walletId") Long walletId);
+    Promise<Wallet> getWallet(@PathParam("walletId") WalletId walletId);
 
     @GET
     @Path("users/{userId}/wallets")
-    Promise<ResultList<Wallet>> getWallets(@PathParam("userId") Long userId);
+    Promise<ResultList<Wallet>> getWallets(@PathParam("userId") UserId userId);
 
     @PUT
     @Path("wallets/{walletId}")
-    Promise<Wallet> updateWallet(@PathParam("walletId") Long walletId, Wallet wallet);
+    Promise<Wallet> updateWallet(@PathParam("walletId") WalletId walletId, Wallet wallet);
 
     @POST
     @Path("wallets/credit")
@@ -44,5 +46,5 @@ public interface WalletResource {
 
     @GET
     @Path("wallets/{walletId}/transactions")
-    Promise<Wallet> getTransactions(@PathParam("walletId") Long walletId);
+    Promise<Wallet> getTransactions(@PathParam("walletId") WalletId walletId);
 }

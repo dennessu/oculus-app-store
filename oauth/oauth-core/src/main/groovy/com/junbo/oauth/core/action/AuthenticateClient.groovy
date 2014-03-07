@@ -11,8 +11,8 @@ import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.exception.AppExceptions
-import com.junbo.oauth.db.repo.AppClientRepository
-import com.junbo.oauth.spec.model.AppClient
+import com.junbo.oauth.db.repo.ClientRepository
+import com.junbo.oauth.spec.model.Client
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
 import org.apache.commons.codec.binary.Base64
@@ -26,11 +26,11 @@ import org.springframework.util.StringUtils
 class AuthenticateClient implements Action {
     private static final int TOKENS_LENGTH = 2
 
-    private AppClientRepository appClientRepository
+    private ClientRepository clientRepository
 
     @Required
-    void setAppClientRepository(AppClientRepository appClientRepository) {
-        this.appClientRepository = appClientRepository
+    void setClientRepository(ClientRepository clientRepository) {
+        this.clientRepository = clientRepository
     }
 
     @Override
@@ -69,7 +69,7 @@ class AuthenticateClient implements Action {
             throw AppExceptions.INSTANCE.missingClientId().exception()
         }
 
-        AppClient appClient = appClientRepository.getAppClient(clientId)
+        Client appClient = clientRepository.getClient(clientId)
 
         if (appClient == null) {
             throw AppExceptions.INSTANCE.invalidClientId(clientId).exception()
@@ -87,7 +87,7 @@ class AuthenticateClient implements Action {
             throw AppExceptions.INSTANCE.invalidClientSecret(clientSecret).exception()
         }
 
-        contextWrapper.appClient = appClient
+        contextWrapper.client = appClient
 
         return Promise.pure(null)
     }

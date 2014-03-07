@@ -33,7 +33,65 @@ public interface CategoryResource {
     @Path("/{categoryId}")
     Promise<Category> getCategory(@PathParam("categoryId") Long categoryId, @BeanParam EntityGetOptions options);
 
+    /**
+     * Create a draft category, the created category is not purchasable until it is released.
+     *
+     * @param category the category to be created.
+     * @return the created category.
+     */
     @POST
     @Path("/")
-    Promise<Category> createCategory(@Valid Category category);
+    Promise<Category> create(@Valid Category category);
+
+    @PUT
+    @Path("/{categoryId}")
+    Promise<Category> update(@Valid Category category);
+
+    /**
+     * Developer submit an draft category for review.
+     * @param categoryId the id of the category to be reviewed.
+     * @return the category to be reviewed.
+     */
+    @POST
+    @Path("/{categoryId}/review")
+    Promise<Category> review(@PathParam("categoryId") Long categoryId);
+
+    /**
+     * Admin publishes an category, makes it purchasable.
+     * @param categoryId the id of category to be released.
+     * @return the category to be released.
+     */
+    @POST
+    @Path("/{categoryId}/release")
+    Promise<Category> release(@PathParam("categoryId") Long categoryId);
+
+    /**
+     * Admin rejects an category, developer may update and submit review later.
+     * @param categoryId the id of category to be released.
+     * @return the category to be released.
+     */
+    // TODO: add review notes
+    @POST
+    @Path("/{categoryId}/reject")
+    Promise<Category> reject(@PathParam("categoryId") Long categoryId);
+
+    /**
+     * Remove an released category. The draft version is still kept.
+     * Developer may update and submit review again in future.
+     * @param categoryId the id of category to be removed.
+     * @return the removed category id.
+     */
+    @DELETE
+    @Path("/{categoryId}/release")
+    Promise<Long> remove(@PathParam("categoryId") Long categoryId);
+
+    /**
+     * Delete an category, delete both draft and released version.
+     * Developer cannot operate this category again in future.
+     * @param categoryId the id of category to be deleted.
+     * @return the deleted category id.
+     */
+    @DELETE
+    @Path("/{categoryId}")
+    Promise<Long> delete(@PathParam("categoryId") Long categoryId);
 }

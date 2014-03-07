@@ -7,7 +7,7 @@
 
     <wf:flow id="authorizeFlow">
         <wf:action-state id="validation">
-            <wf:action ref="getAppClient"/>
+            <wf:action ref="validateClient"/>
             <wf:action ref="validateScope"/>
             <wf:action ref="validateRedirectUri"/>
             <wf:action ref="validateResponseType"/>

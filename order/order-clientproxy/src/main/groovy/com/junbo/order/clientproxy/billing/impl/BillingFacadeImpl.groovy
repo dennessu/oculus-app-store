@@ -4,6 +4,9 @@ import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.ShippingAddress
 import com.junbo.billing.spec.resource.BalanceResource
 import com.junbo.billing.spec.resource.ShippingAddressResource
+import com.junbo.common.id.BalanceId
+import com.junbo.common.id.ShippingAddressId
+import com.junbo.common.id.UserId
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.billing.BillingFacade
 import groovy.transform.CompileStatic
@@ -41,7 +44,7 @@ class BillingFacadeImpl implements BillingFacade {
 
     @Override
     Promise<Balance> getBalanceById(Long balanceId) {
-        return balanceResource.getBalance(balanceId)
+        return balanceResource.getBalance(new BalanceId(balanceId))
     }
 
     @Override
@@ -50,8 +53,9 @@ class BillingFacadeImpl implements BillingFacade {
     }
 
     @Override
-    Promise<ShippingAddress> getShippingAddress(Long shippingAddressId) {
-        return shippingAddressResource.getShippingAddress(shippingAddressId)
+    Promise<ShippingAddress> getShippingAddress(Long userId, Long shippingAddressId) {
+        return shippingAddressResource.getShippingAddress(
+                new UserId(userId), new ShippingAddressId(shippingAddressId)) // provide the user id
     }
 
     @Override

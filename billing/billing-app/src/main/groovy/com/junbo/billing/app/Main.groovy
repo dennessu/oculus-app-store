@@ -6,6 +6,7 @@
 
 package com.junbo.billing.app
 
+import com.junbo.common.id.provider.IdTypeFromStringProvider
 import com.junbo.common.json.JacksonFeature
 import com.junbo.common.json.ObjectMapperProvider
 import org.glassfish.grizzly.http.server.HttpServer
@@ -29,6 +30,7 @@ class Main {
 
         resourceConfig.register(JacksonFeature)
         resourceConfig.register(ObjectMapperProvider)
+        resourceConfig.register(IdTypeFromStringProvider)
 
         def uri = URI.create('http://localhost:8080/rest')
         return GrizzlyHttpServerFactory.createHttpServer(uri, resourceConfig)

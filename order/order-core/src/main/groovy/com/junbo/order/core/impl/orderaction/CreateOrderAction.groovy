@@ -4,10 +4,12 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
-import com.junbo.order.spec.model.EventStatus
+import com.junbo.order.db.entity.enums.EventStatus
+import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.model.OrderEvent
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
+import org.springframework.beans.factory.annotation.Autowired
 
 /**
  * Created by chriszhu on 2/18/14.
@@ -15,6 +17,8 @@ import groovy.transform.TypeChecked
 @CompileStatic
 @TypeChecked
 class CreateOrderAction implements Action {
+    @Autowired
+    OrderRepository orderRepository
 
     @Override
     Promise<ActionResult> execute(ActionContext actionContext) {
@@ -23,9 +27,9 @@ class CreateOrderAction implements Action {
         def orderEvent = new OrderEvent()
         // orderEvent.action = context.action?.toString() // todo set the action
         orderEvent.status = EventStatus.OPEN.toString()
-        def orderWithId = context.orderServiceContext.orderRepository.createOrder(
+        def orderWithId = orderRepository.createOrder(
                 context.orderServiceContext.order, orderEvent)
         context.orderServiceContext.setOrder(orderWithId)
-        return Promise.pure(ActionUtils.DEFAULT_RESULT)
+        return Promise.pure(null)
     }
 }

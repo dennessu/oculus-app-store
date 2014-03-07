@@ -39,6 +39,8 @@ public class PaymentInstrument {
     private String accountNum;
     private Address address;
     private Phone phone;
+    private String email;
+    private String relationToHolder;
     private CreditCardRequest creditCardRequest;
     //response:
     private String status;
@@ -132,6 +134,22 @@ public class PaymentInstrument {
 
     public void setPhone(Phone phone) {
         this.phone = phone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getRelationToHolder() {
+        return relationToHolder;
+    }
+
+    public void setRelationToHolder(String relationToHolder) {
+        this.relationToHolder = relationToHolder;
     }
 
     public String getStatus() {

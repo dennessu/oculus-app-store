@@ -1,5 +1,6 @@
 package com.junbo.order.app
 
+import com.junbo.common.id.provider.IdTypeFromStringProvider
 import com.junbo.common.json.JacksonFeature
 import com.junbo.common.json.ObjectMapperProvider
 import groovy.transform.CompileStatic
@@ -10,7 +11,6 @@ import org.glassfish.jersey.server.ResourceConfig
 import java.util.logging.Handler
 import java.util.logging.Level
 import java.util.logging.Logger
-
 /**
  * Created by chriszhu on 24/1/2014.
  */
@@ -33,6 +33,7 @@ class Main {
         resourceConfig.property('contextConfigLocation', 'classpath*:/spring/*.xml')
         resourceConfig.register(JacksonFeature)
         resourceConfig.register(ObjectMapperProvider)
+        resourceConfig.register(IdTypeFromStringProvider)
 
         def uri = URI.create('http://localhost:8080/rest')
         return GrizzlyHttpServerFactory.createHttpServer(uri, resourceConfig)

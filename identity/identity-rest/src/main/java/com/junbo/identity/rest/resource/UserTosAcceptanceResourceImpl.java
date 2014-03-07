@@ -5,6 +5,8 @@
  */
 package com.junbo.identity.rest.resource;
 
+import com.junbo.common.id.UserId;
+import com.junbo.common.id.UserTosAcceptanceId;
 import com.junbo.identity.rest.service.user.UserTosAcceptanceService;
 import com.junbo.identity.spec.model.common.ResultList;
 import com.junbo.identity.spec.model.common.ResultListUtil;
@@ -28,31 +30,32 @@ public class UserTosAcceptanceResourceImpl implements UserTosAcceptanceResource 
     private UserTosAcceptanceService userTosAcceptanceService;
 
     @Override
-    public Promise<UserTosAcceptance> postUserTosAcceptance(Long userId, UserTosAcceptance userTosAcceptance) {
-        return Promise.pure(userTosAcceptanceService.save(userId, userTosAcceptance));
+    public Promise<UserTosAcceptance> postUserTosAcceptance(UserId userId, UserTosAcceptance userTosAcceptance) {
+        return Promise.pure(userTosAcceptanceService.save(userId.getValue(), userTosAcceptance));
     }
 
     @Override
-    public Promise<ResultList<UserTosAcceptance>> getUserTosAcceptances(Long userId, String tos,
+    public Promise<ResultList<UserTosAcceptance>> getUserTosAcceptances(UserId userId, String tos,
                                                                         Integer cursor, Integer count) {
-        List<UserTosAcceptance> tosAcceptances = userTosAcceptanceService.getByUserId(userId, tos);
+        List<UserTosAcceptance> tosAcceptances = userTosAcceptanceService.getByUserId(userId.getValue(), tos);
         return Promise.pure(ResultListUtil.init(tosAcceptances, count));
     }
 
     @Override
-    public Promise<UserTosAcceptance> getUserTosAcceptance(Long userId, Long tosAcceptanceId) {
-        return Promise.pure(userTosAcceptanceService.get(userId, tosAcceptanceId));
+    public Promise<UserTosAcceptance> getUserTosAcceptance(UserId userId, UserTosAcceptanceId tosAcceptanceId) {
+        return Promise.pure(userTosAcceptanceService.get(userId.getValue(), tosAcceptanceId.getValue()));
     }
 
     @Override
-    public Promise<UserTosAcceptance> updateUserTosAcceptance(Long userId,
-                                   Long tosAcceptanceId, UserTosAcceptance userTosAcceptance) {
-        return Promise.pure(userTosAcceptanceService.update(userId, tosAcceptanceId, userTosAcceptance));
+    public Promise<UserTosAcceptance> updateUserTosAcceptance(UserId userId,
+                                      UserTosAcceptanceId tosAcceptanceId, UserTosAcceptance userTosAcceptance) {
+        return Promise.pure(userTosAcceptanceService.update(userId.getValue(),
+                tosAcceptanceId.getValue(), userTosAcceptance));
     }
 
     @Override
-    public Promise<Void> deleteUserTosAcceptance(Long userId, Long tosAcceptanceId) {
-        userTosAcceptanceService.delete(userId, tosAcceptanceId);
+    public Promise<Void> deleteUserTosAcceptance(UserId userId, UserTosAcceptanceId tosAcceptanceId) {
+        userTosAcceptanceService.delete(userId.getValue(), tosAcceptanceId.getValue());
         return Promise.pure(null);
     }
 }

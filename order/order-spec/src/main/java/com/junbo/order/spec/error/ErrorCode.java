@@ -35,4 +35,3 @@ public class ErrorCode {
 
     public static final String ENUM_CONVERSION_ERROR = "10010";
 }
-

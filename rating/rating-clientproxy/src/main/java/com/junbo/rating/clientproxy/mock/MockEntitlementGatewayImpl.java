@@ -8,7 +8,7 @@ package com.junbo.rating.clientproxy.mock;
 
 import com.junbo.rating.clientproxy.EntitlementGateway;
 
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -17,6 +17,8 @@ import java.util.Set;
 public class MockEntitlementGatewayImpl implements EntitlementGateway{
     @Override
     public Set<String> getEntitlements(Long userId, Set<String> groups) {
-        return Collections.emptySet();
+        Set<String> result = new HashSet<String>();
+        result.add("XXX#YYY");
+        return result;
     }
 }

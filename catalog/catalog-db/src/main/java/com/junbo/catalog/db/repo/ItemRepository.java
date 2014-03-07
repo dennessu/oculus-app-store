@@ -15,17 +15,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 /**
  * Item repository.
  */
-public class ItemRepository {
+public class ItemRepository implements EntityRepository<Item> {
     @Autowired
     private ItemDao itemDao;
 
+    @Override
     public Long create(Item item) {
         ItemEntity entity = ItemConverter.toEntity(item);
         return itemDao.create(entity);
     }
 
-    public Item get(Long id, Integer revision) {
-        ItemEntity entity = itemDao.getItem(id, revision);
+    @Override
+    public Item get(Long id, Long timestamp) {
+        ItemEntity entity = itemDao.getItem(id, timestamp);
         return ItemConverter.toModel(entity);
     }
 }

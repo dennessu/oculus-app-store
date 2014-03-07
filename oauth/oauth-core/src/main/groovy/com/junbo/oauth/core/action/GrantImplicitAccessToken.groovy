@@ -11,7 +11,6 @@ import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.service.TokenGenerationService
-import com.junbo.oauth.spec.model.AccessToken
 import com.junbo.oauth.spec.model.ResponseType
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
@@ -34,15 +33,14 @@ class GrantImplicitAccessToken implements Action {
     Promise<ActionResult> execute(ActionContext context) {
         def contextWrapper = new ActionContextWrapper(context)
 
-        def appClient = contextWrapper.appClient
+        def client = contextWrapper.client
         def oauthInfo = contextWrapper.oauthInfo
 
         if (oauthInfo.responseTypes.contains(ResponseType.TOKEN)) {
             def loginState = contextWrapper.loginState
             Assert.notNull(loginState, 'loginState is null')
 
-            AccessToken accessToken = tokenGenerationService.generateAccessToken(appClient,
-                    loginState.userId, oauthInfo.scopes)
+            def accessToken = tokenGenerationService.generateAccessToken(client, loginState.userId, oauthInfo.scopes)
 
             contextWrapper.accessToken = accessToken
         }

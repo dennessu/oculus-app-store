@@ -6,8 +6,6 @@
 
 package com.junbo.common.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 /**
  * Created by minhao on 2/14/14.
  */
@@ -29,10 +27,5 @@ public class Reference {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    @JsonIgnore
-    public Long getIdValue() {
-        return Long.valueOf(this.id);
     }
 }

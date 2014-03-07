@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.junbo.common.id.Id;
 import com.junbo.common.model.Reference;
+import com.junbo.common.util.IdFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +42,7 @@ public class IdDeserializer<T extends Id>
         try {
             id = this.clazz.newInstance();
             if (ref != null) {
-                id.setValue(ref.getIdValue());
+                id.setValue(IdFormat.decodeFormattedId(this.clazz, ref.getId()));
             }
         }
         catch (InstantiationException e) {

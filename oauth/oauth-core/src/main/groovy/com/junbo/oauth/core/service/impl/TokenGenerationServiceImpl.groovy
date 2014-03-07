@@ -67,14 +67,14 @@ class TokenGenerationServiceImpl implements TokenGenerationService {
     }
 
     @Override
-    AccessToken generateAccessToken(AppClient appClient, Long userId, Set<String> scopes) {
-        Assert.notNull(appClient)
-        Assert.notNull(appClient.clientId)
-        Assert.notNull(userId)
-        Assert.notNull(scopes)
+    AccessToken generateAccessToken(Client client, Long userId, Set<String> scopes) {
+        Assert.notNull(client, 'client is null')
+        Assert.notNull(client.clientId, 'client.clientId is null')
+        Assert.notNull(userId, 'userId is null')
+        Assert.notNull(scopes, 'scopes is null')
 
         AccessToken accessToken = new AccessToken(
-                clientId: appClient.clientId,
+                clientId: client.clientId,
                 userId: userId,
                 scopes: scopes,
                 expiredBy: new Date(System.currentTimeMillis() + defaultAccessTokenExpiration * MILLISECONDS_PER_SECOND)
@@ -96,13 +96,13 @@ class TokenGenerationServiceImpl implements TokenGenerationService {
     }
 
     @Override
-    RefreshToken generateRefreshToken(AppClient appClient, AccessToken accessToken, String salt) {
-        Assert.notNull(appClient)
-        Assert.notNull(accessToken)
-        Assert.notNull(accessToken.tokenValue)
+    RefreshToken generateRefreshToken(Client client, AccessToken accessToken, String salt) {
+        Assert.notNull(client, 'client is null')
+        Assert.notNull(accessToken, 'accessToken is null')
+        Assert.notNull(accessToken.tokenValue, 'accessToken.tokenValue is null')
 
         RefreshToken refreshToken = new RefreshToken(
-                clientId: appClient.clientId,
+                clientId: client.clientId,
                 userId: accessToken.userId,
                 accessToken: accessToken,
                 salt: salt,
@@ -116,14 +116,14 @@ class TokenGenerationServiceImpl implements TokenGenerationService {
     }
 
     @Override
-    RefreshToken generateRefreshToken(AppClient appClient, AccessToken accessToken, RefreshToken oldRefreshToken) {
-        Assert.notNull(appClient)
-        Assert.notNull(accessToken)
-        Assert.notNull(accessToken.tokenValue)
+    RefreshToken generateRefreshToken(Client client, AccessToken accessToken, RefreshToken oldRefreshToken) {
+        Assert.notNull(client, 'client is null')
+        Assert.notNull(accessToken, 'accessToken is null')
+        Assert.notNull(accessToken.tokenValue, 'accessToken.tokenValue is null')
 
         RefreshToken refreshToken = new RefreshToken(
                 tokenValue: oldRefreshToken.tokenValue,
-                clientId: appClient.clientId,
+                clientId: client.clientId,
                 userId: accessToken.userId,
                 accessToken: accessToken,
                 salt: oldRefreshToken.salt,
@@ -142,7 +142,7 @@ class TokenGenerationServiceImpl implements TokenGenerationService {
     }
 
     @Override
-    IdToken generateIdToken(AppClient client, String issuer, Long userId, String nonce, Date lastAuthDate,
+    IdToken generateIdToken(Client client, String issuer, Long userId, String nonce, Date lastAuthDate,
                             AuthorizationCode code, AccessToken accessToken) {
         Assert.notNull(client, 'client is null')
         Assert.notNull(issuer, 'issuer is null')
@@ -195,7 +195,7 @@ class TokenGenerationServiceImpl implements TokenGenerationService {
     }
 
     @Override
-    IdToken parseIdToken(AppClient client, String tokenValue) {
+    IdToken parseIdToken(Client client, String tokenValue) {
         Assert.notNull(client)
         Assert.notNull(tokenValue)
 

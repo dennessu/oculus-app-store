@@ -1,6 +1,7 @@
 package com.junbo.payment.app
 
 import com.fasterxml.jackson.jaxrs.base.JsonMappingExceptionMapper
+import com.junbo.common.id.provider.IdTypeFromStringProvider
 import com.junbo.payment.core.exception.RestExceptionMapper
 import com.junbo.payment.rest.jackson.JacksonFeature
 import com.junbo.payment.rest.jackson.MapperConfigurator
@@ -33,6 +34,7 @@ class Main {
         resourceConfig.register(MapperConfigurator)
         resourceConfig.register(JsonMappingExceptionMapper)
         resourceConfig.register(RestExceptionMapper)
+        resourceConfig.register(IdTypeFromStringProvider)
         resourceConfig.property(ServerProperties.BV_SEND_ERROR_IN_RESPONSE, true)
         resourceConfig.property(ServerProperties.TRACING, 'ALL')
         resourceConfig.packages('com.junbo.payment.spec.resource.adapter')

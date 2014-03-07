@@ -19,19 +19,26 @@ import java.util.List;
 /**
  * Offer draft repository.
  */
-public class OfferDraftRepository {
+public class OfferDraftRepository implements EntityDraftRepository<Offer> {
     @Autowired
     private OfferDraftDao offerDraftDao;
 
+    @Override
     public Long create(Offer offer) {
         OfferDraftEntity entity = OfferConverter.toDraftEntity(offer);
 
         return offerDraftDao.create(entity);
     }
 
+    @Override
     public Offer get(Long offerId) {
         OfferDraftEntity entity = offerDraftDao.get(offerId);
         return OfferConverter.toModel(entity);
+    }
+
+    @Override
+    public List<Offer> getEntities(int start, int size) {
+        return getOffers(start, size);
     }
 
     public List<Offer> getOffers(int start, int size) {
@@ -44,6 +51,7 @@ public class OfferDraftRepository {
         return result;
     }
 
+    @Override
     public Long update(Offer offer) {
         OfferDraftEntity entity = offerDraftDao.get(offer.getId());
         // TODO: validations
