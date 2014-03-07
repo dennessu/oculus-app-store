@@ -1,5 +1,5 @@
 package com.junbo.order.core.orderflow
-import com.junbo.langur.core.promise.Promise
+
 import com.junbo.order.core.BaseTest
 import com.junbo.order.core.FlowType
 import com.junbo.order.core.OrderServiceOperation
@@ -16,7 +16,7 @@ class FlowSelectorTest extends BaseTest {
     @Test
     void testSelector_CREATE_PayIn_CreditCard_Digital() {
         def context = TestBuilder.buildDefaultContext()
-        context.paymentInstruments = Promise.pure([TestBuilder.buildCreditCartPI()])
+        context.paymentInstruments = [TestBuilder.buildCreditCartPI()]
         new DefaultFlowSelector().select(context, OrderServiceOperation.CREATE).syncThen { FlowType type ->
             assert(type == FlowType.IMMEDIATE_SETTLE)
         }

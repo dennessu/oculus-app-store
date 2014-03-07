@@ -10,4 +10,5 @@ import groovy.transform.CompileStatic
 class OrderActionContext {
 
     OrderServiceContext orderServiceContext
+    Long orderId
 }
