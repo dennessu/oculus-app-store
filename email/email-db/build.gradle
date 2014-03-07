@@ -1,0 +1,38 @@
+apply plugin: 'groovy'
+
+dependencies {
+    compile (libraries.common_lib)
+    compile (libraries.langur)
+    compile (libraries.common_sharding)
+    compile (libraries.oom_processor)
+    compile (libraries.oom)
+    compile (libraries.common_configuration)
+
+    compile (libraries.persistence_api)
+    compile (libraries.validation_api)
+
+    compile (libraries.spring_aop)
+    compile (libraries.spring_context)
+    compile (libraries.spring_core)
+    compile (libraries.spring_expression)
+    compile (libraries.spring_tx)
+    compile (libraries.spring_jdbc)
+    compile (libraries.spring_orm)
+    compile (libraries.spring_beans)
+
+    compile (libraries.hibernate_core)
+    compile (libraries.hibernate_entitymanager)
+    compile (libraries.hibernate_annotation)
+    compile (libraries.hibernate_validator)
+
+    compile (libraries.postgresql)
+
+    compile (libraries.bonecp_spring)
+    compile (libraries.rs_api)
+
+    testCompile (libraries.guava)
+    testCompile (libraries.spring_test)
+
+    compile project(':email-common')
+    compile project(':email-spec')
+}

@@ -1,0 +1,10 @@
+include 'email-spec'
+
+include 'email-common'
+include 'email-db'
+include 'email-core'
+include 'email-rest'
+
+include 'email-clientproxy'
+
+include 'email-app'
