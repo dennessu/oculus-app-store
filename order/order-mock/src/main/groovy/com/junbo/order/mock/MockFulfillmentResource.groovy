@@ -1,15 +1,12 @@
 package com.junbo.order.mock
-
+import com.junbo.common.id.FulfilmentId
+import com.junbo.common.id.OrderId
 import com.junbo.fulfilment.spec.model.FulfilmentItem
 import com.junbo.fulfilment.spec.model.FulfilmentRequest
 import com.junbo.fulfilment.spec.resource.FulfilmentResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.stereotype.Component
-
-import javax.ws.rs.PathParam
-import javax.ws.rs.QueryParam
-
 /**
  * Created by fzhang on 14-3-7.
  */
@@ -27,12 +24,12 @@ class MockFulfillmentResource extends BaseMock implements FulfilmentResource {
     }
 
     @Override
-    Promise<FulfilmentRequest> getByBillingOrderId(@QueryParam('billingOrderId') Long billingOrderId) {
+    Promise<FulfilmentRequest> getByBillingOrderId(OrderId orderId) {
         return null
     }
 
     @Override
-    Promise<FulfilmentItem> getByFulfilmentId(@PathParam('fulfilmentId') Long billingOrderId) {
+    Promise<FulfilmentItem> getByFulfilmentId(FulfilmentId billingOrderId) {
         return null
     }
 }
