@@ -34,18 +34,30 @@ public class OrderRatingServiceTest extends BaseTest {
         RatableItem item = new RatableItem();
         item.setOfferId(100L);
         item.setQuantity(1);
+        item.setShippingMethodId(400L);
         context.setItems(new HashSet<RatableItem>());
         context.getItems().add(item);
 
         item = new RatableItem();
-        item.setOfferId(generateId());
+        item.setOfferId(102L);
         item.setQuantity(2);
+        item.setShippingMethodId(400L);
+        context.getItems().add(item);
+
+        item = new RatableItem();
+        item.setOfferId(109L);
+        item.setQuantity(2);
+        item.setShippingMethodId(400L);
         context.getItems().add(item);
 
         OrderRatingRequest result = orderRatingService.orderRating(context);
 
         Assert.assertNotNull(result);
-        Assert.assertEquals(result.getLineItems().size(), 2);
-        Assert.assertEquals(result.getOrderBenefit().getFinalAmount(), new BigDecimal("20.97"));
+        Assert.assertEquals(result.getLineItems().size(), 3);
+
+        Assert.assertEquals(result.getOrderBenefit().getDiscountAmount(), new BigDecimal("5.00"));
+        Assert.assertEquals(result.getOrderBenefit().getFinalAmount(), new BigDecimal("28.95"));
+
+        Assert.assertEquals(result.getShippingBenefit().getShippingFee(), new BigDecimal("20.80"));
     }
 }

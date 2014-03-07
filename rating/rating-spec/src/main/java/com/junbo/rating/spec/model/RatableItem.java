@@ -14,6 +14,7 @@ import com.junbo.rating.spec.fusion.RatingOffer;
 public class RatableItem {
     private Long offerId;
     private int quantity;
+    private Long shippingMethodId;
     private RatingOffer offer;
 
     public Long getOfferId() {
@@ -30,6 +31,14 @@ public class RatableItem {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public Long getShippingMethodId() {
+        return shippingMethodId;
+    }
+
+    public void setShippingMethodId(Long shippingMethodId) {
+        this.shippingMethodId = shippingMethodId;
     }
 
     public RatingOffer getOffer() {
