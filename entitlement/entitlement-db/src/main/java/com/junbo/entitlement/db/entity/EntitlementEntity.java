@@ -9,6 +9,8 @@ package com.junbo.entitlement.db.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.junbo.entitlement.db.entity.def.EntitlementStatus;
 import com.junbo.entitlement.db.entity.def.EntitlementType;
+import com.junbo.entitlement.db.entity.def.IdentifiableType;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
@@ -67,6 +69,7 @@ public class EntitlementEntity extends Entity {
     }
 
     @Column(name = "status")
+    @Type(type = IdentifiableType.TYPE)
     public EntitlementStatus getStatus() {
         return status;
     }
@@ -148,6 +151,7 @@ public class EntitlementEntity extends Entity {
     }
 
     @Column(name = "type")
+    @Type(type = IdentifiableType.TYPE)
     public EntitlementType getType() {
         return type;
     }

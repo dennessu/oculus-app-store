@@ -41,7 +41,6 @@ class Main {
     }
 
     static void main(String[] args) {
-
         def server = startServer()
         System.in.read()
         server.shutdown()
