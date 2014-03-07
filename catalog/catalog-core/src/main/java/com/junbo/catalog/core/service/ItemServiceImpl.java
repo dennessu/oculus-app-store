@@ -17,15 +17,13 @@ import com.junbo.catalog.spec.model.common.EntityGetOptions;
 import com.junbo.catalog.spec.model.common.Status;
 import com.junbo.catalog.spec.model.item.Item;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Item service implementation.
  */
-public class ItemServiceImpl implements ItemService {
+public class ItemServiceImpl extends BaseServiceImpl<Item> implements ItemService {
     @Autowired
     private ItemDraftRepository itemDraftRepository;
     @Autowired
@@ -51,39 +49,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<Item> getItems(EntitiesGetOptions options) {
-        if (CollectionUtils.isEmpty(options.getEntityIds())) {
-            List<Item> items = new ArrayList<>();
-
-            for (Long itemId : options.getEntityIds()) {
-                Item item;
-                if (Status.RELEASED.equalsIgnoreCase(options.getStatus())) {
-                    item = itemRepository.get(itemId, options.getTimestamp());
-                } else {
-                    item = itemDraftRepository.get(itemId);
-                }
-
-                if (item != null) {
-                    items.add(item);
-                }
-            }
-            return items;
-        } else {
-            options.ensurePagingValid();
-            List<Item> draftOffers = itemDraftRepository.getItems(options.getStart(), options.getSize());
-            if (!Status.RELEASED.equalsIgnoreCase(options.getStatus())) {
-                return draftOffers;
-            }
-
-            List<Item> items = new ArrayList<>();
-            for (Item draftOffer : draftOffers) {
-                Item item = itemRepository.get(draftOffer.getId(), options.getTimestamp());
-                if (item != null) {
-                    items.add(item);
-                }
-            }
-
-            return items;
-        }
+        return getEntities(options, itemRepository, itemDraftRepository);
     }
 
     @Override

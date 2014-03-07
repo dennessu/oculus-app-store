@@ -52,13 +52,6 @@ public class EntityGetOptions {
         return options;
     }
 
-    public boolean isFromDraft() {
-        return status != null
-                && (Status.DESIGN.equalsIgnoreCase(status)
-                    || Status.PENDING_REVIEW.equalsIgnoreCase(status)
-                    || Status.REJECTED.equalsIgnoreCase(status));
-    }
-
     public String getStatus() {
         return status;
     }
