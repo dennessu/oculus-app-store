@@ -145,47 +145,7 @@ public abstract class BaseServiceImpl<T extends BaseModel> implements BaseServic
         return updateStatus(entityId, Status.DELETED);
     }
 
-    protected List<T> getEntities(EntitiesGetOptions options,
-                               EntityRepository<T> entityRepo,
-                               EntityDraftRepository<T> entityDraftRepo){
-
-        if (!CollectionUtils.isEmpty(options.getEntityIds())) {
-            List<T> entities = new ArrayList<>();
-
-            for (Long entityId : options.getEntityIds()) {
-                T entity;
-                if (Status.RELEASED.equalsIgnoreCase(options.getStatus())) {
-                    entity = entityRepo.get(entityId, options.getTimestamp());
-                } else {
-                    entity = entityDraftRepo.get(entityId);
-                }
-
-                if (entity != null) {
-                    entities.add(entity);
-                }
-            }
-            return entities;
-        } else {
-            options.ensurePagingValid();
-            List<T> draftEntities = entityDraftRepo.getEntities(options.getStart(), options.getSize());
-            if (!Status.RELEASED.equalsIgnoreCase(options.getStatus())) {
-                return draftEntities;
-            }
-
-            List<T> entities = new ArrayList<>();
-            for (T draftEntity : draftEntities) {
-                T entity = entityRepo.get(draftEntity.getId(), options.getTimestamp());
-                if (entity != null) {
-                    entities.add(entity);
-                }
-            }
-
-            return entities;
-        }
-    }
-
-
-    protected Long updateStatus(Long entityId, String status) {
+    private Long updateStatus(Long entityId, String status) {
         T entity = getEntityDraftRepo().get(entityId);
         checkEntityNotNull(entityId, entity);
         entity.setStatus(status);
@@ -194,7 +154,7 @@ public abstract class BaseServiceImpl<T extends BaseModel> implements BaseServic
         return entity.getId();
     }
 
-    protected Long updateReleasedStatus(Long entityId, String status) {
+    private Long updateReleasedStatus(Long entityId, String status) {
         T entity = getEntityRepo().get(entityId, null);
         checkEntityNotNull(entityId, entity);
         entity.setStatus(status);
@@ -202,7 +162,7 @@ public abstract class BaseServiceImpl<T extends BaseModel> implements BaseServic
         return entity.getId();
     }
 
-    protected Long updateDraftStatus(Long entityId, String status) {
+    private Long updateDraftStatus(Long entityId, String status) {
         T entity = getEntityDraftRepo().get(entityId);
         checkEntityNotNull(entityId, entity);
         entity.setStatus(status);
@@ -210,7 +170,7 @@ public abstract class BaseServiceImpl<T extends BaseModel> implements BaseServic
         return entity.getId();
     }
 
-    protected void checkEntityNotNull(Long entityId, T entity) {
+    private void checkEntityNotNull(Long entityId, T entity) {
         if (entity == null) {
             throw new NotFoundException(entity.getEntityType(), entityId);
         }

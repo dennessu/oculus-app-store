@@ -7,8 +7,8 @@
 package com.junbo.order.db.entity;
 
 import com.junbo.order.db.ValidationMessages;
-import com.junbo.order.spec.model.OrderStatus;
-import com.junbo.order.spec.model.OrderType;
+import com.junbo.order.db.entity.enums.OrderStatus;
+import com.junbo.order.db.entity.enums.OrderType;
 import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.Length;
 
@@ -65,6 +65,7 @@ public class OrderEntity extends CommonDbEntityWithDate {
 
     @Column(name = "ORDER_TYPE_ID")
     @NotNull(message = ValidationMessages.MISSING_VALUE)
+    @Type(type = "com.junbo.order.db.entity.type.OrderEnumType")
     public OrderType getOrderTypeId() {
         return orderTypeId;
     }
@@ -116,6 +117,7 @@ public class OrderEntity extends CommonDbEntityWithDate {
 
     @Column(name = "ORDER_STATUS_ID")
     @NotNull(message = ValidationMessages.MISSING_VALUE)
+    @Type(type = "com.junbo.order.db.entity.type.OrderStatusType")
     public OrderStatus getOrderStatusId() {
         return orderStatusId;
     }

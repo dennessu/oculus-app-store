@@ -8,8 +8,8 @@ package com.junbo.order.db;
 
 import com.junbo.order.db.dao.OrderItemPreorderEventDao;
 import com.junbo.order.db.entity.OrderItemPreorderEventEntity;
-import com.junbo.order.spec.model.EventStatus;
-import com.junbo.order.spec.model.PreorderAction;
+import com.junbo.order.db.entity.enums.EventStatus;
+import com.junbo.order.db.entity.enums.PreorderAction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.Test;

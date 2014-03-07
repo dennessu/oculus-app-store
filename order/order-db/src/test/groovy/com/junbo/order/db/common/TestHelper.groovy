@@ -7,7 +7,13 @@
 package com.junbo.order.db.common
 
 import com.junbo.order.db.entity.*
-import com.junbo.order.spec.model.*
+import com.junbo.order.db.entity.enums.DiscountType
+import com.junbo.order.db.entity.enums.EventStatus
+import com.junbo.order.db.entity.enums.FulfillmentAction
+import com.junbo.order.db.entity.enums.ItemType
+import com.junbo.order.db.entity.enums.OrderActionType
+import com.junbo.order.db.entity.enums.OrderStatus
+import com.junbo.order.db.entity.enums.OrderType
 import groovy.transform.CompileStatic
 
 import java.security.SecureRandom

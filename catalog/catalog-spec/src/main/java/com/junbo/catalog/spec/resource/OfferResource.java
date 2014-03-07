@@ -41,11 +41,11 @@ public interface OfferResource {
      */
     @POST
     @Path("/")
-    Promise<Offer> createOffer(@Valid Offer offer);
+    Promise<Offer> create(@Valid Offer offer);
 
     @PUT
     @Path("/{offerId}")
-    Promise<Offer> updateOffer(@Valid Offer offer);
+    Promise<Offer> update(@Valid Offer offer);
 
     /**
      * Developer submit an draft offer for review.
@@ -54,7 +54,7 @@ public interface OfferResource {
      */
     @POST
     @Path("/{offerId}/review")
-    Promise<Offer> createReview(@PathParam("offerId") Long offerId);
+    Promise<Offer> review(@PathParam("offerId") Long offerId);
 
     /**
      * Admin publishes an offer, makes it purchasable.
@@ -63,7 +63,7 @@ public interface OfferResource {
      */
     @POST
     @Path("/{offerId}/release")
-    Promise<Offer> releaseOffer(@PathParam("offerId") Long offerId);
+    Promise<Offer> release(@PathParam("offerId") Long offerId);
 
     /**
      * Admin rejects an offer, developer may update and submit review later.
@@ -73,7 +73,7 @@ public interface OfferResource {
     // TODO: add review notes
     @POST
     @Path("/{offerId}/reject")
-    Promise<Offer> rejectOffer(@PathParam("offerId") Long offerId);
+    Promise<Offer> reject(@PathParam("offerId") Long offerId);
 
     /**
      * Remove an offer, makes it not purchasable. The draft version is still kept.
@@ -83,7 +83,7 @@ public interface OfferResource {
      */
     @DELETE
     @Path("/{offerId}/release")
-    Promise<Long> removeOffer(@PathParam("offerId") Long offerId);
+    Promise<Long> remove(@PathParam("offerId") Long offerId);
 
     /**
      * Delete an offer, delete both draft and released version.
@@ -93,5 +93,5 @@ public interface OfferResource {
      */
     @DELETE
     @Path("/{offerId}")
-    Promise<Long> deleteOffer(@PathParam("offerId") Long offerId);
+    Promise<Long> delete(@PathParam("offerId") Long offerId);
 }

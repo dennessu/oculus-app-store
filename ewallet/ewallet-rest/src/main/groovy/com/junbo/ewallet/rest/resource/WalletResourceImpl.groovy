@@ -5,6 +5,9 @@
  */
 
 package com.junbo.ewallet.rest.resource
+
+import com.junbo.common.id.UserId
+import com.junbo.common.id.WalletId
 import com.junbo.ewallet.spec.model.ResultList
 import com.junbo.ewallet.spec.model.Wallet
 import com.junbo.ewallet.spec.resource.WalletResource
@@ -14,17 +17,17 @@ import com.junbo.langur.core.promise.Promise
  */
 class WalletResourceImpl implements WalletResource {
     @Override
-    Promise<Wallet> getWallet(Long walletId) {
+    Promise<Wallet> getWallet(WalletId walletId) {
         return null
     }
 
     @Override
-    Promise<ResultList<Wallet>> getWallets(Long userId) {
+    Promise<ResultList<Wallet>> getWallets(UserId userId) {
         return null
     }
 
     @Override
-    Promise<Wallet> updateWallet(Long walletId, Wallet wallet) {
+    Promise<Wallet> updateWallet(WalletId walletId, Wallet wallet) {
         return null
     }
 
@@ -39,7 +42,7 @@ class WalletResourceImpl implements WalletResource {
     }
 
     @Override
-    Promise<Wallet> getTransactions(Long walletId) {
+    Promise<Wallet> getTransactions(WalletId walletId) {
         return null
     }
 }

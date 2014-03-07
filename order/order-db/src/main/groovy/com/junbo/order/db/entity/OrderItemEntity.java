@@ -7,7 +7,8 @@
 package com.junbo.order.db.entity;
 
 import com.junbo.order.db.ValidationMessages;
-import com.junbo.order.spec.model.ItemType;
+import com.junbo.order.db.entity.enums.ItemType;
+import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -59,6 +60,7 @@ public class OrderItemEntity extends CommonDbEntityWithDate{
 
     @Column(name = "ORDER_ITEM_TYPE")
     @NotNull(message = ValidationMessages.MISSING_VALUE)
+    @Type(type = "com.junbo.order.db.entity.type.ItemEnumType")
     public ItemType getOrderItemType() {
         return orderItemType;
     }
