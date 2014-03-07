@@ -12,10 +12,8 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.junbo.common.id.Id;
-import com.junbo.common.id.OrderId;
 import com.junbo.common.model.Reference;
-import com.junbo.common.shuffle.Oculus40Id;
-import com.junbo.common.shuffle.Oculus48Id;
+import com.junbo.common.util.IdFormat;
 
 import java.io.IOException;
 
@@ -32,7 +30,7 @@ public class IdSerializer extends JsonSerializer<Id> {
         Reference ref = new Reference();
         if (value != null) {
             ref.setHref(getHref(value));
-            ref.setId(encodeId(value));
+            ref.setId(IdFormat.encodeId(value));
         }
 
         mapper.writeValue(jgen, ref);
@@ -41,16 +39,5 @@ public class IdSerializer extends JsonSerializer<Id> {
     protected String getHref(Id value) {
         // TODO: get the href template from config service and key as Id subType class
         return "https://xxx.xxx.xxx";
-    }
-
-    public String encodeId(Id id) {
-        if(id instanceof OrderId) {
-            Long value = Oculus40Id.shuffle(id.getValue());
-            return Oculus40Id.format(value);
-        }
-        else {
-            Long value = Oculus48Id.shuffle(id.getValue());
-            return Oculus48Id.format(value);
-        }
     }
 }

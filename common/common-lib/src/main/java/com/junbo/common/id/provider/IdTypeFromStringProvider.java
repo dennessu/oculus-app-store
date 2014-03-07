@@ -6,10 +6,8 @@
 package com.junbo.common.id.provider;
 
 import com.junbo.common.id.Id;
-import com.junbo.common.id.OrderId;
 import com.junbo.common.id.converter.IdTypeFromStringConverter;
-import com.junbo.common.shuffle.Oculus40Id;
-import com.junbo.common.shuffle.Oculus48Id;
+import com.junbo.common.util.IdFormat;
 import org.glassfish.jersey.internal.inject.Custom;
 
 import javax.inject.Singleton;
@@ -32,16 +30,11 @@ public class IdTypeFromStringProvider implements ParamConverterProvider {
             @Override
             protected T _fromString(String value) throws Exception {
                 T obj = rawType.newInstance();
-                if(obj instanceof OrderId) {
-                    Long deFormatValue = Oculus40Id.deFormat(value);
-                    ((OrderId) obj).setValue(Oculus40Id.unShuffle(deFormatValue));
+                if(!(obj instanceof Id)) {
+                    return null;
                 }
-                if(obj instanceof Id) {
-                    Long deFormatValue = Oculus48Id.deFormat(value);
-                    ((Id) obj).setValue(Oculus48Id.unShuffle(deFormatValue));
-                    return obj;
-                }
-                return null;
+                ((Id)obj).setValue(IdFormat.decodeFormattedId(rawType, value));
+                return obj;
             }
         };
     }

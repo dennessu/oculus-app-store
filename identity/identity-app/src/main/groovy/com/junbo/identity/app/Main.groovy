@@ -6,6 +6,8 @@
 
 package com.junbo.identity.app
 
+import com.junbo.common.id.converter.IdTypeFromStringConverter
+import com.junbo.common.id.provider.IdTypeFromStringProvider
 import com.junbo.common.json.JacksonFeature
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.identity.spec.filter.ResultListInterceptor
@@ -32,6 +34,8 @@ class Main {
         resourceConfig.packages('com.junbo.identity.spec.resource.adapter')
         resourceConfig.property('contextConfigLocation', 'classpath*:/spring/*.xml')
         resourceConfig.register(ResultListInterceptor)
+        resourceConfig.register(IdTypeFromStringProvider)
+        resourceConfig.register(IdTypeFromStringConverter)
 
         def uri = URI.create('http://0.0.0.0:8080/rest')
         GrizzlyHttpServerFactory.createHttpServer(uri, resourceConfig)
