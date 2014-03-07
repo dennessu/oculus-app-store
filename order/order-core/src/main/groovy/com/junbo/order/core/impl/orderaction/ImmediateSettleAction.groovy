@@ -9,9 +9,9 @@ import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.clientproxy.billing.BillingFacade
 import com.junbo.order.core.impl.common.CoreBuilder
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
+import com.junbo.order.db.entity.enums.BillingAction
+import com.junbo.order.db.entity.enums.EventStatus
 import com.junbo.order.db.repo.OrderRepository
-import com.junbo.order.spec.model.BillingAction
-import com.junbo.order.spec.model.EventStatus
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.slf4j.Logger

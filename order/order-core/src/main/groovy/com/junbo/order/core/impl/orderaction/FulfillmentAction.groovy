@@ -9,8 +9,8 @@ import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.clientproxy.fulfillment.FulfillmentFacade
 import com.junbo.order.core.impl.common.CoreBuilder
+import com.junbo.order.db.entity.enums.EventStatus
 import com.junbo.order.db.repo.OrderRepository
-import com.junbo.order.spec.model.EventStatus
 import com.junbo.order.spec.model.FulfillmentEvent
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
@@ -48,7 +48,7 @@ class FulfillmentAction implements Action {
             if (fulfilmentResult == null) { // error in post fulfillment
                 orderRepository.createOrderEvent(
                         CoreBuilder.buildOrderEvent(order.id,
-                                com.junbo.order.spec.model.OrderActionType.FULFILL, EventStatus.ERROR))
+                                com.junbo.order.db.entity.enums.OrderActionType.FULFILL, EventStatus.ERROR))
             } else {
                 EventStatus orderEventStatus = EventStatus.PENDING
                 fulfilmentResult.items.each { FulfilmentItem fulfilmentItem ->
@@ -63,7 +63,7 @@ class FulfillmentAction implements Action {
                 }
                 orderRepository.createOrderEvent(
                         CoreBuilder.buildOrderEvent(order.id,
-                                com.junbo.order.spec.model.OrderActionType.FULFILL, orderEventStatus))
+                                com.junbo.order.db.entity.enums.OrderActionType.FULFILL, orderEventStatus))
             }
             return ActionUtils.DEFAULT_RESULT
         }
@@ -72,7 +72,7 @@ class FulfillmentAction implements Action {
     private FulfillmentEvent toFulfillmentEvent(FulfilmentRequest fulfilmentResult, FulfilmentItem fulfilmentItem) {
         def fulfillmentEvent = new FulfillmentEvent()
         fulfillmentEvent.trackingUuid = UUID.fromString(fulfilmentResult.trackingGuid)
-        fulfillmentEvent.action = com.junbo.order.spec.model.FulfillmentAction.FULFILL.toString()
+        fulfillmentEvent.action = com.junbo.order.db.entity.enums.FulfillmentAction.FULFILL.toString()
         fulfillmentEvent.orderItem = new OrderItemId(fulfilmentItem.orderItemId)
         fulfillmentEvent.status = getFulfillmentEventStatus(fulfilmentItem).name()
         fulfillmentEvent.fulfillmentId = fulfilmentItem.fulfilmentId
