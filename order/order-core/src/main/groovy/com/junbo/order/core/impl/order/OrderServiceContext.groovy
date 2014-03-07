@@ -34,66 +34,7 @@ class OrderServiceContext {
     Promise<List<Balance>> balances
     Promise<ShippingAddress> shippingAddress
 
-    @Autowired
-    OrderRepository orderRepository
-    @Autowired
-    PaymentFacade paymentFacade
-    @Autowired
-    BillingFacade billingFacade
-    @Autowired
-    RatingFacade ratingFacade
-    @Autowired
-    IdentityFacade identityFacade
-    @Autowired
-    FulfillmentFacade fulfillmentFacade
-
-    Long orderId
-
-    Promise<List<PaymentInstrument>> getPaymentInstruments() {
-
-        if (order == null || order.paymentInstruments == null || order.paymentInstruments.isEmpty()) {
-            return null
-        }
-        // Lazy load
-        List<PaymentInstrument> pis
-        if (paymentInstruments == null) {
-            pis = []
-            paymentInstruments = Promise.each(order.paymentInstruments?.iterator()) {
-                PaymentInstrumentId pmId ->
-                paymentFacade.getPaymentInstrument(pmId.value).syncThen { PaymentInstrument pi ->
-                    pis << pi
-                }
-            }.then {
-                Promise.pure(pis)
-            }
-        }
-        return paymentInstruments
-    }
-
-    Promise<List<Balance>> getBalances() {
-        // Lazy load
-        if (balances == null) {
-            balances = refreshBalances()
-        }
-        return balances
-    }
-
-    Promise<List<Balance>> refreshBalances() {
-        if (order == null || order.id == null) {
-            return null
-        }
-        balances = billingFacade.getBalancesByOrderId(order.id.value)
-        return balances
-    }
-
-    Promise<ShippingAddress> getShippingAddress() {
-        if (order == null || order.shippingAddressId == null) {
-            return null
-        }
-        // Lazy load
-        if (shippingAddress == null) {
-            shippingAddress = billingFacade.getShippingAddress(order.user.value, order.shippingAddressId.value)
-        }
-        return shippingAddress
+    OrderServiceContext(Order o) {
+        order = o
     }
 }

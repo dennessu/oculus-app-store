@@ -8,6 +8,8 @@ package com.junbo.entitlement.rest.exceptionmapper;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import com.junbo.entitlement.spec.error.AppErrors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -20,6 +22,8 @@ import javax.ws.rs.ext.ExceptionMapper;
  * Common exception mapper. Convert exceptions to json error message.
  */
 public class RestExceptionMapper implements ExceptionMapper<Exception> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(RestExceptionMapper.class);
+
     @Override
     public Response toResponse(Exception e) {
         if (e instanceof WebApplicationException) {    //common service exception
@@ -43,6 +47,7 @@ public class RestExceptionMapper implements ExceptionMapper<Exception> {
                 return AppErrors.INSTANCE.validation(e.getMessage()).exception().getResponse();
             }
         } else {    //other exceptions
+            LOGGER.error("unCaught Exception", e);
             return AppErrors.INSTANCE.unCaught(e.getMessage()).exception().getResponse();
         }
     }

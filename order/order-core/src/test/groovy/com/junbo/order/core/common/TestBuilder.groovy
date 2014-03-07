@@ -58,8 +58,7 @@ class TestBuilder {
     }
 
     static OrderServiceContext buildDefaultContext() {
-        def context = new OrderServiceContext()
-        context.order = buildOrderRequest()
+        def context = new OrderServiceContext(buildOrderRequest())
         return context
     }
 }

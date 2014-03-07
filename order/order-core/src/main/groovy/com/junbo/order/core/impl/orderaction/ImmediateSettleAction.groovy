@@ -1,18 +1,22 @@
 package com.junbo.order.core.impl.orderaction
 
-import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.enums.BalanceType
+import com.junbo.billing.spec.model.Balance
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
+import com.junbo.order.clientproxy.billing.BillingFacade
 import com.junbo.order.core.impl.common.CoreBuilder
-import com.junbo.order.db.entity.enums.BillingAction
-import com.junbo.order.db.entity.enums.EventStatus
+import com.junbo.order.core.impl.order.OrderServiceContextBuilder
+import com.junbo.order.db.repo.OrderRepository
+import com.junbo.order.spec.model.BillingAction
+import com.junbo.order.spec.model.EventStatus
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
 
 /**
  * Created by chriszhu on 2/20/14.
@@ -20,6 +24,12 @@ import org.slf4j.LoggerFactory
 @CompileStatic
 @TypeChecked
 class ImmediateSettleAction implements Action {
+    @Autowired
+    BillingFacade billingFacade
+    @Autowired
+    OrderRepository orderRepository
+    @Autowired
+    OrderServiceContextBuilder orderServiceContextBuilder
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ImmediateSettleAction)
 
@@ -28,7 +38,7 @@ class ImmediateSettleAction implements Action {
         def context = ActionUtils.getOrderActionContext(actionContext)
         def order = context.orderServiceContext.order
         def balance = CoreBuilder.buildBalance(context.orderServiceContext, BalanceType.DEBIT)
-        Promise promise = context.orderServiceContext.billingFacade?.createBalance(balance)
+        Promise promise = billingFacade.createBalance(balance)
         return promise.syncRecover { Throwable throwable ->
             LOGGER.error('name=Order_ImmediateSettle_Error', throwable)
             return null
@@ -37,10 +47,10 @@ class ImmediateSettleAction implements Action {
                 // todo: log order charge action error?
                 LOGGER.info('fail to create balance')
             } else {
-                context.orderServiceContext.orderRepository.saveBillingEvent(
+                orderRepository.saveBillingEvent(
                         order.id, balance.balanceId,
                         BillingAction.CHARGE, billingEventStatus)
-                context.orderServiceContext.refreshBalances()
+                orderServiceContextBuilder.refreshBalances(context.orderServiceContext)
                 // TODO: update order status according to balance status.
             }
             return null

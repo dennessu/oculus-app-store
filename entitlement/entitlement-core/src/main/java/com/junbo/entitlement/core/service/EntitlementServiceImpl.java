@@ -14,6 +14,8 @@ import com.junbo.entitlement.db.repository.EntitlementDefinitionRepository;
 import com.junbo.entitlement.db.repository.EntitlementRepository;
 import com.junbo.entitlement.spec.error.AppErrors;
 import com.junbo.entitlement.spec.model.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +27,7 @@ import java.util.UUID;
  * Service of Entitlement.
  */
 public class EntitlementServiceImpl extends BaseService implements EntitlementService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(EntitlementService.class);
     @Autowired
     private EntitlementRepository entitlementRepository;
     @Autowired
@@ -48,6 +51,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
 
         if (EntitlementStatus.LIFECYCLE_NOT_MANAGED_STATUS.contains(
                 EntitlementStatus.valueOf(entitlement.getStatus()))) {
+            LOGGER.error("Can not created {} entitlement.", entitlement.getStatus());
             throw AppErrors.INSTANCE.fieldNotCorrect("status",
                     "status can not be DELETED or BANNED when created").exception();
         }
@@ -57,10 +61,12 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
         validateGrantTimeBeforeExpirationTime(entitlement);
 
         if (entitlement.getManagedLifecycle() == null) {
+            LOGGER.warn("managedLifecycle not found, set false as default.");
             entitlement.setManagedLifecycle(false);
         }
 
         if (entitlement.getConsumable() == null || !entitlement.getConsumable()) {
+            LOGGER.warn("consumable not found, set false and set useCount to 0 as default.");
             entitlement.setConsumable(false);
             entitlement.setUseCount(0);
         }
@@ -70,6 +76,8 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
             Entitlement existingEntitlement = entitlementRepository.getExistingManagedEntitlement(
                     entitlement.getUserId(), entitlement.getEntitlementDefinitionId());
             if (existingEntitlement != null) {
+                LOGGER.info("Merge added entitlement into existing entitlement [{}].",
+                        existingEntitlement.getEntitlementId());
                 if (entitlement.getExpirationTime() != null) {
                     existingEntitlement.setExpirationTime(new Date(existingEntitlement.getExpirationTime().getTime()
                             + entitlement.getExpirationTime().getTime()
@@ -146,6 +154,8 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
         }
 
         if (EntitlementStatus.LIFECYCLE_NOT_MANAGED_STATUS.contains(entitlement.getStatus())) {
+            LOGGER.info("Delete or ban entitlement [{}], set managedLifecycle" +
+                    " and consumable to false and set useCount to 0.", entitlementId);
             existingEntitlement.setManagedLifecycle(false);
             existingEntitlement.setConsumable(false);
             existingEntitlement.setUseCount(0);
@@ -200,6 +210,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
         Entitlement existingEntitlement = getEntitlement(entitlementTransfer.getEntitlementId());
 
         if (EntitlementStatus.NOT_TRANSFERABLE.contains(existingEntitlement.getStatus())) {
+            LOGGER.error("Entitlement [{}] can not be transferred.", existingEntitlement.getEntitlementId());
             throw AppErrors.INSTANCE.notTransferable(existingEntitlement.getEntitlementId(),
                     "Entitlement with status " +
                             existingEntitlement.getStatus() +
@@ -210,6 +221,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
         Entitlement newEntitlement = CloneUtils.clone(existingEntitlement);
         deleteEntitlement(entitlementTransfer.getEntitlementId(),
                 EntitlementStatusReason.TRANSFERRED);
+        LOGGER.info("Entitlement [{}] is deleted for transferring.", existingEntitlement.getEntitlementId());
         newEntitlement.setTrackingUuid(entitlementTransfer.getTrackingUuid());
         newEntitlement.setEntitlementId(null);
         newEntitlement.setUserId(entitlementTransfer.getTargetUserId());

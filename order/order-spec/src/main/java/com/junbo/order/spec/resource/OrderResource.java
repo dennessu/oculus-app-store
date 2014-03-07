@@ -5,6 +5,7 @@
  */
 package com.junbo.order.spec.resource;
 
+import com.junbo.common.id.OrderId;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.order.spec.model.Discount;
@@ -33,32 +34,32 @@ public interface OrderResource {
 
     @GET
     @Path("/{orderId}")
-    Promise<Order> getOrderByOrderId(@PathParam("orderId") Long orderId,
+    Promise<Order> getOrderByOrderId(@PathParam("orderId") OrderId orderId,
                                      @Context HttpHeaders headers);
 
     @PUT
     @Path("/{orderId}")
-    Promise<List<Order>> updateOrderByOrderId(@PathParam("orderId") Long orderId, Order order,
+    Promise<List<Order>> updateOrderByOrderId(@PathParam("orderId") OrderId orderId, Order order,
                                            @Context HttpHeaders headers);
 
     @GET
     @Path("/{orderId}/order-events")
-    Promise<List<OrderEvent>> getOrderEvents(@PathParam("orderId") Long orderId,
+    Promise<List<OrderEvent>> getOrderEvents(@PathParam("orderId") OrderId orderId,
                                              @Context HttpHeaders headers);
 
     @POST
     @Path("/{orderId}/order-events")
-    Promise<OrderEvent> createOrderEvent(@PathParam("orderId") Long orderId,
+    Promise<OrderEvent> createOrderEvent(@PathParam("orderId") OrderId orderId,
                                          @Context HttpHeaders headers);
 
     @GET
     @Path("/{orderId}/discounts")
-    Promise<List<Discount>> getOrderDiscounts(@PathParam("orderId") Long orderId,
+    Promise<List<Discount>> getOrderDiscounts(@PathParam("orderId") OrderId orderId,
                                               @Context HttpHeaders headers);
 
     @GET
     @Path("/{orderId}/order-items")
-    Promise<List<OrderItem>> getOrderItemsByOrderId(@PathParam("orderId") Long orderId,
+    Promise<List<OrderItem>> getOrderItemsByOrderId(@PathParam("orderId") OrderId orderId,
                                                     @Context HttpHeaders headers);
 }
 

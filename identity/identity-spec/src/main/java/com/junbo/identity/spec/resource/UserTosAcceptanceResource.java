@@ -5,6 +5,8 @@
  */
 package com.junbo.identity.spec.resource;
 
+import com.junbo.common.id.UserId;
+import com.junbo.common.id.UserTosAcceptanceId;
 import com.junbo.identity.spec.model.common.ResultList;
 import com.junbo.identity.spec.model.user.UserTosAcceptance;
 import com.junbo.langur.core.RestResource;
@@ -23,28 +25,28 @@ import javax.ws.rs.core.MediaType;
 @Consumes({MediaType.APPLICATION_JSON})
 public interface UserTosAcceptanceResource {
     @POST
-    Promise<UserTosAcceptance> postUserTosAcceptance(@PathParam("key1") Long userId,
+    Promise<UserTosAcceptance> postUserTosAcceptance(@PathParam("key1") UserId userId,
                                             UserTosAcceptance userTosAcceptance);
 
     @GET
-    Promise<ResultList<UserTosAcceptance>> getUserTosAcceptances(@PathParam("key1") Long userId,
+    Promise<ResultList<UserTosAcceptance>> getUserTosAcceptances(@PathParam("key1") UserId userId,
                                                   @QueryParam("tos") String tos,
                                                   @QueryParam("cursor") Integer cursor,
                                                   @QueryParam("count") Integer count);
 
     @GET
     @Path("/{key2}")
-    Promise<UserTosAcceptance> getUserTosAcceptance(@PathParam("key1") Long userId,
-                                           @PathParam("key2") Long tosAcceptanceId);
+    Promise<UserTosAcceptance> getUserTosAcceptance(@PathParam("key1") UserId userId,
+                                           @PathParam("key2") UserTosAcceptanceId tosAcceptanceId);
 
     @PUT
     @Path("/{key2}")
-    Promise<UserTosAcceptance> updateUserTosAcceptance(@PathParam("key1") Long userId,
-                                              @PathParam("key2") Long tosAcceptanceId,
+    Promise<UserTosAcceptance> updateUserTosAcceptance(@PathParam("key1") UserId userId,
+                                              @PathParam("key2") UserTosAcceptanceId tosAcceptanceId,
                                               UserTosAcceptance userTosAcceptance);
 
     @DELETE
     @Path("/{key2}")
-    Promise<Void> deleteUserTosAcceptance(@PathParam("key1") Long userId,
-                                 @PathParam("key2") Long tosAcceptanceId);
+    Promise<Void> deleteUserTosAcceptance(@PathParam("key1") UserId userId,
+                                 @PathParam("key2") UserTosAcceptanceId tosAcceptanceId);
 }

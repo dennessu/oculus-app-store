@@ -5,6 +5,8 @@
  */
 package com.junbo.identity.rest.resource;
 
+import com.junbo.common.id.UserFederationId;
+import com.junbo.common.id.UserId;
 import com.junbo.identity.rest.service.user.UserFederationService;
 import com.junbo.identity.spec.model.common.ResultList;
 import com.junbo.identity.spec.model.common.ResultListUtil;
@@ -28,30 +30,31 @@ public class UserFederationResourceImpl implements UserFederationResource {
     private UserFederationService userFederationService;
 
     @Override
-    public Promise<UserFederation> postUserFederation(Long userId, UserFederation userFederation) {
-        return Promise.pure(userFederationService.save(userId, userFederation));
+    public Promise<UserFederation> postUserFederation(UserId userId, UserFederation userFederation) {
+        return Promise.pure(userFederationService.save(userId.getValue(), userFederation));
     }
 
     @Override
-    public Promise<ResultList<UserFederation>> getUserFederations(Long userId, String type,
+    public Promise<ResultList<UserFederation>> getUserFederations(UserId userId, String type,
                                                                   Integer cursor, Integer count) {
-        List<UserFederation> userFederations = userFederationService.getByUserId(userId, type);
+        List<UserFederation> userFederations = userFederationService.getByUserId(userId.getValue(), type);
         return Promise.pure(ResultListUtil.init(userFederations, count));
     }
 
     @Override
-    public Promise<UserFederation> getUserFederation(Long userId, Long federationId) {
-        return Promise.pure(userFederationService.get(userId, federationId));
+    public Promise<UserFederation> getUserFederation(UserId userId, UserFederationId federationId) {
+        return Promise.pure(userFederationService.get(userId.getValue(), federationId.getValue()));
     }
 
     @Override
-    public Promise<UserFederation> updateUserFederation(Long userId, Long federationId, UserFederation userFederation) {
-        return Promise.pure(userFederationService.update(userId, federationId, userFederation));
+    public Promise<UserFederation> updateUserFederation(UserId userId,
+                                                        UserFederationId federationId, UserFederation userFederation) {
+        return Promise.pure(userFederationService.update(userId.getValue(), federationId.getValue(), userFederation));
     }
 
     @Override
-    public Promise<Void> deleteUserFederation(Long userId, Long federationId) {
-        userFederationService.delete(userId, federationId);
+    public Promise<Void> deleteUserFederation(UserId userId, UserFederationId federationId) {
+        userFederationService.delete(userId.getValue(), federationId.getValue());
         return Promise.pure(null);
     }
 }

@@ -20,8 +20,6 @@ import com.junbo.order.core.OrderService
 import com.junbo.order.core.OrderServiceOperation
 import com.junbo.order.core.impl.common.CoreBuilder
 import com.junbo.order.core.impl.orderaction.ActionUtils
-import com.junbo.order.db.entity.enums.EventStatus
-import com.junbo.order.db.entity.enums.OrderActionType
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.*
@@ -63,8 +61,9 @@ class OrderServiceImpl implements OrderService {
     Promise<List<Order>> createOrders(Order order, ApiContext context) {
         // TODO: split orders
         // TODO: expand external resources
-        def orderServiceContext = initOrderServiceContext(order, null)
-        flowSelector.select(orderServiceContext, OrderServiceOperation.CREATE).then { FlowType flowType ->
+        def orderServiceContext = initOrderServiceContext(order)
+        flowSelector.select(
+                new OrderServiceContext(order), OrderServiceOperation.CREATE).syncThen { FlowType flowType ->
             executeFlow(flowType, orderServiceContext, null)
         }.syncThen {
             return [orderServiceContext.order]
@@ -74,8 +73,8 @@ class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     Promise<List<Order>> settleQuote(Order order, ApiContext context) {
-        def orderServiceContext = initOrderServiceContext(order, null)
-        flowSelector.select(orderServiceContext, OrderServiceOperation.UPDATE_TENTATIVE).then { FlowType flowType ->
+        def orderServiceContext = initOrderServiceContext(order)
+        flowSelector.select(orderServiceContext, OrderServiceOperation.SETTLE_TENTATIVE).syncThen { FlowType flowType ->
             executeFlow(flowType, orderServiceContext, null)
         }.syncThen {
             return [orderServiceContext.order]
@@ -114,7 +113,7 @@ class OrderServiceImpl implements OrderService {
         orderRepository.createOrder(order, orderEvent)
 
         // Calculate Tax
-        def balanceRequest = CoreBuilder.buildBalance(initOrderServiceContext(order, null), BalanceType.DEBIT)
+        def balanceRequest = CoreBuilder.buildBalance(initOrderServiceContext(order), BalanceType.DEBIT)
         billingFacade.quoteBalance(balanceRequest).syncThen { Balance balance ->
             order.isTaxInclusive = balance.taxIncluded
             order.totalTax = balance.taxAmount
@@ -128,30 +127,28 @@ class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     Promise<Order> getOrderByOrderId(Long orderId) {
-        def orderServiceContext = initOrderServiceContext(null, orderId)
+        def orderServiceContext = initOrderServiceContext(null)
+        Map<String, Object> requestScope = ['GetOrderAction_OrderId':(Object)orderId]
         flowSelector.select(orderServiceContext, OrderServiceOperation.GET).syncThen { FlowType flowType ->
-
-            executeFlow(flowType, orderServiceContext, null).syncThen { List<Order> orders ->
+            executeFlow(flowType, orderServiceContext, requestScope).syncThen { List<Order> orders ->
                 if (CollectionUtils.isEmpty(orders)) {
-                    throw AppErrors.INSTANCE.orderNotFound().exception()
+                    return null
                 }
-                def order = orderServiceContext.order
+                // TODO need refactor the get logic
                 // order items
-                order.setOrderItems(orderRepository.getOrderItems(orderId))
-                if (CollectionUtils.isEmpty(order.orderItems)) {
-                    throw AppErrors.INSTANCE.orderItemNotFound().exception()
-                }
+                orders[0].setOrderItems(orderRepository.getOrderItems(orderId))
                 // rating info
-                order.totalAmount = 0
-                order.orderItems?.each { OrderItem orderItem ->
+                orders[0].totalAmount = 0
+                orders[0].orderItems?.each { OrderItem orderItem ->
                     if (orderItem.totalAmount != null) {
-                        order.totalAmount += orderItem.totalAmount
+                        orders[0].totalAmount += orderItem.totalAmount
                     }
                 }
                 // payment instrument
-                order.setPaymentInstruments(orderRepository.getPaymentInstrumentIds(orderId))
+                orders[0].setPaymentInstruments(orderRepository.getPaymentInstrumentIds(orderId))
                 // discount
-                order.setDiscounts(orderRepository.getDiscounts(orderId))
+                orders[0].setDiscounts(orderRepository.getDiscounts(orderId))
+                return orders[0]
             }
         }
     }
@@ -186,22 +183,16 @@ class OrderServiceImpl implements OrderService {
         return null
     }
 
-    private Promise<OrderServiceContext> executeFlow(FlowType flowType, OrderServiceContext context,
-                                                     Map<String, Object> requestScope) {
+    private Promise<OrderServiceContext> executeFlow(
+            FlowType flowType, OrderServiceContext context,
+            Map<String, Object> requestScope) {
         return flowExecutor.start(flowType.name(), ActionUtils.initRequestScope(context, requestScope)).syncThen {
             return context
         }
     }
 
-    private OrderServiceContext initOrderServiceContext(Order order, Long orderId) {
-        OrderServiceContext context = new OrderServiceContext()
-        context.order = order
-        context.orderId = orderId
-        context.orderRepository = orderRepository
-        context.billingFacade = billingFacade
-        context.fulfillmentFacade = fulfillmentFacade
-        context.identityFacade = identityFacade
-        context.ratingFacade = ratingFacade
+    private OrderServiceContext initOrderServiceContext(Order order) {
+        OrderServiceContext context = new OrderServiceContext(order)
         return context
     }
 }
