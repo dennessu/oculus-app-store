@@ -16,6 +16,8 @@ import com.junbo.order.db.entity.OrderDiscountInfoEntity
 import com.junbo.order.db.entity.OrderEntity
 import com.junbo.order.db.entity.OrderItemEntity
 import com.junbo.order.db.entity.OrderPaymentInfoEntity
+import com.junbo.order.db.entity.enums.BillingAction
+import com.junbo.order.db.entity.enums.EventStatus
 import com.junbo.order.db.mapper.ModelMapper
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.model.*

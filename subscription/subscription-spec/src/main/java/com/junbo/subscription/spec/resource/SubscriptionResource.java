@@ -1,9 +1,9 @@
 package com.junbo.subscription.spec.resource;
 
-import com.google.common.util.concurrent.ListenableFuture;
+import com.junbo.common.id.SubscriptionId;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
-import com.junbo.subscription.spec.model.*;
+import com.junbo.subscription.spec.model.Subscription;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -17,6 +17,7 @@ import javax.ws.rs.core.MediaType;
 public interface SubscriptionResource {
     @GET
     @Path("/subscriptions/{subscriptionId}")
-    public Promise<Subscription> getSubscription(@Context HttpHeaders httpHeaders, @PathParam("subscriptionId") Long subscriptionId);
+    public Promise<Subscription> getSubscription(@Context HttpHeaders httpHeaders,
+                                                 @PathParam("subscriptionId") SubscriptionId subscriptionId);
 
 }

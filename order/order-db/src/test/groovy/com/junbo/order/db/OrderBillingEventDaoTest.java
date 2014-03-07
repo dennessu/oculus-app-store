@@ -8,8 +8,8 @@ package com.junbo.order.db;
 
 import com.junbo.order.db.dao.OrderBillingEventDao;
 import com.junbo.order.db.entity.OrderBillingEventEntity;
-import com.junbo.order.spec.model.BillingAction;
-import com.junbo.order.spec.model.EventStatus;
+import com.junbo.order.db.entity.enums.BillingAction;
+import com.junbo.order.db.entity.enums.EventStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.Test;

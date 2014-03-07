@@ -40,7 +40,7 @@ class BillingFacadeTest extends BaseTest {
     @Test(enabled = true)
     void testGetShippingAddress() {
 //        def balance = TestBuilder.buildBalance();
-        def promise = billingFacade.getShippingAddress(TestBuilder.generateLong())
+        def promise = billingFacade.getShippingAddress(TestBuilder.generateLong(), TestBuilder.generateLong())
         promise.then(new Promise.Func<ShippingAddress, Promise>() {
             @Override
             Promise apply(ShippingAddress shippingAddress) {
