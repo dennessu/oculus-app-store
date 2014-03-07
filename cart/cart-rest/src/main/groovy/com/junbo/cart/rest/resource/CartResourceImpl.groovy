@@ -83,18 +83,18 @@ class CartResourceImpl implements CartResource {
     }
 
     @Override
-    Promise<Cart> addCart(Long userId, Cart cart) {
-        return cartService.addCart(cart, clientId, new UserId(userId))
+    Promise<Cart> addCart(UserId userId, Cart cart) {
+        return cartService.addCart(cart, clientId, userId)
     }
 
     @Override
-    Promise<Cart> getCart(Long userId, Long cartId) {
-        return cartService.getCart(new UserId(userId), new CartId(cartId))
+    Promise<Cart> getCart(UserId userId, CartId cartId) {
+        return cartService.getCart(userId, cartId)
     }
 
     @Override
-    Promise<Cart> getCartPrimary(Long userId) {
-        return cartService.getCartPrimary(clientId, new UserId(userId)).then {
+    Promise<Cart> getCartPrimary(UserId userId) {
+        return cartService.getCartPrimary(clientId, userId).then {
             Cart cart = (Cart) it
             respondingContext.push(new RedirectFunction(cart, requestContext))
             return Promise.pure(null)
@@ -102,8 +102,8 @@ class CartResourceImpl implements CartResource {
     }
 
     @Override
-    Promise<Cart> getCartByName(Long userId, String cartName) {
-        return cartService.getCartByName(clientId, cartName, new UserId(userId)).then {
+    Promise<Cart> getCartByName(UserId userId, String cartName) {
+        return cartService.getCartByName(clientId, cartName, userId).then {
             Cart cart = (Cart) it
             respondingContext.push(new RedirectFunction(cart, requestContext))
             return Promise.pure(null)
@@ -111,41 +111,41 @@ class CartResourceImpl implements CartResource {
     }
 
     @Override
-    Promise<Cart> updateCart(Long userId, Long cartId, Cart fromCart) {
-        return cartService.updateCart(new UserId(userId), new CartId(cartId), fromCart)
+    Promise<Cart> updateCart(UserId userId, CartId cartId, Cart fromCart) {
+        return cartService.updateCart(userId, cartId, fromCart)
     }
 
     @Override
-    Promise<Cart> mergeCart(Long userId, Long cartId,  Cart fromCart) {
-        return cartService.mergeCart(new UserId(userId), new CartId(cartId), fromCart)
+    Promise<Cart> mergeCart(UserId userId, CartId cartId,  Cart fromCart) {
+        return cartService.mergeCart(userId, cartId, fromCart)
     }
 
     @Override
-    Promise<Cart> addOffer(Long userId, Long cartId, OfferItem offer) {
-        return cartService.addOfferItem(new UserId(userId), new CartId(cartId), offer)
+    Promise<Cart> addOffer(UserId userId, CartId cartId, OfferItem offer) {
+        return cartService.addOfferItem(userId, cartId, offer)
     }
 
     @Override
-    Promise<Cart> updateOffer(Long userId, Long cartId, Long offerItemId, OfferItem offer) {
-        return cartService.updateOfferItem(new UserId(userId), new CartId(cartId), new CartItemId(offerItemId), offer)
+    Promise<Cart> updateOffer(UserId userId, CartId cartId, CartItemId offerItemId, OfferItem offer) {
+        return cartService.updateOfferItem(userId, cartId, offerItemId, offer)
     }
 
     @Override
-    Promise<Void> deleteOffer(Long userId, Long cartId, Long offerItemId) {
-        return cartService.deleteOfferItem(new UserId(userId), new CartId(cartId), new CartItemId(offerItemId)).then {
+    Promise<Void> deleteOffer(UserId userId, CartId cartId, CartItemId offerItemId) {
+        return cartService.deleteOfferItem(userId, cartId, offerItemId).then {
             respondingContext.push(new DeleteFunction())
             return Promise.pure(null)
         }
     }
 
     @Override
-    Promise<Cart> addCoupon(Long userId, Long cartId, CouponItem couponItem) {
-        return cartService.addCouponItem(new UserId(userId), new CartId(cartId), couponItem)
+    Promise<Cart> addCoupon(UserId userId, CartId cartId, CouponItem couponItem) {
+        return cartService.addCouponItem(userId, cartId, couponItem)
     }
 
     @Override
-    Promise<Cart> deleteCoupon(Long userId, Long cartId, Long couponItemId) {
-        return cartService.deleteCouponItem(new UserId(userId), new CartId(cartId), new CartItemId(couponItemId)).then {
+    Promise<Cart> deleteCoupon(UserId userId, CartId cartId, CartItemId couponItemId) {
+        return cartService.deleteCouponItem(userId, cartId, couponItemId).then {
             respondingContext.push(new DeleteFunction())
             return Promise.pure(null)
         }
