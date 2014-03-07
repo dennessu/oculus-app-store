@@ -5,8 +5,8 @@
  */
 package com.junbo.sharding.dao.impl;
 
-import com.junbo.sharding.dao.ShardIdGlobalCounterDAO;
-import com.junbo.sharding.model.ShardIdGlobalCounterEntity;
+import com.junbo.sharding.dao.IdGlobalCounterDAO;
+import com.junbo.sharding.model.IdGlobalCounterEntity;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ import java.util.List;
  */
 @Component
 @Transactional("shardingTransactionManager")
-public class ShardIdGlobalCounterDAOImpl implements ShardIdGlobalCounterDAO {
+public class IdGlobalCounterDAOImpl implements IdGlobalCounterDAO {
     @Autowired
     @Qualifier("shardingSessionFactory")
     private SessionFactory sessionFactory;
@@ -32,10 +32,10 @@ public class ShardIdGlobalCounterDAOImpl implements ShardIdGlobalCounterDAO {
     }
 
     @Override
-    public ShardIdGlobalCounterEntity get(Long optionMode, Long shardId) {
-        String query = "select * from shard_id_global_counter where shard_id = :shardId and option_mode = :optionMode";
-        List<ShardIdGlobalCounterEntity> entities = currentSession().createSQLQuery(query)
-                .addEntity(ShardIdGlobalCounterEntity.class).setParameter("optionMode", optionMode)
+    public IdGlobalCounterEntity get(Long optionMode, Long shardId) {
+        String query = "select * from id_global_counter where shard_id = :shardId and option_mode = :optionMode";
+        List<IdGlobalCounterEntity> entities = currentSession().createSQLQuery(query)
+                .addEntity(IdGlobalCounterEntity.class).setParameter("optionMode", optionMode)
                 .setParameter("shardId", shardId).list();
 
         if(CollectionUtils.isEmpty(entities)) {
@@ -50,8 +50,8 @@ public class ShardIdGlobalCounterDAOImpl implements ShardIdGlobalCounterDAO {
     }
 
     @Override
-    public ShardIdGlobalCounterEntity saveOrUpdate(ShardIdGlobalCounterEntity entity) {
-        ShardIdGlobalCounterEntity entityInDB = get(entity.getOptionMode(), entity.getShardId());
+    public IdGlobalCounterEntity saveOrUpdate(IdGlobalCounterEntity entity) {
+        IdGlobalCounterEntity entityInDB = get(entity.getOptionMode(), entity.getShardId());
         currentSession().evict(entityInDB);
         if(entityInDB == null) {
             currentSession().save(entity);
@@ -67,7 +67,7 @@ public class ShardIdGlobalCounterDAOImpl implements ShardIdGlobalCounterDAO {
     }
 
     @Override
-    public ShardIdGlobalCounterEntity update(ShardIdGlobalCounterEntity entity) {
+    public IdGlobalCounterEntity update(IdGlobalCounterEntity entity) {
         currentSession().update(entity);
         return get(entity.getOptionMode(), entity.getShardId());
     }
