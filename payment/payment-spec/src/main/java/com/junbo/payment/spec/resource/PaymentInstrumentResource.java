@@ -6,6 +6,7 @@
 
 package com.junbo.payment.spec.resource;
 
+import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.spec.model.PageMetaData;
@@ -30,15 +31,15 @@ public interface PaymentInstrumentResource {
 
     @GET
     @Path("/{paymentInstrumentId}")
-    Promise<PaymentInstrument> getById(@PathParam("paymentInstrumentId") Long paymentInstrumentId);
+    Promise<PaymentInstrument> getById(@PathParam("paymentInstrumentId") PaymentInstrumentId paymentInstrumentId);
 
     @DELETE
     @Path("/{paymentInstrumentId}")
-    Promise<Response> delete(@PathParam("paymentInstrumentId") Long paymentInstrumentId);
+    Promise<Response> delete(@PathParam("paymentInstrumentId") PaymentInstrumentId paymentInstrumentId);
 
     @PUT
     @Path("/{paymentInstrumentId}")
-    Promise<PaymentInstrument> update(@PathParam("paymentInstrumentId") Long paymentInstrumentId,
+    Promise<PaymentInstrument> update(@PathParam("paymentInstrumentId") PaymentInstrumentId paymentInstrumentId,
                                              PaymentInstrument request);
 
     @GET
