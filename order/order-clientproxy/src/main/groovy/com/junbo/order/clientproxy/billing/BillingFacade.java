@@ -21,6 +21,6 @@ public interface BillingFacade {
     Promise<Balance> captureBalance(Long balanceId);
     Promise<Balance> getBalanceById(Long balanceId);
     Promise<List<Balance>> getBalancesByOrderId(Long orderId);
-    Promise<ShippingAddress> getShippingAddress(Long shippingAddressId);
+    Promise<ShippingAddress> getShippingAddress(Long userId, Long shippingAddressId);
     Promise<Balance> quoteBalance(Balance balance);
 }
