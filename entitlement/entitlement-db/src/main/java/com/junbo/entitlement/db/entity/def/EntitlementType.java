@@ -6,9 +6,22 @@
 
 package com.junbo.entitlement.db.entity.def;
 
+import com.junbo.common.util.Identifiable;
+
 /**
  * EntitlementType enum.
  */
-public enum EntitlementType {
-    ONLINE_ACCESS, SUBSCRIPTIONS, DOWNLOAD, DEFAULT;
+public enum EntitlementType implements Identifiable<Integer> {
+    ONLINE_ACCESS(1), SUBSCRIPTIONS(2), DOWNLOAD(3), DEFAULT(0);
+
+    private Integer id;
+
+    EntitlementType(Integer id) {
+        this.id = id;
+    }
+
+    @Override
+    public Integer getId() {
+        return id;
+    }
 }

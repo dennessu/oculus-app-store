@@ -6,16 +6,14 @@
        http://www.junbo.com/schema/webflow http://www.junbo.com/schema/webflow-config/webflow.xsd">
 
     <wf:flow id="IMMEDIATE_SETTLE">
-        <wf:action-state id="IMMEDIATE_SETTLE_immediateSettle">
-            <wf:action ref="validateAction"/>
-            <wf:action ref="ratingAction"/>
-            <wf:action ref="createOrderAction"/>
-            <wf:action ref="immediateSettleAction"/>
-            <wf:action ref="fulfillmentAction"/>
-            <wf:transition on="*" to="endOrder"/>
-        </wf:action-state>
-
-        <wf:end-state id="endOrder">
+        <wf:end-state id="endState">
+            <wf:on-entry>
+                <wf:action ref="validateAction"/>
+                <wf:action ref="ratingAction"/>
+                <wf:action ref="createOrderAction"/>
+                <wf:action ref="immediateSettleAction"/>
+                <wf:action ref="fulfillmentAction"/>
+            </wf:on-entry>
         </wf:end-state>
     </wf:flow>
 </beans>

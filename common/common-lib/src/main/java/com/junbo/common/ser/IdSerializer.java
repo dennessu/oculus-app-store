@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.junbo.common.id.Id;
 import com.junbo.common.model.Reference;
+import com.junbo.common.util.IdFormat;
 
 import java.io.IOException;
 
@@ -29,7 +30,7 @@ public class IdSerializer extends JsonSerializer<Id> {
         Reference ref = new Reference();
         if (value != null) {
             ref.setHref(getHref(value));
-            ref.setId(value.toString());
+            ref.setId(IdFormat.encodeId(value));
         }
 
         mapper.writeValue(jgen, ref);

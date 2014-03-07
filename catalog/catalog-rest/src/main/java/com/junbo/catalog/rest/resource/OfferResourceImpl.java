@@ -15,71 +15,27 @@ import com.junbo.catalog.spec.resource.OfferResource;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.validation.Valid;
-import java.util.List;
+import javax.ws.rs.BeanParam;
 
 /**
  * Offer resource implementation.
  */
-public class OfferResourceImpl implements OfferResource{
+public class OfferResourceImpl extends BaseResourceImpl<Offer> implements OfferResource {
     @Autowired
     private OfferService offerService;
 
     @Override
-    public Promise<ResultList<Offer>> getOffers(EntitiesGetOptions options) {
-        List<Offer> offers = offerService.getOffers(options);
-        ResultList<Offer> resultList = new ResultList<>();
-        resultList.setResults(offers);
-        resultList.setHref("href TODO");
-        resultList.setNext("next TODO");
-        return Promise.pure(resultList);
+    public Promise<ResultList<Offer>> getOffers(@BeanParam EntitiesGetOptions options) {
+        return getEntities(options);
     }
 
     @Override
-    public Promise<Offer> getOffer(Long offerId, EntityGetOptions options) {
-        Offer offer = offerService.getOffer(offerId, options);
-        return Promise.pure(offer);
+    public Promise<Offer> getOffer(Long offerId, @BeanParam EntityGetOptions options) {
+        return get(offerId, options);
     }
 
     @Override
-    public Promise<Offer> createOffer(Offer offer) {
-        Offer result = offerService.createOffer(offer);
-        return Promise.pure(result);
-    }
-
-    @Override
-    public Promise<Offer> createReview(Long offerId) {
-        Offer offer = offerService.reviewOffer(offerId);
-        return Promise.pure(offer);
-    }
-
-    @Override
-    public Promise<Offer> releaseOffer(Long offerId) {
-        Offer offer = offerService.releaseOffer(offerId);
-        return Promise.pure(offer);
-    }
-
-    @Override
-    public Promise<Offer> rejectOffer(Long offerId) {
-        Offer updatedOffer = offerService.rejectOffer(offerId);
-        return Promise.pure(updatedOffer);
-    }
-
-    @Override
-    public Promise<Offer> updateOffer(@Valid Offer offer) {
-        Offer updatedOffer = offerService.updateOffer(offer);
-        return Promise.pure(updatedOffer);
-    }
-
-    @Override
-    public Promise<Long> removeOffer(Long offerId) {
-        Long removedOfferId = offerService.removeOffer(offerId);
-        return Promise.pure(removedOfferId);
-    }
-
-    @Override
-    public Promise<Long> deleteOffer(Long offerId) {
-        Long deletedOfferId = offerService.deleteOffer(offerId);
-        return Promise.pure(deletedOfferId);
+    protected OfferService getEntityService() {
+        return offerService;
     }
 }

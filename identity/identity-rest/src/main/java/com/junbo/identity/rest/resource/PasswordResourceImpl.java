@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.rest.resource;
 
+import com.junbo.common.id.PasswordRuleId;
 import com.junbo.identity.rest.service.password.PasswordService;
 import com.junbo.identity.spec.error.AppErrors;
 import com.junbo.identity.spec.model.password.PasswordRule;
@@ -26,8 +27,8 @@ public class PasswordResourceImpl implements PasswordResource {
     private PasswordService passwordService;
 
     @Override
-    public Promise<PasswordRule> getPasswordRule(Long passwordRuleId) {
-        return Promise.pure(passwordService.get(passwordRuleId));
+    public Promise<PasswordRule> getPasswordRule(PasswordRuleId passwordRuleId) {
+        return Promise.pure(passwordService.get(passwordRuleId.getValue()));
     }
 
     @Override
@@ -36,12 +37,12 @@ public class PasswordResourceImpl implements PasswordResource {
     }
 
     @Override
-    public Promise<PasswordRule> updatePasswordRule(Long passwordRuleId, PasswordRule passwordRule) {
+    public Promise<PasswordRule> updatePasswordRule(PasswordRuleId passwordRuleId, PasswordRule passwordRule) {
         if(passwordRule.getId() == null) {
             throw AppErrors.INSTANCE.missingParameterField("passwordRule.id").exception();
         }
 
-        if(passwordRule.getId().getValue().equals(passwordRuleId)) {
+        if(passwordRule.getId().getValue().equals(passwordRuleId.getValue())) {
             throw AppErrors.INSTANCE.unmatchedValue("passwordRuleId", "passwordRule.ID").exception();
         }
         return Promise.pure(passwordService.update(passwordRule));

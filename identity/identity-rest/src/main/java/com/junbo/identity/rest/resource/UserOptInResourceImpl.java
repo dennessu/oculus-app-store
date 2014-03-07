@@ -5,6 +5,8 @@
  */
 package com.junbo.identity.rest.resource;
 
+import com.junbo.common.id.UserId;
+import com.junbo.common.id.UserOptInId;
 import com.junbo.identity.rest.service.user.UserOptInService;
 import com.junbo.identity.spec.model.common.ResultList;
 import com.junbo.identity.spec.model.common.ResultListUtil;
@@ -28,29 +30,29 @@ public class UserOptInResourceImpl implements UserOptInResource {
     private UserOptInService userOptInService;
 
     @Override
-    public Promise<UserOptIn> postUserOptIn(Long userId, UserOptIn userOptIn) {
-        return Promise.pure(userOptInService.save(userId, userOptIn));
+    public Promise<UserOptIn> postUserOptIn(UserId userId, UserOptIn userOptIn) {
+        return Promise.pure(userOptInService.save(userId.getValue(), userOptIn));
     }
 
     @Override
-    public Promise<ResultList<UserOptIn>> getUserOptIns(Long userId, String type, Integer cursor, Integer count) {
-        List<UserOptIn> userOptIns = userOptInService.getByUserId(userId, type);
+    public Promise<ResultList<UserOptIn>> getUserOptIns(UserId userId, String type, Integer cursor, Integer count) {
+        List<UserOptIn> userOptIns = userOptInService.getByUserId(userId.getValue(), type);
         return Promise.pure(ResultListUtil.init(userOptIns, count));
     }
 
     @Override
-    public Promise<UserOptIn> getUserOptIn(Long userId, Long optInId) {
-        return Promise.pure(userOptInService.get(userId, optInId));
+    public Promise<UserOptIn> getUserOptIn(UserId userId, UserOptInId optInId) {
+        return Promise.pure(userOptInService.get(userId.getValue(), optInId.getValue()));
     }
 
     @Override
-    public Promise<UserOptIn> updateUserOptIn(Long userId, Long optInId, UserOptIn userOptIn) {
-        return Promise.pure(userOptInService.update(userId, optInId, userOptIn));
+    public Promise<UserOptIn> updateUserOptIn(UserId userId, UserOptInId optInId, UserOptIn userOptIn) {
+        return Promise.pure(userOptInService.update(userId.getValue(), optInId.getValue(), userOptIn));
     }
 
     @Override
-    public Promise<Void> deleteUserOptIn(Long userId, Long optInId) {
-        userOptInService.delete(userId, optInId);
+    public Promise<Void> deleteUserOptIn(UserId userId, UserOptInId optInId) {
+        userOptInService.delete(userId.getValue(), optInId.getValue());
         return Promise.pure(null);
     }
 }

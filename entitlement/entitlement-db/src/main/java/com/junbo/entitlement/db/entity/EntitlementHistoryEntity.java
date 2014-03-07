@@ -8,7 +8,9 @@ package com.junbo.entitlement.db.entity;
 
 import com.junbo.entitlement.db.entity.def.EntitlementStatus;
 import com.junbo.entitlement.db.entity.def.EntitlementType;
+import com.junbo.entitlement.db.entity.def.IdentifiableType;
 import com.junbo.entitlement.db.entity.def.Shardable;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
@@ -120,6 +122,7 @@ public class EntitlementHistoryEntity implements Shardable {
     }
 
     @Column(name = "status")
+    @Type(type = IdentifiableType.TYPE)
     public EntitlementStatus getStatus() {
         return status;
     }
@@ -255,6 +258,7 @@ public class EntitlementHistoryEntity implements Shardable {
     }
 
     @Column(name = "type")
+    @Type(type = IdentifiableType.TYPE)
     public EntitlementType getType() {
         return type;
     }

@@ -24,5 +24,8 @@ dependencies {
 
     compile (libraries.bonecp_spring)
 
+
+    compile (libraries.btm)
+
     testCompile (libraries.spring_test)
 }

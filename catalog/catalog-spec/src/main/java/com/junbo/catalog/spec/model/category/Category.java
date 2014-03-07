@@ -50,4 +50,9 @@ public class Category extends BaseModel {
     public void setProperties(Map<String, String> properties) {
         this.properties = properties;
     }
+
+    @Override
+    public String getEntityType() {
+        return "Category";
+    }
 }

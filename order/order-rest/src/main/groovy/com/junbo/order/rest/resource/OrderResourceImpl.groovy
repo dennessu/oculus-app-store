@@ -1,4 +1,6 @@
 package com.junbo.order.rest.resource
+
+import com.junbo.common.id.OrderId
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.core.OrderService
 import com.junbo.order.spec.model.*
@@ -31,8 +33,8 @@ class OrderResourceImpl implements OrderResource {
 
     @Override
     @Transactional
-    Promise<Order> getOrderByOrderId(Long orderId, HttpHeaders httpHeaders) {
-        return orderService.getOrderByOrderId(orderId)
+    Promise<Order> getOrderByOrderId(OrderId orderId, HttpHeaders httpHeaders) {
+        return orderService.getOrderByOrderId(orderId.value)
     }
 
     @Override
@@ -46,8 +48,8 @@ class OrderResourceImpl implements OrderResource {
     }
 
     @Override
-    Promise<List<Order>> updateOrderByOrderId(Long orderId, Order order, HttpHeaders httpHeaders) {
-        orderService.getOrderByOrderId(orderId).syncThen { Order o ->
+    Promise<List<Order>> updateOrderByOrderId(OrderId orderId, Order order, HttpHeaders httpHeaders) {
+        orderService.getOrderByOrderId(orderId.value).syncThen { Order o ->
             // handle the update request per scenario
             // handle settle order scenario: the tentative flag is updated from false to true
             if (o.tentative == false && order.tentative == true) {
@@ -61,26 +63,26 @@ class OrderResourceImpl implements OrderResource {
     }
 
     @Override
-    Promise<List<OrderEvent>> getOrderEvents(Long orderId, HttpHeaders httpHeaders) {
+    Promise<List<OrderEvent>> getOrderEvents(OrderId orderId, HttpHeaders httpHeaders) {
         def orderEvents = []
         orderEvents.add(new OrderEvent())
         return Promise.pure(orderEvents)
     }
 
     @Override
-    Promise<List<Discount>> getOrderDiscounts(Long orderId, HttpHeaders httpHeaders) {
+    Promise<List<Discount>> getOrderDiscounts(OrderId orderId, HttpHeaders httpHeaders) {
         def discounts = []
         discounts.add(new Discount())
         return Promise.pure(discounts)
     }
 
     @Override
-    Promise<List<OrderItem>> getOrderItemsByOrderId(Long orderId, HttpHeaders headers) {
+    Promise<List<OrderItem>> getOrderItemsByOrderId(OrderId orderId, HttpHeaders headers) {
         return null
     }
 
     @Override
-    Promise<OrderEvent> createOrderEvent(Long orderId, HttpHeaders headers) {
+    Promise<OrderEvent> createOrderEvent(OrderId orderId, HttpHeaders headers) {
         return null
     }
 }

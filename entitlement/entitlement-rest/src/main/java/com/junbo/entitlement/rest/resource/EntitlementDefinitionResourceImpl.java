@@ -6,6 +6,8 @@
 
 package com.junbo.entitlement.rest.resource;
 
+import com.junbo.common.id.EntitlementDefinitionId;
+import com.junbo.common.id.UserId;
 import com.junbo.entitlement.common.def.EntitlementConsts;
 import com.junbo.entitlement.common.lib.CommonUtils;
 import com.junbo.entitlement.core.EntitlementDefinitionService;
@@ -33,18 +35,18 @@ public class EntitlementDefinitionResourceImpl implements EntitlementDefinitionR
     private UriInfo uriInfo;
 
     @Override
-    public Promise<EntitlementDefinition> getEntitlementDefinition(Long entitlementDefinitionId) {
+    public Promise<EntitlementDefinition> getEntitlementDefinition(EntitlementDefinitionId entitlementDefinitionId) {
         EntitlementDefinition entitlementDefinition =
-                entitlementDefinitionService.getEntitlementDefinition(entitlementDefinitionId);
+                entitlementDefinitionService.getEntitlementDefinition(entitlementDefinitionId.getValue());
         return Promise.pure(entitlementDefinition);
     }
 
     @Override
     public Promise<ResultList<EntitlementDefinition>> getEntitlementDefinitionDefinitions(
-            Long developerId, String type, String group, String tag, PageMetadata pageMetadata) {
+            UserId developerId, String type, String group, String tag, PageMetadata pageMetadata) {
         List<EntitlementDefinition> entitlementDefinitions =
                 entitlementDefinitionService.getEntitlementDefinitions(
-                        developerId, group, tag, type, pageMetadata);
+                        developerId.getValue(), group, tag, type, pageMetadata);
         ResultList<EntitlementDefinition> result = new ResultList<EntitlementDefinition>();
         result.setCriteria(entitlementDefinitions);
         if (entitlementDefinitions.size() <
@@ -53,7 +55,7 @@ public class EntitlementDefinitionResourceImpl implements EntitlementDefinitionR
                         : pageMetadata.getCount())) {
             result.setNext(EntitlementConsts.NEXT_END);
         } else {
-            result.setNext(buildNextUrl(developerId, type, group, tag, pageMetadata));
+            result.setNext(buildNextUrl(developerId.getValue(), type, group, tag, pageMetadata));
         }
         return Promise.pure(result);
     }
@@ -75,7 +77,7 @@ public class EntitlementDefinitionResourceImpl implements EntitlementDefinitionR
 
     @Override
     public Promise<EntitlementDefinition> updateEntitlementDefinition(
-            Long entitlementDefinitionId, EntitlementDefinition entitlementDefinition) {
+            EntitlementDefinitionId entitlementDefinitionId, EntitlementDefinition entitlementDefinition) {
         UUID trackingUuid = entitlementDefinition.getTrackingUuid();
         if (trackingUuid != null) {
             EntitlementDefinition existingEntitlementDefinition
@@ -85,12 +87,12 @@ public class EntitlementDefinitionResourceImpl implements EntitlementDefinitionR
             }
         }
         return Promise.pure(entitlementDefinitionService
-                .updateEntitlementDefinition(entitlementDefinitionId, entitlementDefinition));
+                .updateEntitlementDefinition(entitlementDefinitionId.getValue(), entitlementDefinition));
     }
 
     @Override
-    public Promise<Response> deleteEntitlementDefinition(Long entitlementDefinitionId) {
-        entitlementDefinitionService.deleteEntitlement(entitlementDefinitionId);
+    public Promise<Response> deleteEntitlementDefinition(EntitlementDefinitionId entitlementDefinitionId) {
+        entitlementDefinitionService.deleteEntitlement(entitlementDefinitionId.getValue());
         return Promise.pure(Response.status(204).build());
     }
 

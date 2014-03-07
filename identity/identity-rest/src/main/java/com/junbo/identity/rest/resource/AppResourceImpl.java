@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.rest.resource;
 
+import com.junbo.common.id.AppId;
 import com.junbo.identity.rest.service.app.AppService;
 import com.junbo.identity.spec.error.AppErrors;
 import com.junbo.identity.spec.model.app.App;
@@ -26,8 +27,8 @@ public class AppResourceImpl implements AppResource {
     private AppService appService;
 
     @Override
-    public Promise<App> getApp(Long appId) {
-        return Promise.pure(appService.get(appId));
+    public Promise<App> getApp(AppId appId) {
+        return Promise.pure(appService.get(appId.getValue()));
     }
 
     @Override
@@ -36,16 +37,16 @@ public class AppResourceImpl implements AppResource {
     }
 
     @Override
-    public Promise<App> updateApp(Long appId, App app) {
-        if(appId.compareTo(app.getId().getValue()) != 0) {
+    public Promise<App> updateApp(AppId appId, App app) {
+        if(appId.getValue().compareTo(app.getId().getValue()) != 0) {
             throw AppErrors.INSTANCE.inputParametersMismatch("appId", "app.appId").exception();
         }
         return Promise.pure(appService.updateApp(app));
     }
 
     @Override
-    public Promise<App> deleteApp(Long appId) {
-        appService.deleteApp(appId);
+    public Promise<App> deleteApp(AppId appId) {
+        appService.deleteApp(appId.getValue());
         return Promise.pure(null);
     }
 }

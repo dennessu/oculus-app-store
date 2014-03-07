@@ -9,6 +9,8 @@ package com.junbo.order.db.repo;
 import com.junbo.common.id.BalanceId;
 import com.junbo.common.id.OrderId;
 import com.junbo.common.id.PaymentInstrumentId;
+import com.junbo.order.db.entity.enums.BillingAction;
+import com.junbo.order.db.entity.enums.EventStatus;
 import com.junbo.order.spec.model.*;
 
 import java.util.List;
@@ -24,7 +26,7 @@ public interface OrderRepository {
 
     OrderEvent createOrderEvent(OrderEvent event);
 
-    FulfillmentEvent createFulfillmentEvent(FulfillmentEvent event);
+    FulfillmentEvent createFulfillmentEvent(Long orderId, FulfillmentEvent event);
 
     void saveBillingEvent(OrderId orderId, BalanceId balanceId,
                           BillingAction action, EventStatus status);

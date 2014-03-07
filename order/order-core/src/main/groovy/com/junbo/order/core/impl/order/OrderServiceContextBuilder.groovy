@@ -101,7 +101,8 @@ class OrderServiceContextBuilder {
         if (context == null || context.order == null || context.order.shippingAddressId == null) {
             return null
         }
-        return billingFacade.getShippingAddress(context.order.shippingAddressId.value).syncThen { ShippingAddress sa ->
+        return billingFacade.getShippingAddress(context.order.user.value, context.order.shippingAddressId.value).
+                syncThen { ShippingAddress sa ->
             context.shippingAddress = sa
             return sa
         }

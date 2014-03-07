@@ -7,8 +7,8 @@
 package com.junbo.order.db.entity;
 
 import com.junbo.order.db.ValidationMessages;
-import com.junbo.order.spec.model.EventStatus;
-import com.junbo.order.spec.model.OrderActionType;
+import com.junbo.order.db.entity.enums.EventStatus;
+import com.junbo.order.db.entity.enums.OrderActionType;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;
@@ -42,6 +42,7 @@ public class OrderEventEntity extends CommonEventEntity {
 
     @Column (name = "ACTION_ID")
     @NotNull(message = ValidationMessages.MISSING_VALUE)
+    @Type(type = "com.junbo.order.db.entity.type.OrderActionEnumType")
     public OrderActionType getActionId() {
         return actionId;
     }
@@ -52,6 +53,7 @@ public class OrderEventEntity extends CommonEventEntity {
 
     @Column (name = "STATUS_ID")
     @NotNull (message = ValidationMessages.MISSING_VALUE)
+    @Type(type = "com.junbo.order.db.entity.type.EventStatusType")
     public EventStatus getStatusId() {
         return statusId;
     }

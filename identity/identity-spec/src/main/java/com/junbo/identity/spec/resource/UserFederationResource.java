@@ -5,6 +5,8 @@
  */
 package com.junbo.identity.spec.resource;
 
+import com.junbo.common.id.UserFederationId;
+import com.junbo.common.id.UserId;
 import com.junbo.identity.spec.model.common.ResultList;
 import com.junbo.identity.spec.model.user.UserFederation;
 import com.junbo.langur.core.RestResource;
@@ -23,28 +25,28 @@ import javax.ws.rs.core.MediaType;
 @Consumes({MediaType.APPLICATION_JSON})
 public interface UserFederationResource {
     @POST
-    Promise<UserFederation> postUserFederation(@PathParam("key1") Long userId,
+    Promise<UserFederation> postUserFederation(@PathParam("key1") UserId userId,
                                       UserFederation userFederation);
 
     @GET
-    Promise<ResultList<UserFederation>> getUserFederations(@PathParam("key1") Long userId,
+    Promise<ResultList<UserFederation>> getUserFederations(@PathParam("key1") UserId userId,
                                             @QueryParam("type") String type,
                                             @QueryParam("cursor") Integer cursor,
                                             @QueryParam("count") Integer count);
 
     @GET
     @Path("/{key2}")
-    Promise<UserFederation> getUserFederation(@PathParam("key1") Long userId,
-                                     @PathParam("key2") Long federationId);
+    Promise<UserFederation> getUserFederation(@PathParam("key1") UserId userId,
+                                     @PathParam("key2") UserFederationId federationId);
 
     @PUT
     @Path("/{key2}")
-    Promise<UserFederation> updateUserFederation(@PathParam("key1") Long userId,
-                                        @PathParam("key2") Long federationId,
+    Promise<UserFederation> updateUserFederation(@PathParam("key1") UserId userId,
+                                        @PathParam("key2") UserFederationId federationId,
                                         UserFederation userFederation);
 
     @DELETE
     @Path("/{key2}")
-    Promise<Void> deleteUserFederation(@PathParam("key1") Long userId,
-                              @PathParam("key2") Long federationId);
+    Promise<Void> deleteUserFederation(@PathParam("key1") UserId userId,
+                              @PathParam("key2") UserFederationId federationId);
 }

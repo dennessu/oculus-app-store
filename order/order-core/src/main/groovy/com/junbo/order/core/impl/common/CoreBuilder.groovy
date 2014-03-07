@@ -6,6 +6,8 @@ import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.model.DiscountItem
 import com.junbo.common.id.OrderId
 import com.junbo.order.core.impl.order.OrderServiceContext
+import com.junbo.order.db.entity.enums.EventStatus
+import com.junbo.order.db.entity.enums.OrderActionType
 import com.junbo.order.spec.model.*
 import com.junbo.rating.spec.model.request.OrderRatingItem
 import com.junbo.rating.spec.model.request.OrderRatingRequest
@@ -26,6 +28,7 @@ class CoreBuilder {
         balance.country = context.order.country
         balance.currency = context.order.currency
         balance.orderId = context.order.id
+        balance.userId = context.order.user
         balance.piId = context.order.paymentInstruments?.get(0)
         balance.type = balanceType.toString()
 

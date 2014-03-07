@@ -6,6 +6,7 @@
 
 package com.junbo.ewallet.app
 
+import com.junbo.common.id.provider.IdTypeFromStringProvider
 import groovy.transform.CompileStatic
 import org.glassfish.grizzly.http.server.HttpServer
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory
@@ -21,6 +22,8 @@ class Main {
 
         resourceConfig.packages('com.junbo.ewallet.spec.resource.adapter')
         resourceConfig.property('contextConfigLocation', 'classpath*:/spring/*.xml')
+
+        resourceConfig.register(IdTypeFromStringProvider)
 
         def uri = URI.create('http://0.0.0.0:8080/oauth')
         return GrizzlyHttpServerFactory.createHttpServer(uri, resourceConfig)
