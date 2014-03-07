@@ -1,5 +1,7 @@
 package com.junbo.order.app
 
+import com.junbo.common.id.converter.IdTypeFromStringConverter
+import com.junbo.common.id.provider.IdTypeFromStringProvider
 import com.junbo.common.json.JacksonFeature
 import com.junbo.common.json.ObjectMapperProvider
 import groovy.transform.CompileStatic
@@ -33,6 +35,8 @@ class Main {
         resourceConfig.property('contextConfigLocation', 'classpath*:/spring/*.xml')
         resourceConfig.register(JacksonFeature)
         resourceConfig.register(ObjectMapperProvider)
+        resourceConfig.register(IdTypeFromStringConverter)
+        resourceConfig.register(IdTypeFromStringProvider)
 
         def uri = URI.create('http://localhost:8080/rest')
         return GrizzlyHttpServerFactory.createHttpServer(uri, resourceConfig)
