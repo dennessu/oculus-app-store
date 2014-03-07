@@ -5,6 +5,7 @@
  */
 package com.junbo.sharding.hibernate.multitenancy;
 
+import com.junbo.langur.core.promise.Promise;
 import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
 
 import java.util.Random;
@@ -12,13 +13,13 @@ import java.util.Random;
 /**
  * Created by minhao on 3/3/14.
  */
-public class SchemaResolver implements CurrentTenantIdentifierResolver {
+public class CurrentTenantIdentifierResolverImpl implements CurrentTenantIdentifierResolver {
 
     @Override
     public String resolveCurrentTenantIdentifier() {
         //TODO: Implement service to identify shard
         Random random = new Random();
-        return "shard_" + random.nextInt(2);
+        return "shard_" + Promise.currentContext().get("shardId");
     }
 
     @Override

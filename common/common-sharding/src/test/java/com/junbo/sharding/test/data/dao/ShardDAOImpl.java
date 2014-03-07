@@ -1,10 +1,17 @@
 package com.junbo.sharding.test.data.dao;
 
+import com.junbo.langur.core.promise.Promise;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.jdbc.Work;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.test.context.ContextConfiguration;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+
 
 /**
  * Created by haomin on 14-3-4.
@@ -13,9 +20,18 @@ import org.springframework.test.context.ContextConfiguration;
 public class ShardDAOImpl implements ShardDAO {
 
     @Autowired
-    private SessionFactory sessionFactory;
+    private SessionFactory[] sessionFactory;
 
     private Session currentSession() {
+
+        sessionFactory.getCurrentSession().doWork(new Work() {
+            @Override
+            public void execute(Connection connection) throws SQLException {
+                //connection, finally!
+                connection.createStatement().execute("set search_path=shard_1");
+            }
+        });
+
         return sessionFactory.getCurrentSession();
     }
 

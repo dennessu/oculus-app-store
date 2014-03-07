@@ -1,5 +1,6 @@
 package com.junbo.sharding.test;
 
+import com.junbo.sharding.core.ShardAwareDaoProxy;
 import com.junbo.sharding.test.data.dao.ShardDAO;
 import com.junbo.sharding.test.data.dao.ShardEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,16 +14,17 @@ import org.testng.annotations.Test;
  */
 @ContextConfiguration(locations = {
         "/spring/sharding-context-test.xml"})
+@TransactionConfiguration(defaultRollback = false)
 public class ShardDAOTest extends AbstractTransactionalTestNGSpringContextTests {
     @Autowired
     private ShardDAO shardDao;
 
-    @Test(enabled = false)
+    @Test(enabled = true)
     public void shardDaoTest() {
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 3; i++) {
             ShardEntity entity = new ShardEntity();
             entity.setId(new Long(i));
-            shardDao.saveShard(entity);
+            ((ShardDAO)ShardAwareDaoProxy.newProxyInstance(shardDao, ShardDAO.class)).saveShard(entity);
         }
     }
 }

@@ -20,6 +20,17 @@
         <property name="releaseHelperThreads" value="3"/>
     </bean>
 
+    <bean id="derbyDataSource" class="bitronix.tm.resource.jdbc.PoolingDataSource" init-method="init" destroy-method="close">
+        <property name="className" value="org.apache.derby.jdbc.EmbeddedXADataSource" />
+        <property name="uniqueName" value="derbydb" />
+        <property name="maxPoolSize" value="5" />
+        <property name="driverProperties">
+            <props>
+                <prop key="databaseName">derbydb</prop>
+            </props>
+        </property>
+    </bean>
+
     <!-- SessonFactory for Hibernate -->
     <bean id="sessionFactory"
           class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
@@ -32,9 +43,10 @@
                 <entry key="hibernate.jdbc.fetch_size" value="50"/>
                 <entry key="hibernate.jdbc.batch_size" value="10"/>
                 <entry key="hibernate.show_sql" value="true"/>
-                <entry key="hibernate.multiTenancy" value="SCHEMA"/>
+                <entry key="hibernate.current_session_context_class" value="jta"/>
+                <!--entry key="hibernate.multiTenancy" value="SCHEMA"/>
                 <entry key="hibernate.tenant_identifier_resolver" value-ref="multiTenantIdentifierResolver"/>
-                <entry key="hibernate.multi_tenant_connection_provider" value-ref="multiTenantConnectionProvider"/>
+                <entry key="hibernate.multi_tenant_connection_provider" value-ref="multiTenantConnectionProvider"/-->
             </map>
         </property>
     </bean>
@@ -42,14 +54,31 @@
     <bean id="multiTenantConnectionProvider" class="com.junbo.sharding.hibernate.multitenancy.MultiTenantConnectionProviderImpl">
         <property name="dataSource" ref="dataSource"/>
     </bean>
-    <bean id="multiTenantIdentifierResolver" class="com.junbo.sharding.hibernate.multitenancy.SchemaResolver" />
+    <bean id="multiTenantIdentifierResolver" class="com.junbo.sharding.hibernate.multitenancy.CurrentTenantIdentifierResolverImpl" />
 
     <!-- Transaction Manager -->
-    <bean id="transactionManager"
+    <!--bean id="transactionManager"
           class="org.springframework.orm.hibernate4.HibernateTransactionManager">
         <property name="sessionFactory" ref="sessionFactory"/>
         <property name="autodetectDataSource" value="false" />
-    </bean>
+    </bean-->
+
+    <bean id="transactionManager" class="org.springframework.transaction.jta.JtaTransactionManager"/>
+    <tx:jta-transaction-manager/>
 
     <bean id="shardDao" class="com.junbo.sharding.test.data.dao.ShardDAOImpl"/>
+    <bean id="daoProxy" class="com.junbo.sharding.core.ShardAwareDaoProxy">
+        <constructor-arg value=""/>
+    </bean>
+
+    <datasourcemapping>
+        <datasource physicalDBServerId="0" enabled="true">
+            <shardIdRange>0..31</shardIdRange>
+            <jdbcUrl>jdbc:postgresql://localhost:5432/{0}</jdbcUrl>
+        </datasource>
+        <datasource physicalDBServerId="1" enabled="true">
+            <shardIdRange>32..63</shardIdRange>
+            <jdbcUrl>jdbc:postgresql://localhost:5432/{0}</jdbcUrl>
+        </datasource>
+    </datasourcemapping>
 </beans>
