@@ -30,7 +30,7 @@ public class OfferRatingServiceTest extends BaseTest {
         context.setCountry("US");
         context.setCurrency("USD");
         RatableItem item = new RatableItem();
-        item.setOfferId(generateId());
+        item.setOfferId(100L);
         context.setItems(new HashSet<RatableItem>());
         context.getItems().add(item);
 

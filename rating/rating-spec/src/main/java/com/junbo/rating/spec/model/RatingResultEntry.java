@@ -14,6 +14,7 @@ import java.util.Set;
 public class RatingResultEntry {
     private Long offerId;
     private int quantity;
+    private Long shippingMethodId;
     private Money originalAmount;
     private Money discountAmount;
     private Set<Long> appliedPromotion;
@@ -32,6 +33,14 @@ public class RatingResultEntry {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public Long getShippingMethodId() {
+        return shippingMethodId;
+    }
+
+    public void setShippingMethodId(Long shippingMethodId) {
+        this.shippingMethodId = shippingMethodId;
     }
 
     public Money getOriginalAmount() {

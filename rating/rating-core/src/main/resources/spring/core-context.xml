@@ -29,8 +29,8 @@
                 <entry key="INCLUDE_ENTITLEMENT" value-ref="entitlementCriterionHandler"/>
                 <entry key="EXCLUDE_ENTITLEMENT" value-ref="entitlementCriterionHandler"/>
                 <entry key="HAS_COUPON" value-ref="couponCriterionHandler"/>
-                <entry key="CART_ITEM_COUNT" value-ref="orderCriterionHandler"/>
-                <entry key="CART_ABSOLUTE_VALUE" value-ref="orderCriterionHandler"/>
+                <entry key="ORDER_ITEM_COUNT_ABOVE" value-ref="orderCriterionHandler"/>
+                <entry key="ORDER_ABSOLUTE_VALUE_ABOVE" value-ref="orderCriterionHandler"/>
             </util:map>
         </property>
     </bean>
