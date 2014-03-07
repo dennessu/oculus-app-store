@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="btmConfig" factory-method="getConfiguration" class="bitronix.tm.TransactionManagerServices">
+
+        <!-- TODO: should be a unique id in the cluser and more customized configurations -->
+        <property name="serverId" value="spring-btm"/>
+    </bean>
+
+    <bean id="bitronixTransactionManager" factory-method="getTransactionManager"
+          class="bitronix.tm.TransactionManagerServices" depends-on="btmConfig" destroy-method="shutdown"/>
+
+    <bean id="transactionManager" class="org.springframework.transaction.jta.JtaTransactionManager">
+        <property name="transactionManager" ref="bitronixTransactionManager"/>
+        <property name="userTransaction" ref="bitronixTransactionManager"/>
+    </bean>
+
+</beans>

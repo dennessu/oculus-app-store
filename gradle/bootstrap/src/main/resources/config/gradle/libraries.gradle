@@ -115,6 +115,8 @@ ext {
             common_collection:      'commons-collections:commons-collections:3.2.1',
             
             spy_memcached:          'net.spy:spymemcached:2.10.4',
-            easy_mock:              'org.easymock:easymock:3.2'
+            easy_mock:              'org.easymock:easymock:3.2',
+
+            btm:                    'org.codehaus.btm:btm:2.1.4',
     ]
 }
