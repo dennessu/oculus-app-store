@@ -28,6 +28,7 @@ dependencies {
     compile (libraries.bonecp_spring)
     compile (libraries.rs_api)
 
+
     testCompile (libraries.guava)
     testCompile (libraries.spring_test)
 
