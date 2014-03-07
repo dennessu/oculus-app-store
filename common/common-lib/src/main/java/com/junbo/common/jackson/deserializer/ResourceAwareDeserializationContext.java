@@ -65,9 +65,16 @@ public class ResourceAwareDeserializationContext extends DefaultDeserializationC
                 AnnotatedMethod method = (AnnotatedMethod) annotated;
                 Class<?> paramClass = method.getRawParameterType(UNIQUE_PARAM_INDEX);
 
+                Class<?> componentType;
                 if (Collection.class.isAssignableFrom(paramClass)) {
-                    ((ResourceCollectionAware) deser).injectCollectionType((Class<? extends Collection>) paramClass);
+                    Class<? extends Collection> collectionType = (Class<? extends Collection>) paramClass;
+                    ((ResourceCollectionAware) deser).injectCollectionType(collectionType);
+                    componentType = collectionType.getComponentType();
+                } else {
+                    componentType = paramClass;
                 }
+
+                ((ResourceCollectionAware) deser).injectComponentType(componentType);
             }
         }
 
