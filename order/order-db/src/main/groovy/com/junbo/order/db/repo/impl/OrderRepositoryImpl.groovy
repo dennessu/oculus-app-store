@@ -6,6 +6,7 @@
 
 package com.junbo.order.db.repo.impl
 
+import com.junbo.common.id.OrderItemId
 import com.junbo.common.id.PaymentInstrumentId
 import com.junbo.oom.core.MappingContext
 import com.junbo.common.id.BalanceId
@@ -75,8 +76,9 @@ class OrderRepositoryImpl implements OrderRepository {
 
         // Save OrderItem
         order.orderItems?.each { OrderItem item ->
+            item.id = new OrderItemId(idGenerator.nextId(orderEntity.orderId))
+            item.orderId = orderId
             def itemEntity = modelMapper.toOrderItemEntity(item, context)
-            itemEntity.orderItemId = idGenerator.nextId(orderEntity.orderId)
             orderItemDao.create(itemEntity)
         }
 
@@ -91,7 +93,7 @@ class OrderRepositoryImpl implements OrderRepository {
         orderEvent.order = order.id
         def orderEventEntity = modelMapper.toOrderEventEntity(orderEvent, context)
         orderEventEntity.eventId = idGenerator.nextId(orderEntity.orderId)
-        orderEventDao.create(orderEventEntity)
+        // orderEventDao.create(orderEventEntity)
 
         // Save Balance Event
 
@@ -118,14 +120,18 @@ class OrderRepositoryImpl implements OrderRepository {
     OrderEvent createOrderEvent(OrderEvent event) {
         def entity = modelMapper.toOrderEventEntity(event, new MappingContext())
         entity.eventId = idGenerator.nextId(entity.orderId)
+        // todo set the flowName & tracking guuid
+        entity.flowName = UUID.randomUUID()
+        entity.trackingUuid = UUID.randomUUID()
         orderEventDao.create(entity)
         return modelMapper.toOrderEventModel(entity, new MappingContext())
     }
 
     @Override
-    FulfillmentEvent createFulfillmentEvent(FulfillmentEvent event) {
+    FulfillmentEvent createFulfillmentEvent(Long orderId, FulfillmentEvent event) {
         def entity = modelMapper.toOrderItemFulfillmentEventEntity(event, new MappingContext())
-        entity.eventId = idGenerator.nextId(entity.orderId)
+        entity.eventId = idGenerator.nextId(orderId)
+        entity.orderId = orderId
         orderItemFulfillmentEventDao.create(entity)
         return modelMapper.toFulfillmentEventModel(entity, new MappingContext())
     }

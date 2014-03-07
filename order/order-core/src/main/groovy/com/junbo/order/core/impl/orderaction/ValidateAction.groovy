@@ -37,11 +37,12 @@ class ValidateAction implements Action {
         }
     }
 
-    private void validatePayment(OrderActionContext context) {
-        if (context.orderServiceContext.paymentInstruments?.find { PaymentInstrument paymentInstrument ->
-            paymentInstrument.status == 'ACTIVE'
-        } == null) {
-            throw AppErrors.INSTANCE.paymentStatusInvalid().exception()
+    private Promise<Void> validatePayment(OrderActionContext context) {
+        context.orderServiceContext.paymentInstruments.syncThen { List<PaymentInstrument> paymentInstruments ->
+            if (paymentInstruments?.find { PaymentInstrument pi -> pi.status == 'ACTIVE' } == null) {
+                throw AppErrors.INSTANCE.paymentStatusInvalid().exception()
+            }
+            return null
         }
     }
 }

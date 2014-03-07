@@ -46,7 +46,7 @@ class FulfillmentAction implements Action {
                         CoreBuilder.buildOrderEvent(order.id,
                                 com.junbo.order.spec.model.OrderActionType.FULFILL, EventStatus.ERROR))
             } else {
-                EventStatus orderEventStatus = null
+                EventStatus orderEventStatus = EventStatus.PENDING
                 fulfilmentResult.items.each { FulfilmentItem fulfilmentItem ->
                     def fulfillmentEvent = toFulfillmentEvent(fulfilmentResult, fulfilmentItem)
                     def fulfillmentEventStatus = EventStatus.valueOf(fulfillmentEvent.status)
@@ -55,7 +55,7 @@ class FulfillmentAction implements Action {
                             ITEMSTATUSPRIORITY[fulfillmentEventStatus] > ITEMSTATUSPRIORITY[orderEventStatus]) {
                         orderEventStatus = fulfillmentEventStatus
                     }
-                    serviceContext.orderRepository.createFulfillmentEvent(fulfillmentEvent)
+                    serviceContext.orderRepository.createFulfillmentEvent(order.id.value, fulfillmentEvent)
                 }
                 serviceContext.orderRepository.createOrderEvent(
                         CoreBuilder.buildOrderEvent(order.id,
@@ -68,10 +68,10 @@ class FulfillmentAction implements Action {
     private FulfillmentEvent toFulfillmentEvent(FulfilmentRequest fulfilmentResult, FulfilmentItem fulfilmentItem) {
         def fulfillmentEvent = new FulfillmentEvent()
         fulfillmentEvent.trackingUuid = UUID.fromString(fulfilmentResult.trackingGuid)
-        fulfillmentEvent.fulfillmentId = fulfilmentResult.requestId
         fulfillmentEvent.action = com.junbo.order.spec.model.FulfillmentAction.FULFILL.toString()
         fulfillmentEvent.orderItem = new OrderItemId(fulfilmentItem.orderItemId)
         fulfillmentEvent.status = getFulfillmentEventStatus(fulfilmentItem).name()
+        fulfillmentEvent.fulfillmentId = fulfilmentItem.fulfilmentId
         return fulfillmentEvent
     }
 

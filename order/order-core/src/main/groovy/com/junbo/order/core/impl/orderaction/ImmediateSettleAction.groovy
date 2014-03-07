@@ -40,7 +40,7 @@ class ImmediateSettleAction implements Action {
                 LOGGER.info('fail to create balance')
             } else {
                 context.orderServiceContext.orderRepository.saveBillingEvent(
-                        order.id, balance.balanceId,
+                        order.id, resultBalance.balanceId,
                         BillingAction.CHARGE, billingEventStatus)
                 context.orderServiceContext.refreshBalances()
                 // TODO: update order status according to balance status.
@@ -50,6 +50,6 @@ class ImmediateSettleAction implements Action {
     }
 
     private EventStatus getBillingEventStatus() {
-        return null // todo: implement this
+        return EventStatus.OPEN // todo: implement this
     }
 }

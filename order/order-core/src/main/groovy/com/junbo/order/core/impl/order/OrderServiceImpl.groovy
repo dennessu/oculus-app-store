@@ -197,6 +197,7 @@ class OrderServiceImpl implements OrderService {
         context.fulfillmentFacade = fulfillmentFacade
         context.identityFacade = identityFacade
         context.ratingFacade = ratingFacade
+        context.paymentFacade = paymentFacade
         return context
     }
 }
