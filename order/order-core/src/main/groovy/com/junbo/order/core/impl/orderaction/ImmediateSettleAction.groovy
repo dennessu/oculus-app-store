@@ -6,11 +6,9 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
-import com.junbo.order.core.OrderAction
 import com.junbo.order.core.impl.common.CoreBuilder
-import com.junbo.order.core.impl.orderaction.context.OrderActionContext
-import com.junbo.order.spec.model.BillingAction
-import com.junbo.order.spec.model.EventStatus
+import com.junbo.order.db.entity.enums.BillingAction
+import com.junbo.order.db.entity.enums.EventStatus
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.slf4j.Logger

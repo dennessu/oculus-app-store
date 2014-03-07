@@ -7,8 +7,9 @@
 package com.junbo.order.db.entity;
 
 import com.junbo.order.db.ValidationMessages;
-import com.junbo.order.spec.model.PreorderAction;
-import com.junbo.order.spec.model.EventStatus;
+import com.junbo.order.db.entity.enums.PreorderAction;
+import com.junbo.order.db.entity.enums.EventStatus;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -37,6 +38,7 @@ public class OrderItemPreorderEventEntity extends CommonEventEntity {
 
     @Column (name = "ACTION_ID")
     @NotNull(message = ValidationMessages.MISSING_VALUE)
+    @Type(type = "com.junbo.order.db.entity.type.PreorderActionType")
     public PreorderAction getAction() {
         return action;
     }
@@ -47,6 +49,7 @@ public class OrderItemPreorderEventEntity extends CommonEventEntity {
 
     @Column (name = "STATUS_ID")
     @NotNull (message = ValidationMessages.MISSING_VALUE)
+    @Type(type = "com.junbo.order.db.entity.type.EventStatusType")
     public EventStatus getStatus() {
         return status;
     }

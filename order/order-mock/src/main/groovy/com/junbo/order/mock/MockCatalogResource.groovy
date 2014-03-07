@@ -58,6 +58,11 @@ class MockCatalogResource extends BaseMock implements OfferResource {
     }
 
     @Override
+    Promise<Offer> releaseOffer(@PathParam('offerId') Long offerId) {
+        return null
+    }
+
+    @Override
     Promise<Offer> publishOffer(Long id) {
         return null
     }

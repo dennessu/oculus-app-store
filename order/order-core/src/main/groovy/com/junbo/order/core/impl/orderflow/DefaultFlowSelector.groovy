@@ -11,8 +11,8 @@ import com.junbo.order.core.FlowSelector
 import com.junbo.order.core.FlowType
 import com.junbo.order.core.OrderServiceOperation
 import com.junbo.order.core.impl.order.OrderServiceContext
-import com.junbo.order.spec.model.ItemType
-import com.junbo.order.spec.model.OrderType
+import com.junbo.order.db.entity.enums.ItemType
+import com.junbo.order.db.entity.enums.OrderType
 import com.junbo.payment.spec.model.PaymentInstrument
 import groovy.transform.CompileStatic
 import org.springframework.stereotype.Component

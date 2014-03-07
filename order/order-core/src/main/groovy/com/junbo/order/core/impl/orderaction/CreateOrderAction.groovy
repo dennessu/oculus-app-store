@@ -4,7 +4,7 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
-import com.junbo.order.spec.model.EventStatus
+import com.junbo.order.db.entity.enums.EventStatus
 import com.junbo.order.spec.model.OrderEvent
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked

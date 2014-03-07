@@ -92,7 +92,7 @@ class OrderServiceContext {
         }
         // Lazy load
         if (shippingAddress == null) {
-            shippingAddress = billingFacade.getShippingAddress(order.shippingAddressId.value)
+            shippingAddress = billingFacade.getShippingAddress(order.user.value, order.shippingAddressId.value)
         }
         return shippingAddress
     }

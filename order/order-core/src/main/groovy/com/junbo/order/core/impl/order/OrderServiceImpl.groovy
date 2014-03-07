@@ -19,6 +19,8 @@ import com.junbo.order.core.OrderService
 import com.junbo.order.core.OrderServiceOperation
 import com.junbo.order.core.impl.common.CoreBuilder
 import com.junbo.order.core.impl.orderaction.ActionUtils
+import com.junbo.order.db.entity.enums.EventStatus
+import com.junbo.order.db.entity.enums.OrderActionType
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.*
@@ -122,11 +124,14 @@ class OrderServiceImpl implements OrderService {
 
             executeFlow(flowType, orderServiceContext, null).syncThen { List<Order> orders ->
                 if (CollectionUtils.isEmpty(orders)) {
-                    return Promise.pure(null)
+                    throw AppErrors.INSTANCE.orderNotFound().exception()
                 }
                 def order = orderServiceContext.order
                 // order items
                 order.setOrderItems(orderRepository.getOrderItems(orderId))
+                if (CollectionUtils.isEmpty(order.orderItems)) {
+                    throw AppErrors.INSTANCE.orderItemNotFound().exception()
+                }
                 // rating info
                 order.totalAmount = 0
                 order.orderItems?.each { OrderItem orderItem ->

@@ -22,12 +22,23 @@ class MockShippingAddressResource extends BaseMock implements ShippingAddressRes
     }
 
     @Override
+    Promise<ShippingAddress> postShippingAddress(@PathParam('userId') Long userId, ShippingAddress address) {
+        return null
+    }
+
+    @Override
     Promise<List<ShippingAddress>> getShippingAddresses(@QueryParam('user') Long userId) {
         return null
     }
 
     @Override
-    Promise<ShippingAddress> getShippingAddress(@PathParam('addressId') Long addressId) {
+    Promise<Void> deleteShippingAddress(@PathParam('userId') Long userId, @PathParam('addressId') Long addressId) {
+        return null
+    }
+
+    @Override
+    Promise<ShippingAddress> getShippingAddress(
+            @PathParam('userId') Long userId, @PathParam('addressId') Long addressId) {
         def shippingAddress = new ShippingAddress()
         shippingAddress.addressId = new ShippingAddressId()
         shippingAddress.addressId.value = addressId
