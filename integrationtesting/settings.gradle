@@ -1,0 +1,4 @@
+include 'integration-catalogratingscenarios'
+include 'integration-csrscenarios'
+include 'integration-customerscenarios'
+include 'integration-developerscenarios'
