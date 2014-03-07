@@ -5,14 +5,15 @@
  */
 package com.junbo.oauth.core.service
 
-import com.junbo.oauth.core.context.ServiceContext
 import com.junbo.oauth.spec.model.UserInfo
 import groovy.transform.CompileStatic
+
+import javax.ws.rs.core.MultivaluedMap
 
 /**
  * UserService.
  */
 @CompileStatic
 interface UserService {
-    UserInfo getUserInfo(ServiceContext context)
+    UserInfo getUserInfo(MultivaluedMap<String, String> headerMap)
 }

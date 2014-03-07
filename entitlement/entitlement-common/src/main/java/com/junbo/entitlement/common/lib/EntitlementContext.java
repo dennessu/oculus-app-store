@@ -9,40 +9,35 @@ package com.junbo.entitlement.common.lib;
 import java.util.Date;
 
 /**
- * A wrapper of Promise Context.
+ * A wrapper of ThreadLocal to save common values.
  */
 public class EntitlementContext {
-    private static ThreadLocal<Date> now = new ThreadLocal<Date>();
+    private Date now;
+    private String requestorId;
 
-    public static Date now() {
-//        if(Promise.Context("now") == null){
-//            setNow(new Date());
-//        }
-//        return Promise.currentContext().get("now");
-        if (now.get() == null) {
-            setNow(new Date());
+    private static ThreadLocal<EntitlementContext> current = new ThreadLocal<EntitlementContext>();
+
+    public static EntitlementContext current() {
+        EntitlementContext context = current.get();
+        if (context == null) {
+            current.set(new EntitlementContext());
         }
-        return now.get();
+        return current.get();
     }
 
-    public static void setNow(Date nowTime) {
-//        Promise.currentContext().set("now", now);
-        now.set(nowTime);
+    public Date getNow() {
+        return now == null ? new Date() : now;
     }
-//
-//    public static Long requestorId(){
-//        return Promise.currentContext().get("requestorId");
-//    }
-//
-//    public static void setRequestorId(Long requestorId){
-//        Promise.currentContext().set("requestorId", requestorId);
-//    }
-//
-//    public static UUID trackingUuid(){
-//        return Promise.currentContext().get("trackingUuid");
-//    }
-//
-//    public static void setTrackingUuid(UUID trackingUuid){
-//        Promise.currentContext().set("trackingUuid", trackingUuid);
-//    }
+
+    public void setNow(Date now) {
+        this.now = now;
+    }
+
+    public String getRequestorId() {
+        return requestorId;
+    }
+
+    public void setRequestorId(String requestorId) {
+        this.requestorId = requestorId;
+    }
 }

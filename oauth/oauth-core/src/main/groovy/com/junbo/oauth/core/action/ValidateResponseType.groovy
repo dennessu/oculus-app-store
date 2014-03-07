@@ -5,24 +5,28 @@
  */
 package com.junbo.oauth.core.action
 
-import com.junbo.oauth.core.context.ServiceContext
+import com.junbo.langur.core.promise.Promise
+import com.junbo.langur.core.webflow.action.Action
+import com.junbo.langur.core.webflow.action.ActionContext
+import com.junbo.langur.core.webflow.action.ActionResult
+import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.exception.AppExceptions
-import com.junbo.oauth.core.util.ServiceContextUtil
 import com.junbo.oauth.spec.model.ResponseType
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
 import org.springframework.util.StringUtils
 
 /**
- * Javadoc.
+ * ValidateResponseType.
  */
 @CompileStatic
 class ValidateResponseType implements Action {
-
     @Override
-    boolean execute(ServiceContext context) {
-        def parameterMap = ServiceContextUtil.getParameterMap(context)
-        def appClient = ServiceContextUtil.getAppClient(context)
+    Promise<ActionResult> execute(ActionContext context) {
+        def contextWrapper = new ActionContextWrapper(context)
+
+        def parameterMap = contextWrapper.parameterMap
+        def client = contextWrapper.client
 
         String responseTypeParam = parameterMap.getFirst(OAuthParameters.RESPONSE_TYPE)
 
@@ -33,7 +37,7 @@ class ValidateResponseType implements Action {
             responseTypes.each { String responseTypeStr ->
                 if (ResponseType.isValid(responseTypeStr)) {
                     ResponseType responseType = ResponseType.valueOf(responseTypeStr.toUpperCase())
-                    if (appClient.allowedResponseTypes.contains(responseType)) {
+                    if (client.allowedResponseTypes.contains(responseType)) {
                         responseTypeSet.add(responseType)
                     } else {
                         throw AppExceptions.INSTANCE.invalidResponseType(responseTypeParam).exception()
@@ -46,9 +50,9 @@ class ValidateResponseType implements Action {
             throw AppExceptions.INSTANCE.missingResponseType().exception()
         }
 
-        def oauthInfo = ServiceContextUtil.getOAuthInfo(context)
+        def oauthInfo = contextWrapper.oauthInfo
         oauthInfo.responseTypes = responseTypeSet
 
-        return true
+        return Promise.pure(null)
     }
 }

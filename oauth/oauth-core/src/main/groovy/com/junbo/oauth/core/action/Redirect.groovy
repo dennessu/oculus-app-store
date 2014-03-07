@@ -5,8 +5,11 @@
  */
 package com.junbo.oauth.core.action
 
-import com.junbo.oauth.core.context.ServiceContext
-import com.junbo.oauth.core.util.ServiceContextUtil
+import com.junbo.langur.core.promise.Promise
+import com.junbo.langur.core.webflow.action.Action
+import com.junbo.langur.core.webflow.action.ActionContext
+import com.junbo.langur.core.webflow.action.ActionResult
+import com.junbo.oauth.core.context.ActionContextWrapper
 import groovy.transform.CompileStatic
 import org.springframework.util.Assert
 import org.springframework.web.util.UriComponentsBuilder
@@ -14,19 +17,21 @@ import org.springframework.web.util.UriComponentsBuilder
 import javax.ws.rs.core.Response
 
 /**
- * Javadoc.
+ * Redirect.
  */
 @CompileStatic
 class Redirect implements Action {
     @Override
-    boolean execute(ServiceContext context) {
+    Promise<ActionResult> execute(ActionContext context) {
+        def contextWrapper = new ActionContextWrapper(context)
+        UriComponentsBuilder builder = contextWrapper.redirectUriBuilder
+        Assert.notNull(builder, 'builder is null')
 
-        UriComponentsBuilder builder = ServiceContextUtil.getRedirectUriBuilder(context)
-        Assert.notNull(builder)
+        Response.ResponseBuilder responseBuilder = Response.status(Response.Status.FOUND)
+                .location(builder.build().toUri())
 
-        def responseBuilder = Response.status(Response.Status.FOUND).location(builder.build().toUri())
-        ServiceContextUtil.setResponseBuilder(context, responseBuilder)
+        contextWrapper.responseBuilder = responseBuilder
 
-        return false
+        return Promise.pure(null)
     }
 }

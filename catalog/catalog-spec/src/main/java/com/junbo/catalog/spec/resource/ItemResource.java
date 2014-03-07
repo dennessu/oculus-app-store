@@ -29,19 +29,69 @@ public interface ItemResource {
     Promise<ResultList<Item>> getItems(@BeanParam EntitiesGetOptions options);
 
     @GET
-    @Path("/{itemId}")
-    Promise<Item> getItem(@PathParam("itemId") Long itemId, @BeanParam EntityGetOptions options);
+    @Path("/{ItemId}")
+    Promise<Item> getItem(@PathParam("ItemId") Long itemId, @BeanParam EntityGetOptions options);
 
+    /**
+     * Create a draft item.
+     *
+     * @param item the Item to be created.
+     * @return the created Item.
+     */
     @POST
     @Path("/")
     Promise<Item> createItem(@Valid Item item);
 
-    @POST
-    @Path("/{itemId}/review")
-    Promise<Item> createReview(@PathParam("itemId") Long itemId);
+    @PUT
+    @Path("/{ItemId}")
+    Promise<Item> updateItem(@Valid Item item);
 
+    /**
+     * Developer submit an draft Item for review.
+     * @param itemId the id of the Item to be reviewed.
+     * @return the Item to be reviewed.
+     */
     @POST
-    @Path("/{itemId}/publish")
-    Promise<Item> publishItem(@PathParam("itemId") Long itemId);
+    @Path("/{ItemId}/review")
+    Promise<Item> createReview(@PathParam("ItemId") Long itemId);
+
+    /**
+     * Admin releases an item.
+     * @param itemId the id of Item to be released.
+     * @return the Item to be released.
+     */
+    @POST
+    @Path("/{ItemId}/release")
+    Promise<Item> releaseItem(@PathParam("ItemId") Long itemId);
+
+    /**
+     * Admin rejects an item, developer may update and submit review later.
+     * @param itemId the id of Item to be released.
+     * @return the Item to be released.
+     */
+    // TODO: add review notes
+    @POST
+    @Path("/{ItemId}/reject")
+    Promise<Item> rejectItem(@PathParam("ItemId") Long itemId);
+
+    /**
+     * Remove the item from released items list. The draft version is still kept.
+     * Developer may update and submit review again in future.
+     * @param itemId the id of item to be removed.
+     * @return the removed Item id.
+     */
+    @DELETE
+    @Path("/{ItemId}/release")
+    Promise<Long> removeItem(@PathParam("ItemId") Long itemId);
+
+    /**
+     * Delete an Item, delete both draft and released version.
+     * Developer cannot operate this itm again in future.
+     * @param itemId the id of item to be deleted.
+     * @return the deleted item id.
+     */
+    @DELETE
+    @Path("/{ItemId}")
+    Promise<Long> deleteItem(@PathParam("ItemId") Long itemId);
 }
 

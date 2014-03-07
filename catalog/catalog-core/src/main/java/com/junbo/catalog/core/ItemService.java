@@ -6,6 +6,7 @@
 
 package com.junbo.catalog.core;
 
+import com.junbo.catalog.spec.model.common.EntitiesGetOptions;
 import com.junbo.catalog.spec.model.common.EntityGetOptions;
 import com.junbo.catalog.spec.model.item.Item;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +18,13 @@ import java.util.List;
  */
 @Transactional
 public interface ItemService {
-    Item getItem(Long id, EntityGetOptions options);
-    List<Item> getItems(int start, int size);
+    Item getItem(Long itemId, EntityGetOptions options);
+    List<Item> getItems(EntitiesGetOptions options);
     Item createItem(Item item);
+    Item updateItem(Item item);
+    Item reviewItem(Long itemId);
+    Item releaseItem(Long itemId);
+    Item rejectItem(Long itemId);
+    Long removeItem(Long itemId);
+    Long deleteItem(Long itemId);
 }

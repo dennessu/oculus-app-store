@@ -5,36 +5,40 @@
  */
 package com.junbo.oauth.core.action
 
-import com.junbo.oauth.core.context.ServiceContext
+import com.junbo.langur.core.promise.Promise
+import com.junbo.langur.core.webflow.action.Action
+import com.junbo.langur.core.webflow.action.ActionContext
+import com.junbo.langur.core.webflow.action.ActionResult
+import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.exception.AppExceptions
-import com.junbo.oauth.core.util.ServiceContextUtil
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
 
 import java.util.regex.Pattern
 
 /**
- * Javadoc.
+ * ValidateRedirectUri.
  */
 @CompileStatic
 class ValidateRedirectUri implements Action {
-
     @Override
-    boolean execute(ServiceContext context) {
-        def parameterMap = ServiceContextUtil.getParameterMap(context)
-        def appClient = ServiceContextUtil.getAppClient(context)
+    Promise<ActionResult> execute(ActionContext context) {
+        def contextWrapper = new ActionContextWrapper(context)
+
+        def parameterMap = contextWrapper.parameterMap
+        def client = contextWrapper.client
 
         String redirectUri = parameterMap.getFirst(OAuthParameters.REDIRECT_URI)
 
         if (redirectUri == null) {
-            redirectUri = appClient.defaultRedirectUri
+            redirectUri = client.defaultRedirectUri
         }
 
         if (redirectUri == null) {
             throw AppExceptions.INSTANCE.invalidRedirectUri(redirectUri).exception()
         }
 
-        boolean allowed = appClient.allowedRedirectUris.any {
+        boolean allowed = client.allowedRedirectUris.any {
             String allowedRedirectUri -> match(redirectUri, allowedRedirectUri)
         }
 
@@ -42,10 +46,10 @@ class ValidateRedirectUri implements Action {
             throw AppExceptions.INSTANCE.missingRedirectUri().exception()
         }
 
-        def oauthInfo = ServiceContextUtil.getOAuthInfo(context)
+        def oauthInfo = contextWrapper.oauthInfo
         oauthInfo.redirectUri = redirectUri
 
-        return true
+        return Promise.pure(null)
     }
 
     private static boolean match(String redirectUri, String allowedRedirectUri) {

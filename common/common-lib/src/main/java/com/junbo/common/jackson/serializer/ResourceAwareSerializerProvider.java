@@ -14,7 +14,7 @@ import com.fasterxml.jackson.databind.ser.SerializerFactory;
 import com.junbo.common.jackson.annotation.ResourceType;
 
 /**
- * Java doc.
+ * ResourceAwareSerializerProvider.
  */
 public class ResourceAwareSerializerProvider extends DefaultSerializerProvider {
     public ResourceAwareSerializerProvider() {

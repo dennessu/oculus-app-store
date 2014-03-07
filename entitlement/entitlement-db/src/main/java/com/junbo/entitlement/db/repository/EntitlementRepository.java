@@ -42,16 +42,13 @@ public class EntitlementRepository {
     }
 
     public Entitlement insert(Entitlement entitlement) {
-        Long id = entitlementDao.insert(entitlementMapper.toEntitlementEntity(entitlement));
-        EntitlementEntity result = entitlementDao.get(id);
+        EntitlementEntity result = entitlementDao.insert(entitlementMapper.toEntitlementEntity(entitlement));
         entitlementHistoryDao.insert(new EntitlementHistoryEntity(CREATE, result));
         return entitlementMapper.toEntitlement(result);
     }
 
     public Entitlement update(Entitlement entitlement) {
-        Long id = entitlementDao.update(entitlementMapper.toEntitlementEntity(entitlement));
-        EntitlementEntity result = entitlementDao.get(id);
-//        entitlementRedisDao.update(result);
+        EntitlementEntity result = entitlementDao.update(entitlementMapper.toEntitlementEntity(entitlement));
         entitlementHistoryDao.insert(new EntitlementHistoryEntity(UPDATE, result));
         return entitlementMapper.toEntitlement(result);
     }

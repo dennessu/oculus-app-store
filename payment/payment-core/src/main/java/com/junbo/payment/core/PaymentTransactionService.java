@@ -7,6 +7,7 @@ package com.junbo.payment.core;
 
 
 import com.junbo.langur.core.promise.Promise;
+import com.junbo.payment.spec.model.PaymentEvent;
 import com.junbo.payment.spec.model.PaymentTransaction;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,4 +27,6 @@ public interface PaymentTransactionService {
     Promise<PaymentTransaction> refund(Long paymentId, PaymentTransaction request);
     @Transactional(readOnly = true)
     PaymentTransaction getById(Long paymentId);
+    @Transactional
+    void reportPaymentEvent(PaymentEvent event);
 }

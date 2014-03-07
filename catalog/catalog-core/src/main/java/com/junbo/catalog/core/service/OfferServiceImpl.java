@@ -6,23 +6,24 @@
 
 package com.junbo.catalog.core.service;
 
+import com.junbo.catalog.common.exception.CatalogException;
 import com.junbo.catalog.common.exception.NotFoundException;
 import com.junbo.catalog.common.util.Constants;
 import com.junbo.catalog.core.OfferService;
 import com.junbo.catalog.db.repo.OfferDraftRepository;
 import com.junbo.catalog.db.repo.OfferRepository;
+import com.junbo.catalog.spec.model.common.EntitiesGetOptions;
 import com.junbo.catalog.spec.model.common.EntityGetOptions;
 import com.junbo.catalog.spec.model.common.Status;
 import com.junbo.catalog.spec.model.offer.Offer;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Offer service implementation.
  */
-public class OfferServiceImpl implements OfferService {
+public class OfferServiceImpl extends BaseServiceImpl<Offer> implements OfferService {
     @Autowired
     private OfferDraftRepository offerDraftRepository;
     @Autowired
@@ -31,7 +32,7 @@ public class OfferServiceImpl implements OfferService {
     @Override
     public Offer getOffer(Long offerId, EntityGetOptions options) {
         Offer offer;
-        if (options.isFromDraft()) {
+        if (options.getStatus() != null && !Status.RELEASED.equalsIgnoreCase(options.getStatus())) {
             offer = offerDraftRepository.get(offerId);
             if (!options.getStatus().equalsIgnoreCase(offer.getStatus())) {
                 throw new NotFoundException("offer", offerId);
@@ -46,33 +47,30 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Override
-    public List<Offer> getOffers(int start, int size) {
-        List<Offer> draftOffers = offerDraftRepository.getOffers(start, size);
-        List<Offer> result = new ArrayList<>();
-        for (Offer draftOffer : draftOffers) {
-            result.add(offerRepository.get(draftOffer.getId(), null));
-        }
-
-        return result;
+    public List<Offer> getOffers(EntitiesGetOptions options) {
+        return getEntities(options, offerRepository, offerDraftRepository);
     }
 
     @Override
     public Offer createOffer(Offer offer) {
-        // TODO: validations
+        if (offer == null) {
+            throw new CatalogException("TODO");
+        }
 
         offer.setRevision(Constants.INITIAL_CREATION_REVISION);
         offer.setStatus(Status.DESIGN);
 
         Long offerId = offerDraftRepository.create(offer);
-        //offer.setId(offerId);
-        //offerRepository.create(offer);
 
         return offerDraftRepository.get(offerId);
     }
 
     @Override
     public Offer updateOffer(Offer offer) {
-        // TODO: validations
+        if (offer == null) {
+            throw new CatalogException("TODO");
+        }
+
         offerDraftRepository.update(offer);
         return offerDraftRepository.get(offer.getId());
     }
@@ -87,7 +85,7 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Override
-    public Offer publishOffer(Long offerId) {
+    public Offer releaseOffer(Long offerId) {
         Offer offer = offerDraftRepository.get(offerId);
         checkOfferNotNull(offerId, offer);
         offer.setStatus(Status.RELEASED);

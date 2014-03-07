@@ -5,10 +5,13 @@
  */
 package com.junbo.oauth.core.action
 
-import com.junbo.oauth.core.context.ServiceContext
+import com.junbo.langur.core.promise.Promise
+import com.junbo.langur.core.webflow.action.Action
+import com.junbo.langur.core.webflow.action.ActionContext
+import com.junbo.langur.core.webflow.action.ActionResult
+import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.exception.AppExceptions
 import com.junbo.oauth.core.service.TokenGenerationService
-import com.junbo.oauth.core.util.ServiceContextUtil
 import com.junbo.oauth.db.repo.AuthorizationCodeRepository
 import com.junbo.oauth.spec.model.AccessToken
 import com.junbo.oauth.spec.model.AuthorizationCode
@@ -19,10 +22,11 @@ import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.StringUtils
 
 /**
- * Javadoc.
+ * GrantTokenByCode.
  */
 @CompileStatic
 class GrantTokenByCode implements Action {
+
     private AuthorizationCodeRepository authorizationCodeRepository
 
     private TokenGenerationService tokenGenerationService
@@ -38,9 +42,11 @@ class GrantTokenByCode implements Action {
     }
 
     @Override
-    boolean execute(ServiceContext context) {
-        def parameterMap = ServiceContextUtil.getParameterMap(context)
-        def appClient = ServiceContextUtil.getAppClient(context)
+    Promise<ActionResult> execute(ActionContext context) {
+        def contextWrapper = new ActionContextWrapper(context)
+
+        def parameterMap = contextWrapper.parameterMap
+        def client = contextWrapper.client
 
         String code = parameterMap.getFirst(OAuthParameters.CODE)
         String redirectUri = parameterMap.getFirst(OAuthParameters.REDIRECT_URI)
@@ -63,21 +69,22 @@ class GrantTokenByCode implements Action {
             throw AppExceptions.INSTANCE.invalidRedirectUri(redirectUri).exception()
         }
 
-        AccessToken accessToken = tokenGenerationService.generateAccessToken(appClient,
+        AccessToken accessToken = tokenGenerationService.generateAccessToken(client,
                 authorizationCode.userId, authorizationCode.scopes)
 
         LoginState loginState = new LoginState(
                 userId: authorizationCode.userId,
                 lastAuthDate: authorizationCode.lastAuthDate
         )
-        ServiceContextUtil.setLoginState(context, loginState)
 
-        def oauthInfo = ServiceContextUtil.getOAuthInfo(context)
+        contextWrapper.loginState = loginState
+
+        def oauthInfo = contextWrapper.oauthInfo
         oauthInfo.setScopes(authorizationCode.scopes)
         oauthInfo.setNonce(authorizationCode.nonce)
 
-        ServiceContextUtil.setAccessToken(context, accessToken)
+        contextWrapper.accessToken = accessToken
 
-        return true
+        return Promise.pure(null)
     }
 }

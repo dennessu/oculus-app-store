@@ -5,20 +5,23 @@
  */
 package com.junbo.oauth.core.action
 
-import com.junbo.oauth.core.context.ServiceContext
+import com.junbo.langur.core.promise.Promise
+import com.junbo.langur.core.webflow.action.Action
+import com.junbo.langur.core.webflow.action.ActionContext
+import com.junbo.langur.core.webflow.action.ActionResult
+import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.service.TokenGenerationService
-import com.junbo.oauth.core.util.ServiceContextUtil
-import com.junbo.oauth.spec.model.AccessToken
 import com.junbo.oauth.spec.model.ResponseType
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.Assert
 
 /**
- * Javadoc.
+ * GrantImplicitAccessToken.
  */
 @CompileStatic
 class GrantImplicitAccessToken implements Action {
+
     private TokenGenerationService tokenGenerationService
 
     @Required
@@ -27,19 +30,22 @@ class GrantImplicitAccessToken implements Action {
     }
 
     @Override
-    boolean execute(ServiceContext context) {
-        def appClient = ServiceContextUtil.getAppClient(context)
-        def oauthInfo = ServiceContextUtil.getOAuthInfo(context)
+    Promise<ActionResult> execute(ActionContext context) {
+        def contextWrapper = new ActionContextWrapper(context)
+
+        def client = contextWrapper.client
+        def oauthInfo = contextWrapper.oauthInfo
 
         if (oauthInfo.responseTypes.contains(ResponseType.TOKEN)) {
-            def loginState = ServiceContextUtil.getLoginState(context)
-            Assert.notNull(loginState)
+            def loginState = contextWrapper.loginState
+            Assert.notNull(loginState, 'loginState is null')
 
-            AccessToken accessToken = tokenGenerationService.generateAccessToken(appClient,
-                    loginState.userId, oauthInfo.scopes)
-            ServiceContextUtil.setAccessToken(context, accessToken)
+            def accessToken = tokenGenerationService.generateAccessToken(client, loginState.userId, oauthInfo.scopes)
+
+            contextWrapper.accessToken = accessToken
         }
 
-        return true
+        return Promise.pure(null)
+
     }
 }

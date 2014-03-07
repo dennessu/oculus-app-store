@@ -6,6 +6,7 @@
 
 package com.junbo.billing.spec.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.*;
 
@@ -38,8 +39,12 @@ public class Balance {
 
     private List<BalanceItem> balanceItems;
 
+    @JsonIgnore
+    private List<Transaction> transactions;
+
     public Balance() {
-        balanceItems = new ArrayList<BalanceItem>();
+        balanceItems = new ArrayList<>();
+        transactions = new ArrayList<>();
     }
 
     public BalanceId getBalanceId() {
@@ -168,5 +173,13 @@ public class Balance {
 
     public void setShippingAddressId(ShippingAddressId shippingAddressId) {
         this.shippingAddressId = shippingAddressId;
+    }
+
+    public List<Transaction> getTransactions() {
+        return transactions;
+    }
+
+    public void addTransaction(Transaction transaction) {
+        transactions.add(transaction);
     }
 }

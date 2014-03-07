@@ -34,7 +34,7 @@ public interface OfferResource {
     Promise<Offer> getOffer(@PathParam("offerId") Long offerId, @BeanParam EntityGetOptions options);
 
     /**
-     * Create a draft offer, the created offer is not purchasable until it is published.
+     * Create a draft offer, the created offer is not purchasable until it is released.
      *
      * @param offer the offer to be created.
      * @return the created offer.
@@ -58,17 +58,17 @@ public interface OfferResource {
 
     /**
      * Admin publishes an offer, makes it purchasable.
-     * @param offerId the id of offer to be published.
-     * @return the offer to be published.
+     * @param offerId the id of offer to be released.
+     * @return the offer to be released.
      */
     @POST
     @Path("/{offerId}/release")
-    Promise<Offer> publishOffer(@PathParam("offerId") Long offerId);
+    Promise<Offer> releaseOffer(@PathParam("offerId") Long offerId);
 
     /**
      * Admin rejects an offer, developer may update and submit review later.
-     * @param offerId the id of offer to be published.
-     * @return the offer to be published.
+     * @param offerId the id of offer to be released.
+     * @return the offer to be released.
      */
     // TODO: add review notes
     @POST
@@ -86,7 +86,7 @@ public interface OfferResource {
     Promise<Long> removeOffer(@PathParam("offerId") Long offerId);
 
     /**
-     * Delete an offer, delete both draft and published version.
+     * Delete an offer, delete both draft and released version.
      * Developer cannot operate this offer again in future.
      * @param offerId the id of offer to be deleted.
      * @return the deleted offer id.

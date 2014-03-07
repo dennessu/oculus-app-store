@@ -7,8 +7,6 @@ import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.clientproxy.rating.RatingFacade
 import com.junbo.order.core.impl.common.CoreBuilder
 import com.junbo.order.db.repo.OrderRepository
-import com.junbo.order.spec.model.EventStatus
-import com.junbo.order.spec.model.OrderActionType
 import com.junbo.rating.spec.model.request.OrderRatingRequest
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
@@ -38,24 +36,14 @@ class RatingAction implements Action {
             LOGGER.error('name=Order_Rating_Error', throwable)
             return null
         }.syncThen { OrderRatingRequest ratingResult ->
-            if (ratingResult == null) {
-                orderRepository.createOrderEvent(
-                        CoreBuilder.buildOrderEvent(
-                                order.id,
-                                OrderActionType.RATE,
-                                EventStatus.ERROR))
-            } else {
-                // todo handle rating violation
-                CoreBuilder.fillRatingInfo(order, ratingResult)
-                EventStatus ratingStatus = EventStatus.COMPLETED
-                orderRepository.createOrderEvent(
-                        CoreBuilder.buildOrderEvent(
-                                order.id,
-                                OrderActionType.RATE,
-                                ratingStatus))
-                return context
-            }
-            return ActionUtils.DEFAULT_RESULT
+            // todo handle rating violation
+            CoreBuilder.fillRatingInfo(order, ratingResult)
+           //  no need to log event for rating
+           //  EventStatus ratingStatus = EventStatus.COMPLETED
+           //  serviceContext.orderRepository.createOrderEvent(
+           //         CoreBuilder.buildOrderEvent(order.id,
+           //                 com.junbo.order.spec.model.OrderAction.RATE, ratingStatus))
+            return null
         }
     }
 }

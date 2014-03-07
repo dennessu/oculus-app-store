@@ -37,26 +37,24 @@ public class BaseDao<T extends Entity> {
         return sessionFactory.getCurrentSession();
     }
 
-    public Long insert(T t) {
+    public T insert(T t) {
         t.setId(generateId(t.getShardMasterId()));
-        Date now = EntitlementContext.now();
+        Date now = EntitlementContext.current().getNow();
         t.setCreatedBy("DEFAULT");  //TODO
         t.setCreatedTime(now);
         t.setModifiedBy("DEFAULT"); //TODO
         t.setModifiedTime(now);
-        return (Long) currentSession().save(t);
+        return get((Long) currentSession().save(t));
     }
 
     public T get(Long id) {
         return (T) currentSession().get(entityType, id);
     }
 
-    public Long update(T t) {
-        T newt = (T) currentSession().merge(t);
-        newt.setModifiedBy("DEFAULT"); //TODO
-        newt.setModifiedTime(EntitlementContext.now());
-        currentSession().update(newt);
-        return newt.getId();
+    public T update(T t) {
+        t.setModifiedBy("DEFAULT"); //TODO
+        t.setModifiedTime(EntitlementContext.current().getNow());
+        return (T) currentSession().merge(t);
     }
 
     public Class<T> getEntityType() {

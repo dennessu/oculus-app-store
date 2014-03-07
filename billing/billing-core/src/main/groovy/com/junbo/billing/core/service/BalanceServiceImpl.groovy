@@ -82,37 +82,10 @@ class BalanceServiceImpl implements BalanceService {
         // set the balance status to INIT
         balance.setStatus(BalanceStatus.INIT.name())
 
+        transactionService.processBalance(balance)
+
         //persist the balance entity
         Balance resultBalance = balanceRepository.saveBalance(balance)
-
-        Transaction transaction = transactionService.processBalance(resultBalance)
-
-        TransactionStatus transactionStatus = TransactionStatus.valueOf(transaction.status)
-        BalanceStatus balanceStatus
-        switch (transactionStatus) {
-            case TransactionStatus.DECLINE:
-                balanceStatus = BalanceStatus.FAILED
-                break
-            case TransactionStatus.SUCCESS:
-                TransactionType transactionType = TransactionType.valueOf(transaction.type)
-                switch (transactionType) {
-                    case TransactionType.AUTHORIZE:
-                        balanceStatus = BalanceStatus.PENDING_CAPTURE
-                        break
-                    case TransactionType.CAPTURE:
-                    case TransactionType.CHARGE:
-                        balanceStatus = BalanceStatus.AWAITING_PAYMENT
-                        break
-                    case TransactionType.REVERSE:
-                        balanceStatus = BalanceStatus.CANCELLED
-                        break
-                }
-                break
-            default:
-                balanceStatus = BalanceStatus.ERROR
-                break
-        }
-        resultBalance = balanceRepository.updateBalanceStatus(resultBalance.balanceId.value, balanceStatus)
 
         return Promise.pure(resultBalance)
     }
@@ -224,13 +197,13 @@ class BalanceServiceImpl implements BalanceService {
 
     private void computeTotal(Balance balance) {
 
-        BigDecimal amount = new BigDecimal()
-        BigDecimal discountTotal = new BigDecimal()
-        BigDecimal taxTotal = new BigDecimal()
+        BigDecimal amount = 0.0G
+        BigDecimal discountTotal = 0.0G
+        BigDecimal taxTotal = 0.0G
 
         balance.balanceItems.each { BalanceItem item ->
-            BigDecimal discount = new BigDecimal()
-            BigDecimal tax = new BigDecimal()
+            BigDecimal discount = 0.0G
+            BigDecimal tax = 0.0G
 
             item.taxItems.each { TaxItem taxItem ->
                 if (taxItem.taxAmount != null) {

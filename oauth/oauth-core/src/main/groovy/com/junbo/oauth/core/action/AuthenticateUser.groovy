@@ -8,30 +8,25 @@ package com.junbo.oauth.core.action
 import com.junbo.identity.spec.model.user.User
 import com.junbo.identity.spec.resource.UserResource
 import com.junbo.langur.core.promise.Promise
-import com.junbo.oauth.core.context.ServiceContext
+import com.junbo.langur.core.webflow.action.Action
+import com.junbo.langur.core.webflow.action.ActionContext
+import com.junbo.langur.core.webflow.action.ActionResult
+import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.exception.AppExceptions
-import com.junbo.oauth.core.util.ServiceContextUtil
-import com.junbo.oauth.db.repo.FlowStateRepository
 import com.junbo.oauth.spec.model.LoginState
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
+import org.glassfish.jersey.server.ContainerRequest
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.StringUtils
 import org.springframework.web.util.UriComponentsBuilder
 
 /**
- * Javadoc.
+ * AuthenticateUser
  */
 @CompileStatic
 class AuthenticateUser implements Action {
-    private FlowStateRepository flowStateRepository
-
     private UserResource userResource
-
-    @Required
-    void setFlowStateRepository(FlowStateRepository flowStateRepository) {
-        this.flowStateRepository = flowStateRepository
-    }
 
     @Required
     void setUserResource(UserResource userResource) {
@@ -39,8 +34,10 @@ class AuthenticateUser implements Action {
     }
 
     @Override
-    boolean execute(ServiceContext context) {
-        def parameterMap = ServiceContextUtil.getParameterMap(context)
+    Promise<ActionResult> execute(ActionContext context) {
+        def contextWrapper = new ActionContextWrapper(context)
+
+        def parameterMap = contextWrapper.parameterMap
 
         String username = parameterMap.getFirst(OAuthParameters.USERNAME)
         String password = parameterMap.getFirst(OAuthParameters.PASSWORD)
@@ -53,41 +50,39 @@ class AuthenticateUser implements Action {
             throw AppExceptions.INSTANCE.missingPassword().exception()
         }
 
-        Promise<User> userPromise = userResource.authenticateUser(username, password)
-
-        if (userPromise == null || userPromise.wrapped() == null || userPromise.wrapped().get() == null) {
-            throw AppExceptions.INSTANCE.invalidCredential().exception()
-        }
-
-        User user = userPromise.wrapped().get()
-
-        def loginState = new LoginState(
-                userId: user.id.value,
-                lastAuthDate: new Date()
-        )
-
-        def flowState = ServiceContextUtil.getFlowState(context)
-
-        if (flowState != null) {
-            flowState.loginState = loginState
-            flowStateRepository.saveOrUpdate(flowState)
-
-            UriComponentsBuilder builder = ServiceContextUtil.getRedirectUriBuilder(context)
-
-            if (builder == null) {
-                builder = UriComponentsBuilder.fromHttpUrl(flowState.redirectUri)
-                ServiceContextUtil.setRedirectUriBuilder(context, builder)
+        userResource.authenticateUser(username, password).then { User user ->
+            if (user == null) {
+                throw AppExceptions.INSTANCE.invalidCredential().exception()
             }
 
-            builder.queryParam(OAuthParameters.FLOW_STATE, flowState.id)
-        }
+            def loginState = new LoginState(
+                    userId: user.id.value,
+                    lastAuthDate: new Date()
+            )
 
-        String rememberMe = parameterMap.getFirst(OAuthParameters.REMEMBER_ME)
-        if ('TRUE'.equalsIgnoreCase(rememberMe)) {
-            ServiceContextUtil.setNeedRememberMe(context, true)
-        }
+            contextWrapper.loginState = loginState
 
-        ServiceContextUtil.setLoginState(context, loginState)
-        return true
+            def conversationId = parameterMap.getFirst(OAuthParameters.CONVERSATION_ID)
+            if (StringUtils.hasText(conversationId)) {
+                String rememberMe = parameterMap.getFirst(OAuthParameters.REMEMBER_ME)
+                if ('TRUE'.equalsIgnoreCase(rememberMe)) {
+                    contextWrapper.needRememberMe = true
+                }
+
+                def request = (ContainerRequest) contextWrapper.request
+
+                UriComponentsBuilder builder = UriComponentsBuilder.fromUri(request.baseUri)
+                builder.path(request.getPath(true))
+
+                builder.queryParam(OAuthParameters.CONVERSATION_ID, contextWrapper.conversationId)
+                builder.queryParam(OAuthParameters.EVENT, 'loginSuccess')
+
+                contextWrapper.redirectUriBuilder = builder
+
+                return Promise.pure(new ActionResult('success'))
+            }
+
+            return Promise.pure(new ActionResult('success'))
+        }
     }
 }

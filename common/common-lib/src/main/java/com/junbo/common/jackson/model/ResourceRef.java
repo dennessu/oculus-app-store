@@ -7,7 +7,7 @@
 package com.junbo.common.jackson.model;
 
 /**
- * Java doc.
+ * ResourceRef.
  */
 public class ResourceRef {
     private String href;

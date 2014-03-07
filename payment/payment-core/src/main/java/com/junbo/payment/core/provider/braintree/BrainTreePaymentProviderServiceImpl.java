@@ -12,6 +12,7 @@ import com.junbo.payment.core.exception.AppClientExceptions;
 import com.junbo.payment.core.exception.AppServerExceptions;
 import com.junbo.payment.core.provider.PaymentProviderService;
 import com.junbo.payment.core.util.PaymentUtil;
+import com.junbo.payment.spec.enums.PaymentStatus;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentTransaction;
 import org.slf4j.Logger;
@@ -211,6 +212,47 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
     @Override
     public void refund(String transactionId, PaymentTransaction request) {
 
+    }
+
+    @Override
+    public Promise<PaymentTransaction> getByOrderId(String orderId) {
+        ResourceCollection<Transaction> collection = null;
+        try{
+            TransactionSearchRequest request = new TransactionSearchRequest()
+                    .orderId().is(orderId);
+            collection = gateway.transaction().search(request);
+        }catch(Exception ex){
+            handleProviderException(ex);
+        }
+        if(collection == null || collection.getMaximumSize() == 0){
+            return null;
+        }
+        PaymentTransaction result = new PaymentTransaction();
+        for(Transaction transaction : collection){
+            result.setStatus(PaymentUtil.mapPaymentStatus(PaymentStatus.BrainTreeStatus.valueOf(
+                    transaction.getStatus().toString())).toString());
+            //TODO: need add transaction.getSettlementBatchId(); for the batch job processing
+            return Promise.pure(result);
+        }
+        return null;
+    }
+
+    @Override
+    public Promise<PaymentTransaction> getByTransactionToken(String token) {
+        Transaction transaction = null;
+        try{
+            transaction = gateway.transaction().find(token);
+        }catch(Exception ex){
+            handleProviderException(ex);
+        }
+        if(transaction == null){
+            return null;
+        }
+        PaymentTransaction result = new PaymentTransaction();
+        result.setStatus(PaymentUtil.mapPaymentStatus(PaymentStatus.BrainTreeStatus.valueOf(
+                transaction.getStatus().toString())).toString());
+        //TODO: need add transaction.getSettlementBatchId(); for the batch job processing
+        return Promise.pure(result);
     }
 
     private TransactionRequest getTransactionRequest(String piToken, PaymentTransaction paymentRequest) {

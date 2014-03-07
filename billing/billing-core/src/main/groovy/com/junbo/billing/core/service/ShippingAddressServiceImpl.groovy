@@ -10,6 +10,7 @@ import com.junbo.billing.clientproxy.IdentityFacade
 import com.junbo.billing.db.repository.ShippingAddressRepository
 import com.junbo.billing.spec.error.AppErrors
 import com.junbo.billing.spec.model.ShippingAddress
+import com.junbo.common.id.UserId
 import com.junbo.identity.spec.model.user.User
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
@@ -29,11 +30,13 @@ class ShippingAddressServiceImpl implements ShippingAddressService {
     IdentityFacade identityFacade
 
     @Override
-    Promise<ShippingAddress> addShippingAddress(ShippingAddress address) {
+    Promise<ShippingAddress> addShippingAddress(Long userId, ShippingAddress address) {
 
-        if (address.userId == null) {
+        if (userId == null) {
             throw AppErrors.INSTANCE.fieldMissingValue('userId').exception()
         }
+        address.setUserId(new UserId(userId))
+
         validateUser(address.userId.value)
         validateAddress(address)
 
@@ -49,18 +52,23 @@ class ShippingAddressServiceImpl implements ShippingAddressService {
     }
 
     @Override
-    Promise<ShippingAddress> getShippingAddress(Long addressId) {
+    Promise<ShippingAddress> getShippingAddress(Long userId, Long addressId) {
 
         ShippingAddress address = shippingAddressRepository.getShippingAddress(addressId)
 
         if (address == null) {
             throw AppErrors.INSTANCE.shippingAddressNotFound(addressId.toString()).exception()
         }
+
+        if (address.userId.value != userId) {
+            throw AppErrors.INSTANCE.userShippingAddressNotMatch(userId.toString(), addressId.toString()).exception()
+        }
+
         return Promise.pure(address)
     }
 
     @Override
-    void deleteShippingAddress(Long addressId) {
+    void deleteShippingAddress(Long userId, Long addressId) {
 
         shippingAddressRepository.deleteShippingAddress(addressId)
     }

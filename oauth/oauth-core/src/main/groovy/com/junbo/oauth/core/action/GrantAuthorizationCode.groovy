@@ -5,10 +5,13 @@
  */
 package com.junbo.oauth.core.action
 
-import com.junbo.oauth.core.context.ServiceContext
+import com.junbo.langur.core.promise.Promise
+import com.junbo.langur.core.webflow.action.Action
+import com.junbo.langur.core.webflow.action.ActionContext
+import com.junbo.langur.core.webflow.action.ActionResult
+import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.exception.AppExceptions
 import com.junbo.oauth.core.util.OAuthInfoUtil
-import com.junbo.oauth.core.util.ServiceContextUtil
 import com.junbo.oauth.db.repo.AuthorizationCodeRepository
 import com.junbo.oauth.spec.model.AuthorizationCode
 import com.junbo.oauth.spec.model.ResponseType
@@ -17,7 +20,7 @@ import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 
 /**
- * Javadoc.
+ * GrantAuthorizationCode.
  */
 @CompileStatic
 class GrantAuthorizationCode implements Action {
@@ -37,13 +40,15 @@ class GrantAuthorizationCode implements Action {
     }
 
     @Override
-    boolean execute(ServiceContext context) {
-        def oauthInfo = ServiceContextUtil.getOAuthInfo(context)
-        def parameterMap = ServiceContextUtil.getParameterMap(context)
+    Promise<ActionResult> execute(ActionContext context) {
+        def contextWrapper = new ActionContextWrapper(context)
+
+        def oauthInfo = contextWrapper.oauthInfo
+        def parameterMap = contextWrapper.parameterMap
 
         if (oauthInfo.responseTypes.contains(ResponseType.CODE)) {
-            def appClient = ServiceContextUtil.getAppClient(context)
-            def loginState = ServiceContextUtil.getLoginState(context)
+            def client = contextWrapper.client
+            def loginState = contextWrapper.loginState
 
             String nonce = null
             if (OAuthInfoUtil.isOpenIdConnect(oauthInfo)) {
@@ -54,7 +59,7 @@ class GrantAuthorizationCode implements Action {
             }
 
             AuthorizationCode authorizationCode = new AuthorizationCode(
-                    clientId: appClient.clientId,
+                    clientId: client.clientId,
                     userId: loginState.userId,
                     scopes: oauthInfo.scopes,
                     nonce: nonce,
@@ -64,9 +69,9 @@ class GrantAuthorizationCode implements Action {
             )
 
             authorizationCodeRepository.save(authorizationCode)
-            ServiceContextUtil.setAuthorizationCode(context, authorizationCode)
+            contextWrapper.authorizationCode = authorizationCode
         }
 
-        return true
+        return Promise.pure(null)
     }
 }

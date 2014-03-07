@@ -1,4 +1,5 @@
 package com.junbo.order.core.impl.orderaction
+
 import com.junbo.identity.spec.model.user.User
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
@@ -26,7 +27,7 @@ class ValidateAction implements Action {
     Promise<ActionResult> execute(ActionContext actionContext) {
         def context = ActionUtils.getOrderActionContext(actionContext)
         validateUser(context).syncThen {
-            ActionUtils.DEFAULT_RESULT
+            return null
         }
     }
 
@@ -34,10 +35,11 @@ class ValidateAction implements Action {
         def order = context.orderServiceContext.order
         validatePayment(context) // validate payment
         // validate user
-        return identityFacade.getUser(order.user.value).then { User user ->
+        return identityFacade.getUser(order.user.value).syncThen { User user ->
             if (user.status != 'ACTIVE') {
                 throw AppErrors.INSTANCE.userStatusInvalid().exception()
             }
+            return null
         }
     }
 
@@ -49,6 +51,4 @@ class ValidateAction implements Action {
             throw AppErrors.INSTANCE.paymentStatusInvalid().exception()
         }
     }
-
-
 }

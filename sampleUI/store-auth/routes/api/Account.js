@@ -12,12 +12,14 @@ exports.Login = function(req, res){
 
   var model = new AuthModel();
 
-  var flowState = req.cookies[C.QueryStringConstants.FlowState];
-  if(typeof(flowState) != "undefined" && flowState != null){
-    model.fs = flowState;
+  var conversationId = req.cookies[C.QueryStringConstants.ConversationId];
+  if(typeof(conversationId) != "undefined" && conversationId != null){
+    model.cid = conversationId;
   }else{
-    model.fs = null;
+    model.cid = null;
   }
+
+  model.event = req.cookies[C.QueryStringConstants.Event];
   model.username = req.body["email"];
   model.password = req.body["password"];
 

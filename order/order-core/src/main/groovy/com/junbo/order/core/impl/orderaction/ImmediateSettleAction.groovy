@@ -53,7 +53,7 @@ class ImmediateSettleAction implements Action {
                 orderServiceContextBuilder.refreshBalances(context.orderServiceContext)
                 // TODO: update order status according to balance status.
             }
-            return ActionUtils.DEFAULT_RESULT
+            return null
         }
     }
 

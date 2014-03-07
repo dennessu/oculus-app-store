@@ -16,7 +16,6 @@ import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,16 +27,7 @@ public class OfferResourceImpl implements OfferResource{
 
     @Override
     public Promise<ResultList<Offer>> getOffers(EntitiesGetOptions options) {
-        List<Offer> offers;
-        if (options.getEntityIds() != null && options.getEntityIds().size() > 0) {
-            offers = new ArrayList<>();
-            for (Long offerId : options.getEntityIds()) {
-                offers.add(offerService.getOffer(offerId, EntityGetOptions.getDefault()));
-            }
-        } else {
-            options.ensurePagingValid();
-            offers = offerService.getOffers(options.getStart(), options.getSize());
-        }
+        List<Offer> offers = offerService.getOffers(options);
         ResultList<Offer> resultList = new ResultList<>();
         resultList.setResults(offers);
         resultList.setHref("href TODO");
@@ -64,8 +54,8 @@ public class OfferResourceImpl implements OfferResource{
     }
 
     @Override
-    public Promise<Offer> publishOffer(Long offerId) {
-        Offer offer = offerService.publishOffer(offerId);
+    public Promise<Offer> releaseOffer(Long offerId) {
+        Offer offer = offerService.releaseOffer(offerId);
         return Promise.pure(offer);
     }
 

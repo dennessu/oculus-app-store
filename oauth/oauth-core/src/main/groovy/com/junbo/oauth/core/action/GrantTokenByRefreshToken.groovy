@@ -5,10 +5,13 @@
  */
 package com.junbo.oauth.core.action
 
-import com.junbo.oauth.core.context.ServiceContext
+import com.junbo.langur.core.promise.Promise
+import com.junbo.langur.core.webflow.action.Action
+import com.junbo.langur.core.webflow.action.ActionContext
+import com.junbo.langur.core.webflow.action.ActionResult
+import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.exception.AppExceptions
 import com.junbo.oauth.core.service.TokenGenerationService
-import com.junbo.oauth.core.util.ServiceContextUtil
 import com.junbo.oauth.spec.model.AccessToken
 import com.junbo.oauth.spec.model.LoginState
 import com.junbo.oauth.spec.model.RefreshToken
@@ -19,7 +22,7 @@ import org.springframework.util.Assert
 import org.springframework.util.StringUtils
 
 /**
- * Javadoc.
+ * GrantTokenByRefreshToken.
  */
 @CompileStatic
 class GrantTokenByRefreshToken implements Action {
@@ -32,10 +35,12 @@ class GrantTokenByRefreshToken implements Action {
     }
 
     @Override
-    boolean execute(ServiceContext context) {
-        def parameterMap = ServiceContextUtil.getParameterMap(context)
-        def appClient = ServiceContextUtil.getAppClient(context)
-        def oauthInfo = ServiceContextUtil.getOAuthInfo(context)
+    Promise<ActionResult> execute(ActionContext context) {
+        def contextWrapper = new ActionContextWrapper(context)
+
+        def parameterMap = contextWrapper.parameterMap
+        def client = contextWrapper.client
+        def oauthInfo = contextWrapper.oauthInfo
 
         String token = parameterMap.getFirst(OAuthParameters.REFRESH_TOKEN)
 
@@ -55,8 +60,8 @@ class GrantTokenByRefreshToken implements Action {
         AccessToken accessToken = refreshToken.accessToken
         Assert.notNull(accessToken)
 
-        if (refreshToken.clientId != appClient.clientId) {
-            throw AppExceptions.INSTANCE.differentClientId(refreshToken.clientId, appClient.clientId).exception()
+        if (refreshToken.clientId != client.clientId) {
+            throw AppExceptions.INSTANCE.differentClientId(refreshToken.clientId, client.clientId).exception()
         }
 
         Set<String> scopesParam = oauthInfo.scopes
@@ -73,14 +78,14 @@ class GrantTokenByRefreshToken implements Action {
                 userId: refreshToken.userId,
                 lastAuthDate: new Date()
         )
-        ServiceContextUtil.setLoginState(context, loginState)
+        contextWrapper.loginState = loginState
 
-        def newAccessToken = tokenGenerationService.generateAccessToken(appClient, refreshToken.userId, scopesParam)
-        ServiceContextUtil.setAccessToken(context, newAccessToken)
+        def newAccessToken = tokenGenerationService.generateAccessToken(client, refreshToken.userId, scopesParam)
+        contextWrapper.accessToken = newAccessToken
 
-        def newRefreshToken = tokenGenerationService.generateRefreshToken(appClient, newAccessToken, refreshToken)
-        ServiceContextUtil.setRefreshToken(context, newRefreshToken)
+        def newRefreshToken = tokenGenerationService.generateRefreshToken(client, newAccessToken, refreshToken)
+        contextWrapper.refreshToken = newRefreshToken
 
-        return true
+        return Promise.pure(null)
     }
 }

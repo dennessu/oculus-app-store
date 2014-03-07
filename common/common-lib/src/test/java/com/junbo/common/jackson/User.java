@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Java doc.
+ * User.
  */
 public class User {
     @UserId

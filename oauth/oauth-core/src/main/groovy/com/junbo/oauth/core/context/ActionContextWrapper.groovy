@@ -28,7 +28,7 @@ class ActionContextWrapper {
     public static final String COOKIE_MAP = 'cookie_map'
     public static final String RESPONSE_HEADER_MAP = 'response_headers_map'
     public static final String RESPONSE_COOKIE_LIST = 'response_cookies_map'
-    public static final String APP_CLIENT = 'app_client'
+    public static final String CLIENT = 'client'
     public static final String CLIENT_ID = 'client_id'
     public static final String OAUTH_INFO = 'oauth_info'
     public static final String FLOW_STATE = 'flow_state'
@@ -112,12 +112,12 @@ class ActionContextWrapper {
         actionContext.requestScope[RESPONSE_COOKIE_LIST] = cookieList
     }
 
-    AppClient getAppClient() {
-        return (AppClient) actionContext.flowScope[APP_CLIENT]
+    Client getClient() {
+        return (Client) actionContext.flowScope[CLIENT]
     }
 
-    void setAppClient(AppClient appClient) {
-        actionContext.flowScope[APP_CLIENT] = appClient
+    void setClient(Client appClient) {
+        actionContext.flowScope[CLIENT] = appClient
     }
 
     String getClientId() {

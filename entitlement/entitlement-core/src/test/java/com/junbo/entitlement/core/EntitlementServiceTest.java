@@ -94,7 +94,7 @@ public class EntitlementServiceTest extends AbstractTransactionalTestNGSpringCon
 
     @Test
     public void testSearchEntitlements() {
-        EntitlementContext.setNow(new Date(114, 1, 10));
+        EntitlementContext.current().setNow(new Date(114, 1, 10));
         Long userId = idGenerator.nextId();
         for (int i = 0; i < 48; i++) {
             Entitlement entitlementEntity = buildAnEntitlement();
@@ -105,7 +105,7 @@ public class EntitlementServiceTest extends AbstractTransactionalTestNGSpringCon
             entitlementService.addEntitlement(entitlementEntity);
         }
 
-        EntitlementContext.setNow(new Date(114, 2, 30));
+        EntitlementContext.current().setNow(new Date(114, 2, 30));
 
         EntitlementSearchParam searchParam = new EntitlementSearchParam();
         searchParam.setUserId(userId);

@@ -18,7 +18,6 @@ import javax.ws.rs.core.*;
 @Path("authorize")
 @RestResource
 @Produces(MediaType.APPLICATION_JSON)
-@Consumes(MediaType.APPLICATION_JSON)
 public interface AuthorizeEndpoint {
 
     @GET
@@ -27,6 +26,7 @@ public interface AuthorizeEndpoint {
                                 @Context ContainerRequestContext request);
 
     @POST
+    @Consumes("application/x-www-form-urlencoded")
     Promise<Response> postAuthorize(@Context HttpHeaders httpHeaders,
                                     MultivaluedMap<String, String> formParams,
                                     @Context ContainerRequestContext request);
