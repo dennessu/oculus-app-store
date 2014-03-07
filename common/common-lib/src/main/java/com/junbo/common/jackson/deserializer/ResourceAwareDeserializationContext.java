@@ -33,8 +33,9 @@ public class ResourceAwareDeserializationContext extends DefaultDeserializationC
         super(df, cache);
     }
 
-    protected ResourceAwareDeserializationContext(DefaultDeserializationContext src,
-                                                  DeserializationConfig config, JsonParser jp, InjectableValues values) {
+    protected ResourceAwareDeserializationContext(
+            DefaultDeserializationContext src,
+            DeserializationConfig config, JsonParser jp, InjectableValues values) {
         super(src, config, jp, values);
     }
 

@@ -6,6 +6,7 @@
 
 package com.junbo.catalog.db.repo;
 
+import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.db.convertor.PromotionConverter;
 import com.junbo.catalog.db.dao.PromotionDraftDao;
 import com.junbo.catalog.db.entity.PromotionDraftEntity;
@@ -18,16 +19,18 @@ import java.util.List;
 /**
  * Promotion draft repository.
  */
-public class PromotionDraftRepository {
+public class PromotionDraftRepository implements EntityDraftRepository<Promotion> {
     @Autowired
     private PromotionDraftDao promotionDraftDao;
 
-    public Long createPromotion(Promotion promotion) {
+    @Override
+    public Long create(Promotion promotion) {
         PromotionDraftEntity promotionDraftEntity = PromotionConverter.toDraftEntity(promotion);
         return promotionDraftDao.create(promotionDraftEntity);
     }
 
-    /*public Long updatePromotion(Promotion promotion) {
+    @Override
+    public Long update(Promotion promotion) {
         PromotionDraftEntity promotionDraftEntity = promotionDraftDao.get(promotion.getId());
         promotionDraftEntity.setName(promotion.getName());
         promotionDraftEntity.setType(promotion.getType());
@@ -36,11 +39,17 @@ public class PromotionDraftRepository {
         promotionDraftEntity.setPayload(Utils.toJson(promotionDraftEntity));
 
         return promotionDraftDao.update(promotionDraftEntity);
-    }*/
+    }
 
+    @Override
     public Promotion get(Long promotionId) {
         PromotionDraftEntity promotionDraftEntity = promotionDraftDao.get(promotionId);
         return PromotionConverter.toModel(promotionDraftEntity);
+    }
+
+    @Override
+    public List<Promotion> getEntities(int start, int size) {
+        return getEffectivePromotions(start, size);
     }
 
     public List<Promotion> getEffectivePromotions(int start, int size) {

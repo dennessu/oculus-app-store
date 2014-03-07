@@ -31,7 +31,7 @@ public class PromotionServiceImpl implements PromotionService{
     public Promotion createPromotion(Promotion promotion) {
         promotion.setRevision(Constants.INITIAL_CREATION_REVISION);
         promotion.setStatus(Status.DESIGN);
-        Long promotionId = promotionDraftRepository.createPromotion(promotion);
+        Long promotionId = promotionDraftRepository.create(promotion);
         promotion.setId(promotionId);
         promotionRepository.create(promotion);
         return promotionDraftRepository.get(promotionId);

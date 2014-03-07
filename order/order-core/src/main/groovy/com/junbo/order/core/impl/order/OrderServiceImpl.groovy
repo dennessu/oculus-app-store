@@ -10,6 +10,7 @@ import com.junbo.billing.spec.model.Balance
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.executor.FlowExecutor
 import com.junbo.order.clientproxy.billing.BillingFacade
+import com.junbo.order.clientproxy.fulfillment.FulfillmentFacade
 import com.junbo.order.clientproxy.identity.IdentityFacade
 import com.junbo.order.clientproxy.payment.PaymentFacade
 import com.junbo.order.clientproxy.rating.RatingFacade
@@ -28,6 +29,7 @@ import com.junbo.rating.spec.model.request.OrderRatingRequest
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.util.CollectionUtils
 /**
  * Created by chriszhu on 2/7/14.
@@ -44,6 +46,8 @@ class OrderServiceImpl implements OrderService {
     @Autowired
     RatingFacade ratingFacade
     @Autowired
+    FulfillmentFacade fulfillmentFacade
+    @Autowired
     OrderRepository orderRepository
     @Autowired
     FlowSelector flowSelector
@@ -55,6 +59,7 @@ class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     Promise<List<Order>> createOrders(Order order, ApiContext context) {
         // TODO: split orders
         // TODO: expand external resources
@@ -67,6 +72,7 @@ class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     Promise<List<Order>> settleQuote(Order order, ApiContext context) {
         def orderServiceContext = initOrderServiceContext(order, null)
         flowSelector.select(orderServiceContext, OrderServiceOperation.UPDATE_TENTATIVE).then { FlowType flowType ->
@@ -77,11 +83,13 @@ class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     Promise<Order> updateTentativeOrder(Order order, ApiContext context) {
         return null
     }
 
     @Override
+    @Transactional
     Promise<List<Order>> createQuotes(Order order, ApiContext context) {
 
         List<Order> orders = []
@@ -118,6 +126,7 @@ class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     Promise<Order> getOrderByOrderId(Long orderId) {
         def orderServiceContext = initOrderServiceContext(null, orderId)
         flowSelector.select(orderServiceContext, OrderServiceOperation.GET).syncThen { FlowType flowType ->
@@ -148,26 +157,31 @@ class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     Promise<Order> cancelOrder(Order request) {
         return null
     }
 
     @Override
+    @Transactional
     Promise<Order> refundOrder(Order request) {
         return null
     }
 
     @Override
+    @Transactional
     Promise<List<Order>> getOrders(Order request) {
         return null
     }
 
     @Override
+    @Transactional
     Promise<OrderEvent> updateOrderBillingStatus(OrderEvent event) {
         return null
     }
 
     @Override
+    @Transactional
     Promise<OrderEvent> updateOrderFulfillmentStatus(OrderEvent event) {
         return null
     }
@@ -183,6 +197,11 @@ class OrderServiceImpl implements OrderService {
         OrderServiceContext context = new OrderServiceContext()
         context.order = order
         context.orderId = orderId
+        context.orderRepository = orderRepository
+        context.billingFacade = billingFacade
+        context.fulfillmentFacade = fulfillmentFacade
+        context.identityFacade = identityFacade
+        context.ratingFacade = ratingFacade
         return context
     }
 }

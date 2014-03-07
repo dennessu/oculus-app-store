@@ -7,7 +7,6 @@
 package com.junbo.common.jackson.serializer;
 
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -38,9 +37,8 @@ public class ResourceIdSerializer extends JsonSerializer<Object> implements Reso
 
     @Override
     public void serialize(Object value, JsonGenerator jgen, SerializerProvider provider)
-            throws IOException, JsonProcessingException {
+            throws IOException {
         if (value == null) {
-            MAPPER.writeValue(jgen, null);
             return;
         }
 

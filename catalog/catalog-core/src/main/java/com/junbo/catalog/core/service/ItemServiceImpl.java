@@ -6,6 +6,8 @@
 
 package com.junbo.catalog.core.service;
 
+import com.junbo.catalog.common.exception.CatalogException;
+import com.junbo.catalog.common.exception.NotFoundException;
 import com.junbo.catalog.common.util.Constants;
 import com.junbo.catalog.core.ItemService;
 import com.junbo.catalog.db.repo.ItemDraftRepository;
@@ -21,7 +23,7 @@ import java.util.List;
 /**
  * Item service implementation.
  */
-public class ItemServiceImpl implements ItemService {
+public class ItemServiceImpl extends BaseServiceImpl<Item> implements ItemService {
     @Autowired
     private ItemDraftRepository itemDraftRepository;
     @Autowired
@@ -33,50 +35,83 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Item createItem(Item item) {
-        // TODO: validations
+        if (item == null) {
+            throw new CatalogException("TODO");
+        }
 
         item.setRevision(Constants.INITIAL_CREATION_REVISION);
         item.setStatus(Status.DESIGN);
 
         Long itemId = itemDraftRepository.create(item);
-        item.setId(itemId);
-        itemRepository.create(item);
 
         return itemDraftRepository.get(itemId);
     }
 
     @Override
     public List<Item> getItems(EntitiesGetOptions options) {
-        return null;
+        return getEntities(options, itemRepository, itemDraftRepository);
     }
 
     @Override
     public Item updateItem(Item item) {
-        return null;
+        if (item == null) {
+            throw new CatalogException("TODO");
+        }
+
+        itemDraftRepository.update(item);
+        return itemDraftRepository.get(item.getId());
     }
 
     @Override
     public Item reviewItem(Long itemId) {
-        return null;
+        Item item = itemDraftRepository.get(itemId);
+        checkItemNotNull(itemId, item);
+        item.setStatus(Status.PENDING_REVIEW);
+        itemDraftRepository.update(item);
+        return itemRepository.get(itemId, null);
     }
 
     @Override
     public Item releaseItem(Long itemId) {
-        return null;
+        Item item = itemDraftRepository.get(itemId);
+        checkItemNotNull(itemId, item);
+        item.setStatus(Status.RELEASED);
+        itemRepository.create(item);
+        itemDraftRepository.update(item);
+        return itemRepository.get(itemId, null);
     }
 
     @Override
     public Item rejectItem(Long itemId) {
-        return null;
+        Item item = itemDraftRepository.get(itemId);
+        checkItemNotNull(itemId, item);
+        item.setStatus(Status.REJECTED);
+        itemDraftRepository.update(item);
+        return itemRepository.get(itemId, null);
     }
 
     @Override
     public Long removeItem(Long itemId) {
-        return null;
+        Item item = itemRepository.get(itemId, null);
+        checkItemNotNull(itemId, item);
+        item.setStatus(Status.DELETED);
+        itemRepository.create(item);
+        return itemId;
     }
 
     @Override
     public Long deleteItem(Long itemId) {
-        return null;
+        Item item = itemRepository.get(itemId, null);
+        checkItemNotNull(itemId, item);
+        item.setStatus(Status.DELETED);
+        itemRepository.create(item);
+        itemDraftRepository.update(item);
+        return itemId;
+    }
+
+    private void checkItemNotNull(Long itemId, Item item) {
+        if (item == null) {
+            throw new NotFoundException("offer", itemId);
+        }
     }
 }

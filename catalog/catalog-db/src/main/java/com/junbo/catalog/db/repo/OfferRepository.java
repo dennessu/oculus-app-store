@@ -15,16 +15,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 /**
  * Offer repository.
  */
-public class OfferRepository {
+public class OfferRepository implements EntityRepository<Offer> {
     @Autowired
     private OfferDao offerDao;
 
+    @Override
     public Long create(Offer offer) {
         OfferEntity entity = OfferConverter.toEntity(offer);
 
         return offerDao.create(entity);
     }
 
+    @Override
     public Offer get(Long offerId, Long timestamp) {
         OfferEntity entity = offerDao.getOffer(offerId, timestamp);
         return OfferConverter.toModel(entity);

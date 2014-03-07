@@ -17,15 +17,13 @@ import com.junbo.catalog.spec.model.common.EntityGetOptions;
 import com.junbo.catalog.spec.model.common.Status;
 import com.junbo.catalog.spec.model.offer.Offer;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Offer service implementation.
  */
-public class OfferServiceImpl implements OfferService {
+public class OfferServiceImpl extends BaseServiceImpl<Offer> implements OfferService {
     @Autowired
     private OfferDraftRepository offerDraftRepository;
     @Autowired
@@ -34,7 +32,7 @@ public class OfferServiceImpl implements OfferService {
     @Override
     public Offer getOffer(Long offerId, EntityGetOptions options) {
         Offer offer;
-        if (options.isFromDraft()) {
+        if (options.getStatus() != null && !Status.RELEASED.equalsIgnoreCase(options.getStatus())) {
             offer = offerDraftRepository.get(offerId);
             if (!options.getStatus().equalsIgnoreCase(offer.getStatus())) {
                 throw new NotFoundException("offer", offerId);
@@ -50,39 +48,7 @@ public class OfferServiceImpl implements OfferService {
 
     @Override
     public List<Offer> getOffers(EntitiesGetOptions options) {
-        if (CollectionUtils.isEmpty(options.getEntityIds())) {
-            List<Offer> offers = new ArrayList<>();
-
-            for (Long offerId : options.getEntityIds()) {
-                Offer offer;
-                if (Status.RELEASED.equalsIgnoreCase(options.getStatus())) {
-                    offer = offerRepository.get(offerId, options.getTimestamp());
-                } else {
-                    offer = offerDraftRepository.get(offerId);
-                }
-
-                if (offer != null) {
-                    offers.add(offer);
-                }
-            }
-            return offers;
-        } else {
-            options.ensurePagingValid();
-            List<Offer> draftOffers = offerDraftRepository.getOffers(options.getStart(), options.getSize());
-            if (!Status.RELEASED.equalsIgnoreCase(options.getStatus())) {
-                return draftOffers;
-            }
-
-            List<Offer> offers = new ArrayList<>();
-            for (Offer draftOffer : draftOffers) {
-                Offer offer = offerRepository.get(draftOffer.getId(), options.getTimestamp());
-                if (offer != null) {
-                    offers.add(offer);
-                }
-            }
-
-            return offers;
-        }
+        return getEntities(options, offerRepository, offerDraftRepository);
     }
 
     @Override
