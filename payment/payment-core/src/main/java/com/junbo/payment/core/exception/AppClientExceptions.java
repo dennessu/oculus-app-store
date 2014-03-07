@@ -10,6 +10,7 @@ import com.junbo.common.error.AppError;
 import com.junbo.common.error.ErrorDef;
 import com.junbo.common.error.ErrorProxy;
 
+
 /**
  * Application Client Exceptions.
  */
@@ -96,4 +97,7 @@ public interface AppClientExceptions {
             description = "the payment id {0} is invalid", field = "payment_id")
     AppError invalidPaymentId(String paymentId);
 
+    @ErrorDef(httpStatusCode = 404, code = "40401",
+            description = "the resource {0} is not found", field = "resource")
+    AppError resourceNotFound(String resource);
 }
