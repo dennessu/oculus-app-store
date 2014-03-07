@@ -5,6 +5,8 @@
  */
 package com.junbo.bootstrap
 
+import com.junbo.common.id.converter.IdTypeFromStringConverter
+import com.junbo.common.id.provider.IdTypeFromStringProvider
 import com.junbo.common.json.JacksonFeature
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.identity.spec.filter.ResultListInterceptor
@@ -37,6 +39,10 @@ class IdentityMain {
         // packages
         resourceConfig.packages('com.junbo.identity.spec.resource.adapter')
         resourceConfig.packages('com.junbo.oauth.spec.endpoint.adapter')
+
+        // Id type feature
+        resourceConfig.register(IdTypeFromStringConverter)
+        resourceConfig.register(IdTypeFromStringProvider)
 
         // filters
         resourceConfig.register(ResultListInterceptor)
