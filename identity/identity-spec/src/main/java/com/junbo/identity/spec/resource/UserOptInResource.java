@@ -5,6 +5,8 @@
  */
 package com.junbo.identity.spec.resource;
 
+import com.junbo.common.id.UserId;
+import com.junbo.common.id.UserOptInId;
 import com.junbo.identity.spec.model.common.ResultList;
 import com.junbo.identity.spec.model.user.UserOptIn;
 import com.junbo.langur.core.RestResource;
@@ -23,28 +25,28 @@ import javax.ws.rs.core.MediaType;
 @Consumes({MediaType.APPLICATION_JSON})
 public interface UserOptInResource {
     @POST
-    Promise<UserOptIn> postUserOptIn(@PathParam("key1") Long userId,
+    Promise<UserOptIn> postUserOptIn(@PathParam("key1") UserId userId,
                             UserOptIn userOptIn);
 
     @GET
-    Promise<ResultList<UserOptIn>> getUserOptIns(@PathParam("key1") Long userId,
+    Promise<ResultList<UserOptIn>> getUserOptIns(@PathParam("key1") UserId userId,
                                  @QueryParam("type") String type,
                                  @QueryParam("cursor") Integer cursor,
                                  @QueryParam("count") Integer count);
 
     @GET
     @Path("/{key2}")
-    Promise<UserOptIn> getUserOptIn(@PathParam("key1") Long userId,
-                           @PathParam("key2") Long optInId);
+    Promise<UserOptIn> getUserOptIn(@PathParam("key1") UserId userId,
+                           @PathParam("key2") UserOptInId optInId);
 
     @PUT
     @Path("/{key2}")
-    Promise<UserOptIn> updateUserOptIn(@PathParam("key1") Long userId,
-                              @PathParam("key2") Long optInId,
+    Promise<UserOptIn> updateUserOptIn(@PathParam("key1") UserId userId,
+                              @PathParam("key2") UserOptInId optInId,
                               UserOptIn userOptIn);
 
     @DELETE
     @Path("/{key2}")
-    Promise<Void> deleteUserOptIn(@PathParam("key1") Long userId,
-                         @PathParam("key2") Long optInId);
+    Promise<Void> deleteUserOptIn(@PathParam("key1") UserId userId,
+                         @PathParam("key2") UserOptInId optInId);
 }

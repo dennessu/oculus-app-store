@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.rest.resource;
 
+import com.junbo.common.id.UserId;
 import com.junbo.identity.data.util.Constants;
 import com.junbo.identity.spec.error.AppErrors;
 import com.junbo.identity.data.entity.user.UserStatus;
@@ -60,13 +61,13 @@ public class UserResourceImpl implements UserResource {
     }
 
     @Override
-    public Promise<User> getUser(Long id) {
-        return Promise.pure(userService.get(id));
+    public Promise<User> getUser(UserId id) {
+        return Promise.pure(userService.get(id.getValue()));
     }
 
     @Override
-    public Promise<User> putUser(Long id, User user) {
-        return Promise.pure(userService.update(id, user));
+    public Promise<User> putUser(UserId id, User user) {
+        return Promise.pure(userService.update(id.getValue(), user));
     }
 
     @Override
@@ -80,16 +81,16 @@ public class UserResourceImpl implements UserResource {
     }
 
     @Override
-    public Promise<User> updatePassword(Long id, String oldPassword, String newPassword) {
-        User user = userService.get(id);
+    public Promise<User> updatePassword(UserId id, String oldPassword, String newPassword) {
+        User user = userService.get(id.getValue());
         userService.authenticate(user.getUserName(), oldPassword);
         userService.savePassword(user, newPassword);
         return Promise.pure(user);
     }
 
     @Override
-    public Promise<User> restPassword(Long id, String newPassword) {
-        User user = userService.get(id);
+    public Promise<User> restPassword(UserId id, String newPassword) {
+        User user = userService.get(id.getValue());
         userService.savePassword(user, newPassword);
         return Promise.pure(null);
     }

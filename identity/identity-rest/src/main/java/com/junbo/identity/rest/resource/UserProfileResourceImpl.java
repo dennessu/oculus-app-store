@@ -5,6 +5,8 @@
  */
 package com.junbo.identity.rest.resource;
 
+import com.junbo.common.id.UserId;
+import com.junbo.common.id.UserProfileId;
 import com.junbo.identity.rest.service.user.UserProfileService;
 import com.junbo.identity.spec.model.common.ResultList;
 import com.junbo.identity.spec.model.common.ResultListUtil;
@@ -28,29 +30,29 @@ public class UserProfileResourceImpl implements UserProfileResource {
     private UserProfileService userProfileService;
 
     @Override
-    public Promise<UserProfile> postUserProfile(Long userId, UserProfile userProfile) {
-        return Promise.pure(userProfileService.save(userId, userProfile));
+    public Promise<UserProfile> postUserProfile(UserId userId, UserProfile userProfile) {
+        return Promise.pure(userProfileService.save(userId.getValue(), userProfile));
     }
 
     @Override
-    public Promise<ResultList<UserProfile>> getUserProfiles(Long userId, String type, Integer cursor, Integer count) {
-        List<UserProfile> userProfiles = userProfileService.getByUserId(userId, type);
+    public Promise<ResultList<UserProfile>> getUserProfiles(UserId userId, String type, Integer cursor, Integer count) {
+        List<UserProfile> userProfiles = userProfileService.getByUserId(userId.getValue(), type);
         return Promise.pure(ResultListUtil.init(userProfiles, count));
     }
 
     @Override
-    public Promise<UserProfile> getUserProfile(Long userId, Long profileId) {
-        return Promise.pure(userProfileService.get(userId, profileId));
+    public Promise<UserProfile> getUserProfile(UserId userId, UserProfileId profileId) {
+        return Promise.pure(userProfileService.get(userId.getValue(), profileId.getValue()));
     }
 
     @Override
-    public Promise<UserProfile> updateUserProfile(Long userId, Long profileId, UserProfile userProfile) {
-        return Promise.pure(userProfileService.update(userId, profileId, userProfile));
+    public Promise<UserProfile> updateUserProfile(UserId userId, UserProfileId profileId, UserProfile userProfile) {
+        return Promise.pure(userProfileService.update(userId.getValue(), profileId.getValue(), userProfile));
     }
 
     @Override
-    public Promise<Void> deleteUserProfile(Long userId, Long profileId) {
-        userProfileService.deleteProfile(userId, profileId);
+    public Promise<Void> deleteUserProfile(UserId userId, UserProfileId profileId) {
+        userProfileService.deleteProfile(userId.getValue(), profileId.getValue());
         return Promise.pure(null);
     }
 }

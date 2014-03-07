@@ -6,6 +6,7 @@
 
 package com.junbo.identity.spec.resource;
 
+import com.junbo.common.id.AppId;
 import com.junbo.identity.spec.model.app.App;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
@@ -22,7 +23,7 @@ import javax.ws.rs.core.MediaType;
 public interface AppResource {
     @GET
     @Path("/{appId}")
-    Promise<App> getApp(@PathParam("appId") Long appId);
+    Promise<App> getApp(@PathParam("appId") AppId appId);
 
     @POST
     @Path("/")
@@ -30,9 +31,9 @@ public interface AppResource {
 
     @PUT
     @Path("/{appId}")
-    Promise<App> updateApp(@PathParam("appId") Long appId, App app);
+    Promise<App> updateApp(@PathParam("appId") AppId appId, App app);
 
     @DELETE
     @Path("/{appId}")
-    Promise<App> deleteApp(@PathParam("appId") Long appId);
+    Promise<App> deleteApp(@PathParam("appId") AppId appId);
 }
