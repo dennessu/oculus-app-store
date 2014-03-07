@@ -15,7 +15,6 @@ import com.junbo.catalog.spec.resource.CategoryResource;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,16 +26,7 @@ public class CategoryResourceImpl implements CategoryResource {
 
     @Override
     public Promise<ResultList<Category>> getCategories(EntitiesGetOptions options) {
-        List<Category> categories;
-        if (options.getEntityIds() != null && options.getEntityIds().size() > 0) {
-            categories = new ArrayList<>();
-            for (Long categoryId : options.getEntityIds()) {
-                categories.add(categoryService.getCategory(categoryId, EntityGetOptions.getDefault()));
-            }
-        } else {
-            options.ensurePagingValid();
-            categories = categoryService.getCategories(options.getStart(), options.getSize());
-        }
+        List<Category> categories = categoryService.getEntities(options);
         ResultList<Category> resultList = new ResultList<>();
         resultList.setResults(categories);
         resultList.setHref("href TODO");
@@ -46,11 +36,11 @@ public class CategoryResourceImpl implements CategoryResource {
 
     @Override
     public Promise<Category> getCategory(Long categoryId, EntityGetOptions options) {
-        return Promise.pure(categoryService.getCategory(categoryId, options));
+        return Promise.pure(categoryService.get(categoryId, options));
     }
 
     @Override
     public Promise<Category> createCategory(Category category) {
-        return Promise.pure(categoryService.createCategory(category));
+        return Promise.pure(categoryService.create(category));
     }
 }

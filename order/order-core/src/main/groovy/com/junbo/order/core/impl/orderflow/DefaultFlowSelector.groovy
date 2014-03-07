@@ -11,10 +11,12 @@ import com.junbo.order.core.FlowSelector
 import com.junbo.order.core.FlowType
 import com.junbo.order.core.OrderServiceOperation
 import com.junbo.order.core.impl.order.OrderServiceContext
+import com.junbo.order.core.impl.order.OrderServiceContextBuilder
 import com.junbo.order.spec.model.ItemType
 import com.junbo.order.spec.model.OrderType
 import com.junbo.payment.spec.model.PaymentInstrument
 import groovy.transform.CompileStatic
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 /**
@@ -23,6 +25,8 @@ import org.springframework.stereotype.Component
 @CompileStatic
 @Component('defaultFlowSelector')
 class DefaultFlowSelector implements FlowSelector {
+    @Autowired
+    OrderServiceContextBuilder orderServiceContextBuilder
 
     @Override
     Promise<FlowType> select(OrderServiceContext expOrder, OrderServiceOperation operation) {
@@ -36,7 +40,7 @@ class DefaultFlowSelector implements FlowSelector {
         }
     }
 
-    private static Promise<FlowType> selectCreateOrderFlow(OrderServiceContext expOrder) {
+    private Promise<FlowType> selectCreateOrderFlow(OrderServiceContext expOrder) {
         switch (expOrder.order?.type) {
             case OrderType.PAY_IN.toString():
                 return selectPayInFlow(expOrder)
@@ -46,7 +50,7 @@ class DefaultFlowSelector implements FlowSelector {
         return null
     }
 
-    private static Promise<FlowType> selectPayInFlow(OrderServiceContext context) {
+    private Promise<FlowType> selectPayInFlow(OrderServiceContext context) {
 
         if (context == null) {
             return null
@@ -56,7 +60,8 @@ class DefaultFlowSelector implements FlowSelector {
             return Promise.pure(FlowType.FREE_SETTLE)
         }
         // select order flow per payment info and product item info
-        context.paymentInstruments.syncThen { List<PaymentInstrument> pis ->
+
+        orderServiceContextBuilder.getPaymentInstruments(context).syncThen { List<PaymentInstrument> pis ->
             // TODO: do not support multiple payment methods now
             switch (pis[0]?.type) {
                 // TODO reference to payment instrument type

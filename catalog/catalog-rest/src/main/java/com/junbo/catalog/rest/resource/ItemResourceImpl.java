@@ -28,7 +28,7 @@ public class ItemResourceImpl implements ItemResource {
 
     @Override
     public Promise<ResultList<Item>> getItems(EntitiesGetOptions options) {
-        List<Item> items = itemService.getItems(options);
+        List<Item> items = itemService.getEntities(options);
         ResultList<Item> resultList = new ResultList<>();
         resultList.setResults(items);
         resultList.setHref("href TODO");
@@ -38,41 +38,41 @@ public class ItemResourceImpl implements ItemResource {
 
     @Override
     public Promise<Item> getItem(Long itemId, @BeanParam EntityGetOptions options) {
-        return Promise.pure(itemService.getItem(itemId, options));
+        return Promise.pure(itemService.get(itemId, options));
     }
 
     @Override
     public Promise<Item> createItem(@Valid Item item) {
-        return Promise.pure(itemService.createItem(item));
+        return Promise.pure(itemService.create(item));
     }
 
     @Override
     public Promise<Item> updateItem(@Valid Item item) {
-        return Promise.pure(itemService.updateItem(item));
+        return Promise.pure(itemService.update(item));
     }
 
     @Override
     public Promise<Item> createReview(Long itemId) {
-        return Promise.pure(itemService.reviewItem(itemId));
+        return Promise.pure(itemService.review(itemId));
     }
 
     @Override
     public Promise<Item> releaseItem(Long itemId) {
-        return Promise.pure(itemService.releaseItem(itemId));
+        return Promise.pure(itemService.release(itemId));
     }
 
     @Override
     public Promise<Item> rejectItem(Long itemId) {
-        return Promise.pure(itemService.rejectItem(itemId));
+        return Promise.pure(itemService.reject(itemId));
     }
 
     @Override
     public Promise<Long> removeItem(Long itemId) {
-        return Promise.pure(itemService.removeItem(itemId));
+        return Promise.pure(itemService.remove(itemId));
     }
 
     @Override
     public Promise<Long> deleteItem(Long itemId) {
-        return Promise.pure(itemService.deleteItem(itemId));
+        return Promise.pure(itemService.delete(itemId));
     }
 }

@@ -6,19 +6,12 @@
 
 package com.junbo.catalog.core;
 
-import com.junbo.catalog.spec.model.common.EntityGetOptions;
 import com.junbo.catalog.spec.model.promotion.Promotion;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 /**
  * Promotion service definition.
  */
 @Transactional
-public interface PromotionService {
-    Promotion createPromotion(Promotion promotion);
-    //Promotion updatePromotion(Promotion updatedPromotion);
-    Promotion getPromotion(Long promotionId, EntityGetOptions options);
-    List<Promotion> getEffectivePromotions(int page, int size);
+public interface PromotionService extends BaseService<Promotion> {
 }

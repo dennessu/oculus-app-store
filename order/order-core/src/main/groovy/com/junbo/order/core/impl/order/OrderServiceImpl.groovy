@@ -10,6 +10,7 @@ import com.junbo.billing.spec.model.Balance
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.executor.FlowExecutor
 import com.junbo.order.clientproxy.billing.BillingFacade
+import com.junbo.order.clientproxy.fulfillment.FulfillmentFacade
 import com.junbo.order.clientproxy.identity.IdentityFacade
 import com.junbo.order.clientproxy.payment.PaymentFacade
 import com.junbo.order.clientproxy.rating.RatingFacade
@@ -26,6 +27,7 @@ import com.junbo.rating.spec.model.request.OrderRatingRequest
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.util.CollectionUtils
 /**
  * Created by chriszhu on 2/7/14.
@@ -42,6 +44,8 @@ class OrderServiceImpl implements OrderService {
     @Autowired
     RatingFacade ratingFacade
     @Autowired
+    FulfillmentFacade fulfillmentFacade
+    @Autowired
     OrderRepository orderRepository
     @Autowired
     FlowSelector flowSelector
@@ -53,11 +57,13 @@ class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     Promise<List<Order>> createOrders(Order order, ApiContext context) {
         // TODO: split orders
         // TODO: expand external resources
-        def orderServiceContext = initOrderServiceContext(order, null)
-        flowSelector.select(orderServiceContext, OrderServiceOperation.CREATE).then { FlowType flowType ->
+        def orderServiceContext = initOrderServiceContext(order)
+        flowSelector.select(
+                new OrderServiceContext(order), OrderServiceOperation.CREATE).syncThen { FlowType flowType ->
             executeFlow(flowType, orderServiceContext, null)
         }.syncThen {
             return [orderServiceContext.order]
@@ -65,9 +71,10 @@ class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     Promise<List<Order>> settleQuote(Order order, ApiContext context) {
-        def orderServiceContext = initOrderServiceContext(order, null)
-        flowSelector.select(orderServiceContext, OrderServiceOperation.UPDATE_TENTATIVE).then { FlowType flowType ->
+        def orderServiceContext = initOrderServiceContext(order)
+        flowSelector.select(orderServiceContext, OrderServiceOperation.SETTLE_TENTATIVE).syncThen { FlowType flowType ->
             executeFlow(flowType, orderServiceContext, null)
         }.syncThen {
             return [orderServiceContext.order]
@@ -75,11 +82,13 @@ class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     Promise<Order> updateTentativeOrder(Order order, ApiContext context) {
         return null
     }
 
     @Override
+    @Transactional
     Promise<List<Order>> createQuotes(Order order, ApiContext context) {
 
         List<Order> orders = []
@@ -104,7 +113,7 @@ class OrderServiceImpl implements OrderService {
         orderRepository.createOrder(order, orderEvent)
 
         // Calculate Tax
-        def balanceRequest = CoreBuilder.buildBalance(initOrderServiceContext(order, null), BalanceType.DEBIT)
+        def balanceRequest = CoreBuilder.buildBalance(initOrderServiceContext(order), BalanceType.DEBIT)
         billingFacade.quoteBalance(balanceRequest).syncThen { Balance balance ->
             order.isTaxInclusive = balance.taxIncluded
             order.totalTax = balance.taxAmount
@@ -116,68 +125,74 @@ class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     Promise<Order> getOrderByOrderId(Long orderId) {
-        def orderServiceContext = initOrderServiceContext(null, orderId)
+        def orderServiceContext = initOrderServiceContext(null)
+        Map<String, Object> requestScope = ['GetOrderAction_OrderId':(Object)orderId]
         flowSelector.select(orderServiceContext, OrderServiceOperation.GET).syncThen { FlowType flowType ->
-
-            executeFlow(flowType, orderServiceContext, null).syncThen { List<Order> orders ->
+            executeFlow(flowType, orderServiceContext, requestScope).syncThen { List<Order> orders ->
                 if (CollectionUtils.isEmpty(orders)) {
-                    return Promise.pure(null)
+                    return null
                 }
-                def order = orderServiceContext.order
+                // TODO need refactor the get logic
                 // order items
-                order.setOrderItems(orderRepository.getOrderItems(orderId))
+                orders[0].setOrderItems(orderRepository.getOrderItems(orderId))
                 // rating info
-                order.totalAmount = 0
-                order.orderItems?.each { OrderItem orderItem ->
+                orders[0].totalAmount = 0
+                orders[0].orderItems?.each { OrderItem orderItem ->
                     if (orderItem.totalAmount != null) {
-                        order.totalAmount += orderItem.totalAmount
+                        orders[0].totalAmount += orderItem.totalAmount
                     }
                 }
                 // payment instrument
-                order.setPaymentInstruments(orderRepository.getPaymentInstrumentIds(orderId))
+                orders[0].setPaymentInstruments(orderRepository.getPaymentInstrumentIds(orderId))
                 // discount
-                order.setDiscounts(orderRepository.getDiscounts(orderId))
+                orders[0].setDiscounts(orderRepository.getDiscounts(orderId))
+                return orders[0]
             }
         }
     }
 
     @Override
+    @Transactional
     Promise<Order> cancelOrder(Order request) {
         return null
     }
 
     @Override
+    @Transactional
     Promise<Order> refundOrder(Order request) {
         return null
     }
 
     @Override
+    @Transactional
     Promise<List<Order>> getOrders(Order request) {
         return null
     }
 
     @Override
+    @Transactional
     Promise<OrderEvent> updateOrderBillingStatus(OrderEvent event) {
         return null
     }
 
     @Override
+    @Transactional
     Promise<OrderEvent> updateOrderFulfillmentStatus(OrderEvent event) {
         return null
     }
 
-    private Promise<OrderServiceContext> executeFlow(FlowType flowType, OrderServiceContext context,
-                                                     Map<String, Object> requestScope) {
+    private Promise<OrderServiceContext> executeFlow(
+            FlowType flowType, OrderServiceContext context,
+            Map<String, Object> requestScope) {
         return flowExecutor.start(flowType.name(), ActionUtils.initRequestScope(context, requestScope)).syncThen {
             return context
         }
     }
 
-    private OrderServiceContext initOrderServiceContext(Order order, Long orderId) {
-        OrderServiceContext context = new OrderServiceContext()
-        context.order = order
-        context.orderId = orderId
+    private OrderServiceContext initOrderServiceContext(Order order) {
+        OrderServiceContext context = new OrderServiceContext(order)
         return context
     }
 }

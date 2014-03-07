@@ -18,18 +18,31 @@ import java.util.List;
 /**
  * Category draft repository.
  */
-public class CategoryDraftRepository {
+public class CategoryDraftRepository implements EntityDraftRepository<Category> {
     @Autowired
     private CategoryDraftDao categoryDraftDao;
 
+    @Override
     public Long create(Category category) {
         CategoryDraftEntity entity = CategoryConverter.toDraftEntity(category);
         return categoryDraftDao.create(entity);
     }
 
+    @Override
     public Category get(Long id) {
         CategoryDraftEntity entity = categoryDraftDao.get(id);
         return CategoryConverter.toModel(entity);
+    }
+
+    @Override
+    public Long update(Category category) {
+        // TODO
+        return null;
+    }
+
+    @Override
+    public List<Category> getEntities(int start, int size) {
+        return getCategories(start, size);
     }
 
     public List<Category> getCategories(int start, int size) {
