@@ -6,8 +6,8 @@
 
 package com.junbo.sharding.impl;
 
-import com.junbo.sharding.dao.ShardIdGlobalCounterDAO;
-import com.junbo.sharding.model.ShardIdGlobalCounterEntity;
+import com.junbo.sharding.dao.IdGlobalCounterDAO;
+import com.junbo.sharding.model.IdGlobalCounterEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,14 +17,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class GlobalCounterInDBImpl implements GlobalCounter {
     @Autowired
-    private ShardIdGlobalCounterDAO shardIdGlobalCounterDAO;
+    private IdGlobalCounterDAO shardIdGlobalCounterDAO;
 
     @Override
     public int getAndIncrease(int shardId, int timeSec, int optionMode) {
-        ShardIdGlobalCounterEntity entity = shardIdGlobalCounterDAO.get((long)optionMode, (long)shardId);
+        IdGlobalCounterEntity entity = shardIdGlobalCounterDAO.get((long)optionMode, (long)shardId);
 
         if(entity == null) {
-            entity = new ShardIdGlobalCounterEntity();
+            entity = new IdGlobalCounterEntity();
             entity.setOptionMode((long)optionMode);
             entity.setShardId((long)shardId);
             entity.setGlobalCounter(0L);

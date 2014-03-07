@@ -97,12 +97,12 @@ public class IdGeneratorSlotImpl implements IdGeneratorSlot {
             return value;
         } else if (optionMode == 2 || optionMode == 3) {
             long value = 0;
-            value = (value << idSchema.getBitsInIdSignificant()) + slotData.idSignificant;
-            value = (value << idSchema.getBitsInIdVersion()) + slotData.idVersion;
-            value = (value << idSchema.getDataCenterId()) + slotData.dataCenterId;
-            value = (value << idSchema.getBitsInShard()) + shardId;
             value = (value << idSchema.getBitsInGlobalCounter()) + slotData.globalCounter;
             value = (value << idSchema.getBitsInLocalCounter()) + slotData.localCounter.intValue();
+            value = (value << idSchema.getBitsInShard()) + shardId;
+            value = (value << idSchema.getDataCenterId()) + slotData.dataCenterId;
+            value = (value << idSchema.getBitsInIdVersion()) + slotData.idVersion;
+            value = (value << idSchema.getBitsInIdSignificant()) + slotData.idSignificant;
             return value;
         } else {
             throw new IllegalArgumentException("unsupported optionMode.");
