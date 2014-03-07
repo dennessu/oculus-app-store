@@ -51,7 +51,8 @@ class BillingFacadeImpl implements BillingFacade {
 
     @Override
     Promise<ShippingAddress> getShippingAddress(Long shippingAddressId) {
-        return shippingAddressResource.getShippingAddress(shippingAddressId)
+        return shippingAddressResource.getShippingAddress(
+                System.currentTimeMillis(), shippingAddressId) // provide the user id
     }
 
     @Override
