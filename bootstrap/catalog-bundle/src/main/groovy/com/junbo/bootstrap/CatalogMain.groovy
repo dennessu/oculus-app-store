@@ -5,6 +5,8 @@
  */
 package com.junbo.bootstrap
 
+import com.junbo.common.id.converter.IdTypeFromStringConverter
+import com.junbo.common.id.provider.IdTypeFromStringProvider
 import com.junbo.common.json.JacksonFeature
 import com.junbo.common.json.ObjectMapperProvider
 import groovy.transform.CompileStatic
@@ -31,6 +33,10 @@ class CatalogMain {
 
         // present properties - Get /properties
         resourceConfig.register(com.junbo.configuration.ConfigResource)
+
+        // Id type feature
+        resourceConfig.register(IdTypeFromStringConverter)
+        resourceConfig.register(IdTypeFromStringProvider)
 
         // packages
         resourceConfig.packages('com.junbo.catalog.spec.resource.adapter')
