@@ -6,17 +6,19 @@
 
 package com.junbo.rating.core.service;
 
+import com.junbo.catalog.spec.model.domaindata.ShippingMethod;
+import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.promotion.Promotion;
 import com.junbo.catalog.spec.model.promotion.PromotionType;
 import com.junbo.rating.core.builder.OrderRatingResultBuilder;
 import com.junbo.rating.core.context.RatingContext;
-import com.junbo.rating.spec.model.Money;
-import com.junbo.rating.spec.model.OrderResultEntry;
-import com.junbo.rating.spec.model.RatableItem;
-import com.junbo.rating.spec.model.RatingResultEntry;
+import com.junbo.rating.spec.fusion.LinkedEntry;
+import com.junbo.rating.spec.fusion.RatingOffer;
+import com.junbo.rating.spec.model.*;
 import com.junbo.rating.spec.model.request.OrderRatingRequest;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -69,6 +71,7 @@ public class OrderRatingService extends RatingServiceSupport{
             RatingResultEntry entry = new RatingResultEntry();
             entry.setOfferId(item.getOfferId());
             entry.setQuantity(item.getQuantity());
+            entry.setShippingMethodId(item.getShippingMethodId());
             entry.setOriginalAmount(originalPrice);
             entry.setAppliedPromotion(new HashSet<Long>());
             for (Promotion promotion : promotions) {
@@ -98,7 +101,7 @@ public class OrderRatingService extends RatingServiceSupport{
         OrderResultEntry result = new OrderResultEntry();
         result.setOriginalAmount(totalAmount);
         //for criterion validation
-        context.setOrderResultEntry(result);
+        context.setOrderResult(result);
 
         Money bestBenefit = new Money(BigDecimal.ZERO, context.getCurrency());
 
@@ -123,10 +126,57 @@ public class OrderRatingService extends RatingServiceSupport{
             }
         }
         result.setDiscountAmount(bestBenefit);
-        context.setOrderResultEntry(result);
+        context.setOrderResult(result);
     }
 
     private void calculateShippingFee(RatingContext context) {
+        BigDecimal shippingFee = BigDecimal.ZERO;
+        Map<Long, Integer> shippingDetail = new HashMap<Long, Integer>();
 
+        for (RatableItem item : context.getItems()) {
+            if (item.getShippingMethodId() == null) {
+                continue;
+            }
+            if (!shippingDetail.containsKey(item.getShippingMethodId())) {
+                shippingDetail.put(item.getShippingMethodId(), 0);
+            }
+            shippingDetail.put(item.getShippingMethodId(),
+                    shippingDetail.get(item.getShippingMethodId()) + getQuantity(item.getOffer(), item.getQuantity()));
+        }
+
+        for (Long shippingMethodId : shippingDetail.keySet()) {
+            int quantity = shippingDetail.get(shippingMethodId);
+            ShippingMethod shippingMethod = catalogGateway.getShippingMethod(shippingMethodId);
+            shippingFee = shippingFee.add(shippingMethod.getBasePrice());
+            if (quantity > shippingMethod.getBaseUnit()) {
+                int additionalUnit = quantity > shippingMethod.getCapUnit() ?
+                        shippingMethod.getCapUnit() - shippingMethod.getBaseUnit()
+                        : quantity - shippingMethod.getBaseUnit();
+                shippingFee = shippingFee.add(
+                        shippingMethod.getAdditionalPrice().multiply(new BigDecimal(additionalUnit)));
+            }
+        }
+
+        ShippingResultEntry result = new ShippingResultEntry();
+        result.setShippingFee(shippingFee);
+        context.setShippingResult(result);
+    }
+
+    private int getQuantity(RatingOffer ratingOffer, int quantity) {
+        int result = 0;
+
+        for (LinkedEntry entry : ratingOffer.getItems()) {
+            Item item = catalogGateway.getItem(entry.getEntryId());
+            if ("Physical".equalsIgnoreCase(item.getType())) {
+                result += entry.getQuantity();
+            }
+        }
+
+        for (LinkedEntry entry : ratingOffer.getSubOffers()) {
+            RatingOffer offer = catalogGateway.getOffer(entry.getEntryId());
+            result += getQuantity(offer, entry.getQuantity());
+        }
+
+        return quantity * result;
     }
 }

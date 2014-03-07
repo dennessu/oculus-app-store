@@ -6,6 +6,8 @@
 
 package com.junbo.rating.clientproxy;
 
+import com.junbo.catalog.spec.model.domaindata.ShippingMethod;
+import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.promotion.Promotion;
 import com.junbo.rating.spec.fusion.RatingOffer;
 
@@ -15,7 +17,8 @@ import java.util.List;
  * Created by lizwu on 2/25/14.
  */
 public interface CatalogGateway {
+    Item getItem(Long itemId);
     RatingOffer getOffer(Long offerId);
     List<Promotion> getPromotions();
-
+    ShippingMethod getShippingMethod(Long shippingMethodId);
 }
