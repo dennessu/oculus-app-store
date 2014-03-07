@@ -5,11 +5,14 @@
  */
 package com.junbo.order.spec.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.junbo.common.id.OrderId;
 import com.junbo.common.id.PaymentInstrumentId;
+import com.junbo.common.id.ShippingAddressId;
 import com.junbo.common.id.UserId;
+import com.junbo.common.jackson.annotation.ShippingMethodId;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -24,6 +27,7 @@ import java.util.UUID;
         "tentative", "resourceAge", "originalOrder", "ratingInfo", "shippingMethodId",
         "shippingAddressId", "paymentInstruments", "refundOrders", "discounts", "orderItems"
 })
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Order extends BaseModelWithDate {
     @JsonProperty("self")
     private OrderId id;
@@ -49,8 +53,9 @@ public class Order extends BaseModelWithDate {
     // end of ratingInfo
 
     // expand shippingInfo to simplify oom
+    @ShippingMethodId
     private Long shippingMethodId;
-    private Long shippingAddressId;
+    private ShippingAddressId shippingAddressId;
     // end of shippingInfo
 
     private List<PaymentInstrumentId> paymentInstruments;
@@ -210,11 +215,11 @@ public class Order extends BaseModelWithDate {
         this.shippingMethodId = shippingMethodId;
     }
 
-    public Long getShippingAddressId() {
+    public ShippingAddressId getShippingAddressId() {
         return shippingAddressId;
     }
 
-    public void setShippingAddressId(Long shippingAddressId) {
+    public void setShippingAddressId(ShippingAddressId shippingAddressId) {
         this.shippingAddressId = shippingAddressId;
     }
 

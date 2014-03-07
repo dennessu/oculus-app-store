@@ -5,8 +5,11 @@
  */
 package com.junbo.oauth.core.action
 
-import com.junbo.oauth.core.context.ServiceContext
-import com.junbo.oauth.core.util.ServiceContextUtil
+import com.junbo.langur.core.promise.Promise
+import com.junbo.langur.core.webflow.action.Action
+import com.junbo.langur.core.webflow.action.ActionContext
+import com.junbo.langur.core.webflow.action.ActionResult
+import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.db.repo.RememberMeTokenRepository
 import com.junbo.oauth.spec.model.LoginState
 import com.junbo.oauth.spec.model.RememberMeToken
@@ -19,10 +22,11 @@ import org.springframework.beans.factory.annotation.Required
 import javax.ws.rs.core.Cookie
 
 /**
- * Javadoc.
+ * LoadRememberMeToken.
  */
 @CompileStatic
 class LoadRememberMeToken implements Action {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(LoadRememberMeToken)
 
     private RememberMeTokenRepository rememberMeTokenRepository
@@ -33,20 +37,21 @@ class LoadRememberMeToken implements Action {
     }
 
     @Override
-    boolean execute(ServiceContext context) {
-        def cookieMap = ServiceContextUtil.getCookieMap(context)
+    Promise<ActionResult> execute(ActionContext context) {
+        def contextWrapper = new ActionContextWrapper(context)
+        def cookieMap = contextWrapper.cookieMap
 
         Cookie rememberMeCookie = cookieMap.get(OAuthParameters.REMEMBER_ME)
 
         if (rememberMeCookie == null) {
-            return true
+            return Promise.pure(null)
         }
 
         RememberMeToken rememberMeToken = rememberMeTokenRepository.getAndRemove(rememberMeCookie.value)
 
         if (rememberMeToken == null || rememberMeToken.isExpired()) {
             LOGGER.warn("The remember me token $rememberMeCookie.value is invalid, silently ignore")
-            return true
+            return Promise.pure(null)
         }
 
         LoginState loginState = new LoginState(
@@ -54,10 +59,10 @@ class LoadRememberMeToken implements Action {
                 lastAuthDate: rememberMeToken.lastAuthDate
         )
 
-        ServiceContextUtil.setNeedRememberMe(context, true)
-        ServiceContextUtil.setRememberMeToken(context, rememberMeToken)
-        ServiceContextUtil.setLoginState(context, loginState)
+        contextWrapper.needRememberMe = true
+        contextWrapper.rememberMeToken = rememberMeToken
+        contextWrapper.loginState = loginState
 
-        return true
+        return Promise.pure(null)
     }
 }

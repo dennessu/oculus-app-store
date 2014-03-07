@@ -6,6 +6,7 @@
 package com.junbo.order.spec.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.junbo.common.id.OrderId;
@@ -24,6 +25,7 @@ import java.util.Date;
         "totalPreorderTax", "createdTime", "createdBy", "updatedTime", "updatedBy", "resourceAge",
         "fulfillmentIds", "preorderInfo", "sellerInfo", "federatedId", "properties"
 })
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class OrderItem extends BaseModelWithDate {
     @JsonProperty("self")
     private OrderItemId id;

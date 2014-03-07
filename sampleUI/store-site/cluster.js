@@ -2,7 +2,8 @@ var cluster = require('cluster');
 
 var workers = {};
 if(cluster.isMaster){
-    var cpuCount = require('os').cpus().length/2;
+    //var cpuCount = require('os').cpus().length/2;
+    var cpuCount = 2;
 
     cluster.on('exit', function(worker){
         var originPID = worker.process.pid;

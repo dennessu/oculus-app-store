@@ -8,6 +8,9 @@ package com.junbo.cart.spec.resource;
 import com.junbo.cart.spec.model.Cart;
 import com.junbo.cart.spec.model.item.CouponItem;
 import com.junbo.cart.spec.model.item.OfferItem;
+import com.junbo.common.id.CartId;
+import com.junbo.common.id.CartItemId;
+import com.junbo.common.id.UserId;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 
@@ -25,52 +28,52 @@ public interface CartResource {
 
     @POST
     @Path("/{userId}/carts")
-    Promise<Cart> addCart(@PathParam("userId") Long userId, Cart cart);
+    Promise<Cart> addCart(@PathParam("userId") UserId userId, Cart cart);
 
     @GET
     @Path("/{userId}/carts/{cartId}")
-    Promise<Cart> getCart(@PathParam("userId") Long userId, @PathParam("cartId") Long cartId);
+    Promise<Cart> getCart(@PathParam("userId") UserId userId, @PathParam("cartId") CartId cartId);
 
     @GET
     @Path("/{userId}/carts/primary")
-    Promise<Cart> getCartPrimary(@PathParam("userId") Long userId);
+    Promise<Cart> getCartPrimary(@PathParam("userId") UserId userId);
 
     @GET
     @Path("/{userId}/carts")
-    Promise<Cart> getCartByName(@PathParam("userId") Long userId, @QueryParam("cartName") String cartName);
+    Promise<Cart> getCartByName(@PathParam("userId") UserId userId, @QueryParam("cartName") String cartName);
 
     @PUT
     @Path("/{userId}/carts/{cartId}")
-    Promise<Cart> updateCart(@PathParam("userId") Long userId,
-                                      @PathParam("cartId") Long cartId, Cart cart);
+    Promise<Cart> updateCart(@PathParam("userId") UserId userId,
+                                      @PathParam("cartId") CartId cartId, Cart cart);
 
     @POST
     @Path("/{userId}/carts/{cartId}/merge")
-    Promise<Cart> mergeCart(@PathParam("userId") Long userId,
-                                     @PathParam("cartId") Long cartId, Cart fromCart);
+    Promise<Cart> mergeCart(@PathParam("userId") UserId userId,
+                                     @PathParam("cartId") CartId cartId, Cart fromCart);
 
     @POST
     @Path("/{userId}/carts/{cartId}/offers")
-    Promise<Cart> addOffer(@PathParam("userId") Long userId,
-                                    @PathParam("cartId") Long cartId, OfferItem offer);
+    Promise<Cart> addOffer(@PathParam("userId") UserId userId,
+                                    @PathParam("cartId") CartId cartId, OfferItem offer);
 
     @PUT
     @Path("/{userId}/carts/{cartId}/offers/{offerItemId}")
-    Promise<Cart> updateOffer(@PathParam("userId") Long userId, @PathParam("cartId") Long cartId,
-                                           @PathParam("offerItemId") Long offerItemId, OfferItem offer);
+    Promise<Cart> updateOffer(@PathParam("userId") UserId userId, @PathParam("cartId") CartId cartId,
+                                           @PathParam("offerItemId") CartItemId offerItemId, OfferItem offer);
 
     @DELETE
     @Path("/{userId}/carts/{cartId}/offers/{offerItemId}")
-    Promise<Void> deleteOffer(@PathParam("userId") Long userId, @PathParam("cartId") Long cartId,
-                                       @PathParam("offerItemId") Long offerItemId);
+    Promise<Void> deleteOffer(@PathParam("userId") UserId userId, @PathParam("cartId") CartId cartId,
+                                       @PathParam("offerItemId") CartItemId offerItemId);
 
     @POST
     @Path("/{userId}/carts/{cartId}/coupons/")
-    Promise<Cart> addCoupon(@PathParam("userId") Long userId, @PathParam("cartId") Long cartId,
+    Promise<Cart> addCoupon(@PathParam("userId") UserId userId, @PathParam("cartId") CartId cartId,
                                      CouponItem couponItem);
 
     @DELETE
     @Path("/{userId}/carts/{cartId}/coupons/{couponItemId}")
-    Promise<Void> deleteCoupon(@PathParam("userId") Long userId, @PathParam("cartId") Long cartId,
-                                        @PathParam("couponItemId") Long couponItemId);
+    Promise<Void> deleteCoupon(@PathParam("userId") UserId userId, @PathParam("cartId") CartId cartId,
+                                        @PathParam("couponItemId") CartItemId couponItemId);
 }

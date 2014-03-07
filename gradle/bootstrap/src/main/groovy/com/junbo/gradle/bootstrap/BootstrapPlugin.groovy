@@ -31,7 +31,6 @@ class BootstrapPlugin implements Plugin<Project> {
         Files.copy(libResource, libPath, StandardCopyOption.REPLACE_EXISTING)
 
         rootProject.apply from: "$rootProject.projectDir/build/libraries.gradle"
-
         rootProject.idea {
             project {
                 jdkName = 1.7
@@ -167,7 +166,7 @@ class BootstrapPlugin implements Plugin<Project> {
                 }
 
                 tasks.withType(Checkstyle) {
-                   it.dependsOn 'unzipCheckstyleConfigFile'
+                    it.dependsOn 'unzipCheckstyleConfigFile'
                 }
             }
 
@@ -222,6 +221,17 @@ class BootstrapPlugin implements Plugin<Project> {
                 tasks.withType(CodeNarc) {
                     it.dependsOn 'unzipCodenarcConfigFile'
                 }
+            }
+        }
+        
+        rootProject.apply plugin: "sonar-runner"
+        rootProject.sonarRunner {
+            sonarProperties {
+                property "sonar.host.url", "http://sonar.wansan.internal:9000"
+                property "sonar.jdbc.url", "jdbc:mysql://sonar.wansan.internal:3306/sonar"
+                property "sonar.jdbc.driverClassName", "com.mysql.jdbc.Driver"
+                property "sonar.jdbc.username", "root"
+                property "sonar.jdbc.password", ""
             }
         }
     }

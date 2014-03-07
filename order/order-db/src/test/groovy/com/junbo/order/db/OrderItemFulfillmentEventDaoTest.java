@@ -9,7 +9,7 @@ package com.junbo.order.db;
 import com.junbo.order.db.common.TestHelper;
 import com.junbo.order.db.dao.OrderItemFulfillmentEventDao;
 import com.junbo.order.db.entity.OrderItemFulfillmentEventEntity;
-import com.junbo.order.spec.model.FulfillmentAction;
+import com.junbo.order.db.entity.enums.FulfillmentAction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.Test;

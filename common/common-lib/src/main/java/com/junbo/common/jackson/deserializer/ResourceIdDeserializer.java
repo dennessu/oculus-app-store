@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * Java doc.
+ * ResourceIdDeserializer.
  */
 public class ResourceIdDeserializer extends JsonDeserializer<Object> implements ResourceCollectionAware {
     private static final String ID_FIELD = "id";
@@ -23,38 +23,43 @@ public class ResourceIdDeserializer extends JsonDeserializer<Object> implements 
     // thread safe
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
-    private Class<?> collectionType;
+    private Class<? extends Collection> collectionType;
+
+    private Class<?> componentType;
 
     @Override
-    public void injectCollectionType(Class<?> collectionType) {
+    public void injectCollectionType(Class<? extends Collection> collectionType) {
         this.collectionType = collectionType;
+    }
+
+    @Override
+    public void injectComponentType(Class<?> componentType) {
+        this.componentType = componentType;
     }
 
     @Override
     public Object deserialize(JsonParser jsonParser, DeserializationContext context)
             throws IOException {
-        // for now, we assume id type is Long
         return isCollection() ? handleCollection(jsonParser) : handleSingle(jsonParser);
     }
 
-    private Long handleSingle(JsonParser jsonParser) throws IOException {
+    private Object handleSingle(JsonParser jsonParser) throws IOException {
         ResourceRef resourceRef = MAPPER.readValue(jsonParser, ResourceRef.class);
 
         if (resourceRef == null) {
             return null;
         }
 
-        return Long.valueOf(resourceRef.getId());
+        return parse(resourceRef.getId());
     }
 
     private Object handleCollection(JsonParser jsonParser) throws IOException {
-        Iterator mappingIterator = (Iterator) MAPPER.readValues(jsonParser, collectionType);
-        Collection<Long> results = createEmptyCollection(collectionType);
+        Collection<Object> results = createEmptyCollection(collectionType);
+        Collection<ResourceRef> references = MAPPER.readValue(jsonParser,
+                MAPPER.getTypeFactory().constructCollectionType(collectionType, ResourceRef.class));
 
-        // hack however works, maybe can be improved in the future >_<
-        Iterator it = ((Iterable) mappingIterator.next()).iterator();
-        while (it.hasNext()) {
-            results.add(Long.valueOf(((Map) it.next()).get(ID_FIELD).toString()));
+        for (ResourceRef ref : references) {
+            results.add(parse(ref.getId()));
         }
 
         return results;
@@ -64,16 +69,27 @@ public class ResourceIdDeserializer extends JsonDeserializer<Object> implements 
         return collectionType != null;
     }
 
-    private Collection<Long> createEmptyCollection(Class collectionType) {
+    private Collection<Object> createEmptyCollection(Class collectionType) {
         if (List.class.equals(collectionType)) {
-            return new ArrayList<Long>();
+            return new ArrayList<Object>();
         }
 
         if (Set.class.equals(collectionType)) {
-            return new HashSet<Long>();
+            return new HashSet<Object>();
         }
 
         throw new IllegalStateException(
                 "Unsupported collection type [" + collectionType + "] for ResourceIdDeserializer");
+    }
+
+    private <T> T parse(String input) {
+        // for now, we only support String/Integer/Long id types
+        if (componentType == Long.class) {
+            return (T) Long.valueOf(input);
+        } else if (componentType == Integer.class) {
+            return (T) Integer.valueOf(input);
+        }
+
+        return (T) input;
     }
 }

@@ -5,10 +5,13 @@
  */
 package com.junbo.oauth.core.action
 
-import com.junbo.oauth.core.context.ServiceContext
+import com.junbo.langur.core.promise.Promise
+import com.junbo.langur.core.webflow.action.Action
+import com.junbo.langur.core.webflow.action.ActionContext
+import com.junbo.langur.core.webflow.action.ActionResult
+import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.exception.AppExceptions
 import com.junbo.oauth.core.service.TokenGenerationService
-import com.junbo.oauth.core.util.ServiceContextUtil
 import com.junbo.oauth.spec.model.IdToken
 import com.junbo.oauth.spec.model.LoginState
 import com.junbo.oauth.spec.param.OAuthParameters
@@ -18,7 +21,7 @@ import org.springframework.util.Assert
 import org.springframework.util.StringUtils
 
 /**
- * Javadoc.
+ * LoadIdTokenHint.
  */
 @CompileStatic
 class LoadIdTokenHint implements Action {
@@ -32,28 +35,37 @@ class LoadIdTokenHint implements Action {
     }
 
     @Override
-    boolean execute(ServiceContext context) {
-        def parameterMap = ServiceContextUtil.getParameterMap(context)
-        def appClient = ServiceContextUtil.getAppClient(context)
+    Promise<ActionResult> execute(ActionContext context) {
+        def contextWrapper = new ActionContextWrapper(context)
 
-        Assert.notNull(appClient)
+        def parameterMap = contextWrapper.parameterMap
+        def client = contextWrapper.client
+
+        Assert.notNull(client, 'client is null')
+
+        String nonce = parameterMap.getFirst(OAuthParameters.NONCE)
+
+        if (StringUtils.hasText(nonce)) {
+            def oauthInfo = contextWrapper.oauthInfo
+            oauthInfo.nonce = nonce
+        }
 
         String idTokenHint = parameterMap.getFirst(OAuthParameters.ID_TOKEN_HINT)
 
         if (!StringUtils.hasText(idTokenHint)) {
-            return true
+            return Promise.pure(null)
         }
 
-        IdToken idToken = tokenGenerationService.parseIdToken(appClient, idTokenHint)
+        IdToken idToken = tokenGenerationService.parseIdToken(client, idTokenHint)
 
-        String issuer = GrantIdToken.getIssuer(context)
+        String issuer = client.idTokenIssuer
 
         if (issuer != idToken.iss) {
             throw AppExceptions.INSTANCE.invalidIdTokenIssuer().exception()
         }
 
-        if (!idToken.aud.contains(appClient.clientId)) {
-            throw AppExceptions.INSTANCE.invalidIdTokenAudience(appClient.clientId).exception()
+        if (!idToken.aud.contains(client.clientId)) {
+            throw AppExceptions.INSTANCE.invalidIdTokenAudience(client.clientId).exception()
         }
 
         if (idToken.exp < System.currentTimeMillis() / MILLISECONDS_PER_SECOND) {
@@ -68,8 +80,8 @@ class LoadIdTokenHint implements Action {
             loginState.lastAuthDate = new Date(idToken.authTime * MILLISECONDS_PER_SECOND)
         }
 
-        ServiceContextUtil.setLoginState(context, loginState)
+        contextWrapper.loginState = loginState
 
-        return true
+        return Promise.pure(null)
     }
 }

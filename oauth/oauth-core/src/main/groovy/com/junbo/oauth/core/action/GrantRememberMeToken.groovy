@@ -5,23 +5,25 @@
  */
 package com.junbo.oauth.core.action
 
-import com.junbo.oauth.core.context.ServiceContext
-import com.junbo.oauth.core.util.ServiceContextUtil
+import com.junbo.langur.core.promise.Promise
+import com.junbo.langur.core.webflow.action.Action
+import com.junbo.langur.core.webflow.action.ActionContext
+import com.junbo.langur.core.webflow.action.ActionResult
+import com.junbo.oauth.core.context.ActionContextWrapper
+import com.junbo.oauth.core.util.CookieUtil
 import com.junbo.oauth.db.repo.RememberMeTokenRepository
 import com.junbo.oauth.spec.model.RememberMeToken
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
-import org.glassfish.jersey.server.ContainerRequest
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.Assert
 
-import javax.ws.rs.core.NewCookie
-
 /**
- * Javadoc.
+ * GrantRememberMeToken.
  */
 @CompileStatic
 class GrantRememberMeToken implements Action {
+
     private RememberMeTokenRepository rememberMeTokenRepository
 
     private int defaultRememberMeTokenExpiration
@@ -36,23 +38,26 @@ class GrantRememberMeToken implements Action {
         this.defaultRememberMeTokenExpiration = defaultRememberMeTokenExpiration
     }
 
+
     @Override
-    boolean execute(ServiceContext context) {
-        def needRememberMe = ServiceContextUtil.getNeedRememberMe(context)
+    Promise<ActionResult> execute(ActionContext context) {
+        def contextWrapper = new ActionContextWrapper(context)
+
+        def needRememberMe = contextWrapper.needRememberMe
 
         if (!needRememberMe) {
-            return true
+            return Promise.pure(null)
         }
 
-        def loginState = ServiceContextUtil.getLoginState(context)
-        Assert.notNull(loginState)
+        def loginState = contextWrapper.loginState
+        Assert.notNull(loginState, 'loginState is null')
 
         RememberMeToken newToken = new RememberMeToken(
                 userId: loginState.userId,
                 expiredBy: new Date(System.currentTimeMillis() + defaultRememberMeTokenExpiration * 1000)
         )
 
-        def rememberMeToken = ServiceContextUtil.getRememberMeToken(context)
+        def rememberMeToken = contextWrapper.rememberMeToken
         if (rememberMeToken != null) {
             newToken.tokenValue = rememberMeToken.tokenValue
             newToken.lastAuthDate = rememberMeToken.lastAuthDate
@@ -62,19 +67,9 @@ class GrantRememberMeToken implements Action {
 
         rememberMeTokenRepository.save(newToken)
 
-        setCookie(newToken.tokenValue, context)
+        CookieUtil.setCookie(OAuthParameters.REMEMBER_ME, newToken.tokenValue,
+                defaultRememberMeTokenExpiration, context)
 
-        return true
-    }
-
-    private void setCookie(String value, ServiceContext context) {
-        def request = ServiceContextUtil.getRequest(context)
-        URI uri = ((ContainerRequest) request).baseUri
-
-        NewCookie cookie = new NewCookie(OAuthParameters.REMEMBER_ME, value, uri.path,
-                uri.host, null, defaultRememberMeTokenExpiration, uri.scheme == 'https')
-
-        List<NewCookie> responseCookieList = ServiceContextUtil.getResponseCookieList(context)
-        responseCookieList.add(cookie)
+        return Promise.pure(null)
     }
 }

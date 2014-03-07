@@ -12,7 +12,7 @@ package com.junbo.order.core;
 public enum OrderServiceOperation {
     CREATE,
     GET,
-    UPDATE_TENTATIVE,
+    SETTLE_TENTATIVE,
     UPDATE,
     CANCEL,
     ADJUST

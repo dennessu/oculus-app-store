@@ -61,6 +61,16 @@ public class BrainTreeRestProviderServiceImpl implements PaymentProviderService 
 
     }
 
+    @Override
+    public Promise<PaymentTransaction> getByOrderId(String orderId) {
+        return null;
+    }
+
+    @Override
+    public Promise<PaymentTransaction> getByTransactionToken(String token) {
+        return null;
+    }
+
     public void setBrainTreeResource(BrainTreeResource brainTreeResource) {
         this.brainTreeResource = brainTreeResource;
     }

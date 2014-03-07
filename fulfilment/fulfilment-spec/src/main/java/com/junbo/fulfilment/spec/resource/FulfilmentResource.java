@@ -5,6 +5,8 @@
  */
 package com.junbo.fulfilment.spec.resource;
 
+import com.junbo.common.id.FulfilmentId;
+import com.junbo.common.id.OrderId;
 import com.junbo.fulfilment.spec.model.FulfilmentItem;
 import com.junbo.fulfilment.spec.model.FulfilmentRequest;
 import com.junbo.langur.core.RestResource;
@@ -28,9 +30,9 @@ public interface FulfilmentResource {
 
     @GET
     @Path("/")
-    Promise<FulfilmentRequest> getByBillingOrderId(@QueryParam("billingOrderId") Long billingOrderId);
+    Promise<FulfilmentRequest> getByBillingOrderId(@QueryParam("billingOrderId") OrderId orderId);
 
     @GET
     @Path("/{fulfilmentId}")
-    Promise<FulfilmentItem> getByFulfilmentId(@PathParam("fulfilmentId") Long billingOrderId);
+    Promise<FulfilmentItem> getByFulfilmentId(@PathParam("fulfilmentId") FulfilmentId billingOrderId);
 }

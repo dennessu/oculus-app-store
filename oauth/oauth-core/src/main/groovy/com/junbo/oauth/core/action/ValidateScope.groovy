@@ -5,24 +5,27 @@
  */
 package com.junbo.oauth.core.action
 
-import com.junbo.oauth.core.context.ServiceContext
+import com.junbo.langur.core.promise.Promise
+import com.junbo.langur.core.webflow.action.Action
+import com.junbo.langur.core.webflow.action.ActionContext
+import com.junbo.langur.core.webflow.action.ActionResult
+import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.exception.AppExceptions
-import com.junbo.oauth.core.util.ServiceContextUtil
-import com.junbo.oauth.spec.model.OAuthInfo
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
 import org.springframework.util.StringUtils
 
 /**
- * Javadoc.
+ * ValidateScope.
  */
 @CompileStatic
 class ValidateScope implements Action {
-
     @Override
-    boolean execute(ServiceContext context) {
-        def parameterMap = ServiceContextUtil.getParameterMap(context)
-        def appClient = ServiceContextUtil.getAppClient(context)
+    Promise<ActionResult> execute(ActionContext context) {
+        def contextWrapper = new ActionContextWrapper(context)
+
+        def parameterMap = contextWrapper.parameterMap
+        def client = contextWrapper.client
 
         String scopeStr = parameterMap.getFirst(OAuthParameters.SCOPE)
 
@@ -31,24 +34,24 @@ class ValidateScope implements Action {
         if (StringUtils.hasText(scopeStr)) {
             String[] scopeTokens = scopeStr.split(' ')
             String[] invalidScopes = scopeTokens.findAll {
-                String scope -> !appClient.allowedScopes.contains(scope)
+                String scope -> !client.allowedScopes.contains(scope)
             }
 
             if (invalidScopes.length > 0) {
-                throw AppExceptions.INSTANCE.invalidScope(StringUtils.arrayToCommaDelimitedString(invalidScopes))
-                        .exception()
+                throw AppExceptions.INSTANCE.invalidScope(StringUtils.arrayToCommaDelimitedString(invalidScopes)).
+                        exception()
             }
 
             scopes.addAll(scopeTokens)
-        } else if (appClient.defaultScopes != null) {
-            scopes = appClient.defaultScopes
+        } else if (client.defaultScopes != null) {
+            scopes = client.defaultScopes
         } else {
             throw AppExceptions.INSTANCE.missingScope().exception()
         }
 
-        OAuthInfo oauthInfo = ServiceContextUtil.getOAuthInfo(context)
+        def oauthInfo = contextWrapper.oauthInfo
         oauthInfo.setScopes(scopes)
 
-        return true
+        return Promise.pure(null)
     }
 }

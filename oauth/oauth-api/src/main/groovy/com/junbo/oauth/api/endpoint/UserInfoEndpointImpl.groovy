@@ -6,9 +6,7 @@
 package com.junbo.oauth.api.endpoint
 
 import com.junbo.langur.core.promise.Promise
-import com.junbo.oauth.core.context.ServiceContext
 import com.junbo.oauth.core.service.UserService
-import com.junbo.oauth.core.util.ServiceContextUtil
 import com.junbo.oauth.spec.endpoint.UserInfoEndpoint
 import com.junbo.oauth.spec.model.UserInfo
 import groovy.transform.CompileStatic
@@ -34,9 +32,6 @@ class UserInfoEndpointImpl implements UserInfoEndpoint {
 
     @Override
     Promise<UserInfo> getUserInfo(HttpHeaders httpHeaders) {
-        ServiceContext context = new ServiceContext()
-        ServiceContextUtil.setHeaderMap(context, httpHeaders.requestHeaders)
-
-        return Promise.pure(userService.getUserInfo(context))
+        return Promise.pure(userService.getUserInfo(httpHeaders.requestHeaders))
     }
 }

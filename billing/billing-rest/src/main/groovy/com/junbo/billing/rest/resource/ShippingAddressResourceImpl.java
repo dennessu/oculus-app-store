@@ -9,6 +9,8 @@ package com.junbo.billing.rest.resource;
 import com.junbo.billing.core.service.ShippingAddressService;
 import com.junbo.billing.spec.model.ShippingAddress;
 import com.junbo.billing.spec.resource.ShippingAddressResource;
+import com.junbo.common.id.ShippingAddressId;
+import com.junbo.common.id.UserId;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -25,23 +27,23 @@ public class ShippingAddressResourceImpl implements ShippingAddressResource {
     private ShippingAddressService shippingAddressService;
 
     @Override
-    public Promise<ShippingAddress> postShippingAddress(ShippingAddress address) {
-        return shippingAddressService.addShippingAddress(address);
+    public Promise<ShippingAddress> postShippingAddress(UserId userId, ShippingAddress address) {
+        return shippingAddressService.addShippingAddress(userId.getValue(), address);
     }
 
     @Override
-    public Promise<List<ShippingAddress>> getShippingAddresses(Long userId) {
-        return shippingAddressService.getShippingAddresses(userId);
+    public Promise<List<ShippingAddress>> getShippingAddresses(UserId userId) {
+        return shippingAddressService.getShippingAddresses(userId.getValue());
     }
 
     @Override
-    public Promise<ShippingAddress> getShippingAddress(Long addressId) {
-        return shippingAddressService.getShippingAddress(addressId);
+    public Promise<ShippingAddress> getShippingAddress(UserId userId, ShippingAddressId addressId) {
+        return shippingAddressService.getShippingAddress(userId.getValue(), addressId.getValue());
     }
 
     @Override
-    public Promise<Void> deleteShippingAddress(Long addressId) {
-        shippingAddressService.deleteShippingAddress(addressId);
+    public Promise<Void> deleteShippingAddress(UserId userId, ShippingAddressId addressId) {
+        shippingAddressService.deleteShippingAddress(userId.getValue(), addressId.getValue());
         return null;
     }
 }

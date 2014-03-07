@@ -5,17 +5,16 @@
  */
 package com.junbo.oauth.core.service.impl
 
+import com.junbo.common.id.UserId
 import com.junbo.identity.spec.model.common.ResultList
 import com.junbo.identity.spec.model.user.User
 import com.junbo.identity.spec.model.user.UserProfile
 import com.junbo.identity.spec.resource.UserProfileResource
 import com.junbo.identity.spec.resource.UserResource
 import com.junbo.langur.core.promise.Promise
-import com.junbo.oauth.core.context.ServiceContext
 import com.junbo.oauth.core.exception.AppExceptions
 import com.junbo.oauth.core.service.TokenGenerationService
 import com.junbo.oauth.core.service.UserService
-import com.junbo.oauth.core.util.ServiceContextUtil
 import com.junbo.oauth.spec.model.AccessToken
 import com.junbo.oauth.spec.model.TokenType
 import com.junbo.oauth.spec.model.UserInfo
@@ -23,6 +22,8 @@ import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.StringUtils
+
+import javax.ws.rs.core.MultivaluedMap
 
 /**
  * Javadoc.
@@ -52,8 +53,7 @@ class UserServiceImpl implements UserService {
     }
 
     @Override
-    UserInfo getUserInfo(ServiceContext context) {
-        def headerMap = ServiceContextUtil.getHeaderMap(context)
+    UserInfo getUserInfo(MultivaluedMap<String, String> headerMap) {
         String authorization = headerMap.getFirst(OAuthParameters.AUTHORIZATION)
 
         if (!StringUtils.hasText(authorization)) {
@@ -75,7 +75,7 @@ class UserServiceImpl implements UserService {
             throw AppExceptions.INSTANCE.expiredAccessToken().exception()
         }
 
-        Promise<User> userPromise = userResource.getUser(accessToken.userId)
+        Promise<User> userPromise = userResource.getUser(new UserId(accessToken.userId))
 
         User user = userPromise.wrapped().get()
 
@@ -84,8 +84,8 @@ class UserServiceImpl implements UserService {
                 email: user.userName
         )
 
-        Promise<ResultList<UserProfile>> userProfilePromise = userProfileResource.getUserProfiles(accessToken.userId,
-                'PAYIN', 0, 1)
+        Promise<ResultList<UserProfile>> userProfilePromise = userProfileResource.
+                getUserProfiles(new UserId(accessToken.userId), 'PAYIN', 0, 1)
 
         if (userProfileResource != null && userProfilePromise.wrapped().get() != null
                 && !userProfilePromise.wrapped().get().items.isEmpty()) {

@@ -7,7 +7,8 @@
 package com.junbo.order.db.mapper;
 
 import com.junbo.common.id.*;
-import com.junbo.order.spec.model.*;
+import com.junbo.order.db.entity.enums.*;
+import com.junbo.order.spec.error.AppErrors;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
@@ -95,7 +96,15 @@ public class CommonMapper {
     }
 
     public OrderType fromStringToOrderType(String type) {
-        return OrderType.valueOf(type);
+        if (type == null) {
+            return null;
+        }
+
+        try {
+            return OrderType.valueOf(type);
+        } catch (Exception e) {
+            throw AppErrors.INSTANCE.enumConversionError(type, "OrderType").exception();
+        }
     }
 
     public Long fromOrderItemIdToLong(OrderItemId orderItemId) {
@@ -119,7 +128,11 @@ public class CommonMapper {
             return null;
         }
 
-        return DiscountType.valueOf(discountType);
+        try {
+            return DiscountType.valueOf(discountType);
+        } catch (Exception e) {
+            throw AppErrors.INSTANCE.enumConversionError(discountType, "DiscountType").exception();
+        }
     }
 
     public String fromDiscountTypeToString(DiscountType discountType) {
@@ -143,7 +156,11 @@ public class CommonMapper {
             return null;
         }
 
-        return OrderStatus.valueOf(orderStatus);
+        try {
+            return OrderStatus.valueOf(orderStatus);
+        } catch (Exception e) {
+            throw AppErrors.INSTANCE.enumConversionError(orderStatus, "OrderStatus").exception();
+        }
     }
 
     public String fromEventStatusToString(EventStatus status) {
@@ -159,10 +176,14 @@ public class CommonMapper {
             return null;
         }
 
-        return EventStatus.valueOf(status);
+        try {
+            return EventStatus.valueOf(status);
+        } catch (Exception e) {
+            throw AppErrors.INSTANCE.enumConversionError(status, "EventStatus").exception();
+        }
     }
 
-    public String fromOrderActionToString(OrderAction action) {
+    public String fromOrderActionTypeToString(OrderActionType action) {
         if (action == null) {
             return null;
         }
@@ -170,12 +191,16 @@ public class CommonMapper {
         return action.toString();
     }
 
-    public OrderAction fromStringToOrderAction(String action) {
+    public OrderActionType fromStringToOrderActionType(String action) {
         if (action == null) {
             return null;
         }
 
-        return OrderAction.valueOf(action);
+        try {
+            return OrderActionType.valueOf(action);
+        } catch (Exception e) {
+            throw AppErrors.INSTANCE.enumConversionError(action, "OrderAction").exception();
+        }
     }
 
     public Long fromOrderEventIdToLong(OrderEventId orderEventId) {
@@ -199,7 +224,11 @@ public class CommonMapper {
             return null;
         }
 
-        return ItemType.valueOf(itemType);
+        try {
+            return ItemType.valueOf(itemType);
+        } catch (Exception e) {
+            throw AppErrors.INSTANCE.enumConversionError(itemType, "ItemType").exception();
+        }
     }
 
     public String fromItemTypeToString(ItemType itemType) {
@@ -242,7 +271,7 @@ public class CommonMapper {
         return fulfillmentEventId.getValue();
     }
 
-    public SellerId fromLongToSellderId(Long sellerId) {
+    public SellerId fromLongToSellerId(Long sellerId) {
         if (sellerId == null) {
             return null;
         }
@@ -303,7 +332,11 @@ public class CommonMapper {
             return null;
         }
 
-        return FulfillmentAction.valueOf(action);
+        try {
+            return FulfillmentAction.valueOf(action);
+        } catch (Exception e) {
+            throw AppErrors.INSTANCE.enumConversionError(action, "FulfillmentAction").exception();
+        }
     }
 
     public String fromBillingActionToString(BillingAction action) {
@@ -319,6 +352,27 @@ public class CommonMapper {
             return null;
         }
 
-        return BillingAction.valueOf(action);
+        try {
+            return BillingAction.valueOf(action);
+        } catch (Exception e) {
+            throw AppErrors.INSTANCE.enumConversionError(action, "BillingAction").exception();
+        }
     }
+
+    public ShippingAddressId fromLongToShippingAddressId(Long shippingAddressId) {
+        if (shippingAddressId == null) {
+            return null;
+        }
+
+        return new ShippingAddressId(shippingAddressId);
+    }
+
+    public Long fromShippingAddressIdToLong(ShippingAddressId shippingAddressId) {
+        if (shippingAddressId == null) {
+            return null;
+        }
+
+        return shippingAddressId.getValue();
+    }
+
 }

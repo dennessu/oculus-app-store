@@ -7,7 +7,7 @@
 package com.junbo.common.jackson.serializer;
 
 /**
- * Java doc.
+ * ResourceAware.
  */
 public interface ResourceAware {
     void injectResourceType(String resourceType);

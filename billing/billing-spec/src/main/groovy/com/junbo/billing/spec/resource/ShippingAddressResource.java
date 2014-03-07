@@ -7,6 +7,8 @@
 package com.junbo.billing.spec.resource;
 
 import com.junbo.billing.spec.model.ShippingAddress;
+import com.junbo.common.id.ShippingAddressId;
+import com.junbo.common.id.UserId;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 
@@ -17,22 +19,24 @@ import java.util.List;
 /**
  * Created by xmchen on 14-1-26.
  */
-@Path("/shipping-addresses")
+@Path("/users/{userId}/ship-to-info")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 @RestResource
 public interface ShippingAddressResource {
     @POST
-    Promise<ShippingAddress> postShippingAddress(ShippingAddress address);
+    Promise<ShippingAddress> postShippingAddress(@PathParam("userId") UserId userId, ShippingAddress address);
 
     @GET
-    Promise<List<ShippingAddress>> getShippingAddresses(@QueryParam("userId") Long userId);
+    Promise<List<ShippingAddress>> getShippingAddresses(@PathParam("userId") UserId userId);
 
     @GET
     @Path("/{addressId}")
-    Promise<ShippingAddress> getShippingAddress(@PathParam("addressId") Long addressId);
+    Promise<ShippingAddress> getShippingAddress(@PathParam("userId") UserId userId,
+                                                @PathParam("addressId") ShippingAddressId addressId);
 
     @DELETE
     @Path("/{addressId}")
-    Promise<Void> deleteShippingAddress(@PathParam("addressId") Long addressId);
+    Promise<Void> deleteShippingAddress(@PathParam("userId") UserId userId,
+                                        @PathParam("addressId") ShippingAddressId addressId);
 }

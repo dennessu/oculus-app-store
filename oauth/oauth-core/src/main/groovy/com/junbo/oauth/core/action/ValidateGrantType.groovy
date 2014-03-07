@@ -5,23 +5,26 @@
  */
 package com.junbo.oauth.core.action
 
-import com.junbo.oauth.core.context.ServiceContext
+import com.junbo.langur.core.promise.Promise
+import com.junbo.langur.core.webflow.action.Action
+import com.junbo.langur.core.webflow.action.ActionContext
+import com.junbo.langur.core.webflow.action.ActionResult
+import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.exception.AppExceptions
-import com.junbo.oauth.core.util.ServiceContextUtil
 import com.junbo.oauth.spec.model.GrantType
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
 import org.springframework.util.StringUtils
 
 /**
- * Javadoc.
+ * ValidateGrantType.
  */
 @CompileStatic
 class ValidateGrantType implements Action {
-
     @Override
-    boolean execute(ServiceContext context) {
-        def parameterMap = ServiceContextUtil.getParameterMap(context)
+    Promise<ActionResult> execute(ActionContext context) {
+        def contextWrapper = new ActionContextWrapper(context)
+        def parameterMap = contextWrapper.parameterMap
 
         String grantTypeParam = parameterMap.getFirst(OAuthParameters.GRANT_TYPE)
 
@@ -35,9 +38,9 @@ class ValidateGrantType implements Action {
 
         GrantType grantType = GrantType.valueOf(grantTypeParam.toUpperCase())
 
-        def oauthInfo = ServiceContextUtil.getOAuthInfo(context)
+        def oauthInfo = contextWrapper.oauthInfo
         oauthInfo.grantType = grantType
 
-        return true
+        return Promise.pure(new ActionResult(grantType.name()))
     }
 }

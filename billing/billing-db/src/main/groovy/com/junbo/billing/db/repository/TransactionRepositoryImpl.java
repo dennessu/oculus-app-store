@@ -13,7 +13,10 @@ import com.junbo.billing.db.transaction.TransactionEntity;
 import com.junbo.billing.spec.model.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Random;
 
 /**
  * Created by xmchen on 14-2-24.
@@ -29,6 +32,9 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     @Override
     public Transaction saveTransaction(Transaction transaction) {
         TransactionEntity entity = modelMapper.toTransactionEntity(transaction, new MappingContext());
+
+        //todo: use real id generator
+        entity.setTransactionId(new Random().nextLong());
         entity.setCreatedBy("BILLING");
         entity.setCreatedDate(new Date());
         Long id = transactionEntityDao.insert(entity);
@@ -43,5 +49,18 @@ public class TransactionRepositoryImpl implements TransactionRepository {
             return modelMapper.toTransaction(entity, new MappingContext());
         }
         return null;
+    }
+
+    @Override
+    public List<Transaction> getTransactions(Long balanceId) {
+        List<TransactionEntity> transactionEntities = transactionEntityDao.findByBalanceId(balanceId);
+        List<Transaction> transactions = new ArrayList<>();
+        for(TransactionEntity transactionEntity : transactionEntities) {
+            Transaction transaction = modelMapper.toTransaction(transactionEntity, new MappingContext());
+            if(transaction != null) {
+                transactions.add(transaction);
+            }
+        }
+        return transactions;
     }
 }

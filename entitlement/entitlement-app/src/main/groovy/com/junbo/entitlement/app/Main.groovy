@@ -6,6 +6,7 @@
 
 package com.junbo.entitlement.app
 
+import com.junbo.common.id.provider.IdTypeFromStringProvider
 import com.junbo.common.json.JacksonFeature
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.entitlement.rest.exceptionmapper.RestExceptionMapper
@@ -25,6 +26,7 @@ class Main {
         resourceConfig.register(JacksonFeature)
         resourceConfig.register(ObjectMapperProvider)
         resourceConfig.register(RestExceptionMapper)
+        resourceConfig.register(IdTypeFromStringProvider)
 
         SLF4JBridgeHandler.removeHandlersForRootLogger()
         SLF4JBridgeHandler.install()
@@ -41,7 +43,6 @@ class Main {
     }
 
     static void main(String[] args) {
-
         def server = startServer()
         System.in.read()
         server.shutdown()

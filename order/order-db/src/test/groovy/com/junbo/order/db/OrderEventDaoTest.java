@@ -9,7 +9,7 @@ package com.junbo.order.db;
 import com.junbo.order.db.common.TestHelper;
 import com.junbo.order.db.dao.OrderEventDao;
 import com.junbo.order.db.entity.OrderEventEntity;
-import com.junbo.order.spec.model.OrderAction;
+import com.junbo.order.db.entity.enums.OrderActionType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -41,7 +41,7 @@ public class OrderEventDaoTest extends BaseTest {
         OrderEventEntity orderEventEntity = TestHelper.generateOrderEventEntity();
         Long id = orderEventDao.create(orderEventEntity);
         orderEventDao.flush();
-        orderEventEntity.setActionId(OrderAction.CHARGE);
+        orderEventEntity.setActionId(OrderActionType.CHARGE);
         orderEventDao.update(orderEventEntity);
         orderEventDao.flush();
         OrderEventEntity returnedEntity = orderEventDao.read(id);

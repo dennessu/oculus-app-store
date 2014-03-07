@@ -6,6 +6,7 @@
 
 package com.junbo.catalog.db.repo;
 
+import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.db.convertor.ItemConverter;
 import com.junbo.catalog.db.dao.ItemDraftDao;
 import com.junbo.catalog.db.entity.ItemDraftEntity;
@@ -18,18 +19,25 @@ import java.util.List;
 /**
  * Item draft repository.
  */
-public class ItemDraftRepository {
+public class ItemDraftRepository implements EntityDraftRepository<Item> {
     @Autowired
     private ItemDraftDao itemDraftDao;
 
+    @Override
     public Long create(Item item) {
         ItemDraftEntity entity = ItemConverter.toDraftEntity(item);
         return itemDraftDao.create(entity);
     }
 
+    @Override
     public Item get(Long itemId) {
         ItemDraftEntity entity = itemDraftDao.get(itemId);
         return ItemConverter.toModel(entity);
+    }
+
+    @Override
+    public List<Item> getEntities(int start, int size) {
+        return getItems(start, size);
     }
 
     public List<Item> getItems(int start, int size) {
@@ -40,5 +48,17 @@ public class ItemDraftRepository {
         }
 
         return result;
+    }
+
+    public Long update(Item item) {
+        ItemDraftEntity entity = itemDraftDao.get(item.getId());
+        // TODO: validations
+        entity.setName(item.getName());
+        entity.setRevision(item.getRevision());
+        entity.setStatus(item.getStatus());
+        entity.setOwnerId(item.getOwnerId());
+        entity.setPayload(Utils.toJson(item));
+
+        return itemDraftDao.update(entity);
     }
 }

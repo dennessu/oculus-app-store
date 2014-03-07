@@ -7,52 +7,58 @@
 
     <wf:flow id="authorizeFlow">
         <wf:action-state id="validation">
-            <wf:action ref="getAppClientWebflow"/>
-            <wf:action ref="validateScopeWebflow"/>
-            <wf:action ref="validateRedirectUriWebflow"/>
-            <wf:action ref="validateResponseTypeWebflow"/>
-            <wf:action ref="validateDisplayWebflow"/>
-            <wf:action ref="validatePromptWebflow"/>
-            <wf:action ref="validateMaxAgeWebflow"/>
+            <wf:action ref="validateClient"/>
+            <wf:action ref="validateScope"/>
+            <wf:action ref="validateRedirectUri"/>
+            <wf:action ref="validateResponseType"/>
+            <wf:action ref="validateDisplay"/>
+            <wf:action ref="validatePrompt"/>
+            <wf:action ref="validateMaxAge"/>
             <wf:transition on="*" to="loadLoginState"/>
         </wf:action-state>
 
         <wf:action-state id="loadLoginState">
-            <wf:action ref="loadIdTokenHintWebflow"/>
-            <wf:action ref="loadLoginStateWebflow"/>
-            <wf:action ref="loadRememberMeTokenWebflow"/>
+            <wf:action ref="loadIdTokenHint"/>
+            <wf:action ref="loadLoginState"/>
+            <wf:action ref="loadRememberMeToken"/>
             <wf:transition on="*" to="validateLoginStateAction"/>
         </wf:action-state>
 
         <wf:action-state id="validateLoginStateAction">
-            <wf:action ref="validateLoginStateWebflow"/>
-            <wf:action ref="saveLoginStateWebflow"/>
-            <wf:transition on="redirectLogin" to="redirectLogin"/>
+            <wf:action ref="validateLoginState"/>
+            <wf:action ref="saveLoginState"/>
+            <wf:transition on="redirectLogin" to="redirectToLogin"/>
             <wf:transition on="*" to="grantAuthorizationCodeAction"/>
         </wf:action-state>
 
         <wf:action-state id="grantAuthorizationCodeAction">
-            <wf:action ref="grantAuthorizationCodeWebflow"/>
-            <wf:action ref="grantImplicitAccessTokenWebflow"/>
-            <wf:action ref="grantRememberMeTokenWebflow"/>
-            <wf:action ref="grantIdTokenWebflow"/>
-            <wf:action ref="buildRedirectUriWebflow"/>
+            <wf:action ref="grantAuthorizationCode"/>
+            <wf:action ref="grantImplicitAccessToken"/>
+            <wf:action ref="grantRememberMeToken"/>
+            <wf:action ref="grantIdToken"/>
+            <wf:action ref="buildRedirectUri"/>
             <wf:transition on="*" to="endRedirect"/>
         </wf:action-state>
 
-        <wf:view-state id="redirectLogin">
+        <wf:view-state id="redirectToLogin">
             <wf:on-render>
-                <wf:action ref="redirectWebflow"/>
+                <wf:action ref="redirect"/>
             </wf:on-render>
-            <wf:transition on="login" to="redirectLogin">
-                <wf:action ref="authenticateUserWebflow"/>
+            <wf:transition on="login" to="redirectToAuth">
+                <wf:action ref="authenticateUser"/>
             </wf:transition>
-            <wf:transition on="loginSuccess" to="validateLoginStateAction"/>
+        </wf:view-state>
+
+        <wf:view-state id="redirectToAuth">
+            <wf:on-render>
+                <wf:action ref="redirect"/>
+            </wf:on-render>
+            <wf:transition on="*" to="validateLoginStateAction"/>
         </wf:view-state>
 
         <wf:end-state id="endRedirect">
             <wf:on-entry>
-                <wf:action ref="redirectWebflow"/>
+                <wf:action ref="redirect"/>
             </wf:on-entry>
         </wf:end-state>
     </wf:flow>

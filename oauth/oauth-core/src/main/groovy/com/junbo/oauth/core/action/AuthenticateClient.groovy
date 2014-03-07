@@ -5,45 +5,79 @@
  */
 package com.junbo.oauth.core.action
 
-import com.junbo.oauth.core.context.ServiceContext
+import com.junbo.langur.core.promise.Promise
+import com.junbo.langur.core.webflow.action.Action
+import com.junbo.langur.core.webflow.action.ActionContext
+import com.junbo.langur.core.webflow.action.ActionResult
+import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.exception.AppExceptions
-import com.junbo.oauth.core.util.ServiceContextUtil
-import com.junbo.oauth.db.repo.AppClientRepository
-import com.junbo.oauth.spec.model.AppClient
+import com.junbo.oauth.db.repo.ClientRepository
+import com.junbo.oauth.spec.model.Client
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
+import org.apache.commons.codec.binary.Base64
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.StringUtils
 
 /**
- * AuthenticateClient.
+ * AuthenticateClient
  */
 @CompileStatic
 class AuthenticateClient implements Action {
+    private static final int TOKENS_LENGTH = 2
 
-    private AppClientRepository appClientRepository
+    private ClientRepository clientRepository
 
     @Required
-    void setAppClientRepository(AppClientRepository appClientRepository) {
-        this.appClientRepository = appClientRepository
+    void setClientRepository(ClientRepository clientRepository) {
+        this.clientRepository = clientRepository
     }
 
     @Override
-    boolean execute(ServiceContext context) {
-        def parameterMap = ServiceContextUtil.getParameterMap(context)
+    Promise<ActionResult> execute(ActionContext context) {
+        def contextWrapper = new ActionContextWrapper(context)
 
-        String clientId = parameterMap.getFirst(OAuthParameters.CLIENT_ID)
+        def parameterMap = contextWrapper.parameterMap
+        def headerMap = contextWrapper.headerMap
+
+        String clientId, clientSecret
+        String authorization = headerMap.getFirst(OAuthParameters.AUTHORIZATION)
+
+        if (StringUtils.hasText(authorization)) {
+            String[] tokens = authorization.split(' ')
+            if (tokens.length != TOKENS_LENGTH || tokens[0] == 'Basic') {
+                throw AppExceptions.INSTANCE.invalidAuthorization().exception()
+            }
+
+            String decoded = Base64.decodeBase64(tokens[1])
+
+            tokens = decoded.split(':')
+
+            if (tokens.length != TOKENS_LENGTH) {
+                throw AppExceptions.INSTANCE.invalidAuthorization().exception()
+            }
+
+            clientId = tokens[0]
+            clientSecret = tokens[1]
+        }
+
+        if (clientId == null) {
+            clientId = parameterMap.getFirst(OAuthParameters.CLIENT_ID)
+        }
+
         if (!StringUtils.hasText(clientId)) {
             throw AppExceptions.INSTANCE.missingClientId().exception()
         }
 
-        AppClient appClient = appClientRepository.getAppClient(clientId)
+        Client appClient = clientRepository.getClient(clientId)
 
         if (appClient == null) {
             throw AppExceptions.INSTANCE.invalidClientId(clientId).exception()
         }
 
-        String clientSecret = parameterMap.getFirst(OAuthParameters.CLIENT_SECRET)
+        if (clientSecret == null) {
+            clientSecret = parameterMap.getFirst(OAuthParameters.CLIENT_SECRET)
+        }
 
         if (!StringUtils.hasText(clientSecret)) {
             throw AppExceptions.INSTANCE.missingClientSecret().exception()
@@ -53,8 +87,8 @@ class AuthenticateClient implements Action {
             throw AppExceptions.INSTANCE.invalidClientSecret(clientSecret).exception()
         }
 
-        ServiceContextUtil.setAppClient(context, appClient)
+        contextWrapper.client = appClient
 
-        return true
+        return Promise.pure(null)
     }
 }

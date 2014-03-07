@@ -7,10 +7,12 @@ import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderItem
 import com.junbo.rating.spec.model.request.OrderRatingItem
 import com.junbo.rating.spec.model.request.OrderRatingRequest
+import groovy.transform.CompileStatic
 
 /**
  * Created by LinYi on 14-3-4.
  */
+@CompileStatic
 class FacadeBuilder {
 
     static FulfilmentRequest buildFulfilmentRequest(Order order) {
@@ -19,24 +21,24 @@ class FacadeBuilder {
         request.orderId = order.id.value
         request.trackingGuid = UUID.randomUUID()
         request.shippingMethodId = order?.shippingMethodId
-        request.shippingAddressId = order?.shippingAddressId
-        def fulfillmentItems = []
+        request.shippingAddressId = order?.shippingAddressId?.value
+        request.items = []
         order.orderItems?.each { OrderItem item ->
-            fulfillmentItems << buildFulfilmentItem(item)
+            request.items << buildFulfilmentItem(item)
         }
         return request
     }
 
-    private FulfilmentItem buildFulfilmentItem(OrderItem orderItem) {
+    private static FulfilmentItem buildFulfilmentItem(OrderItem orderItem) {
         FulfilmentItem item = new FulfilmentItem()
         item.orderItemId = orderItem.id.value
         item.offerId = orderItem.offer
-        item.offerRevision = Integer.parseInt(orderItem.offerRevision)
+        item.timestamp = Integer.parseInt(orderItem.offerRevision)
         item.quantity = orderItem.quantity
         return item
     }
 
-    static OrderRatingRequest buildOrderRatingRequest(Order order, String shipToCountry) {
+    static OrderRatingRequest buildOrderRatingRequest(Order order) {
         OrderRatingRequest request = new OrderRatingRequest()
         request.country = order.country
         List<String> coupons = []
@@ -48,7 +50,7 @@ class FacadeBuilder {
         request.couponCodes = ((String[])coupons?.toArray()) as Set
         request.currency = order.currency
         request.userId = order.user?.value
-        request.country = shipToCountry
+        request.country = order.country
         request.shippingMethodId = order.shippingMethodId
         List<OrderRatingItem> ratingItems = []
         order.orderItems?.each { OrderItem item ->

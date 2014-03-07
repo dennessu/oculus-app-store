@@ -10,17 +10,19 @@
     <tx:annotation-driven />
     <context:component-scan base-package="com.junbo.identity.data" />
 
-    <bean id="identityDataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
-        <property name="driverClass" value="${identity.db.driverClassName}"/>
-        <property name="jdbcUrl" value="${identity.db.url}"/>
-        <property name="username" value="${identity.db.username}"/>
-        <property name="password" value="${identity.db.password}"/>
-        <property name="maxConnectionsPerPartition" value="${identity.db.maxConnectionsPerPartition}"/>
-        <property name="minConnectionsPerPartition" value="${identity.db.minConnectionsPerPartition}"/>
-        <property name="partitionCount" value="${identity.db.partitionCount}"/>
-        <property name="acquireIncrement" value="${identity.db.acquireIncrement}"/>
-        <property name="statementsCacheSize" value="${identity.db.statementsCacheSize}"/>
-        <property name="releaseHelperThreads" value="${identity.db.releaseHelperThreads}"/>
+    <bean id="identityDataSource" class="bitronix.tm.resource.jdbc.PoolingDataSource"
+          init-method="init" destroy-method="close">
+        <property name="uniqueName" value="jdbc/id_ds1"/>
+        <property name="className" value="org.postgresql.xa.PGXADataSource"/>
+        <property name="minPoolSize" value="${identity.db.minConnectionsPerPartition}"/>
+        <property name="maxPoolSize" value="${identity.db.maxConnectionsPerPartition}"/>
+        <property name="driverProperties">
+            <props>
+                <prop key="url">${identity.db.url}</prop>
+                <prop key="user">${identity.db.username}</prop>
+                <prop key="password">${identity.db.password}</prop>
+            </props>
+        </property>
     </bean>
 
     <!-- SessonFactory for Hibernate -->
@@ -28,6 +30,7 @@
           class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
         <property name="dataSource" ref="identityDataSource"/>
         <property name="packagesToScan" value="com.junbo.identity.data.*" />
+        <property name="jtaTransactionManager" ref="transactionManager"/>
         <property name="hibernateProperties">
             <props>
                 <prop key="hibernate.dialect">${identity.hibernate.dialect}</prop>
@@ -41,16 +44,11 @@
 
     <tx:annotation-driven transaction-manager="transactionManager"/>
 
-    <!-- Transaction Manager -->
-    <bean id="transactionManager"
-          class="org.springframework.orm.hibernate4.HibernateTransactionManager">
-        <property name="sessionFactory" ref="sessionFactory"/>
-    </bean>
-
     <bean id="modelMapperImpl" class="com.junbo.identity.data.mapper.ModelMapperImpl" />
     <bean id="userDAO" class="com.junbo.identity.data.dao.impl.postgresql.UserDAOImpl">
         <property name="maxRetryCount" value="${identity.conf.maxPasswordRetryCount}" />
     </bean>
+
     <bean id="userProfileDAO" class="com.junbo.identity.data.dao.impl.postgresql.UserProfileDAOImpl" />
     <bean id="userDeviceProfileDAO" class="com.junbo.identity.data.dao.impl.postgresql.UserDeviceProfileDAOImpl" />
     <bean id="userFederationDAO" class="com.junbo.identity.data.dao.impl.postgresql.UserFederationDAOImpl" />
@@ -58,4 +56,5 @@
     <bean id="appDAO" class="com.junbo.identity.data.dao.impl.postgresql.AppDAOImpl" />
     <bean id="userTosAcceptanceDAO" class="com.junbo.identity.data.dao.impl.postgresql.UserTosAcceptanceDAOImpl" />
     <bean id="passwordDAO" class="com.junbo.identity.data.dao.impl.postgresql.PasswordDAOImpl" />
+
 </beans>

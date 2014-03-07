@@ -6,15 +6,12 @@
 
 package com.junbo.billing.db.repository;
 
-import com.junbo.billing.spec.enums.BalanceStatus;
+import com.junbo.billing.spec.model.*;
+import com.junbo.common.id.BalanceId;
 import com.junbo.oom.core.MappingContext;
 import com.junbo.billing.db.balance.*;
 import com.junbo.billing.db.dao.*;
 import com.junbo.billing.db.mapper.ModelMapper;
-import com.junbo.billing.spec.model.Balance;
-import com.junbo.billing.spec.model.BalanceItem;
-import com.junbo.billing.spec.model.DiscountItem;
-import com.junbo.billing.spec.model.TaxItem;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -41,6 +38,9 @@ public class BalanceRepositoryImpl implements BalanceRepository {
 
     @Autowired
     private OrderBalanceLinkEntityDao orderBalanceLinkEntityDao;
+
+    @Autowired
+    private TransactionRepository transactionRepository;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -85,6 +85,12 @@ public class BalanceRepositoryImpl implements BalanceRepository {
                 discountItemEntityDao.insert(discountItemEntity);
             }
         }
+
+        for(Transaction transaction : balance.getTransactions()) {
+            transaction.setBalanceId(new BalanceId(balanceEntity.getBalanceId()));
+            transactionRepository.saveTransaction(transaction);
+        }
+
         // persist the order balance link
         OrderBalanceLinkEntity orderBalanceLinkEntity = new OrderBalanceLinkEntity();
         //todo: set real key generated ID
@@ -129,6 +135,10 @@ public class BalanceRepositoryImpl implements BalanceRepository {
                 balanceItem.addDiscountItem(discountItem);
             }
         }
+        List<Transaction> transactions = transactionRepository.getTransactions(balanceId);
+        for(Transaction transaction : transactions) {
+            balance.addTransaction(transaction);
+        }
 
         return balance;
     }
@@ -144,18 +154,5 @@ public class BalanceRepositoryImpl implements BalanceRepository {
         }
 
         return balances;
-    }
-
-    @Override
-    public Balance updateBalanceStatus(Long balanceId, BalanceStatus balanceStatus) {
-        Balance balance = getBalance(balanceId);
-        balance.setStatus(balanceStatus.name());
-        BalanceEntity balanceEntity = modelMapper.toBalanceEntity(balance, new MappingContext());
-        balanceEntity.setModifiedBy("Billing");
-        balanceEntity.setModifiedDate(new Date());
-        balanceEntityDao.update(balanceEntity);
-        balanceEntityDao.flush();
-
-        return balance;
     }
 }

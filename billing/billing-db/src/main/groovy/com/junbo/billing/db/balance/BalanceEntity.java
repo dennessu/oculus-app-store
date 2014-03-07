@@ -29,6 +29,7 @@ public class BalanceEntity extends BaseEntity {
     private BigDecimal totalAmount;
     private BigDecimal taxAmount;
     private Boolean taxIncluded;
+    private BigDecimal discountAmount;
     private String currency;
     private String country;
     private Short statusId;
@@ -93,6 +94,15 @@ public class BalanceEntity extends BaseEntity {
         this.taxIncluded = taxIncluded;
     }
 
+    @Column(name = "discount_amount")
+    @NotNull(message = EntityValidationCode.MISSING_VALUE)
+    public BigDecimal getDiscountAmount() {
+        return discountAmount;
+    }
+    public void setDiscountAmount(BigDecimal discountAmount) {
+        this.discountAmount = discountAmount;
+    }
+
     @Column(name = "currency")
     @NotEmpty(message = EntityValidationCode.MISSING_VALUE)
     @Length(max = 3, message = EntityValidationCode.TOO_LONG)
@@ -114,7 +124,7 @@ public class BalanceEntity extends BaseEntity {
     }
 
     @Column(name = "status_id")
-    @NotEmpty(message = EntityValidationCode.MISSING_VALUE)
+    @NotNull(message = EntityValidationCode.MISSING_VALUE)
     public Short getStatusId() {
         return statusId;
     }

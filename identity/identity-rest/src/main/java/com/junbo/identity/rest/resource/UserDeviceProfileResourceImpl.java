@@ -5,6 +5,8 @@
  */
 package com.junbo.identity.rest.resource;
 
+import com.junbo.common.id.UserDeviceProfileId;
+import com.junbo.common.id.UserId;
 import com.junbo.identity.rest.service.user.UserDeviceProfileService;
 import com.junbo.identity.spec.model.common.ResultList;
 import com.junbo.identity.spec.model.common.ResultListUtil;
@@ -28,31 +30,32 @@ public class UserDeviceProfileResourceImpl implements UserDeviceProfileResource{
     private UserDeviceProfileService userDeviceProfileService;
 
     @Override
-    public Promise<UserDeviceProfile> postUserDeviceProfile(Long userId, UserDeviceProfile userDeviceProfile) {
-        return Promise.pure(userDeviceProfileService.save(userId, userDeviceProfile));
+    public Promise<UserDeviceProfile> postUserDeviceProfile(UserId userId, UserDeviceProfile userDeviceProfile) {
+        return Promise.pure(userDeviceProfileService.save(userId.getValue(), userDeviceProfile));
     }
 
     @Override
-    public Promise<ResultList<UserDeviceProfile>> getUserDeviceProfiles(Long userId, String type,
+    public Promise<ResultList<UserDeviceProfile>> getUserDeviceProfiles(UserId userId, String type,
                                                                   Integer cursor, Integer count) {
-        List<UserDeviceProfile> userDeviceProfiles = userDeviceProfileService.getByUserId(userId, type);
+        List<UserDeviceProfile> userDeviceProfiles = userDeviceProfileService.getByUserId(userId.getValue(), type);
         return Promise.pure(ResultListUtil.init(userDeviceProfiles, count));
     }
 
     @Override
-    public Promise<UserDeviceProfile> getUserDeviceProfile(Long userId, Long deviceProfileId) {
-        return Promise.pure(userDeviceProfileService.get(userId, deviceProfileId));
+    public Promise<UserDeviceProfile> getUserDeviceProfile(UserId userId, UserDeviceProfileId deviceProfileId) {
+        return Promise.pure(userDeviceProfileService.get(userId.getValue(), deviceProfileId.getValue()));
     }
 
     @Override
-    public Promise<UserDeviceProfile> updateUserDeviceProfile(Long userId,
-                                 Long deviceProfileId, UserDeviceProfile userDeviceProfile) {
-        return Promise.pure(userDeviceProfileService.update(userId, deviceProfileId, userDeviceProfile));
+    public Promise<UserDeviceProfile> updateUserDeviceProfile(UserId userId,
+                                 UserDeviceProfileId deviceProfileId, UserDeviceProfile userDeviceProfile) {
+        return Promise.pure(userDeviceProfileService.update(userId.getValue(),
+                deviceProfileId.getValue(), userDeviceProfile));
     }
 
     @Override
-    public Promise<Void> deleteUserDeviceProfile(Long userId, Long deviceProfileId) {
-        userDeviceProfileService.deleteProfile(userId, deviceProfileId);
+    public Promise<Void> deleteUserDeviceProfile(UserId userId, UserDeviceProfileId deviceProfileId) {
+        userDeviceProfileService.deleteProfile(userId.getValue(), deviceProfileId.getValue());
 
         return Promise.pure(null);
     }

@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Java doc.
+ * User.
  */
 public class User {
     @UserId
@@ -32,6 +32,12 @@ public class User {
 
     @UserId
     private Set<Long> opponents;
+
+    @UserId
+    private String test1;
+
+    @UserId
+    private List<String> test2;
 
     public User() {
 
@@ -87,5 +93,21 @@ public class User {
 
     public void setOpponents(Set<Long> opponents) {
         this.opponents = opponents;
+    }
+
+    public String getTest1() {
+        return test1;
+    }
+
+    public void setTest1(String test1) {
+        this.test1 = test1;
+    }
+
+    public List<String> getTest2() {
+        return test2;
+    }
+
+    public void setTest2(List<String> test2) {
+        this.test2 = test2;
     }
 }

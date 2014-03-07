@@ -5,8 +5,11 @@
  */
 package com.junbo.oauth.core.action
 
-import com.junbo.oauth.core.context.ServiceContext
-import com.junbo.oauth.core.util.ServiceContextUtil
+import com.junbo.langur.core.promise.Promise
+import com.junbo.langur.core.webflow.action.Action
+import com.junbo.langur.core.webflow.action.ActionContext
+import com.junbo.langur.core.webflow.action.ActionResult
+import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.db.repo.LoginStateRepository
 import com.junbo.oauth.spec.model.LoginState
 import com.junbo.oauth.spec.param.OAuthParameters
@@ -18,10 +21,11 @@ import org.springframework.beans.factory.annotation.Required
 import javax.ws.rs.core.Cookie
 
 /**
- * Javadoc.
+ * LoadLoginState.
  */
 @CompileStatic
 class LoadLoginState implements Action {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(LoadLoginState)
 
     private LoginStateRepository loginStateRepository
@@ -32,23 +36,25 @@ class LoadLoginState implements Action {
     }
 
     @Override
-    boolean execute(ServiceContext context) {
-        def cookieMap = ServiceContextUtil.getCookieMap(context)
+    Promise<ActionResult> execute(ActionContext context) {
+        def contextWrapper = new ActionContextWrapper(context)
+
+        def cookieMap = contextWrapper.cookieMap
 
         Cookie loginStateCookie = cookieMap.get(OAuthParameters.LOGIN_STATE)
 
         if (loginStateCookie == null) {
-            return true
+            return Promise.pure(null)
         }
 
         LoginState loginState = loginStateRepository.get(loginStateCookie.value)
         if (loginState == null) {
             LOGGER.warn("The login state $loginStateCookie.value is invalid, silently ignore")
-            return true
+            return Promise.pure(null)
         }
 
-        ServiceContextUtil.setLoginState(context, loginState)
+        contextWrapper.loginState = loginState
 
-        return true
+        return Promise.pure(null)
     }
 }

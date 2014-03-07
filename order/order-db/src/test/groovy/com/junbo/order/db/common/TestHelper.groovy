@@ -7,7 +7,13 @@
 package com.junbo.order.db.common
 
 import com.junbo.order.db.entity.*
-import com.junbo.order.spec.model.*
+import com.junbo.order.db.entity.enums.DiscountType
+import com.junbo.order.db.entity.enums.EventStatus
+import com.junbo.order.db.entity.enums.FulfillmentAction
+import com.junbo.order.db.entity.enums.ItemType
+import com.junbo.order.db.entity.enums.OrderActionType
+import com.junbo.order.db.entity.enums.OrderStatus
+import com.junbo.order.db.entity.enums.OrderType
 import groovy.transform.CompileStatic
 
 import java.security.SecureRandom
@@ -63,7 +69,6 @@ class TestHelper {
         entity.setOrderId(rand.nextLong())
         entity.setOrderItemType(ItemType.DIGITAL)
         entity.setProductItemId('123')
-        entity.setProductSkuId('TestProductSkuId')
         entity.setProductItemVersion('TestProductItemVersion')
         entity.setUnitPrice(BigDecimal.valueOf(DEFAULT_PRICE))
         entity.setQuantity(Integer.valueOf(DEFAULT_QUANTITY))
@@ -95,7 +100,7 @@ class TestHelper {
         OrderEventEntity orderEventEntity = new OrderEventEntity()
         orderEventEntity.setOrderId(generateId())
         orderEventEntity.setEventId(generateLong())
-        orderEventEntity.setActionId(OrderAction.FULFILL)
+        orderEventEntity.setActionId(OrderActionType.FULFILL)
         orderEventEntity.setStatusId(EventStatus.COMPLETED)
         return orderEventEntity
     }

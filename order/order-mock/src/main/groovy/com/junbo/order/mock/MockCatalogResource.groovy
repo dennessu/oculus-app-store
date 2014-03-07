@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component
 
 import javax.validation.Valid
 import javax.ws.rs.PathParam
-import javax.ws.rs.QueryParam
 
 /**
 * Created by LinYi on 14-2-25.
@@ -20,17 +19,6 @@ import javax.ws.rs.QueryParam
 @Component('mockCatalogResource')
 @Scope('prototype')
 class MockCatalogResource extends BaseMock implements OfferResource {
-
-    @Override
-    Promise<ResultList<Offer>> getOffers(
-            @QueryParam('id') List<Long> ids, Integer start, Integer size) {
-        return null
-    }
-
-    @Override
-    Promise<Offer> getOffer(Long id) {
-        return generateOffer()
-    }
 
     @Override
     Promise<ResultList<Offer>> getOffers( EntitiesGetOptions options) {
@@ -58,7 +46,7 @@ class MockCatalogResource extends BaseMock implements OfferResource {
     }
 
     @Override
-    Promise<Offer> publishOffer(Long id) {
+    Promise<Offer> releaseOffer(Long offerId) {
         return null
     }
 

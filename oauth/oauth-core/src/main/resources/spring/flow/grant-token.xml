@@ -7,40 +7,40 @@
 
     <wf:flow id="grantTokenFlow">
         <wf:action-state id="validation">
-            <wf:action ref="authenticateClientWebflow"/>
-            <wf:action ref="validateGrantTypeWebflow"/>
+            <wf:action ref="authenticateClient"/>
+            <wf:action ref="validateGrantType"/>
             <wf:transition on="AUTHORIZATION_CODE" to="authorizationCodeBranch"/>
             <wf:transition on="PASSWORD" to="passwordBranch"/>
             <wf:transition on="REFRESH_TOKEN" to="refreshTokenBranch"/>
         </wf:action-state>
 
         <wf:action-state id="authorizationCodeBranch">
-            <wf:action ref="grantTokenByCodeWebflow"/>
-            <wf:action ref="grantIdTokenWebflow"/>
+            <wf:action ref="grantTokenByCode"/>
+            <wf:action ref="grantIdToken"/>
             <wf:transition on="*" to="grantRefreshToken"/>
         </wf:action-state>
 
         <wf:action-state id="passwordBranch">
-            <wf:action ref="validateScopeWebflow"/>
-            <wf:action ref="authenticateUserWebflow"/>
-            <wf:action ref="grantTokenByPasswordWebflow"/>
+            <wf:action ref="validateScope"/>
+            <wf:action ref="authenticateUser"/>
+            <wf:action ref="grantTokenByPassword"/>
             <wf:transition on="*" to="grantRefreshToken"/>
         </wf:action-state>
 
         <wf:action-state id="refreshTokenBranch">
-            <wf:action ref="validateScopeWebflow"/>
-            <wf:action ref="grantTokenByRefreshTokenWebflow"/>
+            <wf:action ref="validateScope"/>
+            <wf:action ref="grantTokenByRefreshToken"/>
             <wf:transition on="*" to="grantRefreshToken"/>
         </wf:action-state>
 
         <wf:action-state id="grantRefreshToken">
-            <wf:action ref="grantRefreshTokenWebflow"/>
+            <wf:action ref="grantRefreshToken"/>
             <wf:transition on="*" to="generateTokenResponse"/>
         </wf:action-state>
 
         <wf:end-state id="generateTokenResponse">
             <wf:on-entry>
-                <wf:action ref="generateAccessTokenResponseWebflow"/>
+                <wf:action ref="generateAccessTokenResponse"/>
             </wf:on-entry>
         </wf:end-state>
     </wf:flow>

@@ -5,10 +5,13 @@
  */
 package com.junbo.oauth.core.action
 
-import com.junbo.oauth.core.context.ServiceContext
+import com.junbo.langur.core.promise.Promise
+import com.junbo.langur.core.webflow.action.Action
+import com.junbo.langur.core.webflow.action.ActionContext
+import com.junbo.langur.core.webflow.action.ActionResult
+import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.exception.AppExceptions
 import com.junbo.oauth.core.service.TokenGenerationService
-import com.junbo.oauth.core.util.ServiceContextUtil
 import com.junbo.oauth.spec.model.AccessToken
 import com.junbo.oauth.spec.model.TokenInfo
 import com.junbo.oauth.spec.param.OAuthParameters
@@ -17,7 +20,7 @@ import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.StringUtils
 
 /**
- * Javadoc.
+ * GetAccessTokenInfo
  */
 @CompileStatic
 class GetAccessTokenInfo implements Action {
@@ -29,8 +32,10 @@ class GetAccessTokenInfo implements Action {
     }
 
     @Override
-    boolean execute(ServiceContext context) {
-        def parameterMap = ServiceContextUtil.getParameterMap(context)
+    Promise<ActionResult> execute(ActionContext context) {
+        def contextWrapper = new ActionContextWrapper(context)
+        def parameterMap = contextWrapper.parameterMap
+
         String token = parameterMap.getFirst(OAuthParameters.ACCESS_TOKEN)
 
         if (!StringUtils.hasText(token)) {
@@ -54,8 +59,7 @@ class GetAccessTokenInfo implements Action {
                 expireIn: (Long) (accessToken.expiredBy.time - System.currentTimeMillis()) / 1000
         )
 
-        ServiceContextUtil.setTokenInfo(context, tokenInfo)
-
-        return true
+        contextWrapper.tokenInfo = tokenInfo
+        return Promise.pure(null)
     }
 }

@@ -5,23 +5,25 @@
  */
 package com.junbo.oauth.core.action
 
-import com.junbo.oauth.core.context.ServiceContext
+import com.junbo.langur.core.promise.Promise
+import com.junbo.langur.core.webflow.action.Action
+import com.junbo.langur.core.webflow.action.ActionContext
+import com.junbo.langur.core.webflow.action.ActionResult
+import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.exception.AppExceptions
 import com.junbo.oauth.core.service.TokenGenerationService
 import com.junbo.oauth.core.util.OAuthInfoUtil
-import com.junbo.oauth.core.util.ServiceContextUtil
 import com.junbo.oauth.spec.model.IdToken
-import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
-import org.glassfish.jersey.server.ContainerRequest
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.StringUtils
 
 /**
- * Javadoc.
+ * GrantIdToken.
  */
 @CompileStatic
 class GrantIdToken implements Action {
+
     private TokenGenerationService tokenGenerationService
 
     @Required
@@ -30,23 +32,20 @@ class GrantIdToken implements Action {
     }
 
     @Override
-    boolean execute(ServiceContext context) {
-        def parameterMap = ServiceContextUtil.getParameterMap(context)
-        def oauthInfo = ServiceContextUtil.getOAuthInfo(context)
-        def appClient = ServiceContextUtil.getAppClient(context)
-        def authorizationCode = ServiceContextUtil.getAuthorizationCode(context)
-        def accessToken = ServiceContextUtil.getAccessToken(context)
-        def loginState = ServiceContextUtil.getLoginState(context)
+    Promise<ActionResult> execute(ActionContext context) {
+        def contextWrapper = new ActionContextWrapper(context)
+
+        def oauthInfo = contextWrapper.oauthInfo
+        def client = contextWrapper.client
+        def authorizationCode = contextWrapper.authorizationCode
+        def accessToken = contextWrapper.accessToken
+        def loginState = contextWrapper.loginState
 
         if (!OAuthInfoUtil.isIdTokenNeeded(oauthInfo)) {
-            return true
+            return Promise.pure(null)
         }
 
-        String nonce = parameterMap.getFirst(OAuthParameters.NONCE)
-
-        if (!StringUtils.hasText(nonce)) {
-            nonce = oauthInfo.nonce
-        }
+        String nonce = oauthInfo.nonce
 
         if (!StringUtils.hasText(nonce)) {
             throw AppExceptions.INSTANCE.missingNonce().exception()
@@ -54,22 +53,15 @@ class GrantIdToken implements Action {
 
         Date lastAuthDate = null
 
-        String maxAge = parameterMap.getFirst(OAuthParameters.MAX_AGE)
-
-        if (StringUtils.hasText(maxAge)) {
+        if (oauthInfo.maxAge != null) {
             lastAuthDate = loginState.lastAuthDate
         }
 
-        IdToken idToken = tokenGenerationService.generateIdToken(appClient, getIssuer(context),
+        IdToken idToken = tokenGenerationService.generateIdToken(client, client.idTokenIssuer,
                 loginState.userId, nonce, lastAuthDate, authorizationCode, accessToken)
 
-        ServiceContextUtil.setIdToken(context, idToken)
+        contextWrapper.idToken = idToken
 
-        return true
-    }
-
-    static String getIssuer(ServiceContext context) {
-        def request = (ContainerRequest) ServiceContextUtil.getRequest(context)
-        return request.baseUri.toString()
+        return Promise.pure(null)
     }
 }

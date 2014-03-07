@@ -10,15 +10,13 @@ import com.junbo.billing.clientproxy.IdentityFacade
 import com.junbo.billing.clientproxy.PaymentFacade
 import com.junbo.billing.db.repository.BalanceRepository
 import com.junbo.billing.spec.enums.BalanceStatus
-import com.junbo.billing.spec.enums.TransactionStatus
-import com.junbo.billing.spec.enums.TransactionType
 import com.junbo.billing.spec.error.AppErrors
 import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.BalanceItem
 import com.junbo.billing.spec.enums.BalanceType
+import com.junbo.billing.spec.model.Currency
 import com.junbo.billing.spec.model.DiscountItem
 import com.junbo.billing.spec.model.TaxItem
-import com.junbo.billing.spec.model.Transaction
 import com.junbo.identity.spec.model.user.User
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
@@ -52,7 +50,7 @@ class BalanceServiceImpl implements BalanceService {
     @Autowired
     PaymentFacade paymentFacade
 
-    private static final int AMOUNT_SCALE = 2
+    private static final int AMOUNT_SCALE = 3
 
     @Override
     Promise<Balance> quoteBalance(Balance balance) {
@@ -82,37 +80,10 @@ class BalanceServiceImpl implements BalanceService {
         // set the balance status to INIT
         balance.setStatus(BalanceStatus.INIT.name())
 
+        transactionService.processBalance(balance)
+
         //persist the balance entity
         Balance resultBalance = balanceRepository.saveBalance(balance)
-
-        Transaction transaction = transactionService.processBalance(resultBalance)
-
-        TransactionStatus transactionStatus = TransactionStatus.valueOf(transaction.status)
-        BalanceStatus balanceStatus
-        switch (transactionStatus) {
-            case TransactionStatus.DECLINE:
-                balanceStatus = BalanceStatus.FAILED
-                break
-            case TransactionStatus.SUCCESS:
-                TransactionType transactionType = TransactionType.valueOf(transaction.type)
-                switch (transactionType) {
-                    case TransactionType.AUTHORIZE:
-                        balanceStatus = BalanceStatus.PENDING_CAPTURE
-                        break
-                    case TransactionType.CAPTURE:
-                    case TransactionType.CHARGE:
-                        balanceStatus = BalanceStatus.AWAITING_PAYMENT
-                        break
-                    case TransactionType.REVERSE:
-                        balanceStatus = BalanceStatus.CANCELLED
-                        break
-                }
-                break
-            default:
-                balanceStatus = BalanceStatus.ERROR
-                break
-        }
-        resultBalance = balanceRepository.updateBalanceStatus(resultBalance.balanceId.value, balanceStatus)
 
         return Promise.pure(resultBalance)
     }
@@ -224,13 +195,15 @@ class BalanceServiceImpl implements BalanceService {
 
     private void computeTotal(Balance balance) {
 
-        BigDecimal amount = new BigDecimal()
-        BigDecimal discountTotal = new BigDecimal()
-        BigDecimal taxTotal = new BigDecimal()
+        BigDecimal amount = BigDecimal.ZERO
+        BigDecimal discountTotal = BigDecimal.ZERO
+        BigDecimal taxTotal = BigDecimal.ZERO
+
+        Currency currency = currencyService.getCurrencyByName(balance.currency)
 
         balance.balanceItems.each { BalanceItem item ->
-            BigDecimal discount = new BigDecimal()
-            BigDecimal tax = new BigDecimal()
+            BigDecimal discount = BigDecimal.ZERO
+            BigDecimal tax = BigDecimal.ZERO
 
             item.taxItems.each { TaxItem taxItem ->
                 if (taxItem.taxAmount != null) {
@@ -242,6 +215,9 @@ class BalanceServiceImpl implements BalanceService {
                     discount = discount + discountItem.discountAmount
                 }
             }
+
+            tax = currency.getValueByBaseUnits(tax)
+            discount = currency.getValueByBaseUnits(discount)
             item.setTaxAmount(tax)
             item.setDiscountAmount(discount)
 
@@ -251,13 +227,15 @@ class BalanceServiceImpl implements BalanceService {
             amount = amount + item.amount
         }
 
-        balance.setTaxAmount(taxTotal)
-        balance.setDiscountAmount(discountTotal)
-
         if (!balance.taxIncluded) {
             amount = amount + taxTotal
         }
         amount = amount - discountTotal
+
+        balance.setTaxAmount(taxTotal)
+        balance.setDiscountAmount(discountTotal)
+
+        amount = currency.getValueByBaseUnits(amount)
         balance.setTotalAmount(amount)
     }
 

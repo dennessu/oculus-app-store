@@ -5,22 +5,27 @@
  */
 package com.junbo.oauth.core.action
 
-import com.junbo.oauth.core.context.ServiceContext
+import com.junbo.langur.core.promise.Promise
+import com.junbo.langur.core.webflow.action.Action
+import com.junbo.langur.core.webflow.action.ActionContext
+import com.junbo.langur.core.webflow.action.ActionResult
+import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.exception.AppExceptions
-import com.junbo.oauth.core.util.ServiceContextUtil
 import com.junbo.oauth.spec.model.Prompt
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
 import org.springframework.util.StringUtils
 
 /**
- * Javadoc.
+ * ValidatePrompt.
  */
 @CompileStatic
 class ValidatePrompt implements Action {
     @Override
-    boolean execute(ServiceContext context) {
-        def parameterMap = ServiceContextUtil.getParameterMap(context)
+    Promise<ActionResult> execute(ActionContext context) {
+        def contextWrapper = new ActionContextWrapper(context)
+
+        def parameterMap = contextWrapper.parameterMap
 
         String prompt = parameterMap.getFirst(OAuthParameters.PROMPT)
 
@@ -39,11 +44,11 @@ class ValidatePrompt implements Action {
             promptSet.addAll(prompts)
         }
 
-        def oauthInfo = ServiceContextUtil.getOAuthInfo(context)
+        def oauthInfo = contextWrapper.oauthInfo
         oauthInfo.setPrompts(promptSet.collect {
             String promptStr -> Prompt.valueOf(prompt.toUpperCase())
         }.toSet())
 
-        return true
+        return Promise.pure(null)
     }
 }

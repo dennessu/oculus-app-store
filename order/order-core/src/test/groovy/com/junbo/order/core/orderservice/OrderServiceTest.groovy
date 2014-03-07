@@ -44,8 +44,8 @@ class OrderServiceTest extends BaseTest {
 
         flowSelector = new FlowSelector() {
             @Override
-            FlowType select(OrderServiceContext expOrder, OrderServiceOperation operation) {
-                return FlowType.FREE_SETTLE
+            Promise<FlowType> select(OrderServiceContext expOrder, OrderServiceOperation operation) {
+                return Promise.pure(FlowType.FREE_SETTLE)
             }
         }
 

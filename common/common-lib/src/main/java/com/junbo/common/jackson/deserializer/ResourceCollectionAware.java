@@ -6,9 +6,13 @@
 
 package com.junbo.common.jackson.deserializer;
 
+import java.util.Collection;
+
 /**
- * Java doc.
+ * ResourceCollectionAware.
  */
 public interface ResourceCollectionAware {
-    void injectCollectionType(Class<?> collectionType);
+    void injectCollectionType(Class<? extends Collection> collectionType);
+
+    void injectComponentType(Class<?> componentType);
 }
