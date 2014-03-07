@@ -5,6 +5,7 @@
  */
 package com.junbo.cart.app
 
+import com.junbo.common.id.provider.IdTypeFromStringProvider
 import com.junbo.common.json.JacksonFeature
 import com.junbo.common.json.ObjectMapperProvider
 import org.glassfish.grizzly.http.server.HttpServer
@@ -34,6 +35,7 @@ class Main {
         resourceConfig.property('contextConfigLocation', 'classpath*:/spring/*.xml')
         resourceConfig.register(JacksonFeature)
         resourceConfig.register(ObjectMapperProvider)
+        resourceConfig.register(IdTypeFromStringProvider)
         def uri = URI.create('http://localhost:8081/rest')
         if (!StringUtils.isEmpty(System.properties['cart.uri'])) {
             uri = URI.create(System.properties['cart.uri'])
