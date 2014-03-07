@@ -15,64 +15,27 @@ import com.junbo.catalog.spec.resource.ItemResource;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.validation.Valid;
 import javax.ws.rs.BeanParam;
-import java.util.List;
 
 /**
  * Item resource implementation.
  */
-public class ItemResourceImpl implements ItemResource {
+public class ItemResourceImpl extends BaseResourceImpl<Item> implements ItemResource {
     @Autowired
     private ItemService itemService;
 
     @Override
-    public Promise<ResultList<Item>> getItems(EntitiesGetOptions options) {
-        List<Item> items = itemService.getEntities(options);
-        ResultList<Item> resultList = new ResultList<>();
-        resultList.setResults(items);
-        resultList.setHref("href TODO");
-        resultList.setNext("next TODO");
-        return Promise.pure(resultList);
+    public Promise<ResultList<Item>> getItems(@BeanParam EntitiesGetOptions options) {
+        return getEntities(options);
     }
 
     @Override
     public Promise<Item> getItem(Long itemId, @BeanParam EntityGetOptions options) {
-        return Promise.pure(itemService.get(itemId, options));
+        return getItem(itemId, options);
     }
 
     @Override
-    public Promise<Item> createItem(@Valid Item item) {
-        return Promise.pure(itemService.create(item));
-    }
-
-    @Override
-    public Promise<Item> updateItem(@Valid Item item) {
-        return Promise.pure(itemService.update(item));
-    }
-
-    @Override
-    public Promise<Item> createReview(Long itemId) {
-        return Promise.pure(itemService.review(itemId));
-    }
-
-    @Override
-    public Promise<Item> releaseItem(Long itemId) {
-        return Promise.pure(itemService.release(itemId));
-    }
-
-    @Override
-    public Promise<Item> rejectItem(Long itemId) {
-        return Promise.pure(itemService.reject(itemId));
-    }
-
-    @Override
-    public Promise<Long> removeItem(Long itemId) {
-        return Promise.pure(itemService.remove(itemId));
-    }
-
-    @Override
-    public Promise<Long> deleteItem(Long itemId) {
-        return Promise.pure(itemService.delete(itemId));
+    protected ItemService getEntityService() {
+        return itemService;
     }
 }

@@ -40,11 +40,11 @@ public interface ItemResource {
      */
     @POST
     @Path("/")
-    Promise<Item> createItem(@Valid Item item);
+    Promise<Item> create(@Valid Item item);
 
     @PUT
     @Path("/{ItemId}")
-    Promise<Item> updateItem(@Valid Item item);
+    Promise<Item> update(@Valid Item item);
 
     /**
      * Developer submit an draft Item for review.
@@ -53,7 +53,7 @@ public interface ItemResource {
      */
     @POST
     @Path("/{ItemId}/review")
-    Promise<Item> createReview(@PathParam("ItemId") Long itemId);
+    Promise<Item> review(@PathParam("ItemId") Long itemId);
 
     /**
      * Admin releases an item.
@@ -62,7 +62,7 @@ public interface ItemResource {
      */
     @POST
     @Path("/{ItemId}/release")
-    Promise<Item> releaseItem(@PathParam("ItemId") Long itemId);
+    Promise<Item> release(@PathParam("ItemId") Long itemId);
 
     /**
      * Admin rejects an item, developer may update and submit review later.
@@ -72,7 +72,7 @@ public interface ItemResource {
     // TODO: add review notes
     @POST
     @Path("/{ItemId}/reject")
-    Promise<Item> rejectItem(@PathParam("ItemId") Long itemId);
+    Promise<Item> reject(@PathParam("ItemId") Long itemId);
 
     /**
      * Remove the item from released items list. The draft version is still kept.
@@ -82,7 +82,7 @@ public interface ItemResource {
      */
     @DELETE
     @Path("/{ItemId}/release")
-    Promise<Long> removeItem(@PathParam("ItemId") Long itemId);
+    Promise<Long> remove(@PathParam("ItemId") Long itemId);
 
     /**
      * Delete an Item, delete both draft and released version.
@@ -92,6 +92,6 @@ public interface ItemResource {
      */
     @DELETE
     @Path("/{ItemId}")
-    Promise<Long> deleteItem(@PathParam("ItemId") Long itemId);
+    Promise<Long> delete(@PathParam("ItemId") Long itemId);
 }
 
