@@ -6,6 +6,7 @@
 
 package com.junbo.order.clientproxy.identity.impl;
 
+import com.junbo.common.id.UserId;
 import com.junbo.identity.spec.model.user.User;
 import com.junbo.identity.spec.resource.UserResource;
 import com.junbo.langur.core.promise.Promise;
@@ -31,7 +32,7 @@ public class IdentityFacadeImpl implements IdentityFacade {
         Promise<User> userPromise = null;
 
         try {
-            userPromise = userResource.getUser(userId);
+            userPromise = userResource.getUser(new UserId(userId));
         }
         catch (Exception e) {
             e.printStackTrace();

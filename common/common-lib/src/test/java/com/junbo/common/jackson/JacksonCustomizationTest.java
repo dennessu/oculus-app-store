@@ -79,4 +79,17 @@ public class JacksonCustomizationTest {
         String json = mapper.writeValueAsString(user);
         Assert.assertFalse(json.contains("No null occurred."));
     }
+
+    @Test
+    public void testStringId() throws Exception {
+        User user = new User();
+        user.setTest1("this_id_test_id");
+        user.setTest2(Arrays.asList("123", "456"));
+
+        String json = mapper.writeValueAsString(user);
+        User user2 = mapper.readValue(json, User.class);
+
+        Assert.assertEquals(user.getTest1(), user2.getTest1(), "test1 field should match.");
+        Assert.assertEquals(user.getTest2().size(), user2.getTest2().size(), "test2 field size should match.");
+    }
 }

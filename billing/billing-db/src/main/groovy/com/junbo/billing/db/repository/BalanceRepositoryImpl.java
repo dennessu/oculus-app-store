@@ -6,8 +6,6 @@
 
 package com.junbo.billing.db.repository;
 
-import com.junbo.billing.db.transaction.TransactionEntity;
-import com.junbo.billing.spec.enums.BalanceStatus;
 import com.junbo.billing.spec.model.*;
 import com.junbo.common.id.BalanceId;
 import com.junbo.oom.core.MappingContext;

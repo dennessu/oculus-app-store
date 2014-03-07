@@ -6,6 +6,7 @@
 
 package com.junbo.identity.spec.resource;
 
+import com.junbo.common.id.UserId;
 import com.junbo.identity.spec.model.common.ResultList;
 import com.junbo.identity.spec.model.user.User;
 import com.junbo.langur.core.RestResource;
@@ -34,11 +35,11 @@ public interface UserResource {
 
     @GET
     @Path("/{key}")
-    Promise<User> getUser(@PathParam("key") Long id);
+    Promise<User> getUser(@PathParam("key") UserId id);
 
     @PUT
     @Path("/{key}")
-    Promise<User> putUser(@PathParam("key") Long id,
+    Promise<User> putUser(@PathParam("key") UserId id,
                  User user);
 
     @POST
@@ -48,12 +49,12 @@ public interface UserResource {
 
     @POST
     @Path("/{key}/update-password")
-    Promise<User> updatePassword(@PathParam("key") Long id,
+    Promise<User> updatePassword(@PathParam("key") UserId id,
                         @QueryParam("oldPassword") String oldPassword,
                         @QueryParam("newPassword") String newPassword);
 
     @POST
     @Path("/{key}/reset-password")
-    Promise<User> restPassword(@PathParam("key") Long id,
+    Promise<User> restPassword(@PathParam("key") UserId id,
                       @QueryParam("newPassword") String newPassword);
 }

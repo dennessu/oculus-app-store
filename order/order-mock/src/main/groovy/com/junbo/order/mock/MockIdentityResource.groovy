@@ -1,5 +1,6 @@
 package com.junbo.order.mock
 
+import com.junbo.common.id.UserId
 import com.junbo.identity.spec.model.user.User
 import com.junbo.identity.spec.resource.UserResource
 import com.junbo.langur.core.promise.Promise
@@ -32,12 +33,12 @@ class MockIdentityResource implements UserResource {
     }
 
     @Override
-    Promise<User> getUser(@PathParam('key') Long id) {
+    Promise<User> getUser(@PathParam('key') UserId id) {
         return generateUser()
     }
 
     @Override
-    Promise<User> putUser(@PathParam('key') Long id, User user) {
+    Promise<User> putUser(@PathParam('key') UserId id, User user) {
         return null
     }
 
@@ -48,13 +49,13 @@ class MockIdentityResource implements UserResource {
 
     @Override
     Promise<User> updatePassword(
-            @PathParam('key') Long id,
+            @PathParam('key') UserId id,
             @QueryParam('oldPassword') String oldPassword, @QueryParam('newPassword') String newPassword) {
         return null
     }
 
     @Override
-    Promise<User> restPassword(@PathParam('key') Long id, @QueryParam('newPassword') String newPassword) {
+    Promise<User> restPassword(@PathParam('key') UserId id, @QueryParam('newPassword') String newPassword) {
         return null
     }
 

@@ -6,30 +6,27 @@
 package com.junbo.entitlement.clientproxy.identity.impl;
 
 import com.junbo.entitlement.clientproxy.identity.UserFacade;
-import com.junbo.identity.spec.model.user.User;
 import com.junbo.identity.spec.resource.proxy.UserResourceClientProxy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.concurrent.ExecutionException;
 
 /**
  * Impl of UserFacade.
  */
 public class UserFacadeImpl implements UserFacade {
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserFacade.class);
     @Autowired
     private UserResourceClientProxy identityUserClient;
 
     @Override
     public boolean exists(Long userId) {
-        User user = null;
         try {
-            user = identityUserClient.getUser(userId).wrapped().get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-        if (user == null) {
+            LOGGER.info("Getting user [{}] started.", userId);
+            identityUserClient.getUser(userId).wrapped().get();
+            LOGGER.info("Getting user [{}] finished.", userId);
+        } catch (Exception e) {
+            LOGGER.error("Getting user [{" + userId + "}] failed.", e);
             return false;
         }
         return true;

@@ -4,11 +4,14 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
+import com.junbo.order.clientproxy.rating.RatingFacade
 import com.junbo.order.core.impl.common.CoreBuilder
+import com.junbo.order.db.repo.OrderRepository
 import com.junbo.rating.spec.model.request.OrderRatingRequest
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
 
 /**
  * Created by fzhang on 14-2-25.
@@ -16,14 +19,19 @@ import org.slf4j.LoggerFactory
 @CompileStatic
 class RatingAction implements Action {
 
+    @Autowired
+    RatingFacade ratingFacade
+
+    @Autowired
+    OrderRepository orderRepository
+
     private static final Logger LOGGER = LoggerFactory.getLogger(RatingAction)
 
     @Override
     Promise<ActionResult> execute(ActionContext actionContext) {
         def context = ActionUtils.getOrderActionContext(actionContext)
         def order = context.orderServiceContext.order
-        def serviceContext = context.orderServiceContext
-        return serviceContext.ratingFacade.rateOrder(order).syncRecover {
+        return ratingFacade.rateOrder(order).syncRecover {
             Throwable throwable ->
             LOGGER.error('name=Order_Rating_Error', throwable)
             return null

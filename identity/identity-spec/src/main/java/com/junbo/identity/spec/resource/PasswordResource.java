@@ -6,6 +6,7 @@
 
 package com.junbo.identity.spec.resource;
 
+import com.junbo.common.id.PasswordRuleId;
 import com.junbo.identity.spec.model.password.PasswordRule;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
@@ -22,7 +23,7 @@ import javax.ws.rs.core.MediaType;
 public interface PasswordResource {
     @GET
     @Path("/{passwordRuleId}")
-    Promise<PasswordRule> getPasswordRule(@PathParam("passwordRuleId") Long passwordRuleId);
+    Promise<PasswordRule> getPasswordRule(@PathParam("passwordRuleId") PasswordRuleId passwordRuleId);
 
     @POST
     @Path("/")
@@ -30,6 +31,6 @@ public interface PasswordResource {
 
     @PUT
     @Path("/{appId}")
-    Promise<PasswordRule> updatePasswordRule(@PathParam("passwordRuleId") Long passwordRuleId,
+    Promise<PasswordRule> updatePasswordRule(@PathParam("passwordRuleId") PasswordRuleId passwordRuleId,
                                              PasswordRule passwordRule);
 }

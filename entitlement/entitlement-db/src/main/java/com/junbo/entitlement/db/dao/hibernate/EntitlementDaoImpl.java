@@ -68,7 +68,10 @@ public class EntitlementDaoImpl extends BaseDao<EntitlementEntity> implements En
                         " ))");
                 params.put("now", now);
             }
-            params.put("status", status.ordinal());
+            params.put("status", status.getId());
+        }else {
+            //default not to search DELETED and BANNED Entitlement
+            queryStringBuilder.append(" and status >= 0");
         }
 
         addCollectionParam("entitlement_group", "groups",
@@ -78,7 +81,7 @@ public class EntitlementDaoImpl extends BaseDao<EntitlementEntity> implements En
                 entitlementSearchParam.getDefinitionIds(), queryStringBuilder, params);
         if (CommonUtils.isNotNull(entitlementSearchParam.getType())) {
             addSingleParam("type", "type",
-                    EntitlementType.valueOf(entitlementSearchParam.getType()).ordinal(),
+                    EntitlementType.valueOf(entitlementSearchParam.getType()).getId(),
                     "=", queryStringBuilder, params);
         }
         addCollectionParam("offer_id", "offerIds", entitlementSearchParam.getOfferIds(), queryStringBuilder, params);
@@ -117,11 +120,10 @@ public class EntitlementDaoImpl extends BaseDao<EntitlementEntity> implements En
                 " where managedLifecycle = true" +
                 " and userId = (:userId)" +
                 " and entitlementDefinitionId = (:definitionId)" +
-                " and status not in (:notManagedStatus)";
+                " and status >= 0";
         Query q = currentSession().createQuery(queryString)
                 .setLong("userId", userId)
-                .setLong("definitionId", definitionId)
-                .setParameterList("notManagedStatus", EntitlementStatus.LIFECYCLE_NOT_MANAGED_STATUS);
+                .setLong("definitionId", definitionId);
         return (EntitlementEntity) q.uniqueResult();
     }
 
@@ -129,10 +131,9 @@ public class EntitlementDaoImpl extends BaseDao<EntitlementEntity> implements En
     public Boolean existEntitlementDefinition(Long definitionId) {
         String queryString = "from EntitlementEntity" +
                 " where entitlementDefinitionId = (:definitionId)" +
-                " and status not in (:notManagedStatus)";
+                " and status >= 0";
         Query q = currentSession().createQuery(queryString)
-                .setLong("definitionId", definitionId)
-                .setParameterList("notManagedStatus", EntitlementStatus.LIFECYCLE_NOT_MANAGED_STATUS);
+                .setLong("definitionId", definitionId);
         return q.list().size() != 0;
     }
 }
