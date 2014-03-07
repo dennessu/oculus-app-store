@@ -59,7 +59,7 @@ class MockIdentityResource implements UserResource {
         return null
     }
 
-    Promise<User> generateUser() {
+    static Promise<User> generateUser() {
         User user = new User()
         user.setUserName('fake_user')
         user.setPassword('fake_password')

@@ -1,5 +1,4 @@
 package com.junbo.order.mock
-
 import com.junbo.billing.spec.model.ShippingAddress
 import com.junbo.billing.spec.resource.ShippingAddressResource
 import com.junbo.common.id.ShippingAddressId
@@ -8,9 +7,6 @@ import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
-
-import javax.ws.rs.QueryParam
-
 /**
  * Created by chriszhu on 2/24/14.
  */
@@ -20,30 +16,32 @@ import javax.ws.rs.QueryParam
 class MockShippingAddressResource extends BaseMock implements ShippingAddressResource {
 
     @Override
-    Promise<ShippingAddress> postShippingAddress(Long userId, ShippingAddress address) {
+    Promise<ShippingAddress> postShippingAddress(UserId userId, ShippingAddress address) {
         return null
     }
 
     @Override
-    Promise<List<ShippingAddress>> getShippingAddresses(@QueryParam('user') Long userId) {
+    Promise<List<ShippingAddress>> getShippingAddresses(UserId userId) {
         return null
     }
 
     @Override
-    Promise<Void> deleteShippingAddress(Long userId, Long addressId) {
-        return null
-    }
-
-    @Override
-    Promise<ShippingAddress> getShippingAddress(Long userId,  Long addressId) {
+    Promise<ShippingAddress> getShippingAddress(
+            UserId userId, ShippingAddressId addressId) {
         def shippingAddress = new ShippingAddress()
         shippingAddress.addressId = new ShippingAddressId()
-        shippingAddress.addressId.value = addressId
+        shippingAddress.addressId = addressId
         shippingAddress.city = 'San Francisco'
         shippingAddress.country = 'US'
         shippingAddress.firstName = 'Pacific'
         shippingAddress.lastName = 'Ocean'
-        shippingAddress.userId = new UserId(userId)
+        shippingAddress.userId = userId
         return Promise.pure(shippingAddress)
+    }
+
+    @Override
+    Promise<Void> deleteShippingAddress(
+            UserId userId, ShippingAddressId addressId) {
+        return null
     }
 }

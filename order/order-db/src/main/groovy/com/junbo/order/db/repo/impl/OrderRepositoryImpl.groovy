@@ -177,4 +177,49 @@ class OrderRepositoryImpl implements OrderRepository {
         }
         return paymentInstrumentIds
     }
+
+    @Override
+    Order updateOrder(Order order, OrderEvent orderEvent) {
+        // Validations
+        // TODO Log error and throw exception
+        if (order == null) { return null }
+        if (order.id == null) { return null }
+
+        // Update Order
+        MappingContext context = new MappingContext()
+        def orderEntity = modelMapper.toOrderEntity(order, context)
+        orderDao.update(orderEntity)
+
+        // Update OrderItem
+        order.orderItems?.each { OrderItem item ->
+            def itemEntity = modelMapper.toOrderItemEntity(item, context)
+            itemEntity.orderItemId = idGenerator.nextId(orderEntity.orderId)
+            orderItemDao.update(itemEntity)
+        }
+
+        // Update Discount
+        order.discounts?.each { Discount discount ->
+            def discountEntity = modelMapper.toDiscountEntity(discount, context)
+            discountEntity.discountInfoId = idGenerator.nextId(orderEntity.orderId)
+            discountDao.update(discountEntity)
+        }
+
+        // Save order event
+        orderEvent.order = order.id
+        def orderEventEntity = modelMapper.toOrderEventEntity(orderEvent, context)
+        orderEventEntity.eventId = idGenerator.nextId(orderEntity.orderId)
+        orderEventDao.create(orderEventEntity)
+
+        // Save Balance Event
+
+        // Save Order Item Fulfillment Event
+
+        // Save Payment Info
+
+        // Save Order Item Tax Info
+
+        // Save Order Item Preorder Info
+
+        return order
+    }
 }
