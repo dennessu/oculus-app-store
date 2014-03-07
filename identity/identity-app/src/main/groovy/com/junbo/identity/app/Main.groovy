@@ -6,7 +6,6 @@
 
 package com.junbo.identity.app
 
-import com.junbo.common.id.converter.IdTypeFromStringConverter
 import com.junbo.common.id.provider.IdTypeFromStringProvider
 import com.junbo.common.json.JacksonFeature
 import com.junbo.common.json.ObjectMapperProvider
@@ -18,7 +17,6 @@ import org.glassfish.jersey.server.ResourceConfig
 import java.util.logging.Handler
 import java.util.logging.Level
 import java.util.logging.Logger
-
 /**
  * App to launch Server
  */
@@ -35,7 +33,6 @@ class Main {
         resourceConfig.property('contextConfigLocation', 'classpath*:/spring/*.xml')
         resourceConfig.register(ResultListInterceptor)
         resourceConfig.register(IdTypeFromStringProvider)
-        resourceConfig.register(IdTypeFromStringConverter)
 
         def uri = URI.create('http://0.0.0.0:8080/rest')
         GrizzlyHttpServerFactory.createHttpServer(uri, resourceConfig)
