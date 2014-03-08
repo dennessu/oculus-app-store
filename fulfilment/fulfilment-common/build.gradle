@@ -11,5 +11,11 @@ dependencies {
     compile (libraries.common_lib)
     compile (libraries.common_configuration)
 
+    compile (libraries.log4j)
+    compile (libraries.slf4j_api)
+    compile (libraries.log4j_over_slf4j)
+    compile (libraries.jul_to_slf4j)
+    compile (libraries.jcl_over_slf4j)
+
     compile ('ma.glasnost.orika:orika-core:1.1.4')
 }
