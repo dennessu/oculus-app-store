@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.junbo.common.jackson.deserializer.ResourceAwareDeserializationContext;
 import com.junbo.common.jackson.serializer.ResourceAwareSerializerProvider;
+import com.junbo.common.shuffle.Oculus48Id;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -28,6 +29,15 @@ public class JacksonCustomizationTest {
 
     @BeforeClass
     public void setUp() {
+        Long a = 12345L;
+        System.out.println("original:" + a);
+        System.out.println("shuffle:" + Oculus48Id.shuffle(a));
+        String result = (Oculus48Id.format(Oculus48Id.shuffle(a)));
+        System.out.println("shuffle then format:" + result);
+        System.out.println("deformat:" + (Oculus48Id.deFormat(result)));
+        System.out.println("deformat then unshuffle:" + Oculus48Id.unShuffle(Oculus48Id.deFormat(result)));
+
+
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
     }
 
