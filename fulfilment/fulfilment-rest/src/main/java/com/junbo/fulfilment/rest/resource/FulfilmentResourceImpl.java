@@ -35,8 +35,8 @@ public class FulfilmentResourceImpl implements FulfilmentResource {
     }
 
     @GET
-    public Promise<FulfilmentRequest> getByBillingOrderId(@QueryParam("orderId") OrderId billingOrderId) {
-        return Promise.pure(service.retrieveRequestByBillingOrderId(billingOrderId.getValue()));
+    public Promise<FulfilmentRequest> getByBillingOrderId(@QueryParam("orderId") OrderId orderId) {
+        return Promise.pure(service.retrieveRequestByBillingOrderId(orderId.getValue()));
     }
 
     @Override
