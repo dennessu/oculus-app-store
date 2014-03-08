@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.junbo.common.jackson.model.ResourceRef;
+import com.junbo.common.shuffle.Oculus48Id;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -46,6 +47,11 @@ public class ResourceIdSerializer extends JsonSerializer<Object> implements Reso
         MAPPER.writeValue(jgen, results);
     }
 
+    protected String encode(Object value) {
+        //return value instanceof Long ? Oculus48Id.format(Oculus48Id.shuffle((Long) value)) : value.toString();
+        return value instanceof Long ? Oculus48Id.format(((Long) value)) : value.toString();
+    }
+
     private List<ResourceRef> handleCollection(Object value) {
         Collection collection = (Collection) value;
 
@@ -61,7 +67,7 @@ public class ResourceIdSerializer extends JsonSerializer<Object> implements Reso
     private ResourceRef handleSingle(Object value) {
         ResourceRef ref = new ResourceRef();
         ref.setHref(getResourceHref(value));
-        ref.setId(value.toString());
+        ref.setId(encode(value));
 
         return ref;
     }
@@ -70,9 +76,7 @@ public class ResourceIdSerializer extends JsonSerializer<Object> implements Reso
         return value instanceof Collection;
     }
 
-    protected String getResourceHref(Object value) {
-        // determine resource url prefix with resourceType later
-        // ignore the url below for now >_<
-        return "http://api.oculusvr.com/v1/" + resourceType + "/" + value;
+    private String getResourceHref(Object value) {
+        return "http://api.wan-san.com/v1/" + resourceType + "/" + value;
     }
 }
