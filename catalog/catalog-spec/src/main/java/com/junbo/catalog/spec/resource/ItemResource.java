@@ -9,6 +9,7 @@ import com.junbo.catalog.spec.model.common.EntitiesGetOptions;
 import com.junbo.catalog.spec.model.common.EntityGetOptions;
 import com.junbo.catalog.spec.model.common.ResultList;
 import com.junbo.catalog.spec.model.item.Item;
+import com.junbo.common.id.Id;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 
@@ -30,7 +31,7 @@ public interface ItemResource {
 
     @GET
     @Path("/{ItemId}")
-    Promise<Item> getItem(@PathParam("ItemId") Long itemId, @BeanParam EntityGetOptions options);
+    Promise<Item> getItem(@PathParam("ItemId") Id itemId, @BeanParam EntityGetOptions options);
 
     /**
      * Create a draft item.
@@ -53,7 +54,7 @@ public interface ItemResource {
      */
     @POST
     @Path("/{ItemId}/review")
-    Promise<Item> review(@PathParam("ItemId") Long itemId);
+    Promise<Item> review(@PathParam("ItemId") Id itemId);
 
     /**
      * Admin releases an item.
@@ -62,7 +63,7 @@ public interface ItemResource {
      */
     @POST
     @Path("/{ItemId}/release")
-    Promise<Item> release(@PathParam("ItemId") Long itemId);
+    Promise<Item> release(@PathParam("ItemId") Id itemId);
 
     /**
      * Admin rejects an item, developer may update and submit review later.
@@ -72,7 +73,7 @@ public interface ItemResource {
     // TODO: add review notes
     @POST
     @Path("/{ItemId}/reject")
-    Promise<Item> reject(@PathParam("ItemId") Long itemId);
+    Promise<Item> reject(@PathParam("ItemId") Id itemId);
 
     /**
      * Remove the item from released items list. The draft version is still kept.
@@ -82,7 +83,7 @@ public interface ItemResource {
      */
     @DELETE
     @Path("/{ItemId}/release")
-    Promise<Long> remove(@PathParam("ItemId") Long itemId);
+    Promise<Void> remove(@PathParam("ItemId") Id itemId);
 
     /**
      * Delete an Item, delete both draft and released version.
@@ -92,6 +93,6 @@ public interface ItemResource {
      */
     @DELETE
     @Path("/{ItemId}")
-    Promise<Long> delete(@PathParam("ItemId") Long itemId);
+    Promise<Void> delete(@PathParam("ItemId") Id itemId);
 }
 

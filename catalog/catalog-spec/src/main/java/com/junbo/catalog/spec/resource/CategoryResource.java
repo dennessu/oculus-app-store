@@ -10,6 +10,7 @@ import com.junbo.catalog.spec.model.category.Category;
 import com.junbo.catalog.spec.model.common.EntitiesGetOptions;
 import com.junbo.catalog.spec.model.common.EntityGetOptions;
 import com.junbo.catalog.spec.model.common.ResultList;
+import com.junbo.common.id.Id;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 
@@ -31,7 +32,7 @@ public interface CategoryResource {
 
     @GET
     @Path("/{categoryId}")
-    Promise<Category> getCategory(@PathParam("categoryId") Long categoryId, @BeanParam EntityGetOptions options);
+    Promise<Category> getCategory(@PathParam("categoryId") Id categoryId, @BeanParam EntityGetOptions options);
 
     /**
      * Create a draft category, the created category is not purchasable until it is released.
@@ -54,7 +55,7 @@ public interface CategoryResource {
      */
     @POST
     @Path("/{categoryId}/review")
-    Promise<Category> review(@PathParam("categoryId") Long categoryId);
+    Promise<Category> review(@PathParam("categoryId") Id categoryId);
 
     /**
      * Admin publishes an category, makes it purchasable.
@@ -63,7 +64,7 @@ public interface CategoryResource {
      */
     @POST
     @Path("/{categoryId}/release")
-    Promise<Category> release(@PathParam("categoryId") Long categoryId);
+    Promise<Category> release(@PathParam("categoryId") Id categoryId);
 
     /**
      * Admin rejects an category, developer may update and submit review later.
@@ -73,7 +74,7 @@ public interface CategoryResource {
     // TODO: add review notes
     @POST
     @Path("/{categoryId}/reject")
-    Promise<Category> reject(@PathParam("categoryId") Long categoryId);
+    Promise<Category> reject(@PathParam("categoryId") Id categoryId);
 
     /**
      * Remove an released category. The draft version is still kept.
@@ -83,7 +84,7 @@ public interface CategoryResource {
      */
     @DELETE
     @Path("/{categoryId}/release")
-    Promise<Long> remove(@PathParam("categoryId") Long categoryId);
+    Promise<Void> remove(@PathParam("categoryId") Id categoryId);
 
     /**
      * Delete an category, delete both draft and released version.
@@ -93,5 +94,5 @@ public interface CategoryResource {
      */
     @DELETE
     @Path("/{categoryId}")
-    Promise<Long> delete(@PathParam("categoryId") Long categoryId);
+    Promise<Void> delete(@PathParam("categoryId") Id categoryId);
 }

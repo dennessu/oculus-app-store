@@ -12,6 +12,7 @@ import com.junbo.catalog.spec.model.common.EntityGetOptions;
 import com.junbo.catalog.spec.model.common.ResultList;
 import com.junbo.catalog.spec.model.promotion.Promotion;
 import com.junbo.catalog.spec.resource.PromotionResource;
+import com.junbo.common.id.Id;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -30,7 +31,7 @@ public class PromotionResourceImpl extends BaseResourceImpl<Promotion> implement
     }
 
     @Override
-    public Promise<Promotion> getPromotion(Long promotionId, @BeanParam EntityGetOptions options) {
+    public Promise<Promotion> getPromotion(Id promotionId, @BeanParam EntityGetOptions options) {
         return get(promotionId, options);
     }
 
