@@ -19,7 +19,8 @@ import com.junbo.fulfilment.spec.model.FulfilmentAction;
 public class PhysicalGoodsHandler extends HandlerSupport implements FulfilmentHandler<PhysicalGoodsContext> {
     @Override
     public void process(PhysicalGoodsContext context) {
-        ShippingAddress shippingAddress = billingGateway.getShippingAddress(context.getShippingAddressId());
+        ShippingAddress shippingAddress = billingGateway.getShippingAddress(context.getUserId(),
+                context.getShippingAddressId());
         ShippingMethod shippingMethod = catalogGateway.getShippingMethod(context.getShippingMethodId());
 
         Counter counter = new Counter();

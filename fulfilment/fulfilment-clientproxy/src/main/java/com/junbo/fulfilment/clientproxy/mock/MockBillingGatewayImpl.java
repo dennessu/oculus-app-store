@@ -13,7 +13,7 @@ import com.junbo.fulfilment.spec.fusion.ShippingAddress;
  */
 public class MockBillingGatewayImpl implements BillingGateway {
     @Override
-    public ShippingAddress getShippingAddress(Long shippingAddressId) {
+    public ShippingAddress getShippingAddress(Long userId, Long shippingAddressId) {
         ShippingAddress address = new ShippingAddress();
         address.setAddressId(shippingAddressId);
         address.setUserId(123L);

@@ -5,6 +5,7 @@ import com.junbo.catalog.spec.model.common.ResultList
 import com.junbo.catalog.spec.model.item.Item
 import com.junbo.catalog.spec.model.offer.Offer
 import com.junbo.catalog.spec.resource.OfferResource
+import com.junbo.common.id.Id
 import com.junbo.langur.core.promise.Promise
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
@@ -21,7 +22,7 @@ class MockCatalogResource extends BaseMock implements OfferResource {
     }
 
     @Override
-    Promise<Offer> getOffer(Long offerId, EntityGetOptions options) {
+    Promise<Offer> getOffer(Id offerId, EntityGetOptions options) {
         return generateOffer()
     }
 
@@ -47,7 +48,7 @@ class MockCatalogResource extends BaseMock implements OfferResource {
      * @return the offer to be reviewed.
      */
     @Override
-    Promise<Offer> review(Long offerId) {
+    Promise<Offer> review(Id offerId) {
         return null
     }
 
@@ -57,7 +58,7 @@ class MockCatalogResource extends BaseMock implements OfferResource {
      * @return the offer to be released.
      */
     @Override
-    Promise<Offer> release(Long offerId) {
+    Promise<Offer> release(Id offerId) {
         return null
     }
 
@@ -67,7 +68,7 @@ class MockCatalogResource extends BaseMock implements OfferResource {
      * @return the offer to be released.
      */
     @Override
-    Promise<Offer> reject(Long offerId) {
+    Promise<Offer> reject(Id offerId) {
         return null
     }
 
@@ -78,7 +79,7 @@ class MockCatalogResource extends BaseMock implements OfferResource {
      * @return the removed offer id.
      */
     @Override
-    Promise<Long> remove(Long offerId) {
+    Promise<Void> remove(Id offerId) {
         return null
     }
 
@@ -89,7 +90,7 @@ class MockCatalogResource extends BaseMock implements OfferResource {
      * @return the deleted offer id.
      */
     @Override
-    Promise<Long> delete(Long offerId) {
+    Promise<Void> delete(Id offerId) {
         return null
     }
 

@@ -7,6 +7,7 @@ package com.junbo.entitlement.clientproxy.catalog.impl;
 
 import com.junbo.catalog.spec.model.common.EntityGetOptions;
 import com.junbo.catalog.spec.resource.proxy.OfferResourceClientProxy;
+import com.junbo.common.id.OfferId;
 import com.junbo.entitlement.clientproxy.catalog.CatalogFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +25,7 @@ public class CatalogFacadeImpl implements CatalogFacade {
     public boolean exists(Long offerId) {
         try {
             LOGGER.info("Getting offer [{}] started.", offerId);
-            catalogOfferProxy.getOffer(offerId, EntityGetOptions.getDefault()).wrapped().get();
+            catalogOfferProxy.getOffer(new OfferId(offerId), EntityGetOptions.getDefault()).wrapped().get();
             LOGGER.info("Getting offer [{}] finished.", offerId);
         } catch (Exception e) {
             LOGGER.error("Getting offer [{" + offerId + "}] failed.", e);
