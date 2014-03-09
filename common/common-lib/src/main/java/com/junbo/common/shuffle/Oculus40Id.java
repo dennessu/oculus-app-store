@@ -16,7 +16,7 @@ public class Oculus40Id {
     private Oculus40Id() {
     }
 
-    public static final int OCULUS40_MASK_BITS = 0x3FFFFFF;
+    public static final long OCULUS40_MASK_BITS = 0x3FFFFFFL;
     public static final int OCULUS40_SHUFFLE_OFFSET = 14;
     public static final String OCULUS40_ID_SEPARATOR = "-";
     public static final String OCULUS40_ID_DEFAULT_FILL_FIELD = "0";
