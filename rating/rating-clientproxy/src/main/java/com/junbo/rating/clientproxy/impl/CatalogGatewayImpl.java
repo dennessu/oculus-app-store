@@ -17,6 +17,8 @@ import com.junbo.catalog.spec.model.promotion.Promotion;
 import com.junbo.catalog.spec.resource.ItemResource;
 import com.junbo.catalog.spec.resource.OfferResource;
 import com.junbo.catalog.spec.resource.PromotionResource;
+import com.junbo.common.id.ItemId;
+import com.junbo.common.id.OfferId;
 import com.junbo.rating.clientproxy.CatalogGateway;
 import com.junbo.rating.common.util.Constants;
 import com.junbo.rating.spec.fusion.EntryType;
@@ -44,7 +46,7 @@ public class CatalogGatewayImpl implements CatalogGateway{
     @Override
     public Item getItem(Long itemId) {
         try {
-            return itemResource.getItem(itemId, EntityGetOptions.getDefault()).wrapped().get();
+            return itemResource.getItem(new ItemId(itemId), EntityGetOptions.getDefault()).wrapped().get();
         } catch (Exception e) {
             //TODO: throw pre-defined exception
             throw new RuntimeException(e);
@@ -55,7 +57,7 @@ public class CatalogGatewayImpl implements CatalogGateway{
     public RatingOffer getOffer(Long offerId) {
         Offer offer;
         try {
-            offer = offerResource.getOffer(offerId, EntityGetOptions.getDefault()).wrapped().get();
+            offer = offerResource.getOffer(new OfferId(offerId), EntityGetOptions.getDefault()).wrapped().get();
         } catch (Exception e) {
             //TODO: throw pre-defined exception
             throw new RuntimeException(e);
