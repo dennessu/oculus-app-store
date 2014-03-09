@@ -19,6 +19,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * brain tree sdk implementation.
@@ -215,7 +218,7 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
     }
 
     @Override
-    public Promise<PaymentTransaction> getByOrderId(String orderId) {
+    public List<PaymentTransaction> getByOrderId(String orderId) {
         ResourceCollection<Transaction> collection = null;
         try{
             TransactionSearchRequest request = new TransactionSearchRequest()
@@ -227,14 +230,15 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
         if(collection == null || collection.getMaximumSize() == 0){
             return null;
         }
-        PaymentTransaction result = new PaymentTransaction();
+        List<PaymentTransaction> results = new ArrayList<PaymentTransaction>();
         for(Transaction transaction : collection){
+            PaymentTransaction result = new PaymentTransaction();
             result.setStatus(PaymentUtil.mapPaymentStatus(PaymentStatus.BrainTreeStatus.valueOf(
                     transaction.getStatus().toString())).toString());
             //TODO: need add transaction.getSettlementBatchId(); for the batch job processing
-            return Promise.pure(result);
+            results.add(result);
         }
-        return null;
+        return results;
     }
 
     @Override

@@ -12,6 +12,8 @@ import com.junbo.payment.spec.internal.BrainTreeResource;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentTransaction;
 
+import java.util.List;
+
 /**
  * brain tree rest implementation.
  */
@@ -62,7 +64,7 @@ public class BrainTreeRestProviderServiceImpl implements PaymentProviderService 
     }
 
     @Override
-    public Promise<PaymentTransaction> getByOrderId(String orderId) {
+    public List<PaymentTransaction> getByOrderId(String orderId) {
         return null;
     }
 

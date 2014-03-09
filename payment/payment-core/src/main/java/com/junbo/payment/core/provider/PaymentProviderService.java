@@ -10,6 +10,8 @@ import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentTransaction;
 
+import java.util.List;
+
 /**
  * payment provider service.
  */
@@ -24,6 +26,6 @@ public interface PaymentProviderService{
     Promise<PaymentTransaction> charge(String piToken, PaymentTransaction paymentRequest);
     Promise<Void> reverse(String transactionId);
     void refund(String transactionId, PaymentTransaction request);
-    Promise<PaymentTransaction> getByOrderId(String orderId);
+    List<PaymentTransaction> getByOrderId(String orderId);
     Promise<PaymentTransaction> getByTransactionToken(String token);
 }
