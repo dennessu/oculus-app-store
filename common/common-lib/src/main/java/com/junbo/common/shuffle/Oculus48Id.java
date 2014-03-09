@@ -8,6 +8,7 @@ package com.junbo.common.shuffle;
 import org.apache.commons.collections.bidimap.DualHashBidiMap;
 import java.util.Iterator;
 import java.util.Map;
+
 /**
  * Created by liangfu on 3/6/14.
  */
@@ -73,7 +74,7 @@ public class Oculus48Id {
        Iterator it = oculus48ShuffleMap.entrySet().iterator();
        while (it.hasNext()) {
            Map.Entry pair = (Map.Entry)it.next();
-           shuffledValue += (shufflePart & (0x1 << (int)pair.getKey())) == 0 ? 0 : (0x1 << (int)pair.getValue());
+           shuffledValue += (shufflePart & (0x1L << (int)pair.getKey())) == 0 ? 0 : (0x1L << (int)pair.getValue());
        }
        return nonShufflePart + (shuffledValue << OCULUS48_SHUFFLE_OFFSET);
    }
@@ -85,7 +86,7 @@ public class Oculus48Id {
        Iterator it = oculus48ShuffleMap.entrySet().iterator();
        while (it.hasNext()) {
            Map.Entry pair = (Map.Entry)it.next();
-           unShuffleValue += (shuffledPart & (0x1 << (int)pair.getValue())) == 0 ? 0 : (0x1 << (int)pair.getKey());
+           unShuffleValue += (shuffledPart & (0x1L << (int)pair.getValue())) == 0 ? 0 : (0x1L << (int)pair.getKey());
        }
 
        return nonShuffledPart + (unShuffleValue << OCULUS48_SHUFFLE_OFFSET);
