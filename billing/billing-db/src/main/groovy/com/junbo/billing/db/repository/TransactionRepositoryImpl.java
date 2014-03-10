@@ -11,6 +11,7 @@ import com.junbo.billing.db.dao.TransactionEntityDao;
 import com.junbo.billing.db.mapper.ModelMapper;
 import com.junbo.billing.db.transaction.TransactionEntity;
 import com.junbo.billing.spec.model.Transaction;
+import com.junbo.sharding.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -29,12 +30,14 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private IdGenerator idGenerator;
+
     @Override
     public Transaction saveTransaction(Transaction transaction) {
         TransactionEntity entity = modelMapper.toTransactionEntity(transaction, new MappingContext());
 
-        //todo: use real id generator
-        entity.setTransactionId(new Random().nextLong());
+        entity.setTransactionId(idGenerator.nextId(entity.getBalanceId()));
         entity.setCreatedBy("BILLING");
         entity.setCreatedDate(new Date());
         Long id = transactionEntityDao.insert(entity);
