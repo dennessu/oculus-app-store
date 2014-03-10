@@ -10,6 +10,8 @@ import java.util.Random;
 
 /**
  * Created by Jason on 3/7/14.
+ * @author Jason
+ * 3/7/14
  */
 public final class RandomFactory {
 

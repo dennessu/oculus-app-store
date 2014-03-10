@@ -5,6 +5,7 @@
  */
 package com.junbo.integration.customerscenarios.user;
 
+import com.junbo.integration.customerscenarios.helper.EnumHelper;
 import com.junbo.integration.customerscenarios.helper.LogHelper;
 import com.junbo.integration.customerscenarios.util.BaseTestClass;
 import com.junbo.integration.customerscenarios.helper.AsyncHttpClientHelper;
@@ -31,21 +32,21 @@ public class TestPostUser extends BaseTestClass {
         AsyncHttpClientHelper clientHelper = new AsyncHttpClientHelper();
         StringBuilder postRequestBody = new StringBuilder();
         postRequestBody.append("{\"");
-        postRequestBody.append(UserPara.userName.toString());
+        postRequestBody.append(EnumHelper.UserPara.userName.toString());
         postRequestBody.append("\":\"");
         postRequestBody.append(RandomFactory.getRandomEmailAddress());
         postRequestBody.append("\",\"");
-        postRequestBody.append(UserPara.password.toString());
+        postRequestBody.append(EnumHelper.UserPara.password.toString());
         postRequestBody.append("\":\"");
         postRequestBody.append(weakPassword);
         postRequestBody.append("\",\"");
-        postRequestBody.append(UserPara.passwordStrength.toString());
+        postRequestBody.append(EnumHelper.UserPara.passwordStrength.toString());
         postRequestBody.append("\":\"");
-        postRequestBody.append(PasswordStrength.WEAK.toString());
+        postRequestBody.append(EnumHelper.PasswordStrength.WEAK.toString());
         postRequestBody.append("\",\"");
-        postRequestBody.append(UserPara.status.toString());
+        postRequestBody.append(EnumHelper.UserPara.status.toString());
         postRequestBody.append("\":\"");
-        postRequestBody.append(UserStatus.ACTIVE.toString());
+        postRequestBody.append(EnumHelper.UserStatus.ACTIVE.toString());
         postRequestBody.append("\"}");
 
         String response = clientHelper.UserPost(serverURL,

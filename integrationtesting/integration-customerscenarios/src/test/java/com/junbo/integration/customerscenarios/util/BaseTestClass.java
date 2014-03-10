@@ -23,23 +23,4 @@ public class BaseTestClass {
         System.setProperty("logback.configurationFile", "logback-test.xml");
     }
 
-    public enum PasswordStrength {
-        WEAK,
-        STRONG
-    }
-
-    public enum UserStatus {
-        ACTIVE,
-        SUSPENDED,
-        BANNED,
-        DELETED
-    }
-
-    public enum UserPara {
-        userName,
-        password,
-        passwordStrength,
-        status
-    }
-
 }
