@@ -4,7 +4,7 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.sharding;
+package com.junbo.sharding.impl;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

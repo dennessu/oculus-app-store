@@ -4,6 +4,8 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.identity.data.dao.impl.postgresql
+
+import com.junbo.common.id.UserProfileId
 import com.junbo.identity.data.dao.UserProfileDAO
 import com.junbo.identity.data.entity.user.UserProfileEntity
 import com.junbo.identity.data.entity.user.UserProfileType
@@ -12,6 +14,7 @@ import com.junbo.identity.data.util.Constants
 import com.junbo.identity.spec.model.user.UserProfile
 import com.junbo.oom.core.MappingContext
 import com.junbo.sharding.IdGenerator
+import com.junbo.sharding.IdGeneratorFacade
 import org.hibernate.Session
 import org.hibernate.SessionFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -27,7 +30,7 @@ class UserProfileDAOImpl implements UserProfileDAO {
     private ModelMapper modelMapper
 
     @Autowired
-    private IdGenerator idGenerator
+    private IdGeneratorFacade idGenerator
 
     private Session currentSession() {
         sessionFactory.currentSession
@@ -36,7 +39,7 @@ class UserProfileDAOImpl implements UserProfileDAO {
     @Override
     UserProfile save(UserProfile entity) {
         UserProfileEntity userProfileEntity = modelMapper.toUserProfileEntity(entity, new MappingContext())
-        userProfileEntity.setId(idGenerator.nextId(entity.userId.value))
+        userProfileEntity.setId(idGenerator.nextId(UserProfileId, entity.userId.value))
         userProfileEntity.setCreatedBy(Constants.DEFAULT_CLIENT_ID)
         userProfileEntity.setCreatedTime(new Date())
         currentSession().save(userProfileEntity)

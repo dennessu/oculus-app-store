@@ -4,12 +4,11 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.sharding.impl;
+package com.junbo.sharding.oculus;
 
 /**
  * Java doc for OculusIdGeneratorSlot.
  */
-public interface IdGeneratorSlot {
-
+public interface OculusIdGeneratorSlot {
     long nextId();
 }

@@ -4,7 +4,7 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.sharding.impl;
+package com.junbo.sharding.oculus;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -32,20 +32,19 @@ import java.util.Random;
  *  }
  *  </pre>
  */
-public class IdGeneratorImpl implements com.junbo.sharding.IdGenerator {
+public class OculusIdGeneratorImpl implements com.junbo.sharding.IdGenerator {
 
-    private final List<IdGeneratorSlot> slots;
+    private final List<OculusIdGeneratorSlot> slots;
 
     private final Random random;
 
-    public IdGeneratorImpl(IdSchema idSchema, TimeGenerator timeGenerator, GlobalCounter globalCounter) {
+    public OculusIdGeneratorImpl(OculusIdSchema idSchema, OculusGlobalCounter globalCounter) {
 
-        slots = new ArrayList<IdGeneratorSlot>();
+        slots = new ArrayList<OculusIdGeneratorSlot>();
 
         for (int shardId = 0; shardId < idSchema.getNumberOfShards(); shardId++) {
 
-            slots.add(new IdGeneratorSlotImpl(
-                    shardId, idSchema, timeGenerator, globalCounter));
+            slots.add(new OculusIdGeneratorSlotImpl(shardId, idSchema, globalCounter));
         }
 
         random = new SecureRandom();
@@ -65,7 +64,7 @@ public class IdGeneratorImpl implements com.junbo.sharding.IdGenerator {
 
     @Override
     public long nextIdByShardId(int shardId) {
-        IdGeneratorSlot slot = slots.get(shardId);
+        OculusIdGeneratorSlot slot = slots.get(shardId);
         return slot.nextId();
     }
 }

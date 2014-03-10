@@ -4,7 +4,7 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.sharding.impl;
+package com.junbo.sharding.oculus;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
@@ -13,44 +13,29 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * Java doc for OculusIdGeneratorSlotImpl.
  */
-public class IdGeneratorSlotImpl implements IdGeneratorSlot {
+public class OculusIdGeneratorSlotImpl implements OculusIdGeneratorSlot {
 
     private final int shardId;
-
-    private final IdSchema idSchema;
-
-    private final TimeGenerator timeGenerator;
-    private final GlobalCounter globalCounter;
-
+    private final OculusIdSchema idSchema;
+    private final OculusGlobalCounter globalCounter;
     private final Lock lock;
-
     private volatile SlotData currentSlotData;
 
-    public IdGeneratorSlotImpl(int shardId, IdSchema idSchema,
-                               TimeGenerator timeGenerator, GlobalCounter globalCounter) {
-
+    public OculusIdGeneratorSlotImpl(int shardId, OculusIdSchema idSchema, OculusGlobalCounter globalCounter) {
         this.shardId = shardId;
-
         this.idSchema = idSchema;
-
-        this.timeGenerator = timeGenerator;
         this.globalCounter = globalCounter;
-
         this.lock = new ReentrantLock();
     }
 
     @Override
     public long nextId() {
-
         if (currentSlotData == null) {
             lock.lock();
-
             try {
-
                 if (currentSlotData == null) {
                     currentSlotData = newSlotData();
                 }
-
             }
             finally {
                 lock.unlock();
@@ -58,7 +43,6 @@ public class IdGeneratorSlotImpl implements IdGeneratorSlot {
         }
 
         while (true) {
-
             SlotData slotData = currentSlotData;
             assert slotData != null : "slotData is null";
 
@@ -66,18 +50,15 @@ public class IdGeneratorSlotImpl implements IdGeneratorSlot {
 
             if (current <= idSchema.getMasksInLocalCounter()) {
                 if (slotData.localCounter.compareAndSet(current, current + 1)) {
-                    return nextId(slotData, current);
+                    return nextId(slotData);
                 }
             }
             else {
                 lock.lock();
-
                 try {
-
                     if (slotData == currentSlotData) {
                         currentSlotData = newSlotData();
                     }
-
                 }
                 finally {
                     lock.unlock();
@@ -86,35 +67,30 @@ public class IdGeneratorSlotImpl implements IdGeneratorSlot {
         }
     }
 
-    private long nextId(SlotData slotData, int localCounter) {
-        long value = slotData.timeSec;
+    private long nextId(SlotData slotData) {
+        long value = 0;
         value = (value << idSchema.getBitsInGlobalCounter()) + slotData.globalCounter;
-        value = (value << idSchema.getBitsInLocalCounter()) + localCounter;
-        value = value * idSchema.getNumberOfShards() + shardId;
+        value = (value << idSchema.getBitsInLocalCounter()) + slotData.localCounter.intValue();
+        value = (value << idSchema.getBitsInShard()) + shardId;
+        value = (value << idSchema.getDataCenterId()) + idSchema.getDataCenterId();
+        value = (value << idSchema.getBitsInIdVersion()) + idSchema.getIdVersion();
         return value;
     }
 
     private SlotData newSlotData() {
-
-        int currentTimeSec = timeGenerator.currentTimeSec(idSchema.getTimeSecOffset()) & idSchema.getMasksInTime();
-
-        int count = globalCounter.getAndIncrease(shardId, currentTimeSec)
+        int count = globalCounter.getAndIncrease(shardId, idSchema.getIdType())
                 & idSchema.getMasksInGlobalCounter();
 
-        return new SlotData(currentTimeSec, count);
+        return new SlotData(count);
     }
 
     private static class SlotData {
 
-        private final int timeSec;
         private final int globalCounter;
-
         private final AtomicInteger localCounter;
 
-        private SlotData(int timeSec, int globalCounter) {
-            this.timeSec = timeSec;
+        private SlotData(int globalCounter) {
             this.globalCounter = globalCounter;
-
             localCounter = new AtomicInteger();
         }
     }

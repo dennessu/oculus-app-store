@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.data.dao.impl.postgresql;
 
+import com.junbo.common.id.UserId;
 import com.junbo.identity.data.dao.UserDAO;
 import com.junbo.identity.data.entity.user.*;
 import com.junbo.identity.data.mapper.ModelMapper;
@@ -13,7 +14,7 @@ import com.junbo.identity.data.util.PasswordDAOUtil;
 import com.junbo.identity.spec.error.AppErrors;
 import com.junbo.identity.spec.model.user.User;
 import com.junbo.oom.core.MappingContext;
-import com.junbo.sharding.IdGenerator;
+import com.junbo.sharding.IdGeneratorFacade;
 import groovy.lang.Closure;
 import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 import org.hibernate.Session;
@@ -41,7 +42,7 @@ public class UserDAOImpl implements UserDAO {
     private ModelMapper modelMapper;
 
     @Autowired
-    private IdGenerator idGenerator;
+    private IdGeneratorFacade idGenerator;
 
     private int maxRetryCount;
 
@@ -167,7 +168,7 @@ public class UserDAOImpl implements UserDAO {
     }
 
     private UserEntity saveUserEntity(UserEntity entity) {
-        entity.setId(idGenerator.nextId());
+        entity.setId(idGenerator.nextId(UserId.class));
         entity.setCreatedBy(Constants.DEFAULT_CLIENT_ID);
         entity.setCreatedTime(new Date());
         currentSession().persist(entity);
@@ -248,7 +249,7 @@ public class UserDAOImpl implements UserDAO {
         UserPasswordEntity userPasswordEntity = (UserPasswordEntity) DefaultGroovyMethods.
                 with(new UserPasswordEntity(), new Closure<UserPasswordEntity>(this, this) {
                     public UserPasswordEntity doCall(UserPasswordEntity it) {
-                        it.setKey(idGenerator.nextId(userEntity.getId()));
+                        it.setKey(idGenerator.nextId(UserId.class, userEntity.getId()));
                         it.setPasswordSalt(UUID.randomUUID().toString());
                         it.setPasswordHash(
                                 PasswordDAOUtil.hashPassword(userEntity.getPassword(), it.getPasswordSalt()));
