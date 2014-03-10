@@ -74,7 +74,7 @@ public class WalletEntity extends Entity {
 
     @Transient
     @Override
-    public Long getShardId() {
+    public Long getShardMasterId() {
         return userId;
     }
 
