@@ -30,4 +30,6 @@ public class ErrorCode {
     public static final String INVALID_BALANCE_TYPE = "INVALID_BALANCE_TYPE";
 
     public static final String INVALID_BALANCE_TOTAL = "INVALID_BALANCE_TOTAL";
+
+    public static final String TAX_CALCULATION_ERROR = "TAX_CALCULATION_ERROR";
 }

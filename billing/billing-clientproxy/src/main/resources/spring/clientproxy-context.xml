@@ -5,7 +5,7 @@
        xmlns:util="http://www.springframework.org/schema/util" xmlns:tx="http://www.springframework.org/schema/tx"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
-    <context:component-scan base-package="com.junbo.order.clientproxy"/>
+    <context:component-scan base-package="com.junbo.billing.clientproxy"/>
 
     <!-- <tx:annotation-driven/> -->
 
@@ -23,5 +23,8 @@
 
     <bean id="identityFacade" class="com.junbo.billing.clientproxy.mock.MockIdentityFacadeImpl" />
     <bean id="paymentFacade" class="com.junbo.billing.clientproxy.mock.MockPaymentFacadeImpl" />
-
+    <bean id="avalaraFacade" class="com.junbo.billing.clientproxy.impl.AvalaraFacadeImpl" />
+    <bean id="avalaraServiceConfiguration" class="com.junbo.billing.clientproxy.impl.avalara.AvalaraConfiguration">
+        <property name="baseUrl" value="${avalara.baseUrl}"/>
+    </bean>
 </beans>

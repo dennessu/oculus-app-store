@@ -50,4 +50,8 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 403, code = ErrorCode.INVALID_BALANCE_TOTAL,
             description ="Balance total amount {0} invalid")
     AppError invalidBalanceTotal(String total);
+
+    @ErrorDef(httpStatusCode = 403, code = ErrorCode.TAX_CALCULATION_ERROR,
+            description ="tax calculation error")
+    AppError taxCalculationError();
 }
