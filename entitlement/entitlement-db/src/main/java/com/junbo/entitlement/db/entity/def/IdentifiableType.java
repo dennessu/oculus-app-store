@@ -28,6 +28,7 @@ public class IdentifiableType implements UserType, DynamicParameterizedType {
 
     private Class<Enum<?>> enumClass;
 
+    //May use a map to return sqlTypes(not necessary now).
     @Override
     public int[] sqlTypes() {
         return new int[]{Types.INTEGER};
@@ -35,6 +36,7 @@ public class IdentifiableType implements UserType, DynamicParameterizedType {
 
     @Override
     public Class returnedClass() {
+
         return enumClass;
     }
 

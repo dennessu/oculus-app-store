@@ -34,23 +34,21 @@ public class BaseDao<T extends Entity> {
         return (T) currentSession().get(entityType, id);
     }
 
-    public Long insert(T t) {
+    public T insert(T t) {
         Date now = new Date();
-        t.setId(generateId(t.getShardId()));
+        t.setId(generateId(t.getShardMasterId()));
         t.setCreatedBy("DEFAULT"); //TODO
         t.setCreatedTime(now);
         t.setModifiedBy("DEFAULT");   //TODO
         t.setModifiedTime(now);
-        return (Long) currentSession().save(t);
+        return get((Long) currentSession().save(t));
     }
 
-    public Long update(T t) {
+    public T update(T t) {
         Date now = new Date();
-        T newt = (T) currentSession().merge(t);
-        newt.setModifiedBy("DEFAULT"); //TODO
-        newt.setModifiedTime(now);
-        currentSession().update(newt);
-        return newt.getId();
+        t.setModifiedBy("DEFAULT"); //TODO
+        t.setModifiedTime(now);
+        return (T) currentSession().merge(t);
     }
 
     protected Long generateId(Long shardId) {

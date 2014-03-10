@@ -62,7 +62,7 @@ public class TransactionEntity extends EntityWithCreated {
 
     @Transient
     @Override
-    public Long getShardId() {
+    public Long getShardMasterId() {
         return walletId;
     }
 }
