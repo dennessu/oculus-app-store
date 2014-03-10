@@ -85,7 +85,7 @@ public class IdGeneratorTest extends AbstractTransactionalTestNGSpringContextTes
     }
 
 
-    @Test
+    //@Test
     public void test() {
         List<Long> ids = new ArrayList<Long>();
         for (int i=0; i<100000; i++) {

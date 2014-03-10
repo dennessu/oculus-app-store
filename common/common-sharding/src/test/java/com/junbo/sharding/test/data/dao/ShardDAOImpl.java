@@ -38,7 +38,6 @@ public class ShardDAOImpl implements ShardDAO {
         return null;
     }
 
-    @Autowired
     private ShardSessionFactory shardedSessionFactory;
 
     public void setShardedSessionFactory(ShardSessionFactory shardedSessionFactory) {
@@ -46,13 +45,21 @@ public class ShardDAOImpl implements ShardDAO {
     }
 
     private Session session(int shardId, String db) {
-        return this.shardedSessionFactory.getShardSession(shardId,db);
+        Session s = this.shardedSessionFactory.getShardSession(shardId,db);
+        s.doWork(new Work() {
+            @Override
+            public void execute(Connection connection) throws SQLException {
+                //connection, finally!
+                connection.createStatement().execute("set search_path=shard_2");
+            }
+        });
+        return s;
     }
 
     @Override
-    public ShardEntity saveShard(ShardEntity entity) {
-        session(0, "test").persist(entity);
-        return findById(entity.getId());
+    public void saveShard(ShardEntity entity) {
+        session(2, "test").persist(entity);
+        //return findById(entity.getId());
     }
 
     @Override
@@ -71,6 +78,6 @@ public class ShardDAOImpl implements ShardDAO {
     }
 
     private ShardEntity findById(Long id) {
-        return ((ShardEntity)(currentSession().get(ShardEntity.class, id)));
+        return ((ShardEntity)(session(0, "test").get(ShardEntity.class, id)));
     }
 }

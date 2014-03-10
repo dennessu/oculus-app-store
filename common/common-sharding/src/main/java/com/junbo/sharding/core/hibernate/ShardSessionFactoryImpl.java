@@ -1,3 +1,8 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
+ */
 package com.junbo.sharding.core.hibernate;
 
 import com.junbo.sharding.core.ds.ShardDataSourceKey;
@@ -9,7 +14,6 @@ import org.hibernate.metadata.CollectionMetadata;
 import org.hibernate.stat.Statistics;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 
 import javax.naming.NamingException;
 import javax.naming.Reference;
@@ -22,7 +26,7 @@ import java.util.Set;
 /**
  * Created by haomin on 14-3-10.
  */
-public class ShardSessionFactoryImpl implements ShardSessionFactory, ApplicationContextAware {
+public class ShardSessionFactoryImpl implements ShardSessionFactory{
 
     private SessionFactory proxy;
     private ShardDataSourceRegistry registry;
@@ -33,7 +37,6 @@ public class ShardSessionFactoryImpl implements ShardSessionFactory, Application
         this.registry = registry;
     }
 
-    @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
     }
@@ -51,6 +54,7 @@ public class ShardSessionFactoryImpl implements ShardSessionFactory, Application
             try {
                 factoryBean = (ShardSessionFactoryBean)object;
                 factoryBean.setDataSource(ds);
+                factoryBean.setPackagesToScan("com.junbo.sharding.test.data.dao");
                 factoryBean.afterPropertiesSet();
             }
             catch (Exception e) {
@@ -58,7 +62,7 @@ public class ShardSessionFactoryImpl implements ShardSessionFactory, Application
             }
         }
 
-        return ((ShardSessionFactory)factoryBean.getObject()).getShardSession(shardId, dbName);
+        return ((ShardSessionFactory)factoryBean.getObject()).getCurrentSession();
     }
 
     @Override

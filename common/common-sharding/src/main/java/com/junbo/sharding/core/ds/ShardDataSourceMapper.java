@@ -5,6 +5,8 @@
  */
 package com.junbo.sharding.core.ds;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -23,15 +25,17 @@ import java.util.Set;
  * Created by minhao on 3/8/14.
  */
 public class ShardDataSourceMapper {
-    private static final String DATA_SOURCE = "dataSource";
+    private static final String DATA_SOURCE = "datasource";
     private static final String DATA_SOURCE_ID = "id";
     private static final String DATA_SOURCE_ENABLED = "enabled";
     private static final String DATA_SOURCE_SHARDID_RANGE = "shardIdRange";
     private static final String DATA_SOURCE_JDBC_URL_TEMPLATE = "jdbcUrlTemplate";
 
+    private static Logger logger = LoggerFactory.getLogger(ShardDataSourceMapper.class);
+
     private Set<DataSourceConfig> dataSourceConfigSet;
 
-    public ShardDataSourceMapper(String dataSourceMapping) {
+    public void setDataSourceMapping(String dataSourceMapping) {
         this.dataSourceConfigSet = buildDataSourceSet(new ByteArrayInputStream(dataSourceMapping.getBytes()));
     }
 
@@ -64,7 +68,7 @@ public class ShardDataSourceMapper {
             }
 
         } catch (Exception e) {
-            throw new RuntimeException("init shard datasource mapper failed!", e);
+            throw new RuntimeException("init shard data source mapper failed!", e);
         }
 
         return Collections.unmodifiableSet(set);

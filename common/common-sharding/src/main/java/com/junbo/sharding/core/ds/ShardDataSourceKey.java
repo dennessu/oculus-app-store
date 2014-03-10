@@ -51,20 +51,28 @@ public class ShardDataSourceKey {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
+
         ShardDataSourceKey other = (ShardDataSourceKey) obj;
         if (databaseName == null) {
-            if (other.databaseName != null)
+            if (other.databaseName != null) {
                 return false;
-        } else if (!databaseName.equals(other.databaseName))
+            }
+        } else if (!databaseName.equals(other.databaseName)) {
             return false;
-        if (shardId != other.shardId)
+        }
+        if (shardId != other.shardId) {
             return false;
+        }
+
         return true;
     }
 }

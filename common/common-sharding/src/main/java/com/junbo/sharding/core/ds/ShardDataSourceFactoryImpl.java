@@ -35,22 +35,31 @@ public class ShardDataSourceFactoryImpl implements ShardDataSourceFactory, Appli
 
         DataSource dataSource = applicationContext.getBean(dataSourceBeanName, DataSource.class);
         if (dataSource == null) {
-            throw new RuntimeException(String.format("Can't get prototype dataSource of name [%s] from ApplicationContext", dataSourceBeanName));
+            throw new RuntimeException(String.format(
+                    "Can't get prototype dataSource of name [%s] from ApplicationContext", dataSourceBeanName));
         }
 
         if (dataSource instanceof PoolingDataSource) {
             // reset btmDataSource unique name and url
             PoolingDataSource btmDataSource = (PoolingDataSource)dataSource;
             btmDataSource.setUniqueName(String.format("jdbc/%s_ds_%s", key.getDatabaseName(), key.getShardId()));
+            btmDataSource.setClassName("org.postgresql.xa.PGXADataSource");
+            btmDataSource.setMinPoolSize(3);
+            btmDataSource.setMaxPoolSize(15);
 
             DataSourceConfig config = mapper.getDataSourceConfigByShardId(key.getShardId());
             String url = config.getJdbcUrlTemplate().replaceFirst("%DB_NAME%", key.getDatabaseName());
             btmDataSource.getDriverProperties().setProperty("url", url);
+            btmDataSource.getDriverProperties().setProperty("user", "postgres");
+            btmDataSource.getDriverProperties().setProperty("password", "#Bugsfor$");
+
+            btmDataSource.init();
 
             return btmDataSource;
         }
         else {
-            throw new RuntimeException("Unrecognized dataSource type: " + dataSource.getClass() + ", sharding not support with this type of datasource");
+            throw new RuntimeException("Unrecognized dataSource type: " + dataSource.getClass()
+                    + ", sharding not support with this type of datasource");
         }
     }
 

@@ -5,68 +5,13 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
-    <import resource="classpath*:spring/*-context.xml"/>
+    <import resource="classpath:spring/sharding.xml"/>
+    <import resource="classpath:spring/sharding-context.xml"/>
+    <import resource="classpath:spring/transaction.xml"/>
+    <import resource="classpath*:spring/common-context.xml"/>
 
-    <tx:annotation-driven transaction-manager="transactionManager"/>
-
-    <bean id="btmConfig" factory-method="getConfiguration" class="bitronix.tm.TransactionManagerServices">
-
-        <!-- TODO: should be a unique id in the cluser and more customized configurations -->
-        <property name="serverId" value="spring-btm"/>
+    <bean id="shardDao" class="com.junbo.sharding.test.data.dao.ShardDAOImpl">
+        <property name="shardedSessionFactory" ref="shardedSessionFactory"/>
     </bean>
 
-    <bean id="bitronixTransactionManager" factory-method="getTransactionManager"
-          class="bitronix.tm.TransactionManagerServices" depends-on="btmConfig" destroy-method="shutdown"/>
-
-    <bean id="transactionManager" class="org.springframework.transaction.jta.JtaTransactionManager">
-        <property name="transactionManager" ref="bitronixTransactionManager"/>
-        <property name="userTransaction" ref="bitronixTransactionManager"/>
-    </bean>
-
-    <bean id="testDataSource" class="bitronix.tm.resource.jdbc.PoolingDataSource" init-method="init" destroy-method="close">
-        <property name="uniqueName" value="jdbc/test_ds1"/>
-        <property name="className" value="org.postgresql.xa.PGXADataSource"/>
-        <property name="minPoolSize" value="3"/>
-        <property name="maxPoolSize" value="15"/>
-        <property name="driverProperties">
-            <props>
-                <prop key="url">jdbc:postgresql://localhost:5432/test</prop>
-                <prop key="user">postgres</prop>
-                <prop key="password">#Bugsfor$</prop>
-            </props>
-        </property>
-    </bean>
-
-    <!-- SessonFactory for Hibernate -->
-    <bean id="sessionFactory"
-          class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
-        <property name="dataSource" ref="testDataSource"/>
-        <property name="packagesToScan" value="com.junbo.sharding.test.data.dao"/>
-        <property name="jtaTransactionManager" ref="transactionManager"/>
-        <property name="hibernateProperties">
-            <props>
-                <prop key="hibernate.dialect">${email.hibernate.dialect}</prop>
-                <prop key="hibernate.max_fetch_depth">${email.hibernate.max_fetch_depth}</prop>
-                <prop key="hibernate.jdbc.fetch_size">${email.hibernate.fetch_size}</prop>
-                <prop key="hibernate.jdbc.batch_size">${email.hibernate.batch_size}</prop>
-                <prop key="hibernate.show_sql">${email.hibernate.show_sql}</prop>
-            </props>
-        </property>
-    </bean>
-
-    <bean id="shardDao" class="com.junbo.sharding.test.data.dao.ShardDAOImpl"/>
-    <bean id="daoProxy" class="com.junbo.sharding.core.ShardAwareDaoProxy">
-        <constructor-arg value=""/>
-    </bean>
-
-    <mapping>
-        <datasource physicalDBServerId="0" enabled="true">
-            <shardIdRange>0..31</shardIdRange>
-            <jdbcUrlTemplate>jdbc:postgresql://localhost:5432/{0}</jdbcUrlTemplate>
-        </datasource>
-        <datasource physicalDBServerId="1" enabled="true">
-            <shardIdRange>32..63</shardIdRange>
-            <jdbcUrlTemplate>jdbc:postgresql://localhost:5432/{0}</jdbcUrlTemplate>
-        </datasource>
-    </mapping>
 </beans>
