@@ -7,6 +7,7 @@
 package com.junbo.payment.core.provider.braintree;
 
 import com.braintreegateway.*;
+import com.braintreegateway.exceptions.DownForMaintenanceException;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.core.exception.AppClientExceptions;
 import com.junbo.payment.core.exception.AppServerExceptions;
@@ -19,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -208,8 +210,16 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
     }
 
     private void handleProviderException(Exception ex){
-        LOGGER.error("provider:" + PROVIDER_NAME + "gateway exception: " + ex.toString());
-        throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, ex.toString()).exception();
+        if(ex instanceof DownForMaintenanceException){
+            LOGGER.error("provider:" + PROVIDER_NAME + "gateway internal timeout exception: " + ex.toString());
+            throw AppServerExceptions.INSTANCE.providerGatewayTimeout(PROVIDER_NAME).exception();
+        }else if(ex instanceof SocketTimeoutException){
+            LOGGER.error("provider:" + PROVIDER_NAME + "gateway timeout exception: " + ex.toString());
+            throw AppServerExceptions.INSTANCE.providerGatewayTimeout(PROVIDER_NAME).exception();
+        }else{
+            LOGGER.error("provider:" + PROVIDER_NAME + "gateway exception: " + ex.toString());
+            throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, ex.toString()).exception();
+        }
     }
 
     @Override

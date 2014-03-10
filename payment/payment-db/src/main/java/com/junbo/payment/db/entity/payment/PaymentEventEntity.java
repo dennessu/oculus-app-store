@@ -62,6 +62,11 @@ public class PaymentEventEntity extends GenericEntity {
         this.id = id;
     }
 
+    @Override
+    public Long getShardMasterId() {
+        return paymentId;
+    }
+
     public Long getPaymentId() {
         return paymentId;
     }

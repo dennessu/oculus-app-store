@@ -16,11 +16,13 @@ import com.junbo.payment.spec.enums.PIStatus;
 import com.junbo.payment.spec.enums.PIType;
 import com.junbo.payment.db.mapper.PaymentMapper;
 import com.junbo.payment.spec.model.*;
+import com.junbo.sharding.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 
 /**
  * payment instrument Repository.
@@ -36,16 +38,30 @@ public class PaymentInstrumentRepository {
     private CreditCardPaymentInstrumentDao ccPaymentInstrumentDao;
     @Autowired
     private PaymentMapper paymentMapperImpl;
+    @Autowired
+    private IdGenerator idGenerator;
 
     public void save(PaymentInstrument request){
-        AddressEntity address = paymentMapperImpl.toAddressEntity(request.getAddress(), new MappingContext());
-        Long addressId = addressDao.save(address);
-        Long phoneId = phoneDao.save(paymentMapperImpl.toPhoneEntity(request.getPhone(), new MappingContext()));
         PaymentInstrumentEntity piEntity = paymentMapperImpl.toPIEntity(request, new MappingContext());
+        Long piId = idGenerator.nextId(piEntity.getUserId());
+        Long addressId = null;
+        Long phoneId = null;
+        if(request.getAddress() != null){
+            addressId = idGenerator.nextId(piId);
+            AddressEntity address = paymentMapperImpl.toAddressEntity(request.getAddress(), new MappingContext());
+            address.setId(addressId);
+            addressDao.save(address);
+        }
+        if(request.getPhone() != null){
+            phoneId = idGenerator.nextId(piId);
+            PhoneEntity phone = paymentMapperImpl.toPhoneEntity(request.getPhone(), new MappingContext());
+            phone.setId(phoneId);
+            phoneDao.save(phone);
+        }
+        piEntity.setId(piId);
         piEntity.setAddressId(addressId);
         piEntity.setPhoneId(phoneId);
-        Long piId = paymentInstrumentDao.save(piEntity);
-        request.setId(piId);
+        paymentInstrumentDao.save(piEntity);
         if(request.getType().equals(PIType.CREDITCARD.toString())){
             CreditCardPaymentInstrumentEntity ccPiEntity = paymentMapperImpl.toCreditCardEntity(
                     request.getCreditCardRequest(), new MappingContext());
@@ -53,6 +69,7 @@ public class PaymentInstrumentRepository {
             ccPiEntity.setLastBillingDate(new Date());
             ccPaymentInstrumentDao.save(ccPiEntity);
         }
+        request.setId(piId);
     }
 
     public void delete(Long paymentInstrumentId){
@@ -80,6 +97,9 @@ public class PaymentInstrumentRepository {
 
     public PaymentInstrument getByPIId(Long piId){
         PaymentInstrumentEntity pi = paymentInstrumentDao.get(piId);
+        if(pi == null){
+            return null;
+        }
         PaymentInstrument request = paymentMapperImpl.toPaymentInstrument(pi, new MappingContext());
         setAdditionalInfo(pi, request);
         return request;

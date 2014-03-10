@@ -67,6 +67,11 @@ public class PaymentEntity extends GenericEntity {
         this.id = id;
     }
 
+    @Override
+    public Long getShardMasterId() {
+        return paymentInstrumentId;
+    }
+
     public Long getUserId() {
         return userId;
     }
