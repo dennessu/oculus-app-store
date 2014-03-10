@@ -84,7 +84,7 @@ class OrderServiceContextBuilder {
     Promise<List<Balance>> refreshBalances(OrderServiceContext context) {
 
         if (context == null || context.order == null || context.order.id == null) {
-            return null
+            return Promise.pure(null)
         }
         return billingFacade.getBalancesByOrderId(context.order.id.value).syncThen { List<Balance> bas ->
             context.balances = bas
@@ -94,7 +94,7 @@ class OrderServiceContextBuilder {
 
     Promise<ShippingAddress> getShippingAddress(OrderServiceContext context) {
         if (context == null || context.order == null || context.order.shippingAddressId == null) {
-            return null
+            return Promise.pure(null)
         }
 
         if (context.shippingAddress != null) {
@@ -106,7 +106,7 @@ class OrderServiceContextBuilder {
     Promise<ShippingAddress> refreshShippingAddress(OrderServiceContext context) {
 
         if (context == null || context.order == null || context.order.shippingAddressId == null) {
-            return null
+            return Promise.pure(null)
         }
         return billingFacade.getShippingAddress(context.order.user.value, context.order.shippingAddressId.value).
                 syncThen { ShippingAddress sa ->
@@ -119,7 +119,7 @@ class OrderServiceContextBuilder {
     Promise<User> getUser(OrderServiceContext context) {
 
         if (context == null || context.order == null || context.order.user == null) {
-            return null
+            return Promise.pure(null)
         }
         return identityFacade.getUser(context.order.user.value).syncThen { User user ->
             context.user = user
@@ -130,7 +130,7 @@ class OrderServiceContextBuilder {
     Promise<List<Offer>> getOffers(OrderServiceContext context) {
 
         if (context == null || context.order == null || !CollectionUtils.isEmpty(context.order.orderItems)) {
-            return null
+            return Promise.pure(null)
         }
 
         List<Offer> offers
