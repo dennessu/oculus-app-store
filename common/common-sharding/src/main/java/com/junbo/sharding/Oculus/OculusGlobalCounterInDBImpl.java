@@ -4,7 +4,7 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.sharding.impl;
+package com.junbo.sharding.oculus;
 
 import com.junbo.sharding.dao.IdGlobalCounterDAO;
 import com.junbo.sharding.model.IdGlobalCounterEntity;
@@ -15,12 +15,12 @@ import org.springframework.stereotype.Component;
  * Created by liangfu on 3/5/14.
  */
 @Component
-public class GlobalCounterInDBImpl implements GlobalCounter {
+public class OculusGlobalCounterInDBImpl implements OculusGlobalCounter {
     @Autowired
     private IdGlobalCounterDAO shardIdGlobalCounterDAO;
 
     @Override
-    public int getAndIncrease(int shardId, int timeSec, int optionMode) {
+    public int getAndIncrease(int shardId, int optionMode) {
         IdGlobalCounterEntity entity = shardIdGlobalCounterDAO.get((long)optionMode, (long)shardId);
 
         if(entity == null) {
