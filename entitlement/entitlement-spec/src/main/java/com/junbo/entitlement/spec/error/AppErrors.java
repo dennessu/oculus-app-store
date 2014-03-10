@@ -19,10 +19,10 @@ public interface AppErrors {
     com.junbo.entitlement.spec.error.AppErrors INSTANCE =
             ErrorProxy.newProxyInstance(com.junbo.entitlement.spec.error.AppErrors.class);
 
-    @ErrorDef(httpStatusCode = 400, code = "10000", description = "Missing Input field. field: {0}", field = "{0}")
+    @ErrorDef(httpStatusCode = 400, code = "10000", description = "Missing Input field.", field = "{0}")
     AppError missingField(String field);
 
-    @ErrorDef(httpStatusCode = 400, code = "10001", description = "Unnecessary field found. field: {0}", field = "{0}")
+    @ErrorDef(httpStatusCode = 400, code = "10001", description = "Unnecessary field found.", field = "{0}")
     AppError unnecessaryField(String field);
 
     @ErrorDef(httpStatusCode = 403, code = "10002",
@@ -36,7 +36,7 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 400, code = "10004", description = "ExpirationTime should not be before grantTime.")
     AppError expirationTimeBeforeGrantTime();
 
-    @ErrorDef(httpStatusCode = 400, code = "10005", description = "Field {0} is not correct. {1}", field = "{0}")
+    @ErrorDef(httpStatusCode = 400, code = "10005", description = "Field is not correct. {1}", field = "{0}")
     AppError fieldNotCorrect(String fieldName, String msg);
 
     @ErrorDef(httpStatusCode = 400, code = "10006", description = "Entitlement [{0}] is not transferable. {1}")
