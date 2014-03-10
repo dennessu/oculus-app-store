@@ -10,7 +10,4 @@
     <!-- fusion mock -->
     <bean id="catalogGateway" class="com.junbo.fulfilment.clientproxy.mock.MockCatalogGatewayImpl"/>
     <bean id="entitlementGateway" class="com.junbo.fulfilment.clientproxy.mock.MockEntitlementGatewayImpl"/>
-
-    <!-- id generator mock-->
-    <bean id="idGenerator" class="com.junbo.fulfilment.core.mock.MockIdGenerator" />
 </beans>

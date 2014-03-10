@@ -10,6 +10,7 @@ import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentTransaction;
 
 import java.util.Date;
+import java.util.List;
 
 
 public class MockPaymentProviderServiceImpl implements PaymentProviderService {
@@ -74,7 +75,7 @@ public class MockPaymentProviderServiceImpl implements PaymentProviderService {
     }
 
     @Override
-    public Promise<PaymentTransaction> getByOrderId(String orderId) {
+    public List<PaymentTransaction> getByOrderId(String orderId) {
         return null;
     }
 

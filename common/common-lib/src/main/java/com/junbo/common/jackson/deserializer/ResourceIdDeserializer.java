@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.junbo.common.jackson.model.ResourceRef;
+import com.junbo.common.shuffle.Oculus48Id;
 
 import java.io.IOException;
 import java.util.*;
@@ -18,8 +19,6 @@ import java.util.*;
  * ResourceIdDeserializer.
  */
 public class ResourceIdDeserializer extends JsonDeserializer<Object> implements ResourceCollectionAware {
-    private static final String ID_FIELD = "id";
-
     // thread safe
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
@@ -41,6 +40,10 @@ public class ResourceIdDeserializer extends JsonDeserializer<Object> implements 
     public Object deserialize(JsonParser jsonParser, DeserializationContext context)
             throws IOException {
         return isCollection() ? handleCollection(jsonParser) : handleSingle(jsonParser);
+    }
+
+    protected Long decode(String id) {
+        return Oculus48Id.unShuffle(Oculus48Id.deFormat(id));
     }
 
     private Object handleSingle(JsonParser jsonParser) throws IOException {
@@ -82,14 +85,14 @@ public class ResourceIdDeserializer extends JsonDeserializer<Object> implements 
                 "Unsupported collection type [" + collectionType + "] for ResourceIdDeserializer");
     }
 
-    private <T> T parse(String input) {
+    private <T> T parse(String id) {
         // for now, we only support String/Integer/Long id types
         if (componentType == Long.class) {
-            return (T) Long.valueOf(input);
+            return (T) decode(id);
         } else if (componentType == Integer.class) {
-            return (T) Integer.valueOf(input);
+            return (T) Integer.valueOf(id);
         }
 
-        return (T) input;
+        return (T) id;
     }
 }

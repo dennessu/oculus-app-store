@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.junbo.common.jackson.deserializer.ResourceIdDeserializer;
-import com.junbo.common.jackson.serializer.ResourceIdSerializer;
+import com.junbo.common.jackson.serializer.OrderIdSerializer;
 
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
@@ -22,8 +22,8 @@ import java.lang.annotation.RetentionPolicy;
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
 @JacksonAnnotationsInside
-@JsonSerialize(using = ResourceIdSerializer.class, include = JsonSerialize.Inclusion.NON_NULL)
+@JsonSerialize(using = OrderIdSerializer.class, include = JsonSerialize.Inclusion.NON_NULL)
 @JsonDeserialize(using = ResourceIdDeserializer.class)
-@ResourceType("BillingOrder")
+@ResourceType("orders")
 public @interface OrderId {
 }

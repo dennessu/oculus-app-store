@@ -10,6 +10,7 @@ import com.junbo.catalog.spec.model.common.EntitiesGetOptions;
 import com.junbo.catalog.spec.model.common.EntityGetOptions;
 import com.junbo.catalog.spec.model.common.ResultList;
 import com.junbo.catalog.spec.model.promotion.Promotion;
+import com.junbo.common.id.Id;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 
@@ -31,7 +32,7 @@ public interface PromotionResource {
 
     @GET
     @Path("/{promotionId}")
-    Promise<Promotion> getPromotion(@PathParam("promotionId") Long promotionId, @BeanParam EntityGetOptions options);
+    Promise<Promotion> getPromotion(@PathParam("promotionId") Id promotionId, @BeanParam EntityGetOptions options);
 
     /**
      * Create a draft promotion, the created promotion is not purchasable until it is released.
@@ -54,7 +55,7 @@ public interface PromotionResource {
      */
     @POST
     @Path("/{promotionId}/review")
-    Promise<Promotion> review(@PathParam("promotionId") Long promotionId);
+    Promise<Promotion> review(@PathParam("promotionId") Id promotionId);
 
     /**
      * Admin publishes an promotion, makes it purchasable.
@@ -63,7 +64,7 @@ public interface PromotionResource {
      */
     @POST
     @Path("/{promotionId}/release")
-    Promise<Promotion> release(@PathParam("promotionId") Long promotionId);
+    Promise<Promotion> release(@PathParam("promotionId") Id promotionId);
 
     /**
      * Admin rejects an promotion, developer may update and submit review later.
@@ -73,7 +74,7 @@ public interface PromotionResource {
     // TODO: add review notes
     @POST
     @Path("/{promotionId}/reject")
-    Promise<Promotion> reject(@PathParam("promotionId") Long promotionId);
+    Promise<Promotion> reject(@PathParam("promotionId") Id promotionId);
 
     /**
      * Remove a released promotion. The draft version is still kept.
@@ -83,7 +84,7 @@ public interface PromotionResource {
      */
     @DELETE
     @Path("/{promotionId}/release")
-    Promise<Long> remove(@PathParam("promotionId") Long promotionId);
+    Promise<Void> remove(@PathParam("promotionId") Id promotionId);
 
     /**
      * Delete an promotion, delete both draft and released version.
@@ -93,5 +94,5 @@ public interface PromotionResource {
      */
     @DELETE
     @Path("/{promotionId}")
-    Promise<Long> delete(@PathParam("promotionId") Long promotionId);
+    Promise<Void> delete(@PathParam("promotionId") Id promotionId);
 }

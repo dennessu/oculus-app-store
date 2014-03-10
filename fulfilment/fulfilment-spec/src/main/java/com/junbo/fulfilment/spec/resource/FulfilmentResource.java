@@ -30,9 +30,9 @@ public interface FulfilmentResource {
 
     @GET
     @Path("/")
-    Promise<FulfilmentRequest> getByBillingOrderId(@QueryParam("billingOrderId") OrderId orderId);
+    Promise<FulfilmentRequest> getByBillingOrderId(@QueryParam("orderId") OrderId orderId);
 
     @GET
     @Path("/{fulfilmentId}")
-    Promise<FulfilmentItem> getByFulfilmentId(@PathParam("fulfilmentId") FulfilmentId billingOrderId);
+    Promise<FulfilmentItem> getByFulfilmentId(@PathParam("fulfilmentId") FulfilmentId fulfilmentId);
 }

@@ -10,6 +10,7 @@ import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentTransaction;
+import com.junbo.payment.spec.model.ResultList;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -56,5 +57,5 @@ public interface BrainTreeResource {
 
     @GET
     @Path("/payment/search")
-    Promise<PaymentTransaction> getByOrderId(@QueryParam("orderId") String orderId);
+    Promise<ResultList<PaymentTransaction>> getByOrderId(@QueryParam("orderId") String orderId);
 }

@@ -160,12 +160,20 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
 
     @Override
     public PaymentInstrument getById(Long paymentInstrumentId) {
-        return paymentInstrumentRepository.getByPIId(paymentInstrumentId);
+        PaymentInstrument result = paymentInstrumentRepository.getByPIId(paymentInstrumentId);
+        if(result == null){
+            throw AppClientExceptions.INSTANCE.resourceNotFound("payment_instrument").exception();
+        }
+        return result;
     }
 
     @Override
     public List<PaymentInstrument> getByUserId(Long userId) {
-        return paymentInstrumentRepository.getByUserId(userId);
+        List<PaymentInstrument> results = paymentInstrumentRepository.getByUserId(userId);
+        if(results == null || results.size() == 0){
+            throw AppClientExceptions.INSTANCE.resourceNotFound("payment_instrument").exception();
+        }
+        return results;
     }
 
     @Override
@@ -173,7 +181,11 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
         if(searchParam.getUserId() == null){
             throw AppClientExceptions.INSTANCE.missingUserId().exception();
         }
-        return paymentInstrumentRepository.search(searchParam, page);
+        List<PaymentInstrument> results = paymentInstrumentRepository.search(searchParam, page);
+        if(results == null || results.size() == 0){
+            throw AppClientExceptions.INSTANCE.resourceNotFound("payment_instrument").exception();
+        }
+        return results;
     }
 
     private void saveTrackingUuid(PaymentInstrument request, PaymentAPI api){

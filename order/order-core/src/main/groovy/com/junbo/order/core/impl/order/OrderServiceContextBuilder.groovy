@@ -7,18 +7,23 @@
 package com.junbo.order.core.impl.order
 import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.ShippingAddress
+import com.junbo.catalog.spec.model.offer.Offer
 import com.junbo.common.id.PaymentInstrumentId
+import com.junbo.identity.spec.model.user.User
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.billing.BillingFacade
+import com.junbo.order.clientproxy.cache.CachedCatalogFacadeImpl
 import com.junbo.order.clientproxy.fulfillment.FulfillmentFacade
 import com.junbo.order.clientproxy.identity.IdentityFacade
 import com.junbo.order.clientproxy.payment.PaymentFacade
 import com.junbo.order.clientproxy.rating.RatingFacade
 import com.junbo.order.db.repo.OrderRepository
+import com.junbo.order.spec.model.OrderItem
 import com.junbo.payment.spec.model.PaymentInstrument
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import org.springframework.util.CollectionUtils
 /**
  * Created by chriszhu on 2/21/14.
  */
@@ -38,12 +43,14 @@ class OrderServiceContextBuilder {
     IdentityFacade identityFacade
     @Autowired
     FulfillmentFacade fulfillmentFacade
+    @Autowired
+    CachedCatalogFacadeImpl cachedCatalogFacade
 
     Promise<List<PaymentInstrument>> getPaymentInstruments(OrderServiceContext context) {
 
         if (context == null || context.order == null) { return Promise.pure(null) }
 
-        if (context.paymentInstruments != null && !context.paymentInstruments.isEmpty()) {
+        if (!CollectionUtils.isEmpty(context.paymentInstruments)) {
             return Promise.pure(context.paymentInstruments)
         }
 
@@ -68,7 +75,7 @@ class OrderServiceContextBuilder {
 
         if (context == null || context.order == null) { return null }
 
-        if (context.balances != null && !context.balances.isEmpty()) {
+        if (!CollectionUtils.isEmpty(context.balances)) {
             return Promise.pure(context.balances)
         }
         return refreshBalances(context)
@@ -105,6 +112,36 @@ class OrderServiceContextBuilder {
                 syncThen { ShippingAddress sa ->
             context.shippingAddress = sa
             return sa
+        }
+    }
+
+
+    Promise<User> getUser(OrderServiceContext context) {
+
+        if (context == null || context.order == null || context.order.user == null) {
+            return null
+        }
+        return identityFacade.getUser(context.order.user.value).syncThen { User user ->
+            context.user = user
+            return user
+        }
+    }
+
+    Promise<List<Offer>> getOffers(OrderServiceContext context) {
+
+        if (context == null || context.order == null || !CollectionUtils.isEmpty(context.order.orderItems)) {
+            return null
+        }
+
+        List<Offer> offers
+        // TODO timestamp
+        return Promise.each(context.order.orderItems.iterator()) { OrderItem oi ->
+            cachedCatalogFacade.getOffer(oi.offer).syncThen { Offer of ->
+                offers << of
+            }
+        }.then {
+            context.offers = offers
+            return offers
         }
     }
 }

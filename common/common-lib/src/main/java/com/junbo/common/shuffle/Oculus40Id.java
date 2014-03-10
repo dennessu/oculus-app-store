@@ -16,7 +16,7 @@ public class Oculus40Id {
     private Oculus40Id() {
     }
 
-    public static final int OCULUS40_MASK_BITS = 0x3FFFFFF;
+    public static final long OCULUS40_MASK_BITS = 0x3FFFFFFL;
     public static final int OCULUS40_SHUFFLE_OFFSET = 14;
     public static final String OCULUS40_ID_SEPARATOR = "-";
     public static final String OCULUS40_ID_DEFAULT_FILL_FIELD = "0";
@@ -66,7 +66,7 @@ public class Oculus40Id {
         Iterator it = oculus40ShuffleMap.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry pair = (Map.Entry)it.next();
-            shuffledValue += (shufflePart & (0x1 << (int)pair.getKey())) == 0 ? 0 : (0x1 << (int)pair.getValue());
+            shuffledValue += (shufflePart & (0x1L << (int)pair.getKey())) == 0 ? 0 : (0x1L << (int)pair.getValue());
         }
 
         return nonShufflePart + (shuffledValue << OCULUS40_SHUFFLE_OFFSET);
@@ -79,7 +79,7 @@ public class Oculus40Id {
         Iterator it = oculus40ShuffleMap.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry pair = (Map.Entry)it.next();
-            unShuffleValue += (shuffledPart & (0x1 << (int)pair.getValue())) == 0 ? 0 : (0x1 << (int)pair.getKey());
+            unShuffleValue += (shuffledPart & (0x1L << (int)pair.getValue())) == 0 ? 0 : (0x1L << (int)pair.getKey());
         }
 
         return nonShuffledPart + (unShuffleValue << OCULUS40_SHUFFLE_OFFSET);

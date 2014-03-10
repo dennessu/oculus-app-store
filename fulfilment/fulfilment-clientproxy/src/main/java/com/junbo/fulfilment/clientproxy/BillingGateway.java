@@ -11,5 +11,5 @@ import com.junbo.fulfilment.spec.fusion.ShippingAddress;
  * BillingGateway.
  */
 public interface BillingGateway {
-    ShippingAddress getShippingAddress(Long shippingAddressId);
+    ShippingAddress getShippingAddress(Long userId, Long shippingAddressId);
 }

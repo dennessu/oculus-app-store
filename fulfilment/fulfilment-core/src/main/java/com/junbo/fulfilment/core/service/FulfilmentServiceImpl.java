@@ -28,6 +28,7 @@ import com.junbo.fulfilment.spec.model.FulfilmentAction;
 import com.junbo.fulfilment.spec.model.FulfilmentItem;
 import com.junbo.fulfilment.spec.model.FulfilmentRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * FulfilmentServiceImpl.
@@ -46,6 +47,7 @@ public class FulfilmentServiceImpl extends TransactionSupport implements Fulfilm
     private CatalogGateway catalogGateway;
 
     @Override
+    @Transactional
     public FulfilmentRequest fulfill(FulfilmentRequest request) {
         // check tracking GUID
         Long requestId = fulfilmentRequestRepo.existTrackingGuid(request.getTrackingGuid());
