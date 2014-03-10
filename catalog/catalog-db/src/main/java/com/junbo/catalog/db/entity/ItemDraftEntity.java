@@ -27,7 +27,6 @@ public class ItemDraftEntity extends BaseEntity{
     private String type;
     private String name;
     private int revision;
-    private String status;
     private Long ownerId;
     private String payload;
 
@@ -66,15 +65,6 @@ public class ItemDraftEntity extends BaseEntity{
 
     public void setRevision(int revision) {
         this.revision = revision;
-    }
-
-    @Column(name = "status")
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
     @Column(name = "owner_id")
