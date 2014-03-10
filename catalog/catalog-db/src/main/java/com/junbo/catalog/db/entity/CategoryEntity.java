@@ -28,7 +28,6 @@ public class CategoryEntity extends BaseEntity{
     private Long parentId;
     private String name;
     private int revision;
-    private String status;
     private String payload;
 
 
@@ -76,15 +75,6 @@ public class CategoryEntity extends BaseEntity{
 
     public void setRevision(int revision) {
         this.revision = revision;
-    }
-
-    @Column(name = "status")
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
     @Column(name = "payload")
