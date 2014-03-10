@@ -6,7 +6,6 @@
 
 package com.junbo.catalog.db.repo;
 
-import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.db.convertor.OfferConverter;
 import com.junbo.catalog.db.dao.OfferDraftDao;
 import com.junbo.catalog.db.entity.OfferDraftEntity;
@@ -25,15 +24,12 @@ public class OfferDraftRepository implements EntityDraftRepository<Offer> {
 
     @Override
     public Long create(Offer offer) {
-        OfferDraftEntity entity = OfferConverter.toDraftEntity(offer);
-
-        return offerDraftDao.create(entity);
+        return offerDraftDao.create(OfferConverter.toDraftEntity(offer));
     }
 
     @Override
     public Offer get(Long offerId) {
-        OfferDraftEntity entity = offerDraftDao.get(offerId);
-        return OfferConverter.toModel(entity);
+        return OfferConverter.toModel(offerDraftDao.get(offerId));
     }
 
     @Override
@@ -53,13 +49,12 @@ public class OfferDraftRepository implements EntityDraftRepository<Offer> {
 
     @Override
     public Long update(Offer offer) {
+        if (offer == null) {
+            return null;
+        }
+
         OfferDraftEntity entity = offerDraftDao.get(offer.getId());
-        // TODO: validations
-        entity.setName(offer.getName());
-        entity.setRevision(offer.getRevision());
-        entity.setStatus(offer.getStatus());
-        entity.setOwnerId(offer.getOwnerId());
-        entity.setPayload(Utils.toJson(offer));
+        OfferConverter.fillDraftEntity(offer, entity);
 
         return offerDraftDao.update(entity);
     }
