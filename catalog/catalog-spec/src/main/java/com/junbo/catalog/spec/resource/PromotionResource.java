@@ -46,53 +46,5 @@ public interface PromotionResource {
 
     @PUT
     @Path("/{promotionId}")
-    Promise<Promotion> update(@Valid Promotion promotion);
-
-    /**
-     * Developer submit an draft promotion for review.
-     * @param promotionId the id of the promotion to be reviewed.
-     * @return the promotion to be reviewed.
-     */
-    @POST
-    @Path("/{promotionId}/review")
-    Promise<Promotion> review(@PathParam("promotionId") Id promotionId);
-
-    /**
-     * Admin publishes an promotion, makes it purchasable.
-     * @param promotionId the id of promotion to be released.
-     * @return the promotion to be released.
-     */
-    @POST
-    @Path("/{promotionId}/release")
-    Promise<Promotion> release(@PathParam("promotionId") Id promotionId);
-
-    /**
-     * Admin rejects an promotion, developer may update and submit review later.
-     * @param promotionId the id of promotion to be released.
-     * @return the promotion to be released.
-     */
-    // TODO: add review notes
-    @POST
-    @Path("/{promotionId}/reject")
-    Promise<Promotion> reject(@PathParam("promotionId") Id promotionId);
-
-    /**
-     * Remove a released promotion. The draft version is still kept.
-     * Developer may update and submit review again in future.
-     * @param promotionId the id of promotion to be removed.
-     * @return the removed promotion id.
-     */
-    @DELETE
-    @Path("/{promotionId}/release")
-    Promise<Void> remove(@PathParam("promotionId") Id promotionId);
-
-    /**
-     * Delete an promotion, delete both draft and released version.
-     * Developer cannot operate this promotion again in future.
-     * @param promotionId the id of promotion to be deleted.
-     * @return the deleted promotion id.
-     */
-    @DELETE
-    @Path("/{promotionId}")
-    Promise<Void> delete(@PathParam("promotionId") Id promotionId);
+    Promise<Promotion> update(@PathParam("promotionId") Id promotionId, @Valid Promotion promotion);
 }

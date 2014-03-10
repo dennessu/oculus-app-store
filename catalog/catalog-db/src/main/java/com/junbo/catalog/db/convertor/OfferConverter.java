@@ -22,12 +22,16 @@ public class OfferConverter {
             return null;
         }
         OfferDraftEntity entity = new OfferDraftEntity();
+        fillDraftEntity(model, entity);
+        return entity;
+    }
+
+    public static void fillDraftEntity(Offer model, OfferDraftEntity entity) {
         entity.setName(model.getName());
         entity.setStatus(model.getStatus());
         entity.setRevision(model.getRevision());
         entity.setOwnerId(model.getOwnerId());
         entity.setPayload(Utils.toJson(model));
-        return entity;
     }
 
     public static Offer toModel(OfferDraftEntity entity) {
