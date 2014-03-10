@@ -19,11 +19,9 @@ import java.sql.SQLException;
 @Component
 public class ShardDAOImpl implements ShardDAO {
 
-    @Autowired
-    private SessionFactory[] sessionFactory;
-
     private Session currentSession() {
 
+        /*
         sessionFactory.getCurrentSession().doWork(new Work() {
             @Override
             public void execute(Connection connection) throws SQLException {
@@ -33,10 +31,13 @@ public class ShardDAOImpl implements ShardDAO {
         });
 
         return sessionFactory.getCurrentSession();
+        */
+
+        return null;
     }
 
-    public void setSessionFactory(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+    private Session session(int shardId, String db) {
+
     }
 
     @Override

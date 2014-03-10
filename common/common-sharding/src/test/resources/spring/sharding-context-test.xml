@@ -7,26 +7,30 @@
 
     <tx:annotation-driven transaction-manager="transactionManager"/>
 
-    <bean id="dataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
-        <property name="driverClass" value="org.postgresql.Driver"/>
-        <property name="jdbcUrl" value="jdbc:postgresql://localhost:5432/sharding"/>
-        <property name="username" value="postgres"/>
-        <property name="password" value="#Bugsfor$"/>
-        <property name="maxConnectionsPerPartition" value="15"/>
-        <property name="minConnectionsPerPartition" value="3"/>
-        <property name="partitionCount" value="1"/>
-        <property name="acquireIncrement" value="3"/>
-        <property name="statementsCacheSize" value="100"/>
-        <property name="releaseHelperThreads" value="3"/>
+    <bean id="btmConfig" factory-method="getConfiguration" class="bitronix.tm.TransactionManagerServices">
+
+        <!-- TODO: should be a unique id in the cluser and more customized configurations -->
+        <property name="serverId" value="spring-btm"/>
     </bean>
 
-    <bean id="derbyDataSource" class="bitronix.tm.resource.jdbc.PoolingDataSource" init-method="init" destroy-method="close">
-        <property name="className" value="org.apache.derby.jdbc.EmbeddedXADataSource" />
-        <property name="uniqueName" value="derbydb" />
-        <property name="maxPoolSize" value="5" />
+    <bean id="bitronixTransactionManager" factory-method="getTransactionManager"
+          class="bitronix.tm.TransactionManagerServices" depends-on="btmConfig" destroy-method="shutdown"/>
+
+    <bean id="transactionManager" class="org.springframework.transaction.jta.JtaTransactionManager">
+        <property name="transactionManager" ref="bitronixTransactionManager"/>
+        <property name="userTransaction" ref="bitronixTransactionManager"/>
+    </bean>
+
+    <bean id="testDataSource" class="bitronix.tm.resource.jdbc.PoolingDataSource" init-method="init" destroy-method="close">
+        <property name="uniqueName" value="jdbc/test_ds1"/>
+        <property name="className" value="org.postgresql.xa.PGXADataSource"/>
+        <property name="minPoolSize" value="3"/>
+        <property name="maxPoolSize" value="15"/>
         <property name="driverProperties">
             <props>
-                <prop key="databaseName">derbydb</prop>
+                <prop key="url">jdbc:postgresql://localhost:5432/test</prop>
+                <prop key="user">postgres</prop>
+                <prop key="password">#Bugsfor$</prop>
             </props>
         </property>
     </bean>
@@ -34,51 +38,33 @@
     <!-- SessonFactory for Hibernate -->
     <bean id="sessionFactory"
           class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
-        <property name="dataSource" ref="dataSource"/>
-        <property name="packagesToScan" value="com.junbo.sharding.test.data.dao" />
+        <property name="dataSource" ref="testDataSource"/>
+        <property name="packagesToScan" value="com.junbo.sharding.test.data.dao"/>
+        <property name="jtaTransactionManager" ref="transactionManager"/>
         <property name="hibernateProperties">
-            <map>
-                <entry key="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
-                <entry key="hibernate.max_fetch_depth" value="3"/>
-                <entry key="hibernate.jdbc.fetch_size" value="50"/>
-                <entry key="hibernate.jdbc.batch_size" value="10"/>
-                <entry key="hibernate.show_sql" value="true"/>
-                <entry key="hibernate.current_session_context_class" value="jta"/>
-                <!--entry key="hibernate.multiTenancy" value="SCHEMA"/>
-                <entry key="hibernate.tenant_identifier_resolver" value-ref="multiTenantIdentifierResolver"/>
-                <entry key="hibernate.multi_tenant_connection_provider" value-ref="multiTenantConnectionProvider"/-->
-            </map>
+            <props>
+                <prop key="hibernate.dialect">${email.hibernate.dialect}</prop>
+                <prop key="hibernate.max_fetch_depth">${email.hibernate.max_fetch_depth}</prop>
+                <prop key="hibernate.jdbc.fetch_size">${email.hibernate.fetch_size}</prop>
+                <prop key="hibernate.jdbc.batch_size">${email.hibernate.batch_size}</prop>
+                <prop key="hibernate.show_sql">${email.hibernate.show_sql}</prop>
+            </props>
         </property>
     </bean>
-
-    <bean id="multiTenantConnectionProvider" class="com.junbo.sharding.hibernate.multitenancy.MultiTenantConnectionProviderImpl">
-        <property name="dataSource" ref="dataSource"/>
-    </bean>
-    <bean id="multiTenantIdentifierResolver" class="com.junbo.sharding.hibernate.multitenancy.CurrentTenantIdentifierResolverImpl" />
-
-    <!-- Transaction Manager -->
-    <!--bean id="transactionManager"
-          class="org.springframework.orm.hibernate4.HibernateTransactionManager">
-        <property name="sessionFactory" ref="sessionFactory"/>
-        <property name="autodetectDataSource" value="false" />
-    </bean-->
-
-    <bean id="transactionManager" class="org.springframework.transaction.jta.JtaTransactionManager"/>
-    <tx:jta-transaction-manager/>
 
     <bean id="shardDao" class="com.junbo.sharding.test.data.dao.ShardDAOImpl"/>
     <bean id="daoProxy" class="com.junbo.sharding.core.ShardAwareDaoProxy">
         <constructor-arg value=""/>
     </bean>
 
-    <datasourcemapping>
+    <mapping>
         <datasource physicalDBServerId="0" enabled="true">
             <shardIdRange>0..31</shardIdRange>
-            <jdbcUrl>jdbc:postgresql://localhost:5432/{0}</jdbcUrl>
+            <jdbcUrlTemplate>jdbc:postgresql://localhost:5432/{0}</jdbcUrlTemplate>
         </datasource>
         <datasource physicalDBServerId="1" enabled="true">
             <shardIdRange>32..63</shardIdRange>
-            <jdbcUrl>jdbc:postgresql://localhost:5432/{0}</jdbcUrl>
+            <jdbcUrlTemplate>jdbc:postgresql://localhost:5432/{0}</jdbcUrlTemplate>
         </datasource>
-    </datasourcemapping>
+    </mapping>
 </beans>
