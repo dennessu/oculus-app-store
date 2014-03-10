@@ -1,6 +1,7 @@
 package com.junbo.sharding.test.data.dao;
 
 import com.junbo.langur.core.promise.Promise;
+import com.junbo.sharding.core.hibernate.ShardSessionFactory;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -19,6 +20,7 @@ import java.sql.SQLException;
 @Component
 public class ShardDAOImpl implements ShardDAO {
 
+
     private Session currentSession() {
 
         /*
@@ -36,13 +38,20 @@ public class ShardDAOImpl implements ShardDAO {
         return null;
     }
 
-    private Session session(int shardId, String db) {
+    @Autowired
+    private ShardSessionFactory shardedSessionFactory;
 
+    public void setShardedSessionFactory(ShardSessionFactory shardedSessionFactory) {
+        this.shardedSessionFactory = shardedSessionFactory;
+    }
+
+    private Session session(int shardId, String db) {
+        return this.shardedSessionFactory.getShardSession(shardId,db);
     }
 
     @Override
     public ShardEntity saveShard(ShardEntity entity) {
-        currentSession().persist(entity);
+        session(0, "test").persist(entity);
         return findById(entity.getId());
     }
 

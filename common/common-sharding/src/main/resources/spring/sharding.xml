@@ -24,15 +24,21 @@
         </property>
     </bean>
 
-    <bean id="shardedDataSourceFactory" class="com.junbo.sharding.core.ds.ShardDataSourceFactoryImpl">
+    <bean id="shardDataSourceFactory" class="com.junbo.sharding.core.ds.ShardDataSourceFactoryImpl">
         <property name="dataSourceBeanName" value="btmDataSource"/>
         <property name="mapper" ref="shardDataSourceMapper"/>
     </bean>
 
-    <!-- SessonFactory for Hibernate -->
-    <bean id="sessionFactory"
-          class="com.junbo.sharding.core.hibernate.ShardSessionFactoryBean">
-        <property name="shardedDataSourceFactory" ref="shardedDataSourceFactory"/>
+    <bean id="shardDataSourceRegistry" class="com.junbo.sharding.core.ds.ShardDataSourceRegistry">
+        <property name="dataSourceFactory" ref="shardDataSourceFactory"/>
+    </bean>
+
+    <bean id="dummyDataSource" class="com.junbo.sharding.core.hibernate.DummyDataSource"/>
+
+    <!-- SessonFactory for Hibernate-->
+    <bean id="shardedSessionFactory" class="com.junbo.sharding.core.hibernate.ShardSessionFactoryBean">
+        <property name="registry" ref="shardDataSourceRegistry"/>
+        <property name="dataSource" ref="dummyDataSource"/>
         <property name="jtaTransactionManager" ref="transactionManager"/>
         <property name="hibernateProperties">
             <props>

@@ -25,7 +25,7 @@ public class ShardDataSourceFactoryImpl implements ShardDataSourceFactory, Appli
     public void setMapper(ShardDataSourceMapper mapper) { this.mapper = mapper; }
 
     @Override
-    public DataSource createDataSource(int shardId, String dbName) {
+    public DataSource createDataSource(ShardDataSourceKey key) {
         if (this.applicationContext == null) {
             throw new RuntimeException("applicationContext is null in ShardDataSourceFactory!");
         }
@@ -41,10 +41,10 @@ public class ShardDataSourceFactoryImpl implements ShardDataSourceFactory, Appli
         if (dataSource instanceof PoolingDataSource) {
             // reset btmDataSource unique name and url
             PoolingDataSource btmDataSource = (PoolingDataSource)dataSource;
-            btmDataSource.setUniqueName(String.format("jdbc/%s_ds_%s", dbName, shardId));
+            btmDataSource.setUniqueName(String.format("jdbc/%s_ds_%s", key.getDatabaseName(), key.getShardId()));
 
-            DataSourceConfig config = mapper.getDataSourceConfigByShardId(shardId);
-            String url = config.getJdbcUrlTemplate().replaceFirst("%DB_NAME%", dbName);
+            DataSourceConfig config = mapper.getDataSourceConfigByShardId(key.getShardId());
+            String url = config.getJdbcUrlTemplate().replaceFirst("%DB_NAME%", key.getDatabaseName());
             btmDataSource.getDriverProperties().setProperty("url", url);
 
             return btmDataSource;

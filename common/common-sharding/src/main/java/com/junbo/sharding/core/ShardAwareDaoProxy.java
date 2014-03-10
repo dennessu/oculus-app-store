@@ -5,8 +5,6 @@
  */
 package com.junbo.sharding.core;
 
-import com.junbo.langur.core.promise.Promise;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -28,7 +26,7 @@ public class ShardAwareDaoProxy implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        Promise.currentContext().set("shardId", "0");
+        //Promise.currentContext().set("shardId", "0");
         return method.invoke(target, args);
     }
 }
