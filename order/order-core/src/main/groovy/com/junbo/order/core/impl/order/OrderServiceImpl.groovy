@@ -96,6 +96,13 @@ class OrderServiceImpl implements OrderService {
     @Transactional
     Promise<List<Order>> createQuotes(Order order, ApiContext context) {
 
+        def orderServiceContext = initOrderServiceContext(null)
+        Map<String, Object> requestScope = [:]
+        flowSelector.select(orderServiceContext, OrderServiceOperation.CREATE_TENTATIVE).syncThen { FlowType flowType ->
+            executeFlow(flowType, orderServiceContext, requestScope).syncThen {
+            }
+        }
+
         List<Order> orders = []
         // Only tentative order is accepted
         if (!order.tentative) {
@@ -191,6 +198,7 @@ class OrderServiceImpl implements OrderService {
     private Promise<OrderServiceContext> executeFlow(
             FlowType flowType, OrderServiceContext context,
             Map<String, Object> requestScope) {
+        requestScope.put(ActionUtils.REQUEST_FLOW_TYPE, (Object)flowType)
         return flowExecutor.start(flowType.name(), ActionUtils.initRequestScope(context, requestScope)).syncThen {
             return context
         }
