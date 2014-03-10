@@ -124,9 +124,11 @@ public class PaymentInstrumentRepository {
         List<PaymentInstrument> request = new ArrayList<PaymentInstrument>();
         List<PaymentInstrumentEntity> piEntities = paymentInstrumentDao.getByUserId(userId);
         for(PaymentInstrumentEntity piEntity : piEntities){
-            PaymentInstrument piRequest = paymentMapperImpl.toPaymentInstrument(piEntity, new MappingContext());
-            setAdditionalInfo(piEntity, piRequest);
-            request.add(piRequest);
+            if(piEntity.getStatus() != PIStatus.DELETED){
+                PaymentInstrument piRequest = paymentMapperImpl.toPaymentInstrument(piEntity, new MappingContext());
+                setAdditionalInfo(piEntity, piRequest);
+                request.add(piRequest);
+            }
         }
         return request;
     }

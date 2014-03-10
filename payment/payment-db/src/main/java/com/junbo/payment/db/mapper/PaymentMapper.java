@@ -28,10 +28,6 @@ import com.junbo.payment.spec.model.*;
         CommonMapper.class,
 })
 public interface PaymentMapper {
-    @Mappings({
-            @Mapping(source = "createdTime", target = "createdTime", excluded = true, bidirectional = false),
-            @Mapping(source = "updatedTime", target = "updatedTime", excluded = true, bidirectional = false),
-    })
     AddressEntity toAddressEntity(Address address, MappingContext context);
 
     @Mappings({
@@ -43,33 +39,18 @@ public interface PaymentMapper {
 
     CreditCardRequest toCreditCardRequest(CreditCardPaymentInstrumentEntity ccEntity, MappingContext context);
 
-    @Mappings({
-            @Mapping(source = "createdTime", target = "createdTime", excluded = true, bidirectional = false),
-            @Mapping(source = "updatedTime", target = "updatedTime", excluded = true, bidirectional = false),
-    })
     PhoneEntity toPhoneEntity(Phone phone, MappingContext context);
 
     Phone toPhone(PhoneEntity phoneEntity, MappingContext context);
 
-    @Mappings({
-            @Mapping(source = "createdTime", target = "createdTime", excluded = true, bidirectional = false),
-            @Mapping(source = "updatedTime", target = "updatedTime", excluded = true, bidirectional = false),
-    })
     CountryTypeEntity toCountryEntity(Country country, MappingContext context);
 
     Country toCountry(CountryTypeEntity countryEntity, MappingContext context);
 
-    @Mappings({
-            @Mapping(source = "createdTime", target = "createdTime", excluded = true, bidirectional = false),
-            @Mapping(source = "updatedTime", target = "updatedTime", excluded = true, bidirectional = false),
-    })
     CurrencyTypeEntity toCurrencyEntity(Currency currency, MappingContext context);
 
     Currency toCurrency(CurrencyTypeEntity currencyEntity, MappingContext context);
 
-    @Mappings({
-            @Mapping(source = "createdTime", target = "createdTime", excluded = true, bidirectional = false)
-    })
     PaymentEventEntity toPaymentEventEntityRaw(PaymentEvent event, MappingContext context);
 
     PaymentEvent toPaymentEventRaw(PaymentEventEntity eventEntity, MappingContext context);
@@ -90,11 +71,6 @@ public interface PaymentMapper {
     })
     PaymentTransaction toPaymentRaw(PaymentEntity paymentEntity, MappingContext context);
 
-
-    @Mappings({
-            @Mapping(source = "createdTime", target = "createdTime", excluded = true, bidirectional = false),
-            @Mapping(source = "updatedTime", target = "updatedTime", excluded = true, bidirectional = false),
-    })
     PaymentInstrumentEntity toPIEntity(PaymentInstrument piRequest, MappingContext context);
 
     PaymentInstrument toPaymentInstrument(PaymentInstrumentEntity piEntity, MappingContext context);

@@ -57,14 +57,6 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
 
     @Override
     public Promise<PaymentInstrument> add(PaymentInstrument request) {
-        /*//test use only
-        request.setAccountNum("1111");
-        request.setStatus(PIStatus.ACTIVE.toString());
-        request.getCreditCardRequest().setExternalToken("123");
-        request.getCreditCardRequest().setType("VISA");
-        request.getCreditCardRequest().setCommercial("UNKNOW");
-        //test use only
-         */
         String expireDate = request.getCreditCardRequest().getExpireDate();
         String[] tokens = expireDate.split("-");
         if(tokens == null || tokens.length < 2){
@@ -203,7 +195,7 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
     private <T> void handleProviderError(Result<T> result) {
         StringBuffer sbErrorCodes = new StringBuffer();
         for (ValidationError error : result.getErrors().getAllDeepValidationErrors()) {
-            sbErrorCodes.append(error.getCode() + "_");
+            sbErrorCodes.append(error.getCode()).append("_");
         }
         LOGGER.error("gateway validations errors with codes: " + sbErrorCodes.toString());
         throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, sbErrorCodes.toString()).exception();

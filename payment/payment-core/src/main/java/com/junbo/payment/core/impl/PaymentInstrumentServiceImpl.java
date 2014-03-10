@@ -65,7 +65,6 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
         PaymentProviderService provider = providerRoutingService.getPaymentProvider(
                 PaymentUtil.getPIType(request.getType()));
         //call provider and set result
-        //PaymentInstrument providerResult = provider.add(request);
         return provider.add(request).then(new Promise.Func<PaymentInstrument, Promise<PaymentInstrument>>() {
             @Override
             public Promise<PaymentInstrument> apply(PaymentInstrument paymentInstrument) {
@@ -110,26 +109,6 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
             throw AppClientExceptions.INSTANCE.invalidPaymentInstrumentId(paymentInstrumentId.toString()).exception();
         }
         paymentInstrumentRepository.delete(paymentInstrumentId);
-        /*TODO: need to evaluate whether to delete the PI in BrainTree Side.
-        PaymentProviderService provider = providerRoutingService.getPaymentProvider(
-                PaymentUtil.getPIType(piRequest.getType()));
-        provider.delete(piRequest.getCreditCardRequest().getExternalToken())
-                .then(new Promise.Func<Void, Promise<Void>>() {
-                    @Override
-                    public Promise<Void> apply(Void aVoid) {
-                        AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager);
-                        template.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRES_NEW);
-                        template.execute(new TransactionCallback<Void>() {
-                            @Override
-                            public Void doInTransaction(TransactionStatus status) {
-                                paymentInstrumentRepository.delete(paymentInstrumentId);
-                                return null;
-                            }
-                        });
-                        return null;
-                    }
-                });
-                */
     }
 
     @Override
@@ -190,6 +169,7 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
 
     private void saveTrackingUuid(PaymentInstrument request, PaymentAPI api){
         if(request.getId() == null){
+            LOGGER.error("payment id should not be empty when store tracking uuid.");
             throw AppServerExceptions.INSTANCE.missingRequiredField("payment_instrument_id").exception();
         }
         TrackingUuid trackingUuid = new TrackingUuid();
