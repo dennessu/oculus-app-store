@@ -56,8 +56,8 @@ public abstract class BaseResourceImpl<T extends BaseModel> {
         return Promise.pure(getEntityService().reject(entityId.getValue()));
     }
 
-    public Promise<T> update(T entity) {
-        return Promise.pure(getEntityService().update(entity));
+    public Promise<T> update(Id entityId, T entity) {
+        return Promise.pure(getEntityService().update(entityId.getValue(), entity));
     }
 
     public Promise<Void> remove(Id entityId) {
