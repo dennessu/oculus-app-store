@@ -7,56 +7,11 @@ package com.junbo.sharding;
 
 import com.junbo.common.id.Id;
 
-import java.util.Map;
-
 /**
- * Created by liangfu on 3/10/14.
+ * Created by xiali_000 on 3/10/14.
  */
-public class IdGeneratorFacade {
-    private final Map<Class, IdGenerator> map;
-
-    public IdGeneratorFacade(Map<Class, IdGenerator> map) {
-        if(map == null) {
-            throw new IllegalArgumentException("map is null.");
-        }
-        this.map = map;
+public interface IdGeneratorFacade {
+    <T extends Id> long nextId(Class<T> cls);
+    <T extends Id> long nextId(Class<T> cls, long id);
+    <T extends Id> long nextIdByShardId(Class<T> cls, int shardId);
     }
-
-    /**
-     * Generate a new ID, the shardId is random distributed.
-     * @return The new unique ID on one shard.
-     */
-    <T extends Id> long nextId(Class<T> cls) {
-        IdGenerator idGenerator = map.get(cls);
-        if(idGenerator == null) {
-            throw new IllegalArgumentException("Can't find map for " + cls);
-        }
-        return idGenerator.nextId();
-    }
-
-    /**
-     * Generate a new ID following the shard of the existing ID.
-     * @param id The source(seed) ID for shard information.
-     * @return The new unique ID on the same shard as the source ID.
-     */
-    <T extends Id> long nextId(Class<T> cls, long id) {
-        IdGenerator idGenerator = map.get(cls);
-        if(idGenerator == null) {
-            throw new IllegalArgumentException("Can't find map for " + cls);
-        }
-        return idGenerator.nextId(id);
-    }
-
-    /**
-     * Generate a new ID given the shard ID.
-     * @param shardId The expected shardId.
-     * @return The new unqiue ID on the expected shard.
-     */
-    <T extends Id> long nextIdByShardId(Class<T> cls, int shardId) {
-        IdGenerator idGenerator = map.get(cls);
-        if(idGenerator == null) {
-            throw new IllegalArgumentException("Can't find map for " + cls);
-        }
-        return idGenerator.nextIdByShardId(shardId);
-    }
-}

@@ -6,12 +6,13 @@
 
 package com.junbo.sharding.test;
 
+import com.junbo.common.id.UserId;
 import com.junbo.sharding.IdGenerator;
+import com.junbo.sharding.IdGeneratorFacade;
 import com.junbo.sharding.impl.IdSchema;
 import com.junbo.sharding.impl.*;
 import net.spy.memcached.MemcachedClient;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.testng.Assert;
@@ -30,8 +31,7 @@ import java.util.List;
 @ContextConfiguration(locations = {"classpath:spring/sharding-context-test.xml"})
 public class IdGeneratorTest extends AbstractTransactionalTestNGSpringContextTests {
     @Autowired
-    @Qualifier("oculus48IdGenerator")
-    private IdGenerator generator;
+    private IdGeneratorFacade generator;
 
     private IdGenerator idGenerator;
 
@@ -91,7 +91,7 @@ public class IdGeneratorTest extends AbstractTransactionalTestNGSpringContextTes
     public void test() {
         List<Long> ids = new ArrayList<Long>();
         for (int i=0; i<100000; i++) {
-            ids.add(generator.nextId());
+            ids.add(generator.nextId(UserId.class));
         }
 
         Assert.assertEquals(ids.size(), 100000);

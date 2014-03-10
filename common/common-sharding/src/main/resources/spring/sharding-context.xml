@@ -141,11 +141,12 @@
         <constructor-arg name="numberOfShards" value="${sharding.oculus40.numberOfShards}"/>
     </bean>
 
-    <bean id="idGeneratorFacade" class="com.junbo.sharding.IdGeneratorFacade">
+    <bean id="idGeneratorFacade" class="com.junbo.sharding.IdGeneratorFacadeImpl">
         <constructor-arg name="map">
             <map>
-                <entry key="com.junbo.common.id.AppId" value-ref="oculus48IdGenerator" />
+                <entry key="com.junbo.common.id.OfferId" value-ref="oculus40IdGenerator" />
             </map>
         </constructor-arg>
+        <constructor-arg name="idGenerator" ref="oculus48IdGenerator" />
     </bean>
 </beans>
