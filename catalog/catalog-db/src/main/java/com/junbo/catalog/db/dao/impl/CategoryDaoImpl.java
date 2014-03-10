@@ -6,24 +6,16 @@
 
 package com.junbo.catalog.db.dao.impl;
 
-import com.junbo.catalog.common.util.Action;
 import com.junbo.catalog.db.dao.CategoryDao;
 import com.junbo.catalog.db.entity.CategoryEntity;
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Restrictions;
 
 /**
  * Category DAO implementation.
  */
 public class CategoryDaoImpl extends BaseDaoImpl<CategoryEntity> implements CategoryDao {
     @Override
-    public CategoryEntity getCategory(final long categoryId, final int revision) {
-        return findBy(new Action<Criteria>() {
-            public void apply(Criteria criteria) {
-                criteria.add(Restrictions.eq("category_id", categoryId));
-                criteria.add(Restrictions.eq("revision", revision));
-            }
-        });
+    public CategoryEntity getCategory(Long categoryId, Long timestamp) {
+        return get(categoryId, timestamp, "categoryId");
     }
 
    /* @Override

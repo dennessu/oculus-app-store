@@ -116,7 +116,7 @@
         <constructor-arg name="idSignificant" value="${sharding.oculus48.sharding.idSignificant}" />
         <constructor-arg name="bitsInIdSignificant" value="${sharding.oculus48.sharding.bitsInIdSignificant}" />
         <constructor-arg name="bitsInShardParam" value="${sharding.oculus48.sharding.bitsInShardParam}" />
-        <constructor-arg name="numberOfShards" value="${sharding.sharding.numberOfShards}"/>
+        <constructor-arg name="numberOfShards" value="${sharding.oculus48.numberOfShards}"/>
     </bean>
 
     <!-- 3: OrderId generator propsed by oculus rift (Using 40 bits) -->
@@ -131,6 +131,6 @@
         <constructor-arg name="idSignificant" value="${sharding.oculus40.sharding.idSignificant}" />
         <constructor-arg name="bitsInIdSignificant" value="${sharding.oculus40.sharding.bitsInIdSignificant}" />
         <constructor-arg name="bitsInShardParam" value="${sharding.oculus40.sharding.bitsInShardParam}" />
-        <constructor-arg name="numberOfShards" value="${sharding.sharding.numberOfShards}"/>
+        <constructor-arg name="numberOfShards" value="${sharding.oculus40.numberOfShards}"/>
     </bean>
 </beans>
