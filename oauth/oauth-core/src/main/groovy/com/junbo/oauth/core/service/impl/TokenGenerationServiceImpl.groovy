@@ -195,22 +195,22 @@ class TokenGenerationServiceImpl implements TokenGenerationService {
     }
 
     @Override
-    IdToken parseIdToken(Client client, String tokenValue) {
-        Assert.notNull(client)
+    IdToken parseIdToken(String tokenValue, Client client) {
         Assert.notNull(tokenValue)
 
         try {
-            JWSVerifier verifier = new MACVerifier(client.clientSecret.bytes)
             JWSObject jwsObject = JWSObject.parse(tokenValue)
 
-            if (jwsObject.verify(verifier)) {
-                IdToken idToken = JsonMarshaller.unmarshall(IdToken, jwsObject.payload.toString())
-                idToken.tokenValue = tokenValue
-                return idToken
-            } else {
-                throw AppExceptions.INSTANCE.invalidIdToken().exception()
+            if (client != null) {
+                JWSVerifier verifier = new MACVerifier(client.clientSecret.bytes)
+                if (!jwsObject.verify(verifier)) {
+                    throw AppExceptions.INSTANCE.invalidIdToken().exception()
+                }
             }
 
+            IdToken idToken = JsonMarshaller.unmarshall(IdToken, jwsObject.payload.toString())
+            idToken.tokenValue = tokenValue
+            return idToken
         } catch (ParseException | JOSEException e) {
             LOGGER.error('Error parsing the id token', e)
             throw AppExceptions.INSTANCE.invalidIdToken().exception()

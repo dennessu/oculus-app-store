@@ -35,7 +35,7 @@ class Main {
         resourceConfig.property('contextConfigLocation', 'classpath*:/spring/**/*.xml')
         resourceConfig.register(RestExceptionMapper)
 
-        def uri = URI.create('http://0.0.0.0:8082/auth')
+        def uri = URI.create('http://0.0.0.0:8082/rest')
         return GrizzlyHttpServerFactory.createHttpServer(uri, resourceConfig)
     }
 

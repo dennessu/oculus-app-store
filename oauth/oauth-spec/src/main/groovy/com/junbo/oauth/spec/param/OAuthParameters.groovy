@@ -39,5 +39,6 @@ class OAuthParameters {
     public static final String AUTHORIZATION = 'Authorization'
     public static final String CONVERSATION_ID = 'cid'
     public static final String EVENT = 'event'
+    public static final String POST_LOGOUT_REDIRECT_URI = 'post_logout_redirect_uri'
 }
 

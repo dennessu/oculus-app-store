@@ -22,7 +22,7 @@
     </bean>
 
     <bean id="authenticateUser" class="com.junbo.oauth.core.action.AuthenticateUser">
-    <property name="userResource" ref="identityUserClient"/>
+        <property name="userResource" ref="identityUserClient"/>
     </bean>
 
     <bean id="buildRedirectUri" class="com.junbo.oauth.core.action.BuildRedirectUri"/>
@@ -30,7 +30,7 @@
     <bean id="generateAccessTokenResponse" class="com.junbo.oauth.core.action.GenerateAccessTokenResponse"/>
 
     <bean id="getAccessTokenInfo" class="com.junbo.oauth.core.action.GetAccessTokenInfo">
-    <property name="tokenGenerationService" ref="tokenGenerationService"/>
+        <property name="tokenGenerationService" ref="tokenGenerationService"/>
     </bean>
 
     <bean id="validateClient" class="com.junbo.oauth.core.action.ValidateClient">
@@ -38,66 +38,72 @@
     </bean>
 
     <bean id="grantAuthorizationCode" class="com.junbo.oauth.core.action.GrantAuthorizationCode">
-    <property name="authorizationCodeRepository" ref="authorizationCodeRepository"/>
+        <property name="authorizationCodeRepository" ref="authorizationCodeRepository"/>
         <property name="defaultExpiration" value="${oauth.core.authorizationCode.default.expiration}"/>
     </bean>
 
     <bean id="grantIdToken" class="com.junbo.oauth.core.action.GrantIdToken">
-    <property name="tokenGenerationService" ref="tokenGenerationService"/>
+        <property name="tokenGenerationService" ref="tokenGenerationService"/>
     </bean>
 
     <bean id="grantImplicitAccessToken" class="com.junbo.oauth.core.action.GrantImplicitAccessToken">
-    <property name="tokenGenerationService" ref="tokenGenerationService"/>
+        <property name="tokenGenerationService" ref="tokenGenerationService"/>
     </bean>
 
     <bean id="grantRefreshToken" class="com.junbo.oauth.core.action.GrantRefreshToken">
-    <property name="tokenGenerationService" ref="tokenGenerationService"/>
+        <property name="tokenGenerationService" ref="tokenGenerationService"/>
     </bean>
 
     <bean id="grantRememberMeToken" class="com.junbo.oauth.core.action.GrantRememberMeToken">
-    <property name="rememberMeTokenRepository" ref="rememberMeTokenRepository"/>
+        <property name="rememberMeTokenRepository" ref="rememberMeTokenRepository"/>
         <property name="defaultRememberMeTokenExpiration" value="${oauth.core.rememberMeToken.default.expiration}"/>
     </bean>
 
     <bean id="grantTokenByCode" class="com.junbo.oauth.core.action.GrantTokenByCode">
-    <property name="tokenGenerationService" ref="tokenGenerationService"/>
+        <property name="tokenGenerationService" ref="tokenGenerationService"/>
         <property name="authorizationCodeRepository" ref="authorizationCodeRepository"/>
     </bean>
 
     <bean id="grantTokenByPassword" class="com.junbo.oauth.core.action.GrantTokenByPassword">
-    <property name="tokenGenerationService" ref="tokenGenerationService"/>
+        <property name="tokenGenerationService" ref="tokenGenerationService"/>
     </bean>
 
     <bean id="grantTokenByRefreshToken" class="com.junbo.oauth.core.action.GrantTokenByRefreshToken">
-    <property name="tokenGenerationService" ref="tokenGenerationService"/>
+        <property name="tokenGenerationService" ref="tokenGenerationService"/>
     </bean>
 
     <bean id="loadIdTokenHint" class="com.junbo.oauth.core.action.LoadIdTokenHint">
-    <property name="tokenGenerationService" ref="tokenGenerationService"/>
+        <property name="tokenGenerationService" ref="tokenGenerationService"/>
     </bean>
 
     <bean id="loadLoginState" class="com.junbo.oauth.core.action.LoadLoginState">
-    <property name="loginStateRepository" ref="loginStateRepository"/>
+        <property name="loginStateRepository" ref="loginStateRepository"/>
     </bean>
 
     <bean id="loadRememberMeToken" class="com.junbo.oauth.core.action.LoadRememberMeToken">
-    <property name="rememberMeTokenRepository" ref="rememberMeTokenRepository"/>
+        <property name="rememberMeTokenRepository" ref="rememberMeTokenRepository"/>
+    </bean>
+
+    <bean id="logout" class="com.junbo.oauth.core.action.Logout">
+        <property name="loginStateRepository" ref="loginStateRepository"/>
+        <property name="rememberMeTokenRepository" ref="rememberMeTokenRepository"/>
+        <property name="tokenGenerationService" ref="tokenGenerationService"/>
     </bean>
 
     <bean id="redirect" class="com.junbo.oauth.core.action.Redirect"/>
 
     <bean id="saveLoginState" class="com.junbo.oauth.core.action.SaveLoginState">
-    <property name="loginStateRepository" ref="loginStateRepository"/>
+        <property name="loginStateRepository" ref="loginStateRepository"/>
     </bean>
 
     <bean id="validateDisplay" class="com.junbo.oauth.core.action.ValidateDisplay">
-    <property name="defaultDisplay" value="PAGE"/>
+        <property name="defaultDisplay" value="PAGE"/>
     </bean>
 
     <bean id="validateGrantType" class="com.junbo.oauth.core.action.ValidateGrantType"/>
 
     <bean id="validateLoginState" class="com.junbo.oauth.core.action.ValidateLoginState">
-    <property name="loginUri" value="${oauth.core.portal.loginUri}"/>
+        <property name="loginUri" value="${oauth.core.portal.loginUri}"/>
     </bean>
 
     <bean id="validateMaxAge" class="com.junbo.oauth.core.action.ValidateMaxAge"/>
