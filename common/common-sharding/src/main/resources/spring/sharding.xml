@@ -46,38 +46,4 @@
             </props>
         </property>
     </bean>
-
-    <bean id="sessionFactoryWrapper" class="com.junbo.sharding.core.hibernate.SessionFactoryWrapper">
-        <property name="dataSourceRegistry" ref="shardDataSourceRegistry"/>
-        <property name="sessionFactoryBeanName" value="shardedSessionFactory"/>
-        <property name="packagesToScanMapper" ref="packagesToScanMapper"/>
-    </bean>
-
-    <bean id="packagesToScanMapper" class="com.junbo.sharding.core.util.PackagesToScanMapper" scope="singleton">
-        <property name="properties">
-            <props>
-                <prop key="payment">
-                    com.junbo.payment.db;
-                    com.junbo.payment.db.dao.payment;
-                    com.junbo.payment.db.entity.payment;
-                    com.junbo.payment.db.dao.paymentinstrument;
-                    com.junbo.payment.entity.paymentinstrument;
-                </prop>
-                <prop key="subscription">com.junbo.subscription.db.entity</prop>
-                <prop key="order">com.junbo.order.db.entity</prop>
-                <prop key="identity">com.junbo.identity.data.*</prop>
-                <prop key="fulfilment">com.junbo.fulfilment.db.entity</prop>
-                <prop key="ewallet">com.junbo.ewallet.db.entity</prop>
-                <prop key="entitlement">com.junbo.entitlement.db.entity</prop>
-                <prop key="email">com.junbo.email.db.entity</prop>
-                <prop key="drm">com.junbo.drm.db.entity</prop>
-                <prop key="catalog">com.junbo.catalog.db.entity</prop>
-                <prop key="cart">com.junbo.cart.db.entity</prop>
-                <prop key="billing">com.junbo.billing.db.*</prop>
-
-                <prop key="test">com.junbo.sharding.test.data.dao</prop>
-            </props>
-        </property>
-    </bean>
-
 </beans>

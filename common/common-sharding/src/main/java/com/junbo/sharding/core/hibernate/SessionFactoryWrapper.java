@@ -7,7 +7,6 @@ package com.junbo.sharding.core.hibernate;
 
 import com.junbo.sharding.core.ds.ShardDataSourceKey;
 import com.junbo.sharding.core.ds.ShardDataSourceRegistry;
-import com.junbo.sharding.core.util.PackagesToScanMapper;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -25,7 +24,8 @@ public class SessionFactoryWrapper implements ApplicationContextAware {
     private ApplicationContext applicationContext;
     private ShardDataSourceRegistry dataSourceRegistry;
     private String sessionFactoryBeanName;
-    private PackagesToScanMapper packagesToScanMapper;
+    private String dataBaseName;
+    private String[] packagesToScan;
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
@@ -40,24 +40,24 @@ public class SessionFactoryWrapper implements ApplicationContextAware {
         this.sessionFactoryBeanName = sessionFactoryBeanName;
     }
 
-    public void setPackagesToScanMapper(PackagesToScanMapper packagesToScanMapper) {
-        this.packagesToScanMapper = packagesToScanMapper;
+    public void setDataBaseName(String dataBaseName) {
+        this.dataBaseName = dataBaseName;
     }
 
-    private Map<ShardDataSourceKey, SessionFactory> cache = new HashMap<ShardDataSourceKey, SessionFactory>();
+    public void setPackagesToScan(String... packagesToScan) {
+        this.packagesToScan = packagesToScan;
+    }
 
-    public SessionFactory resolve(ShardDataSourceKey key) {
-        if (key == null) {
-            return null;
+    private Map<Integer, SessionFactory> cache = new HashMap<Integer, SessionFactory>();
+
+    public SessionFactory resolve(int shardId) {
+        if (cache.containsKey(shardId)) {
+            return cache.get(shardId);
         }
-        if (cache.containsKey(key)) {
-            return cache.get(key);
-        }
 
-        SessionFactory sf = this.createShardedSessionFactory(key.getShardId(), key.getDatabaseName(),
-                packagesToScanMapper.getPackagesToScan(key.getDatabaseName()));
+        SessionFactory sf = this.createShardedSessionFactory(shardId, this.dataBaseName, this.packagesToScan);
 
-        cache.put(key, sf);
+        cache.put(shardId, sf);
         return sf;
     }
 

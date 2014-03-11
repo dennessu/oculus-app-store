@@ -27,7 +27,7 @@ public class ShardDAOImpl implements ShardDAO {
 
     private Session session(final int shardId) {
         String dbname = Helper.getDatabaseName(this.getClass());
-        Session s = sessionFactoryWrapper.resolve(new ShardDataSourceKey(shardId, dbname)).getCurrentSession();
+        Session s = sessionFactoryWrapper.resolve(shardId).getCurrentSession();
         s.doWork(new Work() {
             @Override
             public void execute(Connection connection) throws SQLException {
