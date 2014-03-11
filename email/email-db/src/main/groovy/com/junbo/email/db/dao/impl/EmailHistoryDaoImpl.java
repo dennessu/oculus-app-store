@@ -19,7 +19,6 @@ public class EmailHistoryDaoImpl extends BaseDaoImpl<EmailHistoryEntity> impleme
     public Long updateStatus(Long id, Short emailStatus) {
         EmailHistoryEntity entity = get(id);
         entity.setStatus(emailStatus);
-        update(entity);
-        return entity.getId();
+        return update(entity);
     }
 }

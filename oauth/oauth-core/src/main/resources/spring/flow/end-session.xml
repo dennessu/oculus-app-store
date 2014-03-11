@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xmlns:wf="http://www.junbo.com/schema/webflow"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.junbo.com/schema/webflow http://www.junbo.com/schema/webflow-config/webflow.xsd">
+
+    <wf:flow id="endSessionFlow">
+        <wf:action-state id="logout">
+            <wf:action ref="logout"/>
+            <wf:transition on="redirectToConfirmation" to="redirectToConfirmation"/>
+            <wf:transition on="redirectToLogoutRedirectUri" to="redirectClearCookie"/>
+            <wf:transition on="clearCookie" to="clearCookie"/>
+        </wf:action-state>
+
+        <wf:view-state id="redirectToConfirmation">
+            <wf:on-render>
+                <wf:action ref="redirect"/>
+            </wf:on-render>
+            <wf:transition on="yes" to="redirectClearCookie"/>
+            <wf:transition on="no" to="redirectWithoutClearCookie"/>
+        </wf:view-state>
+
+        <wf:end-state id="redirectClearCookie">
+            <wf:on-entry>
+                <wf:action ref="clearLoginCookies"/>
+                <wf:action ref="redirect"/>
+            </wf:on-entry>
+        </wf:end-state>
+
+        <wf:end-state id="redirectWithoutClearCookie">
+            <wf:on-entry>
+                <wf:action ref="redirect"/>
+            </wf:on-entry>
+        </wf:end-state>
+
+        <wf:end-state id="clearCookie">
+            <wf:on-entry>
+                <wf:action ref="clearLoginCookies"/>
+            </wf:on-entry>
+        </wf:end-state>
+
+    </wf:flow>
+
+</beans>

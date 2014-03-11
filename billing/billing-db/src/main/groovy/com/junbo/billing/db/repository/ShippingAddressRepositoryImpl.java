@@ -11,6 +11,7 @@ import com.junbo.billing.db.address.ShippingAddressEntity;
 import com.junbo.billing.db.dao.ShippingAddressEntityDao;
 import com.junbo.billing.db.mapper.ModelMapper;
 import com.junbo.billing.spec.model.ShippingAddress;
+import com.junbo.sharding.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -28,13 +29,15 @@ public class ShippingAddressRepositoryImpl implements ShippingAddressRepository 
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private IdGenerator idGenerator;
+
     @Override
     public ShippingAddress saveShippingAddress(ShippingAddress address) {
 
         ShippingAddressEntity sae = modelMapper.toShippingAddressEntity(address, new MappingContext());
 
-        //todo
-        sae.setAddressId(System.currentTimeMillis());
+        sae.setAddressId(idGenerator.nextId(sae.getUserId()));
 
         sae.setCreatedBy("BILLING");
         sae.setCreatedDate(new Date());

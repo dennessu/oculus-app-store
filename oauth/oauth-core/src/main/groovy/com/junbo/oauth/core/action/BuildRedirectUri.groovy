@@ -30,6 +30,7 @@ class BuildRedirectUri implements Action {
         def authorizationCode = contextWrapper.authorizationCode
         def accessToken = contextWrapper.accessToken
         def idToken = contextWrapper.idToken
+        def loginState = contextWrapper.loginState
 
         def uriBuilder = contextWrapper.redirectUriBuilder
 
@@ -57,6 +58,8 @@ class BuildRedirectUri implements Action {
         if (state != null) {
             parameters.put(OAuthParameters.STATE, state)
         }
+
+        parameters.put(OAuthParameters.SESSION_ID, loginState.sessionId)
 
         if (OAuthInfoUtil.isImplicitFlow(oauthInfo)) {
             List<GString> fragments = parameters.collect { String key, String value ->

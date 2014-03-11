@@ -65,7 +65,7 @@ public class CatalogGatewayImpl implements CatalogGateway{
 
         RatingOffer result = new RatingOffer();
         result.setId(offer.getId());
-        result.getCategories().addAll(offer.getCategories());
+        //result.getCategories().addAll(offer.getCategories());
         for (String country : offer.getPrices().keySet()) {
             com.junbo.catalog.spec.model.offer.Price price = offer.getPrices().get(country);
             Price ratingPrice = new Price(price.getAmount(), price.getCurrency());

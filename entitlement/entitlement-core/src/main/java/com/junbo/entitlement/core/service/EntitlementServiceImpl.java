@@ -185,8 +185,8 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
         if (entitlementSearchParam.getDeveloperId() == null) {
             throw AppErrors.INSTANCE.missingField("developerId").exception();
         }
-        checkUser(entitlementSearchParam.getUserId());
-        checkDeveloper(entitlementSearchParam.getDeveloperId());
+        checkUser(entitlementSearchParam.getUserId().getValue());
+        checkDeveloper(entitlementSearchParam.getDeveloperId().getValue());
         List<Entitlement> entitlementEntities = entitlementRepository.getBySearchParam(
                 entitlementSearchParam, pageMetadata);
         return entitlementEntities;

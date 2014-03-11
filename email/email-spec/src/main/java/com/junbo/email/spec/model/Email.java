@@ -6,7 +6,7 @@
 package com.junbo.email.spec.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.junbo.common.jackson.annotation.UserId;
+import com.junbo.common.id.UserId;
 import com.junbo.common.id.EmailId;
 
 import java.util.Date;
@@ -20,9 +20,8 @@ public class Email {
     @JsonProperty("self")
     private EmailId id;
 
-    @UserId
     @JsonProperty("user")
-    private Long userId;
+    private UserId userId;
 
     private String source;
 
@@ -58,11 +57,11 @@ public class Email {
         this.id = id;
     }
 
-    public Long getUserId() {
+    public UserId getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(UserId userId) {
         this.userId = userId;
     }
 

@@ -24,4 +24,5 @@ dependencies {
     processor (libraries.oom_processor)
 
     testCompile (libraries.spring_test)
+    testCompile (libraries.common_lang)
 }

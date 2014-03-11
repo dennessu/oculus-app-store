@@ -1,0 +1,21 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
+ */
+
+package com.junbo.billing.clientproxy.impl.avalara;
+
+/**
+ * Created by LinYi on 14-3-10.
+ */
+public enum DetailLevel {
+    // summarizes document and jurisdiction detail with no line breakout
+    Summary,
+    // only document detail
+    Document,
+    // document and line detail
+    Line,
+    // document, line and jurisdiction detail
+    Tax
+}

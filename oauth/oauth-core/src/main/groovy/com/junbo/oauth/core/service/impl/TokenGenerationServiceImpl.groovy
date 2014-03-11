@@ -9,6 +9,7 @@ import com.junbo.oauth.common.JsonMarshaller
 import com.junbo.oauth.core.exception.AppExceptions
 import com.junbo.oauth.core.service.TokenGenerationService
 import com.junbo.oauth.db.repo.AccessTokenRepository
+import com.junbo.oauth.db.repo.ClientRepository
 import com.junbo.oauth.db.repo.RefreshTokenRepository
 import com.junbo.oauth.spec.model.*
 import com.nimbusds.jose.*
@@ -40,6 +41,7 @@ class TokenGenerationServiceImpl implements TokenGenerationService {
 
     private AccessTokenRepository accessTokenRepository
     private RefreshTokenRepository refreshTokenRepository
+    private ClientRepository clientRepository
 
     @Required
     void setDefaultAccessTokenExpiration(Long defaultAccessTokenExpiration) {
@@ -64,6 +66,11 @@ class TokenGenerationServiceImpl implements TokenGenerationService {
     @Required
     void setRefreshTokenRepository(RefreshTokenRepository refreshTokenRepository) {
         this.refreshTokenRepository = refreshTokenRepository
+    }
+
+    @Required
+    void setClientRepository(ClientRepository clientRepository) {
+        this.clientRepository = clientRepository
     }
 
     @Override
@@ -195,23 +202,27 @@ class TokenGenerationServiceImpl implements TokenGenerationService {
     }
 
     @Override
-    IdToken parseIdToken(Client client, String tokenValue) {
-        Assert.notNull(client)
+    IdToken parseIdToken(String tokenValue) {
         Assert.notNull(tokenValue)
 
         try {
-            JWSVerifier verifier = new MACVerifier(client.clientSecret.bytes)
             JWSObject jwsObject = JWSObject.parse(tokenValue)
+            IdToken idToken = JsonMarshaller.unmarshall(IdToken, jwsObject.payload.toString())
 
-            if (jwsObject.verify(verifier)) {
-                IdToken idToken = JsonMarshaller.unmarshall(IdToken, jwsObject.payload.toString())
-                idToken.tokenValue = tokenValue
-                return idToken
+            def client = clientRepository.getClient(idToken.aud)
+
+            if (client != null) {
+                JWSVerifier verifier = new MACVerifier(client.clientSecret.bytes)
+                if (!jwsObject.verify(verifier)) {
+                    throw AppExceptions.INSTANCE.invalidIdToken().exception()
+                }
             } else {
-                throw AppExceptions.INSTANCE.invalidIdToken().exception()
+                throw AppExceptions.INSTANCE.invalidClientId(idToken.aud).exception()
             }
 
-        } catch (ParseException | JOSEException e) {
+            idToken.tokenValue = tokenValue
+            return idToken
+        } catch (IOException | ParseException | JOSEException e) {
             LOGGER.error('Error parsing the id token', e)
             throw AppExceptions.INSTANCE.invalidIdToken().exception()
         }

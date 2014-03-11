@@ -135,4 +135,46 @@ class TransactionServiceImpl implements TransactionService {
         return paymentTransaction
     }
 
+    @Override
+    Balance captureBalance(Balance balance, BigDecimal amount) {
+
+        def paymentTransaction = generatePaymentTransaction(balance)
+        if (amount != null) {
+            paymentTransaction.chargeInfo.setAmount(amount)
+        }
+        def transaction = balance.transactions[0]
+        String paymentRefId = transaction.paymentRefId
+        Long paymentId
+        try {
+            paymentId = Long.parseLong(paymentRefId)
+        } catch (NumberFormatException ex) {
+            throw AppErrors.INSTANCE.invalidPaymentId(paymentRefId).exception()
+        }
+
+        Promise<PaymentTransaction> promiseResponse = paymentFacade.postPaymentCapture(paymentId, paymentTransaction)
+        BalanceStatus balanceStatus
+        if (promiseResponse != null) {
+
+            promiseResponse.then { PaymentTransaction pt ->
+                transaction.setType(TransactionType.CAPTURE.name())
+                transaction.setAmount(pt.chargeInfo.amount)
+                if (pt.status == PaymentStatus.SETTLEMENT_SUBMITTED.name()) {
+                    transaction.setStatus(TransactionStatus.SUCCESS.name())
+                    balanceStatus = BalanceStatus.AWAITING_PAYMENT
+                } else if (pt.status == PaymentStatus.SETTLEMENT_DECLINED) {
+                    transaction.setStatus(TransactionStatus.DECLINE.name())
+                    balanceStatus = BalanceStatus.FAILED
+                } else {
+                    transaction.setStatus(TransactionStatus.ERROR.name())
+                    balanceStatus = BalanceStatus.ERROR
+                }
+            }
+        } else {
+            transaction.setStatus(TransactionStatus.ERROR.name())
+            balanceStatus = BalanceStatus.ERROR
+        }
+        balance.setStatus(balanceStatus.name())
+
+        return balance
+    }
 }

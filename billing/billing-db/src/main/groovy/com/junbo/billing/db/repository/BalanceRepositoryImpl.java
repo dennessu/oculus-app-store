@@ -12,12 +12,12 @@ import com.junbo.oom.core.MappingContext;
 import com.junbo.billing.db.balance.*;
 import com.junbo.billing.db.dao.*;
 import com.junbo.billing.db.mapper.ModelMapper;
+import com.junbo.sharding.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created by xmchen on 14-2-19.
@@ -45,12 +45,15 @@ public class BalanceRepositoryImpl implements BalanceRepository {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private IdGenerator idGenerator;
+
     @Override
     public Balance saveBalance(Balance balance) {
 
         BalanceEntity balanceEntity = modelMapper.toBalanceEntity(balance, new MappingContext());
-        //todo: set real key generated ID
-        balanceEntity.setBalanceId(new Random().nextLong());
+
+        balanceEntity.setBalanceId(idGenerator.nextId(balanceEntity.getUserId()));
         balanceEntity.setRequestorId("GOD");
         balanceEntity.setCreatedBy("Billing");
         balanceEntity.setCreatedDate(new Date());
@@ -58,8 +61,8 @@ public class BalanceRepositoryImpl implements BalanceRepository {
 
         for(BalanceItem item : balance.getBalanceItems()) {
             BalanceItemEntity balanceItemEntity = modelMapper.toBalanceItemEntity(item, new MappingContext());
-            //todo: set real key generated ID
-            balanceItemEntity.setBalanceItemId(new Random().nextLong());
+
+            balanceItemEntity.setBalanceItemId(idGenerator.nextId(balanceEntity.getUserId()));
             balanceItemEntity.setBalanceId(balanceEntity.getBalanceId());
             balanceItemEntity.setCreatedDate(new Date());
             balanceItemEntity.setCreatedBy("Billing");
@@ -67,8 +70,8 @@ public class BalanceRepositoryImpl implements BalanceRepository {
 
             for(TaxItem tax : item.getTaxItems()) {
                 TaxItemEntity taxItemEntity = modelMapper.toTaxItemEntity(tax, new MappingContext());
-                //todo: set real key generated ID
-                taxItemEntity.setTaxItemId(new Random().nextLong());
+
+                taxItemEntity.setTaxItemId(idGenerator.nextId(balanceEntity.getUserId()));
                 taxItemEntity.setBalanceItemId(balanceItemEntity.getBalanceItemId());
                 taxItemEntity.setCreatedDate(new Date());
                 taxItemEntity.setCreatedBy("Billing");
@@ -77,8 +80,8 @@ public class BalanceRepositoryImpl implements BalanceRepository {
             for(DiscountItem discount : item.getDiscountItems()) {
                 DiscountItemEntity discountItemEntity =
                         modelMapper.toDiscountItemEntity(discount, new MappingContext());
-                //todo: set real key generated ID
-                discountItemEntity.setDiscountItemId(new Random().nextLong());
+
+                discountItemEntity.setDiscountItemId(idGenerator.nextId(balanceEntity.getUserId()));
                 discountItemEntity.setBalanceItemId(balanceItemEntity.getBalanceItemId());
                 discountItemEntity.setCreatedDate(new Date());
                 discountItemEntity.setCreatedBy("Billing");
@@ -93,8 +96,8 @@ public class BalanceRepositoryImpl implements BalanceRepository {
 
         // persist the order balance link
         OrderBalanceLinkEntity orderBalanceLinkEntity = new OrderBalanceLinkEntity();
-        //todo: set real key generated ID
-        orderBalanceLinkEntity.setLinkId(new Random().nextLong());
+
+        orderBalanceLinkEntity.setLinkId(idGenerator.nextId(balanceEntity.getUserId()));
         orderBalanceLinkEntity.setBalanceId(balanceEntity.getBalanceId());
         orderBalanceLinkEntity.setOrderId(balance.getOrderId().getValue());
         orderBalanceLinkEntity.setCreatedDate(new Date());
@@ -145,12 +148,48 @@ public class BalanceRepositoryImpl implements BalanceRepository {
 
     @Override
     public List<Balance> getBalances(Long orderId) {
-        List<Balance> balances = new ArrayList<Balance>();
+        List<Balance> balances = new ArrayList<>();
 
         List<OrderBalanceLinkEntity> orderBalanceLinkEntities = orderBalanceLinkEntityDao.findByOrderId(orderId);
         for(OrderBalanceLinkEntity orderBalanceLinkEntity : orderBalanceLinkEntities) {
             Balance balance = getBalance(orderBalanceLinkEntity.getBalanceId());
             balances.add(balance);
+        }
+
+        return balances;
+    }
+
+    @Override
+    public Balance updateBalance(Balance balance) {
+        BalanceEntity balanceEntity = modelMapper.toBalanceEntity(balance, new MappingContext());
+        BalanceEntity savedEntity = balanceEntityDao.get(balanceEntity.getBalanceId());
+
+        savedEntity.setTypeId(balanceEntity.getTypeId());
+        savedEntity.setStatusId(balanceEntity.getStatusId());
+        savedEntity.setModifiedDate(new Date());
+        savedEntity.setModifiedBy("BILLING");
+        balanceEntityDao.update(savedEntity);
+
+        for(Transaction transaction : balance.getTransactions()) {
+            transactionRepository.updateTransaction(transaction);
+        }
+
+        balanceEntityDao.flush();
+        return getBalance(balanceEntity.getBalanceId());
+    }
+
+    @Override
+    public List<Balance> getBalancesByOrderItemId(List<Long> orderItemIds) {
+        List<Balance> balances = new ArrayList<>();
+        List<Long> balanceIds = new ArrayList<>();
+
+        List<BalanceItemEntity> balanceItemEntities = balanceItemEntityDao.findByOrderItemId(orderItemIds);
+        for (BalanceItemEntity balanceItemEntity : balanceItemEntities) {
+            if (!balanceIds.contains(balanceItemEntity.getBalanceId())) {
+                Balance balance = getBalance(balanceItemEntity.getBalanceId());
+                balances.add(balance);
+                balanceIds.add(balanceItemEntity.getBalanceId());
+            }
         }
 
         return balances;

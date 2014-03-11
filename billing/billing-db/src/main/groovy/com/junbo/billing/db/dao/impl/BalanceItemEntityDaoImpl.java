@@ -26,4 +26,11 @@ public class BalanceItemEntityDaoImpl extends BaseDaoImpl<BalanceItemEntity, Lon
                 add(Restrictions.eq("balanceId", balanceId));
         return criteria.list();
     }
+
+    @Override
+    public List<BalanceItemEntity> findByOrderItemId(List<Long> orderItemIds) {
+        Criteria criteria = currentSession().createCriteria(BalanceItemEntity.class).
+                add(Restrictions.in("orderItemId", orderItemIds));
+        return criteria.list();
+    }
 }
