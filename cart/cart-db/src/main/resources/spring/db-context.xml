@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:context="http://www.springframework.org/schema/context"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <import resource="classpath*:spring/transaction.xml" />
 
     <!-- Config service -->
     <bean id="configService" class="com.junbo.configuration.impl.ConfigServiceImpl" />
@@ -27,24 +29,27 @@
         <property name="dataMapper" ref="dataMapper"/>
     </bean>
 
-    <bean id="dataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
-        <property name="driverClass" value="${cart.db.driver}"/>
-        <property name="jdbcUrl" value="${cart.db.url}"/>
-        <property name="username" value="${cart.db.username}"/>
-        <property name="password" value="${cart.db.password}"/>
-        <property name="maxConnectionsPerPartition" value="${cart.db.maxConnectionsPerPartition}"/>
-        <property name="minConnectionsPerPartition" value="${cart.db.minConnectionsPerPartition}"/>
-        <property name="partitionCount" value="${cart.db.partitionCount}"/>
-        <property name="acquireIncrement" value="${cart.db.acquireIncrement}"/>
-        <property name="statementsCacheSize" value="${cart.db.statementsCacheSize}"/>
-        <property name="releaseHelperThreads" value="${cart.db.releaseHelperThreads}"/>
+    <bean id="cartDataSource" class="bitronix.tm.resource.jdbc.PoolingDataSource"
+          init-method="init" destroy-method="close">
+        <property name="uniqueName" value="jdbc/id_ds1"/>
+        <property name="className" value="org.postgresql.xa.PGXADataSource"/>
+        <property name="minPoolSize" value="${cart.db.minConnectionsPerPartition}"/>
+        <property name="maxPoolSize" value="${cart.db.maxConnectionsPerPartition}"/>
+        <property name="driverProperties">
+            <props>
+                <prop key="url">${cart.db.url}</prop>
+                <prop key="user">${cart.db.username}</prop>
+                <prop key="password">${cart.db.password}</prop>
+            </props>
+        </property>
     </bean>
 
     <!-- SessonFactory for Hibernate -->
     <bean id="sessionFactory"
           class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
-        <property name="dataSource" ref="dataSource"/>
-        <property name="packagesToScan" value="com.junbo.cart.db.entity"/>
+        <property name="dataSource" ref="cartDataSource"/>
+        <property name="packagesToScan" value="com.junbo.cart.db.entity" />
+        <property name="jtaTransactionManager" ref="transactionManager"/>
         <property name="hibernateProperties">
             <props>
                 <prop key="hibernate.dialect">${cart.hibernate.dialect}</prop>
@@ -54,12 +59,6 @@
                 <prop key="hibernate.show_sql">${cart.hibernate.show_sql}</prop>
             </props>
         </property>
-    </bean>
-
-    <!-- Transaction Manager -->
-    <bean id="transactionManager"
-          class="org.springframework.orm.hibernate4.HibernateTransactionManager">
-        <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
     <bean id="abstractDao" class="com.junbo.cart.db.dao.impl.AbstractDao" abstract="true">
