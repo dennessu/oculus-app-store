@@ -142,16 +142,16 @@ public class PaymentDaoTest extends BaseTest {
         Assert.assertEquals(entity.getId(), entities.get(0).getId());
     }
 
-    private PhoneEntity buildPhoneRequest(){
+    protected PhoneEntity buildPhoneRequest(){
         PhoneEntity entity = new PhoneEntity();
         entity.setId(generateId());
-        entity.setType(PhoneType.Home);
+        entity.setType(PhoneType.HOME);
         entity.setNumber("12345");
         entity.setCreatedTime(new Date());
         return entity;
     }
 
-    private AddressEntity buildAddressRequest(){
+    protected AddressEntity buildAddressRequest(){
         AddressEntity entity = new AddressEntity();
         entity.setId(generateId());
         entity.setCountry("US");
@@ -161,7 +161,7 @@ public class PaymentDaoTest extends BaseTest {
         return entity;
     }
 
-    private PaymentInstrumentEntity buildRequest(PhoneEntity phone, AddressEntity address, Long userId) {
+    protected PaymentInstrumentEntity buildRequest(PhoneEntity phone, AddressEntity address, Long userId) {
         PaymentInstrumentEntity entity = new PaymentInstrumentEntity();
         entity.setId(generateId());
         entity.setAccountName("David");
@@ -176,7 +176,7 @@ public class PaymentDaoTest extends BaseTest {
         return entity;
     }
 
-    private PaymentEntity buildPaymentRequest(PaymentInstrumentEntity pi){
+    protected PaymentEntity buildPaymentRequest(PaymentInstrumentEntity pi){
         PaymentEntity entity = new PaymentEntity();
         entity.setId(generateId());
         entity.setUserId(generateId());
@@ -192,7 +192,7 @@ public class PaymentDaoTest extends BaseTest {
         return entity;
     }
 
-    private PaymentEventEntity getPaymentEventEntity(PaymentEntity payment) {
+    protected PaymentEventEntity getPaymentEventEntity(PaymentEntity payment) {
         PaymentEventEntity eventEntity = new PaymentEventEntity();
         eventEntity.setPaymentId(payment.getId());
         eventEntity.setId(generateId());
@@ -207,7 +207,7 @@ public class PaymentDaoTest extends BaseTest {
         return eventEntity;
     }
 
-    private MerchantAccountEntity buildMerchantRequest(){
+    protected MerchantAccountEntity buildMerchantRequest(){
         MerchantAccountEntity merchant = new MerchantAccountEntity();
         merchant.setCurrency("USD");
         merchant.setPiType(PIType.CREDITCARD);
@@ -220,7 +220,7 @@ public class PaymentDaoTest extends BaseTest {
         return merchant;
     }
 
-    private TrackingUuidEntity buildTrackingUuidRequest(){
+    protected TrackingUuidEntity buildTrackingUuidRequest(){
         TrackingUuidEntity entity = new TrackingUuidEntity();
         entity.setApi(PaymentAPI.AddPI);
         entity.setId(generateId());

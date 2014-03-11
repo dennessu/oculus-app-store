@@ -14,7 +14,7 @@ import com.junbo.payment.spec.resource.PaymentTransactionResource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * brain tree resource implimentation.
+ * payment transaction resource implementation.
  */
 public class PaymentTransactionResourceImpl implements PaymentTransactionResource{
     @Autowired
