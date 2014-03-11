@@ -6,10 +6,12 @@
 
 package com.junbo.billing.rest.resource;
 
-import com.junbo.langur.core.promise.Promise;
 import com.junbo.billing.core.service.BalanceService;
 import com.junbo.billing.spec.model.Balance;
 import com.junbo.billing.spec.resource.BalanceResource;
+import com.junbo.common.id.BalanceId;
+import com.junbo.common.id.OrderId;
+import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 
@@ -35,12 +37,12 @@ public class BalanceResourceImpl implements BalanceResource {
     }
 
     @Override
-    public Promise<Balance> getBalance(Long balanceId) {
-        return balanceService.getBalance(balanceId);
+    public Promise<Balance> getBalance(BalanceId balanceId) {
+        return balanceService.getBalance(balanceId.getValue());
     }
 
     @Override
-    public Promise<List<Balance>> getBalances(Long orderId) {
-        return balanceService.getBalances(orderId);
+    public Promise<List<Balance>> getBalances(OrderId orderId) {
+        return balanceService.getBalances(orderId.getValue());
     }
 }

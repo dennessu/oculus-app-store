@@ -12,12 +12,13 @@ import com.junbo.order.core.FlowType
 import com.junbo.order.core.OrderServiceOperation
 import com.junbo.order.core.impl.order.OrderServiceContext
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
-import com.junbo.order.spec.model.ItemType
-import com.junbo.order.spec.model.OrderType
+import com.junbo.order.db.entity.enums.ItemType
+import com.junbo.order.db.entity.enums.OrderType
 import com.junbo.payment.spec.model.PaymentInstrument
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import org.springframework.util.CollectionUtils
 
 /**
  * Created by chriszhu on 2/7/14.
@@ -29,10 +30,11 @@ class DefaultFlowSelector implements FlowSelector {
     OrderServiceContextBuilder orderServiceContextBuilder
 
     @Override
-    Promise<FlowType> select(OrderServiceContext expOrder, OrderServiceOperation operation) {
+    Promise<FlowType> select(OrderServiceContext context, OrderServiceOperation operation) {
         switch (operation) {
             case OrderServiceOperation.CREATE:
-                return selectCreateOrderFlow(expOrder)
+            case OrderServiceOperation.SETTLE_TENTATIVE:
+                return selectSettleOrderFlow(context)
             case OrderServiceOperation.GET:
                 return Promise.pure(FlowType.GET_ORDER)
             default:
@@ -40,7 +42,7 @@ class DefaultFlowSelector implements FlowSelector {
         }
     }
 
-    private Promise<FlowType> selectCreateOrderFlow(OrderServiceContext expOrder) {
+    private Promise<FlowType> selectSettleOrderFlow(OrderServiceContext expOrder) {
         switch (expOrder.order?.type) {
             case OrderType.PAY_IN.toString():
                 return selectPayInFlow(expOrder)
@@ -52,11 +54,11 @@ class DefaultFlowSelector implements FlowSelector {
 
     private Promise<FlowType> selectPayInFlow(OrderServiceContext context) {
 
-        if (context == null) {
+        if (context == null || context.order == null) {
             return null
         }
 
-        if (context.order?.paymentInstruments == null || context.order?.paymentInstruments.isEmpty()) {
+        if (CollectionUtils.isEmpty(context.order.paymentInstruments)) {
             return Promise.pure(FlowType.FREE_SETTLE)
         }
         // select order flow per payment info and product item info

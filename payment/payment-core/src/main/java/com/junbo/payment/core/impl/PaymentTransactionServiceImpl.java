@@ -291,7 +291,10 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
 
     @Override
     public PaymentTransaction getById(Long paymentId) {
-        PaymentTransaction request = getPaymentById(paymentId);
+        PaymentTransaction request = paymentRepository.getByPaymentId(paymentId);
+        if(request == null){
+            throw AppClientExceptions.INSTANCE.resourceNotFound("payment_transaction").exception();
+        }
         List<PaymentEvent> events = paymentRepository.getPaymentEventsByPaymentId(paymentId);
         request.setPaymentEvents(events);
         return request;
@@ -406,7 +409,6 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
     }
 
     private PaymentTransaction saveAndCommitPayment(final PaymentTransaction request, final PaymentAPI api) {
-        //TransactionTemplate template = new TransactionTemplate(transactionManager);
         AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager);
         template.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRES_NEW);
         return template.execute(new TransactionCallback<PaymentTransaction>() {

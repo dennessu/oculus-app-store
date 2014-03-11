@@ -10,5 +10,6 @@
     <bean id="defaultPaymentInstrumentResource" class="com.junbo.payment.rest.resource.PaymentInstrumentResourceImpl" scope="prototype"/>
     <bean id="defaultPaymentTransactionResource" class="com.junbo.payment.rest.resource.PaymentTransactionResourceImpl" scope="prototype"/>
     <bean id="defaultBrainTreeResource" class="com.junbo.payment.rest.resource.BrainTreeResourceImpl" scope="prototype"/>
+    <bean id="defaultPaymentInstrumentTypeResource" class="com.junbo.payment.rest.resource.PaymentInstrumentTypeResourceImpl" scope="prototype"/>
 
 </beans>

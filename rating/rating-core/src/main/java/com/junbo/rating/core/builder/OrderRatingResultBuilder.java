@@ -11,6 +11,7 @@ import com.junbo.rating.spec.model.RatingResultEntry;
 import com.junbo.rating.spec.model.request.OrderBenefit;
 import com.junbo.rating.spec.model.request.OrderRatingItem;
 import com.junbo.rating.spec.model.request.OrderRatingRequest;
+import com.junbo.rating.spec.model.request.ShippingBenefit;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
@@ -29,10 +30,13 @@ public class OrderRatingResultBuilder {
         result.setCountry(context.getCountry());
         result.setCurrency(context.getCurrency());
         result.setLineItems(new HashSet<OrderRatingItem>());
+
+        //build offer level results
         for (RatingResultEntry entry : context.getEntries()) {
             OrderRatingItem item = new OrderRatingItem();
             item.setOfferId(entry.getOfferId());
             item.setQuantity(entry.getQuantity());
+            item.setShippingMethodId(entry.getShippingMethodId());
             item.setOriginalAmount(entry.getOriginalAmount().getValue());
             item.setDiscountAmount(entry.getDiscountAmount().getValue());
             item.setFinalAmount(item.getOriginalAmount().subtract(item.getDiscountAmount()));
@@ -41,13 +45,21 @@ public class OrderRatingResultBuilder {
             result.getLineItems().add(item);
         }
 
+        //build order level results
         OrderBenefit orderBenefit = new OrderBenefit();
-        orderBenefit.setDiscountAmount(context.getOrderResultEntry().getDiscountAmount().getValue());
-        BigDecimal finalTotalAmount = context.getOrderResultEntry().getOriginalAmount().subtract(
-                context.getOrderResultEntry().getDiscountAmount()).getValue();
+        orderBenefit.setDiscountAmount(context.getOrderResult().getDiscountAmount().getValue());
+        BigDecimal finalTotalAmount = context.getOrderResult().getOriginalAmount().subtract(
+                context.getOrderResult().getDiscountAmount()).getValue();
         orderBenefit.setFinalAmount(finalTotalAmount);
-        orderBenefit.setPromotion(context.getOrderResultEntry().getAppliedPromotion());
+        orderBenefit.setPromotion(context.getOrderResult().getAppliedPromotion());
         result.setOrderBenefit(orderBenefit);
+
+        //build shipping fee calculation results
+        ShippingBenefit shippingBenefit = new ShippingBenefit();
+        shippingBenefit.setShippingFee(context.getShippingResult().getShippingFee());
+        shippingBenefit.setPromotion(context.getShippingResult().getAppliedPromotion());
+        result.setShippingBenefit(shippingBenefit);
+
         return result;
     }
 }

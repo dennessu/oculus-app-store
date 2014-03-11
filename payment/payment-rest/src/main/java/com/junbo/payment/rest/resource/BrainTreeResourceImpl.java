@@ -12,13 +12,15 @@ import com.junbo.payment.core.provider.braintree.BrainTreePaymentProviderService
 import com.junbo.payment.spec.internal.BrainTreeResource;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentTransaction;
+import com.junbo.payment.spec.model.ResultList;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.ws.rs.core.Response;
+import java.util.List;
 
 
 /**
- * brain tree resource implimentation.
+ * brain tree resource implementation.
  */
 public class BrainTreeResourceImpl implements BrainTreeResource {
     @Autowired
@@ -63,7 +65,10 @@ public class BrainTreeResourceImpl implements BrainTreeResource {
     }
 
     @Override
-    public Promise<PaymentTransaction> getByOrderId(String orderId) {
-        return brainTreePaymentProviderService.getByOrderId(orderId);
+    public Promise<ResultList<PaymentTransaction>> getByOrderId(String orderId) {
+        List<PaymentTransaction> transactions = brainTreePaymentProviderService.getByOrderId(orderId);
+        ResultList<PaymentTransaction> result = new ResultList<PaymentTransaction>();
+        result.setResults(transactions);
+        return Promise.pure(result);
     }
 }

@@ -17,11 +17,21 @@ import java.util.Date;
  */
 @MappedSuperclass
 public abstract class BaseEntity implements Serializable {
+    private String status;
     private Long timestamp;
     private Date createdTime;
     private String createdBy;
     private Date updatedTime;
     private String updatedBy;
+
+    @Column(name = "status")
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
     @Column(name = "timestamp")
     public Long getTimestamp() {

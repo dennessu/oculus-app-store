@@ -5,6 +5,7 @@
  */
 package com.junbo.entitlement.clientproxy.identity.impl;
 
+import com.junbo.common.id.UserId;
 import com.junbo.entitlement.clientproxy.identity.UserFacade;
 import com.junbo.identity.spec.resource.proxy.UserResourceClientProxy;
 import org.slf4j.Logger;
@@ -23,7 +24,7 @@ public class UserFacadeImpl implements UserFacade {
     public boolean exists(Long userId) {
         try {
             LOGGER.info("Getting user [{}] started.", userId);
-            identityUserClient.getUser(userId).wrapped().get();
+            identityUserClient.getUser(new UserId(userId)).wrapped().get();
             LOGGER.info("Getting user [{}] finished.", userId);
         } catch (Exception e) {
             LOGGER.error("Getting user [{" + userId + "}] failed.", e);

@@ -40,14 +40,12 @@ public class OrderItemDaoTest extends BaseTest {
         OrderItemEntity orderItemEntity = TestHelper.generateOrderItem();
         Long orderItemId = orderItemDao.create(orderItemEntity);
         orderItemDao.flush();
-        orderItemEntity.setProductSkuId("NEW_ID");
         orderItemDao.update(orderItemEntity);
         orderItemDao.flush();
 
         OrderItemEntity returnedEntity = orderItemDao.read(orderItemId);
 
         Assert.assertNotNull(returnedEntity, "Fail to create or read entity.");
-        Assert.assertEquals("NEW_ID", returnedEntity.getProductSkuId(), "Fail to update entity.");
     }
 
     @Test

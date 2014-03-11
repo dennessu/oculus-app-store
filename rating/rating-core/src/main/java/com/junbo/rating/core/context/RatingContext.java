@@ -11,6 +11,7 @@ import com.junbo.catalog.spec.model.promotion.PromotionType;
 import com.junbo.rating.spec.model.OrderResultEntry;
 import com.junbo.rating.spec.model.RatableItem;
 import com.junbo.rating.spec.model.RatingResultEntry;
+import com.junbo.rating.spec.model.ShippingResultEntry;
 import com.junbo.rating.spec.model.request.OfferRatingItem;
 import com.junbo.rating.spec.model.request.OfferRatingRequest;
 import com.junbo.rating.spec.model.request.OrderRatingItem;
@@ -34,8 +35,10 @@ public class RatingContext {
 
     private Set<RatingResultEntry> entries;
 
-    private OrderResultEntry orderResultEntry;
-    //TODO: shipping fee and violations
+    private OrderResultEntry orderResult;
+
+    private ShippingResultEntry shippingResult;
+    //TODO: violations
 
     public RatingContext() {
         items = new HashSet<RatableItem>();
@@ -70,6 +73,9 @@ public class RatingContext {
             RatableItem item = new RatableItem();
             item.setOfferId(orderRatingItem.getOfferId());
             item.setQuantity(orderRatingItem.getQuantity());
+            item.setShippingMethodId(
+                    orderRatingItem.getShippingMethodId() == null ?
+                            request.getShippingMethodId() : orderRatingItem.getShippingMethodId());
             items.add(item);
         }
     }
@@ -146,11 +152,19 @@ public class RatingContext {
         this.entries = entries;
     }
 
-    public OrderResultEntry getOrderResultEntry() {
-        return orderResultEntry;
+    public OrderResultEntry getOrderResult() {
+        return orderResult;
     }
 
-    public void setOrderResultEntry(OrderResultEntry orderResultEntry) {
-        this.orderResultEntry = orderResultEntry;
+    public void setOrderResult(OrderResultEntry orderResult) {
+        this.orderResult = orderResult;
+    }
+
+    public ShippingResultEntry getShippingResult() {
+        return shippingResult;
+    }
+
+    public void setShippingResult(ShippingResultEntry shippingResult) {
+        this.shippingResult = shippingResult;
     }
 }

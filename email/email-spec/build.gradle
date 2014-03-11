@@ -1,0 +1,24 @@
+apply plugin: 'java'
+
+dependencies {
+    compile (libraries.langur)
+    compile (libraries.common_lib)
+
+    compile (libraries.rs_api)
+    compile (libraries.guava)
+
+    compile (libraries.spring_beans)
+    compile (libraries.spring_context)
+
+    compile (libraries.jackson_annotations)
+    compile (libraries.jackson_databind)
+
+    processor (libraries.langur_processor)
+    processor (libraries.log4j)
+
+    compile project(':email-common')
+}
+
+ext {
+    processorClass = 'com.junbo.langur.processor.RestAdapterProcessor,com.junbo.langur.processor.ClientProxyProcessor'
+}

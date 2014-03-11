@@ -1,16 +1,15 @@
 {
-  "name": "application-name",
+  "name": "store-demo",
   "version": "0.0.1",
   "private": true,
   "scripts": {
     "start": "node app.js"
   },
   "dependencies": {
-    "express": "3.4.8",
+    "express": "3.5.0",
     "ejs": "*",
-    "express-partials": "0.2.0",
-    "less-middleware": "0.1.15",
-     "async": "0.2.10"
-
+      "express-partials": "0.2.0",
+    "socket.io": "0.9.16",
+    "async": "0.2.10"
   }
 }

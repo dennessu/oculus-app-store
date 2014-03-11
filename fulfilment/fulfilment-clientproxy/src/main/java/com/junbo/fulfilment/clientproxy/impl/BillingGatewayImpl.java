@@ -26,10 +26,11 @@ public class BillingGatewayImpl implements BillingGateway {
     private ShippingAddressResource shippingAddressResource;
 
     @Override
-    public ShippingAddress getShippingAddress(Long shippingAddressId) {
+    public ShippingAddress getShippingAddress(Long userId, Long shippingAddressId) {
         try {
             com.junbo.billing.spec.model.ShippingAddress retrieved =
-                    shippingAddressResource.getShippingAddress(shippingAddressId).wrapped().get();
+                    shippingAddressResource.getShippingAddress(new UserId(userId),
+                            new ShippingAddressId(shippingAddressId)).wrapped().get();
 
             if (retrieved == null) {
                 throw new ResourceNotFoundException("ShippingAddress [" + shippingAddressId + "] does not exist");

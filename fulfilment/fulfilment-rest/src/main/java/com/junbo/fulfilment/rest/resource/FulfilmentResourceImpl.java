@@ -5,6 +5,8 @@
  */
 package com.junbo.fulfilment.rest.resource;
 
+import com.junbo.common.id.FulfilmentId;
+import com.junbo.common.id.OrderId;
 import com.junbo.fulfilment.core.FulfilmentService;
 import com.junbo.fulfilment.spec.model.FulfilmentItem;
 import com.junbo.fulfilment.spec.model.FulfilmentRequest;
@@ -33,12 +35,12 @@ public class FulfilmentResourceImpl implements FulfilmentResource {
     }
 
     @GET
-    public Promise<FulfilmentRequest> getByBillingOrderId(@QueryParam("orderId") Long billingOrderId) {
-        return Promise.pure(service.retrieveRequestByBillingOrderId(billingOrderId));
+    public Promise<FulfilmentRequest> getByBillingOrderId(@QueryParam("orderId") OrderId orderId) {
+        return Promise.pure(service.retrieveRequestByBillingOrderId(orderId.getValue()));
     }
 
     @Override
-    public Promise<FulfilmentItem> getByFulfilmentId(@PathParam("fulfilmentId") Long fulfilmentId) {
-        return Promise.pure(service.retrieveFulfilmentItem(fulfilmentId));
+    public Promise<FulfilmentItem> getByFulfilmentId(@PathParam("fulfilmentId") FulfilmentId fulfilmentId) {
+        return Promise.pure(service.retrieveFulfilmentItem(fulfilmentId.getValue()));
     }
 }

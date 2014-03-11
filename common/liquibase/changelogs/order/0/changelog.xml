@@ -47,7 +47,6 @@
                     order_id bigint not null,
                     order_item_type smallint not null,
                     product_item_id varchar(128) not null,
-                    product_sku_id varchar(128) not null,
                     product_item_version varchar(128) not null,
                     unit_price decimal not null,
                     quantity int not null,

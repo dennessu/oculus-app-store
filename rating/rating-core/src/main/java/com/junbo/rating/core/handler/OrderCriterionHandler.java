@@ -20,7 +20,7 @@ public class OrderCriterionHandler implements CriterionHandler<OrderCriterion> {
     public boolean validate(OrderCriterion criterion, RatingContext context) {
         switch (criterion.getPredicate()) {
             case ORDER_ABSOLUTE_VALUE_ABOVE:
-                BigDecimal totalAmount = context.getOrderResultEntry().getOriginalAmount().getValue();
+                BigDecimal totalAmount = context.getOrderResult().getOriginalAmount().getValue();
                 if (criterion.getThresholdValue().compareTo(totalAmount) < 0) {
                     return true;
                 }

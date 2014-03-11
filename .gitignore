@@ -37,3 +37,6 @@ tmux-*.log
 # log file
 *.log
 *.log
+
+# btm log
+*.tlog

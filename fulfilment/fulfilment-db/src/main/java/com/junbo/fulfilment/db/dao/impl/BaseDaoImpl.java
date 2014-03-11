@@ -10,7 +10,6 @@ import com.junbo.fulfilment.common.util.Constant;
 import com.junbo.fulfilment.common.util.Utils;
 import com.junbo.fulfilment.db.dao.BaseDao;
 import com.junbo.fulfilment.db.entity.BaseEntity;
-import com.junbo.fulfilment.db.entity.ShardAware;
 import com.junbo.sharding.IdGenerator;
 import org.hibernate.Criteria;
 import org.hibernate.Session;

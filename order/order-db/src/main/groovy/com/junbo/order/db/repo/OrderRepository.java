@@ -26,7 +26,7 @@ public interface OrderRepository {
 
     OrderEvent createOrderEvent(OrderEvent event);
 
-    FulfillmentEvent createFulfillmentEvent(FulfillmentEvent event);
+    FulfillmentEvent createFulfillmentEvent(Long orderId, FulfillmentEvent event);
 
     void saveBillingEvent(OrderId orderId, BalanceId balanceId,
                           BillingAction action, EventStatus status);
@@ -36,4 +36,6 @@ public interface OrderRepository {
     List<Discount> getDiscounts(Long orderId);
 
     List<PaymentInstrumentId> getPaymentInstrumentIds(Long orderId);
+
+    Order updateOrder(Order order, OrderEvent orderEvent);
 }

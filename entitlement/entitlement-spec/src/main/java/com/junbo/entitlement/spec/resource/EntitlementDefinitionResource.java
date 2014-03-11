@@ -6,6 +6,8 @@
 
 package com.junbo.entitlement.spec.resource;
 
+import com.junbo.common.id.EntitlementDefinitionId;
+import com.junbo.common.id.UserId;
 import com.junbo.entitlement.spec.model.EntitlementDefinition;
 import com.junbo.entitlement.spec.model.PageMetadata;
 import com.junbo.entitlement.spec.model.ResultList;
@@ -27,12 +29,12 @@ public interface EntitlementDefinitionResource {
     @GET
     @Path("/{entitlementDefinitionId}")
     Promise<EntitlementDefinition> getEntitlementDefinition(
-            @PathParam("entitlementDefinitionId") Long entitlementDefinitionId);
+            @PathParam("entitlementDefinitionId") EntitlementDefinitionId entitlementDefinitionId);
 
     @GET
     Promise<ResultList<EntitlementDefinition>>
     getEntitlementDefinitionDefinitions(
-            @QueryParam("developerId") Long developerId,
+            @QueryParam("developerId") UserId developerId,
             @QueryParam("type") String type,
             @QueryParam("group") String group,
             @QueryParam("tag") String tag,
@@ -47,11 +49,11 @@ public interface EntitlementDefinitionResource {
     @Path("/{entitlementDefinitionId}")
     @Consumes({MediaType.APPLICATION_JSON})
     Promise<EntitlementDefinition> updateEntitlementDefinition(
-            @PathParam("entitlementDefinitionId") Long entitlementDefinitionId,
+            @PathParam("entitlementDefinitionId") EntitlementDefinitionId entitlementDefinitionId,
             @Valid EntitlementDefinition entitlementDefinition);
 
     @DELETE
     @Path("/{entitlementDefinitionId}")
     Promise<Response> deleteEntitlementDefinition(
-            @PathParam("entitlementDefinitionId") Long entitlementDefinitionId);
+            @PathParam("entitlementDefinitionId") EntitlementDefinitionId entitlementDefinitionId);
 }

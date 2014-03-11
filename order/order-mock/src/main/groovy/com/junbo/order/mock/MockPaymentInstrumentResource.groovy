@@ -1,5 +1,6 @@
 package com.junbo.order.mock
 
+import com.junbo.common.id.PaymentInstrumentId
 import com.junbo.langur.core.promise.Promise
 import com.junbo.payment.spec.model.PageMetaData
 import com.junbo.payment.spec.model.PaymentInstrument
@@ -24,9 +25,9 @@ class MockPaymentInstrumentResource extends BaseMock implements PaymentInstrumen
     }
 
     @Override
-    Promise<PaymentInstrument> getById(Long paymentInstrumentId) {
+    Promise<PaymentInstrument> getById(PaymentInstrumentId paymentInstrumentId) {
         def pi = new PaymentInstrument()
-        pi.id = paymentInstrumentId
+        pi.id = paymentInstrumentId.value
         pi.isValidated = true
         pi.status = 'ACTIVE'
         pi.type = 'CREDIT_CARD'
@@ -35,12 +36,12 @@ class MockPaymentInstrumentResource extends BaseMock implements PaymentInstrumen
     }
 
     @Override
-    Promise<Response> delete(Long paymentInstrumentId) {
+    Promise<Response> delete(PaymentInstrumentId paymentInstrumentId) {
         return null
     }
 
     @Override
-    Promise<PaymentInstrument> update(Long paymentInstrumentId, PaymentInstrument request) {
+    Promise<PaymentInstrument> update(PaymentInstrumentId paymentInstrumentId, PaymentInstrument request) {
         return null
     }
 
@@ -50,4 +51,6 @@ class MockPaymentInstrumentResource extends BaseMock implements PaymentInstrumen
             PageMetaData pageMetadata) {
         return null
     }
+
+
 }

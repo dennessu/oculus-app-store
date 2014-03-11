@@ -8,6 +8,7 @@ package com.junbo.payment.spec.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.jackson.annotation.PaymentInstrumentId;
+import com.junbo.common.jackson.annotation.PaymentInstrumentTypeId;
 import com.junbo.common.jackson.annotation.UserId;
 
 import javax.validation.constraints.NotNull;
@@ -34,11 +35,14 @@ public class PaymentInstrument {
     private boolean isValidated;
     private Date lastValidatedTime;
     private String isDefault;
+    @PaymentInstrumentTypeId
     private String type;
     private String accountName;
     private String accountNum;
     private Address address;
     private Phone phone;
+    private String email;
+    private String relationToHolder;
     private CreditCardRequest creditCardRequest;
     //response:
     private String status;
@@ -132,6 +136,22 @@ public class PaymentInstrument {
 
     public void setPhone(Phone phone) {
         this.phone = phone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getRelationToHolder() {
+        return relationToHolder;
+    }
+
+    public void setRelationToHolder(String relationToHolder) {
+        this.relationToHolder = relationToHolder;
     }
 
     public String getStatus() {

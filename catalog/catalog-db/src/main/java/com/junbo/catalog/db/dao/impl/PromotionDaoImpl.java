@@ -6,24 +6,16 @@
 
 package com.junbo.catalog.db.dao.impl;
 
-import com.junbo.catalog.common.util.Action;
 import com.junbo.catalog.db.dao.PromotionDao;
 import com.junbo.catalog.db.entity.PromotionEntity;
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Restrictions;
 
 /**
  * Promotion DAO implementation.
  */
 public class PromotionDaoImpl extends BaseDaoImpl<PromotionEntity> implements PromotionDao {
     @Override
-    public PromotionEntity getPromotion(final long promotionId, final int revision) {
-        return findBy(new Action<Criteria>() {
-            public void apply(Criteria criteria) {
-                criteria.add(Restrictions.eq("promotion_id", promotionId));
-                criteria.add(Restrictions.eq("revision", revision));
-            }
-        });
+    public PromotionEntity getPromotion(Long promotionId, Long timestamp) {
+        return get(promotionId, timestamp, "promotionId");
     }
 
     /*@Override

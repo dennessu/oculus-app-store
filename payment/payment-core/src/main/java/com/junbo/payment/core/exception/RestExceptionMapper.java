@@ -22,6 +22,7 @@ import javax.ws.rs.ext.ExceptionMapper;
  */
 public class RestExceptionMapper implements ExceptionMapper<Exception> {
     private static final Logger LOGGER = LoggerFactory.getLogger(RestExceptionMapper.class);
+
     @Override
     public Response toResponse(Exception exception) {
         if (exception instanceof WebApplicationException) {
@@ -30,8 +31,9 @@ public class RestExceptionMapper implements ExceptionMapper<Exception> {
 
         LOGGER.error("Log unhandled exception", exception);
 
-        com.junbo.common.error.Error error = new Error(Response.Status.INTERNAL_SERVER_ERROR.getReasonPhrase(), null,
-                Response.Status.INTERNAL_SERVER_ERROR.getReasonPhrase(), null);
+        com.junbo.common.error.Error error = new Error(String.valueOf(
+                Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
+                , null,Response.Status.INTERNAL_SERVER_ERROR.getReasonPhrase(), null);
 
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(error)
                 .type(MediaType.APPLICATION_JSON).build();

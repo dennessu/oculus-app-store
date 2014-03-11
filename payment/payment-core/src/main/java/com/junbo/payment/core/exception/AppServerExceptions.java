@@ -17,7 +17,7 @@ public interface AppServerExceptions {
 
     AppServerExceptions INSTANCE = ErrorProxy.newProxyInstance(AppServerExceptions.class);
 
-    @ErrorDef(httpStatusCode = 500, code = "50001", description = "The provider {0} is timeout")
+    @ErrorDef(httpStatusCode = 504, code = "50001", description = "The provider {0} is timeout")
     AppError providerGatewayTimeout(String provider);
 
     @ErrorDef(httpStatusCode = 500, code = "50002", description = "The provider {0} process with error code: {1}")

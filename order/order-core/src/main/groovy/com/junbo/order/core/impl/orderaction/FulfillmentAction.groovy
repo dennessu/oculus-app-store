@@ -9,8 +9,9 @@ import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.clientproxy.fulfillment.FulfillmentFacade
 import com.junbo.order.core.impl.common.CoreBuilder
+import com.junbo.order.db.entity.enums.EventStatus
+import com.junbo.order.db.entity.enums.OrderActionType
 import com.junbo.order.db.repo.OrderRepository
-import com.junbo.order.spec.model.EventStatus
 import com.junbo.order.spec.model.FulfillmentEvent
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
@@ -20,7 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired
  * Created by fzhang on 14-2-25.
  */
 @CompileStatic
-class FulfillmentAction implements Action {
+class  FulfillmentAction implements Action {
 
     @Autowired
     FulfillmentFacade fulfillmentFacade
@@ -47,10 +48,9 @@ class FulfillmentAction implements Action {
         }.syncThen { FulfilmentRequest fulfilmentResult ->
             if (fulfilmentResult == null) { // error in post fulfillment
                 orderRepository.createOrderEvent(
-                        CoreBuilder.buildOrderEvent(order.id,
-                                com.junbo.order.spec.model.OrderActionType.FULFILL, EventStatus.ERROR))
+                        CoreBuilder.buildOrderEvent(order.id, OrderActionType.FULFILL, EventStatus.ERROR))
             } else {
-                EventStatus orderEventStatus = null
+                EventStatus orderEventStatus = EventStatus.COMPLETED
                 fulfilmentResult.items.each { FulfilmentItem fulfilmentItem ->
                     def fulfillmentEvent = toFulfillmentEvent(fulfilmentResult, fulfilmentItem)
                     def fulfillmentEventStatus = EventStatus.valueOf(fulfillmentEvent.status)
@@ -59,27 +59,28 @@ class FulfillmentAction implements Action {
                             ITEMSTATUSPRIORITY[fulfillmentEventStatus] > ITEMSTATUSPRIORITY[orderEventStatus]) {
                         orderEventStatus = fulfillmentEventStatus
                     }
-                    orderRepository.createFulfillmentEvent(fulfillmentEvent)
+                    orderRepository.createFulfillmentEvent(order.id.value, fulfillmentEvent)
                 }
                 orderRepository.createOrderEvent(
                         CoreBuilder.buildOrderEvent(order.id,
-                                com.junbo.order.spec.model.OrderActionType.FULFILL, orderEventStatus))
+                                OrderActionType.FULFILL, orderEventStatus))
             }
             return ActionUtils.DEFAULT_RESULT
         }
     }
 
-    private FulfillmentEvent toFulfillmentEvent(FulfilmentRequest fulfilmentResult, FulfilmentItem fulfilmentItem) {
+    private static FulfillmentEvent toFulfillmentEvent(FulfilmentRequest fulfilmentResult,
+                                                       FulfilmentItem fulfilmentItem) {
         def fulfillmentEvent = new FulfillmentEvent()
         fulfillmentEvent.trackingUuid = UUID.fromString(fulfilmentResult.trackingGuid)
-        fulfillmentEvent.fulfillmentId = fulfilmentResult.requestId
-        fulfillmentEvent.action = com.junbo.order.spec.model.FulfillmentAction.FULFILL.toString()
+        fulfillmentEvent.action = com.junbo.order.db.entity.enums.FulfillmentAction.FULFILL.toString()
         fulfillmentEvent.orderItem = new OrderItemId(fulfilmentItem.orderItemId)
         fulfillmentEvent.status = getFulfillmentEventStatus(fulfilmentItem).name()
+        fulfillmentEvent.fulfillmentId = fulfilmentItem.fulfilmentId
         return fulfillmentEvent
     }
 
-    private EventStatus getFulfillmentEventStatus(FulfilmentItem fulfilmentItem) {
+    private static EventStatus getFulfillmentEventStatus(FulfilmentItem fulfilmentItem) {
         switch (fulfilmentItem.status) {
             case FulfilmentStatus.PENDING:
                 return EventStatus.PENDING

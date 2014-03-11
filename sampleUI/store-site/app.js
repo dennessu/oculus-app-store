@@ -1,37 +1,27 @@
-
 var http = require('http');
 var path = require('path');
+var socketIO = require('socket.io');
 var express = require('express');
 var partials = require('express-partials');
-var lessMiddleware = require('less-middleware');
-
+var appConfig = require('./configs');
 var routes = require('./routes');
-var filter = require('./routes/filter/GlobalFilter');
+var events = require('./events');
 
 var app = express();
 
+// init
+appConfig.Init(process.argv);
+
 // all environments
-app.set('port', process.env.PORT || 3100);
+app.set('port', process.env.PORT || 3000);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-app.use(partials());
-app.use(express.favicon());
 app.use(express.logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.methodOverride());
-app.use(express.cookieParser('store'));
-app.use(express.cookieSession({ key:'store_id', secret: 'store', cookie: { maxAge: 60 * 60 * 1000, httpOnly: true }}));
-
-app.use(filter); // Filter
+app.use(partials());
 app.use(app.router);
-
-app.use(lessMiddleware({
-  dest: __dirname + '/public',
-  src: __dirname + '/public',
-  compress: false,
-  debug:true
-}));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // development only
@@ -42,13 +32,17 @@ if ('development' == app.get('env')) {
 routes(app);
 
 var server = http.createServer(app);
-function run(){
+var io = socketIO.listen(server);
+io.sockets.on("connection", events);
+
+function Run(){
     server.listen(app.get('port'), function(){
-        console.log('Server '+ process.pid +' listening on port ' + app.get('port'));
+        console.log('Express server listening on port ' + app.get('port'));
     });
 }
+
 if(!module.parent){
-    run();
+    Run();
 }else{
-    exports.run = run;
+    exports.Run = Run;
 }

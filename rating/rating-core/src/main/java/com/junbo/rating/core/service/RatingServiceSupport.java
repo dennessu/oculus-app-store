@@ -28,7 +28,7 @@ import java.util.*;
  */
 public abstract class RatingServiceSupport implements RatingService{
     @Autowired
-    private CatalogGateway catalogGateway;
+    protected CatalogGateway catalogGateway;
 
     protected void fillOffer(RatingContext context) {
         for (RatableItem item : context.getItems()) {

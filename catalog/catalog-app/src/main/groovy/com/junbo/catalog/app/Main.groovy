@@ -10,6 +10,7 @@ import com.fasterxml.jackson.jaxrs.base.JsonMappingExceptionMapper
 import com.junbo.catalog.rest.exception.RestExceptionMapper
 import com.junbo.catalog.rest.jackson.JacksonFeature
 import com.junbo.catalog.rest.jackson.MapperConfigurator
+import com.junbo.common.id.provider.IdTypeFromStringProvider
 import org.glassfish.grizzly.http.server.HttpServer
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory
 import org.glassfish.jersey.server.ResourceConfig
@@ -26,6 +27,7 @@ class Main {
         resourceConfig.register(MapperConfigurator)
         resourceConfig.register(JsonMappingExceptionMapper)
         resourceConfig.register(RestExceptionMapper)
+        resourceConfig.register(IdTypeFromStringProvider)
 
         resourceConfig.packages('com.junbo.catalog.spec.resource.adapter')
         resourceConfig.property('contextConfigLocation', 'classpath*:/spring/*.xml')

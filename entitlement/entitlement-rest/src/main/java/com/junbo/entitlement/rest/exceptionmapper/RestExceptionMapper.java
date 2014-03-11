@@ -40,7 +40,7 @@ public class RestExceptionMapper implements ExceptionMapper<Exception> {
                 StringBuilder sb = new StringBuilder();
                 for (ConstraintViolation cv : ex.getConstraintViolations()) {
                     sb.append(cv.getPropertyPath()).append(" ")
-                            .append(cv.getMessage()).append(". ");
+                            .append(cv.getMessage()).append(".");
                 }
                 return AppErrors.INSTANCE.validation(sb.toString()).exception().getResponse();
             } else {

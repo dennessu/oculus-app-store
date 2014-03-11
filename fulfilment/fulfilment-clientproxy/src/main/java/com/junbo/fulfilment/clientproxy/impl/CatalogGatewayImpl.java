@@ -11,6 +11,7 @@ import com.junbo.catalog.spec.model.offer.Event;
 import com.junbo.catalog.spec.model.offer.ItemEntry;
 import com.junbo.catalog.spec.model.offer.OfferEntry;
 import com.junbo.catalog.spec.resource.OfferResource;
+import com.junbo.common.id.OfferId;
 import com.junbo.fulfilment.clientproxy.CatalogGateway;
 import com.junbo.fulfilment.common.collection.SevereMap;
 import com.junbo.fulfilment.common.exception.CatalogGatewayException;
@@ -49,7 +50,7 @@ public class CatalogGatewayImpl implements CatalogGateway {
         try {
             // TODO
             com.junbo.catalog.spec.model.offer.Offer offer =
-                    offerResource.getOffer(offerId, EntityGetOptions.getDefault()).wrapped().get();
+                    offerResource.getOffer(new OfferId(offerId), EntityGetOptions.getDefault()).wrapped().get();
 
             if (offer == null) {
                 throw new ResourceNotFoundException(

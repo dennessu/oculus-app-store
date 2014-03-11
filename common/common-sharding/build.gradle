@@ -3,6 +3,9 @@ apply plugin: 'java'
 dependencies {
     compile project(':common-lib')
 
+    compile (libraries.common_configuration)
+    compile (libraries.common_configuration_data)
+
     compile (libraries.spring_beans)
     compile (libraries.spring_context)
     compile (libraries.spring_orm)
@@ -20,9 +23,8 @@ dependencies {
     compile (libraries.hibernate_core)
     compile (libraries.hibernate_entitymanager)
     compile (libraries.hibernate_annotation)
-    compile (libraries.postgresql)
 
-    compile (libraries.bonecp_spring)
+    compile (libraries.btm)
 
     testCompile (libraries.spring_test)
 }

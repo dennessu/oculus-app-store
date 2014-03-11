@@ -12,6 +12,7 @@ import com.junbo.catalog.spec.model.common.EntitiesGetOptions;
 import com.junbo.catalog.spec.model.common.EntityGetOptions;
 import com.junbo.catalog.spec.model.common.ResultList;
 import com.junbo.catalog.spec.resource.CategoryResource;
+import com.junbo.common.id.Id;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -35,7 +36,7 @@ public class CategoryResourceImpl extends BaseResourceImpl<Category> implements 
     }
 
     @Override
-    public Promise<Category> getCategory(Long categoryId, @BeanParam EntityGetOptions options) {
+    public Promise<Category> getCategory(Id categoryId, @BeanParam EntityGetOptions options) {
         return get(categoryId, options);
     }
 }

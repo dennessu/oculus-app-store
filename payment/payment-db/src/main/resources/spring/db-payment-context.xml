@@ -5,12 +5,31 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
+    <import resource="classpath*:spring/common-context.xml"/>
+    <import resource="classpath*:spring/transaction.xml"/>
+    <import resource="classpath*:spring/sharding-context.xml"/>
+
     <context:component-scan base-package="com.junbo.oom.core.builtin"/>
     <context:component-scan base-package="com.junbo.payment.db"/>
     <context:annotation-config />
 
     <!--Data source has the database information -->
-        <bean id="dataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
+    <bean id="paymentDataSource" class="bitronix.tm.resource.jdbc.PoolingDataSource"
+          init-method="init" destroy-method="close">
+        <property name="uniqueName" value="jdbc/id_ds1"/>
+        <property name="className" value="org.postgresql.xa.PGXADataSource"/>
+        <property name="minPoolSize" value="${payment.db.minConnectionsPerPartition}"/>
+        <property name="maxPoolSize" value="${payment.db.maxConnectionsPerPartition}"/>
+        <property name="driverProperties">
+            <props>
+                <prop key="url">${payment.db.url}</prop>
+                <prop key="user">${payment.db.username}</prop>
+                <prop key="password">${payment.db.password}</prop>
+            </props>
+        </property>
+    </bean>
+<!--
+    <bean id="dataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
             <property name="driverClass" value="${payment.db.driverClassName}"/>
             <property name="jdbcUrl" value="${payment.db.url}"/>
             <property name="username" value="${payment.db.username}"/>
@@ -22,19 +41,12 @@
             <property name="statementsCacheSize" value="${payment.db.statementsCacheSize}"/>
             <property name="releaseHelperThreads" value="${payment.db.releaseHelperThreads}"/>
         </bean>
-     <!--
-        <bean id="dataSource"
-              class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-            <property name="driverClassName" value="org.postgresql.Driver"/>
-            <property name="url" value="jdbc:postgresql://localhost:5432/payment"/>
-            <property name="username" value="postgres"/>
-            <property name="password" value="#Bugsfor$"/>
-        </bean>
-    -->
+        -->
     <!-- SessonFactory for Hibernate -->
     <bean id="sessionFactory"
           class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
-        <property name="dataSource" ref="dataSource"/>
+        <property name="dataSource" ref="paymentDataSource"/>
+        <property name="jtaTransactionManager" ref="transactionManager"/>
         <property name="hibernateProperties">
             <props>
                 <prop key="hibernate.dialect">${payment.hibernate.dialect}</prop>
@@ -54,11 +66,37 @@
             </list>
         </property>
     </bean>
-    <!-- Transaction Manager -->
+
+    <!--
+    <bean id="sessionFactory"
+          class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="dataSource" ref="paymentDataSource"/>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">${payment.hibernate.dialect}</prop>
+                <prop key="hibernate.max_fetch_depth">${payment.hibernate.max_fetch_depth}</prop>
+                <prop key="hibernate.jdbc.fetch_size">${payment.hibernate.jdbc.fetch_size}</prop>
+                <prop key="hibernate.jdbc.batch_size">${payment.hibernate.jdbc.batch_size}</prop>
+                <prop key="hibernate.show_sql">${payment.hibernate.show_sql}</prop>
+            </props>
+        </property>
+        <property name="packagesToScan">
+            <list>
+                <value>com.junbo.payment.db</value>
+                <value>com.junbo.payment.db.dao.payment</value>
+                <value>com.junbo.payment.db.entity.payment</value>
+                <value>com.junbo.payment.db.dao.paymentinstrument</value>
+                <value>com.junbo.payment.db.entity.paymentinstrument</value>
+            </list>
+        </property>
+    </bean>
+
+    -->
+    <!-- Transaction Manager
     <bean id="transactionManager"
           class="org.springframework.orm.hibernate4.HibernateTransactionManager">
         <property name="sessionFactory" ref="sessionFactory"/>
-    </bean>
+    </bean> -->
     <!-- Dao -->
     <bean id="genericDao"
           class="com.junbo.payment.db.dao.GenericDAOImpl" abstract="true">
@@ -114,6 +152,11 @@
         <property name="persistentClass" value="com.junbo.payment.db.entity.CountryTypeEntity"/>
     </bean>
 
+    <bean id="paymentInstrumentTypeDao"
+          class="com.junbo.payment.db.dao.PaymentInstrumentTypeDao" parent="genericDao">
+        <property name="persistentClass" value="com.junbo.payment.db.entity.PaymentInstrumentTypeEntity"/>
+    </bean>
+
     <bean id="trackingUuidDao"
           class="com.junbo.payment.db.dao.TrackingUuidDao" parent="genericDao">
         <property name="persistentClass" value="com.junbo.payment.db.entity.TrackingUuidEntity"/>
@@ -147,6 +190,11 @@
     <bean id="currencyTypeRepository"
           class="com.junbo.payment.db.repository.CurrencyTypeRepository" parent="domainDataRepository">
         <property name="dao" ref="currencyTypeDao"/>
+    </bean>
+
+    <bean id="piTypeRepository"
+          class="com.junbo.payment.db.repository.PITypeRepository" parent="domainDataRepository">
+        <property name="dao" ref="paymentInstrumentTypeDao"/>
     </bean>
 
     <bean class="com.junbo.payment.db.mapper.CommonMapper" />

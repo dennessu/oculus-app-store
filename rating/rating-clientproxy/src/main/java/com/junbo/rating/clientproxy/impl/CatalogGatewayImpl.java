@@ -8,12 +8,17 @@ package com.junbo.rating.clientproxy.impl;
 
 import com.junbo.catalog.spec.model.common.EntitiesGetOptions;
 import com.junbo.catalog.spec.model.common.EntityGetOptions;
+import com.junbo.catalog.spec.model.domaindata.ShippingMethod;
+import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.offer.ItemEntry;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OfferEntry;
 import com.junbo.catalog.spec.model.promotion.Promotion;
+import com.junbo.catalog.spec.resource.ItemResource;
 import com.junbo.catalog.spec.resource.OfferResource;
 import com.junbo.catalog.spec.resource.PromotionResource;
+import com.junbo.common.id.ItemId;
+import com.junbo.common.id.OfferId;
 import com.junbo.rating.clientproxy.CatalogGateway;
 import com.junbo.rating.common.util.Constants;
 import com.junbo.rating.spec.fusion.EntryType;
@@ -30,16 +35,29 @@ import java.util.List;
  */
 public class CatalogGatewayImpl implements CatalogGateway{
     @Autowired
+    private ItemResource itemResource;
+
+    @Autowired
     private OfferResource offerResource;
 
     @Autowired
     private PromotionResource promotionResource;
 
     @Override
+    public Item getItem(Long itemId) {
+        try {
+            return itemResource.getItem(new ItemId(itemId), EntityGetOptions.getDefault()).wrapped().get();
+        } catch (Exception e) {
+            //TODO: throw pre-defined exception
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     public RatingOffer getOffer(Long offerId) {
         Offer offer;
         try {
-            offer = offerResource.getOffer(offerId, EntityGetOptions.getDefault()).wrapped().get();
+            offer = offerResource.getOffer(new OfferId(offerId), EntityGetOptions.getDefault()).wrapped().get();
         } catch (Exception e) {
             //TODO: throw pre-defined exception
             throw new RuntimeException(e);
@@ -100,5 +118,10 @@ public class CatalogGatewayImpl implements CatalogGateway{
         }
 
         return results;
+    }
+
+    @Override
+    public ShippingMethod getShippingMethod(Long shippingMethodId) {
+        return null;
     }
 }

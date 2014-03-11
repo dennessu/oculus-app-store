@@ -5,22 +5,17 @@
  */
 
 package com.junbo.order.core.impl.order
+
 import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.ShippingAddress
-import com.junbo.common.id.PaymentInstrumentId
-import com.junbo.langur.core.promise.Promise
-import com.junbo.order.clientproxy.billing.BillingFacade
-import com.junbo.order.clientproxy.fulfillment.FulfillmentFacade
-import com.junbo.order.clientproxy.identity.IdentityFacade
-import com.junbo.order.clientproxy.payment.PaymentFacade
-import com.junbo.order.clientproxy.rating.RatingFacade
-import com.junbo.order.db.repo.OrderRepository
+import com.junbo.catalog.spec.model.offer.Offer
+import com.junbo.identity.spec.model.user.User
 import com.junbo.order.spec.model.Order
 import com.junbo.payment.spec.model.PaymentInstrument
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
+
 /**
  * Created by chriszhu on 2/21/14.
  */
@@ -30,9 +25,11 @@ import org.springframework.stereotype.Component
 class OrderServiceContext {
 
     Order order
-    Promise<List<PaymentInstrument>> paymentInstruments
-    Promise<List<Balance>> balances
-    Promise<ShippingAddress> shippingAddress
+    User user
+    List<PaymentInstrument> paymentInstruments
+    List<Balance> balances
+    ShippingAddress shippingAddress
+    List<Offer> offers
 
     OrderServiceContext(Order o) {
         order = o

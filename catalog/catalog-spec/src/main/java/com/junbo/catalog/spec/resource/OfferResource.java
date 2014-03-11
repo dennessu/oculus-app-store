@@ -10,6 +10,7 @@ import com.junbo.catalog.spec.model.common.EntitiesGetOptions;
 import com.junbo.catalog.spec.model.common.EntityGetOptions;
 import com.junbo.catalog.spec.model.common.ResultList;
 import com.junbo.catalog.spec.model.offer.Offer;
+import com.junbo.common.id.Id;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 
@@ -31,7 +32,7 @@ public interface OfferResource {
 
     @GET
     @Path("/{offerId}")
-    Promise<Offer> getOffer(@PathParam("offerId") Long offerId, @BeanParam EntityGetOptions options);
+    Promise<Offer> getOffer(@PathParam("offerId") Id offerId, @BeanParam EntityGetOptions options);
 
     /**
      * Create a draft offer, the created offer is not purchasable until it is released.
@@ -45,53 +46,5 @@ public interface OfferResource {
 
     @PUT
     @Path("/{offerId}")
-    Promise<Offer> update(@Valid Offer offer);
-
-    /**
-     * Developer submit an draft offer for review.
-     * @param offerId the id of the offer to be reviewed.
-     * @return the offer to be reviewed.
-     */
-    @POST
-    @Path("/{offerId}/review")
-    Promise<Offer> review(@PathParam("offerId") Long offerId);
-
-    /**
-     * Admin publishes an offer, makes it purchasable.
-     * @param offerId the id of offer to be released.
-     * @return the offer to be released.
-     */
-    @POST
-    @Path("/{offerId}/release")
-    Promise<Offer> release(@PathParam("offerId") Long offerId);
-
-    /**
-     * Admin rejects an offer, developer may update and submit review later.
-     * @param offerId the id of offer to be released.
-     * @return the offer to be released.
-     */
-    // TODO: add review notes
-    @POST
-    @Path("/{offerId}/reject")
-    Promise<Offer> reject(@PathParam("offerId") Long offerId);
-
-    /**
-     * Remove an offer, makes it not purchasable. The draft version is still kept.
-     * Developer may update and submit review again in future.
-     * @param offerId the id of offer to be removed.
-     * @return the removed offer id.
-     */
-    @DELETE
-    @Path("/{offerId}/release")
-    Promise<Long> remove(@PathParam("offerId") Long offerId);
-
-    /**
-     * Delete an offer, delete both draft and released version.
-     * Developer cannot operate this offer again in future.
-     * @param offerId the id of offer to be deleted.
-     * @return the deleted offer id.
-     */
-    @DELETE
-    @Path("/{offerId}")
-    Promise<Long> delete(@PathParam("offerId") Long offerId);
+    Promise<Offer> update(@PathParam("offerId") Id offerId, @Valid Offer offer);
 }

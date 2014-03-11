@@ -29,6 +29,9 @@ public class PaymentMapperExtension {
     private PaymentProviderRepository paymentProviderRepository;
 
     public PaymentEventEntity toPaymentEventEntity(PaymentEvent event){
+        if(event == null){
+            return null;
+        }
         PaymentEventEntity entity = paymentMapperImpl.toPaymentEventEntityRaw(event, new MappingContext());
         entity.setNetAmount(event.getChargeInfo().getAmount());
         entity.setCurrency(event.getChargeInfo().getCurrency());
@@ -36,6 +39,9 @@ public class PaymentMapperExtension {
     }
 
     public PaymentEvent toPaymentEvent(PaymentEventEntity eventEntity){
+        if(eventEntity == null){
+            return null;
+        }
         PaymentEvent event = paymentMapperImpl.toPaymentEventRaw(eventEntity, new MappingContext());
         ChargeInfo chargeInfo = new ChargeInfo();
         chargeInfo.setCurrency(eventEntity.getCurrency());
@@ -46,6 +52,9 @@ public class PaymentMapperExtension {
 
 
     public PaymentEntity toPaymentEntity(PaymentTransaction request){
+        if(request == null){
+            return null;
+        }
         PaymentEntity payment = paymentMapperImpl.toPaymentEntityRaw(request, new MappingContext());
         payment.setCurrency(request.getChargeInfo().getCurrency());
         payment.setNetAmount(request.getChargeInfo().getAmount());
@@ -57,6 +66,9 @@ public class PaymentMapperExtension {
     }
 
     public PaymentTransaction toPayment(PaymentEntity paymentEntity){
+        if(paymentEntity == null){
+            return null;
+        }
         PaymentTransaction request = paymentMapperImpl.toPaymentRaw(paymentEntity, new MappingContext());
         ChargeInfo chargeInfo = new ChargeInfo();
         chargeInfo.setAmount(paymentEntity.getNetAmount());
@@ -66,6 +78,4 @@ public class PaymentMapperExtension {
         request.setChargeInfo(chargeInfo);
         return request;
     }
-
-
 }
