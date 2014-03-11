@@ -48,7 +48,7 @@ public class ResourceIdSerializer extends JsonSerializer<Object> implements Reso
     }
 
     protected String encode(Object value) {
-        return value instanceof Long ? encode((Long)value) : value.toString();
+        return value instanceof Long ? encode((Long) value) : value.toString();
     }
 
     protected String encode(Long value) {
@@ -81,6 +81,7 @@ public class ResourceIdSerializer extends JsonSerializer<Object> implements Reso
     }
 
     private String getResourceHref(Object value) {
-        return "http://api.wan-san.com/v1/" + resourceType + "/" + value;
+        return "http://api.wan-san.com/v1/" + resourceType + "/"
+                + (value instanceof Long ? encode((Long) value) : value.toString());
     }
 }
