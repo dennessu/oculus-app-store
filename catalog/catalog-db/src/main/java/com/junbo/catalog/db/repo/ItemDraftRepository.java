@@ -6,7 +6,6 @@
 
 package com.junbo.catalog.db.repo;
 
-import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.db.convertor.ItemConverter;
 import com.junbo.catalog.db.dao.ItemDraftDao;
 import com.junbo.catalog.db.entity.ItemDraftEntity;
@@ -51,13 +50,12 @@ public class ItemDraftRepository implements EntityDraftRepository<Item> {
     }
 
     public Long update(Item item) {
+        if (item == null) {
+            return null;
+        }
+
         ItemDraftEntity entity = itemDraftDao.get(item.getId());
-        // TODO: validations
-        entity.setName(item.getName());
-        entity.setRevision(item.getRevision());
-        entity.setStatus(item.getStatus());
-        entity.setOwnerId(item.getOwnerId());
-        entity.setPayload(Utils.toJson(item));
+        ItemConverter.fillDraftEntity(item, entity);
 
         return itemDraftDao.update(entity);
     }

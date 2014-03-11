@@ -20,13 +20,21 @@ import org.springframework.stereotype.Component;
 public class EntitlementHistoryDaoImpl implements EntitlementHistoryDao {
     @Autowired
     private IdGenerator idGenerator;
-    @Autowired
+
     private SessionFactory sessionFactory;
 
     @Override
     public void insert(EntitlementHistoryEntity entitlementHistory) {
         entitlementHistory.setEntitlementHistoryId(
                 idGenerator.nextId(entitlementHistory.getEntitlementId()));
-        sessionFactory.getCurrentSession().save(entitlementHistory);
+       sessionFactory.getCurrentSession().save(entitlementHistory);
+    }
+
+    public SessionFactory getSessionFactory() {
+        return sessionFactory;
+    }
+
+    public void setSessionFactory(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
     }
 }

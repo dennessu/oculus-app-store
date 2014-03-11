@@ -10,5 +10,5 @@ package com.junbo.ewallet.db.entity.def;
  * Interface to get shardId.
  */
 public interface Shardable {
-    Long getShardId();
+    Long getShardMasterId();
 }

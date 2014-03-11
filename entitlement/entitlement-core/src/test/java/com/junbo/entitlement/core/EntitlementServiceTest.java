@@ -157,18 +157,26 @@ public class EntitlementServiceTest extends AbstractTransactionalTestNGSpringCon
         Assert.assertEquals(entitlement2.getUseCount().intValue(), 40);
     }
 
-    @Test
+    @Test(expectedExceptions = AppErrorException.class)
     public void testUpdateUsedEntitlementDefinition() {
         Entitlement entitlement = buildAnEntitlement();
         entitlement = entitlementService.addEntitlement(entitlement);
         EntitlementDefinition entitlementDefinition = entitlementDefinitionService.getEntitlementDefinition(entitlement.getEntitlementDefinitionId());
         entitlementDefinition.setGroup("ANOTHER_GROUP");
-        try {
-            entitlementDefinitionService.updateEntitlementDefinition(entitlementDefinition.getEntitlementDefinitionId(), entitlementDefinition);
-        } catch (Exception e) {
-            Assert.assertEquals(e.getClass(), AppErrorException.class);
-        }
+        entitlementDefinitionService.updateEntitlementDefinition(entitlementDefinition.getEntitlementDefinitionId(), entitlementDefinition);
 
+        entitlement.setStatus("BANNED");
+        entitlementService.updateEntitlement(entitlement.getEntitlementId(), entitlement);
+        entitlementDefinition = entitlementDefinitionService.updateEntitlementDefinition(entitlementDefinition.getEntitlementDefinitionId(), entitlementDefinition);
+        Assert.assertEquals(entitlementDefinition.getGroup(), "ANOTHER_GROUP");
+    }
+
+    @Test
+    public void testUpdateUnusedEntitlementDefinition(){
+        Entitlement entitlement = buildAnEntitlement();
+        entitlement = entitlementService.addEntitlement(entitlement);
+        EntitlementDefinition entitlementDefinition = entitlementDefinitionService.getEntitlementDefinition(entitlement.getEntitlementDefinitionId());
+        entitlementDefinition.setGroup("ANOTHER_GROUP");
         entitlement.setStatus("BANNED");
         entitlementService.updateEntitlement(entitlement.getEntitlementId(), entitlement);
         entitlementDefinition = entitlementDefinitionService.updateEntitlementDefinition(entitlementDefinition.getEntitlementDefinitionId(), entitlementDefinition);

@@ -6,14 +6,14 @@
 
 package com.junbo.ewallet.db.entity.def;
 
+import com.junbo.common.util.EnumRegistry;
+import com.junbo.common.util.Identifiable;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.usertype.DynamicParameterizedType;
 import org.hibernate.usertype.UserType;
 
 import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -21,11 +21,11 @@ import java.sql.Types;
 import java.util.Properties;
 
 /**
- * UserType to map certain enum.
+ * UserType to map Enum which implements Identifiable.
  */
-public class PersistedEnumType implements UserType, DynamicParameterizedType {
-    private Method returnEnum;
-    private Method getPersistedValue;
+public class IdentifiableType implements UserType, DynamicParameterizedType {
+    public static final String TYPE = "com.junbo.ewallet.db.entity.def.IdentifiableType";
+
     private Class<Enum<?>> enumClass;
 
     @Override
@@ -52,17 +52,9 @@ public class PersistedEnumType implements UserType, DynamicParameterizedType {
     public Object nullSafeGet(ResultSet rs, String[] names,
                               SessionImplementor session,
                               Object owner) throws HibernateException, SQLException {
-        Integer value = rs.getInt(names[0]);
+        Object value = rs.getObject(names[0]);
         if (value != null) {
-            try {
-                return returnEnum.invoke(value);
-            }
-            catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-            catch (InvocationTargetException e) {
-                e.printStackTrace();
-            }
+            return EnumRegistry.resolve(value, enumClass);
         }
         return null;
     }
@@ -71,20 +63,7 @@ public class PersistedEnumType implements UserType, DynamicParameterizedType {
     public void nullSafeSet(PreparedStatement st,
                             Object value, int index,
                             SessionImplementor session) throws HibernateException, SQLException {
-        if (value == null) {
-            st.setObject(index, null);
-        }
-        else {
-            try {
-                st.setInt(index, (Integer) getPersistedValue.invoke(value));
-            }
-            catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-            catch (InvocationTargetException e) {
-                e.printStackTrace();
-            }
-        }
+        st.setObject(index, EnumRegistry.getId(enumClass.cast(value)));
     }
 
     @Override
@@ -118,12 +97,8 @@ public class PersistedEnumType implements UserType, DynamicParameterizedType {
             enumClass = ((ParameterType)
                     parameters.get(DynamicParameterizedType.PARAMETER_TYPE))
                     .getReturnedClass().asSubclass(Enum.class);
-            try {
-                returnEnum = enumClass.getMethod("returnEnum", new Class[]{Integer.class});
-                getPersistedValue = enumClass.getMethod("getPersistedValue");
-            }
-            catch (NoSuchMethodException e) {
-                e.printStackTrace();
+            if (!Identifiable.class.isAssignableFrom(enumClass)) {
+                throw new IllegalArgumentException("The enum should implement [Identifiable] interface.");
             }
         }
     }

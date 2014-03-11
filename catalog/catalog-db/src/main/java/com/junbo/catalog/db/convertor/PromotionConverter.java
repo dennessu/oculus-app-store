@@ -19,6 +19,11 @@ public class PromotionConverter {
 
     public static PromotionDraftEntity toDraftEntity(Promotion model) {
         PromotionDraftEntity entity = new PromotionDraftEntity();
+        fillDraftEntity(model, entity);
+        return entity;
+    }
+
+    public static void fillDraftEntity(Promotion model, PromotionDraftEntity entity) {
         entity.setName(model.getName());
         entity.setType(model.getType());
         entity.setRevision(model.getRevision());
@@ -26,7 +31,6 @@ public class PromotionConverter {
         entity.setStartDate(model.getStartDate());
         entity.setEndDate(model.getEndDate());
         entity.setPayload(Utils.toJsonWithType(model));
-        return entity;
     }
 
     public static Promotion toModel(PromotionDraftEntity entity) {

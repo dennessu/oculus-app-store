@@ -6,10 +6,23 @@
 
 package com.junbo.ewallet.db.entity.def;
 
+import com.junbo.common.util.Identifiable;
+
 /**
  * Enum for WalletType.
  */
-public enum WalletType {
-    SV,
-    VC;
+public enum WalletType implements Identifiable<Integer> {
+    SV(1),
+    VC(2);
+
+    private Integer id;
+
+    WalletType(Integer id) {
+        this.id = id;
+    }
+
+    @Override
+    public Integer getId() {
+        return id;
+    }
 }
