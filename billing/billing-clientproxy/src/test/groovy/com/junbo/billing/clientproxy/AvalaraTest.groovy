@@ -39,8 +39,9 @@ public class AvalaraTest extends BaseTest {
         }
 
         avalaraFacade.calculateTax(balance, shippingAddress, null)
+        Assert.assertNotNull(balance.taxAmount, "Fail to calculate tax.")
         Assert.assertNotEquals(balance.taxAmount, BigDecimal.ZERO,
-                "Tax should not be zero in this test case.")
+                "Tax amount should not be zero in this test case.")
     }
 
 

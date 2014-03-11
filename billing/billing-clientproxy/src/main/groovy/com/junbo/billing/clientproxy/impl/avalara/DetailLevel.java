@@ -10,8 +10,12 @@ package com.junbo.billing.clientproxy.impl.avalara;
  * Created by LinYi on 14-3-10.
  */
 public enum DetailLevel {
+    // summarizes document and jurisdiction detail with no line breakout
     Summary,
+    // only document detail
     Document,
+    // document and line detail
     Line,
+    // document, line and jurisdiction detail
     Tax
 }

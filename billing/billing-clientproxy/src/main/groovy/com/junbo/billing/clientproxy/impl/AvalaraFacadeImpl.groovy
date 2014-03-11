@@ -18,6 +18,7 @@ import com.junbo.billing.clientproxy.impl.avalara.GetTaxResponse
 import com.junbo.billing.clientproxy.impl.avalara.Line
 import com.junbo.billing.clientproxy.impl.avalara.AvalaraAddress
 import com.junbo.billing.clientproxy.impl.avalara.SeverityLevel
+import com.junbo.billing.clientproxy.impl.avalara.TaxDetail
 import com.junbo.billing.clientproxy.impl.avalara.TaxLine
 import com.junbo.billing.spec.error.AppErrors
 import com.junbo.billing.spec.model.Balance
@@ -53,10 +54,14 @@ class AvalaraFacadeImpl implements AvalaraFacade {
             balance.balanceItems.each { BalanceItem item ->
                 response.taxLines.each { TaxLine line ->
                     if (item.balanceItemId.value == Long.valueOf(line.lineNo)) {
-                        def taxItem = new TaxItem()
-                        taxItem.taxAmount = BigDecimal.valueOf(line.tax)
-                        taxItem.taxRate = BigDecimal.valueOf(line.rate)
-                        item.addTaxItem(taxItem)
+                        item.taxAmount = BigDecimal.valueOf(line.tax)
+                        line.taxDetails.each { TaxDetail detail ->
+                            def taxItem = new TaxItem()
+                            taxItem.taxAmount = detail.tax
+                            taxItem.taxRate = detail.rate
+                            taxItem.taxAuthority = detail.jurisName
+                            item.addTaxItem(taxItem)
+                        }
                     }
                 }
             }
@@ -112,9 +117,10 @@ class AvalaraFacadeImpl implements AvalaraFacade {
         // TODO: append optional parameters
 
         // Addresses
+        // TODO: confirm address collection
         def addresses = []
         def shipToAddress = new AvalaraAddress()
-        shipToAddress.addressCode = 'ShipToAddress'
+        shipToAddress.addressCode = shippingAddress.addressId.value.toString()
         shipToAddress.line1 = shippingAddress.street
         shipToAddress.line2 = shippingAddress.street1
         shipToAddress.line3 = shippingAddress.street2
@@ -127,7 +133,7 @@ class AvalaraFacadeImpl implements AvalaraFacade {
         AvalaraAddress billToAddress = null
         if (piAddress != null) {
             billToAddress = new AvalaraAddress()
-            billToAddress.addressCode = 'BillToAddress'
+            billToAddress.addressCode = piAddress.id.toString()
             billToAddress.line1 = piAddress.addressLine1
             billToAddress.line2 = piAddress.addressLine2
             billToAddress.line3 = piAddress.addressLine3

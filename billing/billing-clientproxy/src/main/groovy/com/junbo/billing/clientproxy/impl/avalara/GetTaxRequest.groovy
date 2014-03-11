@@ -24,8 +24,12 @@ class GetTaxRequest {
     // Client application customer reference code.
     @JsonProperty('CustomerCode')
     String customerCode
+    // Address, at least one required
+    // Should represent all origin and destination addresses which will be associated with individual lines.
     @JsonProperty('Addresses')
     AvalaraAddress[] addresses
+    // Line, at least one required
+    // Document line array. There is a limit of 1000 lines per document.
     @JsonProperty('Lines')
     Line[] lines
 
