@@ -31,6 +31,7 @@ dependencies {
 
     compile 'org.apache.commons:commons-lang3:3.1'
     compile 'com.ning:async-http-client:1.7.24'
+    compile project(':integration-commonhelper')
 
     testCompile 'com.ning:async-http-client:1.7.24'
     testCompile 'junit:junit:4.11'
@@ -40,4 +41,5 @@ dependencies {
     testCompile 'com.junbo.identity:identity-data:0.0.1-SNAPSHOT'
     testCompile 'com.junbo.identity:identity-rest:0.0.1-SNAPSHOT'
     testCompile 'com.junbo.identity:identity-spec:0.0.1-SNAPSHOT'
+    testCompile project(':integration-commonhelper')
 }

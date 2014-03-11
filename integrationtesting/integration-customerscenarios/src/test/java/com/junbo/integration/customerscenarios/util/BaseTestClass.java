@@ -8,12 +8,11 @@ package com.junbo.integration.customerscenarios.util;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
 /**
- * Created by Jason on 3/7/14.
+ @author Jason
+  * Time: 3/7/2014
+  * Base test class
  */
 public class BaseTestClass {
-
-    protected final String weakPassword = "password";
-    protected final String strongPassword = "Welcome123";
 
     public BaseTestClass() {
         //set loggging info

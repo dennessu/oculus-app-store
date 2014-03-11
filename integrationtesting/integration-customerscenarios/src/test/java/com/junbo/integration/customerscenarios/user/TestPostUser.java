@@ -5,17 +5,20 @@
  */
 package com.junbo.integration.customerscenarios.user;
 
-import com.junbo.integration.customerscenarios.helper.EnumHelper;
-import com.junbo.integration.customerscenarios.helper.LogHelper;
 import com.junbo.integration.customerscenarios.util.BaseTestClass;
-import com.junbo.integration.customerscenarios.helper.AsyncHttpClientHelper;
-import com.junbo.integration.customerscenarios.helper.RandomFactory;
+
+import com.junbo.integration.commonhelper.otherhelper.LogHelper;
+import com.junbo.integration.commonhelper.apihelper.user.PostUser;
+import com.junbo.integration.commonhelper.apihelper.user.GetUser;
+import com.junbo.integration.commonhelper.testproperties.*;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 /**
- * Created by Jason on 3/7/14.
+ @author Jason
+ * Time: 3/7/2014
+ * For holding Post User API test cases
  */
 public class TestPostUser extends BaseTestClass {
 
@@ -23,44 +26,49 @@ public class TestPostUser extends BaseTestClass {
 
     private final String serverURL = "http://10.0.0.111:8081/rest/users";
 
-    @Test(
-            description = "Test Post User",
-            enabled = true
+    @TestProperties(
+            priority = Priority.BVT,
+            features = "CustomerScenarios",
+            component = Component.Identity,
+            owner = "JasonFu",
+            status = Status.Enable,
+            description = "Test post user",
+            steps = {
+                    "1. Post a user and get its user ID",
+                    "2. Try to get the user with the returned ID",
+                    "3. Try to get the user with the returned username"
+            }
     )
+    @Test
     public void testPostUser() throws Exception {
 
-        AsyncHttpClientHelper clientHelper = new AsyncHttpClientHelper();
-        StringBuilder postRequestBody = new StringBuilder();
-        postRequestBody.append("{\"");
-        postRequestBody.append(EnumHelper.UserPara.userName.toString());
-        postRequestBody.append("\":\"");
-        postRequestBody.append(RandomFactory.getRandomEmailAddress());
-        postRequestBody.append("\",\"");
-        postRequestBody.append(EnumHelper.UserPara.password.toString());
-        postRequestBody.append("\":\"");
-        postRequestBody.append(weakPassword);
-        postRequestBody.append("\",\"");
-        postRequestBody.append(EnumHelper.UserPara.passwordStrength.toString());
-        postRequestBody.append("\":\"");
-        postRequestBody.append(EnumHelper.PasswordStrength.WEAK.toString());
-        postRequestBody.append("\",\"");
-        postRequestBody.append(EnumHelper.UserPara.status.toString());
-        postRequestBody.append("\":\"");
-        postRequestBody.append(EnumHelper.UserStatus.ACTIVE.toString());
-        postRequestBody.append("\"}");
+        String apiResponse = PostUser.CreateUser(serverURL);
 
-        String response = clientHelper.UserPost(serverURL,
-                postRequestBody.toString());
-        logger.logInfo("The Response Body is: " + response);
+        logger.logInfo("The Response Body is: " + apiResponse);
 
-        String[] results = response.split(",");
-        String entityId = null;
+        String[] results = apiResponse.split(",");
+        String userId = null;
+        String userName = null;
         for (String s : results) {
             if (s.contains("id")) {
-                entityId = s.replace("{\"id\":\"", "").replace("\"", "").trim();
+                userId = s.replace("\"id\":\"", "").replace("\"", "").replace("}", "").trim();
+            }
+            if (s.contains("userName")) {
+                userName = s.replace("\"userName\":\"", "").replace("\"", "").trim();
             }
         }
 
-        Assert.assertNotNull(entityId);
+        Assert.assertNotNull(userId);
+        Assert.assertNotNull(userName);
+
+        //Get the user with ID
+        apiResponse = GetUser.GetUserById(serverURL, userId);
+        Assert.assertTrue(apiResponse.contains(userId), "Can't get user by user ID");
+
+        //Get the user with userName
+        apiResponse = GetUser.GetUserByUserName(serverURL, userName);
+        Assert.assertTrue(apiResponse.contains(userName),  "Can't get user by username");
+
     }
+
 }
