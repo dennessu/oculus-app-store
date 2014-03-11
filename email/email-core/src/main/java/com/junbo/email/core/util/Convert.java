@@ -9,7 +9,6 @@ import com.junbo.email.common.util.Utils;
 import com.junbo.email.core.provider.Request;
 import com.junbo.email.core.provider.model.mandrill.MandrillRequest;
 import com.junbo.email.core.provider.model.mandrill.RequestModel;
-import com.junbo.email.db.entity.EmailHistoryEntity;
 import com.junbo.email.spec.model.Email;
 
 import java.util.ArrayList;
@@ -31,15 +30,14 @@ public class Convert {
 
     }
 
-    public static Request toRequest(EmailHistoryEntity entity) {
+    public static Request toRequest(Email email) {
         MandrillRequest request = new MandrillRequest();
         request.setUri(URI);
         RequestModel model = new RequestModel();
         RequestModel.Message message = model.new Message();
-        if(entity.getRecipient() != null) {
-            List<String> recipients = Utils.toObject(entity.getRecipient(), List.class);
+        if(email.getRecipients() != null) {
             List<RequestModel.Message.To> toList = new ArrayList<RequestModel.Message.To>();
-            for(String recipient : recipients) {
+            for(String recipient : email.getRecipients()) {
                 RequestModel.Message.To to = message.new To();
                 to.setEmail(recipient);
                 to.setType(TO_TYPE);
@@ -47,7 +45,6 @@ public class Convert {
             }
             message.setToList(toList);
         }
-        Email email = Utils.toObject(entity.getPayload(), Email.class);
         if(email.getProperties() != null) {
             List<Map<String, String>> properties = new ArrayList<Map<String, String>>();
             Map<String, String> map = email.getProperties();
@@ -60,7 +57,7 @@ public class Convert {
             message.setProperties(properties);
         }
         model.setKey(KEY);
-        String templateName = String.format("%s.%s.%s",entity.getSource(),entity.getAction(),entity.getLocale());
+        String templateName = String.format("%s.%s.%s",email.getSource(),email.getAction(),email.getLocale());
         model.setTemplateName(templateName);
         model.setTemplateContent(new HashMap<String,String>(){});
         model.setMessage(message);

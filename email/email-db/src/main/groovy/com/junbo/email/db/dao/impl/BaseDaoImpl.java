@@ -13,6 +13,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -46,8 +47,12 @@ public abstract class BaseDaoImpl<T extends BaseEntity> implements BaseDao<T> {
     }
 
     public Long update(T entity) {
-        currentSession().update(entity);
-
+        T merge = (T) currentSession().merge(entity);
+        if (merge.getUpdatedTime() == null) {
+            merge.setUpdatedTime(new Date());
+        }
+        currentSession().update(merge);
+        currentSession().flush();
         return entity.getId();
     }
 

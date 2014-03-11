@@ -7,12 +7,10 @@ package com.junbo.email.core;
 
 
 import com.junbo.email.spec.model.Email;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Interface of EmailService.
  */
-@Transactional
 public interface EmailService {
     Email send(Email email);
 }
