@@ -11,7 +11,7 @@
     <import resource="classpath*:spring/common-context.xml"/>
 
     <bean id="shardDao" class="com.junbo.sharding.test.data.dao.ShardDAOImpl">
-        <property name="shardedSessionFactory" ref="shardedSessionFactory"/>
+        <property name="sessionFactoryWrapper" ref="sessionFactoryWrapper"/>
     </bean>
 
 </beans>
