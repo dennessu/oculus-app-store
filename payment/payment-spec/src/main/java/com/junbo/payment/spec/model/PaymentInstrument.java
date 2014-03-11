@@ -27,7 +27,7 @@ public class PaymentInstrument {
     @PaymentInstrumentId
     private Long id;
     private UUID trackingUuid;
-    @UserId
+    @JsonIgnore
     private Long userId;
     @NotNull
     @UserId
@@ -62,11 +62,11 @@ public class PaymentInstrument {
     public void setTrackingUuid(UUID trackingUuid) {
         this.trackingUuid = trackingUuid;
     }
-    @JsonIgnore
+
     public Long getUserId() {
         return userId;
     }
-    @JsonIgnore
+
     public void setUserId(Long userId) {
         this.userId = userId;
         this.setAdmins(Arrays.asList(userId));
