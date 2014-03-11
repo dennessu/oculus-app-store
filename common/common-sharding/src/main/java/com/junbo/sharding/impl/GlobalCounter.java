@@ -7,9 +7,9 @@
 package com.junbo.sharding.impl;
 
 /**
- * Java doc for interface GlobalCounter.
+ * Java doc for interface OculusGlobalCounter.
  */
 public interface GlobalCounter {
 
-    int getAndIncrease(int shardId, int timeSec, int optionMode);
+    int getAndIncrease(int shardId, int timeSec);
 }

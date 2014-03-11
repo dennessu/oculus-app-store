@@ -8,7 +8,6 @@ package com.junbo.catalog.db.repo;
 
 import com.junbo.catalog.db.convertor.CategoryConverter;
 import com.junbo.catalog.db.dao.CategoryDao;
-import com.junbo.catalog.db.entity.CategoryEntity;
 import com.junbo.catalog.spec.model.category.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -21,15 +20,11 @@ public class CategoryRepository implements EntityRepository<Category> {
 
     @Override
     public Long create(Category category) {
-        CategoryEntity entity = CategoryConverter.toEntity(category);
-        return categoryDao.create(entity);
+        return categoryDao.create(CategoryConverter.toEntity(category));
     }
 
     @Override
     public Category get(Long id, Long timestamp) {
-        //CategoryEntity entity = categoryDao.getCategory(id, revision);
-        //Category category = CategoryConverter.toModel(entity);
-        //return category;
-        return null;
+        return CategoryConverter.toModel(categoryDao.getCategory(id, timestamp));
     }
 }

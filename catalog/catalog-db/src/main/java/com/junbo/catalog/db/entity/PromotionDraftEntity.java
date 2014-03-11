@@ -28,7 +28,6 @@ import java.util.Date;
 public class PromotionDraftEntity extends BaseEntity {
     private Long id;
     private int revision;
-    private String status;
     private String name;
     private PromotionType type;
     private Date startDate;
@@ -52,15 +51,6 @@ public class PromotionDraftEntity extends BaseEntity {
 
     public void setRevision(int revision) {
         this.revision = revision;
-    }
-
-    @Column(name = "status")
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
     @Column(name = "promotion_name")

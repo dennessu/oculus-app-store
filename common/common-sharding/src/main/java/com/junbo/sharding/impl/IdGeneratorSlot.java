@@ -7,7 +7,7 @@
 package com.junbo.sharding.impl;
 
 /**
- * Java doc for IdGeneratorSlot.
+ * Java doc for OculusIdGeneratorSlot.
  */
 public interface IdGeneratorSlot {
 

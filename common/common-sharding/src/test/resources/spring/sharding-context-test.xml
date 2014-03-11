@@ -5,51 +5,13 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
-    <tx:annotation-driven transaction-manager="transactionManager"/>
+    <import resource="classpath:spring/sharding.xml"/>
+    <import resource="classpath:spring/sharding-context.xml"/>
+    <import resource="classpath:spring/transaction.xml"/>
+    <import resource="classpath*:spring/common-context.xml"/>
 
-    <bean id="dataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
-        <property name="driverClass" value="org.postgresql.Driver"/>
-        <property name="jdbcUrl" value="jdbc:postgresql://localhost:5432/sharding"/>
-        <property name="username" value="postgres"/>
-        <property name="password" value="#Bugsfor$"/>
-        <property name="maxConnectionsPerPartition" value="15"/>
-        <property name="minConnectionsPerPartition" value="3"/>
-        <property name="partitionCount" value="1"/>
-        <property name="acquireIncrement" value="3"/>
-        <property name="statementsCacheSize" value="100"/>
-        <property name="releaseHelperThreads" value="3"/>
+    <bean id="shardDao" class="com.junbo.sharding.test.data.dao.ShardDAOImpl">
+        <property name="shardedSessionFactory" ref="shardedSessionFactory"/>
     </bean>
 
-    <!-- SessonFactory for Hibernate -->
-    <bean id="sessionFactory"
-          class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
-        <property name="dataSource" ref="dataSource"/>
-        <property name="packagesToScan" value="com.junbo.sharding.test.data.dao" />
-        <property name="hibernateProperties">
-            <map>
-                <entry key="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
-                <entry key="hibernate.max_fetch_depth" value="3"/>
-                <entry key="hibernate.jdbc.fetch_size" value="50"/>
-                <entry key="hibernate.jdbc.batch_size" value="10"/>
-                <entry key="hibernate.show_sql" value="true"/>
-                <entry key="hibernate.multiTenancy" value="SCHEMA"/>
-                <entry key="hibernate.tenant_identifier_resolver" value-ref="multiTenantIdentifierResolver"/>
-                <entry key="hibernate.multi_tenant_connection_provider" value-ref="multiTenantConnectionProvider"/>
-            </map>
-        </property>
-    </bean>
-
-    <bean id="multiTenantConnectionProvider" class="com.junbo.sharding.hibernate.multitenancy.MultiTenantConnectionProviderImpl">
-        <property name="dataSource" ref="dataSource"/>
-    </bean>
-    <bean id="multiTenantIdentifierResolver" class="com.junbo.sharding.hibernate.multitenancy.SchemaResolver" />
-
-    <!-- Transaction Manager -->
-    <bean id="transactionManager"
-          class="org.springframework.orm.hibernate4.HibernateTransactionManager">
-        <property name="sessionFactory" ref="sessionFactory"/>
-        <property name="autodetectDataSource" value="false" />
-    </bean>
-
-    <bean id="shardDao" class="com.junbo.sharding.test.data.dao.ShardDAOImpl"/>
 </beans>

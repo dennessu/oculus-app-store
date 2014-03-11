@@ -6,14 +6,12 @@
 
 package com.junbo.sharding.impl;
 
-import com.junbo.sharding.IdSchema;
-
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * Java doc for IdGeneratorSlotImpl.
+ * Java doc for OculusIdGeneratorSlotImpl.
  */
 public class IdGeneratorSlotImpl implements IdGeneratorSlot {
 
@@ -68,7 +66,7 @@ public class IdGeneratorSlotImpl implements IdGeneratorSlot {
 
             if (current <= idSchema.getMasksInLocalCounter()) {
                 if (slotData.localCounter.compareAndSet(current, current + 1)) {
-                    return nextId(slotData, current, idSchema.getOptionMode());
+                    return nextId(slotData, current);
                 }
             }
             else {
@@ -88,54 +86,34 @@ public class IdGeneratorSlotImpl implements IdGeneratorSlot {
         }
     }
 
-    private long nextId(SlotData slotData, int localCounter, int optionMode) {
-        if(optionMode == 1) {
-            long value = slotData.timeSec;
-            value = (value << idSchema.getBitsInGlobalCounter()) + slotData.globalCounter;
-            value = (value << idSchema.getBitsInLocalCounter()) + localCounter;
-            value = value * idSchema.getNumberOfShards() + shardId;
-            return value;
-        } else if (optionMode == 2 || optionMode == 3) {
-            long value = 0;
-            value = (value << idSchema.getBitsInGlobalCounter()) + slotData.globalCounter;
-            value = (value << idSchema.getBitsInLocalCounter()) + slotData.localCounter.intValue();
-            value = (value << idSchema.getBitsInShard()) + shardId;
-            value = (value << idSchema.getDataCenterId()) + slotData.dataCenterId;
-            value = (value << idSchema.getBitsInIdVersion()) + slotData.idVersion;
-            value = (value << idSchema.getBitsInIdSignificant()) + slotData.idSignificant;
-            return value;
-        } else {
-            throw new IllegalArgumentException("unsupported optionMode.");
-        }
+    private long nextId(SlotData slotData, int localCounter) {
+        long value = slotData.timeSec;
+        value = (value << idSchema.getBitsInGlobalCounter()) + slotData.globalCounter;
+        value = (value << idSchema.getBitsInLocalCounter()) + localCounter;
+        value = value * idSchema.getNumberOfShards() + shardId;
+        return value;
     }
 
     private SlotData newSlotData() {
 
         int currentTimeSec = timeGenerator.currentTimeSec(idSchema.getTimeSecOffset()) & idSchema.getMasksInTime();
 
-        int count = globalCounter.getAndIncrease(shardId, currentTimeSec, idSchema.getOptionMode())
+        int count = globalCounter.getAndIncrease(shardId, currentTimeSec)
                 & idSchema.getMasksInGlobalCounter();
 
-        return new SlotData(currentTimeSec, count, idSchema.getDataCenterId(),
-                idSchema.getIdVersion(), idSchema.getIdSignificant());
+        return new SlotData(currentTimeSec, count);
     }
 
     private static class SlotData {
 
         private final int timeSec;
         private final int globalCounter;
-        private final int dataCenterId;
-        private final int idVersion;
-        private final int idSignificant;
 
         private final AtomicInteger localCounter;
 
-        private SlotData(int timeSec, int globalCounter, int dataCenterId, int idVersion, int idSignificant) {
+        private SlotData(int timeSec, int globalCounter) {
             this.timeSec = timeSec;
             this.globalCounter = globalCounter;
-            this.dataCenterId = dataCenterId;
-            this.idVersion = idVersion;
-            this.idSignificant = idSignificant;
 
             localCounter = new AtomicInteger();
         }

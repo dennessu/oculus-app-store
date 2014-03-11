@@ -11,9 +11,12 @@ import com.junbo.catalog.common.util.Constants;
 import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.db.dao.BaseDao;
 import com.junbo.catalog.db.entity.BaseEntity;
+import com.junbo.catalog.spec.model.common.Status;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -47,6 +50,24 @@ public abstract class BaseDaoImpl<T extends BaseEntity> implements BaseDao<T> {
 
     public T get(Long id) {
         return (T) currentSession().get(entityType, id);
+    }
+
+    protected T get(final Long id, final Long timestamp, final String idPropertyName) {
+        T entity = findBy(new Action<Criteria>() {
+            public void apply(Criteria criteria) {
+                criteria.add(Restrictions.eq(idPropertyName, id));
+                if (timestamp != null) {
+                    criteria.add(Restrictions.le("timestamp", timestamp));
+                }
+                criteria.addOrder(Order.desc("timestamp"));
+            }
+        });
+
+        if (entity!=null && Status.DELETED.equalsIgnoreCase(entity.getStatus())) {
+            entity = null;
+        }
+
+        return entity;
     }
 
     public Long update(T entity) {
@@ -86,7 +107,6 @@ public abstract class BaseDaoImpl<T extends BaseEntity> implements BaseDao<T> {
     public void setEntityType(Class<T> entityType) {
         this.entityType = entityType;
     }
-
 
     /**
      * Generate simple id.

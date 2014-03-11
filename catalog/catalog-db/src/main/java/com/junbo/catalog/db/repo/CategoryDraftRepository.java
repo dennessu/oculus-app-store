@@ -36,8 +36,13 @@ public class CategoryDraftRepository implements EntityDraftRepository<Category> 
 
     @Override
     public Long update(Category category) {
-        // TODO
-        return null;
+        if (category == null) {
+            return null;
+        }
+
+        CategoryDraftEntity entity = categoryDraftDao.get(category.getId());
+        CategoryConverter.fillDraftEntity(category, entity);
+        return categoryDraftDao.update(entity);
     }
 
     @Override

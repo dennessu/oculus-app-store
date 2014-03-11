@@ -31,7 +31,7 @@ public class GlobalCounterMemcachedImpl implements GlobalCounter {
     }
 
     @Override
-    public int getAndIncrease(int optionMode, int shardId, int timeSec) {
+    public int getAndIncrease(int shardId, int timeSec) {
 
         String key = shardId + "_" + (timeSec % (2 * secondsToTrack));
 

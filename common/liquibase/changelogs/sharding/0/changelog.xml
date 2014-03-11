@@ -6,7 +6,7 @@
 
     <changeSet author="liangfuxia" id = "1" context="PREDEPLOY">
         <sql><![CDATA[
-                create table id_global_counter ( (
+                create table id_global_counter (
                     id bigint not null,
                     
 					option_mode bigint not null,
