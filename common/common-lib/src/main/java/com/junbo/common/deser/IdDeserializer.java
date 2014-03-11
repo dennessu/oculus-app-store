@@ -42,7 +42,7 @@ public class IdDeserializer<T extends Id>
         try {
             id = this.clazz.newInstance();
             if (ref != null) {
-                id.setValue(IdFormatter.decodeFormattedId(this.clazz, ref.getId()));
+                id.setValue(IdFormatter.decodeId(this.clazz, ref.getId()));
             }
         }
         catch (InstantiationException e) {
