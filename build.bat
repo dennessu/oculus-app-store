@@ -1,4 +1,4 @@
-@echo on
+@echo off
 set gradle_arg=clean build install %1
 for %%i in (%*) do (
   set gradle_arg=%gradle_arg% %%i
@@ -16,8 +16,9 @@ echo Build error
 exit /b 1
 
 :GRADLE
-pushd %1
+set DIR=%1
+set DIR=%DIR:/=\%
+pushd %DIR%
 call gradle %gradle_arg% || goto :ERROR
-popd %1
+popd
 goto :EOF
-
