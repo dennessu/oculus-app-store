@@ -13,6 +13,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
 /**
  * Created by xmchen on 14-1-24.
@@ -21,6 +22,7 @@ import javax.validation.constraints.NotNull;
 @Table(name = "transaction_event")
 public class TransactionEventEntity extends BaseEventEntity {
     private Long transactionId;
+    private BigDecimal amount;
 
     @Column(name = "transaction_id")
     @NotNull(message = EntityValidationCode.MISSING_VALUE)
@@ -29,5 +31,14 @@ public class TransactionEventEntity extends BaseEventEntity {
     }
     public void setTransactionId(Long transactionId) {
         this.transactionId = transactionId;
+    }
+
+    @Column(name = "amount")
+    @NotNull(message = EntityValidationCode.MISSING_VALUE)
+    public BigDecimal getAmount() {
+        return amount;
+    }
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
     }
 }

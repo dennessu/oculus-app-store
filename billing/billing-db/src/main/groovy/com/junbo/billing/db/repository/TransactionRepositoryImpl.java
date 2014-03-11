@@ -11,12 +11,12 @@ import com.junbo.billing.db.dao.TransactionEntityDao;
 import com.junbo.billing.db.mapper.ModelMapper;
 import com.junbo.billing.db.transaction.TransactionEntity;
 import com.junbo.billing.spec.model.Transaction;
+import com.junbo.sharding.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created by xmchen on 14-2-24.
@@ -29,16 +29,19 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private IdGenerator idGenerator;
+
     @Override
     public Transaction saveTransaction(Transaction transaction) {
         TransactionEntity entity = modelMapper.toTransactionEntity(transaction, new MappingContext());
 
-        //todo: use real id generator
-        entity.setTransactionId(new Random().nextLong());
+        entity.setTransactionId(idGenerator.nextId(entity.getBalanceId()));
         entity.setCreatedBy("BILLING");
         entity.setCreatedDate(new Date());
         Long id = transactionEntityDao.insert(entity);
 
+        transactionEntityDao.flush();
         return getTransaction(id);
     }
 
@@ -62,5 +65,21 @@ public class TransactionRepositoryImpl implements TransactionRepository {
             }
         }
         return transactions;
+    }
+
+    @Override
+    public Transaction updateTransaction(Transaction transaction) {
+        TransactionEntity entity = modelMapper.toTransactionEntity(transaction, new MappingContext());
+        TransactionEntity savedEntity = transactionEntityDao.get(entity.getTransactionId());
+
+        savedEntity.setTypeId(entity.getTypeId());
+        savedEntity.setStatusId(entity.getStatusId());
+        savedEntity.setAmount(entity.getAmount());
+        savedEntity.setModifiedBy("BILLING");
+        savedEntity.setModifiedDate(new Date());
+        transactionEntityDao.update(savedEntity);
+
+        transactionEntityDao.flush();
+        return getTransaction(entity.getTransactionId());
     }
 }
