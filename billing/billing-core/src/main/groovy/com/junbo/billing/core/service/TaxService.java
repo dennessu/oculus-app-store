@@ -7,11 +7,12 @@
 package com.junbo.billing.core.service;
 
 import com.junbo.billing.spec.model.Balance;
+import com.junbo.langur.core.promise.Promise;
 
 /**
  * Created by LinYi on 14-3-10.
  */
 public interface TaxService {
 
-    Balance calculateTax(Balance balance);
+    Promise<Balance> calculateTax(Balance balance);
 }

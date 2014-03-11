@@ -4,7 +4,9 @@ import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.BalanceItem
 import com.junbo.billing.spec.model.ShippingAddress
 import com.junbo.common.id.BalanceItemId
+import com.junbo.common.id.OrderItemId
 import com.junbo.common.id.ShippingAddressId
+import org.testng.Assert
 import org.testng.annotations.Test;
 
 import javax.annotation.Resource;
@@ -16,7 +18,7 @@ public class AvalaraTest extends BaseTest {
     @Resource
     AvalaraFacade avalaraFacade
 
-    @Test
+    @Test(enabled = false)
     public void testAvalaraFacade() {
         def balance = new Balance()
         balance.shippingAddressId = new ShippingAddressId(123L)
@@ -32,8 +34,13 @@ public class AvalaraTest extends BaseTest {
         shippingAddress.postalCode = "80022"
         shippingAddress.country = "USA"
 
-        avalaraFacade.calculateTax(balance, shippingAddress, null)
+        balance.balanceItems.each { BalanceItem balanceItem ->
+            item.orderItemId = new OrderItemId(321L)
+        }
 
+        avalaraFacade.calculateTax(balance, shippingAddress, null)
+        Assert.assertNotEquals(balance.taxAmount, BigDecimal.ZERO,
+                "Tax should not be zero in this test case.")
     }
 
 

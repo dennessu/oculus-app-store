@@ -18,6 +18,7 @@ import com.junbo.billing.clientproxy.impl.avalara.GetTaxResponse
 import com.junbo.billing.clientproxy.impl.avalara.Line
 import com.junbo.billing.clientproxy.impl.avalara.AvalaraAddress
 import com.junbo.billing.clientproxy.impl.avalara.SeverityLevel
+import com.junbo.billing.clientproxy.impl.avalara.TaxLine
 import com.junbo.billing.spec.error.AppErrors
 import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.BalanceItem
@@ -49,14 +50,18 @@ class AvalaraFacadeImpl implements AvalaraFacade {
     Balance updateBalance(GetTaxResponse response, Balance balance) {
         balance.taxAmount = response.totalTax
         if (response.resultCode == SeverityLevel.Success) {
-            for (int i = 0; i < balance.balanceItems.size(); i++) {
-                def item = balance.balanceItems[i]
-                def taxLine = response.taxLines[i]
-                def taxItem = new TaxItem()
-                taxItem.taxAmount = BigDecimal.valueOf(taxLine.tax)
-                taxItem.taxRate = BigDecimal.valueOf(taxLine.rate)
-                item.addTaxItem(taxItem)
+            balance.balanceItems.each { BalanceItem item ->
+                response.taxLines.each { TaxLine line ->
+                    if (item.balanceItemId.value == Long.valueOf(line.lineNo)) {
+                        def taxItem = new TaxItem()
+                        taxItem.taxAmount = BigDecimal.valueOf(line.tax)
+                        taxItem.taxRate = BigDecimal.valueOf(line.rate)
+                        item.addTaxItem(taxItem)
+                    }
+                }
             }
+
+            return balance
         }
     }
 
@@ -93,7 +98,7 @@ class AvalaraFacadeImpl implements AvalaraFacade {
             mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
             return response
         } catch (IOException e) {
-            throw AppErrors.INSTANCE.taxCalculationError().exception()
+            throw AppErrors.INSTANCE.taxCalculationError('Fail to connect to avalara server.').exception()
         }
     }
 
@@ -136,10 +141,9 @@ class AvalaraFacadeImpl implements AvalaraFacade {
 
         // lines
         def lines = []
-        def lineNo = 1
         balance.balanceItems.each { BalanceItem item ->
             def line = new Line()
-            line.lineNo = lineNo++
+            line.lineNo = item.balanceItemId.value.toString()
             // TODO: confirm address collection
             line.destinationCode = shipToAddress.addressCode
             line.originCode = billToAddress == null ? shipToAddress.addressCode: billToAddress.addressCode
