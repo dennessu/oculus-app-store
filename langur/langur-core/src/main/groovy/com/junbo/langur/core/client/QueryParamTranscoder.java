@@ -9,9 +9,6 @@ package com.junbo.langur.core.client;
 /**
  * Created by liangfu on 3/11/14.
  */
-public class IdPathParamTranscoder implements PathParamTranscoder {
-    @Override
-    public <T> String encode(T pathParam) {
-        throw new RuntimeException("Unsupported operation.");
-    }
+public interface QueryParamTranscoder {
+    <T> String encode(T pathParam);
 }
