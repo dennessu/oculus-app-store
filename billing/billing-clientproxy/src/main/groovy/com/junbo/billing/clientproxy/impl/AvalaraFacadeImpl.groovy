@@ -57,8 +57,8 @@ class AvalaraFacadeImpl implements AvalaraFacade {
                         item.taxAmount = BigDecimal.valueOf(line.tax)
                         line.taxDetails.each { TaxDetail detail ->
                             def taxItem = new TaxItem()
-                            taxItem.taxAmount = detail.tax
-                            taxItem.taxRate = detail.rate
+                            taxItem.taxAmount = BigDecimal.valueOf(detail.tax)
+                            taxItem.taxRate = BigDecimal.valueOf(detail.rate)
                             taxItem.taxAuthority = detail.jurisName
                             item.addTaxItem(taxItem)
                         }
