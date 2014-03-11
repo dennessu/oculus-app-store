@@ -3,13 +3,15 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.integration.customerscenarios.helper;
+package com.junbo.integration.commonhelper.otherhelper;
 
 import java.util.GregorianCalendar;
 import java.util.Random;
 
 /**
- * Created by Jason on 3/7/14.
+ * @author Jason
+ * Time 3/11/14
+ *
  */
 public final class RandomFactory {
 

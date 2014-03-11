@@ -3,16 +3,17 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.integration.customerscenarios.helper;
+package com.junbo.integration.commonhelper.otherhelper;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Created by Jason on 3/7/14.
+ * @author Jason
+ * @since 3/10/2014
+ * Invoke slf4j log
  */
 public class LogHelper {
-
     private Logger logger;
 
     public LogHelper(String name) {
@@ -34,5 +35,4 @@ public class LogHelper {
     public void logWarn(String message) {
         logger.warn(message);
     }
-
 }
