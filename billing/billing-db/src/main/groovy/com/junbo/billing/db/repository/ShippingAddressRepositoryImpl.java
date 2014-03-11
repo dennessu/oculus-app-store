@@ -6,12 +6,13 @@
 
 package com.junbo.billing.db.repository;
 
+import com.junbo.common.id.ShippingAddressId;
 import com.junbo.oom.core.MappingContext;
 import com.junbo.billing.db.address.ShippingAddressEntity;
 import com.junbo.billing.db.dao.ShippingAddressEntityDao;
 import com.junbo.billing.db.mapper.ModelMapper;
 import com.junbo.billing.spec.model.ShippingAddress;
-import com.junbo.sharding.IdGenerator;
+import com.junbo.sharding.IdGeneratorFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -30,14 +31,14 @@ public class ShippingAddressRepositoryImpl implements ShippingAddressRepository 
     private ModelMapper modelMapper;
 
     @Autowired
-    private IdGenerator idGenerator;
+    private IdGeneratorFacade idGenerator;
 
     @Override
     public ShippingAddress saveShippingAddress(ShippingAddress address) {
 
         ShippingAddressEntity sae = modelMapper.toShippingAddressEntity(address, new MappingContext());
 
-        sae.setAddressId(idGenerator.nextId(sae.getUserId()));
+        sae.setAddressId(idGenerator.nextId(ShippingAddressId.class, sae.getUserId()));
 
         sae.setCreatedBy("BILLING");
         sae.setCreatedDate(new Date());
