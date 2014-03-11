@@ -4,7 +4,7 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.sharding.oculus;
+package com.junbo.sharding.id.oculus;
 
 import com.junbo.sharding.id.dao.IdGlobalCounterDAO;
 import com.junbo.sharding.id.model.IdGlobalCounterEntity;

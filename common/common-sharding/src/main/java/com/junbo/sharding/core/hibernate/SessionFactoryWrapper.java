@@ -55,7 +55,7 @@ public class SessionFactoryWrapper implements ApplicationContextAware {
         return sf;
     }
 
-    private SessionFactory createShardedSessionFactory(int shardId, String dbName, String... packageToScan) {
+    private SessionFactory createShardedSessionFactory(int shardId, String dbName, String... packagesToScan) {
         if (this.applicationContext == null) {
             throw new RuntimeException("applicationContext is null in SessionFactoryWrapper!");
         }
@@ -70,7 +70,7 @@ public class SessionFactoryWrapper implements ApplicationContextAware {
             try {
                 factoryBean = (LocalSessionFactoryBean)object;
                 factoryBean.setDataSource(ds);
-                factoryBean.setPackagesToScan(packageToScan);
+                factoryBean.setPackagesToScan(packagesToScan);
                 factoryBean.afterPropertiesSet();
             }
             catch (Exception e) {
