@@ -16,6 +16,10 @@ import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory
 import org.glassfish.jersey.server.ResourceConfig
 import org.glassfish.jersey.server.ServerProperties
 
+import java.util.logging.Handler
+import java.util.logging.Level
+import java.util.logging.Logger
+
 /**
  * Main class to start server.
  */
@@ -39,6 +43,11 @@ class Main {
     }
 
     static void main(String[] args) {
+
+        Logger.getLogger('').setLevel(Level.ALL)
+        for (Handler handler : Logger.getLogger('').handlers) {
+            handler.setLevel(Level.ALL)
+        }
 
         def server = startServer()
 
