@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+       ">
+    <!--bean id="btmDataSource" class="bitronix.tm.resource.jdbc.PoolingDataSource" init-method="init"
+          destroy-method="close" scope="prototype" lazy-init="true">
+        <property name="uniqueName" value="dummy"/>
+        <property name="className" value="${sharding.dataSource.driverClassName}"/>
+        <property name="minPoolSize" value="${sharding.dataSource.db.minConnections}"/>
+        <property name="maxPoolSize" value="${sharding.dataSource.db.maxConnections}"/>
+        <property name="driverProperties">
+            <props>
+                <prop key="url"></prop>
+                <prop key="user">${sharding.dataSource.db.username}</prop>
+                <prop key="password">${sharding.dataSource.db.password}</prop>
+            </props>
+        </property>
+    </bean-->
+
+    <bean id="btmDataSource" class="bitronix.tm.resource.jdbc.PoolingDataSource" scope="prototype" lazy-init="true"/>
+
+    <bean id="shardDataSourceMapper" class="com.junbo.sharding.core.ds.ShardDataSourceMapper">
+        <property name="dataSourceMapping" value="${sharding.dataSource.mapping}"/>
+    </bean>
+
+    <bean id="shardDataSourceFactory" class="com.junbo.sharding.core.ds.ShardDataSourceFactoryImpl">
+        <property name="dataSourceBeanName" value="btmDataSource"/>
+        <property name="mapper" ref="shardDataSourceMapper"/>
+    </bean>
+
+    <bean id="shardDataSourceRegistry" class="com.junbo.sharding.core.ds.ShardDataSourceRegistry">
+        <property name="dataSourceFactory" ref="shardDataSourceFactory"/>
+    </bean>
+
+    <!--bean id="dummyDataSource" class="com.junbo.sharding.core.hibernate.DummyDataSource"/-->
+
+    <!-- SessonFactory for Hibernate-->
+    <bean id="shardedSessionFactory" class="com.junbo.sharding.core.hibernate.ShardSessionFactoryBean">
+        <property name="registry" ref="shardDataSourceRegistry"/>
+        <property name="jtaTransactionManager" ref="transactionManager"/>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">${sharding.hibernate.dialect}</prop>
+                <prop key="hibernate.max_fetch_depth">${sharding.hibernate.max_fetch_depth}</prop>
+                <prop key="hibernate.jdbc.fetch_size">${sharding.hibernate.fetch_size}</prop>
+                <prop key="hibernate.jdbc.batch_size">${sharding.hibernate.batch_size}</prop>
+                <prop key="hibernate.show_sql">${sharding.hibernate.show_sql}</prop>
+                <prop key="hibernate.current_session_context_class">jta</prop>
+            </props>
+        </property>
+    </bean>
+
+</beans>

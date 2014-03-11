@@ -12,13 +12,13 @@ import java.util.Random;
 /**
  * Created by minhao on 3/3/14.
  */
-public class SchemaResolver implements CurrentTenantIdentifierResolver {
+public class CurrentTenantIdentifierResolverImpl implements CurrentTenantIdentifierResolver {
 
     @Override
     public String resolveCurrentTenantIdentifier() {
         //TODO: Implement service to identify shard
         Random random = new Random();
-        return "shard_" + random.nextInt(2);
+        return "shard_0";
     }
 
     @Override

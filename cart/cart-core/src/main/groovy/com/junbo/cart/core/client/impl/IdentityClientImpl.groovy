@@ -13,10 +13,12 @@ import com.junbo.identity.spec.resource.proxy.UserResourceClientProxy
 import com.junbo.langur.core.promise.Promise
 import com.ning.http.client.AsyncHttpClient
 import com.ning.http.client.AsyncHttpClientConfigBean
+import groovy.transform.CompileStatic
 
 /**
  * Created by fzhang@wan-san.com on 14-2-18.
  */
+@CompileStatic
 class IdentityClientImpl implements IdentityClient {
 
     final private AsyncHttpClient asyncHttpClient
@@ -36,6 +38,6 @@ class IdentityClientImpl implements IdentityClient {
     @Override
     Promise<User> getUser(UserId userId) {
         return new UserResourceClientProxy(asyncHttpClient, new JsonMessageTranscoder(),
-                identityUrl).getUser(userId.value)
+                identityUrl).getUser(userId)
     }
 }
