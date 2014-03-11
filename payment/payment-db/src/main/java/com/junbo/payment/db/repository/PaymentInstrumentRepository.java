@@ -6,6 +6,7 @@
 
 package com.junbo.payment.db.repository;
 
+import com.junbo.common.id.UserId;
 import com.junbo.oom.core.MappingContext;
 import com.junbo.payment.db.dao.paymentinstrument.AddressDao;
 import com.junbo.payment.db.dao.paymentinstrument.CreditCardPaymentInstrumentDao;
@@ -16,7 +17,7 @@ import com.junbo.payment.spec.enums.PIStatus;
 import com.junbo.payment.spec.enums.PIType;
 import com.junbo.payment.db.mapper.PaymentMapper;
 import com.junbo.payment.spec.model.*;
-import com.junbo.sharding.IdGenerator;
+import com.junbo.sharding.IdGeneratorFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -39,21 +40,21 @@ public class PaymentInstrumentRepository {
     @Autowired
     private PaymentMapper paymentMapperImpl;
     @Autowired
-    private IdGenerator idGenerator;
+    private IdGeneratorFacade idGenerator;
 
     public void save(PaymentInstrument request){
         PaymentInstrumentEntity piEntity = paymentMapperImpl.toPIEntity(request, new MappingContext());
-        Long piId = idGenerator.nextId(piEntity.getUserId());
+        Long piId = idGenerator.nextId(UserId.class, piEntity.getUserId());
         Long addressId = null;
         Long phoneId = null;
         if(request.getAddress() != null){
-            addressId = idGenerator.nextId(piId);
+            addressId = idGenerator.nextId(UserId.class, piId);
             AddressEntity address = paymentMapperImpl.toAddressEntity(request.getAddress(), new MappingContext());
             address.setId(addressId);
             addressDao.save(address);
         }
         if(request.getPhone() != null){
-            phoneId = idGenerator.nextId(piId);
+            phoneId = idGenerator.nextId(UserId.class, piId);
             PhoneEntity phone = paymentMapperImpl.toPhoneEntity(request.getPhone(), new MappingContext());
             phone.setId(phoneId);
             phoneDao.save(phone);
