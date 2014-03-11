@@ -42,5 +42,6 @@ class OAuthParameters {
     public static final String POST_LOGOUT_REDIRECT_URI = 'post_logout_redirect_uri'
     public static final String USER_ID = 'user_id'
     public static final String ID_TOKEN_USER_ID = 'id_token_user_id'
+    public static final String SESSION_ID = 'session_id'
 }
 
