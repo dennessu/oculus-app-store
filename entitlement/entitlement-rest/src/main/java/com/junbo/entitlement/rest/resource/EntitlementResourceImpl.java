@@ -6,8 +6,11 @@
 
 package com.junbo.entitlement.rest.resource;
 
+import com.junbo.common.id.EntitlementDefinitionId;
 import com.junbo.common.id.EntitlementId;
+import com.junbo.common.id.OfferId;
 import com.junbo.common.id.UserId;
+import com.junbo.common.util.IdFormatter;
 import com.junbo.entitlement.common.def.EntitlementConsts;
 import com.junbo.entitlement.common.def.EntitlementStatusReason;
 import com.junbo.entitlement.common.lib.CommonUtils;
@@ -46,7 +49,7 @@ public class EntitlementResourceImpl implements EntitlementResource {
     public Promise<ResultList<Entitlement>> getEntitlements(UserId userId,
                                                             EntitlementSearchParam searchParam,
                                                             PageMetadata pageMetadata) {
-        searchParam.setUserId(userId.getValue());
+        searchParam.setUserId(userId);
         List<Entitlement> entitlements = entitlementService.searchEntitlement(searchParam, pageMetadata);
         ResultList<Entitlement> result = new ResultList<Entitlement>();
         result.setCriteria(entitlements);
@@ -103,23 +106,6 @@ public class EntitlementResourceImpl implements EntitlementResource {
     }
 
     @Override
-    public Promise<ResultList<Entitlement>> searchEntitlements(
-            EntitlementSearchParam searchParam, PageMetadata pageMetadata) {
-        List<Entitlement> entitlements = entitlementService.searchEntitlement(searchParam, pageMetadata);
-        ResultList<Entitlement> result = new ResultList<Entitlement>();
-        result.setCriteria(entitlements);
-        if (entitlements.size() < (pageMetadata.getCount() == null
-                ? EntitlementConsts.DEFAULT_PAGE_SIZE : pageMetadata.getCount())) {
-            result.setNext(EntitlementConsts.NEXT_END);
-        } else {
-            result.setNext(CommonUtils.buildPageParams(
-                    uriInfo.getBaseUriBuilder().path("entitlements").path("search"),
-                    pageMetadata.getStart(), pageMetadata.getCount()).toTemplate());
-        }
-        return Promise.pure(result);
-    }
-
-    @Override
     public Promise<Entitlement> transferEntitlement(EntitlementTransfer entitlementTransfer) {
         UUID trackingUuid = entitlementTransfer.getTrackingUuid();
         if (trackingUuid != null) {
@@ -134,9 +120,9 @@ public class EntitlementResourceImpl implements EntitlementResource {
     private String buildNextUrl(
             EntitlementSearchParam searchParam, PageMetadata pageMetadata) {
         UriBuilder builder = uriInfo.getBaseUriBuilder().path("users")
-                .path(searchParam.getUserId().toString())
+                .path(IdFormatter.encodeId(searchParam.getUserId()))
                 .path("entitlements")
-                .queryParam("developerId", searchParam.getDeveloperId());
+                .queryParam("developerId", IdFormatter.encodeId(searchParam.getDeveloperId()));
         if (!StringUtils.isEmpty(searchParam.getType())) {
             builder = builder.queryParam("type", searchParam.getType());
         }
@@ -144,8 +130,8 @@ public class EntitlementResourceImpl implements EntitlementResource {
             builder = builder.queryParam("status", searchParam.getStatus());
         }
         if (!CollectionUtils.isEmpty(searchParam.getOfferIds())) {
-            for (Long offerId : searchParam.getOfferIds()) {
-                builder = builder.queryParam("offerIds", offerId);
+            for (OfferId offerId : searchParam.getOfferIds()) {
+                builder = builder.queryParam("offerIds", IdFormatter.encodeId(offerId));
             }
         }
         if (!CollectionUtils.isEmpty(searchParam.getGroups())) {
@@ -159,8 +145,8 @@ public class EntitlementResourceImpl implements EntitlementResource {
             }
         }
         if (!CollectionUtils.isEmpty(searchParam.getDefinitionIds())) {
-            for (Long definitionId : searchParam.getDefinitionIds()) {
-                builder = builder.queryParam("definitionIds", definitionId);
+            for (EntitlementDefinitionId definitionId : searchParam.getDefinitionIds()) {
+                builder = builder.queryParam("definitionIds", IdFormatter.encodeId(definitionId));
             }
         }
         builder = CommonUtils.buildPageParams(builder,

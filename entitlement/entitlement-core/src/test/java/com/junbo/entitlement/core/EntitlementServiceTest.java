@@ -109,8 +109,8 @@ public class EntitlementServiceTest extends AbstractTransactionalTestNGSpringCon
         EntitlementContext.current().setNow(new Date(114, 2, 30));
 
         EntitlementSearchParam searchParam = new EntitlementSearchParam();
-        searchParam.setUserId(userId);
-        searchParam.setDeveloperId(userId);
+        searchParam.setUserId(new UserId(userId));
+        searchParam.setDeveloperId(new UserId(userId));
         searchParam.setStatus(EntitlementStatus.ACTIVE.toString());
         List<Entitlement> entitlements = entitlementService.searchEntitlement(searchParam, new PageMetadata());
 
