@@ -5,10 +5,11 @@
  */
 package com.junbo.email.db.repo;
 
+import com.junbo.common.id.EmailId;
 import com.junbo.email.db.dao.EmailTemplateDao;
 import com.junbo.email.db.entity.EmailTemplateEntity;
 import com.junbo.email.db.mapper.EmailMapper;
-import com.junbo.sharding.IdGenerator;
+import com.junbo.sharding.IdGeneratorFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -27,10 +28,10 @@ public class EmailTemplateRepository {
     private EmailMapper emailMapper;
 
     @Autowired
-    private IdGenerator idGenerator;
+    private IdGeneratorFacade idGenerator;
 
     public Long saveEmailTemplate(EmailTemplateEntity entity){
-        entity.setId(idGenerator.nextId());
+        entity.setId(idGenerator.nextId(EmailId.class));
         entity.setCreatedBy("internal system");
         entity.setCreatedTime(new Date());
         return (Long) emailTemplateDao.save(entity);
