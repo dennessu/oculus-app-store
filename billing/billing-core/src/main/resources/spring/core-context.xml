@@ -12,5 +12,4 @@
     <bean id="balanceService" class="com.junbo.billing.core.service.BalanceServiceImpl"/>
     <bean id="transactionService" class="com.junbo.billing.core.service.TransactionServiceImpl"/>
     <bean id="currencyService" class="com.junbo.billing.core.service.CurrencyServiceImpl"/>
-
 </beans>
