@@ -6,8 +6,12 @@
 package com.junbo.cart.db.dao;
 
 import com.junbo.cart.db.util.Generator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
+
+import javax.sql.DataSource;
 
 /**
  * Created by fzhang@wan-san.com on 14-1-21.
@@ -17,5 +21,12 @@ import org.springframework.test.context.testng.AbstractTransactionalTestNGSpring
 public class DaoTestBase extends AbstractTransactionalTestNGSpringContextTests {
 
     protected Generator testGenerator = new Generator();
+
+    @Override
+    @Autowired
+    @Qualifier("cartDataSource")
+    public void setDataSource(DataSource dataSource) {
+        super.setDataSource(dataSource);
+    }
 
 }
