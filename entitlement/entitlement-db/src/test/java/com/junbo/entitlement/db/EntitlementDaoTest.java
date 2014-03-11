@@ -85,8 +85,8 @@ public class EntitlementDaoTest extends AbstractTransactionalTestNGSpringContext
         }
 
         EntitlementSearchParam searchParam = new EntitlementSearchParam();
-        searchParam.setUserId(userId);
-        searchParam.setDeveloperId(developerId);
+        searchParam.setUserId(new UserId(userId));
+        searchParam.setDeveloperId(new UserId(developerId));
 
         PageMetadata pageMetadata = new PageMetadata();
         pageMetadata.setStart(0);
@@ -134,7 +134,7 @@ public class EntitlementDaoTest extends AbstractTransactionalTestNGSpringContext
             entitlementRepository.insert(entitlement);
         }
 
-        EntitlementSearchParam searchParam = new EntitlementSearchParam.Builder(userId, developerId)
+        EntitlementSearchParam searchParam = new EntitlementSearchParam.Builder(new UserId(userId), new UserId(developerId))
                 .status(EntitlementStatus.ACTIVE.toString()).build();
 
         PageMetadata pageMetadata = new PageMetadata();

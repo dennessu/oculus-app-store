@@ -52,13 +52,6 @@ public interface EntitlementResource {
     Promise<Response> deleteEntitlement(@PathParam("entitlementId") EntitlementId entitlementId);
 
     @POST
-    @Path("entitlements/search")
-    @Consumes({MediaType.APPLICATION_JSON})
-    Promise<ResultList<Entitlement>> searchEntitlements(
-            @Valid EntitlementSearchParam searchParam,
-            @BeanParam PageMetadata pageMetadata);
-
-    @POST
     @Path("entitlements/transfer")
     @Consumes({MediaType.APPLICATION_JSON})
     Promise<Entitlement> transferEntitlement(@Valid EntitlementTransfer entitlementTransfer);

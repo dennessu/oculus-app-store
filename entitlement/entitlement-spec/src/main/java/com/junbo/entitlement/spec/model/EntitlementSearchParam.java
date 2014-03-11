@@ -6,9 +6,9 @@
 
 package com.junbo.entitlement.spec.model;
 
-import com.junbo.common.jackson.annotation.EntitlementDefinitionId;
-import com.junbo.common.jackson.annotation.OfferId;
-import com.junbo.common.jackson.annotation.UserId;
+import com.junbo.common.id.OfferId;
+import com.junbo.common.id.UserId;
+import com.junbo.common.id.EntitlementDefinitionId;
 
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.QueryParam;
@@ -21,15 +21,12 @@ import java.util.Set;
 public class EntitlementSearchParam {
     @NotNull
     @QueryParam("userId")
-    @UserId
-    private Long userId;
+    private UserId userId;
     @NotNull
     @QueryParam("developerId")
-    @UserId
-    private Long developerId;
+    private UserId developerId;
     @QueryParam("offerIds")
-    @OfferId
-    private Set<Long> offerIds;
+    private Set<OfferId> offerIds;
     @QueryParam("type")
     private String type;
     @QueryParam("status")
@@ -40,41 +37,52 @@ public class EntitlementSearchParam {
     @QueryParam("tags")
     private Set<String> tags;
     @QueryParam("definitionIds")
-    @EntitlementDefinitionId
-    private Set<Long> definitionIds;
+    private Set<EntitlementDefinitionId> definitionIds;
 
+    @QueryParam("startGrantTime")
     private Date startGrantTime;
+    @QueryParam("endGrantTime")
     private Date endGrantTime;
+    @QueryParam("startExpirationTime")
     private Date startExpirationTime;
+    @QueryParam("endExpirationTime")
     private Date endExpirationTime;
-
+    @QueryParam("lastModifiedTime")
     private Date lastModifiedTime;
 
     public EntitlementSearchParam() {
     }
 
-    public Long getUserId() {
+    public UserId getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(UserId userId) {
         this.userId = userId;
     }
 
-    public Long getDeveloperId() {
+    public UserId getDeveloperId() {
         return developerId;
     }
 
-    public void setDeveloperId(Long developerId) {
+    public void setDeveloperId(UserId developerId) {
         this.developerId = developerId;
     }
 
-    public Set<Long> getOfferIds() {
+    public Set<OfferId> getOfferIds() {
         return offerIds;
     }
 
-    public void setOfferIds(Set<Long> offerIds) {
+    public void setOfferIds(Set<OfferId> offerIds) {
         this.offerIds = offerIds;
+    }
+
+    public Set<EntitlementDefinitionId> getDefinitionIds() {
+        return definitionIds;
+    }
+
+    public void setDefinitionIds(Set<EntitlementDefinitionId> definitionIds) {
+        this.definitionIds = definitionIds;
     }
 
     public String getType() {
@@ -149,27 +157,20 @@ public class EntitlementSearchParam {
         this.lastModifiedTime = lastModifiedTime;
     }
 
-    public Set<Long> getDefinitionIds() {
-        return definitionIds;
-    }
-
-    public void setDefinitionIds(Set<Long> definitionIds) {
-        this.definitionIds = definitionIds;
-    }
 
     /**
      * a builder for SearchParam.
      */
     public static class Builder {
-        private Long userId;
-        private Long developerId;
-        private Set<Long> offerIds;
+        private UserId userId;
+        private UserId developerId;
+        private Set<OfferId> offerIds;
         private String type;
         private String status;
 
         private Set<String> groups;
         private Set<String> tags;
-        private Set<Long> definitionIds;
+        private Set<EntitlementDefinitionId> definitionIds;
 
         private Date startGrantTime;
         private Date endGrantTime;
@@ -178,12 +179,12 @@ public class EntitlementSearchParam {
 
         private Date lastModifiedTime;
 
-        public Builder(Long userId, Long developerId) {
+        public Builder(UserId userId, UserId developerId) {
             this.userId = userId;
             this.developerId = developerId;
         }
 
-        public Builder offerIds(Set<Long> val) {
+        public Builder offerIds(Set<OfferId> val) {
             offerIds = val;
             return this;
         }
@@ -233,7 +234,7 @@ public class EntitlementSearchParam {
             return this;
         }
 
-        public Builder definitionIds(Set<Long> val) {
+        public Builder definitionIds(Set<EntitlementDefinitionId> val) {
             definitionIds = val;
             return this;
         }
