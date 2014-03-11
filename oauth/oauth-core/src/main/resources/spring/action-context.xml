@@ -27,6 +27,11 @@
 
     <bean id="buildRedirectUri" class="com.junbo.oauth.core.action.BuildRedirectUri"/>
 
+    <bean id="clearLoginCookies" class="com.junbo.oauth.core.action.ClearLoginCookies">
+        <property name="loginStateRepository" ref="loginStateRepository"/>
+        <property name="rememberMeTokenRepository" ref="rememberMeTokenRepository"/>
+    </bean>
+
     <bean id="generateAccessTokenResponse" class="com.junbo.oauth.core.action.GenerateAccessTokenResponse"/>
 
     <bean id="getAccessTokenInfo" class="com.junbo.oauth.core.action.GetAccessTokenInfo">
@@ -88,6 +93,8 @@
         <property name="loginStateRepository" ref="loginStateRepository"/>
         <property name="rememberMeTokenRepository" ref="rememberMeTokenRepository"/>
         <property name="tokenGenerationService" ref="tokenGenerationService"/>
+        <property name="clientRepository" ref="clientRepository"/>
+        <property name="confirmationUri" value="${oauth.core.portal.logoutConfirmationUri}"/>
     </bean>
 
     <bean id="redirect" class="com.junbo.oauth.core.action.Redirect"/>

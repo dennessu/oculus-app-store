@@ -28,5 +28,5 @@ interface TokenGenerationService {
     IdToken generateIdToken(Client client, String issuer, Long userId, String nonce, Date lastAuthDate,
                             AuthorizationCode code, AccessToken accessToken)
 
-    IdToken parseIdToken(String tokenValue, Client client)
+    IdToken parseIdToken(String tokenValue)
 }

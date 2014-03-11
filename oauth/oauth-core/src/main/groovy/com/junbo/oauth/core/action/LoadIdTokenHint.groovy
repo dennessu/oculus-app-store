@@ -56,7 +56,7 @@ class LoadIdTokenHint implements Action {
             return Promise.pure(null)
         }
 
-        IdToken idToken = tokenGenerationService.parseIdToken(idTokenHint, client)
+        IdToken idToken = tokenGenerationService.parseIdToken(idTokenHint)
 
         String issuer = client.idTokenIssuer
 

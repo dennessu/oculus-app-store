@@ -10,9 +10,11 @@ import com.junbo.langur.core.webflow.executor.FlowExecutor
 import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.util.ResponseUtil
 import com.junbo.oauth.spec.endpoint.EndSessionEndpoint
+import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.context.annotation.Scope
+import org.springframework.util.StringUtils
 
 import javax.ws.rs.container.ContainerRequestContext
 import javax.ws.rs.core.HttpHeaders
@@ -47,6 +49,13 @@ class EndSessionEndpointImpl implements EndSessionEndpoint {
         requestScope[ActionContextWrapper.HEADER_MAP] = httpHeaders.requestHeaders
         requestScope[ActionContextWrapper.COOKIE_MAP] = httpHeaders.cookies
 
-        return flowExecutor.start(endSessionFlow, requestScope).then(ResponseUtil.WRITE_RESPONSE_CLOSURE)
+        String conversationId = uriInfo.queryParameters.getFirst(OAuthParameters.CONVERSATION_ID)
+        String event = uriInfo.queryParameters.getFirst(OAuthParameters.EVENT)
+
+        if (StringUtils.isEmpty(conversationId)) {
+            return flowExecutor.start(endSessionFlow, requestScope).then(ResponseUtil.WRITE_RESPONSE_CLOSURE)
+        }
+
+        return flowExecutor.resume(conversationId, event, requestScope).then(ResponseUtil.WRITE_RESPONSE_CLOSURE)
     }
 }
