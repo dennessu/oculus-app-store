@@ -10,11 +10,9 @@ import com.junbo.catalog.spec.model.common.EntitiesGetOptions;
 import com.junbo.catalog.spec.model.common.EntityGetOptions;
 import com.junbo.catalog.spec.model.common.ResultList;
 import com.junbo.catalog.spec.model.promotion.Promotion;
-import com.junbo.common.id.Id;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 
-import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
@@ -32,7 +30,7 @@ public interface PromotionResource {
 
     @GET
     @Path("/{promotionId}")
-    Promise<Promotion> getPromotion(@PathParam("promotionId") Id promotionId, @BeanParam EntityGetOptions options);
+    Promise<Promotion> getPromotion(@PathParam("promotionId") Long promotionId, @BeanParam EntityGetOptions options);
 
     /**
      * Create a draft promotion, the created promotion is not purchasable until it is released.
@@ -42,9 +40,9 @@ public interface PromotionResource {
      */
     @POST
     @Path("/")
-    Promise<Promotion> create(@Valid Promotion promotion);
+    Promise<Promotion> create(Promotion promotion);
 
     @PUT
     @Path("/{promotionId}")
-    Promise<Promotion> update(@PathParam("promotionId") Id promotionId, @Valid Promotion promotion);
+    Promise<Promotion> update(@PathParam("promotionId") Long promotionId, Promotion promotion);
 }
