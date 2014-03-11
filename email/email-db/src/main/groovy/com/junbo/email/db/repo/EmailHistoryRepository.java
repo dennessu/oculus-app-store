@@ -5,12 +5,13 @@
  */
 package com.junbo.email.db.repo;
 
+import com.junbo.common.id.EmailId;
 import com.junbo.email.db.dao.EmailHistoryDao;
 import com.junbo.email.db.entity.EmailHistoryEntity;
 import com.junbo.email.db.entity.EmailStatus;
 import com.junbo.email.db.mapper.EmailMapper;
 import com.junbo.email.spec.model.Email;
-import com.junbo.sharding.IdGenerator;
+import com.junbo.sharding.IdGeneratorFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -28,7 +29,7 @@ public class EmailHistoryRepository {
     private EmailMapper emailMapper;
 
     @Autowired
-    private IdGenerator idGenerator;
+    private IdGeneratorFacade idGenerator;
 
     public Long updateEmailHistory(Email email) {
         EmailHistoryEntity entity = updateEmailHistoryEntity(emailMapper.toEmailHistoryEntity(email));
@@ -54,9 +55,9 @@ public class EmailHistoryRepository {
 
     private Long getId(Long userId) {
         if(userId != null) {
-            return idGenerator.nextId(userId);
+            return idGenerator.nextId(EmailId.class, userId);
         }
-        return idGenerator.nextId();
+        return idGenerator.nextId(EmailId.class);
     }
 
     private EmailHistoryEntity updateEmailHistoryEntity(EmailHistoryEntity entity) {

@@ -33,7 +33,7 @@ public class IdTypeFromStringProvider implements ParamConverterProvider {
                 if(!(obj instanceof Id)) {
                     return null;
                 }
-                ((Id)obj).setValue(IdFormatter.decodeFormattedId(rawType, value));
+                ((Id)obj).setValue(IdFormatter.decodeId(rawType, value));
                 return obj;
             }
         };
