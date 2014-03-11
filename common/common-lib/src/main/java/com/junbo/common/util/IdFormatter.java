@@ -13,8 +13,8 @@ import com.junbo.common.shuffle.Oculus48Id;
 /**
  * Created by liangfu on 3/7/14.
  */
-public class IdFormat {
-    private IdFormat() {
+public class IdFormatter {
+    private IdFormatter() {
     }
 
     public static Long decodeFormattedId(Class cls, String formattedId) {
