@@ -52,7 +52,7 @@ public class PaymentRepoTest extends BaseTest {
         });
         pi.setPhone(new Phone(){
             {
-                setType(PhoneType.Home.toString());
+                setType(PhoneType.HOME.toString());
                 setNumber("12334455");
             }
         });
