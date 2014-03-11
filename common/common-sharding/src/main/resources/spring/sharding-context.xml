@@ -144,7 +144,7 @@
     <bean id="idGeneratorFacade" class="com.junbo.sharding.IdGeneratorFacadeImpl">
         <constructor-arg name="map">
             <map>
-                <entry key="com.junbo.common.id.OfferId" value-ref="oculus40IdGenerator" />
+                <entry key="com.junbo.common.id.OrderId" value-ref="oculus40IdGenerator" />
             </map>
         </constructor-arg>
         <constructor-arg name="idGenerator" ref="oculus48IdGenerator" />
