@@ -6,7 +6,9 @@
 
 package com.junbo.ewallet.db.entity.hibernate;
 
+import com.junbo.ewallet.db.entity.def.IdentifiableType;
 import com.junbo.ewallet.db.entity.def.TransactionType;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;
 import javax.persistence.Table;
@@ -34,6 +36,7 @@ public class TransactionEntity extends EntityWithCreated {
     }
 
     @Column(name = "type")
+    @Type(type = IdentifiableType.TYPE)
     public TransactionType getType() {
         return type;
     }

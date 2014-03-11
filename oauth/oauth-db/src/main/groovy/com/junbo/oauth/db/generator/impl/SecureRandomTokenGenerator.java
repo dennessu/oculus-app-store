@@ -27,6 +27,9 @@ public class SecureRandomTokenGenerator implements TokenGenerator {
     private int loginStateLength;
     private String loginStatePostfix;
 
+    private int sessionStateLength;
+    private String sessionStatePostfix;
+
     private int flowStateLength;
     private String flowStatePostfix;
 
@@ -114,6 +117,16 @@ public class SecureRandomTokenGenerator implements TokenGenerator {
         this.rememberMeTokenSeriesLength = rememberMeTokenSeriesLength;
     }
 
+    @Required
+    public void setSessionStateLength(int sessionStateLength) {
+        this.sessionStateLength = sessionStateLength;
+    }
+
+    @Required
+    public void setSessionStatePostfix(String sessionStatePostfix) {
+        this.sessionStatePostfix = sessionStatePostfix;
+    }
+
     private String generate(int length) {
         byte[] bytes = new byte[length];
         random.nextBytes(bytes);
@@ -139,6 +152,11 @@ public class SecureRandomTokenGenerator implements TokenGenerator {
     @Override
     public String generateLoginStateId() {
         return generate(loginStateLength) + loginStatePostfix;
+    }
+
+    @Override
+    public String generateSessionStateId() {
+        return generate(sessionStateLength) + sessionStatePostfix;
     }
 
     @Override

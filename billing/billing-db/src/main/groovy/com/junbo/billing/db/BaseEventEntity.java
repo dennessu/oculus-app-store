@@ -19,7 +19,7 @@ import java.util.Date;
 @MappedSuperclass
 public class BaseEventEntity implements Serializable {
     private Long eventId;
-    private Short actionId;
+    private Short actionTypeId;
     private Short statusId;
     private Date eventDate;
 
@@ -32,13 +32,13 @@ public class BaseEventEntity implements Serializable {
         this.eventId = eventId;
     }
 
-    @Column(name = "action_id")
+    @Column(name = "action_type_id")
     @NotNull(message = EntityValidationCode.MISSING_VALUE)
-    public Short getActionId() {
-        return actionId;
+    public Short getActionTypeId() {
+        return actionTypeId;
     }
-    public void setActionId(Short actionId) {
-        this.actionId = actionId;
+    public void setActionTypeId(Short actionTypeId) {
+        this.actionTypeId = actionTypeId;
     }
 
     @Column(name = "status_id")

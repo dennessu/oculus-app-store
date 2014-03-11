@@ -4,9 +4,9 @@ exports.Index =  function(req, res){
 };
 
 exports.ProductDetail =  function(req, res){
-    res.render('product_detail', {layout: 'layout', title: 'Product Detail'});
+    res.render('detail', {layout: 'layout', title: 'Product Detail'});
 };
 
 exports.ShoppingCart =  function(req, res){
-    res.render('shopping_cart', {layout: 'layout', title: 'Store Demo'});
+    res.render('cart', {layout: 'layout', title: 'Shopping Cart'});
 };

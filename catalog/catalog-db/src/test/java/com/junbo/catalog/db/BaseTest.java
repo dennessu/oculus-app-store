@@ -6,9 +6,13 @@
 
 package com.junbo.catalog.db;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
+
+import javax.sql.DataSource;
 
 /**
  * Created by baojing on 2/18/14.
@@ -16,6 +20,12 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 @ContextConfiguration(locations = {"classpath:spring/context-test.xml"})
 @TransactionConfiguration(defaultRollback = false)
 public class BaseTest extends AbstractTransactionalTestNGSpringContextTests {
+    @Override
+    @Autowired
+    @Qualifier("catalogDataSource")
+    public void setDataSource(DataSource dataSource) {
+        super.setDataSource(dataSource);
+    }
     /**
      * <p>Simple entity id generator.</p>
      *

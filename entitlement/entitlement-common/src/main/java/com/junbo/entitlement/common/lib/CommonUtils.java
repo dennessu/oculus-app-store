@@ -7,9 +7,12 @@
 package com.junbo.entitlement.common.lib;
 
 import com.junbo.entitlement.common.def.EntitlementConsts;
+import com.junbo.entitlement.common.def.Function;
 import org.springframework.util.StringUtils;
 
 import javax.ws.rs.core.UriBuilder;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Common Util.
@@ -35,5 +38,13 @@ public class CommonUtils {
             return !StringUtils.isEmpty(o);
         }
         return Boolean.TRUE;
+    }
+
+    public static <T, U> Set<U> select(Set<T> values, Function<U, T> function) {
+        Set<U> result = new HashSet<U>();
+        for (T t : values) {
+            result.add(function.apply(t));
+        }
+        return result;
     }
 }

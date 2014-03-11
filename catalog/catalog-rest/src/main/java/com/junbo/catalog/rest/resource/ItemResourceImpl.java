@@ -12,7 +12,6 @@ import com.junbo.catalog.spec.model.common.EntityGetOptions;
 import com.junbo.catalog.spec.model.common.ResultList;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.resource.ItemResource;
-import com.junbo.common.id.Id;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -31,8 +30,8 @@ public class ItemResourceImpl extends BaseResourceImpl<Item> implements ItemReso
     }
 
     @Override
-    public Promise<Item> getItem(Id itemId, @BeanParam EntityGetOptions options) {
-        return getItem(itemId, options);
+    public Promise<Item> getItem(Long itemId, @BeanParam EntityGetOptions options) {
+        return get(itemId, options);
     }
 
     @Override

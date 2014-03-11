@@ -13,60 +13,64 @@
     <!-- proxy -->
     <bean id="asyncHttpClient" class="com.ning.http.client.AsyncHttpClient" />
 
+    <bean id="pathParamTranscoder" class="com.junbo.common.json.IdPathParamTranscoder"/>
+    <bean id="transcoder" class="com.junbo.common.json.JsonMessageTranscoder"/>
+    <bean id="queryParamTranscoder" class="com.junbo.common.json.QueryParamTranscoderImpl"/>
+
     <bean id="identityUserClient" class="com.junbo.identity.spec.resource.proxy.UserResourceClientProxy">
         <constructor-arg name="client" ref="asyncHttpClient"/>
+        <constructor-arg name="transcoder" ref="transcoder"/>
+        <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
+        <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder"/>
         <constructor-arg name="target" value="http://localhost:8080/rest"/>
-        <constructor-arg name="transcoder">
-            <bean class="com.junbo.common.json.JsonMessageTranscoder"/>
-        </constructor-arg>
     </bean>
 
     <bean id="billingBalanceClient" class="com.junbo.billing.spec.resource.proxy.BalanceResourceClientProxy">
         <constructor-arg name="client" ref="asyncHttpClient"/>
+        <constructor-arg name="transcoder" ref="transcoder"/>
+        <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
+        <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder"/>
         <constructor-arg name="target" value="http://localhost:8080/rest"/>
-        <constructor-arg name="transcoder">
-            <bean class="com.junbo.common.json.JsonMessageTranscoder"/>
-        </constructor-arg>
     </bean>
 
     <bean id="billingShippingAddressClient" class="com.junbo.billing.spec.resource.proxy.ShippingAddressResourceClientProxy">
         <constructor-arg name="client" ref="asyncHttpClient"/>
+        <constructor-arg name="transcoder" ref="transcoder"/>
+        <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
+        <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder"/>
         <constructor-arg name="target" value="http://localhost:8080/rest"/>
-        <constructor-arg name="transcoder">
-            <bean class="com.junbo.common.json.JsonMessageTranscoder"/>
-        </constructor-arg>
     </bean>
 
     <bean id="ratingClient" class="com.junbo.rating.spec.resource.proxy.RatingResourceClientProxy">
         <constructor-arg name="client" ref="asyncHttpClient"/>
+        <constructor-arg name="transcoder" ref="transcoder"/>
+        <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
+        <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder"/>
         <constructor-arg name="target" value="http://localhost:8080/rest"/>
-        <constructor-arg name="transcoder">
-            <bean class="com.junbo.common.json.JsonMessageTranscoder"/>
-        </constructor-arg>
     </bean>
 
     <bean id="offerClient" class="com.junbo.catalog.spec.resource.proxy.OfferResourceClientProxy">
         <constructor-arg name="client" ref="asyncHttpClient"/>
+        <constructor-arg name="transcoder" ref="transcoder"/>
+        <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
+        <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder"/>
         <constructor-arg name="target" value="http://localhost:8080/rest"/>
-        <constructor-arg name="transcoder">
-            <bean class="com.junbo.common.json.JsonMessageTranscoder"/>
-        </constructor-arg>
     </bean>
 
     <bean id="fulfilmentClient" class="com.junbo.fulfilment.spec.resource.proxy.FulfilmentResourceClientProxy">
         <constructor-arg name="client" ref="asyncHttpClient"/>
+        <constructor-arg name="transcoder" ref="transcoder"/>
+        <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
+        <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder"/>
         <constructor-arg name="target" value="http://localhost:8080/rest"/>
-        <constructor-arg name="transcoder">
-            <bean class="com.junbo.common.json.JsonMessageTranscoder"/>
-        </constructor-arg>
     </bean>
 
     <bean id="paymentInstrumentClient" class="com.junbo.payment.spec.resource.proxy.PaymentInstrumentResourceClientProxy">
         <constructor-arg name="client" ref="asyncHttpClient"/>
+        <constructor-arg name="transcoder" ref="transcoder"/>
+        <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
+        <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder"/>
         <constructor-arg name="target" value="http://localhost:8080/rest"/>
-        <constructor-arg name="transcoder">
-            <bean class="com.junbo.common.json.JsonMessageTranscoder"/>
-        </constructor-arg>
     </bean>
 
     <!-- cache -->

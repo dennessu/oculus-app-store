@@ -19,4 +19,6 @@ public interface TransactionRepository {
     Transaction getTransaction(Long transactionId);
 
     List<Transaction> getTransactions(Long balanceId);
+
+    Transaction updateTransaction(Transaction transaction);
 }

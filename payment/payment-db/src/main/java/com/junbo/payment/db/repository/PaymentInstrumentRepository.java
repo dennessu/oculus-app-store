@@ -6,7 +6,7 @@
 
 package com.junbo.payment.db.repository;
 
-import com.junbo.common.id.UserId;
+import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.oom.core.MappingContext;
 import com.junbo.payment.db.dao.paymentinstrument.AddressDao;
 import com.junbo.payment.db.dao.paymentinstrument.CreditCardPaymentInstrumentDao;
@@ -44,17 +44,17 @@ public class PaymentInstrumentRepository {
 
     public void save(PaymentInstrument request){
         PaymentInstrumentEntity piEntity = paymentMapperImpl.toPIEntity(request, new MappingContext());
-        Long piId = idGenerator.nextId(UserId.class, piEntity.getUserId());
+        Long piId = idGenerator.nextId(PaymentInstrumentId.class, piEntity.getUserId());
         Long addressId = null;
         Long phoneId = null;
         if(request.getAddress() != null){
-            addressId = idGenerator.nextId(UserId.class, piId);
+            addressId = idGenerator.nextId(PaymentInstrumentId.class, piId);
             AddressEntity address = paymentMapperImpl.toAddressEntity(request.getAddress(), new MappingContext());
             address.setId(addressId);
             addressDao.save(address);
         }
         if(request.getPhone() != null){
-            phoneId = idGenerator.nextId(UserId.class, piId);
+            phoneId = idGenerator.nextId(PaymentInstrumentId.class, piId);
             PhoneEntity phone = paymentMapperImpl.toPhoneEntity(request.getPhone(), new MappingContext());
             phone.setId(phoneId);
             phoneDao.save(phone);

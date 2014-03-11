@@ -6,6 +6,9 @@
 
 package com.junbo.entitlement.spec.model;
 
+import com.junbo.common.jackson.annotation.EntitlementId;
+import com.junbo.common.jackson.annotation.UserId;
+
 import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
@@ -15,10 +18,13 @@ import java.util.UUID;
 public class EntitlementTransfer {
     private UUID trackingUuid;
     @NotNull
+    @UserId
     private Long userId;
     @NotNull
+    @UserId
     private Long targetUserId;
     @NotNull
+    @EntitlementId
     private Long entitlementId;
 
     public UUID getTrackingUuid() {
