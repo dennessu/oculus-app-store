@@ -13,7 +13,4 @@ public class WalletConst {
     public static final int ACTIVE = 1;
     public static final int LOCKED = 2;
     public static final int EXPIRED = 3;
-
-    public static final String PERSISTED_ENUM_TYPE
-            = "com.junbo.ewallet.db.entity.def.PersistedEnumType";
 }

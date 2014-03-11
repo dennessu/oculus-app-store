@@ -6,6 +6,8 @@
 
 package com.junbo.entitlement.rest.resource;
 
+import com.junbo.common.id.EntitlementId;
+import com.junbo.common.id.UserId;
 import com.junbo.entitlement.common.def.EntitlementConsts;
 import com.junbo.entitlement.common.def.EntitlementStatusReason;
 import com.junbo.entitlement.common.lib.CommonUtils;
@@ -35,16 +37,16 @@ public class EntitlementResourceImpl implements EntitlementResource {
     private UriInfo uriInfo;
 
     @Override
-    public Promise<Entitlement> getEntitlement(Long entitlementId) {
-        Entitlement entitlement = entitlementService.getEntitlement(entitlementId);
+    public Promise<Entitlement> getEntitlement(EntitlementId entitlementId) {
+        Entitlement entitlement = entitlementService.getEntitlement(entitlementId.getValue());
         return Promise.pure(entitlement);
     }
 
     @Override
-    public Promise<ResultList<Entitlement>> getEntitlements(Long userId,
+    public Promise<ResultList<Entitlement>> getEntitlements(UserId userId,
                                                             EntitlementSearchParam searchParam,
                                                             PageMetadata pageMetadata) {
-        searchParam.setUserId(userId);
+        searchParam.setUserId(userId.getValue());
         List<Entitlement> entitlements = entitlementService.searchEntitlement(searchParam, pageMetadata);
         ResultList<Entitlement> result = new ResultList<Entitlement>();
         result.setCriteria(entitlements);
@@ -77,7 +79,7 @@ public class EntitlementResourceImpl implements EntitlementResource {
     }
 
     @Override
-    public Promise<Entitlement> updateEntitlement(Long entitlementId, Entitlement entitlement) {
+    public Promise<Entitlement> updateEntitlement(EntitlementId entitlementId, Entitlement entitlement) {
         UUID trackingUuid = entitlement.getTrackingUuid();
         if (trackingUuid != null) {
             Entitlement existingEntitlement
@@ -91,12 +93,12 @@ public class EntitlementResourceImpl implements EntitlementResource {
             entitlement.setExpirationTime(new Date(entitlement.getGrantTime().getTime()
                     + TimeUnit.SECONDS.toMillis(entitlement.getPeriod())));
         }
-        return Promise.pure(entitlementService.updateEntitlement(entitlementId, entitlement));
+        return Promise.pure(entitlementService.updateEntitlement(entitlementId.getValue(), entitlement));
     }
 
     @Override
-    public Promise<Response> deleteEntitlement(Long entitlementId) {
-        entitlementService.deleteEntitlement(entitlementId, EntitlementStatusReason.DELETED);
+    public Promise<Response> deleteEntitlement(EntitlementId entitlementId) {
+        entitlementService.deleteEntitlement(entitlementId.getValue(), EntitlementStatusReason.DELETED);
         return Promise.pure(Response.status(204).build());
     }
 

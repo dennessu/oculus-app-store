@@ -6,6 +6,11 @@
 
 package com.junbo.entitlement.spec.model;
 
+import com.junbo.common.jackson.annotation.EntitlementDefinitionId;
+import com.junbo.common.jackson.annotation.OfferId;
+import com.junbo.common.jackson.annotation.UserId;
+
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.QueryParam;
 import java.util.Date;
 import java.util.Set;
@@ -14,11 +19,16 @@ import java.util.Set;
  * EntitlementSearchParam Model.
  */
 public class EntitlementSearchParam {
+    @NotNull
     @QueryParam("userId")
+    @UserId
     private Long userId;
+    @NotNull
     @QueryParam("developerId")
+    @UserId
     private Long developerId;
     @QueryParam("offerIds")
+    @OfferId
     private Set<Long> offerIds;
     @QueryParam("type")
     private String type;
@@ -30,6 +40,7 @@ public class EntitlementSearchParam {
     @QueryParam("tags")
     private Set<String> tags;
     @QueryParam("definitionIds")
+    @EntitlementDefinitionId
     private Set<Long> definitionIds;
 
     private Date startGrantTime;
