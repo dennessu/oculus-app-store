@@ -1,25 +1,48 @@
-var app = require('http').createServer(handler)
-    , io = require('socket.io').listen(app)
-    , fs = require('fs')
+var http = require('http');
+var path = require('path');
+var socketIO = require('socket.io');
+var express = require('express');
+var partials = require('express-partials');
+var appConfig = require('./configs');
+var routes = require('./routes');
+var events = require('./events');
 
-app.listen(80);
+var app = express();
 
-function handler (req, res) {
-    fs.readFile(__dirname + '/index.html',
-        function (err, data) {
-            if (err) {
-                res.writeHead(500);
-                return res.end('Error loading index.html');
-            }
+// init
+appConfig.Init(process.argv);
 
-            res.writeHead(200);
-            res.end(data);
-        });
+// all environments
+app.set('port', process.env.PORT || 3000);
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
+app.use(express.logger('dev'));
+app.use(express.json());
+app.use(express.urlencoded());
+app.use(express.methodOverride());
+app.use(partials());
+app.use(app.router);
+app.use(express.static(path.join(__dirname, 'public')));
+
+// development only
+if ('development' == app.get('env')) {
+  app.use(express.errorHandler());
 }
 
-io.sockets.on('connection', function (socket) {
-    socket.emit('news', { hello: 'world' });
-    socket.on('my other event', function (data) {
-        console.log(data);
+routes(app);
+
+var server = http.createServer(app);
+var io = socketIO.listen(server);
+io.sockets.on("connection", events);
+
+function Run(){
+    server.listen(app.get('port'), function(){
+        console.log('Express server listening on port ' + app.get('port'));
     });
-});
+}
+
+if(!module.parent){
+    Run();
+}else{
+    exports.Run = Run;
+}

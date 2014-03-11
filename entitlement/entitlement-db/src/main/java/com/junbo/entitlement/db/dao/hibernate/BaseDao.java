@@ -26,7 +26,6 @@ import java.util.*;
  * @param <T> Entity type
  */
 public class BaseDao<T extends Entity> {
-    @Autowired
     private SessionFactory sessionFactory;
     @Autowired
     private IdGenerator idGenerator;
@@ -63,6 +62,14 @@ public class BaseDao<T extends Entity> {
 
     public void setEntityType(Class<T> entityType) {
         this.entityType = entityType;
+    }
+
+    public SessionFactory getSessionFactory() {
+        return sessionFactory;
+    }
+
+    public void setSessionFactory(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
     }
 
     protected Long generateId(Long shardId) {

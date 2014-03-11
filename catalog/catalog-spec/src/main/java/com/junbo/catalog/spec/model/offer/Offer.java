@@ -8,7 +8,6 @@ package com.junbo.catalog.spec.model.offer;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.catalog.spec.model.common.BaseModel;
-import com.junbo.common.jackson.annotation.CategoryId;
 import com.junbo.common.jackson.annotation.OfferId;
 import com.junbo.common.jackson.annotation.UserId;
 
@@ -39,8 +38,10 @@ public class Offer extends BaseModel {
 
     private Restriction restriction;
 
-    @CategoryId
-    private List<Long> categories;
+    private List<Long> attributes;
+
+    //@CategoryId
+    //private List<Long> categories;
     private List<Event> events;
     private List<String> eligibleCountries;
     private Map<String, Map<String, String>> countryProperties;
@@ -111,12 +112,21 @@ public class Offer extends BaseModel {
         this.restriction = restriction;
     }
 
-    public List<Long> getCategories() {
+    /*public List<Long> getCategories() {
         return categories;
     }
 
     public void setCategories(List<Long> categories) {
         this.categories = categories;
+    }
+*/
+
+    public List<Long> getAttributes() {
+        return attributes;
+    }
+
+    public void setAttributes(List<Long> attributes) {
+        this.attributes = attributes;
     }
 
     public List<Event> getEvents() {

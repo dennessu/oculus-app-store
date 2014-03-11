@@ -6,8 +6,6 @@
 
 package com.junbo.sharding.impl;
 
-import com.junbo.sharding.IdSchema;
-
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;

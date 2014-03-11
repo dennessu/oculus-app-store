@@ -19,12 +19,16 @@ public class CategoryConverter {
 
     public static CategoryDraftEntity toDraftEntity(Category model) {
         CategoryDraftEntity entity = new CategoryDraftEntity();
+        fillDraftEntity(model, entity);
+        return entity;
+    }
+
+    public static void fillDraftEntity(Category model, CategoryDraftEntity entity) {
         entity.setName(model.getName());
         entity.setStatus(model.getStatus());
         entity.setRevision(model.getRevision());
         entity.setParentId(model.getParentId());
         entity.setPayload(Utils.toJson(model));
-        return entity;
     }
 
     public static Category toModel(CategoryDraftEntity entity) {

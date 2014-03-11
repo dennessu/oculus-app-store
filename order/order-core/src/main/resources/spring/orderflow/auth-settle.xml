@@ -8,7 +8,8 @@
     <wf:flow id="AUTH_SETTLE">
         <wf:end-state id="endState">
             <wf:on-entry>
-                <wf:action ref="validateAction"/>
+                <wf:action ref="validateUserAction"/>
+                <wf:action ref="validatePaymentInstrumentsAction"/>
                 <wf:action ref="ratingAction"/>
                 <wf:action ref="createOrderAction"/>
                 <wf:action ref="authSettleAction"/>

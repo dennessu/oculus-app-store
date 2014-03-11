@@ -20,11 +20,13 @@ import javax.ws.rs.core.MediaType;
 
 /**
  * Category resource definition.
+ * @deprecated will be abandoned
  */
 @Path("categories")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 @RestResource
+@Deprecated
 public interface CategoryResource {
     @GET
     @Path("/")
@@ -46,7 +48,7 @@ public interface CategoryResource {
 
     @PUT
     @Path("/{categoryId}")
-    Promise<Category> update(@Valid Category category);
+    Promise<Category> update(@PathParam("categoryId") Id categoryId, @Valid Category category);
 
     /**
      * Developer submit an draft category for review.
