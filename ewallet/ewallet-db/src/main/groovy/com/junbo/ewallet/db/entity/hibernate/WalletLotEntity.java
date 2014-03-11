@@ -6,7 +6,7 @@
 
 package com.junbo.ewallet.db.entity.hibernate;
 
-import com.junbo.ewallet.common.def.WalletConst;
+import com.junbo.ewallet.db.entity.def.IdentifiableType;
 import com.junbo.ewallet.db.entity.def.WalletLotType;
 import org.hibernate.annotations.Type;
 
@@ -38,7 +38,7 @@ public class WalletLotEntity extends Entity {
     }
 
     @Column(name = "type")
-    @Type(type = WalletConst.PERSISTED_ENUM_TYPE)
+    @Type(type = IdentifiableType.TYPE)
     public WalletLotType getType() {
         return type;
     }
@@ -76,7 +76,7 @@ public class WalletLotEntity extends Entity {
 
     @Transient
     @Override
-    public Long getShardId() {
+    public Long getShardMasterId() {
         return walletId;
     }
 }

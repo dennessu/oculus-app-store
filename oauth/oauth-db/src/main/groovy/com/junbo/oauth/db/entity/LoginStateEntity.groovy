@@ -16,4 +16,5 @@ class LoginStateEntity {
     Long userId
     Date expiredBy
     Date lastAuthDate
+    String sessionId
 }

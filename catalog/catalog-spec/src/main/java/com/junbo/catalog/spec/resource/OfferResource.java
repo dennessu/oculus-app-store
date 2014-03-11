@@ -46,53 +46,5 @@ public interface OfferResource {
 
     @PUT
     @Path("/{offerId}")
-    Promise<Offer> update(@Valid Offer offer);
-
-    /**
-     * Developer submit an draft offer for review.
-     * @param offerId the id of the offer to be reviewed.
-     * @return the offer to be reviewed.
-     */
-    @POST
-    @Path("/{offerId}/review")
-    Promise<Offer> review(@PathParam("offerId") Id offerId);
-
-    /**
-     * Admin publishes an offer, makes it purchasable.
-     * @param offerId the id of offer to be released.
-     * @return the offer to be released.
-     */
-    @POST
-    @Path("/{offerId}/release")
-    Promise<Offer> release(@PathParam("offerId") Id offerId);
-
-    /**
-     * Admin rejects an offer, developer may update and submit review later.
-     * @param offerId the id of offer to be released.
-     * @return the offer to be released.
-     */
-    // TODO: add review notes
-    @POST
-    @Path("/{offerId}/reject")
-    Promise<Offer> reject(@PathParam("offerId") Id offerId);
-
-    /**
-     * Remove an offer, makes it not purchasable. The draft version is still kept.
-     * Developer may update and submit review again in future.
-     * @param offerId the id of offer to be removed.
-     * @return the removed offer id.
-     */
-    @DELETE
-    @Path("/{offerId}/release")
-    Promise<Void> remove(@PathParam("offerId") Id offerId);
-
-    /**
-     * Delete an offer, delete both draft and released version.
-     * Developer cannot operate this offer again in future.
-     * @param offerId the id of offer to be deleted.
-     * @return the deleted offer id.
-     */
-    @DELETE
-    @Path("/{offerId}")
-    Promise<Void> delete(@PathParam("offerId") Id offerId);
+    Promise<Offer> update(@PathParam("offerId") Id offerId, @Valid Offer offer);
 }

@@ -7,13 +7,14 @@
 package com.junbo.entitlement.core;
 
 import com.junbo.common.error.AppErrorException;
+import com.junbo.common.id.UserId;
 import com.junbo.entitlement.common.def.EntitlementStatusReason;
 import com.junbo.entitlement.common.lib.CloneUtils;
 import com.junbo.entitlement.common.lib.EntitlementContext;
 import com.junbo.entitlement.db.entity.def.EntitlementStatus;
 import com.junbo.entitlement.db.entity.def.EntitlementType;
 import com.junbo.entitlement.spec.model.*;
-import com.junbo.sharding.IdGenerator;
+import com.junbo.sharding.IdGeneratorFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
@@ -33,7 +34,7 @@ import java.util.List;
 @TransactionConfiguration(defaultRollback = true)
 public class EntitlementServiceTest extends AbstractTransactionalTestNGSpringContextTests {
     @Autowired
-    private IdGenerator idGenerator;
+    private IdGeneratorFacade idGenerator;
     @Autowired
     private EntitlementService entitlementService;
     @Autowired
@@ -95,7 +96,7 @@ public class EntitlementServiceTest extends AbstractTransactionalTestNGSpringCon
     @Test
     public void testSearchEntitlements() {
         EntitlementContext.current().setNow(new Date(114, 1, 10));
-        Long userId = idGenerator.nextId();
+        Long userId = idGenerator.nextId(UserId.class);
         for (int i = 0; i < 48; i++) {
             Entitlement entitlementEntity = buildAnEntitlement();
             entitlementEntity.setUserId(userId);
@@ -108,8 +109,8 @@ public class EntitlementServiceTest extends AbstractTransactionalTestNGSpringCon
         EntitlementContext.current().setNow(new Date(114, 2, 30));
 
         EntitlementSearchParam searchParam = new EntitlementSearchParam();
-        searchParam.setUserId(userId);
-        searchParam.setDeveloperId(userId);
+        searchParam.setUserId(new UserId(userId));
+        searchParam.setDeveloperId(new UserId(userId));
         searchParam.setStatus(EntitlementStatus.ACTIVE.toString());
         List<Entitlement> entitlements = entitlementService.searchEntitlement(searchParam, new PageMetadata());
 
@@ -157,18 +158,26 @@ public class EntitlementServiceTest extends AbstractTransactionalTestNGSpringCon
         Assert.assertEquals(entitlement2.getUseCount().intValue(), 40);
     }
 
-    @Test
+    @Test(expectedExceptions = AppErrorException.class)
     public void testUpdateUsedEntitlementDefinition() {
         Entitlement entitlement = buildAnEntitlement();
         entitlement = entitlementService.addEntitlement(entitlement);
         EntitlementDefinition entitlementDefinition = entitlementDefinitionService.getEntitlementDefinition(entitlement.getEntitlementDefinitionId());
         entitlementDefinition.setGroup("ANOTHER_GROUP");
-        try {
-            entitlementDefinitionService.updateEntitlementDefinition(entitlementDefinition.getEntitlementDefinitionId(), entitlementDefinition);
-        } catch (Exception e) {
-            Assert.assertEquals(e.getClass(), AppErrorException.class);
-        }
+        entitlementDefinitionService.updateEntitlementDefinition(entitlementDefinition.getEntitlementDefinitionId(), entitlementDefinition);
 
+        entitlement.setStatus("BANNED");
+        entitlementService.updateEntitlement(entitlement.getEntitlementId(), entitlement);
+        entitlementDefinition = entitlementDefinitionService.updateEntitlementDefinition(entitlementDefinition.getEntitlementDefinitionId(), entitlementDefinition);
+        Assert.assertEquals(entitlementDefinition.getGroup(), "ANOTHER_GROUP");
+    }
+
+    @Test
+    public void testUpdateUnusedEntitlementDefinition() {
+        Entitlement entitlement = buildAnEntitlement();
+        entitlement = entitlementService.addEntitlement(entitlement);
+        EntitlementDefinition entitlementDefinition = entitlementDefinitionService.getEntitlementDefinition(entitlement.getEntitlementDefinitionId());
+        entitlementDefinition.setGroup("ANOTHER_GROUP");
         entitlement.setStatus("BANNED");
         entitlementService.updateEntitlement(entitlement.getEntitlementId(), entitlement);
         entitlementDefinition = entitlementDefinitionService.updateEntitlementDefinition(entitlementDefinition.getEntitlementDefinitionId(), entitlementDefinition);
@@ -178,13 +187,13 @@ public class EntitlementServiceTest extends AbstractTransactionalTestNGSpringCon
     private Entitlement buildAnEntitlement() {
         Entitlement entitlement = new Entitlement();
 
-        entitlement.setUserId(idGenerator.nextId());
+        entitlement.setUserId(idGenerator.nextId(UserId.class));
         entitlement.setConsumable(false);
         entitlement.setGrantTime(new Date(114, 0, 22));
         entitlement.setExpirationTime(new Date(114, 0, 28));
 
         entitlement.setEntitlementDefinitionId(buildAnEntitlementDefinition().getEntitlementDefinitionId());
-        entitlement.setOfferId(idGenerator.nextId());
+        entitlement.setOfferId(idGenerator.nextId(UserId.class));
         entitlement.setStatus(EntitlementStatus.ACTIVE.toString());
         entitlement.setUseCount(0);
         entitlement.setCreatedBy("test");
@@ -200,7 +209,7 @@ public class EntitlementServiceTest extends AbstractTransactionalTestNGSpringCon
         entitlementDefinition.setTag("TEST_ACCESS");
         entitlementDefinition.setGroup("testGroup");
         entitlementDefinition.setType(EntitlementType.DEFAULT.toString());
-        entitlementDefinition.setDeveloperId(idGenerator.nextId());
+        entitlementDefinition.setDeveloperId(idGenerator.nextId(UserId.class));
         entitlementDefinition.setCreatedBy("test");
         entitlementDefinition.setModifiedBy("test");
         entitlementDefinition.setCreatedTime(new Date());

@@ -53,8 +53,4 @@ public class EmailScheduleRepository {
         EmailScheduleEntity entity = emailScheduleDao.get(id);
         return emailMapper.toEmail(entity);
     }
-
-    public EmailScheduleEntity getEmailScheduleEntity(Long id) {
-        return emailScheduleDao.get(id);
-    }
 }

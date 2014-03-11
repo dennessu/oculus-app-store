@@ -37,7 +37,4 @@
 
     <bean id="updateFulfillmentAction" class="com.junbo.order.core.impl.orderaction.UpdateFulfillmentAction">
     </bean>
-
-    <bean id="validateAction" class="com.junbo.order.core.impl.orderaction.ValidateAction">
-    </bean>
 </beans>

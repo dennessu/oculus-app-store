@@ -22,7 +22,7 @@ public interface BaseService<T extends BaseModel> {
     T get(Long entityId, EntityGetOptions options);
     List<T> getEntities(EntitiesGetOptions options);
     T create(T entity);
-    T update(T entity);
+    T update(Long entityId, T entity);
     T review(Long entityId);
     T release(Long entityId);
     T reject(Long entityId);

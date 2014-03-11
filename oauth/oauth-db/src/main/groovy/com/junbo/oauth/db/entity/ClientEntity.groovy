@@ -21,4 +21,6 @@ class ClientEntity extends BaseEntity {
     Set<String> defaultScopes
     Set<ResponseType> allowedResponseTypes
     String idTokenIssuer
+    Set<String> allowedLogoutRedirectUris
+    String defaultLogoutRedirectUri
 }

@@ -16,6 +16,7 @@ import java.util.Date;
 
 /**
  * Base Dao for transactionEntity.
+ *
  * @param <T> Transaction entity type.
  */
 public class TransactionBaseDao<T extends EntityWithCreated> {
@@ -36,7 +37,7 @@ public class TransactionBaseDao<T extends EntityWithCreated> {
 
     public Long insert(T t) {
         Date now = new Date();
-        t.setId(generateId(t.getShardId()));
+        t.setId(generateId(t.getShardMasterId()));
         t.setCreatedBy("DEFAULT"); //TODO
         t.setCreatedTime(now);
         return (Long) currentSession().save(t);

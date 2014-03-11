@@ -6,7 +6,6 @@
 
 package com.junbo.catalog.db.repo;
 
-import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.db.convertor.PromotionConverter;
 import com.junbo.catalog.db.dao.PromotionDraftDao;
 import com.junbo.catalog.db.entity.PromotionDraftEntity;
@@ -31,12 +30,12 @@ public class PromotionDraftRepository implements EntityDraftRepository<Promotion
 
     @Override
     public Long update(Promotion promotion) {
+        if (promotion == null) {
+            return null;
+        }
+
         PromotionDraftEntity promotionDraftEntity = promotionDraftDao.get(promotion.getId());
-        promotionDraftEntity.setName(promotion.getName());
-        promotionDraftEntity.setType(promotion.getType());
-        promotionDraftEntity.setStartDate(promotion.getStartDate());
-        promotionDraftEntity.setEndDate(promotion.getEndDate());
-        promotionDraftEntity.setPayload(Utils.toJson(promotionDraftEntity));
+        PromotionConverter.fillDraftEntity(promotion, promotionDraftEntity);
 
         return promotionDraftDao.update(promotionDraftEntity);
     }

@@ -8,7 +8,6 @@ package com.junbo.catalog.db.repo;
 
 import com.junbo.catalog.db.convertor.OfferConverter;
 import com.junbo.catalog.db.dao.OfferDao;
-import com.junbo.catalog.db.entity.OfferEntity;
 import com.junbo.catalog.spec.model.offer.Offer;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -21,14 +20,11 @@ public class OfferRepository implements EntityRepository<Offer> {
 
     @Override
     public Long create(Offer offer) {
-        OfferEntity entity = OfferConverter.toEntity(offer);
-
-        return offerDao.create(entity);
+        return offerDao.create(OfferConverter.toEntity(offer));
     }
 
     @Override
     public Offer get(Long offerId, Long timestamp) {
-        OfferEntity entity = offerDao.getOffer(offerId, timestamp);
-        return OfferConverter.toModel(entity);
+        return OfferConverter.toModel(offerDao.getOffer(offerId, timestamp));
     }
 }

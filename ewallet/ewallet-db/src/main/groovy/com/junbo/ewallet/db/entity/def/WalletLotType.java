@@ -6,35 +6,23 @@
 
 package com.junbo.ewallet.db.entity.def;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.junbo.common.util.Identifiable;
 
 /**
  * Enum for WalletLotType. Can be sorted by type.
  */
-public enum WalletLotType implements PersistedEnum<WalletLotType> {
+public enum WalletLotType implements Identifiable<Integer> {
     CASH(0),
     PROMOTION(1000);
 
-    public static final Map<Integer, WalletLotType> MAP = new HashMap<Integer, WalletLotType>();
+    private Integer id;
 
-    static {
-        for (WalletLotType type : WalletLotType.values()) {
-            MAP.put(type.getPersistedValue(), type);
-        }
+    WalletLotType(Integer id) {
+        this.id = id;
     }
 
-    private Integer persistedValue;
-
-    WalletLotType(Integer persistedValue) {
-        this.persistedValue = persistedValue;
-    }
-
-    public Integer getPersistedValue() {
-        return persistedValue;
-    }
-
-    public WalletLotType returnEnum(Integer persistedValue) {
-        return MAP.get(persistedValue);
+    @Override
+    public Integer getId() {
+        return id;
     }
 }

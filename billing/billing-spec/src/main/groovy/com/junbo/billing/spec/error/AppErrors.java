@@ -55,6 +55,10 @@ public interface AppErrors {
             description ="Balance total amount {0} invalid")
     AppError invalidBalanceTotal(String total);
 
+    @ErrorDef(httpStatusCode = 403, code = ErrorCode.TAX_CALCULATION_ERROR,
+            description ="Fail to calculate tax, reason: {0}")
+    AppError taxCalculationError(String reason);
+
     @ErrorDef(httpStatusCode = 404, code = ErrorCode.BALANCE_NOT_FOUND,
             description ="Balance with id {0} not found")
     AppError balanceNotFound(String id);

@@ -17,6 +17,9 @@ final class ActionUtils {
 
     static final ActionResult DEFAULT_RESULT = new ActionResult('')
 
+    static final String REQUEST_FLOW_TYPE = 'FLOW_TYPE'
+    static final String REQUEST_ORDER_ID = 'ORDER_ID'
+
     static OrderActionContext getOrderActionContext(ActionContext actionContext) {
         return actionContext.requestScope[SCOPE_ORDER_ACTION_CONTEXT]
     }

@@ -27,4 +27,8 @@ class CookieUtil {
         List<NewCookie> responseCookieList = wrapper.responseCookieList
         responseCookieList.add(cookie)
     }
+
+    static void clearCookie(String cookieName, ActionContext context) {
+        setCookie(cookieName, null, 0, context)
+    }
 }
