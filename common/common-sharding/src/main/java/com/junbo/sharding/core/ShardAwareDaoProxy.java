@@ -27,6 +27,9 @@ public class ShardAwareDaoProxy implements InvocationHandler {
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         //Promise.currentContext().set("shardId", "0");
+
+
+
         return method.invoke(target, args);
     }
 }

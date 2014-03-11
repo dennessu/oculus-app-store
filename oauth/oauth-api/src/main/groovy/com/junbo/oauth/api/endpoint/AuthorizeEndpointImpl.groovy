@@ -6,10 +6,10 @@
 package com.junbo.oauth.api.endpoint
 
 import com.junbo.langur.core.promise.Promise
-import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.executor.FlowExecutor
 import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.exception.AppExceptions
+import com.junbo.oauth.core.util.ResponseUtil
 import com.junbo.oauth.spec.endpoint.AuthorizeEndpoint
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
@@ -19,7 +19,10 @@ import org.springframework.stereotype.Component
 import org.springframework.util.StringUtils
 
 import javax.ws.rs.container.ContainerRequestContext
-import javax.ws.rs.core.*
+import javax.ws.rs.core.HttpHeaders
+import javax.ws.rs.core.MultivaluedMap
+import javax.ws.rs.core.Response
+import javax.ws.rs.core.UriInfo
 
 /**
  * Javadoc.
@@ -42,22 +45,6 @@ class AuthorizeEndpointImpl implements AuthorizeEndpoint {
         this.authorizeFlow = authorizeFlow
     }
 
-    private final static Closure WRITE_RESPONSE_CLOSURE = { ActionContext context ->
-        ActionContextWrapper wrapper = new ActionContextWrapper(context)
-        def responseBuilder = wrapper.responseBuilder
-        def cookieList = wrapper.responseCookieList
-        def headerMap = wrapper.responseHeaderMap
-
-        cookieList.each { NewCookie cookie ->
-            responseBuilder.cookie(cookie)
-        }
-
-        headerMap.each { String key, String value ->
-            responseBuilder.header(key, value)
-        }
-
-        return Promise.pure(responseBuilder.build())
-    }
 
     @Override
     Promise<Response> authorize(UriInfo uriInfo, HttpHeaders httpHeaders, ContainerRequestContext request) {
@@ -71,10 +58,10 @@ class AuthorizeEndpointImpl implements AuthorizeEndpoint {
         String event = uriInfo.queryParameters.getFirst(OAuthParameters.EVENT)
 
         if (StringUtils.isEmpty(conversationId)) {
-            flowExecutor.start(authorizeFlow, requestScope).then(WRITE_RESPONSE_CLOSURE)
-        } else {
-            flowExecutor.resume(conversationId, event, requestScope).then(WRITE_RESPONSE_CLOSURE)
+            return flowExecutor.start(authorizeFlow, requestScope).then(ResponseUtil.WRITE_RESPONSE_CLOSURE)
         }
+
+        return flowExecutor.resume(conversationId, event, requestScope).then(ResponseUtil.WRITE_RESPONSE_CLOSURE)
     }
 
     @Override
@@ -92,6 +79,6 @@ class AuthorizeEndpointImpl implements AuthorizeEndpoint {
             throw AppExceptions.INSTANCE.missingConversationId().exception()
         }
 
-        flowExecutor.resume(conversationId, event, requestScope).then(WRITE_RESPONSE_CLOSURE)
+        return flowExecutor.resume(conversationId, event, requestScope).then(ResponseUtil.WRITE_RESPONSE_CLOSURE)
     }
 }

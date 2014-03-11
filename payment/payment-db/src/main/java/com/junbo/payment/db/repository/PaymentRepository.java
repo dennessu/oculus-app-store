@@ -6,13 +6,10 @@
 
 package com.junbo.payment.db.repository;
 
-import com.junbo.payment.db.dao.payment.MerchantAccountDao;
 import com.junbo.payment.db.dao.payment.PaymentDao;
 import com.junbo.payment.db.dao.payment.PaymentEventDao;
-import com.junbo.payment.db.dao.paymentinstrument.PaymentInstrumentDao;
 import com.junbo.payment.db.entity.payment.PaymentEntity;
 import com.junbo.payment.db.entity.payment.PaymentEventEntity;
-import com.junbo.payment.db.mapper.PaymentMapper;
 import com.junbo.payment.db.mapper.PaymentMapperExtension;
 import com.junbo.payment.spec.enums.PaymentStatus;
 import com.junbo.payment.spec.model.PaymentEvent;
@@ -28,15 +25,10 @@ import java.util.List;
 public class PaymentRepository {
 
     @Autowired
-    private PaymentInstrumentDao paymentInstrumentDao;
-    @Autowired
     private PaymentDao paymentDao;
     @Autowired
     private PaymentEventDao paymentEventDao;
-    @Autowired
-    private MerchantAccountDao merchantAccountDao;
-    @Autowired
-    private PaymentMapper paymentMapperImpl;
+
     @Autowired
     private PaymentMapperExtension paymentMapperExtension;
 

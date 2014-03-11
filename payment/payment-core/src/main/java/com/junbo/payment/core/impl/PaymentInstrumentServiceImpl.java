@@ -15,6 +15,7 @@ import com.junbo.payment.core.provider.PaymentProviderService;
 import com.junbo.payment.core.provider.ProviderRoutingService;
 import com.junbo.payment.core.PaymentInstrumentService;
 import com.junbo.payment.core.util.PaymentUtil;
+import com.junbo.payment.db.repository.PITypeRepository;
 import com.junbo.payment.spec.enums.PIStatus;
 import com.junbo.payment.spec.enums.PIType;
 import com.junbo.payment.db.mapper.PaymentAPI;
@@ -24,6 +25,7 @@ import com.junbo.payment.db.repository.TrackingUuidRepository;
 import com.junbo.payment.spec.model.PageMetaData;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentInstrumentSearchParam;
+import com.junbo.payment.spec.model.PaymentInstrumentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +53,8 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
     private PlatformTransactionManager transactionManager;
     @Autowired
     private TrackingUuidRepository trackingUuidRepository;
+    @Autowired
+    private PITypeRepository piTypeRepository;
 
     @Override
     public Promise<PaymentInstrument> add(final PaymentInstrument request) {
@@ -65,7 +69,6 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
         PaymentProviderService provider = providerRoutingService.getPaymentProvider(
                 PaymentUtil.getPIType(request.getType()));
         //call provider and set result
-        //PaymentInstrument providerResult = provider.add(request);
         return provider.add(request).then(new Promise.Func<PaymentInstrument, Promise<PaymentInstrument>>() {
             @Override
             public Promise<PaymentInstrument> apply(PaymentInstrument paymentInstrument) {
@@ -110,26 +113,6 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
             throw AppClientExceptions.INSTANCE.invalidPaymentInstrumentId(paymentInstrumentId.toString()).exception();
         }
         paymentInstrumentRepository.delete(paymentInstrumentId);
-        /*TODO: need to evaluate whether to delete the PI in BrainTree Side.
-        PaymentProviderService provider = providerRoutingService.getPaymentProvider(
-                PaymentUtil.getPIType(piRequest.getType()));
-        provider.delete(piRequest.getCreditCardRequest().getExternalToken())
-                .then(new Promise.Func<Void, Promise<Void>>() {
-                    @Override
-                    public Promise<Void> apply(Void aVoid) {
-                        AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager);
-                        template.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRES_NEW);
-                        template.execute(new TransactionCallback<Void>() {
-                            @Override
-                            public Void doInTransaction(TransactionStatus status) {
-                                paymentInstrumentRepository.delete(paymentInstrumentId);
-                                return null;
-                            }
-                        });
-                        return null;
-                    }
-                });
-                */
     }
 
     @Override
@@ -188,8 +171,21 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
         return results;
     }
 
+    @Override
+    public PaymentInstrumentType getPIType(String piType) {
+        if(piType == null || piType.isEmpty()){
+            throw AppClientExceptions.INSTANCE.invalidPIType(piType).exception();
+        }
+        PaymentInstrumentType result = piTypeRepository.getPITypeByName(piType);
+        if(result == null){
+            throw AppClientExceptions.INSTANCE.resourceNotFound(piType).exception();
+        }
+        return result;
+    }
+
     private void saveTrackingUuid(PaymentInstrument request, PaymentAPI api){
         if(request.getId() == null){
+            LOGGER.error("payment id should not be empty when store tracking uuid.");
             throw AppServerExceptions.INSTANCE.missingRequiredField("payment_instrument_id").exception();
         }
         TrackingUuid trackingUuid = new TrackingUuid();

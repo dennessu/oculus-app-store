@@ -10,5 +10,5 @@ package com.junbo.payment.spec.enums;
  * phone type enum.
  */
 public enum PhoneType {
-    Home
+    HOME
 }
