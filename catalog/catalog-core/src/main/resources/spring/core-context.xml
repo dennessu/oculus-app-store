@@ -7,7 +7,6 @@
     <tx:annotation-driven/>
     <context:component-scan base-package="com.junbo.catalog.core"/>
 
-    <bean id="categoryService" class="com.junbo.catalog.core.service.CategoryServiceImpl"/>
     <bean id="itemService" class="com.junbo.catalog.core.service.ItemServiceImpl"/>
     <bean id="offerService" class="com.junbo.catalog.core.service.OfferServiceImpl"/>
     <bean id="promotionService" class="com.junbo.catalog.core.service.PromotionServiceImpl"/>

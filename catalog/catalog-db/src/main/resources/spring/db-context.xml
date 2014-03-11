@@ -50,12 +50,6 @@
     <bean id="promotionHistoryDao" class="com.junbo.catalog.db.dao.impl.PromotionDaoImpl" parent="baseDao">
         <property name="entityType" value="com.junbo.catalog.db.entity.PromotionEntity"/>
     </bean>
-    <bean id="categoryDraftDao" class="com.junbo.catalog.db.dao.impl.CategoryDraftDaoImpl" parent="baseDao">
-        <property name="entityType" value="com.junbo.catalog.db.entity.CategoryDraftEntity"/>
-    </bean>
-    <bean id="categoryHistoryDao" class="com.junbo.catalog.db.dao.impl.CategoryDaoImpl" parent="baseDao">
-        <property name="entityType" value="com.junbo.catalog.db.entity.CategoryEntity"/>
-    </bean>
     <bean id="itemDraftDao" class="com.junbo.catalog.db.dao.impl.ItemDraftDaoImpl" parent="baseDao">
         <property name="entityType" value="com.junbo.catalog.db.entity.ItemDraftEntity"/>
     </bean>
@@ -70,8 +64,6 @@
     </bean>
 
     <!-- Repository -->
-    <bean id="categoryDraftRepository" class="com.junbo.catalog.db.repo.CategoryDraftRepository"/>
-    <bean id="categoryHistoryRepository" class="com.junbo.catalog.db.repo.CategoryRepository"/>
     <bean id="itemDraftRepository" class="com.junbo.catalog.db.repo.ItemDraftRepository"/>
     <bean id="itemHistoryRepository" class="com.junbo.catalog.db.repo.ItemRepository"/>
     <bean id="offerDraftRepository" class="com.junbo.catalog.db.repo.OfferDraftRepository"/>
