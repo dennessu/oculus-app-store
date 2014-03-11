@@ -18,6 +18,8 @@ import com.google.common.base.Function;
 
 import com.junbo.langur.core.client.ClientResponseException;
 import com.junbo.langur.core.client.MessageTranscoder;
+import com.junbo.langur.core.client.PathParamTranscoder;
+import com.junbo.langur.core.client.QueryParamTranscoder;
 import com.junbo.langur.core.client.TypeReference;
 
 import static com.ning.http.client.extra.ListenableFutureAdapter.asGuavaFuture;
@@ -33,18 +35,28 @@ public class ${className} implements ${interfaceType} {
 
     private final MessageTranscoder __transcoder;
 
-    public ${className}(AsyncHttpClient client, MessageTranscoder transcoder, String target) {
-        this(client, transcoder, target, new javax.ws.rs.core.MultivaluedHashMap<String, Object>());
+    private final PathParamTranscoder __pathParamTranscoder;
+
+    private final QueryParamTranscoder __queryParamTranscoder;
+
+    public ${className}(AsyncHttpClient client, MessageTranscoder transcoder, PathParamTranscoder pathParamTranscoder,
+                                QueryParamTranscoder queryParamTranscoder, String target) {
+        this(client, transcoder, pathParamTranscoder, queryParamTranscoder, target, new javax.ws.rs.core.MultivaluedHashMap<String, Object>());
     }
 
-    public ${className}(AsyncHttpClient client, MessageTranscoder transcoder, String target, MultivaluedMap<String, Object> headers) {
+    public ${className}(AsyncHttpClient client, MessageTranscoder transcoder, PathParamTranscoder pathParamTranscoder,
+                            QueryParamTranscoder queryParamTranscoder, String target, MultivaluedMap<String, Object> headers) {
         assert client != null : "client is null";
         assert transcoder != null : "transcoder is null";
+        assert pathParamTranscoder != null : "pathParamTranscoder is null";
+        assert queryParamTranscoder != null : "queryParamTranscoder is null";
         assert target != null : "target is null";
         assert headers != null : "headers is null";
 
         __client = client;
         __transcoder = transcoder;
+        __pathParamTranscoder = pathParamTranscoder;
+        __queryParamTranscoder = queryParamTranscoder;
         __target = target;
         __headers = headers;
     }

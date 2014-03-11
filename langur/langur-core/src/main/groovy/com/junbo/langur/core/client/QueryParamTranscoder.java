@@ -4,11 +4,11 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.payment.spec.enums;
+package com.junbo.langur.core.client;
 
 /**
- * phone type enum.
+ * Created by liangfu on 3/11/14.
  */
-public enum PhoneType {
-    HOME
+public interface QueryParamTranscoder {
+    <T> String encode(T pathParam);
 }

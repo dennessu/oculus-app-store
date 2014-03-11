@@ -16,7 +16,7 @@ import com.junbo.payment.spec.enums.PaymentStatus;
 /**
  * payment related utility.
  */
-public class PaymentUtil {
+public final class PaymentUtil {
     private PaymentUtil(){
 
     }

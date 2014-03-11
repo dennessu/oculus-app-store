@@ -5,7 +5,6 @@
  */
 package com.junbo.cart.db.persist
 
-import com.junbo.oom.core.MappingContext
 import com.junbo.cart.common.util.SystemOperation
 import com.junbo.cart.core.service.CartPersistService
 import com.junbo.cart.db.dao.CartDao
@@ -18,8 +17,10 @@ import com.junbo.cart.spec.model.item.CouponItem
 import com.junbo.cart.spec.model.item.OfferItem
 import com.junbo.common.id.CartId
 import com.junbo.common.id.CartItemId
+import com.junbo.common.id.Id
 import com.junbo.common.id.UserId
-import com.junbo.sharding.IdGenerator
+import com.junbo.oom.core.MappingContext
+import com.junbo.sharding.IdGeneratorFacade
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -46,7 +47,7 @@ class CartPersistServiceImpl implements CartPersistService {
     private CartMapper dataMapper
 
     @Autowired
-    private IdGenerator idGenerator
+    private IdGeneratorFacade idGenerator
 
     private final Map<Class, CartItemCallback> itemCallbackMap =
             [
@@ -81,7 +82,7 @@ class CartPersistServiceImpl implements CartPersistService {
         this.dataMapper = dataMapper
     }
 
-    void setIdGenerator(IdGenerator idGenerator) {
+    void setIdGenerator(IdGeneratorFacade idGenerator) {
         this.idGenerator = idGenerator
     }
 
@@ -133,12 +134,12 @@ class CartPersistServiceImpl implements CartPersistService {
     @Transactional
     void saveNewCart(Cart newCart) {
         // add cart
-        long cartId = getId(newCart.user)
+        CartId cartId = getId(newCart.user, CartId)
         Date currentTime = systemOperation.currentTime()
         newCart.createdTime = currentTime
         newCart.updatedTime = currentTime
         newCart.resourceAge = null
-        newCart.id = new CartId(cartId)
+        newCart.id = cartId
         CartEntity cartEntity = dataMapper.toCartEntity(newCart, new MappingContext())
         cartDao.insert(cartEntity)
         newCart.resourceAge = cartEntity.resourceAge
@@ -225,7 +226,7 @@ class CartPersistServiceImpl implements CartPersistService {
     private void saveNew(CartItem newItem, Date currentTime, Cart cart, CartItemDao dao) {
         newItem.createdTime = currentTime
         newItem.updatedTime = currentTime
-        newItem.id = new CartItemId(getId(cart.user))
+        newItem.id = getId(cart.user, CartItemId)
         CartItemEntity entity =  itemCallbackMap[newItem.getClass()].toEntity(newItem)
         entity.cartId = cart.id.value
         entity.status = ItemStatus.OPEN
@@ -261,7 +262,9 @@ class CartPersistServiceImpl implements CartPersistService {
         return result
     }
 
-    private long getId(UserId userId) {
-        return idGenerator.nextId(userId.value)
+    private <T extends Id> T getId(UserId userId, Class<T> type) {
+        T id = type.newInstance()
+        id.value = idGenerator.nextId(type, userId.value)
+        return id
     }
 }

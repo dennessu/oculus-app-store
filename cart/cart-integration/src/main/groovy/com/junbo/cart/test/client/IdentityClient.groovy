@@ -13,7 +13,6 @@ class IdentityClient extends BaseClient {
         User user = new User()
         user.userName = RandomStringUtils.randomAlphabetic(10) + '@wan-san.com'
         user.password = '123456!@a'
-        user.passwordStrength = 'FAIR'
         user.status = 'ACTIVE'
         return new UserResourceClientProxy(asyncHttpClient, messageTranscoder, baseUrl).postUser(user).wrapped().get()
     }

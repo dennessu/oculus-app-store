@@ -20,7 +20,7 @@ import java.util.List;
 
 
 /**
- * brain tree resource implimentation.
+ * brain tree resource implementation.
  */
 public class BrainTreeResourceImpl implements BrainTreeResource {
     @Autowired

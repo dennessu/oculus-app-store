@@ -47,6 +47,11 @@ public class PhoneEntity extends GenericEntity {
         this.id = id;
     }
 
+    @Override
+    public Long getShardMasterId() {
+        return null;
+    }
+
     public PhoneType getType() {
         return type;
     }

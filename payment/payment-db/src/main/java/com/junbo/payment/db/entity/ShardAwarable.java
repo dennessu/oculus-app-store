@@ -4,11 +4,12 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.payment.spec.enums;
+
+package com.junbo.payment.db.entity;
 
 /**
- * phone type enum.
+ * shard id generation interface.
  */
-public enum PhoneType {
-    HOME
+public interface ShardAwarable {
 }
+
