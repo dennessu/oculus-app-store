@@ -6,6 +6,7 @@
 
 package com.junbo.entitlement.db;
 
+import com.junbo.common.id.UserId;
 import com.junbo.entitlement.common.lib.EntitlementContext;
 import com.junbo.entitlement.db.entity.def.EntitlementStatus;
 import com.junbo.entitlement.db.entity.def.EntitlementType;
@@ -15,7 +16,7 @@ import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.model.EntitlementDefinition;
 import com.junbo.entitlement.spec.model.EntitlementSearchParam;
 import com.junbo.entitlement.spec.model.PageMetadata;
-import com.junbo.sharding.IdGenerator;
+import com.junbo.sharding.IdGeneratorFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
@@ -37,7 +38,7 @@ import java.util.Random;
 @TransactionConfiguration(defaultRollback = true)
 public class EntitlementDaoTest extends AbstractTransactionalTestNGSpringContextTests {
     @Autowired
-    private IdGenerator idGenerator;
+    private IdGeneratorFacade idGenerator;
     @Autowired
     private EntitlementRepository entitlementRepository;
     @Autowired
@@ -70,8 +71,8 @@ public class EntitlementDaoTest extends AbstractTransactionalTestNGSpringContext
 
     @Test
     public void testSearch() {
-        Long userId = idGenerator.nextId();
-        Long developerId = idGenerator.nextId();
+        Long userId = idGenerator.nextId(UserId.class);
+        Long developerId = idGenerator.nextId(UserId.class);
         for (int i = 0; i < 48; i++) {
             EntitlementDefinition entitlementDefinition = buildAnEntitlementDefinitionWithoutSave();
             entitlementDefinition.setDeveloperId(developerId);
@@ -119,8 +120,8 @@ public class EntitlementDaoTest extends AbstractTransactionalTestNGSpringContext
 
     @Test
     public void testSearchManagedEntitlements() {
-        Long userId = idGenerator.nextId();
-        Long developerId = idGenerator.nextId();
+        Long userId = idGenerator.nextId(UserId.class);
+        Long developerId = idGenerator.nextId(UserId.class);
         for (int i = 0; i < 48; i++) {
             EntitlementDefinition entitlementDefinition = buildAnEntitlementDefinitionWithoutSave();
             entitlementDefinition.setDeveloperId(developerId);
@@ -170,13 +171,13 @@ public class EntitlementDaoTest extends AbstractTransactionalTestNGSpringContext
         Entitlement entitlement = new Entitlement();
 
         entitlement.setEntitlementId(new Random().nextLong());
-        entitlement.setUserId(idGenerator.nextId());
+        entitlement.setUserId(idGenerator.nextId(UserId.class));
         entitlement.setConsumable(false);
         entitlement.setGrantTime(new Date(114, 0, 22));
         entitlement.setExpirationTime(new Date(114, 0, 28));
 
         entitlement.setEntitlementDefinitionId(buildAnEntitlementDefinition().getEntitlementDefinitionId());
-        entitlement.setOfferId(idGenerator.nextId());
+        entitlement.setOfferId(idGenerator.nextId(UserId.class));
         entitlement.setStatus(EntitlementStatus.ACTIVE.toString());
         entitlement.setUseCount(0);
         entitlement.setCreatedBy("test");
@@ -192,7 +193,7 @@ public class EntitlementDaoTest extends AbstractTransactionalTestNGSpringContext
         entitlementDefinition.setTag("TEST_ACCESS");
         entitlementDefinition.setGroup("testGroup");
         entitlementDefinition.setType(EntitlementType.DEFAULT.toString());
-        entitlementDefinition.setDeveloperId(idGenerator.nextId());
+        entitlementDefinition.setDeveloperId(idGenerator.nextId(UserId.class));
         entitlementDefinition.setCreatedBy("test");
         entitlementDefinition.setModifiedBy("test");
         entitlementDefinition.setCreatedTime(new Date());
@@ -205,7 +206,7 @@ public class EntitlementDaoTest extends AbstractTransactionalTestNGSpringContext
         entitlementDefinition.setTag("TEST_ACCESS");
         entitlementDefinition.setGroup("testGroup");
         entitlementDefinition.setType(EntitlementType.DEFAULT.toString());
-        entitlementDefinition.setDeveloperId(idGenerator.nextId());
+        entitlementDefinition.setDeveloperId(idGenerator.nextId(UserId.class));
         entitlementDefinition.setCreatedBy("test");
         entitlementDefinition.setModifiedBy("test");
         entitlementDefinition.setCreatedTime(new Date());
