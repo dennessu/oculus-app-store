@@ -7,6 +7,7 @@ package com.junbo.sharding.core.hibernate;
 
 import com.junbo.sharding.core.ds.ShardDataSourceKey;
 import com.junbo.sharding.core.ds.ShardDataSourceRegistry;
+import com.junbo.sharding.core.util.PackagesToScanMapper;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -24,6 +25,7 @@ public class SessionFactoryWrapper implements ApplicationContextAware {
     private ApplicationContext applicationContext;
     private ShardDataSourceRegistry dataSourceRegistry;
     private String sessionFactoryBeanName;
+    private PackagesToScanMapper packagesToScanMapper;
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
@@ -38,6 +40,10 @@ public class SessionFactoryWrapper implements ApplicationContextAware {
         this.sessionFactoryBeanName = sessionFactoryBeanName;
     }
 
+    public void setPackagesToScanMapper(PackagesToScanMapper packagesToScanMapper) {
+        this.packagesToScanMapper = packagesToScanMapper;
+    }
+
     private Map<ShardDataSourceKey, SessionFactory> cache = new HashMap<ShardDataSourceKey, SessionFactory>();
 
     public SessionFactory resolve(ShardDataSourceKey key) {
@@ -49,9 +55,9 @@ public class SessionFactoryWrapper implements ApplicationContextAware {
         }
 
         SessionFactory sf = this.createShardedSessionFactory(key.getShardId(), key.getDatabaseName(),
-                "com.junbo.sharding.test.data.dao");
-        cache.put(key, sf);
+                packagesToScanMapper.getPackagesToScan(key.getDatabaseName()));
 
+        cache.put(key, sf);
         return sf;
     }
 
