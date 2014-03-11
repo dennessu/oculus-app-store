@@ -10,8 +10,8 @@ package com.junbo.billing.clientproxy.impl.avalara;
  * Created by LinYi on 14-3-10.
  */
 public enum SeverityLevel {
-    SUCCESS,
-    WARNING,
-    ERROR,
-    EXCEPTION;
+    Success,
+    Warning,
+    Error,
+    Exception;
 }

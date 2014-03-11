@@ -6,12 +6,18 @@
 
 package com.junbo.billing.clientproxy.impl.avalara
 
+import com.fasterxml.jackson.annotation.JsonProperty
+
 /**
  * Created by LinYi on 14-3-10.
  */
 class TaxOverrideDef {
+    @JsonProperty('TaxOverrideType')
     String taxOverrideType
+    @JsonProperty('Reason')
     String reason
+    @JsonProperty('TaxAmount')
     String taxAmount
+    @JsonProperty('TaxDate')
     String taxDate
 }

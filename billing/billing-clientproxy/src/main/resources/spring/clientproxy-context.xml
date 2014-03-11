@@ -24,7 +24,11 @@
     <bean id="identityFacade" class="com.junbo.billing.clientproxy.mock.MockIdentityFacadeImpl" />
     <bean id="paymentFacade" class="com.junbo.billing.clientproxy.mock.MockPaymentFacadeImpl" />
     <bean id="avalaraFacade" class="com.junbo.billing.clientproxy.impl.AvalaraFacadeImpl" />
-    <bean id="avalaraServiceConfiguration" class="com.junbo.billing.clientproxy.impl.avalara.AvalaraConfiguration">
+    <bean id="avalaraConfiguration" class="com.junbo.billing.clientproxy.impl.avalara.AvalaraConfiguration">
         <property name="baseUrl" value="${avalara.baseUrl}"/>
+        <property name="companyCode" value="${avalara.companyCode}"/>
+        <property name="customerCode" value="${avalara.customerCode}"/>
+        <property name="detailLevel" value="${avalara.detailLevel}"/>
+        <property name="authorization" value="${avalara.authorization}"/>
     </bean>
 </beans>

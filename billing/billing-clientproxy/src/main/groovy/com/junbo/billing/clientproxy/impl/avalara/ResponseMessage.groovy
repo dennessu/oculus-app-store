@@ -6,13 +6,20 @@
 
 package com.junbo.billing.clientproxy.impl.avalara
 
+import com.fasterxml.jackson.annotation.JsonProperty
+
 /**
  * Created by LinYi on 14-3-10.
  */
 class ResponseMessage {
+    @JsonProperty('Summary')
     String summary
+    @JsonProperty('Details')
     String details
+    @JsonProperty('RefersTo')
     String refersTo
+    @JsonProperty('Severity')
     SeverityLevel severity
+    @JsonProperty('Source')
     String source
 }

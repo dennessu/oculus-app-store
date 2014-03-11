@@ -47,7 +47,8 @@ class AvalaraFacadeImpl implements AvalaraFacade {
     }
 
     Balance updateBalance(GetTaxResponse response, Balance balance) {
-        if (response.resultCode == SeverityLevel.SUCCESS) {
+        balance.taxAmount = response.totalTax
+        if (response.resultCode == SeverityLevel.Success) {
             for (int i = 0; i < balance.balanceItems.size(); i++) {
                 def item = balance.balanceItems[i]
                 def taxLine = response.taxLines[i]
@@ -68,6 +69,10 @@ class AvalaraFacadeImpl implements AvalaraFacade {
             url = new URL(getTaxUrl)
             connection = (HttpURLConnection)url.openConnection()
             connection.setRequestMethod('POST')
+            connection.setDoOutput(true)
+            connection.setDoInput(true)
+            connection.setUseCaches(false)
+            connection.setAllowUserInteraction(false)
             ObjectMapper mapper = new ObjectMapper()
             mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL)
             String content = mapper.writeValueAsString(request)
@@ -114,8 +119,9 @@ class AvalaraFacadeImpl implements AvalaraFacade {
         shipToAddress.country = shippingAddress.country
         addresses << shipToAddress
 
+        AvalaraAddress billToAddress = null
         if (piAddress != null) {
-            def billToAddress = new AvalaraAddress()
+            billToAddress = new AvalaraAddress()
             billToAddress.addressCode = 'BillToAddress'
             billToAddress.line1 = piAddress.addressLine1
             billToAddress.line2 = piAddress.addressLine2
@@ -126,6 +132,7 @@ class AvalaraFacadeImpl implements AvalaraFacade {
             billToAddress.country = piAddress.country
             addresses << billToAddress
         }
+        request.addresses = addresses
 
         // lines
         def lines = []
@@ -133,8 +140,9 @@ class AvalaraFacadeImpl implements AvalaraFacade {
         balance.balanceItems.each { BalanceItem item ->
             def line = new Line()
             line.lineNo = lineNo++
-            line.destinationCode = 'ShipTo'
-            line.originCode = 'BillTo'
+            // TODO: confirm address collection
+            line.destinationCode = shipToAddress.addressCode
+            line.originCode = billToAddress == null ? shipToAddress.addressCode: billToAddress.addressCode
             line.qty = BigDecimal.valueOf(1)
             line.amount = item.amount
             line.itemCode = item.balanceItemId.value.toString()
@@ -142,6 +150,7 @@ class AvalaraFacadeImpl implements AvalaraFacade {
             lines << line
         }
 
-        request
+        request.lines = lines
+        return request
     }
 }
