@@ -29,11 +29,37 @@
         </property>
     </bean>
 
+    <bean id="httpClient" class="com.ning.http.client.AsyncHttpClient">
+        <constructor-arg>
+            <bean class="com.ning.http.client.AsyncHttpClientConfigBean">
+                <property name="redirectEnabled" value="true"/>
+            </bean>
+        </constructor-arg>
+    </bean>
+
+    <bean id="messageTranscoder" class="com.junbo.common.json.JsonMessageTranscoder"/>
+
+    <bean id="pathParamTranscoder" class="com.junbo.common.json.IdPathParamTranscoder"/>
+
+    <bean id="userResource" class="com.junbo.identity.spec.resource.proxy.UserResourceClientProxy">
+        <constructor-arg ref="httpClient"/>
+        <constructor-arg ref="messageTranscoder"/>
+        <constructor-arg ref="pathParamTranscoder"/>
+        <constructor-arg value="${cart.test.client.identity.url}"/>
+    </bean>
+
+    <bean id="cartResource" class="com.junbo.cart.spec.resource.proxy.CartResourceClientProxy">
+        <constructor-arg ref="httpClient"/>
+        <constructor-arg ref="messageTranscoder"/>
+        <constructor-arg ref="pathParamTranscoder"/>
+        <constructor-arg value="${cart.test.client.cart.url}"/>
+    </bean>
+
     <bean id="identityClient" class="com.junbo.cart.test.client.IdentityClient">
-        <property name="baseUrl" value="${cart.test.client.identity.url}"/>
+        <property name="userResource" ref="userResource"/>
     </bean>
 
     <bean id="cartClient" class="com.junbo.cart.test.client.CartClient">
-        <property name="baseUrl" value="${cart.test.client.cart.url}"/>
+        <property name="cartResource" ref="cartResource"/>
     </bean>
 </beans>
