@@ -20,4 +20,6 @@ class Client {
     Set<String> defaultScopes
     Set<ResponseType> allowedResponseTypes
     String idTokenIssuer
+    Set<String> allowedLogoutRedirectUris
+    String defaultLogoutRedirectUri
 }

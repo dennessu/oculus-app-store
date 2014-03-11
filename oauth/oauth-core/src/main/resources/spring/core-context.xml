@@ -9,6 +9,7 @@
         <property name="defaultRefreshTokenExpiration" value="${oauth.core.refreshToken.default.expiration}"/>
         <property name="defaultIdTokenExpiration" value="${oauth.core.idToken.default.expiration}"/>
         <property name="refreshTokenRepository" ref="refreshTokenRepository"/>
+        <property name="clientRepository" ref="clientRepository"/>
     </bean>
 
     <bean id="userService" class="com.junbo.oauth.core.service.impl.UserServiceImpl">

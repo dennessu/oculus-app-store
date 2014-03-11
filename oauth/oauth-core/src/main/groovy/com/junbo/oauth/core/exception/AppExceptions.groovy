@@ -159,4 +159,8 @@ interface AppExceptions {
     @ErrorDef(httpStatusCode = 400, code = '20038', description = 'The conversationId is missing',
             field = 'conversationId')
     AppError missingConversationId()
+
+    @ErrorDef(httpStatusCode = 400, code = '20039', description = 'The post_logout_redirect_uri {0} is invalid',
+            field = 'conversationId')
+    AppError invalidPostLogoutRedirectUri(String postLogoutRedirectUri)
 }
