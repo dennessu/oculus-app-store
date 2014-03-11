@@ -9,7 +9,7 @@ import javax.persistence.Table;
  * Created by haomin on 14-3-4.
  */
 @Entity
-@Table(name = "shard")
+@Table(name = "id")
 public class ShardEntity {
     @Id
     @Column(name = "id")

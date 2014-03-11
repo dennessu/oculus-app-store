@@ -1,10 +1,18 @@
 package com.junbo.sharding.test.data.dao;
 
+import com.junbo.langur.core.promise.Promise;
+import com.junbo.sharding.core.hibernate.ShardSessionFactory;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.jdbc.Work;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.test.context.ContextConfiguration;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+
 
 /**
  * Created by haomin on 14-3-4.
@@ -12,21 +20,46 @@ import org.springframework.test.context.ContextConfiguration;
 @Component
 public class ShardDAOImpl implements ShardDAO {
 
-    @Autowired
-    private SessionFactory sessionFactory;
 
     private Session currentSession() {
+
+        /*
+        sessionFactory.getCurrentSession().doWork(new Work() {
+            @Override
+            public void execute(Connection connection) throws SQLException {
+                //connection, finally!
+                connection.createStatement().execute("set search_path=shard_1");
+            }
+        });
+
         return sessionFactory.getCurrentSession();
+        */
+
+        return null;
     }
 
-    public void setSessionFactory(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+    private ShardSessionFactory shardedSessionFactory;
+
+    public void setShardedSessionFactory(ShardSessionFactory shardedSessionFactory) {
+        this.shardedSessionFactory = shardedSessionFactory;
+    }
+
+    private Session session(int shardId, String db) {
+        Session s = this.shardedSessionFactory.getShardSession(shardId,db);
+        s.doWork(new Work() {
+            @Override
+            public void execute(Connection connection) throws SQLException {
+                //connection, finally!
+                connection.createStatement().execute("set search_path=shard_2");
+            }
+        });
+        return s;
     }
 
     @Override
-    public ShardEntity saveShard(ShardEntity entity) {
-        currentSession().persist(entity);
-        return findById(entity.getId());
+    public void saveShard(ShardEntity entity) {
+        session(2, "test").persist(entity);
+        //return findById(entity.getId());
     }
 
     @Override
@@ -45,6 +78,6 @@ public class ShardDAOImpl implements ShardDAO {
     }
 
     private ShardEntity findById(Long id) {
-        return ((ShardEntity)(currentSession().get(ShardEntity.class, id)));
+        return ((ShardEntity)(session(0, "test").get(ShardEntity.class, id)));
     }
 }
