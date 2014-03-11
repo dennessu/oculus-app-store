@@ -17,9 +17,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by minhao on 3/8/14.
@@ -33,14 +32,14 @@ public class ShardDataSourceMapper {
 
     private static Logger logger = LoggerFactory.getLogger(ShardDataSourceMapper.class);
 
-    private Set<DataSourceConfig> dataSourceConfigSet;
+    private Map<Integer, DataSourceConfig> dataSourceConfigMap;
 
     public void setDataSourceMapping(String dataSourceMapping) {
-        this.dataSourceConfigSet = buildDataSourceSet(new ByteArrayInputStream(dataSourceMapping.getBytes()));
+        this.dataSourceConfigMap = buildDataSourceMap(new ByteArrayInputStream(dataSourceMapping.getBytes()));
     }
 
-    private Set<DataSourceConfig> buildDataSourceSet(InputStream is) {
-        Set<DataSourceConfig> set = new HashSet();
+    private Map<Integer, DataSourceConfig> buildDataSourceMap(InputStream is) {
+        Map<Integer, DataSourceConfig> map = new HashMap();
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
@@ -63,7 +62,10 @@ public class ShardDataSourceMapper {
                     String range = e.getTextContent().trim();
                     String url = ee.getTextContent().trim();
 
-                    set.add(new DataSourceConfig(id, enabled, url, range));
+                    DataSourceConfig config = new DataSourceConfig(id, enabled, url, range);
+                    for (int j = config.getRange().getStart(); j <= config.getRange().getEnd(); j++) {
+                        map.put(Integer.valueOf(j), config);
+                    }
                 }
             }
 
@@ -71,17 +73,15 @@ public class ShardDataSourceMapper {
             throw new RuntimeException("init shard data source mapper failed!", e);
         }
 
-        return Collections.unmodifiableSet(set);
+        return Collections.unmodifiableMap(map);
     }
 
     public DataSourceConfig getDataSourceConfigByShardId(int shardId) {
-        for(Iterator<DataSourceConfig> it = this.dataSourceConfigSet.iterator(); it.hasNext();) {
-            DataSourceConfig c = it.next();
-            if (c.contains(shardId)) {
-                return c;
-            }
+        DataSourceConfig config = this.dataSourceConfigMap.get(Integer.valueOf(shardId));
+        if (config == null) {
+            throw new RuntimeException(String.format("Can't find data source config of shard %s", shardId));
         }
 
-        throw new RuntimeException(String.format("Can't find data source config of shard %s", shardId));
+        return  config;
     }
 }

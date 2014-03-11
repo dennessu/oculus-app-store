@@ -44,7 +44,10 @@ public class DataSourceConfig {
         return this.range.contains(shardId);
     }
 
-    private static class ShardIdRange {
+    /**
+     * ShardIdRange class.
+     */
+    protected static class ShardIdRange {
         private static final String PATTERN_STR = "^(0|[1-9][0-9]*)[\\.]{2}(0|[1-9][0-9]*)$";
         private static final Pattern PATTERN = Pattern.compile(PATTERN_STR);
 
