@@ -4,7 +4,7 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.sharding.impl;
+package com.junbo.sharding.id.impl;
 
 /**
  * Java doc for OculusIdGeneratorSlot.

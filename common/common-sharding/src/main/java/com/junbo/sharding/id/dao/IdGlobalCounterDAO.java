@@ -3,9 +3,9 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.sharding.dao;
+package com.junbo.sharding.id.dao;
 
-import com.junbo.sharding.model.IdGlobalCounterEntity;
+import com.junbo.sharding.id.model.IdGlobalCounterEntity;
 
 /**
  * Created by liangfu on 3/5/14.

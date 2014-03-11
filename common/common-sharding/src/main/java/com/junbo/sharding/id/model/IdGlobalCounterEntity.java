@@ -4,7 +4,7 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.sharding.model;
+package com.junbo.sharding.id.model;
 
 import org.hibernate.annotations.GenericGenerator;
 

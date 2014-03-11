@@ -3,10 +3,10 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.sharding.dao.impl;
+package com.junbo.sharding.id.dao.impl;
 
-import com.junbo.sharding.dao.IdGlobalCounterDAO;
-import com.junbo.sharding.model.IdGlobalCounterEntity;
+import com.junbo.sharding.id.dao.IdGlobalCounterDAO;
+import com.junbo.sharding.id.model.IdGlobalCounterEntity;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
