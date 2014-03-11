@@ -1,4 +1,4 @@
-package com.junbo.fulfilment.core;
+package com.junbo.notification;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

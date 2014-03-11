@@ -17,6 +17,7 @@ import com.fasterxml.jackson.databind.deser.DeserializerFactory;
 import com.fasterxml.jackson.databind.introspect.Annotated;
 import com.fasterxml.jackson.databind.introspect.AnnotatedMethod;
 
+import java.lang.reflect.ParameterizedType;
 import java.util.Collection;
 
 /**
@@ -24,6 +25,7 @@ import java.util.Collection;
  */
 public class ResourceAwareDeserializationContext extends DefaultDeserializationContext {
     private static final int UNIQUE_PARAM_INDEX = 0;
+    private static final int UNIQUE_GENERIC_TYPE_INDEX = 0;
 
     public ResourceAwareDeserializationContext() {
         super(BeanDeserializerFactory.instance, null);
@@ -69,7 +71,10 @@ public class ResourceAwareDeserializationContext extends DefaultDeserializationC
                 if (Collection.class.isAssignableFrom(paramClass)) {
                     Class<? extends Collection> collectionType = (Class<? extends Collection>) paramClass;
                     ((ResourceCollectionAware) deser).injectCollectionType(collectionType);
-                    componentType = collectionType.getComponentType();
+
+                    componentType = (Class<?>) (((ParameterizedType) ((AnnotatedMethod) annotated)
+                            .getGenericParameterType(UNIQUE_PARAM_INDEX))
+                            .getActualTypeArguments()[UNIQUE_GENERIC_TYPE_INDEX]);
                 } else {
                     componentType = paramClass;
                 }

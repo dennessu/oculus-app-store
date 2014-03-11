@@ -5,4 +5,10 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
     <context:component-scan base-package="com.junbo.notification"/>
+    <context:annotation-config/>
+
+    <bean id="broker" class="org.apache.activemq.xbean.BrokerFactoryBean">
+        <property name="config" value="classpath:/activeMQ.xml"/>
+    </bean>
+
 </beans>
