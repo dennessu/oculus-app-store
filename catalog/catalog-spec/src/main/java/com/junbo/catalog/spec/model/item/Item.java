@@ -27,6 +27,7 @@ public class Item extends BaseModel {
     @AppId
     private Long ownerId;
     private List<Sku> skus;
+    private List<Long> attributes;
     private Map<String, String> properties;
 
     public Long getId() {
@@ -59,6 +60,14 @@ public class Item extends BaseModel {
 
     public void setSkus(List<Sku> skus) {
         this.skus = skus;
+    }
+
+    public List<Long> getAttributes() {
+        return attributes;
+    }
+
+    public void setAttributes(List<Long> attributes) {
+        this.attributes = attributes;
     }
 
     public Map<String, String> getProperties() {

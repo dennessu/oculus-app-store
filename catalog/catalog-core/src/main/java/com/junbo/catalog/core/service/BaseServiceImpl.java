@@ -98,8 +98,8 @@ public abstract class BaseServiceImpl<T extends BaseModel> implements BaseServic
     }
 
     @Override
-    public T update(T entity) {
-        if (entity == null) {
+    public T update(Long entityId, T entity) {
+        if (entity == null || entityId != entity.getId()) {
             throw new CatalogException("TODO");
         }
 

@@ -8,7 +8,6 @@ package com.junbo.catalog.db.repo;
 
 import com.junbo.catalog.db.convertor.ItemConverter;
 import com.junbo.catalog.db.dao.ItemDao;
-import com.junbo.catalog.db.entity.ItemEntity;
 import com.junbo.catalog.spec.model.item.Item;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -21,13 +20,11 @@ public class ItemRepository implements EntityRepository<Item> {
 
     @Override
     public Long create(Item item) {
-        ItemEntity entity = ItemConverter.toEntity(item);
-        return itemDao.create(entity);
+        return itemDao.create(ItemConverter.toEntity(item));
     }
 
     @Override
     public Item get(Long id, Long timestamp) {
-        ItemEntity entity = itemDao.getItem(id, timestamp);
-        return ItemConverter.toModel(entity);
+        return ItemConverter.toModel(itemDao.getItem(id, timestamp));
     }
 }

@@ -6,24 +6,32 @@
 
 package com.junbo.sharding.test;
 
+import com.junbo.common.id.UserId;
 import com.junbo.sharding.IdGenerator;
-import com.junbo.sharding.IdSchema;
+import com.junbo.sharding.IdGeneratorFacade;
+import com.junbo.sharding.impl.IdSchema;
 import com.junbo.sharding.impl.*;
 import net.spy.memcached.MemcachedClient;
-import org.testng.annotations.AfterSuite;
-import org.testng.annotations.BeforeSuite;
-import org.testng.log4testng.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Java doc for IdGeneratorTest.
  */
-public class IdGeneratorTest {
-    private static Logger logger = Logger.getLogger(IdGeneratorTest.class);
+@ContextConfiguration(locations = {"classpath:spring/sharding-context-test.xml"})
+public class IdGeneratorTest extends AbstractTransactionalTestNGSpringContextTests {
+    @Autowired
+    private IdGeneratorFacade generator;
 
     private IdGenerator idGenerator;
 
@@ -58,7 +66,9 @@ public class IdGeneratorTest {
         }
     }
 
-    @BeforeSuite
+
+
+    //@BeforeSuite
     public void setup() throws IOException {
 
         idSchema = new IdSchema(1, 31, (int) (new Date(2014, 01, 01).getTime() / 1000), 12, 10, 1000);
@@ -72,8 +82,19 @@ public class IdGeneratorTest {
         idGenerator = new IdGeneratorImpl(idSchema, timeGenerator, globalCounter);
     }
 
-    @AfterSuite
+    //@AfterSuite
     public void teardown() {
+    }
+
+
+    //@Test
+    public void test() {
+        List<Long> ids = new ArrayList<Long>();
+        for (int i=0; i<100000; i++) {
+            ids.add(generator.nextId(UserId.class));
+        }
+
+        Assert.assertEquals(ids.size(), 100000);
     }
 
     //@Test

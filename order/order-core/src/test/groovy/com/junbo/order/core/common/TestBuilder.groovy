@@ -1,10 +1,22 @@
 package com.junbo.order.core.common
+
+import com.junbo.common.id.OrderId
 import com.junbo.common.id.PaymentInstrumentId
 import com.junbo.common.id.ShippingAddressId
 import com.junbo.common.id.UserId
+import com.junbo.fulfilment.spec.model.FulfilmentAction
+import com.junbo.fulfilment.spec.model.FulfilmentItem
+import com.junbo.fulfilment.spec.model.FulfilmentRequest
+import com.junbo.langur.core.webflow.action.ActionContext
+import com.junbo.langur.core.webflow.state.Conversation
 import com.junbo.order.core.impl.order.OrderServiceContext
+import com.junbo.order.core.impl.orderaction.ActionUtils
+import com.junbo.order.core.impl.orderaction.context.OrderActionContext
+import com.junbo.order.db.entity.enums.EventStatus
 import com.junbo.order.db.entity.enums.ItemType
+import com.junbo.order.db.entity.enums.OrderActionType
 import com.junbo.order.spec.model.Order
+import com.junbo.order.spec.model.OrderEvent
 import com.junbo.order.spec.model.OrderItem
 import com.junbo.order.db.entity.enums.OrderType
 import com.junbo.payment.spec.model.PaymentInstrument
@@ -60,5 +72,44 @@ class TestBuilder {
     static OrderServiceContext buildDefaultContext() {
         def context = new OrderServiceContext(buildOrderRequest())
         return context
+    }
+
+    static ActionContext buildActionContext(Order order) {
+        def orderActionContext = new OrderActionContext()
+        orderActionContext.orderServiceContext = new OrderServiceContext(order)
+        def actionContext = new ActionContext(new Conversation(), new HashMap<String, Object>())
+        ActionUtils.putOrderActionContext(orderActionContext, actionContext)
+        return actionContext
+    }
+
+    static OrderEvent buildOrderEvent(OrderId orderId, OrderActionType actionType, EventStatus status) {
+        def event = new OrderEvent()
+        event.order = orderId
+        event.action = actionType == null ? null : actionType.name()
+        event.status = status == null ? null : status.name()
+        return event
+    }
+
+    static FulfilmentRequest buildFulfilmentRequest(Order order) {
+        def request = new FulfilmentRequest()
+        request.items = []
+        request.orderId = order.id.value
+        request.trackingGuid = UUID.randomUUID().toString()
+        return request
+    }
+
+    static FulfilmentItem buildFulfilmentItem(String... actionStatus) {
+        def item = new FulfilmentItem()
+        item.fulfilmentId = generateLong()
+        item.orderItemId = generateLong()
+        if(actionStatus != null) {
+            item.actions = []
+            actionStatus.each {
+                FulfilmentAction action = new FulfilmentAction()
+                action.status = it
+                item.actions << action
+            }
+        }
+        return item
     }
 }

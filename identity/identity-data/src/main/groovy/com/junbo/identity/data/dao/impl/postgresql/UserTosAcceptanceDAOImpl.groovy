@@ -4,6 +4,8 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.identity.data.dao.impl.postgresql
+
+import com.junbo.common.id.UserTosAcceptanceId
 import com.junbo.identity.data.dao.UserTosAcceptanceDAO
 import com.junbo.identity.data.entity.user.UserTosAcceptanceEntity
 import com.junbo.identity.data.mapper.ModelMapper
@@ -11,6 +13,7 @@ import com.junbo.identity.data.util.Constants
 import com.junbo.identity.spec.model.user.UserTosAcceptance
 import com.junbo.oom.core.MappingContext
 import com.junbo.sharding.IdGenerator
+import com.junbo.sharding.IdGeneratorFacade
 import org.hibernate.Session
 import org.hibernate.SessionFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -23,7 +26,7 @@ class UserTosAcceptanceDAOImpl implements UserTosAcceptanceDAO {
     private SessionFactory sessionFactory
 
     @Autowired
-    private IdGenerator idGenerator
+    private IdGeneratorFacade idGenerator
 
     @Autowired
     private ModelMapper modelMapper
@@ -35,7 +38,7 @@ class UserTosAcceptanceDAOImpl implements UserTosAcceptanceDAO {
     @Override
     UserTosAcceptance save(UserTosAcceptance entity) {
         UserTosAcceptanceEntity userTosAcceptanceEntity = modelMapper.toUserTosAcceptance(entity, new MappingContext())
-        userTosAcceptanceEntity.setId(idGenerator.nextId(userTosAcceptanceEntity.userId))
+        userTosAcceptanceEntity.setId(idGenerator.nextId(UserTosAcceptanceId, userTosAcceptanceEntity.userId))
         userTosAcceptanceEntity.setCreatedBy(Constants.DEFAULT_CLIENT_ID)
         userTosAcceptanceEntity.setCreatedTime(new Date())
         currentSession().save(userTosAcceptanceEntity)
