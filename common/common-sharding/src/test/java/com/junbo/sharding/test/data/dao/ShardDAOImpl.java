@@ -1,7 +1,10 @@
 package com.junbo.sharding.test.data.dao;
 
+import com.junbo.sharding.ShardDBNames;
+import com.junbo.sharding.annotations.DatabaseName;
 import com.junbo.sharding.core.ds.ShardDataSourceKey;
 import com.junbo.sharding.core.hibernate.SessionFactoryWrapper;
+import com.junbo.sharding.core.util.Helper;
 import org.hibernate.Session;
 import org.hibernate.jdbc.Work;
 import org.springframework.stereotype.Component;
@@ -14,34 +17,17 @@ import java.sql.SQLException;
  * Created by haomin on 14-3-4.
  */
 @Component
+@DatabaseName(value=ShardDBNames.TEST)
 public class ShardDAOImpl implements ShardDAO {
-
-
-    private Session currentSession() {
-
-        /*
-        sessionFactory.getCurrentSession().doWork(new Work() {
-            @Override
-            public void execute(Connection connection) throws SQLException {
-                //connection, finally!
-                connection.createStatement().execute("set search_path=shard_1");
-            }
-        });
-
-        return sessionFactory.getCurrentSession();
-        */
-
-        return null;
-    }
-
     private SessionFactoryWrapper sessionFactoryWrapper;
 
     public void setSessionFactoryWrapper(SessionFactoryWrapper sessionFactoryWrapper) {
         this.sessionFactoryWrapper = sessionFactoryWrapper;
     }
 
-    private Session session(final int shardId, String db) {
-        Session s = sessionFactoryWrapper.resolve(new ShardDataSourceKey(shardId, db)).getCurrentSession();
+    private Session session(final int shardId) {
+        String dbname = Helper.getDatabaseName(this.getClass());
+        Session s = sessionFactoryWrapper.resolve(new ShardDataSourceKey(shardId, dbname)).getCurrentSession();
         s.doWork(new Work() {
             @Override
             public void execute(Connection connection) throws SQLException {
@@ -54,7 +40,7 @@ public class ShardDAOImpl implements ShardDAO {
 
     @Override
     public ShardEntity saveShard(ShardEntity entity) {
-        session(2, "test").persist(entity);
+        session(3).persist(entity);
         return findById(entity.getId());
     }
 
@@ -74,6 +60,6 @@ public class ShardDAOImpl implements ShardDAO {
     }
 
     private ShardEntity findById(Long id) {
-        return ((ShardEntity)(session(2, "test").get(ShardEntity.class, id)));
+        return ((ShardEntity)(session(3).get(ShardEntity.class, id)));
     }
 }

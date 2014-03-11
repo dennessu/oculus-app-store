@@ -6,10 +6,14 @@
 
 package com.junbo.sharding.annotations;
 
+import java.lang.annotation.*;
+
 /**
- * Java doc for ShardKey.
+ * Created by haomin on 14-3-11.
  */
-
-public @interface ShardKey {
-
+@Target({ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@Inherited
+public @interface DatabaseName {
+    String value();
 }
