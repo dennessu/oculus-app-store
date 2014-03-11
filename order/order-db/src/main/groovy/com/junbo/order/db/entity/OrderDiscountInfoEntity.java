@@ -22,7 +22,7 @@ import java.math.BigDecimal;
  */
 @Entity
 @Table(name = "ORDER_DISCOUNT_INFO")
-public class OrderDiscountInfoEntity extends CommonDbEntityWithDate {
+public class OrderDiscountInfoEntity extends CommonDbEntityDeletable {
     private Long discountInfoId;
     private Long orderId;
     private Long orderItemId;
