@@ -27,10 +27,8 @@ public class EmailMapper {
             return null;
         }
         Email email =Utils.toObject(entity.getPayload(),Email.class);
-        email.setStatus(fromEmailStatus(entity.getStatus()));
         email.setSentDate(entity.getSentDate());
         email.setId(new EmailId(entity.getId()));
-        email.setUserId(entity.getUserId());
         email.setPriority(entity.getPriority());
         email.setRetryCount(entity.getRetryCount());
 
@@ -47,15 +45,20 @@ public class EmailMapper {
             return null;
         }
         EmailHistoryEntity entity = new EmailHistoryEntity();
-        entity.setUserId(email.getUserId());
+        if(email.getUserId() != null) {
+            entity.setUserId(email.getUserId().getValue());
+        }
+        if(email.getId() != null) {
+            entity.setId(email.getId().getValue());
+        }
         entity.setAction(email.getAction());
         entity.setSource(email.getSource());
-        entity.setPayload(Utils.toJson(email));
         entity.setLocale(email.getLocale());
-        entity.setUserId(email.getUserId());
+        entity.setPayload(Utils.toJson(email));
         entity.setPriority(email.getPriority());
         entity.setRecipient(Utils.toJson(email.getRecipients()));
         entity.setType(StringUtils.isEmpty(email.getType()) ? EmailType.COMMERCE.getId():toEmailType(email.getType()));
+        entity.setStatus(toEmailStatus(email.getStatus()));
 
         return entity;
     }
@@ -86,6 +89,18 @@ public class EmailMapper {
             }
             catch (Exception e) {
                 throw AppExceptions.INSTANCE.invalidType().exception();
+            }
+        }
+        return null;
+    }
+
+    private Short toEmailStatus(String emailStatus) {
+        if(!StringUtils.isEmpty(emailStatus)) {
+            try {
+                return EmailStatus.valueOf(EmailStatus.class,emailStatus).getId();
+            }
+            catch (Exception e) {
+                throw AppExceptions.INSTANCE.invalidStatus().exception();
             }
         }
         return null;

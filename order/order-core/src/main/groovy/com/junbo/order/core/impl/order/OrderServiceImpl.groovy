@@ -5,8 +5,7 @@
  */
 
 package com.junbo.order.core.impl.order
-import com.junbo.billing.spec.enums.BalanceType
-import com.junbo.billing.spec.model.Balance
+
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.executor.FlowExecutor
 import com.junbo.order.clientproxy.billing.BillingFacade
@@ -18,14 +17,12 @@ import com.junbo.order.core.FlowSelector
 import com.junbo.order.core.FlowType
 import com.junbo.order.core.OrderService
 import com.junbo.order.core.OrderServiceOperation
-import com.junbo.order.core.impl.common.CoreBuilder
 import com.junbo.order.core.impl.orderaction.ActionUtils
-import com.junbo.order.db.entity.enums.EventStatus
-import com.junbo.order.db.entity.enums.OrderActionType
 import com.junbo.order.db.repo.OrderRepository
-import com.junbo.order.spec.error.AppErrors
-import com.junbo.order.spec.model.*
-import com.junbo.rating.spec.model.request.OrderRatingRequest
+import com.junbo.order.spec.model.ApiContext
+import com.junbo.order.spec.model.Order
+import com.junbo.order.spec.model.OrderEvent
+import com.junbo.order.spec.model.OrderItem
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -96,37 +93,13 @@ class OrderServiceImpl implements OrderService {
     @Transactional
     Promise<List<Order>> createQuotes(Order order, ApiContext context) {
 
-        List<Order> orders = []
-        // Only tentative order is accepted
-        if (!order.tentative) {
-            throw AppErrors.INSTANCE.fieldInvalid('tentative', 'tentative should be true').exception()
+        def orderServiceContext = initOrderServiceContext(null)
+        Map<String, Object> requestScope = [:]
+        flowSelector.select(orderServiceContext, OrderServiceOperation.CREATE_TENTATIVE).syncThen { FlowType flowType ->
+            executeFlow(flowType, orderServiceContext, requestScope)
+        }.syncThen {
+            return [orderServiceContext.order]
         }
-
-        // Call rating to get the price and discount
-        ratingFacade.rateOrder(
-            order).syncThen { OrderRatingRequest request ->
-                CoreBuilder.fillRatingInfo(order, request)
-                // TODO append returned promotions to order
-        }
-
-        // Create order event for this operation
-        OrderEvent orderEvent = new OrderEvent()
-        orderEvent.status = EventStatus.COMPLETED.toString()
-        orderEvent.action = OrderActionType.RATE.toString()
-
-        // Persist order
-        orderRepository.createOrder(order, orderEvent)
-
-        // Calculate Tax
-        def balanceRequest = CoreBuilder.buildBalance(initOrderServiceContext(order), BalanceType.DEBIT)
-        billingFacade.quoteBalance(balanceRequest).syncThen { Balance balance ->
-            order.isTaxInclusive = balance.taxIncluded
-            order.totalTax = balance.taxAmount
-            // TODO append item level tax
-        }
-        orders.add(order)
-
-        return Promise.pure(orders)
     }
 
     @Override
@@ -191,6 +164,7 @@ class OrderServiceImpl implements OrderService {
     private Promise<OrderServiceContext> executeFlow(
             FlowType flowType, OrderServiceContext context,
             Map<String, Object> requestScope) {
+        requestScope.put(ActionUtils.REQUEST_FLOW_TYPE, (Object)flowType)
         return flowExecutor.start(flowType.name(), ActionUtils.initRequestScope(context, requestScope)).syncThen {
             return context
         }

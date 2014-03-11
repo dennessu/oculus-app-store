@@ -8,7 +8,6 @@ package com.junbo.catalog.db.repo;
 
 import com.junbo.catalog.db.convertor.PromotionConverter;
 import com.junbo.catalog.db.dao.PromotionDao;
-import com.junbo.catalog.db.entity.PromotionEntity;
 import com.junbo.catalog.spec.model.promotion.Promotion;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -21,15 +20,11 @@ public class PromotionRepository implements EntityRepository<Promotion> {
 
     @Override
     public Long create(Promotion promotion) {
-        PromotionEntity entity = PromotionConverter.toEntity(promotion);
-
-        return promotionDao.create(entity);
+        return promotionDao.create(PromotionConverter.toEntity(promotion));
     }
 
     @Override
-    public Promotion get(Long offerId, Long timestamp) {
-        //PromotionEntity entity = promotionDao.getPromotion(offerId, timestamp);
-        //return PromotionConverter.toModel(entity);
-        return null;
+    public Promotion get(Long promotionId, Long timestamp) {
+        return PromotionConverter.toModel(promotionDao.getPromotion(promotionId, timestamp));
     }
 }

@@ -20,7 +20,7 @@ class MockIdentityFacadeImpl implements IdentityFacade {
         User user = new User()
         user.setUserName('xmchen')
         user.setStatus('Active')
-        user.setKey(new UserId(12345))
+        user.setId(new UserId(12345))
         return Promise.pure(user)
     }
 }

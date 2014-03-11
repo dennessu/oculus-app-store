@@ -11,9 +11,6 @@ import com.junbo.entitlement.spec.error.AppErrors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.ValidationException;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
@@ -34,18 +31,6 @@ public class RestExceptionMapper implements ExceptionMapper<Exception> {
         } else if (e instanceof InvalidFormatException) {    //field invalid format exception
             return AppErrors.INSTANCE.fieldNotCorrect(
                     ((InvalidFormatException) e).getPathReference(), e.getMessage()).exception().getResponse();
-        } else if (e instanceof ValidationException) {    //validation exception
-            if (e instanceof ConstraintViolationException) {
-                ConstraintViolationException ex = (ConstraintViolationException) e;
-                StringBuilder sb = new StringBuilder();
-                for (ConstraintViolation cv : ex.getConstraintViolations()) {
-                    sb.append(cv.getPropertyPath()).append(" ")
-                            .append(cv.getMessage()).append(". ");
-                }
-                return AppErrors.INSTANCE.validation(sb.toString()).exception().getResponse();
-            } else {
-                return AppErrors.INSTANCE.validation(e.getMessage()).exception().getResponse();
-            }
         } else {    //other exceptions
             LOGGER.error("unCaught Exception", e);
             return AppErrors.INSTANCE.unCaught(e.getMessage()).exception().getResponse();

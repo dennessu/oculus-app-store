@@ -7,10 +7,12 @@
 package com.junbo.ewallet.db.entity.def;
 
 
+import com.junbo.common.util.Identifiable;
+
 /**
  * The currencies (ISO 4217). Reference: <a href="http://en.wikipedia.org/wiki/ISO_4217">Wikipedia ISO 4217</a>.
  */
-public enum Currency {
+public enum Currency implements Identifiable<Integer> {
 
     AED(784, Digits.DIGITS_2, "United Arab Emirates dirham"),
     AFN(971, Digits.DIGITS_2, "Afghan afghani"),
@@ -213,6 +215,15 @@ public enum Currency {
      */
     public String getCode() {
         return code;
+    }
+
+    /**
+     * Implement Identifiable.
+     * @return ISOCodeNumeric.
+     */
+    @Override
+    public Integer getId(){
+        return numeric;
     }
 
     /**

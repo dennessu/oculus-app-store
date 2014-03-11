@@ -7,8 +7,10 @@
 package com.junbo.ewallet.db.entity.hibernate;
 
 import com.junbo.ewallet.db.entity.def.Currency;
+import com.junbo.ewallet.db.entity.def.IdentifiableType;
 import com.junbo.ewallet.db.entity.def.Status;
 import com.junbo.ewallet.db.entity.def.WalletType;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;
 import javax.persistence.Table;
@@ -37,6 +39,7 @@ public class WalletEntity extends Entity {
     }
 
     @Column(name = "type")
+    @Type(type = IdentifiableType.TYPE)
     public WalletType getType() {
         return type;
     }
@@ -46,6 +49,7 @@ public class WalletEntity extends Entity {
     }
 
     @Column(name = "status")
+    @Type(type = IdentifiableType.TYPE)
     public Status getStatus() {
         return status;
     }
@@ -55,6 +59,7 @@ public class WalletEntity extends Entity {
     }
 
     @Column(name = "currency")
+    @Type(type = IdentifiableType.TYPE)
     public Currency getCurrency() {
         return currency;
     }
@@ -74,7 +79,7 @@ public class WalletEntity extends Entity {
 
     @Transient
     @Override
-    public Long getShardId() {
+    public Long getShardMasterId() {
         return userId;
     }
 

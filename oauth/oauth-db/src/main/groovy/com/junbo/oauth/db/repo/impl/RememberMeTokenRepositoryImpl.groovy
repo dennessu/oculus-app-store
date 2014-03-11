@@ -52,6 +52,11 @@ class RememberMeTokenRepositoryImpl implements RememberMeTokenRepository {
     }
 
     @Override
+    RememberMeToken get(String tokenValue) {
+        return wrap(rememberMeTokenDAO.get(tokenValue))
+    }
+
+    @Override
     RememberMeToken getAndRemove(String tokenValue) {
         RememberMeToken rememberMeToken = wrap(rememberMeTokenDAO.get(tokenValue))
         rememberMeTokenDAO.delete(tokenValue)

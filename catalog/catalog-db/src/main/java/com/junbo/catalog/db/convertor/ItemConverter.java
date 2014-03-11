@@ -19,13 +19,17 @@ public class ItemConverter {
 
     public static ItemDraftEntity toDraftEntity(Item model) {
         ItemDraftEntity entity = new ItemDraftEntity();
+        fillDraftEntity(model, entity);
+        return entity;
+    }
+
+    public static void fillDraftEntity(Item model, ItemDraftEntity entity) {
         entity.setType(model.getType());
         entity.setName(model.getName());
         entity.setStatus(model.getStatus());
         entity.setRevision(model.getRevision());
         entity.setOwnerId(model.getOwnerId());
         entity.setPayload(Utils.toJson(model));
-        return entity;
     }
 
     public static Item toModel(ItemDraftEntity entity) {

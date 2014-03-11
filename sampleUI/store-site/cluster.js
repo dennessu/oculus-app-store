@@ -1,3 +1,4 @@
+require('./configs');
 var cluster = require('cluster');
 
 var workers = {};
@@ -22,7 +23,7 @@ if(cluster.isMaster){
     }
 }else{
     var app = require('./app');
-    app.run();
+    app.Run();
 }
 
 process.on('SIGTERM', function(){

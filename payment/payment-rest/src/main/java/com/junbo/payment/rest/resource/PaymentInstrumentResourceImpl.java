@@ -21,7 +21,7 @@ import javax.ws.rs.core.Response;
 import java.util.List;
 
 /**
- * brain tree resource implimentation.
+ * payment instrument resource implementation.
  */
 public class PaymentInstrumentResourceImpl implements PaymentInstrumentResource {
     @Autowired

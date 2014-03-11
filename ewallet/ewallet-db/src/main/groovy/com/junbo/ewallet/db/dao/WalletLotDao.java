@@ -14,9 +14,9 @@ import com.junbo.ewallet.db.entity.hibernate.WalletLotEntity;
 public interface WalletLotDao {
     WalletLotEntity get(Long id);
 
-    Long insert(WalletLotEntity walletLotEntity);
+    WalletLotEntity insert(WalletLotEntity walletLotEntity);
 
-    Long update(WalletLotEntity walletLotEntity);
+    WalletLotEntity update(WalletLotEntity walletLotEntity);
 
     void delete(Long id);
 }

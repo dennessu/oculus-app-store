@@ -9,11 +9,9 @@ import com.junbo.catalog.spec.model.common.EntitiesGetOptions;
 import com.junbo.catalog.spec.model.common.EntityGetOptions;
 import com.junbo.catalog.spec.model.common.ResultList;
 import com.junbo.catalog.spec.model.item.Item;
-import com.junbo.common.id.Id;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 
-import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
@@ -30,8 +28,8 @@ public interface ItemResource {
     Promise<ResultList<Item>> getItems(@BeanParam EntitiesGetOptions options);
 
     @GET
-    @Path("/{ItemId}")
-    Promise<Item> getItem(@PathParam("ItemId") Id itemId, @BeanParam EntityGetOptions options);
+    @Path("/{itemId}")
+    Promise<Item> getItem(@PathParam("itemId") Long itemId, @BeanParam EntityGetOptions options);
 
     /**
      * Create a draft item.
@@ -41,58 +39,10 @@ public interface ItemResource {
      */
     @POST
     @Path("/")
-    Promise<Item> create(@Valid Item item);
+    Promise<Item> create(Item item);
 
     @PUT
-    @Path("/{ItemId}")
-    Promise<Item> update(@Valid Item item);
-
-    /**
-     * Developer submit an draft Item for review.
-     * @param itemId the id of the Item to be reviewed.
-     * @return the Item to be reviewed.
-     */
-    @POST
-    @Path("/{ItemId}/review")
-    Promise<Item> review(@PathParam("ItemId") Id itemId);
-
-    /**
-     * Admin releases an item.
-     * @param itemId the id of Item to be released.
-     * @return the Item to be released.
-     */
-    @POST
-    @Path("/{ItemId}/release")
-    Promise<Item> release(@PathParam("ItemId") Id itemId);
-
-    /**
-     * Admin rejects an item, developer may update and submit review later.
-     * @param itemId the id of Item to be released.
-     * @return the Item to be released.
-     */
-    // TODO: add review notes
-    @POST
-    @Path("/{ItemId}/reject")
-    Promise<Item> reject(@PathParam("ItemId") Id itemId);
-
-    /**
-     * Remove the item from released items list. The draft version is still kept.
-     * Developer may update and submit review again in future.
-     * @param itemId the id of item to be removed.
-     * @return the removed Item id.
-     */
-    @DELETE
-    @Path("/{ItemId}/release")
-    Promise<Void> remove(@PathParam("ItemId") Id itemId);
-
-    /**
-     * Delete an Item, delete both draft and released version.
-     * Developer cannot operate this itm again in future.
-     * @param itemId the id of item to be deleted.
-     * @return the deleted item id.
-     */
-    @DELETE
-    @Path("/{ItemId}")
-    Promise<Void> delete(@PathParam("ItemId") Id itemId);
+    @Path("/{itemId}")
+    Promise<Item> update(@PathParam("itemId") Long itemId, Item item);
 }
 

@@ -10,6 +10,7 @@ package com.junbo.payment.spec.enums;
  * credit credit type enum.
  */
 public enum CreditCardType {
+        VISA,
         AMEX,
         CARTE_BLANCHE,
         CHINA_UNION_PAY,
@@ -20,6 +21,5 @@ public enum CreditCardType {
         MAESTRO,
         MASTER_CARD,
         SOLO,
-        SWITCH,
-        VISA;
+        SWITCH;
 }

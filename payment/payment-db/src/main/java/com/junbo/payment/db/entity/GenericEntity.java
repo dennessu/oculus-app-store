@@ -15,7 +15,7 @@ import java.util.Date;
  * generic entity.
  */
 @MappedSuperclass
-public abstract class GenericEntity implements Serializable {
+public abstract class GenericEntity implements Serializable, ShardAwarable {
     @Column(name = "created_time", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdTime;
@@ -66,4 +66,7 @@ public abstract class GenericEntity implements Serializable {
     public abstract Long getId();
 
     public abstract void setId(Long id);
+
+    @Transient
+    public abstract Long getShardMasterId();
 }

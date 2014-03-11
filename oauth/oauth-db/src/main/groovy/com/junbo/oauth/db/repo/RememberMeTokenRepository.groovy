@@ -15,5 +15,7 @@ import groovy.transform.CompileStatic
 interface RememberMeTokenRepository {
     void save(RememberMeToken rememberMeToken)
 
+    RememberMeToken get(String tokenValue)
+
     RememberMeToken getAndRemove(String tokenValue)
 }
