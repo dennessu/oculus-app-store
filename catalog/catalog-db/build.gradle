@@ -20,10 +20,12 @@ dependencies {
     compile (libraries.hibernate_annotation)
     compile (libraries.hibernate_validator)
     compile (libraries.postgresql)
+    compile (libraries.btm)
 
     compile (libraries.bonecp_spring)
 
     compile (libraries.common_lib)
+    compile (libraries.common_sharding)
     compile (libraries.common_configuration)
 
     testCompile (libraries.spring_test)
