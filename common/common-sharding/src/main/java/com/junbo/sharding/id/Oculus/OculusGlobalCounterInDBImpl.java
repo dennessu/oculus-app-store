@@ -6,8 +6,8 @@
 
 package com.junbo.sharding.oculus;
 
-import com.junbo.sharding.dao.IdGlobalCounterDAO;
-import com.junbo.sharding.model.IdGlobalCounterEntity;
+import com.junbo.sharding.id.dao.IdGlobalCounterDAO;
+import com.junbo.sharding.id.model.IdGlobalCounterEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

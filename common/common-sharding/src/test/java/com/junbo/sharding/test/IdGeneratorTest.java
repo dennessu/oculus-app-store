@@ -9,14 +9,13 @@ package com.junbo.sharding.test;
 import com.junbo.common.id.UserId;
 import com.junbo.sharding.IdGenerator;
 import com.junbo.sharding.IdGeneratorFacade;
-import com.junbo.sharding.impl.IdSchema;
-import com.junbo.sharding.impl.*;
+import com.junbo.sharding.id.impl.IdSchema;
+import com.junbo.sharding.id.impl.*;
 import net.spy.memcached.MemcachedClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.testng.Assert;
-import org.testng.annotations.Test;
 
 import java.io.IOException;
 import java.net.InetAddress;
