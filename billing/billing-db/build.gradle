@@ -17,6 +17,7 @@ dependencies {
     compile (libraries.postgresql)
     compile (libraries.oom)
     compile (libraries.common_lib)
+    compile (libraries.common_sharding)
     compile (libraries.bonecp_spring)
 
     processor (libraries.oom_processor)

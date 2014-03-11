@@ -6,12 +6,13 @@
 
 package com.junbo.entitlement.db.dao.hibernate;
 
+import com.junbo.common.id.EntitlementId;
 import com.junbo.entitlement.common.def.EntitlementConsts;
 import com.junbo.entitlement.common.lib.CommonUtils;
 import com.junbo.entitlement.common.lib.EntitlementContext;
 import com.junbo.entitlement.db.entity.Entity;
 import com.junbo.entitlement.spec.model.PageMetadata;
-import com.junbo.sharding.IdGenerator;
+import com.junbo.sharding.IdGeneratorFacade;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -28,7 +29,7 @@ import java.util.*;
 public class BaseDao<T extends Entity> {
     private SessionFactory sessionFactory;
     @Autowired
-    private IdGenerator idGenerator;
+    private IdGeneratorFacade idGenerator;
 
     private Class<T> entityType;
 
@@ -73,7 +74,7 @@ public class BaseDao<T extends Entity> {
     }
 
     protected Long generateId(Long shardId) {
-        return idGenerator.nextId(shardId);
+        return idGenerator.nextId(EntitlementId.class, shardId);
     }
 
     protected void addSingleParam(String columnName, String paramName,

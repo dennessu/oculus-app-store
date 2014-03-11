@@ -15,6 +15,7 @@ import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -34,7 +35,7 @@ public interface EntitlementDefinitionResource {
     @GET
     Promise<ResultList<EntitlementDefinition>>
     getEntitlementDefinitionDefinitions(
-            @QueryParam("developerId") UserId developerId,
+            @NotNull @QueryParam("developerId") UserId developerId,
             @QueryParam("type") String type,
             @QueryParam("group") String group,
             @QueryParam("tag") String tag,

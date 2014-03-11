@@ -9,6 +9,7 @@ package com.junbo.sharding.annotations;
 /**
  * Java doc for ShardKey.
  */
+
 public @interface ShardKey {
 
 }

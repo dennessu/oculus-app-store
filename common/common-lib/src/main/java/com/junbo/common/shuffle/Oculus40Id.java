@@ -16,6 +16,7 @@ public class Oculus40Id {
     private Oculus40Id() {
     }
 
+    public static final long OCULUS40_MAXIMUM = 0xFFFFFFFFFFL;
     public static final long OCULUS40_MASK_BITS = 0x3FFFFFFL;
     public static final int OCULUS40_SHUFFLE_OFFSET = 14;
     public static final String OCULUS40_ID_SEPARATOR = "-";
@@ -106,5 +107,20 @@ public class Oculus40Id {
     public static Long deFormat(String id) {
         String idStr = id.replaceAll(OCULUS40_ID_SEPARATOR, "");
         return Long.parseLong(idStr);
+    }
+
+    public static void validateRawValue(long value) {
+        if(value > OCULUS40_MAXIMUM) {
+            throw new RuntimeException("Invalid Oculus40Id value " + value);
+        }
+    }
+
+    public static void validateEncodedValue(String value) {
+        try {
+            deFormat(value);
+        }
+        catch (Exception e) {
+            throw new RuntimeException("Invalid Oculus40Id formatted value " + value);
+        }
     }
 }

@@ -48,7 +48,12 @@ public class ResourceIdSerializer extends JsonSerializer<Object> implements Reso
     }
 
     protected String encode(Object value) {
-        return value instanceof Long ? Oculus48Id.format(Oculus48Id.shuffle((Long) value)) : value.toString();
+        return value instanceof Long ? encode((Long)value) : value.toString();
+    }
+
+    protected String encode(Long value) {
+        Oculus48Id.validateRawValue(value);
+        return Oculus48Id.format(Oculus48Id.shuffle(value));
     }
 
     private List<ResourceRef> handleCollection(Object value) {

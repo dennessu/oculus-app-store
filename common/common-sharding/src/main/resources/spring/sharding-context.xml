@@ -104,19 +104,19 @@
     </bean>
 
     <!-- The below is the Oculus requirement -->
-    <bean id="oculus48IdGenerator" class="com.junbo.sharding.oculus.OculusIdGeneratorImpl">
+    <bean id="oculus48IdGenerator" class="com.junbo.sharding.id.oculus.OculusIdGeneratorImpl">
         <constructor-arg ref="oculus48IdSchema" />
         <constructor-arg ref="globalCounterInDB" />
     </bean>
 
-    <bean id="oculus40IdGenerator" class="com.junbo.sharding.oculus.OculusIdGeneratorImpl">
+    <bean id="oculus40IdGenerator" class="com.junbo.sharding.id.oculus.OculusIdGeneratorImpl">
         <constructor-arg ref="oculus40IdSchema" />
         <constructor-arg ref="globalCounterInDB" />
     </bean>
 
-    <bean id="globalCounterInDB" class="com.junbo.sharding.oculus.OculusGlobalCounterInDBImpl" />
+    <bean id="globalCounterInDB" class="com.junbo.sharding.id.oculus.OculusGlobalCounterInDBImpl" />
     <!-- 2: Id generator proposed by oculus rift (Using 48 bits) -->
-    <bean id="oculus48IdSchema" class="com.junbo.sharding.oculus.OculusIdSchema">
+    <bean id="oculus48IdSchema" class="com.junbo.sharding.id.oculus.OculusIdSchema">
         <constructor-arg name="idType" value="2" />
         <constructor-arg name="dataCenterId" value="${sharding.oculus48.sharding.dataCenterId}" />
         <constructor-arg name="bitsInDataCenterId" value="${sharding.oculus48.sharding.bitsInDataCenterId}" />
@@ -129,7 +129,7 @@
     </bean>
 
     <!-- 3: OrderId generator propsed by oculus rift (Using 40 bits) -->
-    <bean id="oculus40IdSchema" class="com.junbo.sharding.oculus.OculusIdSchema">
+    <bean id="oculus40IdSchema" class="com.junbo.sharding.id.oculus.OculusIdSchema">
         <constructor-arg name="idType" value="3" />
         <constructor-arg name="dataCenterId" value="${sharding.oculus40.sharding.dataCenterId}" />
         <constructor-arg name="bitsInDataCenterId" value="${sharding.oculus40.sharding.bitsInDataCenterId}" />
