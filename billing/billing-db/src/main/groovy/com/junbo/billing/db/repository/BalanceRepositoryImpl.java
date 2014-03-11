@@ -148,12 +148,48 @@ public class BalanceRepositoryImpl implements BalanceRepository {
 
     @Override
     public List<Balance> getBalances(Long orderId) {
-        List<Balance> balances = new ArrayList<Balance>();
+        List<Balance> balances = new ArrayList<>();
 
         List<OrderBalanceLinkEntity> orderBalanceLinkEntities = orderBalanceLinkEntityDao.findByOrderId(orderId);
         for(OrderBalanceLinkEntity orderBalanceLinkEntity : orderBalanceLinkEntities) {
             Balance balance = getBalance(orderBalanceLinkEntity.getBalanceId());
             balances.add(balance);
+        }
+
+        return balances;
+    }
+
+    @Override
+    public Balance updateBalance(Balance balance) {
+        BalanceEntity balanceEntity = modelMapper.toBalanceEntity(balance, new MappingContext());
+        BalanceEntity savedEntity = balanceEntityDao.get(balanceEntity.getBalanceId());
+
+        savedEntity.setTypeId(balanceEntity.getTypeId());
+        savedEntity.setStatusId(balanceEntity.getStatusId());
+        savedEntity.setModifiedDate(new Date());
+        savedEntity.setModifiedBy("BILLING");
+        balanceEntityDao.update(savedEntity);
+
+        for(Transaction transaction : balance.getTransactions()) {
+            transactionRepository.updateTransaction(transaction);
+        }
+
+        balanceEntityDao.flush();
+        return getBalance(balanceEntity.getBalanceId());
+    }
+
+    @Override
+    public List<Balance> getBalancesByOrderItemId(List<Long> orderItemIds) {
+        List<Balance> balances = new ArrayList<>();
+        List<Long> balanceIds = new ArrayList<>();
+
+        List<BalanceItemEntity> balanceItemEntities = balanceItemEntityDao.findByOrderItemId(orderItemIds);
+        for (BalanceItemEntity balanceItemEntity : balanceItemEntities) {
+            if (!balanceIds.contains(balanceItemEntity.getBalanceId())) {
+                Balance balance = getBalance(balanceItemEntity.getBalanceId());
+                balances.add(balance);
+                balanceIds.add(balanceItemEntity.getBalanceId());
+            }
         }
 
         return balances;

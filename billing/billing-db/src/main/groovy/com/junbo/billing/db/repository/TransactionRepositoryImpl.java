@@ -41,6 +41,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         entity.setCreatedDate(new Date());
         Long id = transactionEntityDao.insert(entity);
 
+        transactionEntityDao.flush();
         return getTransaction(id);
     }
 
@@ -64,5 +65,21 @@ public class TransactionRepositoryImpl implements TransactionRepository {
             }
         }
         return transactions;
+    }
+
+    @Override
+    public Transaction updateTransaction(Transaction transaction) {
+        TransactionEntity entity = modelMapper.toTransactionEntity(transaction, new MappingContext());
+        TransactionEntity savedEntity = transactionEntityDao.get(entity.getTransactionId());
+
+        savedEntity.setTypeId(entity.getTypeId());
+        savedEntity.setStatusId(entity.getStatusId());
+        savedEntity.setAmount(entity.getAmount());
+        savedEntity.setModifiedBy("BILLING");
+        savedEntity.setModifiedDate(new Date());
+        transactionEntityDao.update(savedEntity);
+
+        transactionEntityDao.flush();
+        return getTransaction(entity.getTransactionId());
     }
 }

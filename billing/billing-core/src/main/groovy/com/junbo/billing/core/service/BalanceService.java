@@ -16,9 +16,11 @@ import java.util.List;
  */
 public interface BalanceService {
 
+    Promise<Balance> addBalance(Balance balance);
+
     Promise<Balance> quoteBalance(Balance balance);
 
-    Promise<Balance> addBalance(Balance balance);
+    Promise<Balance> captureBalance(Balance balance);
 
     Promise<Balance> getBalance(Long balanceId);
 
