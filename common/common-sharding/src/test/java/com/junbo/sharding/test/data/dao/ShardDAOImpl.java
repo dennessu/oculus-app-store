@@ -1,10 +1,6 @@
 package com.junbo.sharding.test.data.dao;
 
-import com.junbo.sharding.ShardDBNames;
-import com.junbo.sharding.annotations.DatabaseName;
-import com.junbo.sharding.core.ds.ShardDataSourceKey;
 import com.junbo.sharding.core.hibernate.SessionFactoryWrapper;
-import com.junbo.sharding.core.util.Helper;
 import org.hibernate.Session;
 import org.hibernate.jdbc.Work;
 import org.springframework.stereotype.Component;
@@ -17,7 +13,6 @@ import java.sql.SQLException;
  * Created by haomin on 14-3-4.
  */
 @Component
-@DatabaseName(value=ShardDBNames.TEST)
 public class ShardDAOImpl implements ShardDAO {
     private SessionFactoryWrapper sessionFactoryWrapper;
 
@@ -26,7 +21,6 @@ public class ShardDAOImpl implements ShardDAO {
     }
 
     private Session session(final int shardId) {
-        String dbname = Helper.getDatabaseName(this.getClass());
         Session s = sessionFactoryWrapper.resolve(shardId).getCurrentSession();
         s.doWork(new Work() {
             @Override

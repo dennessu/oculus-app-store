@@ -16,7 +16,7 @@
 
     <bean id="sessionFactoryWrapper" class="com.junbo.sharding.core.hibernate.SessionFactoryWrapper">
         <property name="dataSourceRegistry" ref="shardDataSourceRegistry"/>
-        <property name="sessionFactoryBeanName" value="shardedSessionFactory"/>
+        <property name="sessionFactoryBeanName" value="sessionFactoryTemplate"/>
         <property name="dataBaseName" value="test"/>
         <property name="packagesToScan" value="com.junbo.sharding.test.data.dao"/>
     </bean>

@@ -34,7 +34,7 @@
     </bean>
 
     <!-- Sharded SessonFactory for Hibernate-->
-    <bean id="shardedSessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+    <bean id="sessionFactoryTemplate" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
         <property name="jtaTransactionManager" ref="transactionManager"/>
         <property name="hibernateProperties">
             <props>
