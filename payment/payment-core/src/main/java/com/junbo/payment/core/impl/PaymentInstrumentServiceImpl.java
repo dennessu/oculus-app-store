@@ -15,6 +15,7 @@ import com.junbo.payment.core.provider.PaymentProviderService;
 import com.junbo.payment.core.provider.ProviderRoutingService;
 import com.junbo.payment.core.PaymentInstrumentService;
 import com.junbo.payment.core.util.PaymentUtil;
+import com.junbo.payment.db.repository.PITypeRepository;
 import com.junbo.payment.spec.enums.PIStatus;
 import com.junbo.payment.spec.enums.PIType;
 import com.junbo.payment.db.mapper.PaymentAPI;
@@ -24,6 +25,7 @@ import com.junbo.payment.db.repository.TrackingUuidRepository;
 import com.junbo.payment.spec.model.PageMetaData;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentInstrumentSearchParam;
+import com.junbo.payment.spec.model.PaymentInstrumentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +53,8 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
     private PlatformTransactionManager transactionManager;
     @Autowired
     private TrackingUuidRepository trackingUuidRepository;
+    @Autowired
+    private PITypeRepository piTypeRepository;
 
     @Override
     public Promise<PaymentInstrument> add(final PaymentInstrument request) {
@@ -165,6 +169,18 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
             throw AppClientExceptions.INSTANCE.resourceNotFound("payment_instrument").exception();
         }
         return results;
+    }
+
+    @Override
+    public PaymentInstrumentType getPIType(String piType) {
+        if(piType == null || piType.isEmpty()){
+            throw AppClientExceptions.INSTANCE.invalidPIType(piType).exception();
+        }
+        PaymentInstrumentType result = piTypeRepository.getPITypeByName(piType);
+        if(result == null){
+            throw AppClientExceptions.INSTANCE.resourceNotFound(piType).exception();
+        }
+        return result;
     }
 
     private void saveTrackingUuid(PaymentInstrument request, PaymentAPI api){

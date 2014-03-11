@@ -102,4 +102,16 @@ public class JacksonCustomizationTest {
         Assert.assertEquals(user.getTest1(), user2.getTest1(), "test1 field should match.");
         Assert.assertEquals(user.getTest2().size(), user2.getTest2().size(), "test2 field size should match.");
     }
+
+    @Test
+    public void testListLong() throws Exception {
+        User user = new User();
+        user.setFriends(Arrays.asList(123L, 456L));
+
+        String json = mapper.writeValueAsString(user);
+        User user2 = mapper.readValue(json, User.class);
+
+        Assert.assertEquals(123L, (long) (user2.getFriends().get(0)));
+        Assert.assertEquals(456L, (long) (user2.getFriends().get(1)));
+    }
 }

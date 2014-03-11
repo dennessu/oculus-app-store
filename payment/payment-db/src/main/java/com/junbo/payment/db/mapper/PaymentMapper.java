@@ -12,6 +12,7 @@ import com.junbo.oom.core.MappingContext;
 import com.junbo.oom.core.Mappings;
 import com.junbo.payment.db.entity.CountryTypeEntity;
 import com.junbo.payment.db.entity.CurrencyTypeEntity;
+import com.junbo.payment.db.entity.PaymentInstrumentTypeEntity;
 import com.junbo.payment.db.entity.TrackingUuidEntity;
 import com.junbo.payment.db.entity.payment.PaymentEntity;
 import com.junbo.payment.db.entity.payment.PaymentEventEntity;
@@ -79,5 +80,7 @@ public interface PaymentMapper {
 
     TrackingUuid toTrackingUuid(TrackingUuidEntity entity, MappingContext context);
 
+    PaymentInstrumentTypeEntity toPITypeEntity(PaymentInstrumentType piType, MappingContext context);
 
+    PaymentInstrumentType toPIType(PaymentInstrumentTypeEntity entity, MappingContext context);
 }

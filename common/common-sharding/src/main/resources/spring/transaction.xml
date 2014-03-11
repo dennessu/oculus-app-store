@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+       ">
 
     <bean id="btmConfig" factory-method="getConfiguration" class="bitronix.tm.TransactionManagerServices">
-
         <!-- TODO: should be a unique id in the cluser and more customized configurations -->
         <property name="serverId" value="spring-btm"/>
+        <property name="journal" value="null"/>
     </bean>
 
     <bean id="bitronixTransactionManager" factory-method="getTransactionManager"
@@ -17,4 +19,5 @@
         <property name="userTransaction" ref="bitronixTransactionManager"/>
     </bean>
 
+    <tx:annotation-driven transaction-manager="transactionManager"/>
 </beans>

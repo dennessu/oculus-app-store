@@ -145,7 +145,7 @@ public class PaymentDaoTest extends BaseTest {
     protected PhoneEntity buildPhoneRequest(){
         PhoneEntity entity = new PhoneEntity();
         entity.setId(generateId());
-        entity.setType(PhoneType.Home);
+        entity.setType(PhoneType.HOME);
         entity.setNumber("12345");
         entity.setCreatedTime(new Date());
         return entity;

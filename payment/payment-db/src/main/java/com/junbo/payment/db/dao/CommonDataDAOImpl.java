@@ -6,8 +6,9 @@
 
 package com.junbo.payment.db.dao;
 
+import com.junbo.common.id.UserId;
 import com.junbo.payment.db.entity.GenericEntity;
-import com.junbo.sharding.IdGenerator;
+import com.junbo.sharding.IdGeneratorFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Serializable;
@@ -20,7 +21,7 @@ import java.util.Date;
  */
 public class CommonDataDAOImpl<T extends GenericEntity, ID extends Serializable> extends GenericDAOImpl<T, ID> {
     @Autowired
-    protected IdGenerator idGenerator;
+    protected IdGeneratorFacade idGenerator;
 
     public CommonDataDAOImpl(Class<T> persistentClass) {
         super(persistentClass);
@@ -28,7 +29,7 @@ public class CommonDataDAOImpl<T extends GenericEntity, ID extends Serializable>
     @Override
     public ID save(T entity) {
         if(entity.getId() == null){
-            entity.setId(idGenerator.nextId(entity.getShardMasterId()));
+            entity.setId(idGenerator.nextId(UserId.class, entity.getShardMasterId()));
         }
         if(entity.getCreatedTime() == null){
             entity.setCreatedTime(new Date());
@@ -47,15 +48,5 @@ public class CommonDataDAOImpl<T extends GenericEntity, ID extends Serializable>
         }
         currentSession().update(newt);
         return newt;
-    }
-
-    protected long generateId() {
-        try {
-            Thread.sleep(10);
-        } catch (InterruptedException e) {
-            //ignore
-        }
-
-        return System.currentTimeMillis();
     }
 }

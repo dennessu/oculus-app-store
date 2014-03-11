@@ -1,5 +1,5 @@
 @echo on
-set gradle_arg=clean install %1
+set gradle_arg=clean build install %1
 for %%i in (%*) do (
   set gradle_arg=%gradle_arg% %%i
 )
