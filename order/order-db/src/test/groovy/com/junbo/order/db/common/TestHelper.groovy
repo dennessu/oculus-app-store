@@ -7,6 +7,7 @@
 package com.junbo.order.db.common
 
 import com.junbo.order.db.entity.*
+import com.junbo.order.db.entity.enums.BillingAction
 import com.junbo.order.db.entity.enums.DiscountType
 import com.junbo.order.db.entity.enums.EventStatus
 import com.junbo.order.db.entity.enums.FulfillmentAction
@@ -15,6 +16,7 @@ import com.junbo.order.db.entity.enums.OrderActionType
 import com.junbo.order.db.entity.enums.OrderStatus
 import com.junbo.order.db.entity.enums.OrderType
 import groovy.transform.CompileStatic
+import org.apache.commons.lang.RandomStringUtils
 
 import java.security.SecureRandom
 
@@ -33,6 +35,8 @@ class TestHelper {
 
     private static long nextId = System.currentTimeMillis()
 
+    private static SecureRandom rand = new SecureRandom()
+
     static long generateId() {
         return nextId++
     }
@@ -43,6 +47,10 @@ class TestHelper {
 
     static long generateLong() {
         return System.currentTimeMillis()
+    }
+
+    static <T> T randEnum(Class<T> enumType) {
+        return (T) enumType.enumConstants[rand.nextInt(enumType.enumConstants.length)]
     }
 
     static OrderEntity generateOrder() {
@@ -117,6 +125,15 @@ class TestHelper {
         return entity
     }
 
+    static OrderBillingEventEntity generateOrderBillingEventEntity() {
+        def entity = new OrderBillingEventEntity()
+        entity.eventId = generateId()
+        entity.action = randEnum(BillingAction)
+        entity.status = randEnum(EventStatus)
+        entity.setOrderId(generateLong())
+        entity.balanceId = RandomStringUtils.randomAlphabetic(20)
+        return entity
+    }
 
     static OrderItemPreorderInfoEntity generateOrderItemPreorderInfoEntity() {
         OrderItemPreorderInfoEntity entity = new OrderItemPreorderInfoEntity()

@@ -97,6 +97,25 @@ class MapperTest extends BaseTest {
                 'The fulfillment id should not be different.'
     }
 
+    @Test(enabled = true)
+    void testOrderBillingEventMapper() {
+        MappingContext context = new MappingContext()
+
+        def orderBillingEventEntity = TestHelper.generateOrderBillingEventEntity()
+        def billingEvent =
+                modelMapper.toOrderBillingtEventModel(orderBillingEventEntity, context)
+        def returnedOrderBillingEventEntity =
+                modelMapper.toOrderBillingEventEntity(billingEvent, context)
+        assert billingEvent != null : 'Fail to map billing event entity to model.'
+        assert returnedOrderBillingEventEntity != null : 'Fail to map billing event model to entity.'
+        assert billingEvent.balanceId == orderBillingEventEntity.balanceId :
+                'The balance should not be different.'
+        assert  billingEvent.balanceId == returnedOrderBillingEventEntity.balanceId :
+                'The balance id should not be different.'
+        assert returnedOrderBillingEventEntity.action == orderBillingEventEntity.action
+        assert returnedOrderBillingEventEntity.status == orderBillingEventEntity.status
+    }
+
     // TODO Fix this case
     @Test(enabled = false)
     void testPreorderInfoEventMapper() {

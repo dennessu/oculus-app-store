@@ -12,6 +12,7 @@ import com.junbo.order.core.impl.order.OrderServiceContextBuilder
 import com.junbo.order.db.entity.enums.BillingAction
 import com.junbo.order.db.entity.enums.EventStatus
 import com.junbo.order.db.repo.OrderRepository
+import com.junbo.order.spec.model.BillingEvent
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.slf4j.Logger
@@ -47,9 +48,12 @@ class ImmediateSettleAction implements Action {
                 // todo: log order charge action error?
                 LOGGER.info('fail to create balance')
             } else {
-                orderRepository.saveBillingEvent(
-                        order.id, balance.balanceId,
-                        BillingAction.CHARGE, billingEventStatus)
+                def billingEvent = new BillingEvent()
+                billingEvent.balanceId = (balance.balanceId == null || balance.balanceId.value == null) ?
+                        null : balance.balanceId.value.toString()
+                billingEvent.action = BillingAction.CHARGE.name()
+                billingEvent.status = billingEventStatus.name()
+                orderRepository.createBillingEvent(order.id.value, billingEvent)
                 orderServiceContextBuilder.refreshBalances(context.orderServiceContext)
                 // TODO: update order status according to balance status.
                 // TODO: save order level tax
