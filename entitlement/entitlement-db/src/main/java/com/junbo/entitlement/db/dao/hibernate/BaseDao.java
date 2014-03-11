@@ -6,7 +6,7 @@
 
 package com.junbo.entitlement.db.dao.hibernate;
 
-import com.junbo.common.id.UserId;
+import com.junbo.common.id.EntitlementId;
 import com.junbo.entitlement.common.def.EntitlementConsts;
 import com.junbo.entitlement.common.lib.CommonUtils;
 import com.junbo.entitlement.common.lib.EntitlementContext;
@@ -74,7 +74,7 @@ public class BaseDao<T extends Entity> {
     }
 
     protected Long generateId(Long shardId) {
-        return idGenerator.nextId(UserId.class, shardId);
+        return idGenerator.nextId(EntitlementId.class, shardId);
     }
 
     protected void addSingleParam(String columnName, String paramName,
