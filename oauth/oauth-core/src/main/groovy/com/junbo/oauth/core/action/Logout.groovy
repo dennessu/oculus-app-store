@@ -119,7 +119,7 @@ class Logout implements Action {
                 contextWrapper.loginState = loginState
 
                 if (idToken != null) {
-                    Long userId = IdFormatter.decodeFormattedId(UserId, idToken.sub)
+                    Long userId = IdFormatter.decodeId(UserId, idToken.sub)
                     if (userId != loginState.userId) {
                         def redirectUriBuilder = UriComponentsBuilder.fromUriString(confirmationUri)
                         redirectUriBuilder.queryParam(OAuthParameters.CONVERSATION_ID, contextWrapper.conversationId)

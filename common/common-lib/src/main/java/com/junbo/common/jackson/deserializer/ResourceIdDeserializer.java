@@ -43,6 +43,7 @@ public class ResourceIdDeserializer extends JsonDeserializer<Object> implements 
     }
 
     protected Long decode(String id) {
+        Oculus48Id.validateEncodedValue(id);
         return Oculus48Id.unShuffle(Oculus48Id.deFormat(id));
     }
 
