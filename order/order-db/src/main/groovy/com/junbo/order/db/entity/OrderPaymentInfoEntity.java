@@ -23,7 +23,8 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name = "ORDER_PAYMENT_INFO")
 public class OrderPaymentInfoEntity extends CommonDbEntityDeletable {
-    private Long orderPaymentId;
+
+    private Long id;
     private Long orderId;
     private String paymentInstrumentId;
     private String paymentInstrumentType;
@@ -32,11 +33,11 @@ public class OrderPaymentInfoEntity extends CommonDbEntityDeletable {
     @Column(name = "ORDER_PAYMENT_INFO_ID")
     @NotNull(message = ValidationMessages.MISSING_VALUE)
     public Long getOrderPaymentId() {
-        return orderPaymentId;
+        return id;
     }
 
     public void setOrderPaymentId(Long orderPaymentId) {
-        this.orderPaymentId = orderPaymentId;
+        this.id = orderPaymentId;
     }
 
     @Column(name = "ORDER_ID")

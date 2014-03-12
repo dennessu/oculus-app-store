@@ -5,7 +5,6 @@
  */
 
 package com.junbo.order.core.impl.order
-
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.executor.FlowExecutor
 import com.junbo.order.clientproxy.billing.BillingFacade
@@ -18,6 +17,8 @@ import com.junbo.order.core.FlowType
 import com.junbo.order.core.OrderService
 import com.junbo.order.core.OrderServiceOperation
 import com.junbo.order.core.impl.orderaction.ActionUtils
+import com.junbo.order.core.impl.orderaction.context.CreateOrderActionContext
+import com.junbo.order.db.entity.enums.OrderActionType
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.model.ApiContext
 import com.junbo.order.spec.model.Order
@@ -93,8 +94,14 @@ class OrderServiceImpl implements OrderService {
     @Transactional
     Promise<List<Order>> createQuotes(Order order, ApiContext context) {
 
-        def orderServiceContext = initOrderServiceContext(null)
+        def orderServiceContext = initOrderServiceContext(order)
+
+        // Prepare Flow Request
         Map<String, Object> requestScope = [:]
+        def createOrderActionContext = new CreateOrderActionContext()
+        createOrderActionContext.orderActionType = OrderActionType.RATE
+        requestScope.put(ActionUtils.SCOPE_CREATE_ORDER_ACTION_CONTEXT, (Object)createOrderActionContext)
+
         flowSelector.select(orderServiceContext, OrderServiceOperation.CREATE_TENTATIVE).syncThen { FlowType flowType ->
             executeFlow(flowType, orderServiceContext, requestScope)
         }.syncThen {
