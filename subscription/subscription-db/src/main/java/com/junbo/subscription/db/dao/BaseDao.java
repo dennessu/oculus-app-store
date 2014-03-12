@@ -1,7 +1,7 @@
 package com.junbo.subscription.db.dao;
 
 import com.junbo.common.id.SubscriptionId;
-import com.junbo.sharding.IdGeneratorFacade;
+import com.junbo.sharding.IdGenerator;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +10,7 @@ public class BaseDao<T extends com.junbo.subscription.db.entity.Entity> {
     @Autowired
     private SessionFactory sessionFactory;
     @Autowired
-    private IdGeneratorFacade idGenerator;
+    private IdGenerator idGenerator;
 
     private Class<T> classType;
 
@@ -45,6 +45,6 @@ public class BaseDao<T extends com.junbo.subscription.db.entity.Entity> {
     }
 
     protected Long generateId(){
-        return idGenerator.nextId(SubscriptionId.class);
+        return idGenerator.nextId();
     }
 }
