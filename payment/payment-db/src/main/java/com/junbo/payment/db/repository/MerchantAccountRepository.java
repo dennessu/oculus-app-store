@@ -60,7 +60,7 @@ public class MerchantAccountRepository extends DomainDataRepository<MerchantAcco
     }
 
     public Integer getMerchantAccountIdByRef(String merchantRef){
-        if(merchantRef == null || merchantRef.isEmpty()){
+        if(CommonUtil.isNullOrEmpty(merchantRef)){
             return null;
         }
         List<MerchantAccountEntity> entities = getDomainData();
