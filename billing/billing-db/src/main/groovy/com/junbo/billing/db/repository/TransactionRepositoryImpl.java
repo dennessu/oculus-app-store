@@ -6,12 +6,16 @@
 
 package com.junbo.billing.db.repository;
 
+import com.junbo.billing.db.dao.TransactionEventEntityDao;
+import com.junbo.billing.db.transaction.TransactionEventEntity;
+import com.junbo.common.id.Id;
+import com.junbo.common.id.TransactionId;
 import com.junbo.oom.core.MappingContext;
 import com.junbo.billing.db.dao.TransactionEntityDao;
 import com.junbo.billing.db.mapper.ModelMapper;
 import com.junbo.billing.db.transaction.TransactionEntity;
 import com.junbo.billing.spec.model.Transaction;
-import com.junbo.sharding.IdGenerator;
+import com.junbo.sharding.IdGeneratorFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -27,21 +31,26 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     private TransactionEntityDao transactionEntityDao;
 
     @Autowired
+    private TransactionEventEntityDao transactionEventEntityDao;
+
+    @Autowired
     private ModelMapper modelMapper;
 
     @Autowired
-    private IdGenerator idGenerator;
+    private IdGeneratorFacade idGenerator;
 
     @Override
     public Transaction saveTransaction(Transaction transaction) {
         TransactionEntity entity = modelMapper.toTransactionEntity(transaction, new MappingContext());
 
-        entity.setTransactionId(idGenerator.nextId(entity.getBalanceId()));
+        entity.setTransactionId(idGenerator.nextId(TransactionId.class, entity.getBalanceId()));
         entity.setCreatedBy("BILLING");
         entity.setCreatedDate(new Date());
         Long id = transactionEntityDao.insert(entity);
 
         transactionEntityDao.flush();
+
+        saveTransactionEventEntity(entity);
         return getTransaction(id);
     }
 
@@ -80,6 +89,22 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         transactionEntityDao.update(savedEntity);
 
         transactionEntityDao.flush();
+
+        saveTransactionEventEntity(savedEntity);
+
         return getTransaction(entity.getTransactionId());
+    }
+
+    private void saveTransactionEventEntity(TransactionEntity transactionEntity) {
+        TransactionEventEntity transactionEventEntity = new TransactionEventEntity();
+        transactionEventEntity.setEventId(idGenerator.nextId(Id.class, transactionEntity.getTransactionId()));
+        transactionEventEntity.setTransactionId(transactionEntity.getTransactionId());
+        transactionEventEntity.setActionTypeId(transactionEntity.getTypeId());
+        transactionEventEntity.setStatusId(transactionEntity.getStatusId());
+        transactionEventEntity.setAmount(transactionEntity.getAmount());
+        transactionEventEntity.setEventDate(new Date());
+
+        transactionEventEntityDao.insert(transactionEventEntity);
+        transactionEventEntityDao.flush();
     }
 }
