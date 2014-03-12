@@ -21,6 +21,7 @@ import com.junbo.order.core.impl.orderaction.ActionUtils
 import com.junbo.order.core.impl.orderaction.context.OrderActionContext
 import com.junbo.order.db.entity.enums.OrderActionType
 import com.junbo.order.db.repo.OrderRepository
+import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.ApiContext
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderEvent
@@ -118,7 +119,7 @@ class OrderServiceImpl implements OrderService {
         return flowSelector.select(orderServiceContext, OrderServiceOperation.GET).then { FlowType flowType ->
             executeFlow(flowType, orderServiceContext, requestScope).then { OrderServiceContext context ->
                 if (context.order == null) {
-                      throw com.junbo.order.spec.error.AppErrors.INSTANCE.orderNotFound().exception()
+                      throw AppErrors.INSTANCE.orderNotFound().exception()
                 }
                 // TODO need refactor the get logic
                 // order items

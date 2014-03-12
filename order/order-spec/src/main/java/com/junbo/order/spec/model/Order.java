@@ -50,6 +50,7 @@ public class Order extends BaseModelWithDate {
     private BigDecimal totalPreorderAmount;
     private BigDecimal totalPreorderTax;
     private Date honorUntilTime;
+    private Date honoredTime;
     // end of ratingInfo
 
     // expand shippingInfo to simplify oom
@@ -207,6 +208,14 @@ public class Order extends BaseModelWithDate {
         this.honorUntilTime = honorUntilTime;
     }
 
+    public Date getHonoredTime() {
+        return honoredTime;
+    }
+
+    public void setHonoredTime(Date honoredTime) {
+        this.honoredTime = honoredTime;
+    }
+
     public Long getShippingMethodId() {
         return shippingMethodId;
     }
@@ -235,8 +244,8 @@ public class Order extends BaseModelWithDate {
         return refundOrders;
     }
 
-    public void setRefundOrders(List<OrderId> refundOrderIds) {
-        this.refundOrders = refundOrderIds;
+    public void setRefundOrders(List<OrderId> refundOrders) {
+        this.refundOrders = refundOrders;
     }
 
     public List<Discount> getDiscounts() {

@@ -1,5 +1,6 @@
 package com.junbo.order.core.common
 
+import com.junbo.common.id.OfferId
 import com.junbo.common.id.OrderId
 import com.junbo.common.id.PaymentInstrumentId
 import com.junbo.common.id.ShippingAddressId
@@ -58,8 +59,7 @@ class TestBuilder {
     static OrderItem buildOrderItem() {
         def orderItem = new OrderItem()
         orderItem.setType(ItemType.DIGITAL.toString())
-        orderItem.setOffer(generateLong())
-        orderItem.setOfferRevision('1')
+        orderItem.setOffer(new OfferId(generateLong()))
         return orderItem
     }
 

@@ -15,12 +15,22 @@ import java.util.List;
  * Created by LinYi on 2/10/14.
  */
 public class PreorderInfo extends BaseModelWithDate {
-    private Long id;
+    @JsonIgnore
+    private Long preorderInfoId;
     private Date billingTime;
     private Date preNotificationTime;
     private Date releaseTime;
     private List<PreorderUpdateHistory> updateHistory;
-    private OrderItemId orderItem;
+    @JsonIgnore
+    private OrderItemId orderItemId;
+
+    public Long getPreorderInfoId() {
+        return preorderInfoId;
+    }
+
+    public void setPreorderInfoId(Long preorderInfoId) {
+        this.preorderInfoId = preorderInfoId;
+    }
 
     public Date getBillingTime() {
         return billingTime;
@@ -54,22 +64,12 @@ public class PreorderInfo extends BaseModelWithDate {
         this.updateHistory = updateHistory;
     }
 
-    @JsonIgnore
-    public OrderItemId getOrderItem() {
-        return orderItem;
+    public OrderItemId getOrderItemId() {
+        return orderItemId;
     }
 
-    public void setOrderItem(OrderItemId orderItem) {
-        this.orderItem = orderItem;
-    }
-
-    @JsonIgnore
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+    public void setOrderItemId(OrderItemId orderItemId) {
+        this.orderItemId = orderItemId;
     }
 }
 
