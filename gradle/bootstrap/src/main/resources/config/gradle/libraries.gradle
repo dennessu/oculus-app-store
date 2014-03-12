@@ -117,6 +117,6 @@ ext {
             spy_memcached:          'net.spy:spymemcached:2.10.4',
             easy_mock:              'org.easymock:easymock:3.2',
 
-            btm:                    'org.codehaus.btm:btm:2.1.4',
+            btm:                    'com.junbo.btm:btm:3.0.0-SNAPSHOT', // switch to org.codehaus.btm if release version available
     ]
 }
