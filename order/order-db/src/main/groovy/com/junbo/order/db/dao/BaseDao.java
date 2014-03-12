@@ -22,4 +22,6 @@ public interface BaseDao<T extends CommonDbEntityWithDate> {
     void update(T t);
 
     void flush();
+
+    void markDelete(long id);
 }

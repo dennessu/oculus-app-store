@@ -29,7 +29,7 @@ public abstract class BaseDaoImpl<T extends BaseEntity> implements BaseDao<T> {
     private SessionFactory sessionFactory;
 
     @Autowired
-    @Qualifier("oculus40IdGenerator")
+    @Qualifier("oculus48IdGenerator")
     private IdGenerator idGenerator;
 
     private Class<T> entityType;

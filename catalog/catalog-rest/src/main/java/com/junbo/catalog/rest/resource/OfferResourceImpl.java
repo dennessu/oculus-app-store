@@ -15,8 +15,6 @@ import com.junbo.catalog.spec.resource.OfferResource;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.ws.rs.BeanParam;
-
 /**
  * Offer resource implementation.
  */
@@ -25,12 +23,12 @@ public class OfferResourceImpl extends BaseResourceImpl<Offer> implements OfferR
     private OfferService offerService;
 
     @Override
-    public Promise<ResultList<Offer>> getOffers(@BeanParam EntitiesGetOptions options) {
+    public Promise<ResultList<Offer>> getOffers(EntitiesGetOptions options) {
         return getEntities(options);
     }
 
     @Override
-    public Promise<Offer> getOffer(Long offerId, @BeanParam EntityGetOptions options) {
+    public Promise<Offer> getOffer(Long offerId, EntityGetOptions options) {
         return get(offerId, options);
     }
 
