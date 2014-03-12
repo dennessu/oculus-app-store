@@ -29,7 +29,7 @@ import java.math.BigDecimal;
  * Test for WalletDao.
  */
 @ContextConfiguration(locations = {"classpath:spring/context-test.xml"})
-@TransactionConfiguration(defaultRollback = false)
+@TransactionConfiguration(defaultRollback = true)
 public class WalletDaoTest extends AbstractTransactionalTestNGSpringContextTests{
     @Override
     @Autowired
