@@ -16,6 +16,7 @@ public class Oculus48Id {
     private Oculus48Id() {
     }
 
+    public static final long OCULUS48_MAXIMUM = 0xFFFFFFFFFFFFL;
     public static final long OCULUS48_MASK_BITS = 0x3FFFFFFFFL;
     public static final int OCULUS48_SHUFFLE_OFFSET = 14;
     public static final int OCULUS48_DECIMAL_LENGTH = 12;
@@ -110,4 +111,19 @@ public class Oculus48Id {
    public static Long deFormat(String id) {
        return Long.parseLong(id, OCULUS48_ID_RADIX);
    }
+
+    public static void validateRawValue(long value) {
+        if(value > OCULUS48_MAXIMUM) {
+            throw new RuntimeException("Invalid Oculus48Id value " + value);
+        }
+    }
+
+    public static void validateEncodedValue(String value) {
+        try {
+            deFormat(value);
+        }
+        catch (Exception e) {
+            throw new RuntimeException("Invalid Oculus48Id formatted value " + value);
+        }
+    }
 }

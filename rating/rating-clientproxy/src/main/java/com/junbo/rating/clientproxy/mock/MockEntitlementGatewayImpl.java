@@ -13,7 +13,10 @@ import java.util.Set;
 
 /**
  * Created by lizwu on 3/6/14.
+ * @deprecated just for internal test
  */
+
+@Deprecated
 public class MockEntitlementGatewayImpl implements EntitlementGateway{
     @Override
     public Set<String> getEntitlements(Long userId, Set<String> groups) {

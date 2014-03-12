@@ -24,12 +24,8 @@ import java.util.UUID;
         "type",
         "group",
         "tag",
-        "developerId",
-        "createdTime",
-        "createdBy",
-        "modifiedTime",
-        "modifiedBy"})
-public class EntitlementDefinition extends Model {
+        "developerId"})
+public class EntitlementDefinition {
     private UUID trackingUuid;
     @Null
     @JsonProperty("self")

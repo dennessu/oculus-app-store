@@ -17,12 +17,14 @@ public class IdFormatter {
     private IdFormatter() {
     }
 
-    public static Long decodeFormattedId(Class cls, String formattedId) {
+    public static Long decodeId(Class cls, String formattedId) {
         if(cls == OrderId.class) {
+            Oculus40Id.validateEncodedValue(formattedId);
             Long value = Oculus40Id.deFormat(formattedId);
             return Oculus40Id.unShuffle(value);
         }
         else if(cls.getSuperclass() == Id.class){
+            Oculus48Id.validateEncodedValue(formattedId);
             Long value = Oculus48Id.deFormat(formattedId);
             return Oculus48Id.unShuffle(value);
         }
@@ -33,10 +35,12 @@ public class IdFormatter {
 
     public static String encodeId(Id id) {
         if(id instanceof OrderId) {
+            Oculus40Id.validateRawValue(id.getValue());
             Long value = Oculus40Id.shuffle(id.getValue());
             return Oculus40Id.format(value);
         }
         else {
+            Oculus48Id.validateRawValue(id.getValue());
             Long value = Oculus48Id.shuffle(id.getValue());
             return Oculus48Id.format(value);
         }

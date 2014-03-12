@@ -62,4 +62,17 @@ public class OrderDiscountInfoDaoTest extends BaseTest {
 
         Assert.assertEquals(resultBefore.size() + 1, resultAfter.size(), "Result size should increase.");
     }
+
+    @Test
+    public void testMarkDelete() {
+        OrderDiscountInfoEntity entity = TestHelper.generateOrderDiscountInfoEntity();
+        Long orderId = entity.getOrderId();
+        List<OrderDiscountInfoEntity> resultBefore = orderDiscountInfoDao.readByOrderId(orderId);
+        orderDiscountInfoDao.create(entity);
+        orderDiscountInfoDao.flush();
+        List<OrderDiscountInfoEntity> resultAfter = orderDiscountInfoDao.readByOrderId(orderId);
+        Assert.assertEquals(resultBefore.size() + 1, resultAfter.size(), "Result size should increase.");
+        orderDiscountInfoDao.markDelete(entity.getDiscountInfoId());
+        Assert.assertEquals(resultBefore.size(), orderDiscountInfoDao.readByOrderId(orderId).size(), "Result size should decrease.");
+    }
 }

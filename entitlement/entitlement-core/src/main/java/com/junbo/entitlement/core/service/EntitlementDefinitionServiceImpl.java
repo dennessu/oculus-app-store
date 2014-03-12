@@ -63,6 +63,14 @@ public class EntitlementDefinitionServiceImpl extends BaseService implements Ent
     @Transactional
     public EntitlementDefinition updateEntitlementDefinition(Long entitlementDefinitionId,
                                                              EntitlementDefinition entitlementDefinition) {
+        if (entitlementDefinition.getEntitlementDefinitionId() == null) {
+            throw AppErrors.INSTANCE.missingField("id").exception();
+        }
+        if (!entitlementDefinitionId.equals(entitlementDefinition.getEntitlementDefinitionId())) {
+            throw AppErrors.INSTANCE.fieldNotMatch("id", entitlementDefinition.getEntitlementDefinitionId().toString(),
+                    entitlementDefinitionId.toString()).exception();
+        }
+
         checkUnUsed(entitlementDefinitionId);
 
         EntitlementDefinition existingEntitlementDefinition =

@@ -61,6 +61,21 @@ public class OrderPaymentInfoDaoTest extends BaseTest {
         Assert.assertEquals(resultBefore.size() + 1, resultAfter.size(), "Result size should increase.");
     }
 
+    @Test
+    public void testMarkDelete() {
+        OrderPaymentInfoEntity orderPaymentInfoEntity = generateOrderPaymentInfoEntity();
+        Long paymentInfoId = orderPaymentInfoEntity.getOrderPaymentId();
+        List<OrderPaymentInfoEntity> resultBefore = orderPaymentInfoDao.readByOrderId(paymentInfoId);
+        orderPaymentInfoDao.create(orderPaymentInfoEntity);
+        orderPaymentInfoDao.flush();
+        List<OrderPaymentInfoEntity> resultAfter = orderPaymentInfoDao.readByOrderId(paymentInfoId);
+
+        Assert.assertEquals(resultBefore.size() + 1, resultAfter.size(), "Result size should increase.");
+        orderPaymentInfoDao.markDelete(orderPaymentInfoEntity.getOrderPaymentId());
+        Assert.assertEquals(orderPaymentInfoDao.readByOrderId(paymentInfoId).size(),
+                resultBefore.size(), "Result size should decrease.");
+    }
+
     private OrderPaymentInfoEntity generateOrderPaymentInfoEntity() {
         OrderPaymentInfoEntity entity = new OrderPaymentInfoEntity();
         entity.setOrderPaymentId(generateId());

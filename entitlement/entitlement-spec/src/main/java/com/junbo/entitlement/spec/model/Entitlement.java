@@ -24,9 +24,8 @@ import java.util.UUID;
  */
 @JsonPropertyOrder(value = {"entitlementId", "userId", "developerId", "offerId", "status", "statusReason",
         "type", "group", "tag", "entitlementDefinitionId", "grantTime", "expirationTime",
-        "consumable", "useCount", "managedLifecycle",
-        "createdTime", "createdBy", "modifiedTime", "modifiedBy"})
-public class Entitlement extends Model {
+        "consumable", "useCount", "managedLifecycle"})
+public class Entitlement{
     private UUID trackingUuid;
     @Null
     @JsonProperty("self")

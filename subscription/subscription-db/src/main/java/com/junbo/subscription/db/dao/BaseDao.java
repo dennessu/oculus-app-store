@@ -1,15 +1,12 @@
 package com.junbo.subscription.db.dao;
 
-import com.junbo.subscription.db.entity.Entity;
+import com.junbo.common.id.SubscriptionId;
+import com.junbo.sharding.IdGenerator;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import com.junbo.sharding.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Date;
-import java.util.UUID;
-
-public class BaseDao<T extends Entity> {
+public class BaseDao<T extends com.junbo.subscription.db.entity.Entity> {
     @Autowired
     private SessionFactory sessionFactory;
     @Autowired

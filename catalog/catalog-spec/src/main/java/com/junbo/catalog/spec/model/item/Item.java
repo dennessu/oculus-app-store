@@ -9,9 +9,9 @@ package com.junbo.catalog.spec.model.item;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.catalog.spec.model.common.BaseModel;
 import com.junbo.common.jackson.annotation.AppId;
+import com.junbo.common.jackson.annotation.AttributeId;
 import com.junbo.common.jackson.annotation.ItemId;
 
-import javax.validation.constraints.Null;
 import java.util.List;
 import java.util.Map;
 
@@ -19,15 +19,14 @@ import java.util.Map;
  * Item model.
  */
 public class Item extends BaseModel {
-    @Null
     @ItemId
     @JsonProperty("self")
     private Long id;
-    private String type;
+    @AttributeId
+    private Long type;
     @AppId
     private Long ownerId;
     private List<Sku> skus;
-    private List<Long> attributes;
     private Map<String, String> properties;
 
     public Long getId() {
@@ -38,11 +37,11 @@ public class Item extends BaseModel {
         this.id = id;
     }
 
-    public String getType() {
+    public Long getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(Long type) {
         this.type = type;
     }
 
@@ -60,14 +59,6 @@ public class Item extends BaseModel {
 
     public void setSkus(List<Sku> skus) {
         this.skus = skus;
-    }
-
-    public List<Long> getAttributes() {
-        return attributes;
-    }
-
-    public void setAttributes(List<Long> attributes) {
-        this.attributes = attributes;
     }
 
     public Map<String, String> getProperties() {

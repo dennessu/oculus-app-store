@@ -10,7 +10,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.catalog.spec.model.common.BaseModel;
 import com.junbo.common.jackson.annotation.PromotionId;
 
-import javax.validation.constraints.Null;
 import java.util.Date;
 import java.util.List;
 
@@ -18,7 +17,6 @@ import java.util.List;
  * Promotion model.
  */
 public class Promotion extends BaseModel {
-    @Null
     @PromotionId
     @JsonProperty("self")
     private Long id;

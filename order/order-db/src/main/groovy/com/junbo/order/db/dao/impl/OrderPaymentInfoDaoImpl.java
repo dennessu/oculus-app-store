@@ -23,6 +23,7 @@ public class OrderPaymentInfoDaoImpl extends BaseDaoImpl<OrderPaymentInfoEntity>
     public List<OrderPaymentInfoEntity> readByOrderId(Long orderId) {
         Criteria criteria = this.getSession().createCriteria(OrderPaymentInfoEntity.class);
         criteria.add(Restrictions.eq("orderId", orderId));
+        criteria.add(Restrictions.eq("deleted", false));
         return criteria.list();
     }
 }

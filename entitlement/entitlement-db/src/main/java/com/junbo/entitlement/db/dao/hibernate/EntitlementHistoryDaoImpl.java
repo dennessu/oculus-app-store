@@ -11,6 +11,7 @@ import com.junbo.entitlement.db.entity.EntitlementHistoryEntity;
 import com.junbo.sharding.IdGenerator;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 /**
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class EntitlementHistoryDaoImpl implements EntitlementHistoryDao {
     @Autowired
+    @Qualifier("idGenerator")
     private IdGenerator idGenerator;
 
     private SessionFactory sessionFactory;
@@ -27,7 +29,7 @@ public class EntitlementHistoryDaoImpl implements EntitlementHistoryDao {
     public void insert(EntitlementHistoryEntity entitlementHistory) {
         entitlementHistory.setEntitlementHistoryId(
                 idGenerator.nextId(entitlementHistory.getEntitlementId()));
-       sessionFactory.getCurrentSession().save(entitlementHistory);
+        sessionFactory.getCurrentSession().save(entitlementHistory);
     }
 
     public SessionFactory getSessionFactory() {

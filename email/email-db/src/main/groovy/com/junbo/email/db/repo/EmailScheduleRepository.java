@@ -9,7 +9,6 @@ import com.junbo.email.db.dao.EmailScheduleDao;
 import com.junbo.email.db.entity.EmailScheduleEntity;
 import com.junbo.email.db.mapper.EmailMapper;
 import com.junbo.email.spec.model.Email;
-import com.junbo.sharding.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,9 +25,6 @@ public class EmailScheduleRepository {
 
     @Autowired
     private EmailMapper emailMapper;
-
-    @Autowired
-    private IdGenerator idGenerator;
 
     private Random r = new Random();
 

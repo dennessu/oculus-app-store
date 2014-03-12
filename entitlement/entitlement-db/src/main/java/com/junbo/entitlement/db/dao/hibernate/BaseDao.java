@@ -6,17 +6,17 @@
 
 package com.junbo.entitlement.db.dao.hibernate;
 
-import com.junbo.common.id.UserId;
 import com.junbo.entitlement.common.def.EntitlementConsts;
 import com.junbo.entitlement.common.lib.CommonUtils;
 import com.junbo.entitlement.common.lib.EntitlementContext;
 import com.junbo.entitlement.db.entity.Entity;
 import com.junbo.entitlement.spec.model.PageMetadata;
-import com.junbo.sharding.IdGeneratorFacade;
+import com.junbo.sharding.IdGenerator;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
@@ -29,7 +29,8 @@ import java.util.*;
 public class BaseDao<T extends Entity> {
     private SessionFactory sessionFactory;
     @Autowired
-    private IdGeneratorFacade idGenerator;
+    @Qualifier("idGenerator")
+    private IdGenerator idGenerator;
 
     private Class<T> entityType;
 
@@ -52,6 +53,9 @@ public class BaseDao<T extends Entity> {
     }
 
     public T update(T t) {
+        T existed = (T) currentSession().load(entityType, t.getId());
+        t.setCreatedTime(existed.getCreatedTime());
+        t.setCreatedBy(existed.getCreatedBy());
         t.setModifiedBy("DEFAULT"); //TODO
         t.setModifiedTime(EntitlementContext.current().getNow());
         return (T) currentSession().merge(t);
@@ -74,7 +78,7 @@ public class BaseDao<T extends Entity> {
     }
 
     protected Long generateId(Long shardId) {
-        return idGenerator.nextId(UserId.class, shardId);
+        return idGenerator.nextId(shardId);
     }
 
     protected void addSingleParam(String columnName, String paramName,

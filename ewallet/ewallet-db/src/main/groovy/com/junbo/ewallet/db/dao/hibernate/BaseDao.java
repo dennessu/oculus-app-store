@@ -11,17 +11,21 @@ import com.junbo.sharding.IdGenerator;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.Date;
 
 /**
  * Base dao for Entity.
+ *
  * @param <T> entity type.
  */
 public class BaseDao<T extends Entity> {
     @Autowired
+    @Qualifier("ewalletSessionFactory")
     private SessionFactory sessionFactory;
     @Autowired
+    @Qualifier("idGenerator")
     private IdGenerator idGenerator;
 
     private Class<T> entityType;
@@ -45,6 +49,9 @@ public class BaseDao<T extends Entity> {
     }
 
     public T update(T t) {
+        T existed = (T) currentSession().load(entityType, t.getId());
+        t.setCreatedTime(existed.getCreatedTime());
+        t.setCreatedBy(existed.getCreatedBy());
         Date now = new Date();
         t.setModifiedBy("DEFAULT"); //TODO
         t.setModifiedTime(now);

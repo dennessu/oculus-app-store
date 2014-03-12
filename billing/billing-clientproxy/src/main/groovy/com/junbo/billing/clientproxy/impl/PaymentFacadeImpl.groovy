@@ -8,7 +8,9 @@ package com.junbo.billing.clientproxy.impl
 
 import com.junbo.billing.clientproxy.PaymentFacade
 import com.junbo.common.id.PaymentInstrumentId
+import com.junbo.common.json.IdPathParamTranscoder
 import com.junbo.common.json.JsonMessageTranscoder
+import com.junbo.common.json.QueryParamTranscoderImpl
 import com.junbo.langur.core.promise.Promise
 import com.junbo.payment.spec.model.PaymentInstrument
 import com.junbo.payment.spec.model.PaymentTransaction
@@ -42,25 +44,25 @@ class PaymentFacadeImpl implements PaymentFacade {
 
     @Override
     Promise<PaymentInstrument> getPaymentInstrument(Long piId) {
-        return new PaymentInstrumentResourceClientProxy(asyncHttpClient,
-                new JsonMessageTranscoder(), url).getById(new PaymentInstrumentId(piId))
+        return new PaymentInstrumentResourceClientProxy(asyncHttpClient, new JsonMessageTranscoder(),
+               new IdPathParamTranscoder(), new QueryParamTranscoderImpl(), url).getById(new PaymentInstrumentId(piId))
     }
 
     @Override
     Promise<PaymentTransaction> postPaymentCharge(PaymentTransaction request) {
-        return new PaymentTransactionResourceClientProxy(asyncHttpClient,
-                new JsonMessageTranscoder(), url).postPaymentCharge(request)
+        return new PaymentTransactionResourceClientProxy(asyncHttpClient, new JsonMessageTranscoder(),
+                new IdPathParamTranscoder(), new QueryParamTranscoderImpl(), url).postPaymentCharge(request)
     }
 
     @Override
     Promise<PaymentTransaction> postPaymentAuthorization(PaymentTransaction request) {
-        return new PaymentTransactionResourceClientProxy(asyncHttpClient,
-                new JsonMessageTranscoder(), url).postPaymentAuthorization(request)
+        return new PaymentTransactionResourceClientProxy(asyncHttpClient, new JsonMessageTranscoder(),
+                new IdPathParamTranscoder(), new QueryParamTranscoderImpl(), url).postPaymentAuthorization(request)
     }
 
     @Override
     Promise<PaymentTransaction> postPaymentCapture(Long paymentId, PaymentTransaction request) {
-        return new PaymentTransactionResourceClientProxy(asyncHttpClient,
-                new JsonMessageTranscoder(), url).postPaymentCapture(paymentId, request)
+        return new PaymentTransactionResourceClientProxy(asyncHttpClient, new JsonMessageTranscoder(),
+                new IdPathParamTranscoder(), new QueryParamTranscoderImpl(), url).postPaymentCapture(paymentId, request)
     }
 }

@@ -7,6 +7,7 @@
 package com.junbo.common.jackson;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.junbo.common.jackson.annotation.OrderId;
 import com.junbo.common.jackson.annotation.UserId;
 
 import java.util.List;
@@ -38,6 +39,9 @@ public class User {
 
     @UserId
     private List<String> test2;
+
+    @OrderId
+    private Long orderId;
 
     public User() {
 
@@ -109,5 +113,13 @@ public class User {
 
     public void setTest2(List<String> test2) {
         this.test2 = test2;
+    }
+
+    public Long getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(Long orderId) {
+        this.orderId = orderId;
     }
 }
