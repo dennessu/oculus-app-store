@@ -22,7 +22,10 @@ import java.util.*;
 
 /**
  * Created by lizwu on 2/26/14.
+ * @deprecated just for internal test
  */
+
+@Deprecated
 public class MockCatalogGatewayImpl implements CatalogGateway {
     Map<Long, RatingOffer> mockOffers = new HashMap<Long, RatingOffer>() {{
         put(100L, genOffer100());
