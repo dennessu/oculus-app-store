@@ -79,7 +79,7 @@ public class ResourceAwareDeserializationContext extends DefaultDeserializationC
                     componentType = paramClass;
                 }
 
-                ((ResourceCollectionAware) deser).injectComponentType(componentType);
+                ((ResourceCollectionAware) deser).injectIdClassType(componentType);
             }
         }
 
