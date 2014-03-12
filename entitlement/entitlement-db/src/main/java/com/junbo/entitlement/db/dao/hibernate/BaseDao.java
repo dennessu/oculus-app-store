@@ -53,6 +53,9 @@ public class BaseDao<T extends Entity> {
     }
 
     public T update(T t) {
+        T existed = (T) currentSession().load(entityType, t.getId());
+        t.setCreatedTime(existed.getCreatedTime());
+        t.setCreatedBy(existed.getCreatedBy());
         t.setModifiedBy("DEFAULT"); //TODO
         t.setModifiedTime(EntitlementContext.current().getNow());
         return (T) currentSession().merge(t);

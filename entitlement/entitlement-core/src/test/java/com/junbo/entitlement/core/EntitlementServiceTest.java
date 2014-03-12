@@ -197,10 +197,6 @@ public class EntitlementServiceTest extends AbstractTransactionalTestNGSpringCon
         entitlement.setOfferId(idGenerator.nextId());
         entitlement.setStatus(EntitlementStatus.ACTIVE.toString());
         entitlement.setUseCount(0);
-        entitlement.setCreatedBy("test");
-        entitlement.setModifiedBy("test");
-        entitlement.setCreatedTime(new Date());
-        entitlement.setModifiedTime(new Date());
         entitlement.setManagedLifecycle(false);
         return entitlement;
     }
@@ -211,10 +207,6 @@ public class EntitlementServiceTest extends AbstractTransactionalTestNGSpringCon
         entitlementDefinition.setGroup("testGroup");
         entitlementDefinition.setType(EntitlementType.DEFAULT.toString());
         entitlementDefinition.setDeveloperId(idGenerator.nextId());
-        entitlementDefinition.setCreatedBy("test");
-        entitlementDefinition.setModifiedBy("test");
-        entitlementDefinition.setCreatedTime(new Date());
-        entitlementDefinition.setModifiedTime(new Date());
         return entitlementDefinitionService.addEntitlementDefinition(entitlementDefinition);
     }
 }
