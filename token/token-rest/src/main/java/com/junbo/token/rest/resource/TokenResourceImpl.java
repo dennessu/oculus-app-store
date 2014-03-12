@@ -7,50 +7,54 @@
 package com.junbo.token.rest.resource;
 
 import com.junbo.langur.core.promise.Promise;
+import com.junbo.token.core.TokenService;
+import com.junbo.token.core.exception.AppClientExceptions;
 import com.junbo.token.spec.model.*;
 import com.junbo.token.spec.resource.TokenResource;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.ws.rs.BeanParam;
-import javax.ws.rs.core.Response;
 
 /**
  * token resource implementation.
  */
 public class TokenResourceImpl implements TokenResource{
+
+    @Autowired
+    private TokenService tokenService;
+
     @Override
-    public Promise<TokenOrder> postOrderGeneration(TokenOrder request) {
+    public Promise<TokenOrder> postOrder(TokenOrder request) {
+        return tokenService.createTokenOrder(request);
+    }
+
+    @Override
+    public Promise<TokenOrder> getOrderById(Long tokenOrderId) {
+        return tokenService.getTokenOrder(tokenOrderId);
+    }
+
+    @Override
+    public Promise<ResultList<TokenOrder>> searchOrder(@BeanParam TokenOrderSearchParam searchParam,
+                                                       @BeanParam PageMetaData pageMetadata) {
         return null;
     }
 
     @Override
-    public Promise<TokenOrder> postOrderUpload(TokenOrder request) {
-        return null;
+    public Promise<TokenItem> consumeToken(String tokenString) {
+        return tokenService.consumeToken(tokenString);
     }
 
     @Override
-    public Promise<TokenOrder> getById(Long tokenOrderId) {
-        return null;
-    }
-
-    @Override
-    public Promise<ResultList<TokenOrder>> searchPaymentInstrument(@BeanParam TokenOrderSearchParam searchParam,
-                                                                   @BeanParam PageMetaData pageMetadata) {
-        return null;
-    }
-
-    @Override
-    public Promise<Response> delete(String tokenString) {
-        return null;
-    }
-
-    @Override
-    public Promise<TokenItem> update(String tokenString) {
-        return null;
+    public Promise<TokenItem> updateToken(String tokenString, TokenItem token) {
+        if(tokenString.equalsIgnoreCase(token.getHashString())){
+            throw AppClientExceptions.INSTANCE.invalidToken(tokenString).exception();
+        }
+        return tokenService.updateToken(token);
     }
 
     @Override
     public Promise<TokenItem> getToken(String tokenString) {
-        return null;
+        return tokenService.getToken(tokenString);
     }
 }
 

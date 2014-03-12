@@ -13,40 +13,36 @@ import com.junbo.token.spec.model.TokenOrderSearchParam;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 /**
- * payment instrument resource interface.
+ * token resource interface.
  */
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 @RestResource
 public interface TokenResource {
     @POST
-    @Path("/token-orders/generation")
-    Promise<TokenOrder> postOrderGeneration(TokenOrder request);
-
-    @POST
-    @Path("/token-orders/upload")
-    Promise<TokenOrder> postOrderUpload(TokenOrder request);
+    @Path("/token-orders")
+    Promise<TokenOrder> postOrder(TokenOrder request);
 
     @GET
     @Path("/token-orders/{tokenOrderId}")
-    Promise<TokenOrder> getById(@PathParam("tokenOrderId") Long tokenOrderId);
+    Promise<TokenOrder> getOrderById(@PathParam("tokenOrderId") Long tokenOrderId);
 
     @GET
     @Path("/token-orders/search")
-    Promise<ResultList<TokenOrder>> searchPaymentInstrument(
+    Promise<ResultList<TokenOrder>> searchOrder(
             @BeanParam TokenOrderSearchParam searchParam,
             @BeanParam PageMetaData pageMetadata);
 
     @POST
     @Path("/tokens/{tokenString}/consumption")
-    Promise<Response> delete(@PathParam("tokenString") String tokenString);
+    Promise<TokenItem> consumeToken(@PathParam("tokenString") String tokenString);
 
     @PUT
-    @Path("/{tokenString}")
-    Promise<TokenItem> update(@PathParam("tokenString") String tokenString);
+    @Path("/tokens/{tokenString}")
+    Promise<TokenItem> updateToken(@PathParam("tokenString") String tokenString,
+                                   TokenItem token);
 
     @GET
     @Path("/tokens/{tokenString}")

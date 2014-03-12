@@ -38,10 +38,6 @@ class Main {
         resourceConfig.property(ServerProperties.TRACING, 'ALL')
         resourceConfig.packages('com.junbo.token.spec.resource.adapter')
         resourceConfig.property('contextConfigLocation', 'classpath*:/spring/*.xml')
-        /*//TODO: change to async adapter later
-        resourceConfig.packages("com.junbo.payment.rest.resource")
-        resourceConfig.property("contextConfigLocation", "classpath*:/spring/*.xml")
-        */
         def uri = URI.create('http://localhost:8080/rest')
         return GrizzlyHttpServerFactory.createHttpServer(uri, resourceConfig)
     }
