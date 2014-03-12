@@ -17,6 +17,12 @@ public class CategoryGetOptions extends GetOptions {
     @QueryParam("name")
     private String name;
 
+    @QueryParam("testBoolean")
+    private Boolean testBoolean;
+
+    @QueryParam("testPrimaryBoolean")
+    private boolean testPrimaryBoolean;
+
     @QueryParam("type")
     private String type;
 
@@ -33,6 +39,22 @@ public class CategoryGetOptions extends GetOptions {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Boolean getTestBoolean() {
+        return testBoolean;
+    }
+
+    public void setTestBoolean(Boolean testBoolean) {
+        this.testBoolean = testBoolean;
+    }
+
+    public boolean isTestPrimaryBoolean() {
+        return testPrimaryBoolean;
+    }
+
+    public void setTestPrimaryBoolean(boolean testPrimaryBoolean) {
+        this.testPrimaryBoolean = testPrimaryBoolean;
     }
 
     @QueryParam("type")

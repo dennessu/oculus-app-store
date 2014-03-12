@@ -28,6 +28,8 @@ class ClientProxyParser implements RestResourceHandler {
     private static final String OBJECT_TYPE = 'java.lang.Object'
     private static final String BRACET = '()'
     private static final String GET = 'get'
+    private static final String IS = 'is'
+    private static final String PRIMARY_BOOLEAN = 'boolean'
     private static final String DOT = '.'
 
     @Override
@@ -202,7 +204,7 @@ class ClientProxyParser implements RestResourceHandler {
 
         def typeElement = (TypeElement) ((DeclaredType) variableType).asElement()
         ElementFilter.fieldsIn(elementUtils.getAllMembers(typeElement)).each { VariableElement variableElement ->
-            String fieldGetMethodName = getGetMethodName(variableElement.simpleName.toString())
+            String fieldGetMethodName = getGetMethodName(variableElement)
             QueryParam queryParam = variableElement.getAnnotation(QueryParam)
             if (queryParam != null && !simpleNames.contains(fieldGetMethodName)) {
                 result.add(new QueryParameterModel(
@@ -237,7 +239,7 @@ class ClientProxyParser implements RestResourceHandler {
             }
         }
 
-        typeElement = (TypeElement) ((DeclaredType) variableType).asElement();
+        typeElement = (TypeElement) ((DeclaredType) variableType).asElement()
         ElementFilter.methodsIn(elementUtils.getAllMembers(typeElement)).each { ExecutableElement executableElement ->
             if (executableElement.enclosingElement.toString() == OBJECT_TYPE) {
                 return
@@ -280,7 +282,11 @@ class ClientProxyParser implements RestResourceHandler {
         return result
     }
 
-    static String getGetMethodName(String fieldName) {
-        return GET + fieldName.capitalize()
+    static String getGetMethodName(VariableElement variableElement) {
+        String name = variableElement.simpleName.toString()
+        if (variableElement.asType().toString() == PRIMARY_BOOLEAN) {
+            return IS + name.capitalize()
+        }
+        return GET + name.capitalize()
     }
 }
