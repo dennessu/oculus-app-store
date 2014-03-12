@@ -14,12 +14,16 @@ import javax.ws.rs.QueryParam;
  */
 public class CategoryGetOptions extends GetOptions {
 
+    @QueryParam("name")
     private String name;
 
+    @QueryParam("type")
     private String type;
 
+    @QueryParam("parentCategoryId")
     private String parentCategoryId;
 
+    @QueryParam("categoryId")
     private String categoryId;
 
     @QueryParam("name")
