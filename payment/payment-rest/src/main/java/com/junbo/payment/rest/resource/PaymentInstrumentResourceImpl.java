@@ -9,6 +9,7 @@ package com.junbo.payment.rest.resource;
 import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.core.PaymentInstrumentService;
+import com.junbo.payment.core.exception.AppClientExceptions;
 import com.junbo.payment.spec.model.PageMetaData;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentInstrumentSearchParam;
@@ -46,7 +47,9 @@ public class PaymentInstrumentResourceImpl implements PaymentInstrumentResource 
 
     @Override
     public Promise<PaymentInstrument> update(PaymentInstrumentId paymentInstrumentId, PaymentInstrument request) {
-        request.setId(paymentInstrumentId.getValue());
+        if(!paymentInstrumentId.getValue().equals(request.getId())){
+            throw AppClientExceptions.INSTANCE.invalidPaymentInstrumentId(request.getId().toString()).exception();
+        }
         piService.update(request);
         return Promise.pure(request);
     }

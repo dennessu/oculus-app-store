@@ -49,6 +49,10 @@ public final class CommonUtil {
         return value.equalsIgnoreCase("Yes") || value.equalsIgnoreCase("True");
     }
 
+    public static boolean isNullOrEmpty(String value){
+        return value == null || value.isEmpty();
+    }
+
     public static <T> List<T> filter(List<T> target, IPredicate<T> predicate) {
         List<T> result = new ArrayList<T>();
         for (T element: target) {
