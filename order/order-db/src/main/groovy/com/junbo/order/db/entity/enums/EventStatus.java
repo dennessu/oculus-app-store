@@ -14,8 +14,8 @@ public enum EventStatus implements Identifiable<Short> {
     OPEN(0),
     PROCESSING(1),
     PENDING(2),
-    COMPLETED(3),
-    FAILED(4),
+    COMPLETED(100),
+    FAILED(999),
     ERROR(-1);
 
     private EventStatus(int id) {

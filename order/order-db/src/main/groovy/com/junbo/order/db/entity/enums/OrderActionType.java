@@ -16,7 +16,8 @@ public enum OrderActionType implements Identifiable<Short> {
     AUTHORIZE(2),
     FULFILL(3),
     REFUND(4),
-    CANCEL(5);
+    CANCEL(5),
+    UPDATE(6);
 
     private OrderActionType(int id) {
         this.id = (short) id;
