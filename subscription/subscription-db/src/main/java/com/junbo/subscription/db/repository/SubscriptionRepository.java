@@ -1,14 +1,18 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
+ */
 package com.junbo.subscription.db.repository;
 
 import com.junbo.subscription.db.dao.SubscriptionDao;
 import com.junbo.subscription.db.mapper.SubscriptionMapper;
 import com.junbo.subscription.spec.model.Subscription;
-import com.junbo.subscription.spec.model.PageMetadata;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.List;
-import java.util.UUID;
-
+/**
+ * subscription repository.
+ */
 public class SubscriptionRepository {
     @Autowired
     private SubscriptionDao subscriptionDao;
