@@ -15,24 +15,25 @@ import junit.framework.Assert;
 public class CascadeResourceIdSerializer extends ResourceIdSerializer {
     @Override
     protected ResourceRef handleSingle(Object value) {
-        Assert.assertTrue(value instanceof CascadeResourceId);
+        Assert.assertTrue(value instanceof CascadeResource);
 
         ResourceRef ref = new ResourceRef();
         ref.setHref(getResourceHref(value));
-        ref.setId(encode(((CascadeResourceId) value).getPrimaryId()));
+        ref.setId(encode(((CascadeResource) value).getPrimaryId()));
 
         return ref;
     }
 
     @Override
     protected String getResourceHref(Object value) {
-        Assert.assertTrue(value instanceof CascadeResourceId);
-        CascadeResourceId cascadeResourceId = (CascadeResourceId) value;
+        Assert.assertTrue(value instanceof CascadeResource);
+        CascadeResource resource = (CascadeResource) value;
 
-        for (int i = 0; i < cascadeResourceId.getCascadeIds().length; i++) {
-            cascadeResourceId.getCascadeIds()[i] = encode(cascadeResourceId.getCascadeIds()[i]);
+        Object[] encodedIds = new String[resource.getCascadeIds().length];
+        for (int i = 0; i < resource.getCascadeIds().length; i++) {
+            encodedIds[i] = encode(resource.getCascadeIds()[i]);
         }
 
-        return RESOURCE_URL_PREFIX + String.format(resourceType, cascadeResourceId.getCascadeIds());
+        return RESOURCE_URL_PREFIX + String.format(resourceType, encodedIds);
     }
 }
