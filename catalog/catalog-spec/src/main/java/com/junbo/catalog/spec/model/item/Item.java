@@ -12,7 +12,6 @@ import com.junbo.common.jackson.annotation.AppId;
 import com.junbo.common.jackson.annotation.AttributeId;
 import com.junbo.common.jackson.annotation.ItemId;
 
-import javax.validation.constraints.Null;
 import java.util.List;
 import java.util.Map;
 
@@ -20,7 +19,6 @@ import java.util.Map;
  * Item model.
  */
 public class Item extends BaseModel {
-    @Null
     @ItemId
     @JsonProperty("self")
     private Long id;
