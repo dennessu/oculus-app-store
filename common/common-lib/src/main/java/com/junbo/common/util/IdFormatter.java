@@ -40,7 +40,7 @@ public class IdFormatter {
             return Oculus40Id.format(value);
         }
         else {
-            Oculus40Id.validateRawValue(id.getValue());
+            Oculus48Id.validateRawValue(id.getValue());
             Long value = Oculus48Id.shuffle(id.getValue());
             return Oculus48Id.format(value);
         }
