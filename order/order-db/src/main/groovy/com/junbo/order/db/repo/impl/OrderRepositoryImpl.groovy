@@ -63,12 +63,13 @@ class OrderRepositoryImpl implements OrderRepository {
     IdGenerator idGenerator
 
     @Override
-    Order createOrder(Order order, OrderEvent orderEvent) {
+    Order createOrder(Order order) {
 
         MappingContext context = new MappingContext()
         def orderEntity = modelMapper.toOrderEntity(order, context)
 
         // Save Order
+        // TODO Save Order Tax Info
         orderEntity.setOrderId(idGenerator.nextId(order.user.value))
         def id = orderDao.create(orderEntity)
         def orderId = new OrderId()
@@ -82,6 +83,9 @@ class OrderRepositoryImpl implements OrderRepository {
             item.orderId = orderId
             def itemEntity = modelMapper.toOrderItemEntity(item, context)
             orderItemDao.create(itemEntity)
+
+            // Save Order Item Preorder Info
+
         }
 
         // Save Discount
@@ -91,21 +95,12 @@ class OrderRepositoryImpl implements OrderRepository {
             discountDao.create(discountEntity)
         }
 
-        // Save order event
-        orderEvent.order = order.id
-        def orderEventEntity = modelMapper.toOrderEventEntity(orderEvent, context)
-        orderEventEntity.eventId = idGenerator.nextId(orderEntity.orderId)
-        // orderEventDao.create(orderEventEntity)
-
-        // Save Balance Event
-
-        // Save Order Item Fulfillment Event
-
         // Save Payment Info
-
-        // Save Order Item Tax Info
-
-        // Save Order Item Preorder Info
+        order.paymentInstruments.each { PaymentInstrumentId piid ->
+            def paymentInfoEntity = modelMapper.toOrderPaymentInfoEntity(piid, context)
+            paymentInfoEntity.id = idGenerator.nextId(orderEntity.orderId)
+            orderPaymentInfoDao.create(paymentInfoEntity)
+        }
 
         return order
     }
@@ -119,12 +114,11 @@ class OrderRepositoryImpl implements OrderRepository {
     }
 
     @Override
-    OrderEvent createOrderEvent(OrderEvent event) {
+    OrderEvent createOrderEvent(OrderEvent event, String flowName, UUID trackingUuid) {
         def entity = modelMapper.toOrderEventEntity(event, new MappingContext())
         entity.eventId = idGenerator.nextId(entity.orderId)
-        // todo set the flowName & tracking guuid
-        entity.flowName = UUID.randomUUID()
-        entity.trackingUuid = UUID.randomUUID()
+        entity.flowName = flowName
+        entity.trackingUuid = trackingUuid
         orderEventDao.create(entity)
         return modelMapper.toOrderEventModel(entity, new MappingContext())
     }

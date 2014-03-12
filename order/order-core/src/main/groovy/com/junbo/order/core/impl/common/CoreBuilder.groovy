@@ -1,14 +1,20 @@
 package com.junbo.order.core.impl.common
 
+import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.BalanceItem
-import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.model.DiscountItem
 import com.junbo.common.id.OrderId
+import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.core.impl.order.OrderServiceContext
+import com.junbo.order.core.impl.orderaction.ActionUtils
+import com.junbo.order.core.impl.orderaction.context.OrderActionContext
+import com.junbo.order.core.impl.orderaction.context.OrderActionResult
 import com.junbo.order.db.entity.enums.EventStatus
 import com.junbo.order.db.entity.enums.OrderActionType
-import com.junbo.order.spec.model.*
+import com.junbo.order.spec.model.Order
+import com.junbo.order.spec.model.OrderEvent
+import com.junbo.order.spec.model.OrderItem
 import com.junbo.rating.spec.model.request.OrderRatingItem
 import com.junbo.rating.spec.model.request.OrderRatingRequest
 import groovy.transform.CompileStatic
@@ -92,5 +98,16 @@ class CoreBuilder {
         event.action = action
         event.status = status.name()
         return event
+    }
+
+    static ActionResult buildActionResultForOrderEventAwareAction(OrderActionContext context, EventStatus eventStatus) {
+        def orderActionResult = new OrderActionResult()
+        orderActionResult.orderActionContext = context
+        orderActionResult.returnedEventStatus = eventStatus
+
+        def data = [:]
+        data.put(ActionUtils.DATA_ORDER_ACTION_RESULT, (Object)orderActionResult)
+        def actionResult = new ActionResult('success', data)
+        return actionResult
     }
 }

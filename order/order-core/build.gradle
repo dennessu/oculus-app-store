@@ -4,6 +4,8 @@ dependencies {
     compile project(":order-spec")
     compile project(":order-clientproxy")
     compile project(":order-db")
+    compile "org.aspectj:aspectjrt:1.7.4"
+    compile "org.aspectj:aspectjweaver:1.7.4"
     testCompile (libraries.spring_test)
     testCompile (libraries.easy_mock)
 }

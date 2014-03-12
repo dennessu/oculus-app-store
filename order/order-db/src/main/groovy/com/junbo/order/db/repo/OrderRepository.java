@@ -14,17 +14,18 @@ import com.junbo.order.db.entity.enums.EventStatus;
 import com.junbo.order.spec.model.*;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by chriszhu on 2/18/14.
  */
 public interface OrderRepository {
 
-    Order createOrder(Order order, OrderEvent orderEvent);
+    Order createOrder(Order order);
 
     Order getOrder(Long orderId);
 
-    OrderEvent createOrderEvent(OrderEvent event);
+    OrderEvent createOrderEvent(OrderEvent event, String flowName, UUID trackingUuid);
 
     FulfillmentEvent createFulfillmentEvent(Long orderId, FulfillmentEvent event);
 
