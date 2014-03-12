@@ -1,5 +1,4 @@
 package com.junbo.order.rest.resource
-
 import com.junbo.common.id.OrderId
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.core.OrderService
@@ -9,11 +8,10 @@ import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
 
+import javax.ws.rs.core.HttpHeaders
 //import javax.ws.rs.container.ContainerRequestContext
 //import javax.ws.rs.core.Context
-import javax.ws.rs.core.HttpHeaders
 /**
  * Created by chriszhu on 2/10/14.
  */
@@ -32,7 +30,6 @@ class OrderResourceImpl implements OrderResource {
 //    private RespondingContext respondingContext
 
     @Override
-    @Transactional
     Promise<Order> getOrderByOrderId(OrderId orderId, HttpHeaders httpHeaders) {
         return orderService.getOrderByOrderId(orderId.value)
     }

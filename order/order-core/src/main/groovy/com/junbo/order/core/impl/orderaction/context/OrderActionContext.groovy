@@ -1,5 +1,5 @@
 package com.junbo.order.core.impl.orderaction.context
-import com.junbo.order.core.FlowType
+
 import com.junbo.order.core.impl.order.OrderServiceContext
 import com.junbo.order.db.entity.enums.OrderActionType
 import groovy.transform.CompileStatic
@@ -11,7 +11,7 @@ class OrderActionContext {
 
     OrderServiceContext orderServiceContext
     Long orderId
-    FlowType flowType
+    // For order event
     OrderActionType orderActionType
     UUID trackingUuid
 }
