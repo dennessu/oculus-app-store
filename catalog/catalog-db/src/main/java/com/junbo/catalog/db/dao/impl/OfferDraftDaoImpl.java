@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Offer draft DAO implementation.
  */
-public class OfferDraftDaoImpl extends BaseDaoImpl<OfferDraftEntity> implements OfferDraftDao {
+public class OfferDraftDaoImpl extends VersionedDaoImpl<OfferDraftEntity> implements OfferDraftDao {
     @Override
     public List<OfferDraftEntity> getOffers(final int start, final int size) {
         return findAllBy(new Action<Criteria>() {

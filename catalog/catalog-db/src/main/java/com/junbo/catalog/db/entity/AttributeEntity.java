@@ -4,26 +4,25 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.catalog.spec.model.attribute;
+package com.junbo.catalog.db.entity;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.junbo.catalog.spec.model.common.BaseModel;
-import com.junbo.common.jackson.annotation.AttributeId;
-
-import javax.validation.constraints.NotNull;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
- * Attribute.
+ * AttributeEntity.
  */
-public class Attribute extends BaseModel {
-    @AttributeId
-    @JsonProperty("self")
+@Entity
+@Table(name="attribute")
+public class AttributeEntity extends BaseEntity {
     private Long id;
-    @NotNull
     private String name;
-    @NotNull
     private String type;
 
+    @Id
+    @Column(name = "id")
     public Long getId() {
         return id;
     }
@@ -32,6 +31,7 @@ public class Attribute extends BaseModel {
         this.id = id;
     }
 
+    @Column(name = "name")
     public String getName() {
         return name;
     }
@@ -40,6 +40,7 @@ public class Attribute extends BaseModel {
         this.name = name;
     }
 
+    @Column(name = "type")
     public String getType() {
         return type;
     }

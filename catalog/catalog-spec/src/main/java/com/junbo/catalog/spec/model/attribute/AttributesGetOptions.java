@@ -6,6 +6,7 @@
 
 package com.junbo.catalog.spec.model.attribute;
 
+import com.junbo.catalog.spec.model.common.PageableGetOptions;
 import com.junbo.common.id.AttributeId;
 
 import javax.ws.rs.QueryParam;
@@ -14,35 +15,12 @@ import java.util.List;
 /**
  * Attributes get options.
  */
-public class AttributesGetOptions {
-    // paging params
-    @QueryParam("start")
-    private Integer start;
-    @QueryParam("size")
-    private Integer size;
-
-    // if entityIds is specified, paging params will be ignored.
+public class AttributesGetOptions extends PageableGetOptions {
     @QueryParam("id")
     private List<AttributeId> attributeIds;
 
     @QueryParam("type")
     private String attributeType;
-
-    public Integer getStart() {
-        return start;
-    }
-
-    public void setStart(Integer start) {
-        this.start = start;
-    }
-
-    public Integer getSize() {
-        return size;
-    }
-
-    public void setSize(Integer size) {
-        this.size = size;
-    }
 
     public List<AttributeId> getAttributeIds() {
         return attributeIds;
