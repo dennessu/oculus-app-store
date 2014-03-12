@@ -18,10 +18,7 @@ import javax.ws.rs.QueryParam;
  * Entity get options.
  */
 public class EntityGetOptions {
-    @QueryParam("timestamp")
     private Long timestamp;
-
-    @QueryParam("status")
     private String status;
 
     public static EntityGetOptions getDefault() {
@@ -52,6 +49,7 @@ public class EntityGetOptions {
         return options;
     }
 
+    @QueryParam("status")
     public String getStatus() {
         return status;
     }
@@ -60,6 +58,7 @@ public class EntityGetOptions {
         this.status = status;
     }
 
+    @QueryParam("timestamp")
     public Long getTimestamp() {
         return timestamp;
     }

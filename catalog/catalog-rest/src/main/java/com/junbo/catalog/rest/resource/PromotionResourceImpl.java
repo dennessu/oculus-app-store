@@ -25,12 +25,12 @@ public class PromotionResourceImpl extends BaseResourceImpl<Promotion> implement
     private PromotionService promotionService;
 
     @Override
-    public Promise<ResultList<Promotion>> getPromotions(@BeanParam EntitiesGetOptions options) {
+    public Promise<ResultList<Promotion>> getPromotions(EntitiesGetOptions options) {
         return getEntities(options);
     }
 
     @Override
-    public Promise<Promotion> getPromotion(Long promotionId, @BeanParam EntityGetOptions options) {
+    public Promise<Promotion> getPromotion(Long promotionId, EntityGetOptions options) {
         return get(promotionId, options);
     }
 
