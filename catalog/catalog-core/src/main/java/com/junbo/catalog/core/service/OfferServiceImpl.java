@@ -30,4 +30,9 @@ public class OfferServiceImpl extends BaseServiceImpl<Offer> implements OfferSer
     public OfferDraftRepository getEntityDraftRepo() {
         return offerDraftRepository;
     }
+
+    @Override
+    protected String getEntityType() {
+        return "Offer";
+    }
 }
