@@ -10,7 +10,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.junbo.common.jackson.deserializer.ResourceAwareDeserializationContext;
 import com.junbo.common.jackson.serializer.ResourceAwareSerializerProvider;
-import com.junbo.common.shuffle.Oculus48Id;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -124,8 +123,6 @@ public class JacksonCustomizationTest {
         paymentInstrument.setPaymentInstrumentId(99999L);
 
         String json = mapper.writeValueAsString(paymentInstrument);
-        System.out.println(json);
-
         PaymentInstrument paymentInstrument2 = mapper.readValue(json, PaymentInstrument.class);
 
         Assert.assertEquals(paymentInstrument.getUserId(), paymentInstrument2.getUserId(), "user id should match.");
@@ -133,5 +130,15 @@ public class JacksonCustomizationTest {
         Assert.assertEquals(paymentInstrument.getPaymentInstrumentId(),
                 paymentInstrument2.getPaymentInstrumentId(),
                 "user id should match.");
+    }
+
+    @Test
+    public void testFulfilmentId() throws Exception {
+        FulfilmentRequest fulfilmentRequest = new FulfilmentRequest();
+        fulfilmentRequest.setOrderId(12345L);
+        fulfilmentRequest.setRequestId(99999L);
+
+        String json = mapper.writeValueAsString(fulfilmentRequest);
+        Assert.assertNotNull(json);
     }
 }
