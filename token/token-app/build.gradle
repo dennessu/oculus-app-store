@@ -1,0 +1,9 @@
+apply plugin: 'groovy'
+
+dependencies {
+    compile project(':token-rest')
+    
+	compile(libraries.jersey_container_grizzly2_http)
+	compile(libraries.jersey_spring3)
+    runtime (libraries.common_configuration_data)
+}
