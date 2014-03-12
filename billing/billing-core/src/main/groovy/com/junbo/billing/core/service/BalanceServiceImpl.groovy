@@ -104,6 +104,9 @@ class BalanceServiceImpl implements BalanceService {
         if (savedBalance.transactions.size() == 0) {
             throw AppErrors.INSTANCE.transactionNotFound(savedBalance.balanceId.value.toString()).exception()
         }
+        if (balance.totalAmount != null && balance.totalAmount > savedBalance.totalAmount) {
+            throw AppErrors.INSTANCE.invalidBalanceTotal(balance.totalAmount.toString()).exception()
+        }
 
         transactionService.captureBalance(savedBalance, balance.totalAmount)
 
