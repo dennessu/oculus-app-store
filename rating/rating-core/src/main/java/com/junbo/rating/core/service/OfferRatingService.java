@@ -10,6 +10,7 @@ import com.junbo.catalog.spec.model.promotion.Promotion;
 import com.junbo.catalog.spec.model.promotion.PromotionType;
 import com.junbo.rating.core.builder.OfferRatingResultBuilder;
 import com.junbo.rating.core.context.RatingContext;
+import com.junbo.rating.spec.error.AppErrors;
 import com.junbo.rating.spec.model.Money;
 import com.junbo.rating.spec.model.RatableItem;
 import com.junbo.rating.spec.model.RatingResultEntry;
@@ -56,7 +57,7 @@ public class OfferRatingService extends RatingServiceSupport{
 
             Money originalPrice = getPrice(item.getOffer(), country, currency);
             if (originalPrice == Money.NOT_FOUND) {
-                //add to violations
+                throw AppErrors.INSTANCE.priceNotFound(item.getOfferId().toString()).exception();
             }
 
             Money bestBenefit = new Money(BigDecimal.ZERO, originalPrice.getCurrency());
