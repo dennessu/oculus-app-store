@@ -7,7 +7,7 @@
 package com.junbo.catalog.rest.resource;
 
 import com.junbo.catalog.core.BaseService;
-import com.junbo.catalog.spec.model.common.BaseModel;
+import com.junbo.catalog.spec.model.common.VersionedModel;
 import com.junbo.catalog.spec.model.common.EntitiesGetOptions;
 import com.junbo.catalog.spec.model.common.EntityGetOptions;
 import com.junbo.catalog.spec.model.common.ResultList;
@@ -20,7 +20,7 @@ import java.util.List;
  * Base resource implementation.
  * @param <T> the model type.
  */
-public abstract class BaseResourceImpl<T extends BaseModel> {
+public abstract class BaseResourceImpl<T extends VersionedModel> {
     protected abstract <E extends BaseService<T>> E getEntityService();
 
     public Promise<ResultList<T>> getEntities(EntitiesGetOptions options) {

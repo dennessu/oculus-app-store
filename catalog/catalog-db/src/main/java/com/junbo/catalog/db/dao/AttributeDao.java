@@ -6,11 +6,10 @@
 
 package com.junbo.catalog.db.dao;
 
-import com.junbo.catalog.db.entity.ItemEntity;
+import com.junbo.catalog.db.entity.AttributeEntity;
 
 /**
- * Item DAO definition.
+ * Attribute DAO definition.
  */
-public interface ItemDao extends VersionedDao<ItemEntity> {
-    ItemEntity getItem(Long itemId, Long timestamp);
+public interface AttributeDao extends BaseDao<AttributeEntity> {
 }
