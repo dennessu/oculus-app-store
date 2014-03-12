@@ -1,5 +1,6 @@
 package com.junbo.order.db.repo
 
+import com.junbo.common.id.OfferId
 import com.junbo.common.id.PaymentInstrumentId
 import com.junbo.common.id.ShippingAddressId
 import com.junbo.oom.core.MappingContext
@@ -9,6 +10,7 @@ import com.junbo.order.db.mapper.ModelMapper
 import com.junbo.order.spec.model.Discount
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderItem
+import org.easymock.EasyMock
 import org.springframework.beans.factory.annotation.Autowired
 import org.testng.annotations.AfterMethod
 import org.testng.annotations.Test
@@ -50,18 +52,18 @@ class OrderRepositoryTest extends BaseTest {
 
         // remove id and check
         order.orderItems.each {
-            it.id = null
+            it.orderItemId = null
         }
         order.discounts.each {
-            it.id = null
-            it.orderItem = null
-            it.order = null
+            it.discountInfoId = null
+            it.orderItemId = null
+            it.orderId = null
         }
         orderRepository.updateOrder(order)
         verifyByRead(order)
 
         // update order item, discount, paymentId
-        order.orderItems[0].offer = TestHelper.generateLong()
+        order.orderItems[0].offer = new OfferId(TestHelper.generateLong())
         order.discounts[0].coupon = 'Code' + TestHelper.generateLong()
         order.paymentInstruments[0] = new PaymentInstrumentId(TestHelper.generateId())
         orderRepository.updateOrder(order)
@@ -81,7 +83,7 @@ class OrderRepositoryTest extends BaseTest {
         // verify items
         assertListEquals(orderRepository.getOrderItems(order.id.value), order.orderItems,
                 { OrderItem it ->
-                    return it.id
+                    return it.orderItemId
                 },
                 { OrderItem actual, OrderItem expected ->
                     assertOrderItemEquals(actual, expected)
@@ -91,7 +93,7 @@ class OrderRepositoryTest extends BaseTest {
         // verify discounts
         assertListEquals(orderRepository.getDiscounts(order.id.value), order.discounts,
                 { Discount it ->
-                    return it.id
+                    return it.discountInfoId
                 },
                 { Discount actual, Discount expected ->
                     assertDiscountEquals(actual, expected)
@@ -105,16 +107,16 @@ class OrderRepositoryTest extends BaseTest {
 
     private OrderItem createOrderItem() {
         def item = modelMapper.toOrderItemModel(TestHelper.generateOrderItem(), new MappingContext())
-        item.id = null
+        item.orderItemId = null
         item.orderId = null
         return item
     }
 
     private Discount createDiscount(Order order, OrderItem orderItem) {
         def item = modelMapper.toDiscountModel(TestHelper.generateOrderDiscountInfoEntity(), new MappingContext())
-        item.order = null
-        item.id = null
-        item.orderItem = null
+        item.orderId = null
+        item.discountInfoId = null
+        item.orderItemId = null
         item.ownerOrder = order
         item.ownerOrderItem = orderItem
         return item
@@ -137,19 +139,18 @@ class OrderRepositoryTest extends BaseTest {
 
     void assertOrderItemEquals(OrderItem actual, OrderItem expected) {
         assert actual.orderId == expected.orderId
-        assert actual.offerRevision == expected.offerRevision
         assert actual.offer == expected.offer
         assert actual.federatedId == expected.federatedId
         assert actual.type == expected.type
     }
 
     void assertDiscountEquals(Discount actual, Discount expected) {
-        assert actual.id == expected.id
+        assert actual.discountInfoId == expected.discountInfoId
 
         assert actual.discountAmount == expected.discountAmount
-        assert actual.order == expected.order
+        assert actual.orderId == expected.orderId
         assert actual.discountType == expected.discountType
-        assert actual.orderItem == expected.orderItem
+        assert actual.orderItemId == expected.orderItemId
         //assert actual.promotion == expected.promotion
         //assert actual.coupon == expected.coupon
     }

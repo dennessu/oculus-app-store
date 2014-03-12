@@ -6,11 +6,9 @@
 package com.junbo.order.spec.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.junbo.common.id.DiscountId;
 import com.junbo.common.id.OrderId;
 import com.junbo.common.id.OrderItemId;
-import com.junbo.common.jackson.annotation.PromotionId;
+import com.junbo.common.id.PromotionId;
 
 import java.math.BigDecimal;
 
@@ -18,44 +16,44 @@ import java.math.BigDecimal;
  * Created by LinYi on 2/10/14.
  */
 public class Discount extends BaseModelWithDate {
-    @JsonProperty("self")
-    private DiscountId id;
     @JsonIgnore
-    private OrderId order;
-    private OrderItemId orderItem;
+    private Long discountInfoId;
+    @JsonIgnore
+    private OrderId orderId;
+    @JsonIgnore
+    private OrderItemId orderItemId;
     private String type;
     private BigDecimal discountAmount;
     private BigDecimal discountRate;
-    @PromotionId
-    private Long promotion;
+    private PromotionId promotion;
     private String coupon;
     @JsonIgnore
     private Order ownerOrder;
     @JsonIgnore
     private OrderItem ownerOrderItem;
 
-    public DiscountId getId() {
-        return id;
+    public Long getDiscountInfoId() {
+        return discountInfoId;
     }
 
-    public void setId(DiscountId id) {
-        this.id = id;
+    public void setDiscountInfoId(Long discountInfoId) {
+        this.discountInfoId = discountInfoId;
     }
 
-    public OrderId getOrder() {
-        return order;
+    public OrderId getOrderId() {
+        return orderId;
     }
 
-    public void setOrder(OrderId order) {
-        this.order = order;
+    public void setOrderId(OrderId orderId) {
+        this.orderId = orderId;
     }
 
-    public OrderItemId getOrderItem() {
-        return orderItem;
+    public OrderItemId getOrderItemId() {
+        return orderItemId;
     }
 
-    public void setOrderItem(OrderItemId orderItem) {
-        this.orderItem = orderItem;
+    public void setOrderItemId(OrderItemId orderItemId) {
+        this.orderItemId = orderItemId;
     }
 
     public String getDiscountType() {
@@ -82,11 +80,11 @@ public class Discount extends BaseModelWithDate {
         this.discountRate = discountRate;
     }
 
-    public Long getPromotion() {
+    public PromotionId getPromotion() {
         return promotion;
     }
 
-    public void setPromotion(Long promotion) {
+    public void setPromotion(PromotionId promotion) {
         this.promotion = promotion;
     }
 

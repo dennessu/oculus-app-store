@@ -46,34 +46,19 @@ public interface ModelMapper {
     @Mappings({
             @Mapping(source = "type", target = "orderItemType", excluded = false, bidirectional = false),
             @Mapping(source = "offer", target = "productItemId", excluded = false, bidirectional = false),
-            @Mapping(source = "offerRevision", target = "productItemVersion", excluded = false, bidirectional = false),
             @Mapping(source = "totalAmount", target = "totalPrice", excluded = false, bidirectional = false),
-            @Mapping(source = "id", target = "orderItemId", excluded = false, bidirectional = false)
     })
     OrderItemEntity toOrderItemEntity(OrderItem orderItem, MappingContext context);
 
     @Mappings({
             @Mapping(source = "orderItemType", target = "type", excluded = false, bidirectional = false),
             @Mapping(source = "productItemId", target = "offer", excluded = false, bidirectional = false),
-            @Mapping(source = "productItemVersion", target = "offerRevision", excluded = false, bidirectional = false),
             @Mapping(source = "totalPrice", target = "totalAmount", excluded = false, bidirectional = false),
-            @Mapping(source = "orderItemId", target = "id", excluded = false, bidirectional = false)
     })
     OrderItem toOrderItemModel(OrderItemEntity orderItemEntity, MappingContext context);
 
-    @Mappings({
-            @Mapping(source = "id", target = "discountInfoId", excluded = false, bidirectional = false),
-            @Mapping(source = "order", target = "orderId", excluded = false, bidirectional = false),
-            @Mapping(source = "orderItem", target = "orderItemId", excluded = false, bidirectional = false)
-
-    })
     OrderDiscountInfoEntity toDiscountEntity(Discount discount, MappingContext context);
 
-    @Mappings({
-            @Mapping(source = "discountInfoId", target = "id", excluded = false, bidirectional = false),
-            @Mapping(source = "orderId", target = "order", excluded = false, bidirectional = false),
-            @Mapping(source = "orderItemId", target = "orderItem", excluded = false, bidirectional = false)
-    })
     Discount toDiscountModel(OrderDiscountInfoEntity discountEntity, MappingContext context);
 
     @Mappings({
@@ -111,7 +96,7 @@ public interface ModelMapper {
     OrderBillingEventEntity toOrderBillingEventEntity(BillingEvent billingEvent,
                                                                       MappingContext context);
 
-    BillingEvent toOrderBillingtEventModel(OrderBillingEventEntity orderBillingEventEntity,
+    BillingEvent toOrderBillingEventModel(OrderBillingEventEntity orderBillingEventEntity,
                                              MappingContext context);
 
     PreorderInfo toPreOrderInfoModel(OrderItemPreorderInfoEntity orderItemPreorderInfoEntity, MappingContext context);

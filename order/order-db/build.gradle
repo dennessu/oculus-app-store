@@ -27,4 +27,5 @@ dependencies {
     testCompile (libraries.common_lang)
     testRuntime (libraries.el_api)
     testRuntime (libraries.el)
+    testCompile (libraries.easy_mock)
 }

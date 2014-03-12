@@ -124,7 +124,7 @@ class OrderRepositoryImpl implements OrderRepository {
         entity.eventId = idGenerator.nextId(orderId)
         entity.orderId = orderId
         orderBillingEventDao.create(entity)
-        return modelMapper.toOrderBillingtEventModel(entity, new MappingContext())
+        return modelMapper.toOrderBillingEventModel(entity, new MappingContext())
     }
 
     @Override
@@ -183,16 +183,16 @@ class OrderRepositoryImpl implements OrderRepository {
             saveOrderItem(item, true)
         }
         repositoryFuncSet.update = { OrderItem newItem, OrderItem oldItem ->
-            newItem.id = oldItem.id
+            newItem.orderItemId = oldItem.orderItemId
             saveOrderItem(newItem, false)
             return true
         }
         repositoryFuncSet.delete = { OrderItem item ->
-            orderItemDao.markDelete(item.id.value)
+            orderItemDao.markDelete(item.orderItemId.value)
             return true
         }
         def keyFunc = { OrderItem item ->
-            return [item.offer, item.offerRevision]
+            return item.offer
         }
         updateListTypeField(orderItems, getOrderItems(orderId.value), repositoryFuncSet, keyFunc, 'orderItems')
     }
@@ -201,25 +201,25 @@ class OrderRepositoryImpl implements OrderRepository {
         def repositoryFuncSet = new RepositoryFuncSet()
         discounts.each { Discount discount ->
             assert discount.ownerOrder != null
-            discount.order = discount.ownerOrder.id
+            discount.orderId = discount.ownerOrder.id
             if (discount.ownerOrderItem != null) {
-                discount.orderItem = discount.ownerOrderItem.id
+                discount.orderItemId = discount.ownerOrderItem.orderItemId
             }
         }
         repositoryFuncSet.create = { Discount discount ->
             saveDiscount(discount, true)
         }
         repositoryFuncSet.update = { Discount newDiscount, Discount oldDiscount ->
-            newDiscount.id = oldDiscount.id
+            newDiscount.discountInfoId = oldDiscount.discountInfoId
             saveDiscount(newDiscount, false)
             return true
         }
         repositoryFuncSet.delete = { Discount discount ->
-            discountDao.markDelete(discount.id.value)
+            discountDao.markDelete(discount.discountInfoId)
             return true
         }
         def keyFunc = { Discount discount ->
-            return [discount.order, discount.orderItem]
+            return [discount.orderId, discount.orderItemId]
         }
         updateListTypeField(discounts, getDiscounts(orderId.value), repositoryFuncSet, keyFunc, 'discounts')
     }
@@ -300,7 +300,7 @@ class OrderRepositoryImpl implements OrderRepository {
         def entity
         assert orderItem.orderId != null
         if (isCreate) {
-            orderItem.id = new OrderItemId(idGeneratorFacade.nextId(OrderItemId, orderItem.orderId.value))
+            orderItem.orderItemId = new OrderItemId(idGeneratorFacade.nextId(OrderItemId, orderItem.orderId.value))
             entity = modelMapper.toOrderItemEntity(orderItem, new MappingContext())
             orderItemDao.create(entity)
         } else {
@@ -312,9 +312,9 @@ class OrderRepositoryImpl implements OrderRepository {
 
     void saveDiscount(Discount discount, boolean isCreate) {
         def entity
-        assert discount.order != null
+        assert discount.orderId != null
         if (isCreate) {
-            discount.id = new DiscountId(idGeneratorFacade.nextId(OrderItemId, discount.order.value))
+            discount.discountInfoId = idGeneratorFacade.nextId(OrderItemId, discount.orderId.value)
             entity = modelMapper.toDiscountEntity(discount, new MappingContext())
             discountDao.create(entity)
         } else {
