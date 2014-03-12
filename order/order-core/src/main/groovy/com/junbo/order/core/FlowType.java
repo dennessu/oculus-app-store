@@ -10,7 +10,7 @@ package com.junbo.order.core;
  * Created by fzhang on 14-3-5.
  */
 public enum FlowType {
-    RATE,
+    RATE_ORDER,
     ASYNC_SETTLE,
     AUTH_SETTLE,
     FREE_SETTLE,

@@ -31,7 +31,7 @@ class MockBalanceResource extends BaseMock implements BalanceResource {
         balance.balanceId = new BalanceId()
         balance.balanceId.value = generateLong()
         balance.status = 'Open'
-        balance.taxAmount = '2.00'
+        balance.taxAmount = 2.00G
         balance.taxIncluded = false
         return Promise.pure(balance)
     }
@@ -50,5 +50,10 @@ class MockBalanceResource extends BaseMock implements BalanceResource {
         return Promise.pure(balanceMap.values().findAll { Balance balance ->
             balance.orderId == orderId
         })
+    }
+
+    @Override
+    Promise<Balance> captureBalance(Balance balance) {
+        return null
     }
 }
