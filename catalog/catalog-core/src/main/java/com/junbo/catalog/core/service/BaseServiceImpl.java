@@ -16,6 +16,7 @@ import com.junbo.catalog.spec.model.common.BaseModel;
 import com.junbo.catalog.spec.model.common.EntitiesGetOptions;
 import com.junbo.catalog.spec.model.common.EntityGetOptions;
 import com.junbo.catalog.spec.model.common.Status;
+import com.junbo.common.id.Id;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -26,8 +27,8 @@ import java.util.List;
  * @param <T> the entity type.
  */
 public abstract class BaseServiceImpl<T extends BaseModel> implements BaseService<T> {
-    public abstract <R extends EntityRepository<T>> R getEntityRepo();
-    public abstract <R extends EntityDraftRepository<T>> R getEntityDraftRepo();
+    public abstract <E extends EntityRepository<T>> E getEntityRepo();
+    public abstract <E extends EntityDraftRepository<T>> E getEntityDraftRepo();
 
     @Override
     public T get(Long entityId, EntityGetOptions options) {
@@ -51,12 +52,12 @@ public abstract class BaseServiceImpl<T extends BaseModel> implements BaseServic
         if (!CollectionUtils.isEmpty(options.getEntityIds())) {
             List<T> entities = new ArrayList<>();
 
-            for (Long entityId : options.getEntityIds()) {
+            for (Id entityId : options.getEntityIds()) {
                 T entity;
                 if (Status.RELEASED.equalsIgnoreCase(options.getStatus())) {
-                    entity = getEntityRepo().get(entityId, options.getTimestamp());
+                    entity = getEntityRepo().get(entityId.getValue(), options.getTimestamp());
                 } else {
-                    entity = getEntityDraftRepo().get(entityId);
+                    entity = getEntityDraftRepo().get(entityId.getValue());
                 }
 
                 if (entity != null) {
