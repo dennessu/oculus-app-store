@@ -11,5 +11,12 @@ import groovy.transform.CompileStatic
  * DBException.
  */
 @CompileStatic
-class DBException {
+class DBException extends RuntimeException {
+    DBException(String message) {
+        super(message)
+    }
+
+    DBException(String message, Throwable e) {
+        super(message, e)
+    }
 }

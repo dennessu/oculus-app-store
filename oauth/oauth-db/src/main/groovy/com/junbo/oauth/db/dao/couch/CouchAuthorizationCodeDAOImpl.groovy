@@ -5,11 +5,17 @@
  */
 package com.junbo.oauth.db.dao.couch
 
+import com.junbo.oauth.db.dao.AuthorizationCodeDAO
+import com.junbo.oauth.db.entity.AuthorizationCodeEntity
 import groovy.transform.CompileStatic
 
 /**
  * CouchAuthorizationCodeDAOImpl.
  */
 @CompileStatic
-class CouchAuthorizationCodeDAOImpl {
+class CouchAuthorizationCodeDAOImpl extends CouchBaseDAO<AuthorizationCodeEntity> implements AuthorizationCodeDAO {
+    @Override
+    AuthorizationCodeEntity get(String id) {
+        return internalGet(id, AuthorizationCodeEntity)
+    }
 }

@@ -5,6 +5,7 @@
  */
 package com.junbo.oauth.db.dao.couch
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import groovy.transform.CompileStatic
 
 /**
@@ -12,4 +13,10 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class CouchResponse {
+    boolean ok
+
+    String id
+
+    @JsonProperty('rev')
+    String revision
 }

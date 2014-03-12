@@ -5,11 +5,17 @@
  */
 package com.junbo.oauth.db.dao.couch
 
+import com.junbo.oauth.db.dao.ClientDAO
+import com.junbo.oauth.db.entity.ClientEntity
 import groovy.transform.CompileStatic
 
 /**
  * CouchClientDAOImpl.
  */
 @CompileStatic
-class CouchClientDAOImpl {
+class CouchClientDAOImpl extends CouchBaseDAO<ClientEntity> implements ClientDAO {
+    @Override
+    ClientEntity get(String id) {
+        return internalGet(id, ClientEntity)
+    }
 }

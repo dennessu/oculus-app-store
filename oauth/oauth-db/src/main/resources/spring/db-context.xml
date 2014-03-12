@@ -53,21 +53,11 @@
     <!--<property name="namespace" value="${oauth.db.redis.appclient.namespace}:"/>-->
     <!--</bean>-->
 
-    <bean id="flowStateDAO" class="com.junbo.oauth.db.dao.memcached.MemcachedFlowStateDAOImpl" parent="baseDAO">
-        <property name="namespace" value="${oauth.db.flowStatePostfix}:"/>
-    </bean>
-
     <bean id="loginStateDAO" class="com.junbo.oauth.db.dao.memcached.MemcachedLoginStateDAOImpl" parent="baseDAO">
         <property name="namespace" value="${oauth.db.loginStatePostfix}:"/>
     </bean>
 
     <bean id="clientRepository" class="com.junbo.oauth.db.repo.impl.HackClientRepo"/>
-
-    <bean id="flowStateRepository" class="com.junbo.oauth.db.repo.impl.FlowStateRepositoryImpl">
-        <property name="flowStateDAO" ref="flowStateDAO"/>
-        <property name="tokenGenerator" ref="tokenGenerator"/>
-        <property name="defaultFlowStateExpiration" value="${oauth.db.flowState.default.expiration}"/>
-    </bean>
 
     <bean id="loginStateRepository" class="com.junbo.oauth.db.repo.impl.LoginStateRepositoryImpl">
         <property name="loginStateDAO" ref="loginStateDAO"/>

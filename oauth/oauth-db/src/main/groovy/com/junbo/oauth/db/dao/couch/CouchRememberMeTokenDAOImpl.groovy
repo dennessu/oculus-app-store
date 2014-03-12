@@ -5,11 +5,17 @@
  */
 package com.junbo.oauth.db.dao.couch
 
+import com.junbo.oauth.db.dao.RememberMeTokenDAO
+import com.junbo.oauth.db.entity.RememberMeTokenEntity
 import groovy.transform.CompileStatic
 
 /**
  * CouchRememberMeTokenDAOImpl.
  */
 @CompileStatic
-class CouchRememberMeTokenDAOImpl {
+class CouchRememberMeTokenDAOImpl extends CouchBaseDAO<RememberMeTokenEntity> implements RememberMeTokenDAO {
+    @Override
+    RememberMeTokenEntity get(String id) {
+        return internalGet(id, RememberMeTokenEntity)
+    }
 }

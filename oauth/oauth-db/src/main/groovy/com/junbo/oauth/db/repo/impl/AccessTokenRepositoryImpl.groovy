@@ -48,7 +48,10 @@ class AccessTokenRepositoryImpl implements AccessTokenRepository {
 
     @Override
     void remove(String tokenValue) {
-        accessTokenDAO.delete(tokenValue)
+        def entity = accessTokenDAO.get(tokenValue)
+        if (entity != null) {
+            accessTokenDAO.delete(entity)
+        }
     }
 
     private static AccessTokenEntity unwrap(AccessToken accessToken) {
@@ -57,7 +60,7 @@ class AccessTokenRepositoryImpl implements AccessTokenRepository {
         }
 
         return new AccessTokenEntity(
-                tokenValue: accessToken.tokenValue,
+                id: accessToken.tokenValue,
                 clientId: accessToken.clientId,
                 userId: accessToken.userId,
                 scopes: accessToken.scopes,
@@ -70,7 +73,7 @@ class AccessTokenRepositoryImpl implements AccessTokenRepository {
             return null
         }
         return new AccessToken(
-                tokenValue: entity.tokenValue,
+                tokenValue: entity.id,
                 clientId: entity.clientId,
                 userId: entity.userId,
                 scopes: entity.scopes,

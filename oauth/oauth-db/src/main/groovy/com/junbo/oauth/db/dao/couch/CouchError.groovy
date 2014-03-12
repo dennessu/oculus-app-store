@@ -12,4 +12,6 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class CouchError {
+    String error
+    String reason
 }
