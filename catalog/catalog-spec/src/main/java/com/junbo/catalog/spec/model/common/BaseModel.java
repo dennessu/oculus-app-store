@@ -8,20 +8,13 @@ package com.junbo.catalog.spec.model.common;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import java.util.Date;
 
 /**
  * Base model.
  */
-public abstract class BaseModel {
-    private Long timestamp;
-    @JsonIgnore
-    private Integer revision;
-    @NotNull
-    private String name;
-    private String status;
+public class BaseModel {
     @Null
     @JsonIgnore
     private Date createdTime;
@@ -34,41 +27,6 @@ public abstract class BaseModel {
     @Null
     @JsonIgnore
     private String updatedBy;
-
-    public abstract Long getId();
-    public abstract String getEntityType();
-
-    public Long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(Long timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public Integer getRevision() {
-        return revision;
-    }
-
-    public void setRevision(Integer revision) {
-        this.revision = revision;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
 
     public Date getCreatedTime() {
         return createdTime;

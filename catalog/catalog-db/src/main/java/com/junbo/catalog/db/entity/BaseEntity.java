@@ -13,34 +13,14 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * Base DB entity.
+ * BaseEntity.
  */
 @MappedSuperclass
 public abstract class BaseEntity implements Serializable {
-    private String status;
-    private Long timestamp;
     private Date createdTime;
     private String createdBy;
     private Date updatedTime;
     private String updatedBy;
-
-    @Column(name = "status")
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    @Column(name = "timestamp")
-    public Long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(Long timestamp) {
-        this.timestamp = timestamp;
-    }
 
     @Column(name = "created_time")
     public Date getCreatedTime() {

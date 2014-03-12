@@ -10,12 +10,10 @@ import com.junbo.entitlement.common.lib.EntitlementContext;
 import com.junbo.entitlement.db.dao.EntitlementDefinitionDao;
 import com.junbo.entitlement.db.entity.EntitlementDefinitionEntity;
 import com.junbo.entitlement.db.entity.EntitlementEntity;
-import com.junbo.entitlement.db.entity.Entity;
 import com.junbo.entitlement.db.entity.def.EntitlementStatus;
 import com.junbo.entitlement.db.entity.def.EntitlementType;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.model.EntitlementDefinition;
-import com.junbo.entitlement.spec.model.Model;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -51,7 +49,6 @@ public class EntitlementMapper {
         entitlement.setConsumable(entitlementEntity.getConsumable());
         entitlement.setUseCount(entitlementEntity.getUseCount());
         entitlement.setManagedLifecycle(entitlementEntity.getManagedLifecycle());
-        toModel(entitlementEntity, entitlement);
         return entitlement;
     }
 
@@ -78,7 +75,6 @@ public class EntitlementMapper {
         entitlementEntity.setExpirationTime(entitlement.getExpirationTime());
         entitlementEntity.setConsumable(entitlement.getConsumable());
         entitlementEntity.setUseCount(entitlement.getUseCount());
-        toEntity(entitlement, entitlementEntity);
         return entitlementEntity;
     }
 
@@ -103,7 +99,6 @@ public class EntitlementMapper {
         entitlementDefinition.setType(entitlementDefinitionEntity.getType().toString());
         entitlementDefinition.setGroup(entitlementDefinitionEntity.getGroup());
         entitlementDefinition.setTag(entitlementDefinitionEntity.getTag());
-        toModel(entitlementDefinitionEntity, entitlementDefinition);
         return entitlementDefinition;
     }
 
@@ -117,7 +112,6 @@ public class EntitlementMapper {
         entitlementDefinitionEntity.setType(EntitlementType.valueOf(entitlementDefinition.getType()));
         entitlementDefinitionEntity.setGroup(entitlementDefinition.getGroup());
         entitlementDefinitionEntity.setTag(entitlementDefinition.getTag());
-        toEntity(entitlementDefinition, entitlementDefinitionEntity);
         return entitlementDefinitionEntity;
     }
 
@@ -129,20 +123,6 @@ public class EntitlementMapper {
             entitlementDefinitions.add(toEntitlementDefinition(entitlementDefinitionEntity));
         }
         return entitlementDefinitions;
-    }
-
-    private void toModel(Entity entity, Model model) {
-        model.setCreatedBy(entity.getCreatedBy());
-        model.setCreatedTime(entity.getCreatedTime());
-        model.setModifiedBy(entity.getModifiedBy());
-        model.setModifiedTime(entity.getModifiedTime());
-    }
-
-    private void toEntity(Model model, Entity entity) {
-        entity.setCreatedBy(model.getCreatedBy());
-        entity.setCreatedTime(model.getCreatedTime());
-        entity.setModifiedBy(model.getModifiedBy());
-        entity.setModifiedTime(model.getModifiedTime());
     }
 
     private EntitlementStatus getStatus(EntitlementEntity entitlementEntity) {

@@ -11,6 +11,6 @@ import com.junbo.catalog.db.entity.OfferEntity;
 /**
  * Offer DAO definition.
  */
-public interface OfferDao extends BaseDao<OfferEntity>  {
+public interface OfferDao extends VersionedDao<OfferEntity> {
     OfferEntity getOffer(Long offerId, Long timestamp);
 }

@@ -63,7 +63,7 @@ public class BaseDaoImpl<T extends CommonDbEntityWithDate> implements BaseDao<T>
     }
 
     public void update(T t) {
-        this.getSession().update(t);
+        this.getSession().merge(t);
     }
 
     public void flush() {

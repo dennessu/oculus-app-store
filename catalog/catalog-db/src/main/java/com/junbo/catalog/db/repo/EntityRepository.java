@@ -6,13 +6,13 @@
 
 package com.junbo.catalog.db.repo;
 
-import com.junbo.catalog.spec.model.common.BaseModel;
+import com.junbo.catalog.spec.model.common.VersionedModel;
 
 /**
  * Entity Repository interface.
  * @param <T> the entity type.
  */
-public interface EntityRepository<T extends BaseModel>  {
+public interface EntityRepository<T extends VersionedModel>  {
     Long create(T entity);
     T get(Long entityId, Long timestamp);
 }

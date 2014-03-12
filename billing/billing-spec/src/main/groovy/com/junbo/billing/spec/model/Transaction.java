@@ -6,7 +6,7 @@
 
 package com.junbo.billing.spec.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.junbo.common.id.BalanceId;
 import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.common.id.TransactionId;
@@ -17,8 +17,8 @@ import java.math.BigDecimal;
  * Created by xmchen on 14-2-24.
  */
 public class Transaction {
-    @JsonProperty("self")
     private TransactionId transactionId;
+    @JsonIgnore
     private BalanceId balanceId;
     private PaymentInstrumentId piId;
     private String type;

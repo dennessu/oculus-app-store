@@ -1,13 +1,19 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
+ */
 package com.junbo.subscription.core;
 
 import com.junbo.subscription.db.entity.SubscriptionEntity;
-import com.junbo.subscription.spec.model.PageMetadata;
 import com.junbo.subscription.spec.model.Subscription;
 
-import java.util.List;
 
+/**
+ * subscription service.
+ */
 public interface SubscriptionService {
-    public Subscription getsubscription(Long subscriptionId);
+    Subscription getsubscription(Long subscriptionId);
 
-    public Long addsubscription(SubscriptionEntity subscriptionEntity);
+    Long addsubscription(SubscriptionEntity subscriptionEntity);
 }

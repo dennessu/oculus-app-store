@@ -8,6 +8,8 @@ package com.junbo.ewallet.db.dao;
 
 import com.junbo.ewallet.db.entity.hibernate.WalletLotEntity;
 
+import java.math.BigDecimal;
+
 /**
  * Interface of WalletLotDao.
  */
@@ -19,4 +21,6 @@ public interface WalletLotDao {
     WalletLotEntity update(WalletLotEntity walletLotEntity);
 
     void delete(Long id);
+
+    void debit(Long walletId, BigDecimal sum);
 }

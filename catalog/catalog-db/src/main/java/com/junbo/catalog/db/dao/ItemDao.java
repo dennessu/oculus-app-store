@@ -11,6 +11,6 @@ import com.junbo.catalog.db.entity.ItemEntity;
 /**
  * Item DAO definition.
  */
-public interface ItemDao extends BaseDao<ItemEntity>  {
+public interface ItemDao extends VersionedDao<ItemEntity> {
     ItemEntity getItem(Long itemId, Long timestamp);
 }
