@@ -26,7 +26,9 @@ public class ResourceIdSerializer extends JsonSerializer<Object> implements Reso
     // thread safe
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
-    private String resourceType;
+    protected static final String RESOURCE_URL_PREFIX = "http://api.wan-san.com/v1";
+
+    protected String resourceType;
 
     public ResourceIdSerializer() {
     }
@@ -56,7 +58,11 @@ public class ResourceIdSerializer extends JsonSerializer<Object> implements Reso
         }
     }
 
-    private List<ResourceRef> handleCollection(Object value) {
+    protected String getResourceHref(Object value) {
+        return RESOURCE_URL_PREFIX + resourceType + "/" + encode(value);
+    }
+
+    protected List<ResourceRef> handleCollection(Object value) {
         Collection collection = (Collection) value;
 
         List<ResourceRef> results = new ArrayList<>();
@@ -68,7 +74,7 @@ public class ResourceIdSerializer extends JsonSerializer<Object> implements Reso
         return results;
     }
 
-    private ResourceRef handleSingle(Object value) {
+    protected ResourceRef handleSingle(Object value) {
         ResourceRef ref = new ResourceRef();
         ref.setHref(getResourceHref(value));
         ref.setId(encode(value));
@@ -78,10 +84,5 @@ public class ResourceIdSerializer extends JsonSerializer<Object> implements Reso
 
     private boolean isCollection(Object value) {
         return value instanceof Collection;
-    }
-
-    private String getResourceHref(Object value) {
-        return "http://api.wan-san.com/v1/" + resourceType + "/"
-                + (value instanceof Long ? encode(value) : value.toString());
     }
 }

@@ -3,27 +3,27 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-
-package com.junbo.common.jackson.annotation;
+package com.junbo.common.jackson;
 
 import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.junbo.common.jackson.annotation.ResourceType;
 import com.junbo.common.jackson.deserializer.ResourceIdDeserializer;
-import com.junbo.common.jackson.serializer.ResourceIdSerializer;
+import com.junbo.common.jackson.serializer.CascadeResourceIdSerializer;
 
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * interface for paymentInstrumentTypeId.
+ * interface for paymentInstrumentId.
  */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
 @JacksonAnnotationsInside
-@JsonSerialize(using = ResourceIdSerializer.class, include = JsonSerialize.Inclusion.NON_NULL)
+@JsonSerialize(using = CascadeResourceIdSerializer.class, include = JsonSerialize.Inclusion.NON_NULL)
 @JsonDeserialize(using = ResourceIdDeserializer.class)
-@ResourceType("/payment-instrument-types")
-public @interface PaymentInstrumentTypeId {
+@ResourceType("/users/%s/payment-instruments/%s")
+public @interface PaymentInstrumentId {
 }

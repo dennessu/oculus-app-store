@@ -23,6 +23,6 @@ import java.lang.annotation.RetentionPolicy;
 @JacksonAnnotationsInside
 @JsonSerialize(using = ResourceIdSerializer.class, include = JsonSerialize.Inclusion.NON_NULL)
 @JsonDeserialize(using = ResourceIdDeserializer.class)
-@ResourceType("payment-instruments")
+@ResourceType("/payment-instruments")
 public @interface PaymentInstrumentId {
 }

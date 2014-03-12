@@ -116,4 +116,22 @@ public class JacksonCustomizationTest {
 
         Assert.assertEquals(user.getOrderId(), user2.getOrderId(), "order id should match.");
     }
+
+    @Test
+    public void testCascadeId() throws Exception {
+        PaymentInstrument paymentInstrument = new PaymentInstrument();
+        paymentInstrument.setUserId(12345L);
+        paymentInstrument.setPaymentInstrumentId(99999L);
+
+        String json = mapper.writeValueAsString(paymentInstrument);
+        System.out.println(json);
+
+        PaymentInstrument paymentInstrument2 = mapper.readValue(json, PaymentInstrument.class);
+
+        Assert.assertEquals(paymentInstrument.getUserId(), paymentInstrument2.getUserId(), "user id should match.");
+
+        Assert.assertEquals(paymentInstrument.getPaymentInstrumentId(),
+                paymentInstrument2.getPaymentInstrumentId(),
+                "user id should match.");
+    }
 }
