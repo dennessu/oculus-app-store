@@ -49,7 +49,7 @@ class  FulfillmentAction implements Action {
             if (fulfilmentResult == null) { // error in post fulfillment
                 orderRepository.createOrderEvent(
                         CoreBuilder.buildOrderEvent(order.id, OrderActionType.FULFILL, EventStatus.ERROR),
-                        context.flowType.toString(),
+                        ActionUtils.getFlowType(actionContext).toString(),
                         context.trackingUuid)
             } else {
                 EventStatus orderEventStatus = EventStatus.COMPLETED
@@ -66,7 +66,7 @@ class  FulfillmentAction implements Action {
                 orderRepository.createOrderEvent(
                         CoreBuilder.buildOrderEvent(order.id,
                                 OrderActionType.FULFILL, orderEventStatus),
-                                context.flowType.toString(),
+                                ActionUtils.getFlowType(actionContext).toString(),
                                 context.trackingUuid)
             }
             return ActionUtils.DEFAULT_RESULT

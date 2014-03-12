@@ -11,6 +11,7 @@ import com.junbo.catalog.spec.model.common.BaseModel;
 import com.junbo.catalog.spec.model.common.EntitiesGetOptions;
 import com.junbo.catalog.spec.model.common.EntityGetOptions;
 import com.junbo.catalog.spec.model.common.ResultList;
+import com.junbo.common.id.Id;
 import com.junbo.langur.core.promise.Promise;
 
 import java.util.List;
@@ -20,7 +21,7 @@ import java.util.List;
  * @param <T> the model type.
  */
 public abstract class BaseResourceImpl<T extends BaseModel> {
-    protected abstract <S extends BaseService<T>> S getEntityService();
+    protected abstract <E extends BaseService<T>> E getEntityService();
 
     public Promise<ResultList<T>> getEntities(EntitiesGetOptions options) {
         List<T> entities = getEntityService().getEntities(options);
@@ -31,8 +32,8 @@ public abstract class BaseResourceImpl<T extends BaseModel> {
         return Promise.pure(resultList);
     }
 
-    public Promise<T> get(Long entityId, EntityGetOptions options) {
-        T entity = getEntityService().get(entityId, options);
+    public Promise<T> get(Id entityId, EntityGetOptions options) {
+        T entity = getEntityService().get(entityId.getValue(), options);
         return Promise.pure(entity);
     }
 
@@ -55,8 +56,8 @@ public abstract class BaseResourceImpl<T extends BaseModel> {
         return Promise.pure(getEntityService().reject(entityId));
     }
 
-    public Promise<T> update(Long entityId, T entity) {
-        return Promise.pure(getEntityService().update(entityId, entity));
+    public Promise<T> update(Id entityId, T entity) {
+        return Promise.pure(getEntityService().update(entityId.getValue(), entity));
     }
 
     public Promise<Void> remove(Long entityId) {

@@ -234,5 +234,19 @@ class BootstrapPlugin implements Plugin<Project> {
                 property "sonar.jdbc.password", ""
             }
         }
+
+        rootProject.task('cleanupReport')  {
+            rootProject.delete "build/xml-report"
+        }
+
+        rootProject.task('collectReport')  {
+            doLast{
+                rootProject.copy {
+                    from rootProject.subprojects*.testResultsDir
+                    into 'build/xml-report'
+                    include '**/*.xml'
+                }
+            }
+        }
     }
 }

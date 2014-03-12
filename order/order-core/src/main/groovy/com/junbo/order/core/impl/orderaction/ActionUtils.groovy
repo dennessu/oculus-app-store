@@ -1,6 +1,7 @@
 package com.junbo.order.core.impl.orderaction
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
+import com.junbo.order.core.FlowType
 import com.junbo.order.core.impl.order.OrderServiceContext
 import com.junbo.order.core.impl.orderaction.context.CreateOrderActionContext
 import com.junbo.order.core.impl.orderaction.context.OrderActionContext
@@ -36,6 +37,10 @@ final class ActionUtils {
 
     static OrderActionContext putOrderActionContext(OrderActionContext context, ActionContext actionContext) {
         actionContext.requestScope[SCOPE_ORDER_ACTION_CONTEXT] = context
+    }
+
+    static FlowType getFlowType(ActionContext actionContext) {
+        return actionContext.requestScope[REQUEST_FLOW_TYPE]
     }
 
     static Map<String, Object> initRequestScope(OrderServiceContext context, Map<String, Object> args) {

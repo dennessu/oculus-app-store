@@ -15,16 +15,16 @@ public class RatingOffer {
     private Long id;
 
     private Map<String, Price> prices;
-    private Set<Long> categories;
+    private List<Long> categories;
 
     private List<LinkedEntry> items;
     private List<LinkedEntry> subOffers;
 
     public RatingOffer() {
-        prices = new HashMap<String, Price>();
-        categories = new HashSet<Long>();
-        items = new ArrayList<LinkedEntry>();
-        subOffers = new ArrayList<LinkedEntry>();
+        prices = new HashMap<>();
+        categories = new ArrayList<>();
+        items = new ArrayList<>();
+        subOffers = new ArrayList<>();
     }
 
     public Long getId() {
@@ -43,11 +43,11 @@ public class RatingOffer {
         this.prices = prices;
     }
 
-    public Set<Long> getCategories() {
+    public List<Long> getCategories() {
         return categories;
     }
 
-    public void setCategories(Set<Long> categories) {
+    public void setCategories(List<Long> categories) {
         this.categories = categories;
     }
 

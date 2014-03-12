@@ -86,7 +86,9 @@
     </bean-->
 
     <!-- Dao -->
-    <bean id="baseDao" class="com.junbo.catalog.db.dao.impl.BaseDaoImpl" abstract="true"/>
+    <bean id="baseDao" class="com.junbo.catalog.db.dao.impl.BaseDaoImpl" abstract="true">
+        <property name="idGenerator" ref="oculus48IdGenerator" />
+    </bean>
     <bean id="promotionDraftDao" class="com.junbo.catalog.db.dao.impl.PromotionDraftDaoImpl" parent="baseDao">
         <property name="entityType" value="com.junbo.catalog.db.entity.PromotionDraftEntity"/>
     </bean>

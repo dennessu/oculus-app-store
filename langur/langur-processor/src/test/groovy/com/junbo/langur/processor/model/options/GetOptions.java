@@ -17,6 +17,7 @@ public class GetOptions {
 
     private Integer size;
 
+    @QueryParam("status")
     private String status;
 
     private Long revision;

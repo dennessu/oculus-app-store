@@ -8,5 +8,5 @@
     <context:component-scan base-package="com.junbo.rating.spec.resource.adapter"/>
 
     <!-- REST resources -->
-    <bean id="defaultRatingResource" class="com.junbo.rating.rest.resource.RatingResourceImpl"/>
+    <bean id="defaultRatingResource" class="com.junbo.rating.rest.resource.RatingResourceImpl" scope="prototype"/>
 </beans>
