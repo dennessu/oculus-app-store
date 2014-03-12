@@ -3,14 +3,13 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.oauth.db.dao
+package com.junbo.oauth.db.dao.couch
 
-import com.junbo.oauth.db.entity.FlowStateEntity
 import groovy.transform.CompileStatic
 
 /**
- * Javadoc.
+ * CouchResponse.
  */
 @CompileStatic
-interface FlowStateDAO extends BaseDAO<FlowStateEntity, String> {
+class CouchResponse {
 }
