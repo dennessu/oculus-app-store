@@ -17,11 +17,7 @@ import java.util.UUID;
 @ContextConfiguration(locations = {"classpath:spring/context-test.xml"})
 @TransactionConfiguration(defaultRollback = false)
 public abstract class BaseTest extends AbstractTransactionalTestNGSpringContextTests {
-    /**
-     * <p>Simple entity id generator.</p>
-     *
-     * @return new generated entity id
-     */
+
     protected long generateId() {
         try {
             Thread.sleep(10);
@@ -34,10 +30,6 @@ public abstract class BaseTest extends AbstractTransactionalTestNGSpringContextT
 
     protected UUID generateUUID() {
         return UUID.randomUUID();
-    }
-
-    protected long generateLong() {
-        return System.currentTimeMillis();
     }
 
     @Override
