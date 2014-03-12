@@ -9,7 +9,6 @@ package com.junbo.order.clientproxy.catalog.impl;
 import com.junbo.catalog.spec.model.common.EntityGetOptions;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.resource.OfferResource;
-import com.junbo.common.id.OfferId;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.order.clientproxy.catalog.CatalogFacade;
 import org.springframework.stereotype.Component;
@@ -34,7 +33,7 @@ public class CatalogFacadeImpl implements CatalogFacade {
         Promise<Offer> offerPromise = null;
 
         try {
-            offerPromise = offerResource.getOffer(new OfferId(offerId), EntityGetOptions.getDefault());
+            offerPromise = offerResource.getOffer(offerId, EntityGetOptions.getDefault());
         }
         catch (Exception e) {
             e.printStackTrace();
