@@ -8,6 +8,7 @@ package com.junbo.payment.spec.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.jackson.annotation.PaymentInstrumentId;
+import com.junbo.common.jackson.annotation.PaymentInstrumentTypeId;
 import com.junbo.common.jackson.annotation.UserId;
 
 import javax.validation.constraints.NotNull;
@@ -26,7 +27,7 @@ public class PaymentInstrument {
     @PaymentInstrumentId
     private Long id;
     private UUID trackingUuid;
-    @UserId
+    @JsonIgnore
     private Long userId;
     @NotNull
     @UserId
@@ -34,6 +35,7 @@ public class PaymentInstrument {
     private boolean isValidated;
     private Date lastValidatedTime;
     private String isDefault;
+    @PaymentInstrumentTypeId
     private String type;
     private String accountName;
     private String accountNum;
@@ -60,11 +62,11 @@ public class PaymentInstrument {
     public void setTrackingUuid(UUID trackingUuid) {
         this.trackingUuid = trackingUuid;
     }
-    @JsonIgnore
+
     public Long getUserId() {
         return userId;
     }
-    @JsonIgnore
+
     public void setUserId(Long userId) {
         this.userId = userId;
         this.setAdmins(Arrays.asList(userId));

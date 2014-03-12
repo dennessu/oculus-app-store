@@ -11,7 +11,6 @@ import com.junbo.catalog.spec.model.common.BaseModel;
 import com.junbo.catalog.spec.model.common.EntitiesGetOptions;
 import com.junbo.catalog.spec.model.common.EntityGetOptions;
 import com.junbo.catalog.spec.model.common.ResultList;
-import com.junbo.common.id.Id;
 import com.junbo.langur.core.promise.Promise;
 
 import java.util.List;
@@ -32,8 +31,8 @@ public abstract class BaseResourceImpl<T extends BaseModel> {
         return Promise.pure(resultList);
     }
 
-    public Promise<T> get(Id entityId, EntityGetOptions options) {
-        T entity = getEntityService().get(entityId.getValue(), options);
+    public Promise<T> get(Long entityId, EntityGetOptions options) {
+        T entity = getEntityService().get(entityId, options);
         return Promise.pure(entity);
     }
 
@@ -42,31 +41,31 @@ public abstract class BaseResourceImpl<T extends BaseModel> {
         return Promise.pure(result);
     }
 
-    public Promise<T> review(Id entityId) {
-        T entity = getEntityService().review(entityId.getValue());
+    public Promise<T> review(Long entityId) {
+        T entity = getEntityService().review(entityId);
         return Promise.pure(entity);
     }
 
-    public Promise<T> release(Id entityId) {
-        T entity = getEntityService().release(entityId.getValue());
+    public Promise<T> release(Long entityId) {
+        T entity = getEntityService().release(entityId);
         return Promise.pure(entity);
     }
 
-    public Promise<T> reject(Id entityId) {
-        return Promise.pure(getEntityService().reject(entityId.getValue()));
+    public Promise<T> reject(Long entityId) {
+        return Promise.pure(getEntityService().reject(entityId));
     }
 
-    public Promise<T> update(Id entityId, T entity) {
-        return Promise.pure(getEntityService().update(entityId.getValue(), entity));
+    public Promise<T> update(Long entityId, T entity) {
+        return Promise.pure(getEntityService().update(entityId, entity));
     }
 
-    public Promise<Void> remove(Id entityId) {
-        getEntityService().remove(entityId.getValue());
+    public Promise<Void> remove(Long entityId) {
+        getEntityService().remove(entityId);
         return Promise.pure(null);
     }
 
-    public Promise<Void> delete(Id entityId) {
-        getEntityService().delete(entityId.getValue());
+    public Promise<Void> delete(Long entityId) {
+        getEntityService().delete(entityId);
         return Promise.pure(null);
     }
 }

@@ -14,6 +14,7 @@ import com.junbo.cart.spec.resource.CartResource
 import com.junbo.common.id.CartId
 import com.junbo.common.id.CartItemId
 import com.junbo.common.id.UserId
+import com.junbo.langur.core.client.PathParamTranscoder
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.glassfish.jersey.server.ContainerResponse
@@ -45,9 +46,15 @@ class CartResourceImpl implements CartResource {
 
     private CartService cartService
 
+    private PathParamTranscoder pathParamTranscoder
+
     @Required
     void setCartService(CartService cartService) {
         this.cartService = cartService
+    }
+
+    void setPathParamTranscoder(PathParamTranscoder pathParamTranscoder) {
+        this.pathParamTranscoder = pathParamTranscoder
     }
 
     private class RedirectFunction implements Function<ContainerResponse, ContainerResponse> {
@@ -66,7 +73,9 @@ class CartResourceImpl implements CartResource {
             if (cart != null) {
                 response.status = 302
                 response.headers['Location'] =
-                        [ "${containerRequestContext.uriInfo.baseUri}users/${cart.user.value}/carts/${cart.id.value}"]
+                        [ "${containerRequestContext.uriInfo.baseUri}" +
+                                "users/${pathParamTranscoder.encode(cart.user)}/" +
+                                "carts/${pathParamTranscoder.encode(cart.id)}"]
             }
             return response
         }

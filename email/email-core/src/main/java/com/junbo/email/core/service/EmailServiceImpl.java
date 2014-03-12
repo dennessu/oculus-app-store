@@ -12,7 +12,6 @@ import com.junbo.email.core.provider.EmailProvider;
 import com.junbo.email.core.provider.Request;
 import com.junbo.email.core.provider.Response;
 import com.junbo.email.core.util.Convert;
-import com.junbo.email.db.entity.EmailHistoryEntity;
 import com.junbo.email.db.entity.EmailStatus;
 import com.junbo.email.db.entity.EmailTemplateEntity;
 import com.junbo.email.db.repo.EmailScheduleRepository;
@@ -21,6 +20,7 @@ import com.junbo.email.spec.model.Email;
 import com.junbo.email.db.repo.EmailHistoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -28,6 +28,7 @@ import java.util.*;
  * Impl of EmailService.
  */
 @Component
+@Transactional
 public class EmailServiceImpl implements EmailService {
     private static final int INIT_RETRY_COUNT = 0;
     private static final int MAX_RETRY_COUNT = 3;
@@ -48,23 +49,24 @@ public class EmailServiceImpl implements EmailService {
     public Email send(Email email) {
 
         validateRequest(email);
-        Email result = email;
+        Email result;
         if(email.getScheduleDate() != null) {
             //handler schedule email
             result = emailScheduleRepository.saveEmailSchedule(email);
         }
         else {
             Long id = emailHistoryRepository.createEmailHistory(email);
-            EmailHistoryEntity entity = emailHistoryRepository.getEmailHistory(id);
+            Email history = emailHistoryRepository.getEmail(id);
             //send email
-            Request request = Convert.toRequest(entity);
+            Request request = Convert.toRequest(history);
             Response response = emailProvider.send(request);
             if(response.getStatusCode() == 200) {
-                entity.setStatus(EmailStatus.SUCCEED.getId());
-                entity.setIsResend(false);
-                entity.setSentDate(new Date());
-                Long updateId = emailHistoryRepository.updateEmailHistory(entity);
+                history.setStatus(EmailStatus.SUCCEED.toString());
+                history.setIsResend(false);
+                history.setSentDate(new Date());
+                Long updateId = emailHistoryRepository.updateEmailHistory(history);
                 result = emailHistoryRepository.getEmail(updateId);
+                //result = history;
             }
             else {
                 throw AppExceptions.INSTANCE.internalError().exception();

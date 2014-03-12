@@ -61,6 +61,11 @@ public class AddressEntity extends GenericEntity {
         this.id = id;
     }
 
+    @Override
+    public Long getShardMasterId() {
+        return null;
+    }
+
     public String getUnitNumber() {
         return unitNumber;
     }

@@ -16,25 +16,23 @@ import java.util.List;
 /**
  * Created by xmchen on 14-2-13.
  */
+@Transactional
 public class CurrencyServiceImpl implements CurrencyService {
 
     @Autowired
     private CurrencyRepository currencyRepository;
 
     @Override
-    @Transactional
     public Currency getCurrencyByName(String name) {
         return currencyRepository.getCurrency(name);
     }
 
     @Override
-    @Transactional
     public List<Currency> getCurrencies() {
         return currencyRepository.getCurrencies();
     }
 
     @Override
-    @Transactional
     public Boolean exists(String name) {
         Currency currency = getCurrencyByName(name);
         return currency != null;

@@ -55,4 +55,7 @@ public interface AppExceptions {
     @ErrorDef(httpStatusCode = 400, code = "40013", description = "The type is invalid")
     AppError invalidType();
 
+    @ErrorDef(httpStatusCode = 400, code = "40014", description = "The status is invalid")
+    AppError invalidStatus();
+
 }

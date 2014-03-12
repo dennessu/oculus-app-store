@@ -26,10 +26,25 @@
 
     <bean id="defaultCartResource" class="com.junbo.cart.rest.resource.CartResourceImpl" scope="prototype">
         <property name="cartService" ref="cartService"/>
+        <property name="pathParamTranscoder" ref="pathParamTranscoder"/>
     </bean>
 
+    <bean id="httpClient" class="com.ning.http.client.AsyncHttpClient">
+    </bean>
+
+    <bean id="messageTranscoder" class="com.junbo.common.json.JsonMessageTranscoder"/>
+
+    <bean id="pathParamTranscoder" class="com.junbo.common.json.IdPathParamTranscoder"/>
+
     <bean id="identityClient" class="com.junbo.cart.core.client.impl.IdentityClientImpl">
-        <property name="identityUrl" value="${cart.client.identity.url}"/>
+        <property name="userResource" ref="userResourceClientProxy"/>
+    </bean>
+
+    <bean id="userResourceClientProxy" class="com.junbo.identity.spec.resource.proxy.UserResourceClientProxy">
+        <constructor-arg ref="httpClient"/>
+        <constructor-arg ref="messageTranscoder"/>
+        <constructor-arg ref="pathParamTranscoder"/>
+        <constructor-arg value="${cart.client.identity.url}"/>
     </bean>
 
     <bean id="mockUserClient" class="com.junbo.cart.core.client.impl.MockUserClientImpl">

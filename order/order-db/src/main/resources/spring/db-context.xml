@@ -7,26 +7,28 @@
 
     <context:component-scan base-package="com.junbo.oom.core.builtin"/>
     <context:component-scan base-package="com.junbo.order.db"/>
-
-    <!--Data source has the database information -->
-    <bean id="orderDataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
-        <property name="driverClass" value="${order.db.driverClassName}"/>
-        <property name="jdbcUrl" value="${order.db.url}"/>
-        <property name="username" value="${order.db.username}"/>
-        <property name="password" value="${order.db.password}"/>
-        <property name="maxConnectionsPerPartition" value="${order.db.maxConnectionsPerPartition}"/>
-        <property name="minConnectionsPerPartition" value="${order.db.minConnectionsPerPartition}"/>
-        <property name="partitionCount" value="${order.db.partitionCount}"/>
-        <property name="acquireIncrement" value="${order.db.acquireIncrement}"/>
-        <property name="statementsCacheSize" value="${order.db.statementsCacheSize}"/>
-        <property name="releaseHelperThreads" value="${order.db.releaseHelperThreads}"/>
+    <import resource="classpath*:spring/transaction.xml" />
+    <bean id="orderDataSource" class="bitronix.tm.resource.jdbc.PoolingDataSource"
+          init-method="init" destroy-method="close">
+        <property name="uniqueName" value="jdbc/id_ds1"/>
+        <property name="className" value="org.postgresql.xa.PGXADataSource"/>
+        <property name="minPoolSize" value="${order.db.minConnectionsPerPartition}"/>
+        <property name="maxPoolSize" value="${order.db.maxConnectionsPerPartition}"/>
+        <property name="driverProperties">
+            <props>
+                <prop key="url">${order.db.url}</prop>
+                <prop key="user">${order.db.username}</prop>
+                <prop key="password">${order.db.password}</prop>
+            </props>
+        </property>
     </bean>
 
     <!-- SessonFactory for Hibernate -->
     <bean id="sessionFactory"
-                class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+          class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
         <property name="dataSource" ref="orderDataSource"/>
-        <property name="packagesToScan" value="com.junbo.order.db.entity"/>
+        <property name="packagesToScan" value="com.junbo.order.db.entity" />
+        <property name="jtaTransactionManager" ref="transactionManager"/>
         <property name="hibernateProperties">
             <props>
                 <prop key="hibernate.dialect">${order.hibernate.dialect}</prop>
@@ -38,12 +40,7 @@
         </property>
     </bean>
 
-    <!-- Transaction Manager -->
-    <bean id="transactionManager"
-                class="org.springframework.orm.hibernate4.HibernateTransactionManager">
-        <property name="sessionFactory" ref="sessionFactory"/>
-    </bean>
-
+    <tx:annotation-driven transaction-manager="transactionManager"/>
     <tx:annotation-driven/>
 
 </beans>

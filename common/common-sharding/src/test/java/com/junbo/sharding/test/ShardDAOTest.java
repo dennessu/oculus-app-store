@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import javax.annotation.Resource;
@@ -31,12 +32,13 @@ public class ShardDAOTest extends AbstractTransactionalTestNGSpringContextTests 
     @Resource(name="shardDao")
     private ShardDAO shardDao;
 
-    @Test
+    //@Test
     public void shardDaoTest() {
         //for (int i = 0; i < 3; i++) {
-            ShardEntity entity = new ShardEntity();
-            entity.setId(new Long(1));
-            shardDao.saveShard(entity);
+        ShardEntity entity = new ShardEntity();
+        entity.setId(new Long(38));
+        ShardEntity saved = shardDao.saveShard(entity);
+        Assert.assertEquals(entity.getId(), saved.getId());
         //}
     }
 }

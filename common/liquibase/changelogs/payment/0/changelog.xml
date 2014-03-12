@@ -51,9 +51,13 @@
             create table payment_instrument_type
                 (
                   payment_instrument_type_id        smallint            not null,
-                  description                   varchar(50)         not null,
-                  created_time                  date                not null,
-                  created_by                    varchar(50)         not null,
+				  name                              varchar(32)         not null, 
+				  recurring                         varchar(16)             null,
+				  refundable                        varchar(16)             null,
+				  authorizable                      varchar(16)             null,
+				  defaultable                       varchar(16)             null,                  
+                  created_time                      date                not null,
+                  created_by                        varchar(50)         not null,
 
                   constraint payment_instrument_type_id_pk primary key (payment_instrument_type_id)
                 );
@@ -805,25 +809,10 @@
         <sql>
         <![CDATA[
             insert into payment_instrument_type values
-                        (0, 'CREDITCARD', '2014-02-10', 'wenhongzhu')
-                       ,(1,'DIRECTDEBIT', '2014-02-10', 'wenhongzhu')
-                       ,(2,'QWESTACCOUNT', '2014-02-10', 'wenhongzhu')
-                       ,(3,'FDCCREDITCARD', '2014-02-10', 'wenhongzhu')
-                       ,(4,'WHOLESALE', '2014-02-10', 'wenhongzhu')
-                       ,(5,'PREMIUMSMS', '2014-02-10', 'wenhongzhu')
-                       ,(6,'IVR', '2014-02-10', 'wenhongzhu')
-                       ,(7,'WALLET', '2014-02-10', 'wenhongzhu')
-                       ,(8,'BANKTRANSFER', '2014-02-10', 'wenhongzhu')
-                       ,(9,'PAPERCHECK', '2014-02-10', 'wenhongzhu')
-                       ,(10,'PAYPAL', '2014-02-10', 'wenhongzhu')
-                       ,(11,'PAYSKU', '2014-02-10', 'wenhongzhu')
-                       ,(12,'PAYPALAUTOPAY', '2014-02-10', 'wenhongzhu')
-                       ,(13,'VISAPREPAID', '2014-02-10', 'wenhongzhu')
-                       ,(14,'PAYPALPAYIN', '2014-02-10', 'wenhongzhu')
-                       ,(15,'MOBILE', '2014-02-10', 'wenhongzhu')
-                       ,(16,'AMAZONFPS', '2014-02-10', 'wenhongzhu')
-                       ,(17,'INICISPAY', '2014-02-10', 'wenhongzhu')
-                       ,(18,'DDPAYIN', '2014-02-10', 'wenhongzhu');
+                        (0,'CREDITCARD','YES','YES','YES','YES', '2014-02-10', 'wenhongzhu')
+                       ,(1,'DIRECTDEBIT','YES','YES','NO','NO','2014-02-10', 'wenhongzhu')                       
+                       ,(2,'WALLET','YES','YES','NO','NO', '2014-02-10', 'wenhongzhu')                       
+                       ,(3,'PAYPAL','YES','YES','YES','YES', '2014-02-10', 'wenhongzhu');                   
         ]]>
         </sql>
     </changeSet>

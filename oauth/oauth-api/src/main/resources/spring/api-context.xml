@@ -26,4 +26,9 @@
         <property name="userService" ref="userService"/>
     </bean>
 
+    <bean id="defaultEndSessionEndpoint" class="com.junbo.oauth.api.endpoint.EndSessionEndpointImpl">
+        <property name="flowExecutor" ref="flowExecutor"/>
+        <property name="endSessionFlow" value="endSessionFlow"/>
+    </bean>
+
 </beans>

@@ -34,6 +34,7 @@ class Main {
         System.setProperty('net.spy.log.LoggerImpl', 'net.spy.memcached.compat.log.SLF4JLogger')
         System.setProperty('logback.configurationFile', 'logback-identity.xml')
 
+        resourceConfig.property(ServerProperties.BV_SEND_ERROR_IN_RESPONSE, true)
         resourceConfig.property(ServerProperties.TRACING, 'ALL')
         resourceConfig.packages('com.junbo.entitlement.spec.resource.adapter')
         resourceConfig.property('contextConfigLocation', 'classpath*:/spring/*.xml')

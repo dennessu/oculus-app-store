@@ -6,6 +6,9 @@
 
 package com.junbo.entitlement.db.dao.hibernate;
 
+import com.junbo.common.id.EntitlementDefinitionId;
+import com.junbo.common.id.OfferId;
+import com.junbo.entitlement.common.def.Function;
 import com.junbo.entitlement.common.lib.CommonUtils;
 import com.junbo.entitlement.common.lib.EntitlementContext;
 import com.junbo.entitlement.db.dao.EntitlementDao;
@@ -15,6 +18,7 @@ import com.junbo.entitlement.db.entity.def.EntitlementType;
 import com.junbo.entitlement.spec.model.EntitlementSearchParam;
 import com.junbo.entitlement.spec.model.PageMetadata;
 import org.hibernate.Query;
+import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 
@@ -30,8 +34,8 @@ public class EntitlementDaoImpl extends BaseDao<EntitlementEntity> implements En
                         " where user_id = (:userId)" +
                         " and developer_id = (:developerId)");
         Map<String, Object> params = new HashMap<String, Object>();
-        params.put("userId", entitlementSearchParam.getUserId());
-        params.put("developerId", entitlementSearchParam.getDeveloperId());
+        params.put("userId", entitlementSearchParam.getUserId().getValue());
+        params.put("developerId", entitlementSearchParam.getDeveloperId().getValue());
         addSearchParam(entitlementSearchParam, queryStringBuilder, params);
         Query q = currentSession().createSQLQuery(
                 queryStringBuilder.toString()).addEntity(EntitlementEntity.class);
@@ -69,7 +73,7 @@ public class EntitlementDaoImpl extends BaseDao<EntitlementEntity> implements En
                 params.put("now", now);
             }
             params.put("status", status.getId());
-        }else {
+        } else {
             //default not to search DELETED and BANNED Entitlement
             queryStringBuilder.append(" and status >= 0");
         }
@@ -77,14 +81,33 @@ public class EntitlementDaoImpl extends BaseDao<EntitlementEntity> implements En
         addCollectionParam("entitlement_group", "groups",
                 entitlementSearchParam.getGroups(), queryStringBuilder, params);
         addCollectionParam("tag", "tags", entitlementSearchParam.getTags(), queryStringBuilder, params);
-        addCollectionParam("entitlement_definition_id", "definitionIds",
-                entitlementSearchParam.getDefinitionIds(), queryStringBuilder, params);
+        if (!CollectionUtils.isEmpty(entitlementSearchParam.getDefinitionIds())) {
+            addCollectionParam("entitlement_definition_id", "definitionIds",
+                    CommonUtils.select(entitlementSearchParam.getDefinitionIds(),
+                            new Function<Long, EntitlementDefinitionId>() {
+                                @Override
+                                public Long apply(EntitlementDefinitionId entitlementDefinitionId) {
+                                    return entitlementDefinitionId.getValue();
+                                }
+                            }),
+                    queryStringBuilder, params);
+        }
         if (CommonUtils.isNotNull(entitlementSearchParam.getType())) {
             addSingleParam("type", "type",
                     EntitlementType.valueOf(entitlementSearchParam.getType()).getId(),
                     "=", queryStringBuilder, params);
         }
-        addCollectionParam("offer_id", "offerIds", entitlementSearchParam.getOfferIds(), queryStringBuilder, params);
+        if (!CollectionUtils.isEmpty(entitlementSearchParam.getOfferIds())) {
+            addCollectionParam("offer_id", "offerIds",
+                    CommonUtils.select(entitlementSearchParam.getOfferIds(),
+                            new Function<Long, OfferId>() {
+                                @Override
+                                public Long apply(OfferId offerId) {
+                                    return offerId.getValue();
+                                }
+                            }),
+                    queryStringBuilder, params);
+        }
         addSingleParam("grant_time", "startGrantTime",
                 entitlementSearchParam.getStartGrantTime(),
                 ">=", queryStringBuilder, params);

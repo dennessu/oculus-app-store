@@ -16,14 +16,14 @@ import com.junbo.payment.spec.enums.PaymentStatus;
 /**
  * payment related utility.
  */
-public class PaymentUtil {
+public final class PaymentUtil {
     private PaymentUtil(){
 
     }
 
     public static PIType getPIType(String piType){
         try{
-            return PIType.valueOf(piType);
+            return PIType.valueOf(piType.toUpperCase());
         }catch (Exception ex){
             throw AppClientExceptions.INSTANCE.invalidPIType(piType).exception();
         }
@@ -31,7 +31,7 @@ public class PaymentUtil {
 
     public static CreditCardType getCreditCardType(String ccType){
         try{
-            return CreditCardType.valueOf(ccType);
+            return CreditCardType.valueOf(ccType.toUpperCase());
         }catch (Exception ex){
             throw AppServerExceptions.INSTANCE.invalidCreditCardType(ccType).exception();
         }
@@ -39,7 +39,7 @@ public class PaymentUtil {
 
     public static PaymentStatus getPaymentStatus(String status){
         try{
-            return PaymentStatus.valueOf(status);
+            return PaymentStatus.valueOf(status.toUpperCase());
         }catch (Exception ex){
             throw AppServerExceptions.INSTANCE.invalidPaymentStatus(status).exception();
         }
@@ -58,7 +58,7 @@ public class PaymentUtil {
             default:
             {
                 try{
-                    return PaymentStatus.valueOf(brainTreeStatus.toString());
+                    return PaymentStatus.valueOf(brainTreeStatus.toString().toUpperCase());
                 }catch(Exception ex){
                     return PaymentStatus.UNRECOGNIZED;
                 }

@@ -12,7 +12,6 @@ import com.junbo.catalog.spec.model.common.EntityGetOptions;
 import com.junbo.catalog.spec.model.common.ResultList;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.resource.OfferResource;
-import com.junbo.common.id.Id;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -31,7 +30,7 @@ public class OfferResourceImpl extends BaseResourceImpl<Offer> implements OfferR
     }
 
     @Override
-    public Promise<Offer> getOffer(Id offerId, @BeanParam EntityGetOptions options) {
+    public Promise<Offer> getOffer(Long offerId, @BeanParam EntityGetOptions options) {
         return get(offerId, options);
     }
 

@@ -6,8 +6,9 @@
 
 package com.junbo.ewallet.db.dao.hibernate;
 
+import com.junbo.common.id.WalletId;
 import com.junbo.ewallet.db.entity.hibernate.EntityWithCreated;
-import com.junbo.sharding.IdGenerator;
+import com.junbo.sharding.IdGeneratorFacade;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ public class TransactionBaseDao<T extends EntityWithCreated> {
     @Autowired
     private SessionFactory sessionFactory;
     @Autowired
-    private IdGenerator idGenerator;
+    private IdGeneratorFacade idGenerator;
 
     private Class<T> entityType;
 
@@ -44,7 +45,7 @@ public class TransactionBaseDao<T extends EntityWithCreated> {
     }
 
     protected Long generateId(Long shardId) {
-        return idGenerator.nextId(shardId);
+        return idGenerator.nextId(WalletId.class, shardId);
     }
 
     public Class<T> getEntityType() {

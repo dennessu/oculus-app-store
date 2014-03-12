@@ -47,7 +47,12 @@ class ClientRepositoryImpl implements ClientRepository {
                 clientSecret: entity.clientSecret,
                 defaultRedirectUri: entity.defaultRedirectUri,
                 allowedRedirectUris: entity.allowedRedirectUris,
-                allowedScopes: entity.allowedScopes
+                allowedScopes: entity.allowedScopes,
+                defaultScopes: entity.defaultScopes,
+                allowedResponseTypes: entity.allowedResponseTypes,
+                idTokenIssuer: entity.idTokenIssuer,
+                allowedLogoutRedirectUris: entity.allowedLogoutRedirectUris,
+                defaultLogoutRedirectUri: entity.defaultLogoutRedirectUri
         )
     }
 }
