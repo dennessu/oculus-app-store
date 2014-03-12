@@ -37,7 +37,7 @@
                     updated_by varchar(128) not null,
                     order_id bigint not null,
                     tracking_uuid uuid default null,
-                    flow_name uuid default null,
+                    flow_name varchar(128) default null,
                     primary key (event_id)
                 );
                 create unique index order_event_id_updated_time_tracking_uuid_index on order_event (event_id, updated_time, tracking_uuid);

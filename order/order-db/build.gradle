@@ -25,4 +25,6 @@ dependencies {
 
     testCompile (libraries.spring_test)
     testCompile (libraries.common_lang)
+    testRuntime (libraries.el_api)
+    testRuntime (libraries.el)
 }
