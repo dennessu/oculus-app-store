@@ -4,7 +4,6 @@ dependencies {
     compile (libraries.common_lib)
     compile (libraries.common_sharding)
     compile (libraries.common_configuration)
-    compile (libraries.oom)
 
     compile(libraries.spring_aop)
     compile(libraries.spring_context)
@@ -30,8 +29,6 @@ dependencies {
 
     testCompile (libraries.guava)
     testCompile (libraries.spring_test)
-
-    processor (libraries.oom_processor)
 
     compile project(':ewallet-spec')
     compile project(':ewallet-common')
