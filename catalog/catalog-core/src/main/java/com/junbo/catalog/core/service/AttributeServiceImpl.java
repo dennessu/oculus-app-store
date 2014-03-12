@@ -43,9 +43,8 @@ public class AttributeServiceImpl implements AttributeService {
             }
             return attributes;
         } else {
-            // TODO
-
-            return null;
+            options.ensurePagingValid();
+            return attributeRepo.getAttributes(options.getStart(), options.getSize());
         }
     }
 

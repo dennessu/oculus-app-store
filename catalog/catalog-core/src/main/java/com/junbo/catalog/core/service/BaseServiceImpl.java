@@ -27,8 +27,11 @@ import java.util.List;
  * @param <T> the entity type.
  */
 public abstract class BaseServiceImpl<T extends VersionedModel> implements BaseService<T> {
-    public abstract <E extends EntityRepository<T>> E getEntityRepo();
-    public abstract <E extends EntityDraftRepository<T>> E getEntityDraftRepo();
+    protected abstract <E extends EntityRepository<T>> E getEntityRepo();
+    protected abstract <E extends EntityDraftRepository<T>> E getEntityDraftRepo();
+
+    // TODO: think again about this
+    protected abstract String getEntityType();
 
     @Override
     public T get(Long entityId, EntityGetOptions options) {
@@ -173,7 +176,7 @@ public abstract class BaseServiceImpl<T extends VersionedModel> implements BaseS
 
     private void checkEntityNotNull(Long entityId, T entity) {
         if (entity == null) {
-            throw new NotFoundException(entity.getEntityType(), entityId);
+            throw new NotFoundException(getEntityType(), entityId);
         }
     }
 }
