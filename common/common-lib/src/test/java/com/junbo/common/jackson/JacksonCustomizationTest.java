@@ -29,15 +29,6 @@ public class JacksonCustomizationTest {
 
     @BeforeClass
     public void setUp() {
-        Long a = 12345L;
-        System.out.println("original:" + a);
-        System.out.println("shuffle:" + Oculus48Id.shuffle(a));
-        String result = (Oculus48Id.format(Oculus48Id.shuffle(a)));
-        System.out.println("shuffle then format:" + result);
-        System.out.println("deformat:" + (Oculus48Id.deFormat(result)));
-        System.out.println("deformat then unshuffle:" + Oculus48Id.unShuffle(Oculus48Id.deFormat(result)));
-
-
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
     }
 
@@ -113,5 +104,16 @@ public class JacksonCustomizationTest {
 
         Assert.assertEquals(123L, (long) (user2.getFriends().get(0)));
         Assert.assertEquals(456L, (long) (user2.getFriends().get(1)));
+    }
+
+    @Test
+    public void testOrderId() throws Exception {
+        User user = new User();
+        user.setOrderId(1234567L);
+
+        String json = mapper.writeValueAsString(user);
+        User user2 = mapper.readValue(json, User.class);
+
+        Assert.assertEquals(user.getOrderId(), user2.getOrderId(), "order id should match.");
     }
 }

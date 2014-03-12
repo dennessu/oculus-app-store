@@ -48,18 +48,18 @@ public class ResourceIdSerializer extends JsonSerializer<Object> implements Reso
     }
 
     protected String encode(Object value) {
-        return value instanceof Long ? encode((Long) value) : value.toString();
-    }
-
-    protected String encode(Long value) {
-        Oculus48Id.validateRawValue(value);
-        return Oculus48Id.format(Oculus48Id.shuffle(value));
+        if (value instanceof Long) {
+            Oculus48Id.validateRawValue((Long) value);
+            return Oculus48Id.format(Oculus48Id.shuffle((Long) value));
+        } else {
+            return value.toString();
+        }
     }
 
     private List<ResourceRef> handleCollection(Object value) {
         Collection collection = (Collection) value;
 
-        List<ResourceRef> results = new ArrayList<ResourceRef>();
+        List<ResourceRef> results = new ArrayList<>();
         Iterator it = collection.iterator();
         while (it.hasNext()) {
             results.add(handleSingle(it.next()));
@@ -82,6 +82,6 @@ public class ResourceIdSerializer extends JsonSerializer<Object> implements Reso
 
     private String getResourceHref(Object value) {
         return "http://api.wan-san.com/v1/" + resourceType + "/"
-                + (value instanceof Long ? encode((Long) value) : value.toString());
+                + (value instanceof Long ? encode(value) : value.toString());
     }
 }
