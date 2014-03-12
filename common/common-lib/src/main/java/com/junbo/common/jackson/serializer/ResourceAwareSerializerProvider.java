@@ -11,7 +11,7 @@ import com.fasterxml.jackson.databind.SerializationConfig;
 import com.fasterxml.jackson.databind.introspect.Annotated;
 import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
 import com.fasterxml.jackson.databind.ser.SerializerFactory;
-import com.junbo.common.jackson.annotation.ResourceType;
+import com.junbo.common.jackson.annotation.ResourcePath;
 
 /**
  * ResourceAwareSerializerProvider.
@@ -37,9 +37,9 @@ public class ResourceAwareSerializerProvider extends DefaultSerializerProvider {
             throws JsonMappingException {
         JsonSerializer<Object> ser = super.serializerInstance(annotated, serDef);
         if (ser instanceof ResourceAware) {
-            ResourceType typeAnno = annotated.getAnnotation(ResourceType.class);
+            ResourcePath typeAnno = annotated.getAnnotation(ResourcePath.class);
             if (typeAnno == null) {
-                throw new IllegalStateException("ResourceType annotation is missing.");
+                throw new IllegalStateException("ResourcePath annotation is missing.");
             }
             
             ((ResourceAware) ser).injectResourceType(typeAnno.value());

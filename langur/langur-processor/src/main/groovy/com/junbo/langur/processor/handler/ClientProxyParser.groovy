@@ -4,7 +4,6 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.langur.processor.handler
-
 import com.junbo.langur.processor.ProcessingException
 import com.junbo.langur.processor.model.ClientMethodModel
 import com.junbo.langur.processor.model.ClientParameterModel
@@ -28,6 +27,9 @@ import javax.ws.rs.*
 class ClientProxyParser implements RestResourceHandler {
     private static final String OBJECT_TYPE = 'java.lang.Object'
     private static final String BRACET = '()'
+    private static final String GET = 'get'
+    private static final String IS = 'is'
+    private static final String PRIMARY_BOOLEAN = 'boolean'
     private static final String DOT = '.'
 
     @Override
@@ -197,46 +199,94 @@ class ClientProxyParser implements RestResourceHandler {
     private
     static List<ClientParameterModel> getBeanParameters(Elements elementUtils, String variableName,
                                                         TypeMirror variableType) {
+        def simpleNames = []
+        def result = []
 
         def typeElement = (TypeElement) ((DeclaredType) variableType).asElement()
+        ElementFilter.fieldsIn(elementUtils.getAllMembers(typeElement)).each { VariableElement variableElement ->
+            String fieldGetMethodName = getGetMethodName(variableElement)
+            QueryParam queryParam = variableElement.getAnnotation(QueryParam)
+            if (queryParam != null && !simpleNames.contains(fieldGetMethodName)) {
+                result.add(new QueryParameterModel(
+                        paramType:variableElement.asType().toString(),
+                        paramName:variableName + DOT + fieldGetMethodName + BRACET,
+                        queryName:queryParam.value()
+                ))
+                simpleNames.add(fieldGetMethodName)
+                return
+            }
 
-        def result = []
+            PathParam pathParam = variableElement.getAnnotation(PathParam)
+            if (pathParam != null && !simpleNames.contains(fieldGetMethodName)) {
+                result.add(new PathParameterModel(
+                        paramType:variableElement.asType().toString(),
+                        paramName:variableName + DOT + fieldGetMethodName + BRACET,
+                        pathName:pathParam.value()
+                ))
+                simpleNames.add(fieldGetMethodName)
+                return
+            }
+
+            HeaderParam headerParam = variableElement.getAnnotation(HeaderParam)
+            if (headerParam != null && !simpleNames.contains(fieldGetMethodName)) {
+                result.add(new HeaderParameterModel(
+                        paramType:variableElement.asType().toString(),
+                        paramName:variableName + DOT + fieldGetMethodName + BRACET,
+                        headerName:headerParam.value()
+                ))
+                simpleNames.add(fieldGetMethodName)
+                return
+            }
+        }
+
+        typeElement = (TypeElement) ((DeclaredType) variableType).asElement()
         ElementFilter.methodsIn(elementUtils.getAllMembers(typeElement)).each { ExecutableElement executableElement ->
             if (executableElement.enclosingElement.toString() == OBJECT_TYPE) {
                 return
             }
 
             QueryParam queryParam = executableElement.getAnnotation(QueryParam)
-            if (queryParam != null) {
+            if (queryParam != null && !simpleNames.contains(executableElement.simpleName.toString())) {
                 result.add(new QueryParameterModel(
                         paramType:executableElement.returnType.toString(),
                         paramName:variableName + DOT + executableElement.simpleName.toString() + BRACET,
                         queryName:queryParam.value()
                 ))
+                simpleNames.add(executableElement.simpleName.toString())
                 return
             }
 
             PathParam pathParam = executableElement.getAnnotation(PathParam)
-            if (pathParam != null) {
+            if (pathParam != null && !simpleNames.contains(executableElement.simpleName.toString())) {
                 result.add(new PathParameterModel(
                         paramType:executableElement.returnType.toString(),
                         paramName:variableName + DOT + executableElement.simpleName.toString() + BRACET,
                         pathName:pathParam.value()
                 ))
+                simpleNames.add(executableElement.simpleName.toString())
                 return
             }
 
             HeaderParam headerParam = executableElement.getAnnotation(HeaderParam)
-            if (headerParam != null) {
+            if (headerParam != null && !simpleNames.contains(executableElement.simpleName.toString())) {
                 result.add(new HeaderParameterModel(
                         paramType:executableElement.returnType.toString(),
                         paramName:variableName + DOT + executableElement.simpleName.toString() + BRACET,
                         headerName:headerParam.value()
                 ))
+                simpleNames.add(executableElement.simpleName.toString())
                 return
             }
         }
 
         return result
+    }
+
+    static String getGetMethodName(VariableElement variableElement) {
+        String name = variableElement.simpleName.toString()
+        if (variableElement.asType().toString() == PRIMARY_BOOLEAN) {
+            return IS + name.capitalize()
+        }
+        return GET + name.capitalize()
     }
 }

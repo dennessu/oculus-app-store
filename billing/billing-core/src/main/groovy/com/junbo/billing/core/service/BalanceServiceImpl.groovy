@@ -96,13 +96,16 @@ class BalanceServiceImpl implements BalanceService {
         }
         Balance savedBalance = balanceRepository.getBalance(balance.balanceId.value)
         if (savedBalance == null) {
-            throw AppErrors.INSTANCE.balanceNotFound(savedBalance.balanceId.value.toString()).exception()
+            throw AppErrors.INSTANCE.balanceNotFound(balance.balanceId.value.toString()).exception()
         }
         if (savedBalance.status != BalanceStatus.PENDING_CAPTURE.name()) {
             throw AppErrors.INSTANCE.invalidBalanceStatus(savedBalance.status).exception()
         }
         if (savedBalance.transactions.size() == 0) {
             throw AppErrors.INSTANCE.transactionNotFound(savedBalance.balanceId.value.toString()).exception()
+        }
+        if (balance.totalAmount != null && balance.totalAmount > savedBalance.totalAmount) {
+            throw AppErrors.INSTANCE.invalidBalanceTotal(balance.totalAmount.toString()).exception()
         }
 
         transactionService.captureBalance(savedBalance, balance.totalAmount)

@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.junbo.common.jackson.model.ResourceRef;
 import com.junbo.common.shuffle.Oculus48Id;
+import junit.framework.Assert;
 
 import java.io.IOException;
 import java.util.*;
@@ -24,7 +25,7 @@ public class ResourceIdDeserializer extends JsonDeserializer<Object> implements 
 
     private Class<? extends Collection> collectionType;
 
-    private Class<?> componentType;
+    private Class<?> idClassType;
 
     @Override
     public void injectCollectionType(Class<? extends Collection> collectionType) {
@@ -32,13 +33,15 @@ public class ResourceIdDeserializer extends JsonDeserializer<Object> implements 
     }
 
     @Override
-    public void injectComponentType(Class<?> componentType) {
-        this.componentType = componentType;
+    public void injectIdClassType(Class<?> idClassType) {
+        this.idClassType = idClassType;
     }
 
     @Override
     public Object deserialize(JsonParser jsonParser, DeserializationContext context)
             throws IOException {
+        Assert.assertNotNull("IdClassType", idClassType);
+
         return isCollection() ? handleCollection(jsonParser) : handleSingle(jsonParser);
     }
 
@@ -88,9 +91,9 @@ public class ResourceIdDeserializer extends JsonDeserializer<Object> implements 
 
     private <T> T parse(String id) {
         // for now, we only support String/Integer/Long id types
-        if (componentType == Long.class) {
+        if (idClassType == Long.class) {
             return (T) decode(id);
-        } else if (componentType == Integer.class) {
+        } else if (idClassType == Integer.class) {
             return (T) Integer.valueOf(id);
         }
 

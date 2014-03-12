@@ -39,7 +39,6 @@ public class Balance {
 
     private List<BalanceItem> balanceItems;
 
-    @JsonIgnore
     private List<Transaction> transactions;
 
     public Balance() {

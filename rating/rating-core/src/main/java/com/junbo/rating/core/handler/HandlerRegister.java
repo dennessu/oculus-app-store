@@ -22,7 +22,7 @@ public final class HandlerRegister {
         this.register = register;
     }
 
-    public static boolean handle(Criterion criterion, RatingContext context) {
+    public static boolean isSatisfied(Criterion criterion, RatingContext context) {
         Assert.notNull(criterion, "criterion");
         Assert.notNull(criterion.getPredicate(), "predicate");
 
