@@ -16,6 +16,9 @@ buildscript {
     dependencies {
         classpath 'com.junbo.gradle:bootstrap:0.0.1-SNAPSHOT'
     }
+<<<<<<< HEAD
+}
+=======
 }
 
 subprojects {
@@ -39,3 +42,4 @@ sonarRunner {
     }
 }
 
+>>>>>>> 9ad1a8800f3984a9251001dd8619774c5286898c
