@@ -15,4 +15,5 @@ class LoginState extends ExpirableToken {
     String id
     Long userId
     Date lastAuthDate
+    String sessionId
 }

@@ -409,7 +409,6 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
     }
 
     private PaymentTransaction saveAndCommitPayment(final PaymentTransaction request, final PaymentAPI api) {
-        //TransactionTemplate template = new TransactionTemplate(transactionManager);
         AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager);
         template.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRES_NEW);
         return template.execute(new TransactionCallback<PaymentTransaction>() {

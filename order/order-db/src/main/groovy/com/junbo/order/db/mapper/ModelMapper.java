@@ -103,6 +103,12 @@ public interface ModelMapper {
     FulfillmentEvent toFulfillmentEventModel(OrderItemFulfillmentEventEntity orderItemFulfillmentEventEntity,
                                              MappingContext context);
 
+    OrderBillingEventEntity toOrderBillingEventEntity(BillingEvent billingEvent,
+                                                                      MappingContext context);
+
+    BillingEvent toOrderBillingtEventModel(OrderBillingEventEntity orderBillingEventEntity,
+                                             MappingContext context);
+
     PreorderInfo toPreOrderInfoModel(OrderItemPreorderInfoEntity orderItemPreorderInfoEntity, MappingContext context);
 
     OrderItemPreorderInfoEntity toOrderItemPreorderInfoEntity(PreorderInfo preorderInfo, MappingContext context);

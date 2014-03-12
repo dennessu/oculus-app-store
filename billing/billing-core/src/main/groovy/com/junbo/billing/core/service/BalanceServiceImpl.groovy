@@ -53,17 +53,6 @@ class BalanceServiceImpl implements BalanceService {
     private static final int AMOUNT_SCALE = 3
 
     @Override
-    Promise<Balance> quoteBalance(Balance balance) {
-
-        validateBalanceItem(balance)
-
-        calculateTax(balance)
-        computeTotal(balance)
-
-        return Promise.pure(balance)
-    }
-
-    @Override
     Promise<Balance> addBalance(Balance balance) {
 
         validateBalanceType(balance)
@@ -85,6 +74,41 @@ class BalanceServiceImpl implements BalanceService {
         //persist the balance entity
         Balance resultBalance = balanceRepository.saveBalance(balance)
 
+        return Promise.pure(resultBalance)
+    }
+
+    @Override
+    Promise<Balance> quoteBalance(Balance balance) {
+
+        validateBalanceItem(balance)
+
+        calculateTax(balance)
+        computeTotal(balance)
+
+        return Promise.pure(balance)
+    }
+
+    @Override
+    Promise<Balance> captureBalance(Balance balance) {
+
+        if (balance.balanceId == null) {
+            throw AppErrors.INSTANCE.fieldMissingValue('balanceId').exception()
+        }
+        Balance savedBalance = balanceRepository.getBalance(balance.balanceId.value)
+        if (savedBalance == null) {
+            throw AppErrors.INSTANCE.balanceNotFound(savedBalance.balanceId.value.toString()).exception()
+        }
+        if (savedBalance.status != BalanceStatus.PENDING_CAPTURE.name()) {
+            throw AppErrors.INSTANCE.invalidBalanceStatus(savedBalance.status).exception()
+        }
+        if (savedBalance.transactions.size() == 0) {
+            throw AppErrors.INSTANCE.transactionNotFound(savedBalance.balanceId.value.toString()).exception()
+        }
+
+        transactionService.captureBalance(savedBalance, balance.totalAmount)
+
+        savedBalance.setType(BalanceType.MANUAL_CAPTURE.name())
+        Balance resultBalance = balanceRepository.updateBalance(savedBalance)
         return Promise.pure(resultBalance)
     }
 

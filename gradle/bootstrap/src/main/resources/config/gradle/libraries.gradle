@@ -106,8 +106,8 @@ ext {
             jsonlib:                'net.sf.json-lib:json-lib:2.4',
 
             //aspectj
-            aspectjrt               'aspectj:aspectjrt:1.5.4'
-            aspectjweaver           'aspectj:aspectjweaver:1.5.4'
+            aspectjrt:              'org.aspectj:aspectjrt:1.7.4',
+            aspectjweaver:          'org.aspectj:aspectjweaver:1.7.4',
 
             kryo:                   'com.esotericsoftware.kryo:kryo:2.22',
 

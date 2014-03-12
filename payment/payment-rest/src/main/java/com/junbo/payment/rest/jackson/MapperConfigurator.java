@@ -33,8 +33,6 @@ public class MapperConfigurator implements ContextResolver<ObjectMapper> {
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
         mapper.setDateFormat(new ISO8601DateFormat());
-        //mapper.getSerializationConfig().with(new SimpleDateFormat());
-        //mapper.getDeserializationConfig().with(new SimpleDateFormat());
     }
 
     @Override

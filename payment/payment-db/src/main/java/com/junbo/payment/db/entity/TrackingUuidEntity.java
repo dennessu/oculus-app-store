@@ -56,6 +56,20 @@ public class TrackingUuidEntity extends GenericEntity{
         this.id = id;
     }
 
+    @Override
+    public Long getShardMasterId() {
+        if(paymentInstrumentId != null){
+            return paymentInstrumentId;
+        }
+        if(paymentId != null){
+            return paymentId;
+        }
+        if(userId != null){
+            return userId;
+        }
+        return null;
+    }
+
     public UUID getTrackingUuid() {
         return trackingUuid;
     }

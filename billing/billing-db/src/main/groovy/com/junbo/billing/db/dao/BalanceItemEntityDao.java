@@ -18,4 +18,6 @@ public interface BalanceItemEntityDao extends BaseDao<BalanceItemEntity, Long> {
 
     List<BalanceItemEntity> findByBalanceId(Long balanceId);
 
+    List<BalanceItemEntity> findByOrderItemId(List<Long> orderItemIds);
+
 }

@@ -7,7 +7,7 @@ package com.junbo.common.id.provider;
 
 import com.junbo.common.id.Id;
 import com.junbo.common.id.converter.IdTypeFromStringConverter;
-import com.junbo.common.util.IdFormat;
+import com.junbo.common.util.IdFormatter;
 import org.glassfish.jersey.internal.inject.Custom;
 
 import javax.inject.Singleton;
@@ -33,7 +33,7 @@ public class IdTypeFromStringProvider implements ParamConverterProvider {
                 if(!(obj instanceof Id)) {
                     return null;
                 }
-                ((Id)obj).setValue(IdFormat.decodeFormattedId(rawType, value));
+                ((Id)obj).setValue(IdFormatter.decodeId(rawType, value));
                 return obj;
             }
         };

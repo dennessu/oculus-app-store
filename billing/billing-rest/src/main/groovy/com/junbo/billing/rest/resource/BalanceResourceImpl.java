@@ -37,6 +37,11 @@ public class BalanceResourceImpl implements BalanceResource {
     }
 
     @Override
+    public Promise<Balance> captureBalance(Balance balance) {
+        return balanceService.captureBalance(balance);
+    }
+
+    @Override
     public Promise<Balance> getBalance(BalanceId balanceId) {
         return balanceService.getBalance(balanceId.getValue());
     }

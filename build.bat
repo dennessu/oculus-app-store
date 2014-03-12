@@ -1,154 +1,24 @@
-@echo on
-set gradle_arg=clean install %1
+@echo off
+set gradle_arg=clean build install %1
 for %%i in (%*) do (
   set gradle_arg=%gradle_arg% %%i
 )
-pushd "gradle\bootstrap"
-call gradle %gradle_arg%
-if %errorlevel% == 1 (
-	popd
-	goto END
+for /F "tokens=*" %%A in (dirs) do (
+    call :GRADLE %%A || goto :ERROR
 )
-popd
 
-pushd oom
-call gradle %gradle_arg%
-if %errorlevel% == 1 (
-	popd
-	goto END
-)
-popd
-
-pushd langur
-call gradle %gradle_arg%
-if %errorlevel% == 1 (
-	popd
-	goto END
-)
-popd
-
-
-pushd common
-call gradle %gradle_arg%
-if %errorlevel% == 1 (
-	popd
-	goto END
-)
-popd
-
-pushd identity
-call gradle %gradle_arg%
-if %errorlevel% == 1 (
-	popd
-	goto END
-)
-popd
-
-pushd oauth
-call gradle %gradle_arg%
-if %errorlevel% == 1 (
-	popd
-	goto END
-)
-popd
-
-pushd catalog
-call gradle %gradle_arg%
-if %errorlevel% == 1 (
-	popd
-	goto END
-)
-popd
-
-pushd rating
-call gradle %gradle_arg%
-if %errorlevel% == 1 (
-	popd
-	goto END
-)
-popd
-
-pushd payment
-call gradle %gradle_arg%
-if %errorlevel% == 1 (
-	popd
-	goto END
-)
-popd
-
-pushd billing
-call gradle %gradle_arg%
-if %errorlevel% == 1 (
-	popd
-	goto END
-)
-popd
-
-pushd cart
-call gradle %gradle_arg%
-if %errorlevel% == 1 (
-	popd
-	goto END
-)
-popd
-
-pushd drm
-call gradle %gradle_arg%
-if %errorlevel% == 1 (
-	popd
-	goto END
-)
-popd
-
-pushd entitlement
-call gradle %gradle_arg%
-if %errorlevel% == 1 (
-	popd
-	goto END
-)
-popd
-
-pushd ewallet
-call gradle %gradle_arg%
-if %errorlevel% == 1 (
-	popd
-	goto END
-)
-popd
-
-pushd fulfilment
-call gradle %gradle_arg%
-if %errorlevel% == 1 (
-	popd
-	goto END
-)
-popd
-
-pushd order
-call gradle %gradle_arg%
-if %errorlevel% == 1 (
-	popd
-	goto END
-)
-popd
-
-pushd subscription
-call gradle %gradle_arg%
-if %errorlevel% == 1 (
-	popd
-	goto END
-)
-popd
-
-pushd "bootstrap"
-call gradle %gradle_arg%
-if %errorlevel% == 1 (
-	popd
-	goto END
-)
-popd
-
-goto :END
-
-:END
 echo Build done
+goto :EOF
+
+:ERROR
+popd
+echo Build error
+exit /b 1
+
+:GRADLE
+set DIR=%1
+set DIR=%DIR:/=\%
+pushd %DIR%
+call gradle %gradle_arg% || goto :ERROR
+popd
+goto :EOF

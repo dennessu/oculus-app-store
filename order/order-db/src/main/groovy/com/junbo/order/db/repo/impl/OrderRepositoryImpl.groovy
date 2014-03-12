@@ -6,23 +6,17 @@
 
 package com.junbo.order.db.repo.impl
 
-import com.junbo.common.id.OrderItemId
-import com.junbo.common.id.PaymentInstrumentId
+import com.junbo.common.id.*
 import com.junbo.oom.core.MappingContext
-import com.junbo.common.id.BalanceId
-import com.junbo.common.id.OrderId
 import com.junbo.order.db.dao.*
-import com.junbo.order.db.entity.OrderBillingEventEntity
 import com.junbo.order.db.entity.OrderDiscountInfoEntity
 import com.junbo.order.db.entity.OrderEntity
 import com.junbo.order.db.entity.OrderItemEntity
 import com.junbo.order.db.entity.OrderPaymentInfoEntity
-import com.junbo.order.db.entity.enums.BillingAction
-import com.junbo.order.db.entity.enums.EventStatus
 import com.junbo.order.db.mapper.ModelMapper
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.model.*
-import com.junbo.sharding.IdGenerator
+import com.junbo.sharding.IdGeneratorFacade
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.springframework.beans.factory.annotation.Autowired
@@ -60,7 +54,7 @@ class OrderRepositoryImpl implements OrderRepository {
     @Autowired
     ModelMapper modelMapper
     @Autowired
-    IdGenerator idGenerator
+    IdGeneratorFacade idGenerator
 
     @Override
     Order createOrder(Order order) {
@@ -70,7 +64,7 @@ class OrderRepositoryImpl implements OrderRepository {
 
         // Save Order
         // TODO Save Order Tax Info
-        orderEntity.setOrderId(idGenerator.nextId(order.user.value))
+        orderEntity.setOrderId(idGenerator.nextId(OrderId, order.user.value))
         def id = orderDao.create(orderEntity)
         def orderId = new OrderId()
         orderId.setValue(id)
@@ -79,7 +73,7 @@ class OrderRepositoryImpl implements OrderRepository {
 
         // Save OrderItem
         order.orderItems?.each { OrderItem item ->
-            item.id = new OrderItemId(idGenerator.nextId(orderEntity.orderId))
+            item.id = new OrderItemId(idGenerator.nextId(OrderItemId, orderEntity.orderId))
             item.orderId = orderId
             def itemEntity = modelMapper.toOrderItemEntity(item, context)
             orderItemDao.create(itemEntity)
@@ -91,14 +85,14 @@ class OrderRepositoryImpl implements OrderRepository {
         // Save Discount
         order.discounts?.each { Discount discount ->
             def discountEntity = modelMapper.toDiscountEntity(discount, context)
-            discountEntity.discountInfoId = idGenerator.nextId(orderEntity.orderId)
+            discountEntity.discountInfoId = idGenerator.nextId(DiscountId, orderEntity.orderId)
             discountDao.create(discountEntity)
         }
 
         // Save Payment Info
         order.paymentInstruments.each { PaymentInstrumentId piid ->
             def paymentInfoEntity = modelMapper.toOrderPaymentInfoEntity(piid, context)
-            paymentInfoEntity.id = idGenerator.nextId(orderEntity.orderId)
+            paymentInfoEntity.id = idGenerator.nextId(Long, orderEntity.orderId)
             orderPaymentInfoDao.create(paymentInfoEntity)
         }
 
@@ -116,7 +110,7 @@ class OrderRepositoryImpl implements OrderRepository {
     @Override
     OrderEvent createOrderEvent(OrderEvent event, String flowName, UUID trackingUuid) {
         def entity = modelMapper.toOrderEventEntity(event, new MappingContext())
-        entity.eventId = idGenerator.nextId(entity.orderId)
+        entity.eventId = idGenerator.nextId(OrderEventId, entity.orderId)
         entity.flowName = flowName
         entity.trackingUuid = trackingUuid
         orderEventDao.create(entity)
@@ -126,21 +120,19 @@ class OrderRepositoryImpl implements OrderRepository {
     @Override
     FulfillmentEvent createFulfillmentEvent(Long orderId, FulfillmentEvent event) {
         def entity = modelMapper.toOrderItemFulfillmentEventEntity(event, new MappingContext())
-        entity.eventId = idGenerator.nextId(orderId)
+        entity.eventId = idGenerator.nextId(OrderEventId, orderId)
         entity.orderId = orderId
         orderItemFulfillmentEventDao.create(entity)
         return modelMapper.toFulfillmentEventModel(entity, new MappingContext())
     }
 
     @Override
-    void saveBillingEvent(OrderId orderId, BalanceId balanceId, BillingAction action, EventStatus status) {
-        def entity = new OrderBillingEventEntity()
-        entity.eventId = idGenerator.nextId(orderId.value)
-        entity.orderId = orderId.value
-        entity.balanceId = balanceId.value
-        entity.action = action
-        entity.status = status
+    BillingEvent createBillingEvent(Long orderId, BillingEvent event) {
+        def entity = modelMapper.toOrderBillingEventEntity(event, new MappingContext())
+        entity.eventId = idGenerator.nextId(OrderEventId, orderId)
+        entity.orderId = orderId
         orderBillingEventDao.create(entity)
+        return modelMapper.toOrderBillingtEventModel(entity, new MappingContext())
     }
 
     @Override
@@ -187,21 +179,21 @@ class OrderRepositoryImpl implements OrderRepository {
         // Update OrderItem
         order.orderItems?.each { OrderItem item ->
             def itemEntity = modelMapper.toOrderItemEntity(item, context)
-            itemEntity.orderItemId = idGenerator.nextId(orderEntity.orderId)
+            itemEntity.orderItemId = idGenerator.nextId(OrderItemId, orderEntity.orderId)
             orderItemDao.update(itemEntity)
         }
 
         // Update Discount
         order.discounts?.each { Discount discount ->
             def discountEntity = modelMapper.toDiscountEntity(discount, context)
-            discountEntity.discountInfoId = idGenerator.nextId(orderEntity.orderId)
+            discountEntity.discountInfoId = idGenerator.nextId(DiscountId, orderEntity.orderId)
             discountDao.update(discountEntity)
         }
 
         // Save order event
         orderEvent.order = order.id
         def orderEventEntity = modelMapper.toOrderEventEntity(orderEvent, context)
-        orderEventEntity.eventId = idGenerator.nextId(orderEntity.orderId)
+        orderEventEntity.eventId = idGenerator.nextId(OrderEventId, orderEntity.orderId)
         orderEventDao.create(orderEventEntity)
 
         // Save Balance Event
@@ -216,4 +208,6 @@ class OrderRepositoryImpl implements OrderRepository {
 
         return order
     }
+
+
 }

@@ -41,6 +41,12 @@ class HackClientRepo implements ClientRepository {
         client.setAllowedResponseTypes(responseTypes)
 
         client.idTokenIssuer = 'www.junbo.com'
+
+        Set<String> logoutRedirectUris = []
+        logoutRedirectUris.add('http://localhost')
+        client.allowedLogoutRedirectUris = logoutRedirectUris
+
+        client.defaultLogoutRedirectUri = 'http://localhost'
     }
 
     @Override

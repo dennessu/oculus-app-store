@@ -32,6 +32,12 @@
         <constructor-arg name="transcoder">
             <bean class="com.junbo.common.json.JsonMessageTranscoder"/>
         </constructor-arg>
+        <constructor-arg name="pathParamTranscoder">
+            <bean class="com.junbo.common.json.IdPathParamTranscoder" />
+        </constructor-arg>
+        <constructor-arg name="queryParamTranscoder">
+            <bean class="com.junbo.common.json.QueryParamTranscoderImpl" />
+        </constructor-arg>
     </bean>
 
     <bean id="offerClient" class="com.junbo.catalog.spec.resource.proxy.OfferResourceClientProxy">
@@ -40,6 +46,12 @@
         <constructor-arg name="transcoder">
             <bean class="com.junbo.common.json.JsonMessageTranscoder"/>
         </constructor-arg>
+        <constructor-arg name="pathParamTranscoder">
+            <bean class="com.junbo.common.json.IdPathParamTranscoder" />
+        </constructor-arg>
+        <constructor-arg name="queryParamTranscoder">
+            <bean class="com.junbo.common.json.QueryParamTranscoderImpl" />
+        </constructor-arg>
     </bean>
 
     <bean id="shippingAddressClient" class="com.junbo.billing.spec.resource.proxy.ShippingAddressResourceClientProxy">
@@ -47,6 +59,12 @@
         <constructor-arg name="target" value="http://10.0.1.130:8080/rest"/>
         <constructor-arg name="transcoder">
             <bean class="com.junbo.common.json.JsonMessageTranscoder"/>
+        </constructor-arg>
+        <constructor-arg name="pathParamTranscoder">
+            <bean class="com.junbo.common.json.IdPathParamTranscoder" />
+        </constructor-arg>
+        <constructor-arg name="queryParamTranscoder">
+            <bean class="com.junbo.common.json.QueryParamTranscoderImpl" />
         </constructor-arg>
     </bean>
 </beans>

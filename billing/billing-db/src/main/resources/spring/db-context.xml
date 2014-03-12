@@ -8,18 +8,23 @@
     <context:component-scan base-package="com.junbo.oom.core.builtin"/>
     <context:component-scan base-package="com.junbo.billing.db"/>
 
+    <context:annotation-config />
+    <tx:annotation-driven />
+
     <!--Data source has the database information -->
-    <bean id="billingDataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
-        <property name="driverClass" value="${billing.db.driverClassName}"/>
-        <property name="jdbcUrl" value="${billing.db.url}"/>
-        <property name="username" value="${billing.db.username}"/>
-        <property name="password" value="${billing.db.password}"/>
-        <property name="maxConnectionsPerPartition" value="${billing.db.maxConnectionsPerPartition}"/>
-        <property name="minConnectionsPerPartition" value="${billing.db.minConnectionsPerPartition}"/>
-        <property name="partitionCount" value="${billing.db.partitionCount}"/>
-        <property name="acquireIncrement" value="${billing.db.acquireIncrement}"/>
-        <property name="statementsCacheSize" value="${billing.db.statementsCacheSize}"/>
-        <property name="releaseHelperThreads" value="${billing.db.releaseHelperThreads}"/>
+    <bean id="billingDataSource" class="bitronix.tm.resource.jdbc.PoolingDataSource"
+          init-method="init" destroy-method="close">
+        <property name="uniqueName" value="jdbc/id_ds1"/>
+        <property name="className" value="org.postgresql.xa.PGXADataSource"/>
+        <property name="minPoolSize" value="${billing.db.minConnectionsPerPartition}"/>
+        <property name="maxPoolSize" value="${billing.db.maxConnectionsPerPartition}"/>
+        <property name="driverProperties">
+            <props>
+                <prop key="url">${billing.db.url}</prop>
+                <prop key="user">${billing.db.username}</prop>
+                <prop key="password">${billing.db.password}</prop>
+            </props>
+        </property>
     </bean>
 
     <!-- SessonFactory for Hibernate -->
@@ -27,6 +32,7 @@
           class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
         <property name="dataSource" ref="billingDataSource"/>
         <property name="packagesToScan" value="com.junbo.billing.db.*" />
+        <property name="jtaTransactionManager" ref="transactionManager"/>
         <property name="hibernateProperties">
             <props>
                 <prop key="hibernate.dialect">${billing.hibernate.dialect}</prop>
@@ -36,12 +42,6 @@
                 <prop key="hibernate.show_sql">${billing.hibernate.show_sql}</prop>
             </props>
         </property>
-    </bean>
-
-    <!-- Transaction Manager -->
-    <bean id="transactionManager"
-                class="org.springframework.orm.hibernate4.HibernateTransactionManager">
-        <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
     <tx:annotation-driven transaction-manager="transactionManager" />
