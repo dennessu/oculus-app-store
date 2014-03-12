@@ -8,7 +8,7 @@ package com.junbo.common.jackson;
 import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.junbo.common.jackson.annotation.ResourceType;
+import com.junbo.common.jackson.annotation.ResourcePath;
 import com.junbo.common.jackson.deserializer.ResourceIdDeserializer;
 import com.junbo.common.jackson.serializer.CascadeResourceIdSerializer;
 
@@ -24,6 +24,6 @@ import java.lang.annotation.RetentionPolicy;
 @JacksonAnnotationsInside
 @JsonSerialize(using = CascadeResourceIdSerializer.class, include = JsonSerialize.Inclusion.NON_NULL)
 @JsonDeserialize(using = ResourceIdDeserializer.class)
-@ResourceType("/users/%s/payment-instruments/%s")
+@ResourcePath("/users/%s/payment-instruments/%s")
 public @interface PaymentInstrumentId {
 }
