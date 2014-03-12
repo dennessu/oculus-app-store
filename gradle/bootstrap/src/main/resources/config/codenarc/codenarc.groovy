@@ -351,7 +351,7 @@ ruleset {
         UnnecessaryNullCheckBeforeInstanceOf
         // UnnecessaryObjectReferences
         // UnnecessaryOverridingMethod
-        UnnecessaryPackageReference
+        // UnnecessaryPackageReference
         UnnecessaryParenthesesForMethodCallWithClosure
         UnnecessaryPublicModifier
 
