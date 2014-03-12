@@ -6,10 +6,11 @@
 
 package com.junbo.catalog.spec.resource;
 
-import com.junbo.catalog.spec.model.common.EntitiesGetOptions;
 import com.junbo.catalog.spec.model.common.EntityGetOptions;
 import com.junbo.catalog.spec.model.common.ResultList;
 import com.junbo.catalog.spec.model.offer.Offer;
+import com.junbo.catalog.spec.model.offer.OffersGetOptions;
+import com.junbo.common.id.OfferId;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 
@@ -26,11 +27,11 @@ import javax.ws.rs.core.MediaType;
 public interface OfferResource {
     @GET
     @Path("/")
-    Promise<ResultList<Offer>> getOffers(@BeanParam EntitiesGetOptions options);
+    Promise<ResultList<Offer>> getOffers(@BeanParam OffersGetOptions options);
 
     @GET
     @Path("/{offerId}")
-    Promise<Offer> getOffer(@PathParam("offerId") Long offerId, @BeanParam EntityGetOptions options);
+    Promise<Offer> getOffer(@PathParam("offerId") OfferId offerId, @BeanParam EntityGetOptions options);
 
     /**
      * Create a draft offer, the created offer is not purchasable until it is released.
@@ -44,5 +45,5 @@ public interface OfferResource {
 
     @PUT
     @Path("/{offerId}")
-    Promise<Offer> update(@PathParam("offerId") Long offerId, Offer offer);
+    Promise<Offer> update(@PathParam("offerId") OfferId offerId, Offer offer);
 }

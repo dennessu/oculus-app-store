@@ -14,5 +14,5 @@ import java.util.Collection;
 public interface ResourceCollectionAware {
     void injectCollectionType(Class<? extends Collection> collectionType);
 
-    void injectComponentType(Class<?> componentType);
+    void injectIdClassType(Class<?> idClassType);
 }

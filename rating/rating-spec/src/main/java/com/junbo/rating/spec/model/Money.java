@@ -6,6 +6,8 @@
 
 package com.junbo.rating.spec.model;
 
+import com.junbo.rating.spec.error.AppErrors;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
@@ -49,7 +51,7 @@ public class Money {
 
     public Money add(Money other) {
         if (!this.currency.equalsIgnoreCase(other.getCurrency())){
-            //throw Rating Exception
+            AppErrors.INSTANCE.currencyNotConsistent(this.currency, other.getCurrency());
         }
 
         return new Money(this.value.add(other.getValue()), this.currency);
@@ -57,7 +59,7 @@ public class Money {
 
     public Money subtract(Money other) {
         if (!this.currency.equalsIgnoreCase(other.getCurrency())){
-            //throw Rating Exception
+            AppErrors.INSTANCE.currencyNotConsistent(this.currency, other.getCurrency());
         }
 
         return new Money(this.value.subtract(other.getValue()), this.currency);
@@ -69,7 +71,7 @@ public class Money {
 
     public boolean greaterThan(Money other) {
         if (!this.currency.equalsIgnoreCase(other.getCurrency())){
-            //throw Rating Exception
+            AppErrors.INSTANCE.currencyNotConsistent(this.currency, other.getCurrency());
         }
 
         return this.value.compareTo(other.getValue()) > 0;

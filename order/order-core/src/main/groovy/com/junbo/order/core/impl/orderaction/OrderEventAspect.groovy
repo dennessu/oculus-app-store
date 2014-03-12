@@ -51,11 +51,13 @@ class OrderEventAspect {
             return
         }
 
+        def flowType = ActionUtils.getFlowType(actionContext)
+
         def orderEvent = new OrderEvent()
         orderEvent.order = orderId
         orderEvent.action = context.orderActionType.toString()
         orderEvent.status = EventStatus.OPEN.toString()
-        repo.createOrderEvent(orderEvent, context.flowType.toString(), context.trackingUuid)
+        repo.createOrderEvent(orderEvent, flowType.toString(), context.trackingUuid)
     }
 
     @Transactional
@@ -80,6 +82,8 @@ class OrderEventAspect {
             return
         }
 
+        def flowType = ActionUtils.getFlowType(actionContext)
+
         result.syncThen { ActionResult ar ->
             def orderActionResult = ActionUtils.getOrderActionResult(actionContext)
             if (orderActionResult == null) {
@@ -91,7 +95,7 @@ class OrderEventAspect {
                 orderEvent.order = orderId
                 orderEvent.action = context.orderActionType.toString()
                 orderEvent.status = eventStatus.toString()
-                repo.createOrderEvent(orderEvent, context.flowType.toString(), context.trackingUuid)
+                repo.createOrderEvent(orderEvent, flowType.toString(), context.trackingUuid)
             }
             return Promise.pure(ar)
         }

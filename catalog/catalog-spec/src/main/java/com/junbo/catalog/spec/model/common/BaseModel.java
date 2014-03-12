@@ -16,21 +16,23 @@ import java.util.Date;
  * Base model.
  */
 public abstract class BaseModel {
-    @Null
     private Long timestamp;
     @JsonIgnore
     private Integer revision;
     @NotNull
     private String name;
-    @Null
     private String status;
     @Null
+    @JsonIgnore
     private Date createdTime;
     @Null
+    @JsonIgnore
     private String createdBy;
     @Null
+    @JsonIgnore
     private Date updatedTime;
     @Null
+    @JsonIgnore
     private String updatedBy;
 
     public abstract Long getId();

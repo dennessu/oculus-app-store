@@ -27,7 +27,7 @@ public class Oculus40Id {
     static
     {
         // shuffle mapping is:
-        // A: 14 10 12 18 0  1  15 13 8  2  17 11 16 21 7  9  3  19 4  25 6  20 23 24 22 5
+        // A: 14 10 12 18 0  1  15 13 8  2  17 11 16 21 7  9  3  19 4  5 6  20 23 24 22 25
         // B: 0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25
 
         // oculus 40bits Id hash map, 26 bits mapping
@@ -51,13 +51,13 @@ public class Oculus40Id {
         oculus40ShuffleMap.put(3, 16);
         oculus40ShuffleMap.put(19, 17);
         oculus40ShuffleMap.put(4, 18);
-        oculus40ShuffleMap.put(25, 19);
+        oculus40ShuffleMap.put(5, 19);
         oculus40ShuffleMap.put(6, 20);
         oculus40ShuffleMap.put(20, 21);
         oculus40ShuffleMap.put(23, 22);
         oculus40ShuffleMap.put(24, 23);
         oculus40ShuffleMap.put(22, 24);
-        oculus40ShuffleMap.put(5, 25);
+        oculus40ShuffleMap.put(25, 25);
     }
 
     public static Long shuffle(Long id) {

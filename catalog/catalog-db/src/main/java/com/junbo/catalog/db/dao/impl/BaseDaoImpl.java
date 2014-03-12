@@ -12,6 +12,7 @@ import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.db.dao.BaseDao;
 import com.junbo.catalog.db.entity.BaseEntity;
 import com.junbo.catalog.spec.model.common.Status;
+import com.junbo.sharding.IdGenerator;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -31,14 +32,14 @@ public abstract class BaseDaoImpl<T extends BaseEntity> implements BaseDao<T> {
 
     private Class<T> entityType;
 
+    private IdGenerator idGenerator;
+
     protected Session currentSession() {
         return sessionFactory.getCurrentSession();
     }
 
     public Long create(T entity) {
-        // remove it later
-        entity.setId(genSimpleId());
-
+        entity.setId(idGenerator.nextId());
         entity.setTimestamp(Utils.currentTimestamp());
         entity.setCreatedTime(Utils.now());
         entity.setCreatedBy(Constants.SYSTEM_INTERNAL);
@@ -108,19 +109,7 @@ public abstract class BaseDaoImpl<T extends BaseEntity> implements BaseDao<T> {
         this.entityType = entityType;
     }
 
-    /**
-     * Generate simple id.
-     * @deprecated deprecated.
-     * @return simple id
-     */
-    @Deprecated
-    private long genSimpleId() {
-        try {
-            Thread.sleep(10);
-        } catch (InterruptedException e) {
-            //ignore
-        }
-
-        return System.currentTimeMillis();
+    public void setIdGenerator(IdGenerator idGenerator) {
+        this.idGenerator = idGenerator;
     }
 }
