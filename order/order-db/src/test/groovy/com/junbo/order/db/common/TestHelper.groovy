@@ -46,7 +46,7 @@ class TestHelper {
     }
 
     static long generateLong() {
-        return System.currentTimeMillis()
+        return nextId++
     }
 
     static <T> T randEnum(Class<T> enumType) {
@@ -76,8 +76,8 @@ class TestHelper {
         entity.setOrderItemId(rand.nextLong())
         entity.setOrderId(rand.nextLong())
         entity.setOrderItemType(ItemType.DIGITAL)
-        entity.setProductItemId('123')
-        entity.setProductItemVersion('TestProductItemVersion')
+        entity.setProductItemId(generateLong().toString())
+        entity.setProductItemVersion('TestProductItemVersion' + generateLong())
         entity.setUnitPrice(BigDecimal.valueOf(DEFAULT_PRICE))
         entity.setQuantity(Integer.valueOf(DEFAULT_QUANTITY))
         entity.setTotalPrice(BigDecimal.valueOf(DEFAULT_PRICE))
@@ -110,6 +110,8 @@ class TestHelper {
         orderEventEntity.setEventId(generateLong())
         orderEventEntity.setActionId(OrderActionType.FULFILL)
         orderEventEntity.setStatusId(EventStatus.COMPLETED)
+        orderEventEntity.trackingUuid = UUID.randomUUID()
+        orderEventEntity.flowName = UUID.randomUUID().toString()
         return orderEventEntity
     }
 
