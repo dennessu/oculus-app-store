@@ -32,7 +32,7 @@ public class HandlerRegisterTest extends BaseTest{
         RatableItem item = new RatableItem();
         item.setOfferId(itemId);
         context.setCurrentItem(item);
-        boolean result = HandlerRegister.handle(criterion, context);
+        boolean result = HandlerRegister.isSatisfied(criterion, context);
 
         Assert.assertEquals(result, Boolean.TRUE.booleanValue());
     }

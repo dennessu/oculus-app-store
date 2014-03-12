@@ -5,10 +5,11 @@
  */
 package com.junbo.catalog.spec.resource;
 
-import com.junbo.catalog.spec.model.common.EntitiesGetOptions;
 import com.junbo.catalog.spec.model.common.EntityGetOptions;
 import com.junbo.catalog.spec.model.common.ResultList;
 import com.junbo.catalog.spec.model.item.Item;
+import com.junbo.catalog.spec.model.item.ItemsGetOptions;
+import com.junbo.common.id.ItemId;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 
@@ -25,11 +26,11 @@ import javax.ws.rs.core.MediaType;
 public interface ItemResource {
     @GET
     @Path("/")
-    Promise<ResultList<Item>> getItems(@BeanParam EntitiesGetOptions options);
+    Promise<ResultList<Item>> getItems(@BeanParam ItemsGetOptions options);
 
     @GET
     @Path("/{itemId}")
-    Promise<Item> getItem(@PathParam("itemId") Long itemId, @BeanParam EntityGetOptions options);
+    Promise<Item> getItem(@PathParam("itemId") ItemId itemId, @BeanParam EntityGetOptions options);
 
     /**
      * Create a draft item.
@@ -43,6 +44,6 @@ public interface ItemResource {
 
     @PUT
     @Path("/{itemId}")
-    Promise<Item> update(@PathParam("itemId") Long itemId, Item item);
+    Promise<Item> update(@PathParam("itemId") ItemId itemId, Item item);
 }
 

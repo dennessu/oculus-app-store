@@ -121,7 +121,7 @@ public abstract class RatingServiceSupport implements RatingService{
 
     protected boolean validatePromotion(Promotion promotion, RatingContext context) {
         for (Criterion criterion : promotion.getCriteria()) {
-            if (!HandlerRegister.handle(criterion, context)) {
+            if (!HandlerRegister.isSatisfied(criterion, context)) {
                 return false;
             }
         }
