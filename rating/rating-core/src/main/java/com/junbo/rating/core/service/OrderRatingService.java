@@ -168,7 +168,8 @@ public class OrderRatingService extends RatingServiceSupport{
 
         for (LinkedEntry entry : ratingOffer.getItems()) {
             Item item = catalogGateway.getItem(entry.getEntryId());
-            if ("Physical".equalsIgnoreCase(item.getType())) {
+            String itemType = catalogGateway.getAttribute(item.getType()).getName();
+            if ("Physical".equalsIgnoreCase(itemType)) {
                 result += entry.getQuantity();
             }
         }
