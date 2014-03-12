@@ -43,16 +43,11 @@ public class ShardDataSourceFactoryImpl implements ShardDataSourceFactory, Appli
             // reset btmDataSource unique name and url
             PoolingDataSource btmDataSource = (PoolingDataSource)dataSource;
             btmDataSource.setUniqueName(String.format("jdbc/%s_ds_%s", key.getDatabaseName(), key.getShardId()));
-            //btmDataSource.setClassName("org.postgresql.xa.PGXADataSource");
-            //btmDataSource.setMinPoolSize(3);
-            //btmDataSource.setMaxPoolSize(15);
 
             DataSourceConfig config = mapper.getDataSourceConfigByShardId(key.getShardId());
             String url = config.getJdbcUrlTemplate().replaceFirst("%DB_NAME%", key.getDatabaseName());
             btmDataSource.getDriverProperties().setProperty("url", url);
-            //btmDataSource.getDriverProperties().setProperty("user", "postgres");
-            //btmDataSource.getDriverProperties().setProperty("password", "#Bugsfor$");
-
+            btmDataSource.getDriverProperties().setProperty("user", "shard_"+key.getShardId());
             btmDataSource.init();
 
             return btmDataSource;
