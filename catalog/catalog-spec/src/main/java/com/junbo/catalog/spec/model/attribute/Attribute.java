@@ -6,10 +6,18 @@
 
 package com.junbo.catalog.spec.model.attribute;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.junbo.common.jackson.annotation.AttributeId;
+
+import javax.validation.constraints.Null;
+
 /**
  * Attribute.
  */
 public class Attribute {
+    @Null
+    @AttributeId
+    @JsonProperty("self")
     private Long id;
     private String name;
     private String type;

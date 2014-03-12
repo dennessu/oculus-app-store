@@ -28,7 +28,7 @@ public class OrderEventEntity extends CommonEventEntity {
     private OrderActionType actionId;
     private EventStatus statusId;
     private UUID trackingUuid;
-    private UUID flowName;
+    private String flowName;
 
     @Column(name = "ORDER_ID")
     @NotNull (message = ValidationMessages.MISSING_VALUE)
@@ -73,12 +73,11 @@ public class OrderEventEntity extends CommonEventEntity {
     }
 
     @Column (name = "FLOW_NAME")
-    @Type(type = "pg-uuid")
-    public UUID getFlowName() {
+    public String getFlowName() {
         return flowName;
     }
 
-    public void setFlowName(UUID flowName) {
+    public void setFlowName(String flowName) {
         this.flowName = flowName;
     }
 }

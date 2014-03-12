@@ -15,22 +15,10 @@ import java.util.List;
  * Entity list get options.
  */
 public class EntitiesGetOptions {
-    // paging params
-    @QueryParam("start")
     private Integer start;
-    @QueryParam("size")
     private Integer size;
-
-    // if entityIds is specified, paging params will be ignored.
-    @QueryParam("id")
     private List<Long> entityIds;
-
-    // this parameter only applies for 'Released' entities
-    @QueryParam("timestamp")
     private Long timestamp;
-
-    // defaults to get 'Released' entities
-    @QueryParam("status")
     private String status;
 
     public EntitiesGetOptions ensurePagingValid() {
@@ -41,7 +29,8 @@ public class EntitiesGetOptions {
 
         return this;
     }
-
+    // paging params
+    @QueryParam("start")
     public Integer getStart() {
         return start;
     }
@@ -50,6 +39,7 @@ public class EntitiesGetOptions {
         this.start = start;
     }
 
+    @QueryParam("size")
     public Integer getSize() {
         return size;
     }
@@ -58,6 +48,8 @@ public class EntitiesGetOptions {
         this.size = size;
     }
 
+    // if entityIds is specified, paging params will be ignored.
+    @QueryParam("id")
     public List<Long> getEntityIds() {
         return entityIds;
     }
@@ -66,6 +58,8 @@ public class EntitiesGetOptions {
         this.entityIds = entityIds;
     }
 
+    // this parameter only applies for 'Released' entities
+    @QueryParam("timestamp")
     public Long getTimestamp() {
         return timestamp;
     }
@@ -74,6 +68,8 @@ public class EntitiesGetOptions {
         this.timestamp = timestamp;
     }
 
+    // defaults to get 'Released' entities
+    @QueryParam("status")
     public String getStatus() {
         return status;
     }

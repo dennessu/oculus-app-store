@@ -60,4 +60,16 @@ public class OrderItemDaoTest extends BaseTest {
         Assert.assertEquals(resultBefore.size() + 1, resultAfter.size(), "Result size should increase.");
     }
 
+    @Test
+    public void testMarkDelete() {
+        OrderItemEntity orderItemEntity = TestHelper.generateOrderItem();
+        Long orderId = orderItemEntity.getOrderId();
+        List<OrderItemEntity> resultBefore = orderItemDao.readByOrderId(orderId);
+        orderItemDao.create(orderItemEntity);
+        orderItemDao.flush();
+        orderItemDao.markDelete(orderItemEntity.getOrderItemId());
+        List<OrderItemEntity> resultAfter = orderItemDao.readByOrderId(orderId);
+
+        Assert.assertEquals(resultBefore.size(), resultAfter.size(), "Result size should not increase.");
+    }
 }

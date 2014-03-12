@@ -24,7 +24,7 @@ import javax.ws.rs.core.MediaType;
 public interface AttributeResource {
     @GET
     @Path("/{attributeId}")
-    Promise<Attribute> getAttribute(@PathParam("offerId") Long attributeId);
+    Promise<Attribute> getAttribute(@PathParam("attributeId") Long attributeId);
 
     @GET
     @Path("/")

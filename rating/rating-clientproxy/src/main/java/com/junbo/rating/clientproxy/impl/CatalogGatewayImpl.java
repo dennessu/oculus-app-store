@@ -21,6 +21,7 @@ import com.junbo.common.id.ItemId;
 import com.junbo.common.id.OfferId;
 import com.junbo.rating.clientproxy.CatalogGateway;
 import com.junbo.rating.common.util.Constants;
+import com.junbo.rating.spec.error.AppErrors;
 import com.junbo.rating.spec.fusion.EntryType;
 import com.junbo.rating.spec.fusion.LinkedEntry;
 import com.junbo.rating.spec.fusion.Price;
@@ -48,8 +49,7 @@ public class CatalogGatewayImpl implements CatalogGateway{
         try {
             return itemResource.getItem(new ItemId(itemId), EntityGetOptions.getDefault()).wrapped().get();
         } catch (Exception e) {
-            //TODO: throw pre-defined exception
-            throw new RuntimeException(e);
+            throw AppErrors.INSTANCE.catalogGatewayError().exception();
         }
     }
 
@@ -59,8 +59,7 @@ public class CatalogGatewayImpl implements CatalogGateway{
         try {
             offer = offerResource.getOffer(new OfferId(offerId), EntityGetOptions.getDefault()).wrapped().get();
         } catch (Exception e) {
-            //TODO: throw pre-defined exception
-            throw new RuntimeException(e);
+            throw AppErrors.INSTANCE.catalogGatewayError().exception();
         }
 
         RatingOffer result = new RatingOffer();
@@ -107,8 +106,7 @@ public class CatalogGatewayImpl implements CatalogGateway{
             try {
                 promotions.addAll(promotionResource.getPromotions(options).wrapped().get().getResults());
             } catch (Exception e) {
-                //TODO: throw pre-defined exception
-                throw new RuntimeException(e);
+                throw AppErrors.INSTANCE.catalogGatewayError().exception();
             }
             results.addAll(promotions);
             options.setStart(options.getSize() + options.getSize());
