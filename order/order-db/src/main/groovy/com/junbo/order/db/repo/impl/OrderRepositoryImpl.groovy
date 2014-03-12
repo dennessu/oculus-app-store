@@ -73,7 +73,7 @@ class OrderRepositoryImpl implements OrderRepository {
 
         // Save OrderItem
         order.orderItems?.each { OrderItem item ->
-            item.id = new OrderItemId(idGenerator.nextId(OrderItemId, orderEntity.orderId))
+            item.orderItemId = new OrderItemId(idGenerator.nextId(OrderItemId, orderEntity.orderId))
             item.orderId = orderId
             def itemEntity = modelMapper.toOrderItemEntity(item, context)
             orderItemDao.create(itemEntity)
@@ -132,7 +132,7 @@ class OrderRepositoryImpl implements OrderRepository {
         entity.eventId = idGenerator.nextId(OrderEventId, orderId)
         entity.orderId = orderId
         orderBillingEventDao.create(entity)
-        return modelMapper.toOrderBillingtEventModel(entity, new MappingContext())
+        return modelMapper.toOrderBillingEventModel(entity, new MappingContext())
     }
 
     @Override

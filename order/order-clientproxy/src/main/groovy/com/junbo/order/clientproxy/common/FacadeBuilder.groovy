@@ -31,9 +31,9 @@ class FacadeBuilder {
 
     private static FulfilmentItem buildFulfilmentItem(OrderItem orderItem) {
         FulfilmentItem item = new FulfilmentItem()
-        item.orderItemId = orderItem.id.value
-        item.offerId = orderItem.offer
-        item.timestamp = Integer.parseInt(orderItem.offerRevision)
+        item.orderItemId = orderItem.orderItemId.value
+        item.offerId = orderItem.offer.value
+        item.timestamp = orderItem.honoredTime.time
         item.quantity = orderItem.quantity
         return item
     }
@@ -55,7 +55,7 @@ class FacadeBuilder {
         List<OrderRatingItem> ratingItems = []
         order.orderItems?.each { OrderItem item ->
             OrderRatingItem ratingItem = new OrderRatingItem()
-            ratingItem.offerId = item.offer
+            ratingItem.offerId = item.offer.value
             ratingItem.quantity = item.quantity
             ratingItems.add(ratingItem)
         }
