@@ -22,7 +22,7 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "ORDER_PAYMENT_INFO")
-public class OrderPaymentInfoEntity extends CommonDbEntityWithDate {
+public class OrderPaymentInfoEntity extends CommonDbEntityDeletable {
     private Long orderPaymentId;
     private Long orderId;
     private String paymentInstrumentId;

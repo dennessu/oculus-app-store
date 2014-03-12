@@ -25,7 +25,7 @@ import java.math.BigDecimal;
 
 @Entity
 @Table(name = "ORDER_ITEM")
-public class OrderItemEntity extends CommonDbEntityWithDate{
+public class OrderItemEntity extends CommonDbEntityDeletable {
 
     private Long orderItemId;
     private Long orderId;
