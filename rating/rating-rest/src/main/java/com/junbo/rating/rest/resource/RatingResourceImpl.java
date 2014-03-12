@@ -15,17 +15,9 @@ import com.junbo.rating.spec.model.request.OrderRatingRequest;
 import com.junbo.rating.spec.resource.RatingResource;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-
 /**
  * Created by lizwu on 2/18/14.
  */
-@Path("rating")
-@Produces({MediaType.APPLICATION_JSON})
-@Consumes({MediaType.APPLICATION_JSON})
 public class RatingResourceImpl implements RatingResource{
     @Autowired
     private OfferRatingService offerRatingService;

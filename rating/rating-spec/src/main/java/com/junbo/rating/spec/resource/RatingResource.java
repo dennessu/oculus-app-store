@@ -6,6 +6,7 @@
 
 package com.junbo.rating.spec.resource;
 
+import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -27,9 +28,9 @@ import com.junbo.rating.spec.model.request.OfferRatingRequest;
 public interface RatingResource {
     @POST
     @Path("/offers")
-    Promise<OfferRatingRequest> offersRating(OfferRatingRequest request);
+    Promise<OfferRatingRequest> offersRating(@Valid OfferRatingRequest request);
 
     @POST
     @Path("/order")
-    Promise<OrderRatingRequest> orderRating(OrderRatingRequest request);
+    Promise<OrderRatingRequest> orderRating(@Valid OrderRatingRequest request);
 }
