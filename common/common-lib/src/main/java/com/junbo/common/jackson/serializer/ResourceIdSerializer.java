@@ -54,7 +54,7 @@ public class ResourceIdSerializer extends JsonSerializer<Object> implements Reso
             Oculus48Id.validateRawValue((Long) value);
             return Oculus48Id.format(Oculus48Id.shuffle((Long) value));
         } else {
-            return value.toString();
+            return value == null ? "" : value.toString();
         }
     }
 
