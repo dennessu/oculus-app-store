@@ -33,5 +33,5 @@ public interface OrderRepository {
 
     List<PaymentInstrumentId> getPaymentInstrumentIds(Long orderId);
 
-    Order updateOrder(Order order, OrderEvent orderEvent);
+    Order updateOrder(Order order);
 }

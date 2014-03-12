@@ -6,24 +6,27 @@
 
 package com.junbo.ewallet.db.dao.hibernate;
 
-import com.junbo.common.id.WalletId;
 import com.junbo.ewallet.db.entity.hibernate.Entity;
-import com.junbo.sharding.IdGeneratorFacade;
+import com.junbo.sharding.IdGenerator;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.Date;
 
 /**
  * Base dao for Entity.
+ *
  * @param <T> entity type.
  */
 public class BaseDao<T extends Entity> {
     @Autowired
+    @Qualifier("ewalletSessionFactory")
     private SessionFactory sessionFactory;
     @Autowired
-    private IdGeneratorFacade idGenerator;
+    @Qualifier("idGenerator")
+    private IdGenerator idGenerator;
 
     private Class<T> entityType;
 
@@ -46,6 +49,9 @@ public class BaseDao<T extends Entity> {
     }
 
     public T update(T t) {
+        T existed = (T) currentSession().load(entityType, t.getId());
+        t.setCreatedTime(existed.getCreatedTime());
+        t.setCreatedBy(existed.getCreatedBy());
         Date now = new Date();
         t.setModifiedBy("DEFAULT"); //TODO
         t.setModifiedTime(now);
@@ -53,7 +59,7 @@ public class BaseDao<T extends Entity> {
     }
 
     protected Long generateId(Long shardId) {
-        return idGenerator.nextId(WalletId.class, shardId);
+        return idGenerator.nextId(shardId);
     }
 
     public Class<T> getEntityType() {

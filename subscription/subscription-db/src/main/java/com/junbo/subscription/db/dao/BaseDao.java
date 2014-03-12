@@ -1,16 +1,25 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
+ */
 package com.junbo.subscription.db.dao;
 
-import com.junbo.common.id.SubscriptionId;
-import com.junbo.sharding.IdGeneratorFacade;
+import com.junbo.sharding.IdGenerator;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+
+/**
+ * base dao.
+ * @param <T> the entity for this dao
+ */
 public class BaseDao<T extends com.junbo.subscription.db.entity.Entity> {
     @Autowired
     private SessionFactory sessionFactory;
     @Autowired
-    private IdGeneratorFacade idGenerator;
+    private IdGenerator idGenerator;
 
     private Class<T> classType;
 
@@ -45,6 +54,6 @@ public class BaseDao<T extends com.junbo.subscription.db.entity.Entity> {
     }
 
     protected Long generateId(){
-        return idGenerator.nextId(SubscriptionId.class);
+        return idGenerator.nextId();
     }
 }

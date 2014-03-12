@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Promotion draft DAO implementation.
  */
-public class PromotionDraftDaoImpl extends BaseDaoImpl<PromotionDraftEntity> implements PromotionDraftDao {
+public class PromotionDraftDaoImpl extends VersionedDaoImpl<PromotionDraftEntity> implements PromotionDraftDao {
     @Override
     public List<PromotionDraftEntity> getEffectivePromotions(final int start, final int size) {
         return findAllBy(new Action<Criteria>() {

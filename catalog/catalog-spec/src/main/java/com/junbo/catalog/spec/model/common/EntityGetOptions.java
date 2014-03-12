@@ -4,12 +4,6 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-/*
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
- *
- * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
- */
-
 package com.junbo.catalog.spec.model.common;
 
 import javax.ws.rs.QueryParam;
@@ -18,7 +12,10 @@ import javax.ws.rs.QueryParam;
  * Entity get options.
  */
 public class EntityGetOptions {
+    @QueryParam("timestamp")
     private Long timestamp;
+
+    @QueryParam("status")
     private String status;
 
     public static EntityGetOptions getDefault() {
@@ -49,7 +46,6 @@ public class EntityGetOptions {
         return options;
     }
 
-    @QueryParam("status")
     public String getStatus() {
         return status;
     }
@@ -58,7 +54,6 @@ public class EntityGetOptions {
         this.status = status;
     }
 
-    @QueryParam("timestamp")
     public Long getTimestamp() {
         return timestamp;
     }

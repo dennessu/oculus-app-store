@@ -1,3 +1,8 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
+ */
 package com.junbo.subscription.spec.model;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -7,8 +12,12 @@ import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 
 import java.util.Date;
 
+
+/**
+ * subscription.
+ */
 @JsonPropertyOrder(value = {"subscriptionId", "userId", "offerId", "status",
-        "subStartDate", "subEndDate", "paymentMethodId", "partnerId", "Tag",
+        "subStartDate", "subEndDate", "paymentMethodId", "partnerId",
         "createdTime", "createdBy", "modifiedTime", "modifiedBy"})
 public class Subscription extends Model {
 
@@ -33,8 +42,6 @@ public class Subscription extends Model {
     private Long paymentMethodId;
 
     private String partnerId;
-
-    private String Tag;
 
     public Long getSubscriptionId() {
         return subscriptionId;

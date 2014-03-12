@@ -12,9 +12,7 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class RememberMeTokenEntity extends BaseEntity {
-    String tokenValue
     Long userId
     String salt
-    Date expiredBy
     Date lastAuthDate
 }

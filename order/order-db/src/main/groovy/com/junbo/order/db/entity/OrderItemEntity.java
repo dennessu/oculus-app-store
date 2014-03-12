@@ -31,7 +31,6 @@ public class OrderItemEntity extends CommonDbEntityDeletable {
     private Long orderId;
     private ItemType orderItemType;
     private String productItemId;
-    private String productItemVersion;
     private BigDecimal unitPrice;
     private Integer quantity;
     private BigDecimal totalPrice;
@@ -78,17 +77,6 @@ public class OrderItemEntity extends CommonDbEntityDeletable {
 
     public void setProductItemId(String productItemId) {
         this.productItemId = productItemId;
-    }
-
-    @Column(name = "PRODUCT_ITEM_VERSION")
-    @NotEmpty(message = ValidationMessages.MISSING_VALUE)
-    @Length(max=128, message=ValidationMessages.TOO_LONG)
-    public String getProductItemVersion() {
-        return productItemVersion;
-    }
-
-    public void setProductItemVersion(String productItemVersion) {
-        this.productItemVersion = productItemVersion;
     }
 
     @Column(name = "UNIT_PRICE")

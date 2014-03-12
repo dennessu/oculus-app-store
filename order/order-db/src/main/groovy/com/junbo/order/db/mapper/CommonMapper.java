@@ -375,4 +375,19 @@ public class CommonMapper {
         return shippingAddressId.getValue();
     }
 
+    public OfferId fromStringToOfferId(String offerId) {
+        if (offerId == null) {
+            return null;
+        }
+
+        return new OfferId(Long.parseLong(offerId));
+    }
+
+    public String fromOfferIdToString(OfferId offerId) {
+        if (offerId == null) {
+            return null;
+        }
+
+        return offerId.getValue().toString();
+    }
 }

@@ -6,26 +6,24 @@
        ">
     <import resource="transaction.xml"/>
 
-    <bean id="btmDataSourceTemplate" class="bitronix.tm.resource.jdbc.PoolingDataSource" scope="prototype" lazy-init="true" abstract="true">
+    <bean id="btmDataSourceTemplate" class="bitronix.tm.resource.jdbc.PoolingDataSource" scope="prototype" lazy-init="true">
         <property name="className" value="${sharding.dataSource.driverClassName}"/>
         <property name="minPoolSize" value="${sharding.dataSource.db.minConnections}"/>
         <property name="maxPoolSize" value="${sharding.dataSource.db.maxConnections}"/>
+        <property name="ShareTransactionConnections" value="true"/>
         <property name="driverProperties">
             <props>
-                <prop key="user">${sharding.dataSource.db.username}</prop>
                 <prop key="password">${sharding.dataSource.db.password}</prop>
             </props>
         </property>
     </bean>
-
-    <bean id="btmDataSource" scope="prototype" lazy-init="true" parent="btmDataSourceTemplate"/>
 
     <bean id="shardDataSourceMapper" class="com.junbo.sharding.core.ds.ShardDataSourceMapper">
         <property name="dataSourceMapping" value="${sharding.dataSource.mapping}"/>
     </bean>
 
     <bean id="shardDataSourceFactory" class="com.junbo.sharding.core.ds.ShardDataSourceFactoryImpl">
-        <property name="dataSourceBeanName" value="btmDataSource"/>
+        <property name="dataSourceBeanName" value="btmDataSourceTemplate"/>
         <property name="mapper" ref="shardDataSourceMapper"/>
     </bean>
 

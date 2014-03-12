@@ -5,6 +5,9 @@
  */
 package com.junbo.oauth.db.dao.redis
 
+import com.junbo.oauth.common.JsonMarshaller
+import com.junbo.oauth.db.dao.BaseDAO
+import com.junbo.oauth.db.entity.BaseEntity
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 import redis.clients.jedis.Jedis
@@ -13,7 +16,7 @@ import redis.clients.jedis.Jedis
  * Javadoc.
  */
 @CompileStatic
-class RedisBaseDAO {
+abstract class RedisBaseDAO<T extends BaseEntity> implements BaseDAO<T, String> {
     protected Jedis jedis
     protected String namespace
 
@@ -27,4 +30,29 @@ class RedisBaseDAO {
         this.namespace = namespace
     }
 
+    @Override
+    T save(T entity) {
+        jedis.set(namespace + entity.id, JsonMarshaller.marshall(entity))
+        return entity
+    }
+
+    protected T internalGet(String id, Class<T> clazz) {
+        String entityString = jedis.get(namespace + id)
+        if (entityString != null) {
+            return (T) JsonMarshaller.unmarshall(clazz, entityString)
+        }
+
+        return null
+    }
+
+    @Override
+    T update(T entity) {
+        jedis.set(namespace + entity.id, JsonMarshaller.marshall(entity))
+        return entity
+    }
+
+    @Override
+    void delete(T entity) {
+        jedis.del(namespace + entity.id)
+    }
 }

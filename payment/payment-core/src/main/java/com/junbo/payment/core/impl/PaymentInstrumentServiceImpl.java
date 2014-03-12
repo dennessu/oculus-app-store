@@ -108,10 +108,7 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
 
     @Override
     public void delete(final Long paymentInstrumentId) {
-        PaymentInstrument piRequest = getById(paymentInstrumentId);
-        if(piRequest == null){
-            throw AppClientExceptions.INSTANCE.invalidPaymentInstrumentId(paymentInstrumentId.toString()).exception();
-        }
+        getById(paymentInstrumentId);
         paymentInstrumentRepository.delete(paymentInstrumentId);
     }
 
@@ -121,7 +118,7 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
         //no need to support tracking Uuid for put as it should be the same result if call twice
         PaymentInstrument piTarget = getById(request.getId());
         //Validate the info:
-        if(piTarget.getUserId().longValue() != request.getUserId().longValue()
+        if(!piTarget.getUserId().equals(request.getUserId())
                 || !piTarget.getType().equals(request.getType())
                 || !piTarget.getAccountNum().equals(request.getAccountNum())){
             throw AppClientExceptions.INSTANCE.invalidPaymentInstrumentId(request.getId().toString()).exception();
@@ -153,7 +150,7 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
     @Override
     public List<PaymentInstrument> getByUserId(Long userId) {
         List<PaymentInstrument> results = paymentInstrumentRepository.getByUserId(userId);
-        if(results == null || results.size() == 0){
+        if(results == null || results.isEmpty()){
             throw AppClientExceptions.INSTANCE.resourceNotFound("payment_instrument").exception();
         }
         return results;
@@ -165,7 +162,7 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
             throw AppClientExceptions.INSTANCE.missingUserId().exception();
         }
         List<PaymentInstrument> results = paymentInstrumentRepository.search(searchParam, page);
-        if(results == null || results.size() == 0){
+        if(results == null || results.isEmpty()){
             throw AppClientExceptions.INSTANCE.resourceNotFound("payment_instrument").exception();
         }
         return results;
@@ -173,7 +170,7 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
 
     @Override
     public PaymentInstrumentType getPIType(String piType) {
-        if(piType == null || piType.isEmpty()){
+        if(CommonUtil.isNullOrEmpty(piType)){
             throw AppClientExceptions.INSTANCE.invalidPIType(piType).exception();
         }
         PaymentInstrumentType result = piTypeRepository.getPITypeByName(piType);
@@ -201,10 +198,10 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
         if(request.getUserId() == null){
             throw AppClientExceptions.INSTANCE.missingUserId().exception();
         }
-        if(request.getAccountNum() == null || request.getAccountNum().isEmpty()){
+        if(CommonUtil.isNullOrEmpty(request.getAccountNum())){
             throw AppClientExceptions.INSTANCE.missingAccountName().exception();
         }
-        if(request.getType() == null || request.getType().isEmpty()){
+        if(CommonUtil.isNullOrEmpty(request.getType())){
             throw AppClientExceptions.INSTANCE.missingPIType().exception();
         }
         PaymentUtil.getPIType(request.getType());
@@ -218,21 +215,23 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
 
     private void validateAddress(PaymentInstrument request) {
         if(request.getAddress() != null){
-            if(request.getAddress().getCountry() == null || request.getAddress().getCountry().isEmpty()){
+            if(CommonUtil.isNullOrEmpty(request.getAddress().getCountry())){
                 throw AppClientExceptions.INSTANCE.missingCountry().exception();
             }
-            if(request.getAddress().getAddressLine1() == null || request.getAddress().getAddressLine1().isEmpty()){
+            if(CommonUtil.isNullOrEmpty(request.getAddress().getAddressLine1())){
                 throw AppClientExceptions.INSTANCE.missingAddressLine().exception();
             }
-            if(request.getAddress().getPostalCode() == null || request.getAddress().getPostalCode().isEmpty()){
+            if(CommonUtil.isNullOrEmpty(request.getAddress().getPostalCode())){
                 throw AppClientExceptions.INSTANCE.missingPostalCode().exception();
             }
         }
     }
 
     private void validateCreditCard(PaymentInstrument request){
-        if(request.getType().equalsIgnoreCase(PIType.CREDITCARD.toString()) &&
-                request.getCreditCardRequest() != null){
+        if(request.getType().equalsIgnoreCase(PIType.CREDITCARD.toString())){
+            if(request.getCreditCardRequest() == null){
+                throw AppClientExceptions.INSTANCE.missingExpireDate().exception();
+            }
             String expireDate = request.getCreditCardRequest().getExpireDate();
             if (!expireDate.matches("\\d{4}-\\d{2}-\\d{2}")
                     && !expireDate.matches("\\d{4}-\\d{2}")) {

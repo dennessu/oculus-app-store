@@ -43,7 +43,7 @@ class ClientRepositoryImpl implements ClientRepository {
 
     private static Client wrap(ClientEntity entity) {
         return new Client(
-                clientId: entity.clientId,
+                clientId: entity.id,
                 clientSecret: entity.clientSecret,
                 defaultRedirectUri: entity.defaultRedirectUri,
                 allowedRedirectUris: entity.allowedRedirectUris,

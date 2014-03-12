@@ -29,7 +29,7 @@ class UpdateOrderAction implements Action {
         // orderEvent.action = context.action?.toString()
         orderEvent.status = EventStatus.OPEN.toString()
         def orderWithId = orderRepository.updateOrder(
-                context.orderServiceContext.order, orderEvent)
+                context.orderServiceContext.order)
         context.orderServiceContext.setOrder(orderWithId)
         return Promise.pure(null)
     }

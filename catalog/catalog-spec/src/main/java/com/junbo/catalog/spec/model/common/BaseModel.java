@@ -8,65 +8,25 @@ package com.junbo.catalog.spec.model.common;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import java.util.Date;
 
 /**
  * Base model.
  */
-public abstract class BaseModel {
+public class BaseModel {
     @Null
-    private Long timestamp;
     @JsonIgnore
-    private Integer revision;
-    @NotNull
-    private String name;
-    @Null
-    private String status;
-    @Null
     private Date createdTime;
     @Null
+    @JsonIgnore
     private String createdBy;
     @Null
+    @JsonIgnore
     private Date updatedTime;
     @Null
+    @JsonIgnore
     private String updatedBy;
-
-    public abstract Long getId();
-    public abstract String getEntityType();
-
-    public Long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(Long timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public Integer getRevision() {
-        return revision;
-    }
-
-    public void setRevision(Integer revision) {
-        this.revision = revision;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
 
     public Date getCreatedTime() {
         return createdTime;

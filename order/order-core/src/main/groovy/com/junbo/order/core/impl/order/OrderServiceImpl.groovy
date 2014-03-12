@@ -5,6 +5,7 @@
  */
 
 package com.junbo.order.core.impl.order
+
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.executor.FlowExecutor
 import com.junbo.order.clientproxy.billing.BillingFacade
@@ -17,9 +18,10 @@ import com.junbo.order.core.FlowType
 import com.junbo.order.core.OrderService
 import com.junbo.order.core.OrderServiceOperation
 import com.junbo.order.core.impl.orderaction.ActionUtils
-import com.junbo.order.core.impl.orderaction.context.CreateOrderActionContext
+import com.junbo.order.core.impl.orderaction.context.OrderActionContext
 import com.junbo.order.db.entity.enums.OrderActionType
 import com.junbo.order.db.repo.OrderRepository
+import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.ApiContext
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderEvent
@@ -28,7 +30,6 @@ import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.util.CollectionUtils
 /**
  * Created by chriszhu on 2/7/14.
  */
@@ -96,13 +97,14 @@ class OrderServiceImpl implements OrderService {
 
         def orderServiceContext = initOrderServiceContext(order)
 
-        // Prepare Flow Request
-        Map<String, Object> requestScope = [:]
-        def createOrderActionContext = new CreateOrderActionContext()
-        createOrderActionContext.orderActionType = OrderActionType.RATE
-        requestScope.put(ActionUtils.SCOPE_CREATE_ORDER_ACTION_CONTEXT, (Object)createOrderActionContext)
-
         flowSelector.select(orderServiceContext, OrderServiceOperation.CREATE_TENTATIVE).syncThen { FlowType flowType ->
+            // Prepare Flow Request
+            Map<String, Object> requestScope = [:]
+            def orderActionContext = new OrderActionContext()
+            orderActionContext.orderActionType = OrderActionType.RATE
+            orderActionContext.orderServiceContext = orderServiceContext
+            orderActionContext.trackingUuid = order.trackingUuid
+            requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object)orderActionContext)
             executeFlow(flowType, orderServiceContext, requestScope)
         }.syncThen {
             return [orderServiceContext.order]
@@ -114,26 +116,26 @@ class OrderServiceImpl implements OrderService {
     Promise<Order> getOrderByOrderId(Long orderId) {
         def orderServiceContext = initOrderServiceContext(null)
         Map<String, Object> requestScope = ['GetOrderAction_OrderId':(Object)orderId]
-        flowSelector.select(orderServiceContext, OrderServiceOperation.GET).syncThen { FlowType flowType ->
-            executeFlow(flowType, orderServiceContext, requestScope).syncThen { List<Order> orders ->
-                if (CollectionUtils.isEmpty(orders)) {
-                    return null
+        return flowSelector.select(orderServiceContext, OrderServiceOperation.GET).then { FlowType flowType ->
+            executeFlow(flowType, orderServiceContext, requestScope).then { OrderServiceContext context ->
+                if (context.order == null) {
+                      throw AppErrors.INSTANCE.orderNotFound().exception()
                 }
                 // TODO need refactor the get logic
                 // order items
-                orders[0].setOrderItems(orderRepository.getOrderItems(orderId))
+                context.order.setOrderItems(orderRepository.getOrderItems(orderId))
                 // rating info
-                orders[0].totalAmount = 0
-                orders[0].orderItems?.each { OrderItem orderItem ->
+                context.order.totalAmount = 0
+                context.order.orderItems?.each { OrderItem orderItem ->
                     if (orderItem.totalAmount != null) {
-                        orders[0].totalAmount += orderItem.totalAmount
+                        context.order.totalAmount += orderItem.totalAmount
                     }
                 }
                 // payment instrument
-                orders[0].setPaymentInstruments(orderRepository.getPaymentInstrumentIds(orderId))
+                context.order.setPaymentInstruments(orderRepository.getPaymentInstrumentIds(orderId))
                 // discount
-                orders[0].setDiscounts(orderRepository.getDiscounts(orderId))
-                return orders[0]
+                context.order.setDiscounts(orderRepository.getDiscounts(orderId))
+                return Promise.pure(context.order)
             }
         }
     }

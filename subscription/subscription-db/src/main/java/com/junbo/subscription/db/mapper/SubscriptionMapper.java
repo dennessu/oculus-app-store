@@ -1,3 +1,8 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
+ */
 package com.junbo.subscription.db.mapper;
 
 import com.junbo.subscription.db.entity.Entity;
@@ -7,13 +12,18 @@ import com.junbo.subscription.spec.model.Model;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
+
+/**
+ * subscription mapper.
+ */
 @Component
 public class SubscriptionMapper {
     public Subscription toSubscription(SubscriptionEntity subscriptionEntity) {
-        if (subscriptionEntity == null) return null;
+        if (subscriptionEntity == null){
+            return null;
+        }
         Subscription subscription = new Subscription();
         subscription.setSubscriptionId(subscriptionEntity.getSubscriptionId());
         subscription.setUserId(subscriptionEntity.getUserId());

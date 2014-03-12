@@ -12,7 +12,6 @@ import com.junbo.common.jackson.annotation.PaymentInstrumentTypeId;
 import com.junbo.common.jackson.annotation.UserId;
 
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -22,7 +21,6 @@ import java.util.UUID;
  * payment instrument model.
  */
 public class PaymentInstrument {
-    @Null
     @JsonProperty("self")
     @PaymentInstrumentId
     private Long id;

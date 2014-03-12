@@ -16,24 +16,6 @@ buildscript {
     dependencies {
         classpath 'com.junbo.gradle:bootstrap:0.0.1-SNAPSHOT'
     }
-<<<<<<< HEAD
-}
-=======
-}
-
-subprojects {
-    apply plugin: 'java'
-
-    // Disable the test report for the individual test task
-    test {
-        reports.html.enabled = false
-    }
-}
-
-task testReport(type: TestReport) {
-    destinationDir = file("$buildDir/reports/allTests")
-    // Include the results from the `test` task in all subprojects
-    reportOn subprojects*.test
 }
 
 sonarRunner {
@@ -41,5 +23,3 @@ sonarRunner {
         property 'sonar.language', 'grvy'
     }
 }
-
->>>>>>> 9ad1a8800f3984a9251001dd8619774c5286898c
