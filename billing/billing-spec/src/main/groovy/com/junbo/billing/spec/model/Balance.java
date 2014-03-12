@@ -6,7 +6,6 @@
 
 package com.junbo.billing.spec.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.*;
 
