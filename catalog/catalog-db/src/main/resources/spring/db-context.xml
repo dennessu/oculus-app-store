@@ -108,6 +108,10 @@
         <property name="entityType" value="com.junbo.catalog.db.entity.OfferEntity"/>
     </bean>
 
+    <bean id="attributeDao" class="com.junbo.catalog.db.dao.impl.AttributeDaoImpl" parent="baseDao">
+        <property name="entityType" value="com.junbo.catalog.db.entity.AttributeEntity"/>
+    </bean>
+
     <!-- Repository -->
     <bean id="itemDraftRepository" class="com.junbo.catalog.db.repo.ItemDraftRepository"/>
     <bean id="itemHistoryRepository" class="com.junbo.catalog.db.repo.ItemRepository"/>
@@ -115,4 +119,6 @@
     <bean id="offerHistoryRepository" class="com.junbo.catalog.db.repo.OfferRepository"/>
     <bean id="promotionDraftRepository" class="com.junbo.catalog.db.repo.PromotionDraftRepository"/>
     <bean id="promotionHistoryRepository" class="com.junbo.catalog.db.repo.PromotionRepository"/>
+
+    <bean id="attributeRepository" class="com.junbo.catalog.db.repo.AttributeRepository"/>
 </beans>

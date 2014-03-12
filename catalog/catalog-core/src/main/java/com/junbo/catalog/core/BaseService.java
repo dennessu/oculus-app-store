@@ -6,7 +6,7 @@
 
 package com.junbo.catalog.core;
 
-import com.junbo.catalog.spec.model.common.BaseModel;
+import com.junbo.catalog.spec.model.common.VersionedModel;
 import com.junbo.catalog.spec.model.common.EntitiesGetOptions;
 import com.junbo.catalog.spec.model.common.EntityGetOptions;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +18,7 @@ import java.util.List;
  * @param <T> the model type.
  */
 @Transactional
-public interface BaseService<T extends BaseModel> {
+public interface BaseService<T extends VersionedModel> {
     T get(Long entityId, EntityGetOptions options);
     List<T> getEntities(EntitiesGetOptions options);
     T create(T entity);

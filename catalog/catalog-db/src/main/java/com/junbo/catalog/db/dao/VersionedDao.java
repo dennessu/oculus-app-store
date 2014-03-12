@@ -6,13 +6,20 @@
 
 package com.junbo.catalog.db.dao;
 
-import com.junbo.catalog.db.entity.BaseEntity;
+import com.junbo.catalog.db.entity.VersionedEntity;
 
 /**
  *  Base DAO definition.
  * @param <T> entity to operate.
  */
-public interface BaseDao<T extends BaseEntity> {
+public interface VersionedDao<T extends VersionedEntity> extends BaseDao<T> {
     Long create(T entity);
+
     T get(Long id);
+
+    Long update(T t);
+
+    Boolean exists(Long id);
+
+    //void flush();
 }

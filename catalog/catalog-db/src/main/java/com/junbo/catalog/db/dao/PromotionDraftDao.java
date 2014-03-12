@@ -13,6 +13,6 @@ import java.util.List;
 /**
  * Promotion draft DAO definition.
  */
-public interface PromotionDraftDao extends BaseDao<PromotionDraftEntity> {
+public interface PromotionDraftDao extends VersionedDao<PromotionDraftEntity> {
     List<PromotionDraftEntity> getEffectivePromotions(int start, int size);
 }

@@ -8,43 +8,10 @@
 
     <changeSet id="1" author='baojing' context="PREDEPLOY">
         <sql><![CDATA[
-            create table category_draft (
-              category_id            bigint             not null,
-              parent_id              bigint             default null,
-              category_name          varchar(64)        not null,
-              status                 varchar(64)        not null,
-              revision               bigint             not null,
-              timestamp              bigint            not null,
-              payload                json               not null,
-              created_by             varchar(64)        not null,
-              created_time           timestamp          not null,
-              updated_by             varchar(64)        default null,
-              updated_time           timestamp          default null,
-
-              primary key (category_id)
-            );
-
-            create table category (
-              id                     bigint             not null,
-              category_id            bigint             not null,
-              parent_id              bigint             default null,
-              category_name          varchar(64)        not null,
-              status                 varchar(64)        not null,
-              revision               bigint             not null,
-              timestamp              bigint            not null,
-              payload                json               not null,
-              created_by             varchar(64)        not null,
-              created_time           timestamp          not null,
-              updated_by             varchar(64)        default null,
-              updated_time           timestamp          default null,
-
-              primary key (id)
-            );
-
             create table item_draft (
               item_id                 bigint            not null,
               revision                bigint            not null,
-              type                    varchar(64)       not null,
+              type                    bigint            not null,
               item_name               varchar(64)       not null,
               status                  varchar(64)       not null,
               owner_id                bigint            not null,
@@ -62,7 +29,7 @@
               id                      bigint            not null,
               item_id                 bigint            not null,
               revision                bigint            not null,
-              type                    varchar(64)       not null,
+              type                    bigint            not null,
               item_name               varchar(64)       not null,
               status                  varchar(64)       not null,
               owner_id                bigint            not null,
@@ -101,6 +68,18 @@
               owner_id                bigint            not null,
               timestamp               bigint            not null,
               payload                 json              not null,
+              created_by              varchar(64)       not null,
+              created_time            timestamp         not null,
+              updated_by              varchar(64)       default null,
+              updated_time            timestamp         default null,
+
+              primary key (id)
+            );
+
+            create table attribute (
+              id                      bigint            not null,
+              type                    varchar(64)       not null,
+              name                    varchar(64)       not null,
               created_by              varchar(64)       not null,
               created_time            timestamp         not null,
               updated_by              varchar(64)       default null,

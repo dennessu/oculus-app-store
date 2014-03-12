@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Item draft DAO implementation.
  */
-public class ItemDraftDaoImpl extends BaseDaoImpl<ItemDraftEntity> implements ItemDraftDao {
+public class ItemDraftDaoImpl extends VersionedDaoImpl<ItemDraftEntity> implements ItemDraftDao {
     @Override
     public List<ItemDraftEntity> getItems(final int start, final int size) {
         return findAllBy(new Action<Criteria>() {
