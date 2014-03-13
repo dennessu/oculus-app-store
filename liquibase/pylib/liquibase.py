@@ -1,4 +1,4 @@
-#!/bin/env python2.7
+#!/bin/env python
 
 import sys
 import ConfigParser
@@ -8,79 +8,52 @@ import errno
 import re
 import fileinput
 import random
+from handythread import *
 from getpass import *
 
 def error(message):
 	sys.stdout.write(message)	
 	sys.exit(1)
 
+def split_range(param):
+    result = set()
+    for part in param.split(','):
+        x = part.split('..')
+        result.update(range(int(x[0]), int(x[-1]) + 1))
+    return sorted(result)
+
 def run(inputParam):
     # Enforce python version
-    if sys.version_info[0] <= 2 and sys.version_info[1] <= 5:
-        error("must use python 2.6 or greater")
-    
-    if sys.version_info[0] >= 3:
-        error("must use python 2.6 or greater")
- 
+    if sys.version_info[0] != 2:
+        error("must use python 2.x")
+
 	# Enforce to current directory
 	try:
 		os.chdir(os.path.dirname(sys.argv[0]))
 	except OSError, e:
 		error(e+"\nUnable to change into directory : " + os.path.dirname(sys.argv[0]) + ". Quitting...\n")
 
-    #===============================================================================
-    # Get command line arguments
-    #===============================================================================
-    sys.argv.pop(0) 
+    #========================================
+    # Script arguments
+    #========================================
+    sys.argv.pop(0)   # skipped the first arg which is script name
+
     if len(sys.argv) > 0:
-        # Incorrect usage
-        if len(sys.argv) < 1 or len(sys.argv) > 3:
+        # arguments check
+        if len(sys.argv) != 3:
             error("""
-        ./liquibase.py PROJECT ENVIRONMENT DBVERSION [context]
+        ./liquibase.py PROJECT ENVIRONMENT DBVERSION
             """)
-			
-        # Enable batch mode and get the args
-		
-        Args = [""]*4 # Initialize list to a size of 4
-        for i in range(len(sys.argv)):
-            Args[i] = sys.argv[i]
-        inputParam.environment = Args[0]
-        inputParam.command = Args[1]
-        exit(inputParam.command)   
     
-    #===============================================================================
-    # Get environment config
-    #===============================================================================
+    #=========================================
+    # Environment config
+    #=========================================
     
-    # Prompt user for Environment
+    # Check config file existence
     if not os.path.isdir("conf/"+inputParam.project+"/"+inputParam.environment) or len(str.strip(inputParam.environment)) == 0 :
         error("Environment config '"+inputParam.environment+"' not found under ./conf/"+inputParam.project+". Quitting...\n")
-    
-    # Encrypt passwords in configs
-    fname = "conf/"+inputParam.project+"/"+inputParam.environment+"/db.conf"
-    # The configuration file should be xx=xx format
-    # if the config line starts with #, just ignore this line
-    if os.path.exists(fname):
-		file = open(fname, "rb")
-		file_content = ""
-		for line in file:
-			delim = None
-			if line[0] == "#":
-				continue
-			for char in line:
-				if char == "=":
-					delim = char
-					break
-			if delim is not None:
-				key, value = line.split(delim, 1)
-			file_content = file_content+line
-		file.close()
-		# Rewrite the file with an encrypted password instead
-		file = open(fname, "wb")
-		file.write(file_content)
-		file.close()  
 
-    # Load environment config. This contains the usernames, passwords, and etc
+    # Load environment config.
     try:
         configuration = ConfigParser.SafeConfigParser()
         configuration.readfp(open("conf/"+inputParam.project+"/"+inputParam.environment+"/db.conf"))
@@ -94,32 +67,52 @@ def run(inputParam):
     except (ConfigParser.NoSectionError, ConfigParser.MissingSectionHeaderError), e:
         error("Invalid configuration file\n")
     
-    #===============================================================================
-    # Prompt user for Liquibase Command
-    #===============================================================================
+    #============================================
+    # Prompt Liquibase command
+    #============================================
     sys.stdout.write("""
-		update                  Update schema to current version
+        status                  Show unrun changes list
+        update                  Update db schema to latest version
+        updateSQL               Output sql for manually update db schema to latest version
+        validate                Checks changelog for errors
 	""")
     sys.stdout.flush()
     inputParam.command = raw_input("Liquibase command to run: ")
-	
-	#Build the command line args to run
-    cmd = list([os.path.abspath('.') + "/liquibase"])
-    cmd.append("--logLevel=info")
-    cmd.append("--driver=" + config["jdbc_driver"])
-    log_file_name = "changelogs/"+inputParam.project+"/"+inputParam.dbVersion+"/changelog.xml"	
-    cmd.append("--changeLogFile="+log_file_name)
-    cmd.append("--username="+config["liquibase_username"])
-    cmd.append("--password="+config["liquibase_password"])
-    jdbc_url=config["jdbc_url"]
-    cmd.append("--url="+jdbc_url)
-    cmd.append(inputParam.command)
 
-    try:
-        return_code = subprocess.call(" ".join(cmd), shell=True)
-    except OSError, e:
-        error("Error processing liquibase. ")
-	
-    if return_code !=0:
-        error("Error processing liquibase." + str(return_code))
-    
+    c = str.upper(inputParam.command) # Get the command
+    if c == "UPDATE":
+        # Prompt for confirmation on direct changes
+        response = raw_input("WARNING! This action will make changes to the database. Are you absolutely sure? ('yes'/'no'): ")
+        if response != "yes":
+            error("Cancelled...\n")
+    elif not re.compile("^(STATUS|UPDATESQL|VALIDATE)$").match(c):
+        error("Please enter a valid command\n")
+
+    def partition(shardid):
+        sys.stdout.write("Running against shard "+shardid+"...\n");
+        #Build the command line args to run
+        cmd = list([os.path.abspath('.') + "/liquibase"])
+        cmd.append("--logLevel=debug")
+        cmd.append("--driver=" + config["jdbc_driver"])
+        change_log_file = "changelogs/"+inputParam.project+"/"+inputParam.dbVersion+"/changelog.xml"
+        cmd.append("--changeLogFile="+change_log_file)
+        shard_user = config["shard_username"].replace('{0}', shardid)
+        cmd.append("--username="+shard_user)
+        cmd.append("--password="+config["shard_password"])
+        cmd.append("--defaultSchemaName=shard_" + shardid)
+        jdbc_url=config["jdbc_url_" + shardid]
+        cmd.append("--url="+jdbc_url)
+        cmd.append(inputParam.command)
+
+        try:
+            return_code = subprocess.call(" ".join(cmd), shell=True)
+        except OSError, e:
+            error("Error processing liquibase. ")
+
+        if return_code !=0:
+            error("Error processing liquibase." + str(return_code))
+
+    if config.has_key("shard_range"):
+        shard_range = [str(x) for x in split_range(config["shard_range"])]
+
+    foreach(partition, shard_range, 1)
