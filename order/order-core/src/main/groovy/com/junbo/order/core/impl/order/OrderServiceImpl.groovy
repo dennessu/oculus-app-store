@@ -97,7 +97,7 @@ class OrderServiceImpl implements OrderService {
 
         def orderServiceContext = initOrderServiceContext(order)
 
-        flowSelector.select(orderServiceContext, OrderServiceOperation.CREATE_TENTATIVE).syncThen { FlowType flowType ->
+        flowSelector.select(orderServiceContext, OrderServiceOperation.CREATE_TENTATIVE).then { FlowType flowType ->
             // Prepare Flow Request
             Map<String, Object> requestScope = [:]
             def orderActionContext = new OrderActionContext()

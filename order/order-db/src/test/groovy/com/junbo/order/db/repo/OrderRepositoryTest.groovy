@@ -10,9 +10,7 @@ import com.junbo.order.db.mapper.ModelMapper
 import com.junbo.order.spec.model.Discount
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderItem
-import org.easymock.EasyMock
 import org.springframework.beans.factory.annotation.Autowired
-import org.testng.annotations.AfterMethod
 import org.testng.annotations.Test
 
 /**
@@ -22,8 +20,6 @@ class OrderRepositoryTest extends BaseTest {
 
     @Autowired
     private OrderRepository orderRepository
-
-    def List mocks = []
 
     @Autowired
     ModelMapper modelMapper
@@ -162,21 +158,6 @@ class OrderRepositoryTest extends BaseTest {
         assert actual.shippingMethodId == expected.shippingMethodId
         assert actual.shippingAddressId == expected.shippingAddressId
     }
-    //protected <T> createMock()
-
-    private <T> T mock(Class<T> type) {
-        def mock = EasyMock.createMock(type)
-        mocks << mock
-        return mock
-    }
-
-    private void replay() {
-        EasyMock.replay(mocks.toArray())
-    }
-
-    private void verify() {
-        EasyMock.verify(mocks.toArray())
-    }
 
     private void assertListEquals(List actual, List expected, Closure idFunc, Closure assertFunc) {
         def actualMap = [:]
@@ -192,11 +173,4 @@ class OrderRepositoryTest extends BaseTest {
             assertFunc.call(v, expectedMap[k])
         }
     }
-
-    @AfterMethod
-    public void clearMock() {
-        mocks.clear()
-    }
-
-
 }
