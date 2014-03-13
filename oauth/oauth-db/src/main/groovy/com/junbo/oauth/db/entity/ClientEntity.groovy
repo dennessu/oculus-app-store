@@ -17,6 +17,7 @@ import groovy.transform.CompileStatic
 class ClientEntity extends BaseEntity {
     String clientSecret
     String clientName
+    Long ownerUserId
     Set<String> redirectUris
     String defaultRedirectUri
     Set<String> scopes
@@ -28,4 +29,5 @@ class ClientEntity extends BaseEntity {
     String defaultLogoutRedirectUri
     TokenEndpointAuthMethod tokenEndpointAuthMethod
     String logoUri
+    Set<String> contacts
 }

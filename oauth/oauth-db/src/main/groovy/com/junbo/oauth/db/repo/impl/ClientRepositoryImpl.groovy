@@ -51,6 +51,7 @@ class ClientRepositoryImpl implements ClientRepository {
                 id: client.clientId,
                 clientSecret: client.clientSecret,
                 clientName: client.clientName,
+                ownerUserId: client.ownerUserId,
                 defaultRedirectUri: client.defaultRedirectUri,
                 redirectUris: client.redirectUris,
                 scopes: client.scopes,
@@ -60,7 +61,8 @@ class ClientRepositoryImpl implements ClientRepository {
                 idTokenIssuer: client.idTokenIssuer,
                 logoutRedirectUris: client.logoutRedirectUris,
                 defaultLogoutRedirectUri: client.defaultLogoutRedirectUri,
-                logoUri: client.logoUri
+                logoUri: client.logoUri,
+                contacts: client.contacts
         )
     }
 
@@ -69,6 +71,7 @@ class ClientRepositoryImpl implements ClientRepository {
                 clientId: entity.id,
                 clientSecret: entity.clientSecret,
                 clientName: entity.clientName,
+                ownerUserId: entity.ownerUserId,
                 defaultRedirectUri: entity.defaultRedirectUri,
                 redirectUris: entity.redirectUris,
                 scopes: entity.scopes,
@@ -78,7 +81,8 @@ class ClientRepositoryImpl implements ClientRepository {
                 idTokenIssuer: entity.idTokenIssuer,
                 logoutRedirectUris: entity.logoutRedirectUris,
                 defaultLogoutRedirectUri: entity.defaultLogoutRedirectUri,
-                logoUri: entity.logoUri
+                logoUri: entity.logoUri,
+                contacts: entity.contacts
         )
     }
 }

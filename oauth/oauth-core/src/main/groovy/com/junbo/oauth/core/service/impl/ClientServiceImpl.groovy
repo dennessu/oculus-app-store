@@ -9,6 +9,7 @@ package com.junbo.oauth.core.service.impl
 
 import com.junbo.oauth.core.exception.AppExceptions
 import com.junbo.oauth.core.service.ClientService
+import com.junbo.oauth.db.generator.TokenGenerator
 import com.junbo.oauth.db.repo.AccessTokenRepository
 import com.junbo.oauth.db.repo.ClientRepository
 import com.junbo.oauth.spec.model.AccessToken
@@ -22,9 +23,11 @@ import org.springframework.beans.factory.annotation.Required
  */
 @CompileStatic
 class ClientServiceImpl implements ClientService {
-    private static final String CLIENT_SCOPE
+    private static final String CLIENT_SCOPE = 'client.register'
+    private static final Set<String> AVAILABLE_SCOPES = ['openid', 'identity', 'order', 'billing', 'catalog']
     private ClientRepository clientRepository
     private AccessTokenRepository accessTokenRepository
+    private TokenGenerator tokenGenerator
 
     @Required
     void setClientRepository(ClientRepository clientRepository) {
@@ -36,9 +39,23 @@ class ClientServiceImpl implements ClientService {
         this.accessTokenRepository = accessTokenRepository
     }
 
+    @Required
+    void setTokenGenerator(TokenGenerator tokenGenerator) {
+        this.tokenGenerator = tokenGenerator
+    }
+
     @Override
     Client postClient(String authorization, Client client) {
         AccessToken accessToken = parseAccessToken(authorization)
+
+        client.ownerUserId = accessToken.userId
+        String clientId = tokenGenerator.generateClientId()
+        while (clientRepository.getClient(clientId) != null) {
+            clientId = tokenGenerator.generateClientId()
+        }
+
+        client.clientId = clientId
+        client.clientSecret = tokenGenerator.generateClientSecret()
 
         return null
     }
@@ -73,6 +90,9 @@ class ClientServiceImpl implements ClientService {
             throw AppExceptions.INSTANCE.expiredAccessToken().exception()
         }
 
+        if (!accessToken.scopes.contains(CLIENT_SCOPE)) {
+            throw AppExceptions.INSTANCE.insufficientScope().exception()
+        }
         return accessToken
     }
 }

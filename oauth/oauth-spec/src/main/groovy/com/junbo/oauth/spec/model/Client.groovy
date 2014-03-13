@@ -22,6 +22,9 @@ class Client {
     @JsonProperty('client_name')
     String clientName
 
+    @JsonProperty('owner_user_id')
+    Long ownerUserId
+
     @JsonProperty('redirect_uris')
     Set<String> redirectUris
 
@@ -53,4 +56,6 @@ class Client {
 
     @JsonProperty('logo_uri')
     String logoUri
+
+    Set<String> contacts
 }

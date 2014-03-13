@@ -20,6 +20,8 @@
         <property name="rememberMeTokenSeriesLength" value="${oauth.db.rememberMeTokenSeriesLength}"/>
         <property name="sessionStateLength" value="${oauth.db.sessionStateLength}"/>
         <property name="sessionStatePostfix" value="${oauth.db.sessionStatePostfix}"/>
+        <property name="clientIdLength" value="${oauth.db.clientIdLength}"/>
+        <property name="clientSecretLength" value="${oauth.db.clientSecretLength}"/>
     </bean>
 
     <bean id="jedisInstance" class="redis.clients.jedis.Jedis">

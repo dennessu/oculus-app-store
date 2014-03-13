@@ -62,9 +62,6 @@ interface AppExceptions {
     @ErrorDef(httpStatusCode = 400, code = '20012', description = 'The display {0} is invalid', field = 'display')
     AppError invalidDisplay(String display)
 
-    @ErrorDef(httpStatusCode = 400, code = '20013', description = 'The flow state {0} is invalid', field = 'fs')
-    AppError invalidFlowState(String flowState)
-
     @ErrorDef(httpStatusCode = 400, code = '20014', description = 'The login is required')
     AppError loginRequired()
 
@@ -144,7 +141,7 @@ interface AppExceptions {
             field = 'access_token')
     AppError invalidAccessToken()
 
-    @ErrorDef(httpStatusCode = 400, code = '20035', description = 'The access_token {0} is already expired',
+    @ErrorDef(httpStatusCode = 401, code = '20035', description = 'The access_token {0} is already expired',
             field = 'access_token')
     AppError expiredAccessToken()
 
@@ -163,4 +160,9 @@ interface AppExceptions {
     @ErrorDef(httpStatusCode = 400, code = '20039', description = 'The post_logout_redirect_uri {0} is invalid',
             field = 'conversationId')
     AppError invalidPostLogoutRedirectUri(String postLogoutRedirectUri)
+
+    @ErrorDef(httpStatusCode = 403, code = '20040',
+            description = 'The access token does not have sufficient scope to make the request',
+            field = 'access_token')
+    AppError insufficientScope()
 }
