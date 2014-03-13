@@ -8,12 +8,12 @@ package com.junbo.email.db.repo;
 import com.junbo.common.id.EmailId;
 import com.junbo.email.db.dao.EmailHistoryDao;
 import com.junbo.email.db.entity.EmailHistoryEntity;
-import com.junbo.email.db.entity.EmailStatus;
 import com.junbo.email.db.mapper.EmailMapper;
 import com.junbo.email.spec.model.Email;
 import com.junbo.sharding.IdGeneratorFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
@@ -21,6 +21,7 @@ import java.util.Date;
  * Repository of EmailHistory.
  */
 @Component
+@Transactional
 public class EmailHistoryRepository {
     @Autowired
     private EmailHistoryDao emailHistoryDao;
@@ -39,7 +40,6 @@ public class EmailHistoryRepository {
     public Long createEmailHistory(Email email) {
         EmailHistoryEntity entity = emailMapper.toEmailHistoryEntity(email);
         entity.setId(getId(email.getUserId() != null ? email.getUserId().getValue() : null));
-        entity.setStatus(EmailStatus.PENDING.getId());
         entity.setCreatedTime(new Date());
         return emailHistoryDao.save(entity);
     }

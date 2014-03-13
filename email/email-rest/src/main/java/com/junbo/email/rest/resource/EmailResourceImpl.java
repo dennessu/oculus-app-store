@@ -29,8 +29,7 @@ public class EmailResourceImpl implements EmailResource {
 
     @Override
     public Promise<Email> postEmail(Email request) {
-        Email email = emailService.send(request);
-        return Promise.pure(email);
+        return emailService.send(request);
     }
 
     @Override

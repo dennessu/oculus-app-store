@@ -19,7 +19,7 @@ The API operating on the email data.
 * priority ... Define the email priority.
 * properties ... The properties of email, all properties are depend on **source** and **action**.
 * type ... The type of email.
-* recipients ... The list recipient of email.
+* recipient ... The recipient of email.
 * scheduleDate ... The schedule date of email.
 
 ### Email [/emails]
@@ -39,7 +39,7 @@ The general email will be create if "scheduleDate" is not specified. otherwise, 
 			"locale":"en_US",
 			"priority":0,
 			"type":"COMMERCE",
-			"recipients":["user@example.com"],
+			"recipient":"user@example.com",
 			"scheduleDate":null,
 			"properties":{
 				"name1":"value1",
@@ -64,7 +64,7 @@ The general email will be create if "scheduleDate" is not specified. otherwise, 
 			"locale":"en_US",
 			"priority":0,
 			"type":"COMMERCE",
-			"recipients":["user@example.com"],
+			"recipient":"user@example.com",
 			"status":"SUCCEED",
 			"statusReason":null,
 			"retryCount":0,
@@ -102,7 +102,7 @@ Retrieve the email object with all its details by id.
 			"locale":"en_US",
 			"priority":0,
 			"type":"COMMERCE",
-			"recipients":["user@example.com"],
+			"recipient":"user@example.com",
 			"status":"SUCCEED",
 			"statusReason":null,
 			"retryCount":0,
@@ -134,7 +134,7 @@ Update an existing schedule email, only schedule email can be update.
 			"action":"welcome",
 			"locale":"en_US",
 			"priority":0,
-			"recipients":["user@example.com"],
+			"recipient":"user@example.com",
 			"scheduleDate":"2014-04-01",
 			"properties":{
 				"name1":"value1",
@@ -158,7 +158,7 @@ Update an existing schedule email, only schedule email can be update.
 			"action":"welcome",
 			"locale":"en_US",
 			"priority":0,
-			"recipients":["user@example.com"],
+			"recipient":"user@example.com",
 			"scheduleDate":"2014-04-01",
 			"properties":{
 				"name1":"value1",
@@ -210,7 +210,7 @@ All the email templates are returned.
 			"providerIndex":"123456789",
 			"listOfVariables":["var1","var2","var3","var4"],
 			"subject":"welcome123",
-			"fromAddress":["from@example.com"],
+			"fromAddress":"from@example.com",
 			"fromName":"from name",
 			"createBy":"user1",
 			"createTime":"2014-02-01T02:00:03.123Z",
@@ -241,7 +241,7 @@ Get a specific email tempate.
 			"providerIndex":"123456789",
 			"listOfVariables":["var1","var2","var3","var4"],
 			"subject":"welcome123",
-			"fromAddress":["from@example.com"],
+			"fromAddress":"from@example.com",
 			"fromName":"from name",
 			"createBy":"user1",
 			"createTime":"2014-02-01T02:00:03.123Z",
@@ -260,7 +260,7 @@ Create a new email template.
 		    "providerIndex":"123456789",
 			"listOfVariables":["var1","var2","var3","var4"],
 			"subject":"welcome123",
-			"fromAddress":["from@example.com"],
+			"fromAddress":"from@example.com",
 			"fromName":"from name",
 			"createBy":"user1",
 			"createTime":"2014-02-01T02:00:03.123Z",
@@ -280,7 +280,7 @@ Create a new email template.
 		    "providerIndex":"123456789",
 			"listOfVariables":["var1","var2","var3","var4"],
 			"subject":"welcome123",
-			"fromAddress":["from@example.com"],
+			"fromAddress":"from@example.com",
 			"fromName":"from name",
 			"createBy":"user1",
 			"createTime":"2014-02-01T02:00:03.123Z",
@@ -303,7 +303,7 @@ Update an existing templates. Only the attribute include the hash will be update
 			"providerIndex":"123456789",
 			"listOfVariables":["var1","var2","var3","var4"],
 			"subject":"welcome",
-			"fromAddress":["from@example.com"],
+			"fromAddress":"from@example.com",
 			"fromName":"from name",
 			"createBy":"user1",
 			"createTime":"2014-02-01T02:00:03.123Z",
@@ -324,7 +324,7 @@ Update an existing templates. Only the attribute include the hash will be update
 			"providerIndex":"1234567890",
 			"listOfVariables":["var1","var2","var3","var4"],
 			"subject":"welcome",
-			"fromAddress":["from@example.com"],
+			"fromAddress":"from@example.com",
 			"fromName":"from name",
 			"createBy":"user1",
 			"createTime":"2014-02-01T02:00:03.123Z",
