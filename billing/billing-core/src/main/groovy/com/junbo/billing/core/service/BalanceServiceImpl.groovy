@@ -10,6 +10,7 @@ import com.junbo.billing.clientproxy.IdentityFacade
 import com.junbo.billing.clientproxy.PaymentFacade
 import com.junbo.billing.db.repository.BalanceRepository
 import com.junbo.billing.spec.enums.BalanceStatus
+import com.junbo.billing.spec.enums.TaxStatus
 import com.junbo.billing.spec.error.AppErrors
 import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.BalanceItem
@@ -233,7 +234,7 @@ class BalanceServiceImpl implements BalanceService {
             amount = amount + item.amount
         }
 
-        if (!balance.taxIncluded) {
+        if (balance.taxStatus == TaxStatus.TAXED.name() && !balance.taxIncluded) {
             amount = amount + taxTotal
         }
         amount = amount - discountTotal
