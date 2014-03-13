@@ -12,7 +12,7 @@ import com.junbo.catalog.db.entity.PromotionEntity;
 /**
  * Promotion DAO implementation.
  */
-public class PromotionDaoImpl extends BaseDaoImpl<PromotionEntity> implements PromotionDao {
+public class PromotionDaoImpl extends VersionedDaoImpl<PromotionEntity> implements PromotionDao {
     @Override
     public PromotionEntity getPromotion(Long promotionId, Long timestamp) {
         return get(promotionId, timestamp, "promotionId");

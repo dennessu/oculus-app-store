@@ -5,40 +5,25 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
        ">
     <import resource="transaction.xml"/>
-    <!--bean id="btmDataSource" class="bitronix.tm.resource.jdbc.PoolingDataSource" init-method="init"
-          destroy-method="close" scope="prototype" lazy-init="true">
-        <property name="uniqueName" value="dummy"/>
-        <property name="className" value="${sharding.dataSource.driverClassName}"/>
-        <property name="minPoolSize" value="${sharding.dataSource.db.minConnections}"/>
-        <property name="maxPoolSize" value="${sharding.dataSource.db.maxConnections}"/>
-        <property name="driverProperties">
-            <props>
-                <prop key="url"></prop>
-                <prop key="user">${sharding.dataSource.db.username}</prop>
-                <prop key="password">${sharding.dataSource.db.password}</prop>
-            </props>
-        </property>
-    </bean-->
 
-    <bean id="btmDataSourceTemplate" class="bitronix.tm.resource.jdbc.PoolingDataSource" scope="prototype" lazy-init="true" abstract="true">
+    <bean id="btmDataSourceTemplate" class="bitronix.tm.resource.jdbc.PoolingDataSource" scope="prototype" lazy-init="true">
         <property name="className" value="${sharding.dataSource.driverClassName}"/>
         <property name="minPoolSize" value="${sharding.dataSource.db.minConnections}"/>
         <property name="maxPoolSize" value="${sharding.dataSource.db.maxConnections}"/>
+        <property name="ShareTransactionConnections" value="true"/>
         <property name="driverProperties">
             <props>
-                <prop key="user">${sharding.dataSource.db.username}</prop>
                 <prop key="password">${sharding.dataSource.db.password}</prop>
             </props>
         </property>
     </bean>
-    <bean id="btmDataSource" scope="prototype" lazy-init="true" parent="btmDataSourceTemplate"/>
 
     <bean id="shardDataSourceMapper" class="com.junbo.sharding.core.ds.ShardDataSourceMapper">
         <property name="dataSourceMapping" value="${sharding.dataSource.mapping}"/>
     </bean>
 
     <bean id="shardDataSourceFactory" class="com.junbo.sharding.core.ds.ShardDataSourceFactoryImpl">
-        <property name="dataSourceBeanName" value="btmDataSource"/>
+        <property name="dataSourceBeanName" value="btmDataSourceTemplate"/>
         <property name="mapper" ref="shardDataSourceMapper"/>
     </bean>
 
@@ -47,7 +32,7 @@
     </bean>
 
     <!-- Sharded SessonFactory for Hibernate-->
-    <bean id="shardedSessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+    <bean id="sessionFactoryTemplate" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
         <property name="jtaTransactionManager" ref="transactionManager"/>
         <property name="hibernateProperties">
             <props>
@@ -58,10 +43,5 @@
                 <prop key="hibernate.show_sql">${sharding.hibernate.show_sql}</prop>
             </props>
         </property>
-    </bean>
-
-    <bean id="sessionFactoryWrapper" class="com.junbo.sharding.core.hibernate.SessionFactoryWrapper">
-        <property name="dataSourceRegistry" ref="shardDataSourceRegistry"/>
-        <property name="sessionFactoryBeanName" value="shardedSessionFactory"/>
     </bean>
 </beans>

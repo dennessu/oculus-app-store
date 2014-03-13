@@ -1,3 +1,8 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
+ */
 package com.junbo.subscription.rest.jackson;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -10,6 +15,10 @@ import com.junbo.common.jackson.serializer.ResourceAwareSerializerProvider;
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;
 
+
+/**
+ * Mapper configurator.
+ */
 @Provider
 public class MapperConfigurator implements ContextResolver<ObjectMapper> {
     private ObjectMapper mapper;

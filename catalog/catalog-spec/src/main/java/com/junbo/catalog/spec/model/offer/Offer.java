@@ -7,19 +7,18 @@
 package com.junbo.catalog.spec.model.offer;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.junbo.catalog.spec.model.common.BaseModel;
+import com.junbo.catalog.spec.model.common.VersionedModel;
+import com.junbo.common.jackson.annotation.AttributeId;
 import com.junbo.common.jackson.annotation.OfferId;
 import com.junbo.common.jackson.annotation.UserId;
 
-import javax.validation.constraints.Null;
 import java.util.List;
 import java.util.Map;
 
 /**
  * Offer model.
  */
-public class Offer extends BaseModel {
-    @Null
+public class Offer extends VersionedModel {
     @OfferId
     @JsonProperty("self")
     private Long id;
@@ -27,7 +26,8 @@ public class Offer extends BaseModel {
     @UserId
     private Long ownerId;
 
-    private String type;
+    @AttributeId
+    private Long type;
 
     private Integer priceTier;
     private Map<String, Price> prices;
@@ -38,10 +38,11 @@ public class Offer extends BaseModel {
 
     private Restriction restriction;
 
-    private List<Long> attributes;
+    @AttributeId
+    private List<Long> categories;
+    @AttributeId
+    private List<Long> genres;
 
-    //@CategoryId
-    //private List<Long> categories;
     private List<Event> events;
     private List<String> eligibleCountries;
     private Map<String, Map<String, String>> countryProperties;
@@ -64,11 +65,11 @@ public class Offer extends BaseModel {
         this.ownerId = ownerId;
     }
 
-    public String getType() {
+    public Long getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(Long type) {
         this.type = type;
     }
 
@@ -112,21 +113,20 @@ public class Offer extends BaseModel {
         this.restriction = restriction;
     }
 
-    /*public List<Long> getCategories() {
+    public List<Long> getCategories() {
         return categories;
     }
 
     public void setCategories(List<Long> categories) {
         this.categories = categories;
     }
-*/
 
-    public List<Long> getAttributes() {
-        return attributes;
+    public List<Long> getGenres() {
+        return genres;
     }
 
-    public void setAttributes(List<Long> attributes) {
-        this.attributes = attributes;
+    public void setGenres(List<Long> genres) {
+        this.genres = genres;
     }
 
     public List<Event> getEvents() {

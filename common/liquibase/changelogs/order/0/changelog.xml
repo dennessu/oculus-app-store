@@ -37,7 +37,7 @@
                     updated_by varchar(128) not null,
                     order_id bigint not null,
                     tracking_uuid uuid default null,
-                    flow_name uuid default null,
+                    flow_name varchar(128) default null,
                     primary key (event_id)
                 );
                 create unique index order_event_id_updated_time_tracking_uuid_index on order_event (event_id, updated_time, tracking_uuid);
@@ -47,12 +47,12 @@
                     order_id bigint not null,
                     order_item_type smallint not null,
                     product_item_id varchar(128) not null,
-                    product_item_version varchar(128) not null,
                     unit_price decimal not null,
                     quantity int not null,
                     total_price decimal not null,
                     federated_id varchar(128) default null,
                     properties varchar(4000) default null,
+                    is_deleted boolean not null,
                     created_time timestamp not null,
                     created_by varchar(128) not null,
                     updated_time timestamp not null,
@@ -68,6 +68,7 @@
                     discount_type smallint not null,
                     discount_rate decimal default null,
                     discount_amount decimal not null,
+                    is_deleted boolean not null,
                     created_time timestamp not null,
                     created_by varchar(128) not null,
                     updated_time timestamp not null,
@@ -168,6 +169,7 @@
                     order_id bigint not null,
                     payment_method_id varchar(128) not null,
                     payment_method_type varchar(128) not null,
+                    is_deleted boolean not null,
                     created_time timestamp not null,
                     created_by varchar(128) not null,
                     updated_time timestamp not null,

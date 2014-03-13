@@ -4,9 +4,17 @@ exports.Index =  function(req, res){
 };
 
 exports.ProductDetail =  function(req, res){
-    res.render('product_detail', {layout: 'layout', title: 'Product Detail'});
+    res.render('detail', {layout: 'layout', title: 'Product Detail'});
 };
 
 exports.ShoppingCart =  function(req, res){
-    res.render('shopping_cart', {layout: 'layout', title: 'Store Demo'});
+    res.render('cart/cart', {layout: 'layout', title: 'Shopping Cart'});
+};
+
+exports.OrderSummary =  function(req, res){
+    res.render('cart/order_summary', {layout: 'layout', title: 'Order Summary'});
+};
+
+exports.PurchaseNotification =  function(req, res){
+    res.render('cart/notification', {layout: 'identity/layout', title: 'Order Summary'});
 };

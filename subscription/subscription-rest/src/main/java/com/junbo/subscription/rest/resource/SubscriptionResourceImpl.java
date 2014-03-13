@@ -1,3 +1,8 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
+ */
 package com.junbo.subscription.rest.resource;
 
 import com.junbo.common.id.SubscriptionId;
@@ -7,12 +12,11 @@ import com.junbo.subscription.spec.resource.SubscriptionResource;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.validation.Valid;
-import javax.ws.rs.*;
 import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
 
-
+/**
+ * subscription resource implement.
+ */
 public class SubscriptionResourceImpl implements SubscriptionResource {
     @Autowired
     private SubscriptionService service;

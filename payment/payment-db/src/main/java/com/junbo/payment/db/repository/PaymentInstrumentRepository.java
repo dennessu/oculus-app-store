@@ -97,7 +97,7 @@ public class PaymentInstrumentRepository {
 
     public PaymentInstrument getByPIId(Long piId){
         PaymentInstrumentEntity pi = paymentInstrumentDao.get(piId);
-        if(pi == null){
+        if(pi == null || pi.getStatus().equals(PIStatus.DELETED)){
             return null;
         }
         PaymentInstrument request = paymentMapperImpl.toPaymentInstrument(pi, new MappingContext());
@@ -124,7 +124,7 @@ public class PaymentInstrumentRepository {
         List<PaymentInstrument> request = new ArrayList<PaymentInstrument>();
         List<PaymentInstrumentEntity> piEntities = paymentInstrumentDao.getByUserId(userId);
         for(PaymentInstrumentEntity piEntity : piEntities){
-            if(piEntity.getStatus() != PIStatus.DELETED){
+            if(!piEntity.getStatus().equals(PIStatus.DELETED)){
                 PaymentInstrument piRequest = paymentMapperImpl.toPaymentInstrument(piEntity, new MappingContext());
                 setAdditionalInfo(piEntity, piRequest);
                 request.add(piRequest);

@@ -134,7 +134,7 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
             throw AppClientExceptions.INSTANCE.invalidAmount(
                     request.getChargeInfo().getAmount().toString()).exception();
         }
-        if(PaymentStatus.valueOf(existedTransaction.getStatus()) != PaymentStatus.AUTHORIZED){
+        if(!PaymentStatus.valueOf(existedTransaction.getStatus()).equals(PaymentStatus.AUTHORIZED)){
             throw AppServerExceptions.INSTANCE.invalidPaymentStatus(
                     existedTransaction.getStatus().toString()).exception();
         }
@@ -239,9 +239,9 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
         final PaymentAPI api = PaymentAPI.Reverse;
         final PaymentTransaction existedTransaction = getPaymentById(paymentId);
         final PaymentEventType eventType;
-        if(PaymentStatus.valueOf(existedTransaction.getStatus()) == PaymentStatus.AUTHORIZED){
+        if(PaymentStatus.valueOf(existedTransaction.getStatus()).equals(PaymentStatus.AUTHORIZED)){
             eventType = PaymentEventType.AUTH_REVERSE;
-        }else if(PaymentStatus.valueOf(existedTransaction.getStatus()) == PaymentStatus.AUTHORIZED){
+        }else if(PaymentStatus.valueOf(existedTransaction.getStatus()).equals(PaymentStatus.AUTHORIZED)){
             eventType = PaymentEventType.SUBMIT_SETTLE_REVERSE;
         }else{
             throw AppServerExceptions.INSTANCE.invalidPaymentStatus(
@@ -371,7 +371,7 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
         if(existing == null){
             trackingUuidRepository.saveTrackingUuid(trackingUuid);
         }else{
-            if(existing.getPaymentId().longValue() != request.getPaymentId().longValue() ||
+            if(existing.getPaymentId().equals(request.getPaymentId()) ||
                     !existing.getApi().toString().equalsIgnoreCase(api.toString())){
                 throw AppClientExceptions.INSTANCE.duplicatedTrackingUuid(
                         request.getTrackingUuid().toString()).exception();
@@ -393,7 +393,7 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
             if(request.getChargeInfo().getAmount() == null){
                 throw AppClientExceptions.INSTANCE.missingAmount().exception();
             }
-            if(request.getChargeInfo().getCurrency() == null || request.getChargeInfo().getCurrency().isEmpty()){
+            if(CommonUtil.isNullOrEmpty(request.getChargeInfo().getCurrency())){
                 throw AppClientExceptions.INSTANCE.missingCurrency().exception();
             }
         }
@@ -441,7 +441,7 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
         String merchantRef = merchantAccountRepository.getMerchantAccountRef(
                 paymentProviderRepository.getProviderId(providerName)
                 , request.getChargeInfo().getCurrency());
-        if(merchantRef == null || merchantRef.isEmpty()){
+        if(CommonUtil.isNullOrEmpty(merchantRef)){
             throw AppServerExceptions.INSTANCE.merchantRefNotAvailable(
                     request.getChargeInfo().getCurrency()).exception();
         }

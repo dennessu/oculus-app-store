@@ -13,42 +13,32 @@ import java.util.Date;
  */
 public class GetOptions {
 
-    @QueryParam("page")
     private Integer page;
 
-    @QueryParam("size")
     private Integer size;
 
     @QueryParam("status")
     private String status;
 
-    @QueryParam("revision")
     private Long revision;
 
-    @QueryParam("fields")
     private String fields;
 
-    @QueryParam("order")
     private String order;
 
-    @QueryParam("expand")
     private String expand;
 
-    @QueryParam("locale")
     private String locale;
 
-    @QueryParam("country")
     private String country;
 
-    @QueryParam("currency")
     private String currency;
 
-    @QueryParam("modifiedSince")
     private Date modifiedSince;
 
-    @QueryParam("modifiedUntil")
     private Date modifiedUntil;
 
+    @QueryParam("status")
     public String getStatus() {
         return status;
     }
@@ -57,10 +47,12 @@ public class GetOptions {
         this.status = status;
     }
 
+    @QueryParam("revision")
     public Long getRevision() { return revision;    }
 
     public void setRevision(Long revision) { this.revision = revision;}
 
+    @QueryParam("page")
     public Integer getPage() {
         return page;
     }
@@ -69,6 +61,7 @@ public class GetOptions {
         this.page = page;
     }
 
+    @QueryParam("size")
     public Integer getSize() {
         return size;
     }
@@ -77,6 +70,7 @@ public class GetOptions {
         this.size = size;
     }
 
+    @QueryParam("fields")
     public String getFields() {
         return fields;
     }
@@ -85,6 +79,7 @@ public class GetOptions {
         this.fields = fields;
     }
 
+    @QueryParam("order")
     public String getOrder() {
         return order;
     }
@@ -93,6 +88,7 @@ public class GetOptions {
         this.order = order;
     }
 
+    @QueryParam("expand")
     public String getExpand() {
         return expand;
     }
@@ -101,6 +97,7 @@ public class GetOptions {
         this.expand = expand;
     }
 
+    @QueryParam("locale")
     public String getLocale() {
         return locale;
     }
@@ -109,6 +106,7 @@ public class GetOptions {
         this.locale = locale;
     }
 
+    @QueryParam("country")
     public String getCountry() {
         return country;
     }
@@ -117,6 +115,7 @@ public class GetOptions {
         this.country = country;
     }
 
+    @QueryParam("currency")
     public String getCurrency() {
         return currency;
     }
@@ -125,6 +124,7 @@ public class GetOptions {
         this.currency = currency;
     }
 
+    @QueryParam("modifiedSince")
     public Date getModifiedSince() {
         return modifiedSince;
     }
@@ -133,6 +133,7 @@ public class GetOptions {
         this.modifiedSince = modifiedSince;
     }
 
+    @QueryParam("modifiedUntil")
     public Date getModifiedUntil() {
         return modifiedUntil;
     }

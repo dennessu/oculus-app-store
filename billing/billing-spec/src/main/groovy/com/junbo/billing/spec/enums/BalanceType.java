@@ -14,6 +14,7 @@ import com.junbo.common.util.Identifiable;
 public enum BalanceType implements Identifiable<Short> {
     DEBIT((short)1),
     DELAY_DEBIT((short)2),
+    MANUAL_CAPTURE((short)3),
     CREDIT((short)4),
     REFUND((short)8);
 

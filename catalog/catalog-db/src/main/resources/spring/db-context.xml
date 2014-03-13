@@ -1,13 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <import resource="classpath*:spring/common-context.xml"/>
+    <import resource="classpath*:spring/transaction.xml"/>
+    <import resource="classpath*:spring/sharding-context.xml"/>
+
+    <context:annotation-config/>
+    <tx:annotation-driven/>
 
     <context:component-scan base-package="com.junbo.catalog.db"/>
 
+    <bean id="catalogDataSource" class="bitronix.tm.resource.jdbc.PoolingDataSource"
+          init-method="init" destroy-method="close">
+        <property name="uniqueName" value="jdbc/id_ds1"/>
+        <property name="className" value="org.postgresql.xa.PGXADataSource"/>
+        <property name="minPoolSize" value="${catalog.db.minConnectionsPerPartition}"/>
+        <property name="maxPoolSize" value="${catalog.db.maxConnectionsPerPartition}"/>
+
+        <property name="useTmJoin" value="true"/>
+        <property name="allowLocalTransactions" value="true"/>
+
+        <property name="driverProperties">
+            <props>
+                <prop key="url">${catalog.db.url}</prop>
+                <prop key="user">${catalog.db.username}</prop>
+                <prop key="password">${catalog.db.password}</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="sessionFactory"
+          class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="dataSource" ref="catalogDataSource"/>
+        <property name="packagesToScan" value="com.junbo.catalog.db.entity"/>
+        <property name="jtaTransactionManager" ref="transactionManager"/>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">${catalog.hibernate.dialect}</prop>
+                <prop key="hibernate.max_fetch_depth">${catalog.hibernate.max_fetch_depth}</prop>
+                <prop key="hibernate.jdbc.fetch_size">${catalog.hibernate.fetch_size}</prop>
+                <prop key="hibernate.jdbc.batch_size">${catalog.hibernate.batch_size}</prop>
+                <prop key="hibernate.show_sql">${catalog.hibernate.show_sql}</prop>
+            </props>
+        </property>
+    </bean>
+
+    <tx:annotation-driven transaction-manager="transactionManager"/>
     <!--Data source has the database information -->
-    <bean id="dataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
+    <!--bean id="dataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
         <property name="driverClass" value="${catalog.db.driverClassName}"/>
         <property name="jdbcUrl" value="${catalog.db.url}"/>
         <property name="username" value="${catalog.db.username}"/>
@@ -18,10 +61,10 @@
         <property name="acquireIncrement" value="${catalog.db.acquireIncrement}"/>
         <property name="statementsCacheSize" value="${catalog.db.statementsCacheSize}"/>
         <property name="releaseHelperThreads" value="${catalog.db.releaseHelperThreads}"/>
-    </bean>
+    </bean-->
 
     <!-- SessonFactory for Hibernate -->
-    <bean id="sessionFactory"
+    <!--bean id="sessionFactory"
           class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
         <property name="dataSource" ref="dataSource"/>
         <property name="packagesToScan" value="com.junbo.catalog.db.entity"/>
@@ -34,16 +77,18 @@
                 <prop key="hibernate.show_sql">${catalog.hibernate.show_sql}</prop>
             </props>
         </property>
-    </bean>
+    </bean-->
 
     <!-- Transaction Manager -->
-    <bean id="transactionManager"
+    <!--bean id="transactionManager"
           class="org.springframework.orm.hibernate4.HibernateTransactionManager">
         <property name="sessionFactory" ref="sessionFactory"/>
-    </bean>
+    </bean-->
 
     <!-- Dao -->
-    <bean id="baseDao" class="com.junbo.catalog.db.dao.impl.BaseDaoImpl" abstract="true"/>
+    <bean id="baseDao" class="com.junbo.catalog.db.dao.impl.BaseDaoImpl" abstract="true">
+        <property name="idGenerator" ref="oculus48IdGenerator" />
+    </bean>
     <bean id="promotionDraftDao" class="com.junbo.catalog.db.dao.impl.PromotionDraftDaoImpl" parent="baseDao">
         <property name="entityType" value="com.junbo.catalog.db.entity.PromotionDraftEntity"/>
     </bean>
@@ -63,6 +108,10 @@
         <property name="entityType" value="com.junbo.catalog.db.entity.OfferEntity"/>
     </bean>
 
+    <bean id="attributeDao" class="com.junbo.catalog.db.dao.impl.AttributeDaoImpl" parent="baseDao">
+        <property name="entityType" value="com.junbo.catalog.db.entity.AttributeEntity"/>
+    </bean>
+
     <!-- Repository -->
     <bean id="itemDraftRepository" class="com.junbo.catalog.db.repo.ItemDraftRepository"/>
     <bean id="itemHistoryRepository" class="com.junbo.catalog.db.repo.ItemRepository"/>
@@ -70,4 +119,6 @@
     <bean id="offerHistoryRepository" class="com.junbo.catalog.db.repo.OfferRepository"/>
     <bean id="promotionDraftRepository" class="com.junbo.catalog.db.repo.PromotionDraftRepository"/>
     <bean id="promotionHistoryRepository" class="com.junbo.catalog.db.repo.PromotionRepository"/>
+
+    <bean id="attributeRepository" class="com.junbo.catalog.db.repo.AttributeRepository"/>
 </beans>

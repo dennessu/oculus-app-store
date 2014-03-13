@@ -32,6 +32,10 @@ public interface BalanceResource {
     @Path("/quote")
     Promise<Balance> quoteBalance(Balance balance);
 
+    @POST
+    @Path("/capture")
+    Promise<Balance> captureBalance(Balance balance);
+
     @GET
     @Path("/{balanceId}")
     Promise<Balance> getBalance(@PathParam("balanceId") BalanceId balanceId);

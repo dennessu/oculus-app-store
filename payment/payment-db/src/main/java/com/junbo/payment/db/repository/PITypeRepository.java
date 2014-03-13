@@ -7,6 +7,7 @@
 package com.junbo.payment.db.repository;
 
 import com.junbo.oom.core.MappingContext;
+import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.db.dao.PaymentInstrumentTypeDao;
 import com.junbo.payment.db.entity.PaymentInstrumentTypeEntity;
 import com.junbo.payment.db.mapper.PaymentMapper;
@@ -26,7 +27,7 @@ public class PITypeRepository extends DomainDataRepository<PaymentInstrumentType
     private PaymentMapper paymentMapperImpl;
 
     public PaymentInstrumentType getPITypeByName(String name){
-        if(name == null || name.isEmpty()){
+        if(CommonUtil.isNullOrEmpty(name)){
             return null;
         }
         for(PaymentInstrumentTypeEntity entity : getDomainData()){

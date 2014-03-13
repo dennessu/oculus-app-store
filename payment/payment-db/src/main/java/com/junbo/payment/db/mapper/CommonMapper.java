@@ -24,7 +24,7 @@ public class CommonMapper {
     private PaymentProviderRepository paymentProviderRepository;
 
     public CreditCardType toCreditCardTypeEnum(String creditCardType) {
-        return CreditCardType.valueOf(creditCardType.replace(" ", ""));
+        return CreditCardType.valueOf(creditCardType.replace(" ", "").toUpperCase());
     }
 
     public String toCreditCardType(CreditCardType creditCardType) {
@@ -32,7 +32,7 @@ public class CommonMapper {
     }
 
     public PIStatus toPIStatusEnum(String status){
-        return PIStatus.valueOf(status);
+        return PIStatus.valueOf(status.toUpperCase());
     }
 
     public String toPIStatus(PIStatus status){
@@ -40,7 +40,7 @@ public class CommonMapper {
     }
 
     public PIType toPITypeEnum(String piType){
-        return PIType.valueOf(piType);
+        return PIType.valueOf(piType.toUpperCase());
     }
 
     public String toPIType(PIType piType){
@@ -48,7 +48,7 @@ public class CommonMapper {
     }
 
     public PhoneType toPhoneTypeEnum(String phoneType){
-        return PhoneType.valueOf(phoneType);
+        return PhoneType.valueOf(phoneType.toUpperCase());
     }
 
     public String toPhoneType(PhoneType phoneType){
@@ -64,7 +64,7 @@ public class CommonMapper {
     }
 
     public PaymentType toPaymentEnum(String type){
-        return PaymentType.valueOf(type);
+        return PaymentType.valueOf(type.toUpperCase());
     }
 
     public String toPaymentStatus(PaymentStatus status){
@@ -72,7 +72,7 @@ public class CommonMapper {
     }
 
     public PaymentStatus toPaymentStatusEnum(String status){
-        return PaymentStatus.valueOf(status);
+        return PaymentStatus.valueOf(status.toUpperCase());
     }
 
     public String toPaymentEventType(PaymentEventType type){
@@ -80,11 +80,11 @@ public class CommonMapper {
     }
 
     public PaymentEventType toPaymentEventTypeEnum(String type){
-        return PaymentEventType.valueOf(type);
+        return PaymentEventType.valueOf(type.toUpperCase());
     }
 
     public PaymentAPI toPaymentAPIEunm(String api){
-        return PaymentAPI.valueOf(api);
+        return PaymentAPI.valueOf(api.toUpperCase());
     }
 
     public String toPaymentAPI(PaymentAPI api){

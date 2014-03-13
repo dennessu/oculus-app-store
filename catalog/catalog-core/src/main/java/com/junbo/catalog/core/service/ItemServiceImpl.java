@@ -30,4 +30,9 @@ public class ItemServiceImpl extends BaseServiceImpl<Item> implements ItemServic
     public ItemDraftRepository getEntityDraftRepo() {
         return itemDraftRepository;
     }
+
+    @Override
+    protected String getEntityType() {
+        return "Item";
+    }
 }

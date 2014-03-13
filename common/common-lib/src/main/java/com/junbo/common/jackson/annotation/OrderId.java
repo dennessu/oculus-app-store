@@ -24,6 +24,6 @@ import java.lang.annotation.RetentionPolicy;
 @JacksonAnnotationsInside
 @JsonSerialize(using = OrderIdSerializer.class, include = JsonSerialize.Inclusion.NON_NULL)
 @JsonDeserialize(using = OrderIdDeserializer.class)
-@ResourceType("orders")
+@ResourcePath("/orders")
 public @interface OrderId {
 }

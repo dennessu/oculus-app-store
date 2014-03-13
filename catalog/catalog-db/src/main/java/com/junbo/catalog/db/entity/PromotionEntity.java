@@ -24,7 +24,7 @@ import java.util.Date;
 @Entity
 @Table(name = "promotion")
 @TypeDefs(@TypeDef(name="StringJsonObject", typeClass=StringJsonUserType.class))
-public class PromotionEntity extends BaseEntity {
+public class PromotionEntity extends VersionedEntity {
     private Long id;
     private Long promotionId;
     private int revision;

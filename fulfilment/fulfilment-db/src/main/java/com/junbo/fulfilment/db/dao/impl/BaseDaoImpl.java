@@ -15,6 +15,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.List;
 
@@ -28,6 +29,7 @@ public abstract class BaseDaoImpl<T extends BaseEntity> implements BaseDao<T> {
     private SessionFactory sessionFactory;
 
     @Autowired
+    @Qualifier("oculus48IdGenerator")
     private IdGenerator idGenerator;
 
     private Class<T> entityType;

@@ -22,9 +22,9 @@ import javax.persistence.Table;
 @Entity
 @Table(name="item_draft")
 @TypeDefs(@TypeDef(name="json-string", typeClass=StringJsonUserType.class))
-public class ItemEntity extends BaseEntity{
+public class ItemEntity extends VersionedEntity {
     private Long id;
-    private String type;
+    private Long type;
     private Long itemId;
     private String name;
     private int revision;
@@ -51,11 +51,11 @@ public class ItemEntity extends BaseEntity{
     }
 
     @Column(name = "type")
-    public String getType() {
+    public Long getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(Long type) {
         this.type = type;
     }
 

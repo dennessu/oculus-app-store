@@ -24,6 +24,8 @@ public class SessionFactoryWrapper implements ApplicationContextAware {
     private ApplicationContext applicationContext;
     private ShardDataSourceRegistry dataSourceRegistry;
     private String sessionFactoryBeanName;
+    private String dataBaseName;
+    private String[] packagesToScan;
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
@@ -38,20 +40,24 @@ public class SessionFactoryWrapper implements ApplicationContextAware {
         this.sessionFactoryBeanName = sessionFactoryBeanName;
     }
 
-    private Map<ShardDataSourceKey, SessionFactory> cache = new HashMap<ShardDataSourceKey, SessionFactory>();
+    public void setDataBaseName(String dataBaseName) {
+        this.dataBaseName = dataBaseName;
+    }
 
-    public SessionFactory resolve(ShardDataSourceKey key) {
-        if (key == null) {
-            return null;
+    public void setPackagesToScan(String... packagesToScan) {
+        this.packagesToScan = packagesToScan;
+    }
+
+    private Map<Integer, SessionFactory> cache = new HashMap<Integer, SessionFactory>();
+
+    public SessionFactory resolve(int shardId) {
+        if (cache.containsKey(shardId)) {
+            return cache.get(shardId);
         }
-        if (cache.containsKey(key)) {
-            return cache.get(key);
-        }
 
-        SessionFactory sf = this.createShardedSessionFactory(key.getShardId(), key.getDatabaseName(),
-                "com.junbo.sharding.test.data.dao");
-        cache.put(key, sf);
+        SessionFactory sf = this.createShardedSessionFactory(shardId, this.dataBaseName, this.packagesToScan);
 
+        cache.put(shardId, sf);
         return sf;
     }
 

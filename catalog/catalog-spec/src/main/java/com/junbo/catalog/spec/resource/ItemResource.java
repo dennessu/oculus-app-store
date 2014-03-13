@@ -5,15 +5,14 @@
  */
 package com.junbo.catalog.spec.resource;
 
-import com.junbo.catalog.spec.model.common.EntitiesGetOptions;
 import com.junbo.catalog.spec.model.common.EntityGetOptions;
 import com.junbo.catalog.spec.model.common.ResultList;
 import com.junbo.catalog.spec.model.item.Item;
-import com.junbo.common.id.Id;
+import com.junbo.catalog.spec.model.item.ItemsGetOptions;
+import com.junbo.common.id.ItemId;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 
-import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
@@ -27,11 +26,11 @@ import javax.ws.rs.core.MediaType;
 public interface ItemResource {
     @GET
     @Path("/")
-    Promise<ResultList<Item>> getItems(@BeanParam EntitiesGetOptions options);
+    Promise<ResultList<Item>> getItems(@BeanParam ItemsGetOptions options);
 
     @GET
-    @Path("/{ItemId}")
-    Promise<Item> getItem(@PathParam("ItemId") Id itemId, @BeanParam EntityGetOptions options);
+    @Path("/{itemId}")
+    Promise<Item> getItem(@PathParam("itemId") ItemId itemId, @BeanParam EntityGetOptions options);
 
     /**
      * Create a draft item.
@@ -41,10 +40,10 @@ public interface ItemResource {
      */
     @POST
     @Path("/")
-    Promise<Item> create(@Valid Item item);
+    Promise<Item> create(Item item);
 
     @PUT
     @Path("/{itemId}")
-    Promise<Item> update(@PathParam("itemId") Id itemId, @Valid Item item);
+    Promise<Item> update(@PathParam("itemId") ItemId itemId, Item item);
 }
 

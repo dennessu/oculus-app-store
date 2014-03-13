@@ -30,4 +30,9 @@ public class PromotionServiceImpl extends BaseServiceImpl<Promotion> implements 
     public PromotionDraftRepository getEntityDraftRepo() {
         return promotionDraftRepository;
     }
+
+    @Override
+    protected String getEntityType() {
+        return "Promotion";
+    }
 }

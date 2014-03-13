@@ -9,6 +9,7 @@ package com.junbo.payment.db.dao;
 import com.junbo.payment.db.entity.GenericEntity;
 import com.junbo.sharding.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -20,6 +21,7 @@ import java.util.Date;
  */
 public class CommonDataDAOImpl<T extends GenericEntity, ID extends Serializable> extends GenericDAOImpl<T, ID> {
     @Autowired
+    @Qualifier("oculus48IdGenerator")
     protected IdGenerator idGenerator;
 
     public CommonDataDAOImpl(Class<T> persistentClass) {
@@ -47,15 +49,5 @@ public class CommonDataDAOImpl<T extends GenericEntity, ID extends Serializable>
         }
         currentSession().update(newt);
         return newt;
-    }
-
-    protected long generateId() {
-        try {
-            Thread.sleep(10);
-        } catch (InterruptedException e) {
-            //ignore
-        }
-
-        return System.currentTimeMillis();
     }
 }

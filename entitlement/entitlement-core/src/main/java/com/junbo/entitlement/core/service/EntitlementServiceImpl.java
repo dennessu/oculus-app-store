@@ -105,6 +105,14 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     @Override
     @Transactional
     public Entitlement updateEntitlement(Long entitlementId, Entitlement entitlement) {
+        if (entitlement.getEntitlementId() == null) {
+            throw AppErrors.INSTANCE.missingField("id").exception();
+        }
+        if (!entitlementId.equals(entitlement.getEntitlementId())) {
+            throw AppErrors.INSTANCE.fieldNotMatch("id", entitlement.getEntitlementId().toString(),
+                    entitlementId.toString()).exception();
+        }
+
         Entitlement existingEntitlement = entitlementRepository.get(entitlementId);
 
         if (existingEntitlement == null) {
@@ -185,8 +193,8 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
         if (entitlementSearchParam.getDeveloperId() == null) {
             throw AppErrors.INSTANCE.missingField("developerId").exception();
         }
-        checkUser(entitlementSearchParam.getUserId());
-        checkDeveloper(entitlementSearchParam.getDeveloperId());
+        checkUser(entitlementSearchParam.getUserId().getValue());
+        checkDeveloper(entitlementSearchParam.getDeveloperId().getValue());
         List<Entitlement> entitlementEntities = entitlementRepository.getBySearchParam(
                 entitlementSearchParam, pageMetadata);
         return entitlementEntities;

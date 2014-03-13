@@ -11,12 +11,10 @@ import com.junbo.catalog.common.util.Constants;
 import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.db.dao.BaseDao;
 import com.junbo.catalog.db.entity.BaseEntity;
-import com.junbo.catalog.spec.model.common.Status;
+import com.junbo.sharding.IdGenerator;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -31,15 +29,14 @@ public abstract class BaseDaoImpl<T extends BaseEntity> implements BaseDao<T> {
 
     private Class<T> entityType;
 
+    private IdGenerator idGenerator;
+
     protected Session currentSession() {
         return sessionFactory.getCurrentSession();
     }
 
     public Long create(T entity) {
-        // remove it later
-        entity.setId(genSimpleId());
-
-        entity.setTimestamp(Utils.currentTimestamp());
+        entity.setId(idGenerator.nextId());
         entity.setCreatedTime(Utils.now());
         entity.setCreatedBy(Constants.SYSTEM_INTERNAL);
         entity.setUpdatedTime(Utils.now());
@@ -52,26 +49,7 @@ public abstract class BaseDaoImpl<T extends BaseEntity> implements BaseDao<T> {
         return (T) currentSession().get(entityType, id);
     }
 
-    protected T get(final Long id, final Long timestamp, final String idPropertyName) {
-        T entity = findBy(new Action<Criteria>() {
-            public void apply(Criteria criteria) {
-                criteria.add(Restrictions.eq(idPropertyName, id));
-                if (timestamp != null) {
-                    criteria.add(Restrictions.le("timestamp", timestamp));
-                }
-                criteria.addOrder(Order.desc("timestamp"));
-            }
-        });
-
-        if (entity!=null && Status.DELETED.equalsIgnoreCase(entity.getStatus())) {
-            entity = null;
-        }
-
-        return entity;
-    }
-
     public Long update(T entity) {
-        entity.setTimestamp(Utils.currentTimestamp());
         entity.setUpdatedTime(Utils.now());
         entity.setUpdatedBy(Constants.SYSTEM_INTERNAL);
 
@@ -82,10 +60,6 @@ public abstract class BaseDaoImpl<T extends BaseEntity> implements BaseDao<T> {
     public Boolean exists(Long id) {
         return get(id) != null;
     }
-
-    /*public void flush() {
-        currentSession().flush();
-    }*/
 
     protected T findBy(Action<Criteria> filter) {
         Criteria criteria = currentSession().createCriteria(entityType);
@@ -108,19 +82,7 @@ public abstract class BaseDaoImpl<T extends BaseEntity> implements BaseDao<T> {
         this.entityType = entityType;
     }
 
-    /**
-     * Generate simple id.
-     * @deprecated deprecated.
-     * @return simple id
-     */
-    @Deprecated
-    private long genSimpleId() {
-        try {
-            Thread.sleep(10);
-        } catch (InterruptedException e) {
-            //ignore
-        }
-
-        return System.currentTimeMillis();
+    public void setIdGenerator(IdGenerator idGenerator) {
+        this.idGenerator = idGenerator;
     }
 }

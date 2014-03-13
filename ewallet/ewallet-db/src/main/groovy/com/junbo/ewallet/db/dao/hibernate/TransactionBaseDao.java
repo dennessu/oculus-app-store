@@ -11,6 +11,7 @@ import com.junbo.sharding.IdGenerator;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.Date;
 
@@ -21,6 +22,7 @@ import java.util.Date;
  */
 public class TransactionBaseDao<T extends EntityWithCreated> {
     @Autowired
+    @Qualifier("ewalletSessionFactory")
     private SessionFactory sessionFactory;
     @Autowired
     private IdGenerator idGenerator;

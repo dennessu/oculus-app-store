@@ -47,6 +47,10 @@ public interface AppErrors {
             description ="Balance type {0} invalid")
     AppError invalidBalanceType(String type);
 
+    @ErrorDef(httpStatusCode = 403, code = ErrorCode.INVALID_BALANCE_STATUS,
+            description ="Balance status {0} invalid")
+    AppError invalidBalanceStatus(String status);
+
     @ErrorDef(httpStatusCode = 403, code = ErrorCode.INVALID_BALANCE_TOTAL,
             description ="Balance total amount {0} invalid")
     AppError invalidBalanceTotal(String total);
@@ -54,4 +58,16 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 403, code = ErrorCode.TAX_CALCULATION_ERROR,
             description ="Fail to calculate tax, reason: {0}")
     AppError taxCalculationError(String reason);
+
+    @ErrorDef(httpStatusCode = 404, code = ErrorCode.BALANCE_NOT_FOUND,
+            description ="Balance with id {0} not found")
+    AppError balanceNotFound(String id);
+
+    @ErrorDef(httpStatusCode = 404, code = ErrorCode.BILLING_TRANSACTION_NOT_FOUND,
+            description ="billing transaction in balance with id {0} not found")
+    AppError transactionNotFound(String id);
+
+    @ErrorDef(httpStatusCode = 403, code = ErrorCode.INVALID_PAYMENT_ID,
+            description ="Payment with id {0} invalid")
+    AppError invalidPaymentId(String id);
 }

@@ -11,7 +11,7 @@ import com.junbo.catalog.db.entity.PromotionEntity;
 /**
  * Promotion DAO definition.
  */
-public interface PromotionDao extends BaseDao<PromotionEntity> {
+public interface PromotionDao extends VersionedDao<PromotionEntity> {
     PromotionEntity getPromotion(Long promotionId, Long timestamp);
     //List<PromotionEntity> getPromotions(long promotionId, int start, int size);
 }
