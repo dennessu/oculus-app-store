@@ -27,24 +27,24 @@ class HackClientRepo implements ClientRepository {
         Set<String> redirectUris = []
         redirectUris.add('http://localhost')
         redirectUris.add('*')
-        client.setAllowedRedirectUris(redirectUris)
+        client.setRedirectUris(redirectUris)
 
         Set<String> scopes = []
         scopes.add('openid')
         scopes.add('identity')
-        client.setAllowedScopes(scopes)
+        client.setScopes(scopes)
 
         Set<ResponseType> responseTypes = []
         responseTypes.add(ResponseType.CODE)
         responseTypes.add(ResponseType.ID_TOKEN)
         responseTypes.add(ResponseType.TOKEN)
-        client.setAllowedResponseTypes(responseTypes)
+        client.setResponseTypes(responseTypes)
 
         client.idTokenIssuer = 'www.junbo.com'
 
         Set<String> logoutRedirectUris = []
         logoutRedirectUris.add('http://localhost')
-        client.allowedLogoutRedirectUris = logoutRedirectUris
+        client.logoutRedirectUris = logoutRedirectUris
 
         client.defaultLogoutRedirectUri = 'http://localhost'
     }
@@ -55,5 +55,20 @@ class HackClientRepo implements ClientRepository {
             return client
         }
         return null
+    }
+
+    @Override
+    Client saveClient(Client client) {
+        return null
+    }
+
+    @Override
+    Client updateClient(Client client) {
+        return null
+    }
+
+    @Override
+    void deleteClient(Client client) {
+
     }
 }

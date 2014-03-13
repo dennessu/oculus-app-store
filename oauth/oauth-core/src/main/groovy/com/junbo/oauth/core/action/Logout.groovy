@@ -90,7 +90,7 @@ class Logout implements Action {
             if (StringUtils.isEmpty(postLogoutRedirectUri)) {
                 postLogoutRedirectUri = client.defaultLogoutRedirectUri
             } else {
-                if (!client.allowedLogoutRedirectUris.contains(postLogoutRedirectUri)) {
+                if (!client.logoutRedirectUris.contains(postLogoutRedirectUri)) {
                     throw AppExceptions.INSTANCE.invalidPostLogoutRedirectUri(postLogoutRedirectUri).exception()
                 }
             }

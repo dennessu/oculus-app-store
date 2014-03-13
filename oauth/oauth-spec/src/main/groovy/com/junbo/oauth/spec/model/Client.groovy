@@ -5,6 +5,7 @@
  */
 package com.junbo.oauth.spec.model
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import groovy.transform.CompileStatic
 
 /**
@@ -12,14 +13,44 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class Client {
+    @JsonProperty('client_id')
     String clientId
+
+    @JsonProperty('client_secret')
     String clientSecret
-    Set<String> allowedRedirectUris
+
+    @JsonProperty('client_name')
+    String clientName
+
+    @JsonProperty('redirect_uris')
+    Set<String> redirectUris
+
+    @JsonProperty('default_redirect_uri')
     String defaultRedirectUri
-    Set<String> allowedScopes
+
+    Set<String> scopes
+
+    @JsonProperty('default_scopes')
     Set<String> defaultScopes
-    Set<ResponseType> allowedResponseTypes
+
+    @JsonProperty('response_types')
+    Set<ResponseType> responseTypes
+
+    @JsonProperty('grant_types')
+    Set<GrantType> grantTypes
+
+    @JsonProperty('id_token_issuer')
     String idTokenIssuer
-    Set<String> allowedLogoutRedirectUris
+
+    @JsonProperty('logout_redirect_uris')
+    Set<String> logoutRedirectUris
+
+    @JsonProperty('default_logout_redirect_uri')
     String defaultLogoutRedirectUri
+
+    @JsonProperty('token_endpoint_auth_method')
+    TokenEndpointAuthMethod tokenEndpointAuthMethod
+
+    @JsonProperty('logo_uri')
+    String logoUri
 }

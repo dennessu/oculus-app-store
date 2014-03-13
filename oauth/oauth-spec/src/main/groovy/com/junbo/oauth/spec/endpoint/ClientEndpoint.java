@@ -39,7 +39,7 @@ public interface ClientEndpoint {
                               Client client);
 
     @POST
-    @Path("/{clientId}")
+    @Path("/{clientId}/reset-secret")
     Promise<Client> resetSecret(@HeaderParam("Authorization") String authorization,
                                 @PathParam("clientId") String clientId);
 }

@@ -38,7 +38,7 @@ class ValidateRedirectUri implements Action {
             throw AppExceptions.INSTANCE.invalidRedirectUri(redirectUri).exception()
         }
 
-        boolean allowed = client.allowedRedirectUris.any {
+        boolean allowed = client.redirectUris.any {
             String allowedRedirectUri -> match(redirectUri, allowedRedirectUri)
         }
 
