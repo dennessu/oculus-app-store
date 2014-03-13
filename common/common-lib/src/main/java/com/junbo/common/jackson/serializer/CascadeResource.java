@@ -6,13 +6,13 @@
 package com.junbo.common.jackson.serializer;
 
 /**
- * CascadeResourceId.
+ * CascadeResource.
  */
-public class CascadeResourceId {
+public class CascadeResource {
     private Object primaryId;
     private Object[] cascadeIds;
 
-    public CascadeResourceId(Object primaryId, Object... cascadeIds) {
+    public CascadeResource(Object primaryId, Object... cascadeIds) {
         this.primaryId = primaryId;
         this.cascadeIds = cascadeIds;
     }
