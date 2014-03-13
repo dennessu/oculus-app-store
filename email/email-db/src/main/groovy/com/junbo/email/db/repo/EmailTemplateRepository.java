@@ -9,9 +9,11 @@ import com.junbo.common.id.EmailId;
 import com.junbo.email.db.dao.EmailTemplateDao;
 import com.junbo.email.db.entity.EmailTemplateEntity;
 import com.junbo.email.db.mapper.EmailMapper;
+import com.junbo.email.spec.model.EmailTemplate;
 import com.junbo.sharding.IdGeneratorFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -20,6 +22,7 @@ import java.util.List;
  * Repository of EmailTemplate.
  */
 @Component
+@Transactional
 public class EmailTemplateRepository {
     @Autowired
     private EmailTemplateDao emailTemplateDao;
@@ -42,8 +45,9 @@ public class EmailTemplateRepository {
     }
 
 
-    public EmailTemplateEntity getEmailTemplateByName(String name) {
-        return emailTemplateDao.getEmailTemplateByName(name);
+    public EmailTemplate getEmailTemplateByName(String name) {
+        EmailTemplateEntity entity = emailTemplateDao.getEmailTemplateByName(name);
+        return emailMapper.toEmailTemplate(entity);
     }
 
     public List<EmailTemplateEntity> getEmailTemplateList() {

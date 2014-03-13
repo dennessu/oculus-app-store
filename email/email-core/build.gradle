@@ -1,11 +1,7 @@
 apply plugin: 'java'
 
 dependencies {
-    //compile (libraries.asyncclient)
-    compile ('org.apache.httpcomponents:httpclient:4.3.2')
-//    compile ('org.apache.httpcomponents:httpcore:4.3.2')
-//    compile ('org.apache.httpcomponents:httpclient:4.3.2')
-//    compile ('org.apache.httpcomponents:httpcore-nio:4.3.2')
+    compile project(':email-clientproxy')
     compile project(':email-db')
     compile project(':email-spec')
     compile project(':email-common')

@@ -3,11 +3,13 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.email.core.provider;
+package com.junbo.email.clientproxy.impl.mandrill
 
 /**
- * Interface of EmailProvider.
+ * Recipient info of Mandrill request.
  */
-public interface EmailProvider {
-    Response send(Request request);
+class To {
+    String email
+    String name
+    String type
 }
