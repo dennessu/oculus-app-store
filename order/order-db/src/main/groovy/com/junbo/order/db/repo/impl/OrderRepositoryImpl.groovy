@@ -100,11 +100,9 @@ class OrderRepositoryImpl implements OrderRepository {
     }
 
     @Override
-    OrderEvent createOrderEvent(OrderEvent event, String flowName, UUID trackingUuid) {
+    OrderEvent createOrderEvent(OrderEvent event) {
         def entity = modelMapper.toOrderEventEntity(event, new MappingContext())
         entity.eventId = idGenerator.nextId(entity.orderId)
-        entity.flowName = flowName
-        entity.trackingUuid = trackingUuid
         orderEventDao.create(entity)
         return modelMapper.toOrderEventModel(entity, new MappingContext())
     }
