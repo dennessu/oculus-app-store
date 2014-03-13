@@ -10,12 +10,4 @@
     <context:component-scan base-package="com.junbo.order.spec.resource.adapter" />
     <context:component-scan base-package="com.junbo.order.rest.resource" />
 
-    <bean id="defaultUserResource" class="com.junbo.order.mock.MockIdentityResource"/>
-    <bean id="defaultBalanceResource" class="com.junbo.order.mock.MockBalanceResource"/>
-    <bean id="defaultOfferResource" class="com.junbo.order.mock.MockCatalogResource"/>
-    <bean id="defaultRatingResource" class="com.junbo.order.mock.MockRatingResource"/>
-    <bean id="defaultPaymentInstrumentResource" class="com.junbo.order.mock.MockPaymentInstrumentResource"/>
-    <bean id="defaultShippingAddressResource" class="com.junbo.order.mock.MockShippingAddressResource"/>
-    <bean id="defaultFulfilmentResource" class="com.junbo.order.mock.MockFulfillmentResource"/>
-
 </beans>
