@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.testing.customerscenario.util;
+package com.junbo.testing.buyerscenario.util;
 
 import org.slf4j.bridge.SLF4JBridgeHandler;
 

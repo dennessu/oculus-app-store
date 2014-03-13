@@ -3,14 +3,15 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.testing.customerscenario.user;
+package com.junbo.testing.buyerscenario.user;
 
-import com.junbo.testing.customerscenario.util.BaseTestClass;
-
+import com.junbo.testing.buyerscenario.util.BaseTestClass;
+import com.junbo.testing.common.apihelper.identity.impl.UserServiceImpl;
+import com.junbo.testing.common.blueprint.User;
 import com.junbo.testing.common.libs.LogHelper;
-import com.junbo.testing.common.apihelper.user.GetUser;
-import com.junbo.testing.common.apihelper.user.PostUser;
 import com.junbo.testing.common.property.*;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -24,9 +25,9 @@ public class TestPostUser extends BaseTestClass {
 
     private LogHelper logger = new LogHelper(TestPostUser.class);
 
-    private final String serverURL = "http://10.0.0.111:8081/rest/users";
+    private final String serverURL = "http://localhost:8080/rest/users";
 
-    @property(
+    @Property(
             priority = Priority.BVT,
             features = "CustomerScenarios",
             component = Component.Identity,
@@ -42,9 +43,8 @@ public class TestPostUser extends BaseTestClass {
     @Test
     public void testPostUser() throws Exception {
 
-        String apiResponse = PostUser.CreateUser(serverURL);
-
-        logger.logInfo("The Response Body is: " + apiResponse);
+        UserServiceImpl userServiceAPI = new UserServiceImpl(serverURL);
+        String apiResponse = userServiceAPI.PostUser();
 
         String[] results = apiResponse.split(",");
         String userId = null;
@@ -62,13 +62,12 @@ public class TestPostUser extends BaseTestClass {
         Assert.assertNotNull(userName);
 
         //Get the user with ID
-        apiResponse = GetUser.GetUserById(serverURL, userId);
+        apiResponse = userServiceAPI.GetUserByUserId(userId);
         Assert.assertTrue(apiResponse.contains(userId), "Can't get user by user ID");
 
         //Get the user with userName
-        apiResponse = GetUser.GetUserByUserName(serverURL, userName);
+        apiResponse = userServiceAPI.GetUserByUserName(userName);
         Assert.assertTrue(apiResponse.contains(userName),  "Can't get user by username");
-
     }
 
 }
