@@ -29,7 +29,6 @@ public class BalanceItemEntity extends BaseEntity {
     private BigDecimal amount;
     private BigDecimal taxAmount;
     private BigDecimal discountAmount;
-    private Boolean taxIncluded;
     private String financeId;
     private Boolean isTaxExempt;
     private Long originalBalanceItemId;
@@ -77,14 +76,6 @@ public class BalanceItemEntity extends BaseEntity {
     }
     public void setTaxAmount(BigDecimal taxAmount) {
         this.taxAmount = taxAmount;
-    }
-
-    @Column(name = "tax_included")
-    public Boolean getTaxIncluded() {
-        return taxIncluded;
-    }
-    public void setTaxIncluded(Boolean taxIncluded) {
-        this.taxIncluded = taxIncluded;
     }
 
     @Column(name = "discount_amount")

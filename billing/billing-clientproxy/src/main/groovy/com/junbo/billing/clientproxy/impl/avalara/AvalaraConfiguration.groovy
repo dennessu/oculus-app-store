@@ -14,4 +14,9 @@ class AvalaraConfiguration {
     String customerCode
     String detailLevel
     String authorization
+    String shipFromStreet
+    String shipFromCity
+    String shipFromState
+    String shipFromPostalCode
+    String shipFromCountry
 }
