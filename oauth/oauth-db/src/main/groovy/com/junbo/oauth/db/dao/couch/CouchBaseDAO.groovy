@@ -22,12 +22,14 @@ import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 
 import javax.ws.rs.core.UriBuilder
+import java.lang.reflect.ParameterizedType
 
 /**
  * CouchBaseDAO.
  */
 @CompileStatic
 abstract class CouchBaseDAO<T extends BaseEntity> implements InitializingBean, BaseDAO<T, String> {
+    protected final Class<T> entityClass
     protected AsyncHttpClient asyncHttpClient
     protected String couchDBUri
     protected String dbName
@@ -45,6 +47,10 @@ abstract class CouchBaseDAO<T extends BaseEntity> implements InitializingBean, B
     @Required
     void setDbName(String dbName) {
         this.dbName = dbName
+    }
+
+    protected CouchBaseDAO() {
+        entityClass = (Class<T>) ((ParameterizedType) getClass().genericSuperclass).actualTypeArguments[0]
     }
 
     @Override
@@ -72,7 +78,8 @@ abstract class CouchBaseDAO<T extends BaseEntity> implements InitializingBean, B
         return entity
     }
 
-    protected T internalGet(String id, Class<T> clazz) {
+    @Override
+    T get(String id) {
         def response = executeRequest(HttpMethod.GET, id, [:], null)
 
         if (response.statusCode != HttpStatus.OK.value()) {
@@ -83,7 +90,7 @@ abstract class CouchBaseDAO<T extends BaseEntity> implements InitializingBean, B
             return null
         }
 
-        T entity = (T) JsonMarshaller.unmarshall(clazz, response.responseBody)
+        T entity = (T) JsonMarshaller.unmarshall(entityClass, response.responseBody)
         return entity.deleted ? null : entity
     }
 

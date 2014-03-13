@@ -12,8 +12,4 @@ import com.junbo.oauth.db.entity.RefreshTokenEntity
  * Javadoc.
  */
 class RedisRefreshTokenDAOImpl extends RedisBaseDAO<RefreshTokenEntity> implements RefreshTokenDAO {
-    @Override
-    RefreshTokenEntity get(String id) {
-        return internalGet(id, RefreshTokenEntity)
-    }
 }

@@ -14,8 +14,4 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class MemcachedLoginStateDAOImpl extends MemcachedBaseDAO<LoginStateEntity> implements LoginStateDAO {
-    @Override
-    LoginStateEntity get(String id) {
-        return internalGet(id, LoginStateEntity)
-    }
 }

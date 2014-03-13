@@ -14,8 +14,4 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class CouchRefreshTokenDAOImpl extends CouchBaseDAO<RefreshTokenEntity> implements RefreshTokenDAO {
-    @Override
-    RefreshTokenEntity get(String id) {
-        return internalGet(id, RefreshTokenEntity)
-    }
 }

@@ -12,8 +12,4 @@ import com.junbo.oauth.db.entity.RememberMeTokenEntity
  * Javadoc.
  */
 class RedisRememberMeTokenDAOImpl extends RedisBaseDAO<RememberMeTokenEntity> implements RememberMeTokenDAO {
-    @Override
-    RememberMeTokenEntity get(String id) {
-        return internalGet(id, RememberMeTokenEntity)
-    }
 }

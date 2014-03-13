@@ -14,8 +14,4 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class RedisAuthorizationCodeDAOImpl extends RedisBaseDAO<AuthorizationCodeEntity> implements AuthorizationCodeDAO {
-    @Override
-    AuthorizationCodeEntity get(String id) {
-        return internalGet(id, AuthorizationCodeEntity)
-    }
 }

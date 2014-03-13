@@ -14,8 +14,4 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class RedisAccessTokenDAOImpl extends RedisBaseDAO<AccessTokenEntity> implements AccessTokenDAO {
-    @Override
-    AccessTokenEntity get(String id) {
-        return internalGet(id, AccessTokenEntity)
-    }
 }

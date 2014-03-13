@@ -14,8 +14,4 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class CouchClientDAOImpl extends CouchBaseDAO<ClientEntity> implements ClientDAO {
-    @Override
-    ClientEntity get(String id) {
-        return internalGet(id, ClientEntity)
-    }
 }

@@ -14,8 +14,4 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class RedisLoginStateDAOImpl extends RedisBaseDAO<LoginStateEntity> implements LoginStateDAO {
-    @Override
-    LoginStateEntity get(String id) {
-        return internalGet(id, LoginStateEntity)
-    }
 }

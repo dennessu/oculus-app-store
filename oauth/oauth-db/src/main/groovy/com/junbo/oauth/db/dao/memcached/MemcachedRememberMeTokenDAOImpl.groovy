@@ -14,8 +14,4 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class MemcachedRememberMeTokenDAOImpl extends MemcachedBaseDAO<RememberMeTokenEntity> implements RememberMeTokenDAO {
-    @Override
-    RememberMeTokenEntity get(String id) {
-        return internalGet(id, RememberMeTokenEntity)
-    }
 }

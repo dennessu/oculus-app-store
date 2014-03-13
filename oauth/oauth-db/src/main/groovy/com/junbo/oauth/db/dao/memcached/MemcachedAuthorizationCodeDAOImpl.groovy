@@ -15,8 +15,4 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class MemcachedAuthorizationCodeDAOImpl extends MemcachedBaseDAO<AuthorizationCodeEntity>
         implements AuthorizationCodeDAO {
-    @Override
-    AuthorizationCodeEntity get(String id) {
-        return internalGet(id, AuthorizationCodeEntity)
-    }
 }

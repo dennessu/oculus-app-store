@@ -14,8 +14,4 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class RedisClientDAOImpl extends RedisBaseDAO<ClientEntity> implements ClientDAO {
-    @Override
-    ClientEntity get(String id) {
-        return internalGet(id, ClientEntity)
-    }
 }

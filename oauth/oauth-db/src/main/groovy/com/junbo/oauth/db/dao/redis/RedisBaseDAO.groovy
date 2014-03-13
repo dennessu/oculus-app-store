@@ -12,11 +12,14 @@ import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 import redis.clients.jedis.Jedis
 
+import java.lang.reflect.ParameterizedType
+
 /**
  * Javadoc.
  */
 @CompileStatic
 abstract class RedisBaseDAO<T extends BaseEntity> implements BaseDAO<T, String> {
+    protected final Class<T> entityClass
     protected Jedis jedis
     protected String namespace
 
@@ -30,16 +33,21 @@ abstract class RedisBaseDAO<T extends BaseEntity> implements BaseDAO<T, String> 
         this.namespace = namespace
     }
 
+    protected RedisBaseDAO() {
+        entityClass = (Class<T>) ((ParameterizedType) getClass().genericSuperclass).actualTypeArguments[0]
+    }
+
     @Override
     T save(T entity) {
         jedis.set(namespace + entity.id, JsonMarshaller.marshall(entity))
         return entity
     }
 
-    protected T internalGet(String id, Class<T> clazz) {
+    @Override
+    T get(String id) {
         String entityString = jedis.get(namespace + id)
         if (entityString != null) {
-            return (T) JsonMarshaller.unmarshall(clazz, entityString)
+            return (T) JsonMarshaller.unmarshall(entityClass, entityString)
         }
 
         return null

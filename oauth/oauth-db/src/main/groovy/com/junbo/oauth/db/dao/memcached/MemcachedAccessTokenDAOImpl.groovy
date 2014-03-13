@@ -14,8 +14,4 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class MemcachedAccessTokenDAOImpl extends MemcachedBaseDAO<AccessTokenEntity> implements AccessTokenDAO {
-    @Override
-    AccessTokenEntity get(String id) {
-        return internalGet(id, AccessTokenEntity)
-    }
 }

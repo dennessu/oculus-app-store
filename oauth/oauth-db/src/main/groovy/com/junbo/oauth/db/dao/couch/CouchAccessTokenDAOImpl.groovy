@@ -14,8 +14,4 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class CouchAccessTokenDAOImpl extends CouchBaseDAO<AccessTokenEntity> implements AccessTokenDAO {
-    @Override
-    AccessTokenEntity get(String id) {
-        return internalGet(id, AccessTokenEntity)
-    }
 }
