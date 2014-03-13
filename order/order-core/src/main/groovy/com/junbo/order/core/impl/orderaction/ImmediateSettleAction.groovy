@@ -38,13 +38,13 @@ class ImmediateSettleAction implements Action {
     Promise<ActionResult> execute(ActionContext actionContext) {
         def context = ActionUtils.getOrderActionContext(actionContext)
         def order = context.orderServiceContext.order
-        def balance = CoreBuilder.buildBalance(context.orderServiceContext, BalanceType.DEBIT)
-        Promise promise = billingFacade.createBalance(balance)
+        Promise promise =
+                billingFacade.createBalance(CoreBuilder.buildBalance(context.orderServiceContext, BalanceType.DEBIT))
         return promise.syncRecover { Throwable throwable ->
             LOGGER.error('name=Order_ImmediateSettle_Error', throwable)
             return null
-        }.syncThen { Balance resultBalance ->
-            if (resultBalance == null) {
+        }.syncThen { Balance balance ->
+            if (balance == null) {
                 // todo: log order charge action error?
                 LOGGER.info('fail to create balance')
             } else {
@@ -54,7 +54,9 @@ class ImmediateSettleAction implements Action {
                 billingEvent.action = BillingAction.CHARGE.name()
                 billingEvent.status = billingEventStatus.name()
                 orderRepository.createBillingEvent(order.id.value, billingEvent)
-                orderServiceContextBuilder.refreshBalances(context.orderServiceContext)
+                orderServiceContextBuilder.refreshBalances(context.orderServiceContext).syncThen {
+                    return null
+                }
                 // TODO: update order status according to balance status.
                 // TODO: save order level tax
             }

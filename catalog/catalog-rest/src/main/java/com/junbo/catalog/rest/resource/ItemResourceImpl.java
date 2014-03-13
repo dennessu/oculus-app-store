@@ -6,11 +6,9 @@
 
 package com.junbo.catalog.rest.resource;
 
-import com.junbo.catalog.common.exception.CatalogException;
 import com.junbo.catalog.core.ItemService;
 import com.junbo.catalog.spec.model.common.EntityGetOptions;
 import com.junbo.catalog.spec.model.common.ResultList;
-import com.junbo.catalog.spec.model.common.Status;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.item.ItemsGetOptions;
 import com.junbo.catalog.spec.resource.ItemResource;

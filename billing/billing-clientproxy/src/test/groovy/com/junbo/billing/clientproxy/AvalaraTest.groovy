@@ -28,6 +28,7 @@ public class AvalaraTest extends BaseTest {
         balance.addBalanceItem(item)
 
         def shippingAddress = new ShippingAddress()
+        shippingAddress.addressId = new ShippingAddressId(123L)
         shippingAddress.street = "7462 Kearny Street"
         shippingAddress.city = "Commerce City"
         shippingAddress.state = "CO"

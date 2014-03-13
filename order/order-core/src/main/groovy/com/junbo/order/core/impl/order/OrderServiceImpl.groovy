@@ -77,10 +77,12 @@ class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     Promise<List<Order>> settleQuote(Order order, ApiContext context) {
+        order.tentative = false
         def orderServiceContext = initOrderServiceContext(order)
-        flowSelector.select(orderServiceContext, OrderServiceOperation.SETTLE_TENTATIVE).syncThen { FlowType flowType ->
+        flowSelector.select(orderServiceContext, OrderServiceOperation.SETTLE_TENTATIVE).then { FlowType flowType ->
             executeFlow(flowType, orderServiceContext, null)
         }.syncThen {
+            orderRepository.updateOrder(order, true)
             return [orderServiceContext.order]
         }
     }
@@ -88,7 +90,20 @@ class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     Promise<Order> updateTentativeOrder(Order order, ApiContext context) {
-        return null
+        def orderServiceContext = initOrderServiceContext(order)
+
+        flowSelector.select(orderServiceContext, OrderServiceOperation.UPDATE_TENTATIVE).then { FlowType flowType ->
+            // Prepare Flow Request
+            Map<String, Object> requestScope = [:]
+            def orderActionContext = new OrderActionContext()
+            orderActionContext.orderActionType = OrderActionType.RATE
+            orderActionContext.orderServiceContext = orderServiceContext
+            orderActionContext.trackingUuid = order.trackingUuid
+            requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object)orderActionContext)
+            executeFlow(flowType, orderServiceContext, requestScope)
+        }.syncThen {
+            return orderServiceContext.order
+        }
     }
 
     @Override
@@ -97,7 +112,7 @@ class OrderServiceImpl implements OrderService {
 
         def orderServiceContext = initOrderServiceContext(order)
 
-        flowSelector.select(orderServiceContext, OrderServiceOperation.CREATE_TENTATIVE).syncThen { FlowType flowType ->
+        flowSelector.select(orderServiceContext, OrderServiceOperation.CREATE_TENTATIVE).then { FlowType flowType ->
             // Prepare Flow Request
             Map<String, Object> requestScope = [:]
             def orderActionContext = new OrderActionContext()
@@ -173,8 +188,9 @@ class OrderServiceImpl implements OrderService {
     private Promise<OrderServiceContext> executeFlow(
             FlowType flowType, OrderServiceContext context,
             Map<String, Object> requestScope) {
-        requestScope.put(ActionUtils.REQUEST_FLOW_TYPE, (Object)flowType)
-        return flowExecutor.start(flowType.name(), ActionUtils.initRequestScope(context, requestScope)).syncThen {
+        def scope = ActionUtils.initRequestScope(context, requestScope)
+        scope.put(ActionUtils.REQUEST_FLOW_TYPE, (Object)flowType)
+        return flowExecutor.start(flowType.name(), scope).syncThen {
             return context
         }
     }

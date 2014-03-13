@@ -8,6 +8,8 @@ package com.junbo.ewallet.db.dao;
 
 import com.junbo.ewallet.db.entity.hibernate.WalletEntity;
 
+import java.util.UUID;
+
 /**
  * Interface of WalletDao.
  */
@@ -17,4 +19,6 @@ public interface WalletDao {
     WalletEntity update(WalletEntity walletEntity);
 
     WalletEntity insert(WalletEntity walletEntity);
+
+    WalletEntity getByTrackingUuid(UUID uuid);
 }

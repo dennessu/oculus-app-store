@@ -70,7 +70,7 @@ class CoreBuilder {
         order.honorUntilTime = null
         // TODO support preorder amount
         for (OrderItem i in order.orderItems) {
-            CoreBuilder.buildItemRatingInfo(i, ratingRequest)
+            buildItemRatingInfo(i, ratingRequest)
         }
         // TODO append returned promotions to order
     }
@@ -79,7 +79,7 @@ class CoreBuilder {
 
         OrderRatingItem ratingItem = null
         for (OrderRatingItem i in ratingRequest.lineItems) {
-            if (item.offer == i.offerId) {
+            if (item.offer.value == i.offerId) {
                 ratingItem = i
                 break
             }
@@ -92,11 +92,14 @@ class CoreBuilder {
         return item
     }
 
-    static OrderEvent buildOrderEvent(OrderId orderId, OrderActionType action, EventStatus status) {
+    static OrderEvent buildOrderEvent(OrderId orderId, OrderActionType action,
+                                      EventStatus status, String flowType, UUID trackingUuid) {
         def event = new OrderEvent()
         event.order = orderId
         event.action = action
         event.status = status.name()
+        event.flowType = flowType
+        event.trackingUuid = trackingUuid
         return event
     }
 

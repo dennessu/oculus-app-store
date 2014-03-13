@@ -10,7 +10,6 @@ import com.junbo.common.id.UserId;
 import com.junbo.common.id.EmailId;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -31,7 +30,7 @@ public class Email {
 
     private String type;
 
-    private List<String> recipients;
+    private String recipient;
 
     private String status;
 
@@ -97,12 +96,12 @@ public class Email {
         this.type = type;
     }
 
-    public List<String> getRecipients() {
-        return recipients;
+    public String getRecipient() {
+        return recipient;
     }
 
-    public void setRecipients(List<String> recipients) {
-        this.recipients = recipients;
+    public void setRecipient(String recipient) {
+        this.recipient = recipient;
     }
 
     public String getStatus() {

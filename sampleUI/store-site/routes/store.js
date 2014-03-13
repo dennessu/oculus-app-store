@@ -1,10 +1,10 @@
 
 exports.Index =  function(req, res){
-    res.render('index', {layout: 'layout', title: 'Store Demo'});
+    res.render('store/index', {layout: 'layout', title: 'Store Demo'});
 };
 
 exports.ProductDetail =  function(req, res){
-    res.render('detail', {layout: 'layout', title: 'Product Detail'});
+    res.render('store/detail', {layout: 'layout', title: 'Product Detail'});
 };
 
 exports.ShoppingCart =  function(req, res){

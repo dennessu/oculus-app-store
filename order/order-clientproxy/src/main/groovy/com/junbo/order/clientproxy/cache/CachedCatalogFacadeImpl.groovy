@@ -3,6 +3,7 @@ package com.junbo.order.clientproxy.cache
 import com.junbo.catalog.spec.model.offer.Offer
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.catalog.CatalogFacade
+import groovy.transform.CompileStatic
 import net.sf.ehcache.Cache
 import net.sf.ehcache.CacheManager
 import net.sf.ehcache.Element
@@ -13,6 +14,7 @@ import org.springframework.cache.ehcache.EhCacheCacheManager
 /**
  * Implementation of catalog facade with cache
  */
+@CompileStatic
 class CachedCatalogFacadeImpl implements CatalogFacade {
 
     @Autowired

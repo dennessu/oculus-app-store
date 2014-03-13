@@ -8,12 +8,13 @@ package com.junbo.common.jackson;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.jackson.annotation.FulfilmentRequestId;
 import com.junbo.common.jackson.annotation.OrderId;
-import com.junbo.common.jackson.serializer.CascadeResourceId;
+import com.junbo.common.jackson.serializer.CascadeResource;
 
 /**
  * FulfilmentRequest.
  */
 public class FulfilmentRequest {
+    @FulfilmentRequestId
     private Long requestId;
 
     @OrderId
@@ -23,13 +24,6 @@ public class FulfilmentRequest {
         return requestId;
     }
 
-    @JsonProperty("requestId")
-    @FulfilmentRequestId
-    public CascadeResourceId getCascadeRequestId() {
-        return new CascadeResourceId(null, new Object[]{orderId});
-    }
-
-    @FulfilmentRequestId
     public void setRequestId(Long requestId) {
         this.requestId = requestId;
     }

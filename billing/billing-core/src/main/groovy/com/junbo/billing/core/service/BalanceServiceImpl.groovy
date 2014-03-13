@@ -23,8 +23,6 @@ import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 
-import java.math.RoundingMode
-
 /**
  * Created by xmchen on 14-1-26.
  */
@@ -50,7 +48,8 @@ class BalanceServiceImpl implements BalanceService {
     @Autowired
     PaymentFacade paymentFacade
 
-    private static final int AMOUNT_SCALE = 3
+    @Autowired
+    TaxService taxService
 
     @Override
     Promise<Balance> addBalance(Balance balance) {
@@ -197,27 +196,7 @@ class BalanceServiceImpl implements BalanceService {
 
     private void calculateTax(Balance balance) {
 
-        //todo: fix this fake tax calculator
-        balance.setTaxIncluded(Boolean.FALSE)
-
-        balance.balanceItems.each { BalanceItem item ->
-            if (item.taxItems.size() == 0) {
-                // skip the tax calculator if there is tax passing in
-                TaxItem cityTax = new TaxItem()
-                cityTax.setTaxAuthority('CITY')
-                cityTax.setTaxRate(0.045G)
-                BigDecimal cityAmount = item.amount * cityTax.taxRate
-                cityTax.setTaxAmount(cityAmount.setScale(AMOUNT_SCALE, RoundingMode.HALF_UP))
-                item.addTaxItem(cityTax)
-
-                TaxItem stateTax = new TaxItem()
-                stateTax.setTaxAuthority('STATE')
-                stateTax.setTaxRate(0.05G)
-                BigDecimal stateAmount = item.amount * stateTax.taxRate
-                stateTax.setTaxAmount(stateAmount.setScale(AMOUNT_SCALE, RoundingMode.HALF_UP))
-                item.addTaxItem(stateTax)
-            }
-        }
+        taxService.calculateTax(balance)
     }
 
     private void computeTotal(Balance balance) {
