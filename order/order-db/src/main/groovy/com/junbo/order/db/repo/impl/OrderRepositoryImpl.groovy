@@ -82,6 +82,7 @@ class OrderRepositoryImpl implements OrderRepository {
         def id = orderDao.create(orderEntity)
         def orderId = new OrderId(id)
         order.setId(orderId)
+        fillDateInfo(order, orderEntity)
 
         saveOrderItems(order.id, order.orderItems)
         saveDiscounts(order.id, order.discounts)
