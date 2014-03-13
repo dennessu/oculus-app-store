@@ -29,6 +29,7 @@ import com.junbo.payment.spec.model.Address
 import groovy.transform.CompileStatic
 
 import javax.annotation.Resource
+import java.math.RoundingMode
 
 /**
  * Created by LinYi on 14-3-10.
@@ -40,6 +41,8 @@ class AvalaraFacadeImpl implements AvalaraFacade {
 
     @Resource(name = 'paymentFacade')
     PaymentFacade paymentFacade
+
+    private static final int AMOUNT_SCALE = 3
 
     @Override
     Balance calculateTax(Balance balance, ShippingAddress shippingAddress, Address piAddress) {
@@ -54,11 +57,12 @@ class AvalaraFacadeImpl implements AvalaraFacade {
             balance.balanceItems.each { BalanceItem item ->
                 response.taxLines.each { TaxLine line ->
                     if (item.balanceItemId.value == Long.valueOf(line.lineNo)) {
-                        item.taxAmount = BigDecimal.valueOf(line.tax)
+                        item.taxAmount = BigDecimal.valueOf(line.tax).setScale(AMOUNT_SCALE, RoundingMode.HALF_UP)
                         line.taxDetails.each { TaxDetail detail ->
                             def taxItem = new TaxItem()
-                            taxItem.taxAmount = detail.tax
-                            taxItem.taxRate = detail.rate
+                            taxItem.taxAmount = BigDecimal.valueOf(detail.tax)
+                                    .setScale(AMOUNT_SCALE, RoundingMode.HALF_UP)
+                            taxItem.taxRate = BigDecimal.valueOf(detail.rate)
                             taxItem.taxAuthority = detail.jurisName
                             item.addTaxItem(taxItem)
                         }
@@ -97,8 +101,8 @@ class AvalaraFacadeImpl implements AvalaraFacade {
             GetTaxResponse response = mapper.readValue(connection.inputStream, GetTaxResponse)
 
             if (connection.responseCode != 200) {
-                // TODO: error handling
-                return response
+                throw AppErrors.INSTANCE.taxCalculationError(
+                        'Response code from avalara is ' + connection.responseCode).exception()
             }
             mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
             return response
@@ -153,7 +157,7 @@ class AvalaraFacadeImpl implements AvalaraFacade {
             // TODO: confirm address collection
             line.destinationCode = shipToAddress.addressCode
             line.originCode = billToAddress == null ? shipToAddress.addressCode: billToAddress.addressCode
-            line.qty = BigDecimal.valueOf(1)
+            line.qty = BigDecimal.ONE
             line.amount = item.amount
             line.itemCode = item.balanceItemId.value.toString()
             line.taxIncluded = item.taxIncluded
