@@ -17,7 +17,7 @@ import javax.validation.constraints.Null
  * Wallet Entity.
  */
 @CompileStatic
-class Wallet extends Model {
+class Wallet {
     Long walletId
     UUID trackingUuid
     @NotNull
