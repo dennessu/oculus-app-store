@@ -14,6 +14,7 @@ import com.junbo.common.jackson.serializer.CascadeResource;
  * FulfilmentRequest.
  */
 public class FulfilmentRequest {
+    @FulfilmentRequestId
     private Long requestId;
 
     @OrderId
@@ -23,13 +24,6 @@ public class FulfilmentRequest {
         return requestId;
     }
 
-    @JsonProperty("requestId")
-    @FulfilmentRequestId
-    public CascadeResource getCascadeRequestId() {
-        return new CascadeResource(null, new Object[]{orderId});
-    }
-
-    @FulfilmentRequestId
     public void setRequestId(Long requestId) {
         this.requestId = requestId;
     }
