@@ -13,6 +13,7 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class Transaction {
+    Long walletId
     String type
     BigDecimal amount
     Long offerId

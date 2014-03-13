@@ -12,6 +12,7 @@ import com.junbo.catalog.spec.resource.OfferResource;
 import com.junbo.common.id.OfferId;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.order.clientproxy.catalog.CatalogFacade;
+import groovy.transform.CompileStatic;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -20,6 +21,7 @@ import javax.annotation.Resource;
  * Catalog facade implementation.
  */
 @Component("catalogFacade")
+@CompileStatic
 public class CatalogFacadeImpl implements CatalogFacade {
 
     @Resource(name="offerClient")
