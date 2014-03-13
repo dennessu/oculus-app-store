@@ -6,12 +6,14 @@
 
 package com.junbo.rating.clientproxy.impl;
 
+import com.junbo.common.id.UserId;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.model.EntitlementSearchParam;
 import com.junbo.entitlement.spec.model.PageMetadata;
 import com.junbo.entitlement.spec.resource.EntitlementResource;
 import com.junbo.rating.clientproxy.EntitlementGateway;
 import com.junbo.rating.common.util.Constants;
+import com.junbo.rating.spec.error.AppErrors;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
@@ -41,10 +43,10 @@ public class EntitlementGatewayImpl implements EntitlementGateway {
             List<Entitlement> entitlements = new ArrayList<Entitlement>();
             try {
                 entitlements.addAll(
-                        entitlementResource.getEntitlements(userId, param, pagingOption).wrapped().get().getCriteria());
+                        entitlementResource.getEntitlements(
+                                new UserId(userId), param, pagingOption).wrapped().get().getCriteria());
             } catch (Exception e) {
-                //TODO: throw pre-defined exception
-                throw new RuntimeException(e);
+                throw AppErrors.INSTANCE.entitlementGatewayError().exception();
             }
             results.addAll(entitlements);
             pagingOption.setStart(pagingOption.getStart() + Constants.DEFAULT_PAGE_SIZE);

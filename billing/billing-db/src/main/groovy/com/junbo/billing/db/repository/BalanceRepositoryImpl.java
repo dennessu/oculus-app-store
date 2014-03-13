@@ -43,6 +43,9 @@ public class BalanceRepositoryImpl implements BalanceRepository {
     private TransactionRepository transactionRepository;
 
     @Autowired
+    private BalanceEventEntityDao balanceEventEntityDao;
+
+    @Autowired
     private ModelMapper modelMapper;
 
     @Autowired
@@ -81,8 +84,8 @@ public class BalanceRepositoryImpl implements BalanceRepository {
                 DiscountItemEntity discountItemEntity =
                         modelMapper.toDiscountItemEntity(discount, new MappingContext());
 
-                discountItemEntity.setDiscountItemId(idGenerator.nextId(DiscountItemId.class,
-                        balanceEntity.getUserId()));
+                discountItemEntity.setDiscountItemId(
+                        idGenerator.nextId(DiscountItemId.class, balanceEntity.getUserId()));
                 discountItemEntity.setBalanceItemId(balanceItemEntity.getBalanceItemId());
                 discountItemEntity.setCreatedDate(new Date());
                 discountItemEntity.setCreatedBy("Billing");
@@ -98,7 +101,7 @@ public class BalanceRepositoryImpl implements BalanceRepository {
         // persist the order balance link
         OrderBalanceLinkEntity orderBalanceLinkEntity = new OrderBalanceLinkEntity();
 
-        orderBalanceLinkEntity.setLinkId(idGenerator.nextId(BalanceLinkId.class, balanceEntity.getUserId()));
+        orderBalanceLinkEntity.setLinkId(idGenerator.nextId(Id.class, balanceEntity.getUserId()));
         orderBalanceLinkEntity.setBalanceId(balanceEntity.getBalanceId());
         orderBalanceLinkEntity.setOrderId(balance.getOrderId().getValue());
         orderBalanceLinkEntity.setCreatedDate(new Date());
@@ -110,6 +113,9 @@ public class BalanceRepositoryImpl implements BalanceRepository {
         taxItemEntityDao.flush();
         discountItemEntityDao.flush();
         orderBalanceLinkEntityDao.flush();
+
+        // create balance event
+        saveBalanceEventEntity(balanceEntity);
 
         return getBalance(balanceEntity.getBalanceId());
     }
@@ -176,6 +182,10 @@ public class BalanceRepositoryImpl implements BalanceRepository {
         }
 
         balanceEntityDao.flush();
+
+        // create balance event
+        saveBalanceEventEntity(savedEntity);
+
         return getBalance(balanceEntity.getBalanceId());
     }
 
@@ -194,5 +204,17 @@ public class BalanceRepositoryImpl implements BalanceRepository {
         }
 
         return balances;
+    }
+
+    private void saveBalanceEventEntity(BalanceEntity balanceEntity) {
+        // create balance event
+        BalanceEventEntity balanceEventEntity = new BalanceEventEntity();
+        balanceEventEntity.setEventId(idGenerator.nextId(Id.class, balanceEntity.getBalanceId()));
+        balanceEventEntity.setBalanceId(balanceEntity.getBalanceId());
+        balanceEventEntity.setActionTypeId(balanceEntity.getTypeId());
+        balanceEventEntity.setStatusId(balanceEntity.getStatusId());
+        balanceEventEntity.setEventDate(new Date());
+        balanceEventEntityDao.insert(balanceEventEntity);
+        balanceEventEntityDao.flush();
     }
 }

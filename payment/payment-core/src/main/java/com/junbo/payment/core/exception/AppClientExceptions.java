@@ -100,4 +100,8 @@ public interface AppClientExceptions {
     @ErrorDef(httpStatusCode = 404, code = "40401",
             description = "the resource {0} is not found", field = "resource")
     AppError resourceNotFound(String resource);
+
+    @ErrorDef(httpStatusCode = 400, code = "40021",
+            description = "the expire date of credit card is missing", field = "expire_date")
+    AppError missingExpireDate();
 }

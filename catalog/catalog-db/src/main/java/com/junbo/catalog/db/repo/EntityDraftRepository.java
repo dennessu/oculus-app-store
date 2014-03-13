@@ -6,14 +6,15 @@
 
 package com.junbo.catalog.db.repo;
 
-import com.junbo.catalog.spec.model.common.BaseModel;
+import com.junbo.catalog.spec.model.common.VersionedModel;
+
 import java.util.List;
 
 /**
  * Draft repository interface.
  * @param <T> the entity type.
  */
-public interface EntityDraftRepository<T extends BaseModel>  {
+public interface EntityDraftRepository<T extends VersionedModel>  {
     Long create(T entity);
 
     T get(Long entityId);

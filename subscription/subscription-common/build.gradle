@@ -1,7 +1,10 @@
 apply plugin: 'java'
 
 dependencies {
+    compile (libraries.rs_api)
     compile(libraries.spring_core)
     compile(libraries.spring_expression)
     compile(libraries.spring_tx)
+    compile (libraries.json_path)
+    compile (libraries.fastjson)
 }

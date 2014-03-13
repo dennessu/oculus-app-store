@@ -5,17 +5,17 @@
  */
 package com.junbo.fulfilment.db.dao.impl;
 
-import com.junbo.common.id.FulfilmentId;
 import com.junbo.fulfilment.common.util.Action;
 import com.junbo.fulfilment.common.util.Constant;
 import com.junbo.fulfilment.common.util.Utils;
 import com.junbo.fulfilment.db.dao.BaseDao;
 import com.junbo.fulfilment.db.entity.BaseEntity;
-import com.junbo.sharding.IdGeneratorFacade;
+import com.junbo.sharding.IdGenerator;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.List;
 
@@ -29,7 +29,8 @@ public abstract class BaseDaoImpl<T extends BaseEntity> implements BaseDao<T> {
     private SessionFactory sessionFactory;
 
     @Autowired
-    private IdGeneratorFacade idGenerator;
+    @Qualifier("oculus48IdGenerator")
+    private IdGenerator idGenerator;
 
     private Class<T> entityType;
 
@@ -38,7 +39,7 @@ public abstract class BaseDaoImpl<T extends BaseEntity> implements BaseDao<T> {
     }
 
     public Long create(T entity) {
-        entity.setId(idGenerator.nextId(FulfilmentId.class, entity.getShardMasterId()));
+        entity.setId(idGenerator.nextId(entity.getShardMasterId()));
 
         entity.setCreatedTime(Utils.now());
         entity.setCreatedBy(Constant.SYSTEM_INTERNAL);

@@ -22,6 +22,7 @@ public class OrderDiscountInfoDaoImpl extends BaseDaoImpl<OrderDiscountInfoEntit
     public List<OrderDiscountInfoEntity> readByOrderId(final Long orderId) {
         Criteria criteria = this.getSession().createCriteria(OrderDiscountInfoEntity.class);
         criteria.add(Restrictions.eq("orderId", orderId));
+        criteria.add(Restrictions.eq("deleted", false));
         return criteria.list();
     }
 }

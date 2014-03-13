@@ -1,4 +1,10 @@
 
+exports.Index = function(req, res){
+
+    res.render('identity/login', {layout: 'identity/layout', title: 'Store Demo'});
+};
+
+
 exports.Login = function(req, res){
 
     res.render('identity/login', {layout: 'identity/layout', title: 'Store Demo'});

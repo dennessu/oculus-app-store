@@ -105,6 +105,14 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     @Override
     @Transactional
     public Entitlement updateEntitlement(Long entitlementId, Entitlement entitlement) {
+        if (entitlement.getEntitlementId() == null) {
+            throw AppErrors.INSTANCE.missingField("id").exception();
+        }
+        if (!entitlementId.equals(entitlement.getEntitlementId())) {
+            throw AppErrors.INSTANCE.fieldNotMatch("id", entitlement.getEntitlementId().toString(),
+                    entitlementId.toString()).exception();
+        }
+
         Entitlement existingEntitlement = entitlementRepository.get(entitlementId);
 
         if (existingEntitlement == null) {

@@ -7,20 +7,18 @@
 package com.junbo.catalog.spec.model.offer;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.junbo.catalog.spec.model.common.BaseModel;
+import com.junbo.catalog.spec.model.common.VersionedModel;
 import com.junbo.common.jackson.annotation.AttributeId;
 import com.junbo.common.jackson.annotation.OfferId;
 import com.junbo.common.jackson.annotation.UserId;
 
-import javax.validation.constraints.Null;
 import java.util.List;
 import java.util.Map;
 
 /**
  * Offer model.
  */
-public class Offer extends BaseModel {
-    @Null
+public class Offer extends VersionedModel {
     @OfferId
     @JsonProperty("self")
     private Long id;

@@ -6,7 +6,6 @@
 
 package com.junbo.payment.db.repository;
 
-import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.oom.core.MappingContext;
 import com.junbo.payment.db.dao.paymentinstrument.AddressDao;
 import com.junbo.payment.db.dao.paymentinstrument.CreditCardPaymentInstrumentDao;
@@ -17,7 +16,7 @@ import com.junbo.payment.spec.enums.PIStatus;
 import com.junbo.payment.spec.enums.PIType;
 import com.junbo.payment.db.mapper.PaymentMapper;
 import com.junbo.payment.spec.model.*;
-import com.junbo.sharding.IdGeneratorFacade;
+import com.junbo.sharding.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -40,21 +39,21 @@ public class PaymentInstrumentRepository {
     @Autowired
     private PaymentMapper paymentMapperImpl;
     @Autowired
-    private IdGeneratorFacade idGenerator;
+    private IdGenerator idGenerator;
 
     public void save(PaymentInstrument request){
         PaymentInstrumentEntity piEntity = paymentMapperImpl.toPIEntity(request, new MappingContext());
-        Long piId = idGenerator.nextId(PaymentInstrumentId.class, piEntity.getUserId());
+        Long piId = idGenerator.nextId(piEntity.getUserId());
         Long addressId = null;
         Long phoneId = null;
         if(request.getAddress() != null){
-            addressId = idGenerator.nextId(PaymentInstrumentId.class, piId);
+            addressId = idGenerator.nextId(piId);
             AddressEntity address = paymentMapperImpl.toAddressEntity(request.getAddress(), new MappingContext());
             address.setId(addressId);
             addressDao.save(address);
         }
         if(request.getPhone() != null){
-            phoneId = idGenerator.nextId(PaymentInstrumentId.class, piId);
+            phoneId = idGenerator.nextId(piId);
             PhoneEntity phone = paymentMapperImpl.toPhoneEntity(request.getPhone(), new MappingContext());
             phone.setId(phoneId);
             phoneDao.save(phone);
@@ -98,7 +97,7 @@ public class PaymentInstrumentRepository {
 
     public PaymentInstrument getByPIId(Long piId){
         PaymentInstrumentEntity pi = paymentInstrumentDao.get(piId);
-        if(pi == null){
+        if(pi == null || pi.getStatus().equals(PIStatus.DELETED)){
             return null;
         }
         PaymentInstrument request = paymentMapperImpl.toPaymentInstrument(pi, new MappingContext());
@@ -125,7 +124,7 @@ public class PaymentInstrumentRepository {
         List<PaymentInstrument> request = new ArrayList<PaymentInstrument>();
         List<PaymentInstrumentEntity> piEntities = paymentInstrumentDao.getByUserId(userId);
         for(PaymentInstrumentEntity piEntity : piEntities){
-            if(piEntity.getStatus() != PIStatus.DELETED){
+            if(!piEntity.getStatus().equals(PIStatus.DELETED)){
                 PaymentInstrument piRequest = paymentMapperImpl.toPaymentInstrument(piEntity, new MappingContext());
                 setAdditionalInfo(piEntity, piRequest);
                 request.add(piRequest);

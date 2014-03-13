@@ -7,6 +7,7 @@
 package com.junbo.order.db.dao.impl;
 
 import com.junbo.order.db.dao.BaseDao;
+import com.junbo.order.db.entity.CommonDbEntityDeletable;
 import com.junbo.order.db.entity.CommonDbEntityWithDate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -51,6 +52,9 @@ public class BaseDaoImpl<T extends CommonDbEntityWithDate> implements BaseDao<T>
         t.setCreatedTime(now);
         t.setUpdatedTime(now);
         //t.setResourceAge(0);
+        if(t instanceof CommonDbEntityDeletable) {
+            ((CommonDbEntityDeletable) t).setDeleted(false);
+        }
         return (Long) this.getSession().save(t);
     }
 
@@ -59,11 +63,22 @@ public class BaseDaoImpl<T extends CommonDbEntityWithDate> implements BaseDao<T>
     }
 
     public void update(T t) {
-        this.getSession().update(t);
+        this.getSession().merge(t);
     }
 
     public void flush() {
         this.getSession().flush();
+    }
+
+    public void markDelete(long id) {
+        if (!CommonDbEntityDeletable.class.isAssignableFrom(entityType)) {
+            throw new UnsupportedOperationException(
+                    String.format("name=MarkDelete_Not_Supported, type=%s", entityType.getCanonicalName()));
+        }
+        CommonDbEntityDeletable entity = (CommonDbEntityDeletable) read(id);
+        if(entity != null && !entity.isDeleted()) {
+            entity.setDeleted(true);
+        }
     }
 
     public Class<T> getEntityType() {

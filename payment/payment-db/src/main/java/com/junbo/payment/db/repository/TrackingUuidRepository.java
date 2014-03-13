@@ -28,7 +28,7 @@ public class TrackingUuidRepository {
 
     public TrackingUuid getByTrackUuid(Long userId, UUID trackingUuid){
         List<TrackingUuidEntity> entities = trackingUuidDao.getByTrackingUuid(userId, trackingUuid);
-        if(entities != null && entities.size() > 0){
+        if(entities != null && !entities.isEmpty()){
             TrackingUuidEntity piEntity = entities.get(0);
             return paymentMapperImpl.toTrackingUuid(piEntity, new MappingContext());
         }

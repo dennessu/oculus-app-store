@@ -25,8 +25,7 @@ import javax.sql.DataSource;
 public class ShardDAOTest extends AbstractTransactionalTestNGSpringContextTests {
 
     @Override
-    @Autowired
-    public void setDataSource(@Qualifier("btmDataSource") DataSource dataSource) {
+    public void setDataSource(DataSource dataSource) {
     }
 
     @Resource(name="shardDao")
@@ -36,7 +35,7 @@ public class ShardDAOTest extends AbstractTransactionalTestNGSpringContextTests 
     public void shardDaoTest() {
         //for (int i = 0; i < 3; i++) {
         ShardEntity entity = new ShardEntity();
-        entity.setId(new Long(38));
+        entity.setId(new Long(4));
         ShardEntity saved = shardDao.saveShard(entity);
         Assert.assertEquals(entity.getId(), saved.getId());
         //}

@@ -22,7 +22,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name="offer_draft")
 @TypeDefs(@TypeDef(name="json-string", typeClass=StringJsonUserType.class))
-public class OfferDraftEntity extends BaseEntity{
+public class OfferDraftEntity extends VersionedEntity {
     private Long id;
     private String name;
     private int revision;

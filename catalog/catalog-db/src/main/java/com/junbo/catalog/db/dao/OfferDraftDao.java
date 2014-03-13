@@ -13,6 +13,6 @@ import java.util.List;
 /**
  * Offer draft DAO definition.
  */
-public interface OfferDraftDao extends BaseDao<OfferDraftEntity> {
+public interface OfferDraftDao extends VersionedDao<OfferDraftEntity> {
     List<OfferDraftEntity> getOffers(int start, int size);
 }

@@ -43,8 +43,8 @@
               expiration_date timestamp,
               created_time timestamp not null,
               created_by varchar(256) not null,
-              updated_time timestamp,
-              updated_by varchar(256),
+              modified_time timestamp,
+              modified_by varchar(256),
               primary key (id)
             );
 

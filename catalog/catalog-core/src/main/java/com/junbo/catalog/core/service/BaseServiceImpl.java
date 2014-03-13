@@ -12,10 +12,11 @@ import com.junbo.catalog.common.util.Constants;
 import com.junbo.catalog.core.BaseService;
 import com.junbo.catalog.db.repo.EntityDraftRepository;
 import com.junbo.catalog.db.repo.EntityRepository;
-import com.junbo.catalog.spec.model.common.BaseModel;
+import com.junbo.catalog.spec.model.common.VersionedModel;
 import com.junbo.catalog.spec.model.common.EntitiesGetOptions;
 import com.junbo.catalog.spec.model.common.EntityGetOptions;
 import com.junbo.catalog.spec.model.common.Status;
+import com.junbo.common.id.Id;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -25,9 +26,12 @@ import java.util.List;
  * Base service implementation.
  * @param <T> the entity type.
  */
-public abstract class BaseServiceImpl<T extends BaseModel> implements BaseService<T> {
-    public abstract <R extends EntityRepository<T>> R getEntityRepo();
-    public abstract <R extends EntityDraftRepository<T>> R getEntityDraftRepo();
+public abstract class BaseServiceImpl<T extends VersionedModel> implements BaseService<T> {
+    protected abstract <E extends EntityRepository<T>> E getEntityRepo();
+    protected abstract <E extends EntityDraftRepository<T>> E getEntityDraftRepo();
+
+    // TODO: think again about this
+    protected abstract String getEntityType();
 
     @Override
     public T get(Long entityId, EntityGetOptions options) {
@@ -51,12 +55,12 @@ public abstract class BaseServiceImpl<T extends BaseModel> implements BaseServic
         if (!CollectionUtils.isEmpty(options.getEntityIds())) {
             List<T> entities = new ArrayList<>();
 
-            for (Long entityId : options.getEntityIds()) {
+            for (Id entityId : options.getEntityIds()) {
                 T entity;
                 if (Status.RELEASED.equalsIgnoreCase(options.getStatus())) {
-                    entity = getEntityRepo().get(entityId, options.getTimestamp());
+                    entity = getEntityRepo().get(entityId.getValue(), options.getTimestamp());
                 } else {
-                    entity = getEntityDraftRepo().get(entityId);
+                    entity = getEntityDraftRepo().get(entityId.getValue());
                 }
 
                 if (entity != null) {
@@ -172,7 +176,7 @@ public abstract class BaseServiceImpl<T extends BaseModel> implements BaseServic
 
     private void checkEntityNotNull(Long entityId, T entity) {
         if (entity == null) {
-            throw new NotFoundException(entity.getEntityType(), entityId);
+            throw new NotFoundException(getEntityType(), entityId);
         }
     }
 }

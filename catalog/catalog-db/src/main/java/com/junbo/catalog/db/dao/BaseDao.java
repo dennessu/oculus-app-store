@@ -14,12 +14,5 @@ import com.junbo.catalog.db.entity.BaseEntity;
  */
 public interface BaseDao<T extends BaseEntity> {
     Long create(T entity);
-
     T get(Long id);
-
-    Long update(T t);
-
-    Boolean exists(Long id);
-
-    //void flush();
 }
