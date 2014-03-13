@@ -10,7 +10,6 @@ import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.order.spec.model.*;
 
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Created by chriszhu on 2/18/14.
@@ -21,7 +20,7 @@ public interface OrderRepository {
 
     Order getOrder(Long orderId);
 
-    OrderEvent createOrderEvent(OrderEvent event, String flowName, UUID trackingUuid);
+    OrderEvent createOrderEvent(OrderEvent event);
 
     FulfillmentEvent createFulfillmentEvent(Long orderId, FulfillmentEvent event);
 

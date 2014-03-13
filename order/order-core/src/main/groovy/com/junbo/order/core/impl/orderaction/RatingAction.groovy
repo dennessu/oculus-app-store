@@ -6,12 +6,12 @@ import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.clientproxy.rating.RatingFacade
 import com.junbo.order.core.impl.common.CoreBuilder
-import com.junbo.order.db.repo.OrderRepository
 import com.junbo.rating.spec.model.request.OrderRatingRequest
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
+
+import javax.annotation.Resource
 
 /**
  * Created by fzhang on 14-2-25.
@@ -19,11 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired
 @CompileStatic
 class RatingAction implements Action {
 
-    @Autowired
+    @Resource(name = 'ratingFacade')
     RatingFacade ratingFacade
-
-    @Autowired
-    OrderRepository orderRepository
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RatingAction)
 
