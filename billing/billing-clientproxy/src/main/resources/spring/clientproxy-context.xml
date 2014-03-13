@@ -30,5 +30,10 @@
         <property name="customerCode" value="${avalara.customerCode}"/>
         <property name="detailLevel" value="${avalara.detailLevel}"/>
         <property name="authorization" value="${avalara.authorization}"/>
+        <property name="shipFromStreet" value="${shipFrom.address.street}"/>
+        <property name="shipFromCity" value="${shipFrom.address.city}"/>
+        <property name="shipFromState" value="${shipFrom.address.state}"/>
+        <property name="shipFromPostalCode" value="${shipFrom.address.postal.code}"/>
+        <property name="shipFromCountry" value="${shipFrom.address.country}"/>
     </bean>
 </beans>

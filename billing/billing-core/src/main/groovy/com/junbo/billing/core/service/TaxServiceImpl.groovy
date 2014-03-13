@@ -6,22 +6,23 @@
 
 package com.junbo.billing.core.service
 
-import com.junbo.billing.clientproxy.AvalaraFacade
 import com.junbo.billing.clientproxy.PaymentFacade
+import com.junbo.billing.clientproxy.TaxFacade
 import com.junbo.billing.spec.error.AppErrors
 import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.ShippingAddress
 import com.junbo.langur.core.promise.Promise
-import com.junbo.payment.spec.model.PaymentInstrument
+import groovy.transform.CompileStatic
 
 import javax.annotation.Resource
 
 /**
  * Created by LinYi on 14-3-10.
  */
+@CompileStatic
 class TaxServiceImpl implements TaxService {
     @Resource
-    AvalaraFacade avalaraFacade
+    TaxFacade avalaraFacade
 
     @Resource
     PaymentFacade paymentFacade
@@ -29,20 +30,40 @@ class TaxServiceImpl implements TaxService {
     @Resource
     ShippingAddressService shippingAddressService
 
+    String providerName
+
+    TaxFacade taxFacade
+
+    void chooseProvider() {
+        switch (providerName) {
+            case 'AVALARA':
+                taxFacade = avalaraFacade
+                break
+            case 'SABRIX':
+                // TODO: SABRIX IMPLEMENTATION
+                break
+            default:
+                throw AppErrors.INSTANCE.taxCalculationError('No Such Tax Provider.').exception()
+        }
+    }
+
     @Override
     Promise<Balance> calculateTax(Balance balance) {
         Long userId = balance.userId.value
-        Long addressId = balance.shippingAddressId.value
-        ShippingAddress shippingAddress = shippingAddressService.getShippingAddress(userId, addressId)
-        if (shippingAddress == null) {
-            throw AppErrors.INSTANCE.shippingAddressNotFound(addressId.toString()).exception()
+        ShippingAddress shippingAddress
+        if (balance.shippingAddressId != null) {
+            Long addressId = balance.shippingAddressId.value
+            def addressPromise = shippingAddressService.getShippingAddress(userId, addressId)
+            shippingAddress = addressPromise?.wrapped().get()
         }
 
         Long piId = balance.piId.value
-        PaymentInstrument pi = paymentFacade.getPaymentInstrument(piId)
+        def piPromise = paymentFacade.getPaymentInstrument(piId)
+        def pi = piPromise?.wrapped().get()
         if (pi == null) {
-            throw AppErrors.INSTANCE.piNotFound(piId.toString())
+            throw AppErrors.INSTANCE.piNotFound(piId.toString()).exception()
         }
-        return Promise.pure(avalaraFacade.calculateTax(balance, shippingAddress, pi.address))
+        chooseProvider()
+        return Promise.pure(taxFacade.calculateTax(balance, shippingAddress, pi.address))
     }
 }
