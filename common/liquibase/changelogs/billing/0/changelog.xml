@@ -16,6 +16,7 @@
 				total_amount DECIMAL NOT NULL,
 				tax_amount DECIMAL NOT NULL,
 				tax_included BOOLEAN,
+				tax_status_id SMALLINT,
 				discount_amount DECIMAL NOT NULL,
 				currency CHAR(3) NOT NULL,
 				country_code CHAR(2),
