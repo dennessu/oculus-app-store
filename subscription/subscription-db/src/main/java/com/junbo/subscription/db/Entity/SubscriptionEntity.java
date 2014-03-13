@@ -1,14 +1,19 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
+ */
 package com.junbo.subscription.db.entity;
-
-import com.junbo.subscription.db.entity.Entity;
-import com.junbo.subscription.spec.model.Subscription;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import java.util.Date;
 
+
+/**
+ * subscription entity.
+ */
 @javax.persistence.Entity
 @Table(name = "SUBSCRIPTION")
 public class SubscriptionEntity extends Entity {

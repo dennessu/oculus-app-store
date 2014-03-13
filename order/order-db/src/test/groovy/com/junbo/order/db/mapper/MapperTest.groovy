@@ -46,7 +46,7 @@ class MapperTest extends BaseTest {
         OrderItemEntity returnedOrderItemEntity = modelMapper.toOrderItemEntity(orderItemModel, context)
         assert orderItemModel != null :  'Fail to map order item entity to model.'
         assert returnedOrderItemEntity != null :  'Fail to map order item model to entity.'
-        assert (orderItemModel.id.value == orderItemEntity.orderItemId)
+        assert (orderItemModel.orderItemId.value == orderItemEntity.orderItemId)
     }
 
     @Test(enabled = true)
@@ -58,9 +58,9 @@ class MapperTest extends BaseTest {
         OrderDiscountInfoEntity returnedOrderDiscountInfoEntity = modelMapper.toDiscountEntity(discount, context)
         assert discount != null : 'Fail to map discount entity to model.'
         assert returnedOrderDiscountInfoEntity != null : 'Fail to map discount model to entity.'
-        assert discount.id.value == orderDiscountInfoEntity.discountInfoId :
+        assert discount.orderItemId.value == orderDiscountInfoEntity.orderItemId :
                 'The order discount Id should not be different.'
-        assert discount.id.value ==  returnedOrderDiscountInfoEntity.discountInfoId :
+        assert discount.discountInfoId ==  returnedOrderDiscountInfoEntity.discountInfoId :
                 'The order discount Id should not be different.'
     }
 
@@ -103,7 +103,7 @@ class MapperTest extends BaseTest {
 
         def orderBillingEventEntity = TestHelper.generateOrderBillingEventEntity()
         def billingEvent =
-                modelMapper.toOrderBillingtEventModel(orderBillingEventEntity, context)
+                modelMapper.toOrderBillingEventModel(orderBillingEventEntity, context)
         def returnedOrderBillingEventEntity =
                 modelMapper.toOrderBillingEventEntity(billingEvent, context)
         assert billingEvent != null : 'Fail to map billing event entity to model.'

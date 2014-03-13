@@ -26,7 +26,8 @@ public class ShardDAOImpl implements ShardDAO {
             @Override
             public void execute(Connection connection) throws SQLException {
                 //connection, finally!
-                connection.createStatement().execute("set search_path=shard_" + shardId);
+                //connection.createStatement().execute("set search_path=shard_" + shardId);
+                connection.createStatement().execute("show search_path");
             }
         });
         return s;
@@ -34,7 +35,7 @@ public class ShardDAOImpl implements ShardDAO {
 
     @Override
     public ShardEntity saveShard(ShardEntity entity) {
-        session(3).persist(entity);
+        session((int) (entity.getId()%4)).persist(entity);
         return findById(entity.getId());
     }
 
@@ -54,6 +55,6 @@ public class ShardDAOImpl implements ShardDAO {
     }
 
     private ShardEntity findById(Long id) {
-        return ((ShardEntity)(session(3).get(ShardEntity.class, id)));
+        return ((ShardEntity)(session((int) (id%4)).get(ShardEntity.class, id)));
     }
 }

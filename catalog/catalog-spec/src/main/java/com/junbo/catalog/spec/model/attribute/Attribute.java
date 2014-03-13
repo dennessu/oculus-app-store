@@ -7,6 +7,7 @@
 package com.junbo.catalog.spec.model.attribute;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.junbo.catalog.spec.model.common.BaseModel;
 import com.junbo.common.jackson.annotation.AttributeId;
 
 import javax.validation.constraints.NotNull;
@@ -14,7 +15,7 @@ import javax.validation.constraints.NotNull;
 /**
  * Attribute.
  */
-public class Attribute {
+public class Attribute extends BaseModel {
     @AttributeId
     @JsonProperty("self")
     private Long id;

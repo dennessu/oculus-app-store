@@ -6,11 +6,9 @@
 
 package com.junbo.catalog.rest.resource;
 
+import com.junbo.catalog.common.exception.CatalogException;
 import com.junbo.catalog.core.BaseService;
-import com.junbo.catalog.spec.model.common.BaseModel;
-import com.junbo.catalog.spec.model.common.EntitiesGetOptions;
-import com.junbo.catalog.spec.model.common.EntityGetOptions;
-import com.junbo.catalog.spec.model.common.ResultList;
+import com.junbo.catalog.spec.model.common.*;
 import com.junbo.common.id.Id;
 import com.junbo.langur.core.promise.Promise;
 
@@ -20,7 +18,7 @@ import java.util.List;
  * Base resource implementation.
  * @param <T> the model type.
  */
-public abstract class BaseResourceImpl<T extends BaseModel> {
+public abstract class BaseResourceImpl<T extends VersionedModel> {
     protected abstract <E extends BaseService<T>> E getEntityService();
 
     public Promise<ResultList<T>> getEntities(EntitiesGetOptions options) {
@@ -57,6 +55,19 @@ public abstract class BaseResourceImpl<T extends BaseModel> {
     }
 
     public Promise<T> update(Id entityId, T entity) {
+        if (entity == null || entityId.getValue() != entity.getId()) {
+            throw new CatalogException("TODO");
+        }
+
+        // TODO: change this
+        if (Status.PENDING_REVIEW.equalsIgnoreCase(entity.getStatus())) {
+            return review(entityId.getValue());
+        } else if (Status.REJECTED.equalsIgnoreCase(entity.getStatus())) {
+            return reject(entityId.getValue());
+        } else if (Status.RELEASED.equalsIgnoreCase(entity.getStatus())) {
+            return release(entityId.getValue());
+        }
+
         return Promise.pure(getEntityService().update(entityId.getValue(), entity));
     }
 

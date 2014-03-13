@@ -6,7 +6,6 @@
 
 package com.junbo.catalog.spec.model.common;
 
-import com.junbo.catalog.common.util.Constants;
 import com.junbo.common.id.Id;
 
 import javax.ws.rs.QueryParam;
@@ -15,14 +14,7 @@ import java.util.List;
 /**
  * Entity list get options.
  */
-public abstract class EntitiesGetOptions {
-    // paging params
-    @QueryParam("start")
-    private Integer start;
-
-    @QueryParam("size")
-    private Integer size;
-
+public abstract class EntitiesGetOptions extends PageableGetOptions {
     // this parameter only applies for 'Released' entities
     @QueryParam("timestamp")
     private Long timestamp;
@@ -30,31 +22,6 @@ public abstract class EntitiesGetOptions {
     // defaults to get 'Released' entities
     @QueryParam("status")
     private String status;
-
-    public EntitiesGetOptions ensurePagingValid() {
-        if (start == null || size == null) {
-            start = Constants.DEFAULT_PAGING_START;
-            size = Constants.DEFAULT_PAGING_SIZE;
-        }
-
-        return this;
-    }
-
-    public Integer getStart() {
-        return start;
-    }
-
-    public void setStart(Integer start) {
-        this.start = start;
-    }
-
-    public Integer getSize() {
-        return size;
-    }
-
-    public void setSize(Integer size) {
-        this.size = size;
-    }
 
     public Long getTimestamp() {
         return timestamp;

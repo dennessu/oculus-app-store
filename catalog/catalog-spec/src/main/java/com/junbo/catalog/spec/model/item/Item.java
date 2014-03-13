@@ -7,7 +7,7 @@
 package com.junbo.catalog.spec.model.item;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.junbo.catalog.spec.model.common.BaseModel;
+import com.junbo.catalog.spec.model.common.VersionedModel;
 import com.junbo.common.jackson.annotation.AppId;
 import com.junbo.common.jackson.annotation.AttributeId;
 import com.junbo.common.jackson.annotation.ItemId;
@@ -18,7 +18,7 @@ import java.util.Map;
 /**
  * Item model.
  */
-public class Item extends BaseModel {
+public class Item extends VersionedModel {
     @ItemId
     @JsonProperty("self")
     private Long id;

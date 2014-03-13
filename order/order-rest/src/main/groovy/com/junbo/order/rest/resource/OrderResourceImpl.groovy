@@ -1,8 +1,10 @@
 package com.junbo.order.rest.resource
 import com.junbo.common.id.OrderId
+import com.junbo.common.id.UserId
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.core.OrderService
-import com.junbo.order.spec.model.*
+import com.junbo.order.spec.model.ApiContext
+import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.resource.OrderResource
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
@@ -22,12 +24,6 @@ class OrderResourceImpl implements OrderResource {
 
     @Autowired
     OrderService orderService
-
-//    @Context
-//    private ContainerRequestContext requestContext
-//
-//    @Context
-//    private RespondingContext respondingContext
 
     @Override
     Promise<Order> getOrderByOrderId(OrderId orderId, HttpHeaders httpHeaders) {
@@ -60,26 +56,8 @@ class OrderResourceImpl implements OrderResource {
     }
 
     @Override
-    Promise<List<OrderEvent>> getOrderEvents(OrderId orderId, HttpHeaders httpHeaders) {
-        def orderEvents = []
-        orderEvents.add(new OrderEvent())
-        return Promise.pure(orderEvents)
-    }
-
-    @Override
-    Promise<List<Discount>> getOrderDiscounts(OrderId orderId, HttpHeaders httpHeaders) {
-        def discounts = []
-        discounts.add(new Discount())
-        return Promise.pure(discounts)
-    }
-
-    @Override
-    Promise<List<OrderItem>> getOrderItemsByOrderId(OrderId orderId, HttpHeaders headers) {
+    Promise<List<Order>> getOrderByUserId(UserId userId, HttpHeaders headers) {
         return null
     }
 
-    @Override
-    Promise<OrderEvent> createOrderEvent(OrderId orderId, HttpHeaders headers) {
-        return null
-    }
 }

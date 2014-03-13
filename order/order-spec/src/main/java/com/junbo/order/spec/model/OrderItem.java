@@ -7,11 +7,12 @@ package com.junbo.order.spec.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.junbo.common.id.OfferId;
 import com.junbo.common.id.OrderId;
 import com.junbo.common.id.OrderItemId;
-import com.junbo.common.jackson.annotation.OfferId;
+import com.junbo.common.id.ShippingAddressId;
+import com.junbo.common.jackson.annotation.ShippingMethodId;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -27,16 +28,17 @@ import java.util.Date;
 })
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class OrderItem extends BaseModelWithDate {
-    @JsonProperty("self")
-    private OrderItemId id;
+    @JsonIgnore
+    private OrderItemId orderItemId;
+    @JsonIgnore
     private OrderId orderId;
     private String status;
     private String type;
-    @OfferId
-    private Long offer;
-    private String offerRevision;
+    private OfferId offer;
     private Integer quantity;
-    private ShippingInfo shippingInfo;
+    private ShippingAddressId shippingAddressId;
+    @ShippingMethodId
+    private Long shippingMethodId;
 
     // expand ratingInfo to simplify oom
     private BigDecimal unitPrice;
@@ -48,6 +50,7 @@ public class OrderItem extends BaseModelWithDate {
     private BigDecimal totalPreorderAmount;
     private BigDecimal totalPreorderTax;
     private Date honorUntilTime;
+    private Date honoredTime;
     // end of ratingInfo
 
     private PreorderInfo preorderInfo;
@@ -55,12 +58,20 @@ public class OrderItem extends BaseModelWithDate {
     private String federatedId;
     private String properties;
 
-    public OrderItemId getId() {
-        return id;
+    public OrderItemId getOrderItemId() {
+        return orderItemId;
     }
 
-    public void setId(OrderItemId id) {
-        this.id = id;
+    public void setOrderItemId(OrderItemId orderItemId) {
+        this.orderItemId = orderItemId;
+    }
+
+    public OrderId getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(OrderId orderId) {
+        this.orderId = orderId;
     }
 
     public String getStatus() {
@@ -79,20 +90,12 @@ public class OrderItem extends BaseModelWithDate {
         this.type = type;
     }
 
-    public Long getOffer() {
+    public OfferId getOffer() {
         return offer;
     }
 
-    public void setOffer(Long offer) {
+    public void setOffer(OfferId offer) {
         this.offer = offer;
-    }
-
-    public String getOfferRevision() {
-        return offerRevision;
-    }
-
-    public void setOfferRevision(String offerRevision) {
-        this.offerRevision = offerRevision;
     }
 
     public Integer getQuantity() {
@@ -103,12 +106,20 @@ public class OrderItem extends BaseModelWithDate {
         this.quantity = quantity;
     }
 
-    public ShippingInfo getShippingInfo() {
-        return shippingInfo;
+    public ShippingAddressId getShippingAddressId() {
+        return shippingAddressId;
     }
 
-    public void setShippingInfo(ShippingInfo shippingInfo) {
-        this.shippingInfo = shippingInfo;
+    public void setShippingAddressId(ShippingAddressId shippingAddressId) {
+        this.shippingAddressId = shippingAddressId;
+    }
+
+    public Long getShippingMethodId() {
+        return shippingMethodId;
+    }
+
+    public void setShippingMethodId(Long shippingMethodId) {
+        this.shippingMethodId = shippingMethodId;
     }
 
     public BigDecimal getUnitPrice() {
@@ -183,6 +194,14 @@ public class OrderItem extends BaseModelWithDate {
         this.honorUntilTime = honorUntilTime;
     }
 
+    public Date getHonoredTime() {
+        return honoredTime;
+    }
+
+    public void setHonoredTime(Date honoredTime) {
+        this.honoredTime = honoredTime;
+    }
+
     public PreorderInfo getPreorderInfo() {
         return preorderInfo;
     }
@@ -213,14 +232,5 @@ public class OrderItem extends BaseModelWithDate {
 
     public void setProperties(String properties) {
         this.properties = properties;
-    }
-
-    @JsonIgnore
-    public OrderId getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(OrderId orderId) {
-        this.orderId = orderId;
     }
 }

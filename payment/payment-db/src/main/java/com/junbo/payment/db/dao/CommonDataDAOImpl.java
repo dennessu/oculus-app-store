@@ -6,10 +6,10 @@
 
 package com.junbo.payment.db.dao;
 
-import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.payment.db.entity.GenericEntity;
-import com.junbo.sharding.IdGeneratorFacade;
+import com.junbo.sharding.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -21,7 +21,8 @@ import java.util.Date;
  */
 public class CommonDataDAOImpl<T extends GenericEntity, ID extends Serializable> extends GenericDAOImpl<T, ID> {
     @Autowired
-    protected IdGeneratorFacade idGenerator;
+    @Qualifier("oculus48IdGenerator")
+    protected IdGenerator idGenerator;
 
     public CommonDataDAOImpl(Class<T> persistentClass) {
         super(persistentClass);
@@ -29,7 +30,7 @@ public class CommonDataDAOImpl<T extends GenericEntity, ID extends Serializable>
     @Override
     public ID save(T entity) {
         if(entity.getId() == null){
-            entity.setId(idGenerator.nextId(PaymentInstrumentId.class, entity.getShardMasterId()));
+            entity.setId(idGenerator.nextId(entity.getShardMasterId()));
         }
         if(entity.getCreatedTime() == null){
             entity.setCreatedTime(new Date());
@@ -48,15 +49,5 @@ public class CommonDataDAOImpl<T extends GenericEntity, ID extends Serializable>
         }
         currentSession().update(newt);
         return newt;
-    }
-
-    protected long generateId() {
-        try {
-            Thread.sleep(10);
-        } catch (InterruptedException e) {
-            //ignore
-        }
-
-        return System.currentTimeMillis();
     }
 }

@@ -12,7 +12,7 @@ import com.junbo.catalog.common.util.Constants;
 import com.junbo.catalog.core.BaseService;
 import com.junbo.catalog.db.repo.EntityDraftRepository;
 import com.junbo.catalog.db.repo.EntityRepository;
-import com.junbo.catalog.spec.model.common.BaseModel;
+import com.junbo.catalog.spec.model.common.VersionedModel;
 import com.junbo.catalog.spec.model.common.EntitiesGetOptions;
 import com.junbo.catalog.spec.model.common.EntityGetOptions;
 import com.junbo.catalog.spec.model.common.Status;
@@ -26,9 +26,12 @@ import java.util.List;
  * Base service implementation.
  * @param <T> the entity type.
  */
-public abstract class BaseServiceImpl<T extends BaseModel> implements BaseService<T> {
-    public abstract <E extends EntityRepository<T>> E getEntityRepo();
-    public abstract <E extends EntityDraftRepository<T>> E getEntityDraftRepo();
+public abstract class BaseServiceImpl<T extends VersionedModel> implements BaseService<T> {
+    protected abstract <E extends EntityRepository<T>> E getEntityRepo();
+    protected abstract <E extends EntityDraftRepository<T>> E getEntityDraftRepo();
+
+    // TODO: think again about this
+    protected abstract String getEntityType();
 
     @Override
     public T get(Long entityId, EntityGetOptions options) {
@@ -173,7 +176,7 @@ public abstract class BaseServiceImpl<T extends BaseModel> implements BaseServic
 
     private void checkEntityNotNull(Long entityId, T entity) {
         if (entity == null) {
-            throw new NotFoundException(entity.getEntityType(), entityId);
+            throw new NotFoundException(getEntityType(), entityId);
         }
     }
 }
