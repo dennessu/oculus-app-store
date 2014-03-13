@@ -37,6 +37,8 @@ class DefaultFlowSelector implements FlowSelector {
                 return selectSettleOrderFlow(context)
             case OrderServiceOperation.CREATE_TENTATIVE:
                 return Promise.pure(FlowType.RATE_ORDER)
+            case OrderServiceOperation.UPDATE_TENTATIVE:
+                return Promise.pure(FlowType.UPDATE_TENTATIVE)
             case OrderServiceOperation.GET:
                 return Promise.pure(FlowType.GET_ORDER)
             default:

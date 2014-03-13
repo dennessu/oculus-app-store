@@ -5,7 +5,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.junbo.com/schema/webflow http://www.junbo.com/schema/webflow-config/webflow.xsd">
 
-    <wf:flow id="UPDATE_TENTATIVE_ORDER">
+    <wf:flow id="UPDATE_TENTATIVE">
         <wf:end-state id="endState">
             <wf:on-entry>
                 <wf:action ref="validateUserAction"/>

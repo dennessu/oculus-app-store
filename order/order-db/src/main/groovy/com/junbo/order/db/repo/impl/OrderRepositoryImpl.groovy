@@ -156,7 +156,7 @@ class OrderRepositoryImpl implements OrderRepository {
     }
 
     @Override
-    Order updateOrder(Order order) {
+    Order updateOrder(Order order, boolean updateOnlyOrder) {
         // Validations
         // TODO Log error and throw exception
         if (order == null) { return null }
@@ -167,9 +167,11 @@ class OrderRepositoryImpl implements OrderRepository {
         def orderEntity = modelMapper.toOrderEntity(order, context)
         orderDao.update(orderEntity)
 
-        saveOrderItems(order.id, order.orderItems)
-        saveDiscounts(order.id, order.discounts)
-        savePaymentInstruments(order.id, order.paymentInstruments)
+        if (!updateOnlyOrder) {
+            saveOrderItems(order.id, order.orderItems)
+            saveDiscounts(order.id, order.discounts)
+            savePaymentInstruments(order.id, order.paymentInstruments)
+        }
         return order
     }
 

@@ -5,6 +5,7 @@ import com.junbo.billing.spec.model.ShippingAddress
 import com.junbo.billing.spec.resource.BalanceResource
 import com.junbo.billing.spec.resource.ShippingAddressResource
 import com.junbo.common.id.BalanceId
+import com.junbo.common.id.OrderId
 import com.junbo.common.id.ShippingAddressId
 import com.junbo.common.id.UserId
 import com.junbo.langur.core.promise.Promise
@@ -49,7 +50,7 @@ class BillingFacadeImpl implements BillingFacade {
 
     @Override
     Promise<List<Balance>> getBalancesByOrderId(Long orderId) {
-        return null
+        return balanceResource.getBalances(new OrderId(orderId))
     }
 
     @Override
