@@ -3,6 +3,8 @@ var Identity = require('./identity');
 var Payment = require('./payment');
 var Account = require('./account');
 
+var Template = require('./template');
+
 module.exports = function(app){
 
     /*
@@ -12,10 +14,21 @@ module.exports = function(app){
     */
 
     // Application
-    app.get('/', Store.Index);
-    app.get('/Auth', Identity.Index);
+    app.get('/', function(req, res){
+        res.render("index", {layout: false, title: "Store Demo"});
+    });
+    app.get('/Identity', function(req, res){
+        res.render("identity/index", {layout: false, title: "Store Demo"});
+    });
+
 
     // Template
+    app.get('/Template/Identity/Login', Template.Login);
+    app.get('/Template/Identity/Register', Template.Register);
+
+    // Redirect back handler
+    app.get('/Callback/Login', function(req, res){});
+    app.get('/Callback/Register', function(req, res){});
 
     // Rest
 

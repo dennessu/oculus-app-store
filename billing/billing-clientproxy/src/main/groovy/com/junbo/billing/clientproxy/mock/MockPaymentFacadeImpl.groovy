@@ -10,6 +10,7 @@ import com.junbo.billing.clientproxy.PaymentFacade
 import com.junbo.langur.core.promise.Promise
 import com.junbo.payment.spec.enums.PaymentStatus
 import com.junbo.payment.spec.enums.PaymentType
+import com.junbo.payment.spec.model.Address
 import com.junbo.payment.spec.model.PaymentInstrument
 import com.junbo.payment.spec.model.PaymentTransaction
 
@@ -22,6 +23,14 @@ class MockPaymentFacadeImpl implements PaymentFacade {
         PaymentInstrument pi = new PaymentInstrument()
         pi.setId(54321)
         pi.setUserId(12345)
+        Address address = new Address()
+        address.id = 999999
+        address.addressLine1 = '7462 Kearny Street'
+        address.city = 'Commerce City'
+        address.state = 'CA'
+        address.postalCode = '96045'
+        address.country = 'US'
+        pi.setAddress(address)
         return Promise.pure(pi)
     }
 

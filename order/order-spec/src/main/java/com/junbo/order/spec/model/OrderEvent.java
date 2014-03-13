@@ -5,6 +5,7 @@
  */
 package com.junbo.order.spec.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.OrderEventId;
 import com.junbo.common.id.OrderId;
@@ -17,6 +18,9 @@ public class OrderEvent extends BaseEventModel {
     private OrderEventId id;
 
     private OrderId order;
+
+    @JsonIgnore
+    private String flowType;
 
     public OrderEventId getId() {
         return id;
@@ -32,5 +36,13 @@ public class OrderEvent extends BaseEventModel {
 
     public void setOrder(OrderId order) {
         this.order = order;
+    }
+
+    public String getFlowType() {
+        return flowType;
+    }
+
+    public void setFlowType(String flowType) {
+        this.flowType = flowType;
     }
 }

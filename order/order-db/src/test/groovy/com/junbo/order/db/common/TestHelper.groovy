@@ -66,7 +66,7 @@ class TestHelper {
         order.setUpdatedBy('Test')
         order.setUpdatedTime(new Date())
         order.setOrderStatusId(OrderStatus.OPEN)
-
+        order.setTentative(rand.nextBoolean())
         return order
     }
 
