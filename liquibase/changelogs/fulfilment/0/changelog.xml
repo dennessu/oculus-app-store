@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author='LiruiMao' context="PREDEPLOY">
+        <sql>
+        <![CDATA[
+            create table fulfilment_request (
+                request_id            bigint          not null,
+                tracking_guid         uuid            not null,
+                payload               json            not null,
+                order_id              bigint          default null,
+                created_by            varchar(64)     not null,
+                created_time          timestamp       not null,
+                updated_by            varchar(64)     default null,
+                updated_time          timestamp       default null,
+
+                primary key (request_id)
+            );
+        ]]>
+        </sql>
+    </changeSet>
+    
+    <changeSet id="2" author='LiruiMao' context="PREDEPLOY">
+        <sql>
+        <![CDATA[
+            create table fulfilment_item (
+                fulfilment_id         bigint          not null,
+                request_id            bigint          not null,
+                payload               json            not null,
+                created_by            varchar(64)     not null,
+                created_time          timestamp       not null,
+                updated_by            varchar(64)     default null,
+                updated_time          timestamp       default null,
+
+                primary key (fulfilment_id)
+            );
+        ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet id="3" author='LiruiMao' context="PREDEPLOY">
+        <sql>
+        <![CDATA[
+            create table fulfilment_action (
+                action_id             bigint          not null,
+                fulfilment_id         bigint          not null,
+                payload               json            not null,
+                type                  int             not null,
+                status                int             not null,
+                result                varchar(1024)       null,
+                created_by            varchar(64)     not null,
+                created_time          timestamp       not null,
+                updated_by            varchar(64)     default null,
+                updated_time          timestamp       default null,
+
+                primary key (action_id)
+            );
+        ]]>
+        </sql>
+    </changeSet>
+</databaseChangeLog>
