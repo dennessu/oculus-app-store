@@ -11,8 +11,8 @@ import com.junbo.billing.spec.model.ShippingAddress;
 import com.junbo.payment.spec.model.Address;
 
 /**
- * Created by LinYi on 14-3-10.
+ * Created by LinYi on 14-3-13.
  */
-public interface AvalaraFacade {
+public interface TaxFacade {
     Balance calculateTax(Balance balance, ShippingAddress shippingAddress, Address piAddress);
 }

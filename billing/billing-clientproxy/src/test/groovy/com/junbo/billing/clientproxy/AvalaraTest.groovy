@@ -16,7 +16,7 @@ import javax.annotation.Resource;
  */
 public class AvalaraTest extends BaseTest {
     @Resource
-    AvalaraFacade avalaraFacade
+    TaxFacade avalaraFacade
 
     @Test(enabled = false)
     public void testAvalaraFacade() {
