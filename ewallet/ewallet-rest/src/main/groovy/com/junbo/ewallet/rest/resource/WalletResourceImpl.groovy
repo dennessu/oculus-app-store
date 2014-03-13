@@ -5,9 +5,10 @@
  */
 
 package com.junbo.ewallet.rest.resource
-
 import com.junbo.common.id.UserId
 import com.junbo.common.id.WalletId
+import com.junbo.ewallet.spec.model.CreditRequest
+import com.junbo.ewallet.spec.model.DebitRequest
 import com.junbo.ewallet.spec.model.ResultList
 import com.junbo.ewallet.spec.model.Wallet
 import com.junbo.ewallet.spec.resource.WalletResource
@@ -32,12 +33,12 @@ class WalletResourceImpl implements WalletResource {
     }
 
     @Override
-    Promise<Wallet> credit(Wallet wallet) {
+    Promise<Wallet> credit(WalletId walletId, CreditRequest creditRequest) {
         return null
     }
 
     @Override
-    Promise<Wallet> debit(Wallet wallet) {
+    Promise<Wallet> debit(WalletId walletId, DebitRequest debitRequest) {
         return null
     }
 
