@@ -65,7 +65,7 @@ class OrderServiceContextBuilder {
             paymentFacade.getPaymentInstrument(piid.value).syncThen { PaymentInstrument pi ->
                 pis << pi
             }
-        }.then {
+        }.syncThen {
             context.paymentInstruments = pis
             return pis
         }
