@@ -15,6 +15,7 @@ import com.junbo.payment.core.exception.*;
 import com.junbo.payment.core.provider.PaymentProviderService;
 import com.junbo.payment.core.provider.ProviderRoutingService;
 import com.junbo.payment.core.util.PaymentUtil;
+import com.junbo.payment.core.util.ProxyExceptionResponse;
 import com.junbo.payment.db.mapper.*;
 import com.junbo.payment.db.repository.*;
 import com.junbo.payment.spec.enums.PIStatus;
@@ -43,7 +44,6 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
     private static final String[] FILTER = new String[]{"paymentId", "paymentProvider", "merchantAccount", "status",
                         "externalToken", "type","paymentEvents" };
     private static final String SUCCESS_EVENT_RESPONSE = "{\"result\": \"OK\"}";
-    private static final String ERROR_EVENT_RESPONSE = "{\"result\": \"error with reason: %s\"}";
     private static final Logger LOGGER = LoggerFactory.getLogger(PaymentTransactionServiceImpl.class);
 
     private PaymentInstrumentService paymentInstrumentService;
@@ -94,16 +94,8 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
                 .recover(new Promise.Func<Throwable, Promise<PaymentTransaction>>() {
             @Override
             public Promise<PaymentTransaction> apply(Throwable throwable) {
-                LOGGER.error("authorization declined by" + provider.getProviderName() + ". The error is: "
-                        + throwable.toString());
-                PaymentStatus status = PaymentStatus.AUTH_DECLINED;
-                request.setStatus(status.toString());
-                PaymentEvent authDeclined = createPaymentEvent(request,
-                        PaymentEventType.AUTHORIZE, status, String.format(ERROR_EVENT_RESPONSE, throwable));
-                addPaymentEvent(request, authDeclined);
-                updatePaymentAndSaveEvent(request, Arrays.asList(authDeclined), api, status);
-                throw AppServerExceptions.INSTANCE.providerProcessError(
-                        provider.getProviderName(), throwable.getMessage()).exception();
+                return handleProviderException(throwable, provider, request, api,
+                        PaymentStatus.AUTH_DECLINED, PaymentEventType.AUTHORIZE);
             }
         }).then(new Promise.Func<PaymentTransaction, Promise<PaymentTransaction>>() {
             @Override
@@ -118,6 +110,20 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
                 return Promise.pure(request);
             }
         });
+    }
+
+    private Promise<PaymentTransaction> handleProviderException(Throwable throwable,
+             PaymentProviderService provider, PaymentTransaction request, PaymentAPI api,
+             PaymentStatus status, PaymentEventType event) {
+        ProxyExceptionResponse proxyResponse = new ProxyExceptionResponse(throwable);
+        LOGGER.error(api.toString() + " declined by" + provider.getProviderName() +
+                "; error detail: " + proxyResponse.getBody());
+        request.setStatus(status.toString());
+        PaymentEvent authDeclined = createPaymentEvent(request, event, status, proxyResponse.getBody());
+        addPaymentEvent(request, authDeclined);
+        updatePaymentAndSaveEvent(request, Arrays.asList(authDeclined), api, status);
+        throw AppServerExceptions.INSTANCE.providerProcessError(
+                provider.getProviderName(), proxyResponse.getBody()).exception();
     }
 
     @Override
@@ -157,16 +163,8 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
                 recover(new Promise.Func<Throwable, Promise<PaymentTransaction>>() {
             @Override
             public Promise<PaymentTransaction> apply(Throwable throwable) {
-                LOGGER.error("Settlement declined by" + provider.getProviderName() + ". The error is: "
-                        + throwable.toString());
-                PaymentStatus status = PaymentStatus.SETTLEMENT_DECLINED;
-                existedTransaction.setStatus(status.toString());
-                PaymentEvent authDeclined = createPaymentEvent(request
-                        , PaymentEventType.SUBMIT_SETTLE, status, String.format(ERROR_EVENT_RESPONSE, throwable));
-                addPaymentEvent(existedTransaction, authDeclined);
-                updatePaymentAndSaveEvent(existedTransaction, Arrays.asList(authDeclined), api, status);
-                throw AppServerExceptions.INSTANCE.providerProcessError(
-                        provider.getProviderName(), throwable.getMessage()).exception();
+                return handleProviderException(throwable, provider, request, api,
+                        PaymentStatus.SETTLEMENT_DECLINED, PaymentEventType.SUBMIT_SETTLE);
             }
         }).then(new Promise.Func<PaymentTransaction, Promise<PaymentTransaction>>() {
             @Override
@@ -208,16 +206,8 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
                 .recover(new Promise.Func<Throwable, Promise<PaymentTransaction>>() {
             @Override
             public Promise<PaymentTransaction> apply(Throwable throwable) {
-                LOGGER.error("Settlement declined by" + provider.getProviderName() + ". The error is: "
-                        + throwable.toString());
-                PaymentStatus status = PaymentStatus.SETTLEMENT_DECLINED;
-                request.setStatus(status.toString());
-                PaymentEvent settleDeclined = createPaymentEvent(request
-                        , PaymentEventType.SUBMIT_SETTLE, status, String.format(ERROR_EVENT_RESPONSE, throwable));
-                addPaymentEvent(request, settleDeclined);
-                updatePaymentAndSaveEvent(request, Arrays.asList(settleDeclined), api, status);
-                throw AppServerExceptions.INSTANCE.providerProcessError(
-                        provider.getProviderName(), throwable.getMessage()).exception();
+                return handleProviderException(throwable, provider, request, api,
+                        PaymentStatus.SETTLEMENT_DECLINED, PaymentEventType.SUBMIT_SETTLE);
             }
         }).then(new Promise.Func<PaymentTransaction, Promise<PaymentTransaction>>() {
             @Override
@@ -264,16 +254,9 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
                 .recover(new Promise.Func<Throwable, Promise<Void>>() {
             @Override
             public Promise<Void> apply(Throwable throwable) {
-                LOGGER.error("Reverse declined by" + provider.getProviderName() + ". The error is: "
-                        + throwable.toString());
-                PaymentStatus declinedStatus = PaymentStatus.REVERSE_DECLINED;
-                existedTransaction.setStatus(declinedStatus.toString());
-                PaymentEvent authDeclined = createPaymentEvent(existedTransaction,
-                        eventType, declinedStatus, String.format(ERROR_EVENT_RESPONSE, throwable));
-                addPaymentEvent(existedTransaction, authDeclined);
-                updatePaymentAndSaveEvent(existedTransaction, Arrays.asList(authDeclined), api, declinedStatus);
-                throw AppServerExceptions.INSTANCE.providerProcessError(
-                        provider.getProviderName(), throwable.getMessage()).exception();
+                handleProviderException(throwable, provider, existedTransaction, api,
+                        PaymentStatus.REVERSE_DECLINED, eventType);
+                return null;
             }
         }).then(new Promise.Func<Void, Promise<PaymentTransaction>>() {
             @Override
@@ -371,7 +354,7 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
         if(existing == null){
             trackingUuidRepository.saveTrackingUuid(trackingUuid);
         }else{
-            if(existing.getPaymentId().equals(request.getPaymentId()) ||
+            if(existing.getPaymentId() == null || !existing.getPaymentId().equals(request.getPaymentId()) ||
                     !existing.getApi().toString().equalsIgnoreCase(api.toString())){
                 throw AppClientExceptions.INSTANCE.duplicatedTrackingUuid(
                         request.getTrackingUuid().toString()).exception();

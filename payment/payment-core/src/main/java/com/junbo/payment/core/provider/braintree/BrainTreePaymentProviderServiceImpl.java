@@ -63,7 +63,7 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
             throw AppClientExceptions.INSTANCE.invalidExpireDateFormat(expireDate).exception();
         }
         CreditCardRequest ccRequest = new CreditCardRequest()
-                .customerId(getCustomerId())
+                .customerId(getOrCreateCustomerId(request.getUserId().toString() + "_" + CUSTOMER_ID))
                 .number(request.getAccountNum())
                 .expirationMonth(String.valueOf(tokens[1]))
                 .expirationYear(String.valueOf(tokens[0]))
@@ -87,7 +87,7 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
         try {
             result = gateway.creditCard().create(ccRequest);
         }catch (Exception ex){
-            handleProviderException(ex);
+            handleProviderException(ex, "Add", "User", request.getUserId().toString());
         }
         if(result.isSuccess()){
             request.setAccountNum(result.getTarget().getMaskedNumber());
@@ -110,7 +110,7 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
         try{
             result = gateway.creditCard().delete(token);
         }catch(Exception ex){
-            handleProviderException(ex);
+            handleProviderException(ex, "Delete", "token", token);
         }
         if(!result.isSuccess()){
             handleProviderError(result);
@@ -125,7 +125,7 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
         try{
             result = gateway.transaction().sale(request);
         }catch (Exception ex){
-            handleProviderException(ex);
+            handleProviderException(ex, "Authorize", "order", paymentRequest.getPaymentId().toString());
         }
         if(result.isSuccess()){
             paymentRequest.setExternalToken(result.getTarget().getId());
@@ -146,7 +146,7 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
                 result = gateway.transaction().submitForSettlement(transactionId, request.getChargeInfo().getAmount());
             }
         }catch (Exception ex){
-            handleProviderException(ex);
+            handleProviderException(ex, "Capture", "transaction", transactionId);
         }
         if (result.isSuccess()) {
             // transaction successfully submitted for settlement
@@ -166,7 +166,7 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
         try{
             result = gateway.transaction().sale(request);
         }catch (Exception ex){
-            handleProviderException(ex);
+            handleProviderException(ex, "Charge", "order", paymentRequest.getPaymentId().toString());
         }
         if(result.isSuccess()){
             paymentRequest.setExternalToken(result.getTarget().getId());
@@ -182,7 +182,7 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
         try{
             result = gateway.transaction().voidTransaction(transactionId);
         }catch(Exception ex){
-            handleProviderException(ex);
+            handleProviderException(ex, "Void", "transaction", transactionId);
         }
         if (result.isSuccess()) {
             // transaction successfully voided
@@ -195,15 +195,16 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
     private <T> void handleProviderError(Result<T> result) {
         StringBuffer sbErrorCodes = new StringBuffer();
         for (ValidationError error : result.getErrors().getAllDeepValidationErrors()) {
-            sbErrorCodes.append(error.getCode()).append("_");
+            sbErrorCodes.append(error.getCode()).append("&");
         }
         LOGGER.error("gateway validations errors with codes: " + sbErrorCodes.toString());
         throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, sbErrorCodes.toString()).exception();
     }
 
-    private void handleProviderException(Exception ex){
+    private void handleProviderException(Exception ex, String action, String source, String sourceValue){
         if(ex instanceof DownForMaintenanceException){
-            LOGGER.error("provider:" + PROVIDER_NAME + "gateway internal timeout exception: " + ex.toString());
+            LOGGER.error("gateway internal timeout exception: " + ex.toString() +
+            ".Provider:" + PROVIDER_NAME + " take action:" + action + " for:" + source + "of " + sourceValue);
             throw AppServerExceptions.INSTANCE.providerGatewayTimeout(PROVIDER_NAME).exception();
         }else if(ex instanceof SocketTimeoutException){
             LOGGER.error("provider:" + PROVIDER_NAME + "gateway timeout exception: " + ex.toString());
@@ -227,7 +228,7 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
                     .orderId().is(orderId);
             collection = gateway.transaction().search(request);
         }catch(Exception ex){
-            handleProviderException(ex);
+            handleProviderException(ex, "Search", "order", orderId);
         }
         if(collection == null || collection.getMaximumSize() == 0){
             return null;
@@ -249,7 +250,7 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
         try{
             transaction = gateway.transaction().find(token);
         }catch(Exception ex){
-            handleProviderException(ex);
+            handleProviderException(ex, "Search", "token", token);
         }
         if(transaction == null){
             return null;
@@ -276,18 +277,18 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
         return request;
     }
 
-    private String getCustomerId(){
+    private String getOrCreateCustomerId(String customerId){
         Customer customer = null;
         try{
-            customer = gateway.customer().find(CUSTOMER_ID);
+            customer = gateway.customer().find(customerId);
         }catch(Exception ex){
             //Ignore Not Found exception
         }
         if(customer != null) {
-            return CUSTOMER_ID;
+            return customerId;
         }
         CustomerRequest request = new CustomerRequest()
-                .id(CUSTOMER_ID)
+                .id(customerId)
                 .firstName("Junbo")
                 .lastName("Zhang")
                 .company("Junbo Inc.");
@@ -299,7 +300,7 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
             throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, ex.getMessage()).exception();
         }
         if(dummyCustomer.isSuccess()){
-            return CUSTOMER_ID;
+            return customerId;
         }else{
             handleProviderError(dummyCustomer);
         }

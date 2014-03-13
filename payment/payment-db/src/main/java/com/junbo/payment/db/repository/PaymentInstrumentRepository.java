@@ -18,6 +18,7 @@ import com.junbo.payment.db.mapper.PaymentMapper;
 import com.junbo.payment.spec.model.*;
 import com.junbo.sharding.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -39,6 +40,7 @@ public class PaymentInstrumentRepository {
     @Autowired
     private PaymentMapper paymentMapperImpl;
     @Autowired
+    @Qualifier("oculus48IdGenerator")
     private IdGenerator idGenerator;
 
     public void save(PaymentInstrument request){
