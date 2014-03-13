@@ -7,7 +7,7 @@ package com.junbo.common.jackson;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.jackson.annotation.UserId;
-import com.junbo.common.jackson.serializer.CascadeResourceId;
+import com.junbo.common.jackson.serializer.CascadeResource;
 
 /**
  * PaymentInstrument.
@@ -37,7 +37,7 @@ public class PaymentInstrument {
 
     @JsonProperty("paymentInstrumentId")
     @PaymentInstrumentId
-    public CascadeResourceId getCascadePaymentInstrumentId() {
-        return new CascadeResourceId(paymentInstrumentId, new Object[]{userId, paymentInstrumentId});
+    public CascadeResource getCascadePaymentInstrumentId() {
+        return new CascadeResource(paymentInstrumentId, new Object[]{userId, paymentInstrumentId});
     }
 }
