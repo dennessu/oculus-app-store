@@ -7,46 +7,27 @@ package com.junbo.ewallet.db;
 
 import com.junbo.ewallet.db.dao.WalletDao;
 import com.junbo.ewallet.db.dao.WalletLotDao;
-import com.junbo.ewallet.db.entity.def.Currency;
-import com.junbo.ewallet.db.entity.def.Status;
-import com.junbo.ewallet.db.entity.def.WalletLotType;
-import com.junbo.ewallet.db.entity.def.WalletType;
+import com.junbo.ewallet.db.entity.def.*;
 import com.junbo.ewallet.db.entity.hibernate.WalletEntity;
 import com.junbo.ewallet.db.entity.hibernate.WalletLotEntity;
-import com.junbo.sharding.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
-import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import javax.sql.DataSource;
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * Test for WalletDao.
  */
-@ContextConfiguration(locations = {"classpath:spring/context-test.xml"})
-@TransactionConfiguration(defaultRollback = true)
-public class WalletDaoTest extends AbstractTransactionalTestNGSpringContextTests{
-    @Override
-    @Autowired
-    @Qualifier("ewalletDataSource")
-    public void setDataSource(DataSource dataSource) {
-        super.setDataSource(dataSource);
-    }
-    @Autowired
-    @Qualifier("idGenerator")
-    private IdGenerator idGenerator;
+public class WalletDaoTest extends BaseTest {
     @Autowired
     private WalletDao walletDao;
     @Autowired
     private WalletLotDao walletLotDao;
 
     @Test
-    public void testCreateWallet(){
+    public void testCreateWallet() {
         WalletEntity walletEntity = buildAWallet();
         WalletEntity insertedWallet = walletDao.insert(walletEntity);
         Assert.assertNotNull(insertedWallet.getId());
@@ -54,7 +35,7 @@ public class WalletDaoTest extends AbstractTransactionalTestNGSpringContextTests
     }
 
     @Test
-    public void testUpdateWallet(){
+    public void testUpdateWallet() {
         WalletEntity walletEntity = buildAWallet();
         WalletEntity insertedWallet = walletDao.insert(walletEntity);
         insertedWallet.setStatus(Status.LOCKED);
@@ -63,16 +44,31 @@ public class WalletDaoTest extends AbstractTransactionalTestNGSpringContextTests
     }
 
     @Test
-    public void testDebit(){
+    public void testDebit() {
         WalletEntity wallet = walletDao.insert(buildAWallet());
         WalletLotEntity lot1 = walletLotDao.insert(buildALot(wallet.getId(), WalletLotType.CASH));
         WalletLotEntity lot2 = walletLotDao.insert(buildALot(wallet.getId(), WalletLotType.PROMOTION));
-        walletLotDao.debit(wallet.getId(), new BigDecimal(15));
-        Assert.assertEquals(walletLotDao.get(lot1.getId()).getRemainingAmount(), new BigDecimal(5));
+        walletLotDao.debit(wallet.getId(), new BigDecimal(17));
+        Assert.assertEquals(walletLotDao.get(lot1.getId()).getRemainingAmount(), new BigDecimal(3));
         Assert.assertEquals(walletLotDao.get(lot2.getId()).getRemainingAmount(), BigDecimal.ZERO);
     }
 
-    private WalletEntity buildAWallet(){
+    @Test
+    public void testExpiredWalletLot() {
+        WalletEntity wallet = walletDao.insert(buildAWallet());
+        WalletLotEntity lot1 = walletLotDao.insert(buildALot(wallet.getId(), WalletLotType.CASH));
+        WalletLotEntity lot2 = buildALot(wallet.getId(), WalletLotType.PROMOTION);
+        lot2.setExpirationDate(new Date(new Date().getTime() - 2000));
+        walletLotDao.insert(lot2);
+        try{
+            walletLotDao.debit(wallet.getId(), new BigDecimal(17));
+        } catch (Exception e){
+            Assert.assertEquals(e.getClass(), NotEnoughMoneyException.class);
+            Assert.assertEquals(walletLotDao.get(lot1.getId()).getRemainingAmount(), new BigDecimal(10));
+        }
+    }
+
+    private WalletEntity buildAWallet() {
         WalletEntity walletEntity = new WalletEntity();
         walletEntity.setUserId(idGenerator.nextId());
         walletEntity.setType(WalletType.SV);
@@ -82,7 +78,7 @@ public class WalletDaoTest extends AbstractTransactionalTestNGSpringContextTests
         return walletEntity;
     }
 
-    private WalletLotEntity buildALot(Long walletId, WalletLotType type){
+    private WalletLotEntity buildALot(Long walletId, WalletLotType type) {
         WalletLotEntity lot = new WalletLotEntity();
         lot.setTotalAmount(new BigDecimal(10));
         lot.setRemainingAmount(new BigDecimal(10));
