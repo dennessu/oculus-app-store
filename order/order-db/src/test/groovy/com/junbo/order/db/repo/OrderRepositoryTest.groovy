@@ -10,9 +10,7 @@ import com.junbo.order.db.mapper.ModelMapper
 import com.junbo.order.spec.model.Discount
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderItem
-import org.easymock.EasyMock
 import org.springframework.beans.factory.annotation.Autowired
-import org.testng.annotations.AfterMethod
 import org.testng.annotations.Test
 
 /**
@@ -22,8 +20,6 @@ class OrderRepositoryTest extends BaseTest {
 
     @Autowired
     private OrderRepository orderRepository
-
-    def List mocks = []
 
     @Autowired
     ModelMapper modelMapper
@@ -47,7 +43,7 @@ class OrderRepositoryTest extends BaseTest {
         order.orderItems << createOrderItem()
         order.discounts << createDiscount(order, order.orderItems.last())
         order.paymentInstruments << new PaymentInstrumentId(TestHelper.generateId())
-        orderRepository.updateOrder(order)
+        orderRepository.updateOrder(order, false)
         verifyByRead(order)
 
         // remove id and check
@@ -59,21 +55,21 @@ class OrderRepositoryTest extends BaseTest {
             it.orderItemId = null
             it.orderId = null
         }
-        orderRepository.updateOrder(order)
+        orderRepository.updateOrder(order, false)
         verifyByRead(order)
 
         // update order item, discount, paymentId
         order.orderItems[0].offer = new OfferId(TestHelper.generateLong())
         order.discounts[0].coupon = 'Code' + TestHelper.generateLong()
         order.paymentInstruments[0] = new PaymentInstrumentId(TestHelper.generateId())
-        orderRepository.updateOrder(order)
+        orderRepository.updateOrder(order, false)
         verifyByRead(order)
 
         // remove order item, discount, paymentId
         order.orderItems.clear()
         order.discounts.clear()
         order.paymentInstruments.clear()
-        orderRepository.updateOrder(order)
+        orderRepository.updateOrder(order, false)
         verifyByRead(order)
     }
 
@@ -117,7 +113,6 @@ class OrderRepositoryTest extends BaseTest {
         item.orderId = null
         item.discountInfoId = null
         item.orderItemId = null
-        item.ownerOrder = order
         item.ownerOrderItem = orderItem
         return item
     }
@@ -162,21 +157,6 @@ class OrderRepositoryTest extends BaseTest {
         assert actual.shippingMethodId == expected.shippingMethodId
         assert actual.shippingAddressId == expected.shippingAddressId
     }
-    //protected <T> createMock()
-
-    private <T> T mock(Class<T> type) {
-        def mock = EasyMock.createMock(type)
-        mocks << mock
-        return mock
-    }
-
-    private void replay() {
-        EasyMock.replay(mocks.toArray())
-    }
-
-    private void verify() {
-        EasyMock.verify(mocks.toArray())
-    }
 
     private void assertListEquals(List actual, List expected, Closure idFunc, Closure assertFunc) {
         def actualMap = [:]
@@ -192,11 +172,4 @@ class OrderRepositoryTest extends BaseTest {
             assertFunc.call(v, expectedMap[k])
         }
     }
-
-    @AfterMethod
-    public void clearMock() {
-        mocks.clear()
-    }
-
-
 }

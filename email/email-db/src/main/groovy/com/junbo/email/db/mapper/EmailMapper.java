@@ -7,15 +7,14 @@ package com.junbo.email.db.mapper;
 
 import com.junbo.common.id.EmailId;
 import com.junbo.common.util.EnumRegistry;
-import com.junbo.email.common.exception.AppExceptions;
 import com.junbo.email.common.util.Utils;
-import com.junbo.email.db.entity.EmailHistoryEntity;
-import com.junbo.email.db.entity.EmailScheduleEntity;
-import com.junbo.email.db.entity.EmailStatus;
-import com.junbo.email.db.entity.EmailType;
-import com.junbo.email.spec.model.Email;
+import com.junbo.email.db.entity.*;
+import com.junbo.email.spec.error.AppErrors;
+import com.junbo.email.spec.model.*;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+
+import java.util.List;
 
 /**
  * EmailMapper.
@@ -56,9 +55,11 @@ public class EmailMapper {
         entity.setLocale(email.getLocale());
         entity.setPayload(Utils.toJson(email));
         entity.setPriority(email.getPriority());
-        entity.setRecipient(Utils.toJson(email.getRecipients()));
+        entity.setRecipient(email.getRecipient());
         entity.setType(StringUtils.isEmpty(email.getType()) ? EmailType.COMMERCE.getId():toEmailType(email.getType()));
         entity.setStatus(toEmailStatus(email.getStatus()));
+        entity.setStatusReason(email.getStatusReason());
+        entity.setSentDate(email.getSentDate());
 
         return entity;
     }
@@ -82,13 +83,44 @@ public class EmailMapper {
         return email;
     }
 
+    public EmailTemplate toEmailTemplate(EmailTemplateEntity entity) {
+        if(entity == null) {
+            return null;
+        }
+        EmailTemplate template = toModel(entity, new EmailTemplate());
+        template.setId(new EmailId(entity.getId()));
+        template.setFromAddress(entity.getFromAddress());
+        template.setFromName(entity.getFromName());
+        template.setProviderIndex(entity.getProviderIndex());
+        template.setProviderName(entity.getProviderName());
+        template.setName(entity.getName());
+        template.setSubject(entity.getSubject());
+        if(entity.getVars() != null) {
+            template.setListOfVariables(Utils.toObject(entity.getVars(), List.class));
+        }
+        return template;
+    }
+
+    public EmailTemplateEntity toEmailTemplateEntity(EmailTemplate template) {
+        EmailTemplateEntity entity = new EmailTemplateEntity();
+        entity.setName(template.getName());
+        entity.setSubject(template.getSubject());
+        entity.setProviderIndex(template.getProviderIndex());
+        entity.setProviderName(template.getProviderName());
+        entity.setFromAddress(template.getFromAddress());
+        entity.setFromName(template.getFromName());
+        if(template.getListOfVariables() != null) {
+            entity.setVars(Utils.toJson(template.getListOfVariables()));
+        }
+        return entity;
+    }
     private Short toEmailType(String emailType) {
         if(!StringUtils.isEmpty(emailType)) {
             try {
                 return EmailType.valueOf(EmailType.class,emailType).getId();
             }
             catch (Exception e) {
-                throw AppExceptions.INSTANCE.invalidType().exception();
+                throw AppErrors.INSTANCE.fieldInvalid(emailType).exception();
             }
         }
         return null;
@@ -97,10 +129,10 @@ public class EmailMapper {
     private Short toEmailStatus(String emailStatus) {
         if(!StringUtils.isEmpty(emailStatus)) {
             try {
-                return EmailStatus.valueOf(EmailStatus.class,emailStatus).getId();
+                return EmailStatus.valueOf(EmailStatus.class, emailStatus).getId();
             }
             catch (Exception e) {
-                throw AppExceptions.INSTANCE.invalidStatus().exception();
+                throw AppErrors.INSTANCE.invalidStatus(emailStatus).exception();
             }
         }
         return null;
@@ -113,5 +145,14 @@ public class EmailMapper {
     private String fromEmailStatus(Short id) {
         return EnumRegistry.resolve(id, EmailStatus.class).toString();
 
+    }
+
+    private <T extends Model> T toModel(BaseEntity entity, T model) {
+        model.setCreatedBy(entity.getCreatedBy());
+        model.setCreatedTime(entity.getCreatedTime());
+        model.setModifiedBy(entity.getUpdatedBy());
+        model.setModifiedTime(entity.getUpdatedTime());
+
+        return model;
     }
 }

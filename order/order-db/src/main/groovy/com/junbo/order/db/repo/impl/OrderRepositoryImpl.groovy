@@ -82,6 +82,7 @@ class OrderRepositoryImpl implements OrderRepository {
         def id = orderDao.create(orderEntity)
         def orderId = new OrderId(id)
         order.setId(orderId)
+        fillDateInfo(order, orderEntity)
 
         saveOrderItems(order.id, order.orderItems)
         saveDiscounts(order.id, order.discounts)
@@ -100,11 +101,20 @@ class OrderRepositoryImpl implements OrderRepository {
     }
 
     @Override
-    OrderEvent createOrderEvent(OrderEvent event, String flowName, UUID trackingUuid) {
+    List<Order> getOrdersByUserId(Long userId) {
+        List<Order> orders = []
+        List<OrderEntity> orderEntities = orderDao.readByUserId(userId)
+        MappingContext context = new MappingContext()
+        orderEntities.each { OrderEntity orderEntity ->
+            orders.add(modelMapper.toOrderModel(orderEntity, context))
+        }
+        return orders
+    }
+
+    @Override
+    OrderEvent createOrderEvent(OrderEvent event) {
         def entity = modelMapper.toOrderEventEntity(event, new MappingContext())
         entity.eventId = idGenerator.nextId(entity.orderId)
-        entity.flowName = flowName
-        entity.trackingUuid = trackingUuid
         orderEventDao.create(entity)
         return modelMapper.toOrderEventModel(entity, new MappingContext())
     }
@@ -157,7 +167,7 @@ class OrderRepositoryImpl implements OrderRepository {
     }
 
     @Override
-    Order updateOrder(Order order) {
+    Order updateOrder(Order order, boolean updateOnlyOrder) {
         // Validations
         // TODO Log error and throw exception
         if (order == null) { return null }
@@ -168,9 +178,11 @@ class OrderRepositoryImpl implements OrderRepository {
         def orderEntity = modelMapper.toOrderEntity(order, context)
         orderDao.update(orderEntity)
 
-        saveOrderItems(order.id, order.orderItems)
-        saveDiscounts(order.id, order.discounts)
-        savePaymentInstruments(order.id, order.paymentInstruments)
+        if (!updateOnlyOrder) {
+            saveOrderItems(order.id, order.orderItems)
+            saveDiscounts(order.id, order.discounts)
+            savePaymentInstruments(order.id, order.paymentInstruments)
+        }
         return order
     }
 
@@ -200,8 +212,7 @@ class OrderRepositoryImpl implements OrderRepository {
     void saveDiscounts(OrderId orderId, List<Discount> discounts) {
         def repositoryFuncSet = new RepositoryFuncSet()
         discounts.each { Discount discount ->
-            assert discount.ownerOrder != null
-            discount.orderId = discount.ownerOrder.id
+            discount.orderId = orderId
             if (discount.ownerOrderItem != null) {
                 discount.orderItemId = discount.ownerOrderItem.orderItemId
             }

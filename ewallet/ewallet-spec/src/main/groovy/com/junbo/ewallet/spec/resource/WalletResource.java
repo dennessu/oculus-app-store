@@ -8,6 +8,8 @@ package com.junbo.ewallet.spec.resource;
 
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.WalletId;
+import com.junbo.ewallet.spec.model.CreditRequest;
+import com.junbo.ewallet.spec.model.DebitRequest;
 import com.junbo.ewallet.spec.model.ResultList;
 import com.junbo.ewallet.spec.model.Wallet;
 import com.junbo.langur.core.RestResource;
@@ -37,12 +39,12 @@ public interface WalletResource {
     Promise<Wallet> updateWallet(@PathParam("walletId") WalletId walletId, Wallet wallet);
 
     @POST
-    @Path("wallets/credit")
-    Promise<Wallet> credit(Wallet wallet);
+    @Path("wallets/{walletId}/credit")
+    Promise<Wallet> credit(@PathParam("walletId") WalletId walletId, CreditRequest creditRequest);
 
     @POST
-    @Path("wallets/debit")
-    Promise<Wallet> debit(Wallet wallet);
+    @Path("wallets/{walletId}/debit")
+    Promise<Wallet> debit(@PathParam("walletId") WalletId walletId, DebitRequest debitRequest);
 
     @GET
     @Path("wallets/{walletId}/transactions")

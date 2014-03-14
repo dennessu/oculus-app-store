@@ -47,9 +47,6 @@
     <bean id="transactionDao" class="com.junbo.ewallet.db.dao.hibernate.TransactionDaoImpl" parent="baseTransactionDao">
         <property name="entityType" value="com.junbo.ewallet.db.entity.hibernate.TransactionEntity"/>
     </bean>
-    <bean id="lotTransactionDao" class="com.junbo.ewallet.db.dao.hibernate.LotTransactionDaoImpl" parent="baseTransactionDao">
-        <property name="entityType" value="com.junbo.ewallet.db.entity.hibernate.LotTransactionEntity"/>
-    </bean>
 
     <bean id="baseDao" class="com.junbo.ewallet.db.dao.hibernate.BaseDao" abstract="true" parent="baseTransactionDao"/>
     <bean id="walletDao" class="com.junbo.ewallet.db.dao.hibernate.WalletDaoImpl" parent="baseDao">
@@ -59,4 +56,9 @@
         <property name="entityType" value="com.junbo.ewallet.db.entity.hibernate.WalletLotEntity"/>
     </bean>
 
+    <!-- mapper -->
+    <bean id="walletMapper" class="com.junbo.ewallet.db.mapper.WalletMapper"/>
+
+    <!-- repo -->
+    <bean id="walletRepository" class="com.junbo.ewallet.db.repo.WalletRepository"/>
 </beans>

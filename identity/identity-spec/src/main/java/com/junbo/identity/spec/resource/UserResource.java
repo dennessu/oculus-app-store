@@ -11,6 +11,8 @@ import com.junbo.identity.spec.model.common.ResultList;
 import com.junbo.identity.spec.model.user.User;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -19,7 +21,8 @@ import javax.ws.rs.core.MediaType;
  * Java cod for UserResource.
  */
 
-@Path("users")
+@Api(value= "users")
+@Path("/users")
 @RestResource
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
@@ -28,6 +31,10 @@ public interface UserResource {
     Promise<User> postUser(User user);
 
     @GET
+    @ApiOperation(
+            value = "Get or search users",
+            response = User.class,
+            responseContainer = "List")
     Promise<ResultList<User>> getUsers(@QueryParam("userName") String userName,
                         @QueryParam("userNamePrefix") String userNamePrefix,
                         @QueryParam("cursor") Integer cursor,

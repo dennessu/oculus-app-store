@@ -13,6 +13,7 @@ public enum OrderServiceOperation {
     CREATE,
     GET,
     CREATE_TENTATIVE,
+    UPDATE_TENTATIVE,
     SETTLE_TENTATIVE,
     UPDATE,
     CANCEL,

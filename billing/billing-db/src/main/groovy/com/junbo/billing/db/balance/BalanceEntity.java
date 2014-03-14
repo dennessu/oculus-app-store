@@ -30,6 +30,7 @@ public class BalanceEntity extends BaseEntity {
     private BigDecimal taxAmount;
     private Boolean taxIncluded;
     private BigDecimal discountAmount;
+    private Short taxStatusId;
     private String currency;
     private String country;
     private Short statusId;
@@ -101,6 +102,14 @@ public class BalanceEntity extends BaseEntity {
     }
     public void setDiscountAmount(BigDecimal discountAmount) {
         this.discountAmount = discountAmount;
+    }
+
+    @Column(name = "tax_status_id")
+    public Short getTaxStatusId() {
+        return taxStatusId;
+    }
+    public void setTaxStatusId(Short taxStatusId) {
+        this.taxStatusId = taxStatusId;
     }
 
     @Column(name = "currency")
@@ -199,4 +208,5 @@ public class BalanceEntity extends BaseEntity {
     public void setOriginalBalanceId(Long originalBalanceId) {
         this.originalBalanceId = originalBalanceId;
     }
+
 }

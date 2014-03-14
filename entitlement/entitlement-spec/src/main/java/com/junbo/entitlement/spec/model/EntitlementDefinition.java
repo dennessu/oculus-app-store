@@ -12,8 +12,6 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.junbo.common.jackson.annotation.EntitlementDefinitionId;
 import com.junbo.common.jackson.annotation.UserId;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
 import java.util.UUID;
 
 /**
@@ -27,14 +25,11 @@ import java.util.UUID;
         "developerId"})
 public class EntitlementDefinition {
     private UUID trackingUuid;
-    @Null
     @JsonProperty("self")
     @EntitlementDefinitionId
     private Long entitlementDefinitionId;
-    @NotNull
     @UserId
     private Long developerId;
-    @NotNull
     private String type;
     private String group;
     private String tag;
