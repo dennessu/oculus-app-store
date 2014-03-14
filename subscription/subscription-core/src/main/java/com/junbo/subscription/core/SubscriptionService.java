@@ -5,8 +5,9 @@
  */
 package com.junbo.subscription.core;
 
-import com.junbo.subscription.db.entity.SubscriptionEntity;
 import com.junbo.subscription.spec.model.Subscription;
+
+import java.util.UUID;
 
 
 /**
@@ -15,5 +16,7 @@ import com.junbo.subscription.spec.model.Subscription;
 public interface SubscriptionService {
     Subscription getsubscription(Long subscriptionId);
 
-    Long addsubscription(SubscriptionEntity subscriptionEntity);
+    Subscription addsubscription(Subscription subscription);
+
+    Subscription getSubsByTrackingUuid(UUID trackingUuid);
 }

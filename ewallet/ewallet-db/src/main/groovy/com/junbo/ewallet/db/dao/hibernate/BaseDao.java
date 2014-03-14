@@ -25,7 +25,7 @@ public class BaseDao<T extends Entity> {
     @Qualifier("ewalletSessionFactory")
     private SessionFactory sessionFactory;
     @Autowired
-    @Qualifier("idGenerator")
+    @Qualifier("oculus48IdGenerator")
     private IdGenerator idGenerator;
 
     private Class<T> entityType;
