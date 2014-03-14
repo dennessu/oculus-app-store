@@ -14,12 +14,20 @@ import junit.framework.Assert;
  */
 public class CascadeResourceIdSerializer extends ResourceIdSerializer {
     @Override
+    protected Object unwrap(Object value) {
+        Assert.assertTrue(value instanceof CascadeResource);
+
+        return ((CascadeResource) value).getPrimaryId();
+    }
+
+    @Override
     protected ResourceRef handleSingle(Object value) {
         Assert.assertTrue(value instanceof CascadeResource);
 
+        Object primaryId = ((CascadeResource) value).getPrimaryId();
         ResourceRef ref = new ResourceRef();
         ref.setHref(getResourceHref(value));
-        ref.setId(encode(((CascadeResource) value).getPrimaryId()));
+        ref.setId(encode(primaryId));
 
         return ref;
     }

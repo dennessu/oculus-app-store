@@ -14,6 +14,7 @@ import org.glassfish.grizzly.http.server.HttpServer
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory
 import org.glassfish.jersey.server.ResourceConfig
 import org.glassfish.jersey.server.ServerProperties
+import org.slf4j.bridge.SLF4JBridgeHandler
 
 import java.util.logging.Handler
 import java.util.logging.Level
@@ -42,10 +43,11 @@ class Main {
     }
 
     static void main(String[] args) {
-        Logger.getLogger('').setLevel(Level.ALL)
-        for (Handler handler : Logger.getLogger('').handlers) {
-            handler.setLevel(Level.ALL)
-        }
+        SLF4JBridgeHandler.removeHandlersForRootLogger()
+        SLF4JBridgeHandler.install()
+
+        System.setProperty('net.spy.log.LoggerImpl', 'net.spy.memcached.compat.log.SLF4JLogger')
+        System.setProperty('logback.configurationFile', 'logback-identity.xml')
 
         def server = startServer()
         System.in.read()
