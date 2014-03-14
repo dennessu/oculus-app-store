@@ -113,7 +113,6 @@ class OrderRepositoryTest extends BaseTest {
         item.orderId = null
         item.discountInfoId = null
         item.orderItemId = null
-        item.ownerOrder = order
         item.ownerOrderItem = orderItem
         return item
     }

@@ -37,7 +37,8 @@ class TestBuilder {
 
     static Order buildOrderRequest() {
         def order = new Order()
-        order.setOrderItems([buildOrderItem()])
+        def orderItem = buildOrderItem()
+        order.setOrderItems([orderItem])
         order.setType(OrderType.PAY_IN.toString())
         order.setCountry('US')
         order.setCurrency('USD')
@@ -51,13 +52,14 @@ class TestBuilder {
         order.setTentative(true)
         order.setTrackingUuid(generateUUID())
         order.discounts = []
-        order.discounts.add(buildDiscount('AAA'))
+        order.discounts.add(buildDiscount('AAA', orderItem))
         return order
     }
 
-    static Discount buildDiscount(String coupon) {
+    static Discount buildDiscount(String coupon, OrderItem item) {
         def discount = new Discount()
         discount.coupon = coupon
+        discount.ownerOrderItem = item
         return discount
     }
 
@@ -65,6 +67,7 @@ class TestBuilder {
         def orderItem = new OrderItem()
         orderItem.setType(ItemType.DIGITAL.toString())
         orderItem.setOffer(new OfferId(generateLong()))
+        orderItem.quantity = 1
         return orderItem
     }
 

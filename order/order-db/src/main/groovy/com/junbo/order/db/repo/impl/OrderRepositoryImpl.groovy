@@ -199,8 +199,7 @@ class OrderRepositoryImpl implements OrderRepository {
     void saveDiscounts(OrderId orderId, List<Discount> discounts) {
         def repositoryFuncSet = new RepositoryFuncSet()
         discounts.each { Discount discount ->
-            assert discount.ownerOrder != null
-            discount.orderId = discount.ownerOrder.id
+            discount.orderId = orderId
             if (discount.ownerOrderItem != null) {
                 discount.orderItemId = discount.ownerOrderItem.orderItemId
             }

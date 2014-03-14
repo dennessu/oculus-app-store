@@ -96,14 +96,6 @@ public class Discount extends BaseModelWithDate {
         this.coupon = coupon;
     }
 
-    public Order getOwnerOrder() {
-        return ownerOrder;
-    }
-
-    public void setOwnerOrder(Order ownerOrder) {
-        this.ownerOrder = ownerOrder;
-    }
-
     public OrderItem getOwnerOrderItem() {
         return ownerOrderItem;
     }
