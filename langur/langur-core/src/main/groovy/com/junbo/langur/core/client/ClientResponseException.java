@@ -31,4 +31,8 @@ public class ClientResponseException extends RuntimeException {
         // more detailed messages.
         return message + " Response: " + response;
     }
+
+    public Response getResponse(){
+        return response;
+    }
 }

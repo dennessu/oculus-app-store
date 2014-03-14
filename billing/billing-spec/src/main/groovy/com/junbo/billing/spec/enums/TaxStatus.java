@@ -1,0 +1,29 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
+ */
+
+package com.junbo.billing.spec.enums;
+
+import com.junbo.common.util.Identifiable;
+
+/**
+ * Created by xmchen on 14-3-13.
+ */
+public enum TaxStatus implements Identifiable<Short> {
+    TAXED((short)0),
+    NOT_TAXED((short)10),
+    FAILED((short)-1);
+
+    private final Short id;
+
+    TaxStatus(Short id) {
+        this.id = id;
+    }
+
+    @Override
+    public Short getId() {
+        return id;
+    }
+}

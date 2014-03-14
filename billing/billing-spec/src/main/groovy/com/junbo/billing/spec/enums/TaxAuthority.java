@@ -26,6 +26,7 @@ public enum TaxAuthority implements Identifiable<Short> {
     VAT((short)12),
     QST((short)13),
     HST((short)14),
+    SPECIAL((short)15),
 
     UNKNOWN((short)999);
 

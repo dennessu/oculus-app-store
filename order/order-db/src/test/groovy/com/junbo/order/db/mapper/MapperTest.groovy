@@ -35,6 +35,7 @@ class MapperTest extends BaseTest {
         assert returnedOrderEntity != null :'Fail to map order model to entity.'
         assert orderModel.id.value == orderEntity.orderId :  'The order Id should not be different.'
         assert orderModel.id.value == returnedOrderEntity.orderId : 'The order Id should not be different.'
+        assert orderEntity.tentative == returnedOrderEntity.tentative
     }
 
     @Test(enabled = true)

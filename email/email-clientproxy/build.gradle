@@ -1,11 +1,15 @@
-apply plugin: 'java'
+apply plugin: 'groovy'
 
 dependencies {
+    compile project(":email-spec")
     compile (libraries.rs_api)
     compile (libraries.langur)
     compile (libraries.spring_beans)
     compile (libraries.spring_context)
     compile (libraries.guava)
+    compile (libraries.asyncclient)
+
+    compile 'com.junbo.identity:identity-spec:0.0.1-SNAPSHOT'
 
     processor (libraries.langur_processor)
     processor (libraries.log4j)
