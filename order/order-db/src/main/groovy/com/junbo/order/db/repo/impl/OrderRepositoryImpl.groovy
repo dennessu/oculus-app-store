@@ -101,6 +101,17 @@ class OrderRepositoryImpl implements OrderRepository {
     }
 
     @Override
+    List<Order> getOrdersByUserId(Long userId) {
+        List<Order> orders = []
+        List<OrderEntity> orderEntities = orderDao.readByUserId(userId)
+        MappingContext context = new MappingContext()
+        orderEntities.each { OrderEntity orderEntity ->
+            orders.add(modelMapper.toOrderModel(orderEntity, context))
+        }
+        return orders
+    }
+
+    @Override
     OrderEvent createOrderEvent(OrderEvent event) {
         def entity = modelMapper.toOrderEventEntity(event, new MappingContext())
         entity.eventId = idGenerator.nextId(entity.orderId)
@@ -201,8 +212,7 @@ class OrderRepositoryImpl implements OrderRepository {
     void saveDiscounts(OrderId orderId, List<Discount> discounts) {
         def repositoryFuncSet = new RepositoryFuncSet()
         discounts.each { Discount discount ->
-            assert discount.ownerOrder != null
-            discount.orderId = discount.ownerOrder.id
+            discount.orderId = orderId
             if (discount.ownerOrderItem != null) {
                 discount.orderItemId = discount.ownerOrderItem.orderItemId
             }

@@ -38,7 +38,7 @@ import java.util.Random;
 @TransactionConfiguration(defaultRollback = true)
 public class EntitlementDaoTest extends AbstractTransactionalTestNGSpringContextTests {
     @Autowired
-    @Qualifier("idGenerator")
+    @Qualifier("oculus48IdGenerator")
     private IdGenerator idGenerator;
     @Autowired
     private EntitlementRepository entitlementRepository;

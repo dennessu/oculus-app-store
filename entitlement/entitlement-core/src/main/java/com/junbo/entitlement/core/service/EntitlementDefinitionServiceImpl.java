@@ -7,6 +7,7 @@
 package com.junbo.entitlement.core.service;
 
 import com.junbo.entitlement.core.EntitlementDefinitionService;
+import com.junbo.entitlement.db.entity.def.EntitlementType;
 import com.junbo.entitlement.db.repository.EntitlementDefinitionRepository;
 import com.junbo.entitlement.db.repository.EntitlementRepository;
 import com.junbo.entitlement.spec.error.AppErrors;
@@ -55,6 +56,9 @@ public class EntitlementDefinitionServiceImpl extends BaseService implements Ent
     @Override
     @Transactional
     public EntitlementDefinition addEntitlementDefinition(EntitlementDefinition entitlementDefinition) {
+        if (entitlementDefinition.getType() == null) {
+            entitlementDefinition.setType(EntitlementType.DEFAULT.toString());
+        }
         checkDeveloper(entitlementDefinition.getDeveloperId());
         return entitlementDefinitionRepository.insert(entitlementDefinition);
     }
@@ -67,8 +71,12 @@ public class EntitlementDefinitionServiceImpl extends BaseService implements Ent
             throw AppErrors.INSTANCE.missingField("id").exception();
         }
         if (!entitlementDefinitionId.equals(entitlementDefinition.getEntitlementDefinitionId())) {
-            throw AppErrors.INSTANCE.fieldNotMatch("id", entitlementDefinition.getEntitlementDefinitionId().toString(),
-                    entitlementDefinitionId.toString()).exception();
+            throw AppErrors.INSTANCE.fieldNotMatch("id", entitlementDefinition.getEntitlementDefinitionId(),
+                    entitlementDefinitionId).exception();
+        }
+
+        if (entitlementDefinition.getType() == null) {
+            entitlementDefinition.setType(EntitlementType.DEFAULT.toString());
         }
 
         checkUnUsed(entitlementDefinitionId);
@@ -83,8 +91,8 @@ public class EntitlementDefinitionServiceImpl extends BaseService implements Ent
         checkDeveloper(existingEntitlementDefinition.getDeveloperId());
 
         if (!existingEntitlementDefinition.getDeveloperId().equals(entitlementDefinition.getDeveloperId())) {
-            throw AppErrors.INSTANCE.fieldNotMatch("developerId", entitlementDefinition.getDeveloperId().toString(),
-                    existingEntitlementDefinition.getDeveloperId().toString()).exception();
+            throw AppErrors.INSTANCE.fieldNotMatch("developerId", entitlementDefinition.getDeveloperId(),
+                    existingEntitlementDefinition.getDeveloperId()).exception();
         }
 
         existingEntitlementDefinition.setTag(entitlementDefinition.getTag());
