@@ -10,9 +10,7 @@ import com.junbo.common.util.EnumRegistry;
 import com.junbo.email.common.util.Utils;
 import com.junbo.email.db.entity.*;
 import com.junbo.email.spec.error.AppErrors;
-import com.junbo.email.spec.model.Email;
-import com.junbo.email.spec.model.EmailTemplate;
-import com.junbo.email.spec.model.Model;
+import com.junbo.email.spec.model.*;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -131,7 +129,7 @@ public class EmailMapper {
     private Short toEmailStatus(String emailStatus) {
         if(!StringUtils.isEmpty(emailStatus)) {
             try {
-                return EmailStatus.valueOf(EmailStatus.class,emailStatus).getId();
+                return EmailStatus.valueOf(EmailStatus.class, emailStatus).getId();
             }
             catch (Exception e) {
                 throw AppErrors.INSTANCE.invalidStatus(emailStatus).exception();
