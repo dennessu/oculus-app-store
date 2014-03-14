@@ -7,10 +7,11 @@ package com.junbo.email.core;
 
 
 import com.junbo.email.spec.model.Email;
+import com.junbo.langur.core.promise.Promise;
 
 /**
  * Interface of EmailService.
  */
 public interface EmailService {
-    Email send(Email email);
+    Promise<Email> send(Email request);
 }

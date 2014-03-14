@@ -11,6 +11,7 @@ import com.junbo.email.db.mapper.EmailMapper;
 import com.junbo.email.spec.model.Email;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.Random;
@@ -19,6 +20,7 @@ import java.util.Random;
  * Repository of EmailSchedule.
  */
 @Component
+@Transactional
 public class EmailScheduleRepository {
     @Autowired
     private EmailScheduleDao emailScheduleDao;

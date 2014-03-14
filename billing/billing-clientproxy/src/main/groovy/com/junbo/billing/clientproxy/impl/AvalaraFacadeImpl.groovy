@@ -20,6 +20,7 @@ import com.junbo.billing.clientproxy.impl.avalara.SeverityLevel
 import com.junbo.billing.clientproxy.impl.avalara.TaxDetail
 import com.junbo.billing.clientproxy.impl.avalara.TaxLine
 import com.junbo.billing.spec.enums.TaxAuthority
+import com.junbo.billing.spec.enums.TaxStatus
 import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.BalanceItem
 import com.junbo.billing.spec.model.ShippingAddress
@@ -47,9 +48,9 @@ class AvalaraFacadeImpl implements TaxFacade {
     Balance updateBalance(GetTaxResponse response, Balance balance) {
         balance.taxAmount = response.totalTax
         if (response != null && response.resultCode == SeverityLevel.Success) {
-            balance.balanceItems.each { BalanceItem item ->
+            balance.balanceItems.eachWithIndex { BalanceItem item, int index ->
                 response.taxLines.each { TaxLine line ->
-                    if (item.balanceItemId.value == Long.valueOf(line.lineNo)) {
+                    if (index == Long.valueOf(line.lineNo)) {
                         item.taxAmount = BigDecimal.valueOf(line.tax)
                         line.taxDetails.each { TaxDetail detail ->
                             def taxItem = new TaxItem()
@@ -61,9 +62,11 @@ class AvalaraFacadeImpl implements TaxFacade {
                     }
                 }
             }
-
-            return balance
+            balance.setTaxStatus(TaxStatus.TAXED.name())
+        } else {
+            balance.setTaxStatus(TaxStatus.FAILED.name())
         }
+        return balance
     }
 
     String getTaxAuthority(String jurisType) {
@@ -158,16 +161,15 @@ class AvalaraFacadeImpl implements TaxFacade {
 
         // lines
         def lines = []
-        balance.balanceItems.each { BalanceItem item ->
+        balance.balanceItems.eachWithIndex { BalanceItem item, int index ->
             def line = new Line()
-            line.lineNo = item.balanceItemId.value.toString()
+            line.lineNo = index.toString()
             // TODO: confirm address collection
             line.destinationCode = shipToAddress.addressCode
             line.originCode = shipFromAddress.addressCode
             line.qty = BigDecimal.ONE
             line.amount = item.amount
-            line.itemCode = item.balanceItemId.value.toString()
-            line.taxIncluded = item.taxIncluded
+            line.itemCode = item.financeId
             lines << line
         }
 

@@ -5,30 +5,29 @@
  */
 package com.junbo.email.core.service;
 
-import com.junbo.email.common.exception.AppExceptions;
-import com.junbo.email.common.util.Utils;
+import com.junbo.email.clientproxy.MandrillFacade;
+import com.junbo.email.clientproxy.impl.mandrill.MandrillResponse;
+import com.junbo.email.clientproxy.impl.mandrill.SendStatus;
 import com.junbo.email.core.EmailService;
-import com.junbo.email.core.provider.EmailProvider;
-import com.junbo.email.core.provider.Request;
-import com.junbo.email.core.provider.Response;
-import com.junbo.email.core.util.Convert;
 import com.junbo.email.db.entity.EmailStatus;
-import com.junbo.email.db.entity.EmailTemplateEntity;
+import com.junbo.email.db.repo.EmailHistoryRepository;
 import com.junbo.email.db.repo.EmailScheduleRepository;
 import com.junbo.email.db.repo.EmailTemplateRepository;
+import com.junbo.email.spec.error.AppErrors;
 import com.junbo.email.spec.model.Email;
-import com.junbo.email.db.repo.EmailHistoryRepository;
+import com.junbo.email.spec.model.EmailTemplate;
+import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import javax.annotation.Resource;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Impl of EmailService.
  */
 @Component
-@Transactional
 public class EmailServiceImpl implements EmailService {
     private static final int INIT_RETRY_COUNT = 0;
     private static final int MAX_RETRY_COUNT = 3;
@@ -42,77 +41,100 @@ public class EmailServiceImpl implements EmailService {
     @Autowired
     private EmailScheduleRepository emailScheduleRepository;
 
-    @Autowired
-    private EmailProvider emailProvider;
+    @Resource
+    private MandrillFacade mandrillFacade;
 
     @Override
-    public Email send(Email email) {
+    public Promise<Email> send(Email request) {
 
-        validateRequest(email);
-        Email result;
-        if(email.getScheduleDate() != null) {
+        validateRequest(request);
+        final Email email = request;
+        if(request.getScheduleDate() != null) {
             //handler schedule email
-            result = emailScheduleRepository.saveEmailSchedule(email);
+            Email schedule = emailScheduleRepository.saveEmailSchedule(request);
+            return Promise.pure(schedule);
         }
         else {
-            Long id = emailHistoryRepository.createEmailHistory(email);
-            Email history = emailHistoryRepository.getEmail(id);
-            //send email
-            Request request = Convert.toRequest(history);
-            Response response = emailProvider.send(request);
-            if(response.getStatusCode() == 200) {
-                history.setStatus(EmailStatus.SUCCEED.toString());
-                history.setIsResend(false);
-                history.setSentDate(new Date());
-                Long updateId = emailHistoryRepository.updateEmailHistory(history);
-                result = emailHistoryRepository.getEmail(updateId);
-                //result = history;
-            }
-            else {
-                throw AppExceptions.INSTANCE.internalError().exception();
-            }
+            //send email by mandrill
+            return mandrillFacade.send(request).then(new Promise.Func<MandrillResponse, Promise<Email>>() {
+                @Override
+                public Promise<Email> apply(MandrillResponse response) {
+                    if(response.getCode() == 200) {
+                        switch (response.getStatus()) {
+                            case SendStatus.SENT:{
+                                email.setStatus(EmailStatus.SUCCEED.toString());
+                                email.setSentDate(new Date());
+                                break;
+                            }
+                            case SendStatus.REJECTED:{
+                                email.setStatus(EmailStatus.FAILED.toString());
+                                email.setStatusReason(response.getReason());
+                                break;
+                            }
+                            case SendStatus.QUEUED:{
+                                email.setStatus(EmailStatus.PENDING.toString());
+                                break;
+                            }
+                            case SendStatus.INVALID:{
+                                email.setStatus(EmailStatus.FAILED.toString());
+                                email.setStatusReason("invalid");
+                                break;
+                            }
+                            default:{
+                                email.setStatus(EmailStatus.FAILED.toString());
+                                email.setStatusReason("unknown");
+                            }
+                        }
+                    }
+                    else {
+                        email.setStatus(EmailStatus.FAILED.toString());
+                        email.setStatusReason(response.getBody());
+                    }
+                    Long id = emailHistoryRepository.createEmailHistory(email);
+                    return Promise.pure(emailHistoryRepository.getEmail(id));
+                }
+            });
         }
-        return result;
     }
 
     private void validateRequest(Email email) {
         if(email == null) {
-            throw AppExceptions.INSTANCE.invalidPayload().exception();
+            throw AppErrors.INSTANCE.invalidPayload().exception();
         }
-        if(email.getUserId() == null && email.getRecipients() == null) {
-            throw AppExceptions.INSTANCE.invalidInput().exception();
+        if(email.getUserId() == null && email.getRecipient() == null) {
+            throw AppErrors.INSTANCE.fieldMissingValue("user or recipient").exception();
         }
         if(email.getSource() == null) {
-            throw AppExceptions.INSTANCE.missingSource().exception();
+            throw AppErrors.INSTANCE.fieldMissingValue("source").exception();
         }
         if(email.getAction() == null) {
-            throw AppExceptions.INSTANCE.missingAction().exception();
+            throw AppErrors.INSTANCE.fieldMissingValue("action").exception();
         }
         if(email.getLocale() == null) {
-            throw AppExceptions.INSTANCE.missingLocale().exception();
+            throw AppErrors.INSTANCE.fieldMissingValue("locale").exception();
         }
         if(email.getScheduleDate() != null && email.getScheduleDate().before(new Date())) {
-            throw AppExceptions.INSTANCE.invalidScheduleDate().exception();
+            throw AppErrors.INSTANCE.fieldInvalid("scheduleDate").exception();
         }
         checkProperties(email);
     }
 
     private void checkProperties(Email email) {
         String templateName = String.format("%s.%s.%s",email.getSource(), email.getAction(), email.getLocale());
-        EmailTemplateEntity templateEntity = emailTemplateRepository.getEmailTemplateByName(templateName);
+        EmailTemplate template = emailTemplateRepository.getEmailTemplateByName(templateName);
 
-        if(templateEntity == null) {
-            throw AppExceptions.INSTANCE.templateNotFound().exception();
+        if(template == null) {
+            throw AppErrors.INSTANCE.templateNotFound(templateName).exception();
         }
-        if(templateEntity.getVars() != null && email.getProperties() == null) {
-            throw AppExceptions.INSTANCE.invalidPayload().exception();
+        if(template.getListOfVariables() != null && email.getProperties() == null) {
+            throw AppErrors.INSTANCE.invalidProperty("properties").exception();
         }
-        if(templateEntity.getVars() != null) {
-            List<String> variables = Utils.toObject(templateEntity.getVars(),List.class);
+        if(template.getListOfVariables() != null) {
+            List<String> variables = template.getListOfVariables();
             //properties check
             for(String key : email.getProperties().keySet()) {
                 if(!variables.contains(key.replaceAll("\\d*$",""))) {
-                    throw AppExceptions.INSTANCE.invalidProperty(key).exception();
+                    throw AppErrors.INSTANCE.invalidProperty(key).exception();
                 }
             }
         }

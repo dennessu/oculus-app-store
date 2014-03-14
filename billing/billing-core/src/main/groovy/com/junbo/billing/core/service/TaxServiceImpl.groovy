@@ -10,6 +10,7 @@ import com.junbo.billing.clientproxy.PaymentFacade
 import com.junbo.billing.clientproxy.TaxFacade
 import com.junbo.billing.spec.error.AppErrors
 import com.junbo.billing.spec.model.Balance
+import com.junbo.billing.spec.model.ShippingAddress
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 
@@ -49,9 +50,12 @@ class TaxServiceImpl implements TaxService {
     @Override
     Promise<Balance> calculateTax(Balance balance) {
         Long userId = balance.userId.value
-        Long addressId = balance.shippingAddressId.value
-        def addressPromise = shippingAddressService.getShippingAddress(userId, addressId)
-        def shippingAddress = addressPromise?.wrapped().get()
+        ShippingAddress shippingAddress
+        if (balance.shippingAddressId != null) {
+            Long addressId = balance.shippingAddressId.value
+            def addressPromise = shippingAddressService.getShippingAddress(userId, addressId)
+            shippingAddress = addressPromise?.wrapped().get()
+        }
 
         Long piId = balance.piId.value
         def piPromise = paymentFacade.getPaymentInstrument(piId)

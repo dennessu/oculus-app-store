@@ -6,10 +6,12 @@
 
 package com.junbo.order.clientproxy.payment.impl
 
+import com.junbo.common.id.PaymentInstrumentId
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.payment.PaymentFacade
 import com.junbo.payment.spec.model.PaymentInstrument
 import com.junbo.payment.spec.resource.PaymentInstrumentResource
+import groovy.transform.CompileStatic
 import org.springframework.stereotype.Component
 
 import javax.annotation.Resource
@@ -18,6 +20,7 @@ import javax.annotation.Resource
  * Created by chriszhu on 2/11/14.
  */
 @Component('paymentFacade')
+@CompileStatic
 class PaymentFacadeImpl implements PaymentFacade {
 
     @Resource(name='paymentInstrumentClient')
@@ -25,6 +28,6 @@ class PaymentFacadeImpl implements PaymentFacade {
 
     @Override
     Promise<PaymentInstrument> getPaymentInstrument(Long paymentInstrumentId) {
-        return paymentInstrumentResource.getById(paymentInstrumentId)
+        return paymentInstrumentResource.getById(new PaymentInstrumentId(paymentInstrumentId))
     }
 }

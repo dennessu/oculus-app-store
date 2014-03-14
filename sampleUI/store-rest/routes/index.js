@@ -7,9 +7,10 @@ module.exports = function (app) {
 
         res.render("index", {title: "Redirect Test"});
     });
-    app.get("/r", function (req, res) {
+    app.get("/rest/authorize", function (req, res) {
 
-        res.render("index", {title: "Result"});
+        res.redirect("http://localhost:3000/identity?fs=12345");
+        res.end();
     });
 
     for (var p in C) {

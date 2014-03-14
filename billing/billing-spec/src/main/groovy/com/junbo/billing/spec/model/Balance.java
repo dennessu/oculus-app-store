@@ -30,6 +30,7 @@ public class Balance {
     private BigDecimal taxAmount;
     private BigDecimal discountAmount;
     private Boolean taxIncluded;
+    private String taxStatus;
     private String currency;
     private String country;
     private Date dueDate;
@@ -179,5 +180,13 @@ public class Balance {
 
     public void addTransaction(Transaction transaction) {
         transactions.add(transaction);
+    }
+
+    public String getTaxStatus() {
+        return taxStatus;
+    }
+
+    public void setTaxStatus(String taxStatus) {
+        this.taxStatus = taxStatus;
     }
 }

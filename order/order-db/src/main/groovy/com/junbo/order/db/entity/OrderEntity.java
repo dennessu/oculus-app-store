@@ -28,6 +28,7 @@ public class OrderEntity extends CommonDbEntityWithDate {
     private Long orderId;
     private Long userId;
     private OrderStatus orderStatusId;
+    private Boolean tentative;
     private Long originalOrderId;
     private OrderType orderTypeId;
     private String currency;
@@ -124,5 +125,15 @@ public class OrderEntity extends CommonDbEntityWithDate {
 
     public void setOrderStatusId(OrderStatus orderStatusId) {
         this.orderStatusId = orderStatusId;
+    }
+
+    @Column(name = "IS_TENTATIVE")
+    @NotNull(message = ValidationMessages.MISSING_VALUE)
+    public Boolean getTentative() {
+        return tentative;
+    }
+
+    public void setTentative(Boolean tentative) {
+        this.tentative = tentative;
     }
 }
