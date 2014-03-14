@@ -169,4 +169,32 @@ public class JacksonCustomizationTest {
                 paymentInstrument2.getPaymentInstrumentId2(),
                 "paymentInstrument2 id should match.");
     }
+
+
+    @Test
+    public void testSetIgnore() throws Exception {
+        Order order = new Order();
+        order.setBuyerId(1234L);
+
+        String json = mapper.writeValueAsString(order);
+        Order order2 = mapper.readValue(json, Order.class);
+
+        Assert.assertNull(order2.getBuyerId(), "buyer id should be null.");
+    }
+
+    @Test
+    public void testGetIgnore() throws Exception {
+        Order order = new Order();
+        order.setSellerId(9876L);
+
+        String json = mapper.writeValueAsString(order);
+        Order order2 = mapper.readValue(json, Order.class);
+
+        Assert.assertNull(order2.getSellerId(), "seller id should be null.");
+
+        String json2 = "{\"sellerId\":{\"href\":\"http://api.wan-san.com/v1/users/0000000004D2\",\"id\":\"0000000004D2\"}}";
+        Order order3 = mapper.readValue(json2, Order.class);
+        Assert.assertEquals((long) order3.getSellerId(), 1234L, "seller id should match.");
+
+    }
 }
