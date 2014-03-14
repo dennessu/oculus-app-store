@@ -18,6 +18,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * Created by chriszhu on 1/26/14.
@@ -33,9 +34,21 @@ public class OrderItemEntity extends CommonDbEntityDeletable {
     private String productItemId;
     private BigDecimal unitPrice;
     private Integer quantity;
-    private BigDecimal totalPrice;
     private String federatedId;
     private String properties;
+    private Long shippingAddressId;
+    private Long shippingMethodId;
+    // expand ratingInfo to simplify oom
+    private BigDecimal totalAmount;
+    private BigDecimal totalTax;
+    private Boolean isTaxExempted;
+    private BigDecimal totalDiscount;
+    private BigDecimal totalPreorderAmount;
+    private BigDecimal totalPreorderTax;
+    private Date honorUntilTime;
+    private Date honoredTime;
+    // end of ratingInfo
+
 
     @Id
     @Column(name = "ORDER_ITEM_ID")
@@ -99,16 +112,6 @@ public class OrderItemEntity extends CommonDbEntityDeletable {
         this.quantity = quantity;
     }
 
-    @Column(name = "TOTAL_PRICE")
-    @NotNull(message = ValidationMessages.MISSING_VALUE)
-    public BigDecimal getTotalPrice() {
-        return totalPrice;
-    }
-
-    public void setTotalPrice(BigDecimal totalPrice) {
-        this.totalPrice = totalPrice;
-    }
-
     @Column(name = "FEDERATED_ID")
     public String getFederatedId() {
         return federatedId;
@@ -126,5 +129,90 @@ public class OrderItemEntity extends CommonDbEntityDeletable {
 
     public void setProperties(String properties) {
         this.properties = properties;
+    }
+
+    @Column(name = "SHIPPING_ADDRESS_ID")
+    public Long getShippingAddressId() { return shippingAddressId; }
+    public void setShippingAddressId(Long shippingAddressId) { this.shippingAddressId = shippingAddressId; }
+
+    @Column(name = "SHIPPING_METHOD_ID")
+    public Long getShippingMethodId() { return shippingMethodId; }
+    public void setShippingMethodId(Long shippingMethodId) { this.shippingMethodId = shippingMethodId; }
+
+    @Column(name = "TOTAL_AMOUNT")
+    @NotNull(message = ValidationMessages.MISSING_VALUE)
+    public BigDecimal getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(BigDecimal totalAmount) {
+        this.totalAmount = totalAmount;
+    }
+
+    @Column(name = "TOTAL_TAX")
+    @NotNull(message = ValidationMessages.MISSING_VALUE)
+    public BigDecimal getTotalTax() {
+        return totalTax;
+    }
+
+    public void setTotalTax(BigDecimal totalTax) {
+        this.totalTax = totalTax;
+    }
+
+    @Column(name = "IS_TAX_EXEMPTED")
+    @NotNull(message = ValidationMessages.MISSING_VALUE)
+    public Boolean getIsTaxExempted() {
+        return isTaxExempted;
+    }
+
+    public void setIsTaxExempted(Boolean isTaxExempted) {
+        this.isTaxExempted = isTaxExempted;
+    }
+
+    @Column(name = "TOTAL_DISCOUNT")
+    @NotNull(message = ValidationMessages.MISSING_VALUE)
+    public BigDecimal getTotalDiscount() {
+        return totalDiscount;
+    }
+
+    public void setTotalDiscount(BigDecimal totalDiscount) {
+        this.totalDiscount = totalDiscount;
+    }
+
+    @Column(name = "TOTAL_PREORDER_AMOUNT")
+    public BigDecimal getTotalPreorderAmount() {
+        return totalPreorderAmount;
+    }
+
+    public void setTotalPreorderAmount(BigDecimal totalPreorderAmount) {
+        this.totalPreorderAmount = totalPreorderAmount;
+    }
+
+    @Column(name = "TOTAL_PREORDER_TAX")
+    public BigDecimal getTotalPreorderTax() {
+        return totalPreorderTax;
+    }
+
+    public void setTotalPreorderTax(BigDecimal totalPreorderTax) {
+        this.totalPreorderTax = totalPreorderTax;
+    }
+
+    @Column(name = "HONOR_UNTIL_TIME")
+    public Date getHonorUntilTime() {
+        return honorUntilTime;
+    }
+
+    public void setHonorUntilTime(Date honorUntilTime) {
+        this.honorUntilTime = honorUntilTime;
+    }
+
+    @Column(name = "HONORED_TIME")
+    @NotNull(message = ValidationMessages.MISSING_VALUE)
+    public Date getHonoredTime() {
+        return honoredTime;
+    }
+
+    public void setHonoredTime(Date honoredTime) {
+        this.honoredTime = honoredTime;
     }
 }

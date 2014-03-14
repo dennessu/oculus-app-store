@@ -41,11 +41,11 @@ public class Order extends BaseModelWithDate {
     private OrderId originalOrder;
 
     // expand ratingInfo to simplify oom
-    private BigDecimal unitPrice;
     private BigDecimal totalAmount;
     private BigDecimal totalTax;
     private Boolean isTaxInclusive;
     private BigDecimal totalDiscount;
+    private BigDecimal totalShippingFee;
     private BigDecimal totalShippingFeeDiscount;
     private BigDecimal totalPreorderAmount;
     private BigDecimal totalPreorderTax;
@@ -136,14 +136,6 @@ public class Order extends BaseModelWithDate {
         this.originalOrder = originalOrder;
     }
 
-    public BigDecimal getUnitPrice() {
-        return unitPrice;
-    }
-
-    public void setUnitPrice(BigDecimal unitPrice) {
-        this.unitPrice = unitPrice;
-    }
-
     public BigDecimal getTotalAmount() {
         return totalAmount;
     }
@@ -174,6 +166,14 @@ public class Order extends BaseModelWithDate {
 
     public void setTotalDiscount(BigDecimal totalDiscount) {
         this.totalDiscount = totalDiscount;
+    }
+
+    public BigDecimal getTotalShippingFee() {
+        return totalShippingFee;
+    }
+
+    public void setTotalShippingFee(BigDecimal totalShippingFee) {
+        this.totalShippingFee = totalShippingFee;
     }
 
     public BigDecimal getTotalShippingFeeDiscount() {
