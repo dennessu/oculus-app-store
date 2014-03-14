@@ -7,6 +7,11 @@ package com.junbo.testing.common.libs;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.ning.http.client.Request;
+import com.ning.http.client.providers.netty.NettyResponse;
+
+import java.io.IOException;
+import java.util.Map;
 
 /**
  * @author Jason
@@ -34,5 +39,34 @@ public class LogHelper {
 
     public void logWarn(String message) {
         logger.warn(message);
+    }
+
+    public void LogRequest(Request req) {
+        if (req != null) {
+            logger.info("**** EXECUTING " + req.getMethod());
+            logger.info("**** URI is: " + req.getURI());
+
+            String headers = "**** Headers: [";
+            for (Map.Entry eachHeader : req.getHeaders()) {
+                headers += eachHeader.getKey() + ": " + eachHeader.getValue() + ", ";
+            }
+            headers = headers.substring(0, headers.length() - 2) + "]";
+            logger.info(headers);
+
+            logger.info("**** Request Body: " + req.getStringData());
+        }
+        else {
+            logger.warn("The request is null");
+        }
+    }
+
+    public void LogResponse(NettyResponse response) throws IOException {
+        if (response != null) {
+            logger.info("**** Response status code: " + response.getStatusCode());
+            logger.info("**** Response body: " + response.getResponseBody());
+        }
+        else {
+            logger.warn("The response is null");
+        }
     }
 }
