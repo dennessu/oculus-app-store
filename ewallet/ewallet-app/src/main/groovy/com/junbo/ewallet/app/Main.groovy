@@ -7,10 +7,12 @@
 package com.junbo.ewallet.app
 
 import com.junbo.common.id.provider.IdTypeFromStringProvider
+import com.junbo.ewallet.rest.mapper.RestExceptionMapper
 import groovy.transform.CompileStatic
 import org.glassfish.grizzly.http.server.HttpServer
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory
 import org.glassfish.jersey.server.ResourceConfig
+import org.glassfish.jersey.server.ServerProperties
 
 /**
  * Main to start server.
@@ -23,9 +25,12 @@ class Main {
         resourceConfig.packages('com.junbo.ewallet.spec.resource.adapter')
         resourceConfig.property('contextConfigLocation', 'classpath*:/spring/*.xml')
 
+        resourceConfig.register(RestExceptionMapper)
+        resourceConfig.property(ServerProperties.BV_SEND_ERROR_IN_RESPONSE, true)
+        resourceConfig.property(ServerProperties.TRACING, 'ALL')
         resourceConfig.register(IdTypeFromStringProvider)
 
-        def uri = URI.create('http://0.0.0.0:8080/oauth')
+        def uri = URI.create('http://0.0.0.0:8080/rest')
         return GrizzlyHttpServerFactory.createHttpServer(uri, resourceConfig)
     }
 

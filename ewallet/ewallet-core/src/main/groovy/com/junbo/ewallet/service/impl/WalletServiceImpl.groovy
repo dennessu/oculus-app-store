@@ -60,7 +60,9 @@ class WalletServiceImpl implements WalletService {
             throw AppErrors.INSTANCE.missingField('currency').exception()
         }
 
-        if (!wallet.balance == BigDecimal.ZERO) {
+        if (wallet.balance == null) {
+            wallet.balance = BigDecimal.ZERO
+        } else if (!wallet.balance == BigDecimal.ZERO) {
             throw AppErrors.INSTANCE.fieldNotCorrect('balance', 'balance should be 0.').exception()
         }
 

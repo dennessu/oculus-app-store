@@ -5,45 +5,59 @@
  */
 
 package com.junbo.ewallet.rest.resource
-import com.junbo.common.id.UserId
+
 import com.junbo.common.id.WalletId
+import com.junbo.ewallet.service.WalletService
 import com.junbo.ewallet.spec.model.CreditRequest
 import com.junbo.ewallet.spec.model.DebitRequest
-import com.junbo.ewallet.spec.model.ResultList
+import com.junbo.ewallet.spec.model.Transaction
 import com.junbo.ewallet.spec.model.Wallet
 import com.junbo.ewallet.spec.resource.WalletResource
 import com.junbo.langur.core.promise.Promise
+import groovy.transform.CompileStatic
+import org.springframework.beans.factory.annotation.Autowired
 /**
  * WalletResource Impl.
  */
+@CompileStatic
 class WalletResourceImpl implements WalletResource {
+    @Autowired
+    private  WalletService walletService
     @Override
     Promise<Wallet> getWallet(WalletId walletId) {
-        return null
+        Wallet result = walletService.get(walletId.value)
+        return Promise.pure(result)
     }
 
     @Override
-    Promise<ResultList<Wallet>> getWallets(UserId userId) {
-        return null
+    Promise<Wallet> postWallet(Wallet wallet) {
+        Wallet result = walletService.add(wallet)
+        return Promise.pure(result)
     }
 
     @Override
     Promise<Wallet> updateWallet(WalletId walletId, Wallet wallet) {
-        return null
+        Wallet result = walletService.update(walletId.value, wallet)
+        return Promise.pure(result)
     }
 
     @Override
     Promise<Wallet> credit(WalletId walletId, CreditRequest creditRequest) {
-        return null
+        Wallet result = walletService.credit(walletId.value, creditRequest)
+        return Promise.pure(result)
     }
 
     @Override
     Promise<Wallet> debit(WalletId walletId, DebitRequest debitRequest) {
-        return null
+        Wallet result = walletService.debit(walletId.value, debitRequest)
+        return Promise.pure(result)
     }
 
     @Override
     Promise<Wallet> getTransactions(WalletId walletId) {
-        return null
+        Wallet result = walletService.get(walletId.value)
+        List<Transaction> transactions = walletService.getTransactions(walletId.value)
+        result.transactions = transactions
+        return Promise.pure(result)
     }
 }
