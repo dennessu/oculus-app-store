@@ -5,8 +5,10 @@
  */
 package com.junbo.testing.common.blueprint;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.UserId;
+
+import java.util.Date;
 
 /**
  * @author Jason.
@@ -14,14 +16,18 @@ import com.junbo.common.id.UserId;
  * User model class
  */
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class User {
 
+    @JsonProperty("self")
     private UserId id;
+
     private String userName;
     private String status;
     private String password;
-    private String passwordStrength;
+
+    private Date createdTime;
+    private Integer resourceAge;
+    private Date updatedTime;
 
     public UserId getId() { return id; }
 
@@ -51,12 +57,24 @@ public class User {
         this.password = password;
     }
 
-    public String getPasswordStrength() {
-        return passwordStrength;
+    public Date getCreatedTime() {
+        return createdTime;
     }
 
-    public void setPasswordStrength(String passwordStrength) {
-        this.passwordStrength = passwordStrength;
+    public void setCreatedTime(Date createdTime) {
+        this.createdTime = createdTime;
     }
+
+    public Date getUpdatedTime() {
+        return updatedTime;
+    }
+
+    public void setUpdatedTime(Date updatedTime) {
+        this.updatedTime = updatedTime;
+    }
+
+    public Integer getResourceAge() { return resourceAge; }
+
+    public void setResourceAge(Integer resourceAge) { this.resourceAge = resourceAge; }
 
 }

@@ -22,6 +22,7 @@ import java.util.Date;
  * Hibernate impl of WalletLotDao.
  */
 public class WalletLotDaoImpl extends BaseDao<WalletLotEntity> implements WalletLotDao {
+    public static final int SCROLL_THRESHOLD = 50;
 
     @Override
     public WalletLotEntity insert(WalletLotEntity lot) {
@@ -54,27 +55,38 @@ public class WalletLotDaoImpl extends BaseDao<WalletLotEntity> implements Wallet
                 .setDate("now", new Date());
         ScrollableResults result = q.scroll(ScrollMode.FORWARD_ONLY);
 
-        while (result.next()) {
-            WalletLotEntity lot = (WalletLotEntity) result.get(0);
-            BigDecimal remaining = lot.getRemainingAmount();
-            if (sum.compareTo(remaining) <= 0) {
-                lot.setRemainingAmount(remaining.subtract(sum));
-                update(lot);
-                currentSession().save(buildDebitLotTransaction(lot, sum));
-                return;
-            } else {
-                lot.setRemainingAmount(BigDecimal.ZERO);
-                update(lot);
-                currentSession().save(buildDebitLotTransaction(lot, remaining));
+        try {
+            int i = 0;
+            while (result.next()) {
+                WalletLotEntity lot = (WalletLotEntity) result.get(0);
+                BigDecimal remaining = lot.getRemainingAmount();
+                if (sum.compareTo(remaining) <= 0) {
+                    lot.setRemainingAmount(remaining.subtract(sum));
+                    update(lot);
+                    currentSession().save(buildDebitLotTransaction(lot, sum));
+                    return;
+                } else {
+                    lot.setRemainingAmount(BigDecimal.ZERO);
+                    update(lot);
+                    currentSession().save(buildDebitLotTransaction(lot, remaining));
+                }
+                sum = sum.subtract(remaining);
+                i++;
+                if (i == SCROLL_THRESHOLD) {
+                    currentSession().clear();
+                    i = 0;
+                }
             }
-            sum = sum.subtract(remaining);
+        } finally {
+            result.close();
         }
+
         if (sum.compareTo(BigDecimal.ZERO) > 0) {
             throw new NotEnoughMoneyException();
         }
     }
 
-    private LotTransactionEntity buildDebitLotTransaction(WalletLotEntity lotEntity, BigDecimal amount){
+    private LotTransactionEntity buildDebitLotTransaction(WalletLotEntity lotEntity, BigDecimal amount) {
         LotTransactionEntity lotTransaction = new LotTransactionEntity();
         lotTransaction.setId(generateId(lotEntity.getId()));
         lotTransaction.setType(TransactionType.DEBIT);
@@ -86,7 +98,7 @@ public class WalletLotDaoImpl extends BaseDao<WalletLotEntity> implements Wallet
         return lotTransaction;
     }
 
-    private LotTransactionEntity buildCreditLotTransaction(WalletLotEntity lotEntity){
+    private LotTransactionEntity buildCreditLotTransaction(WalletLotEntity lotEntity) {
         LotTransactionEntity lotTransaction = new LotTransactionEntity();
         lotTransaction.setId(generateId(lotEntity.getId()));
         lotTransaction.setType(TransactionType.CREDIT);

@@ -71,8 +71,8 @@ public class EntitlementDefinitionServiceImpl extends BaseService implements Ent
             throw AppErrors.INSTANCE.missingField("id").exception();
         }
         if (!entitlementDefinitionId.equals(entitlementDefinition.getEntitlementDefinitionId())) {
-            throw AppErrors.INSTANCE.fieldNotMatch("id", entitlementDefinition.getEntitlementDefinitionId().toString(),
-                    entitlementDefinitionId.toString()).exception();
+            throw AppErrors.INSTANCE.fieldNotMatch("id", entitlementDefinition.getEntitlementDefinitionId(),
+                    entitlementDefinitionId).exception();
         }
 
         if (entitlementDefinition.getType() == null) {
@@ -91,8 +91,8 @@ public class EntitlementDefinitionServiceImpl extends BaseService implements Ent
         checkDeveloper(existingEntitlementDefinition.getDeveloperId());
 
         if (!existingEntitlementDefinition.getDeveloperId().equals(entitlementDefinition.getDeveloperId())) {
-            throw AppErrors.INSTANCE.fieldNotMatch("developerId", entitlementDefinition.getDeveloperId().toString(),
-                    existingEntitlementDefinition.getDeveloperId().toString()).exception();
+            throw AppErrors.INSTANCE.fieldNotMatch("developerId", entitlementDefinition.getDeveloperId(),
+                    existingEntitlementDefinition.getDeveloperId()).exception();
         }
 
         existingEntitlementDefinition.setTag(entitlementDefinition.getTag());

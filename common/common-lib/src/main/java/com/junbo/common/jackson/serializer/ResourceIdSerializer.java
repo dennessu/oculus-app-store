@@ -41,12 +41,17 @@ public class ResourceIdSerializer extends JsonSerializer<Object> implements Reso
     @Override
     public void serialize(Object value, JsonGenerator jgen, SerializerProvider provider)
             throws IOException {
-        if (value == null) {
+        if (unwrap(value) == null) {
+            MAPPER.writeValue(jgen, null);
             return;
         }
 
         Object results = isCollection(value) ? handleCollection(value) : handleSingle(value);
         MAPPER.writeValue(jgen, results);
+    }
+
+    protected Object unwrap(Object value) {
+        return value;
     }
 
     protected String encode(Object value) {

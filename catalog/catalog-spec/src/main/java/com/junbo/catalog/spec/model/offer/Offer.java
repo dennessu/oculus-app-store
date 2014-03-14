@@ -6,6 +6,7 @@
 
 package com.junbo.catalog.spec.model.offer;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.catalog.spec.model.common.VersionedModel;
 import com.junbo.common.jackson.annotation.AttributeId;
@@ -170,6 +171,7 @@ public class Offer extends VersionedModel {
     }
 
     @Override
+    @JsonIgnore
     public String getEntityType() {
         return "Offer";
     }

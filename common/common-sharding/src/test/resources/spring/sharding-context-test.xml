@@ -10,10 +10,6 @@
     <import resource="classpath:spring/transaction.xml"/>
     <import resource="classpath*:spring/common-context.xml"/>
 
-    <bean id="shardDao" class="com.junbo.sharding.test.data.dao.ShardDAOImpl">
-        <property name="sessionFactoryWrapper" ref="sessionFactoryWrapper"/>
-    </bean>
-
     <bean id="sessionFactoryWrapper" class="com.junbo.sharding.core.hibernate.SessionFactoryWrapper">
         <property name="dataSourceRegistry" ref="shardDataSourceRegistry"/>
         <property name="sessionFactoryBeanName" value="sessionFactoryTemplate"/>
@@ -21,4 +17,12 @@
         <property name="packagesToScan" value="com.junbo.sharding.test.data.dao"/>
     </bean>
 
+    <bean id="shardDaoTarget" class="com.junbo.sharding.test.data.dao.ShardDAOImpl">
+        <property name="sessionFactoryWrapper" ref="sessionFactoryWrapper"/>
+    </bean>
+    <bean id="shardDao" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean">
+        <property name="daoInterface" value="com.junbo.sharding.test.data.dao.ShardDAO"/>
+        <property name="daoTarget" ref="shardDaoTarget"/>
+        <property name="idGeneratorFacade" ref="idGeneratorFacade"/>
+    </bean>
 </beans>

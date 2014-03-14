@@ -1,6 +1,8 @@
 package com.junbo.sharding.test.data.dao;
 
+import com.junbo.sharding.core.ShardAwareDaoProxy;
 import com.junbo.sharding.core.hibernate.SessionFactoryWrapper;
+import com.junbo.sharding.util.Helper;
 import org.hibernate.Session;
 import org.hibernate.jdbc.Work;
 import org.springframework.stereotype.Component;
@@ -15,27 +17,17 @@ import java.sql.SQLException;
 @Component
 public class ShardDAOImpl implements ShardDAO {
     private SessionFactoryWrapper sessionFactoryWrapper;
-
     public void setSessionFactoryWrapper(SessionFactoryWrapper sessionFactoryWrapper) {
         this.sessionFactoryWrapper = sessionFactoryWrapper;
     }
 
-    private Session session(final int shardId) {
-        Session s = sessionFactoryWrapper.resolve(shardId).getCurrentSession();
-        s.doWork(new Work() {
-            @Override
-            public void execute(Connection connection) throws SQLException {
-                //connection, finally!
-                //connection.createStatement().execute("set search_path=shard_" + shardId);
-                connection.createStatement().execute("show search_path");
-            }
-        });
-        return s;
+    private Session currentSession() {
+        return sessionFactoryWrapper.resolve(Helper.getCurrentThreadLocalShardId()).getCurrentSession();
     }
 
     @Override
     public ShardEntity saveShard(ShardEntity entity) {
-        session((int) (entity.getId()%4)).persist(entity);
+        currentSession().persist(entity);
         return findById(entity.getId());
     }
 
@@ -55,6 +47,6 @@ public class ShardDAOImpl implements ShardDAO {
     }
 
     private ShardEntity findById(Long id) {
-        return ((ShardEntity)(session((int) (id%4)).get(ShardEntity.class, id)));
+        return ((ShardEntity)(currentSession().get(ShardEntity.class, id)));
     }
 }
