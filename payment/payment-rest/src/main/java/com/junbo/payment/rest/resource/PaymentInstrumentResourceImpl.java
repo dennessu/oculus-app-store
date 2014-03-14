@@ -7,6 +7,7 @@
 package com.junbo.payment.rest.resource;
 
 import com.junbo.common.id.PaymentInstrumentId;
+import com.junbo.common.id.UserId;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.core.PaymentInstrumentService;
 import com.junbo.payment.core.exception.AppClientExceptions;
@@ -29,35 +30,38 @@ public class PaymentInstrumentResourceImpl implements PaymentInstrumentResource 
     private PaymentInstrumentService piService;
 
     @Override
-    public Promise<PaymentInstrument> postPaymentInstrument(PaymentInstrument request) {
+    public Promise<PaymentInstrument> postPaymentInstrument(UserId userId, PaymentInstrument request) {
+        request.setUserId(userId.getValue());
         return piService.add(request);
     }
 
     @Override
-    public Promise<PaymentInstrument> getById(PaymentInstrumentId paymentInstrumentId) {
-        PaymentInstrument result = piService.getById(paymentInstrumentId.getValue());
+    public Promise<PaymentInstrument> getById(UserId userId, PaymentInstrumentId paymentInstrumentId) {
+        PaymentInstrument result = piService.getById(userId.getValue(), paymentInstrumentId.getValue());
         return Promise.pure(result);
     }
 
     @Override
-    public Promise<Response> delete(PaymentInstrumentId paymentInstrumentId) {
-        piService.delete(paymentInstrumentId.getValue());
+    public Promise<Response> delete(UserId userId, PaymentInstrumentId paymentInstrumentId) {
+        piService.delete(userId.getValue(), paymentInstrumentId.getValue());
         return Promise.pure(Response.status(204).build());
     }
 
     @Override
-    public Promise<PaymentInstrument> update(PaymentInstrumentId paymentInstrumentId, PaymentInstrument request) {
+    public Promise<PaymentInstrument> update(UserId userId, PaymentInstrumentId paymentInstrumentId,
+                                             PaymentInstrument request) {
         if(!paymentInstrumentId.getValue().equals(request.getId())){
             throw AppClientExceptions.INSTANCE.invalidPaymentInstrumentId(request.getId().toString()).exception();
         }
+        request.setUserId(userId.getValue());
         piService.update(request);
         return Promise.pure(request);
     }
 
     @Override
-    public Promise<ResultList<PaymentInstrument>> searchPaymentInstrument(
+    public Promise<ResultList<PaymentInstrument>> searchPaymentInstrument(UserId userId,
             @BeanParam PaymentInstrumentSearchParam searchParam, @BeanParam PageMetaData pageMetadata) {
-        List<PaymentInstrument> piRequests = piService.searchPi(searchParam, pageMetadata);
+        List<PaymentInstrument> piRequests = piService.searchPi(userId.getValue(), searchParam, pageMetadata);
         ResultList<PaymentInstrument> result = new ResultList<PaymentInstrument>();
         result.setResults(piRequests);
         //result.setNext(CommonUtils.buildNextUrl(uriInfo));
