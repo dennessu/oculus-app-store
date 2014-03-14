@@ -28,6 +28,6 @@ public class BaseTest extends AbstractTransactionalTestNGSpringContextTests {
     }
 
     @Autowired
-    @Qualifier("idGenerator")
+    @Qualifier("oculus48IdGenerator")
     protected IdGenerator idGenerator;
 }
