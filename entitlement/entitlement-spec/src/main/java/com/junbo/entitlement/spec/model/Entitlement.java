@@ -14,8 +14,6 @@ import com.junbo.common.jackson.annotation.EntitlementId;
 import com.junbo.common.jackson.annotation.OfferId;
 import com.junbo.common.jackson.annotation.UserId;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
 import java.util.Date;
 import java.util.UUID;
 
@@ -27,11 +25,9 @@ import java.util.UUID;
         "consumable", "useCount", "managedLifecycle"})
 public class Entitlement{
     private UUID trackingUuid;
-    @Null
     @JsonProperty("self")
     @EntitlementId
     private Long entitlementId;
-    @NotNull
     @UserId
     private Long userId;
     @UserId
@@ -39,7 +35,6 @@ public class Entitlement{
     private String type;
     private String status;
     private String statusReason;
-    @NotNull
     @EntitlementDefinitionId
     private Long entitlementDefinitionId;
     private Date grantTime;

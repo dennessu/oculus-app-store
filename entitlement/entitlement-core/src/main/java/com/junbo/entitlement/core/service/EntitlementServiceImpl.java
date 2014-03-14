@@ -10,6 +10,7 @@ import com.junbo.entitlement.common.def.EntitlementStatusReason;
 import com.junbo.entitlement.common.lib.CloneUtils;
 import com.junbo.entitlement.core.EntitlementService;
 import com.junbo.entitlement.db.entity.def.EntitlementStatus;
+import com.junbo.entitlement.db.entity.def.EntitlementType;
 import com.junbo.entitlement.db.repository.EntitlementDefinitionRepository;
 import com.junbo.entitlement.db.repository.EntitlementRepository;
 import com.junbo.entitlement.spec.error.AppErrors;
@@ -56,7 +57,12 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
                     "status can not be DELETED or BANNED when created").exception();
         }
 
-        checkEntitlementDefinition(entitlement.getEntitlementDefinitionId());
+        EntitlementDefinition entitlementDefinition =
+                entitlementDefinitionRepository.get(entitlement.getEntitlementDefinitionId());
+        if (entitlementDefinition == null) {
+            throw AppErrors.INSTANCE.notFound("entitlementDefinition",
+                    entitlement.getEntitlementDefinitionId()).exception();
+        }
 
         validateGrantTimeBeforeExpirationTime(entitlement);
 
@@ -72,7 +78,9 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
         }
 
         //if managedLifecycle is true, try to merge the added entitlement into existing entitlement
-        if (Boolean.TRUE.equals(entitlement.getManagedLifecycle())) {
+        //not deal with developer entitlement as developer entitlement is bounded to userId only
+        if (Boolean.TRUE.equals(entitlement.getManagedLifecycle()) &&
+                !entitlementDefinition.getType().equalsIgnoreCase(EntitlementType.DEVELOPER.toString())) {
             Entitlement existingEntitlement = entitlementRepository.getExistingManagedEntitlement(
                     entitlement.getUserId(), entitlement.getEntitlementDefinitionId());
             if (existingEntitlement != null) {
@@ -93,13 +101,6 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
         }
 
         return entitlementRepository.insert(entitlement);
-    }
-
-    private void checkEntitlementDefinition(Long entitlementDefinitionId) {
-        EntitlementDefinition entitlementDefinition = entitlementDefinitionRepository.get(entitlementDefinitionId);
-        if (entitlementDefinition == null) {
-            throw AppErrors.INSTANCE.notFound("entitlementDefinition", entitlementDefinitionId).exception();
-        }
     }
 
     @Override
