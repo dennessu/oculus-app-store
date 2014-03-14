@@ -102,7 +102,8 @@ class CoreBuilder {
         return event
     }
 
-    static ActionResult buildActionResultForOrderEventAwareAction(OrderActionContext context, EventStatus eventStatus) {
+    static ActionResult  buildActionResultForOrderEventAwareAction(OrderActionContext context,
+                                                                   EventStatus eventStatus) {
         def orderActionResult = new OrderActionResult()
         orderActionResult.orderActionContext = context
         orderActionResult.returnedEventStatus = eventStatus
