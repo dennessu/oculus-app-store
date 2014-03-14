@@ -6,8 +6,9 @@
     "start": "node app.js"
   },
   "dependencies": {
-    "express": "3.4.8",
-    "ejs": "*",
-    "restler": "*"
+      "express": "3.4.8",
+      "ejs": "*",
+      "restler": "*",
+      "querystring": "*"
   }
 }

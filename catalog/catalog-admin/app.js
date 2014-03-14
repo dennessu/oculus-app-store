@@ -1,8 +1,3 @@
-
-/**
- * Module dependencies.
- */
-
 var express = require('express');
 var offers = require('./api-proxy/offers');
 var http = require('http');
@@ -27,6 +22,7 @@ if ('development' == app.get('env')) {
 }
 
 app.get('/api/offers', offers.getOffers);
+app.get('/api/offers/:id', offers.getOffer);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
