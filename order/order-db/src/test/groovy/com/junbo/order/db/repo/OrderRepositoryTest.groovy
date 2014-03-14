@@ -43,7 +43,7 @@ class OrderRepositoryTest extends BaseTest {
         order.orderItems << createOrderItem()
         order.discounts << createDiscount(order, order.orderItems.last())
         order.paymentInstruments << new PaymentInstrumentId(TestHelper.generateId())
-        orderRepository.updateOrder(order)
+        orderRepository.updateOrder(order, false)
         verifyByRead(order)
 
         // remove id and check
@@ -55,21 +55,21 @@ class OrderRepositoryTest extends BaseTest {
             it.orderItemId = null
             it.orderId = null
         }
-        orderRepository.updateOrder(order)
+        orderRepository.updateOrder(order, false)
         verifyByRead(order)
 
         // update order item, discount, paymentId
         order.orderItems[0].offer = new OfferId(TestHelper.generateLong())
         order.discounts[0].coupon = 'Code' + TestHelper.generateLong()
         order.paymentInstruments[0] = new PaymentInstrumentId(TestHelper.generateId())
-        orderRepository.updateOrder(order)
+        orderRepository.updateOrder(order, false)
         verifyByRead(order)
 
         // remove order item, discount, paymentId
         order.orderItems.clear()
         order.discounts.clear()
         order.paymentInstruments.clear()
-        orderRepository.updateOrder(order)
+        orderRepository.updateOrder(order, false)
         verifyByRead(order)
     }
 

@@ -46,7 +46,9 @@ class OrderResourceImpl implements OrderResource {
             // handle the update request per scenario
             if (oldOrder.tentative) { // order not settle
                 if (order.tentative) {
-                    [orderService.updateTentativeOrder(order, new ApiContext(httpHeaders))]
+                    orderService.updateTentativeOrder(order, new ApiContext(httpHeaders)).syncThen { Order result ->
+                        [result]
+                    }
                 } else { // handle settle order scenario: the tentative flag is updated from true to false
                     orderService.settleQuote(oldOrder, new ApiContext(httpHeaders))
                 }

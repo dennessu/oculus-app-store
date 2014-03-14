@@ -56,7 +56,6 @@
 				order_item_id BIGINT NOT NULL,
 				amount DECIMAL NOT NULL,
 				tax_amount DECIMAL NOT NULL,
-				tax_included BOOLEAN,
 				discount_amount DECIMAL NOT NULL,
 				finance_id VARCHAR(64),
 				is_tax_exempt BOOLEAN,

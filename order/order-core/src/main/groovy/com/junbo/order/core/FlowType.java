@@ -11,6 +11,7 @@ package com.junbo.order.core;
  */
 public enum FlowType {
     RATE_ORDER,
+    UPDATE_TENTATIVE,
     ASYNC_SETTLE,
     AUTH_SETTLE,
     FREE_SETTLE,

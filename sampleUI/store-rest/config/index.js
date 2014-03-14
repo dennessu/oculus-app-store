@@ -11,7 +11,7 @@ module.exports = {
                 'Succeed': {
                     statusCode: 302,
                     headers: {
-                        location: 'http://localhost:8000/'
+                        location: 'http://localhost:3000/callback/login'
                     },
                     data: ""
                 },
