@@ -135,8 +135,9 @@ public class PaymentInstrumentRepository {
         return request;
     }
 
-    public List<PaymentInstrument> search(PaymentInstrumentSearchParam searchParam, PageMetaData pageMetadata) {
-        return getByUserId(searchParam.getUserId());
+    public List<PaymentInstrument> search(Long userId,
+            PaymentInstrumentSearchParam searchParam, PageMetaData pageMetadata) {
+        return getByUserId(userId);
     }
 
     public void setDefault(Long piId){
