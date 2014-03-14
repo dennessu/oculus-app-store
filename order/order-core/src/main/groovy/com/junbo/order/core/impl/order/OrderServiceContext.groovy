@@ -30,6 +30,7 @@ class OrderServiceContext {
     List<Balance> balances
     ShippingAddress shippingAddress
     List<Offer> offers
+    List<Order> orders
 
     OrderServiceContext(Order o) {
         order = o

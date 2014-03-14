@@ -20,6 +20,8 @@ public interface OrderRepository {
 
     Order getOrder(Long orderId);
 
+    List<Order> getOrdersByUserId(Long userId);
+
     OrderEvent createOrderEvent(OrderEvent event);
 
     FulfillmentEvent createFulfillmentEvent(Long orderId, FulfillmentEvent event);

@@ -17,12 +17,17 @@ class GetOrderAction implements Action {
     Promise<ActionResult> execute(ActionContext actionContext) {
         def context = ActionUtils.getOrderActionContext(actionContext)
         Long orderId = (Long)actionContext.requestScope['GetOrderAction_OrderId']
+        Long userId = (Long)actionContext.requestScope['GetOrderAction_UserId']
         if (orderId != null) {
             // get Order by id
             def order = orderRepository.getOrder(orderId)
-            context.orderServiceContext.setOrder(order)
+            context.orderServiceContext.order = order
         }
-
+        else if (userId != null) {
+            // get order by userId
+            def orders = orderRepository.getOrdersByUserId(userId)
+            context.orderServiceContext.orders = orders
+        }
         return Promise.pure(null)
     }
 }
