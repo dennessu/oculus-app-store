@@ -17,6 +17,7 @@ public class Entitlement {
     private String tag;
     private Date grantDate;
     private Date expirationDate;
+    private Long offerId;
 
     public Long getUserId() {
         return userId;
@@ -64,5 +65,13 @@ public class Entitlement {
 
     public void setExpirationDate(Date expirationDate) {
         this.expirationDate = expirationDate;
+    }
+
+    public Long getOfferId() {
+        return offerId;
+    }
+
+    public void setOfferId(Long offerId) {
+        this.offerId = offerId;
     }
 }
