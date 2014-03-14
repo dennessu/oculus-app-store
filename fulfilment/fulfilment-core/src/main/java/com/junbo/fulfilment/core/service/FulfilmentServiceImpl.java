@@ -16,6 +16,7 @@ import com.junbo.fulfilment.core.context.FulfilmentContext;
 import com.junbo.fulfilment.core.context.FulfilmentContextFactory;
 import com.junbo.fulfilment.core.context.PhysicalGoodsContext;
 import com.junbo.fulfilment.core.handler.HandlerRegistry;
+import com.junbo.fulfilment.core.util.ModelUtils;
 import com.junbo.fulfilment.db.repo.FulfilmentActionRepository;
 import com.junbo.fulfilment.db.repo.FulfilmentRepository;
 import com.junbo.fulfilment.db.repo.FulfilmentRequestRepository;
@@ -29,6 +30,8 @@ import com.junbo.fulfilment.spec.model.FulfilmentItem;
 import com.junbo.fulfilment.spec.model.FulfilmentRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Map;
 
 /**
  * FulfilmentServiceImpl.
@@ -168,8 +171,11 @@ public class FulfilmentServiceImpl extends TransactionSupport implements Fulfilm
     }
 
     public void dispatch(FulfilmentRequest request, ClassifyResult classifyResult) {
+        Map<Long, FulfilmentItem> items = ModelUtils.buildFulfilmentItemMap(request);
+
         for (String actionType : classifyResult.getActionTypes()) {
             FulfilmentContext context = FulfilmentContextFactory.create(actionType);
+            context.setItems(items);
 
             context.setUserId(request.getUserId());
             context.setOrderId(request.getOrderId());
