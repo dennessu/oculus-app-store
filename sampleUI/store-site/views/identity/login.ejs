@@ -1,15 +1,16 @@
-<section class="box1 login">
+<form id="Login" class="box1 login" {{action "Submit" on="submit"}}>
     <h2>Login to Store</h2>
+    <p>No Account,&nbsp;{{#link-to-animated "register" animations="main:flip"}}Create an Account{{/link-to-animated}}</p>
     <dl>
         <dt>Username</dt>
-        <dd>{{input type="text" class="{required:true,email:true}" id="Username" autofocus="true" value=content.username}}</dd>
+        <dd>{{input type="text" class="{required:true,email:true}" id="Username" name="Username" autofocus="true" value=content.username}}</dd>
     </dl>
     <dl>
         <dt>Password</dt>
-        <dd>{{input type="password" class="{required:true,maxlength:20}" id="Password" value=content.password}}</dd>
+        <dd>{{input type="password" class="{required:true,maxlength:20}" id="Password" name="Password" value=content.password}}</dd>
     </dl>
     <div class="actions">
-        <button type="button" class="btn btn-primary" {{action "Submit"}}>Login</button>
-        <button type="button" class="btn btn-cancel">Cancel</button>
+        <input type="submit" class="btn btn-primary" value="Login"/>
+        <button type="button" class="btn btn-cancel" {{action "Cancel"}}>Cancel</button>
     </div>
-</section>
+</form>

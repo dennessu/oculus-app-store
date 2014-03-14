@@ -1,4 +1,3 @@
-require('./configs');
 var cluster = require('cluster');
 
 var workers = {};
