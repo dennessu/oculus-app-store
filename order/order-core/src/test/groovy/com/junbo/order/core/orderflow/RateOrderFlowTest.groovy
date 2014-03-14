@@ -20,7 +20,7 @@ class RateOrderFlowTest extends BaseTest{
     @Autowired
     OrderRepository repo
 
-    @Test(enabled = true)
+    @Test(enabled = false)
     void testFlowExecute() {
         def order = TestBuilder.buildOrderRequest()
 

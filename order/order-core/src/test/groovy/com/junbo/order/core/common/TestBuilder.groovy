@@ -9,6 +9,7 @@ import com.junbo.langur.core.webflow.state.Conversation
 import com.junbo.order.core.impl.order.OrderServiceContext
 import com.junbo.order.core.impl.orderaction.ActionUtils
 import com.junbo.order.core.impl.orderaction.context.OrderActionContext
+import com.junbo.order.db.entity.enums.DiscountType
 import com.junbo.order.db.entity.enums.EventStatus
 import com.junbo.order.db.entity.enums.ItemType
 import com.junbo.order.db.entity.enums.OrderActionType
@@ -60,6 +61,8 @@ class TestBuilder {
         def discount = new Discount()
         discount.coupon = coupon
         discount.ownerOrderItem = item
+        discount.discountAmount = 10.00G
+        discount.type = DiscountType.ORDER_DISCOUNT
         return discount
     }
 
@@ -68,6 +71,7 @@ class TestBuilder {
         orderItem.setType(ItemType.DIGITAL.toString())
         orderItem.setOffer(new OfferId(generateLong()))
         orderItem.quantity = 1
+        orderItem.unitPrice = 10.00G
         return orderItem
     }
 
