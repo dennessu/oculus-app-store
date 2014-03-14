@@ -17,6 +17,11 @@ app.controller('OfferListCtrl', ['$scope', 'OffersFactory',
   	  $scope.offers = OffersFactory.query();
   }]);
 
+app.controller('OfferDetailCtrl', ['$scope', 'OfferFactory', '$routeParams',
+    function($scope, OfferFactory, $routeParams) {
+        $scope.offer = OfferFactory.query({id: $routeParams.id});
+    }]);
+
 app.controller('MyCtrl2', [function() {
 
   }]);
