@@ -3,7 +3,6 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-
 package com.junbo.oauth.spec.endpoint;
 
 import com.junbo.langur.core.RestResource;
@@ -12,6 +11,7 @@ import com.junbo.oauth.spec.model.Client;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  * ClientEndpoint.
@@ -37,6 +37,11 @@ public interface ClientEndpoint {
     Promise<Client> putClient(@HeaderParam("Authorization") String authorization,
                               @PathParam("clientId") String clientId,
                               Client client);
+
+    @DELETE
+    @Path("/{clientId}")
+    Promise<Response> deleteClient(@HeaderParam("Authorization") String authorization,
+                                   @PathParam("clientId") String clientId);
 
     @POST
     @Path("/{clientId}/reset-secret")

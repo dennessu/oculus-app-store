@@ -5,6 +5,7 @@
  */
 package com.junbo.oauth.spec.model
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
 import groovy.transform.CompileStatic
 
@@ -58,4 +59,7 @@ class Client {
     String logoUri
 
     Set<String> contacts
+
+    @JsonIgnore
+    String revision
 }

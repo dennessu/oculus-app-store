@@ -31,4 +31,8 @@
         <property name="endSessionFlow" value="endSessionFlow"/>
     </bean>
 
+    <bean id="defaultClientEndpoint" class="com.junbo.oauth.api.endpoint.ClientEndpointImpl">
+        <property name="clientService" ref="clientService"/>
+    </bean>
+
 </beans>
