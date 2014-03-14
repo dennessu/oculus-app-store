@@ -1,7 +1,10 @@
 package com.junbo.order.clientproxy.common
 
+import com.junbo.catalog.spec.model.offer.Offer
+import com.junbo.email.spec.model.Email
 import com.junbo.fulfilment.spec.model.FulfilmentItem
 import com.junbo.fulfilment.spec.model.FulfilmentRequest
+import com.junbo.identity.spec.model.user.User
 import com.junbo.order.spec.model.Discount
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderItem
@@ -14,6 +17,16 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class FacadeBuilder {
+
+    public static final String ORDER_NUMBER = 'ORDERNUMBER'
+    public static final String ORDER_DATE = 'ORDERDATE'
+    public static final String NAME = 'NAME'
+    public static final String OFFER_NAME = 'OFFERNAME'
+    public static final String QUANTITY = 'QTY'
+    public static final String PRICE = 'PRICE'
+    public static final String SUBTOTAL = 'SUBTOTAL'
+    public static final String TAX = 'TAX'
+    public static final String GRAND_TOTAL = 'GRANDTOTAL'
 
     static FulfilmentRequest buildFulfilmentRequest(Order order) {
         FulfilmentRequest request = new FulfilmentRequest()
@@ -61,5 +74,30 @@ class FacadeBuilder {
         }
         request.lineItems = ((OrderRatingItem[])ratingItems.toArray()) as Set
         return request
+    }
+
+    static Email buildOrderConfirmationEmail(Order order, User user, List<Offer> offers) {
+        Email email = new Email()
+        email.userId = order.user
+        email.source = 'ServicECommerce'
+        email.action = 'OrderConfirmation'
+        email.locale = 'en_US'
+        Map<String, String> properties = [:]
+        properties.put(ORDER_NUMBER, order.id.value.toString())
+        properties.put(ORDER_DATE, new Date().toString())
+        properties.put(NAME, user.userName)
+        properties.put(SUBTOTAL, order.unitPrice?.toString())
+        properties.put(TAX, order.totalTax?.toString())
+        properties.put(GRAND_TOTAL, order.totalAmount?.toString())
+        offers.eachWithIndex { Offer offer, int index ->
+            properties.put(OFFER_NAME + index, offer.name)
+            order.orderItems.each { OrderItem item ->
+                if (item.offer.value == offer.id) {
+                    properties.put(QUANTITY + index, item.quantity.toString())
+                    properties.put(PRICE + index, (item.quantity * item.unitPrice).toString())
+                }
+            }
+        }
+        return email
     }
 }
