@@ -34,7 +34,7 @@ import java.util.List;
 @TransactionConfiguration(defaultRollback = true)
 public class EntitlementServiceTest extends AbstractTransactionalTestNGSpringContextTests {
     @Autowired
-    @Qualifier("idGenerator")
+    @Qualifier("oculus48IdGenerator")
     private IdGenerator idGenerator;
     @Autowired
     private EntitlementService entitlementService;
