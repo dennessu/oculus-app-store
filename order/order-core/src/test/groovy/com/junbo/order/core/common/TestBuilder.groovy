@@ -1,10 +1,6 @@
 package com.junbo.order.core.common
 
-import com.junbo.common.id.OfferId
-import com.junbo.common.id.OrderId
-import com.junbo.common.id.PaymentInstrumentId
-import com.junbo.common.id.ShippingAddressId
-import com.junbo.common.id.UserId
+import com.junbo.common.id.*
 import com.junbo.fulfilment.spec.model.FulfilmentAction
 import com.junbo.fulfilment.spec.model.FulfilmentItem
 import com.junbo.fulfilment.spec.model.FulfilmentRequest
@@ -16,12 +12,14 @@ import com.junbo.order.core.impl.orderaction.context.OrderActionContext
 import com.junbo.order.db.entity.enums.EventStatus
 import com.junbo.order.db.entity.enums.ItemType
 import com.junbo.order.db.entity.enums.OrderActionType
+import com.junbo.order.db.entity.enums.OrderType
+import com.junbo.order.spec.model.Discount
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderEvent
 import com.junbo.order.spec.model.OrderItem
-import com.junbo.order.db.entity.enums.OrderType
 import com.junbo.payment.spec.model.PaymentInstrument
 import groovy.transform.CompileStatic
+
 /**
  * Created by chriszhu on 2/14/14.
  */
@@ -52,8 +50,15 @@ class TestBuilder {
         order.setShippingMethodId(generateLong())
         order.setTentative(true)
         order.setTrackingUuid(generateUUID())
-
+        order.discounts = []
+        order.discounts.add(buildDiscount('AAA'))
         return order
+    }
+
+    static Discount buildDiscount(String coupon) {
+        def discount = new Discount()
+        discount.coupon = coupon
+        return discount
     }
 
     static OrderItem buildOrderItem() {

@@ -10,12 +10,24 @@
         <constructor-arg name="client" ref="asyncHttpClient"/>
         <constructor-arg name="target" value="${oauth.clientproxy.identity.url}"/>
         <constructor-arg name="transcoder" ref="transcoder"/>
+        <constructor-arg name="pathParamTranscoder">
+            <bean class="com.junbo.common.json.IdPathParamTranscoder" />
+        </constructor-arg>
+        <constructor-arg name="queryParamTranscoder">
+            <bean class="com.junbo.common.json.QueryParamTranscoderImpl" />
+        </constructor-arg>
     </bean>
 
     <bean id="identityUserProfileClient" class="com.junbo.identity.spec.resource.proxy.UserProfileResourceClientProxy">
         <constructor-arg name="client" ref="asyncHttpClient"/>
         <constructor-arg name="target" value="${oauth.clientproxy.identity.url}"/>
         <constructor-arg name="transcoder" ref="transcoder"/>
+        <constructor-arg name="pathParamTranscoder">
+            <bean class="com.junbo.common.json.IdPathParamTranscoder" />
+        </constructor-arg>
+        <constructor-arg name="queryParamTranscoder">
+            <bean class="com.junbo.common.json.QueryParamTranscoderImpl" />
+        </constructor-arg>
     </bean>
 
 </beans>

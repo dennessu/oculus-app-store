@@ -42,16 +42,19 @@ class OrderResourceImpl implements OrderResource {
 
     @Override
     Promise<List<Order>> updateOrderByOrderId(OrderId orderId, Order order, HttpHeaders httpHeaders) {
-        orderService.getOrderByOrderId(orderId.value).syncThen { Order o ->
+        orderService.getOrderByOrderId(orderId.value).then { Order oldOrder ->
             // handle the update request per scenario
-            // handle settle order scenario: the tentative flag is updated from false to true
-            if (o.tentative == false && order.tentative == true) {
-                // The order need to be settled regardless of the other updates
-                orderService.settleQuote(order, new ApiContext(httpHeaders))
-            } else if (o.tentative == false) {
-                orderService.updateTentativeOrder(order, new ApiContext(httpHeaders))
+            if (oldOrder.tentative) { // order not settle
+                if (order.tentative) {
+                    orderService.updateTentativeOrder(order, new ApiContext(httpHeaders)).syncThen { Order result ->
+                        [result]
+                    }
+                } else { // handle settle order scenario: the tentative flag is updated from true to false
+                    orderService.settleQuote(oldOrder, new ApiContext(httpHeaders))
+                }
+            } else { // order already settle
+                Promise.pure([oldOrder]) // todo implement update on settled order
             }
-
         }
     }
 

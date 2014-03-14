@@ -16,7 +16,7 @@ import javax.annotation.Resource;
  */
 public class AvalaraTest extends BaseTest {
     @Resource
-    AvalaraFacade avalaraFacade
+    TaxFacade avalaraFacade
 
     @Test(enabled = false)
     public void testAvalaraFacade() {
@@ -28,6 +28,7 @@ public class AvalaraTest extends BaseTest {
         balance.addBalanceItem(item)
 
         def shippingAddress = new ShippingAddress()
+        shippingAddress.addressId = new ShippingAddressId(123L)
         shippingAddress.street = "7462 Kearny Street"
         shippingAddress.city = "Commerce City"
         shippingAddress.state = "CO"

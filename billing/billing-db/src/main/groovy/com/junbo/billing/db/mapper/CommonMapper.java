@@ -28,6 +28,19 @@ public class CommonMapper {
         return balanceType.toString();
     }
 
+    public Short explicitMethod_convertTaxStatus(String taxStatus) {
+        if(!StringUtils.isEmpty(taxStatus)) {
+            TaxStatus status = TaxStatus.valueOf(taxStatus);
+            return status.getId();
+        }
+        return null;
+    }
+
+    public String explicitMethod_convertTaxStatus(Short taxStatusId) {
+        TaxStatus status = EnumRegistry.resolve(taxStatusId, TaxStatus.class);
+        return status.toString();
+    }
+
     public Short explicitMethod_convertTaxAuthority(String taxAuthority) {
         if(!StringUtils.isEmpty(taxAuthority)) {
             TaxAuthority tax = TaxAuthority.valueOf(taxAuthority);
