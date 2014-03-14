@@ -12,7 +12,7 @@ import com.junbo.identity.spec.model.user.UserTosAcceptance;
  */
 public interface UserTosAcceptanceValidator {
     void validateCreate(Long userId, UserTosAcceptance userTosAcceptance);
-    void validateUpdate(Long userId, Long userTosAcceptanceId, UserTosAcceptance userTosAcceptance);
-    void validateDelete(Long userId, Long userTosAcceptanceId);
-    void validateResourceAccessible(Long userId, Long userTosAcceptanceId);
+    void validateUpdate(Long userId, Long userTosId, UserTosAcceptance userTosAcceptance);
+    void validateDelete(Long userId, Long userTosId);
+    void validateResourceAccessible(Long userId, Long userTosId);
 }

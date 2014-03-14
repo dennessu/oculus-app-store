@@ -9,8 +9,6 @@
     <context:component-scan base-package="com.junbo.identity.spec.resource.adapter" />
     <context:component-scan base-package="com.junbo.identity.rest.service" />
 
-    <bean class="com.junbo.identity.data.mapper.CommonMapper" />
-
     <!-- resource implementation -->
     <bean id="defaultUserResource" class="com.junbo.identity.rest.resource.UserResourceImpl" />
     <bean id="defaultUserProfileResource" class="com.junbo.identity.rest.resource.UserProfileResourceImpl" />
@@ -20,4 +18,7 @@
     <bean id="defaultUserOptInResource" class="com.junbo.identity.rest.resource.UserOptInResourceImpl" />
     <bean id="defaultUserTosAcceptanceResource" class="com.junbo.identity.rest.resource.UserTosAcceptanceResourceImpl" />
     <bean id="defaultPasswordResource" class="com.junbo.identity.rest.resource.PasswordResourceImpl" />
+
+    <!-- v1 resource implementation -->
+    <bean id="defaultGroupResource" class="com.junbo.identity.rest.v1.resource.GroupResourceImpl" />
 </beans>

@@ -7,7 +7,7 @@ package com.junbo.identity.spec.model.user;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.UserId;
-import com.junbo.common.id.UserTosAcceptanceId;
+import com.junbo.common.id.UserTosId;
 import com.junbo.identity.spec.model.common.CommonStamp;
 import java.util.Date;
 
@@ -16,18 +16,18 @@ import java.util.Date;
  */
 public class UserTosAcceptance extends CommonStamp{
     @JsonProperty("self")
-    private UserTosAcceptanceId id;
+    private UserTosId id;
 
     @JsonProperty("user")
     private UserId userId;
     private String tos;
     private Date dateAccepted;
 
-    public UserTosAcceptanceId getId() {
+    public UserTosId getId() {
         return id;
     }
 
-    public void setId(UserTosAcceptanceId id) {
+    public void setId(UserTosId id) {
         this.id = id;
     }
 

@@ -14,8 +14,8 @@ import java.util.List;
  */
 public interface UserTosAcceptanceService {
     UserTosAcceptance save(Long userId, UserTosAcceptance userTosAcceptance);
-    UserTosAcceptance update(Long userId, Long userTosAcceptanceId, UserTosAcceptance userTosAcceptance);
-    UserTosAcceptance get(Long userId, Long userTosAcceptanceId);
+    UserTosAcceptance update(Long userId, Long userTosId, UserTosAcceptance userTosAcceptance);
+    UserTosAcceptance get(Long userId, Long userTosId);
     List<UserTosAcceptance> getByUserId(Long userId, String tos);
-    void delete(Long userId, Long userTosAcceptanceId);
+    void delete(Long userId, Long userTosId);
 }

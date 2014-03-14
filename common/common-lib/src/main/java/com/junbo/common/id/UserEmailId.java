@@ -3,16 +3,14 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-
 package com.junbo.common.id;
 
 /**
- * Created by minhao on 2/13/14.
+ * Created by liangfu on 3/13/14.
  */
-public class UserTosAcceptanceId extends Id {
-
-    public UserTosAcceptanceId() {}
-    public UserTosAcceptanceId(long value) {
+public class UserEmailId extends Id{
+    public UserEmailId() {}
+    public UserEmailId(long value) {
         super(value);
     }
 }

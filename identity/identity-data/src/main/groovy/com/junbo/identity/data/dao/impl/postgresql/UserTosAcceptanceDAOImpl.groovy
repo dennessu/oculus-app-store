@@ -5,7 +5,7 @@
  */
 package com.junbo.identity.data.dao.impl.postgresql
 
-import com.junbo.common.id.UserTosAcceptanceId
+import com.junbo.common.id.UserTosId
 import com.junbo.identity.data.dao.UserTosAcceptanceDAO
 import com.junbo.identity.data.entity.user.UserTosAcceptanceEntity
 import com.junbo.identity.data.mapper.ModelMapper
@@ -38,7 +38,7 @@ class UserTosAcceptanceDAOImpl implements UserTosAcceptanceDAO {
     @Override
     UserTosAcceptance save(UserTosAcceptance entity) {
         UserTosAcceptanceEntity userTosAcceptanceEntity = modelMapper.toUserTosAcceptance(entity, new MappingContext())
-        userTosAcceptanceEntity.setId(idGenerator.nextId(UserTosAcceptanceId, userTosAcceptanceEntity.userId))
+        userTosAcceptanceEntity.setId(idGenerator.nextId(UserTosId, userTosAcceptanceEntity.userId))
         userTosAcceptanceEntity.setCreatedBy(Constants.DEFAULT_CLIENT_ID)
         userTosAcceptanceEntity.setCreatedTime(new Date())
         currentSession().save(userTosAcceptanceEntity)

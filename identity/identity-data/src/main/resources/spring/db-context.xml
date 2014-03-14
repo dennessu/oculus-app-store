@@ -22,7 +22,6 @@
     <bean id="userDAO" class="com.junbo.identity.data.dao.impl.postgresql.UserDAOImpl">
         <property name="maxRetryCount" value="${identity.conf.maxPasswordRetryCount}" />
     </bean>
-
     <bean id="userProfileDAO" class="com.junbo.identity.data.dao.impl.postgresql.UserProfileDAOImpl" />
     <bean id="userDeviceProfileDAO" class="com.junbo.identity.data.dao.impl.postgresql.UserDeviceProfileDAOImpl" />
     <bean id="userFederationDAO" class="com.junbo.identity.data.dao.impl.postgresql.UserFederationDAOImpl" />
@@ -31,4 +30,6 @@
     <bean id="userTosAcceptanceDAO" class="com.junbo.identity.data.dao.impl.postgresql.UserTosAcceptanceDAOImpl" />
     <bean id="passwordDAO" class="com.junbo.identity.data.dao.impl.postgresql.PasswordDAOImpl" />
 
+    <!-- v1 dao -->
+    <bean id="groupDAO" class="com.junbo.identity.data.v1.dao.impl.GroupDAOImpl" />
 </beans>

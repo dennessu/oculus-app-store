@@ -34,15 +34,15 @@ public class UserTosAcceptanceServiceImpl implements UserTosAcceptanceService {
     }
 
     @Override
-    public UserTosAcceptance update(Long userId, Long userTosAcceptanceId, UserTosAcceptance userTosAcceptance) {
-        validator.validateUpdate(userId, userTosAcceptanceId, userTosAcceptance);
+    public UserTosAcceptance update(Long userId, Long userTosId, UserTosAcceptance userTosAcceptance) {
+        validator.validateUpdate(userId, userTosId, userTosAcceptance);
         return userTosAcceptanceDAO.update(userTosAcceptance);
     }
 
     @Override
-    public UserTosAcceptance get(Long userId, Long userTosAcceptanceId) {
-        validator.validateResourceAccessible(userId, userTosAcceptanceId);
-        return userTosAcceptanceDAO.get(userTosAcceptanceId);
+    public UserTosAcceptance get(Long userId, Long userTosId) {
+        validator.validateResourceAccessible(userId, userTosId);
+        return userTosAcceptanceDAO.get(userTosId);
     }
 
     @Override
@@ -51,8 +51,8 @@ public class UserTosAcceptanceServiceImpl implements UserTosAcceptanceService {
     }
 
     @Override
-    public void delete(Long userId, Long userTosAcceptanceId) {
-        validator.validateDelete(userId, userTosAcceptanceId);
-        userTosAcceptanceDAO.delete(userTosAcceptanceId);
+    public void delete(Long userId, Long userTosId) {
+        validator.validateDelete(userId, userTosId);
+        userTosAcceptanceDAO.delete(userTosId);
     }
 }
