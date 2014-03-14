@@ -5,14 +5,12 @@
  */
 
 package com.junbo.ewallet.spec.model
-
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
 import groovy.transform.CompileStatic
 
 import javax.validation.constraints.NotNull
 import javax.validation.constraints.Null
-
 /**
  * Wallet Entity.
  */
@@ -29,7 +27,7 @@ class Wallet {
     String currency
     BigDecimal balance
     @Null
-    List<Transaction> comments
+    List<Transaction> transactions
 
     @JsonIgnore
     UUID getTrackingUuid() {
