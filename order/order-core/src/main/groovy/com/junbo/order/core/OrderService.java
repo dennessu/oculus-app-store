@@ -30,7 +30,7 @@ public interface OrderService {
 
     Promise<Order> refundOrder(Order request);
 
-    Promise<List<Order>> getOrders(Order request);
+    Promise<List<Order>> getOrdersByUserId(Long userId);
 
     Promise<OrderEvent> updateOrderBillingStatus(OrderEvent event);
 
