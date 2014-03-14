@@ -60,7 +60,7 @@ class OrderResourceImpl implements OrderResource {
 
     @Override
     Promise<List<Order>> getOrderByUserId(UserId userId, HttpHeaders headers) {
-        return null
+        return orderService.getOrdersByUserId(userId.value)
     }
 
 }

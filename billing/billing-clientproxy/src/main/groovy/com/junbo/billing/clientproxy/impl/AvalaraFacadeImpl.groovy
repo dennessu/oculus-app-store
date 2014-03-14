@@ -70,6 +70,10 @@ class AvalaraFacadeImpl implements TaxFacade {
     }
 
     String getTaxAuthority(String jurisType) {
+        if (jurisType == null) {
+            return null
+        }
+
         if (EnumSet.allOf(TaxAuthority).toString().contains(jurisType.toUpperCase())) {
             return jurisType.toUpperCase()
         }
