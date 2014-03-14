@@ -1,5 +1,6 @@
 package com.junbo.order.mock
 import com.junbo.billing.spec.model.Balance
+import com.junbo.billing.spec.model.BalanceItem
 import com.junbo.billing.spec.resource.BalanceResource
 import com.junbo.common.id.BalanceId
 import com.junbo.common.id.OrderId
@@ -33,6 +34,10 @@ class MockBalanceResource extends BaseMock implements BalanceResource {
         balance.status = 'Open'
         balance.taxAmount = 2.00G
         balance.taxIncluded = false
+        balance.balanceItems.each { BalanceItem bi ->
+            bi.taxAmount = 1.00G
+            bi.isTaxExempt = false
+        }
         return Promise.pure(balance)
     }
 

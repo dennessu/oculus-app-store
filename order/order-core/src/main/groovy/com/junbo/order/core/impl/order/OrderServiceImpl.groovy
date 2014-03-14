@@ -27,6 +27,7 @@ import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderEvent
 import com.junbo.order.spec.model.OrderItem
 import groovy.transform.CompileStatic
+import org.apache.commons.collections.CollectionUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -58,7 +59,6 @@ class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    @Transactional
     Promise<List<Order>> createOrders(Order order, ApiContext context) {
         // TODO: split orders
         // TODO: expand external resources
@@ -75,7 +75,6 @@ class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    @Transactional
     Promise<List<Order>> settleQuote(Order order, ApiContext context) {
         order.tentative = false
         def orderServiceContext = initOrderServiceContext(order)
@@ -88,7 +87,6 @@ class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    @Transactional
     Promise<Order> updateTentativeOrder(Order order, ApiContext context) {
         def orderServiceContext = initOrderServiceContext(order)
 
@@ -107,9 +105,13 @@ class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    @Transactional
     Promise<List<Order>> createQuotes(Order order, ApiContext context) {
 
+        def ht = new Date()
+        order.honoredTime = ht
+        order.orderItems.each { OrderItem oi ->
+            oi.honoredTime = ht
+        }
         def orderServiceContext = initOrderServiceContext(order)
 
         flowSelector.select(orderServiceContext, OrderServiceOperation.CREATE_TENTATIVE).then { FlowType flowType ->
@@ -129,20 +131,20 @@ class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     Promise<Order> getOrderByOrderId(Long orderId) {
-        def orderServiceContext = initOrderServiceContext(null)
-        Map<String, Object> requestScope = ['GetOrderAction_OrderId':(Object)orderId]
-        return flowSelector.select(orderServiceContext, OrderServiceOperation.GET).then { FlowType flowType ->
-            executeFlow(flowType, orderServiceContext, requestScope).then { OrderServiceContext context ->
-                if (context.order == null) {
-                      throw AppErrors.INSTANCE.orderNotFound().exception()
-                }
-                completeOrder(context.order)
-                return Promise.pure(context.order)
-            }
+
+        if (orderId == null) {
+            throw AppErrors.INSTANCE.fieldInvalid('orderId', 'orderId cannot be null').exception()
         }
+
+        // get Order by id
+        def order = orderRepository.getOrder(orderId)
+        if (order == null) {
+            throw AppErrors.INSTANCE.orderNotFound().exception()
+        }
+        return Promise.pure(completeOrder(order))
     }
 
-    private void completeOrder(Order order) {
+    private Order completeOrder(Order order) {
         // order items
         order.orderItems = orderRepository.getOrderItems(order.id.value)
         if (order.orderItems == null) {
@@ -159,16 +161,15 @@ class OrderServiceImpl implements OrderService {
         order.setPaymentInstruments(orderRepository.getPaymentInstrumentIds(order.id.value))
         // discount
         order.setDiscounts(orderRepository.getDiscounts(order.id.value))
+        return order
     }
 
     @Override
-    @Transactional
     Promise<Order> cancelOrder(Order request) {
         return null
     }
 
     @Override
-    @Transactional
     Promise<Order> refundOrder(Order request) {
         return null
     }
@@ -176,29 +177,28 @@ class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     Promise<List<Order>> getOrdersByUserId(Long userId) {
-        def orderServiceContext = initOrderServiceContext(null)
-        Map <String, Object> requestScope = ['GetOrderAction_UserId':(Object)userId]
-        return flowSelector.select(orderServiceContext, OrderServiceOperation.GET).then { FlowType flowType ->
-            executeFlow(flowType, orderServiceContext, requestScope).then { OrderServiceContext context ->
-                if (context.orders == null || context.orders.size() == 0) {
-                    throw AppErrors.INSTANCE.orderItemNotFound().exception()
-                }
-                context.orders.each { Order order ->
-                    completeOrder(order)
-                }
-                return Promise.pure(context.orders)
-            }
+
+        if (userId == null) {
+            throw AppErrors.INSTANCE.fieldInvalid('userId', 'userId cannot be null').exception()
         }
+
+        // get Orders by userId
+        def orders = orderRepository.getOrdersByUserId(userId)
+        if (CollectionUtils.isEmpty(orders)) {
+            throw AppErrors.INSTANCE.orderNotFound().exception()
+        }
+        orders.each { Order order ->
+            completeOrder(order)
+        }
+        return Promise.pure(orders)
     }
 
     @Override
-    @Transactional
     Promise<OrderEvent> updateOrderBillingStatus(OrderEvent event) {
         return null
     }
 
     @Override
-    @Transactional
     Promise<OrderEvent> updateOrderFulfillmentStatus(OrderEvent event) {
         return null
     }

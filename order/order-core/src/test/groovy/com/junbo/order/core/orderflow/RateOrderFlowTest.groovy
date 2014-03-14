@@ -1,12 +1,12 @@
 package com.junbo.order.core.orderflow
-
-import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.executor.FlowExecutor
 import com.junbo.order.core.BaseTest
+import com.junbo.order.core.OrderService
 import com.junbo.order.core.common.TestBuilder
 import com.junbo.order.core.impl.order.OrderServiceContext
 import com.junbo.order.core.impl.orderaction.ActionUtils
 import com.junbo.order.db.repo.OrderRepository
+import com.junbo.order.spec.model.Discount
 import org.springframework.beans.factory.annotation.Autowired
 import org.testng.annotations.Test
 /**
@@ -16,27 +16,32 @@ class RateOrderFlowTest extends BaseTest{
 
     @Autowired
     FlowExecutor executor
-
+    @Autowired
+    OrderService orderService
     @Autowired
     OrderRepository repo
 
-    @Test(enabled = false)
+    @Test(enabled = true)
     void testFlowExecute() {
         def order = TestBuilder.buildOrderRequest()
 
         Map<String, Object> requestScope = [:]
-        requestScope.put(ActionUtils.REQUEST_FLOW_TYPE, (Object)'MOCK_RATE_ORDER')
+        requestScope.put(ActionUtils.REQUEST_FLOW_TYPE, (Object) 'MOCK_RATE_ORDER')
 
-        executor.start(
+        def context = executor.start(
                 'MOCK_RATE_ORDER',
-                ActionUtils.initRequestScope(
-                new OrderServiceContext(order),
-                requestScope)).syncThen { ActionContext context ->
-            // Check the order is same as the returned order
-            def o = ActionUtils.getOrderActionContext(context).orderServiceContext.order
-            assert (o != null)
-            def getOrder = repo.getOrder(o.id.value)
-            assert (o == getOrder)
-        }.wrapped().get()
+                ActionUtils.initRequestScope(new OrderServiceContext(order), requestScope)).wrapped().get()
+        // Check the order is same as the returned order
+        def o = ActionUtils.getOrderActionContext(context).orderServiceContext.order
+        assert (o != null)
+        o.discounts?.each { Discount d ->
+            d.ownerOrderItem = null
+        }
+        def getOrder = orderService.getOrderByOrderId(o.id.value).wrapped().get()
+        assert (o.id.value == getOrder.id.value)
+        assert (o.discounts.size() == getOrder.discounts.size())
+        assert (o.orderItems.size() == getOrder.orderItems.size())
+        assert (o.totalAmount == getOrder.totalAmount)
+        assert (o.totalTax == getOrder.totalTax)
     }
 }
