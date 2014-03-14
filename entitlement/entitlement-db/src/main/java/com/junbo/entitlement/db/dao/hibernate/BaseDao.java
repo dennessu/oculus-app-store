@@ -29,7 +29,7 @@ import java.util.*;
 public class BaseDao<T extends Entity> {
     private SessionFactory sessionFactory;
     @Autowired
-    @Qualifier("idGenerator")
+    @Qualifier("oculus48IdGenerator")
     private IdGenerator idGenerator;
 
     private Class<T> entityType;

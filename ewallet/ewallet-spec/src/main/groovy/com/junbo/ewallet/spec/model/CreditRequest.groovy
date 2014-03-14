@@ -6,10 +6,14 @@
 
 package com.junbo.ewallet.spec.model
 
+import groovy.transform.CompileStatic
+
 /**
  * credit request.
  */
+@CompileStatic
 class CreditRequest {
+    UUID trackingUuid
     Long offerId
     BigDecimal amount
     String type

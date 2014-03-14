@@ -28,7 +28,7 @@ public class BaseDao<T extends com.junbo.subscription.db.entity.Entity> {
     }
 
     public Long insert(T t) {
-        t.setId(generateId());
+        t.setId(generateId(t.getShardMasterId()));
         return (Long) currentSession().save(t);
     }
 
@@ -53,7 +53,7 @@ public class BaseDao<T extends com.junbo.subscription.db.entity.Entity> {
         this.classType = classType;
     }
 
-    protected Long generateId(){
-        return idGenerator.nextId();
+    protected Long generateId(Long shardId){
+        return idGenerator.nextId(shardId);
     }
 }

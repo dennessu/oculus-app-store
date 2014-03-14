@@ -5,11 +5,8 @@
  */
 package com.junbo.email.core.service;
 
-import com.junbo.email.clientproxy.MandrillFacade;
-import com.junbo.email.clientproxy.impl.mandrill.MandrillResponse;
-import com.junbo.email.clientproxy.impl.mandrill.SendStatus;
+import com.junbo.email.clientproxy.EmailProvider;
 import com.junbo.email.core.EmailService;
-import com.junbo.email.db.entity.EmailStatus;
 import com.junbo.email.db.repo.EmailHistoryRepository;
 import com.junbo.email.db.repo.EmailScheduleRepository;
 import com.junbo.email.db.repo.EmailTemplateRepository;
@@ -42,13 +39,12 @@ public class EmailServiceImpl implements EmailService {
     private EmailScheduleRepository emailScheduleRepository;
 
     @Resource
-    private MandrillFacade mandrillFacade;
+    private EmailProvider emailProvider;
 
     @Override
     public Promise<Email> send(Email request) {
 
         validateRequest(request);
-        final Email email = request;
         if(request.getScheduleDate() != null) {
             //handler schedule email
             Email schedule = emailScheduleRepository.saveEmailSchedule(request);
@@ -56,40 +52,9 @@ public class EmailServiceImpl implements EmailService {
         }
         else {
             //send email by mandrill
-            return mandrillFacade.send(request).then(new Promise.Func<MandrillResponse, Promise<Email>>() {
+            return emailProvider.sendEmail(request).then(new Promise.Func<Email, Promise<Email>>() {
                 @Override
-                public Promise<Email> apply(MandrillResponse response) {
-                    if(response.getCode() == 200) {
-                        switch (response.getStatus()) {
-                            case SendStatus.SENT:{
-                                email.setStatus(EmailStatus.SUCCEED.toString());
-                                email.setSentDate(new Date());
-                                break;
-                            }
-                            case SendStatus.REJECTED:{
-                                email.setStatus(EmailStatus.FAILED.toString());
-                                email.setStatusReason(response.getReason());
-                                break;
-                            }
-                            case SendStatus.QUEUED:{
-                                email.setStatus(EmailStatus.PENDING.toString());
-                                break;
-                            }
-                            case SendStatus.INVALID:{
-                                email.setStatus(EmailStatus.FAILED.toString());
-                                email.setStatusReason("invalid");
-                                break;
-                            }
-                            default:{
-                                email.setStatus(EmailStatus.FAILED.toString());
-                                email.setStatusReason("unknown");
-                            }
-                        }
-                    }
-                    else {
-                        email.setStatus(EmailStatus.FAILED.toString());
-                        email.setStatusReason(response.getBody());
-                    }
+                public Promise<Email> apply(Email email) {
                     Long id = emailHistoryRepository.createEmailHistory(email);
                     return Promise.pure(emailHistoryRepository.getEmail(id));
                 }
@@ -110,7 +75,7 @@ public class EmailServiceImpl implements EmailService {
         if(email.getAction() == null) {
             throw AppErrors.INSTANCE.fieldMissingValue("action").exception();
         }
-        if(email.getLocale() == null) {
+        if(email.getLocale() == null && email.getUserId() == null) {
             throw AppErrors.INSTANCE.fieldMissingValue("locale").exception();
         }
         if(email.getScheduleDate() != null && email.getScheduleDate().before(new Date())) {

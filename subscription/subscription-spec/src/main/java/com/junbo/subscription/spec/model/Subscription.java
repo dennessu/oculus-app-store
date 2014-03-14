@@ -11,15 +11,18 @@ import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 
 
 import java.util.Date;
+import java.util.UUID;
 
 
 /**
  * subscription.
  */
-@JsonPropertyOrder(value = {"subscriptionId", "userId", "offerId", "status",
+@JsonPropertyOrder(value = {"trackingGuid", "subscriptionId", "userId", "offerId", "status",
         "subStartDate", "subEndDate", "paymentMethodId", "partnerId",
         "createdTime", "createdBy", "modifiedTime", "modifiedBy"})
 public class Subscription extends Model {
+
+    private UUID trackingUuid;
 
     //@NotNull
     @JsonSerialize(using = ToStringSerializer.class)
@@ -42,6 +45,12 @@ public class Subscription extends Model {
     private Long paymentMethodId;
 
     private String partnerId;
+
+    public UUID getTrackingUuid() {return trackingUuid;}
+
+    public void setTrackingUuid(UUID trackingUuid) {
+        this.trackingUuid = trackingUuid;
+    }
 
     public Long getSubscriptionId() {
         return subscriptionId;

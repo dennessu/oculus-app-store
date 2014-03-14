@@ -22,7 +22,6 @@ public class BalanceItem {
     private BigDecimal amount;
     private BigDecimal taxAmount;
     private BigDecimal discountAmount;
-    private Boolean taxIncluded;
     private String financeId;
     private Boolean isTaxExempt;
     private BalanceItemId originalBalanceItemId;
@@ -31,8 +30,8 @@ public class BalanceItem {
     private List<DiscountItem> discountItems;
 
     public BalanceItem() {
-        taxItems = new ArrayList<TaxItem>();
-        discountItems = new ArrayList<DiscountItem>();
+        taxItems = new ArrayList<>();
+        discountItems = new ArrayList<>();
     }
 
     public BalanceItemId getBalanceItemId() {
@@ -65,14 +64,6 @@ public class BalanceItem {
 
     public void setTaxAmount(BigDecimal taxAmount) {
         this.taxAmount = taxAmount;
-    }
-
-    public Boolean getTaxIncluded() {
-        return taxIncluded;
-    }
-
-    public void setTaxIncluded(Boolean taxIncluded) {
-        this.taxIncluded = taxIncluded;
     }
 
     public BigDecimal getDiscountAmount() {

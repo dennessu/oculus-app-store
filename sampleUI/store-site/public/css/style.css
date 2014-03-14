@@ -31,17 +31,19 @@ body > header > nav{ line-height: 25px; color: #CCC; border-bottom: solid 1px #B
 .btn-cancel:hover, .btn-cancel:focus, .btn-cancel:active, .btn-cancel.active{ background-color: #ebebeb; border-color: #adadad; }
 
 
-.box1, .box2{ padding: 15px; border: solid 1px #ccc;}
+.box1, .box2{ padding: 15px; border: solid 1px #ccc; background-color: #fff;}
 .box1{ margin: 0 auto; width: 250px;}
 .box1 > h2, .box2 > h2{ margin: 0 0 10px 0;}
 .box1 > p, .box2 > p{ margin: 0 0 25px 0;}
 .box1 > dl > dt, .box2 > dl > dt{ line-height: 20px; font-weight: bold;}
 .box1 > dl > dd, .box2 > dl > dd{ margin: 0;}
+.box1 > dl > dd > .error,
+.box2 > dl > dd > .error{ display:block; line-height: 20px; color: #f00;}
 .box1 input[type=text],
 .box1 input[type=number],
 .box1 input[type=email],
 .box1 input[type=password]{ width: 247px }
-.box1 button{ width: 248px }
+.box1 button, .box1 input[type=submit]{ width: 248px }
 .box1 select{ width: 248px; height: 24px; }
 .box1 > dl.agreement > dd,
 .box1 > dl.agreement > dt,
@@ -51,7 +53,9 @@ body > header > nav{ line-height: 25px; color: #CCC; border-bottom: solid 1px #B
 .box2 > dl.agreement > dd input{ float: left; }
 .box1 > .actions, .box2 > .actions{ margin: 20px 0 0 0;}
 .box1 > .actions > button,
-.box2 > .actions > button{ display: block; margin-bottom: 20px;}
+.box1 > .actions > input[type=submit],
+.box2 > .actions > button,
+.box2 > .actions > input[type=submit]{ display: block; margin-bottom: 20px;}
 .box1 > .actions > button:last-child,
 .box2 > .actions > button:last-child{  margin-bottom: 0px;}
 

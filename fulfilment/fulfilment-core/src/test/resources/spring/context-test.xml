@@ -10,4 +10,6 @@
     <!-- fusion mock -->
     <bean id="catalogGateway" class="com.junbo.fulfilment.clientproxy.mock.MockCatalogGatewayImpl"/>
     <bean id="entitlementGateway" class="com.junbo.fulfilment.clientproxy.mock.MockEntitlementGatewayImpl"/>
+    <bean id="walletGateway" class="com.junbo.fulfilment.clientproxy.mock.MockWalletGatewayImpl"/>
+    <bean id="billingGateway" class="com.junbo.fulfilment.clientproxy.mock.MockBillingGatewayImpl"/>
 </beans>
