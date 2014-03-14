@@ -39,9 +39,6 @@ dependencies {
     testCompile 'junit:junit:4.11'
     testCompile 'org.testng:testng:6.8.8'
     testCompile 'org.slf4j:slf4j-api:1.7.6'
-    testCompile 'com.junbo.identity:identity-clientproxy:0.0.1-SNAPSHOT'
-    testCompile 'com.junbo.identity:identity-data:0.0.1-SNAPSHOT'
-    testCompile 'com.junbo.identity:identity-rest:0.0.1-SNAPSHOT'
     testCompile 'com.junbo.identity:identity-spec:0.0.1-SNAPSHOT'
     testCompile project(':integration-common')
 }

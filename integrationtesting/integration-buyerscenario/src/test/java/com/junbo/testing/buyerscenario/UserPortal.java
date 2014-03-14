@@ -3,29 +3,27 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.testing.buyerscenario.user;
+package com.junbo.testing.buyerscenario;
 
 import com.junbo.testing.buyerscenario.util.BaseTestClass;
 import com.junbo.testing.common.apihelper.identity.impl.UserServiceImpl;
-import com.junbo.testing.common.blueprint.User;
 import com.junbo.testing.common.libs.LogHelper;
 import com.junbo.testing.common.property.*;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 /**
  @author Jason
- * Time: 3/7/2014
- * For holding Post User API test cases
+  * Time: 3/7/2014
+  * For holding test cases of User portal
  */
-public class TestPostUser extends BaseTestClass {
+public class UserPortal extends BaseTestClass {
 
-    private LogHelper logger = new LogHelper(TestPostUser.class);
+    private LogHelper logger = new LogHelper(UserPortal.class);
 
-    private final String serverURL = "http://localhost:8080/rest/users";
+    private final String identityServerURL = "http://localhost:8080/rest/users";
+    private final String oAuthServerURL = "http://localhost:8082/auth";
 
     @Property(
             priority = Priority.BVT,
@@ -43,7 +41,7 @@ public class TestPostUser extends BaseTestClass {
     @Test
     public void testPostUser() throws Exception {
 
-        UserServiceImpl userServiceAPI = new UserServiceImpl(serverURL);
+        UserServiceImpl userServiceAPI = new UserServiceImpl(identityServerURL);
         String apiResponse = userServiceAPI.PostUser();
 
         String[] results = apiResponse.split(",");
@@ -70,4 +68,37 @@ public class TestPostUser extends BaseTestClass {
         Assert.assertTrue(apiResponse.contains(userName),  "Can't get user by username");
     }
 
+    @Property(
+            priority = Priority.BVT,
+            features = "BuyerScenario",
+            component = Component.Identity,
+            owner = "JasonFu",
+            status = Status.Enable,
+            description = "Test user registration",
+            steps = {
+                    "Just call Post http://localhost:8080/rest/users, no need to call OAuth"
+            }
+    )
+    @Test
+    public void testUserRegistration() throws Exception {
+
+    }
+
+    @Property(
+            priority = Priority.BVT,
+            features = "BuyerScenario",
+            component = Component.Identity,
+            owner = "JasonFu",
+            status = Status.Enable,
+            description = "Test user Login without captcha, twofactor, securityquestions and tos",
+            steps = {
+                    "1. ",
+                    "2. ",
+                    "3. "
+            }
+    )
+    @Test
+    public void testUserLogin() throws Exception {
+
+    }
 }
