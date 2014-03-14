@@ -1,5 +1,5 @@
 <div class="span6">
-  <table class="table table-striped table-condensed">
+  <table class="table">
     <thead>
       <tr>
         <th style="min-width: 80px;">Offer Id</th>
@@ -8,7 +8,7 @@
     </thead>
     <tbody>
       <tr ng-repeat="offer in offers">
-        <td>{{ offer.self.id }}</td>
+        <td><a href="#/offers/{{ offer.self.id }}">{{ offer.self.id }}</a></td>
         <td>{{ offer.name }}</td>
       </tr>
     </tbody>

@@ -6,6 +6,7 @@
 
 package com.junbo.catalog.spec.model.item;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.catalog.spec.model.common.VersionedModel;
 import com.junbo.common.jackson.annotation.AttributeId;
@@ -70,6 +71,7 @@ public class Item extends VersionedModel {
     }
 
     @Override
+    @JsonIgnore
     public String getEntityType() {
         return "Item";
     }
