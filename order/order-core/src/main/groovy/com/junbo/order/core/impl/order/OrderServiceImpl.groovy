@@ -77,10 +77,12 @@ class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     Promise<List<Order>> settleQuote(Order order, ApiContext context) {
+        order.tentative = false
         def orderServiceContext = initOrderServiceContext(order)
-        flowSelector.select(orderServiceContext, OrderServiceOperation.SETTLE_TENTATIVE).syncThen { FlowType flowType ->
+        flowSelector.select(orderServiceContext, OrderServiceOperation.SETTLE_TENTATIVE).then { FlowType flowType ->
             executeFlow(flowType, orderServiceContext, null)
         }.syncThen {
+            orderRepository.updateOrder(order, true)
             return [orderServiceContext.order]
         }
     }
@@ -88,7 +90,20 @@ class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     Promise<Order> updateTentativeOrder(Order order, ApiContext context) {
-        return null
+        def orderServiceContext = initOrderServiceContext(order)
+
+        flowSelector.select(orderServiceContext, OrderServiceOperation.UPDATE_TENTATIVE).then { FlowType flowType ->
+            // Prepare Flow Request
+            Map<String, Object> requestScope = [:]
+            def orderActionContext = new OrderActionContext()
+            orderActionContext.orderActionType = OrderActionType.RATE
+            orderActionContext.orderServiceContext = orderServiceContext
+            orderActionContext.trackingUuid = order.trackingUuid
+            requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object)orderActionContext)
+            executeFlow(flowType, orderServiceContext, requestScope)
+        }.syncThen {
+            return orderServiceContext.order
+        }
     }
 
     @Override
@@ -121,23 +136,29 @@ class OrderServiceImpl implements OrderService {
                 if (context.order == null) {
                       throw AppErrors.INSTANCE.orderNotFound().exception()
                 }
-                // TODO need refactor the get logic
-                // order items
-                context.order.setOrderItems(orderRepository.getOrderItems(orderId))
-                // rating info
-                context.order.totalAmount = 0
-                context.order.orderItems?.each { OrderItem orderItem ->
-                    if (orderItem.totalAmount != null) {
-                        context.order.totalAmount += orderItem.totalAmount
-                    }
-                }
-                // payment instrument
-                context.order.setPaymentInstruments(orderRepository.getPaymentInstrumentIds(orderId))
-                // discount
-                context.order.setDiscounts(orderRepository.getDiscounts(orderId))
+                completeOrder(context.order)
                 return Promise.pure(context.order)
             }
         }
+    }
+
+    private void completeOrder(Order order) {
+        // order items
+        order.orderItems = orderRepository.getOrderItems(order.id.value)
+        if (order.orderItems == null) {
+            throw AppErrors.INSTANCE.orderItemNotFound().exception()
+        }
+        // rating info
+        order.totalAmount = 0
+        order.orderItems?.each { OrderItem orderItem ->
+            if (orderItem.totalAmount != null) {
+                order.totalAmount += orderItem.totalAmount
+            }
+        }
+        // payment instrument
+        order.setPaymentInstruments(orderRepository.getPaymentInstrumentIds(order.id.value))
+        // discount
+        order.setDiscounts(orderRepository.getDiscounts(order.id.value))
     }
 
     @Override
@@ -154,8 +175,20 @@ class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    Promise<List<Order>> getOrders(Order request) {
-        return null
+    Promise<List<Order>> getOrdersByUserId(Long userId) {
+        def orderServiceContext = initOrderServiceContext(null)
+        Map <String, Object> requestScope = ['GetOrderAction_UserId':(Object)userId]
+        return flowSelector.select(orderServiceContext, OrderServiceOperation.GET).then { FlowType flowType ->
+            executeFlow(flowType, orderServiceContext, requestScope).then { OrderServiceContext context ->
+                if (context.orders == null || context.orders.size() == 0) {
+                    throw AppErrors.INSTANCE.orderItemNotFound().exception()
+                }
+                context.orders.each { Order order ->
+                    completeOrder(order)
+                }
+                return Promise.pure(context.orders)
+            }
+        }
     }
 
     @Override
@@ -173,8 +206,9 @@ class OrderServiceImpl implements OrderService {
     private Promise<OrderServiceContext> executeFlow(
             FlowType flowType, OrderServiceContext context,
             Map<String, Object> requestScope) {
-        requestScope.put(ActionUtils.REQUEST_FLOW_TYPE, (Object)flowType)
-        return flowExecutor.start(flowType.name(), ActionUtils.initRequestScope(context, requestScope)).syncThen {
+        def scope = ActionUtils.initRequestScope(context, requestScope)
+        scope.put(ActionUtils.REQUEST_FLOW_TYPE, (Object)flowType)
+        return flowExecutor.start(flowType.name(), scope).syncThen {
             return context
         }
     }

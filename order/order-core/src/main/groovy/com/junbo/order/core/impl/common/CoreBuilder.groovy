@@ -92,15 +92,19 @@ class CoreBuilder {
         return item
     }
 
-    static OrderEvent buildOrderEvent(OrderId orderId, OrderActionType action, EventStatus status) {
+    static OrderEvent buildOrderEvent(OrderId orderId, OrderActionType action,
+                                      EventStatus status, String flowType, UUID trackingUuid) {
         def event = new OrderEvent()
         event.order = orderId
         event.action = action
         event.status = status.name()
+        event.flowType = flowType
+        event.trackingUuid = trackingUuid
         return event
     }
 
-    static ActionResult buildActionResultForOrderEventAwareAction(OrderActionContext context, EventStatus eventStatus) {
+    static ActionResult  buildActionResultForOrderEventAwareAction(OrderActionContext context,
+                                                                   EventStatus eventStatus) {
         def orderActionResult = new OrderActionResult()
         orderActionResult.orderActionContext = context
         orderActionResult.returnedEventStatus = eventStatus

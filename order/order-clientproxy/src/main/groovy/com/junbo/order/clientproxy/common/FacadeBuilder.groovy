@@ -33,7 +33,7 @@ class FacadeBuilder {
         FulfilmentItem item = new FulfilmentItem()
         item.orderItemId = orderItem.orderItemId.value
         item.offerId = orderItem.offer.value
-        item.timestamp = orderItem.honoredTime.time
+        item.timestamp = orderItem.honoredTime?.time
         item.quantity = orderItem.quantity
         return item
     }

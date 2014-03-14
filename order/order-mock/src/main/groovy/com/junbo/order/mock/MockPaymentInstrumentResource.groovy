@@ -9,6 +9,7 @@ import com.junbo.payment.spec.model.ResultList
 import com.junbo.payment.spec.resource.PaymentInstrumentResource
 import groovy.transform.CompileStatic
 import org.springframework.context.annotation.Scope
+import org.springframework.stereotype.Component
 
 import javax.ws.rs.core.Response
 
@@ -17,6 +18,7 @@ import javax.ws.rs.core.Response
  */
 @CompileStatic
 @Scope('prototype')
+@Component('mockPaymentInstrumentResource')
 class MockPaymentInstrumentResource extends BaseMock implements PaymentInstrumentResource {
 
     @Override
