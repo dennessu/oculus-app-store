@@ -195,14 +195,14 @@ public class CommonMapper {
         return id.getValue();
     }
 
-    public UserTosAcceptanceId toUserTosAcceptanceId(Long id) {
+    public UserTosId toUserTosId(Long id) {
         if(id == null) {
             return null;
         }
-        return new UserTosAcceptanceId(id);
+        return new UserTosId(id);
     }
 
-    public Long toUserTosAcceptanceId(UserTosAcceptanceId id) {
+    public Long toUserTosId(UserTosId id) {
         if(id == null) {
             return null;
         }

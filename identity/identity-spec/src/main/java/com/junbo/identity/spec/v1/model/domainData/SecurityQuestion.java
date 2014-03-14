@@ -10,8 +10,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * Created by kg on 3/12/14.
  */
-// Todo:    This is much more like some domain data ...
-// Can we put them into our identity domain data?
 public class SecurityQuestion {
 
     @JsonProperty("self")

@@ -6,7 +6,7 @@
 package com.junbo.identity.rest.resource;
 
 import com.junbo.common.id.UserId;
-import com.junbo.common.id.UserTosAcceptanceId;
+import com.junbo.common.id.UserTosId;
 import com.junbo.identity.rest.service.user.UserTosAcceptanceService;
 import com.junbo.identity.spec.model.common.ResultList;
 import com.junbo.identity.spec.model.common.ResultListUtil;
@@ -42,19 +42,19 @@ public class UserTosAcceptanceResourceImpl implements UserTosAcceptanceResource 
     }
 
     @Override
-    public Promise<UserTosAcceptance> getUserTosAcceptance(UserId userId, UserTosAcceptanceId tosAcceptanceId) {
+    public Promise<UserTosAcceptance> getUserTosAcceptance(UserId userId, UserTosId tosAcceptanceId) {
         return Promise.pure(userTosAcceptanceService.get(userId.getValue(), tosAcceptanceId.getValue()));
     }
 
     @Override
     public Promise<UserTosAcceptance> updateUserTosAcceptance(UserId userId,
-                                      UserTosAcceptanceId tosAcceptanceId, UserTosAcceptance userTosAcceptance) {
+                                      UserTosId tosAcceptanceId, UserTosAcceptance userTosAcceptance) {
         return Promise.pure(userTosAcceptanceService.update(userId.getValue(),
                 tosAcceptanceId.getValue(), userTosAcceptance));
     }
 
     @Override
-    public Promise<Void> deleteUserTosAcceptance(UserId userId, UserTosAcceptanceId tosAcceptanceId) {
+    public Promise<Void> deleteUserTosAcceptance(UserId userId, UserTosId tosAcceptanceId) {
         userTosAcceptanceService.delete(userId.getValue(), tosAcceptanceId.getValue());
         return Promise.pure(null);
     }

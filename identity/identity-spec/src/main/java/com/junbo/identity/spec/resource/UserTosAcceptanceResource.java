@@ -6,7 +6,7 @@
 package com.junbo.identity.spec.resource;
 
 import com.junbo.common.id.UserId;
-import com.junbo.common.id.UserTosAcceptanceId;
+import com.junbo.common.id.UserTosId;
 import com.junbo.identity.spec.model.common.ResultList;
 import com.junbo.identity.spec.model.user.UserTosAcceptance;
 import com.junbo.langur.core.RestResource;
@@ -37,16 +37,16 @@ public interface UserTosAcceptanceResource {
     @GET
     @Path("/{key2}")
     Promise<UserTosAcceptance> getUserTosAcceptance(@PathParam("key1") UserId userId,
-                                           @PathParam("key2") UserTosAcceptanceId tosAcceptanceId);
+                                           @PathParam("key2") UserTosId tosAcceptanceId);
 
     @PUT
     @Path("/{key2}")
     Promise<UserTosAcceptance> updateUserTosAcceptance(@PathParam("key1") UserId userId,
-                                              @PathParam("key2") UserTosAcceptanceId tosAcceptanceId,
+                                              @PathParam("key2") UserTosId tosAcceptanceId,
                                               UserTosAcceptance userTosAcceptance);
 
     @DELETE
     @Path("/{key2}")
     Promise<Void> deleteUserTosAcceptance(@PathParam("key1") UserId userId,
-                                 @PathParam("key2") UserTosAcceptanceId tosAcceptanceId);
+                                 @PathParam("key2") UserTosId tosAcceptanceId);
 }

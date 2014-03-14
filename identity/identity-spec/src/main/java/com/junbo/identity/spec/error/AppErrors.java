@@ -15,6 +15,10 @@ import com.junbo.common.error.*;
 public interface AppErrors {
     AppErrors INSTANCE = ErrorProxy.newProxyInstance(AppErrors.class);
 
+    @ErrorDef(httpStatusCode = 400, code = "10000", description = "Invalid parameter: {0}.")
+    AppError invalidParameter(String message);
+
+    // Redefined, the below will all retired
     @ErrorDef(httpStatusCode = 400, code = "10000", description ="Invalid null/empty input parameter")
     AppError invalidNullEmptyInputParam();
 
@@ -77,8 +81,8 @@ public interface AppErrors {
     AppError notExistingUserOptIn(String userId, String userOptInId);
 
     @ErrorDef(httpStatusCode = 403, code = "10019",
-            description = "User {0} with userTosAcceptanceId {1} doesn't exist.")
-    AppError notExistingUserTosAcceptance(String userId, String userTosAcceptanceId);
+            description = "User {0} with userTosId {1} doesn't exist.")
+    AppError notExistingUserTosAcceptance(String userId, String userTosId);
 
     @ErrorDef(httpStatusCode = 403, code = "10020", description = "Duplicate password rule details.")
     AppError duplicatePasswordRuleDetails();

@@ -4,7 +4,6 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.identity.data.dao.impl.postgresql
-
 import com.junbo.common.id.UserProfileId
 import com.junbo.identity.data.dao.UserProfileDAO
 import com.junbo.identity.data.entity.user.UserProfileEntity
@@ -13,7 +12,6 @@ import com.junbo.identity.data.mapper.ModelMapper
 import com.junbo.identity.data.util.Constants
 import com.junbo.identity.spec.model.user.UserProfile
 import com.junbo.oom.core.MappingContext
-import com.junbo.sharding.IdGenerator
 import com.junbo.sharding.IdGeneratorFacade
 import org.hibernate.Session
 import org.hibernate.SessionFactory

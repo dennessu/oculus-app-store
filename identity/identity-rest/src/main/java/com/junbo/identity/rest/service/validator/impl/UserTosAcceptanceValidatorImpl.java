@@ -40,13 +40,13 @@ public class UserTosAcceptanceValidatorImpl extends CommonValidator implements U
     }
 
     @Override
-    public void validateUpdate(Long userId, Long userTosAcceptanceId, UserTosAcceptance userTosAcceptance) {
-        if(userId == null || userTosAcceptanceId == null || userTosAcceptance == null) {
+    public void validateUpdate(Long userId, Long userTosId, UserTosAcceptance userTosAcceptance) {
+        if(userId == null || userTosId == null || userTosAcceptance == null) {
             throw AppErrors.INSTANCE.invalidNullEmptyInputParam().exception();
         }
         validateNecessaryFields(userId, userTosAcceptance);
         validateUnnecessaryFields(userTosAcceptance);
-        validateResourceAccessible(userId, userTosAcceptanceId);
+        validateResourceAccessible(userId, userTosId);
         if(userTosAcceptance.getResourceAge() == null) {
             throw AppErrors.INSTANCE.missingParameterField("userTosAcceptance.resourceAge").exception();
         }
@@ -56,21 +56,21 @@ public class UserTosAcceptanceValidatorImpl extends CommonValidator implements U
     }
 
     @Override
-    public void validateDelete(Long userId, Long userTosAcceptanceId) {
-        validateResourceAccessible(userId, userTosAcceptanceId);
+    public void validateDelete(Long userId, Long userTosId) {
+        validateResourceAccessible(userId, userTosId);
     }
 
     @Override
-    public void validateResourceAccessible(Long userId, Long userTosAcceptanceId) {
+    public void validateResourceAccessible(Long userId, Long userTosId) {
         checkUserValid(userId);
 
-        UserTosAcceptance userTosAcceptance = userTosAcceptanceDAO.get(userTosAcceptanceId);
+        UserTosAcceptance userTosAcceptance = userTosAcceptanceDAO.get(userTosId);
         if(userTosAcceptance == null) {
             throw AppErrors.INSTANCE.invalidResourceRequest().exception();
         }
 
         if(!userId.equals(userTosAcceptance.getUserId().getValue())) {
-            throw AppErrors.INSTANCE.inputParametersMismatch("userId", "userTosAcceptanceId").exception();
+            throw AppErrors.INSTANCE.inputParametersMismatch("userId", "UserTosId").exception();
         }
     }
 
