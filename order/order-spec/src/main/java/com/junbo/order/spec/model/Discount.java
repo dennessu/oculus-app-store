@@ -28,8 +28,6 @@ public class Discount extends BaseModelWithDate {
     private PromotionId promotion;
     private String coupon;
     @JsonIgnore
-    private Order ownerOrder;
-    @JsonIgnore
     private OrderItem ownerOrderItem;
 
     public Long getDiscountInfoId() {
@@ -94,14 +92,6 @@ public class Discount extends BaseModelWithDate {
 
     public void setCoupon(String coupon) {
         this.coupon = coupon;
-    }
-
-    public Order getOwnerOrder() {
-        return ownerOrder;
-    }
-
-    public void setOwnerOrder(Order ownerOrder) {
-        this.ownerOrder = ownerOrder;
     }
 
     public OrderItem getOwnerOrderItem() {

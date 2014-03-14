@@ -55,7 +55,7 @@ public abstract class BaseResourceImpl<T extends VersionedModel> {
     }
 
     public Promise<T> update(Id entityId, T entity) {
-        if (entity == null || entityId.getValue() != entity.getId()) {
+        if (entity == null || !entityId.getValue().equals(entity.getId())) {
             throw new CatalogException("TODO");
         }
 

@@ -13,6 +13,7 @@ import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.ws.rs.core.HttpHeaders;
+import java.util.UUID;
 
 /**
  * subscription resource implement.
@@ -26,5 +27,19 @@ public class SubscriptionResourceImpl implements SubscriptionResource {
         Subscription entitlement = service.getsubscription(subscriptionId.getValue());
         return Promise.pure(entitlement);
     }
+
+    @Override
+    public Promise<Subscription> postSubscription(Subscription subscription){
+        UUID trackingUuid = subscription.getTrackingUuid();
+        if (trackingUuid != null) {
+            Subscription existingSubscription = service.getSubsByTrackingUuid(trackingUuid);
+            if (existingSubscription != null) {
+                return Promise.pure(existingSubscription);
+            }
+        }
+        return Promise.pure(service.addsubscription(subscription));
+    }
+
+
 
 }

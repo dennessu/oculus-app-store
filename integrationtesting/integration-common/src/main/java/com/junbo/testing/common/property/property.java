@@ -13,7 +13,7 @@ import java.lang.annotation.Retention;
  * test properties: priority, features, component, owner, status, description, steps
  */
 @Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
-public @interface property {
+public @interface Property {
     Priority priority() default Priority.Default;
     String features() default "";
     Component[] component() default Component.Default;

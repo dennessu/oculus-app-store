@@ -19,11 +19,15 @@ import javax.ws.rs.core.MediaType;
 /**
  * subscription dao.
  */
-@Path("/subscription")
+@Path("/subscriptions")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 @RestResource
 public interface SubscriptionResource {
+    @POST
+    @Path("/")
+    Promise<Subscription> postSubscription(Subscription request);
+
     @GET
     @Path("/{subscriptionId}")
     Promise<Subscription> getSubscription(@Context HttpHeaders httpHeaders,

@@ -7,6 +7,7 @@
 package com.junbo.payment.spec.resource;
 
 import com.junbo.common.id.PaymentInstrumentId;
+import com.junbo.common.id.UserId;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.spec.model.PageMetaData;
@@ -21,30 +22,34 @@ import javax.ws.rs.core.Response;
 /**
  * payment instrument resource interface.
  */
-@Path("/payment-instruments")
+@Path("/users/{userId}/payment-instruments")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 @RestResource
 public interface PaymentInstrumentResource {
     @POST
-    Promise<PaymentInstrument> postPaymentInstrument(PaymentInstrument request);
+    Promise<PaymentInstrument> postPaymentInstrument(@PathParam("userId")UserId userId, PaymentInstrument request);
 
     @GET
     @Path("/{paymentInstrumentId}")
-    Promise<PaymentInstrument> getById(@PathParam("paymentInstrumentId") PaymentInstrumentId paymentInstrumentId);
+    Promise<PaymentInstrument> getById(@PathParam("userId")UserId userId,
+            @PathParam("paymentInstrumentId") PaymentInstrumentId paymentInstrumentId);
 
     @DELETE
     @Path("/{paymentInstrumentId}")
-    Promise<Response> delete(@PathParam("paymentInstrumentId") PaymentInstrumentId paymentInstrumentId);
+    Promise<Response> delete(@PathParam("userId")UserId userId,
+            @PathParam("paymentInstrumentId") PaymentInstrumentId paymentInstrumentId);
 
     @PUT
     @Path("/{paymentInstrumentId}")
-    Promise<PaymentInstrument> update(@PathParam("paymentInstrumentId") PaymentInstrumentId paymentInstrumentId,
+    Promise<PaymentInstrument> update(@PathParam("userId")UserId userId,
+            @PathParam("paymentInstrumentId") PaymentInstrumentId paymentInstrumentId,
                                              PaymentInstrument request);
 
     @GET
     @Path("/search")
     Promise<ResultList<PaymentInstrument>> searchPaymentInstrument(
+            @PathParam("userId")UserId userId,
             @BeanParam PaymentInstrumentSearchParam searchParam,
             @BeanParam PageMetaData pageMetadata);
 

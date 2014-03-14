@@ -17,6 +17,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -27,15 +29,29 @@ import java.util.UUID;
 public class OrderEntity extends CommonDbEntityWithDate {
     private Long orderId;
     private Long userId;
+    private UUID trackingUuid;
     private OrderStatus orderStatusId;
     private Boolean tentative;
     private Long originalOrderId;
     private OrderType orderTypeId;
     private String currency;
     private String country;
-    private UUID trackingUuid;
     private Long shippingAddressId;
-    private Short shippingMethodId;
+    private Long shippingMethodId;
+
+    // expand ratingInfo to simplify oom
+    private BigDecimal totalAmount;
+    private BigDecimal totalTax;
+    private Boolean isTaxInclusive;
+    private BigDecimal totalDiscount;
+    private BigDecimal totalShippingFee;
+    private BigDecimal totalShippingFeeDiscount;
+    private BigDecimal totalPreorderAmount;
+    private BigDecimal totalPreorderTax;
+    private Date honorUntilTime;
+    private Date honoredTime;
+    // end of ratingInfo
+
     private String properties;
 
     @Id
@@ -54,6 +70,17 @@ public class OrderEntity extends CommonDbEntityWithDate {
     }
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    @Column(name = "TRACKING_UUID")
+    @Type(type = "pg-uuid")
+    @NotNull(message = ValidationMessages.MISSING_VALUE)
+    public UUID getTrackingUuid() {
+        return trackingUuid;
+    }
+
+    public void setTrackingUuid(UUID trackingUuid) {
+        this.trackingUuid = trackingUuid;
     }
 
     @Column(name = "ORIGINAL_ORDER_ID")
@@ -83,23 +110,13 @@ public class OrderEntity extends CommonDbEntityWithDate {
         this.currency = currency;
     }
 
-    @Column(name = "TRACKING_UUID")
-    @Type(type = "pg-uuid")
-    @NotNull(message = ValidationMessages.MISSING_VALUE)
-    public UUID getTrackingUuid() {
-        return trackingUuid;
-    }
-    public void setTrackingUuid(UUID trackingUuid) {
-        this.trackingUuid = trackingUuid;
-    }
-
     @Column(name = "SHIPPING_ADDRESS_ID")
     public Long getShippingAddressId() { return shippingAddressId; }
     public void setShippingAddressId(Long shippingAddressId) { this.shippingAddressId = shippingAddressId; }
 
     @Column(name = "SHIPPING_METHOD_ID")
-    public Short getShippingMethodId() { return shippingMethodId; }
-    public void setShippingMethodId(Short shippingMethodId) { this.shippingMethodId = shippingMethodId; }
+    public Long getShippingMethodId() { return shippingMethodId; }
+    public void setShippingMethodId(Long shippingMethodId) { this.shippingMethodId = shippingMethodId; }
 
     @Column(name = "COUNTRY")
     @NotNull(message = ValidationMessages.MISSING_VALUE)
@@ -135,5 +152,101 @@ public class OrderEntity extends CommonDbEntityWithDate {
 
     public void setTentative(Boolean tentative) {
         this.tentative = tentative;
+    }
+
+    @Column(name = "TOTAL_AMOUNT")
+    @NotNull(message = ValidationMessages.MISSING_VALUE)
+    public BigDecimal getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(BigDecimal totalAmount) {
+        this.totalAmount = totalAmount;
+    }
+
+    @Column(name = "TOTAL_TAX")
+    @NotNull(message = ValidationMessages.MISSING_VALUE)
+    public BigDecimal getTotalTax() {
+        return totalTax;
+    }
+
+    public void setTotalTax(BigDecimal totalTax) {
+        this.totalTax = totalTax;
+    }
+
+    @Column(name = "IS_TAX_INCLUSIVE")
+    @NotNull(message = ValidationMessages.MISSING_VALUE)
+    public Boolean getIsTaxInclusive() {
+        return isTaxInclusive;
+    }
+
+    public void setIsTaxInclusive(Boolean isTaxInclusive) {
+        this.isTaxInclusive = isTaxInclusive;
+    }
+
+    @Column(name = "TOTAL_DISCOUNT")
+    @NotNull(message = ValidationMessages.MISSING_VALUE)
+    public BigDecimal getTotalDiscount() {
+        return totalDiscount;
+    }
+
+    public void setTotalDiscount(BigDecimal totalDiscount) {
+        this.totalDiscount = totalDiscount;
+    }
+
+    @Column(name = "TOTAL_SHIPPING_FEE")
+    @NotNull(message = ValidationMessages.MISSING_VALUE)
+    public BigDecimal getTotalShippingFee() {
+        return totalShippingFee;
+    }
+
+    public void setTotalShippingFee(BigDecimal totalShippingFee) {
+        this.totalShippingFee = totalShippingFee;
+    }
+
+    @Column(name = "TOTAL_SHIPPING_FEE_DISCOUNT")
+    @NotNull(message = ValidationMessages.MISSING_VALUE)
+    public BigDecimal getTotalShippingFeeDiscount() {
+        return totalShippingFeeDiscount;
+    }
+
+    public void setTotalShippingFeeDiscount(BigDecimal totalShippingFeeDiscount) {
+        this.totalShippingFeeDiscount = totalShippingFeeDiscount;
+    }
+
+    @Column(name = "TOTAL_PREORDER_AMOUNT")
+    public BigDecimal getTotalPreorderAmount() {
+        return totalPreorderAmount;
+    }
+
+    public void setTotalPreorderAmount(BigDecimal totalPreorderAmount) {
+        this.totalPreorderAmount = totalPreorderAmount;
+    }
+
+    @Column(name = "TOTAL_PREORDER_TAX")
+    public BigDecimal getTotalPreorderTax() {
+        return totalPreorderTax;
+    }
+
+    public void setTotalPreorderTax(BigDecimal totalPreorderTax) {
+        this.totalPreorderTax = totalPreorderTax;
+    }
+
+    @Column(name = "HONOR_UNTIL_TIME")
+    public Date getHonorUntilTime() {
+        return honorUntilTime;
+    }
+
+    public void setHonorUntilTime(Date honorUntilTime) {
+        this.honorUntilTime = honorUntilTime;
+    }
+
+    @Column(name = "HONORED_TIME")
+    public Date getHonoredTime() {
+        return honoredTime;
+    }
+
+    public void setHonoredTime(Date honoredTime) {
+        this.honoredTime = honoredTime;
     }
 }

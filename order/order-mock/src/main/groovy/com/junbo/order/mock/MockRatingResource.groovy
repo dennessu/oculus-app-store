@@ -1,15 +1,13 @@
 package com.junbo.order.mock
+
 import com.junbo.langur.core.promise.Promise
-import com.junbo.rating.spec.model.request.OfferRatingRequest
-import com.junbo.rating.spec.model.request.OrderBenefit
-import com.junbo.rating.spec.model.request.OrderRatingItem
-import com.junbo.rating.spec.model.request.OrderRatingRequest
-import com.junbo.rating.spec.model.request.ShippingBenefit
+import com.junbo.rating.spec.model.request.*
 import com.junbo.rating.spec.resource.RatingResource
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
+
 /**
  * Created by chriszhu on 2/21/14.
  */
@@ -27,12 +25,16 @@ class MockRatingResource extends BaseMock implements RatingResource {
         BigDecimal sixty = BigDecimal.valueOf(60.00D)
         request.orderBenefit.discountAmount = ten
         request.orderBenefit.finalAmount = fifty
+        request.orderBenefit.promotion = generateLong()
         request.shippingBenefit = new ShippingBenefit()
         request.shippingBenefit.shippingFee = ten
         request.lineItems?.each { OrderRatingItem item ->
             item.finalAmount = fifty
             item.discountAmount = ten
             item.originalAmount = sixty
+            List<Long> proms = []
+            proms.add(generateLong())
+            item.promotions = ((Long[])proms?.toArray()) as Set
         }
 
         return Promise.pure(request)

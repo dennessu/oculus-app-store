@@ -24,6 +24,7 @@
 
     <bean id="mockRatingAction" class="com.junbo.order.core.impl.orderaction.RatingAction">
         <property name = "ratingFacade" ref="mockRatingFacade"></property>
+        <property name="billingFacade" ref="mockBillingFacade"></property>
     </bean>
 
     <bean id="mockUpdateFulfillmentAction" class="com.junbo.order.core.impl.orderaction.UpdateFulfillmentAction">

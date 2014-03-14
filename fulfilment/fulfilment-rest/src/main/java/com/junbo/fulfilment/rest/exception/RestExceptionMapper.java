@@ -5,6 +5,8 @@
  */
 package com.junbo.fulfilment.rest.exception;
 
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import com.junbo.fulfilment.common.exception.FulfilmentException;
 import com.junbo.fulfilment.common.exception.ResourceNotFoundException;
 
@@ -25,6 +27,8 @@ public class RestExceptionMapper implements ExceptionMapper<FulfilmentException>
         MAPPING = new HashMap();
         MAPPING.put(FulfilmentException.class, Response.Status.INTERNAL_SERVER_ERROR);
         MAPPING.put(ResourceNotFoundException.class, Response.Status.NOT_FOUND);
+        MAPPING.put(UnrecognizedPropertyException.class, Response.Status.BAD_REQUEST);
+        MAPPING.put(InvalidFormatException.class, Response.Status.BAD_REQUEST);
     }
 
     @Override

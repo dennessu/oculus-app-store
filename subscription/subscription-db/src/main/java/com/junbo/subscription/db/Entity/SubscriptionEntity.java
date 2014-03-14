@@ -69,4 +69,10 @@ public class SubscriptionEntity extends Entity {
     public void setId(Long id) {
         this.subscriptionId = id;
     }
+
+    @Override
+    public Long getShardMasterId() {
+        return userId;
+    }
+
 }
