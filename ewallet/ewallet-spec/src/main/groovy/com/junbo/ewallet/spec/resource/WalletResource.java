@@ -14,6 +14,7 @@ import com.junbo.ewallet.spec.model.ResultList;
 import com.junbo.ewallet.spec.model.Wallet;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
+import groovy.transform.CompileStatic;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -25,6 +26,7 @@ import javax.ws.rs.core.MediaType;
 @RestResource
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@CompileStatic
 public interface WalletResource {
     @GET
     @Path("wallets/{walletId}")
