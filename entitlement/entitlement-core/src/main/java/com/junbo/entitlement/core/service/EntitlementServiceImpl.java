@@ -110,8 +110,8 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
             throw AppErrors.INSTANCE.missingField("id").exception();
         }
         if (!entitlementId.equals(entitlement.getEntitlementId())) {
-            throw AppErrors.INSTANCE.fieldNotMatch("id", entitlement.getEntitlementId().toString(),
-                    entitlementId.toString()).exception();
+            throw AppErrors.INSTANCE.fieldNotMatch("id", entitlement.getEntitlementId(),
+                    entitlementId).exception();
         }
 
         Entitlement existingEntitlement = entitlementRepository.get(entitlementId);
@@ -123,23 +123,23 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
         checkUser(existingEntitlement.getUserId());
 
         if (!existingEntitlement.getUserId().equals(entitlement.getUserId())) {
-            throw AppErrors.INSTANCE.fieldNotMatch("userId", entitlement.getUserId().toString(),
-                    existingEntitlement.getUserId().toString()).exception();
+            throw AppErrors.INSTANCE.fieldNotMatch("userId", entitlement.getUserId(),
+                    existingEntitlement.getUserId()).exception();
         }
         if (!existingEntitlement.getOfferId().equals(entitlement.getOfferId())) {
-            throw AppErrors.INSTANCE.fieldNotMatch("offerId", entitlement.getOfferId().toString(),
-                    existingEntitlement.getOfferId().toString()).exception();
+            throw AppErrors.INSTANCE.fieldNotMatch("offerId", entitlement.getOfferId(),
+                    existingEntitlement.getOfferId()).exception();
         }
         if (!existingEntitlement.getEntitlementDefinitionId().equals(entitlement.getEntitlementDefinitionId())) {
             throw AppErrors.INSTANCE.fieldNotMatch("EntitlementDefinitionId",
-                    entitlement.getEntitlementDefinitionId().toString(),
-                    existingEntitlement.getEntitlementDefinitionId().toString()).exception();
+                    entitlement.getEntitlementDefinitionId(),
+                    existingEntitlement.getEntitlementDefinitionId()).exception();
         }
 
         if (existingEntitlement.getGrantTime().compareTo(entitlement.getGrantTime()) != 0) {
             throw AppErrors.INSTANCE.fieldNotMatch("grantTime",
-                    entitlement.getGrantTime().toString(),
-                    existingEntitlement.getGrantTime().toString()).exception();
+                    entitlement.getGrantTime(),
+                    existingEntitlement.getGrantTime()).exception();
         }
 
         existingEntitlement.setExpirationTime(entitlement.getExpirationTime());

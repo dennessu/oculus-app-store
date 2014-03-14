@@ -29,18 +29,22 @@ public class Entitlement{
     @EntitlementId
     private Long entitlementId;
     @UserId
+    @JsonProperty("user")
     private Long userId;
     @UserId
+    @JsonProperty("developer")
     private Long developerId;
     private String type;
     private String status;
     private String statusReason;
     @EntitlementDefinitionId
+    @JsonProperty("entitlementDefinition")
     private Long entitlementDefinitionId;
     private Date grantTime;
     private Date expirationTime;
     private Long period;
     @OfferId
+    @JsonProperty("offer")
     private Long offerId;
     private String group;
     private String tag;

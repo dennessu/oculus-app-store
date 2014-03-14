@@ -23,7 +23,7 @@ import javax.ws.rs.core.Response;
 /**
  * API for entitlementDefinition.
  */
-@Path("/entitlementDefinitions")
+@Path("/entitlement-definitions")
 @Produces({MediaType.APPLICATION_JSON})
 @RestResource
 public interface EntitlementDefinitionResource {

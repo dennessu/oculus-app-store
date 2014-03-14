@@ -29,6 +29,7 @@ public class EntitlementDefinition {
     @EntitlementDefinitionId
     private Long entitlementDefinitionId;
     @UserId
+    @JsonProperty("developer")
     private Long developerId;
     private String type;
     private String group;

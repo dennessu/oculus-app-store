@@ -28,7 +28,7 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 403, code = "10002",
             description = "{0} doesn't match. actually: {1}, expected: {2}.",
             field = "{0}")
-    AppError fieldNotMatch(String fieldName, String actually, String expected);
+    AppError fieldNotMatch(String fieldName, Object actually, Object expected);
 
     @ErrorDef(httpStatusCode = 404, code = "10003", description = "{0} [{1}] not found.")
     AppError notFound(String entity, Long id);
