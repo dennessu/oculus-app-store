@@ -6,15 +6,15 @@
 
 package com.junbo.subscription.core.service;
 
+import com.junbo.subscription.common.exception.SubscriptionExceptions;
 import com.junbo.subscription.core.SubscriptionService;
-import com.junbo.subscription.db.dao.SubscriptionDao;
-import com.junbo.subscription.db.entity.SubscriptionEntity;
 import com.junbo.subscription.spec.model.Subscription;
 import com.junbo.subscription.db.repository.SubscriptionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * subscription service implement.
@@ -22,8 +22,6 @@ import java.util.Date;
 public class SubscriptionServiceImpl implements SubscriptionService {
     public static final String NOT_START = "NOT_START";
     public static final String EXPIRED = "EXPIRED";
-    @Autowired
-    private SubscriptionDao subscriptionDao;
     @Autowired
     private SubscriptionRepository subscriptionRepository;
 
@@ -38,21 +36,33 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     @Override
     @Transactional
-    public Long addsubscription(SubscriptionEntity subscriptionEntity) {
-        //TODO: check userId and itemId
-
-        if (subscriptionEntity.getType() == null) {
-            subscriptionEntity.setType("FREE_MONTHLY");
+    public Subscription addsubscription(Subscription subscription) {
+        if(subscription.getTrackingUuid() == null){
+            throw SubscriptionExceptions.INSTANCE.missingTrackingUuid().exception();
         }
+        Subscription result = subscriptionRepository.getByTrackingUuid(subscription.getTrackingUuid());
+        if(result != null){
+            return result;
+        }
+
+
+        //TODO: set property
 
         Date currentDate = new Date();
 
-        subscriptionEntity.setCreatedBy("DEFAULT");
-        subscriptionEntity.setCreatedTime(currentDate);
-        subscriptionEntity.setModifiedBy("DEFAULT");
-        subscriptionEntity.setModifiedTime(currentDate);
+        subscription.setCreatedBy("DEFAULT");
+        subscription.setCreatedTime(currentDate);
+        subscription.setModifiedBy("DEFAULT");
+        subscription.setModifiedTime(currentDate);
 
-        return subscriptionDao.insert(subscriptionEntity);
+        //TODO: create entitlement for subscription
+
+        return subscriptionRepository.insert(subscription);
+    }
+
+    @Override
+    public Subscription getSubsByTrackingUuid(UUID trackingUuid) {
+        return subscriptionRepository.getByTrackingUuid(trackingUuid);
     }
 
 }

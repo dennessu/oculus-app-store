@@ -8,7 +8,10 @@ package com.junbo.subscription.db.repository;
 import com.junbo.subscription.db.dao.SubscriptionDao;
 import com.junbo.subscription.db.mapper.SubscriptionMapper;
 import com.junbo.subscription.spec.model.Subscription;
+import com.junbo.subscription.db.entity.SubscriptionEntity;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.UUID;
 
 /**
  * subscription repository.
@@ -23,11 +26,18 @@ public class SubscriptionRepository {
         return subscriptionMapper.toSubscription(subscriptionDao.get(entitlementId));
     }
 
-    public Long insert(Subscription subscription) {
-        return subscriptionDao.insert(subscriptionMapper.toSubscriptionEntity(subscription));
+    public Subscription insert(Subscription subscription) {
+        Long id = subscriptionDao.insert(subscriptionMapper.toSubscriptionEntity(subscription));
+        SubscriptionEntity result = subscriptionDao.get(id);
+        return subscriptionMapper.toSubscription(result);
+
     }
 
     public Long update(Subscription subscription) {
         return subscriptionDao.update(subscriptionMapper.toSubscriptionEntity(subscription));
+    }
+
+    public Subscription getByTrackingUuid(UUID trackingUuid) {
+        return subscriptionMapper.toSubscription(subscriptionDao.getByTrackingUuid(trackingUuid));
     }
 }

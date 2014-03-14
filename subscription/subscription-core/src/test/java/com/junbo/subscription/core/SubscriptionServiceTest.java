@@ -20,8 +20,8 @@ public class SubscriptionServiceTest extends AbstractTransactionalTestNGSpringCo
 
     //@Test
     public void testAddSubscription() {
-        SubscriptionEntity subscription = new SubscriptionEntity();
-        Long id = subscriptionService.addsubscription(subscription);
+        Subscription subscription = new Subscription();
+        subscription = subscriptionService.addsubscription(subscription);
     }
 
 
