@@ -165,4 +165,47 @@ interface AppExceptions {
             description = 'The access token does not have sufficient scope to make the request',
             field = 'access_token')
     AppError insufficientScope()
+
+    @ErrorDef(httpStatusCode = 400, code = '20041',
+            description = 'The default_redirect_uri {0} is invalid, reason: {1}',
+            field = 'default_redirect_uri')
+    AppError invalidDefaultRedirectUri(String defaultRedirectUri, String reason)
+
+    @ErrorDef(httpStatusCode = 400, code = '20042', description = 'The default_scopes {0} is invalid',
+            field = 'default_scopes')
+    AppError invalidDefaultScope(String scopes)
+
+    @ErrorDef(httpStatusCode = 400, code = '20043', description = 'The logout_uri {0} is invalid',
+            field = 'logout_uri')
+    AppError invalidLogoutRedirectUri(String logoutRedirectUri)
+
+    @ErrorDef(httpStatusCode = 400, code = '20044',
+            description = 'The default_logout_redirect_uri {0} is invalid, reason: {1}',
+            field = 'default_logout_redirect_uri')
+    AppError invalidDefaultLogoutRedirectUri(String defaultLogoutRedirectUri, String reason)
+
+    @ErrorDef(httpStatusCode = 400, code = '20045', description = 'The logo_uri {0} is invalid',
+            field = 'logo_uri')
+    AppError invalidLogoUri(String logoUri)
+
+    @ErrorDef(httpStatusCode = 400, code = '20046', description = 'The contact {0} is not a valid email address',
+            field = 'contacts')
+    AppError invalidContacts(String contact)
+
+    @ErrorDef(httpStatusCode = 401, code = '20047', description = 'The user of access token is not the client owner',
+            field = 'access_token')
+    AppError notClientOwner()
+
+    @ErrorDef(httpStatusCode = 401, code = '20048', description = 'The client id {0} does not exist',
+            field = 'client_id')
+    AppError notExistClient(String clientId)
+
+    @ErrorDef(httpStatusCode = 403, code = '20048', description = 'The {0} cannot be updated',
+            field = 'client')
+    AppError cantUpdateFields(String field)
+
+    @ErrorDef(httpStatusCode = 400, code = '20049',
+            description = 'The client is updated by someone else, please re-get the client and try update again',
+            field = 'client')
+    AppError updateConflict()
 }

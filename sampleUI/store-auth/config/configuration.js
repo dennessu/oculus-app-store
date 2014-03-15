@@ -1,7 +1,7 @@
 module.exports = {
 
-    Identity_API_Host: "10.0.1.137",
-    Identity_API_Port: 8082,
+    Identity_API_Host: "54.186.20.200",
+    Identity_API_Port: 8081,
 
     Google_Captcha_Hostname: "www.google.com",
     Google_Captcha_VerifyUrl: "/recaptcha/api/verify",

@@ -18,35 +18,39 @@ import org.springframework.util.Assert
  */
 @CompileStatic
 class ClientRepositoryImpl implements ClientRepository {
-    private ClientDAO appClientDAO
+    private ClientDAO clientDAO
 
     @Required
-    void setAppClientDAO(ClientDAO appClientDAO) {
-        this.appClientDAO = appClientDAO
+    void setClientDAO(ClientDAO clientDAO) {
+        this.clientDAO = clientDAO
     }
 
     @Override
     Client getClient(String clientId) {
         Assert.notNull(clientId)
-        return wrap(appClientDAO.get(clientId))
+        return wrap(clientDAO.get(clientId))
     }
 
     @Override
     Client saveClient(Client client) {
-        return wrap(appClientDAO.save(unwrap(client)))
+        return wrap(clientDAO.save(unwrap(client)))
     }
 
     @Override
     Client updateClient(Client client) {
-        return wrap(appClientDAO.update(unwrap(client)))
+        return wrap(clientDAO.update(unwrap(client)))
     }
 
     @Override
     void deleteClient(Client client) {
-        appClientDAO.delete(unwrap(client))
+        clientDAO.delete(unwrap(client))
     }
 
     private static ClientEntity unwrap(Client client) {
+        if (client == null) {
+            return null
+        }
+
         return new ClientEntity(
                 id: client.clientId,
                 clientSecret: client.clientSecret,
@@ -62,11 +66,16 @@ class ClientRepositoryImpl implements ClientRepository {
                 logoutRedirectUris: client.logoutRedirectUris,
                 defaultLogoutRedirectUri: client.defaultLogoutRedirectUri,
                 logoUri: client.logoUri,
-                contacts: client.contacts
+                contacts: client.contacts,
+                revision: client.revision
         )
     }
 
     private static Client wrap(ClientEntity entity) {
+        if (entity == null) {
+            return null
+        }
+
         return new Client(
                 clientId: entity.id,
                 clientSecret: entity.clientSecret,
@@ -82,7 +91,8 @@ class ClientRepositoryImpl implements ClientRepository {
                 logoutRedirectUris: entity.logoutRedirectUris,
                 defaultLogoutRedirectUri: entity.defaultLogoutRedirectUri,
                 logoUri: entity.logoUri,
-                contacts: entity.contacts
+                contacts: entity.contacts,
+                revision: entity.revision
         )
     }
 }
