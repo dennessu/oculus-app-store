@@ -197,4 +197,31 @@ public class JacksonCustomizationTest {
         Assert.assertEquals((long) order3.getSellerId(), 1234L, "seller id should match.");
 
     }
+
+    @Test
+    public void testAnnotatedFieldIgnore() throws Exception {
+        Flight flight = new Flight();
+        flight.setHijackerId(12345L);
+
+        String json = mapper.writeValueAsString(flight);
+        Flight flight2 = mapper.readValue(json, Flight.class);
+
+        //the @JsonIgnore should not take effect on setter method
+        //you need to add @JsonIgnore on both field and setter method to take effect
+        Assert.assertEquals(flight2.getHijackerId(), flight.getHijackerId(), "hijacker id should be null.");
+    }
+
+    @Test
+    public void testAnnotatedFieldIgnore2() throws Exception {
+        Flight flight = new Flight();
+        flight.setPassengers(Arrays.asList(111L, 222L));
+
+        String json = mapper.writeValueAsString(flight);
+        Flight flight2 = mapper.readValue(json, Flight.class);
+
+        //the @JsonIgnore should not take effect on setter method
+        //you need to add @JsonIgnore on both field and setter method to take effect
+        Assert.assertEquals(flight2.getPassengers().size(), flight.getPassengers().size(),
+                "passengers size should be null.");
+    }
 }
