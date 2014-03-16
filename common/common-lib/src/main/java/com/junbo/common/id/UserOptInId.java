@@ -9,10 +9,10 @@ package com.junbo.common.id;
 /**
  * Created by minhao on 2/13/14.
  */
-public class UserOptInId extends Id {
+public class UserOptinId extends Id {
 
-    public UserOptInId() {}
-    public UserOptInId(long value) {
+    public UserOptinId() {}
+    public UserOptinId(long value) {
         super(value);
     }
 }
