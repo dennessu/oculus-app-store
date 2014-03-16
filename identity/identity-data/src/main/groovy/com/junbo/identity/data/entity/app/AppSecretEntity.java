@@ -5,6 +5,8 @@
  */
 package com.junbo.identity.data.entity.app;
 
+import com.junbo.sharding.annotations.SeedId;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -18,6 +20,7 @@ public class AppSecretEntity {
     @Column(name = "id")
     private Long id;
 
+    @SeedId
     @Column(name = "app_id")
     private Long appId;
 

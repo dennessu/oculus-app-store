@@ -1,14 +1,11 @@
 package com.junbo.sharding.test.data.dao;
 
-import com.junbo.sharding.core.ShardAwareDaoProxy;
 import com.junbo.sharding.core.hibernate.SessionFactoryWrapper;
 import com.junbo.sharding.util.Helper;
 import org.hibernate.Session;
-import org.hibernate.jdbc.Work;
 import org.springframework.stereotype.Component;
 
-import java.sql.Connection;
-import java.sql.SQLException;
+import javax.persistence.RollbackException;
 
 
 /**

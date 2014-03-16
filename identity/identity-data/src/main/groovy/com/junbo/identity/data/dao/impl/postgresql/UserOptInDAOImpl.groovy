@@ -5,40 +5,38 @@
  */
 package com.junbo.identity.data.dao.impl.postgresql
 
-import com.junbo.common.id.UserOptInId
 import com.junbo.identity.data.dao.UserOptInDAO
 import com.junbo.identity.data.entity.user.UserOptInEntity
 import com.junbo.identity.data.mapper.ModelMapper
 import com.junbo.identity.data.util.Constants
 import com.junbo.identity.spec.model.user.UserOptIn
 import com.junbo.oom.core.MappingContext
-import com.junbo.sharding.IdGenerator
-import com.junbo.sharding.IdGeneratorFacade
+import com.junbo.sharding.core.hibernate.SessionFactoryWrapper
+import com.junbo.sharding.util.Helper
 import org.hibernate.Session
-import org.hibernate.SessionFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.util.StringUtils
+
 /**
  * Implementation for UserOptInDAO.
  */
 class UserOptInDAOImpl implements UserOptInDAO {
-    @Autowired
-    private SessionFactory sessionFactory
 
     @Autowired
     private ModelMapper modelMapper
+    private SessionFactoryWrapper sessionFactoryWrapper
 
-    @Autowired
-    private IdGeneratorFacade idGenerator
+    void setSessionFactoryWrapper(SessionFactoryWrapper sessionFactoryWrapper) {
+        this.sessionFactoryWrapper = sessionFactoryWrapper
+    }
 
     private Session currentSession() {
-        sessionFactory.currentSession
+        return sessionFactoryWrapper.resolve(Helper.currentThreadLocalShardId).currentSession
     }
 
     @Override
     UserOptIn save(UserOptIn entity) {
         UserOptInEntity userOptInEntity = modelMapper.toUserOptIn(entity, new MappingContext())
-        userOptInEntity.setId(idGenerator.nextId(UserOptInId, userOptInEntity.userId))
         userOptInEntity.setCreatedBy(Constants.DEFAULT_CLIENT_ID)
         userOptInEntity.setCreatedTime(new Date())
         currentSession().save(userOptInEntity)
