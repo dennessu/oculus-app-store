@@ -28,7 +28,7 @@
 
     <bean id="entitlementClient" class="com.junbo.entitlement.spec.resource.proxy.EntitlementResourceClientProxy">
         <constructor-arg name="client" ref="asyncHttpClient"/>
-        <constructor-arg name="target" value="http://10.0.1.130:8080/rest"/>
+        <constructor-arg name="target" value="${clientproxy.entitlement.url}"/>
         <constructor-arg name="transcoder">
             <bean class="com.junbo.common.json.JsonMessageTranscoder"/>
         </constructor-arg>
@@ -42,7 +42,7 @@
 
     <bean id="offerClient" class="com.junbo.catalog.spec.resource.proxy.OfferResourceClientProxy">
         <constructor-arg name="client" ref="asyncHttpClient"/>
-        <constructor-arg name="target" value="http://10.0.1.130:8080/rest"/>
+        <constructor-arg name="target" value="${clientproxy.catalog.url}"/>
         <constructor-arg name="transcoder">
             <bean class="com.junbo.common.json.JsonMessageTranscoder"/>
         </constructor-arg>
@@ -56,7 +56,7 @@
 
     <bean id="shippingAddressClient" class="com.junbo.billing.spec.resource.proxy.ShippingAddressResourceClientProxy">
         <constructor-arg name="client" ref="asyncHttpClient"/>
-        <constructor-arg name="target" value="http://10.0.1.130:8080/rest"/>
+        <constructor-arg name="target" value="${clientproxy.billing.url}"/>
         <constructor-arg name="transcoder">
             <bean class="com.junbo.common.json.JsonMessageTranscoder"/>
         </constructor-arg>
