@@ -30,7 +30,7 @@ module.exports = function(app){
     app.get('/Callback/Login', function(req, res){});
     app.get('/Callback/Register', function(req, res){});
 
-    // Rest
+    // API Rest
 
     app.get('/detail',Store.ProductDetail);
     app.get('/cart',Store.ShoppingCart);

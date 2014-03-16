@@ -35,7 +35,7 @@ routes(app);
 
 var server = http.createServer(app);
 var io = socketIO.listen(server);
-io.sockets.on("connection", events);
+events(io);
 
 function Run(){
     server.listen(app.get('port'), function(){

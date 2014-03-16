@@ -9,7 +9,7 @@ module.exports = function (app) {
     });
     app.get("/rest/authorize", function (req, res) {
 
-        res.redirect("http://localhost:3000/identity?fs=12345");
+        res.redirect("http://localhost:3000/identity?event=TestEvent&cid=12345");
         res.end();
     });
 
