@@ -6,6 +6,7 @@
 package com.junbo.identity.data.entity.app;
 
 import com.junbo.identity.data.entity.user.UserEntity;
+import com.junbo.sharding.annotations.SeedId;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ public class AppGroupEntity {
     @Column(name = "id")
     private Long id;
 
+    @SeedId
     @Column(name = "app_id")
     private Long appId;
 

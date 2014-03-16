@@ -5,6 +5,8 @@
  */
 package com.junbo.identity.data.entity.app;
 
+import com.junbo.sharding.annotations.SeedId;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +21,7 @@ public class AppEntity {
     @Column(name = "id")
     private Long id;
 
+    @SeedId
     @Column(name = "owner_id")
     private Long ownerId;
 
