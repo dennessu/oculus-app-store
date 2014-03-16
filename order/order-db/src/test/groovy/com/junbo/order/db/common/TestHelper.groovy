@@ -67,6 +67,13 @@ class TestHelper {
         order.setUpdatedTime(new Date())
         order.setOrderStatusId(OrderStatus.OPEN)
         order.setTentative(rand.nextBoolean())
+        order.setTotalAmount(BigDecimal.valueOf(DEFAULT_PRICE))
+        order.setTotalDiscount(BigDecimal.valueOf(DEFAULT_PRICE))
+        order.setTotalTax(BigDecimal.valueOf(DEFAULT_PRICE))
+        order.setIsTaxInclusive(false)
+        order.setTotalShippingFee(BigDecimal.valueOf(DEFAULT_PRICE))
+        order.setTotalShippingFeeDiscount(BigDecimal.valueOf(DEFAULT_PRICE))
+        order.setHonoredTime(new Date())
         return order
     }
 
@@ -79,12 +86,16 @@ class TestHelper {
         entity.setProductItemId(generateLong().toString())
         entity.setUnitPrice(BigDecimal.valueOf(DEFAULT_PRICE))
         entity.setQuantity(Integer.valueOf(DEFAULT_QUANTITY))
-        entity.setTotalPrice(BigDecimal.valueOf(DEFAULT_PRICE))
         entity.setFederatedId('TestFederatedId')
         entity.setCreatedTime(new Date())
         entity.setCreatedBy('Test')
         entity.setUpdatedBy('Test')
         entity.setUpdatedTime(new Date())
+        entity.setTotalAmount(BigDecimal.valueOf(DEFAULT_PRICE))
+        entity.setTotalDiscount(BigDecimal.valueOf(DEFAULT_PRICE))
+        entity.setTotalTax(BigDecimal.valueOf(DEFAULT_PRICE))
+        entity.setIsTaxExempted(false)
+        entity.setHonoredTime(new Date())
         return entity
     }
 

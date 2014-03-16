@@ -45,7 +45,7 @@ class CreateOrderAction extends BaseOrderEventAwareAction {
                 case OrderActionType.CHARGE:
                     context.orderServiceContext.order.status = OrderStatus.OPEN
                 default:
-                    context.orderServiceContext.order.status = OrderStatus.OPEN
+                    context.orderServiceContext.order.status = OrderStatus.COMPLETED
             }
             def orderWithId = repo.createOrder(context.orderServiceContext.order)
             context.orderServiceContext.order = orderWithId

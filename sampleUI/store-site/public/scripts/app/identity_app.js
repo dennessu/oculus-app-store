@@ -49,6 +49,23 @@ App.LoginController = Ember.ObjectController.extend({
     actions: {
         Submit: function(){
             console.log("[LoginController:Submit] Click Login");
+            var provider = new IdentityProvider();
+
+            var model = new IdentityModels.LoginModel();
+            model.event = Utils.Cookies.Get(AppConfig.CookiesName.Event);
+            model.cid = Utils.Cookies.Get(AppConfig.CookiesName.ConversationId);
+            model.username = this.get("content.username");
+            model.password = this.get("content.password");
+
+            var data = {
+                body: model,
+                cookies: Utils.Cookies.GetAll()
+            };
+
+            provider.Login(data, function(data){
+                console.log(data);
+                //provider.Discount();
+            });
         },
         Cancel: function(){
             console.log("[LoginController:Cancel] Click Cancel");

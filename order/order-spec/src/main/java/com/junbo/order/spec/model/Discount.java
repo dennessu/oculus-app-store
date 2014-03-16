@@ -28,8 +28,6 @@ public class Discount extends BaseModelWithDate {
     private PromotionId promotion;
     private String coupon;
     @JsonIgnore
-    private Order ownerOrder;
-    @JsonIgnore
     private OrderItem ownerOrderItem;
 
     public Long getDiscountInfoId() {

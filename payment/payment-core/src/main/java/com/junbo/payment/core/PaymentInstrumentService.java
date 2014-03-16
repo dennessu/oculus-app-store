@@ -22,15 +22,15 @@ public interface PaymentInstrumentService {
     @Transactional
     Promise<PaymentInstrument> add(PaymentInstrument request);
     @Transactional
-    void delete(Long paymentInstrumentId);
+    void delete(Long userId, Long paymentInstrumentId);
     @Transactional
     void update(PaymentInstrument request);
     @Transactional(readOnly = true)
-    PaymentInstrument getById(Long paymentInstrumentId);
+    PaymentInstrument getById(Long userId, Long paymentInstrumentId);
     @Transactional(readOnly = true)
     List<PaymentInstrument> getByUserId(Long userId);
     @Transactional(readOnly = true)
-    List<PaymentInstrument> searchPi(PaymentInstrumentSearchParam searchParam, PageMetaData page);
+    List<PaymentInstrument> searchPi(Long userId, PaymentInstrumentSearchParam searchParam, PageMetaData page);
     @Transactional(readOnly = true)
     PaymentInstrumentType getPIType(String piType);
 }
