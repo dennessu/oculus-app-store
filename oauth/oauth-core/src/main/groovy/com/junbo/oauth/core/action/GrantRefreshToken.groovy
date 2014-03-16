@@ -10,7 +10,7 @@ import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
-import com.junbo.oauth.core.service.TokenGenerationService
+import com.junbo.oauth.core.service.TokenService
 import com.junbo.oauth.core.util.OAuthInfoUtil
 import com.junbo.oauth.spec.model.RefreshToken
 import com.junbo.oauth.spec.param.OAuthParameters
@@ -24,11 +24,11 @@ import org.springframework.util.Assert
 @CompileStatic
 class GrantRefreshToken implements Action {
 
-    private TokenGenerationService tokenGenerationService
+    private TokenService tokenService
 
     @Required
-    void setTokenGenerationService(TokenGenerationService tokenGenerationService) {
-        this.tokenGenerationService = tokenGenerationService
+    void setTokenService(TokenService tokenService) {
+        this.tokenService = tokenService
     }
 
     @Override
@@ -44,7 +44,7 @@ class GrantRefreshToken implements Action {
 
         if (accessToken.scopes.contains(OAuthInfoUtil.OFFLINE_SCOPE)) {
             String salt = parameterMap.getFirst(OAuthParameters.SALT)
-            RefreshToken refreshToken = tokenGenerationService.generateRefreshToken(client, accessToken, salt)
+            RefreshToken refreshToken = tokenService.generateRefreshToken(client, accessToken, salt)
 
             contextWrapper.refreshToken = refreshToken
         }

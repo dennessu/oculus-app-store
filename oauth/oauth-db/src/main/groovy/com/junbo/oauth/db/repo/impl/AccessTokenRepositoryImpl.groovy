@@ -64,7 +64,8 @@ class AccessTokenRepositoryImpl implements AccessTokenRepository {
                 clientId: accessToken.clientId,
                 userId: accessToken.userId,
                 scopes: accessToken.scopes,
-                expiredBy: accessToken.expiredBy
+                expiredBy: accessToken.expiredBy,
+                refreshTokenValue: accessToken.refreshTokenValue
         )
     }
 
@@ -77,7 +78,8 @@ class AccessTokenRepositoryImpl implements AccessTokenRepository {
                 clientId: entity.clientId,
                 userId: entity.userId,
                 scopes: entity.scopes,
-                expiredBy: entity.expiredBy
+                expiredBy: entity.expiredBy,
+                refreshTokenValue: entity.refreshTokenValue
         )
     }
 }

@@ -11,7 +11,7 @@ import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.exception.AppExceptions
-import com.junbo.oauth.core.service.TokenGenerationService
+import com.junbo.oauth.core.service.TokenService
 import com.junbo.oauth.spec.model.IdToken
 import com.junbo.oauth.spec.model.LoginState
 import com.junbo.oauth.spec.param.OAuthParameters
@@ -27,11 +27,11 @@ import org.springframework.util.StringUtils
 class LoadIdTokenHint implements Action {
     private static final Long MILLISECONDS_PER_SECOND = 1000L
 
-    private TokenGenerationService tokenGenerationService
+    private TokenService tokenService
 
     @Required
-    void setTokenGenerationService(TokenGenerationService tokenGenerationService) {
-        this.tokenGenerationService = tokenGenerationService
+    void setTokenService(TokenService tokenService) {
+        this.tokenService = tokenService
     }
 
     @Override
@@ -56,7 +56,7 @@ class LoadIdTokenHint implements Action {
             return Promise.pure(null)
         }
 
-        IdToken idToken = tokenGenerationService.parseIdToken(idTokenHint)
+        IdToken idToken = tokenService.parseIdToken(idTokenHint)
 
         String issuer = client.idTokenIssuer
 

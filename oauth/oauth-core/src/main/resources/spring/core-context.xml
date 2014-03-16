@@ -3,7 +3,7 @@
        xmlns="http://www.springframework.org/schema/beans"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="tokenGenerationService" class="com.junbo.oauth.core.service.impl.TokenGenerationServiceImpl">
+    <bean id="tokenService" class="com.junbo.oauth.core.service.impl.TokenServiceImpl">
         <property name="accessTokenRepository" ref="accessTokenRepository"/>
         <property name="defaultAccessTokenExpiration" value="${oauth.core.accessToken.default.expiration}"/>
         <property name="defaultRefreshTokenExpiration" value="${oauth.core.refreshToken.default.expiration}"/>
@@ -13,7 +13,7 @@
     </bean>
 
     <bean id="userService" class="com.junbo.oauth.core.service.impl.UserServiceImpl">
-        <property name="tokenGenerationService" ref="tokenGenerationService"/>
+        <property name="tokenService" ref="tokenService"/>
         <property name="userProfileResource" ref="identityUserProfileClient"/>
         <property name="userResource" ref="identityUserClient"/>
     </bean>

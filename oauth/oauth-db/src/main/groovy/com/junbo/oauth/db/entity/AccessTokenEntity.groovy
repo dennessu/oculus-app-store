@@ -15,4 +15,5 @@ class AccessTokenEntity extends BaseEntity {
     String clientId
     Set<String> scopes
     Long userId
+    String refreshTokenValue
 }

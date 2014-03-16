@@ -19,7 +19,7 @@
     </bean>
 
     <bean id="defaultTokenInfoEndpoint" class="com.junbo.oauth.api.endpoint.TokenInfoEndpointImpl">
-        <property name="tokenGenerationService" ref="tokenGenerationService"/>
+        <property name="tokenService" ref="tokenService"/>
     </bean>
 
     <bean id="defaultUserInfoEndpoint" class="com.junbo.oauth.api.endpoint.UserInfoEndpointImpl">
