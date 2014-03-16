@@ -46,19 +46,23 @@ public interface ModelMapper {
     @Mappings({
             @Mapping(source = "type", target = "orderItemType", excluded = false, bidirectional = false),
             @Mapping(source = "offer", target = "productItemId", excluded = false, bidirectional = false),
-            @Mapping(source = "totalAmount", target = "totalPrice", excluded = false, bidirectional = false),
     })
     OrderItemEntity toOrderItemEntity(OrderItem orderItem, MappingContext context);
 
     @Mappings({
             @Mapping(source = "orderItemType", target = "type", excluded = false, bidirectional = false),
             @Mapping(source = "productItemId", target = "offer", excluded = false, bidirectional = false),
-            @Mapping(source = "totalPrice", target = "totalAmount", excluded = false, bidirectional = false),
     })
     OrderItem toOrderItemModel(OrderItemEntity orderItemEntity, MappingContext context);
 
+    @Mappings({
+            @Mapping(source = "promotion", target = "promotionId", excluded = false, bidirectional = false)
+    })
     OrderDiscountInfoEntity toDiscountEntity(Discount discount, MappingContext context);
 
+    @Mappings({
+            @Mapping(source = "promotionId", target = "promotion", excluded = false, bidirectional = false)
+    })
     Discount toDiscountModel(OrderDiscountInfoEntity discountEntity, MappingContext context);
 
     @Mappings({

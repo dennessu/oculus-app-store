@@ -60,7 +60,7 @@ class TestBuilder {
     static Discount buildDiscount(String coupon, OrderItem item) {
         def discount = new Discount()
         discount.coupon = coupon
-        discount.ownerOrderItem = item
+        //discount.ownerOrderItem = item
         discount.discountAmount = 10.00G
         discount.type = DiscountType.ORDER_DISCOUNT
         return discount

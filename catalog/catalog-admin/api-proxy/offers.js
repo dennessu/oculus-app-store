@@ -20,6 +20,11 @@ exports.getOffer = function(req, res){
     console.log(url);
 
     rest.get(url).on('complete', function(result) {
-        res.send(result);
+        if (result instanceof Error) {
+            console.log('Error:', result.message);
+            res.send(result.message);
+        } else {
+            res.send(result);
+        }
     });
 };

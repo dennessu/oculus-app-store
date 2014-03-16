@@ -390,4 +390,20 @@ public class CommonMapper {
 
         return offerId.getValue().toString();
     }
+
+    public PromotionId fromStringToPromotionId(String promotionId) {
+        if (promotionId == null) {
+            return null;
+        }
+
+        return new PromotionId(Long.parseLong(promotionId));
+    }
+
+    public String fromPromotionIdToString(PromotionId promotionId) {
+        if (promotionId == null) {
+            return null;
+        }
+
+        return promotionId.getValue().toString();
+    }
 }

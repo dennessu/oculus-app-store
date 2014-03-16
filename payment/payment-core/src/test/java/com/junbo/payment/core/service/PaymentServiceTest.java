@@ -13,10 +13,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.testng.Assert;
 
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
 public class PaymentServiceTest extends BaseTest {
+    private final Long userId = 123L;
     @Autowired
     public void setPiService(@Qualifier("mockPaymentInstrumentService")PaymentInstrumentService piService) {
         this.piService = piService;
@@ -43,8 +43,8 @@ public class PaymentServiceTest extends BaseTest {
     public void testRemovePI() throws ExecutionException, InterruptedException {
         PaymentInstrument request = buildPIRequest();
         PaymentInstrument result = piService.add(request).wrapped().get();
-        piService.delete(result.getId());
-        PaymentInstrument resultDelete = piService.getById(result.getId());
+        piService.delete(userId, result.getId());
+        PaymentInstrument resultDelete = piService.getById(userId, result.getId());
         Assert.assertEquals(resultDelete.getStatus().toString(), PIStatus.DELETED.toString());
     }
 
@@ -55,7 +55,7 @@ public class PaymentServiceTest extends BaseTest {
         result.setStatus(PIStatus.DELETED.toString());
         result.getAddress().setPostalCode("123");
         piService.update(result);
-        PaymentInstrument resultUpdate = piService.getById(result.getId());
+        PaymentInstrument resultUpdate = piService.getById(userId, result.getId());
         Assert.assertEquals(resultUpdate.getStatus().toString(), PIStatus.DELETED.toString());
         Assert.assertEquals(resultUpdate.getAddress().getPostalCode(), "123");
     }
@@ -107,7 +107,7 @@ public class PaymentServiceTest extends BaseTest {
 
     private PaymentInstrument buildPIRequest() {
         PaymentInstrument request = new PaymentInstrument();
-        request.setUserId(generateLong());
+        request.setUserId(userId);
         request.setTrackingUuid(generateUUID());
         request.setAccountName("ut");
         request.setIsDefault(Boolean.TRUE.toString());

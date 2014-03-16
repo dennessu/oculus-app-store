@@ -7,6 +7,7 @@
 package com.junbo.payment.spec.model;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.jackson.annotation.PaymentInstrumentId;
 import com.junbo.common.jackson.annotation.PaymentTransactionId;
 import com.junbo.common.jackson.annotation.UserId;
@@ -23,8 +24,10 @@ public class PaymentTransaction {
     private UUID trackingUuid;
     @NotNull
     @UserId
+    @JsonProperty("user")
     private Long userId;
     @PaymentInstrumentId
+    @JsonProperty("paymentInstrument")
     private Long paymentInstrumentId;
     private ChargeInfo chargeInfo;
     //response:

@@ -1,5 +1,7 @@
 package com.junbo.sharding.test.data.dao;
 
+import com.junbo.sharding.annotations.SeedId;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -12,6 +14,7 @@ import javax.persistence.Table;
 @Table(name = "id")
 public class ShardEntity {
     @Id
+    @SeedId
     @Column(name = "id")
     private Long id;
 

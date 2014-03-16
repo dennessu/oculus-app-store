@@ -6,6 +6,7 @@
 
 package com.junbo.payment.core.impl;
 
+import com.junbo.langur.core.client.ClientResponseException;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.langur.core.transaction.AsyncTransactionTemplate;
 import com.junbo.payment.common.CommonUtil;
@@ -34,6 +35,7 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -66,10 +68,15 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
         if(result != null && result.getApi().equals(PaymentAPI.AddPI)){
             return Promise.pure(CommonUtil.parseJson(result.getResponse(), PaymentInstrument.class));
         }
-        PaymentProviderService provider = providerRoutingService.getPaymentProvider(
+        final PaymentProviderService provider = providerRoutingService.getPaymentProvider(
                 PaymentUtil.getPIType(request.getType()));
         //call provider and set result
-        return provider.add(request).then(new Promise.Func<PaymentInstrument, Promise<PaymentInstrument>>() {
+        return provider.add(request).recover(new Promise.Func<Throwable, Promise<PaymentInstrument>>() {
+            @Override
+            public Promise<PaymentInstrument> apply(Throwable throwable) {
+                return logException(PaymentAPI.AddPI, provider.getProviderName(), throwable);
+            }
+        }).then(new Promise.Func<PaymentInstrument, Promise<PaymentInstrument>>() {
             @Override
             public Promise<PaymentInstrument> apply(PaymentInstrument paymentInstrument) {
                 request.setAccountNum(paymentInstrument.getAccountNum());
@@ -91,6 +98,18 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
         });
     }
 
+    private Promise<PaymentInstrument> logException(PaymentAPI api, String provider, Throwable throwable){
+        String response = null;
+        try {
+            response = ((ClientResponseException) throwable).getResponse().getResponseBody();
+        } catch (IOException e) {
+
+        }
+        LOGGER.error(api.toString() + " with error for provider: " + provider+
+                ".detail: " + response);
+        throw AppServerExceptions.INSTANCE.providerProcessError(provider, response).exception();
+    }
+
     private void saveAndCommitPI(final PaymentInstrument request) {
         AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager);
         template.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRES_NEW);
@@ -107,8 +126,8 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
     }
 
     @Override
-    public void delete(final Long paymentInstrumentId) {
-        getById(paymentInstrumentId);
+    public void delete(Long userId, final Long paymentInstrumentId) {
+        getById(userId, paymentInstrumentId);
         paymentInstrumentRepository.delete(paymentInstrumentId);
     }
 
@@ -116,7 +135,7 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
     public void update(PaymentInstrument request) {
         validateRequest(request);
         //no need to support tracking Uuid for put as it should be the same result if call twice
-        PaymentInstrument piTarget = getById(request.getId());
+        PaymentInstrument piTarget = getById(request.getUserId(), request.getId());
         //Validate the info:
         if(!piTarget.getUserId().equals(request.getUserId())
                 || !piTarget.getType().equals(request.getType())
@@ -139,9 +158,12 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
     }
 
     @Override
-    public PaymentInstrument getById(Long paymentInstrumentId) {
+    public PaymentInstrument getById(Long userId, Long paymentInstrumentId) {
         PaymentInstrument result = paymentInstrumentRepository.getByPIId(paymentInstrumentId);
         if(result == null){
+            throw AppClientExceptions.INSTANCE.resourceNotFound("payment_instrument").exception();
+        }
+        if(userId != null && !userId.equals(result.getUserId())){
             throw AppClientExceptions.INSTANCE.resourceNotFound("payment_instrument").exception();
         }
         return result;
@@ -157,11 +179,11 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
     }
 
     @Override
-    public List<PaymentInstrument> searchPi(PaymentInstrumentSearchParam searchParam, PageMetaData page) {
-        if(searchParam.getUserId() == null){
+    public List<PaymentInstrument> searchPi(Long userId, PaymentInstrumentSearchParam searchParam, PageMetaData page) {
+        if(userId == null){
             throw AppClientExceptions.INSTANCE.missingUserId().exception();
         }
-        List<PaymentInstrument> results = paymentInstrumentRepository.search(searchParam, page);
+        List<PaymentInstrument> results = paymentInstrumentRepository.search(userId, searchParam, page);
         if(results == null || results.isEmpty()){
             throw AppClientExceptions.INSTANCE.resourceNotFound("payment_instrument").exception();
         }

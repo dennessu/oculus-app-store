@@ -72,7 +72,7 @@ public class OculusIdGeneratorSlotImpl implements OculusIdGeneratorSlot {
         value = (value << idSchema.getBitsInGlobalCounter()) + slotData.globalCounter;
         value = (value << idSchema.getBitsInLocalCounter()) + slotData.localCounter.intValue();
         value = (value << idSchema.getBitsInShard()) + shardId;
-        value = (value << idSchema.getDataCenterId()) + idSchema.getDataCenterId();
+        value = (value << idSchema.getBitsInDataCenterId()) + idSchema.getDataCenterId();
         value = (value << idSchema.getBitsInIdVersion()) + idSchema.getIdVersion();
         return value;
     }

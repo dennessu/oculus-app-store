@@ -156,7 +156,7 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
         //commit the payment event
         updatePaymentAndSaveEvent(existedTransaction, Arrays.asList(submitCreateEvent),
                 api, PaymentStatus.SETTLE_CREATED);
-        PaymentInstrument pi = paymentInstrumentService.getById(existedTransaction.getPaymentInstrumentId());
+        PaymentInstrument pi = paymentInstrumentService.getById(null, existedTransaction.getPaymentInstrumentId());
         final PaymentProviderService provider = providerRoutingService.getPaymentProvider(
                 PaymentUtil.getPIType(pi.getType()));
         return provider.capture(existedTransaction.getExternalToken(), request).
@@ -241,7 +241,7 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
         if(trackingResult != null){
             return Promise.pure(trackingResult);
         }
-        PaymentInstrument pi = paymentInstrumentService.getById(existedTransaction.getPaymentInstrumentId());
+        PaymentInstrument pi = paymentInstrumentService.getById(null, existedTransaction.getPaymentInstrumentId());
         PaymentStatus createStatus = PaymentStatus.REVERSE_CREATED;
         PaymentEvent reverseCreateEvent = createPaymentEvent(existedTransaction,
                 PaymentEventType.REVERSE_CREATE, createStatus, SUCCESS_EVENT_RESPONSE);
@@ -380,7 +380,7 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
                 throw AppClientExceptions.INSTANCE.missingCurrency().exception();
             }
         }
-        PaymentInstrument pi = paymentInstrumentService.getById(request.getPaymentInstrumentId());
+        PaymentInstrument pi = paymentInstrumentService.getById(null, request.getPaymentInstrumentId());
         if(pi == null){
             throw AppClientExceptions.INSTANCE.invalidPaymentInstrumentId(
                     request.getPaymentInstrumentId().toString()).exception();
