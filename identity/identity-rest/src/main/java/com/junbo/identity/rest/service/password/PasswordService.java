@@ -5,7 +5,13 @@
  */
 package com.junbo.identity.rest.service.password;
 
+import com.junbo.common.id.UserId;
+import com.junbo.common.id.UserPasswordId;
+import com.junbo.identity.spec.model.options.UserPasswordGetOption;
 import com.junbo.identity.spec.model.password.PasswordRule;
+import com.junbo.identity.spec.model.users.UserPassword;
+
+import java.util.List;
 
 /**
  * Interface for password Service.
@@ -15,6 +21,10 @@ import com.junbo.identity.spec.model.password.PasswordRule;
  */
 public interface PasswordService {
     void validatePassword(String password);
+
+    void save(UserId userId, UserPassword userPassword);
+    UserPassword get(UserId userId, UserPasswordId id);
+    List<UserPassword> search(UserId userId, UserPasswordGetOption getOption);
 
     PasswordRule save(PasswordRule passwordRule);
     void delete(Long id);

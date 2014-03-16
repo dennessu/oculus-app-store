@@ -5,15 +5,12 @@
  */
 package com.junbo.identity.rest.service.validator.impl;
 
-import com.junbo.identity.data.entity.user.UserStatus;
 import com.junbo.identity.rest.service.password.PasswordService;
 import com.junbo.identity.rest.service.validator.UserServiceValidator;
 import com.junbo.identity.spec.error.AppErrors;
-import com.junbo.identity.spec.model.user.User;
+import com.junbo.identity.spec.model.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
 /**
  * User service validator.
@@ -33,28 +30,6 @@ class UserServiceValidatorImpl extends CommonValidator implements UserServiceVal
         if(user.getResourceAge() != null) {
             throw AppErrors.INSTANCE.unnecessaryParameterField("resourceAge").exception();
         }
-        if(StringUtils.isEmpty(user.getPassword())) {
-            throw AppErrors.INSTANCE.missingParameterField("password").exception();
-        }
-
-        if(user.getStatus().equals(UserStatus.BANNED.toString()) ||
-           user.getStatus().equals(UserStatus.DELETED.toString())) {
-            throw AppErrors.INSTANCE.invalidUserStatus("Create User can't accept " + user.getStatus() + " status.")
-                    .exception();
-        }
-
-        // Check userName valid
-        if(!CollectionUtils.isEmpty(userDAO.findByUserName(user.getUserName(), UserStatus.ACTIVE.toString()))) {
-            throw AppErrors.INSTANCE.userAlreadyExists(user.getUserName()).exception();
-        }
-        if(!CollectionUtils.isEmpty(userDAO.findByUserName(user.getUserName(), UserStatus.BANNED.toString()))) {
-            throw AppErrors.INSTANCE.userAlreadyBanned(user.getUserName()).exception();
-        }
-        if(!CollectionUtils.isEmpty(userDAO.findByUserName(user.getUserName(), UserStatus.SUSPEND.toString()))) {
-            throw AppErrors.INSTANCE.userPendingForConfirmation(user.getUserName()).exception();
-        }
-
-        passwordService.validatePassword(user.getPassword());
     }
 
     @Override
@@ -70,9 +45,6 @@ class UserServiceValidatorImpl extends CommonValidator implements UserServiceVal
         }
         if(user.getResourceAge() == null) {
             throw AppErrors.INSTANCE.missingParameterField("user.resourceAge").exception();
-        }
-        if(!StringUtils.isEmpty(user.getPassword())) {
-            throw AppErrors.INSTANCE.unnecessaryParameterField("user.password").exception();
         }
     }
 
@@ -101,12 +73,7 @@ class UserServiceValidatorImpl extends CommonValidator implements UserServiceVal
     }
 
     private void validateNecessaryFields(User user) {
-        if(StringUtils.isEmpty(user.getUserName())) {
-            throw AppErrors.INSTANCE.missingParameterField("userName").exception();
-        }
-        if(StringUtils.isEmpty(user.getStatus())) {
-            throw AppErrors.INSTANCE.missingParameterField("status").exception();
-        }
+
     }
 
     private void validateUnnecessaryFields(User user) {

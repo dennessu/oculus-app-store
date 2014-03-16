@@ -34,6 +34,7 @@ import java.util.regex.Pattern;
  *
  */
 public class PasswordDAOUtil {
+    // Need to change this according to the passwordRule configuration.
     private PasswordDAOUtil() {
 
     }

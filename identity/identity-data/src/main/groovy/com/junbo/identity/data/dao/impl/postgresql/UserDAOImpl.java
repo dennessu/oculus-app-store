@@ -12,7 +12,7 @@ import com.junbo.identity.data.mapper.ModelMapper;
 import com.junbo.identity.data.util.Constants;
 import com.junbo.identity.data.util.PasswordDAOUtil;
 import com.junbo.identity.spec.error.AppErrors;
-import com.junbo.identity.spec.model.user.User;
+import com.junbo.identity.spec.model.users.User;
 import com.junbo.oom.core.MappingContext;
 import com.junbo.sharding.IdGeneratorFacade;
 import groovy.lang.Closure;
@@ -56,7 +56,7 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public User saveUser(User user) {
-        UserEntity userEntity = modelMapper.toUserEntity(user, new MappingContext());
+        UserEntity userEntity = modelMapper.toUser(user, new MappingContext());
 
         saveUserEntity(userEntity);
         saveUserPassword(fillUserPasswordEntity(userEntity));
@@ -66,7 +66,7 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public User updateUser(User user) {
-        UserEntity userEntity = modelMapper.toUserEntity(user, new MappingContext());
+        UserEntity userEntity = modelMapper.toUser(user, new MappingContext());
 
         return modelMapper.toUser(updateUserEntity(userEntity), new MappingContext());
     }
@@ -115,23 +115,17 @@ public class UserDAOImpl implements UserDAO {
     @Override
     public User authenticate(String userName, String password) {
         UserPasswordEntity entity = getActivePasswordEntity(userName);
-        if(entity.getRetryFailureCount() > maxRetryCount) {
-            throw AppErrors.INSTANCE.maximumFailureRetryCountReached().exception();
-        }
+
         String passwordHash = PasswordDAOUtil.hashPassword(password, entity.getPasswordSalt());
 
-        entity.setLastLoginTime(new Date());
-        entity.setLastLoginIp(Constants.DEFAULT_IP_ADDRESS);
         if(!entity.getPasswordHash().equals(passwordHash)) {
             // Need to change the retry count
-            entity.setRetryFailureCount(entity.getRetryFailureCount() + 1);
             currentSession().update(entity);
 
             throw AppErrors.INSTANCE.userNamePasswordNotMatch(userName).exception();
         }
         else {
             // Need to clear the retry count
-            entity.setRetryFailureCount(Constants.INIT_RETRY_COUNT);
             currentSession().update(entity);
             return findByUserName(userName, UserStatus.ACTIVE.toString()).get(0);
         }
@@ -141,23 +135,12 @@ public class UserDAOImpl implements UserDAO {
     public void savePassword(String userName, String password) {
         UserPasswordEntity entity = getActivePasswordEntity(userName);
 
-        UserPasswordStrength userPasswordStrength = PasswordDAOUtil.calcPwdStrength(password);
-        if(userPasswordStrength.getId() < entity.getPasswordStrength()) {
-            throw AppErrors.INSTANCE.updatePasswordToWeaker().exception();
-        }
-
-        entity.setLastLoginIp(Constants.DEFAULT_IP_ADDRESS);
-        entity.setLastLoginTime(new Date());
-        entity.setStatus(UserPasswordStatus.RETIRE.getId());
         // retire current password
         currentSession().update(entity);
 
         entity.setPasswordHash(PasswordDAOUtil.hashPassword(password, entity.getPasswordSalt()));
-        entity.setStatus(UserPasswordStatus.ACTIVE.getId());
-        entity.setRetryFailureCount(Constants.INIT_RETRY_COUNT);
         entity.setCreatedBy(Constants.DEFAULT_CLIENT_ID);
         entity.setCreatedTime(new Date());
-        entity.setPasswordStrength(userPasswordStrength.getId());
         // create new password
         currentSession().persist(entity);
     }
@@ -216,10 +199,8 @@ public class UserDAOImpl implements UserDAO {
     private UserPasswordEntity saveUserPassword(UserPasswordEntity entity) {
         entity.setCreatedTime(new Date());
         entity.setCreatedBy(Constants.DEFAULT_CLIENT_ID);
-        entity.setLastLoginIp(Constants.DEFAULT_IP_ADDRESS);
-        entity.setLastLoginTime(new Date());
         currentSession().persist(entity);
-        return getPasswordEntity(entity.getKey());
+        return entity;
     }
 
     private UserPasswordEntity getPasswordEntity(Long id) {
@@ -249,14 +230,9 @@ public class UserDAOImpl implements UserDAO {
         UserPasswordEntity userPasswordEntity = (UserPasswordEntity) DefaultGroovyMethods.
                 with(new UserPasswordEntity(), new Closure<UserPasswordEntity>(this, this) {
                     public UserPasswordEntity doCall(UserPasswordEntity it) {
-                        it.setKey(idGenerator.nextId(UserId.class, userEntity.getId()));
                         it.setPasswordSalt(UUID.randomUUID().toString());
                         it.setPasswordHash(
                                 PasswordDAOUtil.hashPassword(userEntity.getPassword(), it.getPasswordSalt()));
-                        it.setPasswordStrength(PasswordDAOUtil.calcPwdStrength(userEntity.getPassword()).getId());
-                        it.setUserId(userEntity.getId());
-                        it.setRetryFailureCount(0);
-                        it.setStatus(UserPasswordStatus.ACTIVE.getId());
                         return it;
                     }
                 });

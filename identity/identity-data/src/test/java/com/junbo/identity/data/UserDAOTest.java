@@ -5,32 +5,33 @@
  */
 package com.junbo.identity.data;
 
-import com.junbo.common.id.UserId;
-import com.junbo.identity.data.dao.UserDAO;
-import com.junbo.identity.data.dao.UserProfileDAO;
-import com.junbo.identity.data.entity.user.UserProfileType;
-import com.junbo.identity.data.entity.user.UserStatus;
-import com.junbo.identity.spec.model.user.User;
-import com.junbo.identity.spec.model.user.UserProfile;
+import com.junbo.common.id.*;
+import com.junbo.identity.data.dao.GroupDAO;
+import com.junbo.identity.data.dao.SecurityQuestionDAO;
+import com.junbo.identity.data.dao.UserPINDAO;
+import com.junbo.identity.data.dao.UserPasswordDAO;
+import com.junbo.identity.spec.model.domaindata.SecurityQuestion;
+import com.junbo.identity.spec.model.users.Group;
+import com.junbo.identity.spec.model.users.UserPIN;
+import com.junbo.identity.spec.model.users.UserPassword;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.testng.Assert;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import javax.annotation.Resource;
 import javax.sql.DataSource;
 import java.util.Date;
+import java.util.Random;
 import java.util.UUID;
 
 /**
  * Unittest.
  */
 @ContextConfiguration(locations = {"classpath:spring/context-test.xml"})
-@TransactionConfiguration(defaultRollback = false)
+@TransactionConfiguration(defaultRollback = true)
 public class UserDAOTest extends AbstractTransactionalTestNGSpringContextTests {
     @Override
     @Autowired
@@ -40,60 +41,102 @@ public class UserDAOTest extends AbstractTransactionalTestNGSpringContextTests {
     }
 
     @Autowired
-    @Resource(name = "userDAO")
-    private UserDAO userDAO;
+    private GroupDAO groupDAO;
 
     @Autowired
-    @Resource(name = "userProfileDAO")
-    private UserProfileDAO userProfileDAO;
+    private UserPasswordDAO userPasswordDAO;
 
-    private Long userId;
+    @Autowired
+    private UserPINDAO userPINDAO;
 
-    @BeforeMethod
-    public void preparedUserKey() {
-        User user = new User();
-        user.setCreatedTime(new Date());
-        user.setStatus(UserStatus.ACTIVE.toString());
-        user.setUpdatedTime(new Date());
-        user.setUserName(UUID.randomUUID().toString() + "xxxxx@xxx.com");
-        user.setPassword("password");
-        user = userDAO.saveUser(user);
+    @Autowired
+    private SecurityQuestionDAO securityQuestionDAO;
 
-        userId = user.getId().getValue();
+    private Random rand = new Random();
+
+    @Test
+    public void testGroupEntity() {
+        Group group = new Group();
+        group.setId(new GroupId(rand.nextLong()));
+        group.setValue("test " + UUID.randomUUID().toString());
+        group.setActive(true);
+        group.setCreatedTime(new Date());
+        groupDAO.save(group);
+
+        Group newGroup = groupDAO.get(group.getId());
+        Assert.assertEquals(group.getValue(), newGroup.getValue());
+
+        String newValue = "test2 " + UUID.randomUUID().toString();
+        newGroup.setValue(newValue);
+        groupDAO.update(newGroup);
+        newGroup = groupDAO.get(group.getId());
+        Assert.assertEquals(newValue, newGroup.getValue());
     }
 
     @Test
-    public void testUserDAO() {
-        User user = new User();
-        user.setCreatedTime(new Date());
-        user.setStatus(UserStatus.ACTIVE.toString());
-        user.setUpdatedTime(new Date());
-        user.setUserName(UUID.randomUUID().toString() + "xxxxx@xxx.com");
-        user.setPassword("password");
-        user = userDAO.saveUser(user);
+    public void testUserPasswordDAO() {
+        UserPassword userPassword = new UserPassword();
+        userPassword.setId(new UserPasswordId(rand.nextLong()));
+        userPassword.setUserId(new UserId(rand.nextLong()));
+        userPassword.setPasswordSalt(UUID.randomUUID().toString());
+        userPassword.setPasswordHash(UUID.randomUUID().toString());
+        userPassword.setActive(true);
+        userPassword.setChangeAtNextLogin(false);
+        userPassword.setExpiresBy(new Date());
+        userPassword.setCreatedTime(new Date());
+        userPassword.setUpdatedTime(new Date());
+        userPasswordDAO.save(userPassword);
 
-        User newUser = userDAO.getUser(user.getId().getValue());
+        UserPassword newUserPassword = userPasswordDAO.get(userPassword.getId());
+        Assert.assertEquals(userPassword.getActive(), newUserPassword.getActive());
 
-        Assert.assertEquals(user.getUserName(), newUser.getUserName());
+        Boolean newValue = !userPassword.getActive();
+        newUserPassword.setActive(newValue);
+        userPasswordDAO.update(newUserPassword);
+        newUserPassword = userPasswordDAO.get(newUserPassword.getId());
+        Assert.assertEquals(newValue, newUserPassword.getActive());
     }
 
+    @Test
+    public void testUserPinDAO() {
+        UserPIN userPIN = new UserPIN();
+        userPIN.setId(new UserPINId(rand.nextLong()));
+        userPIN.setUserId(new UserId(rand.nextLong()));
+        userPIN.setPinHash(UUID.randomUUID().toString());
+        userPIN.setPinSalt(UUID.randomUUID().toString());
+        userPIN.setActive(true);
+        userPIN.setChangeAtNextLogin(false);
+        userPIN.setExpiresBy(new Date());
+        userPIN.setCreatedTime(new Date());
+        userPIN.setUpdatedTime(new Date());
+        userPINDAO.save(userPIN);
+
+        UserPIN newUserPIN = userPINDAO.get(userPIN.getId());
+        Assert.assertEquals(userPIN.getActive(), newUserPIN.getActive());
+
+        Boolean newValue = !userPIN.getActive();
+        newUserPIN.setActive(newValue);
+        userPINDAO.update(newUserPIN);
+        newUserPIN = userPINDAO.get(newUserPIN.getId());
+        Assert.assertEquals(newValue, newUserPIN.getActive());
+    }
 
     @Test
-    public void testUserProfileDAO() {
-        UserProfile entity = new UserProfile();
-        entity.setType(UserProfileType.PAYIN.toString());
-        entity.setDateOfBirth(new Date());
-        entity.setFirstName("liangfu");
-        entity.setLastName("xia");
-        entity.setMiddleName("");
-        entity.setLocale("en_US");
-        entity.setRegion("US");
-        entity.setCreatedTime(new Date());
-        entity.setUpdatedTime(new Date());
-        entity.setUserId(new UserId(userId));
-        entity = userProfileDAO.save(entity);
+    public void testSecurityQuestionDAO() {
+        SecurityQuestion securityQuestion = new SecurityQuestion();
+        securityQuestion.setId(new SecurityQuestionId(rand.nextLong()));
+        securityQuestion.setValue("test " + UUID.randomUUID().toString());
+        securityQuestion.setCreatedTime(new Date());
+        securityQuestion.setUpdatedTime(new Date());
+        securityQuestionDAO.save(securityQuestion);
 
-        UserProfile newEntity = userProfileDAO.get(entity.getId().getValue());
-        Assert.assertEquals(entity.getFirstName(), newEntity.getFirstName());
+        SecurityQuestion newSecurityQuestion = securityQuestionDAO.get(securityQuestion.getId());
+        Assert.assertEquals(securityQuestion.getValue(), newSecurityQuestion.getValue());
+
+        String newValue = "Test2 " + UUID.randomUUID().toString();
+        newSecurityQuestion.setValue(newValue);
+        securityQuestionDAO.update(newSecurityQuestion);
+        newSecurityQuestion = securityQuestionDAO.get(newSecurityQuestion.getId());
+        Assert.assertEquals(newValue, newSecurityQuestion.getValue());
     }
 }

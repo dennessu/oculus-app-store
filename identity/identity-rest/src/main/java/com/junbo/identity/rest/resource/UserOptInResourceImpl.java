@@ -6,53 +6,51 @@
 package com.junbo.identity.rest.resource;
 
 import com.junbo.common.id.UserId;
-import com.junbo.common.id.UserOptInId;
-import com.junbo.identity.rest.service.user.UserOptInService;
+import com.junbo.common.id.UserOptinId;
 import com.junbo.identity.spec.model.common.ResultList;
-import com.junbo.identity.spec.model.common.ResultListUtil;
-import com.junbo.identity.spec.model.user.UserOptIn;
 import com.junbo.identity.spec.resource.UserOptInResource;
+import com.junbo.identity.spec.model.options.UserOptInGetOption;
+import com.junbo.identity.spec.model.users.UserOptin;
 import com.junbo.langur.core.promise.Promise;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.ws.rs.BeanParam;
 import javax.ws.rs.ext.Provider;
-import java.util.List;
 
 /**
- * Created by liangfu on 2/13/14.
+ * Created by liangfu on 3/14/14.
  */
 @Provider
 @Component
 @org.springframework.context.annotation.Scope("prototype")
 public class UserOptInResourceImpl implements UserOptInResource {
-    @Autowired
-    private UserOptInService userOptInService;
-
     @Override
-    public Promise<UserOptIn> postUserOptIn(UserId userId, UserOptIn userOptIn) {
-        return Promise.pure(userOptInService.save(userId.getValue(), userOptIn));
+    public Promise<UserOptin> create(UserId userId, UserOptin userOptIn) {
+        return null;
     }
 
     @Override
-    public Promise<ResultList<UserOptIn>> getUserOptIns(UserId userId, String type, Integer cursor, Integer count) {
-        List<UserOptIn> userOptIns = userOptInService.getByUserId(userId.getValue(), type);
-        return Promise.pure(ResultListUtil.init(userOptIns, count));
+    public Promise<UserOptin> update(UserId userId, UserOptinId userOptInId, UserOptin userOptIn) {
+        return null;
     }
 
     @Override
-    public Promise<UserOptIn> getUserOptIn(UserId userId, UserOptInId optInId) {
-        return Promise.pure(userOptInService.get(userId.getValue(), optInId.getValue()));
+    public Promise<UserOptin> patch(UserId userId, UserOptinId userOptInId, UserOptin userOptIn) {
+        return null;
     }
 
     @Override
-    public Promise<UserOptIn> updateUserOptIn(UserId userId, UserOptInId optInId, UserOptIn userOptIn) {
-        return Promise.pure(userOptInService.update(userId.getValue(), optInId.getValue(), userOptIn));
+    public Promise<UserOptin> get(UserId userId, UserOptinId userOptInId) {
+        return null;
     }
 
     @Override
-    public Promise<Void> deleteUserOptIn(UserId userId, UserOptInId optInId) {
-        userOptInService.delete(userId.getValue(), optInId.getValue());
-        return Promise.pure(null);
+    public Promise<UserOptin> delete(UserId userId, UserOptinId userOptInId) {
+        return null;
+    }
+
+    @Override
+    public Promise<ResultList<UserOptin>> list(UserId userId, @BeanParam UserOptInGetOption getOption) {
+        return null;
     }
 }

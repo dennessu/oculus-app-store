@@ -5,10 +5,10 @@
  */
 package com.junbo.identity.rest.service.user.impl;
 
-import com.junbo.identity.data.dao.UserOptInDAO;
-import com.junbo.identity.rest.service.user.UserOptInService;
-import com.junbo.identity.rest.service.validator.UserOptInValidator;
-import com.junbo.identity.spec.model.user.UserOptIn;
+import com.junbo.identity.data.dao.UserOptinDAO;
+import com.junbo.identity.rest.service.user.UserOptinService;
+import com.junbo.identity.rest.service.validator.UserOptinValidator;
+import com.junbo.identity.spec.model.users.UserOptin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,33 +20,33 @@ import java.util.List;
  */
 @Component
 @Transactional
-public class UserOptInServiceImpl implements UserOptInService {
+public class UserOptinServiceImpl implements UserOptinService {
     @Autowired
-    private UserOptInDAO userOptInDAO;
+    private UserOptinDAO userOptInDAO;
 
     @Autowired
-    private UserOptInValidator validator;
+    private UserOptinValidator validator;
 
     @Override
-    public UserOptIn save(Long userId, UserOptIn userOptIn) {
+    public UserOptin save(Long userId, UserOptin userOptIn) {
         validator.validateCreate(userId, userOptIn);
         return userOptInDAO.save(userOptIn);
     }
 
     @Override
-    public UserOptIn update(Long userId, Long userOptInId, UserOptIn userOptIn) {
+    public UserOptin update(Long userId, Long userOptInId, UserOptin userOptIn) {
         validator.validateUpdate(userId, userOptInId, userOptIn);
         return userOptInDAO.update(userOptIn);
     }
 
     @Override
-    public UserOptIn get(Long userId, Long userOptInId) {
+    public UserOptin get(Long userId, Long userOptInId) {
         validator.validateResourceAccessible(userId, userOptInId);
         return userOptInDAO.get(userOptInId);
     }
 
     @Override
-    public List<UserOptIn> getByUserId(Long userId, String type) {
+    public List<UserOptin> getByUserId(Long userId, String type) {
         return userOptInDAO.findByUser(userId, type);
     }
 

@@ -26,6 +26,62 @@ import java.util.List;
 public class CommonMapper {
     private ObjectMapper objectMapper = new ObjectMapper();
 
+    Long toGroupId(GroupId groupId) {
+        if (groupId == null) {
+            return null;
+        }
+        return groupId.getValue();
+    }
+
+    GroupId toGroupId(Long groupId) {
+        if (groupId == null) {
+            return null;
+        }
+        return new GroupId(groupId);
+    }
+
+    UserPasswordId toUserPasswordId(Long userPasswordId) {
+        if (userPasswordId == null) {
+            return null;
+        }
+        return new UserPasswordId(userPasswordId);
+    }
+
+    Long toUserPasswordId(UserPasswordId userPasswordId) {
+        if (userPasswordId == null) {
+            return null;
+        }
+        return userPasswordId.getValue();
+    }
+
+    UserPINId toUserPINId(Long userPINId) {
+        if (userPINId == null) {
+            return null;
+        }
+        return new UserPINId(userPINId);
+    }
+
+    Long toUserPINId(UserPINId userPINId) {
+        if(userPINId == null) {
+            return null;
+        }
+        return userPINId.getValue();
+    }
+
+    SecurityQuestionId toSecurityQuestionId(Long securityQuestionId) {
+        if(securityQuestionId == null) {
+            return null;
+        }
+        return new SecurityQuestionId(securityQuestionId);
+    }
+
+    Long toSecurityQuestionId(SecurityQuestionId id) {
+        if(id == null) {
+            return null;
+        }
+        return id.getValue();
+    }
+
     public Short explicitMethod_toUserPasswordStrength(String passwordStrength) {
         if(StringUtils.isEmpty(passwordStrength)) {
             return null;
@@ -93,8 +149,8 @@ public class CommonMapper {
         }
     }
 
-    public Integer toInteger(Integer resourceAge) {
-        return resourceAge;
+    public Long fromStringToLong(String str) {
+        return Long.parseLong(str);
     }
 
     public Long toUserId(UserId user) {
@@ -111,84 +167,42 @@ public class CommonMapper {
         return new UserId(id);
     }
 
-    public Long toUserDeviceProfileId(UserDeviceProfileId id) {
+    public Long toUserDeviceId(UserDeviceId id) {
         if(id == null) {
             return null;
         }
         return id.getValue();
     }
 
-    public UserDeviceProfileId toUserDeviceProfileId(Long id) {
+    public UserDeviceId toUserDeviceId(Long id) {
         if(id == null) {
             return null;
         }
-        return new UserDeviceProfileId(id);
+        return new UserDeviceId(id);
     }
 
-    public Long toDeviceId(DeviceId id) {
+    public UserAuthenticatorId toUserAuthenticatorId(Long id) {
         if(id == null) {
             return null;
         }
-        return id.getValue();
+        return new UserAuthenticatorId(id);
     }
 
-    public DeviceId toDeviceId(Long id) {
-        if(id == null) {
-            return null;
-        }
-        return new DeviceId(id);
-    }
-
-    public AppId toAppId(Long id) {
-        if(id == null) {
-            return null;
-        }
-        return new AppId(id);
-    }
-
-    public Long toAppId(AppId id) {
+    public Long toUserAuthenticatorId(UserAuthenticatorId id) {
         if(id == null) {
             return null;
         }
         return id.getValue();
     }
 
-    public UserFederationId toUserFederationId(Long id) {
+    public UserOptinId toUserOptinId(Long id) {
         if(id == null) {
             return null;
         }
-        return new UserFederationId(id);
+        return new UserOptinId(id);
     }
 
-    public Long toUserFederationId(UserFederationId id) {
-        if(id == null) {
-            return null;
-        }
-        return id.getValue();
-    }
-
-    public UserOptInId toUserOptInId(Long id) {
-        if(id == null) {
-            return null;
-        }
-        return new UserOptInId(id);
-    }
-
-    public Long toUserOptInId(UserOptInId id) {
-        if(id == null) {
-            return null;
-        }
-        return id.getValue();
-    }
-
-    public UserProfileId toUserProfileId(Long id) {
-        if(id == null) {
-            return null;
-        }
-        return new UserProfileId(id);
-    }
-
-    public Long toUserProfileId(UserProfileId id) {
+    public Long toUserOptInId(UserOptinId id) {
         if(id == null) {
             return null;
         }

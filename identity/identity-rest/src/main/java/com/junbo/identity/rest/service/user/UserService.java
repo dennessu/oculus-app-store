@@ -5,9 +5,7 @@
  */
 package com.junbo.identity.rest.service.user;
 
-
-import com.junbo.identity.spec.model.user.User;
-
+import com.junbo.identity.spec.model.users.User;
 import java.util.List;
 
 /**

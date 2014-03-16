@@ -8,7 +8,7 @@ package com.junbo.identity.rest.service.user.impl;
 import com.junbo.identity.data.dao.UserDAO;
 import com.junbo.identity.rest.service.user.UserService;
 import com.junbo.identity.rest.service.validator.UserServiceValidator;
-import com.junbo.identity.spec.model.user.User;
+import com.junbo.identity.spec.model.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,7 +54,7 @@ class UserServiceImpl implements UserService {
 
     @Override
     public void savePassword(User user, String password) {
-        userDAO.savePassword(user.getUserName(), password);
+        userDAO.savePassword(user.getUsername(), password);
     }
 
     @Override

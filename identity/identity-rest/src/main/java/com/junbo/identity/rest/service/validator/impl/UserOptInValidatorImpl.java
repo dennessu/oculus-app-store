@@ -5,27 +5,23 @@
  */
 package com.junbo.identity.rest.service.validator.impl;
 
-import com.junbo.identity.data.dao.UserOptInDAO;
-import com.junbo.identity.rest.service.validator.UserOptInValidator;
+import com.junbo.identity.data.dao.UserOptinDAO;
+import com.junbo.identity.rest.service.validator.UserOptinValidator;
 import com.junbo.identity.spec.error.AppErrors;
-import com.junbo.identity.spec.model.user.UserOptIn;
+import com.junbo.identity.spec.model.users.UserOptin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
-
-import java.util.List;
 
 /**
  * Created by liangfu on 2/28/14.
  */
 @Component
-public class UserOptInValidatorImpl extends CommonValidator implements UserOptInValidator {
+public class UserOptinValidatorImpl extends CommonValidator implements UserOptinValidator {
     @Autowired
-    private UserOptInDAO userOptInDAO;
+    private UserOptinDAO userOptInDAO;
 
     @Override
-    public void validateCreate(Long userId, UserOptIn userOptIn) {
+    public void validateCreate(Long userId, UserOptin userOptIn) {
         if(userId == null || userOptIn == null) {
             throw AppErrors.INSTANCE.invalidNullEmptyInputParam().exception();
         }
@@ -40,7 +36,7 @@ public class UserOptInValidatorImpl extends CommonValidator implements UserOptIn
     }
 
     @Override
-    public void validateUpdate(Long userId, Long optInId, UserOptIn userOptIn) {
+    public void validateUpdate(Long userId, Long optInId, UserOptin userOptIn) {
         if(userId == null || optInId == null || userOptIn == null) {
             throw AppErrors.INSTANCE.invalidNullEmptyInputParam().exception();
         }
@@ -63,28 +59,18 @@ public class UserOptInValidatorImpl extends CommonValidator implements UserOptIn
     public void validateResourceAccessible(Long userId, Long optInId) {
         checkUserValid(userId);
 
-        UserOptIn userOptIn = userOptInDAO.get(optInId);
+        UserOptin userOptIn = userOptInDAO.get(optInId);
         if(userOptIn == null) {
             throw AppErrors.INSTANCE.invalidResourceRequest().exception();
         }
-
-        if(!userId.equals(userOptIn.getUserId().getValue())) {
-            throw AppErrors.INSTANCE.inputParametersMismatch("userId", "userOptIn.userId").exception();
-        }
     }
 
-    private void validateNecessaryFields(Long userId, UserOptIn userOptIn) {
+    private void validateNecessaryFields(Long userId, UserOptin userOptIn) {
         checkUserValid(userId);
-        if(userOptIn.getUserId() == null) {
-            throw AppErrors.INSTANCE.missingParameterField("userOptIn.userId").exception();
-        }
-        if(StringUtils.isEmpty(userOptIn.getType())) {
-            throw AppErrors.INSTANCE.missingParameterField("userOptIn.type").exception();
-        }
         checkUserOptInNotExists(userId, userOptIn);
     }
 
-    private void validateUnnecessaryFields(UserOptIn userOptIn) {
+    private void validateUnnecessaryFields(UserOptin userOptIn) {
         if(userOptIn.getCreatedTime() != null) {
             throw AppErrors.INSTANCE.unnecessaryParameterField("userOptIn.createdTime").exception();
         }
@@ -93,15 +79,7 @@ public class UserOptInValidatorImpl extends CommonValidator implements UserOptIn
         }
     }
 
-    private void checkUserOptInNotExists(Long userId, UserOptIn userOptIn) {
-        List<UserOptIn> userOptIns = userOptInDAO.findByUser(userId, userOptIn.getType());
+    private void checkUserOptInNotExists(Long userId, UserOptin userOptIn) {
 
-        if(!CollectionUtils.isEmpty(userOptIns)) {
-            for(UserOptIn temp : userOptIns) {
-                if(userOptIn.getId() == null || !temp.getId().getValue().equals(userOptIn.getId().getValue())) {
-                    throw AppErrors.INSTANCE.userOptInAlreadyExists(temp.getType()).exception();
-                }
-            }
-        }
     }
 }

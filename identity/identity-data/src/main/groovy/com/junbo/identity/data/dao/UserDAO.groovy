@@ -6,7 +6,8 @@
 package com.junbo.identity.data.dao
 
 import com.junbo.identity.data.entity.user.UserPasswordBlacklist
-import com.junbo.identity.spec.model.user.User
+import com.junbo.identity.spec.model.users.User
+
 /**
  * User DAO is used to fetch/update/delete/get user data from the database
  */

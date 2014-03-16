@@ -6,9 +6,8 @@
 package com.junbo.identity.rest.service.validator.impl;
 
 import com.junbo.identity.data.dao.UserDAO;
-import com.junbo.identity.data.entity.user.UserStatus;
 import com.junbo.identity.spec.error.AppErrors;
-import com.junbo.identity.spec.model.user.User;
+import com.junbo.identity.spec.model.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -25,9 +24,9 @@ public class CommonValidator {
         if(user == null) {
             throw AppErrors.INSTANCE.notExistingUser("userId = " + userId.toString()).exception();
         }
-        if(user.getStatus().equals(UserStatus.BANNED.toString())
-                || user.getStatus().equals(UserStatus.DELETED.toString())) {
-            throw AppErrors.INSTANCE.userStatusError("userId = " + userId.toString()).exception();
-        }
+    }
+
+    protected void checkFieldAccess(Class cls, String preFix) {
+
     }
 }

@@ -5,16 +5,18 @@
  */
 package com.junbo.identity.data.entity.user
 
-import com.junbo.identity.data.entity.common.CommonStampEntity
-
-import javax.persistence.*
+import com.junbo.identity.data.entity.common.ResourceMetaEntity
+import javax.persistence.Column
+import javax.persistence.Entity
+import javax.persistence.Id
+import javax.persistence.Table
 
 /**
  * UserEntity model for user_device_profile table
  */
 @Entity
 @Table(name='user_optin')
-class UserOptInEntity extends CommonStampEntity {
+class UserOptinEntity extends ResourceMetaEntity {
     @Id
     @Column(name = 'id')
     private Long id
@@ -22,8 +24,8 @@ class UserOptInEntity extends CommonStampEntity {
     @Column(name = 'user_id')
     private Long userId
 
-    @Column(name = 'type')
-    private String type
+    @Column(name = 'value')
+    private String value
 
     Long getId() {
         id
@@ -41,11 +43,11 @@ class UserOptInEntity extends CommonStampEntity {
         this.userId = userId
     }
 
-    String getType() {
-        type
+    String getValue() {
+        return value
     }
 
-    void setType(String type) {
-        this.type = type
+    void setValue(String value) {
+        this.value = value
     }
 }

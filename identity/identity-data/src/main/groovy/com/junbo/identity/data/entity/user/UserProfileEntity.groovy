@@ -5,8 +5,7 @@
  */
 package com.junbo.identity.data.entity.user
 
-import com.junbo.identity.data.entity.common.CommonStampEntity
-
+import com.junbo.identity.data.entity.common.ResourceMetaEntity
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Id
@@ -17,7 +16,7 @@ import javax.persistence.Table
  */
 @Entity
 @Table(name='user_profile')
-class UserProfileEntity extends CommonStampEntity {
+class UserProfileEntity extends ResourceMetaEntity {
     @Id
     @Column(name = 'id')
     private Long id

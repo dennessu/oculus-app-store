@@ -8,28 +8,52 @@
     <context:annotation-config />
     <tx:annotation-driven />
     <context:component-scan base-package="com.junbo.identity.data" />
-    <import resource="classpath*:spring/transaction.xml"/>
-    <import resource="classpath*:spring/sharding.xml"/>
-
-    <bean id="sessionFactoryWrapper" class="com.junbo.sharding.core.hibernate.SessionFactoryWrapper">
-        <property name="dataSourceRegistry" ref="shardDataSourceRegistry"/>
-        <property name="sessionFactoryBeanName" value="sessionFactoryTemplate"/>
-        <property name="dataBaseName" value="identity"/>
-        <property name="packagesToScan" value="com.junbo.identity.data.*"/>
+    <bean id="identityDataSource" class="bitronix.tm.resource.jdbc.PoolingDataSource"
+          init-method="init" destroy-method="close">
+        <property name="uniqueName" value="jdbc/id_ds1"/>
+        <property name="className" value="org.postgresql.xa.PGXADataSource"/>
+        <property name="minPoolSize" value="${identity.db.minConnectionsPerPartition}"/>
+        <property name="maxPoolSize" value="${identity.db.maxConnectionsPerPartition}"/>
+        <property name="driverProperties">
+            <props>
+                <prop key="url">${identity.db.url}</prop>
+                <prop key="user">${identity.db.username}</prop>
+                <prop key="password">${identity.db.password}</prop>
+            </props>
+        </property>
     </bean>
+
+    <!-- SessonFactory for Hibernate -->
+    <bean id="sessionFactory"
+          class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="dataSource" ref="identityDataSource"/>
+        <property name="packagesToScan" value="com.junbo.identity.data.*" />
+        <property name="jtaTransactionManager" ref="transactionManager"/>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">${identity.hibernate.dialect}</prop>
+                <prop key="hibernate.max_fetch_depth">${identity.hibernate.max_fetch_depth}</prop>
+                <prop key="hibernate.jdbc.fetch_size">${identity.hibernate.jdbc.fetch_size}</prop>
+                <prop key="hibernate.jdbc.batch_size">${identity.hibernate.jdbc.batch_size}</prop>
+                <prop key="hibernate.show_sql">${identity.hibernate.show_sql}</prop>
+            </props>
+        </property>
+    </bean>
+
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <bean id="__builtinMapper" class="com.junbo.oom.core.builtin.BuiltinMapper" />
+    <bean id="__commonMapper" class="com.junbo.identity.data.mapper.CommonMapper" />
 
     <bean id="modelMapperImpl" class="com.junbo.identity.data.mapper.ModelMapperImpl" />
     <bean id="userDAO" class="com.junbo.identity.data.dao.impl.postgresql.UserDAOImpl">
         <property name="maxRetryCount" value="${identity.conf.maxPasswordRetryCount}" />
     </bean>
-    <bean id="userProfileDAO" class="com.junbo.identity.data.dao.impl.postgresql.UserProfileDAOImpl" />
-    <bean id="userDeviceProfileDAO" class="com.junbo.identity.data.dao.impl.postgresql.UserDeviceProfileDAOImpl" />
-    <bean id="userFederationDAO" class="com.junbo.identity.data.dao.impl.postgresql.UserFederationDAOImpl" />
-    <bean id="userOptInDAO" class="com.junbo.identity.data.dao.impl.postgresql.UserOptInDAOImpl" />
-    <bean id="appDAO" class="com.junbo.identity.data.dao.impl.postgresql.AppDAOImpl" />
-    <bean id="userTosAcceptanceDAO" class="com.junbo.identity.data.dao.impl.postgresql.UserTosAcceptanceDAOImpl" />
-    <bean id="passwordDAO" class="com.junbo.identity.data.dao.impl.postgresql.PasswordDAOImpl" />
-
-    <!-- v1 dao -->
-    <bean id="groupDAO" class="com.junbo.identity.data.v1.dao.impl.GroupDAOImpl" />
+    <bean id="userDeviceDAO" class="com.junbo.identity.data.dao.impl.postgresql.UserDeviceDAOImpl" />
+    <bean id="userAuthenticatorDAO" class="com.junbo.identity.data.dao.impl.postgresql.UserAuthenticatorDAOImpl" />
+    <bean id="userOptInDAO" class="com.junbo.identity.data.dao.impl.postgresql.UserOptinDAOImpl" />
+    <bean id="userTosDAO" class="com.junbo.identity.data.dao.impl.postgresql.UserTosDAOImpl" />
+    <bean id="passwordDAO" class="com.junbo.identity.data.dao.impl.postgresql.PasswordRuleDAOImpl" />
+    <bean id="groupDAO" class="com.junbo.identity.data.dao.impl.postgresql.GroupDAOImpl" />
+    <bean id="userPINDAO" class="com.junbo.identity.data.dao.impl.postgresql.UserPINDAOImpl" />
 </beans>

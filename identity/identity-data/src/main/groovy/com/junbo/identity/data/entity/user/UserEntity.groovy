@@ -6,15 +6,16 @@
 package com.junbo.identity.data.entity.user
 
 import com.junbo.common.util.EnumRegistry
-import com.junbo.identity.data.entity.common.CommonStampEntity
+import com.junbo.identity.data.entity.common.ResourceMetaEntity
 
 import javax.persistence.*
+
 /**
  * UserEntity model for user_device_profile table
  */
 @Entity
 @Table(name = 'user_account')
-class UserEntity extends CommonStampEntity {
+class UserEntity extends ResourceMetaEntity {
     Long getId() {
         id
     }
