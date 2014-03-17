@@ -8,6 +8,7 @@ package com.junbo.billing.clientproxy.impl
 
 import com.junbo.billing.clientproxy.PaymentFacade
 import com.junbo.common.id.PaymentInstrumentId
+import com.junbo.common.id.UserId
 import com.junbo.common.json.IdPathParamTranscoder
 import com.junbo.common.json.JsonMessageTranscoder
 import com.junbo.common.json.QueryParamTranscoderImpl
@@ -43,9 +44,10 @@ class PaymentFacadeImpl implements PaymentFacade {
     }
 
     @Override
-    Promise<PaymentInstrument> getPaymentInstrument(Long piId) {
+    Promise<PaymentInstrument> getPaymentInstrument(Long userId, Long piId) {
         return new PaymentInstrumentResourceClientProxy(asyncHttpClient, new JsonMessageTranscoder(),
-               new IdPathParamTranscoder(), new QueryParamTranscoderImpl(), url).getById(new PaymentInstrumentId(piId))
+               new IdPathParamTranscoder(), new QueryParamTranscoderImpl(), url)
+                .getById(new UserId(userId), new PaymentInstrumentId(piId))
     }
 
     @Override
