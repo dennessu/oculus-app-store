@@ -55,7 +55,7 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
 
     // private List<UserPassword> passwords;
 
-    // private List<UserPIN> pins;
+    // private List<UserPin> pins;
 
     // private List<LoginAttempt> loginAttempts;
 

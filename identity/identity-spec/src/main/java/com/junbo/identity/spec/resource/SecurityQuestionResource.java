@@ -9,6 +9,8 @@ import com.junbo.common.id.SecurityQuestionId;
 import com.junbo.identity.spec.model.common.ResultList;
 import com.junbo.identity.spec.model.domaindata.SecurityQuestion;
 import com.junbo.identity.spec.model.options.DomainDataGetOption;
+import com.junbo.identity.spec.options.SecurityQuestionGetOptions;
+import com.junbo.identity.spec.options.SecurityQuestionListOptions;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 
@@ -23,25 +25,27 @@ import javax.ws.rs.core.MediaType;
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 public interface SecurityQuestionResource {
+
     @POST
     @Path("/")
     Promise<SecurityQuestion> create(SecurityQuestion securityQuestion);
 
     @PUT
     @Path("/{securityQuestionId}")
-    Promise<SecurityQuestion> update(@PathParam("securityQuestionId") SecurityQuestionId securityQuestionId,
-                                  SecurityQuestion securityQuestion);
+    Promise<SecurityQuestion> put(@PathParam("securityQuestionId") SecurityQuestionId securityQuestionId,
+                                     SecurityQuestion securityQuestion);
 
     @POST
     @Path("/{securityQuestionId}")
     Promise<SecurityQuestion> patch(@PathParam("securityQuestionId") SecurityQuestionId securityQuestionId,
-                                  SecurityQuestion securityQuestion);
+                                    SecurityQuestion securityQuestion);
 
     @GET
     @Path("/{securityQuestionId}")
-    Promise<SecurityQuestion> get(@PathParam("securityQuestionId") SecurityQuestionId securityQuestionId);
+    Promise<SecurityQuestion> get(@PathParam("securityQuestionId") SecurityQuestionId securityQuestionId,
+                                  @BeanParam SecurityQuestionGetOptions getOptions);
 
     @GET
     @Path("/")
-    Promise<ResultList<SecurityQuestion>> list(@BeanParam DomainDataGetOption option);
+    Promise<ResultList<SecurityQuestion>> list(@BeanParam SecurityQuestionListOptions listOptions);
 }

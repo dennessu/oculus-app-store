@@ -8,9 +8,10 @@ package com.junbo.identity.spec.resource;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserPasswordId;
 import com.junbo.identity.spec.model.common.ResultList;
-import com.junbo.identity.spec.model.options.UserPasswordGetOption;
 import com.junbo.identity.spec.model.users.User;
 import com.junbo.identity.spec.model.users.UserPassword;
+import com.junbo.identity.spec.options.UserPasswordGetOptions;
+import com.junbo.identity.spec.options.UserPasswordListOptions;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 
@@ -24,20 +25,22 @@ import javax.ws.rs.core.MediaType;
 @Path("/users/{userId}/passwords")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
-public interface PasswordResource {
-
-    @GET
-    @Path("/{userPasswordId}")
-    Promise<UserPassword> get(@PathParam("userId") UserId userId,
-                      @PathParam("userPasswordId") UserPasswordId userPasswordId);
-
-    @GET
-    @Path("/")
-    Promise<ResultList<UserPassword>> list(@PathParam("userId") UserId userId,
-                                     @BeanParam UserPasswordGetOption userPasswordGetOption);
+public interface UserPasswordResource {
 
     @POST
     @Path("/")
     Promise<User> create(@PathParam("userId") UserId userId,
                          UserPassword userPassword);
+
+    @GET
+    @Path("/{userPasswordId}")
+    Promise<UserPassword> get(@PathParam("userId") UserId userId,
+                              @PathParam("userPasswordId") UserPasswordId userPasswordId,
+                              @BeanParam UserPasswordGetOptions getOptions);
+
+    @GET
+    @Path("/")
+    Promise<ResultList<UserPassword>> list(@PathParam("userId") UserId userId,
+                                           @BeanParam UserPasswordListOptions listOptions);
+
 }

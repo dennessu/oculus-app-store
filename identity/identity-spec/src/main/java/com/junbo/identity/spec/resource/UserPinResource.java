@@ -6,11 +6,12 @@
 package com.junbo.identity.spec.resource;
 
 import com.junbo.common.id.UserId;
-import com.junbo.common.id.UserPINId;
+import com.junbo.common.id.UserPinId;
 import com.junbo.identity.spec.model.common.ResultList;
-import com.junbo.identity.spec.model.options.UserPinGetOption;
 import com.junbo.identity.spec.model.users.User;
-import com.junbo.identity.spec.model.users.UserPIN;
+import com.junbo.identity.spec.model.users.UserPin;
+import com.junbo.identity.spec.options.UserPinGetOptions;
+import com.junbo.identity.spec.options.UserPinListOptions;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 
@@ -24,20 +25,21 @@ import javax.ws.rs.core.MediaType;
 @Path("/users/{userId}/pins")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
-public interface PINResource {
-
-    @GET
-    @Path("/{userPinId}")
-    Promise<UserPIN> get(@PathParam("userId") UserId userId,
-                         @PathParam("userPinId") UserPINId userPinId);
-
-    @GET
-    @Path("/")
-    Promise<ResultList<UserPIN>> list(@PathParam("userId") UserId userId,
-                         @BeanParam UserPinGetOption userPinGetOption);
+public interface UserPinResource {
 
     @POST
     @Path("/")
-    Promise<User> post(@PathParam("userId") UserId userId,
-                       UserPIN userPin);
+    Promise<User> create(@PathParam("userId") UserId userId, UserPin userPin);
+
+    @GET
+    @Path("/{userPinId}")
+    Promise<UserPin> get(@PathParam("userId") UserId userId,
+                         @PathParam("userPinId") UserPinId userPinId,
+                         @BeanParam UserPinGetOptions getOptions);
+
+    @GET
+    @Path("/")
+    Promise<ResultList<UserPin>> list(@PathParam("userId") UserId userId,
+                                      @BeanParam UserPinListOptions listOptions);
+
 }

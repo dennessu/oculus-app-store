@@ -7,7 +7,10 @@ package com.junbo.identity.spec.resource;
 
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserSecurityQuestionId;
+import com.junbo.identity.spec.model.common.ResultList;
 import com.junbo.identity.spec.model.users.UserSecurityQuestion;
+import com.junbo.identity.spec.options.UserSecurityQuestionGetOptions;
+import com.junbo.identity.spec.options.UserSecurityQuestionListOptions;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 
@@ -22,30 +25,38 @@ import javax.ws.rs.core.MediaType;
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 public interface UserSecurityQuestionResource {
+
     @POST
     @Path("/")
-    Promise<UserSecurityQuestion> create(@PathParam("userId")UserId userId,
-                                       UserSecurityQuestion userSecurityQuestion);
+    Promise<UserSecurityQuestion> create(@PathParam("userId") UserId userId,
+                                         UserSecurityQuestion userSecurityQuestion);
 
     @PUT
     @Path("/{userSecurityQuestionId}")
-    Promise<UserSecurityQuestion> update(@PathParam("userId")UserId userId,
-                                     @PathParam("userSecurityQuestionId")UserSecurityQuestionId userSecurityQuestionId,
-                                     UserSecurityQuestion userSecurityQuestion);
+    Promise<UserSecurityQuestion> put(@PathParam("userId") UserId userId,
+                                      @PathParam("userSecurityQuestionId") UserSecurityQuestionId userSecurityQuestionId,
+                                      UserSecurityQuestion userSecurityQuestion);
 
     @POST
     @Path("/{userSecurityQuestionId}")
-    Promise<UserSecurityQuestion> patch(@PathParam("userId")UserId userId,
-                                    @PathParam("userSecurityQuestionId")UserSecurityQuestionId userSecurityQuestionId,
-                                    UserSecurityQuestion userSecurityQuestion);
-
-    @GET
-    @Path("/{userSecurityQuestionId}")
-    Promise<UserSecurityQuestion> get(@PathParam("userId")UserId userId,
-                                  @PathParam("userSecurityQuestionId")UserSecurityQuestionId userSecurityQuestionId);
+    Promise<UserSecurityQuestion> patch(@PathParam("userId") UserId userId,
+                                        @PathParam("userSecurityQuestionId") UserSecurityQuestionId userSecurityQuestionId,
+                                        UserSecurityQuestion userSecurityQuestion);
 
     @DELETE
     @Path("/{userSecurityQuestionId}")
-    Promise<UserSecurityQuestion> delete(@PathParam("userId")UserId userId,
-                                  @PathParam("userSecurityQuestionId")UserSecurityQuestionId userSecurityQuestionId);
+    Promise<UserSecurityQuestion> delete(@PathParam("userId") UserId userId,
+                                         @PathParam("userSecurityQuestionId") UserSecurityQuestionId userSecurityQuestionId);
+
+    @GET
+    @Path("/{userSecurityQuestionId}")
+    Promise<UserSecurityQuestion> get(@PathParam("userId") UserId userId,
+                                      @PathParam("userSecurityQuestionId") UserSecurityQuestionId userSecurityQuestionId,
+                                      @BeanParam UserSecurityQuestionGetOptions getOptions);
+
+    @GET
+    @Path("/")
+    Promise<ResultList<UserSecurityQuestion>> list(@PathParam("userId") UserId userId,
+                                                  @BeanParam UserSecurityQuestionListOptions listOptions);
+
 }

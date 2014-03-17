@@ -8,8 +8,9 @@ package com.junbo.identity.spec.resource;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserPhoneNumberId;
 import com.junbo.identity.spec.model.common.ResultList;
-import com.junbo.identity.spec.model.options.UserPhoneNumberGetOption;
 import com.junbo.identity.spec.model.users.UserPhoneNumber;
+import com.junbo.identity.spec.options.UserPhoneNumberGetOptions;
+import com.junbo.identity.spec.options.UserPhoneNumberListOptions;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 
@@ -24,34 +25,37 @@ import javax.ws.rs.core.MediaType;
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 public interface UserPhoneNumberResource {
+
     @POST
     @Path("/")
-    Promise<UserPhoneNumber> create(@PathParam("userId")UserId userId,
-                                  UserPhoneNumber userPhoneNumber);
+    Promise<UserPhoneNumber> create(@PathParam("userId") UserId userId,
+                                    UserPhoneNumber userPhoneNumber);
 
     @PUT
     @Path("/{userPhoneNumberId}")
-    Promise<UserPhoneNumber> update(@PathParam("userId")UserId userId,
-                                    @PathParam("userPhoneNumberId")UserPhoneNumberId userPhoneNumberId,
-                                    UserPhoneNumber userPhoneNumber);
+    Promise<UserPhoneNumber> put(@PathParam("userId") UserId userId,
+                                 @PathParam("userPhoneNumberId") UserPhoneNumberId userPhoneNumberId,
+                                 UserPhoneNumber userPhoneNumber);
 
     @POST
     @Path("/{userPhoneNumberId}")
-    Promise<UserPhoneNumber> patch(@PathParam("userId")UserId userId,
-                                   @PathParam("userPhoneNumberId")UserPhoneNumberId userPhoneNumberId,
+    Promise<UserPhoneNumber> patch(@PathParam("userId") UserId userId,
+                                   @PathParam("userPhoneNumberId") UserPhoneNumberId userPhoneNumberId,
                                    UserPhoneNumber userPhoneNumber);
-
-    @GET
-    @Path("/{userPhoneNumberId}")
-    Promise<UserPhoneNumber> get(@PathParam("userId")UserId userId,
-                                 @PathParam("userPhoneNumberId")UserPhoneNumberId userPhoneNumberId);
 
     @DELETE
     @Path("/{userPhoneNumberId}")
-    Promise<UserPhoneNumber> delete(@PathParam("userId")UserId userId,
-                                    @PathParam("userPhoneNumberId")UserPhoneNumberId userPhoneNumberId);
+    Promise<UserPhoneNumber> delete(@PathParam("userId") UserId userId,
+                                    @PathParam("userPhoneNumberId") UserPhoneNumberId userPhoneNumberId);
+
+    @GET
+    @Path("/{userPhoneNumberId}")
+    Promise<UserPhoneNumber> get(@PathParam("userId") UserId userId,
+                                 @PathParam("userPhoneNumberId") UserPhoneNumberId userPhoneNumberId,
+                                 @BeanParam UserPhoneNumberGetOptions getOptions);
+
     @GET
     @Path("/")
-    Promise<ResultList<UserPhoneNumber>> list(@PathParam("userId")UserId userId,
-                                              @BeanParam UserPhoneNumberGetOption getOption);
+    Promise<ResultList<UserPhoneNumber>> list(@PathParam("userId") UserId userId,
+                                              @BeanParam UserPhoneNumberListOptions listOptions);
 }

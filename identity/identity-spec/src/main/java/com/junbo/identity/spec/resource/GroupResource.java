@@ -7,8 +7,11 @@ package com.junbo.identity.spec.resource;
 
 import com.junbo.common.id.GroupId;
 import com.junbo.identity.spec.model.common.ResultList;
-import com.junbo.identity.spec.model.options.GroupGetOption;
 import com.junbo.identity.spec.model.users.Group;
+import com.junbo.identity.spec.model.users.UserGroup;
+import com.junbo.identity.spec.options.GroupGetOptions;
+import com.junbo.identity.spec.options.GroupListOptions;
+import com.junbo.identity.spec.options.UserGroupListOptions;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 
@@ -23,25 +26,29 @@ import javax.ws.rs.core.MediaType;
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 public interface GroupResource {
+
     @POST
     @Path("/")
     Promise<Group> create(Group group);
 
     @PUT
     @Path("/{groupId}")
-    Promise<Group> update(@PathParam("groupId") GroupId groupId,
-                          Group group);
+    Promise<Group> put(@PathParam("groupId") GroupId groupId, Group group);
 
     @POST
     @Path("/{groupId}")
-    Promise<Group> patch(@PathParam("groupId") GroupId groupId,
-                         Group group);
+    Promise<Group> patch(@PathParam("groupId") GroupId groupId, Group group);
 
     @GET
     @Path("/{groupId}")
-    Promise<Group> get(@PathParam("groupId") GroupId groupId);
+    Promise<Group> get(@PathParam("groupId") GroupId groupId, @BeanParam GroupGetOptions getOptions);
 
     @GET
     @Path("/")
-    Promise<ResultList<Group>> list(@BeanParam GroupGetOption getOption);
+    Promise<ResultList<Group>> list(@BeanParam GroupListOptions listOptions);
+
+    @GET
+    @Path("/{groupId}/users")
+    Promise<ResultList<UserGroup>> listUserGroups(@PathParam("groupId") GroupId groupId,
+                                                  @BeanParam UserGroupListOptions listOptions);
 }

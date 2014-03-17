@@ -5,11 +5,12 @@
  */
 package com.junbo.identity.spec.resource;
 
-import com.junbo.common.id.GroupId;
+import com.junbo.common.id.UserGroupId;
 import com.junbo.common.id.UserId;
 import com.junbo.identity.spec.model.common.ResultList;
-import com.junbo.identity.spec.model.options.UserGroupGetOption;
 import com.junbo.identity.spec.model.users.UserGroup;
+import com.junbo.identity.spec.options.UserGroupGetOptions;
+import com.junbo.identity.spec.options.UserGroupListOptions;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 
@@ -20,39 +21,42 @@ import javax.ws.rs.core.MediaType;
  * Created by liangfu on 3/13/14.
  */
 @RestResource
-@Path("/groups/{groupId}")
+@Path("/users")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 public interface UserGroupResource {
+
     @POST
-    @Path("/users")
-    Promise<UserGroup> create(@PathParam("groupId") GroupId groupId,
+    @Path("/{userId}/groups")
+    Promise<UserGroup> create(@PathParam("userId") UserId userId,
                               UserGroup userGroup);
 
     @PUT
-    @Path("/users/{userId}")
-    Promise<UserGroup> update(@PathParam("groupId") GroupId groupId,
-                              @PathParam("userId") UserId userId,
-                              UserGroup userGroup);
+    @Path("/{userId}/groups/{userGroupId}")
+    Promise<UserGroup> put(@PathParam("userId") UserId userId,
+                           @PathParam("userGroupId") UserGroupId userGroupId,
+                           UserGroup userGroup);
 
     @POST
-    @Path("/users/{userId}")
-    Promise<UserGroup> patch(@PathParam("groupId") GroupId groupId,
-                             @PathParam("userId") UserId userId,
+    @Path("/{userId}/groups/{userGroupId}")
+    Promise<UserGroup> patch(@PathParam("userId") UserId userId,
+                             @PathParam("userGroupId") UserGroupId userGroupId,
                              UserGroup userGroup);
 
-    @GET
-    @Path("/users/{userId}")
-    Promise<UserGroup> get(@PathParam("groupId") GroupId groupId,
-                           @PathParam("userId") UserId userId);
-
     @DELETE
-    @Path("/users/{userId}")
-    Promise<UserGroup> delete(@PathParam("groupId") GroupId groupId,
-                              @PathParam("userId") UserId userId);
+    @Path("/{userId}/groups/{userGroupId}")
+    Promise<UserGroup> delete(@PathParam("userId") UserId userId,
+                              @PathParam("userGroupId") UserGroupId userGroupId);
 
     @GET
-    @Path("/users")
-    Promise<ResultList<UserGroup>> list(@PathParam("groupId") GroupId groupId,
-                                        @BeanParam UserGroupGetOption getOption);
+    @Path("/{userId}/groups/{userGroupId}")
+    Promise<UserGroup> get(@PathParam("userId") UserId userId,
+                           @PathParam("userGroupId") UserGroupId userGroupId,
+                           @BeanParam UserGroupGetOptions getOptions);
+
+    @GET
+    @Path("/{userId}/groups")
+    Promise<ResultList<UserGroup>> list(@PathParam("userId") UserId userId,
+                                        @BeanParam UserGroupListOptions listOptions);
+
 }

@@ -7,8 +7,9 @@ package com.junbo.identity.spec.resource;
 
 import com.junbo.common.id.UserId;
 import com.junbo.identity.spec.model.common.ResultList;
-import com.junbo.identity.spec.model.options.UserGetOption;
 import com.junbo.identity.spec.model.users.User;
+import com.junbo.identity.spec.options.UserGetOptions;
+import com.junbo.identity.spec.options.UserListOptions;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 
@@ -29,17 +30,17 @@ public interface UserResource {
 
     @PUT
     @Path("/{userId}")
-    Promise<User> update(@PathParam("userId")UserId userId, User user);
+    Promise<User> put(@PathParam("userId") UserId userId, User user);
 
     @POST
     @Path("/{userId}")
-    Promise<User> patch(@PathParam("userId")UserId userId, User user);
+    Promise<User> patch(@PathParam("userId") UserId userId, User user);
 
     @GET
     @Path("/{userId}")
-    Promise<User> get(@PathParam("userId")UserId userId);
+    Promise<User> get(@PathParam("userId") UserId userId, @BeanParam UserGetOptions getOptions);
 
     @GET
     @Path("/")
-    Promise<ResultList<User>> list(@BeanParam UserGetOption getOption);
+    Promise<ResultList<User>> list(@BeanParam UserListOptions listOptions);
 }

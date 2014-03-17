@@ -8,8 +8,9 @@ package com.junbo.identity.spec.resource;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserTosId;
 import com.junbo.identity.spec.model.common.ResultList;
-import com.junbo.identity.spec.model.options.UserTosGetOption;
 import com.junbo.identity.spec.model.users.UserTos;
+import com.junbo.identity.spec.options.UserTosGetOptions;
+import com.junbo.identity.spec.options.UserTosListOptions;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 
@@ -24,30 +25,37 @@ import javax.ws.rs.core.MediaType;
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 public interface UserTosResource {
+
     @POST
     @Path("/")
-    Promise<UserTos> create(@PathParam("userId")UserId userId,
-                          UserTos userTos);
+    Promise<UserTos> create(@PathParam("userId") UserId userId,
+                            UserTos userTos);
 
     @PUT
     @Path("/{userTosId}")
-    Promise<UserTos> update(@PathParam("userId")UserId userId, @PathParam("userTosId")UserTosId userTosId,
+    Promise<UserTos> put(@PathParam("userId") UserId userId,
+                         @PathParam("userTosId") UserTosId userTosId,
                          UserTos userTos);
 
     @POST
     @Path("/{userTosId}")
-    Promise<UserTos> patch(@PathParam("userId")UserId userId, @PathParam("userTosId")UserTosId userTosId,
+    Promise<UserTos> patch(@PathParam("userId") UserId userId,
+                           @PathParam("userTosId") UserTosId userTosId,
                            UserTos userTos);
-
-    @GET
-    @Path("/{userTosId}")
-    Promise<UserTos> get(@PathParam("userId")UserId userId, @PathParam("userTosId")UserTosId userTosId);
 
     @DELETE
     @Path("/{userTosId}")
-    Promise<Void> delete(@PathParam("userId")UserId userId, @PathParam("userTosId")UserTosId userTosId);
+    Promise<Void> delete(@PathParam("userId") UserId userId,
+                         @PathParam("userTosId") UserTosId userTosId);
+
+    @GET
+    @Path("/{userTosId}")
+    Promise<UserTos> get(@PathParam("userId") UserId userId,
+                         @PathParam("userTosId") UserTosId userTosId,
+                         @BeanParam UserTosGetOptions getOptions);
 
     @GET
     @Path("/")
-    Promise<ResultList<UserTos>> list(@PathParam("userId")UserId userId, @BeanParam UserTosGetOption getOption);
+    Promise<ResultList<UserTos>> list(@PathParam("userId") UserId userId,
+                                      @BeanParam UserTosListOptions listOptions);
 }
