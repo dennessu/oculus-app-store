@@ -75,7 +75,7 @@ public interface ModelMapper {
     @Mappings({
             @Mapping(source = "actionId", target = "action", excluded = false, bidirectional = false),
             @Mapping(source = "statusId", target = "status", excluded = false, bidirectional = false),
-            @Mapping(source = "orderId", target = "order", excluded = false, bidirectional = false)
+            @Mapping(source = "orderId", target = "order", excluded = false, bidirectional = false),
     })
     OrderEvent toOrderEventModel(OrderEventEntity orderEventEntity, MappingContext context);
 
