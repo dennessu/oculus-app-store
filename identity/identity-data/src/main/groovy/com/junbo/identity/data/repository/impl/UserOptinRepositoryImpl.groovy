@@ -24,7 +24,7 @@ class UserOptinRepositoryImpl implements UserOptinRepository {
     private UserOptinDAO userOptinDAO
 
     @Autowired
-    @Qualifier("modelMapperImpl")
+    @Qualifier('identityModelMapperImpl')
     private ModelMapper modelMapper
 
     @Override

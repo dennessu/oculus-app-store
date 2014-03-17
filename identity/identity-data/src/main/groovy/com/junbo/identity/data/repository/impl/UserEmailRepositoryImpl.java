@@ -30,7 +30,7 @@ public class UserEmailRepositoryImpl implements UserEmailRepository {
     private UserEmailDAO userEmailDAO;
 
     @Autowired
-    @Qualifier("modelMapperImpl")
+    @Qualifier("identityModelMapperImpl")
     private ModelMapper modelMapper;
 
     @Override

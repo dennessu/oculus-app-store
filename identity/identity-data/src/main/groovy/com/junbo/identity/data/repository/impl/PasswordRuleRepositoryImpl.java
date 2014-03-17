@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
 public class PasswordRuleRepositoryImpl implements PasswordRuleRepository {
 
     @Autowired
-    @Qualifier("modelMapperImpl")
+    @Qualifier("identityModelMapperImpl")
     private ModelMapper modelMapper;
 
     @Autowired

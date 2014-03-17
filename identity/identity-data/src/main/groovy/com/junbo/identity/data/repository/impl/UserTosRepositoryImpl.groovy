@@ -25,7 +25,7 @@ class UserTosRepositoryImpl implements UserTosRepository {
     private UserTosDAO userTosDAO
 
     @Autowired
-    @Qualifier("modelMapperImpl")
+    @Qualifier('identityModelMapperImpl')
     private ModelMapper modelMapper
 
     @Override

@@ -8,95 +8,70 @@
 
     <changeSet id="0.1" author='minhao' context="PREDEPLOY">
         <sql><![CDATA[
-            create table user_account (
-              id bigint not null,
-			  
-			  version bigint not null,
-			  
-              user_name varchar(255) not null,
-              status smallint not null,
-			  
-              created_by varchar(32) not null,
-              created_time timestamp not null,
-              modified_by varchar(32),
-              modified_time timestamp,
-
-              primary key (id)
-            );
-
-            create table user_profile (
-              id bigint not null,
-			  
-			  version bigint not null,
-              user_id bigint not null,
-              type smallint not null,
-
-			  region varchar(10) not null,
-			  locale varchar(10) not null,
-			  dob timestamp not null,
-			  
-              first_name varchar(256),
-			  middle_name varchar(255),
-              last_name varchar(256),
-
-              created_by varchar(32) not null,
-              created_time timestamp not null,
-              modified_by varchar(32),
-              modified_time timestamp,
-
-              primary key (id)
-            );
-			
-            create table user_device_profile (
-              id bigint not null,
-			  version bigint not null,
-              user_id bigint not null,
-              type varchar(10) not null ,
-              device_id bigint not null,
-			  
-			  last_updated_date timestamp,
-			  
-              created_by varchar(32) not null,
-              created_time timestamp not null,
-			  modified_by varchar(32),
-			  modified_time timestamp,
-
-              primary key (id)
-            );
-
-            create table user_tos_acceptance (
-              id bigint not null,
-			  version bigint not null,
-              user_id bigint not null,
-              tos_acceptance_url varchar(2000) not null,
-              date_accepted timestamp not null,
-              
-              created_by varchar(32) not null,
-              created_time timestamp not null,
-              modified_by varchar(32),
-              modified_time timestamp,
-
-              primary key (id)
-            );
-
-            create table user_optin (
-              id bigint not null,
-              
-			  version bigint not null,
-			  user_id bigint not null,
-              type varchar(255) not null ,
-
-              created_by varchar(32) not null,
-              created_time timestamp not null,
-              modified_by varchar(32),
-              modified_time timestamp,
-
-              primary key (id)
-            );
-
-            create table user_federation(
+            create table group_entity(
                 id bigint not null,
                 
+				value varchar(255) not null,
+				active boolean not null, 
+				
+				version bigint not null,
+				created_time timestamp,
+				created_by varchar(255),
+				modified_time timestamp,
+				modified_by varchar(255),
+				
+                primary key(id)
+            );
+			
+			create table user_password (
+				id bigint not null,
+				version bigint not null,
+				user_id bigint not null,
+				password_hash varchar(255) not null,
+				password_salt varchar(255) not null,
+				password_strength smallint not null,
+				
+				active boolean not null,
+				change_at_next_login boolean not null,
+				expires_by timestamp not null,
+				
+				created_by varchar(32) not null,
+				created_time timestamp not null,
+				
+				primary key(id)
+			);
+			
+			create table user_pin (
+				id bigint not null,
+				version bigint not null,
+				user_id bigint not null,
+				pin_hash varchar(255) not null,
+				pin_salt varchar(255) not null,
+				
+				active boolean not null,
+				change_at_next_login boolean not null,
+				expires_by timestamp not null,
+				
+				created_by varchar(32) not null,
+				created_time timestamp not null,
+				
+				primary key(id)
+			);
+			
+			create table security_question (
+				id bigint not null,
+				version bigint not null,
+				value varchar(255) not null,
+				
+				created_by varchar(32) not null,
+				created_time timestamp not null,
+				
+				primary key(id)
+			);
+			
+			create table user_authenticator(
+                id bigint not null,
+				
 			    version bigint not null,
 				user_id bigint not null,
                 type varchar(255) not null,
@@ -109,151 +84,183 @@
 			  
                 primary key(id)
             );
-			
-			create table user_password (
-				id bigint not null,
-				
-				user_id bigint not null,
-				password_hash varchar(255) not null,
-				password_salt varchar(255) not null,
-				password_strength smallint not null,
-				
-				status smallint not null,
-				
-				retry_failure_count bigint,
-				last_login_time varchar(255) not null,
-				last_login_ip varchar(255) not null,
-				
-				created_by varchar(32) not null,
-				created_time timestamp not null,
-				
-				primary key(id)
-			);
-			
-			create table password_blacklist(
-				id bigint not null,
-				
-				password  varchar(255) not null,
-				created_by varchar(32) not null,
-				created_time timestamp not null,
-				
-				primary key(id)
-			);
-                ]]>
-        </sql>
-    </changeSet>
-    <changeSet id="0.2" author='liangfu' context="PREDEPLOY">
-        <sql><![CDATA[
-            create table app(
-                id bigint not null,
-                owner_id bigint not null,
-                name varchar(255) not null,
-                
-                redirect_uris TEXT,
-                default_redirect_uri TEXT,
-                logout_uris TEXT,
-                
-                response_types TEXT,
-                grant_types TEXT,
-                ip_whitelist TEXT,
-                properties TEXT,
-                
-                primary key(id)
-                );
-                
-            create table app_secrect(
-                id bigint not null,
-                app_id bigint not null,
-                
-                value varchar(255),
-                expires_by timestamp,
-                status varchar(255),
-                
-                primary key(id)
-                );    
-            create table app_group(
-                id bigint not null,
-                app_id bigint not null,
-                
-				name varchar(255) not null,
-                permissions varchar(255) not null,
-                
-                primary key(id)
-            );
-            
-            create table app_group_assoc(
-                id bigint not null,
-                app_group_id bigint not null,
-                user_id bigint not null,
-                
-                primary key(id)
-            );
-			
-			create table password_rule(
-				id bigint not null,
-				version bigint not null,
-				password_strength varchar(255) not null,
-				allowed_character_set varchar(1000) not null,
-				not_allowed_character_set varchar(1000) not null,
-				password_rule varchar(1000) not null,
-				
-				created_by varchar(32) not null,
-				created_time timestamp not null,
-				modified_by varchar(32),
-				modified_time timestamp,
-			
-				primary key(id)
-			);
-        ]]></sql>
-    </changeSet>
+						
+            create table user_device (
+              id bigint not null,
+			  version bigint not null,
+              user_id bigint not null,
+			  
+              type varchar(10) not null ,
+              device_id bigint not null,
+			  
+			  os varchar(255) not null,
+			  
+              created_by varchar(32) not null,
+              created_time timestamp not null,
+			  modified_by varchar(32),
+			  modified_time timestamp,
 
-    <changeSet id="0.3" author='liangfu' context="PREDEPLOY">
-        <sql><![CDATA[
-            create table authorization_code(
-                id bigint not null,
-                
-                code_value varchar(255) not null,
-                app_id bigint not null,
-                scopes TEXT not null,
-                user_id bigint not null,
-                expires_by timestamp,
-                
-                nonece TEXT,
-                redirect_uri TEXT,
-                properties TEXT,
-                
-                primary key(id)
+              primary key (id)
             );
-            
-            create table access_token(
-                id bigint not null,
-                
-                token_value varchar(255) not null,
-                app_id bigint not null,
-                
-                scopes TEXT not null,
-                user_id bigint not null,
-                expires_by timestamp,
-                
-                properties TEXT,
-                
-                primary key(id)
+			
+			create table user_email (
+              id bigint not null,
+			  version bigint not null,
+              user_id bigint not null,
+			  
+			  value varchar(255) not null,
+			  type varchar(255) not null,
+			  is_primary boolean not null,
+			  is_verified boolean not null,
+              
+              created_by varchar(32) not null,
+              created_time timestamp not null,
+			  modified_by varchar(32),
+			  modified_time timestamp,
+
+              primary key (id)
             );
-            
-            create table refresh_token(
-                id bigint not null,
-                
-                token_value varchar(255) not null,
-                app_id bigint not null,
-                scopes TEXT not null,
-                user_id bigint not null,
-                expires_by timestamp,
-                
-                salt varchar(255),
-                is_stolen boolean,
-                properties TEXT,
-                
-                primary key(id)
+			
+			create table user_group (
+              id bigint not null,
+			  version bigint not null,
+              user_id bigint not null,
+			  group_id bigint not null,
+			  
+              created_by varchar(32) not null,
+              created_time timestamp not null,
+			  modified_by varchar(32),
+			  modified_time timestamp,
+
+              primary key (id)
+            );
+			
+			create table user_login_attempt (
+              id bigint not null,
+			  version bigint not null,
+              user_id bigint not null,
+			  
+			  type varchar(255) not null,
+			  ip_address varchar(255) not null,
+			  user_agent varchar(255) not null,
+			  client_id varchar(255) not null,
+			  succeeded boolean not null,
+			  
+              created_by varchar(32) not null,
+              created_time timestamp not null,
+			  modified_by varchar(32),
+			  modified_time timestamp,
+
+              primary key (id)
+            );
+			
+            create table user_optin (
+              id bigint not null,
+              
+			  version bigint not null,
+			  user_id bigint not null,
+              value varchar(255) not null ,
+
+              created_by varchar(32) not null,
+              created_time timestamp not null,
+              modified_by varchar(32),
+              modified_time timestamp,
+
+              primary key (id)
+            );
+			
+			create table user_phone_number (
+              id bigint not null,
+              
+			  version bigint not null,
+			  user_id bigint not null,
+
+		      type varchar(255) not null,
+              value varchar(255) not null,
+			  is_primary boolean not null,
+			  is_verified boolean not null,
+
+              created_by varchar(32) not null,
+              created_time timestamp not null,
+              modified_by varchar(32),
+              modified_time timestamp,
+
+              primary key (id)
+            );
+			
+			create table user_account (
+              id bigint not null,
+              
+			  version bigint not null,
+
+			  user_name varchar(255) not null,
+			  nick_name varchar(255) not null,
+			  preferred_language varchar(255) not null,
+			  locale varchar(255) not null,
+			  time_zone varchar(255) not null,
+			  is_active boolean not null,
+			  birthday varchar(255) not null,
+			  gender varchar(255) not null,
+			  type varchar(255) not null,
+			  
+              created_by varchar(32) not null,
+              created_time timestamp not null,
+              modified_by varchar(32),
+              modified_time timestamp,
+
+              primary key (id)
+            );
+			
+			create table user_name (
+              id bigint not null,
+              
+			  version bigint not null,
+			  user_id bigint not null,
+
+		      first_name varchar(255) not null,
+			  middle_name varchar(255) not null,
+			  last_name varchar(255) not null,
+			  honorific_prefix varchar(255) not null,
+			  honorific_suffix varchar(255) not null,
+
+              created_by varchar(32) not null,
+              created_time timestamp not null,
+              modified_by varchar(32),
+              modified_time timestamp,
+
+              primary key (id)
+            );
+			
+			create table user_security_question (
+              id bigint not null,
+              
+			  version bigint not null,
+			  user_id bigint not null,
+
+		      security_question_id bigint not null,
+			  answer_salt varchar(255) not null,
+			  answer_hash varchar(255) not null,
+
+              created_by varchar(32) not null,
+              created_time timestamp not null,
+              modified_by varchar(32),
+              modified_time timestamp,
+
+              primary key (id)
+            );
+			
+			create table user_tos (
+              id bigint not null,
+			  version bigint not null,
+              user_id bigint not null,
+              tos_uri varchar(2000) not null,
+              
+              created_by varchar(32) not null,
+              created_time timestamp not null,
+              modified_by varchar(32),
+              modified_time timestamp,
+
+              primary key (id)
             );
         ]]></sql>
     </changeSet>

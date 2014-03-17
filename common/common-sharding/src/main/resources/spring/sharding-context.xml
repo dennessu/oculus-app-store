@@ -23,7 +23,7 @@
     <bean id="shardingSessionFactory"
           class="org.springframework.orm.hibernate4.LocalSessionFactoryBean" lazy-init="false">
         <property name="dataSource" ref="shardingDataSource"/>
-        <property name="packagesToScan" value="com.junbo.sharding.*" />
+        <property name="packagesToScan" value="com.junbo.sharding.id.model" />
         <property name="hibernateProperties">
             <props>
                 <prop key="hibernate.dialect">${sharding.hibernate.dialect}</prop>
@@ -37,14 +37,15 @@
 
     <tx:annotation-driven transaction-manager="shardingTransactionManager" />
 
-    <tx:annotation-driven />
     <!-- Transaction Manager -->
     <bean id="shardingTransactionManager"
           class="org.springframework.orm.hibernate4.HibernateTransactionManager">
         <property name="sessionFactory" ref="shardingSessionFactory"/>
     </bean>
 
-    <bean id="shardIdGlobalCounterDAO" class="com.junbo.sharding.id.dao.impl.IdGlobalCounterDAOImpl" />
+    <bean id="shardIdGlobalCounterDAO" class="com.junbo.sharding.id.dao.impl.IdGlobalCounterDAOImpl">
+        <property name="sessionFactory" ref="shardingSessionFactory" />
+    </bean>
 
     <!-- Id generate -->
     <!-- In id generator, we will have three implementation methods: -->
@@ -114,7 +115,10 @@
         <constructor-arg ref="globalCounterInDB" />
     </bean>
 
-    <bean id="globalCounterInDB" class="com.junbo.sharding.id.oculus.OculusGlobalCounterInDBImpl" />
+    <bean id="globalCounterInDB" class="com.junbo.sharding.id.oculus.OculusGlobalCounterInDBImpl">
+        <property name="shardIdGlobalCounterDAO" ref="shardIdGlobalCounterDAO" />
+    </bean>
+
     <!-- 2: Id generator proposed by oculus rift (Using 48 bits) -->
     <bean id="oculus48IdSchema" class="com.junbo.sharding.id.oculus.OculusIdSchema">
         <constructor-arg name="idType" value="2" />

@@ -9,7 +9,6 @@
 
     <tx:annotation-driven />
     <context:component-scan base-package="com.junbo.identity.data" />
-    <import resource="classpath*:spring/transaction.xml"/>
     <import resource="classpath*:spring/sharding.xml"/>
     <import resource="classpath*:spring/sharding-context.xml"/>
 
@@ -23,7 +22,7 @@
         <property name="packagesToScan" value="com.junbo.identity.data.entity.*"/>
     </bean>
 
-    <bean id="modelMapperImpl" class="com.junbo.identity.data.mapper.ModelMapperImpl" />
+    <bean id="identityModelMapperImpl" class="com.junbo.identity.data.mapper.ModelMapperImpl" />
 
     <bean id="baseDao" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" abstract="true">
         <property name="idGeneratorFacade" ref="idGeneratorFacade"/>

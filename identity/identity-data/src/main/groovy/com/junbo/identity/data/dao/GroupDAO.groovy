@@ -7,12 +7,13 @@ package com.junbo.identity.data.dao
 
 import com.junbo.identity.data.entity.group.GroupEntity
 import com.junbo.identity.spec.model.options.GroupGetOption
+import com.junbo.sharding.annotations.SeedParam
 
 /**
  * Created by liangfu on 3/14/14.
  */
 interface GroupDAO {
-    GroupEntity get(Long groupId)
+    GroupEntity get(@SeedParam Long groupId)
     GroupEntity save(GroupEntity group)
     GroupEntity update(GroupEntity group)
     List<GroupEntity> search(GroupGetOption getOption)

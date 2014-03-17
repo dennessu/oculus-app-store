@@ -30,7 +30,7 @@ public class UserPasswordRepositoryImpl implements UserPasswordRepository {
     private UserPasswordDAO userPasswordDAO;
 
     @Autowired
-    @Qualifier("modelMapperImpl")
+    @Qualifier("identityModelMapperImpl")
     private ModelMapper modelMapper;
 
     @Override

@@ -21,11 +21,11 @@ import org.springframework.beans.factory.annotation.Qualifier
  */
 class UserAuthenticatorRepositoryImpl implements UserAuthenticatorRepository {
     @Autowired
-    @Qualifier('authenticatorDAO')
+    @Qualifier('userAuthenticatorDAO')
     private UserAuthenticatorDAO authenticatorDAO
 
     @Autowired
-    @Qualifier("modelMapperImpl")
+    @Qualifier('identityModelMapperImpl')
     private ModelMapper modelMapper
 
     @Override

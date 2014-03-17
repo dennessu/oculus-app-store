@@ -22,9 +22,7 @@ import javax.transaction.TransactionRolledbackException;
  * Created by haomin on 14-3-4.
  */
 @ContextConfiguration(locations = {
-        "/spring/sharding-context-test.xml",
-        "/spring/sharding.xml",
-        "/spring/transaction.xml"
+        "/spring/sharding-context-test.xml"
 })
 @TransactionConfiguration(defaultRollback = false)
 @TestExecutionListeners(TransactionalTestExecutionListener.class)
@@ -33,8 +31,8 @@ public class ShardDAOTest extends AbstractTestNGSpringContextTests {
     @Resource(name="shardDao")
     private ShardDAO shardDao;
 
-    //@Test
-    @Transactional("transactionManager")
+    @Test
+    @Transactional
     public void shardDaoTest() {
         ShardEntity entity = new ShardEntity();
         ShardEntity saved = shardDao.saveShard(entity);

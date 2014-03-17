@@ -7,6 +7,7 @@
 package com.junbo.identity.data.entity.group
 
 import com.junbo.identity.data.entity.common.ResourceMetaEntity
+import com.junbo.sharding.annotations.SeedId
 
 import javax.persistence.Column
 import javax.persistence.Entity
@@ -19,6 +20,7 @@ import javax.persistence.Table
 @Table(name = 'group_entity')
 class GroupEntity extends ResourceMetaEntity {
     @Id
+    @SeedId
     @Column(name = 'id')
     private Long id
 

@@ -25,7 +25,7 @@ class GroupRepositoryImpl implements GroupRepository {
     private GroupDAO groupDAO
 
     @Autowired
-    @Qualifier("modelMapperImpl")
+    @Qualifier('identityModelMapperImpl')
     private ModelMapper modelMapper
 
     @Override
@@ -40,7 +40,7 @@ class GroupRepositoryImpl implements GroupRepository {
 
         groupDAO.save(groupEntity)
 
-        return get(group.id)
+        return get(new GroupId(groupEntity.id))
     }
 
     @Override

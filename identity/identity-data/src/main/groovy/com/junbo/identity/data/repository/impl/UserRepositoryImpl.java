@@ -26,11 +26,11 @@ import java.util.List;
 @Component
 public class UserRepositoryImpl implements UserRepository {
     @Autowired
-    @Qualifier("userDAO")
+    @Qualifier("identityModelMapperImpl")
     private ModelMapper modelMapper;
 
     @Autowired
-    @Qualifier("modelMapperImpl")
+    @Qualifier("userDAO")
     private UserDAO userDAO;
 
     @Override

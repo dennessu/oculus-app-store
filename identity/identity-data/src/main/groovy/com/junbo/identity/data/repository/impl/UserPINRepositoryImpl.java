@@ -30,7 +30,7 @@ public class UserPINRepositoryImpl implements UserPINRepository {
     private UserPinDAO userPINDAO;
 
     @Autowired
-    @Qualifier("modelMapperImpl")
+    @Qualifier("identityModelMapperImpl")
     private ModelMapper modelMapper;
 
     @Override

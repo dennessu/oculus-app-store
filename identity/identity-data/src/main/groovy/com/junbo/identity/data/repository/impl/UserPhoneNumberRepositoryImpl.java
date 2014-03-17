@@ -30,7 +30,7 @@ public class UserPhoneNumberRepositoryImpl implements UserPhoneNumberRepository 
     private UserPhoneNumberDAO userPhoneNumberDAO;
 
     @Autowired
-    @Qualifier("modelMapperImpl")
+    @Qualifier("identityModelMapperImpl")
     private ModelMapper modelMapper;
 
     @Override

@@ -30,7 +30,7 @@ public class UserSecurityQuestionRepositoryImpl implements UserSecurityQuestionR
     private UserSecurityQuestionDAO userSecurityQuestionDAO;
 
     @Autowired
-    @Qualifier("modelMapperImpl")
+    @Qualifier("identityModelMapperImpl")
     private ModelMapper modelMapper;
 
     @Override

@@ -24,7 +24,7 @@ class UserDeviceRepositoryImpl implements UserDeviceRepository {
     private UserDeviceDAO userDeviceDAO
 
     @Autowired
-    @Qualifier("modelMapperImpl")
+    @Qualifier('identityModelMapperImpl')
     private ModelMapper modelMapper
 
     @Override

@@ -29,7 +29,7 @@ public class SecurityQuestionRepositoryImpl implements SecurityQuestionRepositor
     private SecurityQuestionDAO securityQuestionDAO;
 
     @Autowired
-    @Qualifier("modelMapperImpl")
+    @Qualifier("identityModelMapperImpl")
     private ModelMapper modelMapper;
 
     @Override
