@@ -10,10 +10,8 @@ import com.junbo.common.id.UserId;
 import com.junbo.entitlement.common.lib.EntitlementContext;
 import com.junbo.entitlement.db.entity.def.EntitlementStatus;
 import com.junbo.entitlement.db.entity.def.EntitlementType;
-import com.junbo.entitlement.db.repository.EntitlementDefinitionRepository;
 import com.junbo.entitlement.db.repository.EntitlementRepository;
 import com.junbo.entitlement.spec.model.Entitlement;
-import com.junbo.entitlement.spec.model.EntitlementDefinition;
 import com.junbo.entitlement.spec.model.EntitlementSearchParam;
 import com.junbo.entitlement.spec.model.PageMetadata;
 import com.junbo.sharding.IdGenerator;
@@ -42,8 +40,6 @@ public class EntitlementDaoTest extends AbstractTransactionalTestNGSpringContext
     private IdGenerator idGenerator;
     @Autowired
     private EntitlementRepository entitlementRepository;
-    @Autowired
-    private EntitlementDefinitionRepository entitlementDefinitionRepository;
 
     @Override
     @Autowired
@@ -75,17 +71,9 @@ public class EntitlementDaoTest extends AbstractTransactionalTestNGSpringContext
         Long userId = idGenerator.nextId();
         Long developerId = idGenerator.nextId();
         for (int i = 0; i < 48; i++) {
-            EntitlementDefinition entitlementDefinition = buildAnEntitlementDefinitionWithoutSave();
-            entitlementDefinition.setDeveloperId(developerId);
-            EntitlementDefinition insertedEntitlementDefinition =
-                    entitlementDefinitionRepository.insert(entitlementDefinition);
             Entitlement entitlementEntity = buildAnEntitlement();
             entitlementEntity.setUserId(userId);
-            entitlementEntity.setEntitlementDefinitionId(insertedEntitlementDefinition.getEntitlementDefinitionId());
-            entitlementEntity.setGroup(insertedEntitlementDefinition.getGroup());
-            entitlementEntity.setType(insertedEntitlementDefinition.getType());
-            entitlementEntity.setTag(insertedEntitlementDefinition.getTag());
-            entitlementEntity.setDeveloperId(insertedEntitlementDefinition.getDeveloperId());
+            entitlementEntity.setDeveloperId(developerId);
             entitlementRepository.insert(entitlementEntity);
         }
 
@@ -111,9 +99,9 @@ public class EntitlementDaoTest extends AbstractTransactionalTestNGSpringContext
         List<Entitlement> list3 = entitlementRepository.getBySearchParam(searchParam, pageMetadata);
         Assert.assertEquals(list3.size(), 48);
 
-        searchParam.setGroups(Collections.singleton("testGroup"));
+        searchParam.setGroups(Collections.singleton("TEST"));
         searchParam.setType(EntitlementType.DEFAULT.toString());
-        searchParam.setTags(Collections.singleton("TEST_ACCESS"));
+        searchParam.setTags(Collections.singleton("TEST"));
         List<Entitlement> list4 = entitlementRepository.getBySearchParam(searchParam, pageMetadata);
         Assert.assertEquals(list4.size(), 48);
 
@@ -128,17 +116,9 @@ public class EntitlementDaoTest extends AbstractTransactionalTestNGSpringContext
         Long userId = idGenerator.nextId();
         Long developerId = idGenerator.nextId();
         for (int i = 0; i < 48; i++) {
-            EntitlementDefinition entitlementDefinition = buildAnEntitlementDefinitionWithoutSave();
-            entitlementDefinition.setDeveloperId(developerId);
-            EntitlementDefinition insertedEntitlementDefinition =
-                    entitlementDefinitionRepository.insert(entitlementDefinition);
             Entitlement entitlement = buildAnEntitlement();
             entitlement.setUserId(userId);
-            entitlement.setEntitlementDefinitionId(insertedEntitlementDefinition.getEntitlementDefinitionId());
-            entitlement.setGroup(insertedEntitlementDefinition.getGroup());
-            entitlement.setType(insertedEntitlementDefinition.getType());
-            entitlement.setTag(insertedEntitlementDefinition.getTag());
-            entitlement.setDeveloperId(insertedEntitlementDefinition.getDeveloperId());
+            entitlement.setDeveloperId(developerId);
             entitlement.setManagedLifecycle(true);
             entitlementRepository.insert(entitlement);
         }
@@ -168,14 +148,6 @@ public class EntitlementDaoTest extends AbstractTransactionalTestNGSpringContext
         Assert.assertEquals(list4.size(), 48);
     }
 
-    @Test
-    public void testSearchEntitlementDefinition() {
-        EntitlementDefinition ed = buildAnEntitlementDefinition();
-        List<EntitlementDefinition> l1 = entitlementDefinitionRepository.getByParams(
-                ed.getDeveloperId(), null, null, ed.getType(), new PageMetadata());
-        Assert.assertTrue(l1.size() > 0);
-    }
-
     private Entitlement buildAnEntitlement() {
         Entitlement entitlement = new Entitlement();
 
@@ -185,34 +157,15 @@ public class EntitlementDaoTest extends AbstractTransactionalTestNGSpringContext
         entitlement.setGrantTime(new Date(114, 0, 22));
         entitlement.setExpirationTime(new Date(114, 0, 28));
 
-        EntitlementDefinition definition = buildAnEntitlementDefinition();
-        entitlement.setEntitlementDefinitionId(definition.getEntitlementDefinitionId());
-        entitlement.setGroup(definition.getGroup());
-        entitlement.setTag(definition.getTag());
-        entitlement.setType(definition.getType());
-        entitlement.setDeveloperId(definition.getDeveloperId());
+        entitlement.setEntitlementDefinitionId(idGenerator.nextId());
+        entitlement.setGroup("TEST");
+        entitlement.setTag("TEST");
+        entitlement.setType(EntitlementType.DEFAULT.toString());
+        entitlement.setDeveloperId(idGenerator.nextId());
         entitlement.setOfferId(idGenerator.nextId());
         entitlement.setStatus(EntitlementStatus.ACTIVE.toString());
         entitlement.setUseCount(0);
         entitlement.setManagedLifecycle(false);
         return entitlement;
-    }
-
-    private EntitlementDefinition buildAnEntitlementDefinition() {
-        EntitlementDefinition entitlementDefinition = new EntitlementDefinition();
-        entitlementDefinition.setTag("TEST_ACCESS");
-        entitlementDefinition.setGroup("testGroup");
-        entitlementDefinition.setType(EntitlementType.DEFAULT.toString());
-        entitlementDefinition.setDeveloperId(idGenerator.nextId());
-        return entitlementDefinitionRepository.insert(entitlementDefinition);
-    }
-
-    private EntitlementDefinition buildAnEntitlementDefinitionWithoutSave() {
-        EntitlementDefinition entitlementDefinition = new EntitlementDefinition();
-        entitlementDefinition.setTag("TEST_ACCESS");
-        entitlementDefinition.setGroup("testGroup");
-        entitlementDefinition.setType(EntitlementType.DEFAULT.toString());
-        entitlementDefinition.setDeveloperId(idGenerator.nextId());
-        return entitlementDefinition;
     }
 }
