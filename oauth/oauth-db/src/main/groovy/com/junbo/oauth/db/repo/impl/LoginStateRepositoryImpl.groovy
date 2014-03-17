@@ -60,7 +60,10 @@ class LoginStateRepositoryImpl implements LoginStateRepository {
 
     @Override
     void delete(String id) {
-        loginStateDAO.delete(id)
+        def entity = loginStateDAO.get(id)
+        if (entity != null) {
+            loginStateDAO.delete(entity)
+        }
     }
 
     private static LoginStateEntity unwrap(LoginState loginState) {

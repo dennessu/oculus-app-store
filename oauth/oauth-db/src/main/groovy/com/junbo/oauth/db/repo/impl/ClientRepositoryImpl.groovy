@@ -18,41 +18,81 @@ import org.springframework.util.Assert
  */
 @CompileStatic
 class ClientRepositoryImpl implements ClientRepository {
-    private ClientDAO appClientDAO
+    private ClientDAO clientDAO
 
     @Required
-    void setAppClientDAO(ClientDAO appClientDAO) {
-        this.appClientDAO = appClientDAO
+    void setClientDAO(ClientDAO clientDAO) {
+        this.clientDAO = clientDAO
     }
 
     @Override
     Client getClient(String clientId) {
         Assert.notNull(clientId)
-        return wrap(appClientDAO.get(clientId))
+        return wrap(clientDAO.get(clientId))
     }
 
-//    private static ClientEntity unwrap(Client client) {
-//        return new ClientEntity(
-//                clientId: client.clientId,
-//                clientSecret: client.clientSecret,
-//                defaultRedirectUri: client.defaultRedirectUri,
-//                allowedRedirectUris: client.allowedRedirectUris,
-//                allowedScopes: client.allowedScopes
-//        )
-//    }
+    @Override
+    Client saveClient(Client client) {
+        return wrap(clientDAO.save(unwrap(client)))
+    }
+
+    @Override
+    Client updateClient(Client client) {
+        return wrap(clientDAO.update(unwrap(client)))
+    }
+
+    @Override
+    void deleteClient(Client client) {
+        clientDAO.delete(unwrap(client))
+    }
+
+    private static ClientEntity unwrap(Client client) {
+        if (client == null) {
+            return null
+        }
+
+        return new ClientEntity(
+                id: client.clientId,
+                clientSecret: client.clientSecret,
+                clientName: client.clientName,
+                ownerUserId: client.ownerUserId,
+                defaultRedirectUri: client.defaultRedirectUri,
+                redirectUris: client.redirectUris,
+                scopes: client.scopes,
+                defaultScopes: client.defaultScopes,
+                responseTypes: client.responseTypes,
+                grantTypes: client.grantTypes,
+                idTokenIssuer: client.idTokenIssuer,
+                logoutRedirectUris: client.logoutRedirectUris,
+                defaultLogoutRedirectUri: client.defaultLogoutRedirectUri,
+                logoUri: client.logoUri,
+                contacts: client.contacts,
+                revision: client.revision
+        )
+    }
 
     private static Client wrap(ClientEntity entity) {
+        if (entity == null) {
+            return null
+        }
+
         return new Client(
-                clientId: entity.clientId,
+                clientId: entity.id,
                 clientSecret: entity.clientSecret,
+                clientName: entity.clientName,
+                ownerUserId: entity.ownerUserId,
                 defaultRedirectUri: entity.defaultRedirectUri,
-                allowedRedirectUris: entity.allowedRedirectUris,
-                allowedScopes: entity.allowedScopes,
+                redirectUris: entity.redirectUris,
+                scopes: entity.scopes,
                 defaultScopes: entity.defaultScopes,
-                allowedResponseTypes: entity.allowedResponseTypes,
+                responseTypes: entity.responseTypes,
+                grantTypes: entity.grantTypes,
                 idTokenIssuer: entity.idTokenIssuer,
-                allowedLogoutRedirectUris: entity.allowedLogoutRedirectUris,
-                defaultLogoutRedirectUri: entity.defaultLogoutRedirectUri
+                logoutRedirectUris: entity.logoutRedirectUris,
+                defaultLogoutRedirectUri: entity.defaultLogoutRedirectUri,
+                logoUri: entity.logoUri,
+                contacts: entity.contacts,
+                revision: entity.revision
         )
     }
 }

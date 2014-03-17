@@ -18,7 +18,7 @@ interface BaseDAO<T, K> {
 
     T get(K id)
 
-    T update(T t)
+    T update(T entity)
 
-    void delete(K id)
+    void delete(T entity)
 }

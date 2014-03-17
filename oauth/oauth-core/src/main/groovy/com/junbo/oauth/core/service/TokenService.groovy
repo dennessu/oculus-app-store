@@ -9,15 +9,13 @@ import com.junbo.oauth.spec.model.*
 import groovy.transform.CompileStatic
 
 /**
- * TokenGenerationService.
+ * TokenService.
  */
 @CompileStatic
-interface TokenGenerationService {
+interface TokenService {
     AccessToken generateAccessToken(Client appClient, Long userId, Set<String> scopes)
 
     AccessToken getAccessToken(String tokenValue)
-
-    void removeAccessToken(String tokenValue)
 
     RefreshToken generateRefreshToken(Client client, AccessToken accessToken, String salt)
 
@@ -29,4 +27,8 @@ interface TokenGenerationService {
                             AuthorizationCode code, AccessToken accessToken)
 
     IdToken parseIdToken(String tokenValue)
+
+    void revokeAccessToken(String tokenValue)
+
+    void revokeRefreshToken(String tokenValue)
 }

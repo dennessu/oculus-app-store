@@ -7,6 +7,7 @@ package com.junbo.oauth.db.repo.impl
 
 import com.junbo.oauth.db.repo.ClientRepository
 import com.junbo.oauth.spec.model.Client
+import com.junbo.oauth.spec.model.GrantType
 import com.junbo.oauth.spec.model.ResponseType
 import groovy.transform.CompileStatic
 
@@ -27,26 +28,33 @@ class HackClientRepo implements ClientRepository {
         Set<String> redirectUris = []
         redirectUris.add('http://localhost')
         redirectUris.add('*')
-        client.setAllowedRedirectUris(redirectUris)
+        client.setRedirectUris(redirectUris)
 
         Set<String> scopes = []
         scopes.add('openid')
         scopes.add('identity')
-        client.setAllowedScopes(scopes)
+        scopes.add('client.register')
+        client.setScopes(scopes)
 
         Set<ResponseType> responseTypes = []
         responseTypes.add(ResponseType.CODE)
         responseTypes.add(ResponseType.ID_TOKEN)
         responseTypes.add(ResponseType.TOKEN)
-        client.setAllowedResponseTypes(responseTypes)
+        client.setResponseTypes(responseTypes)
+
+        Set<GrantType> grantTypes = [GrantType.AUTHORIZATION_CODE, GrantType.PASSWORD, GrantType.REFRESH_TOKEN].toSet()
+
+        client.grantTypes = grantTypes
 
         client.idTokenIssuer = 'www.junbo.com'
 
         Set<String> logoutRedirectUris = []
         logoutRedirectUris.add('http://localhost')
-        client.allowedLogoutRedirectUris = logoutRedirectUris
+        client.logoutRedirectUris = logoutRedirectUris
 
         client.defaultLogoutRedirectUri = 'http://localhost'
+
+        client.ownerUserId = 762
     }
 
     @Override
@@ -55,5 +63,20 @@ class HackClientRepo implements ClientRepository {
             return client
         }
         return null
+    }
+
+    @Override
+    Client saveClient(Client client) {
+        return null
+    }
+
+    @Override
+    Client updateClient(Client client) {
+        return null
+    }
+
+    @Override
+    void deleteClient(Client client) {
+
     }
 }

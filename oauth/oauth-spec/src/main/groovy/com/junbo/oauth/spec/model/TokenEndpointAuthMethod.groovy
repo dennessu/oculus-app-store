@@ -3,14 +3,18 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.oauth.db.dao
 
-import com.junbo.oauth.db.entity.FlowStateEntity
+
+package com.junbo.oauth.spec.model
+
 import groovy.transform.CompileStatic
 
 /**
- * Javadoc.
+ * TokenEndpointAuthMethod.
  */
 @CompileStatic
-interface FlowStateDAO extends BaseDAO<FlowStateEntity, String> {
+enum TokenEndpointAuthMethod {
+    NONE,
+    CLIENT_SECRET_POST,
+    CLIENT_SECRET_BASIC
 }
