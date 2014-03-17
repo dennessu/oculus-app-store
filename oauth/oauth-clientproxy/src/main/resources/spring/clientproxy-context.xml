@@ -6,28 +6,24 @@
 
     <bean id="transcoder" class="com.junbo.common.json.JsonMessageTranscoder"/>
 
+    <bean id="pathParamTranscoder" class="com.junbo.common.json.IdPathParamTranscoder"/>
+
+    <bean id="queryParamTranscoder" class="com.junbo.common.json.QueryParamTranscoderImpl"/>
+
     <bean id="identityUserClient" class="com.junbo.identity.spec.resource.proxy.UserResourceClientProxy">
         <constructor-arg name="client" ref="asyncHttpClient"/>
         <constructor-arg name="target" value="${oauth.clientproxy.identity.url}"/>
         <constructor-arg name="transcoder" ref="transcoder"/>
-        <constructor-arg name="pathParamTranscoder">
-            <bean class="com.junbo.common.json.IdPathParamTranscoder" />
-        </constructor-arg>
-        <constructor-arg name="queryParamTranscoder">
-            <bean class="com.junbo.common.json.QueryParamTranscoderImpl" />
-        </constructor-arg>
+        <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
+        <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder"/>
     </bean>
 
     <bean id="identityUserProfileClient" class="com.junbo.identity.spec.resource.proxy.UserProfileResourceClientProxy">
         <constructor-arg name="client" ref="asyncHttpClient"/>
         <constructor-arg name="target" value="${oauth.clientproxy.identity.url}"/>
         <constructor-arg name="transcoder" ref="transcoder"/>
-        <constructor-arg name="pathParamTranscoder">
-            <bean class="com.junbo.common.json.IdPathParamTranscoder" />
-        </constructor-arg>
-        <constructor-arg name="queryParamTranscoder">
-            <bean class="com.junbo.common.json.QueryParamTranscoderImpl" />
-        </constructor-arg>
+        <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
+        <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder"/>
     </bean>
 
 </beans>

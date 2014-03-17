@@ -9,11 +9,14 @@ import com.junbo.common.id.OrderId;
 import com.junbo.common.id.UserId;
 import com.junbo.sharding.IdGeneratorFacade;
 import com.junbo.sharding.annotations.SeedId;
+import com.junbo.sharding.annotations.SeedParam;
 import com.junbo.sharding.util.Helper;
+import junit.framework.Assert;
 import org.springframework.core.annotation.AnnotationUtils;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -38,12 +41,31 @@ public class ShardAwareDaoProxy implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        int shardId = tryGetShardIdAndSetEntityId(args);
+        int shardId = tryGetShardIdAndSetEntityId(method, args);
         Helper.setCurrentShardId(shardId);
         return method.invoke(target, args);
     }
 
-    private int tryGetShardIdAndSetEntityId(Object[] args) throws Throwable {
+    private int tryGetShardIdAndSetEntityId(Method mtd, Object[] args) throws Throwable {
+        // @SeedParam processing
+        Annotation[][] a = mtd.getParameterAnnotations();
+        Assert.assertEquals(a.length, args.length);
+
+        for (int i = 0; i < a.length; i++) {
+            for (Annotation annotation : a[i]) {
+                if (annotation instanceof SeedParam) {
+                    if (args[i].getClass().equals(Long.class)) {
+                        return Helper.getShardId((long)args[i]);
+                    }
+                    else {
+                        throw new RuntimeException("@SeedParam annotation must be placed with Long type field, " +
+                                "error with class " + args[i].getClass().getCanonicalName());
+                    }
+                }
+            }
+        }
+
+        // @Entity arg processing
         for(Object arg : args) {
             Entity entityAnnotation = AnnotationUtils.findAnnotation(arg.getClass(), Entity.class);
             // if it is an entity class
@@ -55,69 +77,78 @@ public class ShardAwareDaoProxy implements InvocationHandler {
                                 arg.getClass().getCanonicalName() + " violate this rule, please fix!");
                     }
                 }
-
-                Class<?> clazz = arg.getClass();
+                Class<?> leafClazz = arg.getClass();
+                Class<?> idClazz = arg.getClass();
 
                 do {
-                    for(Field idField : clazz.getDeclaredFields()) {
+                    for(Field idField : idClazz.getDeclaredFields()) {
                         Id idAnnotation = idField.getAnnotation(Id.class);
                         if (idAnnotation != null) {
-                            Method idGetMethod = Helper.tryObtainGetterMethod(clazz, idField.getName(), Long.class);
-                            Method idSetMethod = Helper.tryObtainSetterMethod(clazz, idField.getName(), Long.class);
+                            Method idGetMethod = Helper.tryObtainGetterMethod(leafClazz, idField.getName(), Long.class);
+                            Method idSetMethod = Helper.tryObtainSetterMethod(leafClazz, idField.getName(), Long.class);
 
                             if (idGetMethod == null || idSetMethod == null) {
                                 throw new RuntimeException("@Id annotation must be placed with Long type field," +
                                         " and with proper getter and setter method available. "
-                                        + clazz.getCanonicalName());
+                                        + idClazz.getCanonicalName());
                             }
 
                             if (idGetMethod.invoke(arg) == null) { //id not set yet
-                                for(Field seedField : clazz.getDeclaredFields()) {
-                                    SeedId seedIdAnnotation = seedField.getAnnotation(SeedId.class);
+                                Class<?> seedIdClazz = leafClazz;
+                                do {
+                                    for(Field seedField : seedIdClazz.getDeclaredFields()) {
+                                        SeedId seedIdAnnotation = seedField.getAnnotation(SeedId.class);
+                                        if (seedIdAnnotation != null) {
+                                            Method seedGetMethod = Helper.tryObtainGetterMethod(leafClazz,
+                                                    seedField.getName(), Long.class);
+                                            if (seedGetMethod == null) {
+                                                throw new RuntimeException("@SeedId annotation must be placed with " +
+                                                        "Long type field, and with proper getter method available. "
+                                                        + seedIdClazz.getCanonicalName());
+                                            }
 
-                                    Method seedGetMethod = Helper.tryObtainGetterMethod(clazz,
-                                            seedField.getName(), Long.class);
-                                    if (seedGetMethod == null) {
-                                        throw new RuntimeException("@SeedId annotation must be placed with " +
-                                                "Long type field, and with proper getter method available. "
-                                                + arg.getClass().getCanonicalName());
-                                    }
-
-                                    if (seedIdAnnotation != null) {
-                                        // Generate primary id on any shard if @SeedId
-                                        // and @Id annotation on the same field
-                                        if(seedField.equals(idField)) {
-                                            long nextId = idGeneratorFacade.nextId(UserId.class);
-                                            idSetMethod.invoke(arg, nextId);
-                                            return Helper.getShardId(nextId);
-                                        }
-                                        else {  // use @SeedId field as id generator seed
-                                            long seed = (long)seedGetMethod.invoke(arg);
-                                            if (arg.getClass().getCanonicalName()
-                                                    .equalsIgnoreCase("com.junbo.order.db.entity.OrderEntity")) {
-                                                long nextId = idGeneratorFacade.nextId(OrderId.class, seed);
+                                            // Generate primary id on any shard if @SeedId
+                                            // and @Id annotation on the same field
+                                            if(seedField.equals(idField)) {
+                                                long nextId = idGeneratorFacade.nextId(UserId.class);
                                                 idSetMethod.invoke(arg, nextId);
                                                 return Helper.getShardId(nextId);
                                             }
-                                            else {
-                                                long nextId = idGeneratorFacade.nextId(UserId.class, seed);
-                                                idSetMethod.invoke(arg, nextId);
-                                                return Helper.getShardId(nextId);
+                                            else {  // use @SeedId field as id generator seed
+                                                long seed = (long)seedGetMethod.invoke(arg);
+                                                if (leafClazz.getCanonicalName()
+                                                        .equalsIgnoreCase("com.junbo.order.db.entity.OrderEntity")) {
+                                                    long nextId = idGeneratorFacade.nextId(OrderId.class, seed);
+                                                    idSetMethod.invoke(arg, nextId);
+                                                    return Helper.getShardId(nextId);
+                                                }
+                                                else {
+                                                    long nextId = idGeneratorFacade.nextId(UserId.class, seed);
+                                                    idSetMethod.invoke(arg, nextId);
+                                                    return Helper.getShardId(nextId);
+                                                }
                                             }
                                         }
                                     }
-                                }
+                                    seedIdClazz = seedIdClazz.getSuperclass();
+                                } while (seedIdClazz != null);
+
+                                // @SeedId not found, domain data in domaindata service?
+                                // todo: haomin
+                                throw new RuntimeException("@SeedId annotation not found on entity class "
+                                        + leafClazz.getCanonicalName());
                             }
-                            else {  // entity id has been set
+                            else {  // entity id has been set, not POST method
                                 return Helper.getShardId((long)idField.get(arg));
                             }
                         }
                     }
-                    clazz = clazz.getSuperclass();
-                } while (clazz != null);
+
+                    idClazz = idClazz.getSuperclass();
+                } while (idClazz != null);
 
                 throw new RuntimeException("@Id annotation not found on entity class "
-                        + arg.getClass().getCanonicalName());
+                        + leafClazz.getCanonicalName());
             }
         }
 

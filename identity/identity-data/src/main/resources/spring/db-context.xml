@@ -8,6 +8,7 @@
     <context:annotation-config />
     <tx:annotation-driven />
     <context:component-scan base-package="com.junbo.identity.data" />
+
     <bean id="identityDataSource" class="bitronix.tm.resource.jdbc.PoolingDataSource"
           init-method="init" destroy-method="close">
         <property name="uniqueName" value="jdbc/id_ds1"/>

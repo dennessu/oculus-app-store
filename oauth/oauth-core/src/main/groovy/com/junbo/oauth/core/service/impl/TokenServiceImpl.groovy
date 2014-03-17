@@ -7,7 +7,7 @@ package com.junbo.oauth.core.service.impl
 
 import com.junbo.oauth.common.JsonMarshaller
 import com.junbo.oauth.core.exception.AppExceptions
-import com.junbo.oauth.core.service.TokenGenerationService
+import com.junbo.oauth.core.service.TokenService
 import com.junbo.oauth.db.repo.AccessTokenRepository
 import com.junbo.oauth.db.repo.ClientRepository
 import com.junbo.oauth.db.repo.RefreshTokenRepository
@@ -28,8 +28,8 @@ import java.text.ParseException
  * Javadoc.
  */
 @CompileStatic
-class TokenGenerationServiceImpl implements TokenGenerationService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(TokenGenerationServiceImpl)
+class TokenServiceImpl implements TokenService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TokenServiceImpl)
 
     private static final String JWT_CONTENT_TYPE = 'JWT'
     private static final int LEFT_MOST_128_BITS = 16
@@ -95,11 +95,6 @@ class TokenGenerationServiceImpl implements TokenGenerationService {
     @Override
     AccessToken getAccessToken(String tokenValue) {
         return accessTokenRepository.get(tokenValue)
-    }
-
-    @Override
-    void removeAccessToken(String tokenValue) {
-        accessTokenRepository.remove(tokenValue)
     }
 
     @Override
@@ -226,5 +221,15 @@ class TokenGenerationServiceImpl implements TokenGenerationService {
             LOGGER.error('Error parsing the id token', e)
             throw AppExceptions.INSTANCE.invalidIdToken().exception()
         }
+    }
+
+    @Override
+    void revokeAccessToken(String tokenValue) {
+
+    }
+
+    @Override
+    void revokeRefreshToken(String tokenValue) {
+
     }
 }

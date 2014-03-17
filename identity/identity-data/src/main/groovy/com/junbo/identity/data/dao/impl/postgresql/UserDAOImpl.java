@@ -12,10 +12,10 @@ import com.junbo.identity.data.mapper.ModelMapper;
 import com.junbo.identity.spec.model.options.UserGetOption;
 import com.junbo.identity.spec.model.users.User;
 import com.junbo.oom.core.MappingContext;
+import com.junbo.sharding.core.hibernate.SessionFactoryWrapper;
+import com.junbo.sharding.util.Helper;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -28,14 +28,16 @@ import java.util.List;
 @Component
 public class UserDAOImpl implements UserDAO {
     @Autowired
-    @Qualifier("sessionFactory")
-    private SessionFactory sessionFactory;
-
-    @Autowired
     private ModelMapper modelMapper;
 
+    private SessionFactoryWrapper sessionFactoryWrapper;
+
+    public void setSessionFactoryWrapper(SessionFactoryWrapper sessionFactoryWrapper) {
+        this.sessionFactoryWrapper = sessionFactoryWrapper;
+    }
+
     private Session currentSession() {
-        return sessionFactory.getCurrentSession();
+        return sessionFactoryWrapper.resolve(Helper.getCurrentThreadLocalShardId()).getCurrentSession();
     }
 
     @Override
@@ -81,5 +83,4 @@ public class UserDAOImpl implements UserDAO {
         UserEntity entity = (UserEntity)currentSession().get(UserEntity.class, userId.getValue());
         currentSession().delete(entity);
     }
-
 }

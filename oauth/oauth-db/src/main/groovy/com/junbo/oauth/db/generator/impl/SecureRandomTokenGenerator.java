@@ -16,7 +16,8 @@ import java.util.Random;
 /**
  * Javadoc.
  */
-public class SecureRandomTokenGenerator implements TokenGenerator {
+public class
+        SecureRandomTokenGenerator implements TokenGenerator {
 
     private static final char[] DEFAULT_CODEC =
             "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray();
@@ -46,6 +47,9 @@ public class SecureRandomTokenGenerator implements TokenGenerator {
     private int rememberMeTokenLength;
     private String rememberMeTokenPostfix;
     private int rememberMeTokenSeriesLength;
+
+    private int clientIdLength;
+    private int clientSecretLength;
 
     @Required
     public void setLoginStateLength(int loginStateLength) {
@@ -127,6 +131,16 @@ public class SecureRandomTokenGenerator implements TokenGenerator {
         this.sessionStatePostfix = sessionStatePostfix;
     }
 
+    @Required
+    public void setClientIdLength(int clientIdLength) {
+        this.clientIdLength = clientIdLength;
+    }
+
+    @Required
+    public void setClientSecretLength(int clientSecretLength) {
+        this.clientSecretLength = clientSecretLength;
+    }
+
     private String generate(int length) {
         byte[] bytes = new byte[length];
         random.nextBytes(bytes);
@@ -190,6 +204,16 @@ public class SecureRandomTokenGenerator implements TokenGenerator {
     @Override
     public String generateRememberMeTokenSeries() {
         return generate(rememberMeTokenSeriesLength);
+    }
+
+    @Override
+    public String generateClientId() {
+        return generate(clientIdLength);
+    }
+
+    @Override
+    public String generateClientSecret() {
+        return generate(clientSecretLength);
     }
 
     @Override

@@ -10,6 +10,7 @@ import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Id
 import javax.persistence.Table
+import com.junbo.sharding.annotations.SeedId
 
 /**
  * UserEntity model for user device profile table
@@ -22,6 +23,7 @@ class UserDeviceEntity extends ResourceMetaEntity {
     @Column(name = 'id')
     private Long id
 
+    @SeedId
     @Column(name = 'user_id')
     private Long userId
 

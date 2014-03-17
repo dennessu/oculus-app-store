@@ -25,6 +25,7 @@ class ValidateGrantType implements Action {
     Promise<ActionResult> execute(ActionContext context) {
         def contextWrapper = new ActionContextWrapper(context)
         def parameterMap = contextWrapper.parameterMap
+        def client = contextWrapper.client
 
         String grantTypeParam = parameterMap.getFirst(OAuthParameters.GRANT_TYPE)
 
@@ -37,6 +38,10 @@ class ValidateGrantType implements Action {
         }
 
         GrantType grantType = GrantType.valueOf(grantTypeParam.toUpperCase())
+
+        if (!client.grantTypes.contains(grantType)) {
+            throw AppExceptions.INSTANCE.invalidGrantType(grantTypeParam).exception()
+        }
 
         def oauthInfo = contextWrapper.oauthInfo
         oauthInfo.grantType = grantType
