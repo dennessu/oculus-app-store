@@ -95,4 +95,6 @@ public class UserPin extends ResourceMeta implements Identifiable<UserPinId> {
     public void setUserId(UserId userId) {
         this.userId = userId;
     }
+
+
 }
