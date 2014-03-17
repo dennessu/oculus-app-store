@@ -62,7 +62,7 @@ class OrderServiceContextBuilder {
 
         List<PaymentInstrument> pis = []
         return Promise.each(piids.iterator()) { PaymentInstrumentId piid ->
-            paymentFacade.getPaymentInstrument(piid.value).syncThen { PaymentInstrument pi ->
+            paymentFacade.getPaymentInstrument(context.order.user, piid.value).syncThen { PaymentInstrument pi ->
                 pis << pi
             }
         }.syncThen {

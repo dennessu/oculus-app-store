@@ -122,7 +122,7 @@ class TestHelper {
         orderEventEntity.setActionId(OrderActionType.FULFILL)
         orderEventEntity.setStatusId(EventStatus.COMPLETED)
         orderEventEntity.trackingUuid = UUID.randomUUID()
-        orderEventEntity.flowName = UUID.randomUUID().toString()
+        orderEventEntity.flowType = UUID.randomUUID().toString()
         return orderEventEntity
     }
 
