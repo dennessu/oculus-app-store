@@ -5,6 +5,8 @@
  */
 package com.junbo.identity.data.dao.impl.postgresql;
 
+import com.junbo.common.id.AppId;
+import com.junbo.oom.core.MappingContext;
 import com.junbo.identity.data.dao.AppDAO;
 import com.junbo.identity.data.entity.app.AppEntity;
 import com.junbo.identity.data.entity.app.AppGroupEntity;
@@ -13,10 +15,9 @@ import com.junbo.identity.data.entity.app.AppSecretEntity;
 import com.junbo.identity.data.entity.user.UserEntity;
 import com.junbo.identity.data.mapper.ModelMapper;
 import com.junbo.identity.spec.model.app.App;
-import com.junbo.oom.core.MappingContext;
-import com.junbo.sharding.core.hibernate.SessionFactoryWrapper;
-import com.junbo.sharding.util.Helper;
+import com.junbo.sharding.IdGeneratorFacade;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -29,23 +30,24 @@ import java.util.List;
 @Component
 public class AppDAOImpl implements AppDAO {
 
-    private SessionFactoryWrapper sessionFactoryWrapper;
-
-    public void setSessionFactoryWrapper(SessionFactoryWrapper sessionFactoryWrapper) {
-        this.sessionFactoryWrapper = sessionFactoryWrapper;
-    }
-
-    private Session currentSession() {
-        return sessionFactoryWrapper.resolve(Helper.getCurrentThreadLocalShardId()).getCurrentSession();
-    }
+    @Autowired
+    private SessionFactory sessionFactory;
 
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private IdGeneratorFacade idGenerator;
+
+    private Session currentSession() {
+        return sessionFactory.getCurrentSession();
+    }
 
     @Override
     public App save(App app) {
         AppEntity appEntity = modelMapper.toAppEntity(app, new MappingContext());
+
+        appEntity.setId(idGenerator.nextId(AppId.class));
         save(appEntity);
         return get(appEntity.getId());
     }
@@ -137,6 +139,7 @@ public class AppDAOImpl implements AppDAO {
 
         if(!CollectionUtils.isEmpty(appEntity.getAppSecrets())) {
             for(int i = 0; i < appEntity.getAppSecrets().size(); i++) {
+                appEntity.getAppSecrets().get(i).setId(idGenerator.nextId(AppId.class, appEntity.getId()));
                 appEntity.getAppSecrets().get(i).setAppId(appEntity.getId());
                 currentSession().save(appEntity.getAppSecrets().get(i));
             }
@@ -144,12 +147,14 @@ public class AppDAOImpl implements AppDAO {
 
         if(!CollectionUtils.isEmpty(appEntity.getGroups())) {
             for(int i = 0; i < appEntity.getGroups().size(); i++) {
+                appEntity.getGroups().get(i).setId(idGenerator.nextId(AppId.class, appEntity.getId()));
                 appEntity.getGroups().get(i).setAppId(appEntity.getId());
                 currentSession().save(appEntity.getGroups().get(i));
 
                 if(!CollectionUtils.isEmpty(appEntity.getGroups().get(i).getMembers())) {
                     for(int j = 0; j < appEntity.getGroups().get(i).getMembers().size(); j++) {
                         AppGroupUserAssocEntity appGroupUserAssocEntity = new AppGroupUserAssocEntity();
+                        appGroupUserAssocEntity.setId(idGenerator.nextId(AppId.class, appEntity.getId()));
                         appGroupUserAssocEntity.setGroupId(appEntity.getGroups().get(i).getId());
                         appGroupUserAssocEntity.setUserId(appEntity.getGroups().get(i).getMembers().get(j).getId());
                         currentSession().save(appGroupUserAssocEntity);
