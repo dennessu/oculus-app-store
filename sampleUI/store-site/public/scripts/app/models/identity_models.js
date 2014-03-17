@@ -5,5 +5,10 @@ var IdentityModels = {
         this.cid = "";
         this.username = "";
         this.password = "";
+    },
+
+    TFAModel: function(){
+        this.code = "";
+        this.remember = false
     }
 };

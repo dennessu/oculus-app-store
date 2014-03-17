@@ -11,7 +11,7 @@ module.exports = function(data, cookies, query, cb){
 
         if (resultData.StatusCode == 200) {
 
-            if (process.AppConfig.EnabledCaptcha) { // can't ship captcha
+            if (process.AppConfig.Feature.Captcha) { // can't ship captcha
                 resultModel.status = DomainModels.ResultStatusEnum.Normal;
                 resultModel.data = "";
             } else { // need back and ship captcha
@@ -32,11 +32,11 @@ module.exports = function(data, cookies, query, cb){
                 // set access_token to cookie
                 var resObj = JSON.parse(resultData.Data);
                 var accessTokenCookie = new DomainModels.SettingModel();
-                accessTokenCookie.type = DomainModels.SettingTypeEnum.Cookie;
-                accessTokenCookie.data = {name: process.AppConfig.SessionKeys.AccessToken, value: resObj[process.AppConfig.FieldNames.AccessToken] };
+                accessTokenCookie.type = process.AppConfig.SettingTypeEnum.Cookie;
+                accessTokenCookie.data = {name: process.AppConfig.CookiesName.AccessToken, value: resObj[process.AppConfig.FieldNames.AccessToken] };
                 var idTokenCookie = new DomainModels.SettingModel();
-                idTokenCookie.type = DomainModels.SettingTypeEnum.Cookie;
-                idTokenCookie.data = {name: process.AppConfig.SessionKeys.IdToken, value: resObj[process.AppConfig.FieldNames.IdToken] };
+                idTokenCookie.type = process.AppConfig.SettingTypeEnum.Cookie;
+                idTokenCookie.data = {name: process.AppConfig.CookiesName.IdToken, value: resObj[process.AppConfig.FieldNames.IdToken] };
 
                 settingArr.push(accessTokenCookie);
                 settingArr.push(idTokenCookie);
@@ -52,12 +52,12 @@ module.exports = function(data, cookies, query, cb){
 
             // set access_token to cookie
             var accessTokenCookie = new DomainModels.SettingModel();
-            accessTokenCookie.type = DomainModels.SettingTypeEnum.Cookie;
-            accessTokenCookie.data = {name: process.AppConfig.SessionKeys.AccessToken, value: "test" };
+            accessTokenCookie.type = process.AppConfig.SettingTypeEnum.Cookie;
+            accessTokenCookie.data = {name: process.AppConfig.CookiesName.AccessToken, value: "test" };
             settingArr.push(accessTokenCookie);
         }else{ // Error
-            resultModel.action = DomainModels.ResultStatusEnum.Error;
-            resultModel.data = JSON.parse(resultData.Data);
+            resultModel.status = DomainModels.ResultStatusEnum.APIError;
+            resultModel.data = resultData.Data;
         }
         var responseModel = new DomainModels.ResponseModel();
         responseModel.data = resultModel;

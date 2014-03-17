@@ -151,12 +151,21 @@ public class EntitlementDaoImpl extends BaseDao<EntitlementEntity> implements En
     }
 
     @Override
-    public Boolean existEntitlementDefinition(Long definitionId) {
+    public EntitlementEntity getExistingManagedEntitlement(
+            Long userId, EntitlementType type, Long developerId, String group, String tag) {
         String queryString = "from EntitlementEntity" +
-                " where entitlementDefinitionId = (:definitionId)" +
+                " where userId =(:userId)" +
+                " and developerId = (:developerId)" +
+                " and type = (:type)" +
+                " and group = (:group)" +
+                " and tag = (:tag)" +
                 " and status >= 0";
         Query q = currentSession().createQuery(queryString)
-                .setLong("definitionId", definitionId);
-        return q.list().size() != 0;
+                .setLong("userId", userId)
+                .setLong("developerId", developerId)
+                .setInteger("type", type.getId())
+                .setString("group", group)
+                .setString("tag", tag);
+        return (EntitlementEntity) q.uniqueResult();
     }
 }

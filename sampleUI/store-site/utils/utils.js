@@ -101,10 +101,10 @@ Utils.FillAuthInfoToBaseModel = function(req, res, model){
 
     var store = new SessionStore(req, res);
 
-    if(typeof(store.Get(C.SessionKeys.IsAuthenticate)) != "undefined"
-        && store.Get(C.SessionKeys.IsAuthenticate) == "true"){
+    if(typeof(store.Get(C.CookiesName.IsAuthenticate)) != "undefined"
+        && store.Get(C.CookiesName.IsAuthenticate) == "true"){
         model.Header.IsAuthenticate = true;
-        model.Header.Username = store.Get(C.SessionKeys.Username);
+        model.Header.Username = store.Get(C.CookiesName.Username);
     }else{
         model.Header.IsAuthenticate = false;
     }
