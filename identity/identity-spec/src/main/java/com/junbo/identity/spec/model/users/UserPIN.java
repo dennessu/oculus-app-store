@@ -6,7 +6,7 @@
 package com.junbo.identity.spec.model.users;
 
 import com.junbo.common.id.UserId;
-import com.junbo.common.id.UserPINId;
+import com.junbo.common.id.UserPinId;
 import com.junbo.common.util.Identifiable;
 
 import java.util.Date;
@@ -15,9 +15,9 @@ import java.util.Date;
  * Created by kg on 3/10/14.
  */
 
-public class UserPIN extends ResourceMeta implements Identifiable<UserPINId> {
+public class UserPin extends ResourceMeta implements Identifiable<UserPinId> {
 
-    private UserPINId id;
+    private UserPinId id;
 
     private String value; // write only
 
@@ -32,11 +32,11 @@ public class UserPIN extends ResourceMeta implements Identifiable<UserPINId> {
     private String pinHash;
     private UserId userId;
 
-    public UserPINId getId() {
+    public UserPinId getId() {
         return id;
     }
 
-    public void setId(UserPINId id) {
+    public void setId(UserPinId id) {
         this.id = id;
     }
 

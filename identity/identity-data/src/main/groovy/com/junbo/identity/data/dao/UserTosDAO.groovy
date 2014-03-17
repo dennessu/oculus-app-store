@@ -5,21 +5,20 @@
  */
 package com.junbo.identity.data.dao
 
-import com.junbo.common.id.UserTosId
+import com.junbo.identity.data.entity.user.UserTosEntity
 import com.junbo.identity.spec.model.options.UserTosGetOption
-import com.junbo.identity.spec.model.users.UserTos
 /**
  * User tos acceptance DAO is used to fetch/update/delete/get user tos Acceptance(eg, legal) from the database
  */
 interface UserTosDAO {
 
-    UserTos save(UserTos entity)
+    UserTosEntity save(UserTosEntity entity)
 
-    UserTos update(UserTos entity)
+    UserTosEntity update(UserTosEntity entity)
 
-    UserTos get(UserTosId id)
+    UserTosEntity get(Long id)
 
-    List<UserTos> search(UserTosGetOption getOption)
+    List<UserTosEntity> search(UserTosGetOption getOption)
 
-    void delete(UserTosId id)
+    void delete(Long id)
 }

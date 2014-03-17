@@ -6,7 +6,7 @@
 package com.junbo.identity.rest.service.validator.impl;
 
 import com.junbo.common.id.UserOptinId;
-import com.junbo.identity.data.dao.UserOptinDAO;
+import com.junbo.identity.data.repository.UserOptinRepository;
 import com.junbo.identity.rest.service.validator.UserOptinValidator;
 import com.junbo.identity.spec.error.AppErrors;
 import com.junbo.identity.spec.model.users.UserOptin;
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserOptinValidatorImpl extends CommonValidator implements UserOptinValidator {
     @Autowired
-    private UserOptinDAO userOptInDAO;
+    private UserOptinRepository userOptInRepository;
 
     @Override
     public void validateCreate(Long userId, UserOptin userOptIn) {
@@ -60,7 +60,7 @@ public class UserOptinValidatorImpl extends CommonValidator implements UserOptin
     public void validateResourceAccessible(Long userId, Long optInId) {
         checkUserValid(userId);
 
-        UserOptin userOptIn = userOptInDAO.get(new UserOptinId(optInId));
+        UserOptin userOptIn = userOptInRepository.get(new UserOptinId(optInId));
         if(userOptIn == null) {
             throw AppErrors.INSTANCE.invalidResourceRequest().exception();
         }

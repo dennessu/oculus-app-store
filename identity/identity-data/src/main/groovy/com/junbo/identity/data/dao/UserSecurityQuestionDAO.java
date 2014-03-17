@@ -5,9 +5,8 @@
  */
 package com.junbo.identity.data.dao;
 
-import com.junbo.common.id.UserSecurityQuestionId;
+import com.junbo.identity.data.entity.user.UserSecurityQuestionEntity;
 import com.junbo.identity.spec.model.options.UserSecurityQuestionGetOption;
-import com.junbo.identity.spec.model.users.UserSecurityQuestion;
 
 import java.util.List;
 
@@ -15,13 +14,13 @@ import java.util.List;
  * Created by liangfu on 3/17/14.
  */
 public interface UserSecurityQuestionDAO {
-    UserSecurityQuestion save(UserSecurityQuestion entity);
+    UserSecurityQuestionEntity save(UserSecurityQuestionEntity entity);
 
-    UserSecurityQuestion update(UserSecurityQuestion entity);
+    UserSecurityQuestionEntity update(UserSecurityQuestionEntity entity);
 
-    UserSecurityQuestion get(UserSecurityQuestionId id);
+    UserSecurityQuestionEntity get(Long id);
 
-    List<UserSecurityQuestion> search(UserSecurityQuestionGetOption getOption);
+    List<UserSecurityQuestionEntity> search(UserSecurityQuestionGetOption getOption);
 
-    void delete(UserSecurityQuestionId id);
+    void delete(Long id);
 }

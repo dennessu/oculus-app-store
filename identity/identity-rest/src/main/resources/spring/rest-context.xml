@@ -11,8 +11,8 @@
 
     <!-- resource implementation -->
     <bean id="defaultGroupResource" class="com.junbo.identity.rest.resource.GroupResourceImpl" />
-    <bean id="defaultPasswordResource" class="com.junbo.identity.rest.resource.PasswordResourceImpl" />
-    <bean id="defaultPINResource" class="com.junbo.identity.rest.resource.PINResourceImpl" />
+    <bean id="defaultPasswordResource" class="com.junbo.identity.rest.resource.UserPasswordResourceImpl" />
+    <bean id="defaultPINResource" class="com.junbo.identity.rest.resource.UserPinResourceImpl" />
     <bean id="defaultSecurityQuestionResource" class="com.junbo.identity.rest.resource.SecurityQuestionResourceImpl" />
     <bean id="defaultUserAuthenticatorResource" class="com.junbo.identity.rest.resource.UserAuthenticatorResourceImpl" />
     <bean id="defaultUserDeviceResource" class="com.junbo.identity.rest.resource.UserDeviceResourceImpl" />

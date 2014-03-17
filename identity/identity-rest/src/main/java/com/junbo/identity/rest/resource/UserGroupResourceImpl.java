@@ -5,12 +5,13 @@
  */
 package com.junbo.identity.rest.resource;
 
-import com.junbo.common.id.GroupId;
+import com.junbo.common.id.UserGroupId;
 import com.junbo.common.id.UserId;
 import com.junbo.identity.spec.model.common.ResultList;
-import com.junbo.identity.spec.resource.UserGroupResource;
-import com.junbo.identity.spec.model.options.UserGroupGetOption;
 import com.junbo.identity.spec.model.users.UserGroup;
+import com.junbo.identity.spec.options.UserGroupGetOptions;
+import com.junbo.identity.spec.options.UserGroupListOptions;
+import com.junbo.identity.spec.resource.UserGroupResource;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.stereotype.Component;
 
@@ -25,32 +26,32 @@ import javax.ws.rs.ext.Provider;
 @org.springframework.context.annotation.Scope("prototype")
 public class UserGroupResourceImpl implements UserGroupResource {
     @Override
-    public Promise<UserGroup> create(GroupId groupId, UserGroup userGroup) {
+    public Promise<UserGroup> create(UserId userId, UserGroup userGroup) {
         return null;
     }
 
     @Override
-    public Promise<UserGroup> update(GroupId groupId, UserId userId, UserGroup userGroup) {
+    public Promise<UserGroup> put(UserId userId, UserGroupId userGroupId, UserGroup userGroup) {
         return null;
     }
 
     @Override
-    public Promise<UserGroup> patch(GroupId groupId, UserId userId, UserGroup userGroup) {
+    public Promise<UserGroup> patch(UserId userId, UserGroupId userGroupId, UserGroup userGroup) {
         return null;
     }
 
     @Override
-    public Promise<UserGroup> get(GroupId groupId, UserId userId) {
+    public Promise<UserGroup> delete(UserId userId, UserGroupId userGroupId) {
         return null;
     }
 
     @Override
-    public Promise<UserGroup> delete(GroupId groupId, UserId userId) {
+    public Promise<UserGroup> get(UserId userId, UserGroupId userGroupId, @BeanParam UserGroupGetOptions getOptions) {
         return null;
     }
 
     @Override
-    public Promise<ResultList<UserGroup>> list(GroupId groupId, @BeanParam UserGroupGetOption getOption) {
+    public Promise<ResultList<UserGroup>> list(UserId userId, @BeanParam UserGroupListOptions listOptions) {
         return null;
     }
 }

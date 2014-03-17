@@ -5,9 +5,8 @@
  */
 package com.junbo.identity.data.dao;
 
-import com.junbo.common.id.UserPhoneNumberId;
+import com.junbo.identity.data.entity.user.UserPhoneNumberEntity;
 import com.junbo.identity.spec.model.options.UserPhoneNumberGetOption;
-import com.junbo.identity.spec.model.users.UserPhoneNumber;
 
 import java.util.List;
 
@@ -15,13 +14,13 @@ import java.util.List;
  * Created by liangfu on 3/17/14.
  */
 public interface UserPhoneNumberDAO {
-    UserPhoneNumber save(UserPhoneNumber entity);
+    UserPhoneNumberEntity save(UserPhoneNumberEntity entity);
 
-    UserPhoneNumber update(UserPhoneNumber entity);
+    UserPhoneNumberEntity update(UserPhoneNumberEntity entity);
 
-    UserPhoneNumber get(UserPhoneNumberId id);
+    UserPhoneNumberEntity get(Long id);
 
-    List<UserPhoneNumber> search(UserPhoneNumberGetOption getOption);
+    List<UserPhoneNumberEntity> search(UserPhoneNumberGetOption getOption);
 
-    void delete(UserPhoneNumberId id);
+    void delete(Long id);
 }

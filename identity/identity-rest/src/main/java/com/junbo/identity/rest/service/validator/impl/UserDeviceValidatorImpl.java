@@ -6,7 +6,7 @@
 package com.junbo.identity.rest.service.validator.impl;
 
 import com.junbo.common.id.UserDeviceId;
-import com.junbo.identity.data.dao.UserDeviceDAO;
+import com.junbo.identity.data.repository.UserDeviceRepository;
 import com.junbo.identity.rest.service.validator.UserDeviceValidator;
 import com.junbo.identity.spec.error.AppErrors;
 import com.junbo.identity.spec.model.users.UserDevice;
@@ -20,7 +20,7 @@ import org.springframework.util.StringUtils;
 @Component
 public class UserDeviceValidatorImpl extends CommonValidator implements UserDeviceValidator {
     @Autowired
-    private UserDeviceDAO userDeviceDAO;
+    private UserDeviceRepository userDeviceRepository;
 
     @Override
     public void validateCreate(Long userId, UserDevice userDeviceProfile) {
@@ -61,7 +61,7 @@ public class UserDeviceValidatorImpl extends CommonValidator implements UserDevi
     public void validateResourceAccessible(Long userId, Long deviceProfileId) {
         checkUserValid(userId);
 
-        UserDevice userDeviceProfile = userDeviceDAO.get(new UserDeviceId(deviceProfileId));
+        UserDevice userDeviceProfile = userDeviceRepository.get(new UserDeviceId(deviceProfileId));
         if(userDeviceProfile == null) {
             throw AppErrors.INSTANCE.invalidResourceRequest().exception();
         }

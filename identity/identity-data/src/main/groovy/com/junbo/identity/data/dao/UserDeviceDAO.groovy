@@ -5,22 +5,21 @@
  */
 package com.junbo.identity.data.dao
 
-import com.junbo.common.id.UserDeviceId
+import com.junbo.identity.data.entity.user.UserDeviceEntity
 import com.junbo.identity.spec.model.options.UserDeviceGetOption
-import com.junbo.identity.spec.model.users.UserDevice
 
 /**
  * User Device Profile DAO is used to fetch/update/delete/get user device profile data from the database
  */
 interface UserDeviceDAO {
 
-    UserDevice save(UserDevice entity)
+    UserDeviceEntity save(UserDeviceEntity entity)
 
-    UserDevice update(UserDevice entity)
+    UserDeviceEntity update(UserDeviceEntity entity)
 
-    UserDevice get(UserDeviceId id)
+    UserDeviceEntity get(Long id)
 
-    List<UserDevice> search(UserDeviceGetOption getOption)
+    List<UserDeviceEntity> search(UserDeviceGetOption getOption)
 
-    void delete(UserDeviceId id)
+    void delete(Long id)
 }

@@ -6,15 +6,17 @@
 package com.junbo.identity.data;
 
 import com.junbo.common.id.*;
-import com.junbo.identity.data.dao.GroupDAO;
 import com.junbo.identity.data.dao.SecurityQuestionDAO;
 import com.junbo.identity.data.dao.UserPINDAO;
-import com.junbo.identity.data.dao.UserPasswordDAO;
 import com.junbo.identity.data.entity.user.UserPasswordStrength;
+import com.junbo.identity.data.repository.GroupRepository;
+import com.junbo.identity.data.repository.SecurityQuestionRepository;
+import com.junbo.identity.data.repository.UserPINRepository;
+import com.junbo.identity.data.repository.UserPasswordRepository;
 import com.junbo.identity.spec.model.domaindata.SecurityQuestion;
 import com.junbo.identity.spec.model.options.GroupGetOption;
 import com.junbo.identity.spec.model.users.Group;
-import com.junbo.identity.spec.model.users.UserPIN;
+import com.junbo.identity.spec.model.users.UserPin;
 import com.junbo.identity.spec.model.users.UserPassword;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -39,16 +41,16 @@ import java.util.UUID;
 public class UserDAOTest extends AbstractTestNGSpringContextTests {
 
     @Autowired
-    private GroupDAO groupDAO;
+    private GroupRepository groupRepository;
 
     @Autowired
-    private UserPasswordDAO userPasswordDAO;
+    private UserPasswordRepository userPasswordRepository;
 
     @Autowired
-    private UserPINDAO userPINDAO;
+    private UserPINRepository userPINRepository;
 
     @Autowired
-    private SecurityQuestionDAO securityQuestionDAO;
+    private SecurityQuestionRepository securityQuestionRepository;
 
     private Random rand = new Random();
 
@@ -59,20 +61,20 @@ public class UserDAOTest extends AbstractTestNGSpringContextTests {
         group.setValue("test " + UUID.randomUUID().toString());
         group.setActive(true);
         group.setCreatedTime(new Date());
-        groupDAO.save(group);
+        groupRepository.save(group);
 
-        Group newGroup = groupDAO.get(group.getId());
+        Group newGroup = groupRepository.get(group.getId());
         Assert.assertEquals(group.getValue(), newGroup.getValue());
 
         String newValue = "test2 " + UUID.randomUUID().toString();
         newGroup.setValue(newValue);
-        groupDAO.update(newGroup);
-        newGroup = groupDAO.get(group.getId());
+        groupRepository.update(newGroup);
+        newGroup = groupRepository.get(group.getId());
         Assert.assertEquals(newValue, newGroup.getValue());
 
         GroupGetOption option = new GroupGetOption();
         option.setValue("test");
-        List<Group> groupList = groupDAO.search(option);
+        List<Group> groupList = groupRepository.search(option);
 
         Assert.assertNotEquals(groupList.size(), 0);
     }
@@ -90,22 +92,22 @@ public class UserDAOTest extends AbstractTestNGSpringContextTests {
         userPassword.setExpiresBy(new Date());
         userPassword.setCreatedTime(new Date());
         userPassword.setUpdatedTime(new Date());
-        userPasswordDAO.save(userPassword);
+        userPasswordRepository.save(userPassword);
 
-        UserPassword newUserPassword = userPasswordDAO.get(userPassword.getId());
+        UserPassword newUserPassword = userPasswordRepository.get(userPassword.getId());
         Assert.assertEquals(userPassword.getActive(), newUserPassword.getActive());
 
         Boolean newValue = !userPassword.getActive();
         newUserPassword.setActive(newValue);
-        userPasswordDAO.update(newUserPassword);
-        newUserPassword = userPasswordDAO.get(newUserPassword.getId());
+        userPasswordRepository.update(newUserPassword);
+        newUserPassword = userPasswordRepository.get(newUserPassword.getId());
         Assert.assertEquals(newValue, newUserPassword.getActive());
     }
 
     @Test(enabled = false)
     public void testUserPinDAO() {
-        UserPIN userPIN = new UserPIN();
-        userPIN.setId(new UserPINId(rand.nextLong()));
+        UserPin userPIN = new UserPin();
+        userPIN.setId(new UserPinId(rand.nextLong()));
         userPIN.setUserId(new UserId(rand.nextLong()));
         userPIN.setPinHash(UUID.randomUUID().toString());
         userPIN.setPinSalt(UUID.randomUUID().toString());
@@ -114,15 +116,15 @@ public class UserDAOTest extends AbstractTestNGSpringContextTests {
         userPIN.setExpiresBy(new Date());
         userPIN.setCreatedTime(new Date());
         userPIN.setUpdatedTime(new Date());
-        userPINDAO.save(userPIN);
+        userPINRepository.save(userPIN);
 
-        UserPIN newUserPIN = userPINDAO.get(userPIN.getId());
+        UserPin newUserPIN = userPINRepository.get(userPIN.getId());
         Assert.assertEquals(userPIN.getActive(), newUserPIN.getActive());
 
         Boolean newValue = !userPIN.getActive();
         newUserPIN.setActive(newValue);
-        userPINDAO.update(newUserPIN);
-        newUserPIN = userPINDAO.get(newUserPIN.getId());
+        userPINRepository.update(newUserPIN);
+        newUserPIN = userPINRepository.get(newUserPIN.getId());
         Assert.assertEquals(newValue, newUserPIN.getActive());
     }
 
@@ -133,15 +135,15 @@ public class UserDAOTest extends AbstractTestNGSpringContextTests {
         securityQuestion.setValue("test " + UUID.randomUUID().toString());
         securityQuestion.setCreatedTime(new Date());
         securityQuestion.setUpdatedTime(new Date());
-        securityQuestionDAO.save(securityQuestion);
+        securityQuestionRepository.save(securityQuestion);
 
-        SecurityQuestion newSecurityQuestion = securityQuestionDAO.get(securityQuestion.getId());
+        SecurityQuestion newSecurityQuestion = securityQuestionRepository.get(securityQuestion.getId());
         Assert.assertEquals(securityQuestion.getValue(), newSecurityQuestion.getValue());
 
         String newValue = "Test2 " + UUID.randomUUID().toString();
         newSecurityQuestion.setValue(newValue);
-        securityQuestionDAO.update(newSecurityQuestion);
-        newSecurityQuestion = securityQuestionDAO.get(newSecurityQuestion.getId());
+        securityQuestionRepository.update(newSecurityQuestion);
+        newSecurityQuestion = securityQuestionRepository.get(newSecurityQuestion.getId());
         Assert.assertEquals(newValue, newSecurityQuestion.getValue());
     }
 }

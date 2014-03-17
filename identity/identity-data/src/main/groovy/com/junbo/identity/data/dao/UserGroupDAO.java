@@ -5,9 +5,8 @@
  */
 package com.junbo.identity.data.dao;
 
-import com.junbo.common.id.UserGroupId;
+import com.junbo.identity.data.entity.user.UserGroupEntity;
 import com.junbo.identity.spec.model.options.UserGroupGetOption;
-import com.junbo.identity.spec.model.users.UserGroup;
 
 import java.util.List;
 
@@ -15,13 +14,13 @@ import java.util.List;
  * Created by liangfu on 3/17/14.
  */
 public interface UserGroupDAO {
-    UserGroup save(UserGroup entity);
+    UserGroupEntity save(UserGroupEntity entity);
 
-    UserGroup update(UserGroup entity);
+    UserGroupEntity update(UserGroupEntity entity);
 
-    UserGroup get(UserGroupId id);
+    UserGroupEntity get(Long id);
 
-    List<UserGroup> search(UserGroupGetOption getOption);
+    List<UserGroupEntity> search(UserGroupGetOption getOption);
 
-    void delete(UserGroupId id);
+    void delete(Long id);
 }

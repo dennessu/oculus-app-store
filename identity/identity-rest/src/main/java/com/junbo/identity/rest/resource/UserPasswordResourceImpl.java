@@ -6,12 +6,13 @@
 package com.junbo.identity.rest.resource;
 
 import com.junbo.common.id.UserId;
-import com.junbo.common.id.UserPINId;
+import com.junbo.common.id.UserPasswordId;
 import com.junbo.identity.spec.model.common.ResultList;
-import com.junbo.identity.spec.model.options.UserPinGetOption;
 import com.junbo.identity.spec.model.users.User;
-import com.junbo.identity.spec.model.users.UserPIN;
-import com.junbo.identity.spec.resource.PINResource;
+import com.junbo.identity.spec.model.users.UserPassword;
+import com.junbo.identity.spec.options.UserPasswordGetOptions;
+import com.junbo.identity.spec.options.UserPasswordListOptions;
+import com.junbo.identity.spec.resource.UserPasswordResource;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.stereotype.Component;
 
@@ -24,19 +25,19 @@ import javax.ws.rs.ext.Provider;
 @Provider
 @Component
 @org.springframework.context.annotation.Scope("prototype")
-public class PINResourceImpl implements PINResource {
+public class UserPasswordResourceImpl implements UserPasswordResource {
     @Override
-    public Promise<UserPIN> get(UserId userId, UserPINId userPinId) {
+    public Promise<User> create(UserId userId, UserPassword userPassword) {
         return null;
     }
 
     @Override
-    public Promise<ResultList<UserPIN>> list(UserId userId, @BeanParam UserPinGetOption userPinGetOption) {
+    public Promise<UserPassword> get(UserId userId, UserPasswordId userPasswordId, @BeanParam UserPasswordGetOptions getOptions) {
         return null;
     }
 
     @Override
-    public Promise<User> post(UserId userId, UserPIN userPin) {
+    public Promise<ResultList<UserPassword>> list(UserId userId, @BeanParam UserPasswordListOptions listOptions) {
         return null;
     }
 }

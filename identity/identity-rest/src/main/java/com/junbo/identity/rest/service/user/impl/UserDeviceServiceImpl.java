@@ -6,7 +6,7 @@
 package com.junbo.identity.rest.service.user.impl;
 
 import com.junbo.common.id.UserDeviceId;
-import com.junbo.identity.data.dao.UserDeviceDAO;
+import com.junbo.identity.data.repository.UserDeviceRepository;
 import com.junbo.identity.rest.service.user.UserDeviceService;
 import com.junbo.identity.spec.model.options.UserDeviceGetOption;
 import com.junbo.identity.spec.model.users.UserDevice;
@@ -23,30 +23,30 @@ import java.util.List;
 @Transactional
 public class UserDeviceServiceImpl implements UserDeviceService {
     @Autowired
-    private UserDeviceDAO userDeviceDAO;
+    private UserDeviceRepository userDeviceRepository;
 
     @Override
     public UserDevice save(Long userId, UserDevice userDeviceProfile) {
-        return userDeviceDAO.save(userDeviceProfile);
+        return userDeviceRepository.save(userDeviceProfile);
     }
 
     @Override
     public UserDevice update(Long userId, Long deviceProfileId, UserDevice userDeviceProfileProfile) {
-        return userDeviceDAO.update(userDeviceProfileProfile);
+        return userDeviceRepository.update(userDeviceProfileProfile);
     }
 
     @Override
     public UserDevice get(Long userId, Long deviceProfileId) {
-        return userDeviceDAO.get(new UserDeviceId(deviceProfileId));
+        return userDeviceRepository.get(new UserDeviceId(deviceProfileId));
     }
 
     @Override
     public List<UserDevice> search(UserDeviceGetOption getOption) {
-        return userDeviceDAO.search(getOption);
+        return userDeviceRepository.search(getOption);
     }
 
     @Override
     public void delete(Long userId, Long deviceId) {
-        userDeviceDAO.delete(new UserDeviceId(deviceId));
+        userDeviceRepository.delete(new UserDeviceId(deviceId));
     }
 }

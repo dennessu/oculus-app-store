@@ -8,15 +8,16 @@ package com.junbo.identity.rest.resource;
 import com.junbo.common.id.GroupId;
 import com.junbo.identity.rest.service.group.GroupService;
 import com.junbo.identity.spec.model.common.ResultList;
-import com.junbo.identity.spec.model.common.ResultListUtil;
-import com.junbo.identity.spec.model.options.GroupGetOption;
 import com.junbo.identity.spec.model.users.Group;
+import com.junbo.identity.spec.model.users.UserGroup;
+import com.junbo.identity.spec.options.GroupGetOptions;
+import com.junbo.identity.spec.options.GroupListOptions;
+import com.junbo.identity.spec.options.UserGroupListOptions;
 import com.junbo.identity.spec.resource.GroupResource;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.ws.rs.BeanParam;
 import javax.ws.rs.ext.Provider;
 
 /**
@@ -35,7 +36,7 @@ public class GroupResourceImpl implements GroupResource {
     }
 
     @Override
-    public Promise<Group> update(GroupId groupId, Group group) {
+    public Promise<Group> put(GroupId groupId, Group group) {
         return Promise.pure(groupService.update(groupId, group));
     }
 
@@ -45,13 +46,17 @@ public class GroupResourceImpl implements GroupResource {
     }
 
     @Override
-    public Promise<Group> get(GroupId groupId) {
+    public Promise<Group> get(GroupId groupId, GroupGetOptions groupGetOptions) {
         return Promise.pure(groupService.get(groupId));
     }
 
     @Override
-    public Promise<ResultList<Group>> list(@BeanParam GroupGetOption getOption) {
-        ResultList<Group> groups = ResultListUtil.init(groupService.search(getOption), getOption.getLimit());
-        return Promise.pure(groups);
+    public Promise<ResultList<Group>> list(GroupListOptions listOptions) {
+        return Promise.pure(null);
+    }
+
+    @Override
+    public Promise<ResultList<UserGroup>> listUserGroups(GroupId groupId, UserGroupListOptions listOptions) {
+        return null;
     }
 }

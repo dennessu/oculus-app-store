@@ -6,11 +6,9 @@
 package com.junbo.identity.rest.service.validator.impl;
 
 import com.junbo.common.id.UserId;
-import com.junbo.identity.rest.service.password.PasswordService;
 import com.junbo.identity.rest.service.validator.UserServiceValidator;
 import com.junbo.identity.spec.error.AppErrors;
 import com.junbo.identity.spec.model.users.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -18,8 +16,6 @@ import org.springframework.stereotype.Component;
  */
 @Component
 class UserServiceValidatorImpl extends CommonValidator implements UserServiceValidator {
-    @Autowired
-    private PasswordService passwordService;
 
     @Override
     public void validateCreate(User user) {
@@ -58,7 +54,7 @@ class UserServiceValidatorImpl extends CommonValidator implements UserServiceVal
         if(id == null) {
             throw AppErrors.INSTANCE.invalidNullEmptyInputParam().exception();
         }
-        User existingUser = userDAO.get(new UserId(id));
+        User existingUser = userRepository.get(new UserId(id));
         if(existingUser == null) {
             throw AppErrors.INSTANCE.notExistingUser("userId = " + id.toString()).exception();
         }

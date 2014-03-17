@@ -7,8 +7,9 @@ package com.junbo.identity.rest.resource;
 
 import com.junbo.common.id.UserId;
 import com.junbo.identity.spec.model.common.ResultList;
-import com.junbo.identity.spec.model.options.UserGetOption;
 import com.junbo.identity.spec.model.users.User;
+import com.junbo.identity.spec.options.UserGetOptions;
+import com.junbo.identity.spec.options.UserListOptions;
 import com.junbo.identity.spec.resource.UserResource;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.stereotype.Component;
@@ -29,7 +30,7 @@ public class UserResourceImpl implements UserResource {
     }
 
     @Override
-    public Promise<User> update(UserId userId, User user) {
+    public Promise<User> put(UserId userId, User user) {
         return null;
     }
 
@@ -39,12 +40,12 @@ public class UserResourceImpl implements UserResource {
     }
 
     @Override
-    public Promise<User> get(UserId userId) {
+    public Promise<User> get(UserId userId, @BeanParam UserGetOptions getOptions) {
         return null;
     }
 
     @Override
-    public Promise<ResultList<User>> list(@BeanParam UserGetOption getOption) {
+    public Promise<ResultList<User>> list(@BeanParam UserListOptions listOptions) {
         return null;
     }
 }

@@ -5,9 +5,8 @@
  */
 package com.junbo.identity.data.dao;
 
-import com.junbo.common.id.UserPasswordId;
+import com.junbo.identity.data.entity.user.UserPasswordEntity;
 import com.junbo.identity.spec.model.options.UserPasswordGetOption;
-import com.junbo.identity.spec.model.users.UserPassword;
 
 import java.util.List;
 
@@ -15,13 +14,13 @@ import java.util.List;
  * Created by liangfu on 3/16/14.
  */
 public interface UserPasswordDAO {
-    UserPassword save(UserPassword entity);
+    UserPasswordEntity save(UserPasswordEntity entity);
 
-    UserPassword update(UserPassword entity);
+    UserPasswordEntity update(UserPasswordEntity entity);
 
-    UserPassword get(UserPasswordId id);
+    UserPasswordEntity get(Long id);
 
-    List<UserPassword> search(UserPasswordGetOption getOption);
+    List<UserPasswordEntity> search(UserPasswordGetOption getOption);
 
-    void delete(UserPasswordId id);
+    void delete(Long id);
 }

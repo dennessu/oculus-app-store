@@ -8,8 +8,9 @@ package com.junbo.identity.rest.resource;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserTosId;
 import com.junbo.identity.spec.model.common.ResultList;
-import com.junbo.identity.spec.model.options.UserTosGetOption;
 import com.junbo.identity.spec.model.users.UserTos;
+import com.junbo.identity.spec.options.UserTosGetOptions;
+import com.junbo.identity.spec.options.UserTosListOptions;
 import com.junbo.identity.spec.resource.UserTosResource;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.stereotype.Component;
@@ -30,7 +31,7 @@ public class UserTosResourceImpl implements UserTosResource {
     }
 
     @Override
-    public Promise<UserTos> update(UserId userId, UserTosId userTosId, UserTos userTos) {
+    public Promise<UserTos> put(UserId userId, UserTosId userTosId, UserTos userTos) {
         return null;
     }
 
@@ -40,17 +41,17 @@ public class UserTosResourceImpl implements UserTosResource {
     }
 
     @Override
-    public Promise<UserTos> get(UserId userId, UserTosId userTosId) {
-        return null;
-    }
-
-    @Override
     public Promise<Void> delete(UserId userId, UserTosId userTosId) {
         return null;
     }
 
     @Override
-    public Promise<ResultList<UserTos>> list(UserId userId, @BeanParam UserTosGetOption getOption) {
+    public Promise<UserTos> get(UserId userId, UserTosId userTosId, @BeanParam UserTosGetOptions getOptions) {
+        return null;
+    }
+
+    @Override
+    public Promise<ResultList<UserTos>> list(UserId userId, @BeanParam UserTosListOptions listOptions) {
         return null;
     }
 }

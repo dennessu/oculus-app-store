@@ -5,9 +5,10 @@
  */
 package com.junbo.identity.rest.service.password.impl;
 
+import com.junbo.common.id.PasswordRuleId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserPasswordId;
-import com.junbo.identity.data.dao.PasswordRuleDAO;
+import com.junbo.identity.data.repository.PasswordRuleRepository;
 import com.junbo.identity.data.util.PasswordDAOUtil;
 import com.junbo.identity.rest.service.password.PasswordService;
 import com.junbo.identity.rest.service.util.UserPasswordUtil;
@@ -30,7 +31,7 @@ import java.util.List;
 public class PasswordServiceImpl implements PasswordService {
 
     @Autowired
-    private PasswordRuleDAO passwordDAO;
+    private PasswordRuleRepository passwordRepository;
 
     @Autowired
     private PasswordRuleValidator validator;
@@ -62,21 +63,21 @@ public class PasswordServiceImpl implements PasswordService {
 
     @Override
     public PasswordRule save(PasswordRule passwordRule) {
-        return passwordDAO.save(passwordRule);
+        return passwordRepository.save(passwordRule);
     }
 
     @Override
     public void delete(Long id) {
-        passwordDAO.delete(id);
+        passwordRepository.delete(new PasswordRuleId(id));
     }
 
     @Override
     public PasswordRule get(Long id) {
-        return passwordDAO.get(id);
+        return passwordRepository.get(new PasswordRuleId(id));
     }
 
     @Override
     public PasswordRule update(PasswordRule passwordRule) {
-        return passwordDAO.update(passwordRule);
+        return passwordRepository.update(passwordRule);
     }
 }

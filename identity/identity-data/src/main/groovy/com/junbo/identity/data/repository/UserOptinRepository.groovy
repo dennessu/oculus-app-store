@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.identity.data.dao
+package com.junbo.identity.data.repository
 
 import com.junbo.common.id.UserOptinId
 import com.junbo.identity.spec.model.options.UserOptinGetOption
@@ -12,7 +12,7 @@ import com.junbo.identity.spec.model.users.UserOptin
 /**
  * User OptIn DAO is used to fetch/update/delete/get user OptIn data(such as sports, news) from the database
  */
-interface UserOptinDAO {
+interface UserOptinRepository {
 
     UserOptin save(UserOptin entity)
 

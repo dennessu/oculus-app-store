@@ -6,7 +6,7 @@
 package com.junbo.identity.rest.service.user.impl;
 
 import com.junbo.common.id.UserId;
-import com.junbo.identity.data.dao.UserDAO;
+import com.junbo.identity.data.repository.UserRepository;
 import com.junbo.identity.rest.service.user.UserService;
 import com.junbo.identity.rest.service.validator.UserServiceValidator;
 import com.junbo.identity.spec.model.options.UserGetOption;
@@ -21,7 +21,7 @@ import java.util.List;
 @Transactional("transactionManager")
 class UserServiceImpl implements UserService {
     @Autowired
-    private UserDAO userDAO;
+    private UserRepository userRepository;
 
     @Autowired
     private UserServiceValidator validator;
@@ -29,29 +29,29 @@ class UserServiceImpl implements UserService {
     @Override
     public User save(User user) {
         validator.validateCreate(user);
-        return (userDAO.save(user));
+        return (userRepository.save(user));
     }
 
     @Override
     public User update(Long userId, User user) {
         validator.validateUpdate(userId, user);
-        return userDAO.update(user);
+        return userRepository.update(user);
     }
 
     @Override
     public User get(Long id) {
-        return userDAO.get(new UserId(id));
+        return userRepository.get(new UserId(id));
     }
 
     @Override
     public void delete(Long id) {
         validator.validateDelete(id);
-        userDAO.delete(new UserId(id));
+        userRepository.delete(new UserId(id));
     }
 
     @Override
     public List<User> search(String userName, String status) {
         UserGetOption getOption = new UserGetOption();
-        return userDAO.search(getOption);
+        return userRepository.search(getOption);
     }
 }

@@ -4,21 +4,21 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.identity.data.dao
-import com.junbo.common.id.UserId
+
+import com.junbo.identity.data.entity.user.UserEntity
 import com.junbo.identity.spec.model.options.UserGetOption
-import com.junbo.identity.spec.model.users.User
 /**
  * User DAO is used to fetch/update/delete/get user data from the database
  */
 interface UserDAO {
     // User Model Layer
-    User save(User user)
+    UserEntity save(UserEntity user)
 
-    User update(User user)
+    UserEntity update(UserEntity user)
 
-    User get(UserId userId)
+    UserEntity get(Long userId)
 
-    List<User> search(UserGetOption getOption)
+    List<UserEntity> search(UserGetOption getOption)
 
-    void delete(UserId userId)
+    void delete(Long userId)
 }

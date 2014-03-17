@@ -5,9 +5,8 @@
  */
 package com.junbo.identity.data.dao;
 
-import com.junbo.common.id.UserPINId;
+import com.junbo.identity.data.entity.user.UserPINEntity;
 import com.junbo.identity.spec.model.options.UserPinGetOption;
-import com.junbo.identity.spec.model.users.UserPIN;
 
 import java.util.List;
 
@@ -16,13 +15,13 @@ import java.util.List;
  */
 public interface UserPINDAO {
 
-    UserPIN save(UserPIN entity);
+    UserPINEntity save(UserPINEntity entity);
 
-    UserPIN update(UserPIN entity);
+    UserPINEntity update(UserPINEntity entity);
 
-    UserPIN get(UserPINId id);
+    UserPINEntity get(Long id);
 
-    List<UserPIN> search(UserPinGetOption getOption);
+    List<UserPINEntity> search(UserPinGetOption getOption);
 
-    void delete(UserPINId id);
+    void delete(Long id);
 }

@@ -5,14 +5,15 @@
  */
 package com.junbo.identity.data.dao
 
-import com.junbo.identity.spec.model.password.PasswordRule
+import com.junbo.identity.data.entity.password.PasswordRuleEntity
+
 
 /**
  * Created by liangfu on 2/24/14.
  */
 interface PasswordRuleDAO {
-    PasswordRule get(Long id)
-    PasswordRule save(PasswordRule passwordRule)
+    PasswordRuleEntity get(Long id)
+    PasswordRuleEntity save(PasswordRuleEntity passwordRule)
     void delete(Long id)
-    PasswordRule update(PasswordRule passwordRule)
+    PasswordRuleEntity update(PasswordRuleEntity passwordRule)
 }

@@ -6,7 +6,7 @@
 package com.junbo.identity.rest.service.group.impl;
 
 import com.junbo.common.id.GroupId;
-import com.junbo.identity.data.dao.GroupDAO;
+import com.junbo.identity.data.repository.GroupRepository;
 import com.junbo.identity.rest.service.group.GroupService;
 import com.junbo.identity.rest.service.validator.GroupValidator;
 import com.junbo.identity.spec.model.options.GroupGetOption;
@@ -24,7 +24,7 @@ import java.util.List;
 @Component
 public class GroupServiceImpl implements GroupService{
     @Autowired
-    private GroupDAO groupDAO;
+    private GroupRepository groupRepository;
 
     @Autowired
     private GroupValidator groupValidator;
@@ -35,20 +35,20 @@ public class GroupServiceImpl implements GroupService{
     @Override
     public Group get(GroupId groupId) {
         groupValidator.validateGet(groupId);
-        return groupDAO.get(groupId);
+        return groupRepository.get(groupId);
     }
 
     @Override
     public Group create(Group group) {
         groupValidator.validateCreate(group);
         group.setId(new GroupId(idGeneratorFacade.nextId(GroupId.class)));
-        return groupDAO.save(group);
+        return groupRepository.save(group);
     }
 
     @Override
     public Group update(GroupId groupId, Group group) {
         groupValidator.validateUpdate(groupId, group);
-        return groupDAO.update(group);
+        return groupRepository.update(group);
     }
 
     @Override
@@ -61,11 +61,11 @@ public class GroupServiceImpl implements GroupService{
         if(group.getActive() != null) {
             existing.setActive(group.getActive());
         }
-        return groupDAO.update(existing);
+        return groupRepository.update(existing);
     }
 
     @Override
     public List<Group> search(GroupGetOption getOption) {
-        return groupDAO.search(getOption == null ? new GroupGetOption() : getOption);
+        return groupRepository.search(getOption == null ? new GroupGetOption() : getOption);
     }
 }

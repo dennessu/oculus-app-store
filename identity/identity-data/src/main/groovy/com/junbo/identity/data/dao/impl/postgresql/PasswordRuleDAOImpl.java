@@ -7,10 +7,6 @@ package com.junbo.identity.data.dao.impl.postgresql;
 
 import com.junbo.identity.data.dao.PasswordRuleDAO;
 import com.junbo.identity.data.entity.password.PasswordRuleEntity;
-import com.junbo.identity.data.mapper.ModelMapper;
-import com.junbo.identity.data.util.Constants;
-import com.junbo.identity.spec.model.password.PasswordRule;
-import com.junbo.oom.core.MappingContext;
 import com.junbo.sharding.core.hibernate.SessionFactoryWrapper;
 import com.junbo.sharding.util.Helper;
 import org.hibernate.Session;
@@ -18,8 +14,6 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-
-import java.util.Date;
 
 /**
  * Created by liangfu on 2/24/14.
@@ -29,9 +23,6 @@ public class PasswordRuleDAOImpl implements PasswordRuleDAO {
     @Autowired
     @Qualifier("sessionFactory")
     private SessionFactory sessionFactory;
-
-    @Autowired
-    private ModelMapper modelMapper;
 
     private SessionFactoryWrapper sessionFactoryWrapper;
 
@@ -44,20 +35,15 @@ public class PasswordRuleDAOImpl implements PasswordRuleDAO {
     }
 
     @Override
-    public PasswordRule get(Long id) {
-        PasswordRuleEntity entity = (PasswordRuleEntity)currentSession().get(PasswordRuleEntity.class, id);
-
-        return modelMapper.toPasswordRule(entity, new MappingContext());
+    public PasswordRuleEntity get(Long id) {
+        return (PasswordRuleEntity)currentSession().get(PasswordRuleEntity.class, id);
     }
 
     @Override
-    public PasswordRule save(PasswordRule passwordRule) {
-        PasswordRuleEntity entity = modelMapper.toPasswordRule(passwordRule, new MappingContext());
-        entity.setCreatedBy(Constants.DEFAULT_CLIENT_ID);
-        entity.setCreatedTime(new Date());
-        currentSession().persist(entity);
+    public PasswordRuleEntity save(PasswordRuleEntity passwordRule) {
+        currentSession().persist(passwordRule);
 
-        return get(entity.getId());
+        return get(passwordRule.getId());
     }
 
     @Override
@@ -68,17 +54,10 @@ public class PasswordRuleDAOImpl implements PasswordRuleDAO {
     }
 
     @Override
-    public PasswordRule update(PasswordRule passwordRule) {
-        PasswordRuleEntity entity = modelMapper.toPasswordRule(passwordRule, new MappingContext());
-        PasswordRuleEntity entityInDB = (PasswordRuleEntity)currentSession().get(PasswordRuleEntity.class,
-                passwordRule.getId().getValue());
-        entity.setCreatedBy(entityInDB.getCreatedBy());
-        entity.setCreatedTime(entityInDB.getCreatedTime());
-        entity.setUpdatedBy(Constants.DEFAULT_CLIENT_ID);
-        entity.setUpdatedTime(new Date());
-        currentSession().merge(entity);
+    public PasswordRuleEntity update(PasswordRuleEntity passwordRule) {
+        currentSession().merge(passwordRule);
         currentSession().flush();
 
-        return get(entity.getId());
+        return get(passwordRule.getId());
     }
 }

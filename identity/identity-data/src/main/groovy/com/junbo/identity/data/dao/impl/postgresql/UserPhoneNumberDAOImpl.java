@@ -5,13 +5,9 @@
  */
 package com.junbo.identity.data.dao.impl.postgresql;
 
-import com.junbo.common.id.UserPhoneNumberId;
 import com.junbo.identity.data.dao.UserPhoneNumberDAO;
 import com.junbo.identity.data.entity.user.UserPhoneNumberEntity;
-import com.junbo.identity.data.mapper.ModelMapper;
 import com.junbo.identity.spec.model.options.UserPhoneNumberGetOption;
-import com.junbo.identity.spec.model.users.UserPhoneNumber;
-import com.junbo.oom.core.MappingContext;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +15,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,37 +26,32 @@ public class UserPhoneNumberDAOImpl implements UserPhoneNumberDAO {
     @Qualifier("sessionFactory")
     private SessionFactory sessionFactory;
 
-    @Autowired
-    private ModelMapper modelMapper;
-
     private Session currentSession() {
         return sessionFactory.getCurrentSession();
     }
 
     @Override
-    public UserPhoneNumber save(UserPhoneNumber entity) {
-        UserPhoneNumberEntity userPhoneNumberEntity = modelMapper.toUserPhoneNumber(entity, new MappingContext());
-        currentSession().save(userPhoneNumberEntity);
+    public UserPhoneNumberEntity save(UserPhoneNumberEntity entity) {
+        currentSession().save(entity);
 
         return get(entity.getId());
     }
 
     @Override
-    public UserPhoneNumber update(UserPhoneNumber entity) {
-        UserPhoneNumberEntity userPhoneNumberEntity = modelMapper.toUserPhoneNumber(entity, new MappingContext());
-        currentSession().merge(userPhoneNumberEntity);
+    public UserPhoneNumberEntity update(UserPhoneNumberEntity entity) {
+        currentSession().merge(entity);
+        currentSession().flush();
 
         return get(entity.getId());
     }
 
     @Override
-    public UserPhoneNumber get(UserPhoneNumberId id) {
-        return modelMapper.toUserPhoneNumber((UserPhoneNumberEntity)currentSession().
-                get(UserPhoneNumberEntity.class, id.getValue()), new MappingContext());
+    public UserPhoneNumberEntity get(Long id) {
+        return (UserPhoneNumberEntity)currentSession().get(UserPhoneNumberEntity.class, id);
     }
 
     @Override
-    public List<UserPhoneNumber> search(UserPhoneNumberGetOption getOption) {
+    public List<UserPhoneNumberEntity> search(UserPhoneNumberGetOption getOption) {
         String query = "select * from user_phone_number where user_id = " + (getOption.getUserId().getValue()) +
                 (StringUtils.isEmpty(getOption.getType()) ? "" : (" and type = " + getOption.getType())) +
                 (StringUtils.isEmpty(getOption.getValue()) ? "" : (" and value = " + getOption.getValue())) +
@@ -70,17 +60,13 @@ public class UserPhoneNumberDAOImpl implements UserPhoneNumberDAO {
 
         List entities = currentSession().createSQLQuery(query).addEntity(UserPhoneNumberEntity.class).list();
 
-        List<UserPhoneNumber> results = new ArrayList<UserPhoneNumber>();
-        for(int i =0 ; i< entities.size(); i++) {
-            results.add(modelMapper.toUserPhoneNumber((UserPhoneNumberEntity)entities.get(i), new MappingContext()));
-        }
-        return results;
+        return entities;
     }
 
     @Override
-    public void delete(UserPhoneNumberId id) {
+    public void delete(Long id) {
         UserPhoneNumberEntity entity =
-                (UserPhoneNumberEntity)currentSession().get(UserPhoneNumberEntity.class, id.getValue());
+                (UserPhoneNumberEntity)currentSession().get(UserPhoneNumberEntity.class, id);
         currentSession().delete(entity);
     }
 }

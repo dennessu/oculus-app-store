@@ -8,9 +8,10 @@ package com.junbo.identity.rest.resource;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserPhoneNumberId;
 import com.junbo.identity.spec.model.common.ResultList;
-import com.junbo.identity.spec.resource.UserPhoneNumberResource;
-import com.junbo.identity.spec.model.options.UserPhoneNumberGetOption;
 import com.junbo.identity.spec.model.users.UserPhoneNumber;
+import com.junbo.identity.spec.options.UserPhoneNumberGetOptions;
+import com.junbo.identity.spec.options.UserPhoneNumberListOptions;
+import com.junbo.identity.spec.resource.UserPhoneNumberResource;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.stereotype.Component;
 
@@ -30,19 +31,12 @@ public class UserPhoneNumberResourceImpl implements UserPhoneNumberResource {
     }
 
     @Override
-    public Promise<UserPhoneNumber> update(UserId userId, UserPhoneNumberId userPhoneNumberId,
-                                           UserPhoneNumber userPhoneNumber) {
+    public Promise<UserPhoneNumber> put(UserId userId, UserPhoneNumberId userPhoneNumberId, UserPhoneNumber userPhoneNumber) {
         return null;
     }
 
     @Override
-    public Promise<UserPhoneNumber> patch(UserId userId, UserPhoneNumberId userPhoneNumberId,
-                                          UserPhoneNumber userPhoneNumber) {
-        return null;
-    }
-
-    @Override
-    public Promise<UserPhoneNumber> get(UserId userId, UserPhoneNumberId userPhoneNumberId) {
+    public Promise<UserPhoneNumber> patch(UserId userId, UserPhoneNumberId userPhoneNumberId, UserPhoneNumber userPhoneNumber) {
         return null;
     }
 
@@ -52,7 +46,12 @@ public class UserPhoneNumberResourceImpl implements UserPhoneNumberResource {
     }
 
     @Override
-    public Promise<ResultList<UserPhoneNumber>> list(UserId userId, @BeanParam UserPhoneNumberGetOption getOption) {
+    public Promise<UserPhoneNumber> get(UserId userId, UserPhoneNumberId userPhoneNumberId, @BeanParam UserPhoneNumberGetOptions getOptions) {
+        return null;
+    }
+
+    @Override
+    public Promise<ResultList<UserPhoneNumber>> list(UserId userId, @BeanParam UserPhoneNumberListOptions listOptions) {
         return null;
     }
 }

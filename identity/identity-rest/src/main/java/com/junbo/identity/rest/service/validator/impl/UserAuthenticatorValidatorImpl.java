@@ -7,7 +7,7 @@ package com.junbo.identity.rest.service.validator.impl;
 
 import com.junbo.common.id.UserAuthenticatorId;
 import com.junbo.common.id.UserId;
-import com.junbo.identity.data.dao.UserAuthenticatorDAO;
+import com.junbo.identity.data.repository.UserAuthenticatorRepository;
 import com.junbo.identity.rest.service.validator.UserAuthenticatorValidator;
 import com.junbo.identity.spec.error.AppErrors;
 import com.junbo.identity.spec.model.options.UserAuthenticatorGetOption;
@@ -25,7 +25,7 @@ import java.util.List;
 @Component
 public class UserAuthenticatorValidatorImpl extends CommonValidator implements UserAuthenticatorValidator {
     @Autowired
-    private UserAuthenticatorDAO userFederationDAO;
+    private UserAuthenticatorRepository userAuthenticatorRepository;
 
     @Override
     public void validateCreate(Long userId, UserAuthenticator userFederation) {
@@ -66,7 +66,7 @@ public class UserAuthenticatorValidatorImpl extends CommonValidator implements U
     public void validateResourceAccessible(Long userId, Long federationId) {
         checkUserValid(userId);
 
-        UserAuthenticator userFederation = userFederationDAO.get(new UserAuthenticatorId(federationId));
+        UserAuthenticator userFederation = userAuthenticatorRepository.get(new UserAuthenticatorId(federationId));
         if(userFederation == null) {
             throw AppErrors.INSTANCE.invalidResourceRequest().exception();
         }
@@ -102,7 +102,7 @@ public class UserAuthenticatorValidatorImpl extends CommonValidator implements U
     private void checkUserFederationNotExists(Long userId, UserAuthenticator userFederation) {
         UserAuthenticatorGetOption getOption = new UserAuthenticatorGetOption();
         getOption.setUserId(new UserId(userId));
-        List<UserAuthenticator> userFederations = userFederationDAO.search(getOption);
+        List<UserAuthenticator> userFederations = userAuthenticatorRepository.search(getOption);
 
         if(!CollectionUtils.isEmpty(userFederations)) {
             for(UserAuthenticator temp : userFederations) {

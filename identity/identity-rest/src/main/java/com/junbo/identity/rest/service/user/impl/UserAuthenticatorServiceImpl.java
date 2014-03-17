@@ -6,7 +6,7 @@
 package com.junbo.identity.rest.service.user.impl;
 
 import com.junbo.common.id.UserAuthenticatorId;
-import com.junbo.identity.data.dao.UserAuthenticatorDAO;
+import com.junbo.identity.data.repository.UserAuthenticatorRepository;
 import com.junbo.identity.rest.service.user.UserAuthenticatorService;
 import com.junbo.identity.rest.service.validator.UserAuthenticatorValidator;
 import com.junbo.identity.spec.model.options.UserAuthenticatorGetOption;
@@ -24,7 +24,7 @@ import java.util.List;
 @Transactional
 public class UserAuthenticatorServiceImpl implements UserAuthenticatorService {
     @Autowired
-    private UserAuthenticatorDAO userFederationDAO;
+    private UserAuthenticatorRepository userFederationRepository;
 
     @Autowired
     private UserAuthenticatorValidator validator;
@@ -32,29 +32,29 @@ public class UserAuthenticatorServiceImpl implements UserAuthenticatorService {
     @Override
     public UserAuthenticator save(Long userId, UserAuthenticator userFederation) {
         validator.validateCreate(userId, userFederation);
-        return userFederationDAO.save(userFederation);
+        return userFederationRepository.save(userFederation);
     }
 
     @Override
     public UserAuthenticator update(Long userId, Long federationId, UserAuthenticator userFederation) {
         validator.validateUpdate(userId, federationId, userFederation);
-        return userFederationDAO.update(userFederation);
+        return userFederationRepository.update(userFederation);
     }
 
     @Override
     public UserAuthenticator get(Long userId, Long federationId) {
         validator.validateResourceAccessible(userId, federationId);
-        return userFederationDAO.get(new UserAuthenticatorId(federationId));
+        return userFederationRepository.get(new UserAuthenticatorId(federationId));
     }
 
     @Override
     public List<UserAuthenticator> search(UserAuthenticatorGetOption getOption) {
-        return userFederationDAO.search(getOption);
+        return userFederationRepository.search(getOption);
     }
 
     @Override
     public void delete(Long userId, Long federationId) {
         validator.validateDelete(userId, federationId);
-        userFederationDAO.delete(new UserAuthenticatorId(federationId));
+        userFederationRepository.delete(new UserAuthenticatorId(federationId));
     }
 }

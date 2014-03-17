@@ -7,11 +7,15 @@ package com.junbo.identity.rest.resource;
 
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserSecurityQuestionId;
+import com.junbo.identity.spec.model.common.ResultList;
 import com.junbo.identity.spec.model.users.UserSecurityQuestion;
+import com.junbo.identity.spec.options.UserSecurityQuestionGetOptions;
+import com.junbo.identity.spec.options.UserSecurityQuestionListOptions;
 import com.junbo.identity.spec.resource.UserSecurityQuestionResource;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.stereotype.Component;
 
+import javax.ws.rs.BeanParam;
 import javax.ws.rs.ext.Provider;
 
 /**
@@ -27,24 +31,27 @@ public class UserSecurityQuestionResourceImpl implements UserSecurityQuestionRes
     }
 
     @Override
-    public Promise<UserSecurityQuestion> update(UserId userId, UserSecurityQuestionId userSecurityQuestionId,
-                                                UserSecurityQuestion userSecurityQuestion) {
+    public Promise<UserSecurityQuestion> put(UserId userId, UserSecurityQuestionId userSecurityQuestionId, UserSecurityQuestion userSecurityQuestion) {
         return null;
     }
 
     @Override
-    public Promise<UserSecurityQuestion> patch(UserId userId, UserSecurityQuestionId userSecurityQuestionId,
-                                               UserSecurityQuestion userSecurityQuestion) {
-        return null;
-    }
-
-    @Override
-    public Promise<UserSecurityQuestion> get(UserId userId, UserSecurityQuestionId userSecurityQuestionId) {
+    public Promise<UserSecurityQuestion> patch(UserId userId, UserSecurityQuestionId userSecurityQuestionId, UserSecurityQuestion userSecurityQuestion) {
         return null;
     }
 
     @Override
     public Promise<UserSecurityQuestion> delete(UserId userId, UserSecurityQuestionId userSecurityQuestionId) {
+        return null;
+    }
+
+    @Override
+    public Promise<UserSecurityQuestion> get(UserId userId, UserSecurityQuestionId userSecurityQuestionId, @BeanParam UserSecurityQuestionGetOptions getOptions) {
+        return null;
+    }
+
+    @Override
+    public Promise<ResultList<UserSecurityQuestion>> list(UserId userId, @BeanParam UserSecurityQuestionListOptions listOptions) {
         return null;
     }
 }

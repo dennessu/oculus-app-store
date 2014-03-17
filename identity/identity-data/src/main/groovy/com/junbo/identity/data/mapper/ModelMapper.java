@@ -31,8 +31,8 @@ public interface ModelMapper {
     UserPassword toUserPassword(UserPasswordEntity entity, MappingContext context);
     UserPasswordEntity toUserPassword(UserPassword entity, MappingContext context);
 
-    UserPIN toUserPIN(UserPINEntity entity, MappingContext context);
-    UserPINEntity toUserPIN(UserPIN entity, MappingContext context);
+    UserPin toUserPIN(UserPINEntity entity, MappingContext context);
+    UserPINEntity toUserPIN(UserPin entity, MappingContext context);
 
     SecurityQuestion toSecurityQuestion(SecurityQuestionEntity entity, MappingContext context);
     SecurityQuestionEntity toSecurityQuestion(SecurityQuestion entity, MappingContext context);

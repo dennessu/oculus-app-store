@@ -6,7 +6,7 @@
 package com.junbo.identity.rest.service.validator.impl;
 
 import com.junbo.common.id.GroupId;
-import com.junbo.identity.data.dao.GroupDAO;
+import com.junbo.identity.data.repository.GroupRepository;
 import com.junbo.identity.rest.service.validator.GroupValidator;
 import com.junbo.identity.spec.error.AppErrors;
 import com.junbo.identity.spec.model.users.Group;
@@ -20,7 +20,7 @@ import org.springframework.util.StringUtils;
 @Component
 public class GroupValidatorImpl implements GroupValidator {
     @Autowired
-    private GroupDAO groupDAO;
+    private GroupRepository groupRepository;
 
     @Override
     public void validateGet(GroupId groupId) {

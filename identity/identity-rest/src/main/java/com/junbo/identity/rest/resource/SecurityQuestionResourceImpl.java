@@ -9,6 +9,8 @@ import com.junbo.common.id.SecurityQuestionId;
 import com.junbo.identity.spec.model.common.ResultList;
 import com.junbo.identity.spec.model.domaindata.SecurityQuestion;
 import com.junbo.identity.spec.model.options.DomainDataGetOption;
+import com.junbo.identity.spec.options.SecurityQuestionGetOptions;
+import com.junbo.identity.spec.options.SecurityQuestionListOptions;
 import com.junbo.identity.spec.resource.SecurityQuestionResource;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.stereotype.Component;
@@ -29,7 +31,7 @@ public class SecurityQuestionResourceImpl implements SecurityQuestionResource {
     }
 
     @Override
-    public Promise<SecurityQuestion> update(SecurityQuestionId securityQuestionId, SecurityQuestion securityQuestion) {
+    public Promise<SecurityQuestion> put(SecurityQuestionId securityQuestionId, SecurityQuestion securityQuestion) {
         return null;
     }
 
@@ -39,12 +41,12 @@ public class SecurityQuestionResourceImpl implements SecurityQuestionResource {
     }
 
     @Override
-    public Promise<SecurityQuestion> get(SecurityQuestionId securityQuestionId) {
+    public Promise<SecurityQuestion> get(SecurityQuestionId securityQuestionId, @BeanParam SecurityQuestionGetOptions getOptions) {
         return null;
     }
 
     @Override
-    public Promise<ResultList<SecurityQuestion>> list(@BeanParam DomainDataGetOption option) {
+    public Promise<ResultList<SecurityQuestion>> list(@BeanParam SecurityQuestionListOptions listOptions) {
         return null;
     }
 }

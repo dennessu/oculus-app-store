@@ -4,13 +4,9 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.identity.data.dao.impl.postgresql
-import com.junbo.common.id.UserOptinId
 import com.junbo.identity.data.dao.UserOptinDAO
 import com.junbo.identity.data.entity.user.UserOptinEntity
-import com.junbo.identity.data.mapper.ModelMapper
 import com.junbo.identity.spec.model.options.UserOptinGetOption
-import com.junbo.identity.spec.model.users.UserOptin
-import com.junbo.oom.core.MappingContext
 import com.junbo.sharding.core.hibernate.SessionFactoryWrapper
 import com.junbo.sharding.util.Helper
 import org.hibernate.Session
@@ -26,8 +22,6 @@ class UserOptinDAOImpl implements UserOptinDAO {
     @Qualifier('sessionFactory')
     private SessionFactory sessionFactory
 
-    @Autowired
-    private ModelMapper modelMapper
     private SessionFactoryWrapper sessionFactoryWrapper
 
     void setSessionFactoryWrapper(SessionFactoryWrapper sessionFactoryWrapper) {
@@ -39,31 +33,27 @@ class UserOptinDAOImpl implements UserOptinDAO {
     }
 
     @Override
-    UserOptin save(UserOptin entity) {
-        UserOptinEntity userOptInEntity = modelMapper.toUserOptin(entity, new MappingContext())
-        currentSession().save(userOptInEntity)
+    UserOptinEntity save(UserOptinEntity entity) {
+        currentSession().save(entity)
 
-        return get(userOptInEntity.id)
+        return get(entity.id)
     }
 
     @Override
-    UserOptin update(UserOptin entity) {
-        UserOptinEntity userOptInEntity = modelMapper.toUserOptin(entity, new MappingContext())
-
-        currentSession().merge(userOptInEntity)
+    UserOptinEntity update(UserOptinEntity entity) {
+        currentSession().merge(entity)
         currentSession().flush()
 
-        return get(userOptInEntity.id)
+        return get(entity.id)
     }
 
     @Override
-    UserOptin get(UserOptinId id) {
-        return modelMapper.toUserOptin(currentSession().get(UserOptinEntity, id), new MappingContext())
+    UserOptinEntity get(Long id) {
+        return currentSession().get(UserOptinEntity, id)
     }
 
     @Override
-    List<UserOptin> search(UserOptinGetOption getOption) {
-        def result = []
+    List<UserOptinEntity> search(UserOptinGetOption getOption) {
         String query = 'select * from user_optin where user_id =  ' + getOption.userId.value +
                 (getOption.value == null ? '' : (' and value = ' + getOption.value)) +
                 (' order by id limit ' + (getOption.limit == null ? 'ALL' : getOption.limit.toString())) +
@@ -71,15 +61,12 @@ class UserOptinDAOImpl implements UserOptinDAO {
 
         def entities = sessionFactory.currentSession.createSQLQuery(query).addEntity(UserOptinEntity).list()
 
-        entities.flatten { i ->
-            result.add(modelMapper.toUserOptin(i, new MappingContext()))
-        }
-        return result
+        return entities
     }
 
     @Override
-    void delete(UserOptinId id) {
-        UserOptinEntity entity = currentSession().get(UserOptinEntity, id.value)
+    void delete(Long id) {
+        UserOptinEntity entity = currentSession().get(UserOptinEntity, id)
         currentSession().delete(entity)
     }
 }

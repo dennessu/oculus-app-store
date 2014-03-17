@@ -53,14 +53,14 @@ public class CommonMapper {
         return userPasswordId.getValue();
     }
 
-    UserPINId toUserPINId(Long userPINId) {
+    UserPinId toUserPINId(Long userPINId) {
         if (userPINId == null) {
             return null;
         }
-        return new UserPINId(userPINId);
+        return new UserPinId(userPINId);
     }
 
-    Long toUserPINId(UserPINId userPINId) {
+    Long toUserPINId(UserPinId userPINId) {
         if(userPINId == null) {
             return null;
         }

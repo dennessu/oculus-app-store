@@ -4,13 +4,9 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.identity.data.dao.impl.postgresql
-import com.junbo.common.id.UserTosId
 import com.junbo.identity.data.dao.UserTosDAO
 import com.junbo.identity.data.entity.user.UserTosEntity
-import com.junbo.identity.data.mapper.ModelMapper
 import com.junbo.identity.spec.model.options.UserTosGetOption
-import com.junbo.identity.spec.model.users.UserTos
-import com.junbo.oom.core.MappingContext
 import org.hibernate.Session
 import org.hibernate.SessionFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -22,54 +18,43 @@ class UserTosDAOImpl implements UserTosDAO {
     @Autowired
     @Qualifier('sessionFactory')
     private SessionFactory sessionFactory
-    @Autowired
-    private ModelMapper modelMapper
 
     private Session currentSession() {
         sessionFactory.currentSession
     }
 
     @Override
-    UserTos save(UserTos entity) {
-        UserTosEntity userTosAcceptanceEntity = modelMapper.toUserTos(entity, new MappingContext())
-        currentSession().save(userTosAcceptanceEntity)
+    UserTosEntity save(UserTosEntity entity) {
+        currentSession().save(entity)
         return get(entity.id)
     }
 
     @Override
-    UserTos update(UserTos entity) {
-        UserTosEntity userTosAcceptanceEntity = modelMapper.toUserTos(entity, new MappingContext())
-
-        currentSession().merge(userTosAcceptanceEntity)
+    UserTosEntity update(UserTosEntity entity) {
+        currentSession().merge(entity)
         currentSession().flush()
 
         return get(entity.id)
     }
 
     @Override
-    UserTos get(UserTosId id) {
-        return modelMapper.toUserTos(currentSession().get(UserTosEntity, id.value), new MappingContext())
+    UserTosEntity get(Long id) {
+        return currentSession().get(UserTosEntity, id)
     }
 
     @Override
-    List<UserTos> search(UserTosGetOption getOption) {
-        def result = []
+    List<UserTosEntity> search(UserTosGetOption getOption) {
         String query = 'select * from user_tos where user_id =  ' + getOption.userId.value +
                 (getOption.tosUri == null ? '' : ' and tos_uri = ' + getOption.tosUri) +
                 (' order by id limit ' + (getOption.limit == null ? 'ALL' : getOption.limit.toString())) +
                 ' offset ' + (getOption.offset == null ? '0' : getOption.offset.toString())
 
-        def entities = currentSession().createSQLQuery(query).addEntity(UserTosEntity).list()
-
-        entities.flatten { i ->
-            result.add(modelMapper.toUserTos(i, new MappingContext()))
-        }
-        return result
+        return currentSession().createSQLQuery(query).addEntity(UserTosEntity).list()
     }
 
     @Override
-    void delete(UserTosId id) {
-        UserTosEntity entity = currentSession().get(UserTosEntity, id.value)
+    void delete(Long id) {
+        UserTosEntity entity = currentSession().get(UserTosEntity, id)
         currentSession().delete(entity)
     }
 }

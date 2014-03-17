@@ -8,6 +8,8 @@ package com.junbo.identity.rest.resource;
 import com.junbo.common.id.UserAuthenticatorId;
 import com.junbo.common.id.UserId;
 import com.junbo.identity.spec.model.common.ResultList;
+import com.junbo.identity.spec.options.UserAuthenticatorGetOptions;
+import com.junbo.identity.spec.options.UserAuthenticatorListOptions;
 import com.junbo.identity.spec.resource.UserAuthenticatorResource;
 import com.junbo.identity.spec.model.options.UserAuthenticatorGetOption;
 import com.junbo.identity.spec.model.users.UserAuthenticator;
@@ -30,24 +32,12 @@ public class UserAuthenticatorResourceImpl implements UserAuthenticatorResource 
     }
 
     @Override
-    public Promise<UserAuthenticator> update(UserId userId, UserAuthenticatorId userAuthenticatorId,
-                                             UserAuthenticator userAuthenticator) {
+    public Promise<UserAuthenticator> put(UserId userId, UserAuthenticatorId userAuthenticatorId, UserAuthenticator userAuthenticator) {
         return null;
     }
 
     @Override
-    public Promise<UserAuthenticator> patch(UserId userId, UserAuthenticatorId userAuthenticatorId,
-                                            UserAuthenticator userAuthenticator) {
-        return null;
-    }
-
-    @Override
-    public Promise<UserAuthenticator> get(UserId userId, UserAuthenticatorId userAuthenticatorId) {
-        return null;
-    }
-
-    @Override
-    public Promise<ResultList<UserAuthenticator>> list(UserId userId, @BeanParam UserAuthenticatorGetOption getOption) {
+    public Promise<UserAuthenticator> patch(UserId userId, UserAuthenticatorId userAuthenticatorId, UserAuthenticator userAuthenticator) {
         return null;
     }
 
@@ -57,7 +47,17 @@ public class UserAuthenticatorResourceImpl implements UserAuthenticatorResource 
     }
 
     @Override
-    public Promise<ResultList<UserAuthenticator>> search(@BeanParam UserAuthenticatorGetOption getOption) {
+    public Promise<UserAuthenticator> get(UserId userId, UserAuthenticatorId userAuthenticatorId, @BeanParam UserAuthenticatorGetOptions getOptions) {
+        return null;
+    }
+
+    @Override
+    public Promise<ResultList<UserAuthenticator>> list(UserId userId, @BeanParam UserAuthenticatorListOptions listOptions) {
+        return null;
+    }
+
+    @Override
+    public Promise<ResultList<UserAuthenticator>> list(@BeanParam UserAuthenticatorListOptions listOptions) {
         return null;
     }
 }

@@ -5,13 +5,9 @@
  */
 package com.junbo.identity.data.dao.impl.postgresql;
 
-import com.junbo.common.id.UserLoginAttemptId;
 import com.junbo.identity.data.dao.UserLoginAttemptDAO;
 import com.junbo.identity.data.entity.user.UserLoginAttemptEntity;
-import com.junbo.identity.data.mapper.ModelMapper;
 import com.junbo.identity.spec.model.options.UserLoginAttemptGetOption;
-import com.junbo.identity.spec.model.users.LoginAttempt;
-import com.junbo.oom.core.MappingContext;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +15,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,37 +26,32 @@ public class UserLoginAttemptDAOImpl implements UserLoginAttemptDAO {
     @Qualifier("sessionFactory")
     private SessionFactory sessionFactory;
 
-    @Autowired
-    private ModelMapper modelMapper;
-
     private Session currentSession() {
         return sessionFactory.getCurrentSession();
     }
 
     @Override
-    public LoginAttempt save(LoginAttempt entity) {
-        UserLoginAttemptEntity userLoginAttemptEntity = modelMapper.toUserLoginAttempt(entity, new MappingContext());
-        currentSession().save(userLoginAttemptEntity);
+    public UserLoginAttemptEntity save(UserLoginAttemptEntity entity) {
+        currentSession().save(entity);
 
         return get(entity.getId());
     }
 
     @Override
-    public LoginAttempt update(LoginAttempt entity) {
-        UserLoginAttemptEntity userLoginAttemptEntity = modelMapper.toUserLoginAttempt(entity, new MappingContext());
-        currentSession().merge(userLoginAttemptEntity);
+    public UserLoginAttemptEntity update(UserLoginAttemptEntity entity) {
+        currentSession().merge(entity);
+        currentSession().flush();
 
         return get(entity.getId());
     }
 
     @Override
-    public LoginAttempt get(UserLoginAttemptId id) {
-        return modelMapper.toUserLoginAttempt((UserLoginAttemptEntity)currentSession().
-                get(UserLoginAttemptEntity.class, id.getValue()), new MappingContext());
+    public UserLoginAttemptEntity get(Long id) {
+        return (UserLoginAttemptEntity)currentSession().get(UserLoginAttemptEntity.class, id);
     }
 
     @Override
-    public List<LoginAttempt> search(UserLoginAttemptGetOption getOption) {
+    public List<UserLoginAttemptEntity> search(UserLoginAttemptGetOption getOption) {
         String query = "select * from user_login_attempt where user_id = " + (getOption.getUserId().getValue()) +
             (StringUtils.isEmpty(getOption.getType()) ? "" : (" and type = " + getOption.getType())) +
             (StringUtils.isEmpty(getOption.getIpAddress()) ? "" : (" and ip_address = " + getOption.getIpAddress())) +
@@ -71,17 +61,13 @@ public class UserLoginAttemptDAOImpl implements UserLoginAttemptDAO {
         List entities = sessionFactory.getCurrentSession().createSQLQuery(query)
                 .addEntity(UserLoginAttemptEntity.class).list();
 
-        List<LoginAttempt> results = new ArrayList<LoginAttempt>();
-        for(int i =0 ; i< entities.size(); i++) {
-            results.add(modelMapper.toUserLoginAttempt((UserLoginAttemptEntity)entities.get(i), new MappingContext()));
-        }
-        return results;
+        return entities;
     }
 
     @Override
-    public void delete(UserLoginAttemptId id) {
+    public void delete(Long id) {
         UserLoginAttemptEntity entity =
-                (UserLoginAttemptEntity)currentSession().get(UserLoginAttemptEntity.class, id.getValue());
+                (UserLoginAttemptEntity)currentSession().get(UserLoginAttemptEntity.class, id);
         currentSession().delete(entity);
     }
 }

@@ -5,9 +5,8 @@
  */
 package com.junbo.identity.data.dao;
 
-import com.junbo.common.id.UserEmailId;
+import com.junbo.identity.data.entity.user.UserEmailEntity;
 import com.junbo.identity.spec.model.options.UserEmailGetOption;
-import com.junbo.identity.spec.model.users.UserEmail;
 
 import java.util.List;
 
@@ -15,13 +14,13 @@ import java.util.List;
  * Created by liangfu on 3/17/14.
  */
 public interface UserEmailDAO {
-    UserEmail save(UserEmail entity);
+    UserEmailEntity save(UserEmailEntity entity);
 
-    UserEmail update(UserEmail entity);
+    UserEmailEntity update(UserEmailEntity entity);
 
-    UserEmail get(UserEmailId id);
+    UserEmailEntity get(Long id);
 
-    List<UserEmail> search(UserEmailGetOption getOption);
+    List<UserEmailEntity> search(UserEmailGetOption getOption);
 
-    void delete(UserEmailId id);
+    void delete(Long id);
 }

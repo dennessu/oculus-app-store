@@ -5,10 +5,8 @@
  */
 package com.junbo.identity.data.dao;
 
-
-import com.junbo.common.id.UserLoginAttemptId;
+import com.junbo.identity.data.entity.user.UserLoginAttemptEntity;
 import com.junbo.identity.spec.model.options.UserLoginAttemptGetOption;
-import com.junbo.identity.spec.model.users.LoginAttempt;
 
 import java.util.List;
 
@@ -16,13 +14,13 @@ import java.util.List;
  * Created by liangfu on 3/17/14.
  */
 public interface UserLoginAttemptDAO {
-    LoginAttempt save(LoginAttempt entity);
+    UserLoginAttemptEntity save(UserLoginAttemptEntity entity);
 
-    LoginAttempt update(LoginAttempt entity);
+    UserLoginAttemptEntity update(UserLoginAttemptEntity entity);
 
-    LoginAttempt get(UserLoginAttemptId id);
+    UserLoginAttemptEntity get(Long id);
 
-    List<LoginAttempt> search(UserLoginAttemptGetOption getOption);
+    List<UserLoginAttemptEntity> search(UserLoginAttemptGetOption getOption);
 
-    void delete(UserLoginAttemptId id);
+    void delete(Long id);
 }

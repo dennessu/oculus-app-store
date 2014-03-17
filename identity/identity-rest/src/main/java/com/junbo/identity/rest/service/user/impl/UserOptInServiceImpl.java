@@ -7,7 +7,7 @@ package com.junbo.identity.rest.service.user.impl;
 
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserOptinId;
-import com.junbo.identity.data.dao.UserOptinDAO;
+import com.junbo.identity.data.repository.UserOptinRepository;
 import com.junbo.identity.rest.service.user.UserOptinService;
 import com.junbo.identity.rest.service.validator.UserOptinValidator;
 import com.junbo.identity.spec.model.options.UserOptinGetOption;
@@ -25,7 +25,7 @@ import java.util.List;
 @Transactional
 public class UserOptinServiceImpl implements UserOptinService {
     @Autowired
-    private UserOptinDAO userOptInDAO;
+    private UserOptinRepository userOptInRepository;
 
     @Autowired
     private UserOptinValidator validator;
@@ -33,19 +33,19 @@ public class UserOptinServiceImpl implements UserOptinService {
     @Override
     public UserOptin save(Long userId, UserOptin userOptIn) {
         validator.validateCreate(userId, userOptIn);
-        return userOptInDAO.save(userOptIn);
+        return userOptInRepository.save(userOptIn);
     }
 
     @Override
     public UserOptin update(Long userId, Long userOptInId, UserOptin userOptIn) {
         validator.validateUpdate(userId, userOptInId, userOptIn);
-        return userOptInDAO.update(userOptIn);
+        return userOptInRepository.update(userOptIn);
     }
 
     @Override
     public UserOptin get(Long userId, Long userOptInId) {
         validator.validateResourceAccessible(userId, userOptInId);
-        return userOptInDAO.get(new UserOptinId(userOptInId));
+        return userOptInRepository.get(new UserOptinId(userOptInId));
     }
 
     @Override
@@ -53,12 +53,12 @@ public class UserOptinServiceImpl implements UserOptinService {
         UserOptinGetOption getOption = new UserOptinGetOption();
         getOption.setUserId(new UserId(userId));
         getOption.setValue(type);
-        return userOptInDAO.search(getOption);
+        return userOptInRepository.search(getOption);
     }
 
     @Override
     public void delete(Long userId, Long userOptInId) {
         validator.validateDelete(userId, userOptInId);
-        userOptInDAO.delete(new UserOptinId(userOptInId));
+        userOptInRepository.delete(new UserOptinId(userOptInId));
     }
 }

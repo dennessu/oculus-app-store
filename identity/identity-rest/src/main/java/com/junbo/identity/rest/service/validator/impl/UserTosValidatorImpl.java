@@ -6,7 +6,7 @@
 package com.junbo.identity.rest.service.validator.impl;
 
 import com.junbo.common.id.UserTosId;
-import com.junbo.identity.data.dao.UserTosDAO;
+import com.junbo.identity.data.repository.UserTosRepository;
 import com.junbo.identity.rest.service.validator.UserTosValidator;
 import com.junbo.identity.spec.error.AppErrors;
 import com.junbo.identity.spec.model.users.UserTos;
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserTosValidatorImpl extends CommonValidator implements UserTosValidator {
     @Autowired
-    private UserTosDAO userTosAcceptanceDAO;
+    private UserTosRepository userTosAcceptanceRepository;
 
     @Override
     public void validateCreate(Long userId, UserTos userTosAcceptance) {
@@ -61,7 +61,7 @@ public class UserTosValidatorImpl extends CommonValidator implements UserTosVali
     public void validateResourceAccessible(Long userId, Long userTosId) {
         checkUserValid(userId);
 
-        UserTos userTosAcceptance = userTosAcceptanceDAO.get(new UserTosId(userTosId));
+        UserTos userTosAcceptance = userTosAcceptanceRepository.get(new UserTosId(userTosId));
         if(userTosAcceptance == null) {
             throw AppErrors.INSTANCE.invalidResourceRequest().exception();
         }
