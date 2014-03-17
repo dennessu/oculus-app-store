@@ -3,6 +3,8 @@ import com.junbo.common.id.OrderId
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
+import com.junbo.order.core.annotation.OrderEventAwareAfter
+import com.junbo.order.core.annotation.OrderEventAwareBefore
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
 import com.junbo.order.core.impl.orderaction.ActionUtils
 import com.junbo.order.core.impl.orderaction.BaseOrderEventAwareAction
@@ -11,11 +13,11 @@ import com.junbo.order.db.entity.enums.EventStatus
 import com.junbo.order.db.entity.enums.OrderActionType
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.model.OrderEvent
+import groovy.transform.CompileStatic
 import org.aspectj.lang.JoinPoint
 import org.aspectj.lang.annotation.AfterReturning
 import org.aspectj.lang.annotation.Aspect
 import org.aspectj.lang.annotation.Before
-import org.aspectj.lang.annotation.Pointcut
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 
@@ -25,6 +27,7 @@ import javax.annotation.Resource
  */
 @Aspect
 @Component('orderEventAspect')
+@CompileStatic
 class OrderEventAspect {
 
     @Resource(name = 'orderRepository')
@@ -32,47 +35,35 @@ class OrderEventAspect {
     @Resource(name = 'orderServiceContextBuilder')
     OrderServiceContextBuilder builder
 
-    @Pointcut(value = '@annotation(com.junbo.order.core.annotation.OrderEventAwareBefore)')
-    void orderEventAwareBeforeCut() { return }
-
-    @Pointcut(value = '@annotation(com.junbo.order.core.annotation.OrderEventAwareAfter)')
-    void orderEventAwareAfterCut() { return }
-
     @Transactional
-    @Before(value = 'orderEventAwareBeforeCut()')
-    void beforeOrderEventAwareAction(JoinPoint jp) {
-
+    @Before(value = '@annotation(orderEventAwareBefore)', argNames = 'jp, orderEventAwareBefore')
+    Promise<ActionResult> beforeOrderEventAwareAction(JoinPoint jp, OrderEventAwareBefore orderEventAwareBefore) {
+        assert(orderEventAwareBefore != null)
         def orderEvent = getOpenOrderEvent(jp)
-        if (orderEvent == null) {
-            return
+        if (orderEvent != null && orderEvent.order != null) {
+            repo.createOrderEvent(orderEvent)
         }
-        repo.createOrderEvent(orderEvent)
+        return Promise.pure(null)
     }
 
     @Transactional
-    @AfterReturning(value = 'orderEventAwareAfterCut()', argNames = 'rv', returning = 'rv')
-    Promise<ActionResult> afterOrderEventAwareAction(JoinPoint jp, Object rv) {
-        if (rv == null || !Promise.isInstance(rv)) {
-            // TODO log
-            return
-        }
-        def result = (Promise<ActionResult>)rv
-
-        Object[] args = jp.args()
-        ActionContext actionContext = (ActionContext) args.find { Object arg ->
-            ActionContext.isInstance(arg)
-        }
-
-        result.syncThen { ActionResult ar ->
-            def orderActionResult = ActionUtils.getOrderActionResult(actionContext)
-            if (orderActionResult == null) {
-                return Promise.pure(ar)
+    @AfterReturning(value = '@annotation(orderEventAwareAfter)',
+            argNames = 'jp, orderEventAwareAfter, rv', returning = 'rv')
+    Promise<ActionResult> afterOrderEventAwareAction(
+            JoinPoint jp,
+            OrderEventAwareAfter orderEventAwareAfter,
+            Promise<ActionResult> rv) {
+        rv?.syncThen { ActionResult ar ->
+            assert(orderEventAwareAfter != null)
+            def orderActionResult = ActionUtils.getOrderActionResult(ar)
+            if (orderActionResult != null) {
+                EventStatus eventStatus = orderActionResult.returnedEventStatus
+                if (eventStatus != null) {
+                    def oe = getReturnedOrderEvent(jp, eventStatus)
+                    repo.createOrderEvent(oe)
+                }
             }
-            EventStatus eventStatus = orderActionResult.returnedEventStatus
-            if (eventStatus != null) {
-                repo.createOrderEvent(getReturnedOrderEvent(jp, eventStatus.toString()))
-            }
-            return Promise.pure(ar)
+            return ar
         }
     }
 
@@ -86,19 +77,20 @@ class OrderEventAspect {
         return orderEvent
     }
 
-    private getReturnedOrderEvent(JoinPoint jp, EventStatus eventStatus) {
+    private OrderEvent getReturnedOrderEvent(JoinPoint jp, EventStatus eventStatus) {
         def orderEvent = getOpenOrderEvent(jp)
-        orderEvent?.status = eventStatus
+        orderEvent?.status = eventStatus.toString()
         return orderEvent
     }
 
     private OrderActionType getOrderActionType(JoinPoint jp) {
-        def orderEventAwareAction = (BaseOrderEventAwareAction)jp.this
+
+        def orderEventAwareAction = (BaseOrderEventAwareAction) jp.target
         return orderEventAwareAction?.orderActionType
     }
 
     private String getFlowType(JoinPoint jp) {
-        def context = getOrderActionContext(jp)
+        ActionContext context = getActionContext(jp)
         return ActionUtils.getFlowType(context)
     }
 
@@ -112,16 +104,21 @@ class OrderEventAspect {
         return context?.orderServiceContext?.order?.id
     }
 
-    private OrderActionContext getOrderActionContext(JoinPoint jp) {
+    @SuppressWarnings('UnnecessaryGetter')
+    private ActionContext getActionContext(JoinPoint jp) {
         if (jp == null) {
             return null
         }
 
-        Object[] args = jp.args()
+        Object[] args = jp.getArgs()
         def actionContext = (ActionContext) args?.find { Object arg ->
             ActionContext.isInstance(arg)
         }
 
-        return ActionUtils.getOrderActionContext(actionContext)
+        return actionContext
+    }
+
+    private OrderActionContext getOrderActionContext(JoinPoint jp) {
+        return ActionUtils.getOrderActionContext(getActionContext(jp))
     }
 }

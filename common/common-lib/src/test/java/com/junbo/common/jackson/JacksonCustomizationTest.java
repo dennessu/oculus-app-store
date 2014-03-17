@@ -224,4 +224,15 @@ public class JacksonCustomizationTest {
         Assert.assertEquals(flight2.getPassengers().size(), flight.getPassengers().size(),
                 "passengers size should be null.");
     }
+
+    @Test
+    public void testRawIgnore() throws Exception {
+        MyIgnore ignore = new MyIgnore();
+        ignore.setName("test_user_name");
+
+        String json = mapper.writeValueAsString(ignore);
+        MyIgnore ignore2 = mapper.readValue(json, MyIgnore.class);
+
+        Assert.assertNotNull(ignore2.getName());
+    }
 }

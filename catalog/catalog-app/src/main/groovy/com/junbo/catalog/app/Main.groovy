@@ -38,7 +38,7 @@ class Main {
         resourceConfig.property(ServerProperties.TRACING, 'ALL')
         resourceConfig.property(ServerProperties.RESPONSE_SET_STATUS_OVER_SEND_ERROR, true)
 
-        def uri = URI.create('http://localhost:8080/rest')
+        def uri = URI.create('http://localhost:8091/rest')
         return GrizzlyHttpServerFactory.createHttpServer(uri, resourceConfig)
     }
 

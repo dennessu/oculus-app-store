@@ -7,14 +7,10 @@
 package com.junbo.entitlement.db.mapper;
 
 import com.junbo.entitlement.common.lib.EntitlementContext;
-import com.junbo.entitlement.db.dao.EntitlementDefinitionDao;
-import com.junbo.entitlement.db.entity.EntitlementDefinitionEntity;
 import com.junbo.entitlement.db.entity.EntitlementEntity;
 import com.junbo.entitlement.db.entity.def.EntitlementStatus;
 import com.junbo.entitlement.db.entity.def.EntitlementType;
 import com.junbo.entitlement.spec.model.Entitlement;
-import com.junbo.entitlement.spec.model.EntitlementDefinition;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -26,9 +22,6 @@ import java.util.List;
  */
 @Component
 public class EntitlementMapper {
-    @Autowired
-    private EntitlementDefinitionDao entitlementDefinitionDao;
-
     public Entitlement toEntitlement(EntitlementEntity entitlementEntity) {
         if (entitlementEntity == null) {
             return null;
@@ -57,14 +50,12 @@ public class EntitlementMapper {
         entitlementEntity.setTrackingUuid(entitlement.getTrackingUuid());
         entitlementEntity.setEntitlementId(entitlement.getEntitlementId());
 
-        EntitlementDefinitionEntity definitionEntity =
-                entitlementDefinitionDao.get(entitlement.getEntitlementDefinitionId());
         entitlementEntity.setEntitlementDefinitionId(
-                definitionEntity.getEntitlementDefinitionId());
-        entitlementEntity.setDeveloperId(definitionEntity.getDeveloperId());
-        entitlementEntity.setType(definitionEntity.getType());
-        entitlementEntity.setGroup(definitionEntity.getGroup());
-        entitlementEntity.setTag(definitionEntity.getTag());
+                entitlement.getEntitlementDefinitionId());
+        entitlementEntity.setDeveloperId(entitlement.getDeveloperId());
+        entitlementEntity.setType(EntitlementType.valueOf(entitlement.getType()));
+        entitlementEntity.setGroup(entitlement.getGroup());
+        entitlementEntity.setTag(entitlement.getTag());
 
         entitlementEntity.setUserId(entitlement.getUserId());
         entitlementEntity.setManagedLifecycle(entitlement.getManagedLifecycle());
@@ -87,44 +78,6 @@ public class EntitlementMapper {
         return entitlements;
     }
 
-    public EntitlementDefinition toEntitlementDefinition(
-            EntitlementDefinitionEntity entitlementDefinitionEntity) {
-        if (entitlementDefinitionEntity == null) {
-            return null;
-        }
-        EntitlementDefinition entitlementDefinition = new EntitlementDefinition();
-        entitlementDefinition.setEntitlementDefinitionId(
-                entitlementDefinitionEntity.getEntitlementDefinitionId());
-        entitlementDefinition.setDeveloperId(entitlementDefinitionEntity.getDeveloperId());
-        entitlementDefinition.setType(entitlementDefinitionEntity.getType().toString());
-        entitlementDefinition.setGroup(entitlementDefinitionEntity.getGroup());
-        entitlementDefinition.setTag(entitlementDefinitionEntity.getTag());
-        return entitlementDefinition;
-    }
-
-    public EntitlementDefinitionEntity toEntitlementDefinitionEntity(
-            EntitlementDefinition entitlementDefinition) {
-        EntitlementDefinitionEntity entitlementDefinitionEntity = new EntitlementDefinitionEntity();
-        entitlementDefinitionEntity.setTrackingUuid(entitlementDefinition.getTrackingUuid());
-        entitlementDefinitionEntity.setEntitlementDefinitionId(
-                entitlementDefinition.getEntitlementDefinitionId());
-        entitlementDefinitionEntity.setDeveloperId(entitlementDefinition.getDeveloperId());
-        entitlementDefinitionEntity.setType(EntitlementType.valueOf(entitlementDefinition.getType()));
-        entitlementDefinitionEntity.setGroup(entitlementDefinition.getGroup());
-        entitlementDefinitionEntity.setTag(entitlementDefinition.getTag());
-        return entitlementDefinitionEntity;
-    }
-
-    public List<EntitlementDefinition> toEntitlementDefinitionList(
-            List<EntitlementDefinitionEntity> entitlementDefinitionEntities) {
-        List<EntitlementDefinition> entitlementDefinitions =
-                new ArrayList<EntitlementDefinition>(entitlementDefinitionEntities.size());
-        for (EntitlementDefinitionEntity entitlementDefinitionEntity : entitlementDefinitionEntities) {
-            entitlementDefinitions.add(toEntitlementDefinition(entitlementDefinitionEntity));
-        }
-        return entitlementDefinitions;
-    }
-
     private EntitlementStatus getStatus(EntitlementEntity entitlementEntity) {
         if (EntitlementStatus.LIFECYCLE_NOT_MANAGED_STATUS
                 .contains(entitlementEntity.getStatus())) {
@@ -138,7 +91,8 @@ public class EntitlementMapper {
                 return EntitlementStatus.DISABLED;
             } else if (now.before(entitlementEntity.getGrantTime())) {
                 return EntitlementStatus.PENDING;
-            } else if (now.before(entitlementEntity.getExpirationTime())) {
+            } else if (entitlementEntity.getExpirationTime() == null
+                    || now.before(entitlementEntity.getExpirationTime())) {
                 return EntitlementStatus.ACTIVE;
             } else {
                 return EntitlementStatus.DISABLED;

@@ -58,7 +58,7 @@ class TaxServiceImpl implements TaxService {
         }
 
         Long piId = balance.piId.value
-        def piPromise = paymentFacade.getPaymentInstrument(piId)
+        def piPromise = paymentFacade.getPaymentInstrument(userId, piId)
         def pi = piPromise?.wrapped().get()
         if (pi == null) {
             throw AppErrors.INSTANCE.piNotFound(piId.toString()).exception()

@@ -4,29 +4,29 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.entitlement.db.entity;
+package com.junbo.catalog.db.entity;
 
-import com.junbo.entitlement.db.entity.def.EntitlementType;
-import com.junbo.entitlement.db.entity.def.IdentifiableType;
+import com.junbo.catalog.spec.model.entitlementdef.EntitlementType;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import java.util.UUID;
 
 /**
  * EntitlementDefinition Entity.
  */
 @javax.persistence.Entity
 @Table(name = "entitlement_definition")
-public class EntitlementDefinitionEntity extends Entity {
+public class EntitlementDefinitionEntity extends BaseEntity {
     private Long entitlementDefinitionId;
     private Long developerId;
     private EntitlementType type;
     private String group;
     private String tag;
-    private String status;
+    private UUID trackingUuid;
 
     @Id
     @Column(name = "entitlement_definition_id")
@@ -48,7 +48,6 @@ public class EntitlementDefinitionEntity extends Entity {
     }
 
     @Column(name = "type")
-    @Type(type = IdentifiableType.TYPE)
     public EntitlementType getType() {
         return type;
     }
@@ -75,13 +74,14 @@ public class EntitlementDefinitionEntity extends Entity {
         this.tag = tag;
     }
 
-    @Column(name = "status")
-    public String getStatus() {
-        return status;
+    @Column(name = "tracking_uuid")
+    @Type(type = "pg-uuid")
+    public UUID getTrackingUuid() {
+        return trackingUuid;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setTrackingUuid(UUID trackingUuid) {
+        this.trackingUuid = trackingUuid;
     }
 
     @Transient
@@ -93,11 +93,5 @@ public class EntitlementDefinitionEntity extends Entity {
     @Override
     public void setId(Long id) {
         this.entitlementDefinitionId = id;
-    }
-
-    @Transient
-    @Override
-    public Long getShardMasterId() {
-        return developerId;
     }
 }

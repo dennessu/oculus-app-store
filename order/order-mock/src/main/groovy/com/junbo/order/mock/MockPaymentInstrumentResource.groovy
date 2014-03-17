@@ -1,6 +1,7 @@
 package com.junbo.order.mock
 
 import com.junbo.common.id.PaymentInstrumentId
+import com.junbo.common.id.UserId
 import com.junbo.langur.core.promise.Promise
 import com.junbo.payment.spec.model.PageMetaData
 import com.junbo.payment.spec.model.PaymentInstrument
@@ -22,33 +23,35 @@ import javax.ws.rs.core.Response
 class MockPaymentInstrumentResource extends BaseMock implements PaymentInstrumentResource {
 
     @Override
-    Promise<PaymentInstrument> postPaymentInstrument(PaymentInstrument request) {
+    Promise<PaymentInstrument> postPaymentInstrument(UserId userId, PaymentInstrument request) {
         return null
     }
 
     @Override
-    Promise<PaymentInstrument> getById(PaymentInstrumentId paymentInstrumentId) {
+    Promise<PaymentInstrument> getById(UserId userId, PaymentInstrumentId paymentInstrumentId) {
         def pi = new PaymentInstrument()
         pi.id = paymentInstrumentId.value
         pi.isValidated = true
         pi.status = 'ACTIVE'
         pi.type = 'CREDIT_CARD'
-        pi.userId = generateLong()
+        pi.userId = userId.value
         return Promise.pure(pi)
     }
 
     @Override
-    Promise<Response> delete(PaymentInstrumentId paymentInstrumentId) {
+    Promise<Response> delete(UserId userId, PaymentInstrumentId paymentInstrumentId) {
         return null
     }
 
     @Override
-    Promise<PaymentInstrument> update(PaymentInstrumentId paymentInstrumentId, PaymentInstrument request) {
+    Promise<PaymentInstrument> update(UserId userId,
+                                      PaymentInstrumentId paymentInstrumentId, PaymentInstrument request) {
         return null
     }
 
     @Override
     Promise<ResultList<PaymentInstrument>> searchPaymentInstrument(
+            UserId userId,
             PaymentInstrumentSearchParam searchParam,
             PageMetaData pageMetadata) {
         return null

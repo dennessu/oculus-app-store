@@ -4,13 +4,13 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.entitlement.spec.resource;
+package com.junbo.catalog.spec.resource;
 
+import com.junbo.catalog.spec.model.common.PageableGetOptions;
+import com.junbo.catalog.spec.model.common.ResultList;
+import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
 import com.junbo.common.id.EntitlementDefinitionId;
 import com.junbo.common.id.UserId;
-import com.junbo.entitlement.spec.model.EntitlementDefinition;
-import com.junbo.entitlement.spec.model.PageMetadata;
-import com.junbo.entitlement.spec.model.ResultList;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 
@@ -18,7 +18,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 /**
  * API for entitlementDefinition.
@@ -39,22 +38,10 @@ public interface EntitlementDefinitionResource {
             @QueryParam("type") String type,
             @QueryParam("group") String group,
             @QueryParam("tag") String tag,
-            @BeanParam PageMetadata pageMetadata);
+            @BeanParam PageableGetOptions pageMetadata);
 
     @POST
     @Consumes({MediaType.APPLICATION_JSON})
     Promise<EntitlementDefinition> postEntitlementDefinition(
             @Valid EntitlementDefinition entitlementDefinition);
-
-    @PUT
-    @Path("/{entitlementDefinitionId}")
-    @Consumes({MediaType.APPLICATION_JSON})
-    Promise<EntitlementDefinition> updateEntitlementDefinition(
-            @PathParam("entitlementDefinitionId") EntitlementDefinitionId entitlementDefinitionId,
-            @Valid EntitlementDefinition entitlementDefinition);
-
-    @DELETE
-    @Path("/{entitlementDefinitionId}")
-    Promise<Response> deleteEntitlementDefinition(
-            @PathParam("entitlementDefinitionId") EntitlementDefinitionId entitlementDefinitionId);
 }
