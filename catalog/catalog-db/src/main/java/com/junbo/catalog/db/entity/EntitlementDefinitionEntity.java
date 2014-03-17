@@ -26,7 +26,6 @@ public class EntitlementDefinitionEntity extends BaseEntity {
     private EntitlementType type;
     private String group;
     private String tag;
-    private String status;
     private UUID trackingUuid;
 
     @Id
@@ -73,15 +72,6 @@ public class EntitlementDefinitionEntity extends BaseEntity {
 
     public void setTag(String tag) {
         this.tag = tag;
-    }
-
-    @Column(name = "status")
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
     @Column(name = "tracking_uuid")

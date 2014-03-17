@@ -21,8 +21,6 @@ public interface EntitlementDefinitionDao {
 
     EntitlementDefinitionEntity get(Long entitlementDefinitionId);
 
-    Long update(EntitlementDefinitionEntity entitlementDefinition);
-
     List<EntitlementDefinitionEntity> getByParams(Long developerId,
                                                   String group, String tag,
                                                   EntitlementType type, PageableGetOptions pageableGetOptions);

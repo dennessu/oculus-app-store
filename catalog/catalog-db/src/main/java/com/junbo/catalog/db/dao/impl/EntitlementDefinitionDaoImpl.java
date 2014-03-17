@@ -24,18 +24,6 @@ import java.util.UUID;
 public class EntitlementDefinitionDaoImpl extends BaseDaoImpl<EntitlementDefinitionEntity>
         implements EntitlementDefinitionDao {
     @Override
-    public EntitlementDefinitionEntity get(Long id) {
-        EntitlementDefinitionEntity entitlementDefinitionEntity =
-                (EntitlementDefinitionEntity)
-                        currentSession().get(EntitlementDefinitionEntity.class, id);
-        if (entitlementDefinitionEntity != null
-                && "DELETED".equals(entitlementDefinitionEntity.getStatus())) {
-            return null;
-        }
-        return entitlementDefinitionEntity;
-    }
-
-    @Override
     public List<EntitlementDefinitionEntity> getByParams(Long developerId, String group, String tag,
                                                          EntitlementType type, PageableGetOptions pageableGetOptions) {
         StringBuilder queryString = new StringBuilder("from EntitlementDefinitionEntity" +

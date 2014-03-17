@@ -18,7 +18,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 /**
  * API for entitlementDefinition.
@@ -45,9 +44,4 @@ public interface EntitlementDefinitionResource {
     @Consumes({MediaType.APPLICATION_JSON})
     Promise<EntitlementDefinition> postEntitlementDefinition(
             @Valid EntitlementDefinition entitlementDefinition);
-
-    @DELETE
-    @Path("/{entitlementDefinitionId}")
-    Promise<Response> deleteEntitlementDefinition(
-            @PathParam("entitlementDefinitionId") EntitlementDefinitionId entitlementDefinitionId);
 }

@@ -17,7 +17,6 @@ import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
-import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 import java.util.List;
@@ -64,12 +63,6 @@ public class EntitlementDefinitionResourceImpl implements EntitlementDefinitionR
         }
         Long id = entitlementDefinitionService.createEntitlementDefinition(entitlementDefinition);
         return Promise.pure(entitlementDefinitionService.getEntitlementDefinition(id));
-    }
-
-    @Override
-    public Promise<Response> deleteEntitlementDefinition(EntitlementDefinitionId entitlementDefinitionId) {
-        entitlementDefinitionService.deleteEntitlement(entitlementDefinitionId.getValue());
-        return Promise.pure(Response.status(204).build());
     }
 
     private String buildNextUrl(Long developerId,
