@@ -30,6 +30,10 @@ interface TokenGenerator {
 
     String generateRememberMeTokenSeries()
 
+    String generateClientId()
+
+    String generateClientSecret()
+
     boolean isValidAccessToken(String tokenValue)
 
     boolean isValidRefreshToken(String tokenValue)

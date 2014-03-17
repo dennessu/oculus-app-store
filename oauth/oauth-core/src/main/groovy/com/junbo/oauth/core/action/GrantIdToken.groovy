@@ -11,7 +11,7 @@ import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.exception.AppExceptions
-import com.junbo.oauth.core.service.TokenGenerationService
+import com.junbo.oauth.core.service.TokenService
 import com.junbo.oauth.core.util.OAuthInfoUtil
 import com.junbo.oauth.spec.model.IdToken
 import groovy.transform.CompileStatic
@@ -24,11 +24,11 @@ import org.springframework.util.StringUtils
 @CompileStatic
 class GrantIdToken implements Action {
 
-    private TokenGenerationService tokenGenerationService
+    private TokenService tokenService
 
     @Required
-    void setTokenGenerationService(TokenGenerationService tokenGenerationService) {
-        this.tokenGenerationService = tokenGenerationService
+    void setTokenService(TokenService tokenService) {
+        this.tokenService = tokenService
     }
 
     @Override
@@ -57,7 +57,7 @@ class GrantIdToken implements Action {
             lastAuthDate = loginState.lastAuthDate
         }
 
-        IdToken idToken = tokenGenerationService.generateIdToken(client, client.idTokenIssuer,
+        IdToken idToken = tokenService.generateIdToken(client, client.idTokenIssuer,
                 loginState.userId, nonce, lastAuthDate, authorizationCode, accessToken)
 
         contextWrapper.idToken = idToken

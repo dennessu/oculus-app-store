@@ -7,7 +7,7 @@ package com.junbo.oauth.api.endpoint
 
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oauth.core.exception.AppExceptions
-import com.junbo.oauth.core.service.TokenGenerationService
+import com.junbo.oauth.core.service.TokenService
 import com.junbo.oauth.spec.endpoint.TokenInfoEndpoint
 import com.junbo.oauth.spec.model.AccessToken
 import com.junbo.oauth.spec.model.TokenInfo
@@ -27,11 +27,11 @@ import javax.ws.rs.core.UriInfo
 @CompileStatic
 @Scope('prototype')
 class TokenInfoEndpointImpl implements TokenInfoEndpoint {
-    private TokenGenerationService tokenGenerationService
+    private TokenService tokenService
 
     @Required
-    void setTokenGenerationService(TokenGenerationService tokenGenerationService) {
-        this.tokenGenerationService = tokenGenerationService
+    void setTokenService(TokenService tokenService) {
+        this.tokenService = tokenService
     }
 
     @Override
@@ -42,7 +42,7 @@ class TokenInfoEndpointImpl implements TokenInfoEndpoint {
             throw AppExceptions.INSTANCE.missingAccessToken().exception()
         }
 
-        AccessToken accessToken = tokenGenerationService.getAccessToken(token)
+        AccessToken accessToken = tokenService.getAccessToken(token)
 
         if (accessToken == null) {
             throw AppExceptions.INSTANCE.invalidAccessToken().exception()

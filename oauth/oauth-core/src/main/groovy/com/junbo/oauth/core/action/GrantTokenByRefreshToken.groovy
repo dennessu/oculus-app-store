@@ -11,7 +11,7 @@ import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.exception.AppExceptions
-import com.junbo.oauth.core.service.TokenGenerationService
+import com.junbo.oauth.core.service.TokenService
 import com.junbo.oauth.spec.model.AccessToken
 import com.junbo.oauth.spec.model.LoginState
 import com.junbo.oauth.spec.model.RefreshToken
@@ -27,11 +27,11 @@ import org.springframework.util.StringUtils
 @CompileStatic
 class GrantTokenByRefreshToken implements Action {
 
-    private TokenGenerationService tokenGenerationService
+    private TokenService tokenService
 
     @Required
-    void setTokenGenerationService(TokenGenerationService tokenGenerationService) {
-        this.tokenGenerationService = tokenGenerationService
+    void setTokenService(TokenService tokenService) {
+        this.tokenService = tokenService
     }
 
     @Override
@@ -48,7 +48,7 @@ class GrantTokenByRefreshToken implements Action {
             throw AppExceptions.INSTANCE.missingRefreshToken().exception()
         }
 
-        RefreshToken refreshToken = tokenGenerationService.getAndRemoveRefreshToken(token)
+        RefreshToken refreshToken = tokenService.getAndRemoveRefreshToken(token)
         if (refreshToken == null) {
             throw AppExceptions.INSTANCE.invalidRefreshToken(token).exception()
         }
@@ -80,10 +80,10 @@ class GrantTokenByRefreshToken implements Action {
         )
         contextWrapper.loginState = loginState
 
-        def newAccessToken = tokenGenerationService.generateAccessToken(client, refreshToken.userId, scopesParam)
+        def newAccessToken = tokenService.generateAccessToken(client, refreshToken.userId, scopesParam)
         contextWrapper.accessToken = newAccessToken
 
-        def newRefreshToken = tokenGenerationService.generateRefreshToken(client, newAccessToken, refreshToken)
+        def newRefreshToken = tokenService.generateRefreshToken(client, newAccessToken, refreshToken)
         contextWrapper.refreshToken = newRefreshToken
 
         return Promise.pure(null)

@@ -49,6 +49,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     public Entitlement addEntitlement(Entitlement entitlement) {
         checkUser(entitlement.getUserId());
         checkOffer(entitlement.getOfferId());
+        checkDeveloper(entitlement.getDeveloperId());
 
         if (EntitlementStatus.LIFECYCLE_NOT_MANAGED_STATUS.contains(
                 EntitlementStatus.valueOf(entitlement.getStatus()))) {
@@ -57,18 +58,17 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
                     "status can not be DELETED or BANNED when created").exception();
         }
 
-        EntitlementDefinition entitlementDefinition =
-                entitlementDefinitionRepository.get(entitlement.getEntitlementDefinitionId());
-        if (entitlementDefinition == null) {
-            throw AppErrors.INSTANCE.notFound("entitlementDefinition",
-                    entitlement.getEntitlementDefinitionId()).exception();
-        }
+        checkEntitlementDefinition(entitlement.getEntitlementDefinitionId());
 
         validateGrantTimeBeforeExpirationTime(entitlement);
 
+        if (entitlement.getType() == null) {
+            entitlement.setType(EntitlementType.DEFAULT.toString());
+        }
+
         if (entitlement.getManagedLifecycle() == null) {
-            LOGGER.warn("managedLifecycle not found, set false as default.");
-            entitlement.setManagedLifecycle(false);
+            LOGGER.warn("managedLifecycle not found, set true as default.");
+            entitlement.setManagedLifecycle(true);
         }
 
         if (entitlement.getConsumable() == null || !entitlement.getConsumable()) {
@@ -80,7 +80,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
         //if managedLifecycle is true, try to merge the added entitlement into existing entitlement
         //not deal with developer entitlement as developer entitlement is bounded to userId only
         if (Boolean.TRUE.equals(entitlement.getManagedLifecycle()) &&
-                !entitlementDefinition.getType().equalsIgnoreCase(EntitlementType.DEVELOPER.toString())) {
+                !entitlement.getType().equalsIgnoreCase(EntitlementType.DEVELOPER.toString())) {
             Entitlement existingEntitlement = entitlementRepository.getExistingManagedEntitlement(
                     entitlement.getUserId(), entitlement.getEntitlementDefinitionId());
             if (existingEntitlement != null) {
@@ -102,6 +102,8 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
 
         return entitlementRepository.insert(entitlement);
     }
+
+
 
     @Override
     @Transactional
@@ -135,6 +137,21 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
                     entitlement.getEntitlementDefinitionId(),
                     existingEntitlement.getEntitlementDefinitionId()).exception();
         }
+        if (!existingEntitlement.getType().equals(entitlement.getType())) {
+            throw AppErrors.INSTANCE.fieldNotMatch("type",
+                    entitlement.getType(),
+                    existingEntitlement.getType()).exception();
+        }
+        if (!existingEntitlement.getGroup().equals(entitlement.getGroup())) {
+            throw AppErrors.INSTANCE.fieldNotMatch("group",
+                    entitlement.getGroup(),
+                    existingEntitlement.getGroup()).exception();
+        }
+        if (!existingEntitlement.getTag().equals(entitlement.getTag())) {
+            throw AppErrors.INSTANCE.fieldNotMatch("tag",
+                    entitlement.getTag(),
+                    existingEntitlement.getTag()).exception();
+        }
 
         if (existingEntitlement.getGrantTime().compareTo(entitlement.getGrantTime()) != 0) {
             throw AppErrors.INSTANCE.fieldNotMatch("grantTime",
@@ -149,7 +166,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
         existingEntitlement.setStatusReason(entitlement.getStatusReason());
 
         if (entitlement.getManagedLifecycle() == null) {
-            existingEntitlement.setManagedLifecycle(false);
+            existingEntitlement.setManagedLifecycle(true);
         } else {
             existingEntitlement.setManagedLifecycle(entitlement.getManagedLifecycle());
         }
@@ -249,5 +266,9 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     @Transactional
     public Entitlement getByTrackingUuid(UUID trackingUuid) {
         return entitlementRepository.getByTrackingUuid(trackingUuid);
+    }
+
+    private void checkEntitlementDefinition(Long entitlementDefinitionId) {
+
     }
 }

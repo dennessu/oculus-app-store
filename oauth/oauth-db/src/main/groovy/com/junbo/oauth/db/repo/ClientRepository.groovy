@@ -14,4 +14,10 @@ import groovy.transform.CompileStatic
 @CompileStatic
 interface ClientRepository {
     Client getClient(String clientId)
+
+    Client saveClient(Client client)
+
+    Client updateClient(Client client)
+
+    void deleteClient(Client client)
 }

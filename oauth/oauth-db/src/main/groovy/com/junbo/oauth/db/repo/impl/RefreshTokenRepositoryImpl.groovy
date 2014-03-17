@@ -55,9 +55,13 @@ class RefreshTokenRepositoryImpl implements RefreshTokenRepository {
 
     @Override
     RefreshToken getAndRemove(String tokenValue) {
-        RefreshToken refreshToken = wrap(refreshTokenDAO.get(tokenValue))
-        refreshTokenDAO.delete(tokenValue)
-        return refreshToken
+        def entity = refreshTokenDAO.get(tokenValue)
+
+        if (entity != null) {
+            refreshTokenDAO.delete(entity)
+        }
+
+        return wrap(entity)
     }
 
     private static RefreshTokenEntity unwrap(RefreshToken refreshToken) {
@@ -66,7 +70,7 @@ class RefreshTokenRepositoryImpl implements RefreshTokenRepository {
         }
 
         return new RefreshTokenEntity(
-                tokenValue: refreshToken.tokenValue,
+                id: refreshToken.tokenValue,
                 clientId: refreshToken.clientId,
                 userId: refreshToken.userId,
                 accessToken: JsonMarshaller.marshall(refreshToken.accessToken),
@@ -81,7 +85,7 @@ class RefreshTokenRepositoryImpl implements RefreshTokenRepository {
         }
 
         return new RefreshToken(
-                tokenValue: entity.tokenValue,
+                tokenValue: entity.id,
                 clientId: entity.clientId,
                 userId: entity.userId,
                 accessToken: JsonMarshaller.unmarshall(AccessToken, entity.accessToken),

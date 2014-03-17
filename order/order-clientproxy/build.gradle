@@ -15,6 +15,7 @@ dependencies {
     compile 'com.junbo.rating:rating-spec:0.0.1-SNAPSHOT'
     compile 'com.junbo.fulfilment:fulfilment-spec:0.0.1-SNAPSHOT'
     compile 'com.junbo.payment:payment-spec:0.0.1-SNAPSHOT'
+    compile 'com.junbo.email:email-spec:0.0.1-SNAPSHOT'
     compile 'net.sf.ehcache:ehcache-core:2.6.6'
     compile 'org.springframework:spring-context-support:4.0.2.RELEASE'
     compile 'javax.transaction:jta:1.1'

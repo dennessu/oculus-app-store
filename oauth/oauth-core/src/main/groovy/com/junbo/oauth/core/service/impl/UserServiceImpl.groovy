@@ -13,7 +13,7 @@ import com.junbo.identity.spec.resource.UserProfileResource
 import com.junbo.identity.spec.resource.UserResource
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oauth.core.exception.AppExceptions
-import com.junbo.oauth.core.service.TokenGenerationService
+import com.junbo.oauth.core.service.TokenService
 import com.junbo.oauth.core.service.UserService
 import com.junbo.oauth.spec.model.AccessToken
 import com.junbo.oauth.spec.model.TokenType
@@ -31,15 +31,15 @@ import javax.ws.rs.core.MultivaluedMap
 @CompileStatic
 class UserServiceImpl implements UserService {
 
-    private TokenGenerationService tokenGenerationService
+    private TokenService tokenService
 
     private UserResource userResource
 
     private UserProfileResource userProfileResource
 
     @Required
-    void setTokenGenerationService(TokenGenerationService tokenGenerationService) {
-        this.tokenGenerationService = tokenGenerationService
+    void setTokenService(TokenService tokenService) {
+        this.tokenService = tokenService
     }
 
     @Required
@@ -65,7 +65,7 @@ class UserServiceImpl implements UserService {
             throw AppExceptions.INSTANCE.invalidAuthorization().exception()
         }
 
-        AccessToken accessToken = tokenGenerationService.getAccessToken(tokens[1])
+        AccessToken accessToken = tokenService.getAccessToken(tokens[1])
 
         if (accessToken == null) {
             throw AppExceptions.INSTANCE.invalidAccessToken().exception()

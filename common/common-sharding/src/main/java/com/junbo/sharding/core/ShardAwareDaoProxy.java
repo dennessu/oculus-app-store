@@ -9,11 +9,14 @@ import com.junbo.common.id.OrderId;
 import com.junbo.common.id.UserId;
 import com.junbo.sharding.IdGeneratorFacade;
 import com.junbo.sharding.annotations.SeedId;
+import com.junbo.sharding.annotations.SeedParam;
 import com.junbo.sharding.util.Helper;
+import junit.framework.Assert;
 import org.springframework.core.annotation.AnnotationUtils;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -38,12 +41,31 @@ public class ShardAwareDaoProxy implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        int shardId = tryGetShardIdAndSetEntityId(args);
+        int shardId = tryGetShardIdAndSetEntityId(method, args);
         Helper.setCurrentShardId(shardId);
         return method.invoke(target, args);
     }
 
-    private int tryGetShardIdAndSetEntityId(Object[] args) throws Throwable {
+    private int tryGetShardIdAndSetEntityId(Method mtd, Object[] args) throws Throwable {
+        // @SeedParam processing
+        Annotation[][] a = mtd.getParameterAnnotations();
+        Assert.assertEquals(a.length, args.length);
+
+        for (int i = 0; i < a.length; i++) {
+            for (Annotation annotation : a[i]) {
+                if (annotation instanceof SeedParam) {
+                    if (args[i].getClass().equals(Long.class)) {
+                        return Helper.getShardId((Long)args[i]);
+                    }
+                    else {
+                        throw new RuntimeException("@SeedParam annotation must be placed with Long type field, " +
+                                "error with class " + args[i].getClass().getCanonicalName());
+                    }
+                }
+            }
+        }
+
+        // @Entity arg processing
         for(Object arg : args) {
             Entity entityAnnotation = AnnotationUtils.findAnnotation(arg.getClass(), Entity.class);
             // if it is an entity class
@@ -93,7 +115,7 @@ public class ShardAwareDaoProxy implements InvocationHandler {
                                                 return Helper.getShardId(nextId);
                                             }
                                             else {  // use @SeedId field as id generator seed
-                                                long seed = (long)seedGetMethod.invoke(arg);
+                                                long seed = (Long)seedGetMethod.invoke(arg);
                                                 if (leafClazz.getCanonicalName()
                                                         .equalsIgnoreCase("com.junbo.order.db.entity.OrderEntity")) {
                                                     long nextId = idGeneratorFacade.nextId(OrderId.class, seed);
@@ -111,13 +133,12 @@ public class ShardAwareDaoProxy implements InvocationHandler {
                                     seedIdClazz = seedIdClazz.getSuperclass();
                                 } while (seedIdClazz != null);
 
-                                // @SeedId not found, domain data in domaindata service?
-                                // todo: haomin
+                                // @SeedId not found
                                 throw new RuntimeException("@SeedId annotation not found on entity class "
                                         + leafClazz.getCanonicalName());
                             }
                             else {  // entity id has been set, not POST method
-                                return Helper.getShardId((long)idField.get(arg));
+                                return Helper.getShardId((Long)idGetMethod.invoke(arg));
                             }
                         }
                     }
@@ -130,6 +151,6 @@ public class ShardAwareDaoProxy implements InvocationHandler {
             }
         }
 
-        throw new RuntimeException("Can't find any argument with @Entity annotation.");
+        throw new RuntimeException("Can't find any argument with @Entity or @SeedParam annotation.");
     }
 }

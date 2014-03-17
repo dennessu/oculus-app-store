@@ -12,9 +12,8 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class AccessTokenEntity extends BaseEntity {
-    String tokenValue
     String clientId
     Set<String> scopes
     Long userId
-    Date expiredBy
+    String refreshTokenValue
 }
