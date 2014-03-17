@@ -35,7 +35,7 @@
     <bean id="generateAccessTokenResponse" class="com.junbo.oauth.core.action.GenerateAccessTokenResponse"/>
 
     <bean id="getAccessTokenInfo" class="com.junbo.oauth.core.action.GetAccessTokenInfo">
-        <property name="tokenGenerationService" ref="tokenGenerationService"/>
+        <property name="tokenService" ref="tokenService"/>
     </bean>
 
     <bean id="validateClient" class="com.junbo.oauth.core.action.ValidateClient">
@@ -48,15 +48,15 @@
     </bean>
 
     <bean id="grantIdToken" class="com.junbo.oauth.core.action.GrantIdToken">
-        <property name="tokenGenerationService" ref="tokenGenerationService"/>
+        <property name="tokenService" ref="tokenService"/>
     </bean>
 
     <bean id="grantImplicitAccessToken" class="com.junbo.oauth.core.action.GrantImplicitAccessToken">
-        <property name="tokenGenerationService" ref="tokenGenerationService"/>
+        <property name="tokenService" ref="tokenService"/>
     </bean>
 
     <bean id="grantRefreshToken" class="com.junbo.oauth.core.action.GrantRefreshToken">
-        <property name="tokenGenerationService" ref="tokenGenerationService"/>
+        <property name="tokenService" ref="tokenService"/>
     </bean>
 
     <bean id="grantRememberMeToken" class="com.junbo.oauth.core.action.GrantRememberMeToken">
@@ -65,20 +65,20 @@
     </bean>
 
     <bean id="grantTokenByCode" class="com.junbo.oauth.core.action.GrantTokenByCode">
-        <property name="tokenGenerationService" ref="tokenGenerationService"/>
+        <property name="tokenService" ref="tokenService"/>
         <property name="authorizationCodeRepository" ref="authorizationCodeRepository"/>
     </bean>
 
     <bean id="grantTokenByPassword" class="com.junbo.oauth.core.action.GrantTokenByPassword">
-        <property name="tokenGenerationService" ref="tokenGenerationService"/>
+        <property name="tokenService" ref="tokenService"/>
     </bean>
 
     <bean id="grantTokenByRefreshToken" class="com.junbo.oauth.core.action.GrantTokenByRefreshToken">
-        <property name="tokenGenerationService" ref="tokenGenerationService"/>
+        <property name="tokenService" ref="tokenService"/>
     </bean>
 
     <bean id="loadIdTokenHint" class="com.junbo.oauth.core.action.LoadIdTokenHint">
-        <property name="tokenGenerationService" ref="tokenGenerationService"/>
+        <property name="tokenService" ref="tokenService"/>
     </bean>
 
     <bean id="loadLoginState" class="com.junbo.oauth.core.action.LoadLoginState">
@@ -92,7 +92,7 @@
     <bean id="logout" class="com.junbo.oauth.core.action.Logout">
         <property name="loginStateRepository" ref="loginStateRepository"/>
         <property name="rememberMeTokenRepository" ref="rememberMeTokenRepository"/>
-        <property name="tokenGenerationService" ref="tokenGenerationService"/>
+        <property name="tokenService" ref="tokenService"/>
         <property name="clientRepository" ref="clientRepository"/>
         <property name="confirmationUri" value="${oauth.core.portal.logoutConfirmationUri}"/>
     </bean>

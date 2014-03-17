@@ -58,9 +58,13 @@ class RememberMeTokenRepositoryImpl implements RememberMeTokenRepository {
 
     @Override
     RememberMeToken getAndRemove(String tokenValue) {
-        RememberMeToken rememberMeToken = wrap(rememberMeTokenDAO.get(tokenValue))
-        rememberMeTokenDAO.delete(tokenValue)
-        return rememberMeToken
+        def entity = rememberMeTokenDAO.get(tokenValue)
+
+        if (entity != null) {
+            rememberMeTokenDAO.delete(entity)
+        }
+
+        return wrap(entity)
     }
 
     private static RememberMeTokenEntity unwrap(RememberMeToken rememberMeToken) {
@@ -69,7 +73,7 @@ class RememberMeTokenRepositoryImpl implements RememberMeTokenRepository {
         }
 
         return new RememberMeTokenEntity(
-                tokenValue: rememberMeToken.tokenValue,
+                id: rememberMeToken.tokenValue,
                 userId: rememberMeToken.userId,
                 expiredBy: rememberMeToken.expiredBy,
                 lastAuthDate: rememberMeToken.lastAuthDate
@@ -82,7 +86,7 @@ class RememberMeTokenRepositoryImpl implements RememberMeTokenRepository {
         }
 
         return new RememberMeToken(
-                tokenValue: entity.tokenValue,
+                tokenValue: entity.id,
                 userId: entity.userId,
                 expiredBy: entity.expiredBy,
                 lastAuthDate: entity.lastAuthDate

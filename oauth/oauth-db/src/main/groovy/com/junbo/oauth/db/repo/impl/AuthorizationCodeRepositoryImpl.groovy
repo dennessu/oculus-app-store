@@ -43,9 +43,9 @@ class AuthorizationCodeRepositoryImpl implements AuthorizationCodeRepository {
 
     @Override
     AuthorizationCode getAndRemove(String code) {
-        AuthorizationCode authorizationCode = wrap(authorizationCodeDAO.get(code))
-        authorizationCodeDAO.delete(code)
-        return authorizationCode
+        AuthorizationCodeEntity entity = authorizationCodeDAO.get(code)
+        authorizationCodeDAO.delete(entity)
+        return wrap(entity)
     }
 
     private static AuthorizationCodeEntity unwrap(AuthorizationCode code) {
@@ -54,7 +54,7 @@ class AuthorizationCodeRepositoryImpl implements AuthorizationCodeRepository {
         }
 
         return new AuthorizationCodeEntity(
-                code: code.code,
+                id: code.code,
                 userId: code.userId,
                 clientId: code.clientId,
                 scopes: code.scopes,
@@ -71,7 +71,7 @@ class AuthorizationCodeRepositoryImpl implements AuthorizationCodeRepository {
         }
 
         return new AuthorizationCode(
-                code: entity.code,
+                code: entity.id,
                 userId: entity.userId,
                 clientId: entity.clientId,
                 scopes: entity.scopes,

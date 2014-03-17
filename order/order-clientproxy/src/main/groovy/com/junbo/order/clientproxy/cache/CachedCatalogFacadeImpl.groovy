@@ -1,6 +1,7 @@
 package com.junbo.order.clientproxy.cache
 
 import com.junbo.catalog.spec.model.offer.Offer
+import com.junbo.common.id.OfferId
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.catalog.CatalogFacade
 import groovy.transform.CompileStatic
@@ -52,5 +53,10 @@ class CachedCatalogFacadeImpl implements CatalogFacade {
         } )
         return offerPromise
 
+    }
+
+    @Override
+    Promise<List<Offer>> getOffers(List<OfferId> offerIds) {
+        return null
     }
 }

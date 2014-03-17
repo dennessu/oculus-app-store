@@ -11,7 +11,7 @@ import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.exception.AppExceptions
-import com.junbo.oauth.core.service.TokenGenerationService
+import com.junbo.oauth.core.service.TokenService
 import com.junbo.oauth.db.repo.AuthorizationCodeRepository
 import com.junbo.oauth.spec.model.AccessToken
 import com.junbo.oauth.spec.model.AuthorizationCode
@@ -29,7 +29,7 @@ class GrantTokenByCode implements Action {
 
     private AuthorizationCodeRepository authorizationCodeRepository
 
-    private TokenGenerationService tokenGenerationService
+    private TokenService tokenService
 
     @Required
     void setAuthorizationCodeRepository(AuthorizationCodeRepository authorizationCodeRepository) {
@@ -37,8 +37,8 @@ class GrantTokenByCode implements Action {
     }
 
     @Required
-    void setTokenGenerationService(TokenGenerationService tokenGenerationService) {
-        this.tokenGenerationService = tokenGenerationService
+    void setTokenService(TokenService tokenService) {
+        this.tokenService = tokenService
     }
 
     @Override
@@ -69,7 +69,7 @@ class GrantTokenByCode implements Action {
             throw AppExceptions.INSTANCE.invalidRedirectUri(redirectUri).exception()
         }
 
-        AccessToken accessToken = tokenGenerationService.generateAccessToken(client,
+        AccessToken accessToken = tokenService.generateAccessToken(client,
                 authorizationCode.userId, authorizationCode.scopes)
 
         LoginState loginState = new LoginState(

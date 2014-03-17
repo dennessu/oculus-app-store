@@ -5,7 +5,9 @@
  */
 package com.junbo.oauth.db.entity
 
+import com.junbo.oauth.spec.model.GrantType
 import com.junbo.oauth.spec.model.ResponseType
+import com.junbo.oauth.spec.model.TokenEndpointAuthMethod
 import groovy.transform.CompileStatic
 
 /**
@@ -13,14 +15,19 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class ClientEntity extends BaseEntity {
-    String clientId
     String clientSecret
-    Set<String> allowedRedirectUris
+    String clientName
+    Long ownerUserId
+    Set<String> redirectUris
     String defaultRedirectUri
-    Set<String> allowedScopes
+    Set<String> scopes
     Set<String> defaultScopes
-    Set<ResponseType> allowedResponseTypes
+    Set<ResponseType> responseTypes
+    Set<GrantType> grantTypes
     String idTokenIssuer
-    Set<String> allowedLogoutRedirectUris
+    Set<String> logoutRedirectUris
     String defaultLogoutRedirectUri
+    TokenEndpointAuthMethod tokenEndpointAuthMethod
+    String logoUri
+    Set<String> contacts
 }

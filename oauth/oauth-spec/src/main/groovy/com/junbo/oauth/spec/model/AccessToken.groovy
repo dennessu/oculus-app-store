@@ -16,4 +16,5 @@ class AccessToken extends ExpirableToken {
     String clientId
     Set<String> scopes
     Long userId
+    String refreshTokenValue
 }
