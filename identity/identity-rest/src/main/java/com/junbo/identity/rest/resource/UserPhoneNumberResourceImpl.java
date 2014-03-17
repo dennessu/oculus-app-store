@@ -31,12 +31,14 @@ public class UserPhoneNumberResourceImpl implements UserPhoneNumberResource {
     }
 
     @Override
-    public Promise<UserPhoneNumber> put(UserId userId, UserPhoneNumberId userPhoneNumberId, UserPhoneNumber userPhoneNumber) {
+    public Promise<UserPhoneNumber> put(UserId userId, UserPhoneNumberId userPhoneNumberId,
+                                        UserPhoneNumber userPhoneNumber) {
         return null;
     }
 
     @Override
-    public Promise<UserPhoneNumber> patch(UserId userId, UserPhoneNumberId userPhoneNumberId, UserPhoneNumber userPhoneNumber) {
+    public Promise<UserPhoneNumber> patch(UserId userId, UserPhoneNumberId userPhoneNumberId,
+                                          UserPhoneNumber userPhoneNumber) {
         return null;
     }
 
@@ -46,7 +48,8 @@ public class UserPhoneNumberResourceImpl implements UserPhoneNumberResource {
     }
 
     @Override
-    public Promise<UserPhoneNumber> get(UserId userId, UserPhoneNumberId userPhoneNumberId, @BeanParam UserPhoneNumberGetOptions getOptions) {
+    public Promise<UserPhoneNumber> get(UserId userId, UserPhoneNumberId userPhoneNumberId,
+                                        @BeanParam UserPhoneNumberGetOptions getOptions) {
         return null;
     }
 

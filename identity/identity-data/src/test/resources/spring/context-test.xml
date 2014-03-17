@@ -10,9 +10,6 @@
     <bean id="__builtinMapper" class="com.junbo.oom.core.builtin.BuiltinMapper" />
     <bean id="__commonMapper" class="com.junbo.identity.data.mapper.CommonMapper" />
 
-    <import resource="classpath:spring/db-context.xml"/>
+    <import resource="classpath*:spring/*-context.xml"/>
     <import resource="classpath*:spring/transaction.xml" />
-    <import resource="classpath*:spring/sharding.xml"/>
-    <import resource="classpath*:spring/common-context.xml"/>
-
 </beans>

@@ -34,29 +34,29 @@ public interface UserSecurityQuestionResource {
     @PUT
     @Path("/{userSecurityQuestionId}")
     Promise<UserSecurityQuestion> put(@PathParam("userId") UserId userId,
-                                      @PathParam("userSecurityQuestionId") UserSecurityQuestionId userSecurityQuestionId,
-                                      UserSecurityQuestion userSecurityQuestion);
+                                  @PathParam("userSecurityQuestionId") UserSecurityQuestionId userSecurityQuestionId,
+                                  UserSecurityQuestion userSecurityQuestion);
 
     @POST
     @Path("/{userSecurityQuestionId}")
     Promise<UserSecurityQuestion> patch(@PathParam("userId") UserId userId,
-                                        @PathParam("userSecurityQuestionId") UserSecurityQuestionId userSecurityQuestionId,
-                                        UserSecurityQuestion userSecurityQuestion);
+                                    @PathParam("userSecurityQuestionId") UserSecurityQuestionId userSecurityQuestionId,
+                                    UserSecurityQuestion userSecurityQuestion);
 
     @DELETE
     @Path("/{userSecurityQuestionId}")
     Promise<UserSecurityQuestion> delete(@PathParam("userId") UserId userId,
-                                         @PathParam("userSecurityQuestionId") UserSecurityQuestionId userSecurityQuestionId);
+                                 @PathParam("userSecurityQuestionId") UserSecurityQuestionId userSecurityQuestionId);
 
     @GET
     @Path("/{userSecurityQuestionId}")
     Promise<UserSecurityQuestion> get(@PathParam("userId") UserId userId,
-                                      @PathParam("userSecurityQuestionId") UserSecurityQuestionId userSecurityQuestionId,
-                                      @BeanParam UserSecurityQuestionGetOptions getOptions);
+                                  @PathParam("userSecurityQuestionId") UserSecurityQuestionId userSecurityQuestionId,
+                                  @BeanParam UserSecurityQuestionGetOptions getOptions);
 
     @GET
     @Path("/")
     Promise<ResultList<UserSecurityQuestion>> list(@PathParam("userId") UserId userId,
-                                                  @BeanParam UserSecurityQuestionListOptions listOptions);
+                                  @BeanParam UserSecurityQuestionListOptions listOptions);
 
 }

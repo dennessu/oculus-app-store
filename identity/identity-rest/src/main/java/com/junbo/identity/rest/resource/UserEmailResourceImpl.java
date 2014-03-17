@@ -8,11 +8,10 @@ package com.junbo.identity.rest.resource;
 import com.junbo.common.id.UserEmailId;
 import com.junbo.common.id.UserId;
 import com.junbo.identity.spec.model.common.ResultList;
+import com.junbo.identity.spec.model.users.UserEmail;
 import com.junbo.identity.spec.options.UserEmailGetOptions;
 import com.junbo.identity.spec.options.UserEmailListOptions;
 import com.junbo.identity.spec.resource.UserEmailResource;
-import com.junbo.identity.spec.model.options.UserEmailGetOption;
-import com.junbo.identity.spec.model.users.UserEmail;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.stereotype.Component;
 

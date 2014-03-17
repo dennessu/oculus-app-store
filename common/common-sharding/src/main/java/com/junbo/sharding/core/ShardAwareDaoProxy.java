@@ -55,7 +55,7 @@ public class ShardAwareDaoProxy implements InvocationHandler {
             for (Annotation annotation : a[i]) {
                 if (annotation instanceof SeedParam) {
                     if (args[i].getClass().equals(Long.class)) {
-                        return Helper.getShardId((long)args[i]);
+                        return Helper.getShardId((Long)args[i]);
                     }
                     else {
                         throw new RuntimeException("@SeedParam annotation must be placed with Long type field, " +
@@ -115,7 +115,7 @@ public class ShardAwareDaoProxy implements InvocationHandler {
                                                 return Helper.getShardId(nextId);
                                             }
                                             else {  // use @SeedId field as id generator seed
-                                                long seed = (long)seedGetMethod.invoke(arg);
+                                                long seed = (Long)seedGetMethod.invoke(arg);
                                                 if (leafClazz.getCanonicalName()
                                                         .equalsIgnoreCase("com.junbo.order.db.entity.OrderEntity")) {
                                                     long nextId = idGeneratorFacade.nextId(OrderId.class, seed);
@@ -133,13 +133,12 @@ public class ShardAwareDaoProxy implements InvocationHandler {
                                     seedIdClazz = seedIdClazz.getSuperclass();
                                 } while (seedIdClazz != null);
 
-                                // @SeedId not found, domain data in domaindata service?
-                                // todo: haomin
+                                // @SeedId not found
                                 throw new RuntimeException("@SeedId annotation not found on entity class "
                                         + leafClazz.getCanonicalName());
                             }
                             else {  // entity id has been set, not POST method
-                                return Helper.getShardId((long)idField.get(arg));
+                                return Helper.getShardId((Long)idGetMethod.invoke(arg));
                             }
                         }
                     }
@@ -152,6 +151,6 @@ public class ShardAwareDaoProxy implements InvocationHandler {
             }
         }
 
-        throw new RuntimeException("Can't find any argument with @Entity annotation.");
+        throw new RuntimeException("Can't find any argument with @Entity or @SeedParam annotation.");
     }
 }

@@ -47,6 +47,6 @@ class GroupDAOImpl implements GroupDAO {
                 ' offset ' + (getOption.offset == null ? '0' : getOption.offset.toString())
         List entities = sessionFactory.currentSession.createSQLQuery(query).addEntity(GroupEntity).list()
 
-        return entities;
+        return entities
     }
 }

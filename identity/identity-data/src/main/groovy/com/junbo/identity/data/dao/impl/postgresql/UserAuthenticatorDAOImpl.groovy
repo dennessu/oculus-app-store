@@ -36,7 +36,7 @@ class UserAuthenticatorDAOImpl implements UserAuthenticatorDAO {
 
     @Override
     UserAuthenticatorEntity get(Long id) {
-        return (UserAuthenticatorEntity)sessionFactory.currentSession.get(UserAuthenticatorEntity, id);
+        return (UserAuthenticatorEntity)sessionFactory.currentSession.get(UserAuthenticatorEntity, id)
     }
 
     @Override

@@ -11,6 +11,9 @@ import java.util.List;
  * Created by liangfu on 3/4/14.
  */
 public class ResultListUtil {
+    private ResultListUtil() {
+
+    }
 
     public static <T> ResultList<T> init(List<T> entities, Integer count) {
         ResultList<T> resultList = new ResultList<T>();

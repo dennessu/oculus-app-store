@@ -20,7 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired
  */
 class UserAuthenticatorRepositoryImpl implements UserAuthenticatorRepository {
     @Autowired
-    private UserAuthenticatorDAO authenticatorDAO;
+    private UserAuthenticatorDAO authenticatorDAO
 
     @Autowired
     private ModelMapper modelMapper
@@ -43,7 +43,7 @@ class UserAuthenticatorRepositoryImpl implements UserAuthenticatorRepository {
 
     @Override
     UserAuthenticator get(UserAuthenticatorId id) {
-        return modelMapper.toUserAuthenticator(authenticatorDAO.get(id.getValue()), new MappingContext())
+        return modelMapper.toUserAuthenticator(authenticatorDAO.get(id.value), new MappingContext())
     }
 
     @Override
@@ -59,6 +59,6 @@ class UserAuthenticatorRepositoryImpl implements UserAuthenticatorRepository {
 
     @Override
     void delete(UserAuthenticatorId id) {
-        authenticatorDAO.delete(id.getValue())
+        authenticatorDAO.delete(id.value)
     }
 }

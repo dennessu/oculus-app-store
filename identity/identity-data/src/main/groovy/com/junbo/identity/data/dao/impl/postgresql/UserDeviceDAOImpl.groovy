@@ -40,7 +40,7 @@ class UserDeviceDAOImpl implements UserDeviceDAO {
 
     @Override
     UserDeviceEntity get(Long id) {
-        return (UserDeviceEntity)currentSession().get(UserDeviceEntity, id);
+        return (UserDeviceEntity)currentSession().get(UserDeviceEntity, id)
     }
 
     @Override

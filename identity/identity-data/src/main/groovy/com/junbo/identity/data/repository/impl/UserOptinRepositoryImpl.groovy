@@ -18,7 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired
  */
 class UserOptinRepositoryImpl implements UserOptinRepository {
     @Autowired
-    private UserOptinDAO userOptinDAO;
+    private UserOptinDAO userOptinDAO
 
     @Autowired
     private ModelMapper modelMapper

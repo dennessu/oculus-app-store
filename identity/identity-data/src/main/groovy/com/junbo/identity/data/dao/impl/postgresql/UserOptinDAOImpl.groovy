@@ -4,11 +4,10 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.identity.data.dao.impl.postgresql
+
 import com.junbo.identity.data.dao.UserOptinDAO
 import com.junbo.identity.data.entity.user.UserOptinEntity
 import com.junbo.identity.spec.model.options.UserOptinGetOption
-import com.junbo.sharding.core.hibernate.SessionFactoryWrapper
-import com.junbo.sharding.util.Helper
 import org.hibernate.Session
 import org.hibernate.SessionFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -22,14 +21,8 @@ class UserOptinDAOImpl implements UserOptinDAO {
     @Qualifier('sessionFactory')
     private SessionFactory sessionFactory
 
-    private SessionFactoryWrapper sessionFactoryWrapper
-
-    void setSessionFactoryWrapper(SessionFactoryWrapper sessionFactoryWrapper) {
-        this.sessionFactoryWrapper = sessionFactoryWrapper
-    }
-
     private Session currentSession() {
-        return sessionFactoryWrapper.resolve(Helper.currentThreadLocalShardId).currentSession
+        sessionFactory.currentSession
     }
 
     @Override

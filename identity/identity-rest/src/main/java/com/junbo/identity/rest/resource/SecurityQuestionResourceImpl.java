@@ -8,7 +8,6 @@ package com.junbo.identity.rest.resource;
 import com.junbo.common.id.SecurityQuestionId;
 import com.junbo.identity.spec.model.common.ResultList;
 import com.junbo.identity.spec.model.domaindata.SecurityQuestion;
-import com.junbo.identity.spec.model.options.DomainDataGetOption;
 import com.junbo.identity.spec.options.SecurityQuestionGetOptions;
 import com.junbo.identity.spec.options.SecurityQuestionListOptions;
 import com.junbo.identity.spec.resource.SecurityQuestionResource;
@@ -41,7 +40,8 @@ public class SecurityQuestionResourceImpl implements SecurityQuestionResource {
     }
 
     @Override
-    public Promise<SecurityQuestion> get(SecurityQuestionId securityQuestionId, @BeanParam SecurityQuestionGetOptions getOptions) {
+    public Promise<SecurityQuestion> get(SecurityQuestionId securityQuestionId,
+                                         @BeanParam SecurityQuestionGetOptions getOptions) {
         return null;
     }
 

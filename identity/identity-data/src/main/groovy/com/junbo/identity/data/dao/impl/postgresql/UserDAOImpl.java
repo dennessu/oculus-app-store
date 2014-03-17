@@ -8,9 +8,10 @@ package com.junbo.identity.data.dao.impl.postgresql;
 import com.junbo.identity.data.dao.UserDAO;
 import com.junbo.identity.data.entity.user.UserEntity;
 import com.junbo.identity.spec.model.options.UserGetOption;
-import com.junbo.sharding.core.hibernate.SessionFactoryWrapper;
-import com.junbo.sharding.util.Helper;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -21,21 +22,20 @@ import java.util.List;
  */
 @Component
 public class UserDAOImpl implements UserDAO {
-    private SessionFactoryWrapper sessionFactoryWrapper;
 
-    public void setSessionFactoryWrapper(SessionFactoryWrapper sessionFactoryWrapper) {
-        this.sessionFactoryWrapper = sessionFactoryWrapper;
-    }
+    @Autowired
+    @Qualifier("sessionFactory")
+    private SessionFactory sessionFactory;
 
     private Session currentSession() {
-        return sessionFactoryWrapper.resolve(Helper.getCurrentThreadLocalShardId()).getCurrentSession();
+        return sessionFactory.getCurrentSession();
     }
 
     @Override
-    public UserEntity save(UserEntity entity) {
-        currentSession().save(entity);
+    public UserEntity save(UserEntity user) {
+        currentSession().save(user);
 
-        return get(entity.getId());
+        return get(user.getId());
     }
 
     @Override

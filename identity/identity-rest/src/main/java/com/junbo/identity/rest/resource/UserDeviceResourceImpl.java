@@ -8,11 +8,10 @@ package com.junbo.identity.rest.resource;
 import com.junbo.common.id.UserDeviceId;
 import com.junbo.common.id.UserId;
 import com.junbo.identity.spec.model.common.ResultList;
+import com.junbo.identity.spec.model.users.UserDevice;
 import com.junbo.identity.spec.options.UserDeviceGetOptions;
 import com.junbo.identity.spec.options.UserDeviceListOptions;
 import com.junbo.identity.spec.resource.UserDeviceResource;
-import com.junbo.identity.spec.model.options.UserDeviceGetOption;
-import com.junbo.identity.spec.model.users.UserDevice;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.stereotype.Component;
 
@@ -47,7 +46,8 @@ public class UserDeviceResourceImpl implements UserDeviceResource {
     }
 
     @Override
-    public Promise<UserDevice> get(UserId userId, UserDeviceId userDeviceId, @BeanParam UserDeviceGetOptions getOptions) {
+    public Promise<UserDevice> get(UserId userId, UserDeviceId userDeviceId,
+                                   @BeanParam UserDeviceGetOptions getOptions) {
         return null;
     }
 

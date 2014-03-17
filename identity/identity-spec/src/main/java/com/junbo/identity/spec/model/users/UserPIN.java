@@ -19,7 +19,8 @@ public class UserPin extends ResourceMeta implements Identifiable<UserPinId> {
 
     private UserPinId id;
 
-    private String value; // write only
+    // write only
+    private String value;
 
     private Boolean active;
 

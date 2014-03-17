@@ -31,12 +31,14 @@ public class UserSecurityQuestionResourceImpl implements UserSecurityQuestionRes
     }
 
     @Override
-    public Promise<UserSecurityQuestion> put(UserId userId, UserSecurityQuestionId userSecurityQuestionId, UserSecurityQuestion userSecurityQuestion) {
+    public Promise<UserSecurityQuestion> put(UserId userId, UserSecurityQuestionId userSecurityQuestionId,
+                                             UserSecurityQuestion userSecurityQuestion) {
         return null;
     }
 
     @Override
-    public Promise<UserSecurityQuestion> patch(UserId userId, UserSecurityQuestionId userSecurityQuestionId, UserSecurityQuestion userSecurityQuestion) {
+    public Promise<UserSecurityQuestion> patch(UserId userId, UserSecurityQuestionId userSecurityQuestionId,
+                                               UserSecurityQuestion userSecurityQuestion) {
         return null;
     }
 
@@ -46,12 +48,14 @@ public class UserSecurityQuestionResourceImpl implements UserSecurityQuestionRes
     }
 
     @Override
-    public Promise<UserSecurityQuestion> get(UserId userId, UserSecurityQuestionId userSecurityQuestionId, @BeanParam UserSecurityQuestionGetOptions getOptions) {
+    public Promise<UserSecurityQuestion> get(UserId userId, UserSecurityQuestionId userSecurityQuestionId,
+                                             @BeanParam UserSecurityQuestionGetOptions getOptions) {
         return null;
     }
 
     @Override
-    public Promise<ResultList<UserSecurityQuestion>> list(UserId userId, @BeanParam UserSecurityQuestionListOptions listOptions) {
+    public Promise<ResultList<UserSecurityQuestion>> list(UserId userId,
+                                                          @BeanParam UserSecurityQuestionListOptions listOptions) {
         return null;
     }
 }

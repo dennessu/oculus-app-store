@@ -32,7 +32,8 @@ public class UserPasswordResourceImpl implements UserPasswordResource {
     }
 
     @Override
-    public Promise<UserPassword> get(UserId userId, UserPasswordId userPasswordId, @BeanParam UserPasswordGetOptions getOptions) {
+    public Promise<UserPassword> get(UserId userId, UserPasswordId userPasswordId,
+                                     @BeanParam UserPasswordGetOptions getOptions) {
         return null;
     }
 

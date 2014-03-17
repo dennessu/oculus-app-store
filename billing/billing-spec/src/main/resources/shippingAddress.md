@@ -2,15 +2,15 @@ FORMAT: 1A
 
 HOST: http://www.wan-san.com
 
-# Shipping Address API
+# ShipToInfo API
 
-Shipping Address API is a collection of APIs that implements Shipping Address operation.
+ShipToInfo API is a collection of APIs that implements ShipToInfo operation.
 
 # Group Balance
 
 Fields:
 
-+  <span id="addressId">addressId...string to identify the shipping address.</span>
++  <span id="self">self...string to identify the ship to info.</span>
 +  <span id="userId">userId...string to identify the user.</span>
 +  <span id="firstName">firstName...string to identify the ship to customer's first name.</span>
 +  <span id="middleName">middleName...string to identify the ship to customer's middle name.</span>
@@ -30,8 +30,12 @@ Fields:
 +  <span id="modifiedBy">modifiedBy...indicates who modifies the balance</span>
 
 
-## POST /shipping-addresses
-Create shipping address for a user
+## POST /users/{userId}/ship-to-info
+Create ship to info for a user
+
++ Parameters
+
+    + userId (required, string) ... indicates the user who owns ship to info.
 
 + Request
     + Headers
@@ -46,10 +50,6 @@ Create shipping address for a user
         
             [
             {
-                "user": {
-                    "href": "http://api.wan-san.com/users/12345",
-                    "id": "12345"
-                },
                 "street": "NO. 1000 Twin Dophin Dr",
                 "city": "Redwood City",
                 "state": "CA",
@@ -66,7 +66,7 @@ Create shipping address for a user
             [
             {
                 "self": {
-                    "href": "http://api.wan-san.com/shipping-addresses/70953532335535",
+                    "href": "http://api.wan-san.com/ship-to-info/70953532335535",
                     "id": "70953532335535"
                 },
                 "user": {
@@ -84,12 +84,13 @@ Create shipping address for a user
             }
             ]
 
-##GET /shipping-addresses/{key}
-Get the balances information with balance id
+##GET /users/{userId}/ship-to-info/{key}
+Get the ship to info with id
 
 + Parameters
 
-    + key (required, string) ... indicates the shipping address.
+    + userId (required, string) ... indicates the user who owns ship to info.
+    + key (required, string) ... indicates the ship to info.
 
 + Request
 
@@ -105,7 +106,7 @@ Get the balances information with balance id
             [
             {
                 "self": {
-                    "href": "http://api.wan-san.com/shipping-addresses/70953532335535",
+                    "href": "http://api.wan-san.com/ship-to-info/70953532335535",
                     "id": "70953532335535"
                 },
                 "user": {
@@ -123,12 +124,12 @@ Get the balances information with balance id
             }
             ]
 
-## GET /shipping-addresses(?userId)
-Get the shipping address by userId.
+## GET /ship-to-info(?userId)
+Get the ship to info by userId.
 
 + Parameters
 
-    + userId (required, string) ... indicates the user id when posting the shipping address.
+    + userId (required, string) ... indicates the user id when posting the ship to info.
 
 + Request
 
@@ -143,16 +144,16 @@ Get the shipping address by userId.
 + Response 200 (application/json)
     
             {
-                "shippingAddressUri":  "/shipping-addresses/98765432",
-                "shippingAddressUri":  "/shipping-addresses/98765431"
+                "shipToInfoUri":  "/ship-to-info/98765432",
+                "shipToInfoUri":  "/ship-to-info/98765431"
             }
 
-## DELETE /shipping-addresses/{id}
-Delete the shipping address by address id.
+## DELETE /ship-to-info/{id}
+Delete the ship to info by id.
 
 + Parameters
 
-    + id (required, string) ... indicates the shipping address.
+    + id (required, string) ... indicates the ship to info.
 
 + Request
 

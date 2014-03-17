@@ -32,7 +32,8 @@ public class UserLoginAttemptResourceImpl implements UserLoginAttemptResource {
     }
 
     @Override
-    public Promise<LoginAttempt> get(UserId userId, UserLoginAttemptId userLoginAttemptId, @BeanParam LoginAttemptGetOptions getOptions) {
+    public Promise<LoginAttempt> get(UserId userId, UserLoginAttemptId userLoginAttemptId,
+                                     @BeanParam LoginAttemptGetOptions getOptions) {
         return null;
     }
 

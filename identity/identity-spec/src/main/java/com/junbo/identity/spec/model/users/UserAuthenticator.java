@@ -20,7 +20,8 @@ public class UserAuthenticator extends ResourceMeta implements Identifiable<User
 
     private String value;
 
-    private UserId userId; // not indexable. readonly
+    // not indexable. readonly
+    private UserId userId;
 
     public UserAuthenticatorId getId() {
         return id;

@@ -8,7 +8,6 @@ package com.junbo.identity.spec.resource;
 import com.junbo.common.id.SecurityQuestionId;
 import com.junbo.identity.spec.model.common.ResultList;
 import com.junbo.identity.spec.model.domaindata.SecurityQuestion;
-import com.junbo.identity.spec.model.options.DomainDataGetOption;
 import com.junbo.identity.spec.options.SecurityQuestionGetOptions;
 import com.junbo.identity.spec.options.SecurityQuestionListOptions;
 import com.junbo.langur.core.RestResource;

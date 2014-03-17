@@ -18,7 +18,8 @@ public class UserSecurityQuestion extends ResourceMeta implements Identifiable<U
 
     private SecurityQuestionId securityQuestionId;
 
-    private String answer; // write only
+    // write only
+    private String answer;
 
     // not read and write possible
     private String answerSalt;

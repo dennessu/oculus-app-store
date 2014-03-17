@@ -19,7 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired
  */
 class GroupRepositoryImpl implements GroupRepository {
     @Autowired
-    private GroupDAO groupDAO;
+    private GroupDAO groupDAO
 
     @Autowired
     private ModelMapper modelMapper

@@ -6,8 +6,6 @@
 package com.junbo.identity.data;
 
 import com.junbo.common.id.*;
-import com.junbo.identity.data.dao.SecurityQuestionDAO;
-import com.junbo.identity.data.dao.UserPINDAO;
 import com.junbo.identity.data.entity.user.UserPasswordStrength;
 import com.junbo.identity.data.repository.GroupRepository;
 import com.junbo.identity.data.repository.SecurityQuestionRepository;
@@ -16,17 +14,17 @@ import com.junbo.identity.data.repository.UserPasswordRepository;
 import com.junbo.identity.spec.model.domaindata.SecurityQuestion;
 import com.junbo.identity.spec.model.options.GroupGetOption;
 import com.junbo.identity.spec.model.users.Group;
-import com.junbo.identity.spec.model.users.UserPin;
 import com.junbo.identity.spec.model.users.UserPassword;
+import com.junbo.identity.spec.model.users.UserPin;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
-import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import javax.sql.DataSource;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -37,8 +35,13 @@ import java.util.UUID;
  */
 @ContextConfiguration(locations = {"classpath:spring/context-test.xml"})
 @TransactionConfiguration(defaultRollback = false)
-@TestExecutionListeners(TransactionalTestExecutionListener.class)
-public class UserDAOTest extends AbstractTestNGSpringContextTests {
+public class UserDAOTest extends AbstractTransactionalTestNGSpringContextTests {
+    @Override
+    @Autowired
+    @Qualifier("identityDataSource")
+    public void setDataSource(DataSource dataSource) {
+        super.setDataSource(dataSource);
+    }
 
     @Autowired
     private GroupRepository groupRepository;

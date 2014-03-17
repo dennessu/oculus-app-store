@@ -57,14 +57,12 @@ public class EntitlementMapper {
         entitlementEntity.setTrackingUuid(entitlement.getTrackingUuid());
         entitlementEntity.setEntitlementId(entitlement.getEntitlementId());
 
-        EntitlementDefinitionEntity definitionEntity =
-                entitlementDefinitionDao.get(entitlement.getEntitlementDefinitionId());
         entitlementEntity.setEntitlementDefinitionId(
-                definitionEntity.getEntitlementDefinitionId());
-        entitlementEntity.setDeveloperId(definitionEntity.getDeveloperId());
-        entitlementEntity.setType(definitionEntity.getType());
-        entitlementEntity.setGroup(definitionEntity.getGroup());
-        entitlementEntity.setTag(definitionEntity.getTag());
+                entitlement.getEntitlementDefinitionId());
+        entitlementEntity.setDeveloperId(entitlement.getDeveloperId());
+        entitlementEntity.setType(EntitlementType.valueOf(entitlement.getType()));
+        entitlementEntity.setGroup(entitlement.getGroup());
+        entitlementEntity.setTag(entitlement.getTag());
 
         entitlementEntity.setUserId(entitlement.getUserId());
         entitlementEntity.setManagedLifecycle(entitlement.getManagedLifecycle());
