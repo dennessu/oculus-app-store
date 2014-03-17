@@ -13,7 +13,7 @@ import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.exception.AppExceptions
-import com.junbo.oauth.core.service.TokenGenerationService
+import com.junbo.oauth.core.service.TokenService
 import com.junbo.oauth.db.repo.ClientRepository
 import com.junbo.oauth.db.repo.LoginStateRepository
 import com.junbo.oauth.db.repo.RememberMeTokenRepository
@@ -35,7 +35,7 @@ class Logout implements Action {
 
     private LoginStateRepository loginStateRepository
     private RememberMeTokenRepository rememberMeTokenRepository
-    private TokenGenerationService tokenGenerationService
+    private TokenService tokenService
     private ClientRepository clientRepository
 
     private String confirmationUri
@@ -51,8 +51,8 @@ class Logout implements Action {
     }
 
     @Required
-    void setTokenGenerationService(TokenGenerationService tokenGenerationService) {
-        this.tokenGenerationService = tokenGenerationService
+    void setTokenService(TokenService tokenService) {
+        this.tokenService = tokenService
     }
 
     @Required
@@ -75,7 +75,7 @@ class Logout implements Action {
         IdToken idToken = null
         String idTokenHint = parameterMap.getFirst(OAuthParameters.ID_TOKEN_HINT)
         if (StringUtils.hasText(idTokenHint)) {
-            idToken = tokenGenerationService.parseIdToken(idTokenHint)
+            idToken = tokenService.parseIdToken(idTokenHint)
 
             def client = clientRepository.getClient(idToken.aud)
             if (client == null) {
@@ -90,7 +90,7 @@ class Logout implements Action {
             if (StringUtils.isEmpty(postLogoutRedirectUri)) {
                 postLogoutRedirectUri = client.defaultLogoutRedirectUri
             } else {
-                if (!client.allowedLogoutRedirectUris.contains(postLogoutRedirectUri)) {
+                if (!client.logoutRedirectUris.contains(postLogoutRedirectUri)) {
                     throw AppExceptions.INSTANCE.invalidPostLogoutRedirectUri(postLogoutRedirectUri).exception()
                 }
             }

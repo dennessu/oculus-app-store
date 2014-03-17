@@ -10,7 +10,7 @@ import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
-import com.junbo.oauth.core.service.TokenGenerationService
+import com.junbo.oauth.core.service.TokenService
 import com.junbo.oauth.spec.model.AccessToken
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
@@ -22,11 +22,11 @@ import org.springframework.util.Assert
 @CompileStatic
 class GrantTokenByPassword implements Action {
 
-    private TokenGenerationService tokenGenerationService
+    private TokenService tokenService
 
     @Required
-    void setTokenGenerationService(TokenGenerationService tokenGenerationService) {
-        this.tokenGenerationService = tokenGenerationService
+    void setTokenService(TokenService tokenService) {
+        this.tokenService = tokenService
     }
 
     @Override
@@ -41,7 +41,7 @@ class GrantTokenByPassword implements Action {
         Assert.notNull(client, 'client is null')
         Assert.notNull(loginState, 'loginState is null')
 
-        AccessToken accessToken = tokenGenerationService.generateAccessToken(client,
+        AccessToken accessToken = tokenService.generateAccessToken(client,
                 loginState.userId, oauthInfo.scopes)
 
         contextWrapper.accessToken = accessToken

@@ -37,7 +37,7 @@ class ValidateResponseType implements Action {
             responseTypes.each { String responseTypeStr ->
                 if (ResponseType.isValid(responseTypeStr)) {
                     ResponseType responseType = ResponseType.valueOf(responseTypeStr.toUpperCase())
-                    if (client.allowedResponseTypes.contains(responseType)) {
+                    if (client.responseTypes.contains(responseType)) {
                         responseTypeSet.add(responseType)
                     } else {
                         throw AppExceptions.INSTANCE.invalidResponseType(responseTypeParam).exception()
