@@ -14,4 +14,8 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class CouchLoginStateDAOImpl extends CouchBaseDAO<LoginStateEntity> implements LoginStateDAO {
+    @Override
+    protected CouchViews getCouchViews() {
+        return null
+    }
 }

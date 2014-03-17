@@ -5,6 +5,7 @@
  */
 package com.junbo.oauth.common
 
+import com.fasterxml.jackson.databind.JavaType
 import com.fasterxml.jackson.databind.ObjectMapper
 import groovy.transform.CompileStatic
 
@@ -25,5 +26,10 @@ class JsonMarshaller {
 
     static <T> T unmarshall(Class<T> clazz, String string) {
         return objectMapper.readValue(string, clazz)
+    }
+
+    static <T> T unmarshall(String string, Class<?> parametrized, Class<?> genericType) {
+        JavaType javaType = objectMapper.typeFactory.constructParametricType(parametrized, genericType)
+        return objectMapper.readValue(string, javaType)
     }
 }

@@ -13,9 +13,15 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 interface AccessTokenRepository {
-    void save(AccessToken accessToken)
+    AccessToken save(AccessToken accessToken)
 
     AccessToken get(String tokenValue)
 
+    List<AccessToken> findByRefreshToken(String refreshTokenValue)
+
+    AccessToken update(AccessToken accessToken)
+
     void remove(String tokenValue)
+
+    boolean isValidAccessToken(String tokenValue)
 }

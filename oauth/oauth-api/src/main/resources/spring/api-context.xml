@@ -35,4 +35,8 @@
         <property name="clientService" ref="clientService"/>
     </bean>
 
+    <bean id="defaultRevokeEndpoint" class="com.junbo.oauth.api.endpoint.RevokeEndpointImpl">
+        <property name="clientRepository" ref="clientRepository"/>
+        <property name="tokenService" ref="tokenService"/>
+    </bean>
 </beans>

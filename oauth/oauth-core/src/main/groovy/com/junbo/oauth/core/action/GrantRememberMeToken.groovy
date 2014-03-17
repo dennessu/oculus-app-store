@@ -65,7 +65,7 @@ class GrantRememberMeToken implements Action {
             newToken.lastAuthDate = new Date()
         }
 
-        rememberMeTokenRepository.save(newToken)
+        newToken = rememberMeTokenRepository.save(newToken)
 
         CookieUtil.setCookie(OAuthParameters.REMEMBER_ME, newToken.tokenValue,
                 defaultRememberMeTokenExpiration, context)

@@ -29,6 +29,7 @@ import java.lang.reflect.ParameterizedType
  */
 @CompileStatic
 abstract class CouchBaseDAO<T extends BaseEntity> implements InitializingBean, BaseDAO<T, String> {
+    protected static final String VIEW_PATH = '/_design/views/_view/'
     protected final Class<T> entityClass
     protected AsyncHttpClient asyncHttpClient
     protected String couchDBUri
@@ -140,7 +141,37 @@ abstract class CouchBaseDAO<T extends BaseEntity> implements InitializingBean, B
                 throw new DBException("Failed to create the database, error: $couchError.error," +
                         " reason: $couchError.reason")
             }
+
+            if (couchViews != null) {
+                response = executeRequest(HttpMethod.PUT, '_design/views', [:], couchViews)
+                if (response.statusCode != HttpStatus.CREATED.value()) {
+                    CouchError couchError = JsonMarshaller.unmarshall(CouchError, response.responseBody)
+                    throw new DBException("Failed to create the views in the database, error: $couchError.error," +
+                            " reason: $couchError.reason")
+                }
+            }
         }
+    }
+
+    abstract protected CouchViews getCouchViews()
+
+    protected CouchSearchResult queryView(String viewName, String key) {
+        CouchViews.CouchView couchView = couchViews.views[viewName]
+        if (couchView == null) {
+            throw new DBException("The view $viewName does not exist")
+        }
+
+        def response = executeRequest(HttpMethod.GET, VIEW_PATH + viewName,
+                key == null ? [:] : ['key': "\"$key\""], null)
+
+        if (response.statusCode != HttpStatus.OK.value()) {
+            CouchError couchError = JsonMarshaller.unmarshall(CouchError, response.responseBody)
+            throw new DBException("Failed to query the view, error: $couchError.error," +
+                    " reason: $couchError.reason")
+        }
+
+        return (CouchSearchResult) JsonMarshaller.unmarshall(response.responseBody, CouchSearchResult,
+                couchView.resultClass)
     }
 
     protected Response executeRequest(HttpMethod method, String path, Map<String, String> queryParams, Object body) {

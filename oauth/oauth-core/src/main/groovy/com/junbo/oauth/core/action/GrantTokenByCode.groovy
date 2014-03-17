@@ -65,7 +65,7 @@ class GrantTokenByCode implements Action {
             throw AppExceptions.INSTANCE.missingRedirectUri().exception()
         }
 
-        if (!authorizationCode.redirectUri == redirectUri) {
+        if (authorizationCode.redirectUri != redirectUri) {
             throw AppExceptions.INSTANCE.invalidRedirectUri(redirectUri).exception()
         }
 

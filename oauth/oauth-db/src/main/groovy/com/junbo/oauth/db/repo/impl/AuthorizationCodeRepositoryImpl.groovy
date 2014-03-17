@@ -61,7 +61,8 @@ class AuthorizationCodeRepositoryImpl implements AuthorizationCodeRepository {
                 nonce: code.nonce,
                 redirectUri: code.redirectUri,
                 expiredBy: code.expiredBy,
-                lastAuthDate: code.lastAuthDate
+                lastAuthDate: code.lastAuthDate,
+                revision: code.revision
         )
     }
 
@@ -78,7 +79,8 @@ class AuthorizationCodeRepositoryImpl implements AuthorizationCodeRepository {
                 nonce: entity.nonce,
                 redirectUri: entity.redirectUri,
                 expiredBy: entity.expiredBy,
-                lastAuthDate: entity.lastAuthDate
+                lastAuthDate: entity.lastAuthDate,
+                revision: entity.revision
         )
 
     }
