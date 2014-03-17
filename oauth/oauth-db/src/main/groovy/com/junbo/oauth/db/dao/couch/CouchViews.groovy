@@ -5,6 +5,7 @@
  */
 package com.junbo.oauth.db.dao.couch
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
 import groovy.transform.CompileStatic
 
@@ -20,6 +21,7 @@ class CouchViews {
     static class CouchView {
         String map
         String reduce
+        @JsonIgnore
         Class resultClass
     }
 }
