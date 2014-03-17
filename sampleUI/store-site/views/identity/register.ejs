@@ -1,44 +1,47 @@
-<form class="box1 register">
+<form class="box1 register" {{action "Submit" on="submit"}}>
     <h2>Create an Store Account</h2>
     <p>I already have an account,&nbsp;{{#link-to-animated "login" animations="main:flip"}}Login{{/link-to-animated}}</p>
+    {{#if errMessage}}
+    <p class="error">{{errMessage}}</p>
+    {{/if}}
     <dl>
         <dt>Username</dt>
-        <dd>{{input type="text" class="{required:true,maxlength:20}" name="Username" id="Username" value=content.username}}</dd>
+        <dd>{{input type="text" class="{required:true,maxlength:20}" name="RUsername" id="RUsername" value=content.username}}</dd>
     </dl>
     <dl>
         <dt>Email Address</dt>
-        <dd>{{input type="email" class="{required:true,email:true}" name="Email" id="Email" value=content.email}}</dd>
+        <dd>{{input type="email" class="{required:true,email:true}" name="REmail" id="REmail" value=content.email}}</dd>
     </dl>
     <dl>
         <dt>Password</dt>
-        <dd>{{input type="password" class="{required:true,maxlength:20}" name="Password" id="Password" value=content.password}}</dd>
+        <dd>{{input type="password" class="{required:true,maxlength:20}" name="RPassword" id="RPassword" value=content.password}}</dd>
     </dl>
     <dl>
         <dt>Re-type Password</dt>
-        <dd>{{input type="password" class="{required:true,equalTo:'#Password'}" id="ConfirmPassword"}}</dd>
+        <dd>{{input type="password" class="{required:true,equalTo:'#RPassword'}" id="RConfirmPassword"}}</dd>
     </dl>
     <dl>
         <dt>Phone Number</dt>
-        <dd>{{input type="text" class="{required:true,maxlength:20}" name="Phone" id="Phone" value=content.phone}}</dd>
+        <dd>{{input type="text" class="{required:true,maxlength:20}" name="RPhone" id="RPhone" value=content.phone}}</dd>
     </dl>
     <dl>
         <dt>Enter Birth Date</dt>
         <dd>
-            {{view Ember.Select content=months optionValuePath="content.v" optionLabelPath="content.t" value=month id="RMonth" name="Month" class="month {required:true, VerifyNumberValue:true}"}}
-            {{view Ember.Select content=days optionValuePath="content.v" optionLabelPath="content.t" value=day id="RDay" name="Day" class="day {required:true, VerifyNumberValue:true}"}}
-            {{view Ember.Select content=years optionValuePath="content.v" optionLabelPath="content.t" value=year id="RYear" name="Year" class="year {required:true, VerifyNumberValue:true}"}}
+            {{view Ember.Select content=months optionValuePath="content.v" optionLabelPath="content.t" value=month id="RMonth" name="RMonth" class="month {required:true, VerifyNumberValue:true}"}}
+            {{view Ember.Select content=days optionValuePath="content.v" optionLabelPath="content.t" value=day id="RDay" name="RDay" class="day {required:true, VerifyNumberValue:true}"}}
+            {{view Ember.Select content=years optionValuePath="content.v" optionLabelPath="content.t" value=year id="RYear" name="RYear" class="year {required:true, VerifyNumberValue:true}"}}
         </dd>
     </dl>
     <dl>
         <dt>Country of Residence</dt>
-        <dd>{{view Ember.Select content=countries optionValuePath="content.v" optionLabelPath="content.t" value=country id="Country" name="Country" class="{required:true}"}}</dd>
+        <dd>{{view Ember.Select content=countries optionValuePath="content.v" optionLabelPath="content.t" value=country id="RCountry" name="RCountry" class="{required:true}"}}</dd>
     </dl>
     <dl class="agreement">
-        <dd><label><input type="checkbox"><span>I have read and agree to Store Terms of Service and Privacy Policy.</span></label></dd>
-        <dd><label><input type="checkbox"><span>I would like to receive totally sweet promotions, news, and offers form Store.</span></label></dd>
+        <dd><label>{{input type="checkbox" id="RSsAgree" name="RIsAgree" checked=content.isAgree}}<span>I have read and agree to Store Terms of Service and Privacy Policy.</span></label></dd>
+        <dd><label>{{input type="checkbox" id="RIsReceive" name="RIsReceive" checked=content.isReceive}}<span>I would like to receive totally sweet promotions, news, and offers form Store.</span></label></dd>
     </dl>
     <div class="actions">
         <button type="submit" class="btn btn-primary">Continue</button>
-        <button type="button" class="btn btn-cancel">Cancel</button>
+        <button type="button" class="btn btn-cancel" {{action "Cancel"}}>Cancel</button>
     </div>
 </form>

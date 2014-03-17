@@ -66,7 +66,7 @@ App.RegisterView = Ember.View.extend({
                 username:"Month Day Year"
             },
             errorPlacement:function(error,element) {
-                if (element.attr("name") == "Month" || element.attr("name") == "Day" || element.attr("name") == "Year")
+                if (element.attr("id") == "RMonth" || element.attr("id") == "RDay" || element.attr("id") == "RYear")
                     error.insertAfter("#RYear");
                 else
                     error.insertAfter(element);
@@ -117,13 +117,11 @@ App.LoginController = Ember.ObjectController.extend({
             model.username = this.get("content.username");
             model.password = this.get("content.password");
 
-            var requestModel = new RequestDataModel();
-            requestModel.data = model;
-            requestModel.cookies = Utils.Cookies.GetAll();
-
-            provider.Login(requestModel, function(data){
+            provider.Login(Utils.GenerateRequestModel(model), function(data){
                 var resultModel = data.data;
                 if(resultModel.status == 200){
+                    _self.set("content.errMessage", null);
+
                     var redirectUrl = Utils.Cookies.Get(AppConfig.CookiesName.RedirectUrl);
                     // show captcha
                     if(AppConfig.Feature.Captcha){
@@ -154,7 +152,7 @@ App.LoginController = Ember.ObjectController.extend({
 });
 
 App.RegisterController = Ember.ObjectController.extend({
-    errMessage: "Please try again later!",
+    errMessage: null,
     months:(function(){
         var result = new Array();
         result.push({t: "Month", v: ""});
@@ -187,15 +185,51 @@ App.RegisterController = Ember.ObjectController.extend({
         month:"",
         day:"",
         year:"",
-        country: ""
+        country: "",
+        isAgree: false,
+        isReceive: false
     },
 
     actions: {
         Submit: function(){
+            console.log("[RegisterController:Submit] Click Continue");
+            var _self = this;
+            var provider = new IdentityProvider();
 
+            var model = new IdentityModels.RegisterModel();
+            Utils.FillObject(model, this.get("content"), "OneWay");
+            model.brithday = new Date(parseInt(_self.get("content.year")), parseInt(_self.get("content.month")) - 1, parseInt(_self.get("content.day")) + 1);
+
+            provider.Register(Utils.GenerateRequestModel(model), function(data){
+                var resultModel = data.data;
+                if(resultModel.status == 200){
+                    _self.set("errMessage", null);
+
+                    var redirectUrl = Utils.Cookies.Get(AppConfig.CookiesName.RedirectUrl);
+                    // show captcha
+                    if(AppConfig.Feature.Captcha){
+                        _self.transitionToRouteAnimated('captcha', {main: 'flip'});
+                        return;
+                    }else if(AppConfig.Feature.TFA){
+                        _self.transitionToRouteAnimated('tfa', {main: 'flip'});
+                        return;
+                    }else if(redirectUrl != null && redirectUrl != ""){
+                        location.href = redirectUrl;
+                    }else{
+                        this.transitionToRouteAnimated('my', {main: 'flip'});
+                        return;
+                    }
+                }else if(resultModel.status == 302){
+                    // redirect back
+                    location.href = resultModel.data.url;
+                }else{
+                    // error
+                    _self.set("errMessage", Utils.GetErrorMessage(resultModel));
+                }
+            });
         },
         Cancel: function(){
-
+            console.log("[CaptchaController:Cancel] Click Cancel");
         }
     }
 });
@@ -217,13 +251,12 @@ App.CaptchaController = Ember.ObjectController.extend({
             };
 
             var provider = new IdentityProvider();
-            var requestModel = new RequestDataModel();
-            requestModel.data = verifyData;
-            requestModel.cookies = Utils.Cookies.GetAll();
 
-            provider.Captcha(requestModel, function(data){
+            provider.Captcha(Utils.GenerateRequestModel(verifyData), function(data){
                 var resultModel = data.data;
                 if(resultModel.status == 200){
+                    _self.set("content.errMessage", null);
+
                     var redirectUrl = Utils.Cookies.Get(AppConfig.CookiesName.RedirectUrl);
                     // show captcha
                     if(AppConfig.Feature.TFA){
@@ -265,13 +298,11 @@ App.TfaController = Ember.ObjectController.extend({
             tfaModel.code = this.get("content.code");
             tfaModel.remember = this.get("content.remember");
 
-            var requestModel = new RequestDataModel();
-            requestModel.data = tfaModel;
-            requestModel.cookies = Utils.Cookies.GetAll();
-
-            provider.TFA(requestModel, function(data){
+            provider.TFA(Utils.GenerateRequestModel(tfaModel), function(data){
                 var resultModel = data.data;
                 if(resultModel.status == 200){
+                    _self.set("content.errMessage", null);
+
                     // redirect
                     var redirectUrl = Utils.Cookies.Get(AppConfig.CookiesName.RedirectUrl);
                     // show captcha

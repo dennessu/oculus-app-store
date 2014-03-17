@@ -3,12 +3,15 @@ var QueryString = require('querystring');
 var http = require('http');
 var DomainModels = require('../../models/domain');
 
-module.exports = function(data, cookies, query, cb){
+module.exports = function(data, cb){
+    var body = data.data;
+    var cookies = data.cookies;
+    var query = data.query;
 
     var privatekey = process.AppConfig.Google_Captcha_PrivateKey;
-    var remoteip = data.ip;
-    var challenge = data["recaptcha_challenge_field"];
-    var response = data["recaptcha_response_field"];
+    var remoteip = body.ip;
+    var challenge = body["recaptcha_challenge_field"];
+    var response = body["recaptcha_response_field"];
 
     var post_data = {"privatekey":privatekey, "remoteip": remoteip, "challenge": challenge, "response": response };
     var post_content = QueryString.stringify(post_data);

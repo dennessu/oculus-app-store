@@ -1,13 +1,16 @@
 var IdentityProvider = require('store-data-provider').Identity;
 var DomainModels = require('../../models/domain');
 
-module.exports = function(data, cookies, query, cb){
+module.exports = function(data, cb){
+    var body = data.data;
+    var cookies = data.cookies;
+    var query = data.query;
 
     var dataProvider = new IdentityProvider(process.AppConfig.Identity_API_Host, process.AppConfig.Identity_API_Port);
 
-    dataProvider.PostAuthenticate(data, function(resultData){
+    dataProvider.PostAuthenticate(body, function(resultData){
         var resultModel = new DomainModels.ResultModel();
-        var settingArr = new Array();
+        var settingArray = new Array();
 
         if (resultData.StatusCode == 200) {
 
@@ -38,8 +41,8 @@ module.exports = function(data, cookies, query, cb){
                 idTokenCookie.type = process.AppConfig.SettingTypeEnum.Cookie;
                 idTokenCookie.data = {name: process.AppConfig.CookiesName.IdToken, value: resObj[process.AppConfig.FieldNames.IdToken] };
 
-                settingArr.push(accessTokenCookie);
-                settingArr.push(idTokenCookie);
+                settingArray.push(accessTokenCookie);
+                settingArray.push(idTokenCookie);
             }
         }else if(resultData.StatusCode == 302){ // need redirect, only user login
 
@@ -54,14 +57,14 @@ module.exports = function(data, cookies, query, cb){
             var accessTokenCookie = new DomainModels.SettingModel();
             accessTokenCookie.type = process.AppConfig.SettingTypeEnum.Cookie;
             accessTokenCookie.data = {name: process.AppConfig.CookiesName.AccessToken, value: "test" };
-            settingArr.push(accessTokenCookie);
+            settingArray.push(accessTokenCookie);
         }else{ // Error
             resultModel.status = DomainModels.ResultStatusEnum.APIError;
             resultModel.data = resultData.Data;
         }
         var responseModel = new DomainModels.ResponseModel();
         responseModel.data = resultModel;
-        responseModel.settings = settingArr;
+        responseModel.settings = settingArray;
 
         console.log("Login Result:", responseModel);
         cb(responseModel);

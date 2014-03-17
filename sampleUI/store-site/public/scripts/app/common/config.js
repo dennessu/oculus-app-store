@@ -49,7 +49,7 @@ AppConfig.Init = function(){
         url: "/config",
         async: false,
         success: function (data, textStatus) {
-            AppConfig = Utils.MoreFilling(AppConfig, data);
+            AppConfig = Utils.FillObject(AppConfig, data, "full");
             console.log(AppConfig.CookiesTimeout);
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
