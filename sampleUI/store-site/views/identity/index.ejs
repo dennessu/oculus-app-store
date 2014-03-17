@@ -4,26 +4,28 @@
     <meta charset="utf-8">
     <title><%= title %></title>
     <link rel='stylesheet' href='/css/style.css' />
+    <link rel='stylesheet' href='/css/ember-animated-outlet.css' />
     <script type="text/javascript" src="/scripts/libs/jquery-1.10.2.min.js"></script>
     <script type="text/javascript" src="/scripts/libs/jquery.metadata.js"></script>
     <script type="text/javascript" src="/scripts/libs/jquery.validate.min.js"></script>
     <script type="text/javascript" src="/scripts/libs/jquery.cookie.js"></script>
     <script type="text/javascript" src="/scripts/libs/handlebars-v1.2.1.js"></script>
     <script type="text/javascript" src="/scripts/libs/ember.js"></script>
+    <script type="text/javascript" src="/scripts/libs/ember-animated-outlet.js"></script>
     <script type="text/javascript" src="/scripts/libs/ember-data.js"></script>
     <script type="text/javascript" src="/socket.io/socket.io.js"></script>
 </head>
 <body>
 
-<script type="text/x-handlebars" data-template-name="application">
-    <p>
-        {{#link-to "register"}}Register{{/link-to}}
-    </p>
-    {{outlet}}
+<script type="text/x-handlebars">
+    {{animated-outlet name="main"}}
 </script>
 
-<script type="text/javascript" src="/scripts/app/common/config.js"></script>
 <script type="text/javascript" src="/scripts/app/common/utils.js"></script>
+<script type="text/javascript" src="/scripts/app/common/config.js"></script>
+<script type="text/javascript" src="/scripts/app/adapters/data_provider.js"></script>
+<script type="text/javascript" src="/scripts/app/adapters/identity_provider.js"></script>
 <script type="text/javascript" src="/scripts/app/identity_app.js"></script>
+<script type="text/javascript" src="/scripts/app/models/identity_models.js"></script>
 </body>
 </html>

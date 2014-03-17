@@ -6,6 +6,7 @@
 package com.junbo.identity.data.entity.user
 
 import com.junbo.identity.data.entity.common.CommonStampEntity
+import com.junbo.sharding.annotations.SeedId
 
 import javax.persistence.*
 
@@ -19,6 +20,7 @@ class UserOptInEntity extends CommonStampEntity {
     @Column(name = 'id')
     private Long id
 
+    @SeedId
     @Column(name = 'user_id')
     private Long userId
 

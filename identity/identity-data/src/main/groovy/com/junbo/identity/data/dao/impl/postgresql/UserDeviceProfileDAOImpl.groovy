@@ -5,40 +5,39 @@
  */
 package com.junbo.identity.data.dao.impl.postgresql
 
-import com.junbo.common.id.UserDeviceProfileId
 import com.junbo.identity.data.dao.UserDeviceProfileDAO
 import com.junbo.identity.data.entity.user.UserDeviceProfileEntity
 import com.junbo.identity.data.mapper.ModelMapper
 import com.junbo.identity.data.util.Constants
 import com.junbo.identity.spec.model.user.UserDeviceProfile
 import com.junbo.oom.core.MappingContext
-import com.junbo.sharding.IdGenerator
-import com.junbo.sharding.IdGeneratorFacade
+import com.junbo.sharding.core.hibernate.SessionFactoryWrapper
+import com.junbo.sharding.util.Helper
 import org.hibernate.Session
-import org.hibernate.SessionFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.util.StringUtils
+
 /**
  * Implementation for UserDeviceProfileDAO.
  */
 class UserDeviceProfileDAOImpl implements UserDeviceProfileDAO {
-    @Autowired
-    private SessionFactory sessionFactory
 
     @Autowired
     private ModelMapper modelMapper
 
-    @Autowired
-    private IdGeneratorFacade idGenerator
+    private SessionFactoryWrapper sessionFactoryWrapper
+
+    void setSessionFactoryWrapper(SessionFactoryWrapper sessionFactoryWrapper) {
+        this.sessionFactoryWrapper = sessionFactoryWrapper
+    }
 
     private Session currentSession() {
-        sessionFactory.currentSession
+        return sessionFactoryWrapper.resolve(Helper.currentThreadLocalShardId).currentSession
     }
 
     @Override
     UserDeviceProfile save(UserDeviceProfile entity) {
         UserDeviceProfileEntity userDeviceProfileEntity = modelMapper.toUserDeviceProfile(entity, new MappingContext())
-        userDeviceProfileEntity.setId(idGenerator.nextId(UserDeviceProfileId, userDeviceProfileEntity.userId))
         userDeviceProfileEntity.setCreatedTime(new Date())
         userDeviceProfileEntity.setCreatedBy(Constants.DEFAULT_CLIENT_ID)
         currentSession().save(userDeviceProfileEntity)

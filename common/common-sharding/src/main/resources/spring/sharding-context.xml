@@ -62,7 +62,7 @@
     -->
 
     <!-- 3: order Id generator proposed by oculus rift, it will use 40 bits -->
-    <!-- CCCC CCCC CCCC CCCC CCCC CCCC CCCC CCCC CCSS SSSS SSDD DDVV -->
+    <!-- 0CCC CCCC CCCC CCCC CCCC CCCC CCSS SSSS SSDD DDVV -->
     <!-- •	C is 25 bits of shuffled sequential ID
          •	S is 8 bits of shard ID
          •	D is 4 bits of data-center ID

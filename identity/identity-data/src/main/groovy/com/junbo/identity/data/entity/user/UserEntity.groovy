@@ -7,6 +7,7 @@ package com.junbo.identity.data.entity.user
 
 import com.junbo.common.util.EnumRegistry
 import com.junbo.identity.data.entity.common.CommonStampEntity
+import com.junbo.sharding.annotations.SeedId
 
 import javax.persistence.*
 /**
@@ -54,7 +55,9 @@ class UserEntity extends CommonStampEntity {
     void setPasswordStrength(Short passwordStrength) {
         this.passwordStrength = EnumRegistry.resolve(passwordStrength, UserPasswordStrength)
     }
+
     @Id
+    @SeedId
     @Column(name = 'id')
     private Long id
 

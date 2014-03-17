@@ -29,6 +29,8 @@ public class OrderDiscountInfoEntity extends CommonDbEntityDeletable {
     private DiscountType discountType;
     private BigDecimal discountRate;
     private BigDecimal discountAmount;
+    private String promotionId;
+    private String coupon;
 
     @Id
     @Column(name = "ORDER_ITEM_DISCOUNT_INFO_ID")
@@ -87,5 +89,23 @@ public class OrderDiscountInfoEntity extends CommonDbEntityDeletable {
 
     public void setDiscountAmount(BigDecimal discountAmount) {
         this.discountAmount = discountAmount;
+    }
+
+    @Column(name = "PROMOTION_ID")
+    public String getPromotionId() {
+        return promotionId;
+    }
+
+    public void setPromotionId(String promotionId) {
+        this.promotionId = promotionId;
+    }
+
+    @Column(name = "COUPON")
+    public String getCoupon() {
+        return coupon;
+    }
+
+    public void setCoupon(String coupon) {
+        this.coupon = coupon;
     }
 }

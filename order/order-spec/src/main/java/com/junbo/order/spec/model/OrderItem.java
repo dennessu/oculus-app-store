@@ -44,9 +44,8 @@ public class OrderItem extends BaseModelWithDate {
     private BigDecimal unitPrice;
     private BigDecimal totalAmount;
     private BigDecimal totalTax;
-    private Boolean isTaxInclusive;
+    private Boolean isTaxExempted;
     private BigDecimal totalDiscount;
-    private BigDecimal totalShippingFeeDiscount;
     private BigDecimal totalPreorderAmount;
     private BigDecimal totalPreorderTax;
     private Date honorUntilTime;
@@ -146,12 +145,12 @@ public class OrderItem extends BaseModelWithDate {
         this.totalTax = totalTax;
     }
 
-    public Boolean getIsTaxInclusive() {
-        return isTaxInclusive;
+    public Boolean getIsTaxExempted() {
+        return isTaxExempted;
     }
 
-    public void setIsTaxInclusive(Boolean isTaxInclusive) {
-        this.isTaxInclusive = isTaxInclusive;
+    public void setIsTaxExempted(Boolean isTaxExempted) {
+        this.isTaxExempted = isTaxExempted;
     }
 
     public BigDecimal getTotalDiscount() {
@@ -160,14 +159,6 @@ public class OrderItem extends BaseModelWithDate {
 
     public void setTotalDiscount(BigDecimal totalDiscount) {
         this.totalDiscount = totalDiscount;
-    }
-
-    public BigDecimal getTotalShippingFeeDiscount() {
-        return totalShippingFeeDiscount;
-    }
-
-    public void setTotalShippingFeeDiscount(BigDecimal totalShippingFeeDiscount) {
-        this.totalShippingFeeDiscount = totalShippingFeeDiscount;
     }
 
     public BigDecimal getTotalPreorderAmount() {

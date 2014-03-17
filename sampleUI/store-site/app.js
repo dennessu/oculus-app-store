@@ -6,6 +6,7 @@ var partials = require('express-partials');
 var appConfig = require('./configs');
 var routes = require('./routes');
 var events = require('./events');
+var filter = require("./routes/filters/global_filter");
 
 var app = express();
 
@@ -21,6 +22,7 @@ app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.methodOverride());
 app.use(partials());
+app.use(filter); // Filter
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -33,7 +35,7 @@ routes(app);
 
 var server = http.createServer(app);
 var io = socketIO.listen(server);
-io.sockets.on("connection", events);
+events(io);
 
 function Run(){
     server.listen(app.get('port'), function(){

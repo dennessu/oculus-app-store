@@ -5,40 +5,39 @@
  */
 package com.junbo.identity.data.dao.impl.postgresql
 
-import com.junbo.common.id.UserTosAcceptanceId
 import com.junbo.identity.data.dao.UserTosAcceptanceDAO
 import com.junbo.identity.data.entity.user.UserTosAcceptanceEntity
 import com.junbo.identity.data.mapper.ModelMapper
 import com.junbo.identity.data.util.Constants
 import com.junbo.identity.spec.model.user.UserTosAcceptance
 import com.junbo.oom.core.MappingContext
-import com.junbo.sharding.IdGenerator
-import com.junbo.sharding.IdGeneratorFacade
+import com.junbo.sharding.core.hibernate.SessionFactoryWrapper
+import com.junbo.sharding.util.Helper
 import org.hibernate.Session
-import org.hibernate.SessionFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.util.StringUtils
+
 /**
  * Implementation for User Tos Acceptance DAO interface.
  */
 class UserTosAcceptanceDAOImpl implements UserTosAcceptanceDAO {
-    @Autowired
-    private SessionFactory sessionFactory
-
-    @Autowired
-    private IdGeneratorFacade idGenerator
 
     @Autowired
     private ModelMapper modelMapper
 
+    private SessionFactoryWrapper sessionFactoryWrapper
+
+    void setSessionFactoryWrapper(SessionFactoryWrapper sessionFactoryWrapper) {
+        this.sessionFactoryWrapper = sessionFactoryWrapper
+    }
+
     private Session currentSession() {
-        sessionFactory.currentSession
+        return sessionFactoryWrapper.resolve(Helper.currentThreadLocalShardId).currentSession
     }
 
     @Override
     UserTosAcceptance save(UserTosAcceptance entity) {
         UserTosAcceptanceEntity userTosAcceptanceEntity = modelMapper.toUserTosAcceptance(entity, new MappingContext())
-        userTosAcceptanceEntity.setId(idGenerator.nextId(UserTosAcceptanceId, userTosAcceptanceEntity.userId))
         userTosAcceptanceEntity.setCreatedBy(Constants.DEFAULT_CLIENT_ID)
         userTosAcceptanceEntity.setCreatedTime(new Date())
         currentSession().save(userTosAcceptanceEntity)

@@ -10,26 +10,20 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.jackson.annotation.PaymentInstrumentId;
 import com.junbo.common.jackson.annotation.PaymentInstrumentTypeId;
 import com.junbo.common.jackson.annotation.UserId;
+import com.junbo.common.jackson.serializer.CascadeResource;
 
-import javax.validation.constraints.NotNull;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 /**
  * payment instrument model.
  */
 public class PaymentInstrument {
-    @JsonProperty("self")
-    @PaymentInstrumentId
     private Long id;
     private UUID trackingUuid;
-    @JsonIgnore
-    private Long userId;
-    @NotNull
+    @JsonProperty("user")
     @UserId
-    private List<Long> admins;
+    private Long userId;
     private boolean isValidated;
     private Date lastValidatedTime;
     private String isDefault;
@@ -48,9 +42,16 @@ public class PaymentInstrument {
     public Long getId() {
         return id;
     }
-
+    @PaymentInstrumentId
+    @JsonProperty("self")
     public void setId(Long id) {
         this.id = id;
+    }
+
+    @PaymentInstrumentId
+    @JsonProperty("self")
+    public CascadeResource getCascadePaymentInstrumentId() {
+        return new CascadeResource(id, new Object[]{userId, id});
     }
 
     public UUID getTrackingUuid() {
@@ -61,22 +62,13 @@ public class PaymentInstrument {
         this.trackingUuid = trackingUuid;
     }
 
+    @JsonProperty
     public Long getUserId() {
         return userId;
     }
-
+    //TODO: add @JsonIgnore
     public void setUserId(Long userId) {
         this.userId = userId;
-        this.setAdmins(Arrays.asList(userId));
-    }
-
-    public List<Long> getAdmins() {
-        return admins;
-    }
-
-    public void setAdmins(List<Long> admins) {
-        this.admins = admins;
-        this.userId = admins.get(0);
     }
 
     public CreditCardRequest getCreditCardRequest() {

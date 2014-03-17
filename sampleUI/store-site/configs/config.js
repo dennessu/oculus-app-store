@@ -4,6 +4,11 @@ var Configs = {
 
     CookiesTimeout: 10 * 60 * 1000,
 
+    EnabledCaptcha: false,
+    Google_Captcha_Hostname: "www.google.com",
+    Google_Captcha_VerifyUrl: "/recaptcha/api/verify",
+    Google_Captcha_PrivateKey: "6LeKhO4SAAAAACP5W0NoL7YV9dZAs3-5Z-T4Dl5i",
+
     // API Data field and other site post filed
     FieldNames: {
         AccessToken: "access_token",
@@ -19,9 +24,12 @@ var Configs = {
     QueryStrings: {
         Code: "code",
         IdToken: "id_token",
-        AccessToken: "access_token"
+        AccessToken: "access_token",
+        ConversationId: "cid",
+        Event: "event",
+        RedirectUrl: "redirect_url"
     },
-    SaveQueryStringArray: ["id_token", "access_token"],
+    SaveQueryStringArray: ["cid", "event", "id_token", "access_token", "redirect_url"],
 
     SessionKeys: {
         AccessToken: "access_token",

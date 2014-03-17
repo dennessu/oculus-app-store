@@ -15,9 +15,11 @@ import com.fasterxml.jackson.databind.deser.DefaultDeserializationContext;
 import com.fasterxml.jackson.databind.deser.DeserializerCache;
 import com.fasterxml.jackson.databind.deser.DeserializerFactory;
 import com.fasterxml.jackson.databind.introspect.Annotated;
-import com.fasterxml.jackson.databind.introspect.AnnotatedMethod;
+import com.fasterxml.jackson.databind.introspect.AnnotatedMember;
+import com.fasterxml.jackson.databind.introspect.AnnotatedWithParams;
 
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Collection;
 
 /**
@@ -63,24 +65,32 @@ public class ResourceAwareDeserializationContext extends DefaultDeserializationC
         JsonDeserializer<Object> deser = super.deserializerInstance(annotated, deserDef);
 
         if (deser instanceof ResourceCollectionAware) {
-            if (annotated instanceof AnnotatedMethod) {
-                AnnotatedMethod method = (AnnotatedMethod) annotated;
-                Class<?> paramClass = method.getRawParameterType(UNIQUE_PARAM_INDEX);
-
-                Class<?> componentType;
-                if (Collection.class.isAssignableFrom(paramClass)) {
-                    Class<? extends Collection> collectionType = (Class<? extends Collection>) paramClass;
-                    ((ResourceCollectionAware) deser).injectCollectionType(collectionType);
-
-                    componentType = (Class<?>) (((ParameterizedType) ((AnnotatedMethod) annotated)
-                            .getGenericParameterType(UNIQUE_PARAM_INDEX))
-                            .getActualTypeArguments()[UNIQUE_GENERIC_TYPE_INDEX]);
-                } else {
-                    componentType = paramClass;
-                }
-
-                ((ResourceCollectionAware) deser).injectIdClassType(componentType);
+            Type propertyType;
+            Class<?> propertyClass;
+            if (annotated instanceof AnnotatedWithParams) {
+                propertyType = ((AnnotatedWithParams) annotated).getGenericParameterType(UNIQUE_PARAM_INDEX);
+                propertyClass = ((AnnotatedWithParams) annotated).getRawParameterType(UNIQUE_PARAM_INDEX);
+            } else if (annotated instanceof AnnotatedMember) {
+                propertyType = annotated.getGenericType();
+                propertyClass = annotated.getRawType();
+            } else {
+                throw new JsonMappingException("ResourceAwareDeserializer does not support ["
+                        + annotated.getClass().getSimpleName() + "] for now.");
             }
+
+            Class<?> idClassType;
+
+            // extract component type as id class type if the property is of collection type
+            if (Collection.class.isAssignableFrom(propertyClass)) {
+                ((ResourceCollectionAware) deser).injectCollectionType((Class<? extends Collection>) propertyClass);
+
+                idClassType = (Class<?>) (((ParameterizedType) propertyType)
+                        .getActualTypeArguments()[UNIQUE_GENERIC_TYPE_INDEX]);
+            } else {
+                idClassType = propertyClass;
+            }
+
+            ((ResourceCollectionAware) deser).injectIdClassType(idClassType);
         }
 
         return deser;
