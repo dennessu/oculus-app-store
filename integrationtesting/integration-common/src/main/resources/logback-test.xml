@@ -12,7 +12,7 @@
         </encoder>
     </appender>
 
-    <root level="TRACE">
+    <root level="warn">
         <!--
         <appender-ref ref="MAIN_ASYNC" />
         <appender-ref ref="ALERT_ASYNC" />

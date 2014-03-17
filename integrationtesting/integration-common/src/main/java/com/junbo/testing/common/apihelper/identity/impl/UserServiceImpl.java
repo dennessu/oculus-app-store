@@ -12,6 +12,7 @@ import com.junbo.testing.common.apihelper.identity.UserService;
 import com.junbo.testing.common.libs.LogHelper;
 import com.junbo.testing.common.libs.EnumHelper;
 import com.junbo.testing.common.libs.RandomFactory;
+import com.junbo.testing.common.libs.ConfigPropertiesHelper;
 import com.junbo.testing.common.blueprint.User;
 
 import com.ning.http.client.AsyncHttpClient;
@@ -31,13 +32,21 @@ public class UserServiceImpl implements UserService {
 
     private final String requestHeaderName = "Content-Type";
     private final String requestHeaderValue = "application/json";
+    private final String identityServerURL = "http://" +
+            ConfigPropertiesHelper.instance().getProperty("identity.host") +
+            ":" +
+            ConfigPropertiesHelper.instance().getProperty("identity.port") +
+            "/rest/users";
+    private final String oAuthServerURL = "http://" +
+            ConfigPropertiesHelper.instance().getProperty("oauth.host") +
+            ":" +
+            ConfigPropertiesHelper.instance().getProperty("oauth.port") +
+            "/auth";
 
     private LogHelper logger = new LogHelper(UserServiceImpl.class);
-    private String serverUrl;
     private AsyncHttpClient asyncClient;
 
-    public UserServiceImpl(String url) {
-        serverUrl = url;
+    public UserServiceImpl() {
         asyncClient = new AsyncHttpClient(new AsyncHttpClientConfig.Builder().build());
     }
 
@@ -66,7 +75,7 @@ public class UserServiceImpl implements UserService {
 
     public String GetUserByUserId(String userId) throws Exception {
 
-        String url = serverUrl + "/" + userId;
+        String url = identityServerURL + "/" + userId;
 
         Request req = new RequestBuilder("GET")
                 .addHeader(requestHeaderName, requestHeaderValue)
@@ -85,7 +94,7 @@ public class UserServiceImpl implements UserService {
         Request req = new RequestBuilder("GET")
                 .addHeader(requestHeaderName, requestHeaderValue)
                 .addParameter("userName", userName)
-                .setUrl(serverUrl)
+                .setUrl(identityServerURL)
                 .build();
 
         logger.LogRequest(req);
@@ -134,7 +143,7 @@ public class UserServiceImpl implements UserService {
         requestBody = ow.writeValueAsString(userToPost);
 
         Request req = new RequestBuilder("POST")
-                .setUrl(serverUrl)
+                .setUrl(identityServerURL)
                 .addHeader(requestHeaderName, requestHeaderValue)
                 .setBody(requestBody)
                 .build();

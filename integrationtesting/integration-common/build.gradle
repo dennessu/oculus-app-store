@@ -21,9 +21,11 @@ dependencies {
     compile (libraries.common_lib)
     compile (libraries.async_http_client)
 
+    compile 'com.junbo.identity:identity-spec:0.0.1-SNAPSHOT'
+    compile 'com.junbo.catalog:catalog-spec:0.0.1-SNAPSHOT'
+
     processor (libraries.langur_processor)
     processor (libraries.log4j)
-
 }
 
 ext {

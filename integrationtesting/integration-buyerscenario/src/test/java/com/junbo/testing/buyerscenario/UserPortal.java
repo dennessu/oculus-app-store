@@ -22,9 +22,6 @@ public class UserPortal extends BaseTestClass {
 
     private LogHelper logger = new LogHelper(UserPortal.class);
 
-    private final String identityServerURL = "http://localhost:8080/rest/users";
-    private final String oAuthServerURL = "http://localhost:8082/auth";
-
     @Property(
             priority = Priority.BVT,
             features = "CustomerScenarios",
@@ -41,7 +38,7 @@ public class UserPortal extends BaseTestClass {
     @Test
     public void testPostUser() throws Exception {
 
-        UserServiceImpl userServiceAPI = new UserServiceImpl(identityServerURL);
+        UserServiceImpl userServiceAPI = new UserServiceImpl();
         String apiResponse = userServiceAPI.PostUser();
 
         String[] results = apiResponse.split(",");
