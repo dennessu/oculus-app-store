@@ -12,8 +12,16 @@ app.run(function ($rootScope, $templateCache) {
   });
 });
 
-app.controller('OfferListCtrl', ['$scope', 'OffersFactory',
-  function($scope, OffersFactory) {
+app.controller('OfferListCtrl', ['$scope', 'OffersFactory', '$location',
+  function($scope, OffersFactory, $location) {
+      $scope.createOffer = function () {
+          OffersFactory.create($scope.offer, function(offer){
+              $location.path('/offers/' + offer.self.id);
+          });
+      };
+      $scope.cancel = function () {
+          $location.path('/offers');
+      };
   	  $scope.offers = OffersFactory.query();
   }]);
 
