@@ -42,23 +42,34 @@ public interface ModelMapper {
             @Mapping(source = "updatedTime", target = "updatedTime", excluded = true, bidirectional = false)
     })
     UserEntity toUser(User user, MappingContext context);
-
     @Mappings({
             @Mapping(source = "password", excluded = true, bidirectional = false)
     })
     User toUser(UserEntity userEntity, MappingContext context);
 
     UserDevice toUserDevice(UserDeviceEntity entity, MappingContext context);
-
     UserDeviceEntity toUserDevice(UserDevice entity, MappingContext context);
 
     UserAuthenticator toUserAuthenticator(UserAuthenticatorEntity entity, MappingContext context);
-
     UserAuthenticatorEntity toUserAuthenticator(UserAuthenticator userFederation, MappingContext context);
 
-    UserOptin toUserOptin(UserOptinEntity entity, MappingContext context);
+    UserEmail toUserEmail(UserEmailEntity entity, MappingContext context);
+    UserEmailEntity toUserEmail(UserEmail entity, MappingContext context);
 
+    UserGroup toUserGroup(UserGroupEntity entity, MappingContext context);
+    UserGroupEntity toUserGroup(UserGroup entity, MappingContext context);
+
+    LoginAttempt toUserLoginAttempt(UserLoginAttemptEntity entity, MappingContext context);
+    UserLoginAttemptEntity toUserLoginAttempt(LoginAttempt entity, MappingContext context);
+
+    UserOptin toUserOptin(UserOptinEntity entity, MappingContext context);
     UserOptinEntity toUserOptin(UserOptin entity, MappingContext context);
+
+    UserPhoneNumber toUserPhoneNumber(UserPhoneNumberEntity entity, MappingContext context);
+    UserPhoneNumberEntity toUserPhoneNumber(UserPhoneNumber entity, MappingContext context);
+
+    UserSecurityQuestion toUserSecurityQuestion(UserSecurityQuestionEntity entity, MappingContext context);
+    UserSecurityQuestionEntity toUserSecurityQuestion(UserSecurityQuestion entity, MappingContext context);
 
     UserTos toUserTos(UserTosEntity entity, MappingContext context);
 

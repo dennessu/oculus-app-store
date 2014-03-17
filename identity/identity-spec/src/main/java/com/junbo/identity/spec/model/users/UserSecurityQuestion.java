@@ -20,6 +20,10 @@ public class UserSecurityQuestion extends ResourceMeta implements Identifiable<U
 
     private String answer; // write only
 
+    // not read and write possible
+    private String answerSalt;
+    private String answerHash;
+
     public UserSecurityQuestionId getId() {
         return id;
     }
@@ -42,5 +46,21 @@ public class UserSecurityQuestion extends ResourceMeta implements Identifiable<U
 
     public void setAnswer(String answer) {
         this.answer = answer;
+    }
+
+    public String getAnswerSalt() {
+        return answerSalt;
+    }
+
+    public void setAnswerSalt(String answerSalt) {
+        this.answerSalt = answerSalt;
+    }
+
+    public String getAnswerHash() {
+        return answerHash;
+    }
+
+    public void setAnswerHash(String answerHash) {
+        this.answerHash = answerHash;
     }
 }

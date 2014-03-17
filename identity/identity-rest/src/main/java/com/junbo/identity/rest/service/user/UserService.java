@@ -46,33 +46,10 @@ public interface UserService {
     User update(Long userId, User user);
 
     /*
-     * authenticate whether the userName & password match
-     * @param user
-     * @param password
-     */
-    User authenticate(String userName, String password);
-
-    /*
-     * save password
-     * @param user
-     * @param password
-     */
-    void savePassword(User user, String password);
-
-    /*
-     * Search user with userNamePrefix
-     * @param userNamePrefix
-     * @param cursor
-     * @param count
-     * @return
-     */
-    List<User> searchUser(String userNamePrefix, String status, Integer cursor, Integer count);
-
-    /*
      * get user with name and status
      * @param userName
      * @param status
      * @return
      */
-    List<User> getByUserName(String userName, String status);
+    List<User> search(String userName, String status);
 }

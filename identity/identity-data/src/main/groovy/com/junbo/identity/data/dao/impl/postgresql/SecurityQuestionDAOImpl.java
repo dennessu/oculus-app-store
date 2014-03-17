@@ -43,10 +43,8 @@ public class SecurityQuestionDAOImpl implements SecurityQuestionDAO {
     @Override
     public SecurityQuestion update(SecurityQuestion entity) {
         SecurityQuestionEntity securityQuestionEntity = modelMapper.toSecurityQuestion(entity, new MappingContext());
-        sessionFactory.getCurrentSession().evict((SecurityQuestionEntity)sessionFactory.getCurrentSession()
-                .get(SecurityQuestionEntity.class, entity.getId().getValue())
-        );
-        sessionFactory.getCurrentSession().update(securityQuestionEntity);
+
+        sessionFactory.getCurrentSession().merge(securityQuestionEntity);
 
         return get(entity.getId());
     }
@@ -59,7 +57,7 @@ public class SecurityQuestionDAOImpl implements SecurityQuestionDAO {
 
     @Override
     public List<SecurityQuestion> search(DomainDataGetOption getOption) {
-        String query = "select * from security_question where value like " + getOption.getValue() +
+        String query = "select * from security_question where value like \'%" + getOption.getValue() + "%\'" +
                 (" order by id limit " + (getOption.getLimit() == null ? "ALL" : getOption.getLimit().toString())) +
                 " offset " + (getOption.getOffset() == null ? "0" : getOption.getOffset().toString());
         List entities = sessionFactory.getCurrentSession().createSQLQuery(query)

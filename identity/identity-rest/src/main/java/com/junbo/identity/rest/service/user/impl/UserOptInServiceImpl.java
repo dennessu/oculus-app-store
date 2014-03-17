@@ -5,9 +5,12 @@
  */
 package com.junbo.identity.rest.service.user.impl;
 
+import com.junbo.common.id.UserId;
+import com.junbo.common.id.UserOptinId;
 import com.junbo.identity.data.dao.UserOptinDAO;
 import com.junbo.identity.rest.service.user.UserOptinService;
 import com.junbo.identity.rest.service.validator.UserOptinValidator;
+import com.junbo.identity.spec.model.options.UserOptinGetOption;
 import com.junbo.identity.spec.model.users.UserOptin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -42,17 +45,20 @@ public class UserOptinServiceImpl implements UserOptinService {
     @Override
     public UserOptin get(Long userId, Long userOptInId) {
         validator.validateResourceAccessible(userId, userOptInId);
-        return userOptInDAO.get(userOptInId);
+        return userOptInDAO.get(new UserOptinId(userOptInId));
     }
 
     @Override
     public List<UserOptin> getByUserId(Long userId, String type) {
-        return userOptInDAO.findByUser(userId, type);
+        UserOptinGetOption getOption = new UserOptinGetOption();
+        getOption.setUserId(new UserId(userId));
+        getOption.setValue(type);
+        return userOptInDAO.search(getOption);
     }
 
     @Override
     public void delete(Long userId, Long userOptInId) {
         validator.validateDelete(userId, userOptInId);
-        userOptInDAO.delete(userOptInId);
+        userOptInDAO.delete(new UserOptinId(userOptInId));
     }
 }

@@ -15,7 +15,7 @@ import javax.persistence.Table
  * UserEntity model for user_device_profile table
  */
 @Entity
-@Table(name='user_tos_acceptance')
+@Table(name='user_tos')
 class UserTosEntity extends ResourceMetaEntity {
     @Id
     @Column(name = 'id')
@@ -24,14 +24,11 @@ class UserTosEntity extends ResourceMetaEntity {
     @Column(name = 'user_id')
     private Long userId
 
-    @Column(name = 'tos_acceptance_url')
-    private String tosAcceptanceUrl
-
-    @Column(name = 'date_accepted')
-    private Date dateAccepted
+    @Column(name = 'tos_uri')
+    private String tosUri
 
     Long getId() {
-        id
+        return id
     }
 
     void setId(Long id) {
@@ -39,26 +36,18 @@ class UserTosEntity extends ResourceMetaEntity {
     }
 
     Long getUserId() {
-        userId
+        return userId
     }
 
     void setUserId(Long userId) {
         this.userId = userId
     }
 
-    String getTosAcceptanceUrl() {
-        tosAcceptanceUrl
+    String getTosUri() {
+        return tosUri
     }
 
-    void setTosAcceptanceUrl(String tosAcceptanceUrl) {
-        this.tosAcceptanceUrl = tosAcceptanceUrl
-    }
-
-    Date getDateAccepted() {
-        dateAccepted
-    }
-
-    void setDateAccepted(Date dateAccepted) {
-        this.dateAccepted = dateAccepted
+    void setTosUri(String tosUri) {
+        this.tosUri = tosUri
     }
 }

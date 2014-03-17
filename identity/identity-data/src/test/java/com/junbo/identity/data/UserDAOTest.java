@@ -10,7 +10,9 @@ import com.junbo.identity.data.dao.GroupDAO;
 import com.junbo.identity.data.dao.SecurityQuestionDAO;
 import com.junbo.identity.data.dao.UserPINDAO;
 import com.junbo.identity.data.dao.UserPasswordDAO;
+import com.junbo.identity.data.entity.user.UserPasswordStrength;
 import com.junbo.identity.spec.model.domaindata.SecurityQuestion;
+import com.junbo.identity.spec.model.options.GroupGetOption;
 import com.junbo.identity.spec.model.users.Group;
 import com.junbo.identity.spec.model.users.UserPIN;
 import com.junbo.identity.spec.model.users.UserPassword;
@@ -24,6 +26,7 @@ import org.testng.annotations.Test;
 
 import javax.sql.DataSource;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
@@ -31,7 +34,7 @@ import java.util.UUID;
  * Unittest.
  */
 @ContextConfiguration(locations = {"classpath:spring/context-test.xml"})
-@TransactionConfiguration(defaultRollback = true)
+@TransactionConfiguration(defaultRollback = false)
 public class UserDAOTest extends AbstractTransactionalTestNGSpringContextTests {
     @Override
     @Autowired
@@ -71,6 +74,12 @@ public class UserDAOTest extends AbstractTransactionalTestNGSpringContextTests {
         groupDAO.update(newGroup);
         newGroup = groupDAO.get(group.getId());
         Assert.assertEquals(newValue, newGroup.getValue());
+
+        GroupGetOption option = new GroupGetOption();
+        option.setValue("test");
+        List<Group> groupList = groupDAO.search(option);
+
+        Assert.assertNotEquals(groupList.size(), 0);
     }
 
     @Test
@@ -80,6 +89,7 @@ public class UserDAOTest extends AbstractTransactionalTestNGSpringContextTests {
         userPassword.setUserId(new UserId(rand.nextLong()));
         userPassword.setPasswordSalt(UUID.randomUUID().toString());
         userPassword.setPasswordHash(UUID.randomUUID().toString());
+        userPassword.setPasswordStrength(UserPasswordStrength.WEAK.toString());
         userPassword.setActive(true);
         userPassword.setChangeAtNextLogin(false);
         userPassword.setExpiresBy(new Date());
@@ -97,7 +107,7 @@ public class UserDAOTest extends AbstractTransactionalTestNGSpringContextTests {
         Assert.assertEquals(newValue, newUserPassword.getActive());
     }
 
-    @Test
+    @Test(enabled = false)
     public void testUserPinDAO() {
         UserPIN userPIN = new UserPIN();
         userPIN.setId(new UserPINId(rand.nextLong()));

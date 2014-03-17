@@ -8,7 +8,7 @@ package com.junbo.identity.spec.resource;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserOptinId;
 import com.junbo.identity.spec.model.common.ResultList;
-import com.junbo.identity.spec.model.options.UserOptInGetOption;
+import com.junbo.identity.spec.model.options.UserOptinGetOption;
 import com.junbo.identity.spec.model.users.UserOptin;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
@@ -52,5 +52,5 @@ public interface UserOptInResource {
     @GET
     @Path("/")
     Promise<ResultList<UserOptin>> list(@PathParam("userId")UserId userId,
-                                        @BeanParam UserOptInGetOption getOption);
+                                        @BeanParam UserOptinGetOption getOption);
 }

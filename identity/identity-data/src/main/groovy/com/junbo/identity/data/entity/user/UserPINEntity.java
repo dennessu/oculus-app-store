@@ -24,7 +24,7 @@ public class UserPINEntity {
     @Column(name = "pin_hash")
     private String pinHash;
 
-    @Column(name = "password_salt")
+    @Column(name = "pin_salt")
     private String pinSalt;
 
     @Column(name = "active")

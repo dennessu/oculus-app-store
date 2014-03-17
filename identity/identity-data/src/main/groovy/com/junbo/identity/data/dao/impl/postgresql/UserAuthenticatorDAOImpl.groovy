@@ -36,10 +36,8 @@ class UserAuthenticatorDAOImpl implements UserAuthenticatorDAO {
     @Override
     UserAuthenticator update(UserAuthenticator entity) {
         UserAuthenticatorEntity userFederationEntity = modelMapper.toUserAuthenticator(entity, new MappingContext())
-        sessionFactory.currentSession.evict(
-                sessionFactory.currentSession.get(UserAuthenticatorEntity, entity.id.value)
-        )
-        sessionFactory.currentSession.save(userFederationEntity)
+
+        sessionFactory.currentSession.merge(userFederationEntity)
         sessionFactory.currentSession.flush()
 
         return get(userFederationEntity.id)
@@ -56,7 +54,7 @@ class UserAuthenticatorDAOImpl implements UserAuthenticatorDAO {
         def result = []
         String query = 'select * from user_authenticator where user_id =  ' + getOption.userId.value +
                 (getOption.type == null ? '' : ' and type = ' + getOption.type) +
-                (getOption.value == null ? '' : ' and value like %' + getOption.value + '%') +
+                (getOption.value == null ? '' : ' and value like \'%' + getOption.value + '%\'') +
                 (' order by id limit ' + (getOption.limit == null ? 'ALL' : getOption.limit.toString())) +
                 ' offset ' + (getOption.offset == null ? '0' : getOption.offset.toString())
 

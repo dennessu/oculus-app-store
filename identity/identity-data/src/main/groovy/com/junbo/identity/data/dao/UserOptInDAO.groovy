@@ -5,6 +5,8 @@
  */
 package com.junbo.identity.data.dao
 
+import com.junbo.common.id.UserOptinId
+import com.junbo.identity.spec.model.options.UserOptinGetOption
 import com.junbo.identity.spec.model.users.UserOptin
 
 /**
@@ -16,9 +18,9 @@ interface UserOptinDAO {
 
     UserOptin update(UserOptin entity)
 
-    UserOptin get(Long id)
+    UserOptin get(UserOptinId id)
 
-    List<UserOptin> findByUser(Long userId, String type)
+    List<UserOptin> search(UserOptinGetOption getOption)
 
-    void delete(Long id)
+    void delete(UserOptinId id)
 }

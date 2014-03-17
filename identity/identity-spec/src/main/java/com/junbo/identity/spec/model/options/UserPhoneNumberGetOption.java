@@ -5,6 +5,8 @@
  */
 package com.junbo.identity.spec.model.options;
 
+import com.junbo.common.id.UserId;
+
 import javax.ws.rs.QueryParam;
 
 /**
@@ -17,6 +19,9 @@ public class UserPhoneNumberGetOption extends PagingGetOption {
 
     @QueryParam("type")
     private String type;
+
+    @QueryParam("userId")
+    private UserId userId;
 
     public String getValue() {
         return value;
@@ -32,5 +37,13 @@ public class UserPhoneNumberGetOption extends PagingGetOption {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public UserId getUserId() {
+        return userId;
+    }
+
+    public void setUserId(UserId userId) {
+        this.userId = userId;
     }
 }

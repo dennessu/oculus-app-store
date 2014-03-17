@@ -8,8 +8,8 @@ package com.junbo.identity.rest.resource;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserOptinId;
 import com.junbo.identity.spec.model.common.ResultList;
+import com.junbo.identity.spec.model.options.UserOptinGetOption;
 import com.junbo.identity.spec.resource.UserOptInResource;
-import com.junbo.identity.spec.model.options.UserOptInGetOption;
 import com.junbo.identity.spec.model.users.UserOptin;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.stereotype.Component;
@@ -50,7 +50,7 @@ public class UserOptInResourceImpl implements UserOptInResource {
     }
 
     @Override
-    public Promise<ResultList<UserOptin>> list(UserId userId, @BeanParam UserOptInGetOption getOption) {
+    public Promise<ResultList<UserOptin>> list(UserId userId, @BeanParam UserOptinGetOption getOption) {
         return null;
     }
 }

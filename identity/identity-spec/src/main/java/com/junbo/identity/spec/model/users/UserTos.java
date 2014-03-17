@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.spec.model.users;
 
+import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserTosId;
 import com.junbo.common.util.Identifiable;
 
@@ -16,6 +17,9 @@ public class UserTos extends ResourceMeta implements Identifiable<UserTosId> {
     private UserTosId id;
 
     private String tosUri;
+
+    // not readable or writable
+    private UserId userId;
 
     public UserTosId getId() {
         return id;
@@ -31,5 +35,13 @@ public class UserTos extends ResourceMeta implements Identifiable<UserTosId> {
 
     public void setTosUri(String tosUri) {
         this.tosUri = tosUri;
+    }
+
+    public UserId getUserId() {
+        return userId;
+    }
+
+    public void setUserId(UserId userId) {
+        this.userId = userId;
     }
 }

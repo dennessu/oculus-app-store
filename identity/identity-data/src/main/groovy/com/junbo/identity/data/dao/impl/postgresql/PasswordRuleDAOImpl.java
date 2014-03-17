@@ -70,12 +70,11 @@ public class PasswordRuleDAOImpl implements PasswordRuleDAO {
         PasswordRuleEntity entity = modelMapper.toPasswordRule(passwordRule, new MappingContext());
         PasswordRuleEntity entityInDB = (PasswordRuleEntity)currentSession().get(PasswordRuleEntity.class,
                 passwordRule.getId().getValue());
-        currentSession().evict(entityInDB);
         entity.setCreatedBy(entityInDB.getCreatedBy());
         entity.setCreatedTime(entityInDB.getCreatedTime());
         entity.setUpdatedBy(Constants.DEFAULT_CLIENT_ID);
         entity.setUpdatedTime(new Date());
-        currentSession().update(entity);
+        currentSession().merge(entity);
         currentSession().flush();
 
         return get(entity.getId());

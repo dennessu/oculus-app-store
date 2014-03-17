@@ -43,10 +43,7 @@ public class UserPasswordDAOImpl implements UserPasswordDAO {
     @Override
     public UserPassword update(UserPassword entity) {
         UserPasswordEntity userPasswordEntity = modelMapper.toUserPassword(entity, new MappingContext());
-        sessionFactory.getCurrentSession().evict(
-                sessionFactory.getCurrentSession().get(UserPasswordEntity.class, entity.getId().getValue()));
-
-        sessionFactory.getCurrentSession().update(userPasswordEntity);
+        sessionFactory.getCurrentSession().merge(userPasswordEntity);
         return get(entity.getId());
     }
 

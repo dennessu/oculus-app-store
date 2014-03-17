@@ -42,9 +42,7 @@ public class UserPINDAOImpl implements UserPINDAO {
     @Override
     public UserPIN update(UserPIN entity) {
         UserPINEntity userPINEntity = modelMapper.toUserPIN(entity, new MappingContext());
-        sessionFactory.getCurrentSession().evict(
-                sessionFactory.getCurrentSession().get(UserPINEntity.class, entity.getId().getValue()));
-        sessionFactory.getCurrentSession().update(userPINEntity);
+        sessionFactory.getCurrentSession().merge(userPINEntity);
 
         return get(entity.getId());
     }

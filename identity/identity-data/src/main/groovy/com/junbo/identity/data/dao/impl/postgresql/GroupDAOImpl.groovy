@@ -44,8 +44,8 @@ class GroupDAOImpl implements GroupDAO {
     @Override
     Group update(Group group) {
         GroupEntity groupEntity = modelMapper.toGroup(group, new MappingContext())
-        sessionFactory.currentSession.evict(sessionFactory.currentSession.get(GroupEntity, group.id.value))
-        sessionFactory.currentSession.update(groupEntity)
+        sessionFactory.currentSession.merge(groupEntity)
+        sessionFactory.currentSession.flush()
 
         return get(group.id)
     }
@@ -55,7 +55,7 @@ class GroupDAOImpl implements GroupDAO {
         def result = []
 
         String query = 'select * from group_entity where value like ' +
-                (getOption.value == null ? '\'%%\'' : '\'%\'' + getOption.value + '\'%\'') +
+                (getOption.value == null ? '\'%%\'' : '\'%' + getOption.value + '%\'') +
                 (' order by id limit ' + (getOption.limit == null ? 'ALL' : getOption.limit.toString())) +
                 ' offset ' + (getOption.offset == null ? '0' : getOption.offset.toString())
         List entities = sessionFactory.currentSession.createSQLQuery(query).addEntity(GroupEntity).list()

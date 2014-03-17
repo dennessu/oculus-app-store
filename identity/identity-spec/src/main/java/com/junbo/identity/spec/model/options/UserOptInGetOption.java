@@ -5,20 +5,33 @@
  */
 package com.junbo.identity.spec.model.options;
 
+import com.junbo.common.id.UserId;
+
 import javax.ws.rs.QueryParam;
 
 /**
  * Created by liangfu on 3/14/14.
  */
-public class UserOptInGetOption extends PagingGetOption {
-    @QueryParam("optIn")
-    private String optIn;
+public class UserOptinGetOption extends PagingGetOption {
+    @QueryParam("value")
+    private String value;
 
-    public String getOptIn() {
-        return optIn;
+    @QueryParam("userId")
+    private UserId userId;
+
+    public String getValue() {
+        return value;
     }
 
-    public void setOptIn(String optIn) {
-        this.optIn = optIn;
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public UserId getUserId() {
+        return userId;
+    }
+
+    public void setUserId(UserId userId) {
+        this.userId = userId;
     }
 }

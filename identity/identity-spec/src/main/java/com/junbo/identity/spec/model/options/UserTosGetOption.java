@@ -5,6 +5,8 @@
  */
 package com.junbo.identity.spec.model.options;
 
+import com.junbo.common.id.UserId;
+
 import javax.ws.rs.QueryParam;
 
 /**
@@ -14,11 +16,22 @@ public class UserTosGetOption extends PagingGetOption {
     @QueryParam("tosUri")
     private String tosUri;
 
+    @QueryParam("userId")
+    private UserId userId;
+
     public String getTosUri() {
         return tosUri;
     }
 
     public void setTosUri(String tosUri) {
         this.tosUri = tosUri;
+    }
+
+    public UserId getUserId() {
+        return userId;
+    }
+
+    public void setUserId(UserId userId) {
+        this.userId = userId;
     }
 }

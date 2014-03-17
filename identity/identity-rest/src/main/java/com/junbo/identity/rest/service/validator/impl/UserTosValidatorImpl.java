@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.rest.service.validator.impl;
 
+import com.junbo.common.id.UserTosId;
 import com.junbo.identity.data.dao.UserTosDAO;
 import com.junbo.identity.rest.service.validator.UserTosValidator;
 import com.junbo.identity.spec.error.AppErrors;
@@ -60,7 +61,7 @@ public class UserTosValidatorImpl extends CommonValidator implements UserTosVali
     public void validateResourceAccessible(Long userId, Long userTosId) {
         checkUserValid(userId);
 
-        UserTos userTosAcceptance = userTosAcceptanceDAO.get(userTosId);
+        UserTos userTosAcceptance = userTosAcceptanceDAO.get(new UserTosId(userTosId));
         if(userTosAcceptance == null) {
             throw AppErrors.INSTANCE.invalidResourceRequest().exception();
         }

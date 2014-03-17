@@ -5,9 +5,11 @@
  */
 package com.junbo.identity.rest.service.user.impl;
 
+import com.junbo.common.id.UserId;
 import com.junbo.identity.data.dao.UserDAO;
 import com.junbo.identity.rest.service.user.UserService;
 import com.junbo.identity.rest.service.validator.UserServiceValidator;
+import com.junbo.identity.spec.model.options.UserGetOption;
 import com.junbo.identity.spec.model.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -27,43 +29,29 @@ class UserServiceImpl implements UserService {
     @Override
     public User save(User user) {
         validator.validateCreate(user);
-        return (userDAO.saveUser(user));
+        return (userDAO.save(user));
     }
 
     @Override
     public User update(Long userId, User user) {
         validator.validateUpdate(userId, user);
-        return userDAO.updateUser(user);
+        return userDAO.update(user);
     }
 
     @Override
     public User get(Long id) {
-        return userDAO.getUser(id);
+        return userDAO.get(new UserId(id));
     }
 
     @Override
     public void delete(Long id) {
         validator.validateDelete(id);
-        userDAO.deleteUser(id);
+        userDAO.delete(new UserId(id));
     }
 
     @Override
-    public User authenticate(String userName, String password) {
-        return userDAO.authenticate(userName, password);
-    }
-
-    @Override
-    public void savePassword(User user, String password) {
-        userDAO.savePassword(user.getUsername(), password);
-    }
-
-    @Override
-    public List<User> searchUser(String userNamePrefix, String status, Integer cursor, Integer count) {
-        return userDAO.searchUsers(userNamePrefix, status, cursor, count);
-    }
-
-    @Override
-    public List<User> getByUserName(String userName, String status) {
-        return userDAO.findByUserName(userName, status);
+    public List<User> search(String userName, String status) {
+        UserGetOption getOption = new UserGetOption();
+        return userDAO.search(getOption);
     }
 }

@@ -220,7 +220,7 @@
             <property name="max" value="55"/>
         </module>
         <module name="ClassDataAbstractionCoupling">
-            <property name="max" value="16"/>
+            <property name="max" value="30"/>
         </module>
         <module name="CyclomaticComplexity">
             <property name="max" value="55"/>

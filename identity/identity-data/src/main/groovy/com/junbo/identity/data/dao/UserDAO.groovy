@@ -4,31 +4,21 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.identity.data.dao
-
-import com.junbo.identity.data.entity.user.UserPasswordBlacklist
+import com.junbo.common.id.UserId
+import com.junbo.identity.spec.model.options.UserGetOption
 import com.junbo.identity.spec.model.users.User
-
 /**
  * User DAO is used to fetch/update/delete/get user data from the database
  */
 interface UserDAO {
     // User Model Layer
-    User saveUser(User user)
+    User save(User user)
 
-    User updateUser(User user)
+    User update(User user)
 
-    User getUser(Long userId)
+    User get(UserId userId)
 
-    List<User> findByUserName(String userName, String status)
+    List<User> search(UserGetOption getOption)
 
-    void deleteUser(Long userId)
-
-    List<User> searchUsers(String userNamePrefix, String status, Integer cursor, Integer count)
-
-    // password Layer
-    User authenticate(String userName, String password)
-
-    void savePassword(String userName, String password)
-
-    List<UserPasswordBlacklist> getPasswordBlacklists()
+    void delete(UserId userId)
 }

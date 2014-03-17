@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.rest.service.validator.impl;
 
+import com.junbo.common.id.UserOptinId;
 import com.junbo.identity.data.dao.UserOptinDAO;
 import com.junbo.identity.rest.service.validator.UserOptinValidator;
 import com.junbo.identity.spec.error.AppErrors;
@@ -59,7 +60,7 @@ public class UserOptinValidatorImpl extends CommonValidator implements UserOptin
     public void validateResourceAccessible(Long userId, Long optInId) {
         checkUserValid(userId);
 
-        UserOptin userOptIn = userOptInDAO.get(optInId);
+        UserOptin userOptIn = userOptInDAO.get(new UserOptinId(optInId));
         if(userOptIn == null) {
             throw AppErrors.INSTANCE.invalidResourceRequest().exception();
         }

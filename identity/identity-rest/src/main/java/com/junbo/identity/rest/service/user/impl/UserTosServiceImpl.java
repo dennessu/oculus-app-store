@@ -5,9 +5,11 @@
  */
 package com.junbo.identity.rest.service.user.impl;
 
+import com.junbo.common.id.UserTosId;
 import com.junbo.identity.data.dao.UserTosDAO;
 import com.junbo.identity.rest.service.user.UserTosService;
 import com.junbo.identity.rest.service.validator.UserTosValidator;
+import com.junbo.identity.spec.model.options.UserTosGetOption;
 import com.junbo.identity.spec.model.users.UserTos;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -42,17 +44,18 @@ public class UserTosServiceImpl implements UserTosService {
     @Override
     public UserTos get(Long userId, Long userTosId) {
         validator.validateResourceAccessible(userId, userTosId);
-        return userTosAcceptanceDAO.get(userTosId);
+        return userTosAcceptanceDAO.get(new UserTosId(userTosId));
     }
 
     @Override
     public List<UserTos> getByUserId(Long userId, String tos) {
-        return userTosAcceptanceDAO.findByUserId(userId, tos);
+        UserTosGetOption getOption = new UserTosGetOption();
+        return userTosAcceptanceDAO.search(getOption);
     }
 
     @Override
     public void delete(Long userId, Long userTosId) {
         validator.validateDelete(userId, userTosId);
-        userTosAcceptanceDAO.delete(userTosId);
+        userTosAcceptanceDAO.delete(new UserTosId(userTosId));
     }
 }

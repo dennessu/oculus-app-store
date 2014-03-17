@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.rest.service.validator.impl;
 
+import com.junbo.common.id.UserId;
 import com.junbo.identity.data.dao.UserDAO;
 import com.junbo.identity.spec.error.AppErrors;
 import com.junbo.identity.spec.model.users.User;
@@ -20,7 +21,7 @@ public class CommonValidator {
     protected UserDAO userDAO;
 
     protected void checkUserValid(Long userId) {
-        User user = userDAO.getUser(userId);
+        User user = userDAO.get(new UserId(userId));
         if(user == null) {
             throw AppErrors.INSTANCE.notExistingUser("userId = " + userId.toString()).exception();
         }

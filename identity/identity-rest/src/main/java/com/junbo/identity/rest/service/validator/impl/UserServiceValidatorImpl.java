@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.rest.service.validator.impl;
 
+import com.junbo.common.id.UserId;
 import com.junbo.identity.rest.service.password.PasswordService;
 import com.junbo.identity.rest.service.validator.UserServiceValidator;
 import com.junbo.identity.spec.error.AppErrors;
@@ -57,7 +58,7 @@ class UserServiceValidatorImpl extends CommonValidator implements UserServiceVal
         if(id == null) {
             throw AppErrors.INSTANCE.invalidNullEmptyInputParam().exception();
         }
-        User existingUser = userDAO.getUser(id);
+        User existingUser = userDAO.get(new UserId(id));
         if(existingUser == null) {
             throw AppErrors.INSTANCE.notExistingUser("userId = " + id.toString()).exception();
         }

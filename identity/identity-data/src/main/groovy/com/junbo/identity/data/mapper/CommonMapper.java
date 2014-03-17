@@ -12,7 +12,6 @@ import com.junbo.common.id.*;
 import com.junbo.common.util.EnumRegistry;
 import com.junbo.identity.data.entity.user.UserPasswordStrength;
 import com.junbo.identity.data.entity.user.UserProfileType;
-import com.junbo.identity.data.entity.user.UserStatus;
 import com.junbo.identity.spec.error.AppErrors;
 import com.junbo.identity.spec.model.password.PasswordRuleDetail;
 import org.springframework.util.StringUtils;
@@ -82,6 +81,76 @@ public class CommonMapper {
         return id.getValue();
     }
 
+    UserSecurityQuestionId toUserSecurityQuestionId(Long id) {
+        if(id == null) {
+            return null;
+        }
+        return new UserSecurityQuestionId(id);
+    }
+
+    Long toUserPhoneNumberId(UserPhoneNumberId id) {
+        if(id == null) {
+            return null;
+        }
+        return id.getValue();
+    }
+
+    UserPhoneNumberId toUserPhoneNumberId(Long id) {
+        if(id == null) {
+            return null;
+        }
+        return new UserPhoneNumberId(id);
+    }
+
+    Long toUserLoginAttemptId(UserLoginAttemptId id) {
+        if(id == null) {
+            return null;
+        }
+        return id.getValue();
+    }
+
+    UserLoginAttemptId toUserLoginAttemptId(Long id) {
+        if(id == null) {
+            return null;
+        }
+        return new UserLoginAttemptId(id);
+    }
+
+    Long toUserSecurityQuestionId(UserSecurityQuestionId id) {
+        if(id == null) {
+            return null;
+        }
+        return id.getValue();
+    }
+
+    Long toUserGroupId(UserGroupId id) {
+        if(id == null) {
+            return null;
+        }
+        return id.getValue();
+    }
+
+    UserGroupId toUserGroupId(Long id) {
+        if(id == null) {
+            return null;
+        }
+        return new UserGroupId(id);
+    }
+
+    UserEmailId toUserEmailId(Long id) {
+        if(id == null) {
+            return null;
+        }
+        return new UserEmailId(id);
+    }
+
+    Long toUserEmailId(UserEmailId id) {
+        if(id == null) {
+            return null;
+        }
+        return id.getValue();
+    }
+
     public Short explicitMethod_toUserPasswordStrength(String passwordStrength) {
         if(StringUtils.isEmpty(passwordStrength)) {
             return null;
@@ -100,29 +169,6 @@ public class CommonMapper {
         }
         else {
             return EnumRegistry.resolve(userPasswordStrength, UserPasswordStrength.class).toString();
-        }
-    }
-
-    public Short explicitMethod_toUserStatus(String userStatus) {
-        if(!StringUtils.isEmpty(userStatus)) {
-            try {
-                return UserStatus.valueOf(UserStatus.class, userStatus).getId();
-            }
-            catch (Exception e) {
-                throw AppErrors.INSTANCE.enumConversionError(userStatus, "UserStatus").exception();
-            }
-        }
-        else {
-            return null;
-        }
-    }
-
-    public String explicitMethod_toUserStatus(Short userStatus) {
-        if(userStatus == null) {
-            return null;
-        }
-        else {
-            return EnumRegistry.resolve(userStatus, UserStatus.class).toString();
         }
     }
 

@@ -41,8 +41,7 @@ class UserDeviceDAOImpl implements UserDeviceDAO {
     @Override
     UserDevice update(UserDevice entity) {
         UserDeviceEntity userDeviceProfileEntity = modelMapper.toUserDevice(entity, new MappingContext())
-        currentSession().evict(currentSession().get(UserDeviceEntity, userDeviceProfileEntity.id))
-        currentSession().update(userDeviceProfileEntity)
+        currentSession().merge(userDeviceProfileEntity)
         currentSession().flush()
 
         return get(userDeviceProfileEntity.id)

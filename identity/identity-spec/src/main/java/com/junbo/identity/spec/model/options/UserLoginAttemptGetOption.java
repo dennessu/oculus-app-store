@@ -5,6 +5,8 @@
  */
 package com.junbo.identity.spec.model.options;
 
+import com.junbo.common.id.UserId;
+
 import javax.ws.rs.QueryParam;
 
 /**
@@ -16,6 +18,9 @@ public class UserLoginAttemptGetOption extends PagingGetOption {
 
     @QueryParam("ipAddress")
     private String ipAddress;
+
+    @QueryParam("userId")
+    private UserId userId;
 
     public String getType() {
         return type;
@@ -31,5 +36,13 @@ public class UserLoginAttemptGetOption extends PagingGetOption {
 
     public void setIpAddress(String ipAddress) {
         this.ipAddress = ipAddress;
+    }
+
+    public UserId getUserId() {
+        return userId;
+    }
+
+    public void setUserId(UserId userId) {
+        this.userId = userId;
     }
 }
