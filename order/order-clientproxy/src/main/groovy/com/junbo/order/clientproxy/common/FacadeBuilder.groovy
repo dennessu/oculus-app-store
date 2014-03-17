@@ -79,16 +79,21 @@ class FacadeBuilder {
     static Email buildOrderConfirmationEmail(Order order, User user, List<Offer> offers) {
         Email email = new Email()
         email.userId = order.user
-        email.source = 'ServicECommerce'
+        email.source = 'SilkCloud'
         email.action = 'OrderConfirmation'
         email.locale = 'en_US'
         Map<String, String> properties = [:]
         properties.put(ORDER_NUMBER, order.id.value.toString())
         properties.put(ORDER_DATE, new Date().toString())
         properties.put(NAME, user.userName)
-        properties.put(SUBTOTAL, order.unitPrice?.toString())
-        properties.put(TAX, order.totalTax?.toString())
-        properties.put(GRAND_TOTAL, order.totalAmount?.toString())
+        properties.put(SUBTOTAL, order.totalAmount?.toString())
+        properties.put(TAX, BigDecimal.ZERO.toString())
+        def grandTotal = order.totalAmount
+        if (order.totalTax != null) {
+            grandTotal += order.totalTax
+            properties.put(TAX, order.totalTax.toString())
+        }
+        properties.put(GRAND_TOTAL, grandTotal.toString())
         offers.eachWithIndex { Offer offer, int index ->
             properties.put(OFFER_NAME + index, offer.name)
             order.orderItems.each { OrderItem item ->
