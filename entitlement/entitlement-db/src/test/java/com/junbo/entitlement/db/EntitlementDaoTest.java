@@ -82,6 +82,10 @@ public class EntitlementDaoTest extends AbstractTransactionalTestNGSpringContext
             Entitlement entitlementEntity = buildAnEntitlement();
             entitlementEntity.setUserId(userId);
             entitlementEntity.setEntitlementDefinitionId(insertedEntitlementDefinition.getEntitlementDefinitionId());
+            entitlementEntity.setGroup(insertedEntitlementDefinition.getGroup());
+            entitlementEntity.setType(insertedEntitlementDefinition.getType());
+            entitlementEntity.setTag(insertedEntitlementDefinition.getTag());
+            entitlementEntity.setDeveloperId(insertedEntitlementDefinition.getDeveloperId());
             entitlementRepository.insert(entitlementEntity);
         }
 
@@ -131,6 +135,10 @@ public class EntitlementDaoTest extends AbstractTransactionalTestNGSpringContext
             Entitlement entitlement = buildAnEntitlement();
             entitlement.setUserId(userId);
             entitlement.setEntitlementDefinitionId(insertedEntitlementDefinition.getEntitlementDefinitionId());
+            entitlement.setGroup(insertedEntitlementDefinition.getGroup());
+            entitlement.setType(insertedEntitlementDefinition.getType());
+            entitlement.setTag(insertedEntitlementDefinition.getTag());
+            entitlement.setDeveloperId(insertedEntitlementDefinition.getDeveloperId());
             entitlement.setManagedLifecycle(true);
             entitlementRepository.insert(entitlement);
         }
@@ -177,7 +185,12 @@ public class EntitlementDaoTest extends AbstractTransactionalTestNGSpringContext
         entitlement.setGrantTime(new Date(114, 0, 22));
         entitlement.setExpirationTime(new Date(114, 0, 28));
 
-        entitlement.setEntitlementDefinitionId(buildAnEntitlementDefinition().getEntitlementDefinitionId());
+        EntitlementDefinition definition = buildAnEntitlementDefinition();
+        entitlement.setEntitlementDefinitionId(definition.getEntitlementDefinitionId());
+        entitlement.setGroup(definition.getGroup());
+        entitlement.setTag(definition.getTag());
+        entitlement.setType(definition.getType());
+        entitlement.setDeveloperId(definition.getDeveloperId());
         entitlement.setOfferId(idGenerator.nextId());
         entitlement.setStatus(EntitlementStatus.ACTIVE.toString());
         entitlement.setUseCount(0);
