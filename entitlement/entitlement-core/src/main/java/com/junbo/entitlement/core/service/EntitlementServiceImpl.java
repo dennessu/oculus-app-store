@@ -49,6 +49,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     public Entitlement addEntitlement(Entitlement entitlement) {
         checkUser(entitlement.getUserId());
         checkOffer(entitlement.getOfferId());
+        checkDeveloper(entitlement.getDeveloperId());
 
         if (EntitlementStatus.LIFECYCLE_NOT_MANAGED_STATUS.contains(
                 EntitlementStatus.valueOf(entitlement.getStatus()))) {
@@ -60,6 +61,10 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
         checkEntitlementDefinition(entitlement.getEntitlementDefinitionId());
 
         validateGrantTimeBeforeExpirationTime(entitlement);
+
+        if (entitlement.getType() == null) {
+            entitlement.setType(EntitlementType.DEFAULT.toString());
+        }
 
         if (entitlement.getManagedLifecycle() == null) {
             LOGGER.warn("managedLifecycle not found, set true as default.");
