@@ -8,8 +8,9 @@ package com.junbo.identity.spec.resource;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserOptinId;
 import com.junbo.identity.spec.model.common.ResultList;
-import com.junbo.identity.spec.model.options.UserOptinGetOption;
 import com.junbo.identity.spec.model.users.UserOptin;
+import com.junbo.identity.spec.options.UserOptinGetOptions;
+import com.junbo.identity.spec.options.UserOptinListOptions;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 
@@ -20,37 +21,41 @@ import javax.ws.rs.core.MediaType;
  * Created by liangfu on 3/13/14.
  */
 @RestResource
-@Path("/users/{userId}/optIns")
+@Path("/users/{userId}/optins")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
-public interface UserOptInResource {
+public interface UserOptinResource {
+
     @POST
     @Path("/")
-    Promise<UserOptin> create(@PathParam("userId")UserId userId,
-                              UserOptin userOptIn);
+    Promise<UserOptin> create(@PathParam("userId") UserId userId,
+                              UserOptin userOptin);
 
     @PUT
-    @Path("/{userOptInId}")
-    Promise<UserOptin> update(@PathParam("userId")UserId userId,
-                              @PathParam("userOptInId")UserOptinId userOptInId,
-                              UserOptin userOptIn);
+    @Path("/{userOptinId}")
+    Promise<UserOptin> put(@PathParam("userId") UserId userId,
+                           @PathParam("userOptinId") UserOptinId userOptinId,
+                           UserOptin userOptin);
+
     @POST
-    @Path("/{userOptInId}")
-    Promise<UserOptin> patch(@PathParam("userId")UserId userId,
-                             @PathParam("userOptInId")UserOptinId userOptInId,
-                             UserOptin userOptIn);
+    @Path("/{userOptinId}")
+    Promise<UserOptin> patch(@PathParam("userId") UserId userId,
+                             @PathParam("userOptinId") UserOptinId userOptinId,
+                             UserOptin userOptin);
+
+    @DELETE
+    @Path("/{userOptinId}")
+    Promise<UserOptin> delete(@PathParam("userId") UserId userId,
+                              @PathParam("userOptinId") UserOptinId userOptinId);
 
     @GET
-    @Path("/{userOptInId}")
-    Promise<UserOptin> get(@PathParam("userId")UserId userId,
-                           @PathParam("userOptInId")UserOptinId userOptInId);
-    @DELETE
-    @Path("/{userOptInId}")
-    Promise<UserOptin> delete(@PathParam("userId")UserId userId,
-                              @PathParam("userOptInId")UserOptinId userOptInId);
+    @Path("/{userOptinId}")
+    Promise<UserOptin> get(@PathParam("userId") UserId userId,
+                           @PathParam("userOptinId") UserOptinId userOptinId,
+                           @BeanParam UserOptinGetOptions getOptions);
 
     @GET
     @Path("/")
-    Promise<ResultList<UserOptin>> list(@PathParam("userId")UserId userId,
-                                        @BeanParam UserOptinGetOption getOption);
+    Promise<ResultList<UserOptin>> list(@PathParam("userId") UserId userId,
+                                        @BeanParam UserOptinListOptions listOptions);
 }
