@@ -6,10 +6,7 @@
 package com.junbo.fulfilment.clientproxy.impl;
 
 import com.junbo.catalog.spec.model.common.EntityGetOptions;
-import com.junbo.catalog.spec.model.offer.Action;
-import com.junbo.catalog.spec.model.offer.Event;
-import com.junbo.catalog.spec.model.offer.ItemEntry;
-import com.junbo.catalog.spec.model.offer.OfferEntry;
+import com.junbo.catalog.spec.model.offer.*;
 import com.junbo.catalog.spec.resource.OfferResource;
 import com.junbo.common.id.OfferId;
 import com.junbo.fulfilment.clientproxy.CatalogGateway;
@@ -18,6 +15,7 @@ import com.junbo.fulfilment.common.exception.CatalogGatewayException;
 import com.junbo.fulfilment.common.exception.ResourceNotFoundException;
 import com.junbo.fulfilment.common.util.Utils;
 import com.junbo.fulfilment.spec.fusion.*;
+import com.junbo.fulfilment.spec.fusion.Offer;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -25,20 +23,22 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class CatalogGatewayImpl implements CatalogGateway {
     private static final String PURCHASE_EVENT = "PURCHASE_EVENT";
-    private static final Long OFFER_TIMESTAMP_NOT_SPECIFIED = -1L;
+    private static final String OFFER_RELEASED_STATUS = "RELEASED";
+    private static final Long OFFER_TIMESTAMP_NOT_SPECIFIED = null;
 
     @Autowired
     private OfferResource offerResource;
 
     @Override
-    public com.junbo.fulfilment.spec.fusion.Offer getOffer(Long offerId, Long timestamp) {
+    public Offer getOffer(Long offerId, Long timestamp) {
         return wash(retrieve(offerId, timestamp));
     }
 
     @Override
-    public com.junbo.fulfilment.spec.fusion.Offer getOffer(Long offerId) {
+    public Offer getOffer(Long offerId) {
         return wash(retrieve(offerId, OFFER_TIMESTAMP_NOT_SPECIFIED));
     }
+
 
     @Override
     public ShippingMethod getShippingMethod(Long shippingMethodId) {
@@ -48,9 +48,11 @@ public class CatalogGatewayImpl implements CatalogGateway {
 
     protected com.junbo.catalog.spec.model.offer.Offer retrieve(Long offerId, Long timestamp) {
         try {
-            // TODO
+            EntityGetOptions options = EntityGetOptions.getDefault();
+            options.setStatus(OFFER_RELEASED_STATUS);
+
             com.junbo.catalog.spec.model.offer.Offer offer =
-                    offerResource.getOffer(new OfferId(offerId), EntityGetOptions.getDefault()).wrapped().get();
+                    offerResource.getOffer(new OfferId(offerId), options).wrapped().get();
 
             if (offer == null) {
                 throw new ResourceNotFoundException(
