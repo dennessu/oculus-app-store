@@ -5,25 +5,23 @@
  */
 
 package com.junbo.order.core.impl.order
+
 import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.ShippingAddress
 import com.junbo.catalog.spec.model.offer.Offer
 import com.junbo.common.id.PaymentInstrumentId
 import com.junbo.identity.spec.model.user.User
 import com.junbo.langur.core.promise.Promise
-import com.junbo.order.clientproxy.billing.BillingFacade
-import com.junbo.order.clientproxy.cache.CachedCatalogFacadeImpl
-import com.junbo.order.clientproxy.fulfillment.FulfillmentFacade
-import com.junbo.order.clientproxy.identity.IdentityFacade
-import com.junbo.order.clientproxy.payment.PaymentFacade
-import com.junbo.order.clientproxy.rating.RatingFacade
+import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.model.OrderItem
 import com.junbo.payment.spec.model.PaymentInstrument
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
 import org.springframework.util.CollectionUtils
+
 /**
  * Created by chriszhu on 2/21/14.
  */
@@ -34,17 +32,8 @@ class OrderServiceContextBuilder {
     @Autowired
     OrderRepository orderRepository
     @Autowired
-    PaymentFacade paymentFacade
-    @Autowired
-    BillingFacade billingFacade
-    @Autowired
-    RatingFacade ratingFacade
-    @Autowired
-    IdentityFacade identityFacade
-    @Autowired
-    FulfillmentFacade fulfillmentFacade
-    @Autowired
-    CachedCatalogFacadeImpl cachedCatalogFacade
+    @Qualifier('orderFacadeContainer')
+    FacadeContainer facadeContainer
 
     Promise<List<PaymentInstrument>> getPaymentInstruments(OrderServiceContext context) {
 
@@ -62,7 +51,8 @@ class OrderServiceContextBuilder {
 
         List<PaymentInstrument> pis = []
         return Promise.each(piids.iterator()) { PaymentInstrumentId piid ->
-            paymentFacade.getPaymentInstrument(context.order.user, piid.value).syncThen { PaymentInstrument pi ->
+            facadeContainer.paymentFacade.
+                    getPaymentInstrument(context.order.user, piid.value).syncThen { PaymentInstrument pi ->
                 pis << pi
             }
         }.syncThen {
@@ -86,7 +76,8 @@ class OrderServiceContextBuilder {
         if (context == null || context.order == null || context.order.id == null) {
             return Promise.pure(null)
         }
-        return billingFacade.getBalancesByOrderId(context.order.id.value).syncThen { List<Balance> bas ->
+        return facadeContainer.billingFacade.getBalancesByOrderId(
+                context.order.id.value).syncThen { List<Balance> bas ->
             context.balances = bas
             return bas
         }
@@ -108,8 +99,8 @@ class OrderServiceContextBuilder {
         if (context == null || context.order == null || context.order.shippingAddressId == null) {
             return Promise.pure(null)
         }
-        return billingFacade.getShippingAddress(context.order.user.value, context.order.shippingAddressId.value).
-                syncThen { ShippingAddress sa ->
+        return facadeContainer.billingFacade.getShippingAddress(
+                context.order.user.value, context.order.shippingAddressId.value).syncThen { ShippingAddress sa ->
             context.shippingAddress = sa
             return sa
         }
@@ -121,7 +112,7 @@ class OrderServiceContextBuilder {
         if (context == null || context.order == null || context.order.user == null) {
             return Promise.pure(null)
         }
-        return identityFacade.getUser(context.order.user.value).syncThen { User user ->
+        return facadeContainer.identityFacade.getUser(context.order.user.value).syncThen { User user ->
             context.user = user
             return user
         }
@@ -136,7 +127,7 @@ class OrderServiceContextBuilder {
         List<Offer> offers
         // TODO timestamp
         return Promise.each(context.order.orderItems.iterator()) { OrderItem oi ->
-            cachedCatalogFacade.getOffer(oi.offer.value).syncThen { Offer of ->
+            facadeContainer.catalogFacade.getOffer(oi.offer.value).syncThen { Offer of ->
                 offers << of
             }
         }.then {

@@ -6,7 +6,7 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
-import com.junbo.order.clientproxy.billing.BillingFacade
+import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.core.impl.common.CoreBuilder
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
 import com.junbo.order.db.entity.enums.BillingAction
@@ -18,6 +18,7 @@ import groovy.transform.TypeChecked
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
 
 /**
  * Created by chriszhu on 2/20/14.
@@ -26,7 +27,8 @@ import org.springframework.beans.factory.annotation.Autowired
 @TypeChecked
 class ImmediateSettleAction implements Action {
     @Autowired
-    BillingFacade billingFacade
+    @Qualifier('orderFacadeContainer')
+    FacadeContainer facadeContainer
     @Autowired
     OrderRepository orderRepository
     @Autowired
@@ -39,7 +41,8 @@ class ImmediateSettleAction implements Action {
         def context = ActionUtils.getOrderActionContext(actionContext)
         def order = context.orderServiceContext.order
         Promise promise =
-                billingFacade.createBalance(CoreBuilder.buildBalance(context.orderServiceContext, BalanceType.DEBIT))
+                facadeContainer.billingFacade.createBalance(
+                        CoreBuilder.buildBalance(context.orderServiceContext, BalanceType.DEBIT))
         return promise.syncRecover { Throwable throwable ->
             LOGGER.error('name=Order_ImmediateSettle_Error', throwable)
             return null

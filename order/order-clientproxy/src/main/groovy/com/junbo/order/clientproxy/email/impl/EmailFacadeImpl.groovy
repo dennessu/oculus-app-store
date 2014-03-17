@@ -18,7 +18,7 @@ import javax.annotation.Resource
  * Created by LinYi on 14-3-14.
  */
 @CompileStatic
-@Component('emailFacade')
+@Component('orderEmailFacade')
 @TypeChecked
 class EmailFacadeImpl implements EmailFacade {
     @Resource(name='emailClient')

@@ -6,13 +6,14 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
-import com.junbo.order.clientproxy.billing.BillingFacade
+import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.core.impl.common.CoreBuilder
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
 import com.junbo.order.db.repo.OrderRepository
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
 
 /**
  * Auth Settle Action.
@@ -21,7 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired
 @TypeChecked
 class AuthSettleAction implements Action {
     @Autowired
-    BillingFacade billingFacade
+    @Qualifier('orderFacadeContainer')
+    FacadeContainer facadeContainer
     @Autowired
     OrderRepository orderRepository
     @Autowired
@@ -31,7 +33,7 @@ class AuthSettleAction implements Action {
     Promise<ActionResult> execute(ActionContext actionContext) {
         def context = ActionUtils.getOrderActionContext(actionContext)
         Balance balance = CoreBuilder.buildBalance(context.orderServiceContext, BalanceType.DELAY_DEBIT)
-        Promise promise = billingFacade.createBalance(balance)
+        Promise promise = facadeContainer.billingFacade.createBalance(balance)
         promise.then(new Promise.Func<Balance, Promise>() {
             @Override
             Promise apply(Balance b) {
