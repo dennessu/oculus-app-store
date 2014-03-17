@@ -6,6 +6,7 @@
 
 package com.junbo.catalog.spec.model.common;
 
+import com.junbo.catalog.common.util.Constants;
 import com.junbo.common.id.Id;
 
 import javax.ws.rs.QueryParam;
@@ -22,6 +23,14 @@ public abstract class EntitiesGetOptions extends PageableGetOptions {
     // defaults to get 'Released' entities
     @QueryParam("status")
     private String status;
+
+    protected static  <T extends EntitiesGetOptions> T setDefaults(T options) {
+        options.setStatus(Status.RELEASED);
+        options.setStart(Constants.DEFAULT_PAGING_START);
+        options.setSize(Constants.DEFAULT_PAGING_SIZE);
+
+        return options;
+    }
 
     public Long getTimestamp() {
         return timestamp;
