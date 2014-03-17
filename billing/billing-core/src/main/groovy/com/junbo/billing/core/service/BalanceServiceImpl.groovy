@@ -145,14 +145,12 @@ class BalanceServiceImpl implements BalanceService {
         }
 
         Long userId = balance.userId.value
-        identityFacade.getUser(userId).then {
-            User user = (User)it
-            if (user == null) {
-                throw AppErrors.INSTANCE.userNotFound(userId.toString()).exception()
-            }
-            if (user.status != 'ACTIVE') {
-                throw AppErrors.INSTANCE.userStatusInvalid(userId.toString()).exception()
-            }
+        User user = identityFacade.getUser(userId)?.wrapped().get()
+        if (user == null) {
+            throw AppErrors.INSTANCE.userNotFound(userId.toString()).exception()
+        }
+        if (user.status != 'ACTIVE') {
+            throw AppErrors.INSTANCE.userStatusInvalid(userId.toString()).exception()
         }
     }
 
@@ -176,7 +174,7 @@ class BalanceServiceImpl implements BalanceService {
         if (balance.piId == null) {
             throw AppErrors.INSTANCE.fieldMissingValue('piId').exception()
         }
-        def promisePi = paymentFacade.getPaymentInstrument(balance.piId.value)
+        def promisePi = paymentFacade.getPaymentInstrument(balance.userId.value, balance.piId.value)?.wrapped().get()
         if (promisePi == null) {
             throw AppErrors.INSTANCE.piNotFound(balance.piId.value.toString()).exception()
         }
