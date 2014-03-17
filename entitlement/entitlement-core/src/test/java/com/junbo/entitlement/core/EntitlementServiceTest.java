@@ -193,7 +193,12 @@ public class EntitlementServiceTest extends AbstractTransactionalTestNGSpringCon
         entitlement.setGrantTime(new Date(114, 0, 22));
         entitlement.setExpirationTime(new Date(114, 0, 28));
 
-        entitlement.setEntitlementDefinitionId(buildAnEntitlementDefinition().getEntitlementDefinitionId());
+        EntitlementDefinition definition = buildAnEntitlementDefinition();
+        entitlement.setEntitlementDefinitionId(definition.getEntitlementDefinitionId());
+        entitlement.setGroup(definition.getGroup());
+        entitlement.setTag(definition.getTag());
+        entitlement.setType(definition.getType());
+        entitlement.setDeveloperId(definition.getDeveloperId());
         entitlement.setOfferId(idGenerator.nextId());
         entitlement.setStatus(EntitlementStatus.ACTIVE.toString());
         entitlement.setUseCount(0);
