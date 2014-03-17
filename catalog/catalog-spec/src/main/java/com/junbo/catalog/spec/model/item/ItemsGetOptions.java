@@ -19,6 +19,10 @@ public class ItemsGetOptions extends EntitiesGetOptions {
     @QueryParam("id")
     private List<ItemId> itemIds;
 
+    public static ItemsGetOptions getDefault() {
+        return setDefaults(new ItemsGetOptions());
+    }
+
     public List<ItemId> getItemIds() {
         return itemIds;
     }
