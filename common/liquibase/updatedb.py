@@ -10,6 +10,8 @@ if len(sys.argv) <= 3:
 inputParam.project = sys.argv.pop(1)
 inputParam.environment = sys.argv.pop(1)
 inputParam.dbVersion = sys.argv.pop(1)
+if(len(sys.argv) > 1):
+    inputParam.command=sys.argv.pop(1)
 inputParam.schemaOrder = ["liquibase"]
 
 run(inputParam)

@@ -12,12 +12,10 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class AuthorizationCodeEntity extends BaseEntity {
-    String code
     Long userId
     String clientId
     Set<String> scopes
     String nonce
     String redirectUri
-    Date expiredBy
     Date lastAuthDate
 }
