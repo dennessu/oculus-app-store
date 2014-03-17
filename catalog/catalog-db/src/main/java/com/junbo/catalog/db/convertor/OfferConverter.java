@@ -29,7 +29,7 @@ public class OfferConverter {
     public static void fillDraftEntity(Offer model, OfferDraftEntity entity) {
         entity.setName(model.getName());
         entity.setStatus(model.getStatus());
-        entity.setRevision(model.getRevision());
+        //entity.setRevision(model.getRevision());
         entity.setOwnerId(model.getOwnerId());
         entity.setPayload(Utils.toJson(model));
     }
