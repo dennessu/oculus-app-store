@@ -14,14 +14,18 @@ import com.junbo.identity.spec.model.options.GroupGetOption
 import com.junbo.identity.spec.model.users.Group
 import com.junbo.oom.core.MappingContext
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
+
 /**
  * Created by liangfu on 3/14/14.
  */
 class GroupRepositoryImpl implements GroupRepository {
     @Autowired
+    @Qualifier('groupDAO')
     private GroupDAO groupDAO
 
     @Autowired
+    @Qualifier("modelMapperImpl")
     private ModelMapper modelMapper
 
     @Override

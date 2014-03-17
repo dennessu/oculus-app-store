@@ -8,9 +8,6 @@ package com.junbo.identity.data.dao.impl.postgresql;
 import com.junbo.identity.data.dao.SecurityQuestionDAO;
 import com.junbo.identity.data.entity.domaindata.SecurityQuestionEntity;
 import com.junbo.identity.spec.model.options.DomainDataGetOption;
-import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -19,29 +16,26 @@ import java.util.List;
  * Created by liangfu on 3/16/14.
  */
 @Component
-public class SecurityQuestionDAOImpl implements SecurityQuestionDAO {
-    @Autowired
-    @Qualifier("sessionFactory")
-    private SessionFactory sessionFactory;
+public class SecurityQuestionDAOImpl extends EntityDAOImpl implements SecurityQuestionDAO {
 
     @Override
     public SecurityQuestionEntity save(SecurityQuestionEntity entity) {
-        sessionFactory.getCurrentSession().save(entity);
+        currentSession().save(entity);
 
         return get(entity.getId());
     }
 
     @Override
     public SecurityQuestionEntity update(SecurityQuestionEntity entity) {
-        sessionFactory.getCurrentSession().merge(entity);
-        sessionFactory.getCurrentSession().flush();
+        currentSession().merge(entity);
+        currentSession().flush();
 
         return get(entity.getId());
     }
 
     @Override
     public SecurityQuestionEntity get(Long id) {
-        return (SecurityQuestionEntity)sessionFactory.getCurrentSession().get(SecurityQuestionEntity.class, id);
+        return (SecurityQuestionEntity)currentSession().get(SecurityQuestionEntity.class, id);
     }
 
     @Override
@@ -49,16 +43,14 @@ public class SecurityQuestionDAOImpl implements SecurityQuestionDAO {
         String query = "select * from security_question where value like \'%" + getOption.getValue() + "%\'" +
                 (" order by id limit " + (getOption.getLimit() == null ? "ALL" : getOption.getLimit().toString())) +
                 " offset " + (getOption.getOffset() == null ? "0" : getOption.getOffset().toString());
-        List entities = sessionFactory.getCurrentSession().createSQLQuery(query)
-                .addEntity(SecurityQuestionEntity.class).list();
+        List entities = currentSession().createSQLQuery(query).addEntity(SecurityQuestionEntity.class).list();
 
         return entities;
     }
 
     @Override
     public void delete(Long id) {
-        SecurityQuestionEntity entity = (SecurityQuestionEntity)sessionFactory.getCurrentSession()
-                .get(SecurityQuestionEntity.class, id);
-        sessionFactory.getCurrentSession().delete(entity);
+        SecurityQuestionEntity entity = (SecurityQuestionEntity)currentSession().get(SecurityQuestionEntity.class, id);
+        currentSession().delete(entity);
     }
 }

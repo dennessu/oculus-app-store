@@ -8,10 +8,6 @@ package com.junbo.identity.data.dao.impl.postgresql;
 import com.junbo.identity.data.dao.UserDAO;
 import com.junbo.identity.data.entity.user.UserEntity;
 import com.junbo.identity.spec.model.options.UserGetOption;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -21,15 +17,7 @@ import java.util.List;
  * Implementation for User DAO..
  */
 @Component
-public class UserDAOImpl implements UserDAO {
-
-    @Autowired
-    @Qualifier("sessionFactory")
-    private SessionFactory sessionFactory;
-
-    private Session currentSession() {
-        return sessionFactory.getCurrentSession();
-    }
+public class UserDAOImpl extends EntityDAOImpl implements UserDAO {
 
     @Override
     public UserEntity save(UserEntity user) {

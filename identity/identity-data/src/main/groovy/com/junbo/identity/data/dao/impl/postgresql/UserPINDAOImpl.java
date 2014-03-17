@@ -5,12 +5,9 @@
  */
 package com.junbo.identity.data.dao.impl.postgresql;
 
-import com.junbo.identity.data.dao.UserPINDAO;
+import com.junbo.identity.data.dao.UserPinDAO;
 import com.junbo.identity.data.entity.user.UserPINEntity;
 import com.junbo.identity.spec.model.options.UserPinGetOption;
-import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -19,28 +16,24 @@ import java.util.List;
  * Created by liangfu on 3/16/14.
  */
 @Component
-public class UserPINDAOImpl implements UserPINDAO {
-    @Autowired
-    @Qualifier("sessionFactory")
-    private SessionFactory sessionFactory;
-
+public class UserPinDAOImpl extends EntityDAOImpl implements UserPinDAO {
     @Override
     public UserPINEntity save(UserPINEntity entity) {
-        sessionFactory.getCurrentSession().save(entity);
+        currentSession().save(entity);
         return get(entity.getId());
     }
 
     @Override
     public UserPINEntity update(UserPINEntity entity) {
-        sessionFactory.getCurrentSession().merge(entity);
-        sessionFactory.getCurrentSession().flush();
+        currentSession().merge(entity);
+        currentSession().flush();
 
         return get(entity.getId());
     }
 
     @Override
     public UserPINEntity get(Long id) {
-        return (UserPINEntity) sessionFactory.getCurrentSession().get(UserPINEntity.class, id);
+        return (UserPINEntity)currentSession().get(UserPINEntity.class, id);
     }
 
     @Override
@@ -48,7 +41,7 @@ public class UserPINDAOImpl implements UserPINDAO {
         String query = "select * from user_pin where user_id = " + (getOption.getUserId().getValue()) +
                 (" order by id limit " + (getOption.getLimit() == null ? "ALL" : getOption.getLimit().toString())) +
                 " offset " + (getOption.getOffset() == null ? "0" : getOption.getOffset().toString());
-        List entities = sessionFactory.getCurrentSession().createSQLQuery(query)
+        List entities = currentSession().createSQLQuery(query)
                 .addEntity(UserPINEntity.class).list();
 
         return entities;
@@ -56,7 +49,7 @@ public class UserPINDAOImpl implements UserPINDAO {
 
     @Override
     public void delete(Long id) {
-        UserPINEntity entity = (UserPINEntity)sessionFactory.getCurrentSession().get(UserPINEntity.class, id);
-        sessionFactory.getCurrentSession().delete(entity);
+        UserPINEntity entity = (UserPINEntity)currentSession().get(UserPINEntity.class, id);
+        currentSession().delete(entity);
     }
 }

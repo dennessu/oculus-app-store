@@ -14,6 +14,7 @@ import com.junbo.identity.spec.model.options.UserGetOption;
 import com.junbo.identity.spec.model.users.User;
 import com.junbo.oom.core.MappingContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -25,9 +26,11 @@ import java.util.List;
 @Component
 public class UserRepositoryImpl implements UserRepository {
     @Autowired
+    @Qualifier("userDAO")
     private ModelMapper modelMapper;
 
     @Autowired
+    @Qualifier("modelMapperImpl")
     private UserDAO userDAO;
 
     @Override

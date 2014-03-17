@@ -8,10 +8,6 @@ package com.junbo.identity.data.dao.impl.postgresql;
 import com.junbo.identity.data.dao.UserSecurityQuestionDAO;
 import com.junbo.identity.data.entity.user.UserSecurityQuestionEntity;
 import com.junbo.identity.spec.model.options.UserSecurityQuestionGetOption;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -20,15 +16,7 @@ import java.util.List;
  * Created by liangfu on 3/17/14.
  */
 @Component
-public class UserSecurityQuestionDAOImpl implements UserSecurityQuestionDAO {
-    @Autowired
-    @Qualifier("sessionFactory")
-    private SessionFactory sessionFactory;
-
-    private Session currentSession() {
-        return sessionFactory.getCurrentSession();
-    }
-
+public class UserSecurityQuestionDAOImpl extends EntityDAOImpl implements UserSecurityQuestionDAO {
     @Override
     public UserSecurityQuestionEntity save(UserSecurityQuestionEntity entity) {
         currentSession().save(entity);

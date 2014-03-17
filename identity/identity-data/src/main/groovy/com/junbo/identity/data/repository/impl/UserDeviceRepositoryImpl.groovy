@@ -13,14 +13,18 @@ import com.junbo.identity.spec.model.options.UserDeviceGetOption
 import com.junbo.identity.spec.model.users.UserDevice
 import com.junbo.oom.core.MappingContext
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
+
 /**
  * Implementation for UserDeviceDAO.
  */
 class UserDeviceRepositoryImpl implements UserDeviceRepository {
     @Autowired
+    @Qualifier('userDeviceDAO')
     private UserDeviceDAO userDeviceDAO
 
     @Autowired
+    @Qualifier("modelMapperImpl")
     private ModelMapper modelMapper
 
     @Override

@@ -14,15 +14,18 @@ import com.junbo.identity.spec.model.options.UserTosGetOption
 import com.junbo.identity.spec.model.users.UserTos
 import com.junbo.oom.core.MappingContext
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
 
 /**
  * Implementation for User Tos Acceptance DAO interface.
  */
 class UserTosRepositoryImpl implements UserTosRepository {
     @Autowired
+    @Qualifier('userTosDAO')
     private UserTosDAO userTosDAO
 
     @Autowired
+    @Qualifier("modelMapperImpl")
     private ModelMapper modelMapper
 
     @Override

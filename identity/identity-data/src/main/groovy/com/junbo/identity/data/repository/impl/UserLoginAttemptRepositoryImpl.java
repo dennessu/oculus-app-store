@@ -14,6 +14,7 @@ import com.junbo.identity.spec.model.options.UserLoginAttemptGetOption;
 import com.junbo.identity.spec.model.users.LoginAttempt;
 import com.junbo.oom.core.MappingContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -25,9 +26,11 @@ import java.util.List;
 @Component
 public class UserLoginAttemptRepositoryImpl implements UserLoginAttemptRepository {
     @Autowired
+    @Qualifier("userLoginAttemptDAO")
     private UserLoginAttemptDAO userLoginAttemptDAO;
 
     @Autowired
+    @Qualifier("modelMapperImpl")
     private ModelMapper modelMapper;
 
     @Override

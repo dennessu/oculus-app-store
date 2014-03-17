@@ -9,54 +9,120 @@
 
     <tx:annotation-driven />
     <context:component-scan base-package="com.junbo.identity.data" />
-
-    <bean id="identityDataSource" class="bitronix.tm.resource.jdbc.PoolingDataSource"
-          init-method="init" destroy-method="close">
-        <property name="uniqueName" value="jdbc/id_ds1"/>
-        <property name="className" value="org.postgresql.xa.PGXADataSource"/>
-        <property name="minPoolSize" value="${identity.db.minConnectionsPerPartition}"/>
-        <property name="maxPoolSize" value="${identity.db.maxConnectionsPerPartition}"/>
-        <property name="driverProperties">
-            <props>
-                <prop key="url">${identity.db.url}</prop>
-                <prop key="user">${identity.db.username}</prop>
-                <prop key="password">${identity.db.password}</prop>
-            </props>
-        </property>
-    </bean>
-
-    <!-- SessonFactory for Hibernate -->
-    <bean id="sessionFactory"
-          class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
-        <property name="dataSource" ref="identityDataSource"/>
-        <property name="packagesToScan" value="com.junbo.identity.data.*" />
-        <property name="jtaTransactionManager" ref="transactionManager"/>
-        <property name="hibernateProperties">
-            <props>
-                <prop key="hibernate.dialect">${identity.hibernate.dialect}</prop>
-                <prop key="hibernate.max_fetch_depth">${identity.hibernate.max_fetch_depth}</prop>
-                <prop key="hibernate.jdbc.fetch_size">${identity.hibernate.jdbc.fetch_size}</prop>
-                <prop key="hibernate.jdbc.batch_size">${identity.hibernate.jdbc.batch_size}</prop>
-                <prop key="hibernate.show_sql">${identity.hibernate.show_sql}</prop>
-            </props>
-        </property>
-    </bean>
-
-    <tx:annotation-driven transaction-manager="transactionManager"/>
-
+    <import resource="classpath*:spring/transaction.xml"/>
+    <import resource="classpath*:spring/sharding.xml"/>
+    <import resource="classpath*:spring/sharding-context.xml"/>
 
     <bean id="__builtinMapper" class="com.junbo.oom.core.builtin.BuiltinMapper" />
     <bean id="__commonMapper" class="com.junbo.identity.data.mapper.CommonMapper" />
-    <!--<bean id="identityModelMapper" class="com.junbo.identity.data.mapper.ModelMapperImpl" />-->
+
+    <bean id="sessionFactoryWrapper" class="com.junbo.sharding.core.hibernate.SessionFactoryWrapper">
+        <property name="dataSourceRegistry" ref="shardDataSourceRegistry"/>
+        <property name="sessionFactoryBeanName" value="sessionFactoryTemplate"/>
+        <property name="dataBaseName" value="identity"/>
+        <property name="packagesToScan" value="com.junbo.identity.data.entity.*"/>
+    </bean>
 
     <bean id="modelMapperImpl" class="com.junbo.identity.data.mapper.ModelMapperImpl" />
-    <bean id="userDAO" class="com.junbo.identity.data.dao.impl.postgresql.UserDAOImpl" />
-    <bean id="userDeviceDAO" class="com.junbo.identity.data.dao.impl.postgresql.UserDeviceDAOImpl" />
-    <bean id="userAuthenticatorDAO" class="com.junbo.identity.data.dao.impl.postgresql.UserAuthenticatorDAOImpl" />
-    <bean id="userOptInDAO" class="com.junbo.identity.data.dao.impl.postgresql.UserOptinDAOImpl" />
-    <bean id="userTosDAO" class="com.junbo.identity.data.dao.impl.postgresql.UserTosDAOImpl" />
-    <bean id="passwordDAO" class="com.junbo.identity.data.dao.impl.postgresql.PasswordRuleDAOImpl" />
-    <bean id="groupDAO" class="com.junbo.identity.data.dao.impl.postgresql.GroupDAOImpl" />
-    <bean id="userPINDAO" class="com.junbo.identity.data.dao.impl.postgresql.UserPINDAOImpl" />
 
+    <bean id="baseDao" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" abstract="true">
+        <property name="idGeneratorFacade" ref="idGeneratorFacade"/>
+    </bean>
+
+    <bean id="entityDAOBase" class="com.junbo.identity.data.dao.impl.postgresql.EntityDAOImpl" abstract="true">
+        <property name="sessionFactoryWrapper" ref="sessionFactoryWrapper" />
+    </bean>
+
+    <bean id="userDAOTarget" class="com.junbo.identity.data.dao.impl.postgresql.UserDAOImpl" parent="entityDAOBase" />
+    <bean id="userDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
+        <property name="daoInterface" value="com.junbo.identity.data.dao.UserDAO"/>
+        <property name="daoTarget" ref="userDAOTarget"/>
+    </bean>
+
+    <bean id="groupDAOTarget" class="com.junbo.identity.data.dao.impl.postgresql.GroupDAOImpl" parent="entityDAOBase"/>
+    <bean id="groupDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
+        <property name="daoInterface" value="com.junbo.identity.data.dao.GroupDAO" />
+        <property name="daoTarget" ref="groupDAOTarget" />
+    </bean>
+
+    <bean id="userAuthenticatorDAOTarget" class="com.junbo.identity.data.dao.impl.postgresql.UserAuthenticatorDAOImpl" parent="entityDAOBase" />
+    <bean id="userAuthenticatorDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
+        <property name="daoInterface" value="com.junbo.identity.data.dao.UserAuthenticatorDAO" />
+        <property name="daoTarget" ref="userAuthenticatorDAOTarget" />
+    </bean>
+
+    <bean id="userDeviceDAOTarget" class="com.junbo.identity.data.dao.impl.postgresql.UserDeviceDAOImpl" parent="entityDAOBase"/>
+    <bean id="userDeviceDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
+        <property name="daoInterface" value="com.junbo.identity.data.dao.UserDeviceDAO" />
+        <property name="daoTarget" ref="userDeviceDAOTarget" />
+    </bean>
+
+    <bean id="userEmailDAOTarget" class="com.junbo.identity.data.dao.impl.postgresql.UserEmailDAOImpl" parent="entityDAOBase"/>
+    <bean id="userEmailDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
+        <property name="daoInterface" value="com.junbo.identity.data.dao.UserEmailDAO" />
+        <property name="daoTarget" ref="userEmailDAOTarget" />
+    </bean>
+
+    <bean id="userGroupDAOTarget" class="com.junbo.identity.data.dao.impl.postgresql.UserGroupDAOImpl" parent="entityDAOBase"/>
+    <bean id="userGroupDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
+        <property name="daoInterface" value="com.junbo.identity.data.dao.UserGroupDAO" />
+        <property name="daoTarget" ref="userGroupDAOTarget" />
+    </bean>
+
+    <bean id="userLoginAttemptDAOTarget" class="com.junbo.identity.data.dao.impl.postgresql.UserLoginAttemptDAOImpl" parent="entityDAOBase"/>
+    <bean id="userLoginAttemptDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
+        <property name="daoInterface" value="com.junbo.identity.data.dao.UserLoginAttemptDAO" />
+        <property name="daoTarget" ref="userLoginAttemptDAOTarget" />
+    </bean>
+
+    <bean id="userOptinDAOTarget" class="com.junbo.identity.data.dao.impl.postgresql.UserOptinDAOImpl" parent="entityDAOBase"/>
+    <bean id="userOptinDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
+        <property name="daoInterface" value="com.junbo.identity.data.dao.UserOptinDAO" />
+        <property name="daoTarget" ref="userOptinDAOTarget" />
+    </bean>
+
+    <bean id="userPasswordDAOTarget" class="com.junbo.identity.data.dao.impl.postgresql.UserPasswordDAOImpl" parent="entityDAOBase"/>
+    <bean id="userPasswordDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
+        <property name="daoInterface" value="com.junbo.identity.data.dao.UserPasswordDAO" />
+        <property name="daoTarget" ref="userPasswordDAOTarget" />
+    </bean>
+
+    <bean id="userPhoneNumberDAOTarget" class="com.junbo.identity.data.dao.impl.postgresql.UserPhoneNumberDAOImpl" parent="entityDAOBase" />
+    <bean id="userPhoneNumberDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
+        <property name="daoInterface" value="com.junbo.identity.data.dao.UserPhoneNumberDAO" />
+        <property name="daoTarget" ref="userPhoneNumberDAOTarget" />
+    </bean>
+
+    <bean id="userPINDAOTarget" class="com.junbo.identity.data.dao.impl.postgresql.UserPinDAOImpl" parent="entityDAOBase" />
+    <bean id="userPINDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
+        <property name="daoInterface" value="com.junbo.identity.data.dao.UserPinDAO" />
+        <property name="daoTarget" ref="userPINDAOTarget" />
+    </bean>
+
+    <bean id="userSecurityQuestionDAOTarget" class="com.junbo.identity.data.dao.impl.postgresql.UserSecurityQuestionDAOImpl" parent="entityDAOBase" />
+    <bean id="userSecurityQuestionDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
+        <property name="daoInterface" value="com.junbo.identity.data.dao.UserSecurityQuestionDAO" />
+        <property name="daoTarget" ref="userSecurityQuestionDAOTarget" />
+    </bean>
+
+    <bean id="userTosDAOTarget" class="com.junbo.identity.data.dao.impl.postgresql.UserTosDAOImpl" parent="entityDAOBase" />
+    <bean id="userTosDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
+        <property name="daoInterface" value="com.junbo.identity.data.dao.UserTosDAO" />
+        <property name="daoTarget" ref="userTosDAOTarget" />
+    </bean>
+
+
+    <bean id="groupRepository" class="com.junbo.identity.data.repository.impl.GroupRepositoryImpl" />
+    <bean id="userAuthenticatorRepository" class="com.junbo.identity.data.repository.impl.UserAuthenticatorRepositoryImpl" />
+    <bean id="userDeviceRepository" class="com.junbo.identity.data.repository.impl.UserDeviceRepositoryImpl" />
+    <bean id="userEmailRepository" class="com.junbo.identity.data.repository.impl.UserEmailRepositoryImpl" />
+    <bean id="userGroupRepository" class="com.junbo.identity.data.repository.impl.UserGroupRepositoryImpl" />
+    <bean id="userLoginAttemptRepository" class="com.junbo.identity.data.repository.impl.UserLoginAttemptRepositoryImpl" />
+    <bean id="userOptinRepository" class="com.junbo.identity.data.repository.impl.UserOptinRepositoryImpl" />
+    <bean id="userPasswordRepository" class="com.junbo.identity.data.repository.impl.UserPasswordRepositoryImpl" />
+    <bean id="userPhoneNumberRepository" class="com.junbo.identity.data.repository.impl.UserPhoneNumberRepositoryImpl" />
+    <bean id="userPINRepository" class="com.junbo.identity.data.repository.impl.UserPINRepositoryImpl" />
+    <bean id="userRepository" class="com.junbo.identity.data.repository.impl.UserRepositoryImpl" />
+    <bean id="userSecurityQuestionRepository" class="com.junbo.identity.data.repository.impl.UserSecurityQuestionRepositoryImpl" />
+    <bean id="userTosRepository" class="com.junbo.identity.data.repository.impl.UserTosRepositoryImpl" />
 </beans>

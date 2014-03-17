@@ -4,26 +4,13 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.identity.data.dao.impl.postgresql
-
 import com.junbo.identity.data.dao.UserOptinDAO
 import com.junbo.identity.data.entity.user.UserOptinEntity
 import com.junbo.identity.spec.model.options.UserOptinGetOption
-import org.hibernate.Session
-import org.hibernate.SessionFactory
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Qualifier
-
 /**
  * Implementation for UserOptinDAO.
  */
-class UserOptinDAOImpl implements UserOptinDAO {
-    @Autowired
-    @Qualifier('sessionFactory')
-    private SessionFactory sessionFactory
-
-    private Session currentSession() {
-        sessionFactory.currentSession
-    }
+class UserOptinDAOImpl extends EntityDAOImpl implements UserOptinDAO {
 
     @Override
     UserOptinEntity save(UserOptinEntity entity) {
@@ -52,7 +39,7 @@ class UserOptinDAOImpl implements UserOptinDAO {
                 (' order by id limit ' + (getOption.limit == null ? 'ALL' : getOption.limit.toString())) +
                 ' offset ' + (getOption.offset == null ? '0' : getOption.offset.toString())
 
-        def entities = sessionFactory.currentSession.createSQLQuery(query).addEntity(UserOptinEntity).list()
+        def entities = currentSession().createSQLQuery(query).addEntity(UserOptinEntity).list()
 
         return entities
     }

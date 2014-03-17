@@ -4,25 +4,13 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.identity.data.dao.impl.postgresql
-
 import com.junbo.identity.data.dao.UserDeviceDAO
 import com.junbo.identity.data.entity.user.UserDeviceEntity
 import com.junbo.identity.spec.model.options.UserDeviceGetOption
-import org.hibernate.Session
-import org.hibernate.SessionFactory
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Qualifier
 /**
  * Implementation for UserDeviceDAO.
  */
-class UserDeviceDAOImpl implements UserDeviceDAO {
-    @Autowired
-    @Qualifier('sessionFactory')
-    private SessionFactory sessionFactory
-
-    private Session currentSession() {
-        sessionFactory.currentSession
-    }
+class UserDeviceDAOImpl extends EntityDAOImpl implements UserDeviceDAO {
 
     @Override
     UserDeviceEntity save(UserDeviceEntity entity) {

@@ -13,6 +13,7 @@ import com.junbo.identity.data.repository.PasswordRuleRepository;
 import com.junbo.identity.spec.model.password.PasswordRule;
 import com.junbo.oom.core.MappingContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 /**
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Component;
 public class PasswordRuleRepositoryImpl implements PasswordRuleRepository {
 
     @Autowired
+    @Qualifier("modelMapperImpl")
     private ModelMapper modelMapper;
 
     @Autowired

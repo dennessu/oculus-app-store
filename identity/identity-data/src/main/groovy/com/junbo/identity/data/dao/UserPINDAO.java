@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Created by liangfu on 3/16/14.
  */
-public interface UserPINDAO {
+public interface UserPinDAO {
 
     UserPINEntity save(UserPINEntity entity);
 

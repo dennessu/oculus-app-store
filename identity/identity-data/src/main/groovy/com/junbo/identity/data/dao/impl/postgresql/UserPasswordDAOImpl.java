@@ -8,9 +8,6 @@ package com.junbo.identity.data.dao.impl.postgresql;
 import com.junbo.identity.data.dao.UserPasswordDAO;
 import com.junbo.identity.data.entity.user.UserPasswordEntity;
 import com.junbo.identity.spec.model.options.UserPasswordGetOption;
-import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -19,27 +16,24 @@ import java.util.List;
  * Created by liangfu on 3/16/14.
  */
 @Component
-public class UserPasswordDAOImpl implements UserPasswordDAO {
-    @Autowired
-    @Qualifier("sessionFactory")
-    private SessionFactory sessionFactory;
+public class UserPasswordDAOImpl extends EntityDAOImpl implements UserPasswordDAO {
 
     @Override
     public UserPasswordEntity save(UserPasswordEntity entity) {
-        sessionFactory.getCurrentSession().save(entity);
+        currentSession().save(entity);
 
         return get(entity.getId());
     }
 
     @Override
     public UserPasswordEntity update(UserPasswordEntity entity) {
-        sessionFactory.getCurrentSession().merge(entity);
+        currentSession().merge(entity);
         return get(entity.getId());
     }
 
     @Override
     public UserPasswordEntity get(Long id) {
-        return (UserPasswordEntity)sessionFactory.getCurrentSession().get(UserPasswordEntity.class, id);
+        return (UserPasswordEntity)currentSession().get(UserPasswordEntity.class, id);
     }
 
     @Override
@@ -48,7 +42,7 @@ public class UserPasswordDAOImpl implements UserPasswordDAO {
         String query = "select * from user_password where user_id = " + (getOption.getUserId().getValue()) +
                 (" order by id limit " + (getOption.getLimit() == null ? "ALL" : getOption.getLimit().toString())) +
                 " offset " + (getOption.getOffset() == null ? "0" : getOption.getOffset().toString());
-        List entities = sessionFactory.getCurrentSession().createSQLQuery(query)
+        List entities = currentSession().createSQLQuery(query)
                 .addEntity(UserPasswordEntity.class).list();
 
         return entities;
@@ -57,7 +51,7 @@ public class UserPasswordDAOImpl implements UserPasswordDAO {
     @Override
     public void delete(Long id) {
         UserPasswordEntity entity =
-                (UserPasswordEntity)sessionFactory.getCurrentSession().get(UserPasswordEntity.class, id);
-        sessionFactory.getCurrentSession().delete(entity);
+                (UserPasswordEntity)currentSession().get(UserPasswordEntity.class, id);
+        currentSession().delete(entity);
     }
 }

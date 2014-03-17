@@ -14,6 +14,7 @@ import com.junbo.identity.spec.model.options.UserEmailGetOption;
 import com.junbo.identity.spec.model.users.UserEmail;
 import com.junbo.oom.core.MappingContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -25,9 +26,11 @@ import java.util.List;
 @Component
 public class UserEmailRepositoryImpl implements UserEmailRepository {
     @Autowired
+    @Qualifier("userEmailDAO")
     private UserEmailDAO userEmailDAO;
 
     @Autowired
+    @Qualifier("modelMapperImpl")
     private ModelMapper modelMapper;
 
     @Override
@@ -38,7 +41,7 @@ public class UserEmailRepositoryImpl implements UserEmailRepository {
     @Override
     public List<UserEmail> search(UserEmailGetOption getOption) {
 
-        List entities = userEmailDAO.search(getOption);
+        List entities = userEmailDAO.search(getOption.getUserId().getValue(), getOption);
 
         List<UserEmail> results = new ArrayList<UserEmail>();
         for(int i =0 ; i< entities.size(); i++) {

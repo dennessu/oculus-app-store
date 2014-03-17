@@ -57,7 +57,7 @@ public class UserDAOTest extends AbstractTransactionalTestNGSpringContextTests {
 
     private Random rand = new Random();
 
-    @Test(enabled = false)
+    @Test
     public void testGroupEntity() {
         Group group = new Group();
         group.setId(new GroupId(rand.nextLong()));

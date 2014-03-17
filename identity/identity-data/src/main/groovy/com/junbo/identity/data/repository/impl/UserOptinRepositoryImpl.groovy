@@ -13,14 +13,18 @@ import com.junbo.identity.spec.model.options.UserOptinGetOption
 import com.junbo.identity.spec.model.users.UserOptin
 import com.junbo.oom.core.MappingContext
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
+
 /**
  * Implementation for UserOptinDAO.
  */
 class UserOptinRepositoryImpl implements UserOptinRepository {
     @Autowired
+    @Qualifier('userOptinDAO')
     private UserOptinDAO userOptinDAO
 
     @Autowired
+    @Qualifier("modelMapperImpl")
     private ModelMapper modelMapper
 
     @Override

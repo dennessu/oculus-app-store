@@ -8,10 +8,6 @@ package com.junbo.identity.data.dao.impl.postgresql;
 import com.junbo.identity.data.dao.UserPhoneNumberDAO;
 import com.junbo.identity.data.entity.user.UserPhoneNumberEntity;
 import com.junbo.identity.spec.model.options.UserPhoneNumberGetOption;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -21,15 +17,7 @@ import java.util.List;
  * Created by liangfu on 3/17/14.
  */
 @Component
-public class UserPhoneNumberDAOImpl implements UserPhoneNumberDAO {
-    @Autowired
-    @Qualifier("sessionFactory")
-    private SessionFactory sessionFactory;
-
-    private Session currentSession() {
-        return sessionFactory.getCurrentSession();
-    }
-
+public class UserPhoneNumberDAOImpl extends EntityDAOImpl implements UserPhoneNumberDAO {
     @Override
     public UserPhoneNumberEntity save(UserPhoneNumberEntity entity) {
         currentSession().save(entity);

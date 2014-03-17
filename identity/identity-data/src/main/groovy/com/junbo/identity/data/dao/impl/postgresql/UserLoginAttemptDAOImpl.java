@@ -8,10 +8,6 @@ package com.junbo.identity.data.dao.impl.postgresql;
 import com.junbo.identity.data.dao.UserLoginAttemptDAO;
 import com.junbo.identity.data.entity.user.UserLoginAttemptEntity;
 import com.junbo.identity.spec.model.options.UserLoginAttemptGetOption;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -21,15 +17,7 @@ import java.util.List;
  * Created by liangfu on 3/17/14.
  */
 @Component
-public class UserLoginAttemptDAOImpl implements UserLoginAttemptDAO {
-    @Autowired
-    @Qualifier("sessionFactory")
-    private SessionFactory sessionFactory;
-
-    private Session currentSession() {
-        return sessionFactory.getCurrentSession();
-    }
-
+public class UserLoginAttemptDAOImpl extends EntityDAOImpl implements UserLoginAttemptDAO {
     @Override
     public UserLoginAttemptEntity save(UserLoginAttemptEntity entity) {
         currentSession().save(entity);
@@ -58,8 +46,7 @@ public class UserLoginAttemptDAOImpl implements UserLoginAttemptDAO {
             (" order by id limit " + (getOption.getLimit() == null ? "ALL" : getOption.getLimit().toString())) +
             " offset " + (getOption.getOffset() == null ? "0" : getOption.getOffset().toString());
 
-        List entities = sessionFactory.getCurrentSession().createSQLQuery(query)
-                .addEntity(UserLoginAttemptEntity.class).list();
+        List entities = currentSession().createSQLQuery(query).addEntity(UserLoginAttemptEntity.class).list();
 
         return entities;
     }

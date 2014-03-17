@@ -6,7 +6,7 @@
 package com.junbo.identity.data.repository.impl;
 
 import com.junbo.common.id.UserPinId;
-import com.junbo.identity.data.dao.UserPINDAO;
+import com.junbo.identity.data.dao.UserPinDAO;
 import com.junbo.identity.data.entity.user.UserPINEntity;
 import com.junbo.identity.data.mapper.ModelMapper;
 import com.junbo.identity.data.repository.UserPINRepository;
@@ -14,6 +14,7 @@ import com.junbo.identity.spec.model.options.UserPinGetOption;
 import com.junbo.identity.spec.model.users.UserPin;
 import com.junbo.oom.core.MappingContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -25,9 +26,11 @@ import java.util.List;
 @Component
 public class UserPINRepositoryImpl implements UserPINRepository {
     @Autowired
-    private UserPINDAO userPINDAO;
+    @Qualifier("userPINDAO")
+    private UserPinDAO userPINDAO;
 
     @Autowired
+    @Qualifier("modelMapperImpl")
     private ModelMapper modelMapper;
 
     @Override

@@ -7,12 +7,7 @@ package com.junbo.identity.data.dao.impl.postgresql;
 
 import com.junbo.identity.data.dao.UserEmailDAO;
 import com.junbo.identity.data.entity.user.UserEmailEntity;
-import com.junbo.identity.data.mapper.ModelMapper;
 import com.junbo.identity.spec.model.options.UserEmailGetOption;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -22,17 +17,7 @@ import java.util.List;
  * Created by liangfu on 3/17/14.
  */
 @Component
-public class UserEmailDAOImpl implements UserEmailDAO {
-    @Autowired
-    @Qualifier("sessionFactory")
-    private SessionFactory sessionFactory;
-
-    @Autowired
-    private ModelMapper modelMapper;
-
-    private Session currentSession() {
-        return sessionFactory.getCurrentSession();
-    }
+public class UserEmailDAOImpl extends EntityDAOImpl implements UserEmailDAO {
 
     @Override
     public void delete(Long id) {
@@ -41,14 +26,14 @@ public class UserEmailDAOImpl implements UserEmailDAO {
     }
 
     @Override
-    public List<UserEmailEntity> search(UserEmailGetOption getOption) {
+    public List<UserEmailEntity> search(Long userId, UserEmailGetOption getOption) {
         String query = "select * from user_email where user_id = " + (getOption.getUserId().getValue()) +
             (StringUtils.isEmpty(getOption.getType()) ? "" : (" and type = " + getOption.getType())) +
             (StringUtils.isEmpty(getOption.getValue()) ? "" : (" and value like \'%") + getOption.getValue() + "%\'") +
             (" order by id limit " + (getOption.getLimit() == null ? "ALL" : getOption.getLimit().toString())) +
             " offset " + (getOption.getOffset() == null ? "0" : getOption.getOffset().toString());
 
-        List entities = sessionFactory.getCurrentSession().createSQLQuery(query)
+        List entities = currentSession().createSQLQuery(query)
                 .addEntity(UserEmailEntity.class).list();
 
         return entities;

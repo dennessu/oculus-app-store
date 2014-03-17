@@ -7,6 +7,7 @@ package com.junbo.identity.data.dao;
 
 import com.junbo.identity.data.entity.user.UserEmailEntity;
 import com.junbo.identity.spec.model.options.UserEmailGetOption;
+import com.junbo.sharding.annotations.SeedParam;
 
 import java.util.List;
 
@@ -18,9 +19,9 @@ public interface UserEmailDAO {
 
     UserEmailEntity update(UserEmailEntity entity);
 
-    UserEmailEntity get(Long id);
+    UserEmailEntity get(@SeedParam Long id);
 
-    List<UserEmailEntity> search(UserEmailGetOption getOption);
+    List<UserEmailEntity> search(@SeedParam Long id, UserEmailGetOption getOption);
 
-    void delete(Long id);
+    void delete(@SeedParam Long id);
 }

@@ -7,22 +7,10 @@ package com.junbo.identity.data.dao.impl.postgresql
 import com.junbo.identity.data.dao.UserTosDAO
 import com.junbo.identity.data.entity.user.UserTosEntity
 import com.junbo.identity.spec.model.options.UserTosGetOption
-import org.hibernate.Session
-import org.hibernate.SessionFactory
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Qualifier
 /**
  * Implementation for User Tos Acceptance DAO interface.
  */
-class UserTosDAOImpl implements UserTosDAO {
-    @Autowired
-    @Qualifier('sessionFactory')
-    private SessionFactory sessionFactory
-
-    private Session currentSession() {
-        sessionFactory.currentSession
-    }
-
+class UserTosDAOImpl extends EntityDAOImpl implements UserTosDAO {
     @Override
     UserTosEntity save(UserTosEntity entity) {
         currentSession().save(entity)

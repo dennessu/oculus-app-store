@@ -7,32 +7,13 @@ package com.junbo.identity.data.dao.impl.postgresql;
 
 import com.junbo.identity.data.dao.PasswordRuleDAO;
 import com.junbo.identity.data.entity.password.PasswordRuleEntity;
-import com.junbo.sharding.core.hibernate.SessionFactoryWrapper;
-import com.junbo.sharding.util.Helper;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 /**
  * Created by liangfu on 2/24/14.
  */
 @Component
-public class PasswordRuleDAOImpl implements PasswordRuleDAO {
-    @Autowired
-    @Qualifier("sessionFactory")
-    private SessionFactory sessionFactory;
-
-    private SessionFactoryWrapper sessionFactoryWrapper;
-
-    public void setSessionFactoryWrapper(SessionFactoryWrapper sessionFactoryWrapper) {
-        this.sessionFactoryWrapper = sessionFactoryWrapper;
-    }
-
-    private Session currentSession() {
-        return sessionFactoryWrapper.resolve(Helper.getCurrentThreadLocalShardId()).getCurrentSession();
-    }
+public class PasswordRuleDAOImpl extends EntityDAOImpl implements PasswordRuleDAO {
 
     @Override
     public PasswordRuleEntity get(Long id) {

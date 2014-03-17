@@ -4,39 +4,31 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.identity.data.dao.impl.postgresql
-
 import com.junbo.identity.data.dao.UserAuthenticatorDAO
 import com.junbo.identity.data.entity.user.UserAuthenticatorEntity
 import com.junbo.identity.spec.model.options.UserAuthenticatorGetOption
-import org.hibernate.SessionFactory
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Qualifier
 /**
  * Implementation for UserAuthenticatorDAO.
  */
-class UserAuthenticatorDAOImpl implements UserAuthenticatorDAO {
-    @Autowired
-    @Qualifier('sessionFactory')
-    private SessionFactory sessionFactory
-
+class UserAuthenticatorDAOImpl extends EntityDAOImpl implements UserAuthenticatorDAO {
     @Override
     UserAuthenticatorEntity save(UserAuthenticatorEntity entity) {
-        sessionFactory.currentSession.save(entity)
+        currentSession().save(entity)
 
         return get(entity.id)
     }
 
     @Override
     UserAuthenticatorEntity update(UserAuthenticatorEntity entity) {
-        sessionFactory.currentSession.merge(entity)
-        sessionFactory.currentSession.flush()
+        currentSession().merge(entity)
+        currentSession().flush()
 
         return get(entity.id)
     }
 
     @Override
     UserAuthenticatorEntity get(Long id) {
-        return (UserAuthenticatorEntity)sessionFactory.currentSession.get(UserAuthenticatorEntity, id)
+        return (UserAuthenticatorEntity)currentSession().get(UserAuthenticatorEntity, id)
     }
 
     @Override
@@ -47,12 +39,12 @@ class UserAuthenticatorDAOImpl implements UserAuthenticatorDAO {
                 (' order by id limit ' + (getOption.limit == null ? 'ALL' : getOption.limit.toString())) +
                 ' offset ' + (getOption.offset == null ? '0' : getOption.offset.toString())
 
-        return sessionFactory.currentSession.createSQLQuery(query).addEntity(UserAuthenticatorEntity).list()
+        return currentSession().createSQLQuery(query).addEntity(UserAuthenticatorEntity).list()
     }
 
     @Override
     void delete(Long id) {
-        UserAuthenticatorEntity entity = sessionFactory.currentSession.get(UserAuthenticatorEntity, id)
-        sessionFactory.currentSession.delete(entity)
+        UserAuthenticatorEntity entity = currentSession().get(UserAuthenticatorEntity, id)
+        currentSession().delete(entity)
     }
 }

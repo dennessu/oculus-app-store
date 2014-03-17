@@ -14,15 +14,18 @@ import com.junbo.identity.spec.model.options.UserAuthenticatorGetOption
 import com.junbo.identity.spec.model.users.UserAuthenticator
 import com.junbo.oom.core.MappingContext
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
 
 /**
  * Implementation for UserAuthenticatorDAO.
  */
 class UserAuthenticatorRepositoryImpl implements UserAuthenticatorRepository {
     @Autowired
+    @Qualifier('authenticatorDAO')
     private UserAuthenticatorDAO authenticatorDAO
 
     @Autowired
+    @Qualifier("modelMapperImpl")
     private ModelMapper modelMapper
 
     @Override
