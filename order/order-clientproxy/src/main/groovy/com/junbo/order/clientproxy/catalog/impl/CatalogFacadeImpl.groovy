@@ -42,6 +42,7 @@ class CatalogFacadeImpl implements CatalogFacade {
     Promise<ResultList<Offer>> getOffers(List<OfferId> offerIds) {
         OffersGetOptions options = new OffersGetOptions()
         options.offerIds = offerIds
+        options.status = 'Released'
         return offerResource.getOffers(options)
     }
 
