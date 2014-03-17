@@ -43,4 +43,8 @@ public class BaseService {
 //            throw new NotFoundException("developer");
 //        }
     }
+
+    protected void checkEntitlementDefinition(Long entitlementDefinitionId) {
+
+    }
 }
