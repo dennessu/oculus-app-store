@@ -12,7 +12,7 @@ import com.junbo.oom.core.filter.PropertyMappingFilter;
 import ${importedType.qualifiedName};
 [/#list]
 
-@org.springframework.stereotype.Component
+@org.springframework.stereotype.Component("${packageName}.${implementationName}")
 public class ${implementationName} implements ${interfaceName} {
 
 [#list mapperRefs as mapperRef]

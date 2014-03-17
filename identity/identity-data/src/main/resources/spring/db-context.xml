@@ -44,7 +44,7 @@
 
     <tx:annotation-driven transaction-manager="transactionManager"/>
 
-    <bean id="modelMapperImpl" class="com.junbo.identity.data.mapper.ModelMapperImpl" />
+    <!--<bean id="identityModelMapper" class="com.junbo.identity.data.mapper.ModelMapperImpl" />-->
     <bean id="userDAO" class="com.junbo.identity.data.dao.impl.postgresql.UserDAOImpl">
         <property name="maxRetryCount" value="${identity.conf.maxPasswordRetryCount}" />
     </bean>
