@@ -1,4 +1,5 @@
 package com.junbo.order.core.impl.orderaction
+
 import com.junbo.common.id.OrderItemId
 import com.junbo.fulfilment.spec.constant.FulfilmentStatus
 import com.junbo.fulfilment.spec.model.FulfilmentItem
@@ -7,7 +8,7 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
-import com.junbo.order.clientproxy.fulfillment.FulfillmentFacade
+import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.core.impl.common.CoreBuilder
 import com.junbo.order.db.entity.enums.EventStatus
 import com.junbo.order.db.entity.enums.OrderActionType
@@ -17,6 +18,8 @@ import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
+
 /**
  * Created by fzhang on 14-2-25.
  */
@@ -24,7 +27,8 @@ import org.springframework.beans.factory.annotation.Autowired
 class  FulfillmentAction implements Action {
 
     @Autowired
-    FulfillmentFacade fulfillmentFacade
+    @Qualifier('orderFacadeContainer')
+    FacadeContainer facadeContainer
     @Autowired
     OrderRepository orderRepository
 
@@ -42,7 +46,7 @@ class  FulfillmentAction implements Action {
         def serviceContext = context.orderServiceContext
         def order = serviceContext.order
 
-        fulfillmentFacade.postFulfillment(order).syncRecover { Throwable throwable ->
+        facadeContainer.fulfillmentFacade.postFulfillment(order).syncRecover { Throwable throwable ->
             LOGGER.error('name=Order_FulfillmentAction_Error', throwable)
             return null
         }.syncThen { FulfilmentRequest fulfilmentResult ->

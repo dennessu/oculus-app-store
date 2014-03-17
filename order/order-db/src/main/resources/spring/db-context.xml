@@ -10,7 +10,7 @@
     <import resource="classpath*:spring/transaction.xml" />
     <bean id="orderDataSource" class="bitronix.tm.resource.jdbc.PoolingDataSource"
           init-method="init" destroy-method="close">
-        <property name="uniqueName" value="jdbc/id_ds1"/>
+        <property name="uniqueName" value="jdbc/order_ds1"/>
         <property name="className" value="org.postgresql.xa.PGXADataSource"/>
         <property name="minPoolSize" value="${order.db.minConnectionsPerPartition}"/>
         <property name="maxPoolSize" value="${order.db.maxConnectionsPerPartition}"/>
