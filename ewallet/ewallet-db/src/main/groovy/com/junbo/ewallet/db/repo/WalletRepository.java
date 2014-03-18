@@ -8,8 +8,10 @@ package com.junbo.ewallet.db.repo;
 import com.junbo.ewallet.db.dao.TransactionDao;
 import com.junbo.ewallet.db.dao.WalletDao;
 import com.junbo.ewallet.db.dao.WalletLotDao;
+import com.junbo.ewallet.db.entity.def.Currency;
 import com.junbo.ewallet.db.entity.def.TransactionType;
 import com.junbo.ewallet.db.entity.def.WalletLotType;
+import com.junbo.ewallet.db.entity.def.WalletType;
 import com.junbo.ewallet.db.entity.hibernate.TransactionEntity;
 import com.junbo.ewallet.db.entity.hibernate.WalletEntity;
 import com.junbo.ewallet.db.entity.hibernate.WalletLotEntity;
@@ -36,8 +38,14 @@ public class WalletRepository {
     @Autowired
     private TransactionDao transactionDao;
 
-    public Wallet get(Long walletId){
+    public Wallet get(Long walletId) {
         return mapper.toWallet(walletDao.get(walletId));
+    }
+
+    public Wallet get(Long userId, String type, String currency) {
+        return mapper.toWallet(
+                walletDao.get(userId, WalletType.valueOf(type),
+                        currency == null ? null : Currency.valueOf(currency)));
     }
 
     public Wallet create(Wallet wallet) {
@@ -54,6 +62,7 @@ public class WalletRepository {
         walletLotDao.insert(buildWalletLot(wallet.getWalletId(), creditRequest));
         transactionDao.insert(buildCreditTransaction(wallet.getWalletId(), creditRequest));
         wallet.setBalance(wallet.getBalance().add(creditRequest.getAmount()));
+        wallet.setTrackingUuid(creditRequest.getTrackingUuid());
         return update(wallet);
     }
 
@@ -61,6 +70,7 @@ public class WalletRepository {
         walletLotDao.debit(wallet.getWalletId(), debitRequest.getAmount());
         transactionDao.insert(buildDebitTransaction(wallet.getWalletId(), debitRequest));
         wallet.setBalance(wallet.getBalance().subtract(debitRequest.getAmount()));
+        wallet.setTrackingUuid(debitRequest.getTrackingUuid());
         return update(wallet);
     }
 
@@ -69,7 +79,7 @@ public class WalletRepository {
         return mapper.toTransactions(results);
     }
 
-    public Wallet getByTrackingUuid(UUID uuid){
+    public Wallet getByTrackingUuid(UUID uuid) {
         return mapper.toWallet(walletDao.getByTrackingUuid(uuid));
     }
 
