@@ -38,7 +38,8 @@ public class FulfilmentServiceTest extends BaseTest {
         Assert.assertEquals(request2.getRequestId(), request.getRequestId(), "Request id should match.");
     }
 
-    @Test(expectedExceptions = FulfilmentException.class, expectedExceptionsMessageRegExp = "BillingOrderId.*already exists.*")
+    @Test(expectedExceptions = FulfilmentException.class,
+            expectedExceptionsMessageRegExp = ".*orderId.*has already been issued.*")
     public void testDuplicatedBillingOrderId() {
         FulfilmentRequest request = createRequest();
         service.fulfill(request);

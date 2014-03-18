@@ -8,7 +8,7 @@ package com.junbo.identity.spec.model.common;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.junbo.common.model.Reference;
+import com.junbo.common.model.Link;
 
 import java.util.List;
 
@@ -18,15 +18,24 @@ import java.util.List;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ResultList<T> {
+
+    @JsonProperty("self")
+    private Link self;
+
     private List<T> items;
 
     private Boolean hasNext;
 
-    @JsonProperty("self")
-    private Reference self;
-
     @JsonProperty("next")
-    private Reference next;
+    private Link next;
+
+    public Link getSelf() {
+        return self;
+    }
+
+    public void setSelf(Link self) {
+        this.self = self;
+    }
 
     public List<T> getItems() {
         return items;
@@ -44,19 +53,11 @@ public class ResultList<T> {
         this.hasNext = hasNext;
     }
 
-    public Reference getSelf() {
-        return self;
-    }
-
-    public void setSelf(Reference self) {
-        this.self = self;
-    }
-
-    public Reference getNext() {
+    public Link getNext() {
         return next;
     }
 
-    public void setNext(Reference next) {
+    public void setNext(Link next) {
         this.next = next;
     }
 }
