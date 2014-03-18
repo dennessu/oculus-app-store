@@ -3,8 +3,8 @@ module.exports = {
     Identity_API_Host: "54.186.20.200",
     Identity_API_Port: 8081,
 
-    Catalog_API_Host: "54.186.20.200",
-    Catalog_API_Port: 8083,
+    Catalog_API_Host: "127.0.0.1",
+    Catalog_API_Port: 8000,
 
     Cart_API_Host: "54.186.20.200",
     Cart_API_Port: 8082,
