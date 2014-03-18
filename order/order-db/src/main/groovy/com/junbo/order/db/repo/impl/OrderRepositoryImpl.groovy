@@ -173,8 +173,8 @@ class OrderRepositoryImpl implements OrderRepository {
         if (order == null) { return null }
         if (order.id == null) { return null }
         def oldEntity = orderDao.read(order.id.value)
-        if(oldEntity == null) {
-            throw new IllegalArgumentException("name=Order_Not_Found")
+        if (oldEntity == null) {
+            throw new IllegalArgumentException('name=Order_Not_Found')
         }
 
         // Update Order
