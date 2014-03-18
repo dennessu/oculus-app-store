@@ -37,6 +37,11 @@ class ClientEndpointImpl implements ClientEndpoint {
     }
 
     @Override
+    Promise<Client> getInfoByClientId(String authorization, String clientId) {
+        return Promise.pure(clientService.getClientInfo(authorization, clientId))
+    }
+
+    @Override
     Promise<Client> putClient(String authorization, String clientId, Client client) {
         return Promise.pure(clientService.updateClient(authorization, clientId, client))
     }

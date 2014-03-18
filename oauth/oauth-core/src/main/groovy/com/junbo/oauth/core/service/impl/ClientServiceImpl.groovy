@@ -30,7 +30,8 @@ import java.util.regex.Pattern
 class ClientServiceImpl implements ClientService {
     private final static Logger LOGGER = LoggerFactory.getLogger(ClientServiceImpl)
 
-    private static final String CLIENT_SCOPE = 'client.register'
+    private static final String CLIENT_REGISTER_SCOPE = 'client.register'
+    private static final String CLIENT_INFO_SCOPE = 'client.info'
     private static final Set<String> AVAILABLE_SCOPES = ['openid', 'identity', 'order', 'billing', 'catalog'].toSet()
 
     private static final Pattern EMAIL_PATTERN = Pattern.compile('[a-z0-9!#$%&\'*+/=?^_`{|}~-]+(?:\\.' +
@@ -59,6 +60,10 @@ class ClientServiceImpl implements ClientService {
     Client postClient(String authorization, Client client) {
         AccessToken accessToken = parseAccessToken(authorization)
 
+        if (!accessToken.scopes.contains(CLIENT_REGISTER_SCOPE)) {
+            throw AppExceptions.INSTANCE.insufficientScope().exception()
+        }
+
         validateClient(client)
 
         client.ownerUserId = accessToken.userId
@@ -78,6 +83,10 @@ class ClientServiceImpl implements ClientService {
     Client getClient(String authorization, String clientId) {
         AccessToken accessToken = parseAccessToken(authorization)
 
+        if (!accessToken.scopes.contains(CLIENT_REGISTER_SCOPE)) {
+            throw AppExceptions.INSTANCE.insufficientScope().exception()
+        }
+
         Client client = clientRepository.getClient(clientId)
 
         if (client == null) {
@@ -90,6 +99,29 @@ class ClientServiceImpl implements ClientService {
         }
 
         return client
+    }
+
+    @Override
+    Client getClientInfo(String authorization, String clientId) {
+        AccessToken accessToken = parseAccessToken(authorization)
+
+        if (!accessToken.scopes.contains(CLIENT_INFO_SCOPE)) {
+            throw AppExceptions.INSTANCE.insufficientScope().exception()
+        }
+
+        Client client = clientRepository.getClient(clientId)
+
+        if (client == null) {
+            accessTokenRepository.remove(accessToken.tokenValue)
+            throw AppExceptions.INSTANCE.notExistClient(clientId).exception()
+        }
+
+        return new Client(
+                clientId: client.clientId,
+                clientName: client.clientName,
+                scopes: client.scopes,
+                logoUri: client.logoUri
+        )
     }
 
     @Override
@@ -268,9 +300,6 @@ class ClientServiceImpl implements ClientService {
             throw AppExceptions.INSTANCE.expiredAccessToken().exception()
         }
 
-        if (!accessToken.scopes.contains(CLIENT_SCOPE)) {
-            throw AppExceptions.INSTANCE.insufficientScope().exception()
-        }
         return accessToken
     }
 }

@@ -17,6 +17,8 @@ interface ClientService {
 
     Client getClient(String authorization, String clientId)
 
+    Client getClientInfo(String authorization, String clientId)
+
     Client updateClient(String authorization, String clientId, Client client)
 
     void deleteClient(String authorization, String clientId)
