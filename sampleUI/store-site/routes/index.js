@@ -30,11 +30,14 @@ module.exports = function(app){
     });
 
     // Template
-    app.get('/Template/Identity/Login', Template.Login);
-    app.get('/Template/Identity/Register', Template.Register);
-    app.get('/Template/Identity/Captcha', Template.Captcha);
-    app.get('/Template/Identity/TFA', Template.TFA);
-    app.get('/Template/Identity/My', Template.My);
+    app.get('/Template/Identity/Login', Template.Identity.Login);
+    app.get('/Template/Identity/Captcha', Template.Identity.Captcha);
+    app.get('/Template/Identity/TFA', Template.Identity.TFA);
+    app.get('/Template/Identity/Register', Template.Identity.Register);
+    app.get('/Template/Identity/PIN', Template.Identity.PIN);
+    app.get('/Template/Identity/My', Template.Identity.My);
+
+    app.get('/Template/Store/Index', Template.Store.Index);
 
     // Redirect back handler
     app.get('/Callback/Login', function(req, res){});

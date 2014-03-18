@@ -34,6 +34,13 @@ class CatalogFacadeImpl implements CatalogFacade {
     }
 
     @Override
+    Promise<Offer> getOffer(Long offerId, Date honoredTime) {
+        def entityGetOption = EntityGetOptions.default
+        entityGetOption.timestamp = honoredTime.time
+        return offerResource.getOffer(new OfferId(offerId), entityGetOption)
+    }
+
+    @Override
     Promise<Offer> getOffer(Long offerId) {
         return offerResource.getOffer(new OfferId(offerId), EntityGetOptions.default)
     }

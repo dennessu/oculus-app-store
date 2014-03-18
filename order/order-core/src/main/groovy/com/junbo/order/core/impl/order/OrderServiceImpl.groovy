@@ -78,6 +78,7 @@ class OrderServiceImpl implements OrderService {
 
     @Override
     Promise<Order> updateTentativeOrder(Order order, ApiContext context) {
+        setHonoredTime(order)
         def orderServiceContext = initOrderServiceContext(order)
 
         flowSelector.select(orderServiceContext, OrderServiceOperation.UPDATE_TENTATIVE).then { FlowType flowType ->
@@ -97,11 +98,7 @@ class OrderServiceImpl implements OrderService {
     @Override
     Promise<List<Order>> createQuotes(Order order, ApiContext context) {
 
-        def ht = new Date()
-        order.honoredTime = ht
-        order.orderItems.each { OrderItem oi ->
-            oi.honoredTime = ht
-        }
+        setHonoredTime(order)
         def orderServiceContext = initOrderServiceContext(order)
 
         flowSelector.select(orderServiceContext, OrderServiceOperation.CREATE_TENTATIVE).then { FlowType flowType ->
@@ -206,5 +203,13 @@ class OrderServiceImpl implements OrderService {
     private OrderServiceContext initOrderServiceContext(Order order) {
         OrderServiceContext context = new OrderServiceContext(order)
         return context
+    }
+
+    private void setHonoredTime(Order order) {
+        def ht = new Date()
+        order.honoredTime = ht
+        order.orderItems.each { OrderItem oi ->
+            oi.honoredTime = ht
+        }
     }
 }

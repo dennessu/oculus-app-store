@@ -43,11 +43,14 @@ public class EntitlementHandler extends HandlerSupport implements FulfilmentHand
         Entitlement entitlement = new Entitlement();
 
         entitlement.setType(action.getProperties().get(ENTITLMENT_TYPE));
+        entitlement.setUserId(context.getUserId());
+        entitlement.setOfferId(context.getItems().get(action.getFulfilmentId()).getOfferId());
+
+        // fetch from entitlement definition
         entitlement.setGroup(action.getProperties().get(ENTITLMENT_GROUP));
         entitlement.setTag(action.getProperties().get(ENTITLMENT_TAG));
         entitlement.setGrantDate(Utils.now());
-        entitlement.setUserId(context.getUserId());
-        entitlement.setOfferId(context.getItems().get(action.getFulfilmentId()).getOfferId());
+        entitlement.setDeveloperId(1L);
 
         return entitlementGateway.grant(entitlement);
     }

@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:tx="http://www.springframework.org/schema/tx"
        xmlns:context="http://www.springframework.org/schema/context"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
     <import resource="classpath*:spring/common-context.xml"/>
-    <import resource="classpath*:spring/transaction.xml"/>
     <import resource="classpath*:spring/sharding-context.xml"/>
 
     <context:component-scan base-package="com.junbo.oom.core.builtin"/>
     <context:component-scan base-package="com.junbo.payment.db"/>
     <context:annotation-config />
+    <tx:annotation-driven />
 
     <!--Data source has the database information -->
     <bean id="paymentDataSource" class="bitronix.tm.resource.jdbc.PoolingDataSource"
           init-method="init" destroy-method="close">
-        <property name="uniqueName" value="jdbc/id_ds1"/>
+        <property name="uniqueName" value="jdbc/payment"/>
         <property name="className" value="org.postgresql.xa.PGXADataSource"/>
         <property name="minPoolSize" value="${payment.db.minConnectionsPerPartition}"/>
         <property name="maxPoolSize" value="${payment.db.maxConnectionsPerPartition}"/>
@@ -43,7 +43,7 @@
         </bean>
         -->
     <!-- SessonFactory for Hibernate -->
-    <bean id="sessionFactory"
+    <bean id="paymentSessionFactory"
           class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
         <property name="dataSource" ref="paymentDataSource"/>
         <property name="jtaTransactionManager" ref="transactionManager"/>

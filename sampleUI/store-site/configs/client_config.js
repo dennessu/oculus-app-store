@@ -2,11 +2,16 @@ var Utils = require('../utils/utils');
 
 var ClientConfigs = {
 
+    // Environments
+    SocketAddress: "http://localhost:3000",
+
+    // Global
     CookiesTimeout: 60 * 60 * 1000,
     Google_Captcha_PublicKey: "6LeKhO4SAAAAAL53gitVTB5ddevC59wE-6usFCnT",
     Feature: {
-        Captcha: true,
-        TFA: true
+        Captcha: false,
+        TFA: true,
+        PIN: true
     },
     CookiesName: {
         AccessToken: "access_token",
@@ -26,7 +31,7 @@ var ClientConfigs = {
     },
     SettingTypeEnum:{
         Cookie: 'cookie'
-    },
+    }
 };
 
 module.exports = ClientConfigs;

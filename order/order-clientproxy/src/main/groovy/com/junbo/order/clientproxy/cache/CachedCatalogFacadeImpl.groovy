@@ -58,6 +58,11 @@ class CachedCatalogFacadeImpl implements CatalogFacade {
     }
 
     @Override
+    Promise<Offer> getOffer(Long offerId, Date honoredTime) {
+        return catalogFacade.getOffer(offerId, honoredTime)
+    }
+
+    @Override
     Promise<List<Offer>> getOffers(List<OfferId> offerIds) {
         return null
     }
