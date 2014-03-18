@@ -5,7 +5,9 @@
  */
 package com.junbo.sharding.core.hibernate;
 
+import com.junbo.sharding.core.ds.DataSourceConfig;
 import com.junbo.sharding.core.ds.ShardDataSourceKey;
+import com.junbo.sharding.core.ds.ShardDataSourceMapper;
 import com.junbo.sharding.core.ds.ShardDataSourceRegistry;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.BeansException;
@@ -22,6 +24,7 @@ import java.util.Map;
  */
 public class SessionFactoryWrapper implements ApplicationContextAware {
     private ApplicationContext applicationContext;
+    private ShardDataSourceMapper mapper;
     private ShardDataSourceRegistry dataSourceRegistry;
     private String sessionFactoryBeanName;
     private String dataBaseName;
@@ -30,6 +33,10 @@ public class SessionFactoryWrapper implements ApplicationContextAware {
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
+    }
+
+    public void setMapper(ShardDataSourceMapper mapper) {
+        this.mapper = mapper;
     }
 
     public void setDataSourceRegistry(ShardDataSourceRegistry dataSourceRegistry) {
@@ -55,21 +62,25 @@ public class SessionFactoryWrapper implements ApplicationContextAware {
             return cache.get(shardId);
         }
 
-        SessionFactory sf = this.createShardedSessionFactory(shardId, this.dataBaseName, this.packagesToScan);
-
+        SessionFactory sf = this.createShardedSessionFactory(shardId);
         cache.put(shardId, sf);
         return sf;
     }
 
-    private SessionFactory createShardedSessionFactory(int shardId, String dbName, String... packagesToScan) {
+    private SessionFactory createShardedSessionFactory(int shardId) {
         if (this.applicationContext == null) {
             throw new RuntimeException("applicationContext is null in SessionFactoryWrapper!");
         }
         if (this.dataSourceRegistry == null) {
             throw new RuntimeException("dataSourceRegistry is null in SessionFactoryWrapper");
         }
+        if (this.mapper == null) {
+            throw new RuntimeException("mapper is null in SessionFactoryWrapper");
+        }
 
-        DataSource ds = this.dataSourceRegistry.resolve(new ShardDataSourceKey(shardId, dbName));
+        DataSourceConfig dc = this.mapper.getDataSourceConfigByShardId(shardId);
+        DataSource ds = this.dataSourceRegistry.resolve(shardId,
+                new ShardDataSourceKey(dc.getRange().toString(), this.dataBaseName, dc.getLoginRole()));
         Object object = this.applicationContext.getBean("&" + sessionFactoryBeanName);
         LocalSessionFactoryBean factoryBean = null;
         if (object instanceof LocalSessionFactoryBean) {

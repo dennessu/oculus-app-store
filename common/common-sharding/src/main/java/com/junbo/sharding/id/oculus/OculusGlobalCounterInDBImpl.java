@@ -8,7 +8,7 @@ package com.junbo.sharding.id.oculus;
 
 import com.junbo.sharding.id.dao.IdGlobalCounterDAO;
 import com.junbo.sharding.id.model.IdGlobalCounterEntity;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.stereotype.Component;
 
 /**
@@ -16,8 +16,13 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class OculusGlobalCounterInDBImpl implements OculusGlobalCounter {
-    @Autowired
+
     private IdGlobalCounterDAO shardIdGlobalCounterDAO;
+
+    @Required
+    public void setShardIdGlobalCounterDAO(IdGlobalCounterDAO shardIdGlobalCounterDAO) {
+        this.shardIdGlobalCounterDAO = shardIdGlobalCounterDAO;
+    }
 
     @Override
     public int getAndIncrease(int shardId, int optionMode) {

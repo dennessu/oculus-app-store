@@ -5,7 +5,7 @@
  */
 package com.junbo.identity.rest.service.validator;
 
-import com.junbo.identity.spec.model.user.User;
+import com.junbo.identity.spec.model.users.User;
 
 /**
  * User service validator.

@@ -16,11 +16,15 @@ import javax.persistence.*
 class UserPasswordEntity {
     @Id
     @Column(name = 'id')
-    private Long key
+    private Long id
 
     @SeedId
     @Column(name = 'user_id')
     private Long userId
+
+    @Column(name = 'version')
+    @Version
+    private Integer resourceAge
 
     @Column(name = 'password_hash')
     private String passwordHash
@@ -29,20 +33,13 @@ class UserPasswordEntity {
     private String passwordSalt
 
     @Column(name = 'password_strength')
-    private Short passwordStrength
+    private Short strength
 
-    @Column(name = 'status')
-    private Short status
+    @Column(name = 'active')
+    private Boolean active
 
-    @Column(name = 'retry_failure_count')
-    private int retryFailureCount
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = 'last_login_time')
-    private Date lastLoginTime
-
-    @Column(name = 'last_login_ip')
-    private String lastLoginIp
+    @Column(name = 'change_at_next_login')
+    private Boolean changeAtNextLogin
 
     @Column(name = 'created_by')
     private String createdBy
@@ -51,24 +48,36 @@ class UserPasswordEntity {
     @Column(name = 'created_time')
     private Date createdTime
 
-    Long getKey() {
-        key
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = 'expires_by')
+    private Date expiresBy
+
+    Long getId() {
+        return id
     }
 
-    void setKey(Long key) {
-        this.key = key
+    void setId(Long id) {
+        this.id = id
     }
 
     Long getUserId() {
-        userId
+        return userId
     }
 
     void setUserId(Long userId) {
         this.userId = userId
     }
 
+    Integer getResourceAge() {
+        return resourceAge
+    }
+
+    void setResourceAge(Integer resourceAge) {
+        this.resourceAge = resourceAge
+    }
+
     String getPasswordHash() {
-        passwordHash
+        return passwordHash
     }
 
     void setPasswordHash(String passwordHash) {
@@ -76,55 +85,39 @@ class UserPasswordEntity {
     }
 
     String getPasswordSalt() {
-        passwordSalt
+        return passwordSalt
     }
 
     void setPasswordSalt(String passwordSalt) {
         this.passwordSalt = passwordSalt
     }
 
-    Short getPasswordStrength() {
-        passwordStrength
+    Short getStrength() {
+        return strength
     }
 
-    void setPasswordStrength(Short passwordStrength) {
-        this.passwordStrength = passwordStrength
+    void setStrength(Short strength) {
+        this.strength = strength
     }
 
-    Short getStatus() {
-        status
+    Boolean getActive() {
+        return active
     }
 
-    void setStatus(Short status) {
-        this.status = status
+    void setActive(Boolean active) {
+        this.active = active
     }
 
-    int getRetryFailureCount() {
-        retryFailureCount
+    Boolean getChangeAtNextLogin() {
+        return changeAtNextLogin
     }
 
-    void setRetryFailureCount(int retryFailureCount) {
-        this.retryFailureCount = retryFailureCount
-    }
-
-    Date getLastLoginTime() {
-        lastLoginTime
-    }
-
-    void setLastLoginTime(Date lastLoginTime) {
-        this.lastLoginTime = lastLoginTime
-    }
-
-    String getLastLoginIp() {
-        lastLoginIp
-    }
-
-    void setLastLoginIp(String lastLoginIp) {
-        this.lastLoginIp = lastLoginIp
+    void setChangeAtNextLogin(Boolean changeAtNextLogin) {
+        this.changeAtNextLogin = changeAtNextLogin
     }
 
     String getCreatedBy() {
-        createdBy
+        return createdBy
     }
 
     void setCreatedBy(String createdBy) {
@@ -132,10 +125,18 @@ class UserPasswordEntity {
     }
 
     Date getCreatedTime() {
-        createdTime
+        return createdTime
     }
 
     void setCreatedTime(Date createdTime) {
         this.createdTime = createdTime
+    }
+
+    Date getExpiresBy() {
+        return expiresBy
+    }
+
+    void setExpiresBy(Date expiresBy) {
+        this.expiresBy = expiresBy
     }
 }

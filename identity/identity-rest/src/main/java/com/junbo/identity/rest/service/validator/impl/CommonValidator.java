@@ -5,10 +5,10 @@
  */
 package com.junbo.identity.rest.service.validator.impl;
 
-import com.junbo.identity.data.dao.UserDAO;
-import com.junbo.identity.data.entity.user.UserStatus;
+import com.junbo.common.id.UserId;
+import com.junbo.identity.data.repository.UserRepository;
 import com.junbo.identity.spec.error.AppErrors;
-import com.junbo.identity.spec.model.user.User;
+import com.junbo.identity.spec.model.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,16 +18,16 @@ import org.springframework.stereotype.Component;
 @Component
 public class CommonValidator {
     @Autowired
-    protected UserDAO userDAO;
+    protected UserRepository userRepository;
 
     protected void checkUserValid(Long userId) {
-        User user = userDAO.getUser(userId);
+        User user = userRepository.get(new UserId(userId));
         if(user == null) {
             throw AppErrors.INSTANCE.notExistingUser("userId = " + userId.toString()).exception();
         }
-        if(user.getStatus().equals(UserStatus.BANNED.toString())
-                || user.getStatus().equals(UserStatus.DELETED.toString())) {
-            throw AppErrors.INSTANCE.userStatusError("userId = " + userId.toString()).exception();
-        }
+    }
+
+    protected void checkFieldAccess(Class cls, String preFix) {
+
     }
 }

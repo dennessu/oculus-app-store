@@ -25,20 +25,19 @@ import java.util.Map;
  */
 public class ShardDataSourceMapper {
     private static final String DATA_SOURCE = "datasource";
-    private static final String DATA_SOURCE_ID = "id";
-    private static final String DATA_SOURCE_ENABLED = "enabled";
     private static final String DATA_SOURCE_SHARDID_RANGE = "shardIdRange";
     private static final String DATA_SOURCE_JDBC_URL_TEMPLATE = "jdbcUrlTemplate";
+    private static final String DATA_SOURCE_LOGIN_ROLE = "loginRole";
 
     private static Logger logger = LoggerFactory.getLogger(ShardDataSourceMapper.class);
 
     private Map<Integer, DataSourceConfig> dataSourceConfigMap;
 
     public void setDataSourceMapping(String dataSourceMapping) {
-        this.dataSourceConfigMap = buildDataSourceMap(new ByteArrayInputStream(dataSourceMapping.getBytes()));
+        this.dataSourceConfigMap = buildDataSourceMapFromXml(new ByteArrayInputStream(dataSourceMapping.getBytes()));
     }
 
-    private Map<Integer, DataSourceConfig> buildDataSourceMap(InputStream is) {
+    private Map<Integer, DataSourceConfig> buildDataSourceMapFromXml(InputStream is) {
         Map<Integer, DataSourceConfig> map = new HashMap();
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -51,18 +50,19 @@ public class ShardDataSourceMapper {
                 Node dsNode = dataSourceList.item(i);
                 if(dsNode.getNodeType() == Node.ELEMENT_NODE) {
                     Element dsElement = (Element)dsNode;
-                    String id = dsElement.getAttribute(DATA_SOURCE_ID).trim();
-                    Boolean enabled = Boolean.valueOf(dsElement.getAttribute(DATA_SOURCE_ENABLED).trim());
 
                     NodeList r = dsElement.getElementsByTagName(DATA_SOURCE_SHARDID_RANGE);
                     Element e = (Element)r.item(0);
                     NodeList u = dsElement.getElementsByTagName(DATA_SOURCE_JDBC_URL_TEMPLATE);
                     Element ee = (Element)u.item(0);
+                    NodeList n = dsElement.getElementsByTagName(DATA_SOURCE_LOGIN_ROLE);
+                    Element eee = (Element)n.item(0);
 
                     String range = e.getTextContent().trim();
                     String url = ee.getTextContent().trim();
+                    String role = eee.getTextContent().trim();
 
-                    DataSourceConfig config = new DataSourceConfig(id, enabled, url, range);
+                    DataSourceConfig config = new DataSourceConfig(url, range, role);
                     for (int j = config.getRange().getStart(); j <= config.getRange().getEnd(); j++) {
                         map.put(Integer.valueOf(j), config);
                     }

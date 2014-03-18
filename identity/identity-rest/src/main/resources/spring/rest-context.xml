@@ -10,15 +10,18 @@
     <context:component-scan base-package="com.junbo.identity.rest.service" />
 
     <!-- resource implementation -->
+    <bean id="defaultGroupResource" class="com.junbo.identity.rest.resource.GroupResourceImpl" />
+    <bean id="defaultPasswordResource" class="com.junbo.identity.rest.resource.UserPasswordResourceImpl" />
+    <bean id="defaultPINResource" class="com.junbo.identity.rest.resource.UserPinResourceImpl" />
+    <bean id="defaultSecurityQuestionResource" class="com.junbo.identity.rest.resource.SecurityQuestionResourceImpl" />
+    <bean id="defaultUserAuthenticatorResource" class="com.junbo.identity.rest.resource.UserAuthenticatorResourceImpl" />
+    <bean id="defaultUserDeviceResource" class="com.junbo.identity.rest.resource.UserDeviceResourceImpl" />
+    <bean id="defaultUserEmailResource" class="com.junbo.identity.rest.resource.UserEmailResourceImpl" />
+    <bean id="defaultUserGroupResource" class="com.junbo.identity.rest.resource.UserGroupResourceImpl" />
+    <bean id="defaultUserLoginAttemptResource" class="com.junbo.identity.rest.resource.UserLoginAttemptResourceImpl" />
+    <bean id="defaultUserOptInResource" class="com.junbo.identity.rest.resource.UserOptinResourceImpl" />
+    <bean id="defaultUserPhoneNumberResource" class="com.junbo.identity.rest.resource.UserPhoneNumberResourceImpl" />
     <bean id="defaultUserResource" class="com.junbo.identity.rest.resource.UserResourceImpl" />
-    <bean id="defaultUserProfileResource" class="com.junbo.identity.rest.resource.UserProfileResourceImpl" />
-    <bean id="defaultAppResource" class="com.junbo.identity.rest.resource.AppResourceImpl" />
-    <bean id="defaultUserDeviceProfileResource" class="com.junbo.identity.rest.resource.UserDeviceProfileResourceImpl" />
-    <bean id="defaultUserFederationResource" class="com.junbo.identity.rest.resource.UserFederationResourceImpl" />
-    <bean id="defaultUserOptInResource" class="com.junbo.identity.rest.resource.UserOptInResourceImpl" />
-    <bean id="defaultUserTosAcceptanceResource" class="com.junbo.identity.rest.resource.UserTosAcceptanceResourceImpl" />
-    <bean id="defaultPasswordResource" class="com.junbo.identity.rest.resource.PasswordResourceImpl" />
-
-    <!-- v1 resource implementation -->
-    <bean id="defaultGroupResource" class="com.junbo.identity.rest.v1.resource.GroupResourceImpl" />
+    <bean id="defaultUserSecurityQuestionResource" class="com.junbo.identity.rest.resource.UserSecurityQuestionResourceImpl" />
+    <bean id="defaultUserTosResource" class="com.junbo.identity.rest.resource.UserTosResourceImpl" />
 </beans>

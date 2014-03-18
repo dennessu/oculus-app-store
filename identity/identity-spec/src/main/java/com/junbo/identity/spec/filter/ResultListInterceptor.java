@@ -98,7 +98,8 @@ public class ResultListInterceptor implements ContainerResponseFilter {
         Integer nextCursor = getNextCursor(cursor, count);
         String nextURL = url;
         String str[] = url.split(CURSOR_FORMAT);
-        if(str.length != 2) {   //no cursor information in current url
+        if(str.length != 2) {
+            //no cursor information in current url
             // Append mode
             if(nextCursor != null) {
                 nextURL += ("&cursor=" + nextCursor);

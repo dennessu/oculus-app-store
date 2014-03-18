@@ -5,7 +5,8 @@
  */
 package com.junbo.identity.data.entity.password;
 
-import com.junbo.identity.data.entity.common.CommonStampEntity;
+import com.junbo.identity.data.entity.common.ResourceMetaEntity;
+import com.junbo.sharding.annotations.SeedId;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,8 +18,9 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "password_rule")
-public class PasswordRuleEntity extends CommonStampEntity{
+public class PasswordRuleEntity extends ResourceMetaEntity {
     @Id
+    @SeedId
     @Column(name = "id")
     private Long id;
 

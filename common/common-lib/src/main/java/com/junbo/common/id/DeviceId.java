@@ -7,7 +7,7 @@
 package com.junbo.common.id;
 
 /**
- * Created by minhao on 2/13/14.
+ * Created by liangfu on 3/9/14.
  */
 public class DeviceId extends Id {
     public DeviceId(){

@@ -11,5 +11,5 @@ import javax.sql.DataSource;
  * Created by minhao on 3/8/14.
  */
 public interface ShardDataSourceFactory {
-    DataSource createDataSource(ShardDataSourceKey key);
+    DataSource createDataSource(int shardId, String dbName);
 }
