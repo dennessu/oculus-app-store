@@ -21,6 +21,9 @@ import org.slf4j.bridge.SLF4JBridgeHandler
 class Main {
 
     static {
+        SLF4JBridgeHandler.removeHandlersForRootLogger()
+        SLF4JBridgeHandler.install()
+
         System.setProperty('net.spy.log.LoggerImpl', 'net.spy.memcached.compat.log.SLF4JLogger')
         System.setProperty('logback.configurationFile', 'logback-identity.xml')
         LOGGER = LoggerFactory.getLogger(Main)
@@ -35,14 +38,11 @@ class Main {
         resourceConfig.property('contextConfigLocation', 'classpath*:/spring/**/*.xml')
         resourceConfig.register(RestExceptionMapper)
 
-        def uri = URI.create('http://0.0.0.0:8082/auth')
+        def uri = URI.create('http://0.0.0.0:8082/rest')
         return GrizzlyHttpServerFactory.createHttpServer(uri, resourceConfig)
     }
 
     static void main(String[] args) {
-
-        SLF4JBridgeHandler.removeHandlersForRootLogger()
-        SLF4JBridgeHandler.install()
 
         def server = startServer()
 

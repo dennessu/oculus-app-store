@@ -39,7 +39,7 @@ class RefreshTokenRepositoryImpl implements RefreshTokenRepository {
     }
 
     @Override
-    void save(RefreshToken refreshToken) {
+    RefreshToken save(RefreshToken refreshToken) {
         if (refreshToken.tokenValue == null) {
             refreshToken.tokenValue = tokenGenerator.generateRefreshToken() +
                     DELIMITER + tokenGenerator.generateRefreshTokenSeries()
@@ -50,14 +50,28 @@ class RefreshTokenRepositoryImpl implements RefreshTokenRepository {
             refreshToken.tokenValue = tokens[0] + DELIMITER + tokenGenerator.generateRefreshTokenSeries()
         }
 
-        refreshTokenDAO.save(unwrap(refreshToken))
+        return wrap(refreshTokenDAO.save(unwrap(refreshToken)))
+    }
+
+    @Override
+    RefreshToken get(String tokenValue) {
+        return wrap(refreshTokenDAO.get(tokenValue))
     }
 
     @Override
     RefreshToken getAndRemove(String tokenValue) {
-        RefreshToken refreshToken = wrap(refreshTokenDAO.get(tokenValue))
-        refreshTokenDAO.delete(tokenValue)
-        return refreshToken
+        def entity = refreshTokenDAO.get(tokenValue)
+
+        if (entity != null) {
+            refreshTokenDAO.delete(entity)
+        }
+
+        return wrap(entity)
+    }
+
+    @Override
+    boolean isValidRefreshToken(String tokenValue) {
+        return tokenGenerator.isValidRefreshToken(tokenValue)
     }
 
     private static RefreshTokenEntity unwrap(RefreshToken refreshToken) {
@@ -66,12 +80,13 @@ class RefreshTokenRepositoryImpl implements RefreshTokenRepository {
         }
 
         return new RefreshTokenEntity(
-                tokenValue: refreshToken.tokenValue,
+                id: refreshToken.tokenValue,
                 clientId: refreshToken.clientId,
                 userId: refreshToken.userId,
                 accessToken: JsonMarshaller.marshall(refreshToken.accessToken),
                 expiredBy: refreshToken.expiredBy,
-                salt: refreshToken.salt
+                salt: refreshToken.salt,
+                revision: refreshToken.revision
         )
     }
 
@@ -81,12 +96,13 @@ class RefreshTokenRepositoryImpl implements RefreshTokenRepository {
         }
 
         return new RefreshToken(
-                tokenValue: entity.tokenValue,
+                tokenValue: entity.id,
                 clientId: entity.clientId,
                 userId: entity.userId,
                 accessToken: JsonMarshaller.unmarshall(AccessToken, entity.accessToken),
                 expiredBy: entity.expiredBy,
-                salt: entity.salt
+                salt: entity.salt,
+                revision: entity.revision
         )
     }
 }

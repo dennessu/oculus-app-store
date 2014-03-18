@@ -15,11 +15,8 @@ import com.junbo.identity.spec.model.user.UserProfile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
-import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -34,12 +31,19 @@ import java.util.UUID;
  */
 @ContextConfiguration(locations = {"classpath:spring/context-test.xml"})
 @TransactionConfiguration(defaultRollback = false)
-@TestExecutionListeners(TransactionalTestExecutionListener.class)
-public class UserDAOTest extends AbstractTestNGSpringContextTests {
+public class UserDAOTest extends AbstractTransactionalTestNGSpringContextTests {
+    @Override
+    @Autowired
+    @Qualifier("identityDataSource")
+    public void setDataSource(DataSource dataSource) {
+        super.setDataSource(dataSource);
+    }
 
+    @Autowired
     @Resource(name = "userDAO")
     private UserDAO userDAO;
 
+    @Autowired
     @Resource(name = "userProfileDAO")
     private UserProfileDAO userProfileDAO;
 

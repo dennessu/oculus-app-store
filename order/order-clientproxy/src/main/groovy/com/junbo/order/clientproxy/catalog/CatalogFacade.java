@@ -7,7 +7,12 @@
 package com.junbo.order.clientproxy.catalog;
 
 import com.junbo.catalog.spec.model.offer.Offer;
+import com.junbo.common.id.OfferId;
 import com.junbo.langur.core.promise.Promise;
+
+import java.util.Date;
+import java.util.List;
+
 /**
  * Interface for catalog facade.
  */
@@ -15,4 +20,7 @@ public interface CatalogFacade {
 
     Promise<Offer> getOffer(Long offerId);
 
+    Promise<Offer> getOffer(Long offerId, Date honoredTime);
+
+    Promise<List<Offer>> getOffers(List<OfferId> offerIds);
 }

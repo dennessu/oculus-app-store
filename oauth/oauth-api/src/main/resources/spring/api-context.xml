@@ -19,7 +19,7 @@
     </bean>
 
     <bean id="defaultTokenInfoEndpoint" class="com.junbo.oauth.api.endpoint.TokenInfoEndpointImpl">
-        <property name="tokenGenerationService" ref="tokenGenerationService"/>
+        <property name="tokenService" ref="tokenService"/>
     </bean>
 
     <bean id="defaultUserInfoEndpoint" class="com.junbo.oauth.api.endpoint.UserInfoEndpointImpl">
@@ -31,4 +31,12 @@
         <property name="endSessionFlow" value="endSessionFlow"/>
     </bean>
 
+    <bean id="defaultClientEndpoint" class="com.junbo.oauth.api.endpoint.ClientEndpointImpl">
+        <property name="clientService" ref="clientService"/>
+    </bean>
+
+    <bean id="defaultRevokeEndpoint" class="com.junbo.oauth.api.endpoint.RevokeEndpointImpl">
+        <property name="clientRepository" ref="clientRepository"/>
+        <property name="tokenService" ref="tokenService"/>
+    </bean>
 </beans>

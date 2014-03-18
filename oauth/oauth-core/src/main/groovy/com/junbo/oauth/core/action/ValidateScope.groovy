@@ -34,7 +34,7 @@ class ValidateScope implements Action {
         if (StringUtils.hasText(scopeStr)) {
             String[] scopeTokens = scopeStr.split(' ')
             String[] invalidScopes = scopeTokens.findAll {
-                String scope -> !client.allowedScopes.contains(scope)
+                String scope -> !client.scopes.contains(scope)
             }
 
             if (invalidScopes.length > 0) {

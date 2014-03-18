@@ -18,7 +18,7 @@ class CatalogFacadeTest extends BaseTest {
 
     @Test
     void testGetOffer() {
-        def offerPromise = catalogFacade.getOffer(new Random().nextLong())
+        def offerPromise = catalogFacade.getOffer(new Random().nextLong(), new Date())
 
         offerPromise?.then(new Promise.Func<Offer, Promise>() {
             @Override

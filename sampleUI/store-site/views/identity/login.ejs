@@ -1,9 +1,12 @@
 <form id="Login" class="box1 login" {{action "Submit" on="submit"}}>
     <h2>Login to Store</h2>
     <p>No Account,&nbsp;{{#link-to-animated "register" animations="main:flip"}}Create an Account{{/link-to-animated}}</p>
+    {{#if content.errMessage}}
+    <p class="error">{{content.errMessage}}</p>
+    {{/if}}
     <dl>
         <dt>Username</dt>
-        <dd>{{input type="text" class="{required:true,email:true}" id="Username" name="Username" autofocus="true" value=content.username}}</dd>
+        <dd>{{input type="text" class="{required:true}" id="Username" name="Username" autofocus="true" value=content.username}}</dd>
     </dl>
     <dl>
         <dt>Password</dt>

@@ -62,9 +62,6 @@ interface AppExceptions {
     @ErrorDef(httpStatusCode = 400, code = '20012', description = 'The display {0} is invalid', field = 'display')
     AppError invalidDisplay(String display)
 
-    @ErrorDef(httpStatusCode = 400, code = '20013', description = 'The flow state {0} is invalid', field = 'fs')
-    AppError invalidFlowState(String flowState)
-
     @ErrorDef(httpStatusCode = 400, code = '20014', description = 'The login is required')
     AppError loginRequired()
 
@@ -144,7 +141,7 @@ interface AppExceptions {
             field = 'access_token')
     AppError invalidAccessToken()
 
-    @ErrorDef(httpStatusCode = 400, code = '20035', description = 'The access_token {0} is already expired',
+    @ErrorDef(httpStatusCode = 401, code = '20035', description = 'The access_token {0} is already expired',
             field = 'access_token')
     AppError expiredAccessToken()
 
@@ -163,4 +160,62 @@ interface AppExceptions {
     @ErrorDef(httpStatusCode = 400, code = '20039', description = 'The post_logout_redirect_uri {0} is invalid',
             field = 'conversationId')
     AppError invalidPostLogoutRedirectUri(String postLogoutRedirectUri)
+
+    @ErrorDef(httpStatusCode = 403, code = '20040',
+            description = 'The access token does not have sufficient scope to make the request',
+            field = 'access_token')
+    AppError insufficientScope()
+
+    @ErrorDef(httpStatusCode = 400, code = '20041',
+            description = 'The default_redirect_uri {0} is invalid, reason: {1}',
+            field = 'default_redirect_uri')
+    AppError invalidDefaultRedirectUri(String defaultRedirectUri, String reason)
+
+    @ErrorDef(httpStatusCode = 400, code = '20042', description = 'The default_scopes {0} is invalid',
+            field = 'default_scopes')
+    AppError invalidDefaultScope(String scopes)
+
+    @ErrorDef(httpStatusCode = 400, code = '20043', description = 'The logout_uri {0} is invalid',
+            field = 'logout_uri')
+    AppError invalidLogoutRedirectUri(String logoutRedirectUri)
+
+    @ErrorDef(httpStatusCode = 400, code = '20044',
+            description = 'The default_logout_redirect_uri {0} is invalid, reason: {1}',
+            field = 'default_logout_redirect_uri')
+    AppError invalidDefaultLogoutRedirectUri(String defaultLogoutRedirectUri, String reason)
+
+    @ErrorDef(httpStatusCode = 400, code = '20045', description = 'The logo_uri {0} is invalid',
+            field = 'logo_uri')
+    AppError invalidLogoUri(String logoUri)
+
+    @ErrorDef(httpStatusCode = 400, code = '20046', description = 'The contact {0} is not a valid email address',
+            field = 'contacts')
+    AppError invalidContacts(String contact)
+
+    @ErrorDef(httpStatusCode = 401, code = '20047', description = 'The user of access token is not the client owner',
+            field = 'access_token')
+    AppError notClientOwner()
+
+    @ErrorDef(httpStatusCode = 401, code = '20048', description = 'The client id {0} does not exist',
+            field = 'client_id')
+    AppError notExistClient(String clientId)
+
+    @ErrorDef(httpStatusCode = 403, code = '20048', description = 'The {0} cannot be updated',
+            field = 'client')
+    AppError cantUpdateFields(String field)
+
+    @ErrorDef(httpStatusCode = 400, code = '20049',
+            description = 'The client is updated by someone else, please re-get the client and try update again',
+            field = 'client')
+    AppError updateConflict()
+
+    @ErrorDef(httpStatusCode = 400, code = '20050',
+            description = 'The token is neither an access token nor a refresh token',
+            field = 'token')
+    AppError invalidTokenType()
+
+    @ErrorDef(httpStatusCode = 403, code = '20050',
+            description = 'The token\'s client does not match the authorization\'s client',
+            field = 'token')
+    AppError tokenClientNotMatch()
 }

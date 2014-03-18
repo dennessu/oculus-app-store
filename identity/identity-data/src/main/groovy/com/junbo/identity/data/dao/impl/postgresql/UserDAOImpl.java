@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.data.dao.impl.postgresql;
 
+import com.junbo.common.id.UserId;
 import com.junbo.identity.data.dao.UserDAO;
 import com.junbo.identity.data.entity.user.*;
 import com.junbo.identity.data.mapper.ModelMapper;
@@ -13,12 +14,13 @@ import com.junbo.identity.data.util.PasswordDAOUtil;
 import com.junbo.identity.spec.error.AppErrors;
 import com.junbo.identity.spec.model.user.User;
 import com.junbo.oom.core.MappingContext;
-import com.junbo.sharding.core.hibernate.SessionFactoryWrapper;
-import com.junbo.sharding.util.Helper;
+import com.junbo.sharding.IdGeneratorFacade;
 import groovy.lang.Closure;
 import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -32,19 +34,15 @@ import java.util.UUID;
  */
 @Component
 public class UserDAOImpl implements UserDAO {
-
-    private SessionFactoryWrapper sessionFactoryWrapper;
-
-    public void setSessionFactoryWrapper(SessionFactoryWrapper sessionFactoryWrapper) {
-        this.sessionFactoryWrapper = sessionFactoryWrapper;
-    }
-
-    private Session currentSession() {
-        return sessionFactoryWrapper.resolve(Helper.getCurrentThreadLocalShardId()).getCurrentSession();
-    }
+    @Autowired
+    @Qualifier("identitySessionFactory")
+    private SessionFactory sessionFactory;
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private IdGeneratorFacade idGenerator;
 
     private int maxRetryCount;
 
@@ -52,11 +50,17 @@ public class UserDAOImpl implements UserDAO {
         this.maxRetryCount = maxRetryCount;
     }
 
+    private Session currentSession() {
+        return sessionFactory.getCurrentSession();
+    }
+
     @Override
     public User saveUser(User user) {
         UserEntity userEntity = modelMapper.toUserEntity(user, new MappingContext());
+
         saveUserEntity(userEntity);
         saveUserPassword(fillUserPasswordEntity(userEntity));
+
         return getUser(userEntity.getId());
     }
 
@@ -164,6 +168,7 @@ public class UserDAOImpl implements UserDAO {
     }
 
     private UserEntity saveUserEntity(UserEntity entity) {
+        entity.setId(idGenerator.nextId(UserId.class));
         entity.setCreatedBy(Constants.DEFAULT_CLIENT_ID);
         entity.setCreatedTime(new Date());
         currentSession().persist(entity);
@@ -244,6 +249,7 @@ public class UserDAOImpl implements UserDAO {
         UserPasswordEntity userPasswordEntity = (UserPasswordEntity) DefaultGroovyMethods.
                 with(new UserPasswordEntity(), new Closure<UserPasswordEntity>(this, this) {
                     public UserPasswordEntity doCall(UserPasswordEntity it) {
+                        it.setKey(idGenerator.nextId(UserId.class, userEntity.getId()));
                         it.setPasswordSalt(UUID.randomUUID().toString());
                         it.setPasswordHash(
                                 PasswordDAOUtil.hashPassword(userEntity.getPassword(), it.getPasswordSalt()));

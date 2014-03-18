@@ -26,7 +26,7 @@ public interface AuthorizeEndpoint {
                                 @Context ContainerRequestContext request);
 
     @POST
-    @Consumes("application/x-www-form-urlencoded")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     Promise<Response> postAuthorize(@Context HttpHeaders httpHeaders,
                                     MultivaluedMap<String, String> formParams,
                                     @Context ContainerRequestContext request);

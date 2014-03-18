@@ -11,6 +11,7 @@ import com.junbo.entitlement.db.dao.EntitlementHistoryDao;
 import com.junbo.entitlement.db.entity.EntitlementEntity;
 import com.junbo.entitlement.db.entity.EntitlementHistoryEntity;
 import com.junbo.entitlement.db.entity.def.EntitlementStatus;
+import com.junbo.entitlement.db.entity.def.EntitlementType;
 import com.junbo.entitlement.db.mapper.EntitlementMapper;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.model.EntitlementSearchParam;
@@ -82,7 +83,10 @@ public class EntitlementRepository {
         return entitlementMapper.toEntitlement(entitlementDao.getExistingManagedEntitlement(userId, definitionId));
     }
 
-    public Boolean existWithEntitlementDefinition(Long definitionId) {
-        return entitlementDao.existEntitlementDefinition(definitionId);
+    public Entitlement getExistingManagedEntitlement(
+            Long userId, String type, Long developerId, String group, String tag) {
+        return entitlementMapper.toEntitlement(
+                entitlementDao.getExistingManagedEntitlement(
+                        userId, EntitlementType.valueOf(type), developerId, group, tag));
     }
 }

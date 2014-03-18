@@ -36,7 +36,7 @@ public interface EntitlementResource {
             @BeanParam PageMetadata pageMetadata);
 
     @POST
-    @Path("/entitlements")
+    @Path("entitlements")
     @Consumes({MediaType.APPLICATION_JSON})
     Promise<Entitlement> postEntitlement(@Valid Entitlement entitlement);
 

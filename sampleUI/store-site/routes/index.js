@@ -3,7 +3,9 @@ var Identity = require('./identity');
 var Payment = require('./payment');
 var Account = require('./account');
 
+var ClientConfigs = require('../configs/client_config');
 var Template = require('./template');
+
 
 module.exports = function(app){
 
@@ -21,10 +23,21 @@ module.exports = function(app){
         res.render("identity/index", {layout: false, title: "Store Demo"});
     });
 
+    // Config
+    app.get('/config', function(req, res){
+        res.json(ClientConfigs);
+        res.end();
+    });
 
     // Template
-    app.get('/Template/Identity/Login', Template.Login);
-    app.get('/Template/Identity/Register', Template.Register);
+    app.get('/Template/Identity/Login', Template.Identity.Login);
+    app.get('/Template/Identity/Captcha', Template.Identity.Captcha);
+    app.get('/Template/Identity/TFA', Template.Identity.TFA);
+    app.get('/Template/Identity/Register', Template.Identity.Register);
+    app.get('/Template/Identity/PIN', Template.Identity.PIN);
+    app.get('/Template/Identity/My', Template.Identity.My);
+
+    app.get('/Template/Store/Index', Template.Store.Index);
 
     // Redirect back handler
     app.get('/Callback/Login', function(req, res){});

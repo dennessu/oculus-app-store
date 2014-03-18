@@ -33,7 +33,7 @@ public class ShardDAOTest extends AbstractTestNGSpringContextTests {
     @Resource(name="shardDao")
     private ShardDAO shardDao;
 
-    @Test
+    //@Test
     @Transactional("transactionManager")
     public void shardDaoTest() {
         ShardEntity entity = new ShardEntity();

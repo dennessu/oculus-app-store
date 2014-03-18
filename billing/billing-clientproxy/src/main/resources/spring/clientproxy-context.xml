@@ -36,4 +36,6 @@
         <property name="shipFromPostalCode" value="${shipFrom.address.postal.code}"/>
         <property name="shipFromCountry" value="${shipFrom.address.country}"/>
     </bean>
+    <bean id="asyncHttpClient" class="com.ning.http.client.AsyncHttpClient"/>
+    <bean id="transcoder" class="com.junbo.common.json.JsonMessageTranscoder"/>
 </beans>

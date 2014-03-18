@@ -60,7 +60,10 @@ class LoginStateRepositoryImpl implements LoginStateRepository {
 
     @Override
     void delete(String id) {
-        loginStateDAO.delete(id)
+        def entity = loginStateDAO.get(id)
+        if (entity != null) {
+            loginStateDAO.delete(entity)
+        }
     }
 
     private static LoginStateEntity unwrap(LoginState loginState) {
@@ -73,7 +76,8 @@ class LoginStateRepositoryImpl implements LoginStateRepository {
                 userId: loginState.userId,
                 expiredBy: loginState.expiredBy,
                 lastAuthDate: loginState.lastAuthDate,
-                sessionId: loginState.sessionId
+                sessionId: loginState.sessionId,
+                revision: loginState.revision
         )
 
     }
@@ -88,7 +92,8 @@ class LoginStateRepositoryImpl implements LoginStateRepository {
                 userId: entity.userId,
                 expiredBy: entity.expiredBy,
                 lastAuthDate: entity.lastAuthDate,
-                sessionId: entity.sessionId
+                sessionId: entity.sessionId,
+                revision: entity.revision
         )
     }
 }

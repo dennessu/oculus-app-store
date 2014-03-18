@@ -16,7 +16,7 @@ import java.util.UUID;
 /**
  * Created by linyi on 14-2-13.
  */
-@Component("commonMapper")
+@Component("orderCommonMapper")
 public class CommonMapper {
 
     public String fromLongToString(Long id) {

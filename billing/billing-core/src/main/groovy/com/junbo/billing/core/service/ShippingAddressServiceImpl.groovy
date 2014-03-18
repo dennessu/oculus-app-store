@@ -11,7 +11,6 @@ import com.junbo.billing.db.repository.ShippingAddressRepository
 import com.junbo.billing.spec.error.AppErrors
 import com.junbo.billing.spec.model.ShippingAddress
 import com.junbo.common.id.UserId
-import com.junbo.identity.spec.model.user.User
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
@@ -74,14 +73,12 @@ class ShippingAddressServiceImpl implements ShippingAddressService {
     }
 
     private void validateUser(Long userId) {
-        identityFacade.getUser(userId).then {
-            User user = (User)it
-            if (user == null) {
-                throw AppErrors.INSTANCE.userNotFound(userId.toString()).exception()
-            }
-            if (user.status != 'ACTIVE') {
-                throw AppErrors.INSTANCE.userStatusInvalid(userId.toString()).exception()
-            }
+        def user = identityFacade.getUser(userId)?.wrapped().get()
+        if (user == null) {
+            throw AppErrors.INSTANCE.userNotFound(userId.toString()).exception()
+        }
+        if (user.status != 'ACTIVE') {
+            throw AppErrors.INSTANCE.userStatusInvalid(userId.toString()).exception()
         }
     }
 

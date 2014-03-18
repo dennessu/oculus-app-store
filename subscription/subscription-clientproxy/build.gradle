@@ -7,6 +7,9 @@ dependencies {
     compile (libraries.spring_context)
     compile (libraries.guava)
 
+    compile 'com.junbo.catalog:catalog-spec:0.0.1-SNAPSHOT'
+    compile project(':subscription-common')
+
     processor (libraries.langur_processor)
     processor (libraries.log4j)
 }

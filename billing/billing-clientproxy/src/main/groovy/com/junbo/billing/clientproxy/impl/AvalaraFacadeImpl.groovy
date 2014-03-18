@@ -6,9 +6,11 @@
 
 package com.junbo.billing.clientproxy.impl
 
-import com.fasterxml.jackson.annotation.JsonInclude
-import com.fasterxml.jackson.databind.DeserializationFeature
+import static com.ning.http.client.extra.ListenableFutureAdapter.asGuavaFuture
+
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.junbo.langur.core.client.MessageTranscoder
+import com.ning.http.client.Response
 import com.junbo.billing.clientproxy.TaxFacade
 import com.junbo.billing.clientproxy.impl.avalara.AvalaraConfiguration
 import com.junbo.billing.clientproxy.impl.avalara.DetailLevel
@@ -25,7 +27,9 @@ import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.BalanceItem
 import com.junbo.billing.spec.model.ShippingAddress
 import com.junbo.billing.spec.model.TaxItem
+import com.junbo.langur.core.promise.Promise
 import com.junbo.payment.spec.model.Address
+import com.ning.http.client.AsyncHttpClient
 import groovy.transform.CompileStatic
 
 import javax.annotation.Resource
@@ -38,10 +42,16 @@ class AvalaraFacadeImpl implements TaxFacade {
     @Resource(name = 'avalaraConfiguration')
     AvalaraConfiguration configuration
 
+    @Resource(name = 'asyncHttpClient')
+    AsyncHttpClient asyncHttpClient
+
+    @Resource(name = 'transcoder')
+    MessageTranscoder transcoder
+
     @Override
     Balance calculateTax(Balance balance, ShippingAddress shippingAddress, Address piAddress) {
         GetTaxRequest request = generateGetTaxRequest(balance, shippingAddress, piAddress)
-        GetTaxResponse response = calculateTax(request)
+        GetTaxResponse response = calculateTax(request).wrapped().get()
         updateBalance(response, balance)
     }
 
@@ -80,43 +90,41 @@ class AvalaraFacadeImpl implements TaxFacade {
         return TaxAuthority.UNKNOWN.toString()
     }
 
-    GetTaxResponse calculateTax(GetTaxRequest request) {
-        // TODO: call avalara REST API, use HttpURLConnection for now
+    Promise<GetTaxResponse> calculateTax(GetTaxRequest request) {
         String getTaxUrl = configuration.baseUrl + 'tax/get'
-        URL url
-        HttpURLConnection connection
-        GetTaxResponse response
+        def requestBuilder = asyncHttpClient.preparePost(getTaxUrl)
+        String content = transcoder.encode(request)
+        requestBuilder.addHeader('Content-Type', 'application/x-www-form-urlencoded')
+        requestBuilder.addHeader('Authorization', configuration.authorization)
+        requestBuilder.addHeader('Content-Length', content.size().toString())
+        requestBuilder.setBody(content)
+        requestBuilder.setUrl(getTaxUrl)
+        Promise<Response> future
         try {
-            url = new URL(getTaxUrl)
-            connection = (HttpURLConnection)url.openConnection()
-            connection.setRequestMethod('POST')
-            connection.setDoOutput(true)
-            connection.setDoInput(true)
-            connection.setUseCaches(false)
-            connection.setAllowUserInteraction(false)
-            ObjectMapper mapper = new ObjectMapper()
-            mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL)
-            String content = mapper.writeValueAsString(request)
-            connection.setRequestProperty('Content-Length', content.size().toString())
-            connection.setRequestProperty('Authorization', configuration.authorization)
-            connection.setRequestProperty('Content-Type', 'application/x-www-form-urlencoded')
-            DataOutputStream outputStream = new DataOutputStream(connection.outputStream)
-            outputStream.writeBytes(content)
-            outputStream.flush()
-            outputStream.close()
-            connection.disconnect()
-            response = mapper.readValue(connection.inputStream, GetTaxResponse)
-
-            if (connection.responseCode != 200) {
-                // TODO: error handling
-                return null
-            }
-            mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-            return response
+            future = Promise.wrap(asGuavaFuture(requestBuilder.execute()))
         } catch (IOException e) {
             // TODO: error handling
-            return response
+            return Promise.pure(null)
         }
+
+        return future.then(new Promise.Func<Response, Promise<GetTaxResponse>>() {
+            @Override
+            Promise<GetTaxResponse> apply(Response response) {
+                if (response.statusCode / 100 == 2) {
+                    try {
+                        return Promise.pure(new ObjectMapper().readValue(response.responseBody, GetTaxResponse))
+                    } catch (IOException ex) {
+                        // TODO: error handling
+                        return Promise.pure(null)
+                    }
+                }
+                else {
+                    // TODO: error handling
+                    return Promise.pure(null)
+                }
+            }
+        }
+        )
     }
 
     GetTaxRequest generateGetTaxRequest(Balance balance, ShippingAddress shippingAddress, Address piAddress) {

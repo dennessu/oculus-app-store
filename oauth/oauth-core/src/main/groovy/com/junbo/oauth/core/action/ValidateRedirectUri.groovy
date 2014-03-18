@@ -11,10 +11,9 @@ import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.exception.AppExceptions
+import com.junbo.oauth.core.util.UriUtil
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
-
-import java.util.regex.Pattern
 
 /**
  * ValidateRedirectUri.
@@ -38,8 +37,8 @@ class ValidateRedirectUri implements Action {
             throw AppExceptions.INSTANCE.invalidRedirectUri(redirectUri).exception()
         }
 
-        boolean allowed = client.allowedRedirectUris.any {
-            String allowedRedirectUri -> match(redirectUri, allowedRedirectUri)
+        boolean allowed = client.redirectUris.any {
+            String allowedRedirectUri -> UriUtil.match(redirectUri, allowedRedirectUri)
         }
 
         if (!allowed) {
@@ -50,19 +49,5 @@ class ValidateRedirectUri implements Action {
         oauthInfo.redirectUri = redirectUri
 
         return Promise.pure(null)
-    }
-
-    private static boolean match(String redirectUri, String allowedRedirectUri) {
-        if (allowedRedirectUri.contains('*')) {
-            String redirectUriPattern = allowedRedirectUri.replace('.', '\\.').replace('?', '\\?')
-                    .replace('*', '.*').concat('.*')
-            if (Pattern.matches(redirectUriPattern, redirectUri)) {
-                return true
-            }
-        } else if (redirectUri.startsWith(allowedRedirectUri)) {
-            return true
-        }
-
-        return false
     }
 }

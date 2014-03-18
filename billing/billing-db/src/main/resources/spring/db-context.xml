@@ -14,7 +14,7 @@
     <!--Data source has the database information -->
     <bean id="billingDataSource" class="bitronix.tm.resource.jdbc.PoolingDataSource"
           init-method="init" destroy-method="close">
-        <property name="uniqueName" value="jdbc/id_ds1"/>
+        <property name="uniqueName" value="jdbc/billing"/>
         <property name="className" value="org.postgresql.xa.PGXADataSource"/>
         <property name="minPoolSize" value="${billing.db.minConnectionsPerPartition}"/>
         <property name="maxPoolSize" value="${billing.db.maxConnectionsPerPartition}"/>
@@ -28,7 +28,7 @@
     </bean>
 
     <!-- SessonFactory for Hibernate -->
-    <bean id="sessionFactory"
+    <bean id="billingSessionFactory"
           class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
         <property name="dataSource" ref="billingDataSource"/>
         <property name="packagesToScan" value="com.junbo.billing.db.*" />
@@ -43,8 +43,6 @@
             </props>
         </property>
     </bean>
-
-    <tx:annotation-driven transaction-manager="transactionManager" />
 
     <!-- Dao -->
     <bean id="baseDao"

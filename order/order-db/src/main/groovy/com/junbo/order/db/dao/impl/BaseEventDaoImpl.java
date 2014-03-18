@@ -11,6 +11,7 @@ import com.junbo.order.db.entity.CommonEventEntity;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import java.lang.reflect.ParameterizedType;
@@ -24,6 +25,7 @@ import java.lang.reflect.Type;
 @Repository("baseEventDao")
 public class BaseEventDaoImpl<T extends CommonEventEntity> implements BaseEventDao<T> {
     @Autowired
+    @Qualifier("orderSessionFactory")
     private SessionFactory sessionFactory;
 
     private Class<T> entityType;

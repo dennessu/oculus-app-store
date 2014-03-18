@@ -12,27 +12,29 @@ import com.junbo.identity.data.mapper.ModelMapper
 import com.junbo.identity.data.util.Constants
 import com.junbo.identity.spec.model.user.UserFederation
 import com.junbo.oom.core.MappingContext
-import com.junbo.sharding.core.hibernate.SessionFactoryWrapper
-import com.junbo.sharding.util.Helper
+import com.junbo.sharding.IdGenerator
+import com.junbo.sharding.IdGeneratorFacade
 import org.hibernate.Session
+import org.hibernate.SessionFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.util.StringUtils
-
 /**
  * Implementation for UserFederationDAO.
  */
 class UserFederationDAOImpl implements UserFederationDAO {
     @Autowired
+    @Qualifier('identitySessionFactory')
+    private SessionFactory sessionFactory
+
+    @Autowired
     private ModelMapper modelMapper
 
-    private SessionFactoryWrapper sessionFactoryWrapper
-
-    void setSessionFactoryWrapper(SessionFactoryWrapper sessionFactoryWrapper) {
-        this.sessionFactoryWrapper = sessionFactoryWrapper
-    }
+    @Autowired
+    private IdGeneratorFacade idGenerator
 
     private Session currentSession() {
-        return sessionFactoryWrapper.resolve(Helper.currentThreadLocalShardId).currentSession
+        sessionFactory.currentSession
     }
 
     @Override
