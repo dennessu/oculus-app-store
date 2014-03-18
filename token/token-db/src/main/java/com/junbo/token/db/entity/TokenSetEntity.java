@@ -4,20 +4,37 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.token.spec.internal;
+package com.junbo.token.db.entity;
 
-import java.util.List;
+import com.junbo.token.spec.enums.SetStatus;
+import com.junbo.token.spec.enums.TokenLength;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
- * token set model.
+ * Token Set Entity.
  */
-public class TokenSet {
+@Entity
+@Table(name = "token_set")
+public class TokenSetEntity extends GenericEntity {
+    @Id
+    @Column(name = "token_set_id")
     private Long id;
+
+    @Column(name = "description")
     private String description;
-    private String status;
-    private String generationLength;
+
+    @Column(name = "token_set_status")
+    private SetStatus status;
+
+    @Column(name = "generation_length")
+    private TokenLength generationLength;
+
+    @Column(name = "generation_seed")
     private Long generationSeed;
-    private List<Long> offerIds;
 
     public Long getId() {
         return id;
@@ -35,19 +52,19 @@ public class TokenSet {
         this.description = description;
     }
 
-    public String getStatus() {
+    public SetStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(SetStatus status) {
         this.status = status;
     }
 
-    public String getGenerationLength() {
+    public TokenLength getGenerationLength() {
         return generationLength;
     }
 
-    public void setGenerationLength(String generationLength) {
+    public void setGenerationLength(TokenLength generationLength) {
         this.generationLength = generationLength;
     }
 
@@ -59,11 +76,4 @@ public class TokenSet {
         this.generationSeed = generationSeed;
     }
 
-    public List<Long> getOfferIds() {
-        return offerIds;
-    }
-
-    public void setOfferIds(List<Long> offerIds) {
-        this.offerIds = offerIds;
-    }
 }
