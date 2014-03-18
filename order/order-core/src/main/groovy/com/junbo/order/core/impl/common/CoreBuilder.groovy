@@ -13,7 +13,6 @@ import com.junbo.order.core.impl.orderaction.context.OrderActionResult
 import com.junbo.order.db.entity.enums.DiscountType
 import com.junbo.order.db.entity.enums.EventStatus
 import com.junbo.order.db.entity.enums.OrderActionType
-import com.junbo.order.db.entity.enums.OrderStatus
 import com.junbo.order.spec.model.Discount
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderEvent
@@ -22,7 +21,6 @@ import com.junbo.rating.spec.model.request.OrderRatingItem
 import com.junbo.rating.spec.model.request.OrderRatingRequest
 import groovy.transform.CompileStatic
 import org.apache.commons.collections.CollectionUtils
-
 /**
  * Created by chriszhu on 2/24/14.
  */
@@ -157,22 +155,5 @@ class CoreBuilder {
         data.put(ActionUtils.DATA_ORDER_ACTION_RESULT, (Object)orderActionResult)
         def actionResult = new ActionResult('success', data)
         return actionResult
-    }
-//    public enum OrderStatus implements Identifiable<Short> {
-//        OPEN(0),
-//        PENDING_CHARGE(1),
-//        PENDING_FULFILL(2),
-//        CHARGED(3),
-//        FULFILLED(4),
-//        COMPLETED(5),
-//        FAILED(6),
-//        CANCELED(7),
-//        REFUNDED(8),
-//        ERROR(-1);
-    static OrderStatus buildOrderStatus(List<OrderEvent> orderEvents) {
-        orderEvents.each {
-
-        }
-        return OrderStatus.OPEN
     }
 }
