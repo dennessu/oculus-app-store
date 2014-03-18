@@ -33,7 +33,7 @@ class UserTosDAOImpl extends EntityDAOImpl implements UserTosDAO {
     @Override
     List<UserTosEntity> search(Long userId, UserTosGetOption getOption) {
         String query = 'select * from user_tos where user_id =  ' + getOption.userId.value +
-                (getOption.tosUri == null ? '' : ' and tos_uri = ' + getOption.tosUri) +
+                (getOption.tosUri == null ? '' : ' and tos_uri = \'' + getOption.tosUri + '\'') +
                 (' order by id limit ' + (getOption.limit == null ? 'ALL' : getOption.limit.toString())) +
                 ' offset ' + (getOption.offset == null ? '0' : getOption.offset.toString())
 

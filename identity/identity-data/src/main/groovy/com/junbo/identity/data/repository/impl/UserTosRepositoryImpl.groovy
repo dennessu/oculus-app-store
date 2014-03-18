@@ -32,7 +32,7 @@ class UserTosRepositoryImpl implements UserTosRepository {
     UserTos save(UserTos entity) {
         UserTosEntity userTosAcceptanceEntity = modelMapper.toUserTos(entity, new MappingContext())
         userTosDAO.save(userTosAcceptanceEntity)
-        return get(entity.id)
+        return get(new UserTosId(userTosAcceptanceEntity.id))
     }
 
     @Override

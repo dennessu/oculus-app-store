@@ -74,6 +74,9 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
     @Autowired
     private UserSecurityQuestionRepository userSecurityQuestionRepository;
 
+    @Autowired
+    private UserTosRepository userTosRepository;
+
     @Test(enabled = false)
     public void testUserRepository() {
         User user = new User();
@@ -426,5 +429,31 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         getOption.setSecurityQuestionId(new SecurityQuestionId(123L));
         List<UserSecurityQuestion> securityQuestions = userSecurityQuestionRepository.search(getOption);
         Assert.assertNotEquals(securityQuestions.size(), 0);
+    }
+
+    @Test
+    public void testUserTosRepository() {
+        UserTos userTos = new UserTos();
+        userTos.setUserId(new UserId(userId));
+        userTos.setTosUri(UUID.randomUUID().toString());
+        userTos.setCreatedBy("lixia");
+        userTos.setCreatedTime(new Date());
+        userTos = userTosRepository.save(userTos);
+
+        UserTos newUserTos = userTosRepository.get(userTos.getId());
+        Assert.assertEquals(userTos.getTosUri(), newUserTos.getTosUri());
+
+        String value = UUID.randomUUID().toString();
+        newUserTos.setTosUri(value);
+        userTosRepository.update(newUserTos);
+
+        newUserTos = userTosRepository.get(userTos.getId());
+        Assert.assertEquals(value, newUserTos.getTosUri());
+
+        UserTosGetOption userTosGetOption = new UserTosGetOption();
+        userTosGetOption.setUserId(new UserId(userId));
+        userTosGetOption.setTosUri(value);
+        List<UserTos> userToses = userTosRepository.search(userTosGetOption);
+        Assert.assertEquals(userToses.size(), 1);
     }
 }
