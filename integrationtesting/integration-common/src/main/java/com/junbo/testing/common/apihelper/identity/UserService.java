@@ -3,8 +3,11 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-
 package com.junbo.testing.common.apihelper.identity;
+
+import com.junbo.common.id.UserId;
+import com.junbo.identity.spec.model.common.ResultList;
+import com.junbo.identity.spec.model.user.User;
 
 /**
  * @author Jason
@@ -14,23 +17,23 @@ package com.junbo.testing.common.apihelper.identity;
 public interface UserService {
 
     //Post a new user
-    String PostUser() throws Exception;
+    User PostUser() throws Exception;
 
     //Get the user by userId
-    String GetUserByUserId(String userId) throws Exception;
+    User GetUserByUserId(UserId userId) throws Exception;
 
     //Get the user by userName
-    String GetUserByUserName(String userName) throws Exception;
+    ResultList<User> GetUserByUserName(String userName) throws Exception;
 
     //update a user
-    String PutUser(String userName, String status) throws Exception;
+    User PutUser(String userName, String status) throws Exception;
 
     //Authenticate user
-    String AuthenticateUser(String userName, String password) throws Exception;
+    User AuthenticateUser(String userName, String password) throws Exception;
 
     //update password
-    String UpdatePassword(String userId, String oldPassword, String newPassword) throws Exception;
+    User UpdatePassword(UserId userId, String oldPassword, String newPassword) throws Exception;
 
     //reset password
-    String ResetPassword(String userId, String newPassword) throws Exception;
+    User ResetPassword(UserId userId, String newPassword) throws Exception;
 }

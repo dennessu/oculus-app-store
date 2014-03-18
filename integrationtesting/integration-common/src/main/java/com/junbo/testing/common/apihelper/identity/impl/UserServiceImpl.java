@@ -5,15 +5,17 @@
  */
 package com.junbo.testing.common.apihelper.identity.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-
-import com.junbo.testing.common.apihelper.identity.UserService;
+import com.junbo.common.id.UserId;
+import com.junbo.common.json.JsonMessageTranscoder;
+import com.junbo.common.util.IdFormatter;
+import com.junbo.identity.spec.model.common.ResultList;
+import com.junbo.langur.core.client.TypeReference;
 import com.junbo.testing.common.libs.LogHelper;
 import com.junbo.testing.common.libs.EnumHelper;
 import com.junbo.testing.common.libs.RandomFactory;
 import com.junbo.testing.common.libs.ConfigPropertiesHelper;
-import com.junbo.testing.common.blueprint.User;
+import com.junbo.testing.common.apihelper.identity.UserService;
+import com.junbo.identity.spec.model.user.User;
 
 import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.AsyncHttpClientConfig;
@@ -32,6 +34,7 @@ public class UserServiceImpl implements UserService {
 
     private final String requestHeaderName = "Content-Type";
     private final String requestHeaderValue = "application/json";
+
     private final String identityServerURL = "http://" +
             ConfigPropertiesHelper.instance().getProperty("identity.host") +
             ":" +
@@ -50,32 +53,32 @@ public class UserServiceImpl implements UserService {
         asyncClient = new AsyncHttpClient(new AsyncHttpClientConfig.Builder().build());
     }
 
-    public String PutUser(String userName, String status) throws Exception {
+    public User PutUser(String userName, String status) throws Exception {
         //Todo
-        return "";
+        return null;
     };
 
     //Authenticate user
-    public String AuthenticateUser(String userName, String password) throws Exception {
+    public User AuthenticateUser(String userName, String password) throws Exception {
         //Todo
-        return "";
+        return null;
     };
 
     //update password
-    public String UpdatePassword(String userId, String oldPassword, String newPassword) throws Exception {
+    public User UpdatePassword(UserId userId, String oldPassword, String newPassword) throws Exception {
         //Todo
-        return "";
+        return null;
     };
 
     //reset password
-    public String ResetPassword(String userId, String newPassword) throws Exception {
+    public User ResetPassword(UserId userId, String newPassword) throws Exception {
         //Todo
-        return "";
+        return null;
     };
 
-    public String GetUserByUserId(String userId) throws Exception {
+    public User GetUserByUserId(UserId userId) throws Exception {
 
-        String url = identityServerURL + "/" + userId;
+        String url = identityServerURL + "/" + IdFormatter.encodeId(userId);
 
         Request req = new RequestBuilder("GET")
                 .addHeader(requestHeaderName, requestHeaderValue)
@@ -85,15 +88,19 @@ public class UserServiceImpl implements UserService {
 
         Future future = asyncClient.prepareRequest(req).execute();
         NettyResponse nettyResponse = (NettyResponse) future.get();
+
         logger.LogResponse(nettyResponse);
-        return nettyResponse.getResponseBody();
+
+        User userGet = new JsonMessageTranscoder().decode(new TypeReference<User>() {},
+                nettyResponse.getResponseBody());
+        return userGet;
     }
 
-    public String GetUserByUserName(String userName) throws Exception {
+    public ResultList<User> GetUserByUserName(String userName) throws Exception {
 
         Request req = new RequestBuilder("GET")
                 .addHeader(requestHeaderName, requestHeaderValue)
-                .addParameter("userName", userName)
+                .addQueryParameter("userName", userName)
                 .setUrl(identityServerURL)
                 .build();
 
@@ -103,10 +110,14 @@ public class UserServiceImpl implements UserService {
         NettyResponse nettyResponse = (NettyResponse) future.get();
 
         logger.LogResponse(nettyResponse);
-        return nettyResponse.getResponseBody();
+
+        ResultList<User> userGet = new JsonMessageTranscoder().decode(
+               new TypeReference<ResultList<User>>() {}, nettyResponse.getResponseBody());
+
+        return userGet;
     }
 
-    public String PostUser() throws Exception {
+    public User PostUser() throws Exception {
 
         String userName = RandomFactory.getRandomEmailAddress();
         String password = "password";
@@ -115,7 +126,7 @@ public class UserServiceImpl implements UserService {
         return PostUser(userName, password, status);
     }
 
-    public String PostUser(String userName) throws Exception {
+    public User PostUser(String userName) throws Exception {
 
         String password = "password";
         String status = EnumHelper.UserStatus.ACTIVE.toString();
@@ -123,14 +134,14 @@ public class UserServiceImpl implements UserService {
         return PostUser(userName, password, status);
     }
 
-    public String PostUser(String userName, String password) throws Exception {
+    public User PostUser(String userName, String password) throws Exception {
 
         String status = EnumHelper.UserStatus.ACTIVE.toString();
 
         return PostUser(userName, password, status);
     }
 
-    public String PostUser(String userName, String password, String status) throws Exception {
+    public User PostUser(String userName, String password, String status) throws Exception {
 
         String requestBody = "";
 
@@ -139,8 +150,7 @@ public class UserServiceImpl implements UserService {
         userToPost.setStatus(status);
         userToPost.setPassword(password);
 
-        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-        requestBody = ow.writeValueAsString(userToPost);
+        requestBody = new JsonMessageTranscoder().encode(userToPost);
 
         Request req = new RequestBuilder("POST")
                 .setUrl(identityServerURL)
@@ -154,6 +164,9 @@ public class UserServiceImpl implements UserService {
         NettyResponse nettyResponse = (NettyResponse) future.get();
 
         logger.LogResponse(nettyResponse);
-        return nettyResponse.getResponseBody();
+
+        User userGet = new JsonMessageTranscoder().decode(new TypeReference<User>() {},
+                nettyResponse.getResponseBody());
+        return userGet;
     }
 }
