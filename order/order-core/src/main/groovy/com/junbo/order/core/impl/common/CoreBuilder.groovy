@@ -1,4 +1,5 @@
 package com.junbo.order.core.impl.common
+import com.junbo.billing.spec.enums.BalanceStatus
 import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.BalanceItem
@@ -155,5 +156,26 @@ class CoreBuilder {
         data.put(ActionUtils.DATA_ORDER_ACTION_RESULT, (Object)orderActionResult)
         def actionResult = new ActionResult('success', data)
         return actionResult
+    }
+
+    static EventStatus buildEventStatusFromBalance(String balanceStatus) {
+        switch (balanceStatus) {
+            case BalanceStatus.COMPLETED:
+                return EventStatus.COMPLETED
+            case BalanceStatus.AWAITING_PAYMENT:
+                return EventStatus.PENDING
+            case BalanceStatus.PENDING_CAPTURE: // Authorize completed
+                return EventStatus.COMPLETED
+            case BalanceStatus.UNCONFIRMED:
+                return EventStatus.PROCESSING
+            case BalanceStatus.INIT:
+                return EventStatus.PROCESSING
+            case BalanceStatus.CANCELLED:
+            case BalanceStatus.FAILED:
+            case BalanceStatus.ERROR:
+                return EventStatus.FAILED
+            default:
+                return EventStatus.FAILED
+        }
     }
 }
