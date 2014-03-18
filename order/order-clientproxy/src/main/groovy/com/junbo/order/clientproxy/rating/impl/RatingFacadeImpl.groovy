@@ -20,7 +20,7 @@ import javax.annotation.Resource
 /**
  * Rating facade implementation.
  */
-@Component('ratingFacade')
+@Component('orderRatingFacade')
 @CompileStatic
 @TypeChecked
 class RatingFacadeImpl implements RatingFacade {

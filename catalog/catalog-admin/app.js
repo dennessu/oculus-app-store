@@ -23,6 +23,7 @@ if ('development' == app.get('env')) {
 }
 
 app.get('/api/offers', offers.getOffers);
+app.post('/api/offers', offers.createOffer);
 app.get('/api/offers/:id', offers.getOffer);
 app.put('/api/offers/:id', offers.updateOffer);
 

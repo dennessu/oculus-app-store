@@ -1,12 +1,17 @@
 var Utils = {
-    MoreFilling: function (original, target) {
+    /*
+     Fill original object use target object
+     @type: full, OneWay
+     @return: original object
+     */
+    FillObject: function (original, target, type) {
         for (var p in original) {
             var p_type = typeof(original[p]);
 
             if (p_type != "function") {
                 if (p_type == "object") {
                     if (typeof(target[p]) != "undefined") {
-                        original[p] = Utils.MoreFilling(original[p], target[p]);
+                        original[p] = this.FillObject(original[p], target[p], type);
                     }
                 } else {
                     if (typeof(target[p]) != "undefined") {
@@ -16,13 +21,15 @@ var Utils = {
             }
         }
 
-        // Append new property
-        for (var p in target) {
-            var p_type = typeof(target[p]);
+        if (type.toLowerCase() == "full") {
+            // Append new property
+            for (var p in target) {
+                var p_type = typeof(target[p]);
 
-            if (p_type != "function") {
-                if (typeof(original[p]) != "undefined") continue;
-                original[p] = target[p];
+                if (p_type != "function") {
+                    if (typeof(original[p]) != "undefined") continue;
+                    original[p] = target[p];
+                }
             }
         }
 
@@ -130,6 +137,23 @@ var Utils = {
         }
 
         return resultMessage;
+    },
+
+    /*
+        Generate a request model according to arguments
+        @arguments: 0:Data, 1:query, 2:cookies
+     */
+    GenerateRequestModel: function(){
+        if(arguments.length <= 0){
+            throw "Need pass request model data object!";
+        }
+
+        var requestModel = new RequestDataModel();
+        requestModel.data = arguments[0];
+        if(arguments.length > 1) requestModel.query = arguments[1];
+        requestModel.cookies = Utils.Cookies.GetAll();
+
+        return requestModel;
     }
 
 };

@@ -3,8 +3,22 @@ apply plugin: 'groovy'
 dependencies {
     compile project(':order-rest')
 
+    //compile "com.junbo.billing:billing-app:${junboVersion}"
+    compile "com.junbo.identity:identity-app:${junboVersion}"
+//    compile "com.junbo.catalog:catalog-spec:${junboVersion}"
+
+//    compile "com.junbo.domaindata:domaindata-app:${junboVersion}"
+//    compile "com.junbo.rating:rating-app:${junboVersion}"
+//    compile "com.junbo.entitlement:entitlement-app:${junboVersion}"
+//    compile "com.junbo.fulfilment:fulfilment-app:${junboVersion}"
+//    compile "com.junbo.cart:cart-app:${junboVersion}"
+//    compile "com.junbo.billing:billing-app:${junboVersion}"
+//    compile "com.junbo.order:order-app:${junboVerison}"
+    //compile "com.junbo.payment:payment-app:${junboVersion}"
+
+    compile (libraries.common_lib)
+    compile (libraries.common_configuration)
     compile (libraries.jersey_container_grizzly2_http)
     compile (libraries.jersey_spring3)
-
     runtime (libraries.common_configuration_data)
 }

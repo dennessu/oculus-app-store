@@ -19,7 +19,7 @@ import javax.annotation.Resource;
 /**
  * Created by linyi on 14-2-19.
  */
-@Component("identityFacade")
+@Component("orderIdentityFacade")
 @CompileStatic
 public class IdentityFacadeImpl implements IdentityFacade {
     @Resource(name="identityUserClient")

@@ -15,7 +15,7 @@ Application.Init = function(args){
     }
 
     process.env.PORT = Config.ListenOnPort;
-    process.AppConfig = Utils.MoreFilling(Config, GlobalConfig);
+    process.AppConfig = Utils.FillObject(Config, GlobalConfig, "full");
 };
 
 module.exports = Application;

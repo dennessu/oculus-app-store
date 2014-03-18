@@ -10,7 +10,7 @@ module.exports = function(io){
         });
 
         socket.on('/api/identity/login', function (data, fn) {
-            Identity.Login(data.data, data.cookies, null, function(data){
+            Identity.Login(data, function(data){
                 fn(data);
             });
         });
@@ -19,17 +19,22 @@ module.exports = function(io){
             var address = socket.handshake.address;
             data.data.ip = address.address;
 
-            Identity.Captcha(data.data, data.cookies, null, function(data){
+            Identity.Captcha(data, function(data){
                 fn(data);
             });
         });
 
         socket.on('/api/identity/tfa', function (data, fn) {
-            Identity.TFA(data.data, data.cookies, null, function(data){
+            Identity.TFA(data, function(data){
                 fn(data);
             });
         });
 
+        socket.on('/api/identity/register', function (data, fn) {
+            Identity.Register(data, function(data){
+                fn(data);
+            });
+        });
 
     });
 };

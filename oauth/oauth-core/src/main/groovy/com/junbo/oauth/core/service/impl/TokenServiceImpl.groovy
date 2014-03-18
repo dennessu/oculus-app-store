@@ -87,14 +87,17 @@ class TokenServiceImpl implements TokenService {
                 expiredBy: new Date(System.currentTimeMillis() + defaultAccessTokenExpiration * MILLISECONDS_PER_SECOND)
         )
 
-        accessTokenRepository.save(accessToken)
-
-        return accessToken
+        return accessTokenRepository.save(accessToken)
     }
 
     @Override
     AccessToken getAccessToken(String tokenValue) {
         return accessTokenRepository.get(tokenValue)
+    }
+
+    @Override
+    AccessToken updateAccessToken(AccessToken accessToken) {
+        return accessTokenRepository.update(accessToken)
     }
 
     @Override
@@ -112,9 +115,7 @@ class TokenServiceImpl implements TokenService {
                         defaultRefreshTokenExpiration * MILLISECONDS_PER_SECOND)
         )
 
-        refreshTokenRepository.save(refreshToken)
-
-        return refreshToken
+        return refreshTokenRepository.save(refreshToken)
     }
 
     @Override
@@ -133,9 +134,7 @@ class TokenServiceImpl implements TokenService {
                         defaultRefreshTokenExpiration * MILLISECONDS_PER_SECOND)
         )
 
-        refreshTokenRepository.save(refreshToken)
-
-        return refreshToken
+        return refreshTokenRepository.save(refreshToken)
     }
 
     @Override
@@ -224,12 +223,49 @@ class TokenServiceImpl implements TokenService {
     }
 
     @Override
-    void revokeAccessToken(String tokenValue) {
+    void revokeAccessToken(String tokenValue, Client client) {
+        Assert.notNull(tokenValue, 'tokenValue is null')
+        AccessToken accessToken = accessTokenRepository.get(tokenValue)
 
+        if (accessToken != null) {
+            if (accessToken.clientId != client.clientId) {
+                throw AppExceptions.INSTANCE.tokenClientNotMatch().exception()
+            }
+
+            accessTokenRepository.remove(accessToken.tokenValue)
+
+            if (accessToken.refreshTokenValue != null) {
+                revokeRefreshToken(accessToken.refreshTokenValue, client)
+            }
+        }
     }
 
     @Override
-    void revokeRefreshToken(String tokenValue) {
+    void revokeRefreshToken(String tokenValue, Client client) {
+        Assert.notNull(tokenValue, 'tokenValue is null')
+        RefreshToken refreshToken = refreshTokenRepository.get(tokenValue)
 
+        if (refreshToken != null) {
+            if (refreshToken.clientId != client.clientId) {
+                throw AppExceptions.INSTANCE.tokenClientNotMatch().exception()
+            }
+
+            refreshTokenRepository.getAndRemove(tokenValue)
+        }
+
+        def accessTokens = accessTokenRepository.findByRefreshToken(tokenValue)
+        accessTokens.each { AccessToken token ->
+            accessTokenRepository.remove(token.tokenValue)
+        }
+    }
+
+    @Override
+    boolean isValidAccessToken(String tokenValue) {
+        return accessTokenRepository.isValidAccessToken(tokenValue)
+    }
+
+    @Override
+    boolean isValidRefreshToken(String tokenValue) {
+        return refreshTokenRepository.isValidRefreshToken(tokenValue)
     }
 }

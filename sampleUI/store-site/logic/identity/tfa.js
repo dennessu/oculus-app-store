@@ -1,11 +1,14 @@
 var IdentityProvider = require('store-data-provider').Identity;
 var DomainModels = require('../../models/domain');
 
-module.exports = function(data, cookies, query, cb){
+module.exports = function(data, cb){
+    var body = data.data;
+    var cookies = data.cookies;
+    var query = data.query;
 
     var resultModel = new DomainModels.ResultModel();
 
-    if(!data.remember){
+    if(!body.remember){
         resultModel.status = DomainModels.ResultStatusEnum.Normal;
     }else{
         resultModel.status = DomainModels.ResultStatusEnum.Exception;
