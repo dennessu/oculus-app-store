@@ -38,7 +38,7 @@ public class UserGroupRepositoryImpl implements UserGroupRepository {
         UserGroupEntity userGroupEntity = modelMapper.toUserGroup(entity, new MappingContext());
         userGroupDAO.save(userGroupEntity);
 
-        return get(entity.getId());
+        return get(new UserGroupId(userGroupEntity.getId()));
     }
 
     @Override

@@ -5,9 +5,7 @@
  */
 package com.junbo.identity.data.dao
 import com.junbo.identity.data.entity.user.UserEntity
-import com.junbo.identity.spec.model.options.UserGetOption
 import com.junbo.sharding.annotations.SeedParam
-
 /**
  * User DAO is used to fetch/update/delete/get user data from the database
  */
@@ -20,7 +18,4 @@ interface UserDAO {
     UserEntity get(@SeedParam Long userId)
 
     void delete(@SeedParam Long userId)
-
-    //Todo: Need to build reverse lookup table
-    List<UserEntity> search(UserGetOption getOption)
 }

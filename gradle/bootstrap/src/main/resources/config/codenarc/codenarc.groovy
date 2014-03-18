@@ -280,7 +280,6 @@ ruleset {
         ClassName
         ClassNameSameAsFilename
         ConfusingMethodName
-        FactoryMethodName
         FieldName
         InterfaceName
         MethodName

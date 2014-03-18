@@ -32,7 +32,6 @@ public class UserPassword extends ResourceMeta implements Identifiable<UserPassw
     // Won't return field
     private String passwordSalt;
     private String passwordHash;
-    private String passwordStrength;
     private UserId userId;
 
     public UserPasswordId getId() {
@@ -97,14 +96,6 @@ public class UserPassword extends ResourceMeta implements Identifiable<UserPassw
 
     public void setPasswordHash(String passwordHash) {
         this.passwordHash = passwordHash;
-    }
-
-    public String getPasswordStrength() {
-        return passwordStrength;
-    }
-
-    public void setPasswordStrength(String passwordStrength) {
-        this.passwordStrength = passwordStrength;
     }
 
     public UserId getUserId() {

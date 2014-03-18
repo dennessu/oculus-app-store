@@ -11,7 +11,7 @@ import com.junbo.identity.data.entity.user.UserLoginAttemptEntity;
 import com.junbo.identity.data.mapper.ModelMapper;
 import com.junbo.identity.data.repository.UserLoginAttemptRepository;
 import com.junbo.identity.spec.model.options.UserLoginAttemptGetOption;
-import com.junbo.identity.spec.model.users.LoginAttempt;
+import com.junbo.identity.spec.model.users.UserLoginAttempt;
 import com.junbo.oom.core.MappingContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -34,15 +34,15 @@ public class UserLoginAttemptRepositoryImpl implements UserLoginAttemptRepositor
     private ModelMapper modelMapper;
 
     @Override
-    public LoginAttempt save(LoginAttempt entity) {
+    public UserLoginAttempt save(UserLoginAttempt entity) {
         UserLoginAttemptEntity userLoginAttemptEntity = modelMapper.toUserLoginAttempt(entity, new MappingContext());
         userLoginAttemptDAO.save(userLoginAttemptEntity);
 
-        return get(entity.getId());
+        return get(new UserLoginAttemptId(userLoginAttemptEntity.getId()));
     }
 
     @Override
-    public LoginAttempt update(LoginAttempt entity) {
+    public UserLoginAttempt update(UserLoginAttempt entity) {
         UserLoginAttemptEntity userLoginAttemptEntity = modelMapper.toUserLoginAttempt(entity, new MappingContext());
         userLoginAttemptDAO.update(userLoginAttemptEntity);
 
@@ -50,15 +50,15 @@ public class UserLoginAttemptRepositoryImpl implements UserLoginAttemptRepositor
     }
 
     @Override
-    public LoginAttempt get(UserLoginAttemptId id) {
+    public UserLoginAttempt get(UserLoginAttemptId id) {
         return modelMapper.toUserLoginAttempt(userLoginAttemptDAO.get(id.getValue()), new MappingContext());
     }
 
     @Override
-    public List<LoginAttempt> search(UserLoginAttemptGetOption getOption) {
+    public List<UserLoginAttempt> search(UserLoginAttemptGetOption getOption) {
         List entities = userLoginAttemptDAO.search(getOption.getUserId().getValue(), getOption);
 
-        List<LoginAttempt> results = new ArrayList<LoginAttempt>();
+        List<UserLoginAttempt> results = new ArrayList<UserLoginAttempt>();
         for(int i =0 ; i< entities.size(); i++) {
             results.add(modelMapper.toUserLoginAttempt((UserLoginAttemptEntity)entities.get(i), new MappingContext()));
         }

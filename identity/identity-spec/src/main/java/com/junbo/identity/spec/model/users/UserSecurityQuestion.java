@@ -6,6 +6,7 @@
 package com.junbo.identity.spec.model.users;
 
 import com.junbo.common.id.SecurityQuestionId;
+import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserSecurityQuestionId;
 import com.junbo.common.util.Identifiable;
 
@@ -24,6 +25,7 @@ public class UserSecurityQuestion extends ResourceMeta implements Identifiable<U
     // not read and write possible
     private String answerSalt;
     private String answerHash;
+    private UserId userId;
 
     public UserSecurityQuestionId getId() {
         return id;
@@ -63,5 +65,13 @@ public class UserSecurityQuestion extends ResourceMeta implements Identifiable<U
 
     public void setAnswerHash(String answerHash) {
         this.answerHash = answerHash;
+    }
+
+    public UserId getUserId() {
+        return userId;
+    }
+
+    public void setUserId(UserId userId) {
+        this.userId = userId;
     }
 }

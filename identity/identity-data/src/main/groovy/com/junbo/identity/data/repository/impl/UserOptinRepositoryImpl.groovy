@@ -32,7 +32,7 @@ class UserOptinRepositoryImpl implements UserOptinRepository {
         UserOptinEntity userOptInEntity = modelMapper.toUserOptin(entity, new MappingContext())
         userOptinDAO.save(userOptInEntity)
 
-        return get(entity.id)
+        return get(new UserOptinId(userOptInEntity.id))
     }
 
     @Override

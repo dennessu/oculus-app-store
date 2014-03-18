@@ -8,7 +8,7 @@ package com.junbo.identity.data.repository;
 
 import com.junbo.common.id.UserLoginAttemptId;
 import com.junbo.identity.spec.model.options.UserLoginAttemptGetOption;
-import com.junbo.identity.spec.model.users.LoginAttempt;
+import com.junbo.identity.spec.model.users.UserLoginAttempt;
 
 import java.util.List;
 
@@ -16,13 +16,13 @@ import java.util.List;
  * Created by liangfu on 3/17/14.
  */
 public interface UserLoginAttemptRepository {
-    LoginAttempt save(LoginAttempt entity);
+    UserLoginAttempt save(UserLoginAttempt entity);
 
-    LoginAttempt update(LoginAttempt entity);
+    UserLoginAttempt update(UserLoginAttempt entity);
 
-    LoginAttempt get(UserLoginAttemptId id);
+    UserLoginAttempt get(UserLoginAttemptId id);
 
-    List<LoginAttempt> search(UserLoginAttemptGetOption getOption);
+    List<UserLoginAttempt> search(UserLoginAttemptGetOption getOption);
 
     void delete(UserLoginAttemptId id);
 }

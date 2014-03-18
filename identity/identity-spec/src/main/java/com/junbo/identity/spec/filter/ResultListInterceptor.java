@@ -5,7 +5,7 @@
  */
 package com.junbo.identity.spec.filter;
 
-import com.junbo.common.model.Reference;
+import com.junbo.common.model.Link;
 import com.junbo.identity.spec.model.common.ResultList;
 import org.glassfish.jersey.server.ContainerResponse;
 import org.springframework.util.StringUtils;
@@ -33,7 +33,7 @@ public class ResultListInterceptor implements ContainerResponseFilter {
         }
 
         ResultList resultList = (ResultList)responseContext.getEntity();
-        Reference self = getSelf(responseContext);
+        Link self = getSelf(responseContext);
         resultList.setSelf(self);
 
         if(resultList.getHasNext() != null && resultList.getHasNext().booleanValue()) {
@@ -43,19 +43,19 @@ public class ResultListInterceptor implements ContainerResponseFilter {
 
     }
 
-    private Reference getSelf(ContainerResponseContext responseContext) {
+    private Link getSelf(ContainerResponseContext responseContext) {
         if(!(responseContext instanceof ContainerResponse)) {
             return null;
         }
 
         ContainerResponse response = (ContainerResponse)responseContext;
-        Reference ref = new Reference();
+        Link ref = new Link();
         ref.setHref(response.getRequestContext().getRequestUri().toString());
         ref.setId("");
         return ref;
     }
 
-    private Reference getNext(Reference self) {
+    private Link getNext(Link self) {
         if(self == null || StringUtils.isEmpty(self.getHref()))    {
             return null;
         }
@@ -64,7 +64,7 @@ public class ResultListInterceptor implements ContainerResponseFilter {
         Integer selfCount = extract(selfUrl, COUNT_FORMAT);
         Integer selfCursor = extract(selfUrl, CURSOR_FORMAT);
 
-        Reference next = new Reference();
+        Link next = new Link();
         next.setId("");
         next.setHref(replaceExistsOrAppend(selfUrl, selfCursor, selfCount));
 

@@ -5,8 +5,7 @@
  */
 package com.junbo.identity.data.entity.user;
 
-import com.junbo.common.id.UserId;
-import com.junbo.identity.data.entity.common.ResourceMetaEntity;
+import com.junbo.sharding.annotations.SeedId;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,13 +17,14 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "user_name")
-public class UserNameEntity extends ResourceMetaEntity {
+public class UserNameEntity {
     @Id
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "userId")
-    private UserId userId;
+    @SeedId
+    @Column(name = "user_id")
+    private Long userId;
 
     @Column(name = "first_name")
     private String firstName;
@@ -49,11 +49,11 @@ public class UserNameEntity extends ResourceMetaEntity {
         this.id = id;
     }
 
-    public UserId getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(UserId userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 

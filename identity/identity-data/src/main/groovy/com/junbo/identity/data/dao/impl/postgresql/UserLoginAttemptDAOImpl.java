@@ -41,10 +41,10 @@ public class UserLoginAttemptDAOImpl extends EntityDAOImpl implements UserLoginA
     @Override
     public List<UserLoginAttemptEntity> search(Long userId, UserLoginAttemptGetOption getOption) {
         String query = "select * from user_login_attempt where user_id = " + (getOption.getUserId().getValue()) +
-            (StringUtils.isEmpty(getOption.getType()) ? "" : (" and type = " + getOption.getType())) +
-            (StringUtils.isEmpty(getOption.getIpAddress()) ? "" : (" and ip_address = " + getOption.getIpAddress())) +
-            (" order by id limit " + (getOption.getLimit() == null ? "ALL" : getOption.getLimit().toString())) +
-            " offset " + (getOption.getOffset() == null ? "0" : getOption.getOffset().toString());
+    (StringUtils.isEmpty(getOption.getType()) ? "" : (" and type = " + getOption.getType())) +
+    (StringUtils.isEmpty(getOption.getIpAddress()) ? "" : (" and ip_address = \'" + getOption.getIpAddress())) + "\'" +
+    (" order by id limit " + (getOption.getLimit() == null ? "ALL" : getOption.getLimit().toString())) +
+    " offset " + (getOption.getOffset() == null ? "0" : getOption.getOffset().toString());
 
         List entities = currentSession().createSQLQuery(query).addEntity(UserLoginAttemptEntity.class).list();
 

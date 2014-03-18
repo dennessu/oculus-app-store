@@ -15,10 +15,14 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "user_pin")
-public class UserPinEntity {
+public class UserPinEntity  {
     @Id
     @Column(name = "id")
     private Long id;
+
+    @Version
+    @Column(name = "version")
+    private Integer resourceAge;
 
     @SeedId
     @Column(name = "user_id")
@@ -53,6 +57,14 @@ public class UserPinEntity {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Integer getResourceAge() {
+        return resourceAge;
+    }
+
+    public void setResourceAge(Integer resourceAge) {
+        this.resourceAge = resourceAge;
     }
 
     public Long getUserId() {

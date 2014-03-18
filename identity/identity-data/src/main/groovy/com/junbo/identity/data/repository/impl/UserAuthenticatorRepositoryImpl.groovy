@@ -33,7 +33,7 @@ class UserAuthenticatorRepositoryImpl implements UserAuthenticatorRepository {
         UserAuthenticatorEntity userAuthenticatorEntity = modelMapper.toUserAuthenticator(entity, new MappingContext())
         authenticatorDAO.save(userAuthenticatorEntity)
 
-        return get(entity.id)
+        return get(new UserAuthenticatorId(userAuthenticatorEntity.id))
     }
 
     @Override

@@ -7,18 +7,14 @@ package com.junbo.identity.data.dao.impl.postgresql;
 
 import com.junbo.identity.data.dao.UserDAO;
 import com.junbo.identity.data.entity.user.UserEntity;
-import com.junbo.identity.spec.model.options.UserGetOption;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
-
-import java.util.List;
 
 /**
  * Implementation for User DAO..
  */
 @Component
-public class UserDAOImpl extends EntityDAOImpl implements UserDAO {
 
+public class UserDAOImpl extends EntityDAOImpl implements UserDAO {
     @Override
     public UserEntity save(UserEntity user) {
         currentSession().save(user);
@@ -37,17 +33,6 @@ public class UserDAOImpl extends EntityDAOImpl implements UserDAO {
     @Override
     public UserEntity get(Long userId) {
         return (UserEntity)currentSession().get(UserEntity.class, userId);
-    }
-
-    @Override
-    public List<UserEntity> search(UserGetOption getOption) {
-        String query = "select * from user_login_attempt where 1 = 1" + " " +
-        (StringUtils.isEmpty(getOption.getUserName()) ? "" : ("user_name like \'%" + getOption.getUserName() + "%\'")) +
-        (" order by id limit " + (getOption.getLimit() == null ? "ALL" : getOption.getLimit().toString())) +
-        " offset " + (getOption.getOffset() == null ? "0" : getOption.getOffset().toString());
-
-        List entities = currentSession().createSQLQuery(query).addEntity(UserEntity.class).list();
-        return entities;
     }
 
     @Override

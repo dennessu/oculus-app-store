@@ -12,8 +12,11 @@
     <import resource="classpath*:spring/sharding.xml"/>
     <import resource="classpath*:spring/sharding-context.xml"/>
 
+
     <bean id="__builtinMapper" class="com.junbo.oom.core.builtin.BuiltinMapper" />
     <bean id="__commonMapper" class="com.junbo.identity.data.mapper.CommonMapper" />
+
+    <tx:annotation-driven transaction-manager="transactionManager"/>
 
     <bean id="sessionFactoryWrapper" class="com.junbo.sharding.core.hibernate.SessionFactoryWrapper">
         <property name="dataSourceRegistry" ref="shardDataSourceRegistry"/>
@@ -110,6 +113,17 @@
         <property name="daoTarget" ref="userTosDAOTarget" />
     </bean>
 
+    <bean id="userNameReverseIndexDAOTarget" class="com.junbo.identity.data.dao.impl.postgresql.UserNameReverseIndexDAOImpl" parent="entityDAOBase" />
+    <bean id="userNameReverseIndexDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
+        <property name="daoInterface" value="com.junbo.identity.data.dao.UserNameReverseIndexDAO" />
+        <property name="daoTarget" ref="userNameReverseIndexDAOTarget" />
+    </bean>
+
+    <bean id="userNameDAOTarget" class="com.junbo.identity.data.dao.impl.postgresql.UserNameDAOImpl" parent="entityDAOBase"/>
+    <bean id="userNameDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
+        <property name="daoInterface" value="com.junbo.identity.data.dao.UserNameDAO" />
+        <property name="daoTarget" ref="userNameDAOTarget" />
+    </bean>
 
     <bean id="groupRepository" class="com.junbo.identity.data.repository.impl.GroupRepositoryImpl" />
     <bean id="userAuthenticatorRepository" class="com.junbo.identity.data.repository.impl.UserAuthenticatorRepositoryImpl" />
@@ -120,7 +134,7 @@
     <bean id="userOptinRepository" class="com.junbo.identity.data.repository.impl.UserOptinRepositoryImpl" />
     <bean id="userPasswordRepository" class="com.junbo.identity.data.repository.impl.UserPasswordRepositoryImpl" />
     <bean id="userPhoneNumberRepository" class="com.junbo.identity.data.repository.impl.UserPhoneNumberRepositoryImpl" />
-    <bean id="userPINRepository" class="com.junbo.identity.data.repository.impl.UserPinRepositoryImpl" />
+    <bean id="userPinRepository" class="com.junbo.identity.data.repository.impl.UserPinRepositoryImpl" />
     <bean id="userRepository" class="com.junbo.identity.data.repository.impl.UserRepositoryImpl" />
     <bean id="userSecurityQuestionRepository" class="com.junbo.identity.data.repository.impl.UserSecurityQuestionRepositoryImpl" />
     <bean id="userTosRepository" class="com.junbo.identity.data.repository.impl.UserTosRepositoryImpl" />

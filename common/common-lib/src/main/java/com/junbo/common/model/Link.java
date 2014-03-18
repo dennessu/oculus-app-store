@@ -9,7 +9,7 @@ package com.junbo.common.model;
 /**
  * Created by minhao on 2/14/14.
  */
-public class Reference {
+public class Link {
     private String href;
     private String id;
 

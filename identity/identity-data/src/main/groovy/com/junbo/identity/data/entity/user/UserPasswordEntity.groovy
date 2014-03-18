@@ -22,6 +22,10 @@ class UserPasswordEntity {
     @Column(name = 'user_id')
     private Long userId
 
+    @Column(name = 'version')
+    @Version
+    private Integer resourceAge
+
     @Column(name = 'password_hash')
     private String passwordHash
 
@@ -62,6 +66,14 @@ class UserPasswordEntity {
 
     void setUserId(Long userId) {
         this.userId = userId
+    }
+
+    Integer getResourceAge() {
+        return resourceAge
+    }
+
+    void setResourceAge(Integer resourceAge) {
+        this.resourceAge = resourceAge
     }
 
     String getPasswordHash() {

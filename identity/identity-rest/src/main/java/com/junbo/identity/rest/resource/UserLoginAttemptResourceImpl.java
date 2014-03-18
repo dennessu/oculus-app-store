@@ -8,7 +8,7 @@ package com.junbo.identity.rest.resource;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserLoginAttemptId;
 import com.junbo.identity.spec.model.common.ResultList;
-import com.junbo.identity.spec.model.users.LoginAttempt;
+import com.junbo.identity.spec.model.users.UserLoginAttempt;
 import com.junbo.identity.spec.model.users.User;
 import com.junbo.identity.spec.options.LoginAttemptGetOptions;
 import com.junbo.identity.spec.options.LoginAttemptListOptions;
@@ -27,18 +27,18 @@ import javax.ws.rs.ext.Provider;
 @org.springframework.context.annotation.Scope("prototype")
 public class UserLoginAttemptResourceImpl implements UserLoginAttemptResource {
     @Override
-    public Promise<User> create(UserId userId, LoginAttempt loginAttempt) {
+    public Promise<User> create(UserId userId, UserLoginAttempt loginAttempt) {
         return null;
     }
 
     @Override
-    public Promise<LoginAttempt> get(UserId userId, UserLoginAttemptId userLoginAttemptId,
+    public Promise<UserLoginAttempt> get(UserId userId, UserLoginAttemptId userLoginAttemptId,
                                      @BeanParam LoginAttemptGetOptions getOptions) {
         return null;
     }
 
     @Override
-    public Promise<ResultList<LoginAttempt>> list(UserId userId, @BeanParam LoginAttemptListOptions listOptions) {
+    public Promise<ResultList<UserLoginAttempt>> list(UserId userId, @BeanParam LoginAttemptListOptions listOptions) {
         return null;
     }
 }

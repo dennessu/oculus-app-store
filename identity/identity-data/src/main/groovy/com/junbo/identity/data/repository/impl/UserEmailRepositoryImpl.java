@@ -68,6 +68,6 @@ public class UserEmailRepositoryImpl implements UserEmailRepository {
         UserEmailEntity userEmailEntity = modelMapper.toUserEmail(entity, new MappingContext());
         userEmailDAO.save(userEmailEntity);
 
-        return get(entity.getId());
+        return get(new UserEmailId(userEmailEntity.getId()));
     }
 }

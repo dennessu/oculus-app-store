@@ -39,7 +39,7 @@ public class UserSecurityQuestionRepositoryImpl implements UserSecurityQuestionR
                 modelMapper.toUserSecurityQuestion(entity, new MappingContext());
         userSecurityQuestionDAO.save(userSecurityQuestionEntity);
 
-        return get(entity.getId());
+        return get(new UserSecurityQuestionId(userSecurityQuestionEntity.getId()));
     }
 
     @Override

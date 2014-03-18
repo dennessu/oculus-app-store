@@ -36,6 +36,9 @@ class UserDeviceEntity extends ResourceMetaEntity {
     @Column(name = 'os')
     private String os
 
+    @Column(name = 'name')
+    private String name
+
     Long getId() {
         id
     }
@@ -74,5 +77,13 @@ class UserDeviceEntity extends ResourceMetaEntity {
 
     void setOs(String os) {
         this.os = os
+    }
+
+    String getName() {
+        return name
+    }
+
+    void setName(String name) {
+        this.name = name
     }
 }
