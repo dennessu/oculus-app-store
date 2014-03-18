@@ -16,13 +16,15 @@ import com.junbo.ewallet.spec.resource.WalletResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
+
 /**
  * WalletResource Impl.
  */
 @CompileStatic
 class WalletResourceImpl implements WalletResource {
     @Autowired
-    private  WalletService walletService
+    private WalletService walletService
+
     @Override
     Promise<Wallet> getWallet(WalletId walletId) {
         Wallet result = walletService.get(walletId.value)
@@ -31,24 +33,40 @@ class WalletResourceImpl implements WalletResource {
 
     @Override
     Promise<Wallet> postWallet(Wallet wallet) {
+        Wallet existed = getByTrackingUuid(wallet.trackingUuid)
+        if (existed != null) {
+            return Promise.pure(existed)
+        }
         Wallet result = walletService.add(wallet)
         return Promise.pure(result)
     }
 
     @Override
     Promise<Wallet> updateWallet(WalletId walletId, Wallet wallet) {
+        Wallet existed = getByTrackingUuid(wallet.trackingUuid)
+        if (existed != null) {
+            return Promise.pure(existed)
+        }
         Wallet result = walletService.update(walletId.value, wallet)
         return Promise.pure(result)
     }
 
     @Override
     Promise<Wallet> credit(WalletId walletId, CreditRequest creditRequest) {
+        Wallet existed = getByTrackingUuid(creditRequest.trackingUuid)
+        if (existed != null) {
+            return Promise.pure(existed)
+        }
         Wallet result = walletService.credit(walletId.value, creditRequest)
         return Promise.pure(result)
     }
 
     @Override
     Promise<Wallet> debit(WalletId walletId, DebitRequest debitRequest) {
+        Wallet existed = getByTrackingUuid(debitRequest.trackingUuid)
+        if (existed != null) {
+            return Promise.pure(existed)
+        }
         Wallet result = walletService.debit(walletId.value, debitRequest)
         return Promise.pure(result)
     }
@@ -59,5 +77,12 @@ class WalletResourceImpl implements WalletResource {
         List<Transaction> transactions = walletService.getTransactions(walletId.value)
         result.transactions = transactions
         return Promise.pure(result)
+    }
+
+    private Wallet getByTrackingUuid(UUID trackingUuid) {
+        if (trackingUuid == null) {
+            return null
+        }
+        return walletService.getByTrackingUuid(trackingUuid)
     }
 }

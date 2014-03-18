@@ -27,39 +27,42 @@ import javax.ws.rs.core.MediaType;
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 public interface UserResource {
+    @ApiOperation("Create a new user")
     @POST
     Promise<User> postUser(User user);
 
+    @ApiOperation("Get or search users")
     @GET
-    @ApiOperation(
-            value = "Get or search users",
-            response = User.class,
-            responseContainer = "List")
     Promise<ResultList<User>> getUsers(@QueryParam("userName") String userName,
                         @QueryParam("userNamePrefix") String userNamePrefix,
                         @QueryParam("cursor") Integer cursor,
                         @QueryParam("count") Integer count);
 
+    @ApiOperation("Get a user")
     @GET
     @Path("/{key}")
     Promise<User> getUser(@PathParam("key") UserId id);
 
+    @ApiOperation("Put a user")
     @PUT
     @Path("/{key}")
     Promise<User> putUser(@PathParam("key") UserId id,
                  User user);
 
+    @ApiOperation("Authenticate user")
     @POST
     @Path("/authenticate-user")
     Promise<User> authenticateUser(@QueryParam("userName") String userName,
                                    @QueryParam("password") String password);
 
+    @ApiOperation("Update password")
     @POST
     @Path("/{key}/update-password")
     Promise<User> updatePassword(@PathParam("key") UserId id,
                         @QueryParam("oldPassword") String oldPassword,
                         @QueryParam("newPassword") String newPassword);
 
+    @ApiOperation("Reset password")
     @POST
     @Path("/{key}/reset-password")
     Promise<User> restPassword(@PathParam("key") UserId id,

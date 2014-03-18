@@ -20,6 +20,7 @@ public enum OrderStatus implements Identifiable<Short> {
     FAILED(6),
     CANCELED(7),
     REFUNDED(8),
+    PREORDERED(9),
     ERROR(-1);
 
     private OrderStatus(int id) {

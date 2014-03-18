@@ -8,6 +8,7 @@ package com.junbo.entitlement.core.service;
 
 import com.junbo.entitlement.clientproxy.catalog.CatalogFacade;
 import com.junbo.entitlement.clientproxy.identity.UserFacade;
+import com.junbo.entitlement.spec.error.AppErrors;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
@@ -27,6 +28,9 @@ public class BaseService {
     }
 
     protected void checkUser(Long userId) {
+        if (userId == null) {
+            throw AppErrors.INSTANCE.missingField("userId").exception();
+        }
 //        if (!userFacade.exists(userId)) {
 //            throw new NotFoundException("user");
 //        }
@@ -39,6 +43,9 @@ public class BaseService {
     }
 
     protected void checkDeveloper(Long developerId) {
+        if (developerId == null) {
+            throw AppErrors.INSTANCE.missingField("developerId").exception();
+        }
 //        if (!userFacade.exists(developerId)) {
 //            throw new NotFoundException("developer");
 //        }

@@ -6,7 +6,6 @@ import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.core.impl.common.CoreBuilder
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
 import com.junbo.order.db.entity.enums.EventStatus
-import com.junbo.order.db.entity.enums.OrderActionType
 import com.junbo.order.db.entity.enums.OrderStatus
 import com.junbo.order.db.repo.OrderRepository
 import groovy.transform.CompileStatic
@@ -38,21 +37,9 @@ class SaveOrderAction extends BaseOrderEventAwareAction {
         // Save Order
         // Fetch Preorder Info from catalog
         builder.getOffers(context.orderServiceContext).syncThen { List<Offer> ofs ->
-
-            // TODO get and build preorder info
-            // TODO move the order status calculation logic to other place
-            switch (orderActionType) {
-                case OrderActionType.RATE:
-                case OrderActionType.CHARGE:
-                    context.orderServiceContext.order.status = OrderStatus.OPEN
-                    break
-                default:
-                    context.orderServiceContext.order.status = OrderStatus.COMPLETED
-            }
-
-            context.orderServiceContext.order = newOrder ?
-                    repo.createOrder(context.orderServiceContext.order)
-                    : repo.updateOrder(context.orderServiceContext.order, false)
+            context.orderServiceContext.order.status = OrderStatus.OPEN
+            def orderWithId = repo.createOrder(context.orderServiceContext.order)
+            context.orderServiceContext.order = orderWithId
 
             return CoreBuilder.buildActionResultForOrderEventAwareAction(context, EventStatus.COMPLETED)
         }
