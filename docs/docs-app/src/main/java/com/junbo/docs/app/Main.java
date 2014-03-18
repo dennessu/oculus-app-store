@@ -6,7 +6,11 @@
 
 package com.junbo.docs.app;
 
+import com.junbo.docs.app.readers.JaxrsApiReader;
+import com.junbo.docs.app.readers.ModelReader;
 import com.wordnik.swagger.jaxrs.config.BeanConfig;
+import com.wordnik.swagger.reader.ClassReaders;
+import com.wordnik.swagger.reader.ModelReaders;
 import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
@@ -24,7 +28,6 @@ import java.net.URI;
 public class Main {
 
     private static final int SERVER_PORT = 8079;
-    private static final String CONTEXT_PATH = "api-docs";
 
     private Main() { }
 
@@ -36,14 +39,18 @@ public class Main {
         URI baseUri = UriBuilder.fromUri("http://0.0.0.0").port(SERVER_PORT).build();
         ResourceConfig config = new ResourceConfig();
         config.packages("com.wordnik.swagger.jersey.listing");
-        config.files(true, "swagger-ui");
 
         BeanConfig beanConfig = new BeanConfig();
+
+        ModelReaders.setReader(new ModelReader());
+        ClassReaders.setReader(new JaxrsApiReader());
+
         beanConfig.setResourcePackage("com.junbo");
 
         beanConfig.setDescription("Oculus Commerce and Identity API Documentations");
         beanConfig.setTitle("Oculus Commerce and Identity API");
         beanConfig.setVersion("0.0.1-SNAPSHOT");
+        beanConfig.setBasePath("http://127.0.0.1:8080/rest");
         beanConfig.setScan(true);
 
         // jersey container
