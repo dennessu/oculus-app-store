@@ -15,7 +15,7 @@
         </wf:end-state>
     </wf:flow>
 
-    <bean id="rate_order_createOrderAction" class="com.junbo.order.core.impl.orderaction.CreateOrderAction">
+    <bean id="rate_order_createOrderAction" class="com.junbo.order.core.impl.orderaction.SaveOrderAction">
         <property name="orderActionType" value="RATE"></property>
     </bean>
 
