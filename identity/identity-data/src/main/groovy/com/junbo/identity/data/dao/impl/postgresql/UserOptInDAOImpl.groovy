@@ -17,12 +17,14 @@ import com.junbo.sharding.IdGeneratorFacade
 import org.hibernate.Session
 import org.hibernate.SessionFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.util.StringUtils
 /**
  * Implementation for UserOptInDAO.
  */
 class UserOptInDAOImpl implements UserOptInDAO {
     @Autowired
+    @Qualifier('identitySessionFactory')
     private SessionFactory sessionFactory
 
     @Autowired
