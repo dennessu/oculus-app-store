@@ -1,4 +1,5 @@
 var Identity = require('../logic/identity');
+var Catalog = require('../logic/catalog');
 
 module.exports = function(io){
     io.set("log level", 0);
@@ -32,6 +33,24 @@ module.exports = function(io){
 
         socket.on('/api/identity/register', function (data, fn) {
             Identity.Register(data, function(data){
+                fn(data);
+            });
+        });
+
+        socket.on('/api/identity/pin', function (data, fn) {
+            Identity.PIN(data, function(data){
+                fn(data);
+            });
+        });
+
+        socket.on('/api/catalog/products', function (data, fn) {
+            Catalog.Products(data, function(data){
+                fn(data);
+            });
+        });
+
+        socket.on('/api/catalog/product', function (data, fn) {
+            Catalog.Product(data, function(data){
                 fn(data);
             });
         });
