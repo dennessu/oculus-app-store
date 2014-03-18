@@ -19,6 +19,7 @@ import com.junbo.sharding.IdGeneratorFacade;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -31,6 +32,7 @@ import java.util.List;
 public class AppDAOImpl implements AppDAO {
 
     @Autowired
+    @Qualifier("identitySessionFactory")
     private SessionFactory sessionFactory;
 
     @Autowired

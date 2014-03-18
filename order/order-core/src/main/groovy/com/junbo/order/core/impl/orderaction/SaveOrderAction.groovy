@@ -21,11 +21,12 @@ import javax.annotation.Resource
 @CompileStatic
 @TypeChecked
 @Component('createOrderAction')
-class CreateOrderAction extends BaseOrderEventAwareAction {
+class SaveOrderAction extends BaseOrderEventAwareAction {
     @Resource(name = 'orderRepository')
     OrderRepository repo
     @Resource(name = 'orderServiceContextBuilder')
     OrderServiceContextBuilder builder
+    boolean newOrder = true
 
     @Override
     @com.junbo.order.core.annotation.OrderEventAwareBefore
@@ -44,11 +45,14 @@ class CreateOrderAction extends BaseOrderEventAwareAction {
                 case OrderActionType.RATE:
                 case OrderActionType.CHARGE:
                     context.orderServiceContext.order.status = OrderStatus.OPEN
+                    break
                 default:
                     context.orderServiceContext.order.status = OrderStatus.COMPLETED
             }
-            def orderWithId = repo.createOrder(context.orderServiceContext.order)
-            context.orderServiceContext.order = orderWithId
+
+            context.orderServiceContext.order = newOrder ?
+                    repo.createOrder(context.orderServiceContext.order)
+                    : repo.updateOrder(context.orderServiceContext.order, false)
 
             return CoreBuilder.buildActionResultForOrderEventAwareAction(context, EventStatus.COMPLETED)
         }

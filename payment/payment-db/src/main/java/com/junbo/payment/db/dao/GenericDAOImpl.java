@@ -12,6 +12,7 @@ import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 /**
  * generic dao.
@@ -21,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 @SuppressWarnings("unchecked")
 public class GenericDAOImpl<T, ID extends Serializable> {
     @Autowired
+    @Qualifier("paymentSessionFactory")
     private SessionFactory sessionFactory;
     private Class<T> persistentClass;
 

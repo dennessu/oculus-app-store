@@ -4,6 +4,7 @@ import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.BalanceItem
 import com.junbo.billing.spec.model.DiscountItem
 import com.junbo.common.id.OrderId
+import com.junbo.common.id.OrderItemId
 import com.junbo.common.id.PromotionId
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.core.impl.order.OrderServiceContext
@@ -42,8 +43,14 @@ class CoreBuilder {
         balance.piId = context.order.paymentInstruments?.get(0)
         balance.type = balanceType.toString()
 
-        context.order.orderItems.each {
-            OrderItem item -> balance.addBalanceItem(buildBalanceItem(item))
+        context.order.orderItems.eachWithIndex { OrderItem item, int i ->
+            def balanceItem = buildBalanceItem(item)
+            if (item.orderItemId == null) {
+                balanceItem.orderItemId = new OrderItemId(i)
+            } else {
+                balanceItem.orderItemId = item.orderItemId
+            }
+            balance.addBalanceItem(balanceItem)
         }
 
         return balance
@@ -106,9 +113,7 @@ class CoreBuilder {
 
 
     static OrderItem buildItemRatingInfo(OrderItem item, OrderRatingRequest ratingRequest) {
-
-        OrderRatingItem ratingItem = null
-        ratingItem = ratingRequest.lineItems?.find { OrderRatingItem i ->
+        OrderRatingItem ratingItem = ratingRequest.lineItems?.find { OrderRatingItem i ->
             item.offer.value == i.offerId
         }
         if (ratingItem == null) {
@@ -116,6 +121,9 @@ class CoreBuilder {
         }
         item.totalAmount = ratingItem.finalAmount
         item.totalDiscount = ratingItem.discountAmount
+        // todo get unit price from rating
+        item.unitPrice =
+                ratingItem.quantity == 0 ? ratingItem.originalAmount : ratingItem.originalAmount / ratingItem.quantity
         item.honorUntilTime = null
         return item
     }
@@ -123,15 +131,21 @@ class CoreBuilder {
     static void fillTaxInfo(Order order, Balance balance) {
         order.totalTax = balance.taxAmount
         order.isTaxInclusive = balance.taxIncluded
+        if (balance.taxIncluded == null) { // todo : remove this, this is a temporary workaround
+            order.isTaxInclusive = false
+        }
 
-        for (BalanceItem bi in balance.balanceItems) {
-            def orderItem = order.orderItems.find { OrderItem oi ->
-                oi.orderItemId == bi.orderItemId
-
+        order.orderItems.eachWithIndex { OrderItem orderItem, int i ->
+            def orderItemId = orderItem.orderItemId == null ? new OrderItemId(i) : orderItem.orderItemId
+            def balanceItem = balance.balanceItems.find { BalanceItem balanceItem ->
+                return balanceItem.orderItemId == orderItemId
             }
-            if (orderItem != null) {
-                orderItem?.totalTax = bi.taxAmount
-                orderItem?.isTaxExempted = bi.isTaxExempt
+            if (balanceItem != null) {
+                orderItem.totalTax = balanceItem.taxAmount
+                orderItem.isTaxExempted = balanceItem.isTaxExempt
+                if (orderItem.isTaxExempted == null) { // todo : remove this, this is a temporary workaround
+                    orderItem.isTaxExempted = false
+                }
             }
         }
     }

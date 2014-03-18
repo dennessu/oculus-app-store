@@ -172,11 +172,17 @@ class OrderRepositoryImpl implements OrderRepository {
         // TODO Log error and throw exception
         if (order == null) { return null }
         if (order.id == null) { return null }
+        def oldEntity = orderDao.read(order.id.value)
+        if(oldEntity == null) {
+            throw new IllegalArgumentException("name=Order_Not_Found")
+        }
 
         // Update Order
-        MappingContext context = new MappingContext()
-        def orderEntity = modelMapper.toOrderEntity(order, context)
+        def orderEntity = modelMapper.toOrderEntity(order, new MappingContext())
+        orderEntity.createdTime = oldEntity.createdTime
+        orderEntity.createdBy = oldEntity.createdBy
         orderDao.update(orderEntity)
+        fillDateInfo(order, orderEntity)
 
         if (!updateOnlyOrder) {
             saveOrderItems(order.id, order.orderItems)
@@ -196,6 +202,8 @@ class OrderRepositoryImpl implements OrderRepository {
         }
         repositoryFuncSet.update = { OrderItem newItem, OrderItem oldItem ->
             newItem.orderItemId = oldItem.orderItemId
+            newItem.createdBy = oldItem.createdBy
+            newItem.createdTime = oldItem.createdTime
             saveOrderItem(newItem, false)
             return true
         }
@@ -316,6 +324,9 @@ class OrderRepositoryImpl implements OrderRepository {
             orderItemDao.create(entity)
         } else {
             entity = modelMapper.toOrderItemEntity(orderItem, new MappingContext())
+            def oldEntity = orderItemDao.read(entity.orderItemId)
+            entity.createdTime = oldEntity.createdTime
+            entity.createdBy = oldEntity.createdBy
             orderItemDao.update(entity)
         }
         fillDateInfo(orderItem, entity)
@@ -330,6 +341,9 @@ class OrderRepositoryImpl implements OrderRepository {
             discountDao.create(entity)
         } else {
             entity = modelMapper.toDiscountEntity(discount, new MappingContext())
+            def oldEntity = discountDao.read(entity.discountInfoId)
+            entity.createdTime = oldEntity.createdTime
+            entity.createdBy = oldEntity.createdBy
             discountDao.update(entity)
         }
         fillDateInfo(discount, entity)

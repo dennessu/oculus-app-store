@@ -10,8 +10,13 @@
             <wf:on-entry>
                 <wf:action ref="validateUserAction"/>
                 <wf:action ref="ratingAction"/>
-                <wf:action ref="updateOrderAction"/>
+                <wf:action ref="update_tentative_updateOrderAction"/>
             </wf:on-entry>
         </wf:end-state>
     </wf:flow>
+
+    <bean id="update_tentative_updateOrderAction" class="com.junbo.order.core.impl.orderaction.SaveOrderAction">
+        <property name="newOrder" value="false"/>
+        <property name="orderActionType" value="RATE"/>
+    </bean>
 </beans>
