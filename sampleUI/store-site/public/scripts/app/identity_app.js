@@ -2,9 +2,10 @@ var App = Ember.App = Ember.Application.create();
 
 App.Router.map(function(){
     this.route("login");
-    this.route("register");
     this.route("captcha");
     this.route("tfa");
+    this.route("register");
+    this.route("pin");
     this.route("my");
 });
 
@@ -17,65 +18,48 @@ App.IndexRoute = Ember.Route.extend({
 App.LoginRoute = Ember.Route.extend({
     beforeModel: function(){
         console.log("[LoginRoute] Before Model");
-        Utils.GetViews(AppConfig.Templates.Login);
-    }
-});
-App.RegisterRoute = Ember.Route.extend({
-    beforeModel: function(){
-        console.log("[RegisterRoute] Before Model");
-        Utils.GetViews(AppConfig.Templates.Register);
+        Utils.GetViews(AppConfig.Templates.Identity.Login);
     }
 });
 App.CaptchaRoute = Ember.Route.extend({
     beforeModel: function(){
         console.log("[CaptchaRoute] Before Model");
-        Utils.GetViews(AppConfig.Templates.Captcha);
+        Utils.GetViews(AppConfig.Templates.Identity.Captcha);
     }
 });
 App.TfaRoute = Ember.Route.extend({
     beforeModel: function(){
         console.log("[CaptchaRoute] Before Model");
-        Utils.GetViews(AppConfig.Templates.TFA);
+        Utils.GetViews(AppConfig.Templates.Identity.TFA);
+    }
+});
+App.RegisterRoute = Ember.Route.extend({
+    beforeModel: function(){
+        console.log("[RegisterRoute] Before Model");
+        Utils.GetViews(AppConfig.Templates.Identity.Register);
+    }
+});
+App.PinRoute = Ember.Route.extend({
+    beforeModel: function(){
+        console.log("[PinRoute] Before Model");
+        Utils.GetViews(AppConfig.Templates.Identity.PIN);
     }
 });
 App.MyRoute = Ember.Route.extend({
     beforeModel: function(){
         console.log("[MyRoute] Before Model");
-        Utils.GetViews(AppConfig.Templates.My);
+        Utils.GetViews(AppConfig.Templates.Identity.My);
     }
 });
 
 App.LoginView = Ember.View.extend({
-    template: Ember.TEMPLATES[AppConfig.Templates.Login.name],
+    template: Ember.TEMPLATES[AppConfig.Templates.Identity.Login.name],
     didInsertElement: function(){
         $("form").validate();
     }
 });
-App.RegisterView = Ember.View.extend({
-    template: Ember.TEMPLATES[AppConfig.Templates.Register.name],
-    didInsertElement: function(){
-        jQuery.validator.addMethod("VerifyNumberValue", function(value, element) {
-            if(!isNaN(value)){
-                return true;
-            }
-            return false;
-        }, "Please select Birth Date.");
-
-        $("form").validate({
-            groups:{
-                username:"Month Day Year"
-            },
-            errorPlacement:function(error,element) {
-                if (element.attr("id") == "RMonth" || element.attr("id") == "RDay" || element.attr("id") == "RYear")
-                    error.insertAfter("#RYear");
-                else
-                    error.insertAfter(element);
-            }
-        });
-    }
-});
 App.CaptchaView = Ember.View.extend({
-    template: Ember.TEMPLATES[AppConfig.Templates.Captcha.name],
+    template: Ember.TEMPLATES[AppConfig.Templates.Identity.Captcha.name],
     didInsertElement: function(){
         Recaptcha.create(AppConfig.Google_Captcha_PublicKey, 'captchadiv',
             {
@@ -86,13 +70,42 @@ App.CaptchaView = Ember.View.extend({
     }
 });
 App.TfaView = Ember.View.extend({
-    template: Ember.TEMPLATES[AppConfig.Templates.TFA.name],
+    template: Ember.TEMPLATES[AppConfig.Templates.Identity.TFA.name],
+    didInsertElement: function(){
+        $("form").validate();
+    }
+});
+App.RegisterView = Ember.View.extend({
+    template: Ember.TEMPLATES[AppConfig.Templates.Identity.Register.name],
+    didInsertElement: function(){
+        jQuery.validator.addMethod("VerifyNumberValue", function(value, element) {
+            if(!isNaN(value)){
+                return true;
+            }
+            return false;
+        }, "Please select Birth Date.");
+
+        $("form").validate({
+            groups:{
+                Birthday: "RMonth RDay RYear"
+            },
+            errorPlacement:function(error,element) {
+                if (element.attr("id") == "RMonth" || element.attr("id") == "RDay" || element.attr("id") == "RYear")
+                    error.insertAfter("#RYear");
+                else
+                    error.insertAfter(element);
+            }
+        });
+    }
+});
+App.PinView = Ember.View.extend({
+    template: Ember.TEMPLATES[AppConfig.Templates.Identity.PIN.name],
     didInsertElement: function(){
         $("form").validate();
     }
 });
 App.MyView = Ember.View.extend({
-    template: Ember.TEMPLATES[AppConfig.Templates.My.name],
+    template: Ember.TEMPLATES[AppConfig.Templates.Identity.My.name],
     didInsertElement: function(){}
 });
 
@@ -109,7 +122,7 @@ App.LoginController = Ember.ObjectController.extend({
             console.log("[LoginController:Submit] Click Login");
 
             var _self = this;
-            var provider = new IdentityProvider();
+            var provider = new CatalogProvider();
 
             var model = new IdentityModels.LoginModel();
             model.event = Utils.Cookies.Get(AppConfig.CookiesName.Event);
@@ -150,7 +163,97 @@ App.LoginController = Ember.ObjectController.extend({
         }
     }
 });
+App.CaptchaController = Ember.ObjectController.extend({
+    content: {
+        errMessage: null
+    },
+    actions: {
+        Submit: function(){
+            console.log("[CaptchaController:Submit] Click Continue");
 
+            var _self = this;
+            var isFailed = false;
+
+            var verifyData = {
+                recaptcha_challenge_field: $("#recaptcha_challenge_field").val(),
+                recaptcha_response_field: $("#recaptcha_response_field").val()
+            };
+
+            var provider = new CatalogProvider();
+
+            provider.Captcha(Utils.GenerateRequestModel(verifyData), function(data){
+                var resultModel = data.data;
+                if(resultModel.status == 200){
+                    _self.set("content.errMessage", null);
+
+                    var redirectUrl = Utils.Cookies.Get(AppConfig.CookiesName.RedirectUrl);
+                    // show captcha
+                    if(AppConfig.Feature.TFA){
+                        _self.transitionToRouteAnimated('tfa', {main: 'flip'});
+                        return;
+                    }else if(redirectUrl != null && redirectUrl != ""){
+                        location.href = redirectUrl;
+                    }else{
+                        _self.transitionToRouteAnimated('my', {main: 'flip'});
+                        return;
+                    }
+                }else{
+                    // error
+                    isFailed = true;
+                    _self.set("content.errMessage", "Please try again!");
+                    Recaptcha.reload();
+                }
+            });
+        },
+        Cancel: function(){
+            console.log("[CaptchaController:Cancel] Click Cancel");
+            this.transitionToRouteAnimated('login', {main: 'flip'});
+        }
+    }
+});
+App.TfaController = Ember.ObjectController.extend({
+    content:{
+        code: "",
+        remember: false
+    },
+    actions: {
+        Submit: function(){
+            console.log("[TfaController:Submit] Click Verify");
+
+            var _self = this;
+            var provider = new CatalogProvider();
+
+            var tfaModel = new IdentityModels.TFAModel();
+            tfaModel.code = this.get("content.code");
+            tfaModel.remember = this.get("content.remember");
+
+            provider.TFA(Utils.GenerateRequestModel(tfaModel), function(data){
+                var resultModel = data.data;
+                if(resultModel.status == 200){
+                    _self.set("content.errMessage", null);
+
+                    // redirect
+                    var redirectUrl = Utils.Cookies.Get(AppConfig.CookiesName.RedirectUrl);
+                    // show captcha
+                   if(redirectUrl != null && redirectUrl != ""){
+                        location.href = redirectUrl;
+                    }else{
+                       _self.transitionToRouteAnimated('my', {main: 'flip'});
+                        return;
+                    }
+                    _self.set("content.errMessage", null);
+                }else{
+                    // error
+                    _self.set("content.errMessage", "Please try again!");
+                }
+            });
+        },
+        Cancel: function(){
+            console.log("[TfaController:Cancel] Click Cancel");
+            this.transitionToRouteAnimated('login', {main: 'flip'});
+        }
+    }
+});
 App.RegisterController = Ember.ObjectController.extend({
     errMessage: null,
     months:(function(){
@@ -194,7 +297,7 @@ App.RegisterController = Ember.ObjectController.extend({
         Submit: function(){
             console.log("[RegisterController:Submit] Click Continue");
             var _self = this;
-            var provider = new IdentityProvider();
+            var provider = new CatalogProvider();
 
             var model = new IdentityModels.RegisterModel();
             Utils.FillObject(model, this.get("content"), "OneWay");
@@ -210,8 +313,8 @@ App.RegisterController = Ember.ObjectController.extend({
                     if(AppConfig.Feature.Captcha){
                         _self.transitionToRouteAnimated('captcha', {main: 'flip'});
                         return;
-                    }else if(AppConfig.Feature.TFA){
-                        _self.transitionToRouteAnimated('tfa', {main: 'flip'});
+                    }else if(AppConfig.Feature.PIN){
+                        _self.transitionToRouteAnimated('pin', {main: 'flip'});
                         return;
                     }else if(redirectUrl != null && redirectUrl != ""){
                         location.href = redirectUrl;
@@ -233,72 +336,19 @@ App.RegisterController = Ember.ObjectController.extend({
         }
     }
 });
-
-App.CaptchaController = Ember.ObjectController.extend({
-    content: {
-        errMessage: null
-    },
-    actions: {
-        Submit: function(){
-            console.log("[CaptchaController:Submit] Click Continue");
-
-            var _self = this;
-            var isFailed = false;
-
-            var verifyData = {
-                recaptcha_challenge_field: $("#recaptcha_challenge_field").val(),
-                recaptcha_response_field: $("#recaptcha_response_field").val()
-            };
-
-            var provider = new IdentityProvider();
-
-            provider.Captcha(Utils.GenerateRequestModel(verifyData), function(data){
-                var resultModel = data.data;
-                if(resultModel.status == 200){
-                    _self.set("content.errMessage", null);
-
-                    var redirectUrl = Utils.Cookies.Get(AppConfig.CookiesName.RedirectUrl);
-                    // show captcha
-                    if(AppConfig.Feature.TFA){
-                        _self.transitionToRouteAnimated('tfa', {main: 'flip'});
-                        return;
-                    }else if(redirectUrl != null && redirectUrl != ""){
-                        location.href = redirectUrl;
-                    }else{
-                        _self.transitionToRouteAnimated('my', {main: 'flip'});
-                        return;
-                    }
-                }else{
-                    // error
-                    isFailed = true;
-                    _self.set("content.errMessage", "Please try again!");
-                    Recaptcha.reload();
-                }
-            });
-        },
-        Cancel: function(){
-            console.log("[CaptchaController:Cancel] Click Cancel");
-            this.transitionToRouteAnimated('login', {main: 'flip'});
-        }
-    }
-});
-App.TfaController = Ember.ObjectController.extend({
+App.PinController = Ember.ObjectController.extend({
     content:{
         code: "",
-        remember: false
+        errMessage: ""
     },
     actions: {
         Submit: function(){
-            console.log("[TfaController:Submit] Click Verify");
+            console.log("[PinController:Submit] Click Continue");
 
             var _self = this;
-            var provider = new IdentityProvider();
+            var provider = new CatalogProvider();
 
-            var tfaModel = new IdentityModels.TFAModel();
-            tfaModel.code = this.get("content.code");
-            tfaModel.remember = this.get("content.remember");
-
-            provider.TFA(Utils.GenerateRequestModel(tfaModel), function(data){
+            provider.PIN(Utils.GenerateRequestModel({code: this.get("content.code")}), function(data){
                 var resultModel = data.data;
                 if(resultModel.status == 200){
                     _self.set("content.errMessage", null);
@@ -306,10 +356,10 @@ App.TfaController = Ember.ObjectController.extend({
                     // redirect
                     var redirectUrl = Utils.Cookies.Get(AppConfig.CookiesName.RedirectUrl);
                     // show captcha
-                   if(redirectUrl != null && redirectUrl != ""){
+                    if(redirectUrl != null && redirectUrl != ""){
                         location.href = redirectUrl;
                     }else{
-                       _self.transitionToRouteAnimated('my', {main: 'flip'});
+                        _self.transitionToRouteAnimated('my', {main: 'flip'});
                         return;
                     }
                     _self.set("content.errMessage", null);
@@ -320,7 +370,7 @@ App.TfaController = Ember.ObjectController.extend({
             });
         },
         Cancel: function(){
-            console.log("[TfaController:Cancel] Click Cancel");
+            console.log("[PinController:Cancel] Click Cancel");
             this.transitionToRouteAnimated('login', {main: 'flip'});
         }
     }
