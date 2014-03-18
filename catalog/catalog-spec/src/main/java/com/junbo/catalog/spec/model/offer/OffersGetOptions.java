@@ -19,6 +19,10 @@ public class OffersGetOptions extends EntitiesGetOptions {
     @QueryParam("id")
     private List<OfferId> offerIds;
 
+    public static OffersGetOptions getDefault() {
+        return setDefaults(new OffersGetOptions());
+    }
+
     public List<OfferId> getOfferIds() {
         return offerIds;
     }

@@ -1,7 +1,6 @@
 
-exports.Login = function(req, res){
-    res.render('identity/login');
-};
-exports.Register = function(req, res){
-    res.render('identity/register');
-};
+var Identity = require('./identity');
+var Store = require('./store');
+
+exports.Identity = Identity;
+exports.Store = Store;

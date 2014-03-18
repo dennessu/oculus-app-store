@@ -14,4 +14,8 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class CouchRememberMeTokenDAOImpl extends CouchBaseDAO<RememberMeTokenEntity> implements RememberMeTokenDAO {
+    @Override
+    protected CouchViews getCouchViews() {
+        return null
+    }
 }

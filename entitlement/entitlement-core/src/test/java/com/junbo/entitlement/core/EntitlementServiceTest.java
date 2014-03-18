@@ -13,7 +13,10 @@ import com.junbo.entitlement.common.lib.CloneUtils;
 import com.junbo.entitlement.common.lib.EntitlementContext;
 import com.junbo.entitlement.db.entity.def.EntitlementStatus;
 import com.junbo.entitlement.db.entity.def.EntitlementType;
-import com.junbo.entitlement.spec.model.*;
+import com.junbo.entitlement.spec.model.Entitlement;
+import com.junbo.entitlement.spec.model.EntitlementSearchParam;
+import com.junbo.entitlement.spec.model.EntitlementTransfer;
+import com.junbo.entitlement.spec.model.PageMetadata;
 import com.junbo.sharding.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -38,8 +41,6 @@ public class EntitlementServiceTest extends AbstractTransactionalTestNGSpringCon
     private IdGenerator idGenerator;
     @Autowired
     private EntitlementService entitlementService;
-    @Autowired
-    private EntitlementDefinitionService entitlementDefinitionService;
 
     @Override
     @Autowired
@@ -102,7 +103,7 @@ public class EntitlementServiceTest extends AbstractTransactionalTestNGSpringCon
             Entitlement entitlementEntity = buildAnEntitlement();
             entitlementEntity.setUserId(userId);
             entitlementEntity.setManagedLifecycle(true);
-            entitlementEntity.setEntitlementDefinitionId(buildAnEntitlementDefinition().getEntitlementDefinitionId());
+            entitlementEntity.setEntitlementDefinitionId(idGenerator.nextId());
             entitlementEntity.setExpirationTime(new Date(114, 2, 20));
             entitlementService.addEntitlement(entitlementEntity);
         }
@@ -157,32 +158,20 @@ public class EntitlementServiceTest extends AbstractTransactionalTestNGSpringCon
         Assert.assertEquals(addedEntitlement.getEntitlementId(), entitlement2.getEntitlementId());
         Assert.assertEquals(entitlement2.getStatus(), EntitlementStatus.ACTIVE.toString());
         Assert.assertEquals(entitlement2.getUseCount().intValue(), 40);
-    }
 
-    @Test(expectedExceptions = AppErrorException.class)
-    public void testUpdateUsedEntitlementDefinition() {
-        Entitlement entitlement = buildAnEntitlement();
-        entitlement = entitlementService.addEntitlement(entitlement);
-        EntitlementDefinition entitlementDefinition = entitlementDefinitionService.getEntitlementDefinition(entitlement.getEntitlementDefinitionId());
-        entitlementDefinition.setGroup("ANOTHER_GROUP");
-        entitlementDefinitionService.updateEntitlementDefinition(entitlementDefinition.getEntitlementDefinitionId(), entitlementDefinition);
-
-        entitlement.setStatus("BANNED");
-        entitlementService.updateEntitlement(entitlement.getEntitlementId(), entitlement);
-        entitlementDefinition = entitlementDefinitionService.updateEntitlementDefinition(entitlementDefinition.getEntitlementDefinitionId(), entitlementDefinition);
-        Assert.assertEquals(entitlementDefinition.getGroup(), "ANOTHER_GROUP");
-    }
-
-    @Test
-    public void testUpdateUnusedEntitlementDefinition() {
-        Entitlement entitlement = buildAnEntitlement();
-        entitlement = entitlementService.addEntitlement(entitlement);
-        EntitlementDefinition entitlementDefinition = entitlementDefinitionService.getEntitlementDefinition(entitlement.getEntitlementDefinitionId());
-        entitlementDefinition.setGroup("ANOTHER_GROUP");
-        entitlement.setStatus("BANNED");
-        entitlementService.updateEntitlement(entitlement.getEntitlementId(), entitlement);
-        entitlementDefinition = entitlementDefinitionService.updateEntitlementDefinition(entitlementDefinition.getEntitlementDefinitionId(), entitlementDefinition);
-        Assert.assertEquals(entitlementDefinition.getGroup(), "ANOTHER_GROUP");
+        entitlement = buildAnEntitlement();
+        entitlement.setManagedLifecycle(true);
+        entitlement.setConsumable(true);
+        entitlement.setUseCount(0);
+        addedEntitlement = entitlementService.addEntitlement(entitlement);
+        e1 = CloneUtils.clone(addedEntitlement);
+        e1.setUseCount(40);
+        e1.setExpirationTime(new Date(814, 0, 22));
+        e1.setEntitlementDefinitionId(null);
+        e2 = entitlementService.addEntitlement(e1);
+        Assert.assertEquals(addedEntitlement.getEntitlementId(), e2.getEntitlementId());
+        Assert.assertEquals(e2.getStatus(), EntitlementStatus.ACTIVE.toString());
+        Assert.assertEquals(e2.getUseCount().intValue(), 40);
     }
 
     private Entitlement buildAnEntitlement() {
@@ -193,25 +182,15 @@ public class EntitlementServiceTest extends AbstractTransactionalTestNGSpringCon
         entitlement.setGrantTime(new Date(114, 0, 22));
         entitlement.setExpirationTime(new Date(114, 0, 28));
 
-        EntitlementDefinition definition = buildAnEntitlementDefinition();
-        entitlement.setEntitlementDefinitionId(definition.getEntitlementDefinitionId());
-        entitlement.setGroup(definition.getGroup());
-        entitlement.setTag(definition.getTag());
-        entitlement.setType(definition.getType());
-        entitlement.setDeveloperId(definition.getDeveloperId());
+        entitlement.setEntitlementDefinitionId(idGenerator.nextId());
+        entitlement.setGroup("TEST");
+        entitlement.setTag("TEST");
+        entitlement.setType(EntitlementType.DEFAULT.toString());
+        entitlement.setDeveloperId(idGenerator.nextId());
         entitlement.setOfferId(idGenerator.nextId());
         entitlement.setStatus(EntitlementStatus.ACTIVE.toString());
         entitlement.setUseCount(0);
         entitlement.setManagedLifecycle(false);
         return entitlement;
-    }
-
-    private EntitlementDefinition buildAnEntitlementDefinition() {
-        EntitlementDefinition entitlementDefinition = new EntitlementDefinition();
-        entitlementDefinition.setTag("TEST_ACCESS");
-        entitlementDefinition.setGroup("testGroup");
-        entitlementDefinition.setType(EntitlementType.DEFAULT.toString());
-        entitlementDefinition.setDeveloperId(idGenerator.nextId());
-        return entitlementDefinitionService.addEntitlementDefinition(entitlementDefinition);
     }
 }

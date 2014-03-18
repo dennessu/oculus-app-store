@@ -1,7 +1,8 @@
 package com.junbo.ewallet.spec.model
 
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.junbo.common.jackson.annotation.OfferId
 import groovy.transform.CompileStatic
-
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
@@ -14,6 +15,8 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class DebitRequest {
     UUID trackingUuid
+    @OfferId
+    @JsonProperty('offer')
     Long offerId
     BigDecimal amount
 }

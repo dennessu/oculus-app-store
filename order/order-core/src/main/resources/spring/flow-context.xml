@@ -20,9 +20,6 @@
     <bean id="authSettleAction" class="com.junbo.order.core.impl.orderaction.AuthSettleAction">
     </bean>
 
-    <bean id="createOrderAction" class="com.junbo.order.core.impl.orderaction.CreateOrderAction">
-    </bean>
-
     <bean id="fulfillmentAction" class="com.junbo.order.core.impl.orderaction.FulfillmentAction">
     </bean>
 

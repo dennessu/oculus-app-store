@@ -6,8 +6,9 @@
 package com.junbo.fulfilment.clientproxy.mock;
 
 import com.junbo.catalog.spec.model.offer.*;
+import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.fulfilment.clientproxy.impl.CatalogGatewayImpl;
-import com.junbo.fulfilment.spec.fusion.ShippingMethod;
+import com.junbo.fulfilment.spec.fusion.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;

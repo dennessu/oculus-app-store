@@ -6,15 +6,18 @@
 
 package com.junbo.entitlement.core.service;
 
+import com.junbo.catalog.spec.model.entitlementdef.EntitlementType;
 import com.junbo.entitlement.common.def.EntitlementStatusReason;
 import com.junbo.entitlement.common.lib.CloneUtils;
+import com.junbo.entitlement.common.lib.EntitlementContext;
 import com.junbo.entitlement.core.EntitlementService;
 import com.junbo.entitlement.db.entity.def.EntitlementStatus;
-import com.junbo.entitlement.db.entity.def.EntitlementType;
-import com.junbo.entitlement.db.repository.EntitlementDefinitionRepository;
 import com.junbo.entitlement.db.repository.EntitlementRepository;
 import com.junbo.entitlement.spec.error.AppErrors;
-import com.junbo.entitlement.spec.model.*;
+import com.junbo.entitlement.spec.model.Entitlement;
+import com.junbo.entitlement.spec.model.EntitlementSearchParam;
+import com.junbo.entitlement.spec.model.EntitlementTransfer;
+import com.junbo.entitlement.spec.model.PageMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +34,6 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     private static final Logger LOGGER = LoggerFactory.getLogger(EntitlementService.class);
     @Autowired
     private EntitlementRepository entitlementRepository;
-    @Autowired
-    private EntitlementDefinitionRepository entitlementDefinitionRepository;
 
     @Override
     @Transactional
@@ -51,17 +52,6 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
         checkOffer(entitlement.getOfferId());
         checkDeveloper(entitlement.getDeveloperId());
 
-        if (EntitlementStatus.LIFECYCLE_NOT_MANAGED_STATUS.contains(
-                EntitlementStatus.valueOf(entitlement.getStatus()))) {
-            LOGGER.error("Can not created {} entitlement.", entitlement.getStatus());
-            throw AppErrors.INSTANCE.fieldNotCorrect("status",
-                    "status can not be DELETED or BANNED when created").exception();
-        }
-
-        checkEntitlementDefinition(entitlement.getEntitlementDefinitionId());
-
-        validateGrantTimeBeforeExpirationTime(entitlement);
-
         if (entitlement.getType() == null) {
             entitlement.setType(EntitlementType.DEFAULT.toString());
         }
@@ -77,12 +67,40 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
             entitlement.setUseCount(0);
         }
 
+        if(entitlement.getStatus() == null){
+            if(!entitlement.getManagedLifecycle()){
+                throw AppErrors.INSTANCE.missingField("status").exception();
+            } else {
+                entitlement.setStatus(EntitlementStatus.MANAGED.toString());
+            }
+        }
+
+        if (EntitlementStatus.LIFECYCLE_NOT_MANAGED_STATUS.contains(
+                EntitlementStatus.valueOf(entitlement.getStatus()))) {
+            LOGGER.error("Can not created {} entitlement.", entitlement.getStatus());
+            throw AppErrors.INSTANCE.fieldNotCorrect("status",
+                    "status can not be DELETED or BANNED when created").exception();
+        }
+
+        if(entitlement.getGrantTime() == null){
+            entitlement.setGrantTime(EntitlementContext.current().getNow());
+        }
+
+        checkEntitlementDefinition(entitlement.getEntitlementDefinitionId());
+
+        validateGrantTimeBeforeExpirationTime(entitlement);
+
         //if managedLifecycle is true, try to merge the added entitlement into existing entitlement
-        //not deal with developer entitlement as developer entitlement is bounded to userId only
-        if (Boolean.TRUE.equals(entitlement.getManagedLifecycle()) &&
-                !entitlement.getType().equalsIgnoreCase(EntitlementType.DEVELOPER.toString())) {
-            Entitlement existingEntitlement = entitlementRepository.getExistingManagedEntitlement(
-                    entitlement.getUserId(), entitlement.getEntitlementDefinitionId());
+        if (Boolean.TRUE.equals(entitlement.getManagedLifecycle())) {
+            Entitlement existingEntitlement = null;
+            if (entitlement.getEntitlementDefinitionId() != null) {
+                existingEntitlement = entitlementRepository.getExistingManagedEntitlement(
+                        entitlement.getUserId(), entitlement.getEntitlementDefinitionId());
+            } else {
+                existingEntitlement = entitlementRepository.getExistingManagedEntitlement(
+                        entitlement.getUserId(), entitlement.getType(),
+                        entitlement.getDeveloperId(), entitlement.getGroup(), entitlement.getTag());
+            }
             if (existingEntitlement != null) {
                 LOGGER.info("Merge added entitlement into existing entitlement [{}].",
                         existingEntitlement.getEntitlementId());
@@ -102,7 +120,6 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
 
         return entitlementRepository.insert(entitlement);
     }
-
 
 
     @Override
@@ -153,7 +170,8 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
                     existingEntitlement.getTag()).exception();
         }
 
-        if (existingEntitlement.getGrantTime().compareTo(entitlement.getGrantTime()) != 0) {
+        if (entitlement.getGrantTime() == null ||
+                existingEntitlement.getGrantTime().compareTo(entitlement.getGrantTime()) != 0) {
             throw AppErrors.INSTANCE.fieldNotMatch("grantTime",
                     entitlement.getGrantTime(),
                     existingEntitlement.getGrantTime()).exception();
@@ -266,9 +284,5 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     @Transactional
     public Entitlement getByTrackingUuid(UUID trackingUuid) {
         return entitlementRepository.getByTrackingUuid(trackingUuid);
-    }
-
-    private void checkEntitlementDefinition(Long entitlementDefinitionId) {
-
     }
 }

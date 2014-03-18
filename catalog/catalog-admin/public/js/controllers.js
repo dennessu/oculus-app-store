@@ -12,14 +12,34 @@ app.run(function ($rootScope, $templateCache) {
   });
 });
 
-app.controller('OfferListCtrl', ['$scope', 'OffersFactory',
-  function($scope, OffersFactory) {
+app.controller('OfferListCtrl', ['$scope', 'OffersFactory', '$location',
+  function($scope, OffersFactory, $location) {
+      $scope.createOffer = function () {
+          OffersFactory.create($scope.offer, function(offer){
+              $location.path('/offers/' + offer.self.id);
+          });
+      };
+      $scope.cancel = function () {
+          $location.path('/offers');
+      };
   	  $scope.offers = OffersFactory.query();
   }]);
 
-app.controller('OfferDetailCtrl', ['$scope', 'OfferFactory', '$routeParams',
-    function($scope, OfferFactory, $routeParams) {
-        $scope.offer = OfferFactory.query({id: $routeParams.id});
+app.controller('OfferDetailCtrl', ['$scope', 'OfferFactory', '$routeParams', '$location',
+    function($scope, OfferFactory, $routeParams, $location) {
+        console.log("OfferDetailCtrl");
+        console.log($routeParams);
+
+        $scope.updateOffer = function () {
+            OfferFactory.update({id: $routeParams.id}, $scope.offer);
+            $location.path('/offers/' + $routeParams.id);
+        };
+
+        $scope.cancel = function () {
+            $location.path('/offers/' + $routeParams.id);
+        };
+
+        $scope.offer = OfferFactory.query($routeParams);
     }]);
 
 app.controller('MyCtrl2', [function() {
