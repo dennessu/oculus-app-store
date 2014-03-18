@@ -18,7 +18,7 @@ public interface FulfilmentService {
 
     FulfilmentRequest retrieveRequest(Long requestId);
 
-    FulfilmentRequest retrieveRequestByBillingOrderId(Long billingOrderId);
+    FulfilmentRequest retrieveRequestByOrderId(Long billingOrderId);
 
     FulfilmentItem retrieveFulfilmentItem(Long fulfilmentId);
 }
