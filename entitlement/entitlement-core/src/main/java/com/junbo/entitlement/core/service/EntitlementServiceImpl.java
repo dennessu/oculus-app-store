@@ -91,9 +91,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
         validateGrantTimeBeforeExpirationTime(entitlement);
 
         //if managedLifecycle is true, try to merge the added entitlement into existing entitlement
-        //not deal with developer entitlement as developer entitlement is bounded to userId only
-        if (Boolean.TRUE.equals(entitlement.getManagedLifecycle()) &&
-                !entitlement.getType().equalsIgnoreCase(EntitlementType.DEVELOPER.toString())) {
+        if (Boolean.TRUE.equals(entitlement.getManagedLifecycle())) {
             Entitlement existingEntitlement = null;
             if (entitlement.getEntitlementDefinitionId() != null) {
                 existingEntitlement = entitlementRepository.getExistingManagedEntitlement(
