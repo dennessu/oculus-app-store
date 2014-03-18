@@ -33,12 +33,12 @@ class AccessTokenRepositoryImpl implements AccessTokenRepository {
     }
 
     @Override
-    void save(AccessToken accessToken) {
+    AccessToken save(AccessToken accessToken) {
         if (accessToken.tokenValue == null) {
             accessToken.tokenValue = tokenGenerator.generateAccessToken()
         }
 
-        accessTokenDAO.save(unwrap(accessToken))
+        return wrap(accessTokenDAO.save(unwrap(accessToken)))
     }
 
     @Override
@@ -47,8 +47,30 @@ class AccessTokenRepositoryImpl implements AccessTokenRepository {
     }
 
     @Override
+    List<AccessToken> findByRefreshToken(String refreshTokenValue) {
+        List<AccessTokenEntity> entities = accessTokenDAO.findByRefreshToken(refreshTokenValue)
+
+        return entities.collect { AccessTokenEntity entity ->
+            return wrap(entity)
+        }
+    }
+
+    @Override
+    AccessToken update(AccessToken accessToken) {
+        return wrap(accessTokenDAO.update(unwrap(accessToken)))
+    }
+
+    @Override
     void remove(String tokenValue) {
-        accessTokenDAO.delete(tokenValue)
+        def entity = accessTokenDAO.get(tokenValue)
+        if (entity != null) {
+            accessTokenDAO.delete(entity)
+        }
+    }
+
+    @Override
+    boolean isValidAccessToken(String tokenValue) {
+        return tokenGenerator.isValidAccessToken(tokenValue)
     }
 
     private static AccessTokenEntity unwrap(AccessToken accessToken) {
@@ -57,11 +79,13 @@ class AccessTokenRepositoryImpl implements AccessTokenRepository {
         }
 
         return new AccessTokenEntity(
-                tokenValue: accessToken.tokenValue,
+                id: accessToken.tokenValue,
                 clientId: accessToken.clientId,
                 userId: accessToken.userId,
                 scopes: accessToken.scopes,
-                expiredBy: accessToken.expiredBy
+                expiredBy: accessToken.expiredBy,
+                refreshTokenValue: accessToken.refreshTokenValue,
+                revision: accessToken.revision
         )
     }
 
@@ -70,11 +94,13 @@ class AccessTokenRepositoryImpl implements AccessTokenRepository {
             return null
         }
         return new AccessToken(
-                tokenValue: entity.tokenValue,
+                tokenValue: entity.id,
                 clientId: entity.clientId,
                 userId: entity.userId,
                 scopes: entity.scopes,
-                expiredBy: entity.expiredBy
+                expiredBy: entity.expiredBy,
+                refreshTokenValue: entity.refreshTokenValue,
+                revision: entity.revision
         )
     }
 }

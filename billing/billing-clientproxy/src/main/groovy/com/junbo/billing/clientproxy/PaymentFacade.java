@@ -14,7 +14,7 @@ import com.junbo.payment.spec.model.PaymentTransaction;
  * Created by xmchen on 2/20/14.
  */
 public interface PaymentFacade {
-    Promise<PaymentInstrument> getPaymentInstrument(Long piId);
+    Promise<PaymentInstrument> getPaymentInstrument(Long userId, Long piId);
 
     Promise<PaymentTransaction> postPaymentCharge(PaymentTransaction request);
 

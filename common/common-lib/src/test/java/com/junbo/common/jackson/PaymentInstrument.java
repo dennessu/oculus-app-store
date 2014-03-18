@@ -57,6 +57,6 @@ public class PaymentInstrument {
     @PaymentInstrumentId
     public CascadeResource getCascadePaymentInstrumentId2() {
         return paymentInstrumentId2 == null ? null
-                : new CascadeResource(paymentInstrumentId, new Object[]{userId, paymentInstrumentId});
+                : new CascadeResource(paymentInstrumentId, new Object[]{userId, paymentInstrumentId2});
     }
 }

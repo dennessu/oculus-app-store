@@ -11,6 +11,7 @@ import com.junbo.ewallet.db.entity.def.NotEnoughMoneyException;
 import com.junbo.ewallet.db.entity.def.TransactionType;
 import com.junbo.ewallet.db.entity.hibernate.LotTransactionEntity;
 import com.junbo.ewallet.db.entity.hibernate.WalletLotEntity;
+import org.hibernate.CacheMode;
 import org.hibernate.Query;
 import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
@@ -22,8 +23,6 @@ import java.util.Date;
  * Hibernate impl of WalletLotDao.
  */
 public class WalletLotDaoImpl extends BaseDao<WalletLotEntity> implements WalletLotDao {
-    public static final int SCROLL_THRESHOLD = 50;
-
     @Override
     public WalletLotEntity insert(WalletLotEntity lot) {
         Date now = new Date();
@@ -53,10 +52,10 @@ public class WalletLotDaoImpl extends BaseDao<WalletLotEntity> implements Wallet
                 .addEntity(WalletLotEntity.class)
                 .setLong("walletId", walletId)
                 .setDate("now", new Date());
+        q.setCacheMode(CacheMode.IGNORE);
         ScrollableResults result = q.scroll(ScrollMode.FORWARD_ONLY);
 
         try {
-            int i = 0;
             while (result.next()) {
                 WalletLotEntity lot = (WalletLotEntity) result.get(0);
                 BigDecimal remaining = lot.getRemainingAmount();
@@ -71,11 +70,6 @@ public class WalletLotDaoImpl extends BaseDao<WalletLotEntity> implements Wallet
                     currentSession().save(buildDebitLotTransaction(lot, remaining));
                 }
                 sum = sum.subtract(remaining);
-                i++;
-                if (i == SCROLL_THRESHOLD) {
-                    currentSession().clear();
-                    i = 0;
-                }
             }
         } finally {
             result.close();

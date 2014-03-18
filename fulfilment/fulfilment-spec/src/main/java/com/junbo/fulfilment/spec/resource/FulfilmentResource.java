@@ -19,7 +19,7 @@ import javax.ws.rs.core.MediaType;
 /**
  * FulfilmentResource.
  */
-@Path("fulfilments")
+@Path("/fulfilments")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 @RestResource
@@ -30,7 +30,7 @@ public interface FulfilmentResource {
 
     @GET
     @Path("/")
-    Promise<FulfilmentRequest> getByBillingOrderId(@QueryParam("orderId") OrderId orderId);
+    Promise<FulfilmentRequest> getByOrderId(@QueryParam("orderId") OrderId orderId);
 
     @GET
     @Path("/{fulfilmentId}")

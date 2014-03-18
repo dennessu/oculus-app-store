@@ -11,10 +11,8 @@ import groovy.transform.CompileStatic
  * Javadoc.
  */
 @CompileStatic
-class LoginStateEntity {
-    String id
+class LoginStateEntity extends BaseEntity {
     Long userId
-    Date expiredBy
     Date lastAuthDate
     String sessionId
 }

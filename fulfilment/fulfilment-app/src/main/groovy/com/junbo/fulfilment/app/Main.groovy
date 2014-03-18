@@ -16,10 +16,6 @@ import org.glassfish.jersey.server.ResourceConfig
 import org.glassfish.jersey.server.ServerProperties
 import org.slf4j.bridge.SLF4JBridgeHandler
 
-import java.util.logging.Handler
-import java.util.logging.Level
-import java.util.logging.Logger
-
 /**
  * Main
  */
@@ -38,7 +34,7 @@ class Main {
                 .register(RestExceptionMapper)
                 .register(IdTypeFromStringProvider)
 
-        def uri = URI.create('http://localhost:8080/rest')
+        def uri = URI.create('http://localhost:8091/rest')
         return GrizzlyHttpServerFactory.createHttpServer(uri, resourceConfig)
     }
 

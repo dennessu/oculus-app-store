@@ -12,6 +12,8 @@ import com.junbo.fulfilment.common.exception.EntitlementGatewayException;
 import com.junbo.fulfilment.common.util.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.UUID;
+
 /**
  * EntitlementGatewayImpl.
  */
@@ -24,8 +26,9 @@ public class EntitlementGatewayImpl implements EntitlementGateway {
     public String grant(com.junbo.fulfilment.spec.fusion.Entitlement input) {
         try {
             Entitlement entitlement = Utils.map(input, Entitlement.class);
-            Entitlement result = entitlementResource.postEntitlement(entitlement).wrapped().get();
+            entitlement.setTrackingUuid(UUID.randomUUID());
 
+            Entitlement result = entitlementResource.postEntitlement(entitlement).wrapped().get();
             return result.getEntitlementId().toString();
         } catch (Exception e) {
             throw new EntitlementGatewayException("Error occurred during calling [Entitlement] component service.", e);

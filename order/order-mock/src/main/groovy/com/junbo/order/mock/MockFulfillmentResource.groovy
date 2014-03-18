@@ -24,7 +24,7 @@ class MockFulfillmentResource extends BaseMock implements FulfilmentResource {
     }
 
     @Override
-    Promise<FulfilmentRequest> getByBillingOrderId(OrderId orderId) {
+    Promise<FulfilmentRequest> getByOrderId(OrderId orderId) {
         return null
     }
 

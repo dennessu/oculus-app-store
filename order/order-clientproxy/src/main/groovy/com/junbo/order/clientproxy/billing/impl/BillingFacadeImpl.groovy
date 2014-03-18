@@ -20,7 +20,7 @@ import javax.annotation.Resource
  * Created by chriszhu on 2/19/14.
  */
 @CompileStatic
-@Component('billingFacade')
+@Component('orderBillingFacade')
 @TypeChecked
 class BillingFacadeImpl implements BillingFacade {
     @Resource(name='billingBalanceClient')

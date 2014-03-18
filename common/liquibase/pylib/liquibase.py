@@ -101,7 +101,8 @@ def run(inputParam):
 		update                  Update schema to current version
 	""")
     sys.stdout.flush()
-    inputParam.command = raw_input("Liquibase command to run: ")
+    if inputParam.command == "":
+        inputParam.command = raw_input("Liquibase command to run: ")
 	
 	#Build the command line args to run
     cmd = list([os.path.abspath('.') + "/liquibase"])

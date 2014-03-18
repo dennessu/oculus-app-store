@@ -10,7 +10,6 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.junbo.common.jackson.deserializer.ResourceIdDeserializer;
 import com.junbo.common.jackson.serializer.CascadeResourceIdSerializer;
-import com.junbo.common.jackson.serializer.ResourceIdSerializer;
 
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;

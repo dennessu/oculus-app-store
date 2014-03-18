@@ -1,6 +1,7 @@
 package com.junbo.order.clientproxy.cache
 
 import com.junbo.catalog.spec.model.offer.Offer
+import com.junbo.common.id.OfferId
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.catalog.CatalogFacade
 import groovy.transform.CompileStatic
@@ -9,6 +10,7 @@ import net.sf.ehcache.CacheManager
 import net.sf.ehcache.Element
 import net.sf.ehcache.Status
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.cache.ehcache.EhCacheCacheManager
 
 /**
@@ -18,6 +20,7 @@ import org.springframework.cache.ehcache.EhCacheCacheManager
 class CachedCatalogFacadeImpl implements CatalogFacade {
 
     @Autowired
+    @Qualifier('orderCatalogFacade')
     CatalogFacade catalogFacade
 
     CacheManager cacheManager
@@ -52,5 +55,15 @@ class CachedCatalogFacadeImpl implements CatalogFacade {
         } )
         return offerPromise
 
+    }
+
+    @Override
+    Promise<Offer> getOffer(Long offerId, Date honoredTime) {
+        return catalogFacade.getOffer(offerId, honoredTime)
+    }
+
+    @Override
+    Promise<List<Offer>> getOffers(List<OfferId> offerIds) {
+        return null
     }
 }

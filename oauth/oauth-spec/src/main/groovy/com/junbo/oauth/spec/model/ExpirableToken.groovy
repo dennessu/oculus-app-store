@@ -16,6 +16,9 @@ abstract class ExpirableToken {
     Date expiredBy
 
     @JsonIgnore
+    String revision
+
+    @JsonIgnore
     boolean isExpired() {
         return expiredBy.before(new Date())
     }

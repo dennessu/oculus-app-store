@@ -40,3 +40,7 @@ tmux-*.log
 
 # btm log
 *.tlog
+
+# activemq log
+**/activemq-data/**
+

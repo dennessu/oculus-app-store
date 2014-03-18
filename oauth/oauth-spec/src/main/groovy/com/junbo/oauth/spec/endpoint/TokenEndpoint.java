@@ -25,7 +25,7 @@ import javax.ws.rs.core.MultivaluedMap;
 @Path("token")
 @RestResource
 @Produces(MediaType.APPLICATION_JSON)
-@Consumes("application/x-www-form-urlencoded")
+@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 public interface TokenEndpoint {
 
     @POST

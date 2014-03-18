@@ -5,7 +5,9 @@
  */
 package com.junbo.order.spec.model;
 
-import javax.ws.rs.core.HttpHeaders;
+import org.springframework.util.CollectionUtils;
+
+import javax.ws.rs.core.MultivaluedMap;
 
 /**
  * Created by chriszhu on 2/7/14.
@@ -22,11 +24,9 @@ public class ApiContext {
     private String onBehalfOfRequestorId;
     private String userIp;
 
-    public ApiContext(HttpHeaders httpHeaders) {
-
-        if (httpHeaders.getRequestHeader(HEADER_USER_IP) != null &&
-                !httpHeaders.getRequestHeader(HEADER_USER_IP).isEmpty()) {
-            setUserIp(httpHeaders.getRequestHeader(HEADER_USER_IP).get(0));
+    public ApiContext(MultivaluedMap<String, String> httpHeaders) {
+        if (!CollectionUtils.isEmpty(httpHeaders.get(HEADER_USER_IP))) {
+            setUserIp(httpHeaders.get(HEADER_USER_IP).get(0));
         }
     }
 

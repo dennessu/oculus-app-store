@@ -5,6 +5,8 @@
  */
 package com.junbo.identity.data.entity.user
 
+import com.junbo.sharding.annotations.SeedId
+
 import javax.persistence.*
 /**
  * UserEntity model for user password entity table
@@ -16,6 +18,7 @@ class UserPasswordEntity {
     @Column(name = 'id')
     private Long key
 
+    @SeedId
     @Column(name = 'user_id')
     private Long userId
 

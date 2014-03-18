@@ -19,10 +19,10 @@ import com.junbo.payment.spec.model.PaymentTransaction
  */
 class MockPaymentFacadeImpl implements PaymentFacade {
     @Override
-    Promise<PaymentInstrument> getPaymentInstrument(Long piId) {
+    Promise<PaymentInstrument> getPaymentInstrument(Long userId, Long piId) {
         PaymentInstrument pi = new PaymentInstrument()
-        pi.setId(54321)
-        pi.setUserId(12345)
+        pi.setId(piId)
+        pi.setUserId(userId)
         Address address = new Address()
         address.id = 999999
         address.addressLine1 = '7462 Kearny Street'

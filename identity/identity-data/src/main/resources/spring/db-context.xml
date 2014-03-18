@@ -6,19 +6,45 @@
        ">
 
     <context:annotation-config />
+
     <tx:annotation-driven />
     <context:component-scan base-package="com.junbo.identity.data" />
-    <import resource="classpath*:spring/transaction.xml"/>
-    <import resource="classpath*:spring/sharding.xml"/>
 
-    <bean id="sessionFactoryWrapper" class="com.junbo.sharding.core.hibernate.SessionFactoryWrapper">
-        <property name="dataSourceRegistry" ref="shardDataSourceRegistry"/>
-        <property name="sessionFactoryBeanName" value="sessionFactoryTemplate"/>
-        <property name="dataBaseName" value="identity"/>
-        <property name="packagesToScan" value="com.junbo.identity.data.*"/>
+    <bean id="identityDataSource" class="bitronix.tm.resource.jdbc.PoolingDataSource"
+          init-method="init" destroy-method="close">
+        <property name="uniqueName" value="jdbc/id_ds1"/>
+        <property name="className" value="org.postgresql.xa.PGXADataSource"/>
+        <property name="minPoolSize" value="${identity.db.minConnectionsPerPartition}"/>
+        <property name="maxPoolSize" value="${identity.db.maxConnectionsPerPartition}"/>
+        <property name="driverProperties">
+            <props>
+                <prop key="url">${identity.db.url}</prop>
+                <prop key="user">${identity.db.username}</prop>
+                <prop key="password">${identity.db.password}</prop>
+            </props>
+        </property>
     </bean>
 
-    <bean id="modelMapperImpl" class="com.junbo.identity.data.mapper.ModelMapperImpl" />
+    <!-- SessonFactory for Hibernate -->
+    <bean id="identitySessionFactory"
+          class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="dataSource" ref="identityDataSource"/>
+        <property name="packagesToScan" value="com.junbo.identity.data.*" />
+        <property name="jtaTransactionManager" ref="transactionManager"/>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">${identity.hibernate.dialect}</prop>
+                <prop key="hibernate.max_fetch_depth">${identity.hibernate.max_fetch_depth}</prop>
+                <prop key="hibernate.jdbc.fetch_size">${identity.hibernate.jdbc.fetch_size}</prop>
+                <prop key="hibernate.jdbc.batch_size">${identity.hibernate.jdbc.batch_size}</prop>
+                <prop key="hibernate.show_sql">${identity.hibernate.show_sql}</prop>
+            </props>
+        </property>
+    </bean>
+
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <!--<bean id="identityModelMapper" class="com.junbo.identity.data.mapper.ModelMapperImpl" />-->
     <bean id="userDAO" class="com.junbo.identity.data.dao.impl.postgresql.UserDAOImpl">
         <property name="maxRetryCount" value="${identity.conf.maxPasswordRetryCount}" />
     </bean>

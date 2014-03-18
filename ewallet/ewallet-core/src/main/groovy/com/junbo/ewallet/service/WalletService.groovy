@@ -28,4 +28,6 @@ interface WalletService {
     Wallet debit(Long walletId, DebitRequest debitRequest)
 
     List<Transaction> getTransactions(Long walletId)
+
+    Wallet getByTrackingUuid(UUID trackingUuid)
 }

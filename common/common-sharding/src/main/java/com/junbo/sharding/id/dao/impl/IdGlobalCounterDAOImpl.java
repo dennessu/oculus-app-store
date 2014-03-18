@@ -21,7 +21,7 @@ import java.util.List;
  * Created by liangfu on 3/5/14.
  */
 @Component
-@Transactional("shardingTransactionManager")
+@Transactional
 public class IdGlobalCounterDAOImpl implements IdGlobalCounterDAO {
     @Autowired
     @Qualifier("shardingSessionFactory")
