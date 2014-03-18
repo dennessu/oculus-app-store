@@ -10,6 +10,7 @@
     <import resource="classpath*:spring/common-context.xml"/>
 
     <bean id="sessionFactoryWrapper" class="com.junbo.sharding.core.hibernate.SessionFactoryWrapper">
+        <property name="mapper" ref="shardDataSourceMapper"/>
         <property name="dataSourceRegistry" ref="shardDataSourceRegistry"/>
         <property name="sessionFactoryBeanName" value="sessionFactoryTemplate"/>
         <property name="dataBaseName" value="test"/>

@@ -74,6 +74,9 @@ public class SessionFactoryWrapper implements ApplicationContextAware {
         if (this.dataSourceRegistry == null) {
             throw new RuntimeException("dataSourceRegistry is null in SessionFactoryWrapper");
         }
+        if (this.mapper == null) {
+            throw new RuntimeException("mapper is null in SessionFactoryWrapper");
+        }
 
         DataSourceConfig dc = this.mapper.getDataSourceConfigByShardId(shardId);
         DataSource ds = this.dataSourceRegistry.resolve(shardId,

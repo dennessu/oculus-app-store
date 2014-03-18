@@ -19,9 +19,18 @@
     <tx:annotation-driven transaction-manager="transactionManager"/>
 
     <bean id="sessionFactoryWrapper" class="com.junbo.sharding.core.hibernate.SessionFactoryWrapper">
+        <property name="mapper" ref="shardDataSourceMapper"/>
         <property name="dataSourceRegistry" ref="shardDataSourceRegistry"/>
         <property name="sessionFactoryBeanName" value="sessionFactoryTemplate"/>
         <property name="dataBaseName" value="identity"/>
+        <property name="packagesToScan" value="com.junbo.identity.data.entity.*"/>
+    </bean>
+
+    <bean id="lookupSessionFactoryWrapper" class="com.junbo.sharding.core.hibernate.SessionFactoryWrapper">
+        <property name="mapper" ref="lookupDataSourceMapper"/>
+        <property name="dataSourceRegistry" ref="lookupDataSourceRegistry"/>
+        <property name="sessionFactoryBeanName" value="sessionFactoryTemplate"/>
+        <property name="dataBaseName" value="lookup"/>
         <property name="packagesToScan" value="com.junbo.identity.data.entity.*"/>
     </bean>
 
