@@ -56,7 +56,7 @@ public class UserPhoneNumberRepositoryImpl implements UserPhoneNumberRepository 
 
     @Override
     public List<UserPhoneNumber> search(UserPhoneNumberGetOption getOption) {
-        List entities = userPhoneNumberDAO.search(getOption);
+        List entities = userPhoneNumberDAO.search(getOption.getUserId().getValue(), getOption);
 
         List<UserPhoneNumber> results = new ArrayList<UserPhoneNumber>();
         for(int i =0 ; i< entities.size(); i++) {

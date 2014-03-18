@@ -5,17 +5,15 @@
  */
 package com.junbo.identity.data;
 
-import com.junbo.common.id.UserId;
 import com.junbo.identity.data.entity.user.UserPasswordStrength;
 import com.junbo.identity.data.repository.GroupRepository;
 import com.junbo.identity.data.repository.SecurityQuestionRepository;
-import com.junbo.identity.data.repository.UserPINRepository;
 import com.junbo.identity.data.repository.UserPasswordRepository;
+import com.junbo.identity.data.repository.UserPinRepository;
 import com.junbo.identity.spec.model.domaindata.SecurityQuestion;
 import com.junbo.identity.spec.model.users.Group;
 import com.junbo.identity.spec.model.users.UserPassword;
 import com.junbo.identity.spec.model.users.UserPin;
-import com.junbo.sharding.IdGeneratorFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
@@ -36,7 +34,7 @@ import java.util.UUID;
 @TransactionConfiguration(defaultRollback = false)
 @TestExecutionListeners(TransactionalTestExecutionListener.class)
 @Transactional("transactionManager")
-public class UserDAOTest extends AbstractTestNGSpringContextTests {
+public class RepositoryTest extends AbstractTestNGSpringContextTests {
     @Autowired
     private GroupRepository groupRepository;
 
@@ -44,17 +42,13 @@ public class UserDAOTest extends AbstractTestNGSpringContextTests {
     private UserPasswordRepository userPasswordRepository;
 
     @Autowired
-    private UserPINRepository userPINRepository;
+    private UserPinRepository userPINRepository;
 
     @Autowired
     private SecurityQuestionRepository securityQuestionRepository;
 
-    @Autowired
-    private IdGeneratorFacade facade;
-
-    @Test(enabled = true)
+    @Test
     public void testGroupEntity() {
-        facade.nextId(UserId.class);
         Group group = new Group();
         group.setValue("test " + UUID.randomUUID().toString());
         group.setActive(true);
@@ -70,6 +64,7 @@ public class UserDAOTest extends AbstractTestNGSpringContextTests {
         newGroup = groupRepository.get(group.getId());
         Assert.assertEquals(newValue, newGroup.getValue());
 
+        // Todo:    Need to enable this.
         //GroupGetOption option = new GroupGetOption();
         //option.setValue("test");
         //List<Group> groupList = groupRepository.search(option);

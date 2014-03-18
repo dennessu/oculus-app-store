@@ -120,7 +120,7 @@
     <bean id="userOptinRepository" class="com.junbo.identity.data.repository.impl.UserOptinRepositoryImpl" />
     <bean id="userPasswordRepository" class="com.junbo.identity.data.repository.impl.UserPasswordRepositoryImpl" />
     <bean id="userPhoneNumberRepository" class="com.junbo.identity.data.repository.impl.UserPhoneNumberRepositoryImpl" />
-    <bean id="userPINRepository" class="com.junbo.identity.data.repository.impl.UserPINRepositoryImpl" />
+    <bean id="userPINRepository" class="com.junbo.identity.data.repository.impl.UserPinRepositoryImpl" />
     <bean id="userRepository" class="com.junbo.identity.data.repository.impl.UserRepositoryImpl" />
     <bean id="userSecurityQuestionRepository" class="com.junbo.identity.data.repository.impl.UserSecurityQuestionRepositoryImpl" />
     <bean id="userTosRepository" class="com.junbo.identity.data.repository.impl.UserTosRepositoryImpl" />

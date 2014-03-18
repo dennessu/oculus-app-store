@@ -11,4 +11,4 @@
     <bean id="__commonMapper" class="com.junbo.identity.data.mapper.CommonMapper" />
 
     <import resource="classpath*:spring/*-context.xml"/>
-</beans> 
+</beans>

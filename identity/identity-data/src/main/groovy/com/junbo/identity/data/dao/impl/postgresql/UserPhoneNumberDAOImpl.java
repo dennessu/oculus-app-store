@@ -39,7 +39,7 @@ public class UserPhoneNumberDAOImpl extends EntityDAOImpl implements UserPhoneNu
     }
 
     @Override
-    public List<UserPhoneNumberEntity> search(UserPhoneNumberGetOption getOption) {
+    public List<UserPhoneNumberEntity> search(Long userId, UserPhoneNumberGetOption getOption) {
         String query = "select * from user_phone_number where user_id = " + (getOption.getUserId().getValue()) +
                 (StringUtils.isEmpty(getOption.getType()) ? "" : (" and type = " + getOption.getType())) +
                 (StringUtils.isEmpty(getOption.getValue()) ? "" : (" and value = " + getOption.getValue())) +

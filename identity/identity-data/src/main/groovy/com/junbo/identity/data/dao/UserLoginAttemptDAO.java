@@ -7,6 +7,7 @@ package com.junbo.identity.data.dao;
 
 import com.junbo.identity.data.entity.user.UserLoginAttemptEntity;
 import com.junbo.identity.spec.model.options.UserLoginAttemptGetOption;
+import com.junbo.sharding.annotations.SeedParam;
 
 import java.util.List;
 
@@ -18,9 +19,9 @@ public interface UserLoginAttemptDAO {
 
     UserLoginAttemptEntity update(UserLoginAttemptEntity entity);
 
-    UserLoginAttemptEntity get(Long id);
+    UserLoginAttemptEntity get(@SeedParam Long id);
 
-    List<UserLoginAttemptEntity> search(UserLoginAttemptGetOption getOption);
+    List<UserLoginAttemptEntity> search(@SeedParam Long userId, UserLoginAttemptGetOption getOption);
 
-    void delete(Long id);
+    void delete(@SeedParam Long id);
 }

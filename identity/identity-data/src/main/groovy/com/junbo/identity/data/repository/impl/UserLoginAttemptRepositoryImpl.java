@@ -56,7 +56,7 @@ public class UserLoginAttemptRepositoryImpl implements UserLoginAttemptRepositor
 
     @Override
     public List<LoginAttempt> search(UserLoginAttemptGetOption getOption) {
-        List entities = userLoginAttemptDAO.search(getOption);
+        List entities = userLoginAttemptDAO.search(getOption.getUserId().getValue(), getOption);
 
         List<LoginAttempt> results = new ArrayList<LoginAttempt>();
         for(int i =0 ; i< entities.size(); i++) {

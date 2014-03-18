@@ -56,7 +56,7 @@ public class UserPasswordRepositoryImpl implements UserPasswordRepository {
 
     @Override
     public List<UserPassword> search(UserPasswordGetOption getOption) {
-        List entities = userPasswordDAO.search(getOption);
+        List entities = userPasswordDAO.search(getOption.getUserId().getValue(), getOption);
 
         List<UserPassword> results = new ArrayList<UserPassword>();
         for(int i =0 ; i< entities.size(); i++) {

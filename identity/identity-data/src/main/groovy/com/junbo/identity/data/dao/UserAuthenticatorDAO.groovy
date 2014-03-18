@@ -7,6 +7,8 @@ package com.junbo.identity.data.dao
 
 import com.junbo.identity.data.entity.user.UserAuthenticatorEntity
 import com.junbo.identity.spec.model.options.UserAuthenticatorGetOption
+import com.junbo.sharding.annotations.SeedParam
+
 /**
  * User Federation DAO is used to fetch/update/delete/get user
  * federation data(such as google account, facebook account) from the database
@@ -17,9 +19,9 @@ interface UserAuthenticatorDAO {
 
     UserAuthenticatorEntity update(UserAuthenticatorEntity entity)
 
-    UserAuthenticatorEntity get(Long id)
+    UserAuthenticatorEntity get(@SeedParam Long id)
 
-    List<UserAuthenticatorEntity> search(UserAuthenticatorGetOption getOption)
+    List<UserAuthenticatorEntity> search(@SeedParam Long userId, UserAuthenticatorGetOption getOption)
 
-    void delete(Long id)
+    void delete(@SeedParam Long id)
 }

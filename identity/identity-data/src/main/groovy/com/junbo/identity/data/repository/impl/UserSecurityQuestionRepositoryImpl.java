@@ -58,7 +58,7 @@ public class UserSecurityQuestionRepositoryImpl implements UserSecurityQuestionR
 
     @Override
     public List<UserSecurityQuestion> search(UserSecurityQuestionGetOption getOption) {
-        List entities = userSecurityQuestionDAO.search(getOption);
+        List entities = userSecurityQuestionDAO.search(getOption.getUserId().getValue(), getOption);
 
         List<UserSecurityQuestion> results = new ArrayList<UserSecurityQuestion>();
         for(int i =0 ; i< entities.size(); i++) {

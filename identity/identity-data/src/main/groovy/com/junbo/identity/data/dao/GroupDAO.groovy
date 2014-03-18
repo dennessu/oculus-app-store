@@ -16,5 +16,7 @@ interface GroupDAO {
     GroupEntity get(@SeedParam Long groupId)
     GroupEntity save(GroupEntity group)
     GroupEntity update(GroupEntity group)
+
+    // Todo:    need to build reverse lookup table.
     List<GroupEntity> search(GroupGetOption getOption)
 }

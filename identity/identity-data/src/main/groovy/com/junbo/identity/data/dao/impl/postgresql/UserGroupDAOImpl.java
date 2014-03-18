@@ -38,7 +38,7 @@ public class UserGroupDAOImpl extends EntityDAOImpl implements UserGroupDAO {
     }
 
     @Override
-    public List<UserGroupEntity> search(UserGroupGetOption getOption) {
+    public List<UserGroupEntity> search(Long userId, UserGroupGetOption getOption) {
         String query = "select * from user_group where user_id = " + (getOption.getUserId().getValue()) +
                 (getOption.getGroupId() == null ? "" : (" and group_id = " + getOption.getGroupId().getValue())) +
                 (" order by id limit " + (getOption.getLimit() == null ? "ALL" : getOption.getLimit().toString())) +

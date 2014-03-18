@@ -26,7 +26,7 @@ public class UserEmailDAOImpl extends EntityDAOImpl implements UserEmailDAO {
     }
 
     @Override
-    public List<UserEmailEntity> search(Long userId, UserEmailGetOption getOption) {
+    public List<UserEmailEntity> search(UserEmailGetOption getOption) {
         String query = "select * from user_email where user_id = " + (getOption.getUserId().getValue()) +
             (StringUtils.isEmpty(getOption.getType()) ? "" : (" and type = " + getOption.getType())) +
             (StringUtils.isEmpty(getOption.getValue()) ? "" : (" and value like \'%") + getOption.getValue() + "%\'") +

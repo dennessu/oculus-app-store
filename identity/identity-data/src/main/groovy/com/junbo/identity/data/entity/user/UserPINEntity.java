@@ -5,6 +5,8 @@
  */
 package com.junbo.identity.data.entity.user;
 
+import com.junbo.sharding.annotations.SeedId;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -13,11 +15,12 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "user_pin")
-public class UserPINEntity {
+public class UserPinEntity {
     @Id
     @Column(name = "id")
     private Long id;
 
+    @SeedId
     @Column(name = "user_id")
     private Long userId;
 

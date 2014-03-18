@@ -56,7 +56,7 @@ public class UserGroupRepositoryImpl implements UserGroupRepository {
 
     @Override
     public List<UserGroup> search(UserGroupGetOption getOption) {
-        List entities = userGroupDAO.search(getOption);
+        List entities = userGroupDAO.search(getOption.getUserId().getValue(), getOption);
 
         List<UserGroup> results = new ArrayList<UserGroup>();
         for(int i =0 ; i< entities.size(); i++) {

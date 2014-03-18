@@ -7,9 +7,9 @@ package com.junbo.identity.data.repository.impl;
 
 import com.junbo.common.id.UserPinId;
 import com.junbo.identity.data.dao.UserPinDAO;
-import com.junbo.identity.data.entity.user.UserPINEntity;
+import com.junbo.identity.data.entity.user.UserPinEntity;
 import com.junbo.identity.data.mapper.ModelMapper;
-import com.junbo.identity.data.repository.UserPINRepository;
+import com.junbo.identity.data.repository.UserPinRepository;
 import com.junbo.identity.spec.model.options.UserPinGetOption;
 import com.junbo.identity.spec.model.users.UserPin;
 import com.junbo.oom.core.MappingContext;
@@ -24,7 +24,7 @@ import java.util.List;
  * Created by liangfu on 3/16/14.
  */
 @Component
-public class UserPINRepositoryImpl implements UserPINRepository {
+public class UserPinRepositoryImpl implements UserPinRepository {
     @Autowired
     @Qualifier("userPINDAO")
     private UserPinDAO userPINDAO;
@@ -35,7 +35,7 @@ public class UserPINRepositoryImpl implements UserPINRepository {
 
     @Override
     public UserPin save(UserPin entity) {
-        UserPINEntity userPINEntity = modelMapper.toUserPIN(entity, new MappingContext());
+        UserPinEntity userPINEntity = modelMapper.toUserPIN(entity, new MappingContext());
         userPINDAO.save(userPINEntity);
 
         return get(entity.getId());
@@ -43,7 +43,7 @@ public class UserPINRepositoryImpl implements UserPINRepository {
 
     @Override
     public UserPin update(UserPin entity) {
-        UserPINEntity userPINEntity = modelMapper.toUserPIN(entity, new MappingContext());
+        UserPinEntity userPINEntity = modelMapper.toUserPIN(entity, new MappingContext());
         userPINDAO.update(userPINEntity);
 
         return get(entity.getId());
@@ -56,11 +56,11 @@ public class UserPINRepositoryImpl implements UserPINRepository {
 
     @Override
     public List<UserPin> search(UserPinGetOption getOption) {
-        List entities = userPINDAO.search(getOption);
+        List entities = userPINDAO.search(getOption.getUserId().getValue(), getOption);
 
         List<UserPin> results = new ArrayList<UserPin>();
         for(int i =0 ; i< entities.size(); i++) {
-            results.add(modelMapper.toUserPIN((UserPINEntity) entities.get(i), new MappingContext()));
+            results.add(modelMapper.toUserPIN((UserPinEntity) entities.get(i), new MappingContext()));
         }
         return results;
     }

@@ -21,7 +21,8 @@ public interface UserEmailDAO {
 
     UserEmailEntity get(@SeedParam Long id);
 
-    List<UserEmailEntity> search(@SeedParam Long id, UserEmailGetOption getOption);
-
     void delete(@SeedParam Long id);
+
+    // Todo:    Need to build reverse lookup table
+    List<UserEmailEntity> search(UserEmailGetOption getOption);
 }

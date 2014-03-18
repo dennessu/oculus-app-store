@@ -51,7 +51,7 @@ class UserOptinRepositoryImpl implements UserOptinRepository {
     @Override
     List<UserOptin> search(UserOptinGetOption getOption) {
         def result = []
-        def entities = userOptinDAO.search(getOption)
+        def entities = userOptinDAO.search(getOption.userId.value, getOption)
 
         entities.flatten { i ->
             result.add(modelMapper.toUserOptin(i, new MappingContext()))

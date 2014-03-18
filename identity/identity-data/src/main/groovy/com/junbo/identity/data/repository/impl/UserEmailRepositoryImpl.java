@@ -41,7 +41,7 @@ public class UserEmailRepositoryImpl implements UserEmailRepository {
     @Override
     public List<UserEmail> search(UserEmailGetOption getOption) {
 
-        List entities = userEmailDAO.search(getOption.getUserId().getValue(), getOption);
+        List entities = userEmailDAO.search(getOption);
 
         List<UserEmail> results = new ArrayList<UserEmail>();
         for(int i =0 ; i< entities.size(); i++) {

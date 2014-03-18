@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Created by liangfu on 3/16/14.
  */
-public interface UserPINRepository {
+public interface UserPinRepository {
 
     UserPin save(UserPin entity);
 

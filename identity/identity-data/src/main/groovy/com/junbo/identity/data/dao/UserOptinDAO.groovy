@@ -7,6 +7,7 @@ package com.junbo.identity.data.dao
 
 import com.junbo.identity.data.entity.user.UserOptinEntity
 import com.junbo.identity.spec.model.options.UserOptinGetOption
+import com.junbo.sharding.annotations.SeedParam
 
 /**
  * User OptIn DAO is used to fetch/update/delete/get user OptIn data(such as sports, news) from the database
@@ -17,9 +18,9 @@ interface UserOptinDAO {
 
     UserOptinEntity update(UserOptinEntity entity)
 
-    UserOptinEntity get(Long id)
+    UserOptinEntity get(@SeedParam Long id)
 
-    List<UserOptinEntity> search(UserOptinGetOption getOption)
+    List<UserOptinEntity> search(@SeedParam Long userId, UserOptinGetOption getOption)
 
-    void delete(Long id)
+    void delete(@SeedParam Long id)
 }

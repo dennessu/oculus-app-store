@@ -7,6 +7,8 @@ package com.junbo.identity.data.dao
 
 import com.junbo.identity.data.entity.user.UserTosEntity
 import com.junbo.identity.spec.model.options.UserTosGetOption
+import com.junbo.sharding.annotations.SeedParam
+
 /**
  * User tos acceptance DAO is used to fetch/update/delete/get user tos Acceptance(eg, legal) from the database
  */
@@ -16,9 +18,9 @@ interface UserTosDAO {
 
     UserTosEntity update(UserTosEntity entity)
 
-    UserTosEntity get(Long id)
+    UserTosEntity get(@SeedParam Long id)
 
-    List<UserTosEntity> search(UserTosGetOption getOption)
+    List<UserTosEntity> search(@SeedParam Long userId, UserTosGetOption getOption)
 
-    void delete(Long id)
+    void delete(@SeedParam Long id)
 }

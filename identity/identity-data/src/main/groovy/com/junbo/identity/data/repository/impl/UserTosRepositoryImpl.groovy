@@ -51,7 +51,7 @@ class UserTosRepositoryImpl implements UserTosRepository {
     @Override
     List<UserTos> search(UserTosGetOption getOption) {
         def result = []
-        def entities = userTosDAO.search(getOption)
+        def entities = userTosDAO.search(getOption.userId.value, getOption)
 
         entities.flatten { i ->
             result.add(modelMapper.toUserTos(i, new MappingContext()))

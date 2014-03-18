@@ -39,7 +39,7 @@ public class UserLoginAttemptDAOImpl extends EntityDAOImpl implements UserLoginA
     }
 
     @Override
-    public List<UserLoginAttemptEntity> search(UserLoginAttemptGetOption getOption) {
+    public List<UserLoginAttemptEntity> search(Long userId, UserLoginAttemptGetOption getOption) {
         String query = "select * from user_login_attempt where user_id = " + (getOption.getUserId().getValue()) +
             (StringUtils.isEmpty(getOption.getType()) ? "" : (" and type = " + getOption.getType())) +
             (StringUtils.isEmpty(getOption.getIpAddress()) ? "" : (" and ip_address = " + getOption.getIpAddress())) +

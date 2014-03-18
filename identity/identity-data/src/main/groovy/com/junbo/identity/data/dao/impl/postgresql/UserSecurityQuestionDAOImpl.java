@@ -38,7 +38,7 @@ public class UserSecurityQuestionDAOImpl extends EntityDAOImpl implements UserSe
     }
 
     @Override
-    public List<UserSecurityQuestionEntity> search(UserSecurityQuestionGetOption getOption) {
+    public List<UserSecurityQuestionEntity> search(Long userId, UserSecurityQuestionGetOption getOption) {
         String query = "select * from user_security_question where user_id = " + getOption.getUserId().getValue() +
             (getOption.getSecurityQuestionId() == null ? "" :
                     (" and security_question_id = " + getOption.getSecurityQuestionId().getValue())) +

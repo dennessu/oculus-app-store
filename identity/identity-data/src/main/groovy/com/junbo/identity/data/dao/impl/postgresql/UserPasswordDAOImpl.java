@@ -37,8 +37,7 @@ public class UserPasswordDAOImpl extends EntityDAOImpl implements UserPasswordDA
     }
 
     @Override
-    public List<UserPasswordEntity> search(UserPasswordGetOption getOption) {
-
+    public List<UserPasswordEntity> search(Long userId, UserPasswordGetOption getOption) {
         String query = "select * from user_password where user_id = " + (getOption.getUserId().getValue()) +
                 (" order by id limit " + (getOption.getLimit() == null ? "ALL" : getOption.getLimit().toString())) +
                 " offset " + (getOption.getOffset() == null ? "0" : getOption.getOffset().toString());

@@ -5,6 +5,8 @@
  */
 package com.junbo.identity.data.entity.domaindata;
 
+import com.junbo.sharding.annotations.SeedId;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -15,6 +17,7 @@ import java.util.Date;
 @Table(name = "security_question")
 public class SecurityQuestionEntity {
     @Id
+    @SeedId
     @Column(name = "id")
     private Long id;
 

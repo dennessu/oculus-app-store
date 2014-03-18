@@ -7,6 +7,7 @@ package com.junbo.identity.data.dao;
 
 import com.junbo.identity.data.entity.user.UserGroupEntity;
 import com.junbo.identity.spec.model.options.UserGroupGetOption;
+import com.junbo.sharding.annotations.SeedParam;
 
 import java.util.List;
 
@@ -18,9 +19,9 @@ public interface UserGroupDAO {
 
     UserGroupEntity update(UserGroupEntity entity);
 
-    UserGroupEntity get(Long id);
+    UserGroupEntity get(@SeedParam Long id);
 
-    List<UserGroupEntity> search(UserGroupGetOption getOption);
+    List<UserGroupEntity> search(@SeedParam Long userId, UserGroupGetOption getOption);
 
-    void delete(Long id);
+    void delete(@SeedParam Long id);
 }

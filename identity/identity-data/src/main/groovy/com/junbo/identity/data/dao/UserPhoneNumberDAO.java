@@ -7,6 +7,7 @@ package com.junbo.identity.data.dao;
 
 import com.junbo.identity.data.entity.user.UserPhoneNumberEntity;
 import com.junbo.identity.spec.model.options.UserPhoneNumberGetOption;
+import com.junbo.sharding.annotations.SeedParam;
 
 import java.util.List;
 
@@ -18,9 +19,9 @@ public interface UserPhoneNumberDAO {
 
     UserPhoneNumberEntity update(UserPhoneNumberEntity entity);
 
-    UserPhoneNumberEntity get(Long id);
+    UserPhoneNumberEntity get(@SeedParam Long id);
 
-    List<UserPhoneNumberEntity> search(UserPhoneNumberGetOption getOption);
+    List<UserPhoneNumberEntity> search(@SeedParam Long userId, UserPhoneNumberGetOption getOption);
 
-    void delete(Long id);
+    void delete(@SeedParam Long id);
 }

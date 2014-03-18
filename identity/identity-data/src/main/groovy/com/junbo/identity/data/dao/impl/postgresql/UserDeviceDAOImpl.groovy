@@ -32,7 +32,7 @@ class UserDeviceDAOImpl extends EntityDAOImpl implements UserDeviceDAO {
     }
 
     @Override
-    List<UserDeviceEntity> search(UserDeviceGetOption getOption) {
+    List<UserDeviceEntity> search(Long userId, UserDeviceGetOption getOption) {
         String query = 'select * from user_device where user_id =  ' + getOption.userId.value +
                 (getOption.deviceId == null ? '' : ' and device_id = ' + getOption.deviceId) +
                 (' order by id limit ' + (getOption.limit == null ? 'ALL' : getOption.limit.toString())) +

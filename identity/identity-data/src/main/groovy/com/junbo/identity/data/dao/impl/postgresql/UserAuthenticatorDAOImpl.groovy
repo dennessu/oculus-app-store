@@ -32,7 +32,7 @@ class UserAuthenticatorDAOImpl extends EntityDAOImpl implements UserAuthenticato
     }
 
     @Override
-    List<UserAuthenticatorEntity> search(UserAuthenticatorGetOption getOption) {
+    List<UserAuthenticatorEntity> search(Long userId, UserAuthenticatorGetOption getOption) {
         String query = 'select * from user_authenticator where user_id =  ' + getOption.userId.value +
                 (getOption.type == null ? '' : ' and type = ' + getOption.type) +
                 (getOption.value == null ? '' : ' and value like \'%' + getOption.value + '%\'') +
