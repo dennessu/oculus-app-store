@@ -22,22 +22,34 @@ import org.springframework.web.util.UriComponentsBuilder
  */
 @CompileStatic
 class BuildRedirectUri implements Action {
+    private String errorMessage
+
+    void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage
+    }
+
     @Override
     Promise<ActionResult> execute(ActionContext context) {
         def contextWrapper = new ActionContextWrapper(context)
-        def oauthInfo = contextWrapper.oauthInfo
-        def parameterMap = contextWrapper.parameterMap
-        def authorizationCode = contextWrapper.authorizationCode
-        def accessToken = contextWrapper.accessToken
-        def idToken = contextWrapper.idToken
-        def loginState = contextWrapper.loginState
 
+        def oauthInfo = contextWrapper.oauthInfo
         def uriBuilder = contextWrapper.redirectUriBuilder
 
         if (uriBuilder == null) {
             uriBuilder = UriComponentsBuilder.fromHttpUrl(oauthInfo.redirectUri)
             contextWrapper.redirectUriBuilder = uriBuilder
         }
+
+        if (errorMessage != null) {
+            uriBuilder.queryParam(OAuthParameters.ERROR, errorMessage)
+            return Promise.pure(null)
+        }
+
+        def parameterMap = contextWrapper.parameterMap
+        def authorizationCode = contextWrapper.authorizationCode
+        def accessToken = contextWrapper.accessToken
+        def idToken = contextWrapper.idToken
+        def loginState = contextWrapper.loginState
 
         Map<String, String> parameters = new HashMap<>()
 
