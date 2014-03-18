@@ -16,7 +16,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "user_name_reverse_lookup")
-public class UserNameReverseLookupEntity {
+public class UserNameReverseIndexEntity {
 
     @SeedId
     @Column(name = "user_name")

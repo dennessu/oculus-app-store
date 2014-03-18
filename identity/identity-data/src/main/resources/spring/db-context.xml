@@ -110,9 +110,9 @@
         <property name="daoTarget" ref="userTosDAOTarget" />
     </bean>
 
-    <bean id="userNameReverseLookupDAOTarget" class="com.junbo.identity.data.dao.impl.postgresql.UserNameReverseLookupDAOImpl" parent="entityDAOBase" />
+    <bean id="userNameReverseLookupDAOTarget" class="com.junbo.identity.data.dao.impl.postgresql.UserNameReverseIndexDAOImpl" parent="entityDAOBase" />
     <bean id="userNameReverseLookupDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
-        <property name="daoInterface" value="com.junbo.identity.data.dao.UserNameReverseLookupDAO" />
+        <property name="daoInterface" value="com.junbo.identity.data.dao.UserNameReverseIndexDAO" />
         <property name="daoTarget" ref="userNameReverseLookupDAOTarget" />
     </bean>
 

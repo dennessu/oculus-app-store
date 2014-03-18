@@ -5,8 +5,8 @@
  */
 package com.junbo.identity.data.dao.impl.postgresql;
 
-import com.junbo.identity.data.dao.UserNameReverseLookupDAO;
-import com.junbo.identity.data.entity.reverselookup.UserNameReverseLookupEntity;
+import com.junbo.identity.data.dao.UserNameReverseIndexDAO;
+import com.junbo.identity.data.entity.reverselookup.UserNameReverseIndexEntity;
 import com.junbo.sharding.annotations.SeedParam;
 
 import java.util.List;
@@ -14,17 +14,17 @@ import java.util.List;
 /**
  * Created by liangfu on 3/18/14.
  */
-public class UserNameReverseLookupDAOImpl extends EntityDAOImpl implements UserNameReverseLookupDAO {
+public class UserNameReverseIndexDAOImpl extends EntityDAOImpl implements UserNameReverseIndexDAO {
 
     @Override
-    public UserNameReverseLookupEntity save(UserNameReverseLookupEntity entity) {
+    public UserNameReverseIndexEntity save(UserNameReverseIndexEntity entity) {
         currentSession().save(entity);
 
         return get(entity.getUserName());
     }
 
     @Override
-    public UserNameReverseLookupEntity update(UserNameReverseLookupEntity entity) {
+    public UserNameReverseIndexEntity update(UserNameReverseIndexEntity entity) {
         currentSession().merge(entity);
         currentSession().flush();
 
@@ -32,17 +32,17 @@ public class UserNameReverseLookupDAOImpl extends EntityDAOImpl implements UserN
     }
 
     @Override
-    public UserNameReverseLookupEntity get(@SeedParam String userName) {
+    public UserNameReverseIndexEntity get(@SeedParam String userName) {
         String query = "select * from user_name_reverse_lookup where user_name = :userName";
-        List<UserNameReverseLookupEntity> entities =
-                currentSession().createSQLQuery(query).addEntity(UserNameReverseLookupEntity.class)
+        List<UserNameReverseIndexEntity> entities =
+                currentSession().createSQLQuery(query).addEntity(UserNameReverseIndexEntity.class)
                         .setParameter("userName", userName).list();
         return entities.get(0);
     }
 
     @Override
     public void delete(@SeedParam String userName) {
-        UserNameReverseLookupEntity entity = get(userName);
+        UserNameReverseIndexEntity entity = get(userName);
         currentSession().delete(entity);
     }
 }
