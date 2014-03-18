@@ -6,17 +6,19 @@
        ">
 
     <!-- Shard db configuration -->
-    <bean id="shardingDataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
-        <property name="driverClass" value="${sharding.db.driverClassName}"/>
-        <property name="jdbcUrl" value="${sharding.db.url}"/>
-        <property name="username" value="${sharding.db.username}"/>
-        <property name="password" value="${sharding.db.password}"/>
-        <property name="maxConnectionsPerPartition" value="${sharding.db.maxConnectionsPerPartition}"/>
-        <property name="minConnectionsPerPartition" value="${sharding.db.minConnectionsPerPartition}"/>
-        <property name="partitionCount" value="${sharding.db.partitionCount}"/>
-        <property name="acquireIncrement" value="${sharding.db.acquireIncrement}"/>
-        <property name="statementsCacheSize" value="${sharding.db.statementsCacheSize}"/>
-        <property name="releaseHelperThreads" value="${sharding.db.releaseHelperThreads}"/>
+    <bean id="shardingDataSource" class="bitronix.tm.resource.jdbc.PoolingDataSource"
+          init-method="init" destroy-method="close">
+        <property name="uniqueName" value="jdbc/sharding"/>
+        <property name="className" value="org.postgresql.xa.PGXADataSource"/>
+        <property name="minPoolSize" value="${sharding.db.minConnectionsPerPartition}"/>
+        <property name="maxPoolSize" value="${sharding.db.maxConnectionsPerPartition}"/>
+        <property name="driverProperties">
+            <props>
+                <prop key="url">${sharding.db.url}</prop>
+                <prop key="user">${sharding.db.username}</prop>
+                <prop key="password">${sharding.db.password}</prop>
+            </props>
+        </property>
     </bean>
 
     <!-- SessonFactory for Hibernate -->
@@ -24,6 +26,7 @@
           class="org.springframework.orm.hibernate4.LocalSessionFactoryBean" lazy-init="false">
         <property name="dataSource" ref="shardingDataSource"/>
         <property name="packagesToScan" value="com.junbo.sharding.*" />
+        <property name="jtaTransactionManager" ref="transactionManager"/>
         <property name="hibernateProperties">
             <props>
                 <prop key="hibernate.dialect">${sharding.hibernate.dialect}</prop>
@@ -33,15 +36,6 @@
                 <prop key="hibernate.show_sql">${sharding.hibernate.show_sql}</prop>
             </props>
         </property>
-    </bean>
-
-    <tx:annotation-driven transaction-manager="shardingTransactionManager" />
-
-    <tx:annotation-driven />
-    <!-- Transaction Manager -->
-    <bean id="shardingTransactionManager"
-          class="org.springframework.orm.hibernate4.HibernateTransactionManager">
-        <property name="sessionFactory" ref="shardingSessionFactory"/>
     </bean>
 
     <bean id="shardIdGlobalCounterDAO" class="com.junbo.sharding.id.dao.impl.IdGlobalCounterDAOImpl" />
