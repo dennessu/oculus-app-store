@@ -208,4 +208,14 @@ interface AppExceptions {
             description = 'The client is updated by someone else, please re-get the client and try update again',
             field = 'client')
     AppError updateConflict()
+
+    @ErrorDef(httpStatusCode = 400, code = '20050',
+            description = 'The token is neither an access token nor a refresh token',
+            field = 'token')
+    AppError invalidTokenType()
+
+    @ErrorDef(httpStatusCode = 403, code = '20050',
+            description = 'The token\'s client does not match the authorization\'s client',
+            field = 'token')
+    AppError tokenClientNotMatch()
 }

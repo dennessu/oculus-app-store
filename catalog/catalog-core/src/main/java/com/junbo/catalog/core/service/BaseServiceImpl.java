@@ -36,13 +36,13 @@ public abstract class BaseServiceImpl<T extends VersionedModel> implements BaseS
     @Override
     public T get(Long entityId, EntityGetOptions options) {
         T entity;
-        if (options.getStatus() != null && !Status.RELEASED.equalsIgnoreCase(options.getStatus())) {
+        if (Status.RELEASED.equalsIgnoreCase(options.getStatus())) {
+            entity = getEntityRepo().get(entityId, options.getTimestamp());
+        } else {
             entity = getEntityDraftRepo().get(entityId);
-            if (!options.getStatus().equalsIgnoreCase(entity.getStatus())) {
+            if (options.getStatus()!=null && !options.getStatus().equalsIgnoreCase(entity.getStatus())) {
                 throw new NotFoundException(entity.getEntityType(), entityId);
             }
-        } else {
-            entity = getEntityRepo().get(entityId, options.getTimestamp());
         }
 
         checkEntityNotNull(entityId, entity);
@@ -71,19 +71,20 @@ public abstract class BaseServiceImpl<T extends VersionedModel> implements BaseS
         } else {
             options.ensurePagingValid();
             List<T> draftEntities = getEntityDraftRepo().getEntities(options.getStart(), options.getSize());
-            if (options.getStatus()!= null && !Status.RELEASED.equalsIgnoreCase(options.getStatus())) {
+
+            if (Status.RELEASED.equalsIgnoreCase(options.getStatus())) {
+                List<T> entities = new ArrayList<>();
+                for (T draftEntity : draftEntities) {
+                    T entity = getEntityRepo().get(draftEntity.getId(), options.getTimestamp());
+                    if (entity != null) {
+                        entities.add(entity);
+                    }
+                }
+
+                return entities;
+            } else {
                 return draftEntities;
             }
-
-            List<T> entities = new ArrayList<>();
-            for (T draftEntity : draftEntities) {
-                T entity = getEntityRepo().get(draftEntity.getId(), options.getTimestamp());
-                if (entity != null) {
-                    entities.add(entity);
-                }
-            }
-
-            return entities;
         }
     }
 
@@ -103,7 +104,7 @@ public abstract class BaseServiceImpl<T extends VersionedModel> implements BaseS
 
     @Override
     public T update(Long entityId, T entity) {
-        if (entity == null || entityId != entity.getId()) {
+        if (entity == null || !entityId.equals(entity.getId())) {
             throw new CatalogException("TODO");
         }
 

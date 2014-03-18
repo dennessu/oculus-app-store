@@ -11,11 +11,11 @@ import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.exception.AppExceptions
+import com.junbo.oauth.core.util.AuthorizationHeaderUtil
 import com.junbo.oauth.db.repo.ClientRepository
 import com.junbo.oauth.spec.model.Client
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
-import org.apache.commons.codec.binary.Base64
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.StringUtils
 
@@ -24,8 +24,6 @@ import org.springframework.util.StringUtils
  */
 @CompileStatic
 class AuthenticateClient implements Action {
-    private static final int TOKENS_LENGTH = 2
-
     private ClientRepository clientRepository
 
     @Required
@@ -44,21 +42,10 @@ class AuthenticateClient implements Action {
         String authorization = headerMap.getFirst(OAuthParameters.AUTHORIZATION)
 
         if (StringUtils.hasText(authorization)) {
-            String[] tokens = authorization.split(' ')
-            if (tokens.length != TOKENS_LENGTH || tokens[0] == 'Basic') {
-                throw AppExceptions.INSTANCE.invalidAuthorization().exception()
-            }
+            def clientCredential = AuthorizationHeaderUtil.extractClientCredential(authorization)
 
-            String decoded = Base64.decodeBase64(tokens[1])
-
-            tokens = decoded.split(':')
-
-            if (tokens.length != TOKENS_LENGTH) {
-                throw AppExceptions.INSTANCE.invalidAuthorization().exception()
-            }
-
-            clientId = tokens[0]
-            clientSecret = tokens[1]
+            clientId = clientCredential.clientId
+            clientSecret = clientCredential.clientSecret
         }
 
         if (clientId == null) {

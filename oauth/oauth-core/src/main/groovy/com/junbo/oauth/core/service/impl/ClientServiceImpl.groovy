@@ -7,6 +7,7 @@ package com.junbo.oauth.core.service.impl
 
 import com.junbo.oauth.core.exception.AppExceptions
 import com.junbo.oauth.core.service.ClientService
+import com.junbo.oauth.core.util.AuthorizationHeaderUtil
 import com.junbo.oauth.core.util.UriUtil
 import com.junbo.oauth.db.exception.DBUpdateConflictException
 import com.junbo.oauth.db.generator.TokenGenerator
@@ -14,7 +15,6 @@ import com.junbo.oauth.db.repo.AccessTokenRepository
 import com.junbo.oauth.db.repo.ClientRepository
 import com.junbo.oauth.spec.model.AccessToken
 import com.junbo.oauth.spec.model.Client
-import com.junbo.oauth.spec.model.TokenType
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -257,12 +257,9 @@ class ClientServiceImpl implements ClientService {
     }
 
     private AccessToken parseAccessToken(String authorization) {
-        String[] tokens = authorization.split(' ')
-        if (tokens.length != 2 || !tokens[0].equalsIgnoreCase(TokenType.BEARER.name())) {
-            throw AppExceptions.INSTANCE.invalidAuthorization().exception()
-        }
+        String tokenValue = AuthorizationHeaderUtil.extractAccessToken(authorization)
 
-        AccessToken accessToken = accessTokenRepository.get(tokens[1])
+        AccessToken accessToken = accessTokenRepository.get(tokenValue)
         if (accessToken == null) {
             throw AppExceptions.INSTANCE.invalidAuthorization().exception()
         }

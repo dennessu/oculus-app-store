@@ -14,4 +14,8 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class CouchAuthorizationCodeDAOImpl extends CouchBaseDAO<AuthorizationCodeEntity> implements AuthorizationCodeDAO {
+    @Override
+    protected CouchViews getCouchViews() {
+        return null
+    }
 }

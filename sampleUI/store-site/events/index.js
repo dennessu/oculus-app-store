@@ -10,11 +10,31 @@ module.exports = function(io){
         });
 
         socket.on('/api/identity/login', function (data, fn) {
-            Identity.Login(data.body, data.cookies, null, function(data){
+            Identity.Login(data, function(data){
                 fn(data);
             });
         });
 
+        socket.on('/api/identity/captcha', function (data, fn) {
+            var address = socket.handshake.address;
+            data.data.ip = address.address;
+
+            Identity.Captcha(data, function(data){
+                fn(data);
+            });
+        });
+
+        socket.on('/api/identity/tfa', function (data, fn) {
+            Identity.TFA(data, function(data){
+                fn(data);
+            });
+        });
+
+        socket.on('/api/identity/register', function (data, fn) {
+            Identity.Register(data, function(data){
+                fn(data);
+            });
+        });
 
     });
 };

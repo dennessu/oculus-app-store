@@ -17,6 +17,8 @@ interface TokenService {
 
     AccessToken getAccessToken(String tokenValue)
 
+    AccessToken updateAccessToken(AccessToken accessToken)
+
     RefreshToken generateRefreshToken(Client client, AccessToken accessToken, String salt)
 
     RefreshToken generateRefreshToken(Client client, AccessToken accessToken, RefreshToken oldRefreshToken)
@@ -28,7 +30,11 @@ interface TokenService {
 
     IdToken parseIdToken(String tokenValue)
 
-    void revokeAccessToken(String tokenValue)
+    void revokeAccessToken(String tokenValue, Client client)
 
-    void revokeRefreshToken(String tokenValue)
+    void revokeRefreshToken(String tokenValue, Client client)
+
+    boolean isValidAccessToken(String tokenValue)
+
+    boolean isValidRefreshToken(String tokenValue)
 }

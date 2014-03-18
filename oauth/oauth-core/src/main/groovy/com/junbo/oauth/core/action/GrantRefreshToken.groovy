@@ -46,6 +46,9 @@ class GrantRefreshToken implements Action {
             String salt = parameterMap.getFirst(OAuthParameters.SALT)
             RefreshToken refreshToken = tokenService.generateRefreshToken(client, accessToken, salt)
 
+            accessToken.refreshTokenValue = refreshToken.tokenValue
+            tokenService.updateAccessToken(accessToken)
+
             contextWrapper.refreshToken = refreshToken
         }
 

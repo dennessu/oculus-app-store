@@ -5,7 +5,7 @@ module.exports = {
         PostAuthenticate: {
             Method: 'POST',
             Path: '/rest/Authenticate',
-            ResponseItem: 'Succeed',
+            ResponseItem: 'SucceedNormal',
             Items: {
 
                 'Succeed': {
@@ -26,7 +26,7 @@ module.exports = {
                 'Failed': {
                     statusCode: 404,
                     headers: null,
-                    data: null
+                    data: "Error"
                 }
             }
         },

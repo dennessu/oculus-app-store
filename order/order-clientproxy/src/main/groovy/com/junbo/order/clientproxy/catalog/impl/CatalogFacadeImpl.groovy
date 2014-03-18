@@ -22,7 +22,7 @@ import javax.annotation.Resource
 /**
  * Catalog facade implementation.
  */
-@Component('catalogFacade')
+@Component('orderCatalogFacade')
 @CompileStatic
 class CatalogFacadeImpl implements CatalogFacade {
 

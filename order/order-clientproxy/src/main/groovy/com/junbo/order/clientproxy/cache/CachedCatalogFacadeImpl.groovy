@@ -10,6 +10,7 @@ import net.sf.ehcache.CacheManager
 import net.sf.ehcache.Element
 import net.sf.ehcache.Status
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.cache.ehcache.EhCacheCacheManager
 
 /**
@@ -19,6 +20,7 @@ import org.springframework.cache.ehcache.EhCacheCacheManager
 class CachedCatalogFacadeImpl implements CatalogFacade {
 
     @Autowired
+    @Qualifier('orderCatalogFacade')
     CatalogFacade catalogFacade
 
     CacheManager cacheManager
