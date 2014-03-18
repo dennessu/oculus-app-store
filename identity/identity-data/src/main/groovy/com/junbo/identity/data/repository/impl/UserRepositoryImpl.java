@@ -39,8 +39,8 @@ public class UserRepositoryImpl implements UserRepository {
     private UserDAO userDAO;
 
     @Autowired
-    @Qualifier("userNameReverseLookupDAO")
-    private UserNameReverseIndexDAO userNameReverseLookupDAO;
+    @Qualifier("userNameReverseIndexDAO")
+    private UserNameReverseIndexDAO userNameReverseIndexDAO;
 
     @Autowired
     @Qualifier("userNameDAO")
@@ -60,7 +60,7 @@ public class UserRepositoryImpl implements UserRepository {
         UserNameReverseIndexEntity reverseLookupEntity = new UserNameReverseIndexEntity();
         reverseLookupEntity.setUserId(userEntity.getId());
         reverseLookupEntity.setUserName(userEntity.getUserName());
-        userNameReverseLookupDAO.save(reverseLookupEntity);
+        userNameReverseIndexDAO.save(reverseLookupEntity);
 
         return get(new UserId(userEntity.getId()));
     }
@@ -78,12 +78,12 @@ public class UserRepositoryImpl implements UserRepository {
         userNameDAO.update(userNameEntity);
 
         if(!userEntity.getUserName().equals(existing.getUserName())) {
-            userNameReverseLookupDAO.delete(existing.getUserName());
+            userNameReverseIndexDAO.delete(existing.getUserName());
 
             UserNameReverseIndexEntity reverseLookupEntity = new UserNameReverseIndexEntity();
             reverseLookupEntity.setUserId(userEntity.getId());
             reverseLookupEntity.setUserName(userEntity.getUserName());
-            userNameReverseLookupDAO.save(reverseLookupEntity);
+            userNameReverseIndexDAO.save(reverseLookupEntity);
         }
 
         return get(user.getId());
@@ -100,7 +100,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public List<User> search(UserGetOption getOption) {
-        UserNameReverseIndexEntity reverseEntity = userNameReverseLookupDAO.get(getOption.getUserName());
+        UserNameReverseIndexEntity reverseEntity = userNameReverseIndexDAO.get(getOption.getUserName());
 
         List<User> results = new ArrayList<User>();
         results.add(get(new UserId(reverseEntity.getUserId())));
@@ -114,7 +114,7 @@ public class UserRepositoryImpl implements UserRepository {
         UserNameEntity userNameEntity = userNameDAO.findByUserId(userId.getValue());
         userNameDAO.delete(userNameEntity.getId());
 
-        userNameReverseLookupDAO.delete(userEntity.getUserName());
+        userNameReverseIndexDAO.delete(userEntity.getUserName());
         userDAO.delete(userId.getValue());
     }
 }

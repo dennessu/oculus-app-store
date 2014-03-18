@@ -35,15 +35,15 @@ public class UserPinRepositoryImpl implements UserPinRepository {
 
     @Override
     public UserPin save(UserPin entity) {
-        UserPinEntity userPINEntity = modelMapper.toUserPIN(entity, new MappingContext());
-        userPINDAO.save(userPINEntity);
+        UserPinEntity userPinEntity = modelMapper.toUserPin(entity, new MappingContext());
+        userPINDAO.save(userPinEntity);
 
-        return get(entity.getId());
+        return get(new UserPinId(userPinEntity.getId()));
     }
 
     @Override
     public UserPin update(UserPin entity) {
-        UserPinEntity userPINEntity = modelMapper.toUserPIN(entity, new MappingContext());
+        UserPinEntity userPINEntity = modelMapper.toUserPin(entity, new MappingContext());
         userPINDAO.update(userPINEntity);
 
         return get(entity.getId());
@@ -51,7 +51,7 @@ public class UserPinRepositoryImpl implements UserPinRepository {
 
     @Override
     public UserPin get(UserPinId id) {
-        return modelMapper.toUserPIN(userPINDAO.get(id.getValue()), new MappingContext());
+        return modelMapper.toUserPin(userPINDAO.get(id.getValue()), new MappingContext());
     }
 
     @Override
@@ -60,7 +60,7 @@ public class UserPinRepositoryImpl implements UserPinRepository {
 
         List<UserPin> results = new ArrayList<UserPin>();
         for(int i =0 ; i< entities.size(); i++) {
-            results.add(modelMapper.toUserPIN((UserPinEntity) entities.get(i), new MappingContext()));
+            results.add(modelMapper.toUserPin((UserPinEntity) entities.get(i), new MappingContext()));
         }
         return results;
     }

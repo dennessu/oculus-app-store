@@ -38,13 +38,13 @@ public class UserPhoneNumberRepositoryImpl implements UserPhoneNumberRepository 
         UserPhoneNumberEntity userPhoneNumberEntity = modelMapper.toUserPhoneNumber(entity, new MappingContext());
         userPhoneNumberDAO.save(userPhoneNumberEntity);
 
-        return get(entity.getId());
+        return get(new UserPhoneNumberId(userPhoneNumberEntity.getId()));
     }
 
     @Override
     public UserPhoneNumber update(UserPhoneNumber entity) {
         UserPhoneNumberEntity userPhoneNumberEntity = modelMapper.toUserPhoneNumber(entity, new MappingContext());
-        userPhoneNumberDAO.save(userPhoneNumberEntity);
+        userPhoneNumberDAO.update(userPhoneNumberEntity);
 
         return get(entity.getId());
     }

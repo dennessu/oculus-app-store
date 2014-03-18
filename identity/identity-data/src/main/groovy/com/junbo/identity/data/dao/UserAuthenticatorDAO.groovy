@@ -21,6 +21,7 @@ interface UserAuthenticatorDAO {
 
     UserAuthenticatorEntity get(@SeedParam Long id)
 
+    // todo:    This need to be done by reverse index
     List<UserAuthenticatorEntity> search(@SeedParam Long userId, UserAuthenticatorGetOption getOption)
 
     void delete(@SeedParam Long id)

@@ -12,7 +12,7 @@ import com.junbo.common.util.Identifiable;
 /**
  * Created by kg on 3/10/14.
  */
-public class LoginAttempt extends ResourceMeta implements Identifiable<UserLoginAttemptId> {
+public class UserLoginAttempt extends ResourceMeta implements Identifiable<UserLoginAttemptId> {
 
     private UserLoginAttemptId id;
 

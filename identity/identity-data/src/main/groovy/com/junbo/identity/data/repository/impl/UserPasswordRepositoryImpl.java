@@ -38,7 +38,7 @@ public class UserPasswordRepositoryImpl implements UserPasswordRepository {
         UserPasswordEntity userPasswordEntity = modelMapper.toUserPassword(entity, new MappingContext());
         userPasswordDAO.save(userPasswordEntity);
 
-        return get(entity.getId());
+        return get(new UserPasswordId(userPasswordEntity.getId()));
     }
 
     @Override

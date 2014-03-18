@@ -5,10 +5,13 @@
  */
 package com.junbo.identity.data;
 
+import com.junbo.common.id.DeviceId;
+import com.junbo.common.id.GroupId;
+import com.junbo.common.id.SecurityQuestionId;
+import com.junbo.common.id.UserId;
 import com.junbo.identity.data.entity.user.UserPasswordStrength;
 import com.junbo.identity.data.repository.*;
-import com.junbo.identity.spec.model.domaindata.SecurityQuestion;
-import com.junbo.identity.spec.model.options.UserGetOption;
+import com.junbo.identity.spec.model.options.*;
 import com.junbo.identity.spec.model.users.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -32,6 +35,9 @@ import java.util.UUID;
 @TestExecutionListeners(TransactionalTestExecutionListener.class)
 @Transactional("transactionManager")
 public class RepositoryTest extends AbstractTestNGSpringContextTests {
+    // This is the fake value to meet current requirement.
+    private final long userId = 1493188608L;
+
     @Autowired
     private UserRepository userRepository;
 
@@ -39,13 +45,34 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
     private GroupRepository groupRepository;
 
     @Autowired
+    private UserPinRepository userPinRepository;
+
+    @Autowired
+    private UserAuthenticatorRepository userAuthenticatorRepository;
+
+    @Autowired
+    private UserDeviceRepository userDeviceRepository;
+
+    @Autowired
+    private UserEmailRepository userEmailRepository;
+
+    @Autowired
+    private UserGroupRepository userGroupRepository;
+
+    @Autowired
+    private UserLoginAttemptRepository userLoginAttemptRepository;
+
+    @Autowired
+    private UserOptinRepository userOptinRepository;
+
+    @Autowired
+    private UserPhoneNumberRepository userPhoneNumberRepository;
+
+    @Autowired
     private UserPasswordRepository userPasswordRepository;
 
     @Autowired
-    private UserPinRepository userPINRepository;
-
-    @Autowired
-    private SecurityQuestionRepository securityQuestionRepository;
+    private UserSecurityQuestionRepository userSecurityQuestionRepository;
 
     @Test(enabled = false)
     public void testUserRepository() {
@@ -80,14 +107,15 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         newUser = userRepository.update(newUser);
         Assert.assertEquals(newUser.getBirthday(), newValue);
 
-        UserGetOption getOption = new UserGetOption();
-        getOption.setUserName(newUser.getUserName());
-        List<User> userList = userRepository.search(getOption);
-        Assert.assertNotEquals(userList.size(), 0);
+        // todo:    Enable this test
+        //UserGetOption getOption = new UserGetOption();
+        //getOption.setUserName(newUser.getUserName());
+        //List<User> userList = userRepository.search(getOption);
+        //Assert.assertNotEquals(userList.size(), 0);
     }
 
     @Test(enabled = false)
-    public void testGroupEntity() {
+    public void testGroupRepository() {
         Group group = new Group();
         group.setValue("test " + UUID.randomUUID().toString());
         group.setActive(true);
@@ -112,18 +140,20 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
     }
 
     @Test(enabled = false)
-    public void testUserPasswordDAO() {
+    public void testUserPasswordRepository() {
         UserPassword userPassword = new UserPassword();
-        // userPassword.setUserId(new UserId(rand.nextLong()));
+        userPassword.setUserId(new UserId(userId));
         userPassword.setPasswordSalt(UUID.randomUUID().toString());
         userPassword.setPasswordHash(UUID.randomUUID().toString());
-        userPassword.setPasswordStrength(UserPasswordStrength.WEAK.toString());
+        userPassword.setStrength(UserPasswordStrength.WEAK.toString());
         userPassword.setActive(true);
         userPassword.setChangeAtNextLogin(false);
         userPassword.setExpiresBy(new Date());
         userPassword.setCreatedTime(new Date());
+        userPassword.setCreatedBy("lixia");
         userPassword.setUpdatedTime(new Date());
-        userPasswordRepository.save(userPassword);
+        userPassword.setUpdatedBy("lixia");
+        userPassword = userPasswordRepository.save(userPassword);
 
         UserPassword newUserPassword = userPasswordRepository.get(userPassword.getId());
         Assert.assertEquals(userPassword.getActive(), newUserPassword.getActive());
@@ -133,46 +163,268 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userPasswordRepository.update(newUserPassword);
         newUserPassword = userPasswordRepository.get(newUserPassword.getId());
         Assert.assertEquals(newValue, newUserPassword.getActive());
+
+        UserPasswordGetOption getOption = new UserPasswordGetOption();
+        getOption.setUserId(new UserId(userId));
+        List<UserPassword> userPasswordList = userPasswordRepository.search(getOption);
+        Assert.assertNotEquals(userPasswordList.size(), 0);
     }
 
     @Test(enabled = false)
-    public void testUserPinDAO() {
+    public void testUserPinRepository() {
         UserPin userPIN = new UserPin();
-        // userPIN.setUserId(new UserId(rand.nextLong()));
+        userPIN.setUserId(new UserId(userId));
         userPIN.setPinHash(UUID.randomUUID().toString());
         userPIN.setPinSalt(UUID.randomUUID().toString());
         userPIN.setActive(true);
         userPIN.setChangeAtNextLogin(false);
         userPIN.setExpiresBy(new Date());
         userPIN.setCreatedTime(new Date());
+        userPIN.setCreatedBy("lixia");
         userPIN.setUpdatedTime(new Date());
-        userPINRepository.save(userPIN);
+        userPIN.setUpdatedBy("lixia");
+        userPIN = userPinRepository.save(userPIN);
 
-        UserPin newUserPIN = userPINRepository.get(userPIN.getId());
-        Assert.assertEquals(userPIN.getActive(), newUserPIN.getActive());
+        UserPin newUserPin = userPinRepository.get(userPIN.getId());
+        Assert.assertEquals(userPIN.getActive(), newUserPin.getActive());
 
         Boolean newValue = !userPIN.getActive();
-        newUserPIN.setActive(newValue);
-        userPINRepository.update(newUserPIN);
-        newUserPIN = userPINRepository.get(newUserPIN.getId());
-        Assert.assertEquals(newValue, newUserPIN.getActive());
+        newUserPin.setActive(newValue);
+        userPinRepository.update(newUserPin);
+        newUserPin = userPinRepository.get(newUserPin.getId());
+        Assert.assertEquals(newValue, newUserPin.getActive());
+
+        UserPinGetOption getOption = new UserPinGetOption();
+        getOption.setUserId(new UserId(userId));
+        List<UserPin> userPins = userPinRepository.search(getOption);
+        Assert.assertNotEquals(userPins.size(), 0);
     }
 
     @Test(enabled = false)
-    public void testSecurityQuestionDAO() {
-        SecurityQuestion securityQuestion = new SecurityQuestion();
-        securityQuestion.setValue("test " + UUID.randomUUID().toString());
-        securityQuestion.setCreatedTime(new Date());
-        securityQuestion.setUpdatedTime(new Date());
-        securityQuestionRepository.save(securityQuestion);
+    public void testUserAuthenticatorRepository() {
+        UserAuthenticator authenticator = new UserAuthenticator();
+        authenticator.setUserId(new UserId(userId));
+        authenticator.setType("Google_account");
+        authenticator.setValue(UUID.randomUUID().toString());
+        authenticator.setCreatedTime(new Date());
+        authenticator.setCreatedBy("lixia");
+        authenticator = userAuthenticatorRepository.save(authenticator);
 
-        SecurityQuestion newSecurityQuestion = securityQuestionRepository.get(securityQuestion.getId());
-        Assert.assertEquals(securityQuestion.getValue(), newSecurityQuestion.getValue());
+        UserAuthenticator newUserAuthenticator = userAuthenticatorRepository.get(authenticator.getId());
+        Assert.assertEquals(authenticator.getValue(), newUserAuthenticator.getValue());
 
-        String newValue = "Test2 " + UUID.randomUUID().toString();
-        newSecurityQuestion.setValue(newValue);
-        securityQuestionRepository.update(newSecurityQuestion);
-        newSecurityQuestion = securityQuestionRepository.get(newSecurityQuestion.getId());
-        Assert.assertEquals(newValue, newSecurityQuestion.getValue());
+        String newValue = UUID.randomUUID().toString();
+        newUserAuthenticator.setValue(newValue);
+        userAuthenticatorRepository.update(newUserAuthenticator);
+        newUserAuthenticator = userAuthenticatorRepository.get(authenticator.getId());
+
+        Assert.assertEquals(newValue, newUserAuthenticator.getValue());
+
+        // todo:    Need to enable this search
+        // UserAuthenticatorGetOption getOption = new UserAuthenticatorGetOption();
+        // getOption.setType("Google_account");
+        // List<UserAuthenticator> userAuthenticators = userAuthenticatorRepository.search(getOption);
+        // Assert.assertNotEquals(userAuthenticators.size(), 0);
+    }
+
+    @Test(enabled = false)
+    public void testUserDeviceRepository() {
+        UserDevice userDevice = new UserDevice();
+        userDevice.setType("Oculus");
+        userDevice.setDeviceId(new DeviceId(12312L));
+        userDevice.setName(UUID.randomUUID().toString());
+        userDevice.setOs(UUID.randomUUID().toString());
+        userDevice.setUserId(new UserId(userId));
+        userDevice.setCreatedBy("lixia");
+        userDevice.setCreatedTime(new Date());
+
+        userDevice = userDeviceRepository.save(userDevice);
+
+        UserDevice newUserDevice = userDeviceRepository.get(userDevice.getId());
+        Assert.assertEquals(userDevice.getName(), newUserDevice.getName());
+
+        String newName = UUID.randomUUID().toString();
+        newUserDevice.setName(newName);
+        userDeviceRepository.update(newUserDevice);
+
+        newUserDevice = userDeviceRepository.get(userDevice.getId());
+        Assert.assertEquals(newName, newUserDevice.getName());
+
+        UserDeviceGetOption getOption = new UserDeviceGetOption();
+        getOption.setUserId(new UserId(userId));
+        List<UserDevice> userDevices = userDeviceRepository.search(getOption);
+        Assert.assertNotEquals(userDevices.size(), 0);
+    }
+
+    @Test(enabled = false)
+    public void testUserEmailRepository() {
+        UserEmail userEmail = new UserEmail();
+        userEmail.setUserId(new UserId(userId));
+        userEmail.setType("Google");
+        userEmail.setValue(UUID.randomUUID().toString());
+        userEmail.setPrimary(true);
+        userEmail.setVerified(true);
+        userEmail.setCreatedBy("lixia");
+        userEmail.setCreatedTime(new Date());
+        userEmail = userEmailRepository.save(userEmail);
+
+        UserEmail newUserEmail = userEmailRepository.get(userEmail.getId());
+        Assert.assertEquals(userEmail.getValue(), newUserEmail.getValue());
+
+        String value = UUID.randomUUID().toString();
+        newUserEmail.setValue(value);
+        userEmailRepository.update(newUserEmail);
+
+        newUserEmail = userEmailRepository.get(userEmail.getId());
+        Assert.assertEquals(newUserEmail.getValue(), value);
+
+        // todo:    Need to search by emailAddress
+        UserEmailGetOption getOption = new UserEmailGetOption();
+        getOption.setValue(value);
+        getOption.setType("Google");
+        List<UserEmail> userEmails = userEmailRepository.search(getOption);
+        Assert.assertNotEquals(userEmails.size(), 0);
+    }
+
+    @Test(enabled = false)
+    public void testUserGroupRepository() {
+        UserGroup userGroup = new UserGroup();
+        userGroup.setUserId(new UserId(userId));
+        userGroup.setGroupId(new GroupId(423423L));
+        userGroup.setCreatedBy("lixia");
+        userGroup.setCreatedTime(new Date());
+        userGroup = userGroupRepository.save(userGroup);
+
+        UserGroup newUserGroup = userGroupRepository.get(userGroup.getId());
+        Assert.assertEquals(userGroup.getGroupId().getValue(), newUserGroup.getGroupId().getValue());
+
+        newUserGroup.setGroupId(new GroupId(123L));
+        userGroupRepository.update(newUserGroup);
+
+        newUserGroup = userGroupRepository.get(userGroup.getId());
+        Assert.assertEquals(newUserGroup.getGroupId().getValue(), new Long(123L));
+
+        UserGroupGetOption getOption = new UserGroupGetOption();
+        getOption.setUserId(new UserId(userId));
+        getOption.setGroupId(new GroupId(123L));
+        List<UserGroup> userGroups = userGroupRepository.search(getOption);
+
+        Assert.assertEquals(userGroups.size(), 1);
+    }
+
+    @Test(enabled = false)
+    public void testUserLoginAttemptRepository() {
+        UserLoginAttempt userLoginAttempt = new UserLoginAttempt();
+        userLoginAttempt.setUserId(new UserId(userId));
+        userLoginAttempt.setType("pin");
+        userLoginAttempt.setValue(UUID.randomUUID().toString());
+        userLoginAttempt.setClientId(UUID.randomUUID().toString());
+        userLoginAttempt.setIpAddress(UUID.randomUUID().toString());
+        userLoginAttempt.setUserAgent(UUID.randomUUID().toString());
+        userLoginAttempt.setSucceeded(true);
+        userLoginAttempt.setCreatedBy("lixia");
+        userLoginAttempt.setCreatedTime(new Date());
+
+        userLoginAttempt = userLoginAttemptRepository.save(userLoginAttempt);
+
+        UserLoginAttempt newUserLoginAttempt = userLoginAttemptRepository.get(userLoginAttempt.getId());
+        Assert.assertEquals(userLoginAttempt.getIpAddress(), newUserLoginAttempt.getIpAddress());
+
+        String value = UUID.randomUUID().toString();
+        newUserLoginAttempt.setIpAddress(value);
+        userLoginAttemptRepository.update(newUserLoginAttempt);
+
+        newUserLoginAttempt = userLoginAttemptRepository.get(userLoginAttempt.getId());
+        Assert.assertEquals(newUserLoginAttempt.getIpAddress(), value);
+
+        UserLoginAttemptGetOption getOption = new UserLoginAttemptGetOption();
+        getOption.setUserId(new UserId(userId));
+        getOption.setIpAddress(value);
+        List<UserLoginAttempt> userLoginAttempts = userLoginAttemptRepository.search(getOption);
+        Assert.assertEquals(userLoginAttempts.size(), 1);
+    }
+
+    @Test(enabled = false)
+    public void testUserOptinRepository() {
+        UserOptin userOptin = new UserOptin();
+        userOptin.setUserId(new UserId(userId));
+        userOptin.setValue(UUID.randomUUID().toString());
+        userOptin.setCreatedBy("lixia");
+        userOptin.setCreatedTime(new Date());
+        userOptin = userOptinRepository.save(userOptin);
+
+        UserOptin newUserOptin = userOptinRepository.get(userOptin.getId());
+        Assert.assertEquals(userOptin.getValue(), newUserOptin.getValue());
+
+        String value = UUID.randomUUID().toString();
+        userOptin.setValue(value);
+        userOptinRepository.update(userOptin);
+
+        newUserOptin = userOptinRepository.get(userOptin.getId());
+        Assert.assertEquals(value, newUserOptin.getValue());
+
+        UserOptinGetOption getOption = new UserOptinGetOption();
+        getOption.setValue(value);
+        getOption.setUserId(new UserId(userId));
+        List<UserOptin> userOptins = userOptinRepository.search(getOption);
+        Assert.assertEquals(userOptins.size(), 1);
+    }
+
+    @Test(enabled = false)
+    public void testUserPhoneNumberRepository() {
+        UserPhoneNumber userPhoneNumber = new UserPhoneNumber();
+        userPhoneNumber.setUserId(new UserId(userId));
+        userPhoneNumber.setValue(UUID.randomUUID().toString());
+        userPhoneNumber.setType("Google");
+        userPhoneNumber.setPrimary(true);
+        userPhoneNumber.setVerified(true);
+        userPhoneNumber.setCreatedTime(new Date());
+        userPhoneNumber.setCreatedBy("lixia");
+        userPhoneNumber = userPhoneNumberRepository.save(userPhoneNumber);
+
+        UserPhoneNumber newUserPhoneNumber = userPhoneNumberRepository.get(userPhoneNumber.getId());
+        Assert.assertEquals(userPhoneNumber.getValue(), newUserPhoneNumber.getValue());
+
+        String value = UUID.randomUUID().toString();
+        newUserPhoneNumber.setValue(value);
+        userPhoneNumberRepository.update(newUserPhoneNumber);
+
+        newUserPhoneNumber = userPhoneNumberRepository.get(userPhoneNumber.getId());
+        Assert.assertEquals(value, newUserPhoneNumber.getValue());
+
+        UserPhoneNumberGetOption getOption = new UserPhoneNumberGetOption();
+        getOption.setUserId(new UserId(userId));
+        getOption.setValue(value);
+        List<UserPhoneNumber> userPhoneNumbers = userPhoneNumberRepository.search(getOption);
+        Assert.assertEquals(userPhoneNumbers.size(), 1);
+    }
+
+    @Test
+    public void testUserSecurityQuestionRepository() {
+        UserSecurityQuestion userSecurityQuestion = new UserSecurityQuestion();
+        userSecurityQuestion.setUserId(new UserId(userId));
+        userSecurityQuestion.setSecurityQuestionId(new SecurityQuestionId(123L));
+        userSecurityQuestion.setAnswerHash(UUID.randomUUID().toString());
+        userSecurityQuestion.setAnswerSalt(UUID.randomUUID().toString());
+        userSecurityQuestion.setCreatedBy("lixia");
+        userSecurityQuestion.setCreatedTime(new Date());
+
+        userSecurityQuestion = userSecurityQuestionRepository.save(userSecurityQuestion);
+
+        UserSecurityQuestion newUserSecurityQuestion = userSecurityQuestionRepository.get(userSecurityQuestion.getId());
+        Assert.assertEquals(userSecurityQuestion.getAnswerHash(), newUserSecurityQuestion.getAnswerHash());
+
+        String value = UUID.randomUUID().toString();
+        userSecurityQuestion.setAnswerSalt(value);
+        userSecurityQuestionRepository.update(userSecurityQuestion);
+
+        newUserSecurityQuestion = userSecurityQuestionRepository.get(userSecurityQuestion.getId());
+        Assert.assertEquals(newUserSecurityQuestion.getAnswerHash(), value);
+
+        UserSecurityQuestionGetOption getOption = new UserSecurityQuestionGetOption();
+        getOption.setUserId(new UserId(userId));
+        getOption.setSecurityQuestionId(new SecurityQuestionId(123L));
+        List<UserSecurityQuestion> securityQuestions = userSecurityQuestionRepository.search(getOption);
+        Assert.assertEquals(securityQuestions.size(), 1);
     }
 }

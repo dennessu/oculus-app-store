@@ -28,11 +28,18 @@ public interface ModelMapper {
     Group toGroup(GroupEntity entity, MappingContext context);
     GroupEntity toGroup(Group entity, MappingContext context);
 
+    @Mappings({
+            @Mapping(source = "strength", target = "strength", explicitMethod = "toUserPasswordStrength",
+                    bidirectional = false)
+    })
     UserPassword toUserPassword(UserPasswordEntity entity, MappingContext context);
+    @Mappings({
+            @Mapping(source = "strength", target = "strength", explicitMethod = "toUserPasswordStrength")
+    })
     UserPasswordEntity toUserPassword(UserPassword entity, MappingContext context);
 
-    UserPin toUserPIN(UserPinEntity entity, MappingContext context);
-    UserPinEntity toUserPIN(UserPin entity, MappingContext context);
+    UserPin toUserPin(UserPinEntity entity, MappingContext context);
+    UserPinEntity toUserPin(UserPin entity, MappingContext context);
 
     SecurityQuestion toSecurityQuestion(SecurityQuestionEntity entity, MappingContext context);
     SecurityQuestionEntity toSecurityQuestion(SecurityQuestion entity, MappingContext context);
@@ -52,8 +59,8 @@ public interface ModelMapper {
     UserGroup toUserGroup(UserGroupEntity entity, MappingContext context);
     UserGroupEntity toUserGroup(UserGroup entity, MappingContext context);
 
-    LoginAttempt toUserLoginAttempt(UserLoginAttemptEntity entity, MappingContext context);
-    UserLoginAttemptEntity toUserLoginAttempt(LoginAttempt entity, MappingContext context);
+    UserLoginAttempt toUserLoginAttempt(UserLoginAttemptEntity entity, MappingContext context);
+    UserLoginAttemptEntity toUserLoginAttempt(UserLoginAttempt entity, MappingContext context);
 
     UserOptin toUserOptin(UserOptinEntity entity, MappingContext context);
     UserOptinEntity toUserOptin(UserOptin entity, MappingContext context);

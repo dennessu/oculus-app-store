@@ -38,7 +38,7 @@ class UserDeviceDAOImpl extends EntityDAOImpl implements UserDeviceDAO {
                 (' order by id limit ' + (getOption.limit == null ? 'ALL' : getOption.limit.toString())) +
                 ' offset ' + (getOption.offset == null ? '0' : getOption.offset.toString())
 
-        def entities = sessionFactory.currentSession.createSQLQuery(query).addEntity(UserDeviceEntity).list()
+        def entities = currentSession().createSQLQuery(query).addEntity(UserDeviceEntity).list()
 
         return entities
     }

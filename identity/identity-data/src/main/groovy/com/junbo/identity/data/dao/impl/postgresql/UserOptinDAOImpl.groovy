@@ -35,7 +35,7 @@ class UserOptinDAOImpl extends EntityDAOImpl implements UserOptinDAO {
     @Override
     List<UserOptinEntity> search(Long userId, UserOptinGetOption getOption) {
         String query = 'select * from user_optin where user_id =  ' + getOption.userId.value +
-                (getOption.value == null ? '' : (' and value = ' + getOption.value)) +
+                (getOption.value == null ? '' : (' and value = \'' + getOption.value)) + '\'' +
                 (' order by id limit ' + (getOption.limit == null ? 'ALL' : getOption.limit.toString())) +
                 ' offset ' + (getOption.offset == null ? '0' : getOption.offset.toString())
 

@@ -32,13 +32,13 @@ class UserDeviceRepositoryImpl implements UserDeviceRepository {
         UserDeviceEntity userDeviceProfileEntity = modelMapper.toUserDevice(entity, new MappingContext())
         userDeviceDAO.save(userDeviceProfileEntity)
 
-        return get(entity.id)
+        return get(new UserDeviceId(userDeviceProfileEntity.id))
     }
 
     @Override
     UserDevice update(UserDevice entity) {
-        UserDeviceEntity userDeviceProfileEntity = modelMapper.toUserDevice(entity, new MappingContext())
-        userDeviceDAO.update(userDeviceProfileEntity)
+        UserDeviceEntity userDeviceEntity = modelMapper.toUserDevice(entity, new MappingContext())
+        userDeviceDAO.update(userDeviceEntity)
 
         return get(entity.id)
     }
@@ -51,7 +51,7 @@ class UserDeviceRepositoryImpl implements UserDeviceRepository {
     @Override
     List<UserDevice> search(UserDeviceGetOption getOption) {
         def result = []
-        def entities = userDeviceDAO.search(getOption)
+        def entities = userDeviceDAO.search(getOption.userId.value, getOption)
 
         entities.flatten { i ->
             result.add(modelMapper.toUserDevice(i, new MappingContext()))

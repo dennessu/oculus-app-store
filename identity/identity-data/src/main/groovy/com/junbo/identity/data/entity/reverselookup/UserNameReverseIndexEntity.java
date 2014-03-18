@@ -9,6 +9,7 @@ import com.junbo.sharding.annotations.SeedId;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
@@ -18,6 +19,7 @@ import javax.persistence.Table;
 @Table(name = "user_name_reverse_lookup")
 public class UserNameReverseIndexEntity {
 
+    @Id
     @SeedId
     @Column(name = "user_name")
     private String userName;

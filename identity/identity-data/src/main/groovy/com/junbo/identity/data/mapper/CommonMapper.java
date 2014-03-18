@@ -53,14 +53,14 @@ public class CommonMapper {
         return userPasswordId.getValue();
     }
 
-    UserPinId toUserPINId(Long userPINId) {
-        if (userPINId == null) {
+    UserPinId toUserPinId(Long userPinId) {
+        if (userPinId == null) {
             return null;
         }
-        return new UserPinId(userPINId);
+        return new UserPinId(userPinId);
     }
 
-    Long toUserPINId(UserPinId userPINId) {
+    Long toUserPinId(UserPinId userPINId) {
         if(userPINId == null) {
             return null;
         }
@@ -281,6 +281,20 @@ public class CommonMapper {
             return null;
         }
         return new PasswordRuleId(id);
+    }
+
+    public Long toDeviceId(DeviceId id) {
+        if(id == null) {
+            return null;
+        }
+        return id.getValue();
+    }
+
+    public DeviceId toDeviceId(Long id) {
+        if(id == null) {
+            return null;
+        }
+        return new DeviceId(id);
     }
 
     public List<String> explicitMethod_jsonToListString(String json) {
