@@ -109,6 +109,11 @@ public class FulfilmentServiceImpl extends TransactionSupport implements Fulfilm
             throw new FulfilmentException("Fulfilment request with orderId ["
                     + request.getOrderId() + "] has already been issued.");
         }
+
+        // ensure fulfilment items are specified
+        if (request.getItems() == null) {
+            throw new FulfilmentException("No fulfilment item specified.");
+        }
     }
 
     public void distill(FulfilmentRequest request) {
