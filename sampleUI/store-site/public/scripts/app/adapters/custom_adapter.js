@@ -1,15 +1,22 @@
 
-App.ProductAdapter = DS.RESTAdapter.extend({
+var ProductAdapter = DS.RESTAdapter.extend({
 
     find: function(store, type, id) {
         var url = type.url;
-        url = url.fmt(id);
 
-        jQuery.getJSON(url, function(data) {
-            // data is a Hash of key/value pairs. If your server returns a
-            // root, simply do something like:
-            // store.load(type, id, data.person)
-            store.load(type, id, data);
+        return new Ember.RSVP.Promise(function(resolve) {
+
+            var ds = {
+                "Product": {
+                    "id": "1",
+                    "name": "3D Parking 1",
+                    "price": 9.99,
+                    "picture": "/images/P1.jpg",
+                    "description": ""
+                }
+            };
+            Ember.run(null, resolve, ds);
+
         });
     },
     findAll: function(store, type, sinceToken) {
@@ -18,33 +25,31 @@ App.ProductAdapter = DS.RESTAdapter.extend({
         if (sinceToken) {
             query = { since: sinceToken };
         }
-        var list = new Array();
-        var product = {
-            id: 123,
-            name: "123",
-            price: 10,
-            picture: "",
-            description: ""
-        };
-        list.push(product);
+        //return this.ajax("/test/products", 'GET', { data: query });
 
-        //return list;
+        var result = {"Products": [
+            {
+                "id": 111,
+                "name": "3D Parking 1",
+                "price": 9.99,
+                "picture": "/images/P1.jpg",
+                "description": ""
+            },
+            {
+                "id": 222,
+                "name": "3D Parking 2",
+                "price": 9.99,
+                "picture": "/images/P1.jpg",
+                "description": ""
+            }
+        ]};
 
-        return new Ember.RSVP.Promise(function(resolve, reject) {
-
-            var ds = {"Products": [{"Product": {id:123, "name": "123", "price": 10, "picture": "", "description": ""}, id:123}]};
-
-            resolve(ds);
-            //Ember.run(null, resolve, product);
-            /*
-            jQuery.getJSON(url).then(function(data) {
-                Ember.run(null, resolve, data);
-            }, function(jqXHR) {
-                jqXHR.then = null; // tame jQuery's ill mannered promises
-                Ember.run(null, reject, jqXHR);
-            });*/
+        var productsPromise = new Ember.RSVP.Promise(function(resolve, reject) {
+            Ember.run(Ember.App.Product, resolve, result);
+            console.log("Push done");
         });
-        //return this.ajax(this.buildURL(type.typeKey), 'GET', { data: query });
+
+        return productsPromise;
     },
 
     findQuery: function(store, type, query, modelArray) {
@@ -62,6 +67,3 @@ App.ProductAdapter = DS.RESTAdapter.extend({
     }
 });
 
-App.store = DS.Store.create({
-    adapter: 'CustomAdapter'
-});
