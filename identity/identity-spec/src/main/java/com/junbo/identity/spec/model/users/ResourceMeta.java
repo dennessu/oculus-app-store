@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.spec.model.users;
 
+import javax.xml.bind.annotation.XmlTransient;
 import java.util.Date;
 
 /**
@@ -18,6 +19,12 @@ public abstract class ResourceMeta {
     private Date createdTime;
 
     private Date updatedTime;
+
+    @XmlTransient
+    private String createdBy;
+
+    @XmlTransient
+    private String updatedBy;
 
     public Integer getResourceAge() {
         return resourceAge;
@@ -43,4 +50,19 @@ public abstract class ResourceMeta {
         this.updatedTime = updatedTime;
     }
 
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public String getUpdatedBy() {
+        return updatedBy;
+    }
+
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+    }
 }

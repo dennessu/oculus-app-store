@@ -37,14 +37,7 @@ public interface ModelMapper {
     SecurityQuestion toSecurityQuestion(SecurityQuestionEntity entity, MappingContext context);
     SecurityQuestionEntity toSecurityQuestion(SecurityQuestion entity, MappingContext context);
 
-    @Mappings({
-            @Mapping(source = "createdTime", target = "createdTime", excluded = true, bidirectional = false),
-            @Mapping(source = "updatedTime", target = "updatedTime", excluded = true, bidirectional = false)
-    })
     UserEntity toUser(User user, MappingContext context);
-    @Mappings({
-            @Mapping(source = "password", excluded = true, bidirectional = false)
-    })
     User toUser(UserEntity userEntity, MappingContext context);
 
     UserDevice toUserDevice(UserDeviceEntity entity, MappingContext context);
@@ -72,8 +65,10 @@ public interface ModelMapper {
     UserSecurityQuestionEntity toUserSecurityQuestion(UserSecurityQuestion entity, MappingContext context);
 
     UserTos toUserTos(UserTosEntity entity, MappingContext context);
-
     UserTosEntity toUserTos(UserTos entity, MappingContext context);
+
+    UserName toUserName(UserNameEntity entity, MappingContext context);
+    UserNameEntity toUserName(UserName entity, MappingContext context);
 
     @Mappings({
             @Mapping(source = "allowedCharacterSet", target = "allowedCharacterSet", excluded = false,

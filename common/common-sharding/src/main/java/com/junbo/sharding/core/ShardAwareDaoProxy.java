@@ -60,6 +60,9 @@ public class ShardAwareDaoProxy implements InvocationHandler {
                     if (args[i].getClass().equals(Long.class)) {
                         return Helper.getShardId((Long)args[i]);
                     }
+                    else if (args[i].getClass().equals(String.class)) {
+                        return Helper.getShardId((String)args[i]);
+                    }
                     else {
                         throw new RuntimeException("@SeedParam annotation must be placed with Long type field, " +
                                 "error with class " + args[i].getClass().getCanonicalName());

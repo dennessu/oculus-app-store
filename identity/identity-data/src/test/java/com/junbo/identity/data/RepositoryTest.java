@@ -6,14 +6,10 @@
 package com.junbo.identity.data;
 
 import com.junbo.identity.data.entity.user.UserPasswordStrength;
-import com.junbo.identity.data.repository.GroupRepository;
-import com.junbo.identity.data.repository.SecurityQuestionRepository;
-import com.junbo.identity.data.repository.UserPasswordRepository;
-import com.junbo.identity.data.repository.UserPinRepository;
+import com.junbo.identity.data.repository.*;
 import com.junbo.identity.spec.model.domaindata.SecurityQuestion;
-import com.junbo.identity.spec.model.users.Group;
-import com.junbo.identity.spec.model.users.UserPassword;
-import com.junbo.identity.spec.model.users.UserPin;
+import com.junbo.identity.spec.model.options.UserGetOption;
+import com.junbo.identity.spec.model.users.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
@@ -25,6 +21,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -35,6 +32,9 @@ import java.util.UUID;
 @TestExecutionListeners(TransactionalTestExecutionListener.class)
 @Transactional("transactionManager")
 public class RepositoryTest extends AbstractTestNGSpringContextTests {
+    @Autowired
+    private UserRepository userRepository;
+
     @Autowired
     private GroupRepository groupRepository;
 
@@ -47,7 +47,46 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
     @Autowired
     private SecurityQuestionRepository securityQuestionRepository;
 
-    @Test
+    @Test(enabled = false)
+    public void testUserRepository() {
+        User user = new User();
+        user.setActive(true);
+        user.setBirthday("1998-08-01");
+        user.setDisplayName(UUID.randomUUID().toString());
+        user.setGender("male");
+        user.setLocale("en_US");
+        UserName userName = new UserName();
+        userName.setFirstName(UUID.randomUUID().toString());
+        userName.setHonorificPrefix(UUID.randomUUID().toString());
+        userName.setHonorificSuffix(UUID.randomUUID().toString());
+        userName.setLastName(UUID.randomUUID().toString());
+        userName.setMiddleName(UUID.randomUUID().toString());
+        user.setName(userName);
+        user.setNickName(UUID.randomUUID().toString());
+        user.setPreferredLanguage(UUID.randomUUID().toString());
+        user.setTimezone(UUID.randomUUID().toString());
+        user.setType(UUID.randomUUID().toString());
+        user.setUserName(UUID.randomUUID().toString());
+        user.setCreatedTime(new Date());
+        user.setCreatedBy("lixia");
+        user = userRepository.save(user);
+
+        User newUser = userRepository.get(user.getId());
+        Assert.assertEquals(user.getBirthday(), newUser.getBirthday());
+
+        String oldValue = user.getBirthday();
+        String newValue = UUID.randomUUID().toString();
+        newUser.setBirthday(newValue);
+        newUser = userRepository.update(newUser);
+        Assert.assertEquals(newUser.getBirthday(), newValue);
+
+        UserGetOption getOption = new UserGetOption();
+        getOption.setUserName(newUser.getUserName());
+        List<User> userList = userRepository.search(getOption);
+        Assert.assertNotEquals(userList.size(), 0);
+    }
+
+    @Test(enabled = false)
     public void testGroupEntity() {
         Group group = new Group();
         group.setValue("test " + UUID.randomUUID().toString());
