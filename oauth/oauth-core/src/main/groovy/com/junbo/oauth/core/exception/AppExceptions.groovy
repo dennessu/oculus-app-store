@@ -218,4 +218,14 @@ interface AppExceptions {
             description = 'The token\'s client does not match the authorization\'s client',
             field = 'token')
     AppError tokenClientNotMatch()
+
+    @ErrorDef(httpStatusCode = 400, code = '20051',
+            description = 'The scope name {0} already exists',
+            field = 'name')
+    AppError duplicateScopeName()
+
+    @ErrorDef(httpStatusCode = 400, code = '20052',
+            description = 'The revision is not provided',
+            field = 'revision')
+    AppError missingRevision()
 }

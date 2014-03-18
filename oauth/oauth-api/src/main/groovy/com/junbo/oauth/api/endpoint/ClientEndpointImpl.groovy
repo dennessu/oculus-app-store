@@ -28,7 +28,7 @@ class ClientEndpointImpl implements ClientEndpoint {
 
     @Override
     Promise<Client> postClient(String authorization, Client client) {
-        return Promise.pure(clientService.postClient(authorization, client))
+        return Promise.pure(clientService.saveClient(authorization, client))
     }
 
     @Override

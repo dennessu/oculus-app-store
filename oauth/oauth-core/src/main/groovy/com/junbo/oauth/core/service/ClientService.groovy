@@ -13,7 +13,7 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 interface ClientService {
-    Client postClient(String authorization, Client client)
+    Client saveClient(String authorization, Client client)
 
     Client getClient(String authorization, String clientId)
 
