@@ -12,8 +12,11 @@
     <import resource="classpath*:spring/sharding.xml"/>
     <import resource="classpath*:spring/sharding-context.xml"/>
 
+
     <bean id="__builtinMapper" class="com.junbo.oom.core.builtin.BuiltinMapper" />
     <bean id="__commonMapper" class="com.junbo.identity.data.mapper.CommonMapper" />
+
+    <tx:annotation-driven transaction-manager="transactionManager"/>
 
     <bean id="sessionFactoryWrapper" class="com.junbo.sharding.core.hibernate.SessionFactoryWrapper">
         <property name="dataSourceRegistry" ref="shardDataSourceRegistry"/>

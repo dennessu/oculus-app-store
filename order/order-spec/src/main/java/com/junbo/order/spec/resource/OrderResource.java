@@ -12,8 +12,6 @@ import com.junbo.langur.core.promise.Promise;
 import com.junbo.order.spec.model.Order;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
@@ -27,21 +25,17 @@ import java.util.List;
 public interface OrderResource {
 
     @POST
-    Promise<List<Order>> createOrders(Order order,
-                                      @Context HttpHeaders headers);
+    Promise<List<Order>> createOrders(Order order);
 
     @GET
     @Path("/{orderId}")
-    Promise<Order> getOrderByOrderId(@PathParam("orderId") OrderId orderId,
-                                     @Context HttpHeaders headers);
+    Promise<Order> getOrderByOrderId(@PathParam("orderId") OrderId orderId);
 
     @GET
-    Promise<List<Order>> getOrderByUserId(@QueryParam("userId") UserId userId,
-                                     @Context HttpHeaders headers);
+    Promise<List<Order>> getOrderByUserId(@QueryParam("userId") UserId userId);
 
     @PUT
     @Path("/{orderId}")
-    Promise<List<Order>> updateOrderByOrderId(@PathParam("orderId") OrderId orderId, Order order,
-                                           @Context HttpHeaders headers);
+    Promise<List<Order>> updateOrderByOrderId(@PathParam("orderId") OrderId orderId, Order order);
 }
 

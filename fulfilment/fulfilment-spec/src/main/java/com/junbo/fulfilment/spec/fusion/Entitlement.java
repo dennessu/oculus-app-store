@@ -18,6 +18,8 @@ public class Entitlement {
     private Date grantDate;
     private Date expirationDate;
     private Long offerId;
+    private Long entitlementDefinitionId;
+    private Long developerId;
 
     public Long getUserId() {
         return userId;
@@ -73,5 +75,21 @@ public class Entitlement {
 
     public void setOfferId(Long offerId) {
         this.offerId = offerId;
+    }
+
+    public Long getEntitlementDefinitionId() {
+        return entitlementDefinitionId;
+    }
+
+    public void setEntitlementDefinitionId(Long entitlementDefinitionId) {
+        this.entitlementDefinitionId = entitlementDefinitionId;
+    }
+
+    public Long getDeveloperId() {
+        return developerId;
+    }
+
+    public void setDeveloperId(Long developerId) {
+        this.developerId = developerId;
     }
 }

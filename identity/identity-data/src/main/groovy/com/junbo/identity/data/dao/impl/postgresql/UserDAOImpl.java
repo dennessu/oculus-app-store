@@ -13,8 +13,8 @@ import org.springframework.stereotype.Component;
  * Implementation for User DAO..
  */
 @Component
-public class UserDAOImpl extends EntityDAOImpl implements UserDAO {
 
+public class UserDAOImpl extends EntityDAOImpl implements UserDAO {
     @Override
     public UserEntity save(UserEntity user) {
         currentSession().save(user);

@@ -1,17 +1,6 @@
 
-exports.Login = function(req, res){
-    res.render('identity/login');
-};
-exports.Register = function(req, res){
-    res.render('identity/register');
-};
-exports.Captcha = function(req, res){
-    res.render('identity/captcha');
-};
+var Identity = require('./identity');
+var Store = require('./store');
 
-exports.TFA = function(req, res){
-    res.render('identity/tfa');
-};
-exports.My = function(req, res){
-    res.render('identity/my');
-};
+exports.Identity = Identity;
+exports.Store = Store;
