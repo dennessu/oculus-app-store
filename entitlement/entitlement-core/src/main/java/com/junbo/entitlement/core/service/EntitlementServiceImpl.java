@@ -9,6 +9,7 @@ package com.junbo.entitlement.core.service;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementType;
 import com.junbo.entitlement.common.def.EntitlementStatusReason;
 import com.junbo.entitlement.common.lib.CloneUtils;
+import com.junbo.entitlement.common.lib.EntitlementContext;
 import com.junbo.entitlement.core.EntitlementService;
 import com.junbo.entitlement.db.entity.def.EntitlementStatus;
 import com.junbo.entitlement.db.repository.EntitlementRepository;
@@ -79,6 +80,10 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
             LOGGER.error("Can not created {} entitlement.", entitlement.getStatus());
             throw AppErrors.INSTANCE.fieldNotCorrect("status",
                     "status can not be DELETED or BANNED when created").exception();
+        }
+
+        if(entitlement.getGrantTime() == null){
+            entitlement.setGrantTime(EntitlementContext.current().getNow());
         }
 
         checkEntitlementDefinition(entitlement.getEntitlementDefinitionId());
@@ -167,7 +172,8 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
                     existingEntitlement.getTag()).exception();
         }
 
-        if (existingEntitlement.getGrantTime().compareTo(entitlement.getGrantTime()) != 0) {
+        if (entitlement.getGrantTime() == null ||
+                existingEntitlement.getGrantTime().compareTo(entitlement.getGrantTime()) != 0) {
             throw AppErrors.INSTANCE.fieldNotMatch("grantTime",
                     entitlement.getGrantTime(),
                     existingEntitlement.getGrantTime()).exception();
