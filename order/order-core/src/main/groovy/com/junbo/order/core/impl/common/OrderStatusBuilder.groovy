@@ -1,5 +1,6 @@
 package com.junbo.order.core.impl.common
 
+import com.junbo.billing.spec.enums.BalanceStatus
 import com.junbo.order.db.entity.enums.EventStatus
 import com.junbo.order.db.entity.enums.OrderActionType
 import com.junbo.order.db.entity.enums.OrderStatus
@@ -128,6 +129,25 @@ class OrderStatusBuilder {
                     oe.status == EventStatus.COMPLETED.toString()
         }
         return orderEvent != null
+    }
+
+    static OrderStatus buildOrderStatusFromBalance(String balanceStatus) {
+        switch (balanceStatus) {
+            case BalanceStatus.COMPLETED:
+                return OrderStatus.CHARGED
+            case BalanceStatus.AWAITING_PAYMENT:
+            case BalanceStatus.UNCONFIRMED:
+            case BalanceStatus.INIT:
+                return OrderStatus.PENDING_CHARGE
+            case BalanceStatus.PENDING_CAPTURE:
+                return OrderStatus.OPEN
+            case BalanceStatus.CANCELLED:
+            case BalanceStatus.FAILED:
+            case BalanceStatus.ERROR:
+                return OrderStatus.FAILED
+            default:
+                return OrderStatus.PENDING_CHARGE
+        }
     }
 
     private static void sortOrderEventsReversely(List<OrderEvent> orderEvents) {
