@@ -70,7 +70,9 @@ public abstract class BaseServiceImpl<T extends VersionedModel> implements BaseS
             return entities;
         } else {
             options.ensurePagingValid();
-            List<T> draftEntities = getEntityDraftRepo().getEntities(options.getStart(), options.getSize());
+            String status = Status.RELEASED.equalsIgnoreCase(options.getStatus()) ? null : options.getStatus();
+
+            List<T> draftEntities = getEntityDraftRepo().getEntities(options.getStart(), options.getSize(), status);
 
             if (Status.RELEASED.equalsIgnoreCase(options.getStatus())) {
                 List<T> entities = new ArrayList<>();

@@ -17,6 +17,7 @@ import java.math.BigDecimal;
  * Created by xmchen on 14-2-24.
  */
 public class Transaction {
+    @JsonIgnore
     private TransactionId transactionId;
     @JsonIgnore
     private BalanceId balanceId;
