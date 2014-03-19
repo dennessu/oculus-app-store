@@ -4,7 +4,7 @@ ext {
     junboVersion = '0.0.1-SNAPSHOT'
     jerseyVersion = '2.5.1'
     springVersion = '4.0.2.RELEASE'
-    swaggerVersion = '1.3.2'
+    swaggerVersion = '1.3.2-JUNBO'
     jacksonVersion = '2.2.3'
     slf4jVersion = '1.7.6'
     logbackVersion = '1.1.1'

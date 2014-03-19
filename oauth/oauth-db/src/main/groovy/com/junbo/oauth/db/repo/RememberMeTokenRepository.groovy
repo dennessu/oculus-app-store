@@ -13,7 +13,7 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 interface RememberMeTokenRepository {
-    void save(RememberMeToken rememberMeToken)
+    RememberMeToken save(RememberMeToken rememberMeToken)
 
     RememberMeToken get(String tokenValue)
 

@@ -1,4 +1,5 @@
 package com.junbo.order.rest.resource
+
 import com.junbo.common.id.OrderId
 import com.junbo.common.id.UserId
 import com.junbo.langur.core.promise.Promise
@@ -11,7 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 
-import javax.ws.rs.core.HttpHeaders
+import javax.ws.rs.container.ContainerRequestContext
+
 //import javax.ws.rs.container.ContainerRequestContext
 //import javax.ws.rs.core.Context
 /**
@@ -23,34 +25,39 @@ import javax.ws.rs.core.HttpHeaders
 class OrderResourceImpl implements OrderResource {
 
     @Autowired
+    private ContainerRequestContext requestContext
+
+    @Autowired
     OrderService orderService
 
     @Override
-    Promise<Order> getOrderByOrderId(OrderId orderId, HttpHeaders httpHeaders) {
+    Promise<Order> getOrderByOrderId(OrderId orderId) {
         return orderService.getOrderByOrderId(orderId.value)
     }
 
     @Override
-    Promise<List<Order>> createOrders(Order order, HttpHeaders httpHeaders) {
+    Promise<List<Order>> createOrders(Order order) {
         if (!order?.tentative) {
-            return orderService.createOrders(order, new ApiContext(httpHeaders))
+            return orderService.createOrders(order, new ApiContext(requestContext.headers))
         }
 
-        return orderService.createQuotes(order, new ApiContext(httpHeaders))
+        return orderService.createQuotes(order, new ApiContext(requestContext.headers))
 
     }
 
     @Override
-    Promise<List<Order>> updateOrderByOrderId(OrderId orderId, Order order, HttpHeaders httpHeaders) {
+    Promise<List<Order>> updateOrderByOrderId(OrderId orderId, Order order) {
+        order.id = orderId
         orderService.getOrderByOrderId(orderId.value).then { Order oldOrder ->
             // handle the update request per scenario
             if (oldOrder.tentative) { // order not settle
                 if (order.tentative) {
-                    orderService.updateTentativeOrder(order, new ApiContext(httpHeaders)).syncThen { Order result ->
+                    orderService.updateTentativeOrder(order,
+                            new ApiContext(requestContext.headers)).syncThen { Order result ->
                         [result]
                     }
                 } else { // handle settle order scenario: the tentative flag is updated from true to false
-                    orderService.settleQuote(oldOrder, new ApiContext(httpHeaders))
+                    orderService.settleQuote(oldOrder, new ApiContext(requestContext.headers))
                 }
             } else { // order already settle
                 Promise.pure([oldOrder]) // todo implement update on settled order
@@ -59,7 +66,7 @@ class OrderResourceImpl implements OrderResource {
     }
 
     @Override
-    Promise<List<Order>> getOrderByUserId(UserId userId, HttpHeaders headers) {
+    Promise<List<Order>> getOrderByUserId(UserId userId) {
         return orderService.getOrdersByUserId(userId.value)
     }
 

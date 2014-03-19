@@ -19,23 +19,24 @@ PasswordIntensity.prototype.IntensityEnum = {
 
 
 PasswordIntensity.prototype._match = function(s, re){
-    return s.match(re) > -1;
+    var reg = new RegExp(re,"g");
+    return reg.test(s);
 };
 
 PasswordIntensity.prototype._isUpperAlphaContain = function(s) {
-    return PasswordIntensity._match(s, PasswordIntensity.ANY_STRING_PATTERN + PasswordIntensity.UPPER_ALPHA_PATTEN + PasswordIntensity.PLUS + PasswordIntensity.ANY_STRING_PATTERN);
+    return this._match(s, this.ANY_STRING_PATTERN + this.UPPER_ALPHA_PATTEN + this.PLUS + this.ANY_STRING_PATTERN);
 };
 
 PasswordIntensity.prototype._isLowerAlphaContain = function(s) {
-    return PasswordIntensity._match(s, PasswordIntensity.ANY_STRING_PATTERN + PasswordIntensity.LOWER_ALPHA_PATTEN + PasswordIntensity.PLUS + PasswordIntensity.ANY_STRING_PATTERN);
+    return this._match(s, this.ANY_STRING_PATTERN + this.LOWER_ALPHA_PATTEN + this.PLUS + this.ANY_STRING_PATTERN);
 };
 
 PasswordIntensity.prototype._isSpecialCharacterContain = function(s) {
-    return PasswordIntensity._match(s, PasswordIntensity.ANY_STRING_PATTERN + PasswordIntensity.SPECIAL_CHARACTER_PATTEN + PasswordIntensity.PLUS + PasswordIntensity.ANY_STRING_PATTERN);
+    return this._match(s, this.ANY_STRING_PATTERN + this.SPECIAL_CHARACTER_PATTEN + this.PLUS + this.ANY_STRING_PATTERN);
 };
 
 PasswordIntensity.prototype._isNumberContain = function(s) {
-    return PasswordIntensity._match(s, PasswordIntensity.ANY_STRING_PATTERN + PasswordIntensity.NUMBER_PATTEN + PasswordIntensity.PLUS + PasswordIntensity.ANY_STRING_PATTERN);
+    return this._match(s, this.ANY_STRING_PATTERN + this.NUMBER_PATTEN + this.PLUS + this.ANY_STRING_PATTERN);
 };
 PasswordIntensity.prototype._getPasswordScore = function(s){
     var score = 0;
@@ -58,7 +59,7 @@ PasswordIntensity.prototype._getPasswordScore = function(s){
 
 PasswordIntensity.prototype.GetIntensity = function(s){
 
-    if(s.length() < 4 || s.length() > 16) {
+    if(s.length < 4 || s.length > 16) {
         return this.IntensityEnum.WEAK;
     }
 
@@ -71,13 +72,8 @@ PasswordIntensity.prototype.GetIntensity = function(s){
         return this.IntensityEnum.FAIR;
     }
     else {
-        return UserPasswordStrength.WEAK;
+        return this.IntensityEnum.WEAK;
     }
 };
 
 module.exports = PasswordIntensity;
-
-
-
-
-

@@ -2,9 +2,36 @@ var Utils = require('../utils/utils');
 
 var Configs = {
 
-    CookiesTimeout: 10 * 60 * 1000,
+    // async client config
+    CookiesTimeout: 60 * 60 * 1000,
+    Google_Captcha_PublicKey: "6LeKhO4SAAAAAL53gitVTB5ddevC59wE-6usFCnT",
+    Feature: {
+        Captcha: true,
+        TFA: true
+    },
+    CookiesName: {
+        AccessToken: "access_token",
+        IdToken: "id_token",
+        ConversationId: "cid",
+        Event: "event",
+        RedirectUrl: "redirect_url",
 
-    EnabledCaptcha: false,
+        UserId: "user_id",
+        Username: "username"
+    },
+    QueryStrings: {
+        Code: "code",
+        IdToken: "id_token",
+        AccessToken: "access_token",
+        ConversationId: "cid",
+        Event: "event",
+        RedirectUrl: "redirect_url"
+    },
+    SettingTypeEnum:{
+        Cookie: 'cookie'
+    },
+
+    // only on server
     Google_Captcha_Hostname: "www.google.com",
     Google_Captcha_VerifyUrl: "/recaptcha/api/verify",
     Google_Captcha_PrivateKey: "6LeKhO4SAAAAACP5W0NoL7YV9dZAs3-5Z-T4Dl5i",
@@ -20,24 +47,7 @@ var Configs = {
         ProfileFirstname: "firstName",
         ProfileLastname: "lastName"
     },
-
-    QueryStrings: {
-        Code: "code",
-        IdToken: "id_token",
-        AccessToken: "access_token",
-        ConversationId: "cid",
-        Event: "event",
-        RedirectUrl: "redirect_url"
-    },
     SaveQueryStringArray: ["cid", "event", "id_token", "access_token", "redirect_url"],
-
-    SessionKeys: {
-        AccessToken: "access_token",
-        IdToken: "id_token",
-        IsAuthenticate: "is_auth",
-        UserId: "user_id",
-        Username: "username"
-    },
 
     Urls:{
         GetCallbackLoginUrl: function(req){

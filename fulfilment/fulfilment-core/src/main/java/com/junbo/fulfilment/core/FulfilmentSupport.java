@@ -12,6 +12,8 @@ import com.junbo.fulfilment.spec.model.FulfilmentRequest;
  * FulfilmentSupport.
  */
 public interface FulfilmentSupport {
+    void validate(FulfilmentRequest request);
+
     void distill(FulfilmentRequest request);
 
     void store(FulfilmentRequest request);

@@ -13,7 +13,11 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 interface RefreshTokenRepository {
-    void save(RefreshToken accessToken)
+    RefreshToken save(RefreshToken accessToken)
+
+    RefreshToken get(String tokenValue)
 
     RefreshToken getAndRemove(String tokenValue)
+
+    boolean isValidRefreshToken(String tokenValue)
 }

@@ -19,6 +19,10 @@ public class PromotionsGetOptions extends EntitiesGetOptions {
     @QueryParam("id")
     private List<PromotionId> promotionIds;
 
+    public static PromotionsGetOptions getDefault() {
+        return setDefaults(new PromotionsGetOptions());
+    }
+
     public List<PromotionId> getPromotionIds() {
         return promotionIds;
     }

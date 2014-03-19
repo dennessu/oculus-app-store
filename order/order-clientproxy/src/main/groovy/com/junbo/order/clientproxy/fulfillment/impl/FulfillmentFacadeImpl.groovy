@@ -21,7 +21,7 @@ import javax.annotation.Resource
  * Created by fzhang on 14-2-25.
  */
 @CompileStatic
-@Component('fulfillmentFacade')
+@Component('orderFulfillmentFacade')
 class FulfillmentFacadeImpl implements FulfillmentFacade {
 
     @Resource(name='fulfilmentClient')

@@ -51,14 +51,10 @@
     <bean id="entitlementDao" class="com.junbo.entitlement.db.dao.hibernate.EntitlementDaoImpl" parent="baseDao">
         <property name="entityType" value="com.junbo.entitlement.db.entity.EntitlementEntity"/>
     </bean>
-    <bean id="entitlementDefinitionDao" class="com.junbo.entitlement.db.dao.hibernate.EntitlementDefinitionDaoImpl" parent="baseDao">
-        <property name="entityType" value="com.junbo.entitlement.db.entity.EntitlementDefinitionEntity"/>
-    </bean>
     <bean id="entitlementHistoryDao" class="com.junbo.entitlement.db.dao.hibernate.EntitlementHistoryDaoImpl">
         <property name="sessionFactory" ref="entitlementSessionFactory"/>
     </bean>
 
     <!-- repository -->
     <bean id="entitlementRepository" class="com.junbo.entitlement.db.repository.EntitlementRepository"/>
-    <bean id="entitlementDefinitionRepository" class="com.junbo.entitlement.db.repository.EntitlementDefinitionRepository"/>
 </beans>

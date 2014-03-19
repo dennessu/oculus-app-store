@@ -35,6 +35,7 @@ body > header > nav{ line-height: 25px; color: #CCC; border-bottom: solid 1px #B
 .box1{ margin: 0 auto; width: 250px;}
 .box1 > h2, .box2 > h2{ margin: 0 0 10px 0;}
 .box1 > p, .box2 > p{ margin: 0 0 25px 0;}
+.box1 > p.error, .box2 > p.error{ margin: 0 0 10px 0; padding: 4px 0px 4px 2px; color: #f00;  border: solid 1px #C4AC09; background-color: #FCF8E3;}
 .box1 > dl > dt, .box2 > dl > dt{ line-height: 20px; font-weight: bold;}
 .box1 > dl > dd, .box2 > dl > dd{ margin: 0;}
 .box1 > dl > dd > .error,
@@ -42,7 +43,7 @@ body > header > nav{ line-height: 25px; color: #CCC; border-bottom: solid 1px #B
 .box1 input[type=text],
 .box1 input[type=number],
 .box1 input[type=email],
-.box1 input[type=password]{ width: 247px }
+.box1 input[type=password]{ padding-left: 2px; width: 245px }
 .box1 button, .box1 input[type=submit]{ width: 248px }
 .box1 select{ width: 248px; height: 24px; }
 .box1 > dl.agreement > dd,
@@ -66,6 +67,7 @@ body > header > nav{ line-height: 25px; color: #CCC; border-bottom: solid 1px #B
 .box1 .month{ width: 60px;}
 .box1 .day{ margin-left: 20px; width: 60px;}
 .box1 .year{margin-left: 20px; width: 83px;}
+.box1 .month.error, .box1 .day.error,.box1 .year.error{ display: inline-block;}
 .box1 .line1{ margin: 10px 0;}
 
 .alert{ padding: 15px 15px 10px 15px; min-width: 200px; width: 200px; border: solid 1px #CCC; background-color: #F7F7F7;}
@@ -145,6 +147,7 @@ body > header > nav{ line-height: 25px; color: #CCC; border-bottom: solid 1px #B
 .register .month{ width: 60px;}
 .register .day{ margin-left: 20px; width: 60px;}
 .register .year{margin-left: 20px; width: 83px;}
+.captcha{ width: 450px;}
 
 /* create payment */
 .create_payment .cvv dd input{ width: 60px;}

@@ -20,7 +20,7 @@ import javax.annotation.Resource
 /**
  * Created by chriszhu on 2/11/14.
  */
-@Component('paymentFacade')
+@Component('orderPaymentFacade')
 @CompileStatic
 class PaymentFacadeImpl implements PaymentFacade {
 

@@ -1,0 +1,24 @@
+<h1>Offer creation</h1>
+<form novalidate="novalidate" class="form-horizontal">
+    <table class="table table-bordered vertical-table">
+        <tr>
+            <td>Offer Name</td>
+            <td><input type="text" class="form-control required" ng-model="offer.name"></td>
+        </tr>
+        <tr>
+            <td>Type</td>
+            <td><input type="text" class="form-control required" ng-model="offer.type.id"></td>
+        </tr>
+        <tr>
+            <td>Owner</td>
+            <td><input type="text" class="form-control required" ng-model="offer.ownerId.id"></td>
+        </tr>
+    </table>
+
+    <div class="control-group">
+        <div class="controls">
+            <a ng-click="cancel()" class="btn btn-small">Cancel</a>
+            <a ng-click="createOffer()" class="btn btn-small btn-primary">Save</a>
+        </div>
+    </div>
+</form>

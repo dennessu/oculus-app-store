@@ -35,7 +35,7 @@ import java.util.UUID;
 @Component
 public class UserDAOImpl implements UserDAO {
     @Autowired
-    @Qualifier("sessionFactory")
+    @Qualifier("identitySessionFactory")
     private SessionFactory sessionFactory;
 
     @Autowired

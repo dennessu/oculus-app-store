@@ -22,7 +22,7 @@ import javax.annotation.Resource
 /**
  * Catalog facade implementation.
  */
-@Component('catalogFacade')
+@Component('orderCatalogFacade')
 @CompileStatic
 class CatalogFacadeImpl implements CatalogFacade {
 
@@ -31,6 +31,13 @@ class CatalogFacadeImpl implements CatalogFacade {
 
     void setOfferResource(OfferResource offerResource) {
         this.offerResource = offerResource
+    }
+
+    @Override
+    Promise<Offer> getOffer(Long offerId, Date honoredTime) {
+        def entityGetOption = EntityGetOptions.default
+        entityGetOption.timestamp = honoredTime.time
+        return offerResource.getOffer(new OfferId(offerId), entityGetOption)
     }
 
     @Override

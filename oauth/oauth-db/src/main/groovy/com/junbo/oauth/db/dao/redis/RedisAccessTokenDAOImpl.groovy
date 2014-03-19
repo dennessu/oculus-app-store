@@ -14,4 +14,8 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class RedisAccessTokenDAOImpl extends RedisBaseDAO<AccessTokenEntity> implements AccessTokenDAO {
+    @Override
+    List<AccessTokenEntity> findByRefreshToken(String refreshTokenValue) {
+        return []
+    }
 }

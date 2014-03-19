@@ -3,9 +3,12 @@ package com.junbo.billing.core
 import com.junbo.billing.core.service.BalanceService
 import com.junbo.billing.spec.enums.BalanceStatus
 import com.junbo.billing.spec.enums.BalanceType
+import com.junbo.billing.spec.enums.TransactionStatus
+import com.junbo.billing.spec.enums.TransactionType
 import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.BalanceItem
 import com.junbo.billing.spec.model.DiscountItem
+import com.junbo.billing.spec.model.Transaction
 import com.junbo.common.id.OrderId
 import com.junbo.common.id.OrderItemId
 import com.junbo.common.id.PaymentInstrumentId
@@ -32,6 +35,58 @@ class BalanceServiceTest extends BaseTest {
 
         assert returnedBalance != null
         assert returnedBalance.status == BalanceStatus.PENDING_CAPTURE.name()
+        assert returnedBalance.getTransactions().size() != 0
+
+        Transaction transaction = returnedBalance.getTransactions()[0]
+
+        assert transaction != null
+        assert transaction.status == TransactionStatus.SUCCESS.name()
+        assert transaction.type == TransactionType.AUTHORIZE.name()
+    }
+
+    @Test
+    void testDebitBalance() {
+        Balance balance = generateBalance(BalanceType.DEBIT)
+        balance = balanceService.addBalance(balance)?.wrapped().get()
+
+        assert balance != null
+
+        Balance returnedBalance = balanceService.getBalance(balance.balanceId.value)?.wrapped().get()
+
+        assert returnedBalance != null
+        assert returnedBalance.status == BalanceStatus.AWAITING_PAYMENT.name()
+
+        Transaction transaction = returnedBalance.getTransactions()[0]
+
+        assert transaction != null
+        assert transaction.status == TransactionStatus.SUCCESS.name()
+        assert transaction.type == TransactionType.CHARGE.name()
+    }
+
+    @Test
+    void testCaptureBalance() {
+        Balance balance = generateBalance(BalanceType.DELAY_DEBIT)
+        balance = balanceService.addBalance(balance)?.wrapped().get()
+
+        assert balance != null
+
+        Balance captureBalance = new Balance()
+        captureBalance.balanceId = balance.balanceId
+        captureBalance = balanceService.captureBalance(captureBalance)?.wrapped().get()
+
+        assert captureBalance != null
+
+        Balance returnedBalance = balanceService.getBalance(balance.balanceId.value)?.wrapped().get()
+
+        assert returnedBalance != null
+        assert returnedBalance.status == BalanceStatus.AWAITING_PAYMENT.name()
+        assert returnedBalance.type == BalanceType.MANUAL_CAPTURE.name()
+
+        Transaction transaction = returnedBalance.getTransactions()[0]
+
+        assert transaction != null
+        assert transaction.status == TransactionStatus.SUCCESS.name()
+        assert transaction.type == TransactionType.CAPTURE.name()
     }
 
     private Balance generateBalance(BalanceType type) {
