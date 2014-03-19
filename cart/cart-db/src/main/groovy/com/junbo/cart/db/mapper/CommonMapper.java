@@ -5,11 +5,7 @@
  */
 package com.junbo.cart.db.mapper;
 
-import com.junbo.cart.spec.model.Coupon;
-import com.junbo.cart.spec.model.Offer;
-import com.junbo.common.id.CartId;
-import com.junbo.common.id.CartItemId;
-import com.junbo.common.id.UserId;
+import com.junbo.common.id.*;
 
 /**
  * Created by fzhang@wan-san.com on 14-2-15.
@@ -49,19 +45,19 @@ public class CommonMapper {
         return source == null ? null : source.getValue();
     }
 
-    public Offer fromLongToOffer(Long source) {
-        return source == null ? null : new Offer(source);
+    public OfferId fromLongToOffer(Long source) {
+        return source == null ? null : new OfferId(source);
     }
 
-    public Long fromOfferToLong(Offer source) {
-        return source == null ? null : source.getId();
+    public Long fromOfferToLong(OfferId source) {
+        return source == null ? null : source.getValue();
     }
 
-    public Coupon fromStringToCoupon(String source) {
-        return source == null ? null : new Coupon(source);
+    public CouponId fromStringToCouponId(String source) {
+        return source == null ? null : new CouponId(Long.parseLong(source));
     }
 
-    public String fromCouponToString(Coupon source) {
-        return source == null ? null : source.getId();
+    public String fromCouponToString(CouponId source) {
+        return source == null ? null : source.getValue().toString();
     }
 }
