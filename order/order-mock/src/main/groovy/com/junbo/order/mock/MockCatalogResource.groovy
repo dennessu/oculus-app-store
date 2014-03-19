@@ -3,6 +3,8 @@ package com.junbo.order.mock
 import com.junbo.catalog.spec.model.common.EntityGetOptions
 import com.junbo.catalog.spec.model.common.ResultList
 import com.junbo.catalog.spec.model.item.Item
+import com.junbo.catalog.spec.model.offer.Action
+import com.junbo.catalog.spec.model.offer.Event
 import com.junbo.catalog.spec.model.offer.Offer
 import com.junbo.catalog.spec.model.offer.OffersGetOptions
 import com.junbo.catalog.spec.resource.OfferResource
@@ -53,10 +55,15 @@ class MockCatalogResource extends BaseMock implements OfferResource {
         offer.setRevision(1)
         offer.setOwnerId(generateLong())
         offer.setId(generateLong())
+        offer.events = []
+        def event = new Event()
+        event.actions = []
+        def action = new Action()
+        action.type = BaseMock.GRANT_ENTITLEMENT
+        event.actions.add(action)
+        offer.events.add(event)
         Item offerItem = new Item()
         offerItem.type = 0L
         return Promise.pure(offer)
     }
-
-
 }
