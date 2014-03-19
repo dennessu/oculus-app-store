@@ -7,6 +7,7 @@
 package com.junbo.billing.core.service;
 
 import com.junbo.billing.spec.model.Balance;
+import com.junbo.langur.core.promise.Promise;
 
 import java.math.BigDecimal;
 
@@ -15,7 +16,7 @@ import java.math.BigDecimal;
  */
 public interface TransactionService {
 
-    Balance processBalance(Balance balance);
+    Promise<Balance> processBalance(Balance balance);
 
-    Balance captureBalance(Balance balance, BigDecimal amount);
+    Promise<Balance> captureBalance(Balance balance, BigDecimal amount);
 }

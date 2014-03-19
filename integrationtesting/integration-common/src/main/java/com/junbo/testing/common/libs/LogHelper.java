@@ -46,12 +46,24 @@ public class LogHelper {
             logger.info("**** EXECUTING " + req.getMethod());
             logger.info("**** URI is: " + req.getURI());
 
-            String headers = "**** Headers: [";
-            for (Map.Entry eachHeader : req.getHeaders()) {
-                headers += eachHeader.getKey() + ": " + eachHeader.getValue() + ", ";
+            if (req.getHeaders() != null){
+                String headers = "**** Headers: [";
+                for (Map.Entry eachHeader : req.getHeaders()) {
+                    headers += eachHeader.getKey() + ": " + eachHeader.getValue() + ", ";
+                }
+                headers = headers.substring(0, headers.length() - 2) + "]";
+                logger.info(headers);
             }
-            headers = headers.substring(0, headers.length() - 2) + "]";
-            logger.info(headers);
+
+            if (req.getQueryParams() != null) {
+                String para = "**** Parameters: [";
+
+                for (Map.Entry eachPara : req.getQueryParams()) {
+                    para += eachPara.getKey() + ": " + eachPara.getValue() + ", ";
+                }
+                para = para.substring(0, para.length() - 2) + "]";
+                logger.info(para);
+            }
 
             logger.info("**** Request Body: " + req.getStringData());
         }

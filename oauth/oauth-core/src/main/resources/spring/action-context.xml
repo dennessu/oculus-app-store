@@ -32,6 +32,10 @@
         <property name="rememberMeTokenRepository" ref="rememberMeTokenRepository"/>
     </bean>
 
+    <bean id="consentError" class="com.junbo.oauth.core.action.BuildRedirectUri">
+        <property name="errorMessage" value="consent_requried"/>
+    </bean>
+
     <bean id="generateAccessTokenResponse" class="com.junbo.oauth.core.action.GenerateAccessTokenResponse"/>
 
     <bean id="getAccessTokenInfo" class="com.junbo.oauth.core.action.GetAccessTokenInfo">
@@ -99,8 +103,17 @@
 
     <bean id="redirect" class="com.junbo.oauth.core.action.Redirect"/>
 
+    <bean id="saveConsent" class="com.junbo.oauth.core.action.SaveConsent">
+        <property name="consentRepository" ref="consentRepository"/>
+    </bean>
+
     <bean id="saveLoginState" class="com.junbo.oauth.core.action.SaveLoginState">
         <property name="loginStateRepository" ref="loginStateRepository"/>
+    </bean>
+
+    <bean id="validateConsent" class="com.junbo.oauth.core.action.ValidateConsent">
+        <property name="consentRepository" ref="consentRepository"/>
+        <property name="consentUri" value="${oauth.core.portal.consentUri}"/>
     </bean>
 
     <bean id="validateDisplay" class="com.junbo.oauth.core.action.ValidateDisplay">
