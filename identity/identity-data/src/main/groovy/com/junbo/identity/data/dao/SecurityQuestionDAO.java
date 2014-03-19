@@ -6,8 +6,7 @@
 package com.junbo.identity.data.dao;
 
 import com.junbo.identity.data.entity.domaindata.SecurityQuestionEntity;
-import com.junbo.identity.spec.model.options.DomainDataGetOption;
-import com.junbo.sharding.annotations.SeedParam;
+import com.junbo.identity.spec.options.SecurityQuestionListOptions;
 
 import java.util.List;
 
@@ -15,15 +14,15 @@ import java.util.List;
  * Created by liangfu on 3/16/14.
  */
 public interface SecurityQuestionDAO {
+
     SecurityQuestionEntity save(SecurityQuestionEntity entity);
 
     SecurityQuestionEntity update(SecurityQuestionEntity entity);
 
-    SecurityQuestionEntity get(@SeedParam Long id);
+    SecurityQuestionEntity get(Long id);
 
-    void delete(@SeedParam Long id);
+    void delete(Long id);
 
-    // Todo:    Need to build reverse lookup table
-    List<SecurityQuestionEntity> search(DomainDataGetOption getOption);
+    List<SecurityQuestionEntity> search(SecurityQuestionListOptions listOption);
 
 }

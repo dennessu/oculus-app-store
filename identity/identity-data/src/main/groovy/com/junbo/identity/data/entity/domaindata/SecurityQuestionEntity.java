@@ -5,8 +5,6 @@
  */
 package com.junbo.identity.data.entity.domaindata;
 
-import com.junbo.sharding.annotations.SeedId;
-
 import javax.persistence.*;
 import java.util.Date;
 

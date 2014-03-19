@@ -9,4 +9,5 @@ package com.junbo.identity.spec.options;
  * Created by liangfu on 3/14/14.
  */
 public class SecurityQuestionListOptions {
+
 }

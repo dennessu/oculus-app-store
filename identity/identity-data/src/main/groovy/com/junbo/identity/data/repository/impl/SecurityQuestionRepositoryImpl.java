@@ -11,7 +11,7 @@ import com.junbo.identity.data.entity.domaindata.SecurityQuestionEntity;
 import com.junbo.identity.data.mapper.ModelMapper;
 import com.junbo.identity.data.repository.SecurityQuestionRepository;
 import com.junbo.identity.spec.model.domaindata.SecurityQuestion;
-import com.junbo.identity.spec.model.options.DomainDataGetOption;
+import com.junbo.identity.spec.options.SecurityQuestionListOptions;
 import com.junbo.oom.core.MappingContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -54,8 +54,8 @@ public class SecurityQuestionRepositoryImpl implements SecurityQuestionRepositor
     }
 
     @Override
-    public List<SecurityQuestion> search(DomainDataGetOption getOption) {
-        List entities = securityQuestionDAO.search(getOption);
+    public List<SecurityQuestion> search(SecurityQuestionListOptions listOption) {
+        List entities = securityQuestionDAO.search(listOption);
 
         List<SecurityQuestion> results = new ArrayList<SecurityQuestion>();
         for(int i =0 ; i< entities.size(); i++) {

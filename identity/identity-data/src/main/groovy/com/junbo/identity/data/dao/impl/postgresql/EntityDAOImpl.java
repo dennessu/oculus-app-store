@@ -13,6 +13,7 @@ import org.hibernate.Session;
  * Created by liangfu on 3/17/14.
  */
 public class EntityDAOImpl {
+
     private SessionFactoryWrapper sessionFactoryWrapper;
 
     public void setSessionFactoryWrapper(SessionFactoryWrapper sessionFactoryWrapper) {

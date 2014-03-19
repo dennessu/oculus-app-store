@@ -7,7 +7,9 @@ package com.junbo.identity.data.dao.impl.postgresql;
 
 import com.junbo.identity.data.dao.SecurityQuestionDAO;
 import com.junbo.identity.data.entity.domaindata.SecurityQuestionEntity;
-import com.junbo.identity.spec.model.options.DomainDataGetOption;
+import com.junbo.identity.spec.options.SecurityQuestionListOptions;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -16,7 +18,17 @@ import java.util.List;
  * Created by liangfu on 3/16/14.
  */
 @Component
-public class SecurityQuestionDAOImpl extends EntityDAOImpl implements SecurityQuestionDAO {
+public class SecurityQuestionDAOImpl implements SecurityQuestionDAO {
+
+    private SessionFactory sessionFactory;
+
+    public void setSessionFactory(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
+
+    protected Session currentSession() {
+        return sessionFactory.getCurrentSession();
+    }
 
     @Override
     public SecurityQuestionEntity save(SecurityQuestionEntity entity) {
@@ -39,12 +51,9 @@ public class SecurityQuestionDAOImpl extends EntityDAOImpl implements SecurityQu
     }
 
     @Override
-    public List<SecurityQuestionEntity> search(DomainDataGetOption getOption) {
-        String query = "select * from security_question where value like \'%" + getOption.getValue() + "%\'" +
-                (" order by id limit " + (getOption.getLimit() == null ? "ALL" : getOption.getLimit().toString())) +
-                " offset " + (getOption.getOffset() == null ? "0" : getOption.getOffset().toString());
+    public List<SecurityQuestionEntity> search(SecurityQuestionListOptions listOption) {
+        String query = "select * from security_question order by id limit";
         List entities = currentSession().createSQLQuery(query).addEntity(SecurityQuestionEntity.class).list();
-
         return entities;
     }
 

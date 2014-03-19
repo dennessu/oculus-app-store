@@ -12,11 +12,31 @@
     <import resource="classpath*:spring/sharding.xml"/>
     <import resource="classpath*:spring/sharding-context.xml"/>
 
-
     <bean id="__builtinMapper" class="com.junbo.oom.core.builtin.BuiltinMapper" />
     <bean id="__commonMapper" class="com.junbo.identity.data.mapper.CommonMapper" />
 
     <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <!-- SessonFactory for Hibernate -->
+    <bean id="configSessionFactory"
+          class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="dataSource" ref="configDataSource"/>
+        <property name="packagesToScan" value="com.junbo.identity.data.entity.domaindata"/>
+        <property name="jtaTransactionManager" ref="transactionManager"/>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">${config.hibernate.dialect}</prop>
+                <prop key="hibernate.max_fetch_depth">${config.hibernate.max_fetch_depth}</prop>
+                <prop key="hibernate.jdbc.fetch_size">${config.hibernate.fetch_size}</prop>
+                <prop key="hibernate.jdbc.batch_size">${config.hibernate.batch_size}</prop>
+                <prop key="hibernate.show_sql">${config.hibernate.show_sql}</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="securityQuestionDAO" class="com.junbo.identity.data.dao.impl.postgresql.SecurityQuestionDAOImpl">
+        <property name="sessionFactory" ref="configSessionFactory"/>
+    </bean>
 
     <bean id="sessionFactoryWrapper" class="com.junbo.sharding.core.hibernate.SessionFactoryWrapper">
         <property name="mapper" ref="shardDataSourceMapper"/>

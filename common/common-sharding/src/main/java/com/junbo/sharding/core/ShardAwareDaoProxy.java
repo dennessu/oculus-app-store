@@ -103,7 +103,8 @@ public class ShardAwareDaoProxy implements InvocationHandler {
                             methods[0] = idGetMethod;
                             methods[1] = idSetMethod;
 
-                            if (idGetMethod.invoke(arg) == null) { //id not set yet
+                            //id not set yet
+                            if (idGetMethod.invoke(arg) == null) {
                                 Class<?> seedIdClazz = leafClazz;
                                 do {
                                     for(Field seedField : seedIdClazz.getDeclaredFields()) {
@@ -131,7 +132,8 @@ public class ShardAwareDaoProxy implements InvocationHandler {
                                 throw new RuntimeException("@SeedId annotation not found on entity class "
                                         + leafClazz.getCanonicalName());
                             }
-                            else {  // entity id has been set, not POST method
+                            else {
+                                // entity id has been set, not POST method
                                 return setIdAndGetShardId(arg, methods);
                             }
                         }

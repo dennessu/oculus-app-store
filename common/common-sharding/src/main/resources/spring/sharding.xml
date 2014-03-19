@@ -6,6 +6,21 @@
        ">
     <import resource="transaction.xml"/>
 
+    <bean id="configDataSource" class="bitronix.tm.resource.jdbc.PoolingDataSource"
+          init-method="init" destroy-method="close">
+        <property name="uniqueName" value="jdbc/config"/>
+        <property name="className" value="${config.db.driverClassName}"/>
+        <property name="minPoolSize" value="${config.db.mixConnectionsPerPartition}"/>
+        <property name="maxPoolSize" value="${config.db.maxConnectionsPerPartition}"/>
+        <property name="driverProperties">
+            <props>
+                <prop key="url">${config.db.url}</prop>
+                <prop key="user">${config.db.username}</prop>
+                <prop key="password">${config.db.password}</prop>
+            </props>
+        </property>
+    </bean>
+
     <bean id="btmDataSourceTemplate" class="bitronix.tm.resource.jdbc.PoolingDataSource" scope="prototype" lazy-init="true">
         <property name="className" value="${sharding.dataSource.driverClassName}"/>
         <property name="minPoolSize" value="${sharding.dataSource.db.minConnections}"/>
