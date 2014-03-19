@@ -65,7 +65,7 @@ public class BalanceRepositoryImpl implements BalanceRepository {
         for(BalanceItem item : balance.getBalanceItems()) {
             BalanceItemEntity balanceItemEntity = modelMapper.toBalanceItemEntity(item, new MappingContext());
 
-            balanceItemEntity.setBalanceItemId(idGenerator.nextId(BalanceItemId.class, balanceEntity.getUserId()));
+            balanceItemEntity.setBalanceItemId(idGenerator.nextId(Id.class, balanceEntity.getUserId()));
             balanceItemEntity.setBalanceId(balanceEntity.getBalanceId());
             balanceItemEntity.setCreatedDate(new Date());
             balanceItemEntity.setCreatedBy("Billing");
@@ -74,7 +74,7 @@ public class BalanceRepositoryImpl implements BalanceRepository {
             for(TaxItem tax : item.getTaxItems()) {
                 TaxItemEntity taxItemEntity = modelMapper.toTaxItemEntity(tax, new MappingContext());
 
-                taxItemEntity.setTaxItemId(idGenerator.nextId(TaxItemId.class, balanceEntity.getUserId()));
+                taxItemEntity.setTaxItemId(idGenerator.nextId(Id.class, balanceEntity.getUserId()));
                 taxItemEntity.setBalanceItemId(balanceItemEntity.getBalanceItemId());
                 taxItemEntity.setCreatedDate(new Date());
                 taxItemEntity.setCreatedBy("Billing");
@@ -85,7 +85,7 @@ public class BalanceRepositoryImpl implements BalanceRepository {
                         modelMapper.toDiscountItemEntity(discount, new MappingContext());
 
                 discountItemEntity.setDiscountItemId(
-                        idGenerator.nextId(DiscountItemId.class, balanceEntity.getUserId()));
+                        idGenerator.nextId(Id.class, balanceEntity.getUserId()));
                 discountItemEntity.setBalanceItemId(balanceItemEntity.getBalanceItemId());
                 discountItemEntity.setCreatedDate(new Date());
                 discountItemEntity.setCreatedBy("Billing");
