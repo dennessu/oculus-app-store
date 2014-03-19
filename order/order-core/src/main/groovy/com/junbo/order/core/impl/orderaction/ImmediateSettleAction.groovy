@@ -20,6 +20,8 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.transaction.annotation.Transactional
+
 /**
  * Created by chriszhu on 2/20/14.
  */
@@ -37,6 +39,7 @@ class ImmediateSettleAction implements Action {
     private static final Logger LOGGER = LoggerFactory.getLogger(ImmediateSettleAction)
 
     @Override
+    @Transactional
     Promise<ActionResult> execute(ActionContext actionContext) {
         def context = ActionUtils.getOrderActionContext(actionContext)
         def order = context.orderServiceContext.order
