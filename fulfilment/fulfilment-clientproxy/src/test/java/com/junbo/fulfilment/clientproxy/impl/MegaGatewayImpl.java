@@ -9,7 +9,6 @@ import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.resource.OfferResource;
 import com.junbo.common.id.OfferId;
 import com.junbo.fulfilment.clientproxy.MegaGateway;
-import com.junbo.fulfilment.common.exception.CatalogGatewayException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -24,7 +23,7 @@ public class MegaGatewayImpl implements MegaGateway {
         try {
             return offerResource.create(offer).wrapped().get().getId();
         } catch (Exception e) {
-            throw new CatalogGatewayException("Error occurred during calling [Catalog] component service.", e);
+            throw new RuntimeException("Error occurred during calling [Catalog] component service.", e);
         }
     }
 
@@ -33,7 +32,7 @@ public class MegaGatewayImpl implements MegaGateway {
         try {
             return offerResource.update(new OfferId(offer.getId()), offer).wrapped().get().getId();
         } catch (Exception e) {
-            throw new CatalogGatewayException("Error occurred during calling [Catalog] component service.", e);
+            throw new RuntimeException("Error occurred during calling [Catalog] component service.", e);
         }
     }
 }
