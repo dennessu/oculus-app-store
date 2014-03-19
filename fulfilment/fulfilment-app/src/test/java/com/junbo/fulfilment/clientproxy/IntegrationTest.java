@@ -6,6 +6,7 @@ import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.fulfilment.spec.model.FulfilmentItem;
 import com.junbo.fulfilment.spec.model.FulfilmentRequest;
 import com.junbo.fulfilment.spec.resource.FulfilmentResource;
+import com.junbo.langur.core.client.ClientResponseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -15,6 +16,7 @@ import org.testng.annotations.Test;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 @ContextConfiguration(locations = {"classpath:spring/context-test.xml"})
 public class IntegrationTest extends AbstractTestNGSpringContextTests {
@@ -37,6 +39,65 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
             Assert.fail(e.getMessage());
         }
         Assert.assertNotNull(request, "fulfilmentRequest should not be null.");
+    }
+
+    @Test(enabled = true)
+    public void testDuplicatedTrackignGuid() {
+        Long offerId = prepareOffer();
+        Assert.assertNotNull(offerId, "offerId should not be null.");
+
+        String trackingGuid = UUID.randomUUID().toString();
+        FulfilmentRequest request = prepareFulfilmentRequest(offerId);
+        request.setTrackingGuid(trackingGuid);
+
+        try {
+            request = fulfilmentResource.fulfill(request).wrapped().get();
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+        Assert.assertNotNull(request, "fulfilmentRequest should not be null.");
+
+        FulfilmentRequest request2 = prepareFulfilmentRequest(offerId);
+        request2.setTrackingGuid(trackingGuid);
+
+        try {
+            request2 = fulfilmentResource.fulfill(request2).wrapped().get();
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+        Assert.assertNotNull(request2, "fulfilmentRequest should not be null.");
+
+        Assert.assertEquals(request2.getRequestId(), request.getRequestId(), "fulfilmentRequest id should match.");
+    }
+
+    @Test(enabled = false)
+    public void testDuplicatedOrderId() {
+        Long offerId = prepareOffer();
+        Assert.assertNotNull(offerId, "offerId should not be null.");
+
+        Long orderId = getRandomLong();
+        FulfilmentRequest request = prepareFulfilmentRequest(offerId);
+        request.setOrderId(orderId);
+
+        try {
+            request = fulfilmentResource.fulfill(request).wrapped().get();
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+        Assert.assertNotNull(request, "fulfilmentRequest should not be null.");
+
+        FulfilmentRequest request2 = prepareFulfilmentRequest(offerId);
+        request2.setOrderId(orderId);
+
+        try {
+            fulfilmentResource.fulfill(request2).wrapped().get();
+        } catch (ClientResponseException e) {
+            Assert.fail("should not reach here");
+        } catch (InterruptedException e) {
+            Assert.fail("should not reach here");
+        } catch (ExecutionException e) {
+            //good
+        }
     }
 
     private FulfilmentRequest prepareFulfilmentRequest(final Long offerId) {
