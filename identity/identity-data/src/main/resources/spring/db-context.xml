@@ -26,12 +26,12 @@
         <property name="packagesToScan" value="com.junbo.identity.data.entity.*"/>
     </bean>
 
-    <bean id="lookupSessionFactoryWrapper" class="com.junbo.sharding.core.hibernate.SessionFactoryWrapper">
-        <property name="mapper" ref="lookupDataSourceMapper"/>
-        <property name="dataSourceRegistry" ref="lookupDataSourceRegistry"/>
+    <bean id="indexSessionFactoryWrapper" class="com.junbo.sharding.core.hibernate.SessionFactoryWrapper">
+        <property name="mapper" ref="indexDataSourceMapper"/>
+        <property name="dataSourceRegistry" ref="indexDataSourceRegistry"/>
         <property name="sessionFactoryBeanName" value="sessionFactoryTemplate"/>
-        <property name="dataBaseName" value="lookup"/>
-        <property name="packagesToScan" value="com.junbo.identity.data.entity.*"/>
+        <property name="dataBaseName" value="index"/>
+        <property name="packagesToScan" value="com.junbo.identity.data.entity.reverselookup"/>
     </bean>
 
     <bean id="identityModelMapperImpl" class="com.junbo.identity.data.mapper.ModelMapperImpl" />

@@ -21,7 +21,7 @@
     <bean id="shardDataSourceMapper" class="com.junbo.sharding.core.ds.ShardDataSourceMapper">
         <property name="dataSourceMapping" value="${sharding.dataSource.mapping}"/>
     </bean>
-    <bean id="lookupDataSourceMapper" class="com.junbo.sharding.core.ds.ShardDataSourceMapper">
+    <bean id="indexDataSourceMapper" class="com.junbo.sharding.core.ds.ShardDataSourceMapper">
         <property name="dataSourceMapping" value="${partition.dataSource.mapping}"/>
     </bean>
 
@@ -29,16 +29,16 @@
         <property name="dataSourceBeanName" value="btmDataSourceTemplate"/>
         <property name="mapper" ref="shardDataSourceMapper"/>
     </bean>
-    <bean id="lookupDataSourceFactory" class="com.junbo.sharding.core.ds.ShardDataSourceFactoryImpl">
+    <bean id="indexDataSourceFactory" class="com.junbo.sharding.core.ds.ShardDataSourceFactoryImpl">
         <property name="dataSourceBeanName" value="btmDataSourceTemplate"/>
-        <property name="mapper" ref="lookupDataSourceMapper"/>
+        <property name="mapper" ref="indexDataSourceMapper"/>
     </bean>
 
     <bean id="shardDataSourceRegistry" class="com.junbo.sharding.core.ds.ShardDataSourceRegistry">
         <property name="dataSourceFactory" ref="shardDataSourceFactory"/>
     </bean>
-    <bean id="lookupDataSourceRegistry" class="com.junbo.sharding.core.ds.ShardDataSourceRegistry">
-        <property name="dataSourceFactory" ref="lookupDataSourceFactory"/>
+    <bean id="indexDataSourceRegistry" class="com.junbo.sharding.core.ds.ShardDataSourceRegistry">
+        <property name="dataSourceFactory" ref="indexDataSourceFactory"/>
     </bean>
 
     <!-- Sharded SessonFactory for Hibernate-->

@@ -16,7 +16,7 @@ import javax.persistence.Table;
  * Created by liangfu on 3/18/14.
  */
 @Entity
-@Table(name = "user_name_reverse_lookup")
+@Table(name = "user_name_reverse_index")
 public class UserNameReverseIndexEntity {
 
     @Id
