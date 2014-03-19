@@ -6,7 +6,6 @@
 
 package com.junbo.billing.spec.model;
 
-import com.junbo.common.id.BalanceItemId;
 import com.junbo.common.id.OrderItemId;
 
 import java.math.BigDecimal;
@@ -17,14 +16,14 @@ import java.util.List;
  * Created by xmchen on 14-1-26.
  */
 public class BalanceItem {
-    private BalanceItemId balanceItemId;
+    private Long balanceItemId;
     private OrderItemId orderItemId;
     private BigDecimal amount;
     private BigDecimal taxAmount;
     private BigDecimal discountAmount;
     private String financeId;
     private Boolean isTaxExempt;
-    private BalanceItemId originalBalanceItemId;
+    private Long originalBalanceItemId;
 
     private List<TaxItem> taxItems;
     private List<DiscountItem> discountItems;
@@ -34,11 +33,11 @@ public class BalanceItem {
         discountItems = new ArrayList<>();
     }
 
-    public BalanceItemId getBalanceItemId() {
+    public Long getBalanceItemId() {
         return balanceItemId;
     }
 
-    public void setBalanceItemId(BalanceItemId balanceItemId) {
+    public void setBalanceItemId(Long balanceItemId) {
         this.balanceItemId = balanceItemId;
     }
 
@@ -106,11 +105,11 @@ public class BalanceItem {
         this.isTaxExempt = isTaxExempt;
     }
 
-    public BalanceItemId getOriginalBalanceItemId() {
+    public Long getOriginalBalanceItemId() {
         return originalBalanceItemId;
     }
 
-    public void setOriginalBalanceItemId(BalanceItemId originalBalanceItemId) {
+    public void setOriginalBalanceItemId(Long originalBalanceItemId) {
         this.originalBalanceItemId = originalBalanceItemId;
     }
 }

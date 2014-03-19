@@ -6,25 +6,14 @@
 
 package com.junbo.billing.spec.model;
 
-import com.junbo.common.id.DiscountItemId;
-
 import java.math.BigDecimal;
 
 /**
  * Created by xmchen on 14-1-26.
  */
 public class DiscountItem {
-    private DiscountItemId discountItemId;
     private BigDecimal discountAmount;
     private BigDecimal discountRate;
-
-    public DiscountItemId getDiscountItemId() {
-        return discountItemId;
-    }
-
-    public void setDiscountItemId(DiscountItemId discountItemId) {
-        this.discountItemId = discountItemId;
-    }
 
     public BigDecimal getDiscountAmount() {
         return discountAmount;
