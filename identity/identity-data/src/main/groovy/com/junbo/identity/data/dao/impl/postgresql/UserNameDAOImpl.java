@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Created by liangfu on 3/18/14.
  */
-public class UserNameDAOImpl extends EntityDAOImpl implements UserNameDAO {
+public class UserNameDAOImpl extends ShardedDAOBase implements UserNameDAO {
     @Override
     public UserNameEntity get(@SeedParam Long id) {
         return (UserNameEntity)currentSession().get(UserNameEntity.class, id);

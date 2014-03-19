@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Created by liangfu on 3/18/14.
  */
-public class UserNameReverseIndexDAOImpl extends EntityDAOImpl implements UserNameReverseIndexDAO {
+public class UserNameReverseIndexDAOImpl extends ShardedDAOBase implements UserNameReverseIndexDAO {
 
     @Override
     public UserNameReverseIndexEntity save(UserNameReverseIndexEntity entity) {

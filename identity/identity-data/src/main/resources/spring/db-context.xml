@@ -60,7 +60,7 @@
         <property name="idGeneratorFacade" ref="idGeneratorFacade"/>
     </bean>
 
-    <bean id="entityDAOBase" class="com.junbo.identity.data.dao.impl.postgresql.EntityDAOImpl" abstract="true">
+    <bean id="entityDAOBase" class="com.junbo.identity.data.dao.impl.postgresql.ShardedDAOBase" abstract="true">
         <property name="sessionFactoryWrapper" ref="sessionFactoryWrapper" />
     </bean>
 

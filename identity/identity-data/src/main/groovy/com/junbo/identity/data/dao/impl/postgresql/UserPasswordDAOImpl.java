@@ -16,7 +16,7 @@ import java.util.List;
  * Created by liangfu on 3/16/14.
  */
 @Component
-public class UserPasswordDAOImpl extends EntityDAOImpl implements UserPasswordDAO {
+public class UserPasswordDAOImpl extends ShardedDAOBase implements UserPasswordDAO {
 
     @Override
     public UserPasswordEntity save(UserPasswordEntity entity) {

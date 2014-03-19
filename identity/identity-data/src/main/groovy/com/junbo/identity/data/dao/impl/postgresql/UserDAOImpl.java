@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 
-public class UserDAOImpl extends EntityDAOImpl implements UserDAO {
+public class UserDAOImpl extends ShardedDAOBase implements UserDAO {
     @Override
     public UserEntity save(UserEntity user) {
         currentSession().save(user);

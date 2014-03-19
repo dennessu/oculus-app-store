@@ -16,7 +16,7 @@ import java.util.List;
  * Created by liangfu on 3/16/14.
  */
 @Component
-public class UserPinDAOImpl extends EntityDAOImpl implements UserPinDAO {
+public class UserPinDAOImpl extends ShardedDAOBase implements UserPinDAO {
     @Override
     public UserPinEntity save(UserPinEntity entity) {
         currentSession().save(entity);

@@ -17,7 +17,7 @@ import java.util.List;
  * Created by liangfu on 3/17/14.
  */
 @Component
-public class UserEmailDAOImpl extends EntityDAOImpl implements UserEmailDAO {
+public class UserEmailDAOImpl extends ShardedDAOBase implements UserEmailDAO {
 
     @Override
     public void delete(Long id) {

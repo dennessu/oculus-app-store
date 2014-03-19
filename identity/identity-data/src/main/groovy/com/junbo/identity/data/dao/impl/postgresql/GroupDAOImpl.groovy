@@ -11,7 +11,7 @@ import com.junbo.identity.spec.model.options.GroupGetOption
 /**
  * Created by liangfu on 3/14/14.
  */
-class GroupDAOImpl extends EntityDAOImpl implements GroupDAO {
+class GroupDAOImpl extends ShardedDAOBase implements GroupDAO {
 
     @Override
     GroupEntity get(Long groupId) {

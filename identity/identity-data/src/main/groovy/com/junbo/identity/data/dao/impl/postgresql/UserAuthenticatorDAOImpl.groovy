@@ -10,7 +10,7 @@ import com.junbo.identity.spec.model.options.UserAuthenticatorGetOption
 /**
  * Implementation for UserAuthenticatorDAO.
  */
-class UserAuthenticatorDAOImpl extends EntityDAOImpl implements UserAuthenticatorDAO {
+class UserAuthenticatorDAOImpl extends ShardedDAOBase implements UserAuthenticatorDAO {
     @Override
     UserAuthenticatorEntity save(UserAuthenticatorEntity entity) {
         currentSession().save(entity)

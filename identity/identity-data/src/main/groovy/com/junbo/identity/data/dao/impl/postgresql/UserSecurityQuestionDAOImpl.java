@@ -16,7 +16,7 @@ import java.util.List;
  * Created by liangfu on 3/17/14.
  */
 @Component
-public class UserSecurityQuestionDAOImpl extends EntityDAOImpl implements UserSecurityQuestionDAO {
+public class UserSecurityQuestionDAOImpl extends ShardedDAOBase implements UserSecurityQuestionDAO {
     @Override
     public UserSecurityQuestionEntity save(UserSecurityQuestionEntity entity) {
         currentSession().save(entity);

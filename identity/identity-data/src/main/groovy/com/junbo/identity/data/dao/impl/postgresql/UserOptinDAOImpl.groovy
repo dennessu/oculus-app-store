@@ -10,7 +10,7 @@ import com.junbo.identity.spec.model.options.UserOptinGetOption
 /**
  * Implementation for UserOptinDAO.
  */
-class UserOptinDAOImpl extends EntityDAOImpl implements UserOptinDAO {
+class UserOptinDAOImpl extends ShardedDAOBase implements UserOptinDAO {
 
     @Override
     UserOptinEntity save(UserOptinEntity entity) {

@@ -16,7 +16,7 @@ import java.util.List;
  * Created by liangfu on 3/17/14.
  */
 @Component
-public class UserGroupDAOImpl extends EntityDAOImpl implements UserGroupDAO {
+public class UserGroupDAOImpl extends ShardedDAOBase implements UserGroupDAO {
     @Override
     public UserGroupEntity save(UserGroupEntity entity) {
         currentSession().save(entity);

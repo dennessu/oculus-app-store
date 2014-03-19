@@ -10,7 +10,7 @@ import com.junbo.identity.spec.model.options.UserTosGetOption
 /**
  * Implementation for User Tos Acceptance DAO interface.
  */
-class UserTosDAOImpl extends EntityDAOImpl implements UserTosDAO {
+class UserTosDAOImpl extends ShardedDAOBase implements UserTosDAO {
     @Override
     UserTosEntity save(UserTosEntity entity) {
         currentSession().save(entity)

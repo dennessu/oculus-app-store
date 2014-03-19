@@ -17,7 +17,7 @@ import java.util.List;
  * Created by liangfu on 3/17/14.
  */
 @Component
-public class UserPhoneNumberDAOImpl extends EntityDAOImpl implements UserPhoneNumberDAO {
+public class UserPhoneNumberDAOImpl extends ShardedDAOBase implements UserPhoneNumberDAO {
     @Override
     public UserPhoneNumberEntity save(UserPhoneNumberEntity entity) {
         currentSession().save(entity);

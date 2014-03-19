@@ -10,7 +10,7 @@ import com.junbo.identity.spec.model.options.UserDeviceGetOption
 /**
  * Implementation for UserDeviceDAO.
  */
-class UserDeviceDAOImpl extends EntityDAOImpl implements UserDeviceDAO {
+class UserDeviceDAOImpl extends ShardedDAOBase implements UserDeviceDAO {
 
     @Override
     UserDeviceEntity save(UserDeviceEntity entity) {

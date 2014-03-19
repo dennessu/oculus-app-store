@@ -17,7 +17,7 @@ import java.util.List;
  * Created by liangfu on 3/17/14.
  */
 @Component
-public class UserLoginAttemptDAOImpl extends EntityDAOImpl implements UserLoginAttemptDAO {
+public class UserLoginAttemptDAOImpl extends ShardedDAOBase implements UserLoginAttemptDAO {
     @Override
     public UserLoginAttemptEntity save(UserLoginAttemptEntity entity) {
         currentSession().save(entity);

@@ -7,13 +7,24 @@ package com.junbo.identity.data.dao.impl.postgresql;
 
 import com.junbo.identity.data.dao.PasswordRuleDAO;
 import com.junbo.identity.data.entity.password.PasswordRuleEntity;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Component;
 
 /**
  * Created by liangfu on 2/24/14.
  */
 @Component
-public class PasswordRuleDAOImpl extends EntityDAOImpl implements PasswordRuleDAO {
+public class PasswordRuleDAOImpl implements PasswordRuleDAO {
+    private SessionFactory sessionFactory;
+
+    public void setSessionFactory(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
+
+    protected Session currentSession() {
+        return sessionFactory.getCurrentSession();
+    }
 
     @Override
     public PasswordRuleEntity get(Long id) {
@@ -30,7 +41,6 @@ public class PasswordRuleDAOImpl extends EntityDAOImpl implements PasswordRuleDA
     @Override
     public void delete(Long id) {
         PasswordRuleEntity entity = (PasswordRuleEntity)currentSession().get(PasswordRuleEntity.class, id);
-
         currentSession().delete(entity);
     }
 
