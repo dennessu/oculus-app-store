@@ -5,6 +5,8 @@
  */
 package com.junbo.email.spec.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.Date;
 
 /**
@@ -14,10 +16,12 @@ public class Model {
 
     private Date createdTime;
 
+    @JsonIgnore
     private String createdBy;
 
     private Date modifiedTime;
 
+    @JsonIgnore
     private String modifiedBy;
 
     public Date getCreatedTime() {
