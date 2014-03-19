@@ -7,12 +7,12 @@ import com.junbo.order.db.entity.enums.ItemType
  */
 class CoreUtils {
 
-    public static final String GRANT_ENTITLEMENT = "GRANT_ENTITLEMENT";
-    public static final String DELIVER_PHYSICAL_GOODS = "DELIVER_PHYSICAL_GOODS";
-    public static final String CREDIT_WALLET = "CREDIT_WALLET";
+    static final String GRANT_ENTITLEMENT = 'GRANT_ENTITLEMENT'
+    static final String DELIVER_PHYSICAL_GOODS = 'DELIVER_PHYSICAL_GOODS'
+    static final String CREDIT_WALLET = 'CREDIT_WALLET'
 
     static ItemType getOfferType(Offer offer) {
-        Boolean isPhysical = offer.getEvents()?.any { com.junbo.catalog.spec.model.offer.Event event ->
+        Boolean isPhysical = offer.events()?.any { com.junbo.catalog.spec.model.offer.Event event ->
             event.actions?.any { com.junbo.catalog.spec.model.offer.Action action ->
                 action.type == DELIVER_PHYSICAL_GOODS
             }

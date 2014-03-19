@@ -13,9 +13,9 @@ class BaseMock {
 
     private static long nextLong = System.currentTimeMillis()
 
-    public static final String GRANT_ENTITLEMENT = "GRANT_ENTITLEMENT";
-    public static final String DELIVER_PHYSICAL_GOODS = "DELIVER_PHYSICAL_GOODS";
-    public static final String CREDIT_WALLET = "CREDIT_WALLET";
+    static final String GRANT_ENTITLEMENT = 'GRANT_ENTITLEMENT'
+    static final String DELIVER_PHYSICAL_GOODS = 'DELIVER_PHYSICAL_GOODS'
+    static final String CREDIT_WALLET = 'CREDIT_WALLET'
 
     protected static long generateLong() {
         return nextLong++

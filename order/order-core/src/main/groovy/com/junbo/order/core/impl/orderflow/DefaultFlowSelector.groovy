@@ -82,9 +82,8 @@ class DefaultFlowSelector implements FlowSelector {
                         }
                         if (isPhysical) {
                             return Promise.pure(FlowType.AUTH_SETTLE)
-                        } else {
-                            return Promise.pure(FlowType.IMMEDIATE_SETTLE)
                         }
+                        return Promise.pure(FlowType.IMMEDIATE_SETTLE)
                     }
                 default:
                     return Promise.pure(null)
