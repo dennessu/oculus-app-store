@@ -8,18 +8,24 @@
     <context:component-scan base-package="com.junbo.order.mock"/>
 
     <bean id="mockAuthSettleAction" class="com.junbo.order.core.impl.orderaction.AuthSettleAction">
+        <property name="orderServiceContextBuilder" ref="mockOrderServiceContextBuilder"/>
+        <property name="facadeContainer" ref="mockFacadeContainer"/>
     </bean>
 
     <bean id="mockCreateOrderAction" class="com.junbo.order.core.impl.orderaction.SaveOrderAction">
+        <property name="builder" ref="mockOrderServiceContextBuilder"/>
     </bean>
 
     <bean id="mockFulfillmentAction" class="com.junbo.order.core.impl.orderaction.FulfillmentAction">
+        <property name="facadeContainer" ref="mockFacadeContainer"/>
     </bean>
 
     <bean id="mockGetOrderAction" class="com.junbo.order.core.impl.orderaction.GetOrderAction">
     </bean>
 
     <bean id="mockImmediateSettleAction" class="com.junbo.order.core.impl.orderaction.ImmediateSettleAction">
+        <property name="orderServiceContextBuilder" ref="mockOrderServiceContextBuilder"/>
+        <property name="facadeContainer" ref="mockFacadeContainer"/>
     </bean>
 
     <bean id="mockRatingAction" class="com.junbo.order.core.impl.orderaction.RatingAction">
@@ -35,6 +41,12 @@
 
     <bean id="mockValidatePaymentInstrumentsAction" class="com.junbo.order.core.impl.orderaction.ValidatePaymentInstrumentsAction">
         <property name="orderServiceContextBuilder" ref="mockOrderServiceContextBuilder"/>
+    </bean>
+
+    <bean id="mockOrderService" class="com.junbo.order.core.impl.order.OrderServiceImpl">
+        <property name="facadeContainer" ref="mockFacadeContainer"/>
+        <property name="flowExecutor" ref="flowExecutor"/>
+        <property name="orderRepository" ref="orderRepository"/>
     </bean>
 
     <bean id="mockFacadeContainer" class="com.junbo.order.clientproxy.FacadeContainer">

@@ -97,18 +97,6 @@ public class CommonMapper {
         return id == null ? null : id.getValue();
     }
 
-    public Long toBalanceItemIdLong(BalanceItemId id) {
-        return id == null ? null : id.getValue();
-    }
-
-    public Long toTaxItemIdLong(TaxItemId id) {
-        return id == null ? null : id.getValue();
-    }
-
-    public Long toDiscountItemIdLong(DiscountItemId id) {
-        return id == null ? null : id.getValue();
-    }
-
     public Long toShippingAddressIdLong(ShippingAddressId id) {
         return id == null ? null : id.getValue();
     }
@@ -135,18 +123,6 @@ public class CommonMapper {
 
     public BalanceId toBalanceId(Long id) {
         return id == null ? null : new BalanceId(id);
-    }
-
-    public BalanceItemId toBalanceItemId(Long id) {
-        return id == null ? null : new BalanceItemId(id);
-    }
-
-    public TaxItemId toTaxItemId(Long id) {
-        return id == null ? null : new TaxItemId(id);
-    }
-
-    public DiscountItemId toDiscountItemId(Long id) {
-        return id == null ? null : new DiscountItemId(id);
     }
 
     public ShippingAddressId toShippingAddressId(Long id) {

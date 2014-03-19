@@ -5,13 +5,13 @@
  */
 package com.junbo.fulfilment.clientproxy;
 
-import com.junbo.fulfilment.spec.fusion.Offer;
+import com.junbo.catalog.spec.model.offer.Offer;
 
 /**
  * MegaGateway.
  */
 public interface MegaGateway {
-    Long createOffer(com.junbo.catalog.spec.model.offer.Offer offer);
+    Long createOffer(Offer offer);
 
-    Long updateOffer(com.junbo.catalog.spec.model.offer.Offer offer);
+    Long updateOffer(Offer offer);
 }

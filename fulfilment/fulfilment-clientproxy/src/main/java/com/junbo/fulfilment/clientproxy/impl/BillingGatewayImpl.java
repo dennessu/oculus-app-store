@@ -14,6 +14,7 @@ import com.junbo.fulfilment.common.exception.ResourceNotFoundException;
 import com.junbo.fulfilment.common.util.Utils;
 import com.junbo.fulfilment.spec.fusion.ShippingAddress;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 /**
  * BillingGatewayImpl.
@@ -23,6 +24,7 @@ public class BillingGatewayImpl implements BillingGateway {
     private static final ShippingAddressId BLIND_ADDRESSID_MAPPING = null;
 
     @Autowired
+    @Qualifier("shippingAddressClient")
     private ShippingAddressResource shippingAddressResource;
 
     @Override

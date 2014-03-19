@@ -16,6 +16,8 @@ import com.junbo.cart.spec.model.item.CouponItem
 import com.junbo.cart.spec.model.item.OfferItem
 import com.junbo.common.id.CartId
 import com.junbo.common.id.CartItemId
+import com.junbo.common.id.CouponId
+import com.junbo.common.id.OfferId
 import com.junbo.common.id.UserId
 import com.junbo.identity.spec.model.user.User
 import com.junbo.langur.core.promise.Promise
@@ -220,12 +222,12 @@ class CartServiceImpl implements CartService {
     }
 
     private List<OfferItem> mergeOffers(List<OfferItem> offers) {
-        Map<Long, OfferItem> offersMap = new HashMap<Long, OfferItem>()
+        Map<OfferId, OfferItem> offersMap = new HashMap<OfferId, OfferItem>()
         offers.each {
             OfferItem e = (OfferItem) it
-            OfferItem current = offersMap[e.offer.id]
+            OfferItem current = offersMap[e.offer]
             if (current == null) {
-                offersMap[e.offer.id] = e
+                offersMap[e.offer] = e
             } else {
                 current.quantity += e.quantity
                 current.selected |= e.selected
@@ -238,12 +240,12 @@ class CartServiceImpl implements CartService {
     }
 
     private static List<CouponItem> mergeCoupons(List<CouponItem> coupons) {
-        Map<String, CouponItem> couponsMap = new HashMap<String, CouponItem>()
+        Map<CouponId, CouponItem> couponsMap = new HashMap<CouponId, CouponItem>()
         coupons.each {
             CouponItem e = (CouponItem) it
-            CouponItem current = couponsMap[e.coupon.id]
+            CouponItem current = couponsMap[e.coupon]
             if (current == null) {
-                couponsMap[e.coupon.id] = e
+                couponsMap[e.coupon] = e
             } else {
                 if (current.id == null && e.id != null) {
                     current.id = e.id

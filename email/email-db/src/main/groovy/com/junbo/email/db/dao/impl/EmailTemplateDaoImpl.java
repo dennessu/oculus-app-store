@@ -21,7 +21,7 @@ public class EmailTemplateDaoImpl extends BaseDaoImpl<EmailTemplateEntity> imple
     public EmailTemplateEntity getEmailTemplateByName(final String name) {
         return findBy(new Action<Criteria>() {
             public void apply(Criteria criteria) {
-                criteria.add(Restrictions.eq("name", name));
+                criteria.add(Restrictions.eq("name", name).ignoreCase());
             }
         });
     }

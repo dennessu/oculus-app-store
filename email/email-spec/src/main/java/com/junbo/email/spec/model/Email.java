@@ -15,7 +15,7 @@ import java.util.Map;
 /**
  * Email model.
  */
-public class Email {
+public class Email extends Model{
     @JsonProperty("self")
     private EmailId id;
 

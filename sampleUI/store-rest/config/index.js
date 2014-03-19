@@ -165,11 +165,11 @@ module.exports = {
                                     }
                                 },
                                 "properties": {
-                                    "mainImage": "the img url"
+                                    "mainImage": "/images/p1.jpg"
                                 },
                                 "self": {
                                     "href": "http://api.oculusvr.com/v1/Offer/1393578675743",
-                                    "id": "1393578675743"
+                                    "id": 1
                                 }
                             },
                             {
@@ -233,11 +233,11 @@ module.exports = {
                                     }
                                 },
                                 "properties": {
-                                    "mainImage": "the img url"
+                                    "mainImage": "/images/p2.jpg"
                                 },
                                 "self": {
                                     "href": "http://api.oculusvr.com/v1/Offer/222222222",
-                                    "id": "222222222"
+                                    "id": 2
                                 }
                             }
                         ]
@@ -321,11 +321,11 @@ module.exports = {
                             }
                         },
                         "properties": {
-                            "mainImage": "the img url"
+                            "mainImage": "/images/p1.jpg"
                         },
                         "self": {
                             "href": "http://api.oculusvr.com/v1/Offer/1393578675743",
-                            "id": "1393578675743"
+                            "id": 1
                         }
                     }
                 },
