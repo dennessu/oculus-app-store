@@ -22,6 +22,21 @@ services.factory('OfferFactory', function ($resource) {
     })
 });
 
+services.factory('AttributesFactory', function ($resource) {
+    return $resource('/api/attributes', {}, {
+        query: { method: 'GET', isArray: true },
+        create: { method: 'POST' }
+    })
+});
+
+services.factory('AttributeFactory', function ($resource) {
+    return $resource('/api/attributes/:id', {}, {
+        query: { method: 'GET' },
+        update: { method: 'PUT', params: {id: '@id'} },
+        delete: { method: 'DELETE', params: {id: '@id'} }
+    })
+});
+
 services.factory('OfferResponse', function() {
     return {
         data:{}

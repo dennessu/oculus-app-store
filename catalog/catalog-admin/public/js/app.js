@@ -2,14 +2,15 @@
 
 
 // Declare app level module which depends on filters, and services
-angular.module('catalog', [
+var app = angular.module('catalog', [
   'ngRoute',
   'catalog.filters',
   'catalog.services',
   'catalog.directives',
   'catalog.controllers'
-]).
-config(['$routeProvider', function($routeProvider) {
+]);
+
+app.config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/offers/creation', {templateUrl: 'views/offer-creation.html', controller: 'OfferListCtrl'});
   $routeProvider.when('/offers', {templateUrl: 'views/offer-list.html', controller: 'OfferListCtrl'});
   $routeProvider.when('/offers/review', {templateUrl: 'views/offer-list.html', controller: 'OfferReviewListCtrl'});

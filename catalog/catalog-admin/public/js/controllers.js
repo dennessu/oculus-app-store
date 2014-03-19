@@ -88,6 +88,32 @@ app.controller('OfferDetailCtrl', ['$scope', 'OfferFactory', '$routeParams', '$l
         $scope.offer = OfferFactory.query($routeParams);
     }]);
 
+
+app.controller('AttributeListCtrl', ['$scope', 'AttributesFactory', '$location',
+    function($scope, AttributesFactory, $location) {
+        $scope.createAttribute = function () {
+            AttributesFactory.create($scope.attribute, function(attribute){
+                $location.path('/attributes/' + attribute.self.id);
+            });
+        };
+        $scope.cancel = function () {
+            $location.path('/attributes');
+        };
+        $scope.attributes = AttributesFactory.query();
+    }]);
+
+app.controller('AttributeDetailCtrl', ['$scope', 'AttributeFactory', '$routeParams', '$location',
+    function($scope, AttributeFactory, $routeParams, $location) {
+        console.log("AttributeDetailCtrl");
+        console.log($routeParams);
+
+        $scope.cancel = function () {
+            $location.path('/attributes/' + $routeParams.id);
+        };
+
+        $scope.attribute = AttributeFactory.query($routeParams);
+    }]);
+
 app.controller('MyCtrl2', [function() {
 
   }]);

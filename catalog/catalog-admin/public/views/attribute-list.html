@@ -1,0 +1,22 @@
+<div class="span6">
+  <div class="controls">
+      <a href="#/attributes/creation">New Attribute</a>
+  </div>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th style="min-width: 80px;">Attribute Id</th>
+        <th style="min-width: 80px;">Attribute Name</th>
+        <th style="min-width: 80px;">Attribute Type</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="attribute in attributes">
+        <td><a href="#/attributes/{{ attribute.self.id }}">{{ attribute.self.id }}</a></td>
+        <td>{{ attribute.name }}</td>
+        <td>{{ attribute.type }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
