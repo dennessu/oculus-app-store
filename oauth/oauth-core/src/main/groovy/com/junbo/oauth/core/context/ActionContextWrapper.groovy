@@ -29,9 +29,7 @@ class ActionContextWrapper {
     public static final String RESPONSE_HEADER_MAP = 'response_headers_map'
     public static final String RESPONSE_COOKIE_LIST = 'response_cookies_map'
     public static final String CLIENT = 'client'
-    public static final String CLIENT_ID = 'client_id'
     public static final String OAUTH_INFO = 'oauth_info'
-    public static final String FLOW_STATE = 'flow_state'
     public static final String LOGIN_STATE = 'login_state'
     public static final String AUTHORIZATION_CODE = 'authorization_code'
     public static final String ACCESS_TOKEN = 'access_token'
@@ -120,14 +118,6 @@ class ActionContextWrapper {
         actionContext.flowScope[CLIENT] = appClient
     }
 
-    String getClientId() {
-        return (String) actionContext.requestScope[CLIENT_ID]
-    }
-
-    void setClientId(String clientId) {
-        actionContext.requestScope[CLIENT_ID] = clientId
-    }
-
     OAuthInfo getOauthInfo() {
         if (actionContext.flowScope[OAUTH_INFO] == null) {
             actionContext.flowScope[OAUTH_INFO] = new OAuthInfo()
@@ -137,14 +127,6 @@ class ActionContextWrapper {
 
     void setOauthInfo(OAuthInfo oauthInfo) {
         actionContext.flowScope[OAUTH_INFO] = oauthInfo
-    }
-
-    FlowState getFlowState() {
-        return (FlowState) actionContext.requestScope[FLOW_STATE]
-    }
-
-    void setFlowState(FlowState flowState) {
-        actionContext.requestScope[FLOW_STATE] = flowState
     }
 
     LoginState getLoginState() {

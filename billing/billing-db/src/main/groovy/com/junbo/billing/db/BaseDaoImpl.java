@@ -9,6 +9,7 @@ package com.junbo.billing.db;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.io.Serializable;
 
@@ -20,6 +21,7 @@ import java.io.Serializable;
 @SuppressWarnings("unchecked")
 public abstract class BaseDaoImpl<T extends Serializable, ID extends Serializable> implements BaseDao<T, ID> {
     @Autowired
+    @Qualifier("billingSessionFactory")
     private SessionFactory sessionFactory;
 
     private Class<T> entityType;

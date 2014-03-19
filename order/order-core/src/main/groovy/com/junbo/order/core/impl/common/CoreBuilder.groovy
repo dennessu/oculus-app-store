@@ -1,9 +1,11 @@
 package com.junbo.order.core.impl.common
+import com.junbo.billing.spec.enums.BalanceStatus
 import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.BalanceItem
 import com.junbo.billing.spec.model.DiscountItem
 import com.junbo.common.id.OrderId
+import com.junbo.common.id.OrderItemId
 import com.junbo.common.id.PromotionId
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.core.impl.order.OrderServiceContext
@@ -13,7 +15,6 @@ import com.junbo.order.core.impl.orderaction.context.OrderActionResult
 import com.junbo.order.db.entity.enums.DiscountType
 import com.junbo.order.db.entity.enums.EventStatus
 import com.junbo.order.db.entity.enums.OrderActionType
-import com.junbo.order.db.entity.enums.OrderStatus
 import com.junbo.order.spec.model.Discount
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderEvent
@@ -22,7 +23,6 @@ import com.junbo.rating.spec.model.request.OrderRatingItem
 import com.junbo.rating.spec.model.request.OrderRatingRequest
 import groovy.transform.CompileStatic
 import org.apache.commons.collections.CollectionUtils
-
 /**
  * Created by chriszhu on 2/24/14.
  */
@@ -42,8 +42,14 @@ class CoreBuilder {
         balance.piId = context.order.paymentInstruments?.get(0)
         balance.type = balanceType.toString()
 
-        context.order.orderItems.each {
-            OrderItem item -> balance.addBalanceItem(buildBalanceItem(item))
+        context.order.orderItems.eachWithIndex { OrderItem item, int i ->
+            def balanceItem = buildBalanceItem(item)
+            if (item.orderItemId == null) {
+                balanceItem.orderItemId = new OrderItemId(i)
+            } else {
+                balanceItem.orderItemId = item.orderItemId
+            }
+            balance.addBalanceItem(balanceItem)
         }
 
         return balance
@@ -106,9 +112,7 @@ class CoreBuilder {
 
 
     static OrderItem buildItemRatingInfo(OrderItem item, OrderRatingRequest ratingRequest) {
-
-        OrderRatingItem ratingItem = null
-        ratingItem = ratingRequest.lineItems?.find { OrderRatingItem i ->
+        OrderRatingItem ratingItem = ratingRequest.lineItems?.find { OrderRatingItem i ->
             item.offer.value == i.offerId
         }
         if (ratingItem == null) {
@@ -116,6 +120,9 @@ class CoreBuilder {
         }
         item.totalAmount = ratingItem.finalAmount
         item.totalDiscount = ratingItem.discountAmount
+        // todo get unit price from rating
+        item.unitPrice =
+                ratingItem.quantity == 0 ? ratingItem.originalAmount : ratingItem.originalAmount / ratingItem.quantity
         item.honorUntilTime = null
         return item
     }
@@ -123,15 +130,21 @@ class CoreBuilder {
     static void fillTaxInfo(Order order, Balance balance) {
         order.totalTax = balance.taxAmount
         order.isTaxInclusive = balance.taxIncluded
+        if (balance.taxIncluded == null) { // todo : remove this, this is a temporary workaround
+            order.isTaxInclusive = false
+        }
 
-        for (BalanceItem bi in balance.balanceItems) {
-            def orderItem = order.orderItems.find { OrderItem oi ->
-                oi.orderItemId == bi.orderItemId
-
+        order.orderItems.eachWithIndex { OrderItem orderItem, int i ->
+            def orderItemId = orderItem.orderItemId == null ? new OrderItemId(i) : orderItem.orderItemId
+            def balanceItem = balance.balanceItems.find { BalanceItem balanceItem ->
+                return balanceItem.orderItemId == orderItemId
             }
-            if (orderItem != null) {
-                orderItem?.totalTax = bi.taxAmount
-                orderItem?.isTaxExempted = bi.isTaxExempt
+            if (balanceItem != null) {
+                orderItem.totalTax = balanceItem.taxAmount
+                orderItem.isTaxExempted = balanceItem.isTaxExempt
+                if (orderItem.isTaxExempted == null) { // todo : remove this, this is a temporary workaround
+                    orderItem.isTaxExempted = false
+                }
             }
         }
     }
@@ -158,21 +171,25 @@ class CoreBuilder {
         def actionResult = new ActionResult('success', data)
         return actionResult
     }
-//    public enum OrderStatus implements Identifiable<Short> {
-//        OPEN(0),
-//        PENDING_CHARGE(1),
-//        PENDING_FULFILL(2),
-//        CHARGED(3),
-//        FULFILLED(4),
-//        COMPLETED(5),
-//        FAILED(6),
-//        CANCELED(7),
-//        REFUNDED(8),
-//        ERROR(-1);
-    static OrderStatus buildOrderStatus(List<OrderEvent> orderEvents) {
-        orderEvents.each {
 
+    static EventStatus buildEventStatusFromBalance(String balanceStatus) {
+        switch (balanceStatus) {
+            case BalanceStatus.COMPLETED:
+                return EventStatus.COMPLETED
+            case BalanceStatus.AWAITING_PAYMENT:
+                return EventStatus.PENDING
+            case BalanceStatus.PENDING_CAPTURE: // Authorize completed
+                return EventStatus.COMPLETED
+            case BalanceStatus.UNCONFIRMED:
+                return EventStatus.PROCESSING
+            case BalanceStatus.INIT:
+                return EventStatus.PROCESSING
+            case BalanceStatus.CANCELLED:
+            case BalanceStatus.FAILED:
+            case BalanceStatus.ERROR:
+                return EventStatus.FAILED
+            default:
+                return EventStatus.FAILED
         }
-        return OrderStatus.OPEN
     }
 }

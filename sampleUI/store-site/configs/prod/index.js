@@ -13,5 +13,8 @@ module.exports = process.C = {
     Cart_API_Port: 8082,
 
     OauthUri: "http://54.186.20.200:8081",   //http://54.186.20.200:8081
-    RegisterUri: "http://127.0.0.1:3000"
+    RegisterUri: "http://127.0.0.1:3000",
+
+    // async client config
+    SocketAddress: "http://localhost:3000"
 };

@@ -144,12 +144,9 @@ var Utils = {
         @arguments: 0:Data, 1:query, 2:cookies
      */
     GenerateRequestModel: function(){
-        if(arguments.length <= 0){
-            throw "Need pass request model data object!";
-        }
 
         var requestModel = new RequestDataModel();
-        requestModel.data = arguments[0];
+        if(arguments.length > 0) requestModel.data = arguments[0];
         if(arguments.length > 1) requestModel.query = arguments[1];
         requestModel.cookies = Utils.Cookies.GetAll();
 

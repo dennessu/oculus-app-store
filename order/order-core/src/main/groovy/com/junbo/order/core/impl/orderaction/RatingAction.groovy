@@ -47,27 +47,27 @@ class RatingAction implements Action {
             if (ratingResult == null) {
                 // TODO: log order charge action error?
                 LOGGER.info('fail to rate order')
-            } else {
-                CoreBuilder.fillRatingInfo(order, ratingResult)
-                //  no need to log event for rating
-                // Call billing to calculate tax
-                facadeContainer.billingFacade.quoteBalance(
-                        CoreBuilder.buildBalance(context.orderServiceContext, BalanceType.DEBIT)).syncRecover {
-                    Throwable throwable ->
-                        LOGGER.error('name=Order_Tax_Error', throwable)
-                        return null
-                }.then { Balance balance ->
-                    if (balance == null) {
-                        // TODO: log order charge action error?
-                        LOGGER.info('fail to calculate tax')
-                    } else {
-                        // TODO: add tax info to order
-                        CoreBuilder.fillTaxInfo(order, balance)
-                    }
-                    return Promise.pure(null)
-                }
+                return Promise.pure(null)
             }
-            return Promise.pure(null)
+
+            CoreBuilder.fillRatingInfo(order, ratingResult)
+            //  no need to log event for rating
+            // Call billing to calculate tax
+            return facadeContainer.billingFacade.quoteBalance(
+                    CoreBuilder.buildBalance(context.orderServiceContext, BalanceType.DEBIT)).syncRecover {
+                Throwable throwable ->
+                    LOGGER.error('name=Order_Tax_Error', throwable)
+                    return null
+            }.then { Balance balance ->
+                if (balance == null) {
+                    // TODO: log order charge action error?
+                    LOGGER.info('fail to calculate tax')
+                } else {
+                    // TODO: add tax info to order
+                    CoreBuilder.fillTaxInfo(order, balance)
+                }
+                return Promise.pure(null)
+            }
         }
     }
 }
