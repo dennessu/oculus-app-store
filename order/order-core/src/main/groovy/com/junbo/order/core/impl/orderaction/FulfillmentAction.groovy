@@ -1,5 +1,4 @@
 package com.junbo.order.core.impl.orderaction
-
 import com.junbo.common.id.OrderItemId
 import com.junbo.fulfilment.spec.constant.FulfilmentStatus
 import com.junbo.fulfilment.spec.model.FulfilmentItem
@@ -12,6 +11,7 @@ import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.core.impl.common.CoreBuilder
 import com.junbo.order.db.entity.enums.EventStatus
 import com.junbo.order.db.entity.enums.OrderActionType
+import com.junbo.order.db.entity.enums.OrderStatus
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.model.FulfillmentEvent
 import groovy.transform.CompileStatic
@@ -78,6 +78,11 @@ class  FulfillmentAction implements Action {
                                 OrderActionType.FULFILL, orderEventStatus,
                                 ActionUtils.getFlowType(actionContext),
                                 context.trackingUuid))
+                // Update order status according to fulfillment status.
+                // TODO get order events to update the order status
+                def o = orderRepository.getOrder(order.id.value)
+                o.status = OrderStatus.FULFILLED
+                orderRepository.updateOrder(o, true)
             }
             return ActionUtils.DEFAULT_RESULT
         }

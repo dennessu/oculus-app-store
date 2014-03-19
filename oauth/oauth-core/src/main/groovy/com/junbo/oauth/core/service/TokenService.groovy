@@ -17,6 +17,8 @@ interface TokenService {
 
     AccessToken getAccessToken(String tokenValue)
 
+    AccessToken extractAccessToken(String authorization)
+
     AccessToken updateAccessToken(AccessToken accessToken)
 
     RefreshToken generateRefreshToken(Client client, AccessToken accessToken, String salt)

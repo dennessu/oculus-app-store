@@ -7,17 +7,15 @@ package com.junbo.oauth.core.service.impl
 
 import com.junbo.oauth.core.exception.AppExceptions
 import com.junbo.oauth.core.service.ClientService
-import com.junbo.oauth.core.util.AuthorizationHeaderUtil
+import com.junbo.oauth.core.service.ScopeService
+import com.junbo.oauth.core.service.TokenService
 import com.junbo.oauth.core.util.UriUtil
 import com.junbo.oauth.db.exception.DBUpdateConflictException
 import com.junbo.oauth.db.generator.TokenGenerator
-import com.junbo.oauth.db.repo.AccessTokenRepository
 import com.junbo.oauth.db.repo.ClientRepository
 import com.junbo.oauth.spec.model.AccessToken
 import com.junbo.oauth.spec.model.Client
 import groovy.transform.CompileStatic
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.StringUtils
 
@@ -28,17 +26,16 @@ import java.util.regex.Pattern
  */
 @CompileStatic
 class ClientServiceImpl implements ClientService {
-    private final static Logger LOGGER = LoggerFactory.getLogger(ClientServiceImpl)
-
-    private static final String CLIENT_SCOPE = 'client.register'
-    private static final Set<String> AVAILABLE_SCOPES = ['openid', 'identity', 'order', 'billing', 'catalog'].toSet()
+    private static final String CLIENT_REGISTER_SCOPE = 'client.register'
+    private static final String CLIENT_INFO_SCOPE = 'client.info'
 
     private static final Pattern EMAIL_PATTERN = Pattern.compile('[a-z0-9!#$%&\'*+/=?^_`{|}~-]+(?:\\.' +
             '[a-z0-9!#$%&\'*+/=?^_`{|}~-]+)*@\n(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?')
 
     private ClientRepository clientRepository
-    private AccessTokenRepository accessTokenRepository
+    private TokenService tokenService
     private TokenGenerator tokenGenerator
+    private ScopeService scopeService
 
     @Required
     void setClientRepository(ClientRepository clientRepository) {
@@ -46,8 +43,8 @@ class ClientServiceImpl implements ClientService {
     }
 
     @Required
-    void setAccessTokenRepository(AccessTokenRepository accessTokenRepository) {
-        this.accessTokenRepository = accessTokenRepository
+    void setTokenService(TokenService tokenService) {
+        this.tokenService = tokenService
     }
 
     @Required
@@ -55,9 +52,18 @@ class ClientServiceImpl implements ClientService {
         this.tokenGenerator = tokenGenerator
     }
 
+    @Required
+    void setScopeService(ScopeService scopeService) {
+        this.scopeService = scopeService
+    }
+
     @Override
-    Client postClient(String authorization, Client client) {
-        AccessToken accessToken = parseAccessToken(authorization)
+    Client saveClient(String authorization, Client client) {
+        AccessToken accessToken = tokenService.extractAccessToken(authorization)
+
+        if (!accessToken.scopes.contains(CLIENT_REGISTER_SCOPE)) {
+            throw AppExceptions.INSTANCE.insufficientScope().exception()
+        }
 
         validateClient(client)
 
@@ -76,12 +82,17 @@ class ClientServiceImpl implements ClientService {
 
     @Override
     Client getClient(String authorization, String clientId) {
-        AccessToken accessToken = parseAccessToken(authorization)
+        AccessToken accessToken = tokenService.extractAccessToken(authorization)
+
+        if (!accessToken.scopes.contains(CLIENT_REGISTER_SCOPE)) {
+            throw AppExceptions.INSTANCE.insufficientScope().exception()
+        }
 
         Client client = clientRepository.getClient(clientId)
 
         if (client == null) {
-            accessTokenRepository.remove(accessToken.tokenValue)
+            client = clientRepository.getClient(accessToken.clientId)
+            tokenService.revokeAccessToken(accessToken.tokenValue, client)
             throw AppExceptions.INSTANCE.notExistClient(clientId).exception()
         }
 
@@ -93,8 +104,40 @@ class ClientServiceImpl implements ClientService {
     }
 
     @Override
+    Client getClientInfo(String authorization, String clientId) {
+        AccessToken accessToken = tokenService.extractAccessToken(authorization)
+
+        if (!accessToken.scopes.contains(CLIENT_INFO_SCOPE)) {
+            throw AppExceptions.INSTANCE.insufficientScope().exception()
+        }
+
+        Client client = clientRepository.getClient(clientId)
+
+        if (client == null) {
+            client = clientRepository.getClient(accessToken.clientId)
+            tokenService.revokeAccessToken(accessToken.tokenValue, client)
+            throw AppExceptions.INSTANCE.notExistClient(clientId).exception()
+        }
+
+        return new Client(
+                clientId: client.clientId,
+                clientName: client.clientName,
+                scopes: client.scopes,
+                logoUri: client.logoUri
+        )
+    }
+
+    @Override
     Client updateClient(String authorization, String clientId, Client client) {
+        if (StringUtils.isEmpty(client.revision)) {
+            throw AppExceptions.INSTANCE.missingRevision().exception()
+        }
+
         Client existingClient = getClient(authorization, clientId)
+
+        if (client.revision != existingClient.revision) {
+            throw AppExceptions.INSTANCE.updateConflict().exception()
+        }
 
         if (client.clientId != null && existingClient.clientId != client.clientId) {
             throw AppExceptions.INSTANCE.cantUpdateFields('client_id').exception()
@@ -121,11 +164,10 @@ class ClientServiceImpl implements ClientService {
         client.revision = existingClient.revision
 
         try {
-            clientRepository.updateClient(client)
+            return clientRepository.updateClient(client)
         } catch (DBUpdateConflictException e) {
             throw AppExceptions.INSTANCE.updateConflict().exception()
         }
-        return client
     }
 
     @Override
@@ -155,7 +197,7 @@ class ClientServiceImpl implements ClientService {
 
     private static void validateScope(Client client) {
         Collection<String> invalidScopes = client.scopes.findAll {
-            String scope -> !AVAILABLE_SCOPES.contains(scope)
+            String scope -> scopeService.getScope(scope) == null
         }
 
         if (invalidScopes != null && !invalidScopes.isEmpty()) {
@@ -179,7 +221,7 @@ class ClientServiceImpl implements ClientService {
         if (client.redirectUris != null) {
             client.redirectUris.each { String uri ->
                 String escapedUri = uri.replace('*', 'a')
-                if (!isValidUri(escapedUri)) {
+                if (!UriUtil.isValidUri(escapedUri)) {
                     throw AppExceptions.INSTANCE.invalidRedirectUri(uri).exception()
                 }
             }
@@ -206,7 +248,7 @@ class ClientServiceImpl implements ClientService {
         if (client.logoutRedirectUris != null) {
             client.logoutRedirectUris.each { String uri ->
                 String escapedUri = uri.replace('*', 'a')
-                if (!isValidUri(escapedUri)) {
+                if (!UriUtil.isValidUri(escapedUri)) {
                     throw AppExceptions.INSTANCE.invalidLogoutRedirectUri(uri).exception()
                 }
             }
@@ -230,7 +272,7 @@ class ClientServiceImpl implements ClientService {
     }
 
     private static void validateLogoUri(Client client) {
-        if (client.logoUri != null && !isValidUri(client.logoUri)) {
+        if (client.logoUri != null && !UriUtil.isValidUri(client.logoUri)) {
             throw AppExceptions.INSTANCE.invalidLogoUri(client.logoUri).exception()
         }
     }
@@ -245,32 +287,4 @@ class ClientServiceImpl implements ClientService {
         }
     }
 
-    private static boolean isValidUri(String uri) {
-        try {
-            URI.create(uri)
-        } catch (IllegalArgumentException e) {
-            LOGGER.debug('Invalid uri format', e)
-            return false
-        }
-
-        return true
-    }
-
-    private AccessToken parseAccessToken(String authorization) {
-        String tokenValue = AuthorizationHeaderUtil.extractAccessToken(authorization)
-
-        AccessToken accessToken = accessTokenRepository.get(tokenValue)
-        if (accessToken == null) {
-            throw AppExceptions.INSTANCE.invalidAuthorization().exception()
-        }
-
-        if (accessToken.isExpired()) {
-            throw AppExceptions.INSTANCE.expiredAccessToken().exception()
-        }
-
-        if (!accessToken.scopes.contains(CLIENT_SCOPE)) {
-            throw AppExceptions.INSTANCE.insufficientScope().exception()
-        }
-        return accessToken
-    }
 }

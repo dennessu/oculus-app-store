@@ -5,6 +5,8 @@
  */
 package com.junbo.testing.buyerscenario;
 
+import com.junbo.identity.spec.model.common.ResultList;
+import com.junbo.identity.spec.model.user.User;
 import com.junbo.testing.buyerscenario.util.BaseTestClass;
 import com.junbo.testing.common.apihelper.identity.impl.UserServiceImpl;
 import com.junbo.testing.common.libs.LogHelper;
@@ -22,9 +24,6 @@ public class UserPortal extends BaseTestClass {
 
     private LogHelper logger = new LogHelper(UserPortal.class);
 
-    private final String identityServerURL = "http://localhost:8080/rest/users";
-    private final String oAuthServerURL = "http://localhost:8082/auth";
-
     @Property(
             priority = Priority.BVT,
             features = "CustomerScenarios",
@@ -41,31 +40,20 @@ public class UserPortal extends BaseTestClass {
     @Test
     public void testPostUser() throws Exception {
 
-        UserServiceImpl userServiceAPI = new UserServiceImpl(identityServerURL);
-        String apiResponse = userServiceAPI.PostUser();
+        UserServiceImpl userServiceAPI = new UserServiceImpl();
+        User userPost = userServiceAPI.PostUser();
 
-        String[] results = apiResponse.split(",");
-        String userId = null;
-        String userName = null;
-        for (String s : results) {
-            if (s.contains("id")) {
-                userId = s.replace("\"id\":\"", "").replace("\"", "").replace("}", "").trim();
-            }
-            if (s.contains("userName")) {
-                userName = s.replace("\"userName\":\"", "").replace("\"", "").trim();
-            }
-        }
-
-        Assert.assertNotNull(userId);
-        Assert.assertNotNull(userName);
+        Assert.assertNotNull(userPost);
+        Assert.assertNotNull(userPost.getId());
+        Assert.assertNotNull(userPost.getUserName());
 
         //Get the user with ID
-        apiResponse = userServiceAPI.GetUserByUserId(userId);
-        Assert.assertTrue(apiResponse.contains(userId), "Can't get user by user ID");
+        User userGet = userServiceAPI.GetUserByUserId(userPost.getId());
+        Assert.assertNotNull(userGet, "Can't get user by user ID");
 
         //Get the user with userName
-        apiResponse = userServiceAPI.GetUserByUserName(userName);
-        Assert.assertTrue(apiResponse.contains(userName),  "Can't get user by username");
+        ResultList<User> userGetList = userServiceAPI.GetUserByUserName(userPost.getUserName());
+        Assert.assertNotNull(userGetList, "Can't get user by user Name");
     }
 
     @Property(
