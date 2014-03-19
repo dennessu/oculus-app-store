@@ -12,6 +12,8 @@ import com.junbo.rating.spec.model.request.OrderRatingItem
 import com.junbo.rating.spec.model.request.OrderRatingRequest
 import groovy.transform.CompileStatic
 
+import java.text.SimpleDateFormat
+
 /**
  * Created by LinYi on 14-3-4.
  */
@@ -86,7 +88,8 @@ class FacadeBuilder {
         email.recipient = user.userName
         Map<String, String> properties = [:]
         properties.put(ORDER_NUMBER, order.id.value.toString())
-        properties.put(ORDER_DATE, new Date().toString())
+        Date now = new Date()
+        properties.put(ORDER_DATE, new SimpleDateFormat('yyyy-MM-dd').format(now))
         properties.put(NAME, user.userName)
         properties.put(SUBTOTAL, order.totalAmount?.toString())
         properties.put(TAX, BigDecimal.ZERO.toString())
