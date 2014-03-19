@@ -30,18 +30,24 @@ public class FulfilmentItem {
 
     @OfferId
     private Long offerId;
-
     private Long timestamp;
     private Integer quantity;
+
+    // aggregated status
+    private String status;
 
     @JsonIgnore
     private Long requestId;
 
     @Null
     @JsonProperty("fulfilmentActions")
-    private List<FulfilmentAction> actions = new ArrayList();
+    private List<FulfilmentAction> actions;
 
     public void addFulfilmentAction(FulfilmentAction action) {
+        if (actions == null) {
+            actions = new ArrayList<>();
+        }
+
         actions.add(action);
     }
 
@@ -51,7 +57,7 @@ public class FulfilmentItem {
         // if all fulfilment action are SUCCEED, the item status is SUCCEED,
         // otherwise PENDING
         if (actions == null) {
-            return FulfilmentStatus.SUCCEED;
+            return FulfilmentStatus.UNKNOWN;
         }
 
         for (FulfilmentAction action : actions) {
@@ -61,6 +67,10 @@ public class FulfilmentItem {
         }
 
         return FulfilmentStatus.SUCCEED;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public Long getFulfilmentId() {
