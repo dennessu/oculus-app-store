@@ -21,6 +21,9 @@ import java.util.List;
  */
 public class WalletMapper {
     public Wallet toWallet(WalletEntity walletEntity) {
+        if (walletEntity == null) {
+            return null;
+        }
         Wallet wallet = new Wallet();
         wallet.setWalletId(walletEntity.getId());
         wallet.setBalance(walletEntity.getBalance());
@@ -59,7 +62,6 @@ public class WalletMapper {
         transaction.setAmount(transactionEntity.getAmount());
         transaction.setType(transactionEntity.getType().toString());
         transaction.setOfferId(transactionEntity.getOfferId());
-        transaction.setWalletId(transactionEntity.getWalletId());
         transaction.setCreatedBy(transactionEntity.getCreatedBy());
         transaction.setCreatedTime(transactionEntity.getCreatedTime());
         return transaction;

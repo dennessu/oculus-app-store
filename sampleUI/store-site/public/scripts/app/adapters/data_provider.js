@@ -1,5 +1,5 @@
 
-var DataProvider = function(apiConfig){
+var DataProvider = function(apiConfig, socketAddress){
 
     if(this._instance !== undefined && this._instance !== null){
         return this._instance;
@@ -11,9 +11,9 @@ var DataProvider = function(apiConfig){
     // TODO: Check support web socket
 
     if(this._isSocket){
-        this._conn = io.connect(config.Socket); //, {'reconnect':false,'auto connect':false});
+        this._conn = io.connect(socketAddress); //, {'reconnect':false,'auto connect':false});
         this._conn.on('connect', function () {
-            console.log("Connected to " + config.Socket);
+            console.log("Connected to " + socketAddress);
         });
         this._conn.on("welcome", function(data){
             console.log("[Event: welcome]", data);
@@ -31,7 +31,7 @@ DataProvider.prototype.Discount = function(){
     this._conn.disconnect();
 };
 
-DataProvider.prototype.Emit = function(api, data, cb){
+DataProvider.prototype.Emit = function(eventName, data, cb){
     /*
     api:{
      async: false,
@@ -44,9 +44,9 @@ DataProvider.prototype.Emit = function(api, data, cb){
     */
 
     if(this._isSocket){
-        console.log("[Emit: "+ api.namespace +"]: ", data);
-        this._conn.emit(api.namespace, data, function(data){
-            console.log("[Emit: "+ api.namespace +": Callback]: ", data);
+        console.log("[Emit: "+ eventName +"]: ", data);
+        this._conn.emit(eventName, data, function(data){
+            console.log("[Emit: "+ eventName +": Callback]: ", data);
             cb(data);
         });
     }else{

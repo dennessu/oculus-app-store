@@ -31,6 +31,11 @@ public interface ClientEndpoint {
     Promise<Client> getByClientId(@HeaderParam("Authorization") String authorization,
                                   @PathParam("clientId") String clientId);
 
+    @GET
+    @Path("/{clientId}/client-info")
+    Promise<Client> getInfoByClientId(@HeaderParam("Authorization") String authorization,
+                                      @PathParam("clientId") String clientId);
+
     @PUT
     @Path("/{clientId}")
     @Consumes(MediaType.APPLICATION_JSON)

@@ -58,10 +58,8 @@ public class FulfilmentServiceImpl extends TransactionSupport implements Fulfilm
             return retrieveRequest(requestId);
         }
 
-        // ensure billing order id doesn't exist
-        if (fulfilmentRequestRepo.existBillingOrderId(request.getOrderId()) != null) {
-            throw new FulfilmentException("BillingOrderId [" + request.getOrderId() + "] already exists.");
-        }
+        // validate fulfilment request
+        validate(request);
 
         // distill fulfilment actions
         distill(request);
@@ -72,7 +70,7 @@ public class FulfilmentServiceImpl extends TransactionSupport implements Fulfilm
         // classify fulfilment actions
         ClassifyResult classifyResult = classify(request);
 
-        // process fulfilment actions
+        // dispatch fulfilment actions
         dispatch(request, classifyResult);
 
         return request;
@@ -84,7 +82,7 @@ public class FulfilmentServiceImpl extends TransactionSupport implements Fulfilm
     }
 
     @Override
-    public FulfilmentRequest retrieveRequestByBillingOrderId(Long billingOrderId) {
+    public FulfilmentRequest retrieveRequestByOrderId(Long billingOrderId) {
         Long requestId = fulfilmentRequestRepo.existBillingOrderId(billingOrderId);
         if (requestId == null) {
             throw new ResourceNotFoundException("Fulfilment request with BillingOrderId ["
@@ -102,6 +100,20 @@ public class FulfilmentServiceImpl extends TransactionSupport implements Fulfilm
         }
 
         return item;
+    }
+
+    public void validate(FulfilmentRequest request) {
+        // ensure order id does not exist
+        Long requestId = fulfilmentRequestRepo.existBillingOrderId(request.getOrderId());
+        if (requestId != null) {
+            throw new FulfilmentException("Fulfilment request with orderId ["
+                    + request.getOrderId() + "] has already been issued.");
+        }
+
+        // ensure fulfilment items are specified
+        if (request.getItems() == null) {
+            throw new FulfilmentException("No fulfilment item specified.");
+        }
     }
 
     public void distill(FulfilmentRequest request) {
@@ -175,8 +187,8 @@ public class FulfilmentServiceImpl extends TransactionSupport implements Fulfilm
 
         for (String actionType : classifyResult.getActionTypes()) {
             FulfilmentContext context = FulfilmentContextFactory.create(actionType);
-            context.setItems(items);
 
+            context.setItems(items);
             context.setUserId(request.getUserId());
             context.setOrderId(request.getOrderId());
             context.setActions(classifyResult.get(actionType));

@@ -30,11 +30,12 @@ public class EmailMapper {
         email.setId(new EmailId(entity.getId()));
         email.setPriority(entity.getPriority());
         email.setRetryCount(entity.getRetryCount());
-
         email.setType(fromEmailType(entity.getType()));
         email.setStatus(fromEmailStatus(entity.getStatus()));
         email.setStatusReason(entity.getStatusReason());
         email.setIsResend(entity.getIsResend());
+        email.setCreatedTime(entity.getCreatedTime());
+        email.setModifiedTime(entity.getUpdatedTime());
 
         return  email;
     }
@@ -60,6 +61,8 @@ public class EmailMapper {
         entity.setStatus(toEmailStatus(email.getStatus()));
         entity.setStatusReason(email.getStatusReason());
         entity.setSentDate(email.getSentDate());
+        entity.setRetryCount(email.getRetryCount());
+        entity.setIsResend(email.getIsResend());
 
         return entity;
     }
@@ -68,10 +71,25 @@ public class EmailMapper {
         if(email == null) {
             return null;
         }
-        return null;
+        EmailScheduleEntity entity = new EmailScheduleEntity();
+        if(email.getId() != null) {
+            entity.setId(email.getId().getValue());
+        }
+        if(email.getUserId() != null) {
+            entity.setUserId(email.getUserId().getValue());
+        }
+        entity.setSource(email.getSource());
+        entity.setAction(email.getAction());
+        entity.setLocale(email.getLocale());
+        entity.setPayload(Utils.toJson(email));
+        entity.setRecipient(email.getRecipient());
+        entity.setPriority(email.getPriority());
+        entity.setScheduleDate(email.getScheduleDate());
+
+        return entity;
     }
 
-    public Email toEmail(EmailScheduleEntity entity) {
+    public Email toEmailSchedule(EmailScheduleEntity entity) {
         if(entity == null) {
             return null;
         }
@@ -79,6 +97,8 @@ public class EmailMapper {
         email.setId(new EmailId(entity.getId()));
         email.setIsResend(false);
         email.setScheduleDate(entity.getScheduleDate());
+        email.setCreatedTime(entity.getCreatedTime());
+        email.setModifiedTime(entity.getUpdatedTime());
 
         return email;
     }
@@ -98,6 +118,7 @@ public class EmailMapper {
         if(entity.getVars() != null) {
             template.setListOfVariables(Utils.toObject(entity.getVars(), List.class));
         }
+
         return template;
     }
 
@@ -112,6 +133,7 @@ public class EmailMapper {
         if(template.getListOfVariables() != null) {
             entity.setVars(Utils.toJson(template.getListOfVariables()));
         }
+
         return entity;
     }
     private Short toEmailType(String emailType) {
@@ -120,7 +142,7 @@ public class EmailMapper {
                 return EmailType.valueOf(EmailType.class,emailType).getId();
             }
             catch (Exception e) {
-                throw AppErrors.INSTANCE.fieldInvalid(emailType).exception();
+                throw AppErrors.INSTANCE.invalidField(emailType).exception();
             }
         }
         return null;

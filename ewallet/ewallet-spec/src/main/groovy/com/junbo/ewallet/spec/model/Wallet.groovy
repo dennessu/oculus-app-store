@@ -5,37 +5,30 @@
  */
 
 package com.junbo.ewallet.spec.model
-import com.fasterxml.jackson.annotation.JsonIgnore
-import com.fasterxml.jackson.annotation.JsonProperty
-import groovy.transform.CompileStatic
 
-import javax.validation.constraints.NotNull
-import javax.validation.constraints.Null
+import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.annotation.JsonPropertyOrder
+import com.junbo.common.jackson.annotation.UserId
+import com.junbo.common.jackson.annotation.WalletId
+import groovy.transform.CompileStatic
 /**
  * Wallet Entity.
  */
 @CompileStatic
+@JsonPropertyOrder(['walletId', 'userId', 'type', 'currency', 'balance', 'status', 'transactions'])
+@JsonInclude(JsonInclude.Include.NON_NULL)
 class Wallet {
+    @WalletId
+    @JsonProperty('self')
     Long walletId
     UUID trackingUuid
-    @NotNull
+    @UserId
+    @JsonProperty('user')
     Long userId
-    @NotNull
     String type
-    @Null
     String status
     String currency
     BigDecimal balance
-    @Null
     List<Transaction> transactions
-
-    @JsonIgnore
-    UUID getTrackingUuid() {
-        return trackingUuid
-    }
-
-    @JsonProperty
-    void setTrackingUuid(UUID trackingUuid) {
-        this.trackingUuid = trackingUuid
-    }
 }

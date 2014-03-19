@@ -78,10 +78,12 @@ class FacadeBuilder {
 
     static Email buildOrderConfirmationEmail(Order order, User user, List<Offer> offers) {
         Email email = new Email()
-        email.userId = order.user
+        email.userId = user.id
         email.source = 'SilkCloud'
         email.action = 'OrderConfirmation'
         email.locale = 'en_US'
+        // TODO: update email address as IDENTITY component
+        email.recipient = user.userName
         Map<String, String> properties = [:]
         properties.put(ORDER_NUMBER, order.id.value.toString())
         properties.put(ORDER_DATE, new Date().toString())
@@ -103,6 +105,7 @@ class FacadeBuilder {
                 }
             }
         }
+        email.properties = properties
         return email
     }
 }

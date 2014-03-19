@@ -31,6 +31,9 @@ public class PaymentInstrumentResourceImpl implements PaymentInstrumentResource 
 
     @Override
     public Promise<PaymentInstrument> postPaymentInstrument(UserId userId, PaymentInstrument request) {
+        if(request.getUserId() != null && !request.getUserId().equals(userId.getValue())){
+            throw AppClientExceptions.INSTANCE.invalidUserId(request.getUserId().toString()).exception();
+        }
         request.setUserId(userId.getValue());
         return piService.add(request);
     }

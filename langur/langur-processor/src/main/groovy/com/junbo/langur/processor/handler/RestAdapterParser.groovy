@@ -37,7 +37,9 @@ class RestAdapterParser implements RestResourceHandler {
         restAdapter.annotations = mapperType.annotationMirrors.collect {
                 AnnotationMirror annotationMirror -> annotationMirror.toString()
             }.findAll {
-                String annotation -> annotation != '@com.junbo.langur.core.RestResource'
+                String annotation ->
+                    annotation != '@com.junbo.langur.core.RestResource' &&
+                    !annotation.startsWith('@com.wordnik.swagger.annotations')
         }.toList()
 
         restAdapter.restMethods = []
@@ -66,7 +68,9 @@ class RestAdapterParser implements RestResourceHandler {
                 restMethod.methodName = executableElement.simpleName.toString()
                 restMethod.annotations = executableElement.annotationMirrors.collect {
                     AnnotationMirror annotationMirror -> annotationMirror.toString()
-                }
+                }.findAll {
+                    String annotation -> !annotation.startsWith('@com.wordnik.swagger.annotations')
+                }.toList()
 
                 restMethod.parameters = executableElement.parameters.collect {
                     VariableElement variableElement ->

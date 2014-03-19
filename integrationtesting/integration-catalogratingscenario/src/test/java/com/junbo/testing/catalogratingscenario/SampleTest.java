@@ -9,4 +9,5 @@ package com.junbo.testing.catalogratingscenario;
  * Created by Jason on 3/7/14.
  */
 public class SampleTest {
+
 }

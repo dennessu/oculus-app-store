@@ -34,4 +34,7 @@
 
     <bean id="updateFulfillmentAction" class="com.junbo.order.core.impl.orderaction.UpdateFulfillmentAction">
     </bean>
+
+    <bean id="sendEmailAction" class="com.junbo.order.core.impl.orderaction.SendEmailAction">
+    </bean>
 </beans>

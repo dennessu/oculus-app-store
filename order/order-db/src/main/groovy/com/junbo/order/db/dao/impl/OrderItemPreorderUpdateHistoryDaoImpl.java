@@ -11,6 +11,7 @@ import com.junbo.order.db.entity.OrderItemPreorderUpdateHistoryEntity;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Repository;
 @Repository("orderItemPreorderUpdateHistoryDao")
 public class OrderItemPreorderUpdateHistoryDaoImpl implements OrderItemPreorderUpdateHistoryDao {
     @Autowired
+    @Qualifier("orderSessionFactory")
     private SessionFactory sessionFactory;
 
     protected Session getSession() {

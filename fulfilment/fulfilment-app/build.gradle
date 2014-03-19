@@ -4,5 +4,7 @@ dependencies {
     compile (libraries.jersey_container_grizzly2_http)
     compile (libraries.jersey_spring3)
 
+    testCompile (libraries.spring_test)
+
     compile project(':fulfilment-rest')
 }
