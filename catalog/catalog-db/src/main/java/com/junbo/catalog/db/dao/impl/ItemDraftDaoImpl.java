@@ -10,6 +10,8 @@ import com.junbo.catalog.common.util.Action;
 import com.junbo.catalog.db.dao.ItemDraftDao;
 import com.junbo.catalog.db.entity.ItemDraftEntity;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -18,12 +20,14 @@ import java.util.List;
  */
 public class ItemDraftDaoImpl extends VersionedDaoImpl<ItemDraftEntity> implements ItemDraftDao {
     @Override
-    public List<ItemDraftEntity> getItems(final int start, final int size) {
+    public List<ItemDraftEntity> getItems(final int start, final int size, final String status) {
         return findAllBy(new Action<Criteria>() {
             public void apply(Criteria criteria) {
                 criteria.setFirstResult(start);
                 criteria.setFetchSize(size);
-                //criteria.add(Restrictions.eq("status", "PUBLISHED"));
+                if (!StringUtils.isEmpty(status)) {
+                    criteria.add(Restrictions.eq("status", status));
+                }
             }
         });
     }

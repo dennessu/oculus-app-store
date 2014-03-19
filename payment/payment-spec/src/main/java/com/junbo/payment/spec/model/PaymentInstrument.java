@@ -51,7 +51,7 @@ public class PaymentInstrument {
     @PaymentInstrumentId
     @JsonProperty("self")
     public CascadeResource getCascadePaymentInstrumentId() {
-        return new CascadeResource(id, new Object[]{userId, id});
+        return id == null ? null : new CascadeResource(id, new Object[]{userId, id});
     }
 
     public UUID getTrackingUuid() {

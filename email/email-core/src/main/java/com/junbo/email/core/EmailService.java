@@ -14,4 +14,10 @@ import com.junbo.langur.core.promise.Promise;
  */
 public interface EmailService {
     Promise<Email> send(Email request);
+
+    Promise<Email> getEmail(Long id);
+
+    Promise<Email> updateEmail(Long id, Email email);
+
+    Void deleteEmail(Long id);
 }

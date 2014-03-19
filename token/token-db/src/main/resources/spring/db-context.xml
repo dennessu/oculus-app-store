@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <import resource="classpath*:spring/common-context.xml"/>
+    <import resource="classpath*:spring/transaction.xml"/>
+    <import resource="classpath*:spring/sharding-context.xml"/>
+
+    <context:component-scan base-package="com.junbo.oom.core.builtin"/>
+    <context:component-scan base-package="com.junbo.token.db"/>
+    <context:annotation-config />
+
+    <!--Data source has the database information -->
+    <bean id="tokenDataSource" class="bitronix.tm.resource.jdbc.PoolingDataSource"
+          init-method="init" destroy-method="close">
+        <property name="uniqueName" value="jdbc/id_ds1"/>
+        <property name="className" value="org.postgresql.xa.PGXADataSource"/>
+        <property name="minPoolSize" value="${token.db.minConnectionsPerPartition}"/>
+        <property name="maxPoolSize" value="${token.db.maxConnectionsPerPartition}"/>
+        <property name="driverProperties">
+            <props>
+                <prop key="url">${token.db.url}</prop>
+                <prop key="user">${token.db.username}</prop>
+                <prop key="password">${token.db.password}</prop>
+            </props>
+        </property>
+    </bean>
+
+    <!-- SessonFactory for Hibernate -->
+    <bean id="sessionFactory"
+          class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="dataSource" ref="tokenDataSource"/>
+        <property name="jtaTransactionManager" ref="transactionManager"/>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">${token.hibernate.dialect}</prop>
+                <prop key="hibernate.max_fetch_depth">${token.hibernate.max_fetch_depth}</prop>
+                <prop key="hibernate.jdbc.fetch_size">${token.hibernate.jdbc.fetch_size}</prop>
+                <prop key="hibernate.jdbc.batch_size">${token.hibernate.jdbc.batch_size}</prop>
+                <prop key="hibernate.show_sql">${token.hibernate.show_sql}</prop>
+            </props>
+        </property>
+        <property name="packagesToScan">
+            <list>
+                <value>com.junbo.token.db</value>
+                <value>com.junbo.token.db.dao</value>
+                <value>com.junbo.token.db.entity</value>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Transaction Manager
+    <bean id="transactionManager"
+          class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean> -->
+    <!-- Dao -->
+    <bean id="genericDao"
+          class="com.junbo.token.db.dao.GenericDAOImpl" abstract="true">
+    </bean>
+
+    <bean id="tokenSetDao"
+          class="com.junbo.token.db.dao.TokenSetDao" parent="genericDao">
+        <property name="persistentClass" value="com.junbo.token.db.entity.TokenSetEntity"/>
+    </bean>
+
+    <bean id="tokenOrderDao"
+          class="com.junbo.token.db.dao.TokenOrderDao" parent="genericDao">
+        <property name="persistentClass" value="com.junbo.token.db.entity.TokenOrderEntity"/>
+    </bean>
+
+    <bean id="tokenItemDao"
+          class="com.junbo.token.db.dao.TokenItemDao" parent="genericDao">
+        <property name="persistentClass" value="com.junbo.token.db.entity.TokenItemEntity"/>
+    </bean>
+
+    <bean id="tokenSetOfferDao"
+          class="com.junbo.token.db.dao.TokenSetOfferDao" parent="genericDao">
+        <property name="persistentClass" value="com.junbo.token.db.entity.TokenSetOfferEntity"/>
+    </bean>
+
+    <bean id="tokenConsumptionDao"
+          class="com.junbo.token.db.dao.TokenConsumptionDao" parent="genericDao">
+        <property name="persistentClass" value="com.junbo.token.db.entity.TokenConsumptionEntity"/>
+    </bean>
+
+    <bean id="domainDataRepository"
+          class="com.junbo.token.db.repository.DomainDataRepository" abstract="true">
+    </bean>
+
+    <bean class="com.junbo.token.db.mapper.CommonMapper" />
+    <bean id="tokenMapperImpl" class="com.junbo.token.db.mapper.TokenMapperImpl" />
+
+</beans>

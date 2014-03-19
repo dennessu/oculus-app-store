@@ -120,17 +120,17 @@ class OrderServiceContextBuilder {
 
     Promise<List<Offer>> getOffers(OrderServiceContext context) {
 
-        if (context == null || context.order == null || !CollectionUtils.isEmpty(context.order.orderItems)) {
-            return Promise.pure(null)
+        if (context == null || context.order == null || CollectionUtils.isEmpty(context.order.orderItems)) {
+            return Promise.pure(Collections.emptyList())
         }
 
-        List<Offer> offers
+        List<Offer> offers = []
         // TODO timestamp
         return Promise.each(context.order.orderItems.iterator()) { OrderItem oi ->
             facadeContainer.catalogFacade.getOffer(oi.offer.value).syncThen { Offer of ->
                 offers << of
             }
-        }.then {
+        }.syncThen {
             context.offers = offers
             return offers
         }
