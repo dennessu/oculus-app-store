@@ -73,6 +73,9 @@ public class FulfilmentServiceImpl extends TransactionSupport implements Fulfilm
         // dispatch fulfilment actions
         dispatch(request, classifyResult);
 
+        // polish fulfilment result
+        windup(request);
+
         return request;
     }
 
@@ -100,6 +103,28 @@ public class FulfilmentServiceImpl extends TransactionSupport implements Fulfilm
         }
 
         return item;
+    }
+
+    @Override
+    public void windup(FulfilmentRequest request) {
+        for (FulfilmentItem item : request.getItems()) {
+            // set initial status
+            item.setStatus(FulfilmentStatus.SUCCEED);
+
+            // no fulfilment actions attached
+            if (item.getActions() == null) {
+                item.setStatus(FulfilmentStatus.UNKNOWN);
+            }
+
+            // aggregated status for billing
+            // if all fulfilment action are SUCCEED, the item status is SUCCEED,
+            // otherwise PENDING
+            for (FulfilmentAction action : item.getActions()) {
+                if (!Utils.equals(FulfilmentStatus.SUCCEED, action.getStatus())) {
+                    item.setStatus(FulfilmentStatus.PENDING);
+                }
+            }
+        }
     }
 
     public void validate(FulfilmentRequest request) {
