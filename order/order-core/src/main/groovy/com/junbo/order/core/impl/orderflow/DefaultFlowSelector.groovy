@@ -6,14 +6,17 @@
 
 package com.junbo.order.core.impl.orderflow
 
+import com.junbo.catalog.spec.model.offer.Offer
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.core.FlowSelector
 import com.junbo.order.core.FlowType
 import com.junbo.order.core.OrderServiceOperation
+import com.junbo.order.core.impl.common.CoreUtils
 import com.junbo.order.core.impl.order.OrderServiceContext
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
 import com.junbo.order.db.entity.enums.ItemType
 import com.junbo.order.db.entity.enums.OrderType
+import com.junbo.payment.spec.enums.PIType
 import com.junbo.payment.spec.model.PaymentInstrument
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
@@ -67,22 +70,23 @@ class DefaultFlowSelector implements FlowSelector {
         }
         // select order flow per payment info and product item info
 
-        orderServiceContextBuilder.getPaymentInstruments(context).syncThen { List<PaymentInstrument> pis ->
+        orderServiceContextBuilder.getPaymentInstruments(context).then { List<PaymentInstrument> pis ->
             // TODO: do not support multiple payment methods now
             switch (pis[0]?.type) {
                 // TODO reference to payment instrument type
-                case 'CREDIT_CARD':
+                case PIType.CREDITCARD:
                     // TODO: do not support mixed order containing both physical item & digital item now
-                    switch (context.order.orderItems[0]?.type) {
-                        case ItemType.DIGITAL.toString():
-                            return FlowType.IMMEDIATE_SETTLE
-                        case ItemType.PHYSICAL.toString():
-                            return FlowType.AUTH_SETTLE
-                        default:
-                            return null
+                    orderServiceContextBuilder.getOffers(context).then { List<Offer> ofs ->
+                        Boolean isPhysical = ofs.any { Offer of ->
+                            CoreUtils.getOfferType(of) == ItemType.PHYSICAL
+                        }
+                        if (isPhysical) {
+                            return Promise.pure(FlowType.AUTH_SETTLE)
+                        }
+                        return Promise.pure(FlowType.IMMEDIATE_SETTLE)
                     }
                 default:
-                    return null
+                    return Promise.pure(null)
             }
         }
     }
