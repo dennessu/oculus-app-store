@@ -9,6 +9,8 @@ package com.junbo.payment.rest.resource;
 import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.common.id.UserId;
 import com.junbo.langur.core.promise.Promise;
+import com.junbo.payment.common.CommonUtil;
+import com.junbo.payment.common.PreValidationException;
 import com.junbo.payment.core.PaymentInstrumentService;
 import com.junbo.payment.core.exception.AppClientExceptions;
 import com.junbo.payment.spec.model.PageMetaData;
@@ -31,11 +33,23 @@ public class PaymentInstrumentResourceImpl implements PaymentInstrumentResource 
 
     @Override
     public Promise<PaymentInstrument> postPaymentInstrument(UserId userId, PaymentInstrument request) {
+        try{
+            CommonUtil.preValidation(request);}
+        catch (PreValidationException ex){
+            throw AppClientExceptions.INSTANCE.fieldNotNeeded(ex.getField()).exception();
+        }
         if(request.getUserId() != null && !request.getUserId().equals(userId.getValue())){
             throw AppClientExceptions.INSTANCE.invalidUserId(request.getUserId().toString()).exception();
         }
         request.setUserId(userId.getValue());
-        return piService.add(request);
+
+        return piService.add(request).then(new Promise.Func<PaymentInstrument, Promise<PaymentInstrument>>() {
+            @Override
+            public Promise<PaymentInstrument> apply(PaymentInstrument paymentInstrument) {
+                CommonUtil.postFilter(paymentInstrument);
+                return Promise.pure(paymentInstrument);
+            }
+        });
     }
 
     @Override

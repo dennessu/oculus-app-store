@@ -11,6 +11,10 @@ import com.alibaba.fastjson.serializer.JSONSerializer;
 import com.alibaba.fastjson.serializer.PropertyFilter;
 import com.alibaba.fastjson.serializer.SerializeWriter;
 
+
+import java.beans.PropertyDescriptor;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.util.*;
 
 
@@ -61,5 +65,63 @@ public final class CommonUtil {
             }
         }
         return result;
+    }
+
+    public static void preValidation(Object obj) {
+        for(Field field : obj.getClass().getDeclaredFields()){
+            for(Annotation annotation : field.getAnnotations()){
+                if(annotation instanceof FilterIn){
+                    Object value = null;
+                    try{
+                        value = new PropertyDescriptor(field.getName(), obj.getClass()).getReadMethod().invoke(obj);
+                    }catch (Exception ex){
+                        throw new PreValidationException(field.getName());
+                    }
+                    if(value != null){
+                        throw new PreValidationException(field.getName());
+                    }
+                }else if(annotation instanceof InnerFilter){
+                    try{
+                        Object sub = new PropertyDescriptor(field.getName(),
+                                obj.getClass()).getReadMethod().invoke(obj);
+                        if(sub != null){
+                            preValidation(sub);
+                        }
+                    }catch (Exception ex){
+                        throw new PreValidationException(field.getName());
+                    }
+                }
+            }
+        }
+    }
+
+    public static void postFilter(Object obj) {
+        for(Field field : obj.getClass().getDeclaredFields()){
+            for(Annotation annotation : field.getAnnotations()){
+                if(annotation instanceof FilterOut){
+                    Object value = null;
+                    try{
+                        PropertyDescriptor propDesc= new PropertyDescriptor(field.getName(),obj.getClass());
+                        propDesc.getWriteMethod().invoke(obj, (Object)null);
+                        value = propDesc.getReadMethod().invoke(obj);
+                    }catch(Exception ex){
+                        throw new PostFilterOutException(field.getName());
+                    }
+                    if(value != null){
+                        throw new PostFilterOutException(field.getName());
+                    }
+                }else if(annotation instanceof InnerFilter){
+                    try{
+                        Object sub = new PropertyDescriptor(field.getName(),
+                                obj.getClass()).getReadMethod().invoke(obj);
+                        if(sub != null){
+                            postFilter(sub);
+                        }
+                    }catch (Exception ex){
+                        throw new PostFilterOutException(field.getName());
+                    }
+                }
+            }
+        }
     }
 }
