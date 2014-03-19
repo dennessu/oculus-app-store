@@ -11,7 +11,6 @@ import com.junbo.identity.spec.model.common.ResultList;
 import com.junbo.identity.spec.model.user.UserTosAcceptance;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
-import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.ws.rs.*;
@@ -21,7 +20,6 @@ import javax.ws.rs.core.MediaType;
  * Java cod for UserTosAcceptanceResource.
  */
 
-@Api("users.tos-acceptances")
 @Path("/users/{key1}/tos-acceptances")
 @RestResource
 @Produces({MediaType.APPLICATION_JSON})
