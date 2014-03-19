@@ -6,7 +6,7 @@
 
 package com.junbo.entitlement.spec.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.junbo.common.jackson.annotation.EntitlementDefinitionId;
@@ -23,6 +23,7 @@ import java.util.UUID;
 @JsonPropertyOrder(value = {"entitlementId", "userId", "developerId", "offerId", "status", "statusReason",
         "type", "group", "tag", "entitlementDefinitionId", "grantTime", "expirationTime",
         "consumable", "useCount", "managedLifecycle"})
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Entitlement{
     private UUID trackingUuid;
     @JsonProperty("self")
@@ -52,12 +53,10 @@ public class Entitlement{
     private Integer useCount;
     private Boolean managedLifecycle;
 
-    @JsonIgnore
     public UUID getTrackingUuid() {
         return trackingUuid;
     }
 
-    @JsonProperty
     public void setTrackingUuid(UUID trackingUuid) {
         this.trackingUuid = trackingUuid;
     }
@@ -182,12 +181,10 @@ public class Entitlement{
         this.developerId = developerId;
     }
 
-    @JsonProperty
     public void setPeriod(Long period) {
         this.period = period;
     }
 
-    @JsonIgnore
     public Long getPeriod() {
         return period;
     }

@@ -6,6 +6,8 @@
 
 package com.junbo.ewallet.db.dao;
 
+import com.junbo.ewallet.db.entity.def.Currency;
+import com.junbo.ewallet.db.entity.def.WalletType;
 import com.junbo.ewallet.db.entity.hibernate.WalletEntity;
 
 import java.util.UUID;
@@ -21,4 +23,6 @@ public interface WalletDao {
     WalletEntity insert(WalletEntity walletEntity);
 
     WalletEntity getByTrackingUuid(UUID uuid);
+
+    WalletEntity get(Long userId, WalletType type, Currency currency);
 }

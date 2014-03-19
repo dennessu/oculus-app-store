@@ -30,11 +30,14 @@ module.exports = function(app){
     });
 
     // Template
-    app.get('/Template/Identity/Login', Template.Login);
-    app.get('/Template/Identity/Register', Template.Register);
-    app.get('/Template/Identity/Captcha', Template.Captcha);
-    app.get('/Template/Identity/TFA', Template.TFA);
-    app.get('/Template/Identity/My', Template.My);
+    app.get('/Template/Identity/Login', Template.Identity.Login);
+    app.get('/Template/Identity/Captcha', Template.Identity.Captcha);
+    app.get('/Template/Identity/TFA', Template.Identity.TFA);
+    app.get('/Template/Identity/Register', Template.Identity.Register);
+    app.get('/Template/Identity/PIN', Template.Identity.PIN);
+    app.get('/Template/Identity/My', Template.Identity.My);
+
+    app.get('/Template/Store/Index', Template.Store.Index);
 
     // Redirect back handler
     app.get('/Callback/Login', function(req, res){});
@@ -64,4 +67,25 @@ module.exports = function(app){
     app.get('/payment/Create', Payment.Create);
     app.get('/payment/Address', Payment.ShippingAddress);
     app.get('/payment/SelectePaymentMethod', Payment.SelectePaymentMethod);
+
+    app.get('/test/products', function(req, res){
+        res.json({"Products": [
+            {
+                "id": 111,
+                "name": "3D Parking 1",
+                "price": 9.99,
+                "picture": "/images/P1.jpg",
+                "description": ""
+            }
+            ,
+            {
+                "id": 222,
+                "name": "3D Parking 1",
+                "price": 9.99,
+                "picture": "/images/P1.jpg",
+                "description": ""
+            }
+        ]});
+        res.end();
+    });
 };

@@ -1,10 +1,12 @@
 
 var Login = require('./login');
-var Register = require('./register');
 var Captcha = require('./captcha');
 var TFA = require('./tfa');
+var Register = require('./register');
+var PIN = require('./pin');
 
 exports.Login = Login;
-exports.Register = Register;
 exports.Captcha = Captcha;
 exports.TFA = TFA;
+exports.Register = Register;
+exports.PIN = PIN;

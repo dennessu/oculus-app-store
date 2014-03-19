@@ -10,7 +10,7 @@
     <bean id="mockAuthSettleAction" class="com.junbo.order.core.impl.orderaction.AuthSettleAction">
     </bean>
 
-    <bean id="mockCreateOrderAction" class="com.junbo.order.core.impl.orderaction.CreateOrderAction">
+    <bean id="mockCreateOrderAction" class="com.junbo.order.core.impl.orderaction.SaveOrderAction">
     </bean>
 
     <bean id="mockFulfillmentAction" class="com.junbo.order.core.impl.orderaction.FulfillmentAction">

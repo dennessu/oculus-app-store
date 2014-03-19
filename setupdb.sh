@@ -1,6 +1,6 @@
 #!/bin/sh
 psqlDir="$1"
-
+db="$2"
 createdb() {
 	local dbname="$1"
 	local executable="$psqlDir\bin\psql.exe"
@@ -37,7 +37,13 @@ if [ ${#psqlDir} == 0 ]; then
     print_help
 fi
 
-for i in `ls common/liquibase/conf`
-do
-	createAndUpdate $i
-done
+if [ ${#db} != 0 ]; then
+    createAndUpdate $db
+else
+	for i in `ls common/liquibase/conf`
+	do
+		createAndUpdate $i
+	done
+fi
+
+

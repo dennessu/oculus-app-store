@@ -9,6 +9,7 @@ package com.junbo.entitlement.core.service;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementType;
 import com.junbo.entitlement.common.def.EntitlementStatusReason;
 import com.junbo.entitlement.common.lib.CloneUtils;
+import com.junbo.entitlement.common.lib.EntitlementContext;
 import com.junbo.entitlement.core.EntitlementService;
 import com.junbo.entitlement.db.entity.def.EntitlementStatus;
 import com.junbo.entitlement.db.repository.EntitlementRepository;
@@ -25,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Service of Entitlement.
@@ -81,14 +83,20 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
                     "status can not be DELETED or BANNED when created").exception();
         }
 
+        if(entitlement.getGrantTime() == null){
+            entitlement.setGrantTime(EntitlementContext.current().getNow());
+        }
+        if (entitlement.getPeriod() != null) {
+            entitlement.setExpirationTime(new Date(entitlement.getGrantTime().getTime()
+                    + TimeUnit.SECONDS.toMillis(entitlement.getPeriod())));
+        }
+
         checkEntitlementDefinition(entitlement.getEntitlementDefinitionId());
 
         validateGrantTimeBeforeExpirationTime(entitlement);
 
         //if managedLifecycle is true, try to merge the added entitlement into existing entitlement
-        //not deal with developer entitlement as developer entitlement is bounded to userId only
-        if (Boolean.TRUE.equals(entitlement.getManagedLifecycle()) &&
-                !entitlement.getType().equalsIgnoreCase(EntitlementType.DEVELOPER.toString())) {
+        if (Boolean.TRUE.equals(entitlement.getManagedLifecycle())) {
             Entitlement existingEntitlement = null;
             if (entitlement.getEntitlementDefinitionId() != null) {
                 existingEntitlement = entitlementRepository.getExistingManagedEntitlement(
@@ -165,6 +173,14 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
             throw AppErrors.INSTANCE.fieldNotMatch("tag",
                     entitlement.getTag(),
                     existingEntitlement.getTag()).exception();
+        }
+
+        if(entitlement.getGrantTime() == null){
+            entitlement.setGrantTime(EntitlementContext.current().getNow());
+        }
+        if (entitlement.getPeriod() != null) {
+            entitlement.setExpirationTime(new Date(entitlement.getGrantTime().getTime()
+                    + TimeUnit.SECONDS.toMillis(entitlement.getPeriod())));
         }
 
         if (existingEntitlement.getGrantTime().compareTo(entitlement.getGrantTime()) != 0) {

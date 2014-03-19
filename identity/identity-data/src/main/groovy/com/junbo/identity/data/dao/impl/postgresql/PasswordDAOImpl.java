@@ -16,6 +16,7 @@ import com.junbo.sharding.IdGeneratorFacade;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -26,6 +27,7 @@ import java.util.Date;
 @Component
 public class PasswordDAOImpl implements PasswordDAO {
     @Autowired
+    @Qualifier("identitySessionFactory")
     private SessionFactory sessionFactory;
 
     @Autowired

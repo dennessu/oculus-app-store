@@ -6,6 +6,7 @@
 package com.junbo.oauth.spec.model
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import groovy.transform.CompileStatic
 
@@ -13,6 +14,7 @@ import groovy.transform.CompileStatic
  * Client.
  */
 @CompileStatic
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 class Client {
     @JsonProperty('client_id')
     String clientId
