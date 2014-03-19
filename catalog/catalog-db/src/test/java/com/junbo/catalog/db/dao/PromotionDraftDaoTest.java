@@ -64,7 +64,7 @@ public class PromotionDraftDaoTest extends BaseTest {
         promotion.setEndDate(calendar.getTime());
         promotionDraftDao.create(promotion);
 
-        List<PromotionDraftEntity> promotions = promotionDraftDao.getEffectivePromotions(0,20);
+        List<PromotionDraftEntity> promotions = promotionDraftDao.getEffectivePromotions(0,20, null);
 
         Assert.assertTrue(promotions.size() > 0);
     }

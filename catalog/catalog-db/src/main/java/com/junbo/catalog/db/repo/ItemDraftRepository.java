@@ -35,12 +35,12 @@ public class ItemDraftRepository implements EntityDraftRepository<Item> {
     }
 
     @Override
-    public List<Item> getEntities(int start, int size) {
-        return getItems(start, size);
+    public List<Item> getEntities(int start, int size, String status) {
+        return getItems(start, size, status);
     }
 
-    public List<Item> getItems(int start, int size) {
-        List<ItemDraftEntity> entities = itemDraftDao.getItems(start, size);
+    public List<Item> getItems(int start, int size, String status) {
+        List<ItemDraftEntity> entities = itemDraftDao.getItems(start, size, status);
         List<Item> result = new ArrayList<>();
         for (ItemDraftEntity entity : entities) {
             result.add(ItemConverter.toModel(entity));

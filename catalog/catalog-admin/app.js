@@ -27,6 +27,13 @@ app.post('/api/offers', offers.createOffer);
 app.get('/api/offers/:id', offers.getOffer);
 app.put('/api/offers/:id', offers.updateOffer);
 
+/*app.engine('.html', require('ejs').renderFile);
+app.set('views', __dirname + '/public');
+app.get('/admin', function(req, res){
+    res.render('admin.html');
+});
+*/
+
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
