@@ -9,6 +9,8 @@ package com.junbo.common.jackson;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.jackson.annotation.OrderId;
 import com.junbo.common.jackson.annotation.UserId;
+import com.junbo.common.json.PropertyAssignedAware;
+import com.junbo.common.json.PropertyAssignedAwareSupport;
 
 import java.util.List;
 import java.util.Set;
@@ -16,7 +18,10 @@ import java.util.Set;
 /**
  * User.
  */
-public class User {
+public class User implements PropertyAssignedAware {
+
+    private final PropertyAssignedAwareSupport support = new PropertyAssignedAwareSupport();
+
     @UserId
     @JsonProperty("self")
     private Long userId;
@@ -34,7 +39,6 @@ public class User {
     @UserId
     private Set<Long> opponents;
 
-    @UserId
     private String test1;
 
     @UserId
@@ -49,6 +53,7 @@ public class User {
 
     public User(Long userId) {
         this.userId = userId;
+        support.setPropertyAssigned("userId");
     }
 
     public Long getUserId() {
@@ -57,6 +62,7 @@ public class User {
 
     public void setUserId(Long userId) {
         this.userId = userId;
+        support.setPropertyAssigned("userId");
     }
 
     public Long getSpouseId() {
@@ -65,6 +71,7 @@ public class User {
 
     public void setSpouseId(Long spouseId) {
         this.spouseId = spouseId;
+        support.setPropertyAssigned("spouseId");
     }
 
     public List<User> getChildren() {
@@ -73,6 +80,7 @@ public class User {
 
     public void setChildren(List<User> children) {
         this.children = children;
+        support.setPropertyAssigned("children");
     }
 
     public Set<User> getParents() {
@@ -81,6 +89,7 @@ public class User {
 
     public void setParents(Set<User> parents) {
         this.parents = parents;
+        support.setPropertyAssigned("parents");
     }
 
     public List<Long> getFriends() {
@@ -89,6 +98,7 @@ public class User {
 
     public void setFriends(List<Long> friends) {
         this.friends = friends;
+        support.setPropertyAssigned("friends");
     }
 
     public Set<Long> getOpponents() {
@@ -97,6 +107,7 @@ public class User {
 
     public void setOpponents(Set<Long> opponents) {
         this.opponents = opponents;
+        support.setPropertyAssigned("opponents");
     }
 
     public String getTest1() {
@@ -105,6 +116,7 @@ public class User {
 
     public void setTest1(String test1) {
         this.test1 = test1;
+        support.setPropertyAssigned("test1");
     }
 
     public List<String> getTest2() {
@@ -113,6 +125,7 @@ public class User {
 
     public void setTest2(List<String> test2) {
         this.test2 = test2;
+        support.setPropertyAssigned("test2");
     }
 
     public Long getOrderId() {
@@ -121,5 +134,11 @@ public class User {
 
     public void setOrderId(Long orderId) {
         this.orderId = orderId;
+        support.setPropertyAssigned("orderId");
+    }
+
+    @Override
+    public boolean isPropertyAssigned(String propertyName) {
+        return support.isPropertyAssigned(propertyName);
     }
 }
