@@ -6,8 +6,6 @@
 package com.junbo.fulfilment.core.service;
 
 import com.junbo.fulfilment.clientproxy.CatalogGateway;
-import com.junbo.fulfilment.common.exception.FulfilmentException;
-import com.junbo.fulfilment.common.exception.ResourceNotFoundException;
 import com.junbo.fulfilment.common.util.Callback;
 import com.junbo.fulfilment.common.util.Utils;
 import com.junbo.fulfilment.core.FulfilmentService;
@@ -22,12 +20,15 @@ import com.junbo.fulfilment.db.repo.FulfilmentRepository;
 import com.junbo.fulfilment.db.repo.FulfilmentRequestRepository;
 import com.junbo.fulfilment.spec.constant.FulfilmentActionType;
 import com.junbo.fulfilment.spec.constant.FulfilmentStatus;
+import com.junbo.fulfilment.spec.error.AppErrors;
 import com.junbo.fulfilment.spec.fusion.LinkedEntry;
 import com.junbo.fulfilment.spec.fusion.Offer;
 import com.junbo.fulfilment.spec.fusion.OfferAction;
 import com.junbo.fulfilment.spec.model.FulfilmentAction;
 import com.junbo.fulfilment.spec.model.FulfilmentItem;
 import com.junbo.fulfilment.spec.model.FulfilmentRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +38,8 @@ import java.util.Map;
  * FulfilmentServiceImpl.
  */
 public class FulfilmentServiceImpl extends TransactionSupport implements FulfilmentService, FulfilmentSupport {
+    private static final Logger LOGGER = LoggerFactory.getLogger(FulfilmentServiceImpl.class);
+
     @Autowired
     private FulfilmentRepository fulfilmentRepo;
 
@@ -87,9 +90,11 @@ public class FulfilmentServiceImpl extends TransactionSupport implements Fulfilm
     @Override
     public FulfilmentRequest retrieveRequestByOrderId(Long billingOrderId) {
         Long requestId = fulfilmentRequestRepo.existBillingOrderId(billingOrderId);
+
         if (requestId == null) {
-            throw new ResourceNotFoundException("Fulfilment request with BillingOrderId ["
-                    + billingOrderId + "] does not exist.");
+            String errorMessage = "Fulfilment request with BillingOrderId [" + billingOrderId + "] does not exist.";
+            LOGGER.error(errorMessage);
+            throw AppErrors.INSTANCE.common(errorMessage).exception();
         }
 
         return load(requestId);
@@ -99,7 +104,8 @@ public class FulfilmentServiceImpl extends TransactionSupport implements Fulfilm
     public FulfilmentItem retrieveFulfilmentItem(Long fulfilmentId) {
         FulfilmentItem item = fulfilmentRepo.get(fulfilmentId);
         if (item == null) {
-            throw new ResourceNotFoundException("Fulfilment item with id [" + fulfilmentId + "] does not exist");
+            LOGGER.error("Fulfilment item with id [" + fulfilmentId + "] does not exist");
+            throw AppErrors.INSTANCE.notFound("Fulfilment", fulfilmentId).exception();
         }
 
         return item;
@@ -131,13 +137,17 @@ public class FulfilmentServiceImpl extends TransactionSupport implements Fulfilm
         // ensure order id does not exist
         Long requestId = fulfilmentRequestRepo.existBillingOrderId(request.getOrderId());
         if (requestId != null) {
-            throw new FulfilmentException("Fulfilment request with orderId ["
-                    + request.getOrderId() + "] has already been issued.");
+            String errorMessage = "Fulfilment request with orderId ["
+                    + request.getOrderId() + "] has already been issued.";
+            LOGGER.error(errorMessage);
+            throw AppErrors.INSTANCE.common(errorMessage).exception();
         }
 
         // ensure fulfilment items are specified
         if (request.getItems() == null) {
-            throw new FulfilmentException("No fulfilment item specified.");
+            String errorMessage = "No fulfilment item specified.";
+            LOGGER.error(errorMessage);
+            throw AppErrors.INSTANCE.common(errorMessage).exception();
         }
     }
 
