@@ -4,30 +4,51 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.token.spec.model;
+package com.junbo.token.db.entity;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.junbo.common.jackson.annotation.TokenOrderId;
+import com.junbo.token.spec.enums.CreateMethod;
+import com.junbo.token.spec.enums.OrderStatus;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.Date;
-import java.util.List;
 
 /**
- * token order model.
+ * token order entity.
  */
-public class TokenOrder {
-    @JsonProperty("self")
-    @TokenOrderId
+@Entity
+@Table(name = "token_order")
+public class TokenOrderEntity extends GenericEntity {
+
+    @Id
+    @Column(name = "token_order_id")
     private Long id;
+
+    @Column(name = "description")
     private String description;
+
+    @Column(name = "token_set_id")
     private Long tokenSetId;
-    private String status;
+
+    @Column(name = "token_order_status")
+    private OrderStatus status;
+
+    @Column(name = "expired_time")
     private Date expiredTime;
+
+    @Column(name = "usage_limit")
     private Long usageLimit;
-    private String createMethod;
+
+    @Column(name = "creation_method")
+    private CreateMethod createMethod;
+
+    @Column(name = "quantity")
     private Long quantity;
+
+    @Column(name = "activation")
     private String activation;
-    private List<TokenItem> tokenItems;
 
     public Long getId() {
         return id;
@@ -53,11 +74,11 @@ public class TokenOrder {
         this.tokenSetId = tokenSetId;
     }
 
-    public String getStatus() {
+    public OrderStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(OrderStatus status) {
         this.status = status;
     }
 
@@ -77,11 +98,11 @@ public class TokenOrder {
         this.usageLimit = usageLimit;
     }
 
-    public String getCreateMethod() {
+    public CreateMethod getCreateMethod() {
         return createMethod;
     }
 
-    public void setCreateMethod(String createMethod) {
+    public void setCreateMethod(CreateMethod createMethod) {
         this.createMethod = createMethod;
     }
 
@@ -100,13 +121,4 @@ public class TokenOrder {
     public void setActivation(String activation) {
         this.activation = activation;
     }
-
-    public List<TokenItem> getTokenItems() {
-        return tokenItems;
-    }
-
-    public void setTokenItems(List<TokenItem> tokenItems) {
-        this.tokenItems = tokenItems;
-    }
-
 }
