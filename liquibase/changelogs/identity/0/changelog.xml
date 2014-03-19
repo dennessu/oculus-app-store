@@ -57,18 +57,7 @@
 				
 				primary key(id)
 			);
-			
-			create table security_question (
-				id bigint not null,
-				version bigint not null,
-				value varchar(255) not null,
-				
-				created_by varchar(32) not null,
-				created_time timestamp not null,
-				
-				primary key(id)
-			);
-			
+
 			create table user_authenticator(
                 id bigint not null,
 				

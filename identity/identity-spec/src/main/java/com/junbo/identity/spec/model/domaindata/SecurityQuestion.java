@@ -14,11 +14,12 @@ import com.junbo.identity.spec.model.users.ResourceMeta;
  * Created by kg on 3/12/14.
  */
 public class SecurityQuestion extends ResourceMeta implements Identifiable<SecurityQuestionId> {
-
     @JsonProperty("self")
     private SecurityQuestionId id;
 
     private String value;
+
+    private Boolean active;
 
     public SecurityQuestionId getId() {
         return id;
@@ -34,5 +35,13 @@ public class SecurityQuestion extends ResourceMeta implements Identifiable<Secur
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 }

@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.identity.data.entity.user
+package com.junbo.identity.data.identifiable
 
 import com.junbo.common.util.Identifiable
 

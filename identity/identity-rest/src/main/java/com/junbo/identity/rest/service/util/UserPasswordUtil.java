@@ -5,7 +5,7 @@
  */
 package com.junbo.identity.rest.service.util;
 
-import com.junbo.identity.data.entity.user.UserPasswordStrength;
+import com.junbo.identity.data.identifiable.UserPasswordStrength;
 import com.junbo.identity.spec.error.AppErrors;
 import org.springframework.util.StringUtils;
 

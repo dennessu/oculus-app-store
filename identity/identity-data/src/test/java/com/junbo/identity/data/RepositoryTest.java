@@ -9,7 +9,7 @@ import com.junbo.common.id.DeviceId;
 import com.junbo.common.id.GroupId;
 import com.junbo.common.id.SecurityQuestionId;
 import com.junbo.common.id.UserId;
-import com.junbo.identity.data.entity.user.UserPasswordStrength;
+import com.junbo.identity.data.identifiable.UserPasswordStrength;
 import com.junbo.identity.data.repository.*;
 import com.junbo.identity.spec.model.options.*;
 import com.junbo.identity.spec.model.users.*;

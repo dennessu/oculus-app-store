@@ -17,7 +17,6 @@ import java.util.Date;
 @Table(name = "security_question")
 public class SecurityQuestionEntity {
     @Id
-    @SeedId
     @Column(name = "id")
     private Long id;
 
@@ -27,6 +26,9 @@ public class SecurityQuestionEntity {
 
     @Column(name = "value")
     private String value;
+
+    @Column(name = "active")
+    private Boolean active;
 
     @Column(name = "created_by")
     private String createdBy;
@@ -57,6 +59,14 @@ public class SecurityQuestionEntity {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 
     public String getCreatedBy() {

@@ -3,20 +3,22 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.identity.data.entity.user
+package com.junbo.identity.data.identifiable
 
 import com.junbo.common.util.Identifiable
 
 /**
- * User Password status enum
+ * User status enum
  */
-enum UserPasswordStatus implements Identifiable<Short> {
+enum UserStatus implements Identifiable<Short> {
     ACTIVE((short)1),
-    RETIRE((short)2)
+    SUSPEND((short)2),
+    BANNED((short)3),
+    DELETED((short)4)
 
     private final Short id
 
-    UserPasswordStatus(Short id) {
+    UserStatus(Short id) {
         this.id = id
     }
 
