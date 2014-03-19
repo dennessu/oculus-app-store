@@ -8,6 +8,7 @@ package com.junbo.payment.rest.resource;
 
 
 import com.junbo.langur.core.promise.Promise;
+import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.core.PaymentTransactionService;
 import com.junbo.payment.spec.model.PaymentTransaction;
 import com.junbo.payment.spec.resource.PaymentTransactionResource;
@@ -21,16 +22,19 @@ public class PaymentTransactionResourceImpl implements PaymentTransactionResourc
     private PaymentTransactionService paymentService;
     @Override
     public Promise<PaymentTransaction> postPaymentAuthorization(PaymentTransaction request) {
+        CommonUtil.preValidation(request);
         return paymentService.authorize(request);
     }
 
     @Override
     public Promise<PaymentTransaction> postPaymentCapture(Long paymentId, PaymentTransaction request) {
+        CommonUtil.preValidation(request);
         return paymentService.capture(paymentId, request);
     }
 
     @Override
     public Promise<PaymentTransaction> postPaymentCharge(PaymentTransaction request) {
+        CommonUtil.preValidation(request);
         return paymentService.charge(request);
     }
 

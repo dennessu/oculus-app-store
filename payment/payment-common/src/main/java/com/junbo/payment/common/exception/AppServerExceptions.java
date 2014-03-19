@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.payment.core.exception;
+package com.junbo.payment.common.exception;
 
 
 import com.junbo.common.error.AppError;

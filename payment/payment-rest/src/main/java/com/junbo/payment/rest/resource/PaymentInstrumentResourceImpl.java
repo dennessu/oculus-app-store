@@ -10,9 +10,8 @@ import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.common.id.UserId;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.common.CommonUtil;
-import com.junbo.payment.common.PreValidationException;
 import com.junbo.payment.core.PaymentInstrumentService;
-import com.junbo.payment.core.exception.AppClientExceptions;
+import com.junbo.payment.common.exception.AppClientExceptions;
 import com.junbo.payment.spec.model.PageMetaData;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentInstrumentSearchParam;
@@ -33,11 +32,7 @@ public class PaymentInstrumentResourceImpl implements PaymentInstrumentResource 
 
     @Override
     public Promise<PaymentInstrument> postPaymentInstrument(UserId userId, PaymentInstrument request) {
-        try{
-            CommonUtil.preValidation(request);}
-        catch (PreValidationException ex){
-            throw AppClientExceptions.INSTANCE.fieldNotNeeded(ex.getField()).exception();
-        }
+        CommonUtil.preValidation(request);
         if(request.getUserId() != null && !request.getUserId().equals(userId.getValue())){
             throw AppClientExceptions.INSTANCE.invalidUserId(request.getUserId().toString()).exception();
         }
