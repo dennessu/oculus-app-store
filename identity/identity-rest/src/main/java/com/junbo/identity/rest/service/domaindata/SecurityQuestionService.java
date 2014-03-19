@@ -8,7 +8,6 @@ package com.junbo.identity.rest.service.domaindata;
 import com.junbo.common.id.SecurityQuestionId;
 import com.junbo.identity.spec.model.domaindata.SecurityQuestion;
 import com.junbo.identity.spec.options.SecurityQuestionListOptions;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 

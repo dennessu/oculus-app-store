@@ -15,12 +15,12 @@
 
     <!-- service impl -->
     <bean id="securityQuestionService" class="com.junbo.identity.rest.service.domaindata.impl.SecurityQuestionServiceImpl"/>
+    <bean id="passwordRuleService" class="com.junbo.identity.rest.service.domaindata.impl.PasswordRuleServiceImpl"/>
 
     <!-- resource implementation -->
     <bean id="defaultGroupResource" class="com.junbo.identity.rest.resource.GroupResourceImpl" />
-    <bean id="defaultPasswordResource" class="com.junbo.identity.rest.resource.UserPasswordResourceImpl" />
-    <bean id="defaultPinResource" class="com.junbo.identity.rest.resource.UserPinResourceImpl" />
-    <bean id="defaultSecurityQuestionResource" class="com.junbo.identity.rest.resource.SecurityQuestionResourceImpl" />
+    <bean id="defaultUserPasswordResource" class="com.junbo.identity.rest.resource.UserPasswordResourceImpl" />
+    <bean id="defaultUserPinResource" class="com.junbo.identity.rest.resource.UserPinResourceImpl" />
     <bean id="defaultUserAuthenticatorResource" class="com.junbo.identity.rest.resource.UserAuthenticatorResourceImpl" />
     <bean id="defaultUserDeviceResource" class="com.junbo.identity.rest.resource.UserDeviceResourceImpl" />
     <bean id="defaultUserEmailResource" class="com.junbo.identity.rest.resource.UserEmailResourceImpl" />
@@ -31,4 +31,6 @@
     <bean id="defaultUserResource" class="com.junbo.identity.rest.resource.UserResourceImpl" />
     <bean id="defaultUserSecurityQuestionResource" class="com.junbo.identity.rest.resource.UserSecurityQuestionResourceImpl" />
     <bean id="defaultUserTosResource" class="com.junbo.identity.rest.resource.UserTosResourceImpl" />
+
+    <bean id="defaultSecurityQuestionResource" class="com.junbo.identity.rest.resource.SecurityQuestionResourceImpl" />
 </beans>

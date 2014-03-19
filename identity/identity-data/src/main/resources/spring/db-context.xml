@@ -172,4 +172,5 @@
     <bean id="userSecurityQuestionRepository" class="com.junbo.identity.data.repository.impl.UserSecurityQuestionRepositoryImpl" />
     <bean id="userTosRepository" class="com.junbo.identity.data.repository.impl.UserTosRepositoryImpl" />
     <bean id="securityQuestionRepository" class="com.junbo.identity.data.repository.impl.SecurityQuestionRepositoryImpl"/>
+    <bean id="passwordRuleRepository" class="com.junbo.identity.data.repository.impl.PasswordRuleRepositoryImpl"/>
 </beans>
