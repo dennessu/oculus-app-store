@@ -42,10 +42,6 @@
         <property name="tokenService" ref="tokenService"/>
     </bean>
 
-    <bean id="validateClient" class="com.junbo.oauth.core.action.ValidateClient">
-        <property name="clientRepository" ref="clientRepository"/>
-    </bean>
-
     <bean id="grantAuthorizationCode" class="com.junbo.oauth.core.action.GrantAuthorizationCode">
         <property name="authorizationCodeRepository" ref="authorizationCodeRepository"/>
         <property name="defaultExpiration" value="${oauth.core.authorizationCode.default.expiration}"/>
@@ -111,6 +107,10 @@
         <property name="loginStateRepository" ref="loginStateRepository"/>
     </bean>
 
+    <bean id="validateClient" class="com.junbo.oauth.core.action.ValidateClient">
+        <property name="clientRepository" ref="clientRepository"/>
+    </bean>
+
     <bean id="validateConsent" class="com.junbo.oauth.core.action.ValidateConsent">
         <property name="consentRepository" ref="consentRepository"/>
         <property name="consentUri" value="${oauth.core.portal.consentUri}"/>
@@ -127,6 +127,8 @@
     </bean>
 
     <bean id="validateMaxAge" class="com.junbo.oauth.core.action.ValidateMaxAge"/>
+
+    <bean id="validateNonce" class="com.junbo.oauth.core.action.ValidateNonce"/>
 
     <bean id="validatePrompt" class="com.junbo.oauth.core.action.ValidatePrompt"/>
 
