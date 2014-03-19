@@ -17,7 +17,8 @@ var Configs = {
         RedirectUrl: "redirect_url",
 
         UserId: "user_id",
-        Username: "username"
+        Username: "username",
+        CartId: 'cart_id'
     },
     QueryStrings: {
         Code: "code",

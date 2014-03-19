@@ -1,5 +1,5 @@
 
-var Product = DS.Model.extend({
+var ProductModel = DS.Model.extend({
     //id: DS.attr("number"),
     name: DS.attr("string"),
     price: DS.attr("number"),

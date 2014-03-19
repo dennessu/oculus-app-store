@@ -153,7 +153,7 @@
 				balance_id BIGINT NOT NULL,
 				pi_id BIGINT NOT NULL,
 				type_id SMALLINT NOT NULL,
-				payment_ref_id VARCHAR(128) NOT NULL,
+				payment_ref_id VARCHAR(128),
 				amount DECIMAL NOT NULL,
 				currency CHAR(3) NOT NULL,
 				status_id SMALLINT NOT NULL,

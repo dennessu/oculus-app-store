@@ -1,20 +1,25 @@
 
 var App = Ember.App = Ember.Application.create();
 
-App.ProductAdapter = ProductAdapter;
+App.ApplicationAdapter = CustomAdapter;
 App.store = DS.Store.create({
-    adapter: 'ProductAdapter'
+    adapter: App.ApplicationAdapter
 });
-App.Product = Product;
+
+App.AuthKey = AuthKey;
+App.Product = ProductModel;
 
 App.Router.map(function(){
 
+    this.resource("detail", { path: "/detail/:productId"});
 });
 
-App.ApplicationRoute = Ember.Route.extend({
-    model: function(){
-        return this.store.findAll("Product");
-    }
-});
+//App.ApplicationRoute = StoreRoutes.ApplicationRoute;
+App.IndexRoute = StoreRoutes.IndexRoute;
+App.DetailRoute = StoreRoutes.DetailRoute;
+
+App.IndexView = StoreViews.IndexView;
+App.DetailView = StoreViews.DetailView;
+
 
 

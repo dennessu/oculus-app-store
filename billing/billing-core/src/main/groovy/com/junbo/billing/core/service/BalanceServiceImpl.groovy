@@ -69,12 +69,11 @@ class BalanceServiceImpl implements BalanceService {
         // set the balance status to INIT
         balance.setStatus(BalanceStatus.INIT.name())
 
-        transactionService.processBalance(balance)
-
-        //persist the balance entity
-        Balance resultBalance = balanceRepository.saveBalance(balance)
-
-        return Promise.pure(resultBalance)
+        return transactionService.processBalance(balance).then {
+            //persist the balance entity
+            Balance resultBalance = balanceRepository.saveBalance(balance)
+            return Promise.pure(resultBalance)
+        }
     }
 
     @Override
@@ -108,11 +107,12 @@ class BalanceServiceImpl implements BalanceService {
             throw AppErrors.INSTANCE.invalidBalanceTotal(balance.totalAmount.toString()).exception()
         }
 
-        transactionService.captureBalance(savedBalance, balance.totalAmount)
-
-        savedBalance.setType(BalanceType.MANUAL_CAPTURE.name())
-        Balance resultBalance = balanceRepository.updateBalance(savedBalance)
-        return Promise.pure(resultBalance)
+        return transactionService.captureBalance(savedBalance, balance.totalAmount).then {
+            //persist the balance entity
+            savedBalance.setType(BalanceType.MANUAL_CAPTURE.name())
+            Balance resultBalance = balanceRepository.updateBalance(savedBalance)
+            return Promise.pure(resultBalance)
+        }
     }
 
     @Override

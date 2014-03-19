@@ -132,14 +132,14 @@ public class BalanceRepositoryImpl implements BalanceRepository {
             balance.addBalanceItem(balanceItem);
 
             List<TaxItemEntity> taxItemEntities =
-                    taxItemEntityDao.findByBalanceItemId(balanceItem.getBalanceItemId().getValue());
+                    taxItemEntityDao.findByBalanceItemId(balanceItem.getBalanceItemId());
             for(TaxItemEntity taxItemEntity : taxItemEntities) {
                 TaxItem taxItem = modelMapper.toTaxItem(taxItemEntity, new MappingContext());
                 balanceItem.addTaxItem(taxItem);
             }
 
             List<DiscountItemEntity> discountItemEntities =
-                    discountItemEntityDao.findByBalanceItemId(balanceItem.getBalanceItemId().getValue());
+                    discountItemEntityDao.findByBalanceItemId(balanceItem.getBalanceItemId());
             for(DiscountItemEntity discountItemEntity : discountItemEntities) {
                 DiscountItem discountItem = modelMapper.toDiscountItem(discountItemEntity, new MappingContext());
                 balanceItem.addDiscountItem(discountItem);

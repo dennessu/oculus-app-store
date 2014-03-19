@@ -48,12 +48,5 @@ module.exports = function(io){
                 fn(data);
             });
         });
-
-        socket.on('/api/catalog/product', function (data, fn) {
-            Catalog.Product(data, function(data){
-                fn(data);
-            });
-        });
-
     });
 };
