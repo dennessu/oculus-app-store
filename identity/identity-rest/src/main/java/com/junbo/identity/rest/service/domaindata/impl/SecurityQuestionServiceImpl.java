@@ -31,7 +31,7 @@ public class SecurityQuestionServiceImpl implements SecurityQuestionService {
 
     @Override
     public SecurityQuestion get(SecurityQuestionId securityQuestionId) {
-        securityQuestionValidator.validataGet(securityQuestionId.getValue());
+        securityQuestionValidator.validateGet(securityQuestionId.getValue());
         return securityQuestionRepository.get(securityQuestionId);
     }
 

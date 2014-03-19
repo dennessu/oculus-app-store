@@ -22,7 +22,7 @@ public class SecurityQuestionValidatorImpl implements SecurityQuestionValidator 
     }
 
     @Override
-    public void validataGet(Long id) {
+    public void validateGet(Long id) {
     }
 
     @Override

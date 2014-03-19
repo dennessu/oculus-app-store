@@ -14,6 +14,6 @@ import com.junbo.identity.spec.options.SecurityQuestionListOptions;
 public interface SecurityQuestionValidator {
     void validateCreate(SecurityQuestion securityQuestion);
     void validateUpdate(Long id, SecurityQuestion securityQuestion);
-    void validataGet(Long id);
+    void validateGet(Long id);
     void validateSearch(SecurityQuestionListOptions options);
 }
