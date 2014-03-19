@@ -71,7 +71,7 @@ class DefaultFlowSelector implements FlowSelector {
             // TODO: do not support multiple payment methods now
             switch (pis[0]?.type) {
                 // TODO reference to payment instrument type
-                case 'CREDIT_CARD':
+                case 'CREDITCARD':
                     // TODO: do not support mixed order containing both physical item & digital item now
                     switch (context.order.orderItems[0]?.type) {
                         case ItemType.DIGITAL.toString():

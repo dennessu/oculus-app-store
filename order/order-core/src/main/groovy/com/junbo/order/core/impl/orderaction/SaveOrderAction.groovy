@@ -26,6 +26,7 @@ class SaveOrderAction extends BaseOrderEventAwareAction {
     @Resource(name = 'orderServiceContextBuilder')
     OrderServiceContextBuilder builder
     boolean newOrder = true
+    boolean updateOnlyOrder = false
 
     @Override
     @com.junbo.order.core.annotation.OrderEventAwareBefore
@@ -38,7 +39,8 @@ class SaveOrderAction extends BaseOrderEventAwareAction {
         // Fetch Preorder Info from catalog
         builder.getOffers(context.orderServiceContext).syncThen { List<Offer> ofs ->
             context.orderServiceContext.order.status = OrderStatus.OPEN
-            def orderWithId = repo.createOrder(context.orderServiceContext.order)
+            def orderWithId = newOrder ? repo.createOrder(context.orderServiceContext.order) :
+                    repo.updateOrder(context.orderServiceContext.order, updateOnlyOrder)
             context.orderServiceContext.order = orderWithId
 
             return CoreBuilder.buildActionResultForOrderEventAwareAction(context, EventStatus.COMPLETED)
