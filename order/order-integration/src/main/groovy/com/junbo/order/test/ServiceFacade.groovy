@@ -1,5 +1,9 @@
 package com.junbo.order.test
 
+import com.junbo.catalog.spec.model.offer.Offer
+import com.junbo.catalog.spec.model.offer.OffersGetOptions
+import com.junbo.catalog.spec.resource.ItemResource
+import com.junbo.catalog.spec.resource.OfferResource
 import com.junbo.identity.spec.model.user.User
 import com.junbo.identity.spec.resource.UserResource
 import com.junbo.order.spec.model.Order
@@ -26,7 +30,15 @@ class ServiceFacade {
     OrderResource orderResource
 
     @Autowired
+    OfferResource offerResource
+
+    @Autowired
+    ItemResource itemResource
+
+    @Autowired
     PaymentInstrumentResource paymentInstrumentResource
+
+    List<Offer> offers
 
     User postUser() {
         User user = new User()
@@ -74,5 +86,23 @@ class ServiceFacade {
     Order putQuotes(Order order) {
         order.tentative = true
         return orderResource.updateOrderByOrderId(order.id, order).wrapped().get().get(0)
+    }
+
+    Offer getOfferByName(String offerName) {
+        def option = new OffersGetOptions()
+        if (offers == null) {
+            while (true) {
+                offers = new ArrayList<>()
+                def offerResults = offerResource.getOffers(option).wrapped().get()
+                offers.addAll(offerResults.results)
+                if (offerResults.results < option.size) {
+                    break
+                }
+                option.start += option.size
+            }
+        }
+        return offers.find {
+            it.name == offerName
+        }
     }
 }
