@@ -56,8 +56,8 @@ class AvalaraFacadeImpl implements TaxFacade {
     }
 
     Balance updateBalance(GetTaxResponse response, Balance balance) {
-        balance.taxAmount = response.totalTax
         if (response != null && response.resultCode == SeverityLevel.Success) {
+            balance.taxAmount = response.totalTax
             balance.balanceItems.eachWithIndex { BalanceItem item, int index ->
                 response.taxLines.each { TaxLine line ->
                     if (index == Long.valueOf(line.lineNo)) {
@@ -140,7 +140,7 @@ class AvalaraFacadeImpl implements TaxFacade {
         def addresses = []
         def shipToAddress = new AvalaraAddress()
         if (shippingAddress != null) {
-            shipToAddress.addressCode = shippingAddress.addressId.value.toString()
+            shipToAddress.addressCode = '0'
             shipToAddress.line1 = shippingAddress.street
             shipToAddress.line2 = shippingAddress.street1
             shipToAddress.line3 = shippingAddress.street2
@@ -150,7 +150,7 @@ class AvalaraFacadeImpl implements TaxFacade {
             shipToAddress.country = shippingAddress.country
         }
         else {
-            shipToAddress.addressCode = piAddress.id.toString()
+            shipToAddress.addressCode = '0'
             shipToAddress.line1 = piAddress.addressLine1
             shipToAddress.line2 = piAddress.addressLine2
             shipToAddress.line3 = piAddress.addressLine3
@@ -162,7 +162,7 @@ class AvalaraFacadeImpl implements TaxFacade {
         addresses << shipToAddress
 
         def shipFromAddress = new AvalaraAddress()
-        shipFromAddress.addressCode = '0'
+        shipFromAddress.addressCode = '1'
         shipFromAddress.line1 = configuration.shipFromStreet
         shipFromAddress.city = configuration.shipFromCity
         shipFromAddress.region = configuration.shipFromState
