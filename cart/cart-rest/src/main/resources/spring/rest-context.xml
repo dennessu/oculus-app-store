@@ -32,18 +32,19 @@
     <bean id="httpClient" class="com.ning.http.client.AsyncHttpClient">
     </bean>
 
-    <bean id="messageTranscoder" class="com.junbo.common.json.JsonMessageTranscoder"/>
-
     <bean id="pathParamTranscoder" class="com.junbo.common.json.IdPathParamTranscoder"/>
+    <bean id="transcoder" class="com.junbo.common.json.JsonMessageTranscoder"/>
+    <bean id="queryParamTranscoder" class="com.junbo.common.json.QueryParamTranscoderImpl"/>
 
     <bean id="identityClient" class="com.junbo.cart.core.client.impl.IdentityClientImpl">
         <property name="userResource" ref="userResourceClientProxy"/>
     </bean>
 
     <bean id="userResourceClientProxy" class="com.junbo.identity.spec.resource.proxy.UserResourceClientProxy">
-        <constructor-arg ref="httpClient"/>
-        <constructor-arg ref="messageTranscoder"/>
-        <constructor-arg ref="pathParamTranscoder"/>
+        <constructor-arg name="client" ref="httpClient"/>
+        <constructor-arg name="transcoder" ref="transcoder"/>
+        <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
+        <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder"/>
         <constructor-arg value="${cart.client.identity.url}"/>
     </bean>
 

@@ -8,6 +8,7 @@ package com.junbo.common.json;
 
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import com.junbo.common.deser.IdDeserializer;
@@ -40,6 +41,7 @@ public class ObjectMapperProvider implements ContextResolver<ObjectMapper> {
                 new ResourceAwareDeserializationContext());
 
         objectMapper.setDateFormat(new ISO8601DateFormat());
+        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
 
         SimpleModule module = new SimpleModule(getClass().getName(), new Version(1, 0, 0, null));
 

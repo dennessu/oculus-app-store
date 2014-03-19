@@ -29,7 +29,7 @@
 
     <bean id="fulfilmentDataSource" class="bitronix.tm.resource.jdbc.PoolingDataSource"
           init-method="init" destroy-method="close">
-        <property name="uniqueName" value="jdbc/id_ds1"/>
+        <property name="uniqueName" value="jdbc/fulfilment_ds1"/>
         <property name="className" value="org.postgresql.xa.PGXADataSource"/>
         <property name="minPoolSize" value="${fulfilment.db.minConnectionsPerPartition}"/>
         <property name="maxPoolSize" value="${fulfilment.db.maxConnectionsPerPartition}"/>
@@ -61,7 +61,7 @@
             </props>
         </property>
     </bean>-->
-    <bean id="sessionFactory"
+    <bean id="fulfilmentSessionFactory"
           class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
         <property name="dataSource" ref="fulfilmentDataSource"/>
         <property name="packagesToScan" value="com.junbo.fulfilment.db.entity"/>
