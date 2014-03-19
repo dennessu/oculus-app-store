@@ -45,6 +45,7 @@ class CommerceMain {
                 'com.junbo.billing.spec.resource.adapter',
                 'com.junbo.payment.spec.resource.adapter',
                 'com.junbo.fulfilment.spec.resource.adapter',
+                'com.junbo.entitlement.spec.resource.adapter',
                 'com.junbo.rating.spec.resource.adapter',
                 'com.junbo.cart.spec.resource.adapter',
                 'com.junbo.order.spec.resource.adapter',

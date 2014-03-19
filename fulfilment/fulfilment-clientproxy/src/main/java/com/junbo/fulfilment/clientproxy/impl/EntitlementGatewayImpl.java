@@ -11,6 +11,7 @@ import com.junbo.fulfilment.clientproxy.EntitlementGateway;
 import com.junbo.fulfilment.common.exception.EntitlementGatewayException;
 import com.junbo.fulfilment.common.util.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.UUID;
 
@@ -19,8 +20,8 @@ import java.util.UUID;
  */
 public class EntitlementGatewayImpl implements EntitlementGateway {
     @Autowired
+    @Qualifier("entitlementClient")
     private EntitlementResource entitlementResource;
-
 
     @Override
     public String grant(com.junbo.fulfilment.spec.fusion.Entitlement input) {

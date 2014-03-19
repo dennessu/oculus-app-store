@@ -6,7 +6,7 @@ mainClassName = "com.junbo.bootstrap.CommerceMain"
 dependencies {
 //    compile "com.junbo.identity:identity-spec:${junboVersion}"
     compile "com.junbo.rating:rating-app:${junboVersion}"
-    //compile "com.junbo.entitlement:entitlement-app:${junboVersion}"
+    compile "com.junbo.entitlement:entitlement-app:${junboVersion}"
     compile "com.junbo.fulfilment:fulfilment-app:${junboVersion}"
     compile "com.junbo.cart:cart-app:${junboVersion}"
     compile "com.junbo.billing:billing-app:${junboVersion}"
