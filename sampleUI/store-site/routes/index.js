@@ -67,4 +67,25 @@ module.exports = function(app){
     app.get('/payment/Create', Payment.Create);
     app.get('/payment/Address', Payment.ShippingAddress);
     app.get('/payment/SelectePaymentMethod', Payment.SelectePaymentMethod);
+
+    app.get('/test/products', function(req, res){
+        res.json({"Products": [
+            {
+                "id": 111,
+                "name": "3D Parking 1",
+                "price": 9.99,
+                "picture": "/images/P1.jpg",
+                "description": ""
+            }
+            ,
+            {
+                "id": 222,
+                "name": "3D Parking 1",
+                "price": 9.99,
+                "picture": "/images/P1.jpg",
+                "description": ""
+            }
+        ]});
+        res.end();
+    });
 };

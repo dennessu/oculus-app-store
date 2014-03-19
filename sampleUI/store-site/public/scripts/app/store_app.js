@@ -1,13 +1,19 @@
 
 var App = Ember.App = Ember.Application.create();
 
+App.ProductAdapter = ProductAdapter;
+App.store = DS.Store.create({
+    adapter: 'ProductAdapter'
+});
+App.Product = Product;
+
 App.Router.map(function(){
 
 });
 
-App.IndexRoute = Ember.Route.extend({
+App.ApplicationRoute = Ember.Route.extend({
     model: function(){
-        this.store.find("Product");
+        return this.store.findAll("Product");
     }
 });
 

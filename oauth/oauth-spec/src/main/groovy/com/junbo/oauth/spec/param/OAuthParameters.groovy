@@ -24,7 +24,6 @@ class OAuthParameters {
     public static final String ID_TOKEN_HINT = 'id_token_hint'
     public static final String LOGIN_HINT = 'login_hint'
     public static final String MAX_AGE = 'max_age'
-    public static final String FLOW_STATE = 'fs'
     public static final String LOGIN_STATE = 'ls'
     public static final String REMEMBER_ME = 'remember_me'
     public static final String CODE = 'code'
@@ -43,5 +42,6 @@ class OAuthParameters {
     public static final String USER_ID = 'user_id'
     public static final String ID_TOKEN_USER_ID = 'id_token_user_id'
     public static final String SESSION_ID = 'session_id'
+    public static final String ERROR = 'error'
 }
 

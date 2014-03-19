@@ -20,8 +20,14 @@
 
     <bean id="clientService" class="com.junbo.oauth.core.service.impl.ClientServiceImpl">
         <property name="clientRepository" ref="clientRepository"/>
-        <property name="accessTokenRepository" ref="accessTokenRepository"/>
+        <property name="tokenService" ref="tokenService"/>
         <property name="tokenGenerator" ref="tokenGenerator"/>
+        <property name="scopeService" ref="scopeService"/>
+    </bean>
+
+    <bean id="scopeService" class="com.junbo.oauth.core.service.impl.ScopeServiceImpl">
+        <property name="tokenService" ref="tokenService"/>
+        <property name="scopeRepository" ref="scopeRepository"/>
     </bean>
 
 </beans>
