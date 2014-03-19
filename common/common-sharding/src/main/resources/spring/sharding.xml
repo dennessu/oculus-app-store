@@ -10,8 +10,8 @@
           init-method="init" destroy-method="close">
         <property name="uniqueName" value="jdbc/config"/>
         <property name="className" value="${config.db.driverClassName}"/>
-        <property name="minPoolSize" value="${config.db.mixConnectionsPerPartition}"/>
-        <property name="maxPoolSize" value="${config.db.maxConnectionsPerPartition}"/>
+        <property name="minPoolSize" value="${config.db.minConnections}"/>
+        <property name="maxPoolSize" value="${config.db.maxConnections}"/>
         <property name="driverProperties">
             <props>
                 <prop key="url">${config.db.url}</prop>

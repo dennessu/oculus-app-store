@@ -6,15 +6,13 @@
 package com.junbo.identity.data.dao
 
 import com.junbo.identity.data.entity.password.PasswordRuleEntity
-import com.junbo.sharding.annotations.SeedParam
-
 
 /**
  * Created by liangfu on 2/24/14.
  */
 interface PasswordRuleDAO {
-    PasswordRuleEntity get(@SeedParam Long id)
+    PasswordRuleEntity get(Long id)
     PasswordRuleEntity save(PasswordRuleEntity passwordRule)
-    void delete(@SeedParam Long id)
+    void delete(Long id)
     PasswordRuleEntity update(PasswordRuleEntity passwordRule)
 }

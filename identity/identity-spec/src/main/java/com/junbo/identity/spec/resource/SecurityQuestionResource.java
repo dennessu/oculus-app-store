@@ -24,7 +24,6 @@ import javax.ws.rs.core.MediaType;
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 public interface SecurityQuestionResource {
-
     @POST
     @Path("/")
     Promise<SecurityQuestion> create(SecurityQuestion securityQuestion);

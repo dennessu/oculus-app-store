@@ -38,6 +38,10 @@
         <property name="sessionFactory" ref="configSessionFactory"/>
     </bean>
 
+    <bean id="passwordRuleDAO" class="com.junbo.identity.data.dao.impl.postgresql.PasswordRuleDAOImpl">
+        <property name="sessionFactory" ref="configSessionFactory"/>
+    </bean>
+
     <bean id="sessionFactoryWrapper" class="com.junbo.sharding.core.hibernate.SessionFactoryWrapper">
         <property name="mapper" ref="shardDataSourceMapper"/>
         <property name="dataSourceRegistry" ref="shardDataSourceRegistry"/>
@@ -167,4 +171,5 @@
     <bean id="userRepository" class="com.junbo.identity.data.repository.impl.UserRepositoryImpl" />
     <bean id="userSecurityQuestionRepository" class="com.junbo.identity.data.repository.impl.UserSecurityQuestionRepositoryImpl" />
     <bean id="userTosRepository" class="com.junbo.identity.data.repository.impl.UserTosRepositoryImpl" />
+    <bean id="securityQuestionRepository" class="com.junbo.identity.data.repository.impl.SecurityQuestionRepositoryImpl"/>
 </beans>

@@ -6,16 +6,20 @@
 package com.junbo.identity.rest.resource;
 
 import com.junbo.common.id.SecurityQuestionId;
+import com.junbo.identity.rest.service.domaindata.SecurityQuestionService;
 import com.junbo.identity.spec.model.common.ResultList;
+import com.junbo.identity.spec.model.common.ResultListUtil;
 import com.junbo.identity.spec.model.domaindata.SecurityQuestion;
 import com.junbo.identity.spec.options.SecurityQuestionGetOptions;
 import com.junbo.identity.spec.options.SecurityQuestionListOptions;
 import com.junbo.identity.spec.resource.SecurityQuestionResource;
 import com.junbo.langur.core.promise.Promise;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.ext.Provider;
+import java.util.List;
 
 /**
  * Created by liangfu on 3/14/14.
@@ -24,29 +28,33 @@ import javax.ws.rs.ext.Provider;
 @Component
 @org.springframework.context.annotation.Scope("prototype")
 public class SecurityQuestionResourceImpl implements SecurityQuestionResource {
+    @Autowired
+    private SecurityQuestionService securityQuestionService;
+
     @Override
     public Promise<SecurityQuestion> create(SecurityQuestion securityQuestion) {
-        return null;
+        return Promise.pure(securityQuestionService.create(securityQuestion));
     }
 
     @Override
     public Promise<SecurityQuestion> put(SecurityQuestionId securityQuestionId, SecurityQuestion securityQuestion) {
-        return null;
+        return Promise.pure(securityQuestionService.update(securityQuestionId, securityQuestion));
     }
 
     @Override
     public Promise<SecurityQuestion> patch(SecurityQuestionId securityQuestionId, SecurityQuestion securityQuestion) {
-        return null;
+        return Promise.pure(securityQuestionService.patch(securityQuestionId, securityQuestion));
     }
 
     @Override
     public Promise<SecurityQuestion> get(SecurityQuestionId securityQuestionId,
                                          @BeanParam SecurityQuestionGetOptions getOptions) {
-        return null;
+        return Promise.pure(securityQuestionService.get(securityQuestionId));
     }
 
     @Override
     public Promise<ResultList<SecurityQuestion>> list(@BeanParam SecurityQuestionListOptions listOptions) {
-        return null;
+        List<SecurityQuestion> securityQuestionList = securityQuestionService.search(listOptions);
+        return Promise.pure(ResultListUtil.init(securityQuestionList, Integer.MAX_VALUE));
     }
 }

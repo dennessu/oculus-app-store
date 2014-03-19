@@ -34,7 +34,7 @@ public class PasswordServiceImpl implements PasswordService {
     private PasswordRuleRepository passwordRepository;
 
     @Autowired
-    private PasswordRuleValidator validator;
+    private PasswordRuleValidator passwordRuleValidator;
 
     @Autowired
     private IdGeneratorFacade idGeneratorFacade;

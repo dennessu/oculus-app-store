@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * Created by liangfu on 2/24/14.
+ * Password rule persistent in config db, not sharded.
  */
 @Component
 public class PasswordRuleDAOImpl implements PasswordRuleDAO {

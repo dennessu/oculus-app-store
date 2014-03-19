@@ -16,6 +16,7 @@ import java.util.List;
 
 /**
  * Created by liangfu on 3/16/14.
+ * Security question persistent in config db, not sharded.
  */
 @Component
 public class SecurityQuestionDAOImpl implements SecurityQuestionDAO {
@@ -52,7 +53,7 @@ public class SecurityQuestionDAOImpl implements SecurityQuestionDAO {
 
     @Override
     public List<SecurityQuestionEntity> search(SecurityQuestionListOptions listOption) {
-        String query = "select * from security_question order by id limit";
+        String query = "select * from security_question where active = true order by id";
         List entities = currentSession().createSQLQuery(query).addEntity(SecurityQuestionEntity.class).list();
         return entities;
     }
