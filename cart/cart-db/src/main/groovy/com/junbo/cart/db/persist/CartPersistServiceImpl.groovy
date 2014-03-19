@@ -97,7 +97,7 @@ class CartPersistServiceImpl implements CartPersistService {
         boolean diff(CartItem left, CartItem right) {
             def leftOffer = (OfferItem) left
             def rightOffer = (OfferItem) right
-            return !(leftOffer.offer.id == rightOffer.offer.id &&
+            return !(leftOffer.offer == rightOffer.offer &&
                     leftOffer.quantity == rightOffer.quantity &&
                     leftOffer.selected == rightOffer.selected)
         }
@@ -112,7 +112,7 @@ class CartPersistServiceImpl implements CartPersistService {
 
         @Override
         boolean diff(CartItem left, CartItem right) {
-            return ((CouponItem) left).coupon.id != ((CouponItem) right).coupon.id
+            return ((CouponItem) left).coupon != ((CouponItem) right).coupon
         }
     }
 
