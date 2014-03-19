@@ -6,7 +6,7 @@
 package com.junbo.cart.spec.model.item;
 
 import com.junbo.cart.common.validate.Group;
-import com.junbo.cart.spec.model.Coupon;
+import com.junbo.common.id.CouponId;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -18,13 +18,13 @@ public class CouponItem extends CartItem {
 
     @Valid
     @NotNull(groups = {Group.CartItem.class})
-    private Coupon coupon;
+    private CouponId coupon;
 
-    public Coupon getCoupon() {
+    public CouponId getCoupon() {
         return coupon;
     }
 
-    public void setCoupon(Coupon coupon) {
+    public void setCoupon(CouponId coupon) {
         this.coupon = coupon;
     }
 }

@@ -3,7 +3,6 @@ package com.junbo.billing.clientproxy
 import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.BalanceItem
 import com.junbo.billing.spec.model.ShippingAddress
-import com.junbo.common.id.BalanceItemId
 import com.junbo.common.id.OrderItemId
 import com.junbo.common.id.ShippingAddressId
 import org.testng.Assert
@@ -24,7 +23,7 @@ public class AvalaraTest extends BaseTest {
         balance.shippingAddressId = new ShippingAddressId(123L)
         def item = new BalanceItem()
         item.amount = 100
-        item.balanceItemId = new BalanceItemId(456L)
+        item.balanceItemId = 456L
         balance.addBalanceItem(item)
 
         def shippingAddress = new ShippingAddress()
