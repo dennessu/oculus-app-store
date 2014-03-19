@@ -17,6 +17,7 @@ import com.junbo.fulfilment.common.util.Utils;
 import com.junbo.fulfilment.spec.fusion.*;
 import com.junbo.fulfilment.spec.fusion.Offer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 /**
  * CatalogGatewayImpl.
@@ -27,6 +28,7 @@ public class CatalogGatewayImpl implements CatalogGateway {
     private static final Long OFFER_TIMESTAMP_NOT_SPECIFIED = null;
 
     @Autowired
+    @Qualifier("offerClient")
     private OfferResource offerResource;
 
     @Override
