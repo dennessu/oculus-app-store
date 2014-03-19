@@ -18,7 +18,7 @@
     </bean>
     -->
     <bean id="paymentFacade" class="com.junbo.billing.clientproxy.impl.PaymentFacadeImpl">
-        <property name="url" value="http://localhost:8082/rest"/>
+        <property name="url" value="${billing.client.payment.url}"/>
     </bean>
 
     <bean id="identityFacade" class="com.junbo.billing.clientproxy.mock.MockIdentityFacadeImpl" />
