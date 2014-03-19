@@ -38,6 +38,7 @@ module.exports = function(app){
     app.get('/Template/Identity/My', Template.Identity.My);
 
     app.get('/Template/Store/Index', Template.Store.Index);
+    app.get('/Template/Store/Detail', Template.Store.Detail);
 
     // Redirect back handler
     app.get('/Callback/Login', function(req, res){});
