@@ -96,11 +96,15 @@ def run(inputParam):
         cmd.append("--driver=" + config["jdbc_driver"])
         change_log_file = "changelogs/"+inputParam.database+"/"+inputParam.dbVersion+"/changelog.xml"
         cmd.append("--changeLogFile="+change_log_file)
-        shard_user = config["shard_username"].replace('{0}', shardid)
-        cmd.append("--username="+shard_user)
-        cmd.append("--password="+config["shard_password"])
-        cmd.append("--defaultSchemaName=" + shard_user)
-        jdbc_url=config["jdbc_url_" + shardid]
+        login_user = config["login_username"].replace('{0}', shardid)
+        cmd.append("--username="+login_user)
+        cmd.append("--password="+config["login_password"])
+        cmd.append("--defaultSchemaName=" + login_user)
+        if (config.has_key("jdbc_url") and len(config["jdbc_url"]) != 0):
+            jdbc_url=config["jdbc_url"]
+        else:
+            jdbc_url=config["jdbc_url_" + shardid]
+
         cmd.append("--url="+jdbc_url)
         cmd.append(inputParam.command)
 
