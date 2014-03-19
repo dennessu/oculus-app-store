@@ -14,5 +14,5 @@ import java.util.List;
  * Item draft DAO definition.
  */
 public interface ItemDraftDao extends VersionedDao<ItemDraftEntity> {
-    List<ItemDraftEntity> getItems(int start, int size);
+    List<ItemDraftEntity> getItems(int start, int size, String status);
 }

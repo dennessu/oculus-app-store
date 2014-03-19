@@ -25,10 +25,8 @@ import org.springframework.util.StringUtils;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Impl of EntitlementResource.
@@ -73,11 +71,6 @@ public class EntitlementResourceImpl implements EntitlementResource {
                 return Promise.pure(existingEntitlement);
             }
         }
-
-        if (entitlement.getPeriod() != null) {
-            entitlement.setExpirationTime(new Date(entitlement.getGrantTime().getTime()
-                    + TimeUnit.SECONDS.toMillis(entitlement.getPeriod())));
-        }
         return Promise.pure(entitlementService.addEntitlement(entitlement));
     }
 
@@ -90,11 +83,6 @@ public class EntitlementResourceImpl implements EntitlementResource {
             if (existingEntitlement != null) {
                 return Promise.pure(existingEntitlement);
             }
-        }
-
-        if (entitlement.getPeriod() != null) {
-            entitlement.setExpirationTime(new Date(entitlement.getGrantTime().getTime()
-                    + TimeUnit.SECONDS.toMillis(entitlement.getPeriod())));
         }
         return Promise.pure(entitlementService.updateEntitlement(entitlementId.getValue(), entitlement));
     }

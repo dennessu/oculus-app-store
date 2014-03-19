@@ -19,7 +19,7 @@ public interface EntityDraftRepository<T extends VersionedModel>  {
 
     T get(Long entityId);
 
-    List<T> getEntities(int start, int size);
+    List<T> getEntities(int start, int size, String status);
 
     Long update(T entity);
 }

@@ -176,7 +176,6 @@ class AvalaraFacadeImpl implements TaxFacade {
         balance.balanceItems.eachWithIndex { BalanceItem item, int index ->
             def line = new Line()
             line.lineNo = index.toString()
-            // TODO: confirm address collection
             line.destinationCode = shipToAddress.addressCode
             line.originCode = shipFromAddress.addressCode
             line.qty = BigDecimal.ONE

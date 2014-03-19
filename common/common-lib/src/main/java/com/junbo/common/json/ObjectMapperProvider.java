@@ -6,8 +6,10 @@
 
 package com.junbo.common.json;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import com.junbo.common.deser.IdDeserializer;
@@ -41,6 +43,9 @@ public class ObjectMapperProvider implements ContextResolver<ObjectMapper> {
 
         objectMapper.setDateFormat(new ISO8601DateFormat());
 
+        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+
         SimpleModule module = new SimpleModule(getClass().getName(), new Version(1, 0, 0, null));
 
         ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCandidateComponentProvider(true);
@@ -53,8 +58,7 @@ public class ObjectMapperProvider implements ContextResolver<ObjectMapper> {
                 Class cls = Class.forName(component.getBeanClassName());
                 module.addSerializer(cls, new IdSerializer());
                 module.addDeserializer(cls, new IdDeserializer(cls));
-            }
-            catch (ClassNotFoundException e) {
+            } catch (ClassNotFoundException e) {
                 logger.error("Class not found exception when customize objectmapper", e);
             }
         }

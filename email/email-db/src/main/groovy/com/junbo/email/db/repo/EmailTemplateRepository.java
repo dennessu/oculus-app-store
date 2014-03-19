@@ -37,7 +37,8 @@ public class EmailTemplateRepository {
         entity.setId(idGenerator.nextId(EmailId.class));
         entity.setCreatedBy("internal system");
         entity.setCreatedTime(new Date());
-        return (Long) emailTemplateDao.save(entity);
+
+        return emailTemplateDao.save(entity);
     }
 
     public EmailTemplateEntity getEmailTemplate(Long id) {
@@ -52,9 +53,5 @@ public class EmailTemplateRepository {
 
     public List<EmailTemplateEntity> getEmailTemplateList() {
         return emailTemplateDao.getEmailTemplateList();
-    }
-
-    public void flush() {
-        emailTemplateDao.flush();
     }
 }

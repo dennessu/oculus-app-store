@@ -12,6 +12,7 @@ import com.junbo.catalog.db.dao.PromotionDraftDao;
 import com.junbo.catalog.db.entity.PromotionDraftEntity;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -20,13 +21,17 @@ import java.util.List;
  */
 public class PromotionDraftDaoImpl extends VersionedDaoImpl<PromotionDraftEntity> implements PromotionDraftDao {
     @Override
-    public List<PromotionDraftEntity> getEffectivePromotions(final int start, final int size) {
+    public List<PromotionDraftEntity> getEffectivePromotions(final int start, final int size, final String status) {
         return findAllBy(new Action<Criteria>() {
             public void apply(Criteria criteria) {
                 criteria.setFirstResult(start);
                 criteria.setFetchSize(size);
                 criteria.add(Restrictions.le("startDate", Utils.now()));
                 criteria.add(Restrictions.ge("endDate", Utils.now()));
+
+                if (!StringUtils.isEmpty(status)) {
+                    criteria.add(Restrictions.eq("status", status));
+                }
             }
         });
     }
