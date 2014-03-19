@@ -38,6 +38,7 @@
     <bean id="defaultRevokeEndpoint" class="com.junbo.oauth.api.endpoint.RevokeEndpointImpl">
         <property name="clientRepository" ref="clientRepository"/>
         <property name="tokenService" ref="tokenService"/>
+        <property name="consentRepository" ref="consentRepository"/>
     </bean>
 
     <bean id="defaultScopeEndpoint" class="com.junbo.oauth.api.endpoint.ScopeEndpointImpl">

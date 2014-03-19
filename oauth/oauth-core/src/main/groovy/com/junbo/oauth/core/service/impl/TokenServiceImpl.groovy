@@ -113,6 +113,11 @@ class TokenServiceImpl implements TokenService {
     }
 
     @Override
+    List<AccessToken> getAccessTokenByUserIdClientId(Long userId, String clientId) {
+        return accessTokenRepository.findByUserIdClientId(userId, clientId)
+    }
+
+    @Override
     AccessToken updateAccessToken(AccessToken accessToken) {
         return accessTokenRepository.update(accessToken)
     }
@@ -152,6 +157,11 @@ class TokenServiceImpl implements TokenService {
         )
 
         return refreshTokenRepository.save(refreshToken)
+    }
+
+    @Override
+    List<RefreshToken> getRefreshTokenByUserIdClientId(Long userId, String clientId) {
+        return refreshTokenRepository.findByUserIdClientId(userId, clientId)
     }
 
     @Override
