@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Service of Entitlement.
@@ -84,6 +85,10 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
 
         if(entitlement.getGrantTime() == null){
             entitlement.setGrantTime(EntitlementContext.current().getNow());
+        }
+        if (entitlement.getPeriod() != null) {
+            entitlement.setExpirationTime(new Date(entitlement.getGrantTime().getTime()
+                    + TimeUnit.SECONDS.toMillis(entitlement.getPeriod())));
         }
 
         checkEntitlementDefinition(entitlement.getEntitlementDefinitionId());
@@ -170,8 +175,15 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
                     existingEntitlement.getTag()).exception();
         }
 
-        if (entitlement.getGrantTime() == null ||
-                existingEntitlement.getGrantTime().compareTo(entitlement.getGrantTime()) != 0) {
+        if(entitlement.getGrantTime() == null){
+            entitlement.setGrantTime(EntitlementContext.current().getNow());
+        }
+        if (entitlement.getPeriod() != null) {
+            entitlement.setExpirationTime(new Date(entitlement.getGrantTime().getTime()
+                    + TimeUnit.SECONDS.toMillis(entitlement.getPeriod())));
+        }
+
+        if (existingEntitlement.getGrantTime().compareTo(entitlement.getGrantTime()) != 0) {
             throw AppErrors.INSTANCE.fieldNotMatch("grantTime",
                     entitlement.getGrantTime(),
                     existingEntitlement.getGrantTime()).exception();
