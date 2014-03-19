@@ -39,7 +39,13 @@ public abstract class BaseDaoImpl<T extends BaseEntity> implements BaseDao<T> {
     }
 
     public Long create(T entity) {
-        entity.setId(idGenerator.nextId(entity.getShardMasterId()));
+        //entity.setId(idGenerator.nextId(entity.getShardMasterId()));
+        try {
+            Thread.sleep(10);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        entity.setId(System.currentTimeMillis());
 
         entity.setCreatedTime(Utils.now());
         entity.setCreatedBy(Constant.SYSTEM_INTERNAL);

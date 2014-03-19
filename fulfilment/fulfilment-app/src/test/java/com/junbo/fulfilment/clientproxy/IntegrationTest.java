@@ -43,8 +43,8 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
         return new FulfilmentRequest() {{
             setTrackingGuid(UUID.randomUUID().toString());
             setRequester("SYSTEM_INTERNAL");
-            setOrderId(999L);
-            setUserId(12345L);
+            setOrderId(getRandomLong());
+            setUserId(getRandomLong());
             setShippingAddressId(null);
             setShippingMethodId(null);
 
@@ -52,6 +52,7 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
                 add(new FulfilmentItem() {{
                     setOrderItemId(1111L);
                     setOfferId(offerId);
+                    setQuantity(1);
                     setTimestamp(System.currentTimeMillis());
                 }});
             }});
@@ -61,7 +62,7 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
     private Long prepareOffer() {
         Offer offer = new Offer();
         offer.setName("TEST_OFFER");
-        offer.setOwnerId(12345L);
+        offer.setOwnerId(getRandomLong());
 
         offer.setEvents(new ArrayList<Event>() {{
             add(new Event() {{
@@ -86,5 +87,15 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
         megaGateway.updateOffer(offer);
 
         return offerId;
+    }
+
+    private Long getRandomLong() {
+        try {
+            Thread.sleep(10);
+        } catch (InterruptedException e) {
+            //ignore
+        }
+
+        return System.currentTimeMillis();
     }
 }
