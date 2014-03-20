@@ -24,6 +24,6 @@ import java.lang.annotation.RetentionPolicy;
 @JacksonAnnotationsInside
 @JsonSerialize(using = CompoundIdSerializer.class, include = JsonSerialize.Inclusion.NON_NULL)
 @JsonDeserialize(using = ResourceIdDeserializer.class)
-@ResourcePath("/users/{userId}/payment-instruments/{paymentInstrumentId}")
+@ResourcePath("/users/{userId}/test-ids/{testId}")
 public @interface TestCompoundId {
 }

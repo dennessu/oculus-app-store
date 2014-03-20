@@ -10,6 +10,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import com.junbo.common.jackson.common.ResourceAware;
 import com.junbo.common.jackson.model.ResourceRef;
 import com.junbo.common.shuffle.Oculus48Id;
 
@@ -34,8 +35,8 @@ public class ResourceIdSerializer extends JsonSerializer<Object> implements Reso
     }
 
     @Override
-    public void injectResourceType(String resourceType) {
-        this.resourcePath = resourceType;
+    public void injectResourcePath(String resourcePath) {
+        this.resourcePath = resourcePath;
     }
 
     @Override

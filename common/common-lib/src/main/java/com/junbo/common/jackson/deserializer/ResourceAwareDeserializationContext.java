@@ -17,6 +17,7 @@ import com.fasterxml.jackson.databind.deser.DeserializerFactory;
 import com.fasterxml.jackson.databind.introspect.Annotated;
 import com.fasterxml.jackson.databind.introspect.AnnotatedMember;
 import com.fasterxml.jackson.databind.introspect.AnnotatedWithParams;
+import com.junbo.common.jackson.common.ResourceCollectionAware;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
