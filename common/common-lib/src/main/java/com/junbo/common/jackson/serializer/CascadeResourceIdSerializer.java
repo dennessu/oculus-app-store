@@ -17,6 +17,13 @@ import junit.framework.Assert;
 @Deprecated
 public class CascadeResourceIdSerializer extends ResourceIdSerializer {
     @Override
+    protected Object unwrap(Object value) {
+        Assert.assertTrue(value instanceof CascadeResource);
+
+        return ((CascadeResource) value).getPrimaryId();
+    }
+
+    @Override
     protected ResourceRef handleSingle(Object value) {
         Assert.assertTrue(value instanceof CascadeResource);
 
