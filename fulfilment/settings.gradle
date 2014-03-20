@@ -1,3 +1,4 @@
+rootProject.name = 'fulfilment'
 include 'fulfilment-spec'
 
 include 'fulfilment-common'

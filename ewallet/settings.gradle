@@ -1,3 +1,4 @@
+rootProject.name = 'ewallet'
 include 'ewallet-spec'
 
 include 'ewallet-common'

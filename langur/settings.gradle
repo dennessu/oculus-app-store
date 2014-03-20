@@ -1,2 +1,3 @@
+rootProject.name = 'langur'
 include 'langur-core'
 include 'langur-processor'
