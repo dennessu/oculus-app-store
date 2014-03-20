@@ -10,7 +10,14 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.JSONSerializer;
 import com.alibaba.fastjson.serializer.PropertyFilter;
 import com.alibaba.fastjson.serializer.SerializeWriter;
+import com.junbo.payment.common.exception.AppClientExceptions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+
+import java.beans.PropertyDescriptor;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.util.*;
 
 
@@ -18,6 +25,7 @@ import java.util.*;
  * Common Util.
  */
 public final class CommonUtil {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CommonUtil.class);
 
     private CommonUtil(){
 
@@ -61,5 +69,60 @@ public final class CommonUtil {
             }
         }
         return result;
+    }
+
+    public static void preValidation(Object obj) {
+        for(Field field : obj.getClass().getDeclaredFields()){
+            for(Annotation annotation : field.getAnnotations()){
+                if(annotation instanceof FilterIn){
+                    Object value = null;
+                    try{
+                        value = new PropertyDescriptor(field.getName(), obj.getClass()).getReadMethod().invoke(obj);
+                    }catch (Exception ex){
+                        throw AppClientExceptions.INSTANCE.fieldNotNeeded(field.getName()).exception();
+                    }
+                    if(value != null){
+                        throw AppClientExceptions.INSTANCE.fieldNotNeeded(field.getName()).exception();
+                    }
+                }else if(annotation instanceof InnerFilter){
+                    try{
+                        Object sub = new PropertyDescriptor(field.getName(),
+                                obj.getClass()).getReadMethod().invoke(obj);
+                        if(sub != null){
+                            preValidation(sub);
+                        }
+                    }catch (Exception ex){
+                        throw AppClientExceptions.INSTANCE.fieldNotNeeded(field.getName()).exception();
+                    }
+                }
+            }
+        }
+    }
+
+    public static void postFilter(Object obj) {
+        for(Field field : obj.getClass().getDeclaredFields()){
+            for(Annotation annotation : field.getAnnotations()){
+                if(annotation instanceof FilterOut){
+                    Object value = null;
+                    try{
+                        PropertyDescriptor propDesc= new PropertyDescriptor(field.getName(),obj.getClass());
+                        propDesc.getWriteMethod().invoke(obj, (Object)null);
+                        value = propDesc.getReadMethod().invoke(obj);
+                    }catch(Exception ex){
+                        LOGGER.warn("exception when filter out field: " + field.getName());
+                    }
+                }else if(annotation instanceof InnerFilter){
+                    try{
+                        Object sub = new PropertyDescriptor(field.getName(),
+                                obj.getClass()).getReadMethod().invoke(obj);
+                        if(sub != null){
+                            postFilter(sub);
+                        }
+                    }catch (Exception ex){
+                        LOGGER.warn("exception when filter out inner field: " + field.getName());
+                    }
+                }
+            }
+        }
     }
 }

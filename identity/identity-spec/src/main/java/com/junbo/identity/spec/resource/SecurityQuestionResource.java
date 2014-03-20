@@ -6,7 +6,6 @@
 package com.junbo.identity.spec.resource;
 
 import com.junbo.common.id.SecurityQuestionId;
-import com.junbo.identity.spec.model.common.ResultList;
 import com.junbo.identity.spec.model.domaindata.SecurityQuestion;
 import com.junbo.identity.spec.options.SecurityQuestionGetOptions;
 import com.junbo.identity.spec.options.SecurityQuestionListOptions;
@@ -15,6 +14,7 @@ import com.junbo.langur.core.promise.Promise;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 /**
  * Created by liangfu on 3/13/14.
@@ -45,5 +45,5 @@ public interface SecurityQuestionResource {
 
     @GET
     @Path("/")
-    Promise<ResultList<SecurityQuestion>> list(@BeanParam SecurityQuestionListOptions listOptions);
+    Promise<List<SecurityQuestion>> list(@BeanParam SecurityQuestionListOptions listOptions);
 }

@@ -17,7 +17,7 @@ import javax.persistence.Table
  * Created by liangfu on 3/14/14.
  */
 @Entity
-@Table(name = 'group_entity')
+@Table(name = 'group')
 class GroupEntity extends ResourceMetaEntity {
     @Id
     @SeedId

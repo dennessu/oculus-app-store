@@ -10,14 +10,13 @@ import com.junbo.identity.data.dao.UserPinDAO;
 import com.junbo.identity.data.entity.user.UserPinEntity;
 import com.junbo.identity.data.mapper.ModelMapper;
 import com.junbo.identity.data.repository.UserPinRepository;
-import com.junbo.identity.spec.model.options.UserPinGetOption;
 import com.junbo.identity.spec.model.users.UserPin;
+import com.junbo.identity.spec.options.UserPinListOptions;
 import com.junbo.oom.core.MappingContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,8 +25,8 @@ import java.util.List;
 @Component
 public class UserPinRepositoryImpl implements UserPinRepository {
     @Autowired
-    @Qualifier("userPINDAO")
-    private UserPinDAO userPINDAO;
+    @Qualifier("userPinDAO")
+    private UserPinDAO userPinDAO;
 
     @Autowired
     @Qualifier("identityModelMapperImpl")
@@ -36,7 +35,7 @@ public class UserPinRepositoryImpl implements UserPinRepository {
     @Override
     public UserPin save(UserPin entity) {
         UserPinEntity userPinEntity = modelMapper.toUserPin(entity, new MappingContext());
-        userPINDAO.save(userPinEntity);
+        userPinDAO.save(userPinEntity);
 
         return get(new UserPinId(userPinEntity.getId()));
     }
@@ -44,29 +43,32 @@ public class UserPinRepositoryImpl implements UserPinRepository {
     @Override
     public UserPin update(UserPin entity) {
         UserPinEntity userPINEntity = modelMapper.toUserPin(entity, new MappingContext());
-        userPINDAO.update(userPINEntity);
+        userPinDAO.update(userPINEntity);
 
         return get(entity.getId());
     }
 
     @Override
     public UserPin get(UserPinId id) {
-        return modelMapper.toUserPin(userPINDAO.get(id.getValue()), new MappingContext());
+        return modelMapper.toUserPin(userPinDAO.get(id.getValue()), new MappingContext());
     }
 
     @Override
-    public List<UserPin> search(UserPinGetOption getOption) {
-        List entities = userPINDAO.search(getOption.getUserId().getValue(), getOption);
+    public List<UserPin> search(UserPinListOptions getOption) {
+        return null;
+        /*
+        List entities = userPinDAO.search(getOption.getUserId().getValue(), getOption);
 
         List<UserPin> results = new ArrayList<UserPin>();
         for(int i =0 ; i< entities.size(); i++) {
             results.add(modelMapper.toUserPin((UserPinEntity) entities.get(i), new MappingContext()));
         }
         return results;
+        */
     }
 
     @Override
     public void delete(UserPinId id) {
-        userPINDAO.delete(id.getValue());
+        userPinDAO.delete(id.getValue());
     }
 }

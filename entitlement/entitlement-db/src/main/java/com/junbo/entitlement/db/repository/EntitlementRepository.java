@@ -87,6 +87,6 @@ public class EntitlementRepository {
             Long userId, String type, Long developerId, String group, String tag) {
         return entitlementMapper.toEntitlement(
                 entitlementDao.getExistingManagedEntitlement(
-                        userId, EntitlementType.valueOf(type), developerId, group, tag));
+                        userId, EntitlementType.valueOf(type.toUpperCase()), developerId, group, tag));
     }
 }

@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.introspect.Annotated;
 import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
 import com.fasterxml.jackson.databind.ser.SerializerFactory;
 import com.junbo.common.jackson.annotation.ResourcePath;
+import com.junbo.common.jackson.common.ResourceAware;
 
 /**
  * ResourceAwareSerializerProvider.
@@ -42,7 +43,7 @@ public class ResourceAwareSerializerProvider extends DefaultSerializerProvider {
                 throw new IllegalStateException("ResourcePath annotation is missing.");
             }
             
-            ((ResourceAware) ser).injectResourceType(typeAnno.value());
+            ((ResourceAware) ser).injectResourcePath(typeAnno.value());
         }
 
         return ser;

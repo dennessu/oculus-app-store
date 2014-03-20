@@ -10,14 +10,13 @@ import com.junbo.identity.data.dao.UserPhoneNumberDAO;
 import com.junbo.identity.data.entity.user.UserPhoneNumberEntity;
 import com.junbo.identity.data.mapper.ModelMapper;
 import com.junbo.identity.data.repository.UserPhoneNumberRepository;
-import com.junbo.identity.spec.model.options.UserPhoneNumberGetOption;
 import com.junbo.identity.spec.model.users.UserPhoneNumber;
+import com.junbo.identity.spec.options.UserPhoneNumberListOptions;
 import com.junbo.oom.core.MappingContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -55,7 +54,9 @@ public class UserPhoneNumberRepositoryImpl implements UserPhoneNumberRepository 
     }
 
     @Override
-    public List<UserPhoneNumber> search(UserPhoneNumberGetOption getOption) {
+    public List<UserPhoneNumber> search(UserPhoneNumberListOptions getOption) {
+        return null;
+        /*
         List entities = userPhoneNumberDAO.search(getOption.getUserId().getValue(), getOption);
 
         List<UserPhoneNumber> results = new ArrayList<UserPhoneNumber>();
@@ -63,6 +64,7 @@ public class UserPhoneNumberRepositoryImpl implements UserPhoneNumberRepository 
             results.add(modelMapper.toUserPhoneNumber((UserPhoneNumberEntity) entities.get(i), new MappingContext()));
         }
         return results;
+        */
     }
 
     @Override

@@ -9,7 +9,7 @@ package com.junbo.rating.clientproxy;
 import java.util.Set;
 
 /**
- * Created by lizwu on 2/27/14.
+ * Entitlement gateway interface.
  */
 public interface EntitlementGateway {
     Set<String> getEntitlements(Long userId, Set<String> groups);

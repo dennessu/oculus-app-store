@@ -6,9 +6,7 @@
 package com.junbo.identity.rest.resource;
 
 import com.junbo.common.id.SecurityQuestionId;
-import com.junbo.identity.rest.service.domaindata.SecurityQuestionService;
-import com.junbo.identity.spec.model.common.ResultList;
-import com.junbo.identity.spec.model.common.ResultListUtil;
+import com.junbo.identity.core.service.domaindata.SecurityQuestionService;
 import com.junbo.identity.spec.model.domaindata.SecurityQuestion;
 import com.junbo.identity.spec.options.SecurityQuestionGetOptions;
 import com.junbo.identity.spec.options.SecurityQuestionListOptions;
@@ -53,8 +51,7 @@ public class SecurityQuestionResourceImpl implements SecurityQuestionResource {
     }
 
     @Override
-    public Promise<ResultList<SecurityQuestion>> list(@BeanParam SecurityQuestionListOptions listOptions) {
-        List<SecurityQuestion> securityQuestionList = securityQuestionService.search(listOptions);
-        return Promise.pure(ResultListUtil.init(securityQuestionList, Integer.MAX_VALUE));
+    public Promise<List<SecurityQuestion>> list(@BeanParam SecurityQuestionListOptions listOptions) {
+        return Promise.pure(securityQuestionService.search(listOptions));
     }
 }

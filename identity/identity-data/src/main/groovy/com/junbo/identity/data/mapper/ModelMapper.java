@@ -8,10 +8,8 @@ package com.junbo.identity.data.mapper;
 
 import com.junbo.identity.data.entity.domaindata.SecurityQuestionEntity;
 import com.junbo.identity.data.entity.group.GroupEntity;
-import com.junbo.identity.data.entity.password.PasswordRuleEntity;
 import com.junbo.identity.data.entity.user.*;
 import com.junbo.identity.spec.model.domaindata.SecurityQuestion;
-import com.junbo.identity.spec.model.password.PasswordRule;
 import com.junbo.identity.spec.model.users.*;
 import com.junbo.oom.core.Mapper;
 import com.junbo.oom.core.Mapping;
@@ -76,29 +74,4 @@ public interface ModelMapper {
 
     UserName toUserName(UserNameEntity entity, MappingContext context);
     UserNameEntity toUserName(UserName entity, MappingContext context);
-
-    @Mappings({
-            @Mapping(source = "allowedCharacterSet", target = "allowedCharacterSet", excluded = false,
-                    bidirectional = false, explicitMethod = "jsonToListString"),
-            @Mapping(source = "notAllowedCharacterSet", target = "notAllowedCharacterSet", excluded = false,
-                    bidirectional = false, explicitMethod = "jsonToListString"),
-            @Mapping(source = "passwordRuleDetails", target = "passwordRuleDetails", excluded = false,
-                    bidirectional = false),
-            @Mapping(source = "passwordStrength", target = "passwordStrength",
-                    explicitMethod = "toUserPasswordStrength")
-    })
-    PasswordRule toPasswordRule(PasswordRuleEntity entity, MappingContext context);
-
-    @Mappings({
-            @Mapping(source = "allowedCharacterSet", target = "allowedCharacterSet", excluded = false,
-                    bidirectional = false, explicitMethod = "listStringToJson"),
-            @Mapping(source = "notAllowedCharacterSet", target = "notAllowedCharacterSet", excluded = false,
-                    bidirectional = false, explicitMethod = "listStringToJson"),
-            @Mapping(source = "passwordRuleDetails", target = "passwordRuleDetails", excluded = false,
-                    bidirectional = false),
-            @Mapping(source = "passwordStrength", target = "passwordStrength",
-                    explicitMethod = "toUserPasswordStrength")
-    })
-    PasswordRuleEntity toPasswordRule(PasswordRule passwordRule, MappingContext context);
-
 }

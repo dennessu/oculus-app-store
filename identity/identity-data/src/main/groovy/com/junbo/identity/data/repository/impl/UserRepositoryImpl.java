@@ -14,15 +14,14 @@ import com.junbo.identity.data.entity.user.UserEntity;
 import com.junbo.identity.data.entity.user.UserNameEntity;
 import com.junbo.identity.data.mapper.ModelMapper;
 import com.junbo.identity.data.repository.UserRepository;
-import com.junbo.identity.spec.model.options.UserGetOption;
 import com.junbo.identity.spec.model.users.User;
 import com.junbo.identity.spec.model.users.UserName;
+import com.junbo.identity.spec.options.UserListOptions;
 import com.junbo.oom.core.MappingContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -48,6 +47,8 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User save(User user) {
+        return null;
+        /*
         UserEntity userEntity = modelMapper.toUser(user, new MappingContext());
         userEntity = userDAO.save(userEntity);
 
@@ -62,7 +63,7 @@ public class UserRepositoryImpl implements UserRepository {
         reverseLookupEntity.setUserName(userEntity.getUserName());
         userNameReverseIndexDAO.save(reverseLookupEntity);
 
-        return get(new UserId(userEntity.getId()));
+        return get(new UserId(userEntity.getId()));*/
     }
 
     @Override
@@ -99,13 +100,15 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public List<User> search(UserGetOption getOption) {
+    public List<User> search(UserListOptions getOption) {
+        return null;
+        /*
         UserNameReverseIndexEntity reverseEntity = userNameReverseIndexDAO.get(getOption.getUserName());
 
         List<User> results = new ArrayList<User>();
         results.add(get(new UserId(reverseEntity.getUserId())));
 
-        return results;
+        return results;*/
     }
 
     @Override

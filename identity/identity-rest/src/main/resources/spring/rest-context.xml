@@ -5,17 +5,8 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
     <context:annotation-config />
-    <context:component-scan base-package="com.junbo.oom.core.builtin"/>
     <context:component-scan base-package="com.junbo.identity.spec.resource.adapter" />
-    <context:component-scan base-package="com.junbo.identity.rest.service" />
-
-    <!-- validator -->
-    <bean id="securityQuestionValidator" class="com.junbo.identity.rest.service.validator.impl.SecurityQuestionValidatorImpl"/>
-    <bean id="passwordRuleValidator" class="com.junbo.identity.rest.service.validator.impl.PasswordRuleValidatorImpl"/>
-
-    <!-- service impl -->
-    <bean id="securityQuestionService" class="com.junbo.identity.rest.service.domaindata.impl.SecurityQuestionServiceImpl"/>
-    <bean id="passwordRuleService" class="com.junbo.identity.rest.service.domaindata.impl.PasswordRuleServiceImpl"/>
+    <context:component-scan base-package="com.junbo.identity.core.service" />
 
     <!-- resource implementation -->
     <bean id="defaultGroupResource" class="com.junbo.identity.rest.resource.GroupResourceImpl" />

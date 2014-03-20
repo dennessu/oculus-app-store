@@ -6,7 +6,7 @@
 package com.junbo.identity.data.dao;
 
 import com.junbo.identity.data.entity.user.UserEmailEntity;
-import com.junbo.identity.spec.model.options.UserEmailGetOption;
+import com.junbo.identity.spec.options.UserEmailListOptions;
 import com.junbo.sharding.annotations.SeedParam;
 
 import java.util.List;
@@ -14,15 +14,10 @@ import java.util.List;
 /**
  * Created by liangfu on 3/17/14.
  */
-public interface UserEmailDAO {
-    UserEmailEntity save(UserEmailEntity entity);
-
-    UserEmailEntity update(UserEmailEntity entity);
-
-    UserEmailEntity get(@SeedParam Long id);
+public interface UserEmailDAO extends BaseDao<UserEmailEntity, Long> {
 
     void delete(@SeedParam Long id);
 
     // Todo:    Need to build reverse lookup table
-    List<UserEmailEntity> search(UserEmailGetOption getOption);
+    List<UserEmailEntity> search(UserEmailListOptions options);
 }

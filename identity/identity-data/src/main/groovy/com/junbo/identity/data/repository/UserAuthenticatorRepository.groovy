@@ -6,8 +6,8 @@
 package com.junbo.identity.data.repository
 
 import com.junbo.common.id.UserAuthenticatorId
-import com.junbo.identity.spec.model.options.UserAuthenticatorGetOption
 import com.junbo.identity.spec.model.users.UserAuthenticator
+import com.junbo.identity.spec.options.UserAuthenticatorListOptions
 
 /**
  * User Federation DAO is used to fetch/update/delete/get user
@@ -21,7 +21,7 @@ interface UserAuthenticatorRepository {
 
     UserAuthenticator get(UserAuthenticatorId id)
 
-    List<UserAuthenticator> search(UserAuthenticatorGetOption getOption)
+    List<UserAuthenticator> search(UserAuthenticatorListOptions getOption)
 
     void delete(UserAuthenticatorId id)
 }

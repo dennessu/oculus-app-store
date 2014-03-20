@@ -10,14 +10,13 @@ import com.junbo.identity.data.dao.UserSecurityQuestionDAO;
 import com.junbo.identity.data.entity.user.UserSecurityQuestionEntity;
 import com.junbo.identity.data.mapper.ModelMapper;
 import com.junbo.identity.data.repository.UserSecurityQuestionRepository;
-import com.junbo.identity.spec.model.options.UserSecurityQuestionGetOption;
 import com.junbo.identity.spec.model.users.UserSecurityQuestion;
+import com.junbo.identity.spec.options.UserSecurityQuestionListOptions;
 import com.junbo.oom.core.MappingContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -57,7 +56,9 @@ public class UserSecurityQuestionRepositoryImpl implements UserSecurityQuestionR
     }
 
     @Override
-    public List<UserSecurityQuestion> search(UserSecurityQuestionGetOption getOption) {
+    public List<UserSecurityQuestion> search(UserSecurityQuestionListOptions getOption) {
+        return null;
+        /*
         List entities = userSecurityQuestionDAO.search(getOption.getUserId().getValue(), getOption);
 
         List<UserSecurityQuestion> results = new ArrayList<UserSecurityQuestion>();
@@ -65,7 +66,7 @@ public class UserSecurityQuestionRepositoryImpl implements UserSecurityQuestionR
             results.add(modelMapper.toUserSecurityQuestion((UserSecurityQuestionEntity) entities.get(i),
                     new MappingContext()));
         }
-        return results;
+        return results;*/
     }
 
     @Override

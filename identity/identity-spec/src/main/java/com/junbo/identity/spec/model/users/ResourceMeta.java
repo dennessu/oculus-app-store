@@ -5,7 +5,8 @@
  */
 package com.junbo.identity.spec.model.users;
 
-import javax.xml.bind.annotation.XmlTransient;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.Date;
 
 /**
@@ -13,17 +14,19 @@ import java.util.Date;
  * Per resource will have those attributes.
  */
 public abstract class ResourceMeta {
-
+    @JsonIgnore
     private Integer resourceAge;
 
+    @JsonIgnore
     private Date createdTime;
 
+    @JsonIgnore
     private Date updatedTime;
 
-    @XmlTransient
+    @JsonIgnore
     private String createdBy;
 
-    @XmlTransient
+    @JsonIgnore
     private String updatedBy;
 
     public Integer getResourceAge() {

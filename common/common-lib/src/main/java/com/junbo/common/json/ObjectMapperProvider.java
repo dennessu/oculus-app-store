@@ -31,7 +31,7 @@ import java.util.Set;
  */
 @Provider
 public class ObjectMapperProvider implements ContextResolver<ObjectMapper> {
-    
+
     private final ObjectMapper objectMapper;
 
     public ObjectMapperProvider() {
@@ -66,7 +66,7 @@ public class ObjectMapperProvider implements ContextResolver<ObjectMapper> {
         SimpleFilterProvider filterProvider = new SimpleFilterProvider();
         filterProvider.addFilter(PropertyAssignedAwareFilter.class.getName(), new PropertyAssignedAwareFilter());
         objectMapper.setFilters(filterProvider);
-        
+
         objectMapper.setAnnotationIntrospector(new PropertyAssignedAwareIntrospector());
     }
 

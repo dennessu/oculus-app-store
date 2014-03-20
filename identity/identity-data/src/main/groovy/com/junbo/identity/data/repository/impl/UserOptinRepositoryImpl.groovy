@@ -9,8 +9,8 @@ import com.junbo.identity.data.dao.UserOptinDAO
 import com.junbo.identity.data.entity.user.UserOptinEntity
 import com.junbo.identity.data.mapper.ModelMapper
 import com.junbo.identity.data.repository.UserOptinRepository
-import com.junbo.identity.spec.model.options.UserOptinGetOption
 import com.junbo.identity.spec.model.users.UserOptin
+import com.junbo.identity.spec.options.UserOptinListOptions
 import com.junbo.oom.core.MappingContext
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
@@ -49,7 +49,9 @@ class UserOptinRepositoryImpl implements UserOptinRepository {
     }
 
     @Override
-    List<UserOptin> search(UserOptinGetOption getOption) {
+    List<UserOptin> search(UserOptinListOptions getOption) {
+        return new ArrayList<UserOptin>()
+        /*
         def result = []
         def entities = userOptinDAO.search(getOption.userId.value, getOption)
 
@@ -57,6 +59,7 @@ class UserOptinRepositoryImpl implements UserOptinRepository {
             result.add(modelMapper.toUserOptin(i, new MappingContext()))
         }
         return result
+        */
     }
 
     @Override

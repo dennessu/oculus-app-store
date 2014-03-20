@@ -10,7 +10,7 @@ import com.junbo.common.jackson.annotation.UserId;
 import com.junbo.common.jackson.serializer.CascadeResource;
 
 /**
- * PaymentInstrument.
+ * TestId.
  */
 public class PaymentInstrument {
     @UserId

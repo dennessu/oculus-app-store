@@ -6,7 +6,7 @@
 package com.junbo.identity.data.dao;
 
 import com.junbo.identity.data.entity.user.UserSecurityQuestionEntity;
-import com.junbo.identity.spec.model.options.UserSecurityQuestionGetOption;
+import com.junbo.identity.spec.options.UserSecurityQuestionListOptions;
 import com.junbo.sharding.annotations.SeedParam;
 
 import java.util.List;
@@ -14,14 +14,9 @@ import java.util.List;
 /**
  * Created by liangfu on 3/17/14.
  */
-public interface UserSecurityQuestionDAO {
-    UserSecurityQuestionEntity save(UserSecurityQuestionEntity entity);
+public interface UserSecurityQuestionDAO extends BaseDao<UserSecurityQuestionEntity, Long> {
 
-    UserSecurityQuestionEntity update(UserSecurityQuestionEntity entity);
-
-    UserSecurityQuestionEntity get(@SeedParam Long id);
-
-    List<UserSecurityQuestionEntity> search(@SeedParam Long userId, UserSecurityQuestionGetOption getOption);
+    List<UserSecurityQuestionEntity> search(@SeedParam Long userId, UserSecurityQuestionListOptions getOption);
 
     void delete(@SeedParam Long id);
 }

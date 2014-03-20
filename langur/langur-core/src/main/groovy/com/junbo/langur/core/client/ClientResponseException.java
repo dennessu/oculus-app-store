@@ -27,6 +27,12 @@ public class ClientResponseException extends RuntimeException {
         this.response = response;
     }
 
+    public ClientResponseException(String message, Response response, Throwable t) {
+        super(generateMessage(message, response), t);
+
+        this.response = response;
+    }
+
     private static String generateMessage(String message, Response response) {
         // more detailed messages.
         return message + " Response: " + response;

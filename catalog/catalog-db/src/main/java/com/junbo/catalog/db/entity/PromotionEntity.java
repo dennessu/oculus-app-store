@@ -6,6 +6,7 @@
 
 package com.junbo.catalog.db.entity;
 
+import com.junbo.catalog.db.dao.DateUserType;
 import com.junbo.catalog.db.dao.StringJsonUserType;
 import com.junbo.catalog.spec.model.promotion.PromotionType;
 import org.hibernate.annotations.Type;
@@ -23,7 +24,8 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "promotion")
-@TypeDefs(@TypeDef(name="StringJsonObject", typeClass=StringJsonUserType.class))
+@TypeDefs({@TypeDef(name="json-string", typeClass=StringJsonUserType.class),
+        @TypeDef(name="date-type", typeClass=DateUserType.class)})
 public class PromotionEntity extends VersionedEntity {
     private Long id;
     private Long promotionId;
@@ -81,6 +83,7 @@ public class PromotionEntity extends VersionedEntity {
     }
 
     @Column(name = "start_date")
+    @Type(type = "date-type")
     public Date getStartDate() {
         return startDate;
     }
@@ -90,6 +93,7 @@ public class PromotionEntity extends VersionedEntity {
     }
 
     @Column(name = "end_date")
+    @Type(type = "date-type")
     public Date getEndDate() {
         return endDate;
     }
@@ -99,7 +103,7 @@ public class PromotionEntity extends VersionedEntity {
     }
 
     @Column(name = "payload")
-    @Type(type = "StringJsonObject")
+    @Type(type = "json-string")
     public String getPayload() {
         return payload;
     }

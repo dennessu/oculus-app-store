@@ -9,6 +9,9 @@ var Transition = {
             case Ember.App.Product:
                 result = Transition.OffersToProduct(data);
                 break;
+            case Ember.App.CartItem:
+                result = Transition.CartItems(data);
+                break;
             default :
                 result = Transition.Normalize(data);
                 break;
@@ -54,5 +57,21 @@ var Transition = {
         }
 
         return result;
+    },
+
+    CartItems: function(data){
+        var offers = data["offers"];
+        var list = new Array();
+        for (var i = 0; i < offers.length; ++i) {
+            var item = offers[i];
+
+            list.push({
+                "id": i,
+                "product_id": item.offer.id,
+                "qty": item.quantity
+            });
+        }
+
+        return {"CartItems": list};
     }
 };

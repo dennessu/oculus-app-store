@@ -22,7 +22,7 @@ public interface PaymentTransactionService {
     @Transactional
     Promise<PaymentTransaction> charge(PaymentTransaction request);
     @Transactional
-    Promise<PaymentTransaction> reverse(Long paymentId);
+    Promise<PaymentTransaction> reverse(Long paymentId, PaymentTransaction request);
     @Transactional
     Promise<PaymentTransaction> refund(Long paymentId, PaymentTransaction request);
     @Transactional(readOnly = true)

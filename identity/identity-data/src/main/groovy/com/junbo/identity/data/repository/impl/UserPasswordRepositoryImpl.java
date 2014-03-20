@@ -10,14 +10,13 @@ import com.junbo.identity.data.dao.UserPasswordDAO;
 import com.junbo.identity.data.entity.user.UserPasswordEntity;
 import com.junbo.identity.data.mapper.ModelMapper;
 import com.junbo.identity.data.repository.UserPasswordRepository;
-import com.junbo.identity.spec.model.options.UserPasswordGetOption;
 import com.junbo.identity.spec.model.users.UserPassword;
+import com.junbo.identity.spec.options.UserPasswordListOptions;
 import com.junbo.oom.core.MappingContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -55,7 +54,9 @@ public class UserPasswordRepositoryImpl implements UserPasswordRepository {
     }
 
     @Override
-    public List<UserPassword> search(UserPasswordGetOption getOption) {
+    public List<UserPassword> search(UserPasswordListOptions getOption) {
+        return null;
+        /*
         List entities = userPasswordDAO.search(getOption.getUserId().getValue(), getOption);
 
         List<UserPassword> results = new ArrayList<UserPassword>();
@@ -63,6 +64,7 @@ public class UserPasswordRepositoryImpl implements UserPasswordRepository {
             results.add(modelMapper.toUserPassword((UserPasswordEntity)entities.get(i), new MappingContext()));
         }
         return results;
+        */
     }
 
     @Override

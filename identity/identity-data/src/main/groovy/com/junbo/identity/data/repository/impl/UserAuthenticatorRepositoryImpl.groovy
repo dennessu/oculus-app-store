@@ -10,8 +10,8 @@ import com.junbo.identity.data.dao.UserAuthenticatorDAO
 import com.junbo.identity.data.entity.user.UserAuthenticatorEntity
 import com.junbo.identity.data.mapper.ModelMapper
 import com.junbo.identity.data.repository.UserAuthenticatorRepository
-import com.junbo.identity.spec.model.options.UserAuthenticatorGetOption
 import com.junbo.identity.spec.model.users.UserAuthenticator
+import com.junbo.identity.spec.options.UserAuthenticatorListOptions
 import com.junbo.oom.core.MappingContext
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
@@ -50,7 +50,7 @@ class UserAuthenticatorRepositoryImpl implements UserAuthenticatorRepository {
     }
 
     @Override
-    List<UserAuthenticator> search(UserAuthenticatorGetOption getOption) {
+    List<UserAuthenticator> search(UserAuthenticatorListOptions getOption) {
         def result = []
         def entities = authenticatorDAO.search(getOption)
 

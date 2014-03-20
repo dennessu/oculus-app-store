@@ -10,14 +10,13 @@ import com.junbo.identity.data.dao.UserLoginAttemptDAO;
 import com.junbo.identity.data.entity.user.UserLoginAttemptEntity;
 import com.junbo.identity.data.mapper.ModelMapper;
 import com.junbo.identity.data.repository.UserLoginAttemptRepository;
-import com.junbo.identity.spec.model.options.UserLoginAttemptGetOption;
 import com.junbo.identity.spec.model.users.UserLoginAttempt;
+import com.junbo.identity.spec.options.LoginAttemptListOptions;
 import com.junbo.oom.core.MappingContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -55,7 +54,9 @@ public class UserLoginAttemptRepositoryImpl implements UserLoginAttemptRepositor
     }
 
     @Override
-    public List<UserLoginAttempt> search(UserLoginAttemptGetOption getOption) {
+    public List<UserLoginAttempt> search(LoginAttemptListOptions getOption) {
+        return null;
+        /*
         List entities = userLoginAttemptDAO.search(getOption.getUserId().getValue(), getOption);
 
         List<UserLoginAttempt> results = new ArrayList<UserLoginAttempt>();
@@ -63,6 +64,7 @@ public class UserLoginAttemptRepositoryImpl implements UserLoginAttemptRepositor
             results.add(modelMapper.toUserLoginAttempt((UserLoginAttemptEntity)entities.get(i), new MappingContext()));
         }
         return results;
+        */
     }
 
     @Override

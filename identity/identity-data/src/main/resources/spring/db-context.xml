@@ -38,10 +38,6 @@
         <property name="sessionFactory" ref="configSessionFactory"/>
     </bean>
 
-    <bean id="passwordRuleDAO" class="com.junbo.identity.data.dao.impl.postgresql.PasswordRuleDAOImpl">
-        <property name="sessionFactory" ref="configSessionFactory"/>
-    </bean>
-
     <bean id="sessionFactoryWrapper" class="com.junbo.sharding.core.hibernate.SessionFactoryWrapper">
         <property name="mapper" ref="shardDataSourceMapper"/>
         <property name="dataSourceRegistry" ref="shardDataSourceRegistry"/>
@@ -128,10 +124,10 @@
         <property name="daoTarget" ref="userPhoneNumberDAOTarget" />
     </bean>
 
-    <bean id="userPINDAOTarget" class="com.junbo.identity.data.dao.impl.postgresql.UserPinDAOImpl" parent="entityDAOBase" />
-    <bean id="userPINDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
+    <bean id="userPinDAOTarget" class="com.junbo.identity.data.dao.impl.postgresql.UserPinDAOImpl" parent="entityDAOBase" />
+    <bean id="userPinDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
         <property name="daoInterface" value="com.junbo.identity.data.dao.UserPinDAO" />
-        <property name="daoTarget" ref="userPINDAOTarget" />
+        <property name="daoTarget" ref="userPinDAOTarget" />
     </bean>
 
     <bean id="userSecurityQuestionDAOTarget" class="com.junbo.identity.data.dao.impl.postgresql.UserSecurityQuestionDAOImpl" parent="entityDAOBase" />
@@ -172,5 +168,4 @@
     <bean id="userSecurityQuestionRepository" class="com.junbo.identity.data.repository.impl.UserSecurityQuestionRepositoryImpl" />
     <bean id="userTosRepository" class="com.junbo.identity.data.repository.impl.UserTosRepositoryImpl" />
     <bean id="securityQuestionRepository" class="com.junbo.identity.data.repository.impl.SecurityQuestionRepositoryImpl"/>
-    <bean id="passwordRuleRepository" class="com.junbo.identity.data.repository.impl.PasswordRuleRepositoryImpl"/>
 </beans>

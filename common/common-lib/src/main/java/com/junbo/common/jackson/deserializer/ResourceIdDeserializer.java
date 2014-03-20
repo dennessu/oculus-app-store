@@ -9,6 +9,8 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.junbo.common.jackson.common.ResourceAware;
+import com.junbo.common.jackson.common.ResourceCollectionAware;
 import com.junbo.common.jackson.model.ResourceRef;
 import com.junbo.common.shuffle.Oculus48Id;
 import junit.framework.Assert;
@@ -19,13 +21,15 @@ import java.util.*;
 /**
  * ResourceIdDeserializer.
  */
-public class ResourceIdDeserializer extends JsonDeserializer<Object> implements ResourceCollectionAware {
+public class ResourceIdDeserializer extends JsonDeserializer<Object> implements ResourceCollectionAware, ResourceAware {
     // thread safe
-    private static final ObjectMapper MAPPER = new ObjectMapper();
+    protected static final ObjectMapper MAPPER = new ObjectMapper();
 
-    private Class<? extends Collection> collectionType;
+    protected Class<? extends Collection> collectionType;
 
-    private Class<?> idClassType;
+    protected Class<?> idClassType;
+
+    protected String resourcePath;
 
     @Override
     public void injectCollectionType(Class<? extends Collection> collectionType) {
@@ -35,6 +39,11 @@ public class ResourceIdDeserializer extends JsonDeserializer<Object> implements 
     @Override
     public void injectIdClassType(Class<?> idClassType) {
         this.idClassType = idClassType;
+    }
+
+    @Override
+    public void injectResourcePath(String resourcePath) {
+        this.resourcePath = resourcePath;
     }
 
     @Override
@@ -50,14 +59,25 @@ public class ResourceIdDeserializer extends JsonDeserializer<Object> implements 
         return Oculus48Id.unShuffle(Oculus48Id.deFormat(id));
     }
 
-    private Object handleSingle(JsonParser jsonParser) throws IOException {
+    protected Object handleSingle(JsonParser jsonParser) throws IOException {
         ResourceRef resourceRef = MAPPER.readValue(jsonParser, ResourceRef.class);
 
         if (resourceRef == null) {
             return null;
         }
 
-        return parse(resourceRef.getId());
+        return parse(resourceRef.getId(), idClassType);
+    }
+
+    protected <T> T parse(String id, Class clazz) {
+        // for now, we only support String/Integer/Long id types
+        if (clazz == Long.class) {
+            return (T) decode(id);
+        } else if (clazz == Integer.class) {
+            return (T) Integer.valueOf(id);
+        }
+
+        return (T) id;
     }
 
     private Object handleCollection(JsonParser jsonParser) throws IOException {
@@ -66,7 +86,7 @@ public class ResourceIdDeserializer extends JsonDeserializer<Object> implements 
                 MAPPER.getTypeFactory().constructCollectionType(collectionType, ResourceRef.class));
 
         for (ResourceRef ref : references) {
-            results.add(parse(ref.getId()));
+            results.add(parse(ref.getId(), idClassType));
         }
 
         return results;
@@ -78,25 +98,14 @@ public class ResourceIdDeserializer extends JsonDeserializer<Object> implements 
 
     private Collection<Object> createEmptyCollection(Class collectionType) {
         if (List.class.equals(collectionType)) {
-            return new ArrayList<Object>();
+            return new ArrayList<>();
         }
 
         if (Set.class.equals(collectionType)) {
-            return new HashSet<Object>();
+            return new HashSet<>();
         }
 
         throw new IllegalStateException(
                 "Unsupported collection type [" + collectionType + "] for ResourceIdDeserializer");
-    }
-
-    private <T> T parse(String id) {
-        // for now, we only support String/Integer/Long id types
-        if (idClassType == Long.class) {
-            return (T) decode(id);
-        } else if (idClassType == Integer.class) {
-            return (T) Integer.valueOf(id);
-        }
-
-        return (T) id;
     }
 }

@@ -5,22 +5,22 @@
  */
 package com.junbo.identity.data.entity.domaindata;
 
-import javax.persistence.*;
-import java.util.Date;
+import com.junbo.identity.data.entity.common.ResourceMetaEntity;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
  * Created by liangfu on 3/16/14.
  */
 @Entity
 @Table(name = "security_question")
-public class SecurityQuestionEntity {
+public class SecurityQuestionEntity extends ResourceMetaEntity {
     @Id
     @Column(name = "id")
     private Long id;
-
-    @Version
-    @Column(name = "version")
-    Integer resourceAge;
 
     @Column(name = "value")
     private String value;
@@ -28,27 +28,12 @@ public class SecurityQuestionEntity {
     @Column(name = "active")
     private Boolean active;
 
-    @Column(name = "created_by")
-    private String createdBy;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "created_time")
-    private Date createdTime;
-
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Integer getResourceAge() {
-        return resourceAge;
-    }
-
-    public void setResourceAge(Integer resourceAge) {
-        this.resourceAge = resourceAge;
     }
 
     public String getValue() {
@@ -67,19 +52,4 @@ public class SecurityQuestionEntity {
         this.active = active;
     }
 
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public Date getCreatedTime() {
-        return createdTime;
-    }
-
-    public void setCreatedTime(Date createdTime) {
-        this.createdTime = createdTime;
-    }
 }
