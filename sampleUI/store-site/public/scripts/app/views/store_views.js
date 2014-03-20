@@ -5,5 +5,11 @@ var StoreViews = {
     }),
     DetailView: Ember.View.extend({
         template: Ember.TEMPLATES[AppConfig.Templates.Store.Detail.name]
+    }),
+    CartView: Ember.View.extend({
+        template: Ember.TEMPLATES[AppConfig.Templates.Store.Cart.name]
+    }),
+    OrderSummaryView: Ember.View.extend({
+        template: Ember.TEMPLATES[AppConfig.Templates.Store.OrderSummary.name]
     })
 };

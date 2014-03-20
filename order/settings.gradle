@@ -1,3 +1,4 @@
+rootProject.name = 'order'
 include 'order-spec'
 
 include 'order-db'

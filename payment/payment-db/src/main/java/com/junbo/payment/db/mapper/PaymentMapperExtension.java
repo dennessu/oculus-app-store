@@ -33,8 +33,8 @@ public class PaymentMapperExtension {
             return null;
         }
         PaymentEventEntity entity = paymentMapperImpl.toPaymentEventEntityRaw(event, new MappingContext());
-        entity.setNetAmount(event.getChargeInfo().getAmount());
-        entity.setCurrency(event.getChargeInfo().getCurrency());
+        entity.setNetAmount(event.getChargeInfo() == null ? null : event.getChargeInfo().getAmount());
+        entity.setCurrency(event.getChargeInfo() == null ? null : event.getChargeInfo().getCurrency());
         return entity;
     }
 

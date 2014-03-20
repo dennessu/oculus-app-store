@@ -10,6 +10,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import com.junbo.common.jackson.common.ResourceAware;
 import com.junbo.common.jackson.model.ResourceRef;
 import com.junbo.common.shuffle.Oculus48Id;
 
@@ -28,14 +29,14 @@ public class ResourceIdSerializer extends JsonSerializer<Object> implements Reso
 
     protected static final String RESOURCE_URL_PREFIX = "http://api.wan-san.com/v1";
 
-    protected String resourceType;
+    protected String resourcePath;
 
     public ResourceIdSerializer() {
     }
 
     @Override
-    public void injectResourceType(String resourceType) {
-        this.resourceType = resourceType;
+    public void injectResourcePath(String resourcePath) {
+        this.resourcePath = resourcePath;
     }
 
     @Override
@@ -64,7 +65,7 @@ public class ResourceIdSerializer extends JsonSerializer<Object> implements Reso
     }
 
     protected String getResourceHref(Object value) {
-        return RESOURCE_URL_PREFIX + resourceType + "/" + encode(value);
+        return RESOURCE_URL_PREFIX + resourcePath + "/" + encode(value);
     }
 
     protected List<ResourceRef> handleCollection(Object value) {

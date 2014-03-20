@@ -5,12 +5,12 @@
  */
 package com.junbo.payment.spec.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.jackson.annotation.PaymentInstrumentId;
 import com.junbo.common.jackson.annotation.PaymentInstrumentTypeId;
 import com.junbo.common.jackson.annotation.UserId;
 import com.junbo.common.jackson.serializer.CascadeResource;
+import com.junbo.payment.common.InnerFilter;
 
 import java.util.Date;
 import java.util.UUID;
@@ -35,6 +35,7 @@ public class PaymentInstrument {
     private Phone phone;
     private String email;
     private String relationToHolder;
+    @InnerFilter
     private CreditCardRequest creditCardRequest;
     //response:
     private String status;
@@ -66,7 +67,7 @@ public class PaymentInstrument {
     public Long getUserId() {
         return userId;
     }
-    //TODO: add @JsonIgnore
+
     public void setUserId(Long userId) {
         this.userId = userId;
     }
@@ -79,11 +80,10 @@ public class PaymentInstrument {
         this.creditCardRequest = creditCardRequest;
     }
 
-    @JsonIgnore
     public boolean getIsValidated() {
         return isValidated;
     }
-    @JsonProperty
+
     public void setIsValidated(boolean validated) {
         this.isValidated = validated;
     }

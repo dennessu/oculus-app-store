@@ -1,3 +1,4 @@
+rootProject.name = 'entitlement'
 include 'entitlement-spec'
 
 include 'entitlement-common'

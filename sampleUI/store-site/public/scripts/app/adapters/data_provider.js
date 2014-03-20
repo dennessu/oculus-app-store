@@ -32,16 +32,6 @@ DataProvider.prototype.Discount = function(){
 };
 
 DataProvider.prototype.Emit = function(eventName, data, cb){
-    /*
-    api:{
-     async: false,
-     namespace: "/api/identity/login"
-     }
-    data:{
-        body: {},
-        cookies:{}
-    }
-    */
 
     if(this._isSocket){
         console.log("[Emit: "+ eventName +"]: ", data);

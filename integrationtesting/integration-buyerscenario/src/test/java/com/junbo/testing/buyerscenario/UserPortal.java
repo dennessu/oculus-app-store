@@ -8,7 +8,9 @@ package com.junbo.testing.buyerscenario;
 import com.junbo.identity.spec.model.common.ResultList;
 import com.junbo.identity.spec.model.user.User;
 import com.junbo.testing.buyerscenario.util.BaseTestClass;
+import com.junbo.testing.common.apihelper.identity.UserService;
 import com.junbo.testing.common.apihelper.identity.impl.UserServiceImpl;
+import com.junbo.testing.common.blueprint.Master;
 import com.junbo.testing.common.libs.LogHelper;
 import com.junbo.testing.common.property.*;
 
@@ -40,19 +42,18 @@ public class UserPortal extends BaseTestClass {
     @Test
     public void testPostUser() throws Exception {
 
-        UserServiceImpl userServiceAPI = new UserServiceImpl();
-        User userPost = userServiceAPI.PostUser();
+        UserService us = UserServiceImpl.instance();
+        String userPostId = us.PostUser();
 
-        Assert.assertNotNull(userPost);
-        Assert.assertNotNull(userPost.getId());
-        Assert.assertNotNull(userPost.getUserName());
+        Assert.assertNotNull(Master.getInstance().getUser(userPostId));
+        Assert.assertNotNull(Master.getInstance().getUser(userPostId).getUserName());
 
         //Get the user with ID
-        User userGet = userServiceAPI.GetUserByUserId(userPost.getId());
-        Assert.assertNotNull(userGet, "Can't get user by user ID");
+        userPostId = us.GetUserByUserId(userPostId);
+        Assert.assertNotNull(userPostId, "Can't get user by user ID");
 
         //Get the user with userName
-        ResultList<User> userGetList = userServiceAPI.GetUserByUserName(userPost.getUserName());
+        ResultList<User> userGetList = us.GetUserByUserName(Master.getInstance().getUser(userPostId).getUserName());
         Assert.assertNotNull(userGetList, "Can't get user by user Name");
     }
 
