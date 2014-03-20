@@ -41,17 +41,25 @@ public interface AppErrors {
             description = "Order item not found")
     AppError orderItemNotFound();
 
-    @ErrorDef(httpStatusCode = 404, code = ErrorCode.USER_NOT_FOUND,
+    @ErrorDef(httpStatusCode = 404, code = UserErrorCode.USER_NOT_FOUND,
             description = "User not found")
     AppError userNotFound();
 
-    @ErrorDef(httpStatusCode = 403, code = ErrorCode.USER_STATUS_INVALID,
+    @ErrorDef(httpStatusCode = 403, code = UserErrorCode.USER_STATUS_INVALID,
             description = "User status invalid")
     AppError userStatusInvalid();
 
-    @ErrorDef(httpStatusCode = 403, code = ErrorCode.PAYMENT_STATUS_INVALID,
-            description = "Payment status invalid")
-    AppError paymentStatusInvalid();
+    @ErrorDef(httpStatusCode = 403, code = PaymentErrorCode.PAYMENT_INSTRUMENT_STATUS_INVALID,
+            description = "Payment instrument {0} status invalid.")
+    AppError paymentInstrumentStatusInvalid(String paymentInstrumentId);
+
+    @ErrorDef(httpStatusCode = 404, code = PaymentErrorCode.PAYMENT_INSTRUMENT_NOT_FOUND,
+            description = "Payment instrument {0} not found.")
+    AppError paymentInstrumentNotFound(String paymentInstrumentId);
+
+    @ErrorDef(httpStatusCode = 403, code = PaymentErrorCode.PAYMENT_CONNECTION_ERROR,
+            description = "Payment connection error")
+    AppError paymentConnectionError();
 
     @ErrorDef(httpStatusCode = 403, code = ErrorCode.INVALID_FIELD,
             description = "{1}", field = "{0}")
