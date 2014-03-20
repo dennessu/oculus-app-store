@@ -23,6 +23,7 @@ import javax.lang.model.element.VariableElement
 import javax.lang.model.type.DeclaredType
 import javax.lang.model.type.TypeMirror
 import javax.lang.model.util.ElementFilter
+
 /**
  * Java doc.
  */
@@ -76,10 +77,10 @@ class ParseMapper implements MapperHandler {
                 }*.properties.flatten().each { MappingPropertyInfo property ->
                     if (property.bidirectional) {
                         properties.add(new MappingPropertyInfo(
-                                source:property.target,
-                                target:property.source,
-                                excluded:property.excluded,
-                                explicitMethodName:property.explicitMethodName
+                                source: property.target,
+                                target: property.source,
+                                excluded: property.excluded,
+                                explicitMethodName: property.explicitMethodName
                         ))
                     }
                 }
@@ -120,7 +121,9 @@ class ParseMapper implements MapperHandler {
     private static MappingMethodInfo getMappingMethod(ExecutableElement method, HandlerContext handlerContext) {
 
         def parameters = parseParameters(method, handlerContext)
-        ParameterModel sourceParameter = parameters[0], contextParameter = parameters[1]
+        ParameterModel sourceParameter = parameters[0]
+        ParameterModel alternativeSourceParameter = parameters[1]
+        ParameterModel contextParameter = parameters[2]
 
         def returnType = handlerContext.typeFactory.getType(method.returnType)
 
@@ -130,21 +133,22 @@ class ParseMapper implements MapperHandler {
         if (mappingsPrism != null) {
             properties.addAll(mappingsPrism.value().collect { MappingsPrism.Mapping mapping ->
                 new MappingPropertyInfo(
-                        source:mapping.source(),
-                        target:mapping.target() == '' ? mapping.source() : mapping.target(),
-                        excluded:mapping.excluded(),
-                        bidirectional:mapping.bidirectional(),
-                        explicitMethodName:getExplicitMethodName(mapping.explicitMethod())
+                        source: mapping.source(),
+                        target: mapping.target() == '' ? mapping.source() : mapping.target(),
+                        excluded: mapping.excluded(),
+                        bidirectional: mapping.bidirectional(),
+                        explicitMethodName: getExplicitMethodName(mapping.explicitMethod())
                 )
             })
         }
 
         return new MappingMethodInfo(
-                name:method.simpleName.toString(),
-                sourceParameter:sourceParameter,
-                contextParameter:contextParameter,
-                returnType:returnType,
-                properties:properties
+                name: method.simpleName.toString(),
+                sourceParameter: sourceParameter,
+                alternativeSourceParameter: alternativeSourceParameter,
+                contextParameter: contextParameter,
+                returnType: returnType,
+                properties: properties
         )
     }
 
@@ -152,44 +156,69 @@ class ParseMapper implements MapperHandler {
             TypeElement type, ExecutableElement method, HandlerContext handlerContext) {
 
         def parameters = parseParameters(method, handlerContext)
-        ParameterModel sourceParameter = parameters[0], contextParameter = parameters[1]
+
+        ParameterModel sourceParameter = parameters[0]
+        ParameterModel alternativeSourceParameter = parameters[1]
+        ParameterModel contextParameter = parameters[2]
 
         def returnType = handlerContext.typeFactory.getType(method.returnType)
 
         def declaringMapper = handlerContext.typeFactory.getType(type.asType())
 
         return new MappingMethodInfo(
-                declaringMapper:declaringMapper,
-                name:method.simpleName.toString(),
-                sourceParameter:sourceParameter,
-                contextParameter:contextParameter,
-                returnType:returnType
+                declaringMapper: declaringMapper,
+                name: method.simpleName.toString(),
+                sourceParameter: sourceParameter,
+                alternativeSourceParameter: alternativeSourceParameter,
+                contextParameter: contextParameter,
+                returnType: returnType
         )
     }
 
     private static List<ParameterModel> parseParameters(ExecutableElement method, HandlerContext handlerContext) {
 
-        if (!(method.parameters.size() in 1..2)) {
-            throw new ProcessingException('Mapping Method should have 1 or 2 parameters.', method)
+        if (!(method.parameters.size() in 1..3)) {
+            throw new ProcessingException('Mapping Method should have 1..3 parameters.', method)
         }
 
         def parameters = method.parameters.collect { VariableElement parameter ->
             new ParameterModel(
-                    name:parameter.simpleName.toString(),
-                    type:handlerContext.typeFactory.getType(parameter.asType())
+                    name: parameter.simpleName.toString(),
+                    type: handlerContext.typeFactory.getType(parameter.asType())
             )
         }
 
         def sourceParameter = parameters[0]
+        ParameterModel alternativeSourceParameter = null
+        ParameterModel contextParameter = null
 
-        ParameterModel contextParameter = parameters.size() > 1 ? parameters[1] : null
+        if (parameters.size() == 2) {
 
-        if (contextParameter != null &&
-                contextParameter.type.qualifiedName != MappingContext.canonicalName) {
-            throw new ProcessingException('2nd parameter of Mapping Method should be of MappingContext type.', method)
+            if (parameters[1].type.qualifiedName == MappingContext.canonicalName) {
+                contextParameter = parameters[1]
+            } else if (parameters[1].type.qualifiedName == sourceParameter.type.qualifiedName) {
+                alternativeSourceParameter = parameters[1]
+            } else {
+                throw new ProcessingException('2nd parameter of Mapping Method should be of ' +
+                        MappingContext.canonicalName + ' type or ' + sourceParameter.type.qualifiedName + 'type.', method)
+            }
+
+        } else if (parameters.size() == 3) {
+            alternativeSourceParameter = parameters[1]
+
+            if (alternativeSourceParameter.type.qualifiedName != sourceParameter.type.qualifiedName) {
+                throw new ProcessingException('2nd parameter of Mapping Method should be of '
+                        + sourceParameter.type.qualifiedName + ' type.', method)
+            }
+
+            contextParameter = parameters[2]
+
+            if (contextParameter.type.qualifiedName != MappingContext.canonicalName) {
+                throw new ProcessingException('3rd parameter of Mapping Method should be of MappingContext type.', method)
+            }
         }
 
-        return [sourceParameter, contextParameter]
+        return [sourceParameter, alternativeSourceParameter, contextParameter]
     }
 
     private static String getExplicitMethodName(String explicitMethodName) {

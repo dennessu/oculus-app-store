@@ -22,6 +22,8 @@ class MappingMethodInfo {
 
     ParameterModel sourceParameter
 
+    ParameterModel alternativeSourceParameter
+
     ParameterModel contextParameter
 
     List<MappingPropertyInfo> properties
@@ -33,6 +35,7 @@ class MappingMethodInfo {
                 ', name=\'' + name + '\'' +
                 ', returnType=' + returnType +
                 ', sourceParameter=' + sourceParameter +
+                ', alternativeSourceParameter=' + alternativeSourceParameter +
                 ', contextParameter=' + contextParameter +
                 '}'
     }

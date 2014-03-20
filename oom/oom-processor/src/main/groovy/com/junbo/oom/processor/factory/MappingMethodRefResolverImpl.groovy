@@ -21,26 +21,56 @@ class MappingMethodRefResolverImpl implements MappingMethodRefResolver {
     private final Map<Tuple, MappingMethodRefModel> explicitMappingMethodRefs = [:]
 
     @Override
-    MappingMethodRefModel resolve(TypeModel sourceType, TypeModel targetType, String explicitMappingMethod) {
+    MappingMethodRefModel resolve(TypeModel sourceType, TypeModel targetType,
+                                  boolean hasAlternativeSourceParameter, boolean hasContextParameter,
+                                  String explicitMappingMethod) {
+
         if (StringUtils.isEmpty(explicitMappingMethod)) {
-            return mappingMethodRefs[new Tuple(sourceType, targetType)]
+
+            return mappingMethodRefs[new Tuple(
+                    sourceType,
+                    targetType,
+                    hasAlternativeSourceParameter,
+                    hasContextParameter)] ?: // fallback to the method without context parameter.
+                    mappingMethodRefs[new Tuple(
+                            sourceType,
+                            targetType,
+                            hasAlternativeSourceParameter,
+                            false)]
         }
 
-        return explicitMappingMethodRefs[new Tuple(sourceType, targetType, explicitMappingMethod)]
+        return explicitMappingMethodRefs[new Tuple(
+                sourceType,
+                targetType,
+                hasAlternativeSourceParameter,
+                hasContextParameter,
+                explicitMappingMethod)] ?: // fallback to the method without context parameter.
+                explicitMappingMethodRefs[new Tuple(
+                        sourceType,
+                        targetType,
+                        hasAlternativeSourceParameter,
+                        false,
+                        explicitMappingMethod)]
     }
 
     @Override
     void register(TypeModel sourceType, TypeModel targetType, MappingMethodRefModel mappingMethodRef) {
+
         if (mappingMethodRef.name.startsWith(Constants.EXPLICIT_METHOD_NAME_PREFIX)) {
-            def oldRef = explicitMappingMethodRefs[new Tuple(sourceType, targetType, mappingMethodRef.name)]
-            if (oldRef == null || !oldRef.hasContextParameter && mappingMethodRef.hasContextParameter) {
-                explicitMappingMethodRefs[new Tuple(sourceType, targetType, mappingMethodRef.name)] = mappingMethodRef
-            }
+            explicitMappingMethodRefs[new Tuple(
+                    sourceType,
+                    targetType,
+                    mappingMethodRef.hasAlternativeSourceParameter,
+                    mappingMethodRef.hasContextParameter,
+                    mappingMethodRef.name)] = mappingMethodRef
+
+            return;
         }
 
-        def oldRef = mappingMethodRefs[new Tuple(sourceType, targetType)]
-        if (oldRef == null || !oldRef.hasContextParameter && mappingMethodRef.hasContextParameter) {
-            mappingMethodRefs[new Tuple(sourceType, targetType)] = mappingMethodRef
-        }
+        mappingMethodRefs[new Tuple(
+                sourceType,
+                targetType,
+                mappingMethodRef.hasAlternativeSourceParameter,
+                mappingMethodRef.hasContextParameter)] = mappingMethodRef
     }
 }
