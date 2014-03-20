@@ -14,6 +14,7 @@ import com.junbo.identity.spec.model.user.User
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.db.repo.OrderRepository
+import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.OrderItem
 import com.junbo.payment.spec.model.PaymentInstrument
 import groovy.transform.CompileStatic
@@ -23,7 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
 import org.springframework.util.CollectionUtils
-
 /**
  * Created by chriszhu on 2/21/14.
  */
@@ -59,7 +59,8 @@ class OrderServiceContextBuilder {
             facadeContainer.paymentFacade.
                     getPaymentInstrument(context.order.user, piid.value).syncRecover { Throwable throwable ->
                 LOGGER.error('name=Order_GetPaymentInstrument_Error', throwable)
-                throw new IllegalArgumentException('name=Order_GetPaymentInstrument_Error' , throwable)
+                // TODO read the payment error
+                throw AppErrors.INSTANCE.paymentConnectionError().exception()
             }.syncThen { PaymentInstrument pi ->
                 pis << pi
             }
