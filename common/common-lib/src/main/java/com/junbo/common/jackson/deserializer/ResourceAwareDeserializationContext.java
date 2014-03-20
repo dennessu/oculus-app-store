@@ -17,6 +17,8 @@ import com.fasterxml.jackson.databind.deser.DeserializerFactory;
 import com.fasterxml.jackson.databind.introspect.Annotated;
 import com.fasterxml.jackson.databind.introspect.AnnotatedMember;
 import com.fasterxml.jackson.databind.introspect.AnnotatedWithParams;
+import com.junbo.common.jackson.annotation.ResourcePath;
+import com.junbo.common.jackson.common.ResourceAware;
 import com.junbo.common.jackson.common.ResourceCollectionAware;
 
 import java.lang.reflect.ParameterizedType;
@@ -92,6 +94,15 @@ public class ResourceAwareDeserializationContext extends DefaultDeserializationC
             }
 
             ((ResourceCollectionAware) deser).injectIdClassType(idClassType);
+        }
+
+        if (deser instanceof ResourceAware) {
+            ResourcePath typeAnno = annotated.getAnnotation(ResourcePath.class);
+            if (typeAnno == null) {
+                throw new IllegalStateException("ResourcePath annotation is missing.");
+            }
+
+            ((ResourceAware) deser).injectResourcePath(typeAnno.value());
         }
 
         return deser;

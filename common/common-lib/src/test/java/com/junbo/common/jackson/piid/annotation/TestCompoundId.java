@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.junbo.common.jackson.annotation.ResourcePath;
-import com.junbo.common.jackson.deserializer.ResourceIdDeserializer;
+import com.junbo.common.jackson.deserializer.CompoundIdDeserializer;
 import com.junbo.common.jackson.serializer.CompoundIdSerializer;
 
 import java.lang.annotation.Inherited;
@@ -23,7 +23,7 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.RUNTIME)
 @JacksonAnnotationsInside
 @JsonSerialize(using = CompoundIdSerializer.class, include = JsonSerialize.Inclusion.NON_NULL)
-@JsonDeserialize(using = ResourceIdDeserializer.class)
+@JsonDeserialize(using = CompoundIdDeserializer.class)
 @ResourcePath("/users/{userId}/test-ids/{testId}")
 public @interface TestCompoundId {
 }

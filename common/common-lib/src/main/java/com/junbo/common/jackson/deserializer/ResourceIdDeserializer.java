@@ -23,7 +23,7 @@ import java.util.*;
  */
 public class ResourceIdDeserializer extends JsonDeserializer<Object> implements ResourceCollectionAware, ResourceAware {
     // thread safe
-    private static final ObjectMapper MAPPER = new ObjectMapper();
+    protected static final ObjectMapper MAPPER = new ObjectMapper();
 
     protected Class<? extends Collection> collectionType;
 
@@ -66,7 +66,18 @@ public class ResourceIdDeserializer extends JsonDeserializer<Object> implements 
             return null;
         }
 
-        return parse(resourceRef.getId());
+        return parse(resourceRef.getId(), idClassType);
+    }
+
+    protected <T> T parse(String id, Class clazz) {
+        // for now, we only support String/Integer/Long id types
+        if (clazz == Long.class) {
+            return (T) decode(id);
+        } else if (clazz == Integer.class) {
+            return (T) Integer.valueOf(id);
+        }
+
+        return (T) id;
     }
 
     private Object handleCollection(JsonParser jsonParser) throws IOException {
@@ -75,7 +86,7 @@ public class ResourceIdDeserializer extends JsonDeserializer<Object> implements 
                 MAPPER.getTypeFactory().constructCollectionType(collectionType, ResourceRef.class));
 
         for (ResourceRef ref : references) {
-            results.add(parse(ref.getId()));
+            results.add(parse(ref.getId(), idClassType));
         }
 
         return results;
@@ -96,16 +107,5 @@ public class ResourceIdDeserializer extends JsonDeserializer<Object> implements 
 
         throw new IllegalStateException(
                 "Unsupported collection type [" + collectionType + "] for ResourceIdDeserializer");
-    }
-
-    private <T> T parse(String id) {
-        // for now, we only support String/Integer/Long id types
-        if (idClassType == Long.class) {
-            return (T) decode(id);
-        } else if (idClassType == Integer.class) {
-            return (T) Integer.valueOf(id);
-        }
-
-        return (T) id;
     }
 }

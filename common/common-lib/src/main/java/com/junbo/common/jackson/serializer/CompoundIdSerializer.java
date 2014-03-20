@@ -35,7 +35,6 @@ public class CompoundIdSerializer extends ResourceIdSerializer {
             for (Field field : value.getClass().getDeclaredFields()) {
                 field.setAccessible(true);
                 Object fieldValue = field.get(value);
-                field.setAccessible(false);
 
                 path = path.replace("{" + field.getName() + "}", encode(fieldValue));
             }
@@ -43,6 +42,6 @@ public class CompoundIdSerializer extends ResourceIdSerializer {
             throw new RuntimeException("Error occurred serialize CompoundId.");
         }
 
-        return path;
+        return RESOURCE_URL_PREFIX + path;
     }
 }

@@ -7,10 +7,17 @@ package com.junbo.common.jackson.piid;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.junbo.common.jackson.PaymentInstrument;
 import com.junbo.common.jackson.deserializer.ResourceAwareDeserializationContext;
 import com.junbo.common.jackson.serializer.ResourceAwareSerializerProvider;
+import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * CascadeIdTest.
@@ -35,6 +42,9 @@ public class CascadeIdTest {
         trx.setTestId(ti);
 
         String json = mapper.writeValueAsString(trx);
-        System.out.println(json);
+        PaymentTransaction trx2 = mapper.readValue(json, PaymentTransaction.class);
+
+        Assert.assertEquals(trx2.getTestId().getUserId(), trx.getTestId().getUserId());
+        Assert.assertEquals(trx2.getTestId().getTestId(), trx.getTestId().getTestId());
     }
 }
