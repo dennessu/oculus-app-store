@@ -11,15 +11,11 @@ import junit.framework.Assert;
 
 /**
  * ResourceIdSerializer.
+ *
+ * @deprecated replaced by CompoundIdSerializer
  */
+@Deprecated
 public class CascadeResourceIdSerializer extends ResourceIdSerializer {
-    @Override
-    protected Object unwrap(Object value) {
-        Assert.assertTrue(value instanceof CascadeResource);
-
-        return ((CascadeResource) value).getPrimaryId();
-    }
-
     @Override
     protected ResourceRef handleSingle(Object value) {
         Assert.assertTrue(value instanceof CascadeResource);
@@ -42,6 +38,6 @@ public class CascadeResourceIdSerializer extends ResourceIdSerializer {
             encodedIds[i] = encode(resource.getCascadeIds()[i]);
         }
 
-        return RESOURCE_URL_PREFIX + String.format(resourceType, encodedIds);
+        return RESOURCE_URL_PREFIX + String.format(resourcePath, encodedIds);
     }
 }

@@ -28,14 +28,14 @@ public class ResourceIdSerializer extends JsonSerializer<Object> implements Reso
 
     protected static final String RESOURCE_URL_PREFIX = "http://api.wan-san.com/v1";
 
-    protected String resourceType;
+    protected String resourcePath;
 
     public ResourceIdSerializer() {
     }
 
     @Override
     public void injectResourceType(String resourceType) {
-        this.resourceType = resourceType;
+        this.resourcePath = resourceType;
     }
 
     @Override
@@ -64,7 +64,7 @@ public class ResourceIdSerializer extends JsonSerializer<Object> implements Reso
     }
 
     protected String getResourceHref(Object value) {
-        return RESOURCE_URL_PREFIX + resourceType + "/" + encode(value);
+        return RESOURCE_URL_PREFIX + resourcePath + "/" + encode(value);
     }
 
     protected List<ResourceRef> handleCollection(Object value) {
