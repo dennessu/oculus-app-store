@@ -1,34 +1,43 @@
 var AppConfig = function () {};
 
 AppConfig.Templates = {
-    Login: { name: "login", url: "/template/identity/login"},
-    Register: {name: "register", url: "/template/identity/register"},
-    Captcha: {name: "captcha", url: "/template/identity/captcha"},
-    TFA: {name: "tfa", url: "/template/identity/tfa"},
-    My: {name: "my", url: "/template/identity/my"}
+    Identity: {
+        Login: { name: "login", url: "/template/identity/login"},
+        Captcha: {name: "captcha", url: "/template/identity/captcha"},
+        TFA: {name: "tfa", url: "/template/identity/tfa"},
+        Register: {name: "register", url: "/template/identity/register"},
+        PIN: {name: "pin", url: "/template/identity/pin"},
+        My: {name: "my", url: "/template/identity/my"}
+    },
+    Store: {
+        Index: {name: "index", url: "/template/store/index"},
+        Detail: {name: "detail", url: "/template/store/detail"}
+    }
 };
 
 AppConfig.API = {
     Identity: {
         Config: {
-            Socket: "http://localhost:3000"
+            Namespace: "/api/identity/"
         },
-        Login: {
-            async: false,
-            namespace: "/api/identity/login"
+        Login: { Path: "login" },
+        Captcha: { Path: "captcha" },
+        TFA: { Path: "tfa" },
+        Register: { Path: "register" },
+        PIN: { Path: "pin" }
+    },
+    Catalog: {
+        Config: {
+            Namespace: "/api/catalog/"
         },
-        Register: {
-            async: false,
-            namespace: "/api/identity/register"
-        },
-        Captcha: {
-            async: false,
-            namespace: "/api/identity/captcha"
-        },
-        TFA: {
-            async: false,
-            namespace: "/api/identity/tfa"
-        }
+        Products: { Path: "products" }
+    }
+};
+
+AppConfig.DataModelMapTable = {
+    "Ember.App.Product": {
+        Provider: "CatalogProvider",
+        Method: "GetProducts"
     }
 };
 

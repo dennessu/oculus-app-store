@@ -34,6 +34,12 @@ public interface ClientEndpoint {
     Promise<Client> getByClientId(@HeaderParam("Authorization") String authorization,
                                   @PathParam("clientId") String clientId);
 
+    @ApiOperation("Get client info")
+    @GET
+    @Path("/{clientId}/client-info")
+    Promise<Client> getInfoByClientId(@HeaderParam("Authorization") String authorization,
+                                      @PathParam("clientId") String clientId);
+
     @ApiOperation("Put a client")
     @PUT
     @Path("/{clientId}")

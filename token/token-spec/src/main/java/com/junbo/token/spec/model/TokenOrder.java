@@ -26,8 +26,7 @@ public class TokenOrder {
     private Long usageLimit;
     private String createMethod;
     private Long quantity;
-    private boolean activeImmediate;
-    private Long requestorId;
+    private String activation;
     private List<TokenItem> tokenItems;
 
     public Long getId() {
@@ -94,19 +93,20 @@ public class TokenOrder {
         this.quantity = quantity;
     }
 
-    public boolean isActiveImmediate() {
-        return activeImmediate;
+    public String getActivation() {
+        return activation;
     }
 
-    public void setActiveImmediate(boolean activeImmediate) {
-        this.activeImmediate = activeImmediate;
+    public void setActivation(String activation) {
+        this.activation = activation;
     }
 
-    public Long getRequestorId() {
-        return requestorId;
+    public List<TokenItem> getTokenItems() {
+        return tokenItems;
     }
 
-    public void setRequestorId(Long requestorId) {
-        this.requestorId = requestorId;
+    public void setTokenItems(List<TokenItem> tokenItems) {
+        this.tokenItems = tokenItems;
     }
+
 }

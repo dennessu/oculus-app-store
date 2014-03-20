@@ -31,4 +31,5 @@ public class OrderDaoImpl extends BaseDaoImpl<OrderEntity> implements OrderDao {
         criteria.add(Restrictions.eq("trackingUuid", trackingUuid));
         return criteria.list();
     }
+
 }

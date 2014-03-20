@@ -58,6 +58,14 @@
         <property name="dbName" value="login_state"/>
     </bean>
 
+    <bean id="scopeDAO" class="com.junbo.oauth.db.dao.couch.CouchScopeDAOImpl" parent="baseDAO">
+        <property name="dbName" value="scope"/>
+    </bean>
+
+    <bean id="consentDAO" class="com.junbo.oauth.db.dao.couch.CouchConsentDAOImpl" parent="baseDAO">
+        <property name="dbName" value="consent"/>
+    </bean>
+
     <bean id="clientRepository" class="com.junbo.oauth.db.repo.impl.ClientRepositoryImpl">
         <property name="clientDAO" ref="clientDAO"/>
     </bean>
@@ -87,4 +95,13 @@
         <property name="rememberMeTokenDAO" ref="rememberMeTokenDAO"/>
         <property name="tokenGenerator" ref="tokenGenerator"/>
     </bean>
+
+    <bean id="scopeRepository" class="com.junbo.oauth.db.repo.impl.ScopeRepositoryImpl">
+        <property name="scopeDAO" ref="scopeDAO"/>
+    </bean>
+
+    <bean id="consentRepository" class="com.junbo.oauth.db.repo.impl.ConsentRepositoryImpl">
+        <property name="consentDAO" ref="consentDAO"/>
+    </bean>
+
 </beans>

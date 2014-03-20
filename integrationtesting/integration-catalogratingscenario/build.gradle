@@ -29,15 +29,13 @@ dependencies {
     // You can read more about how to add dependency here:
     //   http://www.gradle.org/docs/current/userguide/dependency_management.html#sec:how_to_declare_your_dependencies
 
-    compile 'org.apache.commons:commons-lang3:3.1'
-    compile 'com.ning:async-http-client:1.7.24'
+    compile (libraries.asyncclient)
+    compile project(':integration-common')
 
-    testCompile 'com.ning:async-http-client:1.7.24'
+    testCompile (libraries.asyncclient)
+    testCompile (libraries.slf4j_api)
     testCompile 'junit:junit:4.11'
     testCompile 'org.testng:testng:6.8.8'
-    testCompile 'org.slf4j:slf4j-api:1.7.6'
-    testCompile 'com.junbo.identity:identity-clientproxy:0.0.1-SNAPSHOT'
-    testCompile 'com.junbo.identity:identity-data:0.0.1-SNAPSHOT'
-    testCompile 'com.junbo.identity:identity-rest:0.0.1-SNAPSHOT'
-    testCompile 'com.junbo.identity:identity-spec:0.0.1-SNAPSHOT'
+    testCompile 'com.junbo.catalog:catalog-spec:0.0.1-SNAPSHOT'
+    testCompile project(':integration-common')
 }

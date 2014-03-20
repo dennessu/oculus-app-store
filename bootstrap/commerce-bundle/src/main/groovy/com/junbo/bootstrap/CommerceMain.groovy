@@ -5,18 +5,17 @@
  */
 package com.junbo.bootstrap
 
+import com.junbo.common.error.RestExceptionMapper
 import com.junbo.common.id.converter.IdTypeFromStringConverter
 import com.junbo.common.id.provider.IdTypeFromStringProvider
 import com.junbo.common.json.JacksonFeature
 import com.junbo.common.json.ObjectMapperProvider
+import com.junbo.configuration.ConfigResource
 import groovy.transform.CompileStatic
 import org.glassfish.grizzly.http.server.HttpServer
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory
 import org.glassfish.jersey.server.ResourceConfig
-
-import java.util.logging.Handler
-import java.util.logging.Level
-import java.util.logging.Logger
+import org.slf4j.bridge.SLF4JBridgeHandler
 
 /**
  * Commerce bundle.
@@ -31,26 +30,37 @@ class CommerceMain {
         resourceConfig.register(ObjectMapperProvider)
 
         // present properties
-        resourceConfig.register(com.junbo.configuration.ConfigResource)
+        resourceConfig.register(ConfigResource)
         resourceConfig.property('contextConfigLocation', 'classpath*:/spring/*.xml')
 
         // Id type feature
         resourceConfig.register(IdTypeFromStringConverter)
         resourceConfig.register(IdTypeFromStringProvider)
 
+        resourceConfig.register(RestExceptionMapper)
+
+
         // packages
-        resourceConfig.packages('com.junbo.cart.spec.resource.adapter',
-                'com.junbo.cart.rest.jackson', 'com.junbo.cart.rest.filter')
+        resourceConfig.packages(
+                'com.junbo.billing.spec.resource.adapter',
+                'com.junbo.payment.spec.resource.adapter',
+                'com.junbo.fulfilment.spec.resource.adapter',
+                'com.junbo.rating.spec.resource.adapter',
+                'com.junbo.cart.spec.resource.adapter',
+                'com.junbo.order.spec.resource.adapter',
+                'com.junbo.payment.spec.internal.adapter')
 
         def uri = URI.create('http://0.0.0.0:8082/rest')
         return GrizzlyHttpServerFactory.createHttpServer(uri, resourceConfig)
     }
 
     static void main(String[] args) {
-        Logger.getLogger('').setLevel(Level.ALL)
-        for (Handler handler : Logger.getLogger('').handlers) {
-            handler.setLevel(Level.ALL)
-        }
+
+        SLF4JBridgeHandler.removeHandlersForRootLogger()
+        SLF4JBridgeHandler.install()
+
+        System.setProperty('net.spy.log.LoggerImpl', 'net.spy.memcached.compat.log.SLF4JLogger')
+        System.setProperty('logback.configurationFile', 'logback-identity.xml')
 
         startServer()
     }

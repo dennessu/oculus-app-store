@@ -34,6 +34,7 @@ public abstract class VersionedDaoImpl<T extends VersionedEntity> extends BaseDa
                     criteria.add(Restrictions.le("timestamp", timestamp));
                 }
                 criteria.addOrder(Order.desc("timestamp"));
+                criteria.setMaxResults(1);
             }
         });
 

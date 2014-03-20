@@ -17,11 +17,17 @@ interface TokenService {
 
     AccessToken getAccessToken(String tokenValue)
 
+    AccessToken extractAccessToken(String authorization)
+
+    List<AccessToken> getAccessTokenByUserIdClientId(Long userId, String clientId)
+
     AccessToken updateAccessToken(AccessToken accessToken)
 
     RefreshToken generateRefreshToken(Client client, AccessToken accessToken, String salt)
 
     RefreshToken generateRefreshToken(Client client, AccessToken accessToken, RefreshToken oldRefreshToken)
+
+    List<RefreshToken> getRefreshTokenByUserIdClientId(Long userId, String clientId)
 
     RefreshToken getAndRemoveRefreshToken(String tokenValue)
 

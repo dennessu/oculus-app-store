@@ -10,11 +10,11 @@ import org.slf4j.LoggerFactory
  */
 class RequestFilter implements ResponseFilter, com.ning.http.client.filter.RequestFilter {
 
-    private static final logger = LoggerFactory.getLogger(ResponseFilter)
+    private static final LOGGER = LoggerFactory.getLogger(RequestFilter)
 
     @Override
     FilterContext filter(FilterContext ctx) throws FilterException {
-        logger.info("=======Request=======:\n{}", ctx.request.stringData)
+        LOGGER.info('=======Request=======:\n{}', ctx.request.stringData)
         return ctx
     }
 }

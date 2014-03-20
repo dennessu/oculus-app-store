@@ -17,10 +17,10 @@
     </bean>
 
     <bean id="brainTreePaymentProviderService" class="com.junbo.payment.core.provider.braintree.BrainTreePaymentProviderServiceImpl">
-        <property name="environment" value="SANDBOX"/>
-        <property name="merchantId" value="ptgjsbtqxwzgnq2b"/>
-        <property name="publicKey" value="mdmtg4v67mbyh68m"/>
-        <property name="privateKey" value="30b76bb47abf0b424fcb079a9d5978b3"/>
+        <property name="environment" value="${payment.provider.braintree.environment}"/>
+        <property name="merchantId" value="${payment.provider.braintree.merchantid}"/>
+        <property name="publicKey" value="${payment.provider.braintree.publickey}"/>
+        <property name="privateKey" value="${payment.provider.braintree.privatekey}"/>
     </bean>
 
     <bean id="brainTreeRestProviderService" class="com.junbo.payment.core.provider.braintree.BrainTreeRestProviderServiceImpl">
@@ -30,7 +30,7 @@
     <bean id="providerRoutingService" class="com.junbo.payment.core.provider.impl.ProviderRoutingServiceImpl"/>
 
     <!-- regiester brainTreeRestProviderService for async and brainTreePaymentProviderService for sync call -->
-    <bean id="handlerRegistry" class="com.junbo.payment.core.provider.impl.PaymentProviderRegistry">
+    <bean id="paymentHandlerRegistry" class="com.junbo.payment.core.provider.impl.PaymentProviderRegistry">
         <property name="registry">
             <util:map id="handlerRegistryMap">
                 <entry key="BrainTree" value-ref="brainTreeRestProviderService"/>

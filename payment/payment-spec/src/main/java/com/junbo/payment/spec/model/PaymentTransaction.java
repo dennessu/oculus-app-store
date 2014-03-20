@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.jackson.annotation.PaymentInstrumentId;
 import com.junbo.common.jackson.annotation.PaymentTransactionId;
 import com.junbo.common.jackson.annotation.UserId;
+import com.junbo.common.jackson.serializer.CascadeResource;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
@@ -63,6 +64,13 @@ public class PaymentTransaction {
 
     public void setPaymentInstrumentId(Long paymentInstrumentId) {
         this.paymentInstrumentId = paymentInstrumentId;
+    }
+
+    @PaymentInstrumentId
+    @JsonProperty("paymentInstrument")
+    public CascadeResource getCascadePaymentInstrumentId() {
+        return paymentInstrumentId == null ? null : new CascadeResource(paymentInstrumentId,
+                new Object[]{userId, paymentInstrumentId});
     }
 
     public ChargeInfo getChargeInfo() {

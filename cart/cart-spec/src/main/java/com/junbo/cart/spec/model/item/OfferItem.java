@@ -6,7 +6,7 @@
 package com.junbo.cart.spec.model.item;
 
 import com.junbo.cart.common.validate.Group;
-import com.junbo.cart.spec.model.Offer;
+import com.junbo.common.id.OfferId;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
@@ -19,7 +19,7 @@ public class OfferItem extends CartItem {
 
     @Valid
     @NotNull(groups = {Group.CartItem.class})
-    private Offer offer;
+    private OfferId offer;
 
     @NotNull(groups = {Group.CartItem.class})
     @Min(value = 0, groups = {Group.CartItem.class})
@@ -27,11 +27,11 @@ public class OfferItem extends CartItem {
 
     private Boolean selected;
 
-    public Offer getOffer() {
+    public OfferId getOffer() {
         return offer;
     }
 
-    public void setOffer(Offer offer) {
+    public void setOffer(OfferId offer) {
         this.offer = offer;
     }
 

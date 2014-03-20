@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory
  */
 class ResponseFilter implements com.ning.http.client.filter.ResponseFilter {
 
-    private static final logger = LoggerFactory.getLogger(ResponseFilter)
+    private static final LOGGER  = LoggerFactory.getLogger(ResponseFilter)
 
     private class ResponseHandler implements AsyncHandler {
 
@@ -21,7 +21,7 @@ class ResponseFilter implements com.ning.http.client.filter.ResponseFilter {
 
         List<Byte> body = new ArrayList<>()
 
-        public ResponseHandler(AsyncHandler wrapped) {
+        ResponseHandler(AsyncHandler wrapped) {
             this.wrapped = wrapped
         }
 
@@ -32,7 +32,7 @@ class ResponseFilter implements com.ning.http.client.filter.ResponseFilter {
 
         @Override
         AsyncHandler.STATE onBodyPartReceived(HttpResponseBodyPart bodyPart) throws Exception {
-            if(bodyPart.bodyPartBytes != null) {
+            if (bodyPart.bodyPartBytes != null) {
                 bodyPart.bodyPartBytes.each {
                     body.add(it)
                 }
@@ -40,10 +40,10 @@ class ResponseFilter implements com.ning.http.client.filter.ResponseFilter {
 
             if (bodyPart.last) {
                 byte[] bytes = new byte[body.size()]
-                for(int i = 0;i < bytes.length;++i) {
+                for (int i = 0; i < bytes.length; ++i) {
                     bytes[i] = body[i]
                 }
-                logger.info("=======Response=======:\n{}", new String(bytes), "UTF-8")
+                LOGGER.info('=======Response=======:\n{}', new String(bytes), 'UTF-8')
             }
             wrapped.onBodyPartReceived(bodyPart)
         }

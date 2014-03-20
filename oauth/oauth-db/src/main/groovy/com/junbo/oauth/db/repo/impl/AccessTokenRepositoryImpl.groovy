@@ -56,6 +56,13 @@ class AccessTokenRepositoryImpl implements AccessTokenRepository {
     }
 
     @Override
+    List<AccessToken> findByUserIdClientId(Long userId, String clientId) {
+        return accessTokenDAO.findByUserIdClientId(userId, clientId).collect { AccessTokenEntity entity ->
+            return wrap(entity)
+        }
+    }
+
+    @Override
     AccessToken update(AccessToken accessToken) {
         return wrap(accessTokenDAO.update(unwrap(accessToken)))
     }

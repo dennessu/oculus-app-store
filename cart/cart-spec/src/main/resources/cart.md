@@ -76,7 +76,7 @@ Fields:
                 ]
          }
 
-## POST /user/{key}/carts
+## POST /users/{key}/carts
 Create a named shopping cart for a user.
 
 + Request (application/json)
@@ -92,7 +92,7 @@ Create a named shopping cart for a user.
 
     [Cart][]
 
-## GET /user/{keyUser}/carts/{keyCart}
+## GET /users/{keyUser}/carts/{keyCart}
 Get the shopping cart by key of the cart. This is the canonical URI for the cart resources.
 
 + Parameters
@@ -126,7 +126,7 @@ Get the carts by cart name. This is the convenience URI for the cart resources.
     + Body
     [Cart][]
 
-## PUT /user/{keyUser}/carts/{keyCart}
+## PUT /users/{keyUser}/carts/{keyCart}
 Fully update the cart.
 
 + Request (application/json)
@@ -136,7 +136,7 @@ Fully update the cart.
 + Response 200
     [Cart][]
 
-## POST /user/{keyUser}/carts/{keyCart}/merge
+## POST /users/{keyUser}/carts/{keyCart}/merge
 Merge the items from the shopping cart given by the request into the cart given by Uri
 
 + Request (application/json)

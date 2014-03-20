@@ -26,7 +26,7 @@ module.exports = function(data, cb){
     profileModel.dateOfBirth = body.brithday;
     profileModel.locale = "en_" + body.country;
 
-    var dataProvider = new IdentityProvider(process.AppConfig.Identity_API_Host, process.AppConfig.Identity_API_Port);
+    var dataProvider = new CatalogProvider(process.AppConfig.Identity_API_Host, process.AppConfig.Identity_API_Port);
 
     dataProvider.PostCreateAccount(userModel, function(resultData){
         var responseModel = new DomainModels.ResponseModel();

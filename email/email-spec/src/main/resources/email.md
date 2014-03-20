@@ -21,6 +21,8 @@ The API operating on the email data.
 * type ... The type of email.
 * recipient ... The recipient of email.
 * scheduleDate ... The schedule date of email.
+* createdTime... The date time when the email is created. The value is auto-generated.
+* modifiedTime... The date time when the email is updated. The value is auto-generated.
 
 ### Email [/emails]
 
@@ -75,7 +77,9 @@ The general email will be create if "scheduleDate" is not specified. otherwise, 
 				"name1":"value1",
 				"name2":"value2",
 				"name3":"value3"
-			}
+			},
+			"createdTime":"2014-02-01T02:00:03.123Z",
+			"modifiedTime":"2014-02-01T02:00:06.123Z"
 		}
 
 ### Email Collections [/emails/{id}]
@@ -164,7 +168,9 @@ Update an existing schedule email, only schedule email can be update.
 				"name1":"value1",
 				"name2":"value2",
 				"name3":"value3"
-			}
+			},
+            "createdTime":"2014-02-01T02:00:03.123Z",
+            "modifiedTime":"2014-02-01T02:00:06.123Z"
 		}
 
 #### Delete a Schedule Email [DELETE]
@@ -212,9 +218,7 @@ All the email templates are returned.
 			"subject":"welcome123",
 			"fromAddress":"from@example.com",
 			"fromName":"from name",
-			"createBy":"user1",
 			"createTime":"2014-02-01T02:00:03.123Z",
-			"modifiedBy":"user1",
 			"modifiedTime":"2014-02-01T02:00:03.123Z"
 		}
 	],
@@ -243,9 +247,7 @@ Get a specific email tempate.
 			"subject":"welcome123",
 			"fromAddress":"from@example.com",
 			"fromName":"from name",
-			"createBy":"user1",
 			"createTime":"2014-02-01T02:00:03.123Z",
-			"modifiedBy":"user1",
 			"modifiedTime":"2014-02-01T02:00:03.123Z"
 		}
 
@@ -261,11 +263,7 @@ Create a new email template.
 			"listOfVariables":["var1","var2","var3","var4"],
 			"subject":"welcome123",
 			"fromAddress":"from@example.com",
-			"fromName":"from name",
-			"createBy":"user1",
-			"createTime":"2014-02-01T02:00:03.123Z",
-			"modifiedBy":"user1",
-			"modifiedTime":"2014-02-01T02:00:03.123Z"
+			"fromName":"from name"
 		}
 
 + Response 200 (application/json)
@@ -282,9 +280,7 @@ Create a new email template.
 			"subject":"welcome123",
 			"fromAddress":"from@example.com",
 			"fromName":"from name",
-			"createBy":"user1",
 			"createTime":"2014-02-01T02:00:03.123Z",
-			"modifiedBy":"user1",
 			"modifiedTime":"2014-02-01T02:00:03.123Z"
 		}
 
@@ -304,11 +300,7 @@ Update an existing templates. Only the attribute include the hash will be update
 			"listOfVariables":["var1","var2","var3","var4"],
 			"subject":"welcome",
 			"fromAddress":"from@example.com",
-			"fromName":"from name",
-			"createBy":"user1",
-			"createTime":"2014-02-01T02:00:03.123Z",
-			"modifiedBy":"user1",
-			"modifiedTime":"2014-02-01T02:00:03.123Z"
+			"fromName":"from name"
 		}
 
 
@@ -326,9 +318,7 @@ Update an existing templates. Only the attribute include the hash will be update
 			"subject":"welcome",
 			"fromAddress":"from@example.com",
 			"fromName":"from name",
-			"createBy":"user1",
 			"createTime":"2014-02-01T02:00:03.123Z",
-			"modifiedBy":"user1",
 			"modifiedTime":"2014-02-01T02:00:03.123Z"
 		}
 
