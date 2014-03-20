@@ -45,16 +45,11 @@ class CachedCatalogFacadeImpl implements CatalogFacade {
         }
 
         def offerPromise = catalogFacade.getOffer(offerId)
-        offerPromise.syncThen( new Promise.Func <Offer, Promise>() {
-            @Override
-            Promise apply(Offer offer) {
-                Element newElement = new Element(offerId.toString(), offer)
-                cache.put(newElement)
-                return Promise.pure(offer)
-            }
-        } )
-        return offerPromise
-
+        return offerPromise.syncThen { Offer offer ->
+            Element newElement = new Element(offerId.toString(), offer)
+            cache.put(newElement)
+            return offer
+        }
     }
 
     @Override

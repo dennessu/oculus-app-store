@@ -7,6 +7,7 @@ package com.junbo.oauth.spec.endpoint;
 
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
+import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.ws.rs.*;
 import javax.ws.rs.container.ContainerRequestContext;
@@ -20,11 +21,19 @@ import javax.ws.rs.core.*;
 @Produces(MediaType.APPLICATION_JSON)
 public interface AuthorizeEndpoint {
 
+    @ApiOperation(
+            value = "Authorize the user by GET for simple redirect",
+            notes = "The response is through redirect. For more details refer to the document.",
+            response = void.class)
     @GET
     Promise<Response> authorize(@Context UriInfo uriInfo,
                                 @Context HttpHeaders httpHeaders,
                                 @Context ContainerRequestContext request);
 
+    @ApiOperation(
+            value = "Authorize the user",
+            notes = "The response is through redirect. For more details refer to the document.",
+            response = void.class)
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     Promise<Response> postAuthorize(@Context HttpHeaders httpHeaders,

@@ -14,6 +14,7 @@
             <wf:action ref="validateDisplay"/>
             <wf:action ref="validatePrompt"/>
             <wf:action ref="validateMaxAge"/>
+            <wf:action ref="validateNonce"/>
             <wf:transition on="*" to="loadLoginState"/>
         </wf:action-state>
 

@@ -10,8 +10,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.jackson.annotation.FulfilmentId;
 import com.junbo.common.jackson.annotation.OfferId;
 import com.junbo.common.jackson.annotation.OrderItemId;
-import com.junbo.fulfilment.common.util.Utils;
-import com.junbo.fulfilment.spec.constant.FulfilmentStatus;
 
 import javax.validation.constraints.Null;
 import java.util.ArrayList;
@@ -30,37 +28,32 @@ public class FulfilmentItem {
 
     @OfferId
     private Long offerId;
-
     private Long timestamp;
     private Integer quantity;
+
+    private String status;
 
     @JsonIgnore
     private Long requestId;
 
     @Null
     @JsonProperty("fulfilmentActions")
-    private List<FulfilmentAction> actions = new ArrayList();
+    private List<FulfilmentAction> actions;
 
     public void addFulfilmentAction(FulfilmentAction action) {
+        if (actions == null) {
+            actions = new ArrayList<>();
+        }
+
         actions.add(action);
     }
 
-    @JsonProperty
     public String getStatus() {
-        // aggregated status for billing
-        // if all fulfilment action are SUCCEED, the item status is SUCCEED,
-        // otherwise PENDING
-        if (actions == null) {
-            return FulfilmentStatus.SUCCEED;
-        }
+        return status;
+    }
 
-        for (FulfilmentAction action : actions) {
-            if (!Utils.equals(FulfilmentStatus.SUCCEED, action.getStatus())) {
-                return FulfilmentStatus.PENDING;
-            }
-        }
-
-        return FulfilmentStatus.SUCCEED;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public Long getFulfilmentId() {

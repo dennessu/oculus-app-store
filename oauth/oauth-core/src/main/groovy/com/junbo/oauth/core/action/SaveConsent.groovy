@@ -34,15 +34,21 @@ class SaveConsent implements Action {
         def client = contextWrapper.client
         def oauthInfo = contextWrapper.oauthInfo
         def loginState = contextWrapper.loginState
+        def consent = contextWrapper.consent
 
-        Consent consent = new Consent(
-                userId: loginState.userId,
-                clientId: client.clientId,
-                scopes: oauthInfo.scopes
-        )
+        if (consent == null) {
+            consent = new Consent(
+                    userId: loginState.userId,
+                    clientId: client.clientId,
+                    scopes: oauthInfo.scopes
+            )
 
-        consentRepository.saveConsent(consent)
+            consentRepository.saveConsent(consent)
+        } else {
+            consent.scopes = oauthInfo.scopes
+            consentRepository.updateConsent(consent)
+        }
 
-        return Promise.pure(null)
+        return Promise.pure(new ActionResult('success'))
     }
 }

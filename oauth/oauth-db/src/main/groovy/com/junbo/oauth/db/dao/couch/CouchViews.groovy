@@ -7,14 +7,23 @@ package com.junbo.oauth.db.dao.couch
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.annotation.JsonProperty
 import groovy.transform.CompileStatic
 
 /**
  * CouchViews.
  */
 @CompileStatic
+@JsonInclude(JsonInclude.Include.NON_NULL)
 class CouchViews {
+    @JsonProperty('_id')
+    String id
+
+    @JsonProperty('_rev')
+    String revision
+
     String language = 'javascript'
+
     Map<String, CouchView> views
 
     @JsonInclude(JsonInclude.Include.NON_NULL)

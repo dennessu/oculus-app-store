@@ -18,9 +18,5 @@ CatalogProvider._Callback = function(responseModel, cb){
 };
 
 CatalogProvider.prototype.GetProducts = function(data, cb){
-    this._Call(AppConfig.API.Catalog.GetProducts, data, cb);
-};
-
-CatalogProvider.prototype.GetProductById = function(data, cb){
-    this._Call(AppConfig.API.Catalog.GetProductById, data, cb);
+    this._Call(AppConfig.API.Catalog.Products, data, cb);
 };

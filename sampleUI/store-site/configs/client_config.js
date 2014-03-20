@@ -16,10 +16,13 @@ var ClientConfigs = {
     CookiesName: {
         AccessToken: "access_token",
         IdToken: "id_token",
-        IsAuthenticate: "is_auth",
+        ConversationId: "cid",
+        Event: "event",
+        RedirectUrl: "redirect_url",
+
         UserId: "user_id",
         Username: "username",
-        RedirectUrl: "redirect_url"
+        CartId: 'cart_id'
     },
     QueryStrings: {
         Code: "code",

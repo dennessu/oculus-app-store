@@ -1,0 +1,27 @@
+<h1>Attribute creation</h1>
+<form novalidate="novalidate" class="form-horizontal">
+    <table class="table table-bordered vertical-table">
+        <tr>
+            <td>Attribute Type</td>
+            <td>
+                <select ng-model="attribute.type">
+                    <option>Category</option>
+                    <option>Genre</option>
+                    <option>Type</option>
+                    <option>Color</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>Attribute Name</td>
+            <td><input type="text" class="form-control required" ng-model="attribute.name"></td>
+        </tr>
+    </table>
+
+    <div class="control-group">
+        <div class="controls">
+            <a ng-click="cancel()" class="btn btn-small">Cancel</a>
+            <a ng-click="createAttribute()" class="btn btn-small btn-primary">Save</a>
+        </div>
+    </div>
+</form>

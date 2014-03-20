@@ -264,7 +264,7 @@
         </sql>
     </changeSet>
 	
-	<changeSet id="34" author='WenhongZhu' context="PREDEPLOY">
+	<changeSet id="35" author='WenhongZhu' context="PREDEPLOY">
         <sql>
         <![CDATA[
             insert into create_method values (0, 'GENERATE', '2014-02-10','wenhongzhu'),

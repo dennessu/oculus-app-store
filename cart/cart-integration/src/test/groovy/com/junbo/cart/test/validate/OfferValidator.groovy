@@ -1,7 +1,7 @@
 package com.junbo.cart.test.validate
 
-import com.junbo.cart.spec.model.Offer
 import com.junbo.cart.spec.model.item.OfferItem
+import com.junbo.common.id.OfferId
 
 /**
  * Created by fzhang on 14-3-3.
@@ -16,8 +16,8 @@ class OfferValidator {
         return val
     }
 
-    OfferValidator offer(Offer offer) {
-        assert offer.id == result.offer.id
+    OfferValidator offer(OfferId offer) {
+        assert offer == result.offer
         return this
     }
 

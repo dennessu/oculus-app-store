@@ -58,6 +58,14 @@ var Utils = {
         return Ember.TEMPLATES[templateObj.name];
     },
 
+    GetProperty: function(obj, propertyName){
+        for (var p in obj) {
+            if(p == propertyName)
+                return obj[p];
+        }
+        return null;
+    },
+
     Cookies: {
         Set: function (name, value) {
             var Days = 30;
