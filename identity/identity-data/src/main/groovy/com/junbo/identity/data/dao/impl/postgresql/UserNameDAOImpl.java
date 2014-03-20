@@ -14,30 +14,11 @@ import java.util.List;
 /**
  * Created by liangfu on 3/18/14.
  */
-public class UserNameDAOImpl extends ShardedDAOBase implements UserNameDAO {
-    @Override
-    public UserNameEntity get(@SeedParam Long id) {
-        return (UserNameEntity)currentSession().get(UserNameEntity.class, id);
-    }
-
-    @Override
-    public UserNameEntity save(UserNameEntity entity) {
-        currentSession().save(entity);
-        return get(entity.getId());
-    }
-
-    @Override
-    public UserNameEntity update(UserNameEntity entity) {
-        currentSession().merge(entity);
-        currentSession().flush();
-
-        return get(entity.getId());
-    }
+public class UserNameDAOImpl extends BaseDaoImpl<UserNameEntity, Long> implements UserNameDAO {
 
     @Override
     public void delete(@SeedParam Long id) {
-        UserNameEntity entity = (UserNameEntity)currentSession().get(UserNameEntity.class, id);
-        currentSession().delete(entity);
+
     }
 
     @Override

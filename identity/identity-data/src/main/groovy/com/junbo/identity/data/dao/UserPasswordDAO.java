@@ -6,7 +6,7 @@
 package com.junbo.identity.data.dao;
 
 import com.junbo.identity.data.entity.user.UserPasswordEntity;
-import com.junbo.identity.spec.model.options.UserPasswordGetOption;
+import com.junbo.identity.spec.options.UserPasswordListOptions;
 import com.junbo.sharding.annotations.SeedParam;
 
 import java.util.List;
@@ -14,14 +14,7 @@ import java.util.List;
 /**
  * Created by liangfu on 3/16/14.
  */
-public interface UserPasswordDAO {
-    UserPasswordEntity save(UserPasswordEntity entity);
-
-    UserPasswordEntity update(UserPasswordEntity entity);
-
-    UserPasswordEntity get(@SeedParam Long id);
-
-    List<UserPasswordEntity> search(@SeedParam Long userId, UserPasswordGetOption getOption);
-
+public interface UserPasswordDAO extends BaseDao<UserPasswordEntity, Long> {
+    List<UserPasswordEntity> search(@SeedParam Long userId, UserPasswordListOptions getOption);
     void delete(@SeedParam Long id);
 }

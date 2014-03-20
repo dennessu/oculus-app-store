@@ -6,10 +6,9 @@
 package com.junbo.identity.core.service.user.impl;
 
 import com.junbo.common.id.UserTosId;
-import com.junbo.identity.data.repository.UserTosRepository;
 import com.junbo.identity.core.service.user.UserTosService;
 import com.junbo.identity.core.service.validator.UserTosValidator;
-import com.junbo.identity.spec.model.options.UserTosGetOption;
+import com.junbo.identity.data.repository.UserTosRepository;
 import com.junbo.identity.spec.model.users.UserTos;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -49,8 +48,11 @@ public class UserTosServiceImpl implements UserTosService {
 
     @Override
     public List<UserTos> getByUserId(Long userId, String tos) {
+        return null;
+        /*
         UserTosGetOption getOption = new UserTosGetOption();
         return userTosRepository.search(getOption);
+        */
     }
 
     @Override

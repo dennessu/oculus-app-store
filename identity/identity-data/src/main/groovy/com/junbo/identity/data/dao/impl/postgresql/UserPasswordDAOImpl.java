@@ -7,7 +7,8 @@ package com.junbo.identity.data.dao.impl.postgresql;
 
 import com.junbo.identity.data.dao.UserPasswordDAO;
 import com.junbo.identity.data.entity.user.UserPasswordEntity;
-import com.junbo.identity.spec.model.options.UserPasswordGetOption;
+import com.junbo.identity.spec.options.UserPasswordListOptions;
+import com.junbo.sharding.annotations.SeedParam;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -16,35 +17,11 @@ import java.util.List;
  * Created by liangfu on 3/16/14.
  */
 @Component
-public class UserPasswordDAOImpl extends ShardedDAOBase implements UserPasswordDAO {
+public class UserPasswordDAOImpl extends BaseDaoImpl<UserPasswordEntity, Long> implements UserPasswordDAO {
 
     @Override
-    public UserPasswordEntity save(UserPasswordEntity entity) {
-        currentSession().save(entity);
-
-        return get(entity.getId());
-    }
-
-    @Override
-    public UserPasswordEntity update(UserPasswordEntity entity) {
-        currentSession().merge(entity);
-        return get(entity.getId());
-    }
-
-    @Override
-    public UserPasswordEntity get(Long id) {
-        return (UserPasswordEntity)currentSession().get(UserPasswordEntity.class, id);
-    }
-
-    @Override
-    public List<UserPasswordEntity> search(Long userId, UserPasswordGetOption getOption) {
-        String query = "select * from user_password where user_id = " + (getOption.getUserId().getValue()) +
-                (" order by id limit " + (getOption.getLimit() == null ? "ALL" : getOption.getLimit().toString())) +
-                " offset " + (getOption.getOffset() == null ? "0" : getOption.getOffset().toString());
-        List entities = currentSession().createSQLQuery(query)
-                .addEntity(UserPasswordEntity.class).list();
-
-        return entities;
+    public List<UserPasswordEntity> search(@SeedParam Long userId, UserPasswordListOptions getOption) {
+        return null;
     }
 
     @Override

@@ -10,8 +10,8 @@ import com.junbo.identity.data.dao.GroupDAO
 import com.junbo.identity.data.entity.group.GroupEntity
 import com.junbo.identity.data.mapper.ModelMapper
 import com.junbo.identity.data.repository.GroupRepository
-import com.junbo.identity.spec.model.options.GroupGetOption
 import com.junbo.identity.spec.model.users.Group
+import com.junbo.identity.spec.options.GroupListOptions
 import com.junbo.oom.core.MappingContext
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
@@ -53,7 +53,7 @@ class GroupRepositoryImpl implements GroupRepository {
     }
 
     @Override
-    List<Group> search(GroupGetOption getOption) {
+    List<Group> search(GroupListOptions getOption) {
         def result = []
         List entities = groupDAO.search(getOption)
 

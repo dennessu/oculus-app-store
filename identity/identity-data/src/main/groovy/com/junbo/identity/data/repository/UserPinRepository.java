@@ -6,8 +6,8 @@
 package com.junbo.identity.data.repository;
 
 import com.junbo.common.id.UserPinId;
-import com.junbo.identity.spec.model.options.UserPinGetOption;
 import com.junbo.identity.spec.model.users.UserPin;
+import com.junbo.identity.spec.options.UserPinListOptions;
 
 import java.util.List;
 
@@ -22,7 +22,7 @@ public interface UserPinRepository {
 
     UserPin get(UserPinId id);
 
-    List<UserPin> search(UserPinGetOption getOption);
+    List<UserPin> search(UserPinListOptions getOption);
 
     void delete(UserPinId id);
 }
