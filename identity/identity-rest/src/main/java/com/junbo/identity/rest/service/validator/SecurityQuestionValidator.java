@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.rest.service.validator;
 
+import com.junbo.common.id.SecurityQuestionId;
 import com.junbo.identity.spec.model.domaindata.SecurityQuestion;
 import com.junbo.identity.spec.options.SecurityQuestionListOptions;
 
@@ -13,7 +14,8 @@ import com.junbo.identity.spec.options.SecurityQuestionListOptions;
  */
 public interface SecurityQuestionValidator {
     void validateCreate(SecurityQuestion securityQuestion);
-    void validateUpdate(Long id, SecurityQuestion securityQuestion);
-    void validateGet(Long id);
+    void validateUpdate(SecurityQuestionId id, SecurityQuestion securityQuestion);
+    void validataPatch(SecurityQuestionId id, SecurityQuestion securityQuestion);
+    void validateGet(SecurityQuestionId id);
     void validateSearch(SecurityQuestionListOptions options);
 }

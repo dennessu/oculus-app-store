@@ -16,7 +16,7 @@ public interface AppErrors {
     AppErrors INSTANCE = ErrorProxy.newProxyInstance(AppErrors.class);
 
     @ErrorDef(httpStatusCode = 400, code = "10000", description = "Invalid parameter: {0}.")
-    AppError invalidParameter(String message);
+    AppError invalidParameter(String param);
 
     // Redefined, the below will all retired
     @ErrorDef(httpStatusCode = 400, code = "10000", description ="Invalid null/empty input parameter")
@@ -105,8 +105,8 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 400, code = "10025", description = "User profile with type {0} already exists.")
     AppError userProfileAlreadyExists(String profileType);
 
-    @ErrorDef(httpStatusCode = 400, code = "10026", description = "User OptIn with type {0} already exists.")
-    AppError userOptInAlreadyExists(String optInType);
+    @ErrorDef(httpStatusCode = 400, code = "10026", description = "User Optin with type {0} already exists.")
+    AppError userOptinAlreadyExists(String optInType);
 
     @ErrorDef(httpStatusCode = 400, code = "10027", description = "User Federation with type {0} already exists.")
     AppError userFederationAlreadyExists(String federationType);
@@ -116,4 +116,7 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 400, code = "10029", description = "Enum value {0} not exists in type {1}")
     AppError enumConversionError(String enumValue, String enumType);
+
+    @ErrorDef(httpStatusCode = 400, code = "10030", description = "Invalid request.")
+    AppError invalidRequest();
 }

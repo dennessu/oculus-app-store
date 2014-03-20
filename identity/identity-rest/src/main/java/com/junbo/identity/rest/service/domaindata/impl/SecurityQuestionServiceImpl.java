@@ -31,7 +31,7 @@ public class SecurityQuestionServiceImpl implements SecurityQuestionService {
 
     @Override
     public SecurityQuestion get(SecurityQuestionId securityQuestionId) {
-        securityQuestionValidator.validateGet(securityQuestionId.getValue());
+        securityQuestionValidator.validateGet(securityQuestionId);
         return securityQuestionRepository.get(securityQuestionId);
     }
 
@@ -43,13 +43,14 @@ public class SecurityQuestionServiceImpl implements SecurityQuestionService {
 
     @Override
     public SecurityQuestion update(SecurityQuestionId securityQuestionId, SecurityQuestion securityQuestion) {
-        securityQuestionValidator.validateUpdate(securityQuestionId.getValue(), securityQuestion);
+        securityQuestionValidator.validateUpdate(securityQuestionId, securityQuestion);
+
         return securityQuestionRepository.update(securityQuestion);
     }
 
     @Override
     public SecurityQuestion patch(SecurityQuestionId securityQuestionId, SecurityQuestion securityQuestion) {
-        securityQuestionValidator.validateUpdate(securityQuestionId.getValue() ,securityQuestion);
+        securityQuestionValidator.validataPatch(securityQuestionId, securityQuestion);
         SecurityQuestion existing = get(securityQuestion.getId());
 
         if(!StringUtils.isEmpty(securityQuestion.getValue())) {

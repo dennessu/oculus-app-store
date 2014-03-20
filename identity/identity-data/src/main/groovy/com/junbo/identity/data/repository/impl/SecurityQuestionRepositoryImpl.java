@@ -37,7 +37,7 @@ public class SecurityQuestionRepositoryImpl implements SecurityQuestionRepositor
         SecurityQuestionEntity securityQuestionEntity = modelMapper.toSecurityQuestion(entity, new MappingContext());
         securityQuestionDAO.save(securityQuestionEntity);
 
-        return get(entity.getId());
+        return get(new SecurityQuestionId(securityQuestionEntity.getId()));
     }
 
     @Override
