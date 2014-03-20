@@ -2,12 +2,19 @@
 <form novalidate="novalidate" class="form-horizontal">
     <table class="table table-bordered vertical-table">
         <tr>
-            <td>Attribute Name</td>
-            <td><input type="text" class="form-control required" ng-model="attribute.name"></td>
+            <td>Attribute Type</td>
+            <td>
+                <select ng-model="attribute.type">
+                    <option>Category</option>
+                    <option>Genre</option>
+                    <option>Type</option>
+                    <option>Color</option>
+                </select>
+            </td>
         </tr>
         <tr>
-            <td>Attribute Type</td>
-            <td><input type="text" class="form-control required" ng-model="attribute.type"></td>
+            <td>Attribute Name</td>
+            <td><input type="text" class="form-control required" ng-model="attribute.name"></td>
         </tr>
     </table>
 
