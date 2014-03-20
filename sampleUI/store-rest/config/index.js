@@ -337,6 +337,153 @@ module.exports = {
                 }
             }
         }
+    },
+
+    Cart:{
+        GetPrimaryCart: {
+            Method: 'GET',
+            Path: '/rest/users/:userId/carts/primary',
+            ResponseItem: 'Succeed',
+            Items: {
+                'Succeed': {
+                    statusCode: 302,
+                    headers: {
+                        location: "http://localhost:8000/rest/users/10000/carts/21232"
+                    },
+                    data: null
+                },
+
+                'Failed': {
+                    statusCode: 404,
+                    headers: null,
+                    data: null
+                }
+            }
+        },
+
+        GetCartById: {
+            Method: 'GET',
+            Path: '/rest/users/:userId/carts/:cardId',
+            ResponseItem: 'Succeed',
+            Items: {
+                'Succeed': {
+                    statusCode: 200,
+                    headers: null,
+                    data: {
+                        "self": {
+                            "href": "http://api.oculusvr.com/users/10000/carts/21232",
+                            "id": "21232"
+                        },
+                        "user": {
+                            "href": "http://api.oculusvr.com/users/10000",
+                            "id": "10000"
+                        },
+                        "resourceAge": 6,
+                        "createdTime": "2014-02-20T09:34:58Z",
+                        "updatedTime": "2014-02-21T07:34:30Z",
+                        "offers": [
+                            {
+                                "createdTime": "2014-02-21T07:34:30Z",
+                                "updatedTime": "2014-02-21T07:34:30Z",
+                                "offer": {
+                                    "id": 1,
+                                    "href": "http://api.oculusvr.com/offers/30011"
+                                },
+                                "quantity": 2,
+                                "selected": true,
+                                "self": {
+                                    "href": "http://api.oculusvr.com/users/10000/carts/21232/offers/20001",
+                                    "id": "20001"
+                                }
+                            },
+
+                            {
+                                "createdTime": "2014-02-21T07:34:30Z",
+                                "updatedTime": "2014-02-21T07:34:30Z",
+                                "offer": {
+                                    "id": 2,
+                                    "href": "http://api.oculusvr.com/offers/30011"
+                                },
+                                "quantity": 2,
+                                "selected": true,
+                                "self": {
+                                    "href": "http://api.oculusvr.com/users/10000/carts/21232/offers/20001",
+                                    "id": "20001"
+                                }
+                            }
+                        ],
+                        "coupons": []
+                    },
+                    'Failed': {
+                    statusCode: 404,
+                    headers: null,
+                    data: null
+                }
+            }
+        }
+        },
+
+        PutCart: {
+            Method: 'PUT',
+            Path: '/rest/users/:userId/carts/:cardId',
+            ResponseItem: 'Succeed',
+            Items: {
+                'Succeed': {
+                    statusCode: 200,
+                    headers: null,
+                    data: {
+                        "self": {
+                            "href": "http://api.oculusvr.com/users/10000/carts/21232",
+                            "id": "21232"
+                        },
+                        "user": {
+                            "href": "http://api.oculusvr.com/users/10000",
+                            "id": "10000"
+                        },
+                        "resourceAge": 6,
+                        "createdTime": "2014-02-20T09:34:58Z",
+                        "updatedTime": "2014-02-21T07:34:30Z",
+                        "offers": [
+                            {
+                                "createdTime": "2014-02-21T07:34:30Z",
+                                "updatedTime": "2014-02-21T07:34:30Z",
+                                "offer": {
+                                    "id": 1,
+                                    "href": "http://api.oculusvr.com/offers/30011"
+                                },
+                                "quantity": 2,
+                                "selected": true,
+                                "self": {
+                                    "href": "http://api.oculusvr.com/users/10000/carts/21232/offers/20001",
+                                    "id": "20001"
+                                }
+                            },
+
+                            {
+                                "createdTime": "2014-02-21T07:34:30Z",
+                                "updatedTime": "2014-02-21T07:34:30Z",
+                                "offer": {
+                                    "id": 2,
+                                    "href": "http://api.oculusvr.com/offers/30011"
+                                },
+                                "quantity": 2,
+                                "selected": true,
+                                "self": {
+                                    "href": "http://api.oculusvr.com/users/10000/carts/21232/offers/20001",
+                                    "id": "20001"
+                                }
+                            }
+                        ],
+                        "coupons": []
+                    },
+                    'Failed': {
+                        statusCode: 404,
+                        headers: null,
+                        data: null
+                    }
+                }
+            }
+        }
     }
 
 };

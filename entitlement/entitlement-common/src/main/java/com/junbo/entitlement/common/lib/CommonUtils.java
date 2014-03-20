@@ -8,7 +8,6 @@ package com.junbo.entitlement.common.lib;
 
 import com.junbo.entitlement.common.def.EntitlementConsts;
 import com.junbo.entitlement.common.def.Function;
-import org.springframework.util.StringUtils;
 
 import javax.ws.rs.core.UriBuilder;
 import java.util.HashSet;
@@ -34,8 +33,6 @@ public class CommonUtils {
     public static Boolean isNotNull(Object o) {
         if (o == null) {
             return Boolean.FALSE;
-        } else if (o instanceof String) {
-            return !StringUtils.isEmpty(o);
         }
         return Boolean.TRUE;
     }

@@ -17,7 +17,13 @@ module.exports = function(app){
 
     // Application
     app.get('/', function(req, res){
-        res.render("index", {layout: false, title: "Store Demo"});
+        res.render("index",
+            {
+                layout: false,
+                title: "Store Demo",
+                loginUrl: process.AppConfig.Urls.GetLoginUrl(req),
+                registerUrl: process.AppConfig.Urls.GetRegisterUrl(req)
+            });
     });
     app.get('/Identity', function(req, res){
         res.render("identity/index", {layout: false, title: "Store Demo"});
@@ -39,6 +45,9 @@ module.exports = function(app){
 
     app.get('/Template/Store/Index', Template.Store.Index);
     app.get('/Template/Store/Detail', Template.Store.Detail);
+
+    app.get('/Template/Store/Cart', Template.Store.Cart);
+    app.get('/Template/Store/OrderSummary', Template.Store.OrderSummary);
 
     // Redirect back handler
     app.get('/Callback/Login', function(req, res){});

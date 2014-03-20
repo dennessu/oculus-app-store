@@ -26,7 +26,7 @@ public interface AppErrors {
     AppError unnecessaryField(String field);
 
     @ErrorDef(httpStatusCode = 403, code = "10002",
-            description = "{0} doesn't match. actually: {1}, expected: {2}.",
+            description = "{0} does not match. actually: {1}, expected: {2}.",
             field = "{0}")
     AppError fieldNotMatch(String fieldName, Object actually, Object expected);
 

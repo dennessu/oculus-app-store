@@ -15,7 +15,7 @@ import com.junbo.rating.spec.fusion.RatingOffer;
 import java.util.List;
 
 /**
- * Created by lizwu on 2/25/14.
+ * Catalog gateway interface.
  */
 public interface CatalogGateway {
     Attribute getAttribute(Long attributeId);

@@ -67,12 +67,12 @@ public class PaymentServiceTest extends BaseTest {
         PaymentTransaction payment = buildPaymentTransaction(request);
         PaymentTransaction result = paymentService.authorize(payment).wrapped().get();
         payment.setTrackingUuid(generateUUID());
-        paymentService.capture(result.getPaymentId(), payment);
-        PaymentTransaction getResult = paymentService.getById(result.getPaymentId());
+        paymentService.capture(result.getId(), payment);
+        PaymentTransaction getResult = paymentService.getById(result.getId());
         Assert.assertEquals(getResult.getStatus().toString(), PaymentStatus.SETTLEMENT_SUBMITTED.toString());
         payment.setTrackingUuid(generateUUID());
-        paymentService.reverse(result.getPaymentId());
-        getResult = paymentService.getById(result.getPaymentId());
+        paymentService.reverse(result.getId(), payment);
+        getResult = paymentService.getById(result.getId());
         Assert.assertEquals(getResult.getStatus().toString(), PaymentStatus.REVERSED.toString());
     }
 
@@ -82,8 +82,8 @@ public class PaymentServiceTest extends BaseTest {
         piService.add(request);
         PaymentTransaction payment = buildPaymentTransaction(request);
         PaymentTransaction result = paymentService.authorize(payment).wrapped().get();
-        paymentService.reverse(result.getPaymentId());
-        PaymentTransaction getResult = paymentService.getById(result.getPaymentId());
+        paymentService.reverse(result.getId(), payment);
+        PaymentTransaction getResult = paymentService.getById(result.getId());
         Assert.assertEquals(result.getExternalToken(), MockPaymentProviderServiceImpl.authExternalToken);
         Assert.assertEquals(getResult.getStatus().toString(), PaymentStatus.REVERSED.toString());
     }
@@ -94,13 +94,13 @@ public class PaymentServiceTest extends BaseTest {
         piService.add(request);
         PaymentTransaction payment = buildPaymentTransaction(request);
         PaymentTransaction result = paymentService.charge(payment).wrapped().get();
-        PaymentTransaction getResult = paymentService.getById(result.getPaymentId());
+        PaymentTransaction getResult = paymentService.getById(result.getId());
         Assert.assertEquals(result.getExternalToken(), MockPaymentProviderServiceImpl.chargeExternalToken);
         Assert.assertEquals(getResult.getPaymentProvider(), result.getPaymentProvider());
         Assert.assertEquals(getResult.getStatus().toString(), result.getStatus());
         Assert.assertEquals(getResult.getStatus().toString(), PaymentStatus.SETTLEMENT_SUBMITTED.toString());
-        paymentService.reverse(result.getPaymentId());
-        getResult = paymentService.getById(result.getPaymentId());
+        paymentService.reverse(result.getId(), payment);
+        getResult = paymentService.getById(result.getId());
         Assert.assertEquals(result.getExternalToken(), MockPaymentProviderServiceImpl.authExternalToken);
         Assert.assertEquals(getResult.getStatus().toString(), PaymentStatus.REVERSED.toString());
     }

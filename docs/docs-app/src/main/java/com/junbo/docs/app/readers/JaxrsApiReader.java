@@ -7,12 +7,15 @@
 package com.junbo.docs.app.readers;
 
 import com.junbo.common.id.Id;
+import com.junbo.docs.app.resultlists.CatalogResultLists;
 import com.junbo.docs.app.resultlists.IdentityResultLists;
+import com.junbo.docs.app.resultlists.PaymentResultLists;
 import com.junbo.langur.core.promise.Promise;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.model.Operation;
 import org.glassfish.hk2.utilities.reflection.ReflectionHelper;
 
+import javax.ws.rs.core.Response;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -29,8 +32,15 @@ public class JaxrsApiReader extends com.wordnik.swagger.jaxrs.reader.DefaultJaxr
 
         if (actualType != method.getGenericReturnType()) {
             // the type is replaced by something else, re-generate the Operation
-            assert(actualType instanceof Class);
-            responseClass = ((Class)actualType).getName();
+            if (actualType instanceof Class) {
+                responseClass = ((Class)actualType).getName();
+            } else if (actualType instanceof ParameterizedType) {
+                ParameterizedType parameterizedType = (ParameterizedType)actualType;
+                int lastTypeIndex = parameterizedType.getActualTypeArguments().length - 1;
+                responseClass = String.format("%s[%s]",
+                        "List",
+                        ((Class) parameterizedType.getActualTypeArguments()[lastTypeIndex]).getName());
+            }
             return new Operation(
                     operation.method(),
                     operation.summary(),
@@ -70,6 +80,19 @@ public class JaxrsApiReader extends com.wordnik.swagger.jaxrs.reader.DefaultJaxr
             Type actualType = IdentityResultLists.getClass(parameterizedType);
 
             return getActualType(actualType);
+        } else if (clazz.equals(com.junbo.payment.spec.model.ResultList.class)) {
+            ParameterizedType parameterizedType = (ParameterizedType)wrapperType;
+            Type actualType = PaymentResultLists.getClass(parameterizedType);
+
+            return getActualType(actualType);
+        } else if (clazz.equals(com.junbo.catalog.spec.model.common.ResultList.class)) {
+            ParameterizedType parameterizedType = (ParameterizedType)wrapperType;
+            Type actualType = CatalogResultLists.getClass(parameterizedType);
+
+            return getActualType(actualType);
+        } else if (clazz.equals(Response.class)) {
+
+            return void.class;
         } else {
             return wrapperType;
         }

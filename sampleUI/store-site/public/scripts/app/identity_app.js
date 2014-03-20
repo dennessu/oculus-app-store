@@ -122,7 +122,7 @@ App.LoginController = Ember.ObjectController.extend({
             console.log("[LoginController:Submit] Click Login");
 
             var _self = this;
-            var provider = new CatalogProvider();
+            var provider = new IdentityProvider();
 
             var model = new IdentityModels.LoginModel();
             model.event = Utils.Cookies.Get(AppConfig.CookiesName.Event);
@@ -179,7 +179,7 @@ App.CaptchaController = Ember.ObjectController.extend({
                 recaptcha_response_field: $("#recaptcha_response_field").val()
             };
 
-            var provider = new CatalogProvider();
+            var provider = new IdentityProvider();
 
             provider.Captcha(Utils.GenerateRequestModel(verifyData), function(data){
                 var resultModel = data.data;
@@ -221,7 +221,7 @@ App.TfaController = Ember.ObjectController.extend({
             console.log("[TfaController:Submit] Click Verify");
 
             var _self = this;
-            var provider = new CatalogProvider();
+            var provider = new IdentityProvider();
 
             var tfaModel = new IdentityModels.TFAModel();
             tfaModel.code = this.get("content.code");
@@ -297,7 +297,7 @@ App.RegisterController = Ember.ObjectController.extend({
         Submit: function(){
             console.log("[RegisterController:Submit] Click Continue");
             var _self = this;
-            var provider = new CatalogProvider();
+            var provider = new IdentityProvider();
 
             var model = new IdentityModels.RegisterModel();
             Utils.FillObject(model, this.get("content"), "OneWay");
@@ -346,7 +346,7 @@ App.PinController = Ember.ObjectController.extend({
             console.log("[PinController:Submit] Click Continue");
 
             var _self = this;
-            var provider = new CatalogProvider();
+            var provider = new IdentityProvider();
 
             provider.PIN(Utils.GenerateRequestModel({code: this.get("content.code")}), function(data){
                 var resultModel = data.data;

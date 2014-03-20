@@ -29,10 +29,10 @@ public class PropertyAssignedAwareTest {
 
         User user = new User();
 
-        Assert.assertEquals("{}", objectMapper.writeValueAsString(user));
+        Assert.assertFalse(objectMapper.writeValueAsString(user).contains("null"));
 
         user.setTest1(null);
-        Assert.assertEquals("{\"test1\":null}", objectMapper.writeValueAsString(user));
+        Assert.assertTrue(objectMapper.writeValueAsString(user).contains("null"));
     }
 
     @Test
