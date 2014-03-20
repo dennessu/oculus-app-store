@@ -6,3 +6,10 @@ var ProductModel = DS.Model.extend({
     picture: DS.attr("string"),
     description: DS.attr("string")
 });
+
+
+var CartItemModel = DS.Model.extend({
+    // id
+    product_id: DS.attr("number"),
+    qty: DS.attr("number")
+});

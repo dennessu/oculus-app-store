@@ -3,9 +3,7 @@ var StoreRoutes = {
     ApplicationRoute: Ember.Route.extend({
         init: function(){
             this._super();
-            App.AuthManager = AuthManager.create();
-
-
+            Ember.App.AuthManager = AuthManager.create();
         }
     }),
     IndexRoute: Ember.Route.extend({
@@ -22,6 +20,21 @@ var StoreRoutes = {
         },
         model: function(params){
             return this.store.find("Product", params.productId);
+        }
+    }),
+
+    CartRoute: Ember.Route.extend({
+        beforeModel: function(){
+            Utils.GetViews(AppConfig.Templates.Store.Cart);
+        },
+        model: function(){
+            return this.store.findAll("CartItem");
+        }
+    }),
+
+    OrderSummaryRoute: Ember.Route.extend({
+        beforeModel: function(){
+            Utils.GetViews(AppConfig.Templates.Store.OrderSummary);
         }
     })
 };
