@@ -1,9 +1,15 @@
 <header>
     <h1>Store Demo</h1>
     <nav>
+        {{#if isAuthenticated}}
+        <span>Welcome {{username}}</span>
+        &nbsp;&nbsp;
+        <a href="#" {{action 'logout'}}>Log Out</a>
+        {{else}}
         <a href="<%= loginUrl%>">Login</a>
         &nbsp;|&nbsp;
         <a href="<%= registerUrl%>">Register</a>
+        {{/if}}
         &nbsp;|&nbsp;
         {{#link-to-animated "index" animations="main:slideOverLeft"}}Products{{/link-to-animated}}
         &nbsp;|&nbsp;

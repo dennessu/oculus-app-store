@@ -1,4 +1,5 @@
-var AuthKey = Ember.Object.extend({
+
+var AuthKeyModel = Ember.Object.extend({
     access_token: '',
     user_id: ''
 });

@@ -1,5 +1,14 @@
 
 var StoreControllers = {
+    ApplicationController: Ember.ObjectController.extend({
+        username: function() {
+            return App.AuthManager.getUsername();
+        }.property('App.AuthManager.AuthKey'),
+
+        isAuthenticated: function() {
+            return App.AuthManager.isAuthenticated();
+        }.property('App.AuthManager.AuthKey')
+    }),
 
     DetailController: Ember.ObjectController.extend({
 
@@ -103,13 +112,11 @@ var StoreControllers = {
 
             var subtotal = 0;
             this.forEach(function(item, index, enumerable){
-                //var p = _self.store.find("Product", item.get("product_id"));
-
-                subtotal += item.get("qty") * item.get("price");
+                subtotal += item.get("subTotal");
             });
             return subtotal;
 
-        }.property("@each.qty", "@each.price"),
+        }.property("@each.qty", "@each.subTotal"),
 
         totalCount: function(){
             return this.getEach("qty").reduce(function(previousValue, item, index, enumerable){
@@ -127,10 +134,10 @@ var StoreControllers = {
         itemSubtotal: function(){
             var model = this.get("model");
             var count = model.get("qty");
-            var price = (count > 0 ? count : 1) * this.get("product.price");
-            this.set("model.price", price);
+            var subTotal = (count > 0 ? count : 1) * this.get("product.price");
+            this.set("model.subTotal", subTotal);
 
-            return price;
+            return subTotal;
         }.property('model.qty', 'product.price'),
 
         changeQty: function(){
