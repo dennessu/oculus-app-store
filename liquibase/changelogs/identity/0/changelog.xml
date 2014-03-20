@@ -8,7 +8,7 @@
 
     <changeSet id="0.1" author='minhao' context="PREDEPLOY">
         <sql><![CDATA[
-            create table group_entity(
+            create table group(
                 id bigint not null,
                 
 				value varchar(255) not null,
