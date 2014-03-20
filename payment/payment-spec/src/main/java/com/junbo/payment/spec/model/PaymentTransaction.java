@@ -31,7 +31,7 @@ public class PaymentTransaction {
     private ChargeInfo chargeInfo;
     @PaymentTransactionId
     @FilterIn
-    private Long paymentId;
+    private Long id;
     @FilterIn
     private String paymentProvider;
     @FilterIn
@@ -84,12 +84,12 @@ public class PaymentTransaction {
         this.chargeInfo = chargeInfo;
     }
 
-    public Long getPaymentId() {
-        return paymentId;
+    public Long getId() {
+        return id;
     }
 
-    public void setPaymentId(Long paymentId) {
-        this.paymentId = paymentId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getPaymentProvider() {

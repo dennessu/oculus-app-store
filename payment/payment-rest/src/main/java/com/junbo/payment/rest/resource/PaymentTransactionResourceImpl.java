@@ -39,8 +39,8 @@ public class PaymentTransactionResourceImpl implements PaymentTransactionResourc
     }
 
     @Override
-    public Promise<PaymentTransaction> reversePayment(Long paymentId) {
-        return paymentService.reverse(paymentId);
+    public Promise<PaymentTransaction> reversePayment(Long paymentId, PaymentTransaction request) {
+        return paymentService.reverse(paymentId, request);
     }
 
     @Override
