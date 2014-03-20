@@ -3,12 +3,11 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-
 package com.junbo.common.jackson.serializer;
 
 /**
- * ResourceAware.
+ * CompoundAware.
  */
-public interface ResourceAware {
-    void injectResourceType(String resourceType);
+public interface CompoundAware {
+    <T> T getPrimaryId();
 }
