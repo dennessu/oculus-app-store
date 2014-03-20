@@ -25,14 +25,22 @@ class MappingMethodRefResolverImpl implements MappingMethodRefResolver {
         if (StringUtils.isEmpty(explicitMappingMethod)) {
             return mappingMethodRefs[new Tuple(sourceType, targetType)]
         }
+
         return explicitMappingMethodRefs[new Tuple(sourceType, targetType, explicitMappingMethod)]
     }
 
     @Override
     void register(TypeModel sourceType, TypeModel targetType, MappingMethodRefModel mappingMethodRef) {
         if (mappingMethodRef.name.startsWith(Constants.EXPLICIT_METHOD_NAME_PREFIX)) {
-            explicitMappingMethodRefs[new Tuple(sourceType, targetType, mappingMethodRef.name)] = mappingMethodRef
+            def oldRef = explicitMappingMethodRefs[new Tuple(sourceType, targetType, mappingMethodRef.name)]
+            if (oldRef == null || !oldRef.hasContextParameter && mappingMethodRef.hasContextParameter) {
+                explicitMappingMethodRefs[new Tuple(sourceType, targetType, mappingMethodRef.name)] = mappingMethodRef
+            }
         }
-        mappingMethodRefs[new Tuple(sourceType, targetType)] = mappingMethodRef
+
+        def oldRef = mappingMethodRefs[new Tuple(sourceType, targetType)]
+        if (oldRef == null || !oldRef.hasContextParameter && mappingMethodRef.hasContextParameter) {
+            mappingMethodRefs[new Tuple(sourceType, targetType)] = mappingMethodRef
+        }
     }
 }

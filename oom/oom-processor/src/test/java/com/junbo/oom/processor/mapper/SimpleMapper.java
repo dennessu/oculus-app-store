@@ -30,6 +30,9 @@ public interface SimpleMapper {
 
     Item1 fromItem2toItem1_single(Item2 source, MappingContext mappingContext);
 
-    List<Item2> fromItem1toItem2(List<Item1> source, MappingContext mappingContext);
+    Item1 fromItem1toItem1(Item1 source);
 
+    Item1 fromItem1toItem1(Item1 source, MappingContext mappingContext);
+
+    List<Item2> fromItem1toItem2(List<Item1> source, MappingContext mappingContext);
 }

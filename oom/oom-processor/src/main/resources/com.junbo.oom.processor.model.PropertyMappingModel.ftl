@@ -3,7 +3,7 @@
 
     [@includeModel model=sourceProperty.type/] __sourceProperty = ${params.sourceBeanName}.${sourceProperty.getterString}();
 
-[#if params.context??]
+[#if params.context?has_content]
     PropertyMappingFilter __filter = ${params.context}.getPropertyMappingFilter();
     if (__filter == null) {
         ${params.targetBeanName}.${targetProperty.setterString}([@includeModel model=mappingMethodRef source="__sourceProperty" context=params.context/]);
@@ -30,7 +30,7 @@
         }
     }
 [#else]
-    ${params.targetBeanName}.${targetProperty.setterString}([@includeModel model=mappingMethodRef source="__sourceProperty" context=params.context/]);
+    ${params.targetBeanName}.${targetProperty.setterString}([@includeModel model=mappingMethodRef source="__sourceProperty"/]);
 [/#if]
 
 }

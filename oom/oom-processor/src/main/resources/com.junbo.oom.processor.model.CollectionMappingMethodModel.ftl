@@ -23,7 +23,7 @@ public [@includeModel model=returnType/] ${name}([@includeModel model=sourcePara
         if (__filter == null) {
 
             [@includeModel model=returnType.typeParameters[0]/] __targetItem =
-                [@includeModel model=elementMappingMethod source="__sourceItem" context=(contextParameter.name)!/];
+                [@includeModel model=elementMappingMethod source="__sourceItem" context=contextParameter.name/];
 
             __result.add(__targetItem);
 
@@ -40,7 +40,7 @@ public [@includeModel model=returnType/] ${name}([@includeModel model=sourcePara
                 __filter.beginElementMapping(__event, ${contextParameter.name});
 
                 [@includeModel model=returnType.typeParameters[0]/] __targetItem =
-                    [@includeModel model=elementMappingMethod source="__sourceItem" context=(contextParameter.name)!/];
+                    [@includeModel model=elementMappingMethod source="__sourceItem" context=contextParameter.name/];
 
                 __result.add(__targetItem);
 
@@ -50,7 +50,7 @@ public [@includeModel model=returnType/] ${name}([@includeModel model=sourcePara
 
     [#else]
         [@includeModel model=returnType.typeParameters[0]/] __targetItem =
-            [@includeModel model=elementMappingMethod source="__sourceItem" context=(contextParameter.name)!/];
+            [@includeModel model=elementMappingMethod source="__sourceItem"/];
 
         __result.add(__targetItem);
     [/#if]

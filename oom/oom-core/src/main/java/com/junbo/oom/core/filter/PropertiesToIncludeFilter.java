@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Java doc.
  */
-public class PropertyMappingFilterImpl implements PropertyMappingFilter {
+public class PropertiesToIncludeFilter implements PropertyMappingFilter {
 
     @Override
     public boolean skipPropertyMapping(PropertyMappingEvent event, MappingContext context) {

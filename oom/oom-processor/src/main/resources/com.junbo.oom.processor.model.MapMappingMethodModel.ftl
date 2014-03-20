@@ -25,7 +25,7 @@ public [@includeModel model=returnType/] ${name}([@includeModel model=sourcePara
         if (__filter == null) {
 
             [@includeModel model=returnType.typeParameters[1]/] __value;
-            __value = [@includeModel model=valueMappingMethod source="__entry.getValue()" context=(contextParameter.name)!/];
+            __value = [@includeModel model=valueMappingMethod source="__entry.getValue()" context=contextParameter.name/];
             __result.put(__key, __value);
 
         } else {
@@ -46,7 +46,7 @@ public [@includeModel model=returnType/] ${name}([@includeModel model=sourcePara
                 __filter.beginPropertyMapping(__event, ${contextParameter.name});
 
                 [@includeModel model=returnType.typeParameters[1]/] __value;
-                __value = [@includeModel model=valueMappingMethod source="__entry.getValue()" context=(contextParameter.name)!/];
+                __value = [@includeModel model=valueMappingMethod source="__entry.getValue()" context=contextParameter.name/];
                 __result.put(__key, __value);
 
                 __filter.endPropertyMapping(__event, ${contextParameter.name});
@@ -55,7 +55,7 @@ public [@includeModel model=returnType/] ${name}([@includeModel model=sourcePara
     [#else]
 
         [@includeModel model=returnType.typeParameters[1]/] __value;
-        __value = [@includeModel model=valueMappingMethod source="__entry.getValue()" context=(contextParameter.name)!/];
+        __value = [@includeModel model=valueMappingMethod source="__entry.getValue()"/];
         __result.put(__key, __value);
 
     [/#if]
