@@ -48,6 +48,8 @@ class ValidateConsent implements Action {
             return Promise.pure(redirectToConsent(contextWrapper))
         }
 
+        contextWrapper.consent = consent
+
         def oauthInfo = contextWrapper.oauthInfo
         String[] additionalScopes = oauthInfo.scopes.findAll { String scope ->
             !consent.scopes.contains(scope)

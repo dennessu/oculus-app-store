@@ -19,6 +19,8 @@ interface AccessTokenRepository {
 
     List<AccessToken> findByRefreshToken(String refreshTokenValue)
 
+    List<AccessToken> findByUserIdClientId(Long userId, String clientId)
+
     AccessToken update(AccessToken accessToken)
 
     void remove(String tokenValue)

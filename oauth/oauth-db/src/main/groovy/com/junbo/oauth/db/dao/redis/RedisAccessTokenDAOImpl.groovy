@@ -18,4 +18,9 @@ class RedisAccessTokenDAOImpl extends RedisBaseDAO<AccessTokenEntity> implements
     List<AccessTokenEntity> findByRefreshToken(String refreshTokenValue) {
         return []
     }
+
+    @Override
+    List<AccessTokenEntity> findByUserIdClientId(Long userId, String clientId) {
+        return []
+    }
 }

@@ -1,5 +1,6 @@
 var express = require('express');
 var offers = require('./api-proxy/offers');
+var attributes = require('./api-proxy/attributes');
 var http = require('http');
 var path = require('path');
 
@@ -26,6 +27,17 @@ app.get('/api/offers', offers.getOffers);
 app.post('/api/offers', offers.createOffer);
 app.get('/api/offers/:id', offers.getOffer);
 app.put('/api/offers/:id', offers.updateOffer);
+
+app.get('/api/attributes', attributes.getAttributes);
+app.post('/api/attributes', attributes.createAttribute);
+app.get('/api/attributes/:id', attributes.getAttribute);
+
+/*app.engine('.html', require('ejs').renderFile);
+app.set('views', __dirname + '/public');
+app.get('/admin', function(req, res){
+    res.render('admin.html');
+});
+*/
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

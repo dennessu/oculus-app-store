@@ -14,8 +14,21 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class CouchRefreshTokenDAOImpl extends CouchBaseDAO<RefreshTokenEntity> implements RefreshTokenDAO {
+    protected static final CouchViews VIEWS = new CouchViews(
+            views: ['by_user_id_client_id': new CouchViews.CouchView(
+                    map: 'function(doc) {' +
+                            '  emit(doc.userId + \':\' + doc.clientId, doc._id)' +
+                            '}',
+                    resultClass: String)]
+    )
+
     @Override
     protected CouchViews getCouchViews() {
-        return null
+        return VIEWS
+    }
+
+    @Override
+    List<RefreshTokenEntity> findByUserIdClientId(Long userId, String clientId) {
+        return queryView('by_user_id_client_id', userId.toString() + ':' + clientId)
     }
 }

@@ -15,7 +15,7 @@ public class TokenSet {
     private Long id;
     private String description;
     private String status;
-    private Integer generationLength;
+    private String generationLength;
     private Long generationSeed;
     private List<Long> offerIds;
 
@@ -43,11 +43,11 @@ public class TokenSet {
         this.status = status;
     }
 
-    public Integer getGenerationLength() {
+    public String getGenerationLength() {
         return generationLength;
     }
 
-    public void setGenerationLength(Integer generationLength) {
+    public void setGenerationLength(String generationLength) {
         this.generationLength = generationLength;
     }
 
