@@ -17,6 +17,8 @@ import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.model.OrderItem
 import com.junbo.payment.spec.model.PaymentInstrument
 import groovy.transform.CompileStatic
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
@@ -35,6 +37,9 @@ class OrderServiceContextBuilder {
     @Qualifier('orderFacadeContainer')
     FacadeContainer facadeContainer
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(OrderServiceContextBuilder)
+
+
     Promise<List<PaymentInstrument>> getPaymentInstruments(OrderServiceContext context) {
 
         if (context == null || context.order == null) { return Promise.pure(null) }
@@ -52,7 +57,10 @@ class OrderServiceContextBuilder {
         List<PaymentInstrument> pis = []
         return Promise.each(piids.iterator()) { PaymentInstrumentId piid ->
             facadeContainer.paymentFacade.
-                    getPaymentInstrument(context.order.user, piid.value).syncThen { PaymentInstrument pi ->
+                    getPaymentInstrument(context.order.user, piid.value).syncRecover { Throwable throwable ->
+                LOGGER.error('name=Order_GetPaymentInstrument_Error', throwable)
+                throw new IllegalArgumentException('name=Order_GetPaymentInstrument_Error' , throwable)
+            }.syncThen { PaymentInstrument pi ->
                 pis << pi
             }
         }.syncThen {
