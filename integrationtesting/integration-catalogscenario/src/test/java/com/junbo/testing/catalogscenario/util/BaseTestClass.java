@@ -9,8 +9,8 @@ import org.slf4j.bridge.SLF4JBridgeHandler;
 
 /**
  @author Jason
-  * Time: 3/7/2014
-  * Base test class
+  * Time: 3/19/2014
+  * Base test class for catalog scenarios
  */
 public class BaseTestClass {
 
