@@ -13,7 +13,6 @@ import com.junbo.common.util.EnumRegistry;
 import com.junbo.identity.data.identifiable.UserPasswordStrength;
 import com.junbo.identity.data.identifiable.UserProfileType;
 import com.junbo.identity.spec.error.AppErrors;
-import com.junbo.identity.spec.model.password.PasswordRuleDetail;
 import org.springframework.util.StringUtils;
 
 import java.io.StringWriter;
@@ -306,30 +305,10 @@ public class CommonMapper {
         }
     }
 
-    public List<PasswordRuleDetail> jsonToListPasswordRuleDetails(String json) {
-        try {
-            return objectMapper.readValue(json, new TypeReference<List<PasswordRuleDetail>>() { });
-        }
-        catch (Exception e) {
-            throw AppErrors.INSTANCE.serializerError(json).exception();
-        }
-    }
-
     public String explicitMethod_listStringToJson(List<String> strings) {
         try {
             StringWriter sw = new StringWriter();
             objectMapper.writeValue(sw, strings);
-            return sw.toString();
-        }
-        catch (Exception e) {
-            throw AppErrors.INSTANCE.deSerializerError().exception();
-        }
-    }
-
-    public String listPasswordRuleDetailsToJson(List<PasswordRuleDetail> passwordRuleDetails) {
-        try {
-            StringWriter sw = new StringWriter();
-            objectMapper.writeValue(sw, passwordRuleDetails);
             return sw.toString();
         }
         catch (Exception e) {

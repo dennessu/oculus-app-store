@@ -26,8 +26,8 @@ import java.util.List;
 @Component
 public class UserPinRepositoryImpl implements UserPinRepository {
     @Autowired
-    @Qualifier("userPINDAO")
-    private UserPinDAO userPINDAO;
+    @Qualifier("userPinDAO")
+    private UserPinDAO userPinDAO;
 
     @Autowired
     @Qualifier("identityModelMapperImpl")
@@ -36,7 +36,7 @@ public class UserPinRepositoryImpl implements UserPinRepository {
     @Override
     public UserPin save(UserPin entity) {
         UserPinEntity userPinEntity = modelMapper.toUserPin(entity, new MappingContext());
-        userPINDAO.save(userPinEntity);
+        userPinDAO.save(userPinEntity);
 
         return get(new UserPinId(userPinEntity.getId()));
     }
@@ -44,19 +44,19 @@ public class UserPinRepositoryImpl implements UserPinRepository {
     @Override
     public UserPin update(UserPin entity) {
         UserPinEntity userPINEntity = modelMapper.toUserPin(entity, new MappingContext());
-        userPINDAO.update(userPINEntity);
+        userPinDAO.update(userPINEntity);
 
         return get(entity.getId());
     }
 
     @Override
     public UserPin get(UserPinId id) {
-        return modelMapper.toUserPin(userPINDAO.get(id.getValue()), new MappingContext());
+        return modelMapper.toUserPin(userPinDAO.get(id.getValue()), new MappingContext());
     }
 
     @Override
     public List<UserPin> search(UserPinGetOption getOption) {
-        List entities = userPINDAO.search(getOption.getUserId().getValue(), getOption);
+        List entities = userPinDAO.search(getOption.getUserId().getValue(), getOption);
 
         List<UserPin> results = new ArrayList<UserPin>();
         for(int i =0 ; i< entities.size(); i++) {
@@ -67,6 +67,6 @@ public class UserPinRepositoryImpl implements UserPinRepository {
 
     @Override
     public void delete(UserPinId id) {
-        userPINDAO.delete(id.getValue());
+        userPinDAO.delete(id.getValue());
     }
 }

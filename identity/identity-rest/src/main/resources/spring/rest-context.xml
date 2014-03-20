@@ -11,11 +11,9 @@
 
     <!-- validator -->
     <bean id="securityQuestionValidator" class="com.junbo.identity.rest.service.validator.impl.SecurityQuestionValidatorImpl"/>
-    <bean id="passwordRuleValidator" class="com.junbo.identity.rest.service.validator.impl.PasswordRuleValidatorImpl"/>
 
     <!-- service impl -->
     <bean id="securityQuestionService" class="com.junbo.identity.rest.service.domaindata.impl.SecurityQuestionServiceImpl"/>
-    <bean id="passwordRuleService" class="com.junbo.identity.rest.service.domaindata.impl.PasswordRuleServiceImpl"/>
 
     <!-- resource implementation -->
     <bean id="defaultGroupResource" class="com.junbo.identity.rest.resource.GroupResourceImpl" />
