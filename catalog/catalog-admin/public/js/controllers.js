@@ -1,7 +1,7 @@
 'use strict';
 
 /* Controllers */
-var app = angular.module('catalog.controllers', []);
+var app = angular.module('catalog.controllers', ['ui.bootstrap']);
 
 // Clear browser cache (in development mode)
 //
@@ -35,6 +35,24 @@ app.controller('OfferCreationCtrl', ['$scope', 'OffersFactory', 'AttributesFacto
         $scope.cancel = function () {
             $location.path('/offers');
         };
+
+        $scope.addItem = function(item) {
+            $scope.selectedItems[item.self.id] = item;
+        };
+        $scope.removeItem = function(item) {
+            delete $scope.selectedItems[item.self.id];
+        };
+        $scope.saveItems = function() {
+            $scope.offer.items = [];
+            Object.keys( $scope.selectedItems ).forEach(function( key ) {
+                $scope.offer.items.push({itemId: $scope.selectedItems[key].self});
+            });
+        };
+        $scope.selectedItems = {};
+        $scope.isCollapsed = true;
+        // TODO: change to ItemsFactory
+        $scope.items = AttributesFactory.query();
+
         $scope.typeAttributes = AttributesFactory.query({type: "Type"});
         $scope.offers = OffersFactory.query($routeParams);
     }]);
@@ -101,7 +119,6 @@ app.controller('OfferDetailCtrl', ['$scope', 'OfferFactory', '$routeParams', '$l
 
         $scope.offer = OfferFactory.query($routeParams);
     }]);
-
 
 app.controller('AttributeListCtrl', ['$scope', 'AttributesFactory', '$location',
     function($scope, AttributesFactory, $location) {
