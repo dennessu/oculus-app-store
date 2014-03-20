@@ -45,7 +45,12 @@ public Promise<${returnType}> ${methodName}([#list parameters as parameter]${par
                      throw new RuntimeException(ex);
                 }
             } else {
-                throw new ClientResponseException(response);
+                try {
+                    Error error = __transcoder.<Error>decode(new TypeReference<Error>() {}, response.getResponseBody());
+                    throw getAppError(response.getStatusCode(), error).exception();
+                } catch (java.io.IOException e) {
+                    throw new ClientResponseException("Unable to unmarshall the error response", response, e);
+                }
             }
         }
     });

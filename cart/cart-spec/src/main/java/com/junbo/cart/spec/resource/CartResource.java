@@ -6,10 +6,7 @@
 package com.junbo.cart.spec.resource;
 
 import com.junbo.cart.spec.model.Cart;
-import com.junbo.cart.spec.model.item.CouponItem;
-import com.junbo.cart.spec.model.item.OfferItem;
 import com.junbo.common.id.CartId;
-import com.junbo.common.id.CartItemId;
 import com.junbo.common.id.UserId;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
@@ -60,29 +57,4 @@ public interface CartResource {
     @Path("/{userId}/carts/{cartId}/merge")
     Promise<Cart> mergeCart(@PathParam("userId") UserId userId,
                                      @PathParam("cartId") CartId cartId, Cart fromCart);
-
-    @POST
-    @Path("/{userId}/carts/{cartId}/offers")
-    Promise<Cart> addOffer(@PathParam("userId") UserId userId,
-                                    @PathParam("cartId") CartId cartId, OfferItem offer);
-
-    @PUT
-    @Path("/{userId}/carts/{cartId}/offers/{offerItemId}")
-    Promise<Cart> updateOffer(@PathParam("userId") UserId userId, @PathParam("cartId") CartId cartId,
-                                           @PathParam("offerItemId") CartItemId offerItemId, OfferItem offer);
-
-    @DELETE
-    @Path("/{userId}/carts/{cartId}/offers/{offerItemId}")
-    Promise<Void> deleteOffer(@PathParam("userId") UserId userId, @PathParam("cartId") CartId cartId,
-                                       @PathParam("offerItemId") CartItemId offerItemId);
-
-    @POST
-    @Path("/{userId}/carts/{cartId}/coupons/")
-    Promise<Cart> addCoupon(@PathParam("userId") UserId userId, @PathParam("cartId") CartId cartId,
-                                     CouponItem couponItem);
-
-    @DELETE
-    @Path("/{userId}/carts/{cartId}/coupons/{couponItemId}")
-    Promise<Void> deleteCoupon(@PathParam("userId") UserId userId, @PathParam("cartId") CartId cartId,
-                                        @PathParam("couponItemId") CartItemId couponItemId);
 }

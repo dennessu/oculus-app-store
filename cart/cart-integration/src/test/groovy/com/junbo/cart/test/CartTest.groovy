@@ -75,8 +75,7 @@ class CartTest extends TestBase {
 
         // update oB quantity by update Cart
         offer(cartUserA, offerB).quantity = quantity
-        cartUserA = cartClient.updateOffer(userA.id, cartUserA.id, offer(cartUserA, offerB).id,
-                offer(cartUserA, offerB))
+        cartUserA = cartClient.updateCart(userA.id, cartUserA.id, cartUserA)
         CartValidator.fromResult(cartUserA).resourceAge(6)
         OfferValidator.fromResult(offer(cartUserA, offerB)).quantity(quantity)
 
