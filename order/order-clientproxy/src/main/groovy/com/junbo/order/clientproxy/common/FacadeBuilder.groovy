@@ -89,7 +89,7 @@ class FacadeBuilder {
         Map<String, String> properties = [:]
         properties.put(ORDER_NUMBER, order.id.value.toString())
         Date now = new Date()
-        properties.put(ORDER_DATE, new SimpleDateFormat('yyyy-MM-dd').format(now))
+        properties.put(ORDER_DATE, new SimpleDateFormat('yyyy-MM-dd', Locale.US).format(now))
         properties.put(NAME, user.userName)
         properties.put(SUBTOTAL, order.totalAmount?.toString())
         properties.put(TAX, BigDecimal.ZERO.toString())
