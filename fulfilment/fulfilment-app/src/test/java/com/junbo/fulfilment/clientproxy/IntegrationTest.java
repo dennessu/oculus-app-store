@@ -41,7 +41,7 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
         Assert.assertNotNull(request, "fulfilmentRequest should not be null.");
     }
 
-    @Test(enabled = true)
+    @Test(enabled = false)
     public void testDuplicatedTrackignGuid() {
         Long offerId = prepareOffer();
         Assert.assertNotNull(offerId, "offerId should not be null.");
