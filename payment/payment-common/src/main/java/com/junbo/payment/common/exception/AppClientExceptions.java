@@ -4,7 +4,7 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.payment.core.exception;
+package com.junbo.payment.common.exception;
 
 import com.junbo.common.error.AppError;
 import com.junbo.common.error.ErrorDef;
@@ -104,4 +104,8 @@ public interface AppClientExceptions {
     @ErrorDef(httpStatusCode = 400, code = "40021",
             description = "the expire date of credit card is missing", field = "expire_date")
     AppError missingExpireDate();
+
+    @ErrorDef(httpStatusCode = 400, code = "40022",
+            description = "the field {0} is not needed")
+    AppError fieldNotNeeded(String fieldName);
 }
