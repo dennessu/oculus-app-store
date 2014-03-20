@@ -10,18 +10,47 @@
     <tx:annotation-driven/>
 
     <!-- fusion -->
-    <!--bean id="catalogGateway" class="com.junbo.rating.clientproxy.impl.CatalogGatewayImpl"/-->
+    <bean id="catalogGateway" class="com.junbo.rating.clientproxy.impl.CatalogGatewayImpl"/>
+    <bean id="entitlementGateway" class="com.junbo.rating.clientproxy.impl.EntitlementGatewayImpl"/>
 
     <!--mock-->
-    <bean id="mockCatalogGateway" class="com.junbo.rating.clientproxy.mock.MockCatalogGatewayImpl"/>
-    <bean id="mockEntitlementGateway" class="com.junbo.rating.clientproxy.mock.MockEntitlementGatewayImpl"/>
+    <!--bean id="mockCatalogGateway" class="com.junbo.rating.clientproxy.mock.MockCatalogGatewayImpl"/>
+    <bean id="mockEntitlementGateway" class="com.junbo.rating.clientproxy.mock.MockEntitlementGatewayImpl"/-->
 
     <!-- async http client -->
     <bean id="asyncHttpClient" class="com.ning.http.client.AsyncHttpClient"/>
 
+    <bean id="attributeClient" class="com.junbo.catalog.spec.resource.proxy.AttributeResourceClientProxy">
+        <constructor-arg name="client" ref="asyncHttpClient"/>
+        <constructor-arg name="target" value="${clientproxy.catalog.url}"/>
+        <constructor-arg name="transcoder">
+            <bean class="com.junbo.common.json.JsonMessageTranscoder"/>
+        </constructor-arg>
+        <constructor-arg name="pathParamTranscoder">
+            <bean class="com.junbo.common.json.IdPathParamTranscoder" />
+        </constructor-arg>
+        <constructor-arg name="queryParamTranscoder">
+            <bean class="com.junbo.common.json.QueryParamTranscoderImpl" />
+        </constructor-arg>
+    </bean>
+
+    <bean id="itemClient" class="com.junbo.catalog.spec.resource.proxy.ItemResourceClientProxy">
+        <constructor-arg name="client" ref="asyncHttpClient"/>
+        <constructor-arg name="target" value="${clientproxy.catalog.url}"/>
+        <constructor-arg name="transcoder">
+            <bean class="com.junbo.common.json.JsonMessageTranscoder"/>
+        </constructor-arg>
+        <constructor-arg name="pathParamTranscoder">
+            <bean class="com.junbo.common.json.IdPathParamTranscoder" />
+        </constructor-arg>
+        <constructor-arg name="queryParamTranscoder">
+            <bean class="com.junbo.common.json.QueryParamTranscoderImpl" />
+        </constructor-arg>
+    </bean>
+
     <bean id="offerClient" class="com.junbo.catalog.spec.resource.proxy.OfferResourceClientProxy">
         <constructor-arg name="client" ref="asyncHttpClient"/>
-        <constructor-arg name="target" value="http://localhost:8080/rest"/>
+        <constructor-arg name="target" value="${clientproxy.catalog.url}"/>
         <constructor-arg name="transcoder">
             <bean class="com.junbo.common.json.JsonMessageTranscoder"/>
         </constructor-arg>
@@ -35,7 +64,7 @@
 
     <bean id="promotionClient" class="com.junbo.catalog.spec.resource.proxy.PromotionResourceClientProxy">
         <constructor-arg name="client" ref="asyncHttpClient"/>
-        <constructor-arg name="target" value="http://localhost:8080/rest"/>
+        <constructor-arg name="target" value="${clientproxy.catalog.url}"/>
         <constructor-arg name="transcoder">
             <bean class="com.junbo.common.json.JsonMessageTranscoder"/>
         </constructor-arg>
@@ -49,7 +78,7 @@
 
     <bean id="entitlementClient" class="com.junbo.entitlement.spec.resource.proxy.EntitlementResourceClientProxy">
         <constructor-arg name="client" ref="asyncHttpClient"/>
-        <constructor-arg name="target" value="http://localhost:8080/rest"/>
+        <constructor-arg name="target" value="${clientproxy.entitlement.url}"/>
         <constructor-arg name="transcoder">
             <bean class="com.junbo.common.json.JsonMessageTranscoder"/>
         </constructor-arg>
