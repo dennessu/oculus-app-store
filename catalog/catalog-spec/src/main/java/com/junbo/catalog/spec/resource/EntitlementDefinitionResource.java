@@ -13,6 +13,8 @@ import com.junbo.common.id.EntitlementDefinitionId;
 import com.junbo.common.id.UserId;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -22,15 +24,19 @@ import javax.ws.rs.core.MediaType;
 /**
  * API for entitlementDefinition.
  */
+@Api("entitlement-definitions")
 @Path("/entitlement-definitions")
 @Produces({MediaType.APPLICATION_JSON})
 @RestResource
 public interface EntitlementDefinitionResource {
+
+    @ApiOperation("Get an entitlement definition")
     @GET
     @Path("/{entitlementDefinitionId}")
     Promise<EntitlementDefinition> getEntitlementDefinition(
             @PathParam("entitlementDefinitionId") EntitlementDefinitionId entitlementDefinitionId);
 
+    @ApiOperation("Get or search entitlement definitions")
     @GET
     Promise<ResultList<EntitlementDefinition>>
     getEntitlementDefinitionDefinitions(
@@ -40,6 +46,7 @@ public interface EntitlementDefinitionResource {
             @QueryParam("tag") String tag,
             @BeanParam PageableGetOptions pageMetadata);
 
+    @ApiOperation("Create an entitlement definitions")
     @POST
     @Consumes({MediaType.APPLICATION_JSON})
     Promise<EntitlementDefinition> postEntitlementDefinition(
