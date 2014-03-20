@@ -29,7 +29,17 @@ public class PropertyAssignedAwareFilter implements BeanPropertyFilter {
         if (bean instanceof PropertyAssignedAware) {
             PropertyAssignedAware propertyAssignedAware = (PropertyAssignedAware) bean;
 
+            // skip if not assigned.
             if (!propertyAssignedAware.isPropertyAssigned(writer.getName())) {
+                return;
+            }
+
+            Object value = writer.get(bean);
+
+            // always write explicit null
+            if (value == null) {
+                jgen.writeFieldName(writer.getName());
+                jgen.writeNull();
                 return;
             }
         }
