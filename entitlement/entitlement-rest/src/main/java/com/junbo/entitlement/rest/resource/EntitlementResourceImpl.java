@@ -63,28 +63,16 @@ public class EntitlementResourceImpl implements EntitlementResource {
 
     @Override
     public Promise<Entitlement> postEntitlement(Entitlement entitlement) {
-        UUID trackingUuid = entitlement.getTrackingUuid();
-        if (trackingUuid != null) {
-            Entitlement existingEntitlement
-                    = entitlementService.getByTrackingUuid(trackingUuid);
-            if (existingEntitlement != null) {
-                return Promise.pure(existingEntitlement);
-            }
-        }
-        return Promise.pure(entitlementService.addEntitlement(entitlement));
+        Entitlement existing = getByTrackingUuid(entitlement.getTrackingUuid());
+        return Promise.pure(existing != null ? existing :
+                entitlementService.addEntitlement(entitlement));
     }
 
     @Override
     public Promise<Entitlement> updateEntitlement(EntitlementId entitlementId, Entitlement entitlement) {
-        UUID trackingUuid = entitlement.getTrackingUuid();
-        if (trackingUuid != null) {
-            Entitlement existingEntitlement
-                    = entitlementService.getByTrackingUuid(trackingUuid);
-            if (existingEntitlement != null) {
-                return Promise.pure(existingEntitlement);
-            }
-        }
-        return Promise.pure(entitlementService.updateEntitlement(entitlementId.getValue(), entitlement));
+        Entitlement existing = getByTrackingUuid(entitlement.getTrackingUuid());
+        return Promise.pure(existing != null ? existing :
+                entitlementService.updateEntitlement(entitlementId.getValue(), entitlement));
     }
 
     @Override
@@ -95,14 +83,18 @@ public class EntitlementResourceImpl implements EntitlementResource {
 
     @Override
     public Promise<Entitlement> transferEntitlement(EntitlementTransfer entitlementTransfer) {
-        UUID trackingUuid = entitlementTransfer.getTrackingUuid();
+        Entitlement existing = getByTrackingUuid(entitlementTransfer.getTrackingUuid());
+        return Promise.pure(existing != null ? existing :
+                entitlementService.transferEntitlement(entitlementTransfer));
+    }
+
+    private Entitlement getByTrackingUuid(UUID trackingUuid) {
         if (trackingUuid != null) {
-            Entitlement existingEntitlement = entitlementService.getByTrackingUuid(trackingUuid);
-            if (existingEntitlement != null) {
-                return Promise.pure(existingEntitlement);
-            }
+            Entitlement existingEntitlement
+                    = entitlementService.getByTrackingUuid(trackingUuid);
+            return existingEntitlement;
         }
-        return Promise.pure(entitlementService.transferEntitlement(entitlementTransfer));
+        return null;
     }
 
     private String buildNextUrl(
