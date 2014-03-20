@@ -1,3 +1,4 @@
+rootProject.name = 'drm'
 include 'drm-spec'
 
 include 'drm-common'
