@@ -17,11 +17,11 @@ import java.util.HashMap;
  */
 public interface ItemService {
 
-    Item getItem(String itemId, HashMap<String, String> httpPara) throws Exception;
+    String getItem(String itemId, HashMap<String, String> httpPara) throws Exception;
 
     ResultList<Item> getItem(HashMap<String, String> httpPara) throws Exception;
 
-    Item postItem(Item item) throws Exception;
+    String postItem(Item item) throws Exception;
 
-    Item updateItem(String itemId, Item item) throws Exception;
+    String updateItem(String itemId, Item item) throws Exception;
 }

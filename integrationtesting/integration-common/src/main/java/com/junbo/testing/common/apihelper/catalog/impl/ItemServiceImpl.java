@@ -13,8 +13,11 @@ import com.junbo.testing.common.apihelper.catalog.ItemService;
 import com.junbo.testing.common.libs.ConfigPropertiesHelper;
 import com.junbo.testing.common.libs.LogHelper;
 
+import com.junbo.testing.common.libs.RestUrl;
 import com.ning.http.client.*;
 import com.ning.http.client.providers.netty.NettyResponse;
+import sun.print.resources.serviceui_sv;
+
 import java.util.HashMap;
 import java.util.concurrent.Future;
 
@@ -25,28 +28,31 @@ import java.util.concurrent.Future;
  */
 public class ItemServiceImpl implements ItemService {
 
-    private final String requestHeaderName = "Content-Type";
-    private final String requestHeaderValue = "application/json";
-
-    private final String catalogServerURL = "http://" +
-            ConfigPropertiesHelper.instance().getProperty("catalog.host") +
-            ":" +
-            ConfigPropertiesHelper.instance().getProperty("catalog.port") +
+    private final String catalogServerURL = RestUrl.getRestUrl("catalog") +
             "/rest/items";
 
     private LogHelper logger = new LogHelper(ItemServiceImpl.class);
     private AsyncHttpClient asyncClient;
 
-    public ItemServiceImpl() {
+    private static ItemService instance = null;
+
+    public static synchronized ItemService instance() {
+        if (instance == null) {
+            instance = new ItemServiceImpl();
+        }
+        return instance;
+    }
+
+    private ItemServiceImpl() {
         asyncClient = new AsyncHttpClient(new AsyncHttpClientConfig.Builder().build());
     }
 
-    public Item getItem(String itemId, HashMap<String, String> httpPara) throws Exception {
+    public String getItem(String itemId, HashMap<String, String> httpPara) throws Exception {
 
         String url = catalogServerURL + "/" + itemId;
 
         RequestBuilder reqBuilder = new RequestBuilder("GET");
-        reqBuilder.addHeader(requestHeaderName, requestHeaderValue);
+        reqBuilder.addHeader(RestUrl.requestHeaderName, RestUrl.requestHeaderValue);
         reqBuilder.setUrl(url);
         if (!httpPara.isEmpty()) {
             for (String key: httpPara.keySet()) {
@@ -65,13 +71,13 @@ public class ItemServiceImpl implements ItemService {
         Item itemGet = new JsonMessageTranscoder().decode(new TypeReference<Item>() {},
                 nettyResponse.getResponseBody());
 
-        return itemGet;
+        return itemGet.getId().toString();
     }
 
     public ResultList<Item> getItem(HashMap<String, String> httpPara) throws Exception {
 
         RequestBuilder reqBuilder = new RequestBuilder("GET");
-        reqBuilder.addHeader(requestHeaderName, requestHeaderValue);
+        reqBuilder.addHeader(RestUrl.requestHeaderName, RestUrl.requestHeaderValue);
         reqBuilder.setUrl(catalogServerURL);
         if (!httpPara.isEmpty()) {
             for (String key: httpPara.keySet()) {
@@ -93,10 +99,52 @@ public class ItemServiceImpl implements ItemService {
         return itemGet;
     }
 
-    public Item postItem(Item item) throws Exception {
-        return null;
+    public String postItem(Item item) throws Exception {
+
+        RequestBuilder reqBuilder = new RequestBuilder("POST");
+        reqBuilder.addHeader(RestUrl.requestHeaderName, RestUrl.requestHeaderValue);
+        reqBuilder.setUrl(catalogServerURL);
+        reqBuilder.setBody(new JsonMessageTranscoder().encode(item));
+        Request req = reqBuilder.build();
+
+        logger.LogRequest(req);
+
+        Future future = asyncClient.prepareRequest(req).execute();
+        NettyResponse nettyResponse = (NettyResponse) future.get();
+
+        logger.LogResponse(nettyResponse);
+
+        Item itemPost = new JsonMessageTranscoder().decode(new TypeReference<Item>() {},
+                nettyResponse.getResponseBody());
+
+        return itemPost.getId().toString();
     }
-    public Item updateItem(String itemId, Item item) throws Exception {
+
+    public String postDefaultItem() throws Exception {
+
+        Item itemforPost = new Item();
+
+        RequestBuilder reqBuilder = new RequestBuilder("POST");
+        reqBuilder.addHeader(RestUrl.requestHeaderName, RestUrl.requestHeaderValue);
+        reqBuilder.setUrl(catalogServerURL);
+        reqBuilder.setBody(new JsonMessageTranscoder().encode(itemforPost));
+        Request req = reqBuilder.build();
+
+        logger.LogRequest(req);
+
+        Future future = asyncClient.prepareRequest(req).execute();
+        NettyResponse nettyResponse = (NettyResponse) future.get();
+
+        logger.LogResponse(nettyResponse);
+
+        Item itemPost = new JsonMessageTranscoder().decode(new TypeReference<Item>() {},
+                nettyResponse.getResponseBody());
+
+        return itemPost.getId().toString();
+
+    }
+
+    public String updateItem(String itemId, Item item) throws Exception {
         return null;
     }
 

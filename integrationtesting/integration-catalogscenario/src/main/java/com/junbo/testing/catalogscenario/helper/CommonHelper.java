@@ -3,11 +3,10 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.testing.catalogratingscenario;
+package com.junbo.testing.catalogscenario.helper;
 
 /**
  * Created by Jason on 3/7/14.
  */
-public class SampleTest {
-
+public class CommonHelper {
 }

@@ -5,15 +5,11 @@
  */
 package com.junbo.testing.common.apihelper.identity.impl;
 
-import com.junbo.common.id.UserId;
 import com.junbo.common.json.JsonMessageTranscoder;
-import com.junbo.common.util.IdFormatter;
 import com.junbo.identity.spec.model.common.ResultList;
 import com.junbo.langur.core.client.TypeReference;
-import com.junbo.testing.common.libs.LogHelper;
-import com.junbo.testing.common.libs.EnumHelper;
-import com.junbo.testing.common.libs.RandomFactory;
-import com.junbo.testing.common.libs.ConfigPropertiesHelper;
+import com.junbo.testing.common.blueprint.Master;
+import com.junbo.testing.common.libs.*;
 import com.junbo.testing.common.apihelper.identity.UserService;
 import com.junbo.identity.spec.model.user.User;
 
@@ -22,6 +18,7 @@ import com.ning.http.client.AsyncHttpClientConfig;
 import com.ning.http.client.Request;
 import com.ning.http.client.RequestBuilder;
 import com.ning.http.client.providers.netty.NettyResponse;
+import junit.framework.Assert;
 
 import java.util.concurrent.Future;
 
@@ -32,74 +29,94 @@ import java.util.concurrent.Future;
  */
 public class UserServiceImpl implements UserService {
 
-    private final String requestHeaderName = "Content-Type";
-    private final String requestHeaderValue = "application/json";
-
-    private final String identityServerURL = "http://" +
-            ConfigPropertiesHelper.instance().getProperty("identity.host") +
-            ":" +
-            ConfigPropertiesHelper.instance().getProperty("identity.port") +
-            "/rest/users";
-    private final String oAuthServerURL = "http://" +
-            ConfigPropertiesHelper.instance().getProperty("oauth.host") +
-            ":" +
-            ConfigPropertiesHelper.instance().getProperty("oauth.port") +
+    private final String identityServerURL = RestUrl.getRestUrl("identity") +
+            "users";
+    private final String oAuthServerURL = RestUrl.getRestUrl("oauth") +
             "/auth";
 
     private LogHelper logger = new LogHelper(UserServiceImpl.class);
     private AsyncHttpClient asyncClient;
 
-    public UserServiceImpl() {
+    private static UserService instance = null;
+
+    public static synchronized UserService instance() {
+        if (instance == null) {
+            instance = new UserServiceImpl();
+        }
+        return instance;
+    }
+
+    private UserServiceImpl() {
         asyncClient = new AsyncHttpClient(new AsyncHttpClientConfig.Builder().build());
     }
 
-    public User PutUser(String userName, String status) throws Exception {
-        //Todo
-        return null;
-    };
+    public String PostUser() throws Exception {
 
-    //Authenticate user
-    public User AuthenticateUser(String userName, String password) throws Exception {
-        //Todo
-        return null;
-    };
+        User user = new User();
+        user.setUserName(RandomFactory.getRandomEmailAddress());
+        user.setPassword("password");
+        user.setStatus(EnumHelper.UserStatus.ACTIVE.toString());
 
-    //update password
-    public User UpdatePassword(UserId userId, String oldPassword, String newPassword) throws Exception {
-        //Todo
-        return null;
-    };
+        return PostUser(user);
+    }
 
-    //reset password
-    public User ResetPassword(UserId userId, String newPassword) throws Exception {
-        //Todo
-        return null;
-    };
+    public String PostUser(User user) throws Exception {
+        return PostUser(user, 200);
+    }
 
-    public User GetUserByUserId(UserId userId) throws Exception {
+    public String PostUser(User user, int expectedResponseCode) throws Exception {
 
-        String url = identityServerURL + "/" + IdFormatter.encodeId(userId);
-
-        Request req = new RequestBuilder("GET")
-                .addHeader(requestHeaderName, requestHeaderValue)
-                .setUrl(url)
+        Request req = new RequestBuilder("POST")
+                .setUrl(identityServerURL)
+                .addHeader(RestUrl.requestHeaderName, RestUrl.requestHeaderValue)
+                .setBody(new JsonMessageTranscoder().encode(user))
                 .build();
-        logger.LogRequest(req);
 
+        logger.LogRequest(req);
         Future future = asyncClient.prepareRequest(req).execute();
         NettyResponse nettyResponse = (NettyResponse) future.get();
-
         logger.LogResponse(nettyResponse);
+        Assert.assertEquals(expectedResponseCode, nettyResponse.getStatusCode());
 
         User userGet = new JsonMessageTranscoder().decode(new TypeReference<User>() {},
                 nettyResponse.getResponseBody());
-        return userGet;
+        Master.getInstance().addUser(IdConverter.idToHexString(userGet.getId()), userGet);
+        return IdConverter.idToHexString(userGet.getId());
+    }
+
+    public String GetUserByUserId(String userId) throws Exception {
+        return GetUserByUserId(userId, 200);
+    }
+
+    public String GetUserByUserId(String userId, int expectedResponseCode) throws Exception {
+
+        String url = identityServerURL + "/" + userId;
+
+        Request req = new RequestBuilder("GET")
+                .addHeader(RestUrl.requestHeaderName, RestUrl.requestHeaderValue)
+                .setUrl(url)
+                .build();
+
+        logger.LogRequest(req);
+        Future future = asyncClient.prepareRequest(req).execute();
+        NettyResponse nettyResponse = (NettyResponse) future.get();
+        logger.LogResponse(nettyResponse);
+        Assert.assertEquals(expectedResponseCode, nettyResponse.getStatusCode());
+
+        User userGet = new JsonMessageTranscoder().decode(new TypeReference<User>() {},
+                nettyResponse.getResponseBody());
+        Master.getInstance().addUser(IdConverter.idToHexString(userGet.getId()), userGet);
+        return IdConverter.idToHexString(userGet.getId());
     }
 
     public ResultList<User> GetUserByUserName(String userName) throws Exception {
+        return GetUserByUserName(userName, 200);
+    }
+
+    public ResultList<User> GetUserByUserName(String userName, int expectedResponseCode) throws Exception {
 
         Request req = new RequestBuilder("GET")
-                .addHeader(requestHeaderName, requestHeaderValue)
+                .addHeader(RestUrl.requestHeaderName, RestUrl.requestHeaderValue)
                 .addQueryParameter("userName", userName)
                 .setUrl(identityServerURL)
                 .build();
@@ -117,56 +134,46 @@ public class UserServiceImpl implements UserService {
         return userGet;
     }
 
-    public User PostUser() throws Exception {
+    public String PutUser(String userName, String status) throws Exception {
+        //Todo
+        return PutUser(userName, status, 200);
+    };
 
-        String userName = RandomFactory.getRandomEmailAddress();
-        String password = "password";
-        String status = EnumHelper.UserStatus.ACTIVE.toString();
+    public String PutUser(String userName, String status, int expectedResponseCode) throws Exception {
+        //Todo
+        return null;
+    };
 
-        return PostUser(userName, password, status);
-    }
+    //Authenticate user
+    public String AuthenticateUser(String userName, String password) throws Exception {
+        //Todo
+        return AuthenticateUser(userName, password, 200);
+    };
 
-    public User PostUser(String userName) throws Exception {
+    public String AuthenticateUser(String userName, String password, int expectedResponseCode) throws Exception {
+        //Todo
+        return null;
+    };
 
-        String password = "password";
-        String status = EnumHelper.UserStatus.ACTIVE.toString();
+    //update password
+    public String UpdatePassword(String userId, String oldPassword, String newPassword) throws Exception {
+        //Todo
+        return UpdatePassword(userId, oldPassword, newPassword, 200 );
+    };
 
-        return PostUser(userName, password, status);
-    }
+    public String UpdatePassword(String userId, String oldPassword, String newPassword, int expectedResponseCode) throws Exception {
+        //Todo
+        return null;
+    };
 
-    public User PostUser(String userName, String password) throws Exception {
+    //reset password
+    public String ResetPassword(String userId, String newPassword) throws Exception {
+        //Todo
+        return ResetPassword(userId, newPassword, 200);
+    };
 
-        String status = EnumHelper.UserStatus.ACTIVE.toString();
-
-        return PostUser(userName, password, status);
-    }
-
-    public User PostUser(String userName, String password, String status) throws Exception {
-
-        String requestBody = "";
-
-        User userToPost = new User();
-        userToPost.setUserName(userName);
-        userToPost.setStatus(status);
-        userToPost.setPassword(password);
-
-        requestBody = new JsonMessageTranscoder().encode(userToPost);
-
-        Request req = new RequestBuilder("POST")
-                .setUrl(identityServerURL)
-                .addHeader(requestHeaderName, requestHeaderValue)
-                .setBody(requestBody)
-                .build();
-
-        logger.LogRequest(req);
-
-        Future future = asyncClient.prepareRequest(req).execute();
-        NettyResponse nettyResponse = (NettyResponse) future.get();
-
-        logger.LogResponse(nettyResponse);
-
-        User userGet = new JsonMessageTranscoder().decode(new TypeReference<User>() {},
-                nettyResponse.getResponseBody());
-        return userGet;
-    }
+    public String ResetPassword(String userId, String newPassword, int expectedResponseCode) throws Exception {
+        //Todo
+        return null;
+    };
 }
