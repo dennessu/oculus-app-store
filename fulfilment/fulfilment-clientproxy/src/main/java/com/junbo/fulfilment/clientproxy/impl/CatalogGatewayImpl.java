@@ -6,16 +6,19 @@
 package com.junbo.fulfilment.clientproxy.impl;
 
 import com.junbo.catalog.spec.model.common.EntityGetOptions;
-import com.junbo.catalog.spec.model.offer.*;
+import com.junbo.catalog.spec.model.offer.Action;
+import com.junbo.catalog.spec.model.offer.Event;
+import com.junbo.catalog.spec.model.offer.ItemEntry;
+import com.junbo.catalog.spec.model.offer.OfferEntry;
 import com.junbo.catalog.spec.resource.OfferResource;
 import com.junbo.common.id.OfferId;
 import com.junbo.fulfilment.clientproxy.CatalogGateway;
 import com.junbo.fulfilment.common.collection.SevereMap;
-import com.junbo.fulfilment.common.exception.CatalogGatewayException;
-import com.junbo.fulfilment.common.exception.ResourceNotFoundException;
 import com.junbo.fulfilment.common.util.Utils;
+import com.junbo.fulfilment.spec.error.AppErrors;
 import com.junbo.fulfilment.spec.fusion.*;
-import com.junbo.fulfilment.spec.fusion.Offer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -26,6 +29,8 @@ public class CatalogGatewayImpl implements CatalogGateway {
     private static final String PURCHASE_EVENT = "PURCHASE_EVENT";
     private static final String OFFER_RELEASED_STATUS = "RELEASED";
     private static final Long OFFER_TIMESTAMP_NOT_SPECIFIED = null;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CatalogGatewayImpl.class);
 
     @Autowired
     @Qualifier("offerClient")
@@ -44,7 +49,6 @@ public class CatalogGatewayImpl implements CatalogGateway {
 
     @Override
     public ShippingMethod getShippingMethod(Long shippingMethodId) {
-        //TODO
         return new ShippingMethod();
     }
 
@@ -57,13 +61,14 @@ public class CatalogGatewayImpl implements CatalogGateway {
                     offerResource.getOffer(new OfferId(offerId), options).wrapped().get();
 
             if (offer == null) {
-                throw new ResourceNotFoundException(
-                        "Offer [" + offerId + "] with timestamp [" + timestamp + "] does not exist");
+                LOGGER.error("Offer [" + offerId + "] with timestamp [" + timestamp + "] does not exist");
+                throw AppErrors.INSTANCE.notFound("Offer", offerId).exception();
             }
 
             return offer;
         } catch (Exception e) {
-            throw new CatalogGatewayException("Error occurred during calling [Catalog] component service.", e);
+            LOGGER.error("Error occurred during calling [Catalog] component.", e);
+            throw AppErrors.INSTANCE.gatewayFailure("catalog").exception();
         }
     }
 

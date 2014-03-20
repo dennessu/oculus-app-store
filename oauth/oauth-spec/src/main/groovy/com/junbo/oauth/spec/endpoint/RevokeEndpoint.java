@@ -17,9 +17,14 @@ import javax.ws.rs.core.Response;
  */
 @Path("revoke")
 @RestResource
+@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 public interface RevokeEndpoint {
     @POST
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     Promise<Response> revoke(@HeaderParam("Authorization") String authorization, @FormParam("token") String token,
                              @FormParam("token_type_hint") String tokenTypeHint);
+
+    @POST
+    @Path("/consent")
+    Promise<Response> revokeConsent(@HeaderParam("Authorization") String authorization,
+                                    @FormParam("client_id") String clientId);
 }

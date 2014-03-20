@@ -17,6 +17,8 @@ interface RefreshTokenRepository {
 
     RefreshToken get(String tokenValue)
 
+    List<RefreshToken> findByUserIdClientId(Long userId, String clientId)
+
     RefreshToken getAndRemove(String tokenValue)
 
     boolean isValidRefreshToken(String tokenValue)

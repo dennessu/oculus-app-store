@@ -3,7 +3,6 @@ apply plugin: 'java'
 dependencies {
     compile (libraries.langur)
     compile (libraries.common_lib)
-    compile (libraries.swagger_annotations)
 
     compile (libraries.rs_api)
     compile (libraries.guava)

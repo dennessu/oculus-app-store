@@ -40,6 +40,7 @@ class ActionContextWrapper {
     public static final String NEED_REMEMBER_ME = 'need_remember_me'
     public static final String REMEMBER_ME_TOKEN = 'remember_me_token'
     public static final String TOKEN_INFO = 'token_info'
+    public static final String CONSENT = 'consent'
 
     @Delegate
     private final ActionContext actionContext
@@ -207,5 +208,13 @@ class ActionContextWrapper {
 
     void setTokenInfo(TokenInfo tokenInfo) {
         actionContext.requestScope[TOKEN_INFO] = tokenInfo
+    }
+
+    Consent getConsent() {
+        return (Consent) actionContext.flowScope[CONSENT]
+    }
+
+    void setConsent(Consent consent) {
+        actionContext.flowScope[CONSENT] = consent
     }
 }
