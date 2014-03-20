@@ -8,9 +8,12 @@ package com.junbo.fulfilment.clientproxy.impl;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.resource.EntitlementResource;
 import com.junbo.fulfilment.clientproxy.EntitlementGateway;
-import com.junbo.fulfilment.common.exception.EntitlementGatewayException;
 import com.junbo.fulfilment.common.util.Utils;
+import com.junbo.fulfilment.spec.error.AppErrors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.UUID;
 
@@ -18,9 +21,11 @@ import java.util.UUID;
  * EntitlementGatewayImpl.
  */
 public class EntitlementGatewayImpl implements EntitlementGateway {
-    @Autowired
-    private EntitlementResource entitlementResource;
+    private static final Logger LOGGER = LoggerFactory.getLogger(EntitlementGatewayImpl.class);
 
+    @Autowired
+    @Qualifier("entitlementClient")
+    private EntitlementResource entitlementResource;
 
     @Override
     public String grant(com.junbo.fulfilment.spec.fusion.Entitlement input) {
@@ -31,7 +36,8 @@ public class EntitlementGatewayImpl implements EntitlementGateway {
             Entitlement result = entitlementResource.postEntitlement(entitlement).wrapped().get();
             return result.getEntitlementId().toString();
         } catch (Exception e) {
-            throw new EntitlementGatewayException("Error occurred during calling [Entitlement] component service.", e);
+            LOGGER.error("Error occurred during calling [Entitlement] component.", e);
+            throw AppErrors.INSTANCE.gatewayFailure("entitlement").exception();
         }
     }
 }
