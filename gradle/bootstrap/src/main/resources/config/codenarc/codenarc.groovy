@@ -118,7 +118,7 @@ ruleset {
         // rulesets/dry.xml
         DuplicateListLiteral
         DuplicateMapLiteral
-        DuplicateNumberLiteral
+        // DuplicateNumberLiteral
         // DuplicateStringLiteral
 
         // rulesets/enhanced.xml
@@ -144,7 +144,7 @@ ruleset {
         ThrowError
         ThrowException
         ThrowNullPointerException
-        ThrowRuntimeException
+        // ThrowRuntimeException
         ThrowThrowable
 
         // rulesets/formatting.xml

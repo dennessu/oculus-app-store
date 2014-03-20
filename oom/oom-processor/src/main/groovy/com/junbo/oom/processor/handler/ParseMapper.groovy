@@ -200,7 +200,8 @@ class ParseMapper implements MapperHandler {
                 alternativeSourceParameter = parameters[1]
             } else {
                 throw new ProcessingException('2nd parameter of Mapping Method should be of ' +
-                        MappingContext.canonicalName + ' type or ' + sourceParameter.type.qualifiedName + 'type.', method)
+                        MappingContext.canonicalName + ' type or ' + sourceParameter.type.qualifiedName + 'type.',
+                        method)
             }
 
         } else if (parameters.size() == 3) {
@@ -214,7 +215,8 @@ class ParseMapper implements MapperHandler {
             contextParameter = parameters[2]
 
             if (contextParameter.type.qualifiedName != MappingContext.canonicalName) {
-                throw new ProcessingException('3rd parameter of Mapping Method should be of MappingContext type.', method)
+                throw new ProcessingException('3rd parameter of Mapping Method should be of MappingContext type.',
+                        method)
             }
         }
 

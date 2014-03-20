@@ -64,7 +64,7 @@ class MappingMethodRefResolverImpl implements MappingMethodRefResolver {
                     mappingMethodRef.hasContextParameter,
                     mappingMethodRef.name)] = mappingMethodRef
 
-            return;
+            return
         }
 
         mappingMethodRefs[new Tuple(
