@@ -6,7 +6,7 @@
 package com.junbo.identity.rest.resource;
 
 import com.junbo.common.id.GroupId;
-import com.junbo.identity.rest.service.group.GroupService;
+import com.junbo.identity.core.service.group.GroupService;
 import com.junbo.identity.spec.model.common.ResultList;
 import com.junbo.identity.spec.model.users.Group;
 import com.junbo.identity.spec.model.users.UserGroup;

@@ -6,7 +6,7 @@
 package com.junbo.identity.rest.resource;
 
 import com.junbo.common.id.SecurityQuestionId;
-import com.junbo.identity.rest.service.domaindata.SecurityQuestionService;
+import com.junbo.identity.core.service.domaindata.SecurityQuestionService;
 import com.junbo.identity.spec.model.common.ResultList;
 import com.junbo.identity.spec.model.common.ResultListUtil;
 import com.junbo.identity.spec.model.domaindata.SecurityQuestion;
