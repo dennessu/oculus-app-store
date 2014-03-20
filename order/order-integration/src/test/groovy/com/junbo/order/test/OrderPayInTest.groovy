@@ -1,9 +1,8 @@
-package com.junbo.order
+package com.junbo.order.test
 
 import com.junbo.common.id.OfferId
 import com.junbo.common.id.PaymentInstrumentId
 import com.junbo.order.spec.model.Order
-import com.junbo.order.test.ServiceFacade
 import com.junbo.order.test.util.Generator
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
@@ -20,7 +19,15 @@ class OrderPayInTest extends AbstractTestNGSpringContextTests {
     def ServiceFacade serviceFacade
 
     @Autowired
+    def OfferLoader offerLoader
+
+    @Autowired
     def Generator generator
+
+    @Test
+    void testAddOffer() {
+        offerLoader.postOffers()
+    }
 
     @Test
     void testQuote() {
