@@ -7,7 +7,10 @@
         </tr>
         <tr>
             <td>Type</td>
-            <td><input type="text" class="form-control required" ng-model="offer.type.id"></td>
+            <td>
+                <select ng-model="offer.type" ng-options="typeAttribute.name for typeAttribute in typeAttributes">
+                </select>
+            </td>
         </tr>
         <tr>
             <td>Owner</td>

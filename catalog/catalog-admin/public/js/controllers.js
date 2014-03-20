@@ -12,8 +12,8 @@ app.run(function ($rootScope, $templateCache) {
   });
 });
 
-app.controller('OfferListCtrl', ['$scope', 'OffersFactory', '$location',
-  function($scope, OffersFactory, $location) {
+app.controller('OfferListCtrl', ['$scope', 'OffersFactory', '$routeParams', '$location',
+  function($scope, OffersFactory, $routeParams, $location) {
       $scope.createOffer = function () {
           OffersFactory.create($scope.offer, function(offer){
               $location.path('/offers/' + offer.self.id);
@@ -22,8 +22,22 @@ app.controller('OfferListCtrl', ['$scope', 'OffersFactory', '$location',
       $scope.cancel = function () {
           $location.path('/offers');
       };
-  	  $scope.offers = OffersFactory.query();
+  	  $scope.offers = OffersFactory.query($routeParams);
   }]);
+
+app.controller('OfferCreationCtrl', ['$scope', 'OffersFactory', 'AttributesFactory', '$routeParams', '$location',
+    function($scope, OffersFactory, AttributesFactory, $routeParams, $location) {
+        $scope.createOffer = function () {
+            OffersFactory.create($scope.offer, function(offer){
+                $location.path('/offers/' + offer.self.id);
+            });
+        };
+        $scope.cancel = function () {
+            $location.path('/offers');
+        };
+        $scope.typeAttributes = AttributesFactory.query({type: "Type"});
+        $scope.offers = OffersFactory.query($routeParams);
+    }]);
 
 app.controller('OfferReviewListCtrl', ['$scope', 'OffersFactory', '$location',
     function($scope, OffersFactory, $location) {
