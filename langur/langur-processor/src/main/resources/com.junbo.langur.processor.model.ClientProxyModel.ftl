@@ -4,23 +4,18 @@
 
 package ${packageName};
 
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.UriBuilder;
-
+import com.junbo.common.error.AppError;
+import com.junbo.common.error.AppErrorException;
+import com.junbo.common.error.Error;
+import com.junbo.langur.core.client.*;
+import com.junbo.langur.core.promise.Promise;
 import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.Response;
 
-import com.junbo.langur.core.promise.Promise;
-
-import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.base.Function;
-
-import com.junbo.langur.core.client.ClientResponseException;
-import com.junbo.langur.core.client.MessageTranscoder;
-import com.junbo.langur.core.client.PathParamTranscoder;
-import com.junbo.langur.core.client.QueryParamTranscoder;
-import com.junbo.langur.core.client.TypeReference;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.UriBuilder;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.ning.http.client.extra.ListenableFutureAdapter.asGuavaFuture;
 
@@ -65,4 +60,44 @@ public class ${className} implements ${interfaceType} {
         [@includeModel model=clientMethod indent=true/]
 
     [/#list]
+
+    private AppError getAppError(final int statusCode, final Error error) {
+        return new AppError() {
+            @Override
+            public int getHttpStatusCode() {
+                return statusCode;
+            }
+
+            @Override
+            public String getCode() {
+                return error.getCode();
+            }
+
+            @Override
+            public String getDescription() {
+                return error.getDescription();
+            }
+
+            @Override
+            public String getField() {
+                return error.getField();
+            }
+
+            @Override
+            public List<AppError> getCauses() {
+                List<AppError> causes = new ArrayList<>();
+                if (error.getCauses() != null) {
+                    for (Error innerError : error.getCauses()) {
+                        causes.add(getAppError(statusCode, innerError));
+                    }
+                }
+                return causes;
+            }
+
+            @Override
+            public AppErrorException exception() {
+                return new AppErrorException(this);
+            }
+        };
+    }
 }
