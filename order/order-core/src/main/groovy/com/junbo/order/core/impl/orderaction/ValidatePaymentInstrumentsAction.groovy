@@ -27,11 +27,11 @@ class ValidatePaymentInstrumentsAction implements com.junbo.langur.core.webflow.
         // validate payments
         return orderServiceContextBuilder.getPaymentInstruments(
                 context.orderServiceContext).syncThen { List<PaymentInstrument> pis ->
-            if (pis.find { PaymentInstrument pi -> pi.status == PIStatus.ACTIVE.toString() } == null) {
-                throw AppErrors.INSTANCE.paymentStatusInvalid().exception()
+            def invalidPi = pis.find { PaymentInstrument pi -> pi.status != PIStatus.ACTIVE.toString() }
+            if (invalidPi != null) {
+                throw AppErrors.INSTANCE.paymentInstrumentStatusInvalid(invalidPi.id.toString()).exception()
             }
             return null
         }
     }
-
 }
