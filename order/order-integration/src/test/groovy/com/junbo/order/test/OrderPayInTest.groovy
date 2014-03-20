@@ -19,15 +19,7 @@ class OrderPayInTest extends AbstractTestNGSpringContextTests {
     def ServiceFacade serviceFacade
 
     @Autowired
-    def OfferLoader offerLoader
-
-    @Autowired
     def Generator generator
-
-    @Test
-    void testAddOffer() {
-        offerLoader.postOffers()
-    }
 
     @Test
     void testQuote() {
