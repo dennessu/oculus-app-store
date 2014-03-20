@@ -64,4 +64,8 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 400, code = ErrorCode.ENUM_CONVERSION_ERROR,
             description = "Enum value {0} not exists in type {1}")
     AppError enumConversionError(String enumValue, String enumType);
+
+    @ErrorDef(httpStatusCode = 404, code = ErrorCode.ORDER_EVENT_NOT_FOUND,
+            description = "Order event not found")
+    AppError orderEventNotFound();
 }

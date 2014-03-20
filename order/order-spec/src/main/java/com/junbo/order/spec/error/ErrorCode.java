@@ -34,4 +34,6 @@ public class ErrorCode {
     public static final String INVALID_FIELD = "10009";
 
     public static final String ENUM_CONVERSION_ERROR = "10010";
+
+    public static final String ORDER_EVENT_NOT_FOUND = "10011";
 }

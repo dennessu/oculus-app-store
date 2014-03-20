@@ -13,6 +13,7 @@ import com.junbo.order.db.dao.*
 import com.junbo.order.db.entity.CommonDbEntityWithDate
 import com.junbo.order.db.entity.OrderDiscountInfoEntity
 import com.junbo.order.db.entity.OrderEntity
+import com.junbo.order.db.entity.OrderEventEntity
 import com.junbo.order.db.entity.OrderItemEntity
 import com.junbo.order.db.entity.OrderPaymentInfoEntity
 import com.junbo.order.db.mapper.ModelMapper
@@ -190,6 +191,17 @@ class OrderRepositoryImpl implements OrderRepository {
             savePaymentInstruments(order.id, order.paymentInstruments)
         }
         return order
+    }
+
+    @Override
+    List<OrderEvent> getOrderEvents(Long orderId) {
+        List<OrderEvent> orderEvents = []
+        List<OrderEventEntity> orderEventEntities = orderEventDao.readByOrderId(orderId)
+        MappingContext context = new MappingContext()
+        orderEventEntities.each { OrderEventEntity orderEventEntity ->
+            orderEvents.add(modelMapper.toOrderEventModel(orderEventEntity, context))
+        }
+        return orderEvents
     }
 
     void saveOrderItems(OrderId orderId, List<OrderItem> orderItems) {
