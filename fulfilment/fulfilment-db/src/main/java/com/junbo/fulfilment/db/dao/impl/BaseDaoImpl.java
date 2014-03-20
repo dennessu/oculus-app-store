@@ -26,6 +26,7 @@ import java.util.List;
  */
 public abstract class BaseDaoImpl<T extends BaseEntity> implements BaseDao<T> {
     @Autowired
+    @Qualifier("fulfilmentSessionFactory")
     private SessionFactory sessionFactory;
 
     @Autowired

@@ -34,7 +34,7 @@ public class PaymentRepository {
 
     public void save(PaymentTransaction request){
         Long paymentId = paymentDao.save(paymentMapperExtension.toPaymentEntity(request));
-        request.setPaymentId(paymentId);
+        request.setId(paymentId);
         savePaymentEvent(paymentId, request.getPaymentEvents());
     }
 

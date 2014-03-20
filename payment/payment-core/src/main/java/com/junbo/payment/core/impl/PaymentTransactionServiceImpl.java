@@ -9,9 +9,10 @@ package com.junbo.payment.core.impl;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.langur.core.transaction.AsyncTransactionTemplate;
 import com.junbo.payment.common.CommonUtil;
+import com.junbo.payment.common.exception.AppClientExceptions;
+import com.junbo.payment.common.exception.AppServerExceptions;
 import com.junbo.payment.core.PaymentInstrumentService;
 import com.junbo.payment.core.PaymentTransactionService;
-import com.junbo.payment.core.exception.*;
 import com.junbo.payment.core.provider.PaymentProviderService;
 import com.junbo.payment.core.provider.ProviderRoutingService;
 import com.junbo.payment.core.util.PaymentUtil;
@@ -73,6 +74,7 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
     public Promise<PaymentTransaction> authorize(final PaymentTransaction request) {
         PaymentInstrument pi = validateAndGetPI(request);
         final PaymentAPI api = PaymentAPI.Auth;
+        LOGGER.info("authorize for PI:" + request.getPaymentInstrumentId());
         PaymentTransaction trackingResult = getResultByTrackingUuid(request, api);
         if(trackingResult != null){
             return Promise.pure(trackingResult);
@@ -128,9 +130,16 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
 
     @Override
     public Promise<PaymentTransaction> capture(final Long paymentId, final PaymentTransaction request) {
+        validateRequest(request, true);
         final PaymentAPI api = PaymentAPI.Capture;
-        request.setPaymentId(paymentId);
+        request.setId(paymentId);
+        LOGGER.info("capture for payment:" + paymentId);
+        PaymentTransaction trackingResult = getResultByTrackingUuid(request, api);
+        if(trackingResult != null){
+            return Promise.pure(trackingResult);
+        }
         final PaymentTransaction existedTransaction = getPaymentById(paymentId);
+        CloneRequest(request, existedTransaction);
         if(existedTransaction == null){
             LOGGER.error("the payment id is invalid for the event.");
             throw AppClientExceptions.INSTANCE.invalidPaymentId(paymentId.toString()).exception();
@@ -144,10 +153,7 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
             throw AppServerExceptions.INSTANCE.invalidPaymentStatus(
                     existedTransaction.getStatus().toString()).exception();
         }
-        PaymentTransaction trackingResult = getResultByTrackingUuid(request, api);
-        if(trackingResult != null){
-            return Promise.pure(trackingResult);
-        }
+
         PaymentStatus createStatus = PaymentStatus.SETTLE_CREATED;
         existedTransaction.setStatus(createStatus.toString());
         PaymentEvent submitCreateEvent = createPaymentEvent(request,
@@ -185,6 +191,7 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
     public Promise<PaymentTransaction> charge(final PaymentTransaction request) {
         PaymentInstrument pi = validateAndGetPI(request);
         final PaymentAPI api = PaymentAPI.Charge;
+        LOGGER.info("charge for PI:" + request.getPaymentInstrumentId());
         PaymentTransaction trackingResult = getResultByTrackingUuid(request, api);
         if(trackingResult != null){
             return Promise.pure(trackingResult);
@@ -225,9 +232,16 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
     }
 
     @Override
-    public Promise<PaymentTransaction> reverse(final Long paymentId) {
+    public Promise<PaymentTransaction> reverse(final Long paymentId, final PaymentTransaction request) {
+        validateRequest(request, false);
         final PaymentAPI api = PaymentAPI.Reverse;
+        LOGGER.info("reverse for payment:" + paymentId);
+        PaymentTransaction trackingResult = getResultByTrackingUuid(request, api);
+        if(trackingResult != null){
+            return Promise.pure(trackingResult);
+        }
         final PaymentTransaction existedTransaction = getPaymentById(paymentId);
+        CloneRequest(request, existedTransaction);
         final PaymentEventType eventType;
         if(PaymentStatus.valueOf(existedTransaction.getStatus()).equals(PaymentStatus.AUTHORIZED)){
             eventType = PaymentEventType.AUTH_REVERSE;
@@ -236,10 +250,6 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
         }else{
             throw AppServerExceptions.INSTANCE.invalidPaymentStatus(
                     existedTransaction.getStatus().toString()).exception();
-        }
-        PaymentTransaction trackingResult = getResultByTrackingUuid(existedTransaction, api);
-        if(trackingResult != null){
-            return Promise.pure(trackingResult);
         }
         PaymentInstrument pi = paymentInstrumentService.getById(null, existedTransaction.getPaymentInstrumentId());
         PaymentStatus createStatus = PaymentStatus.REVERSE_CREATED;
@@ -272,6 +282,11 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
         });
     }
 
+    private void CloneRequest(PaymentTransaction request, PaymentTransaction existedTransaction) {
+        existedTransaction.setTrackingUuid(request.getTrackingUuid());
+        existedTransaction.setUserId(request.getUserId());
+    }
+
     @Override
     public PaymentTransaction getById(Long paymentId) {
         PaymentTransaction request = paymentRepository.getByPaymentId(paymentId);
@@ -289,6 +304,7 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
             LOGGER.error("the payment id is missing for the event.");
             throw AppClientExceptions.INSTANCE.invalidPaymentId(event.getPaymentId().toString()).exception();
         }
+        LOGGER.info("report event for payment:" + event.getPaymentId());
         paymentRepository.updatePayment(event.getPaymentId()
                     , PaymentUtil.getPaymentStatus(event.getStatus()), null);
         paymentRepository.savePaymentEvent(event.getPaymentId(), Arrays.asList(event));
@@ -321,7 +337,7 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
     private PaymentEvent createPaymentEvent(PaymentTransaction request,
              PaymentEventType eventType, PaymentStatus status, String response) {
         PaymentEvent event = new PaymentEvent();
-        event.setPaymentId(request.getPaymentId());
+        event.setPaymentId(request.getId());
         event.setType(eventType.toString());
         event.setStatus(status.toString());
         event.setChargeInfo(request.getChargeInfo());
@@ -341,11 +357,11 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
     }
 
     private void saveOrUpdateTrackingUuid(PaymentTransaction request, PaymentAPI api){
-        if(request.getPaymentId() == null){
+        if(request.getId() == null){
             throw AppServerExceptions.INSTANCE.missingRequiredField("payment transaction id").exception();
         }
         TrackingUuid trackingUuid = new TrackingUuid();
-        trackingUuid.setPaymentId(request.getPaymentId());
+        trackingUuid.setPaymentId(request.getId());
         trackingUuid.setApi(api);
         trackingUuid.setTrackingUuid(request.getTrackingUuid());
         trackingUuid.setUserId(request.getUserId());
@@ -354,7 +370,7 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
         if(existing == null){
             trackingUuidRepository.saveTrackingUuid(trackingUuid);
         }else{
-            if(existing.getPaymentId() == null || !existing.getPaymentId().equals(request.getPaymentId()) ||
+            if(existing.getPaymentId() == null || !existing.getPaymentId().equals(request.getId()) ||
                     !existing.getApi().toString().equalsIgnoreCase(api.toString())){
                 throw AppClientExceptions.INSTANCE.duplicatedTrackingUuid(
                         request.getTrackingUuid().toString()).exception();
@@ -363,12 +379,22 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
         }
     }
 
-    private PaymentInstrument validateAndGetPI(PaymentTransaction request) {
-        if(request.getPaymentInstrumentId() == null){
-            throw AppClientExceptions.INSTANCE.missingPaymentInstrumentId().exception();
-        }
+    private void validateRequest(PaymentTransaction request, boolean allowChargeInfo){
         if(request.getUserId() == null){
             throw AppClientExceptions.INSTANCE.missingUserId().exception();
+        }
+        if(request.getTrackingUuid() == null){
+            throw AppClientExceptions.INSTANCE.missingTrackingUuid().exception();
+        }
+        if(!allowChargeInfo && request.getChargeInfo() != null){
+            throw AppClientExceptions.INSTANCE.fieldNotNeeded("chargeInfo").exception();
+        }
+    }
+
+    private PaymentInstrument validateAndGetPI(PaymentTransaction request) {
+        validateRequest(request, true);
+        if(request.getPaymentInstrumentId() == null){
+            throw AppClientExceptions.INSTANCE.missingPaymentInstrumentId().exception();
         }
         if(request.getChargeInfo() == null){
             throw AppClientExceptions.INSTANCE.missingAmount().exception();
@@ -410,10 +436,10 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
         return template.execute(new TransactionCallback<List<PaymentEvent>>() {
             public List<PaymentEvent> doInTransaction(TransactionStatus txnStatus) {
                 if(status != null){
-                    paymentRepository.updatePayment(payment.getPaymentId()
+                    paymentRepository.updatePayment(payment.getId()
                             , status, payment.getExternalToken());
                 }
-                paymentRepository.savePaymentEvent(payment.getPaymentId(), request);
+                paymentRepository.savePaymentEvent(payment.getId(), request);
                 saveOrUpdateTrackingUuid(payment, api);
                 return request;
             }

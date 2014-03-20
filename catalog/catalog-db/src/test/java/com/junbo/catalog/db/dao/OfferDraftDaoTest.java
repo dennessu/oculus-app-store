@@ -37,7 +37,7 @@ public class OfferDraftDaoTest extends BaseTest {
     public void testGetOffers() {
         OfferDraftEntity entity = buildOfferEntity();
         offerDraftDao.create(entity);
-        List<OfferDraftEntity> offers = offerDraftDao.getOffers(0,10);
+        List<OfferDraftEntity> offers = offerDraftDao.getOffers(0,10, null);
         Assert.assertNotNull(offers);
     }
 

@@ -1,15 +1,17 @@
 <div class="container detail">
-    <h3>Product Name</h3>
+    <h2>{{name}}</h2>
     <section class="picture">
-
+        <img {{bind-attr src="picture"}} width="550" height="300" />
     </section>
     <section class="info">
-        <p>Price: $9.99</p>
+        <p><h2>Price: $ {{price}}</h2></p>
         <br>
         <p></p>
-        <p><button type="button" class="btn btn-large btn-primary">Add to Cart</button></p>
+        <p><button type="button" class="btn btn-large btn-primary" {{action "AddToCart"}}>Add to Cart</button></p>
         <p><button type="button" class="btn btn-large btn-orange">Buy $9.99</button></p>
     </section>
 
     <div class="clear"></div>
+    <h2>Description</h2>
+    <p>{{description}}</p>
 </div>

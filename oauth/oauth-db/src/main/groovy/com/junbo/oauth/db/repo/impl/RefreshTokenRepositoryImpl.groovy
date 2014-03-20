@@ -59,6 +59,13 @@ class RefreshTokenRepositoryImpl implements RefreshTokenRepository {
     }
 
     @Override
+    List<RefreshToken> findByUserIdClientId(Long userId, String clientId) {
+        return refreshTokenDAO.findByUserIdClientId(userId, clientId).collect { RefreshTokenEntity entity ->
+            return wrap(entity)
+        }
+    }
+
+    @Override
     RefreshToken getAndRemove(String tokenValue) {
         def entity = refreshTokenDAO.get(tokenValue)
 

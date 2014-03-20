@@ -10,6 +10,8 @@ import com.junbo.catalog.common.util.Action;
 import com.junbo.catalog.db.dao.OfferDraftDao;
 import com.junbo.catalog.db.entity.OfferDraftEntity;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -18,12 +20,14 @@ import java.util.List;
  */
 public class OfferDraftDaoImpl extends VersionedDaoImpl<OfferDraftEntity> implements OfferDraftDao {
     @Override
-    public List<OfferDraftEntity> getOffers(final int start, final int size) {
+    public List<OfferDraftEntity> getOffers(final int start, final int size, final String status) {
         return findAllBy(new Action<Criteria>() {
             public void apply(Criteria criteria) {
                 criteria.setFirstResult(start);
                 criteria.setFetchSize(size);
-                //criteria.add(Restrictions.eq("status", "PUBLISHED"));
+                if (!StringUtils.isEmpty(status)) {
+                    criteria.add(Restrictions.eq("status", status));
+                }
             }
         });
     }

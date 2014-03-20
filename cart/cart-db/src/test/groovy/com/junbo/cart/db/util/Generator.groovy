@@ -89,7 +89,7 @@ class Generator {
         def o = new CouponItemEntity()
         o.with {
             cartId = nextId
-            couponCode = RandomStringUtils.randomAlphabetic(SHORT_CHAR_LENGTH)
+            couponCode = nextId.toString()
             cartId = nextId
             cartItemId = nextId
             updatedTime = date()

@@ -11,26 +11,17 @@ package com.junbo.token.spec.model;
  * Token item model.
  */
 public class TokenItem {
-    private Long id;
-    private String hashString;
+    private Long hashValue;
     private Long orderId;
     private String disableReason;
     private String status;
 
-    public Long getId() {
-        return id;
+    public Long getHashValue() {
+        return hashValue;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getHashString() {
-        return hashString;
-    }
-
-    public void setHashString(String hashString) {
-        this.hashString = hashString;
+    public void setHashValue(Long hashValue) {
+        this.hashValue = hashValue;
     }
 
     public Long getOrderId() {

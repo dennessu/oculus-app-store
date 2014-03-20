@@ -1,6 +1,6 @@
 
 body { margin: 0 auto; padding: 0; font: 11px Helvetica,Arial,Verdana,sans-serif; color: #333;}
-a{ text-decoration: none;}
+a{ text-decoration: none; color: #3b5998;}
 a:hover{ text-decoration: underline;}
 h3{ margin: 0;}
 
@@ -13,7 +13,7 @@ select{ height: 22px;}
 
 header,.container{ margin: 0 auto; width: 960px;}
 
-body > header > nav{ line-height: 25px; color: #CCC; border-bottom: solid 1px #BCBCBC;}
+body header > nav{ line-height: 25px; color: #CCC; border-bottom: solid 1px #BCBCBC;}
 
 .clear{ clear: both; height: 0; overflow: hidden;}
 .line1{ margin: 5px 0 5px 0; border-top:solid 1px #CCC; height: 0; overflow: hidden;}
@@ -76,27 +76,32 @@ body > header > nav{ line-height: 25px; color: #CCC; border-bottom: solid 1px #B
 
 .container{ padding-top: 30px;}
 .container > .categories{ float: left; width: 168px;}
-.container > .product_list{ margin-left: 230px;}
+.container > .product_list{}
 
 .categories > ul{ margin: 15px 0 0 0; padding-left: 0px;}
 .categories > ul >  li{ display: block; padding-left: 10px; line-height: 22px;}
 
-.product_list{}
+.product_list{ background-color: #fff;}
 .product_list > h3{ margin-bottom: 10px;}
-.product_list > dl{ float: left; margin: 0 20px 20px 0; padding:10px; width: 190px; border: solid 1px #CCC; }
-.product_list > dl > dt{ margin: 0;  line-height: 25px; font-weight: bold;}
-.product_list > dl > dd{ margin: 0;  line-height: 22px;}
+.product_list > dl{ float: left; margin: 0 20px 20px 0; padding-bottom: 10px; width: 290px; border: solid 1px #CCC; background-color: #F7F7F7; }
+.product_list > dl > dt{ margin: 0; padding:0 10px;  line-height: 25px; font-weight: bold;}
+.product_list > dl > dd{ margin: 0; padding:0 10px; line-height: 22px;}
+.product_list > dl > dd.img{ margin: 0; padding:0px; }
+.product_list > dl > dd.img img{ width: 290px; height:163px; }
 
 /* Product Detail */
+.detail{ background-color: #FFF;}
 .detail > h3{ margin-bottom: 15px;}
 .detail > .picture{ float: left; width: 550px; height: 300px; background-color: #EAEAEA; }
-.detail > .info{ float: right; padding: 15px; width: 340px; height: 270px; border:solid 1px #CCC; }
+.detail > .info{ float: right; padding: 15px; width: 340px; height: 270px; border:solid 1px #CCC; background-color: #F7F7F7; }
 
 /* Shopping Cart */
+.cart{ background-color: #FFF;}
 .cart_list{ padding: 20px; border:solid 1px #CCC; }
 .cart_list > h2{ margin: 0; padding-bottom: 5px; border-bottom: solid 1px #D5D5D5;}
 .cart_list .item{ padding: 15px 0; border-bottom: solid 1px #D5D5D5; }
 .cart_list .item .picture{ float: left; width: 200px; height: 120px; background-color: #EAEAEA; }
+.cart_list .item .picture img{ width: 200px; height: 120px;}
 .cart_list .item .info{ margin-left: 220px; }
 .cart_list .item .info dl{ margin: 0; height: 22px; line-height: 22px; }
 .cart_list .item .info dt{ float: left; width: 400px; font-weight: bold; }

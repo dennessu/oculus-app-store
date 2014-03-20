@@ -16,13 +16,13 @@
     <bean id="identityFacade" class="com.junbo.billing.clientproxy.impl.IdentityFacadeImpl">
         <property name="url" value="${billing.client.identity.url}"/>
     </bean>
+    -->
     <bean id="paymentFacade" class="com.junbo.billing.clientproxy.impl.PaymentFacadeImpl">
         <property name="url" value="${billing.client.payment.url}"/>
     </bean>
-    -->
 
     <bean id="identityFacade" class="com.junbo.billing.clientproxy.mock.MockIdentityFacadeImpl" />
-    <bean id="paymentFacade" class="com.junbo.billing.clientproxy.mock.MockPaymentFacadeImpl" />
+    <!--<bean id="paymentFacade" class="com.junbo.billing.clientproxy.mock.MockPaymentFacadeImpl" />-->
     <bean id="avalaraFacade" class="com.junbo.billing.clientproxy.impl.AvalaraFacadeImpl" />
     <bean id="avalaraConfiguration" class="com.junbo.billing.clientproxy.impl.avalara.AvalaraConfiguration">
         <property name="baseUrl" value="${avalara.baseUrl}"/>

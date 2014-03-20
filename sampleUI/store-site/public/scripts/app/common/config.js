@@ -10,7 +10,10 @@ AppConfig.Templates = {
         My: {name: "my", url: "/template/identity/my"}
     },
     Store: {
-        Index: {name: "index", url: "/template/store/index"}
+        Index: {name: "index", url: "/template/store/index"},
+        Detail: {name: "detail", url: "/template/store/detail"},
+        Cart: {name: "cart", url: "/template/store/cart"},
+        OrderSummary: {name: "cart", url: "/template/store/OrderSummary"}
     }
 };
 
@@ -23,14 +26,36 @@ AppConfig.API = {
         Captcha: { Path: "captcha" },
         TFA: { Path: "tfa" },
         Register: { Path: "register" },
-        PIN: { Path: "pin" }
+        PIN: { Path: "pin" },
+        GetAnonymousUser: { Path: "get_anonymous_user" }
     },
     Catalog: {
         Config: {
             Namespace: "/api/catalog/"
         },
-        GetProducts: { Path: "products" },
-        GetProductById: { Path: "product" }
+        Products: { Path: "products" }
+    },
+
+    Cart: {
+        Config: {
+            Namespace: "/api/cart/"
+        },
+        Get: { Path: "get" },
+        Add: { Path: "add" },
+        Remove: { Path: "remove" },
+        Update: { Path: "update" },
+        Merge: { Path: "merge" }
+    }
+};
+
+AppConfig.DataModelMapTable = {
+    "Ember.App.Product": {
+        Provider: "CatalogProvider",
+        Method: "GetProducts"
+    },
+    "Ember.App.CartItem": {
+        Provider: "CartProvider",
+        Method: "Get"
     }
 };
 

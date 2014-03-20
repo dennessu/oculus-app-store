@@ -6,7 +6,7 @@ module.exports = function(data, cb){
     var cookies = data.cookies;
     var query = data.query;
 
-    var dataProvider = new CatalogProvider(process.AppConfig.Identity_API_Host, process.AppConfig.Identity_API_Port);
+    var dataProvider = new IdentityProvider(process.AppConfig.Identity_API_Host, process.AppConfig.Identity_API_Port);
 
     dataProvider.PostAuthenticate(body, function(resultData){
         var resultModel = new DomainModels.ResultModel();

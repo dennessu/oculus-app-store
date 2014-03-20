@@ -5,16 +5,17 @@
  */
 package com.junbo.email.db.repo;
 
+import com.junbo.common.id.EmailId;
 import com.junbo.email.db.dao.EmailScheduleDao;
 import com.junbo.email.db.entity.EmailScheduleEntity;
 import com.junbo.email.db.mapper.EmailMapper;
 import com.junbo.email.spec.model.Email;
+import com.junbo.sharding.IdGeneratorFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
-import java.util.Random;
 
 /**
  * Repository of EmailSchedule.
@@ -28,19 +29,26 @@ public class EmailScheduleRepository {
     @Autowired
     private EmailMapper emailMapper;
 
-    private Random r = new Random();
+    @Autowired
+    private IdGeneratorFacade idGenerator;
 
     public Email saveEmailSchedule(Email email) {
         EmailScheduleEntity entity = emailMapper.toEmailScheduleEntity(email);
+        entity.setId(idGenerator.nextId(EmailId.class));
+        entity.setCreatedTime(new Date());
+        entity.setCreatedBy("internal system");
         Long id = emailScheduleDao.save(entity);
-        return emailMapper.toEmail(emailScheduleDao.get(id));
+        return emailMapper.toEmailSchedule(emailScheduleDao.get(id));
     }
 
     public Email updateEmailSchedule(Email email) {
         EmailScheduleEntity entity = emailMapper.toEmailScheduleEntity(email);
-        entity.setUpdatedTime(new Date());
-        Long id = emailScheduleDao.update(entity);
-        return emailMapper.toEmail(emailScheduleDao.get(id));
+        EmailScheduleEntity savedEntity = emailScheduleDao.get(entity.getId());
+        mergeEntity(savedEntity,entity);
+        savedEntity.setUpdatedTime(new Date());
+        savedEntity.setUpdatedBy("internal system");
+        Long id = emailScheduleDao.update(savedEntity);
+        return emailMapper.toEmailSchedule(emailScheduleDao.get(id));
     }
 
     public void deleteEmailScheduleById(Long id) {
@@ -49,6 +57,20 @@ public class EmailScheduleRepository {
 
     public Email getEmailSchedule(Long id) {
         EmailScheduleEntity entity = emailScheduleDao.get(id);
-        return emailMapper.toEmail(entity);
+        return emailMapper.toEmailSchedule(entity);
+    }
+
+    private void mergeEntity(EmailScheduleEntity savedEntity,EmailScheduleEntity updateEntity){
+        if(updateEntity.getPriority()!=null) {
+            savedEntity.setPriority(updateEntity.getPriority());
+        }
+        if(updateEntity.getRecipient()!=null) {
+            savedEntity.setRecipient(updateEntity.getRecipient());
+        }
+        savedEntity.setScheduleDate(updateEntity.getScheduleDate());
+        savedEntity.setSource(updateEntity.getSource());
+        savedEntity.setAction(updateEntity.getAction());
+        savedEntity.setLocale(updateEntity.getLocale());
+        savedEntity.setPayload(updateEntity.getPayload());
     }
 }

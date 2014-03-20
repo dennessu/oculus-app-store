@@ -5,7 +5,7 @@
  */
 
 package com.junbo.ewallet.spec.model
-import com.fasterxml.jackson.annotation.JsonIgnore
+
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonPropertyOrder
@@ -31,14 +31,4 @@ class Wallet {
     String currency
     BigDecimal balance
     List<Transaction> transactions
-
-    @JsonIgnore
-    UUID getTrackingUuid() {
-        return trackingUuid
-    }
-
-    @JsonProperty
-    void setTrackingUuid(UUID trackingUuid) {
-        this.trackingUuid = trackingUuid
-    }
 }

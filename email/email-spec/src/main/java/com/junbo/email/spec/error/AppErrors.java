@@ -15,31 +15,48 @@ import com.junbo.common.error.ErrorProxy;
 public interface AppErrors {
     AppErrors INSTANCE = ErrorProxy.newProxyInstance(AppErrors.class);
 
+
+    @ErrorDef(httpStatusCode = 404, code = ErrorCode.INVALID_EMAIL_ID,
+            description ="The email id {0} is invalid")
+    AppError invalidEmailId(String id);
+
     @ErrorDef(httpStatusCode = 404, code = ErrorCode.USER_NOT_FOUND,
             description ="User with id {0} not found")
     AppError invalidUserId(String userId);
 
-    @ErrorDef(httpStatusCode = 403, code = ErrorCode.USER_STATUS_INVALID,
+    @ErrorDef(httpStatusCode = 403, code = ErrorCode.INVALID_USER_STATUS,
             description ="User status is invalid with id {0}")
     AppError invalidUserStatus(String userId);
 
-    @ErrorDef(httpStatusCode = 403, code = ErrorCode.FIELD_MISSING_VALUE,
-            description ="Field {0} has missing value")
-    AppError fieldMissingValue(String field);
+    @ErrorDef(httpStatusCode = 404, code = ErrorCode.EMAIL_SCHEDULE_NOT_FOUND,
+            description ="Email schedule with id {0} not found")
+    AppError emailScheduleNotFound(String id);
 
-    @ErrorDef(httpStatusCode = 403, code = ErrorCode.FIELD_INVALID_VALUE,
+    @ErrorDef(httpStatusCode = 403, code = ErrorCode.MISSING_FIELD_VALUE,
+            description ="Field {0} has missing value")
+    AppError missingField(String field);
+
+    @ErrorDef(httpStatusCode = 403, code = ErrorCode.INVALID_FIELD_VALUE,
             description ="Field {0} is invalid")
-    AppError fieldInvalid(String field);
+    AppError invalidField(String field);
+
+    @ErrorDef(httpStatusCode = 403, code = ErrorCode.UNNECESSARY_FILED,
+            description ="Field {0} is unnecessary")
+    AppError unnecessaryField(String field);
 
     @ErrorDef(httpStatusCode = 404, code = ErrorCode.PAYLOAD_IS_NULL,
             description ="The payload is null")
     AppError invalidPayload();
 
-    @ErrorDef(httpStatusCode = 404, code = ErrorCode.TEMPLATE_NOT_FOUND,
+    @ErrorDef(httpStatusCode = 404, code = ErrorCode.EMAIL_TEMPLATE_NOT_FOUND,
             description = "Template {0} is not found")
     AppError templateNotFound(String template);
 
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.PROPERTIES_INVALID,
+    @ErrorDef(httpStatusCode = 403, code = ErrorCode.TEMPLATE_NAME_ALREADY_EXIST,
+            description ="Template with name {0} is already exists")
+    AppError emailTemplateAlreadyExist(String id);
+
+    @ErrorDef(httpStatusCode = 400, code = ErrorCode.INVALID_PROPERTIES,
             description = "The properties {0} is invalid")
     AppError invalidProperty(String property);
 

@@ -10,6 +10,7 @@ import com.junbo.order.db.entity.enums.OrderActionType
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.model.Discount
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
 import org.testng.annotations.Test
 /**
  * Created by chriszhu on 3/13/14.
@@ -19,6 +20,7 @@ class RateOrderFlowTest extends BaseTest{
     @Autowired
     FlowExecutor executor
     @Autowired
+    @Qualifier('mockOrderService')
     OrderService orderService
     @Autowired
     OrderRepository repo

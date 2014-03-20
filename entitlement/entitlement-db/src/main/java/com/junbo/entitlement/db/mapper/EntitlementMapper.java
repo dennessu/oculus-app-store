@@ -53,7 +53,7 @@ public class EntitlementMapper {
         entitlementEntity.setEntitlementDefinitionId(
                 entitlement.getEntitlementDefinitionId());
         entitlementEntity.setDeveloperId(entitlement.getDeveloperId());
-        entitlementEntity.setType(EntitlementType.valueOf(entitlement.getType()));
+        entitlementEntity.setType(EntitlementType.valueOf(entitlement.getType().toUpperCase()));
         entitlementEntity.setGroup(entitlement.getGroup());
         entitlementEntity.setTag(entitlement.getTag());
 
@@ -105,6 +105,6 @@ public class EntitlementMapper {
         if (entitlement.getManagedLifecycle()) {
             return EntitlementStatus.MANAGED;
         }
-        return EntitlementStatus.valueOf(entitlement.getStatus());
+        return EntitlementStatus.valueOf(entitlement.getStatus().toUpperCase());
     }
 }

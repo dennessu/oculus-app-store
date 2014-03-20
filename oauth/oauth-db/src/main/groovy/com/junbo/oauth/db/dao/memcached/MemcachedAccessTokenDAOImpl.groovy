@@ -18,4 +18,9 @@ class MemcachedAccessTokenDAOImpl extends MemcachedBaseDAO<AccessTokenEntity> im
     List<AccessTokenEntity> findByRefreshToken(String refreshTokenValue) {
         return []
     }
+
+    @Override
+    List<AccessTokenEntity> findByUserIdClientId(Long userId, String clientId) {
+        return []
+    }
 }

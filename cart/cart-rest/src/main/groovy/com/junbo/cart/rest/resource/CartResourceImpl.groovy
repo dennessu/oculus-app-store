@@ -8,11 +8,8 @@ package com.junbo.cart.rest.resource
 import com.google.common.base.Function
 import com.junbo.cart.core.service.CartService
 import com.junbo.cart.spec.model.Cart
-import com.junbo.cart.spec.model.item.CouponItem
-import com.junbo.cart.spec.model.item.OfferItem
 import com.junbo.cart.spec.resource.CartResource
 import com.junbo.common.id.CartId
-import com.junbo.common.id.CartItemId
 import com.junbo.common.id.UserId
 import com.junbo.langur.core.client.PathParamTranscoder
 import com.junbo.langur.core.promise.Promise
@@ -127,37 +124,6 @@ class CartResourceImpl implements CartResource {
     @Override
     Promise<Cart> mergeCart(UserId userId, CartId cartId,  Cart fromCart) {
         return cartService.mergeCart(userId, cartId, fromCart)
-    }
-
-    @Override
-    Promise<Cart> addOffer(UserId userId, CartId cartId, OfferItem offer) {
-        return cartService.addOfferItem(userId, cartId, offer)
-    }
-
-    @Override
-    Promise<Cart> updateOffer(UserId userId, CartId cartId, CartItemId offerItemId, OfferItem offer) {
-        return cartService.updateOfferItem(userId, cartId, offerItemId, offer)
-    }
-
-    @Override
-    Promise<Void> deleteOffer(UserId userId, CartId cartId, CartItemId offerItemId) {
-        return cartService.deleteOfferItem(userId, cartId, offerItemId).then {
-            respondingContext.push(new DeleteFunction())
-            return Promise.pure(null)
-        }
-    }
-
-    @Override
-    Promise<Cart> addCoupon(UserId userId, CartId cartId, CouponItem couponItem) {
-        return cartService.addCouponItem(userId, cartId, couponItem)
-    }
-
-    @Override
-    Promise<Cart> deleteCoupon(UserId userId, CartId cartId, CartItemId couponItemId) {
-        return cartService.deleteCouponItem(userId, cartId, couponItemId).then {
-            respondingContext.push(new DeleteFunction())
-            return Promise.pure(null)
-        }
     }
 
     private String getClientId() {

@@ -33,12 +33,12 @@ public class OfferDraftRepository implements EntityDraftRepository<Offer> {
     }
 
     @Override
-    public List<Offer> getEntities(int start, int size) {
-        return getOffers(start, size);
+    public List<Offer> getEntities(int start, int size, String status) {
+        return getOffers(start, size, status);
     }
 
-    public List<Offer> getOffers(int start, int size) {
-        List<OfferDraftEntity> entities = offerDraftDao.getOffers(start, size);
+    public List<Offer> getOffers(int start, int size, String status) {
+        List<OfferDraftEntity> entities = offerDraftDao.getOffers(start, size, status);
         List<Offer> result = new ArrayList<>();
         for (OfferDraftEntity entity : entities) {
             result.add(OfferConverter.toModel(entity));

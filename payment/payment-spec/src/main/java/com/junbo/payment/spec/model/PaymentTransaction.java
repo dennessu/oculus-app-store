@@ -11,9 +11,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.jackson.annotation.PaymentInstrumentId;
 import com.junbo.common.jackson.annotation.PaymentTransactionId;
 import com.junbo.common.jackson.annotation.UserId;
+import com.junbo.common.jackson.serializer.CascadeResource;
+import com.junbo.payment.common.FilterIn;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,7 +22,6 @@ import java.util.UUID;
  */
 public class PaymentTransaction {
     private UUID trackingUuid;
-    @NotNull
     @UserId
     @JsonProperty("user")
     private Long userId;
@@ -30,15 +29,20 @@ public class PaymentTransaction {
     @JsonProperty("paymentInstrument")
     private Long paymentInstrumentId;
     private ChargeInfo chargeInfo;
-    //response:
-    @Null
     @PaymentTransactionId
-    private Long paymentId;
+    @FilterIn
+    private Long id;
+    @FilterIn
     private String paymentProvider;
+    @FilterIn
     private String merchantAccount;
+    @FilterIn
     private String status;
+    @FilterIn
     private String externalToken;
+    @FilterIn
     private String type;
+    @FilterIn
     private List<PaymentEvent> paymentEvents;
 
     public UUID getTrackingUuid() {
@@ -65,6 +69,13 @@ public class PaymentTransaction {
         this.paymentInstrumentId = paymentInstrumentId;
     }
 
+    @PaymentInstrumentId
+    @JsonProperty("paymentInstrument")
+    public CascadeResource getCascadePaymentInstrumentId() {
+        return paymentInstrumentId == null ? null : new CascadeResource(paymentInstrumentId,
+                new Object[]{userId, paymentInstrumentId});
+    }
+
     public ChargeInfo getChargeInfo() {
         return chargeInfo;
     }
@@ -73,12 +84,12 @@ public class PaymentTransaction {
         this.chargeInfo = chargeInfo;
     }
 
-    public Long getPaymentId() {
-        return paymentId;
+    public Long getId() {
+        return id;
     }
 
-    public void setPaymentId(Long paymentId) {
-        this.paymentId = paymentId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getPaymentProvider() {

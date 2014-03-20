@@ -46,7 +46,8 @@ public class TokenResourceImpl implements TokenResource{
 
     @Override
     public Promise<TokenItem> updateToken(String tokenString, TokenItem token) {
-        if(tokenString.equalsIgnoreCase(token.getHashString())){
+        //TODO: compare hash later
+        if(tokenString.equalsIgnoreCase(token.getHashValue().toString())){
             throw AppClientExceptions.INSTANCE.invalidToken(tokenString).exception();
         }
         return tokenService.updateToken(token);
