@@ -7,40 +7,39 @@ package com.junbo.fulfilment.rest.exception;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
-import com.junbo.fulfilment.common.exception.FulfilmentException;
-import com.junbo.fulfilment.common.exception.ResourceNotFoundException;
+import com.junbo.entitlement.spec.error.AppErrors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * RestExceptionMapper.
  */
 @Provider
-public class RestExceptionMapper implements ExceptionMapper<FulfilmentException> {
-    private static final Map<Class, Response.Status> MAPPING;
-
-    static {
-        MAPPING = new HashMap();
-        MAPPING.put(FulfilmentException.class, Response.Status.INTERNAL_SERVER_ERROR);
-        MAPPING.put(ResourceNotFoundException.class, Response.Status.NOT_FOUND);
-        MAPPING.put(UnrecognizedPropertyException.class, Response.Status.BAD_REQUEST);
-        MAPPING.put(InvalidFormatException.class, Response.Status.BAD_REQUEST);
-    }
+public class RestExceptionMapper implements ExceptionMapper<Exception> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(RestExceptionMapper.class);
 
     @Override
-    public Response toResponse(FulfilmentException e) {
-        Response.Status status = MAPPING.get(e.getClass());
-        if (status == null) {
-            status = Response.Status.BAD_REQUEST;
+    public Response toResponse(Exception e) {
+        if (e instanceof WebApplicationException) {
+            //common service exception
+            return ((WebApplicationException) e).getResponse();
+        } else if (e instanceof UnrecognizedPropertyException) {
+            //unnecessary field exception
+            return AppErrors.INSTANCE.unnecessaryField(
+                    ((UnrecognizedPropertyException) e).getUnrecognizedPropertyName()).exception().getResponse();
+        } else if (e instanceof InvalidFormatException) {
+            //field invalid format exception
+            return AppErrors.INSTANCE.fieldNotCorrect(
+                    ((InvalidFormatException) e).getPathReference(), e.getMessage()).exception().getResponse();
+        } else {
+            //other exceptions
+            LOGGER.error("unCaught Exception", e);
+            return AppErrors.INSTANCE.unCaught(e.getMessage()).exception().getResponse();
         }
-
-        return Response
-                .status(status)
-                .entity(e.getMessage())
-                .type("text/plain").build();
     }
 }

@@ -9,6 +9,8 @@ import com.junbo.common.id.OrderId;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.order.spec.model.OrderEvent;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -19,12 +21,14 @@ import java.util.List;
 /**
  * Created by chriszhu on 3/12/14.
  */
+@Api("order-events")
 @Path("order-events")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 @RestResource
 public interface OrderEventResource {
 
+    @ApiOperation("Get order events")
     @GET
     Promise<List<OrderEvent>> getOrderEvents(@QueryParam("orderId") OrderId orderId,
                                              @Context HttpHeaders headers);
