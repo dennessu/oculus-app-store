@@ -14,7 +14,7 @@ import java.util.Map;
 public class OfferAction {
     private String type;
 
-    private Map<String, String> properties;
+    private Map<String, Object> properties;
 
     private List<LinkedEntry> items;
 
@@ -26,11 +26,11 @@ public class OfferAction {
         this.type = type;
     }
 
-    public Map<String, String> getProperties() {
+    public Map<String, Object> getProperties() {
         return properties;
     }
 
-    public void setProperties(Map<String, String> properties) {
+    public void setProperties(Map<String, Object> properties) {
         this.properties = properties;
     }
 
