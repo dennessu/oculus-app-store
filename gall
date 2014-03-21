@@ -1,0 +1,14 @@
+#!/bin/sh
+GRADLE_CMD="gradle clean $*"
+function run_gradle {
+    pushd $1
+    $GRADLE_CMD || exit 1
+    popd
+}
+
+while read p; do
+    if [ ! -z "$p" ]; then
+        run_gradle $p || exit 1
+    fi
+done < dirs
+
