@@ -214,7 +214,7 @@ class OrderServiceImpl implements OrderService {
         def scope = ActionUtils.initRequestScope(context, requestScope)
         scope.put(ActionUtils.REQUEST_FLOW_TYPE, (Object)flowType)
         return flowExecutor.start(flowType.name(), scope).syncRecover { Throwable throwable ->
-            LOGGER.error(String.format('name=Flow_Execution_Failed. flowType: {0}', flowType), throwable)
+            LOGGER.error('name=Flow_Execution_Failed. flowType: ' + flowType, throwable)
             if (throwable instanceof AppErrorException) {
                 throw throwable
             } else {

@@ -50,8 +50,8 @@ public interface AppErrors {
     AppError orderItemNotFound();
 
     @ErrorDef(httpStatusCode = 404, code = UserErrorCode.USER_NOT_FOUND,
-            description = "User not found")
-    AppError userNotFound();
+            description = "User not found {0}")
+    AppError userNotFound(String userId);
 
     @ErrorDef(httpStatusCode = 500, code = UserErrorCode.USER_STATUS_INVALID,
             description = "User status invalid")
