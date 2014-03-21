@@ -6,6 +6,7 @@
 
 package com.junbo.order.core.impl.order
 
+import com.junbo.common.error.AppErrorException
 import com.junbo.catalog.spec.model.offer.Offer
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.executor.FlowExecutor
@@ -26,6 +27,8 @@ import com.junbo.order.spec.model.OrderEvent
 import com.junbo.order.spec.model.OrderItem
 import groovy.transform.CompileStatic
 import org.apache.commons.collections.CollectionUtils
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
@@ -46,6 +49,9 @@ class OrderServiceImpl implements OrderService {
     FlowSelector flowSelector
     @Autowired
     FlowExecutor flowExecutor
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(OrderServiceImpl)
+
 
     void setFlowSelector(FlowSelector flowSelector) {
         this.flowSelector = flowSelector
@@ -81,6 +87,9 @@ class OrderServiceImpl implements OrderService {
 
     @Override
     Promise<Order> updateTentativeOrder(Order order, ApiContext context) {
+        assert(order != null && order.id != null)
+        LOGGER.info('name=Update_Tentative_Order. orderId: {}', order.id.value)
+
         setHonoredTime(order)
         def orderServiceContext = initOrderServiceContext(order)
         prepareOrder(order).then {
@@ -101,11 +110,16 @@ class OrderServiceImpl implements OrderService {
 
     @Override
     Promise<List<Order>> createQuotes(Order order, ApiContext context) {
+        assert(order != null && order.user != null)
+        LOGGER.info('name=Create_Tentative_Order. userId: {}', order.user.value)
+
         setHonoredTime(order)
         def orderServiceContext = initOrderServiceContext(order)
         prepareOrder(order).then {
             flowSelector.select(orderServiceContext, OrderServiceOperation.CREATE_TENTATIVE).then { FlowType flowType ->
                 // Prepare Flow Request
+                assert(flowType != null)
+                LOGGER.info('name=Create_Tentative_Order. flowType: {}', flowType)
                 Map<String, Object> requestScope = [:]
                 def orderActionContext = new OrderActionContext()
                 orderActionContext.orderActionType = OrderActionType.RATE
@@ -199,7 +213,14 @@ class OrderServiceImpl implements OrderService {
             Map<String, Object> requestScope) {
         def scope = ActionUtils.initRequestScope(context, requestScope)
         scope.put(ActionUtils.REQUEST_FLOW_TYPE, (Object)flowType)
-        return flowExecutor.start(flowType.name(), scope).syncThen {
+        return flowExecutor.start(flowType.name(), scope).syncRecover { Throwable throwable ->
+            LOGGER.error(String.format('name=Flow_Execution_Failed. flowType: {0}', flowType), throwable)
+            if (throwable instanceof AppErrorException) {
+                throw throwable
+            } else {
+                throw AppErrors.INSTANCE.unexpectedError().exception()
+            }
+        }.syncThen {
             return context
         }
     }
@@ -211,8 +232,9 @@ class OrderServiceImpl implements OrderService {
 
     private void setHonoredTime(Order order) {
         def ht = new Date()
+        LOGGER.info('name=Refresh_Order_Honored_Time. time: {}', ht)
         order.honoredTime = ht
-        order.orderItems.each { OrderItem oi ->
+        order.orderItems?.each { OrderItem oi ->
             oi.honoredTime = ht
         }
     }
