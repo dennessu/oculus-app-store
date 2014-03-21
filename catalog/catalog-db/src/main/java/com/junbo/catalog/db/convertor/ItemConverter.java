@@ -30,7 +30,6 @@ public class ItemConverter {
         entity.setType(model.getType());
         entity.setName(model.getName());
         entity.setStatus(model.getStatus());
-        //entity.setRevision(model.getRevision());
         entity.setOwnerId(model.getOwnerId());
         entity.setPayload(Utils.toJson(model));
     }
@@ -44,7 +43,6 @@ public class ItemConverter {
         model.setId(entity.getId());
         model.setType(entity.getType());
         model.setName(entity.getName());
-        model.setRevision(entity.getRevision());
         model.setOwnerId(entity.getOwnerId());
         model.setStatus(entity.getStatus());
         model.setCreatedBy(entity.getCreatedBy());
@@ -64,7 +62,6 @@ public class ItemConverter {
         entity.setType(model.getType());
         entity.setName(model.getName());
         entity.setStatus(model.getStatus());
-        entity.setRevision(model.getRevision());
         entity.setOwnerId(model.getOwnerId());
         entity.setPayload(Utils.toJson(model));
         return entity;

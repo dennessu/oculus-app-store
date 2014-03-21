@@ -29,7 +29,6 @@ public class OfferConverter {
     public static void fillDraftEntity(Offer model, OfferDraftEntity entity) {
         entity.setName(model.getName());
         entity.setStatus(model.getStatus());
-        //entity.setRevision(model.getRevision());
         entity.setOwnerId(model.getOwnerId());
         entity.setPayload(Utils.toJson(model));
     }
@@ -41,7 +40,6 @@ public class OfferConverter {
         Offer model = Utils.fromJson(entity.getPayload(), Offer.class);
         model.setId(entity.getId());
         model.setName(entity.getName());
-        model.setRevision(entity.getRevision());
         model.setStatus(entity.getStatus());
         model.setOwnerId(entity.getOwnerId());
         model.setTimestamp(entity.getTimestamp());
@@ -60,7 +58,6 @@ public class OfferConverter {
         entity.setOfferId(model.getId());
         entity.setName(model.getName());
         entity.setStatus(model.getStatus());
-        entity.setRevision(model.getRevision());
         entity.setOwnerId(model.getOwnerId());
         entity.setPayload(Utils.toJson(model));
         return entity;
@@ -75,7 +72,6 @@ public class OfferConverter {
         model.setId(entity.getOfferId());
         model.setName(entity.getName());
         model.setStatus(entity.getStatus());
-        model.setRevision(entity.getRevision());
         model.setOwnerId(entity.getOwnerId());
         model.setTimestamp(entity.getTimestamp());
         model.setCreatedBy(entity.getCreatedBy());

@@ -32,7 +32,7 @@ public class EntitlementDefinitionServiceImpl implements EntitlementDefinitionSe
     public EntitlementDefinition getEntitlementDefinition(Long entitlementDefinitionId) {
         EntitlementDefinition entitlementDefinition = entitlementDefinitionRepository.get(entitlementDefinitionId);
         if (entitlementDefinition == null) {
-            throw new NotFoundException("entitlementDefinition", entitlementDefinitionId);
+            throw new NotFoundException("Cannot find " + entitlementDefinitionId);
         }
         checkDeveloper(entitlementDefinition.getDeveloperId());
         return entitlementDefinition;

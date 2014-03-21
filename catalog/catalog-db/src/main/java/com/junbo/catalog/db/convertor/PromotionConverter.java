@@ -29,7 +29,6 @@ public class PromotionConverter {
     public static void fillDraftEntity(Promotion model, PromotionDraftEntity entity) {
         entity.setName(model.getName());
         entity.setType(model.getType());
-        entity.setRevision(model.getRevision());
         entity.setStatus(model.getStatus());
         entity.setStartDate(model.getStartDate());
         entity.setEndDate(model.getEndDate());
@@ -43,7 +42,6 @@ public class PromotionConverter {
         Promotion model = Utils.fromJson(entity.getPayload(), Promotion.class);
         model.setId(entity.getId());
         model.setName(entity.getName());
-        model.setRevision(entity.getRevision());
         model.setStatus(entity.getStatus());
         model.setStartDate(entity.getStartDate());
         model.setEndDate(entity.getEndDate());
@@ -63,7 +61,6 @@ public class PromotionConverter {
         entity.setName(model.getName());
         entity.setType(model.getType());
         entity.setStatus(model.getStatus());
-        entity.setRevision(model.getRevision());
         entity.setStartDate(model.getStartDate());
         entity.setEndDate(model.getEndDate());
         entity.setPayload(Utils.toJsonWithType(model));

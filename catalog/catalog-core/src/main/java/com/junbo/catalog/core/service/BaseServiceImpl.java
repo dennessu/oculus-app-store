@@ -8,7 +8,6 @@ package com.junbo.catalog.core.service;
 
 import com.junbo.catalog.common.exception.CatalogException;
 import com.junbo.catalog.common.exception.NotFoundException;
-import com.junbo.catalog.common.util.Constants;
 import com.junbo.catalog.core.BaseService;
 import com.junbo.catalog.db.repo.EntityDraftRepository;
 import com.junbo.catalog.db.repo.EntityRepository;
@@ -40,8 +39,9 @@ public abstract class BaseServiceImpl<T extends VersionedModel> implements BaseS
             entity = getEntityRepo().get(entityId, options.getTimestamp());
         } else {
             entity = getEntityDraftRepo().get(entityId);
-            if (options.getStatus()!=null && !options.getStatus().equalsIgnoreCase(entity.getStatus())) {
-                throw new NotFoundException(entity.getEntityType(), entityId);
+            if (entity == null
+                    || options.getStatus()!=null && !options.getStatus().equalsIgnoreCase(entity.getStatus())) {
+                throw new NotFoundException("Cannot find " + getEntityType() + " " + entityId);
             }
         }
 
@@ -96,7 +96,6 @@ public abstract class BaseServiceImpl<T extends VersionedModel> implements BaseS
             throw new CatalogException("TODO");
         }
 
-        entity.setRevision(Constants.INITIAL_CREATION_REVISION);
         entity.setStatus(Status.DESIGN);
 
         Long entityId = getEntityDraftRepo().create(entity);
@@ -179,7 +178,7 @@ public abstract class BaseServiceImpl<T extends VersionedModel> implements BaseS
 
     private void checkEntityNotNull(Long entityId, T entity) {
         if (entity == null) {
-            throw new NotFoundException(getEntityType(), entityId);
+            throw new NotFoundException("Cannot find " + getEntityType() + " " + entityId);
         }
     }
 }
