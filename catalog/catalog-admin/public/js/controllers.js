@@ -1,7 +1,7 @@
 'use strict';
 
 /* Controllers */
-var app = angular.module('catalog.controllers', []);
+var app = angular.module('catalog.controllers', ['ui.bootstrap']);
 
 // Clear browser cache (in development mode)
 //
@@ -12,8 +12,8 @@ app.run(function ($rootScope, $templateCache) {
   });
 });
 
-app.controller('OfferListCtrl', ['$scope', 'OffersFactory', '$location',
-  function($scope, OffersFactory, $location) {
+app.controller('OfferListCtrl', ['$scope', 'OffersFactory', '$routeParams', '$location',
+  function($scope, OffersFactory, $routeParams, $location) {
       $scope.createOffer = function () {
           OffersFactory.create($scope.offer, function(offer){
               $location.path('/offers/' + offer.self.id);
@@ -22,8 +22,43 @@ app.controller('OfferListCtrl', ['$scope', 'OffersFactory', '$location',
       $scope.cancel = function () {
           $location.path('/offers');
       };
-  	  $scope.offers = OffersFactory.query();
+  	  $scope.offers = OffersFactory.query($routeParams);
   }]);
+
+app.controller('OfferCreationCtrl', ['$scope', 'OffersFactory', 'AttributesFactory', '$routeParams', '$location',
+    function($scope, OffersFactory, AttributesFactory, $routeParams, $location) {
+        $scope.createOffer = function () {
+            OffersFactory.create($scope.offer, function(offer){
+                $location.path('/offers/' + offer.self.id);
+            });
+        };
+        $scope.cancel = function () {
+            $location.path('/offers');
+        };
+
+        $scope.addItem = function(item) {
+            $scope.selectedItems[item.self.id] = item;
+        };
+        $scope.removeItem = function(item) {
+            delete $scope.selectedItems[item.self.id];
+        };
+        $scope.saveItems = function() {
+            $scope.offer.items = [];
+            Object.keys( $scope.selectedItems ).forEach(function( key ) {
+                $scope.offer.items.push({itemId: $scope.selectedItems[key].self});
+            });
+        };
+        $scope.totalItems = function() {
+            return Object.keys( $scope.selectedItems).length;
+        };
+        $scope.selectedItems = {};
+        $scope.isCollapsed = true;
+        // TODO: change to ItemsFactory
+        $scope.items = AttributesFactory.query();
+
+        $scope.typeAttributes = AttributesFactory.query({type: "Type"});
+        $scope.offers = OffersFactory.query($routeParams);
+    }]);
 
 app.controller('OfferReviewListCtrl', ['$scope', 'OffersFactory', '$location',
     function($scope, OffersFactory, $location) {
@@ -87,7 +122,6 @@ app.controller('OfferDetailCtrl', ['$scope', 'OfferFactory', '$routeParams', '$l
 
         $scope.offer = OfferFactory.query($routeParams);
     }]);
-
 
 app.controller('AttributeListCtrl', ['$scope', 'AttributesFactory', '$location',
     function($scope, AttributesFactory, $location) {

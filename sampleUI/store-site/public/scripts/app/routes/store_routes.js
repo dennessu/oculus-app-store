@@ -3,7 +3,22 @@ var StoreRoutes = {
     ApplicationRoute: Ember.Route.extend({
         init: function(){
             this._super();
-            Ember.App.AuthManager = AuthManager.create();
+            console.log("[ApplicationRoute] Application.Init");
+
+            App.AuthManager = AuthManager.create();
+
+            if(App.AuthManager.isAuthenticated()){
+                console.log("[ApplicationRoute] Authenticated");
+
+                // TODO: Merge Cart
+            }else{
+                // TODO: Create Anonymous User
+            }
+        },
+        actions: {
+            logout: function() {
+                App.AuthManager.reset();
+            }
         }
     }),
     IndexRoute: Ember.Route.extend({

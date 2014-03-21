@@ -6,6 +6,7 @@
 package com.junbo.email.spec.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.EmailId;
 
@@ -15,6 +16,8 @@ import java.util.Map;
 /**
  * Email model.
  */
+@JsonPropertyOrder(value = {"self","user","source","action","locale","type","recipient","status","statusReason",
+        "retryCount","priority","sentDate","isResend","scheduleDate","properties","createdTime","modifiedTime"})
 public class Email extends Model{
     @JsonProperty("self")
     private EmailId id;

@@ -17,6 +17,8 @@ import com.junbo.testing.common.property.*;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.util.List;
+
 /**
  @author Jason
   * Time: 3/7/2014
@@ -53,7 +55,7 @@ public class UserPortal extends BaseTestClass {
         Assert.assertNotNull(userPostId, "Can't get user by user ID");
 
         //Get the user with userName
-        ResultList<User> userGetList = us.GetUserByUserName(Master.getInstance().getUser(userPostId).getUserName());
+        List<String> userGetList = us.GetUserByUserName(Master.getInstance().getUser(userPostId).getUserName());
         Assert.assertNotNull(userGetList, "Can't get user by user Name");
     }
 

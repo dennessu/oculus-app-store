@@ -7,17 +7,13 @@ package com.junbo.common.jackson.piid;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.junbo.common.jackson.PaymentInstrument;
 import com.junbo.common.jackson.deserializer.ResourceAwareDeserializationContext;
 import com.junbo.common.jackson.serializer.ResourceAwareSerializerProvider;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Arrays;
 
 /**
  * CascadeIdTest.
@@ -46,5 +42,30 @@ public class CascadeIdTest {
 
         Assert.assertEquals(trx2.getTestId().getUserId(), trx.getTestId().getUserId());
         Assert.assertEquals(trx2.getTestId().getTestId(), trx.getTestId().getTestId());
+    }
+
+    @Test
+    public void testCollectionSupport() throws Exception {
+        Person person = new Person();
+
+        TestId id1 = new TestId();
+        id1.setUserId(12345L);
+        id1.setTestId(99999L);
+
+        TestId id2 = new TestId();
+        id2.setUserId(23456L);
+        id2.setTestId(88888L);
+
+        person.setTestIdList(Arrays.asList(id1, id2));
+
+        String json = mapper.writeValueAsString(person);
+        Person person2 = mapper.readValue(json, Person.class);
+
+        Assert.assertEquals(person2.getTestIdList().size(), person.getTestIdList().size());
+        Assert.assertEquals(person2.getTestIdList().get(0).getUserId(), person.getTestIdList().get(0).getUserId());
+        Assert.assertEquals(person2.getTestIdList().get(0).getTestId(), person.getTestIdList().get(0).getTestId());
+
+        Assert.assertEquals(person2.getTestIdList().get(1).getUserId(), person.getTestIdList().get(1).getUserId());
+        Assert.assertEquals(person2.getTestIdList().get(1).getTestId(), person.getTestIdList().get(1).getTestId());
     }
 }

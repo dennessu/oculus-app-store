@@ -14,9 +14,9 @@ public class UserErrorCode {
 
     // user error codes starts from 30000
 
-    public static final String USER_NOT_FOUND = "22000";
+    public static final String USER_NOT_FOUND = "30000";
 
-    public static final String USER_STATUS_INVALID = "22001";
+    public static final String USER_STATUS_INVALID = "30001";
 
-    public static final String USER_CONNECTION_ERROR = "22002";
+    public static final String USER_CONNECTION_ERROR = "30002";
 }

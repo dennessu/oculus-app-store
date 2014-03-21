@@ -121,7 +121,10 @@ class OrderServiceContextBuilder {
         if (context == null || context.order == null || context.order.user == null) {
             return Promise.pure(null)
         }
-        return facadeContainer.identityFacade.getUser(context.order.user.value).syncThen { User user ->
+        return facadeContainer.identityFacade.getUser(context.order.user.value).syncRecover { Throwable throwable ->
+            LOGGER.error('name=User_Not_Found', throwable)
+            throw AppErrors.INSTANCE.userNotFound(context.order.user.value.toString()).exception()
+        }.syncThen { User user ->
             context.user = user
             return user
         }
@@ -134,7 +137,6 @@ class OrderServiceContextBuilder {
         }
 
         List<Offer> offers = []
-        // TODO timestamp
         return Promise.each(context.order.orderItems.iterator()) { OrderItem oi ->
             facadeContainer.catalogFacade.getOffer(oi.offer.value).syncThen { Offer of ->
                 offers << of

@@ -26,7 +26,7 @@ import javax.annotation.Resource
 @CompileStatic
 class CatalogFacadeImpl implements CatalogFacade {
 
-    @Resource(name='offerClient')
+    @Resource(name='order.offerClient')
     OfferResource offerResource
 
     void setOfferResource(OfferResource offerResource) {

@@ -37,15 +37,23 @@ public interface AppErrors {
             description = "Order not found")
     AppError orderNotFound();
 
+    @ErrorDef(httpStatusCode = 500, code = ErrorCode.ORDER_TYPE_NOT_SUPPORTED,
+            description = "Order action {0} is not supported")
+    AppError orderTypeNotSupported(String type);
+
+    @ErrorDef(httpStatusCode = 403, code = ErrorCode.ORDER_ACTION_NOT_SUPPORTED,
+            description = "Order type {0} is not supported")
+    AppError orderActionNotSupported(String action);
+
     @ErrorDef(httpStatusCode = 404, code = ErrorCode.ORDER_ITEM_NOT_FOUND,
             description = "Order item not found")
     AppError orderItemNotFound();
 
     @ErrorDef(httpStatusCode = 404, code = UserErrorCode.USER_NOT_FOUND,
-            description = "User not found")
-    AppError userNotFound();
+            description = "User not found {0}")
+    AppError userNotFound(String userId);
 
-    @ErrorDef(httpStatusCode = 403, code = UserErrorCode.USER_STATUS_INVALID,
+    @ErrorDef(httpStatusCode = 500, code = UserErrorCode.USER_STATUS_INVALID,
             description = "User status invalid")
     AppError userStatusInvalid();
 
@@ -58,7 +66,7 @@ public interface AppErrors {
     AppError paymentInstrumentNotFound(String paymentInstrumentId);
 
     @ErrorDef(httpStatusCode = 403, code = PaymentErrorCode.PAYMENT_CONNECTION_ERROR,
-            description = "Payment connection error")
+            description = "Payment service connection error")
     AppError paymentConnectionError();
 
     @ErrorDef(httpStatusCode = 403, code = ErrorCode.INVALID_FIELD,
@@ -72,4 +80,36 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 400, code = ErrorCode.ENUM_CONVERSION_ERROR,
             description = "Enum value {0} not exists in type {1}")
     AppError enumConversionError(String enumValue, String enumType);
+
+    @ErrorDef(httpStatusCode = 403, code = PaymentErrorCode.PAYMENT_TYPE_NOT_SUPPORTED,
+            description = "Payment instrument type {0} not supported")
+    AppError piTypeNotSupported(String type);
+
+    @ErrorDef(httpStatusCode = 404, code = CatalogErrorCode.OFFER_NOT_FOUND,
+            description = "Offer {0} not found")
+    AppError offerNotFound(String offerId);
+
+    @ErrorDef(httpStatusCode = 500, code = CatalogErrorCode.CATALOG_CONNECTION_ERROR,
+            description = "Catalog service connection error")
+    AppError catalogConnectionError();
+
+    @ErrorDef(httpStatusCode = 500, code = ErrorCode.UNEXPECTED_ERROR,
+            description = "Unexpected Error")
+    AppError unexpectedError();
+
+    @ErrorDef(httpStatusCode = 403, code = RatingErrorCode.RATING_RESULT_INVALID,
+            description = "Rating result invalid")
+    AppError ratingResultInvalid();
+
+    @ErrorDef(httpStatusCode = 500, code = RatingErrorCode.RATING_CONNECTION_ERROR,
+            description = "Rating connection error")
+    AppError ratingConnectionError();
+
+    @ErrorDef(httpStatusCode = 500, code = BillingErrorCode.BILLING_CONNECTION_ERROR,
+            description = "Billing connection error")
+    AppError billingConnectionError();
+
+    @ErrorDef(httpStatusCode = 404, code = BillingErrorCode.BALANCE_NOT_FOUND,
+            description = "Balance not found")
+    AppError balanceNotFound();
 }

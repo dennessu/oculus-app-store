@@ -22,7 +22,7 @@ import javax.annotation.Resource;
 @Component("orderIdentityFacade")
 @CompileStatic
 public class IdentityFacadeImpl implements IdentityFacade {
-    @Resource(name="identityUserClient")
+    @Resource(name="order.identityUserClient")
     private UserResource userResource;
 
     public void setUserResource(UserResource userResource) {

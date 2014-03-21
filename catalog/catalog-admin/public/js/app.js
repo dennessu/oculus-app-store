@@ -11,7 +11,7 @@ var app = angular.module('catalog', [
 ]);
 
 app.config(['$routeProvider', function($routeProvider) {
-  $routeProvider.when('/offers/creation', {templateUrl: 'views/offer/offer-creation.html', controller: 'OfferListCtrl'});
+  $routeProvider.when('/offers/creation', {templateUrl: 'views/offer/offer-creation.html', controller: 'OfferCreationCtrl'});
   $routeProvider.when('/offers', {templateUrl: 'views/offer/offer-list.html', controller: 'OfferListCtrl'});
   $routeProvider.when('/offers/review', {templateUrl: 'views/offer/offer-list.html', controller: 'OfferReviewListCtrl'});
   $routeProvider.when('/offers/:id', {templateUrl: 'views/offer/offer-detail-view.html', controller: 'OfferDetailCtrl'});

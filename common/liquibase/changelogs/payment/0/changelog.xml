@@ -237,7 +237,7 @@
                     currency_code                   char(3)        not null, 
                     implied_decimals                smallint       not null, 
                     base_unit                       smallint       not null,
-                    min_auth_amount                 money          not null default 1,
+                    min_auth_amount                 numeric        not null default 1,
                     created_time                    date           not null,
                     created_by                      varchar(50)    not null,
                     
@@ -368,7 +368,7 @@
                   user_id                         bigint           not null,
                   payment_type_id                 smallint         not null,
                   currency_code                   char(3)              null,
-                  net_amount                      money            not null,
+                  net_amount                      numeric          not null,
                   country_code                    char(3)          not null,
 				  business_descriptor             varchar(50)          null,
                   payment_instrument_id           bigint           not null,
@@ -410,7 +410,7 @@
                   payment_event_type_id      smallint         not null,
 				  event_status_id            smallint         not null,
                   currency_code              char(3)              null,
-                  net_amount                 money                null,
+                  net_amount                 numeric              null,
 				  request                    json             not null,
 				  response                   json             not null,
                   created_time               date             not null,
@@ -883,14 +883,7 @@
         </sql>
     </changeSet>
 
-	AUTH_CREATE,
-    AUTHORIZE,
-    SUBMIT_SETTLE_CREATE,
-    SUBMIT_SETTLE,
-    REVERSE_CREATE,
-    AUTH_REVERSE,
-    SUBMIT_SETTLE_REVERSE,
-	
+
     <changeSet id="26" author='WenhongZhu' context="PREDEPLOY">
         <sql>
         <![CDATA[

@@ -44,7 +44,7 @@ var Configs = {
         IdTokenUserId: "userId",
         Username: "userName",
 
-        TokenInfoUserId: "sub",
+        TokenInfoUserId: "user_id",
         ProfileFirstname: "firstName",
         ProfileLastname: "lastName"
     },

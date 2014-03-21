@@ -6,6 +6,8 @@
 
 package com.junbo.order.core.impl.order
 
+import com.junbo.common.error.AppErrorException
+import com.junbo.catalog.spec.model.offer.Offer
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.executor.FlowExecutor
 import com.junbo.order.clientproxy.FacadeContainer
@@ -13,6 +15,7 @@ import com.junbo.order.core.FlowSelector
 import com.junbo.order.core.FlowType
 import com.junbo.order.core.OrderService
 import com.junbo.order.core.OrderServiceOperation
+import com.junbo.order.core.impl.common.CoreUtils
 import com.junbo.order.core.impl.orderaction.ActionUtils
 import com.junbo.order.core.impl.orderaction.context.OrderActionContext
 import com.junbo.order.db.entity.enums.OrderActionType
@@ -24,6 +27,8 @@ import com.junbo.order.spec.model.OrderEvent
 import com.junbo.order.spec.model.OrderItem
 import groovy.transform.CompileStatic
 import org.apache.commons.collections.CollectionUtils
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
@@ -36,6 +41,7 @@ import org.springframework.transaction.annotation.Transactional
 @Service('orderService')
 class OrderServiceImpl implements OrderService {
     @Qualifier('orderFacadeContainer')
+    @Autowired
     FacadeContainer facadeContainer
     @Autowired
     OrderRepository orderRepository
@@ -44,12 +50,15 @@ class OrderServiceImpl implements OrderService {
     @Autowired
     FlowExecutor flowExecutor
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(OrderServiceImpl)
+
+
     void setFlowSelector(FlowSelector flowSelector) {
         this.flowSelector = flowSelector
     }
 
     @Override
-    Promise<List<Order>> createOrders(Order order, ApiContext context) {
+    Promise<Order> createOrder(Order order, ApiContext context) {
         // TODO: split orders
         // TODO: expand external resources
         // TODO: change this flow to 2 steps:
@@ -60,58 +69,66 @@ class OrderServiceImpl implements OrderService {
                 new OrderServiceContext(order), OrderServiceOperation.CREATE).syncThen { FlowType flowType ->
             executeFlow(flowType, orderServiceContext, null)
         }.syncThen {
-            return [orderServiceContext.order]
+            return orderServiceContext.order
         }
     }
 
     @Override
-    Promise<List<Order>> settleQuote(Order order, ApiContext context) {
+    Promise<Order> settleQuote(Order order, ApiContext context) {
         order.tentative = false
         def orderServiceContext = initOrderServiceContext(order)
         flowSelector.select(orderServiceContext, OrderServiceOperation.SETTLE_TENTATIVE).then { FlowType flowType ->
             executeFlow(flowType, orderServiceContext, null)
-        }.syncThen {
-            orderRepository.updateOrder(order, true)
-            return [orderServiceContext.order]
-        }
-    }
-
-    @Override
-    Promise<Order> updateTentativeOrder(Order order, ApiContext context) {
-        setHonoredTime(order)
-        def orderServiceContext = initOrderServiceContext(order)
-
-        flowSelector.select(orderServiceContext, OrderServiceOperation.UPDATE_TENTATIVE).then { FlowType flowType ->
-            // Prepare Flow Request
-            Map<String, Object> requestScope = [:]
-            def orderActionContext = new OrderActionContext()
-            orderActionContext.orderActionType = OrderActionType.RATE
-            orderActionContext.orderServiceContext = orderServiceContext
-            orderActionContext.trackingUuid = order.trackingUuid
-            requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object)orderActionContext)
-            executeFlow(flowType, orderServiceContext, requestScope)
         }.syncThen {
             return orderServiceContext.order
         }
     }
 
     @Override
-    Promise<List<Order>> createQuotes(Order order, ApiContext context) {
+    Promise<Order> updateTentativeOrder(Order order, ApiContext context) {
+        assert(order != null && order.id != null)
+        LOGGER.info('name=Update_Tentative_Order. orderId: {}', order.id.value)
 
         setHonoredTime(order)
         def orderServiceContext = initOrderServiceContext(order)
+        prepareOrder(order).then {
+            flowSelector.select(orderServiceContext, OrderServiceOperation.UPDATE_TENTATIVE).then { FlowType flowType ->
+                // Prepare Flow Request
+                Map<String, Object> requestScope = [:]
+                def orderActionContext = new OrderActionContext()
+                orderActionContext.orderActionType = OrderActionType.RATE
+                orderActionContext.orderServiceContext = orderServiceContext
+                orderActionContext.trackingUuid = order.trackingUuid
+                requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object)orderActionContext)
+                executeFlow(flowType, orderServiceContext, requestScope)
+            }.syncThen {
+                return orderServiceContext.order
+            }
+        }
+    }
 
-        flowSelector.select(orderServiceContext, OrderServiceOperation.CREATE_TENTATIVE).then { FlowType flowType ->
-            // Prepare Flow Request
-            Map<String, Object> requestScope = [:]
-            def orderActionContext = new OrderActionContext()
-            orderActionContext.orderActionType = OrderActionType.RATE
-            orderActionContext.orderServiceContext = orderServiceContext
-            orderActionContext.trackingUuid = order.trackingUuid
-            requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object)orderActionContext)
-            executeFlow(flowType, orderServiceContext, requestScope)
-        }.syncThen {
-            return [orderServiceContext.order]
+    @Override
+    Promise<Order> createQuote(Order order, ApiContext context) {
+        assert(order != null && order.user != null)
+        LOGGER.info('name=Create_Tentative_Order. userId: {}', order.user.value)
+
+        setHonoredTime(order)
+        def orderServiceContext = initOrderServiceContext(order)
+        prepareOrder(order).then {
+            flowSelector.select(orderServiceContext, OrderServiceOperation.CREATE_TENTATIVE).then { FlowType flowType ->
+                // Prepare Flow Request
+                assert(flowType != null)
+                LOGGER.info('name=Create_Tentative_Order. flowType: {}', flowType)
+                Map<String, Object> requestScope = [:]
+                def orderActionContext = new OrderActionContext()
+                orderActionContext.orderActionType = OrderActionType.RATE
+                orderActionContext.orderServiceContext = orderServiceContext
+                orderActionContext.trackingUuid = order.trackingUuid
+                requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object)orderActionContext)
+                executeFlow(flowType, orderServiceContext, requestScope)
+            }.syncThen {
+                return orderServiceContext.order
+            }
         }
     }
 
@@ -195,7 +212,14 @@ class OrderServiceImpl implements OrderService {
             Map<String, Object> requestScope) {
         def scope = ActionUtils.initRequestScope(context, requestScope)
         scope.put(ActionUtils.REQUEST_FLOW_TYPE, (Object)flowType)
-        return flowExecutor.start(flowType.name(), scope).syncThen {
+        return flowExecutor.start(flowType.name(), scope).syncRecover { Throwable throwable ->
+            LOGGER.error('name=Flow_Execution_Failed. flowType: ' + flowType, throwable)
+            if (throwable instanceof AppErrorException) {
+                throw throwable
+            } else {
+                throw AppErrors.INSTANCE.unexpectedError().exception()
+            }
+        }.syncThen {
             return context
         }
     }
@@ -207,9 +231,23 @@ class OrderServiceImpl implements OrderService {
 
     private void setHonoredTime(Order order) {
         def ht = new Date()
+        LOGGER.info('name=Refresh_Order_Honored_Time. time: {}', ht)
         order.honoredTime = ht
-        order.orderItems.each { OrderItem oi ->
+        order.orderItems?.each { OrderItem oi ->
             oi.honoredTime = ht
+        }
+    }
+
+    private Promise<Object> prepareOrder(Order order) {
+        Promise.each(order.orderItems.iterator()) { OrderItem item -> // get item type from catalog
+            facadeContainer.catalogFacade.getOffer(item.offer.value).syncThen { Offer offer ->
+                if (offer == null) {
+                    throw AppErrors.INSTANCE.offerNotFound(item.offer.value?.toString()).exception()
+                }
+                item.type = CoreUtils.getOfferType(offer).name()
+            }
+        }.syncThen {
+            return null
         }
     }
 }

@@ -30,3 +30,11 @@ html, body {
   content: "";
   padding: 0;
 }
+
+.select:hover {
+    cursor: pointer;
+}
+
+.borderless td {
+    border-top: 0 !important;
+}
