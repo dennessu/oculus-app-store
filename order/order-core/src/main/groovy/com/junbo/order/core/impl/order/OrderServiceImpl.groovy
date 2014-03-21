@@ -58,7 +58,7 @@ class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    Promise<List<Order>> createOrders(Order order, ApiContext context) {
+    Promise<Order> createOrder(Order order, ApiContext context) {
         // TODO: split orders
         // TODO: expand external resources
         // TODO: change this flow to 2 steps:
@@ -69,19 +69,19 @@ class OrderServiceImpl implements OrderService {
                 new OrderServiceContext(order), OrderServiceOperation.CREATE).syncThen { FlowType flowType ->
             executeFlow(flowType, orderServiceContext, null)
         }.syncThen {
-            return [orderServiceContext.order]
+            return orderServiceContext.order
         }
     }
 
     @Override
-    Promise<List<Order>> settleQuote(Order order, ApiContext context) {
+    Promise<Order> settleQuote(Order order, ApiContext context) {
         order.tentative = false
         def orderServiceContext = initOrderServiceContext(order)
         flowSelector.select(orderServiceContext, OrderServiceOperation.SETTLE_TENTATIVE).then { FlowType flowType ->
             executeFlow(flowType, orderServiceContext, null)
         }.syncThen {
             orderRepository.updateOrder(order, true)
-            return [orderServiceContext.order]
+            return orderServiceContext.order
         }
     }
 
@@ -109,7 +109,7 @@ class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    Promise<List<Order>> createQuotes(Order order, ApiContext context) {
+    Promise<Order> createQuote(Order order, ApiContext context) {
         assert(order != null && order.user != null)
         LOGGER.info('name=Create_Tentative_Order. userId: {}', order.user.value)
 
@@ -128,7 +128,7 @@ class OrderServiceImpl implements OrderService {
                 requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object)orderActionContext)
                 executeFlow(flowType, orderServiceContext, requestScope)
             }.syncThen {
-                return [orderServiceContext.order]
+                return orderServiceContext.order
             }
         }
     }
