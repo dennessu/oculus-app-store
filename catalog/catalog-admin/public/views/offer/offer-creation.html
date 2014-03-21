@@ -20,10 +20,17 @@
             <td>Items</td>
             <td>
                 <div>
-                    <button ng-click="isCollapsed = !isCollapsed">
-                        <div ng-show="isCollapsed">Add Items</div>
-                        <div ng-hide="isCollapsed" ng-click="saveItems()">Save</div>
-                    </button>
+                    <table class="table borderless">
+                        <tr>
+                            <td>Contains {{ totalItems() }} Items.</td>
+                            <td>
+                                <button ng-click="isCollapsed = !isCollapsed" class="btn btn-small btn-default">
+                                    <div ng-show="isCollapsed">Add Items</div>
+                                    <div ng-hide="isCollapsed" ng-click="saveItems()">Save</div>
+                                </button>
+                            </td>
+                        </tr>
+                    </table>
                     <div collapse="isCollapsed">
                         <table class="table table-bordered"><tr>
                             <td>
