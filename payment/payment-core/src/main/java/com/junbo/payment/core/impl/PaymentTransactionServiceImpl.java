@@ -34,6 +34,7 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -132,30 +133,15 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
     public Promise<PaymentTransaction> capture(final Long paymentId, final PaymentTransaction request) {
         validateRequest(request, true);
         final PaymentAPI api = PaymentAPI.Capture;
-        request.setId(paymentId);
         LOGGER.info("capture for payment:" + paymentId);
         PaymentTransaction trackingResult = getResultByTrackingUuid(request, api);
         if(trackingResult != null){
             return Promise.pure(trackingResult);
         }
         final PaymentTransaction existedTransaction = getPaymentById(paymentId);
-        CloneRequest(request, existedTransaction);
-        if(existedTransaction == null){
-            LOGGER.error("the payment id is invalid for the event.");
-            throw AppClientExceptions.INSTANCE.invalidPaymentId(paymentId.toString()).exception();
-        }
-        if(request.getChargeInfo() != null && request.getChargeInfo().getAmount() != null &&
-          existedTransaction.getChargeInfo().getAmount().compareTo(request.getChargeInfo().getAmount()) < 0){
-            LOGGER.error("capture amount should not exceed the authorized amount.");
-            throw AppClientExceptions.INSTANCE.invalidAmount(
-                    request.getChargeInfo().getAmount().toString()).exception();
-        }
-        if(!PaymentStatus.valueOf(existedTransaction.getStatus()).equals(PaymentStatus.AUTHORIZED)){
-            LOGGER.error("the payment status is not allowed to be captured.");
-            throw AppServerExceptions.INSTANCE.invalidPaymentStatus(
-                    existedTransaction.getStatus().toString()).exception();
-        }
+        validateCapturable(paymentId, request, existedTransaction);
 
+        CloneRequest(request, existedTransaction);
         PaymentStatus createStatus = PaymentStatus.SETTLE_CREATED;
         existedTransaction.setStatus(createStatus.toString());
         PaymentEvent submitCreateEvent = createPaymentEvent(request,
@@ -187,6 +173,23 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
             }
         });
 
+    }
+
+    private void validateCapturable(Long paymentId, PaymentTransaction request, PaymentTransaction existedTransaction) {
+        if(existedTransaction == null){
+            LOGGER.error("the payment id is invalid for the event.");
+            throw AppClientExceptions.INSTANCE.invalidPaymentId(paymentId.toString()).exception();
+        }
+        if(request.getChargeInfo() != null && request.getChargeInfo().getAmount() != null &&
+          existedTransaction.getChargeInfo().getAmount().compareTo(request.getChargeInfo().getAmount()) < 0){
+            LOGGER.error("capture amount should not exceed the authorized amount.");
+            throw AppClientExceptions.INSTANCE.invalidAmount(
+                    request.getChargeInfo().getAmount().toString()).exception();
+        }
+        if(!PaymentStatus.valueOf(existedTransaction.getStatus()).equals(PaymentStatus.AUTHORIZED)){
+            LOGGER.error("the payment status is not allowed to be captured.");
+            throw AppServerExceptions.INSTANCE.invalidPaymentStatus(existedTransaction.getStatus()).exception();
+        }
     }
 
     @Override
@@ -250,8 +253,7 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
         }else if(PaymentStatus.valueOf(existedTransaction.getStatus()).equals(PaymentStatus.SETTLEMENT_SUBMITTED)){
             eventType = PaymentEventType.SUBMIT_SETTLE_REVERSE;
         }else{
-            throw AppServerExceptions.INSTANCE.invalidPaymentStatus(
-                    existedTransaction.getStatus().toString()).exception();
+            throw AppServerExceptions.INSTANCE.invalidPaymentStatus(existedTransaction.getStatus()).exception();
         }
         PaymentInstrument pi = paymentInstrumentService.getById(null, existedTransaction.getPaymentInstrumentId());
         PaymentStatus createStatus = PaymentStatus.REVERSE_CREATED;
@@ -263,16 +265,16 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
         final PaymentProviderService provider =
                 providerRoutingService.getPaymentProvider(PaymentUtil.getPIType(pi.getType()));
         return provider.reverse(existedTransaction.getExternalToken())
-                .recover(new Promise.Func<Throwable, Promise<Void>>() {
+                .recover(new Promise.Func<Throwable, Promise<Response>>() {
             @Override
-            public Promise<Void> apply(Throwable throwable) {
+            public Promise<Response> apply(Throwable throwable) {
                 handleProviderException(throwable, provider, request, api,
                         PaymentStatus.REVERSE_DECLINED, eventType);
                 return null;
             }
-        }).then(new Promise.Func<Void, Promise<PaymentTransaction>>() {
+        }).then(new Promise.Func<Response, Promise<PaymentTransaction>>() {
             @Override
-            public Promise<PaymentTransaction> apply(Void aVoid) {
+            public Promise<PaymentTransaction> apply(Response aVoid) {
                 PaymentStatus reverseStatus = PaymentStatus.REVERSED;
                 existedTransaction.setStatus(reverseStatus.toString());
                 PaymentEvent reverseEvent = createPaymentEvent(
@@ -287,6 +289,7 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
     private void CloneRequest(PaymentTransaction request, PaymentTransaction existedTransaction) {
         existedTransaction.setTrackingUuid(request.getTrackingUuid());
         existedTransaction.setUserId(request.getUserId());
+        request.setId(existedTransaction.getId());
     }
 
     @Override

@@ -10,6 +10,7 @@ import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentTransaction;
 
+import javax.ws.rs.core.Response;
 import java.util.List;
 
 /**
@@ -19,12 +20,12 @@ public interface PaymentProviderService{
     String getProviderName();
 
     Promise<PaymentInstrument> add(PaymentInstrument request);
-    Promise<Void> delete(String token);
+    Promise<Response> delete(String token);
 
     Promise<PaymentTransaction> authorize(String piToken, PaymentTransaction paymentRequest);
     Promise<PaymentTransaction> capture(String transactionId, PaymentTransaction paymentRequest);
     Promise<PaymentTransaction> charge(String piToken, PaymentTransaction paymentRequest);
-    Promise<Void> reverse(String transactionId);
+    Promise<Response> reverse(String transactionId);
     void refund(String transactionId, PaymentTransaction request);
     List<PaymentTransaction> getByOrderId(String orderId);
     Promise<PaymentTransaction> getByTransactionToken(String token);

@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
+import javax.ws.rs.core.Response;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +43,6 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
         try{
             env = Environment.valueOf(environment);
         }catch(Exception ex){
-            //TODO: handle exception
             LOGGER.error("not able to get the right environment:" + environment);
             throw AppServerExceptions.INSTANCE.invalidProviderRequest(PROVIDER_NAME).exception();
         }
@@ -105,7 +105,7 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
     }
 
     @Override
-    public Promise<Void> delete(String token) {
+    public Promise<Response> delete(String token) {
         Result<CreditCard> result = null;
         LOGGER.info("delete credit card :" + token);
         try{
@@ -116,7 +116,7 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
         if(!result.isSuccess()){
             handleProviderError(result);
         }
-        return Promise.pure(null);
+        return Promise.pure(Response.status(204).build());
     }
 
     @Override
@@ -142,10 +142,6 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
         Result<Transaction> result = null;
         LOGGER.info("capture transaction :" + transactionId);
         try{
-            //TODO: test use, remove
-            if(1 == 1){
-                throw  new RuntimeException();
-            }
             if(request.getChargeInfo() == null || request.getChargeInfo().getAmount() == null){
                 result = gateway.transaction().submitForSettlement(transactionId);
             }else{
@@ -185,14 +181,10 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
     }
 
     @Override
-    public Promise<Void> reverse(String transactionId) {
+    public Promise<Response> reverse(String transactionId) {
         Result<Transaction> result = null;
         LOGGER.info("reverse transaction :" + transactionId);
         try{
-            //TODO: test use, remove
-            if(1 == 1){
-                throw  new RuntimeException();
-            }
             result = gateway.transaction().voidTransaction(transactionId);
         }catch(Exception ex){
             handleProviderException(ex, "Void", "transaction", transactionId);
@@ -202,7 +194,7 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
         } else {
             handleProviderError(result);
         }
-        return Promise.pure(null);
+        return Promise.pure(Response.status(204).build());
     }
 
     private <T> void handleProviderError(Result<T> result) {
@@ -220,10 +212,10 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
             ".Provider:" + PROVIDER_NAME + " take action:" + action + " for:" + source + "of " + sourceValue);
             throw AppServerExceptions.INSTANCE.providerGatewayTimeout(PROVIDER_NAME).exception();
         }else if(ex instanceof SocketTimeoutException){
-            LOGGER.error("provider:" + PROVIDER_NAME + "gateway timeout exception: " + ex.toString());
+            LOGGER.error("provider:" + PROVIDER_NAME + " gateway timeout exception: " + ex.toString());
             throw AppServerExceptions.INSTANCE.providerGatewayTimeout(PROVIDER_NAME).exception();
         }else{
-            LOGGER.error("provider:" + PROVIDER_NAME + "gateway exception: " + ex.toString());
+            LOGGER.error("provider:" + PROVIDER_NAME + " gateway exception: " + ex.toString());
             throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, ex.toString()).exception();
         }
     }

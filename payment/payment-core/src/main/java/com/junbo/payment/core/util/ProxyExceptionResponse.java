@@ -6,14 +6,16 @@
 
 package com.junbo.payment.core.util;
 
+import com.junbo.common.error.AppErrorException;
 import com.junbo.langur.core.client.ClientResponseException;
+import com.junbo.payment.common.CommonUtil;
 
-import java.io.IOException;
 
 /**
  * proxy exception response.
  */
 public class ProxyExceptionResponse {
+    private static final String internalErrorCode = "{\"result\": \"unknown error\"}";
     private int status;
     private String body;
 
@@ -22,15 +24,26 @@ public class ProxyExceptionResponse {
     }
 
     public String getBody() {
+        if(CommonUtil.isNullOrEmpty(body)){
+            return internalErrorCode;
+        }
         return body;
     }
 
     public ProxyExceptionResponse(Throwable throwable){
-        if(throwable instanceof ClientResponseException){
-            status = ((ClientResponseException)throwable).getResponse().getStatusCode();
+        if(throwable instanceof AppErrorException){
+            AppErrorException appException = ((AppErrorException)throwable);
             try {
+                status = appException.getError().getHttpStatusCode();
+                body = CommonUtil.toJson(appException.getError(), null);
+            }catch (Exception e) {
+
+            }
+        }else if(throwable instanceof ClientResponseException){
+            try {
+                status = ((ClientResponseException)throwable).getResponse().getStatusCode();
                 body = ((ClientResponseException)throwable).getResponse().getResponseBody();
-            } catch (IOException e) {
+            } catch (Exception e) {
 
             }
         }
