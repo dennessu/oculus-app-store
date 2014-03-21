@@ -13,7 +13,7 @@ public class FulfillmentErrorCode {
     private FulfillmentErrorCode() {}
 
     // fulfillment error stats from 32000
-    public static final String FULFILLMENT_NOT_FOUND = "22000";
+    public static final String FULFILLMENT_NOT_FOUND = "32000";
 
-    public static final String FULFILLMENT_CONNECTION_ERROR = "22001";
+    public static final String FULFILLMENT_CONNECTION_ERROR = "32001";
 }

@@ -134,7 +134,6 @@ class OrderServiceContextBuilder {
         }
 
         List<Offer> offers = []
-        // TODO timestamp
         return Promise.each(context.order.orderItems.iterator()) { OrderItem oi ->
             facadeContainer.catalogFacade.getOffer(oi.offer.value).syncThen { Offer of ->
                 offers << of

@@ -13,5 +13,5 @@ public class EmailErrorCode {
     private EmailErrorCode() {}
 
     // email error starts from 34000
-    public static final String EMAIL_CONNECTION_ERROR = "24000";
+    public static final String EMAIL_CONNECTION_ERROR = "34000";
 }

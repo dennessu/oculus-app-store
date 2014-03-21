@@ -8,7 +8,7 @@ import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory
 import org.glassfish.jersey.server.ResourceConfig
 import org.glassfish.jersey.server.ServerProperties
 /**
- * App to launch Server
+ * App to launch Server.
  */
 class Main {
     static HttpServer startServer() {

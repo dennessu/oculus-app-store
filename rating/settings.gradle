@@ -1,3 +1,4 @@
+rootProject.name = 'rating'
 include 'rating-spec'
 
 include 'rating-common'

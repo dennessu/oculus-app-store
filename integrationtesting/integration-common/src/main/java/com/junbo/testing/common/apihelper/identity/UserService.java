@@ -5,8 +5,8 @@
  */
 package com.junbo.testing.common.apihelper.identity;
 
-import com.junbo.identity.spec.model.common.ResultList;
 import com.junbo.identity.spec.model.user.User;
+import java.util.List;
 
 /**
  * @author Jason
@@ -25,8 +25,8 @@ public interface UserService {
     String GetUserByUserId(String userId, int expectedResponseCode) throws Exception;
 
     //Get the user by userName
-    ResultList<User> GetUserByUserName(String userName) throws Exception;
-    ResultList<User> GetUserByUserName(String userName, int expectedResponseCode) throws Exception;
+    List<String> GetUserByUserName(String userName) throws Exception;
+    List<String> GetUserByUserName(String userName, int expectedResponseCode) throws Exception;
 
     //update a user
     String PutUser(String userName, String status) throws Exception;
@@ -38,7 +38,8 @@ public interface UserService {
 
     //update password
     String UpdatePassword(String userId, String oldPassword, String newPassword) throws Exception;
-    String UpdatePassword(String userId, String oldPassword, String newPassword, int expectedResponseCode) throws Exception;
+    String UpdatePassword(String userId, String oldPassword, String newPassword, int expectedResponseCode)
+            throws Exception;
 
     //reset password
     String ResetPassword(String userId, String newPassword) throws Exception;

@@ -59,16 +59,6 @@ public class ResourceIdDeserializer extends JsonDeserializer<Object> implements 
         return Oculus48Id.unShuffle(Oculus48Id.deFormat(id));
     }
 
-    protected Object handleSingle(JsonParser jsonParser) throws IOException {
-        ResourceRef resourceRef = MAPPER.readValue(jsonParser, ResourceRef.class);
-
-        if (resourceRef == null) {
-            return null;
-        }
-
-        return parse(resourceRef.getId(), idClassType);
-    }
-
     protected <T> T parse(String id, Class clazz) {
         // for now, we only support String/Integer/Long id types
         if (clazz == Long.class) {
@@ -80,13 +70,27 @@ public class ResourceIdDeserializer extends JsonDeserializer<Object> implements 
         return (T) id;
     }
 
+    protected Object process(ResourceRef resourceRef) {
+        if (resourceRef == null) {
+            return null;
+        }
+
+        return parse(resourceRef.getId(), idClassType);
+    }
+
+    private Object handleSingle(JsonParser jsonParser) throws IOException {
+        ResourceRef resourceRef = MAPPER.readValue(jsonParser, ResourceRef.class);
+
+        return process(resourceRef);
+    }
+
     private Object handleCollection(JsonParser jsonParser) throws IOException {
         Collection<Object> results = createEmptyCollection(collectionType);
         Collection<ResourceRef> references = MAPPER.readValue(jsonParser,
                 MAPPER.getTypeFactory().constructCollectionType(collectionType, ResourceRef.class));
 
         for (ResourceRef ref : references) {
-            results.add(parse(ref.getId(), idClassType));
+            results.add(process(ref));
         }
 
         return results;
