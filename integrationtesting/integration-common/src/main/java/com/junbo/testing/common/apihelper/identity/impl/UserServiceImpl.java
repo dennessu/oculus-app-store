@@ -20,6 +20,8 @@ import com.ning.http.client.RequestBuilder;
 import com.ning.http.client.providers.netty.NettyResponse;
 import junit.framework.Assert;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Future;
 
 /**
@@ -37,7 +39,7 @@ public class UserServiceImpl implements UserService {
     private LogHelper logger = new LogHelper(UserServiceImpl.class);
     private AsyncHttpClient asyncClient;
 
-    private static UserService instance = null;
+    private static UserService instance;
 
     public static synchronized UserService instance() {
         if (instance == null) {
@@ -109,11 +111,11 @@ public class UserServiceImpl implements UserService {
         return IdConverter.idToHexString(userGet.getId());
     }
 
-    public ResultList<User> GetUserByUserName(String userName) throws Exception {
+    public List<String> GetUserByUserName(String userName) throws Exception {
         return GetUserByUserName(userName, 200);
     }
 
-    public ResultList<User> GetUserByUserName(String userName, int expectedResponseCode) throws Exception {
+    public List<String> GetUserByUserName(String userName, int expectedResponseCode) throws Exception {
 
         Request req = new RequestBuilder("GET")
                 .addHeader(RestUrl.requestHeaderName, RestUrl.requestHeaderValue)
@@ -131,49 +133,55 @@ public class UserServiceImpl implements UserService {
         ResultList<User> userGet = new JsonMessageTranscoder().decode(
                new TypeReference<ResultList<User>>() {}, nettyResponse.getResponseBody());
 
-        return userGet;
+        List<String> listUserId = new ArrayList<>();
+        for (User user : userGet.getItems()){
+            Master.getInstance().addUser(IdConverter.idToHexString(user.getId()), user);
+            listUserId.add(IdConverter.idToHexString(user.getId()));
+        }
+        return listUserId;
     }
 
     public String PutUser(String userName, String status) throws Exception {
         //Todo
         return PutUser(userName, status, 200);
-    };
+    }
 
     public String PutUser(String userName, String status, int expectedResponseCode) throws Exception {
         //Todo
         return null;
-    };
+    }
 
     //Authenticate user
     public String AuthenticateUser(String userName, String password) throws Exception {
         //Todo
         return AuthenticateUser(userName, password, 200);
-    };
+    }
 
     public String AuthenticateUser(String userName, String password, int expectedResponseCode) throws Exception {
         //Todo
         return null;
-    };
+    }
 
     //update password
     public String UpdatePassword(String userId, String oldPassword, String newPassword) throws Exception {
         //Todo
-        return UpdatePassword(userId, oldPassword, newPassword, 200 );
-    };
+        return UpdatePassword(userId, oldPassword, newPassword, 200);
+    }
 
-    public String UpdatePassword(String userId, String oldPassword, String newPassword, int expectedResponseCode) throws Exception {
+    public String UpdatePassword(String userId, String oldPassword, String newPassword, int expectedResponseCode)
+            throws Exception {
         //Todo
         return null;
-    };
+    }
 
     //reset password
     public String ResetPassword(String userId, String newPassword) throws Exception {
         //Todo
         return ResetPassword(userId, newPassword, 200);
-    };
+    }
 
     public String ResetPassword(String userId, String newPassword, int expectedResponseCode) throws Exception {
         //Todo
         return null;
-    };
+    }
 }
