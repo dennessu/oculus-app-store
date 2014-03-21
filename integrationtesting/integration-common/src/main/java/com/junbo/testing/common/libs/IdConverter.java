@@ -6,6 +6,9 @@
 package com.junbo.testing.common.libs;
 
 import com.junbo.common.id.Id;
+import com.junbo.common.id.OrderId;
+import com.junbo.common.shuffle.Oculus40Id;
+import com.junbo.common.shuffle.Oculus48Id;
 import com.junbo.common.util.IdFormatter;
 
 /**
@@ -24,5 +27,21 @@ public class IdConverter {
 
     public static String idToHexString(Id id) {
         return IdFormatter.encodeId(id);
+    }
+
+    public static String idLongToHexString(Class cls, long id) {
+        if(cls == OrderId.class) {
+            Oculus40Id.validateRawValue(id);
+            Long value = Oculus40Id.shuffle(id);
+            return Oculus40Id.format(value);
+        }
+        else if(cls.getSuperclass() == Id.class){
+            Oculus48Id.validateRawValue(id);
+            Long value = Oculus48Id.shuffle(id);
+            return Oculus48Id.format(value);
+        }
+        else {
+            throw new RuntimeException("unsupported class " + cls);
+        }
     }
 }
