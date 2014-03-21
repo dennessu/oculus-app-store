@@ -52,7 +52,7 @@ public class UserOptinServiceImpl implements UserOptinService {
     public List<UserOptin> getByUserId(Long userId, String type) {
         UserOptinListOption getOption = new UserOptinListOption();
         getOption.setUserId(new UserId(userId));
-        getOption.setValue(type);
+        getOption.setType(type);
         return userOptInRepository.search(getOption);
     }
 
