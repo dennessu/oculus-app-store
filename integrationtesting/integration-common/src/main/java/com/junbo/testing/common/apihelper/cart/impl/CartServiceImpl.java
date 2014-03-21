@@ -1,3 +1,8 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
+ */
 package com.junbo.testing.common.apihelper.cart.impl;
 
 import com.junbo.cart.spec.model.Cart;
@@ -5,6 +10,7 @@ import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
 import com.junbo.testing.common.apihelper.cart.CartService;
 import com.junbo.testing.common.blueprint.Master;
+import com.junbo.testing.common.libs.IdConverter;
 import com.junbo.testing.common.libs.LogHelper;
 import com.junbo.testing.common.libs.RestUrl;
 import com.ning.http.client.AsyncHttpClient;
@@ -27,7 +33,7 @@ public class CartServiceImpl implements CartService{
     private LogHelper logger = new LogHelper(CartServiceImpl.class);
     private AsyncHttpClient asyncClient;
 
-    private static CartService instance = null;
+    private static CartService instance;
 
     public static synchronized CartService getInstance(){
         if (instance == null) {
@@ -64,8 +70,9 @@ public class CartServiceImpl implements CartService{
         Assert.assertEquals(expectedResponseCode,nettyResponse.getStatusCode());
         Cart rtnCart = new JsonMessageTranscoder().decode(new TypeReference<Cart>() {},
                 nettyResponse.getResponseBody());
-        Master.getInstance().addCart(rtnCart.getId().toString(),rtnCart);
-        return rtnCart.getId().toString();
+        String rtnCartId = IdConverter.idToHexString(rtnCart.getId());
+        Master.getInstance().addCart(rtnCartId,rtnCart);
+        return rtnCartId;
     }
 
     public String  getCart(String userId, String cartId) throws Exception{
@@ -87,12 +94,13 @@ public class CartServiceImpl implements CartService{
         Assert.assertEquals(expectedResponseCode, nettyResponse.getStatusCode());
         Cart rtnCart = new JsonMessageTranscoder().decode(new TypeReference<Cart>() {},
                 nettyResponse.getResponseBody());
-        Master.getInstance().addCart(rtnCart.getId().toString(),rtnCart);
-        return rtnCart.getId().toString();
+        String rtnCartId = IdConverter.idToHexString(rtnCart.getId());
+        Master.getInstance().addCart(rtnCartId,rtnCart);
+        return rtnCartId;
     }
 
     public String getCartPrimary(String userId) throws Exception{
-        return getCartPrimary(userId, 200);
+        return getCartPrimary(userId, 302);
     }
 
     public String getCartPrimary(String userId, int expectedResponseCode) throws Exception{
@@ -110,12 +118,13 @@ public class CartServiceImpl implements CartService{
         Assert.assertEquals(expectedResponseCode, nettyResponse.getStatusCode());
         Cart rtnCart = new JsonMessageTranscoder().decode(new TypeReference<Cart>() {},
                 nettyResponse.getResponseBody());
-        Master.getInstance().addCart(rtnCart.getId().toString(),rtnCart);
-        return rtnCart.getId().toString();
+        String rtnCartId = IdConverter.idToHexString(rtnCart.getId());
+        Master.getInstance().addCart(rtnCartId,rtnCart);
+        return rtnCartId;
     }
 
     public String getCartByName(String userId, String cartName) throws Exception{
-        return null;
+        return getCartByName(userId, cartName, 302);
     }
 
     public String getCartByName(String userId, String cartName, int expectedResponseCode) throws Exception{
@@ -134,35 +143,62 @@ public class CartServiceImpl implements CartService{
         Assert.assertEquals(expectedResponseCode,nettyResponse.getStatusCode());
         Cart rtnCart = new JsonMessageTranscoder().decode(new TypeReference<Cart>() {},
                 nettyResponse.getResponseBody());
-        Master.getInstance().addCart(rtnCart.getId().toString(),rtnCart);
-        return rtnCart.getId().toString();
+        String rtnCartId = IdConverter.idToHexString(rtnCart.getId());
+        Master.getInstance().addCart(rtnCartId,rtnCart);
+        return rtnCartId;
     }
 
     public String updateCart(String userId, String cartId, Cart cart) throws Exception{
-        return null;
+        return updateCart(userId, cartId, cart, 200);
     }
 
-    public String mergeCart(String userId, String cartId, String fromCartId) throws Exception{
-        return null;
+    public String updateCart(String userId, String cartId, Cart cart, int expectedResponseCode) throws Exception{
+        String requestBody = new JsonMessageTranscoder().encode(cart);
+
+        String cartEndpointUrl = cartUrl + "users/" + userId + "/carts/" + cartId;
+
+        Request req = new RequestBuilder("PUT")
+                .setUrl(cartEndpointUrl)
+                .addHeader(RestUrl.requestHeaderName, RestUrl.requestHeaderValue)
+                .setBody(requestBody)
+                .build();
+
+        logger.LogRequest(req);
+        Future future = asyncClient.prepareRequest(req).execute();
+        NettyResponse nettyResponse = (NettyResponse) future.get();
+        logger.LogResponse(nettyResponse);
+        Assert.assertEquals(expectedResponseCode,nettyResponse.getStatusCode());
+        Cart rtnCart = new JsonMessageTranscoder().decode(new TypeReference<Cart>() {},
+                nettyResponse.getResponseBody());
+        String rtnCartId = IdConverter.idToHexString(rtnCart.getId());
+        Master.getInstance().addCart(rtnCartId,rtnCart);
+        return rtnCartId;
     }
 
-    public String addOffer(String userId, String cartId, String offerId) throws Exception{
-        return null;
+    public String mergeCart(String userId, String cartId, Cart fromCart) throws Exception{
+        return mergeCart(userId, cartId, fromCart, 200);
     }
 
-    public String updateOffer(String userId, String cartId, String offerItemId) throws Exception{
-        return null;
-    }
+    public String mergeCart(String userId, String cartId, Cart fromCart, int expectedResponseCode) throws Exception{
+        String requestBody = new JsonMessageTranscoder().encode(fromCart);
 
-    public String removeOffer(String userId, String cartId, String offerItemId) throws Exception{
-        return null;
-    }
+        String cartEndpointUrl = cartUrl + "users/" + userId + "/carts/" + cartId + "/merge";
 
-    public String addCoupon(String userId, String cartId, String CoupleId) throws Exception{
-        return null;
-    }
+        Request req = new RequestBuilder("POST")
+                .setUrl(cartEndpointUrl)
+                .addHeader(RestUrl.requestHeaderName, RestUrl.requestHeaderValue)
+                .setBody(requestBody)
+                .build();
 
-    public String removeCouple(String userId, String cartId, String coupleItemID) throws Exception{
-        return null;
+        logger.LogRequest(req);
+        Future future = asyncClient.prepareRequest(req).execute();
+        NettyResponse nettyResponse = (NettyResponse) future.get();
+        logger.LogResponse(nettyResponse);
+        Assert.assertEquals(expectedResponseCode,nettyResponse.getStatusCode());
+        Cart rtnCart = new JsonMessageTranscoder().decode(new TypeReference<Cart>() {},
+                nettyResponse.getResponseBody());
+        String rtnCartId = IdConverter.idToHexString(rtnCart.getId());
+        Master.getInstance().addCart(rtnCartId,rtnCart);
+        return rtnCartId;
     }
 }
