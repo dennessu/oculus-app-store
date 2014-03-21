@@ -64,6 +64,10 @@
         <property name="sessionFactoryWrapper" ref="sessionFactoryWrapper" />
     </bean>
 
+    <bean id="entityIndexDAOBase" class="com.junbo.identity.data.dao.impl.postgresql.ShardedDAOBase" abstract="true">
+        <property name="sessionFactoryWrapper" ref="indexSessionFactoryWrapper" />
+    </bean>
+
     <bean id="userDAOTarget" class="com.junbo.identity.data.dao.impl.postgresql.UserDAOImpl" parent="entityDAOBase" />
     <bean id="userDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
         <property name="daoInterface" value="com.junbo.identity.data.dao.UserDAO"/>
@@ -142,16 +146,17 @@
         <property name="daoTarget" ref="userTosDAOTarget" />
     </bean>
 
-    <bean id="userNameReverseIndexDAOTarget" class="com.junbo.identity.data.dao.impl.postgresql.UserNameReverseIndexDAOImpl" parent="entityDAOBase" />
-    <bean id="userNameReverseIndexDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
-        <property name="daoInterface" value="com.junbo.identity.data.dao.UserNameReverseIndexDAO" />
-        <property name="daoTarget" ref="userNameReverseIndexDAOTarget" />
-    </bean>
-
     <bean id="userNameDAOTarget" class="com.junbo.identity.data.dao.impl.postgresql.UserNameDAOImpl" parent="entityDAOBase"/>
     <bean id="userNameDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
         <property name="daoInterface" value="com.junbo.identity.data.dao.UserNameDAO" />
         <property name="daoTarget" ref="userNameDAOTarget" />
+    </bean>
+
+    <!-- identity reverse index -->
+    <bean id="userNameReverseIndexDAOTarget" class="com.junbo.identity.data.dao.impl.postgresql.UserNameReverseIndexDAOImpl" parent="entityIndexDAOBase" />
+    <bean id="userNameReverseIndexDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
+        <property name="daoInterface" value="com.junbo.identity.data.dao.UserNameReverseIndexDAO" />
+        <property name="daoTarget" ref="userNameReverseIndexDAOTarget" />
     </bean>
 
     <bean id="groupRepository" class="com.junbo.identity.data.repository.impl.GroupRepositoryImpl" />

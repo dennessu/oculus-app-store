@@ -77,7 +77,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
     @Autowired
     private UserTosRepository userTosRepository;
 
-    @Test(enabled = false)
+    @Test
     public void testUserRepository() {
         User user = new User();
         user.setActive(true);
@@ -104,17 +104,15 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         User newUser = userRepository.get(user.getId());
         Assert.assertEquals(user.getBirthday(), newUser.getBirthday());
 
-        String oldValue = user.getBirthday();
         String newValue = UUID.randomUUID().toString();
         newUser.setBirthday(newValue);
         newUser = userRepository.update(newUser);
         Assert.assertEquals(newUser.getBirthday(), newValue);
 
-        // todo:    Enable this test
-        //UserListOption getOption = new UserListOption();
-        //getOption.setUserName(newUser.getUserName());
-        //List<User> userList = userRepository.search(getOption);
-        //Assert.assertNotEquals(userList.size(), 0);
+        UserListOption getOption = new UserListOption();
+        getOption.setUserName(newUser.getUserName());
+        List<User> userList = userRepository.search(getOption);
+        Assert.assertNotEquals(userList.size(), 0);
     }
 
     @Test(enabled = false)
