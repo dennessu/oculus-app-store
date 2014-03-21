@@ -59,7 +59,7 @@ public class MegaGatewayImpl implements MegaGateway {
     @Override
     public Long createEntitlementDef(EntitlementDefinition def) {
         try {
-            return entitlementDefResource.postEntitlementDefinition(def).wrapped().get().getEntitlementDefinitionId();
+            return entitlementDefResource.postEntitlementDefinition(def).wrapped().get().getEntitlementDefId();
         } catch (Exception e) {
             throw new RuntimeException("Error occurred during calling [Catalog] component service.", e);
         }
