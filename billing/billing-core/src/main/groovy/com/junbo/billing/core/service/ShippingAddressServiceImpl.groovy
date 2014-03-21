@@ -99,5 +99,11 @@ class ShippingAddressServiceImpl implements ShippingAddressService {
         if (address.postalCode == null) {
             throw AppErrors.INSTANCE.fieldMissingValue('postalCode').exception()
         }
+        if (address.firstName == null) {
+            throw AppErrors.INSTANCE.fieldMissingValue('firstName').exception()
+        }
+        if (address.lastName == null) {
+            throw AppErrors.INSTANCE.fieldMissingValue('lastName').exception()
+        }
     }
 }
