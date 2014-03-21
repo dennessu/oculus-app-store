@@ -28,7 +28,6 @@ public class OfferServiceTest extends BaseTest {
         Offer offer = new Offer();
         offer.setName("testName");
         offer.setStatus("testStatus");
-        offer.setRevision(1);
         offer.setOwnerId(generateId());
         return offer;
     }

@@ -10,7 +10,7 @@ package com.junbo.catalog.common.exception;
  * Exception indicates entity cannot be found.
  */
 public class NotFoundException extends CatalogException{
-    public NotFoundException(String entityType, Long id) {
-        super(entityType + " " + id + " does not exist.");
+    public NotFoundException(String message) {
+        super(message);
     }
 }

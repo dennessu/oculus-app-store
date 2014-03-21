@@ -8,7 +8,6 @@ package com.junbo.catalog.db.dao;
 
 import com.junbo.catalog.db.BaseTest;
 import com.junbo.catalog.db.entity.AttributeEntity;
-import com.junbo.catalog.db.entity.OfferEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.Test;
