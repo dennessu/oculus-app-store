@@ -104,6 +104,12 @@
         <property name="daoTarget" ref="userGroupDAOTarget" />
     </bean>
 
+    <bean id="groupUserDAOTarget" class="com.junbo.identity.data.dao.impl.postgresql.GroupUserDAOImpl" parent="entityDAOBase"/>
+    <bean id="groupUserDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
+        <property name="daoInterface" value="com.junbo.identity.data.dao.GroupUserDAO" />
+        <property name="daoTarget" ref="groupUserDAOTarget" />
+    </bean>
+
     <bean id="userLoginAttemptDAOTarget" class="com.junbo.identity.data.dao.impl.postgresql.UserLoginAttemptDAOImpl" parent="entityDAOBase"/>
     <bean id="userLoginAttemptDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
         <property name="daoInterface" value="com.junbo.identity.data.dao.UserLoginAttemptDAO" />
