@@ -80,6 +80,10 @@ class BalanceServiceImpl implements BalanceService {
     Promise<Balance> quoteBalance(Balance balance) {
 
         validateBalanceItem(balance)
+        validateUser(balance)
+        validateCurrency(balance)
+        validateCountry(balance)
+        validateBalanceItem(balance)
 
         calculateTax(balance)
         computeTotal(balance)
