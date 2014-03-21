@@ -143,18 +143,17 @@ public class CatalogGatewayImpl implements CatalogGateway {
     protected Map<String, Object> getEntitlementDef(Action action) {
         Map<String, Object> result = new HashMap<>();
 
-        String entitlementDefId = action.getProperties().get(Constant.ENTITLEMENT_DEF_ID);
+        Long entitlementDefId = action.getEntitlementDefId();
         if (entitlementDefId == null) {
             return result;
         }
 
         try {
             EntitlementDefinition entitlementDef = entitlementDefClient.getEntitlementDefinition(
-                    new EntitlementDefinitionId(Long.parseLong(entitlementDefId))).wrapped().get();
+                    new EntitlementDefinitionId(entitlementDefId)).wrapped().get();
 
             if (entitlementDef == null) {
-                throw AppErrors.INSTANCE.notFound("EntitlementDefinition",
-                        Long.parseLong(entitlementDefId)).exception();
+                throw AppErrors.INSTANCE.notFound("EntitlementDefinition", entitlementDefId).exception();
             }
 
             result.put(Constant.ENTITLEMENT_GROUP, entitlementDef.getGroup());

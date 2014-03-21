@@ -124,6 +124,11 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
 
     private Long prepareEntitlementDef() {
         EntitlementDefinition def = new EntitlementDefinition();
+        def.setGroup("TEST_GROUP");
+        def.setTag("TEST_TAG");
+        def.setType("DOWNLOAD");
+        def.setDeveloperId(12345L);
+
         return megaGateway.createEntitlementDef(def);
     }
 
