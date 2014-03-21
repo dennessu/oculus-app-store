@@ -45,7 +45,8 @@ public class EntitlementDefinitionServiceImpl implements EntitlementDefinitionSe
     public List<EntitlementDefinition> getEntitlementDefinitions(Long developerId, String group, String tag,
                                                                  String type, PageableGetOptions pageMetadata) {
         if (developerId == null) {
-            throw new CatalogException("missing developerId");  //TODO: change to specified exception later
+            //TODO: change to specified exception later
+            throw new CatalogException("missing developerId");
         }
         checkDeveloper(developerId);
         return entitlementDefinitionRepository.getByParams(developerId, group, tag, type, pageMetadata);

@@ -49,10 +49,20 @@ class AvalaraFacadeImpl implements TaxFacade {
     MessageTranscoder transcoder
 
     @Override
-    Balance calculateTax(Balance balance, ShippingAddress shippingAddress, Address piAddress) {
+    Promise<Balance> calculateTax(Balance balance, ShippingAddress shippingAddress, Address piAddress) {
         GetTaxRequest request = generateGetTaxRequest(balance, shippingAddress, piAddress)
         GetTaxResponse response = calculateTax(request).wrapped().get()
         updateBalance(response, balance)
+    }
+
+    @Override
+    ShippingAddress validateShippingAddress(ShippingAddress shippingAddress) {
+        return null
+    }
+
+    @Override
+    Address validatePiAddress(Address address) {
+        return null
     }
 
     Balance updateBalance(GetTaxResponse response, Balance balance) {
@@ -140,14 +150,7 @@ class AvalaraFacadeImpl implements TaxFacade {
         def addresses = []
         def shipToAddress = new AvalaraAddress()
         if (shippingAddress != null) {
-            shipToAddress.addressCode = '0'
-            shipToAddress.line1 = shippingAddress.street
-            shipToAddress.line2 = shippingAddress.street1
-            shipToAddress.line3 = shippingAddress.street2
-            shipToAddress.city = shippingAddress.city
-            shipToAddress.region = shippingAddress.state
-            shipToAddress.postalCode = shippingAddress.postalCode
-            shipToAddress.country = shippingAddress.country
+            shipToAddress = getAvalaraAddress(shippingAddress)
         }
         else {
             shipToAddress.addressCode = '0'
@@ -158,6 +161,7 @@ class AvalaraFacadeImpl implements TaxFacade {
             shipToAddress.region = piAddress.state
             shipToAddress.postalCode = piAddress.postalCode
             shipToAddress.country = piAddress.country
+            shipToAddress = getAvalaraAddress(piAddress)
         }
         addresses << shipToAddress
 
@@ -186,5 +190,28 @@ class AvalaraFacadeImpl implements TaxFacade {
 
         request.lines = lines
         return request
+    }
+
+    AvalaraAddress getAvalaraAddress(ShippingAddress shippingAddress) {
+        def address = new AvalaraAddress()
+        if (shippingAddress.addressId != null) {
+            address.addressCode = shippingAddress.addressId.value
+        }
+        else {
+            address.addressCode = '0'
+        }
+        address.line1 = shippingAddress.street
+        address.line2 = shippingAddress.street1
+        address.line3 = shippingAddress.street2
+        address.city = shippingAddress.city
+        address.region = shippingAddress.state
+        address.postalCode = shippingAddress.postalCode
+        address.country = shippingAddress.country
+
+        return address
+    }
+
+    AvalaraAddress getAvalaraAddress(Address piAddress) {
+
     }
 }

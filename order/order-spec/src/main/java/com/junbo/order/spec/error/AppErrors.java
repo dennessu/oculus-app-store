@@ -50,8 +50,8 @@ public interface AppErrors {
     AppError orderItemNotFound();
 
     @ErrorDef(httpStatusCode = 404, code = UserErrorCode.USER_NOT_FOUND,
-            description = "User not found")
-    AppError userNotFound();
+            description = "User not found {0}")
+    AppError userNotFound(String userId);
 
     @ErrorDef(httpStatusCode = 500, code = UserErrorCode.USER_STATUS_INVALID,
             description = "User status invalid")
@@ -92,6 +92,26 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 500, code = CatalogErrorCode.CATALOG_CONNECTION_ERROR,
             description = "Catalog service connection error")
     AppError catalogConnectionError();
+
+    @ErrorDef(httpStatusCode = 500, code = ErrorCode.UNEXPECTED_ERROR,
+            description = "Unexpected Error")
+    AppError unexpectedError();
+
+    @ErrorDef(httpStatusCode = 403, code = RatingErrorCode.RATING_RESULT_INVALID,
+            description = "Rating result invalid")
+    AppError ratingResultInvalid();
+
+    @ErrorDef(httpStatusCode = 500, code = RatingErrorCode.RATING_CONNECTION_ERROR,
+            description = "Rating connection error")
+    AppError ratingConnectionError();
+
+    @ErrorDef(httpStatusCode = 500, code = BillingErrorCode.BILLING_CONNECTION_ERROR,
+            description = "Billing connection error")
+    AppError billingConnectionError();
+
+    @ErrorDef(httpStatusCode = 404, code = BillingErrorCode.BALANCE_NOT_FOUND,
+            description = "Balance not found")
+    AppError balanceNotFound();
 
     @ErrorDef(httpStatusCode = 404, code = ErrorCode.ORDER_EVENT_NOT_FOUND,
             description = "Order event not found")
