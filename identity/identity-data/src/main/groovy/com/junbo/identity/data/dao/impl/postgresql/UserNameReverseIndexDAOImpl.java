@@ -33,7 +33,7 @@ public class UserNameReverseIndexDAOImpl extends ShardedDAOBase implements UserN
 
     @Override
     public UserNameReverseIndexEntity get(@SeedParam String userName) {
-        String query = "select * from user_name_reverse_lookup where user_name = :userName";
+        String query = "select * from user_name_reverse_index where user_name = :userName";
         List<UserNameReverseIndexEntity> entities =
                 currentSession().createSQLQuery(query).addEntity(UserNameReverseIndexEntity.class)
                         .setParameter("userName", userName).list();

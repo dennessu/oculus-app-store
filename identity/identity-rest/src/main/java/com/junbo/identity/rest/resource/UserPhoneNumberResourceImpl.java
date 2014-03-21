@@ -9,8 +9,8 @@ import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserPhoneNumberId;
 import com.junbo.identity.spec.model.common.ResultList;
 import com.junbo.identity.spec.model.users.UserPhoneNumber;
-import com.junbo.identity.spec.options.UserPhoneNumberGetOptions;
-import com.junbo.identity.spec.options.UserPhoneNumberListOptions;
+import com.junbo.identity.spec.options.entity.UserPhoneNumberGetOptions;
+import com.junbo.identity.spec.options.list.UserPhoneNumberListOption;
 import com.junbo.identity.spec.resource.UserPhoneNumberResource;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.stereotype.Component;
@@ -54,7 +54,7 @@ public class UserPhoneNumberResourceImpl implements UserPhoneNumberResource {
     }
 
     @Override
-    public Promise<ResultList<UserPhoneNumber>> list(UserId userId, @BeanParam UserPhoneNumberListOptions listOptions) {
+    public Promise<ResultList<UserPhoneNumber>> list(UserId userId, @BeanParam UserPhoneNumberListOption listOptions) {
         return null;
     }
 }

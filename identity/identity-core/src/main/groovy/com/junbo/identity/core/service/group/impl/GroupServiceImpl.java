@@ -9,7 +9,7 @@ import com.junbo.common.id.GroupId;
 import com.junbo.identity.data.repository.GroupRepository;
 import com.junbo.identity.core.service.group.GroupService;
 import com.junbo.identity.core.service.validator.GroupValidator;
-import com.junbo.identity.spec.model.options.GroupGetOption;
+import com.junbo.identity.spec.options.list.GroupListOptions;
 import com.junbo.identity.spec.model.users.Group;
 import com.junbo.sharding.IdGeneratorFacade;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,7 +65,7 @@ public class GroupServiceImpl implements GroupService{
     }
 
     @Override
-    public List<Group> search(GroupGetOption getOption) {
-        return groupRepository.search(getOption == null ? new GroupGetOption() : getOption);
+    public List<Group> search(GroupListOptions getOption) {
+        return groupRepository.search(getOption == null ? new GroupListOptions() : getOption);
     }
 }

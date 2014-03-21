@@ -5,7 +5,7 @@
  */
 package com.junbo.identity.core.service.user;
 
-import com.junbo.identity.spec.model.options.UserAuthenticatorGetOption;
+import com.junbo.identity.spec.options.list.UserAuthenticatorListOption;
 import com.junbo.identity.spec.model.users.UserAuthenticator;
 import java.util.List;
 
@@ -16,6 +16,6 @@ public interface UserAuthenticatorService {
     UserAuthenticator save(Long userId, UserAuthenticator userFederation);
     UserAuthenticator update(Long userId, Long federationId, UserAuthenticator userFederation);
     UserAuthenticator get(Long userId, Long federationId);
-    List<UserAuthenticator> search(UserAuthenticatorGetOption getOption);
+    List<UserAuthenticator> search(UserAuthenticatorListOption getOption);
     void delete(Long userId, Long federationId);
 }

@@ -6,7 +6,7 @@
 package com.junbo.identity.data.dao;
 
 import com.junbo.identity.data.entity.domaindata.SecurityQuestionEntity;
-import com.junbo.identity.spec.options.SecurityQuestionListOptions;
+import com.junbo.identity.spec.options.list.SecurityQuestionListOptions;
 
 import java.util.List;
 

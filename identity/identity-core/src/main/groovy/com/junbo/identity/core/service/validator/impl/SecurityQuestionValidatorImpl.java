@@ -9,7 +9,7 @@ import com.junbo.common.id.SecurityQuestionId;
 import com.junbo.identity.core.service.validator.SecurityQuestionValidator;
 import com.junbo.identity.spec.error.AppErrors;
 import com.junbo.identity.spec.model.domaindata.SecurityQuestion;
-import com.junbo.identity.spec.options.SecurityQuestionListOptions;
+import com.junbo.identity.spec.options.list.SecurityQuestionListOptions;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 

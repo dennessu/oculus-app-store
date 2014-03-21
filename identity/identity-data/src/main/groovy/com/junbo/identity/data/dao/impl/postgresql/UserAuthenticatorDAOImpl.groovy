@@ -6,7 +6,8 @@
 package com.junbo.identity.data.dao.impl.postgresql
 import com.junbo.identity.data.dao.UserAuthenticatorDAO
 import com.junbo.identity.data.entity.user.UserAuthenticatorEntity
-import com.junbo.identity.spec.model.options.UserAuthenticatorGetOption
+import com.junbo.identity.spec.options.list.UserAuthenticatorListOption
+
 /**
  * Implementation for UserAuthenticatorDAO.
  */
@@ -32,7 +33,7 @@ class UserAuthenticatorDAOImpl extends ShardedDAOBase implements UserAuthenticat
     }
 
     @Override
-    List<UserAuthenticatorEntity> search(Long userId, UserAuthenticatorGetOption getOption) {
+    List<UserAuthenticatorEntity> search(Long userId, UserAuthenticatorListOption getOption) {
         String query = 'select * from user_authenticator where user_id =  ' + getOption.userId.value +
                 (getOption.type == null ? '' : ' and type = ' + getOption.type) +
                 (getOption.value == null ? '' : ' and value like \'%' + getOption.value + '%\'') +

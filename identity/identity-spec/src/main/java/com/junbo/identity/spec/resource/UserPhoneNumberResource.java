@@ -9,8 +9,8 @@ import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserPhoneNumberId;
 import com.junbo.identity.spec.model.common.ResultList;
 import com.junbo.identity.spec.model.users.UserPhoneNumber;
-import com.junbo.identity.spec.options.UserPhoneNumberGetOptions;
-import com.junbo.identity.spec.options.UserPhoneNumberListOptions;
+import com.junbo.identity.spec.options.entity.UserPhoneNumberGetOptions;
+import com.junbo.identity.spec.options.list.UserPhoneNumberListOption;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 
@@ -57,5 +57,5 @@ public interface UserPhoneNumberResource {
     @GET
     @Path("/")
     Promise<ResultList<UserPhoneNumber>> list(@PathParam("userId") UserId userId,
-                                              @BeanParam UserPhoneNumberListOptions listOptions);
+                                              @BeanParam UserPhoneNumberListOption listOptions);
 }

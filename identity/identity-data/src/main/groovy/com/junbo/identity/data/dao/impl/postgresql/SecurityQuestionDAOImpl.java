@@ -8,7 +8,7 @@ package com.junbo.identity.data.dao.impl.postgresql;
 import com.junbo.common.id.UserId;
 import com.junbo.identity.data.dao.SecurityQuestionDAO;
 import com.junbo.identity.data.entity.domaindata.SecurityQuestionEntity;
-import com.junbo.identity.spec.options.SecurityQuestionListOptions;
+import com.junbo.identity.spec.options.list.SecurityQuestionListOptions;
 import com.junbo.sharding.IdGeneratorFacade;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;

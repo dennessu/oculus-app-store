@@ -9,8 +9,8 @@ import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserTosId;
 import com.junbo.identity.spec.model.common.ResultList;
 import com.junbo.identity.spec.model.users.UserTos;
-import com.junbo.identity.spec.options.UserTosGetOptions;
-import com.junbo.identity.spec.options.UserTosListOptions;
+import com.junbo.identity.spec.options.entity.UserTosGetOptions;
+import com.junbo.identity.spec.options.list.UserTosListOption;
 import com.junbo.identity.spec.resource.UserTosResource;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.stereotype.Component;
@@ -51,7 +51,7 @@ public class UserTosResourceImpl implements UserTosResource {
     }
 
     @Override
-    public Promise<ResultList<UserTos>> list(UserId userId, @BeanParam UserTosListOptions listOptions) {
+    public Promise<ResultList<UserTos>> list(UserId userId, @BeanParam UserTosListOption listOptions) {
         return null;
     }
 }

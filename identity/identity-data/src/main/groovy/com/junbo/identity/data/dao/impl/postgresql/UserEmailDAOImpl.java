@@ -7,7 +7,7 @@ package com.junbo.identity.data.dao.impl.postgresql;
 
 import com.junbo.identity.data.dao.UserEmailDAO;
 import com.junbo.identity.data.entity.user.UserEmailEntity;
-import com.junbo.identity.spec.model.options.UserEmailGetOption;
+import com.junbo.identity.spec.options.list.UserEmailListOption;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -26,7 +26,7 @@ public class UserEmailDAOImpl extends ShardedDAOBase implements UserEmailDAO {
     }
 
     @Override
-    public List<UserEmailEntity> search(UserEmailGetOption getOption) {
+    public List<UserEmailEntity> search(UserEmailListOption getOption) {
         String query = "select * from user_email where user_id = " + (getOption.getUserId().getValue()) +
             (StringUtils.isEmpty(getOption.getType()) ? "" : (" and type = " + getOption.getType())) +
             (StringUtils.isEmpty(getOption.getValue()) ? "" : (" and value like \'%") + getOption.getValue() + "%\'") +

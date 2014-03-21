@@ -9,7 +9,7 @@ import com.junbo.identity.data.dao.UserDeviceDAO
 import com.junbo.identity.data.entity.user.UserDeviceEntity
 import com.junbo.identity.data.mapper.ModelMapper
 import com.junbo.identity.data.repository.UserDeviceRepository
-import com.junbo.identity.spec.model.options.UserDeviceGetOption
+import com.junbo.identity.spec.options.list.UserDeviceListOption
 import com.junbo.identity.spec.model.users.UserDevice
 import com.junbo.oom.core.MappingContext
 import org.springframework.beans.factory.annotation.Autowired
@@ -49,7 +49,7 @@ class UserDeviceRepositoryImpl implements UserDeviceRepository {
     }
 
     @Override
-    List<UserDevice> search(UserDeviceGetOption getOption) {
+    List<UserDevice> search(UserDeviceListOption getOption) {
         def result = []
         def entities = userDeviceDAO.search(getOption.userId.value, getOption)
 

@@ -6,7 +6,7 @@
 package com.junbo.identity.data.dao
 
 import com.junbo.identity.data.entity.group.GroupEntity
-import com.junbo.identity.spec.model.options.GroupGetOption
+import com.junbo.identity.spec.options.list.GroupListOptions
 import com.junbo.sharding.annotations.SeedParam
 
 /**
@@ -18,5 +18,5 @@ interface GroupDAO {
     GroupEntity update(GroupEntity group)
 
     // Todo:    need to build reverse lookup table.
-    List<GroupEntity> search(GroupGetOption getOption)
+    List<GroupEntity> search(GroupListOptions getOption)
 }

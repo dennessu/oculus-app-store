@@ -9,8 +9,8 @@ import com.junbo.common.id.UserEmailId;
 import com.junbo.common.id.UserId;
 import com.junbo.identity.spec.model.common.ResultList;
 import com.junbo.identity.spec.model.users.UserEmail;
-import com.junbo.identity.spec.options.UserEmailGetOptions;
-import com.junbo.identity.spec.options.UserEmailListOptions;
+import com.junbo.identity.spec.options.entity.UserEmailGetOptions;
+import com.junbo.identity.spec.options.list.UserEmailListOption;
 import com.junbo.identity.spec.resource.UserEmailResource;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.stereotype.Component;
@@ -52,12 +52,12 @@ public class UserEmailResourceImpl implements UserEmailResource {
     }
 
     @Override
-    public Promise<ResultList<UserEmail>> list(UserId userId, @BeanParam UserEmailListOptions listOptions) {
+    public Promise<ResultList<UserEmail>> list(UserId userId, @BeanParam UserEmailListOption listOptions) {
         return null;
     }
 
     @Override
-    public Promise<ResultList<UserEmail>> list(@BeanParam UserEmailListOptions listOptions) {
+    public Promise<ResultList<UserEmail>> list(@BeanParam UserEmailListOption listOptions) {
         return null;
     }
 }

@@ -7,7 +7,7 @@ package com.junbo.identity.data.dao.impl.postgresql;
 
 import com.junbo.identity.data.dao.UserPinDAO;
 import com.junbo.identity.data.entity.user.UserPinEntity;
-import com.junbo.identity.spec.model.options.UserPinGetOption;
+import com.junbo.identity.spec.options.list.UserPinListOption;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -37,7 +37,7 @@ public class UserPinDAOImpl extends ShardedDAOBase implements UserPinDAO {
     }
 
     @Override
-    public List<UserPinEntity> search(Long userId, UserPinGetOption getOption) {
+    public List<UserPinEntity> search(Long userId, UserPinListOption getOption) {
         String query = "select * from user_pin where user_id = " + (getOption.getUserId().getValue()) +
                 (" order by id limit " + (getOption.getLimit() == null ? "ALL" : getOption.getLimit().toString())) +
                 " offset " + (getOption.getOffset() == null ? "0" : getOption.getOffset().toString());

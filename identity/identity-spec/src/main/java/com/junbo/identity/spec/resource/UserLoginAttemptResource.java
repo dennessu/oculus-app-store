@@ -10,8 +10,8 @@ import com.junbo.common.id.UserLoginAttemptId;
 import com.junbo.identity.spec.model.common.ResultList;
 import com.junbo.identity.spec.model.users.UserLoginAttempt;
 import com.junbo.identity.spec.model.users.User;
-import com.junbo.identity.spec.options.LoginAttemptGetOptions;
-import com.junbo.identity.spec.options.LoginAttemptListOptions;
+import com.junbo.identity.spec.options.entity.LoginAttemptGetOptions;
+import com.junbo.identity.spec.options.list.LoginAttemptListOptions;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 

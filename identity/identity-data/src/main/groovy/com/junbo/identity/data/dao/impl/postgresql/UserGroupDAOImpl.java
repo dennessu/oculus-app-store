@@ -7,7 +7,7 @@ package com.junbo.identity.data.dao.impl.postgresql;
 
 import com.junbo.identity.data.dao.UserGroupDAO;
 import com.junbo.identity.data.entity.user.UserGroupEntity;
-import com.junbo.identity.spec.model.options.UserGroupGetOption;
+import com.junbo.identity.spec.options.list.UserGroupListOption;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -38,7 +38,7 @@ public class UserGroupDAOImpl extends ShardedDAOBase implements UserGroupDAO {
     }
 
     @Override
-    public List<UserGroupEntity> search(Long userId, UserGroupGetOption getOption) {
+    public List<UserGroupEntity> search(Long userId, UserGroupListOption getOption) {
         String query = "select * from user_group where user_id = " + (getOption.getUserId().getValue()) +
                 (getOption.getGroupId() == null ? "" : (" and group_id = " + getOption.getGroupId().getValue())) +
                 (" order by id limit " + (getOption.getLimit() == null ? "ALL" : getOption.getLimit().toString())) +

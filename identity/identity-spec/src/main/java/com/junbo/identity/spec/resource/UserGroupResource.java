@@ -9,8 +9,8 @@ import com.junbo.common.id.UserGroupId;
 import com.junbo.common.id.UserId;
 import com.junbo.identity.spec.model.common.ResultList;
 import com.junbo.identity.spec.model.users.UserGroup;
-import com.junbo.identity.spec.options.UserGroupGetOptions;
-import com.junbo.identity.spec.options.UserGroupListOptions;
+import com.junbo.identity.spec.options.entity.UserGroupGetOptions;
+import com.junbo.identity.spec.options.list.UserGroupListOption;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 
@@ -57,6 +57,6 @@ public interface UserGroupResource {
     @GET
     @Path("/{userId}/groups")
     Promise<ResultList<UserGroup>> list(@PathParam("userId") UserId userId,
-                                        @BeanParam UserGroupListOptions listOptions);
+                                        @BeanParam UserGroupListOption listOptions);
 
 }

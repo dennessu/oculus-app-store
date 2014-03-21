@@ -7,7 +7,7 @@ package com.junbo.identity.data.dao.impl.postgresql;
 
 import com.junbo.identity.data.dao.UserLoginAttemptDAO;
 import com.junbo.identity.data.entity.user.UserLoginAttemptEntity;
-import com.junbo.identity.spec.model.options.UserLoginAttemptGetOption;
+import com.junbo.identity.spec.options.list.LoginAttemptListOption;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -39,7 +39,7 @@ public class UserLoginAttemptDAOImpl extends ShardedDAOBase implements UserLogin
     }
 
     @Override
-    public List<UserLoginAttemptEntity> search(Long userId, UserLoginAttemptGetOption getOption) {
+    public List<UserLoginAttemptEntity> search(Long userId, LoginAttemptListOption getOption) {
         String query = "select * from user_login_attempt where user_id = " + (getOption.getUserId().getValue()) +
     (StringUtils.isEmpty(getOption.getType()) ? "" : (" and type = " + getOption.getType())) +
     (StringUtils.isEmpty(getOption.getIpAddress()) ? "" : (" and ip_address = \'" + getOption.getIpAddress())) + "\'" +

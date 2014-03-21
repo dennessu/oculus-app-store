@@ -9,8 +9,8 @@ import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserTosId;
 import com.junbo.identity.spec.model.common.ResultList;
 import com.junbo.identity.spec.model.users.UserTos;
-import com.junbo.identity.spec.options.UserTosGetOptions;
-import com.junbo.identity.spec.options.UserTosListOptions;
+import com.junbo.identity.spec.options.entity.UserTosGetOptions;
+import com.junbo.identity.spec.options.list.UserTosListOption;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 
@@ -57,5 +57,5 @@ public interface UserTosResource {
     @GET
     @Path("/")
     Promise<ResultList<UserTos>> list(@PathParam("userId") UserId userId,
-                                      @BeanParam UserTosListOptions listOptions);
+                                      @BeanParam UserTosListOption listOptions);
 }

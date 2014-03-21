@@ -97,7 +97,7 @@ public class ResultListInterceptor implements ContainerResponseFilter {
     private String replaceExistsOrAppend(String url, Integer cursor, Integer count) {
         Integer nextCursor = getNextCursor(cursor, count);
         String nextURL = url;
-        String str[] = url.split(CURSOR_FORMAT);
+        String str[ ] = url.split(CURSOR_FORMAT);
         if(str.length != 2) {
             //no cursor information in current url
             // Append mode

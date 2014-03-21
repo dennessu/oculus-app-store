@@ -7,7 +7,7 @@ package com.junbo.identity.data.dao.impl.postgresql;
 
 import com.junbo.identity.data.dao.UserSecurityQuestionDAO;
 import com.junbo.identity.data.entity.user.UserSecurityQuestionEntity;
-import com.junbo.identity.spec.model.options.UserSecurityQuestionGetOption;
+import com.junbo.identity.spec.options.list.UserSecurityQuestionListOption;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -38,7 +38,7 @@ public class UserSecurityQuestionDAOImpl extends ShardedDAOBase implements UserS
     }
 
     @Override
-    public List<UserSecurityQuestionEntity> search(Long userId, UserSecurityQuestionGetOption getOption) {
+    public List<UserSecurityQuestionEntity> search(Long userId, UserSecurityQuestionListOption getOption) {
         String query = "select * from user_security_question where user_id = " + getOption.getUserId().getValue() +
             (getOption.getSecurityQuestionId() == null ? "" :
                     (" and security_question_id = " + getOption.getSecurityQuestionId().getValue())) +

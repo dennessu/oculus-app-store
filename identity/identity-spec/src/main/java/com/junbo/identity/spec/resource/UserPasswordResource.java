@@ -10,8 +10,8 @@ import com.junbo.common.id.UserPasswordId;
 import com.junbo.identity.spec.model.common.ResultList;
 import com.junbo.identity.spec.model.users.User;
 import com.junbo.identity.spec.model.users.UserPassword;
-import com.junbo.identity.spec.options.UserPasswordGetOptions;
-import com.junbo.identity.spec.options.UserPasswordListOptions;
+import com.junbo.identity.spec.options.entity.UserPasswordGetOptions;
+import com.junbo.identity.spec.options.list.UserPasswordListOption;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 
@@ -41,6 +41,6 @@ public interface UserPasswordResource {
     @GET
     @Path("/")
     Promise<ResultList<UserPassword>> list(@PathParam("userId") UserId userId,
-                                           @BeanParam UserPasswordListOptions listOptions);
+                                           @BeanParam UserPasswordListOption listOptions);
 
 }

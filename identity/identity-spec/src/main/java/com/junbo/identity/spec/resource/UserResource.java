@@ -8,8 +8,8 @@ package com.junbo.identity.spec.resource;
 import com.junbo.common.id.UserId;
 import com.junbo.identity.spec.model.common.ResultList;
 import com.junbo.identity.spec.model.users.User;
-import com.junbo.identity.spec.options.UserGetOptions;
-import com.junbo.identity.spec.options.UserListOptions;
+import com.junbo.identity.spec.options.entity.UserGetOptions;
+import com.junbo.identity.spec.options.list.UserListOption;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -48,5 +48,5 @@ public interface UserResource {
     @ApiOperation("Get or search users")
     @GET
     @Path("/")
-    Promise<ResultList<User>> list(@BeanParam UserListOptions listOptions);
+    Promise<ResultList<User>> list(@BeanParam UserListOption listOptions);
 }

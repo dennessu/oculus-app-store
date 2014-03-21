@@ -9,8 +9,8 @@ import com.junbo.common.id.UserGroupId;
 import com.junbo.common.id.UserId;
 import com.junbo.identity.spec.model.common.ResultList;
 import com.junbo.identity.spec.model.users.UserGroup;
-import com.junbo.identity.spec.options.UserGroupGetOptions;
-import com.junbo.identity.spec.options.UserGroupListOptions;
+import com.junbo.identity.spec.options.entity.UserGroupGetOptions;
+import com.junbo.identity.spec.options.list.UserGroupListOption;
 import com.junbo.identity.spec.resource.UserGroupResource;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.stereotype.Component;
@@ -51,7 +51,7 @@ public class UserGroupResourceImpl implements UserGroupResource {
     }
 
     @Override
-    public Promise<ResultList<UserGroup>> list(UserId userId, @BeanParam UserGroupListOptions listOptions) {
+    public Promise<ResultList<UserGroup>> list(UserId userId, @BeanParam UserGroupListOption listOptions) {
         return null;
     }
 }

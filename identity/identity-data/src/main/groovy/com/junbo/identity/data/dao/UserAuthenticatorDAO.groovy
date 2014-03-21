@@ -6,7 +6,7 @@
 package com.junbo.identity.data.dao
 
 import com.junbo.identity.data.entity.user.UserAuthenticatorEntity
-import com.junbo.identity.spec.model.options.UserAuthenticatorGetOption
+import com.junbo.identity.spec.options.list.UserAuthenticatorListOption
 import com.junbo.sharding.annotations.SeedParam
 
 /**
@@ -22,7 +22,7 @@ interface UserAuthenticatorDAO {
     UserAuthenticatorEntity get(@SeedParam Long id)
 
     // todo:    This need to be done by reverse index
-    List<UserAuthenticatorEntity> search(@SeedParam Long userId, UserAuthenticatorGetOption getOption)
+    List<UserAuthenticatorEntity> search(@SeedParam Long userId, UserAuthenticatorListOption getOption)
 
     void delete(@SeedParam Long id)
 }

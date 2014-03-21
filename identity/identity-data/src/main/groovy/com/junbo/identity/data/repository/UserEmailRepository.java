@@ -6,7 +6,7 @@
 package com.junbo.identity.data.repository;
 
 import com.junbo.common.id.UserEmailId;
-import com.junbo.identity.spec.model.options.UserEmailGetOption;
+import com.junbo.identity.spec.options.list.UserEmailListOption;
 import com.junbo.identity.spec.model.users.UserEmail;
 
 import java.util.List;
@@ -21,7 +21,7 @@ public interface UserEmailRepository {
 
     UserEmail get(UserEmailId id);
 
-    List<UserEmail> search(UserEmailGetOption getOption);
+    List<UserEmail> search(UserEmailListOption getOption);
 
     void delete(UserEmailId id);
 }

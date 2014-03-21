@@ -9,7 +9,7 @@ import com.junbo.common.id.UserAuthenticatorId;
 import com.junbo.identity.data.repository.UserAuthenticatorRepository;
 import com.junbo.identity.core.service.user.UserAuthenticatorService;
 import com.junbo.identity.core.service.validator.UserAuthenticatorValidator;
-import com.junbo.identity.spec.model.options.UserAuthenticatorGetOption;
+import com.junbo.identity.spec.options.list.UserAuthenticatorListOption;
 import com.junbo.identity.spec.model.users.UserAuthenticator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -48,7 +48,7 @@ public class UserAuthenticatorServiceImpl implements UserAuthenticatorService {
     }
 
     @Override
-    public List<UserAuthenticator> search(UserAuthenticatorGetOption getOption) {
+    public List<UserAuthenticator> search(UserAuthenticatorListOption getOption) {
         return userFederationRepository.search(getOption);
     }
 

@@ -10,9 +10,9 @@ import com.junbo.identity.core.service.group.GroupService;
 import com.junbo.identity.spec.model.common.ResultList;
 import com.junbo.identity.spec.model.users.Group;
 import com.junbo.identity.spec.model.users.UserGroup;
-import com.junbo.identity.spec.options.GroupGetOptions;
-import com.junbo.identity.spec.options.GroupListOptions;
-import com.junbo.identity.spec.options.UserGroupListOptions;
+import com.junbo.identity.spec.options.entity.GroupGetOptions;
+import com.junbo.identity.spec.options.list.GroupListOptions;
+import com.junbo.identity.spec.options.list.UserGroupListOption;
 import com.junbo.identity.spec.resource.GroupResource;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +56,7 @@ public class GroupResourceImpl implements GroupResource {
     }
 
     @Override
-    public Promise<ResultList<UserGroup>> listUserGroups(GroupId groupId, UserGroupListOptions listOptions) {
+    public Promise<ResultList<UserGroup>> listUserGroups(GroupId groupId, UserGroupListOption listOptions) {
         return null;
     }
 }

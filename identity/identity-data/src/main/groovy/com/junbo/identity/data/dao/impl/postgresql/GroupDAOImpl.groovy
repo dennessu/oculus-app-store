@@ -7,7 +7,8 @@
 package com.junbo.identity.data.dao.impl.postgresql
 import com.junbo.identity.data.dao.GroupDAO
 import com.junbo.identity.data.entity.group.GroupEntity
-import com.junbo.identity.spec.model.options.GroupGetOption
+import com.junbo.identity.spec.options.list.GroupListOptions
+
 /**
  * Created by liangfu on 3/14/14.
  */
@@ -34,7 +35,7 @@ class GroupDAOImpl extends ShardedDAOBase implements GroupDAO {
     }
 
     @Override
-    List<GroupEntity> search(GroupGetOption getOption) {
+    List<GroupEntity> search(GroupListOptions getOption) {
         String query = 'select * from group_entity where value like ' +
                 (getOption.value == null ? '\'%%\'' : '\'%' + getOption.value + '%\'') +
                 (' order by id limit ' + (getOption.limit == null ? 'ALL' : getOption.limit.toString())) +

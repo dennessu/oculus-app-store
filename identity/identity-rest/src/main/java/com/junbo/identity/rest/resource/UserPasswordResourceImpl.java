@@ -10,8 +10,8 @@ import com.junbo.common.id.UserPasswordId;
 import com.junbo.identity.spec.model.common.ResultList;
 import com.junbo.identity.spec.model.users.User;
 import com.junbo.identity.spec.model.users.UserPassword;
-import com.junbo.identity.spec.options.UserPasswordGetOptions;
-import com.junbo.identity.spec.options.UserPasswordListOptions;
+import com.junbo.identity.spec.options.entity.UserPasswordGetOptions;
+import com.junbo.identity.spec.options.list.UserPasswordListOption;
 import com.junbo.identity.spec.resource.UserPasswordResource;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.stereotype.Component;
@@ -38,7 +38,7 @@ public class UserPasswordResourceImpl implements UserPasswordResource {
     }
 
     @Override
-    public Promise<ResultList<UserPassword>> list(UserId userId, @BeanParam UserPasswordListOptions listOptions) {
+    public Promise<ResultList<UserPassword>> list(UserId userId, @BeanParam UserPasswordListOption listOptions) {
         return null;
     }
 }

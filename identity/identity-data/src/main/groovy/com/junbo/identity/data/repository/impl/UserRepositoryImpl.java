@@ -14,7 +14,7 @@ import com.junbo.identity.data.entity.user.UserEntity;
 import com.junbo.identity.data.entity.user.UserNameEntity;
 import com.junbo.identity.data.mapper.ModelMapper;
 import com.junbo.identity.data.repository.UserRepository;
-import com.junbo.identity.spec.model.options.UserGetOption;
+import com.junbo.identity.spec.options.list.UserListOption;
 import com.junbo.identity.spec.model.users.User;
 import com.junbo.identity.spec.model.users.UserName;
 import com.junbo.oom.core.MappingContext;
@@ -99,7 +99,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public List<User> search(UserGetOption getOption) {
+    public List<User> search(UserListOption getOption) {
         UserNameReverseIndexEntity reverseEntity = userNameReverseIndexDAO.get(getOption.getUserName());
 
         List<User> results = new ArrayList<User>();

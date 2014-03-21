@@ -10,8 +10,8 @@ import com.junbo.common.id.UserPinId;
 import com.junbo.identity.spec.model.common.ResultList;
 import com.junbo.identity.spec.model.users.User;
 import com.junbo.identity.spec.model.users.UserPin;
-import com.junbo.identity.spec.options.UserPinGetOptions;
-import com.junbo.identity.spec.options.UserPinListOptions;
+import com.junbo.identity.spec.options.entity.UserPinGetOptions;
+import com.junbo.identity.spec.options.list.UserPinListOption;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 
@@ -40,6 +40,6 @@ public interface UserPinResource {
     @GET
     @Path("/")
     Promise<ResultList<UserPin>> list(@PathParam("userId") UserId userId,
-                                      @BeanParam UserPinListOptions listOptions);
+                                      @BeanParam UserPinListOption listOptions);
 
 }

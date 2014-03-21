@@ -10,7 +10,7 @@ import com.junbo.identity.data.repository.SecurityQuestionRepository;
 import com.junbo.identity.core.service.domaindata.SecurityQuestionService;
 import com.junbo.identity.core.service.validator.SecurityQuestionValidator;
 import com.junbo.identity.spec.model.domaindata.SecurityQuestion;
-import com.junbo.identity.spec.options.SecurityQuestionListOptions;
+import com.junbo.identity.spec.options.list.SecurityQuestionListOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;

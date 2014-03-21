@@ -6,7 +6,7 @@
 package com.junbo.identity.data.repository
 
 import com.junbo.common.id.UserOptinId
-import com.junbo.identity.spec.model.options.UserOptinGetOption
+import com.junbo.identity.spec.options.list.UserOptinListOption
 import com.junbo.identity.spec.model.users.UserOptin
 
 /**
@@ -20,7 +20,7 @@ interface UserOptinRepository {
 
     UserOptin get(UserOptinId id)
 
-    List<UserOptin> search(UserOptinGetOption getOption)
+    List<UserOptin> search(UserOptinListOption getOption)
 
     void delete(UserOptinId id)
 }

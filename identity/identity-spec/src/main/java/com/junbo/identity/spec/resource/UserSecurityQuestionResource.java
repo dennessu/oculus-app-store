@@ -9,8 +9,8 @@ import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserSecurityQuestionId;
 import com.junbo.identity.spec.model.common.ResultList;
 import com.junbo.identity.spec.model.users.UserSecurityQuestion;
-import com.junbo.identity.spec.options.UserSecurityQuestionGetOptions;
-import com.junbo.identity.spec.options.UserSecurityQuestionListOptions;
+import com.junbo.identity.spec.options.entity.UserSecurityQuestionGetOptions;
+import com.junbo.identity.spec.options.list.UserSecurityQuestionListOption;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 
@@ -57,6 +57,6 @@ public interface UserSecurityQuestionResource {
     @GET
     @Path("/")
     Promise<ResultList<UserSecurityQuestion>> list(@PathParam("userId") UserId userId,
-                                  @BeanParam UserSecurityQuestionListOptions listOptions);
+                                  @BeanParam UserSecurityQuestionListOption listOptions);
 
 }

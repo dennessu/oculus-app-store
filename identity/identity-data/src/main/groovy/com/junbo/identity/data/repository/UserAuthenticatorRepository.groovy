@@ -6,7 +6,7 @@
 package com.junbo.identity.data.repository
 
 import com.junbo.common.id.UserAuthenticatorId
-import com.junbo.identity.spec.model.options.UserAuthenticatorGetOption
+import com.junbo.identity.spec.options.list.UserAuthenticatorListOption
 import com.junbo.identity.spec.model.users.UserAuthenticator
 
 /**
@@ -21,7 +21,7 @@ interface UserAuthenticatorRepository {
 
     UserAuthenticator get(UserAuthenticatorId id)
 
-    List<UserAuthenticator> search(UserAuthenticatorGetOption getOption)
+    List<UserAuthenticator> search(UserAuthenticatorListOption getOption)
 
     void delete(UserAuthenticatorId id)
 }

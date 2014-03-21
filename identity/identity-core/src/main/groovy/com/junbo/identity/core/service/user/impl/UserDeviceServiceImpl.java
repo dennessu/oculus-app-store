@@ -8,7 +8,7 @@ package com.junbo.identity.core.service.user.impl;
 import com.junbo.common.id.UserDeviceId;
 import com.junbo.identity.data.repository.UserDeviceRepository;
 import com.junbo.identity.core.service.user.UserDeviceService;
-import com.junbo.identity.spec.model.options.UserDeviceGetOption;
+import com.junbo.identity.spec.options.list.UserDeviceListOption;
 import com.junbo.identity.spec.model.users.UserDevice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -41,7 +41,7 @@ public class UserDeviceServiceImpl implements UserDeviceService {
     }
 
     @Override
-    public List<UserDevice> search(UserDeviceGetOption getOption) {
+    public List<UserDevice> search(UserDeviceListOption getOption) {
         return userDeviceRepository.search(getOption);
     }
 

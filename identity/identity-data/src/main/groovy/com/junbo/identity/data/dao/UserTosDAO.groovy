@@ -6,7 +6,7 @@
 package com.junbo.identity.data.dao
 
 import com.junbo.identity.data.entity.user.UserTosEntity
-import com.junbo.identity.spec.model.options.UserTosGetOption
+import com.junbo.identity.spec.options.list.UserTosListOption
 import com.junbo.sharding.annotations.SeedParam
 
 /**
@@ -20,7 +20,7 @@ interface UserTosDAO {
 
     UserTosEntity get(@SeedParam Long id)
 
-    List<UserTosEntity> search(@SeedParam Long userId, UserTosGetOption getOption)
+    List<UserTosEntity> search(@SeedParam Long userId, UserTosListOption getOption)
 
     void delete(@SeedParam Long id)
 }

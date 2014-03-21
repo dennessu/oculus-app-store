@@ -9,8 +9,8 @@ import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserSecurityQuestionId;
 import com.junbo.identity.spec.model.common.ResultList;
 import com.junbo.identity.spec.model.users.UserSecurityQuestion;
-import com.junbo.identity.spec.options.UserSecurityQuestionGetOptions;
-import com.junbo.identity.spec.options.UserSecurityQuestionListOptions;
+import com.junbo.identity.spec.options.entity.UserSecurityQuestionGetOptions;
+import com.junbo.identity.spec.options.list.UserSecurityQuestionListOption;
 import com.junbo.identity.spec.resource.UserSecurityQuestionResource;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.stereotype.Component;
@@ -55,7 +55,7 @@ public class UserSecurityQuestionResourceImpl implements UserSecurityQuestionRes
 
     @Override
     public Promise<ResultList<UserSecurityQuestion>> list(UserId userId,
-                                                          @BeanParam UserSecurityQuestionListOptions listOptions) {
+                                                          @BeanParam UserSecurityQuestionListOption listOptions) {
         return null;
     }
 }

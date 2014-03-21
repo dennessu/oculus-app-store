@@ -7,7 +7,7 @@ package com.junbo.identity.core.service.domaindata;
 
 import com.junbo.common.id.SecurityQuestionId;
 import com.junbo.identity.spec.model.domaindata.SecurityQuestion;
-import com.junbo.identity.spec.options.SecurityQuestionListOptions;
+import com.junbo.identity.spec.options.list.SecurityQuestionListOptions;
 
 import java.util.List;
 

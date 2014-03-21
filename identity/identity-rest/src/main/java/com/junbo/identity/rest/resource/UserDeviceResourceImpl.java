@@ -9,8 +9,8 @@ import com.junbo.common.id.UserDeviceId;
 import com.junbo.common.id.UserId;
 import com.junbo.identity.spec.model.common.ResultList;
 import com.junbo.identity.spec.model.users.UserDevice;
-import com.junbo.identity.spec.options.UserDeviceGetOptions;
-import com.junbo.identity.spec.options.UserDeviceListOptions;
+import com.junbo.identity.spec.options.entity.UserDeviceGetOptions;
+import com.junbo.identity.spec.options.list.UserDeviceListOption;
 import com.junbo.identity.spec.resource.UserDeviceResource;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.stereotype.Component;
@@ -52,7 +52,7 @@ public class UserDeviceResourceImpl implements UserDeviceResource {
     }
 
     @Override
-    public Promise<ResultList<UserDevice>> list(UserId userId, @BeanParam UserDeviceListOptions listOptions) {
+    public Promise<ResultList<UserDevice>> list(UserId userId, @BeanParam UserDeviceListOption listOptions) {
         return null;
     }
 }

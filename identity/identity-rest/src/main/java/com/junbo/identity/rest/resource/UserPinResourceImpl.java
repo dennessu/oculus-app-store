@@ -10,8 +10,8 @@ import com.junbo.common.id.UserPinId;
 import com.junbo.identity.spec.model.common.ResultList;
 import com.junbo.identity.spec.model.users.User;
 import com.junbo.identity.spec.model.users.UserPin;
-import com.junbo.identity.spec.options.UserPinGetOptions;
-import com.junbo.identity.spec.options.UserPinListOptions;
+import com.junbo.identity.spec.options.entity.UserPinGetOptions;
+import com.junbo.identity.spec.options.list.UserPinListOption;
 import com.junbo.identity.spec.resource.UserPinResource;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.stereotype.Component;
@@ -37,7 +37,7 @@ public class UserPinResourceImpl implements UserPinResource {
     }
 
     @Override
-    public Promise<ResultList<UserPin>> list(UserId userId, @BeanParam UserPinListOptions listOptions) {
+    public Promise<ResultList<UserPin>> list(UserId userId, @BeanParam UserPinListOption listOptions) {
         return null;
     }
 }

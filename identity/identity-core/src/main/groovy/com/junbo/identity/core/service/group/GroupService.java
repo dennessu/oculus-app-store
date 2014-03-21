@@ -6,7 +6,7 @@
 package com.junbo.identity.core.service.group;
 
 import com.junbo.common.id.GroupId;
-import com.junbo.identity.spec.model.options.GroupGetOption;
+import com.junbo.identity.spec.options.list.GroupListOptions;
 import com.junbo.identity.spec.model.users.Group;
 
 import java.util.List;
@@ -19,5 +19,5 @@ public interface GroupService {
     Group create(Group group);
     Group update(GroupId groupId, Group group);
     Group patch(GroupId groupId, Group group);
-    List<Group> search(GroupGetOption getOption);
+    List<Group> search(GroupListOptions getOption);
 }

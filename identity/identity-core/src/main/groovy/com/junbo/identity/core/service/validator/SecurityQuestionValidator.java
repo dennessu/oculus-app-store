@@ -7,7 +7,7 @@ package com.junbo.identity.core.service.validator;
 
 import com.junbo.common.id.SecurityQuestionId;
 import com.junbo.identity.spec.model.domaindata.SecurityQuestion;
-import com.junbo.identity.spec.options.SecurityQuestionListOptions;
+import com.junbo.identity.spec.options.list.SecurityQuestionListOptions;
 
 /**
  * Created by haomin on 14-3-19.
