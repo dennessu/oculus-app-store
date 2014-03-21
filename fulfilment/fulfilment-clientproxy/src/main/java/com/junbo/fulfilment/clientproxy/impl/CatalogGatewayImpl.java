@@ -152,6 +152,11 @@ public class CatalogGatewayImpl implements CatalogGateway {
             EntitlementDefinition entitlementDef = entitlementDefClient.getEntitlementDefinition(
                     new EntitlementDefinitionId(Long.parseLong(entitlementDefId))).wrapped().get();
 
+            if (entitlementDef == null) {
+                throw AppErrors.INSTANCE.notFound("EntitlementDefinition",
+                        Long.parseLong(entitlementDefId)).exception();
+            }
+
             result.put(Constant.ENTITLEMENT_GROUP, entitlementDef.getGroup());
             result.put(Constant.ENTITLEMENT_TAG, entitlementDef.getTag());
             result.put(Constant.ENTITLEMENT_TYPE, entitlementDef.getType());

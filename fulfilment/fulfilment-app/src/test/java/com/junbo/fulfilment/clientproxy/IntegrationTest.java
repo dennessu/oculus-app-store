@@ -1,5 +1,6 @@
 package com.junbo.fulfilment.clientproxy;
 
+import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
 import com.junbo.catalog.spec.model.offer.Action;
 import com.junbo.catalog.spec.model.offer.Event;
 import com.junbo.catalog.spec.model.offer.Offer;
@@ -121,7 +122,14 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
         }};
     }
 
+    private Long prepareEntitlementDef() {
+        EntitlementDefinition def = new EntitlementDefinition();
+        return megaGateway.createEntitlementDef(def);
+    }
+
     private Long prepareOffer() {
+        final Long entitlementDefId = prepareEntitlementDef();
+
         Offer offer = new Offer();
         offer.setName("TEST_OFFER");
         offer.setOwnerId(getRandomLong());
@@ -133,7 +141,7 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
                     add(new Action() {{
                         setType(Constant.ACTION_GRANT_ENTITLEMENT);
                         setProperties(new HashMap<String, String>() {{
-                            put(Constant.ENTITLEMENT_DEF_ID, "12345");
+                            put(Constant.ENTITLEMENT_DEF_ID, entitlementDefId + "");
                         }});
                     }});
                 }});
