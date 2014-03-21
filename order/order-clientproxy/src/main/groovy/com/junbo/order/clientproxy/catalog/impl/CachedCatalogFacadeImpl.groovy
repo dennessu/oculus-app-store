@@ -1,9 +1,8 @@
-package com.junbo.order.clientproxy.cache
+package com.junbo.order.clientproxy.catalog.impl
 
-import com.junbo.catalog.spec.model.offer.Offer
-import com.junbo.common.id.OfferId
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.catalog.CatalogFacade
+import com.junbo.order.clientproxy.model.OrderOffer
 import com.junbo.order.spec.error.AppErrors
 import groovy.transform.CompileStatic
 import net.sf.ehcache.Cache
@@ -15,7 +14,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.cache.ehcache.EhCacheCacheManager
-
 /**
  * Implementation of catalog facade with cache
  */
@@ -35,7 +33,7 @@ class CachedCatalogFacadeImpl implements CatalogFacade {
     }
 
     @Override
-    Promise<Offer> getOffer(Long offerId) {
+    Promise<OrderOffer> getOffer(Long offerId) {
 
         assert (offerId != null)
 
@@ -52,7 +50,7 @@ class CachedCatalogFacadeImpl implements CatalogFacade {
                     LOGGER.info('name=Offer_Missing_In_Cache. offerId: {}', offerId)
                 } else {
                     LOGGER.info('name=Offer_Load_From_Cache. offerId: {}', offerId)
-                    return Promise.pure((Offer) element.objectValue)
+                    return Promise.pure((OrderOffer) element.objectValue)
                 }
             }
         }
@@ -62,7 +60,7 @@ class CachedCatalogFacadeImpl implements CatalogFacade {
         return offerPromise.syncRecover { Throwable throwable ->
             LOGGER.error('name=Offer_Not_Found. offerId: {}', offerId, throwable)
             throw AppErrors.INSTANCE.offerNotFound(offerId.toString()).exception()
-        }.syncThen { Offer offer ->
+        }.syncThen { OrderOffer offer ->
             Element newElement = new Element(offerId.toString(), offer)
             if (cache != null) {
                 LOGGER.info('name=Offer_Cached. offerId: {}', offerId)
@@ -73,19 +71,7 @@ class CachedCatalogFacadeImpl implements CatalogFacade {
     }
 
     @Override
-    Promise<Offer> getOffer(Long offerId, Date honoredTime) {
+    Promise<OrderOffer> getOffer(Long offerId, Date honoredTime) {
         return catalogFacade.getOffer(offerId, honoredTime)
-    }
-
-    @Override
-    Promise<List<Offer>> getOffers(List<OfferId> offerIds) {
-        List<Offer> result = []
-        Promise.each(offerIds.iterator()) { OfferId offerId ->
-            getOffer(offerId.value).syncThen { Offer offer ->
-                result << offer
-            }
-        }.syncThen {
-            result
-        }
     }
 }
