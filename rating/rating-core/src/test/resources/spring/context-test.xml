@@ -7,6 +7,6 @@
     <import resource="classpath*:spring/core-context.xml"/>
 
     <!--mock-->
-    <bean id="mockCatalogGateway" class="com.junbo.rating.clientproxy.mock.MockCatalogGatewayImpl"/>
-    <bean id="mockEntitlementGateway" class="com.junbo.rating.clientproxy.mock.MockEntitlementGatewayImpl"/>
+    <bean id="ratingCatalogGateway" class="com.junbo.rating.clientproxy.mock.MockCatalogGatewayImpl"/>
+    <bean id="ratingEntitlementGateway" class="com.junbo.rating.clientproxy.mock.MockEntitlementGatewayImpl"/>
 </beans>

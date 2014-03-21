@@ -24,7 +24,7 @@ import javax.annotation.Resource
 @Component('orderFulfillmentFacade')
 class FulfillmentFacadeImpl implements FulfillmentFacade {
 
-    @Resource(name='fulfilmentClient')
+    @Resource(name='order.fulfilmentClient')
     private FulfilmentResource fulfilmentResource
 
     void setFulfilmentResource(FulfilmentResource fulfilmentResource) {

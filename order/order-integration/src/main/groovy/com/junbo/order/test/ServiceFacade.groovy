@@ -1,9 +1,12 @@
 package com.junbo.order.test
 
+import com.junbo.billing.spec.model.Balance
+import com.junbo.billing.spec.resource.BalanceResource
 import com.junbo.catalog.spec.model.offer.Offer
 import com.junbo.catalog.spec.model.offer.OffersGetOptions
 import com.junbo.catalog.spec.resource.ItemResource
 import com.junbo.catalog.spec.resource.OfferResource
+import com.junbo.common.id.OrderId
 import com.junbo.identity.spec.model.user.User
 import com.junbo.identity.spec.resource.UserResource
 import com.junbo.order.spec.model.Order
@@ -23,6 +26,8 @@ import org.springframework.stereotype.Component
 @Component('serviceFacade')
 class ServiceFacade {
 
+    private final static int DEFAULT_PAGE_SIZE = 20
+
     @Autowired
     UserResource userResource
 
@@ -34,6 +39,9 @@ class ServiceFacade {
 
     @Autowired
     ItemResource itemResource
+
+    @Autowired
+    BalanceResource balanceResource
 
     @Autowired
     PaymentInstrumentResource paymentInstrumentResource
@@ -83,6 +91,12 @@ class ServiceFacade {
         return orderResource.createOrders(order).wrapped().get().get(0)
     }
 
+    Order settleQuotes(OrderId orderId) {
+        def order = new Order()
+        order.tentative = false
+        return orderResource.updateOrderByOrderId(orderId, order).wrapped().get().get(0)
+    }
+
     Order putQuotes(Order order) {
         order.tentative = true
         return orderResource.updateOrderByOrderId(order.id, order).wrapped().get().get(0)
@@ -90,12 +104,14 @@ class ServiceFacade {
 
     Offer getOfferByName(String offerName) {
         def option = new OffersGetOptions()
+        option.size = DEFAULT_PAGE_SIZE
+        option.start = 0
         if (offers == null) {
             while (true) {
                 offers = new ArrayList<>()
                 def offerResults = offerResource.getOffers(option).wrapped().get()
                 offers.addAll(offerResults.results)
-                if (offerResults.results < option.size) {
+                if (offerResults.results.size() < option.size) {
                     break
                 }
                 option.start += option.size

@@ -23,9 +23,9 @@ import javax.annotation.Resource
 @Component('orderBillingFacade')
 @TypeChecked
 class BillingFacadeImpl implements BillingFacade {
-    @Resource(name='billingBalanceClient')
+    @Resource(name='order.billingBalanceClient')
     BalanceResource balanceResource
-    @Resource(name='billingShippingAddressClient')
+    @Resource(name='order.billingShippingAddressClient')
     ShippingAddressResource shippingAddressResource
 
     @Override

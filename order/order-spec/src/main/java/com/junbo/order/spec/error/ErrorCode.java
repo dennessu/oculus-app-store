@@ -34,5 +34,4 @@ public class ErrorCode {
     public static final String ORDER_ACTION_NOT_SUPPORTED = "20002";
 
     public static final String ORDER_TYPE_NOT_SUPPORTED = "20003";
-
 }
