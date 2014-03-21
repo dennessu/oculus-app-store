@@ -92,4 +92,24 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 500, code = CatalogErrorCode.CATALOG_CONNECTION_ERROR,
             description = "Catalog service connection error")
     AppError catalogConnectionError();
+
+    @ErrorDef(httpStatusCode = 500, code = ErrorCode.UNEXPECTED_ERROR,
+            description = "Unexpected Error")
+    AppError unexpectedError();
+
+    @ErrorDef(httpStatusCode = 403, code = RatingErrorCode.RATING_RESULT_INVALID,
+            description = "Rating result invalid")
+    AppError ratingResultInvalid();
+
+    @ErrorDef(httpStatusCode = 500, code = RatingErrorCode.RATING_CONNECTION_ERROR,
+            description = "Rating connection error")
+    AppError ratingConnectionError();
+
+    @ErrorDef(httpStatusCode = 500, code = BillingErrorCode.BILLING_CONNECTION_ERROR,
+            description = "Billing connection error")
+    AppError billingConnectionError();
+
+    @ErrorDef(httpStatusCode = 404, code = BillingErrorCode.BALANCE_NOT_FOUND,
+            description = "Balance not found")
+    AppError balanceNotFound();
 }

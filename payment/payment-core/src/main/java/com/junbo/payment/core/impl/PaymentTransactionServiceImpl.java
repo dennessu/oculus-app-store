@@ -118,7 +118,7 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
              PaymentProviderService provider, PaymentTransaction request, PaymentAPI api,
              PaymentStatus status, PaymentEventType event) {
         ProxyExceptionResponse proxyResponse = new ProxyExceptionResponse(throwable);
-        LOGGER.error(api.toString() + " declined by" + provider.getProviderName() +
+        LOGGER.error(api.toString() + " declined by " + provider.getProviderName() +
                 "; error detail: " + proxyResponse.getBody());
         request.setStatus(status.toString());
         PaymentEvent authDeclined = createPaymentEvent(request, event, status, proxyResponse.getBody());
@@ -146,10 +146,12 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
         }
         if(request.getChargeInfo() != null && request.getChargeInfo().getAmount() != null &&
           existedTransaction.getChargeInfo().getAmount().compareTo(request.getChargeInfo().getAmount()) < 0){
+            LOGGER.error("capture amount should not exceed the authorized amount.");
             throw AppClientExceptions.INSTANCE.invalidAmount(
                     request.getChargeInfo().getAmount().toString()).exception();
         }
         if(!PaymentStatus.valueOf(existedTransaction.getStatus()).equals(PaymentStatus.AUTHORIZED)){
+            LOGGER.error("the payment status is not allowed to be captured.");
             throw AppServerExceptions.INSTANCE.invalidPaymentStatus(
                     existedTransaction.getStatus().toString()).exception();
         }
@@ -245,7 +247,7 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
         final PaymentEventType eventType;
         if(PaymentStatus.valueOf(existedTransaction.getStatus()).equals(PaymentStatus.AUTHORIZED)){
             eventType = PaymentEventType.AUTH_REVERSE;
-        }else if(PaymentStatus.valueOf(existedTransaction.getStatus()).equals(PaymentStatus.AUTHORIZED)){
+        }else if(PaymentStatus.valueOf(existedTransaction.getStatus()).equals(PaymentStatus.SETTLEMENT_SUBMITTED)){
             eventType = PaymentEventType.SUBMIT_SETTLE_REVERSE;
         }else{
             throw AppServerExceptions.INSTANCE.invalidPaymentStatus(
@@ -264,7 +266,7 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
                 .recover(new Promise.Func<Throwable, Promise<Void>>() {
             @Override
             public Promise<Void> apply(Throwable throwable) {
-                handleProviderException(throwable, provider, existedTransaction, api,
+                handleProviderException(throwable, provider, request, api,
                         PaymentStatus.REVERSE_DECLINED, eventType);
                 return null;
             }
@@ -274,7 +276,7 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
                 PaymentStatus reverseStatus = PaymentStatus.REVERSED;
                 existedTransaction.setStatus(reverseStatus.toString());
                 PaymentEvent reverseEvent = createPaymentEvent(
-                        existedTransaction, eventType, PaymentStatus.REVERSED, SUCCESS_EVENT_RESPONSE);
+                        request, eventType, PaymentStatus.REVERSED, SUCCESS_EVENT_RESPONSE);
                 addPaymentEvent(existedTransaction, reverseEvent);
                 updatePaymentAndSaveEvent(existedTransaction, Arrays.asList(reverseEvent), api, reverseStatus);
                 return Promise.pure(existedTransaction);

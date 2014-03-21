@@ -83,19 +83,24 @@ class CoreBuilder {
             buildItemRatingInfo(i, ratingRequest)
         }
         order.discounts = []
-        def discount = new Discount()
-        discount.discountAmount = ratingRequest.orderBenefit.discountAmount
-        discount.discountType = DiscountType.ORDER_DISCOUNT
-        discount.promotion = new PromotionId(ratingRequest.orderBenefit.promotion)
-        order.discounts.add(discount)
-        // TODO: need to discuss the coupon logic
-        discount.coupon = ratingRequest.couponCodes[0]
+        ratingRequest.couponCodes?.each { String couponCode ->
+            def discount = new Discount()
+            discount.discountAmount = ratingRequest.orderBenefit.discountAmount
+            discount.discountType = DiscountType.ORDER_DISCOUNT
+            discount.promotion = new PromotionId(ratingRequest.orderBenefit.promotion)
+            order.discounts.add(discount)
+            // TODO: need to discuss the coupon logic
+            discount.coupon = couponCode
+        }
+
         ratingRequest.lineItems?.each { OrderRatingItem ri ->
-            def d = buildDiscount(ri)
-            d.ownerOrderItem = order.orderItems.find { OrderItem oi ->
-                oi.offer.value == ri.offerId
+            if (!CollectionUtils.isEmpty(ri.promotions)) {
+                def d = buildDiscount(ri)
+                d.ownerOrderItem = order.orderItems.find { OrderItem oi ->
+                    oi.offer.value == ri.offerId
+                }
+                order.discounts.add(d)
             }
-            order.discounts.add(d)
         }
     }
 

@@ -10,7 +10,7 @@ import com.junbo.common.id.*;
 /**
  * Created by fzhang@wan-san.com on 14-2-15.
  */
-@org.springframework.stereotype.Component
+@org.springframework.stereotype.Component("cartCommonMapper")
 public class CommonMapper {
 
     public Long fromStringToLong(String source) {

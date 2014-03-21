@@ -18,11 +18,11 @@ import java.util.List;
  */
 public interface OrderService {
 
-    Promise<List<Order>> createOrders(Order order, ApiContext context);
+    Promise<Order> createOrder(Order order, ApiContext context);
 
-    Promise<List<Order>> settleQuote(Order order, ApiContext context);
+    Promise<Order> settleQuote(Order order, ApiContext context);
 
-    Promise<List<Order>> createQuotes(Order order, ApiContext context);
+    Promise<Order> createQuote(Order order, ApiContext context);
 
     Promise<Order> getOrderByOrderId(Long orderId);
 

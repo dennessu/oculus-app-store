@@ -1,4 +1,3 @@
-rootProject.name = 'cart'
 include 'cart-spec'
 include 'cart-common'
 include 'cart-db'

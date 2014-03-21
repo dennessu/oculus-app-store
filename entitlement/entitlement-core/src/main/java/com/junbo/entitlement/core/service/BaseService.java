@@ -69,8 +69,11 @@ public class BaseService {
     }
 
     protected void fillUpdate(Entitlement entitlement, Entitlement existingEntitlement) {
+        if (entitlement.getGrantTime() == null){
+            existingEntitlement.setGrantTime(EntitlementContext.current().getNow());
+        }
         if (entitlement.getPeriod() != null) {
-            existingEntitlement.setExpirationTime(new Date(entitlement.getGrantTime().getTime()
+            existingEntitlement.setExpirationTime(new Date(existingEntitlement.getGrantTime().getTime()
                     + TimeUnit.SECONDS.toMillis(entitlement.getPeriod())));
         } else {
             existingEntitlement.setExpirationTime(entitlement.getExpirationTime());
@@ -150,7 +153,6 @@ public class BaseService {
         validateEquals(existingEntitlement.getType(), entitlement.getType(), "type");
         validateEquals(existingEntitlement.getGroup(), entitlement.getGroup(), "group");
         validateEquals(existingEntitlement.getTag(), entitlement.getTag(), "tag");
-        validateEquals(existingEntitlement.getGrantTime(), entitlement.getGrantTime(), "grantTime");
         validateGrantTimeBeforeExpirationTime(existingEntitlement);
     }
 

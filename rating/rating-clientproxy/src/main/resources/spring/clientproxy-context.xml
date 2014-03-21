@@ -9,9 +9,24 @@
 
     <tx:annotation-driven/>
 
+    <!-- Config service -->
+    <bean id="configService" class="com.junbo.configuration.impl.ConfigServiceImpl" />
+    <bean id="configPropertyPlaceholderConfigurer" class="com.junbo.configuration.impl.ConfigPropertyPlaceholderConfigurer">
+        <property name="configService" ref="configService" />
+    </bean>
+    <bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
+        <property name="converters">
+            <set>
+                <bean class="com.junbo.configuration.reloadable.impl.ReloadableConfigConverterFactory">
+                    <property name="configService" ref="configService" />
+                </bean>
+            </set>
+        </property>
+    </bean>
+
     <!-- fusion -->
-    <bean id="catalogGateway" class="com.junbo.rating.clientproxy.impl.CatalogGatewayImpl"/>
-    <bean id="entitlementGateway" class="com.junbo.rating.clientproxy.impl.EntitlementGatewayImpl"/>
+    <bean id="ratingCatalogGateway" class="com.junbo.rating.clientproxy.impl.CatalogGatewayImpl"/>
+    <bean id="ratingEntitlementGateway" class="com.junbo.rating.clientproxy.impl.EntitlementGatewayImpl"/>
 
     <!--mock-->
     <!--bean id="mockCatalogGateway" class="com.junbo.rating.clientproxy.mock.MockCatalogGatewayImpl"/>
@@ -20,7 +35,7 @@
     <!-- async http client -->
     <bean id="asyncHttpClient" class="com.ning.http.client.AsyncHttpClient"/>
 
-    <bean id="attributeClient" class="com.junbo.catalog.spec.resource.proxy.AttributeResourceClientProxy">
+    <bean id="ratingAttributeClient" class="com.junbo.catalog.spec.resource.proxy.AttributeResourceClientProxy">
         <constructor-arg name="client" ref="asyncHttpClient"/>
         <constructor-arg name="target" value="${clientproxy.catalog.url}"/>
         <constructor-arg name="transcoder">
@@ -34,7 +49,7 @@
         </constructor-arg>
     </bean>
 
-    <bean id="itemClient" class="com.junbo.catalog.spec.resource.proxy.ItemResourceClientProxy">
+    <bean id="ratingItemClient" class="com.junbo.catalog.spec.resource.proxy.ItemResourceClientProxy">
         <constructor-arg name="client" ref="asyncHttpClient"/>
         <constructor-arg name="target" value="${clientproxy.catalog.url}"/>
         <constructor-arg name="transcoder">
@@ -48,7 +63,7 @@
         </constructor-arg>
     </bean>
 
-    <bean id="offerClient" class="com.junbo.catalog.spec.resource.proxy.OfferResourceClientProxy">
+    <bean id="ratingOfferClient" class="com.junbo.catalog.spec.resource.proxy.OfferResourceClientProxy">
         <constructor-arg name="client" ref="asyncHttpClient"/>
         <constructor-arg name="target" value="${clientproxy.catalog.url}"/>
         <constructor-arg name="transcoder">
@@ -76,7 +91,7 @@
         </constructor-arg>
     </bean>
 
-    <bean id="entitlementClient" class="com.junbo.entitlement.spec.resource.proxy.EntitlementResourceClientProxy">
+    <bean id="ratingEntitlementClient" class="com.junbo.entitlement.spec.resource.proxy.EntitlementResourceClientProxy">
         <constructor-arg name="client" ref="asyncHttpClient"/>
         <constructor-arg name="target" value="${clientproxy.entitlement.url}"/>
         <constructor-arg name="transcoder">
