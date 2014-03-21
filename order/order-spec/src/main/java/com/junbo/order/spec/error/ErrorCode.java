@@ -35,4 +35,6 @@ public class ErrorCode {
 
     public static final String ORDER_TYPE_NOT_SUPPORTED = "20003";
 
+    public static final String ORDER_EVENT_NOT_FOUND = "20004";
+
 }
