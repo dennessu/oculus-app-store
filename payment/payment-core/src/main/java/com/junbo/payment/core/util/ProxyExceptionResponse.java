@@ -15,7 +15,7 @@ import com.junbo.payment.common.CommonUtil;
  * proxy exception response.
  */
 public class ProxyExceptionResponse {
-    private static final String internalErrorCode = "{\"result\": \"unknown error\"}";
+    private static final String ERROR_CODE = "{\"result\": \"unknown error\"}";
     private int status;
     private String body;
 
@@ -25,7 +25,7 @@ public class ProxyExceptionResponse {
 
     public String getBody() {
         if(CommonUtil.isNullOrEmpty(body)){
-            return internalErrorCode;
+            return ERROR_CODE;
         }
         return body;
     }

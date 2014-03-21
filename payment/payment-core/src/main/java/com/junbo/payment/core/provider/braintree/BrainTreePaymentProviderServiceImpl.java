@@ -181,7 +181,7 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
     }
 
     @Override
-    public Promise<Response> reverse(String transactionId) {
+    public Promise<PaymentTransaction> reverse(String transactionId, PaymentTransaction paymentRequest) {
         Result<Transaction> result = null;
         LOGGER.info("reverse transaction :" + transactionId);
         try{
@@ -194,7 +194,7 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
         } else {
             handleProviderError(result);
         }
-        return Promise.pure(Response.status(204).build());
+        return Promise.pure(paymentRequest);
     }
 
     private <T> void handleProviderError(Result<T> result) {
@@ -221,8 +221,8 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
     }
 
     @Override
-    public void refund(String transactionId, PaymentTransaction request) {
-
+    public Promise<PaymentTransaction> refund(String transactionId, PaymentTransaction request) {
+        return Promise.pure(request);
     }
 
     @Override

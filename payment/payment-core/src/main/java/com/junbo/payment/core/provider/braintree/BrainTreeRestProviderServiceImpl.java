@@ -53,13 +53,13 @@ public class BrainTreeRestProviderServiceImpl implements PaymentProviderService 
     }
 
     @Override
-    public Promise<Response> reverse(String transactionId) {
-        return brainTreeResource.reverse(transactionId);
+    public Promise<PaymentTransaction> reverse(String transactionId, PaymentTransaction paymentRequest) {
+        return brainTreeResource.reverse(transactionId, paymentRequest);
     }
 
     @Override
-    public void refund(String transactionId, PaymentTransaction request) {
-
+    public Promise<PaymentTransaction> refund(String transactionId, PaymentTransaction request) {
+        return Promise.pure(request);
     }
 
     @Override

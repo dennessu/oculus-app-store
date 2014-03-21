@@ -34,7 +34,6 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -264,17 +263,16 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
         updatePaymentAndSaveEvent(existedTransaction, Arrays.asList(reverseCreateEvent), api, createStatus);
         final PaymentProviderService provider =
                 providerRoutingService.getPaymentProvider(PaymentUtil.getPIType(pi.getType()));
-        return provider.reverse(existedTransaction.getExternalToken())
-                .recover(new Promise.Func<Throwable, Promise<Response>>() {
+        return provider.reverse(existedTransaction.getExternalToken(), request)
+                .recover(new Promise.Func<Throwable, Promise<PaymentTransaction>>() {
             @Override
-            public Promise<Response> apply(Throwable throwable) {
-                handleProviderException(throwable, provider, request, api,
+            public Promise<PaymentTransaction> apply(Throwable throwable) {
+                return handleProviderException(throwable, provider, request, api,
                         PaymentStatus.REVERSE_DECLINED, eventType);
-                return null;
             }
-        }).then(new Promise.Func<Response, Promise<PaymentTransaction>>() {
+        }).then(new Promise.Func<PaymentTransaction, Promise<PaymentTransaction>>() {
             @Override
-            public Promise<PaymentTransaction> apply(Response aVoid) {
+            public Promise<PaymentTransaction> apply(PaymentTransaction aVoid) {
                 PaymentStatus reverseStatus = PaymentStatus.REVERSED;
                 existedTransaction.setStatus(reverseStatus.toString());
                 PaymentEvent reverseEvent = createPaymentEvent(

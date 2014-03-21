@@ -25,8 +25,8 @@ public interface PaymentProviderService{
     Promise<PaymentTransaction> authorize(String piToken, PaymentTransaction paymentRequest);
     Promise<PaymentTransaction> capture(String transactionId, PaymentTransaction paymentRequest);
     Promise<PaymentTransaction> charge(String piToken, PaymentTransaction paymentRequest);
-    Promise<Response> reverse(String transactionId);
-    void refund(String transactionId, PaymentTransaction request);
+    Promise<PaymentTransaction> reverse(String transactionId, PaymentTransaction paymentRequest);
+    Promise<PaymentTransaction> refund(String transactionId, PaymentTransaction request);
     List<PaymentTransaction> getByOrderId(String orderId);
     Promise<PaymentTransaction> getByTransactionToken(String token);
 }

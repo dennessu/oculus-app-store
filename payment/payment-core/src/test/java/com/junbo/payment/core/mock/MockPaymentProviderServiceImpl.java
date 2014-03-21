@@ -66,13 +66,13 @@ public class MockPaymentProviderServiceImpl implements PaymentProviderService {
     }
 
     @Override
-    public Promise<Response> reverse(String transactionId) {
-        return null;
+    public Promise<PaymentTransaction> reverse(String transactionId, PaymentTransaction request) {
+        return Promise.pure(request);
     }
 
     @Override
-    public void refund(String transactionId, PaymentTransaction request) {
-
+    public Promise<PaymentTransaction> refund(String transactionId, PaymentTransaction request) {
+        return Promise.pure(request);
     }
 
     @Override

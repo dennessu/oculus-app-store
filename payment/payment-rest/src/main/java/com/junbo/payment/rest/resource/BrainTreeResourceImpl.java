@@ -54,9 +54,8 @@ public class BrainTreeResourceImpl implements BrainTreeResource {
     }
 
     @Override
-    public Promise<Response> reverse(String transactionToken) {
-        brainTreePaymentProviderService.reverse(transactionToken);
-        return Promise.pure(Response.status(200).build());
+    public Promise<PaymentTransaction> reverse(String transactionToken,PaymentTransaction request) {
+        return brainTreePaymentProviderService.reverse(transactionToken, request);
     }
 
     @Override
