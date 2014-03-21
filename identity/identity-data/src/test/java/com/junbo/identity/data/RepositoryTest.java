@@ -285,7 +285,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
     public void testUserGroupRepository() {
         UserGroup userGroup = new UserGroup();
         userGroup.setUserId(new UserId(userId));
-        userGroup.setGroupId(new GroupId(423423L));
+        userGroup.setGroupId(new GroupId(1493188608L));
         userGroup.setCreatedBy("lixia");
         userGroup.setCreatedTime(new Date());
         userGroup = userGroupRepository.save(userGroup);
@@ -293,15 +293,9 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         UserGroup newUserGroup = userGroupRepository.get(userGroup.getId());
         Assert.assertEquals(userGroup.getGroupId().getValue(), newUserGroup.getGroupId().getValue());
 
-        newUserGroup.setGroupId(new GroupId(123L));
-        userGroupRepository.update(newUserGroup);
-
-        newUserGroup = userGroupRepository.get(userGroup.getId());
-        Assert.assertEquals(newUserGroup.getGroupId().getValue(), new Long(123L));
-
         UserGroupListOption getOption = new UserGroupListOption();
         getOption.setUserId(new UserId(userId));
-        getOption.setGroupId(new GroupId(123L));
+        getOption.setGroupId(new GroupId(1493188608L));
         List<UserGroup> userGroups = userGroupRepository.search(getOption);
 
         Assert.assertNotEquals(userGroups.size(), 0);

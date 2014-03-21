@@ -6,7 +6,9 @@
 package com.junbo.identity.data.repository.impl;
 
 import com.junbo.common.id.UserGroupId;
+import com.junbo.identity.data.dao.GroupUserDAO;
 import com.junbo.identity.data.dao.UserGroupDAO;
+import com.junbo.identity.data.entity.group.GroupUserEntity;
 import com.junbo.identity.data.entity.user.UserGroupEntity;
 import com.junbo.identity.data.mapper.ModelMapper;
 import com.junbo.identity.data.repository.UserGroupRepository;
@@ -30,6 +32,10 @@ public class UserGroupRepositoryImpl implements UserGroupRepository {
     private UserGroupDAO userGroupDAO;
 
     @Autowired
+    @Qualifier("groupUserDAO")
+    private GroupUserDAO groupUserDAO;
+
+    @Autowired
     @Qualifier("identityModelMapperImpl")
     private ModelMapper modelMapper;
 
@@ -38,6 +44,13 @@ public class UserGroupRepositoryImpl implements UserGroupRepository {
         UserGroupEntity userGroupEntity = modelMapper.toUserGroup(entity, new MappingContext());
         userGroupDAO.save(userGroupEntity);
 
+        GroupUserEntity groupUserEntity = new GroupUserEntity();
+        groupUserEntity.setGroupId(userGroupEntity.getGroupId());
+        groupUserEntity.setUserId(userGroupEntity.getUserId());
+        groupUserEntity.setCreatedBy(userGroupEntity.getCreatedBy());
+        groupUserEntity.setCreatedTime(userGroupEntity.getCreatedTime());
+        groupUserDAO.save(groupUserEntity);
+
         return get(new UserGroupId(userGroupEntity.getId()));
     }
 
@@ -45,6 +58,12 @@ public class UserGroupRepositoryImpl implements UserGroupRepository {
     public UserGroup update(UserGroup entity) {
         UserGroupEntity userGroupEntity = modelMapper.toUserGroup(entity, new MappingContext());
         userGroupDAO.update(userGroupEntity);
+
+        GroupUserEntity groupUserEntity =
+                groupUserDAO.findByGroupId(userGroupEntity.getGroupId(), userGroupEntity.getUserId());
+        groupUserEntity.setUpdatedBy(userGroupEntity.getUpdatedBy());
+        groupUserEntity.setUpdatedTime(userGroupEntity.getUpdatedTime());
+        groupUserDAO.update(groupUserEntity);
 
         return get(entity.getId());
     }
@@ -67,6 +86,10 @@ public class UserGroupRepositoryImpl implements UserGroupRepository {
 
     @Override
     public void delete(UserGroupId id) {
+        UserGroupEntity entity = userGroupDAO.get(id.getValue());
+
+        GroupUserEntity groupUserEntity = groupUserDAO.findByGroupId(entity.getGroupId(), entity.getUserId());
+        groupUserDAO.delete(groupUserEntity.getId());
         userGroupDAO.delete(id.getValue());
     }
 }
