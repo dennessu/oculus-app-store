@@ -15,6 +15,7 @@ import com.junbo.rating.clientproxy.EntitlementGateway;
 import com.junbo.rating.common.util.Constants;
 import com.junbo.rating.spec.error.AppErrors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.*;
 
@@ -23,6 +24,7 @@ import java.util.*;
  */
 public class EntitlementGatewayImpl implements EntitlementGateway {
     @Autowired
+    @Qualifier("ratingEntitlementClient")
     private EntitlementResource entitlementResource;
 
     @Override

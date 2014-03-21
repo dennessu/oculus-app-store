@@ -10,9 +10,8 @@ import org.springframework.stereotype.Component
 @Component('OrderTestGenerator')
 class Generator {
 
-    OrderItem generateOrderItem(String type, OfferId offerId, int quantity) {
+    OrderItem generateOrderItem(OfferId offerId, int quantity) {
         def item = new OrderItem()
-        item.type = type
         item.offer = offerId
         item.quantity = quantity
         return item

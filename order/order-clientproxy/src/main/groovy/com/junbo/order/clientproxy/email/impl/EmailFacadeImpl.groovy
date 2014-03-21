@@ -21,7 +21,7 @@ import javax.annotation.Resource
 @Component('orderEmailFacade')
 @TypeChecked
 class EmailFacadeImpl implements EmailFacade {
-    @Resource(name='emailClient')
+    @Resource(name='order.emailClient')
     EmailResource emailResource
 
     @Override
