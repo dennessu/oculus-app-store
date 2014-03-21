@@ -1,4 +1,7 @@
 package com.junbo.order.core.impl.common
+
+import com.junbo.catalog.spec.model.offer.Action
+import com.junbo.catalog.spec.model.offer.Event
 import com.junbo.catalog.spec.model.offer.Offer
 import com.junbo.order.db.entity.enums.ItemType
 
@@ -12,8 +15,8 @@ class CoreUtils {
     static final String CREDIT_WALLET = 'CREDIT_WALLET'
 
     static ItemType getOfferType(Offer offer) {
-        Boolean isPhysical = offer.events?.any { com.junbo.catalog.spec.model.offer.Event event ->
-            event.actions?.any { com.junbo.catalog.spec.model.offer.Action action ->
+        Boolean isPhysical = offer.events?.any { Event event ->
+            event.actions?.any { Action action ->
                 action.type == DELIVER_PHYSICAL_GOODS
             }
         }

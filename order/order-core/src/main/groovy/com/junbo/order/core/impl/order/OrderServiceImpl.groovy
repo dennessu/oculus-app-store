@@ -6,6 +6,7 @@
 
 package com.junbo.order.core.impl.order
 
+import com.junbo.catalog.spec.model.offer.Offer
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.executor.FlowExecutor
 import com.junbo.order.clientproxy.FacadeContainer
@@ -13,6 +14,7 @@ import com.junbo.order.core.FlowSelector
 import com.junbo.order.core.FlowType
 import com.junbo.order.core.OrderService
 import com.junbo.order.core.OrderServiceOperation
+import com.junbo.order.core.impl.common.CoreUtils
 import com.junbo.order.core.impl.orderaction.ActionUtils
 import com.junbo.order.core.impl.orderaction.context.OrderActionContext
 import com.junbo.order.db.entity.enums.OrderActionType
@@ -36,6 +38,7 @@ import org.springframework.transaction.annotation.Transactional
 @Service('orderService')
 class OrderServiceImpl implements OrderService {
     @Qualifier('orderFacadeContainer')
+    @Autowired
     FacadeContainer facadeContainer
     @Autowired
     OrderRepository orderRepository
@@ -80,38 +83,39 @@ class OrderServiceImpl implements OrderService {
     Promise<Order> updateTentativeOrder(Order order, ApiContext context) {
         setHonoredTime(order)
         def orderServiceContext = initOrderServiceContext(order)
-
-        flowSelector.select(orderServiceContext, OrderServiceOperation.UPDATE_TENTATIVE).then { FlowType flowType ->
-            // Prepare Flow Request
-            Map<String, Object> requestScope = [:]
-            def orderActionContext = new OrderActionContext()
-            orderActionContext.orderActionType = OrderActionType.RATE
-            orderActionContext.orderServiceContext = orderServiceContext
-            orderActionContext.trackingUuid = order.trackingUuid
-            requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object)orderActionContext)
-            executeFlow(flowType, orderServiceContext, requestScope)
-        }.syncThen {
-            return orderServiceContext.order
+        prepareOrder(order).then {
+            flowSelector.select(orderServiceContext, OrderServiceOperation.UPDATE_TENTATIVE).then { FlowType flowType ->
+                // Prepare Flow Request
+                Map<String, Object> requestScope = [:]
+                def orderActionContext = new OrderActionContext()
+                orderActionContext.orderActionType = OrderActionType.RATE
+                orderActionContext.orderServiceContext = orderServiceContext
+                orderActionContext.trackingUuid = order.trackingUuid
+                requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object)orderActionContext)
+                executeFlow(flowType, orderServiceContext, requestScope)
+            }.syncThen {
+                return orderServiceContext.order
+            }
         }
     }
 
     @Override
     Promise<List<Order>> createQuotes(Order order, ApiContext context) {
-
         setHonoredTime(order)
         def orderServiceContext = initOrderServiceContext(order)
-
-        flowSelector.select(orderServiceContext, OrderServiceOperation.CREATE_TENTATIVE).then { FlowType flowType ->
-            // Prepare Flow Request
-            Map<String, Object> requestScope = [:]
-            def orderActionContext = new OrderActionContext()
-            orderActionContext.orderActionType = OrderActionType.RATE
-            orderActionContext.orderServiceContext = orderServiceContext
-            orderActionContext.trackingUuid = order.trackingUuid
-            requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object)orderActionContext)
-            executeFlow(flowType, orderServiceContext, requestScope)
-        }.syncThen {
-            return [orderServiceContext.order]
+        prepareOrder(order).then {
+            flowSelector.select(orderServiceContext, OrderServiceOperation.CREATE_TENTATIVE).then { FlowType flowType ->
+                // Prepare Flow Request
+                Map<String, Object> requestScope = [:]
+                def orderActionContext = new OrderActionContext()
+                orderActionContext.orderActionType = OrderActionType.RATE
+                orderActionContext.orderServiceContext = orderServiceContext
+                orderActionContext.trackingUuid = order.trackingUuid
+                requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object)orderActionContext)
+                executeFlow(flowType, orderServiceContext, requestScope)
+            }.syncThen {
+                return [orderServiceContext.order]
+            }
         }
     }
 
@@ -203,6 +207,19 @@ class OrderServiceImpl implements OrderService {
         order.honoredTime = ht
         order.orderItems.each { OrderItem oi ->
             oi.honoredTime = ht
+        }
+    }
+
+    private Promise<Object> prepareOrder(Order order) {
+        Promise.each(order.orderItems.iterator()) { OrderItem item -> // get item type from catalog
+            facadeContainer.catalogFacade.getOffer(item.offer.value).syncThen { Offer offer ->
+                if (offer == null) {
+                    throw AppErrors.INSTANCE.offerNotFound(item.offer.value?.toString()).exception()
+                }
+                item.type = CoreUtils.getOfferType(offer).name()
+            }
+        }.syncThen {
+            return null
         }
     }
 }
