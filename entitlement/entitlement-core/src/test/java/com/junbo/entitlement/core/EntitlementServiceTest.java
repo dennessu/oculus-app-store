@@ -124,7 +124,6 @@ public class EntitlementServiceTest extends AbstractTransactionalTestNGSpringCon
         Entitlement entitlement = buildAnEntitlement();
         Entitlement addedEntitlement = entitlementService.addEntitlement(entitlement);
         EntitlementTransfer transfer = new EntitlementTransfer();
-        transfer.setUserId(entitlement.getUserId());
         transfer.setTargetUserId(998L);
         transfer.setEntitlementId(addedEntitlement.getEntitlementId());
         Entitlement newEntitlement = entitlementService.transferEntitlement(transfer);

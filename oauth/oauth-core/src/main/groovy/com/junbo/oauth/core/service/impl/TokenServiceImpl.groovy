@@ -8,6 +8,7 @@ package com.junbo.oauth.core.service.impl
 import com.junbo.oauth.common.JsonMarshaller
 import com.junbo.oauth.core.exception.AppExceptions
 import com.junbo.oauth.core.service.TokenService
+import com.junbo.oauth.core.util.AuthorizationHeaderUtil
 import com.junbo.oauth.db.repo.AccessTokenRepository
 import com.junbo.oauth.db.repo.ClientRepository
 import com.junbo.oauth.db.repo.RefreshTokenRepository
@@ -96,6 +97,27 @@ class TokenServiceImpl implements TokenService {
     }
 
     @Override
+    AccessToken extractAccessToken(String authorization) {
+        String tokenValue = AuthorizationHeaderUtil.extractAccessToken(authorization)
+
+        AccessToken accessToken = accessTokenRepository.get(tokenValue)
+        if (accessToken == null) {
+            throw AppExceptions.INSTANCE.invalidAuthorization().exception()
+        }
+
+        if (accessToken.isExpired()) {
+            throw AppExceptions.INSTANCE.expiredAccessToken().exception()
+        }
+
+        return accessToken
+    }
+
+    @Override
+    List<AccessToken> getAccessTokenByUserIdClientId(Long userId, String clientId) {
+        return accessTokenRepository.findByUserIdClientId(userId, clientId)
+    }
+
+    @Override
     AccessToken updateAccessToken(AccessToken accessToken) {
         return accessTokenRepository.update(accessToken)
     }
@@ -135,6 +157,11 @@ class TokenServiceImpl implements TokenService {
         )
 
         return refreshTokenRepository.save(refreshToken)
+    }
+
+    @Override
+    List<RefreshToken> getRefreshTokenByUserIdClientId(Long userId, String clientId) {
+        return refreshTokenRepository.findByUserIdClientId(userId, clientId)
     }
 
     @Override

@@ -5,6 +5,7 @@ var Account = require('./account');
 
 var ClientConfigs = require('../configs/client_config');
 var Template = require('./template');
+var Auth = require('./auth');
 
 
 module.exports = function(app){
@@ -17,7 +18,13 @@ module.exports = function(app){
 
     // Application
     app.get('/', function(req, res){
-        res.render("index", {layout: false, title: "Store Demo"});
+        res.render("index",
+            {
+                layout: false,
+                title: "Store Demo",
+                loginUrl: process.AppConfig.Urls.GetLoginUrl(req),
+                registerUrl: process.AppConfig.Urls.GetRegisterUrl(req)
+            });
     });
     app.get('/Identity', function(req, res){
         res.render("identity/index", {layout: false, title: "Store Demo"});
@@ -30,15 +37,23 @@ module.exports = function(app){
     });
 
     // Template
-    app.get('/Template/Identity/Login', Template.Login);
-    app.get('/Template/Identity/Register', Template.Register);
-    app.get('/Template/Identity/Captcha', Template.Captcha);
-    app.get('/Template/Identity/TFA', Template.TFA);
-    app.get('/Template/Identity/My', Template.My);
+    app.get('/Template/Identity/Login', Template.Identity.Login);
+    app.get('/Template/Identity/Captcha', Template.Identity.Captcha);
+    app.get('/Template/Identity/TFA', Template.Identity.TFA);
+    app.get('/Template/Identity/Register', Template.Identity.Register);
+    app.get('/Template/Identity/PIN', Template.Identity.PIN);
+    app.get('/Template/Identity/My', Template.Identity.My);
+
+    app.get('/Template/Store/Index', Template.Store.Index);
+    app.get('/Template/Store/Detail', Template.Store.Detail);
+
+    app.get('/Template/Store/Cart', Template.Store.Cart);
+    app.get('/Template/Store/OrderSummary', Template.Store.OrderSummary);
 
     // Redirect back handler
-    app.get('/Callback/Login', function(req, res){});
-    app.get('/Callback/Register', function(req, res){});
+    app.get('/Callback/Login', Auth.Login);
+    app.get('/Callback/Register', Auth.Register);
+    app.get('/Logout', Auth.Register);
 
     // API Rest
 
@@ -64,4 +79,5 @@ module.exports = function(app){
     app.get('/payment/Create', Payment.Create);
     app.get('/payment/Address', Payment.ShippingAddress);
     app.get('/payment/SelectePaymentMethod', Payment.SelectePaymentMethod);
+
 };

@@ -10,15 +10,19 @@ period is only used in post and put actions with timeUnit SECOND and has higher 
                 "id": 123
             },
             "trackingUuid": "824afe80-9ebc-11e3-a5e2-0800200c9a66",
-            "userId": {
+            "user": {
                 "href": "https://data.oculusvr.com/v1/users/123",
                 "id": 123
             },
-            "offerId": {
+            "developer": {
+                "href": "https://data.oculusvr.com/v1/users/123456",
+                "id": 123456
+            },
+            "offer": {
                 "href": "https://data.oculusvr.com/v1/offers/12345",
                 "id": 12345
             },
-            "entitlementDefinitionId": {
+            "entitlementDefinition": {
                 "href": "https://data.oculusvr.com/v1/entitlementDefinitions/123",
                 "id": 123
             },
@@ -28,7 +32,10 @@ period is only used in post and put actions with timeUnit SECOND and has higher 
             "period": 31536000,
             "consumable": true,
             "useCount": 10,
-            "managedLifecycle": false
+            "managedLifecycle": false,
+            "group": "test",
+            "tag": "test",
+            "type": "DOWNLOAD"
         }
 
 ##resource entitlement list
@@ -43,49 +50,65 @@ period is only used in post and put actions with timeUnit SECOND and has higher 
                 "self": {
                     "href": "https://data.oculusvr.com/v1/entitlements/123",
                     "id": 123
-                },
-                "userId": {
+                 },
+                "user": {
                     "href": "https://data.oculusvr.com/v1/users/123",
                     "id": 123
                 },
-                "offerId": {
+                "developer": {
+                    "href": "https://data.oculusvr.com/v1/users/123456",
+                    "id": 123456
+                },
+                "offer": {
                     "href": "https://data.oculusvr.com/v1/offers/12345",
                     "id": 12345
                 },
-                "entitlementDefinitionId": {
+                "entitlementDefinition": {
                     "href": "https://data.oculusvr.com/v1/entitlementDefinitions/123",
                     "id": 123
                 },
                 "status":"ACTIVE",
-                "grantTime": "2014-01-01T00:00:00Z", 
+                "grantTime": "2014-01-01T00:00:00Z",
                 "expirationTime": "2014-04-01T00:00:00Z",
-                "consumable": false,
-                "managedLifecycle": false
+                "consumable": true,
+                "useCount": 10,
+                "managedLifecycle": false,
+                "group": "test",
+                "tag": "test",
+                "type": "DOWNLOAD"
             },
             { 
                 "self": {
-                    "href": "https://data.oculusvr.com/v1/entitlements/234",
-                    "id": 234
-                },   
-                "userId": {
+                    "href": "https://data.oculusvr.com/v1/entitlements/1234",
+                    "id": 1234
+                 },
+                "user": {
                     "href": "https://data.oculusvr.com/v1/users/123",
                     "id": 123
                 },
-                "offerId": {
-                    "href": "https://data.oculusvr.com/v1/offers/23456",
-                    "id": 23456
+                "developer": {
+                    "href": "https://data.oculusvr.com/v1/users/123456",
+                    "id": 123456
                 },
-                "entitlementDefinitionId": {
-                    "href": "https://data.oculusvr.com/v1/entitlementDefinitions/234",
-                    "id": 234
+                "offer": {
+                    "href": "https://data.oculusvr.com/v1/offers/123456",
+                    "id": 123456
+                },
+                "entitlementDefinition": {
+                    "href": "https://data.oculusvr.com/v1/entitlementDefinitions/1234",
+                    "id": 1234
                 },
                 "status":"ACTIVE",
-                "grantTime": "2014-01-01T00:00:00Z", 
-                "expirationTime": "2014-04-01T00:00:00Z",   
-                "consumable": false,
-                "managedLifecycle": false
+                "grantTime": "2014-01-01T00:00:00Z",
+                "expirationTime": "2014-04-01T00:00:00Z",
+                "consumable": true,
+                "useCount": 10,
+                "managedLifecycle": false,
+                "group": "test",
+                "tag": "test2",
+                "type": "DOWNLOAD"
             }],
-            "next": "https://data.oculusvr.com/v1/users/123/entitlements?start=50"
+            "next": "END"
         }
 
 ##resource entitlementDefinition
@@ -187,7 +210,7 @@ create a new entitlement
 
 
 ##GET /users/{userId}/entitlements?developerId={developerId}status={status}&type={type}&offerId={offerId}&group={group}&tag={tag}&definitionId={definitionId}
-get and filter all entitlements for specified user. Should use search for complex filter.
+get and filter all entitlements for specified user.
 
 + Parameters
 
@@ -198,34 +221,15 @@ get and filter all entitlements for specified user. Should use search for comple
     + group(optional)
     + tag(optional)
     + definitionId(optional)
+    + startGrantTime(optional)
+    + endGrantTime(optional)
+    + startExpirationTime(optional)
+    + endExpirationTime(optional)
+    + lastModifiedTime(optional)
 
 + Response 200 (application/json)
 
     the result [entitlements](#resource-entitlement-list)        
-
-##POST /entitlements/search
-filter entitlements 
-
-+ Request (application/json)
-
-        {
-            "userId": 123,
-            "developerId": 234,
-            "offerIds": [123, 234, 456],
-            "status": "ACTIVE",
-            "type": "ONLINE_ACCESS",
-            "groups": ["Football", "Basketball"], 
-            "tags": ["GOLDEN_PLAYER", "GUN_AK47"],
-            "startGrantTime":"2014-01-01T00:00:00Z", 
-            "endGrantTime": "2014-03-01T00:00:00Z", 
-            "startExpirationTime": "2014-04-01T00:00:00Z", 
-            "endExpirationTime": "2014-07-01T00:00:00Z",
-            "lastModifiedTime": "2014-01-01T00:00:00Z"
-        }
-
-+ Response 200 (application/json)
-
-    the result [entitlements](#resource-entitlement-list)  
 
 ##POST /entitlements/transfer
 transfer an entitlement to another user
@@ -234,9 +238,14 @@ transfer an entitlement to another user
 
         {
             "trackingUuid": "824afe80-9ebc-11e3-a5e2-0800200c9a66",
-            "userId": "user1", 
-            "targetUserId": "user2", 
-            "entitlementId": "123"
+            "targetUser": {
+                "href": "https://data.oculusvr.com/v1/users/12345",
+                "id": 12345
+            }, 
+            "entitlement": {
+                "href": "https://data.oculusvr.com/v1/entitlements/123",
+                "id": 123
+            }
         }
 
 + Response 200 (application/json)
@@ -249,7 +258,7 @@ transfer an entitlement to another user
             "message": "INVALID_ENTITLEMENT"
         }
 
-## /entitlementDefinitions/{id}
+## /entitlement-definitions/{id}
 ###GET
 get entitlementDefinition by entitlementDefinition Id
 
@@ -281,7 +290,7 @@ delete an existing entitlementDefinition
             "message": "ENTITLEMENT_DEFINITION_NOT_FOUND"
         }
 
-##POST /entitlementDefinitions
+##POST /entitlement-definitions
 create a new entitlementDefinition
 
 + Request (application/json)
@@ -293,7 +302,7 @@ create a new entitlementDefinition
     the created [entitlementDefinition](#resource-entitlementdefinition)
 
 
-##GET /entitlementDefinitions?developerId={developerId}type={type}&group={group}&tag={tag}
+##GET /entitlement-definitions?developerId={developerId}type={type}&group={group}&tag={tag}
 get and filter entitlementDefinitions.
 
 + Parameters

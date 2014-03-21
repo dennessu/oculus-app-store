@@ -13,4 +13,5 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 interface RefreshTokenDAO extends BaseDAO<RefreshTokenEntity, String> {
+    List<RefreshTokenEntity> findByUserIdClientId(Long userId, String clientId)
 }

@@ -5,6 +5,7 @@ import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
 import com.junbo.order.spec.error.AppErrors
+import com.junbo.payment.spec.enums.PIStatus
 import com.junbo.payment.spec.model.PaymentInstrument
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
@@ -26,11 +27,11 @@ class ValidatePaymentInstrumentsAction implements com.junbo.langur.core.webflow.
         // validate payments
         return orderServiceContextBuilder.getPaymentInstruments(
                 context.orderServiceContext).syncThen { List<PaymentInstrument> pis ->
-            if (pis.find { PaymentInstrument pi -> pi.status == 'ACTIVE' } == null) {
-                throw AppErrors.INSTANCE.paymentStatusInvalid().exception()
+            def invalidPi = pis.find { PaymentInstrument pi -> pi.status != PIStatus.ACTIVE.toString() }
+            if (invalidPi != null) {
+                throw AppErrors.INSTANCE.paymentInstrumentStatusInvalid(invalidPi.id.toString()).exception()
             }
             return null
         }
     }
-
 }

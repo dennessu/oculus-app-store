@@ -2,19 +2,27 @@ var Utils = require('../utils/utils');
 
 var ClientConfigs = {
 
+    // Environments
+    SocketAddress: "http://localhost:3000",
+
+    // Global
     CookiesTimeout: 60 * 60 * 1000,
     Google_Captcha_PublicKey: "6LeKhO4SAAAAAL53gitVTB5ddevC59wE-6usFCnT",
     Feature: {
-        Captcha: true,
-        TFA: true
+        Captcha: false,
+        TFA: true,
+        PIN: true
     },
     CookiesName: {
         AccessToken: "access_token",
         IdToken: "id_token",
-        IsAuthenticate: "is_auth",
+        ConversationId: "cid",
+        Event: "event",
+        RedirectUrl: "redirect_url",
+
         UserId: "user_id",
         Username: "username",
-        RedirectUrl: "redirect_url"
+        CartId: 'cart_id'
     },
     QueryStrings: {
         Code: "code",
@@ -26,7 +34,7 @@ var ClientConfigs = {
     },
     SettingTypeEnum:{
         Cookie: 'cookie'
-    },
+    }
 };
 
 module.exports = ClientConfigs;

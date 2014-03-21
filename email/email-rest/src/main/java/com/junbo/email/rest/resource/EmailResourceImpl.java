@@ -34,16 +34,17 @@ public class EmailResourceImpl implements EmailResource {
 
     @Override
     public Promise<Email> getEmail(Long id) {
-        return null;
+        return emailService.getEmail(id);
     }
 
     @Override
     public Promise<Email> putEmail(Long id, Email email) {
-        return null;
+        return emailService.updateEmail(id, email);
     }
 
     @Override
     public Promise<Response> deleteEmail(Long id) {
+        emailService.deleteEmail(id);
         return Promise.pure(Response.status(204).build());
     }
 }

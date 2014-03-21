@@ -29,9 +29,7 @@ class ActionContextWrapper {
     public static final String RESPONSE_HEADER_MAP = 'response_headers_map'
     public static final String RESPONSE_COOKIE_LIST = 'response_cookies_map'
     public static final String CLIENT = 'client'
-    public static final String CLIENT_ID = 'client_id'
     public static final String OAUTH_INFO = 'oauth_info'
-    public static final String FLOW_STATE = 'flow_state'
     public static final String LOGIN_STATE = 'login_state'
     public static final String AUTHORIZATION_CODE = 'authorization_code'
     public static final String ACCESS_TOKEN = 'access_token'
@@ -42,6 +40,7 @@ class ActionContextWrapper {
     public static final String NEED_REMEMBER_ME = 'need_remember_me'
     public static final String REMEMBER_ME_TOKEN = 'remember_me_token'
     public static final String TOKEN_INFO = 'token_info'
+    public static final String CONSENT = 'consent'
 
     @Delegate
     private final ActionContext actionContext
@@ -120,14 +119,6 @@ class ActionContextWrapper {
         actionContext.flowScope[CLIENT] = appClient
     }
 
-    String getClientId() {
-        return (String) actionContext.requestScope[CLIENT_ID]
-    }
-
-    void setClientId(String clientId) {
-        actionContext.requestScope[CLIENT_ID] = clientId
-    }
-
     OAuthInfo getOauthInfo() {
         if (actionContext.flowScope[OAUTH_INFO] == null) {
             actionContext.flowScope[OAUTH_INFO] = new OAuthInfo()
@@ -137,14 +128,6 @@ class ActionContextWrapper {
 
     void setOauthInfo(OAuthInfo oauthInfo) {
         actionContext.flowScope[OAUTH_INFO] = oauthInfo
-    }
-
-    FlowState getFlowState() {
-        return (FlowState) actionContext.requestScope[FLOW_STATE]
-    }
-
-    void setFlowState(FlowState flowState) {
-        actionContext.requestScope[FLOW_STATE] = flowState
     }
 
     LoginState getLoginState() {
@@ -225,5 +208,13 @@ class ActionContextWrapper {
 
     void setTokenInfo(TokenInfo tokenInfo) {
         actionContext.requestScope[TOKEN_INFO] = tokenInfo
+    }
+
+    Consent getConsent() {
+        return (Consent) actionContext.flowScope[CONSENT]
+    }
+
+    void setConsent(Consent consent) {
+        actionContext.flowScope[CONSENT] = consent
     }
 }

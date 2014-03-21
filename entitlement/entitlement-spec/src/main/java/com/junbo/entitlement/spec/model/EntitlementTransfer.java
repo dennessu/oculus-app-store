@@ -6,6 +6,7 @@
 
 package com.junbo.entitlement.spec.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.jackson.annotation.EntitlementId;
 import com.junbo.common.jackson.annotation.UserId;
 
@@ -17,10 +18,10 @@ import java.util.UUID;
 public class EntitlementTransfer {
     private UUID trackingUuid;
     @UserId
-    private Long userId;
-    @UserId
+    @JsonProperty("targetUser")
     private Long targetUserId;
     @EntitlementId
+    @JsonProperty("entitlement")
     private Long entitlementId;
 
     public UUID getTrackingUuid() {
@@ -29,14 +30,6 @@ public class EntitlementTransfer {
 
     public void setTrackingUuid(UUID trackingUuid) {
         this.trackingUuid = trackingUuid;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
     }
 
     public Long getTargetUserId() {

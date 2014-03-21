@@ -1,7 +1,7 @@
 'use strict';
 
 /* Controllers */
-var app = angular.module('catalogAdmin.controllers', []);
+var app = angular.module('catalog.controllers', ['ui.bootstrap']);
 
 // Clear browser cache (in development mode)
 //
@@ -12,8 +12,8 @@ app.run(function ($rootScope, $templateCache) {
   });
 });
 
-app.controller('OfferListCtrl', ['$scope', 'OffersFactory', '$location',
-  function($scope, OffersFactory, $location) {
+app.controller('OfferListCtrl', ['$scope', 'OffersFactory', '$routeParams', '$location',
+  function($scope, OffersFactory, $routeParams, $location) {
       $scope.createOffer = function () {
           OffersFactory.create($scope.offer, function(offer){
               $location.path('/offers/' + offer.self.id);
@@ -22,17 +22,95 @@ app.controller('OfferListCtrl', ['$scope', 'OffersFactory', '$location',
       $scope.cancel = function () {
           $location.path('/offers');
       };
-  	  $scope.offers = OffersFactory.query();
+  	  $scope.offers = OffersFactory.query($routeParams);
   }]);
 
-app.controller('OfferDetailCtrl', ['$scope', 'OfferFactory', '$routeParams', '$location',
-    function($scope, OfferFactory, $routeParams, $location) {
+app.controller('OfferCreationCtrl', ['$scope', 'OffersFactory', 'AttributesFactory', '$routeParams', '$location',
+    function($scope, OffersFactory, AttributesFactory, $routeParams, $location) {
+        $scope.createOffer = function () {
+            OffersFactory.create($scope.offer, function(offer){
+                $location.path('/offers/' + offer.self.id);
+            });
+        };
+        $scope.cancel = function () {
+            $location.path('/offers');
+        };
+
+        $scope.addItem = function(item) {
+            $scope.selectedItems[item.self.id] = item;
+        };
+        $scope.removeItem = function(item) {
+            delete $scope.selectedItems[item.self.id];
+        };
+        $scope.saveItems = function() {
+            $scope.offer.items = [];
+            Object.keys( $scope.selectedItems ).forEach(function( key ) {
+                $scope.offer.items.push({itemId: $scope.selectedItems[key].self});
+            });
+        };
+        $scope.selectedItems = {};
+        $scope.isCollapsed = true;
+        // TODO: change to ItemsFactory
+        $scope.items = AttributesFactory.query();
+
+        $scope.typeAttributes = AttributesFactory.query({type: "Type"});
+        $scope.offers = OffersFactory.query($routeParams);
+    }]);
+
+app.controller('OfferReviewListCtrl', ['$scope', 'OffersFactory', '$location',
+    function($scope, OffersFactory, $location) {
+        $scope.createOffer = function () {
+            OffersFactory.create($scope.offer, function(offer){
+                $location.path('/offers/' + offer.self.id);
+            });
+        };
+        $scope.cancel = function () {
+            $location.path('/offers');
+        };
+        $scope.offers = OffersFactory.query({status: 'PendingReview'});
+    }]);
+
+app.controller('OfferResponseCtrl', ['$scope', '$routeParams', 'OfferResponse',
+    function($scope, $routeParams, OfferResponse) {
+        $scope.response = OfferResponse.data;
+        $scope.offerId = $routeParams.id;
+    }]);
+
+app.controller('OfferDetailCtrl', ['$scope', 'OfferFactory', '$routeParams', '$location','OfferResponse',
+    function($scope, OfferFactory, $routeParams, $location, OfferResponse) {
         console.log("OfferDetailCtrl");
         console.log($routeParams);
 
         $scope.updateOffer = function () {
-            OfferFactory.update({id: $routeParams.id}, $scope.offer);
-            $location.path('/offers/' + $routeParams.id);
+            OfferFactory.update({id: $routeParams.id}, $scope.offer, function(offer){
+                OfferResponse.data = "Offer updated successfully!";
+                $location.path('/offers/' + $routeParams.id + '/response');
+            });
+        };
+
+        $scope.releaseOffer = function () {
+            $scope.offer.status="Released";
+            OfferFactory.update({id: $routeParams.id}, $scope.offer, function(offer){
+                OfferResponse.data = "Offer released successfully!";
+                $location.path('/offers/' + $routeParams.id + '/response');
+            });
+        };
+
+        $scope.reviewOffer = function () {
+            $scope.offer.status="PendingReview";
+
+            OfferFactory.update({id: $routeParams.id}, $scope.offer, function(offer){
+                OfferResponse.data = "Offer submitted for review!";
+                $location.path('/offers/' + $routeParams.id + '/response');
+            });
+        };
+
+        $scope.rejectOffer = function () {
+            $scope.offer.status="Rejected";
+            OfferFactory.update({id: $routeParams.id}, $scope.offer, function(offer){
+                OfferResponse.data = "Offer rejected successfully!";
+                $location.path('/offers/' + $routeParams.id + '/response');
+            });
         };
 
         $scope.cancel = function () {
@@ -40,6 +118,31 @@ app.controller('OfferDetailCtrl', ['$scope', 'OfferFactory', '$routeParams', '$l
         };
 
         $scope.offer = OfferFactory.query($routeParams);
+    }]);
+
+app.controller('AttributeListCtrl', ['$scope', 'AttributesFactory', '$location',
+    function($scope, AttributesFactory, $location) {
+        $scope.createAttribute = function () {
+            AttributesFactory.create($scope.attribute, function(attribute){
+                $location.path('/attributes/' + attribute.self.id);
+            });
+        };
+        $scope.cancel = function () {
+            $location.path('/attributes');
+        };
+        $scope.attributes = AttributesFactory.query();
+    }]);
+
+app.controller('AttributeDetailCtrl', ['$scope', 'AttributeFactory', '$routeParams', '$location',
+    function($scope, AttributeFactory, $routeParams, $location) {
+        console.log("AttributeDetailCtrl");
+        console.log($routeParams);
+
+        $scope.cancel = function () {
+            $location.path('/attributes/' + $routeParams.id);
+        };
+
+        $scope.attribute = AttributeFactory.query($routeParams);
     }]);
 
 app.controller('MyCtrl2', [function() {

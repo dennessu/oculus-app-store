@@ -58,6 +58,14 @@ var Utils = {
         return Ember.TEMPLATES[templateObj.name];
     },
 
+    GetProperty: function(obj, propertyName){
+        for (var p in obj) {
+            if(p == propertyName)
+                return obj[p];
+        }
+        return null;
+    },
+
     Cookies: {
         Set: function (name, value) {
             var Days = 30;
@@ -144,12 +152,9 @@ var Utils = {
         @arguments: 0:Data, 1:query, 2:cookies
      */
     GenerateRequestModel: function(){
-        if(arguments.length <= 0){
-            throw "Need pass request model data object!";
-        }
 
         var requestModel = new RequestDataModel();
-        requestModel.data = arguments[0];
+        if(arguments.length > 0) requestModel.data = arguments[0];
         if(arguments.length > 1) requestModel.query = arguments[1];
         requestModel.cookies = Utils.Cookies.GetAll();
 

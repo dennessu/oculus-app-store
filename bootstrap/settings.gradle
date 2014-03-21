@@ -2,3 +2,4 @@
 include 'identity-bundle'
 include 'commerce-bundle'
 include 'catalog-bundle'
+include 'docs-bundle'

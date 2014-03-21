@@ -1,3 +1,4 @@
+rootProject.name = 'order'
 include 'order-spec'
 
 include 'order-db'
@@ -7,3 +8,4 @@ include 'order-rest'
 include 'order-mock'
 include 'order-jobs'
 include 'order-app'
+include 'order-integration'

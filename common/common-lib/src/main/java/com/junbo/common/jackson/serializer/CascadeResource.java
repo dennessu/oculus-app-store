@@ -7,7 +7,10 @@ package com.junbo.common.jackson.serializer;
 
 /**
  * CascadeResource.
+ *
+ * @deprecated replaced by CompoundAware
  */
+@Deprecated
 public class CascadeResource {
     private Object primaryId;
     private Object[] cascadeIds;

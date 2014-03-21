@@ -76,7 +76,7 @@ Fields:
                 ]
          }
 
-## POST /user/{key}/carts
+## POST /users/{key}/carts
 Create a named shopping cart for a user.
 
 + Request (application/json)
@@ -92,7 +92,7 @@ Create a named shopping cart for a user.
 
     [Cart][]
 
-## GET /user/{keyUser}/carts/{keyCart}
+## GET /users/{keyUser}/carts/{keyCart}
 Get the shopping cart by key of the cart. This is the canonical URI for the cart resources.
 
 + Parameters
@@ -126,7 +126,7 @@ Get the carts by cart name. This is the convenience URI for the cart resources.
     + Body
     [Cart][]
 
-## PUT /user/{keyUser}/carts/{keyCart}
+## PUT /users/{keyUser}/carts/{keyCart}
 Fully update the cart.
 
 + Request (application/json)
@@ -136,7 +136,7 @@ Fully update the cart.
 + Response 200
     [Cart][]
 
-## POST /user/{keyUser}/carts/{keyCart}/merge
+## POST /users/{keyUser}/carts/{keyCart}/merge
 Merge the items from the shopping cart given by the request into the cart given by Uri
 
 + Request (application/json)
@@ -157,70 +157,3 @@ Merge the items from the shopping cart given by the request into the cart given 
 
 + Response 200
     [Cart][]
-
-## POST /users/{keyUser}/carts/{keyCart}/offers
-Add an offer into the cart.
-
-+ Request (application/json)
-    + Body
-
-            {
-                "offer":
-                    {
-                        "href": "http://api.oculusvr.com/offers/12345",
-                        "id": "12345"
-                    },
-                "quantity": 20,
-                "selected": true
-            }
-
-+ Response 200
-    [Cart][]
-
-## PUT /users/{userKey}/carts/{cartKey}/offers/{offerKey}
-Update the offers in the cart.
-
-+ Request (application/json)
-    + Body
-
-            {
-                "offer":
-                    {
-                        "href": "http://api.oculusvr.com/offers/12345",
-                        "id": "12345"
-                    },
-                "quantity": 20,
-	            "selected": true
-            }
-
-+ Response 200
-    [Cart][]
-
-## DELETE /users/{userKey}/carts/{cartKey}/offers/{offerKey}
-Remove an item from cart
-
-+ Response 204
-
-
-## POST /users/{userKey}/carts/{cartKey}/coupons
-Add an coupon item into cart.
-
-+ Request (application/json)
-    + Body
-
-            {
-                "coupon":
-                    {
-                        "href": "http://api.oculusvr.com/coupons/1000013",
-                        "id": "1000013"
-                    }
-            }
-
-+ Response 200
-    [Cart][]
-
-## DELETE  /users/{userKey}/carts/{cartKey}/coupons/{couponKey}
-Remove an coupon item from the cart.
-
-
-+ Response 204

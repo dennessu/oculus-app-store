@@ -14,6 +14,7 @@ import com.junbo.ewallet.spec.model.Wallet
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.util.CollectionUtils
 
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
@@ -66,8 +67,16 @@ class WalletServiceImpl implements WalletService {
             throw AppErrors.INSTANCE.fieldNotCorrect('balance', 'balance should be 0.').exception()
         }
 
-        Wallet result = walletRepo.create(wallet)
+        if (!CollectionUtils.isEmpty(wallet.transactions)) {
+            throw AppErrors.INSTANCE.unnecessaryField('transactions').exception()
+        }
 
+        Wallet existed = walletRepo.get(wallet.userId, wallet.type, wallet.currency)
+        if (existed != null) {
+            return existed
+        }
+
+        Wallet result = walletRepo.create(wallet)
         return result
     }
 
@@ -153,6 +162,12 @@ class WalletServiceImpl implements WalletService {
     List<Transaction> getTransactions(Long walletId) {
         List<Transaction> result = walletRepo.getTransactions(walletId)
         return result
+    }
+
+    @Override
+    @Transactional
+    Wallet getByTrackingUuid(UUID trackingUuid) {
+        return walletRepo.getByTrackingUuid(trackingUuid)
     }
 
     private void checkUserId(Long userId) {

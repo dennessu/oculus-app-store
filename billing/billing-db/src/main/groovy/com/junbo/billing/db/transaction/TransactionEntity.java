@@ -67,7 +67,6 @@ public class TransactionEntity extends BaseEntity {
     }
 
     @Column(name = "payment_ref_id")
-    @NotNull(message = EntityValidationCode.MISSING_VALUE)
     public String getPaymentRefId() {
         return paymentRefId;
     }

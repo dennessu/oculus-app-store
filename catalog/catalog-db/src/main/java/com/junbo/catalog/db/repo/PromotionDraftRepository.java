@@ -47,12 +47,12 @@ public class PromotionDraftRepository implements EntityDraftRepository<Promotion
     }
 
     @Override
-    public List<Promotion> getEntities(int start, int size) {
-        return getEffectivePromotions(start, size);
+    public List<Promotion> getEntities(int start, int size, String status) {
+        return getEffectivePromotions(start, size, status);
     }
 
-    public List<Promotion> getEffectivePromotions(int start, int size) {
-        List<PromotionDraftEntity> entities = promotionDraftDao.getEffectivePromotions(start, size);
+    public List<Promotion> getEffectivePromotions(int start, int size, String status) {
+        List<PromotionDraftEntity> entities = promotionDraftDao.getEffectivePromotions(start, size, status);
 
         List<Promotion> promotions = new ArrayList<>();
         for (PromotionDraftEntity entity : entities) {

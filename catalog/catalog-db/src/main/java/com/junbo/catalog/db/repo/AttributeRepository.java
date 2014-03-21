@@ -37,8 +37,8 @@ public class AttributeRepository {
         return attribute;
     }
 
-    public List<Attribute> getAttributes(int start, int size) {
-        List<AttributeEntity> attributeEntities = attributeDao.getAttributes(start, size);
+    public List<Attribute> getAttributes(int start, int size, String attributeType) {
+        List<AttributeEntity> attributeEntities = attributeDao.getAttributes(start, size, attributeType);
         List<Attribute> attributes = new ArrayList<>();
         for (AttributeEntity attributeEntity : attributeEntities) {
             Attribute attribute = new Attribute();

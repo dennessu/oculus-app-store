@@ -1,6 +1,6 @@
 package com.junbo.fulfilment.core.service;
 
-import com.junbo.fulfilment.common.exception.FulfilmentException;
+import com.junbo.common.error.AppErrorException;
 import com.junbo.fulfilment.core.BaseTest;
 import com.junbo.fulfilment.core.FulfilmentService;
 import com.junbo.fulfilment.spec.model.FulfilmentItem;
@@ -38,7 +38,7 @@ public class FulfilmentServiceTest extends BaseTest {
         Assert.assertEquals(request2.getRequestId(), request.getRequestId(), "Request id should match.");
     }
 
-    @Test(expectedExceptions = FulfilmentException.class, expectedExceptionsMessageRegExp = "BillingOrderId.*already exists.*")
+    @Test(expectedExceptions = AppErrorException.class)
     public void testDuplicatedBillingOrderId() {
         FulfilmentRequest request = createRequest();
         service.fulfill(request);

@@ -44,7 +44,7 @@ public class AttributeServiceImpl implements AttributeService {
             return attributes;
         } else {
             options.ensurePagingValid();
-            return attributeRepo.getAttributes(options.getStart(), options.getSize());
+            return attributeRepo.getAttributes(options.getStart(), options.getSize(), options.getAttributeType());
         }
     }
 

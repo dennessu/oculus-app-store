@@ -15,8 +15,9 @@
         </wf:end-state>
     </wf:flow>
 
-    <bean id="mockRateOrder_CreateOrderAction" class="com.junbo.order.core.impl.orderaction.CreateOrderAction">
+    <bean id="mockRateOrder_CreateOrderAction" class="com.junbo.order.core.impl.orderaction.SaveOrderAction">
         <property name="orderActionType" value="RATE"></property>
+        <property name="builder" ref="mockOrderServiceContextBuilder"/>
     </bean>
 
 </beans>

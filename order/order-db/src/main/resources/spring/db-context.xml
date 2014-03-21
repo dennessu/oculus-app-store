@@ -24,7 +24,7 @@
     </bean>
 
     <!-- SessonFactory for Hibernate -->
-    <bean id="sessionFactory"
+    <bean id="orderSessionFactory"
           class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
         <property name="dataSource" ref="orderDataSource"/>
         <property name="packagesToScan" value="com.junbo.order.db.entity" />

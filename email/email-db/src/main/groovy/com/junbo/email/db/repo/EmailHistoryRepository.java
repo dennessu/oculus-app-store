@@ -33,19 +33,31 @@ public class EmailHistoryRepository {
     private IdGeneratorFacade idGenerator;
 
     public Long updateEmailHistory(Email email) {
-        EmailHistoryEntity entity = updateEmailHistoryEntity(emailMapper.toEmailHistoryEntity(email));
-        return emailHistoryDao.update(entity);
+        EmailHistoryEntity entity = emailMapper.toEmailHistoryEntity(email);
+        EmailHistoryEntity savedEntity  = emailHistoryDao.get(entity.getId());
+        savedEntity.setStatus(entity.getStatus());
+        savedEntity.setStatusReason(entity.getStatusReason());
+        savedEntity.setRetryCount(entity.getRetryCount());
+        savedEntity.setSentDate(entity.getSentDate());
+        savedEntity.setIsResend(entity.getIsResend());
+        savedEntity.setUpdatedTime(new Date());
+        savedEntity.setUpdatedBy("internal system");
+
+        return  emailHistoryDao.update(savedEntity);
     }
 
     public Long createEmailHistory(Email email) {
         EmailHistoryEntity entity = emailMapper.toEmailHistoryEntity(email);
         entity.setId(getId(email.getUserId() != null ? email.getUserId().getValue() : null));
         entity.setCreatedTime(new Date());
+        entity.setCreatedBy("internal system");
+
         return emailHistoryDao.save(entity);
     }
 
     public Email getEmail(Long id) {
         EmailHistoryEntity entity = getEmailHistoryEntity(id);
+
         return emailMapper.toEmail(entity);
     }
 
@@ -57,14 +69,7 @@ public class EmailHistoryRepository {
         if(userId != null) {
             return idGenerator.nextId(EmailId.class, userId);
         }
-        return idGenerator.nextId(EmailId.class);
-    }
 
-    private EmailHistoryEntity updateEmailHistoryEntity(EmailHistoryEntity entity) {
-        EmailHistoryEntity emailHistoryEntity = getEmailHistoryEntity(entity.getId());
-        entity.setCreatedBy(emailHistoryEntity.getCreatedBy());
-        entity.setCreatedTime(emailHistoryEntity.getCreatedTime());
-        entity.setUpdatedTime(new Date());
-        return entity;
+        return idGenerator.nextId(EmailId.class);
     }
 }

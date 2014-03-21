@@ -5,8 +5,6 @@
        xmlns:tx="http://www.springframework.org/schema/tx"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
-    <import resource="classpath*:spring/transaction.xml"/>
-
     <context:component-scan base-package="com.junbo.oom.core.builtin"/>
     <context:component-scan base-package="com.junbo.billing.db"/>
 
@@ -16,7 +14,7 @@
     <!--Data source has the database information -->
     <bean id="billingDataSource" class="bitronix.tm.resource.jdbc.PoolingDataSource"
           init-method="init" destroy-method="close">
-        <property name="uniqueName" value="jdbc/id_ds1"/>
+        <property name="uniqueName" value="jdbc/billing"/>
         <property name="className" value="org.postgresql.xa.PGXADataSource"/>
         <property name="minPoolSize" value="${billing.db.minConnectionsPerPartition}"/>
         <property name="maxPoolSize" value="${billing.db.maxConnectionsPerPartition}"/>
@@ -30,7 +28,7 @@
     </bean>
 
     <!-- SessonFactory for Hibernate -->
-    <bean id="sessionFactory"
+    <bean id="billingSessionFactory"
           class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
         <property name="dataSource" ref="billingDataSource"/>
         <property name="packagesToScan" value="com.junbo.billing.db.*" />
@@ -46,60 +44,58 @@
         </property>
     </bean>
 
-    <tx:annotation-driven transaction-manager="transactionManager" />
-
     <!-- Dao -->
-    <bean id="baseDao"
+    <bean id="billingBaseDao"
           class="com.junbo.billing.db.BaseDaoImpl" abstract="true">
     </bean>
 
     <bean id="shippingAddressEntityDao"
-          class="com.junbo.billing.db.dao.impl.ShippingAddressEntityDaoImpl" parent="baseDao">
+          class="com.junbo.billing.db.dao.impl.ShippingAddressEntityDaoImpl" parent="billingBaseDao">
         <property name="entityType" value="com.junbo.billing.db.address.ShippingAddressEntity"/>
     </bean>
 
     <bean id="currencyEntityDao"
-          class="com.junbo.billing.db.dao.impl.CurrencyEntityDaoImpl" parent="baseDao">
+          class="com.junbo.billing.db.dao.impl.CurrencyEntityDaoImpl" parent="billingBaseDao">
         <property name="entityType" value="com.junbo.billing.db.currency.CurrencyEntity"/>
     </bean>
 
     <bean id="balanceEntityDao"
-          class="com.junbo.billing.db.dao.impl.BalanceEntityDaoImpl" parent="baseDao">
+          class="com.junbo.billing.db.dao.impl.BalanceEntityDaoImpl" parent="billingBaseDao">
         <property name="entityType" value="com.junbo.billing.db.balance.BalanceEntity"/>
     </bean>
 
     <bean id="balanceEventEntityDao"
-          class="com.junbo.billing.db.dao.impl.BalanceEventEntityDaoImpl" parent="baseDao">
+          class="com.junbo.billing.db.dao.impl.BalanceEventEntityDaoImpl" parent="billingBaseDao">
         <property name="entityType" value="com.junbo.billing.db.balance.BalanceEventEntity"/>
     </bean>
 
     <bean id="balanceItemEntityDao"
-          class="com.junbo.billing.db.dao.impl.BalanceItemEntityDaoImpl" parent="baseDao">
+          class="com.junbo.billing.db.dao.impl.BalanceItemEntityDaoImpl" parent="billingBaseDao">
         <property name="entityType" value="com.junbo.billing.db.balance.BalanceItemEntity"/>
     </bean>
 
     <bean id="discountItemEntityDao"
-          class="com.junbo.billing.db.dao.impl.DiscountItemEntityDaoImpl" parent="baseDao">
+          class="com.junbo.billing.db.dao.impl.DiscountItemEntityDaoImpl" parent="billingBaseDao">
         <property name="entityType" value="com.junbo.billing.db.balance.DiscountItemEntity"/>
     </bean>
 
     <bean id="taxItemEntityDao"
-          class="com.junbo.billing.db.dao.impl.TaxItemEntityDaoImpl" parent="baseDao">
+          class="com.junbo.billing.db.dao.impl.TaxItemEntityDaoImpl" parent="billingBaseDao">
         <property name="entityType" value="com.junbo.billing.db.balance.TaxItemEntity"/>
     </bean>
 
     <bean id="orderBalanceLinkEntityDao"
-          class="com.junbo.billing.db.dao.impl.OrderBalanceLinkEntityDaoImpl" parent="baseDao">
+          class="com.junbo.billing.db.dao.impl.OrderBalanceLinkEntityDaoImpl" parent="billingBaseDao">
         <property name="entityType" value="com.junbo.billing.db.balance.OrderBalanceLinkEntity"/>
     </bean>
 
     <bean id="transactionEntityDao"
-          class="com.junbo.billing.db.dao.impl.TransactionEntityDaoImpl" parent="baseDao">
+          class="com.junbo.billing.db.dao.impl.TransactionEntityDaoImpl" parent="billingBaseDao">
         <property name="entityType" value="com.junbo.billing.db.transaction.TransactionEntity"/>
     </bean>
 
     <bean id="transactionEventEntityDao"
-          class="com.junbo.billing.db.dao.impl.TransactionEventEntityDaoImpl" parent="baseDao">
+          class="com.junbo.billing.db.dao.impl.TransactionEventEntityDaoImpl" parent="billingBaseDao">
         <property name="entityType" value="com.junbo.billing.db.transaction.TransactionEventEntity"/>
     </bean>
 

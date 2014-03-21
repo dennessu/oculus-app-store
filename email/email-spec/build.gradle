@@ -15,8 +15,6 @@ dependencies {
 
     processor (libraries.langur_processor)
     processor (libraries.log4j)
-
-    compile project(':email-common')
 }
 
 ext {

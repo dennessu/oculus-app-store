@@ -12,6 +12,7 @@ import com.junbo.order.db.entity.CommonDbEntityWithDate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import java.lang.reflect.ParameterizedType;
@@ -26,6 +27,7 @@ import java.util.Date;
 @Repository("baseDao")
 public class BaseDaoImpl<T extends CommonDbEntityWithDate> implements BaseDao<T> {
     @Autowired
+    @Qualifier("orderSessionFactory")
     private SessionFactory sessionFactory;
 
     private Class<T> entityType;
@@ -63,6 +65,9 @@ public class BaseDaoImpl<T extends CommonDbEntityWithDate> implements BaseDao<T>
     }
 
     public void update(T t) {
+        t.setUpdatedBy("dev");
+        Date now = new Date();
+        t.setUpdatedTime(now);
         this.getSession().merge(t);
     }
 

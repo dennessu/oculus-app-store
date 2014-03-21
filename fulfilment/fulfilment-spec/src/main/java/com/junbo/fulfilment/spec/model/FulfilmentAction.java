@@ -6,11 +6,9 @@
 package com.junbo.fulfilment.spec.model;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.fulfilment.spec.fusion.LinkedEntry;
 
-import javax.validation.constraints.Null;
 import java.util.List;
 import java.util.Map;
 
@@ -21,7 +19,6 @@ import java.util.Map;
         getterVisibility = JsonAutoDetect.Visibility.NONE,
         isGetterVisibility = JsonAutoDetect.Visibility.NONE)
 public class FulfilmentAction {
-    @Null
     private Long actionId;
 
     @JsonProperty
@@ -33,14 +30,13 @@ public class FulfilmentAction {
     @JsonProperty
     private String result;
 
+    private Long fulfilmentId;
+
     private Map<String, String> properties;
 
     private List<LinkedEntry> items;
 
     private Integer copyCount;
-
-    @JsonIgnore
-    private Long fulfilmentId;
 
     public Long getActionId() {
         return actionId;

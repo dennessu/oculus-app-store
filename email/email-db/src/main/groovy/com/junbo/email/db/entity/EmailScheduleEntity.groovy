@@ -6,11 +6,15 @@
 package com.junbo.email.db.entity
 
 import javax.persistence.Column
+import javax.persistence.Entity
 import javax.persistence.Id
+import javax.persistence.Table
 
 /**
  * Entity of EmailSchedule
  */
+@Entity
+@Table(name = 'email_schedule')
 class EmailScheduleEntity extends BaseEntity {
     @Id
     @Column(name = 'id')

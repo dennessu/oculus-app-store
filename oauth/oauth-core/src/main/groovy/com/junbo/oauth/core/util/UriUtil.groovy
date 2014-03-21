@@ -6,6 +6,8 @@
 package com.junbo.oauth.core.util
 
 import groovy.transform.CompileStatic
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 import java.util.regex.Pattern
 
@@ -14,6 +16,8 @@ import java.util.regex.Pattern
  */
 @CompileStatic
 class UriUtil {
+    private final static Logger LOGGER = LoggerFactory.getLogger(UriUtil)
+
     static boolean match(String uri, String uriTemplate) {
         if (uriTemplate.contains('*')) {
             String redirectUriPattern = uriTemplate.replace('.', '\\.').replace('?', '\\?')
@@ -26,5 +30,16 @@ class UriUtil {
         }
 
         return false
+    }
+
+    static boolean isValidUri(String uri) {
+        try {
+            URI.create(uri)
+        } catch (IllegalArgumentException e) {
+            LOGGER.debug('Invalid uri format', e)
+            return false
+        }
+
+        return true
     }
 }

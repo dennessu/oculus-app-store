@@ -22,7 +22,12 @@ class CouchAccessTokenDAOImpl extends CouchBaseDAO<AccessTokenEntity> implements
                             '    emit(doc.refreshToken, doc._id);' +
                             '  }' +
                             '}',
-                    resultClass: String)]
+                    resultClass: String),
+                    'by_user_id_client_id': new CouchView(
+                            map: 'function(doc) {' +
+                                    '  emit(doc.userId + \':\' + doc.clientId, doc._id)' +
+                                    '}',
+                            resultClass: String)]
     )
 
     @Override
@@ -32,14 +37,11 @@ class CouchAccessTokenDAOImpl extends CouchBaseDAO<AccessTokenEntity> implements
 
     @Override
     List<AccessTokenEntity> findByRefreshToken(String refreshTokenValue) {
-        CouchSearchResult<String> searchResult = (CouchSearchResult<String>) queryView('by_refresh_token',
-                refreshTokenValue)
-        if (searchResult.rows != null) {
-            return searchResult.rows.collect { CouchSearchResult.ResultObject result ->
-                return get(result.id)
-            }
-        }
+        return queryView('by_refresh_token', refreshTokenValue)
+    }
 
-        return []
+    @Override
+    List<AccessTokenEntity> findByUserIdClientId(Long userId, String clientId) {
+        return queryView('by_user_id_client_id', userId.toString() + ':' + clientId)
     }
 }

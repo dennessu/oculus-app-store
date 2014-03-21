@@ -6,8 +6,6 @@
 
 package com.junbo.billing.spec.model;
 
-import com.junbo.common.id.TaxItemId;
-
 import java.math.BigDecimal;
 
 /**
@@ -15,18 +13,9 @@ import java.math.BigDecimal;
  */
 public class TaxItem {
 
-    private TaxItemId taxItemId;
     private String taxAuthority;
     private BigDecimal taxAmount;
     private BigDecimal taxRate;
-
-    public TaxItemId getTaxItemId() {
-        return taxItemId;
-    }
-
-    public void setTaxItemId(TaxItemId taxItemId) {
-        this.taxItemId = taxItemId;
-    }
 
     public String getTaxAuthority() {
         return taxAuthority;
