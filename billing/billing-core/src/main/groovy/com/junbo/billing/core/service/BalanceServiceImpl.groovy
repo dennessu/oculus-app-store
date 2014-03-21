@@ -20,7 +20,10 @@ import com.junbo.billing.spec.model.DiscountItem
 import com.junbo.billing.spec.model.TaxItem
 import com.junbo.identity.spec.model.user.User
 import com.junbo.langur.core.promise.Promise
+import com.junbo.payment.spec.model.PaymentInstrument
 import groovy.transform.CompileStatic
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 
@@ -52,43 +55,53 @@ class BalanceServiceImpl implements BalanceService {
     @Autowired
     TaxService taxService
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(BalanceServiceImpl)
+
     @Override
     Promise<Balance> addBalance(Balance balance) {
 
-        validateBalanceType(balance)
-        validateUser(balance)
-        validatePI(balance)
-        validateCurrency(balance)
-        validateCountry(balance)
-        validateBalanceItem(balance)
+        return validateUser(balance).then {
+            return validatePI(balance).then {
+            }
+        }.then {
+            validateBalanceType(balance)
+            validateCurrency(balance)
+            validateCountry(balance)
+            validateBalanceItem(balance)
 
-        calculateTax(balance)
-        computeTotal(balance)
-        validateBalanceTotal(balance)
+            calculateTax(balance)
+            computeTotal(balance)
+            validateBalanceTotal(balance)
 
-        // set the balance status to INIT
-        balance.setStatus(BalanceStatus.INIT.name())
+            // set the balance status to INIT
+            balance.setStatus(BalanceStatus.INIT.name())
 
-        return transactionService.processBalance(balance).then {
-            //persist the balance entity
-            Balance resultBalance = balanceRepository.saveBalance(balance)
-            return Promise.pure(resultBalance)
+            return transactionService.processBalance(balance).then {
+                //persist the balance entity
+                Balance resultBalance = balanceRepository.saveBalance(balance)
+                return Promise.pure(resultBalance)
+            }
         }
     }
 
     @Override
     Promise<Balance> quoteBalance(Balance balance) {
 
-        validateBalanceItem(balance)
-        validateUser(balance)
-        validateCurrency(balance)
-        validateCountry(balance)
-        validateBalanceItem(balance)
+        return validateUser(balance).then {
+            return validatePI(balance).then {
+            }
+        }.then {
+            validateBalanceType(balance)
+            validateCurrency(balance)
+            validateCountry(balance)
+            validateBalanceItem(balance)
 
-        calculateTax(balance)
-        computeTotal(balance)
+            calculateTax(balance)
+            computeTotal(balance)
+            validateBalanceTotal(balance)
 
-        return Promise.pure(balance)
+            return Promise.pure(balance)
+        }
     }
 
     @Override
@@ -126,8 +139,40 @@ class BalanceServiceImpl implements BalanceService {
 
     @Override
     Promise<List<Balance>> getBalances(Long orderId) {
-
         return Promise.pure(balanceRepository.getBalances(orderId))
+    }
+
+    private Promise<Void> validateUser(Balance balance) {
+        if (balance.userId == null) {
+            throw AppErrors.INSTANCE.fieldMissingValue('userId').exception()
+        }
+
+        Long userId = balance.userId.value
+        identityFacade.getUser(userId).recover { Throwable throwable ->
+            LOGGER.error('name=Error_Get_User. user id: ' + userId, throwable)
+            throw AppErrors.INSTANCE.userNotFound(userId.toString()).exception()
+        }.then { User user ->
+            if (user == null) {
+                throw AppErrors.INSTANCE.userNotFound(userId.toString()).exception()
+            }
+            if (user.status != 'ACTIVE') {
+                throw AppErrors.INSTANCE.userStatusInvalid(userId.toString()).exception()
+            }
+            return Promise.pure(null)
+        }
+    }
+
+    private Promise<Void> validatePI(Balance balance) {
+        if (balance.piId == null) {
+            throw AppErrors.INSTANCE.fieldMissingValue('piId').exception()
+        }
+        paymentFacade.getPaymentInstrument(balance.userId.value, balance.piId.value).recover { Throwable throwable ->
+            LOGGER.error('name=Error_Get_PaymentInstrument. pi id: ' + balance.piId.value, throwable)
+            throw AppErrors.INSTANCE.piNotFound(balance.piId.value.toString()).exception()
+        }.then { PaymentInstrument pi ->
+            //todo: more validation for the PI
+            return Promise.pure(null)
+        }
     }
 
     private void validateBalanceType(Balance balance) {
@@ -140,21 +185,6 @@ class BalanceServiceImpl implements BalanceService {
         }
         catch (IllegalArgumentException ex) {
             throw AppErrors.INSTANCE.invalidBalanceType(balance.type).exception()
-        }
-    }
-
-    private void validateUser(Balance balance) {
-        if (balance.userId == null) {
-            throw AppErrors.INSTANCE.fieldMissingValue('userId').exception()
-        }
-
-        Long userId = balance.userId.value
-        User user = identityFacade.getUser(userId)?.wrapped().get()
-        if (user == null) {
-            throw AppErrors.INSTANCE.userNotFound(userId.toString()).exception()
-        }
-        if (user.status != 'ACTIVE') {
-            throw AppErrors.INSTANCE.userStatusInvalid(userId.toString()).exception()
         }
     }
 
@@ -171,16 +201,6 @@ class BalanceServiceImpl implements BalanceService {
     private void validateCountry(Balance balance) {
         if (balance.country == null || balance.country.isEmpty()) {
             throw AppErrors.INSTANCE.fieldMissingValue('country').exception()
-        }
-    }
-
-    private void validatePI(Balance balance) {
-        if (balance.piId == null) {
-            throw AppErrors.INSTANCE.fieldMissingValue('piId').exception()
-        }
-        def promisePi = paymentFacade.getPaymentInstrument(balance.userId.value, balance.piId.value)?.wrapped().get()
-        if (promisePi == null) {
-            throw AppErrors.INSTANCE.piNotFound(balance.piId.value.toString()).exception()
         }
     }
 

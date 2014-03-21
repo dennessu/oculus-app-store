@@ -18,6 +18,9 @@ public class ItemConverter {
     private ItemConverter(){}
 
     public static ItemDraftEntity toDraftEntity(Item model) {
+        if (model == null) {
+            return null;
+        }
         ItemDraftEntity entity = new ItemDraftEntity();
         fillDraftEntity(model, entity);
         return entity;
@@ -27,17 +30,19 @@ public class ItemConverter {
         entity.setType(model.getType());
         entity.setName(model.getName());
         entity.setStatus(model.getStatus());
-        entity.setRevision(model.getRevision());
         entity.setOwnerId(model.getOwnerId());
         entity.setPayload(Utils.toJson(model));
     }
 
     public static Item toModel(ItemDraftEntity entity) {
+        if (entity == null) {
+            return null;
+        }
+
         Item model = Utils.fromJson(entity.getPayload(), Item.class);
         model.setId(entity.getId());
         model.setType(entity.getType());
         model.setName(entity.getName());
-        model.setRevision(entity.getRevision());
         model.setOwnerId(entity.getOwnerId());
         model.setStatus(entity.getStatus());
         model.setCreatedBy(entity.getCreatedBy());
@@ -48,12 +53,15 @@ public class ItemConverter {
     }
 
     public static ItemEntity toEntity(Item model) {
+        if (model == null) {
+            return null;
+        }
+
         ItemEntity entity = new ItemEntity();
         entity.setItemId(model.getId());
         entity.setType(model.getType());
         entity.setName(model.getName());
         entity.setStatus(model.getStatus());
-        entity.setRevision(model.getRevision());
         entity.setOwnerId(model.getOwnerId());
         entity.setPayload(Utils.toJson(model));
         return entity;
@@ -61,6 +69,10 @@ public class ItemConverter {
 
 
     public static Item toModel(ItemEntity entity) {
+        if (entity == null) {
+            return null;
+        }
+
         Item model = Utils.fromJson(entity.getPayload(), Item.class);
         model.setId(entity.getItemId());
         model.setType(entity.getType());

@@ -5,6 +5,7 @@
  */
 package com.junbo.testing.buyerscenario.util;
 
+import com.junbo.testing.common.Utility.TestDataProvider;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
 /**
@@ -13,6 +14,7 @@ import org.slf4j.bridge.SLF4JBridgeHandler;
   * Base test class
  */
 public class BaseTestClass {
+    protected TestDataProvider testDataProvider = new TestDataProvider();
 
     public BaseTestClass() {
         //set loggging info
