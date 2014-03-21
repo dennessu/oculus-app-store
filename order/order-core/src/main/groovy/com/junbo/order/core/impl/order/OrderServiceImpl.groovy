@@ -80,7 +80,6 @@ class OrderServiceImpl implements OrderService {
         flowSelector.select(orderServiceContext, OrderServiceOperation.SETTLE_TENTATIVE).then { FlowType flowType ->
             executeFlow(flowType, orderServiceContext, null)
         }.syncThen {
-            orderRepository.updateOrder(order, true)
             return orderServiceContext.order
         }
     }
