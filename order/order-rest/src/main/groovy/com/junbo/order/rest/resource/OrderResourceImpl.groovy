@@ -36,17 +36,17 @@ class OrderResourceImpl implements OrderResource {
     }
 
     @Override
-    Promise<List<Order>> createOrders(Order order) {
+    Promise<Order> createOrder(Order order) {
         if (!order?.tentative) {
-            return orderService.createOrders(order, new ApiContext(requestContext.headers))
+            return orderService.createOrder(order, new ApiContext(requestContext.headers))
         }
 
-        return orderService.createQuotes(order, new ApiContext(requestContext.headers))
+        return orderService.createQuote(order, new ApiContext(requestContext.headers))
 
     }
 
     @Override
-    Promise<List<Order>> updateOrderByOrderId(OrderId orderId, Order order) {
+    Promise<Order> updateOrderByOrderId(OrderId orderId, Order order) {
         order.id = orderId
         orderService.getOrderByOrderId(orderId.value).then { Order oldOrder ->
             // handle the update request per scenario
@@ -54,13 +54,13 @@ class OrderResourceImpl implements OrderResource {
                 if (order.tentative) {
                     orderService.updateTentativeOrder(order,
                             new ApiContext(requestContext.headers)).syncThen { Order result ->
-                        [result]
+                        return result
                     }
                 } else { // handle settle order scenario: the tentative flag is updated from true to false
                     orderService.settleQuote(oldOrder, new ApiContext(requestContext.headers))
                 }
             } else { // order already settle
-                Promise.pure([oldOrder]) // todo implement update on settled order
+                Promise.pure(oldOrder) // todo implement update on settled order
             }
         }
     }

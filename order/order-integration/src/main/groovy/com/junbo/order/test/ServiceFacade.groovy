@@ -1,6 +1,5 @@
 package com.junbo.order.test
 
-import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.resource.BalanceResource
 import com.junbo.catalog.spec.model.offer.Offer
 import com.junbo.catalog.spec.model.offer.OffersGetOptions
@@ -88,7 +87,7 @@ class ServiceFacade {
 
     Order postQuotes(Order order) {
         order.tentative = true
-        return orderResource.createOrders(order).wrapped().get().get(0)
+        return orderResource.createOrder(order).wrapped().get().get(0)
     }
 
     Order settleQuotes(OrderId orderId) {
