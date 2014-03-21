@@ -118,5 +118,6 @@ def run(inputParam):
 
     if config.has_key("shard_range"):
         shard_range = [str(x) for x in split_range(config["shard_range"])]
-
-    foreach(partition, shard_range, 1)
+        foreach(partition, shard_range, 1)
+    else:
+        partition("noshard")
