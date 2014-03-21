@@ -8,6 +8,7 @@ import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.core.impl.common.CoreBuilder
+import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.OrderItem
 import com.junbo.rating.spec.model.request.OrderRatingRequest
 import groovy.transform.CompileStatic
@@ -38,18 +39,17 @@ class RatingAction implements Action {
                 oi.honoredTime = order.honoredTime
             }
         }
-        return facadeContainer.ratingFacade.rateOrder(order).syncRecover {
-            Throwable throwable ->
+        return facadeContainer.ratingFacade.rateOrder(order).syncRecover { Throwable throwable ->
             LOGGER.error('name=Order_Rating_Error', throwable)
-            return null
+            // TODO parse the rating error
+            throw AppErrors.INSTANCE.ratingConnectionError().exception()
         }.then { OrderRatingRequest ratingResult ->
             // todo handle rating violation
             if (ratingResult == null) {
                 // TODO: log order charge action error?
-                LOGGER.info('fail to rate order')
-                return Promise.pure(null)
+                LOGGER.error('rating result is null')
+                throw AppErrors.INSTANCE.ratingResultInvalid().exception()
             }
-
             CoreBuilder.fillRatingInfo(order, ratingResult)
             //  no need to log event for rating
             // Call billing to calculate tax
@@ -57,13 +57,14 @@ class RatingAction implements Action {
                     CoreBuilder.buildBalance(context.orderServiceContext, BalanceType.DEBIT)).syncRecover {
                 Throwable throwable ->
                     LOGGER.error('name=Order_Tax_Error', throwable)
-                    return null
+                    // TODO parse the tax error
+                    throw AppErrors.INSTANCE.billingConnectionError().exception()
             }.then { Balance balance ->
                 if (balance == null) {
                     // TODO: log order charge action error?
-                    LOGGER.info('fail to calculate tax')
+                    LOGGER.info('fail to calculate tax, balance is null')
+                    throw AppErrors.INSTANCE.balanceNotFound().exception()
                 } else {
-                    // TODO: add tax info to order
                     CoreBuilder.fillTaxInfo(order, balance)
                 }
                 return Promise.pure(null)
