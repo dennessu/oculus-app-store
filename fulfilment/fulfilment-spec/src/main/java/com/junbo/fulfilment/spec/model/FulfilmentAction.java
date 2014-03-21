@@ -32,7 +32,7 @@ public class FulfilmentAction {
 
     private Long fulfilmentId;
 
-    private Map<String, String> properties;
+    private Map<String, Object> properties;
 
     private List<LinkedEntry> items;
 
@@ -70,11 +70,11 @@ public class FulfilmentAction {
         this.status = status;
     }
 
-    public Map<String, String> getProperties() {
+    public Map<String, Object> getProperties() {
         return properties;
     }
 
-    public void setProperties(Map<String, String> properties) {
+    public void setProperties(Map<String, Object> properties) {
         this.properties = properties;
     }
 

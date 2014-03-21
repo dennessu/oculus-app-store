@@ -39,7 +39,7 @@ public interface EntitlementDefinitionResource {
     @ApiOperation("Get or search entitlement definitions")
     @GET
     Promise<ResultList<EntitlementDefinition>>
-    getEntitlementDefinitionDefinitions(
+    getEntitlementDefinitions(
             @NotNull @QueryParam("developerId") UserId developerId,
             @QueryParam("type") String type,
             @QueryParam("group") String group,

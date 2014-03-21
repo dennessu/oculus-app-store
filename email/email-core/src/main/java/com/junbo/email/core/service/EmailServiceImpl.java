@@ -43,7 +43,7 @@ public class EmailServiceImpl implements EmailService {
     private EmailValidator emailValidator;
 
     @Override
-    public Promise<Email> send(Email email) {
+    public Promise<Email> postEmail(Email email) {
 
         emailValidator.validateCreate(email);
         if(email.getScheduleDate() != null) {

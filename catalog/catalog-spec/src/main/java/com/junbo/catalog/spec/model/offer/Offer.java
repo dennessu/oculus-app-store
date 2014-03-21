@@ -13,6 +13,7 @@ import com.junbo.common.jackson.annotation.AttributeId;
 import com.junbo.common.jackson.annotation.OfferId;
 import com.junbo.common.jackson.annotation.UserId;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -35,7 +36,7 @@ public class Offer extends VersionedModel {
 
     private List<OfferEntry> subOffers;
 
-    private List<ItemEntry> items;
+    private List<ItemEntry> items = new ArrayList<>();
 
     private Restriction restriction;
 
@@ -44,7 +45,7 @@ public class Offer extends VersionedModel {
     @AttributeId
     private List<Long> genres;
 
-    private List<Event> events;
+    private List<Event> events = new ArrayList<>();
     private List<String> eligibleCountries;
     private Map<String, Map<String, String>> countryProperties;
     private Map<String, Map<String, String>> localeProperties;
