@@ -24,7 +24,7 @@
         insert into security_question values(2, 0, 'In what city did you meet your spouse/significant other?', true, '', '2014-03-19', '', '2014-03-19');
         insert into security_question values(3, 0, 'What is the name of your favorite childhood friend?', true, '', '2014-03-19', '', '2014-03-19');
         insert into security_question values(4, 0, 'What street did you live on in third grade?', true, '', '2014-03-19', '', '2014-03-19');
-        insert into security_question values(5, 0, 'What is your oldest sibling’s birthday month and year? (e.g., January 1900)', true, '', '2014-03-19', '', '2014-03-19');
+        insert into security_question values(5, 0, 'What is your oldest sibling''s birthday month and year? (e.g., January 1900)', true, '', '2014-03-19', '', '2014-03-19');
         insert into security_question values(6, 0, 'What is the middle name of your oldest child?', true, '', '2014-03-19', '', '2014-03-19');
         insert into security_question values(7, 0, 'What is your oldest sibling''s middle name?', true, '', '2014-03-19', '', '2014-03-19');
         insert into security_question values(8, 0, 'What school did you attend for sixth grade?', true, '', '2014-03-19', '', '2014-03-19');
