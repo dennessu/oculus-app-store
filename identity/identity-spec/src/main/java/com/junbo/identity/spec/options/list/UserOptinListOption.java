@@ -13,18 +13,18 @@ import javax.ws.rs.QueryParam;
  * Created by liangfu on 3/14/14.
  */
 public class UserOptinListOption extends PagingGetOption {
-    @QueryParam("value")
-    private String value;
+    @QueryParam("type")
+    private String type;
 
     @QueryParam("userId")
     private UserId userId;
 
-    public String getValue() {
-        return value;
+    public String getType() {
+        return type;
     }
 
-    public void setValue(String value) {
-        this.value = value;
+    public void setType(String type) {
+        this.type = type;
     }
 
     public UserId getUserId() {

@@ -23,7 +23,7 @@ public class UserAuthenticatorReverseIndexDAOImpl extends ShardedDAOBase impleme
 
     @Override
     public UserAuthenticatorReverseIndexEntity update(UserAuthenticatorReverseIndexEntity entity) {
-        currentSession().save(entity);
+        currentSession().merge(entity);
         currentSession().flush();
 
         return get(entity.getValue());

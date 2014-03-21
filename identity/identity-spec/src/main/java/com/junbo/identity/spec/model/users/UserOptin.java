@@ -16,7 +16,7 @@ public class UserOptin extends ResourceMeta implements Identifiable<UserOptinId>
 
     private UserOptinId id;
 
-    private String value;
+    private String type;
 
     // Won't return
     private UserId userId;
@@ -29,12 +29,12 @@ public class UserOptin extends ResourceMeta implements Identifiable<UserOptinId>
         this.id = id;
     }
 
-    public String getValue() {
-        return value;
+    public String getType() {
+        return type;
     }
 
-    public void setValue(String value) {
-        this.value = value;
+    public void setType(String type) {
+        this.type = type;
     }
 
     public UserId getUserId() {

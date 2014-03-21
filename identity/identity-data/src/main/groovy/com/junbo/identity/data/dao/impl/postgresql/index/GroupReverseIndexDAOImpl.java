@@ -23,7 +23,7 @@ public class GroupReverseIndexDAOImpl extends ShardedDAOBase implements GroupRev
 
     @Override
     public GroupReverseIndexEntity update(GroupReverseIndexEntity entity) {
-        currentSession().save(entity);
+        currentSession().merge(entity);
         currentSession().flush();
 
         return get(entity.getName());
