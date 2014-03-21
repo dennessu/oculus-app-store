@@ -87,6 +87,8 @@ class ShippingAddressServiceImpl implements ShippingAddressService {
             if (user.status != 'ACTIVE') {
                 throw AppErrors.INSTANCE.userStatusInvalid(userId.toString()).exception()
             }
+
+            return Promise.pure(null)
         }
     }
 

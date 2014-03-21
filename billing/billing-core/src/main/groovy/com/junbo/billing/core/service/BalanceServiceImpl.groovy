@@ -158,7 +158,7 @@ class BalanceServiceImpl implements BalanceService {
             if (user.status != 'ACTIVE') {
                 throw AppErrors.INSTANCE.userStatusInvalid(userId.toString()).exception()
             }
-            return Promise.pure(null);
+            return Promise.pure(null)
         }
     }
 
@@ -171,7 +171,7 @@ class BalanceServiceImpl implements BalanceService {
             throw AppErrors.INSTANCE.piNotFound(balance.piId.value.toString()).exception()
         }.then { PaymentInstrument pi ->
             //todo: more validation for the PI
-            return Promise.pure(null);
+            return Promise.pure(null)
         }
     }
 
