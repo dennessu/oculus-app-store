@@ -116,7 +116,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         Assert.assertNotEquals(userList.size(), 0);
     }
 
-    @Test
+    @Test(enabled = false)
     public void testGroupRepository() {
         Group group = new Group();
         group.setName("test " + UUID.randomUUID().toString());
@@ -199,7 +199,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         Assert.assertNotEquals(userPins.size(), 0);
     }
 
-    @Test(enabled = false)
+    @Test(enabled = true)
     public void testUserAuthenticatorRepository() {
         UserAuthenticator authenticator = new UserAuthenticator();
         authenticator.setUserId(new UserId(userId));
@@ -219,11 +219,10 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
 
         Assert.assertEquals(newValue, newUserAuthenticator.getValue());
 
-        // todo:    Need to enable this findByValue
-        // UserAuthenticatorListOption getOption = new UserAuthenticatorListOption();
-        // getOption.setType("Google_account");
-        // List<UserAuthenticator> userAuthenticators = userAuthenticatorRepository.findByValue(getOption);
-        // Assert.assertNotEquals(userAuthenticators.size(), 0);
+        UserAuthenticatorListOption getOption = new UserAuthenticatorListOption();
+        getOption.setValue(newValue);
+        List<UserAuthenticator> userAuthenticators = userAuthenticatorRepository.search(getOption);
+        Assert.assertNotEquals(userAuthenticators.size(), 0);
     }
 
     @Test(enabled = false)

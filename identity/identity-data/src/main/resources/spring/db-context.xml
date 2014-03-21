@@ -165,6 +165,12 @@
         <property name="daoTarget" ref="groupReverseIndexDAOTarget" />
     </bean>
 
+    <bean id="userAuthenticatorReverseIndexDAOTarget" class="com.junbo.identity.data.dao.impl.postgresql.index.UserAuthenticatorReverseIndexDAOImpl" parent="entityIndexDAOBase" />
+    <bean id="userAuthenticatorReverseIndexDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
+        <property name="daoInterface" value="com.junbo.identity.data.dao.index.UserAuthenticatorReverseIndexDAO" />
+        <property name="daoTarget" ref="userAuthenticatorReverseIndexDAOTarget" />
+    </bean>
+
     <bean id="groupRepository" class="com.junbo.identity.data.repository.impl.GroupRepositoryImpl" />
     <bean id="userAuthenticatorRepository" class="com.junbo.identity.data.repository.impl.UserAuthenticatorRepositoryImpl" />
     <bean id="userDeviceRepository" class="com.junbo.identity.data.repository.impl.UserDeviceRepositoryImpl" />
