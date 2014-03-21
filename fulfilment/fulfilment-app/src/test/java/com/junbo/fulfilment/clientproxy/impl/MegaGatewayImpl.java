@@ -5,7 +5,9 @@
  */
 package com.junbo.fulfilment.clientproxy.impl;
 
+import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
 import com.junbo.catalog.spec.model.offer.Offer;
+import com.junbo.catalog.spec.resource.EntitlementDefinitionResource;
 import com.junbo.catalog.spec.resource.OfferResource;
 import com.junbo.common.id.EntitlementId;
 import com.junbo.common.id.OfferId;
@@ -23,6 +25,9 @@ public class MegaGatewayImpl implements MegaGateway {
 
     @Autowired
     private EntitlementResource entitlementResource;
+
+    @Autowired
+    private EntitlementDefinitionResource entitlementDefResource;
 
     @Override
     public Long createOffer(Offer offer) {
@@ -48,6 +53,15 @@ public class MegaGatewayImpl implements MegaGateway {
             return entitlementResource.getEntitlement(new EntitlementId(entitlementId)).wrapped().get();
         } catch (Exception e) {
             throw new RuntimeException("Error occurred during calling [Entitlement] component service.", e);
+        }
+    }
+
+    @Override
+    public Long createEntitlementDef(EntitlementDefinition def) {
+        try {
+            return entitlementDefResource.postEntitlementDefinition(def).wrapped().get().getEntitlementDefinitionId();
+        } catch (Exception e) {
+            throw new RuntimeException("Error occurred during calling [Catalog] component service.", e);
         }
     }
 }
