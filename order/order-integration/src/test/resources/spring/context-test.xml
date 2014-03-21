@@ -94,7 +94,15 @@
         <constructor-arg name="transcoder" ref="transcoder"/>
         <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
         <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder"/>
-        <constructor-arg name="target" value="http://localhost:8080/rest"/>
+        <constructor-arg name="target" value="${order.client.fulfilment.url}"/>
+    </bean>
+
+    <bean id="entitlementClient" class="com.junbo.entitlement.spec.resource.proxy.EntitlementResourceClientProxy">
+        <constructor-arg name="client" ref="asyncHttpClient"/>
+        <constructor-arg name="transcoder" ref="transcoder"/>
+        <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
+        <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder"/>
+        <constructor-arg name="target" value="${order.client.entitlement.url}"/>
     </bean>
 
     <bean id="paymentInstrumentClient" class="com.junbo.payment.spec.resource.proxy.PaymentInstrumentResourceClientProxy">

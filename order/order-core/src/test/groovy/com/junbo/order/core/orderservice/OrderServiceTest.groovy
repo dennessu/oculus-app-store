@@ -58,7 +58,7 @@ class OrderServiceTest extends BaseTest {
         def order = TestBuilder.buildOrderRequest()
 
 
-        def createOrderResult = orderService.createOrders(order, null)
+        def createOrderResult = orderService.createOrder(order, null)
 //        def getOrderResult = orderService.getOrderByOrderId(TestHelper.generateLong())
 
         assert(createOrderResult != null)
@@ -69,7 +69,7 @@ class OrderServiceTest extends BaseTest {
     void createTentativeOrderTest() {
         def order = TestBuilder.buildOrderRequest()
         order.tentative = true
-        def createOrderResult = orderService.createOrders(order, null)
+        def createOrderResult = orderService.createOrder(order, null)
 //        def getOrderResult = orderService.getOrderByOrderId(TestHelper.generateLong())
         assert(createOrderResult != null)
 //        assert(createOrderResult[0] != getOrderResult)

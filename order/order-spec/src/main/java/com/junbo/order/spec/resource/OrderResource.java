@@ -29,7 +29,7 @@ public interface OrderResource {
 
     @ApiOperation("Create an order")
     @POST
-    Promise<List<Order>> createOrders(Order order);
+    Promise<Order> createOrder(Order order);
 
     @ApiOperation("Get an order")
     @GET
@@ -43,6 +43,6 @@ public interface OrderResource {
     @ApiOperation("Put an order")
     @PUT
     @Path("/{orderId}")
-    Promise<List<Order>> updateOrderByOrderId(@PathParam("orderId") OrderId orderId, Order order);
+    Promise<Order> updateOrderByOrderId(@PathParam("orderId") OrderId orderId, Order order);
 }
 

@@ -1,4 +1,3 @@
-rootProject.name = 'token'
 include 'token-spec'
 
 include 'token-common'

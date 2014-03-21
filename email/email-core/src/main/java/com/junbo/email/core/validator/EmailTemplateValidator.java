@@ -6,6 +6,7 @@
 package com.junbo.email.core.validator;
 
 import com.junbo.email.spec.model.EmailTemplate;
+import com.junbo.email.spec.model.Paging;
 
 /**
  * Interface of EmailTemplate validator.
@@ -14,4 +15,8 @@ public interface EmailTemplateValidator {
     void validateCreate(EmailTemplate template);
 
     void validateUpdate(EmailTemplate template);
+
+    void validateDelete(Long id);
+
+    void validateGet(Paging paging);
 }

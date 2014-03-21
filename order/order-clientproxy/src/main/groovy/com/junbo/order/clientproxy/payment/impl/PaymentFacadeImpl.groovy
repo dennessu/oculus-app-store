@@ -24,7 +24,7 @@ import javax.annotation.Resource
 @CompileStatic
 class PaymentFacadeImpl implements PaymentFacade {
 
-    @Resource(name='paymentInstrumentClient')
+    @Resource(name='order.paymentInstrumentClient')
     PaymentInstrumentResource paymentInstrumentResource
 
     @Override

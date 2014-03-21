@@ -8,6 +8,7 @@ package com.junbo.fulfilment.clientproxy;
 import com.junbo.catalog.spec.model.offer.Action;
 import com.junbo.catalog.spec.model.offer.Event;
 import com.junbo.catalog.spec.model.offer.Offer;
+import com.junbo.fulfilment.common.util.Constant;
 import junit.framework.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.Test;
@@ -30,14 +31,12 @@ public class CatalogGatewayTest extends BaseTest {
 
         offer.setEvents(new ArrayList<Event>() {{
             add(new Event() {{
-                setName("PURCHASE_EVENT");
+                setName(Constant.EVENT_PURCHASE);
                 setActions(new ArrayList<Action>() {{
                     add(new Action() {{
-                        setType("GRANT_ENTITLEMENT");
+                        setType(Constant.ACTION_GRANT_ENTITLEMENT);
                         setProperties(new HashMap<String, String>() {{
-                            put("ENTITLMENT_GROUP", "TEST_GROUP");
-                            put("ENTITLMENT_TAG", "TEST_TAG");
-                            put("ENTITLMENT_TYPE", "TEST_TYPE");
+                            put(Constant.ENTITLEMENT_DEF_ID, "12345");
                         }});
                     }});
                 }});
