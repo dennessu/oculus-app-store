@@ -6,38 +6,32 @@
 
 package com.junbo.catalog.rest.exception;
 
-import com.junbo.catalog.common.exception.CatalogException;
-import com.junbo.catalog.common.exception.NotFoundException;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
+import com.junbo.catalog.spec.error.AppErrors;
 
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Rest exception mapper.
  */
 @Provider
-public class RestExceptionMapper implements ExceptionMapper<CatalogException> {
-    private static final Map<Class, Response.Status> MAPPING;
-
-    static {
-        MAPPING = new HashMap<>();
-        MAPPING.put(CatalogException.class, Response.Status.INTERNAL_SERVER_ERROR);
-        MAPPING.put(NotFoundException.class, Response.Status.NOT_FOUND);
-    }
-
+public class RestExceptionMapper implements ExceptionMapper<Exception> {
     @Override
-    public Response toResponse(CatalogException e) {
-        Response.Status status = MAPPING.get(e.getClass());
-        if (status == null) {
-            status = Response.Status.BAD_REQUEST;
+    public Response toResponse(Exception e) {
+        if (e instanceof WebApplicationException) {    //common service exception
+            return ((WebApplicationException) e).getResponse();
+        } else if (e instanceof UnrecognizedPropertyException) {    //unnecessary field exception
+            return AppErrors.INSTANCE.unnecessaryField(
+                    ((UnrecognizedPropertyException) e).getUnrecognizedPropertyName()).exception().getResponse();
+        } else if (e instanceof InvalidFormatException) {    //field invalid format exception
+            return AppErrors.INSTANCE.fieldNotCorrect(
+                    ((InvalidFormatException) e).getPathReference(), e.getMessage()).exception().getResponse();
+        } else {    //other exceptions
+            return AppErrors.INSTANCE.unCaught(e.getMessage()).exception().getResponse();
         }
-
-        return Response
-                .status(status)
-                .entity(e.getMessage())
-                .type("text/plain").build();
     }
 }
