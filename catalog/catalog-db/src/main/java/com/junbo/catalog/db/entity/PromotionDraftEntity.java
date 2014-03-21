@@ -29,7 +29,6 @@ import java.util.Date;
         @TypeDef(name="date-type", typeClass=DateUserType.class)})
 public class PromotionDraftEntity extends VersionedEntity {
     private Long id;
-    private int revision;
     private String name;
     private PromotionType type;
 
@@ -45,15 +44,6 @@ public class PromotionDraftEntity extends VersionedEntity {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    @Column(name = "revision")
-    public int getRevision() {
-        return revision;
-    }
-
-    public void setRevision(int revision) {
-        this.revision = revision;
     }
 
     @Column(name = "promotion_name")

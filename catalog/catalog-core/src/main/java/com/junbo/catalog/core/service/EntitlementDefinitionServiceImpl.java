@@ -16,7 +16,6 @@ import com.junbo.catalog.spec.model.entitlementdef.EntitlementType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -30,18 +29,16 @@ public class EntitlementDefinitionServiceImpl implements EntitlementDefinitionSe
     private EntitlementDefinitionRepository entitlementDefinitionRepository;
 
     @Override
-    @Transactional
     public EntitlementDefinition getEntitlementDefinition(Long entitlementDefinitionId) {
         EntitlementDefinition entitlementDefinition = entitlementDefinitionRepository.get(entitlementDefinitionId);
         if (entitlementDefinition == null) {
-            throw new NotFoundException("entitlementDefinition", entitlementDefinitionId);
+            throw new NotFoundException("Cannot find " + entitlementDefinitionId);
         }
         checkDeveloper(entitlementDefinition.getDeveloperId());
         return entitlementDefinition;
     }
 
     @Override
-    @Transactional
     public List<EntitlementDefinition> getEntitlementDefinitions(Long developerId, String group, String tag,
                                                                  String type, PageableGetOptions pageMetadata) {
         if (developerId == null) {
@@ -53,7 +50,6 @@ public class EntitlementDefinitionServiceImpl implements EntitlementDefinitionSe
     }
 
     @Override
-    @Transactional
     public Long createEntitlementDefinition(EntitlementDefinition entitlementDefinition) {
         if (entitlementDefinition.getType() == null) {
             entitlementDefinition.setType(EntitlementType.DEFAULT.toString());
@@ -63,7 +59,6 @@ public class EntitlementDefinitionServiceImpl implements EntitlementDefinitionSe
     }
 
     @Override
-    @Transactional
     public EntitlementDefinition getByTrackingUuid(UUID trackingUuid) {
         return entitlementDefinitionRepository.getByTrackingUuid(trackingUuid);
     }
