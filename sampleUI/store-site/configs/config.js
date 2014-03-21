@@ -44,7 +44,7 @@ var Configs = {
         IdTokenUserId: "userId",
         Username: "userName",
 
-        TokenInfoUserId: "sub",
+        TokenInfoUserId: "user_id",
         ProfileFirstname: "firstName",
         ProfileLastname: "lastName"
     },
@@ -63,7 +63,7 @@ var Configs = {
                     process.AppConfig.Urls.GetCallbackLoginUrl(req));
         },
         GetRegisterUrl: function(req){
-            return Utils.Format("{1}/?redirect_url={2}#/register", process.AppConfig.RegisterUri, process.AppConfig.Urls.GetCallbackRegisterUrl(req));
+            return Utils.Format("{1}/identity?redirect_url={2}#/register", process.AppConfig.RegisterUri, process.AppConfig.Urls.GetCallbackRegisterUrl(req));
         }
     }
 };

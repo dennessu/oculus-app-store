@@ -5,6 +5,7 @@ var Account = require('./account');
 
 var ClientConfigs = require('../configs/client_config');
 var Template = require('./template');
+var Auth = require('./auth');
 
 
 module.exports = function(app){
@@ -17,7 +18,13 @@ module.exports = function(app){
 
     // Application
     app.get('/', function(req, res){
-        res.render("index", {layout: false, title: "Store Demo"});
+        res.render("index",
+            {
+                layout: false,
+                title: "Store Demo",
+                loginUrl: process.AppConfig.Urls.GetLoginUrl(req),
+                registerUrl: process.AppConfig.Urls.GetRegisterUrl(req)
+            });
     });
     app.get('/Identity', function(req, res){
         res.render("identity/index", {layout: false, title: "Store Demo"});
@@ -40,9 +47,13 @@ module.exports = function(app){
     app.get('/Template/Store/Index', Template.Store.Index);
     app.get('/Template/Store/Detail', Template.Store.Detail);
 
+    app.get('/Template/Store/Cart', Template.Store.Cart);
+    app.get('/Template/Store/OrderSummary', Template.Store.OrderSummary);
+
     // Redirect back handler
-    app.get('/Callback/Login', function(req, res){});
-    app.get('/Callback/Register', function(req, res){});
+    app.get('/Callback/Login', Auth.Login);
+    app.get('/Callback/Register', Auth.Register);
+    app.get('/Logout', Auth.Register);
 
     // API Rest
 
@@ -69,24 +80,4 @@ module.exports = function(app){
     app.get('/payment/Address', Payment.ShippingAddress);
     app.get('/payment/SelectePaymentMethod', Payment.SelectePaymentMethod);
 
-    app.get('/test/products', function(req, res){
-        res.json({"Products": [
-            {
-                "id": 111,
-                "name": "3D Parking 1",
-                "price": 9.99,
-                "picture": "/images/P1.jpg",
-                "description": ""
-            }
-            ,
-            {
-                "id": 222,
-                "name": "3D Parking 1",
-                "price": 9.99,
-                "picture": "/images/P1.jpg",
-                "description": ""
-            }
-        ]});
-        res.end();
-    });
 };

@@ -9,7 +9,7 @@ module.exports = function (app) {
     });
     app.get("/rest/authorize", function (req, res) {
 
-        res.redirect("http://localhost:3000/identity?event=TestEvent&cid=12345");
+        res.redirect("http://localhost:3000/identity?event=TestEvent&cid=12345&redirect_url=http://localhost:3000/callback/login?code=123");
         res.end();
     });
 
@@ -21,14 +21,7 @@ module.exports = function (app) {
 
             try {
                 if (typeof(action["Path"]) != "undefined" && typeof(action["Method"]) != "undefined") {
-                    switch (action.Method.toUpperCase()) {
-                        case "GET":
-                            app.get(action.Path, Utils.RequestHandle);
-                            break;
-                        case "POST":
-                            app.post(action.Path, Utils.RequestHandle);
-                            break;
-                    }
+                    app[action.Method.toLowerCase()](action.Path, Utils.RequestHandle);
 
                     console.log("Append Path: ["+ action.Method +"] " + action.Path);
 

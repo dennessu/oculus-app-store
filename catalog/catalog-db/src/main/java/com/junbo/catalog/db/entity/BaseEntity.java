@@ -6,6 +6,11 @@
 
 package com.junbo.catalog.db.entity;
 
+import com.junbo.catalog.db.dao.DateUserType;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
+
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
@@ -16,6 +21,7 @@ import java.util.Date;
  * BaseEntity.
  */
 @MappedSuperclass
+@TypeDefs(@TypeDef(name="date-type", typeClass=DateUserType.class))
 public abstract class BaseEntity implements Serializable {
     private Date createdTime;
     private String createdBy;
@@ -23,6 +29,7 @@ public abstract class BaseEntity implements Serializable {
     private String updatedBy;
 
     @Column(name = "created_time")
+    @Type(type = "date-type")
     public Date getCreatedTime() {
         return createdTime;
     }
@@ -41,6 +48,7 @@ public abstract class BaseEntity implements Serializable {
     }
 
     @Column(name = "updated_time")
+    @Type(type = "date-type")
     public Date getUpdatedTime() {
         return updatedTime;
     }

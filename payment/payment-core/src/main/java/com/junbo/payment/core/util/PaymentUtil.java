@@ -7,8 +7,8 @@
 package com.junbo.payment.core.util;
 
 
-import com.junbo.payment.core.exception.AppClientExceptions;
-import com.junbo.payment.core.exception.AppServerExceptions;
+import com.junbo.payment.common.exception.AppClientExceptions;
+import com.junbo.payment.common.exception.AppServerExceptions;
 import com.junbo.payment.spec.enums.CreditCardType;
 import com.junbo.payment.spec.enums.PIType;
 import com.junbo.payment.spec.enums.PaymentStatus;

@@ -30,21 +30,25 @@ import com.junbo.rating.spec.fusion.LinkedEntry;
 import com.junbo.rating.spec.fusion.Price;
 import com.junbo.rating.spec.fusion.RatingOffer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by lizwu on 2/25/14.
+ * Catalog gateway.
  */
 public class CatalogGatewayImpl implements CatalogGateway{
     @Autowired
+    @Qualifier("ratingAttributeClient")
     private AttributeResource attributeResource;
 
     @Autowired
+    @Qualifier("ratingItemClient")
     private ItemResource itemResource;
 
     @Autowired
+    @Qualifier("ratingOfferClient")
     private OfferResource offerResource;
 
     @Autowired
@@ -79,7 +83,9 @@ public class CatalogGatewayImpl implements CatalogGateway{
 
         RatingOffer result = new RatingOffer();
         result.setId(offer.getId());
-        result.getCategories().addAll(offer.getCategories());
+        if (offer.getCategories() != null) {
+            result.getCategories().addAll(offer.getCategories());
+        }
         for (String country : offer.getPrices().keySet()) {
             com.junbo.catalog.spec.model.offer.Price price = offer.getPrices().get(country);
             Price ratingPrice = new Price(price.getAmount(), price.getCurrency());

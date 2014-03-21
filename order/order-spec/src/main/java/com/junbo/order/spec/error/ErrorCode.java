@@ -13,6 +13,7 @@ public class ErrorCode {
     private ErrorCode() {
     }
 
+    // api input error
     public static final String INVALID_NULL_EMPTY_INPUT_PARAM = "10000";
 
     public static final String INVALID_OBJECT_TYPE = "10001";
@@ -21,17 +22,18 @@ public class ErrorCode {
 
     public static final String UNNECESSARY_PARAMETER_FIELD = "10003";
 
-    public static final String USER_NOT_FOUND = "10004";
+    public static final String INVALID_FIELD = "10004";
 
-    public static final String USER_STATUS_INVALID = "10005";
+    public static final String ENUM_CONVERSION_ERROR = "10005";
 
-    public static final String PAYMENT_STATUS_INVALID = "10006";
+    public static final String UNEXPECTED_ERROR = "10006";
 
-    public static final String ORDER_NOT_FOUND = "10007";
+    // order error starts from 20000
+    public static final String ORDER_NOT_FOUND = "20000";
 
-    public static final String ORDER_ITEM_NOT_FOUND = "10008";
+    public static final String ORDER_ITEM_NOT_FOUND = "20001";
 
-    public static final String INVALID_FIELD = "10009";
+    public static final String ORDER_ACTION_NOT_SUPPORTED = "20002";
 
-    public static final String ENUM_CONVERSION_ERROR = "10010";
+    public static final String ORDER_TYPE_NOT_SUPPORTED = "20003";
 }

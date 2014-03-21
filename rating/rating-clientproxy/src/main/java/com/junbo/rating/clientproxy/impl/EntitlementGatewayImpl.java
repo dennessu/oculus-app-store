@@ -15,14 +15,16 @@ import com.junbo.rating.clientproxy.EntitlementGateway;
 import com.junbo.rating.common.util.Constants;
 import com.junbo.rating.spec.error.AppErrors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.*;
 
 /**
- * Created by lizwu on 2/27/14.
+ * Entitlement gateway.
  */
 public class EntitlementGatewayImpl implements EntitlementGateway {
     @Autowired
+    @Qualifier("ratingEntitlementClient")
     private EntitlementResource entitlementResource;
 
     @Override
@@ -61,7 +63,7 @@ public class EntitlementGatewayImpl implements EntitlementGateway {
     public Set<String> format(List<Entitlement> entitlements) {
         Set<String> results = new HashSet<String>();
         for (Entitlement entitlement : entitlements) {
-            //TODO: implement after entitlement model support to config group & tag
+            results.add(entitlement.getGroup() + Constants.ENTITLEMENT_SEPARATOR + entitlement.getTag());
         }
 
         return results;

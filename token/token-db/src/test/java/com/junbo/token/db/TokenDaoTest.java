@@ -23,7 +23,7 @@ public class TokenDaoTest extends BaseTest {
     @Autowired
     private TokenSetOfferDao tokenSetOfferDao;
 
-    @Test
+    @Test(enabled = false)
     public void testCreate() {
         TokenSetEntity set = buildTokenSetRequest();
         tokenSetDao.save(set);
