@@ -24,7 +24,7 @@ import javax.persistence.Table;
 @TypeDefs(@TypeDef(name="json-string", typeClass=StringJsonUserType.class))
 public class ItemEntity extends VersionedEntity {
     private Long id;
-    private Long type;
+    private String type;
     private Long itemId;
     private String name;
     private int revision;
@@ -51,11 +51,11 @@ public class ItemEntity extends VersionedEntity {
     }
 
     @Column(name = "type")
-    public Long getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(Long type) {
+    public void setType(String type) {
         this.type = type;
     }
 
