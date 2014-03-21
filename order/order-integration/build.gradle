@@ -19,6 +19,7 @@ dependencies {
     compile 'com.junbo.fulfilment:fulfilment-spec:0.0.1-SNAPSHOT'
     compile 'com.junbo.payment:payment-spec:0.0.1-SNAPSHOT'
     compile 'com.junbo.email:email-spec:0.0.1-SNAPSHOT'
+    compile 'com.junbo.entitlement:entitlement-spec:0.0.1-SNAPSHOT'
 }
 
 def enableIntegration = hasProperty('integration')

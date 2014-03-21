@@ -6,6 +6,8 @@
 
 package com.junbo.catalog.spec.model.offer;
 
+import com.junbo.common.jackson.annotation.EntitlementDefinitionId;
+
 import java.util.Map;
 
 /**
@@ -13,6 +15,8 @@ import java.util.Map;
  */
 public class Action {
     private String type;
+    @EntitlementDefinitionId
+    private Long entitlementDefId;
     private Map<String, String> properties;
 
     public String getType() {
@@ -21,6 +25,14 @@ public class Action {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public Long getEntitlementDefId() {
+        return entitlementDefId;
+    }
+
+    public void setEntitlementDefId(Long entitlementDefId) {
+        this.entitlementDefId = entitlementDefId;
     }
 
     public Map<String, String> getProperties() {

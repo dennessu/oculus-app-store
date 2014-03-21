@@ -6,6 +6,7 @@
 package com.junbo.email.spec.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.junbo.common.id.EmailId;
 
 import java.util.List;
@@ -13,6 +14,8 @@ import java.util.List;
 /**
  * Email Template Model.
  */
+@JsonPropertyOrder(value = {"self","name","providerName","providerIndex","listOfVariables",
+        "subject","fromAddress","fromName","createdTime","modifiedTime"})
 public class EmailTemplate extends Model {
     @JsonProperty("self")
     private EmailId id;

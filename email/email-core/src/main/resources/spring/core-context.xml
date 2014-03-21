@@ -7,5 +7,5 @@
     <context:component-scan base-package="com.junbo.email.clientproxy.*"/>
 
     <bean id="emailService" class="com.junbo.email.core.service.EmailServiceImpl"/>
-
+    <bean id="templateService" class="com.junbo.email.core.service.EmailTemplateServiceImpl"/>
 </beans>

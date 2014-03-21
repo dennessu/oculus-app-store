@@ -8,6 +8,7 @@ package com.junbo.email.core.validator.impl;
 import com.junbo.email.core.validator.EmailTemplateValidator;
 import com.junbo.email.spec.error.AppErrors;
 import com.junbo.email.spec.model.EmailTemplate;
+import com.junbo.email.spec.model.Paging;
 import org.springframework.stereotype.Component;
 
 /**
@@ -38,6 +39,19 @@ public class EmailTemplateValidatorImpl extends CommonValidator implements Email
             throw AppErrors.INSTANCE.invalidField("fromAddress").exception();
         }
         validateAuditDate(template);
+    }
+
+    public void validateDelete(Long id) {
+
+    }
+
+    public void validateGet(Paging paging) {
+        if(paging.getPage()!= null && paging.getPage() < 1) {
+            throw AppErrors.INSTANCE.invalidParameter("page").exception();
+        }
+        if(paging.getSize() != null && paging.getSize() < 1) {
+            throw AppErrors.INSTANCE.invalidParameter("size").exception();
+        }
     }
 
     private void validateTemplateNameExist(String name) {
