@@ -41,7 +41,7 @@ public interface AppErrors {
             description = "Order action {0} is not supported")
     AppError orderTypeNotSupported(String type);
 
-    @ErrorDef(httpStatusCode = 403, code = ErrorCode.ORDER_ACTION_NOT_SUPPORTED,
+    @ErrorDef(httpStatusCode = 400, code = ErrorCode.ORDER_ACTION_NOT_SUPPORTED,
             description = "Order type {0} is not supported")
     AppError orderActionNotSupported(String action);
 
@@ -53,7 +53,7 @@ public interface AppErrors {
             description = "User not found {0}")
     AppError userNotFound(String userId);
 
-    @ErrorDef(httpStatusCode = 500, code = UserErrorCode.USER_STATUS_INVALID,
+    @ErrorDef(httpStatusCode = 403, code = UserErrorCode.USER_STATUS_INVALID,
             description = "User status invalid")
     AppError userStatusInvalid();
 
