@@ -8,7 +8,8 @@ package com.junbo.payment.spec.model;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.junbo.payment.common.FilterIn;
+import com.junbo.payment.common.FilterOut;
 
 import java.util.Date;
 
@@ -18,14 +19,22 @@ import java.util.Date;
 public class CreditCardRequest {
     private Long id;
     private String expireDate;
+    @FilterOut
     private String encryptedCvmCode;
     //response only
+    @FilterIn
     private Date lastBillingDate;
+    @FilterIn
     private String externalToken;
+    @FilterIn
     private String type;
+    @FilterIn
     private String prepaid;
+    @FilterIn
     private String debit;
+    @FilterIn
     private String commercial;
+    @FilterIn
     private String issueCountry;
     @JsonIgnore
     public Long getId() {
@@ -44,68 +53,66 @@ public class CreditCardRequest {
         this.expireDate = expireDate;
     }
 
-    @JsonIgnore
     public String getEncryptedCvmCode() {
         return encryptedCvmCode;
     }
-    @JsonProperty
+
     public void setEncryptedCvmCode(String encryptedCvmCode) {
         this.encryptedCvmCode = encryptedCvmCode;
     }
 
-    @JsonProperty
     public String getExternalToken() {
         return externalToken;
     }
-    @JsonIgnore
+
     public void setExternalToken(String externalToken) {
         this.externalToken = externalToken;
     }
-    @JsonProperty
+
     public String getType() {
         return type;
     }
-    @JsonIgnore
+
     public void setType(String type) {
         this.type = type;
     }
-    @JsonProperty
+
     public String getPrepaid() {
         return prepaid;
     }
-    @JsonIgnore
+
     public void setPrepaid(String prepaid) {
         this.prepaid = prepaid;
     }
-    @JsonProperty
+
     public String getDebit() {
         return debit;
     }
-    @JsonIgnore
+
     public void setDebit(String debit) {
         this.debit = debit;
     }
-    @JsonProperty
+
     public String getCommercial() {
         return commercial;
     }
-    @JsonIgnore
+
     public void setCommercial(String commercial) {
         this.commercial = commercial;
     }
-    @JsonProperty
+
     public String getIssueCountry() {
         return issueCountry;
     }
-    @JsonIgnore
+
     public void setIssueCountry(String issueCountry) {
         this.issueCountry = issueCountry;
     }
-    @JsonProperty
+
     public Date getLastBillingDate() {
         return lastBillingDate;
     }
-    @JsonIgnore
+
     public void setLastBillingDate(Date lastBillingDate) {
         this.lastBillingDate = lastBillingDate;
     }

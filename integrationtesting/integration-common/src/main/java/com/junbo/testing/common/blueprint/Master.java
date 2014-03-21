@@ -1,7 +1,13 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
+ */
 package com.junbo.testing.common.blueprint;
 
 import com.junbo.cart.spec.model.Cart;
-import com.junbo.cart.spec.model.Offer;
+import com.junbo.catalog.spec.model.offer.Offer;
+import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.identity.spec.model.user.User;
 
 import java.util.HashMap;
@@ -12,7 +18,7 @@ import java.util.Map;
  */
 public class Master {
 
-    private static Master instance = null;
+    private static Master instance;
 
     public static synchronized Master getInstance(){
         if (instance == null) {
@@ -28,15 +34,17 @@ public class Master {
     private Map<String, User> users;
     private Map<String, Cart> carts;
     private Map<String, Offer> offers;
+    private Map<String, Item> items;
 
     public void initializeMaster(){
         this.initializeUsers();
         this.initializeCarts();
         this.initializeOffers();
+        this.initializeItems();
     }
     public void initializeUsers(){
         if (this.users == null){
-            this.users = new HashMap<String, User>();
+            this.users = new HashMap<>();
         }
 
         this.users.clear();
@@ -44,30 +52,37 @@ public class Master {
 
     public void initializeCarts(){
         if (this.carts == null){
-            this.carts = new HashMap<String, Cart>();
+            this.carts = new HashMap<>();
         }
         this.carts.clear();
     }
 
     public void initializeOffers(){
         if (this.offers == null){
-            this.offers = new HashMap<String, Offer>();
+            this.offers = new HashMap<>();
         }
         this.offers.clear();
+    }
+
+    public void initializeItems(){
+        if (this.items == null){
+            this.items = new HashMap<>();
+        }
+        this.items.clear();
     }
 
     public void addUser(String userId, User user){
         if (this.users.containsKey(userId)){
             this.users.remove(userId);
         }
-        this.users.put(user.getId().toString(), user);
+        this.users.put(userId, user);
     }
 
     public void addCart(String cartId, Cart cart){
         if (this.carts.containsKey(cartId)){
             this.carts.remove(cartId);
         }
-        this.carts.put(cart.getId().toString(), cart);
+        this.carts.put(cartId, cart);
     }
 
     public void addOffer(String offerId, Offer offer){
@@ -75,7 +90,15 @@ public class Master {
             this.offers.remove(offerId);
         }
 
-        this.offers.put(offer.getId().toString(),offer);
+        this.offers.put(offerId, offer);
+    }
+
+    public void addItem(String itemId, Item item){
+        if (this.items.containsKey(itemId)){
+            this.items.remove(itemId);
+        }
+
+        this.items.put(itemId, item);
     }
 
     public User getUser(String userId){
@@ -88,5 +111,9 @@ public class Master {
 
     public Cart getCart(String cartId){
         return this.carts.get(cartId);
+    }
+
+    public Item getItem(String itemId){
+        return this.items.get(itemId);
     }
 }

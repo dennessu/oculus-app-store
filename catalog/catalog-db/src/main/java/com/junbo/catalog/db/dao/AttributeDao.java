@@ -14,5 +14,5 @@ import java.util.List;
  * Attribute DAO definition.
  */
 public interface AttributeDao extends BaseDao<AttributeEntity> {
-    List<AttributeEntity> getAttributes(int start, int size);
+    List<AttributeEntity> getAttributes(int start, int size, String attributeType);
 }

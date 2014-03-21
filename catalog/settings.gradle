@@ -1,3 +1,4 @@
+rootProject.name = 'catalog'
 include 'catalog-spec'
 
 include 'catalog-common'

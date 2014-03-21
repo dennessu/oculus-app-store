@@ -237,10 +237,10 @@ Identity.prototype.GetPayinProfilesByUserId = function(userId, dataObj, cb){
     client.Request(options, dataObj, cb);
 }
 
-Identity.prototype.GetAccount = function(userId, cb){
+Identity.prototype.GetUser = function(userId, cb){
   /*
    Method: GET
-   URL: /identity/users/{userid}
+   URL: /rest/users/{userid}
    Data Type: JSON
    Content-Type: 'application/json'
    */
@@ -248,7 +248,7 @@ Identity.prototype.GetAccount = function(userId, cb){
   var options = {
     host: this.Host,
     port: this.Port,
-    path: "/identity/users/{userid}",
+    path: "/rest/users/" + userId,
     method: 'GET',
     headers:{
       'Content-Type': 'application/json'

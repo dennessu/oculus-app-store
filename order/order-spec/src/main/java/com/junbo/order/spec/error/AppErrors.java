@@ -65,6 +65,18 @@ public interface AppErrors {
             description = "Enum value {0} not exists in type {1}")
     AppError enumConversionError(String enumValue, String enumType);
 
+    @ErrorDef(httpStatusCode = 403, code = PaymentErrorCode.PAYMENT_TYPE_NOT_SUPPORTED,
+            description = "Payment instrument type {0} not supported")
+    AppError piTypeNotSupported(String type);
+
+    @ErrorDef(httpStatusCode = 404, code = CatalogErrorCode.OFFER_NOT_FOUND,
+            description = "Offer {0} not found")
+    AppError offerNotFound(String offerId);
+
+    @ErrorDef(httpStatusCode = 500, code = CatalogErrorCode.CATALOG_CONNECTION_ERROR,
+            description = "Catalog service connection error")
+    AppError catalogConnectionError();
+
     @ErrorDef(httpStatusCode = 404, code = ErrorCode.ORDER_EVENT_NOT_FOUND,
             description = "Order event not found")
     AppError orderEventNotFound();

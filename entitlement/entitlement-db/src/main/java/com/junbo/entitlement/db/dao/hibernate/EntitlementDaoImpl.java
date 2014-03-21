@@ -140,10 +140,10 @@ public class EntitlementDaoImpl extends BaseDao<EntitlementEntity> implements En
     @Override
     public EntitlementEntity getExistingManagedEntitlement(Long userId, Long definitionId) {
         String queryString = "from EntitlementEntity" +
-                " where managedLifecycle = true" +
-                " and userId = (:userId)" +
+                " where userId = (:userId)" +
                 " and entitlementDefinitionId = (:definitionId)" +
-                " and status >= 0";
+                " and status >= 0" +
+                " and managedLifecycle = true";
         Query q = currentSession().createQuery(queryString)
                 .setLong("userId", userId)
                 .setLong("definitionId", definitionId);
@@ -159,7 +159,8 @@ public class EntitlementDaoImpl extends BaseDao<EntitlementEntity> implements En
                 " and type = (:type)" +
                 " and group = (:group)" +
                 " and tag = (:tag)" +
-                " and status >= 0";
+                " and status >= 0" +
+                " and managedLifecycle = true";
         Query q = currentSession().createQuery(queryString)
                 .setLong("userId", userId)
                 .setLong("developerId", developerId)

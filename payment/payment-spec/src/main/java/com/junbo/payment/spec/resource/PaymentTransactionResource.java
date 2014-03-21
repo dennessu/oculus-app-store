@@ -37,7 +37,8 @@ public interface PaymentTransactionResource {
 
     @PUT
     @Path("/{paymentId}/reverse")
-    Promise<PaymentTransaction> reversePayment(@PathParam("paymentId") Long paymentId);
+    Promise<PaymentTransaction> reversePayment(@PathParam("paymentId") Long paymentId,
+                                               PaymentTransaction request);
 
     @GET
     @Path("/{paymentId}")
