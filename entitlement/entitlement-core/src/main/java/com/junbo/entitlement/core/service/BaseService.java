@@ -70,15 +70,10 @@ public class BaseService {
 
     protected void fillUpdate(Entitlement entitlement, Entitlement existingEntitlement) {
         if (entitlement.getPeriod() != null) {
-            existingEntitlement.setExpirationTime(new Date(entitlement.getGrantTime().getTime()
+            existingEntitlement.setExpirationTime(new Date(existingEntitlement.getGrantTime().getTime()
                     + TimeUnit.SECONDS.toMillis(entitlement.getPeriod())));
         } else {
             existingEntitlement.setExpirationTime(entitlement.getExpirationTime());
-        }
-        if (entitlement.getManagedLifecycle() == null) {
-            existingEntitlement.setManagedLifecycle(true);
-        } else {
-            existingEntitlement.setManagedLifecycle(entitlement.getManagedLifecycle());
         }
 
         if (entitlement.getConsumable() == null || !entitlement.getConsumable()) {
@@ -89,24 +84,19 @@ public class BaseService {
             existingEntitlement.setUseCount(entitlement.getUseCount());
         }
 
-        if (EntitlementStatus.LIFECYCLE_NOT_MANAGED_STATUS
-                .contains(EntitlementStatus.valueOf(entitlement.getStatus().toUpperCase()))) {
-            LOGGER.info("Delete or ban entitlement [{}], set managedLifecycle" +
-                    " and consumable to false and set useCount to 0.", existingEntitlement.getEntitlementId());
-            existingEntitlement.setManagedLifecycle(false);
-            existingEntitlement.setConsumable(false);
-            existingEntitlement.setUseCount(0);
-        }
-
+        existingEntitlement.setManagedLifecycle(entitlement.getManagedLifecycle());
         existingEntitlement.setStatus(entitlement.getStatus());
         existingEntitlement.setStatusReason(entitlement.getStatusReason());
 
-        //fill default group and tag if these are null
-        if (entitlement.getGroup() == null) {
-            entitlement.setGroup("");
-        }
-        if (entitlement.getTag() == null) {
-            entitlement.setTag("");
+        if (existingEntitlement.getStatus() != null) {
+            if (EntitlementStatus.LIFECYCLE_NOT_MANAGED_STATUS
+                    .contains(EntitlementStatus.valueOf(existingEntitlement.getStatus().toUpperCase()))) {
+                LOGGER.info("Delete or ban entitlement [{}], set managedLifecycle" +
+                        " and consumable to false and set useCount to 0.", existingEntitlement.getEntitlementId());
+                existingEntitlement.setManagedLifecycle(false);
+                existingEntitlement.setConsumable(false);
+                existingEntitlement.setUseCount(0);
+            }
         }
     }
 
@@ -141,9 +131,10 @@ public class BaseService {
         checkUser(existingEntitlement.getUserId());
         checkDeveloper(existingEntitlement.getDeveloperId());
         if (!entitlement.getManagedLifecycle()) {
-            validateNotNull(entitlement.getStatus(), "status");
+            validateNotNull(existingEntitlement.getStatus(), "status");
         }
         validateEquals(existingEntitlement.getUserId(), entitlement.getUserId(), "user");
+        validateEquals(existingEntitlement.getDeveloperId(), entitlement.getDeveloperId(), "developer");
         validateEquals(existingEntitlement.getOfferId(), entitlement.getOfferId(), "offer");
         validateEquals(existingEntitlement.getEntitlementDefinitionId(),
                 entitlement.getEntitlementDefinitionId(), "definition");

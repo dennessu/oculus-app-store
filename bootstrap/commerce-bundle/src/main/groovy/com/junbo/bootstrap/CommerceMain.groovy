@@ -49,7 +49,8 @@ class CommerceMain {
                 'com.junbo.rating.spec.resource.adapter',
                 'com.junbo.cart.spec.resource.adapter',
                 'com.junbo.order.spec.resource.adapter',
-                'com.junbo.payment.spec.internal.adapter')
+                'com.junbo.payment.spec.internal.adapter',
+                'com.junbo.email.spec.resource.adapter')
 
         def uri = URI.create('http://0.0.0.0:8082/rest')
         return GrizzlyHttpServerFactory.createHttpServer(uri, resourceConfig)

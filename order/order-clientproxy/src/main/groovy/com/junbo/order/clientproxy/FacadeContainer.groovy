@@ -33,6 +33,7 @@ class FacadeContainer {
     @Autowired
     @Qualifier('orderFulfillmentFacade')
     FulfillmentFacade fulfillmentFacade
+    @Autowired
     @Qualifier('orderEmailFacade')
     EmailFacade emailFacade
     @Autowired
