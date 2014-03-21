@@ -48,6 +48,9 @@ app.controller('OfferCreationCtrl', ['$scope', 'OffersFactory', 'AttributesFacto
                 $scope.offer.items.push({itemId: $scope.selectedItems[key].self});
             });
         };
+        $scope.totalItems = function() {
+            return Object.keys( $scope.selectedItems).length;
+        };
         $scope.selectedItems = {};
         $scope.isCollapsed = true;
         // TODO: change to ItemsFactory
