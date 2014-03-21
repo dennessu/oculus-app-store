@@ -28,12 +28,13 @@ class Main {
 
         resourceConfig.register(JsonMappingExceptionMapper)
         resourceConfig.register(IdTypeFromStringProvider)
-        resourceConfig.property(ServerProperties.BV_SEND_ERROR_IN_RESPONSE, true)
+//        resourceConfig.property(ServerProperties.BV_SEND_ERROR_IN_RESPONSE, true)
         resourceConfig.property(ServerProperties.TRACING, 'ALL')
+        resourceConfig.packages('com.junbo.subscription.spec.resource.adapter')
         resourceConfig.property('contextConfigLocation', 'classpath*:/spring/*.xml')
 
-        def uri = URI.create('http://localhost:8080/rest')
-        return GrizzlyHttpServerFactory.createHttpServer(uri)
+        def uri = URI.create('http://localhost:8055/rest')
+        return GrizzlyHttpServerFactory.createHttpServer(uri, resourceConfig)
     }
 
     static void main(String[] args) {

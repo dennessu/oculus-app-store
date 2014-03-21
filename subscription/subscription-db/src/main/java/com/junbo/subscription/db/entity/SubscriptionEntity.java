@@ -71,6 +71,7 @@ public class SubscriptionEntity extends Entity {
     }
 
     @Override
+    @Transient
     public Long getShardMasterId() {
         return userId;
     }

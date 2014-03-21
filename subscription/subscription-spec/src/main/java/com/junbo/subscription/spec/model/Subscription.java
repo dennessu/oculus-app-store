@@ -32,6 +32,14 @@ public class Subscription extends Model {
     @JsonSerialize(using = ToStringSerializer.class)
     private Long userId;
 
+    public Long getOfferId() {
+        return offerId;
+    }
+
+    public void setOfferId(Long offerId) {
+        this.offerId = offerId;
+    }
+
     //@NotNull
     @JsonSerialize(using = ToStringSerializer.class)
     private Long offerId;

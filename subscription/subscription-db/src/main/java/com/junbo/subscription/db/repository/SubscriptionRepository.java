@@ -22,8 +22,8 @@ public class SubscriptionRepository {
     @Autowired
     private SubscriptionMapper subscriptionMapper;
 
-    public Subscription get(Long entitlementId) {
-        return subscriptionMapper.toSubscription(subscriptionDao.get(entitlementId));
+    public Subscription get(Long subscriptionId) {
+        return subscriptionMapper.toSubscription(subscriptionDao.get(subscriptionId));
     }
 
     public Subscription insert(Subscription subscription) {

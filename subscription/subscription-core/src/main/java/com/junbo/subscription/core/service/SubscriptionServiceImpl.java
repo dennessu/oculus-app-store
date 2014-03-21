@@ -6,6 +6,9 @@
 
 package com.junbo.subscription.core.service;
 
+import com.junbo.catalog.spec.model.offer.Offer;
+import com.junbo.catalog.spec.model.offer.Price;
+import com.junbo.subscription.clientproxy.CatalogGateway;
 import com.junbo.subscription.common.exception.SubscriptionExceptions;
 import com.junbo.subscription.core.SubscriptionService;
 import com.junbo.subscription.spec.model.Subscription;
@@ -14,16 +17,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.Map;
 import java.util.UUID;
 
 /**
  * subscription service implement.
  */
 public class SubscriptionServiceImpl implements SubscriptionService {
-    public static final String NOT_START = "NOT_START";
-    public static final String EXPIRED = "EXPIRED";
+    private static final String NOT_START = "NOT_START";
+    private static final String EXPIRED = "EXPIRED";
+    private static final String SUBSCRIPTION = "SUBSCRIPTION";
+
+
     @Autowired
     private SubscriptionRepository subscriptionRepository;
+
+    @Autowired
+    private CatalogGateway catalogGateway;
 
     @Override
     public Subscription getsubscription(Long subscriptionId) {
@@ -47,6 +57,17 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
 
         //TODO: set property
+        Offer subsOffer = catalogGateway.getOffer(subscription.getOfferId());
+
+        if (subsOffer.getType() != SUBSCRIPTION) {
+            throw SubscriptionExceptions.INSTANCE.subscriptionTypeError().exception();
+        }
+
+        //check if free subs? if not, throw exception now and will call billing later.
+
+        if (!isFreeSubscrption(subsOffer)){
+            throw SubscriptionExceptions.INSTANCE.subscriptionTypeError().exception();
+        }
 
         Date currentDate = new Date();
 
@@ -65,4 +86,10 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         return subscriptionRepository.getByTrackingUuid(trackingUuid);
     }
 
+    private boolean isFreeSubscrption(Offer offer) {
+
+        Map<String, Price> priceMap = offer.getPrices();
+
+        return true;
+    }
 }
