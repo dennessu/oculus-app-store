@@ -11,8 +11,11 @@ import com.junbo.billing.db.repository.ShippingAddressRepository
 import com.junbo.billing.spec.error.AppErrors
 import com.junbo.billing.spec.model.ShippingAddress
 import com.junbo.common.id.UserId
+import com.junbo.identity.spec.model.user.User
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 
@@ -28,6 +31,8 @@ class ShippingAddressServiceImpl implements ShippingAddressService {
     @Autowired
     IdentityFacade identityFacade
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ShippingAddressServiceImpl)
+
     @Override
     Promise<ShippingAddress> addShippingAddress(Long userId, ShippingAddress address) {
 
@@ -36,23 +41,23 @@ class ShippingAddressServiceImpl implements ShippingAddressService {
         }
         address.setUserId(new UserId(userId))
 
-        validateUser(address.userId.value)
-        validateAddress(address)
-
-        return Promise.pure(shippingAddressRepository.saveShippingAddress(address))
+        return validateUser(address.userId.value).then {
+            validateAddress(address)
+            return Promise.pure(shippingAddressRepository.saveShippingAddress(address))
+        }
     }
 
     @Override
     Promise<List<ShippingAddress>> getShippingAddresses(Long userId) {
 
-        validateUser(userId)
+        return validateUser(userId).then {
+            return Promise.pure(shippingAddressRepository.getShippingAddresses(userId))
+        }
 
-        return Promise.pure(shippingAddressRepository.getShippingAddresses(userId))
     }
 
     @Override
     Promise<ShippingAddress> getShippingAddress(Long userId, Long addressId) {
-
         ShippingAddress address = shippingAddressRepository.getShippingAddress(addressId)
 
         if (address == null) {
@@ -68,17 +73,20 @@ class ShippingAddressServiceImpl implements ShippingAddressService {
 
     @Override
     void deleteShippingAddress(Long userId, Long addressId) {
-
         shippingAddressRepository.deleteShippingAddress(addressId)
     }
 
-    private void validateUser(Long userId) {
-        def user = identityFacade.getUser(userId)?.wrapped().get()
-        if (user == null) {
+    private Promise<Void> validateUser(Long userId) {
+        identityFacade.getUser(userId).recover { Throwable throwable ->
+            LOGGER.error('name=Error_Get_User. userId: ' + userId, throwable)
             throw AppErrors.INSTANCE.userNotFound(userId.toString()).exception()
-        }
-        if (user.status != 'ACTIVE') {
-            throw AppErrors.INSTANCE.userStatusInvalid(userId.toString()).exception()
+        }.then { User user ->
+            if (user == null) {
+                throw AppErrors.INSTANCE.userNotFound(userId.toString()).exception()
+            }
+            if (user.status != 'ACTIVE') {
+                throw AppErrors.INSTANCE.userStatusInvalid(userId.toString()).exception()
+            }
         }
     }
 
