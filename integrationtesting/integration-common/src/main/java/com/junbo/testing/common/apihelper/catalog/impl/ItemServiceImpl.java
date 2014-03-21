@@ -10,6 +10,7 @@ import com.junbo.catalog.spec.model.common.ResultList;
 import com.junbo.common.id.ItemId;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
+import com.junbo.testing.common.apihelper.catalog.AttributeService;
 import com.junbo.testing.common.apihelper.catalog.ItemService;
 import com.junbo.testing.common.apihelper.identity.UserService;
 import com.junbo.testing.common.apihelper.identity.impl.UserServiceImpl;
@@ -129,9 +130,9 @@ public class ItemServiceImpl implements ItemService {
         return listItemId;
     }
 
-    public String postDefaultItem() throws Exception {
+    private Item prepareItemEntity(String fileName, boolean isDigital) throws Exception {
 
-        String resourceLocation = String.format("classpath:testItems/%s.json", defaultItemFileName);
+        String resourceLocation = String.format("classpath:testItems/%s.json", fileName);
         Resource resource = resolver.getResource(resourceLocation);
         Assert.assertNotNull(resource);
 
@@ -152,8 +153,26 @@ public class ItemServiceImpl implements ItemService {
 
         Item itemForPost = new JsonMessageTranscoder().decode(new TypeReference<Item>() {},
                 strDefaultItem.toString());
+        itemForPost.setName("temp");
         UserService us = UserServiceImpl.instance();
         itemForPost.setOwnerId(Long.valueOf(us.PostUser()));
+
+        //To post a digital or physical item:
+        //Firstly, search if there is the digital or physical
+        if (isDigital) {
+            AttributeService attributeServiceAPI = AttributeServiceImpl.instance();
+
+        }
+        else {
+
+        }
+
+        return itemForPost;
+    }
+
+    public String postDefaultItem(boolean isDigital) throws Exception {
+
+        Item itemForPost = prepareItemEntity(defaultItemFileName, isDigital);
 
         RequestBuilder reqBuilder = new RequestBuilder("POST");
         reqBuilder.addHeader(RestUrl.requestHeaderName, RestUrl.requestHeaderValue);
@@ -188,11 +207,10 @@ public class ItemServiceImpl implements ItemService {
         Request req = reqBuilder.build();
 
         logger.LogRequest(req);
-
         Future future = asyncClient.prepareRequest(req).execute();
         NettyResponse nettyResponse = (NettyResponse) future.get();
-
         logger.LogResponse(nettyResponse);
+        Assert.assertEquals(expectedResponseCode, nettyResponse.getStatusCode());
 
         Item itemPost = new JsonMessageTranscoder().decode(new TypeReference<Item>() {},
                 nettyResponse.getResponseBody());
@@ -200,7 +218,7 @@ public class ItemServiceImpl implements ItemService {
         String itemRtnId = IdConverter.idLongToHexString(ItemId.class, itemPost.getId());
         Master.getInstance().addItem(itemRtnId, itemPost);
 
-        return itemPost.getId().toString();
+        return itemRtnId;
     }
 
     public String updateItem(String itemId, Item item) throws Exception {
