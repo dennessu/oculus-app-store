@@ -6,8 +6,8 @@
 
 package com.junbo.catalog.rest.resource;
 
-import com.junbo.catalog.common.exception.CatalogException;
 import com.junbo.catalog.core.BaseService;
+import com.junbo.catalog.spec.error.AppErrors;
 import com.junbo.catalog.spec.model.common.*;
 import com.junbo.common.id.Id;
 import com.junbo.langur.core.promise.Promise;
@@ -55,8 +55,11 @@ public abstract class BaseResourceImpl<T extends VersionedModel> {
     }
 
     public Promise<T> update(Id entityId, T entity) {
-        if (entity == null || !entityId.getValue().equals(entity.getId())) {
-            throw new CatalogException("TODO");
+        if (entity.getId() == null) {
+            throw AppErrors.INSTANCE.missingField("id").exception();
+        }
+        if (!entityId.getValue().equals(entity.getId())) {
+            throw AppErrors.INSTANCE.fieldNotMatch("id", entity.getId(), entityId).exception();
         }
 
         // TODO: change this

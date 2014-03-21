@@ -6,10 +6,9 @@
 
 package com.junbo.catalog.core.service;
 
-import com.junbo.catalog.common.exception.CatalogException;
-import com.junbo.catalog.common.exception.NotFoundException;
 import com.junbo.catalog.core.EntitlementDefinitionService;
 import com.junbo.catalog.db.repo.EntitlementDefinitionRepository;
+import com.junbo.catalog.spec.error.AppErrors;
 import com.junbo.catalog.spec.model.common.PageableGetOptions;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementType;
@@ -32,7 +31,7 @@ public class EntitlementDefinitionServiceImpl implements EntitlementDefinitionSe
     public EntitlementDefinition getEntitlementDefinition(Long entitlementDefinitionId) {
         EntitlementDefinition entitlementDefinition = entitlementDefinitionRepository.get(entitlementDefinitionId);
         if (entitlementDefinition == null) {
-            throw new NotFoundException("Cannot find " + entitlementDefinitionId);
+            throw AppErrors.INSTANCE.notFound("entitlementDefinition", entitlementDefinitionId).exception();
         }
         checkDeveloper(entitlementDefinition.getDeveloperId());
         return entitlementDefinition;
@@ -42,8 +41,7 @@ public class EntitlementDefinitionServiceImpl implements EntitlementDefinitionSe
     public List<EntitlementDefinition> getEntitlementDefinitions(Long developerId, String group, String tag,
                                                                  String type, PageableGetOptions pageMetadata) {
         if (developerId == null) {
-            //TODO: change to specified exception later
-            throw new CatalogException("missing developerId");
+            throw AppErrors.INSTANCE.missingField("developerId").exception();
         }
         checkDeveloper(developerId);
         return entitlementDefinitionRepository.getByParams(developerId, group, tag, type, pageMetadata);

@@ -6,11 +6,10 @@
 
 package com.junbo.catalog.core.service;
 
-import com.junbo.catalog.common.exception.CatalogException;
-import com.junbo.catalog.common.exception.NotFoundException;
 import com.junbo.catalog.core.BaseService;
 import com.junbo.catalog.db.repo.EntityDraftRepository;
 import com.junbo.catalog.db.repo.EntityRepository;
+import com.junbo.catalog.spec.error.AppErrors;
 import com.junbo.catalog.spec.model.common.VersionedModel;
 import com.junbo.catalog.spec.model.common.EntitiesGetOptions;
 import com.junbo.catalog.spec.model.common.EntityGetOptions;
@@ -41,7 +40,7 @@ public abstract class BaseServiceImpl<T extends VersionedModel> implements BaseS
             entity = getEntityDraftRepo().get(entityId);
             if (entity == null
                     || options.getStatus()!=null && !options.getStatus().equalsIgnoreCase(entity.getStatus())) {
-                throw new NotFoundException("Cannot find " + getEntityType() + " " + entityId);
+                throw AppErrors.INSTANCE.notFound(getEntityType(), entityId).exception();
             }
         }
 
@@ -92,10 +91,6 @@ public abstract class BaseServiceImpl<T extends VersionedModel> implements BaseS
 
     @Override
     public T create(T entity) {
-        if (entity == null) {
-            throw new CatalogException("TODO");
-        }
-
         entity.setStatus(Status.DESIGN);
 
         Long entityId = getEntityDraftRepo().create(entity);
@@ -105,8 +100,11 @@ public abstract class BaseServiceImpl<T extends VersionedModel> implements BaseS
 
     @Override
     public T update(Long entityId, T entity) {
-        if (entity == null || !entityId.equals(entity.getId())) {
-            throw new CatalogException("TODO");
+        if (entity.getId() == null) {
+            throw AppErrors.INSTANCE.missingField("id").exception();
+        }
+        if (!entityId.equals(entity.getId())) {
+            throw AppErrors.INSTANCE.fieldNotMatch("id", entity.getId(), entityId).exception();
         }
 
         getEntityDraftRepo().update(entity);
@@ -178,7 +176,7 @@ public abstract class BaseServiceImpl<T extends VersionedModel> implements BaseS
 
     private void checkEntityNotNull(Long entityId, T entity) {
         if (entity == null) {
-            throw new NotFoundException("Cannot find " + getEntityType() + " " + entityId);
+            throw AppErrors.INSTANCE.notFound(getEntityType(), entityId).exception();
         }
     }
 }
