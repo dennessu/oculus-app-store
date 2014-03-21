@@ -10,8 +10,8 @@ import com.junbo.identity.data.dao.UserEmailDAO;
 import com.junbo.identity.data.entity.user.UserEmailEntity;
 import com.junbo.identity.data.mapper.ModelMapper;
 import com.junbo.identity.data.repository.UserEmailRepository;
+import com.junbo.identity.spec.model.options.UserEmailGetOption;
 import com.junbo.identity.spec.model.users.UserEmail;
-import com.junbo.identity.spec.options.UserEmailListOptions;
 import com.junbo.oom.core.MappingContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -39,7 +39,7 @@ public class UserEmailRepositoryImpl implements UserEmailRepository {
     }
 
     @Override
-    public List<UserEmail> search(UserEmailListOptions getOption) {
+    public List<UserEmail> search(UserEmailGetOption getOption) {
 
         List entities = userEmailDAO.search(getOption);
 

@@ -6,8 +6,8 @@
 package com.junbo.identity.data.repository
 
 import com.junbo.common.id.GroupId
+import com.junbo.identity.spec.model.options.GroupGetOption
 import com.junbo.identity.spec.model.users.Group
-import com.junbo.identity.spec.options.GroupListOptions
 
 /**
  * Created by liangfu on 3/14/14.
@@ -16,5 +16,5 @@ interface GroupRepository {
     Group get(GroupId groupId)
     Group save(Group group)
     Group update(Group group)
-    List<Group> search(GroupListOptions getOption)
+    List<Group> search(GroupGetOption getOption)
 }

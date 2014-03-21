@@ -4,14 +4,13 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.identity.data.repository.impl
-
 import com.junbo.common.id.UserDeviceId
 import com.junbo.identity.data.dao.UserDeviceDAO
 import com.junbo.identity.data.entity.user.UserDeviceEntity
 import com.junbo.identity.data.mapper.ModelMapper
 import com.junbo.identity.data.repository.UserDeviceRepository
+import com.junbo.identity.spec.model.options.UserDeviceGetOption
 import com.junbo.identity.spec.model.users.UserDevice
-import com.junbo.identity.spec.options.UserDeviceListOptions
 import com.junbo.oom.core.MappingContext
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
@@ -50,7 +49,7 @@ class UserDeviceRepositoryImpl implements UserDeviceRepository {
     }
 
     @Override
-    List<UserDevice> search(UserDeviceListOptions getOption) {
+    List<UserDevice> search(UserDeviceGetOption getOption) {
         def result = []
         def entities = userDeviceDAO.search(getOption.userId.value, getOption)
 

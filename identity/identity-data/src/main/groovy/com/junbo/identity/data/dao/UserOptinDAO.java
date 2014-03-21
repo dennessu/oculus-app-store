@@ -6,15 +6,17 @@
 package com.junbo.identity.data.dao;
 
 import com.junbo.identity.data.entity.user.UserOptinEntity;
-import com.junbo.identity.spec.options.UserOptinListOptions;
-import com.junbo.sharding.annotations.SeedParam;
+import com.junbo.identity.spec.model.options.UserOptinGetOption;
 
 import java.util.List;
 
 /**
- * Created by xiali on 3/18/14.
+ * Created by xiali_000 on 3/18/14.
  */
-public interface UserOptinDAO extends BaseDao<UserOptinEntity, Long> {
-    List<UserOptinEntity> search(Long userId, UserOptinListOptions options);
-    void delete(@SeedParam Long id);
+public interface UserOptinDAO {
+    UserOptinEntity save(UserOptinEntity entity);
+    UserOptinEntity update(UserOptinEntity entity);
+    UserOptinEntity get(Long id);
+    List<UserOptinEntity> search(Long userId, UserOptinGetOption getOption);
+    void delete(Long id);
 }

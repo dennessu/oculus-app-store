@@ -6,8 +6,8 @@
 package com.junbo.identity.data.repository;
 
 import com.junbo.common.id.UserPasswordId;
+import com.junbo.identity.spec.model.options.UserPasswordGetOption;
 import com.junbo.identity.spec.model.users.UserPassword;
-import com.junbo.identity.spec.options.UserPasswordListOptions;
 
 import java.util.List;
 
@@ -21,7 +21,7 @@ public interface UserPasswordRepository {
 
     UserPassword get(UserPasswordId id);
 
-    List<UserPassword> search(UserPasswordListOptions getOption);
+    List<UserPassword> search(UserPasswordGetOption getOption);
 
     void delete(UserPasswordId id);
 }

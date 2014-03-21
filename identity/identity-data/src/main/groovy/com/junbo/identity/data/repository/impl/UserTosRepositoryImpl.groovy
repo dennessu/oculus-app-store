@@ -10,8 +10,8 @@ import com.junbo.identity.data.dao.UserTosDAO
 import com.junbo.identity.data.entity.user.UserTosEntity
 import com.junbo.identity.data.mapper.ModelMapper
 import com.junbo.identity.data.repository.UserTosRepository
+import com.junbo.identity.spec.model.options.UserTosGetOption
 import com.junbo.identity.spec.model.users.UserTos
-import com.junbo.identity.spec.options.UserTosListOptions
 import com.junbo.oom.core.MappingContext
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
@@ -49,9 +49,7 @@ class UserTosRepositoryImpl implements UserTosRepository {
     }
 
     @Override
-    List<UserTos> search(UserTosListOptions getOption) {
-        return new ArrayList<UserTos>()
-        /*
+    List<UserTos> search(UserTosGetOption getOption) {
         def result = []
         def entities = userTosDAO.search(getOption.userId.value, getOption)
 
@@ -59,7 +57,6 @@ class UserTosRepositoryImpl implements UserTosRepository {
             result.add(modelMapper.toUserTos(i, new MappingContext()))
         }
         return result
-        */
     }
 
     @Override

@@ -11,6 +11,7 @@ import com.junbo.common.id.SecurityQuestionId;
 import com.junbo.common.id.UserId;
 import com.junbo.identity.data.identifiable.UserPasswordStrength;
 import com.junbo.identity.data.repository.*;
+import com.junbo.identity.spec.model.options.*;
 import com.junbo.identity.spec.model.users.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -34,7 +35,6 @@ import java.util.UUID;
 @TestExecutionListeners(TransactionalTestExecutionListener.class)
 @Transactional("transactionManager")
 public class RepositoryTest extends AbstractTestNGSpringContextTests {
-    /*
     // This is the fake value to meet current requirement.
     private final long userId = 1493188608L;
 
@@ -456,5 +456,4 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         List<UserTos> userToses = userTosRepository.search(userTosGetOption);
         Assert.assertEquals(userToses.size(), 1);
     }
-    */
 }

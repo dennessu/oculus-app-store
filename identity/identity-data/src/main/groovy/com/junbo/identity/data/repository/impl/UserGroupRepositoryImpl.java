@@ -10,13 +10,14 @@ import com.junbo.identity.data.dao.UserGroupDAO;
 import com.junbo.identity.data.entity.user.UserGroupEntity;
 import com.junbo.identity.data.mapper.ModelMapper;
 import com.junbo.identity.data.repository.UserGroupRepository;
+import com.junbo.identity.spec.model.options.UserGroupGetOption;
 import com.junbo.identity.spec.model.users.UserGroup;
-import com.junbo.identity.spec.options.UserGroupListOptions;
 import com.junbo.oom.core.MappingContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -54,8 +55,7 @@ public class UserGroupRepositoryImpl implements UserGroupRepository {
     }
 
     @Override
-    public List<UserGroup> search(UserGroupListOptions getOption) {
-        /*
+    public List<UserGroup> search(UserGroupGetOption getOption) {
         List entities = userGroupDAO.search(getOption.getUserId().getValue(), getOption);
 
         List<UserGroup> results = new ArrayList<UserGroup>();
@@ -63,8 +63,6 @@ public class UserGroupRepositoryImpl implements UserGroupRepository {
             results.add(modelMapper.toUserGroup((UserGroupEntity)entities.get(i), new MappingContext()));
         }
         return results;
-        */
-        return null;
     }
 
     @Override

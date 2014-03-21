@@ -6,8 +6,8 @@
 package com.junbo.identity.data.repository;
 
 import com.junbo.common.id.UserGroupId;
+import com.junbo.identity.spec.model.options.UserGroupGetOption;
 import com.junbo.identity.spec.model.users.UserGroup;
-import com.junbo.identity.spec.options.UserGroupListOptions;
 
 import java.util.List;
 
@@ -21,7 +21,7 @@ public interface UserGroupRepository {
 
     UserGroup get(UserGroupId id);
 
-    List<UserGroup> search(UserGroupListOptions getOption);
+    List<UserGroup> search(UserGroupGetOption getOption);
 
     void delete(UserGroupId id);
 }

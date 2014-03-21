@@ -11,7 +11,10 @@ import com.junbo.sharding.annotations.SeedParam;
 /**
  * Created by liangfu on 3/18/14.
  */
-public interface UserNameDAO extends BaseDao<UserNameEntity, Long> {
+public interface UserNameDAO {
+    UserNameEntity get(@SeedParam Long id);
+    UserNameEntity save(UserNameEntity entity);
+    UserNameEntity update(UserNameEntity entity);
     void delete(@SeedParam Long id);
     UserNameEntity findByUserId(@SeedParam Long userId);
 }

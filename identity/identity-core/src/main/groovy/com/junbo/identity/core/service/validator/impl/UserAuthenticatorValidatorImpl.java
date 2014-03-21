@@ -6,13 +6,18 @@
 package com.junbo.identity.core.service.validator.impl;
 
 import com.junbo.common.id.UserAuthenticatorId;
-import com.junbo.identity.core.service.validator.UserAuthenticatorValidator;
+import com.junbo.common.id.UserId;
 import com.junbo.identity.data.repository.UserAuthenticatorRepository;
+import com.junbo.identity.core.service.validator.UserAuthenticatorValidator;
 import com.junbo.identity.spec.error.AppErrors;
+import com.junbo.identity.spec.model.options.UserAuthenticatorGetOption;
 import com.junbo.identity.spec.model.users.UserAuthenticator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+
+import java.util.List;
 
 /**
  * Created by liangfu on 3/3/14.
@@ -95,7 +100,6 @@ public class UserAuthenticatorValidatorImpl extends CommonValidator implements U
     }
 
     private void checkUserFederationNotExists(Long userId, UserAuthenticator userFederation) {
-        /*
         UserAuthenticatorGetOption getOption = new UserAuthenticatorGetOption();
         getOption.setUserId(new UserId(userId));
         List<UserAuthenticator> userFederations = userAuthenticatorRepository.search(getOption);
@@ -108,6 +112,5 @@ public class UserAuthenticatorValidatorImpl extends CommonValidator implements U
                 }
             }
         }
-        */
     }
 }

@@ -7,9 +7,9 @@ package com.junbo.identity.data.dao.impl.postgresql;
 
 import com.junbo.identity.data.dao.UserPhoneNumberDAO;
 import com.junbo.identity.data.entity.user.UserPhoneNumberEntity;
-import com.junbo.identity.spec.options.UserPhoneNumberListOptions;
-import com.junbo.sharding.annotations.SeedParam;
+import com.junbo.identity.spec.model.options.UserPhoneNumberGetOption;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -17,11 +17,38 @@ import java.util.List;
  * Created by liangfu on 3/17/14.
  */
 @Component
-public class UserPhoneNumberDAOImpl extends BaseDaoImpl<UserPhoneNumberEntity, Long> implements UserPhoneNumberDAO {
+public class UserPhoneNumberDAOImpl extends ShardedDAOBase implements UserPhoneNumberDAO {
+    @Override
+    public UserPhoneNumberEntity save(UserPhoneNumberEntity entity) {
+        currentSession().save(entity);
+
+        return get(entity.getId());
+    }
 
     @Override
-    public List<UserPhoneNumberEntity> search(@SeedParam Long userId, UserPhoneNumberListOptions getOption) {
-        return null;
+    public UserPhoneNumberEntity update(UserPhoneNumberEntity entity) {
+        currentSession().merge(entity);
+        currentSession().flush();
+
+        return get(entity.getId());
+    }
+
+    @Override
+    public UserPhoneNumberEntity get(Long id) {
+        return (UserPhoneNumberEntity)currentSession().get(UserPhoneNumberEntity.class, id);
+    }
+
+    @Override
+    public List<UserPhoneNumberEntity> search(Long userId, UserPhoneNumberGetOption getOption) {
+        String query = "select * from user_phone_number where user_id = " + (getOption.getUserId().getValue()) +
+                (StringUtils.isEmpty(getOption.getType()) ? "" : (" and type = \'" + getOption.getType()) + "\'") +
+                (StringUtils.isEmpty(getOption.getValue()) ? "" : (" and value = \'" + getOption.getValue()) + "\'") +
+                (" order by id limit " + (getOption.getLimit() == null ? "ALL" : getOption.getLimit().toString())) +
+                " offset " + (getOption.getOffset() == null ? "0" : getOption.getOffset().toString());
+
+        List entities = currentSession().createSQLQuery(query).addEntity(UserPhoneNumberEntity.class).list();
+
+        return entities;
     }
 
     @Override

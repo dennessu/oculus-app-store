@@ -5,9 +5,8 @@
  */
 package com.junbo.identity.data.repository
 import com.junbo.common.id.UserId
+import com.junbo.identity.spec.model.options.UserGetOption
 import com.junbo.identity.spec.model.users.User
-import com.junbo.identity.spec.options.UserListOptions
-
 /**
  * User DAO is used to fetch/update/delete/get user data from the database
  */
@@ -19,7 +18,7 @@ interface UserRepository {
 
     User get(UserId userId)
 
-    List<User> search(UserListOptions getOption)
+    List<User> search(UserGetOption getOption)
 
     void delete(UserId userId)
 }

@@ -9,6 +9,7 @@ import com.junbo.common.id.UserId;
 import com.junbo.identity.data.repository.UserRepository;
 import com.junbo.identity.core.service.user.UserService;
 import com.junbo.identity.core.service.validator.UserServiceValidator;
+import com.junbo.identity.spec.model.options.UserGetOption;
 import com.junbo.identity.spec.model.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -50,10 +51,7 @@ class UserServiceImpl implements UserService {
 
     @Override
     public List<User> search(String userName, String status) {
-        return null;
-        /*
         UserGetOption getOption = new UserGetOption();
         return userRepository.search(getOption);
-        */
     }
 }
