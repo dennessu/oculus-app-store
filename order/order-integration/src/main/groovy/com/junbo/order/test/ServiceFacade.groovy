@@ -160,7 +160,6 @@ class ServiceFacade {
                 break
             }
         }
-
         return result
     }
 

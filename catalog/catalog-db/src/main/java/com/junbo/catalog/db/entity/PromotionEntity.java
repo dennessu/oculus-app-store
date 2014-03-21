@@ -29,7 +29,6 @@ import java.util.Date;
 public class PromotionEntity extends VersionedEntity {
     private Long id;
     private Long promotionId;
-    private int revision;
     private String name;
     private PromotionType type;
     private Date startDate;
@@ -53,15 +52,6 @@ public class PromotionEntity extends VersionedEntity {
 
     public void setPromotionId(Long promotionId) {
         this.promotionId = promotionId;
-    }
-
-    @Column(name = "revision")
-    public int getRevision() {
-        return revision;
-    }
-
-    public void setRevision(int revision) {
-        this.revision = revision;
     }
 
     @Column(name = "promotion_name")
