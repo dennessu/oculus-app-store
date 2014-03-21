@@ -116,7 +116,7 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
         if(!result.isSuccess()){
             handleProviderError(result);
         }
-        return null;
+        return Promise.pure(null);
     }
 
     @Override
@@ -142,6 +142,10 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
         Result<Transaction> result = null;
         LOGGER.info("capture transaction :" + transactionId);
         try{
+            //TODO: test use, remove
+            if(1 == 1){
+                throw  new RuntimeException();
+            }
             if(request.getChargeInfo() == null || request.getChargeInfo().getAmount() == null){
                 result = gateway.transaction().submitForSettlement(transactionId);
             }else{
@@ -185,6 +189,10 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
         Result<Transaction> result = null;
         LOGGER.info("reverse transaction :" + transactionId);
         try{
+            //TODO: test use, remove
+            if(1 == 1){
+                throw  new RuntimeException();
+            }
             result = gateway.transaction().voidTransaction(transactionId);
         }catch(Exception ex){
             handleProviderException(ex, "Void", "transaction", transactionId);
@@ -194,7 +202,7 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
         } else {
             handleProviderError(result);
         }
-        return null;
+        return Promise.pure(null);
     }
 
     private <T> void handleProviderError(Result<T> result) {
