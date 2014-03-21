@@ -79,6 +79,13 @@ class CachedCatalogFacadeImpl implements CatalogFacade {
 
     @Override
     Promise<List<Offer>> getOffers(List<OfferId> offerIds) {
-        return null
+        List<Offer> result = []
+        Promise.each(offerIds.iterator()) { OfferId offerId ->
+            getOffer(offerId.value).syncThen { Offer offer ->
+                result << offer
+            }
+        }.syncThen {
+            result
+        }
     }
 }
