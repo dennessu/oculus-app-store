@@ -14,7 +14,7 @@ import org.testng.annotations.Test;
 /**
  * Created by Yunlong on 3/20/14.
  */
-public class CartCheckout {
+public class CartCheckout extends BaseTestClass{
 
     private LogHelper logger = new LogHelper(CartCheckout.class);
 
@@ -37,6 +37,13 @@ public class CartCheckout {
     )
     @Test
     public void testDigitalGoodCheckout() throws Exception {
+        String randomUid = testDataProvider.createUser();
+        testDataProvider.postDefaultOffersToPrimaryCart(randomUid);
+
+        String uid = testDataProvider.createUser();
+        testDataProvider.mergeCart(uid,randomUid);
+
+
 
 
     }
@@ -60,7 +67,11 @@ public class CartCheckout {
     )
     @Test
     public void testPhysicalGoodCheckout() throws Exception {
+        String randomUid = testDataProvider.createUser();
+        testDataProvider.postDefaultOffersToPrimaryCart(randomUid);
 
+        String uid = testDataProvider.createUser();
+        testDataProvider.mergeCart(uid,randomUid);
 
     }
 
