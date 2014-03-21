@@ -1,4 +1,3 @@
-rootProject.name = 'billing'
 include 'billing-spec'
 
 include 'billing-db'

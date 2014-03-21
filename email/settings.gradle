@@ -1,4 +1,3 @@
-rootProject.name = 'email'
 include 'email-spec'
 
 include 'email-common'

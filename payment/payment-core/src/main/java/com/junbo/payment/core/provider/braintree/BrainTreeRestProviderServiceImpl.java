@@ -34,7 +34,7 @@ public class BrainTreeRestProviderServiceImpl implements PaymentProviderService 
     @Override
     public Promise<Void> delete(String token) {
         brainTreeResource.deletePaymentInstrument(token);
-        return null;
+        return Promise.pure(null);
     }
 
     @Override
@@ -55,7 +55,7 @@ public class BrainTreeRestProviderServiceImpl implements PaymentProviderService 
     @Override
     public Promise<Void> reverse(String transactionId) {
         brainTreeResource.reverse(transactionId);
-        return null;
+        return Promise.pure(null);
     }
 
     @Override
