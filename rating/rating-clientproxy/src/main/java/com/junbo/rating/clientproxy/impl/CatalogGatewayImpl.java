@@ -30,6 +30,7 @@ import com.junbo.rating.spec.fusion.LinkedEntry;
 import com.junbo.rating.spec.fusion.Price;
 import com.junbo.rating.spec.fusion.RatingOffer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,12 +40,15 @@ import java.util.List;
  */
 public class CatalogGatewayImpl implements CatalogGateway{
     @Autowired
+    @Qualifier("ratingAttributeClient")
     private AttributeResource attributeResource;
 
     @Autowired
+    @Qualifier("ratingItemClient")
     private ItemResource itemResource;
 
     @Autowired
+    @Qualifier("ratingOfferClient")
     private OfferResource offerResource;
 
     @Autowired
