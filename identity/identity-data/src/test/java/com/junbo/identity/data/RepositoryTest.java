@@ -77,7 +77,8 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
     @Autowired
     private UserTosRepository userTosRepository;
 
-    @Test
+    @Test(enabled = false
+    )
     public void testUserRepository() {
         User user = new User();
         user.setActive(true);
@@ -115,29 +116,26 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         Assert.assertNotEquals(userList.size(), 0);
     }
 
-    @Test(enabled = false)
+    @Test
     public void testGroupRepository() {
         Group group = new Group();
-        group.setValue("test " + UUID.randomUUID().toString());
+        group.setName("test " + UUID.randomUUID().toString());
         group.setActive(true);
         group.setCreatedTime(new Date());
         group = groupRepository.save(group);
 
         Group newGroup = groupRepository.get(group.getId());
-        Assert.assertEquals(group.getValue(), newGroup.getValue());
+        Assert.assertEquals(group.getName(), newGroup.getName());
 
         String newValue = "test2 " + UUID.randomUUID().toString();
-        newGroup.setValue(newValue);
+        newGroup.setName(newValue);
         groupRepository.update(newGroup);
         newGroup = groupRepository.get(group.getId());
-        Assert.assertEquals(newValue, newGroup.getValue());
+        Assert.assertEquals(newValue, newGroup.getName());
 
-        // Todo:    Need to enable this.
-        //GroupListOptions option = new GroupListOptions();
-        //option.setValue("test");
-        //List<Group> groupList = groupRepository.search(option);
+        List<Group> groupList = groupRepository.findByValue(newValue);
 
-        //Assert.assertNotEquals(groupList.size(), 0);
+        Assert.assertEquals(groupList.size(), 1);
     }
 
     @Test(enabled = false)
@@ -221,10 +219,10 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
 
         Assert.assertEquals(newValue, newUserAuthenticator.getValue());
 
-        // todo:    Need to enable this search
+        // todo:    Need to enable this findByValue
         // UserAuthenticatorListOption getOption = new UserAuthenticatorListOption();
         // getOption.setType("Google_account");
-        // List<UserAuthenticator> userAuthenticators = userAuthenticatorRepository.search(getOption);
+        // List<UserAuthenticator> userAuthenticators = userAuthenticatorRepository.findByValue(getOption);
         // Assert.assertNotEquals(userAuthenticators.size(), 0);
     }
 
@@ -279,7 +277,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         newUserEmail = userEmailRepository.get(userEmail.getId());
         Assert.assertEquals(newUserEmail.getValue(), value);
 
-        // todo:    Need to search by emailAddress
+        // todo:    Need to findByValue by emailAddress
         UserEmailListOption getOption = new UserEmailListOption();
         getOption.setValue(value);
         getOption.setType("Google");

@@ -55,8 +55,8 @@ public class GroupServiceImpl implements GroupService{
     public Group patch(GroupId groupId, Group group) {
         groupValidator.validateUpdate(groupId, group);
         Group existing = get(groupId);
-        if(!StringUtils.isEmpty(group.getValue())) {
-            existing.setValue(group.getValue());
+        if(!StringUtils.isEmpty(group.getName())) {
+            existing.setName(group.getName());
         }
         if(group.getActive() != null) {
             existing.setActive(group.getActive());
@@ -66,6 +66,6 @@ public class GroupServiceImpl implements GroupService{
 
     @Override
     public List<Group> search(GroupListOptions getOption) {
-        return groupRepository.search(getOption == null ? new GroupListOptions() : getOption);
+        return groupRepository.findByValue(getOption.getValue());
     }
 }

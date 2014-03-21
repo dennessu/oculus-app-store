@@ -58,8 +58,8 @@ public class GroupValidatorImpl implements GroupValidator {
         if(group == null) {
             throw AppErrors.INSTANCE.invalidParameter("group is null.").exception();
         }
-        if(StringUtils.isEmpty(group.getValue())) {
-            throw AppErrors.INSTANCE.invalidParameter("group.value is null.").exception();
+        if(StringUtils.isEmpty(group.getName())) {
+            throw AppErrors.INSTANCE.invalidParameter("group.name is null.").exception();
         }
         if(group.getActive() == null) {
             throw AppErrors.INSTANCE.invalidParameter("group.active is null").exception();

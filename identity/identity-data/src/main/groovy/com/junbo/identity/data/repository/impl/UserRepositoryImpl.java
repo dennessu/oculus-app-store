@@ -8,7 +8,7 @@ package com.junbo.identity.data.repository.impl;
 import com.junbo.common.id.UserId;
 import com.junbo.identity.data.dao.UserDAO;
 import com.junbo.identity.data.dao.UserNameDAO;
-import com.junbo.identity.data.dao.UserNameReverseIndexDAO;
+import com.junbo.identity.data.dao.index.UserNameReverseIndexDAO;
 import com.junbo.identity.data.entity.reverselookup.UserNameReverseIndexEntity;
 import com.junbo.identity.data.entity.user.UserEntity;
 import com.junbo.identity.data.entity.user.UserNameEntity;

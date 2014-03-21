@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.identity.data.dao;
+package com.junbo.identity.data.dao.index;
 
 import com.junbo.identity.data.entity.reverselookup.UserNameReverseIndexEntity;
 import com.junbo.sharding.annotations.SeedParam;

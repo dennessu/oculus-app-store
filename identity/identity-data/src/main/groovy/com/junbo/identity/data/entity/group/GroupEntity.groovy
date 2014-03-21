@@ -17,7 +17,7 @@ import javax.persistence.Table
  * Created by liangfu on 3/14/14.
  */
 @Entity
-@Table(name = 'group')
+@Table(name = 'group_entity')
 class GroupEntity extends ResourceMetaEntity {
     @Id
     @SeedId
@@ -25,7 +25,7 @@ class GroupEntity extends ResourceMetaEntity {
     private Long id
 
     @Column(name = 'value')
-    private String value
+    private String name
 
     @Column(name = 'active', nullable = false)
     private Boolean active
@@ -38,12 +38,12 @@ class GroupEntity extends ResourceMetaEntity {
         this.id = id
     }
 
-    String getValue() {
-        return value
+    String getName() {
+        return name
     }
 
-    void setValue(String value) {
-        this.value = value
+    void setName(String name) {
+        this.name = name
     }
 
     Boolean getActive() {

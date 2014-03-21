@@ -7,15 +7,15 @@
 package com.junbo.identity.data.repository.impl
 import com.junbo.common.id.GroupId
 import com.junbo.identity.data.dao.GroupDAO
+import com.junbo.identity.data.dao.index.GroupReverseIndexDAO
 import com.junbo.identity.data.entity.group.GroupEntity
+import com.junbo.identity.data.entity.reverselookup.GroupReverseIndexEntity
 import com.junbo.identity.data.mapper.ModelMapper
 import com.junbo.identity.data.repository.GroupRepository
-import com.junbo.identity.spec.options.list.GroupListOptions
 import com.junbo.identity.spec.model.users.Group
 import com.junbo.oom.core.MappingContext
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
-
 /**
  * Created by liangfu on 3/14/14.
  */
@@ -27,6 +27,10 @@ class GroupRepositoryImpl implements GroupRepository {
     @Autowired
     @Qualifier('identityModelMapperImpl')
     private ModelMapper modelMapper
+
+    @Autowired
+    @Qualifier('groupReverseIndexDAO')
+    private GroupReverseIndexDAO groupReverseIndexDAO
 
     @Override
     Group get(GroupId groupId) {
@@ -40,6 +44,11 @@ class GroupRepositoryImpl implements GroupRepository {
 
         groupDAO.save(groupEntity)
 
+        GroupReverseIndexEntity entity = new GroupReverseIndexEntity()
+        entity.setGroupId(groupEntity.id)
+        entity.setName(groupEntity.name)
+        groupReverseIndexDAO.save(entity)
+
         return get(new GroupId(groupEntity.id))
     }
 
@@ -47,19 +56,28 @@ class GroupRepositoryImpl implements GroupRepository {
     Group update(Group group) {
         GroupEntity groupEntity = modelMapper.toGroup(group, new MappingContext())
 
-        groupDAO.update(groupEntity)
+        GroupEntity existingGroupEntity = groupDAO.get(group.id.value)
 
+        if (existingGroupEntity.name != groupEntity.name) {
+            groupReverseIndexDAO.delete(existingGroupEntity.name)
+
+            GroupReverseIndexEntity entity = new GroupReverseIndexEntity()
+            entity.setName(groupEntity.name)
+            entity.setGroupId(groupEntity.id)
+            groupReverseIndexDAO.save(entity)
+        }
+
+        groupDAO.update(groupEntity)
         return get(group.id)
     }
 
     @Override
-    List<Group> search(GroupListOptions getOption) {
+    List<Group> findByValue(String name) {
         def result = []
-        List entities = groupDAO.search(getOption)
+        def groupReverseIndexEntity = groupReverseIndexDAO.get(name)
+        def group = get(new GroupId(groupReverseIndexEntity.groupId))
 
-        entities.flatten { GroupEntity entity ->
-            result.add(modelMapper.toGroup(entity, new MappingContext()))
-        }
+        result.add(modelMapper.toGroup(group, new MappingContext()))
         return result
     }
 }
