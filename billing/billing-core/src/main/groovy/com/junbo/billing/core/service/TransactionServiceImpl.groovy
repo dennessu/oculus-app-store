@@ -103,7 +103,7 @@ class TransactionServiceImpl implements TransactionService {
             return Promise.pure(balance)
         }
         .then { PaymentTransaction pt ->
-            transaction.setPaymentRefId(pt.paymentId.toString())
+            transaction.setPaymentRefId(pt.id.toString())
             PaymentStatus paymentStatus = PaymentStatus.valueOf(pt.status)
             switch (paymentStatus) {
                 case PaymentStatus.SETTLEMENT_SUBMITTED:
@@ -140,7 +140,7 @@ class TransactionServiceImpl implements TransactionService {
             return Promise.pure(balance)
         }
         .then { PaymentTransaction pt ->
-            transaction.setPaymentRefId(pt.paymentId.toString())
+            transaction.setPaymentRefId(pt.id.toString())
             PaymentStatus paymentStatus = PaymentStatus.valueOf(pt.status)
             switch (paymentStatus) {
                 case PaymentStatus.AUTHORIZED:

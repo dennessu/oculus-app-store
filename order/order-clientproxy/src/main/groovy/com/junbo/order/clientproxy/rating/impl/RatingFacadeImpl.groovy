@@ -25,7 +25,7 @@ import javax.annotation.Resource
 @TypeChecked
 class RatingFacadeImpl implements RatingFacade {
 
-    @Resource(name='ratingClient')
+    @Resource(name='order.ratingClient')
     RatingResource ratingResource
 
     @Override

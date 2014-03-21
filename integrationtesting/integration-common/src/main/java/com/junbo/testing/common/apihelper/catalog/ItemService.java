@@ -6,9 +6,8 @@
 package com.junbo.testing.common.apihelper.catalog;
 
 import com.junbo.catalog.spec.model.item.Item;
-import com.junbo.catalog.spec.model.common.ResultList;
-
 import java.util.HashMap;
+import java.util.List;
 
 /**
  @author Jason
@@ -18,10 +17,15 @@ import java.util.HashMap;
 public interface ItemService {
 
     String getItem(String itemId, HashMap<String, String> httpPara) throws Exception;
+    String getItem(String itemId, HashMap<String, String> httpPara, int expectedResponseCode) throws Exception;
 
-    ResultList<Item> getItem(HashMap<String, String> httpPara) throws Exception;
+    List<String> getItem(HashMap<String, String> httpPara) throws Exception;
+    List<String> getItem(HashMap<String, String> httpPara, int expectedResponseCode) throws Exception;
 
+    String postDefaultItem() throws Exception;
     String postItem(Item item) throws Exception;
+    String postItem(Item item, int expectedResponseCode) throws Exception;
 
     String updateItem(String itemId, Item item) throws Exception;
+    String updateItem(String itemId, Item item, int expectedResponseCode) throws Exception;
 }

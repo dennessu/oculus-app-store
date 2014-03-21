@@ -79,7 +79,7 @@
         <property name="offerResource" ref="mockCatalogResource"/>
     </bean>
 
-    <bean id="mockCachedCatalogFacade" class="com.junbo.order.clientproxy.cache.CachedCatalogFacadeImpl">
+    <bean id="mockCachedCatalogFacade" class="com.junbo.order.clientproxy.catalog.impl.CachedCatalogFacadeImpl">
         <property name="catalogFacade" ref="mockCatalogFacade"/>
         <constructor-arg name="ehCacheCacheManager" ref="cacheManager"/>
     </bean>

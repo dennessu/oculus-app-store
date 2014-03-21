@@ -6,8 +6,8 @@ var Configs = {
     CookiesTimeout: 60 * 60 * 1000,
     Google_Captcha_PublicKey: "6LeKhO4SAAAAAL53gitVTB5ddevC59wE-6usFCnT",
     Feature: {
-        Captcha: true,
-        TFA: true
+        Captcha: false,
+        TFA: false
     },
     CookiesName: {
         AccessToken: "access_token",
@@ -18,7 +18,11 @@ var Configs = {
 
         UserId: "user_id",
         Username: "username",
-        CartId: 'cart_id'
+        CartId: "cart_id",
+        AnonymousUserId: "anonymous_user_id",
+        AnonymousCartId: "anonymous_cart_id",
+
+        BeforeRoute: "before_route"
     },
     QueryStrings: {
         Code: "code",
@@ -30,6 +34,30 @@ var Configs = {
     },
     SettingTypeEnum:{
         Cookie: 'cookie'
+    },
+    Templates: {
+        Identity: {
+            Login: "Login",
+            Captcha: "Captcha",
+            TFA: "TFA",
+            Register: "Register",
+            PIN: "PIN",
+            My: "My"
+        },
+        Store: {
+            Index: "Index",
+            Detail: "Detail",
+            Cart: "Cart",
+            OrderSummary: "OrderSummary"
+        },
+        ShippingInfo: {
+            Entry: "ShippingIndex",
+            Edit: "ShippingInfoEdit"
+        },
+        Payment: {
+            Entry: "PaymentEntry",
+            Edit: "PaymentEdit"
+        }
     },
 
     // only on server

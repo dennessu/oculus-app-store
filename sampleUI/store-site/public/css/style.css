@@ -100,9 +100,10 @@ body header > nav{ line-height: 25px; color: #CCC; border-bottom: solid 1px #BCB
 .cart_list{ padding: 20px; border:solid 1px #CCC; }
 .cart_list > h2{ margin: 0; padding-bottom: 5px; border-bottom: solid 1px #D5D5D5;}
 .cart_list .item{ padding: 15px 0; border-bottom: solid 1px #D5D5D5; }
+.cart_list .item .select{ float: left; width: 30px; height: 120px;}
 .cart_list .item .picture{ float: left; width: 200px; height: 120px; background-color: #EAEAEA; }
 .cart_list .item .picture img{ width: 200px; height: 120px;}
-.cart_list .item .info{ margin-left: 220px; }
+.cart_list .item .info{ margin-left: 250px; }
 .cart_list .item .info dl{ margin: 0; height: 22px; line-height: 22px; }
 .cart_list .item .info dt{ float: left; width: 400px; font-weight: bold; }
 .cart_list .item .info dd{ float: left; margin-left: 0; width: 90px; }

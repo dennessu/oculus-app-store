@@ -29,7 +29,7 @@ public class EmailResourceImpl implements EmailResource {
 
     @Override
     public Promise<Email> postEmail(Email request) {
-        return emailService.send(request);
+        return emailService.postEmail(request);
     }
 
     @Override

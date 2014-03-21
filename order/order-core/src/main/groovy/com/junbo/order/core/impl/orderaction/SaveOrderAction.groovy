@@ -1,8 +1,10 @@
 package com.junbo.order.core.impl.orderaction
-import com.junbo.catalog.spec.model.offer.Offer
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
+import com.junbo.order.clientproxy.model.OrderOffer
+import com.junbo.order.core.annotation.OrderEventAwareAfter
+import com.junbo.order.core.annotation.OrderEventAwareBefore
 import com.junbo.order.core.impl.common.CoreBuilder
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
 import com.junbo.order.db.entity.enums.EventStatus
@@ -29,15 +31,15 @@ class SaveOrderAction extends BaseOrderEventAwareAction {
     boolean updateOnlyOrder = false
 
     @Override
-    @com.junbo.order.core.annotation.OrderEventAwareBefore
-    @com.junbo.order.core.annotation.OrderEventAwareAfter
+    @OrderEventAwareBefore(action = 'SaveOrderAction')
+    @OrderEventAwareAfter(action = 'SaveOrderAction')
     @Transactional
     Promise<ActionResult> execute(ActionContext actionContext) {
         def context = ActionUtils.getOrderActionContext(actionContext)
 
         // Save Order
         // Fetch Preorder Info from catalog
-        builder.getOffers(context.orderServiceContext).syncThen { List<Offer> ofs ->
+        builder.getOffers(context.orderServiceContext).syncThen { List<OrderOffer> ofs ->
             context.orderServiceContext.order.status = OrderStatus.OPEN
             def orderWithId = newOrder ? repo.createOrder(context.orderServiceContext.order) :
                     repo.updateOrder(context.orderServiceContext.order, updateOnlyOrder)

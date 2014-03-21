@@ -81,7 +81,7 @@ API.GetCartItems = function(req, res){
 
     Async.waterfall([
         function(cb){
-            dataProvider.GetPrimaryCart(userId, null, function(result){
+            dataProvider.GetPrimaryCart(userId, function(result){
                 if(result.StatusCode == 302){
                     cb(null, result.Headers.location);
                 }else{
@@ -172,7 +172,7 @@ API.CartProcess = function(req, res, action, userId, offerItems){
     var dataProvider = new CartDataProvider(C.Cart_API_Host, C.Cart_API_Port);
     Async.waterfall([
         function(cb){
-            dataProvider.GetPrimaryCart(userId, null, function(result){
+            dataProvider.GetPrimaryCart(userId, function(result){
                 if(result.StatusCode == 302){
                     cb(null, result.Headers.location);
                 }else{

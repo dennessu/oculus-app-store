@@ -6,17 +6,17 @@
 
 package com.junbo.order.core.impl.orderflow
 
-import com.junbo.catalog.spec.model.offer.Offer
 import com.junbo.common.error.AppErrorException
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.core.FlowSelector
 import com.junbo.order.core.FlowType
 import com.junbo.order.core.OrderServiceOperation
-import com.junbo.order.core.impl.common.CoreUtils
 import com.junbo.order.core.impl.order.OrderServiceContext
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
 import com.junbo.order.db.entity.enums.ItemType
 import com.junbo.order.db.entity.enums.OrderType
+import com.junbo.order.spec.error.AppErrors
+import com.junbo.order.spec.model.OrderItem
 import com.junbo.payment.spec.enums.PIType
 import com.junbo.payment.spec.model.PaymentInstrument
 import groovy.transform.CompileStatic
@@ -53,7 +53,7 @@ class DefaultFlowSelector implements FlowSelector {
                 return Promise.pure(FlowType.GET_ORDER)
             default:
                 LOGGER.error('name=Order_Action_Not_Supported, action: {0}', operation.toString())
-                throw com.junbo.order.spec.error.AppErrors.INSTANCE.orderActionNotSupported(
+                throw AppErrors.INSTANCE.orderActionNotSupported(
                         operation.toString()).exception()
         }
     }
@@ -66,7 +66,7 @@ class DefaultFlowSelector implements FlowSelector {
                 return selectPayInFlow(expOrder)
             default:
                 LOGGER.error('name=Order_Type_Not_Supported, action: {0}', type.toString())
-                throw com.junbo.order.spec.error.AppErrors.INSTANCE.orderTypeNotSupported(type.toString()).exception()
+                throw AppErrors.INSTANCE.orderTypeNotSupported(type.toString()).exception()
         }
     }
 
@@ -83,21 +83,17 @@ class DefaultFlowSelector implements FlowSelector {
             assert(!CollectionUtils.isEmpty(pis))
             switch (pis[0].type) {
                 // TODO reference to payment instrument type
-                case PIType.CREDITCARD.toString():
+                case PIType.CREDITCARD.name():
                     // TODO: do not support mixed order containing both physical item & digital item now
-                    return orderServiceContextBuilder.getOffers(context).then { List<Offer> ofs ->
-                        Boolean isPhysical = ofs.any { Offer of ->
-                            CoreUtils.getOfferType(of) == ItemType.PHYSICAL
-                        }
-                        if (isPhysical) {
-                            return Promise.pure(FlowType.AUTH_SETTLE)
-                        }
-                        return Promise.pure(FlowType.IMMEDIATE_SETTLE)
+                    Boolean isPhysical = context.order.orderItems.any { OrderItem orderItem ->
+                        orderItem.type?.toUpperCase() == ItemType.PHYSICAL.name()
                     }
+                    return isPhysical ? Promise.pure(FlowType.AUTH_SETTLE) :
+                            Promise.pure(FlowType.IMMEDIATE_SETTLE)
                 default:
                     LOGGER.error('name=Payment_Instrument_Type_Not_Supported, action: {}', pis[0]?.type)
-                    throw com.junbo.order.spec.error.AppErrors.INSTANCE.piTypeNotSupported(
-                            pis[0]?.type.toString()).exception()
+                    throw AppErrors.INSTANCE.piTypeNotSupported(
+                            pis[0]?.type?.toString()).exception()
             }
         }
     }
