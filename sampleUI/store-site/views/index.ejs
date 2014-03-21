@@ -19,19 +19,21 @@
 <%- include common/header%>
     {{animated-outlet name="main"}}
 </script>
-
 <script type="text/javascript" src="/scripts/app/common/utils.js"></script>
 <script type="text/javascript" src="/scripts/app/common/config.js"></script>
 <script type="text/javascript" src="/scripts/app/common/transition.js"></script>
 <script type="text/javascript" src="/scripts/app/common/auth_manager.js"></script>
 <script type="text/javascript" src="/scripts/app/adapters/data_provider.js"></script>
+<script type="text/javascript" src="/scripts/app/adapters/identity_provider.js"></script>
 <script type="text/javascript" src="/scripts/app/adapters/catalog_provider.js"></script>
+<script type="text/javascript" src="/scripts/app/adapters/cart_provider.js"></script>
 <script type="text/javascript" src="/scripts/app/adapters/custom_adapter.js"></script>
 <script type="text/javascript" src="/scripts/app/models/domain/request_data_model.js"></script>
 <script type="text/javascript" src="/scripts/app/models/domain/auth_key.js"></script>
-<script type="text/javascript" src="/scripts/app/models/data/product_model.js"></script>
+<script type="text/javascript" src="/scripts/app/models/data/store_models.js"></script>
 <script type="text/javascript" src="/scripts/app/routes/store_routes.js"></script>
 <script type="text/javascript" src="/scripts/app/views/store_views.js"></script>
+<script type="text/javascript" src="/scripts/app/controllers/store_controllers.js"></script>
 <script type="text/javascript" src="/scripts/app/store_app.js"></script>
 </body>
 </html>

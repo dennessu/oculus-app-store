@@ -13,7 +13,7 @@ public class BillingErrorCode {
     private BillingErrorCode() {}
 
     // billing error starts from 33000
-    public static final String BALANCE_NOT_FOUND = "23000";
+    public static final String BALANCE_NOT_FOUND = "33000";
 
-    public static final String BILLING_CONNECTION_ERROR = "23001";
+    public static final String BILLING_CONNECTION_ERROR = "33001";
 }

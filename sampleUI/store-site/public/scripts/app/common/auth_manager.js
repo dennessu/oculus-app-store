@@ -18,6 +18,10 @@ var AuthManager = Ember.Object.extend({
         return this.get('AuthKey.user_id');
     },
 
+    getUsername: function(){
+        return Utils.Cookies.Get(AppConfig.CookiesName.Username);
+    },
+
     getCartId: function(){
         return Utils.Cookies.Get(AppConfig.CookiesName.CartId);
     },
@@ -29,7 +33,7 @@ var AuthManager = Ember.Object.extend({
          });
          var user = Ember.App.User.find(userId);
          */
-        this.set('AuthKey', Ember.App.AuthKey.create({
+        this.set('AuthKey', App.AuthKey.create({
             access_token: accessToken,
             user_id: userId
         }));
@@ -49,12 +53,14 @@ var AuthManager = Ember.Object.extend({
 
          });
          */
+        this.set('AuthKey', null);
     },
 
     apiKeyObserver: function () {
         if (Ember.isEmpty(this.get('AuthKey'))) {
             Utils.Cookies.Remove(AppConfig.CookiesName.AccessToken);
             Utils.Cookies.Remove(AppConfig.CookiesName.UserId);
+            Utils.Cookies.Remove(AppConfig.CookiesName.Username);
         } else {
             Utils.Cookies.Set(AppConfig.CookiesName.AccessToken, this.get('AuthKey.access_token'));
             Utils.Cookies.Set(AppConfig.CookiesName.UserId, this.get('AuthKey.user_id'));

@@ -1,3 +1,4 @@
+rootProject.name = 'subscription'
 include 'subscription-spec'
 
 include 'subscription-common'

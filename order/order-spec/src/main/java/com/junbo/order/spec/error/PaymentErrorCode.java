@@ -14,9 +14,11 @@ public class PaymentErrorCode {
 
     // payment error code starts from 31000
 
-    public static final String PAYMENT_INSTRUMENT_STATUS_INVALID = "21000";
+    public static final String PAYMENT_INSTRUMENT_STATUS_INVALID = "31000";
 
-    public static final String PAYMENT_INSTRUMENT_NOT_FOUND = "21001";
+    public static final String PAYMENT_INSTRUMENT_NOT_FOUND = "31001";
 
-    public static final String PAYMENT_CONNECTION_ERROR = "21002";
+    public static final String PAYMENT_CONNECTION_ERROR = "31002";
+
+    public static final String PAYMENT_TYPE_NOT_SUPPORTED = "31003";
 }

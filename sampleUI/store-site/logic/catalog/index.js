@@ -19,7 +19,7 @@ exports.Products = function (data, cb) {
                 // error
                 resultModel.status = DomainModels.ResultStatusEnum.APIError;
             }
-            resultModel.data = JSON.parse(result.Data);;
+            resultModel.data = result.Data;
             responseModel.data = resultModel;
 
             cb(responseModel);
@@ -31,7 +31,7 @@ exports.Products = function (data, cb) {
 
             if (result.StatusCode == 200) {
                 resultModel.status = DomainModels.ResultStatusEnum.Normal;
-                resultModel.data = JSON.parse(result.Data);
+                resultModel.data = result.Data;
             } else {
                 // error
                 resultModel.status = DomainModels.ResultStatusEnum.APIError;
