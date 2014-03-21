@@ -18,8 +18,7 @@ public class CommonMapper {
     }
 
     public String fromLongToString(Long source) {
-        return source ==
-                null ? null : source.toString();
+        return source == null ? null : source.toString();
     }
 
     public UserId fromLongToUserId(Long source) {

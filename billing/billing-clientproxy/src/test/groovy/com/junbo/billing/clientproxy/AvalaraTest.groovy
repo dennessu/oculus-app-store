@@ -17,7 +17,7 @@ public class AvalaraTest extends BaseTest {
     @Resource
     TaxFacade avalaraFacade
 
-    @Test
+    @Test(enabled = false)
     public void testAvalaraFacade() {
         def balance = new Balance()
         balance.shippingAddressId = new ShippingAddressId(123L)
