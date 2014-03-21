@@ -20,7 +20,7 @@ import javax.persistence.Table;
  * Item DB entity.
  */
 @Entity
-@Table(name="item_draft")
+@Table(name="item")
 @TypeDefs(@TypeDef(name="json-string", typeClass=StringJsonUserType.class))
 public class ItemEntity extends VersionedEntity {
     private Long id;
