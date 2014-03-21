@@ -29,9 +29,9 @@ import java.util.*;
 /**
  * Created by jiefeng on 14-3-19.
  */
-public class CartManagement {
+public class CartManager {
 
-    private LogHelper logger = new LogHelper(CartManagement.class);
+    private LogHelper logger = new LogHelper(CartManager.class);
 
     //prepare a few test offers and test coupons
     private OfferId testOffer1 = new OfferId(100001L);
@@ -165,15 +165,15 @@ public class CartManagement {
         //verify merge result
         //5 testOffer1 + 2 testOffer2 + 3 testOffer3 + testCoupon1 + testCoupon2
         //check updated items returned correctly
-        String updatedCartId =cs.getCartPrimary(user1);
-        Cart updatedCart = Master.getInstance().getCart(updatedCartId);
-        Assert.assertEquals(updatedCart.getOffers().size(),3);
-        Assert.assertEquals(updatedCart.getCoupons().size(), 2);
+        String mergedCartId =cs.getCartPrimary(user1);
+        Cart mergedCart = Master.getInstance().getCart(mergedCartId);
+        Assert.assertEquals(mergedCart.getOffers().size(),3);
+        Assert.assertEquals(mergedCart.getCoupons().size(), 2);
 
         //check item quantity was updated correctly
-        Assert.assertTrue(updatedCart.getOffers().get(0).getQuantity()==5);
-        Assert.assertTrue(updatedCart.getOffers().get(1).getQuantity()==2);
-        Assert.assertTrue(updatedCart.getOffers().get(2).getQuantity()==3);
+        Assert.assertTrue(mergedCart.getOffers().get(0).getQuantity()==5);
+        Assert.assertTrue(mergedCart.getOffers().get(1).getQuantity()==2);
+        Assert.assertTrue(mergedCart.getOffers().get(2).getQuantity()==3);
     }
 
 //helper functions:
