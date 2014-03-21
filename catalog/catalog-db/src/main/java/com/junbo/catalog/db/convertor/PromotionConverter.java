@@ -18,6 +18,9 @@ public class PromotionConverter {
     private PromotionConverter(){}
 
     public static PromotionDraftEntity toDraftEntity(Promotion model) {
+        if (model == null) {
+            return null;
+        }
         PromotionDraftEntity entity = new PromotionDraftEntity();
         fillDraftEntity(model, entity);
         return entity;
@@ -34,6 +37,9 @@ public class PromotionConverter {
     }
 
     public static Promotion toModel(PromotionDraftEntity entity) {
+        if (entity == null) {
+            return null;
+        }
         Promotion model = Utils.fromJson(entity.getPayload(), Promotion.class);
         model.setId(entity.getId());
         model.setName(entity.getName());
@@ -49,6 +55,9 @@ public class PromotionConverter {
     }
 
     public static PromotionEntity toEntity(Promotion model) {
+        if (model == null) {
+            return null;
+        }
         PromotionEntity entity = new PromotionEntity();
         entity.setPromotionId(model.getId());
         entity.setName(model.getName());
@@ -63,6 +72,9 @@ public class PromotionConverter {
 
 
     public static Promotion toModel(PromotionEntity entity) {
+        if (entity == null) {
+            return null;
+        }
         Promotion model = Utils.fromJson(entity.getPayload(), Promotion.class);
         model.setId(entity.getPromotionId());
         model.setName(entity.getName());
