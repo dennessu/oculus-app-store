@@ -35,7 +35,7 @@ class Main {
         resourceConfig.property('contextConfigLocation', 'classpath*:/spring/*.xml')
         resourceConfig.property(ServerProperties.TRACING, 'ALL')
 
-        def uri = URI.create('http://localhost:8091/rest')
+        def uri = URI.create('http://localhost:8083/rest')
         return GrizzlyHttpServerFactory.createHttpServer(uri, resourceConfig)
     }
 
