@@ -10,11 +10,13 @@ import com.junbo.catalog.core.EntitlementDefinitionService;
 import com.junbo.catalog.core.ItemService;
 import com.junbo.catalog.db.repo.ItemDraftRepository;
 import com.junbo.catalog.db.repo.ItemRepository;
+import com.junbo.catalog.spec.error.AppErrors;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementType;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.item.ItemType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 
 /**
  * Item service implementation.
@@ -39,6 +41,7 @@ public class ItemServiceImpl extends BaseServiceImpl<Item> implements ItemServic
 
     @Override
     public Item create(Item item) {
+        validateItem(item);
         if (ItemType.APP.equalsIgnoreCase(item.getType())) {
             EntitlementDefinition entitlementDef = new EntitlementDefinition();
             entitlementDef.setDeveloperId(item.getOwnerId());
@@ -49,6 +52,16 @@ public class ItemServiceImpl extends BaseServiceImpl<Item> implements ItemServic
             item.setEntitlementDefId(entitlementDefId);
         }
         return super.create(item);
+    }
+
+    private void validateItem(Item item) {
+        checkFieldNotEmpty(item.getType(), "type");
+        checkFieldNotEmpty(item.getName(), "name");
+        checkFieldNotNull(item.getOwnerId(), "developer");
+
+        if (item.getEntitlementDefId() != null) {
+            throw AppErrors.INSTANCE.unnecessaryField("entitlementDefinition").exception();
+        }
     }
 
     @Override
