@@ -6,11 +6,11 @@
 package com.junbo.identity.rest.resource;
 
 import com.junbo.common.id.UserId;
+import com.junbo.common.model.Results;
 import com.junbo.identity.data.util.Constants;
 import com.junbo.identity.spec.error.AppErrors;
 import com.junbo.identity.data.entity.user.UserStatus;
 import com.junbo.identity.rest.service.user.UserService;
-import com.junbo.identity.spec.model.common.ResultList;
 import com.junbo.identity.spec.model.common.ResultListUtil;
 import com.junbo.identity.spec.model.user.User;
 import com.junbo.identity.spec.resource.UserResource;
@@ -41,13 +41,13 @@ public class UserResourceImpl implements UserResource {
     }
 
     @Override
-    public Promise<ResultList<User>> getUsers(String userName, String userNamePrefix, Integer cursor, Integer count) {
+    public Promise<Results<User>> getUsers(String userName, String userNamePrefix, Integer cursor, Integer count) {
         List<User> users = null;
 
         if(!StringUtils.isEmpty(userName) && !StringUtils.isEmpty(userNamePrefix)) {
             throw AppErrors.INSTANCE.unnecessaryParameterField(Constants.USER_NAME_PREFIX).exception();
         }
-        ResultList<User> result = new ResultList<User>();
+        Results<User> result = new Results<User>();
         if(!StringUtils.isEmpty(userName)) {
             users = userService.getByUserName(userName, UserStatus.ACTIVE.toString());
             result = ResultListUtil.init(users, Integer.MAX_VALUE);

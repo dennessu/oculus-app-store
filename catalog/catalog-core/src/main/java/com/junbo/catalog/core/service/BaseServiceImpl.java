@@ -16,6 +16,7 @@ import com.junbo.catalog.spec.model.common.EntityGetOptions;
 import com.junbo.catalog.spec.model.common.Status;
 import com.junbo.common.id.Id;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -147,6 +148,18 @@ public abstract class BaseServiceImpl<T extends VersionedModel> implements BaseS
     @Override
     public Long delete(Long entityId) {
         return updateStatus(entityId, Status.DELETED);
+    }
+
+    protected <T> void checkFieldNotNull(T field, String fieldName) {
+        if (field == null) {
+            throw AppErrors.INSTANCE.missingField(fieldName).exception();
+        }
+    }
+
+    protected void checkFieldNotEmpty(String field, String fieldName) {
+        if (StringUtils.isEmpty(field)) {
+            throw AppErrors.INSTANCE.missingField(fieldName).exception();
+        }
     }
 
     private Long updateStatus(Long entityId, String status) {

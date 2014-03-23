@@ -40,6 +40,8 @@ body header > nav{ line-height: 25px; color: #CCC; border-bottom: solid 1px #BCB
 .box1 > dl > dd, .box2 > dl > dd{ margin: 0;}
 .box1 > dl > dd > .error,
 .box2 > dl > dd > .error{ display:block; line-height: 20px; color: #f00;}
+.box1 > dl.radio > dt > lable{ display: inline-block; position: relative; padding-left: 22px; line-height: 18px;}
+.box1 > dl.radio > dt > lable input{ position: absolute; left: 0px; top: 0px;}
 .box1 input[type=text],
 .box1 input[type=number],
 .box1 input[type=email],
@@ -74,9 +76,10 @@ body header > nav{ line-height: 25px; color: #CCC; border-bottom: solid 1px #BCB
 .alert div{ margin-top: 30px; text-align: center;}
 
 
-.container{ padding-top: 30px;}
+.container{ margin: 0 auto; padding-top: 30px; background-color: #FFF;}
 .container > .categories{ float: left; width: 168px;}
 .container > .product_list{}
+.container .ember-animated-container{ margin: 0 auto; width: auto;}
 
 .categories > ul{ margin: 15px 0 0 0; padding-left: 0px;}
 .categories > ul >  li{ display: block; padding-left: 10px; line-height: 22px;}
@@ -173,3 +176,6 @@ body header > nav{ line-height: 25px; color: #CCC; border-bottom: solid 1px #BCB
 .account .payment .list dl dd.number{ width: 120px; }
 .account .payment .list dl dd.exp{ width: 100px; }
 .account .payment .list dl dd:last-child{ float: right;  }
+
+/* modules */
+.modules{ padding-top: 30px;}

@@ -11,6 +11,7 @@ import com.junbo.billing.spec.model.Balance;
 import com.junbo.billing.spec.resource.BalanceResource;
 import com.junbo.common.id.BalanceId;
 import com.junbo.common.id.OrderId;
+import com.junbo.common.model.Results;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -47,7 +48,15 @@ public class BalanceResourceImpl implements BalanceResource {
     }
 
     @Override
-    public Promise<List<Balance>> getBalances(OrderId orderId) {
-        return balanceService.getBalances(orderId.getValue());
+    public Promise<Results<Balance>> getBalances(OrderId orderId) {
+        return balanceService.getBalances(orderId.getValue())
+                .then(new Promise.Func<List<Balance>, Promise<Results<Balance>>>() {
+            @Override
+            public Promise<Results<Balance>> apply(List<Balance> balances) {
+                Results<Balance> results = new Results<>();
+                results.setItems(balances);
+                return Promise.pure(results);
+            }
+        });
     }
 }

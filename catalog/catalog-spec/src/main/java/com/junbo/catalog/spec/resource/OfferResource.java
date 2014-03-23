@@ -7,10 +7,10 @@
 package com.junbo.catalog.spec.resource;
 
 import com.junbo.catalog.spec.model.common.EntityGetOptions;
-import com.junbo.catalog.spec.model.common.ResultList;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OffersGetOptions;
 import com.junbo.common.id.OfferId;
+import com.junbo.common.model.Results;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.wordnik.swagger.annotations.Api;
@@ -32,7 +32,7 @@ public interface OfferResource {
     @ApiOperation("Get or search offers")
     @GET
     @Path("/")
-    Promise<ResultList<Offer>> getOffers(@BeanParam OffersGetOptions options);
+    Promise<Results<Offer>> getOffers(@BeanParam OffersGetOptions options);
 
     @ApiOperation("Get an offer")
     @GET

@@ -1,7 +1,6 @@
 package com.junbo.order.mock
 
 import com.junbo.catalog.spec.model.common.EntityGetOptions
-import com.junbo.catalog.spec.model.common.ResultList
 import com.junbo.catalog.spec.model.item.Item
 import com.junbo.catalog.spec.model.offer.Action
 import com.junbo.catalog.spec.model.offer.Event
@@ -9,6 +8,7 @@ import com.junbo.catalog.spec.model.offer.Offer
 import com.junbo.catalog.spec.model.offer.OffersGetOptions
 import com.junbo.catalog.spec.resource.OfferResource
 import com.junbo.common.id.OfferId
+import com.junbo.common.model.Results
 import com.junbo.langur.core.promise.Promise
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
@@ -30,7 +30,7 @@ class MockCatalogResource extends BaseMock implements OfferResource {
      * @return the created offer.
      */
     @Override
-    Promise<ResultList<Offer>> getOffers(@BeanParam OffersGetOptions options) {
+    Promise<Results<Offer>> getOffers(@BeanParam OffersGetOptions options) {
         return null
     }
 
@@ -52,7 +52,6 @@ class MockCatalogResource extends BaseMock implements OfferResource {
     Promise<Offer> generateOffer() {
         Offer offer = new Offer()
         offer.setName('fake_offer')
-        offer.setRevision(1)
         offer.setOwnerId(generateLong())
         offer.setId(generateLong())
         offer.events = []

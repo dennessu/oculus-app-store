@@ -44,7 +44,6 @@ AppConfig.DataModelMapTable = {
 };
 
 AppConfig.Countries = [
-    {name: "Australia", value: "AU"},
     {name: "Canada", value: "CA"},
     {name: "China", value: "CN"},
     {name: "France", value: "FR"},
