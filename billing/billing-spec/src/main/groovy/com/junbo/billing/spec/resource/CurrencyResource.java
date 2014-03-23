@@ -6,13 +6,13 @@
 
 package com.junbo.billing.spec.resource;
 
-import com.junbo.langur.core.promise.Promise;
-import com.junbo.langur.core.RestResource;
 import com.junbo.billing.spec.model.Currency;
+import com.junbo.common.model.Results;
+import com.junbo.langur.core.RestResource;
+import com.junbo.langur.core.promise.Promise;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.util.List;
 
 /**
  * Created by xmchen on 14-2-13.
@@ -23,7 +23,7 @@ import java.util.List;
 @RestResource
 public interface CurrencyResource {
     @GET
-    Promise<List<Currency>> getCurrencies();
+    Promise<Results<Currency>> getCurrencies();
 
     @GET
     @Path("/{name}")

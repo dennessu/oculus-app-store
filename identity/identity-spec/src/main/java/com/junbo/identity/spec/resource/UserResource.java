@@ -7,7 +7,7 @@
 package com.junbo.identity.spec.resource;
 
 import com.junbo.common.id.UserId;
-import com.junbo.identity.spec.model.common.ResultList;
+import com.junbo.common.model.Results;
 import com.junbo.identity.spec.model.user.User;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
@@ -33,7 +33,7 @@ public interface UserResource {
 
     @ApiOperation("Get or search users")
     @GET
-    Promise<ResultList<User>> getUsers(@QueryParam("userName") String userName,
+    Promise<Results<User>> getUsers(@QueryParam("userName") String userName,
                         @QueryParam("userNamePrefix") String userNamePrefix,
                         @QueryParam("cursor") Integer cursor,
                         @QueryParam("count") Integer count);

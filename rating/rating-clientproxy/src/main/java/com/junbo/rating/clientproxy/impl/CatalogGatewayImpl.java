@@ -109,7 +109,7 @@ public class CatalogGatewayImpl implements CatalogGateway{
         while(true) {
             List<Promotion> promotions = new ArrayList<Promotion>();
             try {
-                promotions.addAll(promotionResource.getPromotions(options).wrapped().get().getResults());
+                promotions.addAll(promotionResource.getPromotions(options).wrapped().get().getItems());
             } catch (Exception e) {
                 throw AppErrors.INSTANCE.catalogGatewayError().exception();
             }

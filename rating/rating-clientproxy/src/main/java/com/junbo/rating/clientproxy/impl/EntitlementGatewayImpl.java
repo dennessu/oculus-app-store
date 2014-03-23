@@ -46,7 +46,7 @@ public class EntitlementGatewayImpl implements EntitlementGateway {
             try {
                 entitlements.addAll(
                         entitlementResource.getEntitlements(
-                                new UserId(userId), param, pagingOption).wrapped().get().getCriteria());
+                                new UserId(userId), param, pagingOption).wrapped().get().getItems());
             } catch (Exception e) {
                 throw AppErrors.INSTANCE.entitlementGatewayError().exception();
             }

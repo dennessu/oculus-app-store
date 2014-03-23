@@ -6,10 +6,10 @@
 package com.junbo.catalog.spec.resource;
 
 import com.junbo.catalog.spec.model.common.EntityGetOptions;
-import com.junbo.catalog.spec.model.common.ResultList;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.item.ItemsGetOptions;
 import com.junbo.common.id.ItemId;
+import com.junbo.common.model.Results;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.wordnik.swagger.annotations.Api;
@@ -31,7 +31,7 @@ public interface ItemResource {
     @ApiOperation("Get or search items")
     @GET
     @Path("/")
-    Promise<ResultList<Item>> getItems(@BeanParam ItemsGetOptions options);
+    Promise<Results<Item>> getItems(@BeanParam ItemsGetOptions options);
 
     @ApiOperation("Get an item")
     @GET

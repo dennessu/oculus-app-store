@@ -8,8 +8,12 @@ package com.junbo.catalog.rest.resource;
 
 import com.junbo.catalog.core.BaseService;
 import com.junbo.catalog.spec.error.AppErrors;
-import com.junbo.catalog.spec.model.common.*;
+import com.junbo.catalog.spec.model.common.EntitiesGetOptions;
+import com.junbo.catalog.spec.model.common.EntityGetOptions;
+import com.junbo.catalog.spec.model.common.Status;
+import com.junbo.catalog.spec.model.common.VersionedModel;
 import com.junbo.common.id.Id;
+import com.junbo.common.model.Results;
 import com.junbo.langur.core.promise.Promise;
 
 import java.util.List;
@@ -21,12 +25,10 @@ import java.util.List;
 public abstract class BaseResourceImpl<T extends VersionedModel> {
     protected abstract <E extends BaseService<T>> E getEntityService();
 
-    public Promise<ResultList<T>> getEntities(EntitiesGetOptions options) {
+    public Promise<Results<T>> getEntities(EntitiesGetOptions options) {
         List<T> entities = getEntityService().getEntities(options);
-        ResultList<T> resultList = new ResultList<>();
-        resultList.setResults(entities);
-        resultList.setHref("href TODO");
-        resultList.setNext("next TODO");
+        Results<T> resultList = new Results<>();
+        resultList.setItems(entities);
         return Promise.pure(resultList);
     }
 
