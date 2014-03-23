@@ -5,6 +5,8 @@
  */
 package com.junbo.identity.spec.model.common;
 
+import com.junbo.common.model.Results;
+
 import java.util.List;
 
 /**
@@ -12,11 +14,19 @@ import java.util.List;
  */
 public class ResultListUtil {
 
-    public static <T> ResultList<T> init(List<T> entities, Integer count) {
-        ResultList<T> resultList = new ResultList<T>();
-        resultList.setItems(entities);
-        resultList.setHasNext(count == null ? false : (count == (entities == null ? 0 : entities.size())));
+    public static <T> Results<T> init(List<T> entities, Integer count) {
+        Results<T> resultList = new Results<T>();
+
+        if (entities.size() > count) {
+            resultList.setHasNext(true);
+            resultList.setItems(entities.subList(0, count));
+        } else {
+            resultList.setHasNext(false);
+            resultList.setItems(entities);
+        }
 
         return resultList;
     }
+
+    private ResultListUtil() {}
 }

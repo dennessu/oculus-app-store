@@ -4,30 +4,32 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.identity.spec.model.common;
+package com.junbo.common.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.junbo.common.model.Link;
 
 import java.util.List;
 
 /**
- * Result list.
- * @param <T>.
+ *
+ * The results of GET /resources APIs.
+ * @param <T> The type of the target resource.
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ResultList<T> {
+public class Results<T> {
 
     @JsonProperty("self")
     private Link self;
 
     private List<T> items;
 
-    private Boolean hasNext;
-
     @JsonProperty("next")
     private Link next;
+
+    @JsonIgnore
+    private boolean hasNext;
 
     public Link getSelf() {
         return self;
@@ -45,19 +47,19 @@ public class ResultList<T> {
         this.items = items;
     }
 
-    public Boolean getHasNext() {
-        return hasNext;
-    }
-
-    public void setHasNext(Boolean hasNext) {
-        this.hasNext = hasNext;
-    }
-
     public Link getNext() {
         return next;
     }
 
     public void setNext(Link next) {
         this.next = next;
+    }
+
+    public boolean hasNext() {
+        return hasNext;
+    }
+
+    public void setHasNext(boolean hasNext) {
+        this.hasNext = hasNext;
     }
 }
