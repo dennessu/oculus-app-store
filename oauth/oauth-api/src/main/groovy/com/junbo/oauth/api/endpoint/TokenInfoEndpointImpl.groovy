@@ -11,22 +11,24 @@ import com.junbo.oauth.core.service.TokenService
 import com.junbo.oauth.spec.endpoint.TokenInfoEndpoint
 import com.junbo.oauth.spec.model.AccessToken
 import com.junbo.oauth.spec.model.TokenInfo
-import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 import org.springframework.util.StringUtils
 
-import javax.ws.rs.core.UriInfo
-
 /**
- * Javadoc.
+ * Default {@link com.junbo.oauth.spec.endpoint.TokenInfoEndpoint} implementation.
+ * @author Zhanxin Yang
+ * @see com.junbo.oauth.spec.endpoint.TokenInfoEndpoint
  */
 @Component
 @CompileStatic
 @Scope('prototype')
 class TokenInfoEndpointImpl implements TokenInfoEndpoint {
+    /**
+     * The TokenService to handle the token related logic.
+     */
     private TokenService tokenService
 
     @Required
@@ -34,16 +36,22 @@ class TokenInfoEndpointImpl implements TokenInfoEndpoint {
         this.tokenService = tokenService
     }
 
+    /**
+     * Endpoint to retrieve the token information of the given access token.
+     * @param tokenValue The access token value to be retrieved.
+     * @return The token information.
+     */
     @Override
-    Promise<TokenInfo> getTokenInfo(UriInfo uriInfo) {
-        String token = uriInfo.queryParameters.getFirst(OAuthParameters.ACCESS_TOKEN)
-
-        if (!StringUtils.hasText(token)) {
+    Promise<TokenInfo> getTokenInfo(String tokenValue) {
+        // Validate the tokenValue, the token value can't be empty.
+        if (StringUtils.isEmpty(tokenValue)) {
             throw AppExceptions.INSTANCE.missingAccessToken().exception()
         }
 
-        AccessToken accessToken = tokenService.getAccessToken(token)
+        // Retrieve the access token with the tokenValue.
+        AccessToken accessToken = tokenService.getAccessToken(tokenValue)
 
+        // Throw exception when the tokenValue is invalid or the access token has been expired.
         if (accessToken == null) {
             throw AppExceptions.INSTANCE.invalidAccessToken().exception()
         }
@@ -52,6 +60,7 @@ class TokenInfoEndpointImpl implements TokenInfoEndpoint {
             throw AppExceptions.INSTANCE.expiredAccessToken().exception()
         }
 
+        // Return the token information.
         TokenInfo tokenInfo = new TokenInfo(
                 clientId: accessToken.clientId,
                 sub: accessToken.userId.toString(),

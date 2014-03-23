@@ -22,7 +22,7 @@
     </bean>
 
     <bean id="authenticateUser" class="com.junbo.oauth.core.action.AuthenticateUser">
-        <property name="userResource" ref="identityUserClient"/>
+        <property name="userService" ref="userService"/>
     </bean>
 
     <bean id="buildRedirectUri" class="com.junbo.oauth.core.action.BuildRedirectUri"/>

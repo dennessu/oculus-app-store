@@ -5,7 +5,7 @@
  */
 package com.junbo.oauth.app
 
-import com.junbo.oauth.api.mapper.RestExceptionMapper
+import com.junbo.oauth.api.mapper.AppExceptionMapper
 import groovy.transform.CompileStatic
 import org.glassfish.grizzly.http.server.HttpServer
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory
@@ -36,7 +36,7 @@ class Main {
 
         resourceConfig.packages('com.junbo.oauth.spec.endpoint.adapter')
         resourceConfig.property('contextConfigLocation', 'classpath*:/spring/**/*.xml')
-        resourceConfig.register(RestExceptionMapper)
+        resourceConfig.register(AppExceptionMapper)
 
         def uri = URI.create('http://0.0.0.0:8082/rest')
         return GrizzlyHttpServerFactory.createHttpServer(uri, resourceConfig)
