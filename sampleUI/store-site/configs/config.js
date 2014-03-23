@@ -51,12 +51,25 @@ var Configs = {
             OrderSummary: "OrderSummary"
         },
         ShippingInfo: {
-            Entry: "ShippingIndex",
-            Edit: "ShippingInfoEdit"
+            Layout: "Shipping",
+            Index: "Shipping/index",
+            Edit: "Shipping/Edit"
         },
         Payment: {
-            Entry: "PaymentEntry",
-            Edit: "PaymentEdit"
+            Layout: "Payment",
+            Index: "Payment/Index",
+            Edit: "Payment/Edit"
+        },
+        Account:{
+            Layout: "Account",
+            Index: "Account/Index",
+            EditInfo: "Account/EditInfo",
+            EditPassword: "Account/EditPassword",
+            EditShipping: "Account/EditShipping",
+            Profile: "Account/Profile",
+            EditProfile: "Account/EditProfile",
+            History: "Account/History",
+            Payment: "Account/Payment"
         }
     },
 

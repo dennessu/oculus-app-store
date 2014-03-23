@@ -1,1 +1,87 @@
-payment_endit
+<div class="container modules">
+    <section class="box1 create_payment">
+        <h2>Enter your Payment info</h2>
+        <dl>
+            <dt>Payment Type</dt>
+            <dd>
+                <select>
+                    <option>Credit Card/Debit Card</option>
+                </select>
+            </dd>
+        </dl>
+        <dl>
+            <dt>Credit Card Type</dt>
+            <dd>
+                <select>
+                    <option>VISA</option>
+                    <option>MASTERCARD</option>
+                </select>
+            </dd>
+        </dl>
+        <dl>
+            <dt>Name on Card</dt>
+            <dd><input type="text"></dd>
+        </dl>
+        <dl>
+            <dt>Street Address</dt>
+            <dd><input type="text"></dd>
+        </dl>
+        <dl>
+            <dt>City</dt>
+            <dd><input type="text"></dd>
+        </dl>
+        <dl>
+            <dt>Zip Code</dt>
+            <dd><input type="text"></dd>
+        </dl>
+        <dl>
+            <dt>Country</dt>
+            <dd>
+                <select>
+                    <option>United States of America</option>
+                </select>
+            </dd>
+        </dl>
+        <dl>
+            <dt>Card #</dt>
+            <dd><input type="text"></dd>
+        </dl>
+        <dl>
+            <dt>Exp Date</dt>
+            <dd>
+                <select class="month">
+                    <option>Month</option>
+                </select>
+                <select class="year">
+                    <option>Year</option>
+                </select>
+            </dd>
+        </dl>
+        <dl class="cvv">
+            <dt>CVV #</dt>
+            <dd><input type="text"></dd>
+        </dl>
+        <div class="line1"></div>
+        <dl>
+            <dt>Relationship to Payment Holder</dt>
+            <dd>
+                <select>
+                    <option>Parent</option>
+                </select>
+            </dd>
+        </dl>
+        <dl>
+            <dt>Payment Holder's Phone Number</dt>
+            <dd><input type="text"></dd>
+        </dl>
+        <dl>
+            <dt>Payment Holder's Email Address</dt>
+            <dd><input type="email"></dd>
+        </dl>
+
+        <div class="actions">
+            <button type="submit" class="btn btn-primary" {{action "Continue"}}>Continue</button>
+            <button type="button" class="btn btn-cancel" {{action "Cancel"}}>Cancel</button>
+        </div>
+    </section>
+</div>

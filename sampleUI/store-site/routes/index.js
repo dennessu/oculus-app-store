@@ -49,6 +49,8 @@ module.exports = function(app){
         }
     }
 
+    app.get('/templates/shippingInfo/edit', Auth.Login);
+
     // Redirect back handler
     app.get('/Callback/Login', Auth.Login);
     app.get('/Callback/Register', Auth.Register);
