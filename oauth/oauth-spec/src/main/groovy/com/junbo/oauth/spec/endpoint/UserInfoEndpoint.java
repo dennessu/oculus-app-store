@@ -12,10 +12,9 @@ import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 
 /**
@@ -29,5 +28,5 @@ public interface UserInfoEndpoint {
 
     @ApiOperation("Get the user info associated with the token")
     @GET
-    Promise<UserInfo> getUserInfo(@Context HttpHeaders httpHeaders);
+    Promise<UserInfo> getUserInfo(@HeaderParam("Authorization") String authorization);
 }

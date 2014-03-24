@@ -228,7 +228,7 @@ class TokenServiceImpl implements TokenService {
 
         try {
             JWSObject jwsObject = JWSObject.parse(tokenValue)
-            IdToken idToken = JsonMarshaller.unmarshall(IdToken, jwsObject.payload.toString())
+            IdToken idToken = JsonMarshaller.unmarshall(jwsObject.payload.toString(), IdToken)
 
             def client = clientRepository.getClient(idToken.aud)
 

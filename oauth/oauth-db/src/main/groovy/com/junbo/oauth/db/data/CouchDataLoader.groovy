@@ -98,7 +98,7 @@ class CouchDataLoader {
     }
 
     private void populateClient(String clientId, String entity) {
-        Client client = JsonMarshaller.unmarshall(Client, entity)
+        Client client = JsonMarshaller.unmarshall(entity, Client)
         Client existingClient = clientRepository.getClient(clientId)
 
         client.clientId = clientId
@@ -111,7 +111,7 @@ class CouchDataLoader {
     }
 
     private void populateScope(String scopeName, String entity) {
-        Scope scope = JsonMarshaller.unmarshall(Scope, entity)
+        Scope scope = JsonMarshaller.unmarshall(entity, Scope)
         Scope existingScope = scopeRepository.getScope(scopeName)
 
         scope.name = scopeName
