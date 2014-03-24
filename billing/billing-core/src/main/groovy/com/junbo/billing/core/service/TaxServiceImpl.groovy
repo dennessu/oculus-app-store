@@ -12,7 +12,10 @@ import com.junbo.billing.spec.error.AppErrors
 import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.ShippingAddress
 import com.junbo.langur.core.promise.Promise
+import com.junbo.payment.spec.model.PaymentInstrument
 import groovy.transform.CompileStatic
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 import javax.annotation.Resource
 
@@ -33,6 +36,8 @@ class TaxServiceImpl implements TaxService {
     String providerName
 
     TaxFacade taxFacade
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(TaxServiceImpl)
 
     void chooseProvider() {
         switch (providerName) {
@@ -58,12 +63,12 @@ class TaxServiceImpl implements TaxService {
         }
 
         Long piId = balance.piId.value
-        def piPromise = paymentFacade.getPaymentInstrument(userId, piId)
-        def pi = piPromise?.wrapped().get()
-        if (pi == null) {
+        return paymentFacade.getPaymentInstrument(userId, piId).recover { Throwable throwable ->
+            LOGGER.error('name=Error_Get_PaymentInstrument. pi id: ' + balance.piId.value, throwable)
             throw AppErrors.INSTANCE.piNotFound(piId.toString()).exception()
+        }.then { PaymentInstrument pi ->
+            chooseProvider()
+            return Promise.pure(taxFacade.calculateTax(balance, shippingAddress, pi.address))
         }
-        chooseProvider()
-        return Promise.pure(taxFacade.calculateTax(balance, shippingAddress, pi.address))
     }
 }
