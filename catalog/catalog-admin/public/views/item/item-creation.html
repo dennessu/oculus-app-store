@@ -1,0 +1,30 @@
+<h1>Item creation</h1>
+<form novalidate="novalidate" class="form-horizontal">
+    <table class="table table-bordered vertical-table">
+        <tr>
+            <td>Item Name</td>
+            <td><input type="text" class="form-control required" ng-model="item.name"></td>
+        </tr>
+        <tr>
+            <td>Developer</td>
+            <td><input type="text" class="form-control required" ng-model="item.developer.id" ng-change="updateDeveloper()"></td>
+        </tr>
+        <tr>
+            <td>Type</td>
+            <td>
+                <select ng-model="item.type">
+                    <option>PHYSICAL</option>
+                    <option>APP</option>
+                    <option>IAP</option>
+                </select>
+            </td>
+        </tr>
+    </table>
+
+    <div class="control-group">
+        <div class="controls">
+            <a ng-click="cancel()" class="btn btn-small btn-default">Cancel</a>
+            <a ng-click="createItem()" class="btn btn-small btn-default">Save</a>
+        </div>
+    </div>
+</form>

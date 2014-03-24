@@ -31,9 +31,7 @@ public class EnumHelper {
         public String getStrength() {
             return strength;
         }
-
     }
-
 
     /**
      * Enum for user status.
@@ -54,6 +52,72 @@ public class EnumHelper {
 
         public String getStatus() {
             return status;
+        }
+    }
+
+    /**
+     * Enum for user status.
+     *
+     * @author Jason
+     */
+    public enum CatalogAttributeType {
+        TYPE("Type"),
+        CATEGORY("Category"),
+        GENRE("Genre"),
+        COLOR("Color");
+
+        private String type;
+
+        private CatalogAttributeType(String type) {
+            this.type = type;
+        }
+
+        public String getType() {
+            return type;
+        }
+    }
+
+    /**
+     * Enum for user status.
+     *
+     * @author Jason
+     */
+    public enum CatalogItemType {
+        PHYSICAL("PHYSICAL"),
+        APP("APP"),
+        IAP("IAP");
+
+        private String itemType;
+
+        private CatalogItemType(String type) {
+            this.itemType = type;
+        }
+
+        public String getItemType() {
+            return itemType;
+        }
+    }
+
+    /**
+     * Enum for user status.
+     *
+     * @author Jason
+     */
+    public enum CatalogEntityStatus {
+        DESIGN("Design"),
+        PENDING_REVIEW("PendingReview"),
+        RELEASED("Released"),
+        REJECTED("Rejected"),
+        DELETED("Deleted");
+
+        private String entityStatus;
+
+        private CatalogEntityStatus(String entityStatus) {
+            this.entityStatus = entityStatus;
+        }
+
+        public String getEntityStatus() {
+            return entityStatus;
         }
     }
 

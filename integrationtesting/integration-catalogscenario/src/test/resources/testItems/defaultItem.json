@@ -1,9 +1,9 @@
 {
     "name": "Angry Bird",
-    "type": {"href": "https://api.oculusvr.com/v1/attributes/344", "id": "344"},
+    "type": "APP",
     "status": "Design",
     "skus":[],
-    "ownerId": {"href": "https://api.oculusvr.com/v1/users/3234", "id": "3234"},
+    "developer": {"href": "https://api.oculusvr.com/v1/users/3234", "id": "3234"},
     "properties":
     {
         "gameModes": "Single-Player",

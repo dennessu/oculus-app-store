@@ -5,8 +5,6 @@
  */
 package com.junbo.testing.buyerscenario;
 
-import com.junbo.identity.spec.model.common.ResultList;
-import com.junbo.identity.spec.model.user.User;
 import com.junbo.testing.buyerscenario.util.BaseTestClass;
 import com.junbo.testing.common.apihelper.identity.UserService;
 import com.junbo.testing.common.apihelper.identity.impl.UserServiceImpl;

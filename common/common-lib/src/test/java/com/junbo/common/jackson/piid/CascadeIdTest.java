@@ -6,6 +6,7 @@
 package com.junbo.common.jackson.piid;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.junbo.common.jackson.deserializer.ResourceAwareDeserializationContext;
 import com.junbo.common.jackson.serializer.ResourceAwareSerializerProvider;
@@ -67,5 +68,18 @@ public class CascadeIdTest {
 
         Assert.assertEquals(person2.getTestIdList().get(1).getUserId(), person.getTestIdList().get(1).getUserId());
         Assert.assertEquals(person2.getTestIdList().get(1).getTestId(), person.getTestIdList().get(1).getTestId());
+    }
+
+    @Test(expectedExceptions = JsonMappingException.class)
+    public void testNullUserId() throws Exception {
+        PaymentTransaction trx = new PaymentTransaction();
+
+        TestId ti = new TestId();
+        ti.setUserId(null);
+        ti.setTestId(99999L);
+
+        trx.setTestId(ti);
+
+        mapper.writeValueAsString(trx);
     }
 }

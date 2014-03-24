@@ -57,6 +57,9 @@ app.controller('OfferCreationCtrl', ['$scope', 'OffersFactory', 'AttributesFacto
         $scope.updateCategories = function() {
             $scope.offer.categories = [$scope.selectedCategory];
         };
+        $scope.updateGenres = function() {
+            $scope.offer.genres = [$scope.selectedGenre];
+        };
         $scope.addPrice = function(country) {
             if (angular.isUndefined($scope.offer)) {
                 $scope.offer = {};
@@ -74,6 +77,7 @@ app.controller('OfferCreationCtrl', ['$scope', 'OffersFactory', 'AttributesFacto
         $scope.items = AttributesFactory.query();
 
         $scope.categoryAttributes = AttributesFactory.query({type: "Category"});
+        $scope.genreAttributes = AttributesFactory.query({type: "Genre"});
         $scope.offers = OffersFactory.query($routeParams);
     }]);
 
@@ -138,6 +142,91 @@ app.controller('OfferDetailCtrl', ['$scope', 'OfferFactory', '$routeParams', '$l
         };
 
         $scope.offer = OfferFactory.query($routeParams);
+    }]);
+
+app.controller('ItemListCtrl', ['$scope', 'ItemsFactory', '$routeParams', '$location',
+    function($scope, ItemsFactory, $routeParams, $location) {
+        $scope.createItem = function () {
+            ItemsFactory.create($scope.item, function(item){
+                $location.path('/items/' + item.self.id);
+            });
+        };
+        $scope.cancel = function () {
+            $location.path('/items');
+        };
+        $scope.items = ItemsFactory.query($routeParams);
+    }]);
+
+app.controller('ItemCreationCtrl', ['$scope', 'ItemsFactory', '$routeParams', '$location',
+    function($scope, ItemsFactory, $routeParams, $location) {
+        $scope.createItem = function () {
+            ItemsFactory.create($scope.item, function(item){
+                $location.path('/items/' + item.self.id);
+            });
+        };
+        $scope.cancel = function () {
+            $location.path('/items');
+        };
+        $scope.updateDeveloper = function() {
+            $scope.item.developer.href="http://localhost:8083/rest/api/users/" + $scope.item.developer.id;
+        };
+
+        $scope.items = ItemsFactory.query($routeParams);
+    }]);
+
+app.controller('ItemDetailCtrl', ['$scope', 'ItemFactory', '$routeParams', '$location','ItemResponse',
+    function($scope, ItemFactory, $routeParams, $location, ItemResponse) {
+        console.log("ItemDetailCtrl");
+        console.log($routeParams);
+
+        $scope.updateItem = function () {
+            ItemFactory.update({id: $routeParams.id}, $scope.item, function(){
+                ItemResponse.data = "Item updated successfully!";
+                $location.path('/items/' + $routeParams.id + '/response');
+            });
+        };
+
+        $scope.releaseItem = function () {
+            $scope.item.status="Released";
+            ItemFactory.update({id: $routeParams.id}, $scope.item, function(){
+                ItemResponse.data = "Item released successfully!";
+                $location.path('/items/' + $routeParams.id + '/response');
+            });
+        };
+
+        $scope.reviewItem = function () {
+            $scope.item.status="PendingReview";
+
+            ItemFactory.update({id: $routeParams.id}, $scope.item, function(){
+                ItemResponse.data = "Item submitted for review!";
+                $location.path('/items/' + $routeParams.id + '/response');
+            });
+        };
+
+        $scope.rejectItem = function () {
+            $scope.item.status="Rejected";
+            ItemFactory.update({id: $routeParams.id}, $scope.item, function(){
+                ItemResponse.data = "Item rejected successfully!";
+                $location.path('/items/' + $routeParams.id + '/response');
+            });
+        };
+
+        $scope.cancel = function () {
+            $location.path('/items/' + $routeParams.id);
+        };
+
+        $scope.item = ItemFactory.query($routeParams);
+    }]);
+
+app.controller('ItemReviewListCtrl', ['$scope', 'ItemsFactory',
+    function($scope, ItemsFactory) {
+        $scope.items = ItemsFactory.query({status: 'PendingReview'});
+    }]);
+
+app.controller('ItemResponseCtrl', ['$scope', '$routeParams', 'ItemResponse',
+    function($scope, $routeParams, ItemResponse) {
+        $scope.response = ItemResponse.data;
+        $scope.itemId = $routeParams.id;
     }]);
 
 app.controller('AttributeListCtrl', ['$scope', 'AttributesFactory', '$location',

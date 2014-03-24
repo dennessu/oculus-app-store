@@ -6,7 +6,7 @@
 package com.junbo.testing.common.apihelper.identity.impl;
 
 import com.junbo.common.json.JsonMessageTranscoder;
-import com.junbo.identity.spec.model.common.ResultList;
+import com.junbo.common.model.Results;
 import com.junbo.langur.core.client.TypeReference;
 import com.junbo.testing.common.blueprint.Master;
 import com.junbo.testing.common.libs.*;
@@ -31,10 +31,8 @@ import java.util.concurrent.Future;
  */
 public class UserServiceImpl implements UserService {
 
-    private final String identityServerURL = RestUrl.getRestUrl("identity") +
-            "users";
-    private final String oAuthServerURL = RestUrl.getRestUrl("oauth") +
-            "/auth";
+    private final String identityServerURL = RestUrl.getRestUrl(RestUrl.ComponentName.IDENTITY) + "users";
+    private final String oAuthServerURL = RestUrl.getRestUrl(RestUrl.ComponentName.OAUTH) + "/auth";
 
     private LogHelper logger = new LogHelper(UserServiceImpl.class);
     private AsyncHttpClient asyncClient;
@@ -130,8 +128,8 @@ public class UserServiceImpl implements UserService {
 
         logger.LogResponse(nettyResponse);
 
-        ResultList<User> userGet = new JsonMessageTranscoder().decode(
-               new TypeReference<ResultList<User>>() {}, nettyResponse.getResponseBody());
+        Results<User> userGet = new JsonMessageTranscoder().decode(
+               new TypeReference<Results<User>>() {}, nettyResponse.getResponseBody());
 
         List<String> listUserId = new ArrayList<>();
         for (User user : userGet.getItems()){
