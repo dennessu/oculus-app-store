@@ -1,5 +1,6 @@
 package com.junbo.order.test
 
+import com.junbo.billing.spec.model.Balance
 import com.junbo.common.id.OfferId
 import com.junbo.common.id.PaymentInstrumentId
 import com.junbo.order.spec.model.Order
@@ -22,12 +23,12 @@ class OrderPayInTest extends AbstractTestNGSpringContextTests {
     def Generator generator
 
     @Test
-    void testQuote() {
+    void testQuoteAndImmediateSettle() {
 
         def user = serviceFacade.postUser()
         def paymentInstrument = serviceFacade.postCreditCardPaymentInstrument(user)
         def order = new Order()
-
+        def offer = serviceFacade.getOfferByName('3D Parking Simulator')
         order.user = user.id
         order.with {
             trackingUuid = UUID.randomUUID()
@@ -39,16 +40,31 @@ class OrderPayInTest extends AbstractTestNGSpringContextTests {
                     new PaymentInstrumentId(paymentInstrument.id)
             ]
             orderItems = [
-                    generator.generateOrderItem('DIGITAL', new OfferId(16810048), 2)
+                    generator.generateOrderItem(new OfferId(offer.id), 2)
             ]
         }
 
         def resultOrder = serviceFacade.postQuotes(order)
         assert resultOrder.orderItems.size() == 1
-        //resultOrder.orderItems << generator.generateOrderItem('DIGITAL', new OfferId(1002), 3)
+        assert resultOrder.status == 'OPEN'
+        //resultOrder.orderItems << generator.generateOrderItem(new OfferId(1002), 3)
         resultOrder = serviceFacade.putQuotes(resultOrder)
         assert resultOrder.id != null
         //assert resultOrder.orderItems.size() == 3
         assert resultOrder.totalAmount != null
+        assert resultOrder.status == 'OPEN'
+
+        resultOrder = serviceFacade.settleQuotes(resultOrder.id)
+        assert !resultOrder.tentative
+
+        List<Balance> balances = serviceFacade.getBalance(resultOrder.id)
+        assert balances.size() == 1
+        assert balances[0].balanceItems.size() == resultOrder.orderItems.size()
+        assert balances[0].totalAmount == resultOrder.totalAmount
+        def fulfillment = serviceFacade.getFulfilment(resultOrder.id)
+        assert fulfillment.userId == user.id.value
+        // todo verify the entitlement
+        // def entitlments = serviceFacade.getEntitlements(user.id, ['item001_ANGRY.BIRD_ONLINE_ACCESS'])
+        // assert entitlments.size() == 1
     }
 }

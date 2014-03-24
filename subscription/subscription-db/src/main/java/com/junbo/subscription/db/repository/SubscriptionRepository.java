@@ -22,8 +22,15 @@ public class SubscriptionRepository {
     @Autowired
     private SubscriptionMapper subscriptionMapper;
 
-    public Subscription get(Long entitlementId) {
-        return subscriptionMapper.toSubscription(subscriptionDao.get(entitlementId));
+    public Subscription get(Long subscriptionId) {
+        SubscriptionEntity entity;
+        try {
+            entity = subscriptionDao.get(subscriptionId);
+        }
+        catch (Exception e){
+            return null;
+        }
+        return subscriptionMapper.toSubscription(entity);
     }
 
     public Subscription insert(Subscription subscription) {

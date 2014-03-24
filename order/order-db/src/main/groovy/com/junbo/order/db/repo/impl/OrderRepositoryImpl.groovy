@@ -13,6 +13,7 @@ import com.junbo.order.db.dao.*
 import com.junbo.order.db.entity.CommonDbEntityWithDate
 import com.junbo.order.db.entity.OrderDiscountInfoEntity
 import com.junbo.order.db.entity.OrderEntity
+import com.junbo.order.db.entity.OrderEventEntity
 import com.junbo.order.db.entity.OrderItemEntity
 import com.junbo.order.db.entity.OrderPaymentInfoEntity
 import com.junbo.order.db.mapper.ModelMapper
@@ -65,6 +66,8 @@ class OrderRepositoryImpl implements OrderRepository {
     @Autowired
     IdGenerator idGenerator
 
+    int orderEventsNumThreshHold = 200
+
     private class RepositoryFuncSet {
         Closure create
         Closure update
@@ -113,6 +116,8 @@ class OrderRepositoryImpl implements OrderRepository {
 
     @Override
     OrderEvent createOrderEvent(OrderEvent event) {
+        LOGGER.info('name=Create_Order_Event, event: {},{},{},{},{}',
+                [event.flowType, event.order.value, event.action, event.status, event.trackingUuid])
         def entity = modelMapper.toOrderEventEntity(event, new MappingContext())
         entity.eventId = idGenerator.nextId(entity.orderId)
         orderEventDao.create(entity)
@@ -190,6 +195,20 @@ class OrderRepositoryImpl implements OrderRepository {
             savePaymentInstruments(order.id, order.paymentInstruments)
         }
         return order
+    }
+
+    @Override
+    List<OrderEvent> getOrderEvents(Long orderId) {
+        List<OrderEvent> events = []
+        orderEventDao.readByOrderId(orderId).each { OrderEventEntity entity ->
+            OrderEvent event = modelMapper.toOrderEventModel(entity, new MappingContext())
+            events << event
+        }
+        if (events.size() > orderEventsNumThreshHold) {
+           LOGGER.warn('name=Too_Many_Order_Events, orderId={}, threshHold={}, current={}', orderId,
+                   orderEventsNumThreshHold, events.size())
+        }
+        return events
     }
 
     void saveOrderItems(OrderId orderId, List<OrderItem> orderItems) {

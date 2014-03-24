@@ -7,10 +7,10 @@
 package com.junbo.catalog.spec.resource;
 
 import com.junbo.catalog.spec.model.common.PageableGetOptions;
-import com.junbo.catalog.spec.model.common.ResultList;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
 import com.junbo.common.id.EntitlementDefinitionId;
 import com.junbo.common.id.UserId;
+import com.junbo.common.model.Results;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.wordnik.swagger.annotations.Api;
@@ -38,7 +38,7 @@ public interface EntitlementDefinitionResource {
 
     @ApiOperation("Get or search entitlement definitions")
     @GET
-    Promise<ResultList<EntitlementDefinition>>
+    Promise<Results<EntitlementDefinition>>
     getEntitlementDefinitionDefinitions(
             @NotNull @QueryParam("developerId") UserId developerId,
             @QueryParam("type") String type,

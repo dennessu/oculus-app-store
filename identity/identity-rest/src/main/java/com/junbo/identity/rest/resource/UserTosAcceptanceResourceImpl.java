@@ -7,8 +7,8 @@ package com.junbo.identity.rest.resource;
 
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserTosAcceptanceId;
+import com.junbo.common.model.Results;
 import com.junbo.identity.rest.service.user.UserTosAcceptanceService;
-import com.junbo.identity.spec.model.common.ResultList;
 import com.junbo.identity.spec.model.common.ResultListUtil;
 import com.junbo.identity.spec.model.user.UserTosAcceptance;
 import com.junbo.identity.spec.resource.UserTosAcceptanceResource;
@@ -35,7 +35,7 @@ public class UserTosAcceptanceResourceImpl implements UserTosAcceptanceResource 
     }
 
     @Override
-    public Promise<ResultList<UserTosAcceptance>> getUserTosAcceptances(UserId userId, String tos,
+    public Promise<Results<UserTosAcceptance>> getUserTosAcceptances(UserId userId, String tos,
                                                                         Integer cursor, Integer count) {
         List<UserTosAcceptance> tosAcceptances = userTosAcceptanceService.getByUserId(userId.getValue(), tos);
         return Promise.pure(ResultListUtil.init(tosAcceptances, count));

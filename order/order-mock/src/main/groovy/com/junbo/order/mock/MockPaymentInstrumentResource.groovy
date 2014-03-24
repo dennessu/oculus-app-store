@@ -2,13 +2,13 @@ package com.junbo.order.mock
 
 import com.junbo.common.id.PaymentInstrumentId
 import com.junbo.common.id.UserId
+import com.junbo.common.model.Results
 import com.junbo.langur.core.promise.Promise
 import com.junbo.payment.spec.enums.PIStatus
 import com.junbo.payment.spec.enums.PIType
 import com.junbo.payment.spec.model.PageMetaData
 import com.junbo.payment.spec.model.PaymentInstrument
 import com.junbo.payment.spec.model.PaymentInstrumentSearchParam
-import com.junbo.payment.spec.model.ResultList
 import com.junbo.payment.spec.resource.PaymentInstrumentResource
 import groovy.transform.CompileStatic
 import org.springframework.context.annotation.Scope
@@ -52,7 +52,7 @@ class MockPaymentInstrumentResource extends BaseMock implements PaymentInstrumen
     }
 
     @Override
-    Promise<ResultList<PaymentInstrument>> searchPaymentInstrument(
+    Promise<Results<PaymentInstrument>> searchPaymentInstrument(
             UserId userId,
             PaymentInstrumentSearchParam searchParam,
             PageMetaData pageMetadata) {

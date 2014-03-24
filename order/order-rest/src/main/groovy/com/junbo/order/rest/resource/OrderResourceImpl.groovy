@@ -2,6 +2,7 @@ package com.junbo.order.rest.resource
 
 import com.junbo.common.id.OrderId
 import com.junbo.common.id.UserId
+import com.junbo.common.model.Results
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.core.OrderService
 import com.junbo.order.spec.model.ApiContext
@@ -36,17 +37,17 @@ class OrderResourceImpl implements OrderResource {
     }
 
     @Override
-    Promise<List<Order>> createOrders(Order order) {
+    Promise<Order> createOrder(Order order) {
         if (!order?.tentative) {
-            return orderService.createOrders(order, new ApiContext(requestContext.headers))
+            return orderService.createOrder(order, new ApiContext(requestContext.headers))
         }
 
-        return orderService.createQuotes(order, new ApiContext(requestContext.headers))
+        return orderService.createQuote(order, new ApiContext(requestContext.headers))
 
     }
 
     @Override
-    Promise<List<Order>> updateOrderByOrderId(OrderId orderId, Order order) {
+    Promise<Order> updateOrderByOrderId(OrderId orderId, Order order) {
         order.id = orderId
         orderService.getOrderByOrderId(orderId.value).then { Order oldOrder ->
             // handle the update request per scenario
@@ -54,20 +55,24 @@ class OrderResourceImpl implements OrderResource {
                 if (order.tentative) {
                     orderService.updateTentativeOrder(order,
                             new ApiContext(requestContext.headers)).syncThen { Order result ->
-                        [result]
+                        return result
                     }
                 } else { // handle settle order scenario: the tentative flag is updated from true to false
                     orderService.settleQuote(oldOrder, new ApiContext(requestContext.headers))
                 }
             } else { // order already settle
-                Promise.pure([oldOrder]) // todo implement update on settled order
+                Promise.pure(oldOrder) // todo implement update on settled order
             }
         }
     }
 
     @Override
-    Promise<List<Order>> getOrderByUserId(UserId userId) {
-        return orderService.getOrdersByUserId(userId.value)
+    Promise<Results<Order>> getOrderByUserId(UserId userId) {
+        orderService.getOrdersByUserId(userId.value).then { List<Order> orders ->
+            Results<Order> results = new Results<>()
+            results.setItems(orders)
+            return results
+        }
     }
 
 }

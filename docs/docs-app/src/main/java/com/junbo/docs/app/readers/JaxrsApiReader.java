@@ -7,9 +7,8 @@
 package com.junbo.docs.app.readers;
 
 import com.junbo.common.id.Id;
-import com.junbo.docs.app.resultlists.CatalogResultLists;
-import com.junbo.docs.app.resultlists.IdentityResultLists;
-import com.junbo.docs.app.resultlists.PaymentResultLists;
+import com.junbo.common.model.Results;
+import com.junbo.docs.app.resultlists.ResultListUtils;
 import com.junbo.langur.core.promise.Promise;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.model.Operation;
@@ -75,20 +74,12 @@ public class JaxrsApiReader extends com.wordnik.swagger.jaxrs.reader.DefaultJaxr
             Type actualType = parameterizedType.getActualTypeArguments()[0];
 
             return getActualType(actualType);
-        } else if (clazz.equals(com.junbo.identity.spec.model.common.ResultList.class)) {
+        } else if (clazz.equals(Results.class)) {
             ParameterizedType parameterizedType = (ParameterizedType)wrapperType;
-            Type actualType = IdentityResultLists.getClass(parameterizedType);
-
-            return getActualType(actualType);
-        } else if (clazz.equals(com.junbo.payment.spec.model.ResultList.class)) {
-            ParameterizedType parameterizedType = (ParameterizedType)wrapperType;
-            Type actualType = PaymentResultLists.getClass(parameterizedType);
-
-            return getActualType(actualType);
-        } else if (clazz.equals(com.junbo.catalog.spec.model.common.ResultList.class)) {
-            ParameterizedType parameterizedType = (ParameterizedType)wrapperType;
-            Type actualType = CatalogResultLists.getClass(parameterizedType);
-
+            Type actualType = ResultListUtils.getClass(parameterizedType);
+            if (actualType == null) {
+                throw new RuntimeException("Unhandled results type: " + wrapperType);
+            }
             return getActualType(actualType);
         } else if (clazz.equals(Response.class)) {
 

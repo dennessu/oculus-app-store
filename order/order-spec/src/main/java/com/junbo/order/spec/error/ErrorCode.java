@@ -26,6 +26,8 @@ public class ErrorCode {
 
     public static final String ENUM_CONVERSION_ERROR = "10005";
 
+    public static final String UNEXPECTED_ERROR = "10006";
+
     // order error starts from 20000
     public static final String ORDER_NOT_FOUND = "20000";
 
@@ -34,5 +36,4 @@ public class ErrorCode {
     public static final String ORDER_ACTION_NOT_SUPPORTED = "20002";
 
     public static final String ORDER_TYPE_NOT_SUPPORTED = "20003";
-
 }

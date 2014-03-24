@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
+import javax.ws.rs.core.Response;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +43,6 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
         try{
             env = Environment.valueOf(environment);
         }catch(Exception ex){
-            //TODO: handle exception
             LOGGER.error("not able to get the right environment:" + environment);
             throw AppServerExceptions.INSTANCE.invalidProviderRequest(PROVIDER_NAME).exception();
         }
@@ -105,7 +105,7 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
     }
 
     @Override
-    public Promise<Void> delete(String token) {
+    public Promise<Response> delete(String token) {
         Result<CreditCard> result = null;
         LOGGER.info("delete credit card :" + token);
         try{
@@ -116,7 +116,7 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
         if(!result.isSuccess()){
             handleProviderError(result);
         }
-        return null;
+        return Promise.pure(Response.status(204).build());
     }
 
     @Override
@@ -181,7 +181,7 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
     }
 
     @Override
-    public Promise<Void> reverse(String transactionId) {
+    public Promise<PaymentTransaction> reverse(String transactionId, PaymentTransaction paymentRequest) {
         Result<Transaction> result = null;
         LOGGER.info("reverse transaction :" + transactionId);
         try{
@@ -194,7 +194,7 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
         } else {
             handleProviderError(result);
         }
-        return null;
+        return Promise.pure(paymentRequest);
     }
 
     private <T> void handleProviderError(Result<T> result) {
@@ -212,17 +212,17 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
             ".Provider:" + PROVIDER_NAME + " take action:" + action + " for:" + source + "of " + sourceValue);
             throw AppServerExceptions.INSTANCE.providerGatewayTimeout(PROVIDER_NAME).exception();
         }else if(ex instanceof SocketTimeoutException){
-            LOGGER.error("provider:" + PROVIDER_NAME + "gateway timeout exception: " + ex.toString());
+            LOGGER.error("provider:" + PROVIDER_NAME + " gateway timeout exception: " + ex.toString());
             throw AppServerExceptions.INSTANCE.providerGatewayTimeout(PROVIDER_NAME).exception();
         }else{
-            LOGGER.error("provider:" + PROVIDER_NAME + "gateway exception: " + ex.toString());
+            LOGGER.error("provider:" + PROVIDER_NAME + " gateway exception: " + ex.toString());
             throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, ex.toString()).exception();
         }
     }
 
     @Override
-    public void refund(String transactionId, PaymentTransaction request) {
-
+    public Promise<PaymentTransaction> refund(String transactionId, PaymentTransaction request) {
+        return Promise.pure(request);
     }
 
     @Override

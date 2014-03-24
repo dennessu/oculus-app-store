@@ -9,6 +9,8 @@ import com.junbo.cart.spec.model.Cart;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.identity.spec.model.user.User;
+import com.junbo.order.spec.model.Order;
+import com.junbo.catalog.spec.model.attribute.Attribute;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,14 +22,14 @@ public class Master {
 
     private static Master instance;
 
-    public static synchronized Master getInstance(){
+    public static synchronized Master getInstance() {
         if (instance == null) {
             instance = new Master();
         }
-       return instance;
+        return instance;
     }
 
-    private Master(){
+    private Master() {
         this.initializeMaster();
     }
 
@@ -35,85 +37,125 @@ public class Master {
     private Map<String, Cart> carts;
     private Map<String, Offer> offers;
     private Map<String, Item> items;
+    private Map<String, Order> orders;
+    private Map<String, Attribute> attributes;
 
-    public void initializeMaster(){
+    public void initializeMaster() {
         this.initializeUsers();
         this.initializeCarts();
         this.initializeOffers();
         this.initializeItems();
+        this.initializeOrders();
+        this.initializeAttributes();
     }
-    public void initializeUsers(){
-        if (this.users == null){
+
+    public void initializeUsers() {
+        if (this.users == null) {
             this.users = new HashMap<>();
         }
-
         this.users.clear();
     }
 
-    public void initializeCarts(){
-        if (this.carts == null){
+    public void initializeCarts() {
+        if (this.carts == null) {
             this.carts = new HashMap<>();
         }
         this.carts.clear();
     }
 
-    public void initializeOffers(){
-        if (this.offers == null){
+    public void initializeOffers() {
+        if (this.offers == null) {
             this.offers = new HashMap<>();
         }
         this.offers.clear();
     }
 
-    public void initializeItems(){
-        if (this.items == null){
+    public void initializeItems() {
+        if (this.items == null) {
             this.items = new HashMap<>();
         }
         this.items.clear();
     }
 
-    public void addUser(String userId, User user){
-        if (this.users.containsKey(userId)){
+    public void initializeOrders() {
+        if (this.orders == null) {
+            this.orders = new HashMap<>();
+        }
+        this.orders.clear();
+    }
+
+    public void initializeAttributes(){
+        if (this.attributes == null){
+            this.attributes = new HashMap<>();
+        }
+        this.attributes.clear();
+    }
+
+    public void addUser(String userId, User user) {
+        if (this.users.containsKey(userId)) {
             this.users.remove(userId);
         }
         this.users.put(userId, user);
     }
 
-    public void addCart(String cartId, Cart cart){
-        if (this.carts.containsKey(cartId)){
+    public void addCart(String cartId, Cart cart) {
+        if (this.carts.containsKey(cartId)) {
             this.carts.remove(cartId);
         }
         this.carts.put(cartId, cart);
     }
 
-    public void addOffer(String offerId, Offer offer){
-        if (this.offers.containsKey(offerId)){
+    public void addOffer(String offerId, Offer offer) {
+        if (this.offers.containsKey(offerId)) {
             this.offers.remove(offerId);
         }
-
         this.offers.put(offerId, offer);
     }
 
-    public void addItem(String itemId, Item item){
-        if (this.items.containsKey(itemId)){
+    public void addItem(String itemId, Item item) {
+        if (this.items.containsKey(itemId)) {
             this.items.remove(itemId);
         }
-
         this.items.put(itemId, item);
     }
 
-    public User getUser(String userId){
+    public void addOrder(String orderId, Order order) {
+        if (this.orders.containsKey(orderId)) {
+            this.orders.remove(orderId);
+        }
+
+        this.orders.put(orderId, order);
+    }
+
+    public void addAttribute(String attributeId, Attribute attribute){
+        if (this.attributes.containsKey(attributeId)){
+            this.attributes.remove(attributeId);
+        }
+        this.attributes.put(attributeId, attribute);
+    }
+
+    public User getUser(String userId) {
         return this.users.get(userId);
     }
 
-    public Offer getOffer(String offerId){
+    public Offer getOffer(String offerId) {
         return this.offers.get(offerId);
     }
 
-    public Cart getCart(String cartId){
+    public Cart getCart(String cartId) {
         return this.carts.get(cartId);
     }
 
-    public Item getItem(String itemId){
+    public Item getItem(String itemId) {
         return this.items.get(itemId);
     }
+
+    public Order getOrder(String orderId) {
+        return this.orders.get(orderId);
+    }
+
+    public Attribute getAttribute(String attributeId){
+        return this.attributes.get(attributeId);
+    }
+
 }

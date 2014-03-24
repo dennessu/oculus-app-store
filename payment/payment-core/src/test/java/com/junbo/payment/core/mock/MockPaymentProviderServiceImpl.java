@@ -9,6 +9,7 @@ import com.junbo.payment.spec.model.ChargeInfo;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentTransaction;
 
+import javax.ws.rs.core.Response;
 import java.util.Date;
 import java.util.List;
 
@@ -42,7 +43,7 @@ public class MockPaymentProviderServiceImpl implements PaymentProviderService {
     }
 
     @Override
-    public Promise<Void> delete(String token) {
+    public Promise<Response> delete(String token) {
         return null;
     }
 
@@ -65,13 +66,13 @@ public class MockPaymentProviderServiceImpl implements PaymentProviderService {
     }
 
     @Override
-    public Promise<Void> reverse(String transactionId) {
-        return null;
+    public Promise<PaymentTransaction> reverse(String transactionId, PaymentTransaction request) {
+        return Promise.pure(request);
     }
 
     @Override
-    public void refund(String transactionId, PaymentTransaction request) {
-
+    public Promise<PaymentTransaction> refund(String transactionId, PaymentTransaction request) {
+        return Promise.pure(request);
     }
 
     @Override

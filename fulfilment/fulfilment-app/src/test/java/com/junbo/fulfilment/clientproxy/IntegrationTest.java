@@ -1,8 +1,14 @@
 package com.junbo.fulfilment.clientproxy;
 
+import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
 import com.junbo.catalog.spec.model.offer.Action;
 import com.junbo.catalog.spec.model.offer.Event;
 import com.junbo.catalog.spec.model.offer.Offer;
+import com.junbo.common.id.FulfilmentId;
+import com.junbo.common.id.OrderId;
+import com.junbo.fulfilment.common.util.Constant;
+import com.junbo.fulfilment.spec.constant.FulfilmentStatus;
+import com.junbo.fulfilment.spec.model.FulfilmentAction;
 import com.junbo.fulfilment.spec.model.FulfilmentItem;
 import com.junbo.fulfilment.spec.model.FulfilmentRequest;
 import com.junbo.fulfilment.spec.resource.FulfilmentResource;
@@ -14,7 +20,6 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
@@ -39,6 +44,34 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
             Assert.fail(e.getMessage());
         }
         Assert.assertNotNull(request, "fulfilmentRequest should not be null.");
+
+        FulfilmentAction action = request.getItems().get(0).getActions().get(0);
+        Assert.assertNotNull(action.getResult(), "Action result should not be null.");
+        Assert.assertEquals(action.getStatus(), FulfilmentStatus.SUCCEED, "Fulfilment status should match.");
+
+        // retrieve fulfilment request by order id
+        Long orderId = request.getOrderId();
+
+        FulfilmentRequest retrievedRequest = null;
+        try {
+            retrievedRequest = fulfilmentResource.getByOrderId(new OrderId(orderId)).wrapped().get();
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+
+        Assert.assertEquals(retrievedRequest.getRequestId(), request.getRequestId(), "Request id should match.");
+
+        // retrieve fulfilment item by fulfilment id
+        Long fulfilmentId = request.getItems().get(0).getFulfilmentId();
+
+        FulfilmentItem retrievedFulfilmentItem = null;
+        try {
+            retrievedFulfilmentItem = fulfilmentResource.getByFulfilmentId(new FulfilmentId(fulfilmentId)).wrapped().get();
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+
+        Assert.assertEquals(retrievedFulfilmentItem.getFulfilmentId(), fulfilmentId, "Fulfilment id should match.");
     }
 
     @Test(enabled = false)
@@ -120,22 +153,30 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
         }};
     }
 
+    private Long prepareEntitlementDef() {
+        EntitlementDefinition def = new EntitlementDefinition();
+        def.setGroup("TEST_GROUP");
+        def.setTag("TEST_TAG");
+        def.setType("DOWNLOAD");
+        def.setDeveloperId(12345L);
+
+        return megaGateway.createEntitlementDef(def);
+    }
+
     private Long prepareOffer() {
+        final Long entitlementDefId = prepareEntitlementDef();
+
         Offer offer = new Offer();
         offer.setName("TEST_OFFER");
         offer.setOwnerId(getRandomLong());
 
         offer.setEvents(new ArrayList<Event>() {{
             add(new Event() {{
-                setName("PURCHASE_EVENT");
+                setName(Constant.EVENT_PURCHASE);
                 setActions(new ArrayList<Action>() {{
                     add(new Action() {{
-                        setType("GRANT_ENTITLEMENT");
-                        setProperties(new HashMap<String, String>() {{
-                            put("ENTITLMENT_GROUP", "TEST_GROUP");
-                            put("ENTITLMENT_TAG", "TEST_TAG");
-                            put("ENTITLMENT_TYPE", "DOWNLOAD");
-                        }});
+                        setEntitlementDefId(entitlementDefId);
+                        setType(Constant.ACTION_GRANT_ENTITLEMENT);
                     }});
                 }});
             }});

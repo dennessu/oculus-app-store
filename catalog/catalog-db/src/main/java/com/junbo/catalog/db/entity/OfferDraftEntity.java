@@ -25,7 +25,6 @@ import javax.persistence.Table;
 public class OfferDraftEntity extends VersionedEntity {
     private Long id;
     private String name;
-    private int revision;
     private Long ownerId;
     private String payload;
 
@@ -46,15 +45,6 @@ public class OfferDraftEntity extends VersionedEntity {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    @Column(name = "revision")
-    public int getRevision() {
-        return revision;
-    }
-
-    public void setRevision(int revision) {
-        this.revision = revision;
     }
 
     @Column(name = "owner_id")

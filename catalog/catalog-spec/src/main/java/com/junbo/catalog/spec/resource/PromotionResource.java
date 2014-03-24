@@ -7,10 +7,10 @@
 package com.junbo.catalog.spec.resource;
 
 import com.junbo.catalog.spec.model.common.EntityGetOptions;
-import com.junbo.catalog.spec.model.common.ResultList;
 import com.junbo.catalog.spec.model.promotion.Promotion;
 import com.junbo.catalog.spec.model.promotion.PromotionsGetOptions;
 import com.junbo.common.id.PromotionId;
+import com.junbo.common.model.Results;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.wordnik.swagger.annotations.Api;
@@ -32,7 +32,7 @@ public interface PromotionResource {
     @ApiOperation("Get or search promotions")
     @GET
     @Path("/")
-    Promise<ResultList<Promotion>> getPromotions(@BeanParam PromotionsGetOptions options);
+    Promise<Results<Promotion>> getPromotions(@BeanParam PromotionsGetOptions options);
 
     @ApiOperation("Get a promotion")
     @GET

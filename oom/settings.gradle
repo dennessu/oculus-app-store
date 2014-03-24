@@ -1,4 +1,3 @@
-rootProject.name = 'oom'
 include 'oom-core'
 include 'oom-processor'
 include 'oom-gradle-plugin'

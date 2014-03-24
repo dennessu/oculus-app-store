@@ -6,7 +6,7 @@
 package com.junbo.oauth.core.service.impl
 
 import com.junbo.common.id.UserId
-import com.junbo.identity.spec.model.common.ResultList
+import com.junbo.common.model.Results
 import com.junbo.identity.spec.model.user.User
 import com.junbo.identity.spec.model.user.UserProfile
 import com.junbo.identity.spec.resource.UserProfileResource
@@ -16,14 +16,10 @@ import com.junbo.oauth.core.exception.AppExceptions
 import com.junbo.oauth.core.service.TokenService
 import com.junbo.oauth.core.service.UserService
 import com.junbo.oauth.spec.model.AccessToken
-import com.junbo.oauth.spec.model.TokenType
 import com.junbo.oauth.spec.model.UserInfo
-import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.StringUtils
-
-import javax.ws.rs.core.MultivaluedMap
 
 /**
  * Javadoc.
@@ -53,19 +49,17 @@ class UserServiceImpl implements UserService {
     }
 
     @Override
-    UserInfo getUserInfo(MultivaluedMap<String, String> headerMap) {
-        String authorization = headerMap.getFirst(OAuthParameters.AUTHORIZATION)
+    Promise<User> authenticateUser(String username, String password) {
+        return userResource.authenticateUser(username, password)
+    }
 
+    @Override
+    UserInfo getUserInfo(String authorization) {
         if (!StringUtils.hasText(authorization)) {
             throw AppExceptions.INSTANCE.missingAuthorization().exception()
         }
 
-        String[] tokens = authorization.split(' ')
-        if (tokens.length != 2 || !tokens[0].equalsIgnoreCase(TokenType.BEARER.name())) {
-            throw AppExceptions.INSTANCE.invalidAuthorization().exception()
-        }
-
-        AccessToken accessToken = tokenService.getAccessToken(tokens[1])
+        AccessToken accessToken = tokenService.extractAccessToken(authorization)
 
         if (accessToken == null) {
             throw AppExceptions.INSTANCE.invalidAccessToken().exception()
@@ -84,7 +78,7 @@ class UserServiceImpl implements UserService {
                 email: user.userName
         )
 
-        Promise<ResultList<UserProfile>> userProfilePromise = userProfileResource.
+        Promise<Results<UserProfile>> userProfilePromise = userProfileResource.
                 getUserProfiles(new UserId(accessToken.userId), 'PAYIN', 0, 1)
 
         if (userProfileResource != null && userProfilePromise.wrapped().get() != null

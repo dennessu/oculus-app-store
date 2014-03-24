@@ -18,7 +18,7 @@ import java.util.Date;
 /**
  * Common Validator.
  */
-@Component
+@Component("emailCommonValidator")
 public class CommonValidator {
     @Autowired
     protected EmailTemplateRepository emailTemplateRepository;

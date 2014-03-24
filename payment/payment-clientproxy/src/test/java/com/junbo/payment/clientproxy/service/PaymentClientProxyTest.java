@@ -2,6 +2,7 @@ package com.junbo.payment.clientproxy.service;
 
 import com.junbo.common.id.UserId;
 import com.junbo.payment.clientproxy.BaseTest;
+import com.junbo.payment.spec.enums.PaymentEventType;
 import com.junbo.payment.spec.enums.PaymentStatus;
 import com.junbo.payment.spec.model.*;
 import com.junbo.payment.spec.resource.proxy.PaymentInstrumentResourceClientProxy;
@@ -292,7 +293,12 @@ public class PaymentClientProxyTest extends BaseTest {
                 });
             }
         };
-        PaymentTransaction paymentResult = paymentClient.postPaymentAuthorization(trx).wrapped().get();
+        PaymentTransaction paymentResult = null;
+        try{
+            paymentResult = paymentClient.postPaymentAuthorization(trx).wrapped().get();
+        }catch(Exception ex){
+
+        }
 
     }
 
@@ -334,7 +340,7 @@ public class PaymentClientProxyTest extends BaseTest {
                 setChargeInfo(new ChargeInfo(){
                     {
                         setCurrency("USD");
-                        setAmount(new BigDecimal(12.00));
+                        setAmount(new BigDecimal(17.00));
                     }
                 });
             }
@@ -354,7 +360,90 @@ public class PaymentClientProxyTest extends BaseTest {
                 });
             }
         };
-        PaymentTransaction captureResult = paymentClient.postPaymentCapture(paymentResult.getId(), captureTrx).wrapped().get();
-        Assert.assertEquals(captureResult.getStatus().toUpperCase(), PaymentStatus.SETTLEMENT_SUBMITTED.toString());
+        PaymentTransaction captureResult = null;
+        try{
+            captureResult = paymentClient.postPaymentCapture(paymentResult.getId(), captureTrx).wrapped().get();
+        }catch (Exception ex){
+            Assert.assertNull(captureResult);
+            PaymentTransaction revertResult = paymentClient.getPayment(paymentResult.getId()).wrapped().get();
+            Assert.assertEquals(revertResult.getStatus().toUpperCase(), PaymentStatus.SETTLEMENT_DECLINED.toString());
+            for(PaymentEvent event : revertResult.getPaymentEvents()){
+                if(event.getType().equalsIgnoreCase(PaymentEventType.SUBMIT_SETTLE.toString())
+                        && event.getStatus().equalsIgnoreCase(PaymentStatus.SETTLEMENT_DECLINED.toString())){
+                    return;
+                }
+            }
+            throw ex;
+        }
+    }
+
+    @Test(enabled = false)
+    public void addPIAndAuthReverseFailed() throws ExecutionException, InterruptedException {
+        final UserId userId = new UserId(generateLong());
+        PaymentInstrument pi = new PaymentInstrument(){
+            {
+                setAccountName("ut");
+                setAccountNum("4111111111111111");
+                setIsValidated(false);
+                setIsDefault("true");
+                setType("CREDITCARD");
+                setTrackingUuid(generateUUID());
+                setAddress(new Address() {
+                    {
+                        setAddressLine1("3rd street");
+                        setPostalCode("12345");
+                        setCountry("US");
+                    }
+                });
+                setCreditCardRequest(new CreditCardRequest(){
+                    {
+                        setExpireDate("2025-12");
+                        setEncryptedCvmCode("111");
+                    }
+                });
+            }
+        };
+
+        final PaymentInstrument result = piClient.postPaymentInstrument(userId, pi).wrapped().get();
+        Assert.assertNotNull(result.getCreditCardRequest().getExternalToken());
+        Assert.assertNotNull(result.getId());
+        PaymentTransaction trx = new PaymentTransaction(){
+            {
+                setTrackingUuid(generateUUID());
+                setUserId(userId.getValue());
+                setPaymentInstrumentId(result.getId());
+                setChargeInfo(new ChargeInfo(){
+                    {
+                        setCurrency("USD");
+                        setAmount(new BigDecimal(18.00));
+                    }
+                });
+            }
+        };
+        PaymentTransaction paymentResult = paymentClient.postPaymentAuthorization(trx).wrapped().get();
+        Assert.assertNotNull(paymentResult.getExternalToken());
+        Assert.assertEquals(paymentResult.getStatus().toUpperCase(), PaymentStatus.AUTHORIZED.toString());
+        PaymentTransaction reverseTrx = new PaymentTransaction(){
+            {
+                setTrackingUuid(generateUUID());
+                setUserId(userId.getValue());
+            }
+        };
+        PaymentTransaction reverseResult = null;
+        try{
+            reverseResult = paymentClient.reversePayment(paymentResult.getId(), reverseTrx).wrapped().get();
+        }catch (Exception ex){
+            Assert.assertNull(reverseResult);
+            PaymentTransaction getResult = paymentClient.getPayment(paymentResult.getId()).wrapped().get();
+            Assert.assertEquals(getResult.getStatus().toUpperCase(), PaymentStatus.REVERSE_DECLINED.toString());
+            for(PaymentEvent event : getResult.getPaymentEvents()){
+                if(event.getType().equalsIgnoreCase(PaymentEventType.AUTH_REVERSE.toString())
+                        && event.getStatus().equalsIgnoreCase(PaymentStatus.REVERSE_DECLINED.toString())){
+                    return;
+                }
+            }
+            throw ex;
+        }
+        throw new RuntimeException("Expect exception");
     }
 }

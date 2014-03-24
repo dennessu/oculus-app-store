@@ -2,10 +2,10 @@ package com.junbo.fulfilment.db.repo;
 
 import com.junbo.fulfilment.db.BaseTest;
 import com.junbo.fulfilment.spec.constant.FulfilmentActionType;
+import com.junbo.fulfilment.spec.constant.FulfilmentStatus;
 import com.junbo.fulfilment.spec.fusion.CatalogEntityType;
 import com.junbo.fulfilment.spec.fusion.LinkedEntry;
 import com.junbo.fulfilment.spec.model.FulfilmentAction;
-import com.junbo.fulfilment.spec.constant.FulfilmentStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -77,7 +77,7 @@ public class FulfilmentActionRepositoryTest extends BaseTest {
 
         action.setItems(items);
 
-        Map<String, String> props = new HashMap();
+        Map<String, Object> props = new HashMap();
         props.put("key1", "value1");
         props.put("key2", "value2");
         action.setProperties(props);

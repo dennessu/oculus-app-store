@@ -8,11 +8,11 @@ package com.junbo.order.core.impl.order
 
 import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.ShippingAddress
-import com.junbo.catalog.spec.model.offer.Offer
 import com.junbo.common.id.PaymentInstrumentId
 import com.junbo.identity.spec.model.user.User
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.FacadeContainer
+import com.junbo.order.clientproxy.model.OrderOffer
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.OrderItem
@@ -121,21 +121,24 @@ class OrderServiceContextBuilder {
         if (context == null || context.order == null || context.order.user == null) {
             return Promise.pure(null)
         }
-        return facadeContainer.identityFacade.getUser(context.order.user.value).syncThen { User user ->
+        return facadeContainer.identityFacade.getUser(context.order.user.value).syncRecover { Throwable throwable ->
+            LOGGER.error('name=User_Not_Found', throwable)
+            throw AppErrors.INSTANCE.userNotFound(context.order.user.value.toString()).exception()
+        }.syncThen { User user ->
             context.user = user
             return user
         }
     }
 
-    Promise<List<Offer>> getOffers(OrderServiceContext context) {
+    Promise<List<OrderOffer>> getOffers(OrderServiceContext context) {
 
         if (context == null || context.order == null || CollectionUtils.isEmpty(context.order.orderItems)) {
             return Promise.pure(Collections.emptyList())
         }
 
-        List<Offer> offers = []
+        List<OrderOffer> offers = []
         return Promise.each(context.order.orderItems.iterator()) { OrderItem oi ->
-            facadeContainer.catalogFacade.getOffer(oi.offer.value).syncThen { Offer of ->
+            facadeContainer.catalogFacade.getOffer(oi.offer.value).syncThen { OrderOffer of ->
                 offers << of
             }
         }.syncThen {

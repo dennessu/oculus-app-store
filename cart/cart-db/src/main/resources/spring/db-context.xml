@@ -45,7 +45,7 @@
     </bean>
 
     <!-- SessonFactory for Hibernate -->
-    <bean id="sessionFactory"
+    <bean id="cartSessionFactory"
           class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
         <property name="dataSource" ref="cartDataSource"/>
         <property name="packagesToScan" value="com.junbo.cart.db.entity" />
@@ -62,7 +62,7 @@
     </bean>
 
     <bean id="abstractDao" class="com.junbo.cart.db.dao.impl.AbstractDao" abstract="true">
-        <property name="sessionFactory" ref="sessionFactory"/>
+        <property name="sessionFactory" ref="cartSessionFactory"/>
     </bean>
 
     <bean id="cartDao" class="com.junbo.cart.db.dao.impl.CartDaoImpl" parent="abstractDao">

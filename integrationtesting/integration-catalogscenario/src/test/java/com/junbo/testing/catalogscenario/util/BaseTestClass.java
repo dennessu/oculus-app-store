@@ -10,7 +10,7 @@ import org.slf4j.bridge.SLF4JBridgeHandler;
 /**
  @author Jason
   * Time: 3/19/2014
-  * Base test class for catalog scenarios
+  * Base test class for each scenarios
  */
 public class BaseTestClass {
 

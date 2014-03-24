@@ -6,24 +6,40 @@
             <td><input type="text" class="form-control required" ng-model="offer.name"></td>
         </tr>
         <tr>
-            <td>Type</td>
+            <td>Developer</td>
+            <td><input type="text" class="form-control required" ng-model="offer.developer.id" ng-change="updateDeveloper()"></td>
+        </tr>
+        <tr>
+            <td>Category</td>
             <td>
-                <select ng-model="offer.type" ng-options="typeAttribute.self as typeAttribute.name for typeAttribute in typeAttributes">
+                <select ng-model="selectedCategory" ng-change="updateCategories()"
+                        ng-options="categoryAttribute.self as categoryAttribute.name for categoryAttribute in categoryAttributes">
                 </select>
             </td>
         </tr>
         <tr>
-            <td>Owner</td>
-            <td><input type="text" class="form-control required" ng-model="offer.ownerId.id"></td>
+            <td>Genre</td>
+            <td>
+                <select ng-model="selectedGenre" ng-change="updateGenres()"
+                        ng-options="genreAttribute.self as genreAttribute.name for genreAttribute in genreAttributes">
+                </select>
+            </td>
         </tr>
         <tr>
             <td>Items</td>
             <td>
                 <div>
-                    <button ng-click="isCollapsed = !isCollapsed">
-                        <div ng-show="isCollapsed">Add Items</div>
-                        <div ng-hide="isCollapsed" ng-click="saveItems()">Save</div>
-                    </button>
+                    <table class="table borderless">
+                        <tr>
+                            <td>Contains {{ totalItems() }} Items.</td>
+                            <td>
+                                <button ng-click="isCollapsed = !isCollapsed" class="btn btn-small btn-default">
+                                    <div ng-show="isCollapsed">Add Items</div>
+                                    <div ng-hide="isCollapsed" ng-click="saveItems()">Save</div>
+                                </button>
+                            </td>
+                        </tr>
+                    </table>
                     <div collapse="isCollapsed">
                         <table class="table table-bordered"><tr>
                             <td>
@@ -45,6 +61,42 @@
                                 </table>
                             </td>
                         </tr></table>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>Prices</td>
+            <td>
+                <div>
+                    <select ng-model="priceType" ng-init="priceType='TierPricing'">
+                        <option>TierPricing</option>
+                        <option>NormalPricing</option>
+                    </select>
+                    <hr />
+                    <div ng-show="priceType=='NormalPricing'">
+                        Add price:
+                        <select ng-model="selectedCountry" ng-change="addPrice(selectedCountry)">
+                            <option>US</option>
+                            <option>CN</option>
+                        </select>
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Country</th>
+                                <th>Amount</th>
+                                <th>Currency</th>
+                            </tr>
+                            </thead>
+                            <tr ng-repeat="(country, price) in offer.prices">
+                                <td>{{ country }}</td>
+                                <td><input type="text" class="form-control required" ng-model="price.amount"></td>
+                                <td><input type="text" class="form-control required" ng-model="price.currency"></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div ng-show="priceType=='TierPricing'">
+                        TODO: TierPricing
                     </div>
                 </div>
             </td>

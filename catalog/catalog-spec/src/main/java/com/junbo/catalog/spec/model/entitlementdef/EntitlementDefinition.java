@@ -18,7 +18,7 @@ import java.util.UUID;
  * EntitlementDefinition Model.
  */
 @JsonPropertyOrder(value = {
-        "entitlementDefinitionId",
+        "entitlementDefId",
         "type",
         "group",
         "tag",
@@ -27,7 +27,7 @@ public class EntitlementDefinition {
     private UUID trackingUuid;
     @JsonProperty("self")
     @EntitlementDefinitionId
-    private Long entitlementDefinitionId;
+    private Long entitlementDefId;
     @UserId
     @JsonProperty("developer")
     private Long developerId;
@@ -45,12 +45,12 @@ public class EntitlementDefinition {
         this.trackingUuid = trackingUuid;
     }
 
-    public Long getEntitlementDefinitionId() {
-        return entitlementDefinitionId;
+    public Long getEntitlementDefId() {
+        return entitlementDefId;
     }
 
-    public void setEntitlementDefinitionId(Long entitlementDefinitionId) {
-        this.entitlementDefinitionId = entitlementDefinitionId;
+    public void setEntitlementDefId(Long entitlementDefId) {
+        this.entitlementDefId = entitlementDefId;
     }
 
     public Long getDeveloperId() {
