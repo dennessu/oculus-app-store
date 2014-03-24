@@ -62,24 +62,23 @@ class BalanceServiceImpl implements BalanceService {
 
         return validateUser(balance).then {
             return validatePI(balance).then {
-            }
-        }.then {
-            validateBalanceType(balance)
-            validateCurrency(balance)
-            validateCountry(balance)
-            validateBalanceItem(balance)
+                validateBalanceType(balance)
+                validateCurrency(balance)
+                validateCountry(balance)
+                validateBalanceItem(balance)
 
-            calculateTax(balance)
-            computeTotal(balance)
-            validateBalanceTotal(balance)
+                calculateTax(balance)
+                computeTotal(balance)
+                validateBalanceTotal(balance)
 
-            // set the balance status to INIT
-            balance.setStatus(BalanceStatus.INIT.name())
+                // set the balance status to INIT
+                balance.setStatus(BalanceStatus.INIT.name())
 
-            return transactionService.processBalance(balance).then {
-                //persist the balance entity
-                Balance resultBalance = balanceRepository.saveBalance(balance)
-                return Promise.pure(resultBalance)
+                return transactionService.processBalance(balance).then {
+                    //persist the balance entity
+                    Balance resultBalance = balanceRepository.saveBalance(balance)
+                    return Promise.pure(resultBalance)
+                }
             }
         }
     }
@@ -148,7 +147,7 @@ class BalanceServiceImpl implements BalanceService {
         }
 
         Long userId = balance.userId.value
-        identityFacade.getUser(userId).recover { Throwable throwable ->
+        return identityFacade.getUser(userId).recover { Throwable throwable ->
             LOGGER.error('name=Error_Get_User. user id: ' + userId, throwable)
             throw AppErrors.INSTANCE.userNotFound(userId.toString()).exception()
         }.then { User user ->
@@ -166,7 +165,7 @@ class BalanceServiceImpl implements BalanceService {
         if (balance.piId == null) {
             throw AppErrors.INSTANCE.fieldMissingValue('piId').exception()
         }
-        paymentFacade.getPaymentInstrument(balance.userId.value, balance.piId.value).recover { Throwable throwable ->
+        return paymentFacade.getPaymentInstrument(balance.userId.value, balance.piId.value).recover { Throwable throwable ->
             LOGGER.error('name=Error_Get_PaymentInstrument. pi id: ' + balance.piId.value, throwable)
             throw AppErrors.INSTANCE.piNotFound(balance.piId.value.toString()).exception()
         }.then { PaymentInstrument pi ->
