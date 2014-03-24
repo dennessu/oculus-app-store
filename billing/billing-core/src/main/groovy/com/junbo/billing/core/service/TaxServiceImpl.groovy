@@ -57,18 +57,19 @@ class TaxServiceImpl implements TaxService {
     Promise<Balance> calculateTax(Balance balance) {
         Long userId = balance.userId.value
         Long piId = balance.piId.value
-        if (balance.shippingAddressId != null) {
-            Long addressId = balance.shippingAddressId.value
-            return shippingAddressService.getShippingAddress(userId, addressId)
-                    .then { ShippingAddress shippingAddress ->
-                return paymentFacade.getPaymentInstrument(userId, piId).recover { Throwable throwable ->
-                    LOGGER.error('name=Error_Get_PaymentInstrument. pi id: ' + balance.piId.value, throwable)
-                    throw AppErrors.INSTANCE.piNotFound(piId.toString()).exception()
-                }.then { PaymentInstrument pi ->
-                    chooseProvider()
+        return paymentFacade.getPaymentInstrument(userId, piId).recover { Throwable throwable ->
+            LOGGER.error('name=Error_Get_PaymentInstrument. pi id: ' + balance.piId.value, throwable)
+            throw AppErrors.INSTANCE.piNotFound(piId.toString()).exception()
+        }.then { PaymentInstrument pi ->
+            chooseProvider()
+            if (balance.shippingAddressId != null) {
+                Long addressId = balance.shippingAddressId.value
+                return shippingAddressService.getShippingAddress(userId, addressId)
+                        .then { ShippingAddress shippingAddress ->
                     return taxFacade.calculateTax(balance, shippingAddress, pi.address)
                 }
             }
+            return taxFacade.calculateTax(balance, null, pi.address)
         }
 
     }

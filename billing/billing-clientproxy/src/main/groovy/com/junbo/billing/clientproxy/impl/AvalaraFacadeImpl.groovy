@@ -51,43 +51,31 @@ class AvalaraFacadeImpl implements TaxFacade {
     @Resource(name = 'transcoder')
     MessageTranscoder transcoder
 
+    static final int STATUS_CODE_MASK = 100
+    static final int SUCCESSFUL_STATUS_CODE_PREFIX = 2
+
     @Override
     Promise<Balance> calculateTax(Balance balance, ShippingAddress shippingAddress, Address piAddress) {
         GetTaxRequest request = generateGetTaxRequest(balance, shippingAddress, piAddress)
-        def balacePromise = calculateTax(request)
-        balacePromise?.then(new Promise.Func<GetTaxResponse, Promise>() {
-            @Override
-            Promise apply(GetTaxResponse response) {
-                return Promise.pure(updateBalance(response, balance))
-            }
+        return calculateTax(request).then { GetTaxResponse response ->
+            return Promise.pure(updateBalance(response, balance))
         }
-        )
     }
 
     @Override
     Promise<ShippingAddress> validateShippingAddress(ShippingAddress shippingAddress) {
         AvalaraAddress address = getAvalaraAddress(shippingAddress)
-        def addressPromise = validateAddress(address)
-        addressPromise?.then(new Promise.Func<ValidateAddressResponse, Promise>() {
-            @Override
-            Promise apply(ValidateAddressResponse response) {
-                return Promise.pure(updateShippingAddress(response, shippingAddress))
-            }
+        return validateAddress(address).then { ValidateAddressResponse response ->
+            return Promise.pure(updateShippingAddress(response, shippingAddress))
         }
-        )
     }
 
     @Override
     Promise<Address> validatePiAddress(Address piAddress) {
         AvalaraAddress address = getAvalaraAddress(piAddress)
-        def addressPromise = validateAddress(address)
-        addressPromise?.then(new Promise.Func<ValidateAddressResponse, Promise>() {
-            @Override
-            Promise apply(ValidateAddressResponse response) {
-                return Promise.pure(updatePiAddress(response, piAddress))
-            }
+        return validateAddress(address).then { ValidateAddressResponse response ->
+            return Promise.pure(updatePiAddress(response, piAddress))
         }
-        )
     }
 
     ShippingAddress updateShippingAddress(ValidateAddressResponse response, ShippingAddress shippingAddress) {
@@ -203,25 +191,19 @@ class AvalaraFacadeImpl implements TaxFacade {
         } catch (IOException) {
             throw AppErrors.INSTANCE.addressValidationError('Fail to build request.').exception()
         }
-        return future.then (new Promise.Func<Response, Promise<ValidateAddressResponse>>() {
-            @Override
-            Promise<ValidateAddressResponse> apply(Response response) {
-                if (response.statusCode / 100 == 2) {
-                    try {
-                        return Promise.pure(new ObjectMapper().readValue(
-                                response.responseBody, ValidateAddressResponse))
-                    } catch (IOException ex) {
-                        throw AppErrors.INSTANCE.addressValidationError('Fail to read response.').exception()
-                    }
-                }
-                else {
-                    def addressResponse = new ObjectMapper().readValue(
-                            response.responseBody, ValidateAddressResponse)
-                    throw AppErrors.INSTANCE.addressValidationError('Response code: ' + response.statusCode).exception()
+        return future.then { Response response ->
+            if (response.statusCode / STATUS_CODE_MASK == SUCCESSFUL_STATUS_CODE_PREFIX) {
+                try {
+                    return Promise.pure(new ObjectMapper().readValue(
+                            response.responseBody, ValidateAddressResponse))
+                } catch (IOException ex) {
+                    throw AppErrors.INSTANCE.addressValidationError('Fail to read response.').exception()
                 }
             }
+            else {
+                throw AppErrors.INSTANCE.addressValidationError('Response code: ' + response.statusCode).exception()
+            }
         }
-        )
     }
 
     Promise<GetTaxResponse> calculateTax(GetTaxRequest request) {
@@ -236,7 +218,7 @@ class AvalaraFacadeImpl implements TaxFacade {
             return Promise.pure(null)
         }
         return future.then { Response response ->
-            if (response.statusCode / 100 == 2) {
+            if (response.statusCode / STATUS_CODE_MASK == SUCCESSFUL_STATUS_CODE_PREFIX) {
                 try {
                     return Promise.pure(new ObjectMapper().readValue(response.responseBody, GetTaxResponse))
                 } catch (IOException ex) {
