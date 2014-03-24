@@ -14,12 +14,24 @@
     <context:component-scan base-package="com.junbo.subscription.db"/>
 
     <!--Data source has the database information -->
-    <bean id="subscriptionDataSource"
-          class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="driverClassName" value="org.postgresql.Driver"/>
-        <property name="url" value="jdbc:postgresql://localhost:5432/subscription"/>
-        <property name="username" value="postgres"/>
-        <property name="password" value="#Bugsfor$"/>
+    <!--Data source has the database information -->
+    <bean id="subscriptionDataSource" class="bitronix.tm.resource.jdbc.PoolingDataSource"
+          init-method="init" destroy-method="close">
+        <property name="uniqueName" value="jdbc/subscription"/>
+        <property name="className" value="org.postgresql.xa.PGXADataSource"/>
+        <property name="minPoolSize" value="${subscription.db.minConnectionsPerPartition}"/>
+        <property name="maxPoolSize" value="${subscription.db.maxConnectionsPerPartition}"/>
+
+        <property name="useTmJoin" value="true"/>
+        <property name="allowLocalTransactions" value="true"/>
+
+        <property name="driverProperties">
+            <props>
+                <prop key="url">${subscription.db.url}</prop>
+                <prop key="user">${subscription.db.username}</prop>
+                <prop key="password">${subscription.db.password}</prop>
+            </props>
+        </property>
     </bean>
 
     <!-- SessonFactory for Hibernate -->
@@ -30,11 +42,11 @@
         <property name="jtaTransactionManager" ref="transactionManager"/>
         <property name="hibernateProperties">
             <props>
-                <prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</prop>
-                <prop key="hibernate.max_fetch_depth">3</prop>
-                <prop key="hibernate.jdbc.fetch_size">50</prop>
-                <prop key="hibernate.jdbc.batch_size">10</prop>
-                <prop key="hibernate.show_sql">true</prop>
+                <prop key="hibernate.dialect">${subscription.hibernate.dialect}</prop>
+                <prop key="hibernate.max_fetch_depth">${subscription.hibernate.max_fetch_depth}</prop>
+                <prop key="hibernate.jdbc.fetch_size">${subscription.hibernate.fetch_size}</prop>
+                <prop key="hibernate.jdbc.batch_size">${subscription.hibernate.batch_size}</prop>
+                <prop key="hibernate.show_sql">${subscription.hibernate.show_sql}</prop>
             </props>
         </property>
     </bean>

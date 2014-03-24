@@ -23,7 +23,14 @@ public class SubscriptionRepository {
     private SubscriptionMapper subscriptionMapper;
 
     public Subscription get(Long subscriptionId) {
-        return subscriptionMapper.toSubscription(subscriptionDao.get(subscriptionId));
+        SubscriptionEntity entity;
+        try {
+            entity = subscriptionDao.get(subscriptionId);
+        }
+        catch (Exception e){
+            return null;
+        }
+        return subscriptionMapper.toSubscription(entity);
     }
 
     public Subscription insert(Subscription subscription) {

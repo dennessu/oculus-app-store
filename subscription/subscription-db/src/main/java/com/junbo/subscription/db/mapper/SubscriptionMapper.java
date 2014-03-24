@@ -27,7 +27,7 @@ public class SubscriptionMapper {
         Subscription subscription = new Subscription();
         subscription.setSubscriptionId(subscriptionEntity.getSubscriptionId());
         subscription.setUserId(subscriptionEntity.getUserId());
-        subscription.setStatus(subscriptionEntity.getStatus());
+        subscription.setStatus("created"); //subscriptionEntity.getStatusId()
         toModel(subscriptionEntity, subscription);
         return subscription;
     }

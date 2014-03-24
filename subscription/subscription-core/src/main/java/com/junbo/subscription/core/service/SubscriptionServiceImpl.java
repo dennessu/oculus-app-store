@@ -26,7 +26,8 @@ import java.util.UUID;
 public class SubscriptionServiceImpl implements SubscriptionService {
     private static final String NOT_START = "NOT_START";
     private static final String EXPIRED = "EXPIRED";
-    private static final String SUBSCRIPTION = "SUBSCRIPTION";
+//    private static final String SUBSCRIPTION = "SUBSCRIPTION";
+    private static final Long SUBSCRIPTION = 1L;
 
 
     @Autowired

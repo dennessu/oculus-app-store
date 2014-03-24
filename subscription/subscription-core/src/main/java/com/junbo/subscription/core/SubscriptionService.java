@@ -6,6 +6,7 @@
 package com.junbo.subscription.core;
 
 import com.junbo.subscription.spec.model.Subscription;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -13,6 +14,7 @@ import java.util.UUID;
 /**
  * subscription service.
  */
+@Transactional
 public interface SubscriptionService {
     Subscription getsubscription(Long subscriptionId);
 
