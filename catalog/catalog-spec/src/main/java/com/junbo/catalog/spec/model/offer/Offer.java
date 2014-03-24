@@ -45,9 +45,9 @@ public class Offer extends VersionedModel {
 
     private List<Event> events = new ArrayList<>();
     private List<String> eligibleCountries;
-    private Map<String, Map<String, String>> countryProperties;
-    private Map<String, Map<String, String>> localeProperties;
-    private Map<String, String> properties;
+    private Map<String, Map<String, Object>> countryProperties;
+    private Map<String, Map<String, Object>> localeProperties;
+    private Map<String, Object> properties;
 
     public Long getId() {
         return id;
@@ -137,27 +137,27 @@ public class Offer extends VersionedModel {
         this.eligibleCountries = eligibleCountries;
     }
 
-    public Map<String, Map<String, String>> getCountryProperties() {
+    public Map<String, Map<String, Object>> getCountryProperties() {
         return countryProperties;
     }
 
-    public void setCountryProperties(Map<String, Map<String, String>> countryProperties) {
+    public void setCountryProperties(Map<String, Map<String, Object>> countryProperties) {
         this.countryProperties = countryProperties;
     }
 
-    public Map<String, Map<String, String>> getLocaleProperties() {
+    public Map<String, Map<String, Object>> getLocaleProperties() {
         return localeProperties;
     }
 
-    public void setLocaleProperties(Map<String, Map<String, String>> localeProperties) {
+    public void setLocaleProperties(Map<String, Map<String, Object>> localeProperties) {
         this.localeProperties = localeProperties;
     }
 
-    public Map<String, String> getProperties() {
+    public Map<String, Object> getProperties() {
         return properties;
     }
 
-    public void setProperties(Map<String, String> properties) {
+    public void setProperties(Map<String, Object> properties) {
         this.properties = properties;
     }
 

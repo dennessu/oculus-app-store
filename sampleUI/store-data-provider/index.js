@@ -1,11 +1,15 @@
 
-var identity = require("./lib/identity");
-var catalog = require("./lib/catalog");
-var cart = require("./lib/cart");
+var Identity = require("./lib/identity");
+var Catalog = require("./lib/catalog");
+var Cart = require("./lib/cart");
+var Order = require("./lib/order");
+var Billing = require("./lib/billing");
 var ResultModel = require('./lib/result_model');
 
-exports.Identity = identity;
-exports.Catalog = catalog;
-exports.Cart = cart;
+exports.Identity = Identity;
+exports.Catalog = Catalog;
+exports.Cart = Cart;
+exports.Order = Order;
+exports.Billing = Billing;
 
 exports.APIResultModel = ResultModel;

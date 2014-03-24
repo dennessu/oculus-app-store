@@ -154,13 +154,6 @@ class OrderServiceImpl implements OrderService {
         if (order.orderItems == null) {
             throw AppErrors.INSTANCE.orderItemNotFound().exception()
         }
-        // rating info
-        order.totalAmount = 0
-        order.orderItems?.each { OrderItem orderItem ->
-            if (orderItem.totalAmount != null) {
-                order.totalAmount += orderItem.totalAmount
-            }
-        }
         // payment instrument
         order.setPaymentInstruments(orderRepository.getPaymentInstrumentIds(order.id.value))
         // discount

@@ -89,11 +89,21 @@ var StoreControllers = {
                 var _self = this;
                 if(App.AuthManager.isAuthenticated()){
                     console.log("[CartController:CheckOut]");
-                    // TODO: Call PostOrder
-                    _self.transitionToRouteAnimated("address", {main: "slideOverLeft"});
+
+                    var dataProvider = new CartProvider();
+                    dataProvider.PostOrder(Utils.GenerateRequestModel(null), function(result){
+                        var resultModel = result.data;
+                        if(resultModel.status == 200){
+                            console.log("[CartController:Checkout] Post order success");
+                            _self.transitionToRouteAnimated("shipping", {main: "slideOverLeft"});
+
+                        }else{
+                            console.log("[CartController:Checkout] Post order failed!");
+                            // TODO: do something
+                        }
+                    });
                 }else{
                     Utils.Cookies.Set(AppConfig.CookiesName.BeforeRoute, "cart");
-
                     location.href = AppConfig.LoginUrl;
                 }
             }

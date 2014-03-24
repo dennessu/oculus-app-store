@@ -21,6 +21,9 @@ var Configs = {
         CartId: "cart_id",
         AnonymousUserId: "anonymous_user_id",
         AnonymousCartId: "anonymous_cart_id",
+        ShippingId: "shipping_id",
+        PaymentId: "payment_id",
+        OrderId: "order_id",
 
         BeforeRoute: "before_route"
     },

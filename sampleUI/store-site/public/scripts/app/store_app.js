@@ -8,6 +8,7 @@ App.store = DS.Store.create({
 App.AuthKey = AuthKeyModel;
 App.Product = ProductModel;
 App.CartItem = CartItemModel;
+App.ShippingInfo = ShippingInfoModel;
 
 App.Router.map(function(){
     this.resource("detail", { path: "/detail/:productId"});

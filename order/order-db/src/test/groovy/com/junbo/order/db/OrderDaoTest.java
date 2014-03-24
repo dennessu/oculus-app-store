@@ -58,7 +58,6 @@ public class OrderDaoTest extends BaseTest {
         orderDao.create(orderEntity);
         orderDao.flush();
         List<OrderEntity> resultAfter = orderDao.readByUserId(userId);
-
         Assert.assertEquals(resultBefore.size() + 1, resultAfter.size(), "Result size should increase.");
     }
 

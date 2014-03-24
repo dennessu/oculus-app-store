@@ -171,7 +171,28 @@ app.controller('ItemCreationCtrl', ['$scope', 'ItemsFactory', '$routeParams', '$
             $scope.item.developer.href="http://localhost:8083/rest/api/users/" + $scope.item.developer.id;
         };
 
+        $scope.metaDefinitions = {
+            "shortDescription": { "display": "Short Description", "controlType": "TEXT_INPUT"},
+            "longDescription": { "display": "Long Description", "controlType": "TEXT_INPUT"},
+            "platform": { "display": "Platform", "controlType": "MULTI_SELECT", "allowedValues":["PC", "Mac", "Linux"]},
+            "changeNotes": { "display": "Change Notes", "controlType": "TEXT_INPUT"},
+            "website": { "display": "Website", "controlType": "TEXT_INPUT"},
+            "gameModes": { "display": "Game Modes", "controlType": "SINGLE_SELECT", "allowedValues":["Single Player", "Multi Player"]}
+        };
         $scope.items = ItemsFactory.query($routeParams);
+
+        var init = function() {
+            $scope.item = {};
+            $scope.item.properties = {};
+            Object.keys($scope.metaDefinitions).forEach(function(key) {
+                $scope.item.properties[key] = "";
+                if ($scope.metaDefinitions[key].controlType == "MULTI_SELECT") {
+                    $scope.item.properties[key] = [];
+                }
+            });
+        };
+
+        init();
     }]);
 
 app.controller('ItemDetailCtrl', ['$scope', 'ItemFactory', '$routeParams', '$location','ItemResponse',

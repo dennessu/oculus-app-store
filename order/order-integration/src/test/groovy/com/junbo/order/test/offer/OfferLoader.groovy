@@ -46,7 +46,7 @@ class OfferLoader {
                     events: [
                             new Event
                             (
-                                name: 'PURCHASE_EVENT',
+                                name: 'PURCHASE',
                                 actions: [
                                     new Action (
                                         type: 'GRANT_ENTITLEMENT',
@@ -98,10 +98,10 @@ class OfferLoader {
                         events: [
                                 new Event
                                 (
-                                        name: 'PURCHASE_EVENT',
+                                        name: 'PURCHASE',
                                         actions: [
                                                 new Action (
-                                                        type: 'GRANT_ENTITLEMENT',
+                                                        type: 'DELIVER_PHYSICAL_GOODS',
                                                         properties: [
                                                                 tag: 'item001_ANGRY.BIRD_ONLINE_ACCESS',
                                                                 group: 'Angry Bird',

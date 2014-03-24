@@ -28,7 +28,15 @@ AppConfig.API = {
         Add: { Path: "add" },
         Remove: { Path: "remove" },
         Update: { Path: "update" },
-        Merge: { Path: "merge" }
+        Merge: { Path: "merge" },
+        PostOrder: { Path: "post_order" }
+    },
+    Billing: {
+        Config: {
+            Namespace: "/api/billing/"
+        },
+        ShippingInfo: {Path: "get_shipping_info"},
+        Add: {Path: "add"}
     }
 };
 
@@ -40,6 +48,10 @@ AppConfig.DataModelMapTable = {
     "Ember.App.CartItem": {
         Provider: "CartProvider",
         Method: "Get"
+    },
+    "Ember.App.ShippingInfo": {
+        Provider: "BillingProvider",
+        Method: "ShippingInfo"
     }
 };
 

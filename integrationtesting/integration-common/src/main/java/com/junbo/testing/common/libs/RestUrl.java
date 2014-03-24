@@ -26,7 +26,9 @@ public final class RestUrl {
         IDENTITY("identity"),
         CART("cart"),
         CATALOG("catalog"),
-        ORDER("order");
+        ORDER("order"),
+        SHIPPING("shipping"),
+        PAYMENT("payment-instruments");
 
         private String name;
 
