@@ -82,4 +82,20 @@ public class CascadeIdTest {
 
         mapper.writeValueAsString(trx);
     }
+
+    @Test
+    public void testNullDeserialize() throws Exception {
+        String json = "{}";
+        PaymentTransaction trx = mapper.readValue(json, PaymentTransaction.class);
+        Assert.assertNull(trx.getTestId());
+    }
+
+    @Test
+    public void testIncompleteDeserialize() throws Exception {
+        String json = "{\"testId\":{\"href\":\"http://api.wan-san.com/v1/users/000000003039/test-ids/\",\"id\":\"\"}}";
+
+        PaymentTransaction trx = mapper.readValue(json, PaymentTransaction.class);
+        Assert.assertNull(trx.getTestId().getTestId());
+        Assert.assertNotNull(trx.getTestId().getUserId());
+    }
 }
