@@ -49,33 +49,14 @@ class TaxServiceImpl implements TaxService {
         }
     }
 
-//    @Override
-//    Promise<Balance> calculateTax(Balance balance) {
-//        Long userId = balance.userId.value
-//        ShippingAddress shippingAddress
-//        if (balance.shippingAddressId != null) {
-//            Long addressId = balance.shippingAddressId.value
-//            def addressPromise = shippingAddressService.getShippingAddress(userId, addressId)
-//            shippingAddress = addressPromise?.wrapped().get()
-//        }
-//
-//        Long piId = balance.piId.value
-//        def piPromise = paymentFacade.getPaymentInstrument(userId, piId)
-//        def pi = piPromise?.wrapped().get()
-//        if (pi == null) {
-//            throw AppErrors.INSTANCE.piNotFound(piId.toString()).exception()
-//        }
-//        chooseProvider()
-//        return Promise.pure(taxFacade.calculateTax(balance, shippingAddress, pi.address))
-//    }
-
     @Override
     Promise<Balance> calculateTax(Balance balance) {
         Long userId = balance.userId.value
         Long piId = balance.piId.value
         if (balance.shippingAddressId != null) {
             Long addressId = balance.shippingAddressId.value
-            return shippingAddressService.getShippingAddress(userId, addressId).then { ShippingAddress shippingAddress ->
+            return shippingAddressService.getShippingAddress(userId, addressId)
+                    .then { ShippingAddress shippingAddress ->
                 return paymentFacade.getPaymentInstrument(userId, piId).then { PaymentInstrument pi ->
                     if (pi == null) {
                         throw AppErrors.INSTANCE.piNotFound(piId.toString()).exception()
@@ -91,12 +72,12 @@ class TaxServiceImpl implements TaxService {
     @Override
     Promise<ShippingAddress> validateShippingAddress(ShippingAddress shippingAddress) {
         chooseProvider()
-        return Promise.pure(taxFacade.validateShippingAddress(shippingAddress))
+        return taxFacade.validateShippingAddress(shippingAddress)
     }
 
     @Override
     Promise<Address> validatePiAddress(Address piAddress) {
         chooseProvider()
-        return Promise.pure(taxFacade.validatePiAddress(piAddress))
+        return taxFacade.validatePiAddress(piAddress)
     }
 }

@@ -52,14 +52,16 @@ public class OrderDaoTest extends BaseTest {
 
     @Test
     public void testReadByUserId() {
-        OrderEntity orderEntity = TestHelper.generateOrder();
-        Long userId = orderEntity.getUserId();
-        List<OrderEntity> resultBefore = orderDao.readByUserId(userId);
-        orderDao.create(orderEntity);
-        orderDao.flush();
-        List<OrderEntity> resultAfter = orderDao.readByUserId(userId);
+        for (int i = 0; i < 10000; i++) {
+            OrderEntity orderEntity = TestHelper.generateOrder();
+            Long userId = orderEntity.getUserId();
+            List<OrderEntity> resultBefore = orderDao.readByUserId(userId);
+            orderDao.create(orderEntity);
+            orderDao.flush();
+            List<OrderEntity> resultAfter = orderDao.readByUserId(userId);
 
-        Assert.assertEquals(resultBefore.size() + 1, resultAfter.size(), "Result size should increase.");
+            Assert.assertEquals(resultBefore.size() + 1, resultAfter.size(), "Result size should increase."+i);
+        }
     }
 
     @Test
