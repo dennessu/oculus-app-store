@@ -112,4 +112,8 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 404, code = BillingErrorCode.BALANCE_NOT_FOUND,
             description = "Balance not found")
     AppError balanceNotFound();
+
+    @ErrorDef(httpStatusCode = 404, code = ErrorCode.ORDER_EVENT_NOT_FOUND,
+            description = "Order event not found")
+    AppError orderEventNotFound();
 }
