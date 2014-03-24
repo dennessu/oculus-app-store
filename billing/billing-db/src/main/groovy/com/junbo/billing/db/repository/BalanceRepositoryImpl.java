@@ -171,7 +171,8 @@ public class BalanceRepositoryImpl implements BalanceRepository {
     public Balance getBalanceByUuid(UUID uuid) {
         List<BalanceEntity> balanceEntities = balanceEntityDao.getByTrackingUuid(uuid);
         if(balanceEntities != null && balanceEntities.size() > 0) {
-            return modelMapper.toBalance(balanceEntities.get(0), new MappingContext());
+            Long balanceId = balanceEntities.get(0).getBalanceId();
+            return getBalance(balanceId);
         }
         return null;
     }
