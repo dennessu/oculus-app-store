@@ -1,5 +1,6 @@
 package com.junbo.order.test
 
+import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.resource.BalanceResource
 import com.junbo.catalog.spec.model.offer.Offer
 import com.junbo.catalog.spec.model.offer.OffersGetOptions
@@ -11,6 +12,8 @@ import com.junbo.entitlement.spec.model.Entitlement
 import com.junbo.entitlement.spec.model.EntitlementSearchParam
 import com.junbo.entitlement.spec.model.PageMetadata
 import com.junbo.entitlement.spec.resource.EntitlementResource
+import com.junbo.fulfilment.spec.model.FulfilmentRequest
+import com.junbo.fulfilment.spec.resource.FulfilmentResource
 import com.junbo.identity.spec.model.user.User
 import com.junbo.identity.spec.resource.UserResource
 import com.junbo.order.spec.model.Order
@@ -53,6 +56,9 @@ class ServiceFacade {
 
     @Autowired
     EntitlementResource entitlementResource
+
+    @Autowired
+    FulfilmentResource fulfilmentResource
 
     List<Offer> offers
 
@@ -118,8 +124,8 @@ class ServiceFacade {
             while (true) {
                 offers = new ArrayList<>()
                 def offerResults = offerResource.getOffers(option).wrapped().get()
-                offers.addAll(offerResults.results)
-                if (offerResults.results.size() < option.size) {
+                offers.addAll(offerResults.items)
+                if (offerResults.items.size() < option.size) {
                     break
                 }
                 option.start += option.size
@@ -128,6 +134,10 @@ class ServiceFacade {
         return offers.find {
             it.name == offerName
         }
+    }
+
+    List<Balance> getBalance(OrderId orderId) {
+        return balanceResource.getBalances(orderId).wrapped().get().items
     }
 
     List<Entitlement> getEntitlements(UserId userId, List<String> tag) {
@@ -144,12 +154,16 @@ class ServiceFacade {
             page.start = start
             page.count = DEFAULT_PAGE_SIZE
             def list = entitlementResource.getEntitlements(userId, searchParam, page).wrapped().get()
-            result.addAll(list.criteria)
-            start += list.criteria.size()
-            if (list.criteria.size() < DEFAULT_PAGE_SIZE) {
+            result.addAll(list.items)
+            start += list.items.size()
+            if (list.items.size() < DEFAULT_PAGE_SIZE) {
                 break
             }
         }
         return result
+    }
+
+    FulfilmentRequest getFulfilment(OrderId orderId) {
+        return fulfilmentResource.getByOrderId(orderId).wrapped().get()
     }
 }

@@ -18,7 +18,7 @@ import javax.ws.rs.core.Response;
  * RevokeEndpoint.
  */
 @Api(value = "oauth2", basePath = "oauth2")
-@Path("revoke")
+@Path("/oauth2/revoke")
 @RestResource
 @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 public interface RevokeEndpoint {

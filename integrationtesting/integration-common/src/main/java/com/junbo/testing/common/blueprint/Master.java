@@ -10,7 +10,7 @@ import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.identity.spec.model.user.User;
 import com.junbo.order.spec.model.Order;
-
+import com.junbo.catalog.spec.model.attribute.Attribute;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -38,6 +38,7 @@ public class Master {
     private Map<String, Offer> offers;
     private Map<String, Item> items;
     private Map<String, Order> orders;
+    private Map<String, Attribute> attributes;
 
     public void initializeMaster() {
         this.initializeUsers();
@@ -45,13 +46,13 @@ public class Master {
         this.initializeOffers();
         this.initializeItems();
         this.initializeOrders();
+        this.initializeAttributes();
     }
 
     public void initializeUsers() {
         if (this.users == null) {
             this.users = new HashMap<>();
         }
-
         this.users.clear();
     }
 
@@ -83,6 +84,13 @@ public class Master {
         this.orders.clear();
     }
 
+    public void initializeAttributes(){
+        if (this.attributes == null){
+            this.attributes = new HashMap<>();
+        }
+        this.attributes.clear();
+    }
+
     public void addUser(String userId, User user) {
         if (this.users.containsKey(userId)) {
             this.users.remove(userId);
@@ -101,7 +109,6 @@ public class Master {
         if (this.offers.containsKey(offerId)) {
             this.offers.remove(offerId);
         }
-
         this.offers.put(offerId, offer);
     }
 
@@ -109,16 +116,22 @@ public class Master {
         if (this.items.containsKey(itemId)) {
             this.items.remove(itemId);
         }
-
         this.items.put(itemId, item);
     }
 
-    public void addOffer(String orderId, Order order) {
+    public void addOrder(String orderId, Order order) {
         if (this.orders.containsKey(orderId)) {
             this.orders.remove(orderId);
         }
 
         this.orders.put(orderId, order);
+    }
+
+    public void addAttribute(String attributeId, Attribute attribute){
+        if (this.attributes.containsKey(attributeId)){
+            this.attributes.remove(attributeId);
+        }
+        this.attributes.put(attributeId, attribute);
     }
 
     public User getUser(String userId) {
@@ -140,4 +153,9 @@ public class Master {
     public Order getOrder(String orderId) {
         return this.orders.get(orderId);
     }
+
+    public Attribute getAttribute(String attributeId){
+        return this.attributes.get(attributeId);
+    }
+
 }

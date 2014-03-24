@@ -19,7 +19,7 @@ import java.util.List;
  * ScopeEndpoint.
  */
 @Api(value = "oauth2", basePath = "oauth2")
-@Path("scopes")
+@Path("/oauth2/scopes")
 @RestResource
 @Produces(MediaType.APPLICATION_JSON)
 public interface ScopeEndpoint {
