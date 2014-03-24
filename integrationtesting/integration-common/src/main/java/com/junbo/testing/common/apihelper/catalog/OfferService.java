@@ -23,10 +23,11 @@ public interface OfferService {
     List<String> getOffer(HashMap<String, String> httpPara) throws Exception;
     List<String> getOffer(HashMap<String, String> httpPara, int expectedResponseCode) throws Exception;
 
-    String postDefaultOffer() throws Exception;
+    String postDefaultOffer(boolean isPhysical) throws Exception;
+    Offer prepareOfferEntity(String fileName, boolean isPhysical) throws Exception;
     String postOffer(Offer offer) throws Exception;
     String postOffer(Offer offer, int expectedResponseCode) throws Exception;
 
-    String updateOffer(String offerId, Offer offer) throws Exception;
-    String updateOffer(String offerId, Offer offer, int expectedResponseCode) throws Exception;
+    String updateOffer(Offer offer) throws Exception;
+    String updateOffer(Offer offer, int expectedResponseCode) throws Exception;
 }
