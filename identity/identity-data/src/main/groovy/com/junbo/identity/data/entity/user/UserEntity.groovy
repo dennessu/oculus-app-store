@@ -39,8 +39,9 @@ class UserEntity extends ResourceMetaEntity {
     @Column(name = 'is_active')
     private Boolean active
 
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = 'birthday')
-    private String birthday
+    private Date birthday
 
     @Column(name = 'gender')
     private String gender
@@ -104,11 +105,11 @@ class UserEntity extends ResourceMetaEntity {
         this.active = active
     }
 
-    String getBirthday() {
+    Date getBirthday() {
         return birthday
     }
 
-    void setBirthday(String birthday) {
+    void setBirthday(Date birthday) {
         this.birthday = birthday
     }
 

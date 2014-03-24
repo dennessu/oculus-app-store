@@ -82,7 +82,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
     public void testUserRepository() {
         User user = new User();
         user.setActive(true);
-        user.setBirthday("1998-08-01");
+        user.setBirthday(new Date());
         user.setDisplayName(UUID.randomUUID().toString());
         user.setGender("male");
         user.setLocale("en_US");
@@ -105,7 +105,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         User newUser = userRepository.get(user.getId());
         Assert.assertEquals(user.getBirthday(), newUser.getBirthday());
 
-        String newValue = UUID.randomUUID().toString();
+        Date newValue = new Date();
         newUser.setBirthday(newValue);
         newUser = userRepository.update(newUser);
         Assert.assertEquals(newUser.getBirthday(), newValue);

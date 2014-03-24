@@ -9,6 +9,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.UserId;
 import com.junbo.common.util.Identifiable;
 
+import java.util.Date;
+
 /**
  * Created by kg on 3/10/14.
  */
@@ -36,7 +38,7 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
     // only active can only login.
     private Boolean active;
 
-    private String birthday;
+    private Date birthday;
 
     private String gender;
 
@@ -129,11 +131,11 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
         this.active = active;
     }
 
-    public String getBirthday() {
+    public Date getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(String birthday) {
+    public void setBirthday(Date birthday) {
         this.birthday = birthday;
     }
 
