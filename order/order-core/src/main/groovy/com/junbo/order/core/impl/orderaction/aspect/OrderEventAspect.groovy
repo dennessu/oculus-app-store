@@ -45,9 +45,11 @@ class OrderEventAspect {
         assert(orderEventAwareBefore != null)
         LOGGER.info('name=Save_Order_Event_Before. action: {}', orderEventAwareBefore.action())
         try {
-            def orderEvent = getOpenOrderEvent(jp)
-            if (orderEvent != null && orderEvent.order != null) {
-                repo.createOrderEvent(orderEvent)
+            if (getOrderActionType(jp) != null) { // only create event if action type is set
+                def orderEvent = getOpenOrderEvent(jp)
+                if (orderEvent != null && orderEvent.order != null) {
+                    repo.createOrderEvent(orderEvent)
+                }
             }
             return Promise.pure(null)
         } catch (e) {
@@ -67,12 +69,14 @@ class OrderEventAspect {
         LOGGER.info('name=Save_Order_Event_AfterReturning. action: {}', orderEventAwareAfter.action())
         rv?.syncThen { ActionResult ar ->
             try {
-                def orderActionResult = ActionUtils.getOrderActionResult(ar)
-                if (orderActionResult != null) {
-                    EventStatus eventStatus = orderActionResult.returnedEventStatus
-                    if (eventStatus != null) {
-                        def oe = getReturnedOrderEvent(jp, eventStatus)
-                        repo.createOrderEvent(oe)
+                if (getOrderActionType(jp) != null) { // only create event if action type is set
+                    def orderActionResult = ActionUtils.getOrderActionResult(ar)
+                    if (orderActionResult != null) {
+                        EventStatus eventStatus = orderActionResult.returnedEventStatus
+                        if (eventStatus != null) {
+                            def oe = getReturnedOrderEvent(jp, eventStatus)
+                            repo.createOrderEvent(oe)
+                        }
                     }
                 }
                 return ar

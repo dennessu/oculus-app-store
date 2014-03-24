@@ -41,11 +41,11 @@ class SendEmailAction implements Action {
             ofs.each { OrderOffer offer -> catalogOffers.add(offer.catalogOffer) }
             return orderServiceContextBuilder.getUser(context.orderServiceContext).then { User u ->
                 return facadeContainer.emailFacade.sendOrderConfirmationEMail(
-                        order, u, catalogOffers).syncRecover { Throwable ex ->
+                        order, u, catalogOffers).recover { Throwable ex ->
                     LOGGER.error('name=SendEmail_Action_Fail', ex)
                     return Promise.pure(null)
                 }.then { Email email ->
-                    LOGGER.info('name=SendEmail_Action_Success, id={}, userId={}', email.id, email.userId)
+                    LOGGER.info('name=SendEmail_Action_Success, id={}, userId={}', email?.id, email?.userId)
                     return Promise.pure(null)
                 }
             }
