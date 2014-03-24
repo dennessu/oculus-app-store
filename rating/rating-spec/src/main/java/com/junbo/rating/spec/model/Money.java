@@ -16,7 +16,7 @@ import java.math.RoundingMode;
  */
 public class Money {
     public static final Money NOT_FOUND = null;
-    public static final RoundingMode MODE = RoundingMode.DOWN;
+    public static final RoundingMode ROUNDING_MODE = RoundingMode.CEILING;
 
     private BigDecimal value;
     private String currency;
@@ -47,6 +47,10 @@ public class Money {
 
     public void setCurrency(String currency) {
         this.currency = currency;
+    }
+
+    public void rounding(int fractionDigits) {
+        this.value = this.value.setScale(fractionDigits, ROUNDING_MODE);
     }
 
     public Money add(Money other) {
