@@ -20,10 +20,16 @@ import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.StringUtils
 
 /**
- * AuthenticateClient
+ * The AuthenticateClient action.
+ * This action will authenticate the client with the client id and client secret.
+ * If either of them failed validation, exception will be thrown.
+ * @author Zhanxin Yang
  */
 @CompileStatic
 class AuthenticateClient implements Action {
+    /**
+     * The clientRepository to handle the client related logic.
+     */
     private ClientRepository clientRepository
 
     @Required
@@ -31,8 +37,14 @@ class AuthenticateClient implements Action {
         this.clientRepository = clientRepository
     }
 
+    /**
+     * Override the {@link com.junbo.langur.core.webflow.action.Action}.execute method.
+     * @param context The ActionContext contains the execution context.
+     * @return The ActionResult contains the transition or other kind of result contains in a map.
+     */
     @Override
     Promise<ActionResult> execute(ActionContext context) {
+        // Get the basic context from constructing an ActionContextWrapper.
         def contextWrapper = new ActionContextWrapper(context)
 
         def parameterMap = contextWrapper.parameterMap
@@ -41,6 +53,9 @@ class AuthenticateClient implements Action {
         String clientId, clientSecret
         String authorization = headerMap.getFirst(OAuthParameters.AUTHORIZATION)
 
+        // First try to extract the client credentials from the Authorization header.
+        // The client credentials are presented in Basic scheme.
+        // Format: clientId:clientSecret then Base64 encoded.
         if (StringUtils.hasText(authorization)) {
             def clientCredential = AuthorizationHeaderUtil.extractClientCredential(authorization)
 
@@ -48,6 +63,8 @@ class AuthenticateClient implements Action {
             clientSecret = clientCredential.clientSecret
         }
 
+        // The authorization header is not presented, try to get the client id and client secret from the
+        // query parameter.
         if (clientId == null) {
             clientId = parameterMap.getFirst(OAuthParameters.CLIENT_ID)
         }
@@ -70,10 +87,12 @@ class AuthenticateClient implements Action {
             throw AppExceptions.INSTANCE.missingClientSecret().exception()
         }
 
-        if (!appClient.clientSecret == clientSecret) {
+        // Validate the client secret in the parameter with the client secret in the configuration.
+        if (appClient.clientSecret != clientSecret) {
             throw AppExceptions.INSTANCE.invalidClientSecret(clientSecret).exception()
         }
 
+        // Validation passed, save the client in the actionContext.
         contextWrapper.client = appClient
 
         return Promise.pure(null)

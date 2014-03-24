@@ -56,7 +56,7 @@ class GetAccessTokenInfo implements Action {
                 clientId: accessToken.clientId,
                 sub: accessToken.userId.toString(),
                 scopes: StringUtils.collectionToDelimitedString(accessToken.scopes, ' '),
-                expireIn: (Long) (accessToken.expiredBy.time - System.currentTimeMillis()) / 1000
+                expiresIn: (Long) (accessToken.expiredBy.time - System.currentTimeMillis()) / 1000
         )
 
         contextWrapper.tokenInfo = tokenInfo

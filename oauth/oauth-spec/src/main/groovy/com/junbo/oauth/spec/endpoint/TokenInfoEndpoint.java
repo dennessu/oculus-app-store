@@ -11,13 +11,8 @@ import com.junbo.oauth.spec.model.TokenInfo;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.UriInfo;
 
 /**
  * Javadoc.
@@ -31,5 +26,5 @@ public interface TokenInfoEndpoint {
 
     @ApiOperation("Get the token info")
     @GET
-    Promise<TokenInfo> getTokenInfo(@Context UriInfo uriInfo);
+    Promise<TokenInfo> getTokenInfo(@PathParam("access_token") String tokenValue);
 }

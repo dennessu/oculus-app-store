@@ -5,15 +5,17 @@
  */
 package com.junbo.oauth.core.service
 
+import com.junbo.identity.spec.model.user.User
+import com.junbo.langur.core.promise.Promise
 import com.junbo.oauth.spec.model.UserInfo
 import groovy.transform.CompileStatic
-
-import javax.ws.rs.core.MultivaluedMap
 
 /**
  * UserService.
  */
 @CompileStatic
 interface UserService {
-    UserInfo getUserInfo(MultivaluedMap<String, String> headerMap)
+    Promise<User> authenticateUser(String username, String password)
+
+    UserInfo getUserInfo(String authorization)
 }

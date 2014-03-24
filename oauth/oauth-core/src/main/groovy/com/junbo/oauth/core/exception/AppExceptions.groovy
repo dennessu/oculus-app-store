@@ -228,4 +228,7 @@ interface AppExceptions {
             description = 'The revision is not provided',
             field = 'revision')
     AppError missingRevision()
+
+    @ErrorDef(httpStatusCode = 500, code = '20053', description = 'Error happened while calling the identity')
+    AppError errorCallingIdentity()
 }

@@ -25,14 +25,23 @@ import javax.ws.rs.core.Response
 import javax.ws.rs.core.UriInfo
 
 /**
- * Javadoc.
+ * Default {@link com.junbo.oauth.spec.endpoint.AuthorizeEndpoint} implementation.
+ * @author Zhanxin Yang
+ * @see com.junbo.oauth.spec.endpoint.AuthorizeEndpoint
  */
 @Component
 @CompileStatic
 @Scope('prototype')
 class AuthorizeEndpointImpl implements AuthorizeEndpoint {
 
+    /**
+     * The flowExecutor to execute the authorize flow
+     */
     private FlowExecutor flowExecutor
+
+    /**
+     * The authorize flow name, by default "authorizeFlow"
+     */
     private String authorizeFlow
 
     @Required
@@ -45,40 +54,62 @@ class AuthorizeEndpointImpl implements AuthorizeEndpoint {
         this.authorizeFlow = authorizeFlow
     }
 
-
+    /**
+     * The GET method of the authorize endpoint.
+     * @param uriInfo The UriInfo contains the path, query parameters
+     * @param httpHeaders The HttpHeaders contains the header information
+     * @param request The raw javax.ws.rs request
+     * @return The raw javax.ws.rs response (mostly http response with response code of 302 Found)
+     */
     @Override
     Promise<Response> authorize(UriInfo uriInfo, HttpHeaders httpHeaders, ContainerRequestContext request) {
+        // Prepare the requestScope.
         Map<String, Object> requestScope = new HashMap<>()
         requestScope[ActionContextWrapper.REQUEST] = request
         requestScope[ActionContextWrapper.PARAMETER_MAP] = uriInfo.queryParameters
         requestScope[ActionContextWrapper.HEADER_MAP] = httpHeaders.requestHeaders
         requestScope[ActionContextWrapper.COOKIE_MAP] = httpHeaders.cookies
 
+        // Parse the conversation id and event.
         String conversationId = uriInfo.queryParameters.getFirst(OAuthParameters.CONVERSATION_ID)
         String event = uriInfo.queryParameters.getFirst(OAuthParameters.EVENT)
 
+        // if the conversation id is empty, start a new conversation in the flowExecutor.
         if (StringUtils.isEmpty(conversationId)) {
             return flowExecutor.start(authorizeFlow, requestScope).then(ResponseUtil.WRITE_RESPONSE_CLOSURE)
         }
 
+        // else try to resume the conversation with the given conversation id and event in the flowExecutor.
         return flowExecutor.resume(conversationId, event, requestScope).then(ResponseUtil.WRITE_RESPONSE_CLOSURE)
     }
 
+    /**
+     * The POST method of the authorize endpoint.
+     * Used when additional parameters such as username or password are needed in the middle of the conversation.
+     * @param httpHeaders The HttpHeaders contains the header information.
+     * @param formParams The form parameters encoded in format of application/x-www-form-urlencoded.
+     * @param request The raw javax.ws.rs request.
+     * @return The raw javax.ws.rs response.
+     */
     @Override
     Promise<Response> postAuthorize(HttpHeaders httpHeaders, MultivaluedMap<String, String> formParams,
                                     ContainerRequestContext request) {
+        // Prepare the requestScope.
         Map<String, Object> requestScope = new HashMap<>()
         requestScope[ActionContextWrapper.REQUEST] = request
         requestScope[ActionContextWrapper.PARAMETER_MAP] = formParams
         requestScope[ActionContextWrapper.HEADER_MAP] = httpHeaders.requestHeaders
 
+        // Parse the conversation id and event.
         String conversationId = formParams.getFirst(OAuthParameters.CONVERSATION_ID)
         String event = formParams.getFirst(OAuthParameters.EVENT)
 
+        // The post authorize flow will always be in one on-going conversation, conversation id should not be empty.
         if (StringUtils.isEmpty(conversationId)) {
             throw AppExceptions.INSTANCE.missingConversationId().exception()
         }
 
+        // try to resume the conversation with the given conversation id and event in the flowExecutor
         return flowExecutor.resume(conversationId, event, requestScope).then(ResponseUtil.WRITE_RESPONSE_CLOSURE)
     }
 }
