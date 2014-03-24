@@ -14,6 +14,7 @@ import com.junbo.email.spec.model.*;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -122,8 +123,22 @@ public class EmailMapper {
         return template;
     }
 
+    public List<EmailTemplate> toEmailTemplates(List<EmailTemplateEntity> entities) {
+        if(entities == null) {
+            return null;
+        }
+        List<EmailTemplate> templates = new ArrayList<>();
+        for(EmailTemplateEntity entity : entities) {
+            templates.add(toEmailTemplate(entity));
+        }
+        return templates;
+    }
+
     public EmailTemplateEntity toEmailTemplateEntity(EmailTemplate template) {
         EmailTemplateEntity entity = new EmailTemplateEntity();
+        if(template.getId()!=null) {
+            entity.setId(template.getId().getValue());
+        }
         entity.setName(template.getName());
         entity.setSubject(template.getSubject());
         entity.setProviderIndex(template.getProviderIndex());

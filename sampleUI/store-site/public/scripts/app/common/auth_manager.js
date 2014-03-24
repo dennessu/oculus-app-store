@@ -9,23 +9,26 @@ var AuthManager = Ember.Object.extend({
             this.authenticate(accessToken, authUserId);
         }
     },
-
     isAuthenticated: function () {
         return !Ember.isEmpty(this.get('AuthKey.access_token')) && !Ember.isEmpty(this.get('AuthKey.user_id'));
     },
-
     getUserId: function () {
-        return this.get('AuthKey.user_id');
+        if(this.isAuthenticated()){
+            return this.get('AuthKey.user_id');
+        }else{
+            return Utils.Cookies.Get(AppConfig.CookiesName.AnonymousUserId);
+        }
     },
-
+    getCartId: function(){
+        if(this.isAuthenticated()){
+            return Utils.Cookies.Get(AppConfig.CookiesName.CartId);
+        }else{
+            return Utils.Cookies.Get(AppConfig.CookiesName.AnonymousCartId);
+        }
+    },
     getUsername: function(){
         return Utils.Cookies.Get(AppConfig.CookiesName.Username);
     },
-
-    getCartId: function(){
-        return Utils.Cookies.Get(AppConfig.CookiesName.CartId);
-    },
-
     authenticate: function (accessToken, userId) {
         /*
          $.ajaxSetup({
@@ -60,6 +63,9 @@ var AuthManager = Ember.Object.extend({
         if (Ember.isEmpty(this.get('AuthKey'))) {
             Utils.Cookies.Remove(AppConfig.CookiesName.AccessToken);
             Utils.Cookies.Remove(AppConfig.CookiesName.UserId);
+            Utils.Cookies.Remove(AppConfig.CookiesName.CartId);
+            Utils.Cookies.Remove(AppConfig.CookiesName.AnonymousUserId);
+            Utils.Cookies.Remove(AppConfig.CookiesName.AnonymousCartId);
             Utils.Cookies.Remove(AppConfig.CookiesName.Username);
         } else {
             Utils.Cookies.Set(AppConfig.CookiesName.AccessToken, this.get('AuthKey.access_token'));

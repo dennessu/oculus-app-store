@@ -9,7 +9,6 @@ package com.junbo.catalog.spec.model.item;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.catalog.spec.model.common.VersionedModel;
-import com.junbo.common.jackson.annotation.AttributeId;
 import com.junbo.common.jackson.annotation.ItemId;
 import com.junbo.common.jackson.annotation.UserId;
 
@@ -23,12 +22,15 @@ public class Item extends VersionedModel {
     @ItemId
     @JsonProperty("self")
     private Long id;
-    @AttributeId
-    private Long type;
+    private String type;
     @UserId
+    @JsonProperty("developer")
     private Long ownerId;
     private List<Sku> skus;
     private Map<String, String> properties;
+
+    @JsonIgnore
+    private Long entitlementDefId;
 
     public Long getId() {
         return id;
@@ -38,11 +40,11 @@ public class Item extends VersionedModel {
         this.id = id;
     }
 
-    public Long getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(Long type) {
+    public void setType(String type) {
         this.type = type;
     }
 
@@ -68,6 +70,14 @@ public class Item extends VersionedModel {
 
     public void setProperties(Map<String, String> properties) {
         this.properties = properties;
+    }
+
+    public Long getEntitlementDefId() {
+        return entitlementDefId;
+    }
+
+    public void setEntitlementDefId(Long entitlementDefId) {
+        this.entitlementDefId = entitlementDefId;
     }
 
     @Override

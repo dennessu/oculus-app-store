@@ -1,7 +1,5 @@
 package com.junbo.order.test
 
-import com.junbo.billing.spec.model.Balance
-import com.junbo.common.id.BalanceId
 import com.junbo.common.id.OfferId
 import com.junbo.common.id.PaymentInstrumentId
 import com.junbo.order.spec.model.Order
@@ -53,8 +51,11 @@ class OrderPayInTest extends AbstractTestNGSpringContextTests {
         //assert resultOrder.orderItems.size() == 3
         assert resultOrder.totalAmount != null
 
-     //   resultOrder = serviceFacade.settleQuotes(resultOrder.id)
-   //     assert !resultOrder.tentative
+        resultOrder = serviceFacade.settleQuotes(resultOrder.id)
+        assert !resultOrder.tentative
 
+        // todo verify the entitlement
+        // def entitlments = serviceFacade.getEntitlements(user.id, ['item001_ANGRY.BIRD_ONLINE_ACCESS'])
+        // assert entitlments.size() == 1
     }
 }

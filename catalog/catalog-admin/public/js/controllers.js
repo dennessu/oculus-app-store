@@ -48,12 +48,32 @@ app.controller('OfferCreationCtrl', ['$scope', 'OffersFactory', 'AttributesFacto
                 $scope.offer.items.push({itemId: $scope.selectedItems[key].self});
             });
         };
+        $scope.totalItems = function() {
+            return Object.keys( $scope.selectedItems).length;
+        };
+        $scope.updateDeveloper = function() {
+            $scope.offer.developer.href="http://localhost:8083/rest/api/users/" + $scope.offer.developer.id;
+        };
+        $scope.updateCategories = function() {
+            $scope.offer.categories = [$scope.selectedCategory];
+        };
+        $scope.addPrice = function(country) {
+            if (angular.isUndefined($scope.offer)) {
+                $scope.offer = {};
+            }
+            if (angular.isUndefined($scope.offer.prices)) {
+                $scope.offer.prices = {};
+            }
+
+            $scope.offer.prices[country] = {};
+        };
+
         $scope.selectedItems = {};
         $scope.isCollapsed = true;
         // TODO: change to ItemsFactory
         $scope.items = AttributesFactory.query();
 
-        $scope.typeAttributes = AttributesFactory.query({type: "Type"});
+        $scope.categoryAttributes = AttributesFactory.query({type: "Category"});
         $scope.offers = OffersFactory.query($routeParams);
     }]);
 

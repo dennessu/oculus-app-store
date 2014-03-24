@@ -6,6 +6,7 @@
 package com.junbo.order.spec.resource;
 
 import com.junbo.common.id.OrderId;
+import com.junbo.common.model.Results;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.order.spec.model.OrderEvent;
@@ -16,7 +17,6 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
-import java.util.List;
 
 /**
  * Created by chriszhu on 3/12/14.
@@ -30,7 +30,7 @@ public interface OrderEventResource {
 
     @ApiOperation("Get order events")
     @GET
-    Promise<List<OrderEvent>> getOrderEvents(@QueryParam("orderId") OrderId orderId,
+    Promise<Results<OrderEvent>> getOrderEvents(@QueryParam("orderId") OrderId orderId,
                                              @Context HttpHeaders headers);
 
     @POST

@@ -6,6 +6,11 @@ import com.junbo.catalog.spec.model.offer.OffersGetOptions
 import com.junbo.catalog.spec.resource.ItemResource
 import com.junbo.catalog.spec.resource.OfferResource
 import com.junbo.common.id.OrderId
+import com.junbo.common.id.UserId
+import com.junbo.entitlement.spec.model.Entitlement
+import com.junbo.entitlement.spec.model.EntitlementSearchParam
+import com.junbo.entitlement.spec.model.PageMetadata
+import com.junbo.entitlement.spec.resource.EntitlementResource
 import com.junbo.identity.spec.model.user.User
 import com.junbo.identity.spec.resource.UserResource
 import com.junbo.order.spec.model.Order
@@ -18,6 +23,7 @@ import com.junbo.payment.spec.resource.PaymentInstrumentResource
 import org.apache.commons.lang.RandomStringUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import org.springframework.util.CollectionUtils
 
 /**
  * Created by fzhang on 14-3-17.
@@ -44,6 +50,9 @@ class ServiceFacade {
 
     @Autowired
     PaymentInstrumentResource paymentInstrumentResource
+
+    @Autowired
+    EntitlementResource entitlementResource
 
     List<Offer> offers
 
@@ -87,18 +96,18 @@ class ServiceFacade {
 
     Order postQuotes(Order order) {
         order.tentative = true
-        return orderResource.createOrder(order).wrapped().get().get(0)
+        return orderResource.createOrder(order).wrapped().get()
     }
 
     Order settleQuotes(OrderId orderId) {
         def order = new Order()
         order.tentative = false
-        return orderResource.updateOrderByOrderId(orderId, order).wrapped().get().get(0)
+        return orderResource.updateOrderByOrderId(orderId, order).wrapped().get()
     }
 
     Order putQuotes(Order order) {
         order.tentative = true
-        return orderResource.updateOrderByOrderId(order.id, order).wrapped().get().get(0)
+        return orderResource.updateOrderByOrderId(order.id, order).wrapped().get()
     }
 
     Offer getOfferByName(String offerName) {
@@ -119,5 +128,28 @@ class ServiceFacade {
         return offers.find {
             it.name == offerName
         }
+    }
+
+    List<Entitlement> getEntitlements(UserId userId, List<String> tag) {
+        List<Entitlement> result = []
+        def searchParam = new EntitlementSearchParam()
+        searchParam.userId = userId
+        if (!CollectionUtils.isEmpty(tag)) {
+            searchParam.tags = new HashSet<>(tag)
+        }
+
+        def start = 0
+        while (true) {
+            def page = new PageMetadata()
+            page.start = start
+            page.count = DEFAULT_PAGE_SIZE
+            def list = entitlementResource.getEntitlements(userId, searchParam, page).wrapped().get()
+            result.addAll(list.criteria)
+            start += list.criteria.size()
+            if (list.criteria.size() < DEFAULT_PAGE_SIZE) {
+                break
+            }
+        }
+        return result
     }
 }

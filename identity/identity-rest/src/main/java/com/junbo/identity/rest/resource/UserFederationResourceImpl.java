@@ -7,8 +7,8 @@ package com.junbo.identity.rest.resource;
 
 import com.junbo.common.id.UserFederationId;
 import com.junbo.common.id.UserId;
+import com.junbo.common.model.Results;
 import com.junbo.identity.rest.service.user.UserFederationService;
-import com.junbo.identity.spec.model.common.ResultList;
 import com.junbo.identity.spec.model.common.ResultListUtil;
 import com.junbo.identity.spec.model.user.UserFederation;
 import com.junbo.identity.spec.resource.UserFederationResource;
@@ -35,7 +35,7 @@ public class UserFederationResourceImpl implements UserFederationResource {
     }
 
     @Override
-    public Promise<ResultList<UserFederation>> getUserFederations(UserId userId, String type,
+    public Promise<Results<UserFederation>> getUserFederations(UserId userId, String type,
                                                                   Integer cursor, Integer count) {
         List<UserFederation> userFederations = userFederationService.getByUserId(userId.getValue(), type);
         return Promise.pure(ResultListUtil.init(userFederations, count));

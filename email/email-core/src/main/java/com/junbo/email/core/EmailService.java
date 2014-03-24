@@ -13,7 +13,7 @@ import com.junbo.langur.core.promise.Promise;
  * Interface of EmailService.
  */
 public interface EmailService {
-    Promise<Email> send(Email request);
+    Promise<Email> postEmail(Email request);
 
     Promise<Email> getEmail(Long id);
 

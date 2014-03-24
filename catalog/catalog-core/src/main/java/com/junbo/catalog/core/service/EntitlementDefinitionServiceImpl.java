@@ -6,17 +6,15 @@
 
 package com.junbo.catalog.core.service;
 
-import com.junbo.catalog.common.exception.CatalogException;
-import com.junbo.catalog.common.exception.NotFoundException;
 import com.junbo.catalog.core.EntitlementDefinitionService;
 import com.junbo.catalog.db.repo.EntitlementDefinitionRepository;
+import com.junbo.catalog.spec.error.AppErrors;
 import com.junbo.catalog.spec.model.common.PageableGetOptions;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -30,29 +28,26 @@ public class EntitlementDefinitionServiceImpl implements EntitlementDefinitionSe
     private EntitlementDefinitionRepository entitlementDefinitionRepository;
 
     @Override
-    @Transactional
     public EntitlementDefinition getEntitlementDefinition(Long entitlementDefinitionId) {
         EntitlementDefinition entitlementDefinition = entitlementDefinitionRepository.get(entitlementDefinitionId);
         if (entitlementDefinition == null) {
-            throw new NotFoundException("entitlementDefinition", entitlementDefinitionId);
+            throw AppErrors.INSTANCE.notFound("entitlementDefinition", entitlementDefinitionId).exception();
         }
         checkDeveloper(entitlementDefinition.getDeveloperId());
         return entitlementDefinition;
     }
 
     @Override
-    @Transactional
     public List<EntitlementDefinition> getEntitlementDefinitions(Long developerId, String group, String tag,
                                                                  String type, PageableGetOptions pageMetadata) {
         if (developerId == null) {
-            throw new CatalogException("missing developerId");  //TODO: change to specified exception later
+            throw AppErrors.INSTANCE.missingField("developerId").exception();
         }
         checkDeveloper(developerId);
         return entitlementDefinitionRepository.getByParams(developerId, group, tag, type, pageMetadata);
     }
 
     @Override
-    @Transactional
     public Long createEntitlementDefinition(EntitlementDefinition entitlementDefinition) {
         if (entitlementDefinition.getType() == null) {
             entitlementDefinition.setType(EntitlementType.DEFAULT.toString());
@@ -62,7 +57,6 @@ public class EntitlementDefinitionServiceImpl implements EntitlementDefinitionSe
     }
 
     @Override
-    @Transactional
     public EntitlementDefinition getByTrackingUuid(UUID trackingUuid) {
         return entitlementDefinitionRepository.getByTrackingUuid(trackingUuid);
     }

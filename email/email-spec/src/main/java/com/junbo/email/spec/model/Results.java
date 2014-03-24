@@ -3,21 +3,21 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-
-package com.junbo.payment.spec.model;
+package com.junbo.email.spec.model;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import java.util.List;
 
 /**
- * result list model.
- * @param <T> result item
+ * Results model.
+ * @param <T> result type.
  */
-@JsonPropertyOrder(value = {"results", "next"})
-public class ResultList<T> {
+@JsonPropertyOrder(value = {"criteria","next"})
+public class Results<T> {
     private String next;
-    private List<T> results;
+
+    private List<T> criteria;
 
     public String getNext() {
         return next;
@@ -27,11 +27,11 @@ public class ResultList<T> {
         this.next = next;
     }
 
-    public List<T> getResults() {
-        return results;
+    public List<T> getCriteria() {
+        return criteria;
     }
 
-    public void setResults(List<T> results) {
-        this.results = results;
+    public void setCriteria(List<T> criteria) {
+        this.criteria = criteria;
     }
 }

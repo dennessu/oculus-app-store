@@ -12,7 +12,7 @@
     <!-- proxy -->
     <bean id="ascynHttpClient" class="com.ning.http.client.AsyncHttpClient" />
 
-    <bean id="identityFacade" class="com.junbo.email.clientproxy.impl.IdentityFacadeImpl">
+    <bean id="emailIdentityFacade" class="com.junbo.email.clientproxy.impl.IdentityFacadeImpl">
         <property name="url" value="${email.client.identity.url}"/>
     </bean>
     <bean id="emailProvider" class="com.junbo.email.clientproxy.impl.MandrillProviderImpl"/>

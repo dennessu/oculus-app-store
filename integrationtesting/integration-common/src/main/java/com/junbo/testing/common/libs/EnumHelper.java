@@ -7,30 +7,54 @@ package com.junbo.testing.common.libs;
 
 /**
  * @author Jason
- * Time: 3/11/204
- * For holding enum values
+ *         Time: 3/11/204
+ *         For holding enum values
  */
 public class EnumHelper {
 
     /**
-     Enum for password Strength.
-     @author Jason
+     * Enum for password Strength.
+     *
+     * @author Jason
      */
     public enum PasswordStrength {
-        WEAK,
-        FAIR,
-        STRONG
+        WEAK("WEAK"),
+        FAIR("FAIR"),
+        STRONG("STRONG");
+
+        private String strength;
+
+        private PasswordStrength(String strength) {
+            this.strength = strength;
+        }
+
+        public String getStrength() {
+            return strength;
+        }
+
     }
 
+
     /**
-     Enum for user status.
-     @author Jason
+     * Enum for user status.
+     *
+     * @author Jason
      */
     public enum UserStatus {
-        ACTIVE,
-        SUSPEND,
-        BANNED,
-        DELETED
+        ACTIVE("ACTIVE"),
+        SUSPEND("SUSPEND"),
+        BANNED("BANNED"),
+        DELETED("DELETED");
+
+        private String status;
+
+        private UserStatus(String status) {
+            this.status = status;
+        }
+
+        public String getStatus() {
+            return status;
+        }
     }
 
 }

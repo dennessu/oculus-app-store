@@ -44,6 +44,10 @@ public interface AppErrors {
             description ="Field {0} is unnecessary")
     AppError unnecessaryField(String field);
 
+    @ErrorDef(httpStatusCode = 403, code = ErrorCode.INVALID_PARAMETER,
+            description ="Parameter {0} is invalid")
+    AppError invalidParameter(String param);
+
     @ErrorDef(httpStatusCode = 404, code = ErrorCode.PAYLOAD_IS_NULL,
             description ="The payload is null")
     AppError invalidPayload();

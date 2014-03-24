@@ -9,16 +9,13 @@ package com.junbo.catalog.db.entity;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementType;
 import org.hibernate.annotations.Type;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.util.UUID;
 
 /**
  * EntitlementDefinition Entity.
  */
-@javax.persistence.Entity
+@Entity
 @Table(name = "entitlement_definition")
 public class EntitlementDefinitionEntity extends BaseEntity {
     private Long entitlementDefinitionId;
