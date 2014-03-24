@@ -137,7 +137,7 @@ class ServiceFacade {
     }
 
     List<Balance> getBalance(OrderId orderId) {
-        return balanceResource.getBalances(orderId).wrapped().get()
+        return balanceResource.getBalances(orderId).wrapped().get().items
     }
 
     List<Entitlement> getEntitlements(UserId userId, List<String> tag) {
