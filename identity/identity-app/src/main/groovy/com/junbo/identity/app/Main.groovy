@@ -5,7 +5,6 @@
  */
 
 package com.junbo.identity.app
-
 import com.junbo.common.id.provider.IdTypeFromStringProvider
 import com.junbo.common.json.JacksonFeature
 import com.junbo.common.json.ObjectMapperProvider

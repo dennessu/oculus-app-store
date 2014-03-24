@@ -39,6 +39,11 @@ class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User patch(UserId userId, User user) {
+        return null;
+    }
+
+    @Override
     public User get(UserId id) {
         return userRepository.get(id);
     }

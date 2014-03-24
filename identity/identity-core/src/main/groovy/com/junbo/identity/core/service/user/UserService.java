@@ -46,6 +46,8 @@ public interface UserService {
      */
     User update(UserId userId, User user);
 
+    User patch(UserId userId, User user);
+
     /*
      * get user with name and status
      * @param userName

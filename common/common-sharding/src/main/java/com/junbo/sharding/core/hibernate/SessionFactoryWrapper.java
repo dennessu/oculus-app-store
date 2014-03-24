@@ -9,6 +9,7 @@ import com.junbo.sharding.core.ds.DataSourceConfig;
 import com.junbo.sharding.core.ds.ShardDataSourceKey;
 import com.junbo.sharding.core.ds.ShardDataSourceMapper;
 import com.junbo.sharding.core.ds.ShardDataSourceRegistry;
+import org.hibernate.Interceptor;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -29,6 +30,7 @@ public class SessionFactoryWrapper implements ApplicationContextAware {
     private String sessionFactoryBeanName;
     private String dataBaseName;
     private String[] packagesToScan;
+    private Interceptor entityInterceptor;
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
@@ -53,6 +55,10 @@ public class SessionFactoryWrapper implements ApplicationContextAware {
 
     public void setPackagesToScan(String... packagesToScan) {
         this.packagesToScan = packagesToScan;
+    }
+
+    public void setEntityInterceptor(Interceptor entityInterceptor) {
+        this.entityInterceptor = entityInterceptor;
     }
 
     private Map<Integer, SessionFactory> cache = new HashMap<Integer, SessionFactory>();
@@ -89,6 +95,7 @@ public class SessionFactoryWrapper implements ApplicationContextAware {
                 factoryBean.setDataSource(ds);
                 factoryBean.setPackagesToScan(packagesToScan);
                 factoryBean.afterPropertiesSet();
+                factoryBean.setEntityInterceptor(entityInterceptor);
             }
             catch (Exception e) {
                 throw new RuntimeException("create sharded sessionFactoryBean(LocalSessionFactoryBean) failed!", e);

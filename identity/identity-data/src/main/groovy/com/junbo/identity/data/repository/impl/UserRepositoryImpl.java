@@ -14,9 +14,9 @@ import com.junbo.identity.data.entity.user.UserEntity;
 import com.junbo.identity.data.entity.user.UserNameEntity;
 import com.junbo.identity.data.mapper.ModelMapper;
 import com.junbo.identity.data.repository.UserRepository;
-import com.junbo.identity.spec.options.list.UserListOption;
 import com.junbo.identity.spec.model.users.User;
 import com.junbo.identity.spec.model.users.UserName;
+import com.junbo.identity.spec.options.list.UserListOption;
 import com.junbo.oom.core.MappingContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -55,6 +55,7 @@ public class UserRepositoryImpl implements UserRepository {
         UserNameEntity userNameEntity = modelMapper.toUserName(user.getName(), new MappingContext());
         userNameEntity.setUserId(userEntity.getId());
         userNameDAO.save(userNameEntity);
+
 
         // build reverse lookup
         UserNameReverseIndexEntity reverseLookupEntity = new UserNameReverseIndexEntity();

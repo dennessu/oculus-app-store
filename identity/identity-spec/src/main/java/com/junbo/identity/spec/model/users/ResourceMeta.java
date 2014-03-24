@@ -17,10 +17,8 @@ public abstract class ResourceMeta {
     @JsonIgnore
     private Integer resourceAge;
 
-    @JsonIgnore
     private Date createdTime;
 
-    @JsonIgnore
     private Date updatedTime;
 
     @JsonIgnore

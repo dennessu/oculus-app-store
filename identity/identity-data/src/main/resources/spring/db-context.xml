@@ -23,6 +23,9 @@
         <property name="dataSource" ref="configDataSource"/>
         <property name="packagesToScan" value="com.junbo.identity.data.entity.domaindata"/>
         <property name="jtaTransactionManager" ref="transactionManager"/>
+        <property name="entityInterceptor">
+            <bean class="com.junbo.identity.data.dao.interceptor.AuditInterceptor" />
+        </property>
         <property name="hibernateProperties">
             <props>
                 <prop key="hibernate.dialect">${config.hibernate.dialect}</prop>
@@ -38,10 +41,29 @@
         <property name="sessionFactory" ref="configSessionFactory"/>
     </bean>
 
+    <bean id="sessionFactoryTemplateWithInterceptor" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="jtaTransactionManager" ref="transactionManager"/>
+        <property name="entityInterceptor">
+            <bean class="com.junbo.identity.data.dao.interceptor.AuditInterceptor" />
+        </property>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">${sharding.hibernate.dialect}</prop>
+                <prop key="hibernate.max_fetch_depth">${sharding.hibernate.max_fetch_depth}</prop>
+                <prop key="hibernate.jdbc.fetch_size">${sharding.hibernate.fetch_size}</prop>
+                <prop key="hibernate.jdbc.batch_size">${sharding.hibernate.batch_size}</prop>
+                <prop key="hibernate.show_sql">${sharding.hibernate.show_sql}</prop>
+            </props>
+        </property>
+    </bean>
+
     <bean id="sessionFactoryWrapper" class="com.junbo.sharding.core.hibernate.SessionFactoryWrapper">
         <property name="mapper" ref="shardDataSourceMapper"/>
         <property name="dataSourceRegistry" ref="shardDataSourceRegistry"/>
-        <property name="sessionFactoryBeanName" value="sessionFactoryTemplate"/>
+        <property name="sessionFactoryBeanName" value="sessionFactoryTemplateWithInterceptor"/>
+        <property name="entityInterceptor">
+            <bean class="com.junbo.identity.data.dao.interceptor.AuditInterceptor" />
+        </property>
         <property name="dataBaseName" value="identity"/>
         <property name="packagesToScan" value="com.junbo.identity.data.entity.*"/>
     </bean>
@@ -49,7 +71,10 @@
     <bean id="indexSessionFactoryWrapper" class="com.junbo.sharding.core.hibernate.SessionFactoryWrapper">
         <property name="mapper" ref="indexDataSourceMapper"/>
         <property name="dataSourceRegistry" ref="indexDataSourceRegistry"/>
-        <property name="sessionFactoryBeanName" value="sessionFactoryTemplate"/>
+        <property name="sessionFactoryBeanName" value="sessionFactoryTemplateWithInterceptor"/>
+        <property name="entityInterceptor">
+            <bean class="com.junbo.identity.data.dao.interceptor.AuditInterceptor" />
+        </property>
         <property name="dataBaseName" value="index"/>
         <property name="packagesToScan" value="com.junbo.identity.data.entity.reverselookup"/>
     </bean>

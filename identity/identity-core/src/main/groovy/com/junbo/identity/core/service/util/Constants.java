@@ -4,7 +4,7 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.identity.data.util;
+package com.junbo.identity.core.service.util;
 
 /**
  * Created by liangfu on 2/28/14.
