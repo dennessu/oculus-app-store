@@ -55,11 +55,11 @@ public class TestDataProvider {
     }
 
     public String postDefaultItem() throws Exception {
-        return itemClient.postDefaultItem();
+        return itemClient.postDefaultItem(false);
     }
 
     public String postDefaultOffer() throws Exception {
-        return offerClient.postDefaultOffer();
+        return offerClient.postDefaultOffer(false);
     }
 
     public void postOffersToPrimaryCart(String uid, ArrayList<String> offers) throws Exception {

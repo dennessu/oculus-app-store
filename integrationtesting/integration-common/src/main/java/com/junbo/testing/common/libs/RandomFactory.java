@@ -14,25 +14,13 @@ import java.util.Random;
  *         Time 3/11/14
  */
 public final class RandomFactory {
-    private static final String alphabetAndNumericCharacters =
+    private static final String ALPHABET_AND_NUMERIC_CHARACTERS =
             "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-    private static final Random random = new Random();
-    private static final String TEST_NAMESPACE_NAME = "user";
-    private static final Random RANDOMINT = new Random();
+    private static final Random RANDOM = new Random();
 
     private RandomFactory() {
     }
-
-    /*
-    public static String getRandomEmailAddress() {
-        int rand1 = RANDOMINT.nextInt(100000);
-        int rand2 = RANDOMINT.nextInt(100000);
-        String email = rand1 + TEST_NAMESPACE_NAME + GregorianCalendar.getInstance().getTimeInMillis()
-                + rand2 + "@ecommerce.com";
-        return email;
-    }
-    */
 
     public static String getRandomEmailAddress() {
         String email = getRandomStringOfAlphabetOrNumeric(20) + String.format("@wan-san.com");
@@ -42,8 +30,8 @@ public final class RandomFactory {
     public static String getRandomStringOfAlphabetOrNumeric(int stringLength) {
         StringBuilder randomString = new StringBuilder();
         for (int i = 0; i < stringLength; i++) {
-            randomString.append(alphabetAndNumericCharacters
-                    .charAt(random.nextInt(alphabetAndNumericCharacters.length())));
+            randomString.append(ALPHABET_AND_NUMERIC_CHARACTERS
+                    .charAt(RANDOM.nextInt(ALPHABET_AND_NUMERIC_CHARACTERS.length())));
 
         }
         return randomString.toString();
@@ -73,7 +61,7 @@ public final class RandomFactory {
     public static String getRandomStringOfCharacters(int stringLength, String allowedChars) {
         StringBuilder randomString = new StringBuilder();
         for (int i = 0; i < stringLength; i++) {
-            randomString.append(allowedChars.charAt(random.nextInt(allowedChars.length())));
+            randomString.append(allowedChars.charAt(RANDOM.nextInt(allowedChars.length())));
         }
         return randomString.toString();
     }
@@ -112,8 +100,8 @@ public final class RandomFactory {
     }
 
     public static String getRandomIp() {
-        return random.nextInt(256) + "." + random.nextInt(256) + "." +
-                random.nextInt(256) + "." + random.nextInt(256);
+        return RANDOM.nextInt(256) + "." + RANDOM.nextInt(256) + "." +
+                RANDOM.nextInt(256) + "." + RANDOM.nextInt(256);
     }
 
 }
