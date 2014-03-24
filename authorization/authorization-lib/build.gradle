@@ -1,0 +1,16 @@
+apply plugin: 'groovy'
+
+dependencies {
+    compile(libraries.langur)
+    compile(libraries.common_lib)
+
+    compile(libraries.rs_api)
+    compile(libraries.guava)
+
+    compile(libraries.spring_beans)
+    compile(libraries.spring_context)
+
+    compile(libraries.jackson_annotations)
+    compile(libraries.jackson_databind)
+
+}
