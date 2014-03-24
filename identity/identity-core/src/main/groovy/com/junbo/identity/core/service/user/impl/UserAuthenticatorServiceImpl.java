@@ -25,7 +25,7 @@ import java.util.List;
 @Transactional
 public class UserAuthenticatorServiceImpl implements UserAuthenticatorService {
     @Autowired
-    private UserAuthenticatorRepository userFederationRepository;
+    private UserAuthenticatorRepository userAuthenticatorRepository;
 
     @Autowired
     private UserAuthenticatorValidator validator;
@@ -33,30 +33,38 @@ public class UserAuthenticatorServiceImpl implements UserAuthenticatorService {
     @Override
     public UserAuthenticator save(UserId userId, UserAuthenticator userAuthenticator) {
         validator.validateCreate(userId, userAuthenticator);
-        return userFederationRepository.save(userAuthenticator);
+        userAuthenticator.setUserId(userId);
+        return userAuthenticatorRepository.save(userAuthenticator);
     }
 
     @Override
     public UserAuthenticator update(UserId userId, UserAuthenticatorId userAuthenticatorId,
                                     UserAuthenticator userAuthenticator) {
         validator.validateUpdate(userId, userAuthenticatorId, userAuthenticator);
-        return userFederationRepository.update(userAuthenticator);
+        userAuthenticator.setUserId(userId);
+        return userAuthenticatorRepository.update(userAuthenticator);
+    }
+
+    @Override
+    public UserAuthenticator patch(UserId userId, UserAuthenticatorId userAuthenticatorId, UserAuthenticator userAuthenticator) {
+        // todo:    Need to validate patch
+        return null;
     }
 
     @Override
     public UserAuthenticator get(UserId userId, UserAuthenticatorId userAuthenticatorId) {
         validator.validateResourceAccessible(userId, userAuthenticatorId);
-        return userFederationRepository.get(userAuthenticatorId);
+        return userAuthenticatorRepository.get(userAuthenticatorId);
     }
 
     @Override
     public List<UserAuthenticator> search(UserAuthenticatorListOption getOption) {
-        return userFederationRepository.search(getOption);
+        return userAuthenticatorRepository.search(getOption);
     }
 
     @Override
     public void delete(UserId userId, UserAuthenticatorId userAuthenticatorId) {
         validator.validateDelete(userId, userAuthenticatorId);
-        userFederationRepository.delete(userAuthenticatorId);
+        userAuthenticatorRepository.delete(userAuthenticatorId);
     }
 }

@@ -15,8 +15,11 @@ import java.util.List;
  * Created by liangfu on 2/20/14.
  */
 public interface UserAuthenticatorService {
-    UserAuthenticator save(UserId userId, UserAuthenticator userFederation);
-    UserAuthenticator update(UserId userId, UserAuthenticatorId userAuthenticatorId, UserAuthenticator userFederation);
+    UserAuthenticator save(UserId userId, UserAuthenticator userAuthenticator);
+    UserAuthenticator update(UserId userId, UserAuthenticatorId userAuthenticatorId,
+                             UserAuthenticator userAuthenticator);
+    UserAuthenticator patch(UserId userId, UserAuthenticatorId userAuthenticatorId,
+                            UserAuthenticator userAuthenticator);
     UserAuthenticator get(UserId userId, UserAuthenticatorId userAuthenticatorId);
     List<UserAuthenticator> search(UserAuthenticatorListOption getOption);
     void delete(UserId userId, UserAuthenticatorId userAuthenticatorId);

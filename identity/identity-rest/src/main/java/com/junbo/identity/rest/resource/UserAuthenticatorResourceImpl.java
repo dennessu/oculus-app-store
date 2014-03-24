@@ -7,9 +7,8 @@ package com.junbo.identity.rest.resource;
 
 import com.junbo.common.id.UserAuthenticatorId;
 import com.junbo.common.id.UserId;
-import com.junbo.identity.core.service.user.UserAuthenticatorService;
-import com.junbo.identity.core.service.validator.UserAuthenticatorValidator;
 import com.junbo.common.model.Results;
+import com.junbo.identity.core.service.user.UserAuthenticatorService;
 import com.junbo.identity.spec.model.users.UserAuthenticator;
 import com.junbo.identity.spec.options.entity.UserAuthenticatorGetOptions;
 import com.junbo.identity.spec.options.list.UserAuthenticatorListOption;
@@ -31,9 +30,6 @@ public class UserAuthenticatorResourceImpl implements UserAuthenticatorResource 
     @Autowired
     private UserAuthenticatorService userAuthenticatorService;
 
-    @Autowired
-    private UserAuthenticatorValidator validator;
-
     @Override
     public Promise<UserAuthenticator> create(UserId userId, UserAuthenticator userAuthenticator) {
         return Promise.pure(userAuthenticatorService.save(userId, userAuthenticator));
@@ -42,7 +38,7 @@ public class UserAuthenticatorResourceImpl implements UserAuthenticatorResource 
     @Override
     public Promise<UserAuthenticator> put(UserId userId, UserAuthenticatorId userAuthenticatorId,
                                           UserAuthenticator userAuthenticator) {
-        return null;
+        return Promise.pure(userAuthenticatorService.update(userId, userAuthenticatorId, userAuthenticator));
     }
 
     @Override
@@ -59,7 +55,8 @@ public class UserAuthenticatorResourceImpl implements UserAuthenticatorResource 
     @Override
     public Promise<UserAuthenticator> get(UserId userId, UserAuthenticatorId userAuthenticatorId,
                                           @BeanParam UserAuthenticatorGetOptions getOptions) {
-        return null;
+        // todo:    Need to implement expand
+        return Promise.pure(userAuthenticatorService.get(userId, userAuthenticatorId));
     }
 
     @Override

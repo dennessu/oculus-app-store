@@ -35,10 +35,7 @@ public class UserAuthenticatorValidatorImpl extends CommonValidator implements U
         validateNecessaryFields(userId, userFederation);
         validateUnnecessaryFields(userFederation);
         if(userFederation.getResourceAge() != null) {
-            throw AppErrors.INSTANCE.unnecessaryParameterField("userFederation.resourceAge").exception();
-        }
-        if(userFederation.getId() != null) {
-            throw AppErrors.INSTANCE.unnecessaryParameterField("userFederation.id").exception();
+            throw AppErrors.INSTANCE.unnecessaryParameterField("userAuthenticator.resourceAge").exception();
         }
     }
 
@@ -51,10 +48,7 @@ public class UserAuthenticatorValidatorImpl extends CommonValidator implements U
         validateNecessaryFields(userId, userAuthenticator);
         validateUnnecessaryFields(userAuthenticator);
         if(userAuthenticator.getResourceAge() == null) {
-            throw AppErrors.INSTANCE.missingParameterField("userFederation.resourceAge").exception();
-        }
-        if(userAuthenticator.getId() == null) {
-            throw AppErrors.INSTANCE.missingParameterField("userFederation.id").exception();
+            throw AppErrors.INSTANCE.missingParameterField("userAuthenticator.resourceAge").exception();
         }
     }
 
@@ -71,32 +65,25 @@ public class UserAuthenticatorValidatorImpl extends CommonValidator implements U
         if(userFederation == null) {
             throw AppErrors.INSTANCE.invalidResourceRequest().exception();
         }
-
-        if(!userId.equals(userFederation.getUserId().getValue())) {
-            throw AppErrors.INSTANCE.inputParametersMismatch("userId", "userFederation.userId").exception();
-        }
     }
 
     private void validateNecessaryFields(UserId userId, UserAuthenticator userAuthenticator) {
         checkUserValid(userId);
-        if(userAuthenticator.getUserId() == null) {
-            throw AppErrors.INSTANCE.missingParameterField("userFederation.userId").exception();
-        }
         if(StringUtils.isEmpty(userAuthenticator.getType())) {
-            throw AppErrors.INSTANCE.missingParameterField("userFederation.type").exception();
+            throw AppErrors.INSTANCE.missingParameterField("userAuthenticator.type").exception();
         }
         if(StringUtils.isEmpty(userAuthenticator.getValue())) {
-            throw AppErrors.INSTANCE.missingParameterField("userFederation.value").exception();
+            throw AppErrors.INSTANCE.missingParameterField("userAuthenticator.value").exception();
         }
         checkUserAuthenticatorNotExists(userId, userAuthenticator);
     }
 
     private void validateUnnecessaryFields(UserAuthenticator userFederation) {
         if(userFederation.getCreatedTime() != null) {
-            throw AppErrors.INSTANCE.unnecessaryParameterField("userFederation.createdTime").exception();
+            throw AppErrors.INSTANCE.unnecessaryParameterField("userAuthenticator.createdTime").exception();
         }
         if(userFederation.getUpdatedTime() != null) {
-            throw AppErrors.INSTANCE.unnecessaryParameterField("userFederation.updatedTime").exception();
+            throw AppErrors.INSTANCE.unnecessaryParameterField("userAuthenticator.updatedTime").exception();
         }
     }
 

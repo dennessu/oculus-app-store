@@ -70,7 +70,7 @@ class UserAuthenticatorRepositoryImpl implements UserAuthenticatorRepository {
     List<UserAuthenticator> search(UserAuthenticatorListOption getOption) {
         def result = []
         if (getOption != null && getOption.userId != null) {
-            def entities = authenticatorDAO.search(getOption)
+            def entities = authenticatorDAO.search(getOption.userId.value, getOption)
 
             entities.flatten { i ->
                 result.add(modelMapper.toUserAuthenticator(i, new MappingContext()))
