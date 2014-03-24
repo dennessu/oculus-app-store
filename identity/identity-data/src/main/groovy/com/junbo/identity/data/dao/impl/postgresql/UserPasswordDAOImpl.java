@@ -39,6 +39,7 @@ public class UserPasswordDAOImpl extends ShardedDAOBase implements UserPasswordD
     @Override
     public List<UserPasswordEntity> search(Long userId, UserPasswordListOption getOption) {
         String query = "select * from user_password where user_id = " + (getOption.getUserId().getValue()) +
+                (getOption.getActive() == null ? "" : " and active = " + (getOption.getActive())) +
                 (" order by id limit " + (getOption.getLimit() == null ? "ALL" : getOption.getLimit().toString())) +
                 " offset " + (getOption.getOffset() == null ? "0" : getOption.getOffset().toString());
         List entities = currentSession().createSQLQuery(query)

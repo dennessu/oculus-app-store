@@ -7,10 +7,8 @@ package com.junbo.identity.rest.resource;
 
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserPasswordId;
-import com.junbo.identity.core.service.user.UserPasswordService;
-import com.junbo.identity.core.service.user.UserService;
 import com.junbo.common.model.Results;
-import com.junbo.identity.spec.model.users.User;
+import com.junbo.identity.core.service.user.UserPasswordService;
 import com.junbo.identity.spec.model.users.UserPassword;
 import com.junbo.identity.spec.options.entity.UserPasswordGetOptions;
 import com.junbo.identity.spec.options.list.UserPasswordListOption;
@@ -32,13 +30,10 @@ public class UserPasswordResourceImpl implements UserPasswordResource {
     @Autowired
     private UserPasswordService userPasswordService;
 
-    @Autowired
-    private UserService userService;
-
     @Override
-    public Promise<User> create(UserId userId, UserPassword userPassword) {
+    public Promise<UserPassword> create(UserId userId, UserPassword userPassword) {
         userPasswordService.create(userId, userPassword);
-        return Promise.pure(userService.get(userId));
+        return Promise.pure(userPasswordService.create(userId, userPassword));
     }
 
     @Override

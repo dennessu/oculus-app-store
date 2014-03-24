@@ -21,4 +21,6 @@ public class Constants {
 
     public static final String DEFAULT_CLIENT_ID = "lixia";
     public static final String DEFAULT_IP_ADDRESS = "127.0.0.1";
+
+    public static final String COLON = ":";
 }

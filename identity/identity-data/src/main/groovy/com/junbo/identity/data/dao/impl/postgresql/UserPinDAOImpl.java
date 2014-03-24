@@ -39,6 +39,7 @@ public class UserPinDAOImpl extends ShardedDAOBase implements UserPinDAO {
     @Override
     public List<UserPinEntity> search(Long userId, UserPinListOption getOption) {
         String query = "select * from user_pin where user_id = " + (getOption.getUserId().getValue()) +
+                (getOption.getActive() == null ? "" : " and active = " + getOption.getActive()) +
                 (" order by id limit " + (getOption.getLimit() == null ? "ALL" : getOption.getLimit().toString())) +
                 " offset " + (getOption.getOffset() == null ? "0" : getOption.getOffset().toString());
         List entities = currentSession().createSQLQuery(query)

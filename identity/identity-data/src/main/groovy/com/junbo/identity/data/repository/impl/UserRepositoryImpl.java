@@ -21,6 +21,7 @@ import com.junbo.oom.core.MappingContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -100,13 +101,19 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public List<User> search(UserListOption getOption) {
-        UserNameReverseIndexEntity reverseEntity = userNameReverseIndexDAO.get(getOption.getUserName());
+    public List<User> search(UserListOption option) {
+        if(!StringUtils.isEmpty(option.getUserName())) {
+            UserNameReverseIndexEntity reverseEntity = userNameReverseIndexDAO.get(option.getUserName());
 
-        List<User> results = new ArrayList<User>();
-        results.add(get(new UserId(reverseEntity.getUserId())));
+            List<User> results = new ArrayList<User>();
+            results.add(get(new UserId(reverseEntity.getUserId())));
 
-        return results;
+            return results;
+        }
+        else {
+            // todo:    Need to identify other fields
+            throw new RuntimeException();
+        }
     }
 
     @Override

@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Component
-@Transactional("transactionManager")
+@Transactional
 class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
@@ -55,8 +55,7 @@ class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> search(String userName, String status) {
-        UserListOption getOption = new UserListOption();
+    public List<User> search(UserListOption getOption) {
         return userRepository.search(getOption);
     }
 }

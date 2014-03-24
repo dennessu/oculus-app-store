@@ -6,14 +6,13 @@
 package com.junbo.identity.core.service.domaindata.impl;
 
 import com.junbo.common.id.SecurityQuestionId;
-import com.junbo.identity.data.repository.SecurityQuestionRepository;
 import com.junbo.identity.core.service.domaindata.SecurityQuestionService;
 import com.junbo.identity.core.service.validator.SecurityQuestionValidator;
+import com.junbo.identity.data.repository.SecurityQuestionRepository;
 import com.junbo.identity.spec.model.domaindata.SecurityQuestion;
 import com.junbo.identity.spec.options.list.SecurityQuestionListOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
@@ -23,7 +22,7 @@ import java.util.List;
  * Created by haomin on 14-3-19.
  */
 @Component
-@Transactional(propagation = Propagation.REQUIRES_NEW)
+@Transactional
 public class SecurityQuestionServiceImpl implements SecurityQuestionService {
     @Autowired
     private SecurityQuestionRepository securityQuestionRepository;

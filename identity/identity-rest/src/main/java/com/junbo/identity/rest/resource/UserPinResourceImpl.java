@@ -7,10 +7,8 @@ package com.junbo.identity.rest.resource;
 
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserPinId;
-import com.junbo.identity.core.service.user.UserPinService;
-import com.junbo.identity.core.service.user.UserService;
 import com.junbo.common.model.Results;
-import com.junbo.identity.spec.model.users.User;
+import com.junbo.identity.core.service.user.UserPinService;
 import com.junbo.identity.spec.model.users.UserPin;
 import com.junbo.identity.spec.options.entity.UserPinGetOptions;
 import com.junbo.identity.spec.options.list.UserPinListOption;
@@ -32,19 +30,15 @@ public class UserPinResourceImpl implements UserPinResource {
     @Autowired
     private UserPinService userPinService;
 
-    @Autowired
-    private UserService userService;
-
     @Override
-    public Promise<User> create(UserId userId, UserPin userPin) {
-        userPinService.create(userId, userPin);
-        return Promise.pure(userService.get(userId));
+    public Promise<UserPin> create(UserId userId, UserPin userPin) {
+        return Promise.pure(userPinService.create(userId, userPin));
     }
 
     @Override
     public Promise<UserPin> get(UserId userId, UserPinId userPinId, @BeanParam UserPinGetOptions getOptions) {
         // todo:    Need to implement expand option
-        return null;
+        return Promise.pure(userPinService.get(userId, userPinId));
     }
 
     @Override

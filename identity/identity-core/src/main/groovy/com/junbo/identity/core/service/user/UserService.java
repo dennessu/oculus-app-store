@@ -7,6 +7,8 @@ package com.junbo.identity.core.service.user;
 
 import com.junbo.common.id.UserId;
 import com.junbo.identity.spec.model.users.User;
+import com.junbo.identity.spec.options.list.UserListOption;
+
 import java.util.List;
 
 /**
@@ -54,5 +56,5 @@ public interface UserService {
      * @param status
      * @return
      */
-    List<User> search(String userName, String status);
+    List<User> search(UserListOption getOptions);
 }

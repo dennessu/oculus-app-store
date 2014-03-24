@@ -5,6 +5,8 @@
  */
 package com.junbo.identity.spec.model.users;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserPinId;
 import com.junbo.common.util.Identifiable;
@@ -17,6 +19,7 @@ import java.util.Date;
 
 public class UserPin extends ResourceMeta implements Identifiable<UserPinId> {
 
+    @JsonProperty("self")
     private UserPinId id;
 
     // write only
@@ -28,10 +31,13 @@ public class UserPin extends ResourceMeta implements Identifiable<UserPinId> {
 
     private Boolean changeAtNextLogin;
 
-    // Won't return field
-    private String pinSalt;
-    private String pinHash;
     private UserId userId;
+
+    // Won't return field
+    @JsonIgnore
+    private String pinSalt;
+    @JsonIgnore
+    private String pinHash;
 
     public UserPinId getId() {
         return id;

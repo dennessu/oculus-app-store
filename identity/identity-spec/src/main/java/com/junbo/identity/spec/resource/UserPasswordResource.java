@@ -8,7 +8,6 @@ package com.junbo.identity.spec.resource;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserPasswordId;
 import com.junbo.common.model.Results;
-import com.junbo.identity.spec.model.users.User;
 import com.junbo.identity.spec.model.users.UserPassword;
 import com.junbo.identity.spec.options.entity.UserPasswordGetOptions;
 import com.junbo.identity.spec.options.list.UserPasswordListOption;
@@ -29,8 +28,8 @@ public interface UserPasswordResource {
 
     @POST
     @Path("/")
-    Promise<User> create(@PathParam("userId") UserId userId,
-                         UserPassword userPassword);
+    Promise<UserPassword> create(@PathParam("userId") UserId userId,
+                                 UserPassword userPassword);
 
     @GET
     @Path("/{userPasswordId}")

@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.data.entity.user;
 
+import com.junbo.identity.data.entity.common.ResourceMetaEntity;
 import com.junbo.sharding.annotations.SeedId;
 
 import javax.persistence.*;
@@ -15,14 +16,10 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "user_pin")
-public class UserPinEntity  {
+public class UserPinEntity extends ResourceMetaEntity {
     @Id
     @Column(name = "id")
     private Long id;
-
-    @Version
-    @Column(name = "version")
-    private Integer resourceAge;
 
     @SeedId
     @Column(name = "user_id")
@@ -40,13 +37,6 @@ public class UserPinEntity  {
     @Column(name = "change_at_next_login")
     private Boolean changeAtNextLogin;
 
-    @Column(name = "created_by")
-    private String createdBy;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "created_time")
-    private Date createdTime;
-
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "expires_by")
     private Date expiresBy;
@@ -57,14 +47,6 @@ public class UserPinEntity  {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Integer getResourceAge() {
-        return resourceAge;
-    }
-
-    public void setResourceAge(Integer resourceAge) {
-        this.resourceAge = resourceAge;
     }
 
     public Long getUserId() {
@@ -105,22 +87,6 @@ public class UserPinEntity  {
 
     public void setChangeAtNextLogin(Boolean changeAtNextLogin) {
         this.changeAtNextLogin = changeAtNextLogin;
-    }
-
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public Date getCreatedTime() {
-        return createdTime;
-    }
-
-    public void setCreatedTime(Date createdTime) {
-        this.createdTime = createdTime;
     }
 
     public Date getExpiresBy() {

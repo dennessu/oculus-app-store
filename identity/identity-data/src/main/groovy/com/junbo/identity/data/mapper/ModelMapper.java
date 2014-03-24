@@ -28,7 +28,7 @@ public interface ModelMapper {
 
     @Mappings({
             @Mapping(source = "strength", target = "strength", explicitMethod = "toUserPasswordStrength",
-                    bidirectional = false)
+                    bidirectional = false),
     })
     UserPassword toUserPassword(UserPasswordEntity entity, MappingContext context);
     @Mappings({

@@ -13,6 +13,7 @@ import com.junbo.identity.data.identifiable.UserPasswordStrength;
 import com.junbo.identity.data.repository.*;
 import com.junbo.identity.spec.model.users.*;
 import com.junbo.identity.spec.options.list.*;
+import org.glassfish.jersey.internal.util.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
@@ -441,5 +442,19 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userTosGetOption.setTosUri(value);
         List<UserTos> userToses = userTosRepository.search(userTosGetOption);
         Assert.assertEquals(userToses.size(), 1);
+    }
+
+    @Test
+    public void test() {
+        String userName = "liangfuxia";
+        String password = "#Bugsfor$";
+
+        String original = userName + ":" + password;
+        String encode = Base64.encodeAsString(original);
+        String decode = Base64.decodeAsString(encode);
+
+        String[] split = decode.split(":");
+        Assert.assertEquals(userName, split[0]);
+        Assert.assertEquals(password, split[1]);
     }
 }

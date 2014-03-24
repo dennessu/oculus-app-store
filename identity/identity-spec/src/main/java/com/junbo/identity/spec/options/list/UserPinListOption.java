@@ -16,11 +16,22 @@ public class UserPinListOption extends PagingGetOption {
     @QueryParam("userId")
     private UserId userId;
 
+    @QueryParam("active")
+    private Boolean active;
+
     public UserId getUserId() {
         return userId;
     }
 
     public void setUserId(UserId userId) {
         this.userId = userId;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 }

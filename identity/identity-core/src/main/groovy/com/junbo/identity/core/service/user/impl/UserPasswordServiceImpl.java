@@ -15,6 +15,7 @@ import com.junbo.identity.spec.model.users.UserPassword;
 import com.junbo.identity.spec.options.list.UserPasswordListOption;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -23,6 +24,7 @@ import java.util.UUID;
  * Created by liangfu on 3/24/14.
  */
 @Component
+@Transactional
 public class UserPasswordServiceImpl implements UserPasswordService {
     @Autowired
     private UserPasswordRepository userPasswordRepository;
@@ -42,7 +44,7 @@ public class UserPasswordServiceImpl implements UserPasswordService {
         userPassword.setUserId(userId);
         userPassword.setPasswordSalt(UUID.randomUUID().toString());
         userPassword.setStrength(UserPasswordUtil.calcPwdStrength(userPassword.getValue()));
-        userPassword.setPasswordSalt(
+        userPassword.setPasswordHash(
                 UserPasswordUtil.hashPassword(userPassword.getValue(), userPassword.getPasswordSalt()));
         return userPasswordRepository.save(userPassword);
     }

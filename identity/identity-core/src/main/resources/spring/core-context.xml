@@ -4,26 +4,4 @@
        xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
-    <!-- validator -->
-    <!--bean id="commonValidator" class="com.junbo.identity.core.service.validator.impl.CommonValidator" abstract="true" />
-    <bean id="groupValidator" class="com.junbo.identity.core.service.validator.impl.GroupValidatorImpl" parent="commonValidator" />
-    <bean id="securityQuestionValidator" class="com.junbo.identity.core.service.validator.impl.SecurityQuestionValidatorImpl" parent="commonValidator"/>
-    <bean id="userAuthenticatorValidator" class="com.junbo.identity.core.service.validator.impl.UserAuthenticatorValidatorImpl" parent="commonValidator" />
-    <bean id="userDeviceValidator" class="com.junbo.identity.core.service.validator.impl.UserDeviceValidatorImpl" parent="commonValidator" />
-    <bean id="userOptinValidator" class="com.junbo.identity.core.service.validator.impl.UserOptinValidatorImpl" parent="commonValidator" />
-    <bean id="userPasswordValidator" class="com.junbo.identity.core.service.validator.impl.UserPasswordValidatorImpl" parent="commonValidator" />
-    <bean id="userPinValidator" class="com.junbo.identity.core.service.validator.impl.UserPinValidatorImpl" parent="commonValidator" />
-    <bean id="userServiceValidator" class="com.junbo.identity.core.service.validator.impl.UserServiceValidatorImpl" parent="commonValidator" />
-    <bean id="userTosValidator" class="com.junbo.identity.core.service.validator.impl.UserTosValidatorImpl" parent="commonValidator" /-->
-
-    <!-- service impl -->
-    <bean id="groupService" class="com.junbo.identity.core.service.group.impl.GroupServiceImpl" />
-    <bean id="securityQuestionService" class="com.junbo.identity.core.service.domaindata.impl.SecurityQuestionServiceImpl"/>
-    <bean id="userAuthenticatorService" class="com.junbo.identity.core.service.user.impl.UserAuthenticatorServiceImpl" />
-    <bean id="userDeviceService" class="com.junbo.identity.core.service.user.impl.UserDeviceServiceImpl" />
-    <bean id="userOptinService" class="com.junbo.identity.core.service.user.impl.UserOptinServiceImpl" />
-    <bean id="userPasswordService" class="com.junbo.identity.core.service.user.impl.UserPasswordServiceImpl" />
-    <bean id="userPinService" class="com.junbo.identity.core.service.user.impl.UserPinServiceImpl" />
-    <bean id="userService" class="com.junbo.identity.core.service.user.impl.UserServiceImpl" />
-    <bean id="userTosService" class="com.junbo.identity.core.service.user.impl.UserTosServiceImpl" />
 </beans>

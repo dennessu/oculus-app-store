@@ -5,6 +5,8 @@
  */
 package com.junbo.identity.spec.model.users;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserPasswordId;
 import com.junbo.common.util.Identifiable;
@@ -16,6 +18,7 @@ import java.util.Date;
  */
 public class UserPassword extends ResourceMeta implements Identifiable<UserPasswordId> {
 
+    @JsonProperty("self")
     private UserPasswordId id;
 
     private String value;
@@ -26,13 +29,16 @@ public class UserPassword extends ResourceMeta implements Identifiable<UserPassw
 
     private Boolean changeAtNextLogin;
 
+    private UserId userId;
+
     // Read only field
     private String strength;
 
     // Won't return field
+    @JsonIgnore
     private String passwordSalt;
+    @JsonIgnore
     private String passwordHash;
-    private UserId userId;
 
     public UserPasswordId getId() {
         return id;

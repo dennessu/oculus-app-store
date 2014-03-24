@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.spec.model.users;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserLoginAttemptId;
 import com.junbo.common.util.Identifiable;
@@ -14,11 +15,13 @@ import com.junbo.common.util.Identifiable;
  */
 public class UserLoginAttempt extends ResourceMeta implements Identifiable<UserLoginAttemptId> {
 
+    @JsonProperty("self")
     private UserLoginAttemptId id;
 
     // password or pin
     private String type;
 
+    // Todo:    Need to confirm with kgu, pin currently is only supported by userName:pin
     // write only (base_64_encode(username:password) or (deviceid:pin)
     private String value;
 

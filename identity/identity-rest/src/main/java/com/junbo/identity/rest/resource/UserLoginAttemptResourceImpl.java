@@ -5,15 +5,15 @@
  */
 package com.junbo.identity.rest.resource;
 
-import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserLoginAttemptId;
 import com.junbo.common.model.Results;
+import com.junbo.identity.core.service.user.UserLoginAttemptService;
 import com.junbo.identity.spec.model.users.UserLoginAttempt;
-import com.junbo.identity.spec.model.users.User;
 import com.junbo.identity.spec.options.entity.LoginAttemptGetOptions;
 import com.junbo.identity.spec.options.list.LoginAttemptListOptions;
 import com.junbo.identity.spec.resource.UserLoginAttemptResource;
 import com.junbo.langur.core.promise.Promise;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.BeanParam;
@@ -26,19 +26,25 @@ import javax.ws.rs.ext.Provider;
 @Component
 @org.springframework.context.annotation.Scope("prototype")
 public class UserLoginAttemptResourceImpl implements UserLoginAttemptResource {
+
+    @Autowired
+    private UserLoginAttemptService userLoginAttemptService;
+
     @Override
-    public Promise<User> create(UserId userId, UserLoginAttempt loginAttempt) {
-        return null;
+    public Promise<UserLoginAttempt> create(UserLoginAttempt loginAttempt) {
+        return Promise.pure(userLoginAttemptService.create(loginAttempt));
     }
 
     @Override
-    public Promise<UserLoginAttempt> get(UserId userId, UserLoginAttemptId userLoginAttemptId,
-                                     @BeanParam LoginAttemptGetOptions getOptions) {
-        return null;
+    public Promise<UserLoginAttempt> get(UserLoginAttemptId userLoginAttemptId,
+                                         @BeanParam LoginAttemptGetOptions getOptions) {
+        // todo:    Need to do expansion.
+        return Promise.pure(userLoginAttemptService.get(userLoginAttemptId));
     }
 
     @Override
-    public Promise<Results<UserLoginAttempt>> list(UserId userId, @BeanParam LoginAttemptListOptions listOptions) {
+    public Promise<Results<UserLoginAttempt>> list(@BeanParam LoginAttemptListOptions listOptions) {
+        // todo:    Need to implement this.
         return null;
     }
 }

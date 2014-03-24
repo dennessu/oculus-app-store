@@ -14,6 +14,7 @@ import com.junbo.identity.spec.model.users.Group;
 import com.junbo.sharding.IdGeneratorFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
@@ -22,6 +23,7 @@ import java.util.List;
  * Created by liangfu on 3/14/14.
  */
 @Component
+@Transactional
 public class GroupServiceImpl implements GroupService{
     @Autowired
     private GroupRepository groupRepository;

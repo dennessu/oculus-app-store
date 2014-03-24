@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.data.entity.user
 
+import com.junbo.identity.data.entity.common.ResourceMetaEntity
 import com.junbo.sharding.annotations.SeedId
 
 import javax.persistence.*
@@ -13,7 +14,7 @@ import javax.persistence.*
  */
 @Entity
 @Table(name = 'user_password')
-class UserPasswordEntity {
+class UserPasswordEntity extends ResourceMetaEntity {
     @Id
     @Column(name = 'id')
     private Long id
@@ -21,10 +22,6 @@ class UserPasswordEntity {
     @SeedId
     @Column(name = 'user_id')
     private Long userId
-
-    @Column(name = 'version')
-    @Version
-    private Integer resourceAge
 
     @Column(name = 'password_hash')
     private String passwordHash
@@ -40,13 +37,6 @@ class UserPasswordEntity {
 
     @Column(name = 'change_at_next_login')
     private Boolean changeAtNextLogin
-
-    @Column(name = 'created_by')
-    private String createdBy
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = 'created_time')
-    private Date createdTime
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = 'expires_by')
@@ -66,14 +56,6 @@ class UserPasswordEntity {
 
     void setUserId(Long userId) {
         this.userId = userId
-    }
-
-    Integer getResourceAge() {
-        return resourceAge
-    }
-
-    void setResourceAge(Integer resourceAge) {
-        this.resourceAge = resourceAge
     }
 
     String getPasswordHash() {
@@ -114,22 +96,6 @@ class UserPasswordEntity {
 
     void setChangeAtNextLogin(Boolean changeAtNextLogin) {
         this.changeAtNextLogin = changeAtNextLogin
-    }
-
-    String getCreatedBy() {
-        return createdBy
-    }
-
-    void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy
-    }
-
-    Date getCreatedTime() {
-        return createdTime
-    }
-
-    void setCreatedTime(Date createdTime) {
-        this.createdTime = createdTime
     }
 
     Date getExpiresBy() {
