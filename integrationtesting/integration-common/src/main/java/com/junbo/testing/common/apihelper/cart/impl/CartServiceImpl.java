@@ -118,12 +118,25 @@ public class CartServiceImpl implements CartService {
         NettyResponse nettyResponse = (NettyResponse) future.get();
         logger.LogResponse(nettyResponse);
         Assert.assertEquals(expectedResponseCode, nettyResponse.getStatusCode());
-        Cart rtnCart = new JsonMessageTranscoder().decode(new TypeReference<Cart>() {
-        },
-                nettyResponse.getResponseBody());
-        String rtnCartId = IdConverter.idToHexString(rtnCart.getId());
-        Master.getInstance().addCart(rtnCartId, rtnCart);
-        return rtnCartId;
+
+        if (nettyResponse.getStatusCode() == 302) {
+            String redirectUrl = nettyResponse.getHeaders().get("Location").get(0);
+            req = new RequestBuilder("GET")
+                    .setUrl(redirectUrl)
+                    .addHeader(RestUrl.requestHeaderName, RestUrl.requestHeaderValue)
+                    .build();
+            future = asyncClient.prepareRequest(req).execute();
+            NettyResponse redirectResponse = (NettyResponse) future.get();
+            logger.LogResponse(redirectResponse);
+            Assert.assertEquals(200, redirectResponse.getStatusCode());
+            Cart rtnCart = new JsonMessageTranscoder().decode(new TypeReference<Cart>() {
+            }, redirectResponse.getResponseBody());
+
+            String rtnCartId = IdConverter.idToHexString(rtnCart.getId());
+            Master.getInstance().addCart(rtnCartId, rtnCart);
+            return rtnCartId;
+        }
+        return null;
     }
 
     public String getCartByName(String userId, String cartName) throws Exception {
@@ -144,12 +157,24 @@ public class CartServiceImpl implements CartService {
         NettyResponse nettyResponse = (NettyResponse) future.get();
         logger.LogResponse(nettyResponse);
         Assert.assertEquals(expectedResponseCode, nettyResponse.getStatusCode());
-        Cart rtnCart = new JsonMessageTranscoder().decode(new TypeReference<Cart>() {
-        },
-                nettyResponse.getResponseBody());
-        String rtnCartId = IdConverter.idToHexString(rtnCart.getId());
-        Master.getInstance().addCart(rtnCartId, rtnCart);
-        return rtnCartId;
+        if (nettyResponse.getStatusCode() == 302) {
+            String redirectUrl = nettyResponse.getHeaders().get("Location").get(0);
+            req = new RequestBuilder("GET")
+                    .setUrl(redirectUrl)
+                    .addHeader(RestUrl.requestHeaderName, RestUrl.requestHeaderValue)
+                    .build();
+            future = asyncClient.prepareRequest(req).execute();
+            NettyResponse redirectResponse = (NettyResponse) future.get();
+            logger.LogResponse(redirectResponse);
+            Assert.assertEquals(200, redirectResponse.getStatusCode());
+            Cart rtnCart = new JsonMessageTranscoder().decode(new TypeReference<Cart>() {
+            }, redirectResponse.getResponseBody());
+
+            String rtnCartId = IdConverter.idToHexString(rtnCart.getId());
+            Master.getInstance().addCart(rtnCartId, rtnCart);
+            return rtnCartId;
+        }
+        return null;
     }
 
     public String updateCart(String userId, String cartId, Cart cart) throws Exception {
