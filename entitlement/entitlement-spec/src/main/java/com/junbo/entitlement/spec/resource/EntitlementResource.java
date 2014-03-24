@@ -8,7 +8,11 @@ package com.junbo.entitlement.spec.resource;
 
 import com.junbo.common.id.EntitlementId;
 import com.junbo.common.id.UserId;
-import com.junbo.entitlement.spec.model.*;
+import com.junbo.common.model.Results;
+import com.junbo.entitlement.spec.model.Entitlement;
+import com.junbo.entitlement.spec.model.EntitlementSearchParam;
+import com.junbo.entitlement.spec.model.EntitlementTransfer;
+import com.junbo.entitlement.spec.model.PageMetadata;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 
@@ -30,7 +34,7 @@ public interface EntitlementResource {
 
     @GET
     @Path("users/{userId}/entitlements")
-    Promise<ResultList<Entitlement>> getEntitlements(
+    Promise<Results<Entitlement>> getEntitlements(
             @PathParam("userId") UserId userId,
             @BeanParam EntitlementSearchParam searchParam,
             @BeanParam PageMetadata pageMetadata);

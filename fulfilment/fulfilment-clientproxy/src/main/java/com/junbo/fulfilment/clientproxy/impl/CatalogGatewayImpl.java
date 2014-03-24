@@ -126,8 +126,7 @@ public class CatalogGatewayImpl implements CatalogGateway {
                 OfferAction offerAction = new OfferAction();
                 offerAction.setType(action.getType());
 
-                Map<String, Object> entitlementDef =
-                        getEntitlementDef(action);
+                Map<String, Object> entitlementDef = getEntitlementDef(action);
                 offerAction.setProperties(new SevereMap<>(entitlementDef));
 
                 // fill item info for physical delivery action
@@ -160,6 +159,7 @@ public class CatalogGatewayImpl implements CatalogGateway {
             result.put(Constant.ENTITLEMENT_TAG, entitlementDef.getTag());
             result.put(Constant.ENTITLEMENT_TYPE, entitlementDef.getType());
             result.put(Constant.ENTITLEMENT_DEVELOPER, entitlementDef.getDeveloperId());
+            result.put(Constant.ENTITLEMENT_DEF_ID, entitlementDefId);
 
             return result;
         } catch (Exception e) {

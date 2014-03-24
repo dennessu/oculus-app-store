@@ -24,6 +24,7 @@ public class Item extends VersionedModel {
     private Long id;
     private String type;
     @UserId
+    @JsonProperty("developer")
     private Long ownerId;
     private List<Sku> skus;
     private Map<String, String> properties;

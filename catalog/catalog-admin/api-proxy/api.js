@@ -8,7 +8,7 @@ exports.getEntities = function(req, res, url){
     console.log(url);
 
     rest.get(url).on('complete', function(result) {
-        res.send(result.results);
+        res.send(result.items);
     });
 };
 

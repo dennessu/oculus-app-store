@@ -3,6 +3,7 @@ var StoreRoutes = {
     ApplicationRoute: Ember.Route.extend({
         init: function(){
             this._super();
+            var _self = this;
             console.log("[ApplicationRoute] Application.Init");
 
             App.AuthManager = AuthManager.create();
@@ -10,9 +11,45 @@ var StoreRoutes = {
             if(App.AuthManager.isAuthenticated()){
                 console.log("[ApplicationRoute] Authenticated");
 
-                // TODO: Merge Cart
+                var provider = new CartProvider();
+                provider.Merge(Utils.GenerateRequestModel(null), function(resultData){
+                    var resultModel = resultData.data;
+                    if (resultModel.status == 200) {
+                        console.log("[ApplicationRoute:Init] Merge Car Success");
+
+                        Utils.Cookies.Remove(AppConfig.CookiesName.AnonymousUserId);
+                        Utils.Cookies.Remove(AppConfig.CookiesName.AnonymousCartId);
+                    } else {
+                        console.log("[ApplicationRoute:Init] Merge Car Failed!");
+                    }
+                });
             }else{
-                // TODO: Create Anonymous User
+                if(Ember.isEmpty(App.AuthManager.getUserId())){
+                    var provider = new IdentityProvider();
+
+                    provider.GetAnonymousUser(Utils.GenerateRequestModel(null), function (data) {
+                        var resultModel = data.data;
+                        if (resultModel.status == 200) {
+                            console.log("[ApplicationRoute:Init] Create anonymous user success!");
+                        } else {
+                            console.log("[ApplicationRoute:Init] Create anonymous user failed!");
+                        }
+                    });
+                }
+            }
+        },
+        beforeModel: function(){
+
+        },
+        afterModel: function(){
+            if(App.AuthManager.isAuthenticated()){
+                // to before route
+                var beforeRoute = Utils.Cookies.Get(AppConfig.CookiesName.BeforeRoute);
+                if(!Ember.isEmpty(beforeRoute)){
+                    console.log("[ApplicationRoute] After Model: transitionTo ", beforeRoute);
+                    Utils.Cookies.Remove(AppConfig.CookiesName.BeforeRoute);
+                    this.transitionTo(beforeRoute);
+                }
             }
         },
         actions: {

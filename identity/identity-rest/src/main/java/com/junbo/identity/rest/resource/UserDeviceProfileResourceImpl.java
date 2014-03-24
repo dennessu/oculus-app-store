@@ -7,8 +7,8 @@ package com.junbo.identity.rest.resource;
 
 import com.junbo.common.id.UserDeviceProfileId;
 import com.junbo.common.id.UserId;
+import com.junbo.common.model.Results;
 import com.junbo.identity.rest.service.user.UserDeviceProfileService;
-import com.junbo.identity.spec.model.common.ResultList;
 import com.junbo.identity.spec.model.common.ResultListUtil;
 import com.junbo.identity.spec.model.user.UserDeviceProfile;
 import com.junbo.identity.spec.resource.UserDeviceProfileResource;
@@ -35,7 +35,7 @@ public class UserDeviceProfileResourceImpl implements UserDeviceProfileResource{
     }
 
     @Override
-    public Promise<ResultList<UserDeviceProfile>> getUserDeviceProfiles(UserId userId, String type,
+    public Promise<Results<UserDeviceProfile>> getUserDeviceProfiles(UserId userId, String type,
                                                                   Integer cursor, Integer count) {
         List<UserDeviceProfile> userDeviceProfiles = userDeviceProfileService.getByUserId(userId.getValue(), type);
         return Promise.pure(ResultListUtil.init(userDeviceProfiles, count));

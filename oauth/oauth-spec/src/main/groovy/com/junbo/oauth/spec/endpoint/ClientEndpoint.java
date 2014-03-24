@@ -8,6 +8,7 @@ package com.junbo.oauth.spec.endpoint;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.oauth.spec.model.Client;
+import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.ws.rs.*;
@@ -17,6 +18,7 @@ import javax.ws.rs.core.Response;
 /**
  * ClientEndpoint.
  */
+@Api(value = "oauth2", basePath = "oauth2")
 @Path("clients")
 @RestResource
 @Produces(MediaType.APPLICATION_JSON)
@@ -48,7 +50,7 @@ public interface ClientEndpoint {
                               @PathParam("clientId") String clientId,
                               Client client);
 
-    @ApiOperation(value = "Delete a client", response = void.class)
+    @ApiOperation(value = "Delete a client")
     @DELETE
     @Path("/{clientId}")
     Promise<Response> deleteClient(@HeaderParam("Authorization") String authorization,

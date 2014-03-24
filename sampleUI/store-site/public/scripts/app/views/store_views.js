@@ -1,15 +1,15 @@
 
 var StoreViews = {
     IndexView: Ember.View.extend({
-        template: Ember.TEMPLATES[AppConfig.Templates.Store.Index.name]
+        template: Ember.TEMPLATES[AppConfig.Templates.Store.Index]
     }),
     DetailView: Ember.View.extend({
-        template: Ember.TEMPLATES[AppConfig.Templates.Store.Detail.name]
+        template: Ember.TEMPLATES[AppConfig.Templates.Store.Detail]
     }),
     CartView: Ember.View.extend({
-        template: Ember.TEMPLATES[AppConfig.Templates.Store.Cart.name]
+        template: Ember.TEMPLATES[AppConfig.Templates.Store.Cart]
     }),
     OrderSummaryView: Ember.View.extend({
-        template: Ember.TEMPLATES[AppConfig.Templates.Store.OrderSummary.name]
+        template: Ember.TEMPLATES[AppConfig.Templates.Store.OrderSummary]
     })
 };
