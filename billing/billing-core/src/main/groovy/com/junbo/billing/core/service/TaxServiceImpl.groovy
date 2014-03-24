@@ -15,6 +15,8 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.payment.spec.model.Address
 import com.junbo.payment.spec.model.PaymentInstrument
 import groovy.transform.CompileStatic
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 import javax.annotation.Resource
 
@@ -35,6 +37,8 @@ class TaxServiceImpl implements TaxService {
     String providerName
 
     TaxFacade taxFacade
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(TaxServiceImpl)
 
     void chooseProvider() {
         switch (providerName) {
@@ -57,10 +61,10 @@ class TaxServiceImpl implements TaxService {
             Long addressId = balance.shippingAddressId.value
             return shippingAddressService.getShippingAddress(userId, addressId)
                     .then { ShippingAddress shippingAddress ->
-                return paymentFacade.getPaymentInstrument(userId, piId).then { PaymentInstrument pi ->
-                    if (pi == null) {
-                        throw AppErrors.INSTANCE.piNotFound(piId.toString()).exception()
-                    }
+                return paymentFacade.getPaymentInstrument(userId, piId).recover { Throwable throwable ->
+                    LOGGER.error('name=Error_Get_PaymentInstrument. pi id: ' + balance.piId.value, throwable)
+                    throw AppErrors.INSTANCE.piNotFound(piId.toString()).exception()
+                }.then { PaymentInstrument pi ->
                     chooseProvider()
                     return taxFacade.calculateTax(balance, shippingAddress, pi.address)
                 }
