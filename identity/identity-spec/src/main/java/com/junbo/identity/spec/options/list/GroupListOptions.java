@@ -11,14 +11,14 @@ import javax.ws.rs.QueryParam;
  * Created by liangfu on 3/14/14.
  */
 public class GroupListOptions extends PagingGetOption {
-    @QueryParam("value")
-    private String value;
+    @QueryParam("name")
+    private String name;
 
-    public String getValue() {
-        return value;
+    public String getName() {
+        return name;
     }
 
-    public void setValue(String value) {
-        this.value = value;
+    public void setName(String name) {
+        this.name = name;
     }
 }

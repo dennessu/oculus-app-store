@@ -72,12 +72,11 @@ class GroupRepositoryImpl implements GroupRepository {
     }
 
     @Override
-    List<Group> findByValue(String name) {
+    List<Group> searchByName(String name) {
         def result = []
         def groupReverseIndexEntity = groupReverseIndexDAO.get(name)
-        def group = get(new GroupId(groupReverseIndexEntity.groupId))
 
-        result.add(modelMapper.toGroup(group, new MappingContext()))
+        result.add(get(new GroupId(groupReverseIndexEntity.groupId)))
         return result
     }
 }

@@ -133,7 +133,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         newGroup = groupRepository.get(group.getId());
         Assert.assertEquals(newValue, newGroup.getName());
 
-        List<Group> groupList = groupRepository.findByValue(newValue);
+        List<Group> groupList = groupRepository.searchByName(newValue);
 
         Assert.assertEquals(groupList.size(), 1);
     }

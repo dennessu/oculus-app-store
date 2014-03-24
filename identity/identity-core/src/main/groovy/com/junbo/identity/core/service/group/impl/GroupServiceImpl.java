@@ -6,12 +6,11 @@
 package com.junbo.identity.core.service.group.impl;
 
 import com.junbo.common.id.GroupId;
-import com.junbo.identity.data.repository.GroupRepository;
 import com.junbo.identity.core.service.group.GroupService;
 import com.junbo.identity.core.service.validator.GroupValidator;
-import com.junbo.identity.spec.options.list.GroupListOptions;
+import com.junbo.identity.data.repository.GroupRepository;
 import com.junbo.identity.spec.model.users.Group;
-import com.junbo.sharding.IdGeneratorFacade;
+import com.junbo.identity.spec.options.list.GroupListOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,9 +30,6 @@ public class GroupServiceImpl implements GroupService{
     @Autowired
     private GroupValidator groupValidator;
 
-    @Autowired
-    private IdGeneratorFacade idGeneratorFacade;
-
     @Override
     public Group get(GroupId groupId) {
         groupValidator.validateGet(groupId);
@@ -43,7 +39,6 @@ public class GroupServiceImpl implements GroupService{
     @Override
     public Group create(Group group) {
         groupValidator.validateCreate(group);
-        group.setId(new GroupId(idGeneratorFacade.nextId(GroupId.class)));
         return groupRepository.save(group);
     }
 
@@ -68,6 +63,12 @@ public class GroupServiceImpl implements GroupService{
 
     @Override
     public List<Group> search(GroupListOptions getOption) {
-        return groupRepository.findByValue(getOption.getValue());
+        if(!StringUtils.isEmpty(getOption.getName())) {
+            return groupRepository.searchByName(getOption.getName());
+        }
+        else {
+            // todo:    Need to confirm no other operations are supported.
+            throw new RuntimeException();
+        }
     }
 }

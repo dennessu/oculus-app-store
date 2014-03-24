@@ -13,5 +13,5 @@ interface GroupRepository {
     Group get(GroupId groupId)
     Group save(Group group)
     Group update(Group group)
-    List<Group> findByValue(String name)
+    List<Group> searchByName(String name)
 }

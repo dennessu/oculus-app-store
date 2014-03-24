@@ -6,8 +6,8 @@
 package com.junbo.identity.rest.resource;
 
 import com.junbo.common.id.GroupId;
-import com.junbo.identity.core.service.group.GroupService;
 import com.junbo.common.model.Results;
+import com.junbo.identity.core.service.group.GroupService;
 import com.junbo.identity.spec.model.users.Group;
 import com.junbo.identity.spec.model.users.UserGroup;
 import com.junbo.identity.spec.options.entity.GroupGetOptions;
@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.ext.Provider;
+import java.util.List;
 
 /**
  * Created by liangfu on 3/14/14.
@@ -52,7 +53,10 @@ public class GroupResourceImpl implements GroupResource {
 
     @Override
     public Promise<Results<Group>> list(GroupListOptions listOptions) {
-        return Promise.pure(null);
+        List<Group> groups = groupService.search(listOptions);
+        Results<Group> results = new Results<Group>();
+        results.setItems(groups);
+        return Promise.pure(results);
     }
 
     @Override
