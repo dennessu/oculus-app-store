@@ -9,7 +9,6 @@ import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.core.annotation.OrderEventAwareAfter
 import com.junbo.order.core.annotation.OrderEventAwareBefore
 import com.junbo.order.core.impl.common.CoreBuilder
-import com.junbo.order.core.impl.common.OrderStatusBuilder
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
 import com.junbo.order.db.entity.enums.EventStatus
 import com.junbo.order.db.repo.OrderRepository
@@ -53,12 +52,6 @@ class AuthSettleAction extends BaseOrderEventAwareAction {
                 return CoreBuilder.buildActionResultForOrderEventAwareAction(context, EventStatus.ERROR)
             }
             orderServiceContextBuilder.refreshBalances(context.orderServiceContext).syncThen {
-                // TODO: update order status according to balance status.
-                // Update order status according to balance status.
-                // TODO get order events to update the order status
-                def o = orderRepository.getOrder(context.orderServiceContext.order.id.value)
-                o.status = OrderStatusBuilder.buildEventStatusFromBalance(balance.status).toString()
-                orderRepository.updateOrder(o, true)
                 // TODO: save order level tax
                 return CoreBuilder.buildActionResultForOrderEventAwareAction(context,
                         CoreBuilder.buildEventStatusFromBalance(balance.status))
