@@ -149,7 +149,8 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
         //commit the payment event
         updatePaymentAndSaveEvent(existedTransaction, Arrays.asList(submitCreateEvent),
                 api, PaymentStatus.SETTLE_CREATED, false);
-        PaymentInstrument pi = paymentInstrumentService.getById(null, existedTransaction.getPaymentInstrumentId());
+        PaymentInstrument pi = paymentInstrumentService.getById(null,
+                existedTransaction.getPaymentInstrumentId().getPaymentInstrumentId());
         final PaymentProviderService provider = providerRoutingService.getPaymentProvider(
                 PaymentUtil.getPIType(pi.getType()));
         return provider.capture(existedTransaction.getExternalToken(), request).
@@ -254,7 +255,8 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
         }else{
             throw AppServerExceptions.INSTANCE.invalidPaymentStatus(existedTransaction.getStatus()).exception();
         }
-        PaymentInstrument pi = paymentInstrumentService.getById(null, existedTransaction.getPaymentInstrumentId());
+        PaymentInstrument pi = paymentInstrumentService.getById(null,
+                existedTransaction.getPaymentInstrumentId().getPaymentInstrumentId());
         PaymentStatus createStatus = PaymentStatus.REVERSE_CREATED;
         PaymentEvent reverseCreateEvent = createPaymentEvent(existedTransaction,
                 PaymentEventType.REVERSE_CREATE, createStatus, SUCCESS_EVENT_RESPONSE);
@@ -400,7 +402,8 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
                 throw AppClientExceptions.INSTANCE.missingCurrency().exception();
             }
         }
-        PaymentInstrument pi = paymentInstrumentService.getById(null, request.getPaymentInstrumentId());
+        PaymentInstrument pi = paymentInstrumentService.getById(null,
+                request.getPaymentInstrumentId().getPaymentInstrumentId());
         if(pi == null){
             throw AppClientExceptions.INSTANCE.invalidPaymentInstrumentId(
                     request.getPaymentInstrumentId().toString()).exception();

@@ -62,7 +62,7 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
             throw AppClientExceptions.INSTANCE.invalidExpireDateFormat(expireDate).exception();
         }
         CreditCardRequest ccRequest = new CreditCardRequest()
-                .customerId(getOrCreateCustomerId(request.getUserId().toString()))
+                .customerId(getOrCreateCustomerId(request.getId().getUserId().toString()))
                 .number(request.getAccountNum())
                 .expirationMonth(String.valueOf(tokens[1]))
                 .expirationYear(String.valueOf(tokens[0]))
@@ -83,11 +83,11 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
                     .done();
         }
         Result<CreditCard> result = null;
-        LOGGER.info("add credit card for customer:" + request.getUserId().toString());
+        LOGGER.info("add credit card for customer:" + request.getId().getUserId().toString());
         try {
             result = gateway.creditCard().create(ccRequest);
         }catch (Exception ex){
-            handleProviderException(ex, "Add", "User", request.getUserId().toString());
+            handleProviderException(ex, "Add", "User", request.getId().getUserId().toString());
         }
         if(result.isSuccess()){
             request.setAccountNum(result.getTarget().getMaskedNumber());

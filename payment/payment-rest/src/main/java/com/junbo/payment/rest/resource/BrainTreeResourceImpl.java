@@ -6,7 +6,6 @@
 
 package com.junbo.payment.rest.resource;
 
-
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.core.provider.braintree.BrainTreePaymentProviderServiceImpl;
 import com.junbo.payment.spec.internal.BrainTreeResource;
@@ -29,7 +28,6 @@ public class BrainTreeResourceImpl implements BrainTreeResource {
     @Override
     public Promise<PaymentInstrument> addPaymentInstrument(PaymentInstrument request) {
         return brainTreePaymentProviderService.add(request);
-
     }
 
     @Override

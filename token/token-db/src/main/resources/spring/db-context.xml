@@ -92,6 +92,6 @@
     </bean>
 
     <bean class="com.junbo.token.db.mapper.CommonMapper" />
-    <bean id="tokenMapperImpl" class="com.junbo.token.db.mapper.TokenMapperImpl" />
+    <bean id="tokenMapper" class="com.junbo.token.db.mapper.TokenMapperImpl" />
 
 </beans>
