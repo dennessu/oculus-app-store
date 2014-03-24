@@ -83,27 +83,15 @@ class WalletServiceImpl implements WalletService {
     @Override
     @Transactional
     Wallet update(Long walletId, Wallet wallet) {
-        if (wallet.walletId == null) {
-            throw AppErrors.INSTANCE.missingField('id').exception()
-        }
-        if (walletId != wallet.walletId) {
-            throw AppErrors.INSTANCE.fieldNotMatch('id', wallet.walletId, walletId).exception()
-        }
+        validateNotNull(wallet.walletId, 'id')
+        validateEquals(wallet.walletId, walletId, 'id')
 
         Wallet existed = get(walletId)
 
-        if (existed.type != wallet.type) {
-            throw AppErrors.INSTANCE.fieldNotMatch('type', wallet.type, existed.type).exception()
-        }
-        if (existed.userId != wallet.userId) {
-            throw AppErrors.INSTANCE.fieldNotMatch('userId', wallet.userId, existed.userId).exception()
-        }
-        if (existed.currency != wallet.currency) {
-            throw AppErrors.INSTANCE.fieldNotMatch('currency', wallet.currency, existed.currency).exception()
-        }
-        if (existed.balance != wallet.balance) {
-            throw AppErrors.INSTANCE.fieldNotMatch('balance', wallet.balance, existed.balance).exception()
-        }
+        validateEquals(wallet.type, existed.type, 'type')
+        validateEquals(wallet.userId, existed.userId, 'user')
+        validateEquals(wallet.currency, existed.currency, 'currency')
+        validateEquals(wallet.balance, existed.balance, 'balance')
 
         wallet.walletId = walletId
         Wallet result = walletRepo.update(wallet)
@@ -116,11 +104,8 @@ class WalletServiceImpl implements WalletService {
         if (creditRequest.type == null) {
             creditRequest.type = WalletLotType.CASH.toString()
         }
-        if (creditRequest.amount == null) {
-            throw AppErrors.INSTANCE.missingField('amount').exception()
-        } else if (creditRequest.amount <= 0) {
-            throw AppErrors.INSTANCE.fieldNotCorrect('amount', 'Amount should be positive.').exception()
-        }
+
+        validateAmount(creditRequest.amount)
 
         Wallet wallet = get(walletId)
         if (wallet.status.equalsIgnoreCase(Status.LOCKED.toString())) {
@@ -133,11 +118,7 @@ class WalletServiceImpl implements WalletService {
     @Override
     @Transactional
     Wallet debit(Long walletId, DebitRequest debitRequest) {
-        if (debitRequest.amount == null) {
-            throw AppErrors.INSTANCE.missingField('amount').exception()
-        } else if (debitRequest.amount <= 0) {
-            throw AppErrors.INSTANCE.fieldNotCorrect('amount', 'Amount should be positive.').exception()
-        }
+        validateAmount(debitRequest.amount)
 
         Wallet wallet = get(walletId)
         if (wallet.status.equalsIgnoreCase(Status.LOCKED.toString())) {
@@ -157,6 +138,14 @@ class WalletServiceImpl implements WalletService {
         return result
     }
 
+    private void validateAmount(BigDecimal amount) {
+        if (amount == null) {
+            throw AppErrors.INSTANCE.missingField('amount').exception()
+        } else if (amount <= 0) {
+            throw AppErrors.INSTANCE.fieldNotCorrect('amount', 'Amount should be positive.').exception()
+        }
+    }
+
     @Override
     @Transactional
     List<Transaction> getTransactions(Long walletId) {
@@ -173,6 +162,36 @@ class WalletServiceImpl implements WalletService {
     private void checkUserId(Long userId) {
         if (userId == null) {
             throw AppErrors.INSTANCE.missingField('userId').exception()
+        }
+    }
+
+    private void validateNotNull(Object o, String fieldName) {
+        if (o == null) {
+            throw AppErrors.INSTANCE.missingField(fieldName).exception()
+        }
+    }
+
+    private void validateEquals(Object actual, Object expected, String fieldName) {
+        if (expected == actual) {
+            return
+        } else if (expected == null || actual == null) {
+            throw AppErrors.INSTANCE.fieldNotMatch(fieldName, actual, expected).exception()
+        }
+        Boolean equals = true
+        if (actual instanceof String) {
+            if (!((String) expected).equalsIgnoreCase((String) actual)) {
+                equals = false
+            }
+        } else if (actual instanceof Date) {
+            if (Math.abs(((Date) actual).time - ((Date) expected).time) > 1000) {
+                equals = false
+            }
+        } else if (expected != actual) {
+            equals = false
+        }
+
+        if (!equals) {
+            throw AppErrors.INSTANCE.fieldNotMatch(fieldName, actual, expected).exception()
         }
     }
 }
