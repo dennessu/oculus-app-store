@@ -1,7 +1,12 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
+ */
 package com.junbo.testing.common.apihelper.catalog.impl;
 
 import com.junbo.catalog.spec.model.attribute.Attribute;
-import com.junbo.catalog.spec.model.common.ResultList;
+import com.junbo.common.model.Results;
 import com.junbo.common.id.AttributeId;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
@@ -29,8 +34,7 @@ import java.util.concurrent.Future;
  */
 public class AttributeServiceImpl implements AttributeService {
 
-    private final String catalogServerURL = RestUrl.getRestUrl("catalog") +
-            "attributes";
+    private final String catalogServerURL = RestUrl.getRestUrl(RestUrl.ComponentName.CATALOG) + "attributes";
 
     private LogHelper logger = new LogHelper(ItemServiceImpl.class);
     private AsyncHttpClient asyncClient;
@@ -97,11 +101,11 @@ public class AttributeServiceImpl implements AttributeService {
         logger.LogResponse(nettyResponse);
         Assert.assertEquals(expectedResponseCode, nettyResponse.getStatusCode());
 
-        ResultList<Attribute> attributeGet = new JsonMessageTranscoder().decode(new TypeReference<ResultList<Attribute>>() {},
+        Results<Attribute> attributeGet = new JsonMessageTranscoder().decode(new TypeReference<Results<Attribute>>() {},
                 nettyResponse.getResponseBody());
 
         List<String> listItemId = new ArrayList<>();
-        for (Attribute attribute : attributeGet.getResults()){
+        for (Attribute attribute : attributeGet.getItems()){
             String attributeRtnId = IdConverter.idLongToHexString(AttributeId.class, attribute.getId());
             Master.getInstance().addAttribute(attributeRtnId, attribute);
             listItemId.add(attributeRtnId);

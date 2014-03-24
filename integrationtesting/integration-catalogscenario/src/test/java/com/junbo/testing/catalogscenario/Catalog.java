@@ -6,6 +6,7 @@
 package com.junbo.testing.catalogscenario;
 
 import com.junbo.catalog.spec.model.attribute.Attribute;
+import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.testing.catalogscenario.util.BaseTestClass;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.testing.common.apihelper.catalog.AttributeService;
@@ -17,6 +18,7 @@ import com.junbo.testing.common.apihelper.catalog.impl.OfferServiceImpl;
 import com.junbo.testing.common.blueprint.Master;
 import com.junbo.testing.common.libs.EnumHelper;
 import com.junbo.testing.common.libs.LogHelper;
+import com.junbo.testing.common.libs.RandomFactory;
 import com.junbo.testing.common.property.*;
 
 import org.testng.Assert;
@@ -49,12 +51,12 @@ public class Catalog extends BaseTestClass {
     public void testAttributeManagement() throws Exception {
 
         HashMap<String, String> paraMap = new HashMap();
-        paraMap.put(EnumHelper.CatalogAttributeType.Type.toString(), "Digital");
+        paraMap.put(EnumHelper.CatalogAttributeType.TYPE.getType(), "Digital");
 
         AttributeService attributeServiceAPI = AttributeServiceImpl.instance();
 
         Attribute attribute = new Attribute();
-        attribute.setName("Digital type");
+        attribute.setName("testAttribute_" + RandomFactory.getRandomStringOfAlphabetOrNumeric(5));
         attribute.setType("Digital");
 
         String attributeId = attributeServiceAPI.postAttribute(attribute);
@@ -82,7 +84,7 @@ public class Catalog extends BaseTestClass {
     public void testItemManagement() throws Exception {
 
         HashMap<String, String> paraMap = new HashMap();
-        paraMap.put("status", EnumHelper.CatalogEntityStatus.Design.toString());
+        paraMap.put("status", EnumHelper.CatalogEntityStatus.DESIGN.getEntityStatus());
 
         ItemService itemServiceAPI = ItemServiceImpl.instance();
 
@@ -97,6 +99,11 @@ public class Catalog extends BaseTestClass {
 
         List<String> itemResultList = itemServiceAPI.getItem(paraMap);
         Assert.assertNotNull(itemResultList);
+
+        itemGet.setStatus(EnumHelper.CatalogEntityStatus.RELEASED.getEntityStatus());
+        itemId = itemServiceAPI.updateItem(itemGet);
+
+        Assert.assertNotNull(Master.getInstance().getItem(itemId));
 }
 
     @Property(
@@ -114,11 +121,26 @@ public class Catalog extends BaseTestClass {
     public void testOfferManagement() throws Exception {
 
         HashMap<String, String> paraMap = new HashMap();
-        paraMap.put("status", EnumHelper.CatalogEntityStatus.Design.toString());
+        paraMap.put("status", EnumHelper.CatalogEntityStatus.DESIGN.getEntityStatus());
 
         OfferService offerServiceAPI = OfferServiceImpl.instance();
 
-        String offerId = offerServiceAPI.postDefaultOffer();
+        String offerId = offerServiceAPI.postDefaultOffer(true);
         Assert.assertNotNull(offerId);
+
+        offerId = offerServiceAPI.postDefaultOffer(false);
+        Assert.assertNotNull(offerId);
+
+        Offer offerGet = Master.getInstance().getOffer(offerServiceAPI.getOffer(offerId, paraMap));
+        Assert.assertNotNull(offerGet);
+
+        List<String> offerResultList = offerServiceAPI.getOffer(paraMap);
+        Assert.assertNotNull(offerResultList);
+
+        offerGet.setStatus(EnumHelper.CatalogEntityStatus.RELEASED.getEntityStatus());
+        offerId = offerServiceAPI.updateOffer(offerGet);
+
+        Assert.assertNotNull(Master.getInstance().getOffer(offerId));
+
     }
 }

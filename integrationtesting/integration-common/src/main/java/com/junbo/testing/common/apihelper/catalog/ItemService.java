@@ -9,11 +9,11 @@ import com.junbo.catalog.spec.model.item.Item;
 import java.util.HashMap;
 import java.util.List;
 
-    /**
-     @author Jason
-      * Time: 3/14/2014
-      * The interface for Item related APIs
-     */
+/**
+ @author Jason
+  * Time: 3/14/2014
+  * The interface for Item related APIs
+ */
 public interface ItemService {
 
     String getItem(String itemId, HashMap<String, String> httpPara) throws Exception;
@@ -22,10 +22,11 @@ public interface ItemService {
     List<String> getItem(HashMap<String, String> httpPara) throws Exception;
     List<String> getItem(HashMap<String, String> httpPara, int expectedResponseCode) throws Exception;
 
-    String postDefaultItem(boolean isDigital) throws Exception;
+    String postDefaultItem(boolean isPhysical) throws Exception;
+    Item prepareItemEntity(String fileName, boolean isPhysical) throws Exception;
     String postItem(Item item) throws Exception;
     String postItem(Item item, int expectedResponseCode) throws Exception;
 
-    String updateItem(String itemId, Item item) throws Exception;
-    String updateItem(String itemId, Item item, int expectedResponseCode) throws Exception;
+    String updateItem(Item item) throws Exception;
+    String updateItem(Item item, int expectedResponseCode) throws Exception;
 }
