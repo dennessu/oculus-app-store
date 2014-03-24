@@ -1,5 +1,6 @@
 package com.junbo.order.test
 
+import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.resource.BalanceResource
 import com.junbo.catalog.spec.model.offer.Offer
 import com.junbo.catalog.spec.model.offer.OffersGetOptions
@@ -11,6 +12,8 @@ import com.junbo.entitlement.spec.model.Entitlement
 import com.junbo.entitlement.spec.model.EntitlementSearchParam
 import com.junbo.entitlement.spec.model.PageMetadata
 import com.junbo.entitlement.spec.resource.EntitlementResource
+import com.junbo.fulfilment.spec.model.FulfilmentRequest
+import com.junbo.fulfilment.spec.resource.FulfilmentResource
 import com.junbo.identity.spec.model.user.User
 import com.junbo.identity.spec.resource.UserResource
 import com.junbo.order.spec.model.Order
@@ -53,6 +56,9 @@ class ServiceFacade {
 
     @Autowired
     EntitlementResource entitlementResource
+
+    @Autowired
+    FulfilmentResource fulfilmentResource
 
     List<Offer> offers
 
@@ -130,6 +136,10 @@ class ServiceFacade {
         }
     }
 
+    List<Balance> getBalance(OrderId orderId) {
+        return balanceResource.getBalances(orderId).wrapped().get()
+    }
+
     List<Entitlement> getEntitlements(UserId userId, List<String> tag) {
         List<Entitlement> result = []
         def searchParam = new EntitlementSearchParam()
@@ -151,5 +161,9 @@ class ServiceFacade {
             }
         }
         return result
+    }
+
+    FulfilmentRequest getFulfilment(OrderId orderId) {
+        return fulfilmentResource.getByOrderId(orderId).wrapped().get()
     }
 }
