@@ -12,6 +12,12 @@ module.exports = process.C = {
     Cart_API_Host: "54.186.20.200",
     Cart_API_Port: 8082,
 
+    Order_API_Host: "127.0.0.1",
+    Order_API_Port: 8000,
+
+    Billing_API_Host: "127.0.0.1",
+    Billing_API_Port: 8000,
+
     OauthUri: "http://54.186.20.200:8081",   //http://54.186.20.200:8081
     RegisterUri: "http://127.0.0.1:3000",
 

@@ -1,6 +1,7 @@
 var Identity = require('../logic/identity');
 var Catalog = require('../logic/catalog');
 var Cart = require('../logic/cart');
+var Billing = require('../logic/billing');
 
 module.exports = function(io){
     io.set("log level", 0);
@@ -81,6 +82,24 @@ module.exports = function(io){
                 fn(data);
             });
         });
+        socket.on('/api/cart/post_order', function (data, fn) {
+            Cart.PostOrder(data, function(data){
+                fn(data);
+            });
+        });
+
+        /* Billing -------------------------------------------------------------- */
+        socket.on('/api/billing/get_shipping_info', function (data, fn) {
+            Billing.GetShippingInfo(data, function(data){
+                fn(data);
+            });
+        });
+        socket.on('/api/billing/add', function (data, fn) {
+            Billing.PostShippingInfo(data, function(data){
+                fn(data);
+            });
+        });
+
 
     });
 };

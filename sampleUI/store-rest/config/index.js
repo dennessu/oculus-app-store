@@ -653,7 +653,7 @@ module.exports = {
                                 "href": "http://api.wan-san.com/users/12345",
                                 "id": "12345"
                             },
-                            "street": "NO. 1000 Twin Dophin Dr",
+                            "street": "NO. 1001 Twin Dophin Dr",
                             "city": "Redwood City",
                             "state": "CA",
                             "postalCode": "96045",
@@ -672,7 +672,7 @@ module.exports = {
                                 "href": "http://api.wan-san.com/users/12345",
                                 "id": "12345"
                             },
-                            "street": "NO. 1000 Twin Dophin Dr",
+                            "street": "NO. 1002 Twin Dophin Dr",
                             "city": "Redwood City",
                             "state": "CA",
                             "postalCode": "96045",
@@ -701,7 +701,7 @@ module.exports = {
                 'Succeed': {
                     statusCode: 200,
                     headers: null,
-                    data: [
+                    data:
                         {
                             "self": {
                                 "href": "http://api.wan-san.com/ship-to-info/70953532335535",
@@ -719,27 +719,7 @@ module.exports = {
                             "firstName": "Steve 11",
                             "lastName": "Smith",
                             "phoneNumber": "207-655-2345"
-                        },
-
-                        {
-                            "self": {
-                                "href": "http://api.wan-san.com/ship-to-info/70953532335535",
-                                "id": "22"
-                            },
-                            "user": {
-                                "href": "http://api.wan-san.com/users/12345",
-                                "id": "12345"
-                            },
-                            "street": "NO. 1000 Twin Dophin Dr",
-                            "city": "Redwood City",
-                            "state": "CA",
-                            "postalCode": "96045",
-                            "country": "US",
-                            "firstName": "Steve 22",
-                            "lastName": "Smith",
-                            "phoneNumber": "207-655-2345"
                         }
-                    ]
 
                 },
 
