@@ -66,6 +66,8 @@ class OrderRepositoryImpl implements OrderRepository {
     @Autowired
     IdGenerator idGenerator
 
+    int orderEventsNumThreshHold = 200
+
     private class RepositoryFuncSet {
         Closure create
         Closure update
@@ -203,8 +205,8 @@ class OrderRepositoryImpl implements OrderRepository {
             events << event
         }
         if (events.size() > orderEventsNumThreshHold) {
-           LOGGER.warn('name=Too_Many_Order_Events, orderId={}, threshHold={}, current={}', orderId,
-                   orderEventsNumThreshHold, events.size())
+            LOGGER.warn('name=Too_Many_Order_Events, orderId={}, threshHold={}, current={}', orderId,
+                    orderEventsNumThreshHold, events.size())
         }
         return events
     }
