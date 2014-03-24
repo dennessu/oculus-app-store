@@ -107,9 +107,6 @@
         <property name="configLocation">
             <value>ehcache/order_ehcache.xml</value>
         </property>
-        <property name="configLocation">
-            <value>ehcache/order_ehcache.xml</value>
-        </property>
     </bean>
     <bean id="orderCacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
         <property name="cacheManager" ref="orderCacheManagerFactory"/>
