@@ -57,6 +57,9 @@ app.controller('OfferCreationCtrl', ['$scope', 'OffersFactory', 'AttributesFacto
         $scope.updateCategories = function() {
             $scope.offer.categories = [$scope.selectedCategory];
         };
+        $scope.updateCategories = function() {
+            $scope.offer.genres = [$scope.selectedGenre];
+        };
         $scope.addPrice = function(country) {
             if (angular.isUndefined($scope.offer)) {
                 $scope.offer = {};
@@ -74,6 +77,7 @@ app.controller('OfferCreationCtrl', ['$scope', 'OffersFactory', 'AttributesFacto
         $scope.items = AttributesFactory.query();
 
         $scope.categoryAttributes = AttributesFactory.query({type: "Category"});
+        $scope.genreAttributes = AttributesFactory.query({type: "Genre"});
         $scope.offers = OffersFactory.query($routeParams);
     }]);
 

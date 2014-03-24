@@ -20,7 +20,8 @@
         <tr>
             <td>Genre</td>
             <td>
-                <select ng-model="offer.type" ng-options="typeAttribute.self as typeAttribute.name for typeAttribute in typeAttributes">
+                <select ng-model="selectedGenre" ng-change="updateGenres()"
+                        ng-options="genreAttribute.self as genreAttribute.name for genreAttribute in genreAttributes">
                 </select>
             </td>
         </tr>
@@ -72,6 +73,7 @@
                         <option>TierPricing</option>
                         <option>NormalPricing</option>
                     </select>
+                    <hr />
                     <div ng-show="priceType=='NormalPricing'">
                         Add price:
                         <select ng-model="selectedCountry" ng-change="addPrice(selectedCountry)">
