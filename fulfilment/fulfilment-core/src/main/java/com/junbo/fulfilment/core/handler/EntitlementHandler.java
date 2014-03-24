@@ -51,6 +51,7 @@ public class EntitlementHandler extends HandlerSupport implements FulfilmentHand
         entitlement.setTag((String) prop.get(Constant.ENTITLEMENT_TAG));
         entitlement.setGroup((String) prop.get(Constant.ENTITLEMENT_GROUP));
         entitlement.setDeveloperId((Long) prop.get(Constant.ENTITLEMENT_DEVELOPER));
+        entitlement.setEntitlementDefinitionId((Long) prop.get(Constant.ENTITLEMENT_DEF_ID));
         entitlement.setGrantDate(Utils.now());
 
         return entitlementGateway.grant(entitlement);

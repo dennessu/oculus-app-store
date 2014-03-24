@@ -11,6 +11,7 @@ import com.junbo.billing.spec.model.ShippingAddress;
 import com.junbo.billing.spec.resource.ShippingAddressResource;
 import com.junbo.common.id.ShippingAddressId;
 import com.junbo.common.id.UserId;
+import com.junbo.common.model.Results;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -32,8 +33,16 @@ public class ShippingAddressResourceImpl implements ShippingAddressResource {
     }
 
     @Override
-    public Promise<List<ShippingAddress>> getShippingAddresses(UserId userId) {
-        return shippingAddressService.getShippingAddresses(userId.getValue());
+    public Promise<Results<ShippingAddress>> getShippingAddresses(UserId userId) {
+        return shippingAddressService.getShippingAddresses(userId.getValue())
+                .then(new Promise.Func<List<ShippingAddress>, Promise<Results<ShippingAddress>>>() {
+            @Override
+            public Promise<Results<ShippingAddress>> apply(List<ShippingAddress> shippingAddresses) {
+                Results<ShippingAddress> results = new Results<>();
+                results.setItems(shippingAddresses);
+                return Promise.pure(results);
+            }
+        });
     }
 
     @Override

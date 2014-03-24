@@ -26,10 +26,8 @@ public class Offer extends VersionedModel {
     private Long id;
 
     @UserId
+    @JsonProperty("developer")
     private Long ownerId;
-
-    @AttributeId
-    private Long type;
 
     private Integer priceTier;
     private Map<String, Price> prices;
@@ -65,14 +63,6 @@ public class Offer extends VersionedModel {
 
     public void setOwnerId(Long ownerId) {
         this.ownerId = ownerId;
-    }
-
-    public Long getType() {
-        return type;
-    }
-
-    public void setType(Long type) {
-        this.type = type;
     }
 
     public Integer getPriceTier() {

@@ -7,7 +7,7 @@ package com.junbo.identity.spec.resource;
 
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserOptInId;
-import com.junbo.identity.spec.model.common.ResultList;
+import com.junbo.common.model.Results;
 import com.junbo.identity.spec.model.user.UserOptIn;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
@@ -29,7 +29,7 @@ public interface UserOptInResource {
                             UserOptIn userOptIn);
 
     @GET
-    Promise<ResultList<UserOptIn>> getUserOptIns(@PathParam("key1") UserId userId,
+    Promise<Results<UserOptIn>> getUserOptIns(@PathParam("key1") UserId userId,
                                  @QueryParam("type") String type,
                                  @QueryParam("cursor") Integer cursor,
                                  @QueryParam("count") Integer count);

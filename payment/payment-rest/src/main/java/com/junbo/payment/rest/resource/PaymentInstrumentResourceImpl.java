@@ -8,18 +8,19 @@ package com.junbo.payment.rest.resource;
 
 import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.common.id.UserId;
+import com.junbo.common.model.Results;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.common.CommonUtil;
-import com.junbo.payment.core.PaymentInstrumentService;
 import com.junbo.payment.common.exception.AppClientExceptions;
+import com.junbo.payment.core.PaymentInstrumentService;
 import com.junbo.payment.spec.model.PageMetaData;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentInstrumentSearchParam;
-import com.junbo.payment.spec.model.ResultList;
 import com.junbo.payment.spec.resource.PaymentInstrumentResource;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.ws.rs.*;
+import javax.ws.rs.BeanParam;
+import javax.ws.rs.GET;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
@@ -71,11 +72,11 @@ public class PaymentInstrumentResourceImpl implements PaymentInstrumentResource 
     }
 
     @Override
-    public Promise<ResultList<PaymentInstrument>> searchPaymentInstrument(UserId userId,
+    public Promise<Results<PaymentInstrument>> searchPaymentInstrument(UserId userId,
             @BeanParam PaymentInstrumentSearchParam searchParam, @BeanParam PageMetaData pageMetadata) {
         List<PaymentInstrument> piRequests = piService.searchPi(userId.getValue(), searchParam, pageMetadata);
-        ResultList<PaymentInstrument> result = new ResultList<PaymentInstrument>();
-        result.setResults(piRequests);
+        Results<PaymentInstrument> result = new Results<PaymentInstrument>();
+        result.setItems(piRequests);
         //result.setNext(CommonUtils.buildNextUrl(uriInfo));
         return Promise.pure(result);
     }

@@ -8,8 +8,8 @@ package com.junbo.catalog.spec.resource;
 
 import com.junbo.catalog.spec.model.attribute.Attribute;
 import com.junbo.catalog.spec.model.attribute.AttributesGetOptions;
-import com.junbo.catalog.spec.model.common.ResultList;
 import com.junbo.common.id.AttributeId;
+import com.junbo.common.model.Results;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.wordnik.swagger.annotations.Api;
@@ -36,7 +36,7 @@ public interface AttributeResource {
     @ApiOperation("Get all attributes")
     @GET
     @Path("/")
-    Promise<ResultList<Attribute>> getAttributes(@BeanParam AttributesGetOptions options);
+    Promise<Results<Attribute>> getAttributes(@BeanParam AttributesGetOptions options);
 
     @ApiOperation("Create an attribute")
     @POST

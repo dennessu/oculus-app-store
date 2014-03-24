@@ -10,12 +10,17 @@ import com.junbo.common.id.EntitlementDefinitionId;
 import com.junbo.common.id.EntitlementId;
 import com.junbo.common.id.OfferId;
 import com.junbo.common.id.UserId;
+import com.junbo.common.model.Link;
+import com.junbo.common.model.Results;
 import com.junbo.common.util.IdFormatter;
 import com.junbo.entitlement.common.def.EntitlementConsts;
 import com.junbo.entitlement.common.def.EntitlementStatusReason;
 import com.junbo.entitlement.common.lib.CommonUtils;
 import com.junbo.entitlement.core.EntitlementService;
-import com.junbo.entitlement.spec.model.*;
+import com.junbo.entitlement.spec.model.Entitlement;
+import com.junbo.entitlement.spec.model.EntitlementSearchParam;
+import com.junbo.entitlement.spec.model.EntitlementTransfer;
+import com.junbo.entitlement.spec.model.PageMetadata;
 import com.junbo.entitlement.spec.resource.EntitlementResource;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,20 +49,23 @@ public class EntitlementResourceImpl implements EntitlementResource {
     }
 
     @Override
-    public Promise<ResultList<Entitlement>> getEntitlements(UserId userId,
+    public Promise<Results<Entitlement>> getEntitlements(UserId userId,
                                                             EntitlementSearchParam searchParam,
                                                             PageMetadata pageMetadata) {
         searchParam.setUserId(userId);
         List<Entitlement> entitlements = entitlementService.searchEntitlement(searchParam, pageMetadata);
-        ResultList<Entitlement> result = new ResultList<Entitlement>();
-        result.setCriteria(entitlements);
+        Results<Entitlement> result = new Results<Entitlement>();
+        result.setItems(entitlements);
+
+        Link link = new Link();
         if (entitlements.size() <
                 (pageMetadata.getCount() == null
                         ? EntitlementConsts.DEFAULT_PAGE_SIZE : pageMetadata.getCount())) {
-            result.setNext(EntitlementConsts.NEXT_END);
+            link.setHref(EntitlementConsts.NEXT_END);
         } else {
-            result.setNext(buildNextUrl(searchParam, pageMetadata));
+            link.setHref(buildNextUrl(searchParam, pageMetadata));
         }
+        result.setNext(link);
         return Promise.pure(result);
     }
 

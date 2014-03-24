@@ -6,7 +6,7 @@
 package com.junbo.oauth.core.service.impl
 
 import com.junbo.common.id.UserId
-import com.junbo.identity.spec.model.common.ResultList
+import com.junbo.common.model.Results
 import com.junbo.identity.spec.model.user.User
 import com.junbo.identity.spec.model.user.UserProfile
 import com.junbo.identity.spec.resource.UserProfileResource
@@ -84,7 +84,7 @@ class UserServiceImpl implements UserService {
                 email: user.userName
         )
 
-        Promise<ResultList<UserProfile>> userProfilePromise = userProfileResource.
+        Promise<Results<UserProfile>> userProfilePromise = userProfileResource.
                 getUserProfiles(new UserId(accessToken.userId), 'PAYIN', 0, 1)
 
         if (userProfileResource != null && userProfilePromise.wrapped().get() != null
