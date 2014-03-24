@@ -36,6 +36,10 @@ public class CompoundIdSerializer extends ResourceIdSerializer {
                 field.setAccessible(true);
                 Object fieldValue = field.get(value);
 
+                if (fieldValue == null) {
+                    throw new RuntimeException("Field [" + field.getName() + "] value should not be null.");
+                }
+
                 path = path.replace("{" + field.getName() + "}", encode(fieldValue));
             }
         } catch (IllegalAccessException e) {
