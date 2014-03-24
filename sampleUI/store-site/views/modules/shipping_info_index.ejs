@@ -1,23 +1,22 @@
 <div class="container modules">
 <section class="box1">
     <h2>Please select your shipping info</h2>
+    {{#if isValid}}
+    <p class="error">Please select!</p>
+    {{/if}}
     <dl class="radio">
+        {{#each}}
         <dt>
             <lable>
-                <input type="radio" name="ShippingInfo">
-                <span>Street Address<br>City ZipCode</span>
+                {{input type="radio" name="ShippingInfo" value=id}}
+                <span>{{street}}<br>{{city}} {{state}} {{postalCode}}</span>
             </lable>
         </dt>
-        <dt>
-            <lable>
-                <input type="radio" name="ShippingInfo">
-                <span>Street Address<br>City ZipCode</span>
-            </lable>
-        </dt>
+        {{/each}}
     </dl>
     <div class="actions">
-        <button type="button" class="btn btn-primary" {{action "CreateNew"}}>Create a New</button>
         <button type="button" class="btn btn-primary" {{action "Continue"}}>Continue</button>
+        <button type="button" class="btn btn-cancel" {{action "CreateNew"}}>Create a New</button>
     </div>
 </section>
 </div>

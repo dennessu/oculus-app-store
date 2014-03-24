@@ -6,7 +6,7 @@
 package com.junbo.testing.common.apihelper;
 
 import com.junbo.common.json.JsonMessageTranscoder;
-import com.junbo.identity.spec.model.common.ResultList;
+import com.junbo.common.model.Results;
 import com.junbo.langur.core.client.TypeReference;
 import com.junbo.testing.common.libs.LogHelper;
 import com.ning.http.client.AsyncHttpClient;
@@ -76,7 +76,7 @@ public abstract class HttpClientBase {
                 logger.LogResponse(nettyResponse);
 
                 return (T) new JsonMessageTranscoder().decode(
-                        new TypeReference<ResultList<T>>() {
+                        new TypeReference<Results<T>>() {
                         }, nettyResponse.getResponseBody());
             }
             case GET:

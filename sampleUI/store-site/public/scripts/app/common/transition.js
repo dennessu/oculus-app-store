@@ -12,6 +12,9 @@ var Transition = {
             case Ember.App.CartItem:
                 result = Transition.CartItems(data);
                 break;
+            case Ember.App.ShippingInfo:
+                result = Transition.ShippingInfo(data);
+                break;
             default :
                 result = Transition.Normalize(data);
                 break;
@@ -74,5 +77,39 @@ var Transition = {
         }
 
         return {"CartItems": list};
+    },
+
+    ShippingInfo: function(data){
+        if(data instanceof Array){
+            var result = new Array();
+            for(var i = 0; i < data.length; ++i){
+                var item = data[i];
+                result.push({
+                    id: item.self.id,
+                    street: item.street,
+                    city: item.city,
+                    state: item.state,
+                    postalCode: item.postalCode,
+                    country: item.country,
+                    firstName: item.firstName,
+                    lastName: item.lastName,
+                    phoneNumber: item.phoneNumber
+                });
+            }
+            return {"ShippingInfos": result};
+        }else{
+            var item = data;
+            return {
+                id: item.self.id,
+                street: item.street,
+                city: item.city,
+                state: item.state,
+                postalCode: item.postalCode,
+                country: item.country,
+                firstName: item.firstName,
+                lastName: item.lastName,
+                phoneNumber: item.phoneNumber
+            };
+        }
     }
 };

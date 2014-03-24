@@ -1,5 +1,5 @@
 <div class="container modules">
-    <section class="box1 create_payment">
+    <form class="box1 create_payment" {{action "Continue" on="submit"}}>
         <h2>Enter your Payment info</h2>
         <dl>
             <dt>Payment Type</dt>
@@ -80,8 +80,8 @@
         </dl>
 
         <div class="actions">
-            <button type="submit" class="btn btn-primary" {{action "Continue"}}>Continue</button>
-            <button type="button" class="btn btn-cancel" {{action "Cancel"}}>Cancel</button>
+            <button type="button" class="btn btn-primary">Continue</button>
+            <button type="button" class="btn btn-cancel" {{action "CreateNew"}}>Create a New</button>
         </div>
-    </section>
+    </form>
 </div>

@@ -5,13 +5,13 @@ common
 identity
 oauth
 catalog
+entitlement
 rating
 payment
 email
 billing
 cart
 drm
-entitlement
 ewallet
 fulfilment
 order
