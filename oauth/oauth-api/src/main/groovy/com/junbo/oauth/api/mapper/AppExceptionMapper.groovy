@@ -41,7 +41,7 @@ class AppExceptionMapper implements ExceptionMapper<Exception> {
         if (exception instanceof JsonMappingException) {
             Error error = new Error('invalid_json', exception.message, null, null)
 
-            return Response.status(Response.Status.BAD_GATEWAY).entity(error).type(MediaType.APPLICATION_JSON).build()
+            return Response.status(Response.Status.BAD_REQUEST).entity(error).type(MediaType.APPLICATION_JSON).build()
         }
 
         LOGGER.error('Log unhandled exception', exception)
