@@ -7,12 +7,15 @@ package com.junbo.identity.rest.resource;
 
 import com.junbo.common.id.UserAuthenticatorId;
 import com.junbo.common.id.UserId;
+import com.junbo.identity.core.service.user.UserAuthenticatorService;
+import com.junbo.identity.core.service.validator.UserAuthenticatorValidator;
 import com.junbo.identity.spec.model.common.ResultList;
 import com.junbo.identity.spec.model.users.UserAuthenticator;
 import com.junbo.identity.spec.options.entity.UserAuthenticatorGetOptions;
 import com.junbo.identity.spec.options.list.UserAuthenticatorListOption;
 import com.junbo.identity.spec.resource.UserAuthenticatorResource;
 import com.junbo.langur.core.promise.Promise;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.BeanParam;
@@ -25,9 +28,15 @@ import javax.ws.rs.ext.Provider;
 @Component
 @org.springframework.context.annotation.Scope("prototype")
 public class UserAuthenticatorResourceImpl implements UserAuthenticatorResource {
+    @Autowired
+    private UserAuthenticatorService userAuthenticatorService;
+
+    @Autowired
+    private UserAuthenticatorValidator validator;
+
     @Override
     public Promise<UserAuthenticator> create(UserId userId, UserAuthenticator userAuthenticator) {
-        return null;
+        return Promise.pure(userAuthenticatorService.save(userId, userAuthenticator));
     }
 
     @Override

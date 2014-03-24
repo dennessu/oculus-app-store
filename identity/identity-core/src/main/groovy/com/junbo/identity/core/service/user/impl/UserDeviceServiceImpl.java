@@ -6,6 +6,7 @@
 package com.junbo.identity.core.service.user.impl;
 
 import com.junbo.common.id.UserDeviceId;
+import com.junbo.common.id.UserId;
 import com.junbo.identity.data.repository.UserDeviceRepository;
 import com.junbo.identity.core.service.user.UserDeviceService;
 import com.junbo.identity.spec.options.list.UserDeviceListOption;
@@ -26,18 +27,18 @@ public class UserDeviceServiceImpl implements UserDeviceService {
     private UserDeviceRepository userDeviceRepository;
 
     @Override
-    public UserDevice save(Long userId, UserDevice userDeviceProfile) {
-        return userDeviceRepository.save(userDeviceProfile);
+    public UserDevice save(UserId userId, UserDevice userDevice) {
+        return userDeviceRepository.save(userDevice);
     }
 
     @Override
-    public UserDevice update(Long userId, Long deviceProfileId, UserDevice userDeviceProfileProfile) {
-        return userDeviceRepository.update(userDeviceProfileProfile);
+    public UserDevice update(UserId userId, UserDeviceId userDeviceId, UserDevice userDevice) {
+        return userDeviceRepository.update(userDevice);
     }
 
     @Override
-    public UserDevice get(Long userId, Long deviceProfileId) {
-        return userDeviceRepository.get(new UserDeviceId(deviceProfileId));
+    public UserDevice get(UserId userId, UserDeviceId userDeviceId) {
+        return userDeviceRepository.get(userDeviceId);
     }
 
     @Override
@@ -46,7 +47,7 @@ public class UserDeviceServiceImpl implements UserDeviceService {
     }
 
     @Override
-    public void delete(Long userId, Long deviceId) {
-        userDeviceRepository.delete(new UserDeviceId(deviceId));
+    public void delete(UserId userId, UserDeviceId userDeviceId) {
+        userDeviceRepository.delete(userDeviceId);
     }
 }

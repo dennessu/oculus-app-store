@@ -30,15 +30,15 @@ class UserServiceValidatorImpl extends CommonValidator implements UserServiceVal
     }
 
     @Override
-    public void validateUpdate(Long id, User user) {
-        validateUserExist(id);
+    public void validateUpdate(UserId userId, User user) {
+        validateUserExist(userId);
         validateUserInfo(user);
 
         if(user.getId() == null) {
-            throw AppErrors.INSTANCE.missingParameterField("user.id").exception();
+            throw AppErrors.INSTANCE.missingParameterField("user.userId").exception();
         }
-        if(!id.equals(user.getId().getValue())) {
-            throw AppErrors.INSTANCE.inputParametersMismatch("id", "user.id").exception();
+        if(!userId.equals(user.getId().getValue())) {
+            throw AppErrors.INSTANCE.inputParametersMismatch("userId", "user.userId").exception();
         }
         if(user.getResourceAge() == null) {
             throw AppErrors.INSTANCE.missingParameterField("user.resourceAge").exception();
@@ -46,17 +46,17 @@ class UserServiceValidatorImpl extends CommonValidator implements UserServiceVal
     }
 
     @Override
-    public void validateDelete(Long id) {
-        validateUserExist(id);
+    public void validateDelete(UserId userId) {
+        validateUserExist(userId);
     }
 
-    private void validateUserExist(Long id) {
-        if(id == null) {
+    private void validateUserExist(UserId userId) {
+        if(userId == null) {
             throw AppErrors.INSTANCE.invalidNullEmptyInputParam().exception();
         }
-        User existingUser = userRepository.get(new UserId(id));
+        User existingUser = userRepository.get(userId);
         if(existingUser == null) {
-            throw AppErrors.INSTANCE.notExistingUser("userId = " + id.toString()).exception();
+            throw AppErrors.INSTANCE.notExistingUser("userId = " + userId.toString()).exception();
         }
     }
 

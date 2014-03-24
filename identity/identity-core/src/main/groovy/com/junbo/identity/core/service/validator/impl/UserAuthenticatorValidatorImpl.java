@@ -28,7 +28,7 @@ public class UserAuthenticatorValidatorImpl extends CommonValidator implements U
     private UserAuthenticatorRepository userAuthenticatorRepository;
 
     @Override
-    public void validateCreate(Long userId, UserAuthenticator userFederation) {
+    public void validateCreate(UserId userId, UserAuthenticator userFederation) {
         if(userId == null || userFederation == null) {
             throw AppErrors.INSTANCE.invalidNullEmptyInputParam().exception();
         }
@@ -43,30 +43,31 @@ public class UserAuthenticatorValidatorImpl extends CommonValidator implements U
     }
 
     @Override
-    public void validateUpdate(Long userId, Long federationId, UserAuthenticator userFederation) {
-        if(userId == null || federationId == null || userFederation == null) {
+    public void validateUpdate(UserId userId, UserAuthenticatorId userAuthenticatorId,
+                               UserAuthenticator userAuthenticator) {
+        if(userId == null || userAuthenticatorId == null || userAuthenticator == null) {
             throw AppErrors.INSTANCE.invalidNullEmptyInputParam().exception();
         }
-        validateNecessaryFields(userId, userFederation);
-        validateUnnecessaryFields(userFederation);
-        if(userFederation.getResourceAge() == null) {
+        validateNecessaryFields(userId, userAuthenticator);
+        validateUnnecessaryFields(userAuthenticator);
+        if(userAuthenticator.getResourceAge() == null) {
             throw AppErrors.INSTANCE.missingParameterField("userFederation.resourceAge").exception();
         }
-        if(userFederation.getId() == null) {
+        if(userAuthenticator.getId() == null) {
             throw AppErrors.INSTANCE.missingParameterField("userFederation.id").exception();
         }
     }
 
     @Override
-    public void validateDelete(Long userId, Long federationId) {
-        validateResourceAccessible(userId, federationId);
+    public void validateDelete(UserId userId, UserAuthenticatorId userAuthenticatorId) {
+        validateResourceAccessible(userId, userAuthenticatorId);
     }
 
     @Override
-    public void validateResourceAccessible(Long userId, Long federationId) {
+    public void validateResourceAccessible(UserId userId, UserAuthenticatorId userAuthenticatorId) {
         checkUserValid(userId);
 
-        UserAuthenticator userFederation = userAuthenticatorRepository.get(new UserAuthenticatorId(federationId));
+        UserAuthenticator userFederation = userAuthenticatorRepository.get(userAuthenticatorId);
         if(userFederation == null) {
             throw AppErrors.INSTANCE.invalidResourceRequest().exception();
         }
@@ -76,18 +77,18 @@ public class UserAuthenticatorValidatorImpl extends CommonValidator implements U
         }
     }
 
-    private void validateNecessaryFields(Long userId, UserAuthenticator userFederation) {
+    private void validateNecessaryFields(UserId userId, UserAuthenticator userAuthenticator) {
         checkUserValid(userId);
-        if(userFederation.getUserId() == null) {
+        if(userAuthenticator.getUserId() == null) {
             throw AppErrors.INSTANCE.missingParameterField("userFederation.userId").exception();
         }
-        if(StringUtils.isEmpty(userFederation.getType())) {
+        if(StringUtils.isEmpty(userAuthenticator.getType())) {
             throw AppErrors.INSTANCE.missingParameterField("userFederation.type").exception();
         }
-        if(StringUtils.isEmpty(userFederation.getValue())) {
+        if(StringUtils.isEmpty(userAuthenticator.getValue())) {
             throw AppErrors.INSTANCE.missingParameterField("userFederation.value").exception();
         }
-        checkUserFederationNotExists(userId, userFederation);
+        checkUserAuthenticatorNotExists(userId, userAuthenticator);
     }
 
     private void validateUnnecessaryFields(UserAuthenticator userFederation) {
@@ -99,9 +100,9 @@ public class UserAuthenticatorValidatorImpl extends CommonValidator implements U
         }
     }
 
-    private void checkUserFederationNotExists(Long userId, UserAuthenticator userFederation) {
+    private void checkUserAuthenticatorNotExists(UserId userId, UserAuthenticator userFederation) {
         UserAuthenticatorListOption getOption = new UserAuthenticatorListOption();
-        getOption.setUserId(new UserId(userId));
+        getOption.setUserId(userId);
         List<UserAuthenticator> userFederations = userAuthenticatorRepository.search(getOption);
 
         if(!CollectionUtils.isEmpty(userFederations)) {

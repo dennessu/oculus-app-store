@@ -5,14 +5,16 @@
  */
 package com.junbo.identity.core.service.validator;
 
+import com.junbo.common.id.UserDeviceId;
+import com.junbo.common.id.UserId;
 import com.junbo.identity.spec.model.users.UserDevice;
 
 /**
  * Created by liangfu on 3/3/14.
  */
 public interface UserDeviceValidator {
-    void validateCreate(Long userId, UserDevice userDeviceProfile);
-    void validateUpdate(Long userId, Long deviceProfileId, UserDevice userDeviceProfile);
-    void validateDelete(Long userId, Long deviceProfileId);
-    void validateResourceAccessible(Long userId, Long deviceProfileId);
+    void validateCreate(UserId userId, UserDevice userDevice);
+    void validateUpdate(UserId userId, UserDeviceId userDeviceId, UserDevice userDevice);
+    void validateDelete(UserId userId, UserDeviceId userDeviceId);
+    void validateResourceAccessible(UserId userId, UserDeviceId userDeviceId);
 }

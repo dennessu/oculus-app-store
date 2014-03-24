@@ -5,14 +5,16 @@
  */
 package com.junbo.identity.core.service.validator;
 
+import com.junbo.common.id.UserAuthenticatorId;
+import com.junbo.common.id.UserId;
 import com.junbo.identity.spec.model.users.UserAuthenticator;
 
 /**
  * Created by liangfu on 3/3/14.
  */
 public interface UserAuthenticatorValidator {
-    void validateCreate(Long userId, UserAuthenticator userFederation);
-    void validateUpdate(Long userId, Long federationId, UserAuthenticator userFederation);
-    void validateDelete(Long userId, Long federationId);
-    void validateResourceAccessible(Long userId, Long federationId);
+    void validateCreate(UserId userId, UserAuthenticator userFederation);
+    void validateUpdate(UserId userId, UserAuthenticatorId userAuthenticatorId, UserAuthenticator userAuthenticator);
+    void validateDelete(UserId userId, UserAuthenticatorId userAuthenticatorId);
+    void validateResourceAccessible(UserId userId, UserAuthenticatorId userAuthenticatorId);
 }

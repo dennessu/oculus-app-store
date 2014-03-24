@@ -5,14 +5,16 @@
  */
 package com.junbo.identity.core.service.validator;
 
+import com.junbo.common.id.UserId;
+import com.junbo.common.id.UserOptinId;
 import com.junbo.identity.spec.model.users.UserOptin;
 
 /**
  * Created by liangfu on 2/28/14.
  */
 public interface UserOptinValidator {
-    void validateCreate(Long userId, UserOptin userOptIn);
-    void validateUpdate(Long userId, Long optInId, UserOptin userOptIn);
-    void validateDelete(Long userId, Long optInId);
-    void validateResourceAccessible(Long userId, Long optInId);
+    void validateCreate(UserId userId, UserOptin userOptIn);
+    void validateUpdate(UserId userId, UserOptinId userOptinId, UserOptin userOptIn);
+    void validateDelete(UserId userId, UserOptinId userOptinId);
+    void validateResourceAccessible(UserId userId, UserOptinId userOptinId);
 }

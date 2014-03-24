@@ -20,8 +20,8 @@ public class CommonValidator {
     @Autowired
     protected UserRepository userRepository;
 
-    protected void checkUserValid(Long userId) {
-        User user = userRepository.get(new UserId(userId));
+    protected void checkUserValid(UserId userId) {
+        User user = userRepository.get(userId);
         if(user == null) {
             throw AppErrors.INSTANCE.notExistingUser("userId = " + userId.toString()).exception();
         }

@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.core.service.validator;
 
+import com.junbo.common.id.UserId;
 import com.junbo.identity.spec.model.users.User;
 
 /**
@@ -12,6 +13,6 @@ import com.junbo.identity.spec.model.users.User;
  */
 public interface UserServiceValidator {
     void validateCreate(User user);
-    void validateUpdate(Long id, User user);
-    void validateDelete(Long id);
+    void validateUpdate(UserId id, User user);
+    void validateDelete(UserId id);
 }

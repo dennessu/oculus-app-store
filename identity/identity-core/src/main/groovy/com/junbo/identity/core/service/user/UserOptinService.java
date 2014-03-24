@@ -5,6 +5,8 @@
  */
 package com.junbo.identity.core.service.user;
 
+import com.junbo.common.id.UserId;
+import com.junbo.common.id.UserOptinId;
 import com.junbo.identity.spec.model.users.UserOptin;
 
 import java.util.List;
@@ -13,9 +15,9 @@ import java.util.List;
  * Created by liangfu on 2/20/14.
  */
 public interface UserOptinService {
-    UserOptin save(Long userId, UserOptin userOptIn);
-    UserOptin update(Long userId, Long userOptInId, UserOptin userOptIn);
-    UserOptin get(Long userId, Long userOptInId);
-    List<UserOptin> getByUserId(Long userId, String type);
-    void delete(Long userId, Long userOptInId);
+    UserOptin save(UserId userId, UserOptin userOptIn);
+    UserOptin update(UserId userId, UserOptinId userOptInId, UserOptin userOptIn);
+    UserOptin get(UserId userId, UserOptinId userOptInId);
+    List<UserOptin> search(UserId userId, String type);
+    void delete(UserId userId, UserOptinId userOptInId);
 }

@@ -5,14 +5,16 @@
  */
 package com.junbo.identity.core.service.validator;
 
+import com.junbo.common.id.UserId;
+import com.junbo.common.id.UserTosId;
 import com.junbo.identity.spec.model.users.UserTos;
 
 /**
  * Created by liangfu on 2/28/14.
  */
 public interface UserTosValidator {
-    void validateCreate(Long userId, UserTos userTosAcceptance);
-    void validateUpdate(Long userId, Long userTosId, UserTos userTosAcceptance);
-    void validateDelete(Long userId, Long userTosId);
-    void validateResourceAccessible(Long userId, Long userTosId);
+    void validateCreate(UserId userId, UserTos userTos);
+    void validateUpdate(UserId userId, UserTosId userTosId, UserTos userTos);
+    void validateDelete(UserId userId, UserTosId userTosId);
+    void validateResourceAccessible(UserId userId, UserTosId userTosId);
 }

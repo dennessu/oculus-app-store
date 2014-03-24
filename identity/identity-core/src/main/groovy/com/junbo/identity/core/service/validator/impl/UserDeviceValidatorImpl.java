@@ -6,6 +6,7 @@
 package com.junbo.identity.core.service.validator.impl;
 
 import com.junbo.common.id.UserDeviceId;
+import com.junbo.common.id.UserId;
 import com.junbo.identity.data.repository.UserDeviceRepository;
 import com.junbo.identity.core.service.validator.UserDeviceValidator;
 import com.junbo.identity.spec.error.AppErrors;
@@ -23,7 +24,7 @@ public class UserDeviceValidatorImpl extends CommonValidator implements UserDevi
     private UserDeviceRepository userDeviceRepository;
 
     @Override
-    public void validateCreate(Long userId, UserDevice userDeviceProfile) {
+    public void validateCreate(UserId userId, UserDevice userDeviceProfile) {
         if(userId == null || userDeviceProfile == null) {
             throw AppErrors.INSTANCE.invalidNullEmptyInputParam().exception();
         }
@@ -38,36 +39,36 @@ public class UserDeviceValidatorImpl extends CommonValidator implements UserDevi
     }
 
     @Override
-    public void validateUpdate(Long userId, Long deviceProfileId, UserDevice userDeviceProfile) {
-        if(userId == null || deviceProfileId == null || userDeviceProfile == null) {
+    public void validateUpdate(UserId userId, UserDeviceId userDeviceId, UserDevice userDevice) {
+        if(userId == null || userDeviceId == null || userDevice == null) {
             throw AppErrors.INSTANCE.invalidNullEmptyInputParam().exception();
         }
-        validateNecessaryFields(userId, userDeviceProfile);
-        validateUnnecessaryFields(userDeviceProfile);
-        if(userDeviceProfile.getResourceAge() == null) {
+        validateNecessaryFields(userId, userDevice);
+        validateUnnecessaryFields(userDevice);
+        if(userDevice.getResourceAge() == null) {
             throw AppErrors.INSTANCE.missingParameterField("userDeviceProfile.resourceAge").exception();
         }
-        if(userDeviceProfile.getId() == null) {
+        if(userDevice.getId() == null) {
             throw AppErrors.INSTANCE.missingParameterField("userDeviceProfile.id").exception();
         }
     }
 
     @Override
-    public void validateDelete(Long userId, Long deviceProfileId) {
-        validateResourceAccessible(userId, deviceProfileId);
+    public void validateDelete(UserId userId, UserDeviceId userDeviceId) {
+        validateResourceAccessible(userId, userDeviceId);
     }
 
     @Override
-    public void validateResourceAccessible(Long userId, Long deviceProfileId) {
+    public void validateResourceAccessible(UserId userId, UserDeviceId userDeviceId) {
         checkUserValid(userId);
 
-        UserDevice userDeviceProfile = userDeviceRepository.get(new UserDeviceId(deviceProfileId));
+        UserDevice userDeviceProfile = userDeviceRepository.get(userDeviceId);
         if(userDeviceProfile == null) {
             throw AppErrors.INSTANCE.invalidResourceRequest().exception();
         }
     }
 
-    private void validateNecessaryFields(Long userId, UserDevice userDeviceProfile) {
+    private void validateNecessaryFields(UserId userId, UserDevice userDeviceProfile) {
         checkUserValid(userId);
 
         if(userDeviceProfile.getDeviceId() == null) {
@@ -88,7 +89,7 @@ public class UserDeviceValidatorImpl extends CommonValidator implements UserDevi
         }
     }
 
-    private void checkUserDeviceProfileNotExists(Long userId, UserDevice userDeviceProfile) {
+    private void checkUserDeviceProfileNotExists(UserId userId, UserDevice userDeviceProfile) {
 
     }
 }

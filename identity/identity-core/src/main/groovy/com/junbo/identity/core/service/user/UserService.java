@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.core.service.user;
 
+import com.junbo.common.id.UserId;
 import com.junbo.identity.spec.model.users.User;
 import java.util.List;
 
@@ -28,14 +29,14 @@ public interface UserService {
      * @param id
      * @return
      */
-    User get(Long id);
+    User get(UserId id);
 
     /*
      * soft delete the user. Only mark the user status as deleted.
      * @param id
      * @return
      */
-    void delete(Long id);
+    void delete(UserId id);
 
     /*
      * Update current user. User can only update status.
@@ -43,7 +44,7 @@ public interface UserService {
      * @param user
      * @return
      */
-    User update(Long userId, User user);
+    User update(UserId userId, User user);
 
     /*
      * get user with name and status

@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.core.service.user.impl;
 
+import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserTosId;
 import com.junbo.identity.data.repository.UserTosRepository;
 import com.junbo.identity.core.service.user.UserTosService;
@@ -30,32 +31,32 @@ public class UserTosServiceImpl implements UserTosService {
     private UserTosValidator validator;
 
     @Override
-    public UserTos save(Long userId, UserTos userTosAcceptance) {
-        validator.validateCreate(userId, userTosAcceptance);
-        return userTosRepository.save(userTosAcceptance);
+    public UserTos save(UserId userId, UserTos userTos) {
+        validator.validateCreate(userId, userTos);
+        return userTosRepository.save(userTos);
     }
 
     @Override
-    public UserTos update(Long userId, Long userTosId, UserTos userTosAcceptance) {
-        validator.validateUpdate(userId, userTosId, userTosAcceptance);
-        return userTosRepository.update(userTosAcceptance);
+    public UserTos update(UserId userId, UserTosId userTosId, UserTos userTos) {
+        validator.validateUpdate(userId, userTosId, userTos);
+        return userTosRepository.update(userTos);
     }
 
     @Override
-    public UserTos get(Long userId, Long userTosId) {
+    public UserTos get(UserId userId, UserTosId userTosId) {
         validator.validateResourceAccessible(userId, userTosId);
-        return userTosRepository.get(new UserTosId(userTosId));
+        return userTosRepository.get(userTosId);
     }
 
     @Override
-    public List<UserTos> getByUserId(Long userId, String tos) {
+    public List<UserTos> search(UserId userId, String tos) {
         UserTosListOption getOption = new UserTosListOption();
         return userTosRepository.search(getOption);
     }
 
     @Override
-    public void delete(Long userId, Long userTosId) {
+    public void delete(UserId userId, UserTosId userTosId) {
         validator.validateDelete(userId, userTosId);
-        userTosRepository.delete(new UserTosId(userTosId));
+        userTosRepository.delete(userTosId);
     }
 }

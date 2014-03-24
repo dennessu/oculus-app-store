@@ -6,6 +6,7 @@
 package com.junbo.identity.core.service.user.impl;
 
 import com.junbo.common.id.UserAuthenticatorId;
+import com.junbo.common.id.UserId;
 import com.junbo.identity.data.repository.UserAuthenticatorRepository;
 import com.junbo.identity.core.service.user.UserAuthenticatorService;
 import com.junbo.identity.core.service.validator.UserAuthenticatorValidator;
@@ -30,21 +31,22 @@ public class UserAuthenticatorServiceImpl implements UserAuthenticatorService {
     private UserAuthenticatorValidator validator;
 
     @Override
-    public UserAuthenticator save(Long userId, UserAuthenticator userFederation) {
-        validator.validateCreate(userId, userFederation);
-        return userFederationRepository.save(userFederation);
+    public UserAuthenticator save(UserId userId, UserAuthenticator userAuthenticator) {
+        validator.validateCreate(userId, userAuthenticator);
+        return userFederationRepository.save(userAuthenticator);
     }
 
     @Override
-    public UserAuthenticator update(Long userId, Long federationId, UserAuthenticator userFederation) {
-        validator.validateUpdate(userId, federationId, userFederation);
-        return userFederationRepository.update(userFederation);
+    public UserAuthenticator update(UserId userId, UserAuthenticatorId userAuthenticatorId,
+                                    UserAuthenticator userAuthenticator) {
+        validator.validateUpdate(userId, userAuthenticatorId, userAuthenticator);
+        return userFederationRepository.update(userAuthenticator);
     }
 
     @Override
-    public UserAuthenticator get(Long userId, Long federationId) {
-        validator.validateResourceAccessible(userId, federationId);
-        return userFederationRepository.get(new UserAuthenticatorId(federationId));
+    public UserAuthenticator get(UserId userId, UserAuthenticatorId userAuthenticatorId) {
+        validator.validateResourceAccessible(userId, userAuthenticatorId);
+        return userFederationRepository.get(userAuthenticatorId);
     }
 
     @Override
@@ -53,8 +55,8 @@ public class UserAuthenticatorServiceImpl implements UserAuthenticatorService {
     }
 
     @Override
-    public void delete(Long userId, Long federationId) {
-        validator.validateDelete(userId, federationId);
-        userFederationRepository.delete(new UserAuthenticatorId(federationId));
+    public void delete(UserId userId, UserAuthenticatorId userAuthenticatorId) {
+        validator.validateDelete(userId, userAuthenticatorId);
+        userFederationRepository.delete(userAuthenticatorId);
     }
 }

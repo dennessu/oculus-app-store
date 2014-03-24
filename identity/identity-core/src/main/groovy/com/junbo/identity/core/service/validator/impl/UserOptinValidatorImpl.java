@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.core.service.validator.impl;
 
+import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserOptinId;
 import com.junbo.identity.data.repository.UserOptinRepository;
 import com.junbo.identity.core.service.validator.UserOptinValidator;
@@ -22,51 +23,51 @@ public class UserOptinValidatorImpl extends CommonValidator implements UserOptin
     private UserOptinRepository userOptInRepository;
 
     @Override
-    public void validateCreate(Long userId, UserOptin userOptIn) {
-        if(userId == null || userOptIn == null) {
+    public void validateCreate(UserId userId, UserOptin userOptin) {
+        if(userId == null || userOptin == null) {
             throw AppErrors.INSTANCE.invalidNullEmptyInputParam().exception();
         }
-        validateNecessaryFields(userId, userOptIn);
-        validateUnnecessaryFields(userOptIn);
-        if(userOptIn.getResourceAge() != null) {
-            throw AppErrors.INSTANCE.unnecessaryParameterField("userOptIn.resourceAge").exception();
+        validateNecessaryFields(userId, userOptin);
+        validateUnnecessaryFields(userOptin);
+        if(userOptin.getResourceAge() != null) {
+            throw AppErrors.INSTANCE.unnecessaryParameterField("userOptin.resourceAge").exception();
         }
-        if(userOptIn.getId() != null) {
-            throw AppErrors.INSTANCE.unnecessaryParameterField("userOptIn.id").exception();
+        if(userOptin.getId() != null) {
+            throw AppErrors.INSTANCE.unnecessaryParameterField("userOptin.id").exception();
         }
     }
 
     @Override
-    public void validateUpdate(Long userId, Long optInId, UserOptin userOptIn) {
-        if(userId == null || optInId == null || userOptIn == null) {
+    public void validateUpdate(UserId userId, UserOptinId userOptinId, UserOptin userOptin) {
+        if(userId == null || userOptinId == null || userOptin == null) {
             throw AppErrors.INSTANCE.invalidNullEmptyInputParam().exception();
         }
-        validateNecessaryFields(userId, userOptIn);
-        validateUnnecessaryFields(userOptIn);
-        if(userOptIn.getResourceAge() == null) {
-            throw AppErrors.INSTANCE.missingParameterField("userOptIn.resourceAge").exception();
+        validateNecessaryFields(userId, userOptin);
+        validateUnnecessaryFields(userOptin);
+        if(userOptin.getResourceAge() == null) {
+            throw AppErrors.INSTANCE.missingParameterField("userOptin.resourceAge").exception();
         }
-        if(userOptIn.getId() == null) {
-            throw AppErrors.INSTANCE.missingParameterField("userOptIn.id").exception();
+        if(userOptin.getId() == null) {
+            throw AppErrors.INSTANCE.missingParameterField("userOptin.id").exception();
         }
     }
 
     @Override
-    public void validateDelete(Long userId, Long optInId) {
-        validateResourceAccessible(userId, optInId);
+    public void validateDelete(UserId userId, UserOptinId userOptinId) {
+        validateResourceAccessible(userId, userOptinId);
     }
 
     @Override
-    public void validateResourceAccessible(Long userId, Long optInId) {
+    public void validateResourceAccessible(UserId userId, UserOptinId userOptinId) {
         checkUserValid(userId);
 
-        UserOptin userOptIn = userOptInRepository.get(new UserOptinId(optInId));
+        UserOptin userOptIn = userOptInRepository.get(userOptinId);
         if(userOptIn == null) {
             throw AppErrors.INSTANCE.invalidResourceRequest().exception();
         }
     }
 
-    private void validateNecessaryFields(Long userId, UserOptin userOptIn) {
+    private void validateNecessaryFields(UserId userId, UserOptin userOptIn) {
         checkUserValid(userId);
         checkUserOptInNotExists(userId, userOptIn);
     }
@@ -80,7 +81,7 @@ public class UserOptinValidatorImpl extends CommonValidator implements UserOptin
         }
     }
 
-    private void checkUserOptInNotExists(Long userId, UserOptin userOptIn) {
+    private void checkUserOptInNotExists(UserId userId, UserOptin userOptIn) {
 
     }
 }

@@ -33,20 +33,20 @@ class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User update(Long userId, User user) {
+    public User update(UserId userId, User user) {
         validator.validateUpdate(userId, user);
         return userRepository.update(user);
     }
 
     @Override
-    public User get(Long id) {
-        return userRepository.get(new UserId(id));
+    public User get(UserId id) {
+        return userRepository.get(id);
     }
 
     @Override
-    public void delete(Long id) {
+    public void delete(UserId id) {
         validator.validateDelete(id);
-        userRepository.delete(new UserId(id));
+        userRepository.delete(id);
     }
 
     @Override

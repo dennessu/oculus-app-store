@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.core.service.validator.impl;
 
+import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserTosId;
 import com.junbo.identity.data.repository.UserTosRepository;
 import com.junbo.identity.core.service.validator.UserTosValidator;
@@ -19,58 +20,58 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserTosValidatorImpl extends CommonValidator implements UserTosValidator {
     @Autowired
-    private UserTosRepository userTosAcceptanceRepository;
+    private UserTosRepository userTosRepository;
 
     @Override
-    public void validateCreate(Long userId, UserTos userTosAcceptance) {
-        if(userId == null || userTosAcceptance == null) {
+    public void validateCreate(UserId userId, UserTos userTos) {
+        if(userId == null || userTos == null) {
             throw AppErrors.INSTANCE.invalidNullEmptyInputParam().exception();
         }
-        validateNecessaryFields(userId, userTosAcceptance);
-        validateUnnecessaryFields(userTosAcceptance);
-        if(userTosAcceptance.getResourceAge() != null) {
-            throw AppErrors.INSTANCE.unnecessaryParameterField("userTosAcceptance.resourceAge").exception();
+        validateNecessaryFields(userId, userTos);
+        validateUnnecessaryFields(userTos);
+        if(userTos.getResourceAge() != null) {
+            throw AppErrors.INSTANCE.unnecessaryParameterField("userTos.resourceAge").exception();
         }
-        if(userTosAcceptance.getId() != null) {
-            throw AppErrors.INSTANCE.unnecessaryParameterField("userTosAcceptance.id").exception();
+        if(userTos.getId() != null) {
+            throw AppErrors.INSTANCE.unnecessaryParameterField("userTos.id").exception();
         }
     }
 
     @Override
-    public void validateUpdate(Long userId, Long userTosId, UserTos userTosAcceptance) {
-        if(userId == null || userTosId == null || userTosAcceptance == null) {
+    public void validateUpdate(UserId userId, UserTosId userTosId, UserTos userTos) {
+        if(userId == null || userTosId == null || userTos == null) {
             throw AppErrors.INSTANCE.invalidNullEmptyInputParam().exception();
         }
-        validateNecessaryFields(userId, userTosAcceptance);
-        validateUnnecessaryFields(userTosAcceptance);
+        validateNecessaryFields(userId, userTos);
+        validateUnnecessaryFields(userTos);
         validateResourceAccessible(userId, userTosId);
-        if(userTosAcceptance.getResourceAge() == null) {
-            throw AppErrors.INSTANCE.missingParameterField("userTosAcceptance.resourceAge").exception();
+        if(userTos.getResourceAge() == null) {
+            throw AppErrors.INSTANCE.missingParameterField("userTos.resourceAge").exception();
         }
-        if(userTosAcceptance.getId() == null) {
-            throw AppErrors.INSTANCE.missingParameterField("userTosAcceptance.id").exception();
+        if(userTos.getId() == null) {
+            throw AppErrors.INSTANCE.missingParameterField("userTos.id").exception();
         }
     }
 
     @Override
-    public void validateDelete(Long userId, Long userTosId) {
+    public void validateDelete(UserId userId, UserTosId userTosId) {
         validateResourceAccessible(userId, userTosId);
     }
 
     @Override
-    public void validateResourceAccessible(Long userId, Long userTosId) {
+    public void validateResourceAccessible(UserId userId, UserTosId userTosId) {
         checkUserValid(userId);
 
-        UserTos userTosAcceptance = userTosAcceptanceRepository.get(new UserTosId(userTosId));
+        UserTos userTosAcceptance = userTosRepository.get(userTosId);
         if(userTosAcceptance == null) {
             throw AppErrors.INSTANCE.invalidResourceRequest().exception();
         }
     }
 
-    private void validateNecessaryFields(Long userId, UserTos userTosAcceptance) {
+    private void validateNecessaryFields(UserId userId, UserTos userTos) {
         checkUserValid(userId);
 
-        checkTosAcceptanceNotExists(userId, userTosAcceptance);
+        checkTosAcceptanceNotExists(userId, userTos);
     }
 
     private void validateUnnecessaryFields(UserTos userTosAcceptance) {
@@ -82,7 +83,7 @@ public class UserTosValidatorImpl extends CommonValidator implements UserTosVali
         }
     }
 
-    private void checkTosAcceptanceNotExists(Long userId, UserTos userTosAcceptance) {
+    private void checkTosAcceptanceNotExists(UserId userId, UserTos userTos) {
 
     }
 }

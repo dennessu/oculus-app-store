@@ -31,34 +31,34 @@ public class UserOptinServiceImpl implements UserOptinService {
     private UserOptinValidator validator;
 
     @Override
-    public UserOptin save(Long userId, UserOptin userOptIn) {
+    public UserOptin save(UserId userId, UserOptin userOptIn) {
         validator.validateCreate(userId, userOptIn);
         return userOptInRepository.save(userOptIn);
     }
 
     @Override
-    public UserOptin update(Long userId, Long userOptInId, UserOptin userOptIn) {
+    public UserOptin update(UserId userId, UserOptinId userOptInId, UserOptin userOptIn) {
         validator.validateUpdate(userId, userOptInId, userOptIn);
         return userOptInRepository.update(userOptIn);
     }
 
     @Override
-    public UserOptin get(Long userId, Long userOptInId) {
+    public UserOptin get(UserId userId, UserOptinId userOptInId) {
         validator.validateResourceAccessible(userId, userOptInId);
-        return userOptInRepository.get(new UserOptinId(userOptInId));
+        return userOptInRepository.get(userOptInId);
     }
 
     @Override
-    public List<UserOptin> getByUserId(Long userId, String type) {
+    public List<UserOptin> search(UserId userId, String type) {
         UserOptinListOption getOption = new UserOptinListOption();
-        getOption.setUserId(new UserId(userId));
+        getOption.setUserId(userId);
         getOption.setType(type);
         return userOptInRepository.search(getOption);
     }
 
     @Override
-    public void delete(Long userId, Long userOptInId) {
+    public void delete(UserId userId, UserOptinId userOptInId) {
         validator.validateDelete(userId, userOptInId);
-        userOptInRepository.delete(new UserOptinId(userOptInId));
+        userOptInRepository.delete(userOptInId);
     }
 }
