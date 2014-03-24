@@ -60,6 +60,10 @@ public class ResourceIdDeserializer extends JsonDeserializer<Object> implements 
     }
 
     protected <T> T parse(String id, Class clazz) {
+        if (id == null || id.trim().length() == 0) {
+            return null;
+        }
+
         // for now, we only support String/Integer/Long id types
         if (clazz == Long.class) {
             return (T) decode(id);
