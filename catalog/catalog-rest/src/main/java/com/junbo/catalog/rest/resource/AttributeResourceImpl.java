@@ -9,9 +9,9 @@ package com.junbo.catalog.rest.resource;
 import com.junbo.catalog.core.AttributeService;
 import com.junbo.catalog.spec.model.attribute.Attribute;
 import com.junbo.catalog.spec.model.attribute.AttributesGetOptions;
-import com.junbo.catalog.spec.model.common.ResultList;
 import com.junbo.catalog.spec.resource.AttributeResource;
 import com.junbo.common.id.AttributeId;
+import com.junbo.common.model.Results;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -31,12 +31,10 @@ public class AttributeResourceImpl implements AttributeResource {
     }
 
     @Override
-    public Promise<ResultList<Attribute>> getAttributes(@BeanParam AttributesGetOptions options) {
+    public Promise<Results<Attribute>> getAttributes(@BeanParam AttributesGetOptions options) {
         List<Attribute> attributes = attributeService.getAttributes(options);
-        ResultList<Attribute> resultList = new ResultList<>();
-        resultList.setResults(attributes);
-        resultList.setHref("href TODO");
-        resultList.setNext("next TODO");
+        Results<Attribute> resultList = new Results<>();
+        resultList.setItems(attributes);
         return Promise.pure(resultList);
     }
 

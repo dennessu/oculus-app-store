@@ -7,7 +7,7 @@ package com.junbo.identity.rest.resource;
 
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserSecurityQuestionId;
-import com.junbo.identity.spec.model.common.ResultList;
+import com.junbo.common.model.Results;
 import com.junbo.identity.spec.model.users.UserSecurityQuestion;
 import com.junbo.identity.spec.options.entity.UserSecurityQuestionGetOptions;
 import com.junbo.identity.spec.options.list.UserSecurityQuestionListOption;
@@ -54,7 +54,7 @@ public class UserSecurityQuestionResourceImpl implements UserSecurityQuestionRes
     }
 
     @Override
-    public Promise<ResultList<UserSecurityQuestion>> list(UserId userId,
+    public Promise<Results<UserSecurityQuestion>> list(UserId userId,
                                                           @BeanParam UserSecurityQuestionListOption listOptions) {
         return null;
     }

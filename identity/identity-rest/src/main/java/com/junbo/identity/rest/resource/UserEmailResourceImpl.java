@@ -7,7 +7,7 @@ package com.junbo.identity.rest.resource;
 
 import com.junbo.common.id.UserEmailId;
 import com.junbo.common.id.UserId;
-import com.junbo.identity.spec.model.common.ResultList;
+import com.junbo.common.model.Results;
 import com.junbo.identity.spec.model.users.UserEmail;
 import com.junbo.identity.spec.options.entity.UserEmailGetOptions;
 import com.junbo.identity.spec.options.list.UserEmailListOption;
@@ -52,12 +52,12 @@ public class UserEmailResourceImpl implements UserEmailResource {
     }
 
     @Override
-    public Promise<ResultList<UserEmail>> list(UserId userId, @BeanParam UserEmailListOption listOptions) {
+    public Promise<Results<UserEmail>> list(UserId userId, @BeanParam UserEmailListOption listOptions) {
         return null;
     }
 
     @Override
-    public Promise<ResultList<UserEmail>> list(@BeanParam UserEmailListOption listOptions) {
+    public Promise<Results<UserEmail>> list(@BeanParam UserEmailListOption listOptions) {
         return null;
     }
 }

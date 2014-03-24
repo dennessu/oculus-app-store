@@ -9,7 +9,7 @@ import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserPinId;
 import com.junbo.identity.core.service.user.UserPinService;
 import com.junbo.identity.core.service.user.UserService;
-import com.junbo.identity.spec.model.common.ResultList;
+import com.junbo.common.model.Results;
 import com.junbo.identity.spec.model.users.User;
 import com.junbo.identity.spec.model.users.UserPin;
 import com.junbo.identity.spec.options.entity.UserPinGetOptions;
@@ -48,7 +48,7 @@ public class UserPinResourceImpl implements UserPinResource {
     }
 
     @Override
-    public Promise<ResultList<UserPin>> list(UserId userId, @BeanParam UserPinListOption listOptions) {
+    public Promise<Results<UserPin>> list(UserId userId, @BeanParam UserPinListOption listOptions) {
         // todo:    Need to implement expand and list option
         return null;
     }

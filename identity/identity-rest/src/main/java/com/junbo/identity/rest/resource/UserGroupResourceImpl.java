@@ -7,7 +7,7 @@ package com.junbo.identity.rest.resource;
 
 import com.junbo.common.id.UserGroupId;
 import com.junbo.common.id.UserId;
-import com.junbo.identity.spec.model.common.ResultList;
+import com.junbo.common.model.Results;
 import com.junbo.identity.spec.model.users.UserGroup;
 import com.junbo.identity.spec.options.entity.UserGroupGetOptions;
 import com.junbo.identity.spec.options.list.UserGroupListOption;
@@ -51,7 +51,7 @@ public class UserGroupResourceImpl implements UserGroupResource {
     }
 
     @Override
-    public Promise<ResultList<UserGroup>> list(UserId userId, @BeanParam UserGroupListOption listOptions) {
+    public Promise<Results<UserGroup>> list(UserId userId, @BeanParam UserGroupListOption listOptions) {
         return null;
     }
 }

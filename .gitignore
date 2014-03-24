@@ -44,3 +44,6 @@ tmux-*.log
 # activemq log
 **/activemq-data/**
 
+# ignore diff orig file
+*.orig
+

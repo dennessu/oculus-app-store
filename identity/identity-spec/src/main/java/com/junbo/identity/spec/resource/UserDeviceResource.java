@@ -7,7 +7,7 @@ package com.junbo.identity.spec.resource;
 
 import com.junbo.common.id.UserDeviceId;
 import com.junbo.common.id.UserId;
-import com.junbo.identity.spec.model.common.ResultList;
+import com.junbo.common.model.Results;
 import com.junbo.identity.spec.model.users.UserDevice;
 import com.junbo.identity.spec.options.entity.UserDeviceGetOptions;
 import com.junbo.identity.spec.options.list.UserDeviceListOption;
@@ -56,7 +56,7 @@ public interface UserDeviceResource {
 
     @GET
     @Path("/")
-    Promise<ResultList<UserDevice>> list(@PathParam("userId") UserId userId,
+    Promise<Results<UserDevice>> list(@PathParam("userId") UserId userId,
                                          @BeanParam UserDeviceListOption listOptions);
 
 }

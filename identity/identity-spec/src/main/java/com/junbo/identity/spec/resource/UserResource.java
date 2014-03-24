@@ -6,7 +6,7 @@
 package com.junbo.identity.spec.resource;
 
 import com.junbo.common.id.UserId;
-import com.junbo.identity.spec.model.common.ResultList;
+import com.junbo.common.model.Results;
 import com.junbo.identity.spec.model.users.User;
 import com.junbo.identity.spec.options.entity.UserGetOptions;
 import com.junbo.identity.spec.options.list.UserListOption;
@@ -48,5 +48,5 @@ public interface UserResource {
     @ApiOperation("Get or search users")
     @GET
     @Path("/")
-    Promise<ResultList<User>> list(@BeanParam UserListOption listOptions);
+    Promise<Results<User>> list(@BeanParam UserListOption listOptions);
 }

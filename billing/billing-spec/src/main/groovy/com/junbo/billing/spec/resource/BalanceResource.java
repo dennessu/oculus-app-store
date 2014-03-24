@@ -10,12 +10,12 @@ package com.junbo.billing.spec.resource;
 import com.junbo.billing.spec.model.Balance;
 import com.junbo.common.id.BalanceId;
 import com.junbo.common.id.OrderId;
+import com.junbo.common.model.Results;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.util.List;
 
 /**
  * Created by xmchen on 14-1-26.
@@ -41,5 +41,5 @@ public interface BalanceResource {
     Promise<Balance> getBalance(@PathParam("balanceId") BalanceId balanceId);
 
     @GET
-    Promise<List<Balance>> getBalances(@QueryParam("orderId") OrderId orderId);
+    Promise<Results<Balance>> getBalances(@QueryParam("orderId") OrderId orderId);
 }

@@ -7,7 +7,7 @@ package com.junbo.identity.rest.resource;
 
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserLoginAttemptId;
-import com.junbo.identity.spec.model.common.ResultList;
+import com.junbo.common.model.Results;
 import com.junbo.identity.spec.model.users.UserLoginAttempt;
 import com.junbo.identity.spec.model.users.User;
 import com.junbo.identity.spec.options.entity.LoginAttemptGetOptions;
@@ -38,7 +38,7 @@ public class UserLoginAttemptResourceImpl implements UserLoginAttemptResource {
     }
 
     @Override
-    public Promise<ResultList<UserLoginAttempt>> list(UserId userId, @BeanParam LoginAttemptListOptions listOptions) {
+    public Promise<Results<UserLoginAttempt>> list(UserId userId, @BeanParam LoginAttemptListOptions listOptions) {
         return null;
     }
 }

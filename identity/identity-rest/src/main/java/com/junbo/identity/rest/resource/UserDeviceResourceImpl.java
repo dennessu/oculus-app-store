@@ -7,7 +7,7 @@ package com.junbo.identity.rest.resource;
 
 import com.junbo.common.id.UserDeviceId;
 import com.junbo.common.id.UserId;
-import com.junbo.identity.spec.model.common.ResultList;
+import com.junbo.common.model.Results;
 import com.junbo.identity.spec.model.users.UserDevice;
 import com.junbo.identity.spec.options.entity.UserDeviceGetOptions;
 import com.junbo.identity.spec.options.list.UserDeviceListOption;
@@ -52,7 +52,7 @@ public class UserDeviceResourceImpl implements UserDeviceResource {
     }
 
     @Override
-    public Promise<ResultList<UserDevice>> list(UserId userId, @BeanParam UserDeviceListOption listOptions) {
+    public Promise<Results<UserDevice>> list(UserId userId, @BeanParam UserDeviceListOption listOptions) {
         return null;
     }
 }

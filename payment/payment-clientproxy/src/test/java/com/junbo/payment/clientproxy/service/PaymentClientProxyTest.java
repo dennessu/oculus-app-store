@@ -427,12 +427,6 @@ public class PaymentClientProxyTest extends BaseTest {
             {
                 setTrackingUuid(generateUUID());
                 setUserId(userId.getValue());
-                setChargeInfo(new ChargeInfo(){
-                    {
-                        setCurrency("USD");
-                        setAmount(new BigDecimal(11.00));
-                    }
-                });
             }
         };
         PaymentTransaction reverseResult = null;
@@ -441,14 +435,15 @@ public class PaymentClientProxyTest extends BaseTest {
         }catch (Exception ex){
             Assert.assertNull(reverseResult);
             PaymentTransaction getResult = paymentClient.getPayment(paymentResult.getId()).wrapped().get();
-            Assert.assertEquals(getResult.getStatus().toUpperCase(), PaymentStatus.SETTLEMENT_DECLINED.toString());
+            Assert.assertEquals(getResult.getStatus().toUpperCase(), PaymentStatus.REVERSE_DECLINED.toString());
             for(PaymentEvent event : getResult.getPaymentEvents()){
-                if(event.getType().equalsIgnoreCase(PaymentEventType.SUBMIT_SETTLE.toString())
-                        && event.getStatus().equalsIgnoreCase(PaymentStatus.SETTLEMENT_DECLINED.toString())){
+                if(event.getType().equalsIgnoreCase(PaymentEventType.AUTH_REVERSE.toString())
+                        && event.getStatus().equalsIgnoreCase(PaymentStatus.REVERSE_DECLINED.toString())){
                     return;
                 }
             }
             throw ex;
         }
+        throw new RuntimeException("Expect exception");
     }
 }

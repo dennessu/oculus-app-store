@@ -9,7 +9,7 @@ import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserPasswordId;
 import com.junbo.identity.core.service.user.UserPasswordService;
 import com.junbo.identity.core.service.user.UserService;
-import com.junbo.identity.spec.model.common.ResultList;
+import com.junbo.common.model.Results;
 import com.junbo.identity.spec.model.users.User;
 import com.junbo.identity.spec.model.users.UserPassword;
 import com.junbo.identity.spec.options.entity.UserPasswordGetOptions;
@@ -49,7 +49,7 @@ public class UserPasswordResourceImpl implements UserPasswordResource {
     }
 
     @Override
-    public Promise<ResultList<UserPassword>> list(UserId userId, @BeanParam UserPasswordListOption listOptions) {
+    public Promise<Results<UserPassword>> list(UserId userId, @BeanParam UserPasswordListOption listOptions) {
         // todo:    Need to split expand and list getOptions
         return Promise.pure(null);
     }

@@ -6,7 +6,7 @@
 package com.junbo.identity.spec.filter;
 
 import com.junbo.common.model.Link;
-import com.junbo.identity.spec.model.common.ResultList;
+import com.junbo.common.model.Results;
 import org.glassfish.jersey.server.ContainerResponse;
 import org.springframework.util.StringUtils;
 
@@ -19,7 +19,7 @@ import java.io.IOException;
 /**
  * Created by liangfu on 3/4/14.
  */
-public class ResultListInterceptor implements ContainerResponseFilter {
+public class ResultsInterceptor implements ContainerResponseFilter {
     private static final String CURSOR_FORMAT = "cursor=";
     private static final String COUNT_FORMAT = "count=";
     private static final String AND_FORMAT = "&";
@@ -28,19 +28,17 @@ public class ResultListInterceptor implements ContainerResponseFilter {
     public void filter(ContainerRequestContext requestContext,
                        ContainerResponseContext responseContext) throws IOException {
         if(responseContext == null || responseContext.getStatus() != Response.Status.OK.getStatusCode()
-        || responseContext.getEntity() == null || !(responseContext.getEntity() instanceof ResultList)) {
+        || responseContext.getEntity() == null || !(responseContext.getEntity() instanceof Results)) {
             return;
         }
 
-        ResultList resultList = (ResultList)responseContext.getEntity();
+        Results resultList = (Results)responseContext.getEntity();
         Link self = getSelf(responseContext);
         resultList.setSelf(self);
 
-        if(resultList.getHasNext() != null && resultList.getHasNext().booleanValue()) {
+        if(resultList.hasNext()) {
             resultList.setNext(getNext(self));
         }
-        resultList.setHasNext(null);
-
     }
 
     private Link getSelf(ContainerResponseContext responseContext) {
@@ -97,10 +95,11 @@ public class ResultListInterceptor implements ContainerResponseFilter {
     private String replaceExistsOrAppend(String url, Integer cursor, Integer count) {
         Integer nextCursor = getNextCursor(cursor, count);
         String nextURL = url;
-        String str[ ] = url.split(CURSOR_FORMAT);
+
+        String[] str = url.split(CURSOR_FORMAT);
         if(str.length != 2) {
-            //no cursor information in current url
-            // Append mode
+            // no cursor information in current url
+            // append mode
             if(nextCursor != null) {
                 nextURL += ("&cursor=" + nextCursor);
             }

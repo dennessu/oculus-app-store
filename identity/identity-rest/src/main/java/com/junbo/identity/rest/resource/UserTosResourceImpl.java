@@ -7,7 +7,7 @@ package com.junbo.identity.rest.resource;
 
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserTosId;
-import com.junbo.identity.spec.model.common.ResultList;
+import com.junbo.common.model.Results;
 import com.junbo.identity.spec.model.users.UserTos;
 import com.junbo.identity.spec.options.entity.UserTosGetOptions;
 import com.junbo.identity.spec.options.list.UserTosListOption;
@@ -51,7 +51,7 @@ public class UserTosResourceImpl implements UserTosResource {
     }
 
     @Override
-    public Promise<ResultList<UserTos>> list(UserId userId, @BeanParam UserTosListOption listOptions) {
+    public Promise<Results<UserTos>> list(UserId userId, @BeanParam UserTosListOption listOptions) {
         return null;
     }
 }

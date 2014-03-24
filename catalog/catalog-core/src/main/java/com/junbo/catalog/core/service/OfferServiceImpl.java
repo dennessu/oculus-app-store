@@ -42,6 +42,7 @@ public class OfferServiceImpl extends BaseServiceImpl<Offer> implements OfferSer
 
     @Override
     public Offer create(Offer offer) {
+        validateOffer(offer);
         List<Action> actions = new ArrayList<>();
         for (ItemEntry itemEntry : offer.getItems()) {
             Item item = itemService.get(itemEntry.getItemId(), EntityGetOptions.getDefault());
@@ -60,6 +61,11 @@ public class OfferServiceImpl extends BaseServiceImpl<Offer> implements OfferSer
             offer.getEvents().add(event);
         }
         return super.create(offer);
+    }
+
+    private void validateOffer(Offer offer) {
+        checkFieldNotEmpty(offer.getName(), "name");
+        checkFieldNotNull(offer.getOwnerId(), "developer");
     }
 
     @Override

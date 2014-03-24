@@ -6,8 +6,8 @@
 package com.junbo.identity.rest.resource;
 
 import com.junbo.common.id.UserId;
+import com.junbo.common.model.Results;
 import com.junbo.identity.core.service.user.UserService;
-import com.junbo.identity.spec.model.common.ResultList;
 import com.junbo.identity.spec.model.users.User;
 import com.junbo.identity.spec.options.entity.UserGetOptions;
 import com.junbo.identity.spec.options.list.UserListOption;
@@ -51,7 +51,7 @@ public class UserResourceImpl implements UserResource {
     }
 
     @Override
-    public Promise<ResultList<User>> list(@BeanParam UserListOption listOptions) {
+    public Promise<Results<User>> list(@BeanParam UserListOption listOptions) {
         // todo:    Need to implement expand and list options
         return Promise.pure(null);
     }

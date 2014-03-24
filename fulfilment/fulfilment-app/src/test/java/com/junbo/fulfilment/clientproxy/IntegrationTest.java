@@ -4,7 +4,11 @@ import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
 import com.junbo.catalog.spec.model.offer.Action;
 import com.junbo.catalog.spec.model.offer.Event;
 import com.junbo.catalog.spec.model.offer.Offer;
+import com.junbo.common.id.FulfilmentId;
+import com.junbo.common.id.OrderId;
 import com.junbo.fulfilment.common.util.Constant;
+import com.junbo.fulfilment.spec.constant.FulfilmentStatus;
+import com.junbo.fulfilment.spec.model.FulfilmentAction;
 import com.junbo.fulfilment.spec.model.FulfilmentItem;
 import com.junbo.fulfilment.spec.model.FulfilmentRequest;
 import com.junbo.fulfilment.spec.resource.FulfilmentResource;
@@ -16,7 +20,6 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
@@ -41,6 +44,34 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
             Assert.fail(e.getMessage());
         }
         Assert.assertNotNull(request, "fulfilmentRequest should not be null.");
+
+        FulfilmentAction action = request.getItems().get(0).getActions().get(0);
+        Assert.assertNotNull(action.getResult(), "Action result should not be null.");
+        Assert.assertEquals(action.getStatus(), FulfilmentStatus.SUCCEED, "Fulfilment status should match.");
+
+        // retrieve fulfilment request by order id
+        Long orderId = request.getOrderId();
+
+        FulfilmentRequest retrievedRequest = null;
+        try {
+            retrievedRequest = fulfilmentResource.getByOrderId(new OrderId(orderId)).wrapped().get();
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+
+        Assert.assertEquals(retrievedRequest.getRequestId(), request.getRequestId(), "Request id should match.");
+
+        // retrieve fulfilment item by fulfilment id
+        Long fulfilmentId = request.getItems().get(0).getFulfilmentId();
+
+        FulfilmentItem retrievedFulfilmentItem = null;
+        try {
+            retrievedFulfilmentItem = fulfilmentResource.getByFulfilmentId(new FulfilmentId(fulfilmentId)).wrapped().get();
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+
+        Assert.assertEquals(retrievedFulfilmentItem.getFulfilmentId(), fulfilmentId, "Fulfilment id should match.");
     }
 
     @Test(enabled = false)
@@ -144,10 +175,8 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
                 setName(Constant.EVENT_PURCHASE);
                 setActions(new ArrayList<Action>() {{
                     add(new Action() {{
+                        setEntitlementDefId(entitlementDefId);
                         setType(Constant.ACTION_GRANT_ENTITLEMENT);
-                        setProperties(new HashMap<String, String>() {{
-                            put(Constant.ENTITLEMENT_DEF_ID, entitlementDefId + "");
-                        }});
                     }});
                 }});
             }});

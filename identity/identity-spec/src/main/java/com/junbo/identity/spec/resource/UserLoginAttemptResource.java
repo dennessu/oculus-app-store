@@ -7,7 +7,7 @@ package com.junbo.identity.spec.resource;
 
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserLoginAttemptId;
-import com.junbo.identity.spec.model.common.ResultList;
+import com.junbo.common.model.Results;
 import com.junbo.identity.spec.model.users.UserLoginAttempt;
 import com.junbo.identity.spec.model.users.User;
 import com.junbo.identity.spec.options.entity.LoginAttemptGetOptions;
@@ -40,6 +40,6 @@ public interface UserLoginAttemptResource {
 
     @GET
     @Path("/")
-    Promise<ResultList<UserLoginAttempt>> list(@PathParam("userId") UserId userId,
+    Promise<Results<UserLoginAttempt>> list(@PathParam("userId") UserId userId,
                                            @BeanParam LoginAttemptListOptions listOptions);
 }

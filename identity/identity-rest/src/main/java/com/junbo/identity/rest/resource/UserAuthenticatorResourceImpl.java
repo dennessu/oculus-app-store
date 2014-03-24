@@ -9,7 +9,7 @@ import com.junbo.common.id.UserAuthenticatorId;
 import com.junbo.common.id.UserId;
 import com.junbo.identity.core.service.user.UserAuthenticatorService;
 import com.junbo.identity.core.service.validator.UserAuthenticatorValidator;
-import com.junbo.identity.spec.model.common.ResultList;
+import com.junbo.common.model.Results;
 import com.junbo.identity.spec.model.users.UserAuthenticator;
 import com.junbo.identity.spec.options.entity.UserAuthenticatorGetOptions;
 import com.junbo.identity.spec.options.list.UserAuthenticatorListOption;
@@ -63,13 +63,13 @@ public class UserAuthenticatorResourceImpl implements UserAuthenticatorResource 
     }
 
     @Override
-    public Promise<ResultList<UserAuthenticator>> list(UserId userId,
+    public Promise<Results<UserAuthenticator>> list(UserId userId,
                                                        @BeanParam UserAuthenticatorListOption listOptions) {
         return null;
     }
 
     @Override
-    public Promise<ResultList<UserAuthenticator>> list(@BeanParam UserAuthenticatorListOption listOptions) {
+    public Promise<Results<UserAuthenticator>> list(@BeanParam UserAuthenticatorListOption listOptions) {
         return null;
     }
 }

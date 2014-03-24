@@ -7,7 +7,7 @@ package com.junbo.identity.rest.resource;
 
 import com.junbo.common.id.GroupId;
 import com.junbo.identity.core.service.group.GroupService;
-import com.junbo.identity.spec.model.common.ResultList;
+import com.junbo.common.model.Results;
 import com.junbo.identity.spec.model.users.Group;
 import com.junbo.identity.spec.model.users.UserGroup;
 import com.junbo.identity.spec.options.entity.GroupGetOptions;
@@ -51,12 +51,12 @@ public class GroupResourceImpl implements GroupResource {
     }
 
     @Override
-    public Promise<ResultList<Group>> list(GroupListOptions listOptions) {
+    public Promise<Results<Group>> list(GroupListOptions listOptions) {
         return Promise.pure(null);
     }
 
     @Override
-    public Promise<ResultList<UserGroup>> listUserGroups(GroupId groupId, UserGroupListOption listOptions) {
+    public Promise<Results<UserGroup>> listUserGroups(GroupId groupId, UserGroupListOption listOptions) {
         return null;
     }
 }

@@ -8,7 +8,7 @@ package com.junbo.identity.app
 import com.junbo.common.id.provider.IdTypeFromStringProvider
 import com.junbo.common.json.JacksonFeature
 import com.junbo.common.json.ObjectMapperProvider
-import com.junbo.identity.spec.filter.ResultListInterceptor
+import com.junbo.identity.spec.filter.ResultsInterceptor
 import org.glassfish.grizzly.http.server.HttpServer
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory
 import org.glassfish.jersey.server.ResourceConfig
@@ -30,7 +30,7 @@ class Main {
 
         resourceConfig.packages('com.junbo.identity.spec.resource.adapter')
         resourceConfig.property('contextConfigLocation', 'classpath*:/spring/*.xml')
-        resourceConfig.register(ResultListInterceptor)
+        resourceConfig.register(ResultsInterceptor)
         resourceConfig.register(IdTypeFromStringProvider)
 
         def uri = URI.create('http://0.0.0.0:8080/rest')

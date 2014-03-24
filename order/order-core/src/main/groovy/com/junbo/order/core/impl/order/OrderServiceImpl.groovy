@@ -7,10 +7,10 @@
 package com.junbo.order.core.impl.order
 
 import com.junbo.common.error.AppErrorException
-import com.junbo.catalog.spec.model.offer.Offer
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.executor.FlowExecutor
 import com.junbo.order.clientproxy.FacadeContainer
+import com.junbo.order.clientproxy.model.OrderOffer
 import com.junbo.order.core.FlowSelector
 import com.junbo.order.core.FlowType
 import com.junbo.order.core.OrderService
@@ -240,7 +240,7 @@ class OrderServiceImpl implements OrderService {
 
     private Promise<Object> prepareOrder(Order order) {
         Promise.each(order.orderItems.iterator()) { OrderItem item -> // get item type from catalog
-            facadeContainer.catalogFacade.getOffer(item.offer.value).syncThen { Offer offer ->
+            facadeContainer.catalogFacade.getOffer(item.offer.value).syncThen { OrderOffer offer ->
                 if (offer == null) {
                     throw AppErrors.INSTANCE.offerNotFound(item.offer.value?.toString()).exception()
                 }
