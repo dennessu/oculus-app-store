@@ -8,6 +8,7 @@ package com.junbo.rating.core.service;
 
 import com.junbo.rating.core.BaseTest;
 import com.junbo.rating.core.context.RatingContext;
+import com.junbo.rating.spec.model.Currency;
 import com.junbo.rating.spec.model.RatableItem;
 import com.junbo.rating.spec.model.request.OfferRatingRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,7 @@ public class OfferRatingServiceTest extends BaseTest {
         RatingContext context = new RatingContext();
         context.setUserId(generateId());
         context.setCountry("US");
-        context.setCurrency("USD");
+        context.setCurrency(Currency.findByCode("USD"));
         RatableItem item = new RatableItem();
         item.setOfferId(100L);
         context.setItems(new HashSet<RatableItem>());
