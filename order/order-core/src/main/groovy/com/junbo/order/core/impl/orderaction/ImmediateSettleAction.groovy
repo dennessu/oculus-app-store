@@ -1,17 +1,18 @@
 package com.junbo.order.core.impl.orderaction
+
 import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.model.Balance
 import com.junbo.langur.core.promise.Promise
-import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.clientproxy.FacadeContainer
+import com.junbo.order.core.annotation.OrderEventAwareAfter
+import com.junbo.order.core.annotation.OrderEventAwareBefore
 import com.junbo.order.core.impl.common.CoreBuilder
 import com.junbo.order.core.impl.common.OrderStatusBuilder
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
 import com.junbo.order.db.entity.enums.BillingAction
 import com.junbo.order.db.entity.enums.EventStatus
-import com.junbo.order.db.entity.enums.OrderActionType
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.model.BillingEvent
 import groovy.transform.CompileStatic
@@ -27,7 +28,7 @@ import org.springframework.transaction.annotation.Transactional
  */
 @CompileStatic
 @TypeChecked
-class ImmediateSettleAction implements Action {
+class ImmediateSettleAction extends BaseOrderEventAwareAction {
     @Autowired
     @Qualifier('orderFacadeContainer')
     FacadeContainer facadeContainer
@@ -39,6 +40,8 @@ class ImmediateSettleAction implements Action {
     private static final Logger LOGGER = LoggerFactory.getLogger(ImmediateSettleAction)
 
     @Override
+    @OrderEventAwareBefore(action = 'ImmediateSettleAction')
+    @OrderEventAwareAfter(action = 'ImmediateSettleAction')
     @Transactional
     Promise<ActionResult> execute(ActionContext actionContext) {
         def context = ActionUtils.getOrderActionContext(actionContext)
@@ -48,53 +51,24 @@ class ImmediateSettleAction implements Action {
                         CoreBuilder.buildBalance(context.orderServiceContext, BalanceType.DEBIT))
         return promise.syncRecover { Throwable throwable ->
             LOGGER.error('name=Order_ImmediateSettle_Error', throwable)
-            orderRepository.createOrderEvent(
-                    CoreBuilder.buildOrderEvent(
-                            order.id,
-                            OrderActionType.CHARGE,
-                            EventStatus.ERROR,
-                            ActionUtils.getFlowType(actionContext),
-                            context.trackingUuid))
+            return null
         }.syncThen { Balance balance ->
             if (balance == null) {
                 // todo: log order charge action error?
                 LOGGER.info('fail to create balance')
-                orderRepository.createOrderEvent(
-                        CoreBuilder.buildOrderEvent(
-                                order.id,
-                                OrderActionType.CHARGE,
-                                EventStatus.ERROR,
-                                ActionUtils.getFlowType(actionContext),
-                                context.trackingUuid))
-            } else {
-                def billingEvent = new BillingEvent()
-                billingEvent.balanceId = (balance.balanceId == null || balance.balanceId.value == null) ?
-                        null : balance.balanceId.value.toString()
-                billingEvent.action = BillingAction.CHARGE.name()
-                billingEvent.status = billingEventStatus.name()
-                orderRepository.createBillingEvent(order.id.value, billingEvent)
-                orderServiceContextBuilder.refreshBalances(context.orderServiceContext).syncThen {
-                    return null
-                }
-                // Update order status according to balance status.
-                // TODO get order events to update the order status
-                def o = orderRepository.getOrder(order.id.value)
-                o.status = OrderStatusBuilder.buildOrderStatusFromBalance(balance.status).toString()
-                orderRepository.updateOrder(o, true)
-                // TODO: save order level tax
-                orderRepository.createOrderEvent(
-                        CoreBuilder.buildOrderEvent(
-                                order.id,
-                                OrderActionType.CHARGE,
-                                CoreBuilder.buildEventStatusFromBalance(balance.status),
-                                ActionUtils.getFlowType(actionContext),
-                                context.trackingUuid))
+                return CoreBuilder.buildActionResultForOrderEventAwareAction(context, EventStatus.ERROR)
             }
-            return null
+            def billingEvent = new BillingEvent()
+            billingEvent.balanceId = (balance.balanceId == null || balance.balanceId.value == null) ?
+                    null : balance.balanceId.value.toString()
+            billingEvent.action = BillingAction.CHARGE.name()
+            billingEvent.status = OrderStatusBuilder.buildEventStatusFromBalance(balance.status)
+            orderRepository.createBillingEvent(order.id.value, billingEvent)
+            orderServiceContextBuilder.refreshBalances(context.orderServiceContext).syncThen {
+                // TODO: save order level tax
+                return CoreBuilder.buildActionResultForOrderEventAwareAction(context,
+                        CoreBuilder.buildEventStatusFromBalance(balance.status))
+            }
         }
-    }
-
-    private EventStatus getBillingEventStatus() {
-        return EventStatus.OPEN // todo: implement this
     }
 }

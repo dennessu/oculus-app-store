@@ -7,6 +7,7 @@ package com.junbo.oom.core.builtin;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * Java doc.
@@ -57,7 +58,6 @@ public class BuiltinMapper {
     public Boolean fromBooleanToBoolean(Boolean source) {
         return source;
     }
-
 
     public Long fromShortToLong(Short source, Short alternativeSource) {
         if (source == null) {
@@ -111,5 +111,9 @@ public class BuiltinMapper {
 
     public Boolean fromBooleanToBoolean(Boolean source, Boolean alternativeSource) {
         return source == null ? alternativeSource : source;
+    }
+
+    public UUID fromUUIDToUUID(UUID source) {
+        return source;
     }
 }

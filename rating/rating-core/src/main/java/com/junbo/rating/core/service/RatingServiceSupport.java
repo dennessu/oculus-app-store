@@ -67,7 +67,7 @@ public abstract class RatingServiceSupport implements RatingService{
         discardRule(context, new Func<Promotion, Boolean>() {
             @Override
             public Boolean execute(Promotion promotion) {
-                return promotion.getCurrency().equals(context.getCurrency());
+                return promotion.getCurrency().equalsIgnoreCase(context.getCurrency().getCode());
             }
         });
     }

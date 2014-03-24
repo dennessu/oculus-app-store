@@ -18,18 +18,38 @@ import com.junbo.oauth.spec.model.Consent
 import com.junbo.oauth.spec.model.RefreshToken
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.context.annotation.Scope
 import org.springframework.util.StringUtils
 
 import javax.ws.rs.core.Response
 
 /**
- * RevokeEndpointImpl.
+ * Default {@link com.junbo.oauth.spec.endpoint.RevokeEndpoint} implementation.
+ * It contains two method, revoke token and revoke consent.
+ * @author Zhanxin Yang
+ * @see com.junbo.oauth.spec.endpoint.RevokeEndpoint
  */
 @CompileStatic
+@Scope('prototype')
 class RevokeEndpointImpl implements RevokeEndpoint {
+    /**
+     * The static field for the scope 'consent.manage'.
+     */
     private static final String CONSENT_MANAGE_SCOPE = 'consent.manage'
+
+    /**
+     * The TokenService to handle token related operations.
+     */
     private TokenService tokenService
+
+    /**
+     * The ClientRepository to handle client related operations.
+     */
     private ClientRepository clientRepository
+
+    /**
+     * The ConsentRepository to handle consent related operations.
+     */
     private ConsentRepository consentRepository
 
     @Required
@@ -47,20 +67,31 @@ class RevokeEndpointImpl implements RevokeEndpoint {
         this.consentRepository = consentRepository
     }
 
+    /**
+     * Endpoint to revoke an access token or a refresh token
+     * @param authorization The http header Authorization that contains the client id and client secret in Basic format.
+     * @param token The access token or refresh token to be revoked
+     * @param tokenTypeHint The token type hint to be revoked, should be either access_token or refresh_token.
+     * @return The raw javax.ws.rs Response.
+     */
     @Override
     Promise<Response> revoke(String authorization, String token, String tokenTypeHint) {
+        // Validate the authorization, the authorization can't be empty.
         if (StringUtils.isEmpty(authorization)) {
             throw AppExceptions.INSTANCE.missingAuthorization().exception()
         }
 
+        // Validate the token, the token can't be empty.
         if (StringUtils.isEmpty(token)) {
             throw AppExceptions.INSTANCE.missingAccessToken().exception()
         }
 
+        // Parse the client id and client secret from the authorization.
         def clientCredential = AuthorizationHeaderUtil.extractClientCredential(authorization)
 
         Client client = clientRepository.getClient(clientCredential.clientId)
 
+        // Validate the client id and client secret in the authorization.
         if (client == null) {
             throw AppExceptions.INSTANCE.invalidClientId(clientCredential.clientId).exception()
         }
@@ -69,45 +100,62 @@ class RevokeEndpointImpl implements RevokeEndpoint {
             throw AppExceptions.INSTANCE.invalidClientSecret(clientCredential.clientSecret).exception()
         }
 
+        // If the token is an access token, revoke it as an access token.
         if (tokenService.isValidAccessToken(token)) {
             tokenService.revokeAccessToken(token, client)
+            // If the token is a refresh token, revoke it as an refresh token.
         } else if (tokenService.isValidRefreshToken(token)) {
             tokenService.revokeRefreshToken(token, client)
         } else {
             throw AppExceptions.INSTANCE.invalidTokenType().exception()
         }
 
+        // Simply return an OK response.
         return Promise.pure(Response.ok().build())
     }
 
+    /**
+     * Endpoint to revoke the consent of the user for a specific client.
+     * @param authorization The http header that contains the access token in Bearer format.
+     * @param clientId The client id of the consent to be revoked.
+     * @return The raw javax.ws.rs Response.
+     */
     @Override
     Promise<Response> revokeConsent(String authorization, String clientId) {
+        // Validate the authorization, the authorization can't be empty.
         if (StringUtils.isEmpty(authorization)) {
             throw AppExceptions.INSTANCE.missingAuthorization().exception()
         }
 
+        // Validate the clientId, the clientId can't be empty.
         if (StringUtils.isEmpty(clientId)) {
             throw AppExceptions.INSTANCE.missingClientId().exception()
         }
 
+        // Retrieve the client information.
         Client client = clientRepository.getClient(clientId)
 
         if (client == null) {
             throw AppExceptions.INSTANCE.invalidClientId(clientId).exception()
         }
 
+        // Parse the access token from the authorization header.
         AccessToken accessToken = tokenService.extractAccessToken(authorization)
 
+        // The access token must have the consent.manage scope.
         if (!accessToken.scopes.contains(CONSENT_MANAGE_SCOPE)) {
             throw AppExceptions.INSTANCE.insufficientScope().exception()
         }
 
+        // Retrieve the consent of the given user and client id.
         Consent consent = consentRepository.getConsent(accessToken.userId, clientId)
 
+        // Remove the consent in the database.
         if (consent != null) {
             consentRepository.deleteConsent(consent)
         }
 
+        // Revoke all the access tokens and refresh tokens of this user and client id.
         def accessTokens = tokenService.getAccessTokenByUserIdClientId(accessToken.userId, clientId)
 
         accessTokens.each { AccessToken token ->
@@ -120,6 +168,7 @@ class RevokeEndpointImpl implements RevokeEndpoint {
             tokenService.revokeRefreshToken(token.tokenValue, client)
         }
 
+        // Simply return an OK response.
         return Promise.pure(Response.ok().build())
     }
 }

@@ -24,10 +24,18 @@
     <bean id="testSubscriber1" class="com.junbo.notification.topic.TestSubscriber1"/>
     <bean id="testSubscriber2" class="com.junbo.notification.topic.TestSubscriber2"/>
 
-    <bean id="topicListenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+    <bean id="baseSubscriberContainer" abstract="true"
+          class="org.springframework.jms.listener.DefaultMessageListenerContainer">
         <property name="connectionFactory" ref="connectionFactory"/>
         <property name="destination" ref="testTopic"/>
-        <property name="messageListener" ref="testSubscriber1"/>
         <property name="sessionAcknowledgeMode" value="2"/>
+    </bean>
+
+    <bean id="subsciberContainer1" parent="baseSubscriberContainer">
+        <property name="messageListener" ref="testSubscriber1"/>
+    </bean>
+
+    <bean id="subsciberContainer2" parent="baseSubscriberContainer">
+        <property name="messageListener" ref="testSubscriber2"/>
     </bean>
 </beans>

@@ -9,6 +9,7 @@ import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import java.util.Date;
 
 
 /**
@@ -19,8 +20,12 @@ import javax.persistence.Transient;
 public class SubscriptionEntity extends Entity {
     private Long subscriptionId;
     private Long userId;
-    private String type;
-    private String status;
+    private Long piId;
+    private Long statusId;
+    private String itemId;
+    private Date subsStartDate;
+    private Date subsEndDate;
+    private String partnerId;
 
     @Id
     @Column(name = "subscription_Id")
@@ -41,22 +46,20 @@ public class SubscriptionEntity extends Entity {
         this.userId = userId;
     }
 
-    @Column(name = "type")
-    public String getType() {
-        return type;
+    @Column(name = "pi_id")
+    public Long getPiId() { return piId; }
+
+    public void setPiId(Long piId) {
+        this.piId = piId;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    @Column(name = "status_id")
+    public Long getStatusId() {
+        return statusId;
     }
 
-    @Column(name = "status")
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
+    public void setStatusId(Long statusId) {
+        this.statusId = statusId;
     }
 
     @Transient
@@ -71,8 +74,44 @@ public class SubscriptionEntity extends Entity {
     }
 
     @Override
+    @Transient
     public Long getShardMasterId() {
         return userId;
     }
 
+    @Column(name = "item_id")
+    public String getItemId() {
+        return itemId;
+    }
+
+    public void setItemId(String itemId) {
+        this.itemId = itemId;
+    }
+
+    @Column(name = "subs_start_date")
+    public Date getSubsStartDate() {
+        return subsStartDate;
+    }
+
+    public void setSubsStartDate(Date subsStartDate) {
+        this.subsStartDate = subsStartDate;
+    }
+
+    @Column(name = "subs_end_date")
+    public Date getSubsEndDate() {
+        return subsEndDate;
+    }
+
+    public void setSubsEndDate(Date subsEndDate) {
+        this.subsEndDate = subsEndDate;
+    }
+
+    @Column(name = "partner_id")
+    public String getPartnerId() {
+        return partnerId;
+    }
+
+    public void setPartnerId(String partnerId) {
+        this.partnerId = partnerId;
+    }
 }

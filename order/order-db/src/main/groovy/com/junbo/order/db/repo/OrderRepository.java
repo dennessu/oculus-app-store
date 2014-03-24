@@ -36,4 +36,6 @@ public interface OrderRepository {
 
     Order updateOrder(Order order, boolean updateOnlyOrder);
 
+    List<OrderEvent> getOrderEvents(Long orderId);
+
 }

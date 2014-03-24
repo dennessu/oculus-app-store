@@ -66,52 +66,52 @@ public class CartManager {
         //get primary cart
         String primaryCartId = cs.getCartPrimary(user);
         Cart primaryCart = Master.getInstance().getCart(primaryCartId);
-        Assert.assertNotNull(primaryCart,"No Primary cart respond!");
-        Assert.assertEquals(primaryCart.getOffers().size(),0);
-        Assert.assertEquals(primaryCart.getCoupons().size(),0);
+        Assert.assertNotNull(primaryCart, "No Primary cart respond!");
+        Assert.assertEquals(primaryCart.getOffers().size(), 0);
+        Assert.assertEquals(primaryCart.getCoupons().size(), 0);
         Assert.assertTrue(primaryCart.getCartName().contains("primary"), "Primary cart name should include primary");
 
         //add a few offers and couples to primary cart and put cart
         //3 testOffer1 + 2 testOffer2 + testCoupon1 + testCoupon2
-        addOrRemoveOfferInCart(primaryCart,testOffer1,3,true);
-        addOrRemoveOfferInCart(primaryCart,testOffer2,2,true);
-        addCouponInCart(primaryCart,testCoupon1);
-        addCouponInCart(primaryCart,testCoupon2);
+        addOrRemoveOfferInCart(primaryCart, testOffer1, 3, true);
+        addOrRemoveOfferInCart(primaryCart, testOffer2, 2, true);
+        addCouponInCart(primaryCart, testCoupon1);
+        addCouponInCart(primaryCart, testCoupon2);
 
         //updateCart
         cs.updateCart(user, primaryCartId, primaryCart);
 
         // get primary cart again
-        String updatedCartId =cs.getCartPrimary(user);
+        String updatedCartId = cs.getCartPrimary(user);
         Cart updatedCart = Master.getInstance().getCart(updatedCartId);
-        Assert.assertEquals(updatedCartId,primaryCartId);
+        Assert.assertEquals(updatedCartId, primaryCartId);
 
         //check two both items returned
-        Assert.assertEquals(updatedCart.getOffers().size(),2);
+        Assert.assertEquals(updatedCart.getOffers().size(), 2);
         Assert.assertEquals(updatedCart.getCoupons().size(), 2);
         //check item quantity was returned correctly
-        Assert.assertTrue(updatedCart.getOffers().get(0).getQuantity()==3);
-        Assert.assertTrue(updatedCart.getOffers().get(1).getQuantity()==2);
+        Assert.assertTrue(checkOfferQuantity(updatedCart, testOffer1, 3L));
+        Assert.assertTrue(checkOfferQuantity(updatedCart, testOffer2, 2L));
 
         //reduce offer quantity, remove offer&coupon, add one new offer
         addOrRemoveOfferInCart(updatedCart, testOffer1, -1, true);
         addOrRemoveOfferInCart(updatedCart, testOffer2, -2, true);
         addOrRemoveOfferInCart(updatedCart, testOffer3, 1, true);
-        removeCouponInCart(updatedCart,testCoupon2);
+        removeCouponInCart(updatedCart, testCoupon2);
 
         //update cart and get primary cart again
         cs.updateCart(user, updatedCartId, updatedCart);
-        String updatedCartId2 =cs.getCartPrimary(user);
+        String updatedCartId2 = cs.getCartPrimary(user);
         Cart updatedCart2 = Master.getInstance().getCart(updatedCartId2);
-        Assert.assertEquals(updatedCartId2,updatedCartId);
+        Assert.assertEquals(updatedCartId2, updatedCartId);
 
         //check updated items returned correctly
-        Assert.assertEquals(updatedCart2.getOffers().size(),2);
+        Assert.assertEquals(updatedCart2.getOffers().size(), 2);
         Assert.assertEquals(updatedCart2.getCoupons().size(), 1);
 
         //check item quantity was updated correctly
-        Assert.assertTrue(updatedCart.getOffers().get(0).getQuantity()==2);
-        Assert.assertTrue(updatedCart.getOffers().get(2).getQuantity()==1);
+        Assert.assertTrue(checkOfferQuantity(updatedCart, testOffer1, 2L));
+        Assert.assertTrue(checkOfferQuantity(updatedCart, testOffer3, 1L));
     }
 
     @Property(
@@ -144,56 +144,55 @@ public class CartManager {
         //3 testOffer1 + 2 testOffer2 + testCoupon1
         String primaryCartId1 = cs.getCartPrimary(user1);
         Cart primaryCart1 = Master.getInstance().getCart(primaryCartId1);
-        addOrRemoveOfferInCart(primaryCart1,testOffer1,3,true);
-        addOrRemoveOfferInCart(primaryCart1,testOffer2,2,true);
-        addCouponInCart(primaryCart1,testCoupon1);
+        addOrRemoveOfferInCart(primaryCart1, testOffer1, 3, true);
+        addOrRemoveOfferInCart(primaryCart1, testOffer2, 2, true);
+        addCouponInCart(primaryCart1, testCoupon1);
         cs.updateCart(user1, primaryCartId1, primaryCart1);
 
         //add a few offers and couples to user2's primary cart
         //2 testOffer1 + 3 testOffer3 + testCoupon2
         String primaryCartId2 = cs.getCartPrimary(user2);
-        Cart primaryCart2 = Master.getInstance().getCart(primaryCartId1);
-        addOrRemoveOfferInCart(primaryCart2,testOffer1,2,true);
-        addOrRemoveOfferInCart(primaryCart2,testOffer3,3,true);
-        addCouponInCart(primaryCart2,testCoupon2);
-        //cs.updateCart(user2, primaryCartId2, primaryCart2);
+        Cart primaryCart2 = Master.getInstance().getCart(primaryCartId2);
+        addOrRemoveOfferInCart(primaryCart2, testOffer1, 2, true);
+        addOrRemoveOfferInCart(primaryCart2, testOffer3, 3, true);
+        addCouponInCart(primaryCart2, testCoupon2);
+        cs.updateCart(user2, primaryCartId2, primaryCart2);
 
         //merge user2's cart to user1's primary cart
-        cs.mergeCart(user1,primaryCartId1, primaryCart2);
+        cs.mergeCart(user1, primaryCartId1, primaryCart2);
 
 
         //verify merge result
         //5 testOffer1 + 2 testOffer2 + 3 testOffer3 + testCoupon1 + testCoupon2
         //check updated items returned correctly
-        String mergedCartId =cs.getCartPrimary(user1);
+        String mergedCartId = cs.getCartPrimary(user1);
         Cart mergedCart = Master.getInstance().getCart(mergedCartId);
-        Assert.assertEquals(mergedCart.getOffers().size(),3);
+        Assert.assertEquals(mergedCart.getOffers().size(), 3);
         Assert.assertEquals(mergedCart.getCoupons().size(), 2);
 
         //check item quantity was updated correctly
-        Assert.assertTrue(mergedCart.getOffers().get(0).getQuantity()==5);
-        Assert.assertTrue(mergedCart.getOffers().get(1).getQuantity()==2);
-        Assert.assertTrue(mergedCart.getOffers().get(2).getQuantity()==3);
+        Assert.assertTrue(checkOfferQuantity(mergedCart, testOffer1, 5L));
+        Assert.assertTrue(checkOfferQuantity(mergedCart, testOffer2, 2L));
+        Assert.assertTrue(checkOfferQuantity(mergedCart, testOffer3, 3L));
     }
 
-//helper functions:
-    private void addOrRemoveOfferInCart(Cart cart, OfferId offerId, long quantity, boolean selected){
-        if (quantity==0) return;
+    //helper functions:
+    private void addOrRemoveOfferInCart(Cart cart, OfferId offerId, long quantity, boolean selected) {
+        if (quantity == 0) return;
 
         List<OfferItem> curOffers = cart.getOffers();
-        if (curOffers == null){
+        if (curOffers == null) {
             curOffers = new ArrayList<OfferItem>();
             cart.setOffers(curOffers);
-            }
+        }
 
         boolean existingOffer = false;
-        for(OfferItem oi : curOffers){
-            if (oi.getOffer() == offerId){
+        for (OfferItem oi : curOffers) {
+            if (oi.getOffer().equals(offerId)) {
                 long newQuantity = oi.getQuantity() + quantity;
-                if (newQuantity==0) {
+                if (newQuantity == 0) {
                     curOffers.remove(oi);
-                }
-                else{
+                } else {
                     oi.setQuantity(newQuantity);
                 }
                 existingOffer = true;
@@ -201,7 +200,7 @@ public class CartManager {
             }
         }
 
-        if(!existingOffer){
+        if (!existingOffer) {
             OfferItem offerItem = new OfferItem();
             offerItem.setOffer(offerId);
             offerItem.setQuantity(quantity);
@@ -210,9 +209,9 @@ public class CartManager {
         }
     }
 
-    private void addCouponInCart(Cart cart, CouponId couponId){
+    private void addCouponInCart(Cart cart, CouponId couponId) {
         List<CouponItem> curCoupons = cart.getCoupons();
-        if (curCoupons == null){
+        if (curCoupons == null) {
             curCoupons = new ArrayList<CouponItem>();
             cart.setCoupons(curCoupons);
         }
@@ -222,16 +221,27 @@ public class CartManager {
         curCoupons.add(couponItem);
     }
 
-    private void removeCouponInCart(Cart cart, CouponId couponId){
+    private void removeCouponInCart(Cart cart, CouponId couponId) {
         List<CouponItem> curCoupons = cart.getCoupons();
-        if (curCoupons == null){
+        if (curCoupons == null) {
             return;
         }
 
-        for(CouponItem ci : curCoupons){
-            if (ci.getCoupon() == couponId){
+        for (CouponItem ci : curCoupons) {
+            if (ci.getCoupon().equals(couponId)) {
                 curCoupons.remove(ci);
             }
         }
+    }
+
+    private boolean checkOfferQuantity(Cart cart, OfferId offerId, Long expectedQuantity) {
+        List<OfferItem> curOffers = cart.getOffers();
+        if (curOffers == null) return false;
+        for (OfferItem oi : curOffers) {
+            if (oi.getOffer().equals(offerId)) {
+                return (oi.getQuantity().equals(expectedQuantity));
+            }
+        }
+        return false;
     }
 }

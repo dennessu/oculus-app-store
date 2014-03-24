@@ -38,7 +38,6 @@ class OfferLoader {
         createOffer(
             new Offer(
                     name: '3D Parking Simulator',
-                    type: 12,
                     ownerId: owner.value,
                     status: 'Design',
                     categories: [123],
@@ -73,7 +72,7 @@ class OfferLoader {
             [
                     new Item(
                         name: 'Angry Bird',
-                        type: 123,
+                        type: 'APP',
                         status: 'Design',
                         ownerId: owner.value,
                         skus:[],
@@ -87,19 +86,68 @@ class OfferLoader {
                     )
             ]
         )
+
+        createOffer(
+                new Offer(
+                        name: 'Oculus VR',
+                        ownerId: owner.value,
+                        status: 'Design',
+                        categories: [123],
+                        prices: [US:new Price(amount: 229.99, currency: 'USD')],
+                        subOffers: [],
+                        events: [
+                                new Event
+                                (
+                                        name: 'PURCHASE_EVENT',
+                                        actions: [
+                                                new Action (
+                                                        type: 'GRANT_ENTITLEMENT',
+                                                        properties: [
+                                                                tag: 'item001_ANGRY.BIRD_ONLINE_ACCESS',
+                                                                group: 'Angry Bird',
+                                                                type: 'ONLINE_ACCESS',
+                                                                duration: '3Month'
+                                                        ]
+                                                )
+                                        ]
+                                )
+                        ],
+                        localeProperties: [
+                                DEFAULT: [
+                                        description: '3D Parking Simulator is a VR driving simulator specialized for parking.'
+                                ]
+                        ],
+                        properties: [
+                                mainImage: 'the img url'
+                        ]
+                ),
+                [
+                        new Item(
+                                name: 'Oculus VR',
+                                type: 'PHYSICAL',
+                                status: 'Design',
+                                ownerId: owner.value,
+                                skus:[],
+                                properties: [:]
+
+                        )
+                ]
+        )
     }
 
     Offer createOffer(Offer offer, List<Item> items) {
         List<Item> result = []
         items.each {
             def item = serviceFacade.itemResource.create(it).wrapped().get()
-            //item.status = 'RELEASED'
-            //result << serviceFacade.itemResource.update(new ItemId(item.id), item)
+            item.status = 'RELEASED'
+            item = serviceFacade.itemResource.update(new ItemId(item.id), item).wrapped().get()
+            result << item
         }
         offer.items = []
         result.each {
             offer.items << new ItemEntry(
-                    itemId: it.id
+                    itemId: it.id,
+                    quantity: 1
             )
         }
         offer = serviceFacade.offerResource.create(offer).wrapped().get()

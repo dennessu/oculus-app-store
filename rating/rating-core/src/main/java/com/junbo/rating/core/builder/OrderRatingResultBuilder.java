@@ -28,7 +28,7 @@ public class OrderRatingResultBuilder {
         OrderRatingRequest result = new OrderRatingRequest();
         result.setUserId(context.getUserId());
         result.setCountry(context.getCountry());
-        result.setCurrency(context.getCurrency());
+        result.setCurrency(context.getCurrency().getCode());
         result.setLineItems(new HashSet<OrderRatingItem>());
 
         //build offer level results

@@ -21,7 +21,7 @@ public abstract class Entity {
     private Date modifiedTime;
     private String modifiedBy;
 
-    @Column(name = "CREATED_TIME")
+    @Column(name = "created_time")
     public Date getCreatedTime() {
         return createdTime;
     }
@@ -30,7 +30,7 @@ public abstract class Entity {
         this.createdTime = createdTime;
     }
 
-    @Column(name = "CREATED_BY")
+    @Column(name = "created_by")
     public String getCreatedBy() {
         return createdBy;
     }
@@ -39,7 +39,7 @@ public abstract class Entity {
         this.createdBy = createdBy;
     }
 
-    @Column(name = "MODIFIED_TIME")
+    @Column(name = "modified_time")
     public Date getModifiedTime() {
         return modifiedTime;
     }
@@ -48,7 +48,7 @@ public abstract class Entity {
         this.modifiedTime = modifiedTime;
     }
 
-    @Column(name = "MODIFIED_BY")
+    @Column(name = "modified_by")
     public String getModifiedBy() {
         return modifiedBy;
     }
