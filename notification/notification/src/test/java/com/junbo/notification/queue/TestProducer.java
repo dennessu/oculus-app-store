@@ -14,9 +14,9 @@ import javax.jms.Message;
 import javax.jms.Session;
 
 /**
- * TestPublisher.
+ * TestProducer.
  */
-public class TestPublisher {
+public class TestProducer {
     private JmsTemplate template;
     private Destination destination;
 

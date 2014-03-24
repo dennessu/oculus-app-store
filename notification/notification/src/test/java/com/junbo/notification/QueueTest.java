@@ -5,7 +5,7 @@
  */
 package com.junbo.notification;
 
-import com.junbo.notification.queue.TestPublisher;
+import com.junbo.notification.queue.TestProducer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.Test;
 
@@ -14,10 +14,10 @@ import org.testng.annotations.Test;
  */
 public class QueueTest extends BaseTest {
     @Autowired
-    private TestPublisher publisher;
+    private TestProducer producer;
 
     @Test
     public void testBVT() {
-        publisher.send("hello baby!");
+        producer.send("hello baby!");
     }
 }
