@@ -6,7 +6,6 @@
 
 package com.junbo.catalog.core.service;
 
-import com.junbo.catalog.core.EntitlementDefinitionService;
 import com.junbo.catalog.core.ItemService;
 import com.junbo.catalog.core.OfferService;
 import com.junbo.catalog.db.repo.OfferDraftRepository;
@@ -30,8 +29,6 @@ public class OfferServiceImpl extends BaseServiceImpl<Offer> implements OfferSer
     private OfferDraftRepository offerDraftRepository;
     @Autowired
     private ItemService itemService;
-    @Autowired
-    private EntitlementDefinitionService entitlementDefService;
 
     @Override
     public OfferRepository getEntityRepo() {
@@ -45,6 +42,7 @@ public class OfferServiceImpl extends BaseServiceImpl<Offer> implements OfferSer
 
     @Override
     public Offer create(Offer offer) {
+        validateOffer(offer);
         List<Action> actions = new ArrayList<>();
         for (ItemEntry itemEntry : offer.getItems()) {
             Item item = itemService.get(itemEntry.getItemId(), EntityGetOptions.getDefault());
@@ -63,6 +61,11 @@ public class OfferServiceImpl extends BaseServiceImpl<Offer> implements OfferSer
             offer.getEvents().add(event);
         }
         return super.create(offer);
+    }
+
+    private void validateOffer(Offer offer) {
+        checkFieldNotEmpty(offer.getName(), "name");
+        checkFieldNotNull(offer.getOwnerId(), "developer");
     }
 
     @Override

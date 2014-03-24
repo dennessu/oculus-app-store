@@ -1,0 +1,22 @@
+<div class="span6">
+  <div class="controls">
+      <a href="#/items/creation">New Item</a>
+  </div>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th style="min-width: 80px;">Item Id</th>
+        <th style="min-width: 80px;">Item Name</th>
+          <th style="min-width: 80px;">Item Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="item in items">
+        <td><a href="#/items/{{ item.self.id }}">{{ item.self.id }}</a></td>
+        <td>{{ item.name }}</td>
+          <td>{{ item.status }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

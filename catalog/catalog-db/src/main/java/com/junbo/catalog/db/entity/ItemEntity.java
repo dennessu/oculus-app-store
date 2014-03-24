@@ -20,14 +20,13 @@ import javax.persistence.Table;
  * Item DB entity.
  */
 @Entity
-@Table(name="item_draft")
+@Table(name="item")
 @TypeDefs(@TypeDef(name="json-string", typeClass=StringJsonUserType.class))
 public class ItemEntity extends VersionedEntity {
     private Long id;
     private String type;
     private Long itemId;
     private String name;
-    private int revision;
     private Long ownerId;
     private String payload;
 
@@ -66,15 +65,6 @@ public class ItemEntity extends VersionedEntity {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    @Column(name = "revision")
-    public int getRevision() {
-        return revision;
-    }
-
-    public void setRevision(int revision) {
-        this.revision = revision;
     }
 
     @Column(name = "owner_id")

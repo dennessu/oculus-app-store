@@ -5,20 +5,22 @@
  */
 
 package com.junbo.order.clientproxy.catalog.impl
-
 import com.junbo.catalog.spec.model.common.EntityGetOptions
-import com.junbo.catalog.spec.model.common.ResultList
+import com.junbo.catalog.spec.model.item.Item
+import com.junbo.catalog.spec.model.offer.ItemEntry
 import com.junbo.catalog.spec.model.offer.Offer
-import com.junbo.catalog.spec.model.offer.OffersGetOptions
+import com.junbo.catalog.spec.resource.ItemResource
 import com.junbo.catalog.spec.resource.OfferResource
+import com.junbo.common.id.ItemId
 import com.junbo.common.id.OfferId
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.catalog.CatalogFacade
+import com.junbo.order.clientproxy.model.OrderOffer
+import com.junbo.order.clientproxy.model.OrderOfferItem
 import groovy.transform.CompileStatic
 import org.springframework.stereotype.Component
 
 import javax.annotation.Resource
-
 /**
  * Catalog facade implementation.
  */
@@ -29,29 +31,40 @@ class CatalogFacadeImpl implements CatalogFacade {
     @Resource(name='order.offerClient')
     OfferResource offerResource
 
+    @Resource(name='order.offerItemClient')
+    ItemResource itemResource
+
     void setOfferResource(OfferResource offerResource) {
         this.offerResource = offerResource
     }
 
     @Override
-    Promise<Offer> getOffer(Long offerId, Date honoredTime) {
+    Promise<OrderOffer> getOffer(Long offerId, Date honoredTime) {
         def entityGetOption = EntityGetOptions.default
         entityGetOption.timestamp = honoredTime.time
-        return offerResource.getOffer(new OfferId(offerId), entityGetOption)
+        return offerResource.getOffer(new OfferId(offerId), entityGetOption).syncRecover {
+            // TODO add logger and exception
+        }.then { Offer offer ->
+            assert (offer != null)
+            def orderOffer = new OrderOffer(
+                    catalogOffer: offer,
+                    orderOfferItems: []
+            )
+            offer.items?.each { ItemEntry ite ->
+                itemResource.getItem(new ItemId(ite.itemId), entityGetOption).syncRecover {
+                    // TODO add logger and exception
+                }.then { Item it ->
+                    orderOffer.orderOfferItems.add(new OrderOfferItem(
+                            catalogItem: it
+                    ))
+                }
+            }
+            return Promise.pure(orderOffer)
+        }
     }
 
     @Override
-    Promise<Offer> getOffer(Long offerId) {
-        return offerResource.getOffer(new OfferId(offerId), EntityGetOptions.default)
+    Promise<OrderOffer> getOffer(Long offerId) {
+        return getOffer(offerId, new Date())
     }
-
-    @Override
-    Promise<ResultList<Offer>> getOffers(List<OfferId> offerIds) {
-        OffersGetOptions options = new OffersGetOptions()
-        options.offerIds = offerIds
-        options.status = 'Released'
-        return offerResource.getOffers(options)
-    }
-
-
 }

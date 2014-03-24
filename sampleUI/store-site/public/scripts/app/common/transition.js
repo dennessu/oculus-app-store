@@ -68,6 +68,7 @@ var Transition = {
             list.push({
                 "id": i,
                 "product_id": item.offer.id,
+                "selected": item.selected,
                 "qty": item.quantity
             });
         }

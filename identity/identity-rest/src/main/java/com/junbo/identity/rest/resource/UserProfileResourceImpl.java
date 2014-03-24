@@ -7,8 +7,8 @@ package com.junbo.identity.rest.resource;
 
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserProfileId;
+import com.junbo.common.model.Results;
 import com.junbo.identity.rest.service.user.UserProfileService;
-import com.junbo.identity.spec.model.common.ResultList;
 import com.junbo.identity.spec.model.common.ResultListUtil;
 import com.junbo.identity.spec.model.user.UserProfile;
 import com.junbo.identity.spec.resource.UserProfileResource;
@@ -35,7 +35,7 @@ public class UserProfileResourceImpl implements UserProfileResource {
     }
 
     @Override
-    public Promise<ResultList<UserProfile>> getUserProfiles(UserId userId, String type, Integer cursor, Integer count) {
+    public Promise<Results<UserProfile>> getUserProfiles(UserId userId, String type, Integer cursor, Integer count) {
         List<UserProfile> userProfiles = userProfileService.getByUserId(userId.getValue(), type);
         return Promise.pure(ResultListUtil.init(userProfiles, count));
     }

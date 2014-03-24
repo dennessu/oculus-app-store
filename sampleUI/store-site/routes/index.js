@@ -3,8 +3,10 @@ var Identity = require('./identity');
 var Payment = require('./payment');
 var Account = require('./account');
 
+var Utils = require('../utils/utils');
+
 var ClientConfigs = require('../configs/client_config');
-var Template = require('./template');
+var Templates = require('./template');
 var Auth = require('./auth');
 
 
@@ -32,23 +34,22 @@ module.exports = function(app){
 
     // Config
     app.get('/config', function(req, res){
+        ClientConfigs["LoginUrl"] = process.AppConfig.Urls.GetLoginUrl(req);
+
+        ClientConfigs = Utils.FillObject(ClientConfigs, process.AppConfig, 1);
+
         res.json(ClientConfigs);
         res.end();
     });
 
-    // Template
-    app.get('/Template/Identity/Login', Template.Identity.Login);
-    app.get('/Template/Identity/Captcha', Template.Identity.Captcha);
-    app.get('/Template/Identity/TFA', Template.Identity.TFA);
-    app.get('/Template/Identity/Register', Template.Identity.Register);
-    app.get('/Template/Identity/PIN', Template.Identity.PIN);
-    app.get('/Template/Identity/My', Template.Identity.My);
+    // Templates
+    for(var c in process.AppConfig.Templates){
+        for(var s in process.AppConfig.Templates[c]){
+            app.get(Utils.Format("/Templates/{1}/{2}", c, s), Templates[c][s]);
+        }
+    }
 
-    app.get('/Template/Store/Index', Template.Store.Index);
-    app.get('/Template/Store/Detail', Template.Store.Detail);
-
-    app.get('/Template/Store/Cart', Template.Store.Cart);
-    app.get('/Template/Store/OrderSummary', Template.Store.OrderSummary);
+    app.get('/templates/shippingInfo/edit', Auth.Login);
 
     // Redirect back handler
     app.get('/Callback/Login', Auth.Login);

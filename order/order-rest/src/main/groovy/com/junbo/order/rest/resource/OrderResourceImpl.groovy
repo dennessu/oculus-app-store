@@ -2,6 +2,7 @@ package com.junbo.order.rest.resource
 
 import com.junbo.common.id.OrderId
 import com.junbo.common.id.UserId
+import com.junbo.common.model.Results
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.core.OrderService
 import com.junbo.order.spec.model.ApiContext
@@ -66,8 +67,12 @@ class OrderResourceImpl implements OrderResource {
     }
 
     @Override
-    Promise<List<Order>> getOrderByUserId(UserId userId) {
-        return orderService.getOrdersByUserId(userId.value)
+    Promise<Results<Order>> getOrderByUserId(UserId userId) {
+        orderService.getOrdersByUserId(userId.value).then { List<Order> orders ->
+            Results<Order> results = new Results<>()
+            results.setItems(orders)
+            return results
+        }
     }
 
 }

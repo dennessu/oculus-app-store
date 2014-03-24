@@ -15,48 +15,7 @@ var StoreControllers = {
         actions:{
             AddToCart: function(){
                 var _self = this;
-
-                /*
-                    authentication
-                        add to user cart
-                    no authentication
-                        create au anonymous user
-                        create an anonymous cart
-                        add to anonymous cart
-
-                    transition to shopping cart
-                 */
-
-                if(Ember.App.AuthManager.isAuthenticated()){
-                    _self.send("AddToCartHandler");
-                }else{
-                    if(Ember.App.AuthManager.getUserId() == null || Ember.App.AuthManager.getUserId() == ""){
-                        //create au anonymous user
-                        var provider = new IdentityProvider();
-
-                        provider.GetAnonymousUser(Utils.GenerateRequestModel(null), function (data) {
-                            var resultModel = data.data;
-                            if (resultModel.status == 200) {
-                                console.log("[DetailController:AddToCart] Create anonymous user success!");
-                                _self.set("errMessage", null);
-                                _self.send("AddToCartHandler");
-
-                            } else {
-                                console.log("[DetailController:AddToCart] Create anonymous user Failed!");
-                                _self.set("errMessage", Utils.GetErrorMessage(resultModel));
-                            }
-                        });
-                    }else{
-                        // add to cart
-                        _self.send("AddToCartHandler");
-                    }
-                }
-            },
-
-            AddToCartHandler: function(){
-                console.log("[DetailController:AddToCartHandler]");
-
-                var _self = this;
+                console.log("[DetailController:AddToCart]");
                 var currentId = _self.get('model').get('id');
                 var defaultCount = 1;
 
@@ -83,6 +42,7 @@ var StoreControllers = {
 
                     var data = {"cart_items": [{
                         product_id: currentId,
+                        selected: true,
                         qty: defaultCount
                     }]};
 
@@ -122,7 +82,22 @@ var StoreControllers = {
             return this.getEach("qty").reduce(function(previousValue, item, index, enumerable){
                 return previousValue + item;
             });
-        }.property("@each.qty")
+        }.property("@each.qty"),
+
+        actions: {
+            Checkout: function(){
+                var _self = this;
+                if(App.AuthManager.isAuthenticated()){
+                    console.log("[CartController:CheckOut]");
+                    // TODO: Call PostOrder
+                    _self.transitionToRouteAnimated("address", {main: "slideOverLeft"});
+                }else{
+                    Utils.Cookies.Set(AppConfig.CookiesName.BeforeRoute, "cart");
+
+                    location.href = AppConfig.LoginUrl;
+                }
+            }
+        }
 
     }),
 
@@ -149,15 +124,40 @@ var StoreControllers = {
             }
         }.observes('model.qty'),
 
+        changeStatus: function(){
+            var _self = this;
+
+            var data = {"cart_items": [{
+                product_id: _self.get("model.product_id"),
+                selected: _self.get("model.selected"),
+                qty: _self.get("model.qty")
+            }]};
+
+            var provider = new CartProvider();
+            provider.Update(Utils.GenerateRequestModel(data), function(resultData){
+                var resultModel = resultData.data;
+                if (resultModel.status == 200) {
+                    console.log("[CartItemController:Change Status] Success");
+                    _self.set("errMessage", null);
+                } else {
+                    console.log("[CartItemController:Change Status] Failed!");
+                    _self.set("errMessage", Utils.GetErrorMessage(resultModel));
+
+                    //TODO: ?
+                }
+            });
+        }.observes('model.selected'),
+
         actions: {
-            change: function(value){
+            Change: function(value){
                 var _self = this;
 
                 if(value != undefined && !isNaN(value) && value > 0){
-                    var productId = this.get("model.product_id");
+                    var productId = _self.get("model.product_id");
 
                     var data = {"cart_items": [{
                         product_id: productId,
+                        selected: _self.get("model.selected"),
                         qty: value
                     }]};
 
@@ -177,13 +177,14 @@ var StoreControllers = {
                 }
             },
 
-            removeItem: function(){
+            RemoveItem: function(){
                 var _self = this;
                 var item = this.get("model");
                 var productId = item.get("product_id");
 
                 var data = {"cart_items": [{
                     product_id: productId,
+                    selected: _self.get("model.selected"),
                     qty: 1
                 }]};
 

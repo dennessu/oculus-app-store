@@ -6,7 +6,7 @@ var Cart = function(host, port){
   this.Port = port;
 };
 
-Cart.prototype.GetPrimaryCart = function(userId, dataObj, cb){
+Cart.prototype.GetPrimaryCart = function(userId, cb){
     /*
      Method: GET
      URL: /rest/users/{userId}/carts/primary"
@@ -28,7 +28,7 @@ Cart.prototype.GetPrimaryCart = function(userId, dataObj, cb){
   };
 
   var client = new RestClient();
-  client.Request(options, dataObj, cb);
+  client.Request(options, null, cb);
 };
 
 Cart.prototype.GetCartByUrl = function(url, dataObj, cb){
@@ -96,6 +96,73 @@ Cart.prototype.GetCartByUrl = function(url, dataObj, cb){
 
     var client = new RestClient();
     client.Request(options, dataObj, cb);
+};
+
+Cart.prototype.GetCartById = function(userId, cartId, cb){
+    /*
+     Method: GET
+     URL: /rest/users/{userId}/carts/{cardId}"
+     Data Type: QueryString
+     Content-Type: 'application/json'
+     Request: null
+     Response:
+     {
+     "user": {
+     "href": "https://xxx.xxx.xxx",
+     "id": "728975415905280681"
+     },
+     "cartName": "__primary",
+     "resourceAge": 1,
+     "createdTime": "2014-02-28T12:04:43Z",
+     "updatedTime": "2014-02-28T12:05:22Z",
+     "offers": [
+     {
+     "createdTime": "2014-02-28T12:05:22Z",
+     "updatedTime": "2014-02-28T12:05:22Z",
+     "offer": {
+     "id": 30022
+     },
+     "quantity": 2,
+     "selected": true,
+     "self": {
+     "href": "https://xxx.xxx.xxx",
+     "id": "728983570241538681"
+     }
+     },
+     {
+     "createdTime": "2014-02-28T12:05:22Z",
+     "updatedTime": "2014-02-28T12:05:22Z",
+     "offer": {
+     "id": 4000
+     },
+     "quantity": 2,
+     "selected": true,
+     "self": {
+     "href": "https://xxx.xxx.xxx",
+     "id": "728983570241537681"
+     }
+     }
+     ],
+     "coupons": [],
+     "self": {
+     "href": "https://xxx.xxx.xxx",
+     "id": "728983570241536681"
+     }
+     }
+     */
+
+    var options = {
+        host: this.Host,
+        port: this.Port,
+        path: "/rest/users/"+ userId+ "/carts/" + cartId,
+        method: 'GET',
+        headers:{
+            'Content-Type': 'application/json'
+        }
+    };
+
+    var client = new RestClient();
+    client.Request(options, null, cb);
 };
 
 Cart.prototype.PutCartUpdate = function(userId, cartId, dataObj, cb){
@@ -200,6 +267,30 @@ Cart.prototype.PutCartUpdate = function(userId, cartId, dataObj, cb){
         port: this.Port,
         path: "/rest/users/" + userId + "/carts/" + cartId,
         method: 'PUT',
+        headers:{
+            'Content-Type': 'application/json'
+        }
+    };
+
+    var client = new RestClient();
+    client.Request(options, dataObj, cb);
+};
+
+Cart.prototype.PostMerge = function(userId, cartId, dataObj, cb){
+    /*
+     Method: POST
+     URL: /users/{userId}/carts/{cartId}/merge "
+     Data Type: JSON
+     Content-Type: 'application/json'
+     Request: CartModel
+     Response:
+     */
+
+    var options = {
+        host: this.Host,
+        port: this.Port,
+        path: "/rest/users/" + userId + "/carts/" + cartId + "/merge",
+        method: 'POST',
         headers:{
             'Content-Type': 'application/json'
         }

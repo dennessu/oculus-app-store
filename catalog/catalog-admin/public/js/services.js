@@ -22,6 +22,21 @@ services.factory('OfferFactory', function ($resource) {
     })
 });
 
+services.factory('ItemsFactory', function ($resource) {
+    return $resource('/api/items', {}, {
+        query: { method: 'GET', isArray: true },
+        create: { method: 'POST' }
+    })
+});
+
+services.factory('ItemFactory', function ($resource) {
+    return $resource('/api/items/:id', {}, {
+        query: { method: 'GET' },
+        update: { method: 'PUT', params: {id: '@id'} },
+        delete: { method: 'DELETE', params: {id: '@id'} }
+    })
+});
+
 services.factory('AttributesFactory', function ($resource) {
     return $resource('/api/attributes', {}, {
         query: { method: 'GET', isArray: true },
@@ -38,6 +53,12 @@ services.factory('AttributeFactory', function ($resource) {
 });
 
 services.factory('OfferResponse', function() {
+    return {
+        data:{}
+    };
+});
+
+services.factory('ItemResponse', function() {
     return {
         data:{}
     };

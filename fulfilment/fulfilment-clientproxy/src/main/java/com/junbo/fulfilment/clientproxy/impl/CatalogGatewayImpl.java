@@ -126,8 +126,7 @@ public class CatalogGatewayImpl implements CatalogGateway {
                 OfferAction offerAction = new OfferAction();
                 offerAction.setType(action.getType());
 
-                Map<String, Object> entitlementDef =
-                        getEntitlementDef(action);
+                Map<String, Object> entitlementDef = getEntitlementDef(action);
                 offerAction.setProperties(new SevereMap<>(entitlementDef));
 
                 // fill item info for physical delivery action
@@ -143,24 +142,24 @@ public class CatalogGatewayImpl implements CatalogGateway {
     protected Map<String, Object> getEntitlementDef(Action action) {
         Map<String, Object> result = new HashMap<>();
 
-        String entitlementDefId = action.getProperties().get(Constant.ENTITLEMENT_DEF_ID);
+        Long entitlementDefId = action.getEntitlementDefId();
         if (entitlementDefId == null) {
             return result;
         }
 
         try {
             EntitlementDefinition entitlementDef = entitlementDefClient.getEntitlementDefinition(
-                    new EntitlementDefinitionId(Long.parseLong(entitlementDefId))).wrapped().get();
+                    new EntitlementDefinitionId(entitlementDefId)).wrapped().get();
 
             if (entitlementDef == null) {
-                throw AppErrors.INSTANCE.notFound("EntitlementDefinition",
-                        Long.parseLong(entitlementDefId)).exception();
+                throw AppErrors.INSTANCE.notFound("EntitlementDefinition", entitlementDefId).exception();
             }
 
             result.put(Constant.ENTITLEMENT_GROUP, entitlementDef.getGroup());
             result.put(Constant.ENTITLEMENT_TAG, entitlementDef.getTag());
             result.put(Constant.ENTITLEMENT_TYPE, entitlementDef.getType());
             result.put(Constant.ENTITLEMENT_DEVELOPER, entitlementDef.getDeveloperId());
+            result.put(Constant.ENTITLEMENT_DEF_ID, entitlementDefId);
 
             return result;
         } catch (Exception e) {
