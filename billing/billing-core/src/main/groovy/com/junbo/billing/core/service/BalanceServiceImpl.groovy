@@ -166,7 +166,8 @@ class BalanceServiceImpl implements BalanceService {
         if (balance.piId == null) {
             throw AppErrors.INSTANCE.fieldMissingValue('piId').exception()
         }
-        return paymentFacade.getPaymentInstrument(balance.userId.value, balance.piId.value).recover { Throwable throwable ->
+        return paymentFacade.getPaymentInstrument(balance.userId.value, balance.piId.value)
+                .recover { Throwable throwable ->
             LOGGER.error('name=Error_Get_PaymentInstrument. pi id: ' + balance.piId.value, throwable)
             throw AppErrors.INSTANCE.piNotFound(balance.piId.value.toString()).exception()
         }.then { PaymentInstrument pi ->
