@@ -10,12 +10,16 @@
             <wf:on-entry>
                 <wf:action ref="validateUserAction"/>
                 <wf:action ref="validatePaymentInstrumentsAction"/>
-                <wf:action ref="ratingAction"/>
-                <wf:action ref="createOrderAction"/>
                 <wf:action ref="authSettleAction"/>
                 <wf:action ref="fulfillmentAction"/>
+                <wf:action ref="authSettleActionUpdateOrderAction"/>
                 <wf:action ref="sendEmailAction"/>
             </wf:on-entry>
         </wf:end-state>
     </wf:flow>
+
+    <bean id="authSettleActionUpdateOrderAction" class="com.junbo.order.core.impl.orderaction.SaveOrderAction">
+        <property name="newOrder" value="false"/>
+        <property name="updateOnlyOrder" value="true"/>
+    </bean>
 </beans>

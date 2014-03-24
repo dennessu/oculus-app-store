@@ -1,7 +1,9 @@
 package com.junbo.order.test
 
 import com.junbo.billing.spec.model.Balance
+import com.junbo.billing.spec.model.ShippingAddress
 import com.junbo.billing.spec.resource.BalanceResource
+import com.junbo.billing.spec.resource.ShippingAddressResource
 import com.junbo.catalog.spec.model.offer.Offer
 import com.junbo.catalog.spec.model.offer.OffersGetOptions
 import com.junbo.catalog.spec.resource.ItemResource
@@ -50,6 +52,9 @@ class ServiceFacade {
 
     @Autowired
     BalanceResource balanceResource
+
+    @Autowired
+    ShippingAddressResource shippingAddressResource
 
     @Autowired
     PaymentInstrumentResource paymentInstrumentResource
@@ -114,6 +119,21 @@ class ServiceFacade {
     Order putQuotes(Order order) {
         order.tentative = true
         return orderResource.updateOrderByOrderId(order.id, order).wrapped().get()
+    }
+
+    ShippingAddress postShippingAddress(UserId userId) {
+        def shippingAddress = new ShippingAddress(
+                userId: userId,
+                street: 'Ridgewood Rd',
+                city: 'Ridgeland',
+                state: 'MS',
+                postalCode: '39157',
+                country: 'US',
+                firstName: 'Mike',
+                lastName: 'Test',
+                phoneNumber: '16018984661'
+        )
+        return shippingAddressResource.postShippingAddress(userId, shippingAddress).wrapped().get()
     }
 
     Offer getOfferByName(String offerName) {
