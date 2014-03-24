@@ -79,8 +79,7 @@ public class LogHelper {
             } else {
                 logger.info("**** Response body: " + response.getResponseBody());
             }
-        } else
-        {
+        } else {
             logger.warn("The response is null");
         }
     }
