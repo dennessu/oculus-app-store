@@ -15,6 +15,9 @@ var Transition = {
             case Ember.App.ShippingInfo:
                 result = Transition.ShippingInfo(data);
                 break;
+            case Ember.App.CreditCard:
+                result = Transition.CreditCard(data);
+                break;
             default :
                 result = Transition.Normalize(data);
                 break;
@@ -30,7 +33,6 @@ var Transition = {
         var result = null;
         if (data["results"] != undefined) {
             // get offers
-
             var offers = data["results"];
             var resultList = new Array();
             for (var i = 0; i < offers.length; ++i) {
@@ -111,5 +113,54 @@ var Transition = {
                 phoneNumber: item.phoneNumber
             };
         }
+    },
+
+    CreditCard: function(data){
+        var result = null;
+        if(data["results"] != undefined){
+            var payments = data["results"];
+            var paymentArray = new Array();
+            for(var i = 0; i < payments.length; ++i){
+                var item = payments[i];
+                paymentArray.push({
+                    id: item.self.id,
+                    accountName: item.accountName,
+                    accountNum: item.accountNum,
+                    isValidated: item.isValidated,
+                    isDefault: item.isDefault,
+                    expireDate: item.creditCardRequest.expireDate,
+                    encryptedCvmCode: "",
+                    addressLine1: item.address.addressLine1,
+                    city: item.address.city,
+                    state: item.address.state,
+                    country: item.address.country,
+                    postalCode: item.address.postalCode,
+                    phoneType: item.phone.type,
+                    phoneNumber: item.phone.number
+                });
+            }
+
+            result = {"CreditCards": paymentArray};
+        }else{
+            var item = data;
+            result = {
+                id: item.self.id,
+                accountName: item.accountName,
+                accountNum: item.accountNum,
+                isValidated: item.isValidated,
+                isDefault: item.isDefault,
+                expireDate: item.creditCardRequest.expireDate,
+                encryptedCvmCode: "",
+                addressLine1: item.address.addressLine1,
+                city: item.address.city,
+                state: item.address.state,
+                country: item.address.country,
+                postalCode: item.address.postalCode,
+                phoneType: item.phone.type,
+                phoneNumber: item.phone.number
+            };
+        }
+
+        return result;
     }
 };

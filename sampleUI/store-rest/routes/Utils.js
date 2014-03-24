@@ -10,7 +10,7 @@ var Utils = {
             for (var a in gateway) {
                 var action = gateway[a];
                 if (typeof(action["Path"]) != "undefined") {
-                    if (Utils.CheckPath(path, action.Path)) {
+                    if (Utils.CheckPath(path, action.Path) && action.Method.toLowerCase() == req.route.method.toLowerCase()) {
                         Utils.ParseResponse(action, req, res);
                         return;
                     }
