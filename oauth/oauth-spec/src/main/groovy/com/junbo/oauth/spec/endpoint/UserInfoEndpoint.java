@@ -21,7 +21,7 @@ import javax.ws.rs.core.MediaType;
  * Javadoc.
  */
 @Api(value = "oauth2", basePath = "oauth2")
-@Path("userinfo")
+@Path("/oauth2/userinfo")
 @RestResource
 @Produces(MediaType.APPLICATION_JSON)
 public interface UserInfoEndpoint {

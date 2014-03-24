@@ -18,7 +18,7 @@ import javax.ws.rs.core.MediaType;
  * Javadoc.
  */
 @Api(value = "oauth2", basePath = "oauth2")
-@Path("tokeninfo")
+@Path("/oauth2/tokeninfo")
 @RestResource
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
