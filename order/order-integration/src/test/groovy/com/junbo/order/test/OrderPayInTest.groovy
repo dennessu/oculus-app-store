@@ -46,11 +46,13 @@ class OrderPayInTest extends AbstractTestNGSpringContextTests {
 
         def resultOrder = serviceFacade.postQuotes(order)
         assert resultOrder.orderItems.size() == 1
+        assert resultOrder.status == 'OPEN'
         //resultOrder.orderItems << generator.generateOrderItem(new OfferId(1002), 3)
         resultOrder = serviceFacade.putQuotes(resultOrder)
         assert resultOrder.id != null
         //assert resultOrder.orderItems.size() == 3
         assert resultOrder.totalAmount != null
+        assert resultOrder.status == 'OPEN'
 
         resultOrder = serviceFacade.settleQuotes(resultOrder.id)
         assert !resultOrder.tentative

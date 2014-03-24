@@ -124,8 +124,8 @@ class ServiceFacade {
             while (true) {
                 offers = new ArrayList<>()
                 def offerResults = offerResource.getOffers(option).wrapped().get()
-                offers.addAll(offerResults.results)
-                if (offerResults.results.size() < option.size) {
+                offers.addAll(offerResults.items)
+                if (offerResults.items.size() < option.size) {
                     break
                 }
                 option.start += option.size
@@ -137,7 +137,7 @@ class ServiceFacade {
     }
 
     List<Balance> getBalance(OrderId orderId) {
-        return balanceResource.getBalances(orderId).wrapped().get()
+        return balanceResource.getBalances(orderId).wrapped().get().items
     }
 
     List<Entitlement> getEntitlements(UserId userId, List<String> tag) {
@@ -154,9 +154,9 @@ class ServiceFacade {
             page.start = start
             page.count = DEFAULT_PAGE_SIZE
             def list = entitlementResource.getEntitlements(userId, searchParam, page).wrapped().get()
-            result.addAll(list.criteria)
-            start += list.criteria.size()
-            if (list.criteria.size() < DEFAULT_PAGE_SIZE) {
+            result.addAll(list.items)
+            start += list.items.size()
+            if (list.items.size() < DEFAULT_PAGE_SIZE) {
                 break
             }
         }

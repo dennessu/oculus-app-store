@@ -38,7 +38,6 @@ class OfferLoader {
         createOffer(
             new Offer(
                     name: '3D Parking Simulator',
-                    type: 12,
                     ownerId: owner.value,
                     status: 'Design',
                     categories: [123],
@@ -91,7 +90,6 @@ class OfferLoader {
         createOffer(
                 new Offer(
                         name: 'Oculus VR',
-                        type: 14,
                         ownerId: owner.value,
                         status: 'Design',
                         categories: [123],

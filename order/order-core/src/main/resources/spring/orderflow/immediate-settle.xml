@@ -21,6 +21,5 @@
     <bean id="immediateSettleUpdateOrderAction" class="com.junbo.order.core.impl.orderaction.SaveOrderAction">
         <property name="newOrder" value="false"/>
         <property name="updateOnlyOrder" value="true"/>
-        <property name="orderActionType" value="FULFILL"/>
     </bean>
 </beans>
