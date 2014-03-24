@@ -5,12 +5,14 @@
  */
 package com.junbo.testing.common.blueprint;
 
+import com.junbo.billing.spec.model.ShippingAddress;
 import com.junbo.cart.spec.model.Cart;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.identity.spec.model.user.User;
 import com.junbo.order.spec.model.Order;
 import com.junbo.catalog.spec.model.attribute.Attribute;
+import com.junbo.payment.spec.model.PaymentInstrument;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -38,7 +40,9 @@ public class Master {
     private Map<String, Offer> offers;
     private Map<String, Item> items;
     private Map<String, Order> orders;
+    private Map<String, ShippingAddress> shippingAddresses;
     private Map<String, Attribute> attributes;
+    private Map<String, PaymentInstrument> paymentInstruments;
 
     public void initializeMaster() {
         this.initializeUsers();
@@ -84,8 +88,8 @@ public class Master {
         this.orders.clear();
     }
 
-    public void initializeAttributes(){
-        if (this.attributes == null){
+    public void initializeAttributes() {
+        if (this.attributes == null) {
             this.attributes = new HashMap<>();
         }
         this.attributes.clear();
@@ -127,11 +131,27 @@ public class Master {
         this.orders.put(orderId, order);
     }
 
-    public void addAttribute(String attributeId, Attribute attribute){
-        if (this.attributes.containsKey(attributeId)){
+    public void addShippingAddress(String addressId, ShippingAddress address) {
+        if (this.shippingAddresses.containsKey(addressId)) {
+            this.shippingAddresses.remove(addressId);
+        }
+
+        this.shippingAddresses.put(addressId, address);
+    }
+
+    public void addAttribute(String attributeId, Attribute attribute) {
+        if (this.attributes.containsKey(attributeId)) {
             this.attributes.remove(attributeId);
         }
         this.attributes.put(attributeId, attribute);
+    }
+
+    public void addPaymentInstrument(String paymentInstrumentId, PaymentInstrument paymentInstrument) {
+        if (this.paymentInstruments.containsKey(paymentInstrumentId)) {
+            this.paymentInstruments.remove(paymentInstrument);
+        }
+
+        this.paymentInstruments.put(paymentInstrumentId, paymentInstrument);
     }
 
     public User getUser(String userId) {
@@ -154,8 +174,28 @@ public class Master {
         return this.orders.get(orderId);
     }
 
-    public Attribute getAttribute(String attributeId){
+    public ShippingAddress getShippingAddress(String addressId) {
+        return this.shippingAddresses.get(addressId);
+    }
+
+    public PaymentInstrument getPaymentInstrument(String paymentInstrumentId) {
+        return this.paymentInstruments.get(paymentInstrumentId);
+    }
+
+    public Attribute getAttribute(String attributeId) {
         return this.attributes.get(attributeId);
+    }
+
+    public void removeShippingAddress(String addressId) {
+        if (this.shippingAddresses.containsKey(addressId)) {
+            this.shippingAddresses.remove(addressId);
+        }
+    }
+
+    public void removePaymentInstrument(String paymentInstrumentId) {
+        if (this.paymentInstruments.containsKey(paymentInstrumentId)) {
+            this.paymentInstruments.remove(paymentInstrumentId);
+        }
     }
 
 }
