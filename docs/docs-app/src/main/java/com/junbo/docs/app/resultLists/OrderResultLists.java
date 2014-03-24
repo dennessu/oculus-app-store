@@ -6,33 +6,13 @@
 
 package com.junbo.docs.app.resultlists;
 
-import com.junbo.identity.spec.model.common.ResultList;
+import com.junbo.common.model.Results;
 import com.junbo.order.spec.model.Order;
+import com.junbo.order.spec.model.OrderEvent;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.List;
-import java.util.Map;
 
-/**
- * The non-generic ResultList types for identity.
- */
-public class OrderResultLists {
-
-    /**
-     * Find the non-generic ResultList type.
-     */
-    public static Class getClass(ParameterizedType type) {
-        Type actualType = type.getActualTypeArguments()[0];
-        return resultListMap.get(actualType);
-    }
-
-    private OrderResultLists() {}
-    private static Map<Class, Class> resultListMap = ResultListUtils.getMap(
-            OrderResultList.class);
-}
-
-class OrderResultList extends ResultList<Order> {
+class OrderResultList extends Results<Order> {
     @Override
     public List<Order> getItems() {
         return super.getItems();
@@ -40,6 +20,17 @@ class OrderResultList extends ResultList<Order> {
 
     @Override
     public void setItems(List<Order> items) {
+        super.setItems(items);
+    }
+}
+class OrderEventResultList extends Results<OrderEvent> {
+    @Override
+    public List<OrderEvent> getItems() {
+        return super.getItems();
+    }
+
+    @Override
+    public void setItems(List<OrderEvent> items) {
         super.setItems(items);
     }
 }

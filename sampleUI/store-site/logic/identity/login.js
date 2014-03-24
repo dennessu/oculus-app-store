@@ -18,7 +18,7 @@ module.exports = function(data, cb){
                 resultModel.status = DomainModels.ResultStatusEnum.Normal;
                 resultModel.data = "";
             } else { // need back and ship captcha
-                var redirectUrl = cookies[process.AppConfig.QueryStrings.RedirectUrl];
+                var redirectUrl = cookies[process.AppConfig.CookiesName.RedirectUrl];
 
                 var redirectModel = new DomainModels.RedirectModel;
                 redirectModel.target = DomainModels.RedirectTargetsEnum.Self;

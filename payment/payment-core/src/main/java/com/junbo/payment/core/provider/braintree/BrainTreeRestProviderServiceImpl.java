@@ -12,6 +12,7 @@ import com.junbo.payment.spec.internal.BrainTreeResource;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentTransaction;
 
+import javax.ws.rs.core.Response;
 import java.util.List;
 
 /**
@@ -32,9 +33,8 @@ public class BrainTreeRestProviderServiceImpl implements PaymentProviderService 
     }
 
     @Override
-    public Promise<Void> delete(String token) {
-        brainTreeResource.deletePaymentInstrument(token);
-        return Promise.pure(null);
+    public Promise<Response> delete(String token) {
+        return brainTreeResource.deletePaymentInstrument(token);
     }
 
     @Override
@@ -53,14 +53,13 @@ public class BrainTreeRestProviderServiceImpl implements PaymentProviderService 
     }
 
     @Override
-    public Promise<Void> reverse(String transactionId) {
-        brainTreeResource.reverse(transactionId);
-        return Promise.pure(null);
+    public Promise<PaymentTransaction> reverse(String transactionId, PaymentTransaction paymentRequest) {
+        return brainTreeResource.reverse(transactionId, paymentRequest);
     }
 
     @Override
-    public void refund(String transactionId, PaymentTransaction request) {
-
+    public Promise<PaymentTransaction> refund(String transactionId, PaymentTransaction request) {
+        return Promise.pure(request);
     }
 
     @Override

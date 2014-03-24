@@ -4,16 +4,17 @@
 
         {{#each itemController="CartItem"}}
         <section class="item">
+            <div class="select">{{input type="checkbox" checked=selected}}</div>
             {{#link-to-animated "detail" id animations="main:slideOverLeft" class="picture"}}<img {{bind-attr src="product.picture"}}/>{{/link-to-animated}}
             <div class="info">
                 <dl>
                     <dt>{{product.name}}</dt>
                     <dd>$ {{product.price}}</dd>
-                    <dd class="qty">{{input type="number" value=qty focus-out="change"}}</dd>
+                    <dd class="qty">{{input type="number" value=qty focus-out="Change"}}</dd>
                     <dd>$ {{itemSubtotal}}</dd>
                 </dl>
                 <p>
-                    <a href="#" {{action "removeItem"}}>Remove</a>
+                    <a href="#" {{action "RemoveItem"}}>Remove</a>
                 </p>
             </div>
             <div class="clear"></div>
@@ -44,7 +45,7 @@
         </div>
 
         <div class="actions">
-            <button type="button" class="btn btn-orange">Check Out</button>
+            <button type="button" class="btn btn-orange" {{action "Checkout"}}>Check Out</button>
         </div>
 
     </div>

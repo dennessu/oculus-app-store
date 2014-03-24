@@ -6,38 +6,12 @@
 
 package com.junbo.docs.app.resultlists;
 
-import com.junbo.identity.spec.model.common.ResultList;
+import com.junbo.common.model.Results;
 import com.junbo.identity.spec.model.user.*;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.List;
-import java.util.Map;
 
-/**
- * The non-generic ResultList types for identity.
- */
-public class IdentityResultLists {
-
-    /**
-     * Find the non-generic ResultList type.
-     */
-    public static Class getClass(ParameterizedType type) {
-        Type actualType = type.getActualTypeArguments()[0];
-        return resultListMap.get(actualType);
-    }
-
-    private IdentityResultLists() {}
-    private static Map<Class, Class> resultListMap = ResultListUtils.getMap(
-            UserResultList.class,
-            UserDeviceProfileResultList.class,
-            UserFederationResultList.class,
-            UserOptInResultList.class,
-            UserProfileResultList.class,
-            UserTosAcceptanceResultList.class);
-}
-
-class UserResultList extends ResultList<User> {
+class UserResultList extends Results<User> {
     @Override
     public List<User> getItems() {
         return super.getItems();
@@ -48,7 +22,7 @@ class UserResultList extends ResultList<User> {
         super.setItems(items);
     }
 }
-class UserDeviceProfileResultList extends ResultList<UserDeviceProfile> {
+class UserDeviceProfileResultList extends Results<UserDeviceProfile> {
     @Override
     public List<UserDeviceProfile> getItems() {
         return super.getItems();
@@ -59,7 +33,7 @@ class UserDeviceProfileResultList extends ResultList<UserDeviceProfile> {
         super.setItems(items);
     }
 }
-class UserFederationResultList extends ResultList<UserFederation> {
+class UserFederationResultList extends Results<UserFederation> {
     @Override
     public List<UserFederation> getItems() {
         return super.getItems();
@@ -70,7 +44,7 @@ class UserFederationResultList extends ResultList<UserFederation> {
         super.setItems(items);
     }
 }
-class UserOptInResultList extends ResultList<UserOptIn> {
+class UserOptInResultList extends Results<UserOptIn> {
     @Override
     public List<UserOptIn> getItems() {
         return super.getItems();
@@ -81,7 +55,7 @@ class UserOptInResultList extends ResultList<UserOptIn> {
         super.setItems(items);
     }
 }
-class UserProfileResultList extends ResultList<UserProfile> {
+class UserProfileResultList extends Results<UserProfile> {
     @Override
     public List<UserProfile> getItems() {
         return super.getItems();
@@ -92,7 +66,7 @@ class UserProfileResultList extends ResultList<UserProfile> {
         super.setItems(items);
     }
 }
-class UserTosAcceptanceResultList extends ResultList<UserTosAcceptance> {
+class UserTosAcceptanceResultList extends Results<UserTosAcceptance> {
     @Override
     public List<UserTosAcceptance> getItems() {
         return super.getItems();

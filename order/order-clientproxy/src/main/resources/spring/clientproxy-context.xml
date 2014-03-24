@@ -70,6 +70,14 @@
         <constructor-arg name="target" value="${order.client.catalog.url}"/>
     </bean>
 
+    <bean id="order.offerItemClient" class="com.junbo.catalog.spec.resource.proxy.ItemResourceClientProxy">
+        <constructor-arg name="client" ref="asyncHttpClient"/>
+        <constructor-arg name="transcoder" ref="transcoder"/>
+        <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
+        <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder"/>
+        <constructor-arg name="target" value="${order.client.catalog.url}"/>
+    </bean>
+
     <bean id="order.fulfilmentClient" class="com.junbo.fulfilment.spec.resource.proxy.FulfilmentResourceClientProxy">
         <constructor-arg name="client" ref="asyncHttpClient"/>
         <constructor-arg name="transcoder" ref="transcoder"/>
@@ -103,7 +111,7 @@
     <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
         <property name="cacheManager" ref="cacheManagerFactory"/>
     </bean>
-    <bean id="cachedCatalogFacade" class="com.junbo.order.clientproxy.cache.CachedCatalogFacadeImpl">
+    <bean id="cachedCatalogFacade" class="com.junbo.order.clientproxy.catalog.impl.CachedCatalogFacadeImpl">
         <constructor-arg name="ehCacheCacheManager" ref="cacheManager"/>
     </bean>
 
