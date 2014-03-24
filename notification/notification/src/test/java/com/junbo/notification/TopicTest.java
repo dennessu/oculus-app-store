@@ -5,8 +5,20 @@
  */
 package com.junbo.notification;
 
+import com.junbo.notification.queue.TestProducer;
+import com.junbo.notification.topic.TestPublisher;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.testng.annotations.Test;
+
 /**
  * TopicTest.
  */
 public class TopicTest extends BaseTest {
+    @Autowired
+    private TestPublisher publisher;
+
+    @Test
+    public void testBVT() {
+        publisher.send("come on baby!");
+    }
 }

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <import resource="classpath*:spring/*-context.xml"/>
+
+    <!-- Topic demo -->
+    <bean id="testTopic" class="org.apache.activemq.command.ActiveMQTopic">
+        <constructor-arg index="0" value="TEST_QUEUE"/>
+    </bean>
+
+    <bean id="topicTemplate" class="org.springframework.jms.core.JmsTemplate">
+        <property name="defaultDestination" ref="testTopic"/>
+        <property name="connectionFactory" ref="connectionFactory"/>
+        <property name="explicitQosEnabled" value="true"/>
+        <property name="deliveryPersistent" value="true"/>
+    </bean>
+
+    <bean id="testPublisher" class="com.junbo.notification.topic.TestPublisher">
+        <property name="template" ref="topicTemplate"/>
+        <property name="destination" ref="testTopic"/>
+    </bean>
+
+    <bean id="testSubscriber1" class="com.junbo.notification.topic.TestSubscriber1"/>
+    <bean id="testSubscriber2" class="com.junbo.notification.topic.TestSubscriber2"/>
+
+    <bean id="topicListenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+        <property name="connectionFactory" ref="connectionFactory"/>
+        <property name="destination" ref="testTopic"/>
+        <property name="messageListener" ref="testSubscriber1"/>
+        <property name="sessionAcknowledgeMode" value="2"/>
+    </bean>
+</beans>
