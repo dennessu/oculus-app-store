@@ -46,8 +46,8 @@ class AppExceptionMapper implements ExceptionMapper<Exception> {
 
         LOGGER.error('Log unhandled exception', exception)
 
-        Error error = new Error(Response.Status.INTERNAL_SERVER_ERROR.reasonPhrase, null,
-                Response.Status.INTERNAL_SERVER_ERROR.reasonPhrase, null)
+        Error error = new Error(Response.Status.INTERNAL_SERVER_ERROR.reasonPhrase,
+                Response.Status.INTERNAL_SERVER_ERROR.reasonPhrase, null, null)
 
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(error)
                 .type(MediaType.APPLICATION_JSON).build()
