@@ -18,15 +18,18 @@
     </bean>
 
     <bean id="authSettleAction" class="com.junbo.order.core.impl.orderaction.AuthSettleAction">
+        <property name="orderActionType" value="AUTHORIZE"/>
     </bean>
 
     <bean id="fulfillmentAction" class="com.junbo.order.core.impl.orderaction.FulfillmentAction">
+        <property name="orderActionType" value="FULFILL"/>
     </bean>
 
     <bean id="getOrderAction" class="com.junbo.order.core.impl.orderaction.GetOrderAction">
     </bean>
 
     <bean id="immediateSettleAction" class="com.junbo.order.core.impl.orderaction.ImmediateSettleAction">
+        <property name="orderActionType" value="CHARGE"/>
     </bean>
 
     <bean id="ratingAction" class="com.junbo.order.core.impl.orderaction.RatingAction">
