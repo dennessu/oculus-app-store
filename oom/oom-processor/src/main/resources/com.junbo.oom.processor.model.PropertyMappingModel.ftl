@@ -51,14 +51,22 @@
         }
 [/#if]
 
-        ${params.targetBeanName}.${targetProperty.setterString}(
+        [@includeModel model=targetProperty.type/] __targetProperty =
             [#if params.alternativeSourceBeanName?has_content]
-                [@includeModel model=mappingMethodRef source="__sourceProperty" alternativeSource="__alternativeSourceProperty" context=params.context!/]
+                [@includeModel model=mappingMethodRef source="__sourceProperty" alternativeSource="__alternativeSourceProperty" context=params.context!/];
             [#else]
-                [@includeModel model=mappingMethodRef source="__sourceProperty" context=params.context!/]
+                [@includeModel model=mappingMethodRef source="__sourceProperty" context=params.context!/];
             [/#if]
-        );
 
+        if (__targetProperty != null) {
+            ${params.targetBeanName}.${targetProperty.setterString}(__targetProperty);
+        }
+
+[#if params.context?has_content]
+        if (__targetProperty == null && ${params.context}.getSetsNull() == Boolean.TRUE) {
+            ${params.targetBeanName}.${targetProperty.setterString}(null);
+        }
+[/#if]
 
 [#if params.context?has_content]
         if (__filter != null) {

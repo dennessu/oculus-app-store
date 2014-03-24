@@ -5,7 +5,9 @@
  */
 package com.junbo.oom.core.filter;
 
+import java.util.HashMap;
 import java.util.Map;
+
 /**
  * Java doc.
  */
@@ -31,7 +33,7 @@ public class PropertyMappingEvent {
 
     private String targetPropertyName;
 
-    private Map<String, Object> attributes;
+    private Map<Object, Object> attributes;
 
     public Class<?> getSourceType() {
         return sourceType;
@@ -113,11 +115,22 @@ public class PropertyMappingEvent {
         this.targetPropertyName = targetPropertyName;
     }
 
-    public Map<String, Object> getAttributes() {
+    public Map<Object, Object> getAttributes() {
+        if (attributes == null) {
+            attributes = new HashMap<>();
+        }
         return attributes;
     }
 
-    public void setAttributes(Map<String, Object> attributes) {
-        this.attributes = attributes;
+    @SuppressWarnings("unchecked")
+    public Map<Object, Object> getSubAttributes(Object key) {
+        Map<Object, Object> subAttributes = (Map<Object, Object>) getAttributes().get(key);
+
+        if (subAttributes == null) {
+            subAttributes = new HashMap<>();
+            getAttributes().put(key, subAttributes);
+        }
+
+        return subAttributes;
     }
 }

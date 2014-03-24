@@ -33,7 +33,7 @@ class MappingMethodProcessorUtil {
 
             if (!StringUtils.isEmpty(explicitMethodName)) {
                 throw new ProcessingException('Explicit mapping method ' + explicitMethodName + ' not found. '
-                        + 'sourceElementType = ' + sourceElementType + ' targetElementType = ' + targetElementType)
+                        + 'sourceItemType = ' + sourceElementType + ' targetItemType = ' + targetElementType)
             }
 
             def sourceTypeName = sourceElementType.name + sourceElementType.typeParameters*.name.join('')

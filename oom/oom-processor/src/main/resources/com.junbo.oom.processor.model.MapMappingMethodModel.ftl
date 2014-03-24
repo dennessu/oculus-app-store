@@ -97,7 +97,15 @@ public [@includeModel model=returnType/] ${name}(
                 [@includeModel model=valueMappingMethod source="__sourceValue" context=(contextParameter.name)!/];
             [/#if]
 
-            __result.put(__key, __value);
+            if (__value != null) {
+                __result.put(__key, __value);
+            }
+
+    [#if contextParameter??]
+            if (__value == null && ${contextParameter.name}.getSetsNull() == Boolean.TRUE) {
+                __result.put(__key, null);
+            }
+    [/#if]
 
     [#if contextParameter??]
             if (__filter != null) {

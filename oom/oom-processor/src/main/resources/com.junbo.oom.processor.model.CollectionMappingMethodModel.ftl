@@ -21,22 +21,64 @@ public [@includeModel model=returnType/] ${name}(
 
     [@includeModel model=returnType/] __result = new [@includeModel model=returnType.implementationType!returnType/]();
 
-    for ([@includeModel model=sourceParameter.type.typeParameters[0]/] __sourceItem :
-        (${sourceParameter.name}[#if alternativeSourceParameter??] == null ? ${alternativeSourceParameter.name} : ${sourceParameter.name}[/#if])) {
+    int count = 0;
+    if (${sourceParameter.name} != null && ${sourceParameter.name}.size() > count) {
+        count = ${sourceParameter.name}.size();
+    }
+
+[#if alternativeSourceParameter??]
+    if (${alternativeSourceParameter.name} != null && ${alternativeSourceParameter.name}.size() > count) {
+        count = ${alternativeSourceParameter.name}.size();
+    }
+[/#if]
+
+    Iterator<[@includeModel model=sourceParameter.type.typeParameters[0]/]> __sourceIter =
+        ${sourceParameter.name} == null ? null : ${sourceParameter.name}.iterator();
+
+[#if alternativeSourceParameter??]
+    Iterator<[@includeModel model=sourceParameter.type.typeParameters[0]/]> __alternativeSourceIter =
+        ${alternativeSourceParameter.name} == null ? null : ${alternativeSourceParameter.name}.iterator();
+[/#if]
+
+
+    for (int i = 0; i < count; i++) {
+        [@includeModel model=sourceParameter.type.typeParameters[0]/] __sourceItem = null;
+        if (__sourceIter != null && __sourceIter.hasNext()) {
+            __sourceItem = __sourceIter.next();
+        }
+
+[#if alternativeSourceParameter??]
+        [@includeModel model=sourceParameter.type.typeParameters[0]/] __alternativeSourceItem = null;
+        if (__alternativeSourceIter != null && __alternativeSourceIter.hasNext()) {
+            __alternativeSourceItem = __alternativeSourceIter.next();
+        }
+[/#if]
 
         boolean __skipped = false;
 
     [#if contextParameter??]
-        ElementMappingFilter __filter = ${contextParameter.name}.getElementMappingFilter();
-        ElementMappingEvent __event = null;
+        ItemMappingFilter __filter = ${contextParameter.name}.getItemMappingFilter();
+        ItemMappingEvent __event = null;
         if (__filter != null) {
-            __event = new ElementMappingEvent();
+            __event = new ItemMappingEvent();
 
-            __event.setSourceElementType(${sourceParameter.type.typeParameters[0].name}.class);
-            __event.setSourceElement(__sourceItem);
-            __event.setTargetElementType(${returnType.typeParameters[0].name}.class);
+            __event.setSourceType(${sourceParameter.type.name}.class);
+            __event.setSourceItemType(${sourceParameter.type.typeParameters[0].name}.class);
+            __event.setSourceItemIndex(i);
 
-            __skipped = __filter.skipElementMapping(__event, ${contextParameter.name});
+            __event.setSource(${sourceParameter.name});
+            __event.setSourceItem(__sourceItem);
+
+[#if alternativeSourceParameter??]
+            __event.setAlternativeSource(${alternativeSourceParameter.name});
+            __event.setAlternativeSourceItem(__alternativeSourceItem);
+[/#if]
+
+            __event.setTargetType(${returnType.name}.class);
+            __event.setTargetItemType(${returnType.typeParameters[0].name}.class);
+            __event.setTargetItemIndex(i);
+
+            __skipped = __filter.skipItemMapping(__event, ${contextParameter.name});
         }
     [/#if]
 
@@ -44,19 +86,35 @@ public [@includeModel model=returnType/] ${name}(
 
     [#if contextParameter??]
             if (__filter != null) {
-                __filter.beginElementMapping(__event, ${contextParameter.name});
-                __sourceItem = ([@includeModel model=sourceParameter.type.typeParameters[0]/]) __event.getSourceElement();
-            }
+                __filter.beginItemMapping(__event, ${contextParameter.name});
+                __sourceItem = ([@includeModel model=sourceParameter.type.typeParameters[0]/]) __event.getSourceItem();
+
+            [#if alternativeSourceParameter??]
+                __alternativeSourceItem = ([@includeModel model=sourceParameter.type.typeParameters[0]/]) __event.getAlternativeSourceItem();
+            [/#if]
+           }
     [/#if]
 
             [@includeModel model=returnType.typeParameters[0]/] __targetItem =
-                [@includeModel model=elementMappingMethod source="__sourceItem" context=(contextParameter.name)!/];
+        [#if alternativeSourceParameter??]
+            [@includeModel model=elementMappingMethod source="__sourceItem" alternativeSource="__alternativeSourceItem" context=(contextParameter.name)!/];
+        [#else]
+            [@includeModel model=elementMappingMethod source="__sourceItem" context=(contextParameter.name)!/];
+        [/#if]
 
-            __result.add(__targetItem);
+            if (__targetItem != null) {
+                __result.add(__targetItem);
+            }
+
+    [#if contextParameter??]
+            if (__targetItem == null && ${contextParameter.name}.getAddsNull() == Boolean.TRUE) {
+                __result.add(null);
+            }
+    [/#if]
 
     [#if contextParameter??]
             if (__filter != null) {
-                __filter.endElementMapping(__event, ${contextParameter.name});
+                __filter.endItemMapping(__event, ${contextParameter.name});
             }
     [/#if]
         }

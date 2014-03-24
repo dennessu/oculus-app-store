@@ -5,11 +5,11 @@
  */
 package com.junbo.oom.core.filter;
 
+import com.junbo.oom.core.BeanMarker;
 import com.junbo.oom.core.MappingContext;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.Map;
+
 /**
  * Java doc.
  */
@@ -17,21 +17,10 @@ public class PropertiesToIncludeFilter implements PropertyMappingFilter {
 
     @Override
     public boolean skipPropertyMapping(PropertyMappingEvent event, MappingContext context) {
-        List<String> toInclude = context.getPropertiesToInclude();
-        if (toInclude != null && toInclude.size() != 0) {
-
-            boolean found = false;
-            for (String property : toInclude) {
-                if (property.equals(event.getTargetPropertyName()) ||
-                        property.startsWith(event.getTargetPropertyName() + ".")) {
-                    found = true;
-                    break;
-                }
-            }
-
-            if (!found) {
-                return true;
-            }
+        BeanMarker toInclude = context.getPropertiesToInclude();
+        if (toInclude != null) {
+            return !toInclude.hasPropertyMarked(event.getTargetPropertyName())
+                    && !toInclude.hasPropertyPartiallyMarked(event.getTargetPropertyName());
         }
 
         return false;
@@ -39,30 +28,15 @@ public class PropertiesToIncludeFilter implements PropertyMappingFilter {
 
     @Override
     public void beginPropertyMapping(PropertyMappingEvent event, MappingContext context) {
-        List<String> toInclude = context.getPropertiesToInclude();
-        if (toInclude != null && toInclude.size() != 0) {
-            List<String> filtered = null;
+        BeanMarker filtered = null;
 
-            for (String property : toInclude) {
-                if (property.equals(event.getTargetPropertyName())) {
-                    filtered = null;
-                    break;
-                }
+        BeanMarker toInclude = context.getPropertiesToInclude();
+        if (toInclude != null) {
+            filtered = toInclude.getSubBeanMarker(event.getTargetPropertyName());
+        }
 
-                if (property.startsWith(event.getTargetPropertyName() + ".")) {
-                    if (filtered == null) {
-                        filtered = new ArrayList<>();
-                    }
-
-                    filtered.add(property.substring(event.getTargetPropertyName().length() + 1));
-                }
-            }
-
-            if (event.getAttributes() == null) {
-                event.setAttributes(new HashMap<String, Object>());
-            }
-
-            event.getAttributes().put("propertiesToIncludeOld", toInclude);
+        if (filtered != toInclude) {
+            event.getSubAttributes(event).put("propertiesToIncludeOld", toInclude);
             context.setPropertiesToInclude(filtered);
         }
     }
@@ -70,8 +44,11 @@ public class PropertiesToIncludeFilter implements PropertyMappingFilter {
     @SuppressWarnings("unchecked")
     @Override
     public void endPropertyMapping(PropertyMappingEvent event, MappingContext context) {
-        if (event.getAttributes() != null && event.getAttributes().get("propertiesToIncludeOld") != null) {
-            context.setPropertiesToInclude((List<String>) event.getAttributes().get("propertiesToIncludeOld"));
+        Map<Object, Object> subAttributes = event.getSubAttributes(event);
+
+        if (subAttributes.containsKey("propertiesToIncludeOld")) {
+            context.setPropertiesToInclude((BeanMarker) subAttributes.get("propertiesToIncludeOld"));
+            subAttributes.remove("propertiesToIncludeOld");
         }
     }
 }
