@@ -82,4 +82,11 @@ public class CascadeIdTest {
 
         mapper.writeValueAsString(trx);
     }
+
+    @Test
+    public void testNullDeserialize() throws Exception {
+        String json = "{}";
+        PaymentTransaction trx = mapper.readValue(json, PaymentTransaction.class);
+        Assert.assertNull(trx.getTestId());
+    }
 }
