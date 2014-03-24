@@ -5,19 +5,22 @@
  */
 package com.junbo.notification;
 
-import com.junbo.notification.queue.TestPublisher;
+import com.junbo.notification.queue.TestProducer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.Test;
 
 /**
  * QueueTest.
  */
-public class QueueTest extends BaseTest {
+@ContextConfiguration(locations = {"classpath:spring/context-test-queue.xml"})
+public class QueueTest extends AbstractTestNGSpringContextTests {
     @Autowired
-    private TestPublisher publisher;
+    private TestProducer producer;
 
     @Test
     public void testBVT() {
-        publisher.send("hello baby!");
+        producer.send("hello baby!");
     }
 }

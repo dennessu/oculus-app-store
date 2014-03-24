@@ -197,13 +197,16 @@ class OrderRepositoryImpl implements OrderRepository {
 
     @Override
     List<OrderEvent> getOrderEvents(Long orderId) {
-        List<OrderEvent> orderEvents = []
-        List<OrderEventEntity> orderEventEntities = orderEventDao.readByOrderId(orderId)
-        MappingContext context = new MappingContext()
-        orderEventEntities.each { OrderEventEntity orderEventEntity ->
-            orderEvents.add(modelMapper.toOrderEventModel(orderEventEntity, context))
+        List<OrderEvent> events = []
+        orderEventDao.readByOrderId(orderId).each { OrderEventEntity entity ->
+            OrderEvent event = modelMapper.toOrderEventModel(entity, new MappingContext())
+            events << event
         }
-        return orderEvents
+        if (events.size() > orderEventsNumThreshHold) {
+           LOGGER.warn('name=Too_Many_Order_Events, orderId={}, threshHold={}, current={}', orderId,
+                   orderEventsNumThreshHold, events.size())
+        }
+        return events
     }
 
     void saveOrderItems(OrderId orderId, List<OrderItem> orderItems) {

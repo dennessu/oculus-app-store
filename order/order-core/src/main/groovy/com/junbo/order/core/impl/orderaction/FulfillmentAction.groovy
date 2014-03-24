@@ -1,17 +1,17 @@
 package com.junbo.order.core.impl.orderaction
+
 import com.junbo.common.id.OrderItemId
 import com.junbo.fulfilment.spec.constant.FulfilmentStatus
 import com.junbo.fulfilment.spec.model.FulfilmentItem
 import com.junbo.fulfilment.spec.model.FulfilmentRequest
 import com.junbo.langur.core.promise.Promise
-import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.clientproxy.FacadeContainer
+import com.junbo.order.core.annotation.OrderEventAwareAfter
+import com.junbo.order.core.annotation.OrderEventAwareBefore
 import com.junbo.order.core.impl.common.CoreBuilder
 import com.junbo.order.db.entity.enums.EventStatus
-import com.junbo.order.db.entity.enums.OrderActionType
-import com.junbo.order.db.entity.enums.OrderStatus
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.model.FulfillmentEvent
 import groovy.transform.CompileStatic
@@ -25,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional
  * Created by fzhang on 14-2-25.
  */
 @CompileStatic
-class  FulfillmentAction implements Action {
+class  FulfillmentAction extends BaseOrderEventAwareAction {
 
     @Autowired
     @Qualifier('orderFacadeContainer')
@@ -42,6 +42,8 @@ class  FulfillmentAction implements Action {
         ]
 
     @Override
+    @OrderEventAwareBefore(action = 'FulfillmentAction')
+    @OrderEventAwareAfter(action = 'FulfillmentAction')
     @Transactional
     Promise<ActionResult> execute(ActionContext actionContext) {
         def context = ActionUtils.getOrderActionContext(actionContext)
@@ -53,38 +55,20 @@ class  FulfillmentAction implements Action {
             return null
         }.syncThen { FulfilmentRequest fulfilmentResult ->
             if (fulfilmentResult == null) { // error in post fulfillment
-                orderRepository.createOrderEvent(
-                        CoreBuilder.buildOrderEvent(
-                                order.id,
-                                OrderActionType.FULFILL,
-                                EventStatus.ERROR,
-                                ActionUtils.getFlowType(actionContext),
-                                context.trackingUuid))
-            } else {
-                EventStatus orderEventStatus = EventStatus.COMPLETED
-                fulfilmentResult.items.each { FulfilmentItem fulfilmentItem ->
-                    def fulfillmentEvent = toFulfillmentEvent(fulfilmentResult, fulfilmentItem)
-                    def fulfillmentEventStatus = EventStatus.valueOf(fulfillmentEvent.status)
-                    // aggregate fulfillment event status to update order event status
-                    if (orderEventStatus == null ||
-                            ITEMSTATUSPRIORITY[fulfillmentEventStatus] > ITEMSTATUSPRIORITY[orderEventStatus]) {
-                        orderEventStatus = fulfillmentEventStatus
-                    }
-                    orderRepository.createFulfillmentEvent(order.id.value, fulfillmentEvent)
-                }
-                orderRepository.createOrderEvent(
-                        CoreBuilder.buildOrderEvent(
-                                order.id,
-                                OrderActionType.FULFILL, orderEventStatus,
-                                ActionUtils.getFlowType(actionContext),
-                                context.trackingUuid))
-                // Update order status according to fulfillment status.
-                // TODO get order events to update the order status
-                def o = orderRepository.getOrder(order.id.value)
-                o.status = OrderStatus.FULFILLED
-                orderRepository.updateOrder(o, true)
+                return CoreBuilder.buildActionResultForOrderEventAwareAction(context, EventStatus.ERROR)
             }
-            return ActionUtils.DEFAULT_RESULT
+            EventStatus orderEventStatus = EventStatus.COMPLETED
+            fulfilmentResult.items.each { FulfilmentItem fulfilmentItem ->
+                def fulfillmentEvent = toFulfillmentEvent(fulfilmentResult, fulfilmentItem)
+                def fulfillmentEventStatus = EventStatus.valueOf(fulfillmentEvent.status)
+                // aggregate fulfillment event status to update order event status
+                if (orderEventStatus == null ||
+                        ITEMSTATUSPRIORITY[fulfillmentEventStatus] > ITEMSTATUSPRIORITY[orderEventStatus]) {
+                    orderEventStatus = fulfillmentEventStatus
+                }
+                orderRepository.createFulfillmentEvent(order.id.value, fulfillmentEvent)
+            }
+            return CoreBuilder.buildActionResultForOrderEventAwareAction(context, orderEventStatus)
         }
     }
 
@@ -109,7 +93,7 @@ class  FulfillmentAction implements Action {
                 return EventStatus.FAILED
         }
         LOGGER.warn('name=Unknown_Fulfillment_Status, fulfilmentId={}, orderItemId={}, status={}',
-                [fulfilmentItem.fulfilmentId.toString(), fulfilmentItem.orderItemId.toString(), fulfilmentItem.status])
+                fulfilmentItem.fulfilmentId.toString(), fulfilmentItem.orderItemId.toString(), fulfilmentItem.status)
         return null
     }
 }

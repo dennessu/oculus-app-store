@@ -47,7 +47,7 @@ abstract class RedisBaseDAO<T extends BaseEntity> implements BaseDAO<T, String> 
     T get(String id) {
         String entityString = jedis.get(namespace + id)
         if (entityString != null) {
-            return (T) JsonMarshaller.unmarshall(entityClass, entityString)
+            return (T) JsonMarshaller.unmarshall(entityString, entityClass)
         }
 
         return null

@@ -81,7 +81,7 @@
 
     <bean id="mockCachedCatalogFacade" class="com.junbo.order.clientproxy.catalog.impl.CachedCatalogFacadeImpl">
         <property name="catalogFacade" ref="mockCatalogFacade"/>
-        <constructor-arg name="ehCacheCacheManager" ref="cacheManager"/>
+        <constructor-arg name="ehCacheCacheManager" ref="orderCacheManager"/>
     </bean>
 
     <bean id="mockFulfillmentFacade" class="com.junbo.order.clientproxy.fulfillment.impl.FulfillmentFacadeImpl">
