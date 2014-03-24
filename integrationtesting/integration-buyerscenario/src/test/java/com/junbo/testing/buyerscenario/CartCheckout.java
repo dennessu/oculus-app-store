@@ -1,14 +1,12 @@
 package com.junbo.testing.buyerscenario;
 
 
-import com.junbo.identity.spec.model.common.ResultList;
-import com.junbo.identity.spec.model.user.User;
 import com.junbo.testing.buyerscenario.util.BaseTestClass;
-import com.junbo.testing.common.apihelper.identity.impl.UserServiceImpl;
 import com.junbo.testing.common.libs.LogHelper;
-import com.junbo.testing.common.property.*;
-
-import org.testng.Assert;
+import com.junbo.testing.common.property.Component;
+import com.junbo.testing.common.property.Priority;
+import com.junbo.testing.common.property.Property;
+import com.junbo.testing.common.property.Status;
 import org.testng.annotations.Test;
 
 /**

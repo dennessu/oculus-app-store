@@ -46,7 +46,7 @@ public class LogHelper {
             logger.info("**** EXECUTING " + req.getMethod());
             logger.info("**** URI is: " + req.getURI());
 
-            if (req.getHeaders() != null){
+            if (req.getHeaders() != null) {
                 String headers = "**** Headers: [";
                 for (Map.Entry eachHeader : req.getHeaders()) {
                     headers += eachHeader.getKey() + ": " + eachHeader.getValue() + ", ";
@@ -66,8 +66,7 @@ public class LogHelper {
             }
 
             logger.info("**** Request Body: " + req.getStringData());
-        }
-        else {
+        } else {
             logger.warn("The request is null");
         }
     }
@@ -75,9 +74,13 @@ public class LogHelper {
     public void LogResponse(NettyResponse response) throws IOException {
         if (response != null) {
             logger.info("**** Response status code: " + response.getStatusCode());
-            logger.info("**** Response body: " + response.getResponseBody());
-        }
-        else {
+            if (response.getStatusCode() == 302) {
+                logger.info("**** Response redirect URL is: " + response.getHeaders().get("Location").get(0));
+            } else {
+                logger.info("**** Response body: " + response.getResponseBody());
+            }
+        } else
+        {
             logger.warn("The response is null");
         }
     }
