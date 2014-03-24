@@ -8,6 +8,7 @@ package com.junbo.billing.db.balance;
 
 import com.junbo.billing.db.BaseEntity;
 import com.junbo.billing.db.EntityValidationCode;
+import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -15,6 +16,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * Created by xmchen on 14-1-17.
@@ -23,6 +25,7 @@ import java.util.Date;
 @Table(name = "balance")
 public class BalanceEntity extends BaseEntity {
     private Long balanceId;
+    private UUID trackingUuid;
     private Long userId;
     private Long piId;
     private Short typeId;
@@ -49,6 +52,16 @@ public class BalanceEntity extends BaseEntity {
     }
     public void setBalanceId(Long balanceId) {
         this.balanceId = balanceId;
+    }
+
+    @Column(name = "tracking_uuid")
+    @Type(type = "pg-uuid")
+    @NotNull(message = EntityValidationCode.MISSING_VALUE)
+    public UUID getTrackingUuid() {
+        return trackingUuid;
+    }
+    public void setTrackingUuid(UUID trackingUuid) {
+        this.trackingUuid = trackingUuid;
     }
 
     @Column(name = "user_id")

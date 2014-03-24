@@ -10,6 +10,7 @@
         <sql><![CDATA[
 			CREATE TABLE balance (
 				balance_id BIGINT NOT NULL,
+				tracking_uuid UUID NOT NULL,
 				user_id BIGINT NOT NULL,
 				pi_id BIGINT NOT NULL,
 				balance_type_id SMALLINT NOT NULL,
@@ -34,6 +35,7 @@
 				modified_by VARCHAR(64),
 				PRIMARY KEY(balance_id)
 			);
+			CREATE UNIQUE INDEX balance_tracking_uuid_idx ON balance (tracking_uuid);
 			CREATE INDEX balance_user_id_idx ON balance (user_id);
 			CREATE INDEX balance_pi_id_idx ON balance (pi_id);
 			CREATE INDEX balance_status_id_idx ON balance (status_id);
