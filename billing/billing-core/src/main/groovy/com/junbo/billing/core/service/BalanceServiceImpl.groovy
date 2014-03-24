@@ -88,18 +88,17 @@ class BalanceServiceImpl implements BalanceService {
 
         return validateUser(balance).then {
             return validatePI(balance).then {
+                validateBalanceType(balance)
+                validateCurrency(balance)
+                validateCountry(balance)
+                validateBalanceItem(balance)
+
+                calculateTax(balance)
+                computeTotal(balance)
+                validateBalanceTotal(balance)
+
+                return Promise.pure(balance)
             }
-        }.then {
-            validateBalanceType(balance)
-            validateCurrency(balance)
-            validateCountry(balance)
-            validateBalanceItem(balance)
-
-            calculateTax(balance)
-            computeTotal(balance)
-            validateBalanceTotal(balance)
-
-            return Promise.pure(balance)
         }
     }
 
