@@ -30,4 +30,6 @@ public interface OfferService {
 
     String updateOffer(Offer offer) throws Exception;
     String updateOffer(Offer offer, int expectedResponseCode) throws Exception;
+
+    String getOfferIdByName(String offerName) throws  Exception;
 }

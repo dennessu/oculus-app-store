@@ -162,6 +162,18 @@ public class Master {
         return this.offers.get(offerId);
     }
 
+    public String getOfferIdByName(String offerName) {
+
+        for (Map.Entry<String, Offer> entry : offers.entrySet()) {
+            String key = entry.getKey();
+            Offer offer = entry.getValue();
+            if (offer.getName().equals(offerName)) {
+                return key;
+            }
+        }
+        return null;
+    }
+
     public Cart getCart(String cartId) {
         return this.carts.get(cartId);
     }

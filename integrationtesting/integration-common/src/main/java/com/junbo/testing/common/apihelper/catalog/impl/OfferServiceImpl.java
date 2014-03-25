@@ -45,13 +45,16 @@ import java.util.concurrent.Future;
 public class OfferServiceImpl implements OfferService {
 
     private final String catalogServerURL = RestUrl.getRestUrl(RestUrl.ComponentName.CATALOG) + "offers";
-    private static String defaultOfferFileName = "defaultOffer";
-    ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-
+    private final String defaultOfferFileName = "defaultOffer";
+    private final String cartCheckoutPhysical1 = "CartCheckout_Physical1";
+    private final String cartCheckoutPhysical2 = "CartCheckout_Physical2";
+    private final String cartCheckoutDigital1 = "CartCheckout_Digital1";
+    private final String cartCheckoutDigital2 = "CartCheckout_Digital2";
     private LogHelper logger = new LogHelper(ItemServiceImpl.class);
     private AsyncHttpClient asyncClient;
-
     private static OfferService instance;
+    private boolean offerLoaded;
+    ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
 
     public static synchronized OfferService instance() {
         if (instance == null) {
@@ -157,7 +160,7 @@ public class OfferServiceImpl implements OfferService {
     }
 
     public Offer prepareOfferEntity(String fileName, boolean isPhysical) throws Exception {
-        String resourceLocation = String.format("classpath:testOffers/%s.json", defaultOfferFileName);
+        String resourceLocation = String.format("classpath:testOffers/%s.json", fileName);
         Resource resource = resolver.getResource(resourceLocation);
         Assert.assertNotNull(resource);
 
@@ -249,6 +252,31 @@ public class OfferServiceImpl implements OfferService {
         Master.getInstance().addOffer(offerRtnId, offerPut);
 
         return offerRtnId;
+    }
+
+    public String getOfferIdByName(String offerName) throws  Exception {
+        if (!offerLoaded){
+            HashMap<String, String> httpPara = new HashMap<>();
+            this.getOffer(httpPara);
+            offerLoaded = true;
+        }
+
+        String offerId = Master.getInstance().getOfferIdByName(offerName);
+        if (offerId !=  null) {
+            return  offerId;
+        }
+        else {
+            Offer offer1 = prepareOfferEntity(cartCheckoutPhysical1, true);
+            Offer offer2 = prepareOfferEntity(cartCheckoutPhysical2, true);
+            Offer offer3 = prepareOfferEntity(cartCheckoutDigital1, false);
+            Offer offer4 = prepareOfferEntity(cartCheckoutDigital2, false);
+            postOffer(offer1);
+            postOffer(offer2);
+            postOffer(offer3);
+            postOffer(offer4);
+
+            return Master.getInstance().getOfferIdByName(offerName);
+        }
     }
 
 }
