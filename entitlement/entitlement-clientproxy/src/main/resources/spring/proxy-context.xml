@@ -6,29 +6,14 @@
 
     <context:component-scan base-package="com.junbo.entitlement.clientproxy"/>
 
-    <bean id="userFacade" class="com.junbo.entitlement.clientproxy.identity.impl.UserFacadeImpl"/>
-    <bean id="catalogFacade" class="com.junbo.entitlement.clientproxy.catalog.impl.CatalogFacadeImpl"/>
+    <bean id="definitionFacade" class="com.junbo.entitlement.clientproxy.catalog.impl.MockDefinitionFacadeImpl"/>
 
     <!-- proxy -->
     <bean id="asyncHttpClient" class="com.ning.http.client.AsyncHttpClient" />
 
-    <bean id="identityUserClient" class="com.junbo.identity.spec.resource.proxy.UserResourceClientProxy">
+    <bean id="definitionClient" class="com.junbo.catalog.spec.resource.proxy.EntitlementDefinitionResourceClientProxy">
         <constructor-arg name="client" ref="asyncHttpClient"/>
-        <constructor-arg name="target" value="http://localhost:8080/rest"/>
-        <constructor-arg name="transcoder">
-            <bean class="com.junbo.common.json.JsonMessageTranscoder"/>
-        </constructor-arg>
-        <constructor-arg name="pathParamTranscoder">
-            <bean class="com.junbo.common.json.IdPathParamTranscoder" />
-        </constructor-arg>
-        <constructor-arg name="queryParamTranscoder">
-            <bean class="com.junbo.common.json.QueryParamTranscoderImpl" />
-        </constructor-arg>
-    </bean>
-
-    <bean id="catalogOfferClient" class="com.junbo.catalog.spec.resource.proxy.OfferResourceClientProxy">
-        <constructor-arg name="client" ref="asyncHttpClient"/>
-        <constructor-arg name="target" value="http://localhost:8080/rest"/>
+        <constructor-arg name="target" value="${clientproxy.catalog.url}"/>
         <constructor-arg name="transcoder">
             <bean class="com.junbo.common.json.JsonMessageTranscoder"/>
         </constructor-arg>
