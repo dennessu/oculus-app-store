@@ -60,6 +60,11 @@ class BalanceServiceImpl implements BalanceService {
     @Override
     Promise<Balance> addBalance(Balance balance) {
 
+        Balance tmpBalance = checkTrackingUUID(balance.trackingUuid)
+        if (tmpBalance != null) {
+            return Promise.pure(tmpBalance)
+        }
+
         return validateUser(balance).then {
             return validatePI(balance).then {
                 validateBalanceType(balance)
@@ -67,17 +72,18 @@ class BalanceServiceImpl implements BalanceService {
                 validateCountry(balance)
                 validateBalanceItem(balance)
 
-                calculateTax(balance)
-                computeTotal(balance)
-                validateBalanceTotal(balance)
+                return taxService.calculateTax(balance).then { Balance taxedBalance ->
+                    computeTotal(taxedBalance)
+                    validateBalanceTotal(taxedBalance)
 
-                // set the balance status to INIT
-                balance.setStatus(BalanceStatus.INIT.name())
+                    // set the balance status to INIT
+                    taxedBalance.setStatus(BalanceStatus.INIT.name())
 
-                return transactionService.processBalance(balance).then {
-                    //persist the balance entity
-                    Balance resultBalance = balanceRepository.saveBalance(balance)
-                    return Promise.pure(resultBalance)
+                    return transactionService.processBalance(taxedBalance).then {
+                        //persist the balance entity
+                        Balance resultBalance = balanceRepository.saveBalance(taxedBalance)
+                        return Promise.pure(resultBalance)
+                    }
                 }
             }
         }
@@ -93,17 +99,23 @@ class BalanceServiceImpl implements BalanceService {
                 validateCountry(balance)
                 validateBalanceItem(balance)
 
-                calculateTax(balance)
-                computeTotal(balance)
-                validateBalanceTotal(balance)
+                return taxService.calculateTax(balance).then { Balance taxedBalance ->
+                    computeTotal(taxedBalance)
+                    validateBalanceTotal(taxedBalance)
 
-                return Promise.pure(balance)
+                    return Promise.pure(taxedBalance)
+                }
             }
         }
     }
 
     @Override
     Promise<Balance> captureBalance(Balance balance) {
+
+        Balance tmpBalance = checkTrackingUUID(balance.trackingUuid)
+        if (tmpBalance != null) {
+            return Promise.pure(tmpBalance)
+        }
 
         if (balance.balanceId == null) {
             throw AppErrors.INSTANCE.fieldMissingValue('balanceId').exception()
@@ -140,6 +152,13 @@ class BalanceServiceImpl implements BalanceService {
         return Promise.pure(balanceRepository.getBalances(orderId))
     }
 
+    private Balance checkTrackingUUID(UUID uuid) {
+        if (uuid == null) {
+            throw AppErrors.INSTANCE.fieldMissingValue('trackingUuid').exception()
+        }
+        return balanceRepository.getBalanceByUuid(uuid)
+    }
+
     private Promise<Void> validateUser(Balance balance) {
         if (balance.userId == null) {
             throw AppErrors.INSTANCE.fieldMissingValue('userId').exception()
@@ -164,7 +183,8 @@ class BalanceServiceImpl implements BalanceService {
         if (balance.piId == null) {
             throw AppErrors.INSTANCE.fieldMissingValue('piId').exception()
         }
-        return paymentFacade.getPaymentInstrument(balance.userId.value, balance.piId.value).recover { Throwable throwable ->
+        return paymentFacade.getPaymentInstrument(balance.userId.value, balance.piId.value)
+                .recover { Throwable throwable ->
             LOGGER.error('name=Error_Get_PaymentInstrument. pi id: ' + balance.piId.value, throwable)
             throw AppErrors.INSTANCE.piNotFound(balance.piId.value.toString()).exception()
         }.then { PaymentInstrument pi ->
@@ -213,11 +233,6 @@ class BalanceServiceImpl implements BalanceService {
         if (balance.totalAmount <= 0) {
             throw AppErrors.INSTANCE.invalidBalanceTotal(balance.totalAmount.toString()).exception()
         }
-    }
-
-    private void calculateTax(Balance balance) {
-
-        taxService.calculateTax(balance)
     }
 
     private void computeTotal(Balance balance) {

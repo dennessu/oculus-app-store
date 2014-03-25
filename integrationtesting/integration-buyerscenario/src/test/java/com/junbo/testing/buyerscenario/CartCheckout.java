@@ -1,11 +1,10 @@
 package com.junbo.testing.buyerscenario;
 
 
-import com.junbo.identity.spec.model.common.ResultList;
-import com.junbo.identity.spec.model.user.User;
 import com.junbo.testing.buyerscenario.util.BaseTestClass;
-import com.junbo.testing.common.apihelper.identity.impl.UserServiceImpl;
+import com.junbo.testing.common.enums.Country;
 import com.junbo.testing.common.libs.LogHelper;
+import com.junbo.testing.common.paymentInstruments.CreditCardInfo;
 import com.junbo.testing.common.property.*;
 
 import org.testng.Assert;
@@ -14,7 +13,7 @@ import org.testng.annotations.Test;
 /**
  * Created by Yunlong on 3/20/14.
  */
-public class CartCheckout extends BaseTestClass{
+public class CartCheckout extends BaseTestClass {
 
     private LogHelper logger = new LogHelper(CartCheckout.class);
 
@@ -27,23 +26,26 @@ public class CartCheckout extends BaseTestClass{
             description = "Test digital good checkout",
             steps = {
                     "1. Post a random user",
-                    "2  Add digital offer to user's primary cart",
+                    "2. Add digital offer to user's primary cart",
                     "3. Post a new user",
-                    "4. Merge the previous anonymous cart to the new user",
-                    "4. Checkout the primary cart",
-                    "5. Verify the cart is empty",
-                     //TODO "7. email validation",
+                    "4. Post new credit card to new user.",
+                    "5. Merge the previous anonymous cart to the new user",
+                    "6. Post order to checkout",
+                    "7. Close the primary cart",
+                    "8. Verify the primary cart is empty",
+                    //TODO "9. email validation",
             }
     )
     @Test
     public void testDigitalGoodCheckout() throws Exception {
         String randomUid = testDataProvider.createUser();
-        testDataProvider.postDefaultOffersToPrimaryCart(randomUid);
+        testDataProvider.postDefaultOffersToPrimaryCart(randomUid, false);
 
         String uid = testDataProvider.createUser();
-        testDataProvider.mergeCart(uid,randomUid);
+        CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
+        testDataProvider.postCreditCardToUser(uid,creditCardInfo);
 
-
+        testDataProvider.mergeCart(uid, randomUid);
 
 
     }
@@ -54,24 +56,26 @@ public class CartCheckout extends BaseTestClass{
             component = Component.Order,
             owner = "ZhaoYunlong",
             status = Status.Enable,
-            description = "Test digital good checkout",
+            description = "Test physical good checkout",
             steps = {
-                    "1. Post a new user",
-                    "2. Add new credit cart to user",
-                    //TODO "Add shipping method to user",
-                    "3. Add physical offer into primary cart",
-                    "4. Checkout the primary cart",
-                    "5. Verify the cart is empty",
-                    //TODO "7. email validation",
+                    "1. Post a random user",
+                    "2. Add physical offer to user's primary cart",
+                    "3. Post a new user",
+                    "4. Post new credit card and shipping method to new user.",
+                    "5. Merge the previous anonymous cart to the new user",
+                    "6. Post order to checkout",
+                    "7. Close the primary cart",
+                    "8. Verify the primary cart is empty",
+                    //TODO "9. email validation",
             }
     )
     @Test
     public void testPhysicalGoodCheckout() throws Exception {
         String randomUid = testDataProvider.createUser();
-        testDataProvider.postDefaultOffersToPrimaryCart(randomUid);
+        testDataProvider.postDefaultOffersToPrimaryCart(randomUid,true);
 
         String uid = testDataProvider.createUser();
-        testDataProvider.mergeCart(uid,randomUid);
+        testDataProvider.mergeCart(uid, randomUid);
 
     }
 

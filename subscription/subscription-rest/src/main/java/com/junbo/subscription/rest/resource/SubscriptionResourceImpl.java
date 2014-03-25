@@ -20,24 +20,24 @@ import java.util.UUID;
  */
 public class SubscriptionResourceImpl implements SubscriptionResource {
     @Autowired
-    private SubscriptionService service;
+    private SubscriptionService subscriptionService;
 
     @Override
     public Promise<Subscription> getSubscription(HttpHeaders httpHeaders, SubscriptionId subscriptionId){
-        Subscription entitlement = service.getsubscription(subscriptionId.getValue());
-        return Promise.pure(entitlement);
+        Subscription subscription = subscriptionService.getsubscription(subscriptionId.getValue());
+        return Promise.pure(subscription);
     }
 
     @Override
     public Promise<Subscription> postSubscription(Subscription subscription){
         UUID trackingUuid = subscription.getTrackingUuid();
         if (trackingUuid != null) {
-            Subscription existingSubscription = service.getSubsByTrackingUuid(trackingUuid);
-            if (existingSubscription != null) {
-                return Promise.pure(existingSubscription);
-            }
+//            Subscription existingSubscription = subscriptionService.getSubsByTrackingUuid(trackingUuid);
+//            if (existingSubscription != null) {
+//                return Promise.pure(existingSubscription);
+//            }
         }
-        return Promise.pure(service.addsubscription(subscription));
+        return Promise.pure(subscriptionService.addsubscription(subscription));
     }
 
 

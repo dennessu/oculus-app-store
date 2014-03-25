@@ -1,5 +1,6 @@
 package com.junbo.order.core.matcher
 
+import org.codehaus.groovy.runtime.DefaultGroovyMethods
 import org.easymock.EasyMock
 import org.easymock.IArgumentMatcher
 
@@ -27,8 +28,14 @@ class Matcher {
         if (!useMemberEquals(left, includedClass) || !useMemberEquals(right, includedClass)) {
             return left == right
         }
-        for (Map.Entry<String, Object> entry : left.properties.entrySet()) {
-            if (!objectMemberEquals(entry.value, right.properties[entry.key], includedClass)) {
+        if (left == right) {
+            return true
+        }
+
+        Map leftProperties = DefaultGroovyMethods.getProperties(left)
+        Map rightProperties = DefaultGroovyMethods.getProperties(right)
+        for (Map.Entry<String, Object> entry : leftProperties.entrySet()) {
+            if (!objectMemberEquals(entry.value, rightProperties[entry.key], includedClass)) {
                 return false
             }
         }

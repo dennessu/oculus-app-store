@@ -1,23 +1,15 @@
 <div class="container modules">
-<section class="box1">
-    <h2>Please select your shipping info</h2>
-    <dl class="radio">
-        <dt>
-            <lable>
-                <input type="radio" name="ShippingInfo">
-                <span>Street Address<br>City ZipCode</span>
-            </lable>
-        </dt>
-        <dt>
-            <lable>
-                <input type="radio" name="ShippingInfo">
-                <span>Street Address<br>City ZipCode</span>
-            </lable>
-        </dt>
+    <form class="box1" {{action "Continue" on="submit"}}>
+    <h2>Select your Shipping Method</h2>
+    {{#if errMessage}}
+    <p class="error">{{errMessage}}</p>
+    {{/if}}
+    <dl>
+        <dt>Shipping Method</dt>
+        <dd>{{view Ember.Select content=methods optionValuePath="content.v" optionLabelPath="content.t" value=shippingMethodId id="ShippingMethodId" name="ShippingMethodId" class="{required:true}"}}</dd>
     </dl>
     <div class="actions">
-        <button type="button" class="btn btn-primary" {{action "CreateNew"}}>Create a New</button>
-        <button type="button" class="btn btn-primary" {{action "Continue"}}>Continue</button>
+        <button type="submit" class="btn btn-primary">Continue</button>
     </div>
-</section>
+    </form>
 </div>

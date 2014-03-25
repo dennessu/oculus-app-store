@@ -8,8 +8,10 @@ package com.junbo.payment.db.repository;
 
 import com.junbo.payment.db.dao.payment.PaymentDao;
 import com.junbo.payment.db.dao.payment.PaymentEventDao;
+import com.junbo.payment.db.dao.paymentinstrument.PaymentInstrumentDao;
 import com.junbo.payment.db.entity.payment.PaymentEntity;
 import com.junbo.payment.db.entity.payment.PaymentEventEntity;
+import com.junbo.payment.db.entity.paymentinstrument.PaymentInstrumentEntity;
 import com.junbo.payment.db.mapper.PaymentMapperExtension;
 import com.junbo.payment.spec.enums.PaymentStatus;
 import com.junbo.payment.spec.model.PaymentEvent;
@@ -23,7 +25,8 @@ import java.util.List;
  * payment Repository.
  */
 public class PaymentRepository {
-
+    @Autowired
+    private PaymentInstrumentDao piDao;
     @Autowired
     private PaymentDao paymentDao;
     @Autowired
@@ -40,7 +43,10 @@ public class PaymentRepository {
 
     public PaymentTransaction getByPaymentId(Long paymentId){
         PaymentEntity entity = paymentDao.get(paymentId);
-        return paymentMapperExtension.toPayment(entity);
+        PaymentInstrumentEntity pi = piDao.get(entity.getPaymentInstrumentId());
+        PaymentTransaction transaction = paymentMapperExtension.toPayment(entity);
+        transaction.getPaymentInstrumentId().setUserId(pi.getUserId());
+        return transaction;
     }
 
     public void savePaymentEvent(Long paymentId, List<PaymentEvent> events){

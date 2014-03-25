@@ -90,7 +90,7 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
                 , PaymentEventType.AUTH_CREATE, PaymentStatus.AUTH_CREATED, SUCCESS_EVENT_RESPONSE);
         addPaymentEvent(request, createEvent);
         //commit the transaction with trackingUuid
-        saveAndCommitPayment(request, api);
+        saveAndCommitPayment(request);
         //call braintree.
         return provider.authorize(pi.getCreditCardRequest().getExternalToken(), request)
                 .recover(new Promise.Func<Throwable, Promise<PaymentTransaction>>() {
@@ -108,7 +108,7 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
                 PaymentEvent authEvent = createPaymentEvent(request,
                         PaymentEventType.AUTHORIZE, authStatus, SUCCESS_EVENT_RESPONSE);
                 addPaymentEvent(request, authEvent);
-                updatePaymentAndSaveEvent(request, Arrays.asList(authEvent), api, authStatus);
+                updatePaymentAndSaveEvent(request, Arrays.asList(authEvent), api, authStatus, true);
                 return Promise.pure(request);
             }
         });
@@ -123,7 +123,7 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
         request.setStatus(status.toString());
         PaymentEvent authDeclined = createPaymentEvent(request, event, status, proxyResponse.getBody());
         addPaymentEvent(request, authDeclined);
-        updatePaymentAndSaveEvent(request, Arrays.asList(authDeclined), api, status);
+        updatePaymentAndSaveEvent(request, Arrays.asList(authDeclined), api, status, false);
         throw AppServerExceptions.INSTANCE.providerProcessError(
                 provider.getProviderName(), proxyResponse.getBody()).exception();
     }
@@ -148,8 +148,9 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
         addPaymentEvent(existedTransaction, submitCreateEvent);
         //commit the payment event
         updatePaymentAndSaveEvent(existedTransaction, Arrays.asList(submitCreateEvent),
-                api, PaymentStatus.SETTLE_CREATED);
-        PaymentInstrument pi = paymentInstrumentService.getById(null, existedTransaction.getPaymentInstrumentId());
+                api, PaymentStatus.SETTLE_CREATED, false);
+        PaymentInstrument pi = paymentInstrumentService.getById(null,
+                existedTransaction.getPaymentInstrumentId().getPaymentInstrumentId());
         final PaymentProviderService provider = providerRoutingService.getPaymentProvider(
                 PaymentUtil.getPIType(pi.getType()));
         return provider.capture(existedTransaction.getExternalToken(), request).
@@ -167,7 +168,7 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
                 PaymentEvent submitEvent = createPaymentEvent(request, PaymentEventType.SUBMIT_SETTLE,
                          settleStatus, SUCCESS_EVENT_RESPONSE);
                 addPaymentEvent(existedTransaction, submitEvent);
-                updatePaymentAndSaveEvent(existedTransaction, Arrays.asList(submitEvent), api, settleStatus);
+                updatePaymentAndSaveEvent(existedTransaction, Arrays.asList(submitEvent), api, settleStatus, true);
                 return Promise.pure(existedTransaction);
             }
         });
@@ -211,7 +212,7 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
                 , PaymentEventType.SUBMIT_SETTLE_CREATE, PaymentStatus.SETTLE_CREATED, SUCCESS_EVENT_RESPONSE);
         addPaymentEvent(request, event);
         //commit the transaction
-        saveAndCommitPayment(request, api);
+        saveAndCommitPayment(request);
         //call brain tree
         return provider.charge(pi.getCreditCardRequest().getExternalToken(), request)
                 .recover(new Promise.Func<Throwable, Promise<PaymentTransaction>>() {
@@ -229,7 +230,7 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
                 PaymentEvent submitEvent = createPaymentEvent(request,
                         PaymentEventType.SUBMIT_SETTLE, submitStatus, SUCCESS_EVENT_RESPONSE);
                 addPaymentEvent(request, submitEvent);
-                updatePaymentAndSaveEvent(request, Arrays.asList(submitEvent), api, submitStatus);
+                updatePaymentAndSaveEvent(request, Arrays.asList(submitEvent), api, submitStatus, true);
                 return Promise.pure(request);
             }
         });
@@ -254,13 +255,14 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
         }else{
             throw AppServerExceptions.INSTANCE.invalidPaymentStatus(existedTransaction.getStatus()).exception();
         }
-        PaymentInstrument pi = paymentInstrumentService.getById(null, existedTransaction.getPaymentInstrumentId());
+        PaymentInstrument pi = paymentInstrumentService.getById(null,
+                existedTransaction.getPaymentInstrumentId().getPaymentInstrumentId());
         PaymentStatus createStatus = PaymentStatus.REVERSE_CREATED;
         PaymentEvent reverseCreateEvent = createPaymentEvent(existedTransaction,
                 PaymentEventType.REVERSE_CREATE, createStatus, SUCCESS_EVENT_RESPONSE);
         existedTransaction.setStatus(createStatus.toString());
         addPaymentEvent(existedTransaction, reverseCreateEvent);
-        updatePaymentAndSaveEvent(existedTransaction, Arrays.asList(reverseCreateEvent), api, createStatus);
+        updatePaymentAndSaveEvent(existedTransaction, Arrays.asList(reverseCreateEvent), api, createStatus, false);
         final PaymentProviderService provider =
                 providerRoutingService.getPaymentProvider(PaymentUtil.getPIType(pi.getType()));
         return provider.reverse(existedTransaction.getExternalToken(), request)
@@ -278,7 +280,7 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
                 PaymentEvent reverseEvent = createPaymentEvent(
                         request, eventType, PaymentStatus.REVERSED, SUCCESS_EVENT_RESPONSE);
                 addPaymentEvent(existedTransaction, reverseEvent);
-                updatePaymentAndSaveEvent(existedTransaction, Arrays.asList(reverseEvent), api, reverseStatus);
+                updatePaymentAndSaveEvent(existedTransaction, Arrays.asList(reverseEvent), api, reverseStatus, true);
                 return Promise.pure(existedTransaction);
             }
         });
@@ -359,8 +361,9 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
         return existedTransaction;
     }
 
-    private void saveOrUpdateTrackingUuid(PaymentTransaction request, PaymentAPI api){
+    private void saveTrackingUuid(PaymentTransaction request, PaymentAPI api){
         if(request.getId() == null){
+            LOGGER.error("payment transaction id should not be empty when store tracking uuid.");
             throw AppServerExceptions.INSTANCE.missingRequiredField("payment transaction id").exception();
         }
         TrackingUuid trackingUuid = new TrackingUuid();
@@ -369,17 +372,7 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
         trackingUuid.setTrackingUuid(request.getTrackingUuid());
         trackingUuid.setUserId(request.getUserId());
         trackingUuid.setResponse(CommonUtil.toJson(request, null));
-        TrackingUuid existing = trackingUuidRepository.getByTrackUuid(request.getUserId(), request.getTrackingUuid());
-        if(existing == null){
-            trackingUuidRepository.saveTrackingUuid(trackingUuid);
-        }else{
-            if(existing.getPaymentId() == null || !existing.getPaymentId().equals(request.getId()) ||
-                    !existing.getApi().toString().equalsIgnoreCase(api.toString())){
-                throw AppClientExceptions.INSTANCE.duplicatedTrackingUuid(
-                        request.getTrackingUuid().toString()).exception();
-            }
-            trackingUuidRepository.updateResponse(trackingUuid);
-        }
+        trackingUuidRepository.saveTrackingUuid(trackingUuid);
     }
 
     private void validateRequest(PaymentTransaction request, boolean allowChargeInfo){
@@ -409,7 +402,8 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
                 throw AppClientExceptions.INSTANCE.missingCurrency().exception();
             }
         }
-        PaymentInstrument pi = paymentInstrumentService.getById(null, request.getPaymentInstrumentId());
+        PaymentInstrument pi = paymentInstrumentService.getById(null,
+                request.getPaymentInstrumentId().getPaymentInstrumentId());
         if(pi == null){
             throw AppClientExceptions.INSTANCE.invalidPaymentInstrumentId(
                     request.getPaymentInstrumentId().toString()).exception();
@@ -420,20 +414,19 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
         return pi;
     }
 
-    private PaymentTransaction saveAndCommitPayment(final PaymentTransaction request, final PaymentAPI api) {
+    private PaymentTransaction saveAndCommitPayment(final PaymentTransaction request) {
         AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager);
         template.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRES_NEW);
         return template.execute(new TransactionCallback<PaymentTransaction>() {
             public PaymentTransaction doInTransaction(TransactionStatus txnStatus) {
                 paymentRepository.save(request);
-                saveOrUpdateTrackingUuid(request, api);
                 return request;
             }
         });
     }
 
     private List<PaymentEvent> updatePaymentAndSaveEvent(final PaymentTransaction payment,
-              final List<PaymentEvent> request, final PaymentAPI api, final PaymentStatus status){
+        final List<PaymentEvent> events, final PaymentAPI api, final PaymentStatus status, final boolean saveUuid){
         AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager);
         template.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRES_NEW);
         return template.execute(new TransactionCallback<List<PaymentEvent>>() {
@@ -442,9 +435,11 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
                     paymentRepository.updatePayment(payment.getId()
                             , status, payment.getExternalToken());
                 }
-                paymentRepository.savePaymentEvent(payment.getId(), request);
-                saveOrUpdateTrackingUuid(payment, api);
-                return request;
+                paymentRepository.savePaymentEvent(payment.getId(), events);
+                if(saveUuid){
+                    saveTrackingUuid(payment, api);
+                }
+                return events;
             }
         });
     }

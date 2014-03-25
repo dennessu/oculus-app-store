@@ -7,25 +7,27 @@ sourceCompatibility = '1.7'
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
 dependencies {
-    compile (libraries.langur)
-    compile (libraries.common_lib)
+    compile(libraries.langur)
+    compile(libraries.common_lib)
 
-    compile (libraries.rs_api)
-    compile (libraries.guava)
+    compile(libraries.rs_api)
+    compile(libraries.guava)
 
-    compile (libraries.spring_beans)
-    compile (libraries.spring_context)
+    compile(libraries.spring_beans)
+    compile(libraries.spring_context)
 
-    compile (libraries.jackson_annotations)
-    compile (libraries.jackson_databind)
-    compile (libraries.common_lib)
-    compile (libraries.async_http_client)
+    compile(libraries.jackson_annotations)
+    compile(libraries.jackson_databind)
+    compile(libraries.common_lib)
+    compile(libraries.async_http_client)
 
     compile 'com.junbo.identity:identity-spec:0.0.1-SNAPSHOT'
     compile 'com.junbo.catalog:catalog-spec:0.0.1-SNAPSHOT'
     compile 'com.junbo.cart:cart-spec:0.0.1-SNAPSHOT'
     compile 'com.junbo.order:order-spec:0.0.1-SNAPSHOT'
+    compile 'com.junbo.billing:billing-spec:0.0.1-SNAPSHOT'
+    compile 'com.junbo.payment:payment-spec:0.0.1-SNAPSHOT'
 
-    processor (libraries.langur_processor)
-    processor (libraries.log4j)
+    processor(libraries.langur_processor)
+    processor(libraries.log4j)
 }

@@ -18,7 +18,7 @@ import java.util.UUID;
  * Created by LinYi on 2/11/14.
  */
 @ContextConfiguration(locations = {"classpath:spring/context-test.xml"})
-@TransactionConfiguration(defaultRollback = false)
+@TransactionConfiguration(defaultRollback = true)
 public abstract class BaseTest extends AbstractTransactionalTestNGSpringContextTests {
     /**
      * <p>Simple entity id generator.</p>

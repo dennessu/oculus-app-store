@@ -20,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Resource;
+
 
 /**
  * Created by xmchen on 14-2-13.
@@ -30,7 +32,7 @@ public class CurrencyServiceImpl implements CurrencyService {
     @Autowired
     private CurrencyRepository currencyRepository;
 
-    @Autowired
+    @Resource(name = "billingCacheManager")
     private EhCacheCacheManager ehCacheCacheManager;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CurrencyServiceImpl.class);

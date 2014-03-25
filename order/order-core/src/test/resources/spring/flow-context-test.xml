@@ -20,9 +20,6 @@
         <property name="facadeContainer" ref="mockFacadeContainer"/>
     </bean>
 
-    <bean id="mockGetOrderAction" class="com.junbo.order.core.impl.orderaction.GetOrderAction">
-    </bean>
-
     <bean id="mockImmediateSettleAction" class="com.junbo.order.core.impl.orderaction.ImmediateSettleAction">
         <property name="orderServiceContextBuilder" ref="mockOrderServiceContextBuilder"/>
         <property name="facadeContainer" ref="mockFacadeContainer"/>
@@ -81,7 +78,7 @@
 
     <bean id="mockCachedCatalogFacade" class="com.junbo.order.clientproxy.catalog.impl.CachedCatalogFacadeImpl">
         <property name="catalogFacade" ref="mockCatalogFacade"/>
-        <constructor-arg name="ehCacheCacheManager" ref="cacheManager"/>
+        <constructor-arg name="ehCacheCacheManager" ref="orderCacheManager"/>
     </bean>
 
     <bean id="mockFulfillmentFacade" class="com.junbo.order.clientproxy.fulfillment.impl.FulfillmentFacadeImpl">

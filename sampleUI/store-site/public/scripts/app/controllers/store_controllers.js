@@ -89,11 +89,36 @@ var StoreControllers = {
                 var _self = this;
                 if(App.AuthManager.isAuthenticated()){
                     console.log("[CartController:CheckOut]");
-                    // TODO: Call PostOrder
-                    _self.transitionToRouteAnimated("address", {main: "slideOverLeft"});
+
+                    var dataProvider = new CartProvider();
+                    dataProvider.PostOrder(Utils.GenerateRequestModel(null), function(result){
+                        var resultModel = result.data;
+                        if(resultModel.status == 200){
+                            console.log("[CartController:Checkout] Post order success");
+                            var order = JSON.parse(resultModel.data);
+
+                            // set order id to cookie
+                            Utils.Cookies.Set(AppConfig.CookiesName.OrderId, order.self.id);
+
+                            var allDigital = true;
+                            for(var i = 0; i < order.orderItems.length; ++i){
+                                if(order.orderItems[i].type == "PHYSICAL"){
+                                    allDigital = false;
+                                }
+                            }
+                            if(allDigital){
+                                _self.transitionToRouteAnimated("payment", {main: "slideOverLeft"});
+                            }else{
+                                _self.transitionToRouteAnimated("shipping", {main: "slideOverLeft"});
+                            }
+
+                        }else{
+                            console.log("[CartController:Checkout] Post order failed!");
+                            // TODO: do something
+                        }
+                    });
                 }else{
                     Utils.Cookies.Set(AppConfig.CookiesName.BeforeRoute, "cart");
-
                     location.href = AppConfig.LoginUrl;
                 }
             }
@@ -203,7 +228,51 @@ var StoreControllers = {
                 });
             }
         }
+    }),
+
+    OrderSummaryController: Ember.ObjectController.extend({
+        content: {
+            products: new Array(),
+            paymentMethodName: "",
+            shippingMethodName: "",
+            shippingAddress: null
+        },
+
+        subTotal: function(){
+            var result = 0;
+            this.get("content.products").forEach(function(item){
+                result+= item.subTotal;
+            });
+            return result
+        }.property("content.products"),
+
+        actions:{
+            Purchase: function(){
+                var _self = this;
+
+                var cartProvider = new CartProvider();
+                cartProvider.PurchaseOrder(Utils.GenerateRequestModel(null), function(resultData){
+                    if(resultData.data.status == 200){
+                        _self.transitionToRouteAnimated("thanks", {main: "slideOverLeft"});
+                    } else{
+                        // TODO: Show Error
+                    }
+                });
+            }
+        }
+    }),
+
+    OrderSummaryItemController: Ember.ObjectController.extend({
+        product: function(){
+            return this.store.find('Product', this.get('model').id);
+        }.property('model')
+    }),
+
+    ThanksController: Ember.ObjectController.extend({
+        actions:{
+            Continue: function(){
+                this.transitionToRouteAnimated("index", {main: "slideOverLeft"});
+            }
+        }
     })
-
-
 };

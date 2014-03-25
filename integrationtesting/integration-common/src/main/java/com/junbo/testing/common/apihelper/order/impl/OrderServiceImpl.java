@@ -5,11 +5,18 @@
  */
 package com.junbo.testing.common.apihelper.order.impl;
 
+import com.junbo.common.json.JsonMessageTranscoder;
+import com.junbo.langur.core.client.TypeReference;
+import com.junbo.order.spec.model.OrderEvent;
+import com.junbo.order.spec.model.Order;
+
 import com.junbo.testing.common.apihelper.HttpClientBase;
 import com.junbo.testing.common.apihelper.order.OrderService;
+import com.junbo.testing.common.blueprint.Master;
+import com.junbo.testing.common.libs.IdConverter;
 import com.junbo.testing.common.libs.LogHelper;
 import com.junbo.testing.common.libs.RestUrl;
-import javax.persistence.criteria.Order;
+
 import java.util.List;
 
 /**
@@ -23,14 +30,80 @@ public class OrderServiceImpl extends HttpClientBase implements OrderService {
 
     private static OrderService instance;
 
+    public static synchronized OrderService getInstance() {
+        if (instance == null) {
+            instance = new OrderServiceImpl();
+        }
+        return instance;
+    }
+
     @Override
-    public String postOrder(Order order) throws Exception {
+    public String settleQuote(Order order) throws Exception {
         return null;
     }
 
     @Override
-    public String postOrder(Order order, int expectedResponseCode) throws Exception {
+    public String settleQuote(Order order, int expectedResponseCode) throws Exception {
         return null;
+    }
+
+    @Override
+    public String postQuote(Order order) throws Exception {
+        return null;
+    }
+
+    @Override
+    public String postQuote(Order order, int expectedResponseCode) throws Exception {
+        return null;
+    }
+
+    @Override
+    public String updateOrderBillingStatus(OrderEvent orderEvent) throws Exception {
+        return null;
+    }
+
+    @Override
+    public String updateOrderBillingStatus(OrderEvent orderEvent, int expectedResponseCode) throws Exception {
+        return null;
+    }
+
+    @Override
+    public String updateOrderFulfillmentStatus(OrderEvent orderEvent) throws Exception {
+        return null;
+    }
+
+    @Override
+    public String updateOrderFulfillmentStatus(OrderEvent orderEvent, int expectedResponseCode) throws Exception {
+        return null;
+    }
+
+    @Override
+    public String updateTentativeOrder(Order order) throws Exception {
+        return null;
+    }
+
+    @Override
+    public String updateTentativeOrder(Order order, int expectedResponseCode) throws Exception {
+        return null;
+    }
+
+    @Override
+    public String postOrder(Order order) throws Exception {
+        return postOrder(order, 200);
+    }
+
+    @Override
+    public String postOrder(Order order, int expectedResponseCode) throws Exception {
+        String responseBody = restApiCall(HTTPMethod.POST, orderUrl, order, expectedResponseCode);
+
+        Order orderResult = new JsonMessageTranscoder().decode(
+                new TypeReference<Order>() {
+                }, responseBody);
+
+        String orderId = IdConverter.idToHexString(orderResult.getId());
+        Master.getInstance().addOrder(orderId, orderResult);
+
+        return orderId;
     }
 
     @Override
@@ -45,21 +118,45 @@ public class OrderServiceImpl extends HttpClientBase implements OrderService {
 
     @Override
     public String getOrderByOrderId(String orderId) throws Exception {
-        return null;
+        return getOrderByOrderId(orderId, 200);
     }
 
     @Override
     public String getOrderByOrderId(String orderId, int expectedResponseCode) throws Exception {
+        /*
+        Order orderResult = restApiCall(HTTPMethod.GET, orderUrl + orderId, expectedResponseCode);
+        orderId = IdConverter.idToHexString(orderResult.getId());
+        Master.getInstance().addOrder(orderId, orderResult);
+        return orderId;
+        */
         return null;
     }
 
     @Override
-    public String updateOrderByOrderId(String orderId) throws Exception {
+    public String updateOrderByOrderId(Order order) throws Exception {
+        /*
+        String orderId = IdConverter.idLongToHexString(OrderId.class, order.getId().getValue());
+        Order orderResult = restApiCall(HTTPMethod.PUT, orderUrl + orderId, order, 200);
+        orderId = IdConverter.idToHexString(orderResult.getId());
+        Master.getInstance().addOrder(orderId, orderResult);
+
+        return orderId;
+         */
         return null;
     }
 
     @Override
-    public String updateOrderByOrderId(String orderId, int expectedResponseCode) throws Exception {
+    public String updateOrderByOrderId(Order order, int expectedResponseCode) throws Exception {
+    /*
+        String orderId = IdConverter.idLongToHexString(OrderId.class, order.getId().getValue());
+        Order orderResult = restApiCall(HTTPMethod.PUT, orderUrl + orderId, order, expectedResponseCode);
+        orderId = IdConverter.idToHexString(orderResult.getId());
+        Master.getInstance().addOrder(orderId, orderResult);
+
+
+        return orderId;
+        */
         return null;
     }
+
 }

@@ -17,8 +17,6 @@ final class ActionUtils {
     static final String SCOPE_CREATE_ORDER_ACTION_CONTEXT = 'CREATE_ORDER_ACTION_CONTEXT'
     static final String DATA_ORDER_ACTION_RESULT = 'ORDER_ACTION_RESULT'
 
-    static final ActionResult DEFAULT_RESULT = new ActionResult('')
-
     static final String REQUEST_FLOW_TYPE = 'FLOW_TYPE'
     static final String REQUEST_ORDER_ID = 'ORDER_ID'
 
@@ -42,10 +40,10 @@ final class ActionUtils {
         return actionContext?.requestScope[REQUEST_FLOW_TYPE]
     }
 
-    static Map<String, Object> initRequestScope(OrderServiceContext context, Map<String, Object> args) {
+    static Map<String, Object> initRequestScope(OrderServiceContext context) {
         def orderActionContext = new OrderActionContext()
         orderActionContext.orderServiceContext = context
-        def result = (args == null) ? [:] : (Map<String, Object>) args.clone()
+        def result = [:]
         result[SCOPE_ORDER_ACTION_CONTEXT] = orderActionContext
         return result
     }

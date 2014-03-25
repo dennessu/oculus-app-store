@@ -1,6 +1,10 @@
 var Async = require('async');
+var Guid = require('guid');
 var CartDataProvider = require('store-data-provider').Cart;
+var OrderDataProvider = require('store-data-provider').Order;
+
 var CartModels = require('store-model').Cart;
+var OrderModels = require('store-model').Order;
 var DomainModels = require('../../models/domain');
 var Utils = require('../../utils/utils');
 
@@ -102,7 +106,6 @@ Cart.MergeCartItem = function (data, callback) {
     cartModel.user.id = anonymousUserId;
 
     var dataProvider = new CartDataProvider(process.AppConfig.Cart_API_Host, process.AppConfig.Cart_API_Port);
-
 
     if(!Utils.IsEmpty(cartId)){
         dataProvider.PostMerge(userId, cartId, cartModel, function (result) {
@@ -321,6 +324,256 @@ Cart.CartProcess = function (action, data, callback) {
         resModel.data = resultModel;
 
         callback(resModel);
+    });
+};
+
+Cart.GetOrder = function(data, callback){
+    var body = data.data;
+    var cookies = data.cookies;
+    var query = data.query;
+
+    var userId = cookies[process.AppConfig.CookiesName.UserId];
+    var orderId = cookies[process.AppConfig.CookiesName.OrderId];
+
+    var orderProvider = new OrderDataProvider(process.AppConfig.Order_API_Host, process.AppConfig.Order_API_Port);
+    orderProvider.GetOrderById(orderId, function(resultData){
+
+        var resultModel = new DomainModels.ResultModel;
+        if(resultData.StatusCode == 200){
+            resultModel.status = DomainModels.ResultStatusEnum.Normal;
+        }else{
+            resultModel.status = DomainModels.ResultStatusEnum.APIError;
+        }
+        resultModel.data = resultData.Data;
+
+        callback(Utils.GenerateResponseModel(resultModel));
+    });};
+
+Cart.PostOrder = function(data, callback){
+    var body = data.data;
+    var cookies = data.cookies;
+    var query = data.query;
+
+    var userId = null;
+    var cardId = null;
+    var cartIdCookieName = null;
+    if (Utils.IsAuthenticated(cookies)) {
+        userId = cookies[process.AppConfig.CookiesName.UserId];
+        cardId = cookies[process.AppConfig.CookiesName.CartId];
+    } else {
+        userId = cookies[process.AppConfig.CookiesName.AnonymousUserId];
+        cardId = cookies[process.AppConfig.CookiesName.AnonymousCartId];
+    }
+    var dataProvider = new CartDataProvider(process.AppConfig.Cart_API_Host, process.AppConfig.Cart_API_Port);
+
+    Async.waterfall([
+        function (cb) {
+            if (Utils.IsEmpty(cardId)) {
+            dataProvider.GetPrimaryCart(userId, function (result) {
+                if (result.StatusCode == 302) {
+                    cb(null, result.Headers.location);
+                } else {
+                    cb("Can't get primary cart", result);
+                }
+            });
+            }else{
+                cb(null, null);
+            }
+        },
+        // Get cart by url
+        function (url, cb) {
+            if (Utils.IsEmpty(cardId)) {
+            dataProvider.GetCartByUrl(url, null, function (result) {
+                if (result.StatusCode == 200) {
+                    cb(null, result.Data);
+                } else {
+                    cb("Can't get cart by url. URL: " + url, result);
+                }
+            });
+            }else{
+                cb(null, null);
+            }
+        },
+        // Get cart by id
+        function(result, cb){
+            if (!Utils.IsEmpty(cardId)) {
+                dataProvider.GetCartById(userId, cardId, function (resultData) {
+                    if (resultData.StatusCode == 200) {
+                        cb(null, resultData.Data);
+                    } else {
+                        cb("Can't get cart by id. Cart Id: " + cardId, resultData);
+                    }
+                });
+            }else{
+                cb(null, result);
+            }
+        },
+        // POST Order
+        function(result, cb){
+            var cartObj = JSON.parse(result);
+            var orderModel = new OrderModels.OrderModel();
+            orderModel.user.id = userId;
+            orderModel.trackingUuid = Guid.create();
+            orderModel.type = "PAY_IN";
+            orderModel.country = "US";
+            orderModel.currency = "USD";
+            orderModel.tentative = true;
+            orderModel.paymentInstruments = new Array();
+            orderModel.orderItems = new Array();
+
+            var indexArray = new Array();
+            for(var i = 0; i < cartObj.offers.length; ++i){
+                var item = cartObj.offers[i];
+                if(item.selected == true){
+                    var orderItem = new OrderModels.OrderItemModel();
+                    orderItem.offer = item.self;
+                    orderItem.quantity = item.quantity;
+                    orderModel.orderItems.push(orderItem);
+                    indexArray.push(i);
+                }
+            }
+
+            var orderProvider = new OrderDataProvider(process.AppConfig.Order_API_Host, process.AppConfig.Order_API_Port);
+            orderProvider.PostOrder(orderModel, function(resultData){
+                if(resultData.StatusCode == 200){
+                    cb(null, resultData.Data, result, indexArray)
+                }else{
+                    cb("Can't Post a Order, Error:", resultData);
+                }
+            });
+        },
+        // Update Cart
+        function(orderResult, result, indexArray, cb){
+            var cartObj = JSON.parse(result);
+            for(var i = 0; i < indexArray.length; ++i){
+                cartObj.offers.splice(indexArray[i], 1);
+            }
+
+            dataProvider.PutCartUpdate(userId, cardId, cartObj, function (result) {
+                if (result.StatusCode == 200) {
+                    cb(null, orderResult);
+                } else {
+                    cb("Can't update cart. Error: ", result.Data);
+                }
+            });
+
+        }
+    ], function (error, result) {
+        var resultModel = new DomainModels.ResultModel;
+        var responseModel;
+
+        if (error) {
+            resultModel.status = DomainModels.ResultStatusEnum.APIError;
+            resultModel.data = result;
+
+            responseModel = Utils.GenerateResponseModel(resultModel);
+        } else {
+            resultModel.status = DomainModels.ResultStatusEnum.Normal;
+            resultModel.data = result;
+
+            responseModel = Utils.GenerateResponseModel(resultModel);
+        }
+
+        console.log("Post Order Response: ", responseModel);
+        callback(responseModel);
+    });
+
+};
+
+Cart.PutOrder = function(data, callback){
+    var body = data.data;
+    var cookies = data.cookies;
+    var query = data.query;
+
+    var userId = cookies[process.AppConfig.CookiesName.UserId];
+    var orderId = cookies[process.AppConfig.CookiesName.OrderId];
+    var payment = {
+        id: cookies[process.AppConfig.CookiesName.PaymentId]
+    };
+    var shippingAddressId = cookies[process.AppConfig.CookiesName.ShippingId];
+    var shippingMethodId = cookies[process.AppConfig.CookiesName.ShippingMethodId];
+
+    var orderProvider = new OrderDataProvider(process.AppConfig.Order_API_Host, process.AppConfig.Order_API_Port);
+
+    Async.waterfall([
+        function (cb) {
+            orderProvider.GetOrderById(orderId, function(resultData){
+                if(resultData.StatusCode == 200){
+                    cb(null, resultData.Data);
+                }else{
+                    cb("Can't get order by id, OrderId:" + orderId, resultData.Data);
+                }
+            });
+        },
+        // Get cart by url
+        function (result, cb) {
+           var order = JSON.parse(result);
+            order.shippingMethodId = shippingMethodId;
+            order.shippingAddressId = shippingAddressId;
+            order.paymentInstruments.push(payment);
+            order.trackingUuid = Guid.create();
+
+            orderProvider.PutOrder(orderId, order, function(resultData){
+               if(resultData.StatusCode == 200){
+                   cb(null, JSON.stringify(order));
+               }else{
+                   cb("Can't update order", resultData.Data);
+               }
+            });
+        }
+    ], function (error, result) {
+        var resultModel = new DomainModels.ResultModel;
+        var responseModel;
+
+        if (error) {
+            resultModel.status = DomainModels.ResultStatusEnum.APIError;
+            resultModel.data = result;
+
+            responseModel = Utils.GenerateResponseModel(resultModel);
+        } else {
+            resultModel.status = DomainModels.ResultStatusEnum.Normal;
+            resultModel.data = result;
+
+            responseModel = Utils.GenerateResponseModel(resultModel);
+        }
+
+        console.log("Post Order Response: ", responseModel);
+        callback(responseModel);
+    });
+
+};
+
+Cart.PurchaseOrder = function(data, callback){
+    var body = data.data;
+    var cookies = data.cookies;
+    var query = data.query;
+
+    var orderId = cookies[process.AppConfig.CookiesName.OrderId];
+    var dataProvider = new OrderDataProvider(process.AppConfig.Order_API_Host, process.AppConfig.Order_API_Port);
+
+    var resultModel = new DomainModels.ResultModel();
+    dataProvider.GetOrderById(orderId, function(resultData){
+        if(resultData.StatusCode == 200){
+            var order = JSON.parse(resultData.Data);
+
+            order.trackingUuid = Guid.create();
+            order.tentative = false;
+
+            dataProvider.PutOrder(orderId, order, function(result){
+               if(result.StatusCode == 200){
+                   resultModel.status == DomainModels.ResultStatusEnum.Normal;
+               } else{
+                   resultModel.status == DomainModels.ResultStatusEnum.APIError;
+               }
+               resultModel.data = result.Data;
+
+                callback(Utils.GenerateResponseModel(resultModel));
+            });
+        }else{
+            resultModel.status == DomainModels.ResultStatusEnum.APIError;
+            resultModel.data = resultData.Data;
+            callback(Utils.GenerateResponseModel(resultModel));
+        }
     });
 };
 

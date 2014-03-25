@@ -7,7 +7,6 @@ dependencies {
     compile (libraries.spring_context)
     compile (libraries.guava)
 
-    compile ("com.junbo.identity:identity-spec:0.0.1-SNAPSHOT")
     compile ("com.junbo.catalog:catalog-spec:0.0.1-SNAPSHOT")
 
     testCompile (libraries.guava)

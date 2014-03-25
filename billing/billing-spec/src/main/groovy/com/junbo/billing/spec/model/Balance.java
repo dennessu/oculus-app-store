@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by xmchen on 14-1-26.
@@ -21,6 +22,7 @@ public class Balance {
 
     @JsonProperty("self")
     private BalanceId balanceId;
+    private UUID trackingUuid;
     private UserId userId;
     private OrderId orderId;
     private PaymentInstrumentId piId;
@@ -54,6 +56,14 @@ public class Balance {
         this.balanceId = balanceId;
     }
 
+    public UUID getTrackingUuid() {
+        return trackingUuid;
+    }
+
+    public void setTrackingUuid(UUID trackingUuid) {
+        this.trackingUuid = trackingUuid;
+    }
+    
     public UserId getUserId() {
         return userId;
     }
@@ -189,4 +199,5 @@ public class Balance {
     public void setTaxStatus(String taxStatus) {
         this.taxStatus = taxStatus;
     }
+
 }

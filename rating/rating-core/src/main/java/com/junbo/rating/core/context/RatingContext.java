@@ -8,10 +8,9 @@ package com.junbo.rating.core.context;
 
 import com.junbo.catalog.spec.model.promotion.Promotion;
 import com.junbo.catalog.spec.model.promotion.PromotionType;
-import com.junbo.rating.spec.model.OrderResultEntry;
-import com.junbo.rating.spec.model.RatableItem;
-import com.junbo.rating.spec.model.RatingResultEntry;
-import com.junbo.rating.spec.model.ShippingResultEntry;
+import com.junbo.rating.spec.error.AppErrors;
+import com.junbo.rating.spec.model.*;
+import com.junbo.rating.spec.model.Currency;
 import com.junbo.rating.spec.model.request.OfferRatingItem;
 import com.junbo.rating.spec.model.request.OfferRatingRequest;
 import com.junbo.rating.spec.model.request.OrderRatingItem;
@@ -25,7 +24,7 @@ import java.util.*;
 public class RatingContext {
     private Long userId;
     private String country;
-    private String currency;
+    private Currency currency;
     private Map<String, String> couponCodes;
     private Set<RatableItem> items;
     private Map<Long, Set<Promotion>> candidates;
@@ -51,7 +50,13 @@ public class RatingContext {
     public void fromRequest(OfferRatingRequest request) {
         this.userId = request.getUserId();
         this.country = request.getCountry();
-        this.currency = request.getCurrency();
+
+        Currency currency = Currency.findByCode(request.getCurrency());
+        if (currency == null) {
+            throw AppErrors.INSTANCE.currencyNotExist(request.getCurrency()).exception();
+        }
+
+        this.currency = Currency.findByCode(request.getCurrency());
 
         for (OfferRatingItem offerRatingItem : request.getOffers()) {
             RatableItem item = new RatableItem();
@@ -63,7 +68,13 @@ public class RatingContext {
     public void fromRequest(OrderRatingRequest request) {
         this.userId = request.getUserId();
         this.country = request.getCountry();
-        this.currency = request.getCurrency();
+
+        Currency currency = Currency.findByCode(request.getCurrency());
+        if (currency == null) {
+            throw AppErrors.INSTANCE.currencyNotExist(request.getCurrency()).exception();
+        }
+
+        this.currency = currency;
 
         for (String coupon : request.getCouponCodes()) {
             couponCodes.put(coupon, null);
@@ -96,11 +107,11 @@ public class RatingContext {
         this.country = country;
     }
 
-    public String getCurrency() {
+    public Currency getCurrency() {
         return currency;
     }
 
-    public void setCurrency(String currency) {
+    public void setCurrency(Currency currency) {
         this.currency = currency;
     }
 

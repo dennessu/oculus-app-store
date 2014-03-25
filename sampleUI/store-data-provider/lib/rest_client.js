@@ -67,7 +67,7 @@ RestClient.prototype.Request = function(options, data, cb){
 
     var resData = "";
     res.on('data', function(chunk){
-      console.log("Data Receive...\n");
+      //console.log("Data Receive...\n");
       resData += chunk;
     });
     res.on('end', function(){

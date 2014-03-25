@@ -10,12 +10,13 @@
             <wf:on-entry>
                 <wf:action ref="validateUserAction"/>
                 <wf:action ref="validatePaymentInstrumentsAction"/>
-                <wf:action ref="ratingAction"/>
-                <wf:action ref="createOrderAction"/>
+
+                <wf:action ref="markSettleAction"/>
                 <wf:action ref="authSettleAction"/>
                 <wf:action ref="fulfillmentAction"/>
                 <wf:action ref="sendEmailAction"/>
             </wf:on-entry>
         </wf:end-state>
     </wf:flow>
+
 </beans>

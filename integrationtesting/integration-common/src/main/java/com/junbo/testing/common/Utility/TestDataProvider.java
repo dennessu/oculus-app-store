@@ -10,20 +10,37 @@ import com.junbo.cart.spec.model.item.CouponItem;
 import com.junbo.cart.spec.model.item.OfferItem;
 import com.junbo.common.id.OfferId;
 import com.junbo.identity.spec.model.user.User;
+import com.junbo.order.spec.model.OrderItem;
+import com.junbo.payment.spec.model.Address;
+import com.junbo.payment.spec.model.CreditCardRequest;
+import com.junbo.payment.spec.model.PaymentInstrument;
+import com.junbo.payment.spec.model.Phone;
+import com.junbo.testing.common.apihelper.billing.ShippingAddressService;
+import com.junbo.testing.common.apihelper.billing.impl.ShippingAddressServiceImpl;
 import com.junbo.testing.common.apihelper.cart.CartService;
 import com.junbo.testing.common.apihelper.cart.impl.CartServiceImpl;
 import com.junbo.testing.common.apihelper.catalog.ItemService;
 import com.junbo.testing.common.apihelper.catalog.OfferService;
 import com.junbo.testing.common.apihelper.catalog.impl.ItemServiceImpl;
 import com.junbo.testing.common.apihelper.catalog.impl.OfferServiceImpl;
+import com.junbo.order.spec.model.Order;
 import com.junbo.testing.common.apihelper.identity.UserService;
 import com.junbo.testing.common.apihelper.identity.impl.UserServiceImpl;
+import com.junbo.testing.common.apihelper.order.OrderService;
+import com.junbo.testing.common.apihelper.order.impl.OrderServiceImpl;
+
+import com.junbo.testing.common.apihelper.payment.PaymentService;
+import com.junbo.testing.common.apihelper.payment.impl.PaymentServiceImpl;
 import com.junbo.testing.common.blueprint.Master;
+import com.junbo.testing.common.enums.Country;
+import com.junbo.testing.common.enums.Currency;
 import com.junbo.testing.common.libs.EnumHelper.UserStatus;
 import com.junbo.testing.common.libs.RandomFactory;
+import com.junbo.testing.common.paymentInstruments.CreditCardInfo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by Yunlong on 3/20/14.
@@ -33,6 +50,10 @@ public class TestDataProvider {
     private ItemService itemClient = ItemServiceImpl.instance();
     private OfferService offerClient = OfferServiceImpl.instance();
     private CartService cartClient = CartServiceImpl.getInstance();
+    private OrderService orderClient = OrderServiceImpl.getInstance();
+    private PaymentService paymentClient = PaymentServiceImpl.getInstance();
+    private ShippingAddressService shippingClient = ShippingAddressServiceImpl.getInstance();
+
 
     public TestDataProvider() {
     }
@@ -55,11 +76,11 @@ public class TestDataProvider {
     }
 
     public String postDefaultItem() throws Exception {
-        return itemClient.postDefaultItem(false);
+        return itemClient.postDefaultItem(true);
     }
 
-    public String postDefaultOffer() throws Exception {
-        return offerClient.postDefaultOffer(false);
+    public String postDefaultOffer(boolean isPhysical) throws Exception {
+        return offerClient.postDefaultOffer(isPhysical);
     }
 
     public void postOffersToPrimaryCart(String uid, ArrayList<String> offers) throws Exception {
@@ -84,8 +105,9 @@ public class TestDataProvider {
         cartClient.updateCart(uid, primaryCartId, primaryCart);
     }
 
-    public void postDefaultOffersToPrimaryCart(String uid) throws Exception {
-        String offerId = this.postDefaultItem();
+    public void postDefaultOffersToPrimaryCart(String uid, boolean isPhysical) throws Exception {
+        String offerId = this.postDefaultOffer(isPhysical);
+        //String offerId = IdConverter.idLongToHexString(OfferId.class, new OfferId(100001L).getValue());
         ArrayList<String> offerList = new ArrayList<>();
         offerList.add(offerId);
         this.postOffersToPrimaryCart(uid, offerList);
@@ -100,5 +122,69 @@ public class TestDataProvider {
 
         cartClient.mergeCart(destinationUid, destinationCartId, sourceCart);
     }
+
+    public String transferPrimaryCartToOrder(String uid) throws Exception {
+        return transferPrimaryCartToOrder(uid, Country.DEFAULT, Currency.DEFAULT);
+    }
+
+
+    public String transferPrimaryCartToOrder(String uid, Country country, Currency currency) throws Exception {
+        String primaryCartId = cartClient.getCartPrimary(uid);
+        Cart primaryCart = Master.getInstance().getCart(primaryCartId);
+
+        Order order = new Order();
+        //set required fields
+        order.setUser(primaryCart.getUser());
+        order.setCountry(country.toString());
+        order.setCurrency(currency.toString());
+        //TODO order.setPaymentInstruments();
+        //TODO order.setShippingAddressId();
+
+        List<OrderItem> orderItemList = new ArrayList<>();
+        List<OfferItem> offerItemList = primaryCart.getOffers();
+        for (int i = 0; i < offerItemList.size(); i++) {
+            OfferId offerId = offerItemList.get(i).getOffer();
+
+            OrderItem orderItem = new OrderItem();
+            orderItem.setQuantity(Integer.parseInt(offerItemList.get(i).getQuantity().toString()));
+            orderItem.setOffer(offerId);
+        }
+        order.setOrderItems(orderItemList);
+
+        return orderClient.postOrder(order);
+    }
+
+    public String postCreditCardToUser(String uid , CreditCardInfo creditCardInfo) throws Exception{
+        PaymentInstrument paymentInstrument = new PaymentInstrument();
+        CreditCardRequest creditCardRequest = new CreditCardRequest();
+        //creditCardRequest.setType(creditCardInfo.getType().toString());
+        creditCardRequest.setExpireDate(creditCardInfo.getExpireDate());
+        creditCardRequest.setEncryptedCvmCode(creditCardInfo.getEncryptedCVMCode());
+
+        Address address = new Address();
+        address.setAddressLine1(creditCardInfo.getAddress().getAddressLine1());
+        address.setCity(creditCardInfo.getAddress().getCity());
+        address.setState(creditCardInfo.getAddress().getState());
+        address.setCountry(creditCardInfo.getAddress().getCountry());
+        address.setPostalCode(creditCardInfo.getAddress().getPostalCode());
+
+        Phone phone = new Phone();
+        phone.setType(creditCardInfo.getPhone().getType());
+        phone.setNumber(creditCardInfo.getPhone().getNumber());
+
+        paymentInstrument.setAccountName(creditCardInfo.getAccountName());
+        paymentInstrument.setAccountNum("4111111111111111");
+        //paymentInstrument.setAccountNum(creditCardInfo.getAccountNum());
+        paymentInstrument.setAddress(address);
+        paymentInstrument.setCreditCardRequest(creditCardRequest);
+        paymentInstrument.setPhone(phone);
+        paymentInstrument.setIsValidated(creditCardInfo.isValidated());
+        paymentInstrument.setIsDefault(String.valueOf(creditCardInfo.isDefault()));
+        paymentInstrument.setType(creditCardInfo.getType().toString());
+        paymentInstrument.setTrackingUuid(UUID.randomUUID());
+
+        return paymentClient.postPaymentInstrumentToUser(uid,paymentInstrument);
+    }
+
 
 }

@@ -61,7 +61,6 @@ public class EnumHelper {
      * @author Jason
      */
     public enum CatalogAttributeType {
-        TYPE("Type"),
         CATEGORY("Category"),
         GENRE("Genre"),
         COLOR("Color");
@@ -74,6 +73,10 @@ public class EnumHelper {
 
         public String getType() {
             return type;
+        }
+
+        public static String getRandom(){
+            return values()[(int) (Math.random() * values().length)].getType();
         }
     }
 

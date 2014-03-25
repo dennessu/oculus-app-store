@@ -1,6 +1,8 @@
 var Identity = require('../logic/identity');
 var Catalog = require('../logic/catalog');
 var Cart = require('../logic/cart');
+var Billing = require('../logic/billing');
+var Payment = require('../logic/payment');
 
 module.exports = function(io){
     io.set("log level", 0);
@@ -39,6 +41,11 @@ module.exports = function(io){
         });
         socket.on('/api/identity/get_anonymous_user', function (data, fn) {
             Identity.GetAnonymousUser(data, function(data){
+                fn(data);
+            });
+        });
+        socket.on('/api/identity/get_profile', function (data, fn) {
+            Identity.GetProfile(data, function(data){
                 fn(data);
             });
         });
@@ -81,6 +88,63 @@ module.exports = function(io){
                 fn(data);
             });
         });
+        socket.on('/api/cart/get_order', function (data, fn) {
+            Cart.GetOrder(data, function(data){
+                fn(data);
+            });
+        });
+        socket.on('/api/cart/post_order', function (data, fn) {
+            Cart.PostOrder(data, function(data){
+                fn(data);
+            });
+        });
+        socket.on('/api/cart/put_order', function (data, fn) {
+            Cart.PutOrder(data, function(data){
+                fn(data);
+            });
+        });
+        socket.on('/api/cart/purchase_order', function (data, fn) {
+            Cart.PurchaseOrder(data, function(data){
+                fn(data);
+            });
+        });
+
+        /* Billing -------------------------------------------------------------- */
+        socket.on('/api/billing/get_shipping_info', function (data, fn) {
+            Billing.GetShippingInfo(data, function(data){
+                fn(data);
+            });
+        });
+
+        socket.on('/api/billing/get_shipping_info_by_id', function (data, fn) {
+            Billing.GetShippingInfoById(data, function(data){
+                fn(data);
+            });
+        });
+        socket.on('/api/billing/add', function (data, fn) {
+            Billing.PostShippingInfo(data, function(data){
+                fn(data);
+            });
+        });
+
+        /* Payment -------------------------------------------------------------- */
+        socket.on('/api/payment/get_payment_instruments', function (data, fn) {
+            Payment.GetPayment(data, function(data){
+                fn(data);
+            });
+        });
+
+        socket.on('/api/payment/get_payment_instruments_by_id', function (data, fn) {
+            Payment.GetPaymentById(data, function(data){
+                fn(data);
+            });
+        });
+        socket.on('/api/payment/add', function (data, fn) {
+            Payment.PostPayment(data, function(data){
+                fn(data);
+            });
+        });
+
 
     });
 };

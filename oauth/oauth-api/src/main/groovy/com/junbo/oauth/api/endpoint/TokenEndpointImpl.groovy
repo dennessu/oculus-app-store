@@ -21,13 +21,22 @@ import javax.ws.rs.core.HttpHeaders
 import javax.ws.rs.core.MultivaluedMap
 
 /**
- * Javadoc.
+ * Default {@link com.junbo.oauth.spec.endpoint.TokenEndpoint} implementation.
+ * @author Zhanxin Yang
+ * @see com.junbo.oauth.spec.endpoint.TokenEndpoint
  */
 @Component
 @CompileStatic
 @Scope('prototype')
 class TokenEndpointImpl implements TokenEndpoint {
+    /**
+     * The flowExecutor to execute the token flow
+     */
     private FlowExecutor flowExecutor
+
+    /**
+     * The token flow name, by default 'grantTokenFlow'.
+     */
     private String grantTokenFlow
 
     @Required
@@ -40,16 +49,25 @@ class TokenEndpointImpl implements TokenEndpoint {
         this.grantTokenFlow = grantTokenFlow
     }
 
+    /**
+     * The POST method of the grant token endpoint.
+     * @param httpHeaders The HttpHeaders contains the header information.
+     * @param formParams The form parameters encoded in format of application/x-www-form-urlencoded.
+     * @param request The raw javax.ws.rs Request
+     * @return The granted access token.
+     */
     @Override
     Promise<AccessTokenResponse> postToken(HttpHeaders httpHeaders,
                                            MultivaluedMap<String, String> formParams,
                                            ContainerRequestContext request) {
+        // Prepare the request scope.
         Map<String, Object> requestScope = new HashMap<>()
         requestScope[ActionContextWrapper.REQUEST] = request
         requestScope[ActionContextWrapper.PARAMETER_MAP] = formParams
         requestScope[ActionContextWrapper.HEADER_MAP] = httpHeaders.requestHeaders
         requestScope[ActionContextWrapper.COOKIE_MAP] = httpHeaders.cookies
 
+        // Start a new conversation of grantTokenFlow in the flowExecutor.
         flowExecutor.start(grantTokenFlow, requestScope).then { ActionContext context ->
             ActionContextWrapper wrapper = new ActionContextWrapper(context)
             return Promise.pure(wrapper.accessTokenResponse)

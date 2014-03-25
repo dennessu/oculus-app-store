@@ -31,16 +31,7 @@ public class IdentityFacadeImpl implements IdentityFacade {
 
     @Override
     public Promise<User> getUser(Long userId) {
-        Promise<User> userPromise = null;
-
-        try {
-            userPromise = userResource.getUser(new UserId(userId));
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return userPromise;
+        return userResource.getUser(new UserId(userId));
     }
 
     @Override

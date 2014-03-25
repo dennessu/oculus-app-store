@@ -10,6 +10,7 @@ import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.subscription.spec.model.Subscription;
 
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
@@ -26,7 +27,7 @@ import javax.ws.rs.core.MediaType;
 public interface SubscriptionResource {
     @POST
     @Path("/")
-    Promise<Subscription> postSubscription(Subscription request);
+    Promise<Subscription> postSubscription(@Valid Subscription request);
 
     @GET
     @Path("/{subscriptionId}")
