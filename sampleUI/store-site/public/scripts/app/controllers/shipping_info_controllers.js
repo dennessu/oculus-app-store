@@ -1,6 +1,31 @@
 
 var ShippingInfoControllers = {
-    IndexController: Ember.ArrayController.extend({
+    IndexController: Ember.ObjectController.extend({
+        isValid: false,
+        methods: (function(){
+            var result = new Array();
+            for(var i = 0; i < AppConfig.ShippingMethods.length; ++i) result.push({t: AppConfig.ShippingMethods[i].name, v: AppConfig.ShippingMethods[i].value});
+            return result;
+        }()),
+        content:{
+            shippingMethodId: "0"
+        },
+        actions: {
+            Continue: function(){
+                var _self = this;
+                var selectedValue = $('#ShippingMethodId').val();
+                if(selectedValue == undefined){
+                    this.set("isValid", true);
+                }else{
+                    this.set("isValid", false);
+                    Utils.Cookies.Set(AppConfig.CookiesName.ShippingMethodId, selectedValue);
+
+                    _self.transitionToRouteAnimated("shipping.address", {main: "slideOverLeft"});
+                }
+            }
+        }
+    }),
+    AddressController: Ember.ArrayController.extend({
         isValid: false,
         actions: {
             CreateNew: function(){

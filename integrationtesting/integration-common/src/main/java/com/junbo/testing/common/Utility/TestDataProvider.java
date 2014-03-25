@@ -11,8 +11,12 @@ import com.junbo.cart.spec.model.item.OfferItem;
 import com.junbo.common.id.OfferId;
 import com.junbo.identity.spec.model.user.User;
 import com.junbo.order.spec.model.OrderItem;
+import com.junbo.payment.spec.model.Address;
 import com.junbo.payment.spec.model.CreditCardRequest;
 import com.junbo.payment.spec.model.PaymentInstrument;
+import com.junbo.payment.spec.model.Phone;
+import com.junbo.testing.common.apihelper.billing.ShippingAddressService;
+import com.junbo.testing.common.apihelper.billing.impl.ShippingAddressServiceImpl;
 import com.junbo.testing.common.apihelper.cart.CartService;
 import com.junbo.testing.common.apihelper.cart.impl.CartServiceImpl;
 import com.junbo.testing.common.apihelper.catalog.ItemService;
@@ -25,14 +29,18 @@ import com.junbo.testing.common.apihelper.identity.impl.UserServiceImpl;
 import com.junbo.testing.common.apihelper.order.OrderService;
 import com.junbo.testing.common.apihelper.order.impl.OrderServiceImpl;
 
+import com.junbo.testing.common.apihelper.payment.PaymentService;
+import com.junbo.testing.common.apihelper.payment.impl.PaymentServiceImpl;
 import com.junbo.testing.common.blueprint.Master;
 import com.junbo.testing.common.enums.Country;
 import com.junbo.testing.common.enums.Currency;
 import com.junbo.testing.common.libs.EnumHelper.UserStatus;
 import com.junbo.testing.common.libs.RandomFactory;
+import com.junbo.testing.common.paymentInstruments.CreditCardInfo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by Yunlong on 3/20/14.
@@ -43,6 +51,8 @@ public class TestDataProvider {
     private OfferService offerClient = OfferServiceImpl.instance();
     private CartService cartClient = CartServiceImpl.getInstance();
     private OrderService orderClient = OrderServiceImpl.getInstance();
+    private PaymentService paymentClient = PaymentServiceImpl.getInstance();
+    private ShippingAddressService shippingClient = ShippingAddressServiceImpl.getInstance();
 
 
     public TestDataProvider() {
@@ -69,8 +79,8 @@ public class TestDataProvider {
         return itemClient.postDefaultItem(true);
     }
 
-    public String postDefaultOffer() throws Exception {
-        return offerClient.postDefaultOffer(true);
+    public String postDefaultOffer(boolean isPhysical) throws Exception {
+        return offerClient.postDefaultOffer(isPhysical);
     }
 
     public void postOffersToPrimaryCart(String uid, ArrayList<String> offers) throws Exception {
@@ -95,8 +105,9 @@ public class TestDataProvider {
         cartClient.updateCart(uid, primaryCartId, primaryCart);
     }
 
-    public void postDefaultOffersToPrimaryCart(String uid) throws Exception {
-        String offerId = this.postDefaultItem();
+    public void postDefaultOffersToPrimaryCart(String uid, boolean isPhysical) throws Exception {
+        String offerId = this.postDefaultOffer(isPhysical);
+        //String offerId = IdConverter.idLongToHexString(OfferId.class, new OfferId(100001L).getValue());
         ArrayList<String> offerList = new ArrayList<>();
         offerList.add(offerId);
         this.postOffersToPrimaryCart(uid, offerList);
@@ -143,17 +154,36 @@ public class TestDataProvider {
         return orderClient.postOrder(order);
     }
 
-    public String postCreditCardToUser(String uid){
+    public String postCreditCardToUser(String uid , CreditCardInfo creditCardInfo) throws Exception{
         PaymentInstrument paymentInstrument = new PaymentInstrument();
-        CreditCardRequest  creditCardRequest = new CreditCardRequest();
-        //creditCardRequest.setId();
-        //creditCardRequest.setExpireDate();
-       // creditCardRequest.setType();
+        CreditCardRequest creditCardRequest = new CreditCardRequest();
+        //creditCardRequest.setType(creditCardInfo.getType().toString());
+        creditCardRequest.setExpireDate(creditCardInfo.getExpireDate());
+        creditCardRequest.setEncryptedCvmCode(creditCardInfo.getEncryptedCVMCode());
 
+        Address address = new Address();
+        address.setAddressLine1(creditCardInfo.getAddress().getAddressLine1());
+        address.setCity(creditCardInfo.getAddress().getCity());
+        address.setState(creditCardInfo.getAddress().getState());
+        address.setCountry(creditCardInfo.getAddress().getCountry());
+        address.setPostalCode(creditCardInfo.getAddress().getPostalCode());
 
-        //paymentInstrument.setCreditCardRequest();
+        Phone phone = new Phone();
+        phone.setType(creditCardInfo.getPhone().getType());
+        phone.setNumber(creditCardInfo.getPhone().getNumber());
 
-        return null;
+        paymentInstrument.setAccountName(creditCardInfo.getAccountName());
+        paymentInstrument.setAccountNum("4111111111111111");
+        //paymentInstrument.setAccountNum(creditCardInfo.getAccountNum());
+        paymentInstrument.setAddress(address);
+        paymentInstrument.setCreditCardRequest(creditCardRequest);
+        paymentInstrument.setPhone(phone);
+        paymentInstrument.setIsValidated(creditCardInfo.isValidated());
+        paymentInstrument.setIsDefault(String.valueOf(creditCardInfo.isDefault()));
+        paymentInstrument.setType(creditCardInfo.getType().toString());
+        paymentInstrument.setTrackingUuid(UUID.randomUUID());
+
+        return paymentClient.postPaymentInstrumentToUser(uid,paymentInstrument);
     }
 
 

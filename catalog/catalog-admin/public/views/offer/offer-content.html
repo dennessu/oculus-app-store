@@ -1,6 +1,6 @@
 <table class="table table-bordered vertical-table">
     <tr>
-        <td>Offer Id</td>
+        <td style="width: 200px;">Offer Id</td>
         <td>{{ offer.self.id }}</td>
     </tr>
     <tr>
@@ -26,16 +26,20 @@
                 <thead>
                 <tr>
                     <th>Country</th>
-                    <th>Amount</th>
                     <th>Currency</th>
+                    <th>Amount</th>
                 </tr>
                 </thead>
                 <tr ng-repeat="(country, price) in offer.prices">
                     <td>{{ country }}</td>
-                    <td>{{ price.amount }}</td>
                     <td>{{ price.currency }}</td>
+                    <td>{{ price.amount }}</td>
                 </tr>
             </table>
         </td>
+    </tr>
+    <tr>
+        <td>Available Countries</td>
+        <td>{{ offer.eligibleCountries }}</td>
     </tr>
 </table>

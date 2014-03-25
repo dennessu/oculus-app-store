@@ -47,7 +47,7 @@ public enum Country {
     US("US", "United States", true, Currency.USD),
     ZA("ZA", "South Africa", false, Currency.ZAR),
     //define US as default country for common test
-    DEFAULT("DEFAULT", "United States", true, Currency.USD);
+    DEFAULT("US", "United States", true, Currency.USD);
 
 
     private String countryCode;

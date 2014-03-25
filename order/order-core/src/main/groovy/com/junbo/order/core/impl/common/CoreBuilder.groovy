@@ -35,6 +35,7 @@ class CoreBuilder {
         }
 
         Balance balance = new Balance()
+        balance.trackingUuid = UUID.randomUUID()
         balance.country = context.order.country
         balance.currency = context.order.currency
         balance.orderId = context.order.id
