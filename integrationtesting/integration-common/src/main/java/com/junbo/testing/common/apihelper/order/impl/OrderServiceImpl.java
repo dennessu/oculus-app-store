@@ -5,7 +5,8 @@
  */
 package com.junbo.testing.common.apihelper.order.impl;
 
-import com.junbo.common.id.OrderId;
+import com.junbo.common.json.JsonMessageTranscoder;
+import com.junbo.langur.core.client.TypeReference;
 import com.junbo.order.spec.model.OrderEvent;
 import com.junbo.order.spec.model.Order;
 
@@ -93,7 +94,12 @@ public class OrderServiceImpl extends HttpClientBase implements OrderService {
 
     @Override
     public String postOrder(Order order, int expectedResponseCode) throws Exception {
-        Order orderResult = restApiCall(HTTPMethod.POST, orderUrl, order, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.POST, orderUrl, order, expectedResponseCode);
+
+        Order orderResult = new JsonMessageTranscoder().decode(
+                new TypeReference<Order>() {
+                }, responseBody);
+
         String orderId = IdConverter.idToHexString(orderResult.getId());
         Master.getInstance().addOrder(orderId, orderResult);
 
@@ -117,30 +123,40 @@ public class OrderServiceImpl extends HttpClientBase implements OrderService {
 
     @Override
     public String getOrderByOrderId(String orderId, int expectedResponseCode) throws Exception {
+        /*
         Order orderResult = restApiCall(HTTPMethod.GET, orderUrl + orderId, expectedResponseCode);
         orderId = IdConverter.idToHexString(orderResult.getId());
         Master.getInstance().addOrder(orderId, orderResult);
         return orderId;
+        */
+        return null;
     }
 
     @Override
     public String updateOrderByOrderId(Order order) throws Exception {
+        /*
         String orderId = IdConverter.idLongToHexString(OrderId.class, order.getId().getValue());
         Order orderResult = restApiCall(HTTPMethod.PUT, orderUrl + orderId, order, 200);
         orderId = IdConverter.idToHexString(orderResult.getId());
         Master.getInstance().addOrder(orderId, orderResult);
 
         return orderId;
+         */
+        return null;
     }
 
     @Override
     public String updateOrderByOrderId(Order order, int expectedResponseCode) throws Exception {
+    /*
         String orderId = IdConverter.idLongToHexString(OrderId.class, order.getId().getValue());
         Order orderResult = restApiCall(HTTPMethod.PUT, orderUrl + orderId, order, expectedResponseCode);
         orderId = IdConverter.idToHexString(orderResult.getId());
         Master.getInstance().addOrder(orderId, orderResult);
 
+
         return orderId;
+        */
+        return null;
     }
 
 }
