@@ -26,6 +26,7 @@ public class UserEmail extends ResourceMeta implements Identifiable<UserEmailId>
 
     private Boolean verified;
 
+    @JsonProperty("user")
     private UserId userId;
 
     public UserEmailId getId() {

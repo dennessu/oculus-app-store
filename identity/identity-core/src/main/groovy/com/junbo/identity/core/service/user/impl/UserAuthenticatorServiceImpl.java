@@ -46,7 +46,8 @@ public class UserAuthenticatorServiceImpl implements UserAuthenticatorService {
     }
 
     @Override
-    public UserAuthenticator patch(UserId userId, UserAuthenticatorId userAuthenticatorId, UserAuthenticator userAuthenticator) {
+    public UserAuthenticator patch(UserId userId, UserAuthenticatorId userAuthenticatorId,
+                                   UserAuthenticator userAuthenticator) {
         // todo:    Need to validate patch
         return null;
     }

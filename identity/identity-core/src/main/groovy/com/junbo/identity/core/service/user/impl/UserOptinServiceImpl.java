@@ -33,12 +33,14 @@ public class UserOptinServiceImpl implements UserOptinService {
     @Override
     public UserOptin save(UserId userId, UserOptin userOptIn) {
         validator.validateCreate(userId, userOptIn);
+        userOptIn.setUserId(userId);
         return userOptInRepository.save(userOptIn);
     }
 
     @Override
     public UserOptin update(UserId userId, UserOptinId userOptInId, UserOptin userOptIn) {
         validator.validateUpdate(userId, userOptInId, userOptIn);
+        userOptIn.setUserId(userId);
         return userOptInRepository.update(userOptIn);
     }
 
@@ -49,11 +51,8 @@ public class UserOptinServiceImpl implements UserOptinService {
     }
 
     @Override
-    public List<UserOptin> search(UserId userId, String type) {
-        UserOptinListOption getOption = new UserOptinListOption();
-        getOption.setUserId(userId);
-        getOption.setType(type);
-        return userOptInRepository.search(getOption);
+    public List<UserOptin> search(UserOptinListOption listOption) {
+        return userOptInRepository.search(listOption);
     }
 
     @Override

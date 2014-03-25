@@ -33,12 +33,14 @@ public class UserTosServiceImpl implements UserTosService {
     @Override
     public UserTos save(UserId userId, UserTos userTos) {
         validator.validateCreate(userId, userTos);
+        userTos.setUserId(userId);
         return userTosRepository.save(userTos);
     }
 
     @Override
     public UserTos update(UserId userId, UserTosId userTosId, UserTos userTos) {
         validator.validateUpdate(userId, userTosId, userTos);
+        userTos.setUserId(userId);
         return userTosRepository.update(userTos);
     }
 
@@ -49,8 +51,7 @@ public class UserTosServiceImpl implements UserTosService {
     }
 
     @Override
-    public List<UserTos> search(UserId userId, String tos) {
-        UserTosListOption getOption = new UserTosListOption();
+    public List<UserTos> search(UserTosListOption getOption) {
         return userTosRepository.search(getOption);
     }
 

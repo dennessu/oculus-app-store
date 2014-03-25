@@ -14,7 +14,6 @@ import com.junbo.identity.core.service.util.Constants;
 import com.junbo.identity.core.service.util.UserPasswordUtil;
 import com.junbo.identity.core.service.validator.UserLoginAttemptValidator;
 import com.junbo.identity.data.repository.UserLoginAttemptRepository;
-import com.junbo.identity.spec.error.AppErrors;
 import com.junbo.identity.spec.model.users.User;
 import com.junbo.identity.spec.model.users.UserLoginAttempt;
 import com.junbo.identity.spec.model.users.UserPassword;
@@ -75,11 +74,9 @@ public class UserLoginAttemptServiceImpl implements UserLoginAttemptService {
             UserPassword currentPassword = userPasswordService.search(passwordListOption).get(0);
             String hashPassword = UserPasswordUtil.hashPassword(split[1], currentPassword.getPasswordSalt());
 
-            if(!hashPassword.equals(currentPassword.getPasswordHash())) {
-                throw AppErrors.INSTANCE.userNamePasswordNotMatch(decode).exception();
-            }
-            userLoginAttempt.setSucceeded(true);
+            userLoginAttempt.setSucceeded(hashPassword.equals(currentPassword.getPasswordHash()));
             userLoginAttempt.setUserId(users.get(0).getId());
+            userLoginAttemptRepository.save(userLoginAttempt);
         }
         else if(userLoginAttempt.getType().equals("pin")) {
             UserPinListOption userPinListOption = new UserPinListOption();
@@ -89,10 +86,7 @@ public class UserLoginAttemptServiceImpl implements UserLoginAttemptService {
             UserPin currentPin = userPinService.search(userPinListOption).get(0);
             String hashPin = UserPasswordUtil.hashPassword(split[1], currentPin.getPinSalt());
 
-            if(!hashPin.equals(currentPin.getPinHash())) {
-                throw AppErrors.INSTANCE.userNamePasswordNotMatch(decode).exception();
-            }
-            userLoginAttempt.setSucceeded(true);
+            userLoginAttempt.setSucceeded(hashPin.equals(currentPin.getPinHash()));
             userLoginAttempt.setUserId(users.get(0).getId());
         }
         return userLoginAttemptRepository.save(userLoginAttempt);

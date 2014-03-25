@@ -268,6 +268,20 @@ public class CommonMapper {
         return id.getValue();
     }
 
+    public UserSecurityQuestionAttemptId toUserSecurityQuestionAttemptId(Long id) {
+        if(id == null) {
+            return null;
+        }
+        return new UserSecurityQuestionAttemptId(id);
+    }
+
+    public Long toUserSecurityQuestionAttemptId(UserSecurityQuestionAttemptId id) {
+        if(id == null) {
+            return null;
+        }
+        return id.getValue();
+    }
+
     public Long toPasswordRuleId(PasswordRuleId id) {
         if(id == null) {
             return null;
@@ -280,20 +294,6 @@ public class CommonMapper {
             return null;
         }
         return new PasswordRuleId(id);
-    }
-
-    public Long toDeviceId(DeviceId id) {
-        if(id == null) {
-            return null;
-        }
-        return id.getValue();
-    }
-
-    public DeviceId toDeviceId(Long id) {
-        if(id == null) {
-            return null;
-        }
-        return new DeviceId(id);
     }
 
     public List<String> explicitMethod_jsonToListString(String json) {

@@ -31,7 +31,7 @@ class UserDeviceEntity extends ResourceMetaEntity {
     private String type
 
     @Column(name = 'device_id')
-    private Long deviceId
+    private String deviceId
 
     @Column(name = 'os')
     private String os
@@ -63,11 +63,11 @@ class UserDeviceEntity extends ResourceMetaEntity {
         this.type = type
     }
 
-    Long getDeviceId() {
+    String getDeviceId() {
         deviceId
     }
 
-    void setDeviceId(Long deviceId) {
+    void setDeviceId(String deviceId) {
         this.deviceId = deviceId
     }
 

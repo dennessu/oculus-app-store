@@ -5,7 +5,6 @@
  */
 package com.junbo.identity.data;
 
-import com.junbo.common.id.DeviceId;
 import com.junbo.common.id.GroupId;
 import com.junbo.common.id.SecurityQuestionId;
 import com.junbo.common.id.UserId;
@@ -77,6 +76,9 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
 
     @Autowired
     private UserTosRepository userTosRepository;
+
+    @Autowired
+    private UserSecurityQuestionAttemptRepository userSecurityQuestionAttemptRepository;
 
     @Test(enabled = true)
     public void testUserRepository() {
@@ -229,7 +231,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
     public void testUserDeviceRepository() {
         UserDevice userDevice = new UserDevice();
         userDevice.setType("Oculus");
-        userDevice.setDeviceId(new DeviceId(12312L));
+        userDevice.setDeviceId(UUID.randomUUID().toString());
         userDevice.setName(UUID.randomUUID().toString());
         userDevice.setOs(UUID.randomUUID().toString());
         userDevice.setUserId(new UserId(userId));
@@ -442,6 +444,36 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userTosGetOption.setTosUri(value);
         List<UserTos> userToses = userTosRepository.search(userTosGetOption);
         Assert.assertEquals(userToses.size(), 1);
+    }
+
+    @Test(enabled = true)
+    public void testUserSecurityQuestionAttempt() {
+        UserSecurityQuestionAttempt attempt = new UserSecurityQuestionAttempt();
+        attempt.setUserId(new UserId(userId));
+        attempt.setSucceeded(true);
+        attempt.setValue(UUID.randomUUID().toString());
+        attempt.setClientId(UUID.randomUUID().toString());
+        attempt.setIpAddress(UUID.randomUUID().toString());
+        attempt.setSecurityQuestionId(new SecurityQuestionId(123L));
+        attempt.setUserAgent(UUID.randomUUID().toString());
+
+        attempt = userSecurityQuestionAttemptRepository.save(attempt);
+
+        UserSecurityQuestionAttempt newAttempt = userSecurityQuestionAttemptRepository.get(attempt.getId());
+        Assert.assertEquals(attempt.getIpAddress(), newAttempt.getIpAddress());
+
+        String value = UUID.randomUUID().toString();
+        newAttempt.setIpAddress(value);
+        userSecurityQuestionAttemptRepository.update(newAttempt);
+
+        newAttempt = userSecurityQuestionAttemptRepository.get(attempt.getId());
+        Assert.assertEquals(newAttempt.getIpAddress(), value);
+
+        UserSecurityQuestionAttemptListOption option = new UserSecurityQuestionAttemptListOption();
+        option.setUserId(new UserId(userId));
+        option.setSecurityQuestionId(new SecurityQuestionId(123L));
+        List<UserSecurityQuestionAttempt> attempts = userSecurityQuestionAttemptRepository.search(option);
+        Assert.assertNotEquals(attempts.size(), 0);
     }
 
     @Test

@@ -6,22 +6,24 @@
 package com.junbo.identity.spec.model.users;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.junbo.common.id.SecurityQuestionId;
 import com.junbo.common.id.UserId;
-import com.junbo.common.id.UserLoginAttemptId;
+import com.junbo.common.id.UserSecurityQuestionAttemptId;
 import com.junbo.common.util.Identifiable;
 
 /**
- * Created by kg on 3/10/14.
+ * Created by liangfu on 3/25/14.
  */
-public class UserLoginAttempt extends ResourceMeta implements Identifiable<UserLoginAttemptId> {
-
+public class UserSecurityQuestionAttempt extends ResourceMeta implements Identifiable<UserSecurityQuestionAttemptId> {
     @JsonProperty("self")
-    private UserLoginAttemptId id;
+    private UserSecurityQuestionAttemptId id;
 
-    // password or pin
-    private String type;
+    @JsonProperty("user")
+    private UserId userId;
 
-    // write only (base_64_encode(username:password) or (username:pin)
+    @JsonProperty("securityQuestion")
+    private SecurityQuestionId securityQuestionId;
+
     private String value;
 
     private String ipAddress;
@@ -33,22 +35,28 @@ public class UserLoginAttempt extends ResourceMeta implements Identifiable<UserL
     // readonly field
     private Boolean succeeded;
 
-    private UserId userId;
-
-    public UserLoginAttemptId getId() {
+    public UserSecurityQuestionAttemptId getId() {
         return id;
     }
 
-    public void setId(UserLoginAttemptId id) {
+    public void setId(UserSecurityQuestionAttemptId id) {
         this.id = id;
     }
 
-    public String getType() {
-        return type;
+    public UserId getUserId() {
+        return userId;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setUserId(UserId userId) {
+        this.userId = userId;
+    }
+
+    public SecurityQuestionId getSecurityQuestionId() {
+        return securityQuestionId;
+    }
+
+    public void setSecurityQuestionId(SecurityQuestionId securityQuestionId) {
+        this.securityQuestionId = securityQuestionId;
     }
 
     public String getValue() {
@@ -89,13 +97,5 @@ public class UserLoginAttempt extends ResourceMeta implements Identifiable<UserL
 
     public void setSucceeded(Boolean succeeded) {
         this.succeeded = succeeded;
-    }
-
-    public UserId getUserId() {
-        return userId;
-    }
-
-    public void setUserId(UserId userId) {
-        this.userId = userId;
     }
 }

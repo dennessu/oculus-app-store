@@ -7,7 +7,6 @@ package com.junbo.identity.spec.model.users;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.junbo.common.id.DeviceId;
 import com.junbo.common.id.UserDeviceId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.util.Identifiable;
@@ -20,8 +19,7 @@ public class UserDevice extends ResourceMeta implements Identifiable<UserDeviceI
     @JsonProperty("self")
     private UserDeviceId id;
 
-    @JsonProperty("device")
-    private DeviceId deviceId;
+    private String deviceId;
 
     private String os;
 
@@ -41,11 +39,11 @@ public class UserDevice extends ResourceMeta implements Identifiable<UserDeviceI
         this.id = id;
     }
 
-    public DeviceId getDeviceId() {
+    public String getDeviceId() {
         return deviceId;
     }
 
-    public void setDeviceId(DeviceId deviceId) {
+    public void setDeviceId(String deviceId) {
         this.deviceId = deviceId;
     }
 

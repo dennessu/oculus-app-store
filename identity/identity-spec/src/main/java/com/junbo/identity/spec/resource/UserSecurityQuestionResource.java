@@ -31,23 +31,6 @@ public interface UserSecurityQuestionResource {
     Promise<UserSecurityQuestion> create(@PathParam("userId") UserId userId,
                                          UserSecurityQuestion userSecurityQuestion);
 
-    @PUT
-    @Path("/{userSecurityQuestionId}")
-    Promise<UserSecurityQuestion> put(@PathParam("userId") UserId userId,
-                                  @PathParam("userSecurityQuestionId") UserSecurityQuestionId userSecurityQuestionId,
-                                  UserSecurityQuestion userSecurityQuestion);
-
-    @POST
-    @Path("/{userSecurityQuestionId}")
-    Promise<UserSecurityQuestion> patch(@PathParam("userId") UserId userId,
-                                    @PathParam("userSecurityQuestionId") UserSecurityQuestionId userSecurityQuestionId,
-                                    UserSecurityQuestion userSecurityQuestion);
-
-    @DELETE
-    @Path("/{userSecurityQuestionId}")
-    Promise<UserSecurityQuestion> delete(@PathParam("userId") UserId userId,
-                                 @PathParam("userSecurityQuestionId") UserSecurityQuestionId userSecurityQuestionId);
-
     @GET
     @Path("/{userSecurityQuestionId}")
     Promise<UserSecurityQuestion> get(@PathParam("userId") UserId userId,

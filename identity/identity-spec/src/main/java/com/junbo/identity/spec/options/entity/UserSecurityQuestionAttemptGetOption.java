@@ -3,10 +3,10 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.identity.spec.options.list;
+package com.junbo.identity.spec.options.entity;
 
 /**
- * Created by liangfu on 3/14/14.
+ * Created by liangfu on 3/25/14.
  */
-public class LoginAttemptListOptions {
+public class UserSecurityQuestionAttemptGetOption {
 }

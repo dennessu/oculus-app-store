@@ -5,6 +5,8 @@
  */
 package com.junbo.identity.spec.model.users;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserTosId;
 import com.junbo.common.util.Identifiable;
@@ -14,11 +16,13 @@ import com.junbo.common.util.Identifiable;
  */
 public class UserTos extends ResourceMeta implements Identifiable<UserTosId> {
 
+    @JsonProperty("self")
     private UserTosId id;
 
     private String tosUri;
 
     // not readable or writable
+    @JsonIgnore
     private UserId userId;
 
     public UserTosId getId() {

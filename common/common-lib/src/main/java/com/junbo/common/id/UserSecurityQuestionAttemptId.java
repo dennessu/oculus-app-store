@@ -3,18 +3,14 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-
 package com.junbo.common.id;
 
 /**
- * Created by liangfu on 3/9/14.
+ * Created by liangfu on 3/13/14.
  */
-public class DeviceId extends Id {
-    public DeviceId(){
-
-    }
-
-    public DeviceId(Long value) {
+public class UserSecurityQuestionAttemptId extends Id {
+    public UserSecurityQuestionAttemptId() {}
+    public UserSecurityQuestionAttemptId(long value) {
         super(value);
     }
 }

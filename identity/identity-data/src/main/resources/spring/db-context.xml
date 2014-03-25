@@ -183,6 +183,12 @@
         <property name="daoTarget" ref="userNameDAOTarget" />
     </bean>
 
+    <bean id="userSecurityQuestionAttemptDAOTarget" class="com.junbo.identity.data.dao.impl.postgresql.UserSecurityQuestionAttemptDAOImpl" parent="entityDAOBase" />
+    <bean id="userSecurityQuestionAttemptDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
+        <property name="daoInterface" value="com.junbo.identity.data.dao.UserSecurityQuestionAttemptDAO" />
+        <property name="daoTarget" ref="userSecurityQuestionAttemptDAOTarget" />
+    </bean>
+
     <!-- identity reverse index -->
     <bean id="userNameReverseIndexDAOTarget" class="com.junbo.identity.data.dao.impl.postgresql.index.UserNameReverseIndexDAOImpl" parent="entityIndexDAOBase" />
     <bean id="userNameReverseIndexDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
@@ -222,4 +228,5 @@
     <bean id="userSecurityQuestionRepository" class="com.junbo.identity.data.repository.impl.UserSecurityQuestionRepositoryImpl" />
     <bean id="userTosRepository" class="com.junbo.identity.data.repository.impl.UserTosRepositoryImpl" />
     <bean id="securityQuestionRepository" class="com.junbo.identity.data.repository.impl.SecurityQuestionRepositoryImpl"/>
+    <bean id="userSecurityQuestionAttemptRepository" class="com.junbo.identity.data.repository.impl.UserSecurityQuestionAttemptRepositoryImpl" />
 </beans>

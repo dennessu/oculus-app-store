@@ -8,6 +8,7 @@ package com.junbo.identity.core.service.user;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserTosId;
 import com.junbo.identity.spec.model.users.UserTos;
+import com.junbo.identity.spec.options.list.UserTosListOption;
 
 import java.util.List;
 
@@ -18,6 +19,6 @@ public interface UserTosService {
     UserTos save(UserId userId, UserTos userTosAcceptance);
     UserTos update(UserId userId, UserTosId userTosId, UserTos userTosAcceptance);
     UserTos get(UserId userId, UserTosId userTosId);
-    List<UserTos> search(UserId userId, String tos);
+    List<UserTos> search(UserTosListOption listOption);
     void delete(UserId userId, UserTosId userTosId);
 }
