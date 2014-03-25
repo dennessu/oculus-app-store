@@ -49,23 +49,19 @@ public class PaymentInstrumentRepository {
     public void save(PaymentInstrument request){
         PaymentInstrumentEntity piEntity = paymentMapperExtension.toPIEntity(request);
         Long piId = idGenerator.nextId(piEntity.getUserId());
-        Long addressId = null;
-        Long phoneId = null;
         if(request.getAddress() != null){
-            addressId = idGenerator.nextId(piId);
             AddressEntity address = paymentMapperImpl.toAddressEntity(request.getAddress(), new MappingContext());
-            address.setId(addressId);
+            address.setId(piId);
             addressDao.save(address);
+            piEntity.setAddressId(piId);
         }
         if(request.getPhone() != null){
-            phoneId = idGenerator.nextId(piId);
             PhoneEntity phone = paymentMapperImpl.toPhoneEntity(request.getPhone(), new MappingContext());
-            phone.setId(phoneId);
+            phone.setId(piId);
             phoneDao.save(phone);
+            piEntity.setPhoneId(piId);
         }
         piEntity.setId(piId);
-        piEntity.setAddressId(addressId);
-        piEntity.setPhoneId(phoneId);
         paymentInstrumentDao.save(piEntity);
         if(request.getType().equals(PIType.CREDITCARD.toString())){
             CreditCardPaymentInstrumentEntity ccPiEntity = paymentMapperImpl.toCreditCardEntity(

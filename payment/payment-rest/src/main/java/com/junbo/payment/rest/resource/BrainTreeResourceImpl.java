@@ -6,11 +6,8 @@
 
 package com.junbo.payment.rest.resource;
 
-<<<<<<< HEAD
-=======
 
 import com.junbo.common.model.Results;
->>>>>>> upstream/master
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.core.provider.braintree.BrainTreePaymentProviderServiceImpl;
 import com.junbo.payment.spec.internal.BrainTreeResource;

@@ -12,14 +12,11 @@ import com.junbo.common.model.Results;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.common.exception.AppClientExceptions;
-<<<<<<< HEAD
 import com.junbo.payment.spec.model.*;
-=======
 import com.junbo.payment.core.PaymentInstrumentService;
 import com.junbo.payment.spec.model.PageMetaData;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentInstrumentSearchParam;
->>>>>>> upstream/master
 import com.junbo.payment.spec.resource.PaymentInstrumentResource;
 import org.springframework.beans.factory.annotation.Autowired;
 
