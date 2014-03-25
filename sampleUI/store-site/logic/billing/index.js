@@ -40,16 +40,21 @@ Billing.PostShippingInfo = function (data, callback) {
 
     var dataProvider = new DataProvider(process.AppConfig.Billing_API_Host, process.AppConfig.Billing_API_Port);
 
-    dataProvider.PostShippingInfo(userId, data, function(result){
+    dataProvider.PostShippingInfo(userId, model, function(result){
         var resultModel = new DomainModels.ResultModel();
+
         if(result.StatusCode == 200){
+            var shippingInfo = JSON.parse(result.Data);
+            var shippingId = new DomainModels.SettingModel();
             resultModel.status = DomainModels.ResultStatusEnum.Normal;
+            shippingId = Utils.GenerateCookieModel(process.AppConfig.CookiesName.ShippingId, shippingInfo.self.id);
+            resultModel.data = result.Data;
+            callback(Utils.GenerateResponseModel(resultModel, shippingId));
         }else{
             resultModel.status = DomainModels.ResultStatusEnum.APIError;
+            resultModel.data = result.Data;
+            callback(Utils.GenerateResponseModel(resultModel));
         }
-        resultModel.data = result.Data;
-
-        callback(Utils.GenerateResponseModel(resultModel));
     });
 };
 

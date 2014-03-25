@@ -941,7 +941,7 @@ module.exports = {
     PaymentInstruments:{
         GetPaymentInstruments: {
             Method: 'GET',
-            Path: '/rest/users/:userId/payment-instruments/search ',
+            Path: '/rest/users/:userId/payment-instruments', //'/rest/users/:userId/payment-instruments/search',
             ResponseItem: 'Succeed',
             Items: {
                 'Succeed': {
@@ -954,7 +954,7 @@ module.exports = {
                                     "href": "http://api.wan-san.com/v1/payment-instrument-types/CREDITCARD",
                                     "id": "111"
                                 },
-                                "accountName": "David",
+                                "accountName": "VISA 1234",
                                 "accountNum": "4111111111111111",
                                 "isValidated": "false",
                                 "isDefault": "true",
@@ -984,7 +984,7 @@ module.exports = {
                                     "href": "http://api.wan-san.com/v1/payment-instrument-types/CREDITCARD",
                                     "id": "222"
                                 },
-                                "accountName": "Tom",
+                                "accountName": "MaterCard 1234",
                                 "accountNum": "4111111111111111",
                                 "isValidated": "false",
                                 "isDefault": "true",

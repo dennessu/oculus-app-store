@@ -1,18 +1,13 @@
 <div class="container modules">
-<section class="box1">
+<form class="box1" {{action "Continue" on="submit"}}>
     <h2>Select your Payment Info</h2>
     <dl>
         <dt>Payment Type</dt>
-        <dd>
-            <select>
-                <option>None</option>
-                <option>VISA 1234</option>
-            </select>
-        </dd>
+        <dd>{{view Ember.Select content=model optionValuePath="content.id" optionLabelPath="content.accountName" value=country id="Payment" name="Payment" class="{required:true}"}}</dd>
     </dl>
     <div class="actions">
+        <button type="button" class="btn btn-primary">Continue</button>
         <button type="button" class="btn btn-primary" {{action "CreateNew"}}>Create a New</button>
-        <button type="button" class="btn btn-primary" {{action "Continue"}}>Continue</button>
     </div>
-</section>
+</form>
 </div>

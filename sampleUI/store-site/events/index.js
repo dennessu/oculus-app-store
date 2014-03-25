@@ -2,6 +2,7 @@ var Identity = require('../logic/identity');
 var Catalog = require('../logic/catalog');
 var Cart = require('../logic/cart');
 var Billing = require('../logic/billing');
+var Payment = require('../logic/payment');
 
 module.exports = function(io){
     io.set("log level", 0);
@@ -96,6 +97,18 @@ module.exports = function(io){
         });
         socket.on('/api/billing/add', function (data, fn) {
             Billing.PostShippingInfo(data, function(data){
+                fn(data);
+            });
+        });
+
+        /* Payment -------------------------------------------------------------- */
+        socket.on('/api/payment/get_payment_instruments', function (data, fn) {
+            Payment.GetPayment(data, function(data){
+                fn(data);
+            });
+        });
+        socket.on('/api/payment/add', function (data, fn) {
+            Billing.PostPayment(data, function(data){
                 fn(data);
             });
         });
