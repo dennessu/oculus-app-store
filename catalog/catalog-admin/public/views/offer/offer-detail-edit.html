@@ -2,8 +2,12 @@
 <form novalidate="novalidate" class="form-horizontal">
     <table class="table table-bordered vertical-table">
         <tr>
-            <td>Offer Id</td>
+            <td style="width: 200px;">Offer Id</td>
             <td>{{ offer.self.id }}</td>
+        </tr>
+        <tr>
+            <td>Developer</td>
+            <td>{{ offer.developer.id }}</td>
         </tr>
         <tr>
             <td>Offer Name</td>
@@ -15,11 +19,30 @@
         </tr>
         <tr>
             <td>Category</td>
-            <td>{{ offer.categories[0].id }}</td>
+            <td>
+                <label ng-repeat="categoryAttribute in categoryAttributes">
+                    <input type="checkbox" checklist-model="offer.categories" checklist-value="categoryAttribute.self" class="chooseItem">{{ categoryAttribute.name }}
+                </label>
+            </td>
         </tr>
         <tr>
-            <td>Developer</td>
-            <td>{{ offer.developer.id }}</td>
+            <td>Genre</td>
+            <td>
+                <label ng-repeat="genreAttribute in genreAttributes">
+                    <input type="checkbox" checklist-model="offer.genres" checklist-value="genreAttribute.self" class="chooseItem">{{ genreAttribute.name }}
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>Available Countries</td>
+            <td>
+                <a ng-click="selectAllCountries()" class="btn btn-small btn-default">Select All</a>
+                <a ng-click="deselectAllCountries()" class="btn btn-small btn-default">Deselect All</a>
+                <hr/>
+                <label ng-repeat="country in countries | filter: '!DEFAULT'">
+                    <input type="checkbox" checklist-model="offer.eligibleCountries" checklist-value="country.code" class="chooseItem">{{ country.name }}
+                </label>
+            </td>
         </tr>
     </table>
 

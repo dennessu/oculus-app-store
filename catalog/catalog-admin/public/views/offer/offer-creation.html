@@ -2,7 +2,7 @@
 <form novalidate="novalidate" class="form-horizontal">
     <table class="table table-bordered vertical-table">
         <tr>
-            <td>Offer Name</td>
+            <td style="width: 200px;">Offer Name</td>
             <td><input type="text" class="form-control required" ng-model="offer.name"></td>
         </tr>
         <tr>
@@ -12,17 +12,17 @@
         <tr>
             <td>Category</td>
             <td>
-                <select ng-model="selectedCategory" ng-change="updateCategories()"
-                        ng-options="categoryAttribute.self as categoryAttribute.name for categoryAttribute in categoryAttributes">
-                </select>
+                <label ng-repeat="categoryAttribute in categoryAttributes">
+                    <input type="checkbox" checklist-model="offer.categories" checklist-value="categoryAttribute.self" class="chooseItem">{{ categoryAttribute.name }}
+                </label>
             </td>
         </tr>
         <tr>
             <td>Genre</td>
             <td>
-                <select ng-model="selectedGenre" ng-change="updateGenres()"
-                        ng-options="genreAttribute.self as genreAttribute.name for genreAttribute in genreAttributes">
-                </select>
+                <label ng-repeat="genreAttribute in genreAttributes">
+                    <input type="checkbox" checklist-model="offer.genres" checklist-value="genreAttribute.self" class="chooseItem">{{ genreAttribute.name }}
+                </label>
             </td>
         </tr>
         <tr>
@@ -69,6 +69,7 @@
             <td>Prices</td>
             <td>
                 <div>
+                    Price type:
                     <select ng-model="priceType" ng-init="priceType='TierPricing'">
                         <option>TierPricing</option>
                         <option>NormalPricing</option>
@@ -76,22 +77,20 @@
                     <hr />
                     <div ng-if="priceType=='NormalPricing'">
                         Add price:
-                        <select ng-model="selectedCountry" ng-change="addPrice(selectedCountry)">
-                            <option>US</option>
-                            <option>CN</option>
+                        <select ng-model="selectedCountry" ng-change="addPrice(selectedCountry)" ng-options="country.code for country in countries">
                         </select>
                         <table class="table">
                             <thead>
                             <tr>
                                 <th>Country</th>
-                                <th>Amount</th>
                                 <th>Currency</th>
+                                <th>Amount</th>
                             </tr>
                             </thead>
-                            <tr ng-repeat="(country, price) in offer.prices">
-                                <td>{{ country }}</td>
+                            <tr ng-repeat="(countryCode, price) in offer.prices">
+                                <td>{{ countryCode }}</td>
+                                <td>{{ price.currency }}</td>
                                 <td><input type="text" class="form-control required" ng-model="price.amount"></td>
-                                <td><input type="text" class="form-control required" ng-model="price.currency"></td>
                             </tr>
                         </table>
                     </div>
@@ -99,6 +98,17 @@
                         TODO: TierPricing
                     </div>
                 </div>
+            </td>
+        </tr>
+        <tr>
+            <td>Available Countries</td>
+            <td>
+                <a ng-click="selectAllCountries()" class="btn btn-small btn-default">Select All</a>
+                <a ng-click="deselectAllCountries()" class="btn btn-small btn-default">Deselect All</a>
+                <hr/>
+                <label ng-repeat="country in countries | filter: '!DEFAULT'">
+                    <input type="checkbox" checklist-model="offer.eligibleCountries" checklist-value="country.code" class="chooseItem">{{ country.name }}
+                </label>
             </td>
         </tr>
     </table>

@@ -24,7 +24,7 @@
                 </div>
                 <div ng-if="metaDefinitions[key].controlType=='MULTI_SELECT'">
                     <label ng-repeat="allowedValue in metaDefinitions[key].allowedValues">
-                        <input type="checkbox" value="{{allowedValue}}" check-list="item.properties[key]" class="chooseItem">{{ allowedValue }}
+                        <input type="checkbox" checklist-model="item.properties[key]" checklist-value="allowedValue" class="chooseItem">{{ allowedValue }}
                     </label>
                 </div>
                 <div ng-if="metaDefinitions[key].controlType=='SINGLE_SELECT'">
