@@ -9,18 +9,18 @@ import com.junbo.common.id.UserLoginAttemptId;
 import com.junbo.identity.core.service.user.UserLoginAttemptService;
 import com.junbo.identity.core.service.user.UserPasswordService;
 import com.junbo.identity.core.service.user.UserPinService;
-import com.junbo.identity.core.service.user.UserService;
 import com.junbo.identity.core.service.util.Constants;
 import com.junbo.identity.core.service.util.UserPasswordUtil;
 import com.junbo.identity.core.service.validator.UserLoginAttemptValidator;
 import com.junbo.identity.data.repository.UserLoginAttemptRepository;
+import com.junbo.identity.data.repository.UserRepository;
 import com.junbo.identity.spec.error.AppErrors;
 import com.junbo.identity.spec.model.users.User;
 import com.junbo.identity.spec.model.users.UserLoginAttempt;
 import com.junbo.identity.spec.model.users.UserPassword;
 import com.junbo.identity.spec.model.users.UserPin;
 import com.junbo.identity.spec.options.list.LoginAttemptListOption;
-import com.junbo.identity.spec.options.list.UserListOption;
+import com.junbo.identity.spec.options.list.UserListOptions;
 import com.junbo.identity.spec.options.list.UserPasswordListOption;
 import com.junbo.identity.spec.options.list.UserPinListOption;
 import org.glassfish.jersey.internal.util.Base64;
@@ -44,7 +44,7 @@ public class UserLoginAttemptServiceImpl implements UserLoginAttemptService {
     private UserPinService userPinService;
 
     @Autowired
-    private UserService userService;
+    private UserRepository userRepository;
 
     @Autowired
     private UserLoginAttemptRepository userLoginAttemptRepository;
@@ -63,10 +63,15 @@ public class UserLoginAttemptServiceImpl implements UserLoginAttemptService {
         validator.validateCreate(userLoginAttempt);
         String decode = Base64.decodeAsString(userLoginAttempt.getValue());
         String[] split = decode.split(Constants.COLON);
-        UserListOption option = new UserListOption();
-        option.setUserName(split[0]);
+        UserListOptions option = new UserListOptions();
+        option.setUsername(split[0]);
         option.setLimit(1);
-        List<User> users = userService.search(option);
+        List<User> users = null;
+        try {
+            users = userRepository.search(option).wrapped().get();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         if(userLoginAttempt.getType().equals("password")) {
             UserPasswordListOption passwordListOption = new UserPasswordListOption();
             passwordListOption.setUserId(users.get(0).getId());

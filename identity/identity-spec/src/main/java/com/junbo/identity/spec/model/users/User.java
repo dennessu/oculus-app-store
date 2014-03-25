@@ -19,13 +19,25 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
     @JsonProperty("self")
     private UserId id;
 
-    private String userName;
+    private String username;
+
+    private String canonicalUsername; // not readable, not writable
 
     private String displayName;
 
-    private String nickName;
+    /*
+     * Possible values:
+     * 1. firstName_lastName_then_username
+     * 2. lastName_firstName_then_username
+     * 3. firstName_middleName_lastName_then_username
+     * 4. lastName_middleName_firstName_then_username
+     * 5. username
+     */
+    private Integer displayNameType;
 
     private UserName name;
+
+    private String nickName;
 
     private String preferredLanguage;
 
@@ -73,14 +85,25 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
 
     public void setId(UserId id) {
         this.id = id;
+        support.setPropertyAssigned("id");
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUsername(String username) {
+        this.username = username;
+        support.setPropertyAssigned("username");
+    }
+
+    public String getCanonicalUsername() {
+        return canonicalUsername;
+    }
+
+    public void setCanonicalUsername(String canonicalUsername) {
+        this.canonicalUsername = canonicalUsername;
+        support.setPropertyAssigned("canonicalUsername");
     }
 
     public String getDisplayName() {
@@ -89,70 +112,16 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
 
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
+        support.setPropertyAssigned("displayName");
     }
 
-    public UserName getName() {
-        return name;
+    public Integer getDisplayNameType() {
+        return displayNameType;
     }
 
-    public void setName(UserName name) {
-        this.name = name;
-    }
-
-    public String getPreferredLanguage() {
-        return preferredLanguage;
-    }
-
-    public void setPreferredLanguage(String preferredLanguage) {
-        this.preferredLanguage = preferredLanguage;
-    }
-
-    public String getLocale() {
-        return locale;
-    }
-
-    public void setLocale(String locale) {
-        this.locale = locale;
-    }
-
-    public String getTimezone() {
-        return timezone;
-    }
-
-    public void setTimezone(String timezone) {
-        this.timezone = timezone;
-    }
-
-    public Boolean getActive() {
-        return active;
-    }
-
-    public void setActive(Boolean active) {
-        this.active = active;
-    }
-
-    public Date getBirthday() {
-        return birthday;
-    }
-
-    public void setBirthday(Date birthday) {
-        this.birthday = birthday;
-    }
-
-    public String getGender() {
-        return gender;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
+    public void setDisplayNameType(Integer displayNameType) {
+        this.displayNameType = displayNameType;
+        support.setPropertyAssigned("displayNameType");
     }
 
     public String getNickName() {
@@ -161,5 +130,78 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
 
     public void setNickName(String nickName) {
         this.nickName = nickName;
+        support.setPropertyAssigned("nickName");
+    }
+
+    public UserName getName() {
+        return name;
+    }
+
+    public void setName(UserName name) {
+        this.name = name;
+        support.setPropertyAssigned("name");
+    }
+
+    public String getPreferredLanguage() {
+        return preferredLanguage;
+    }
+
+    public void setPreferredLanguage(String preferredLanguage) {
+        this.preferredLanguage = preferredLanguage;
+        support.setPropertyAssigned("preferredLanguage");
+    }
+
+    public String getLocale() {
+        return locale;
+    }
+
+    public void setLocale(String locale) {
+        this.locale = locale;
+        support.setPropertyAssigned("locale");
+    }
+
+    public String getTimezone() {
+        return timezone;
+    }
+
+    public void setTimezone(String timezone) {
+        this.timezone = timezone;
+        support.setPropertyAssigned("timezone");
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
+        support.setPropertyAssigned("active");
+    }
+
+    public Date getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(Date birthday) {
+        this.birthday = birthday;
+        support.setPropertyAssigned("birthday");
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+        support.setPropertyAssigned("gender");
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+        support.setPropertyAssigned("type");
     }
 }

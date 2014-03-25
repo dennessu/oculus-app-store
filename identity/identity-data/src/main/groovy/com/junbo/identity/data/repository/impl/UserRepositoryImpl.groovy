@@ -3,33 +3,33 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.identity.data.repository.impl;
+package com.junbo.identity.data.repository.impl
 
-import com.junbo.common.id.UserId;
-import com.junbo.identity.data.dao.UserDAO;
-import com.junbo.identity.data.dao.UserNameDAO;
-import com.junbo.identity.data.dao.index.UserNameReverseIndexDAO;
-import com.junbo.identity.data.entity.reverselookup.UserNameReverseIndexEntity;
-import com.junbo.identity.data.entity.user.UserEntity;
-import com.junbo.identity.data.entity.user.UserNameEntity;
-import com.junbo.identity.data.mapper.ModelMapper;
-import com.junbo.identity.data.repository.UserRepository;
-import com.junbo.identity.spec.model.users.User;
-import com.junbo.identity.spec.model.users.UserName;
-import com.junbo.identity.spec.options.list.UserListOption;
-import com.junbo.oom.core.MappingContext;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.junbo.common.id.UserId
+import com.junbo.identity.data.dao.UserDAO
+import com.junbo.identity.data.dao.UserNameDAO
+import com.junbo.identity.data.dao.index.UserNameReverseIndexDAO
+import com.junbo.identity.data.entity.reverselookup.UserNameReverseIndexEntity
+import com.junbo.identity.data.entity.user.UserEntity
+import com.junbo.identity.data.entity.user.UserNameEntity
+import com.junbo.identity.data.mapper.ModelMapper
+import com.junbo.identity.data.repository.UserRepository
+import com.junbo.identity.spec.model.users.User
+import com.junbo.identity.spec.model.users.UserName
+import com.junbo.identity.spec.options.list.UserListOptions
+import com.junbo.langur.core.promise.Promise
+import com.junbo.oom.core.MappingContext
+import groovy.transform.CompileStatic
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.stereotype.Component
+import org.springframework.util.StringUtils
 
 /**
  * Implementation for User DAO..
  */
 @Component
+@CompileStatic
 public class UserRepositoryImpl implements UserRepository {
     @Autowired
     @Qualifier("identityModelMapperImpl")
@@ -48,7 +48,7 @@ public class UserRepositoryImpl implements UserRepository {
     private UserNameDAO userNameDAO;
 
     @Override
-    public User save(User user) {
+    public Promise<User> create(User user) {
         UserEntity userEntity = modelMapper.toUser(user, new MappingContext());
         userEntity = userDAO.save(userEntity);
 
@@ -57,18 +57,17 @@ public class UserRepositoryImpl implements UserRepository {
         userNameEntity.setUserId(userEntity.getId());
         userNameDAO.save(userNameEntity);
 
-
         // build reverse lookup
         UserNameReverseIndexEntity reverseLookupEntity = new UserNameReverseIndexEntity();
         reverseLookupEntity.setUserId(userEntity.getId());
-        reverseLookupEntity.setUserName(userEntity.getUserName());
+        reverseLookupEntity.setUsername(userEntity.getUsername());
         userNameReverseIndexDAO.save(reverseLookupEntity);
 
         return get(new UserId(userEntity.getId()));
     }
 
     @Override
-    public User update(User user) {
+    public Promise<User> update(User user) {
         UserEntity userEntity = modelMapper.toUser(user, new MappingContext());
         UserEntity existing = userDAO.get(user.getId().getValue());
         userDAO.update(userEntity);
@@ -79,12 +78,12 @@ public class UserRepositoryImpl implements UserRepository {
         userNameEntity.setUserId(existingUserNameEntity.getUserId());
         userNameDAO.update(userNameEntity);
 
-        if(!userEntity.getUserName().equals(existing.getUserName())) {
-            userNameReverseIndexDAO.delete(existing.getUserName());
+        if (!userEntity.getUsername().equals(existing.getUsername())) {
+            userNameReverseIndexDAO.delete(existing.getUsername());
 
             UserNameReverseIndexEntity reverseLookupEntity = new UserNameReverseIndexEntity();
             reverseLookupEntity.setUserId(userEntity.getId());
-            reverseLookupEntity.setUserName(userEntity.getUserName());
+            reverseLookupEntity.setUsername(userEntity.getUsername());
             userNameReverseIndexDAO.save(reverseLookupEntity);
         }
 
@@ -92,37 +91,53 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public User get(UserId userId) {
+    public Promise<User> get(UserId userId) {
         User user = modelMapper.toUser(userDAO.get(userId.getValue()), new MappingContext());
         UserName userName = modelMapper.toUserName(userNameDAO.findByUserId(userId.getValue()), new MappingContext());
         user.setName(userName);
 
-        return user;
+        return Promise.pure(user);
     }
 
     @Override
-    public List<User> search(UserListOption option) {
-        if(!StringUtils.isEmpty(option.getUserName())) {
-            UserNameReverseIndexEntity reverseEntity = userNameReverseIndexDAO.get(option.getUserName());
+    public Promise<List<User>> search(UserListOptions option) {
+        if (!StringUtils.isEmpty(option.getUsername())) {
+            UserNameReverseIndexEntity reverseEntity = userNameReverseIndexDAO.get(option.getUsername());
 
             List<User> results = new ArrayList<User>();
-            results.add(get(new UserId(reverseEntity.getUserId())));
+            results.add(get(new UserId(reverseEntity.getUserId())).wrapped().get());
 
-            return results;
-        }
-        else {
+            return Promise.pure(results);
+        } else {
             // todo:    Need to identify other fields
             throw new RuntimeException();
         }
     }
 
     @Override
-    public void delete(UserId userId) {
+    public Promise<Void> delete(UserId userId) {
         UserEntity userEntity = userDAO.get(userId.getValue());
         UserNameEntity userNameEntity = userNameDAO.findByUserId(userId.getValue());
         userNameDAO.delete(userNameEntity.getId());
 
-        userNameReverseIndexDAO.delete(userEntity.getUserName());
+        userNameReverseIndexDAO.delete(userEntity.getUsername());
         userDAO.delete(userId.getValue());
+
+        return Promise.pure(null)
+    }
+
+    @Override
+    Promise<User> getUserByCanonicalUsername(String canonicalUsername) {
+        if (StringUtils.isEmpty(canonicalUsername)) {
+            throw new IllegalArgumentException('canonicalUsername is empty')
+        }
+
+        UserNameReverseIndexEntity reverseEntity = userNameReverseIndexDAO.get(canonicalUsername);
+
+        if (reverseEntity == null) {
+            return Promise.pure(null);
+        }
+
+        return get(new UserId(reverseEntity.getUserId()));
     }
 }

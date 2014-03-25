@@ -5,20 +5,24 @@
  */
 package com.junbo.identity.data.repository
 import com.junbo.common.id.UserId
-import com.junbo.identity.spec.options.list.UserListOption
 import com.junbo.identity.spec.model.users.User
+import com.junbo.identity.spec.options.list.UserListOptions
+import com.junbo.langur.core.promise.Promise
+
 /**
  * User DAO is used to fetch/update/delete/get user data from the database
  */
 interface UserRepository {
-    // User Model Layer
-    User save(User user)
 
-    User update(User user)
+    Promise<User> create(User user)
 
-    User get(UserId userId)
+    Promise<User> update(User user)
 
-    List<User> search(UserListOption getOption)
+    Promise<User> get(UserId userId)
 
-    void delete(UserId userId)
+    Promise<Void> delete(UserId userId)
+
+    Promise<List<User>> search(UserListOptions getOption)
+
+    Promise<User> getUserByCanonicalUsername(String canonicalUsername)
 }

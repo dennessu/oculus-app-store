@@ -22,7 +22,7 @@ class UserEntity extends ResourceMetaEntity {
     private Long id
 
     @Column(name = 'user_name')
-    private String userName
+    private String username
 
     @Column(name = 'nick_name')
     private String nickName
@@ -57,12 +57,12 @@ class UserEntity extends ResourceMetaEntity {
         this.id = id
     }
 
-    String getUserName() {
-        return userName
+    String getUsername() {
+        return username
     }
 
-    void setUserName(String userName) {
-        this.userName = userName
+    void setUsername(String username) {
+        this.username = username
     }
 
     String getNickName() {

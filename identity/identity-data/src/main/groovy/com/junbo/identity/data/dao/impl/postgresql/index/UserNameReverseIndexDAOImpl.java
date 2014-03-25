@@ -21,7 +21,7 @@ public class UserNameReverseIndexDAOImpl extends ShardedDAOBase implements UserN
     public UserNameReverseIndexEntity save(UserNameReverseIndexEntity entity) {
         currentSession().save(entity);
 
-        return get(entity.getUserName());
+        return get(entity.getUsername());
     }
 
     @Override
@@ -29,7 +29,7 @@ public class UserNameReverseIndexDAOImpl extends ShardedDAOBase implements UserN
         currentSession().merge(entity);
         currentSession().flush();
 
-        return get(entity.getUserName());
+        return get(entity.getUsername());
     }
 
     @Override
@@ -38,7 +38,8 @@ public class UserNameReverseIndexDAOImpl extends ShardedDAOBase implements UserN
         List<UserNameReverseIndexEntity> entities =
                 currentSession().createSQLQuery(query).addEntity(UserNameReverseIndexEntity.class)
                         .setParameter("userName", userName).list();
-        return entities.get(0);
+
+        return entities.size() == 0 ? null : entities.get(0);
     }
 
     @Override

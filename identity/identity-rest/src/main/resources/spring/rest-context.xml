@@ -19,7 +19,7 @@
     <bean id="defaultUserLoginAttemptResource" class="com.junbo.identity.rest.resource.UserLoginAttemptResourceImpl" />
     <bean id="defaultUserOptinResource" class="com.junbo.identity.rest.resource.UserOptinResourceImpl" />
     <bean id="defaultUserPhoneNumberResource" class="com.junbo.identity.rest.resource.UserPhoneNumberResourceImpl" />
-    <bean id="defaultUserResource" class="com.junbo.identity.rest.resource.UserResourceImpl" />
+    <bean id="defaultUserResource" class="com.junbo.identity.rest.resource.UserResourceImpl" scope="prototype"/>
     <bean id="defaultUserSecurityQuestionResource" class="com.junbo.identity.rest.resource.UserSecurityQuestionResourceImpl" />
     <bean id="defaultUserTosResource" class="com.junbo.identity.rest.resource.UserTosResourceImpl" />
     <bean id="defaultSecurityQuestionResource" class="com.junbo.identity.rest.resource.SecurityQuestionResourceImpl" />

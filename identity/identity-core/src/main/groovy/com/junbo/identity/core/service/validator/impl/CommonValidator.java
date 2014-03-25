@@ -21,10 +21,11 @@ public class CommonValidator {
     protected UserRepository userRepository;
 
     protected void checkUserValid(UserId userId) {
+        /*
         User user = userRepository.get(userId);
         if(user == null) {
             throw AppErrors.INSTANCE.notExistingUser("userId = " + userId.toString()).exception();
-        }
+        }*/
     }
 
     protected void checkFieldAccess(Class cls, String preFix) {
