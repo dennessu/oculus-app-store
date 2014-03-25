@@ -71,7 +71,7 @@ class OrderResourceImpl implements OrderResource {
         orderService.getOrdersByUserId(userId.value).then { List<Order> orders ->
             Results<Order> results = new Results<>()
             results.setItems(orders)
-            return results
+            return Promise.pure(results)
         }
     }
 
