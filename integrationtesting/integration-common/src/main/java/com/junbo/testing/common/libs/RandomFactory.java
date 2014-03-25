@@ -7,6 +7,8 @@ package com.junbo.testing.common.libs;
 
 import com.junbo.testing.common.exception.TestException;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Random;
 
 /**
@@ -77,7 +79,7 @@ public final class RandomFactory {
         }
         Random random = new Random();
         double num = max - min;
-        return min + getRandomDouble() * num;
+        return min + Math.abs(getRandomDouble() % num);
     }
 
     public static Long getRandomLong(long max) {
@@ -90,7 +92,7 @@ public final class RandomFactory {
         }
         Random random = new Random();
         long num = max - min;
-        return min + random.nextLong() * num;
+        return min + Math.abs(random.nextLong() % num);
     }
 
     public static boolean getRandomBoolean() {
@@ -102,6 +104,24 @@ public final class RandomFactory {
     public static String getRandomIp() {
         return RANDOM.nextInt(256) + "." + RANDOM.nextInt(256) + "." +
                 RANDOM.nextInt(256) + "." + RANDOM.nextInt(256);
+    }
+
+    public static Calendar nextDate() {
+        GregorianCalendar gc = new GregorianCalendar();
+        int year = getRandomInteger(1970, 2970);
+        gc.set(gc.YEAR, year);
+        int dayOfYear = getRandomInteger(1, gc.getActualMaximum(gc.DAY_OF_YEAR));
+        gc.set(gc.DAY_OF_YEAR, dayOfYear);
+        return gc;
+    }
+
+    public static String getRandomStringOfNumeric(int stringLength) {
+        Random random = new Random();
+        StringBuffer number = new StringBuffer();
+        for (int i = 0; i < stringLength; i++) {
+            number.append(random.nextInt(10));
+        }
+        return number.toString();
     }
 
 }
