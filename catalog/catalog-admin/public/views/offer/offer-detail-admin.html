@@ -1,8 +1,8 @@
 <h1>Offer detail</h1>
 
 <div class="controls">
-    <a ng-click="rejectOffer()" class="btn btn-small btn-default">Reject</a>
-    <a ng-click="releaseOffer()" class="btn btn-small btn-default">Release Offer</a>
+    <a ng-click="rejectOffer()" class="btn btn-small btn-default" ng-if="offer.status=='PendingReview'">Reject</a>
+    <a ng-click="releaseOffer()" class="btn btn-small btn-default" ng-if="offer.status=='PendingReview'">Release Offer</a>
 </div>
 
 <div ng-include src="'../views/offer/offer-content.html'"></div>
