@@ -1,0 +1,28 @@
+<table class="table table-bordered vertical-table">
+    <tr>
+        <td>Item Id</td>
+        <td>{{ item.self.id }}</td>
+    </tr>
+    <tr>
+        <td>Item Name</td>
+        <td>{{ item.name }}</td>
+    </tr>
+    <tr>
+        <td>Status</td>
+        <td>{{ item.status }}</td>
+    </tr>
+    <tr>
+        <td>Developer</td>
+        <td>{{ item.developer.id }}</td>
+    </tr>
+    <tr>
+        <td>Type</td>
+        <td>{{ item.type }}</td>
+    </tr>
+    <tr ng-repeat="(key, value) in item.properties">
+        <td>{{ metaDefinitions[key].display }}</td>
+        <td>
+            {{ item.properties[key] }}
+        </td>
+    </tr>
+</table>

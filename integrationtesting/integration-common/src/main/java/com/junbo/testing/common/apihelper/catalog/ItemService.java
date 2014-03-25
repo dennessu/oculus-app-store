@@ -22,10 +22,11 @@ public interface ItemService {
     List<String> getItem(HashMap<String, String> httpPara) throws Exception;
     List<String> getItem(HashMap<String, String> httpPara, int expectedResponseCode) throws Exception;
 
-    String postDefaultItem() throws Exception;
+    String postDefaultItem(boolean isPhysical) throws Exception;
+    Item prepareItemEntity(String fileName, boolean isPhysical) throws Exception;
     String postItem(Item item) throws Exception;
     String postItem(Item item, int expectedResponseCode) throws Exception;
 
-    String updateItem(String itemId, Item item) throws Exception;
-    String updateItem(String itemId, Item item, int expectedResponseCode) throws Exception;
+    String updateItem(Item item) throws Exception;
+    String updateItem(Item item, int expectedResponseCode) throws Exception;
 }

@@ -5,10 +5,10 @@
  */
 package com.junbo.email.rest.resource;
 
+import com.junbo.common.model.Results;
 import com.junbo.email.core.EmailTemplateService;
 import com.junbo.email.spec.model.EmailTemplate;
 import com.junbo.email.spec.model.Paging;
-import com.junbo.email.spec.model.Results;
 import com.junbo.email.spec.resource.EmailTemplateResource;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;

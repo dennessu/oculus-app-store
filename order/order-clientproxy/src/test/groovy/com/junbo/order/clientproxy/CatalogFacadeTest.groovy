@@ -1,13 +1,9 @@
 package com.junbo.order.clientproxy
-
-import com.junbo.catalog.spec.model.offer.Offer
-import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.catalog.CatalogFacade
 import groovy.transform.CompileStatic
 import org.testng.annotations.Test
 
 import javax.annotation.Resource
-
 /**
 * Created by LinYi on 14-2-25.
 */
@@ -18,14 +14,7 @@ class CatalogFacadeTest extends BaseTest {
 
     @Test
     void testGetOffer() {
-        def offerPromise = catalogFacade.getOffer(new Random().nextLong(), new Date())
-
-        offerPromise?.then(new Promise.Func<Offer, Promise>() {
-            @Override
-            Promise apply(Offer offer) {
-                assert (offer != null)
-            }
-        } )
-        assert (offerPromise != null)
+        def offer = catalogFacade.getOffer(new Random().nextLong(), new Date()).wrapped().get()
+        assert (offer != null)
     }
 }

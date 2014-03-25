@@ -9,6 +9,7 @@ import com.junbo.sharding.IdGenerator;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 
 /**
@@ -17,8 +18,11 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class BaseDao<T extends com.junbo.subscription.db.entity.Entity> {
     @Autowired
+    @Qualifier("subscriptionSessionFactory")
     private SessionFactory sessionFactory;
+
     @Autowired
+    @Qualifier("oculus48IdGenerator")
     private IdGenerator idGenerator;
 
     private Class<T> classType;

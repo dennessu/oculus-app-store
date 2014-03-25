@@ -79,8 +79,10 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     @Transactional
     public List<Entitlement> searchEntitlement(EntitlementSearchParam entitlementSearchParam,
                                                PageMetadata pageMetadata) {
-        checkUser(entitlementSearchParam.getUserId());
-        checkDeveloper(entitlementSearchParam.getDeveloperId());
+        validateNotNull(entitlementSearchParam.getUserId(), "user");
+        validateNotNull(entitlementSearchParam.getDeveloperId(), "developer");
+        checkUser(entitlementSearchParam.getUserId().getValue());
+        CheckDeveloper(entitlementSearchParam.getDeveloperId().getValue());
         List<Entitlement> entitlementEntities = entitlementRepository.getBySearchParam(
                 entitlementSearchParam, pageMetadata);
         return entitlementEntities;
@@ -113,7 +115,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
 
     private Entitlement merge(Entitlement entitlement) {
         if (Boolean.TRUE.equals(entitlement.getManagedLifecycle())) {
-            Entitlement existingEntitlement = null;
+            Entitlement existingEntitlement;
             if (entitlement.getEntitlementDefinitionId() != null) {
                 existingEntitlement = entitlementRepository.getExistingManagedEntitlement(
                         entitlement.getUserId(), entitlement.getEntitlementDefinitionId());

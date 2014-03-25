@@ -7,7 +7,7 @@
     <import resource="classpath*:spring/*-context.xml"/>
 
     <bean id="abstractDao" class="com.junbo.cart.db.dao.impl.AbstractDao" abstract="true">
-        <property name="sessionFactory" ref="sessionFactory"/>
+        <property name="sessionFactory" ref="cartSessionFactory"/>
     </bean>
 
     <bean id="cartDao" class="com.junbo.cart.db.dao.impl.CartDaoImpl" parent="abstractDao">

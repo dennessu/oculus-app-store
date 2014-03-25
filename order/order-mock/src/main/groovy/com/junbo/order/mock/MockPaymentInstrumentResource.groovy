@@ -6,6 +6,7 @@ import com.junbo.common.model.Results
 import com.junbo.langur.core.promise.Promise
 import com.junbo.payment.spec.enums.PIStatus
 import com.junbo.payment.spec.enums.PIType
+import com.junbo.payment.spec.model.PIId
 import com.junbo.payment.spec.model.PageMetaData
 import com.junbo.payment.spec.model.PaymentInstrument
 import com.junbo.payment.spec.model.PaymentInstrumentSearchParam
@@ -32,11 +33,10 @@ class MockPaymentInstrumentResource extends BaseMock implements PaymentInstrumen
     @Override
     Promise<PaymentInstrument> getById(UserId userId, PaymentInstrumentId paymentInstrumentId) {
         def pi = new PaymentInstrument()
-        pi.id = paymentInstrumentId.value
+        pi.id = new PIId(userId.value, paymentInstrumentId.value)
         pi.isValidated = true
         pi.status = PIStatus.ACTIVE
         pi.type = PIType.CREDITCARD
-        pi.userId = userId.value
         return Promise.pure(pi)
     }
 

@@ -14,15 +14,18 @@ import org.springframework.beans.factory.annotation.Required
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 
-import javax.ws.rs.core.HttpHeaders
-
 /**
- * Javadoc.
+ * Default {@link com.junbo.oauth.spec.endpoint.UserInfoEndpoint} implementation.
+ * @author Zhanxin Yang
+ * @see com.junbo.oauth.spec.endpoint.UserInfoEndpoint
  */
 @Component
 @CompileStatic
 @Scope('prototype')
 class UserInfoEndpointImpl implements UserInfoEndpoint {
+    /**
+     * The UserService to handle the user related logic.
+     */
     private UserService userService
 
     @Required
@@ -30,8 +33,13 @@ class UserInfoEndpointImpl implements UserInfoEndpoint {
         this.userService = userService
     }
 
+    /**
+     * Endpoint to retrieve the user information.
+     * @param authorization The http header Authorization, contains the access token in Bearer format.
+     * @return The user information of the access token's user id.
+     */
     @Override
-    Promise<UserInfo> getUserInfo(HttpHeaders httpHeaders) {
-        return Promise.pure(userService.getUserInfo(httpHeaders.requestHeaders))
+    Promise<UserInfo> getUserInfo(String authorization) {
+        return Promise.pure(userService.getUserInfo(authorization))
     }
 }

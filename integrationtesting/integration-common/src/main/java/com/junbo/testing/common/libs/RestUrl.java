@@ -23,10 +23,12 @@ public final class RestUrl {
      */
     public enum ComponentName {
         OAUTH("oauth"),
-        IDENTITY("user"),
+        IDENTITY("identity"),
         CART("cart"),
         CATALOG("catalog"),
-        ORDER("order");
+        ORDER("order"),
+        SHIPPING("shipping"),
+        PAYMENT("payment-instruments");
 
         private String name;
 

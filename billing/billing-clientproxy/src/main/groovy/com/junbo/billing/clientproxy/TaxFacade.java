@@ -8,11 +8,16 @@ package com.junbo.billing.clientproxy;
 
 import com.junbo.billing.spec.model.Balance;
 import com.junbo.billing.spec.model.ShippingAddress;
+import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.spec.model.Address;
 
 /**
  * Created by LinYi on 14-3-13.
  */
 public interface TaxFacade {
-    Balance calculateTax(Balance balance, ShippingAddress shippingAddress, Address piAddress);
+    Promise<Balance> calculateTax(Balance balance, ShippingAddress shippingAddress, Address piAddress);
+
+    Promise<ShippingAddress> validateShippingAddress(ShippingAddress shippingAddress);
+
+    Promise<Address> validatePiAddress(Address piAddress);
 }

@@ -9,6 +9,7 @@ package com.junbo.billing.db.repository;
 import com.junbo.billing.spec.model.Balance;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by xmchen on 14-2-19.
@@ -19,6 +20,8 @@ public interface BalanceRepository {
     Balance getBalance(Long balanceId);
 
     List<Balance> getBalances(Long orderId);
+
+    Balance getBalanceByUuid(UUID uuid);
 
     Balance updateBalance(Balance balance);
 

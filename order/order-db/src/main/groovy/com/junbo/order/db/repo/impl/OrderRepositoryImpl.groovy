@@ -10,11 +10,7 @@ import com.google.common.collect.HashMultimap
 import com.junbo.common.id.*
 import com.junbo.oom.core.MappingContext
 import com.junbo.order.db.dao.*
-import com.junbo.order.db.entity.CommonDbEntityWithDate
-import com.junbo.order.db.entity.OrderDiscountInfoEntity
-import com.junbo.order.db.entity.OrderEntity
-import com.junbo.order.db.entity.OrderItemEntity
-import com.junbo.order.db.entity.OrderPaymentInfoEntity
+import com.junbo.order.db.entity.*
 import com.junbo.order.db.mapper.ModelMapper
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.model.*
@@ -22,6 +18,7 @@ import com.junbo.sharding.IdGenerator
 import com.junbo.sharding.IdGeneratorFacade
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
+import org.apache.commons.collections.CollectionUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -64,6 +61,8 @@ class OrderRepositoryImpl implements OrderRepository {
     IdGeneratorFacade idGeneratorFacade
     @Autowired
     IdGenerator idGenerator
+
+    int orderEventsNumThreshHold = 200
 
     private class RepositoryFuncSet {
         Closure create
@@ -192,6 +191,31 @@ class OrderRepositoryImpl implements OrderRepository {
             savePaymentInstruments(order.id, order.paymentInstruments)
         }
         return order
+    }
+
+    @Override
+    Order getOrderByTrackingUuid(UUID trackingUuid) {
+        def orderEvents = orderEventDao.readByTrackingUuid(trackingUuid)
+        if (CollectionUtils.isEmpty(orderEvents)) {
+            return null
+        }
+        // assert all the order events are linked to the same order
+        def orderEntity = orderDao.read(orderEvents[0].orderId)
+        return modelMapper.toOrderModel(orderEntity, new MappingContext())
+    }
+
+    @Override
+    List<OrderEvent> getOrderEvents(Long orderId) {
+        List<OrderEvent> events = []
+        orderEventDao.readByOrderId(orderId).each { OrderEventEntity entity ->
+            OrderEvent event = modelMapper.toOrderEventModel(entity, new MappingContext())
+            events << event
+        }
+        if (events.size() > orderEventsNumThreshHold) {
+            LOGGER.warn('name=Too_Many_Order_Events, orderId={}, threshHold={}, current={}', orderId,
+                    orderEventsNumThreshHold, events.size())
+        }
+        return events
     }
 
     void saveOrderItems(OrderId orderId, List<OrderItem> orderItems) {

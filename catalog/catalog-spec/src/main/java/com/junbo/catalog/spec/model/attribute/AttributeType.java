@@ -7,10 +7,9 @@
 package com.junbo.catalog.spec.model.attribute;
 
 /**
- * Created by baojing on 3/10/14.
+ * Attribute type.
  */
 public final class AttributeType {
-    public static final String TYPE = "Type";
     public static final String CATEGORY = "Category";
     public static final String GENRE = "Genre";
     public static final String COLOR = "Color";

@@ -13,6 +13,7 @@ import com.junbo.subscription.clientproxy.CatalogGateway;
 
 import com.junbo.subscription.common.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 /**
  * CatalogGatewayImpl.
@@ -21,6 +22,7 @@ public class CatalogGatewayImpl implements CatalogGateway {
     private static final Long OFFER_TIMESTAMP_NOT_SPECIFIED = -1L;
 
     @Autowired
+    @Qualifier("offerClient")
     private OfferResource offerResource;
 
     @Override

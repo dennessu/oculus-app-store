@@ -52,7 +52,7 @@ abstract class MemcachedBaseDAO<T extends BaseEntity> implements BaseDAO<T, Stri
             return null
         }
 
-        return (T) JsonMarshaller.unmarshall(entityClass, entityString.toString())
+        return (T) JsonMarshaller.unmarshall(entityString.toString(), entityClass)
     }
 
     @Override
