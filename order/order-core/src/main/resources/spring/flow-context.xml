@@ -25,9 +25,6 @@
         <property name="orderActionType" value="FULFILL"/>
     </bean>
 
-    <bean id="getOrderAction" class="com.junbo.order.core.impl.orderaction.GetOrderAction">
-    </bean>
-
     <bean id="immediateSettleAction" class="com.junbo.order.core.impl.orderaction.ImmediateSettleAction">
         <property name="orderActionType" value="CHARGE"/>
     </bean>
@@ -39,5 +36,8 @@
     </bean>
 
     <bean id="sendEmailAction" class="com.junbo.order.core.impl.orderaction.SendEmailAction">
+    </bean>
+
+    <bean id="markSettleAction" class="com.junbo.order.core.impl.orderaction.MarkSettleAction">
     </bean>
 </beans>

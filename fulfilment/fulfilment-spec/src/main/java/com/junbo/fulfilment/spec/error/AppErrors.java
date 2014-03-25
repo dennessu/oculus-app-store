@@ -33,7 +33,7 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 400, code = "30004", description = "Validation failed. {0}")
     AppError validation(String msg);
 
-    @ErrorDef(httpStatusCode = 400, code = "30005", description = "Exception occurred during calling [{0}] component.")
+    @ErrorDef(httpStatusCode = 500, code = "30005", description = "Exception occurred during calling [{0}] component.")
     AppError gatewayFailure(String gateway);
 
     @ErrorDef(httpStatusCode = 500, code = "39999", description = "UnCaught Exception. {0}")

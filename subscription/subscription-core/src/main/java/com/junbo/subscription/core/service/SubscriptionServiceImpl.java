@@ -16,7 +16,6 @@ import com.junbo.subscription.db.repository.SubscriptionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
 
@@ -51,13 +50,14 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         if(subscription.getTrackingUuid() == null){
             throw SubscriptionExceptions.INSTANCE.missingTrackingUuid().exception();
         }
-        Subscription result = subscriptionRepository.getByTrackingUuid(subscription.getTrackingUuid());
-        if(result != null){
-            return result;
-        }
+//        Subscription result = subscriptionRepository.getByTrackingUuid(subscription.getTrackingUuid());
+//        if(result != null){
+//            return result;
+//        }
 
 
         //TODO: set property
+        /*
         Offer subsOffer = catalogGateway.getOffer(subscription.getOfferId());
 
         if (subsOffer.getType() != SUBSCRIPTION) {
@@ -68,14 +68,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
         if (!isFreeSubscrption(subsOffer)){
             throw SubscriptionExceptions.INSTANCE.subscriptionTypeError().exception();
-        }
-
-        Date currentDate = new Date();
-
-        subscription.setCreatedBy("DEFAULT");
-        subscription.setCreatedTime(currentDate);
-        subscription.setModifiedBy("DEFAULT");
-        subscription.setModifiedTime(currentDate);
+        }*/
 
         //TODO: create entitlement for subscription
 

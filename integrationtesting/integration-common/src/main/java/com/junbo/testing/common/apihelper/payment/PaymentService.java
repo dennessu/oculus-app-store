@@ -13,9 +13,9 @@ import java.util.List;
  * Created by Yunlong on 3/24/14.
  */
 public interface PaymentService {
-    String addPaymentInstrument(String uid, PaymentInstrument paymentInstrument) throws Exception;
+    String postPaymentInstrumentToUser(String uid, PaymentInstrument paymentInstrument) throws Exception;
 
-    String addPaymentInstrument(String uid, PaymentInstrument paymentInstrument,
+    String postPaymentInstrumentToUser(String uid, PaymentInstrument paymentInstrument,
                                 int expectedResponseCode) throws Exception;
 
     List<String> getPaymentInstrumentsByUserId(String uid) throws Exception;

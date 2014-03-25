@@ -63,4 +63,23 @@ class Line {
     // Value stored with SalesInvoice DocType that is submitter dependent.
     @JsonProperty('Ref2')
     String ref2
+
+    @Override
+    String toString() {
+        return 'Line{' +
+                "lineNo='" + lineNo + '\'' +
+                ", destinationCode='" + destinationCode + '\'' +
+                ", originCode='" + originCode + '\'' +
+                ", itemCode='" + itemCode + '\'' +
+                ', qty=' + qty +
+                ', amount=' + amount +
+                ", taxCode='" + taxCode + '\'' +
+                ", customerUsageType='" + customerUsageType + '\'' +
+                ", description='" + description + '\'' +
+                ', discounted=' + discounted +
+                ', taxIncluded=' + taxIncluded +
+                ", ref1='" + ref1 + '\'' +
+                ", ref2='" + ref2 + '\'' +
+                '}'
+    }
 }

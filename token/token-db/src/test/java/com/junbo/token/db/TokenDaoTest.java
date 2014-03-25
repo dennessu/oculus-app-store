@@ -23,7 +23,7 @@ public class TokenDaoTest extends BaseTest {
     @Autowired
     private TokenSetOfferDao tokenSetOfferDao;
 
-    @Test(enabled = false)
+    @Test(enabled = true)
     public void testCreate() {
         TokenSetEntity set = buildTokenSetRequest();
         tokenSetDao.save(set);
@@ -78,7 +78,6 @@ public class TokenDaoTest extends BaseTest {
     protected TokenItemEntity buildTokenItemRequest(TokenOrderEntity order){
         TokenItemEntity entity = new TokenItemEntity();
         entity.setId(generateId());
-        entity.setHashValue(123L);
         entity.setStatus(ItemStatus.ACTIVATED);
         entity.setOrderId(order.getId());
         return entity;

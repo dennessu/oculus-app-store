@@ -2,7 +2,9 @@ package com.junbo.testing.buyerscenario;
 
 
 import com.junbo.testing.buyerscenario.util.BaseTestClass;
+import com.junbo.testing.common.enums.Country;
 import com.junbo.testing.common.libs.LogHelper;
+import com.junbo.testing.common.paymentInstruments.CreditCardInfo;
 import com.junbo.testing.common.property.*;
 
 import org.testng.Assert;
@@ -37,9 +39,12 @@ public class CartCheckout extends BaseTestClass {
     @Test
     public void testDigitalGoodCheckout() throws Exception {
         String randomUid = testDataProvider.createUser();
-        testDataProvider.postDefaultOffersToPrimaryCart(randomUid);
+        testDataProvider.postDefaultOffersToPrimaryCart(randomUid, false);
 
         String uid = testDataProvider.createUser();
+        CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
+        testDataProvider.postCreditCardToUser(uid,creditCardInfo);
+
         testDataProvider.mergeCart(uid, randomUid);
 
 
@@ -67,7 +72,7 @@ public class CartCheckout extends BaseTestClass {
     @Test
     public void testPhysicalGoodCheckout() throws Exception {
         String randomUid = testDataProvider.createUser();
-        testDataProvider.postDefaultOffersToPrimaryCart(randomUid);
+        testDataProvider.postDefaultOffersToPrimaryCart(randomUid,true);
 
         String uid = testDataProvider.createUser();
         testDataProvider.mergeCart(uid, randomUid);

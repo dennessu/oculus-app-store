@@ -5,9 +5,9 @@
  */
 package com.junbo.email.spec.resource;
 
+import com.junbo.common.model.Results;
 import com.junbo.email.spec.model.EmailTemplate;
 import com.junbo.email.spec.model.Paging;
-import com.junbo.email.spec.model.Results;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 

@@ -19,4 +19,10 @@
         <td>Type</td>
         <td>{{ item.type }}</td>
     </tr>
+    <tr ng-repeat="(key, value) in item.properties">
+        <td>{{ metaDefinitions[key].display }}</td>
+        <td>
+            {{ item.properties[key] }}
+        </td>
+    </tr>
 </table>

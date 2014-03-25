@@ -11,9 +11,12 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
+import java.util.Date;
+
 
 /**
  * base dao.
+ *
  * @param <T> the entity for this dao
  */
 public class BaseDao<T extends com.junbo.subscription.db.entity.Entity> {
@@ -33,6 +36,10 @@ public class BaseDao<T extends com.junbo.subscription.db.entity.Entity> {
 
     public Long insert(T t) {
         t.setId(generateId(t.getShardMasterId()));
+        if(t.getCreatedTime() == null){
+            t.setCreatedTime(new Date());
+            t.setCreatedBy("INTERNAL");
+        }
         return (Long) currentSession().save(t);
     }
 
@@ -42,6 +49,10 @@ public class BaseDao<T extends com.junbo.subscription.db.entity.Entity> {
 
     public Long update(T t) {
         currentSession().update(t);
+        if(t.getModifiedTime() == null){
+            t.setModifiedTime(new Date());
+            t.setModifiedBy("INTERNAL");
+        }
         return t.getId();
     }
 
@@ -57,7 +68,7 @@ public class BaseDao<T extends com.junbo.subscription.db.entity.Entity> {
         this.classType = classType;
     }
 
-    protected Long generateId(Long shardId){
+    protected Long generateId(Long shardId) {
         return idGenerator.nextId(shardId);
     }
 }

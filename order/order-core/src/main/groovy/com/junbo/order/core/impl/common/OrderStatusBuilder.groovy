@@ -61,9 +61,9 @@ class OrderStatusBuilder {
             return false
         }
         def orderEvent = orderEvents.find { OrderEvent oe ->
-            (OrderActionType.AUTHORIZE.toString() && oe.status == EventStatus.FAILED.toString()) ||
-                    (OrderActionType.CHARGE.toString() && oe.status == EventStatus.FAILED.toString()) ||
-                    (OrderActionType.FULFILL.toString() && oe.status == EventStatus.FAILED.toString())
+            (oe.action == OrderActionType.AUTHORIZE.toString() && oe.status == EventStatus.FAILED.toString()) ||
+                    (oe.action == OrderActionType.CHARGE.toString() && oe.status == EventStatus.FAILED.toString()) ||
+                    (oe.action == OrderActionType.FULFILL.toString() && oe.status == EventStatus.FAILED.toString())
         }
         return orderEvent != null
     }
@@ -73,7 +73,7 @@ class OrderStatusBuilder {
             return false
         }
         def orderEvent = orderEvents.find { OrderEvent oe ->
-            OrderActionType.PREORDER.toString() &&
+            oe.action == OrderActionType.PREORDER.toString() &&
                     oe.status == EventStatus.COMPLETED.toString()
         }
         return orderEvent != null
@@ -84,7 +84,7 @@ class OrderStatusBuilder {
             return false
         }
         def orderEvent = orderEvents.find { OrderEvent oe ->
-            OrderActionType.CHARGE.toString() &&
+            oe.action == OrderActionType.CHARGE.toString() &&
                     oe.status == EventStatus.COMPLETED.toString()
         }
         return orderEvent != null
@@ -95,7 +95,7 @@ class OrderStatusBuilder {
             return false
         }
         def orderEvent = orderEvents.find { OrderEvent oe ->
-            OrderActionType.CHARGE.toString() &&
+            oe.action == OrderActionType.CHARGE.toString() &&
                     (oe.status == EventStatus.PENDING ||
                     oe.status == EventStatus.PROCESSING)
         }
@@ -107,7 +107,7 @@ class OrderStatusBuilder {
             return false
         }
         def orderEvent = orderEvents.find { OrderEvent oe ->
-            OrderActionType.FULFILL.toString() &&
+            oe.action == OrderActionType.FULFILL.toString() &&
                     oe.status == EventStatus.COMPLETED.toString()
         }
         return orderEvent != null
@@ -118,7 +118,7 @@ class OrderStatusBuilder {
             return false
         }
         def orderEvent = orderEvents.find { OrderEvent oe ->
-            OrderActionType.FULFILL.toString() &&
+            oe.action == OrderActionType.FULFILL.toString() &&
                     (oe.status == EventStatus.PENDING ||
                             oe.status == EventStatus.PROCESSING)
         }
@@ -130,7 +130,7 @@ class OrderStatusBuilder {
             return false
         }
         def orderEvent = orderEvents.find { OrderEvent oe ->
-            OrderActionType.REFUND.toString() &&
+            oe.action == OrderActionType.REFUND.toString() &&
                     oe.status == EventStatus.COMPLETED.toString()
         }
         return orderEvent != null
@@ -141,7 +141,7 @@ class OrderStatusBuilder {
             return false
         }
         def orderEvent = orderEvents.find { OrderEvent oe ->
-            OrderActionType.CANCEL.toString() &&
+            oe.action == OrderActionType.CANCEL.toString() &&
                     oe.status == EventStatus.COMPLETED.toString()
         }
         return orderEvent != null
