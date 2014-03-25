@@ -1,7 +1,7 @@
 'use strict';
 
 /* Controllers */
-var app = angular.module('catalog.controllers', ['ui.bootstrap']);
+var app = angular.module('catalog.controllers', ['ui.bootstrap', 'checklist-model']);
 
 // Clear browser cache (in development mode)
 //
@@ -14,19 +14,12 @@ app.run(function ($rootScope, $templateCache) {
 
 app.controller('OfferListCtrl', ['$scope', 'OffersFactory', '$routeParams', '$location',
   function($scope, OffersFactory, $routeParams, $location) {
-      $scope.createOffer = function () {
-          OffersFactory.create($scope.offer, function(offer){
-              $location.path('/offers/' + offer.self.id);
-          });
-      };
-      $scope.cancel = function () {
-          $location.path('/offers');
-      };
   	  $scope.offers = OffersFactory.query($routeParams);
   }]);
 
-app.controller('OfferCreationCtrl', ['$scope', 'OffersFactory', 'AttributesFactory', '$routeParams', '$location',
-    function($scope, OffersFactory, AttributesFactory, $routeParams, $location) {
+app.controller('OfferCreationCtrl',
+    ['$scope', 'OffersFactory', 'ItemsFactory', 'MetaFactory', 'AttributesFactory', '$routeParams', '$location',
+    function($scope, OffersFactory, ItemsFactory, MetaFactory, AttributesFactory, $routeParams, $location) {
         $scope.createOffer = function () {
             OffersFactory.create($scope.offer, function(offer){
                 $location.path('/offers/' + offer.self.id);
@@ -36,61 +29,86 @@ app.controller('OfferCreationCtrl', ['$scope', 'OffersFactory', 'AttributesFacto
             $location.path('/offers');
         };
 
-        $scope.addItem = function(item) {
-            $scope.selectedItems[item.self.id] = item;
-        };
-        $scope.removeItem = function(item) {
-            delete $scope.selectedItems[item.self.id];
-        };
-        $scope.saveItems = function() {
-            $scope.offer.items = [];
-            Object.keys( $scope.selectedItems ).forEach(function( key ) {
-                $scope.offer.items.push({itemId: $scope.selectedItems[key].self});
-            });
-        };
-        $scope.totalItems = function() {
-            return Object.keys( $scope.selectedItems).length;
-        };
-        $scope.updateDeveloper = function() {
-            $scope.offer.developer.href="http://localhost:8083/rest/api/users/" + $scope.offer.developer.id;
-        };
-        $scope.updateCategories = function() {
-            $scope.offer.categories = [$scope.selectedCategory];
-        };
-        $scope.updateGenres = function() {
-            $scope.offer.genres = [$scope.selectedGenre];
-        };
-        $scope.addPrice = function(country) {
-            if (angular.isUndefined($scope.offer)) {
-                $scope.offer = {};
-            }
-            if (angular.isUndefined($scope.offer.prices)) {
-                $scope.offer.prices = {};
-            }
-
-            $scope.offer.prices[country] = {};
+        var init = function() {
+            $scope.offer = {};
+            $scope.offer.categories = [];
+            $scope.offer.properties = {};
+            $scope.offer.eligibleCountries = [];
         };
 
-        $scope.selectedItems = {};
-        $scope.isCollapsed = true;
-        // TODO: change to ItemsFactory
-        $scope.items = AttributesFactory.query();
-
-        $scope.categoryAttributes = AttributesFactory.query({type: "Category"});
-        $scope.genreAttributes = AttributesFactory.query({type: "Genre"});
-        $scope.offers = OffersFactory.query($routeParams);
+        init();
     }]);
+
+app.controller('OfferEditCtrl',
+    ['$scope', 'OffersFactory', 'ItemsFactory', 'MetaFactory', 'AttributesFactory', '$routeParams', '$location',
+        function($scope, OffersFactory, ItemsFactory, MetaFactory, AttributesFactory, $routeParams, $location) {
+            $scope.createOffer = function () {
+                OffersFactory.create($scope.offer, function(offer){
+                    $location.path('/offers/' + offer.self.id);
+                });
+            };
+            $scope.cancel = function () {
+                $location.path('/offers');
+            };
+
+            $scope.addItem = function(item) {
+                $scope.selectedItems[item.self.id] = item;
+            };
+            $scope.removeItem = function(item) {
+                delete $scope.selectedItems[item.self.id];
+            };
+            $scope.saveItems = function() {
+                $scope.offer.items = [];
+                Object.keys( $scope.selectedItems ).forEach(function( key ) {
+                    $scope.offer.items.push({itemId: $scope.selectedItems[key].self});
+                });
+            };
+            $scope.totalItems = function() {
+                return Object.keys( $scope.selectedItems).length;
+            };
+            $scope.updateDeveloper = function() {
+                $scope.offer.developer.href="http://localhost:8083/rest/api/users/" + $scope.offer.developer.id;
+            };
+            $scope.updateCategories = function() {
+                $scope.offer.categories = [$scope.selectedCategory];
+            };
+            $scope.updateGenres = function() {
+                $scope.offer.genres = [$scope.selectedGenre];
+            };
+            $scope.addPrice = function(country) {
+                if (angular.isUndefined($scope.offer)) {
+                    $scope.offer = {};
+                }
+                if (angular.isUndefined($scope.offer.prices)) {
+                    $scope.offer.prices = {};
+                }
+
+                $scope.offer.prices[country.code] = {"currency": country.currency};
+            };
+            $scope.selectAllCountries = function() {
+                $scope.offer.eligibleCountries = [];
+                $scope.countries.forEach(function(country) {
+                    if (country.code != "DEFAULT") {
+                        $scope.offer.eligibleCountries.push(country.code);
+                    }
+                });
+            };
+            $scope.deselectAllCountries = function() {
+                $scope.offer.eligibleCountries = [];
+            };
+
+            $scope.selectedItems = {};
+            $scope.isCollapsed = true;
+            $scope.items = ItemsFactory.query({status: "Released"});
+
+            $scope.categoryAttributes = AttributesFactory.query({type: "Category"});
+            $scope.genreAttributes = AttributesFactory.query({type: "Genre"});
+            $scope.offers = OffersFactory.query($routeParams);
+            $scope.countries = MetaFactory.countries;
+        }]);
 
 app.controller('OfferReviewListCtrl', ['$scope', 'OffersFactory', '$location',
     function($scope, OffersFactory, $location) {
-        $scope.createOffer = function () {
-            OffersFactory.create($scope.offer, function(offer){
-                $location.path('/offers/' + offer.self.id);
-            });
-        };
-        $scope.cancel = function () {
-            $location.path('/offers');
-        };
         $scope.offers = OffersFactory.query({status: 'PendingReview'});
     }]);
 
@@ -100,8 +118,8 @@ app.controller('OfferResponseCtrl', ['$scope', '$routeParams', 'OfferResponse',
         $scope.offerId = $routeParams.id;
     }]);
 
-app.controller('OfferDetailCtrl', ['$scope', 'OfferFactory', '$routeParams', '$location','OfferResponse',
-    function($scope, OfferFactory, $routeParams, $location, OfferResponse) {
+app.controller('OfferDetailCtrl', ['$scope', 'OfferFactory', 'MetaFactory', 'AttributesFactory', '$routeParams', '$location','OfferResponse',
+    function($scope, OfferFactory, MetaFactory, AttributesFactory, $routeParams, $location, OfferResponse) {
         console.log("OfferDetailCtrl");
         console.log($routeParams);
 
@@ -141,7 +159,22 @@ app.controller('OfferDetailCtrl', ['$scope', 'OfferFactory', '$routeParams', '$l
             $location.path('/offers/' + $routeParams.id);
         };
 
+        $scope.selectAllCountries = function() {
+            $scope.offer.eligibleCountries = [];
+            $scope.countries.forEach(function(country) {
+                if (country.code != "DEFAULT") {
+                    $scope.offer.eligibleCountries.push(country.code);
+                }
+            });
+        };
+        $scope.deselectAllCountries = function() {
+            $scope.offer.eligibleCountries = [];
+        };
+
+        $scope.genreAttributes = AttributesFactory.query({type: "Genre"});
+        $scope.categoryAttributes = AttributesFactory.query({type: "Category"});
         $scope.offer = OfferFactory.query($routeParams);
+        $scope.countries = MetaFactory.countries;
     }]);
 
 app.controller('ItemListCtrl', ['$scope', 'ItemsFactory', '$routeParams', '$location',
@@ -270,7 +303,3 @@ app.controller('AttributeDetailCtrl', ['$scope', 'AttributeFactory', '$routePara
 
         $scope.attribute = AttributeFactory.query($routeParams);
     }]);
-
-app.controller('MyCtrl2', [function() {
-
-  }]);
