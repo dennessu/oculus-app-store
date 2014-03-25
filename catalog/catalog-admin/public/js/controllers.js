@@ -157,8 +157,8 @@ app.controller('ItemListCtrl', ['$scope', 'ItemsFactory', '$routeParams', '$loca
         $scope.items = ItemsFactory.query($routeParams);
     }]);
 
-app.controller('ItemCreationCtrl', ['$scope', 'ItemsFactory', '$routeParams', '$location',
-    function($scope, ItemsFactory, $routeParams, $location) {
+app.controller('ItemCreationCtrl', ['$scope', 'ItemsFactory', 'MetaFactory', '$routeParams', '$location',
+    function($scope, ItemsFactory, MetaFactory, $routeParams, $location) {
         $scope.createItem = function () {
             ItemsFactory.create($scope.item, function(item){
                 $location.path('/items/' + item.self.id);
@@ -171,15 +171,9 @@ app.controller('ItemCreationCtrl', ['$scope', 'ItemsFactory', '$routeParams', '$
             $scope.item.developer.href="http://localhost:8083/rest/api/users/" + $scope.item.developer.id;
         };
 
-        $scope.metaDefinitions = {
-            "shortDescription": { "display": "Short Description", "controlType": "TEXT_INPUT"},
-            "longDescription": { "display": "Long Description", "controlType": "TEXT_INPUT"},
-            "platform": { "display": "Platform", "controlType": "MULTI_SELECT", "allowedValues":["PC", "Mac", "Linux"]},
-            "changeNotes": { "display": "Change Notes", "controlType": "TEXT_INPUT"},
-            "website": { "display": "Website", "controlType": "TEXT_INPUT"},
-            "gameModes": { "display": "Game Modes", "controlType": "SINGLE_SELECT", "allowedValues":["Single Player", "Multi Player"]}
-        };
+        $scope.metaDefinitions = MetaFactory.itemMeta;
         $scope.items = ItemsFactory.query($routeParams);
+        $scope.itemTypes = MetaFactory.itemTypes;
 
         var init = function() {
             $scope.item = {};
@@ -195,8 +189,8 @@ app.controller('ItemCreationCtrl', ['$scope', 'ItemsFactory', '$routeParams', '$
         init();
     }]);
 
-app.controller('ItemDetailCtrl', ['$scope', 'ItemFactory', '$routeParams', '$location','ItemResponse',
-    function($scope, ItemFactory, $routeParams, $location, ItemResponse) {
+app.controller('ItemDetailCtrl', ['$scope', 'ItemFactory', 'MetaFactory', '$routeParams', '$location','ItemResponse',
+    function($scope, ItemFactory, MetaFactory, $routeParams, $location, ItemResponse) {
         console.log("ItemDetailCtrl");
         console.log($routeParams);
 
@@ -236,7 +230,9 @@ app.controller('ItemDetailCtrl', ['$scope', 'ItemFactory', '$routeParams', '$loc
             $location.path('/items/' + $routeParams.id);
         };
 
+        $scope.metaDefinitions = MetaFactory.itemMeta;
         $scope.item = ItemFactory.query($routeParams);
+        $scope.itemTypes = MetaFactory.itemTypes;
     }]);
 
 app.controller('ItemReviewListCtrl', ['$scope', 'ItemsFactory',

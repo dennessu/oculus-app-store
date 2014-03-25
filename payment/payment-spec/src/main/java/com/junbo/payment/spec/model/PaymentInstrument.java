@@ -8,8 +8,6 @@ package com.junbo.payment.spec.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.jackson.annotation.PaymentInstrumentId;
 import com.junbo.common.jackson.annotation.PaymentInstrumentTypeId;
-import com.junbo.common.jackson.annotation.UserId;
-import com.junbo.common.jackson.serializer.CascadeResource;
 import com.junbo.payment.common.InnerFilter;
 
 import java.util.Date;
@@ -19,11 +17,10 @@ import java.util.UUID;
  * payment instrument model.
  */
 public class PaymentInstrument {
-    private Long id;
+    @PaymentInstrumentId
+    @JsonProperty("self")
+    private PIId id;
     private UUID trackingUuid;
-    @JsonProperty("user")
-    @UserId
-    private Long userId;
     private boolean isValidated;
     private Date lastValidatedTime;
     private String isDefault;
@@ -40,19 +37,12 @@ public class PaymentInstrument {
     //response:
     private String status;
 
-    public Long getId() {
+    public PIId getId() {
         return id;
     }
-    @PaymentInstrumentId
-    @JsonProperty("self")
-    public void setId(Long id) {
-        this.id = id;
-    }
 
-    @PaymentInstrumentId
-    @JsonProperty("self")
-    public CascadeResource getCascadePaymentInstrumentId() {
-        return id == null ? null : new CascadeResource(id, new Object[]{userId, id});
+    public void setId(PIId id) {
+        this.id = id;
     }
 
     public UUID getTrackingUuid() {
@@ -61,15 +51,6 @@ public class PaymentInstrument {
 
     public void setTrackingUuid(UUID trackingUuid) {
         this.trackingUuid = trackingUuid;
-    }
-
-    @JsonProperty
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
     }
 
     public CreditCardRequest getCreditCardRequest() {
