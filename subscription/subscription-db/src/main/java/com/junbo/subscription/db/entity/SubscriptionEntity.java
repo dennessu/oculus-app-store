@@ -21,11 +21,13 @@ public class SubscriptionEntity extends Entity {
     private Long subscriptionId;
     private Long userId;
     private Long piId;
-    private Long statusId;
+    private SubscriptionStatus statusId;
     private String itemId;
     private Date subsStartDate;
     private Date subsEndDate;
-    private String partnerId;
+    private Integer anniversaryDay;
+    private String source;
+    private String billingMode;
 
     @Id
     @Column(name = "subscription_Id")
@@ -54,11 +56,11 @@ public class SubscriptionEntity extends Entity {
     }
 
     @Column(name = "status_id")
-    public Long getStatusId() {
+    public SubscriptionStatus getStatusId() {
         return statusId;
     }
 
-    public void setStatusId(Long statusId) {
+    public void setStatusId(SubscriptionStatus statusId) {
         this.statusId = statusId;
     }
 
@@ -106,12 +108,20 @@ public class SubscriptionEntity extends Entity {
         this.subsEndDate = subsEndDate;
     }
 
-    @Column(name = "partner_id")
-    public String getPartnerId() {
-        return partnerId;
-    }
+    @Column(name = "anniversary_day")
+    public Integer getAnniversaryDay() { return anniversaryDay; }
 
-    public void setPartnerId(String partnerId) {
-        this.partnerId = partnerId;
+    public void setAnniversaryDay(Integer anniversaryDay) { this.anniversaryDay = anniversaryDay; }
+
+    @Column(name = "source")
+    public String getSource() { return source; }
+
+    public void setSource(String source) { this.source = source; }
+
+    @Column(name = "billing_mode")
+    public String getBillingMode() { return billingMode; }
+
+    public void setBillingMode(String billingMode) {
+        this.billingMode = billingMode;
     }
 }

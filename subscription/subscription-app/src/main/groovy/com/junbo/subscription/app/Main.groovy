@@ -2,6 +2,7 @@ package com.junbo.subscription.app
 
 import com.fasterxml.jackson.jaxrs.base.JsonMappingExceptionMapper
 import com.junbo.common.id.provider.IdTypeFromStringProvider
+import com.junbo.subscription.rest.jackson.JacksonFeature
 import com.junbo.subscription.rest.jackson.MapperConfigurator
 import org.glassfish.grizzly.http.server.HttpServer
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory
@@ -34,6 +35,7 @@ class Main {
         resourceConfig.packages('com.junbo.subscription.spec.resource.adapter')
         resourceConfig.property('contextConfigLocation', 'classpath*:/spring/*.xml')
 
+        resourceConfig.register(JacksonFeature)
         resourceConfig.register(MapperConfigurator)
 
         def uri = URI.create('http://localhost:8055/rest')

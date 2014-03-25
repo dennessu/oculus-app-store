@@ -5,10 +5,9 @@
  */
 package com.junbo.subscription.db.mapper;
 
-import com.junbo.subscription.db.entity.Entity;
 import com.junbo.subscription.db.entity.SubscriptionEntity;
+import com.junbo.subscription.db.entity.SubscriptionStatus;
 import com.junbo.subscription.spec.model.Subscription;
-import com.junbo.subscription.spec.model.Model;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -27,8 +26,7 @@ public class SubscriptionMapper {
         Subscription subscription = new Subscription();
         subscription.setSubscriptionId(subscriptionEntity.getSubscriptionId());
         subscription.setUserId(subscriptionEntity.getUserId());
-        subscription.setStatus("created"); //subscriptionEntity.getStatusId()
-        toModel(subscriptionEntity, subscription);
+        subscription.setStatus(subscriptionEntity.getStatusId().toString()); //subscriptionEntity.getStatusId()
         return subscription;
     }
 
@@ -36,8 +34,8 @@ public class SubscriptionMapper {
         SubscriptionEntity subscriptionEntity = new SubscriptionEntity();
         subscriptionEntity.setSubscriptionId(subscription.getSubscriptionId());
         subscriptionEntity.setUserId(subscription.getUserId());
-
-        toEntity(subscription, subscriptionEntity);
+        subscriptionEntity.setItemId(subscription.getOfferId().toString());
+        subscriptionEntity.setStatusId(SubscriptionStatus.valueOf(subscription.getStatus()));
         return subscriptionEntity;
     }
 
@@ -50,19 +48,6 @@ public class SubscriptionMapper {
         return subscriptions;
     }
 
-    private void toModel(Entity entity, Model model) {
-        model.setCreatedBy(entity.getCreatedBy());
-        model.setCreatedTime(entity.getCreatedTime());
-        model.setModifiedBy(entity.getModifiedBy());
-        model.setModifiedTime(entity.getModifiedTime());
-    }
-
-    private void toEntity(Model model, Entity entity) {
-        entity.setCreatedBy(model.getCreatedBy());
-        entity.setCreatedTime(model.getCreatedTime());
-        entity.setModifiedBy(model.getModifiedBy());
-        entity.setModifiedTime(model.getModifiedTime());
-    }
 
 
 }
