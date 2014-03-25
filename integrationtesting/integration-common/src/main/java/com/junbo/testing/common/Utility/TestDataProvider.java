@@ -10,15 +10,24 @@ import com.junbo.cart.spec.model.item.CouponItem;
 import com.junbo.cart.spec.model.item.OfferItem;
 import com.junbo.common.id.OfferId;
 import com.junbo.identity.spec.model.user.User;
+import com.junbo.order.spec.model.OrderItem;
+import com.junbo.payment.spec.model.CreditCardRequest;
+import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.testing.common.apihelper.cart.CartService;
 import com.junbo.testing.common.apihelper.cart.impl.CartServiceImpl;
 import com.junbo.testing.common.apihelper.catalog.ItemService;
 import com.junbo.testing.common.apihelper.catalog.OfferService;
 import com.junbo.testing.common.apihelper.catalog.impl.ItemServiceImpl;
 import com.junbo.testing.common.apihelper.catalog.impl.OfferServiceImpl;
+import com.junbo.order.spec.model.Order;
 import com.junbo.testing.common.apihelper.identity.UserService;
 import com.junbo.testing.common.apihelper.identity.impl.UserServiceImpl;
+import com.junbo.testing.common.apihelper.order.OrderService;
+import com.junbo.testing.common.apihelper.order.impl.OrderServiceImpl;
+
 import com.junbo.testing.common.blueprint.Master;
+import com.junbo.testing.common.enums.Country;
+import com.junbo.testing.common.enums.Currency;
 import com.junbo.testing.common.libs.EnumHelper.UserStatus;
 import com.junbo.testing.common.libs.RandomFactory;
 
@@ -33,6 +42,8 @@ public class TestDataProvider {
     private ItemService itemClient = ItemServiceImpl.instance();
     private OfferService offerClient = OfferServiceImpl.instance();
     private CartService cartClient = CartServiceImpl.getInstance();
+    private OrderService orderClient = OrderServiceImpl.getInstance();
+
 
     public TestDataProvider() {
     }
@@ -55,11 +66,11 @@ public class TestDataProvider {
     }
 
     public String postDefaultItem() throws Exception {
-        return itemClient.postDefaultItem(false);
+        return itemClient.postDefaultItem(true);
     }
 
     public String postDefaultOffer() throws Exception {
-        return offerClient.postDefaultOffer(false);
+        return offerClient.postDefaultOffer(true);
     }
 
     public void postOffersToPrimaryCart(String uid, ArrayList<String> offers) throws Exception {
@@ -100,5 +111,50 @@ public class TestDataProvider {
 
         cartClient.mergeCart(destinationUid, destinationCartId, sourceCart);
     }
+
+    public String transferPrimaryCartToOrder(String uid) throws Exception {
+        return transferPrimaryCartToOrder(uid, Country.DEFAULT, Currency.DEFAULT);
+    }
+
+
+    public String transferPrimaryCartToOrder(String uid, Country country, Currency currency) throws Exception {
+        String primaryCartId = cartClient.getCartPrimary(uid);
+        Cart primaryCart = Master.getInstance().getCart(primaryCartId);
+
+        Order order = new Order();
+        //set required fields
+        order.setUser(primaryCart.getUser());
+        order.setCountry(country.toString());
+        order.setCurrency(currency.toString());
+        //TODO order.setPaymentInstruments();
+        //TODO order.setShippingAddressId();
+
+        List<OrderItem> orderItemList = new ArrayList<>();
+        List<OfferItem> offerItemList = primaryCart.getOffers();
+        for (int i = 0; i < offerItemList.size(); i++) {
+            OfferId offerId = offerItemList.get(i).getOffer();
+
+            OrderItem orderItem = new OrderItem();
+            orderItem.setQuantity(Integer.parseInt(offerItemList.get(i).getQuantity().toString()));
+            orderItem.setOffer(offerId);
+        }
+        order.setOrderItems(orderItemList);
+
+        return orderClient.postOrder(order);
+    }
+
+    public String postCreditCardToUser(String uid){
+        PaymentInstrument paymentInstrument = new PaymentInstrument();
+        CreditCardRequest  creditCardRequest = new CreditCardRequest();
+        //creditCardRequest.setId();
+        //creditCardRequest.setExpireDate();
+       // creditCardRequest.setType();
+
+
+        //paymentInstrument.setCreditCardRequest();
+
+        return null;
+    }
+
 
 }

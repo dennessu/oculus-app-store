@@ -19,6 +19,24 @@
                 </select>
             </td>
         </tr>
+        <tr ng-repeat="(key, value) in item.properties">
+            <td>{{ metaDefinitions[key].display }}</td>
+            <td>
+                <div ng-if="metaDefinitions[key].controlType=='TEXT_INPUT'">
+                    <input type="text" class="form-control" ng-model="item.properties[key]">
+                </div>
+                <div ng-if="metaDefinitions[key].controlType=='MULTI_SELECT'">
+                    <label ng-repeat="allowedValue in metaDefinitions[key].allowedValues">
+                        <input type="checkbox" value="{{allowedValue}}" check-list="item.properties[key]" class="chooseItem">{{ allowedValue }}
+                    </label>
+                </div>
+                <div ng-if="metaDefinitions[key].controlType=='SINGLE_SELECT'">
+                    <label ng-repeat="allowedValue in metaDefinitions[key].allowedValues">
+                        <input type="radio" ng-model="item.properties[key]" value="{{allowedValue}}" class="chooseItem">{{ allowedValue }}
+                    </label>
+                </div>
+            </td>
+        </tr>
     </table>
 
     <div class="control-group">

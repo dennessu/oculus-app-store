@@ -7,9 +7,7 @@
 package com.junbo.order.db.repo.impl
 
 import com.google.common.collect.HashMultimap
-import com.junbo.common.id.OrderId
-import com.junbo.common.id.OrderItemId
-import com.junbo.common.id.PaymentInstrumentId
+import com.junbo.common.id.*
 import com.junbo.oom.core.MappingContext
 import com.junbo.order.db.dao.*
 import com.junbo.order.db.entity.*
@@ -63,6 +61,8 @@ class OrderRepositoryImpl implements OrderRepository {
     IdGeneratorFacade idGeneratorFacade
     @Autowired
     IdGenerator idGenerator
+
+    int orderEventsNumThreshHold = 200
 
     private class RepositoryFuncSet {
         Closure create
@@ -202,6 +202,20 @@ class OrderRepositoryImpl implements OrderRepository {
         // assert all the order events are linked to the same order
         def orderEntity = orderDao.read(orderEvents[0].orderId)
         return modelMapper.toOrderModel(orderEntity, new MappingContext())
+    }
+
+    @Override
+    List<OrderEvent> getOrderEvents(Long orderId) {
+        List<OrderEvent> events = []
+        orderEventDao.readByOrderId(orderId).each { OrderEventEntity entity ->
+            OrderEvent event = modelMapper.toOrderEventModel(entity, new MappingContext())
+            events << event
+        }
+        if (events.size() > orderEventsNumThreshHold) {
+            LOGGER.warn('name=Too_Many_Order_Events, orderId={}, threshHold={}, current={}', orderId,
+                    orderEventsNumThreshHold, events.size())
+        }
+        return events
     }
 
     void saveOrderItems(OrderId orderId, List<OrderItem> orderItems) {

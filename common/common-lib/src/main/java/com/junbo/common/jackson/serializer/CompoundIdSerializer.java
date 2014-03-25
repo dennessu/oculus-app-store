@@ -35,15 +35,10 @@ public class CompoundIdSerializer extends ResourceIdSerializer {
             for (Field field : value.getClass().getDeclaredFields()) {
                 field.setAccessible(true);
                 Object fieldValue = field.get(value);
-
-                if (fieldValue == null) {
-                    throw new RuntimeException("Field [" + field.getName() + "] value should not be null.");
-                }
-
                 path = path.replace("{" + field.getName() + "}", encode(fieldValue));
             }
         } catch (IllegalAccessException e) {
-            throw new RuntimeException("Error occurred serialize CompoundId.");
+            throw new RuntimeException("Error occurred during serializing CompoundId.");
         }
 
         return RESOURCE_URL_PREFIX + path;

@@ -5,15 +5,17 @@
  */
 package com.junbo.notification;
 
-import com.junbo.notification.queue.TestProducer;
 import com.junbo.notification.topic.TestPublisher;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.Test;
 
 /**
  * TopicTest.
  */
-public class TopicTest extends BaseTest {
+@ContextConfiguration(locations = {"classpath:spring/context-test-topic.xml"})
+public class TopicTest extends AbstractTestNGSpringContextTests {
     @Autowired
     private TestPublisher publisher;
 

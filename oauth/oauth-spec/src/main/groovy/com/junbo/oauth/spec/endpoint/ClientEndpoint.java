@@ -19,7 +19,7 @@ import javax.ws.rs.core.Response;
  * ClientEndpoint.
  */
 @Api(value = "oauth2", basePath = "oauth2")
-@Path("clients")
+@Path("/oauth2/clients")
 @RestResource
 @Produces(MediaType.APPLICATION_JSON)
 public interface ClientEndpoint {

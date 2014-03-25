@@ -1,7 +1,13 @@
 
-var identity = require('./lib/identity');
-var cart = require('./lib/cart');
+var Identity = require('./lib/identity');
+var Cart = require('./lib/cart');
+var Order = require('./lib/order');
+var Billing = require('./lib/billing');
+var Payment = require('./lib/payment');
 
 
-exports.Identity = identity;
-exports.Cart = cart;
+exports.Identity = Identity;
+exports.Cart = Cart;
+exports.Order = Order;
+exports.Billing = Billing;
+exports.Payment = Payment;

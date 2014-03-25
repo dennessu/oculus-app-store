@@ -15,6 +15,7 @@ import com.junbo.order.core.FlowType
 import com.junbo.order.core.OrderService
 import com.junbo.order.core.OrderServiceOperation
 import com.junbo.order.core.impl.common.CoreUtils
+import com.junbo.order.core.impl.common.OrderStatusBuilder
 import com.junbo.order.core.impl.orderaction.ActionUtils
 import com.junbo.order.core.impl.orderaction.context.OrderActionContext
 import com.junbo.order.db.entity.enums.OrderActionType
@@ -67,7 +68,13 @@ class OrderServiceImpl implements OrderService {
         def orderServiceContext = initOrderServiceContext(order)
         flowSelector.select(
                 new OrderServiceContext(order), OrderServiceOperation.CREATE).syncThen { FlowType flowType ->
-            executeFlow(flowType, orderServiceContext, null)
+            // Prepare Flow Request
+            Map<String, Object> requestScope = [:]
+            def orderActionContext = new OrderActionContext()
+            orderActionContext.orderServiceContext = orderServiceContext
+            orderActionContext.trackingUuid = order.trackingUuid
+            requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object) orderActionContext)
+            executeFlow(flowType, orderServiceContext, requestScope)
         }.syncThen {
             return orderServiceContext.order
         }
@@ -79,7 +86,13 @@ class OrderServiceImpl implements OrderService {
         order.tentative = false
         def orderServiceContext = initOrderServiceContext(order)
         flowSelector.select(orderServiceContext, OrderServiceOperation.SETTLE_TENTATIVE).then { FlowType flowType ->
-            executeFlow(flowType, orderServiceContext, null)
+            // Prepare Flow Request
+            Map<String, Object> requestScope = [:]
+            def orderActionContext = new OrderActionContext()
+            orderActionContext.orderServiceContext = orderServiceContext
+            orderActionContext.trackingUuid = order.trackingUuid
+            requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object) orderActionContext)
+            executeFlow(flowType, orderServiceContext, requestScope)
         }.syncThen {
             return orderServiceContext.order
         }
@@ -156,17 +169,11 @@ class OrderServiceImpl implements OrderService {
         if (order.orderItems == null) {
             throw AppErrors.INSTANCE.orderItemNotFound().exception()
         }
-        // rating info
-        order.totalAmount = 0
-        order.orderItems?.each { OrderItem orderItem ->
-            if (orderItem.totalAmount != null) {
-                order.totalAmount += orderItem.totalAmount
-            }
-        }
         // payment instrument
         order.setPaymentInstruments(orderRepository.getPaymentInstrumentIds(order.id.value))
         // discount
         order.setDiscounts(orderRepository.getDiscounts(order.id.value))
+        refreshOrderStatus(order)
         return order
     }
 
@@ -219,12 +226,23 @@ class OrderServiceImpl implements OrderService {
         return order
     }
 
+    private void refreshOrderStatus(Order order) {
+        def status = OrderStatusBuilder.buildOrderStatus(order,
+                orderRepository.getOrderEvents(order.id.value))
+        if (status != order.status) {
+            order.status = status
+            orderRepository.updateOrder(order, true)
+        }
+    }
+
     private Promise<OrderServiceContext> executeFlow(
             FlowType flowType, OrderServiceContext context,
             Map<String, Object> requestScope) {
-        def scope = ActionUtils.initRequestScope(context, requestScope)
-        scope.put(ActionUtils.REQUEST_FLOW_TYPE, (Object) flowType)
-        return flowExecutor.start(flowType.name(), scope).syncRecover { Throwable throwable ->
+        if (requestScope == null) {
+            requestScope = ActionUtils.initRequestScope(context)
+        }
+        requestScope.put(ActionUtils.REQUEST_FLOW_TYPE, (Object) flowType)
+        return flowExecutor.start(flowType.name(), requestScope).syncRecover { Throwable throwable ->
             LOGGER.error('name=Flow_Execution_Failed. flowType: ' + flowType, throwable)
             if (throwable instanceof AppErrorException) {
                 throw throwable

@@ -40,4 +40,6 @@ public class ErrorCode {
     public static final String BILLING_TRANSACTION_NOT_FOUND = "BILLING_TRANSACTION_NOT_FOUND";
 
     public static final String INVALID_PAYMENT_ID = "INVALID_PAYMENT_ID";
+
+    public static final String ADDRESS_VALIDATION_ERROR = "ADDRESS_VALIDATION_ERROR";
 }

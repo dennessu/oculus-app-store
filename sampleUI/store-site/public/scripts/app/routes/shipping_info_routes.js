@@ -8,6 +8,11 @@ var ShippingInfoRoutes = {
     IndexRoute: Ember.Route.extend({
         beforeModel: function(){
             Utils.GetViews(AppConfig.Templates.ShippingInfo.Index);
+        },
+        model: function(){
+            return this.store.findAll("ShippingInfo");
+        },
+        afterModel: function(){
         }
     }),
     EditRoute: Ember.Route.extend({

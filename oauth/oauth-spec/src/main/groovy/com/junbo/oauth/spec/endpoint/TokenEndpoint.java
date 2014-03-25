@@ -25,7 +25,7 @@ import javax.ws.rs.core.MultivaluedMap;
  * Javadoc.
  */
 @Api(value = "oauth2", basePath = "oauth2")
-@Path("token")
+@Path("/oauth2/token")
 @RestResource
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_FORM_URLENCODED)

@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by xmchen on 14-2-19.
@@ -164,6 +165,16 @@ public class BalanceRepositoryImpl implements BalanceRepository {
         }
 
         return balances;
+    }
+
+    @Override
+    public Balance getBalanceByUuid(UUID uuid) {
+        List<BalanceEntity> balanceEntities = balanceEntityDao.getByTrackingUuid(uuid);
+        if(balanceEntities != null && balanceEntities.size() > 0) {
+            Long balanceId = balanceEntities.get(0).getBalanceId();
+            return getBalance(balanceId);
+        }
+        return null;
     }
 
     @Override
