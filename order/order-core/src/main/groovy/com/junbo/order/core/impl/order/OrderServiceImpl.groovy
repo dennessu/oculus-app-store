@@ -238,11 +238,12 @@ class OrderServiceImpl implements OrderService {
     private Promise<OrderServiceContext> executeFlow(
             FlowType flowType, OrderServiceContext context,
             Map<String, Object> requestScope) {
+        def scope = requestScope
         if (requestScope == null) {
-            requestScope = ActionUtils.initRequestScope(context)
+            scope = ActionUtils.initRequestScope(context)
         }
-        requestScope.put(ActionUtils.REQUEST_FLOW_TYPE, (Object) flowType)
-        return flowExecutor.start(flowType.name(), requestScope).syncRecover { Throwable throwable ->
+        scope.put(ActionUtils.REQUEST_FLOW_TYPE, (Object) flowType)
+        return flowExecutor.start(flowType.name(), scope).syncRecover { Throwable throwable ->
             LOGGER.error('name=Flow_Execution_Failed. flowType: ' + flowType, throwable)
             if (throwable instanceof AppErrorException) {
                 throw throwable
