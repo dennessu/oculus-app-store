@@ -17,7 +17,7 @@ import org.springframework.transaction.support.TransactionTemplate;
  * TransactionSupport.
  */
 public abstract class TransactionSupport {
-    private static final Object NO_RETURN = null;
+    private static final Void NO_RETURN = null;
 
     @Autowired
     private PlatformTransactionManager transactionManager;
@@ -26,8 +26,8 @@ public abstract class TransactionSupport {
         TransactionTemplate template = new TransactionTemplate(transactionManager);
         template.setPropagationBehavior(TransactionDefinition.PROPAGATION_MANDATORY);
 
-        template.execute(new TransactionCallback() {
-            public Object doInTransaction(TransactionStatus status) {
+        template.execute(new TransactionCallback<Void>() {
+            public Void doInTransaction(TransactionStatus status) {
                 callback.apply();
                 return NO_RETURN;
             }
