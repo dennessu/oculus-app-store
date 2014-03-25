@@ -23,15 +23,15 @@ import javax.ws.rs.core.MediaType;
 public interface TokenResource {
     @POST
     @Path("/token-orders")
-    Promise<TokenOrder> postOrder(TokenOrder request);
+    Promise<OrderRequest> postOrder(OrderRequest request);
 
     @GET
     @Path("/token-orders/{tokenOrderId}")
-    Promise<TokenOrder> getOrderById(@PathParam("tokenOrderId") Long tokenOrderId);
+    Promise<OrderRequest> getOrderById(@PathParam("tokenOrderId") Long tokenOrderId);
 
     @GET
     @Path("/token-orders/search")
-    Promise<ResultList<TokenOrder>> searchOrder(
+    Promise<ResultList<OrderRequest>> searchOrder(
             @BeanParam TokenOrderSearchParam searchParam,
             @BeanParam PageMetaData pageMetadata);
 
