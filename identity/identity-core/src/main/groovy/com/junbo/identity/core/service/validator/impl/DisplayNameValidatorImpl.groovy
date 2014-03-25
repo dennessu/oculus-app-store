@@ -20,15 +20,15 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class DisplayNameValidatorImpl implements DisplayNameValidator {
 
-    public static final int FIRSTNAME_LASTNAME_THEN_USERNAME = 1;
+    public static final int FIRSTNAME_LASTNAME_THEN_USERNAME = 1
 
-    public static final int LASTNAME_FIRSTNAME_THEN_USERNAME = 2;
+    public static final int LASTNAME_FIRSTNAME_THEN_USERNAME = 2
 
-    public static final int FIRSTNAME_MIDDLENAME_LASTNAME_THEN_USERNAME = 3;
+    public static final int FIRSTNAME_MIDDLENAME_LASTNAME_THEN_USERNAME = 3
 
-    public static final int LASTNAME_MIDDLENAME_FIRSTNAME_THEN_USERNAME = 4;
+    public static final int LASTNAME_MIDDLENAME_FIRSTNAME_THEN_USERNAME = 4
 
-    public static final int USERNAME = 5;
+    public static final int USERNAME = 5
 
     Integer getDisplayNameType(User user) {
         if (user == null) {

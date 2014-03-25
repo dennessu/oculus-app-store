@@ -1,12 +1,7 @@
 package com.junbo.identity.core.service.filter
 
 import com.junbo.identity.spec.model.users.User
-import com.junbo.oom.core.MappingContext
-import com.junbo.oom.core.filter.PropertiesToIncludeFilter
-import com.junbo.oom.core.filter.PropertyMappingFilterList
-import com.junbo.oom.core.filter.SkipNullPropertyFilter
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 /**

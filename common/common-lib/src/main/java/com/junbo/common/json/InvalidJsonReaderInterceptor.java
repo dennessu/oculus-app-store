@@ -1,3 +1,9 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
+ */
+
 package com.junbo.common.json;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -12,6 +18,9 @@ import javax.ws.rs.ext.ReaderInterceptor;
 import javax.ws.rs.ext.ReaderInterceptorContext;
 import java.io.IOException;
 
+/**
+ * Created by liangfu on 3/11/14.
+ */
 @Provider
 public class InvalidJsonReaderInterceptor implements ReaderInterceptor {
 
@@ -28,7 +37,10 @@ public class InvalidJsonReaderInterceptor implements ReaderInterceptor {
 
     public static final Errors ERRORS = ErrorProxy.newProxyInstance(Errors.class);
 
-    public static interface Errors {
+    /**
+     * Created by liangfu on 3/11/14.
+     */
+    public interface Errors {
 
         @ErrorDef(httpStatusCode = 400, code = "10001", description = "invalid Json: {0}", field = "request.body")
         AppError invalidJson(String detail);

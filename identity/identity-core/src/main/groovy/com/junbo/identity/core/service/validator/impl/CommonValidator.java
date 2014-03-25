@@ -7,8 +7,6 @@ package com.junbo.identity.core.service.validator.impl;
 
 import com.junbo.common.id.UserId;
 import com.junbo.identity.data.repository.UserRepository;
-import com.junbo.identity.spec.error.AppErrors;
-import com.junbo.identity.spec.model.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

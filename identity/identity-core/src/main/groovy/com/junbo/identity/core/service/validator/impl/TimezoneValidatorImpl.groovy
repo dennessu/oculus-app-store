@@ -2,7 +2,7 @@ package com.junbo.identity.core.service.validator.impl
 
 import com.junbo.identity.core.service.validator.TimezoneValidator
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Required;
+import org.springframework.beans.factory.annotation.Required
 
 /**
  * Created by kg on 3/18/14.

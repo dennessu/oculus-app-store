@@ -193,9 +193,11 @@ class UserValidatorImpl implements UserValidator {
             user.active = true
         }
 
+        /*
         if (user.active != oldUser.active) {
             // TODO: only admin can do it.
         }
+        */
 
         if (user.displayNameType != null) {
             throw AppErrors.INSTANCE.fieldNotWritable('displayNameType').exception()

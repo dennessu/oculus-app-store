@@ -9,11 +9,11 @@ import com.junbo.common.id.UserLoginAttemptId;
 import com.junbo.identity.core.service.user.UserLoginAttemptService;
 import com.junbo.identity.core.service.user.UserPasswordService;
 import com.junbo.identity.core.service.user.UserPinService;
-import com.junbo.identity.core.service.user.UserService;
 import com.junbo.identity.core.service.util.Constants;
 import com.junbo.identity.core.service.util.UserPasswordUtil;
 import com.junbo.identity.core.service.validator.UserLoginAttemptValidator;
 import com.junbo.identity.data.repository.UserLoginAttemptRepository;
+import com.junbo.identity.data.repository.UserRepository;
 import com.junbo.identity.spec.model.users.User;
 import com.junbo.identity.spec.model.users.UserLoginAttempt;
 import com.junbo.identity.spec.model.users.UserPassword;
@@ -28,6 +28,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by liangfu on 3/24/14.
@@ -43,7 +44,7 @@ public class UserLoginAttemptServiceImpl implements UserLoginAttemptService {
     private UserPinService userPinService;
 
     @Autowired
-    private UserService userService;
+    private UserRepository userRepository;
 
     @Autowired
     private UserLoginAttemptRepository userLoginAttemptRepository;
@@ -63,9 +64,16 @@ public class UserLoginAttemptServiceImpl implements UserLoginAttemptService {
         String decode = Base64.decodeAsString(userLoginAttempt.getValue());
         String[] split = decode.split(Constants.COLON);
         UserListOptions option = new UserListOptions();
-        option.setUserName(split[0]);
+        option.setUsername(split[0]);
         option.setLimit(1);
-        List<User> users = userService.search(option);
+        List<User> users = null;
+        try {
+            users = userRepository.search(option).wrapped().get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
         if(userLoginAttempt.getType().equals("password")) {
             UserPasswordListOptions passwordListOption = new UserPasswordListOptions();
             passwordListOption.setUserId(users.get(0).getId());
