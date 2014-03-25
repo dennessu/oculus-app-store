@@ -23,7 +23,5 @@ public interface UserEmailRepository {
 
     List<UserEmail> search(UserEmailListOption getOption);
 
-    UserEmail findByUserEmail(String value);
-
     void delete(UserEmailId id);
 }

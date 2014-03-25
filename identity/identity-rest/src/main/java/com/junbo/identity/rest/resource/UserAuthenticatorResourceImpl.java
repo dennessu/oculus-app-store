@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.ext.Provider;
+import java.util.List;
 
 /**
  * Created by liangfu on 3/14/14.
@@ -67,6 +68,10 @@ public class UserAuthenticatorResourceImpl implements UserAuthenticatorResource 
 
     @Override
     public Promise<Results<UserAuthenticator>> list(@BeanParam UserAuthenticatorListOption listOptions) {
-        return null;
+        List<UserAuthenticator> userAuthenticators = userAuthenticatorService.search(listOptions);
+        Results<UserAuthenticator> results = new Results<>();
+        results.setItems(userAuthenticators);
+        // Todo:    Need to set next
+        return Promise.pure(results);
     }
 }

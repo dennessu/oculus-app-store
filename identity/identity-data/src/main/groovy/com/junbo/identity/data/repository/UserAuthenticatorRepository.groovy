@@ -23,7 +23,5 @@ interface UserAuthenticatorRepository {
 
     List<UserAuthenticator> search(UserAuthenticatorListOption getOption)
 
-    UserAuthenticator findByAuthenticatorValue(String value)
-
     void delete(UserAuthenticatorId id)
 }

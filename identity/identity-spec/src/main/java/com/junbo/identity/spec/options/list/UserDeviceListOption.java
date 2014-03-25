@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.spec.options.list;
 
+import com.junbo.common.id.DeviceId;
 import com.junbo.common.id.UserId;
 
 import javax.ws.rs.QueryParam;
@@ -14,16 +15,16 @@ import javax.ws.rs.QueryParam;
  */
 public class UserDeviceListOption extends PagingGetOption {
     @QueryParam("deviceId")
-    private String deviceId;
+    private DeviceId deviceId;
 
     @QueryParam("userId")
     private UserId userId;
 
-    public String getDeviceId() {
+    public DeviceId getDeviceId() {
         return deviceId;
     }
 
-    public void setDeviceId(String deviceId) {
+    public void setDeviceId(DeviceId deviceId) {
         this.deviceId = deviceId;
     }
 

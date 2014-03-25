@@ -78,13 +78,12 @@ class UserAuthenticatorRepositoryImpl implements UserAuthenticatorRepository {
             return result
         }
         else if (getOption != null && getOption.value != null) {
-            result.add(modelMapper.toUserAuthenticator(findByAuthenticatorValue(getOption.value), new MappingContext()))
+            result.add(searchByAuthenticatorValue(getOption.value))
             return result
         }
     }
 
-    @Override
-    UserAuthenticator findByAuthenticatorValue(String value) {
+    private UserAuthenticator searchByAuthenticatorValue(String value) {
         def authenticatorReverseEntity = authenticatorReverseIndexDAO.get(value)
         def userAuthenticator = authenticatorDAO.get(authenticatorReverseEntity.userAuthenticatorId)
 

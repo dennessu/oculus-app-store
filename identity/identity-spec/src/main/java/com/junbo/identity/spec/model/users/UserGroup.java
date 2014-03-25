@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.spec.model.users;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.GroupId;
 import com.junbo.common.id.UserGroupId;
 import com.junbo.common.id.UserId;
@@ -15,10 +16,13 @@ import com.junbo.common.util.Identifiable;
  */
 public class UserGroup extends ResourceMeta implements Identifiable<UserGroupId> {
 
+    @JsonProperty("self")
     private UserGroupId id;
 
+    @JsonProperty("user")
     private UserId userId;
 
+    @JsonProperty("group")
     private GroupId groupId;
 
     public UserGroupId getId() {

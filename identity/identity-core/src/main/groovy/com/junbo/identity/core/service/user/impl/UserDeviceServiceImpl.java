@@ -7,6 +7,7 @@ package com.junbo.identity.core.service.user.impl;
 
 import com.junbo.common.id.UserDeviceId;
 import com.junbo.common.id.UserId;
+import com.junbo.identity.core.service.validator.UserDeviceValidator;
 import com.junbo.identity.data.repository.UserDeviceRepository;
 import com.junbo.identity.core.service.user.UserDeviceService;
 import com.junbo.identity.spec.options.list.UserDeviceListOption;
@@ -26,13 +27,20 @@ public class UserDeviceServiceImpl implements UserDeviceService {
     @Autowired
     private UserDeviceRepository userDeviceRepository;
 
+    @Autowired
+    private UserDeviceValidator validator;
+
     @Override
     public UserDevice save(UserId userId, UserDevice userDevice) {
+        validator.validateCreate(userId, userDevice);
+        userDevice.setUserId(userId);
         return userDeviceRepository.save(userDevice);
     }
 
     @Override
     public UserDevice update(UserId userId, UserDeviceId userDeviceId, UserDevice userDevice) {
+        validator.validateUpdate(userId, userDeviceId, userDevice);
+        userDevice.setUserId(userId);
         return userDeviceRepository.update(userDevice);
     }
 

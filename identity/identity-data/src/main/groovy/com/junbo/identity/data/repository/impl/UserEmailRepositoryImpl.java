@@ -55,7 +55,7 @@ public class UserEmailRepositoryImpl implements UserEmailRepository {
             }
         }
         else {
-            results.add(findByUserEmail(getOption.getValue()));
+            results.add(searchByUserEmail(getOption.getValue()));
         }
         return results;
     }
@@ -83,14 +83,6 @@ public class UserEmailRepositoryImpl implements UserEmailRepository {
     }
 
     @Override
-    public UserEmail findByUserEmail(String value) {
-        UserEmailReverseIndexEntity entity = userEmailReverseIndexDAO.get(value);
-        UserEmailEntity userEmailEntity = userEmailDAO.get(entity.getUserEmailId());
-
-        return modelMapper.toUserEmail(userEmailEntity, new MappingContext());
-    }
-
-    @Override
     public UserEmail save(UserEmail entity) {
         UserEmailEntity userEmailEntity = modelMapper.toUserEmail(entity, new MappingContext());
 
@@ -101,5 +93,12 @@ public class UserEmailRepositoryImpl implements UserEmailRepository {
         userEmailReverseIndexDAO.save(reverseIndexEntity);
 
         return get(new UserEmailId(userEmailEntity.getId()));
+    }
+
+    private UserEmail searchByUserEmail(String value) {
+        UserEmailReverseIndexEntity entity = userEmailReverseIndexDAO.get(value);
+        UserEmailEntity userEmailEntity = userEmailDAO.get(entity.getUserEmailId());
+
+        return modelMapper.toUserEmail(userEmailEntity, new MappingContext());
     }
 }
