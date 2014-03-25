@@ -4,11 +4,6 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
     <import resource="classpath*:spring/core-context.xml"/>
 
-    <bean id="broker" class="org.apache.activemq.xbean.BrokerFactoryBean">
-        <property name="config" value="classpath:/spring/activemq.xml"/>
-        <property name="systemExitOnShutdown" value="true"/>
-    </bean>
-
     <!-- Topic demo -->
     <bean id="testTopic" class="org.apache.activemq.command.ActiveMQTopic">
         <constructor-arg index="0" value="TEST_QUEUE"/>
