@@ -40,7 +40,7 @@ class TaxServiceImpl implements TaxService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TaxServiceImpl)
 
-    void chooseProvider() {
+    TaxServiceImpl() {
         switch (providerName) {
             case 'AVALARA':
                 taxFacade = avalaraFacade
@@ -61,7 +61,6 @@ class TaxServiceImpl implements TaxService {
             LOGGER.error('name=Error_Get_PaymentInstrument. pi id: ' + balance.piId.value, throwable)
             throw AppErrors.INSTANCE.piNotFound(piId.toString()).exception()
         }.then { PaymentInstrument pi ->
-            chooseProvider()
             if (balance.shippingAddressId != null) {
                 Long addressId = balance.shippingAddressId.value
                 return shippingAddressService.getShippingAddress(userId, addressId)
@@ -76,13 +75,11 @@ class TaxServiceImpl implements TaxService {
 
     @Override
     Promise<ShippingAddress> validateShippingAddress(ShippingAddress shippingAddress) {
-        chooseProvider()
         return taxFacade.validateShippingAddress(shippingAddress)
     }
 
     @Override
     Promise<Address> validatePiAddress(Address piAddress) {
-        chooseProvider()
         return taxFacade.validatePiAddress(piAddress)
     }
 }
