@@ -37,6 +37,13 @@ AppConfig.API = {
         },
         ShippingInfo: {Path: "get_shipping_info"},
         Add: {Path: "add"}
+    },
+    Payment:{
+        Config: {
+            Namespace: "/api/payment/"
+        },
+        PaymentInstruments: {Path: "get_payment_instruments" },
+        Add: {Path: "add"}
     }
 };
 
@@ -52,6 +59,10 @@ AppConfig.DataModelMapTable = {
     "Ember.App.ShippingInfo": {
         Provider: "BillingProvider",
         Method: "ShippingInfo"
+    },
+    "Ember.App.CreditCard": {
+        Provider: "PaymentProvider",
+        Method: "PaymentInstruments"
     }
 };
 
