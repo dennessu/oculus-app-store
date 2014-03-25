@@ -21,8 +21,7 @@ public class UserLoginAttempt extends ResourceMeta implements Identifiable<UserL
     // password or pin
     private String type;
 
-    // Todo:    Need to confirm with kgu, pin currently is only supported by userName:pin
-    // write only (base_64_encode(username:password) or (deviceid:pin)
+    // write only (base_64_encode(username:password) or (username:pin)
     private String value;
 
     private String ipAddress;

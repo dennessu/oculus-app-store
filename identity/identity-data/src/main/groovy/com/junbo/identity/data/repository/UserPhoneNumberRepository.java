@@ -6,7 +6,7 @@
 package com.junbo.identity.data.repository;
 
 import com.junbo.common.id.UserPhoneNumberId;
-import com.junbo.identity.spec.options.list.UserPhoneNumberListOption;
+import com.junbo.identity.spec.options.list.UserPhoneNumberListOptions;
 import com.junbo.identity.spec.model.users.UserPhoneNumber;
 
 import java.util.List;
@@ -21,7 +21,7 @@ public interface UserPhoneNumberRepository {
 
     UserPhoneNumber get(UserPhoneNumberId id);
 
-    List<UserPhoneNumber> search(UserPhoneNumberListOption getOption);
+    List<UserPhoneNumber> search(UserPhoneNumberListOptions getOption);
 
     void delete(UserPhoneNumberId id);
 }

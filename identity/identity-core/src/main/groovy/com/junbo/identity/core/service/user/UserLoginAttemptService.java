@@ -7,7 +7,7 @@ package com.junbo.identity.core.service.user;
 
 import com.junbo.common.id.UserLoginAttemptId;
 import com.junbo.identity.spec.model.users.UserLoginAttempt;
-import com.junbo.identity.spec.options.list.LoginAttemptListOption;
+import com.junbo.identity.spec.options.list.LoginAttemptListOptions;
 
 import java.util.List;
 
@@ -17,5 +17,5 @@ import java.util.List;
 public interface UserLoginAttemptService {
     UserLoginAttempt get(UserLoginAttemptId userLoginAttemptId);
     UserLoginAttempt create(UserLoginAttempt userLoginAttempt);
-    List<UserLoginAttempt> search(LoginAttemptListOption getOptions);
+    List<UserLoginAttempt> search(LoginAttemptListOptions getOptions);
 }

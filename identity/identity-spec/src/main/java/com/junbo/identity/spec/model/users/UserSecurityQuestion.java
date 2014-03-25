@@ -5,6 +5,8 @@
  */
 package com.junbo.identity.spec.model.users;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.SecurityQuestionId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserSecurityQuestionId;
@@ -15,16 +17,21 @@ import com.junbo.common.util.Identifiable;
  */
 public class UserSecurityQuestion extends ResourceMeta implements Identifiable<UserSecurityQuestionId> {
 
+    @JsonProperty("self")
     private UserSecurityQuestionId id;
 
+    @JsonProperty("securityQuestion")
     private SecurityQuestionId securityQuestionId;
 
     // write only
     private String answer;
 
     // not read and write possible
+    @JsonIgnore
     private String answerSalt;
+    @JsonIgnore
     private String answerHash;
+    @JsonIgnore
     private UserId userId;
 
     public UserSecurityQuestionId getId() {

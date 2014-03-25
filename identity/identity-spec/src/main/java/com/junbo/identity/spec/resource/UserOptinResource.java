@@ -10,7 +10,7 @@ import com.junbo.common.id.UserOptinId;
 import com.junbo.common.model.Results;
 import com.junbo.identity.spec.model.users.UserOptin;
 import com.junbo.identity.spec.options.entity.UserOptinGetOptions;
-import com.junbo.identity.spec.options.list.UserOptinListOption;
+import com.junbo.identity.spec.options.list.UserOptinListOptions;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 
@@ -57,5 +57,5 @@ public interface UserOptinResource {
     @GET
     @Path("/")
     Promise<Results<UserOptin>> list(@PathParam("userId") UserId userId,
-                                      @BeanParam UserOptinListOption listOptions);
+                                      @BeanParam UserOptinListOptions listOptions);
 }

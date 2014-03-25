@@ -8,7 +8,7 @@ package com.junbo.identity.core.service.validator;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserPasswordId;
 import com.junbo.identity.spec.model.users.UserPassword;
-import com.junbo.identity.spec.options.list.UserPasswordListOption;
+import com.junbo.identity.spec.options.list.UserPasswordListOptions;
 
 /**
  * Created by liangfu on 3/24/14.
@@ -16,5 +16,5 @@ import com.junbo.identity.spec.options.list.UserPasswordListOption;
 public interface UserPasswordValidator {
     void validateGet(UserId userId, UserPasswordId userPasswordId);
     void validateCreate(UserId userId, UserPassword userPassword);
-    void validateSearch(UserId userId, UserPasswordListOption getOption);
+    void validateSearch(UserId userId, UserPasswordListOptions getOption);
 }

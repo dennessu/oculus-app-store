@@ -7,7 +7,7 @@ package com.junbo.identity.core.service.validator;
 
 import com.junbo.common.id.UserLoginAttemptId;
 import com.junbo.identity.spec.model.users.UserLoginAttempt;
-import com.junbo.identity.spec.options.list.LoginAttemptListOption;
+import com.junbo.identity.spec.options.list.LoginAttemptListOptions;
 
 /**
  * Created by liangfu on 3/24/14.
@@ -15,5 +15,5 @@ import com.junbo.identity.spec.options.list.LoginAttemptListOption;
 public interface UserLoginAttemptValidator {
     void validateGet(UserLoginAttemptId userLoginAttemptId);
     void validateCreate(UserLoginAttempt userLoginAttempt);
-    void validateSearch(LoginAttemptListOption getOption);
+    void validateSearch(LoginAttemptListOptions getOption);
 }

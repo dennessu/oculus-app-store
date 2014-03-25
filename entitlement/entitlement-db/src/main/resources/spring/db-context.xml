@@ -44,16 +44,12 @@
     <tx:annotation-driven/>
 
     <!-- Dao -->
-    <bean id="baseDao" class="com.junbo.entitlement.db.dao.hibernate.BaseDao" abstract="true">
-        <property name="sessionFactory" ref="entitlementSessionFactory"/>
-    </bean>
+    <bean id="baseDao" class="com.junbo.entitlement.db.dao.hibernate.BaseDao" abstract="true"/>
 
     <bean id="entitlementDao" class="com.junbo.entitlement.db.dao.hibernate.EntitlementDaoImpl" parent="baseDao">
         <property name="entityType" value="com.junbo.entitlement.db.entity.EntitlementEntity"/>
     </bean>
-    <bean id="entitlementHistoryDao" class="com.junbo.entitlement.db.dao.hibernate.EntitlementHistoryDaoImpl">
-        <property name="sessionFactory" ref="entitlementSessionFactory"/>
-    </bean>
+    <bean id="entitlementHistoryDao" class="com.junbo.entitlement.db.dao.hibernate.EntitlementHistoryDaoImpl"/>
 
     <!-- repository -->
     <bean id="entitlementRepository" class="com.junbo.entitlement.db.repository.EntitlementRepository"/>

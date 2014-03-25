@@ -9,6 +9,8 @@ import com.junbo.order.spec.model.ApiContext
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.resource.OrderResource
 import groovy.transform.CompileStatic
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
@@ -31,6 +33,8 @@ class OrderResourceImpl implements OrderResource {
     @Autowired
     OrderService orderService
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(OrderResourceImpl)
+
     @Override
     Promise<Order> getOrderByOrderId(OrderId orderId) {
         return orderService.getOrderByOrderId(orderId.value)
@@ -38,16 +42,26 @@ class OrderResourceImpl implements OrderResource {
 
     @Override
     Promise<Order> createOrder(Order order) {
+        assert (order != null && order.trackingUuid != null && order.user != null)
+        def persistedOrder = orderService.getOrderByTrackingUuid(order.trackingUuid)
+        if (persistedOrder != null) {
+            LOGGER.info('name=Order_Already_Exist. userId:{}, trackingUuid: {}', [order.user.value, order.trackingUuid])
+            return Promise.pure(persistedOrder)
+        }
         if (!order?.tentative) {
             return orderService.createOrder(order, new ApiContext(requestContext.headers))
         }
-
         return orderService.createQuote(order, new ApiContext(requestContext.headers))
-
     }
 
     @Override
     Promise<Order> updateOrderByOrderId(OrderId orderId, Order order) {
+        assert (order != null && order.trackingUuid != null && order.user != null)
+        def persistedOrder = orderService.getOrderByTrackingUuid(order.trackingUuid)
+        if (persistedOrder != null) {
+            LOGGER.info('name=Order_Already_Exist. userId:{}, trackingUuid: {}', [order.user.value, order.trackingUuid])
+            return Promise.pure(persistedOrder)
+        }
         order.id = orderId
         orderService.getOrderByOrderId(orderId.value).then { Order oldOrder ->
             // handle the update request per scenario
@@ -68,11 +82,10 @@ class OrderResourceImpl implements OrderResource {
 
     @Override
     Promise<Results<Order>> getOrderByUserId(UserId userId) {
-        orderService.getOrdersByUserId(userId.value).then { List<Order> orders ->
+        orderService.getOrdersByUserId(userId.value).syncThen { List<Order> orders ->
             Results<Order> results = new Results<>()
             results.setItems(orders)
-            return results
+            return Promise.pure(results)
         }
     }
-
 }

@@ -9,7 +9,7 @@ import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserPinId;
 import com.junbo.identity.core.service.validator.UserPinValidator;
 import com.junbo.identity.spec.model.users.UserPin;
-import com.junbo.identity.spec.options.list.UserPinListOption;
+import com.junbo.identity.spec.options.list.UserPinListOptions;
 import org.springframework.stereotype.Component;
 
 /**
@@ -28,7 +28,7 @@ public class UserPinValidatorImpl extends CommonValidator implements UserPinVali
     }
 
     @Override
-    public void validateSearch(UserId userId, UserPinListOption getOption) {
+    public void validateSearch(UserId userId, UserPinListOptions getOption) {
 
     }
 }

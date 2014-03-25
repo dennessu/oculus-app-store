@@ -23,4 +23,5 @@
     <bean id="defaultUserSecurityQuestionResource" class="com.junbo.identity.rest.resource.UserSecurityQuestionResourceImpl" />
     <bean id="defaultUserTosResource" class="com.junbo.identity.rest.resource.UserTosResourceImpl" />
     <bean id="defaultSecurityQuestionResource" class="com.junbo.identity.rest.resource.SecurityQuestionResourceImpl" />
+    <bean id="defaultUserSecurityQuestionAttemptResource" class="com.junbo.identity.rest.resource.UserSecurityQuestionAttemptResourceImpl" />
 </beans>

@@ -9,7 +9,7 @@ import com.junbo.common.id.UserLoginAttemptId;
 import com.junbo.identity.core.service.validator.UserLoginAttemptValidator;
 import com.junbo.identity.data.repository.UserLoginAttemptRepository;
 import com.junbo.identity.spec.model.users.UserLoginAttempt;
-import com.junbo.identity.spec.options.list.LoginAttemptListOption;
+import com.junbo.identity.spec.options.list.LoginAttemptListOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -33,7 +33,7 @@ public class UserLoginAttemptValidatorImpl extends CommonValidator implements Us
     }
 
     @Override
-    public void validateSearch(LoginAttemptListOption getOption) {
+    public void validateSearch(LoginAttemptListOptions getOption) {
 
     }
 }

@@ -10,7 +10,7 @@ import com.junbo.common.id.UserSecurityQuestionId;
 import com.junbo.common.model.Results;
 import com.junbo.identity.spec.model.users.UserSecurityQuestion;
 import com.junbo.identity.spec.options.entity.UserSecurityQuestionGetOptions;
-import com.junbo.identity.spec.options.list.UserSecurityQuestionListOption;
+import com.junbo.identity.spec.options.list.UserSecurityQuestionListOptions;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 
@@ -31,23 +31,6 @@ public interface UserSecurityQuestionResource {
     Promise<UserSecurityQuestion> create(@PathParam("userId") UserId userId,
                                          UserSecurityQuestion userSecurityQuestion);
 
-    @PUT
-    @Path("/{userSecurityQuestionId}")
-    Promise<UserSecurityQuestion> put(@PathParam("userId") UserId userId,
-                                  @PathParam("userSecurityQuestionId") UserSecurityQuestionId userSecurityQuestionId,
-                                  UserSecurityQuestion userSecurityQuestion);
-
-    @POST
-    @Path("/{userSecurityQuestionId}")
-    Promise<UserSecurityQuestion> patch(@PathParam("userId") UserId userId,
-                                    @PathParam("userSecurityQuestionId") UserSecurityQuestionId userSecurityQuestionId,
-                                    UserSecurityQuestion userSecurityQuestion);
-
-    @DELETE
-    @Path("/{userSecurityQuestionId}")
-    Promise<UserSecurityQuestion> delete(@PathParam("userId") UserId userId,
-                                 @PathParam("userSecurityQuestionId") UserSecurityQuestionId userSecurityQuestionId);
-
     @GET
     @Path("/{userSecurityQuestionId}")
     Promise<UserSecurityQuestion> get(@PathParam("userId") UserId userId,
@@ -57,6 +40,6 @@ public interface UserSecurityQuestionResource {
     @GET
     @Path("/")
     Promise<Results<UserSecurityQuestion>> list(@PathParam("userId") UserId userId,
-                                  @BeanParam UserSecurityQuestionListOption listOptions);
+                                  @BeanParam UserSecurityQuestionListOptions listOptions);
 
 }

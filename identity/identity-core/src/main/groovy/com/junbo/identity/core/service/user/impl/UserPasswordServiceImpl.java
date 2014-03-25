@@ -12,7 +12,7 @@ import com.junbo.identity.core.service.util.UserPasswordUtil;
 import com.junbo.identity.core.service.validator.UserPasswordValidator;
 import com.junbo.identity.data.repository.UserPasswordRepository;
 import com.junbo.identity.spec.model.users.UserPassword;
-import com.junbo.identity.spec.options.list.UserPasswordListOption;
+import com.junbo.identity.spec.options.list.UserPasswordListOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,7 +50,7 @@ public class UserPasswordServiceImpl implements UserPasswordService {
     }
 
     @Override
-    public List<UserPassword> search(UserPasswordListOption getOptions) {
+    public List<UserPassword> search(UserPasswordListOptions getOptions) {
         return userPasswordRepository.search(getOptions);
     }
 }

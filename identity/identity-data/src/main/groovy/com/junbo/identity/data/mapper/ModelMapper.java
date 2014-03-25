@@ -74,4 +74,9 @@ public interface ModelMapper {
 
     UserName toUserName(UserNameEntity entity, MappingContext context);
     UserNameEntity toUserName(UserName entity, MappingContext context);
+
+    UserSecurityQuestionAttempt toUserSecurityQuestionAttempt(UserSecurityQuestionAttemptEntity entity,
+                                                              MappingContext context);
+    UserSecurityQuestionAttemptEntity toUserSecurityQuestionAttempt(UserSecurityQuestionAttempt entity,
+                                                              MappingContext context);
 }

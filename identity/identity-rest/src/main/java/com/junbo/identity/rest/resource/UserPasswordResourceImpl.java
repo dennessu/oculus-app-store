@@ -11,7 +11,7 @@ import com.junbo.common.model.Results;
 import com.junbo.identity.core.service.user.UserPasswordService;
 import com.junbo.identity.spec.model.users.UserPassword;
 import com.junbo.identity.spec.options.entity.UserPasswordGetOptions;
-import com.junbo.identity.spec.options.list.UserPasswordListOption;
+import com.junbo.identity.spec.options.list.UserPasswordListOptions;
 import com.junbo.identity.spec.resource.UserPasswordResource;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +44,7 @@ public class UserPasswordResourceImpl implements UserPasswordResource {
     }
 
     @Override
-    public Promise<Results<UserPassword>> list(UserId userId, @BeanParam UserPasswordListOption listOptions) {
+    public Promise<Results<UserPassword>> list(UserId userId, @BeanParam UserPasswordListOptions listOptions) {
         // todo:    Need to split expand and list getOptions
         return Promise.pure(null);
     }

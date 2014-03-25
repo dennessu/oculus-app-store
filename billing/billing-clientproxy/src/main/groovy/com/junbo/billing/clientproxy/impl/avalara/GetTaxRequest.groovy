@@ -93,4 +93,28 @@ class GetTaxRequest {
     // associated with the terminal processing a sale.
     @JsonProperty('PosLaneCode')
     String posLaneCode
+
+    @Override
+    String toString() {
+        return 'GetTaxRequest{' +
+                'docDate=' + docDate +
+                ", customerCode='" + customerCode + '\'' +
+                ', addresses=' + Arrays.toString(addresses) +
+                ', lines=' + Arrays.toString(lines) +
+                ", docCode='" + docCode + '\'' +
+                ', docType=' + docType +
+                ", companyCode='" + companyCode + '\'' +
+                ', commit=' + commit +
+                ', detailLevel=' + detailLevel +
+                ", client='" + client + '\'' +
+                ", customerUsageType='" + customerUsageType + '\'' +
+                ", exemptionNo='" + exemptionNo + '\'' +
+                ', discount=' + discount +
+                ', taxOverride=' + taxOverride +
+                ", businessIdentificationNo='" + businessIdentificationNo + '\'' +
+                ", purchaseOrderNo='" + purchaseOrderNo + '\'' +
+                ", referenceCode='" + referenceCode + '\'' +
+                ", posLaneCode='" + posLaneCode + '\'' +
+                '}'
+    }
 }

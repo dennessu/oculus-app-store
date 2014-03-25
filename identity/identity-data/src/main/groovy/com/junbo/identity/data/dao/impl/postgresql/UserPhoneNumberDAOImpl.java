@@ -7,7 +7,7 @@ package com.junbo.identity.data.dao.impl.postgresql;
 
 import com.junbo.identity.data.dao.UserPhoneNumberDAO;
 import com.junbo.identity.data.entity.user.UserPhoneNumberEntity;
-import com.junbo.identity.spec.options.list.UserPhoneNumberListOption;
+import com.junbo.identity.spec.options.list.UserPhoneNumberListOptions;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -39,7 +39,7 @@ public class UserPhoneNumberDAOImpl extends ShardedDAOBase implements UserPhoneN
     }
 
     @Override
-    public List<UserPhoneNumberEntity> search(Long userId, UserPhoneNumberListOption getOption) {
+    public List<UserPhoneNumberEntity> search(Long userId, UserPhoneNumberListOptions getOption) {
         String query = "select * from user_phone_number where user_id = " + (getOption.getUserId().getValue()) +
                 (StringUtils.isEmpty(getOption.getType()) ? "" : (" and type = \'" + getOption.getType()) + "\'") +
                 (StringUtils.isEmpty(getOption.getValue()) ? "" : (" and value = \'" + getOption.getValue()) + "\'") +

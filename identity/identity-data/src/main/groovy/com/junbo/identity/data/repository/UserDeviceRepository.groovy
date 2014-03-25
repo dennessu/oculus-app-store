@@ -6,7 +6,7 @@
 package com.junbo.identity.data.repository
 
 import com.junbo.common.id.UserDeviceId
-import com.junbo.identity.spec.options.list.UserDeviceListOption
+import com.junbo.identity.spec.options.list.UserDeviceListOptions
 import com.junbo.identity.spec.model.users.UserDevice
 
 /**
@@ -20,7 +20,7 @@ interface UserDeviceRepository {
 
     UserDevice get(UserDeviceId id)
 
-    List<UserDevice> search(UserDeviceListOption getOption)
+    List<UserDevice> search(UserDeviceListOptions getOption)
 
     void delete(UserDeviceId id)
 }

@@ -8,15 +8,19 @@ package com.junbo.identity.rest.resource;
 import com.junbo.common.id.UserEmailId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.model.Results;
+import com.junbo.identity.core.service.user.UserEmailService;
+import com.junbo.identity.spec.model.common.ResultsUtil;
 import com.junbo.identity.spec.model.users.UserEmail;
 import com.junbo.identity.spec.options.entity.UserEmailGetOptions;
-import com.junbo.identity.spec.options.list.UserEmailListOption;
+import com.junbo.identity.spec.options.list.UserEmailListOptions;
 import com.junbo.identity.spec.resource.UserEmailResource;
 import com.junbo.langur.core.promise.Promise;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.ext.Provider;
+import java.util.List;
 
 /**
  * Created by liangfu on 3/14/14.
@@ -26,14 +30,17 @@ import javax.ws.rs.ext.Provider;
 @org.springframework.context.annotation.Scope("prototype")
 public class UserEmailResourceImpl implements UserEmailResource {
 
+    @Autowired
+    private UserEmailService userEmailService;
+
     @Override
     public Promise<UserEmail> create(UserId userId, UserEmail userEmail) {
-        return null;
+        return Promise.pure(userEmailService.save(userId, userEmail));
     }
 
     @Override
     public Promise<UserEmail> put(UserId userId, UserEmailId userEmailId, UserEmail userEmail) {
-        return null;
+        return Promise.pure(userEmailService.update(userId, userEmailId, userEmail));
     }
 
     @Override
@@ -48,16 +55,24 @@ public class UserEmailResourceImpl implements UserEmailResource {
 
     @Override
     public Promise<UserEmail> get(UserId userId, UserEmailId userEmailId, @BeanParam UserEmailGetOptions getOptions) {
-        return null;
+        return Promise.pure(userEmailService.get(userId, userEmailId));
     }
 
     @Override
-    public Promise<Results<UserEmail>> list(UserId userId, @BeanParam UserEmailListOption listOptions) {
-        return null;
+    public Promise<Results<UserEmail>> list(UserId userId, @BeanParam UserEmailListOptions listOptions) {
+        if(listOptions == null) {
+            listOptions = new UserEmailListOptions();
+        }
+        listOptions.setUserId(userId);
+        List<UserEmail> userEmailList = userEmailService.search(listOptions);
+        return Promise.pure(ResultsUtil.init(userEmailList,
+                listOptions.getLimit() == null ? Integer.MAX_VALUE : listOptions.getLimit()));
     }
 
     @Override
-    public Promise<Results<UserEmail>> list(@BeanParam UserEmailListOption listOptions) {
-        return null;
+    public Promise<Results<UserEmail>> list(@BeanParam UserEmailListOptions listOptions) {
+        List<UserEmail> userEmailList = userEmailService.search(listOptions);
+        return Promise.pure(ResultsUtil.init(userEmailList,
+                listOptions.getLimit() == null ? Integer.MAX_VALUE : listOptions.getLimit()));
     }
 }

@@ -6,8 +6,8 @@
 package com.junbo.identity.data.repository
 
 import com.junbo.common.id.UserOptinId
-import com.junbo.identity.spec.options.list.UserOptinListOption
 import com.junbo.identity.spec.model.users.UserOptin
+import com.junbo.identity.spec.options.list.UserOptinListOptions
 
 /**
  * User OptIn DAO is used to fetch/update/delete/get user OptIn data(such as sports, news) from the database
@@ -20,7 +20,7 @@ interface UserOptinRepository {
 
     UserOptin get(UserOptinId id)
 
-    List<UserOptin> search(UserOptinListOption getOption)
+    List<UserOptin> search(UserOptinListOptions getOption)
 
     void delete(UserOptinId id)
 }

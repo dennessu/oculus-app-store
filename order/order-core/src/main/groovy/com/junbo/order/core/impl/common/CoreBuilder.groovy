@@ -41,6 +41,7 @@ class CoreBuilder {
         balance.userId = context.order.user
         balance.piId = context.order.paymentInstruments?.get(0)
         balance.type = balanceType.toString()
+        balance.trackingUuid = UUID.randomUUID()
 
         context.order.orderItems.eachWithIndex { OrderItem item, int i ->
             def balanceItem = buildBalanceItem(item)

@@ -7,8 +7,9 @@ package com.junbo.identity.core.service.user;
 
 import com.junbo.common.id.UserDeviceId;
 import com.junbo.common.id.UserId;
-import com.junbo.identity.spec.options.list.UserDeviceListOption;
+import com.junbo.identity.spec.options.list.UserDeviceListOptions;
 import com.junbo.identity.spec.model.users.UserDevice;
+
 import java.util.List;
 
 /**
@@ -18,6 +19,6 @@ public interface UserDeviceService {
     UserDevice save(UserId userId, UserDevice userDevice);
     UserDevice update(UserId userId, UserDeviceId userDeviceId, UserDevice userDevice);
     UserDevice get(UserId userId, UserDeviceId userDeviceId);
-    List<UserDevice> search(UserDeviceListOption getOption);
+    List<UserDevice> search(UserDeviceListOptions getOption);
     void delete(UserId userId, UserDeviceId userDeviceId);
 }

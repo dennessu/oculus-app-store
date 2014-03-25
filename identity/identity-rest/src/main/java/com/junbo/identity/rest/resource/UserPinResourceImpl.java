@@ -11,7 +11,7 @@ import com.junbo.common.model.Results;
 import com.junbo.identity.core.service.user.UserPinService;
 import com.junbo.identity.spec.model.users.UserPin;
 import com.junbo.identity.spec.options.entity.UserPinGetOptions;
-import com.junbo.identity.spec.options.list.UserPinListOption;
+import com.junbo.identity.spec.options.list.UserPinListOptions;
 import com.junbo.identity.spec.resource.UserPinResource;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +42,7 @@ public class UserPinResourceImpl implements UserPinResource {
     }
 
     @Override
-    public Promise<Results<UserPin>> list(UserId userId, @BeanParam UserPinListOption listOptions) {
+    public Promise<Results<UserPin>> list(UserId userId, @BeanParam UserPinListOptions listOptions) {
         // todo:    Need to implement expand and list option
         return null;
     }

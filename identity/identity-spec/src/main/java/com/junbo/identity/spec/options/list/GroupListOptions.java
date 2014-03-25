@@ -10,7 +10,7 @@ import javax.ws.rs.QueryParam;
 /**
  * Created by liangfu on 3/14/14.
  */
-public class GroupListOptions extends PagingGetOption {
+public class GroupListOptions extends PagingGetOptions {
     @QueryParam("name")
     private String name;
 

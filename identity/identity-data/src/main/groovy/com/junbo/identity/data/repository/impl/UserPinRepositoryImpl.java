@@ -10,7 +10,7 @@ import com.junbo.identity.data.dao.UserPinDAO;
 import com.junbo.identity.data.entity.user.UserPinEntity;
 import com.junbo.identity.data.mapper.ModelMapper;
 import com.junbo.identity.data.repository.UserPinRepository;
-import com.junbo.identity.spec.options.list.UserPinListOption;
+import com.junbo.identity.spec.options.list.UserPinListOptions;
 import com.junbo.identity.spec.model.users.UserPin;
 import com.junbo.oom.core.MappingContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +55,7 @@ public class UserPinRepositoryImpl implements UserPinRepository {
     }
 
     @Override
-    public List<UserPin> search(UserPinListOption getOption) {
+    public List<UserPin> search(UserPinListOptions getOption) {
         List entities = userPinDAO.search(getOption.getUserId().getValue(), getOption);
 
         List<UserPin> results = new ArrayList<UserPin>();

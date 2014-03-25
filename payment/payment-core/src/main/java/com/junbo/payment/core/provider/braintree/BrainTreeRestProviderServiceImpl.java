@@ -29,7 +29,7 @@ public class BrainTreeRestProviderServiceImpl implements PaymentProviderService 
 
     @Override
     public Promise<PaymentInstrument> add(PaymentInstrument request) {
-        return  brainTreeResource.addPaymentInstrument(request);
+        return brainTreeResource.addPaymentInstrument(request);
     }
 
     @Override

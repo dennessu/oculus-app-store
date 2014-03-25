@@ -5,6 +5,8 @@
  */
 package com.junbo.identity.spec.model.users;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserPhoneNumberId;
 import com.junbo.common.util.Identifiable;
@@ -14,6 +16,7 @@ import com.junbo.common.util.Identifiable;
  */
 public class UserPhoneNumber extends ResourceMeta implements Identifiable<UserPhoneNumberId> {
 
+    @JsonProperty("self")
     private UserPhoneNumberId id;
 
     private String type;
@@ -25,6 +28,7 @@ public class UserPhoneNumber extends ResourceMeta implements Identifiable<UserPh
     private Boolean verified;
 
     // not returned
+    @JsonIgnore
     private UserId userId;
 
     public UserPhoneNumberId getId() {

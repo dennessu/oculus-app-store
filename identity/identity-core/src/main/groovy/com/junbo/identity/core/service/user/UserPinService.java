@@ -8,7 +8,7 @@ package com.junbo.identity.core.service.user;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserPinId;
 import com.junbo.identity.spec.model.users.UserPin;
-import com.junbo.identity.spec.options.list.UserPinListOption;
+import com.junbo.identity.spec.options.list.UserPinListOptions;
 
 import java.util.List;
 
@@ -18,5 +18,5 @@ import java.util.List;
 public interface UserPinService {
     UserPin get(UserId userId, UserPinId userPinId);
     UserPin create(UserId userId, UserPin userPin);
-    List<UserPin> search(UserPinListOption getOptions);
+    List<UserPin> search(UserPinListOptions getOptions);
 }

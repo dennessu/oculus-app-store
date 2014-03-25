@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.spec.model.users;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.UserEmailId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.util.Identifiable;
@@ -14,6 +15,7 @@ import com.junbo.common.util.Identifiable;
  */
 public class UserEmail extends ResourceMeta implements Identifiable<UserEmailId> {
 
+    @JsonProperty("self")
     private UserEmailId id;
 
     private String value;
@@ -24,6 +26,7 @@ public class UserEmail extends ResourceMeta implements Identifiable<UserEmailId>
 
     private Boolean verified;
 
+    @JsonProperty("user")
     private UserId userId;
 
     public UserEmailId getId() {

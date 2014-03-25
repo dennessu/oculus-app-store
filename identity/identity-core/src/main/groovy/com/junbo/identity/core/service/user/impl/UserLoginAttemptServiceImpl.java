@@ -9,20 +9,19 @@ import com.junbo.common.id.UserLoginAttemptId;
 import com.junbo.identity.core.service.user.UserLoginAttemptService;
 import com.junbo.identity.core.service.user.UserPasswordService;
 import com.junbo.identity.core.service.user.UserPinService;
+import com.junbo.identity.core.service.user.UserService;
 import com.junbo.identity.core.service.util.Constants;
 import com.junbo.identity.core.service.util.UserPasswordUtil;
 import com.junbo.identity.core.service.validator.UserLoginAttemptValidator;
 import com.junbo.identity.data.repository.UserLoginAttemptRepository;
-import com.junbo.identity.data.repository.UserRepository;
-import com.junbo.identity.spec.error.AppErrors;
 import com.junbo.identity.spec.model.users.User;
 import com.junbo.identity.spec.model.users.UserLoginAttempt;
 import com.junbo.identity.spec.model.users.UserPassword;
 import com.junbo.identity.spec.model.users.UserPin;
-import com.junbo.identity.spec.options.list.LoginAttemptListOption;
+import com.junbo.identity.spec.options.list.LoginAttemptListOptions;
 import com.junbo.identity.spec.options.list.UserListOptions;
-import com.junbo.identity.spec.options.list.UserPasswordListOption;
-import com.junbo.identity.spec.options.list.UserPinListOption;
+import com.junbo.identity.spec.options.list.UserPasswordListOptions;
+import com.junbo.identity.spec.options.list.UserPinListOptions;
 import org.glassfish.jersey.internal.util.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -44,7 +43,7 @@ public class UserLoginAttemptServiceImpl implements UserLoginAttemptService {
     private UserPinService userPinService;
 
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
     @Autowired
     private UserLoginAttemptRepository userLoginAttemptRepository;
@@ -64,47 +63,37 @@ public class UserLoginAttemptServiceImpl implements UserLoginAttemptService {
         String decode = Base64.decodeAsString(userLoginAttempt.getValue());
         String[] split = decode.split(Constants.COLON);
         UserListOptions option = new UserListOptions();
-        option.setUsername(split[0]);
+        option.setUserName(split[0]);
         option.setLimit(1);
-        List<User> users = null;
-        try {
-            users = userRepository.search(option).wrapped().get();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        List<User> users = userService.search(option);
         if(userLoginAttempt.getType().equals("password")) {
-            UserPasswordListOption passwordListOption = new UserPasswordListOption();
+            UserPasswordListOptions passwordListOption = new UserPasswordListOptions();
             passwordListOption.setUserId(users.get(0).getId());
             passwordListOption.setActive(true);
             passwordListOption.setLimit(1);
             UserPassword currentPassword = userPasswordService.search(passwordListOption).get(0);
             String hashPassword = UserPasswordUtil.hashPassword(split[1], currentPassword.getPasswordSalt());
 
-            if(!hashPassword.equals(currentPassword.getPasswordHash())) {
-                throw AppErrors.INSTANCE.userNamePasswordNotMatch(decode).exception();
-            }
-            userLoginAttempt.setSucceeded(true);
+            userLoginAttempt.setSucceeded(hashPassword.equals(currentPassword.getPasswordHash()));
             userLoginAttempt.setUserId(users.get(0).getId());
+            userLoginAttemptRepository.save(userLoginAttempt);
         }
         else if(userLoginAttempt.getType().equals("pin")) {
-            UserPinListOption userPinListOption = new UserPinListOption();
+            UserPinListOptions userPinListOption = new UserPinListOptions();
             userPinListOption.setUserId(users.get(0).getId());
             userPinListOption.setActive(true);
             userPinListOption.setLimit(1);
             UserPin currentPin = userPinService.search(userPinListOption).get(0);
             String hashPin = UserPasswordUtil.hashPassword(split[1], currentPin.getPinSalt());
 
-            if(!hashPin.equals(currentPin.getPinHash())) {
-                throw AppErrors.INSTANCE.userNamePasswordNotMatch(decode).exception();
-            }
-            userLoginAttempt.setSucceeded(true);
+            userLoginAttempt.setSucceeded(hashPin.equals(currentPin.getPinHash()));
             userLoginAttempt.setUserId(users.get(0).getId());
         }
         return userLoginAttemptRepository.save(userLoginAttempt);
     }
 
     @Override
-    public List<UserLoginAttempt> search(LoginAttemptListOption getOptions) {
+    public List<UserLoginAttempt> search(LoginAttemptListOptions getOptions) {
         return userLoginAttemptRepository.search(getOptions);
     }
 }

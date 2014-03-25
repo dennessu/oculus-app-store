@@ -12,7 +12,7 @@ import com.junbo.identity.data.entity.user.UserAuthenticatorEntity
 import com.junbo.identity.data.mapper.ModelMapper
 import com.junbo.identity.data.repository.UserAuthenticatorRepository
 import com.junbo.identity.spec.model.users.UserAuthenticator
-import com.junbo.identity.spec.options.list.UserAuthenticatorListOption
+import com.junbo.identity.spec.options.list.UserAuthenticatorListOptions
 import com.junbo.oom.core.MappingContext
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
@@ -67,7 +67,7 @@ class UserAuthenticatorRepositoryImpl implements UserAuthenticatorRepository {
     }
 
     @Override
-    List<UserAuthenticator> search(UserAuthenticatorListOption getOption) {
+    List<UserAuthenticator> search(UserAuthenticatorListOptions getOption) {
         def result = []
         if (getOption != null && getOption.userId != null) {
             def entities = authenticatorDAO.search(getOption.userId.value, getOption)
@@ -78,13 +78,12 @@ class UserAuthenticatorRepositoryImpl implements UserAuthenticatorRepository {
             return result
         }
         else if (getOption != null && getOption.value != null) {
-            result.add(modelMapper.toUserAuthenticator(findByAuthenticatorValue(getOption.value), new MappingContext()))
+            result.add(searchByAuthenticatorValue(getOption.value))
             return result
         }
     }
 
-    @Override
-    UserAuthenticator findByAuthenticatorValue(String value) {
+    private UserAuthenticator searchByAuthenticatorValue(String value) {
         def authenticatorReverseEntity = authenticatorReverseIndexDAO.get(value)
         def userAuthenticator = authenticatorDAO.get(authenticatorReverseEntity.userAuthenticatorId)
 

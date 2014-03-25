@@ -72,9 +72,9 @@ public interface PaymentMapper {
     })
     PaymentTransaction toPaymentRaw(PaymentEntity paymentEntity, MappingContext context);
 
-    PaymentInstrumentEntity toPIEntity(PaymentInstrument piRequest, MappingContext context);
+    PaymentInstrumentEntity toPIEntityRaw(PaymentInstrument piRequest, MappingContext context);
 
-    PaymentInstrument toPaymentInstrument(PaymentInstrumentEntity piEntity, MappingContext context);
+    PaymentInstrument toPaymentInstrumentRaw(PaymentInstrumentEntity piEntity, MappingContext context);
 
     TrackingUuidEntity toTrackingUuidEntity(TrackingUuid trackingUuid, MappingContext context);
 

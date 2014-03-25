@@ -1,5 +1,6 @@
 package com.junbo.order.core.action
 
+import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.OrderId
 import com.junbo.common.id.OrderItemId
 import com.junbo.fulfilment.spec.constant.FulfilmentStatus
@@ -12,13 +13,12 @@ import com.junbo.order.core.impl.orderaction.FulfillmentAction
 import com.junbo.order.core.impl.orderaction.context.OrderActionResult
 import com.junbo.order.core.matcher.Matcher
 import com.junbo.order.db.entity.enums.EventStatus
-import com.junbo.order.db.entity.enums.OrderActionType
 import com.junbo.order.db.repo.OrderRepository
+import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.FulfillmentEvent
 import org.easymock.EasyMock
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
-
 /**
  * Created by fzhang on 14-3-10.
  */
@@ -79,9 +79,12 @@ class FulfillmentActionTest {
             Promise.throwing(new IllegalArgumentException())
         )
         EasyMock.replay(action.facadeContainer.fulfillmentFacade, action.orderRepository)
-        def actionResult = (OrderActionResult) action.execute(TestBuilder.buildActionContext(order)).wrapped().
-                get().data[ActionUtils.DATA_ORDER_ACTION_RESULT]
-        assert actionResult.returnedEventStatus == EventStatus.ERROR
+        try {
+            (OrderActionResult) action.execute(TestBuilder.buildActionContext(order)).wrapped().
+                    get().data[ActionUtils.DATA_ORDER_ACTION_RESULT]
+        } catch (ex) {
+            assert ((AppErrorException)(ex.cause)).error.code == AppErrors.INSTANCE.fulfillmentConnectionError().code
+        }
         EasyMock.verify(action.facadeContainer.fulfillmentFacade, action.orderRepository)
     }
 }

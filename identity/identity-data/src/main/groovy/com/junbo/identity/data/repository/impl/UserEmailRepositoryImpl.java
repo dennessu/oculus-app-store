@@ -13,7 +13,7 @@ import com.junbo.identity.data.entity.user.UserEmailEntity;
 import com.junbo.identity.data.mapper.ModelMapper;
 import com.junbo.identity.data.repository.UserEmailRepository;
 import com.junbo.identity.spec.model.users.UserEmail;
-import com.junbo.identity.spec.options.list.UserEmailListOption;
+import com.junbo.identity.spec.options.list.UserEmailListOptions;
 import com.junbo.oom.core.MappingContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -45,7 +45,7 @@ public class UserEmailRepositoryImpl implements UserEmailRepository {
     }
 
     @Override
-    public List<UserEmail> search(UserEmailListOption getOption) {
+    public List<UserEmail> search(UserEmailListOptions getOption) {
         List<UserEmail> results = new ArrayList<UserEmail>();
         if(getOption != null && getOption.getUserId() != null) {
             List entities = userEmailDAO.search(getOption.getUserId().getValue(), getOption);
@@ -55,7 +55,7 @@ public class UserEmailRepositoryImpl implements UserEmailRepository {
             }
         }
         else {
-            results.add(findByUserEmail(getOption.getValue()));
+            results.add(searchByUserEmail(getOption.getValue()));
         }
         return results;
     }
@@ -83,14 +83,6 @@ public class UserEmailRepositoryImpl implements UserEmailRepository {
     }
 
     @Override
-    public UserEmail findByUserEmail(String value) {
-        UserEmailReverseIndexEntity entity = userEmailReverseIndexDAO.get(value);
-        UserEmailEntity userEmailEntity = userEmailDAO.get(entity.getUserEmailId());
-
-        return modelMapper.toUserEmail(userEmailEntity, new MappingContext());
-    }
-
-    @Override
     public UserEmail save(UserEmail entity) {
         UserEmailEntity userEmailEntity = modelMapper.toUserEmail(entity, new MappingContext());
 
@@ -101,5 +93,12 @@ public class UserEmailRepositoryImpl implements UserEmailRepository {
         userEmailReverseIndexDAO.save(reverseIndexEntity);
 
         return get(new UserEmailId(userEmailEntity.getId()));
+    }
+
+    private UserEmail searchByUserEmail(String value) {
+        UserEmailReverseIndexEntity entity = userEmailReverseIndexDAO.get(value);
+        UserEmailEntity userEmailEntity = userEmailDAO.get(entity.getUserEmailId());
+
+        return modelMapper.toUserEmail(userEmailEntity, new MappingContext());
     }
 }

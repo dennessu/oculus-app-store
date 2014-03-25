@@ -8,15 +8,18 @@ package com.junbo.identity.rest.resource;
 import com.junbo.common.id.UserDeviceId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.model.Results;
+import com.junbo.identity.core.service.user.UserDeviceService;
 import com.junbo.identity.spec.model.users.UserDevice;
 import com.junbo.identity.spec.options.entity.UserDeviceGetOptions;
-import com.junbo.identity.spec.options.list.UserDeviceListOption;
+import com.junbo.identity.spec.options.list.UserDeviceListOptions;
 import com.junbo.identity.spec.resource.UserDeviceResource;
 import com.junbo.langur.core.promise.Promise;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.ext.Provider;
+import java.util.List;
 
 /**
  * Created by liangfu on 3/14/14.
@@ -25,14 +28,18 @@ import javax.ws.rs.ext.Provider;
 @Component
 @org.springframework.context.annotation.Scope("prototype")
 public class UserDeviceResourceImpl implements UserDeviceResource {
+
+    @Autowired
+    private UserDeviceService userDeviceService;
+
     @Override
     public Promise<UserDevice> create(UserId userId, UserDevice userDevice) {
-        return null;
+        return Promise.pure(userDeviceService.save(userId, userDevice));
     }
 
     @Override
     public Promise<UserDevice> put(UserId userId, UserDeviceId userDeviceId, UserDevice userDevice) {
-        return null;
+        return Promise.pure(userDeviceService.update(userId, userDeviceId, userDevice));
     }
 
     @Override
@@ -48,11 +55,16 @@ public class UserDeviceResourceImpl implements UserDeviceResource {
     @Override
     public Promise<UserDevice> get(UserId userId, UserDeviceId userDeviceId,
                                    @BeanParam UserDeviceGetOptions getOptions) {
-        return null;
+        // Need to implement expansion
+        return Promise.pure(userDeviceService.get(userId, userDeviceId));
     }
 
     @Override
-    public Promise<Results<UserDevice>> list(UserId userId, @BeanParam UserDeviceListOption listOptions) {
-        return null;
+    public Promise<Results<UserDevice>> list(UserId userId, @BeanParam UserDeviceListOptions listOptions) {
+        listOptions.setUserId(userId);
+        List<UserDevice> userDevices = userDeviceService.search(listOptions);
+        Results<UserDevice> results = new Results<>();
+        results.setItems(userDevices);
+        return Promise.pure(results);
     }
 }

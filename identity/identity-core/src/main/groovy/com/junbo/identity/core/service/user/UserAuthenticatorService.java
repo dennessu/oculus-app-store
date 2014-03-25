@@ -7,8 +7,9 @@ package com.junbo.identity.core.service.user;
 
 import com.junbo.common.id.UserAuthenticatorId;
 import com.junbo.common.id.UserId;
-import com.junbo.identity.spec.options.list.UserAuthenticatorListOption;
+import com.junbo.identity.spec.options.list.UserAuthenticatorListOptions;
 import com.junbo.identity.spec.model.users.UserAuthenticator;
+
 import java.util.List;
 
 /**
@@ -21,6 +22,6 @@ public interface UserAuthenticatorService {
     UserAuthenticator patch(UserId userId, UserAuthenticatorId userAuthenticatorId,
                             UserAuthenticator userAuthenticator);
     UserAuthenticator get(UserId userId, UserAuthenticatorId userAuthenticatorId);
-    List<UserAuthenticator> search(UserAuthenticatorListOption getOption);
+    List<UserAuthenticator> search(UserAuthenticatorListOptions getOption);
     void delete(UserId userId, UserAuthenticatorId userAuthenticatorId);
 }
