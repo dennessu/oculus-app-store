@@ -13,6 +13,7 @@ import com.junbo.order.core.annotation.OrderEventAwareBefore
 import com.junbo.order.core.impl.common.CoreBuilder
 import com.junbo.order.db.entity.enums.EventStatus
 import com.junbo.order.db.repo.OrderRepository
+import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.FulfillmentEvent
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
@@ -52,10 +53,12 @@ class  FulfillmentAction extends BaseOrderEventAwareAction {
 
         facadeContainer.fulfillmentFacade.postFulfillment(order).syncRecover { Throwable throwable ->
             LOGGER.error('name=Order_FulfillmentAction_Error', throwable)
-            return null
+            throw AppErrors.INSTANCE.fulfillmentConnectionError().exception()
         }.syncThen { FulfilmentRequest fulfilmentResult ->
             if (fulfilmentResult == null) { // error in post fulfillment
-                return CoreBuilder.buildActionResultForOrderEventAwareAction(context, EventStatus.ERROR)
+                LOGGER.error('name=Order_Fulfillment_Not_Found')
+                CoreBuilder.buildActionResultForOrderEventAwareAction(context, EventStatus.ERROR)
+                throw AppErrors.INSTANCE.fulfillmentConnectionError().exception()
             }
             EventStatus orderEventStatus = EventStatus.COMPLETED
             fulfilmentResult.items.each { FulfilmentItem fulfilmentItem ->

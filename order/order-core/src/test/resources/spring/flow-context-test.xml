@@ -20,9 +20,6 @@
         <property name="facadeContainer" ref="mockFacadeContainer"/>
     </bean>
 
-    <bean id="mockGetOrderAction" class="com.junbo.order.core.impl.orderaction.GetOrderAction">
-    </bean>
-
     <bean id="mockImmediateSettleAction" class="com.junbo.order.core.impl.orderaction.ImmediateSettleAction">
         <property name="orderServiceContextBuilder" ref="mockOrderServiceContextBuilder"/>
         <property name="facadeContainer" ref="mockFacadeContainer"/>
