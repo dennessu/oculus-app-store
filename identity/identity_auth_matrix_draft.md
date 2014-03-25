@@ -1,16 +1,22 @@
 Users Resource claim list
 -------------------------
-- create_user 
+- create_user
+
         displayName, nickName, name, preferredLanguage, timezone, birthday, gender, locale, type
-- get_user 
+- get_user
+
         id, displayName, nickName, name, preferredLanguage, timezone, birthday, gender, birthday, locale, type, active, type
 - get_user_meta
+
         created_time, updated_time, created_time, created_by
-- update_user_basic 
+- update_user_basic
+
         displayName, nickName, name, preferredLanguage, timezone, birthday, gender
 - update_user_restric
+
         locale, active, type
 - user_search
+
         id, displayName, nickName, name, preferredLanguage, timezone, birthday, gender, birthday, locale, type, active, type
 
 Users Resource scope list
@@ -29,6 +35,7 @@ Users Resource precondition list
 POST /users - create a new user
 ----------------------------------
 - scope: internal.service
+
     	precondition: any
     	claims: 
     		* create_user
@@ -37,6 +44,7 @@ POST /users - create a new user
 PUT /users/{userId} - put a user
 ----------------------------------
 - scope: users
+
 		precondition: owner_logged_in
 		claims: 
 			* update_user_basic
@@ -49,6 +57,7 @@ PUT /users/{userId} - put a user
 			* get_user_meta
 
 - scope: internal.service
+
 		precondition: any
 		claims:
 			* update_user_basic
@@ -59,6 +68,7 @@ PUT /users/{userId} - put a user
 PATCH /users/{userId} - patch a user
 ----------------------------------
 - scope: users
+
 		precondition: owner_logged_in
 		claims: 
 			* update_user_basic
@@ -71,6 +81,7 @@ PATCH /users/{userId} - patch a user
 			* get_user_meta
 
 - scope: internal.service
+
 		precondition: any
 		claims:
 			* update_user_basic
@@ -81,6 +92,7 @@ PATCH /users/{userId} - patch a user
 GET /users/{userId} - get a user
 --------------------------------
 - scope: users
+
 		precondition: owner_logged_in
 		claims:
 			* get_user
@@ -90,6 +102,7 @@ GET /users/{userId} - get a user
 			* get_user_meta
 		
 - scope: users.readonly
+
 		precondition: owner_logged_in
 		claims:
 			* get_user
@@ -99,6 +112,7 @@ GET /users/{userId} - get a user
 			* get_user_meta
 
 - scope: internal.service
+
 		precondition: any
 		claims:
 			* get_user
@@ -107,25 +121,32 @@ GET /users/{userId} - get a user
 GET /users - get or search users by name
 --------------------------------
 - scope: users.search
+
 		precondition: csr_logged_in
 			* user_search
 			
 - scope: internal.service
+
 		precondition: any
 			* user_search
 
 			
 User Email Resource claim list
 -------------------------
-- create_user_email 
+- create_user_email
+
         value, type, primary
-- get_user_email 
+- get_user_email
+
         id, value, type, primary, verified
 - get_user_email_meta
+
         id, created_time, updated_time, created_time, created_by
-- update_user_email_basic 
+- update_user_email_basic
+
         value, type, primary
 - update_user_email_restric
+
         verified
 - delete_user_email
 		
@@ -145,6 +166,7 @@ User Email Resource precondition list
 POST /users/{userId}/emails - create a new user email
 ----------------------------------
 - scope: users.pii
+
     	precondition: owner_logged_in
     	claims: 
     		* create_user_email
@@ -154,6 +176,7 @@ POST /users/{userId}/emails - create a new user email
 PUT /users/{userId}/emails/{userEmailId} - put a user email
 ----------------------------------
 - scope: users.pii
+
 		precondition: owner_logged_in
 		claims: 
 			* update_user_email_basic
@@ -168,6 +191,7 @@ PUT /users/{userId}/emails/{userEmailId} - put a user email
 PATCH /users/{userId}/emails/{userEmailId} - patch a user email
 ----------------------------------
 - scope: users.pii
+
 		precondition: owner_logged_in
 		claims: 
 			* update_user_email_basic
@@ -182,6 +206,7 @@ PATCH /users/{userId}/emails/{userEmailId} - patch a user email
 DELETE /users/{userId}/emails/{userEmailId} - delete a user email
 ------------------------------------------------------------
 - scope: users.pii
+
 		precondition: owner_logged_in
 		claims: 
 			* delete_user_email
@@ -192,6 +217,7 @@ DELETE /users/{userId}/emails/{userEmailId} - delete a user email
 GET /users/{userId}/emails/{userEmailId} - get a user email
 --------------------------------
 - scope: users.pii
+
 		precondition: owner_logged_in
 		claims:
 			* get_user_email
@@ -201,6 +227,7 @@ GET /users/{userId}/emails/{userEmailId} - get a user email
 			* get_user_email_meta
 		
 - scope: users.pii.readonly
+
 		precondition: owner_logged_in
 		claims:
 			* get_user_email
@@ -210,6 +237,7 @@ GET /users/{userId}/emails/{userEmailId} - get a user email
 			* get_user_email_meta
 
 - scope: internal.service
+
 		precondition: any
 		claims:
 			* get_user_email
@@ -218,6 +246,7 @@ GET /users/{userId}/emails/{userEmailId} - get a user email
 GET /users/{userId}/emails - get or search email list for a user
 --------------------------------
 - scope: users.pii
+
 		precondition: owner_logged_in
 		claims:
 			* get_user_email
@@ -227,6 +256,7 @@ GET /users/{userId}/emails - get or search email list for a user
 			* get_user_email_meta
 		
 - scope: users.pii.readonly
+
 		precondition: owner_logged_in
 		claims:
 			* get_user_email
@@ -236,6 +266,7 @@ GET /users/{userId}/emails - get or search email list for a user
 			* get_user_email_meta
 
 - scope: internal.service
+
 		precondition: any
 		claims:
 			* get_user_email
@@ -244,12 +275,14 @@ GET /users/{userId}/emails - get or search email list for a user
 GET /users/emails - get user email by email
 --------------------------------
 - scope: users.pii.search
+
 		precondition: csr_logged_in
 		claims:
 			* get_user_email
 			* get_user_email_meta	
 
 - scope: internal.service
+
 		precondition: any
 		claims:
 			* get_user_email
@@ -257,15 +290,20 @@ GET /users/emails - get user email by email
 			
 User Phone Number Resource claim list
 -------------------------
-- create_user_phone 
+- create_user_phone
+
         value, type, primary
 - get_user_phone
+
         id, value, type, primary, verified
 - get_user_phone_meta
+
         id, created_time, updated_time, created_time, created_by
-- update_user_phone_basic 
+- update_user_phone_basic
+
         value, type, primary
 - update_user_phone_restric
+
         verified
 - delete_user_phone
 		
@@ -285,6 +323,7 @@ User Phone Number Resource precondition list
 POST /users/{userId}/phone-numbers - create a new user phone number
 ----------------------------------
 - scope: users.pii
+
     	precondition: owner_logged_in
     	claims: 
     		* create_user_phone
@@ -297,6 +336,7 @@ POST /users/{userId}/phone-numbers - create a new user phone number
 PUT /users/{userId}/phone-numbers/{userPhoneNumberId} - put a user phone number
 ----------------------------------
 - scope: users.pii
+
 		precondition: owner_logged_in
 		claims: 
 			* update_user_phone_basic
@@ -311,6 +351,7 @@ PUT /users/{userId}/phone-numbers/{userPhoneNumberId} - put a user phone number
 PATCH /users/{userId}/phone-numbers/{userPhoneNumberId} - patch a user phone number
 ----------------------------------
 - scope: users.pii
+
 		precondition: owner_logged_in
 		claims: 
 			* update_user_phone_basic
@@ -325,6 +366,7 @@ PATCH /users/{userId}/phone-numbers/{userPhoneNumberId} - patch a user phone num
 DELETE /users/{userId}/phone-numbers/{userPhoneNumberId} - delete a user phone number
 ------------------------------------------------------------
 - scope: users.pii
+
 		precondition: owner_logged_in
 		claims: 
 			* delete_user_phone
@@ -335,6 +377,7 @@ DELETE /users/{userId}/phone-numbers/{userPhoneNumberId} - delete a user phone n
 GET /users/{userId}/phone-numbers/{userPhoneNumberId} - get a user phone number
 --------------------------------
 - scope: users.pii
+
 		precondition: owner_logged_in
 		claims:
 			* get_user_phone
@@ -344,6 +387,7 @@ GET /users/{userId}/phone-numbers/{userPhoneNumberId} - get a user phone number
 			* get_user_phone_meta
 		
 - scope: users.pii.readonly
+
 		precondition: owner_logged_in
 		claims:
 			* get_user_phone
@@ -353,6 +397,7 @@ GET /users/{userId}/phone-numbers/{userPhoneNumberId} - get a user phone number
 			* get_user_phone_meta
 
 - scope: internal.service
+
 		precondition: any
 		claims:
 			* get_user_phone
@@ -361,6 +406,7 @@ GET /users/{userId}/phone-numbers/{userPhoneNumberId} - get a user phone number
 GET /users/{userId}/phone-numbers - get or search phone number list for a user
 --------------------------------
 - scope: users.pii
+
 		precondition: owner_logged_in
 		claims:
 			* get_user_phone
@@ -370,6 +416,7 @@ GET /users/{userId}/phone-numbers - get or search phone number list for a user
 			* get_user_phone_meta
 		
 - scope: users.pii.readonly
+
 		precondition: owner_logged_in
 		claims:
 			* get_user_phone
@@ -379,6 +426,7 @@ GET /users/{userId}/phone-numbers - get or search phone number list for a user
 			* get_user_phone_meta
 
 - scope: internal.service
+
 		precondition: any
 		claims:
 			* get_user_phone
@@ -386,13 +434,17 @@ GET /users/{userId}/phone-numbers - get or search phone number list for a user
 			
 User Optin Resource claim list
 -------------------------
-- create_user_optin 
+- create_user_optin
+
         value, type, primary
-- get_user_optin 
+- get_user_optin
+
         id, type
 - get_user_optin_meta
+
         id, created_time, updated_time, created_time, created_by
-- update_user_optin 
+- update_user_optin
+
         type
 - delete_user_optin
 
@@ -411,6 +463,7 @@ User Optin Resource precondition list
 POST /users/{userId}/optins - create a new user optin
 ----------------------------------
 - scope: users
+
     	precondition: owner_logged_in
     	claims: 
     		* create_user_optin
@@ -423,6 +476,7 @@ POST /users/{userId}/optins - create a new user optin
 PUT /users/{userId}/optins/{userOptinId} - put a user optin
 ----------------------------------
 - scope: users
+
 		precondition: owner_logged_in
 		claims: 
 			* update_user_optin
@@ -436,6 +490,7 @@ PUT /users/{userId}/optins/{userOptinId} - put a user optin
 PATCH /users/{userId}/optins/{userOptinId} - patch a user optin
 ----------------------------------
 - scope: users
+
 		precondition: owner_logged_in
 		claims: 
 			* update_user_optin
@@ -449,6 +504,7 @@ PATCH /users/{userId}/optins/{userOptinId} - patch a user optin
 DELETE /users/{userId}/optins/{userOptinId} - delete a user optin
 ------------------------------------------------------------
 - scope: users
+
 		precondition: owner_logged_in
 		claims: 
 			* delete_user_optin
@@ -459,6 +515,7 @@ DELETE /users/{userId}/optins/{userOptinId} - delete a user optin
 GET /users/{userId}/optins/{userOptinId} - get a user optin
 --------------------------------
 - scope: users
+
 		precondition: owner_logged_in
 		claims:
 			* get_user_optin
@@ -468,6 +525,7 @@ GET /users/{userId}/optins/{userOptinId} - get a user optin
 			* get_user_optin_meta
 		
 - scope: users.readonly
+
 		precondition: owner_logged_in
 		claims:
 			* get_user_optin
@@ -476,7 +534,8 @@ GET /users/{userId}/optins/{userOptinId} - get a user optin
 			* get_user_optin
 			* get_user_optin_meta
 			
-- scope: internal.service			
+- scope: internal.service
+
 		precondition: any
 		claims:
 			* get_user_optin
@@ -485,6 +544,7 @@ GET /users/{userId}/optins/{userOptinId} - get a user optin
 GET /users/{userId}/optins - get or search optin list for a user
 --------------------------------
 - scope: users
+
 		precondition: owner_logged_in
 		claims:
 			* get_user_optin
@@ -494,6 +554,7 @@ GET /users/{userId}/optins - get or search optin list for a user
 			* get_user_optin_meta
 		
 - scope: users.readonly
+
 		precondition: owner_logged_in
 		claims:
 			* get_user_optin
@@ -503,6 +564,7 @@ GET /users/{userId}/optins - get or search optin list for a user
 			* get_user_optin_meta		
 
 - scope: internal.service
+
 		precondition: any
 		claims:
 			* get_user_optin
@@ -511,12 +573,16 @@ GET /users/{userId}/optins - get or search optin list for a user
 User Tos Resource claim list
 -------------------------
 - create_user_tos
+
         tosUri
-- get_user_tos 
+- get_user_tos
+
         id, tosUri
 - get_user_tos_meta
+
         id, created_time, updated_time, created_time, created_by
-- update_user_tos 
+- update_user_tos
+
         tosUri
 - delete_user_tos
 
@@ -535,6 +601,7 @@ User Tos Resource precondition list
 POST /users/{userId}/tos - create a new user tos acceptance
 ----------------------------------
 - scope: users
+
     	precondition: owner_logged_in
     	claims: 
     		* create_user_tos
@@ -547,6 +614,7 @@ POST /users/{userId}/tos - create a new user tos acceptance
 PUT /users/{userId}/tos/{userTosId} - put a user tos acceptance
 ----------------------------------
 - scope: users
+
 		precondition: owner_logged_in
 		claims: 
 			* update_user_tos
@@ -560,6 +628,7 @@ PUT /users/{userId}/tos/{userTosId} - put a user tos acceptance
 PATCH /users/{userId}/tos/{userTosId} - patch a user tos acceptance
 ----------------------------------
 - scope: users
+
 		precondition: owner_logged_in
 		claims: 
 			* update_user_tos
@@ -573,6 +642,7 @@ PATCH /users/{userId}/tos/{userTosId} - patch a user tos acceptance
 DELETE /users/{userId}/tos/{userTosId} - delete a user tos
 ------------------------------------------------------------
 - scope: users
+
 		precondition: owner_logged_in
 		claims: 
 			* delete_user_tos
@@ -583,6 +653,7 @@ DELETE /users/{userId}/tos/{userTosId} - delete a user tos
 GET /users/{userId}/tos/{userTosId} - get a user tos
 --------------------------------
 - scope: users
+
 		precondition: owner_logged_in
 		claims:
 			* get_user_tos
@@ -592,6 +663,7 @@ GET /users/{userId}/tos/{userTosId} - get a user tos
 			* get_user_tos_meta
 		
 - scope: users.readonly
+
 		precondition: owner_logged_in
 		claims:
 			* get_user_tos
@@ -601,6 +673,7 @@ GET /users/{userId}/tos/{userTosId} - get a user tos
 			* get_user_tos_meta
 
 - scope: internal.service
+
 		precondition: any
 		claims:
 			* get_user_tos
@@ -609,6 +682,7 @@ GET /users/{userId}/tos/{userTosId} - get a user tos
 GET /users/{userId}/tos - get or search tos list for a user
 --------------------------------
 - scope: users
+
 		precondition: owner_logged_in
 		claims:
 			* get_user_tos
@@ -618,6 +692,7 @@ GET /users/{userId}/tos - get or search tos list for a user
 			* get_user_tos_meta
 		
 - scope: users.readonly
+
 		precondition: owner_logged_in
 		claims:
 			* get_user_tos
@@ -627,6 +702,7 @@ GET /users/{userId}/tos - get or search tos list for a user
 			* get_user_tos_meta			
 
 - scope: internal.service
+
 		precondition: any
 		claims:
 			* get_user_tos
@@ -635,12 +711,16 @@ GET /users/{userId}/tos - get or search tos list for a user
 User Device Resource claim list
 -------------------------
 - create_user_device
+
         deviceId, os, type, name
 - get_user_device
+
         id, deviceId, os, type, name
 - get_user_device_meta
+
         id, created_time, updated_time, created_time, created_by
-- update_user_device 
+- update_user_device
+
         deviceId, os, type, name
 - delete_user_device
 
@@ -659,6 +739,7 @@ User Device Resource precondition list
 POST /users/{userId}/devices - create a new user device
 ----------------------------------
 - scope: users
+
     	precondition: owner_logged_in
     	claims: 
     		* create_user_device
@@ -671,6 +752,7 @@ POST /users/{userId}/devices - create a new user device
 PUT /users/{userId}/devices/{userDeviceId} - put a user device
 ----------------------------------
 - scope: users
+
 		precondition: owner_logged_in
 		claims: 
 			* update_user_device
@@ -684,6 +766,7 @@ PUT /users/{userId}/devices/{userDeviceId} - put a user device
 PATCH /users/{userId}/devices/{userDeviceId} - patch a user device
 ----------------------------------
 - scope: users
+
 		precondition: owner_logged_in
 		claims: 
 			* update_user_device
@@ -697,6 +780,7 @@ PATCH /users/{userId}/devices/{userDeviceId} - patch a user device
 DELETE /users/{userId}/devices/{userDeviceId} - delete a user device
 ------------------------------------------------------------
 - scope: users
+
 		precondition: owner_logged_in
 		claims: 
 			* delete_user_device
@@ -707,6 +791,7 @@ DELETE /users/{userId}/devices/{userDeviceId} - delete a user device
 GET /users/{userId}/devices/{userDeviceId} - get a user device
 --------------------------------
 - scope: users
+
 		precondition: owner_logged_in
 		claims:
 			* get_user_device
@@ -716,6 +801,7 @@ GET /users/{userId}/devices/{userDeviceId} - get a user device
 			* get_user_device_meta
 		
 - scope: users.readonly
+
 		precondition: owner_logged_in
 		claims:
 			* get_user_device
@@ -725,6 +811,7 @@ GET /users/{userId}/devices/{userDeviceId} - get a user device
 			* get_user_device_meta
 
 - scope: internal.service
+
 		precondition: any
 		claims:
 			* get_user_device
@@ -733,6 +820,7 @@ GET /users/{userId}/devices/{userDeviceId} - get a user device
 GET /users/{userId}/devices - get or search device list for a user
 --------------------------------
 - scope: users
+
 		precondition: owner_logged_in
 		claims:
 			* get_user_device
@@ -742,6 +830,7 @@ GET /users/{userId}/devices - get or search device list for a user
 			* get_user_device_meta
 		
 - scope: users.readonly
+
 		precondition: owner_logged_in
 		claims:
 			* get_user_device
@@ -751,6 +840,7 @@ GET /users/{userId}/devices - get or search device list for a user
 			* get_user_device_meta
 
 - scope: internal.service
+
 		precondition: any
 		claims:
 			* get_user_device
@@ -759,10 +849,13 @@ GET /users/{userId}/devices - get or search device list for a user
 User Security Question Resource claim list
 -------------------------
 - create_user_secq
+
         security_question_id, answer
-- get_user_secq 
+- get_user_secq
+
         id, security_question_id, active
 - get_user_secq_meta
+
         id, created_time, updated_time, created_time, created_by
 
 User Security Question Resource scope list
@@ -779,6 +872,7 @@ User Security Question Resource precondition list
 POST /users/{userId}/security-questions - create a new user security question
 ----------------------------------
 - scope: users.security
+
     	precondition: owner_logged_in
     	claims: 
     		* create_user_secq
@@ -787,6 +881,7 @@ POST /users/{userId}/security-questions - create a new user security question
 GET /users/{userId}/security-questions/{userSecurityQuestionId} - get a user security question
 --------------------------------
 - scope: users.security
+
 		precondition: owner_logged_in
 		claims:
 			* get_user_secq
@@ -796,6 +891,7 @@ GET /users/{userId}/security-questions/{userSecurityQuestionId} - get a user sec
 			* get_user_secq_meta
 
 - scope: internal.service
+
 		precondition: any
 		claims:
 			* get_user_secq
@@ -804,6 +900,7 @@ GET /users/{userId}/security-questions/{userSecurityQuestionId} - get a user sec
 GET /users/{userId}/security-questions - get or search security question list for a user
 --------------------------------
 - scope: users.security
+
 		precondition: owner_logged_in
 		claims:
 			* get_user_secq
@@ -813,6 +910,7 @@ GET /users/{userId}/security-questions - get or search security question list fo
 			* get_user_secq_meta	
 
 - scope: internal.service
+
 		precondition: any
 		claims:
 			* get_user_secq
@@ -821,12 +919,16 @@ GET /users/{userId}/security-questions - get or search security question list fo
 User Password Resource claim list
 -------------------------
 - create_user_pwd
+
         value
 - create_user_tmp_pwd
+
 		value, userId, changeAtNextLogin, expiresBy
 - get_user_pwd
+
         id, active, expiresBy, changeAtNextLogin, strength
 - get_user_pwd_meta
+
         id, created_time, updated_time, created_time, created_by
 
 User Password Resource scope list
@@ -843,6 +945,7 @@ User Password Resource precondition list
 POST /users/{userId}/passwords - create a new user password
 ----------------------------------
 - scope: users.security
+
     	precondition: owner_logged_in
     	claims: 
     		* create_user_pwd
@@ -853,7 +956,8 @@ POST /users/{userId}/passwords - create a new user password
     		* get_user_pwd
 			* get_user_pwd_meta
 			
-- scope: internal.service			
+- scope: internal.service
+
 		precondition: any
     	claims: 
     		* create_user_tmp_pwd
@@ -863,6 +967,7 @@ POST /users/{userId}/passwords - create a new user password
 GET /users/{userId}/passwords/{userPasswordId} - get a user password
 --------------------------------
 - scope: users.security
+
 		precondition: owner_logged_in
 		claims:
 			* get_user_pwd
@@ -872,6 +977,7 @@ GET /users/{userId}/passwords/{userPasswordId} - get a user password
 			* get_user_pwd_meta
 
 - scope: internal.service
+
 		precondition: any
 		claims:
 			* get_user_pwd
@@ -880,6 +986,7 @@ GET /users/{userId}/passwords/{userPasswordId} - get a user password
 GET /users/{userId}/passwords - get or search password list for a user
 --------------------------------
 - scope: users.security
+
 		precondition: owner_logged_in
 		claims:
 			* get_user_pwd
@@ -889,6 +996,7 @@ GET /users/{userId}/passwords - get or search password list for a user
 			* get_user_pwd_meta	
 
 - scope: internal.service
+
 		precondition: any
 		claims:
 			* get_user_pwd
@@ -897,12 +1005,16 @@ GET /users/{userId}/passwords - get or search password list for a user
 User Pin Resource claim list
 -------------------------
 - create_user_pin
+
         value
 - create_user_tmp_pin
+
 		value, userId, changeAtNextLogin, expiresBy
 - get_user_pin
+
         id, active, expiresBy, changeAtNextLogin, strength
 - get_user_pin_meta
+
         id, created_time, updated_time, created_time, created_by
 
 User Pin Resource scope list
@@ -919,6 +1031,7 @@ User Pin Resource precondition list
 POST /users/{userId}/pins - create a new user pin
 ----------------------------------
 - scope: users.security
+
     	precondition: owner_logged_in
     	claims: 
     		* create_user_pin
@@ -930,6 +1043,7 @@ POST /users/{userId}/pins - create a new user pin
 			* get_user_pin_meta
 
 - scope: internal.service
+
 		precondition: any
     	claims: 
     		* create_user_tmp_pin
@@ -940,6 +1054,7 @@ POST /users/{userId}/pins - create a new user pin
 GET /users/{userId}/pins/{userPinId} - get a user pin
 --------------------------------
 - scope: users.security
+
 		precondition: owner_logged_in
 		claims:
 			* get_user_pin
@@ -949,6 +1064,7 @@ GET /users/{userId}/pins/{userPinId} - get a user pin
 			* get_user_pin_meta
 
 - scope: internal.service
+
 		precondition: any
 		claims:
 			* get_user_pin
@@ -957,6 +1073,7 @@ GET /users/{userId}/pins/{userPinId} - get a user pin
 GET /users/{userId}/pins - get or search pin list for a user
 --------------------------------
 - scope: users.security
+
 		precondition: owner_logged_in
 		claims:
 			* get_user_pin
@@ -966,6 +1083,7 @@ GET /users/{userId}/pins - get or search pin list for a user
 			* get_user_pin_meta				
 
 - scope: internal.service
+
 		precondition: any
 		claims:
 			* get_user_pin
@@ -974,12 +1092,16 @@ GET /users/{userId}/pins - get or search pin list for a user
 User Authenticator Resource claim list
 -------------------------
 - create_user_authenticator
+
 		type, value, userId
 - update_user_authenticator
+
 		type, value, userId
 - get_user_authenticator
+
         id, type, value
 - get_user_authenticator_meta
+
         id, created_time, updated_time, created_time, created_by
 - delete_user_authenticator
 		
@@ -996,20 +1118,26 @@ User Authenticator Resource precondition list
 - any
 
 POST /users/{userId}/authenticators - create a new user authenticator for openId
+--------------------------------------------
 - scope: internal.service
+
 		precondition: any
 		claims:
 			* create_user_authenticator
 			* get_user_authenticator
 			
 PUT /users/{userId}/authenticators/{userAuthenticatorId} - put a user authenticator for openId
+--------------------------------------
 - scope: internal.service
+
 		precondition: any
 		claims:
 			* update_user_authenticator
 
-PATCH /users/{userId}/authenticators/{userAuthenticatorId} - patch a user authenticator for openId			
+PATCH /users/{userId}/authenticators/{userAuthenticatorId} - patch a user authenticator for openId
+-----------------------------------------------------------------------------------
 - scope: internal.service
+
 		precondition: any
 		claims:
 			* update_user_authenticator
@@ -1017,6 +1145,7 @@ PATCH /users/{userId}/authenticators/{userAuthenticatorId} - patch a user authen
 GET /users/{userId}/authenticators/{userAuthenticatorId} - get a user authenticator
 --------------------------------
 - scope: users
+
 		precondition: owner_logged_in
 		claims:
 			* get_user_authenticator
@@ -1026,6 +1155,7 @@ GET /users/{userId}/authenticators/{userAuthenticatorId} - get a user authentica
 			* get_user_authenticator_meta
 
 - scope: users.readonly
+
 		precondition: owner_logged_in
 		claims:
 			* get_user_authenticator
@@ -1037,6 +1167,7 @@ GET /users/{userId}/authenticators/{userAuthenticatorId} - get a user authentica
 GET /users/{userId}/authenticators - get or search authenticator list for a user
 --------------------------------
 - scope: users
+
 		precondition: owner_logged_in
 		claims:
 			* get_user_authenticator
@@ -1046,6 +1177,7 @@ GET /users/{userId}/authenticators - get or search authenticator list for a user
 			* get_user_authenticator_meta
 
 - scope: users.readonly
+
 		precondition: owner_logged_in
 		claims:
 			* get_user_authenticator
@@ -1057,19 +1189,23 @@ GET /users/{userId}/authenticators - get or search authenticator list for a user
 GET /users/authenticators - find user authenticator by authenticator
 --------------------------------
 - scope: users.search
+
 		precondition: csr_logged_in
 		claims:
 			* get_user_authenticator
 			* get_user_authenticator_meta
 
 - scope: internal.service
+
 		precondition: any
 		claims:
 			* get_user_authenticator
 			* get_user_authenticator_meta			
 			
 DELETE /users/{userId}/authenticators/{userAuthenticatorId}	- delete/unlink an authenticator for a user
+------------------------------------------------------------
 - scope: users
+
 		precondition: owner_logged_in
 		claims:
 			* delete_user_authenticator
@@ -1077,18 +1213,23 @@ DELETE /users/{userId}/authenticators/{userAuthenticatorId}	- delete/unlink an a
 			* delete_user_authenticator
 			
 - scope: internal.service
+
 		precondition: csr_logged_in
 			* delete_user_authenticator		
 
 Security Question Resource claim list
 -------------------------
 - create_sec_question
+
 		type, active
 - update_sec_question
+
 		id, type, active
 - get_sec_question
+
         id, type, active
 - get_sec_question_meta
+
         id, created_time, updated_time, created_time, created_by
 - delete_sec_question
 		
@@ -1102,27 +1243,34 @@ Security Question Resource precondition list
 - any
 
 POST /security-questions - create a new definition of security question
+------------------------------------
 - scope: global.config
+
 		precondition: any
 		claims:
 			* create_sec_question
 			* get_sec_question
 			
 PUT /security-questions/{securityQuestionId} - put a definition of security question
+--------------------------------------
 - scope: global.config
+
 		precondition: any
 		claims:
 			* update_sec_question
 
 PATCH /security-questions/{securityQuestionId} - patch a definition of security question
+---------------------------------------
 - scope: global.config
+
 		precondition: any
 		claims:
 			* update_sec_question
 			
 GET /security-questions/{securityQuestionId} - get a definition of security question
---------------------------------			
+--------------------------------------------------------
 - scope: any
+
 		precondition: any
 		claims:
 			* get_sec_questions		
@@ -1130,11 +1278,13 @@ GET /security-questions/{securityQuestionId} - get a definition of security ques
 GET /security-questions - get list of security question
 --------------------------------
 - scope: any
+
 		precondition: any
 		claims:
 			* get_sec_questions
 
 - scope: global.config
+
 		precondition: any
 			* get_sec_question
 			* get_sec_question_meta
@@ -1142,8 +1292,10 @@ GET /security-questions - get list of security question
 User Login Attempts Resource claim list
 -------------------------
 - create_login_attempt
+
 		type, value, ip_address, user_agent, client_id, userId
 - get_login_attempt
+
         id, type, ip_address, user_agent, client_id, userId, succeeded
 		
 User Login Attempts Resource scope list
@@ -1155,15 +1307,18 @@ User Login Attempts Resource precondition list
 - any
 
 POST /users/login-attempts - create a new login attempt
+-----------------------------------------
 - scope: internal.service
+
 		precondition: any
 		claims:
 			* create_login_attempt
 			* get_login_attempt
 			
 GET /users/login-attempts/{userLoginAttemptId} - get a user login attempt
---------------------------------			
+---------------------------------------------
 - scope: internal.service
+
 		precondition: any
 		claims:
 			* get_login_attempt		
@@ -1171,6 +1326,7 @@ GET /users/login-attempts/{userLoginAttemptId} - get a user login attempt
 GET /users/login-attempts - get user login attempt history
 --------------------------------
 - scope: internal.service
+
 		precondition: any
 		claims:
 			* get_login_attempt			
@@ -1178,8 +1334,10 @@ GET /users/login-attempts - get user login attempt history
 User Security Question Attempts Resource claim list
 -------------------------
 - create_sec_question_attempt
+
 		type, value, ip_address, user_agent, client_id
 - get_sec_question_attempt
+
         id, type, ip_address, user_agent, client_id, succeeded
 		
 User Security Question Attempts Resource scope list
@@ -1191,15 +1349,19 @@ User Security Question Attempts Resource precondition list
 - any
 
 POST /users/{userId}/security-questions-attempt - create a new security question attempt
+-----------------------------------------------------
 - scope: internal.service
+
 		precondition: any
 		claims:
 			* create_sec_question_attempt
 			* get_sec_question_attempt
-			
+
+
 GET /users/{userId}/security-questions-attempt/{userSecurityQuestionAttemptId} - get a user security question attempt
---------------------------------			
+----------------------------------------------
 - scope: internal.service
+
 		precondition: any
 		claims:
 			* get_sec_question_attempt		
@@ -1207,6 +1369,7 @@ GET /users/{userId}/security-questions-attempt/{userSecurityQuestionAttemptId} -
 GET /users/{userId}/security-questions-attempt - get user security question attempt history
 --------------------------------
 - scope: internal.service
+
 		precondition: any
 		claims:
 			* get_sec_question_attempt			
