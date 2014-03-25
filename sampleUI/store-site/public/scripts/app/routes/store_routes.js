@@ -88,5 +88,11 @@ var StoreRoutes = {
         beforeModel: function(){
             Utils.GetViews(AppConfig.Templates.Store.OrderSummary);
         }
+    }),
+
+    ThanksRoute: Ember.Route.extend({
+        beforeModel: function(){
+            Utils.GetViews(AppConfig.Templates.Store.Thanks);
+        }
     })
 };

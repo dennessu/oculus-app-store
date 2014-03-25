@@ -44,6 +44,11 @@ module.exports = function(io){
                 fn(data);
             });
         });
+        socket.on('/api/identity/get_profile', function (data, fn) {
+            Identity.GetProfile(data, function(data){
+                fn(data);
+            });
+        });
 
         socket.on('/api/identity/pin', function (data, fn) {
             Identity.PIN(data, function(data){
@@ -88,6 +93,16 @@ module.exports = function(io){
                 fn(data);
             });
         });
+        socket.on('/api/cart/put_order', function (data, fn) {
+            Cart.PutOrder(data, function(data){
+                fn(data);
+            });
+        });
+        socket.on('/api/cart/purchase_order', function (data, fn) {
+            Cart.PurchaseOrder(data, function(data){
+                fn(data);
+            });
+        });
 
         /* Billing -------------------------------------------------------------- */
         socket.on('/api/billing/get_shipping_info', function (data, fn) {
@@ -108,7 +123,7 @@ module.exports = function(io){
             });
         });
         socket.on('/api/payment/add', function (data, fn) {
-            Billing.PostPayment(data, function(data){
+            Payment.PostPayment(data, function(data){
                 fn(data);
             });
         });

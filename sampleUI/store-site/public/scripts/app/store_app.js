@@ -10,17 +10,20 @@ App.Product = ProductModel;
 App.CartItem = CartItemModel;
 App.ShippingInfo = ShippingInfoModel;
 App.CreditCard = CreditCartModel;
+App.Profile = ProductModel;
 
 App.Router.map(function(){
     this.resource("detail", { path: "/detail/:productId"});
     this.resource("cart", { path: "/cart"});
     this.resource("shipping", {path: "/shipping"}, function(){
+        this.route("address");
         this.route("edit");
     });
     this.resource("payment", {path: "/payment"}, function(){
         this.route("edit");
     });
     this.resource("ordersummary", { path: "/ordersummary"});
+    this.resource("thanks", {path: "/thanks"});
 
     this.resource("account", {path: "/account"}, function(){
         this.route("editinfo");
@@ -38,8 +41,10 @@ App.IndexRoute = StoreRoutes.IndexRoute;
 App.DetailRoute = StoreRoutes.DetailRoute;
 App.CartRoute = StoreRoutes.CartRoute;
 App.OrdersummaryRoute = StoreRoutes.OrderSummaryRoute;
+App.ThanksRoute = StoreRoutes.ThanksRoute;
 App.ShippingRoute = ShippingInfoRoutes.LayoutRoute;
 App.ShippingIndexRoute = ShippingInfoRoutes.IndexRoute;
+App.ShippingAddressRoute = ShippingInfoRoutes.AddressRoute;
 App.ShippingEditRoute = ShippingInfoRoutes.EditRoute;
 App.PaymentRoute = PaymentRoutes.LayoutRoute;
 App.PaymentIndexRoute = PaymentRoutes.IndexRoute;
@@ -58,8 +63,10 @@ App.IndexView = StoreViews.IndexView;
 App.DetailView = StoreViews.DetailView;
 App.CartView = StoreViews.CartView;
 App.OrdersummaryView = StoreViews.OrderSummaryView;
+App.ThanksView = StoreViews.ThanksView;
 App.ShippingView = ShippingInfoViews.LayoutView;
 App.ShippingIndexView = ShippingInfoViews.IndexView;
+App.ShippingAddressView = ShippingInfoViews.AddressView;
 App.ShippingEditView = ShippingInfoViews.EditView;
 App.PaymentView = PaymentViews.LayoutView;
 App.PaymentIndexView = PaymentViews.IndexView;
@@ -78,7 +85,10 @@ App.ApplicationController = StoreControllers.ApplicationController;
 App.DetailController = StoreControllers.DetailController;
 App.CartController = StoreControllers.CartController;
 App.CartItemController = StoreControllers.CartItemController;
+App.OrdersummaryController = StoreControllers.OrderSummaryController;
+App.ThanksController = StoreControllers.ThanksController;
 App.ShippingIndexController = ShippingInfoControllers.IndexController;
+App.ShippingAddressController = ShippingInfoControllers.AddressController;
 App.ShippingEditController = ShippingInfoControllers.EditController;
 App.PaymentIndexController = PaymentControllers.IndexController;
 App.PaymentEditController = PaymentControllers.EditController;

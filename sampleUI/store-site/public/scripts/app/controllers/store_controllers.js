@@ -95,7 +95,22 @@ var StoreControllers = {
                         var resultModel = result.data;
                         if(resultModel.status == 200){
                             console.log("[CartController:Checkout] Post order success");
-                            _self.transitionToRouteAnimated("shipping", {main: "slideOverLeft"});
+                            var order = JSON.parse(resultModel.data);
+
+                            // set order id to cookie
+                            Utils.Cookies.Set(AppConfig.CookiesName.OrderId, order.self.id);
+
+                            var allDigital = true;
+                            for(var i = 0; i < order.orderItems.length; ++i){
+                                if(order.orderItems[i].type == "PHYSICAL"){
+                                    allDigital = false;
+                                }
+                            }
+                            if(allDigital){
+                                _self.transitionToRouteAnimated("payment", {main: "slideOverLeft"});
+                            }else{
+                                _self.transitionToRouteAnimated("shipping", {main: "slideOverLeft"});
+                            }
 
                         }else{
                             console.log("[CartController:Checkout] Post order failed!");
@@ -213,7 +228,35 @@ var StoreControllers = {
                 });
             }
         }
+    }),
+
+    OrderSummaryController: Ember.ObjectController.extend({
+        products: [
+            {name: "Product 1", price: 9, qty: 1, subTotal: 9},
+            {name: "Product 2", price: 9, qty: 2, subTotal: 18}
+        ],
+
+        actions:{
+            Purchase: function(){
+                var _self = this;
+
+                var cartProvider = new CartProvider();
+                cartProvider.PurchaseOrder(Utils.GenerateRequestModel(null), function(resultData){
+                    if(resultData.data.status == 200){
+                        _self.transitionToRouteAnimated("thanks", {main: "slideOverLeft"});
+                    } else{
+                        // TODO: Show Error
+                    }
+                });
+            }
+        }
+    }),
+
+    ThanksController: Ember.ObjectController.extend({
+        actions:{
+            Continue: function(){
+                this.transitionToRouteAnimated("index", {main: "slideOverLeft"});
+            }
+        }
     })
-
-
 };
