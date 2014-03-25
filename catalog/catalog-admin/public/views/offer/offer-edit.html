@@ -105,8 +105,8 @@
     <tr>
         <td>Available Countries</td>
         <td>
-            <a ng-click="selectAllCountries()" class="btn btn-small btn-default">Select All</a>
-            <a ng-click="deselectAllCountries()" class="btn btn-small btn-default">Deselect All</a>
+            <a ng-click="selectAllCountries()" class="btn btn-small btn-default">Check All</a>
+            <a ng-click="deselectAllCountries()" class="btn btn-small btn-default">Uncheck All</a>
             <hr/>
             <label ng-repeat="country in countries | filter: '!DEFAULT'">
                 <input type="checkbox" checklist-model="offer.eligibleCountries" checklist-value="country.code" class="chooseItem">{{ country.name }}

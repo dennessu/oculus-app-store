@@ -8,16 +8,16 @@
         <td><input type="text" class="form-control required" ng-model="item.name"></td>
     </tr>
     <tr>
+        <td>Developer</td>
+        <td>
+            <input type="text" class="form-control required" ng-model="item.developer.id" ng-change="updateDeveloper()">
+        </td>
+    </tr>
+    <tr>
         <td>Type</td>
         <td>
             <select ng-model="item.type" ng-options="itemType for itemType in itemTypes">
             </select>
-        </td>
-    </tr>
-    <tr>
-        <td>Developer</td>
-        <td>
-            <input type="text" class="form-control required" ng-model="item.developer.id" ng-change="updateDeveloper()">
         </td>
     </tr>
     <tr ng-repeat="(key, value) in item.properties">
