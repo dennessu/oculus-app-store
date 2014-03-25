@@ -54,7 +54,7 @@ public class OrderRatingService extends RatingServiceSupport{
     private void findBestPrice(RatingContext context) {
         Map<Long, Set<Promotion>> candidates = context.getCandidates();
         String country = context.getCountry();
-        String currency = context.getCurrency();
+        Currency currency = context.getCurrency();
 
         //TODO: this logic will be changed after adding new kinds of offer level promotions
         for (RatableItem item : context.getItems()) {
@@ -62,7 +62,7 @@ public class OrderRatingService extends RatingServiceSupport{
             Set<Promotion> promotions = candidates.get(offerId) == null?
                     new HashSet<Promotion>() : candidates.get(offerId);
 
-            Money originalPrice = getPrice(item.getOffer(), country, currency);
+            Money originalPrice = getPrice(item.getOffer(), country, currency.getCode());
             if (originalPrice == Money.NOT_FOUND) {
                 throw AppErrors.INSTANCE.priceNotFound(item.getOfferId().toString()).exception();
             }
@@ -86,13 +86,14 @@ public class OrderRatingService extends RatingServiceSupport{
                     entry.getAppliedPromotion().add(promotion.getId());
                 }
             }
+            bestBenefit.rounding(currency.getDigits());
             entry.setDiscountAmount(bestBenefit);
             context.getEntries().add(entry);
         }
     }
 
     private void calculateOrderLevelPromotion(RatingContext context) {
-        Money totalAmount = new Money(BigDecimal.ZERO, context.getCurrency());
+        Money totalAmount = new Money(BigDecimal.ZERO, context.getCurrency().getCode());
         for (RatingResultEntry entry : context.getEntries()) {
             //calculate the total amount of line items in current order
             totalAmount = totalAmount.add(
@@ -104,7 +105,7 @@ public class OrderRatingService extends RatingServiceSupport{
         //for criterion validation
         context.setOrderResult(result);
 
-        Money bestBenefit = new Money(BigDecimal.ZERO, context.getCurrency());
+        Money bestBenefit = new Money(BigDecimal.ZERO, context.getCurrency().getCode());
 
         Set<Promotion> candidates = context.getRules().get(PromotionType.ORDER_PROMOTION) == null?
                 new HashSet<Promotion>() : context.getRules().get(PromotionType.ORDER_PROMOTION);
@@ -126,6 +127,7 @@ public class OrderRatingService extends RatingServiceSupport{
                 result.setAppliedPromotion(promotion.getId());
             }
         }
+        bestBenefit.rounding(context.getCurrency().getDigits());
         result.setDiscountAmount(bestBenefit);
         context.setOrderResult(result);
     }

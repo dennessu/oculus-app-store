@@ -6,7 +6,9 @@
 
 package com.junbo.testing.common.apihelper.order;
 
-import javax.persistence.criteria.Order;
+import com.junbo.order.spec.model.Order;
+import com.junbo.order.spec.model.OrderEvent;
+
 import java.util.List;
 
 /**
@@ -18,6 +20,14 @@ public interface OrderService {
 
     String postOrder(Order order, int expectedResponseCode) throws Exception;
 
+    String settleQuote(Order order) throws Exception;
+
+    String settleQuote(Order order, int expectedResponseCode) throws Exception;
+
+    String postQuote(Order order) throws Exception;
+
+    String postQuote(Order order, int expectedResponseCode) throws Exception;
+
     List<String> getOrderByUserId(String userId) throws Exception;
 
     List<String> getOrderByUserId(String userId, int expectedResponseCode) throws Exception;
@@ -26,8 +36,20 @@ public interface OrderService {
 
     String getOrderByOrderId(String orderId, int expectedResponseCode) throws Exception;
 
-    String updateOrderByOrderId(String orderId) throws Exception;
+    String updateOrderByOrderId(Order order) throws Exception;
 
-    String updateOrderByOrderId(String orderId, int expectedResponseCode) throws Exception;
+    String updateOrderByOrderId(Order order, int expectedResponseCode) throws Exception;
+
+    String updateOrderBillingStatus(OrderEvent orderEvent) throws Exception;
+
+    String updateOrderBillingStatus(OrderEvent orderEvent, int expectedResponseCode) throws Exception;
+
+    String updateOrderFulfillmentStatus(OrderEvent orderEvent) throws Exception;
+
+    String updateOrderFulfillmentStatus(OrderEvent orderEvent, int expectedResponseCode) throws Exception;
+
+    String updateTentativeOrder(Order order) throws Exception;
+
+    String updateTentativeOrder(Order order, int expectedResponseCode) throws Exception;
 
 }

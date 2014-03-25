@@ -78,4 +78,4 @@ Order.prototype.PutOrder = function(orderId, dataObj, cb){
     client.Request(options, dataObj, cb);
 };
 
-module.exports = Cart;
+module.exports = Order;

@@ -74,7 +74,7 @@
                         <option>NormalPricing</option>
                     </select>
                     <hr />
-                    <div ng-show="priceType=='NormalPricing'">
+                    <div ng-if="priceType=='NormalPricing'">
                         Add price:
                         <select ng-model="selectedCountry" ng-change="addPrice(selectedCountry)">
                             <option>US</option>
@@ -95,7 +95,7 @@
                             </tr>
                         </table>
                     </div>
-                    <div ng-show="priceType=='TierPricing'">
+                    <div ng-if="priceType=='TierPricing'">
                         TODO: TierPricing
                     </div>
                 </div>

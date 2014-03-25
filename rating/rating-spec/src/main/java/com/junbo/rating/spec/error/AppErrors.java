@@ -19,16 +19,19 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 404, code = "10001", description = "Price of Offer: {0} is not found.")
     AppError priceNotFound(String offerId);
 
-    @ErrorDef(httpStatusCode = 403, code = "10002", description = "Currency is not consistent: {0} & {1}.")
+    @ErrorDef(httpStatusCode = 404, code = "10002", description = "Currency does not exist.")
+    AppError currencyNotExist(String currency);
+
+    @ErrorDef(httpStatusCode = 403, code = "10003", description = "Currency is not consistent: {0} & {1}.")
     AppError currencyNotConsistent(String currency, String other);
 
-    @ErrorDef(httpStatusCode = 500, code = "10003", description = "Error occurred during calling Catalog service.")
+    @ErrorDef(httpStatusCode = 500, code = "10004", description = "Error occurred during calling Catalog service.")
     AppError catalogGatewayError();
 
-    @ErrorDef(httpStatusCode = 500, code = "10004", description = "Error occurred during calling Entitlement service.")
+    @ErrorDef(httpStatusCode = 500, code = "10005", description = "Error occurred during calling Entitlement service.")
     AppError entitlementGatewayError();
 
-    @ErrorDef(httpStatusCode = 500, code = "10005", description = "Internal Error.")
+    @ErrorDef(httpStatusCode = 500, code = "10006", description = "Internal Error.")
     AppError unCaught();
 
 }

@@ -43,10 +43,8 @@ public class ItemServiceImpl implements ItemService {
     private final String catalogServerURL = RestUrl.getRestUrl(RestUrl.ComponentName.CATALOG) + "items";
     private static String defaultItemFileName = "defaultItem";
     ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-
     private LogHelper logger = new LogHelper(ItemServiceImpl.class);
     private AsyncHttpClient asyncClient;
-
     private static ItemService instance;
 
     public static synchronized ItemService instance() {
@@ -160,7 +158,12 @@ public class ItemServiceImpl implements ItemService {
             itemForPost.setType(EnumHelper.CatalogItemType.PHYSICAL.getItemType());
         }
         else {
-            itemForPost.setType(EnumHelper.CatalogItemType.APP.getItemType());
+            if ((int) (Math.random() * 2) == 1) {
+                itemForPost.setType(EnumHelper.CatalogItemType.APP.getItemType());
+            }
+            else {
+                itemForPost.setType(EnumHelper.CatalogItemType.IAP.getItemType());
+            }
         }
 
         return itemForPost;
