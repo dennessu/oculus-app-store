@@ -32,10 +32,10 @@ public class SubscriptionResourceImpl implements SubscriptionResource {
     public Promise<Subscription> postSubscription(Subscription subscription){
         UUID trackingUuid = subscription.getTrackingUuid();
         if (trackingUuid != null) {
-            Subscription existingSubscription = subscriptionService.getSubsByTrackingUuid(trackingUuid);
-            if (existingSubscription != null) {
-                return Promise.pure(existingSubscription);
-            }
+//            Subscription existingSubscription = subscriptionService.getSubsByTrackingUuid(trackingUuid);
+//            if (existingSubscription != null) {
+//                return Promise.pure(existingSubscription);
+//            }
         }
         return Promise.pure(subscriptionService.addsubscription(subscription));
     }
