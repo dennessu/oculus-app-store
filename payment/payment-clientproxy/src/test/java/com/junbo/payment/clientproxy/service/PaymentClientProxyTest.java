@@ -1,5 +1,6 @@
 package com.junbo.payment.clientproxy.service;
 
+import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.common.id.UserId;
 import com.junbo.payment.clientproxy.BaseTest;
 import com.junbo.payment.spec.enums.PaymentEventType;
@@ -50,6 +51,11 @@ public class PaymentClientProxyTest extends BaseTest {
         final PaymentInstrument result = piClient.postPaymentInstrument(userId, pi).wrapped().get();
         Assert.assertNotNull(result.getCreditCardRequest().getExternalToken());
         Assert.assertNotNull(result.getId());
+        final PaymentInstrument getResult = piClient.getById(userId, new PaymentInstrumentId(result.getId()
+                .getPaymentInstrumentId())).wrapped().get();
+        Assert.assertEquals(result.getCreditCardRequest().getExternalToken(), getResult.getCreditCardRequest().getExternalToken());
+        Assert.assertEquals(result.getId().getUserId(), result.getId().getUserId());
+        Assert.assertEquals(result.getId().getPaymentInstrumentId(), result.getId().getPaymentInstrumentId());
         PaymentTransaction trx = new PaymentTransaction(){
             {
                 setTrackingUuid(generateUUID());
@@ -66,6 +72,11 @@ public class PaymentClientProxyTest extends BaseTest {
         PaymentTransaction paymentResult = paymentClient.postPaymentAuthorization(trx).wrapped().get();
         Assert.assertNotNull(paymentResult.getExternalToken());
         Assert.assertEquals(paymentResult.getStatus().toUpperCase(), PaymentStatus.AUTHORIZED.toString());
+        PaymentTransaction getAuth = paymentClient.getPayment(paymentResult.getId()).wrapped().get();
+        Assert.assertEquals(getAuth.getPaymentInstrumentId().getPaymentInstrumentId(), paymentResult.getPaymentInstrumentId().getPaymentInstrumentId());
+        Assert.assertEquals(getAuth.getPaymentInstrumentId().getUserId(), paymentResult.getPaymentInstrumentId().getUserId());
+        Assert.assertEquals(getAuth.getExternalToken(), paymentResult.getExternalToken());
+        Assert.assertEquals(getAuth.getStatus().toUpperCase(), PaymentStatus.AUTHORIZED.toString());
         PaymentTransaction captureTrx = new PaymentTransaction(){
             {
                 setTrackingUuid(generateUUID());
@@ -74,6 +85,7 @@ public class PaymentClientProxyTest extends BaseTest {
         };
         PaymentTransaction captureResult = paymentClient.postPaymentCapture(paymentResult.getId(), captureTrx).wrapped().get();
         Assert.assertEquals(captureResult.getStatus().toUpperCase(), PaymentStatus.SETTLEMENT_SUBMITTED.toString());
+
     }
 
     @Test(enabled = false)

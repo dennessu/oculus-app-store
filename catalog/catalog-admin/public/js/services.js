@@ -63,3 +63,17 @@ services.factory('ItemResponse', function() {
         data:{}
     };
 });
+
+services.factory('MetaFactory', function() {
+    return  {
+        itemMeta: {
+            "shortDescription": { "display": "Short Description", "controlType": "TEXT_INPUT"},
+            "longDescription": { "display": "Long Description", "controlType": "TEXT_INPUT"},
+            "platform": { "display": "Platform", "controlType": "MULTI_SELECT", "allowedValues":["PC", "Mac", "Linux"]},
+            "changeNotes": { "display": "Change Notes", "controlType": "TEXT_INPUT"},
+            "website": { "display": "Website", "controlType": "TEXT_INPUT"},
+            "gameModes": { "display": "Game Modes", "controlType": "SINGLE_SELECT", "allowedValues":["Single Player", "Multi Player"]}
+        },
+        itemTypes: ["PHYSICAL", "IAP", "APP"]
+    };
+});

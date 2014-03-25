@@ -47,7 +47,7 @@ class RatingAction implements Action {
             // todo handle rating violation
             if (ratingResult == null) {
                 // TODO: log order charge action error?
-                LOGGER.error('rating result is null')
+                LOGGER.error('name=Rating_Result_Null')
                 throw AppErrors.INSTANCE.ratingResultInvalid().exception()
             }
             CoreBuilder.fillRatingInfo(order, ratingResult)

@@ -29,7 +29,6 @@ public class BrainTreeResourceImpl implements BrainTreeResource {
     @Override
     public Promise<PaymentInstrument> addPaymentInstrument(PaymentInstrument request) {
         return brainTreePaymentProviderService.add(request);
-
     }
 
     @Override
