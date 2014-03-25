@@ -8,11 +8,9 @@ package com.junbo.authorization.model
 import groovy.transform.CompileStatic
 
 /**
- * Role.
+ * Scope.
  */
 @CompileStatic
-enum Role {
-    OWNER,
-    ADMIN,
-    GUEST
+class Scope {
+    Map<Role, Set<String>> claims
 }

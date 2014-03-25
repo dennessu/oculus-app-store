@@ -3,16 +3,16 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.authorization.model
+package com.junbo.authorization.test
 
 import groovy.transform.CompileStatic
 
 /**
- * Role.
+ * Entity.
  */
 @CompileStatic
-enum Role {
-    OWNER,
-    ADMIN,
-    GUEST
+class Entity {
+    Long id
+    String name
+    String createdBy
 }

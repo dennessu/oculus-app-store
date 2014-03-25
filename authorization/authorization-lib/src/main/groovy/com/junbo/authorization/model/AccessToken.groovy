@@ -8,11 +8,11 @@ package com.junbo.authorization.model
 import groovy.transform.CompileStatic
 
 /**
- * Role.
+ * AccessToken.
  */
 @CompileStatic
-enum Role {
-    OWNER,
-    ADMIN,
-    GUEST
+class AccessToken {
+    String tokenValue
+    Long userId
+    Set<Scope> scopes
 }

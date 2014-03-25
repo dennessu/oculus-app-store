@@ -5,6 +5,7 @@
  */
 package com.junbo.authorization
 
+import com.junbo.authorization.model.AuthorizeContext
 import com.junbo.authorization.model.Role
 import groovy.transform.CompileStatic
 
@@ -12,6 +13,12 @@ import groovy.transform.CompileStatic
  * AuthorizeCallback.
  */
 @CompileStatic
-interface AuthorizeCallback {
-    Boolean hasRole(Role role)
+interface AuthorizeCallback<T> {
+    AuthorizeContext newContext(Map<String, Object> map)
+
+    AuthorizeContext newContext(T resourceEntity)
+
+    Boolean hasRole(Role role, AuthorizeContext context)
+
+    T postFilter(T resourceEntity, AuthorizeContext context)
 }
