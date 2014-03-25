@@ -1,0 +1,4 @@
+CartCheckout_Digital1,false
+CartCheckout_Digital2,false
+CartCheckout_Physical1,true
+CartCheckout_Physical2,true

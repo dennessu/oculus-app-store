@@ -21,17 +21,11 @@ import com.ning.http.client.*;
 import com.ning.http.client.providers.netty.NettyResponse;
 import junit.framework.Assert;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Future;
-
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.core.io.support.ResourcePatternResolver;
-import org.springframework.core.io.Resource;
 
 /**
  @author Jason
@@ -42,7 +36,6 @@ public class ItemServiceImpl implements ItemService {
 
     private final String catalogServerURL = RestUrl.getRestUrl(RestUrl.ComponentName.CATALOG) + "items";
     private static String defaultItemFileName = "defaultItem";
-    ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
     private LogHelper logger = new LogHelper(ItemServiceImpl.class);
     private AsyncHttpClient asyncClient;
     private static ItemService instance;
@@ -125,13 +118,12 @@ public class ItemServiceImpl implements ItemService {
         return listItemId;
     }
 
-    public Item prepareItemEntity(String fileName, boolean isPhysical) throws Exception {
+    public Item prepareItemEntity(String fileName) throws Exception {
 
-        String resourceLocation = String.format("classpath:testItems/%s.json", fileName);
-        Resource resource = resolver.getResource(resourceLocation);
-        Assert.assertNotNull(resource);
+        String resourceLocation = String.format("testItems/%s.json", fileName);
+        InputStream inStream = ClassLoader.getSystemResourceAsStream(resourceLocation);
+        BufferedReader br = new BufferedReader(new InputStreamReader(inStream));
 
-        BufferedReader br = new BufferedReader(new FileReader(resource.getFile().getPath()));
         StringBuilder strDefaultItem = new StringBuilder();
         try {
             String sCurrentLine;
@@ -144,6 +136,9 @@ public class ItemServiceImpl implements ItemService {
             if (br != null){
                 br.close();
             }
+            if (inStream != null) {
+                inStream.close();
+            }
         }
 
         Item itemForPost = new JsonMessageTranscoder().decode(new TypeReference<Item>() {},
@@ -153,6 +148,12 @@ public class ItemServiceImpl implements ItemService {
         String developerId = us.PostUser();
         itemForPost.setOwnerId(IdConverter.hexStringToId(UserId.class, developerId));
 
+        return itemForPost;
+    }
+
+    public String postDefaultItem(boolean isPhysical) throws Exception {
+
+        Item itemForPost = prepareItemEntity(defaultItemFileName);
         //To post a digital or physical item:
         if (isPhysical) {
             itemForPost.setType(EnumHelper.CatalogItemType.PHYSICAL.getItemType());
@@ -165,13 +166,6 @@ public class ItemServiceImpl implements ItemService {
                 itemForPost.setType(EnumHelper.CatalogItemType.IAP.getItemType());
             }
         }
-
-        return itemForPost;
-    }
-
-    public String postDefaultItem(boolean isPhysical) throws Exception {
-
-        Item itemForPost = prepareItemEntity(defaultItemFileName, isPhysical);
 
         RequestBuilder reqBuilder = new RequestBuilder("POST");
         reqBuilder.addHeader(RestUrl.requestHeaderName, RestUrl.requestHeaderValue);

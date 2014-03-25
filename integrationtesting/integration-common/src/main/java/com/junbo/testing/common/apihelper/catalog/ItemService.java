@@ -23,7 +23,7 @@ public interface ItemService {
     List<String> getItem(HashMap<String, String> httpPara, int expectedResponseCode) throws Exception;
 
     String postDefaultItem(boolean isPhysical) throws Exception;
-    Item prepareItemEntity(String fileName, boolean isPhysical) throws Exception;
+    Item prepareItemEntity(String fileName) throws Exception;
     String postItem(Item item) throws Exception;
     String postItem(Item item, int expectedResponseCode) throws Exception;
 

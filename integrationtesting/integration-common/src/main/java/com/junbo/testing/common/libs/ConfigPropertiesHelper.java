@@ -53,12 +53,14 @@ public final class ConfigPropertiesHelper {
     }
 
     private static void init() {
-        String config = System.getProperty("test.config");
+        String config = System.getProperty("test.universe");
         if (config != null && !config.startsWith("${")) {
             logger.logInfo("universe: " + config);
             loadTestProperties(String.format("testconfig/%s.config", config));
         }
-        loadTestProperties("testconfig/default.config");
+        else {
+            loadTestProperties("testconfig/default.config");
+        }
     }
 
     private static void loadTestProperties(String path) {

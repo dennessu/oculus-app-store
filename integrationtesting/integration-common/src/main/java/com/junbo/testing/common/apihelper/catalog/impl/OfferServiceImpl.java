@@ -25,13 +25,8 @@ import com.ning.http.client.Request;
 import com.ning.http.client.RequestBuilder;
 import com.ning.http.client.providers.netty.NettyResponse;
 import junit.framework.Assert;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.core.io.support.ResourcePatternResolver;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,15 +41,10 @@ public class OfferServiceImpl implements OfferService {
 
     private final String catalogServerURL = RestUrl.getRestUrl(RestUrl.ComponentName.CATALOG) + "offers";
     private final String defaultOfferFileName = "defaultOffer";
-    private final String cartCheckoutPhysical1 = "CartCheckout_Physical1";
-    private final String cartCheckoutPhysical2 = "CartCheckout_Physical2";
-    private final String cartCheckoutDigital1 = "CartCheckout_Digital1";
-    private final String cartCheckoutDigital2 = "CartCheckout_Digital2";
     private LogHelper logger = new LogHelper(ItemServiceImpl.class);
     private AsyncHttpClient asyncClient;
     private static OfferService instance;
     private boolean offerLoaded;
-    ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
 
     public static synchronized OfferService instance() {
         if (instance == null) {
@@ -79,7 +69,7 @@ public class OfferServiceImpl implements OfferService {
         RequestBuilder reqBuilder = new RequestBuilder("GET");
         reqBuilder.addHeader(RestUrl.requestHeaderName, RestUrl.requestHeaderValue);
         reqBuilder.setUrl(url);
-        if (!httpPara.isEmpty()) {
+        if ((httpPara != null) && !httpPara.isEmpty()) {
             for (String key: httpPara.keySet()) {
                 reqBuilder.addQueryParameter(key, httpPara.get(key));
             }
@@ -109,7 +99,7 @@ public class OfferServiceImpl implements OfferService {
         RequestBuilder reqBuilder = new RequestBuilder("GET");
         reqBuilder.addHeader(RestUrl.requestHeaderName, RestUrl.requestHeaderValue);
         reqBuilder.setUrl(catalogServerURL);
-        if (!httpPara.isEmpty()) {
+        if ((httpPara != null) && !httpPara.isEmpty()) {
             for (String key: httpPara.keySet()) {
                 reqBuilder.addQueryParameter(key, httpPara.get(key));
             }
@@ -160,11 +150,11 @@ public class OfferServiceImpl implements OfferService {
     }
 
     public Offer prepareOfferEntity(String fileName, boolean isPhysical) throws Exception {
-        String resourceLocation = String.format("classpath:testOffers/%s.json", fileName);
-        Resource resource = resolver.getResource(resourceLocation);
-        Assert.assertNotNull(resource);
 
-        BufferedReader br = new BufferedReader(new FileReader(resource.getFile().getPath()));
+        String resourceLocation = String.format("testOffers/%s.json", fileName);
+        InputStream inStream = ClassLoader.getSystemResourceAsStream(resourceLocation);
+        BufferedReader br = new BufferedReader(new InputStreamReader(inStream));
+
         StringBuilder strDefaultOffer = new StringBuilder();
         try {
             String sCurrentLine;
@@ -176,6 +166,9 @@ public class OfferServiceImpl implements OfferService {
         } finally {
             if (br != null){
                 br.close();
+            }
+            if (inStream != null) {
+                inStream.close();
             }
         }
 
@@ -255,28 +248,42 @@ public class OfferServiceImpl implements OfferService {
     }
 
     public String getOfferIdByName(String offerName) throws  Exception {
+
         if (!offerLoaded){
-            HashMap<String, String> httpPara = new HashMap<>();
-            this.getOffer(httpPara);
+            this.loadAllOffers();
+
+            InputStream inStream = ClassLoader.getSystemResourceAsStream("testOffers/predefinedofferlist.txt");
+            BufferedReader br = new BufferedReader(new InputStreamReader(inStream));
+            try {
+                String sCurrentLine;
+                while ((sCurrentLine = br.readLine()) != null) {
+                    System.out.println(sCurrentLine);
+                    String[] strLine = sCurrentLine.split(",");
+                    if (Master.getInstance().getOfferIdByName(strLine[0]) == null)
+                    {
+                        Offer offer = this.prepareOfferEntity(strLine[0], Boolean.parseBoolean(strLine[1]));
+                        this.postOffer(offer);
+                    }
+                }
+            } catch (IOException e) {
+                throw e;
+            } finally {
+                if (br != null){
+                    br.close();
+                }
+                if (inStream != null) {
+                    inStream.close();
+                }
+            }
+
             offerLoaded = true;
         }
 
-        String offerId = Master.getInstance().getOfferIdByName(offerName);
-        if (offerId !=  null) {
-            return  offerId;
-        }
-        else {
-            Offer offer1 = prepareOfferEntity(cartCheckoutPhysical1, true);
-            Offer offer2 = prepareOfferEntity(cartCheckoutPhysical2, true);
-            Offer offer3 = prepareOfferEntity(cartCheckoutDigital1, false);
-            Offer offer4 = prepareOfferEntity(cartCheckoutDigital2, false);
-            postOffer(offer1);
-            postOffer(offer2);
-            postOffer(offer3);
-            postOffer(offer4);
+        return Master.getInstance().getOfferIdByName(offerName);
+    }
 
-            return Master.getInstance().getOfferIdByName(offerName);
-        }
+    private void loadAllOffers() throws Exception {
+        this.getOffer(null);
     }
 
 }
