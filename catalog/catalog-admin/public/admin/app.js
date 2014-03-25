@@ -11,13 +11,11 @@ var app = angular.module('catalogAdmin', [
     ]);
 
 app.config(['$routeProvider', function($routeProvider) {
-    $routeProvider.when('/offers', {templateUrl: '../views/offer/offer-list.html', controller: 'OfferListCtrl'});
-    $routeProvider.when('/offers/review', {templateUrl: '../views/offer/offer-list.html', controller: 'OfferReviewListCtrl'});
+    $routeProvider.when('/offers', {templateUrl: '../views/offer/offer-list-admin.html', controller: 'OfferAdminListCtrl'});
     $routeProvider.when('/offers/:id', {templateUrl: '../views/offer/offer-detail-admin.html', controller: 'OfferDetailCtrl'});
     $routeProvider.when('/offers/:id/response', {templateUrl: '../views/offer/offer-response.html', controller: 'OfferResponseCtrl'})
 
-    $routeProvider.when('/items', {templateUrl: '../views/item/item-list.html', controller: 'ItemListCtrl'});
-    $routeProvider.when('/items/review', {templateUrl: '../views/item/item-list.html', controller: 'ItemReviewListCtrl'});
+    $routeProvider.when('/items', {templateUrl: '../views/item/item-list-admin.html', controller: 'ItemAdminListCtrl'});
     $routeProvider.when('/items/:id', {templateUrl: '../views/item/item-detail-admin.html', controller: 'ItemDetailCtrl'});
     $routeProvider.when('/items/:id/response', {templateUrl: '../views/item/item-response.html', controller: 'ItemResponseCtrl'})
 
