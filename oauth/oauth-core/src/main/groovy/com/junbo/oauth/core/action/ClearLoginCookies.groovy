@@ -20,11 +20,20 @@ import org.springframework.beans.factory.annotation.Required
 import javax.ws.rs.core.Response
 
 /**
- * ClearLoginCookies.
+ * The ClearLoginCookies action.
+ * This action will clear the login related cookies, including the login state and the remember me token cookie.
+ * @author Zhanxin Yang.
  */
 @CompileStatic
 class ClearLoginCookies implements Action {
+    /**
+     * The LoginStateRepository to handle the login state related logic.
+     */
     private LoginStateRepository loginStateRepository
+
+    /**
+     * The RememberMeTokenRepository to handle the remember me token related logic.
+     */
     private RememberMeTokenRepository rememberMeTokenRepository
 
     @Required
@@ -37,26 +46,37 @@ class ClearLoginCookies implements Action {
         this.rememberMeTokenRepository = rememberMeTokenRepository
     }
 
+    /**
+     * Override the {@link com.junbo.langur.core.webflow.action.Action}.execute method.
+     * @param context The ActionContext contains the execution context.
+     * @return The ActionResult contains the transition or other kind of result contains in a map.
+     */
     @Override
     Promise<ActionResult> execute(ActionContext context) {
+        // Get the basic context from constructing an ActionContextWrapper.
         def contextWrapper = new ActionContextWrapper(context)
 
         def loginState = contextWrapper.loginState
 
+        // Delete the login state from the database if presented.
         if (loginState != null) {
             loginStateRepository.delete(loginState.id)
         }
 
+        // Clear the login state cookie.
         CookieUtil.clearCookie(OAuthParameters.LOGIN_STATE, context)
 
         def rememberMeToken = contextWrapper.rememberMeToken
 
+        // Delete the remember me token from the database if presented.
         if (rememberMeToken != null) {
             rememberMeTokenRepository.getAndRemove(rememberMeToken.tokenValue)
         }
 
+        // Clear the remember me token cookie.
         CookieUtil.clearCookie(OAuthParameters.REMEMBER_ME, context)
 
+        // Return an OK(200) response.
         if (contextWrapper.responseBuilder == null) {
             contextWrapper.responseBuilder = Response.ok()
         }

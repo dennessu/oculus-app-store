@@ -12,6 +12,12 @@ var Transition = {
             case Ember.App.CartItem:
                 result = Transition.CartItems(data);
                 break;
+            case Ember.App.ShippingInfo:
+                result = Transition.ShippingInfo(data);
+                break;
+            case Ember.App.CreditCard:
+                result = Transition.CreditCard(data);
+                break;
             default :
                 result = Transition.Normalize(data);
                 break;
@@ -27,7 +33,6 @@ var Transition = {
         var result = null;
         if (data["results"] != undefined) {
             // get offers
-
             var offers = data["results"];
             var resultList = new Array();
             for (var i = 0; i < offers.length; ++i) {
@@ -68,10 +73,94 @@ var Transition = {
             list.push({
                 "id": i,
                 "product_id": item.offer.id,
+                "selected": item.selected,
                 "qty": item.quantity
             });
         }
 
         return {"CartItems": list};
+    },
+
+    ShippingInfo: function(data){
+        if(data instanceof Array){
+            var result = new Array();
+            for(var i = 0; i < data.length; ++i){
+                var item = data[i];
+                result.push({
+                    id: item.self.id,
+                    street: item.street,
+                    city: item.city,
+                    state: item.state,
+                    postalCode: item.postalCode,
+                    country: item.country,
+                    firstName: item.firstName,
+                    lastName: item.lastName,
+                    phoneNumber: item.phoneNumber
+                });
+            }
+            return {"ShippingInfos": result};
+        }else{
+            var item = data;
+            return {
+                id: item.self.id,
+                street: item.street,
+                city: item.city,
+                state: item.state,
+                postalCode: item.postalCode,
+                country: item.country,
+                firstName: item.firstName,
+                lastName: item.lastName,
+                phoneNumber: item.phoneNumber
+            };
+        }
+    },
+
+    CreditCard: function(data){
+        var result = null;
+        if(data["results"] != undefined){
+            var payments = data["results"];
+            var paymentArray = new Array();
+            for(var i = 0; i < payments.length; ++i){
+                var item = payments[i];
+                paymentArray.push({
+                    id: item.self.id,
+                    accountName: item.accountName,
+                    accountNum: item.accountNum,
+                    isValidated: item.isValidated,
+                    isDefault: item.isDefault,
+                    expireDate: item.creditCardRequest.expireDate,
+                    encryptedCvmCode: "",
+                    addressLine1: item.address.addressLine1,
+                    city: item.address.city,
+                    state: item.address.state,
+                    country: item.address.country,
+                    postalCode: item.address.postalCode,
+                    phoneType: item.phone.type,
+                    phoneNumber: item.phone.number
+                });
+            }
+
+            result = {"CreditCards": paymentArray};
+        }else{
+            var item = data;
+            result = {
+                id: item.self.id,
+                accountName: item.accountName,
+                accountNum: item.accountNum,
+                isValidated: item.isValidated,
+                isDefault: item.isDefault,
+                expireDate: item.creditCardRequest.expireDate,
+                encryptedCvmCode: "",
+                addressLine1: item.address.addressLine1,
+                city: item.address.city,
+                state: item.address.state,
+                country: item.address.country,
+                postalCode: item.address.postalCode,
+                phoneType: item.phone.type,
+                phoneNumber: item.phone.number
+            };
+        }
+
+        return result;
     }
 };

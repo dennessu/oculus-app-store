@@ -8,12 +8,12 @@ package com.junbo.payment.spec.resource;
 
 import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.common.id.UserId;
+import com.junbo.common.model.Results;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.spec.model.PageMetaData;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentInstrumentSearchParam;
-import com.junbo.payment.spec.model.ResultList;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 
@@ -57,7 +57,7 @@ public interface PaymentInstrumentResource {
     @ApiOperation("Search a payment instrument")
     @GET
     @Path("/search")
-    Promise<ResultList<PaymentInstrument>> searchPaymentInstrument(
+    Promise<Results<PaymentInstrument>> searchPaymentInstrument(
             @PathParam("userId")UserId userId,
             @BeanParam PaymentInstrumentSearchParam searchParam,
             @BeanParam PageMetaData pageMetadata);

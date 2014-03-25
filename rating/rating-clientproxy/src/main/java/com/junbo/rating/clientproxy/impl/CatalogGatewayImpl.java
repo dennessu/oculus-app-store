@@ -6,7 +6,6 @@
 
 package com.junbo.rating.clientproxy.impl;
 
-import com.junbo.catalog.spec.model.attribute.Attribute;
 import com.junbo.catalog.spec.model.common.EntityGetOptions;
 import com.junbo.catalog.spec.model.domaindata.ShippingMethod;
 import com.junbo.catalog.spec.model.item.Item;
@@ -15,11 +14,9 @@ import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OfferEntry;
 import com.junbo.catalog.spec.model.promotion.Promotion;
 import com.junbo.catalog.spec.model.promotion.PromotionsGetOptions;
-import com.junbo.catalog.spec.resource.AttributeResource;
 import com.junbo.catalog.spec.resource.ItemResource;
 import com.junbo.catalog.spec.resource.OfferResource;
 import com.junbo.catalog.spec.resource.PromotionResource;
-import com.junbo.common.id.AttributeId;
 import com.junbo.common.id.ItemId;
 import com.junbo.common.id.OfferId;
 import com.junbo.rating.clientproxy.CatalogGateway;
@@ -40,10 +37,6 @@ import java.util.List;
  */
 public class CatalogGatewayImpl implements CatalogGateway{
     @Autowired
-    @Qualifier("ratingAttributeClient")
-    private AttributeResource attributeResource;
-
-    @Autowired
     @Qualifier("ratingItemClient")
     private ItemResource itemResource;
 
@@ -53,15 +46,6 @@ public class CatalogGatewayImpl implements CatalogGateway{
 
     @Autowired
     private PromotionResource promotionResource;
-
-    @Override
-    public Attribute getAttribute(Long attributeId) {
-        try {
-            return attributeResource.getAttribute(new AttributeId(attributeId)).wrapped().get();
-        } catch (Exception e) {
-            throw AppErrors.INSTANCE.catalogGatewayError().exception();
-        }
-    }
 
     @Override
     public Item getItem(Long itemId) {
@@ -125,7 +109,7 @@ public class CatalogGatewayImpl implements CatalogGateway{
         while(true) {
             List<Promotion> promotions = new ArrayList<Promotion>();
             try {
-                promotions.addAll(promotionResource.getPromotions(options).wrapped().get().getResults());
+                promotions.addAll(promotionResource.getPromotions(options).wrapped().get().getItems());
             } catch (Exception e) {
                 throw AppErrors.INSTANCE.catalogGatewayError().exception();
             }

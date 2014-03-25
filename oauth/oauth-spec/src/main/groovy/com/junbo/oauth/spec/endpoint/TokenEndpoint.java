@@ -8,6 +8,8 @@ package com.junbo.oauth.spec.endpoint;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.oauth.spec.model.AccessTokenResponse;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -22,12 +24,14 @@ import javax.ws.rs.core.MultivaluedMap;
 /**
  * Javadoc.
  */
-@Path("token")
+@Api(value = "oauth2", basePath = "oauth2")
+@Path("/oauth2/token")
 @RestResource
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 public interface TokenEndpoint {
 
+    @ApiOperation("Exchange for access token")
     @POST
     Promise<AccessTokenResponse> postToken(@Context HttpHeaders httpHeaders,
                                            MultivaluedMap<String, String> formParams,

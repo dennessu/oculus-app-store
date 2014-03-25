@@ -1,21 +1,5 @@
 var AppConfig = function () {};
 
-AppConfig.Templates = {
-    Identity: {
-        Login: { name: "login", url: "/template/identity/login"},
-        Captcha: {name: "captcha", url: "/template/identity/captcha"},
-        TFA: {name: "tfa", url: "/template/identity/tfa"},
-        Register: {name: "register", url: "/template/identity/register"},
-        PIN: {name: "pin", url: "/template/identity/pin"},
-        My: {name: "my", url: "/template/identity/my"}
-    },
-    Store: {
-        Index: {name: "index", url: "/template/store/index"},
-        Detail: {name: "detail", url: "/template/store/detail"},
-        Cart: {name: "cart", url: "/template/store/cart"},
-        OrderSummary: {name: "cart", url: "/template/store/OrderSummary"}
-    }
-};
 
 AppConfig.API = {
     Identity: {
@@ -44,7 +28,22 @@ AppConfig.API = {
         Add: { Path: "add" },
         Remove: { Path: "remove" },
         Update: { Path: "update" },
-        Merge: { Path: "merge" }
+        Merge: { Path: "merge" },
+        PostOrder: { Path: "post_order" }
+    },
+    Billing: {
+        Config: {
+            Namespace: "/api/billing/"
+        },
+        ShippingInfo: {Path: "get_shipping_info"},
+        Add: {Path: "add"}
+    },
+    Payment:{
+        Config: {
+            Namespace: "/api/payment/"
+        },
+        PaymentInstruments: {Path: "get_payment_instruments" },
+        Add: {Path: "add"}
     }
 };
 
@@ -56,11 +55,18 @@ AppConfig.DataModelMapTable = {
     "Ember.App.CartItem": {
         Provider: "CartProvider",
         Method: "Get"
+    },
+    "Ember.App.ShippingInfo": {
+        Provider: "BillingProvider",
+        Method: "ShippingInfo"
+    },
+    "Ember.App.CreditCard": {
+        Provider: "PaymentProvider",
+        Method: "PaymentInstruments"
     }
 };
 
 AppConfig.Countries = [
-    {name: "Australia", value: "AU"},
     {name: "Canada", value: "CA"},
     {name: "China", value: "CN"},
     {name: "France", value: "FR"},
@@ -76,7 +82,7 @@ AppConfig.Init = function(){
         url: "/config",
         async: false,
         success: function (data, textStatus) {
-            AppConfig = Utils.FillObject(AppConfig, data, "full");
+            AppConfig = Utils.FillObject(AppConfig, data, 0);
             console.log(AppConfig.CookiesTimeout);
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {

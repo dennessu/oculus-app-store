@@ -25,7 +25,7 @@ public class OfferRatingResultBuilder {
         OfferRatingRequest result = new OfferRatingRequest();
         result.setUserId(context.getUserId());
         result.setCountry(context.getCountry());
-        result.setCurrency(context.getCurrency());
+        result.setCurrency(context.getCurrency().getCode());
         result.setOffers(new HashSet<OfferRatingItem>());
         for (RatingResultEntry entry : context.getEntries()) {
             OfferRatingItem item = new OfferRatingItem();

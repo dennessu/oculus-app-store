@@ -15,4 +15,14 @@
     <bean id="taxService" class="com.junbo.billing.core.service.TaxServiceImpl">
         <property name="providerName" value="${tax.provider.name}"/>
     </bean>
+
+    <!-- cache -->
+    <bean id="billingCacheManagerFactory" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+        <property name="configLocation">
+            <value>ehcache/ehcache.xml</value>
+        </property>
+    </bean>
+    <bean id="billingCacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
+        <property name="cacheManager" ref="billingCacheManagerFactory"/>
+    </bean>
 </beans>

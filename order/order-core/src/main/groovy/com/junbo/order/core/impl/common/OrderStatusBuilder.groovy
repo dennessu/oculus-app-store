@@ -4,17 +4,33 @@ import com.junbo.billing.spec.enums.BalanceStatus
 import com.junbo.order.db.entity.enums.EventStatus
 import com.junbo.order.db.entity.enums.OrderActionType
 import com.junbo.order.db.entity.enums.OrderStatus
+import com.junbo.order.db.repo.OrderRepository
+import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderEvent
 import groovy.transform.CompileStatic
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Component
+import org.springframework.util.CollectionUtils
 
 /**
  * Created by chriszhu on 3/18/14.
  */
 @CompileStatic
+@Component('orderStatusBuilder')
 class OrderStatusBuilder {
 
-    static OrderStatus buildOrderStatus(List<OrderEvent> orderEvents) {
-        if (org.apache.commons.collections.CollectionUtils.isEmpty(orderEvents)) {
+    private static final Logger LOGGER = LoggerFactory.getLogger(OrderStatusBuilder)
+
+    @Autowired
+    OrderRepository orderRepository
+
+    static OrderStatus buildOrderStatus(Order order, List<OrderEvent> orderEvents) {
+        if (order.tentative) {
+            return OrderStatus.OPEN
+        }
+        if (CollectionUtils.isEmpty(orderEvents)) {
             return OrderStatus.OPEN
         }
         sortOrderEventsReversely(orderEvents)
@@ -131,22 +147,23 @@ class OrderStatusBuilder {
         return orderEvent != null
     }
 
-    static OrderStatus buildOrderStatusFromBalance(String balanceStatus) {
+    static EventStatus buildEventStatusFromBalance(String balanceStatus) {
         switch (balanceStatus) {
             case BalanceStatus.COMPLETED:
-                return OrderStatus.CHARGED
+                return EventStatus.COMPLETED
             case BalanceStatus.AWAITING_PAYMENT:
             case BalanceStatus.UNCONFIRMED:
             case BalanceStatus.INIT:
-                return OrderStatus.PENDING_CHARGE
+                return EventStatus.PENDING
             case BalanceStatus.PENDING_CAPTURE:
-                return OrderStatus.OPEN
+                return EventStatus.OPEN
             case BalanceStatus.CANCELLED:
             case BalanceStatus.FAILED:
             case BalanceStatus.ERROR:
-                return OrderStatus.FAILED
+                return EventStatus.FAILED
             default:
-                return OrderStatus.PENDING_CHARGE
+                LOGGER.warn('name=Unknown_Balance_Status, status={}', balanceStatus)
+                return EventStatus.PENDING
         }
     }
 

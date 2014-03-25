@@ -10,4 +10,5 @@
 
     <!-- resource implementation -->
     <bean id="defaultEmailResource" class="com.junbo.email.rest.resource.EmailResourceImpl" />
+    <bean id="defaultEmailTemplateResource" class="com.junbo.email.rest.resource.EmailTemplateResourceImpl"/>
 </beans>

@@ -5,13 +5,13 @@ module.exports = {
         PostAuthenticate: {
             Method: 'POST',
             Path: '/rest/Authenticate',
-            ResponseItem: 'SucceedNormal',
+            ResponseItem: 'Succeed',
             Items: {
 
                 'Succeed': {
                     statusCode: 302,
                     headers: {
-                        location: 'http://localhost:3000/callback/login'
+                        location: 'http://localhost:3000/callback/login?code=1234'
                     },
                     data: ""
                 },
@@ -476,7 +476,7 @@ module.exports = {
                                     "href": "http://api.oculusvr.com/offers/30011"
                                 },
                                 "quantity": 2,
-                                "selected": true,
+                                "selected": false,
                                 "self": {
                                     "href": "http://api.oculusvr.com/users/10000/carts/21232/offers/20001",
                                     "id": "20001"
@@ -567,6 +567,619 @@ module.exports = {
                         headers: null,
                         data: null
                     }
+                }
+            }
+        },
+
+        PostCartMerge: {
+            Method: 'POST',
+            Path: '/rest/users/:userId/carts/:cardId/merge',
+            ResponseItem: 'Succeed',
+            Items: {
+                'Succeed': {
+                    statusCode: 200,
+                    headers: null,
+                    data: {
+                        "self": {
+                            "href": "http://api.oculusvr.com/users/10000/carts/21232",
+                            "id": "21232"
+                        },
+                        "user": {
+                            "href": "http://api.oculusvr.com/users/10000",
+                            "id": "10000"
+                        },
+                        "resourceAge": 6,
+                        "createdTime": "2014-02-20T09:34:58Z",
+                        "updatedTime": "2014-02-21T07:34:30Z",
+                        "offers": [
+                            {
+                                "createdTime": "2014-02-21T07:34:30Z",
+                                "updatedTime": "2014-02-21T07:34:30Z",
+                                "offer": {
+                                    "id": 1,
+                                    "href": "http://api.oculusvr.com/offers/30011"
+                                },
+                                "quantity": 2,
+                                "selected": true,
+                                "self": {
+                                    "href": "http://api.oculusvr.com/users/10000/carts/21232/offers/20001",
+                                    "id": "20001"
+                                }
+                            },
+
+                            {
+                                "createdTime": "2014-02-21T07:34:30Z",
+                                "updatedTime": "2014-02-21T07:34:30Z",
+                                "offer": {
+                                    "id": 2,
+                                    "href": "http://api.oculusvr.com/offers/30011"
+                                },
+                                "quantity": 2,
+                                "selected": true,
+                                "self": {
+                                    "href": "http://api.oculusvr.com/users/10000/carts/21232/offers/20001",
+                                    "id": "20001"
+                                }
+                            }
+                        ],
+                        "coupons": []
+                    },
+                    'Failed': {
+                        statusCode: 404,
+                        headers: null,
+                        data: null
+                    }
+                }
+            }
+        }
+    },
+
+    Billing:{
+        GetShippingInfo: {
+            Method: 'GET',
+            Path: '/rest/users/:userId/ship-to-info',
+            ResponseItem: 'Succeed',
+            Items: {
+                'Succeed': {
+                    statusCode: 200,
+                    headers: null,
+                    data: [
+                        {
+                            "self": {
+                                "href": "http://api.wan-san.com/ship-to-info/70953532335535",
+                                "id": "11"
+                            },
+                            "user": {
+                                "href": "http://api.wan-san.com/users/12345",
+                                "id": "12345"
+                            },
+                            "street": "NO. 1001 Twin Dophin Dr",
+                            "city": "Redwood City",
+                            "state": "CA",
+                            "postalCode": "96045",
+                            "country": "US",
+                            "firstName": "Steve 11",
+                            "lastName": "Smith",
+                            "phoneNumber": "207-655-2345"
+                        },
+
+                        {
+                            "self": {
+                                "href": "http://api.wan-san.com/ship-to-info/70953532335535",
+                                "id": "22"
+                            },
+                            "user": {
+                                "href": "http://api.wan-san.com/users/12345",
+                                "id": "12345"
+                            },
+                            "street": "NO. 1002 Twin Dophin Dr",
+                            "city": "Redwood City",
+                            "state": "CA",
+                            "postalCode": "96045",
+                            "country": "US",
+                            "firstName": "Steve 22",
+                            "lastName": "Smith",
+                            "phoneNumber": "207-655-2345"
+                        }
+                    ]
+
+                },
+
+                'Failed': {
+                    statusCode: 404,
+                    headers: null,
+                    data: null
+                }
+            }
+        },
+
+        PostShippingInfo: {
+            Method: 'POST',
+            Path: '/rest/users/:userId/ship-to-info',
+            ResponseItem: 'Succeed',
+            Items: {
+                'Succeed': {
+                    statusCode: 200,
+                    headers: null,
+                    data:
+                        {
+                            "self": {
+                                "href": "http://api.wan-san.com/ship-to-info/70953532335535",
+                                "id": "11"
+                            },
+                            "user": {
+                                "href": "http://api.wan-san.com/users/12345",
+                                "id": "12345"
+                            },
+                            "street": "NO. 1000 Twin Dophin Dr",
+                            "city": "Redwood City",
+                            "state": "CA",
+                            "postalCode": "96045",
+                            "country": "US",
+                            "firstName": "Steve 11",
+                            "lastName": "Smith",
+                            "phoneNumber": "207-655-2345"
+                        }
+
+                },
+
+                'Failed': {
+                    statusCode: 404,
+                    headers: null,
+                    data: null
+                }
+            }
+        }
+    },
+
+    Order: {
+        GetOrders: {
+            Method: 'GET',
+            Path: '/rest/orders',
+            ResponseItem: 'Succeed',
+            Items: {
+                'Succeed': {
+                    statusCode: 200,
+                    headers: null,
+                    data: [
+                        {
+                            "self" : {
+                                "href" : "https://xxx.xxx.xxx",
+                                "id" : "111"
+                            },
+                            "user" : {
+                                "href" : "https://xxx.xxx.xxx",
+                                "id" : "000100008040"
+                            },
+                            "trackingUuid" : "3a6f0c0e-2973-403b-96d7-64d29c5419dc",
+                            "type" : "PAY_IN",
+                            "country" : "US",
+                            "currency" : "USD",
+                            "tentative" : true,
+                            "paymentInstruments" : [ {
+                                "href" : "https://xxx.xxx.xxx",
+                                "id" : "00000025C000"
+                            } ],
+                            "orderItems" : [ {
+                                "offer" : {
+                                    "href" : "https://xxx.xxx.xxx",
+                                    "id" : "000002080040"
+                                },
+                                "quantity" : 2
+                            } ]
+                        },
+                        {
+                            "self" : {
+                                "href" : "https://xxx.xxx.xxx",
+                                "id" : "222"
+                            },
+                            "user" : {
+                                "href" : "https://xxx.xxx.xxx",
+                                "id" : "000100008040"
+                            },
+                            "trackingUuid" : "3a6f0c0e-2973-403b-96d7-64d29c5419dc",
+                            "type" : "PAY_IN",
+                            "country" : "US",
+                            "currency" : "USD",
+                            "tentative" : true,
+                            "paymentInstruments" : [ {
+                                "href" : "https://xxx.xxx.xxx",
+                                "id" : "00000025C000"
+                            } ],
+                            "orderItems" : [ {
+                                "offer" : {
+                                    "href" : "https://xxx.xxx.xxx",
+                                    "id" : "000002080040"
+                                },
+                                "quantity" : 2
+                            } ]
+                        }
+                    ]
+                },
+
+                'Failed': {
+                    statusCode: 404,
+                    headers: null,
+                    data: null
+                }
+            }
+        },
+
+        GetOrdersById: {
+            Method: 'GET',
+            Path: '/rest/orders/:orderId',
+            ResponseItem: 'Succeed',
+            Items: {
+                'Succeed': {
+                    statusCode: 200,
+                    headers: null,
+                    data: {
+                        "self" : {
+                            "href" : "https://xxx.xxx.xxx",
+                            "id" : "111"
+                        },
+                        "user" : {
+                            "href" : "https://xxx.xxx.xxx",
+                            "id" : "000100008040"
+                        },
+                        "trackingUuid" : "3a6f0c0e-2973-403b-96d7-64d29c5419dc",
+                        "type" : "PAY_IN",
+                        "country" : "US",
+                        "currency" : "USD",
+                        "tentative" : true,
+                        "paymentInstruments" : [ {
+                            "href" : "https://xxx.xxx.xxx",
+                            "id" : "00000025C000"
+                        } ],
+                        "orderItems" : [ {
+                            "offer" : {
+                                "href" : "https://xxx.xxx.xxx",
+                                "id" : "000002080040"
+                            },
+                            "quantity" : 2
+                        } ]
+                    }
+                },
+
+                'Failed': {
+                    statusCode: 404,
+                    headers: null,
+                    data: null
+                }
+            }
+        },
+
+        PostOrders: {
+            Method: 'POST',
+            Path: '/rest/orders',
+            ResponseItem: 'Succeed',
+            Items: {
+                'Succeed': {
+                    statusCode: 200,
+                    headers: null,
+                    data: {
+                        "self" : {
+                            "href" : "https://xxx.xxx.xxx",
+                            "id" : "111"
+                        },
+                        "user" : {
+                            "href" : "https://xxx.xxx.xxx",
+                            "id" : "000100008040"
+                        },
+                        "trackingUuid" : "3a6f0c0e-2973-403b-96d7-64d29c5419dc",
+                        "type" : "PAY_IN",
+                        "country" : "US",
+                        "currency" : "USD",
+                        "tentative" : true,
+                        "paymentInstruments" : [ {
+                            "href" : "https://xxx.xxx.xxx",
+                            "id" : "00000025C000"
+                        } ],
+                        "orderItems" : [ {
+                            "offer" : {
+                                "href" : "https://xxx.xxx.xxx",
+                                "id" : "000002080040"
+                            },
+                            "quantity" : 2
+                        } ]
+                    }
+                },
+
+                'Failed': {
+                    statusCode: 404,
+                    headers: null,
+                    data: null
+                }
+            }
+        },
+
+        PutOrders: {
+            Method: 'PUT',
+            Path: '/rest/orders/:orderId',
+            ResponseItem: 'Succeed',
+            Items: {
+                'Succeed': {
+                    statusCode: 200,
+                    headers: null,
+                    data: {
+                        "self" : {
+                            "href" : "https://xxx.xxx.xxx",
+                            "id" : "111"
+                        },
+                        "user" : {
+                            "href" : "https://xxx.xxx.xxx",
+                            "id" : "000100008040"
+                        },
+                        "trackingUuid" : "3a6f0c0e-2973-403b-96d7-64d29c5419dc",
+                        "type" : "PAY_IN",
+                        "country" : "US",
+                        "currency" : "USD",
+                        "tentative" : true,
+                        "paymentInstruments" : [ {
+                            "href" : "https://xxx.xxx.xxx",
+                            "id" : "00000025C000"
+                        } ],
+                        "orderItems" : [ {
+                            "offer" : {
+                                "href" : "https://xxx.xxx.xxx",
+                                "id" : "000002080040"
+                            },
+                            "quantity" : 2
+                        } ]
+                    }
+                },
+
+                'Failed': {
+                    statusCode: 404,
+                    headers: null,
+                    data: null
+                }
+            }
+        }
+    },
+
+    PaymentInstruments:{
+        GetPaymentInstruments: {
+            Method: 'GET',
+            Path: '/rest/users/:userId/payment-instruments', //'/rest/users/:userId/payment-instruments/search',
+            ResponseItem: 'Succeed',
+            Items: {
+                'Succeed': {
+                    statusCode: 200,
+                    headers: null,
+                    data:{
+                        results:[
+                            {
+                                "self": {
+                                    "href": "http://api.wan-san.com/v1/payment-instrument-types/CREDITCARD",
+                                    "id": "111"
+                                },
+                                "accountName": "VISA 1234",
+                                "accountNum": "4111111111111111",
+                                "isValidated": "false",
+                                "isDefault": "true",
+                                "type": {
+                                    "href": "http://api.wan-san.com/v1/payment-instrument-types/CREDITCARD",
+                                    "id": "CREDITCARD"
+                                },
+                                "creditCardRequest": {
+                                    "expireDate": "1999-11-27",
+                                    "encryptedCvmCode": "111"
+                                },
+                                "address": {
+                                    "addressLine1": "ThirdStreetFerriday",
+                                    "city": "LA",
+                                    "state": "CA",
+                                    "country": "US",
+                                    "postalCode": "12345"
+                                },
+                                "phone": {
+                                    "type": "Home",
+                                    "number": "12345678"
+                                },
+                                "trackingUuid": "f48d6fae-adec-43d0-a865-00a0c91e6bf7"
+                            },
+                            {
+                                "self": {
+                                    "href": "http://api.wan-san.com/v1/payment-instrument-types/CREDITCARD",
+                                    "id": "222"
+                                },
+                                "accountName": "MaterCard 1234",
+                                "accountNum": "4111111111111111",
+                                "isValidated": "false",
+                                "isDefault": "true",
+                                "type": {
+                                    "href": "http://api.wan-san.com/v1/payment-instrument-types/CREDITCARD",
+                                    "id": "CREDITCARD"
+                                },
+                                "creditCardRequest": {
+                                    "expireDate": "1999-11-27",
+                                    "encryptedCvmCode": "111"
+                                },
+                                "address": {
+                                    "addressLine1": "ThirdStreetFerriday",
+                                    "city": "LA",
+                                    "state": "CA",
+                                    "country": "US",
+                                    "postalCode": "12345"
+                                },
+                                "phone": {
+                                    "type": "Home",
+                                    "number": "12345678"
+                                },
+                                "trackingUuid": "f48d6fae-adec-43d0-a865-00a0c91e6bf7"
+                            }
+                        ]
+                    }
+                },
+
+                'Failed': {
+                    statusCode: 404,
+                    headers: null,
+                    data: null
+                }
+            }
+        },
+
+        GetPaymentInstrumentsById: {
+            Method: 'GET',
+            Path: '/rest/users/:userId/payment-instruments/:paymentInstrumentId',
+            ResponseItem: 'Succeed',
+            Items: {
+                'Succeed': {
+                    statusCode: 200,
+                    headers: null,
+                    data: {
+                        "self": {
+                            "href": "http://api.wan-san.com/v1/payment-instrument-types/CREDITCARD",
+                            "id": "111"
+                        },
+                        "accountName": "David",
+                        "accountNum": "4111111111111111",
+                        "isValidated": "false",
+                        "isDefault": "true",
+                        "type": {
+                            "href": "http://api.wan-san.com/v1/payment-instrument-types/CREDITCARD",
+                            "id": "CREDITCARD"
+                        },
+                        "creditCardRequest": {
+                            "expireDate": "1999-11-27",
+                            "encryptedCvmCode": "111"
+                        },
+                        "address": {
+                            "addressLine1": "ThirdStreetFerriday",
+                            "city": "LA",
+                            "state": "CA",
+                            "country": "US",
+                            "postalCode": "12345"
+                        },
+                        "phone": {
+                            "type": "Home",
+                            "number": "12345678"
+                        },
+                        "trackingUuid": "f48d6fae-adec-43d0-a865-00a0c91e6bf7"
+                    }
+                },
+
+                'Failed': {
+                    statusCode: 404,
+                    headers: null,
+                    data: null
+                }
+            }
+        },
+
+        PostPaymentInstruments: {
+            Method: 'POST',
+            Path: '/rest/users/:userId/payment-instruments ',
+            ResponseItem: 'Succeed',
+            Items: {
+                'Succeed': {
+                    statusCode: 200,
+                    headers: null,
+                    data: {
+                        "self": {
+                            "href": "http://api.wan-san.com/v1/payment-instrument-types/CREDITCARD",
+                            "id": "111"
+                        },
+                        "accountName": "David",
+                        "accountNum": "4111111111111111",
+                        "isValidated": "false",
+                        "isDefault": "true",
+                        "type": {
+                            "href": "http://api.wan-san.com/v1/payment-instrument-types/CREDITCARD",
+                            "id": "CREDITCARD"
+                        },
+                        "creditCardRequest": {
+                            "expireDate": "1999-11-27",
+                            "encryptedCvmCode": "111"
+                        },
+                        "address": {
+                            "addressLine1": "ThirdStreetFerriday",
+                            "city": "LA",
+                            "state": "CA",
+                            "country": "US",
+                            "postalCode": "12345"
+                        },
+                        "phone": {
+                            "type": "Home",
+                            "number": "12345678"
+                        },
+                        "trackingUuid": "f48d6fae-adec-43d0-a865-00a0c91e6bf7"
+                    }
+                },
+
+                'Failed': {
+                    statusCode: 404,
+                    headers: null,
+                    data: null
+                }
+            }
+        },
+
+        PutPaymentInstruments: {
+            Method: 'PUT',
+            Path: '/rest/users/:userId/payment-instruments ',
+            ResponseItem: 'Succeed',
+            Items: {
+                'Succeed': {
+                    statusCode: 200,
+                    headers: null,
+                    data: {
+                        "self": {
+                            "href": "http://api.wan-san.com/v1/payment-instrument-types/CREDITCARD",
+                            "id": "111"
+                        },
+                        "accountName": "David",
+                        "accountNum": "4111111111111111",
+                        "isValidated": "false",
+                        "isDefault": "true",
+                        "type": {
+                            "href": "http://api.wan-san.com/v1/payment-instrument-types/CREDITCARD",
+                            "id": "CREDITCARD"
+                        },
+                        "creditCardRequest": {
+                            "expireDate": "1999-11-27",
+                            "encryptedCvmCode": "111"
+                        },
+                        "address": {
+                            "addressLine1": "ThirdStreetFerriday",
+                            "city": "LA",
+                            "state": "CA",
+                            "country": "US",
+                            "postalCode": "12345"
+                        },
+                        "phone": {
+                            "type": "Home",
+                            "number": "12345678"
+                        },
+                        "trackingUuid": "f48d6fae-adec-43d0-a865-00a0c91e6bf7"
+                    }
+                },
+
+                'Failed': {
+                    statusCode: 404,
+                    headers: null,
+                    data: null
+                }
+            }
+        },
+
+        DeletePaymentInstrumentsById: {
+            Method: 'DELETE',
+            Path: '/rest/users/:userId/payment-instruments/:paymentInstrumentId',
+            ResponseItem: 'Succeed',
+            Items: {
+                'Succeed': {
+                    statusCode: 200,
+                    headers: null,
+                    data: null
+                },
+
+                'Failed': {
+                    statusCode: 404,
+                    headers: null,
+                    data: null
                 }
             }
         }

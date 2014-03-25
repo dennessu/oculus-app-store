@@ -1,0 +1,65 @@
+
+var ShippingInfoControllers = {
+    IndexController: Ember.ArrayController.extend({
+        isValid: false,
+        actions: {
+            CreateNew: function(){
+                var _self = this;
+
+                _self.transitionToRouteAnimated("shipping.edit", {shipping: "flip"});
+
+            },
+            Continue: function(){
+                var _self = this;
+                var selectedValue = $('input:radio:checked').val();
+                if(selectedValue == undefined){
+                    this.set("isValid", true);
+                }else{
+                    this.set("isValid", false);
+                    Utils.Cookies.Set(AppConfig.CookiesName.ShippingId, selectedValue);
+
+                    _self.transitionToRouteAnimated("payment", {main: "slideOverLeft"});
+                }
+            }
+        }
+    }),
+    EditController: Ember.ObjectController.extend({
+        errMessage: null,
+        countries: (function(){
+            var result = new Array();
+            for(var i = 0; i < AppConfig.Countries.length; ++i) result.push({t: AppConfig.Countries[i].name, v: AppConfig.Countries[i].value});
+            return result;
+        }()),
+        content:{
+            country: "",
+            firstName:"",
+            lastName: "",
+            street: "",
+            city: "",
+            state: "",
+            postCode: "",
+            phoneNumber: ""
+        },
+
+        actions: {
+            Continue: function(){
+                var _self = this;
+
+                var dataProvider = new BillingProvider();
+                dataProvider.Add(Utils.GenerateRequestModel(this.get("content")), function(result){
+                    if(result.data.status == 200){
+                        _self.set("errMessage", null);
+                        _self.transitionToRouteAnimated("payment", {main: "slideOverLeft"});
+                    }else{
+                        _self.set("errMessage", "Please try again later!");
+                    }
+                });
+            },
+            Cancel: function(){
+                var _self = this;
+
+                _self.transitionToRouteAnimated("shipping.index", {shipping: "flip"});
+            }
+        }
+    })
+};

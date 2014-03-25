@@ -6,7 +6,8 @@
 package com.junbo.testing.common.apihelper.catalog.impl;
 
 import com.junbo.catalog.spec.model.item.Item;
-import com.junbo.catalog.spec.model.common.ResultList;
+import com.junbo.common.id.UserId;
+import com.junbo.common.model.Results;
 import com.junbo.common.id.ItemId;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
@@ -14,10 +15,8 @@ import com.junbo.testing.common.apihelper.catalog.ItemService;
 import com.junbo.testing.common.apihelper.identity.UserService;
 import com.junbo.testing.common.apihelper.identity.impl.UserServiceImpl;
 import com.junbo.testing.common.blueprint.Master;
-import com.junbo.testing.common.libs.IdConverter;
-import com.junbo.testing.common.libs.LogHelper;
+import com.junbo.testing.common.libs.*;
 
-import com.junbo.testing.common.libs.RestUrl;
 import com.ning.http.client.*;
 import com.ning.http.client.providers.netty.NettyResponse;
 import junit.framework.Assert;
@@ -41,14 +40,11 @@ import org.springframework.core.io.Resource;
  */
 public class ItemServiceImpl implements ItemService {
 
-    private final String catalogServerURL = RestUrl.getRestUrl("catalog") +
-            "items";
+    private final String catalogServerURL = RestUrl.getRestUrl(RestUrl.ComponentName.CATALOG) + "items";
     private static String defaultItemFileName = "defaultItem";
     ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-
     private LogHelper logger = new LogHelper(ItemServiceImpl.class);
     private AsyncHttpClient asyncClient;
-
     private static ItemService instance;
 
     public static synchronized ItemService instance() {
@@ -116,11 +112,11 @@ public class ItemServiceImpl implements ItemService {
         logger.LogResponse(nettyResponse);
         Assert.assertEquals(expectedResponseCode, nettyResponse.getStatusCode());
 
-        ResultList<Item> itemGet = new JsonMessageTranscoder().decode(new TypeReference<ResultList<Item>>() {},
+        Results<Item> itemGet = new JsonMessageTranscoder().decode(new TypeReference<Results<Item>>() {},
                 nettyResponse.getResponseBody());
 
         List<String> listItemId = new ArrayList<>();
-        for (Item item : itemGet.getResults()){
+        for (Item item : itemGet.getItems()){
             String itemRtnId = IdConverter.idLongToHexString(ItemId.class, item.getId());
             Master.getInstance().addItem(itemRtnId, item);
             listItemId.add(itemRtnId);
@@ -129,9 +125,9 @@ public class ItemServiceImpl implements ItemService {
         return listItemId;
     }
 
-    public String postDefaultItem() throws Exception {
+    public Item prepareItemEntity(String fileName, boolean isPhysical) throws Exception {
 
-        String resourceLocation = String.format("classpath:testItems/%s.json", defaultItemFileName);
+        String resourceLocation = String.format("classpath:testItems/%s.json", fileName);
         Resource resource = resolver.getResource(resourceLocation);
         Assert.assertNotNull(resource);
 
@@ -152,8 +148,30 @@ public class ItemServiceImpl implements ItemService {
 
         Item itemForPost = new JsonMessageTranscoder().decode(new TypeReference<Item>() {},
                 strDefaultItem.toString());
+        itemForPost.setName("testItem_" + RandomFactory.getRandomStringOfAlphabetOrNumeric(10));
         UserService us = UserServiceImpl.instance();
-        itemForPost.setOwnerId(Long.valueOf(us.PostUser()));
+        String developerId = us.PostUser();
+        itemForPost.setOwnerId(IdConverter.hexStringToId(UserId.class, developerId));
+
+        //To post a digital or physical item:
+        if (isPhysical) {
+            itemForPost.setType(EnumHelper.CatalogItemType.PHYSICAL.getItemType());
+        }
+        else {
+            if ((int) (Math.random() * 2) == 1) {
+                itemForPost.setType(EnumHelper.CatalogItemType.APP.getItemType());
+            }
+            else {
+                itemForPost.setType(EnumHelper.CatalogItemType.IAP.getItemType());
+            }
+        }
+
+        return itemForPost;
+    }
+
+    public String postDefaultItem(boolean isPhysical) throws Exception {
+
+        Item itemForPost = prepareItemEntity(defaultItemFileName, isPhysical);
 
         RequestBuilder reqBuilder = new RequestBuilder("POST");
         reqBuilder.addHeader(RestUrl.requestHeaderName, RestUrl.requestHeaderValue);
@@ -188,11 +206,10 @@ public class ItemServiceImpl implements ItemService {
         Request req = reqBuilder.build();
 
         logger.LogRequest(req);
-
         Future future = asyncClient.prepareRequest(req).execute();
         NettyResponse nettyResponse = (NettyResponse) future.get();
-
         logger.LogResponse(nettyResponse);
+        Assert.assertEquals(expectedResponseCode, nettyResponse.getStatusCode());
 
         Item itemPost = new JsonMessageTranscoder().decode(new TypeReference<Item>() {},
                 nettyResponse.getResponseBody());
@@ -200,15 +217,35 @@ public class ItemServiceImpl implements ItemService {
         String itemRtnId = IdConverter.idLongToHexString(ItemId.class, itemPost.getId());
         Master.getInstance().addItem(itemRtnId, itemPost);
 
-        return itemPost.getId().toString();
+        return itemRtnId;
     }
 
-    public String updateItem(String itemId, Item item) throws Exception {
-        return updateItem(itemId, item, 200);
+    public String updateItem(Item item) throws Exception {
+        return updateItem(item, 200);
     }
 
-    public String updateItem(String itemId, Item item, int expectedResponseCode) throws Exception {
-        return null;
+    public String updateItem(Item item, int expectedResponseCode) throws Exception {
+
+        String putUrl = catalogServerURL + "/" + IdConverter.idLongToHexString(ItemId.class, item.getId());
+        RequestBuilder reqBuilder = new RequestBuilder("PUT");
+        reqBuilder.addHeader(RestUrl.requestHeaderName, RestUrl.requestHeaderValue);
+        reqBuilder.setUrl(putUrl);
+        reqBuilder.setBody(new JsonMessageTranscoder().encode(item));
+        Request req = reqBuilder.build();
+
+        logger.LogRequest(req);
+        Future future = asyncClient.prepareRequest(req).execute();
+        NettyResponse nettyResponse = (NettyResponse) future.get();
+        logger.LogResponse(nettyResponse);
+        Assert.assertEquals(expectedResponseCode, nettyResponse.getStatusCode());
+
+        Item itemPut = new JsonMessageTranscoder().decode(new TypeReference<Item>() {},
+                nettyResponse.getResponseBody());
+
+        String itemRtnId = IdConverter.idLongToHexString(ItemId.class, itemPut.getId());
+        Master.getInstance().addItem(itemRtnId, itemPut);
+
+        return itemRtnId;
     }
 
 }

@@ -192,46 +192,49 @@ The API operating on the email template. The template is associated with email s
 * subject ... The subject of email.
 * fromAddress ... The from address of email.
 * fromName ... The from name of email.
-* createBy ... The name when template is created.
-* createTime ... The date time when template is created.
-* modifiedBy ... the name when template is updated.
-* modifiedTime ... The date time when template is updated.
+* createTime ... The date time when template is created. The value is auto-generated.
+* modifiedTime ... The date time when template is updated. The value is auto-generated.
 
-### Email Template [/email-templates]
+### Email Template [/email-templates?page={page}&size={size}]
+
++ Parameter
+    + page (optional, int) ... The page number of email templates. The default value is 1.
+    + size (optional, int) ... The page size of email templates. The default value is 20.
 
 #### Get all Email Templates [GET]
 All the email templates are returned.
 
 + Response 200 (application/json)
 
-{
-	template:[
-		{
-			"self":{
-				"href":"http://api.servicecommerce.com/email-templates/123456",
-				"id":"123456"
-			},
-			"name":"source.action.en_US",
-			"providerName":"mandrill",
-			"providerIndex":"123456789",
-			"listOfVariables":["var1","var2","var3","var4"],
-			"subject":"welcome123",
-			"fromAddress":"from@example.com",
-			"fromName":"from name",
-			"createTime":"2014-02-01T02:00:03.123Z",
-			"modifiedTime":"2014-02-01T02:00:03.123Z"
-		}
-	],
-	total:1
-}
+        {
+            "criteria":[
+                {
+                    "self":{
+                        "href":"http://api.servicecommerce.com/email-templates/123456",
+                        "id":"123456"
+                    },
+                    "name":"source.action.en_US",
+                    "providerName":"mandrill",
+                    "providerIndex":"123456789",
+                    "listOfVariables":["var1","var2","var3","var4"],
+                    "subject":"welcome123",
+                    "fromAddress":"from@example.com",
+                    "fromName":"from name",
+                    "createTime":"2014-02-01T02:00:03.123Z",
+                    "modifiedTime":"2014-02-01T02:00:03.123Z"
+                }
+            ],
+            //...
+            "next":"http://api.servicecommerce.com/email-templates?page=1&size=2"
+        }
 
 ### Email Template Collections [/emails-templates/{id}]
 
 + Parameter
 	+ id (required, string) ... The id of the email template.
 
-#### Retrieve a Email Template [GET]
-Get a specific email tempate.
+#### Retrieve an Email Template [GET]
+Get a specific email template.
 
 + Response 200 (application/json)
 

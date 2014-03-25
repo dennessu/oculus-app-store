@@ -59,7 +59,7 @@ abstract class CouchBaseDAO<T extends BaseEntity> implements InitializingBean, B
         def response = executeRequest(HttpMethod.POST, '', [:], entity)
 
         if (response.statusCode != HttpStatus.CREATED.value()) {
-            CouchError couchError = JsonMarshaller.unmarshall(CouchError, response.responseBody)
+            CouchError couchError = JsonMarshaller.unmarshall(response.responseBody, CouchError)
 
             if (response.statusCode == HttpStatus.CONFLICT.value()) {
                 throw new DBUpdateConflictException("Failed to save object to CouchDB, error: $couchError.error," +
@@ -70,7 +70,7 @@ abstract class CouchBaseDAO<T extends BaseEntity> implements InitializingBean, B
                     " reason: $couchError.reason")
         }
 
-        def couchResponse = JsonMarshaller.unmarshall(CouchResponse, response.responseBody)
+        def couchResponse = JsonMarshaller.unmarshall(response.responseBody, CouchResponse)
 
         Assert.assertTrue(couchResponse.ok)
         entity.id = couchResponse.id
@@ -91,7 +91,7 @@ abstract class CouchBaseDAO<T extends BaseEntity> implements InitializingBean, B
             return null
         }
 
-        T entity = (T) JsonMarshaller.unmarshall(entityClass, response.responseBody)
+        T entity = (T) JsonMarshaller.unmarshall(response.responseBody, entityClass)
         return entity.deleted ? null : entity
     }
 
@@ -100,7 +100,7 @@ abstract class CouchBaseDAO<T extends BaseEntity> implements InitializingBean, B
         def response = executeRequest(HttpMethod.PUT, entity.id, [:], entity)
 
         if (response.statusCode != HttpStatus.CREATED.value()) {
-            CouchError couchError = JsonMarshaller.unmarshall(CouchError, response.responseBody)
+            CouchError couchError = JsonMarshaller.unmarshall(response.responseBody, CouchError)
 
             if (response.statusCode == HttpStatus.CONFLICT.value()) {
                 throw new DBUpdateConflictException("Failed to update object to CouchDB, error: $couchError.error," +
@@ -111,7 +111,7 @@ abstract class CouchBaseDAO<T extends BaseEntity> implements InitializingBean, B
                     " reason: $couchError.reason")
         }
 
-        def couchResponse = JsonMarshaller.unmarshall(CouchResponse, response.responseBody)
+        def couchResponse = JsonMarshaller.unmarshall(response.responseBody, CouchResponse)
 
         Assert.assertTrue(couchResponse.ok)
         entity.revision = couchResponse.revision
@@ -124,7 +124,7 @@ abstract class CouchBaseDAO<T extends BaseEntity> implements InitializingBean, B
         def response = executeRequest(HttpMethod.DELETE, entity.id, ['rev': entity.revision], null)
 
         if (response.statusCode != HttpStatus.OK.value() && response.statusCode != HttpStatus.NOT_FOUND.value()) {
-            CouchError couchError = JsonMarshaller.unmarshall(CouchError, response.responseBody)
+            CouchError couchError = JsonMarshaller.unmarshall(response.responseBody, CouchError)
             throw new DBException("Failed to delete object from CouchDB, error: $couchError.error," +
                     " reason: $couchError.reason")
         }
@@ -137,7 +137,7 @@ abstract class CouchBaseDAO<T extends BaseEntity> implements InitializingBean, B
             response = executeRequest(HttpMethod.PUT, '', [:], null)
 
             if (response.statusCode != HttpStatus.CREATED.value()) {
-                CouchError couchError = JsonMarshaller.unmarshall(CouchError, response.responseBody)
+                CouchError couchError = JsonMarshaller.unmarshall(response.responseBody, CouchError)
                 throw new DBException("Failed to create the database, error: $couchError.error," +
                         " reason: $couchError.reason")
             }
@@ -149,7 +149,7 @@ abstract class CouchBaseDAO<T extends BaseEntity> implements InitializingBean, B
             if (response.statusCode == HttpStatus.NOT_FOUND.value()) {
                 putViews(couchViews)
             } else if (response.statusCode == HttpStatus.OK.value()) {
-                CouchViews existingViews = JsonMarshaller.unmarshall(CouchViews, response.responseBody)
+                CouchViews existingViews = JsonMarshaller.unmarshall(response.responseBody, CouchViews)
                 def newView = couchViews.views.keySet().find { !existingViews.views.containsKey(it) }
                 if (newView != null) {
                     couchViews.revision = existingViews.revision
@@ -163,7 +163,7 @@ abstract class CouchBaseDAO<T extends BaseEntity> implements InitializingBean, B
         def response = executeRequest(HttpMethod.PUT, '_design/views', [:], views)
 
         if (response.statusCode != HttpStatus.CREATED.value()) {
-            CouchError couchError = JsonMarshaller.unmarshall(CouchError, response.responseBody)
+            CouchError couchError = JsonMarshaller.unmarshall(response.responseBody, CouchError)
             throw new DBException("Failed to create the views in the database, error: $couchError.error," +
                     " reason: $couchError.reason")
         }
@@ -181,7 +181,7 @@ abstract class CouchBaseDAO<T extends BaseEntity> implements InitializingBean, B
                 key == null ? [:] : ['key': "\"$key\""], null)
 
         if (response.statusCode != HttpStatus.OK.value()) {
-            CouchError couchError = JsonMarshaller.unmarshall(CouchError, response.responseBody)
+            CouchError couchError = JsonMarshaller.unmarshall(response.responseBody, CouchError)
             throw new DBException("Failed to query the view, error: $couchError.error," +
                     " reason: $couchError.reason")
         }

@@ -106,7 +106,7 @@ class RefreshTokenRepositoryImpl implements RefreshTokenRepository {
                 tokenValue: entity.id,
                 clientId: entity.clientId,
                 userId: entity.userId,
-                accessToken: JsonMarshaller.unmarshall(AccessToken, entity.accessToken),
+                accessToken: JsonMarshaller.unmarshall(entity.accessToken, AccessToken),
                 expiredBy: entity.expiredBy,
                 salt: entity.salt,
                 revision: entity.revision

@@ -15,8 +15,8 @@ import groovy.transform.CompileStatic
 class TokenInfo {
     String sub
 
-    @JsonProperty('expire_in')
-    Long expireIn
+    @JsonProperty('expires_in')
+    Long expiresIn
 
     String scopes
 

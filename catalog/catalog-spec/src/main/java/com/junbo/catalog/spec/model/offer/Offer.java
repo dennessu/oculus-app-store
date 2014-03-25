@@ -13,6 +13,7 @@ import com.junbo.common.jackson.annotation.AttributeId;
 import com.junbo.common.jackson.annotation.OfferId;
 import com.junbo.common.jackson.annotation.UserId;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -25,17 +26,15 @@ public class Offer extends VersionedModel {
     private Long id;
 
     @UserId
+    @JsonProperty("developer")
     private Long ownerId;
-
-    @AttributeId
-    private Long type;
 
     private Integer priceTier;
     private Map<String, Price> prices;
 
     private List<OfferEntry> subOffers;
 
-    private List<ItemEntry> items;
+    private List<ItemEntry> items = new ArrayList<>();
 
     private Restriction restriction;
 
@@ -44,11 +43,11 @@ public class Offer extends VersionedModel {
     @AttributeId
     private List<Long> genres;
 
-    private List<Event> events;
+    private List<Event> events = new ArrayList<>();
     private List<String> eligibleCountries;
-    private Map<String, Map<String, String>> countryProperties;
-    private Map<String, Map<String, String>> localeProperties;
-    private Map<String, String> properties;
+    private Map<String, Map<String, Object>> countryProperties;
+    private Map<String, Map<String, Object>> localeProperties;
+    private Map<String, Object> properties;
 
     public Long getId() {
         return id;
@@ -64,14 +63,6 @@ public class Offer extends VersionedModel {
 
     public void setOwnerId(Long ownerId) {
         this.ownerId = ownerId;
-    }
-
-    public Long getType() {
-        return type;
-    }
-
-    public void setType(Long type) {
-        this.type = type;
     }
 
     public Integer getPriceTier() {
@@ -146,27 +137,27 @@ public class Offer extends VersionedModel {
         this.eligibleCountries = eligibleCountries;
     }
 
-    public Map<String, Map<String, String>> getCountryProperties() {
+    public Map<String, Map<String, Object>> getCountryProperties() {
         return countryProperties;
     }
 
-    public void setCountryProperties(Map<String, Map<String, String>> countryProperties) {
+    public void setCountryProperties(Map<String, Map<String, Object>> countryProperties) {
         this.countryProperties = countryProperties;
     }
 
-    public Map<String, Map<String, String>> getLocaleProperties() {
+    public Map<String, Map<String, Object>> getLocaleProperties() {
         return localeProperties;
     }
 
-    public void setLocaleProperties(Map<String, Map<String, String>> localeProperties) {
+    public void setLocaleProperties(Map<String, Map<String, Object>> localeProperties) {
         this.localeProperties = localeProperties;
     }
 
-    public Map<String, String> getProperties() {
+    public Map<String, Object> getProperties() {
         return properties;
     }
 
-    public void setProperties(Map<String, String> properties) {
+    public void setProperties(Map<String, Object> properties) {
         this.properties = properties;
     }
 

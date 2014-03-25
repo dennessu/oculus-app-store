@@ -7,8 +7,8 @@ package com.junbo.identity.rest.resource;
 
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserOptInId;
+import com.junbo.common.model.Results;
 import com.junbo.identity.rest.service.user.UserOptInService;
-import com.junbo.identity.spec.model.common.ResultList;
 import com.junbo.identity.spec.model.common.ResultListUtil;
 import com.junbo.identity.spec.model.user.UserOptIn;
 import com.junbo.identity.spec.resource.UserOptInResource;
@@ -35,7 +35,7 @@ public class UserOptInResourceImpl implements UserOptInResource {
     }
 
     @Override
-    public Promise<ResultList<UserOptIn>> getUserOptIns(UserId userId, String type, Integer cursor, Integer count) {
+    public Promise<Results<UserOptIn>> getUserOptIns(UserId userId, String type, Integer cursor, Integer count) {
         List<UserOptIn> userOptIns = userOptInService.getByUserId(userId.getValue(), type);
         return Promise.pure(ResultListUtil.init(userOptIns, count));
     }

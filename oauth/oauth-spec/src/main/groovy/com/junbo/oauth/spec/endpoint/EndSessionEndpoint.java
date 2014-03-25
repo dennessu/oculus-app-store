@@ -7,6 +7,8 @@ package com.junbo.oauth.spec.endpoint;
 
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -19,10 +21,12 @@ import javax.ws.rs.core.UriInfo;
 /**
  * EndSessionEndpoint.
  */
-@Path("end-session")
+@Api(value = "oauth2", basePath = "oauth2")
+@Path("/oauth2/end-session")
 @RestResource
 public interface EndSessionEndpoint {
 
+    @ApiOperation("Logout the user from web flow")
     @GET
     Promise<Response> endSession(@Context UriInfo uriInfo,
                                  @Context HttpHeaders httpHeaders,

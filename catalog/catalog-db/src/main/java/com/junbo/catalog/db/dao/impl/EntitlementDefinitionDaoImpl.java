@@ -27,8 +27,7 @@ public class EntitlementDefinitionDaoImpl extends BaseDaoImpl<EntitlementDefinit
     public List<EntitlementDefinitionEntity> getByParams(Long developerId, String group, String tag,
                                                          EntitlementType type, PageableGetOptions pageableGetOptions) {
         StringBuilder queryString = new StringBuilder("from EntitlementDefinitionEntity" +
-                " where status is null" +
-                " and developerId = (:developerId)");
+                " where developerId = (:developerId)");
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("developerId", developerId);
 

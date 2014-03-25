@@ -12,6 +12,7 @@ dependencies {
     compile "com.junbo.billing:billing-app:${junboVersion}"
     compile "com.junbo.order:order-app:${junboVersion}"
     compile "com.junbo.payment:payment-app:${junboVersion}"
+    compile "com.junbo.email:email-app:${junboVersion}"
 
     compile (libraries.common_lib)
     compile (libraries.common_configuration)

@@ -7,7 +7,7 @@ package com.junbo.identity.spec.resource;
 
 import com.junbo.common.id.UserFederationId;
 import com.junbo.common.id.UserId;
-import com.junbo.identity.spec.model.common.ResultList;
+import com.junbo.common.model.Results;
 import com.junbo.identity.spec.model.user.UserFederation;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
@@ -29,7 +29,7 @@ public interface UserFederationResource {
                                       UserFederation userFederation);
 
     @GET
-    Promise<ResultList<UserFederation>> getUserFederations(@PathParam("key1") UserId userId,
+    Promise<Results<UserFederation>> getUserFederations(@PathParam("key1") UserId userId,
                                             @QueryParam("type") String type,
                                             @QueryParam("cursor") Integer cursor,
                                             @QueryParam("count") Integer count);

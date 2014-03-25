@@ -8,8 +8,8 @@ package com.junbo.order.core.impl.order
 
 import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.ShippingAddress
-import com.junbo.catalog.spec.model.offer.Offer
 import com.junbo.identity.spec.model.user.User
+import com.junbo.order.clientproxy.model.OrderOffer
 import com.junbo.order.spec.model.Order
 import com.junbo.payment.spec.model.PaymentInstrument
 import groovy.transform.CompileStatic
@@ -29,7 +29,7 @@ class OrderServiceContext {
     List<PaymentInstrument> paymentInstruments
     List<Balance> balances
     ShippingAddress shippingAddress
-    List<Offer> offers
+    List<OrderOffer> offers
     List<Order> orders
 
     OrderServiceContext(Order o) {

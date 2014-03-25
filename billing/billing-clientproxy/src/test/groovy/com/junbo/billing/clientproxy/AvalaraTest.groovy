@@ -18,7 +18,7 @@ public class AvalaraTest extends BaseTest {
     TaxFacade avalaraFacade
 
     @Test(enabled = false)
-    public void testAvalaraFacade() {
+    public void testTaxCalculation() {
         def balance = new Balance()
         balance.shippingAddressId = new ShippingAddressId(123L)
         def item = new BalanceItem()
@@ -38,11 +38,22 @@ public class AvalaraTest extends BaseTest {
             item.orderItemId = new OrderItemId(321L)
         }
 
-        avalaraFacade.calculateTax(balance, shippingAddress, null)
-        Assert.assertNotNull(balance.taxAmount, "Fail to calculate tax.")
-        Assert.assertNotEquals(balance.taxAmount, BigDecimal.ZERO,
+        Balance balanceWithTax = avalaraFacade.calculateTax(balance, shippingAddress, null).wrapped().get()
+        Assert.assertNotNull(balanceWithTax.taxAmount, "Fail to calculate tax.")
+        Assert.assertNotEquals(balanceWithTax.taxAmount, BigDecimal.ZERO,
                 "Tax amount should not be zero in this test case.")
     }
 
+    @Test(enabled = false)
+    public void testAddressValidation() {
+        def shippingAddress = new ShippingAddress()
+        shippingAddress.addressId = new ShippingAddressId(123L)
+        shippingAddress.street = "7462 Kearny Street"
+        shippingAddress.city = "Commerce City"
+        shippingAddress.state = "CO"
+        shippingAddress.postalCode = "80022"
 
+        def validatedAddress = avalaraFacade.validateShippingAddress(shippingAddress).wrapped().get()
+        Assert.assertNotNull(validatedAddress, "Fail to validate address.")
+    }
 }
