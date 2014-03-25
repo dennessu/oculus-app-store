@@ -6,7 +6,7 @@
 
     <!-- Topic demo -->
     <bean id="testTopic" class="org.apache.activemq.command.ActiveMQTopic">
-        <constructor-arg index="0" value="TEST_QUEUE"/>
+        <constructor-arg index="0" value="TEST_TOPIC"/>
     </bean>
 
     <bean id="topicTemplate" class="org.springframework.jms.core.JmsTemplate">
