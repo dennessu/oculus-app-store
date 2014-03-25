@@ -27,6 +27,8 @@ import java.util.*;
  * @param <T> Entity type
  */
 public class BaseDao<T extends Entity> {
+    @Autowired
+    @Qualifier("entitlementSessionFactory")
     private SessionFactory sessionFactory;
     @Autowired
     @Qualifier("oculus48IdGenerator")

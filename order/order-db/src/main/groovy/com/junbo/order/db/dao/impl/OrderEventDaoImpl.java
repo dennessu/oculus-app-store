@@ -13,6 +13,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by LinYi on 2/8/14.
@@ -22,6 +23,11 @@ public class OrderEventDaoImpl extends BaseDaoImpl<OrderEventEntity> implements 
     public List<OrderEventEntity> readByOrderId(final Long orderId) {
         Criteria criteria = this.getSession().createCriteria(OrderEventEntity.class);
         criteria.add(Restrictions.eq("orderId", orderId));
+        return criteria.list();
+    }
+    public List<OrderEventEntity> readByTrackingUuid(final UUID trackingUuid) {
+        Criteria criteria = this.getSession().createCriteria(OrderEventEntity.class);
+        criteria.add(Restrictions.eq("trackingUuid", trackingUuid));
         return criteria.list();
     }
 }

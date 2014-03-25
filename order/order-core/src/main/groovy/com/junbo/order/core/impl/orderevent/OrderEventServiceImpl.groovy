@@ -7,6 +7,7 @@ import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.OrderEvent
 import groovy.transform.CompileStatic
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 import javax.annotation.Resource
 
@@ -20,13 +21,14 @@ class OrderEventServiceImpl implements OrderEventService {
     OrderRepository orderRepository
 
     @Override
+    @Transactional
     Promise<List<OrderEvent>> getOrderEvents(Long orderId) {
         if (orderId == null) {
             throw AppErrors.INSTANCE.fieldInvalid('orderId', 'orderId cannot be null').exception()
         }
 
         def orderEvents = orderRepository.getOrderEvents(orderId)
-        if (orderEvents == null) {
+        if (orderEvents == null || orderEvents.size() == 0) {
             throw AppErrors.INSTANCE.orderEventNotFound().exception()
         }
 

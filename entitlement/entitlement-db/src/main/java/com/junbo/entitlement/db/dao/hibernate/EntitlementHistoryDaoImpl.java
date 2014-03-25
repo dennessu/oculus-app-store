@@ -23,6 +23,8 @@ public class EntitlementHistoryDaoImpl implements EntitlementHistoryDao {
     @Qualifier("idGenerator")
     private IdGenerator idGenerator;
 
+    @Autowired
+    @Qualifier("entitlementSessionFactory")
     private SessionFactory sessionFactory;
 
     @Override

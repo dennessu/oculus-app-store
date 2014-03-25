@@ -11,7 +11,8 @@ AppConfig.API = {
         TFA: { Path: "tfa" },
         Register: { Path: "register" },
         PIN: { Path: "pin" },
-        GetAnonymousUser: { Path: "get_anonymous_user" }
+        GetAnonymousUser: { Path: "get_anonymous_user" },
+        GetProfile: { Path: "get_profile" }
     },
     Catalog: {
         Config: {
@@ -29,7 +30,9 @@ AppConfig.API = {
         Remove: { Path: "remove" },
         Update: { Path: "update" },
         Merge: { Path: "merge" },
-        PostOrder: { Path: "post_order" }
+        PostOrder: { Path: "post_order" },
+        PutOrder: { Path: "put_order" },
+        PurchaseOrder: { Path: "purchase_order" }
     },
     Billing: {
         Config: {
@@ -63,8 +66,32 @@ AppConfig.DataModelMapTable = {
     "Ember.App.CreditCard": {
         Provider: "PaymentProvider",
         Method: "PaymentInstruments"
+    },
+    "Ember.App.Profile": {
+        Provider: "IdentityProvider",
+        Method: "GetProfile"
     }
 };
+
+AppConfig.PaymentType = [
+    {name: "Credit Card", value: "CREDITCARD"}
+];
+AppConfig.CardType = {
+    CreditCard: [
+        {name: "VISA", value: "VISA"},
+        {name: "MASTERCARD", value: "MASTERCARD"}
+    ]
+};
+AppConfig.PaymentHolderType = [
+    {name: "Parent", value: "Parent"}
+];
+
+AppConfig.ShippingMethods = [
+    {name: "Standard", value: "1"},
+    {name: "Economy", value: "2"},
+    {name: "Express", value: "3"}
+
+];
 
 AppConfig.Countries = [
     {name: "Canada", value: "CA"},

@@ -6,7 +6,4 @@
 
     <import resource="classpath*:spring/*-context.xml"/>
     <import resource="classpath*:spring/transaction.xml"/>
-
-    <bean id="userFacade" class="com.junbo.entitlement.clientproxy.identity.impl.MockedUserFacadeImpl"/>
-
 </beans>

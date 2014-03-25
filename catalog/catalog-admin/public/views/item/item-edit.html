@@ -1,0 +1,41 @@
+<table class="table table-bordered vertical-table" ng-controller="ItemEditCtrl">
+    <tr ng-if="item.self">
+        <td>Item Id</td>
+        <td>{{ item.self.id }}</td>
+    </tr>
+    <tr>
+        <td style="width: 200px;">Item Name</td>
+        <td><input type="text" class="form-control required" ng-model="item.name"></td>
+    </tr>
+    <tr>
+        <td>Developer</td>
+        <td>
+            <input type="text" class="form-control required" ng-model="item.developer.id" ng-change="updateDeveloper()">
+        </td>
+    </tr>
+    <tr>
+        <td>Type</td>
+        <td>
+            <select ng-model="item.type" ng-options="itemType for itemType in itemTypes">
+            </select>
+        </td>
+    </tr>
+    <tr ng-repeat="(key, value) in item.properties">
+        <td>{{ metaDefinitions[key].display }}</td>
+        <td>
+            <div ng-if="metaDefinitions[key].controlType=='TEXT_INPUT'">
+                <input type="text" class="form-control" ng-model="item.properties[key]">
+            </div>
+            <div ng-if="metaDefinitions[key].controlType=='MULTI_SELECT'">
+                <label ng-repeat="allowedValue in metaDefinitions[key].allowedValues">
+                    <input type="checkbox" checklist-model="item.properties[key]" checklist-value="allowedValue" class="chooseItem">{{ allowedValue }}
+                </label>
+            </div>
+            <div ng-if="metaDefinitions[key].controlType=='SINGLE_SELECT'">
+                <label ng-repeat="allowedValue in metaDefinitions[key].allowedValues">
+                    <input type="radio" ng-model="item.properties[key]" value="{{allowedValue}}" class="chooseItem">{{ allowedValue }}
+                </label>
+            </div>
+        </td>
+    </tr>
+</table>

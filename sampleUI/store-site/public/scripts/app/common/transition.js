@@ -18,6 +18,9 @@ var Transition = {
             case Ember.App.CreditCard:
                 result = Transition.CreditCard(data);
                 break;
+            case Ember.App.Profile:
+                result = Transition.Profile(data);
+                break;
             default :
                 result = Transition.Normalize(data);
                 break;
@@ -31,9 +34,9 @@ var Transition = {
 
     OffersToProduct: function (data) {
         var result = null;
-        if (data["results"] != undefined) {
+        if (data["items"] != undefined) {
             // get offers
-            var offers = data["results"];
+            var offers = data["items"];
             var resultList = new Array();
             for (var i = 0; i < offers.length; ++i) {
                 var item = offers[i];
@@ -117,8 +120,8 @@ var Transition = {
 
     CreditCard: function(data){
         var result = null;
-        if(data["results"] != undefined){
-            var payments = data["results"];
+        if(data["items"] != undefined){
+            var payments = data["items"];
             var paymentArray = new Array();
             for(var i = 0; i < payments.length; ++i){
                 var item = payments[i];
@@ -160,6 +163,24 @@ var Transition = {
                 phoneNumber: item.phone.number
             };
         }
+
+        return result;
+    },
+
+    Profile: function(data){
+        var result = null;
+
+        var item = data;
+        result = {
+            id: item.self.id,
+            type: item.type,
+            region: item.region,
+            firstName: item.firstName,
+            middleName: item.middleName,
+            lastName: item.lastName,
+            dateOfBirth: item.dateOfBirth,
+            locale: item.locale
+        };
 
         return result;
     }

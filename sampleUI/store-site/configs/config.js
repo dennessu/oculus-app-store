@@ -22,8 +22,10 @@ var Configs = {
         AnonymousUserId: "anonymous_user_id",
         AnonymousCartId: "anonymous_cart_id",
         ShippingId: "shipping_id",
+        ShippingMethodId: "shipping_method_id",
         PaymentId: "payment_id",
         OrderId: "order_id",
+
 
         BeforeRoute: "before_route"
     },
@@ -51,11 +53,13 @@ var Configs = {
             Index: "Index",
             Detail: "Detail",
             Cart: "Cart",
-            OrderSummary: "OrderSummary"
+            OrderSummary: "OrderSummary",
+            Thanks: "Thanks"
         },
         ShippingInfo: {
             Layout: "Shipping",
             Index: "Shipping/index",
+            Address: "Shipping/Address",
             Edit: "Shipping/Edit"
         },
         Payment: {

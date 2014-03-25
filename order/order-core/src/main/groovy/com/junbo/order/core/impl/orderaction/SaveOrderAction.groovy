@@ -48,8 +48,7 @@ class SaveOrderAction extends BaseOrderEventAwareAction {
         builder.getOffers(context.orderServiceContext).syncThen { List<OrderOffer> ofs ->
             def orderWithId = newOrder ? repo.createOrder(context.orderServiceContext.order) :
                     repo.updateOrder(order, updateOnlyOrder)
-           order = orderWithId
-
+            order = orderWithId
             return CoreBuilder.buildActionResultForOrderEventAwareAction(context, EventStatus.COMPLETED)
         }
     }

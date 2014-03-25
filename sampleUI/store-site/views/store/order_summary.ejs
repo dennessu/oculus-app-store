@@ -4,21 +4,16 @@
     <div class="order">
 
         <div class="list">
+            {{#each products}}
             <dl class="item">
-                <dt>Product Name</dt>
-                <dd>$ 9.99</dd>
-                <dd class="qty">1</dd>
-                <dd>$ 9.99</dd>
+                <dt>{{name}}</dt>
+                <dd>$ {{price}}</dd>
+                <dd class="qty">{{qty}}</dd>
+                <dd>$ {{subTotal}}</dd>
             </dl>
 
             <div class="line1"></div>
-
-            <dl class="item">
-                <dt>Product Name</dt>
-                <dd>$ 9.99</dd>
-                <dd class="qty">1</dd>
-                <dd>$ 9.99</dd>
-            </dl>
+            {{/each}}
         </div>
 
         <div class="total">
@@ -50,7 +45,7 @@
                 <dd>VISA ****9031</dd>
             </dl>
             <dl>
-                <dt>Gift Options:</dt>
+                <dt>Shipping Method:</dt>
                 <dd>None</dd>
             </dl>
             <dl class="billing_address">
@@ -62,18 +57,10 @@
                     United States of America
                 </dd>
             </dl>
-            <dl>
-                <dt>Phone:</dt>
-                <dd>213-456-5678</dd>
-            </dl>
-            <dl>
-                <dt>Account:</dt>
-                <dd>Billbob09</dd>
-            </dl>
         </div>
 
         <div class="actions">
-            <button type="button" class="btn btn-orange">Purchase Now</button>
+            <button type="button" class="btn btn-orange" {{action "Purchase"}}>Purchase Now</button>
         </div>
     </div>
 </div>
