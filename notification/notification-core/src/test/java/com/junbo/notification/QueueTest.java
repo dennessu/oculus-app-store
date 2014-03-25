@@ -6,9 +6,12 @@
 package com.junbo.notification;
 
 import com.junbo.notification.queue.TestProducer;
+import org.apache.activemq.xbean.BrokerFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 /**
@@ -18,6 +21,13 @@ import org.testng.annotations.Test;
 public class QueueTest extends AbstractTestNGSpringContextTests {
     @Autowired
     private TestProducer producer;
+
+    @BeforeClass
+    public void setUp() throws Exception {
+        BrokerFactoryBean bfb = new BrokerFactoryBean();
+        bfb.setConfig(new ClassPathResource("/spring/activemq.xml"));
+        bfb.afterPropertiesSet();
+    }
 
     @Test
     public void testBVT() {
