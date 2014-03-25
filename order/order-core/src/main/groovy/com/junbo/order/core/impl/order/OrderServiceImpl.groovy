@@ -5,6 +5,7 @@
  */
 
 package com.junbo.order.core.impl.order
+
 import com.junbo.common.error.AppErrorException
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.executor.FlowExecutor
@@ -16,6 +17,7 @@ import com.junbo.order.core.OrderService
 import com.junbo.order.core.OrderServiceOperation
 import com.junbo.order.core.impl.common.CoreUtils
 import com.junbo.order.core.impl.common.OrderStatusBuilder
+import com.junbo.order.core.impl.common.TransactionHelper
 import com.junbo.order.core.impl.orderaction.ActionUtils
 import com.junbo.order.core.impl.orderaction.context.OrderActionContext
 import com.junbo.order.db.entity.enums.OrderActionType
@@ -33,6 +35,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+
 /**
  * Created by chriszhu on 2/7/14.
  */
@@ -48,6 +51,9 @@ class OrderServiceImpl implements OrderService {
     FlowSelector flowSelector
     @Autowired
     FlowExecutor flowExecutor
+    @Qualifier('orderTransactionHelper')
+    @Autowired
+    TransactionHelper transactionHelper
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OrderServiceImpl)
 
@@ -93,7 +99,11 @@ class OrderServiceImpl implements OrderService {
             orderActionContext.trackingUuid = order.trackingUuid
             requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object) orderActionContext)
             executeFlow(flowType, orderServiceContext, requestScope)
+        }.syncRecover { Throwable throwable ->
+            refreshOrderStatus(orderServiceContext.order)
+            throw throwable
         }.syncThen {
+            refreshOrderStatus(orderServiceContext.order)
             return orderServiceContext.order
         }
     }
@@ -227,11 +237,13 @@ class OrderServiceImpl implements OrderService {
     }
 
     private void refreshOrderStatus(Order order) {
-        def status = OrderStatusBuilder.buildOrderStatus(order,
-                orderRepository.getOrderEvents(order.id.value))
-        if (status != order.status) {
-            order.status = status
-            orderRepository.updateOrder(order, true)
+        transactionHelper.executeInTransaction {
+            def status = OrderStatusBuilder.buildOrderStatus(order,
+                    orderRepository.getOrderEvents(order.id.value))
+            if (status != order.status) {
+                order.status = status
+                orderRepository.updateOrder(order, true)
+            }
         }
     }
 
