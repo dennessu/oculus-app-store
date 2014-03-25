@@ -51,6 +51,7 @@ public class Master {
         this.initializeItems();
         this.initializeOrders();
         this.initializeAttributes();
+        this.initializePayments();
     }
 
     public void initializeUsers() {
@@ -93,6 +94,13 @@ public class Master {
             this.attributes = new HashMap<>();
         }
         this.attributes.clear();
+    }
+
+    public void initializePayments() {
+        if (this.paymentInstruments == null) {
+            this.paymentInstruments = new HashMap<>();
+        }
+        this.paymentInstruments.clear();
     }
 
     public void addUser(String userId, User user) {

@@ -37,6 +37,12 @@ IdentityProvider.prototype.GetAnonymousUser = function(data, cb){
     this._Call(AppConfig.API.Identity.GetAnonymousUser, data, cb);
 };
 
+IdentityProvider.prototype.GetProfile = function(data, cb){
+    this._Call(AppConfig.API.Identity.GetProfile, data, cb);
+};
+
 IdentityProvider.prototype.PIN = function(data, cb){
     this._Call(AppConfig.API.Identity.PIN, data, cb);
 };
+
+
