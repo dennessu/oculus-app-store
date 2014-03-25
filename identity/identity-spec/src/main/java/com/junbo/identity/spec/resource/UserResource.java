@@ -9,7 +9,7 @@ import com.junbo.common.id.UserId;
 import com.junbo.common.model.Results;
 import com.junbo.identity.spec.model.users.User;
 import com.junbo.identity.spec.options.entity.UserGetOptions;
-import com.junbo.identity.spec.options.list.UserListOption;
+import com.junbo.identity.spec.options.list.UserListOptions;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -48,5 +48,5 @@ public interface UserResource {
     @ApiOperation("Get or search users")
     @GET
     @Path("/")
-    Promise<Results<User>> list(@BeanParam UserListOption listOptions);
+    Promise<Results<User>> list(@BeanParam UserListOptions listOptions);
 }

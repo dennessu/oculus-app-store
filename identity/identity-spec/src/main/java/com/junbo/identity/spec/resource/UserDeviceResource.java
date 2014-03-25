@@ -10,7 +10,7 @@ import com.junbo.common.id.UserId;
 import com.junbo.common.model.Results;
 import com.junbo.identity.spec.model.users.UserDevice;
 import com.junbo.identity.spec.options.entity.UserDeviceGetOptions;
-import com.junbo.identity.spec.options.list.UserDeviceListOption;
+import com.junbo.identity.spec.options.list.UserDeviceListOptions;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 
@@ -57,6 +57,6 @@ public interface UserDeviceResource {
     @GET
     @Path("/")
     Promise<Results<UserDevice>> list(@PathParam("userId") UserId userId,
-                                         @BeanParam UserDeviceListOption listOptions);
+                                         @BeanParam UserDeviceListOptions listOptions);
 
 }

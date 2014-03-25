@@ -6,7 +6,7 @@
 package com.junbo.identity.data.repository;
 
 import com.junbo.common.id.UserSecurityQuestionId;
-import com.junbo.identity.spec.options.list.UserSecurityQuestionListOption;
+import com.junbo.identity.spec.options.list.UserSecurityQuestionListOptions;
 import com.junbo.identity.spec.model.users.UserSecurityQuestion;
 
 import java.util.List;
@@ -21,7 +21,7 @@ public interface UserSecurityQuestionRepository {
 
     UserSecurityQuestion get(UserSecurityQuestionId id);
 
-    List<UserSecurityQuestion> search(UserSecurityQuestionListOption getOption);
+    List<UserSecurityQuestion> search(UserSecurityQuestionListOptions getOption);
 
     void delete(UserSecurityQuestionId id);
 }

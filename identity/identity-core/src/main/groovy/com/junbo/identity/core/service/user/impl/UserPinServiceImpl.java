@@ -12,7 +12,7 @@ import com.junbo.identity.core.service.util.UserPasswordUtil;
 import com.junbo.identity.core.service.validator.UserPinValidator;
 import com.junbo.identity.data.repository.UserPinRepository;
 import com.junbo.identity.spec.model.users.UserPin;
-import com.junbo.identity.spec.options.list.UserPinListOption;
+import com.junbo.identity.spec.options.list.UserPinListOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,7 +49,7 @@ public class UserPinServiceImpl implements UserPinService {
     }
 
     @Override
-    public List<UserPin> search(UserPinListOption getOptions) {
+    public List<UserPin> search(UserPinListOptions getOptions) {
         return userPinRepository.search(getOptions);
     }
 }

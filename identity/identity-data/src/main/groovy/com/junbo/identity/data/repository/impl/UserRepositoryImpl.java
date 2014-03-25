@@ -16,7 +16,7 @@ import com.junbo.identity.data.mapper.ModelMapper;
 import com.junbo.identity.data.repository.UserRepository;
 import com.junbo.identity.spec.model.users.User;
 import com.junbo.identity.spec.model.users.UserName;
-import com.junbo.identity.spec.options.list.UserListOption;
+import com.junbo.identity.spec.options.list.UserListOptions;
 import com.junbo.oom.core.MappingContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -101,7 +101,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public List<User> search(UserListOption option) {
+    public List<User> search(UserListOptions option) {
         if(!StringUtils.isEmpty(option.getUserName())) {
             UserNameReverseIndexEntity reverseEntity = userNameReverseIndexDAO.get(option.getUserName());
 

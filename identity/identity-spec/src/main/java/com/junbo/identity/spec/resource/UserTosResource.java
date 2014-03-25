@@ -10,7 +10,7 @@ import com.junbo.common.id.UserTosId;
 import com.junbo.common.model.Results;
 import com.junbo.identity.spec.model.users.UserTos;
 import com.junbo.identity.spec.options.entity.UserTosGetOptions;
-import com.junbo.identity.spec.options.list.UserTosListOption;
+import com.junbo.identity.spec.options.list.UserTosListOptions;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -63,5 +63,5 @@ public interface UserTosResource {
     @GET
     @Path("/")
     Promise<Results<UserTos>> list(@PathParam("userId") UserId userId,
-                                      @BeanParam UserTosListOption listOptions);
+                                      @BeanParam UserTosListOptions listOptions);
 }

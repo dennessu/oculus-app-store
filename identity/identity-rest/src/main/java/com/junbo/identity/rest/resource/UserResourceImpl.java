@@ -10,7 +10,7 @@ import com.junbo.common.model.Results;
 import com.junbo.identity.core.service.user.UserService;
 import com.junbo.identity.spec.model.users.User;
 import com.junbo.identity.spec.options.entity.UserGetOptions;
-import com.junbo.identity.spec.options.list.UserListOption;
+import com.junbo.identity.spec.options.list.UserListOptions;
 import com.junbo.identity.spec.resource.UserResource;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +51,7 @@ public class UserResourceImpl implements UserResource {
     }
 
     @Override
-    public Promise<Results<User>> list(@BeanParam UserListOption listOptions) {
+    public Promise<Results<User>> list(@BeanParam UserListOptions listOptions) {
         // todo:    Need to implement expand and list options
         return Promise.pure(null);
     }

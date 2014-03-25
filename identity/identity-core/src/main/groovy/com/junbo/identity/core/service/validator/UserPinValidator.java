@@ -8,7 +8,7 @@ package com.junbo.identity.core.service.validator;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserPinId;
 import com.junbo.identity.spec.model.users.UserPin;
-import com.junbo.identity.spec.options.list.UserPinListOption;
+import com.junbo.identity.spec.options.list.UserPinListOptions;
 
 /**
  * Created by liangfu on 3/24/14.
@@ -16,5 +16,5 @@ import com.junbo.identity.spec.options.list.UserPinListOption;
 public interface UserPinValidator {
     void validateGet(UserId userId, UserPinId userPinId);
     void validateCreate(UserId userId, UserPin userPin);
-    void validateSearch(UserId userId, UserPinListOption getOption);
+    void validateSearch(UserId userId, UserPinListOptions getOption);
 }

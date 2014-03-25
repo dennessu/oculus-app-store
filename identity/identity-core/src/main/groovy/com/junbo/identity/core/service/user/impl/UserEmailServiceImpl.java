@@ -11,7 +11,7 @@ import com.junbo.identity.core.service.user.UserEmailService;
 import com.junbo.identity.core.service.validator.UserEmailValidator;
 import com.junbo.identity.data.repository.UserEmailRepository;
 import com.junbo.identity.spec.model.users.UserEmail;
-import com.junbo.identity.spec.options.list.UserEmailListOption;
+import com.junbo.identity.spec.options.list.UserEmailListOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,7 +57,7 @@ public class UserEmailServiceImpl implements UserEmailService {
     }
 
     @Override
-    public List<UserEmail> search(UserEmailListOption getOption) {
+    public List<UserEmail> search(UserEmailListOptions getOption) {
         return userEmailRepository.search(getOption);
     }
 

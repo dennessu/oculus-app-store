@@ -112,7 +112,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         newUser = userRepository.update(newUser);
         Assert.assertEquals(newUser.getBirthday(), newValue);
 
-        UserListOption getOption = new UserListOption();
+        UserListOptions getOption = new UserListOptions();
         getOption.setUserName(newUser.getUserName());
         List<User> userList = userRepository.search(getOption);
         Assert.assertNotEquals(userList.size(), 0);
@@ -165,7 +165,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         newUserPassword = userPasswordRepository.get(newUserPassword.getId());
         Assert.assertEquals(newValue, newUserPassword.getActive());
 
-        UserPasswordListOption getOption = new UserPasswordListOption();
+        UserPasswordListOptions getOption = new UserPasswordListOptions();
         getOption.setUserId(new UserId(userId));
         List<UserPassword> userPasswordList = userPasswordRepository.search(getOption);
         Assert.assertNotEquals(userPasswordList.size(), 0);
@@ -195,7 +195,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         newUserPin = userPinRepository.get(newUserPin.getId());
         Assert.assertEquals(newValue, newUserPin.getActive());
 
-        UserPinListOption getOption = new UserPinListOption();
+        UserPinListOptions getOption = new UserPinListOptions();
         getOption.setUserId(new UserId(userId));
         List<UserPin> userPins = userPinRepository.search(getOption);
         Assert.assertNotEquals(userPins.size(), 0);
@@ -221,7 +221,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
 
         Assert.assertEquals(newValue, newUserAuthenticator.getValue());
 
-        UserAuthenticatorListOption getOption = new UserAuthenticatorListOption();
+        UserAuthenticatorListOptions getOption = new UserAuthenticatorListOptions();
         getOption.setValue(newValue);
         List<UserAuthenticator> userAuthenticators = userAuthenticatorRepository.search(getOption);
         Assert.assertNotEquals(userAuthenticators.size(), 0);
@@ -250,7 +250,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         newUserDevice = userDeviceRepository.get(userDevice.getId());
         Assert.assertEquals(newName, newUserDevice.getName());
 
-        UserDeviceListOption getOption = new UserDeviceListOption();
+        UserDeviceListOptions getOption = new UserDeviceListOptions();
         getOption.setUserId(new UserId(userId));
         List<UserDevice> userDevices = userDeviceRepository.search(getOption);
         Assert.assertNotEquals(userDevices.size(), 0);
@@ -278,7 +278,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         newUserEmail = userEmailRepository.get(userEmail.getId());
         Assert.assertEquals(newUserEmail.getValue(), value);
 
-        UserEmailListOption getOption = new UserEmailListOption();
+        UserEmailListOptions getOption = new UserEmailListOptions();
         getOption.setValue(value);
         List<UserEmail> userEmails = userEmailRepository.search(getOption);
         Assert.assertEquals(userEmails.size(), 1);
@@ -296,7 +296,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         UserGroup newUserGroup = userGroupRepository.get(userGroup.getId());
         Assert.assertEquals(userGroup.getGroupId().getValue(), newUserGroup.getGroupId().getValue());
 
-        UserGroupListOption getOption = new UserGroupListOption();
+        UserGroupListOptions getOption = new UserGroupListOptions();
         getOption.setUserId(new UserId(userId));
         getOption.setGroupId(new GroupId(1493188608L));
         List<UserGroup> userGroups = userGroupRepository.search(getOption);
@@ -329,7 +329,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         newUserLoginAttempt = userLoginAttemptRepository.get(userLoginAttempt.getId());
         Assert.assertEquals(newUserLoginAttempt.getIpAddress(), value);
 
-        LoginAttemptListOption getOption = new LoginAttemptListOption();
+        LoginAttemptListOptions getOption = new LoginAttemptListOptions();
         getOption.setUserId(new UserId(userId));
         getOption.setIpAddress(value);
         List<UserLoginAttempt> userLoginAttempts = userLoginAttemptRepository.search(getOption);
@@ -355,7 +355,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         newUserOptin = userOptinRepository.get(userOptin.getId());
         Assert.assertEquals(value, newUserOptin.getType());
 
-        UserOptinListOption getOption = new UserOptinListOption();
+        UserOptinListOptions getOption = new UserOptinListOptions();
         getOption.setType(value);
         getOption.setUserId(new UserId(userId));
         List<UserOptin> userOptins = userOptinRepository.search(getOption);
@@ -384,7 +384,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         newUserPhoneNumber = userPhoneNumberRepository.get(userPhoneNumber.getId());
         Assert.assertEquals(value, newUserPhoneNumber.getValue());
 
-        UserPhoneNumberListOption getOption = new UserPhoneNumberListOption();
+        UserPhoneNumberListOptions getOption = new UserPhoneNumberListOptions();
         getOption.setUserId(new UserId(userId));
         getOption.setValue(value);
         List<UserPhoneNumber> userPhoneNumbers = userPhoneNumberRepository.search(getOption);
@@ -413,7 +413,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         newUserSecurityQuestion = userSecurityQuestionRepository.get(userSecurityQuestion.getId());
         Assert.assertEquals(newUserSecurityQuestion.getAnswerSalt(), value);
 
-        UserSecurityQuestionListOption getOption = new UserSecurityQuestionListOption();
+        UserSecurityQuestionListOptions getOption = new UserSecurityQuestionListOptions();
         getOption.setUserId(new UserId(userId));
         getOption.setSecurityQuestionId(new SecurityQuestionId(123L));
         List<UserSecurityQuestion> securityQuestions = userSecurityQuestionRepository.search(getOption);
@@ -439,7 +439,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         newUserTos = userTosRepository.get(userTos.getId());
         Assert.assertEquals(value, newUserTos.getTosUri());
 
-        UserTosListOption userTosGetOption = new UserTosListOption();
+        UserTosListOptions userTosGetOption = new UserTosListOptions();
         userTosGetOption.setUserId(new UserId(userId));
         userTosGetOption.setTosUri(value);
         List<UserTos> userToses = userTosRepository.search(userTosGetOption);
@@ -469,7 +469,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         newAttempt = userSecurityQuestionAttemptRepository.get(attempt.getId());
         Assert.assertEquals(newAttempt.getIpAddress(), value);
 
-        UserSecurityQuestionAttemptListOption option = new UserSecurityQuestionAttemptListOption();
+        UserSecurityQuestionAttemptListOptions option = new UserSecurityQuestionAttemptListOptions();
         option.setUserId(new UserId(userId));
         option.setSecurityQuestionId(new SecurityQuestionId(123L));
         List<UserSecurityQuestionAttempt> attempts = userSecurityQuestionAttemptRepository.search(option);

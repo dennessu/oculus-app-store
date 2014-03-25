@@ -10,7 +10,7 @@ import com.junbo.common.id.UserSecurityQuestionAttemptId;
 import com.junbo.common.model.Results;
 import com.junbo.identity.spec.model.users.UserSecurityQuestionAttempt;
 import com.junbo.identity.spec.options.entity.UserSecurityQuestionAttemptGetOption;
-import com.junbo.identity.spec.options.list.UserSecurityQuestionAttemptListOption;
+import com.junbo.identity.spec.options.list.UserSecurityQuestionAttemptListOptions;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 
@@ -21,7 +21,7 @@ import javax.ws.rs.core.MediaType;
  * Created by liangfu on 3/25/14.
  */
 @RestResource
-@Path("/users/{userId}/security-questions-attempt")
+@Path("/users/{userId}/security-question-attempts")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 public interface UserSecurityQuestionAttemptResource {
@@ -42,5 +42,5 @@ public interface UserSecurityQuestionAttemptResource {
     @Path("/")
     Promise<Results<UserSecurityQuestionAttempt>> list(
             @PathParam("userId") UserId userId,
-            @BeanParam UserSecurityQuestionAttemptListOption listOptions);
+            @BeanParam UserSecurityQuestionAttemptListOptions listOptions);
 }

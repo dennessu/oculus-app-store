@@ -9,7 +9,7 @@ import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserPasswordId;
 import com.junbo.identity.core.service.validator.UserPasswordValidator;
 import com.junbo.identity.spec.model.users.UserPassword;
-import com.junbo.identity.spec.options.list.UserPasswordListOption;
+import com.junbo.identity.spec.options.list.UserPasswordListOptions;
 import org.springframework.stereotype.Component;
 
 /**
@@ -29,7 +29,7 @@ public class UserPasswordValidatorImpl extends CommonValidator implements UserPa
     }
 
     @Override
-    public void validateSearch(UserId userId, UserPasswordListOption getOption) {
+    public void validateSearch(UserId userId, UserPasswordListOptions getOption) {
         return ;
     }
 }

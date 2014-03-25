@@ -8,7 +8,7 @@ package com.junbo.identity.core.service.user;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserPasswordId;
 import com.junbo.identity.spec.model.users.UserPassword;
-import com.junbo.identity.spec.options.list.UserPasswordListOption;
+import com.junbo.identity.spec.options.list.UserPasswordListOptions;
 
 import java.util.List;
 
@@ -18,5 +18,5 @@ import java.util.List;
 public interface UserPasswordService {
     UserPassword get(UserId userId, UserPasswordId userPasswordId);
     UserPassword create(UserId userId, UserPassword userPassword);
-    List<UserPassword> search(UserPasswordListOption getOptions);
+    List<UserPassword> search(UserPasswordListOptions getOptions);
 }

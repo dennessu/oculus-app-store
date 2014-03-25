@@ -12,7 +12,7 @@ import com.junbo.identity.core.service.util.UserPasswordUtil;
 import com.junbo.identity.core.service.validator.UserSecurityQuestionValidator;
 import com.junbo.identity.data.repository.UserSecurityQuestionRepository;
 import com.junbo.identity.spec.model.users.UserSecurityQuestion;
-import com.junbo.identity.spec.options.list.UserSecurityQuestionListOption;
+import com.junbo.identity.spec.options.list.UserSecurityQuestionListOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,7 +50,7 @@ public class UserSecurityQuestionServiceImpl implements UserSecurityQuestionServ
     }
 
     @Override
-    public List<UserSecurityQuestion> search(UserSecurityQuestionListOption listOption) {
+    public List<UserSecurityQuestion> search(UserSecurityQuestionListOptions listOption) {
         return userSecurityQuestionRepository.search(listOption);
     }
 }

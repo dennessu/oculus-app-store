@@ -11,7 +11,7 @@ import com.junbo.identity.core.service.user.UserPhoneNumberService;
 import com.junbo.identity.core.service.validator.UserPhoneNumberValidator;
 import com.junbo.identity.data.repository.UserPhoneNumberRepository;
 import com.junbo.identity.spec.model.users.UserPhoneNumber;
-import com.junbo.identity.spec.options.list.UserPhoneNumberListOption;
+import com.junbo.identity.spec.options.list.UserPhoneNumberListOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,7 +52,7 @@ public class UserPhoneNumberServiceImpl implements UserPhoneNumberService {
     }
 
     @Override
-    public List<UserPhoneNumber> search(UserPhoneNumberListOption listOption) {
+    public List<UserPhoneNumber> search(UserPhoneNumberListOptions listOption) {
         return userPhoneNumberRepository.search(listOption);
     }
 

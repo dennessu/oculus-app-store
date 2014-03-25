@@ -18,10 +18,10 @@ import com.junbo.identity.spec.model.users.User;
 import com.junbo.identity.spec.model.users.UserLoginAttempt;
 import com.junbo.identity.spec.model.users.UserPassword;
 import com.junbo.identity.spec.model.users.UserPin;
-import com.junbo.identity.spec.options.list.LoginAttemptListOption;
-import com.junbo.identity.spec.options.list.UserListOption;
-import com.junbo.identity.spec.options.list.UserPasswordListOption;
-import com.junbo.identity.spec.options.list.UserPinListOption;
+import com.junbo.identity.spec.options.list.LoginAttemptListOptions;
+import com.junbo.identity.spec.options.list.UserListOptions;
+import com.junbo.identity.spec.options.list.UserPasswordListOptions;
+import com.junbo.identity.spec.options.list.UserPinListOptions;
 import org.glassfish.jersey.internal.util.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -62,12 +62,12 @@ public class UserLoginAttemptServiceImpl implements UserLoginAttemptService {
         validator.validateCreate(userLoginAttempt);
         String decode = Base64.decodeAsString(userLoginAttempt.getValue());
         String[] split = decode.split(Constants.COLON);
-        UserListOption option = new UserListOption();
+        UserListOptions option = new UserListOptions();
         option.setUserName(split[0]);
         option.setLimit(1);
         List<User> users = userService.search(option);
         if(userLoginAttempt.getType().equals("password")) {
-            UserPasswordListOption passwordListOption = new UserPasswordListOption();
+            UserPasswordListOptions passwordListOption = new UserPasswordListOptions();
             passwordListOption.setUserId(users.get(0).getId());
             passwordListOption.setActive(true);
             passwordListOption.setLimit(1);
@@ -79,7 +79,7 @@ public class UserLoginAttemptServiceImpl implements UserLoginAttemptService {
             userLoginAttemptRepository.save(userLoginAttempt);
         }
         else if(userLoginAttempt.getType().equals("pin")) {
-            UserPinListOption userPinListOption = new UserPinListOption();
+            UserPinListOptions userPinListOption = new UserPinListOptions();
             userPinListOption.setUserId(users.get(0).getId());
             userPinListOption.setActive(true);
             userPinListOption.setLimit(1);
@@ -93,7 +93,7 @@ public class UserLoginAttemptServiceImpl implements UserLoginAttemptService {
     }
 
     @Override
-    public List<UserLoginAttempt> search(LoginAttemptListOption getOptions) {
+    public List<UserLoginAttempt> search(LoginAttemptListOptions getOptions) {
         return userLoginAttemptRepository.search(getOptions);
     }
 }

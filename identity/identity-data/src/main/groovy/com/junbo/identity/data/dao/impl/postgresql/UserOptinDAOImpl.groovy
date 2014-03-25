@@ -6,7 +6,7 @@
 package com.junbo.identity.data.dao.impl.postgresql
 import com.junbo.identity.data.dao.UserOptinDAO
 import com.junbo.identity.data.entity.user.UserOptinEntity
-import com.junbo.identity.spec.options.list.UserOptinListOption
+import com.junbo.identity.spec.options.list.UserOptinListOptions
 /**
  * Implementation for UserOptinDAO.
  */
@@ -33,7 +33,7 @@ class UserOptinDAOImpl extends ShardedDAOBase implements UserOptinDAO {
     }
 
     @Override
-    List<UserOptinEntity> search(Long userId, UserOptinListOption getOption) {
+    List<UserOptinEntity> search(Long userId, UserOptinListOptions getOption) {
         String query = 'select * from user_optin where user_id =  ' + getOption.userId.value +
                 (getOption.type == null ? '' : (' and type = \'' + getOption.type) + '\'') +
                 (' order by id limit ' + (getOption.limit == null ? 'ALL' : getOption.limit.toString())) +

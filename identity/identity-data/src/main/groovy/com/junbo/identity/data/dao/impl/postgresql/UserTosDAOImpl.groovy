@@ -6,7 +6,7 @@
 package com.junbo.identity.data.dao.impl.postgresql
 import com.junbo.identity.data.dao.UserTosDAO
 import com.junbo.identity.data.entity.user.UserTosEntity
-import com.junbo.identity.spec.options.list.UserTosListOption
+import com.junbo.identity.spec.options.list.UserTosListOptions
 
 /**
  * Implementation for User Tos Acceptance DAO interface.
@@ -32,7 +32,7 @@ class UserTosDAOImpl extends ShardedDAOBase implements UserTosDAO {
     }
 
     @Override
-    List<UserTosEntity> search(Long userId, UserTosListOption getOption) {
+    List<UserTosEntity> search(Long userId, UserTosListOptions getOption) {
         String query = 'select * from user_tos where user_id =  ' + getOption.userId.value +
                 (getOption.tosUri == null ? '' : ' and tos_uri = \'' + getOption.tosUri + '\'') +
                 (' order by id limit ' + (getOption.limit == null ? 'ALL' : getOption.limit.toString())) +

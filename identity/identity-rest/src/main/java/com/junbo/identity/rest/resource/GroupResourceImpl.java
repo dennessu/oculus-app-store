@@ -12,7 +12,7 @@ import com.junbo.identity.spec.model.users.Group;
 import com.junbo.identity.spec.model.users.UserGroup;
 import com.junbo.identity.spec.options.entity.GroupGetOptions;
 import com.junbo.identity.spec.options.list.GroupListOptions;
-import com.junbo.identity.spec.options.list.UserGroupListOption;
+import com.junbo.identity.spec.options.list.UserGroupListOptions;
 import com.junbo.identity.spec.resource.GroupResource;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +60,7 @@ public class GroupResourceImpl implements GroupResource {
     }
 
     @Override
-    public Promise<Results<UserGroup>> listUserGroups(GroupId groupId, UserGroupListOption listOptions) {
+    public Promise<Results<UserGroup>> listUserGroups(GroupId groupId, UserGroupListOptions listOptions) {
         return null;
     }
 }

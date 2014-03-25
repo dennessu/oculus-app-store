@@ -8,7 +8,7 @@ package com.junbo.identity.core.service.user;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserSecurityQuestionId;
 import com.junbo.identity.spec.model.users.UserSecurityQuestion;
-import com.junbo.identity.spec.options.list.UserSecurityQuestionListOption;
+import com.junbo.identity.spec.options.list.UserSecurityQuestionListOptions;
 
 import java.util.List;
 
@@ -18,5 +18,5 @@ import java.util.List;
 public interface UserSecurityQuestionService {
     UserSecurityQuestion save(UserId userId, UserSecurityQuestion userSecurityQuestion);
     UserSecurityQuestion get(UserId userId, UserSecurityQuestionId userSecurityQuestionId);
-    List<UserSecurityQuestion> search(UserSecurityQuestionListOption listOption);
+    List<UserSecurityQuestion> search(UserSecurityQuestionListOptions listOption);
 }

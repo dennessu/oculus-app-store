@@ -8,7 +8,7 @@ package com.junbo.identity.core.service.user;
 import com.junbo.common.id.UserEmailId;
 import com.junbo.common.id.UserId;
 import com.junbo.identity.spec.model.users.UserEmail;
-import com.junbo.identity.spec.options.list.UserEmailListOption;
+import com.junbo.identity.spec.options.list.UserEmailListOptions;
 
 import java.util.List;
 
@@ -20,6 +20,6 @@ public interface UserEmailService {
     UserEmail update(UserId userId, UserEmailId userEmailId, UserEmail userEmail);
     UserEmail patch(UserId userId, UserEmailId userEmailId, UserEmail userEmail);
     UserEmail get(UserId userId, UserEmailId userEmailId);
-    List<UserEmail> search(UserEmailListOption getOption);
+    List<UserEmail> search(UserEmailListOptions getOption);
     void delete(UserId userId, UserEmailId userEmailId);
 }

@@ -7,7 +7,7 @@ package com.junbo.identity.data.dao.impl.postgresql;
 
 import com.junbo.identity.data.dao.UserSecurityQuestionAttemptDAO;
 import com.junbo.identity.data.entity.user.UserSecurityQuestionAttemptEntity;
-import com.junbo.identity.spec.options.list.UserSecurityQuestionAttemptListOption;
+import com.junbo.identity.spec.options.list.UserSecurityQuestionAttemptListOptions;
 import com.junbo.sharding.annotations.SeedParam;
 
 import java.util.List;
@@ -39,7 +39,7 @@ public class UserSecurityQuestionAttemptDAOImpl extends ShardedDAOBase implement
 
     @Override
     public List<UserSecurityQuestionAttemptEntity> search(@SeedParam Long userId,
-                                                          UserSecurityQuestionAttemptListOption getOption) {
+                                                          UserSecurityQuestionAttemptListOptions getOption) {
         String query = "select * from user_security_question_attempt where user_id = " +
                 (getOption.getUserId().getValue()) +
         (getOption.getSecurityQuestionId() == null ? "" : (" and security_question_id = " +

@@ -12,30 +12,19 @@ import javax.ws.rs.QueryParam;
 /**
  * Created by liangfu on 3/14/14.
  */
-public class UserEmailListOption extends PagingGetOption {
-    @QueryParam("value")
-    private String value;
-
-    @QueryParam("type")
-    private String type;
+public class UserTosListOptions extends PagingGetOptions {
+    @QueryParam("tosUri")
+    private String tosUri;
 
     @QueryParam("userId")
     private UserId userId;
 
-    public String getValue() {
-        return value;
+    public String getTosUri() {
+        return tosUri;
     }
 
-    public void setValue(String value) {
-        this.value = value;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
+    public void setTosUri(String tosUri) {
+        this.tosUri = tosUri;
     }
 
     public UserId getUserId() {

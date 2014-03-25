@@ -12,15 +12,23 @@ import javax.ws.rs.QueryParam;
 /**
  * Created by liangfu on 3/14/14.
  */
-public class LoginAttemptListOption extends PagingGetOption {
+public class UserEmailListOptions extends PagingGetOptions {
+    @QueryParam("value")
+    private String value;
+
     @QueryParam("type")
     private String type;
 
-    @QueryParam("ipAddress")
-    private String ipAddress;
-
     @QueryParam("userId")
     private UserId userId;
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
 
     public String getType() {
         return type;
@@ -28,14 +36,6 @@ public class LoginAttemptListOption extends PagingGetOption {
 
     public void setType(String type) {
         this.type = type;
-    }
-
-    public String getIpAddress() {
-        return ipAddress;
-    }
-
-    public void setIpAddress(String ipAddress) {
-        this.ipAddress = ipAddress;
     }
 
     public UserId getUserId() {

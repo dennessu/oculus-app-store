@@ -11,7 +11,7 @@ import com.junbo.common.model.Results;
 import com.junbo.identity.core.service.user.UserAuthenticatorService;
 import com.junbo.identity.spec.model.users.UserAuthenticator;
 import com.junbo.identity.spec.options.entity.UserAuthenticatorGetOptions;
-import com.junbo.identity.spec.options.list.UserAuthenticatorListOption;
+import com.junbo.identity.spec.options.list.UserAuthenticatorListOptions;
 import com.junbo.identity.spec.resource.UserAuthenticatorResource;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,12 +62,12 @@ public class UserAuthenticatorResourceImpl implements UserAuthenticatorResource 
 
     @Override
     public Promise<Results<UserAuthenticator>> list(UserId userId,
-                                                       @BeanParam UserAuthenticatorListOption listOptions) {
+                                                       @BeanParam UserAuthenticatorListOptions listOptions) {
         return null;
     }
 
     @Override
-    public Promise<Results<UserAuthenticator>> list(@BeanParam UserAuthenticatorListOption listOptions) {
+    public Promise<Results<UserAuthenticator>> list(@BeanParam UserAuthenticatorListOptions listOptions) {
         List<UserAuthenticator> userAuthenticators = userAuthenticatorService.search(listOptions);
         Results<UserAuthenticator> results = new Results<>();
         results.setItems(userAuthenticators);

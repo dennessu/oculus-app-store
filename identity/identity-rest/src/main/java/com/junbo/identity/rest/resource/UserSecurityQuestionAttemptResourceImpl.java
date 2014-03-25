@@ -12,7 +12,7 @@ import com.junbo.identity.core.service.user.UserSecurityQuestionAttemptService;
 import com.junbo.identity.spec.model.common.ResultsUtil;
 import com.junbo.identity.spec.model.users.UserSecurityQuestionAttempt;
 import com.junbo.identity.spec.options.entity.UserSecurityQuestionAttemptGetOption;
-import com.junbo.identity.spec.options.list.UserSecurityQuestionAttemptListOption;
+import com.junbo.identity.spec.options.list.UserSecurityQuestionAttemptListOptions;
 import com.junbo.identity.spec.resource.UserSecurityQuestionAttemptResource;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,9 +47,9 @@ public class UserSecurityQuestionAttemptResourceImpl implements UserSecurityQues
 
     @Override
     public Promise<Results<UserSecurityQuestionAttempt>> list(UserId userId,
-                                                  @BeanParam UserSecurityQuestionAttemptListOption listOptions) {
+                                                  @BeanParam UserSecurityQuestionAttemptListOptions listOptions) {
         if(listOptions == null) {
-            listOptions = new UserSecurityQuestionAttemptListOption();
+            listOptions = new UserSecurityQuestionAttemptListOptions();
         }
         listOptions.setUserId(userId);
         List<UserSecurityQuestionAttempt> attempts = attemptService.search(listOptions);

@@ -11,7 +11,7 @@ import com.junbo.identity.core.service.user.UserGroupService;
 import com.junbo.identity.core.service.validator.UserGroupValidator;
 import com.junbo.identity.data.repository.UserGroupRepository;
 import com.junbo.identity.spec.model.users.UserGroup;
-import com.junbo.identity.spec.options.list.UserGroupListOption;
+import com.junbo.identity.spec.options.list.UserGroupListOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,7 +57,7 @@ public class UserGroupServiceImpl implements UserGroupService {
     }
 
     @Override
-    public List<UserGroup> search(UserGroupListOption getOption) {
+    public List<UserGroup> search(UserGroupListOptions getOption) {
         return userGroupRepository.search(getOption);
     }
 

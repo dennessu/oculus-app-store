@@ -12,13 +12,20 @@ import javax.ws.rs.QueryParam;
 /**
  * Created by liangfu on 3/14/14.
  */
-public class UserPasswordListOption extends PagingGetOption {
+public class UserOptinListOptions extends PagingGetOptions {
+    @QueryParam("type")
+    private String type;
 
     @QueryParam("userId")
     private UserId userId;
 
-    @QueryParam("active")
-    private Boolean active;
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public UserId getUserId() {
         return userId;
@@ -26,13 +33,5 @@ public class UserPasswordListOption extends PagingGetOption {
 
     public void setUserId(UserId userId) {
         this.userId = userId;
-    }
-
-    public Boolean getActive() {
-        return active;
-    }
-
-    public void setActive(Boolean active) {
-        this.active = active;
     }
 }

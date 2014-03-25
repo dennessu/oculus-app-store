@@ -5,7 +5,6 @@
  */
 package com.junbo.identity.spec.options.list;
 
-import com.junbo.common.id.SecurityQuestionId;
 import com.junbo.common.id.UserId;
 
 import javax.ws.rs.QueryParam;
@@ -13,12 +12,12 @@ import javax.ws.rs.QueryParam;
 /**
  * Created by liangfu on 3/14/14.
  */
-public class UserSecurityQuestionListOption extends PagingGetOption {
+public class UserPinListOptions extends PagingGetOptions {
     @QueryParam("userId")
     private UserId userId;
 
-    @QueryParam("securityQuestionId")
-    private SecurityQuestionId securityQuestionId;
+    @QueryParam("active")
+    private Boolean active;
 
     public UserId getUserId() {
         return userId;
@@ -28,11 +27,11 @@ public class UserSecurityQuestionListOption extends PagingGetOption {
         this.userId = userId;
     }
 
-    public SecurityQuestionId getSecurityQuestionId() {
-        return securityQuestionId;
+    public Boolean getActive() {
+        return active;
     }
 
-    public void setSecurityQuestionId(SecurityQuestionId securityQuestionId) {
-        this.securityQuestionId = securityQuestionId;
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 }

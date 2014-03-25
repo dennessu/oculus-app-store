@@ -8,7 +8,7 @@ package com.junbo.identity.core.service.validator;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserSecurityQuestionAttemptId;
 import com.junbo.identity.spec.model.users.UserSecurityQuestionAttempt;
-import com.junbo.identity.spec.options.list.UserSecurityQuestionAttemptListOption;
+import com.junbo.identity.spec.options.list.UserSecurityQuestionAttemptListOptions;
 
 /**
  * Created by liangfu on 3/25/14.
@@ -16,5 +16,5 @@ import com.junbo.identity.spec.options.list.UserSecurityQuestionAttemptListOptio
 public interface UserSecurityQuestionAttemptValidator {
     void validateGet(UserId userId, UserSecurityQuestionAttemptId userSecurityQuestionAttemptId);
     void validateCreate(UserId userId, UserSecurityQuestionAttempt userSecurityQuestionAttempt);
-    void validateSearch(UserId userId, UserSecurityQuestionAttemptListOption getOption);
+    void validateSearch(UserId userId, UserSecurityQuestionAttemptListOptions getOption);
 }

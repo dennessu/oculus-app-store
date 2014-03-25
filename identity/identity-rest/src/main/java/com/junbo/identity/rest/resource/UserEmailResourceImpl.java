@@ -12,7 +12,7 @@ import com.junbo.identity.core.service.user.UserEmailService;
 import com.junbo.identity.spec.model.common.ResultsUtil;
 import com.junbo.identity.spec.model.users.UserEmail;
 import com.junbo.identity.spec.options.entity.UserEmailGetOptions;
-import com.junbo.identity.spec.options.list.UserEmailListOption;
+import com.junbo.identity.spec.options.list.UserEmailListOptions;
 import com.junbo.identity.spec.resource.UserEmailResource;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,9 +59,9 @@ public class UserEmailResourceImpl implements UserEmailResource {
     }
 
     @Override
-    public Promise<Results<UserEmail>> list(UserId userId, @BeanParam UserEmailListOption listOptions) {
+    public Promise<Results<UserEmail>> list(UserId userId, @BeanParam UserEmailListOptions listOptions) {
         if(listOptions == null) {
-            listOptions = new UserEmailListOption();
+            listOptions = new UserEmailListOptions();
         }
         listOptions.setUserId(userId);
         List<UserEmail> userEmailList = userEmailService.search(listOptions);
@@ -70,7 +70,7 @@ public class UserEmailResourceImpl implements UserEmailResource {
     }
 
     @Override
-    public Promise<Results<UserEmail>> list(@BeanParam UserEmailListOption listOptions) {
+    public Promise<Results<UserEmail>> list(@BeanParam UserEmailListOptions listOptions) {
         List<UserEmail> userEmailList = userEmailService.search(listOptions);
         return Promise.pure(ResultsUtil.init(userEmailList,
                 listOptions.getLimit() == null ? Integer.MAX_VALUE : listOptions.getLimit()));

@@ -10,7 +10,7 @@ import com.junbo.common.model.Results;
 import com.junbo.identity.core.service.user.UserLoginAttemptService;
 import com.junbo.identity.spec.model.users.UserLoginAttempt;
 import com.junbo.identity.spec.options.entity.LoginAttemptGetOptions;
-import com.junbo.identity.spec.options.list.LoginAttemptListOption;
+import com.junbo.identity.spec.options.list.LoginAttemptListOptions;
 import com.junbo.identity.spec.resource.UserLoginAttemptResource;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +43,7 @@ public class UserLoginAttemptResourceImpl implements UserLoginAttemptResource {
     }
 
     @Override
-    public Promise<Results<UserLoginAttempt>> list(@BeanParam LoginAttemptListOption listOptions) {
+    public Promise<Results<UserLoginAttempt>> list(@BeanParam LoginAttemptListOptions listOptions) {
         // todo:    Need to implement this.
         return null;
     }

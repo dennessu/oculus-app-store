@@ -6,7 +6,7 @@
 package com.junbo.identity.data.dao.impl.postgresql
 import com.junbo.identity.data.dao.UserDeviceDAO
 import com.junbo.identity.data.entity.user.UserDeviceEntity
-import com.junbo.identity.spec.options.list.UserDeviceListOption
+import com.junbo.identity.spec.options.list.UserDeviceListOptions
 import org.springframework.util.StringUtils
 
 /**
@@ -34,7 +34,7 @@ class UserDeviceDAOImpl extends ShardedDAOBase implements UserDeviceDAO {
     }
 
     @Override
-    List<UserDeviceEntity> search(Long userId, UserDeviceListOption getOption) {
+    List<UserDeviceEntity> search(Long userId, UserDeviceListOptions getOption) {
         String query = 'select * from user_device where user_id =  ' + getOption.userId.value +
                 (StringUtils.isEmpty(getOption.deviceId) ? '' : ' and device_id = \'' + getOption.deviceId + '\'') +
                 (' order by id limit ' + (getOption.limit == null ? 'ALL' : getOption.limit.toString())) +

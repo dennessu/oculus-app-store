@@ -9,7 +9,7 @@ import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserSecurityQuestionAttemptId;
 import com.junbo.identity.core.service.validator.UserSecurityQuestionAttemptValidator;
 import com.junbo.identity.spec.model.users.UserSecurityQuestionAttempt;
-import com.junbo.identity.spec.options.list.UserSecurityQuestionAttemptListOption;
+import com.junbo.identity.spec.options.list.UserSecurityQuestionAttemptListOptions;
 import org.springframework.stereotype.Component;
 
 /**
@@ -30,7 +30,7 @@ public class UserSecurityQuestionAttemptValidatorImpl
     }
 
     @Override
-    public void validateSearch(UserId userId, UserSecurityQuestionAttemptListOption getOption) {
+    public void validateSearch(UserId userId, UserSecurityQuestionAttemptListOptions getOption) {
 
     }
 }

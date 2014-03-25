@@ -14,8 +14,8 @@ import com.junbo.identity.core.service.validator.UserSecurityQuestionAttemptVali
 import com.junbo.identity.data.repository.UserSecurityQuestionAttemptRepository;
 import com.junbo.identity.spec.model.users.UserSecurityQuestion;
 import com.junbo.identity.spec.model.users.UserSecurityQuestionAttempt;
-import com.junbo.identity.spec.options.list.UserSecurityQuestionAttemptListOption;
-import com.junbo.identity.spec.options.list.UserSecurityQuestionListOption;
+import com.junbo.identity.spec.options.list.UserSecurityQuestionAttemptListOptions;
+import com.junbo.identity.spec.options.list.UserSecurityQuestionListOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -49,7 +49,7 @@ public class UserSecurityQuestionAttemptServiceImpl implements UserSecurityQuest
     public UserSecurityQuestionAttempt create(UserId userId, UserSecurityQuestionAttempt userSecurityQuestionAttempt) {
         validator.validateCreate(userId, userSecurityQuestionAttempt);
 
-        UserSecurityQuestionListOption option = new UserSecurityQuestionListOption();
+        UserSecurityQuestionListOptions option = new UserSecurityQuestionListOptions();
         option.setUserId(userId);
         option.setSecurityQuestionId(userSecurityQuestionAttempt.getSecurityQuestionId());
         List<UserSecurityQuestion> attempts = userSecurityQuestionService.search(option);
@@ -63,7 +63,7 @@ public class UserSecurityQuestionAttemptServiceImpl implements UserSecurityQuest
     }
 
     @Override
-    public List<UserSecurityQuestionAttempt> search(UserSecurityQuestionAttemptListOption getOptions) {
+    public List<UserSecurityQuestionAttempt> search(UserSecurityQuestionAttemptListOptions getOptions) {
         return repository.search(getOptions);
     }
 }

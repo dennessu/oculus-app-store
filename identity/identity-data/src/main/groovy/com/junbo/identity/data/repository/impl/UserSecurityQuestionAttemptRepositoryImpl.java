@@ -11,7 +11,7 @@ import com.junbo.identity.data.entity.user.UserSecurityQuestionAttemptEntity;
 import com.junbo.identity.data.mapper.ModelMapper;
 import com.junbo.identity.data.repository.UserSecurityQuestionAttemptRepository;
 import com.junbo.identity.spec.model.users.UserSecurityQuestionAttempt;
-import com.junbo.identity.spec.options.list.UserSecurityQuestionAttemptListOption;
+import com.junbo.identity.spec.options.list.UserSecurityQuestionAttemptListOptions;
 import com.junbo.oom.core.MappingContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -61,7 +61,7 @@ public class UserSecurityQuestionAttemptRepositoryImpl implements UserSecurityQu
     }
 
     @Override
-    public List<UserSecurityQuestionAttempt> search(UserSecurityQuestionAttemptListOption getOption) {
+    public List<UserSecurityQuestionAttempt> search(UserSecurityQuestionAttemptListOptions getOption) {
         List<UserSecurityQuestionAttemptEntity> entities =
                 userSecurityQuestionAttemptDAO.search(getOption.getUserId().getValue(), getOption);
 

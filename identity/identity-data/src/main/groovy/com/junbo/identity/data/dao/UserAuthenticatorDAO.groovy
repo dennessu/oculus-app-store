@@ -6,7 +6,7 @@
 package com.junbo.identity.data.dao
 
 import com.junbo.identity.data.entity.user.UserAuthenticatorEntity
-import com.junbo.identity.spec.options.list.UserAuthenticatorListOption
+import com.junbo.identity.spec.options.list.UserAuthenticatorListOptions
 import com.junbo.sharding.annotations.SeedParam
 
 /**
@@ -22,7 +22,7 @@ interface UserAuthenticatorDAO {
     UserAuthenticatorEntity get(@SeedParam Long id)
 
     // only possible when userId is existing
-    List<UserAuthenticatorEntity> search(@SeedParam Long userId, UserAuthenticatorListOption getOption)
+    List<UserAuthenticatorEntity> search(@SeedParam Long userId, UserAuthenticatorListOptions getOption)
 
     void delete(@SeedParam Long id)
 }

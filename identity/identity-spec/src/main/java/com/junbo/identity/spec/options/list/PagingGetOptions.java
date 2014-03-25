@@ -10,7 +10,7 @@ import javax.ws.rs.QueryParam;
 /**
  * Created by liangfu on 3/13/14.
  */
-public class PagingGetOption {
+public class PagingGetOptions {
     @QueryParam("limit")
     private Integer limit;
 

@@ -11,7 +11,7 @@ import com.junbo.common.model.Results;
 import com.junbo.identity.core.service.user.UserDeviceService;
 import com.junbo.identity.spec.model.users.UserDevice;
 import com.junbo.identity.spec.options.entity.UserDeviceGetOptions;
-import com.junbo.identity.spec.options.list.UserDeviceListOption;
+import com.junbo.identity.spec.options.list.UserDeviceListOptions;
 import com.junbo.identity.spec.resource.UserDeviceResource;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +60,7 @@ public class UserDeviceResourceImpl implements UserDeviceResource {
     }
 
     @Override
-    public Promise<Results<UserDevice>> list(UserId userId, @BeanParam UserDeviceListOption listOptions) {
+    public Promise<Results<UserDevice>> list(UserId userId, @BeanParam UserDeviceListOptions listOptions) {
         listOptions.setUserId(userId);
         List<UserDevice> userDevices = userDeviceService.search(listOptions);
         Results<UserDevice> results = new Results<>();

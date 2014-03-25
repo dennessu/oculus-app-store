@@ -8,7 +8,7 @@ package com.junbo.identity.core.service.user;
 import com.junbo.common.id.UserGroupId;
 import com.junbo.common.id.UserId;
 import com.junbo.identity.spec.model.users.UserGroup;
-import com.junbo.identity.spec.options.list.UserGroupListOption;
+import com.junbo.identity.spec.options.list.UserGroupListOptions;
 
 import java.util.List;
 
@@ -20,6 +20,6 @@ public interface UserGroupService {
     UserGroup update(UserId userId, UserGroupId userGroupId, UserGroup userGroup);
     UserGroup patch(UserId userId, UserGroupId userGroupId, UserGroup userGroup);
     UserGroup get(UserId userId, UserGroupId userGroupId);
-    List<UserGroup> search(UserGroupListOption getOption);
+    List<UserGroup> search(UserGroupListOptions getOption);
     void delete(UserId userId, UserGroupId userGroupId);
 }

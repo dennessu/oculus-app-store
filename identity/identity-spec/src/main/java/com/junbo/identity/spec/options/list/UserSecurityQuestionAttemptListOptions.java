@@ -13,7 +13,7 @@ import javax.ws.rs.QueryParam;
 /**
  * Created by liangfu on 3/25/14.
  */
-public class UserSecurityQuestionAttemptListOption extends PagingGetOption {
+public class UserSecurityQuestionAttemptListOptions extends PagingGetOptions {
 
     @QueryParam("userId")
     private UserId userId;

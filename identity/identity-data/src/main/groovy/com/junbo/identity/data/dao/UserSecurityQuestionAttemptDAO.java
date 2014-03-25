@@ -6,7 +6,7 @@
 package com.junbo.identity.data.dao;
 
 import com.junbo.identity.data.entity.user.UserSecurityQuestionAttemptEntity;
-import com.junbo.identity.spec.options.list.UserSecurityQuestionAttemptListOption;
+import com.junbo.identity.spec.options.list.UserSecurityQuestionAttemptListOptions;
 import com.junbo.sharding.annotations.SeedParam;
 
 import java.util.List;
@@ -22,6 +22,6 @@ public interface UserSecurityQuestionAttemptDAO {
     UserSecurityQuestionAttemptEntity get(@SeedParam Long id);
 
     List<UserSecurityQuestionAttemptEntity> search(@SeedParam Long userId,
-                                                   UserSecurityQuestionAttemptListOption getOption);
+                                                   UserSecurityQuestionAttemptListOptions getOption);
 
 }

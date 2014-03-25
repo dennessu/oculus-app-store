@@ -12,7 +12,7 @@ import com.junbo.identity.core.service.user.UserPhoneNumberService;
 import com.junbo.identity.spec.model.common.ResultsUtil;
 import com.junbo.identity.spec.model.users.UserPhoneNumber;
 import com.junbo.identity.spec.options.entity.UserPhoneNumberGetOptions;
-import com.junbo.identity.spec.options.list.UserPhoneNumberListOption;
+import com.junbo.identity.spec.options.list.UserPhoneNumberListOptions;
 import com.junbo.identity.spec.resource.UserPhoneNumberResource;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,9 +62,9 @@ public class UserPhoneNumberResourceImpl implements UserPhoneNumberResource {
     }
 
     @Override
-    public Promise<Results<UserPhoneNumber>> list(UserId userId, @BeanParam UserPhoneNumberListOption listOptions) {
+    public Promise<Results<UserPhoneNumber>> list(UserId userId, @BeanParam UserPhoneNumberListOptions listOptions) {
         if(listOptions == null) {
-            listOptions = new UserPhoneNumberListOption();
+            listOptions = new UserPhoneNumberListOptions();
         }
         listOptions.setUserId(userId);
         List<UserPhoneNumber> userPhoneNumberList = userPhoneNumberService.search(listOptions);

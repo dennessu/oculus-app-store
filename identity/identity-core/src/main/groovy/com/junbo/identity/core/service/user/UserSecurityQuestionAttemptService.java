@@ -8,7 +8,7 @@ package com.junbo.identity.core.service.user;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserSecurityQuestionAttemptId;
 import com.junbo.identity.spec.model.users.UserSecurityQuestionAttempt;
-import com.junbo.identity.spec.options.list.UserSecurityQuestionAttemptListOption;
+import com.junbo.identity.spec.options.list.UserSecurityQuestionAttemptListOptions;
 
 import java.util.List;
 
@@ -18,5 +18,5 @@ import java.util.List;
 public interface UserSecurityQuestionAttemptService {
     UserSecurityQuestionAttempt get(UserId userId, UserSecurityQuestionAttemptId userSecurityQuestionAttemptId);
     UserSecurityQuestionAttempt create(UserId userId, UserSecurityQuestionAttempt userSecurityQuestionAttempt);
-    List<UserSecurityQuestionAttempt> search(UserSecurityQuestionAttemptListOption getOptions);
+    List<UserSecurityQuestionAttempt> search(UserSecurityQuestionAttemptListOptions getOptions);
 }

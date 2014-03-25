@@ -10,7 +10,7 @@ import javax.ws.rs.QueryParam;
 /**
  * Created by liangfu on 3/14/14.
  */
-public class UserListOption extends PagingGetOption {
+public class UserListOptions extends PagingGetOptions {
     @QueryParam("userName")
     private String userName;
 

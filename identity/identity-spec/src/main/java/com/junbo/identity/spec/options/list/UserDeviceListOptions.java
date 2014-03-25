@@ -12,12 +12,20 @@ import javax.ws.rs.QueryParam;
 /**
  * Created by liangfu on 3/14/14.
  */
-public class UserPinListOption extends PagingGetOption {
+public class UserDeviceListOptions extends PagingGetOptions {
+    @QueryParam("deviceId")
+    private String deviceId;
+
     @QueryParam("userId")
     private UserId userId;
 
-    @QueryParam("active")
-    private Boolean active;
+    public String getDeviceId() {
+        return deviceId;
+    }
+
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
+    }
 
     public UserId getUserId() {
         return userId;
@@ -25,13 +33,5 @@ public class UserPinListOption extends PagingGetOption {
 
     public void setUserId(UserId userId) {
         this.userId = userId;
-    }
-
-    public Boolean getActive() {
-        return active;
-    }
-
-    public void setActive(Boolean active) {
-        this.active = active;
     }
 }

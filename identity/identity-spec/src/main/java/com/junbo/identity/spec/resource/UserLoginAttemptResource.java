@@ -9,7 +9,7 @@ import com.junbo.common.id.UserLoginAttemptId;
 import com.junbo.common.model.Results;
 import com.junbo.identity.spec.model.users.UserLoginAttempt;
 import com.junbo.identity.spec.options.entity.LoginAttemptGetOptions;
-import com.junbo.identity.spec.options.list.LoginAttemptListOption;
+import com.junbo.identity.spec.options.list.LoginAttemptListOptions;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 
@@ -36,5 +36,5 @@ public interface UserLoginAttemptResource {
 
     @GET
     @Path("/")
-    Promise<Results<UserLoginAttempt>> list(@BeanParam LoginAttemptListOption listOptions);
+    Promise<Results<UserLoginAttempt>> list(@BeanParam LoginAttemptListOptions listOptions);
 }

@@ -10,7 +10,7 @@ import com.junbo.common.id.UserId;
 import com.junbo.common.model.Results;
 import com.junbo.identity.spec.model.users.UserEmail;
 import com.junbo.identity.spec.options.entity.UserEmailGetOptions;
-import com.junbo.identity.spec.options.list.UserEmailListOption;
+import com.junbo.identity.spec.options.list.UserEmailListOptions;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 
@@ -57,9 +57,9 @@ public interface UserEmailResource {
     @GET
     @Path("/{userId}/emails/")
     Promise<Results<UserEmail>> list(@PathParam("userId") UserId userId,
-                                        @BeanParam UserEmailListOption listOptions);
+                                        @BeanParam UserEmailListOptions listOptions);
 
     @GET
     @Path("/emails/")
-    Promise<Results<UserEmail>> list(@BeanParam UserEmailListOption listOptions);
+    Promise<Results<UserEmail>> list(@BeanParam UserEmailListOptions listOptions);
 }

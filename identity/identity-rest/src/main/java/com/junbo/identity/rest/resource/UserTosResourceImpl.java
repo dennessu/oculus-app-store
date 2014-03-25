@@ -12,7 +12,7 @@ import com.junbo.identity.core.service.user.UserTosService;
 import com.junbo.identity.spec.model.common.ResultsUtil;
 import com.junbo.identity.spec.model.users.UserTos;
 import com.junbo.identity.spec.options.entity.UserTosGetOptions;
-import com.junbo.identity.spec.options.list.UserTosListOption;
+import com.junbo.identity.spec.options.list.UserTosListOptions;
 import com.junbo.identity.spec.resource.UserTosResource;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,9 +58,9 @@ public class UserTosResourceImpl implements UserTosResource {
     }
 
     @Override
-    public Promise<Results<UserTos>> list(UserId userId, @BeanParam UserTosListOption listOptions) {
+    public Promise<Results<UserTos>> list(UserId userId, @BeanParam UserTosListOptions listOptions) {
         if(listOptions == null) {
-            listOptions = new UserTosListOption();
+            listOptions = new UserTosListOptions();
         }
         listOptions.setUserId(userId);
         List<UserTos> userTosList = userTosService.search(listOptions);

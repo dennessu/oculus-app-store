@@ -12,7 +12,7 @@ import com.junbo.identity.core.service.user.UserOptinService;
 import com.junbo.identity.spec.model.common.ResultsUtil;
 import com.junbo.identity.spec.model.users.UserOptin;
 import com.junbo.identity.spec.options.entity.UserOptinGetOptions;
-import com.junbo.identity.spec.options.list.UserOptinListOption;
+import com.junbo.identity.spec.options.list.UserOptinListOptions;
 import com.junbo.identity.spec.resource.UserOptinResource;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,9 +59,9 @@ public class UserOptinResourceImpl implements UserOptinResource {
     }
 
     @Override
-    public Promise<Results<UserOptin>> list(UserId userId, @BeanParam UserOptinListOption listOptions) {
+    public Promise<Results<UserOptin>> list(UserId userId, @BeanParam UserOptinListOptions listOptions) {
         if(listOptions == null) {
-            listOptions = new UserOptinListOption();
+            listOptions = new UserOptinListOptions();
         }
         listOptions.setUserId(userId);
         List<UserOptin> userOptinList = userOptinService.search(listOptions);

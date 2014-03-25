@@ -10,7 +10,7 @@ import com.junbo.common.id.UserId;
 import com.junbo.common.model.Results;
 import com.junbo.identity.spec.model.users.UserAuthenticator;
 import com.junbo.identity.spec.options.entity.UserAuthenticatorGetOptions;
-import com.junbo.identity.spec.options.list.UserAuthenticatorListOption;
+import com.junbo.identity.spec.options.list.UserAuthenticatorListOptions;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 
@@ -57,10 +57,10 @@ public interface UserAuthenticatorResource {
     @GET
     @Path("/{userId}/authenticators")
     Promise<Results<UserAuthenticator>> list(@PathParam("userId") UserId userId,
-                                                @BeanParam UserAuthenticatorListOption listOptions);
+                                                @BeanParam UserAuthenticatorListOptions listOptions);
 
 
     @GET
     @Path("/authenticators")
-    Promise<Results<UserAuthenticator>> list(@BeanParam UserAuthenticatorListOption listOptions);
+    Promise<Results<UserAuthenticator>> list(@BeanParam UserAuthenticatorListOptions listOptions);
 }
