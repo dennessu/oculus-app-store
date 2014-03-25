@@ -12,10 +12,7 @@
         <tr>
             <td>Type</td>
             <td>
-                <select ng-model="item.type">
-                    <option>PHYSICAL</option>
-                    <option>APP</option>
-                    <option>IAP</option>
+                <select ng-model="item.type" ng-options="itemType for itemType in itemTypes">
                 </select>
             </td>
         </tr>
