@@ -82,6 +82,7 @@ class FulfillmentActionTest {
         try {
             (OrderActionResult) action.execute(TestBuilder.buildActionContext(order)).wrapped().
                     get().data[ActionUtils.DATA_ORDER_ACTION_RESULT]
+            assert false
         } catch (ex) {
             assert ((AppErrorException)(ex.cause)).error.code == AppErrors.INSTANCE.fulfillmentConnectionError().code
         }
