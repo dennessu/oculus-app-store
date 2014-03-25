@@ -1,15 +1,19 @@
+Required (*)
 <table class="table table-bordered vertical-table" ng-controller="OfferEditCtrl">
     <tr ng-if="offer.self">
         <td>Offer Id</td>
         <td>{{ offer.self.id }}</td>
     </tr>
     <tr>
-        <td style="width: 200px;">Offer Name</td>
-        <td><input type="text" class="form-control required" ng-model="offer.name"></td>
+        <td style="width: 200px;">Offer Name *</td>
+        <td>
+            <input type="text" class="form-control required" ng-model="offer.name" name="name" required />
+            <span class="help-inline" ng-show="submitted && form.name.$error.required">Required</span>
+        </td>
     </tr>
     <tr>
-        <td>Developer</td>
-        <td><input type="text" class="form-control required" ng-model="offer.developer.id" ng-change="updateDeveloper()"></td>
+        <td>Developer *</td>
+        <td><input type="text" class="form-control required" ng-model="offer.developer.id" ng-change="updateDeveloper()" required /></td>
     </tr>
     <tr>
         <td>Category</td>
@@ -68,7 +72,7 @@
         </td>
     </tr>
     <tr>
-        <td>Prices</td>
+        <td>Prices *</td>
         <td>
             <div>
                 Price type:
@@ -87,12 +91,14 @@
                             <th>Country</th>
                             <th>Currency</th>
                             <th>Amount</th>
+                            <th></th>
                         </tr>
                         </thead>
-                        <tr ng-repeat="(countryCode, price) in offer.prices">
+                        <tr ng-repeat="(countryCode, price) in offer.prices" ng-click="removePrice(countryCode)">
                             <td>{{ countryCode }}</td>
                             <td>{{ price.currency }}</td>
-                            <td><input type="text" class="form-control required" ng-model="price.amount"></td>
+                            <td><input type="text" class="form-control required" ng-model="price.amount" required /></td>
+                            <td class="select">x</td>
                         </tr>
                     </table>
                 </div>

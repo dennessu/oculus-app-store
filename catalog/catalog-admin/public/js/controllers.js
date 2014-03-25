@@ -12,13 +12,24 @@ app.run(function ($rootScope, $templateCache) {
   });
 });
 
-app.controller('OfferListCtrl', ['$scope', 'OffersFactory', '$routeParams', '$location',
-  function($scope, OffersFactory, $routeParams, $location) {
+app.controller('OfferListCtrl', ['$scope', 'OffersFactory', '$routeParams',
+  function($scope, OffersFactory, $routeParams) {
   	  $scope.offers = OffersFactory.query($routeParams);
   }]);
 
-app.controller('OfferCreationCtrl', ['$scope',
-    function($scope) {
+app.controller('OfferCreationCtrl', ['$scope', 'OffersFactory', '$location',
+    function($scope, OffersFactory, $location) {
+        $scope.createOffer = function () {
+            $scope.submitted = true;
+            OffersFactory.create($scope.offer, function(offer){
+                $location.path('/offers/' + offer.self.id);
+            });
+        };
+
+        $scope.cancel = function () {
+            $location.path('/offers');
+        };
+
         var init = function() {
             $scope.offer = {};
             $scope.offer.categories = [];
@@ -32,16 +43,6 @@ app.controller('OfferCreationCtrl', ['$scope',
 app.controller('OfferEditCtrl',
     ['$scope', 'OffersFactory', 'ItemsFactory', 'MetaFactory', 'AttributesFactory', '$routeParams', '$location',
         function($scope, OffersFactory, ItemsFactory, MetaFactory, AttributesFactory, $routeParams, $location) {
-            $scope.createOffer = function () {
-                OffersFactory.create($scope.offer, function(offer){
-                    $location.path('/offers/' + offer.self.id);
-                });
-            };
-
-            $scope.cancel = function () {
-                $location.path('/offers');
-            };
-
             $scope.addItem = function(item) {
                 $scope.selectedItems[item.self.id] = item;
             };
@@ -53,6 +54,9 @@ app.controller('OfferEditCtrl',
                 Object.keys( $scope.selectedItems ).forEach(function( key ) {
                     $scope.offer.items.push({itemId: $scope.selectedItems[key].self});
                 });
+            };
+            $scope.removePrice = function(countryCode) {
+                delete $scope.offer.prices[countryCode];
             };
             $scope.totalItems = function() {
                 return Object.keys( $scope.selectedItems).length;
@@ -175,8 +179,18 @@ app.controller('ItemListCtrl', ['$scope', 'ItemsFactory', '$routeParams', '$loca
         $scope.items = ItemsFactory.query($routeParams);
     }]);
 
-app.controller('ItemCreationCtrl', ['$scope', 'MetaFactory',
-    function($scope, MetaFactory) {
+app.controller('ItemCreationCtrl', ['$scope', 'MetaFactory', 'ItemsFactory', '$location',
+    function($scope, MetaFactory, ItemsFactory, $location) {
+        $scope.createItem = function () {
+            ItemsFactory.create($scope.item, function(item){
+                $location.path('/items/' + item.self.id);
+            });
+        };
+
+        $scope.cancel = function () {
+            $location.path('/items');
+        };
+
         $scope.metaDefinitions = MetaFactory.itemMeta;
 
         var init = function() {
@@ -195,15 +209,6 @@ app.controller('ItemCreationCtrl', ['$scope', 'MetaFactory',
 
 app.controller('ItemEditCtrl', ['$scope', 'ItemsFactory', 'MetaFactory', '$routeParams', '$location',
     function($scope, ItemsFactory, MetaFactory, $routeParams, $location) {
-        $scope.createItem = function () {
-            ItemsFactory.create($scope.item, function(item){
-                $location.path('/items/' + item.self.id);
-            });
-        };
-
-        $scope.cancel = function () {
-            $location.path('/items');
-        };
         $scope.updateDeveloper = function() {
             $scope.item.developer.href="http://localhost:8083/rest/api/users/" + $scope.item.developer.id;
         };

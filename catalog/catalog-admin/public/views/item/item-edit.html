@@ -4,19 +4,19 @@
         <td>{{ item.self.id }}</td>
     </tr>
     <tr>
-        <td style="width: 200px;">Item Name</td>
-        <td><input type="text" class="form-control required" ng-model="item.name"></td>
+        <td style="width: 200px;">Item Name *</td>
+        <td><input type="text" class="form-control required" ng-model="item.name" required /></td>
     </tr>
     <tr>
-        <td>Developer</td>
+        <td>Developer *</td>
         <td>
-            <input type="text" class="form-control required" ng-model="item.developer.id" ng-change="updateDeveloper()">
+            <input type="text" class="form-control required" ng-model="item.developer.id" ng-change="updateDeveloper()" required />
         </td>
     </tr>
     <tr>
-        <td>Type</td>
+        <td>Type *</td>
         <td>
-            <select ng-model="item.type" ng-options="itemType for itemType in itemTypes">
+            <select ng-model="item.type" ng-options="itemType for itemType in itemTypes" required />
             </select>
         </td>
     </tr>
