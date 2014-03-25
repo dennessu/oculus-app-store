@@ -65,10 +65,15 @@ class TaxServiceImpl implements TaxService {
                 Long addressId = balance.shippingAddressId.value
                 return shippingAddressService.getShippingAddress(userId, addressId)
                         .then { ShippingAddress shippingAddress ->
-                    return taxFacade.calculateTax(balance, shippingAddress, pi.address)
+                    return taxFacade.validateShippingAddress(shippingAddress)
+                            .then { ShippingAddress validatedShippingAddress ->
+                        return taxFacade.calculateTax(balance, validatedShippingAddress, pi.address)
+                    }
                 }
             }
-            return taxFacade.calculateTax(balance, null, pi.address)
+            return taxFacade.validatePiAddress(pi.address).then { Address validatedPiAddress ->
+                return taxFacade.calculateTax(balance, null, validatedPiAddress)
+            }
         }
 
     }
