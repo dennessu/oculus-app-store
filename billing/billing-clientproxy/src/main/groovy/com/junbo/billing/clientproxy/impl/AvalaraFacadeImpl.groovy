@@ -220,6 +220,7 @@ class AvalaraFacadeImpl implements TaxFacade {
         return future.then { Response response ->
             if (response.statusCode / STATUS_CODE_MASK == SUCCESSFUL_STATUS_CODE_PREFIX) {
                 try {
+                    // use new ObjectMapper instead of transcoder here since the DocDate is not ISO8601DateFormat
                     return Promise.pure(new ObjectMapper().readValue(response.responseBody, GetTaxResponse))
                 } catch (IOException ex) {
                     // TODO: error handling
