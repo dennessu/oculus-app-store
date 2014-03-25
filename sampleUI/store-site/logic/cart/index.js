@@ -327,6 +327,28 @@ Cart.CartProcess = function (action, data, callback) {
     });
 };
 
+Cart.GetOrder = function(data, callback){
+    var body = data.data;
+    var cookies = data.cookies;
+    var query = data.query;
+
+    var userId = cookies[process.AppConfig.CookiesName.UserId];
+    var orderId = cookies[process.AppConfig.CookiesName.OrderId];
+
+    var orderProvider = new OrderDataProvider(process.AppConfig.Order_API_Host, process.AppConfig.Order_API_Port);
+    orderProvider.GetOrderById(orderId, function(resultData){
+
+        var resultModel = new DomainModels.ResultModel;
+        if(resultData.StatusCode == 200){
+            resultModel.status = DomainModels.ResultStatusEnum.Normal;
+        }else{
+            resultModel.status = DomainModels.ResultStatusEnum.APIError;
+        }
+        resultModel.data = resultData.Data;
+
+        callback(Utils.GenerateResponseModel(resultModel));
+    });};
+
 Cart.PostOrder = function(data, callback){
     var body = data.data;
     var cookies = data.cookies;

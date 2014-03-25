@@ -86,6 +86,7 @@ App.DetailController = StoreControllers.DetailController;
 App.CartController = StoreControllers.CartController;
 App.CartItemController = StoreControllers.CartItemController;
 App.OrdersummaryController = StoreControllers.OrderSummaryController;
+App.OrderSummaryItemController = StoreControllers.OrderSummaryItemController;
 App.ThanksController = StoreControllers.ThanksController;
 App.ShippingIndexController = ShippingInfoControllers.IndexController;
 App.ShippingAddressController = ShippingInfoControllers.AddressController;

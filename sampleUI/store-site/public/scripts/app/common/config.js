@@ -31,6 +31,7 @@ AppConfig.API = {
         Update: { Path: "update" },
         Merge: { Path: "merge" },
         PostOrder: { Path: "post_order" },
+        GetOrder: { Path: "get_order" },
         PutOrder: { Path: "put_order" },
         PurchaseOrder: { Path: "purchase_order" }
     },
@@ -39,6 +40,7 @@ AppConfig.API = {
             Namespace: "/api/billing/"
         },
         ShippingInfo: {Path: "get_shipping_info"},
+        Get: {Path: "get_shipping_info_by_id"},
         Add: {Path: "add"}
     },
     Payment:{
@@ -46,6 +48,7 @@ AppConfig.API = {
             Namespace: "/api/payment/"
         },
         PaymentInstruments: {Path: "get_payment_instruments" },
+        Get: {Path: "get_payment_instruments_by_id"},
         Add: {Path: "add"}
     }
 };

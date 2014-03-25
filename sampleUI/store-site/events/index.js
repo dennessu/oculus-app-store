@@ -88,6 +88,11 @@ module.exports = function(io){
                 fn(data);
             });
         });
+        socket.on('/api/cart/get_order', function (data, fn) {
+            Cart.GetOrder(data, function(data){
+                fn(data);
+            });
+        });
         socket.on('/api/cart/post_order', function (data, fn) {
             Cart.PostOrder(data, function(data){
                 fn(data);
@@ -110,6 +115,12 @@ module.exports = function(io){
                 fn(data);
             });
         });
+
+        socket.on('/api/billing/get_shipping_info_by_id', function (data, fn) {
+            Billing.GetShippingInfoById(data, function(data){
+                fn(data);
+            });
+        });
         socket.on('/api/billing/add', function (data, fn) {
             Billing.PostShippingInfo(data, function(data){
                 fn(data);
@@ -119,6 +130,12 @@ module.exports = function(io){
         /* Payment -------------------------------------------------------------- */
         socket.on('/api/payment/get_payment_instruments', function (data, fn) {
             Payment.GetPayment(data, function(data){
+                fn(data);
+            });
+        });
+
+        socket.on('/api/payment/get_payment_instruments_by_id', function (data, fn) {
+            Payment.GetPaymentById(data, function(data){
                 fn(data);
             });
         });

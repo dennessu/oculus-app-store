@@ -231,10 +231,20 @@ var StoreControllers = {
     }),
 
     OrderSummaryController: Ember.ObjectController.extend({
-        products: [
-            {name: "Product 1", price: 9, qty: 1, subTotal: 9},
-            {name: "Product 2", price: 9, qty: 2, subTotal: 18}
-        ],
+        content: {
+            products: new Array(),
+            paymentMethodName: "",
+            shippingMethodName: "",
+            shippingAddress: null
+        },
+
+        subTotal: function(){
+            var result = 0;
+            this.get("content.products").forEach(function(item){
+                result+= item.subTotal;
+            });
+            return result
+        }.property("content.products"),
 
         actions:{
             Purchase: function(){
@@ -250,6 +260,12 @@ var StoreControllers = {
                 });
             }
         }
+    }),
+
+    OrderSummaryItemController: Ember.ObjectController.extend({
+        product: function(){
+            return this.store.find('Product', this.get('model').id);
+        }.property('model')
     }),
 
     ThanksController: Ember.ObjectController.extend({
