@@ -5,9 +5,11 @@
  */
 package com.junbo.entitlement.clientproxy.catalog;
 
+import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
+
 /**
  * Interface wrapper to call from catalog.
  */
-public interface CatalogFacade {
-    boolean exists(Long offerId);
+public interface EntitlementDefinitionFacade {
+    EntitlementDefinition getDefinition(Long definitionId);
 }
