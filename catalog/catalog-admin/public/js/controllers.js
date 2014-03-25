@@ -305,7 +305,3 @@ app.controller('AttributeDetailCtrl', ['$scope', 'AttributeFactory', '$routePara
 
         $scope.attribute = AttributeFactory.query($routeParams);
     }]);
-
-app.controller('MyCtrl2', [function() {
-
-  }]);
