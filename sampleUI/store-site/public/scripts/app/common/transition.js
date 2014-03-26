@@ -34,7 +34,7 @@ var Transition = {
 
     OffersToProduct: function (data) {
         var result = null;
-        if (data["items"] != undefined) {
+        if (data["items"] != undefined && data["items"] instanceof Array && typeof(data["self"]) == "undefined") {
             // get offers
             var offers = data["items"];
             var resultList = new Array();
@@ -120,7 +120,7 @@ var Transition = {
 
     CreditCard: function(data){
         var result = null;
-        if(data["items"] != undefined){
+        if(data["items"] != undefined && data["items"] instanceof Array && typeof(data["self"]) == "undefined"){
             var payments = data["items"];
             var paymentArray = new Array();
             for(var i = 0; i < payments.length; ++i){

@@ -249,7 +249,6 @@ Cart.CartProcess = function (action, data, callback) {
             var offerItems = new Array();
             for (var i = 0; i < cartItems.length; ++i) {
                 var offer = new CartModels.OfferItemModel();
-                offer.self.id = cartId;
                 offer.offer.id = cartItems[i].product_id;
                 offer.quantity = cartItems[i].qty;
                 offer.selected = cartItems[i].selected;
@@ -324,6 +323,50 @@ Cart.CartProcess = function (action, data, callback) {
         resModel.data = resultModel;
 
         callback(resModel);
+    });
+};
+
+Cart.GetOrders = function(data, callback){
+    var body = data.data;
+    var cookies = data.cookies;
+    var query = data.query;
+
+    var userId = cookies[process.AppConfig.CookiesName.UserId];
+
+    var orderProvider = new OrderDataProvider(process.AppConfig.Order_API_Host, process.AppConfig.Order_API_Port);
+    orderProvider.GetOrdersByUserId(userId, function(resultData){
+        var resultModel = new DomainModels.ResultModel;
+        if(resultData.StatusCode == 200){
+            resultModel.status = DomainModels.ResultStatusEnum.Normal;
+        }else{
+            resultModel.status = DomainModels.ResultStatusEnum.APIError;
+        }
+        resultModel.data = resultData.Data;
+
+        callback(Utils.GenerateResponseModel(resultModel));
+    });
+};
+
+Cart.GetOrderById = function(data, callback){
+    var body = data.data;
+    var cookies = data.cookies;
+    var query = data.query;
+
+    var userId = cookies[process.AppConfig.CookiesName.UserId];
+    var orderId = cookies[process.AppConfig.CookiesName.OrderId];
+
+    var orderProvider = new OrderDataProvider(process.AppConfig.Order_API_Host, process.AppConfig.Order_API_Port);
+    orderProvider.GetOrderById(orderId, function(resultData){
+
+        var resultModel = new DomainModels.ResultModel;
+        if(resultData.StatusCode == 200){
+            resultModel.status = DomainModels.ResultStatusEnum.Normal;
+        }else{
+            resultModel.status = DomainModels.ResultStatusEnum.APIError;
+        }
+        resultModel.data = resultData.Data;
+
+        callback(Utils.GenerateResponseModel(resultModel));
     });
 };
 

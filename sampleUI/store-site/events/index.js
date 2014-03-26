@@ -49,6 +49,26 @@ module.exports = function(io){
                 fn(data);
             });
         });
+        socket.on('/api/identity/put_profile', function (data, fn) {
+            Identity.PutProfile(data, function(data){
+                fn(data);
+            });
+        });
+        socket.on('/api/identity/get_opt_ins', function (data, fn) {
+            Identity.GetOptIns(data, function(data){
+                fn(data);
+            });
+        });
+        socket.on('/api/identity/post_opt_ins', function (data, fn) {
+            Identity.PostOptIns(data, function(data){
+                fn(data);
+            });
+        });
+        socket.on('/api/identity/put_user', function (data, fn) {
+            Identity.PutUser(data, function(data){
+                fn(data);
+            });
+        });
 
         socket.on('/api/identity/pin', function (data, fn) {
             Identity.PIN(data, function(data){
@@ -88,6 +108,16 @@ module.exports = function(io){
                 fn(data);
             });
         });
+        socket.on('/api/cart/get_order_by_id', function (data, fn) {
+            Cart.GetOrderById(data, function(data){
+                fn(data);
+            });
+        });
+        socket.on('/api/cart/get_order_by_user', function (data, fn) {
+            Cart.GetOrders(data, function(data){
+                fn(data);
+            });
+        });
         socket.on('/api/cart/post_order', function (data, fn) {
             Cart.PostOrder(data, function(data){
                 fn(data);
@@ -110,6 +140,12 @@ module.exports = function(io){
                 fn(data);
             });
         });
+
+        socket.on('/api/billing/get_shipping_info_by_id', function (data, fn) {
+            Billing.GetShippingInfoById(data, function(data){
+                fn(data);
+            });
+        });
         socket.on('/api/billing/add', function (data, fn) {
             Billing.PostShippingInfo(data, function(data){
                 fn(data);
@@ -119,6 +155,12 @@ module.exports = function(io){
         /* Payment -------------------------------------------------------------- */
         socket.on('/api/payment/get_payment_instruments', function (data, fn) {
             Payment.GetPayment(data, function(data){
+                fn(data);
+            });
+        });
+
+        socket.on('/api/payment/get_payment_instruments_by_id', function (data, fn) {
+            Payment.GetPaymentById(data, function(data){
                 fn(data);
             });
         });

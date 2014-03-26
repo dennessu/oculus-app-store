@@ -30,6 +30,30 @@ Order.prototype.PostOrder = function(dataObj, cb){
   client.Request(options, dataObj, cb);
 };
 
+Order.prototype.GetOrdersByUserId = function(userId, cb){
+    /*
+     Method: GET
+     URL: /rest/orders?userId={userId}"
+     Data Type: JSON
+     Content-Type: none
+     Request: null
+     Response: null
+     */
+
+    var options = {
+        host: this.Host,
+        port: this.Port,
+        path: "/rest/orders?userId=" + userId,
+        method: 'GET',
+        headers:{
+            'Content-Type': 'application/json'
+        }
+    };
+
+    var client = new RestClient();
+    client.Request(options, null, cb);
+};
+
 Order.prototype.GetOrderById = function(orderId, cb){
     /*
      Method: GET

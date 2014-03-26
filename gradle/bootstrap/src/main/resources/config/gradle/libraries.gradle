@@ -126,5 +126,10 @@ ext {
             easy_mock:              'org.easymock:easymock:3.2',
 
             btm:                    'com.junbo.btm:btm:3.0.0-SNAPSHOT', // switch to org.codehaus.btm if release version available
+
+            //****** common test lib dependencies ******
+            gson:                   'com.google.code.gson:gson:2.2.4',
+            apache_commons_lang:    'org.apache.commons:commons-lang3:3.1',
+            apache_httpclient:      'org.apache.httpcomponents:httpclient:4.3.3',
     ]
 }

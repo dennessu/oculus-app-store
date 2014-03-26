@@ -12,13 +12,24 @@ app.run(function ($rootScope, $templateCache) {
   });
 });
 
-app.controller('OfferListCtrl', ['$scope', 'OffersFactory', '$routeParams', '$location',
-  function($scope, OffersFactory, $routeParams, $location) {
+app.controller('OfferListCtrl', ['$scope', 'OffersFactory', '$routeParams',
+  function($scope, OffersFactory, $routeParams) {
   	  $scope.offers = OffersFactory.query($routeParams);
   }]);
 
-app.controller('OfferCreationCtrl', ['$scope',
-    function($scope) {
+app.controller('OfferCreationCtrl', ['$scope', 'OffersFactory', '$location',
+    function($scope, OffersFactory, $location) {
+        $scope.createOffer = function () {
+            $scope.submitted = true;
+            OffersFactory.create($scope.offer, function(offer){
+                $location.path('/offers/' + offer.self.id);
+            });
+        };
+
+        $scope.cancel = function () {
+            $location.path('/offers');
+        };
+
         var init = function() {
             $scope.offer = {};
             $scope.offer.categories = [];
@@ -32,24 +43,6 @@ app.controller('OfferCreationCtrl', ['$scope',
 app.controller('OfferEditCtrl',
     ['$scope', 'OffersFactory', 'ItemsFactory', 'MetaFactory', 'AttributesFactory', '$routeParams', '$location',
         function($scope, OffersFactory, ItemsFactory, MetaFactory, AttributesFactory, $routeParams, $location) {
-            $scope.createOffer = function () {
-                OffersFactory.create($scope.offer, function(offer){
-                    $location.path('/offers/' + offer.self.id);
-                });
-            };
-
-            $scope.updateOffer = function () {
-                $scope.offer.status="Design";
-                OfferFactory.update({id: $routeParams.id}, $scope.offer, function(offer){
-                    OfferResponse.data = "Offer updated successfully!";
-                    $location.path('/offers/' + $routeParams.id + '/response');
-                });
-            };
-
-            $scope.cancel = function () {
-                $location.path('/offers');
-            };
-
             $scope.addItem = function(item) {
                 $scope.selectedItems[item.self.id] = item;
             };
@@ -61,6 +54,9 @@ app.controller('OfferEditCtrl',
                 Object.keys( $scope.selectedItems ).forEach(function( key ) {
                     $scope.offer.items.push({itemId: $scope.selectedItems[key].self});
                 });
+            };
+            $scope.removePrice = function(countryCode) {
+                delete $scope.offer.prices[countryCode];
             };
             $scope.totalItems = function() {
                 return Object.keys( $scope.selectedItems).length;
@@ -106,8 +102,16 @@ app.controller('OfferEditCtrl',
             $scope.countries = MetaFactory.countries;
         }]);
 
-app.controller('OfferReviewListCtrl', ['$scope', 'OffersFactory',
+app.controller('OfferAdminListCtrl', ['$scope', 'OffersFactory',
     function($scope, OffersFactory) {
+        $scope.updateList = function () {
+            if ($scope.showStatus=="PendingReview") {
+                $scope.offers = OffersFactory.query({status: 'PendingReview'});
+            } else {
+                $scope.offers = OffersFactory.query({status: 'Released'});
+            }
+        };
+
         $scope.offers = OffersFactory.query({status: 'PendingReview'});
     }]);
 
@@ -122,9 +126,17 @@ app.controller('OfferDetailCtrl', ['$scope', 'OfferFactory', 'MetaFactory', 'Att
         console.log("OfferDetailCtrl");
         console.log($routeParams);
 
+        $scope.updateOffer = function () {
+            $scope.offer.status="Design";
+            OfferFactory.update({id: $routeParams.id}, $scope.offer, function(){
+                OfferResponse.data = "Offer updated successfully!";
+                $location.path('/offers/' + $routeParams.id + '/response');
+            });
+        };
+
         $scope.releaseOffer = function () {
             $scope.offer.status="Released";
-            OfferFactory.update({id: $routeParams.id}, $scope.offer, function(offer){
+            OfferFactory.update({id: $routeParams.id}, $scope.offer, function(){
                 OfferResponse.data = "Offer released successfully!";
                 $location.path('/offers/' + $routeParams.id + '/response');
             });
@@ -133,7 +145,7 @@ app.controller('OfferDetailCtrl', ['$scope', 'OfferFactory', 'MetaFactory', 'Att
         $scope.reviewOffer = function () {
             $scope.offer.status="PendingReview";
 
-            OfferFactory.update({id: $routeParams.id}, $scope.offer, function(offer){
+            OfferFactory.update({id: $routeParams.id}, $scope.offer, function(){
                 OfferResponse.data = "Offer submitted for review!";
                 $location.path('/offers/' + $routeParams.id + '/response');
             });
@@ -141,7 +153,7 @@ app.controller('OfferDetailCtrl', ['$scope', 'OfferFactory', 'MetaFactory', 'Att
 
         $scope.rejectOffer = function () {
             $scope.offer.status="Rejected";
-            OfferFactory.update({id: $routeParams.id}, $scope.offer, function(offer){
+            OfferFactory.update({id: $routeParams.id}, $scope.offer, function(){
                 OfferResponse.data = "Offer rejected successfully!";
                 $location.path('/offers/' + $routeParams.id + '/response');
             });
@@ -167,8 +179,18 @@ app.controller('ItemListCtrl', ['$scope', 'ItemsFactory', '$routeParams', '$loca
         $scope.items = ItemsFactory.query($routeParams);
     }]);
 
-app.controller('ItemCreationCtrl', ['$scope', 'MetaFactory',
-    function($scope, MetaFactory) {
+app.controller('ItemCreationCtrl', ['$scope', 'MetaFactory', 'ItemsFactory', '$location',
+    function($scope, MetaFactory, ItemsFactory, $location) {
+        $scope.createItem = function () {
+            ItemsFactory.create($scope.item, function(item){
+                $location.path('/items/' + item.self.id);
+            });
+        };
+
+        $scope.cancel = function () {
+            $location.path('/items');
+        };
+
         $scope.metaDefinitions = MetaFactory.itemMeta;
 
         var init = function() {
@@ -187,23 +209,6 @@ app.controller('ItemCreationCtrl', ['$scope', 'MetaFactory',
 
 app.controller('ItemEditCtrl', ['$scope', 'ItemsFactory', 'MetaFactory', '$routeParams', '$location',
     function($scope, ItemsFactory, MetaFactory, $routeParams, $location) {
-        $scope.createItem = function () {
-            ItemsFactory.create($scope.item, function(item){
-                $location.path('/items/' + item.self.id);
-            });
-        };
-
-        $scope.updateItem = function () {
-            $scope.item.status="Design";
-            ItemFactory.update({id: $routeParams.id}, $scope.item, function(){
-                ItemResponse.data = "Item updated successfully!";
-                $location.path('/items/' + $routeParams.id + '/response');
-            });
-        };
-
-        $scope.cancel = function () {
-            $location.path('/items');
-        };
         $scope.updateDeveloper = function() {
             $scope.item.developer.href="http://localhost:8083/rest/api/users/" + $scope.item.developer.id;
         };
@@ -217,6 +222,14 @@ app.controller('ItemDetailCtrl', ['$scope', 'ItemFactory', 'MetaFactory', '$rout
     function($scope, ItemFactory, MetaFactory, $routeParams, $location, ItemResponse) {
         console.log("ItemDetailCtrl");
         console.log($routeParams);
+
+        $scope.updateItem = function () {
+            $scope.item.status="Design";
+            ItemFactory.update({id: $routeParams.id}, $scope.item, function(){
+                ItemResponse.data = "Item updated successfully!";
+                $location.path('/items/' + $routeParams.id + '/response');
+            });
+        };
 
         $scope.releaseItem = function () {
             $scope.item.status="Released";
@@ -247,8 +260,15 @@ app.controller('ItemDetailCtrl', ['$scope', 'ItemFactory', 'MetaFactory', '$rout
         $scope.item = ItemFactory.query($routeParams);
     }]);
 
-app.controller('ItemReviewListCtrl', ['$scope', 'ItemsFactory',
+app.controller('ItemAdminListCtrl', ['$scope', 'ItemsFactory',
     function($scope, ItemsFactory) {
+        $scope.updateList = function () {
+            if ($scope.showStatus=="PendingReview") {
+                $scope.items = ItemsFactory.query({status: 'PendingReview'});
+            } else {
+                $scope.items = ItemsFactory.query({status: 'Released'});
+            }
+        };
         $scope.items = ItemsFactory.query({status: 'PendingReview'});
     }]);
 

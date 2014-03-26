@@ -4,9 +4,9 @@
     <div class="order">
 
         <div class="list">
-            {{#each products}}
+            {{#each content.products itemController="OrderSummaryItem"}}
             <dl class="item">
-                <dt>{{name}}</dt>
+                <dt>{{product.name}}</dt>
                 <dd>$ {{price}}</dd>
                 <dd class="qty">{{qty}}</dd>
                 <dd>$ {{subTotal}}</dd>
@@ -21,19 +21,27 @@
             <div class="money">
                 <dl>
                     <dt>Subtotal:</dt>
-                    <dd>$ 1099.99</dd>
+                    <dd>$ {{subTotal}}</dd>
                 </dl>
                 <dl>
-                    <dt>Shipping & Handling:</dt>
-                    <dd>$ 0.00</dd>
+                    <dt>Discount:</dt>
+                    <dd>$ {{content.discount}}</dd>
+                </dl>
+                <dl>
+                    <dt>Shipping:</dt>
+                    <dd>$ {{content.shippingFee}}</dd>
+                </dl>
+                <dl>
+                    <dt>Shipping Discount:</dt>
+                    <dd>$ {{content.shippingFeeDiscount}}</dd>
                 </dl>
                 <dl>
                     <dt>Tax:</dt>
-                    <dd>$ 0.00</dd>
+                    <dd>$ {{content.tax}}</dd>
                 </dl>
                 <dl class="total">
                     <dt>Order Total:</dt>
-                    <dd>$ 1099.99</dd>
+                    <dd>$ {{content.totalAmount}}</dd>
                 </dl>
             </div>
             <div class="clear"></div>
@@ -42,19 +50,19 @@
         <div class="info">
             <dl>
                 <dt>Payment Method:</dt>
-                <dd>VISA ****9031</dd>
+                <dd>{{content.paymentMethodName}}</dd>
             </dl>
             <dl>
                 <dt>Shipping Method:</dt>
-                <dd>None</dd>
+                <dd>{{content.shippingMethodName}}</dd>
             </dl>
             <dl class="billing_address">
                 <dt>Billing Address:</dt>
                 <dd>
-                    Billy Bob<br>
-                    17281 Magnolia Blvd.<br>
-                    Long Beach, CA 92134<br>
-                    United States of America
+                    {{content.shippingAddress.firstName}} {{content.shippingAddress.lastName}}<br>
+                    {{content.shippingAddress.street}}<br>
+                    {{content.shippingAddress.city}}, {{content.shippingAddress.state}} {{content.shippingAddress.postalCode}}<br>
+                    {{content.shippingAddress.phoneNumber}}
                 </dd>
             </dl>
         </div>

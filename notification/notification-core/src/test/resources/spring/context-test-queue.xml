@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <import resource="classpath*:spring/core-context.xml"/>
+
+    <!-- Queue demo -->
+    <bean id="testQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg index="0" value="TEST_QUEUE"/>
+    </bean>
+
+    <bean id="queueTemplate" class="org.springframework.jms.core.JmsTemplate">
+        <property name="defaultDestination" ref="testQueue"/>
+        <property name="connectionFactory" ref="connectionFactory"/>
+        <property name="explicitQosEnabled" value="true"/>
+        <property name="deliveryPersistent" value="true"/>
+    </bean>
+
+    <bean id="testProducer" class="com.junbo.notification.queue.TestProducer">
+        <property name="template" ref="queueTemplate"/>
+        <property name="destination" ref="testQueue"/>
+    </bean>
+
+    <bean id="testConsumer" class="com.junbo.notification.queue.TestConsumer"/>
+
+    <bean id="queueListenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+        <property name="connectionFactory" ref="connectionFactory"/>
+        <property name="destination" ref="testQueue"/>
+        <property name="messageListener" ref="testConsumer"/>
+        <property name="sessionAcknowledgeMode" value="2"/>
+    </bean>
+</beans>

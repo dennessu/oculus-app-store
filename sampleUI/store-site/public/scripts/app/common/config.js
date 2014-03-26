@@ -12,7 +12,11 @@ AppConfig.API = {
         Register: { Path: "register" },
         PIN: { Path: "pin" },
         GetAnonymousUser: { Path: "get_anonymous_user" },
-        GetProfile: { Path: "get_profile" }
+        GetProfile: { Path: "get_profile" },
+        PutProfile: { Path: "put_profile" },
+        PutUser: { Path: "put_user" },
+        GetOptIns: {Path: "get_opt_ins"},
+        PostOptIns: {Path: "post_opt_ins"}
     },
     Catalog: {
         Config: {
@@ -31,6 +35,8 @@ AppConfig.API = {
         Update: { Path: "update" },
         Merge: { Path: "merge" },
         PostOrder: { Path: "post_order" },
+        GetOrder: { Path: "get_order_by_id" },
+        GetOrders: { Path: "get_order_by_user" },
         PutOrder: { Path: "put_order" },
         PurchaseOrder: { Path: "purchase_order" }
     },
@@ -39,6 +45,7 @@ AppConfig.API = {
             Namespace: "/api/billing/"
         },
         ShippingInfo: {Path: "get_shipping_info"},
+        Get: {Path: "get_shipping_info_by_id"},
         Add: {Path: "add"}
     },
     Payment:{
@@ -46,6 +53,7 @@ AppConfig.API = {
             Namespace: "/api/payment/"
         },
         PaymentInstruments: {Path: "get_payment_instruments" },
+        Get: {Path: "get_payment_instruments_by_id"},
         Add: {Path: "add"}
     }
 };
