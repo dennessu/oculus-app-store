@@ -80,5 +80,15 @@
         </sql>
     </changeSet>
 
+    <changeSet id="2" author="weijiang" context="PREDEPLOY">
+        <sql>
+            <![CDATA[
+                    insert into email_template(id,name,provider_name,list_of_variables) values(0,'SilkCloud.OrderConfirmation.en_US','mandrill.com','["ordernumber","orderdate","name","offername","qty","price","subtotal","tax","grandtotal"]');
+                    insert into email_template(id,name,provider_name,list_of_variables) values(1,'Oculus.Welcome.en_US','mandrill.com','["accountname"]');
+                    insert into email_template(id,name,provider_name,list_of_variables) values(2,'Oculus.ActiveDevAccount.en_US','mandrill.com','["devname","publishername"]');
+            ]]>
+        </sql>
+    </changeSet>
+
 
 </databaseChangeLog>

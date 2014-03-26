@@ -1,6 +1,6 @@
 <table class="table table-bordered vertical-table">
     <tr>
-        <td>Offer Id</td>
+        <td style="width: 200px;">Offer Id</td>
         <td>{{ offer.self.id }}</td>
     </tr>
     <tr>
@@ -12,11 +12,34 @@
         <td>{{ offer.status }}</td>
     </tr>
     <tr>
-        <td>Type</td>
-        <td>{{ offer.type }}</td>
+        <td>Developer</td>
+        <td>{{ offer.developer.id }}</td>
     </tr>
     <tr>
-        <td>Owner</td>
-        <td>{{ offer.ownerId.id }}</td>
+        <td>Category</td>
+        <td>{{ offer.categories[0].id }}</td>
+    </tr>
+    <tr>
+        <td>Prices</td>
+        <td>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Country</th>
+                    <th>Currency</th>
+                    <th>Amount</th>
+                </tr>
+                </thead>
+                <tr ng-repeat="(country, price) in offer.prices">
+                    <td>{{ country }}</td>
+                    <td>{{ price.currency }}</td>
+                    <td>{{ price.amount }}</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td>Available Countries</td>
+        <td>{{ offer.eligibleCountries }}</td>
     </tr>
 </table>

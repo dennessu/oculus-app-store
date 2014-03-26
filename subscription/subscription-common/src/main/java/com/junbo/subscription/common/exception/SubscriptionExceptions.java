@@ -17,8 +17,14 @@ public interface SubscriptionExceptions {
 
     SubscriptionExceptions INSTANCE = ErrorProxy.newProxyInstance(SubscriptionExceptions.class);
 
-    @ErrorDef(httpStatusCode = 400, code = "40001", description = "The trackingUuid is missing",
+    @ErrorDef(httpStatusCode = 400, code = "40001", description = "The trackingUuid is missing: {0}",
             field = "tracking_uuid")
     AppError missingTrackingUuid();
+
+
+
+
+    @ErrorDef(httpStatusCode = 500, code = "50001", description = "this is not a subscrption offer")
+    AppError subscriptionTypeError();
 
 }

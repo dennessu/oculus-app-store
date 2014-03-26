@@ -6,11 +6,11 @@
 
 package com.junbo.payment.spec.internal;
 
+import com.junbo.common.model.Results;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentTransaction;
-import com.junbo.payment.spec.model.ResultList;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -49,7 +49,8 @@ public interface BrainTreeResource {
 
     @PUT
     @Path("/payment/{paymentId}/reverse")
-    Promise<Response> reverse(@PathParam("paymentId") String transactionToken);
+    Promise<PaymentTransaction> reverse(@PathParam("paymentId") String transactionToken,
+                                        PaymentTransaction request);
 
     @GET
     @Path("/payment/{paymentId}")
@@ -57,5 +58,5 @@ public interface BrainTreeResource {
 
     @GET
     @Path("/payment/search")
-    Promise<ResultList<PaymentTransaction>> getByOrderId(@QueryParam("orderId") String orderId);
+    Promise<Results<PaymentTransaction>> getByOrderId(@QueryParam("orderId") String orderId);
 }

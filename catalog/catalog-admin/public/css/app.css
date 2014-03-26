@@ -34,3 +34,17 @@ html, body {
 .select:hover {
     cursor: pointer;
 }
+
+.borderless td {
+    border-top: 0 !important;
+}
+
+.chooseItem {margin:0px 5px 0px 10px !important;}
+
+input.ng-invalid {
+    border: 1px solid red;
+}
+
+select.ng-invalid {
+    border: 1px solid red;
+}

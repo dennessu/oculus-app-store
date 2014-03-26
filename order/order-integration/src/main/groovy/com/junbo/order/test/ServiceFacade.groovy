@@ -1,9 +1,21 @@
 package com.junbo.order.test
 
+import com.junbo.billing.spec.model.Balance
+import com.junbo.billing.spec.model.ShippingAddress
+import com.junbo.billing.spec.resource.BalanceResource
+import com.junbo.billing.spec.resource.ShippingAddressResource
 import com.junbo.catalog.spec.model.offer.Offer
 import com.junbo.catalog.spec.model.offer.OffersGetOptions
 import com.junbo.catalog.spec.resource.ItemResource
 import com.junbo.catalog.spec.resource.OfferResource
+import com.junbo.common.id.OrderId
+import com.junbo.common.id.UserId
+import com.junbo.entitlement.spec.model.Entitlement
+import com.junbo.entitlement.spec.model.EntitlementSearchParam
+import com.junbo.entitlement.spec.model.PageMetadata
+import com.junbo.entitlement.spec.resource.EntitlementResource
+import com.junbo.fulfilment.spec.model.FulfilmentRequest
+import com.junbo.fulfilment.spec.resource.FulfilmentResource
 import com.junbo.identity.spec.model.user.User
 import com.junbo.identity.spec.resource.UserResource
 import com.junbo.order.spec.model.Order
@@ -16,12 +28,15 @@ import com.junbo.payment.spec.resource.PaymentInstrumentResource
 import org.apache.commons.lang.RandomStringUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import org.springframework.util.CollectionUtils
 
 /**
  * Created by fzhang on 14-3-17.
  */
 @Component('serviceFacade')
 class ServiceFacade {
+
+    private final static int DEFAULT_PAGE_SIZE = 20
 
     @Autowired
     UserResource userResource
@@ -36,7 +51,19 @@ class ServiceFacade {
     ItemResource itemResource
 
     @Autowired
+    BalanceResource balanceResource
+
+    @Autowired
+    ShippingAddressResource shippingAddressResource
+
+    @Autowired
     PaymentInstrumentResource paymentInstrumentResource
+
+    @Autowired
+    EntitlementResource entitlementResource
+
+    @Autowired
+    FulfilmentResource fulfilmentResource
 
     List<Offer> offers
 
@@ -80,22 +107,49 @@ class ServiceFacade {
 
     Order postQuotes(Order order) {
         order.tentative = true
-        return orderResource.createOrders(order).wrapped().get().get(0)
+        order.trackingUuid = UUID.randomUUID()
+        return orderResource.createOrder(order).wrapped().get()
+    }
+
+    Order settleQuotes(OrderId orderId, UserId userId) {
+        def order = new Order()
+        order.tentative = false
+        order.user = userId
+        order.trackingUuid = UUID.randomUUID()
+        return orderResource.updateOrderByOrderId(orderId, order).wrapped().get()
     }
 
     Order putQuotes(Order order) {
         order.tentative = true
-        return orderResource.updateOrderByOrderId(order.id, order).wrapped().get().get(0)
+        order.trackingUuid = UUID.randomUUID()
+        return orderResource.updateOrderByOrderId(order.id, order).wrapped().get()
+    }
+
+    ShippingAddress postShippingAddress(UserId userId) {
+        def shippingAddress = new ShippingAddress(
+                userId: userId,
+                street: 'Ridgewood Rd',
+                city: 'Ridgeland',
+                state: 'MS',
+                postalCode: '39157',
+                country: 'US',
+                firstName: 'Mike',
+                lastName: 'Test',
+                phoneNumber: '16018984661'
+        )
+        return shippingAddressResource.postShippingAddress(userId, shippingAddress).wrapped().get()
     }
 
     Offer getOfferByName(String offerName) {
         def option = new OffersGetOptions()
+        option.size = DEFAULT_PAGE_SIZE
+        option.start = 0
         if (offers == null) {
             while (true) {
                 offers = new ArrayList<>()
                 def offerResults = offerResource.getOffers(option).wrapped().get()
-                offers.addAll(offerResults.results)
-                if (offerResults.results < option.size) {
+                offers.addAll(offerResults.items)
+                if (offerResults.items.size() < option.size) {
                     break
                 }
                 option.start += option.size
@@ -104,5 +158,36 @@ class ServiceFacade {
         return offers.find {
             it.name == offerName
         }
+    }
+
+    List<Balance> getBalance(OrderId orderId) {
+        return balanceResource.getBalances(orderId).wrapped().get().items
+    }
+
+    List<Entitlement> getEntitlements(UserId userId, List<String> tag) {
+        List<Entitlement> result = []
+        def searchParam = new EntitlementSearchParam()
+        searchParam.userId = userId
+        if (!CollectionUtils.isEmpty(tag)) {
+            searchParam.tags = new HashSet<>(tag)
+        }
+
+        def start = 0
+        while (true) {
+            def page = new PageMetadata()
+            page.start = start
+            page.count = DEFAULT_PAGE_SIZE
+            def list = entitlementResource.getEntitlements(userId, searchParam, page).wrapped().get()
+            result.addAll(list.items)
+            start += list.items.size()
+            if (list.items.size() < DEFAULT_PAGE_SIZE) {
+                break
+            }
+        }
+        return result
+    }
+
+    FulfilmentRequest getFulfilment(OrderId orderId) {
+        return fulfilmentResource.getByOrderId(orderId).wrapped().get()
     }
 }

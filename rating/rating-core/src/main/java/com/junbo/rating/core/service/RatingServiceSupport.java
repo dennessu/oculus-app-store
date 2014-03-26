@@ -20,6 +20,7 @@ import com.junbo.rating.spec.fusion.*;
 import com.junbo.rating.spec.model.Money;
 import com.junbo.rating.spec.model.RatableItem;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.*;
 
@@ -28,6 +29,7 @@ import java.util.*;
  */
 public abstract class RatingServiceSupport implements RatingService{
     @Autowired
+    @Qualifier("ratingCatalogGateway")
     protected CatalogGateway catalogGateway;
 
     protected void fillOffer(RatingContext context) {
@@ -65,7 +67,7 @@ public abstract class RatingServiceSupport implements RatingService{
         discardRule(context, new Func<Promotion, Boolean>() {
             @Override
             public Boolean execute(Promotion promotion) {
-                return promotion.getCurrency().equals(context.getCurrency());
+                return promotion.getCurrency().equalsIgnoreCase(context.getCurrency().getCode());
             }
         });
     }

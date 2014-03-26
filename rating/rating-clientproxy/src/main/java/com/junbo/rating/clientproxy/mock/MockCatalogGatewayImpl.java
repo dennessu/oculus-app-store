@@ -6,7 +6,6 @@
 
 package com.junbo.rating.clientproxy.mock;
 
-import com.junbo.catalog.spec.model.attribute.Attribute;
 import com.junbo.catalog.spec.model.domaindata.ShippingMethod;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.promotion.*;
@@ -28,17 +27,6 @@ import java.util.*;
 
 @Deprecated
 public class MockCatalogGatewayImpl implements CatalogGateway {
-    Map<Long, Attribute> mockAttributes = new HashMap<Long, Attribute>() {{
-        put(400L, new Attribute() {{
-            setId(400L);
-            setName("DIGITAL");
-        }});
-        put(401L, new Attribute() {{
-            setId(401L);
-            setName("PHYSICAL");
-        }});
-    }};
-
     Map<Long, RatingOffer> mockOffers = new HashMap<Long, RatingOffer>() {{
         put(100L, genOffer100());
         put(102L, genOffer102());
@@ -56,12 +44,6 @@ public class MockCatalogGatewayImpl implements CatalogGateway {
         put(302L, genOrderPromotion());
 
     }};
-
-
-    @Override
-    public Attribute getAttribute(Long attributeId) {
-        return mockAttributes.get(attributeId);
-    }
 
     @Override
     public Item getItem(Long itemId) {
@@ -167,14 +149,14 @@ public class MockCatalogGatewayImpl implements CatalogGateway {
     private Item genDigitalItem() {
         return new Item() {{
             setId(200L);
-            setType(400L);
+            setType("DIGITAL");
         }};
     }
 
     private Item genPhysicalItem() {
         return new Item() {{
             setId(201L);
-            setType(401L);
+            setType("PHYSICAL");
         }};
     }
 

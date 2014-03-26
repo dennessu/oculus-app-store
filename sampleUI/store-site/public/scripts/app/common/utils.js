@@ -1,33 +1,39 @@
 var Utils = {
     /*
      Fill original object use target object
-     @type: full, OneWay
+     @type: 0:full, 1:ChildFull, 2:OneWay
      @return: original object
      */
     FillObject: function (original, target, type) {
+        if (type == 0 && (original == undefined || original == null)) return target;
+
         for (var p in original) {
             var p_type = typeof(original[p]);
 
             if (p_type != "function") {
                 if (p_type == "object") {
-                    if (typeof(target[p]) != "undefined") {
-                        original[p] = this.FillObject(original[p], target[p], type);
+                    if (typeof(target[p]) != "undefined" && target[p] != null) {
+                        if (type == 1) {
+                            original[p] = this.FillObject(original[p], target[p], 0);
+                        } else {
+                            original[p] = this.FillObject(original[p], target[p], type);
+                        }
                     }
                 } else {
-                    if (typeof(target[p]) != "undefined") {
+                    if (typeof(target[p]) != "undefined" && target[p] != null) {
                         original[p] = target[p];
                     }
                 }
             }
         }
 
-        if (type.toLowerCase() == "full") {
+        if (type == 0) {
             // Append new property
             for (var p in target) {
                 var p_type = typeof(target[p]);
 
                 if (p_type != "function") {
-                    if (typeof(original[p]) != "undefined") continue;
+                    if (typeof(original[p]) != "undefined" && original[p] != null) continue;
                     original[p] = target[p];
                 }
             }
@@ -36,26 +42,66 @@ var Utils = {
         return original;
     },
 
-    GetViews: function (templateObj) {
-        if (templateObj == undefined || templateObj == null) {
-            throw "The template not exists!";
+    // {1} is {2}
+    Format: function(str, args) {
+    var result = str;
+    if (arguments.length > 0) {
+        if (arguments.length == 1 && typeof (args) == "object") {
+            for (var key in args) {
+                if(args[key]!=undefined){
+                    var reg = new RegExp("({" + key + "})", "g");
+                    result = result.replace(reg, args[key]);
+                }
+            }
+        }
+        else {
+            for (var i = 0; i < arguments.length; i++) {
+                if (arguments[i] != undefined) {
+                    var reg= new RegExp("({)" + i + "(})", "g");
+                    result = result.replace(reg, arguments[i]);
+                }
+            }
+        }
+    }
+    return result;
+    },
+
+    GetViews: function (templateName) {
+        templateName = templateName.toLowerCase();
+        if (Ember.isEmpty(templateName)) {
+            return;
         }
 
-        if (Ember.TEMPLATES[templateObj.name] == undefined || Ember.TEMPLATES[templateObj.name] == null) {
-            console.log("Request Template: ", templateObj.name);
+        if (Ember.isEmpty(Ember.TEMPLATES[templateName])) {
+
+            var tempUrl = "";
+            for (var c in AppConfig.Templates) {
+                for (var s in AppConfig.Templates[c]) {
+                    if (AppConfig.Templates[c][s].toLowerCase() === templateName) {
+                        tempUrl = Utils.Format("/templates/{1}/{2}", c, s);
+                        break;
+                    }
+                }
+            }
+
+            if (Ember.isEmpty(tempUrl)) throw "The template not exists!";
+
+            console.log("Get Template: ", templateName);
 
             $.ajax({
-                url: templateObj.url,
+                url: tempUrl,
                 async: false,
                 success: function (data, textStatus, jqXHR) {
-                    Ember.TEMPLATES[templateObj.name] = Ember.Handlebars.compile(data);
+                    Ember.TEMPLATES[templateName] = Ember.Handlebars.compile(data);
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
                     throw errorThrown;
                 }
             });
+            console.log("Get Template: ", templateName, " done");
         }
-        return Ember.TEMPLATES[templateObj.name];
+
+        return Ember.TEMPLATES[templateName];
     },
 
     GetProperty: function(obj, propertyName){

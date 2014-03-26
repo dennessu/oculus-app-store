@@ -7,7 +7,7 @@
 
     <context:component-scan base-package="com.junbo.oom.core.builtin"/>
     <context:component-scan base-package="com.junbo.order.db"/>
-    <import resource="classpath*:spring/transaction.xml" />
+
     <bean id="orderDataSource" class="bitronix.tm.resource.jdbc.PoolingDataSource"
           init-method="init" destroy-method="close">
         <property name="uniqueName" value="jdbc/order_ds1"/>
@@ -39,8 +39,4 @@
             </props>
         </property>
     </bean>
-
-    <tx:annotation-driven transaction-manager="transactionManager"/>
-    <tx:annotation-driven/>
-
 </beans>

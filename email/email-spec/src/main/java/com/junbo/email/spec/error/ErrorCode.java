@@ -23,6 +23,8 @@ public class ErrorCode {
 
     public static final String UNNECESSARY_FILED = "UNNECESSARY_FILED";
 
+    public static final String INVALID_PARAMETER = "INVALID_PARAMETER";
+
     public static final String PAYLOAD_IS_NULL = "PAYLOAD_IS_NULL";
 
     public static final String INVALID_PROPERTIES = "INVALID_PROPERTIES";

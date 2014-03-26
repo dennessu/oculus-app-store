@@ -9,11 +9,10 @@ package com.junbo.billing.rest.resource;
 import com.junbo.billing.core.service.CurrencyService;
 import com.junbo.billing.spec.model.Currency;
 import com.junbo.billing.spec.resource.CurrencyResource;
+import com.junbo.common.model.Results;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
-
-import java.util.List;
 
 /**
  * Created by xmchen on 14-2-13.
@@ -25,8 +24,11 @@ public class CurrencyResourceImpl implements CurrencyResource {
     private CurrencyService currencyService;
 
     @Override
-    public Promise<List<Currency>> getCurrencies() {
-        return Promise.pure(currencyService.getCurrencies());
+    public Promise<Results<Currency>> getCurrencies() {
+        Results<Currency> result = new Results<>();
+        result.setItems(currencyService.getCurrencies());
+
+        return Promise.pure(result);
     }
 
     @Override

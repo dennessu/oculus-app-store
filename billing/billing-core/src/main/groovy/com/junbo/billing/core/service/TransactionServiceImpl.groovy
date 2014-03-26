@@ -15,11 +15,11 @@ import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.model.Transaction
 import com.junbo.billing.spec.enums.TransactionType
-import com.junbo.common.id.PaymentInstrumentId
 import com.junbo.langur.core.promise.Promise
 import com.junbo.payment.spec.enums.PaymentStatus
 import com.junbo.payment.spec.model.ChargeInfo
 import com.junbo.payment.spec.model.PaymentTransaction
+import com.junbo.payment.spec.model.PIId
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
@@ -103,7 +103,7 @@ class TransactionServiceImpl implements TransactionService {
             return Promise.pure(balance)
         }
         .then { PaymentTransaction pt ->
-            transaction.setPaymentRefId(pt.paymentId.toString())
+            transaction.setPaymentRefId(pt.id.toString())
             PaymentStatus paymentStatus = PaymentStatus.valueOf(pt.status)
             switch (paymentStatus) {
                 case PaymentStatus.SETTLEMENT_SUBMITTED:
@@ -140,7 +140,7 @@ class TransactionServiceImpl implements TransactionService {
             return Promise.pure(balance)
         }
         .then { PaymentTransaction pt ->
-            transaction.setPaymentRefId(pt.paymentId.toString())
+            transaction.setPaymentRefId(pt.id.toString())
             PaymentStatus paymentStatus = PaymentStatus.valueOf(pt.status)
             switch (paymentStatus) {
                 case PaymentStatus.AUTHORIZED:
@@ -163,9 +163,13 @@ class TransactionServiceImpl implements TransactionService {
 
     private PaymentTransaction generatePaymentTransaction(Balance balance) {
         def paymentTransaction = new PaymentTransaction()
+        PIId piid = new PIId()
+        piid.userId = balance.userId.value
+        piid.paymentInstrumentId = balance.piId.value
+
         paymentTransaction.setTrackingUuid(UUID.randomUUID())
         paymentTransaction.setUserId(balance.userId.value)
-        paymentTransaction.setPaymentInstrumentId(balance.piId.value)
+        paymentTransaction.setPaymentInstrumentId(piid)
 
         def chargeInfo = new ChargeInfo()
         chargeInfo.setCurrency(balance.currency)

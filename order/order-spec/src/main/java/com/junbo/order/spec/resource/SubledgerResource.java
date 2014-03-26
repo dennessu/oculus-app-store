@@ -5,6 +5,7 @@
  */
 package com.junbo.order.spec.resource;
 
+import com.junbo.common.model.Results;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.order.spec.model.Subledger;
@@ -14,7 +15,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by chriszhu on 2/10/14.
@@ -26,7 +26,7 @@ import java.util.List;
 public interface SubledgerResource {
 
     @GET
-    Promise<List<Subledger>> getSubledgers(
+    Promise<Results<Subledger>> getSubledgers(
             @QueryParam("sellerId") String sellerId,
             @QueryParam("status") String status,
             @QueryParam("fromDate") Date fromDate,

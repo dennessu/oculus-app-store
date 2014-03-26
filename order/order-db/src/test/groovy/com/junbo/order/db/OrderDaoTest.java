@@ -47,7 +47,7 @@ public class OrderDaoTest extends BaseTest {
         OrderEntity returnedEntity = orderDao.read(id);
 
         Assert.assertNotNull(returnedEntity, "Fail to create or read entity.");
-        Assert.assertEquals("CN", returnedEntity.getCountry(), "Fail to update entity.");
+        Assert.assertEquals(returnedEntity.getCountry(), "CN", "Fail to update entity.");
     }
 
     @Test
@@ -58,8 +58,7 @@ public class OrderDaoTest extends BaseTest {
         orderDao.create(orderEntity);
         orderDao.flush();
         List<OrderEntity> resultAfter = orderDao.readByUserId(userId);
-
-        Assert.assertEquals(resultBefore.size() + 1, resultAfter.size(), "Result size should increase.");
+        Assert.assertEquals(resultAfter.size(), resultBefore.size() + 1, "Result size should increase.");
     }
 
     @Test
@@ -71,6 +70,6 @@ public class OrderDaoTest extends BaseTest {
         orderDao.flush();
         List<OrderEntity> resultAfter = orderDao.readByTrackingUuid(trackingUuid);
 
-        Assert.assertEquals(resultBefore.size() + 1, resultAfter.size(), "Result size should increase.");
+        Assert.assertEquals(resultAfter.size(), resultBefore.size() + 1, "Result size should increase.");
     }
 }

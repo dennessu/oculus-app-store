@@ -1,0 +1,15 @@
+<div class="container modules">
+    <form class="box1" {{action "Continue" on="submit"}}>
+    <h2>Select your Shipping Method</h2>
+    {{#if errMessage}}
+    <p class="error">{{errMessage}}</p>
+    {{/if}}
+    <dl>
+        <dt>Shipping Method</dt>
+        <dd>{{view Ember.Select content=methods optionValuePath="content.v" optionLabelPath="content.t" value=shippingMethodId id="ShippingMethodId" name="ShippingMethodId" class="{required:true}"}}</dd>
+    </dl>
+    <div class="actions">
+        <button type="submit" class="btn btn-primary">Continue</button>
+    </div>
+    </form>
+</div>

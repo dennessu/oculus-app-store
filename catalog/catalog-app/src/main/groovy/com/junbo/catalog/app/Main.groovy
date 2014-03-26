@@ -6,7 +6,6 @@
 
 package com.junbo.catalog.app
 
-import com.fasterxml.jackson.jaxrs.base.JsonMappingExceptionMapper
 import com.junbo.catalog.rest.exception.RestExceptionMapper
 import com.junbo.catalog.rest.jackson.JacksonFeature
 import com.junbo.catalog.rest.jackson.MapperConfigurator
@@ -29,16 +28,14 @@ class Main {
 
         resourceConfig.register(JacksonFeature)
         resourceConfig.register(MapperConfigurator)
-        resourceConfig.register(JsonMappingExceptionMapper)
         resourceConfig.register(RestExceptionMapper)
         resourceConfig.register(IdTypeFromStringProvider)
 
         resourceConfig.packages('com.junbo.catalog.spec.resource.adapter')
         resourceConfig.property('contextConfigLocation', 'classpath*:/spring/*.xml')
         resourceConfig.property(ServerProperties.TRACING, 'ALL')
-        resourceConfig.property(ServerProperties.RESPONSE_SET_STATUS_OVER_SEND_ERROR, true)
 
-        def uri = URI.create('http://localhost:8091/rest')
+        def uri = URI.create('http://localhost:8083/rest')
         return GrizzlyHttpServerFactory.createHttpServer(uri, resourceConfig)
     }
 

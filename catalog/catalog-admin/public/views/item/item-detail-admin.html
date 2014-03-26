@@ -1,0 +1,8 @@
+<h1>Item detail</h1>
+
+<div class="controls">
+    <a ng-click="rejectItem()" class="btn btn-small btn-default" ng-if="item.status='PendingReview'">Reject</a>
+    <a ng-click="releaseItem()" class="btn btn-small btn-default" ng-if="item.status='PendingReview'">Release Item</a>
+</div>
+
+<div ng-include src="'../views/item/item-content.html'"></div>

@@ -9,6 +9,7 @@ package com.junbo.payment.db.mapper;
 import com.junbo.payment.db.repository.MerchantAccountRepository;
 import com.junbo.payment.db.repository.PaymentProviderRepository;
 import com.junbo.payment.spec.enums.*;
+import com.junbo.payment.spec.model.PIId;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.UUID;
@@ -93,6 +94,15 @@ public class CommonMapper {
 
     public PaymentAPI toPaymentAPIEunm(PaymentAPI api){
         return api;
+    }
+
+    public Long toPaymentInstrumentId(PIId piId){
+        return piId.getPaymentInstrumentId();
+    }
+
+    public PIId toPaymentInstrument(Long piId){
+        PIId pi = new PIId(piId, null);
+        return pi;
     }
 
     public Integer explicitMethod_toMerchantId(String merchant){

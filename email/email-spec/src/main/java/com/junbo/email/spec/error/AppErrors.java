@@ -16,7 +16,7 @@ public interface AppErrors {
     AppErrors INSTANCE = ErrorProxy.newProxyInstance(AppErrors.class);
 
 
-    @ErrorDef(httpStatusCode = 404, code = ErrorCode.INVALID_EMAIL_ID,
+    @ErrorDef(httpStatusCode = 400, code = ErrorCode.INVALID_EMAIL_ID,
             description ="The email id {0} is invalid")
     AppError invalidEmailId(String id);
 
@@ -24,7 +24,7 @@ public interface AppErrors {
             description ="User with id {0} not found")
     AppError invalidUserId(String userId);
 
-    @ErrorDef(httpStatusCode = 403, code = ErrorCode.INVALID_USER_STATUS,
+    @ErrorDef(httpStatusCode = 400, code = ErrorCode.INVALID_USER_STATUS,
             description ="User status is invalid with id {0}")
     AppError invalidUserStatus(String userId);
 
@@ -32,19 +32,23 @@ public interface AppErrors {
             description ="Email schedule with id {0} not found")
     AppError emailScheduleNotFound(String id);
 
-    @ErrorDef(httpStatusCode = 403, code = ErrorCode.MISSING_FIELD_VALUE,
+    @ErrorDef(httpStatusCode = 400, code = ErrorCode.MISSING_FIELD_VALUE,
             description ="Field {0} has missing value")
     AppError missingField(String field);
 
-    @ErrorDef(httpStatusCode = 403, code = ErrorCode.INVALID_FIELD_VALUE,
+    @ErrorDef(httpStatusCode = 400, code = ErrorCode.INVALID_FIELD_VALUE,
             description ="Field {0} is invalid")
     AppError invalidField(String field);
 
-    @ErrorDef(httpStatusCode = 403, code = ErrorCode.UNNECESSARY_FILED,
+    @ErrorDef(httpStatusCode = 400, code = ErrorCode.UNNECESSARY_FILED,
             description ="Field {0} is unnecessary")
     AppError unnecessaryField(String field);
 
-    @ErrorDef(httpStatusCode = 404, code = ErrorCode.PAYLOAD_IS_NULL,
+    @ErrorDef(httpStatusCode = 400, code = ErrorCode.INVALID_PARAMETER,
+            description ="Parameter {0} is invalid")
+    AppError invalidParameter(String param);
+
+    @ErrorDef(httpStatusCode = 400, code = ErrorCode.PAYLOAD_IS_NULL,
             description ="The payload is null")
     AppError invalidPayload();
 
@@ -52,7 +56,7 @@ public interface AppErrors {
             description = "Template {0} is not found")
     AppError templateNotFound(String template);
 
-    @ErrorDef(httpStatusCode = 403, code = ErrorCode.TEMPLATE_NAME_ALREADY_EXIST,
+    @ErrorDef(httpStatusCode = 400, code = ErrorCode.TEMPLATE_NAME_ALREADY_EXIST,
             description ="Template with name {0} is already exists")
     AppError emailTemplateAlreadyExist(String id);
 

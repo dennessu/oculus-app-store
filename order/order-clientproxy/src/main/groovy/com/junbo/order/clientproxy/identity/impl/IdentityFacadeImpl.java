@@ -22,7 +22,7 @@ import javax.annotation.Resource;
 @Component("orderIdentityFacade")
 @CompileStatic
 public class IdentityFacadeImpl implements IdentityFacade {
-    @Resource(name="identityUserClient")
+    @Resource(name="order.identityUserClient")
     private UserResource userResource;
 
     public void setUserResource(UserResource userResource) {
@@ -31,16 +31,7 @@ public class IdentityFacadeImpl implements IdentityFacade {
 
     @Override
     public Promise<User> getUser(Long userId) {
-        Promise<User> userPromise = null;
-
-        try {
-            userPromise = userResource.getUser(new UserId(userId));
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return userPromise;
+        return userResource.getUser(new UserId(userId));
     }
 
     @Override

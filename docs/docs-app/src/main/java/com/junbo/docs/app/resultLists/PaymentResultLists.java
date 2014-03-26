@@ -6,53 +6,31 @@
 
 package com.junbo.docs.app.resultlists;
 
+import com.junbo.common.model.Results;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentInstrumentType;
-import com.junbo.payment.spec.model.ResultList;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.List;
-import java.util.Map;
 
-/**
- * The non-generic ResultList types for identity.
- */
-public class PaymentResultLists {
-
-    /**
-     * Find the non-generic ResultList type.
-     */
-    public static Class getClass(ParameterizedType type) {
-        Type actualType = type.getActualTypeArguments()[0];
-        return resultListMap.get(actualType);
-    }
-
-    private PaymentResultLists() {}
-    private static Map<Class, Class> resultListMap = ResultListUtils.getMap(
-            PaymentInstrumentResultList.class,
-            PaymentInstrumentTypeResultList.class);
-}
-
-class PaymentInstrumentResultList extends ResultList<PaymentInstrument> {
+class PaymentInstrumentResultList extends Results<PaymentInstrument> {
     @Override
-    public List<PaymentInstrument> getResults() {
-        return super.getResults();
+    public List<PaymentInstrument> getItems() {
+        return super.getItems();
     }
 
     @Override
-    public void setResults(List<PaymentInstrument> results) {
-        super.setResults(results);
+    public void setItems(List<PaymentInstrument> results) {
+        super.setItems(results);
     }
 }
-class PaymentInstrumentTypeResultList extends ResultList<PaymentInstrumentType> {
+class PaymentInstrumentTypeResultList extends Results<PaymentInstrumentType> {
     @Override
-    public List<PaymentInstrumentType> getResults() {
-        return super.getResults();
+    public List<PaymentInstrumentType> getItems() {
+        return super.getItems();
     }
 
     @Override
-    public void setResults(List<PaymentInstrumentType> results) {
-        super.setResults(results);
+    public void setItems(List<PaymentInstrumentType> results) {
+        super.setItems(results);
     }
 }

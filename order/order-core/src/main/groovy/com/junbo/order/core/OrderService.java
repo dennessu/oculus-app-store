@@ -12,17 +12,18 @@ import com.junbo.order.spec.model.Order;
 import com.junbo.order.spec.model.OrderEvent;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by chriszhu on 2/7/14.
  */
 public interface OrderService {
 
-    Promise<List<Order>> createOrders(Order order, ApiContext context);
+    Promise<Order> createOrder(Order order, ApiContext context);
 
-    Promise<List<Order>> settleQuote(Order order, ApiContext context);
+    Promise<Order> settleQuote(Order order, ApiContext context);
 
-    Promise<List<Order>> createQuotes(Order order, ApiContext context);
+    Promise<Order> createQuote(Order order, ApiContext context);
 
     Promise<Order> getOrderByOrderId(Long orderId);
 
@@ -38,4 +39,5 @@ public interface OrderService {
 
     Promise<Order> updateTentativeOrder(Order order, ApiContext context);
 
+    Order getOrderByTrackingUuid(UUID trackingUuid);
 }

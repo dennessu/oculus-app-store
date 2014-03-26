@@ -21,7 +21,7 @@ public interface AppErrors {
             description ="Invalid null/empty input parameter")
     AppError invalidNullEmptyInputParam();
 
-    @ErrorDef(httpStatusCode = 403, code = ErrorCode.INVALID_OBJECT_TYPE,
+    @ErrorDef(httpStatusCode = 400, code = ErrorCode.INVALID_OBJECT_TYPE,
             description = "Object type doesn't map. actually: {0}, expected: {1}.")
     AppError invalidObjectType(Class actually, Class expected);
 
@@ -41,7 +41,7 @@ public interface AppErrors {
             description = "Order action {0} is not supported")
     AppError orderTypeNotSupported(String type);
 
-    @ErrorDef(httpStatusCode = 403, code = ErrorCode.ORDER_ACTION_NOT_SUPPORTED,
+    @ErrorDef(httpStatusCode = 400, code = ErrorCode.ORDER_ACTION_NOT_SUPPORTED,
             description = "Order type {0} is not supported")
     AppError orderActionNotSupported(String action);
 
@@ -49,15 +49,19 @@ public interface AppErrors {
             description = "Order item not found")
     AppError orderItemNotFound();
 
-    @ErrorDef(httpStatusCode = 404, code = UserErrorCode.USER_NOT_FOUND,
-            description = "User not found")
-    AppError userNotFound();
+    @ErrorDef(httpStatusCode = 409, code = ErrorCode.ORDER_NOT_TENTATIVE,
+            description = "Order not tentative")
+    AppError orderNotTentative();
 
-    @ErrorDef(httpStatusCode = 500, code = UserErrorCode.USER_STATUS_INVALID,
+    @ErrorDef(httpStatusCode = 404, code = UserErrorCode.USER_NOT_FOUND,
+            description = "User not found {0}")
+    AppError userNotFound(String userId);
+
+    @ErrorDef(httpStatusCode = 400, code = UserErrorCode.USER_STATUS_INVALID,
             description = "User status invalid")
     AppError userStatusInvalid();
 
-    @ErrorDef(httpStatusCode = 403, code = PaymentErrorCode.PAYMENT_INSTRUMENT_STATUS_INVALID,
+    @ErrorDef(httpStatusCode = 400, code = PaymentErrorCode.PAYMENT_INSTRUMENT_STATUS_INVALID,
             description = "Payment instrument {0} status invalid.")
     AppError paymentInstrumentStatusInvalid(String paymentInstrumentId);
 
@@ -65,7 +69,7 @@ public interface AppErrors {
             description = "Payment instrument {0} not found.")
     AppError paymentInstrumentNotFound(String paymentInstrumentId);
 
-    @ErrorDef(httpStatusCode = 403, code = PaymentErrorCode.PAYMENT_CONNECTION_ERROR,
+    @ErrorDef(httpStatusCode = 500, code = PaymentErrorCode.PAYMENT_CONNECTION_ERROR,
             description = "Payment service connection error")
     AppError paymentConnectionError();
 
@@ -73,7 +77,7 @@ public interface AppErrors {
             description = "{1}", field = "{0}")
     AppError fieldInvalid(String field, String message);
 
-    @ErrorDef(httpStatusCode = 403, code = ErrorCode.INVALID_FIELD,
+    @ErrorDef(httpStatusCode = 400, code = ErrorCode.INVALID_FIELD,
             description = "Field value invalid", field = "{0}")
     AppError fieldInvalid(String field);
 
@@ -81,7 +85,7 @@ public interface AppErrors {
             description = "Enum value {0} not exists in type {1}")
     AppError enumConversionError(String enumValue, String enumType);
 
-    @ErrorDef(httpStatusCode = 403, code = PaymentErrorCode.PAYMENT_TYPE_NOT_SUPPORTED,
+    @ErrorDef(httpStatusCode = 400, code = PaymentErrorCode.PAYMENT_TYPE_NOT_SUPPORTED,
             description = "Payment instrument type {0} not supported")
     AppError piTypeNotSupported(String type);
 
@@ -92,4 +96,44 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 500, code = CatalogErrorCode.CATALOG_CONNECTION_ERROR,
             description = "Catalog service connection error")
     AppError catalogConnectionError();
+
+    @ErrorDef(httpStatusCode = 500, code = ErrorCode.UNEXPECTED_ERROR,
+            description = "Unexpected Error")
+    AppError unexpectedError();
+
+    @ErrorDef(httpStatusCode = 400, code = RatingErrorCode.RATING_RESULT_INVALID,
+            description = "Rating result invalid")
+    AppError ratingResultInvalid();
+
+    @ErrorDef(httpStatusCode = 500, code = RatingErrorCode.RATING_CONNECTION_ERROR,
+            description = "Rating connection error")
+    AppError ratingConnectionError();
+
+    @ErrorDef(httpStatusCode = 500, code = BillingErrorCode.BILLING_CONNECTION_ERROR,
+            description = "Billing connection error")
+    AppError billingConnectionError(AppError[] causes);
+
+    @ErrorDef(httpStatusCode = 500, code = BillingErrorCode.BILLING_CONNECTION_ERROR,
+            description = "Billing connection error")
+    AppError billingConnectionError();
+
+    @ErrorDef(httpStatusCode = 404, code = BillingErrorCode.BALANCE_NOT_FOUND,
+            description = "Balance not found")
+    AppError balanceNotFound();
+
+    @ErrorDef(httpStatusCode = 404, code = ErrorCode.ORDER_EVENT_NOT_FOUND,
+            description = "Order event not found")
+    AppError orderEventNotFound();
+
+    @ErrorDef(httpStatusCode = 500, code = UserErrorCode.USER_CONNECTION_ERROR,
+            description = "User connection error")
+    AppError userConnectionError();
+
+    @ErrorDef(httpStatusCode = 500, code = FulfillmentErrorCode.FULFILLMENT_CONNECTION_ERROR,
+            description = "Fulfillment connection error")
+    AppError fulfillmentConnectionError();
+
+    @ErrorDef(httpStatusCode = 500, code = FulfillmentErrorCode.FULFILLMENT_CONNECTION_ERROR,
+            description = "Fulfilment connection error")
+    AppError fulfilmentConnectionError(AppError[] causes);
 }

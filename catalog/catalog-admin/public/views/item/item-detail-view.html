@@ -1,0 +1,8 @@
+<h1>Item detail</h1>
+
+<div class="controls">
+    <a href="#/items/{{ item.self.id }}/edit" ng-if="offer.status!='PendingReview'">Edit</a>
+    <a ng-click="reviewItem()" class="btn btn-small btn-default" ng-if="item.status=='Design'">Submit</a>
+</div>
+
+<div ng-include src="'views/item/item-content.html'"></div>

@@ -112,27 +112,6 @@ public class FulfilmentServiceImpl extends TransactionSupport implements Fulfilm
     }
 
     @Override
-    public void windup(FulfilmentRequest request) {
-        for (FulfilmentItem item : request.getItems()) {
-            // set initial status
-            item.setStatus(FulfilmentStatus.SUCCEED);
-
-            // no fulfilment actions attached
-            if (item.getActions() == null) {
-                item.setStatus(FulfilmentStatus.UNKNOWN);
-            }
-
-            // aggregated status for billing
-            // if all fulfilment action are SUCCEED, the item status is SUCCEED,
-            // otherwise PENDING
-            for (FulfilmentAction action : item.getActions()) {
-                if (!Utils.equals(FulfilmentStatus.SUCCEED, action.getStatus())) {
-                    item.setStatus(FulfilmentStatus.PENDING);
-                }
-            }
-        }
-    }
-
     public void validate(FulfilmentRequest request) {
         // ensure order id does not exist
         Long requestId = fulfilmentRequestRepo.existBillingOrderId(request.getOrderId());
@@ -151,37 +130,15 @@ public class FulfilmentServiceImpl extends TransactionSupport implements Fulfilm
         }
     }
 
+    @Override
     public void distill(FulfilmentRequest request) {
         for (FulfilmentItem item : request.getItems()) {
             Offer offer = catalogGateway.getOffer(item.getOfferId(), item.getTimestamp());
-            distill(offer, item.getQuantity(), item);
+            _distill(offer, item.getQuantity(), item);
         }
     }
 
-    private void distill(Offer offer, Integer copyCount, FulfilmentItem fulfilmentItem) {
-        // process fulfilment actions on current offer
-        for (OfferAction action : offer.getActions()) {
-            FulfilmentAction fulfilmentAction = new FulfilmentAction();
-
-            fulfilmentAction.setType(action.getType());
-            fulfilmentAction.setStatus(FulfilmentStatus.PENDING);
-            fulfilmentAction.setProperties(action.getProperties());
-            fulfilmentAction.setCopyCount(copyCount);
-
-            if (Utils.equals(FulfilmentActionType.DELIVER_PHYSICAL_GOODS, action.getType())) {
-                fulfilmentAction.setItems(offer.getItems());
-            }
-
-            fulfilmentItem.addFulfilmentAction(fulfilmentAction);
-        }
-
-        // expand sub offers
-        for (LinkedEntry entry : offer.getSubOffers()) {
-            Offer subOffer = catalogGateway.getOffer(entry.getId());
-            distill(subOffer, copyCount * entry.getQuantity(), fulfilmentItem);
-        }
-    }
-
+    @Override
     public void store(final FulfilmentRequest request) {
         executeInNewTransaction(new Callback() {
             @Override
@@ -205,6 +162,7 @@ public class FulfilmentServiceImpl extends TransactionSupport implements Fulfilm
         });
     }
 
+    @Override
     public ClassifyResult classify(FulfilmentRequest request) {
         ClassifyResult result = new ClassifyResult();
 
@@ -217,6 +175,7 @@ public class FulfilmentServiceImpl extends TransactionSupport implements Fulfilm
         return result;
     }
 
+    @Override
     public void dispatch(FulfilmentRequest request, ClassifyResult classifyResult) {
         Map<Long, FulfilmentItem> items = ModelUtils.buildFulfilmentItemMap(request);
 
@@ -236,6 +195,52 @@ public class FulfilmentServiceImpl extends TransactionSupport implements Fulfilm
             }
 
             HandlerRegistry.resolve(actionType).process(context);
+        }
+    }
+
+    @Override
+    public void windup(FulfilmentRequest request) {
+        for (FulfilmentItem item : request.getItems()) {
+            // set initial status
+            item.setStatus(FulfilmentStatus.SUCCEED);
+
+            // no fulfilment actions attached
+            if (item.getActions() == null) {
+                item.setStatus(FulfilmentStatus.UNKNOWN);
+            }
+
+            // aggregated status for billing
+            // if all fulfilment action are SUCCEED, the item status is SUCCEED,
+            // otherwise PENDING
+            for (FulfilmentAction action : item.getActions()) {
+                if (!Utils.equals(FulfilmentStatus.SUCCEED, action.getStatus())) {
+                    item.setStatus(FulfilmentStatus.PENDING);
+                }
+            }
+        }
+    }
+
+    private void _distill(Offer offer, Integer copyCount, FulfilmentItem fulfilmentItem) {
+        // process fulfilment actions on current offer
+        for (OfferAction action : offer.getActions()) {
+            FulfilmentAction fulfilmentAction = new FulfilmentAction();
+
+            fulfilmentAction.setType(action.getType());
+            fulfilmentAction.setStatus(FulfilmentStatus.PENDING);
+            fulfilmentAction.setProperties(action.getProperties());
+            fulfilmentAction.setCopyCount(copyCount);
+
+            if (Utils.equals(FulfilmentActionType.DELIVER_PHYSICAL_GOODS, action.getType())) {
+                fulfilmentAction.setItems(offer.getItems());
+            }
+
+            fulfilmentItem.addFulfilmentAction(fulfilmentAction);
+        }
+
+        // expand sub offers
+        for (LinkedEntry entry : offer.getSubOffers()) {
+            Offer subOffer = catalogGateway.getOffer(entry.getId());
+            _distill(subOffer, copyCount * entry.getQuantity(), fulfilmentItem);
         }
     }
 

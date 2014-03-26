@@ -53,13 +53,13 @@ App.MyRoute = Ember.Route.extend({
 });
 
 App.LoginView = Ember.View.extend({
-    template: Ember.TEMPLATES[AppConfig.Templates.Identity.Login.name],
+    template: Ember.TEMPLATES[AppConfig.Templates.Identity.Login],
     didInsertElement: function(){
         $("form").validate();
     }
 });
 App.CaptchaView = Ember.View.extend({
-    template: Ember.TEMPLATES[AppConfig.Templates.Identity.Captcha.name],
+    template: Ember.TEMPLATES[AppConfig.Templates.Identity.Captcha],
     didInsertElement: function(){
         Recaptcha.create(AppConfig.Google_Captcha_PublicKey, 'captchadiv',
             {
@@ -70,13 +70,13 @@ App.CaptchaView = Ember.View.extend({
     }
 });
 App.TfaView = Ember.View.extend({
-    template: Ember.TEMPLATES[AppConfig.Templates.Identity.TFA.name],
+    template: Ember.TEMPLATES[AppConfig.Templates.Identity.TFA],
     didInsertElement: function(){
         $("form").validate();
     }
 });
 App.RegisterView = Ember.View.extend({
-    template: Ember.TEMPLATES[AppConfig.Templates.Identity.Register.name],
+    template: Ember.TEMPLATES[AppConfig.Templates.Identity.Register],
     didInsertElement: function(){
         jQuery.validator.addMethod("VerifyNumberValue", function(value, element) {
             if(!isNaN(value)){
@@ -99,13 +99,13 @@ App.RegisterView = Ember.View.extend({
     }
 });
 App.PinView = Ember.View.extend({
-    template: Ember.TEMPLATES[AppConfig.Templates.Identity.PIN.name],
+    template: Ember.TEMPLATES[AppConfig.Templates.Identity.PIN],
     didInsertElement: function(){
         $("form").validate();
     }
 });
 App.MyView = Ember.View.extend({
-    template: Ember.TEMPLATES[AppConfig.Templates.Identity.My.name],
+    template: Ember.TEMPLATES[AppConfig.Templates.Identity.My],
     didInsertElement: function(){}
 });
 
@@ -300,7 +300,7 @@ App.RegisterController = Ember.ObjectController.extend({
             var provider = new IdentityProvider();
 
             var model = new IdentityModels.RegisterModel();
-            Utils.FillObject(model, this.get("content"), "OneWay");
+            Utils.FillObject(model, this.get("content"), 2);
             model.brithday = new Date(parseInt(_self.get("content.year")), parseInt(_self.get("content.month")) - 1, parseInt(_self.get("content.day")) + 1);
 
             provider.Register(Utils.GenerateRequestModel(model), function(data){

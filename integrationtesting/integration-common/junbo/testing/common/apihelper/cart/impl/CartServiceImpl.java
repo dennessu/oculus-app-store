@@ -26,7 +26,7 @@ import java.util.concurrent.Future;
  * Created by jiefeng on 14-3-19.
  * Caller helper for cart APIs
  */
-public class CartServiceImpl implements CartService{
+public class CartServiceImpl implements CartService {
 
     private static String cartUrl = RestUrl.getRestUrl("cart");
 
@@ -35,23 +35,23 @@ public class CartServiceImpl implements CartService{
 
     private static CartService instance;
 
-    public static synchronized CartService getInstance(){
+    public static synchronized CartService getInstance() {
         if (instance == null) {
             instance = new CartServiceImpl();
         }
         return instance;
     }
 
-    private CartServiceImpl(){
+    private CartServiceImpl() {
         asyncClient = new AsyncHttpClient(new AsyncHttpClientConfig.Builder().build());
     }
 
-    public String addCart(String userId, Cart cart) throws Exception{
+    public String addCart(String userId, Cart cart) throws Exception {
         return addCart(userId, cart, 200);
 
     }
 
-    public String addCart(String userId, Cart cart, int expectedResponseCode) throws Exception{
+    public String addCart(String userId, Cart cart, int expectedResponseCode) throws Exception {
 
         String requestBody = new JsonMessageTranscoder().encode(cart);
 
@@ -67,19 +67,20 @@ public class CartServiceImpl implements CartService{
         Future future = asyncClient.prepareRequest(req).execute();
         NettyResponse nettyResponse = (NettyResponse) future.get();
         logger.LogResponse(nettyResponse);
-        Assert.assertEquals(expectedResponseCode,nettyResponse.getStatusCode());
-        Cart rtnCart = new JsonMessageTranscoder().decode(new TypeReference<Cart>() {},
+        Assert.assertEquals(expectedResponseCode, nettyResponse.getStatusCode());
+        Cart rtnCart = new JsonMessageTranscoder().decode(new TypeReference<Cart>() {
+        },
                 nettyResponse.getResponseBody());
         String rtnCartId = IdConverter.idToHexString(rtnCart.getId());
-        Master.getInstance().addCart(rtnCartId,rtnCart);
+        Master.getInstance().addCart(rtnCartId, rtnCart);
         return rtnCartId;
     }
 
-    public String  getCart(String userId, String cartId) throws Exception{
-        return getCart(userId, cartId,200);
+    public String getCart(String userId, String cartId) throws Exception {
+        return getCart(userId, cartId, 200);
     }
 
-    public String  getCart(String userId, String cartId, int expectedResponseCode) throws Exception{
+    public String getCart(String userId, String cartId, int expectedResponseCode) throws Exception {
         String cartEndpointUrl = cartUrl + "users/" + userId + "/carts/" + cartId;
 
         Request req = new RequestBuilder("GET")
@@ -92,18 +93,19 @@ public class CartServiceImpl implements CartService{
         NettyResponse nettyResponse = (NettyResponse) future.get();
         logger.LogResponse(nettyResponse);
         Assert.assertEquals(expectedResponseCode, nettyResponse.getStatusCode());
-        Cart rtnCart = new JsonMessageTranscoder().decode(new TypeReference<Cart>() {},
+        Cart rtnCart = new JsonMessageTranscoder().decode(new TypeReference<Cart>() {
+        },
                 nettyResponse.getResponseBody());
         String rtnCartId = IdConverter.idToHexString(rtnCart.getId());
-        Master.getInstance().addCart(rtnCartId,rtnCart);
+        Master.getInstance().addCart(rtnCartId, rtnCart);
         return rtnCartId;
     }
 
-    public String getCartPrimary(String userId) throws Exception{
+    public String getCartPrimary(String userId) throws Exception {
         return getCartPrimary(userId, 302);
     }
 
-    public String getCartPrimary(String userId, int expectedResponseCode) throws Exception{
+    public String getCartPrimary(String userId, int expectedResponseCode) throws Exception {
         String cartEndpointUrl = cartUrl + "users/" + userId + "/carts/primary";
 
         Request req = new RequestBuilder("GET")
@@ -116,18 +118,32 @@ public class CartServiceImpl implements CartService{
         NettyResponse nettyResponse = (NettyResponse) future.get();
         logger.LogResponse(nettyResponse);
         Assert.assertEquals(expectedResponseCode, nettyResponse.getStatusCode());
-        Cart rtnCart = new JsonMessageTranscoder().decode(new TypeReference<Cart>() {},
-                nettyResponse.getResponseBody());
-        String rtnCartId = IdConverter.idToHexString(rtnCart.getId());
-        Master.getInstance().addCart(rtnCartId,rtnCart);
-        return rtnCartId;
+
+        if (nettyResponse.getStatusCode() == 302) {
+            String redirectUrl = nettyResponse.getHeaders().get("Location").get(0);
+            req = new RequestBuilder("GET")
+                    .setUrl(redirectUrl)
+                    .addHeader(RestUrl.requestHeaderName, RestUrl.requestHeaderValue)
+                    .build();
+            future = asyncClient.prepareRequest(req).execute();
+            NettyResponse redirectResponse = (NettyResponse) future.get();
+            logger.LogResponse(redirectResponse);
+            Assert.assertEquals(200, redirectResponse.getStatusCode());
+            Cart rtnCart = new JsonMessageTranscoder().decode(new TypeReference<Cart>() {
+            }, redirectResponse.getResponseBody());
+
+            String rtnCartId = IdConverter.idToHexString(rtnCart.getId());
+            Master.getInstance().addCart(rtnCartId, rtnCart);
+            return rtnCartId;
+        }
+        return null;
     }
 
-    public String getCartByName(String userId, String cartName) throws Exception{
+    public String getCartByName(String userId, String cartName) throws Exception {
         return getCartByName(userId, cartName, 302);
     }
 
-    public String getCartByName(String userId, String cartName, int expectedResponseCode) throws Exception{
+    public String getCartByName(String userId, String cartName, int expectedResponseCode) throws Exception {
 
         String cartEndpointUrl = cartUrl + "users/" + userId + "/carts?" + cartName;
 
@@ -140,19 +156,32 @@ public class CartServiceImpl implements CartService{
         Future future = asyncClient.prepareRequest(req).execute();
         NettyResponse nettyResponse = (NettyResponse) future.get();
         logger.LogResponse(nettyResponse);
-        Assert.assertEquals(expectedResponseCode,nettyResponse.getStatusCode());
-        Cart rtnCart = new JsonMessageTranscoder().decode(new TypeReference<Cart>() {},
-                nettyResponse.getResponseBody());
-        String rtnCartId = IdConverter.idToHexString(rtnCart.getId());
-        Master.getInstance().addCart(rtnCartId,rtnCart);
-        return rtnCartId;
+        Assert.assertEquals(expectedResponseCode, nettyResponse.getStatusCode());
+        if (nettyResponse.getStatusCode() == 302) {
+            String redirectUrl = nettyResponse.getHeaders().get("Location").get(0);
+            req = new RequestBuilder("GET")
+                    .setUrl(redirectUrl)
+                    .addHeader(RestUrl.requestHeaderName, RestUrl.requestHeaderValue)
+                    .build();
+            future = asyncClient.prepareRequest(req).execute();
+            NettyResponse redirectResponse = (NettyResponse) future.get();
+            logger.LogResponse(redirectResponse);
+            Assert.assertEquals(200, redirectResponse.getStatusCode());
+            Cart rtnCart = new JsonMessageTranscoder().decode(new TypeReference<Cart>() {
+            }, redirectResponse.getResponseBody());
+
+            String rtnCartId = IdConverter.idToHexString(rtnCart.getId());
+            Master.getInstance().addCart(rtnCartId, rtnCart);
+            return rtnCartId;
+        }
+        return null;
     }
 
-    public String updateCart(String userId, String cartId, Cart cart) throws Exception{
+    public String updateCart(String userId, String cartId, Cart cart) throws Exception {
         return updateCart(userId, cartId, cart, 200);
     }
 
-    public String updateCart(String userId, String cartId, Cart cart, int expectedResponseCode) throws Exception{
+    public String updateCart(String userId, String cartId, Cart cart, int expectedResponseCode) throws Exception {
         String requestBody = new JsonMessageTranscoder().encode(cart);
 
         String cartEndpointUrl = cartUrl + "users/" + userId + "/carts/" + cartId;
@@ -167,19 +196,20 @@ public class CartServiceImpl implements CartService{
         Future future = asyncClient.prepareRequest(req).execute();
         NettyResponse nettyResponse = (NettyResponse) future.get();
         logger.LogResponse(nettyResponse);
-        Assert.assertEquals(expectedResponseCode,nettyResponse.getStatusCode());
-        Cart rtnCart = new JsonMessageTranscoder().decode(new TypeReference<Cart>() {},
+        Assert.assertEquals(expectedResponseCode, nettyResponse.getStatusCode());
+        Cart rtnCart = new JsonMessageTranscoder().decode(new TypeReference<Cart>() {
+        },
                 nettyResponse.getResponseBody());
         String rtnCartId = IdConverter.idToHexString(rtnCart.getId());
-        Master.getInstance().addCart(rtnCartId,rtnCart);
+        Master.getInstance().addCart(rtnCartId, rtnCart);
         return rtnCartId;
     }
 
-    public String mergeCart(String userId, String cartId, Cart fromCart) throws Exception{
+    public String mergeCart(String userId, String cartId, Cart fromCart) throws Exception {
         return mergeCart(userId, cartId, fromCart, 200);
     }
 
-    public String mergeCart(String userId, String cartId, Cart fromCart, int expectedResponseCode) throws Exception{
+    public String mergeCart(String userId, String cartId, Cart fromCart, int expectedResponseCode) throws Exception {
         String requestBody = new JsonMessageTranscoder().encode(fromCart);
 
         String cartEndpointUrl = cartUrl + "users/" + userId + "/carts/" + cartId + "/merge";
@@ -194,11 +224,12 @@ public class CartServiceImpl implements CartService{
         Future future = asyncClient.prepareRequest(req).execute();
         NettyResponse nettyResponse = (NettyResponse) future.get();
         logger.LogResponse(nettyResponse);
-        Assert.assertEquals(expectedResponseCode,nettyResponse.getStatusCode());
-        Cart rtnCart = new JsonMessageTranscoder().decode(new TypeReference<Cart>() {},
+        Assert.assertEquals(expectedResponseCode, nettyResponse.getStatusCode());
+        Cart rtnCart = new JsonMessageTranscoder().decode(new TypeReference<Cart>() {
+        },
                 nettyResponse.getResponseBody());
         String rtnCartId = IdConverter.idToHexString(rtnCart.getId());
-        Master.getInstance().addCart(rtnCartId,rtnCart);
+        Master.getInstance().addCart(rtnCartId, rtnCart);
         return rtnCartId;
     }
 }

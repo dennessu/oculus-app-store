@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
+import javax.ws.rs.core.Response;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +43,6 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
         try{
             env = Environment.valueOf(environment);
         }catch(Exception ex){
-            //TODO: handle exception
             LOGGER.error("not able to get the right environment:" + environment);
             throw AppServerExceptions.INSTANCE.invalidProviderRequest(PROVIDER_NAME).exception();
         }
@@ -62,7 +62,7 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
             throw AppClientExceptions.INSTANCE.invalidExpireDateFormat(expireDate).exception();
         }
         CreditCardRequest ccRequest = new CreditCardRequest()
-                .customerId(getOrCreateCustomerId(request.getUserId().toString()))
+                .customerId(getOrCreateCustomerId(request.getId().getUserId().toString()))
                 .number(request.getAccountNum())
                 .expirationMonth(String.valueOf(tokens[1]))
                 .expirationYear(String.valueOf(tokens[0]))
@@ -83,11 +83,11 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
                     .done();
         }
         Result<CreditCard> result = null;
-        LOGGER.info("add credit card for customer:" + request.getUserId().toString());
+        LOGGER.info("add credit card for customer:" + request.getId().getUserId().toString());
         try {
             result = gateway.creditCard().create(ccRequest);
         }catch (Exception ex){
-            handleProviderException(ex, "Add", "User", request.getUserId().toString());
+            handleProviderException(ex, "Add", "User", request.getId().getUserId().toString());
         }
         if(result.isSuccess()){
             request.setAccountNum(result.getTarget().getMaskedNumber());
@@ -105,7 +105,7 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
     }
 
     @Override
-    public Promise<Void> delete(String token) {
+    public Promise<Response> delete(String token) {
         Result<CreditCard> result = null;
         LOGGER.info("delete credit card :" + token);
         try{
@@ -116,7 +116,7 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
         if(!result.isSuccess()){
             handleProviderError(result);
         }
-        return Promise.pure(null);
+        return Promise.pure(Response.status(204).build());
     }
 
     @Override
@@ -142,10 +142,6 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
         Result<Transaction> result = null;
         LOGGER.info("capture transaction :" + transactionId);
         try{
-            //TODO: test use, remove
-            if(1 == 1){
-                throw  new RuntimeException();
-            }
             if(request.getChargeInfo() == null || request.getChargeInfo().getAmount() == null){
                 result = gateway.transaction().submitForSettlement(transactionId);
             }else{
@@ -185,14 +181,10 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
     }
 
     @Override
-    public Promise<Void> reverse(String transactionId) {
+    public Promise<PaymentTransaction> reverse(String transactionId, PaymentTransaction paymentRequest) {
         Result<Transaction> result = null;
         LOGGER.info("reverse transaction :" + transactionId);
         try{
-            //TODO: test use, remove
-            if(1 == 1){
-                throw  new RuntimeException();
-            }
             result = gateway.transaction().voidTransaction(transactionId);
         }catch(Exception ex){
             handleProviderException(ex, "Void", "transaction", transactionId);
@@ -202,7 +194,7 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
         } else {
             handleProviderError(result);
         }
-        return Promise.pure(null);
+        return Promise.pure(paymentRequest);
     }
 
     private <T> void handleProviderError(Result<T> result) {
@@ -220,17 +212,17 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
             ".Provider:" + PROVIDER_NAME + " take action:" + action + " for:" + source + "of " + sourceValue);
             throw AppServerExceptions.INSTANCE.providerGatewayTimeout(PROVIDER_NAME).exception();
         }else if(ex instanceof SocketTimeoutException){
-            LOGGER.error("provider:" + PROVIDER_NAME + "gateway timeout exception: " + ex.toString());
+            LOGGER.error("provider:" + PROVIDER_NAME + " gateway timeout exception: " + ex.toString());
             throw AppServerExceptions.INSTANCE.providerGatewayTimeout(PROVIDER_NAME).exception();
         }else{
-            LOGGER.error("provider:" + PROVIDER_NAME + "gateway exception: " + ex.toString());
+            LOGGER.error("provider:" + PROVIDER_NAME + " gateway exception: " + ex.toString());
             throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, ex.toString()).exception();
         }
     }
 
     @Override
-    public void refund(String transactionId, PaymentTransaction request) {
-
+    public Promise<PaymentTransaction> refund(String transactionId, PaymentTransaction request) {
+        return Promise.pure(request);
     }
 
     @Override

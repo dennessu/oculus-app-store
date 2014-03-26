@@ -7,91 +7,66 @@
 package com.junbo.docs.app.resultlists;
 
 import com.junbo.catalog.spec.model.attribute.Attribute;
-import com.junbo.catalog.spec.model.common.ResultList;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.promotion.Promotion;
+import com.junbo.common.model.Results;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.List;
-import java.util.Map;
 
-/**
- * The non-generic ResultList types for catalog.
- */
-public class CatalogResultLists {
-
-    /**
-     * Find the non-generic ResultList type.
-     */
-    public static Class getClass(ParameterizedType type) {
-        Type actualType = type.getActualTypeArguments()[0];
-        return resultListMap.get(actualType);
-    }
-
-    private CatalogResultLists() {}
-    private static Map<Class, Class> resultListMap = ResultListUtils.getMap(
-            OfferResultList.class,
-            ItemResultList.class,
-            AttributeResultList.class,
-            EntitlementDefinitionResultList.class,
-            PromotionResultList.class);
-}
-
-class OfferResultList extends ResultList<Offer> {
+class OfferResultList extends Results<Offer> {
     @Override
-    public List<Offer> getResults() {
-        return super.getResults();
+    public List<Offer> getItems() {
+        return super.getItems();
     }
 
     @Override
-    public void setResults(List<Offer> results) {
-        super.setResults(results);
+    public void setItems(List<Offer> results) {
+        super.setItems(results);
     }
 }
-class ItemResultList extends ResultList<Item> {
+class ItemResultList extends Results<Item> {
     @Override
-    public List<Item> getResults() {
-        return super.getResults();
+    public List<Item> getItems() {
+        return super.getItems();
     }
 
     @Override
-    public void setResults(List<Item> results) {
-        super.setResults(results);
+    public void setItems(List<Item> results) {
+        super.setItems(results);
     }
 }
-class AttributeResultList extends ResultList<Attribute> {
+class AttributeResultList extends Results<Attribute> {
     @Override
-    public List<Attribute> getResults() {
-        return super.getResults();
+    public List<Attribute> getItems() {
+        return super.getItems();
     }
 
     @Override
-    public void setResults(List<Attribute> results) {
-        super.setResults(results);
+    public void setItems(List<Attribute> results) {
+        super.setItems(results);
     }
 }
-class EntitlementDefinitionResultList extends ResultList<EntitlementDefinition> {
+class EntitlementDefinitionResultList extends Results<EntitlementDefinition> {
     @Override
-    public List<EntitlementDefinition> getResults() {
-        return super.getResults();
+    public List<EntitlementDefinition> getItems() {
+        return super.getItems();
     }
 
     @Override
-    public void setResults(List<EntitlementDefinition> results) {
-        super.setResults(results);
+    public void setItems(List<EntitlementDefinition> results) {
+        super.setItems(results);
     }
 }
-class PromotionResultList extends ResultList<Promotion> {
+class PromotionResultList extends Results<Promotion> {
     @Override
-    public List<Promotion> getResults() {
-        return super.getResults();
+    public List<Promotion> getItems() {
+        return super.getItems();
     }
 
     @Override
-    public void setResults(List<Promotion> results) {
-        super.setResults(results);
+    public void setItems(List<Promotion> results) {
+        super.setItems(results);
     }
 }

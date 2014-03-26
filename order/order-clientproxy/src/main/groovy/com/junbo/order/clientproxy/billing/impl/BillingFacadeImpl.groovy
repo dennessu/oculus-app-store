@@ -8,6 +8,7 @@ import com.junbo.common.id.BalanceId
 import com.junbo.common.id.OrderId
 import com.junbo.common.id.ShippingAddressId
 import com.junbo.common.id.UserId
+import com.junbo.common.model.Results
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.billing.BillingFacade
 import groovy.transform.CompileStatic
@@ -23,9 +24,9 @@ import javax.annotation.Resource
 @Component('orderBillingFacade')
 @TypeChecked
 class BillingFacadeImpl implements BillingFacade {
-    @Resource(name='billingBalanceClient')
+    @Resource(name='order.billingBalanceClient')
     BalanceResource balanceResource
-    @Resource(name='billingShippingAddressClient')
+    @Resource(name='order.billingShippingAddressClient')
     ShippingAddressResource shippingAddressResource
 
     @Override
@@ -50,7 +51,9 @@ class BillingFacadeImpl implements BillingFacade {
 
     @Override
     Promise<List<Balance>> getBalancesByOrderId(Long orderId) {
-        return balanceResource.getBalances(new OrderId(orderId))
+        return balanceResource.getBalances(new OrderId(orderId)).syncThen { Results<Balance> results ->
+            return results == null ? Collections.emptyList() : results.items
+        }
     }
 
     @Override

@@ -110,18 +110,11 @@ class TestBuilder {
         return request
     }
 
-    static FulfilmentItem buildFulfilmentItem(String... actionStatus) {
+    static FulfilmentItem buildFulfilmentItem(String itemStatus) {
         def item = new FulfilmentItem()
         item.fulfilmentId = generateLong()
         item.orderItemId = generateLong()
-        if(actionStatus != null) {
-            item.actions = []
-            actionStatus.each {
-                FulfilmentAction action = new FulfilmentAction()
-                action.status = it
-                item.actions << action
-            }
-        }
+        item.status = itemStatus
         return item
     }
 }

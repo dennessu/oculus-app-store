@@ -6,10 +6,9 @@
 
 package com.junbo.entitlement.core.service;
 
+import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementType;
-import com.junbo.common.id.UserId;
-import com.junbo.entitlement.clientproxy.catalog.CatalogFacade;
-import com.junbo.entitlement.clientproxy.identity.UserFacade;
+import com.junbo.entitlement.clientproxy.catalog.EntitlementDefinitionFacade;
 import com.junbo.entitlement.common.lib.EntitlementContext;
 import com.junbo.entitlement.db.entity.def.EntitlementStatus;
 import com.junbo.entitlement.spec.error.AppErrors;
@@ -28,13 +27,21 @@ import java.util.concurrent.TimeUnit;
 public class BaseService {
     private static final Logger LOGGER = LoggerFactory.getLogger(BaseService.class);
     @Autowired
-    private UserFacade userFacade;
-    @Autowired
-    private CatalogFacade catalogFacade;
+    private EntitlementDefinitionFacade definitionFacade;
 
     protected void fillCreate(Entitlement entitlement) {
-        if (entitlement.getType() == null) {
-            entitlement.setType(EntitlementType.DEFAULT.toString());
+        if (entitlement.getDeveloperId() == null && entitlement.getEntitlementDefinitionId() != null) {
+            fillDefinition(entitlement);
+        } else {
+            if (entitlement.getType() == null) {
+                entitlement.setType(EntitlementType.DEFAULT.toString());
+            }
+            if (entitlement.getGroup() == null) {
+                entitlement.setGroup("");
+            }
+            if (entitlement.getTag() == null) {
+                entitlement.setTag("");
+            }
         }
 
         if (entitlement.getManagedLifecycle() == null) {
@@ -59,26 +66,28 @@ public class BaseService {
             entitlement.setExpirationTime(new Date(entitlement.getGrantTime().getTime()
                     + TimeUnit.SECONDS.toMillis(entitlement.getPeriod())));
         }
+    }
 
-        if (entitlement.getGroup() == null) {
-            entitlement.setGroup("");
+    private void fillDefinition(Entitlement entitlement) {
+        EntitlementDefinition definition = definitionFacade.getDefinition(entitlement.getEntitlementDefinitionId());
+        if (definition == null) {
+            throw AppErrors.INSTANCE.fieldNotCorrect(
+                    "entitlementDefinition", "EntitlementDefinition [" +
+                    entitlement.getEntitlementDefinitionId() +
+                    "] not found.").exception();
         }
-        if (entitlement.getTag() == null) {
-            entitlement.setTag("");
-        }
+        entitlement.setType(definition.getType());
+        entitlement.setGroup(definition.getGroup());
+        entitlement.setTag(definition.getTag());
+        entitlement.setDeveloperId(definition.getDeveloperId());
     }
 
     protected void fillUpdate(Entitlement entitlement, Entitlement existingEntitlement) {
         if (entitlement.getPeriod() != null) {
-            existingEntitlement.setExpirationTime(new Date(entitlement.getGrantTime().getTime()
+            existingEntitlement.setExpirationTime(new Date(existingEntitlement.getGrantTime().getTime()
                     + TimeUnit.SECONDS.toMillis(entitlement.getPeriod())));
         } else {
             existingEntitlement.setExpirationTime(entitlement.getExpirationTime());
-        }
-        if (entitlement.getManagedLifecycle() == null) {
-            existingEntitlement.setManagedLifecycle(true);
-        } else {
-            existingEntitlement.setManagedLifecycle(entitlement.getManagedLifecycle());
         }
 
         if (entitlement.getConsumable() == null || !entitlement.getConsumable()) {
@@ -89,31 +98,29 @@ public class BaseService {
             existingEntitlement.setUseCount(entitlement.getUseCount());
         }
 
-        if (EntitlementStatus.LIFECYCLE_NOT_MANAGED_STATUS
-                .contains(EntitlementStatus.valueOf(entitlement.getStatus().toUpperCase()))) {
-            LOGGER.info("Delete or ban entitlement [{}], set managedLifecycle" +
-                    " and consumable to false and set useCount to 0.", existingEntitlement.getEntitlementId());
-            existingEntitlement.setManagedLifecycle(false);
-            existingEntitlement.setConsumable(false);
-            existingEntitlement.setUseCount(0);
-        }
-
         existingEntitlement.setStatus(entitlement.getStatus());
         existingEntitlement.setStatusReason(entitlement.getStatusReason());
 
-        //fill default group and tag if these are null
-        if (entitlement.getGroup() == null) {
-            entitlement.setGroup("");
-        }
-        if (entitlement.getTag() == null) {
-            entitlement.setTag("");
+        if (existingEntitlement.getStatus() != null) {
+            if (EntitlementStatus.LIFECYCLE_NOT_MANAGED_STATUS
+                    .contains(EntitlementStatus.valueOf(existingEntitlement.getStatus().toUpperCase()))) {
+                LOGGER.info("Delete or ban entitlement [{}], set managedLifecycle" +
+                        " and consumable to false and set useCount to 0.", existingEntitlement.getEntitlementId());
+                existingEntitlement.setManagedLifecycle(false);
+                existingEntitlement.setConsumable(false);
+                existingEntitlement.setUseCount(0);
+            }
         }
     }
 
     protected void validateCreate(Entitlement entitlement) {
         checkUser(entitlement.getUserId());
-        checkOffer(entitlement.getOfferId());
-        checkDeveloper(entitlement.getDeveloperId());
+        if (entitlement.getDeveloperId() == null && entitlement.getEntitlementDefinitionId() == null) {
+            throw AppErrors.INSTANCE.common(
+                    "One of developer and entitlementDefinition should not be null.")
+                    .exception();
+        }
+        CheckDeveloper(entitlement.getDeveloperId());
         if (EntitlementStatus.LIFECYCLE_NOT_MANAGED_STATUS.contains(
                 EntitlementStatus.valueOf(entitlement.getStatus().toUpperCase()))) {
             LOGGER.error("Can not created {} entitlement.", entitlement.getStatus());
@@ -123,7 +130,6 @@ public class BaseService {
         if (!entitlement.getManagedLifecycle()) {
             validateNotNull(entitlement.getStatus(), "status");
         }
-        checkEntitlementDefinition(entitlement.getEntitlementDefinitionId());
         validateGrantTimeBeforeExpirationTime(entitlement);
     }
 
@@ -139,17 +145,20 @@ public class BaseService {
 
     protected void validateUpdate(Entitlement entitlement, Entitlement existingEntitlement) {
         checkUser(existingEntitlement.getUserId());
-        checkDeveloper(existingEntitlement.getDeveloperId());
+        CheckDeveloper(existingEntitlement.getDeveloperId());
         if (!entitlement.getManagedLifecycle()) {
-            validateNotNull(entitlement.getStatus(), "status");
+            validateNotNull(existingEntitlement.getStatus(), "status");
         }
         validateEquals(existingEntitlement.getUserId(), entitlement.getUserId(), "user");
+        validateEquals(existingEntitlement.getDeveloperId(), entitlement.getDeveloperId(), "developer");
         validateEquals(existingEntitlement.getOfferId(), entitlement.getOfferId(), "offer");
         validateEquals(existingEntitlement.getEntitlementDefinitionId(),
                 entitlement.getEntitlementDefinitionId(), "definition");
         validateEquals(existingEntitlement.getType(), entitlement.getType(), "type");
         validateEquals(existingEntitlement.getGroup(), entitlement.getGroup(), "group");
         validateEquals(existingEntitlement.getTag(), entitlement.getTag(), "tag");
+        validateEquals(existingEntitlement.getManagedLifecycle(),
+                entitlement.getManagedLifecycle(), "managedLifecycle");
         validateEquals(existingEntitlement.getGrantTime(), entitlement.getGrantTime(), "grantTime");
         validateGrantTimeBeforeExpirationTime(existingEntitlement);
     }
@@ -160,7 +169,7 @@ public class BaseService {
             throw AppErrors.INSTANCE.notFound("entitlement", transfer.getEntitlementId()).exception();
         }
         checkUser(existingEntitlement.getUserId());
-        checkTargetUser(transfer.getTargetUserId());
+        checktargetUser(transfer.getTargetUserId());
         if (EntitlementStatus.NOT_TRANSFERABLE.contains(existingEntitlement.getStatus())) {
             LOGGER.error("Entitlement [{}] can not be transferred.", existingEntitlement.getEntitlementId());
             throw AppErrors.INSTANCE.notTransferable(existingEntitlement.getEntitlementId(),
@@ -203,7 +212,7 @@ public class BaseService {
         }
     }
 
-    private void validateNotNull(Object value, String fieldName) {
+    protected void validateNotNull(Object value, String fieldName) {
         if (value == null) {
             throw AppErrors.INSTANCE.missingField(fieldName).exception();
         }
@@ -211,45 +220,15 @@ public class BaseService {
 
     protected void checkUser(Long userId) {
         validateNotNull(userId, "user");
-//        if (!userFacade.exists(userId)) {
-//            throw new NotFoundException("user");
-//        }
+        //TODO: check userId
     }
 
-    protected void checkUser(UserId userId) {
-        validateNotNull(userId, "user");
-//        if (!userFacade.exists(userId)) {
-//            throw new NotFoundException("user");
-//        }
-    }
-
-    private void checkTargetUser(Long userId) {
+    protected void checktargetUser(Long userId) {
         validateNotNull(userId, "targetUser");
-//        if (!userFacade.exists(userId)) {
-//            throw new NotFoundException("targetUser");
-//        }
     }
 
-    private void checkOffer(Long itemId) {
-//        if (!catalogFacade.exists(itemId)) {
-//            throw new NotFoundException("offer");
-//        }
-    }
-
-    protected void checkDeveloper(Long developerId) {
+    protected void CheckDeveloper(Long developerId) {
         validateNotNull(developerId, "developer");
-//        if (!userFacade.exists(developerId)) {
-//            throw new NotFoundException("developer");
-//        }
-    }
-
-    protected void checkDeveloper(UserId developerId) {
-        validateNotNull(developerId, "developer");
-//        if (!userFacade.exists(developerId)) {
-//            throw new NotFoundException("developer");
-//        }
-    }
-
-    private void checkEntitlementDefinition(Long entitlementDefinitionId) {
+        //TODO: check clientId
     }
 }

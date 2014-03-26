@@ -9,10 +9,7 @@ import com.junbo.payment.spec.enums.CreditCardType;
 import com.junbo.payment.spec.enums.PIStatus;
 import com.junbo.payment.spec.enums.PIType;
 import com.junbo.payment.spec.enums.PhoneType;
-import com.junbo.payment.spec.model.Address;
-import com.junbo.payment.spec.model.CreditCardRequest;
-import com.junbo.payment.spec.model.PaymentInstrument;
-import com.junbo.payment.spec.model.Phone;
+import com.junbo.payment.spec.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -29,7 +26,7 @@ public class PaymentRepoTest extends BaseTest {
     public void testRepo() {
         PaymentInstrument pi = buildPIRequest();
         piRepo.save(pi);
-        PaymentInstrument result = piRepo.getByPIId(pi.getId());
+        PaymentInstrument result = piRepo.getByPIId(pi.getId().getPaymentInstrumentId());
         Assert.assertEquals(pi.getAccountName(), result.getAccountName());
         Assert.assertEquals(pi.getAccountNum(), result.getAccountNum());
         Assert.assertEquals(pi.getAddress().getAddressLine1(), result.getAddress().getAddressLine1());
@@ -38,7 +35,7 @@ public class PaymentRepoTest extends BaseTest {
 
     private PaymentInstrument buildPIRequest(){
         PaymentInstrument pi = new PaymentInstrument();
-        pi.setUserId(userId);
+        pi.setId(new PIId(userId, null));
         pi.setType(PIType.CREDITCARD.toString());
         pi.setAccountName("David");
         pi.setAccountNum("1111");

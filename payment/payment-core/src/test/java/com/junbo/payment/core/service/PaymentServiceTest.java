@@ -43,8 +43,8 @@ public class PaymentServiceTest extends BaseTest {
     public void testRemovePI() throws ExecutionException, InterruptedException {
         PaymentInstrument request = buildPIRequest();
         PaymentInstrument result = piService.add(request).wrapped().get();
-        piService.delete(userId, result.getId());
-        PaymentInstrument resultDelete = piService.getById(userId, result.getId());
+        piService.delete(userId, result.getId().getPaymentInstrumentId());
+        PaymentInstrument resultDelete = piService.getById(userId, result.getId().getPaymentInstrumentId());
         Assert.assertEquals(resultDelete.getStatus().toString(), PIStatus.DELETED.toString());
     }
 
@@ -55,7 +55,7 @@ public class PaymentServiceTest extends BaseTest {
         result.setStatus(PIStatus.DELETED.toString());
         result.getAddress().setPostalCode("123");
         piService.update(result);
-        PaymentInstrument resultUpdate = piService.getById(userId, result.getId());
+        PaymentInstrument resultUpdate = piService.getById(userId, result.getId().getPaymentInstrumentId());
         Assert.assertEquals(resultUpdate.getStatus().toString(), PIStatus.DELETED.toString());
         Assert.assertEquals(resultUpdate.getAddress().getPostalCode(), "123");
     }
@@ -107,7 +107,7 @@ public class PaymentServiceTest extends BaseTest {
 
     private PaymentInstrument buildPIRequest() {
         PaymentInstrument request = new PaymentInstrument();
-        request.setUserId(userId);
+        request.setId(new PIId(userId, null));
         request.setTrackingUuid(generateUUID());
         request.setAccountName("ut");
         request.setIsDefault(Boolean.TRUE.toString());
@@ -141,7 +141,7 @@ public class PaymentServiceTest extends BaseTest {
     private PaymentTransaction buildPaymentTransaction(final PaymentInstrument pi){
         PaymentTransaction payment = new PaymentTransaction();
         payment.setTrackingUuid(generateUUID());
-        payment.setUserId(pi.getUserId());
+        payment.setUserId(pi.getId().getUserId());
         payment.setChargeInfo(new ChargeInfo(){
             {
                 setCurrency("USD");

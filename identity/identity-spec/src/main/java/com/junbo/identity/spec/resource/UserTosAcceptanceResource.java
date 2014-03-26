@@ -7,10 +7,11 @@ package com.junbo.identity.spec.resource;
 
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserTosAcceptanceId;
-import com.junbo.identity.spec.model.common.ResultList;
+import com.junbo.common.model.Results;
 import com.junbo.identity.spec.model.user.UserTosAcceptance;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
+import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.ws.rs.*;
@@ -20,6 +21,7 @@ import javax.ws.rs.core.MediaType;
  * Java cod for UserTosAcceptanceResource.
  */
 
+@Api("users")
 @Path("/users/{key1}/tos-acceptances")
 @RestResource
 @Produces({MediaType.APPLICATION_JSON})
@@ -32,7 +34,7 @@ public interface UserTosAcceptanceResource {
 
     @ApiOperation("Get or search TOS acceptance")
     @GET
-    Promise<ResultList<UserTosAcceptance>> getUserTosAcceptances(@PathParam("key1") UserId userId,
+    Promise<Results<UserTosAcceptance>> getUserTosAcceptances(@PathParam("key1") UserId userId,
                                                   @QueryParam("tos") String tos,
                                                   @QueryParam("cursor") Integer cursor,
                                                   @QueryParam("count") Integer count);

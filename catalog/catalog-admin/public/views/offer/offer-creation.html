@@ -1,55 +1,6 @@
 <h1>Offer creation</h1>
 <form novalidate="novalidate" class="form-horizontal">
-    <table class="table table-bordered vertical-table">
-        <tr>
-            <td>Offer Name</td>
-            <td><input type="text" class="form-control required" ng-model="offer.name"></td>
-        </tr>
-        <tr>
-            <td>Type</td>
-            <td>
-                <select ng-model="offer.type" ng-options="typeAttribute.self as typeAttribute.name for typeAttribute in typeAttributes">
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <td>Owner</td>
-            <td><input type="text" class="form-control required" ng-model="offer.ownerId.id"></td>
-        </tr>
-        <tr>
-            <td>Items</td>
-            <td>
-                <div>
-                    <button ng-click="isCollapsed = !isCollapsed">
-                        <div ng-show="isCollapsed">Add Items</div>
-                        <div ng-hide="isCollapsed" ng-click="saveItems()">Save</div>
-                    </button>
-                    <div collapse="isCollapsed">
-                        <table class="table table-bordered"><tr>
-                            <td>
-                                <b>Contained Items:</b>
-                                <table class="table table-hover">
-                                    <tr ng-repeat="(id, item) in selectedItems" ng-click="removeItem(item)">
-                                        <td>{{ item.name }}</td>
-                                        <td class="select">x</td>
-                                    </tr>
-                                </table>
-                            </td>
-                            <td>
-                                <b>Add Items to the Offer:</b>
-                                <table class="table table-hover">
-                                    <tr ng-repeat="item in items" ng-click="addItem(item)">
-                                        <td>{{ item.name }}</td>
-                                        <td class="select">+</td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr></table>
-                    </div>
-                </div>
-            </td>
-        </tr>
-    </table>
+    <div ng-include src="'views/offer/offer-edit.html'"></div>
 
     <div class="control-group">
         <div class="controls">

@@ -22,6 +22,21 @@ services.factory('OfferFactory', function ($resource) {
     })
 });
 
+services.factory('ItemsFactory', function ($resource) {
+    return $resource('/api/items', {}, {
+        query: { method: 'GET', isArray: true },
+        create: { method: 'POST' }
+    })
+});
+
+services.factory('ItemFactory', function ($resource) {
+    return $resource('/api/items/:id', {}, {
+        query: { method: 'GET' },
+        update: { method: 'PUT', params: {id: '@id'} },
+        delete: { method: 'DELETE', params: {id: '@id'} }
+    })
+});
+
 services.factory('AttributesFactory', function ($resource) {
     return $resource('/api/attributes', {}, {
         query: { method: 'GET', isArray: true },
@@ -40,5 +55,45 @@ services.factory('AttributeFactory', function ($resource) {
 services.factory('OfferResponse', function() {
     return {
         data:{}
+    };
+});
+
+services.factory('ItemResponse', function() {
+    return {
+        data:{}
+    };
+});
+
+services.factory('MetaFactory', function() {
+    return  {
+        itemMeta: {
+            "shortDescription": { "display": "Short Description", "controlType": "TEXT_INPUT"},
+            "longDescription": { "display": "Long Description", "controlType": "TEXT_INPUT"},
+            "platform": { "display": "Platform", "controlType": "MULTI_SELECT", "allowedValues":["PC", "Mac", "Linux"]},
+            "changeNotes": { "display": "Change Notes", "controlType": "TEXT_INPUT"},
+            "website": { "display": "Website", "controlType": "TEXT_INPUT"},
+            "gameModes": { "display": "Game Modes", "controlType": "SINGLE_SELECT", "allowedValues":["Single Player", "Multi Player"]}
+        },
+        itemTypes: ["PHYSICAL", "IAP", "APP"],
+        countries: [
+            {"code":"AT", "name":"Austria", "currency": "AUD"},
+            {"code":"CN", "name":"China", "currency": "RMB"},
+            {"code":"CO", "name":"Colombia", "currency": "COP"},
+            {"code":"KR", "name":"South Korea", "currency": "KRW"},
+            {"code":"UA", "name":"Ukraine", "currency": "UAH"},
+            {"code":"US", "name":"United States", "currency": "USD"},
+            {"code":"JP", "name":"Japan", "currency": "JPY"},
+            {"code":"IN", "name":"India", "currency": "INR"},
+            {"code":"TW", "name":"Tai Wan", "currency": "TWD"},
+            {"code":"MX", "name":"Mexico", "currency": "MXN"},
+            {"code":"HK", "name":"Hong Kong", "currency": "HKD"},
+            {"code":"NZ", "name":"New Zealand", "currency": "NZD"},
+            {"code":"DEFAULT", "name":"DEFAULT", "currency": "USD"}
+        ],
+        offerMeta: {
+            "shortDescription": { "display": "Short Description", "controlType": "TEXT_INPUT"},
+            "longDescription": { "display": "Long Description", "controlType": "TEXT_INPUT"},
+            "changeNotes": { "display": "Change Notes", "controlType": "TEXT_INPUT"}
+        }
     };
 });

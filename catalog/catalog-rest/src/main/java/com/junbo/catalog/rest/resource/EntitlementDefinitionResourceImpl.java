@@ -8,11 +8,12 @@ package com.junbo.catalog.rest.resource;
 
 import com.junbo.catalog.core.EntitlementDefinitionService;
 import com.junbo.catalog.spec.model.common.PageableGetOptions;
-import com.junbo.catalog.spec.model.common.ResultList;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
 import com.junbo.catalog.spec.resource.EntitlementDefinitionResource;
 import com.junbo.common.id.EntitlementDefinitionId;
 import com.junbo.common.id.UserId;
+import com.junbo.common.model.Link;
+import com.junbo.common.model.Results;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
@@ -39,13 +40,14 @@ public class EntitlementDefinitionResourceImpl implements EntitlementDefinitionR
     }
 
     @Override
-    public Promise<ResultList<EntitlementDefinition>> getEntitlementDefinitionDefinitions(
+    public Promise<Results<EntitlementDefinition>> getEntitlementDefinitionDefinitions(
             UserId developerId, String type, String group, String tag, PageableGetOptions pageMetadata) {
+        pageMetadata.ensurePagingValid();
         List<EntitlementDefinition> entitlementDefinitions =
                 entitlementDefinitionService.getEntitlementDefinitions(
                         developerId.getValue(), group, tag, type, pageMetadata);
-        ResultList<EntitlementDefinition> result = new ResultList<EntitlementDefinition>();
-        result.setResults(entitlementDefinitions);
+        Results<EntitlementDefinition> result = new Results<EntitlementDefinition>();
+        result.setItems(entitlementDefinitions);
         result.setNext(buildNextUrl(developerId.getValue(), type, group, tag, pageMetadata));
         return Promise.pure(result);
     }
@@ -65,7 +67,7 @@ public class EntitlementDefinitionResourceImpl implements EntitlementDefinitionR
         return Promise.pure(entitlementDefinitionService.getEntitlementDefinition(id));
     }
 
-    private String buildNextUrl(Long developerId,
+    private Link buildNextUrl(Long developerId,
                                 String type, String group,
                                 String tag, PageableGetOptions pageMetadata) {
         UriBuilder builder = uriInfo.getBaseUriBuilder()
@@ -80,7 +82,10 @@ public class EntitlementDefinitionResourceImpl implements EntitlementDefinitionR
             builder = builder.queryParam("tag", tag);
         }
         builder = buildPageParams(builder, pageMetadata);
-        return builder.toTemplate();
+
+        Link result = new Link();
+        result.setHref(builder.toTemplate());
+        return result;
     }
 
     private UriBuilder buildPageParams(UriBuilder builder, PageableGetOptions pageableGetOptions) {
