@@ -2,12 +2,12 @@ package com.junbo.testing.buyerscenario;
 
 
 import com.junbo.testing.buyerscenario.util.BaseTestClass;
-import com.junbo.testing.common.enums.Country;
+import com.junbo.testing.common.Entities.ShippingAddressInfo;
+import com.junbo.testing.common.Entities.enums.Country;
 import com.junbo.testing.common.libs.LogHelper;
-import com.junbo.testing.common.paymentInstruments.CreditCardInfo;
+import com.junbo.testing.common.Entities.paymentInstruments.CreditCardInfo;
 import com.junbo.testing.common.property.*;
 
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
 /**
@@ -22,7 +22,7 @@ public class CartCheckout extends BaseTestClass {
             features = "BuyerScenarios",
             component = Component.Order,
             owner = "ZhaoYunlong",
-            status = Status.Enable,
+            status = Status.Incomplete,
             description = "Test digital good checkout",
             steps = {
                     "1. Post a random user",
@@ -39,9 +39,11 @@ public class CartCheckout extends BaseTestClass {
     @Test
     public void testDigitalGoodCheckout() throws Exception {
         String randomUid = testDataProvider.createUser();
+
         testDataProvider.postDefaultOffersToPrimaryCart(randomUid, false);
 
         String uid = testDataProvider.createUser();
+
         CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
         testDataProvider.postCreditCardToUser(uid,creditCardInfo);
 
@@ -55,7 +57,7 @@ public class CartCheckout extends BaseTestClass {
             features = "BuyerScenarios",
             component = Component.Order,
             owner = "ZhaoYunlong",
-            status = Status.Enable,
+            status = Status.Incomplete,
             description = "Test physical good checkout",
             steps = {
                     "1. Post a random user",
@@ -72,9 +74,16 @@ public class CartCheckout extends BaseTestClass {
     @Test
     public void testPhysicalGoodCheckout() throws Exception {
         String randomUid = testDataProvider.createUser();
-        testDataProvider.postDefaultOffersToPrimaryCart(randomUid,true);
+        testDataProvider.postDefaultOffersToPrimaryCart(randomUid, false);
 
         String uid = testDataProvider.createUser();
+
+        CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
+        testDataProvider.postCreditCardToUser(uid,creditCardInfo);
+
+        ShippingAddressInfo shippingAddressInfo = ShippingAddressInfo.getRandomShippingAddress(Country.DEFAULT);
+        testDataProvider.postShippingAddressToUser(uid, shippingAddressInfo);
+
         testDataProvider.mergeCart(uid, randomUid);
 
     }

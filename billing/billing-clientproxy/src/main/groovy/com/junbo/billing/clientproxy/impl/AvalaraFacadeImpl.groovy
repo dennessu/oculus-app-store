@@ -197,13 +197,9 @@ class AvalaraFacadeImpl implements TaxFacade {
     Promise<ValidateAddressResponse> validateAddress(AvalaraAddress address) {
         String validateAddressUrl = configuration.baseUrl + 'address/validate'
         def requestBuilder = buildRequest(validateAddressUrl, address)
-        Promise<Response> future
-        try {
-            future = Promise.wrap(asGuavaFuture(requestBuilder.execute()))
-        } catch (IOException) {
+        return Promise.wrap(asGuavaFuture(requestBuilder.execute())).recover {
             throw AppErrors.INSTANCE.addressValidationError('Fail to build request.').exception()
-        }
-        return future.then { Response response ->
+        }.then { Response response ->
             ValidateAddressResponse validateAddressResponse
             try {
                 validateAddressResponse = new ObjectMapper().readValue(response.responseBody,
@@ -228,13 +224,9 @@ class AvalaraFacadeImpl implements TaxFacade {
         String getTaxUrl = configuration.baseUrl + 'tax/get'
         String content = transcoder.encode(request)
         def requestBuilder = buildRequest(getTaxUrl, content)
-        Promise<Response> future
-        try {
-            future = Promise.wrap(asGuavaFuture(requestBuilder.execute()))
-        } catch (IOException e) {
+        return Promise.wrap(asGuavaFuture(requestBuilder.execute())).recover {
             return Promise.pure(null)
-        }
-        return future.then { Response response ->
+        }.then { Response response ->
             if (response.statusCode / STATUS_CODE_MASK == SUCCESSFUL_STATUS_CODE_PREFIX) {
                 try {
                     // use new ObjectMapper instead of transcoder here since the DocDate is not ISO8601DateFormat

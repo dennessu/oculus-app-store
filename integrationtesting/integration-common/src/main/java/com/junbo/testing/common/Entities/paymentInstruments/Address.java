@@ -3,9 +3,9 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.testing.common.paymentInstruments;
+package com.junbo.testing.common.Entities.paymentInstruments;
 
-import com.junbo.testing.common.enums.Country;
+import com.junbo.testing.common.Entities.enums.Country;
 import com.junbo.testing.common.libs.RandomFactory;
 
 /**
