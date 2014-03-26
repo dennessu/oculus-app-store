@@ -1,10 +1,11 @@
-package com.junbo.payment.core;
+package com.junbo.token.core;
 
+import com.junbo.sharding.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
-import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
 import java.util.UUID;
@@ -14,13 +15,17 @@ import java.util.UUID;
 public abstract class BaseTest extends AbstractTransactionalTestNGSpringContextTests {
     @Override
     @Autowired
-    @org.springframework.beans.factory.annotation.Qualifier("paymentDataSource")
+    @Qualifier("tokenDataSource")
     public void setDataSource(DataSource dataSource) {
         super.setDataSource(dataSource);
     }
 
+    @Autowired
+    @Qualifier("oculus48IdGenerator")
+    private IdGenerator idGenerator;
+
     protected long generateLong() {
-        return System.currentTimeMillis();
+        return idGenerator.nextId();
     }
 
     protected UUID generateUUID() {

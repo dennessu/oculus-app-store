@@ -27,6 +27,7 @@ public class PaymentTransaction {
     @PaymentInstrumentId
     @JsonProperty("paymentInstrument")
     private PIId paymentInstrumentId;
+    private String billingRefId;
     private ChargeInfo chargeInfo;
     @PaymentTransactionId
     @FilterIn
@@ -114,6 +115,14 @@ public class PaymentTransaction {
 
     public void setExternalToken(String externalToken) {
         this.externalToken = externalToken;
+    }
+
+    public String getBillingRefId() {
+        return billingRefId;
+    }
+
+    public void setBillingRefId(String billingRefId) {
+        this.billingRefId = billingRefId;
     }
 
     public String getType() {
