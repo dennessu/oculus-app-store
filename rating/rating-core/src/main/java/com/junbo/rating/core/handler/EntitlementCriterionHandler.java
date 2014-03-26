@@ -32,7 +32,7 @@ public class EntitlementCriterionHandler implements CriterionHandler<Entitlement
         }
 
         //call entitlement to get owned entitlement
-        Set<String> entitlements = entitlementGateway.getEntitlements(context.getUserId(),groups);
+        Set<String> entitlements = entitlementGateway.getEntitlements(context.getUserId(), groups);
 
         for (Entitlement entitlement : criterion.getEntitlements()) {
             switch (criterion.getPredicate()) {

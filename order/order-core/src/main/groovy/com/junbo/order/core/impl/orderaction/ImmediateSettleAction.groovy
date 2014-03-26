@@ -9,11 +9,12 @@ import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.core.annotation.OrderEventAwareAfter
 import com.junbo.order.core.annotation.OrderEventAwareBefore
 import com.junbo.order.core.impl.common.CoreBuilder
+import com.junbo.order.core.impl.common.CoreUtils
 import com.junbo.order.core.impl.common.OrderStatusBuilder
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
 import com.junbo.order.db.entity.enums.BillingAction
-import com.junbo.order.db.entity.enums.EventStatus
 import com.junbo.order.db.repo.OrderRepository
+import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.BillingEvent
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
@@ -51,13 +52,9 @@ class ImmediateSettleAction extends BaseOrderEventAwareAction {
                         CoreBuilder.buildBalance(context.orderServiceContext, BalanceType.DEBIT))
         return promise.syncRecover { Throwable throwable ->
             LOGGER.error('name=Order_ImmediateSettle_Error', throwable)
-            return null
+            throw AppErrors.INSTANCE.
+                    billingConnectionError(CoreUtils.toAppErrors(throwable)).exception()
         }.syncThen { Balance balance ->
-            if (balance == null) {
-                // todo: log order charge action error?
-                LOGGER.info('fail to create balance')
-                return CoreBuilder.buildActionResultForOrderEventAwareAction(context, EventStatus.ERROR)
-            }
             def billingEvent = new BillingEvent()
             billingEvent.balanceId = (balance.balanceId == null || balance.balanceId.value == null) ?
                     null : balance.balanceId.value.toString()

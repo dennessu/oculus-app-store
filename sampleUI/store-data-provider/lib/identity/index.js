@@ -194,7 +194,7 @@ Identity.prototype.PostCreateProfiles = function(userId, dataObj, cb){
   client.Request(options, dataObj, cb);
 }
 
-Identity.prototype.GetPayinProfilesByUserId = function(userId, dataObj, cb){
+Identity.prototype.GetPayinProfilesByUserId = function(userId, cb){
     /*
      Method: GET
      URL: /rest/users/{userId}/profiles?type=PAYIN
@@ -234,7 +234,7 @@ Identity.prototype.GetPayinProfilesByUserId = function(userId, dataObj, cb){
     };
 
     var client = new RestClient();
-    client.Request(options, dataObj, cb);
+    client.Request(options, null, cb);
 }
 
 Identity.prototype.GetUser = function(userId, cb){

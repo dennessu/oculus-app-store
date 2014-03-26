@@ -5,9 +5,10 @@
  */
 package com.junbo.email.spec.resource;
 
+import com.junbo.common.id.EmailId;
+import com.junbo.common.model.Results;
 import com.junbo.email.spec.model.EmailTemplate;
 import com.junbo.email.spec.model.Paging;
-import com.junbo.email.spec.model.Results;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 
@@ -31,13 +32,13 @@ public interface EmailTemplateResource {
 
     @GET
     @Path("/{id}")
-    Promise<EmailTemplate> getEmailTemplate(@PathParam("id") Long id);
+    Promise<EmailTemplate> getEmailTemplate(@PathParam("id") EmailId id);
 
     @PUT
     @Path("/{id}")
-    Promise<EmailTemplate> putEmailTemplate(@PathParam("id") Long id, EmailTemplate template);
+    Promise<EmailTemplate> putEmailTemplate(@PathParam("id") EmailId id, EmailTemplate template);
 
     @DELETE
     @Path("/{id}")
-    Promise<Response> deleteEmailTemplate(@PathParam("id") Long id);
+    Promise<Response> deleteEmailTemplate(@PathParam("id") EmailId id);
 }

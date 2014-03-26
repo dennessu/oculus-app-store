@@ -11,5 +11,8 @@ var StoreViews = {
     }),
     OrderSummaryView: Ember.View.extend({
         template: Ember.TEMPLATES[AppConfig.Templates.Store.OrderSummary]
+    }),
+    ThanksView: Ember.View.extend({
+        template: Ember.TEMPLATES[AppConfig.Templates.Store.Thanks]
     })
 };

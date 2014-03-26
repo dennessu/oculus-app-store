@@ -6,24 +6,12 @@
 
 package com.junbo.catalog.spec.model.promotion;
 
-import com.junbo.common.jackson.annotation.EntitlementDefinitionId;
-
 /**
  * Entitlement.
  */
 public class Entitlement {
-    @EntitlementDefinitionId
-    private Long entitlementDefinitionId;
     private String group;
     private String tag;
-
-    public Long getEntitlementDefinitionId() {
-        return entitlementDefinitionId;
-    }
-
-    public void setEntitlementDefinitionId(Long entitlementDefinitionId) {
-        this.entitlementDefinitionId = entitlementDefinitionId;
-    }
 
     public String getGroup() {
         return group;

@@ -6,16 +6,15 @@
        http://www.junbo.com/schema/webflow http://www.junbo.com/schema/webflow-config/webflow.xsd">
 
     <wf:flow id="FREE_SETTLE">
-        <wf:action-state id="FREE_SETTLE_immediateSettle">
-            <wf:action ref="validateUserAction"/>
-            <wf:action ref="fulfillmentAction"/>
-            <wf:action ref="freeSettleActionUpdateOrderAction"/>
-            <wf:action ref="sendEmailAction"/>
-        </wf:action-state>
+        <wf:end-state id="endState">
+            <wf:on-entry>
+                <wf:action ref="validateUserAction"/>
+
+                <wf:action ref="markSettleAction"/>
+                <wf:action ref="fulfillmentAction"/>
+                <wf:action ref="sendEmailAction"/>
+            </wf:on-entry>
+        </wf:end-state>
     </wf:flow>
 
-    <bean id="freeSettleActionUpdateOrderAction" class="com.junbo.order.core.impl.orderaction.SaveOrderAction">
-        <property name="newOrder" value="false"/>
-        <property name="updateOnlyOrder" value="true"/>
-    </bean>
 </beans>

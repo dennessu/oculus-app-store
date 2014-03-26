@@ -6,13 +6,14 @@
 package com.junbo.email.core.service;
 
 import com.junbo.common.id.EmailId;
+import com.junbo.common.model.Link;
+import com.junbo.common.model.Results;
 import com.junbo.email.common.constant.PagingConstants;
 import com.junbo.email.core.EmailTemplateService;
 import com.junbo.email.core.validator.EmailTemplateValidator;
 import com.junbo.email.db.repo.EmailTemplateRepository;
 import com.junbo.email.spec.model.EmailTemplate;
 import com.junbo.email.spec.model.Paging;
-import com.junbo.email.spec.model.Results;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -26,6 +27,7 @@ import java.util.List;
  */
 @Component
 public class EmailTemplateServiceImpl implements EmailTemplateService {
+
     @Autowired
     private EmailTemplateRepository templateRepository;
 
@@ -69,9 +71,12 @@ public class EmailTemplateServiceImpl implements EmailTemplateService {
     private Results<EmailTemplate> buildResults(List<EmailTemplate> templates, Paging paging) {
         Results<EmailTemplate> results = new Results<>();
         if(templates != null) {
-            results.setCriteria(templates);
+            results.setItems(templates);
+            results.setSelf(buildLink(paging, false));
+            results.setHasNext(false);
             if(templates.size() == paging.getSize()) {
-                results.setNext(buildNextUri(paging));
+                results.setNext(buildLink(paging, true));
+                results.setHasNext(true);
             }
         }
         return  results;
@@ -89,10 +94,12 @@ public class EmailTemplateServiceImpl implements EmailTemplateService {
         }
     }
 
-    private String buildNextUri(Paging paging) {
+    private Link buildLink(Paging paging, boolean isNext) {
+        Link link = new Link();
         UriBuilder uri = uriInfo.getBaseUriBuilder().path("email-templates");
-        uri.queryParam("page", paging.getPage()+1);
+        uri.queryParam("page", isNext ? paging.getPage()+1 : paging.getPage());
         uri.queryParam("size", paging.getSize());
-        return uri.toTemplate();
+        link.setHref(uri.toTemplate());
+        return link;
     }
 }

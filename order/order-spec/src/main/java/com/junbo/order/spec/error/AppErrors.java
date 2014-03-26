@@ -49,6 +49,10 @@ public interface AppErrors {
             description = "Order item not found")
     AppError orderItemNotFound();
 
+    @ErrorDef(httpStatusCode = 409, code = ErrorCode.ORDER_NOT_TENTATIVE,
+            description = "Order not tentative")
+    AppError orderNotTentative();
+
     @ErrorDef(httpStatusCode = 404, code = UserErrorCode.USER_NOT_FOUND,
             description = "User not found {0}")
     AppError userNotFound(String userId);
@@ -107,6 +111,10 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 500, code = BillingErrorCode.BILLING_CONNECTION_ERROR,
             description = "Billing connection error")
+    AppError billingConnectionError(AppError[] causes);
+
+    @ErrorDef(httpStatusCode = 500, code = BillingErrorCode.BILLING_CONNECTION_ERROR,
+            description = "Billing connection error")
     AppError billingConnectionError();
 
     @ErrorDef(httpStatusCode = 404, code = BillingErrorCode.BALANCE_NOT_FOUND,
@@ -116,4 +124,16 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 404, code = ErrorCode.ORDER_EVENT_NOT_FOUND,
             description = "Order event not found")
     AppError orderEventNotFound();
+
+    @ErrorDef(httpStatusCode = 500, code = UserErrorCode.USER_CONNECTION_ERROR,
+            description = "User connection error")
+    AppError userConnectionError();
+
+    @ErrorDef(httpStatusCode = 500, code = FulfillmentErrorCode.FULFILLMENT_CONNECTION_ERROR,
+            description = "Fulfillment connection error")
+    AppError fulfillmentConnectionError();
+
+    @ErrorDef(httpStatusCode = 500, code = FulfillmentErrorCode.FULFILLMENT_CONNECTION_ERROR,
+            description = "Fulfilment connection error")
+    AppError fulfilmentConnectionError(AppError[] causes);
 }
