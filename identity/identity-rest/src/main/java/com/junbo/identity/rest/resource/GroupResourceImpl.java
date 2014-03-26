@@ -15,8 +15,11 @@ import com.junbo.identity.spec.options.list.GroupListOptions;
 import com.junbo.identity.spec.options.list.UserGroupListOptions;
 import com.junbo.identity.spec.resource.GroupResource;
 import com.junbo.langur.core.promise.Promise;
+import groovy.transform.CompileStatic;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.ws.rs.ext.Provider;
 import java.util.List;
@@ -26,7 +29,9 @@ import java.util.List;
  */
 @Provider
 @Component
-@org.springframework.context.annotation.Scope("prototype")
+@Scope("prototype")
+@Transactional
+@CompileStatic
 public class GroupResourceImpl implements GroupResource {
     @Autowired
     private GroupService groupService;
