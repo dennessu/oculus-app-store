@@ -7,12 +7,15 @@ package com.junbo.order.core.impl.common;
 
 import groovy.lang.Closure;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by fzhang on 14-3-25.
  */
 public interface TransactionHelper {
+
+    <T>  T executeInNewTransaction(Closure<T> closure);
 
     <T>  T executeInTransaction(Closure<T> closure);
 
@@ -21,6 +24,11 @@ public interface TransactionHelper {
      */
     @Component("orderTransactionHelper")
     public static class TransactionHelperImpl implements TransactionHelper {
+        @Transactional(propagation = Propagation.REQUIRES_NEW)
+        public <T>  T executeInNewTransaction(Closure<T> closure) {
+            return closure.call();
+        }
+
         @Transactional
         public <T>  T executeInTransaction(Closure<T> closure) {
             return closure.call();
