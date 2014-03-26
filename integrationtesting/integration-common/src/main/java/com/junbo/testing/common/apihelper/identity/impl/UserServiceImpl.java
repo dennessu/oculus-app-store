@@ -3,14 +3,14 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.testing.common.apihelper.identity.impl;
+package com.junbo.test.common.apihelper.identity.impl;
 
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.common.model.Results;
 import com.junbo.langur.core.client.TypeReference;
-import com.junbo.testing.common.blueprint.Master;
-import com.junbo.testing.common.libs.*;
-import com.junbo.testing.common.apihelper.identity.UserService;
+import com.junbo.test.common.blueprint.Master;
+import com.junbo.test.common.libs.*;
+import com.junbo.test.common.apihelper.identity.UserService;
 import com.junbo.identity.spec.model.user.User;
 
 import com.ning.http.client.AsyncHttpClient;

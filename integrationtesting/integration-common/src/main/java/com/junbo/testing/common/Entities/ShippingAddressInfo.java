@@ -3,10 +3,10 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.testing.common.Entities;
+package com.junbo.test.common.Entities;
 
-import com.junbo.testing.common.Entities.enums.Country;
-import com.junbo.testing.common.libs.RandomFactory;
+import com.junbo.test.common.Entities.enums.Country;
+import com.junbo.test.common.libs.RandomFactory;
 
 /**
  * Created by Yunlong on 3/26/14.

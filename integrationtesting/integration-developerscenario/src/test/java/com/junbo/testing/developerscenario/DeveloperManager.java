@@ -3,24 +3,24 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.testing.developerscenario;
+package com.junbo.test.developerscenario;
 
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.common.id.UserId;
 import com.junbo.entitlement.spec.model.Entitlement;
-import com.junbo.testing.common.apihelper.catalog.OfferService;
-import com.junbo.testing.common.apihelper.catalog.impl.OfferServiceImpl;
-import com.junbo.testing.common.apihelper.entitlement.EntitlementService;
-import com.junbo.testing.common.apihelper.entitlement.impl.EntitlementServiceImpl;
-import com.junbo.testing.common.apihelper.identity.UserService;
-import com.junbo.testing.common.apihelper.identity.impl.UserServiceImpl;
-import com.junbo.testing.common.blueprint.Master;
-import com.junbo.testing.common.libs.IdConverter;
-import com.junbo.testing.common.libs.LogHelper;
-import com.junbo.testing.common.property.Component;
-import com.junbo.testing.common.property.Priority;
-import com.junbo.testing.common.property.Property;
-import com.junbo.testing.common.property.Status;
+import com.junbo.test.common.apihelper.catalog.OfferService;
+import com.junbo.test.common.apihelper.catalog.impl.OfferServiceImpl;
+import com.junbo.test.common.apihelper.entitlement.EntitlementService;
+import com.junbo.test.common.apihelper.entitlement.impl.EntitlementServiceImpl;
+import com.junbo.test.common.apihelper.identity.UserService;
+import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
+import com.junbo.test.common.blueprint.Master;
+import com.junbo.test.common.libs.IdConverter;
+import com.junbo.test.common.libs.LogHelper;
+import com.junbo.test.common.property.Component;
+import com.junbo.test.common.property.Priority;
+import com.junbo.test.common.property.Property;
+import com.junbo.test.common.property.Status;
 import org.testng.annotations.Test;
 import org.testng.Assert;
 

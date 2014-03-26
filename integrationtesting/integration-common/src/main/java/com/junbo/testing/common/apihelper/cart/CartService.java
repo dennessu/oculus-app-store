@@ -4,7 +4,7 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.testing.common.apihelper.cart;
+package com.junbo.test.common.apihelper.cart;
 
 import com.junbo.cart.spec.model.Cart;
 

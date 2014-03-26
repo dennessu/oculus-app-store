@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.testing.common.apihelper.billing;
+package com.junbo.test.common.apihelper.billing;
 
 import com.junbo.billing.spec.model.ShippingAddress;
 

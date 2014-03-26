@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.testing.common.libs;
+package com.junbo.test.common.libs;
 
 import java.io.IOException;
 import java.io.InputStream;
