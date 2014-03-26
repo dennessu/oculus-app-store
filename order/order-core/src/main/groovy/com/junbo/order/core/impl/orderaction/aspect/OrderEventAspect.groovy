@@ -53,7 +53,7 @@ class OrderEventAspect {
             if (getOrderActionType(jp) != null) { // only create event if action type is set
                 def orderEvent = getOpenOrderEvent(jp)
                 if (orderEvent != null && orderEvent.order != null) {
-                    transactionHelper.executeInTransaction {
+                    transactionHelper.executeInNewTransaction {
                         repo.createOrderEvent(orderEvent)
                     }
                 }
@@ -77,7 +77,7 @@ class OrderEventAspect {
         rv.syncRecover { Throwable throwable ->
             def oe = getReturnedOrderEvent(jp, EventStatus.ERROR)
             if (oe != null) {
-                transactionHelper.executeInTransaction {
+                transactionHelper.executeInNewTransaction {
                     repo.createOrderEvent(oe)
                 }
             }
@@ -87,7 +87,7 @@ class OrderEventAspect {
             try {
                 def oe = getReturnedOrderEvent(jp, ar)
                 if (oe != null) {
-                    transactionHelper.executeInTransaction {
+                    transactionHelper.executeInNewTransaction {
                         repo.createOrderEvent(oe)
                     }
                 }
