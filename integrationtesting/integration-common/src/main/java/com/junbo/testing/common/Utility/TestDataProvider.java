@@ -5,6 +5,7 @@
  */
 package com.junbo.testing.common.Utility;
 
+import com.junbo.billing.spec.model.ShippingAddress;
 import com.junbo.cart.spec.model.Cart;
 import com.junbo.cart.spec.model.item.CouponItem;
 import com.junbo.cart.spec.model.item.OfferItem;
@@ -15,6 +16,7 @@ import com.junbo.payment.spec.model.Address;
 import com.junbo.payment.spec.model.CreditCardRequest;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.Phone;
+import com.junbo.testing.common.Entities.ShippingAddressInfo;
 import com.junbo.testing.common.apihelper.billing.ShippingAddressService;
 import com.junbo.testing.common.apihelper.billing.impl.ShippingAddressServiceImpl;
 import com.junbo.testing.common.apihelper.cart.CartService;
@@ -32,11 +34,11 @@ import com.junbo.testing.common.apihelper.order.impl.OrderServiceImpl;
 import com.junbo.testing.common.apihelper.payment.PaymentService;
 import com.junbo.testing.common.apihelper.payment.impl.PaymentServiceImpl;
 import com.junbo.testing.common.blueprint.Master;
-import com.junbo.testing.common.enums.Country;
-import com.junbo.testing.common.enums.Currency;
+import com.junbo.testing.common.Entities.enums.Country;
+import com.junbo.testing.common.Entities.enums.Currency;
 import com.junbo.testing.common.libs.EnumHelper.UserStatus;
 import com.junbo.testing.common.libs.RandomFactory;
-import com.junbo.testing.common.paymentInstruments.CreditCardInfo;
+import com.junbo.testing.common.Entities.paymentInstruments.CreditCardInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -154,7 +156,7 @@ public class TestDataProvider {
         return orderClient.postOrder(order);
     }
 
-    public String postCreditCardToUser(String uid , CreditCardInfo creditCardInfo) throws Exception{
+    public String postCreditCardToUser(String uid, CreditCardInfo creditCardInfo) throws Exception {
         PaymentInstrument paymentInstrument = new PaymentInstrument();
         CreditCardRequest creditCardRequest = new CreditCardRequest();
         //creditCardRequest.setType(creditCardInfo.getType().toString());
@@ -183,8 +185,22 @@ public class TestDataProvider {
         paymentInstrument.setType(creditCardInfo.getType().toString());
         paymentInstrument.setTrackingUuid(UUID.randomUUID());
 
-        return paymentClient.postPaymentInstrumentToUser(uid,paymentInstrument);
+        return paymentClient.postPaymentInstrumentToUser(uid, paymentInstrument);
     }
 
+    public String postShippingAddressToUser(String uid, ShippingAddressInfo shippingAddressInfo) throws Exception {
+        ShippingAddress shippingAddress = new ShippingAddress();
+        shippingAddress.setStreet(shippingAddressInfo.getStreet());
+        shippingAddress.setCity(shippingAddressInfo.getCity());
+        shippingAddress.setState(shippingAddressInfo.getState());
+        shippingAddress.setPostalCode(shippingAddressInfo.getPostalCode());
+        shippingAddress.setCountry(shippingAddressInfo.getCountry());
+        shippingAddress.setFirstName(shippingAddressInfo.getFirstName());
+        shippingAddress.setLastName(shippingAddressInfo.getLastName());
+        shippingAddress.setPhoneNumber(shippingAddressInfo.getPhoneNumber());
+
+        return shippingClient.postShippingAddressToUser(uid, shippingAddress);
+
+    }
 
 }

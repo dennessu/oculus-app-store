@@ -27,6 +27,7 @@ import java.util.List;
  */
 @Component
 public class EmailTemplateServiceImpl implements EmailTemplateService {
+
     @Autowired
     private EmailTemplateRepository templateRepository;
 
