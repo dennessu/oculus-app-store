@@ -3,7 +3,6 @@ apply plugin: 'groovy'
 dependencies {
     compile (libraries.common_lib)
     compile (libraries.common_sharding)
-    compile (libraries.oom_processor)
     compile (libraries.oom)
     compile (libraries.common_configuration)
 
@@ -28,10 +27,20 @@ dependencies {
     compile (libraries.bonecp_spring)
     compile (libraries.rs_api)
 
+    compile (libraries.querydsl_jpa)
+
+    processor (libraries.querydsl_apt)
+    processor (libraries.persistence_api)
+    processor (libraries.oom_processor)
 
     testCompile (libraries.guava)
     testCompile (libraries.spring_test)
 
     compile project(':identity-common')
     compile project(':identity-spec')
+}
+
+
+ext {
+    processorClass = 'com.mysema.query.apt.jpa.JPAAnnotationProcessor,com.junbo.oom.processor.MappingProcessor'
 }
