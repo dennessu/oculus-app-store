@@ -8,6 +8,7 @@ import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.core.impl.common.CoreBuilder
+import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.OrderItem
 import com.junbo.rating.spec.model.request.OrderRatingRequest
@@ -26,6 +27,9 @@ class RatingAction implements Action {
     @Autowired
     @Qualifier('orderFacadeContainer')
     FacadeContainer facadeContainer
+    @Autowired
+    OrderRepository orderRepository
+
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RatingAction)
 

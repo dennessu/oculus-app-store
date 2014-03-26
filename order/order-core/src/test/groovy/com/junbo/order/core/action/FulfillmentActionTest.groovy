@@ -1,12 +1,13 @@
 package com.junbo.order.core.action
-
 import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.OrderId
 import com.junbo.common.id.OrderItemId
 import com.junbo.fulfilment.spec.constant.FulfilmentStatus
 import com.junbo.langur.core.promise.Promise
+import com.junbo.langur.core.webflow.executor.FlowExecutor
 import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.clientproxy.fulfillment.FulfillmentFacade
+import com.junbo.order.core.BaseTest
 import com.junbo.order.core.common.TestBuilder
 import com.junbo.order.core.impl.orderaction.ActionUtils
 import com.junbo.order.core.impl.orderaction.FulfillmentAction
@@ -17,14 +18,24 @@ import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.FulfillmentEvent
 import org.easymock.EasyMock
+import org.springframework.beans.factory.annotation.Autowired
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
+
+import javax.annotation.Resource
+
 /**
  * Created by fzhang on 14-3-10.
  */
-class FulfillmentActionTest {
+class FulfillmentActionTest extends BaseTest{
 
-    def action = new FulfillmentAction()
+    //def action = new FulfillmentAction()
+
+    @Autowired
+    FlowExecutor executor
+
+    @Resource(name='fulfillmentAction')
+    FulfillmentAction action
 
     @BeforeMethod
     void setUp() {
