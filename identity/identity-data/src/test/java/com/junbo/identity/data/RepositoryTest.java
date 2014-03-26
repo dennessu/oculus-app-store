@@ -26,6 +26,7 @@ import org.testng.annotations.Test;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Unittest.
@@ -99,22 +100,48 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         user.setPreferredLanguage(UUID.randomUUID().toString());
         user.setTimezone(UUID.randomUUID().toString());
         user.setType(UUID.randomUUID().toString());
-        user.setUserName(UUID.randomUUID().toString());
+        user.setUsername(UUID.randomUUID().toString());
         user.setCreatedTime(new Date());
         user.setCreatedBy("lixia");
-        user = userRepository.save(user);
+        try {
+            user = userRepository.create(user).wrapped().get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
 
-        User newUser = userRepository.get(user.getId());
+        User newUser = null;
+        try {
+            newUser = userRepository.get(user.getId()).wrapped().get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
         Assert.assertEquals(user.getBirthday(), newUser.getBirthday());
 
         Date newValue = new Date();
         newUser.setBirthday(newValue);
-        newUser = userRepository.update(newUser);
+        try {
+            newUser = userRepository.update(newUser).wrapped().get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
         Assert.assertEquals(newUser.getBirthday(), newValue);
 
         UserListOptions getOption = new UserListOptions();
-        getOption.setUserName(newUser.getUserName());
-        List<User> userList = userRepository.search(getOption);
+        getOption.setUsername(newUser.getUsername());
+        List<User> userList = null;
+        try {
+            userList = userRepository.search(getOption).wrapped().get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
         Assert.assertNotEquals(userList.size(), 0);
     }
 

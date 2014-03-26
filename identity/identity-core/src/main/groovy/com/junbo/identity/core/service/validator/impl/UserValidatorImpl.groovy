@@ -184,7 +184,7 @@ class UserValidatorImpl implements UserValidator {
         }
 
         if (user.gender != null) {
-            if (!(user.gender in ['male', 'female'])) {
+            if (!(user.gender in ['female', 'male'])) {
                 throw AppErrors.INSTANCE.fieldInvalid('gender', 'male, female').exception()
             }
         }

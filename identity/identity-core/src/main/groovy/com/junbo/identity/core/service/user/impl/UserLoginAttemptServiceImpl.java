@@ -14,6 +14,7 @@ import com.junbo.identity.core.service.util.UserPasswordUtil;
 import com.junbo.identity.core.service.validator.UserLoginAttemptValidator;
 import com.junbo.identity.data.repository.UserLoginAttemptRepository;
 import com.junbo.identity.data.repository.UserRepository;
+import com.junbo.identity.spec.error.AppErrors;
 import com.junbo.identity.spec.model.users.User;
 import com.junbo.identity.spec.model.users.UserLoginAttempt;
 import com.junbo.identity.spec.model.users.UserPassword;
@@ -25,6 +26,7 @@ import com.junbo.identity.spec.options.list.UserPinListOptions;
 import org.glassfish.jersey.internal.util.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -84,7 +86,6 @@ public class UserLoginAttemptServiceImpl implements UserLoginAttemptService {
 
             userLoginAttempt.setSucceeded(hashPassword.equals(currentPassword.getPasswordHash()));
             userLoginAttempt.setUserId(users.get(0).getId());
-            userLoginAttemptRepository.save(userLoginAttempt);
         }
         else if(userLoginAttempt.getType().equals("pin")) {
             UserPinListOptions userPinListOption = new UserPinListOptions();
@@ -97,7 +98,16 @@ public class UserLoginAttemptServiceImpl implements UserLoginAttemptService {
             userLoginAttempt.setSucceeded(hashPin.equals(currentPin.getPinHash()));
             userLoginAttempt.setUserId(users.get(0).getId());
         }
-        return userLoginAttemptRepository.save(userLoginAttempt);
+        UserLoginAttempt saved = saveUserLoginAttempt(userLoginAttempt);
+        if(!saved.getSucceeded()) {
+            throw AppErrors.INSTANCE.invalidPassword(saved.getType()).exception();
+        }
+        return saved;
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    private UserLoginAttempt saveUserLoginAttempt(UserLoginAttempt attempt) {
+        return userLoginAttemptRepository.save(attempt);
     }
 
     @Override

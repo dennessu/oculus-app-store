@@ -30,98 +30,99 @@ import org.springframework.util.StringUtils
  */
 @Component
 @CompileStatic
-public class UserRepositoryImpl implements UserRepository {
+class UserRepositoryImpl implements UserRepository {
     @Autowired
-    @Qualifier("identityModelMapperImpl")
-    private ModelMapper modelMapper;
+    @Qualifier('identityModelMapperImpl')
+    private ModelMapper modelMapper
 
     @Autowired
-    @Qualifier("userDAO")
-    private UserDAO userDAO;
+    @Qualifier('userDAO')
+    private UserDAO userDAO
 
     @Autowired
-    @Qualifier("userNameReverseIndexDAO")
-    private UserNameReverseIndexDAO userNameReverseIndexDAO;
+    @Qualifier('userNameReverseIndexDAO')
+    private UserNameReverseIndexDAO userNameReverseIndexDAO
 
     @Autowired
-    @Qualifier("userNameDAO")
-    private UserNameDAO userNameDAO;
+    @Qualifier('userNameDAO')
+    private UserNameDAO userNameDAO
 
     @Override
-    public Promise<User> create(User user) {
-        UserEntity userEntity = modelMapper.toUser(user, new MappingContext());
-        userEntity = userDAO.save(userEntity);
+    Promise<User> create(User user) {
+        UserEntity userEntity = modelMapper.toUser(user, new MappingContext())
+        userEntity = userDAO.save(userEntity)
 
         // save name structure
-        UserNameEntity userNameEntity = modelMapper.toUserName(user.getName(), new MappingContext());
-        userNameEntity.setUserId(userEntity.getId());
-        userNameDAO.save(userNameEntity);
+        UserNameEntity userNameEntity = modelMapper.toUserName(user.name, new MappingContext())
+        userNameEntity.setUserId(userEntity.id)
+        userNameDAO.save(userNameEntity)
 
         // build reverse lookup
-        UserNameReverseIndexEntity reverseLookupEntity = new UserNameReverseIndexEntity();
-        reverseLookupEntity.setUserId(userEntity.getId());
-        reverseLookupEntity.setUsername(userEntity.getUsername());
-        userNameReverseIndexDAO.save(reverseLookupEntity);
+        UserNameReverseIndexEntity reverseLookupEntity = new UserNameReverseIndexEntity()
+        reverseLookupEntity.setUserId(userEntity.id)
+        reverseLookupEntity.setUsername(userEntity.username)
+        userNameReverseIndexDAO.save(reverseLookupEntity)
 
-        return get(new UserId(userEntity.getId()));
+        return get(new UserId(userEntity.id))
     }
 
     @Override
-    public Promise<User> update(User user) {
-        UserEntity userEntity = modelMapper.toUser(user, new MappingContext());
-        UserEntity existing = userDAO.get(user.getId().getValue());
-        userDAO.update(userEntity);
+    Promise<User> update(User user) {
+        UserEntity userEntity = modelMapper.toUser(user, new MappingContext())
+        UserEntity existing = userDAO.get(userEntity.id)
+        userDAO.update(userEntity)
 
-        UserNameEntity userNameEntity = modelMapper.toUserName(user.getName(), new MappingContext());
-        UserNameEntity existingUserNameEntity = userNameDAO.findByUserId(userEntity.getId());
-        userNameEntity.setId(existingUserNameEntity.getId());
-        userNameEntity.setUserId(existingUserNameEntity.getUserId());
-        userNameDAO.update(userNameEntity);
+        UserNameEntity userNameEntity = modelMapper.toUserName(user.name, new MappingContext())
+        UserNameEntity existingUserNameEntity = userNameDAO.findByUserId(userEntity.id)
+        userNameEntity.setId(existingUserNameEntity.id)
+        userNameEntity.setUserId(existingUserNameEntity.userId)
+        userNameDAO.update(userNameEntity)
 
-        if (!userEntity.getUsername().equals(existing.getUsername())) {
-            userNameReverseIndexDAO.delete(existing.getUsername());
+        if (userEntity.username != existing.username) {
+            userNameReverseIndexDAO.delete(existing.username)
 
-            UserNameReverseIndexEntity reverseLookupEntity = new UserNameReverseIndexEntity();
-            reverseLookupEntity.setUserId(userEntity.getId());
-            reverseLookupEntity.setUsername(userEntity.getUsername());
-            userNameReverseIndexDAO.save(reverseLookupEntity);
+            UserNameReverseIndexEntity reverseLookupEntity = new UserNameReverseIndexEntity()
+            reverseLookupEntity.setUserId(userEntity.id)
+            reverseLookupEntity.setUsername(userEntity.username)
+            userNameReverseIndexDAO.save(reverseLookupEntity)
         }
 
-        return get(user.getId());
+        return get((UserId)user.id)
     }
 
     @Override
-    public Promise<User> get(UserId userId) {
-        User user = modelMapper.toUser(userDAO.get(userId.getValue()), new MappingContext());
-        UserName userName = modelMapper.toUserName(userNameDAO.findByUserId(userId.getValue()), new MappingContext());
-        user.setName(userName);
+    Promise<User> get(UserId userId) {
+        User user = modelMapper.toUser(userDAO.get(userId.value), new MappingContext())
+        UserName userName = modelMapper.toUserName(userNameDAO.findByUserId(userId.value), new MappingContext())
+        user.setName(userName)
 
-        return Promise.pure(user);
+        return Promise.pure(user)
     }
 
     @Override
-    public Promise<List<User>> search(UserListOptions option) {
-        if (!StringUtils.isEmpty(option.getUsername())) {
-            UserNameReverseIndexEntity reverseEntity = userNameReverseIndexDAO.get(option.getUsername());
-
-            List<User> results = new ArrayList<User>();
-            results.add(get(new UserId(reverseEntity.getUserId())).wrapped().get());
-
-            return Promise.pure(results);
-        } else {
+    Promise<List<User>> search(UserListOptions option) {
+        if (StringUtils.isEmpty(option.username)) {
             // todo:    Need to identify other fields
-            throw new RuntimeException();
+            throw new RuntimeException()
+        }
+        else {
+            UserNameReverseIndexEntity reverseEntity = userNameReverseIndexDAO.get(option.username)
+
+            List<User> results = new ArrayList<User>()
+            results.add(get(new UserId(reverseEntity.userId)).wrapped().get())
+
+            return Promise.pure(results)
         }
     }
 
     @Override
-    public Promise<Void> delete(UserId userId) {
-        UserEntity userEntity = userDAO.get(userId.getValue());
-        UserNameEntity userNameEntity = userNameDAO.findByUserId(userId.getValue());
-        userNameDAO.delete(userNameEntity.getId());
+    Promise<Void> delete(UserId userId) {
+        UserEntity userEntity = userDAO.get(userId.value)
+        UserNameEntity userNameEntity = userNameDAO.findByUserId(userId.value)
+        userNameDAO.delete(userNameEntity.id)
 
-        userNameReverseIndexDAO.delete(userEntity.getUsername());
-        userDAO.delete(userId.getValue());
+        userNameReverseIndexDAO.delete(userEntity.username)
+        userDAO.delete(userId.value)
 
         return Promise.pure(null)
     }
@@ -132,12 +133,12 @@ public class UserRepositoryImpl implements UserRepository {
             throw new IllegalArgumentException('canonicalUsername is empty')
         }
 
-        UserNameReverseIndexEntity reverseEntity = userNameReverseIndexDAO.get(canonicalUsername);
+        UserNameReverseIndexEntity reverseEntity = userNameReverseIndexDAO.get(canonicalUsername)
 
         if (reverseEntity == null) {
-            return Promise.pure(null);
+            return Promise.pure(null)
         }
 
-        return get(new UserId(reverseEntity.getUserId()));
+        return get(new UserId(reverseEntity.userId))
     }
 }
