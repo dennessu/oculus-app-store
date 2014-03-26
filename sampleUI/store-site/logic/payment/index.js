@@ -28,6 +28,28 @@ Payment.GetPayment = function (data, callback) {
     });
 };
 
+Payment.GetPaymentById = function (data, callback) {
+    var body = data.data;
+    var cookies = data.cookies;
+    var query = data.query;
+
+    var userId = cookies[process.AppConfig.CookiesName.UserId];
+    var paymentId = body["paymentId"];
+    var dataProvider = new DataProvider(process.AppConfig.Payment_API_Host, process.AppConfig.Payment_API_Port);
+
+    dataProvider.GetPaymentInstrumentsById(paymentId, userId, function(result){
+        var resultModel = new DomainModels.ResultModel();
+        if(result.StatusCode == 200){
+            resultModel.status = DomainModels.ResultStatusEnum.Normal;
+        }else{
+            resultModel.status = DomainModels.ResultStatusEnum.APIError;
+        }
+        resultModel.data = result.Data;
+
+        callback(Utils.GenerateResponseModel(resultModel));
+    });
+};
+
 Payment.PostPayment = function (data, callback) {
     var body = data.data;
     var cookies = data.cookies;
@@ -49,7 +71,7 @@ Payment.PostPayment = function (data, callback) {
 
     var dataProvider = new DataProvider(process.AppConfig.Payment_API_Host, process.AppConfig.Payment_API_Port);
 
-    dataProvider.PostPayment(userId, model, function(result){
+    dataProvider.PostPaymentInstruments(userId, model, function(result){
         var resultModel = new DomainModels.ResultModel();
 
         if(result.StatusCode == 200){
@@ -77,7 +99,7 @@ Payment.DeletePayment = function (data, callback) {
 
     var dataProvider = new DataProvider(process.AppConfig.Payment_API_Host, process.AppConfig.Payment_API_Port);
 
-    dataProvider.DeletePayment(paymentId, userId, function(result){
+    dataProvider.DeltePaymentInstruments(paymentId, userId, function(result){
         var resultModel = new DomainModels.ResultModel();
         if(result.StatusCode == 200){
             resultModel.status = DomainModels.ResultStatusEnum.Normal;

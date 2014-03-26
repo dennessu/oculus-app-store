@@ -1,0 +1,130 @@
+Required (*)
+<table class="table table-bordered vertical-table" ng-controller="OfferEditCtrl">
+    <tr ng-if="offer.self">
+        <td>Offer Id</td>
+        <td>{{ offer.self.id }}</td>
+    </tr>
+    <tr>
+        <td style="width: 200px;">Offer Name *</td>
+        <td>
+            <input type="text" class="form-control required" ng-model="offer.name" name="name" required />
+            <span class="help-inline" ng-show="submitted && form.name.$error.required">Required</span>
+        </td>
+    </tr>
+    <tr>
+        <td>Developer *</td>
+        <td><input type="text" class="form-control required" ng-model="offer.developer.id" ng-change="updateDeveloper()" required /></td>
+    </tr>
+    <tr>
+        <td>Category</td>
+        <td>
+            <label ng-repeat="categoryAttribute in categoryAttributes">
+                <input type="checkbox" checklist-model="offer.categories" checklist-value="categoryAttribute.self" class="chooseItem">{{ categoryAttribute.name }}
+            </label>
+        </td>
+    </tr>
+    <tr>
+        <td>Genre</td>
+        <td>
+            <label ng-repeat="genreAttribute in genreAttributes">
+                <input type="checkbox" checklist-model="offer.genres" checklist-value="genreAttribute.self" class="chooseItem">{{ genreAttribute.name }}
+            </label>
+        </td>
+    </tr>
+    <tr>
+        <td>Items</td>
+        <td>
+            <div>
+                <table class="table borderless">
+                    <tr>
+                        <td>Contains {{ totalItems() }} Items.</td>
+                        <td>
+                            <button ng-click="isCollapsed = !isCollapsed" class="btn btn-small btn-default">
+                                <div ng-show="isCollapsed">Add Items</div>
+                                <div ng-hide="isCollapsed" ng-click="saveItems()">Save</div>
+                            </button>
+                        </td>
+                    </tr>
+                </table>
+                <div collapse="isCollapsed">
+                    <table class="table table-bordered"><tr>
+                        <td>
+                            <b>Contained Items:</b>
+                            <table class="table table-hover">
+                                <tr ng-repeat="(id, item) in selectedItems" ng-click="removeItem(item)">
+                                    <td>{{ item.name }}</td>
+                                    <td class="select">x</td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td>
+                            <b>Add Items to the Offer:</b>
+                            <table class="table table-hover">
+                                <tr ng-repeat="item in items" ng-click="addItem(item)">
+                                    <td>{{ item.name }}</td>
+                                    <td class="select">+</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr></table>
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>Prices *</td>
+        <td>
+            <div>
+                Price type:
+                <select ng-model="priceType" ng-init="priceType='TierPricing'">
+                    <option>TierPricing</option>
+                    <option>NormalPricing</option>
+                </select>
+                <hr />
+                <div ng-if="priceType=='NormalPricing'">
+                    Add price:
+                    <select ng-model="selectedCountry" ng-change="addPrice(selectedCountry)" ng-options="country.code for country in countries">
+                    </select>
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Country</th>
+                            <th>Currency</th>
+                            <th>Amount</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tr ng-repeat="(countryCode, price) in offer.prices" ng-click="removePrice(countryCode)">
+                            <td>{{ countryCode }}</td>
+                            <td>{{ price.currency }}</td>
+                            <td><input type="text" class="form-control required" ng-model="price.amount" required /></td>
+                            <td class="select">x</td>
+                        </tr>
+                    </table>
+                </div>
+                <div ng-if="priceType=='TierPricing'">
+                    TODO: TierPricing
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>Limit Per Customer</td>
+        <td><input type="text" class="form-control required" ng-model="offer.restriction.limitPerCustomer"></td>
+    </tr>
+    <tr>
+        <td>Limit Per Order</td>
+        <td><input type="text" class="form-control required" ng-model="offer.restriction.limitPerOrder"></td>
+    </tr>
+    <tr>
+        <td>Available Countries</td>
+        <td>
+            <a ng-click="selectAllCountries()" class="btn btn-small btn-default">Check All</a>
+            <a ng-click="deselectAllCountries()" class="btn btn-small btn-default">Uncheck All</a>
+            <hr/>
+            <label ng-repeat="country in countries | filter: '!DEFAULT'">
+                <input type="checkbox" checklist-model="offer.eligibleCountries" checklist-value="country.code" class="chooseItem">{{ country.name }}
+            </label>
+        </td>
+    </tr>
+</table>

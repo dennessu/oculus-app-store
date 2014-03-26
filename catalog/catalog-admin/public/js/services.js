@@ -74,6 +74,26 @@ services.factory('MetaFactory', function() {
             "website": { "display": "Website", "controlType": "TEXT_INPUT"},
             "gameModes": { "display": "Game Modes", "controlType": "SINGLE_SELECT", "allowedValues":["Single Player", "Multi Player"]}
         },
-        itemTypes: ["PHYSICAL", "IAP", "APP"]
+        itemTypes: ["PHYSICAL", "IAP", "APP"],
+        countries: [
+            {"code":"AT", "name":"Austria", "currency": "AUD"},
+            {"code":"CN", "name":"China", "currency": "RMB"},
+            {"code":"CO", "name":"Colombia", "currency": "COP"},
+            {"code":"KR", "name":"South Korea", "currency": "KRW"},
+            {"code":"UA", "name":"Ukraine", "currency": "UAH"},
+            {"code":"US", "name":"United States", "currency": "USD"},
+            {"code":"JP", "name":"Japan", "currency": "JPY"},
+            {"code":"IN", "name":"India", "currency": "INR"},
+            {"code":"TW", "name":"Tai Wan", "currency": "TWD"},
+            {"code":"MX", "name":"Mexico", "currency": "MXN"},
+            {"code":"HK", "name":"Hong Kong", "currency": "HKD"},
+            {"code":"NZ", "name":"New Zealand", "currency": "NZD"},
+            {"code":"DEFAULT", "name":"DEFAULT", "currency": "USD"}
+        ],
+        offerMeta: {
+            "shortDescription": { "display": "Short Description", "controlType": "TEXT_INPUT"},
+            "longDescription": { "display": "Long Description", "controlType": "TEXT_INPUT"},
+            "changeNotes": { "display": "Change Notes", "controlType": "TEXT_INPUT"}
+        }
     };
 });

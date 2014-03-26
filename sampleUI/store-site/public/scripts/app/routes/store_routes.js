@@ -87,6 +87,71 @@ var StoreRoutes = {
     OrderSummaryRoute: Ember.Route.extend({
         beforeModel: function(){
             Utils.GetViews(AppConfig.Templates.Store.OrderSummary);
+        },
+        setupController: function(controller, model){
+            var provider = new CartProvider();
+            provider.GetOrder(Utils.GenerateRequestModel(null), function(resultData){
+                if(resultData.data.status == 200){
+                    var order = JSON.parse(resultData.data.data);
+                    // set products
+                    var products = new Array();
+                    for(var i =0; i < order.orderItems.length; ++i){
+                        var item = order.orderItems[i];
+                        products.push({
+                            id: item.offer.id, price: item.unitPrice, qty: item.quantity, subTotal: item.totalAmount
+                        });
+                    }
+                    controller.set("content.products", products);
+
+                    // set shipping method name
+                    var shippingMethod = "None";
+                    for(var i = 0; i < AppConfig.ShippingMethods.length; ++i){
+                        var item = AppConfig.ShippingMethods[i];
+                        if(item.value == order.shippingMethodId){
+                            shippingMethod = item.name;
+                            break;
+                        }
+                    }
+                    controller.set("content.shippingMethodName", shippingMethod);
+
+                    // set shipping info
+                    var billingProvider = new BillingProvider();
+                    billingProvider.Get(Utils.GenerateRequestModel({shippingId: order.shippingAddressId}), function(resultData){
+                        if(resultData.data.status == 200){
+                            controller.set("content.shippingAddress", JSON.parse(resultData.data.data));
+                        }else{
+
+                        }
+                    });
+
+                    // set payment method
+                    var paymentProvider = new PaymentProvider();
+                    paymentProvider.Get(Utils.GenerateRequestModel({paymentId: order.paymentInstruments[0].id}), function(resultData){
+                        if(resultData.data.status == 200){
+                            var payment = JSON.parse(resultData.data.data);
+                            controller.set("content.paymentMethodName", payment.creditCardRequest.creditCardType + " " + payment.accountNum.substr(payment.accountNum.length - 4, 4));
+                        }else{
+
+                        }
+                    });
+
+                    // amount
+                    controller.set("content.discount", order.totalDiscount);
+                    controller.set("content.shippingFee", order.totalShippingFee);
+                    controller.set("content.shippingFeeDiscount", order.totalShippingFeeDiscount);
+                    controller.set("content.tax", order.totalTax);
+                    controller.set("content.totalAmount", order.totalAmount);
+
+                }else{
+                    throw "Can't get Order!";
+                }
+            });
+        }
+    }),
+
+    ThanksRoute: Ember.Route.extend({
+        beforeModel: function(){
+            Utils.GetViews(AppConfig.Templates.Store.Thanks);
         }
     })
 };
