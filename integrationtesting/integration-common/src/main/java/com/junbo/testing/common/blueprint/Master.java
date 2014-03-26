@@ -55,6 +55,7 @@ public class Master {
         this.initializeAttributes();
         this.initializeEntitlements();
         this.initializePayments();
+        this.initializeShippingAddresses();
     }
 
     public void initializeUsers() {
@@ -104,6 +105,13 @@ public class Master {
             this.entitlements = new HashMap<>();
         }
         this.entitlements.clear();
+    }
+
+    public void initializeShippingAddresses() {
+        if (this.shippingAddresses == null) {
+            this.shippingAddresses = new HashMap<>();
+        }
+        this.shippingAddresses.clear();
     }
 
     public void initializePayments() {
