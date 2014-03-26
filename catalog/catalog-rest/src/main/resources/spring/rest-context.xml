@@ -13,4 +13,6 @@
     <bean id="defaultPromotionResource" class="com.junbo.catalog.rest.resource.PromotionResourceImpl" scope="prototype"/>
     <bean id="defaultAttributeResource" class="com.junbo.catalog.rest.resource.AttributeResourceImpl" scope="prototype"/>
     <bean id="defaultEntitlementDefinitionResource" class="com.junbo.catalog.rest.resource.EntitlementDefinitionResourceImpl" scope="prototype"/>
+    <bean id="defaultPriceTierResource" class="com.junbo.catalog.rest.resource.PriceTierResourceImpl" scope="prototype"/>
+
 </beans>

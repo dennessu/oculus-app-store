@@ -40,8 +40,8 @@ Required (*)
                         <td>Contains {{ totalItems() }} Items.</td>
                         <td>
                             <button ng-click="isCollapsed = !isCollapsed" class="btn btn-small btn-default">
-                                <div ng-show="isCollapsed">Add Items</div>
-                                <div ng-hide="isCollapsed" ng-click="saveItems()">Save</div>
+                                <div ng-show="isCollapsed">View</div>
+                                <div ng-hide="isCollapsed">Collapse</div>
                             </button>
                         </td>
                     </tr>
@@ -76,45 +76,52 @@ Required (*)
         <td>
             <div>
                 Price type:
-                <select ng-model="priceType" ng-init="priceType='TierPricing'">
+                <select ng-model="priceType" ng-init="priceType='TierPricing'" ng-change="updatePriceType(priceType)">
                     <option>TierPricing</option>
                     <option>NormalPricing</option>
                 </select>
                 <hr />
-                <div ng-if="priceType=='NormalPricing'">
+                <div ng-show="priceType=='NormalPricing'">
                     Add price:
                     <select ng-model="selectedCountry" ng-change="addPrice(selectedCountry)" ng-options="country.code for country in countries">
                     </select>
-                    <table class="table">
-                        <thead>
-                        <tr>
-                            <th>Country</th>
-                            <th>Currency</th>
-                            <th>Amount</th>
-                            <th></th>
-                        </tr>
-                        </thead>
-                        <tr ng-repeat="(countryCode, price) in offer.prices" ng-click="removePrice(countryCode)">
+                    <table class="table table-bordered vertical-table">
+                        <tr><td>Country</td><td>Currency</td><td>Amount</td><td></td></tr>
+                        <tr ng-repeat="(countryCode, price) in offer.prices">
                             <td>{{ countryCode }}</td>
                             <td>{{ price.currency }}</td>
                             <td><input type="text" class="form-control required" ng-model="price.amount" required /></td>
-                            <td class="select">x</td>
+                            <td class="select" ng-click="removePrice(countryCode)">x</td>
                         </tr>
                     </table>
                 </div>
-                <div ng-if="priceType=='TierPricing'">
-                    TODO: TierPricing
+                <div ng-show="priceType=='TierPricing'">
+                    Select a price tier
+                    <select ng-model="selectedTierIndex" ng-change="updatePriceTier()">
+                        <option ng-repeat="priceTier in priceTiers" value="{{$index}}"
+                                ng-selected="priceTier.self.id == offer.priceTier.id">{{priceTier.name}}</option>
+                    </select>
+                    <div ng-show="offer.priceTier">
+                        <table class="table table-bordered vertical-table">
+                            <tr><td>Country</td><td>Currency</td><td>Price</td></tr>
+                            <tr ng-repeat="(country, price) in selectedTier.prices">
+                                <td>{{country}}</td>
+                                <td>{{price.currency}}</td>
+                                <td>{{price.amount}}</td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
             </div>
         </td>
     </tr>
     <tr>
         <td>Limit Per Customer</td>
-        <td><input type="text" class="form-control required" ng-model="offer.restriction.limitPerCustomer"></td>
+        <td><input type="number" class="form-control required" ng-model="offer.restriction.limitPerCustomer"></td>
     </tr>
     <tr>
         <td>Limit Per Order</td>
-        <td><input type="text" class="form-control required" ng-model="offer.restriction.limitPerOrder"></td>
+        <td><input type="number" class="form-control required" ng-model="offer.restriction.limitPerOrder"></td>
     </tr>
     <tr>
         <td>Available Countries</td>

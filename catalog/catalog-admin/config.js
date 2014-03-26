@@ -3,5 +3,6 @@ config.catalog_api_base_url = "http://localhost:8083/rest/";
 config.attributes_url = config.catalog_api_base_url + "attributes/"
 config.offers_url = config.catalog_api_base_url + "offers/"
 config.items_url = config.catalog_api_base_url + "items/"
+config.price_tiers_url = config.catalog_api_base_url + "price-tiers/"
 
 module.exports = config;
