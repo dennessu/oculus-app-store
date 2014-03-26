@@ -5,6 +5,7 @@
  */
 package com.junbo.oauth.api.endpoint
 
+import com.junbo.common.id.UserId
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oauth.core.exception.AppExceptions
 import com.junbo.oauth.core.service.TokenService
@@ -63,7 +64,7 @@ class TokenInfoEndpointImpl implements TokenInfoEndpoint {
         // Return the token information.
         TokenInfo tokenInfo = new TokenInfo(
                 clientId: accessToken.clientId,
-                sub: accessToken.userId.toString(),
+                sub: new UserId(accessToken.userId),
                 scopes: StringUtils.collectionToDelimitedString(accessToken.scopes, ' '),
                 expiresIn: (Long) (accessToken.expiredBy.time - System.currentTimeMillis()) / 1000
         )
