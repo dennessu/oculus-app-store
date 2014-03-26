@@ -6,4 +6,51 @@
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
+    <bean id="userFilter" class="com.junbo.identity.core.service.filter.UserFilter">
+
+        <property name="readableProperties">
+            <list>
+                <value>id</value>
+                <value>username</value>
+                <value>displayName</value>
+                <value>name</value>
+                <value>nickName</value>
+                <value>preferredLanguage</value>
+                <value>locale</value>
+                <value>timezone</value>
+                <value>active</value>
+                <value>birthday</value>
+                <value>gender</value>
+                <value>type</value>
+                <value>resourceAge</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForCreate">
+            <list>
+                <value>username</value>
+                <value>displayName</value>
+                <value>name</value>
+                <value>nickName</value>
+                <value>preferredLanguage</value>
+                <value>locale</value>
+                <value>timezone</value>
+                <value>birthday</value>
+                <value>gender</value>
+                <value>type</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForUpdate">
+            <list>
+                <value>displayName</value>
+                <value>name</value>
+                <value>nickName</value>
+                <value>preferredLanguage</value>
+                <value>locale</value>
+                <value>timezone</value>
+            </list>
+        </property>
+
+    </bean>
 </beans>

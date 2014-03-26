@@ -86,6 +86,9 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
     public void setId(UserId id) {
         this.id = id;
         support.setPropertyAssigned("id");
+
+        // just work around. TODO: fix later.
+        support.setPropertyAssigned("self");
     }
 
     public String getUsername() {

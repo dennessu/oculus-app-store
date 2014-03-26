@@ -81,7 +81,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
     private UserSecurityQuestionAttemptRepository userSecurityQuestionAttemptRepository;
 
     @Test(enabled = true)
-    public void testUserRepository() {
+    public void testUserRepository() throws Exception {
         User user = new User();
         user.setActive(true);
         user.setBirthday(new Date());
@@ -99,22 +99,22 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         user.setPreferredLanguage(UUID.randomUUID().toString());
         user.setTimezone(UUID.randomUUID().toString());
         user.setType(UUID.randomUUID().toString());
-        user.setUserName(UUID.randomUUID().toString());
+        user.setUsername(UUID.randomUUID().toString());
         user.setCreatedTime(new Date());
         user.setCreatedBy("lixia");
-        user = userRepository.save(user);
+        user = userRepository.create(user).wrapped().get();
 
-        User newUser = userRepository.get(user.getId());
+        User newUser = userRepository.get(user.getId()).wrapped().get();
         Assert.assertEquals(user.getBirthday(), newUser.getBirthday());
 
         Date newValue = new Date();
         newUser.setBirthday(newValue);
-        newUser = userRepository.update(newUser);
+        newUser = userRepository.update(newUser).wrapped().get();
         Assert.assertEquals(newUser.getBirthday(), newValue);
 
         UserListOptions getOption = new UserListOptions();
-        getOption.setUserName(newUser.getUserName());
-        List<User> userList = userRepository.search(getOption);
+        getOption.setUsername(newUser.getUsername());
+        List<User> userList = userRepository.search(getOption).wrapped().get();
         Assert.assertNotEquals(userList.size(), 0);
     }
 

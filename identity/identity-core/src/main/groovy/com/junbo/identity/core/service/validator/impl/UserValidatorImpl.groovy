@@ -1,5 +1,6 @@
 package com.junbo.identity.core.service.validator.impl
 
+import com.junbo.common.id.UserId
 import com.junbo.identity.core.service.validator.*
 import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.spec.error.AppErrors
@@ -136,17 +137,13 @@ class UserValidatorImpl implements UserValidator {
         if (user == null) {
             throw new IllegalArgumentException('user is null')
         }
+
         if (oldUser == null) {
             throw new IllegalArgumentException('oldUser is null')
         }
 
-
-        if (user.id != null) {
-            throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
-        }
-
-        if (user.type != oldUser.type) {
-            throw AppErrors.INSTANCE.fieldNotWritable('type').exception()
+        if (user.id != oldUser.id) {
+            throw new IllegalArgumentException('user.id mismatch')
         }
 
         if (user.name != null) {
@@ -190,14 +187,8 @@ class UserValidatorImpl implements UserValidator {
         }
 
         if (user.active == null) {
-            user.active = true
+            throw AppErrors.INSTANCE.fieldRequired('active').exception()
         }
-
-        /*
-        if (user.active != oldUser.active) {
-            // TODO: only admin can do it.
-        }
-        */
 
         if (user.displayNameType != null) {
             throw AppErrors.INSTANCE.fieldNotWritable('displayNameType').exception()
