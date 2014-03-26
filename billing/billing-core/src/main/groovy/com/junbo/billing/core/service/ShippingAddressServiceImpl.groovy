@@ -31,6 +31,9 @@ class ShippingAddressServiceImpl implements ShippingAddressService {
     @Autowired
     IdentityFacade identityFacade
 
+    @Autowired
+    TaxService taxService
+
     private static final Logger LOGGER = LoggerFactory.getLogger(ShippingAddressServiceImpl)
 
     @Override
@@ -42,8 +45,12 @@ class ShippingAddressServiceImpl implements ShippingAddressService {
         address.setUserId(new UserId(userId))
 
         return validateUser(address.userId.value).then {
-            validateAddress(address)
-            return Promise.pure(shippingAddressRepository.saveShippingAddress(address))
+            return validateAddress(address).recover { Throwable throwable ->
+                LOGGER.error('name=Error_Add_ShippingAddress. The posted address is invalid verified by tax service. ')
+                throw throwable
+            }.then { ShippingAddress returnedAddress ->
+                return Promise.pure(shippingAddressRepository.saveShippingAddress(returnedAddress))
+            }
         }
     }
 
@@ -92,7 +99,7 @@ class ShippingAddressServiceImpl implements ShippingAddressService {
         }
     }
 
-    private void validateAddress(ShippingAddress address) {
+    private Promise<ShippingAddress> validateAddress(ShippingAddress address) {
         if (address.street == null) {
             throw AppErrors.INSTANCE.fieldMissingValue('street').exception()
         }
@@ -115,5 +122,7 @@ class ShippingAddressServiceImpl implements ShippingAddressService {
         if (address.lastName == null) {
             throw AppErrors.INSTANCE.fieldMissingValue('lastName').exception()
         }
+
+        return taxService.validateShippingAddress(address)
     }
 }

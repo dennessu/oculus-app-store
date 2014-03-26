@@ -7,11 +7,54 @@ var AccountRoutes = {
     IndexRoute: Ember.Route.extend({
         beforeModel: function(){
             Utils.GetViews(AppConfig.Templates.Account.Index);
+        },
+        setupController: function(controller, model){
+            // get profile
+            var provider = new IdentityProvider();
+            provider.GetProfile(Utils.GenerateRequestModel(null), function(resultData){
+                if(resultData.data.status == 200){
+                    var profile = JSON.parse(resultData.data.data);
+                    controller.set("content.firstName", profile.firstName);
+                    controller.set("content.lastName", profile.lastName);
+                }else{
+                    // TODO: Error
+                }
+            });
         }
     }),
     EditInfoRoute: Ember.Route.extend({
         beforeModel: function(){
             Utils.GetViews(AppConfig.Templates.Account.EditInfo);
+        },
+        setupController: function(controller, model){
+            // get profile
+            var provider = new IdentityProvider();
+            provider.GetProfile(Utils.GenerateRequestModel(null), function(resultData){
+               if(resultData.data.status == 200){
+                   var profile = JSON.parse(resultData.data.data);
+                   controller.set("content.firstName", profile.firstName);
+                   controller.set("content.lastName", profile.lastName);
+               }else{
+                   // TODO: Error
+               }
+            });
+
+            // get opt-in
+            provider.GetOptIns(Utils.GenerateRequestModel(null), function(resultData){
+                if(resultData.data.status == 200){
+                    var optIns = JSON.parse(resultData.data.data).items;
+                    for(var i = 0; i < optIns.length; ++i){
+                        if(optIns[i].type.toLowerCase() == "promotion"){
+                            controller.set("content.isOptInPromotion", true);
+                        }
+                        if(optIns[i].type.toLowerCase() == "newsweekly"){
+                            controller.set("content.isOptInNewsWeekly", true);
+                        }
+                    }
+                }else{
+                    // TODO: Error
+                }
+            });
         }
     }),
     EditPasswordRoute: Ember.Route.extend({
@@ -37,6 +80,17 @@ var AccountRoutes = {
     HistoryRoute: Ember.Route.extend({
         beforeModel: function(){
             Utils.GetViews(AppConfig.Templates.Account.History);
+        },
+        setupController: function(controller, model){
+            var provider = new CartProvider();
+            provider.GetOrders(Utils.GenerateRequestModel(null), function(resultData){
+                if(resultData.data.status == 200){
+                    var orders = JSON.parse(resultData.data.data).items;
+                    controller.set("content.orders", orders);
+                }else{
+                    // TODO: Error
+                }
+            });
         }
     }),
     PaymentRoute: Ember.Route.extend({

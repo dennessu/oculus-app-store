@@ -24,7 +24,7 @@ import org.slf4j.bridge.SLF4JBridgeHandler
 class CatalogMain {
     static HttpServer startServer() {
         def resourceConfig = new ResourceConfig()
-        resourceConfig.property('contextConfigLocation', 'classpath*:/spring/*.xml')
+        resourceConfig.property('contextConfigLocation', 'classpath*:/spring/**/*.xml')
 
         // jackson feature
         resourceConfig.register(JacksonFeature)
@@ -51,11 +51,8 @@ class CatalogMain {
         SLF4JBridgeHandler.install()
 
         System.setProperty('net.spy.log.LoggerImpl', 'net.spy.memcached.compat.log.SLF4JLogger')
-        System.setProperty('logback.configurationFile', 'logback-identity.xml')
+        System.setProperty('logback.configurationFile', './conf/logback-catalog.xml')
 
         startServer()
-        //System.out.println('started\nHit enter to stop it...')
-        //System.in.read()
-        //server.shutdown()
     }
 }

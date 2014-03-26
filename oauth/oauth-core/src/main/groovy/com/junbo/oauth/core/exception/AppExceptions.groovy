@@ -204,7 +204,7 @@ interface AppExceptions {
             field = 'client')
     AppError cantUpdateFields(String field)
 
-    @ErrorDef(httpStatusCode = 400, code = '20049',
+    @ErrorDef(httpStatusCode = 409, code = '20049',
             description = 'The client is updated by someone else, please re-get the client and try update again',
             field = 'client')
     AppError updateConflict()
@@ -219,7 +219,7 @@ interface AppExceptions {
             field = 'token')
     AppError tokenClientNotMatch()
 
-    @ErrorDef(httpStatusCode = 400, code = '20051',
+    @ErrorDef(httpStatusCode = 409, code = '20051',
             description = 'The scope name {0} already exists',
             field = 'name')
     AppError duplicateScopeName()
