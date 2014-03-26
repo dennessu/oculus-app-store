@@ -49,6 +49,26 @@ module.exports = function(io){
                 fn(data);
             });
         });
+        socket.on('/api/identity/put_profile', function (data, fn) {
+            Identity.PutProfile(data, function(data){
+                fn(data);
+            });
+        });
+        socket.on('/api/identity/get_opt_ins', function (data, fn) {
+            Identity.GetOptIns(data, function(data){
+                fn(data);
+            });
+        });
+        socket.on('/api/identity/post_opt_ins', function (data, fn) {
+            Identity.PostOptIns(data, function(data){
+                fn(data);
+            });
+        });
+        socket.on('/api/identity/put_user', function (data, fn) {
+            Identity.PutUser(data, function(data){
+                fn(data);
+            });
+        });
 
         socket.on('/api/identity/pin', function (data, fn) {
             Identity.PIN(data, function(data){
@@ -88,8 +108,13 @@ module.exports = function(io){
                 fn(data);
             });
         });
-        socket.on('/api/cart/get_order', function (data, fn) {
-            Cart.GetOrder(data, function(data){
+        socket.on('/api/cart/get_order_by_id', function (data, fn) {
+            Cart.GetOrderById(data, function(data){
+                fn(data);
+            });
+        });
+        socket.on('/api/cart/get_order_by_user', function (data, fn) {
+            Cart.GetOrders(data, function(data){
                 fn(data);
             });
         });

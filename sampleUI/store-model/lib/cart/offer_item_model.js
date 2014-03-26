@@ -1,10 +1,6 @@
 
 
 module.exports = function(){
-    this.self = {
-        href : "#",
-        id : "" //cart id
-    };
     this.offer = {
         id : ""
     };
