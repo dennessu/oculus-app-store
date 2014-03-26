@@ -5,8 +5,6 @@
  */
 package com.junbo.test.common.Entities.paymentInstruments;
 
-import com.junbo.test.common.libs.RandomFactory;
-
 /**
  * Created by Yunlong on 3/25/14.
  */
@@ -23,7 +21,7 @@ public class Phone {
     public static Phone getRandomPhone(){
         Phone randomPhone = new Phone();
         randomPhone.setType("Home");
-        randomPhone.setNumber(RandomFactory.getRandomStringOfNumeric(10));
+        randomPhone.setNumber("650-253-0000");
         return randomPhone;
     }
 
