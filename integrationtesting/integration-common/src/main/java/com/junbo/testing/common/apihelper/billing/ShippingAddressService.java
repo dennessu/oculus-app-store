@@ -13,9 +13,9 @@ import java.util.List;
  * Created by Yunlong on 3/24/14.
  */
 public interface ShippingAddressService {
-    String addShippingAddress(String uid, ShippingAddress address) throws Exception;
+    String postShippingAddressToUser(String uid, ShippingAddress address) throws Exception;
 
-    String addShippingAddress(String uid, ShippingAddress address, int expectedResponseCode) throws Exception;
+    String postShippingAddressToUser(String uid, ShippingAddress address, int expectedResponseCode) throws Exception;
 
     List<String> getShippingAddresses(String uid) throws Exception;
 

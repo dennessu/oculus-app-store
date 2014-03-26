@@ -8,7 +8,10 @@ package com.junbo.testing.common.apihelper.billing.impl;
 import com.junbo.billing.spec.model.ShippingAddress;
 import com.junbo.testing.common.apihelper.HttpClientBase;
 import com.junbo.testing.common.apihelper.billing.ShippingAddressService;
+import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.testing.common.blueprint.Master;
+import com.junbo.langur.core.client.TypeReference;
+import com.junbo.testing.common.libs.IdConverter;
 import com.junbo.testing.common.libs.RestUrl;
 import com.junbo.testing.common.libs.LogHelper;
 
@@ -33,21 +36,25 @@ public class ShippingAddressServiceImpl extends HttpClientBase implements Shippi
     }
 
     @Override
-    public String addShippingAddress(String uid, ShippingAddress address) throws Exception {
-        return addShippingAddress(uid, address, 200);
+    public String postShippingAddressToUser(String uid, ShippingAddress address) throws Exception {
+        return postShippingAddressToUser(uid, address, 200);
     }
 
     @Override
-    public String addShippingAddress(String uid, ShippingAddress address, int expectedResponseCode) throws Exception {
-        /*
+    public String postShippingAddressToUser(String uid, ShippingAddress address,
+                                            int expectedResponseCode) throws Exception {
+        String responseBody = restApiCall(HTTPMethod.POST, shippingAddressUrl
+                + "users/" + uid + "/ship-to-info", address);
+
         ShippingAddress shippingResult =
-                restApiCall(HTTPMethod.POST, shippingAddressUrl, address, expectedResponseCode);
+                new JsonMessageTranscoder().decode(
+                        new TypeReference<ShippingAddress>() {
+                        }, responseBody);
+
         String addressId = IdConverter.idToHexString(shippingResult.getAddressId());
         Master.getInstance().addShippingAddress(addressId, shippingResult);
 
         return addressId;
-        */
-        return null;
     }
 
     @Override
