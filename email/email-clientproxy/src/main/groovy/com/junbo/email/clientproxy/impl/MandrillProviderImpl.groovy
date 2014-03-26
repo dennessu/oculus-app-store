@@ -56,7 +56,10 @@ class MandrillProviderImpl implements EmailProvider {
         requestBuilder.setBody(toJson(request))
         Promise<Response> future = Promise.wrap(asGuavaFuture(requestBuilder.execute()))
 
-        future.then {
+        future.recover {
+            LOGGER.error('Failed to build request')
+            throw AppErrors.INSTANCE.emailSendError('Fail to build request').exception()
+        } .then {
             def response = (Response)it
             if (response == null) {
                 LOGGER.error('Fail to get the response')
