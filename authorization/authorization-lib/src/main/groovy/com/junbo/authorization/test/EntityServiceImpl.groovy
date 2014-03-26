@@ -15,6 +15,9 @@ import com.junbo.authorization.model.Scope
 import groovy.transform.CompileStatic
 import org.springframework.context.ApplicationContext
 import org.springframework.context.support.ClassPathXmlApplicationContext
+import org.springframework.expression.ExpressionParser
+import org.springframework.expression.spel.standard.SpelExpressionParser
+import org.springframework.expression.spel.support.StandardEvaluationContext
 
 /**
  * EntityServiceImpl.
@@ -32,22 +35,34 @@ class EntityServiceImpl implements EntityService {
         return null
     }
 
-    static void main(String[] args) {
-        ObjectMapper objectMapper = new ObjectMapper()
-        ApplicationContext context = new ClassPathXmlApplicationContext('spring/context.xml')
-        EntityService service = (EntityService) context.getBean('service')
-        Scope scope = new Scope()
-        Map<Role, Set<String>> scopeClaims = [:]
-        scopeClaims[Role.OWNER] = ['read', 'owner'].toSet()
-        scopeClaims[Role.ADMIN] = ['read', 'admin'].toSet()
-        scopeClaims[Role.GUEST] = ['read'].toSet()
-        scope.claims = scopeClaims
+    Boolean isOwner() {
+        return true
+    }
 
-        Entity entity = service.get(456L, new AccessToken(tokenValue: 'test', userId: 456L, scopes: [scope].toSet()), null)
-        println objectMapper.writeValueAsString(entity)
-        entity = service.get(456L, new AccessToken(tokenValue: 'test', userId: 789L, scopes: [scope].toSet()), null)
-        println objectMapper.writeValueAsString(entity)
-        entity = service.get(456L, new AccessToken(tokenValue: 'test', userId: 123L, scopes: [scope].toSet()), null)
-        println objectMapper.writeValueAsString(entity)
+    Boolean isAdmin() {
+        return false
+    }
+    static void main(String[] args) {
+//        ObjectMapper objectMapper = new ObjectMapper()
+//        ApplicationContext context = new ClassPathXmlApplicationContext('spring/context.xml')
+//        EntityService service = (EntityService) context.getBean('service')
+//        Scope scope = new Scope()
+//        Map<Role, Set<String>> scopeClaims = [:]
+//        scopeClaims[Role.OWNER] = ['read', 'owner'].toSet()
+//        scopeClaims[Role.ADMIN] = ['read', 'admin'].toSet()
+//        scopeClaims[Role.GUEST] = ['read'].toSet()
+//        scope.claims = scopeClaims
+//
+//        Entity entity = service.get(456L, new AccessToken(tokenValue: 'test', userId: 456L, scopes: [scope].toSet()), null)
+//        println objectMapper.writeValueAsString(entity)
+//        entity = service.get(456L, new AccessToken(tokenValue: 'test', userId: 789L, scopes: [scope].toSet()), null)
+//        println objectMapper.writeValueAsString(entity)
+//        entity = service.get(456L, new AccessToken(tokenValue: 'test', userId: 123L, scopes: [scope].toSet()), null)
+//        println objectMapper.writeValueAsString(entity)
+        EntityServiceImpl entityService = new EntityServiceImpl()
+        StandardEvaluationContext context = new StandardEvaluationContext(entityService)
+        ExpressionParser parser = new SpelExpressionParser();
+        Boolean is = parser.parseExpression('owne. && adm').getValue(context, Boolean)
+        println is
     }
 }
