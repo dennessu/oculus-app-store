@@ -46,7 +46,7 @@ public class CartManager {
             features = "BuyerScenarios",
             component = Component.Cart,
             owner = "JieFeng",
-            status = Status.Incomplete,
+            status = Status.Enable,
             description = "get primary cart then add/remove items in cart",
             steps = {
                     "1. Create an user" +
@@ -119,7 +119,7 @@ public class CartManager {
             features = "BuyerScenarios",
             component = Component.Cart,
             owner = "JieFeng",
-            status = Status.Incomplete,
+            status = Status.Enable,
             description = "test cart merge",
             steps = {
                     "1. Create two users" +

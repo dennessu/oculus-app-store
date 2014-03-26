@@ -9,6 +9,7 @@ import com.junbo.billing.spec.model.ShippingAddress;
 import com.junbo.cart.spec.model.Cart;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.item.Item;
+import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.identity.spec.model.user.User;
 import com.junbo.order.spec.model.Order;
 import com.junbo.catalog.spec.model.attribute.Attribute;
@@ -43,6 +44,7 @@ public class Master {
     private Map<String, ShippingAddress> shippingAddresses;
     private Map<String, Attribute> attributes;
     private Map<String, PaymentInstrument> paymentInstruments;
+    private Map<String, Entitlement> entitlements;
 
     public void initializeMaster() {
         this.initializeUsers();
@@ -51,6 +53,7 @@ public class Master {
         this.initializeItems();
         this.initializeOrders();
         this.initializeAttributes();
+        this.initializeEntitlements();
     }
 
     public void initializeUsers() {
@@ -93,6 +96,13 @@ public class Master {
             this.attributes = new HashMap<>();
         }
         this.attributes.clear();
+    }
+
+    public void initializeEntitlements() {
+        if (this.entitlements == null) {
+            this.entitlements = new HashMap<>();
+        }
+        this.entitlements.clear();
     }
 
     public void addUser(String userId, User user) {
@@ -154,6 +164,13 @@ public class Master {
         this.paymentInstruments.put(paymentInstrumentId, paymentInstrument);
     }
 
+    public void addEntitlement(String entitlementId, Entitlement entitlement) {
+        if (this.entitlements.containsKey(entitlementId)) {
+            this.entitlements.remove(entitlementId);
+        }
+        this.entitlements.put(entitlementId, entitlement);
+    }
+
     public User getUser(String userId) {
         return this.users.get(userId);
     }
@@ -184,6 +201,10 @@ public class Master {
 
     public Attribute getAttribute(String attributeId) {
         return this.attributes.get(attributeId);
+    }
+
+    public Entitlement getEntitlement(String entitlementId) {
+        return this.entitlements.get(entitlementId);
     }
 
     public void removeShippingAddress(String addressId) {
