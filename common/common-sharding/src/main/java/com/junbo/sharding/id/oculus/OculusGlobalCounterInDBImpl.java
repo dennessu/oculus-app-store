@@ -10,6 +10,8 @@ import com.junbo.sharding.id.dao.IdGlobalCounterDAO;
 import com.junbo.sharding.id.model.IdGlobalCounterEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by liangfu on 3/5/14.
@@ -20,6 +22,7 @@ public class OculusGlobalCounterInDBImpl implements OculusGlobalCounter {
     private IdGlobalCounterDAO shardIdGlobalCounterDAO;
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public int getAndIncrease(int shardId, int optionMode) {
         IdGlobalCounterEntity entity = shardIdGlobalCounterDAO.get((long)optionMode, (long)shardId);
 
