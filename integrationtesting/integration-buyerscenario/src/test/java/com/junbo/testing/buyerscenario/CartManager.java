@@ -93,7 +93,7 @@ public class CartManager {
         Assert.assertTrue(checkOfferQuantity(updatedCart, testOffer1, 3L));
         Assert.assertTrue(checkOfferQuantity(updatedCart, testOffer2, 2L));
 
-        //reduce offer quantity, remove offer&coupon, add one new offer
+        //reduce offer quantity, remove offer&coupon, add one new off5er
         addOrRemoveOfferInCart(updatedCart, testOffer1, -1, true);
         addOrRemoveOfferInCart(updatedCart, testOffer2, -2, true);
         addOrRemoveOfferInCart(updatedCart, testOffer3, 1, true);
@@ -230,6 +230,7 @@ public class CartManager {
         for (CouponItem ci : curCoupons) {
             if (ci.getCoupon().equals(couponId)) {
                 curCoupons.remove(ci);
+                break;
             }
         }
     }
