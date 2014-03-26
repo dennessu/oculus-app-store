@@ -83,6 +83,18 @@
 
               primary key (id)
             );
+
+            create table price_tiers (
+              id                      bigint            not null,
+              name                    varchar(64)       not null,
+              payload                 json              not null,
+              created_by              varchar(64)       not null,
+              created_time            timestamp         not null,
+              updated_by              varchar(64)       default null,
+              updated_time            timestamp         default null,
+
+              primary key (id)
+            );
                 ]]>
         </sql>
     </changeSet>
