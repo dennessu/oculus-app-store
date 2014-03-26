@@ -31,7 +31,7 @@ class CommerceMain {
 
         // present properties
         resourceConfig.register(ConfigResource)
-        resourceConfig.property('contextConfigLocation', 'classpath*:/spring/*.xml')
+        resourceConfig.property('contextConfigLocation', 'classpath*:/spring/**/*.xml')
 
         // Id type feature
         resourceConfig.register(IdTypeFromStringConverter)
@@ -62,7 +62,7 @@ class CommerceMain {
         SLF4JBridgeHandler.install()
 
         System.setProperty('net.spy.log.LoggerImpl', 'net.spy.memcached.compat.log.SLF4JLogger')
-        System.setProperty('logback.configurationFile', 'logback-identity.xml')
+        System.setProperty('logback.configurationFile', './conf/logback-commerce.xml')
 
         startServer()
     }
