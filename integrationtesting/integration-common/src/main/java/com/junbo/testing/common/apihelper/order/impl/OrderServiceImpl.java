@@ -3,19 +3,19 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.testing.common.apihelper.order.impl;
+package com.junbo.test.common.apihelper.order.impl;
 
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
 import com.junbo.order.spec.model.OrderEvent;
 import com.junbo.order.spec.model.Order;
 
-import com.junbo.testing.common.apihelper.HttpClientBase;
-import com.junbo.testing.common.apihelper.order.OrderService;
-import com.junbo.testing.common.blueprint.Master;
-import com.junbo.testing.common.libs.IdConverter;
-import com.junbo.testing.common.libs.LogHelper;
-import com.junbo.testing.common.libs.RestUrl;
+import com.junbo.test.common.apihelper.HttpClientBase;
+import com.junbo.test.common.apihelper.order.OrderService;
+import com.junbo.test.common.blueprint.Master;
+import com.junbo.test.common.libs.IdConverter;
+import com.junbo.test.common.libs.LogHelper;
+import com.junbo.test.common.libs.RestUrl;
 
 import java.util.List;
 

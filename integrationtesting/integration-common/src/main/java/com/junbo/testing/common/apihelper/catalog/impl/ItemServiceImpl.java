@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.testing.common.apihelper.catalog.impl;
+package com.junbo.test.common.apihelper.catalog.impl;
 
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.common.id.UserId;
@@ -11,11 +11,11 @@ import com.junbo.common.model.Results;
 import com.junbo.common.id.ItemId;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
-import com.junbo.testing.common.apihelper.catalog.ItemService;
-import com.junbo.testing.common.apihelper.identity.UserService;
-import com.junbo.testing.common.apihelper.identity.impl.UserServiceImpl;
-import com.junbo.testing.common.blueprint.Master;
-import com.junbo.testing.common.libs.*;
+import com.junbo.test.common.apihelper.catalog.ItemService;
+import com.junbo.test.common.apihelper.identity.UserService;
+import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
+import com.junbo.test.common.blueprint.Master;
+import com.junbo.test.common.libs.*;
 
 import com.ning.http.client.*;
 import com.ning.http.client.providers.netty.NettyResponse;

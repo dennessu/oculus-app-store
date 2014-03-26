@@ -3,9 +3,9 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.testing.common.exception;
+package com.junbo.test.common.exception;
 
-import com.junbo.testing.common.libs.LogHelper;
+import com.junbo.test.common.libs.LogHelper;
 
 /**
  * Created by Yunlong on 3/21/14.

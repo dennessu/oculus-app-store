@@ -3,14 +3,14 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.testing.buyerscenario;
+package com.junbo.test.buyerscenario;
 
-import com.junbo.testing.buyerscenario.util.BaseTestClass;
-import com.junbo.testing.common.apihelper.identity.UserService;
-import com.junbo.testing.common.apihelper.identity.impl.UserServiceImpl;
-import com.junbo.testing.common.blueprint.Master;
-import com.junbo.testing.common.libs.LogHelper;
-import com.junbo.testing.common.property.*;
+import com.junbo.test.buyerscenario.util.BaseTestClass;
+import com.junbo.test.common.apihelper.identity.UserService;
+import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
+import com.junbo.test.common.blueprint.Master;
+import com.junbo.test.common.libs.LogHelper;
+import com.junbo.test.common.property.*;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;

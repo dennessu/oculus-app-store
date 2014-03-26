@@ -3,16 +3,16 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.testing.common.apihelper.payment.impl;
+package com.junbo.test.common.apihelper.payment.impl;
 
 import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.payment.spec.model.PaymentInstrument;
-import com.junbo.testing.common.apihelper.HttpClientBase;
-import com.junbo.testing.common.apihelper.payment.PaymentService;
-import com.junbo.testing.common.blueprint.Master;
-import com.junbo.testing.common.libs.IdConverter;
-import com.junbo.testing.common.libs.LogHelper;
-import com.junbo.testing.common.libs.RestUrl;
+import com.junbo.test.common.apihelper.HttpClientBase;
+import com.junbo.test.common.apihelper.payment.PaymentService;
+import com.junbo.test.common.blueprint.Master;
+import com.junbo.test.common.libs.IdConverter;
+import com.junbo.test.common.libs.LogHelper;
+import com.junbo.test.common.libs.RestUrl;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
 

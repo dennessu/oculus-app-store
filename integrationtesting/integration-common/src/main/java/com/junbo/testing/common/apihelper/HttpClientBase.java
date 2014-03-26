@@ -3,11 +3,11 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.testing.common.apihelper;
+package com.junbo.test.common.apihelper;
 
 import com.junbo.common.json.JsonMessageTranscoder;
-import com.junbo.testing.common.exception.TestException;
-import com.junbo.testing.common.libs.LogHelper;
+import com.junbo.test.common.exception.TestException;
+import com.junbo.test.common.libs.LogHelper;
 import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.FluentCaseInsensitiveStringsMap;
 import com.ning.http.client.Request;

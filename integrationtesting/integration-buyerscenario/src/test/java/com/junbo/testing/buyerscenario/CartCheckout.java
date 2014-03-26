@@ -1,12 +1,12 @@
-package com.junbo.testing.buyerscenario;
+package com.junbo.test.buyerscenario;
 
 
-import com.junbo.testing.buyerscenario.util.BaseTestClass;
-import com.junbo.testing.common.Entities.ShippingAddressInfo;
-import com.junbo.testing.common.Entities.enums.Country;
-import com.junbo.testing.common.libs.LogHelper;
-import com.junbo.testing.common.Entities.paymentInstruments.CreditCardInfo;
-import com.junbo.testing.common.property.*;
+import com.junbo.test.buyerscenario.util.BaseTestClass;
+import com.junbo.test.common.Entities.ShippingAddressInfo;
+import com.junbo.test.common.Entities.enums.Country;
+import com.junbo.test.common.libs.LogHelper;
+import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
+import com.junbo.test.common.property.*;
 
 import org.testng.annotations.Test;
 

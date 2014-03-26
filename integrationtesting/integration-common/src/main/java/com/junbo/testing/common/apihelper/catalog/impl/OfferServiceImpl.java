@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.testing.common.apihelper.catalog.impl;
+package com.junbo.test.common.apihelper.catalog.impl;
 
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.offer.ItemEntry;
@@ -12,13 +12,13 @@ import com.junbo.common.id.OfferId;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.common.model.Results;
 import com.junbo.langur.core.client.TypeReference;
-import com.junbo.testing.common.apihelper.catalog.ItemService;
-import com.junbo.testing.common.apihelper.catalog.OfferService;
-import com.junbo.testing.common.blueprint.Master;
-import com.junbo.testing.common.libs.EnumHelper;
-import com.junbo.testing.common.libs.IdConverter;
-import com.junbo.testing.common.libs.LogHelper;
-import com.junbo.testing.common.libs.RestUrl;
+import com.junbo.test.common.apihelper.catalog.ItemService;
+import com.junbo.test.common.apihelper.catalog.OfferService;
+import com.junbo.test.common.blueprint.Master;
+import com.junbo.test.common.libs.EnumHelper;
+import com.junbo.test.common.libs.IdConverter;
+import com.junbo.test.common.libs.LogHelper;
+import com.junbo.test.common.libs.RestUrl;
 import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.AsyncHttpClientConfig;
 import com.ning.http.client.Request;

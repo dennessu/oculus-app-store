@@ -3,9 +3,9 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.testing.common.libs;
+package com.junbo.test.common.libs;
 
-import com.junbo.testing.common.exception.TestException;
+import com.junbo.test.common.exception.TestException;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;

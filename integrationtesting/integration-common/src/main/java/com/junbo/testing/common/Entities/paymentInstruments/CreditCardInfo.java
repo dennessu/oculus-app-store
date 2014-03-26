@@ -3,11 +3,11 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.testing.common.Entities.paymentInstruments;
+package com.junbo.test.common.Entities.paymentInstruments;
 
-import com.junbo.testing.common.Entities.enums.Country;
-import com.junbo.testing.common.Entities.enums.PaymentType;
-import com.junbo.testing.common.libs.RandomFactory;
+import com.junbo.test.common.Entities.enums.Country;
+import com.junbo.test.common.Entities.enums.PaymentType;
+import com.junbo.test.common.libs.RandomFactory;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
