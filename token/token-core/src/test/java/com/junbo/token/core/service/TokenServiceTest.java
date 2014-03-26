@@ -19,7 +19,7 @@ public class TokenServiceTest extends BaseTest {
     @Autowired
     private TokenService tokenService;
 
-    @Test
+    @Test(enabled = false)
     public void testAdd() throws ExecutionException, InterruptedException {
         OrderRequest request = new OrderRequest(){
             {
