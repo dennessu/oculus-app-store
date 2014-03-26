@@ -8,6 +8,7 @@ import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.core.annotation.OrderEventAwareAfter
 import com.junbo.order.core.annotation.OrderEventAwareBefore
+import com.junbo.order.core.impl.common.BillingEventBuilder
 import com.junbo.order.core.impl.common.CoreBuilder
 import com.junbo.order.core.impl.common.CoreUtils
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
@@ -49,11 +50,11 @@ class AuthSettleAction extends BaseOrderEventAwareAction {
             LOGGER.error('name=Order_AuthSettle_Error', throwable)
             throw AppErrors.INSTANCE.
                     billingConnectionError(CoreUtils.toAppErrors(throwable)).exception()
-        }.then {
+        }.then { Balance resultBalance ->
+            def billingEvent = BillingEventBuilder.buildBillingEvent(resultBalance)
             orderServiceContextBuilder.refreshBalances(context.orderServiceContext).syncThen {
                 // TODO: save order level tax
-                return CoreBuilder.buildActionResultForOrderEventAwareAction(context,
-                        CoreBuilder.buildEventStatusFromBalance(balance.status))
+                return CoreBuilder.buildActionResultForOrderEventAwareAction(context, billingEvent.status)
             }
         }
     }
