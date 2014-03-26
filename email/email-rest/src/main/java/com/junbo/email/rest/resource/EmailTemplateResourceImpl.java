@@ -5,6 +5,7 @@
  */
 package com.junbo.email.rest.resource;
 
+import com.junbo.common.id.EmailId;
 import com.junbo.common.model.Results;
 import com.junbo.email.core.EmailTemplateService;
 import com.junbo.email.spec.model.EmailTemplate;
@@ -31,14 +32,14 @@ public class EmailTemplateResourceImpl implements EmailTemplateResource{
     public Promise<EmailTemplate> postEmailTemplate(EmailTemplate template) {
         return templateService.postEmailTemplate(template);
     }
-    public Promise<EmailTemplate> getEmailTemplate(Long id) {
-        return templateService.getEmailTemplate(id);
+    public Promise<EmailTemplate> getEmailTemplate(EmailId id) {
+        return templateService.getEmailTemplate(id.getValue());
     }
-    public Promise<EmailTemplate> putEmailTemplate(Long id, EmailTemplate template) {
-        return templateService.putEmailTemplate(id, template);
+    public Promise<EmailTemplate> putEmailTemplate(EmailId id, EmailTemplate template) {
+        return templateService.putEmailTemplate(id.getValue(), template);
     }
-    public Promise<Response> deleteEmailTemplate(Long id) {
-        templateService.deleteEmailTemplate(id);
+    public Promise<Response> deleteEmailTemplate(EmailId id) {
+        templateService.deleteEmailTemplate(id.getValue());
         return Promise.pure(Response.status(204).build());
     }
     public Promise<Results<EmailTemplate>> getEmailTemplates(Paging paging) {
