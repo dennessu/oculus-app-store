@@ -1,6 +1,5 @@
 package com.junbo.identity.core.service.validator.impl
 
-import com.junbo.common.id.UserId
 import com.junbo.identity.core.service.validator.*
 import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.spec.error.AppErrors
