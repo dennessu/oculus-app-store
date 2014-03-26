@@ -12,8 +12,10 @@ if (!hasProperty('mainClass')) {
 
 test{
     useTestNG()
+    systemProperty 'test.config', System.properties['test.config']
     options {
         listeners << 'org.testng.reporters.XMLReporter'
+        listeners << 'com.junbo.testing.common.property.PropertyTransformer'
     }
     testLogging {
         events "passed", "skipped", "failed"
