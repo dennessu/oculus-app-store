@@ -1,22 +1,34 @@
 package com.junbo.payment.core.service;
 
+import com.junbo.common.error.AppErrorException;
+import com.junbo.langur.core.transaction.AsyncTransactionTemplate;
+import com.junbo.payment.common.exception.AppClientExceptions;
 import com.junbo.payment.core.BaseTest;
 import com.junbo.payment.core.PaymentInstrumentService;
 import com.junbo.payment.core.PaymentTransactionService;
 import com.junbo.payment.core.mock.MockPaymentProviderServiceImpl;
+import com.junbo.payment.spec.enums.CreditCardType;
 import com.junbo.payment.spec.enums.PIStatus;
 import com.junbo.payment.spec.enums.PIType;
 import com.junbo.payment.spec.enums.PaymentStatus;
 import com.junbo.payment.spec.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.testng.Assert;
+import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
 import java.util.concurrent.ExecutionException;
 
 public class PaymentServiceTest extends BaseTest {
     private final Long userId = 123L;
+    private final String BILLING_REF_ID = "123";
+    @Autowired
+    private PlatformTransactionManager transactionManager;
     @Autowired
     public void setPiService(@Qualifier("mockPaymentInstrumentService")PaymentInstrumentService piService) {
         this.piService = piService;
@@ -29,50 +41,65 @@ public class PaymentServiceTest extends BaseTest {
     private PaymentInstrumentService piService;
     private PaymentTransactionService paymentService;
 
-    //@Test
+    @Test
     public void testAddPI() throws ExecutionException, InterruptedException {
         PaymentInstrument request = buildPIRequest();
         PaymentInstrument result = null;
         result = piService.add(request).wrapped().get();
         Assert.assertNotNull(result);
-        Assert.assertEquals(result.getCreditCardRequest().getType(), "Visa");
+        Assert.assertEquals(result.getCreditCardRequest().getType(), CreditCardType.VISA.toString());
         Assert.assertEquals(result.getCreditCardRequest().getExternalToken(), MockPaymentProviderServiceImpl.piExternalToken);
+        PaymentInstrument getResult = piService.getById(result.getId().getUserId(), result.getId().getPaymentInstrumentId());
+        Assert.assertEquals(getResult.getAccountName(), result.getAccountName());
        }
 
-    //@Test
+    @Test
     public void testRemovePI() throws ExecutionException, InterruptedException {
         PaymentInstrument request = buildPIRequest();
         PaymentInstrument result = piService.add(request).wrapped().get();
         piService.delete(userId, result.getId().getPaymentInstrumentId());
-        PaymentInstrument resultDelete = piService.getById(userId, result.getId().getPaymentInstrumentId());
-        Assert.assertEquals(resultDelete.getStatus().toString(), PIStatus.DELETED.toString());
     }
 
-    //@Test
+    @Test
     public void testPutPI() throws ExecutionException, InterruptedException {
         PaymentInstrument request = buildPIRequest();
         PaymentInstrument result = piService.add(request).wrapped().get();
-        result.setStatus(PIStatus.DELETED.toString());
+        result.setStatus(PIStatus.DISABLE.toString());
         result.getAddress().setPostalCode("123");
         piService.update(result);
         PaymentInstrument resultUpdate = piService.getById(userId, result.getId().getPaymentInstrumentId());
-        Assert.assertEquals(resultUpdate.getStatus().toString(), PIStatus.DELETED.toString());
+        Assert.assertEquals(resultUpdate.getStatus().toString(), PIStatus.DISABLE.toString());
         Assert.assertEquals(resultUpdate.getAddress().getPostalCode(), "123");
     }
 
+    private PaymentInstrument addPI(){
+        final PaymentInstrument request = buildPIRequest();
+        AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager);
+        template.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRES_NEW);
+        return template.execute(new TransactionCallback<PaymentInstrument>() {
+            public PaymentInstrument doInTransaction(TransactionStatus txnStatus) {
+                try {
+                    return piService.add(request).wrapped().get();
+                } catch (InterruptedException e) {
+                    return null;
+                } catch (ExecutionException e) {
+                    return null;
+                }
+            }
+        });
+    }
     //@Test
     public void testAuthSettleAndReverse() throws ExecutionException, InterruptedException {
-        PaymentInstrument request = buildPIRequest();
-        piService.add(request);
+        PaymentInstrument request = addPI();
         PaymentTransaction payment = buildPaymentTransaction(request);
         PaymentTransaction result = paymentService.authorize(payment).wrapped().get();
         payment.setTrackingUuid(generateUUID());
-        paymentService.capture(result.getId(), payment);
-        PaymentTransaction getResult = paymentService.getById(result.getId());
-        Assert.assertEquals(getResult.getStatus().toString(), PaymentStatus.SETTLEMENT_SUBMITTED.toString());
+        PaymentTransaction captureResult = paymentService.capture(result.getId(), payment).wrapped().get();
+        Assert.assertEquals(captureResult.getStatus().toString(), PaymentStatus.SETTLEMENT_SUBMITTED.toString());
         payment.setTrackingUuid(generateUUID());
+        payment.setChargeInfo(null);
         paymentService.reverse(result.getId(), payment);
-        getResult = paymentService.getById(result.getId());
+        PaymentTransaction getResult = paymentService.getById(result.getId());
         Assert.assertEquals(getResult.getStatus().toString(), PaymentStatus.REVERSED.toString());
     }
 
@@ -82,6 +109,7 @@ public class PaymentServiceTest extends BaseTest {
         piService.add(request);
         PaymentTransaction payment = buildPaymentTransaction(request);
         PaymentTransaction result = paymentService.authorize(payment).wrapped().get();
+        payment.setChargeInfo(null);
         paymentService.reverse(result.getId(), payment);
         PaymentTransaction getResult = paymentService.getById(result.getId());
         Assert.assertEquals(result.getExternalToken(), MockPaymentProviderServiceImpl.authExternalToken);
@@ -99,6 +127,7 @@ public class PaymentServiceTest extends BaseTest {
         Assert.assertEquals(getResult.getPaymentProvider(), result.getPaymentProvider());
         Assert.assertEquals(getResult.getStatus().toString(), result.getStatus());
         Assert.assertEquals(getResult.getStatus().toString(), PaymentStatus.SETTLEMENT_SUBMITTED.toString());
+        payment.setChargeInfo(null);
         paymentService.reverse(result.getId(), payment);
         getResult = paymentService.getById(result.getId());
         Assert.assertEquals(result.getExternalToken(), MockPaymentProviderServiceImpl.authExternalToken);
@@ -142,7 +171,8 @@ public class PaymentServiceTest extends BaseTest {
         PaymentTransaction payment = new PaymentTransaction();
         payment.setTrackingUuid(generateUUID());
         payment.setUserId(pi.getId().getUserId());
-        payment.setChargeInfo(new ChargeInfo(){
+        payment.setBillingRefId(BILLING_REF_ID);
+        payment.setChargeInfo(new ChargeInfo() {
             {
                 setCurrency("USD");
                 setAmount(new BigDecimal(100.00));
