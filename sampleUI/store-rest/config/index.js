@@ -189,7 +189,7 @@ module.exports = {
                     statusCode: 200,
                     headers: null,
                     data: {
-                        results: [
+                        items: [
                             {
                                 "revision": 1,
                                 "name": "3D Parking 1",
@@ -692,6 +692,41 @@ module.exports = {
                 }
             }
         },
+        GetShippingInfoById: {
+            Method: 'GET',
+            Path: '/rest/users/:userId/ship-to-info/:shippingAddressId',
+            ResponseItem: 'Succeed',
+            Items: {
+                'Succeed': {
+                    statusCode: 200,
+                    headers: null,
+                    data: {
+                        "self": {
+                            "href": "http://api.wan-san.com/ship-to-info/70953532335535",
+                            "id": "11"
+                        },
+                        "user": {
+                            "href": "http://api.wan-san.com/users/12345",
+                            "id": "12345"
+                        },
+                        "street": "NO. 1001 Twin Dophin Dr",
+                        "city": "Redwood City",
+                        "state": "CA",
+                        "postalCode": "96045",
+                        "country": "US",
+                        "firstName": "Steve 11",
+                        "lastName": "Smith",
+                        "phoneNumber": "207-655-2345"
+                    }
+                },
+
+                'Failed': {
+                    statusCode: 404,
+                    headers: null,
+                    data: null
+                }
+            }
+        },
 
         PostShippingInfo: {
             Method: 'POST',
@@ -743,56 +778,112 @@ module.exports = {
                     headers: null,
                     data: [
                         {
-                            "self" : {
-                                "href" : "https://xxx.xxx.xxx",
-                                "id" : "111"
+                            "self": {
+                                "href": "https://xxx.xxx.xxx",
+                                "id": "0000-0027-8528"
                             },
-                            "user" : {
-                                "href" : "https://xxx.xxx.xxx",
-                                "id" : "000100008040"
+                            "user": {
+                                "href": "https://xxx.xxx.xxx",
+                                "id": "000002040040"
                             },
-                            "trackingUuid" : "3a6f0c0e-2973-403b-96d7-64d29c5419dc",
-                            "type" : "PAY_IN",
-                            "country" : "US",
-                            "currency" : "USD",
-                            "tentative" : true,
-                            "paymentInstruments" : [ {
-                                "href" : "https://xxx.xxx.xxx",
-                                "id" : "00000025C000"
-                            } ],
-                            "orderItems" : [ {
-                                "offer" : {
-                                    "href" : "https://xxx.xxx.xxx",
-                                    "id" : "000002080040"
-                                },
-                                "quantity" : 2
-                            } ]
+                            "trackingUuid": "56a7c1c6-45c6-429b-8790-f352b1e27767",
+                            "type": "PAY_IN",
+                            "status": "FAILED",
+                            "country": "US",
+                            "currency": "USD",
+                            "tentative": false,
+                            "paymentInstruments": [
+                                {
+                                    "href": "https://xxx.xxx.xxx",
+                                    "id": "000002140000"
+                                }
+                            ],
+                            "discounts": [],
+                            "orderItems": [
+                                {
+                                    "type": "DIGITAL",
+                                    "offer": {
+                                        "href": "https://xxx.xxx.xxx",
+                                        "id": "0000002C0040"
+                                    },
+                                    "quantity": 1,
+                                    "unitPrice": 9.99,
+                                    "totalAmount": 9.99,
+                                    "totalDiscount": 0,
+                                    "totalTax": 0,
+                                    "createdTime": "2014-03-24T08:02:45Z",
+                                    "createdBy": "dev",
+                                    "updatedTime": "2014-03-24T08:02:45Z",
+                                    "updatedBy": "dev",
+                                    "isTaxExempted": false,
+                                    "honoredTime": "2014-03-24T08:02:39Z"
+                                }
+                            ],
+                            "createdTime": "2014-03-24T08:02:45Z",
+                            "createdBy": "dev",
+                            "updatedTime": "2014-03-25T07:17:33Z",
+                            "updatedBy": "dev",
+                            "totalAmount": 9.99,
+                            "totalTax": 0,
+                            "isTaxInclusive": false,
+                            "totalDiscount": 0,
+                            "totalShippingFee": 0,
+                            "totalShippingFeeDiscount": 0,
+                            "honoredTime": "2014-03-24T08:02:39Z"
                         },
                         {
-                            "self" : {
-                                "href" : "https://xxx.xxx.xxx",
-                                "id" : "222"
+                            "self": {
+                                "href": "https://xxx.xxx.xxx",
+                                "id": "2222-0027-8528"
                             },
-                            "user" : {
-                                "href" : "https://xxx.xxx.xxx",
-                                "id" : "000100008040"
+                            "user": {
+                                "href": "https://xxx.xxx.xxx",
+                                "id": "000002040040"
                             },
-                            "trackingUuid" : "3a6f0c0e-2973-403b-96d7-64d29c5419dc",
-                            "type" : "PAY_IN",
-                            "country" : "US",
-                            "currency" : "USD",
-                            "tentative" : true,
-                            "paymentInstruments" : [ {
-                                "href" : "https://xxx.xxx.xxx",
-                                "id" : "00000025C000"
-                            } ],
-                            "orderItems" : [ {
-                                "offer" : {
-                                    "href" : "https://xxx.xxx.xxx",
-                                    "id" : "000002080040"
-                                },
-                                "quantity" : 2
-                            } ]
+                            "trackingUuid": "56a7c1c6-45c6-429b-8790-f352b1e27767",
+                            "type": "PAY_IN",
+                            "status": "FAILED",
+                            "country": "US",
+                            "currency": "USD",
+                            "tentative": false,
+                            "paymentInstruments": [
+                                {
+                                    "href": "https://xxx.xxx.xxx",
+                                    "id": "000002140000"
+                                }
+                            ],
+                            "discounts": [],
+                            "orderItems": [
+                                {
+                                    "type": "PHYSICAL",
+                                    "offer": {
+                                        "href": "https://xxx.xxx.xxx",
+                                        "id": "0000002C0040"
+                                    },
+                                    "quantity": 1,
+                                    "unitPrice": 9.99,
+                                    "totalAmount": 9.99,
+                                    "totalDiscount": 0,
+                                    "totalTax": 0,
+                                    "createdTime": "2014-03-24T08:02:45Z",
+                                    "createdBy": "dev",
+                                    "updatedTime": "2014-03-24T08:02:45Z",
+                                    "updatedBy": "dev",
+                                    "isTaxExempted": false,
+                                    "honoredTime": "2014-03-24T08:02:39Z"
+                                }
+                            ],
+                            "createdTime": "2014-03-24T08:02:45Z",
+                            "createdBy": "dev",
+                            "updatedTime": "2014-03-25T07:17:33Z",
+                            "updatedBy": "dev",
+                            "totalAmount": 9.99,
+                            "totalTax": 0,
+                            "isTaxInclusive": false,
+                            "totalDiscount": 0,
+                            "totalShippingFee": 0,
+                            "totalShippingFeeDiscount": 0,
+                            "honoredTime": "2014-03-24T08:02:39Z"
                         }
                     ]
                 },
@@ -814,30 +905,155 @@ module.exports = {
                     statusCode: 200,
                     headers: null,
                     data: {
-                        "self" : {
-                            "href" : "https://xxx.xxx.xxx",
-                            "id" : "111"
+                        "self": {
+                            "href": "https://xxx.xxx.xxx",
+                            "id": "2222-0027-8528"
                         },
-                        "user" : {
-                            "href" : "https://xxx.xxx.xxx",
-                            "id" : "000100008040"
+                        "user": {
+                            "href": "https://xxx.xxx.xxx",
+                            "id": "000002040040"
                         },
-                        "trackingUuid" : "3a6f0c0e-2973-403b-96d7-64d29c5419dc",
-                        "type" : "PAY_IN",
-                        "country" : "US",
-                        "currency" : "USD",
-                        "tentative" : true,
-                        "paymentInstruments" : [ {
-                            "href" : "https://xxx.xxx.xxx",
-                            "id" : "00000025C000"
-                        } ],
-                        "orderItems" : [ {
-                            "offer" : {
-                                "href" : "https://xxx.xxx.xxx",
-                                "id" : "000002080040"
+                        "trackingUuid": "56a7c1c6-45c6-429b-8790-f352b1e27767",
+                        "type": "PAY_IN",
+                        "status": "FAILED",
+                        "country": "US",
+                        "currency": "USD",
+                        "tentative": false,
+                        "shippingAddressId": 123,
+                        "paymentInstruments": [
+                            {
+                                "href": "https://xxx.xxx.xxx",
+                                "id": "000002140000"
+                            }
+                        ],
+                        "discounts": [],
+                        "orderItems": [
+                            {
+                                "type": "PHYSICAL",
+                                "offer": {
+                                    "href": "https://xxx.xxx.xxx",
+                                    "id": "0000002C0040"
+                                },
+                                "quantity": 1,
+                                "unitPrice": 9.99,
+                                "totalAmount": 9.99,
+                                "totalDiscount": 0,
+                                "totalTax": 0,
+                                "createdTime": "2014-03-24T08:02:45Z",
+                                "createdBy": "dev",
+                                "updatedTime": "2014-03-24T08:02:45Z",
+                                "updatedBy": "dev",
+                                "isTaxExempted": false,
+                                "honoredTime": "2014-03-24T08:02:39Z"
                             },
-                            "quantity" : 2
-                        } ]
+                            {
+                                "type": "DIGITAL",
+                                "offer": {
+                                    "href": "https://xxx.xxx.xxx",
+                                    "id": "0000002C0040"
+                                },
+                                "quantity": 2,
+                                "unitPrice": 9.99,
+                                "totalAmount": 19.98,
+                                "totalDiscount": 0,
+                                "totalTax": 0,
+                                "createdTime": "2014-03-24T08:02:45Z",
+                                "createdBy": "dev",
+                                "updatedTime": "2014-03-24T08:02:45Z",
+                                "updatedBy": "dev",
+                                "isTaxExempted": false,
+                                "honoredTime": "2014-03-24T08:02:39Z"
+                            }
+                        ],
+                        "createdTime": "2014-03-24T08:02:45Z",
+                        "createdBy": "dev",
+                        "updatedTime": "2014-03-25T07:17:33Z",
+                        "updatedBy": "dev",
+                        "totalAmount": 28.97,
+                        "totalTax": 0,
+                        "isTaxInclusive": false,
+                        "totalDiscount": 1.00,
+                        "totalShippingFee": 0,
+                        "totalShippingFeeDiscount": 0,
+                        "honoredTime": "2014-03-24T08:02:39Z"
+                    }
+                },
+
+                'SucceedDigital': {
+                    statusCode: 200,
+                    headers: null,
+                    data:
+                    {
+                        "self": {
+                            "href": "https://xxx.xxx.xxx",
+                            "id": "2222-0027-8528"
+                        },
+                        "user": {
+                            "href": "https://xxx.xxx.xxx",
+                            "id": "000002040040"
+                        },
+                        "trackingUuid": "56a7c1c6-45c6-429b-8790-f352b1e27767",
+                        "type": "PAY_IN",
+                        "status": "FAILED",
+                        "country": "US",
+                        "currency": "USD",
+                        "tentative": false,
+                        "paymentInstruments": [
+                            {
+                                "href": "https://xxx.xxx.xxx",
+                                "id": "000002140000"
+                            }
+                        ],
+                        "discounts": [],
+                        "orderItems": [
+                            {
+                                "type": "DIGITAL",
+                                "offer": {
+                                    "href": "https://xxx.xxx.xxx",
+                                    "id": "0000002C0040"
+                                },
+                                "quantity": 1,
+                                "unitPrice": 9.99,
+                                "totalAmount": 9.99,
+                                "totalDiscount": 0,
+                                "totalTax": 0,
+                                "createdTime": "2014-03-24T08:02:45Z",
+                                "createdBy": "dev",
+                                "updatedTime": "2014-03-24T08:02:45Z",
+                                "updatedBy": "dev",
+                                "isTaxExempted": false,
+                                "honoredTime": "2014-03-24T08:02:39Z"
+                            },
+                            {
+                                "type": "DIGITAL",
+                                "offer": {
+                                    "href": "https://xxx.xxx.xxx",
+                                    "id": "0000002C0040"
+                                },
+                                "quantity": 1,
+                                "unitPrice": 9.99,
+                                "totalAmount": 9.99,
+                                "totalDiscount": 0,
+                                "totalTax": 0,
+                                "createdTime": "2014-03-24T08:02:45Z",
+                                "createdBy": "dev",
+                                "updatedTime": "2014-03-24T08:02:45Z",
+                                "updatedBy": "dev",
+                                "isTaxExempted": false,
+                                "honoredTime": "2014-03-24T08:02:39Z"
+                            }
+                        ],
+                        "createdTime": "2014-03-24T08:02:45Z",
+                        "createdBy": "dev",
+                        "updatedTime": "2014-03-25T07:17:33Z",
+                        "updatedBy": "dev",
+                        "totalAmount": 9.99,
+                        "totalTax": 0,
+                        "isTaxInclusive": false,
+                        "totalDiscount": 0,
+                        "totalShippingFee": 0,
+                        "totalShippingFeeDiscount": 0,
+                        "honoredTime": "2014-03-24T08:02:39Z"
                     }
                 },
 
@@ -858,30 +1074,154 @@ module.exports = {
                     statusCode: 200,
                     headers: null,
                     data: {
-                        "self" : {
-                            "href" : "https://xxx.xxx.xxx",
-                            "id" : "111"
+                        "self": {
+                            "href": "https://xxx.xxx.xxx",
+                            "id": "2222-0027-8528"
                         },
-                        "user" : {
-                            "href" : "https://xxx.xxx.xxx",
-                            "id" : "000100008040"
+                        "user": {
+                            "href": "https://xxx.xxx.xxx",
+                            "id": "000002040040"
                         },
-                        "trackingUuid" : "3a6f0c0e-2973-403b-96d7-64d29c5419dc",
-                        "type" : "PAY_IN",
-                        "country" : "US",
-                        "currency" : "USD",
-                        "tentative" : true,
-                        "paymentInstruments" : [ {
-                            "href" : "https://xxx.xxx.xxx",
-                            "id" : "00000025C000"
-                        } ],
-                        "orderItems" : [ {
-                            "offer" : {
-                                "href" : "https://xxx.xxx.xxx",
-                                "id" : "000002080040"
+                        "trackingUuid": "56a7c1c6-45c6-429b-8790-f352b1e27767",
+                        "type": "PAY_IN",
+                        "status": "FAILED",
+                        "country": "US",
+                        "currency": "USD",
+                        "tentative": false,
+                        "paymentInstruments": [
+                            {
+                                "href": "https://xxx.xxx.xxx",
+                                "id": "000002140000"
+                            }
+                        ],
+                        "discounts": [],
+                        "orderItems": [
+                            {
+                                "type": "PHYSICAL",
+                                "offer": {
+                                    "href": "https://xxx.xxx.xxx",
+                                    "id": "0000002C0040"
+                                },
+                                "quantity": 1,
+                                "unitPrice": 9.99,
+                                "totalAmount": 9.99,
+                                "totalDiscount": 0,
+                                "totalTax": 0,
+                                "createdTime": "2014-03-24T08:02:45Z",
+                                "createdBy": "dev",
+                                "updatedTime": "2014-03-24T08:02:45Z",
+                                "updatedBy": "dev",
+                                "isTaxExempted": false,
+                                "honoredTime": "2014-03-24T08:02:39Z"
                             },
-                            "quantity" : 2
-                        } ]
+                            {
+                                "type": "DIGITAL",
+                                "offer": {
+                                    "href": "https://xxx.xxx.xxx",
+                                    "id": "0000002C0040"
+                                },
+                                "quantity": 1,
+                                "unitPrice": 9.99,
+                                "totalAmount": 9.99,
+                                "totalDiscount": 0,
+                                "totalTax": 0,
+                                "createdTime": "2014-03-24T08:02:45Z",
+                                "createdBy": "dev",
+                                "updatedTime": "2014-03-24T08:02:45Z",
+                                "updatedBy": "dev",
+                                "isTaxExempted": false,
+                                "honoredTime": "2014-03-24T08:02:39Z"
+                            }
+                        ],
+                        "createdTime": "2014-03-24T08:02:45Z",
+                        "createdBy": "dev",
+                        "updatedTime": "2014-03-25T07:17:33Z",
+                        "updatedBy": "dev",
+                        "totalAmount": 9.99,
+                        "totalTax": 0,
+                        "isTaxInclusive": false,
+                        "totalDiscount": 0,
+                        "totalShippingFee": 0,
+                        "totalShippingFeeDiscount": 0,
+                        "honoredTime": "2014-03-24T08:02:39Z"
+                    }
+                },
+
+                'SucceedDigital': {
+                    statusCode: 200,
+                    headers: null,
+                    data:
+                    {
+                        "self": {
+                            "href": "https://xxx.xxx.xxx",
+                            "id": "2222-0027-8528"
+                        },
+                        "user": {
+                            "href": "https://xxx.xxx.xxx",
+                            "id": "000002040040"
+                        },
+                        "trackingUuid": "56a7c1c6-45c6-429b-8790-f352b1e27767",
+                        "type": "PAY_IN",
+                        "status": "FAILED",
+                        "country": "US",
+                        "currency": "USD",
+                        "tentative": false,
+                        "paymentInstruments": [
+                            {
+                                "href": "https://xxx.xxx.xxx",
+                                "id": "000002140000"
+                            }
+                        ],
+                        "discounts": [],
+                        "orderItems": [
+                            {
+                                "type": "DIGITAL",
+                                "offer": {
+                                    "href": "https://xxx.xxx.xxx",
+                                    "id": "0000002C0040"
+                                },
+                                "quantity": 1,
+                                "unitPrice": 9.99,
+                                "totalAmount": 9.99,
+                                "totalDiscount": 0,
+                                "totalTax": 0,
+                                "createdTime": "2014-03-24T08:02:45Z",
+                                "createdBy": "dev",
+                                "updatedTime": "2014-03-24T08:02:45Z",
+                                "updatedBy": "dev",
+                                "isTaxExempted": false,
+                                "honoredTime": "2014-03-24T08:02:39Z"
+                            },
+                            {
+                                "type": "DIGITAL",
+                                "offer": {
+                                    "href": "https://xxx.xxx.xxx",
+                                    "id": "0000002C0040"
+                                },
+                                "quantity": 1,
+                                "unitPrice": 9.99,
+                                "totalAmount": 9.99,
+                                "totalDiscount": 0,
+                                "totalTax": 0,
+                                "createdTime": "2014-03-24T08:02:45Z",
+                                "createdBy": "dev",
+                                "updatedTime": "2014-03-24T08:02:45Z",
+                                "updatedBy": "dev",
+                                "isTaxExempted": false,
+                                "honoredTime": "2014-03-24T08:02:39Z"
+                            }
+                        ],
+                        "createdTime": "2014-03-24T08:02:45Z",
+                        "createdBy": "dev",
+                        "updatedTime": "2014-03-25T07:17:33Z",
+                        "updatedBy": "dev",
+                        "totalAmount": 9.99,
+                        "totalTax": 0,
+                        "isTaxInclusive": false,
+                        "totalDiscount": 0,
+                        "totalShippingFee": 0,
+                        "totalShippingFeeDiscount": 0,
+                        "honoredTime": "2014-03-24T08:02:39Z"
                     }
                 },
 
@@ -902,30 +1242,76 @@ module.exports = {
                     statusCode: 200,
                     headers: null,
                     data: {
-                        "self" : {
-                            "href" : "https://xxx.xxx.xxx",
-                            "id" : "111"
+                        "self": {
+                            "href": "https://xxx.xxx.xxx",
+                            "id": "2222-0027-8528"
                         },
-                        "user" : {
-                            "href" : "https://xxx.xxx.xxx",
-                            "id" : "000100008040"
+                        "user": {
+                            "href": "https://xxx.xxx.xxx",
+                            "id": "000002040040"
                         },
-                        "trackingUuid" : "3a6f0c0e-2973-403b-96d7-64d29c5419dc",
-                        "type" : "PAY_IN",
-                        "country" : "US",
-                        "currency" : "USD",
-                        "tentative" : true,
-                        "paymentInstruments" : [ {
-                            "href" : "https://xxx.xxx.xxx",
-                            "id" : "00000025C000"
-                        } ],
-                        "orderItems" : [ {
-                            "offer" : {
-                                "href" : "https://xxx.xxx.xxx",
-                                "id" : "000002080040"
+                        "trackingUuid": "56a7c1c6-45c6-429b-8790-f352b1e27767",
+                        "type": "PAY_IN",
+                        "status": "FAILED",
+                        "country": "US",
+                        "currency": "USD",
+                        "tentative": false,
+                        "paymentInstruments": [
+                            {
+                                "href": "https://xxx.xxx.xxx",
+                                "id": "000002140000"
+                            }
+                        ],
+                        "discounts": [],
+                        "orderItems": [
+                            {
+                                "type": "PHYSICAL",
+                                "offer": {
+                                    "href": "https://xxx.xxx.xxx",
+                                    "id": "0000002C0040"
+                                },
+                                "quantity": 1,
+                                "unitPrice": 9.99,
+                                "totalAmount": 9.99,
+                                "totalDiscount": 0,
+                                "totalTax": 0,
+                                "createdTime": "2014-03-24T08:02:45Z",
+                                "createdBy": "dev",
+                                "updatedTime": "2014-03-24T08:02:45Z",
+                                "updatedBy": "dev",
+                                "isTaxExempted": false,
+                                "honoredTime": "2014-03-24T08:02:39Z"
                             },
-                            "quantity" : 2
-                        } ]
+                            {
+                                "type": "DIGITAL",
+                                "offer": {
+                                    "href": "https://xxx.xxx.xxx",
+                                    "id": "0000002C0040"
+                                },
+                                "quantity": 1,
+                                "unitPrice": 9.99,
+                                "totalAmount": 9.99,
+                                "totalDiscount": 0,
+                                "totalTax": 0,
+                                "createdTime": "2014-03-24T08:02:45Z",
+                                "createdBy": "dev",
+                                "updatedTime": "2014-03-24T08:02:45Z",
+                                "updatedBy": "dev",
+                                "isTaxExempted": false,
+                                "honoredTime": "2014-03-24T08:02:39Z"
+                            }
+                        ],
+                        "createdTime": "2014-03-24T08:02:45Z",
+                        "createdBy": "dev",
+                        "updatedTime": "2014-03-25T07:17:33Z",
+                        "updatedBy": "dev",
+                        "totalAmount": 9.99,
+                        "totalTax": 0,
+                        "isTaxInclusive": false,
+                        "totalDiscount": 0,
+                        "totalShippingFee": 0,
+                        "totalShippingFeeDiscount": 0,
+                        "honoredTime": "2014-03-24T08:02:39Z"
                     }
                 },
 
@@ -948,7 +1334,7 @@ module.exports = {
                     statusCode: 200,
                     headers: null,
                     data:{
-                        results:[
+                        items:[
                             {
                                 "self": {
                                     "href": "http://api.wan-san.com/v1/payment-instrument-types/CREDITCARD",
@@ -1043,6 +1429,7 @@ module.exports = {
                             "id": "CREDITCARD"
                         },
                         "creditCardRequest": {
+                            "creditCardType": "VISA",
                             "expireDate": "1999-11-27",
                             "encryptedCvmCode": "111"
                         },
@@ -1071,7 +1458,7 @@ module.exports = {
 
         PostPaymentInstruments: {
             Method: 'POST',
-            Path: '/rest/users/:userId/payment-instruments ',
+            Path: '/rest/users/:userId/payment-instruments',
             ResponseItem: 'Succeed',
             Items: {
                 'Succeed': {

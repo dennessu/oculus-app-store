@@ -24,8 +24,6 @@ import javax.annotation.Resource;
  */
 @Component
 public class EmailServiceImpl implements EmailService {
-    private static final int INIT_RETRY_COUNT = 0;
-    private static final int MAX_RETRY_COUNT = 3;
 
     @Autowired
     private  EmailHistoryRepository emailHistoryRepository;

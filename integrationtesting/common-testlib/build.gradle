@@ -1,0 +1,28 @@
+apply plugin: 'java'
+
+sourceCompatibility = '1.7'
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+repositories {
+    mavenLocal()
+    maven {
+        credentials {
+            username "${artifactory_user}"
+            password "${artifactory_password}"
+        }
+        url "${artifactory_contextUrl}/repo"
+    }
+    mavenCentral()
+}
+    
+dependencies {
+    compile (libraries.common_io)
+    compile (libraries.common_lib)
+    compile (libraries.gson)
+    compile (libraries.jackson_annotations)
+    compile (libraries.jackson_core)
+    compile (libraries.jackson_databind)
+    compile (libraries.jackson_jaxrs_json_provider)
+    compile (libraries.apache_commons_lang)
+    compile (libraries.apache_httpclient)
+}
