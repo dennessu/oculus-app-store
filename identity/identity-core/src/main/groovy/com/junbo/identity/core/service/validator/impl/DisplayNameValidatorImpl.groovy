@@ -37,34 +37,32 @@ class DisplayNameValidatorImpl implements DisplayNameValidator {
 
         if (user.displayName == null) {
             return FIRSTNAME_LASTNAME_THEN_USERNAME
-        } else {
-            if (user.name != null) {
-                if (user.displayName == "${user.name.firstName} ${user.name.lastName}") {
-                    return FIRSTNAME_LASTNAME_THEN_USERNAME
-                }
-
-                if (user.displayName == "${user.name.lastName} ${user.name.firstName}") {
-                    return LASTNAME_FIRSTNAME_THEN_USERNAME
-                }
-
-                if (user.name.middleName != null) {
-                    if (user.displayName == "${user.name.firstName} ${user.name.middleName} ${user.name.lastName}") {
-                        return FIRSTNAME_MIDDLENAME_LASTNAME_THEN_USERNAME
-                    }
-
-                    if (user.displayName == "${user.name.lastName} ${user.name.middleName} ${user.name.firstName}") {
-                        return LASTNAME_MIDDLENAME_FIRSTNAME_THEN_USERNAME
-                    }
-                }
+        }
+        if (user.name != null) {
+            if (user.displayName == "${user.name.firstName} ${user.name.lastName}") {
+                return FIRSTNAME_LASTNAME_THEN_USERNAME
             }
 
-            if (user.username != null) {
-                if (user.displayName == user.username) {
-                    return USERNAME
+            if (user.displayName == "${user.name.lastName} ${user.name.firstName}") {
+                return LASTNAME_FIRSTNAME_THEN_USERNAME
+            }
+
+            if (user.name.middleName != null) {
+                if (user.displayName == "${user.name.firstName} ${user.name.middleName} ${user.name.lastName}") {
+                    return FIRSTNAME_MIDDLENAME_LASTNAME_THEN_USERNAME
+                }
+
+                if (user.displayName == "${user.name.lastName} ${user.name.middleName} ${user.name.firstName}") {
+                    return LASTNAME_MIDDLENAME_FIRSTNAME_THEN_USERNAME
                 }
             }
         }
 
+        if (user.username != null) {
+            if (user.displayName == user.username) {
+                return USERNAME
+            }
+        }
 
         def possibleValues = []
         if (user.name != null) {
