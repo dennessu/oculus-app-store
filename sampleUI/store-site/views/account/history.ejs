@@ -11,10 +11,22 @@
         <div class="detail">
             {{#each orderItems itemController="AccountHistoryItemProducts"}}
             <dl class="product">
-                <dt>{{product.name}}</dt>
+                {{downloadLinksObserver}}
+                <dt>{{product.name}}
+                {{#if downloadLinks}}
+                    &nbsp;&nbsp;<label class="download">Download
+                        <ul>
+                        {{#each downloadLinks}}
+                            <li><a {{bind-attr href=link}} target="_blank">{{name}}</a></li>
+                        {{/each}}
+                        </ul>
+                    </label>
+                {{/if}}
+                </dt>
                 <dd>{{unitPrice}}</dd>
                 <dd>{{quantity}}</dd>
                 <dd>{{totalAmount}}</dd>
+
             </dl>
             {{/each}}
             <div class="total_info">
