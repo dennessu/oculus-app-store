@@ -72,6 +72,7 @@ public class PaymentServiceTest extends BaseTest {
         Assert.assertEquals(resultUpdate.getAddress().getPostalCode(), "123");
     }
 
+    //commit addPI since there is standalone commit in payment transaction, so that PI is available fir them
     private PaymentInstrument addPI(){
         final PaymentInstrument request = buildPIRequest();
         AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager);
@@ -88,7 +89,7 @@ public class PaymentServiceTest extends BaseTest {
             }
         });
     }
-    //@Test
+    @Test
     public void testAuthSettleAndReverse() throws ExecutionException, InterruptedException {
         PaymentInstrument request = addPI();
         PaymentTransaction payment = buildPaymentTransaction(request);
@@ -103,10 +104,9 @@ public class PaymentServiceTest extends BaseTest {
         Assert.assertEquals(getResult.getStatus().toString(), PaymentStatus.REVERSED.toString());
     }
 
-    //@Test
+    @Test
     public void testAuthAndReverse() throws ExecutionException, InterruptedException {
-        PaymentInstrument request = buildPIRequest();
-        piService.add(request);
+        PaymentInstrument request = addPI();
         PaymentTransaction payment = buildPaymentTransaction(request);
         PaymentTransaction result = paymentService.authorize(payment).wrapped().get();
         payment.setChargeInfo(null);
@@ -116,21 +116,17 @@ public class PaymentServiceTest extends BaseTest {
         Assert.assertEquals(getResult.getStatus().toString(), PaymentStatus.REVERSED.toString());
     }
 
-    //@Test
+    @Test
     public void testChargeAndReverse() throws ExecutionException, InterruptedException {
-        PaymentInstrument request = buildPIRequest();
-        piService.add(request);
+        PaymentInstrument request = addPI();
         PaymentTransaction payment = buildPaymentTransaction(request);
         PaymentTransaction result = paymentService.charge(payment).wrapped().get();
-        PaymentTransaction getResult = paymentService.getById(result.getId());
         Assert.assertEquals(result.getExternalToken(), MockPaymentProviderServiceImpl.chargeExternalToken);
-        Assert.assertEquals(getResult.getPaymentProvider(), result.getPaymentProvider());
-        Assert.assertEquals(getResult.getStatus().toString(), result.getStatus());
-        Assert.assertEquals(getResult.getStatus().toString(), PaymentStatus.SETTLEMENT_SUBMITTED.toString());
+        Assert.assertEquals(result.getStatus().toString(), PaymentStatus.SETTLEMENT_SUBMITTED.toString());
         payment.setChargeInfo(null);
         paymentService.reverse(result.getId(), payment);
-        getResult = paymentService.getById(result.getId());
-        Assert.assertEquals(result.getExternalToken(), MockPaymentProviderServiceImpl.authExternalToken);
+        PaymentTransaction getResult = paymentService.getById(result.getId());
+        Assert.assertEquals(result.getExternalToken(), MockPaymentProviderServiceImpl.chargeExternalToken);
         Assert.assertEquals(getResult.getStatus().toString(), PaymentStatus.REVERSED.toString());
     }
 
