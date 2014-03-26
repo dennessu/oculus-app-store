@@ -4,7 +4,7 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.testing.common.apihelper.order;
+package com.junbo.test.common.apihelper.order;
 
 import com.junbo.order.spec.model.Order;
 import com.junbo.order.spec.model.OrderEvent;

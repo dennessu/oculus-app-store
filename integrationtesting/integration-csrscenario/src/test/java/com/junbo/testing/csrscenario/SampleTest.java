@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.testing.csrscenario;
+package com.junbo.test.csrscenario;
 
 /**
  * Created by Jason on 3/7/14.

@@ -3,23 +3,23 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.testing.buyerscenario;
+package com.junbo.test.buyerscenario;
 
 import com.junbo.cart.spec.model.Cart;
 import com.junbo.cart.spec.model.item.CouponItem;
 import com.junbo.cart.spec.model.item.OfferItem;
 import com.junbo.common.id.CouponId;
 import com.junbo.common.id.OfferId;
-import com.junbo.testing.common.apihelper.cart.CartService;
-import com.junbo.testing.common.apihelper.cart.impl.CartServiceImpl;
-import com.junbo.testing.common.apihelper.identity.UserService;
-import com.junbo.testing.common.apihelper.identity.impl.UserServiceImpl;
-import com.junbo.testing.common.blueprint.Master;
-import com.junbo.testing.common.libs.LogHelper;
-import com.junbo.testing.common.property.Component;
-import com.junbo.testing.common.property.Priority;
-import com.junbo.testing.common.property.Property;
-import com.junbo.testing.common.property.Status;
+import com.junbo.test.common.apihelper.cart.CartService;
+import com.junbo.test.common.apihelper.cart.impl.CartServiceImpl;
+import com.junbo.test.common.apihelper.identity.UserService;
+import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
+import com.junbo.test.common.blueprint.Master;
+import com.junbo.test.common.libs.LogHelper;
+import com.junbo.test.common.property.Component;
+import com.junbo.test.common.property.Priority;
+import com.junbo.test.common.property.Property;
+import com.junbo.test.common.property.Status;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -93,7 +93,7 @@ public class CartManager {
         Assert.assertTrue(checkOfferQuantity(updatedCart, testOffer1, 3L));
         Assert.assertTrue(checkOfferQuantity(updatedCart, testOffer2, 2L));
 
-        //reduce offer quantity, remove offer&coupon, add one new offer
+        //reduce offer quantity, remove offer&coupon, add one new off5er
         addOrRemoveOfferInCart(updatedCart, testOffer1, -1, true);
         addOrRemoveOfferInCart(updatedCart, testOffer2, -2, true);
         addOrRemoveOfferInCart(updatedCart, testOffer3, 1, true);
@@ -230,6 +230,7 @@ public class CartManager {
         for (CouponItem ci : curCoupons) {
             if (ci.getCoupon().equals(couponId)) {
                 curCoupons.remove(ci);
+                break;
             }
         }
     }

@@ -3,9 +3,9 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.testing.buyerscenario.util;
+package com.junbo.test.buyerscenario.util;
 
-import com.junbo.testing.common.Utility.TestDataProvider;
+import com.junbo.test.common.Utility.TestDataProvider;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
 /**

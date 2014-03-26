@@ -3,23 +3,23 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.testing.catalogscenario;
+package com.junbo.test.catalogscenario;
 
 import com.junbo.catalog.spec.model.attribute.Attribute;
 import com.junbo.catalog.spec.model.offer.Offer;
-import com.junbo.testing.catalogscenario.util.BaseTestClass;
+import com.junbo.test.catalogscenario.util.BaseTestClass;
 import com.junbo.catalog.spec.model.item.Item;
-import com.junbo.testing.common.apihelper.catalog.AttributeService;
-import com.junbo.testing.common.apihelper.catalog.ItemService;
-import com.junbo.testing.common.apihelper.catalog.OfferService;
-import com.junbo.testing.common.apihelper.catalog.impl.AttributeServiceImpl;
-import com.junbo.testing.common.apihelper.catalog.impl.ItemServiceImpl;
-import com.junbo.testing.common.apihelper.catalog.impl.OfferServiceImpl;
-import com.junbo.testing.common.blueprint.Master;
-import com.junbo.testing.common.libs.EnumHelper;
-import com.junbo.testing.common.libs.LogHelper;
-import com.junbo.testing.common.libs.RandomFactory;
-import com.junbo.testing.common.property.*;
+import com.junbo.test.common.apihelper.catalog.AttributeService;
+import com.junbo.test.common.apihelper.catalog.ItemService;
+import com.junbo.test.common.apihelper.catalog.OfferService;
+import com.junbo.test.common.apihelper.catalog.impl.AttributeServiceImpl;
+import com.junbo.test.common.apihelper.catalog.impl.ItemServiceImpl;
+import com.junbo.test.common.apihelper.catalog.impl.OfferServiceImpl;
+import com.junbo.test.common.blueprint.Master;
+import com.junbo.test.common.libs.EnumHelper;
+import com.junbo.test.common.libs.LogHelper;
+import com.junbo.test.common.libs.RandomFactory;
+import com.junbo.test.common.property.*;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;

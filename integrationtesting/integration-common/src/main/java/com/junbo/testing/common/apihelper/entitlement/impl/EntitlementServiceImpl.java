@@ -3,19 +3,19 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.testing.common.apihelper.entitlement.impl;
+package com.junbo.test.common.apihelper.entitlement.impl;
 
 import com.junbo.common.id.EntitlementId;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.common.model.Results;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.langur.core.client.TypeReference;
-import com.junbo.testing.common.apihelper.cart.impl.CartServiceImpl;
-import com.junbo.testing.common.apihelper.entitlement.EntitlementService;
-import com.junbo.testing.common.blueprint.Master;
-import com.junbo.testing.common.libs.IdConverter;
-import com.junbo.testing.common.libs.LogHelper;
-import com.junbo.testing.common.libs.RestUrl;
+import com.junbo.test.common.apihelper.cart.impl.CartServiceImpl;
+import com.junbo.test.common.apihelper.entitlement.EntitlementService;
+import com.junbo.test.common.blueprint.Master;
+import com.junbo.test.common.libs.IdConverter;
+import com.junbo.test.common.libs.LogHelper;
+import com.junbo.test.common.libs.RestUrl;
 import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.AsyncHttpClientConfig;
 import com.ning.http.client.Request;
@@ -104,12 +104,13 @@ public class EntitlementServiceImpl implements EntitlementService {
         NettyResponse nettyResponse = (NettyResponse) future.get();
         logger.LogResponse(nettyResponse);
         Assert.assertEquals(expectedResponseCode, nettyResponse.getStatusCode());
-        Results<Entitlement> rtnEntitlements = new JsonMessageTranscoder().decode(new TypeReference<Entitlement>() {
-        },
-                nettyResponse.getResponseBody());
+        Results<Entitlement> rtnEntitlements =
+                new JsonMessageTranscoder().decode(new TypeReference<Results<Entitlement>>() {
+                },
+                        nettyResponse.getResponseBody());
         List<String> rtnEntitlementIds = new ArrayList<>();
 
-        for(Entitlement en: rtnEntitlements.getItems()){
+        for (Entitlement en : rtnEntitlements.getItems()) {
             String rtnEntitlementId = IdConverter.idToHexString(new EntitlementId(en.getEntitlementId()));
             Master.getInstance().addEntitlement(rtnEntitlementId, en);
             rtnEntitlementIds.add(rtnEntitlementId);

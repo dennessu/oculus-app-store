@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.testing.common.Utility;
+package com.junbo.test.common.Utility;
 
 import com.junbo.billing.spec.model.ShippingAddress;
 import com.junbo.cart.spec.model.Cart;
@@ -16,29 +16,29 @@ import com.junbo.payment.spec.model.Address;
 import com.junbo.payment.spec.model.CreditCardRequest;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.Phone;
-import com.junbo.testing.common.Entities.ShippingAddressInfo;
-import com.junbo.testing.common.apihelper.billing.ShippingAddressService;
-import com.junbo.testing.common.apihelper.billing.impl.ShippingAddressServiceImpl;
-import com.junbo.testing.common.apihelper.cart.CartService;
-import com.junbo.testing.common.apihelper.cart.impl.CartServiceImpl;
-import com.junbo.testing.common.apihelper.catalog.ItemService;
-import com.junbo.testing.common.apihelper.catalog.OfferService;
-import com.junbo.testing.common.apihelper.catalog.impl.ItemServiceImpl;
-import com.junbo.testing.common.apihelper.catalog.impl.OfferServiceImpl;
+import com.junbo.test.common.Entities.ShippingAddressInfo;
+import com.junbo.test.common.apihelper.billing.ShippingAddressService;
+import com.junbo.test.common.apihelper.billing.impl.ShippingAddressServiceImpl;
+import com.junbo.test.common.apihelper.cart.CartService;
+import com.junbo.test.common.apihelper.cart.impl.CartServiceImpl;
+import com.junbo.test.common.apihelper.catalog.ItemService;
+import com.junbo.test.common.apihelper.catalog.OfferService;
+import com.junbo.test.common.apihelper.catalog.impl.ItemServiceImpl;
+import com.junbo.test.common.apihelper.catalog.impl.OfferServiceImpl;
 import com.junbo.order.spec.model.Order;
-import com.junbo.testing.common.apihelper.identity.UserService;
-import com.junbo.testing.common.apihelper.identity.impl.UserServiceImpl;
-import com.junbo.testing.common.apihelper.order.OrderService;
-import com.junbo.testing.common.apihelper.order.impl.OrderServiceImpl;
+import com.junbo.test.common.apihelper.identity.UserService;
+import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
+import com.junbo.test.common.apihelper.order.OrderService;
+import com.junbo.test.common.apihelper.order.impl.OrderServiceImpl;
 
-import com.junbo.testing.common.apihelper.payment.PaymentService;
-import com.junbo.testing.common.apihelper.payment.impl.PaymentServiceImpl;
-import com.junbo.testing.common.blueprint.Master;
-import com.junbo.testing.common.Entities.enums.Country;
-import com.junbo.testing.common.Entities.enums.Currency;
-import com.junbo.testing.common.libs.EnumHelper.UserStatus;
-import com.junbo.testing.common.libs.RandomFactory;
-import com.junbo.testing.common.Entities.paymentInstruments.CreditCardInfo;
+import com.junbo.test.common.apihelper.payment.PaymentService;
+import com.junbo.test.common.apihelper.payment.impl.PaymentServiceImpl;
+import com.junbo.test.common.blueprint.Master;
+import com.junbo.test.common.Entities.enums.Country;
+import com.junbo.test.common.Entities.enums.Currency;
+import com.junbo.test.common.libs.EnumHelper.UserStatus;
+import com.junbo.test.common.libs.RandomFactory;
+import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
 
 import java.util.ArrayList;
 import java.util.List;

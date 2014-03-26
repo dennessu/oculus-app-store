@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.testing.common.Entities.enums;
+package com.junbo.test.common.Entities.enums;
 
 /**
  * Created by Yunlong on 3/25/14.
