@@ -197,7 +197,8 @@ class AvalaraFacadeImpl implements TaxFacade {
     Promise<ValidateAddressResponse> validateAddress(AvalaraAddress address) {
         String validateAddressUrl = configuration.baseUrl + 'address/validate'
         def requestBuilder = buildRequest(validateAddressUrl, address)
-        return Promise.wrap(asGuavaFuture(requestBuilder.execute())).recover {
+        return Promise.wrap(asGuavaFuture(requestBuilder.execute())).recover { Throwable throwable ->
+            LOGGER.error('Error_Build_Avalara_Request.', throwable)
             throw AppErrors.INSTANCE.addressValidationError('Fail to build request.').exception()
         }.then { Response response ->
             ValidateAddressResponse validateAddressResponse
@@ -205,6 +206,7 @@ class AvalaraFacadeImpl implements TaxFacade {
                 validateAddressResponse = new ObjectMapper().readValue(response.responseBody,
                         ValidateAddressResponse)
             } catch (IOException ex) {
+                LOGGER.error('name=Error_Read_Avalara_Response.', ex)
                 throw AppErrors.INSTANCE.addressValidationError('Fail to read response.').exception()
             }
             if (response.statusCode / STATUS_CODE_MASK == SUCCESSFUL_STATUS_CODE_PREFIX) {
@@ -224,7 +226,8 @@ class AvalaraFacadeImpl implements TaxFacade {
         String getTaxUrl = configuration.baseUrl + 'tax/get'
         String content = transcoder.encode(request)
         def requestBuilder = buildRequest(getTaxUrl, content)
-        return Promise.wrap(asGuavaFuture(requestBuilder.execute())).recover {
+        return Promise.wrap(asGuavaFuture(requestBuilder.execute())).recover { Throwable throwable ->
+            LOGGER.error('Error_Build_Avalara_Request.', throwable)
             return Promise.pure(null)
         }.then { Response response ->
             if (response.statusCode / STATUS_CODE_MASK == SUCCESSFUL_STATUS_CODE_PREFIX) {
@@ -232,11 +235,12 @@ class AvalaraFacadeImpl implements TaxFacade {
                     // use new ObjectMapper instead of transcoder here since the DocDate is not ISO8601DateFormat
                     return Promise.pure(new ObjectMapper().readValue(response.responseBody, GetTaxResponse))
                 } catch (IOException ex) {
+                    LOGGER.error('name=Error_Read_Avalara_Response.', ex)
                     return Promise.pure(null)
                 }
             }
             else {
-                LOGGER.error('name=Error_Tax_Calculation.')
+                LOGGER.error('name=Error_Tax_Calculation. statusCode: ' + response.statusCode)
                 return Promise.pure(null)
             }
         }
