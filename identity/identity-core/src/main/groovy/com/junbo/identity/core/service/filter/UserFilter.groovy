@@ -139,6 +139,13 @@ class UserFilter implements ResourceFilter<User> {
                 readablePropertiesFilter,
         ])
 
+        if (propertiesToInclude != null) {
+            context.propertiesToInclude = new BeanMarker()
+            context.propertiesToInclude.markProperties(propertiesToInclude)
+
+            filterList.filters.add(new PropertiesToIncludeFilter())
+        }
+
         context.propertyMappingFilter = filterList
 
         return selfMapper.filterUser(user, context)
@@ -287,6 +294,10 @@ class UserFilter implements ResourceFilter<User> {
 
 
     public static boolean isSimpleType(Class type) {
-        return type == String.class || type == Date.class || Number.class.isAssignableFrom(type)
+        return type == Boolean.class ||
+                type == String.class ||
+                type == Date.class ||
+                Number.class.isAssignableFrom(type) ||
+                type == UUID.class
     }
 }
