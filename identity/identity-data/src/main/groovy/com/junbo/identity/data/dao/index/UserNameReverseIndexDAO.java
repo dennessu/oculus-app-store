@@ -14,6 +14,6 @@ import com.junbo.sharding.annotations.SeedParam;
 public interface UserNameReverseIndexDAO {
     UserNameReverseIndexEntity save(UserNameReverseIndexEntity entity);
     UserNameReverseIndexEntity update(UserNameReverseIndexEntity entity);
-    UserNameReverseIndexEntity get(@SeedParam String userName);
     void delete(@SeedParam String userName);
+    UserNameReverseIndexEntity get(@SeedParam String userName);
 }

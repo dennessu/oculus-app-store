@@ -141,10 +141,6 @@ class UserResourceImpl implements UserResource {
 
             user = userFilter.filterForGet(user, getOptions.properties?.split(',') as List<String>)
 
-            if (user == null) {
-                throw AppErrors.INSTANCE.userNotFound(userId).exception()
-            }
-
             return Promise.pure(user)
         }
     }

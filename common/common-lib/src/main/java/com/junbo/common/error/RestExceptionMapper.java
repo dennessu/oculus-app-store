@@ -24,11 +24,11 @@ public class RestExceptionMapper implements ExceptionMapper<Exception> {
 
     @Override
     public Response toResponse(Exception exception) {
+
+        LOGGER.error("Log unhandled exception", exception);
         if (exception instanceof WebApplicationException) {
             return ((WebApplicationException) exception).getResponse();
         }
-
-        LOGGER.error("Log unhandled exception", exception);
 
         Error error = new Error(Response.Status.INTERNAL_SERVER_ERROR.getReasonPhrase(), null,
                 Response.Status.INTERNAL_SERVER_ERROR.getReasonPhrase(), null);

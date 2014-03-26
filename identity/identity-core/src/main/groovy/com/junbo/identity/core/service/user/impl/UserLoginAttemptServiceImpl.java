@@ -12,6 +12,7 @@ import com.junbo.identity.core.service.user.UserPinService;
 import com.junbo.identity.core.service.util.Constants;
 import com.junbo.identity.core.service.util.UserPasswordUtil;
 import com.junbo.identity.core.service.validator.UserLoginAttemptValidator;
+import com.junbo.identity.core.service.validator.UsernameValidator;
 import com.junbo.identity.data.repository.UserLoginAttemptRepository;
 import com.junbo.identity.data.repository.UserRepository;
 import com.junbo.identity.spec.error.AppErrors;
@@ -20,7 +21,6 @@ import com.junbo.identity.spec.model.users.UserLoginAttempt;
 import com.junbo.identity.spec.model.users.UserPassword;
 import com.junbo.identity.spec.model.users.UserPin;
 import com.junbo.identity.spec.options.list.LoginAttemptListOptions;
-import com.junbo.identity.spec.options.list.UserListOptions;
 import com.junbo.identity.spec.options.list.UserPasswordListOptions;
 import com.junbo.identity.spec.options.list.UserPinListOptions;
 import org.glassfish.jersey.internal.util.Base64;
@@ -54,6 +54,9 @@ public class UserLoginAttemptServiceImpl implements UserLoginAttemptService {
     @Autowired
     private UserLoginAttemptValidator validator;
 
+    @Autowired
+    private UsernameValidator usernameValidator;
+
     @Override
     public UserLoginAttempt get(UserLoginAttemptId userLoginAttemptId) {
         validator.validateGet(userLoginAttemptId);
@@ -65,12 +68,10 @@ public class UserLoginAttemptServiceImpl implements UserLoginAttemptService {
         validator.validateCreate(userLoginAttempt);
         String decode = Base64.decodeAsString(userLoginAttempt.getValue());
         String[] split = decode.split(Constants.COLON);
-        UserListOptions option = new UserListOptions();
-        option.setUsername(split[0]);
-        option.setLimit(1);
-        List<User> users = null;
+        User user = null;
         try {
-            users = userRepository.search(option).wrapped().get();
+            user = userRepository.getUserByCanonicalUsername(usernameValidator.normalizeUsername(split[0])).
+                    wrapped().get();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -78,25 +79,25 @@ public class UserLoginAttemptServiceImpl implements UserLoginAttemptService {
         }
         if(userLoginAttempt.getType().equals("password")) {
             UserPasswordListOptions passwordListOption = new UserPasswordListOptions();
-            passwordListOption.setUserId(users.get(0).getId());
+            passwordListOption.setUserId(user.getId());
             passwordListOption.setActive(true);
             passwordListOption.setLimit(1);
             UserPassword currentPassword = userPasswordService.search(passwordListOption).get(0);
             String hashPassword = UserPasswordUtil.hashPassword(split[1], currentPassword.getPasswordSalt());
 
             userLoginAttempt.setSucceeded(hashPassword.equals(currentPassword.getPasswordHash()));
-            userLoginAttempt.setUserId(users.get(0).getId());
+            userLoginAttempt.setUserId(user.getId());
         }
         else if(userLoginAttempt.getType().equals("pin")) {
             UserPinListOptions userPinListOption = new UserPinListOptions();
-            userPinListOption.setUserId(users.get(0).getId());
+            userPinListOption.setUserId(user.getId());
             userPinListOption.setActive(true);
             userPinListOption.setLimit(1);
             UserPin currentPin = userPinService.search(userPinListOption).get(0);
             String hashPin = UserPasswordUtil.hashPassword(split[1], currentPin.getPinSalt());
 
             userLoginAttempt.setSucceeded(hashPin.equals(currentPin.getPinHash()));
-            userLoginAttempt.setUserId(users.get(0).getId());
+            userLoginAttempt.setUserId(user.getId());
         }
         UserLoginAttempt saved = saveUserLoginAttempt(userLoginAttempt);
         if(!saved.getSucceeded()) {

@@ -132,17 +132,15 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         }
         Assert.assertEquals(newUser.getBirthday(), newValue);
 
-        UserListOptions getOption = new UserListOptions();
-        getOption.setUsername(newUser.getUsername());
-        List<User> userList = null;
+        User findUser = null;
         try {
-            userList = userRepository.search(getOption).wrapped().get();
+            findUser = userRepository.getUserByCanonicalUsername(newUser.getUsername()).wrapped().get();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
-        Assert.assertNotEquals(userList.size(), 0);
+        Assert.assertNotNull(findUser);
     }
 
     @Test(enabled = true)
