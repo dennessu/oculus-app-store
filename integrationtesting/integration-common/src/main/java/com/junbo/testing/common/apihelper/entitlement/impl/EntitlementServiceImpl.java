@@ -104,12 +104,13 @@ public class EntitlementServiceImpl implements EntitlementService {
         NettyResponse nettyResponse = (NettyResponse) future.get();
         logger.LogResponse(nettyResponse);
         Assert.assertEquals(expectedResponseCode, nettyResponse.getStatusCode());
-        Results<Entitlement> rtnEntitlements = new JsonMessageTranscoder().decode(new TypeReference<Entitlement>() {
-        },
-                nettyResponse.getResponseBody());
+        Results<Entitlement> rtnEntitlements =
+                new JsonMessageTranscoder().decode(new TypeReference<Results<Entitlement>>() {
+                },
+                        nettyResponse.getResponseBody());
         List<String> rtnEntitlementIds = new ArrayList<>();
 
-        for(Entitlement en: rtnEntitlements.getItems()){
+        for (Entitlement en : rtnEntitlements.getItems()) {
             String rtnEntitlementId = IdConverter.idToHexString(new EntitlementId(en.getEntitlementId()));
             Master.getInstance().addEntitlement(rtnEntitlementId, en);
             rtnEntitlementIds.add(rtnEntitlementId);
