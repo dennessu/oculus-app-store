@@ -7,11 +7,14 @@
 package com.junbo.payment.core.provider;
 
 import com.junbo.payment.spec.enums.PIType;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * provider routing service.
  */
 public interface ProviderRoutingService {
+    @Transactional(readOnly = true)
     PaymentProviderService getPaymentProvider(PIType piType);
+    @Transactional
     void updatePaymentConfiguration();
 }

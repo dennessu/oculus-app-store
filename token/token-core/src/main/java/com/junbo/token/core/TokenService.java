@@ -8,8 +8,9 @@ package com.junbo.token.core;
 
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.token.spec.internal.TokenSet;
+import com.junbo.token.spec.model.OrderRequest;
 import com.junbo.token.spec.model.TokenItem;
-import com.junbo.token.spec.model.TokenOrder;
+import com.junbo.token.spec.internal.TokenOrder;
 import org.springframework.transaction.annotation.Transactional;
 
 
@@ -23,6 +24,10 @@ public interface TokenService {
     Promise<TokenSet> getTokenSet(Long tokenSetId);
     @Transactional
     Promise<TokenOrder> createTokenOrder(TokenOrder request);
+    @Transactional
+    Promise<OrderRequest> createOrderRequest(OrderRequest request);
+    @Transactional(readOnly = true)
+    Promise<OrderRequest> getOrderRequest(Long tokenOrderId);
     @Transactional(readOnly = true)
     Promise<TokenOrder> getTokenOrder(Long tokenOrderId);
     @Transactional

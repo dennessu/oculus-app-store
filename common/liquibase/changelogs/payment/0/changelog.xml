@@ -376,6 +376,7 @@
                   merchant_account_id             int                  null,
                   payment_status_id               smallint         not null,                  
 				  external_token                  varchar(128)         null,
+				  billing_ref_id                  varchar(128)     not null,
                   created_time                    date             not null,
                   created_by                      varchar(50)          null,
                   updated_time                    date                 null,

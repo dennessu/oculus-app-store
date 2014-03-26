@@ -3,6 +3,7 @@ package com.junbo.rating.app
 import com.junbo.common.id.provider.IdTypeFromStringProvider
 import com.junbo.common.json.JacksonFeature
 import com.junbo.common.json.ObjectMapperProvider
+import com.junbo.rating.rest.exceptionMapper.RestExceptionMapper
 import org.glassfish.grizzly.http.server.HttpServer
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory
 import org.glassfish.jersey.server.ResourceConfig
@@ -20,6 +21,7 @@ class Main {
         resourceConfig.register(ObjectMapperProvider)
         resourceConfig.register(JacksonFeature)
         resourceConfig.register(IdTypeFromStringProvider)
+        resourceConfig.register(RestExceptionMapper)
 
         def uri = URI.create('http://localhost:8080/rest')
         return GrizzlyHttpServerFactory.createHttpServer(uri, resourceConfig)

@@ -76,7 +76,8 @@ var Configs = {
             Profile: "Account/Profile",
             EditProfile: "Account/EditProfile",
             History: "Account/History",
-            Payment: "Account/Payment"
+            Payment: "Account/Payment",
+            AddPayment: "Account/AddPayment"
         }
     },
 

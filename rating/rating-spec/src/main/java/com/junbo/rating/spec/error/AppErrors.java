@@ -16,13 +16,15 @@ import com.junbo.common.error.ErrorProxy;
 public interface AppErrors {
     AppErrors INSTANCE = ErrorProxy.newProxyInstance(AppErrors.class);
 
-    @ErrorDef(httpStatusCode = 404, code = "10001", description = "Price of Offer: {0} is not found.")
+    @ErrorDef(httpStatusCode = 404, code = "10001",
+            description = "Price of Offer: {0} is not found.", field = "offer_id")
     AppError priceNotFound(String offerId);
 
-    @ErrorDef(httpStatusCode = 404, code = "10002", description = "Currency does not exist.")
+    @ErrorDef(httpStatusCode = 404, code = "10002", description = "Currency does not exist.", field = "currency")
     AppError currencyNotExist(String currency);
 
-    @ErrorDef(httpStatusCode = 403, code = "10003", description = "Currency is not consistent: {0} & {1}.")
+    @ErrorDef(httpStatusCode = 403, code = "10003",
+            description = "Currency is not consistent: {0} & {1}.", field = "currency")
     AppError currencyNotConsistent(String currency, String other);
 
     @ErrorDef(httpStatusCode = 500, code = "10004", description = "Error occurred during calling Catalog service.")
@@ -30,8 +32,5 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 500, code = "10005", description = "Error occurred during calling Entitlement service.")
     AppError entitlementGatewayError();
-
-    @ErrorDef(httpStatusCode = 500, code = "10006", description = "Internal Error.")
-    AppError unCaught();
 
 }

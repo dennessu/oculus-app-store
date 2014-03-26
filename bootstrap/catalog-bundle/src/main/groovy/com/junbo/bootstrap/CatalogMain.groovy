@@ -6,7 +6,6 @@
 package com.junbo.bootstrap
 
 import com.junbo.common.error.RestExceptionMapper
-import com.junbo.common.id.converter.IdTypeFromStringConverter
 import com.junbo.common.id.provider.IdTypeFromStringProvider
 import com.junbo.common.json.JacksonFeature
 import com.junbo.common.json.ObjectMapperProvider
@@ -24,7 +23,7 @@ import org.slf4j.bridge.SLF4JBridgeHandler
 class CatalogMain {
     static HttpServer startServer() {
         def resourceConfig = new ResourceConfig()
-        resourceConfig.property('contextConfigLocation', 'classpath*:/spring/*.xml')
+        resourceConfig.property('contextConfigLocation', 'classpath*:/spring/**/*.xml')
 
         // jackson feature
         resourceConfig.register(JacksonFeature)
@@ -34,7 +33,6 @@ class CatalogMain {
         resourceConfig.register(ConfigResource)
 
         // Id type feature
-        resourceConfig.register(IdTypeFromStringConverter)
         resourceConfig.register(IdTypeFromStringProvider)
 
         resourceConfig.register(RestExceptionMapper)
@@ -51,11 +49,8 @@ class CatalogMain {
         SLF4JBridgeHandler.install()
 
         System.setProperty('net.spy.log.LoggerImpl', 'net.spy.memcached.compat.log.SLF4JLogger')
-        System.setProperty('logback.configurationFile', 'logback-identity.xml')
+        System.setProperty('logback.configurationFile', './conf/logback-catalog-bundle.xml')
 
         startServer()
-        //System.out.println('started\nHit enter to stop it...')
-        //System.in.read()
-        //server.shutdown()
     }
 }

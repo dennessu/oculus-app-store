@@ -64,6 +64,6 @@ public class OrderItemFulfillmentEventDaoTest extends BaseTest {
         List<OrderItemFulfillmentEventEntity> resultAfter =
                 orderItemFulfillmentEventDao.readByOrderItemId(orderId, orderItemId);
 
-        Assert.assertEquals(resultBefore.size() + 1, resultAfter.size(), "Result size should increase.");
+        Assert.assertEquals(resultAfter.size(), resultBefore.size() + 1, "Result size should increase.");
     }
 }

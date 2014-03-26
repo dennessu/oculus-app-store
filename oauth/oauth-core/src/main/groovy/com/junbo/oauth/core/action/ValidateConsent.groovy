@@ -40,6 +40,11 @@ class ValidateConsent implements Action {
         def contextWrapper = new ActionContextWrapper(context)
 
         def client = contextWrapper.client
+
+        if (!client.needConsent) {
+            return Promise.pure(new ActionResult('success'))
+        }
+
         def loginState = contextWrapper.loginState
 
         def consent = consentRepository.getConsent(loginState.userId, client.clientId)

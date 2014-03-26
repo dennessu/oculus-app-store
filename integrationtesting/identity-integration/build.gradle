@@ -1,0 +1,35 @@
+apply plugin: 'java'
+
+sourceCompatibility = '1.7'
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+test{
+    useTestNG()
+    options {
+        listeners << 'org.testng.reporters.XMLReporter'
+    }
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+    // show standard out and standard error of the test JVM(s) on the console
+    testLogging.showStandardStreams = true
+}
+
+repositories {
+    mavenLocal()
+    maven {
+        credentials {
+            username "${artifactory_user}"
+            password "${artifactory_password}"
+        }
+        url "${artifactory_contextUrl}/repo"
+    }
+    mavenCentral()
+}
+
+dependencies {
+    compile 'com.junbo.identity:identity-spec:0.0.1-SNAPSHOT'
+    compile 'com.junbo.test:common-testlib:0.0.1-SNAPSHOT'
+    testCompile 'junit:junit:4.10'
+    testCompile 'org.testng:testng:6.0.1'
+}
