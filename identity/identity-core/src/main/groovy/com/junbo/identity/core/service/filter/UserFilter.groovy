@@ -52,8 +52,8 @@ class UserFilter implements ResourceFilter<User> {
         context.writableProperties = new BeanMarker()
         context.writableProperties.markProperties(writablePropertiesForCreate)
 
-        def createFilter = new CreateFilter();
-        def writablePropertiesFilter = new WritablePropertiesFilter();
+        def createFilter = new CreateFilter()
+        def writablePropertiesFilter = new WritablePropertiesFilter()
 
         def filterList = new PropertyMappingFilterList(filters: [
                 createFilter,
@@ -78,9 +78,9 @@ class UserFilter implements ResourceFilter<User> {
         context.writableProperties = new BeanMarker()
         context.writableProperties.markProperties(writablePropertiesForUpdate)
 
-        def putFilter = new PutFilter();
-        def readablePropertiesFilter = new ReadablePropertiesFilter();
-        def writablePropertiesFilter = new WritablePropertiesFilter();
+        def putFilter = new PutFilter()
+        def readablePropertiesFilter = new ReadablePropertiesFilter()
+        def writablePropertiesFilter = new WritablePropertiesFilter()
 
         def filterList = new PropertyMappingFilterList(filters: [
                 putFilter,
@@ -106,9 +106,9 @@ class UserFilter implements ResourceFilter<User> {
         context.writableProperties = new BeanMarker()
         context.writableProperties.markProperties(writablePropertiesForUpdate)
 
-        def patchFilter = new PatchFilter();
-        def readablePropertiesFilter = new ReadablePropertiesFilter();
-        def writablePropertiesFilter = new WritablePropertiesFilter();
+        def patchFilter = new PatchFilter()
+        def readablePropertiesFilter = new ReadablePropertiesFilter()
+        def writablePropertiesFilter = new WritablePropertiesFilter()
 
         def filterList = new PropertyMappingFilterList(filters: [
                 patchFilter,
@@ -131,8 +131,8 @@ class UserFilter implements ResourceFilter<User> {
         context.readableProperties = new BeanMarker()
         context.readableProperties.markProperties(readableProperties)
 
-        def readFilter = new ReadFilter();
-        def readablePropertiesFilter = new ReadablePropertiesFilter();
+        def readFilter = new ReadFilter()
+        def readablePropertiesFilter = new ReadablePropertiesFilter()
 
         def filterList = new PropertyMappingFilterList(filters: [
                 readFilter,
@@ -151,7 +151,7 @@ class UserFilter implements ResourceFilter<User> {
         return selfMapper.filterUser(user, context)
     }
 
-    public static class CreateFilter implements PropertyMappingFilter {
+    static class CreateFilter implements PropertyMappingFilter {
 
         @Override
         boolean skipPropertyMapping(PropertyMappingEvent event, MappingContext context) {
@@ -173,7 +173,7 @@ class UserFilter implements ResourceFilter<User> {
         }
     }
 
-    public static class ReadFilter implements PropertyMappingFilter {
+    static class ReadFilter implements PropertyMappingFilter {
 
         @Override
         boolean skipPropertyMapping(PropertyMappingEvent event, MappingContext context) {
@@ -189,7 +189,7 @@ class UserFilter implements ResourceFilter<User> {
         }
     }
 
-    public static class PutFilter implements PropertyMappingFilter {
+    static class PutFilter implements PropertyMappingFilter {
 
         @Override
         boolean skipPropertyMapping(PropertyMappingEvent event, MappingContext context) {
@@ -238,7 +238,7 @@ class UserFilter implements ResourceFilter<User> {
     }
 
 
-    public static class PatchFilter implements PropertyMappingFilter {
+    static class PatchFilter implements PropertyMappingFilter {
 
         @Override
         boolean skipPropertyMapping(PropertyMappingEvent event, MappingContext context) {
@@ -293,11 +293,11 @@ class UserFilter implements ResourceFilter<User> {
     }
 
 
-    public static boolean isSimpleType(Class type) {
-        return type == Boolean.class ||
-                type == String.class ||
-                type == Date.class ||
-                Number.class.isAssignableFrom(type) ||
-                type == UUID.class
+    static boolean isSimpleType(Class type) {
+        return type == Boolean ||
+                type == String ||
+                type == Date ||
+                Number.isAssignableFrom(type) ||
+                type == UUID
     }
 }
