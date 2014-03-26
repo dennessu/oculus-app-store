@@ -16,7 +16,6 @@ import com.junbo.identity.data.mapper.ModelMapper
 import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.spec.model.users.User
 import com.junbo.identity.spec.model.users.UserName
-import com.junbo.identity.spec.options.list.UserListOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oom.core.MappingContext
 import groovy.transform.CompileStatic
@@ -70,13 +69,6 @@ class UserRepositoryImpl implements UserRepository {
     Promise<User> update(User user) {
         UserEntity userEntity = modelMapper.toUser(user, new MappingContext())
         UserEntity existing = userDAO.get(userEntity.id)
-        userDAO.update(userEntity)
-
-        UserNameEntity userNameEntity = modelMapper.toUserName(user.name, new MappingContext())
-        UserNameEntity existingUserNameEntity = userNameDAO.findByUserId(userEntity.id)
-        userNameEntity.setId(existingUserNameEntity.id)
-        userNameEntity.setUserId(existingUserNameEntity.userId)
-        userNameDAO.update(userNameEntity)
 
         if (userEntity.username != existing.username) {
             userNameReverseIndexDAO.delete(existing.username)
@@ -86,6 +78,18 @@ class UserRepositoryImpl implements UserRepository {
             reverseLookupEntity.setUsername(userEntity.username)
             userNameReverseIndexDAO.save(reverseLookupEntity)
         }
+        else if (userEntity.active != existing.active) {
+            UserNameReverseIndexEntity reverseLookupEntity = userNameReverseIndexDAO.get(userEntity.username)
+            userNameReverseIndexDAO.update(reverseLookupEntity)
+        }
+
+        userDAO.update(userEntity)
+
+        UserNameEntity userNameEntity = modelMapper.toUserName(user.name, new MappingContext())
+        UserNameEntity existingUserNameEntity = userNameDAO.findByUserId(userEntity.id)
+        userNameEntity.setId(existingUserNameEntity.id)
+        userNameEntity.setUserId(existingUserNameEntity.userId)
+        userNameDAO.update(userNameEntity)
 
         return get((UserId)user.id)
     }
@@ -97,22 +101,6 @@ class UserRepositoryImpl implements UserRepository {
         user.setName(userName)
 
         return Promise.pure(user)
-    }
-
-    @Override
-    Promise<List<User>> search(UserListOptions option) {
-        if (StringUtils.isEmpty(option.username)) {
-            // todo:    Need to identify other fields
-            throw new RuntimeException()
-        }
-        else {
-            UserNameReverseIndexEntity reverseEntity = userNameReverseIndexDAO.get(option.username)
-
-            List<User> results = new ArrayList<User>()
-            results.add(get(new UserId(reverseEntity.userId)).wrapped().get())
-
-            return Promise.pure(results)
-        }
     }
 
     @Override

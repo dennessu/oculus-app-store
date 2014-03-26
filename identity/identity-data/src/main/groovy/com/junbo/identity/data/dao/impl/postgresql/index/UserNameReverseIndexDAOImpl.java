@@ -33,18 +33,18 @@ public class UserNameReverseIndexDAOImpl extends ShardedDAOBase implements UserN
     }
 
     @Override
+    public void delete(@SeedParam String userName) {
+        UserNameReverseIndexEntity entity = get(userName);
+        currentSession().delete(entity);
+    }
+
+    @Override
     public UserNameReverseIndexEntity get(@SeedParam String userName) {
         String query = "select * from user_name_reverse_index where user_name = :userName";
         List<UserNameReverseIndexEntity> entities =
                 currentSession().createSQLQuery(query).addEntity(UserNameReverseIndexEntity.class)
                         .setParameter("userName", userName).list();
 
-        return entities.size() == 0 ? null : entities.get(0);
-    }
-
-    @Override
-    public void delete(@SeedParam String userName) {
-        UserNameReverseIndexEntity entity = get(userName);
-        currentSession().delete(entity);
+        return entities.size() == 0? null : entities.get(0);
     }
 }
