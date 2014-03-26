@@ -29,11 +29,12 @@ public class Address {
     public static Address getRandomAddress(Country country) {
         Address randomAddress = new Address();
         randomAddress.setCountry(country.toString());
-        randomAddress.setAddressLine1(RandomFactory.getRandomStringOfAlphabet(6));
+        //randomAddress.setAddressLine1(RandomFactory.getRandomStringOfAlphabet(6));
+        randomAddress.setAddressLine1("1600 Amphitheatre Parkway");
         randomAddress.setAddressLine2(RandomFactory.getRandomStringOfAlphabet(6));
         randomAddress.setAddressLine3(RandomFactory.getRandomStringOfAlphabet(6));
-        randomAddress.setPostalCode(RandomFactory.getRandomStringOfNumeric(5));
-        randomAddress.setCity("LA");
+        randomAddress.setPostalCode("94043");
+        randomAddress.setCity("Mountain View");
         randomAddress.setState("CA");
         return randomAddress;
     }

@@ -32,14 +32,17 @@ public class ShippingAddressInfo {
 
     public static ShippingAddressInfo getRandomShippingAddress(Country country) {
         ShippingAddressInfo shippingAddress = new ShippingAddressInfo();
-        shippingAddress.setStreet(RandomFactory.getRandomStringOfAlphabet(10));
-        shippingAddress.setCity("Redwood City");
+        //shippingAddress.setStreet(RandomFactory.getRandomStringOfAlphabet(10));
+        shippingAddress.setStreet("1600 Amphitheatre Parkway");
+        shippingAddress.setCity("Mountain View");
         shippingAddress.setState("CA");
-        shippingAddress.setPostalCode(RandomFactory.getRandomStringOfNumeric(5));
+        //shippingAddress.setPostalCode(RandomFactory.getRandomStringOfNumeric(5));
+        shippingAddress.setPostalCode("94043");
         shippingAddress.setCountry(country.toString());
         shippingAddress.setFirstName(RandomFactory.getRandomStringOfAlphabet(5));
         shippingAddress.setLastName(RandomFactory.getRandomStringOfAlphabetOrNumeric(5));
-        shippingAddress.setPhoneNumber(RandomFactory.getRandomStringOfNumeric(10));
+        shippingAddress.setPhoneNumber("650-253-0000");
+        //shippingAddress.setPhoneNumber(RandomFactory.getRandomStringOfNumeric(10));
         return shippingAddress;
     }
 
