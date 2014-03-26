@@ -107,17 +107,21 @@ class ServiceFacade {
 
     Order postQuotes(Order order) {
         order.tentative = true
+        order.trackingUuid = UUID.randomUUID()
         return orderResource.createOrder(order).wrapped().get()
     }
 
-    Order settleQuotes(OrderId orderId) {
+    Order settleQuotes(OrderId orderId, UserId userId) {
         def order = new Order()
         order.tentative = false
+        order.user = userId
+        order.trackingUuid = UUID.randomUUID()
         return orderResource.updateOrderByOrderId(orderId, order).wrapped().get()
     }
 
     Order putQuotes(Order order) {
         order.tentative = true
+        order.trackingUuid = UUID.randomUUID()
         return orderResource.updateOrderByOrderId(order.id, order).wrapped().get()
     }
 

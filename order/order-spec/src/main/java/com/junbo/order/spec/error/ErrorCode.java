@@ -39,4 +39,6 @@ public class ErrorCode {
 
     public static final String ORDER_EVENT_NOT_FOUND = "20004";
 
+    public static final String ORDER_NOT_TENTATIVE = "20005";
+
 }

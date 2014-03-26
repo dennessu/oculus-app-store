@@ -13,3 +13,7 @@ exports.Cart = function(req, res){
 exports.OrderSummary = function(req, res){
     res.render("store/order_summary", {title: "Store Demo"});
 }
+
+exports.Thanks = function(req, res){
+    res.render("store/thanks_for_purchase", {title: "Store Demo"});
+}

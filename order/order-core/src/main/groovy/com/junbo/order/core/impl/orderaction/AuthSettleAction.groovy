@@ -9,8 +9,8 @@ import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.core.annotation.OrderEventAwareAfter
 import com.junbo.order.core.annotation.OrderEventAwareBefore
 import com.junbo.order.core.impl.common.CoreBuilder
+import com.junbo.order.core.impl.common.CoreUtils
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
-import com.junbo.order.db.entity.enums.EventStatus
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.error.AppErrors
 import groovy.transform.CompileStatic
@@ -47,12 +47,9 @@ class AuthSettleAction extends BaseOrderEventAwareAction {
         Promise promise = facadeContainer.billingFacade.createBalance(balance)
         promise.syncRecover {  Throwable throwable ->
             LOGGER.error('name=Order_AuthSettle_Error', throwable)
-            return null
-        }.then { Balance it ->
-            if (it == null) {
-                CoreBuilder.buildActionResultForOrderEventAwareAction(context, EventStatus.ERROR)
-                throw AppErrors.INSTANCE.billingConnectionError().exception()
-            }
+            throw AppErrors.INSTANCE.
+                    billingConnectionError(CoreUtils.toAppErrors(throwable)).exception()
+        }.then {
             orderServiceContextBuilder.refreshBalances(context.orderServiceContext).syncThen {
                 // TODO: save order level tax
                 return CoreBuilder.buildActionResultForOrderEventAwareAction(context,
