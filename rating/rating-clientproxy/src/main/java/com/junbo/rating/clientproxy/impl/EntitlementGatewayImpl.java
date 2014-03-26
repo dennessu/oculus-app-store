@@ -24,7 +24,7 @@ import java.util.*;
  */
 public class EntitlementGatewayImpl implements EntitlementGateway {
     @Autowired
-    @Qualifier("ratingEntitlementClient")
+    @Qualifier("ratingUserEntitlementClient")
     private UserEntitlementResource userEntitlementResource;
 
     @Override

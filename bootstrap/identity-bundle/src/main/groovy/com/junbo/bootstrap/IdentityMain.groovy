@@ -6,7 +6,6 @@
 package com.junbo.bootstrap
 
 import com.junbo.common.error.RestExceptionMapper
-import com.junbo.common.id.converter.IdTypeFromStringConverter
 import com.junbo.common.id.provider.IdTypeFromStringProvider
 import com.junbo.common.json.JacksonFeature
 import com.junbo.common.json.ObjectMapperProvider
@@ -39,7 +38,6 @@ class IdentityMain {
         resourceConfig.packages('com.junbo.oauth.spec.endpoint.adapter')
 
         // Id type feature
-        resourceConfig.register(IdTypeFromStringConverter)
         resourceConfig.register(IdTypeFromStringProvider)
 
         resourceConfig.register(RestExceptionMapper)

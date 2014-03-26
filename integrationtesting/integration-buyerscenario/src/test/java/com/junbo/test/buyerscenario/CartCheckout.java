@@ -4,6 +4,7 @@ package com.junbo.test.buyerscenario;
 import com.junbo.test.buyerscenario.util.BaseTestClass;
 import com.junbo.test.common.Entities.ShippingAddressInfo;
 import com.junbo.test.common.Entities.enums.Country;
+import com.junbo.test.common.Entities.enums.Currency;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
 import com.junbo.test.common.property.*;
@@ -31,9 +32,10 @@ public class CartCheckout extends BaseTestClass {
                     "4. Post new credit card to new user.",
                     "5. Merge the previous anonymous cart to the new user",
                     "6. Post order to checkout",
-                    "7. Close the primary cart",
-                    "8. Verify the primary cart is empty",
-                    //TODO "9. email validation",
+                    "7. Verify the order response info",
+                    "8. Close the primary cart",
+                    "9  Update order tentative to false",
+                    "10. Verify Email sent successfully"
             }
     )
     @Test
@@ -45,10 +47,9 @@ public class CartCheckout extends BaseTestClass {
         String uid = testDataProvider.createUser();
 
         CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
-        testDataProvider.postCreditCardToUser(uid,creditCardInfo);
+        testDataProvider.postCreditCardToUser(uid, creditCardInfo);
 
         testDataProvider.mergeCart(uid, randomUid);
-
 
     }
 
@@ -63,12 +64,13 @@ public class CartCheckout extends BaseTestClass {
                     "1. Post a random user",
                     "2. Add physical offer to user's primary cart",
                     "3. Post a new user",
-                    "4. Post new credit card and shipping method to new user.",
+                    "4. Post new credit card and shipping address to new user.",
                     "5. Merge the previous anonymous cart to the new user",
                     "6. Post order to checkout",
-                    "7. Close the primary cart",
-                    "8. Verify the primary cart is empty",
-                    //TODO "9. email validation",
+                    "7  Verify order info correct",
+                    "8. Close the primary cart",
+                    "9  Update order tentative to false",
+                    "10. Verify Email sent successfully"
             }
     )
     @Test
@@ -79,13 +81,16 @@ public class CartCheckout extends BaseTestClass {
         String uid = testDataProvider.createUser();
 
         CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
-        testDataProvider.postCreditCardToUser(uid,creditCardInfo);
+        String creditCardId = testDataProvider.postCreditCardToUser(uid, creditCardInfo);
 
         ShippingAddressInfo shippingAddressInfo = ShippingAddressInfo.getRandomShippingAddress(Country.DEFAULT);
-        testDataProvider.postShippingAddressToUser(uid, shippingAddressInfo);
+        String shippingAddressId = testDataProvider.postShippingAddressToUser(uid, shippingAddressInfo);
 
-        testDataProvider.mergeCart(uid, randomUid);
+        String cartId = testDataProvider.mergeCart(uid, randomUid);
+
+        String orderId = testDataProvider.postOrderByCartId(uid, cartId, Country.DEFAULT, Currency.DEFAULT, creditCardId, shippingAddressId);
 
     }
 
 }
+

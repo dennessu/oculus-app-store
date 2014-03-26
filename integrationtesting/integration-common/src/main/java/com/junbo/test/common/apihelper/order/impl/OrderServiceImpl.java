@@ -94,7 +94,7 @@ public class OrderServiceImpl extends HttpClientBase implements OrderService {
 
     @Override
     public String postOrder(Order order, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, orderUrl, order, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.POST, orderUrl + "orders/", order, expectedResponseCode);
 
         Order orderResult = new JsonMessageTranscoder().decode(
                 new TypeReference<Order>() {

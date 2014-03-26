@@ -51,7 +51,7 @@
         <appender-ref ref="ALERT"/>
     </appender>
 
-    <root level="DEBUG">
+    <root level="INFO">
         <appender-ref ref="MAIN_ASYNC" />
         <appender-ref ref="ALERT_ASYNC" />
         <appender-ref ref="STDOUT" />
