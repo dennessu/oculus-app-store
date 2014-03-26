@@ -10,6 +10,7 @@ import com.junbo.cart.spec.model.Cart;
 import com.junbo.cart.spec.model.item.CouponItem;
 import com.junbo.cart.spec.model.item.OfferItem;
 import com.junbo.common.id.OfferId;
+import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.identity.spec.model.user.User;
 import com.junbo.order.spec.model.OrderItem;
 import com.junbo.payment.spec.model.Address;
@@ -37,6 +38,7 @@ import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.common.Entities.enums.Currency;
 import com.junbo.test.common.libs.EnumHelper.UserStatus;
+import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
 
@@ -115,20 +117,15 @@ public class TestDataProvider {
         this.postOffersToPrimaryCart(uid, offerList);
     }
 
-    public void mergeCart(String destinationUid, String sourceUid) throws Exception {
+    public String mergeCart(String destinationUid, String sourceUid) throws Exception {
         String sourceCartId = cartClient.getCartPrimary(sourceUid);
         Cart sourceCart = Master.getInstance().getCart(sourceCartId);
 
         String destinationCartId = cartClient.getCartPrimary(destinationUid);
         //Cart destinationCart = Master.getInstance().getCart(destinationCartId);
 
-        cartClient.mergeCart(destinationUid, destinationCartId, sourceCart);
+        return cartClient.mergeCart(destinationUid, destinationCartId, sourceCart);
     }
-
-    public String transferPrimaryCartToOrder(String uid) throws Exception {
-        return transferPrimaryCartToOrder(uid, Country.DEFAULT, Currency.DEFAULT);
-    }
-
 
     public String transferPrimaryCartToOrder(String uid, Country country, Currency currency) throws Exception {
         String primaryCartId = cartClient.getCartPrimary(uid);
@@ -200,7 +197,49 @@ public class TestDataProvider {
         shippingAddress.setPhoneNumber(shippingAddressInfo.getPhoneNumber());
 
         return shippingClient.postShippingAddressToUser(uid, shippingAddress);
-
     }
 
+    public String postOrderByCartId(String uid, String cartId, Country country, Currency currency,
+                                    String paymentInstrumentId, String shippingAddressId) throws Exception {
+        if (cartId == null) {
+            cartId = cartClient.getCartPrimary(uid);
+        }
+
+        Cart cart = Master.getInstance().getCart(cartId);
+        Order order = new Order();
+
+        List<PaymentInstrumentId> paymentInstruments = new ArrayList<>();
+        paymentInstruments.add(new PaymentInstrumentId(
+                IdConverter.hexStringToId(PaymentInstrumentId.class, paymentInstrumentId)));
+        order.setUser(cart.getUser());
+        order.setCountry(country.toString());
+        order.setCurrency(currency.toString());
+        order.setPaymentInstruments(paymentInstruments);
+        order.setShippingAddressId(Master.getInstance().getShippingAddress(shippingAddressId).getAddressId());
+
+        List<OrderItem> orderItemList = new ArrayList<>();
+        List<OfferItem> offerItemList = cart.getOffers();
+        for (int i = 0; i < offerItemList.size(); i++) {
+            OfferId offerId = offerItemList.get(i).getOffer();
+
+            OrderItem orderItem = new OrderItem();
+            orderItem.setQuantity(Integer.parseInt(offerItemList.get(i).getQuantity().toString()));
+            orderItem.setOffer(offerId);
+            orderItemList.add(orderItem);
+        }
+        order.setOrderItems(orderItemList);
+        order.setTrackingUuid(UUID.randomUUID());
+        order.setTentative(true);
+        order.setType("PAY_IN");
+
+        return orderClient.postOrder(order);
+    }
+
+    public String orderPrimaryCart(String uid, String cartId, Country country, Currency currency) throws Exception {
+        String orderId = this.transferPrimaryCartToOrder(uid, country, currency);
+        return null;
+    }
+
+
 }
+
