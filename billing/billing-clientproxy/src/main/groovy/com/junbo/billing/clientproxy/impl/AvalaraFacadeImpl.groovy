@@ -213,10 +213,12 @@ class AvalaraFacadeImpl implements TaxFacade {
 
             LOGGER.error('name=Error_Address_Validation.')
             LOGGER.info('name=Address_Validation_Response_Status_Code, statusCode={}', response.statusCode)
+            String detail
             validateAddressResponse.messages.each { ResponseMessage message ->
                 LOGGER.info('name=Address_Validation_Response_Error_Message, message={}', message.details)
+                detail += message.details
             }
-            throw AppErrors.INSTANCE.addressValidationError('Fail to pass address validation.').exception()
+            throw AppErrors.INSTANCE.addressValidationError('Fail to validate address. ' + detail).exception()
         }
     }
 

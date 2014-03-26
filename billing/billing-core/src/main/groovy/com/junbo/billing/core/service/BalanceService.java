@@ -7,6 +7,8 @@
 package com.junbo.billing.core.service;
 
 import com.junbo.billing.spec.model.Balance;
+import com.junbo.common.id.BalanceId;
+import com.junbo.common.id.OrderId;
 import com.junbo.langur.core.promise.Promise;
 
 import java.util.List;
@@ -22,7 +24,7 @@ public interface BalanceService {
 
     Promise<Balance> captureBalance(Balance balance);
 
-    Promise<Balance> getBalance(Long balanceId);
+    Promise<Balance> getBalance(BalanceId balanceId);
 
-    Promise<List<Balance>> getBalances(Long orderId);
+    Promise<List<Balance>> getBalances(OrderId orderId);
 }

@@ -44,12 +44,12 @@ public class BalanceResourceImpl implements BalanceResource {
 
     @Override
     public Promise<Balance> getBalance(BalanceId balanceId) {
-        return balanceService.getBalance(balanceId.getValue());
+        return balanceService.getBalance(balanceId);
     }
 
     @Override
     public Promise<Results<Balance>> getBalances(OrderId orderId) {
-        return balanceService.getBalances(orderId.getValue())
+        return balanceService.getBalances(orderId)
                 .then(new Promise.Func<List<Balance>, Promise<Results<Balance>>>() {
             @Override
             public Promise<Results<Balance>> apply(List<Balance> balances) {

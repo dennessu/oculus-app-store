@@ -21,6 +21,8 @@ import com.junbo.payment.spec.model.ChargeInfo
 import com.junbo.payment.spec.model.PaymentTransaction
 import com.junbo.payment.spec.model.PIId
 import groovy.transform.CompileStatic
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 
@@ -36,6 +38,8 @@ class TransactionServiceImpl implements TransactionService {
 
     @Autowired
     PaymentFacade paymentFacade
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(TransactionServiceImpl)
 
     @Override
     Promise<Balance> processBalance(Balance balance) {
@@ -67,10 +71,15 @@ class TransactionServiceImpl implements TransactionService {
             throw AppErrors.INSTANCE.invalidPaymentId(paymentRefId).exception()
         }
 
+        LOGGER.info('name=Capture_Balance. balance currency: {0}, authed amount: {1}, settled amount: {1}, pi id: {3}',
+                balance.currency, balance.totalAmount, amount, balance.piId)
         return paymentFacade.postPaymentCapture(paymentId, paymentTransaction).recover { Throwable throwable ->
+            LOGGER.error('name=Capture_Balance_Error. error in post payment capture', throwable)
             transaction.setStatus(TransactionStatus.ERROR.name())
             balance.setStatus(BalanceStatus.ERROR.name())
         }.then { PaymentTransaction pt ->
+            LOGGER.info('name=Capture_Balance. payment id: {0}, amount: {1}, status: {2}',
+                    pt.id, pt.chargeInfo.amount, pt.status)
             transaction.setType(TransactionType.CAPTURE.name())
             transaction.setAmount(pt.chargeInfo.amount)
             if (pt.status == PaymentStatus.SETTLEMENT_SUBMITTED.name()) {
@@ -96,13 +105,16 @@ class TransactionServiceImpl implements TransactionService {
         transaction.setPiId(balance.piId)
 
         def paymentTransaction = generatePaymentTransaction(balance)
+        LOGGER.info('name=Charge_Balance. balance currency: {0}, amount: {1}, pi id: {2}',
+                balance.currency, balance.totalAmount, balance.piId)
         return paymentFacade.postPaymentCharge(paymentTransaction).recover { Throwable throwable ->
+            LOGGER.error('name=Charge_Balance_Error. error in post payment charge', throwable)
             transaction.setStatus(TransactionStatus.ERROR.name())
             balance.addTransaction(transaction)
             balance.setStatus(BalanceStatus.ERROR.name())
             return Promise.pure(balance)
-        }
-        .then { PaymentTransaction pt ->
+        }.then { PaymentTransaction pt ->
+            LOGGER.info('name=Charge_Balance. payment id: {0}, status: {1}', pt.id, pt.status)
             transaction.setPaymentRefId(pt.id.toString())
             PaymentStatus paymentStatus = PaymentStatus.valueOf(pt.status)
             switch (paymentStatus) {
@@ -133,13 +145,16 @@ class TransactionServiceImpl implements TransactionService {
         transaction.setPiId(balance.piId)
 
         def paymentTransaction = generatePaymentTransaction(balance)
+        LOGGER.info('name=Authorize_Balance. balance currency: {0}, amount: {1}, pi id: {2}',
+                balance.currency, balance.totalAmount, balance.piId)
         return paymentFacade.postPaymentAuthorization(paymentTransaction).recover { Throwable throwable ->
+            LOGGER.error('name=Authorize_Balance_Error. error in post payment authorization', throwable)
             transaction.setStatus(TransactionStatus.ERROR.name())
             balance.addTransaction(transaction)
             balance.setStatus(BalanceStatus.ERROR.name())
             return Promise.pure(balance)
-        }
-        .then { PaymentTransaction pt ->
+        }.then { PaymentTransaction pt ->
+            LOGGER.info('name=Authorize_Balance. payment id: {0}, status: {1}', pt.id, pt.status)
             transaction.setPaymentRefId(pt.id.toString())
             PaymentStatus paymentStatus = PaymentStatus.valueOf(pt.status)
             switch (paymentStatus) {

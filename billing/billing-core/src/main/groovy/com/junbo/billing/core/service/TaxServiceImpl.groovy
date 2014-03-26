@@ -34,13 +34,16 @@ class TaxServiceImpl implements TaxService {
     @Resource
     ShippingAddressService shippingAddressService
 
-    String providerName
-
     TaxFacade taxFacade
+
+    String providerName
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TaxServiceImpl)
 
-    void chooseProvider() {
+    void chooseTaxProvider() {
+        if (taxFacade != null) {
+            return
+        }
         switch (providerName) {
             case 'AVALARA':
                 taxFacade = avalaraFacade
@@ -55,13 +58,15 @@ class TaxServiceImpl implements TaxService {
 
     @Override
     Promise<Balance> calculateTax(Balance balance) {
+
+        chooseTaxProvider()
+
         Long userId = balance.userId.value
         Long piId = balance.piId.value
         return paymentFacade.getPaymentInstrument(userId, piId).recover { Throwable throwable ->
             LOGGER.error('name=Error_Get_PaymentInstrument. pi id: ' + balance.piId.value, throwable)
             throw AppErrors.INSTANCE.piNotFound(piId.toString()).exception()
         }.then { PaymentInstrument pi ->
-            chooseProvider()
             if (balance.shippingAddressId != null) {
                 Long addressId = balance.shippingAddressId.value
                 return shippingAddressService.getShippingAddress(userId, addressId)
@@ -81,13 +86,15 @@ class TaxServiceImpl implements TaxService {
 
     @Override
     Promise<ShippingAddress> validateShippingAddress(ShippingAddress shippingAddress) {
-        chooseProvider()
+        chooseTaxProvider()
+
         return taxFacade.validateShippingAddress(shippingAddress)
     }
 
     @Override
     Promise<Address> validatePiAddress(Address piAddress) {
-        chooseProvider()
+        chooseTaxProvider()
+
         return taxFacade.validatePiAddress(piAddress)
     }
 }
