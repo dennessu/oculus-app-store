@@ -22,7 +22,7 @@ public class CartCheckout extends BaseTestClass {
             features = "BuyerScenarios",
             component = Component.Order,
             owner = "ZhaoYunlong",
-            status = Status.Enable,
+            status = Status.Incomplete,
             description = "Test digital good checkout",
             steps = {
                     "1. Post a random user",
@@ -47,7 +47,6 @@ public class CartCheckout extends BaseTestClass {
 
         testDataProvider.mergeCart(uid, randomUid);
 
-
     }
 
     @Property(
@@ -55,7 +54,7 @@ public class CartCheckout extends BaseTestClass {
             features = "BuyerScenarios",
             component = Component.Order,
             owner = "ZhaoYunlong",
-            status = Status.Enable,
+            status = Status.Incomplete,
             description = "Test physical good checkout",
             steps = {
                     "1. Post a random user",

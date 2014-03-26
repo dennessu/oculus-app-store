@@ -19,7 +19,7 @@ import java.util.List;
  */
 public class ShippingAddressServiceImpl extends HttpClientBase implements ShippingAddressService {
 
-    private static String shippingAddressUrl = RestUrl.getRestUrl(RestUrl.ComponentName.SHIPPING);
+    private static String shippingAddressUrl = RestUrl.getRestUrl(RestUrl.ComponentName.BILLING);
 
     private LogHelper logger = new LogHelper(ShippingAddressServiceImpl.class);
 
