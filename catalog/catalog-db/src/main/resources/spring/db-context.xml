@@ -15,7 +15,7 @@
 
     <bean id="catalogDataSource" class="bitronix.tm.resource.jdbc.PoolingDataSource"
           init-method="init" destroy-method="close">
-        <property name="uniqueName" value="jdbc/id_ds1"/>
+        <property name="uniqueName" value="jdbc/catalog_ds1"/>
         <property name="className" value="org.postgresql.xa.PGXADataSource"/>
         <property name="minPoolSize" value="${catalog.db.minConnectionsPerPartition}"/>
         <property name="maxPoolSize" value="${catalog.db.maxConnectionsPerPartition}"/>

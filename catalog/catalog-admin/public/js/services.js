@@ -52,6 +52,21 @@ services.factory('AttributeFactory', function ($resource) {
     })
 });
 
+services.factory('PriceTiersFactory', function ($resource) {
+    return $resource('/api/price-tiers', {}, {
+        query: { method: 'GET', isArray: true },
+        create: { method: 'POST' }
+    })
+});
+
+services.factory('PriceTierFactory', function ($resource) {
+    return $resource('/api/price-tiers/:id', {}, {
+        query: { method: 'GET' },
+        update: { method: 'PUT', params: {id: '@id'} },
+        delete: { method: 'DELETE', params: {id: '@id'} }
+    })
+});
+
 services.factory('OfferResponse', function() {
     return {
         data:{}
