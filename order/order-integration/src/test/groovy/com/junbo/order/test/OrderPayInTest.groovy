@@ -32,13 +32,12 @@ class OrderPayInTest extends AbstractTestNGSpringContextTests {
         def offer = serviceFacade.getOfferByName('3D Parking Simulator')
         order.user = user.id
         order.with {
-            trackingUuid = UUID.randomUUID()
             type = 'PAY_IN'
             country = 'US'
             currency = 'USD'
             tentative = true
             paymentInstruments = [
-                    new PaymentInstrumentId(paymentInstrument.id)
+                    new PaymentInstrumentId(paymentInstrument.id.paymentInstrumentId)
             ]
             orderItems = [
                     generator.generateOrderItem(new OfferId(offer.id), 2)
@@ -56,7 +55,7 @@ class OrderPayInTest extends AbstractTestNGSpringContextTests {
         assert resultOrder.status == 'OPEN'
         assert resultOrder.orderItems[0].type == 'DIGITAL'
 
-        resultOrder = serviceFacade.settleQuotes(resultOrder.id)
+        resultOrder = serviceFacade.settleQuotes(resultOrder.id, user.id)
         assert !resultOrder.tentative
 
         List<Balance> balances = serviceFacade.getBalance(resultOrder.id)
@@ -89,7 +88,7 @@ class OrderPayInTest extends AbstractTestNGSpringContextTests {
             tentative = true
             shippingAddressId = address.addressId
             paymentInstruments = [
-                    new PaymentInstrumentId(paymentInstrument.id)
+                    new PaymentInstrumentId(paymentInstrument.id.paymentInstrumentId)
             ]
             orderItems = [
                     generator.generateOrderItem(new OfferId(offer.id), 10)
@@ -109,7 +108,7 @@ class OrderPayInTest extends AbstractTestNGSpringContextTests {
         assert resultOrder.status == 'OPEN'
 
         // settle quotes
-        resultOrder = serviceFacade.settleQuotes(resultOrder.id)
+        resultOrder = serviceFacade.settleQuotes(resultOrder.id, user.id)
 
         // verify
         // todo verify order status

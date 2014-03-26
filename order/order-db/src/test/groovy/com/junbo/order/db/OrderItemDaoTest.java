@@ -31,7 +31,7 @@ public class OrderItemDaoTest extends BaseTest {
 
         OrderItemEntity returnedEntity = orderItemDao.read(orderItemId);
         Assert.assertNotNull(returnedEntity, "Fail to create or read entity.");
-        Assert.assertEquals(orderItemEntity.getOrderItemId(), returnedEntity.getOrderItemId(),
+        Assert.assertEquals(returnedEntity.getOrderItemId(), orderItemEntity.getOrderItemId(),
                 "The order item Id should not be different.");
     }
 
@@ -44,7 +44,6 @@ public class OrderItemDaoTest extends BaseTest {
         orderItemDao.flush();
 
         OrderItemEntity returnedEntity = orderItemDao.read(orderItemId);
-
         Assert.assertNotNull(returnedEntity, "Fail to create or read entity.");
     }
 
@@ -56,8 +55,7 @@ public class OrderItemDaoTest extends BaseTest {
         orderItemDao.create(orderItemEntity);
         orderItemDao.flush();
         List<OrderItemEntity> resultAfter = orderItemDao.readByOrderId(orderId);
-
-        Assert.assertEquals(resultBefore.size() + 1, resultAfter.size(), "Result size should increase.");
+        Assert.assertEquals(resultAfter.size(), resultBefore.size() + 1, "Result size should increase.");
     }
 
     @Test
@@ -69,7 +67,6 @@ public class OrderItemDaoTest extends BaseTest {
         orderItemDao.flush();
         orderItemDao.markDelete(orderItemEntity.getOrderItemId());
         List<OrderItemEntity> resultAfter = orderItemDao.readByOrderId(orderId);
-
-        Assert.assertEquals(resultBefore.size(), resultAfter.size(), "Result size should not increase.");
+        Assert.assertEquals(resultAfter.size(), resultBefore.size(), "Result size should not increase.");
     }
 }

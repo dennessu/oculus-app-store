@@ -11,6 +11,7 @@ import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.core.annotation.OrderEventAwareAfter
 import com.junbo.order.core.annotation.OrderEventAwareBefore
 import com.junbo.order.core.impl.common.CoreBuilder
+import com.junbo.order.core.impl.common.CoreUtils
 import com.junbo.order.db.entity.enums.EventStatus
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.error.AppErrors
@@ -53,17 +54,15 @@ class  FulfillmentAction extends BaseOrderEventAwareAction {
 
         facadeContainer.fulfillmentFacade.postFulfillment(order).syncRecover { Throwable throwable ->
             LOGGER.error('name=Order_FulfillmentAction_Error', throwable)
-            throw AppErrors.INSTANCE.fulfillmentConnectionError().exception()
+            throw AppErrors.INSTANCE.
+                    fulfilmentConnectionError(CoreUtils.toAppErrors(throwable)).exception()
         }.syncThen { FulfilmentRequest fulfilmentResult ->
-            if (fulfilmentResult == null) { // error in post fulfillment
-                LOGGER.error('name=Order_Fulfillment_Not_Found')
-                CoreBuilder.buildActionResultForOrderEventAwareAction(context, EventStatus.ERROR)
-                throw AppErrors.INSTANCE.fulfillmentConnectionError().exception()
-            }
             EventStatus orderEventStatus = EventStatus.COMPLETED
+
             fulfilmentResult.items.each { FulfilmentItem fulfilmentItem ->
                 def fulfillmentEvent = toFulfillmentEvent(fulfilmentResult, fulfilmentItem)
                 def fulfillmentEventStatus = EventStatus.valueOf(fulfillmentEvent.status)
+
                 // aggregate fulfillment event status to update order event status
                 if (orderEventStatus == null ||
                         ITEMSTATUSPRIORITY[fulfillmentEventStatus] > ITEMSTATUSPRIORITY[orderEventStatus]) {
@@ -71,6 +70,7 @@ class  FulfillmentAction extends BaseOrderEventAwareAction {
                 }
                 orderRepository.createFulfillmentEvent(order.id.value, fulfillmentEvent)
             }
+
             return CoreBuilder.buildActionResultForOrderEventAwareAction(context, orderEventStatus)
         }
     }

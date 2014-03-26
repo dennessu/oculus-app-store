@@ -17,8 +17,6 @@ final class ActionUtils {
     static final String SCOPE_CREATE_ORDER_ACTION_CONTEXT = 'CREATE_ORDER_ACTION_CONTEXT'
     static final String DATA_ORDER_ACTION_RESULT = 'ORDER_ACTION_RESULT'
 
-    static final ActionResult DEFAULT_RESULT = new ActionResult('')
-
     static final String REQUEST_FLOW_TYPE = 'FLOW_TYPE'
     static final String REQUEST_ORDER_ID = 'ORDER_ID'
 

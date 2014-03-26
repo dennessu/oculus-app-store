@@ -8,6 +8,9 @@ package com.junbo.billing.clientproxy.impl
 
 import static com.ning.http.client.extra.ListenableFutureAdapter.asGuavaFuture
 
+import com.junbo.billing.clientproxy.impl.avalara.ResponseMessage
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import com.junbo.billing.clientproxy.impl.avalara.ValidateAddressResponse
 import com.junbo.billing.spec.error.AppErrors
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -54,9 +57,13 @@ class AvalaraFacadeImpl implements TaxFacade {
     static final int STATUS_CODE_MASK = 100
     static final int SUCCESSFUL_STATUS_CODE_PREFIX = 2
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(AvalaraFacadeImpl)
+
+
     @Override
     Promise<Balance> calculateTax(Balance balance, ShippingAddress shippingAddress, Address piAddress) {
         GetTaxRequest request = generateGetTaxRequest(balance, shippingAddress, piAddress)
+        LOGGER.info('name=Get_Tax_Request, request={}', request.toString())
         return calculateTax(request).then { GetTaxResponse response ->
             return Promise.pure(updateBalance(response, balance))
         }
@@ -65,6 +72,7 @@ class AvalaraFacadeImpl implements TaxFacade {
     @Override
     Promise<ShippingAddress> validateShippingAddress(ShippingAddress shippingAddress) {
         AvalaraAddress address = getAvalaraAddress(shippingAddress)
+        LOGGER.info('name=Validate_Address_Request, request={}', address.toString())
         return validateAddress(address).then { ValidateAddressResponse response ->
             return Promise.pure(updateShippingAddress(response, shippingAddress))
         }
@@ -73,6 +81,7 @@ class AvalaraFacadeImpl implements TaxFacade {
     @Override
     Promise<Address> validatePiAddress(Address piAddress) {
         AvalaraAddress address = getAvalaraAddress(piAddress)
+        LOGGER.info('name=Validate_Address_Request, request={}', address.toString())
         return validateAddress(address).then { ValidateAddressResponse response ->
             return Promise.pure(updatePiAddress(response, piAddress))
         }
@@ -88,6 +97,7 @@ class AvalaraFacadeImpl implements TaxFacade {
             shippingAddress.postalCode = response.address.postalCode
             shippingAddress.country = response.address.country
         } else {
+            LOGGER.error('name=Address_Validation_Response_Invalid.')
             throw AppErrors.INSTANCE.addressValidationError('Invalid response.').exception()
         }
         return shippingAddress
@@ -103,6 +113,7 @@ class AvalaraFacadeImpl implements TaxFacade {
             piAddress.postalCode = response.address.postalCode
             piAddress.country = response.address.country
         } else {
+            LOGGER.error('name=Address_Validation_Response_Invalid.')
             throw AppErrors.INSTANCE.addressValidationError('Invalid response.').exception()
         }
         return piAddress
@@ -127,6 +138,7 @@ class AvalaraFacadeImpl implements TaxFacade {
             }
             balance.setTaxStatus(TaxStatus.TAXED.name())
         } else {
+            LOGGER.info('name=Tax_Calculation_Failure.')
             balance.setTaxStatus(TaxStatus.FAILED.name())
         }
         return balance
@@ -185,24 +197,26 @@ class AvalaraFacadeImpl implements TaxFacade {
     Promise<ValidateAddressResponse> validateAddress(AvalaraAddress address) {
         String validateAddressUrl = configuration.baseUrl + 'address/validate'
         def requestBuilder = buildRequest(validateAddressUrl, address)
-        Promise<Response> future
-        try {
-            future = Promise.wrap(asGuavaFuture(requestBuilder.execute()))
-        } catch (IOException) {
+        return Promise.wrap(asGuavaFuture(requestBuilder.execute())).recover {
             throw AppErrors.INSTANCE.addressValidationError('Fail to build request.').exception()
-        }
-        return future.then { Response response ->
+        }.then { Response response ->
+            ValidateAddressResponse validateAddressResponse
+            try {
+                validateAddressResponse = new ObjectMapper().readValue(response.responseBody,
+                        ValidateAddressResponse)
+            } catch (IOException ex) {
+                throw AppErrors.INSTANCE.addressValidationError('Fail to read response.').exception()
+            }
             if (response.statusCode / STATUS_CODE_MASK == SUCCESSFUL_STATUS_CODE_PREFIX) {
-                try {
-                    return Promise.pure(new ObjectMapper().readValue(
-                            response.responseBody, ValidateAddressResponse))
-                } catch (IOException ex) {
-                    throw AppErrors.INSTANCE.addressValidationError('Fail to read response.').exception()
-                }
+                return Promise.pure(validateAddressResponse)
             }
-            else {
-                throw AppErrors.INSTANCE.addressValidationError('Response code: ' + response.statusCode).exception()
+
+            LOGGER.error('name=Error_Address_Validation.')
+            LOGGER.info('name=Address_Validation_Response_Status_Code, statusCode={}', response.statusCode)
+            validateAddressResponse.messages.each { ResponseMessage message ->
+                LOGGER.info('name=Address_Validation_Response_Error_Message, message={}', message.details)
             }
+            throw AppErrors.INSTANCE.addressValidationError('Fail to pass address validation.').exception()
         }
     }
 
@@ -210,24 +224,19 @@ class AvalaraFacadeImpl implements TaxFacade {
         String getTaxUrl = configuration.baseUrl + 'tax/get'
         String content = transcoder.encode(request)
         def requestBuilder = buildRequest(getTaxUrl, content)
-        Promise<Response> future
-        try {
-            future = Promise.wrap(asGuavaFuture(requestBuilder.execute()))
-        } catch (IOException e) {
-            // TODO: error handling
+        return Promise.wrap(asGuavaFuture(requestBuilder.execute())).recover {
             return Promise.pure(null)
-        }
-        return future.then { Response response ->
+        }.then { Response response ->
             if (response.statusCode / STATUS_CODE_MASK == SUCCESSFUL_STATUS_CODE_PREFIX) {
                 try {
+                    // use new ObjectMapper instead of transcoder here since the DocDate is not ISO8601DateFormat
                     return Promise.pure(new ObjectMapper().readValue(response.responseBody, GetTaxResponse))
                 } catch (IOException ex) {
-                    // TODO: error handling
                     return Promise.pure(null)
                 }
             }
             else {
-                // TODO: error handling
+                LOGGER.error('name=Error_Tax_Calculation.')
                 return Promise.pure(null)
             }
         }

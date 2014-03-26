@@ -60,6 +60,6 @@ public class OrderEventDaoTest extends BaseTest {
         orderEventDao.flush();
         List<OrderEventEntity> resultAfter = orderEventDao.readByOrderId(orderId);
 
-        Assert.assertEquals(resultBefore.size() + 1, resultAfter.size(), "Result size should increase.");
+        Assert.assertEquals(resultAfter.size(), resultBefore.size() + 1, "Result size should increase.");
     }
 }

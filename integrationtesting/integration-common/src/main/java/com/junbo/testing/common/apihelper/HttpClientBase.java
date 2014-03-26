@@ -6,8 +6,6 @@
 package com.junbo.testing.common.apihelper;
 
 import com.junbo.common.json.JsonMessageTranscoder;
-import com.junbo.common.model.Results;
-import com.junbo.langur.core.client.TypeReference;
 import com.junbo.testing.common.exception.TestException;
 import com.junbo.testing.common.libs.LogHelper;
 import com.ning.http.client.AsyncHttpClient;
@@ -60,38 +58,38 @@ public abstract class HttpClientBase {
         return headers;
     }
 
-    protected <T> T restApiCall(HTTPMethod httpMethod, String restUrl, T t) throws Exception {
+    protected <T> String restApiCall(HTTPMethod httpMethod, String restUrl, T t) throws Exception {
         String requestBody = new JsonMessageTranscoder().encode(t);
 
         return restApiCall(httpMethod, restUrl, requestBody);
     }
 
-    protected <T> T restApiCall(HTTPMethod httpMethod, String restUrl, T t,
-                                int expectedResponseCode) throws Exception {
+    protected <T> String restApiCall(HTTPMethod httpMethod, String restUrl, T t,
+                                 int expectedResponseCode) throws Exception {
         String requestBody = new JsonMessageTranscoder().encode(t);
 
         return restApiCall(httpMethod, restUrl, requestBody, expectedResponseCode);
     }
 
-    protected <T> T restApiCall(HTTPMethod httpMethod, String restUrl) throws Exception {
+    protected String restApiCall(HTTPMethod httpMethod, String restUrl) throws Exception {
         return restApiCall(httpMethod, restUrl, null);
     }
 
-    protected <T> T restApiCall(HTTPMethod httpMethod, String restUrl, String requestBody) throws Exception {
+    protected String restApiCall(HTTPMethod httpMethod, String restUrl, String requestBody) throws Exception {
         return restApiCall(httpMethod, restUrl, requestBody, 200);
     }
 
-    protected <T> T restApiCall(HTTPMethod httpMethod, String restUrl, String requestBody,
-                                int expectedResponseCode) throws Exception {
+    protected String restApiCall(HTTPMethod httpMethod, String restUrl, String requestBody,
+                                 int expectedResponseCode) throws Exception {
         return restApiCall(httpMethod, restUrl, requestBody, expectedResponseCode, null);
     }
 
-    protected <T> T restApiCall(HTTPMethod httpMethod, String restUrl, int expectedResponseCode) throws Exception {
-        return restApiCall(httpMethod, restUrl, null, expectedResponseCode);
+    protected String restApiCall(HTTPMethod httpMethod, String restUrl, int expectedResponseCode) throws Exception {
+        return restApiCall(httpMethod, restUrl, null, expectedResponseCode, null);
     }
 
-    protected <T> T restApiCall(HTTPMethod httpMethod, String restUrl, String requestBody,
-                                int expectedResponseCode, HashMap<String, String> httpParameters) throws Exception {
+    protected String restApiCall(HTTPMethod httpMethod, String restUrl, String requestBody,
+                                 int expectedResponseCode, HashMap<String, String> httpParameters) throws Exception {
         switch (httpMethod) {
             case PUT:
             case POST: {
@@ -113,9 +111,7 @@ public abstract class HttpClientBase {
 
                 logger.LogResponse(nettyResponse);
 
-                return (T) new JsonMessageTranscoder().decode(
-                        new TypeReference<Results<T>>() {
-                        }, nettyResponse.getResponseBody());
+                return nettyResponse.getResponseBody();
             }
             case GET: {
                 //append URL paras for http get method
@@ -160,9 +156,7 @@ public abstract class HttpClientBase {
 
                 logger.LogResponse(nettyResponse);
 
-                return (T) new JsonMessageTranscoder().decode(
-                        new TypeReference<Results<T>>() {
-                        }, nettyResponse.getResponseBody());
+                return nettyResponse.getResponseBody();
             }
             case DELETE:
                 //TODO

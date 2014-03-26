@@ -1,10 +1,12 @@
 package com.junbo.order.core.impl.orderaction.aspect
+
 import com.junbo.common.id.OrderId
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.core.annotation.OrderEventAwareAfter
 import com.junbo.order.core.annotation.OrderEventAwareBefore
+import com.junbo.order.core.impl.common.TransactionHelper
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
 import com.junbo.order.core.impl.orderaction.ActionUtils
 import com.junbo.order.core.impl.orderaction.BaseOrderEventAwareAction
@@ -22,9 +24,9 @@ import org.aspectj.lang.annotation.Before
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
 
 import javax.annotation.Resource
+
 /**
  * Created by chriszhu on 3/11/14.
  */
@@ -37,19 +39,24 @@ class OrderEventAspect {
     OrderRepository repo
     @Resource(name = 'orderServiceContextBuilder')
     OrderServiceContextBuilder builder
+    @Resource(name = 'orderTransactionHelper')
+    TransactionHelper transactionHelper
+
 
     private final static Logger LOGGER = LoggerFactory.getLogger(OrderEventAspect)
 
-    @Transactional
     @Before(value = '@annotation(orderEventAwareBefore)', argNames = 'jp, orderEventAwareBefore')
     Promise<ActionResult> beforeOrderEventAwareAction(JoinPoint jp, OrderEventAwareBefore orderEventAwareBefore) {
         assert(orderEventAwareBefore != null)
         LOGGER.info('name=Save_Order_Event_Before. action: {}', orderEventAwareBefore.action())
+
         try {
             if (getOrderActionType(jp) != null) { // only create event if action type is set
                 def orderEvent = getOpenOrderEvent(jp)
                 if (orderEvent != null && orderEvent.order != null) {
-                    repo.createOrderEvent(orderEvent)
+                    transactionHelper.executeInNewTransaction {
+                        repo.createOrderEvent(orderEvent)
+                    }
                 }
             }
             return Promise.pure(null)
@@ -59,7 +66,6 @@ class OrderEventAspect {
         }
     }
 
-    @Transactional
     @AfterThrowing(value = '@annotation(orderEventAwareAfter)',
             argNames = 'jp, orderEventAwareAfter, ex', throwing = 'ex')
     Promise<ActionResult> afterThrowingOrderEventAwareAction(
@@ -71,7 +77,9 @@ class OrderEventAspect {
         try {
             if (getOrderActionType(jp) != null) { // only create event if action type is set
                 def oe = getReturnedOrderEvent(jp, EventStatus.ERROR)
-                repo.createOrderEvent(oe)
+                transactionHelper.executeInNewTransaction {
+                    repo.createOrderEvent(oe)
+                }
             }
             throw ex
         } catch (e) {
@@ -80,7 +88,6 @@ class OrderEventAspect {
         }
     }
 
-    @Transactional
     @AfterReturning(value = '@annotation(orderEventAwareAfter)',
             argNames = 'jp, orderEventAwareAfter, rv', returning = 'rv')
     Promise<ActionResult> afterOrderEventAwareAction(
@@ -89,16 +96,22 @@ class OrderEventAspect {
             Promise<ActionResult> rv) {
         assert (orderEventAwareAfter != null)
         LOGGER.info('name=Save_Order_Event_AfterReturning. action: {}', orderEventAwareAfter.action())
-        rv?.syncThen { ActionResult ar ->
+
+        rv.syncRecover { Throwable throwable ->
+            def oe = getReturnedOrderEvent(jp, EventStatus.ERROR)
+            if (oe != null) {
+                transactionHelper.executeInNewTransaction {
+                    repo.createOrderEvent(oe)
+                }
+            }
+            throw throwable
+        }
+        .syncThen { ActionResult ar ->
             try {
-                if (getOrderActionType(jp) != null) { // only create event if action type is set
-                    def orderActionResult = ActionUtils.getOrderActionResult(ar)
-                    if (orderActionResult != null) {
-                        EventStatus eventStatus = orderActionResult.returnedEventStatus
-                        if (eventStatus != null) {
-                            def oe = getReturnedOrderEvent(jp, eventStatus)
-                            repo.createOrderEvent(oe)
-                        }
+                def oe = getReturnedOrderEvent(jp, ar)
+                if (oe != null) {
+                    transactionHelper.executeInNewTransaction {
+                        repo.createOrderEvent(oe)
                     }
                 }
                 return ar
@@ -110,13 +123,27 @@ class OrderEventAspect {
     }
 
     private OrderEvent getOpenOrderEvent(JoinPoint jp) {
-        def orderEvent = new OrderEvent()
-        orderEvent.order = getOrderId(jp)
-        orderEvent.action = getOrderActionType(jp)
-        orderEvent.status = EventStatus.OPEN.toString()
-        orderEvent.trackingUuid = getTrackingUuid(jp)
-        orderEvent.flowType = getFlowType(jp)
-        return orderEvent
+        if (getOrderActionType(jp) != null) {
+            def orderEvent = new OrderEvent()
+            orderEvent.order = getOrderId(jp)
+            orderEvent.action = getOrderActionType(jp)
+            orderEvent.status = EventStatus.OPEN.toString()
+            orderEvent.trackingUuid = getTrackingUuid(jp)
+            orderEvent.flowType = getFlowType(jp)
+            return orderEvent
+        }
+        return null
+    }
+
+    private OrderEvent getReturnedOrderEvent(JoinPoint jp, ActionResult ar) {
+        def orderActionResult = ActionUtils.getOrderActionResult(ar)
+        if (orderActionResult != null) {
+            EventStatus eventStatus = orderActionResult.returnedEventStatus
+            if (eventStatus != null) {
+                return getReturnedOrderEvent(jp, eventStatus)
+            }
+        }
+        return null
     }
 
     private OrderEvent getReturnedOrderEvent(JoinPoint jp, EventStatus eventStatus) {
