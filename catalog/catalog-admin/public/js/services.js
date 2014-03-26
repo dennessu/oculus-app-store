@@ -86,10 +86,11 @@ services.factory('MetaFactory', function() {
             "longDescription": { "display": "Long Description", "controlType": "TEXT_INPUT"},
             "platform": { "display": "Platform", "controlType": "MULTI_SELECT", "allowedValues":["PC", "Mac", "Linux"]},
             "changeNotes": { "display": "Change Notes", "controlType": "TEXT_INPUT"},
-            "website": { "display": "Website", "controlType": "TEXT_INPUT"},
+            "website": { "display": "Website", "controlType": "URL_INPUT"},
+            "downloadLink": { "display": "Download Link", "controlType": "URL_INPUT"},
             "gameModes": { "display": "Game Modes", "controlType": "SINGLE_SELECT", "allowedValues":["Single Player", "Multi Player"]}
         },
-        itemTypes: ["PHYSICAL", "IAP", "APP"],
+        itemTypes: ["PHYSICAL", "APP"],
         countries: [
             {"code":"AT", "name":"Austria", "currency": "AUD"},
             {"code":"CN", "name":"China", "currency": "RMB"},
