@@ -20,6 +20,9 @@ public class UserGroupListOptions extends PagingGetOptions {
     @QueryParam("groupId")
     private GroupId groupId;
 
+    @QueryParam("properties")
+    private String properties;
+
     public UserId getUserId() {
         return userId;
     }
@@ -34,5 +37,13 @@ public class UserGroupListOptions extends PagingGetOptions {
 
     public void setGroupId(GroupId groupId) {
         this.groupId = groupId;
+    }
+
+    public String getProperties() {
+        return properties;
+    }
+
+    public void setProperties(String properties) {
+        this.properties = properties;
     }
 }

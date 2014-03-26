@@ -59,8 +59,8 @@ public class UserGroupRepositoryImpl implements UserGroupRepository {
         UserGroupEntity userGroupEntity = modelMapper.toUserGroup(entity, new MappingContext());
         userGroupDAO.update(userGroupEntity);
 
-        GroupUserEntity groupUserEntity =
-                groupUserDAO.findByGroupId(userGroupEntity.getGroupId(), userGroupEntity.getUserId());
+        GroupUserEntity groupUserEntity = groupUserDAO.findByGroupIdAndUserId(userGroupEntity.getGroupId(),
+                userGroupEntity.getUserId());
         groupUserEntity.setUpdatedBy(userGroupEntity.getUpdatedBy());
         groupUserEntity.setUpdatedTime(userGroupEntity.getUpdatedTime());
         groupUserDAO.update(groupUserEntity);
@@ -88,7 +88,7 @@ public class UserGroupRepositoryImpl implements UserGroupRepository {
     public void delete(UserGroupId id) {
         UserGroupEntity entity = userGroupDAO.get(id.getValue());
 
-        GroupUserEntity groupUserEntity = groupUserDAO.findByGroupId(entity.getGroupId(), entity.getUserId());
+        GroupUserEntity groupUserEntity = groupUserDAO.findByGroupIdAndUserId(entity.getGroupId(), entity.getUserId());
         groupUserDAO.delete(groupUserEntity.getId());
         userGroupDAO.delete(id.getValue());
     }

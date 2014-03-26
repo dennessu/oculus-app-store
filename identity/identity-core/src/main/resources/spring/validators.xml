@@ -62,4 +62,10 @@
 
     <bean id="displayNameValidator" class="com.junbo.identity.core.service.validator.impl.DisplayNameValidatorImpl">
     </bean>
+
+    <bean id="groupValidator" class="com.junbo.identity.core.service.validator.impl.GroupValidatorImpl">
+        <property name="groupRepository" ref="groupRepository" />
+        <property name="groupValueMaxLength" value="255" />
+        <property name="groupValueMinLength" value="1" />
+    </bean>
 </beans>

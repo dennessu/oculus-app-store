@@ -5,7 +5,10 @@
  */
 package com.junbo.identity.spec.error;
 
-import com.junbo.common.error.*;
+import com.junbo.common.error.AppError;
+import com.junbo.common.error.ErrorDef;
+import com.junbo.common.error.ErrorProxy;
+import com.junbo.common.id.GroupId;
 import com.junbo.common.id.UserId;
 
 /**
@@ -148,6 +151,12 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 409, code = "2000007", description = "Field {0} required.", field = "{0}")
     AppError fieldRequired(String field);
 
-    @ErrorDef(httpStatusCode = 404, code = "2000007", description = "User {0} not found.")
+    @ErrorDef(httpStatusCode = 404, code = "2000008", description = "User {0} not found.")
     AppError userNotFound(UserId userId);
+
+    @ErrorDef(httpStatusCode = 404, code = "2000009", description = "Group {0} not found.")
+    AppError groupNotFound(GroupId groupId);
+
+    @ErrorDef(httpStatusCode = 409, code = "2000010", description = "Param name {0} required.", field = "{0}")
+    AppError parameterRequired(String paraName);
 }
