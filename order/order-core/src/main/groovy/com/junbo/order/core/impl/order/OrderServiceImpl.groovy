@@ -5,7 +5,6 @@
  */
 
 package com.junbo.order.core.impl.order
-
 import com.junbo.common.error.AppErrorException
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.executor.FlowExecutor
@@ -20,7 +19,6 @@ import com.junbo.order.core.impl.common.OrderStatusBuilder
 import com.junbo.order.core.impl.common.TransactionHelper
 import com.junbo.order.core.impl.orderaction.ActionUtils
 import com.junbo.order.core.impl.orderaction.context.OrderActionContext
-import com.junbo.order.db.entity.enums.OrderActionType
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.ApiContext
@@ -35,7 +33,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-
 /**
  * Created by chriszhu on 2/7/14.
  */
@@ -119,7 +116,6 @@ class OrderServiceImpl implements OrderService {
                 // Prepare Flow Request
                 Map<String, Object> requestScope = [:]
                 def orderActionContext = new OrderActionContext()
-                orderActionContext.orderActionType = OrderActionType.RATE
                 orderActionContext.orderServiceContext = orderServiceContext
                 orderActionContext.trackingUuid = order.trackingUuid
                 requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object) orderActionContext)
@@ -143,7 +139,6 @@ class OrderServiceImpl implements OrderService {
                 LOGGER.info('name=Create_Tentative_Order. flowType: {}', flowType)
                 Map<String, Object> requestScope = [:]
                 def orderActionContext = new OrderActionContext()
-                orderActionContext.orderActionType = OrderActionType.RATE
                 orderActionContext.orderServiceContext = orderServiceContext
                 orderActionContext.trackingUuid = order.trackingUuid
                 requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object) orderActionContext)

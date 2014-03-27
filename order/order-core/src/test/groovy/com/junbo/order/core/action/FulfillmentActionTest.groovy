@@ -4,7 +4,6 @@ import com.junbo.common.id.OrderId
 import com.junbo.common.id.OrderItemId
 import com.junbo.fulfilment.spec.constant.FulfilmentStatus
 import com.junbo.langur.core.promise.Promise
-import com.junbo.langur.core.webflow.executor.FlowExecutor
 import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.clientproxy.fulfillment.FulfillmentFacade
 import com.junbo.order.core.BaseTest
@@ -13,26 +12,22 @@ import com.junbo.order.core.impl.orderaction.ActionUtils
 import com.junbo.order.core.impl.orderaction.FulfillmentAction
 import com.junbo.order.core.impl.orderaction.context.OrderActionResult
 import com.junbo.order.core.matcher.Matcher
+import com.junbo.order.db.common.TestHelper
 import com.junbo.order.db.entity.enums.EventStatus
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.FulfillmentEvent
 import org.easymock.EasyMock
-import org.springframework.beans.factory.annotation.Autowired
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 
 import javax.annotation.Resource
-
 /**
  * Created by fzhang on 14-3-10.
  */
 class FulfillmentActionTest extends BaseTest{
 
     //def action = new FulfillmentAction()
-
-    @Autowired
-    FlowExecutor executor
 
     @Resource(name='fulfillmentAction')
     FulfillmentAction action
@@ -86,17 +81,18 @@ class FulfillmentActionTest extends BaseTest{
     @Test(enabled = true)
     void testExecuteFulfillmentError() {
         def order = TestBuilder.buildOrderRequest()
+        order.id = new OrderId(TestHelper.generateLong())
         EasyMock.expect(action.facadeContainer.fulfillmentFacade.postFulfillment(EasyMock.same(order))).andReturn(
-            Promise.throwing(new IllegalArgumentException())
+                Promise.throwing(new IllegalArgumentException())
         )
         EasyMock.replay(action.facadeContainer.fulfillmentFacade, action.orderRepository)
-        try {
-            (OrderActionResult) action.execute(TestBuilder.buildActionContext(order)).wrapped().
-                    get().data[ActionUtils.DATA_ORDER_ACTION_RESULT]
-            assert false
-        } catch (ex) {
-            assert ((AppErrorException)(ex.cause)).error.code == AppErrors.INSTANCE.fulfillmentConnectionError().code
-        }
+        action.execute(TestBuilder.buildActionContext(order)).syncRecover { Throwable ex ->
+            assert ex instanceof AppErrorException
+            assert ((AppErrorException) ex).error.code == AppErrors.INSTANCE.fulfillmentConnectionError().code
+            return null
+        }.syncThen {
+            return null
+        }.wrapped()?.get()
         EasyMock.verify(action.facadeContainer.fulfillmentFacade, action.orderRepository)
     }
 }

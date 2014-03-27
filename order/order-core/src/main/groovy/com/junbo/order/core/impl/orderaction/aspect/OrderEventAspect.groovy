@@ -104,7 +104,8 @@ class OrderEventAspect {
                     repo.createOrderEvent(oe)
                 }
             }
-            throw throwable
+            return null
+            //throw throwable
         }
         .syncThen { ActionResult ar ->
             try {
