@@ -110,4 +110,34 @@
             </list>
         </property>
     </bean>
+
+    <bean id="userAuthenticatorFilter" class="com.junbo.identity.core.service.filter.UserAuthenticatorFilter">
+        <property name="readableProperties">
+            <list>
+                <value>id</value>
+                <value>type</value>
+                <value>value</value>
+                <value>userId</value>
+                <value>resourceAge</value>
+                <value>createdTime</value>
+                <value>updatedTime</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForCreate">
+            <list>
+                <value>type</value>
+                <value>value</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForUpdate">
+            <list>
+                <value>id</value>
+                <value>type</value>
+                <value>value</value>
+                <value>resourceAge</value>
+            </list>
+        </property>
+    </bean>
 </beans>

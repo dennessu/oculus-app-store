@@ -8,20 +8,23 @@ package com.junbo.identity.data.repository
 import com.junbo.common.id.UserAuthenticatorId
 import com.junbo.identity.spec.model.users.UserAuthenticator
 import com.junbo.identity.spec.options.list.UserAuthenticatorListOptions
+import com.junbo.langur.core.promise.Promise
+import groovy.transform.CompileStatic
 
 /**
  * User Federation DAO is used to fetch/update/delete/get user
  * federation data(such as google account, facebook account) from the database
  */
+@CompileStatic
 interface UserAuthenticatorRepository {
 
-    UserAuthenticator save(UserAuthenticator entity)
+    Promise<UserAuthenticator> create(UserAuthenticator entity)
 
-    UserAuthenticator update(UserAuthenticator entity)
+    Promise<UserAuthenticator> update(UserAuthenticator entity)
 
-    UserAuthenticator get(UserAuthenticatorId id)
+    Promise<UserAuthenticator> get(UserAuthenticatorId id)
 
-    List<UserAuthenticator> search(UserAuthenticatorListOptions getOption)
+    Promise<List<UserAuthenticator>> search(UserAuthenticatorListOptions getOption)
 
-    void delete(UserAuthenticatorId id)
+    Promise<Void> delete(UserAuthenticatorId id)
 }

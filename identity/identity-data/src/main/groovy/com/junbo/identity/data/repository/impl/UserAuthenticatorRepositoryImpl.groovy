@@ -13,12 +13,18 @@ import com.junbo.identity.data.mapper.ModelMapper
 import com.junbo.identity.data.repository.UserAuthenticatorRepository
 import com.junbo.identity.spec.model.users.UserAuthenticator
 import com.junbo.identity.spec.options.list.UserAuthenticatorListOptions
+import com.junbo.langur.core.promise.Promise
 import com.junbo.oom.core.MappingContext
+import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.stereotype.Component
+
 /**
  * Implementation for UserAuthenticatorDAO.
  */
+@CompileStatic
+@Component
 class UserAuthenticatorRepositoryImpl implements UserAuthenticatorRepository {
     @Autowired
     @Qualifier('userAuthenticatorDAO')
@@ -33,7 +39,7 @@ class UserAuthenticatorRepositoryImpl implements UserAuthenticatorRepository {
     private UserAuthenticatorReverseIndexDAO authenticatorReverseIndexDAO
 
     @Override
-    UserAuthenticator save(UserAuthenticator entity) {
+    Promise<UserAuthenticator> create(UserAuthenticator entity) {
         UserAuthenticatorEntity userAuthenticatorEntity = modelMapper.toUserAuthenticator(entity, new MappingContext())
         authenticatorDAO.save(userAuthenticatorEntity)
 
@@ -46,53 +52,62 @@ class UserAuthenticatorRepositoryImpl implements UserAuthenticatorRepository {
     }
 
     @Override
-    UserAuthenticator update(UserAuthenticator entity) {
+    Promise<UserAuthenticator> update(UserAuthenticator entity) {
         UserAuthenticatorEntity userFederationEntity = modelMapper.toUserAuthenticator(entity, new MappingContext())
-        UserAuthenticatorEntity existing = authenticatorDAO.get(entity.id.value)
+        UserAuthenticatorEntity existing = authenticatorDAO.get(((UserAuthenticatorId)entity.id).value)
         if (existing.value != entity.value) {
             authenticatorReverseIndexDAO.delete(existing.value)
             UserAuthenticatorReverseIndexEntity reverseIndexEntity = new UserAuthenticatorReverseIndexEntity()
             reverseIndexEntity.setValue(entity.value)
-            reverseIndexEntity.setUserAuthenticatorId(entity.id.value)
+            reverseIndexEntity.setUserAuthenticatorId(((UserAuthenticatorId)entity.id).value)
             authenticatorReverseIndexDAO.save(reverseIndexEntity)
         }
         authenticatorDAO.update(userFederationEntity)
 
-        return get(entity.id)
+        return get((UserAuthenticatorId)entity.id)
     }
 
     @Override
-    UserAuthenticator get(UserAuthenticatorId id) {
-        return modelMapper.toUserAuthenticator(authenticatorDAO.get(id.value), new MappingContext())
+    Promise<UserAuthenticator> get(UserAuthenticatorId id) {
+        return Promise.pure(modelMapper.toUserAuthenticator(authenticatorDAO.get(id.value), new MappingContext()))
     }
 
     @Override
-    List<UserAuthenticator> search(UserAuthenticatorListOptions getOption) {
+    Promise<List<UserAuthenticator>> search(UserAuthenticatorListOptions getOption) {
         def result = []
         if (getOption != null && getOption.userId != null) {
             def entities = authenticatorDAO.search(getOption.userId.value, getOption)
 
-            entities.flatten { i ->
-                result.add(modelMapper.toUserAuthenticator(i, new MappingContext()))
+            entities.each { i ->
+                result.add(modelMapper.toUserAuthenticator((UserAuthenticatorEntity)i, new MappingContext()))
             }
-            return result
         }
         else if (getOption != null && getOption.value != null) {
-            result.add(searchByAuthenticatorValue(getOption.value))
-            return result
+            def entity = searchByAuthenticatorValue(getOption.value)
+            if (entity != null) {
+                result.add(entity)
+            }
         }
+
+        return Promise.pure(result)
     }
 
     private UserAuthenticator searchByAuthenticatorValue(String value) {
         def authenticatorReverseEntity = authenticatorReverseIndexDAO.get(value)
+        if (authenticatorReverseEntity == null) {
+            return null
+        }
         def userAuthenticator = authenticatorDAO.get(authenticatorReverseEntity.userAuthenticatorId)
 
         return modelMapper.toUserAuthenticator(userAuthenticator, new MappingContext())
     }
 
     @Override
-    void delete(UserAuthenticatorId id) {
+    Promise<Void> delete(UserAuthenticatorId id) {
+        UserAuthenticatorEntity entity = authenticatorDAO.get(id.value)
         authenticatorDAO.delete(id.value)
-        authenticatorReverseIndexDAO.delete(id.value)
+        authenticatorReverseIndexDAO.delete(entity.value)
+
+        return Promise.pure(null)
     }
 }

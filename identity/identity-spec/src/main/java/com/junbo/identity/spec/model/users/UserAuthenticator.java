@@ -23,6 +23,7 @@ public class UserAuthenticator extends ResourceMeta implements Identifiable<User
     private String value;
 
     // not indexable. readonly
+    @JsonProperty("user")
     private UserId userId;
 
     public UserAuthenticatorId getId() {
@@ -31,6 +32,8 @@ public class UserAuthenticator extends ResourceMeta implements Identifiable<User
 
     public void setId(UserAuthenticatorId id) {
         this.id = id;
+        support.setPropertyAssigned("id");
+        support.setPropertyAssigned("self");
     }
 
     public String getType() {
@@ -39,6 +42,7 @@ public class UserAuthenticator extends ResourceMeta implements Identifiable<User
 
     public void setType(String type) {
         this.type = type;
+        support.setPropertyAssigned("type");
     }
 
     public String getValue() {
@@ -47,6 +51,7 @@ public class UserAuthenticator extends ResourceMeta implements Identifiable<User
 
     public void setValue(String value) {
         this.value = value;
+        support.setPropertyAssigned("value");
     }
 
     public UserId getUserId() {
@@ -55,5 +60,7 @@ public class UserAuthenticator extends ResourceMeta implements Identifiable<User
 
     public void setUserId(UserId userId) {
         this.userId = userId;
+        support.setPropertyAssigned("userId");
+        support.setPropertyAssigned("user");
     }
 }

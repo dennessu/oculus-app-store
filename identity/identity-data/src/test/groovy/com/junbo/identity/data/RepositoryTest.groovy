@@ -11,6 +11,7 @@ import com.junbo.identity.data.identifiable.UserPasswordStrength
 import com.junbo.identity.data.repository.*
 import com.junbo.identity.spec.model.users.*
 import com.junbo.identity.spec.options.list.*
+import groovy.transform.CompileStatic
 import org.glassfish.jersey.internal.util.Base64
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
@@ -28,6 +29,7 @@ import org.testng.annotations.Test
 @TransactionConfiguration(defaultRollback = false)
 @TestExecutionListeners(TransactionalTestExecutionListener.class)
 @Transactional('transactionManager')
+@CompileStatic
 public class RepositoryTest extends AbstractTestNGSpringContextTests {
     // This is the fake value to meet current requirement.
     private final long userId = 1493188608L
@@ -161,7 +163,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         UserPasswordListOptions getOption = new UserPasswordListOptions()
         getOption.setUserId(new UserId(userId))
         List<UserPassword> userPasswordList = userPasswordRepository.search(getOption)
-        Assert.assertNotEquals(userPasswordList.size(), 0)
+        assert userPasswordList.size() != 0
     }
 
     @Test(enabled = true)
@@ -191,7 +193,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         UserPinListOptions getOption = new UserPinListOptions()
         getOption.setUserId(new UserId(userId))
         List<UserPin> userPins = userPinRepository.search(getOption)
-        Assert.assertNotEquals(userPins.size(), 0)
+        assert userPins.size() != 0
     }
 
     @Test(enabled = true)
@@ -202,22 +204,22 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         authenticator.setValue(UUID.randomUUID().toString())
         authenticator.setCreatedTime(new Date())
         authenticator.setCreatedBy('lixia')
-        authenticator = userAuthenticatorRepository.save(authenticator)
+        authenticator = userAuthenticatorRepository.create(authenticator).wrapped().get()
 
-        UserAuthenticator newUserAuthenticator = userAuthenticatorRepository.get(authenticator.getId())
+        UserAuthenticator newUserAuthenticator = userAuthenticatorRepository.get(authenticator.getId()).wrapped().get()
         Assert.assertEquals(authenticator.getValue(), newUserAuthenticator.getValue())
 
         String newValue = UUID.randomUUID().toString()
         newUserAuthenticator.setValue(newValue)
         userAuthenticatorRepository.update(newUserAuthenticator)
-        newUserAuthenticator = userAuthenticatorRepository.get(authenticator.getId())
+        newUserAuthenticator = userAuthenticatorRepository.get(authenticator.getId()).wrapped().get()
 
         Assert.assertEquals(newValue, newUserAuthenticator.getValue())
 
         UserAuthenticatorListOptions getOption = new UserAuthenticatorListOptions()
         getOption.setValue(newValue)
-        List<UserAuthenticator> userAuthenticators = userAuthenticatorRepository.search(getOption)
-        Assert.assertNotEquals(userAuthenticators.size(), 0)
+        List<UserAuthenticator> userAuthenticators = userAuthenticatorRepository.search(getOption).wrapped().get()
+        assert userAuthenticators.size() != 0
     }
 
     @Test(enabled = true)
@@ -246,7 +248,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         UserDeviceListOptions getOption = new UserDeviceListOptions()
         getOption.setUserId(new UserId(userId))
         List<UserDevice> userDevices = userDeviceRepository.search(getOption)
-        Assert.assertNotEquals(userDevices.size(), 0)
+        assert userDevices.size() != 0
     }
 
     @Test(enabled = true)
@@ -294,7 +296,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         getOption.setGroupId(new GroupId(1493188608L))
         List<UserGroup> userGroups = userGroupRepository.search(getOption)
 
-        Assert.assertNotEquals(userGroups.size(), 0)
+        assert userGroups.size() != 0
     }
 
     @Test(enabled = true)
@@ -410,7 +412,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         getOption.setUserId(new UserId(userId))
         getOption.setSecurityQuestionId(new SecurityQuestionId(123L))
         List<UserSecurityQuestion> securityQuestions = userSecurityQuestionRepository.search(getOption)
-        Assert.assertNotEquals(securityQuestions.size(), 0)
+        assert securityQuestions.size() != 0
     }
 
     @Test(enabled = true)
@@ -466,7 +468,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         option.setUserId(new UserId(userId))
         option.setSecurityQuestionId(new SecurityQuestionId(123L))
         List<UserSecurityQuestionAttempt> attempts = userSecurityQuestionAttemptRepository.search(option)
-        Assert.assertNotEquals(attempts.size(), 0)
+        assert attempts.size() != 0
     }
 
     @Test

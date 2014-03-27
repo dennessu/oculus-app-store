@@ -10,6 +10,7 @@ import com.junbo.common.error.ErrorDef;
 import com.junbo.common.error.ErrorProxy;
 import com.junbo.common.id.GroupId;
 import com.junbo.common.id.SecurityQuestionId;
+import com.junbo.common.id.UserAuthenticatorId;
 import com.junbo.common.id.UserId;
 
 /**
@@ -152,15 +153,22 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 409, code = "2000007", description = "Field {0} required.", field = "{0}")
     AppError fieldRequired(String field);
 
-    @ErrorDef(httpStatusCode = 404, code = "2000008", description = "User {0} not found.")
+    @ErrorDef(httpStatusCode = 404, code = "2000008", description = "User {0} not found.", field = "{0}")
     AppError userNotFound(UserId userId);
 
-    @ErrorDef(httpStatusCode = 404, code = "2000009", description = "Group {0} not found.")
+    @ErrorDef(httpStatusCode = 404, code = "2000009", description = "Group {0} not found.", field = "{0}")
     AppError groupNotFound(GroupId groupId);
 
     @ErrorDef(httpStatusCode = 409, code = "2000010", description = "Param name {0} required.", field = "{0}")
     AppError parameterRequired(String paraName);
 
-    @ErrorDef(httpStatusCode = 409, code = "2000011", description = "Security Question {0} not found.")
+    @ErrorDef(httpStatusCode = 409, code = "2000011", description = "Security Question {0} not found.", field = "{0}")
     AppError securityQuestionNotFound(SecurityQuestionId securityQuestionId);
+
+    @ErrorDef(httpStatusCode = 409, code = "2000012", description = "User Authenticator {0} not found.", field = "{0}")
+    AppError userAuthenticatorNotFound(UserAuthenticatorId userAuthenticatorId);
+
+    @ErrorDef(httpStatusCode = 409, code = "2000013", description = "Param invalid due to {0}.", field = "{0}")
+    AppError parameterInvalid(String message);
+
 }

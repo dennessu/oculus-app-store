@@ -69,9 +69,21 @@
         <property name="groupValueMinLength" value="1" />
     </bean>
 
-    <bean id="" class="com.junbo.identity.core.service.validator.impl.SecurityQuestionValidatorImpl">
+    <bean id="securityQuestionValidator" class="com.junbo.identity.core.service.validator.impl.SecurityQuestionValidatorImpl">
+        <property name="securityQuestionRepository" ref="securityQuestionRepository" />
         <property name="securityQuestionValueMinLength" value="10" />
         <property name="securityQuestionValueMaxLength" value="1000" />
-        <property name="securityQuestionRepository" ref="securityQuestionRepository" />
+    </bean>
+
+    <bean id="userAuthenticatorValidator" class="com.junbo.identity.core.service.validator.impl.UserAuthenticatorValidatorImpl">
+        <property name="userRepository" ref="userRepository" />
+        <property name="userAuthenticatorRepository" ref="userAuthenticatorRepository" />
+        <property name="allowedTypes">
+            <list>
+                <value>hotmail</value>
+                <value>google</value>
+                <value>facebook</value>
+            </list>
+        </property>
     </bean>
 </beans>

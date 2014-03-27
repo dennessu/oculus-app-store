@@ -1,5 +1,4 @@
 package com.junbo.identity.core.service.validator.impl
-
 import com.junbo.common.id.SecurityQuestionId
 import com.junbo.identity.core.service.validator.SecurityQuestionValidator
 import com.junbo.identity.data.repository.SecurityQuestionRepository
@@ -9,7 +8,6 @@ import com.junbo.identity.spec.options.list.SecurityQuestionListOptions
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
-
 /**
  * Created by liangfu on 3/27/14.
  */
@@ -67,7 +65,7 @@ class SecurityQuestionValidatorImpl implements SecurityQuestionValidator {
         return securityQuestionRepository.search(new SecurityQuestionListOptions(
                 value: securityQuestion.value,
                 active: true
-        )).then{ List<SecurityQuestion> existing ->
+        )).then { List<SecurityQuestion> existing ->
             existing.each { SecurityQuestion singleObj ->
                 if (singleObj != null) {
                     throw AppErrors.INSTANCE.fieldDuplicate('value').exception()
