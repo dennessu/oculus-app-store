@@ -9,7 +9,7 @@ var Identity = function(host, port){
 Identity.prototype.PostAuthenticate = function(dataObj, cb){
   /*
    Method: POST
-   URL: /rest/authenticate
+   URL: /rest/authorize
    Data Type: QueryString
    Content-Type: 'application/x-www-form-urlencoded'
    Request: fs={fs}&username={username}&password={password}
@@ -19,7 +19,7 @@ Identity.prototype.PostAuthenticate = function(dataObj, cb){
   var options = {
     host: this.Host,
     port: this.Port,
-    path: "/rest/authenticate",
+    path: "/rest/oauth2/authorize",
     method: 'POST',
     headers:{
       'Content-Type': 'application/x-www-form-urlencoded'
@@ -49,7 +49,7 @@ Identity.prototype.GetTokenInfo = function(accessToken, dataObj, cb){
     var options = {
         host: this.Host,
         port: this.Port,
-        path: "/rest/tokeninfo?access_token=" + accessToken,
+        path: "/rest/oauth2/tokeninfo?access_token=" + accessToken,
         method: 'GET',
         headers:{
             'Content-Type': 'application/json'
@@ -87,7 +87,7 @@ Identity.prototype.PostTokenInfoByCode = function(dataObj, cb){
     var options = {
         host: this.Host,
         port: this.Port,
-        path: "/rest/token",
+        path: "/rest/oauth2/token",
         method: 'POST',
         headers:{
             'Content-Type': 'application/x-www-form-urlencoded'
@@ -96,6 +96,31 @@ Identity.prototype.PostTokenInfoByCode = function(dataObj, cb){
 
     var client = new RestClient();
     client.Request(options, dataObj, cb);
+}
+
+Identity.prototype.GetEndSession = function(cb){
+    /*
+     Only Client
+     Method: GET
+     URL: /rest/tokeninfo?access_token={access_token}
+     Data Type: QueryString
+     Content-Type: 'application/json'
+     Request: null
+     Response:
+     */
+
+    var options = {
+        host: this.Host,
+        port: this.Port,
+        path: "/rest/oauth2/end-session",
+        method: 'GET',
+        headers:{
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+    };
+
+    var client = new RestClient();
+    client.Request(options, null, cb);
 }
 
 Identity.prototype.PostCreateAccount = function(dataObj, cb){

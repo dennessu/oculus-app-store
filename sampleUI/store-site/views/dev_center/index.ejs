@@ -1,0 +1,21 @@
+<div class="container dev_center">
+    <%- include sidebar%>
+
+    <div class="content">
+        <h1>Welcome</h1>
+
+        <div id="ConfirmDialog" class="alert">
+            <h3>Register as a Developer</h3>
+            <p>Create a developer account for you.</p>
+            {{#if errMessage}}
+            <span class="error">{{errMessage}}</span>
+            {{/if}}
+            <div>
+                <button class="btn btn-cancel" {{action DialogNo}}>Cancel</button>
+                <button class="btn btn-primary" {{action DialogYes}}>Register Now</button>
+            </div>
+        </div>
+
+    </div>
+    <div class="clear"></div>
+</div>

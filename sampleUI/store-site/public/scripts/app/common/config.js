@@ -16,7 +16,8 @@ AppConfig.API = {
         PutProfile: { Path: "put_profile" },
         PutUser: { Path: "put_user" },
         GetOptIns: {Path: "get_opt_ins"},
-        PostOptIns: {Path: "post_opt_ins"}
+        PostOptIns: {Path: "post_opt_ins"},
+        Logout: {Path: "logout"}
     },
     Catalog: {
         Config: {
@@ -47,7 +48,8 @@ AppConfig.API = {
         },
         ShippingInfo: {Path: "get_shipping_info"},
         Get: {Path: "get_shipping_info_by_id"},
-        Add: {Path: "add"}
+        Add: {Path: "add"},
+        Del: {Path: "del"}
     },
     Payment:{
         Config: {
@@ -55,7 +57,15 @@ AppConfig.API = {
         },
         PaymentInstruments: {Path: "get_payment_instruments" },
         Get: {Path: "get_payment_instruments_by_id"},
-        Add: {Path: "add"}
+        Add: {Path: "add"},
+        Del: {Path: "del"}
+    },
+    Entitlement:{
+        Config: {
+            Namespace: "/api/entitlement/"
+        },
+        Get: {Path: "get"},
+        Post: {Path: "post"}
     }
 };
 

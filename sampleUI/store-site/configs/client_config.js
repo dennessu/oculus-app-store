@@ -11,6 +11,7 @@ var ClientConfigs = {
     // Global
     CookiesTimeout: 60 * 60 * 1000,
     Google_Captcha_PublicKey: "6LeKhO4SAAAAAL53gitVTB5ddevC59wE-6usFCnT",
+    LogoutAjaxUrl: "",
     Feature: null,
     CookiesName: null,
     QueryStrings: null,

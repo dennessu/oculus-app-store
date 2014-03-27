@@ -28,3 +28,9 @@ exports.Payment = function(req, res){
 exports.AddPayment = function(req, res){
     res.render('modules/payment_edit', {layout: false, title: "Store Demo"});
 };
+exports.Shipping = function(req, res){
+    res.render('account/shipping', {layout: false, title: "Store Demo"});
+};
+exports.AddShipping = function(req, res){
+    res.render('modules/shipping_info_edit', {layout: false, title: "Store Demo"});
+};
