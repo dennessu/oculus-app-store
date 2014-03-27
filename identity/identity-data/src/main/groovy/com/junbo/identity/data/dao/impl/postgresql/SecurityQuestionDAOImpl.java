@@ -10,8 +10,11 @@ import com.junbo.identity.data.dao.SecurityQuestionDAO;
 import com.junbo.identity.data.entity.domaindata.SecurityQuestionEntity;
 import com.junbo.identity.spec.options.list.SecurityQuestionListOptions;
 import com.junbo.sharding.IdGeneratorFacade;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -66,9 +69,11 @@ public class SecurityQuestionDAOImpl implements SecurityQuestionDAO {
 
     @Override
     public List<SecurityQuestionEntity> search(SecurityQuestionListOptions listOption) {
-        String query = "select * from security_question where active = true order by id";
-        List entities = currentSession().createSQLQuery(query).addEntity(SecurityQuestionEntity.class).list();
-        return entities;
+
+        Criteria criteria = currentSession().createCriteria(SecurityQuestionEntity.class);
+        criteria.add(Restrictions.eq("active", true));
+        criteria.addOrder(Order.asc("id"));
+        return criteria.list();
     }
 
     @Override

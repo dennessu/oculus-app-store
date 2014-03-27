@@ -8,6 +8,9 @@ package com.junbo.identity.data.dao.impl.postgresql;
 import com.junbo.identity.data.dao.UserGroupDAO;
 import com.junbo.identity.data.entity.user.UserGroupEntity;
 import com.junbo.identity.spec.options.list.UserGroupListOptions;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -39,14 +42,19 @@ public class UserGroupDAOImpl extends ShardedDAOBase implements UserGroupDAO {
 
     @Override
     public List<UserGroupEntity> search(Long userId, UserGroupListOptions getOption) {
-        String query = "select * from user_group where user_id = " + (getOption.getUserId().getValue()) +
-                (getOption.getGroupId() == null ? "" : (" and group_id = " + getOption.getGroupId().getValue())) +
-                (" order by id limit " + (getOption.getLimit() == null ? "ALL" : getOption.getLimit().toString())) +
-                " offset " + (getOption.getOffset() == null ? "0" : getOption.getOffset().toString());
-
-        List entities = currentSession().createSQLQuery(query).addEntity(UserGroupEntity.class).list();
-
-        return entities;
+        Criteria criteria = currentSession().createCriteria(UserGroupEntity.class);
+        criteria.add(Restrictions.eq("userId", getOption.getUserId().getValue()));
+        if (getOption.getGroupId() != null) {
+            criteria.add(Restrictions.eq("groupId", getOption.getGroupId().getValue()));
+        }
+        criteria.addOrder(Order.asc("id"));
+        if (getOption.getLimit() != null) {
+            criteria.setMaxResults(getOption.getLimit());
+        }
+        if (getOption.getOffset() != null) {
+            criteria.setFirstResult(getOption.getOffset());
+        }
+        return criteria.list();
     }
 
     @Override

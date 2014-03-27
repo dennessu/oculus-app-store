@@ -8,6 +8,9 @@ package com.junbo.identity.data.dao.impl.postgresql;
 import com.junbo.identity.data.dao.UserLoginAttemptDAO;
 import com.junbo.identity.data.entity.user.UserLoginAttemptEntity;
 import com.junbo.identity.spec.options.list.LoginAttemptListOptions;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -40,15 +43,22 @@ public class UserLoginAttemptDAOImpl extends ShardedDAOBase implements UserLogin
 
     @Override
     public List<UserLoginAttemptEntity> search(Long userId, LoginAttemptListOptions getOption) {
-        String query = "select * from user_login_attempt where user_id = " + (getOption.getUserId().getValue()) +
-    (StringUtils.isEmpty(getOption.getType()) ? "" : (" and type = " + getOption.getType())) +
-    (StringUtils.isEmpty(getOption.getIpAddress()) ? "" : (" and ip_address = \'" + getOption.getIpAddress())) + "\'" +
-    (" order by id limit " + (getOption.getLimit() == null ? "ALL" : getOption.getLimit().toString())) +
-    " offset " + (getOption.getOffset() == null ? "0" : getOption.getOffset().toString());
-
-        List entities = currentSession().createSQLQuery(query).addEntity(UserLoginAttemptEntity.class).list();
-
-        return entities;
+        Criteria criteria = currentSession().createCriteria(UserLoginAttemptEntity.class);
+        criteria.add(Restrictions.eq("userId", getOption.getUserId().getValue()));
+        if (!StringUtils.isEmpty(getOption.getType())) {
+            criteria.add(Restrictions.eq("type", getOption.getType()));
+        }
+        if (!StringUtils.isEmpty(getOption.getIpAddress())) {
+            criteria.add(Restrictions.eq("ipAddress", getOption.getIpAddress()));
+        }
+        criteria.addOrder(Order.asc("id"));
+        if (getOption.getLimit() != null) {
+            criteria.setMaxResults(getOption.getLimit());
+        }
+        if (getOption.getOffset() != null) {
+            criteria.setFirstResult(getOption.getOffset());
+        }
+        return criteria.list();
     }
 
     @Override

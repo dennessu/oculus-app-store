@@ -7,6 +7,10 @@ package com.junbo.identity.data.dao.impl.postgresql
 import com.junbo.identity.data.dao.UserTosDAO
 import com.junbo.identity.data.entity.user.UserTosEntity
 import com.junbo.identity.spec.options.list.UserTosListOptions
+import org.hibernate.Criteria
+import org.hibernate.criterion.Order
+import org.hibernate.criterion.Restrictions
+import org.springframework.util.StringUtils
 
 /**
  * Implementation for User Tos Acceptance DAO interface.
@@ -33,12 +37,19 @@ class UserTosDAOImpl extends ShardedDAOBase implements UserTosDAO {
 
     @Override
     List<UserTosEntity> search(Long userId, UserTosListOptions getOption) {
-        String query = 'select * from user_tos where user_id =  ' + getOption.userId.value +
-                (getOption.tosUri == null ? '' : ' and tos_uri = \'' + getOption.tosUri + '\'') +
-                (' order by id limit ' + (getOption.limit == null ? 'ALL' : getOption.limit.toString())) +
-                ' offset ' + (getOption.offset == null ? '0' : getOption.offset.toString())
-
-        return currentSession().createSQLQuery(query).addEntity(UserTosEntity).list()
+        Criteria criteria = currentSession().createCriteria(UserTosEntity)
+        criteria.add(Restrictions.eq('userId', getOption.userId.value))
+        if (!StringUtils.isEmpty(getOption.tosUri)) {
+            criteria.add(Restrictions.eq('tosUri', getOption.tosUri))
+        }
+        criteria.addOrder(Order.asc('id'))
+        if (getOption.limit != null) {
+            criteria.setMaxResults(getOption.limit)
+        }
+        if (getOption.offset != null) {
+            criteria.setFirstResult(getOption.offset)
+        }
+        return criteria.list()
     }
 
     @Override

@@ -8,6 +8,8 @@ package com.junbo.identity.data.dao.impl.postgresql;
 import com.junbo.identity.data.dao.GroupUserDAO;
 import com.junbo.identity.data.entity.group.GroupUserEntity;
 import com.junbo.sharding.annotations.SeedParam;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 
 import java.util.List;
 
@@ -32,21 +34,17 @@ public class GroupUserDAOImpl  extends ShardedDAOBase implements GroupUserDAO {
 
     @Override
     public GroupUserEntity findByGroupIdAndUserId(@SeedParam Long groupId, Long userId) {
-        String query = "select * from group_user where group_id = " + groupId + " and user_id = " + userId;
-
-        List list = currentSession().createSQLQuery(query).addEntity(GroupUserEntity.class).list();
-        if(list != null) {
-            return (GroupUserEntity)list.get(0);
-        }
-        return null;
+        Criteria criteria = currentSession().createCriteria(GroupUserEntity.class);
+        criteria.add(Restrictions.eq("groupId", groupId));
+        criteria.add(Restrictions.eq("userId", userId));
+        return criteria.list().size() == 0 ? null : (GroupUserEntity)criteria.list().get(0);
     }
 
     @Override
     public List<GroupUserEntity> findByGroupId(@SeedParam Long groupId) {
-        String query = "select * from group_user where group_id = " + groupId;
-
-        List list = currentSession().createSQLQuery(query).addEntity(GroupUserEntity.class).list();
-        return list;
+        Criteria criteria = currentSession().createCriteria(GroupUserEntity.class);
+        criteria.add(Restrictions.eq("groupId", groupId));
+        return criteria.list();
     }
 
     @Override

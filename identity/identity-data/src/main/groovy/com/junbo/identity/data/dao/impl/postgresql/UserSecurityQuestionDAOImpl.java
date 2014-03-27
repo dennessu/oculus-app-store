@@ -8,6 +8,9 @@ package com.junbo.identity.data.dao.impl.postgresql;
 import com.junbo.identity.data.dao.UserSecurityQuestionDAO;
 import com.junbo.identity.data.entity.user.UserSecurityQuestionEntity;
 import com.junbo.identity.spec.options.list.UserSecurityQuestionListOptions;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -39,15 +42,19 @@ public class UserSecurityQuestionDAOImpl extends ShardedDAOBase implements UserS
 
     @Override
     public List<UserSecurityQuestionEntity> search(Long userId, UserSecurityQuestionListOptions getOption) {
-        String query = "select * from user_security_question where user_id = " + getOption.getUserId().getValue() +
-            (getOption.getSecurityQuestionId() == null ? "" :
-                    (" and security_question_id = " + getOption.getSecurityQuestionId().getValue())) +
-            (" order by id limit " + (getOption.getLimit() == null ? "ALL" : getOption.getLimit().toString())) +
-            " offset " + (getOption.getOffset() == null ? "0" : getOption.getOffset().toString());
-
-        List entities = currentSession().createSQLQuery(query).addEntity(UserSecurityQuestionEntity.class).list();
-
-        return entities;
+        Criteria criteria = currentSession().createCriteria(UserSecurityQuestionEntity.class);
+        criteria.add(Restrictions.eq("userId", getOption.getUserId().getValue()));
+        if (getOption.getSecurityQuestionId() != null) {
+            criteria.add(Restrictions.eq("securityQuestionId", getOption.getSecurityQuestionId().getValue()));
+        }
+        criteria.addOrder(Order.asc("id"));
+        if (getOption.getLimit() != null) {
+            criteria.setMaxResults(getOption.getLimit());
+        }
+        if (getOption.getOffset() != null) {
+            criteria.setFirstResult(getOption.getOffset());
+        }
+        return criteria.list();
     }
 
     @Override

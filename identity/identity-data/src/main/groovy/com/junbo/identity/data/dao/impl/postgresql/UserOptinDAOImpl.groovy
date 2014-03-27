@@ -7,6 +7,11 @@ package com.junbo.identity.data.dao.impl.postgresql
 import com.junbo.identity.data.dao.UserOptinDAO
 import com.junbo.identity.data.entity.user.UserOptinEntity
 import com.junbo.identity.spec.options.list.UserOptinListOptions
+import org.hibernate.Criteria
+import org.hibernate.criterion.Order
+import org.hibernate.criterion.Restrictions
+import org.springframework.util.StringUtils
+
 /**
  * Implementation for UserOptinDAO.
  */
@@ -34,14 +39,19 @@ class UserOptinDAOImpl extends ShardedDAOBase implements UserOptinDAO {
 
     @Override
     List<UserOptinEntity> search(Long userId, UserOptinListOptions getOption) {
-        String query = 'select * from user_optin where user_id =  ' + getOption.userId.value +
-                (getOption.type == null ? '' : (' and type = \'' + getOption.type) + '\'') +
-                (' order by id limit ' + (getOption.limit == null ? 'ALL' : getOption.limit.toString())) +
-                ' offset ' + (getOption.offset == null ? '0' : getOption.offset.toString())
-
-        def entities = currentSession().createSQLQuery(query).addEntity(UserOptinEntity).list()
-
-        return entities
+        Criteria criteria = currentSession().createCriteria(UserOptinEntity)
+        criteria.add(Restrictions.eq('userId', getOption.userId.value))
+        if (!StringUtils.isEmpty(getOption.type)) {
+           criteria.add(Restrictions.eq('type', getOption.type))
+        }
+        criteria.addOrder(Order.asc('id'))
+        if (getOption.limit != null) {
+            criteria.setMaxResults(getOption.limit)
+        }
+        if (getOption.offset != null) {
+            criteria.setFirstResult(getOption.offset)
+        }
+        return criteria.list()
     }
 
     @Override

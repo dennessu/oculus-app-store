@@ -8,8 +8,8 @@ package com.junbo.identity.data.dao.impl.postgresql;
 import com.junbo.identity.data.dao.UserNameDAO;
 import com.junbo.identity.data.entity.user.UserNameEntity;
 import com.junbo.sharding.annotations.SeedParam;
-
-import java.util.List;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 
 /**
  * Created by liangfu on 3/18/14.
@@ -42,12 +42,9 @@ public class UserNameDAOImpl extends ShardedDAOBase implements UserNameDAO {
 
     @Override
     public UserNameEntity findByUserId(@SeedParam Long userId) {
-        String query = "select * from user_name where user_id = " + userId;
-        List results = currentSession().createSQLQuery(query).addEntity(UserNameEntity.class).list();
-        if(results.size() == 0) {
-            return null;
-        } else {
-            return (UserNameEntity)results.get(0);
-        }
+        Criteria criteria = currentSession().createCriteria(UserNameEntity.class);
+        criteria.add(Restrictions.eq("userId", userId));
+
+        return criteria.list() == null ? null : (UserNameEntity)criteria.list().get(0);
     }
 }

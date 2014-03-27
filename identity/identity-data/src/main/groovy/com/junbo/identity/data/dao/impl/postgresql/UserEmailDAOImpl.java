@@ -9,6 +9,9 @@ import com.junbo.identity.data.dao.UserEmailDAO;
 import com.junbo.identity.data.entity.user.UserEmailEntity;
 import com.junbo.identity.spec.options.list.UserEmailListOptions;
 import com.junbo.sharding.annotations.SeedParam;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -28,16 +31,22 @@ public class UserEmailDAOImpl extends ShardedDAOBase implements UserEmailDAO {
 
     @Override
     public List<UserEmailEntity> search(@SeedParam Long userId, UserEmailListOptions getOption) {
-        String query = "select * from user_email where user_id = " + (getOption.getUserId().getValue()) +
-            (StringUtils.isEmpty(getOption.getType()) ? "" : (" and type = " + getOption.getType())) +
-            (StringUtils.isEmpty(getOption.getValue()) ? "" : (" and value like \'%") + getOption.getValue() + "%\'") +
-            (" order by id limit " + (getOption.getLimit() == null ? "ALL" : getOption.getLimit().toString())) +
-            " offset " + (getOption.getOffset() == null ? "0" : getOption.getOffset().toString());
-
-        List entities = currentSession().createSQLQuery(query)
-                .addEntity(UserEmailEntity.class).list();
-
-        return entities;
+        Criteria criteria = currentSession().createCriteria(UserEmailEntity.class);
+        criteria.add(Restrictions.eq("userId", getOption.getUserId().getValue()));
+        if(!StringUtils.isEmpty(getOption.getType())) {
+            criteria.add(Restrictions.eq("type", getOption.getType()));
+        }
+        if(!StringUtils.isEmpty(getOption.getValue())) {
+            criteria.add(Restrictions.eq("value", getOption.getValue()));
+        }
+        criteria.addOrder(Order.asc("id"));
+        if(getOption.getLimit() != null) {
+            criteria.setMaxResults(getOption.getLimit());
+        }
+        if(getOption.getOffset() != null) {
+            criteria.setFirstResult(getOption.getOffset());
+        }
+        return criteria.list();
     }
 
     @Override

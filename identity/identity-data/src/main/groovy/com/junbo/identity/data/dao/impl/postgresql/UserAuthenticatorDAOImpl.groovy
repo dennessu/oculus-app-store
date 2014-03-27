@@ -7,6 +7,9 @@ package com.junbo.identity.data.dao.impl.postgresql
 import com.junbo.identity.data.dao.UserAuthenticatorDAO
 import com.junbo.identity.data.entity.user.UserAuthenticatorEntity
 import com.junbo.identity.spec.options.list.UserAuthenticatorListOptions
+import org.hibernate.Criteria
+import org.hibernate.criterion.Order
+import org.hibernate.criterion.Restrictions
 
 /**
  * Implementation for UserAuthenticatorDAO.
@@ -34,13 +37,22 @@ class UserAuthenticatorDAOImpl extends ShardedDAOBase implements UserAuthenticat
 
     @Override
     List<UserAuthenticatorEntity> search(Long userId, UserAuthenticatorListOptions getOption) {
-        String query = 'select * from user_authenticator where user_id =  ' + getOption.userId.value +
-                (getOption.type == null ? '' : ' and type = ' + getOption.type) +
-                (getOption.value == null ? '' : ' and value like \'%' + getOption.value + '%\'') +
-                (' order by id limit ' + (getOption.limit == null ? 'ALL' : getOption.limit.toString())) +
-                ' offset ' + (getOption.offset == null ? '0' : getOption.offset.toString())
-
-        return currentSession().createSQLQuery(query).addEntity(UserAuthenticatorEntity).list()
+        Criteria criteria = currentSession().createCriteria(UserAuthenticatorEntity)
+        criteria.add(Restrictions.eq('userId', getOption.userId.value))
+        if (getOption.type != null) {
+            criteria.add('type', getOption.type)
+        }
+        if (getOption.value != null) {
+            criteria.add('value', getOption.value)
+        }
+        criteria.addOrder(Order.asc('id'))
+        if (getOption.limit != null) {
+            criteria.setMaxResults(getOption.limit)
+        }
+        if (getOption.offset != null) {
+            criteria.setFirstResult(getOption.offset)
+        }
+        return criteria.list()
     }
 
     @Override

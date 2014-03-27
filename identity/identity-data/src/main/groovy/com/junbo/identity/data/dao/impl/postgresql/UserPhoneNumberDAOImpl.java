@@ -8,6 +8,9 @@ package com.junbo.identity.data.dao.impl.postgresql;
 import com.junbo.identity.data.dao.UserPhoneNumberDAO;
 import com.junbo.identity.data.entity.user.UserPhoneNumberEntity;
 import com.junbo.identity.spec.options.list.UserPhoneNumberListOptions;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -40,15 +43,22 @@ public class UserPhoneNumberDAOImpl extends ShardedDAOBase implements UserPhoneN
 
     @Override
     public List<UserPhoneNumberEntity> search(Long userId, UserPhoneNumberListOptions getOption) {
-        String query = "select * from user_phone_number where user_id = " + (getOption.getUserId().getValue()) +
-                (StringUtils.isEmpty(getOption.getType()) ? "" : (" and type = \'" + getOption.getType()) + "\'") +
-                (StringUtils.isEmpty(getOption.getValue()) ? "" : (" and value = \'" + getOption.getValue()) + "\'") +
-                (" order by id limit " + (getOption.getLimit() == null ? "ALL" : getOption.getLimit().toString())) +
-                " offset " + (getOption.getOffset() == null ? "0" : getOption.getOffset().toString());
-
-        List entities = currentSession().createSQLQuery(query).addEntity(UserPhoneNumberEntity.class).list();
-
-        return entities;
+        Criteria criteria = currentSession().createCriteria(UserPhoneNumberEntity.class);
+        criteria.add(Restrictions.eq("userId", getOption.getUserId().getValue()));
+        if (!StringUtils.isEmpty(getOption.getType())) {
+            criteria.add(Restrictions.eq("type", getOption.getType()));
+        }
+        if (!StringUtils.isEmpty(getOption.getValue())) {
+            criteria.add(Restrictions.eq("value", getOption.getValue()));
+        }
+        criteria.addOrder(Order.asc("id"));
+        if (getOption.getLimit() != null) {
+            criteria.setMaxResults(getOption.getLimit());
+        }
+        if (getOption.getOffset() != null) {
+            criteria.setFirstResult(getOption.getOffset());
+        }
+        return criteria.list();
     }
 
     @Override

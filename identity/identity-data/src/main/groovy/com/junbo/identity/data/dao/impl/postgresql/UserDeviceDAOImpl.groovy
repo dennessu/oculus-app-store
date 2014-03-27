@@ -7,8 +7,9 @@ package com.junbo.identity.data.dao.impl.postgresql
 import com.junbo.identity.data.dao.UserDeviceDAO
 import com.junbo.identity.data.entity.user.UserDeviceEntity
 import com.junbo.identity.spec.options.list.UserDeviceListOptions
-import org.springframework.util.StringUtils
-
+import org.hibernate.Criteria
+import org.hibernate.criterion.Order
+import org.hibernate.criterion.Restrictions
 /**
  * Implementation for UserDeviceDAO.
  */
@@ -35,14 +36,19 @@ class UserDeviceDAOImpl extends ShardedDAOBase implements UserDeviceDAO {
 
     @Override
     List<UserDeviceEntity> search(Long userId, UserDeviceListOptions getOption) {
-        String query = 'select * from user_device where user_id =  ' + getOption.userId.value +
-                (StringUtils.isEmpty(getOption.deviceId) ? '' : ' and device_id = \'' + getOption.deviceId + '\'') +
-                (' order by id limit ' + (getOption.limit == null ? 'ALL' : getOption.limit.toString())) +
-                ' offset ' + (getOption.offset == null ? '0' : getOption.offset.toString())
-
-        def entities = currentSession().createSQLQuery(query).addEntity(UserDeviceEntity).list()
-
-        return entities
+        Criteria criteria = currentSession().createCriteria(UserDeviceEntity)
+        criteria.add(Restrictions.eq('userId', getOption.userId.value))
+        if (getOption.deviceId != null) {
+            criteria.add('deviceId', getOption.deviceId)
+        }
+        criteria.addOrder(Order.asc('id'))
+        if (getOption.limit != null) {
+            criteria.setMaxResults(getOption.limit)
+        }
+        if (getOption.offset != null) {
+            criteria.setFirstResult(getOption.offset)
+        }
+        return criteria.list()
     }
 
     @Override

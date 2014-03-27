@@ -9,6 +9,9 @@ import com.junbo.identity.data.dao.UserSecurityQuestionAttemptDAO;
 import com.junbo.identity.data.entity.user.UserSecurityQuestionAttemptEntity;
 import com.junbo.identity.spec.options.list.UserSecurityQuestionAttemptListOptions;
 import com.junbo.sharding.annotations.SeedParam;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 
 import java.util.List;
 
@@ -40,16 +43,18 @@ public class UserSecurityQuestionAttemptDAOImpl extends ShardedDAOBase implement
     @Override
     public List<UserSecurityQuestionAttemptEntity> search(@SeedParam Long userId,
                                                           UserSecurityQuestionAttemptListOptions getOption) {
-        String query = "select * from user_security_question_attempt where user_id = " +
-                (getOption.getUserId().getValue()) +
-        (getOption.getSecurityQuestionId() == null ? "" : (" and security_question_id = " +
-                getOption.getSecurityQuestionId().getValue())) +
-        (" order by id limit " + (getOption.getLimit() == null ? "ALL" : getOption.getLimit().toString())) +
-        " offset " + (getOption.getOffset() == null ? "0" : getOption.getOffset().toString());
-
-        List entities = currentSession().createSQLQuery(query).
-                addEntity(UserSecurityQuestionAttemptEntity.class).list();
-
-        return entities;
+        Criteria criteria = currentSession().createCriteria(UserSecurityQuestionAttemptEntity.class);
+        criteria.add(Restrictions.eq("userId", getOption.getUserId().getValue()));
+        if (getOption.getSecurityQuestionId() != null) {
+           criteria.add(Restrictions.eq("securityQuestionId", getOption.getSecurityQuestionId().getValue()));
+        }
+        criteria.addOrder(Order.asc("id"));
+        if (getOption.getLimit() != null) {
+            criteria.setMaxResults(getOption.getLimit());
+        }
+        if (getOption.getOffset() != null) {
+            criteria.setFirstResult(getOption.getOffset());
+        }
+        return criteria.list();
     }
 }

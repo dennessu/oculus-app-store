@@ -5,12 +5,12 @@
  */
 package com.junbo.identity.data.dao.impl.postgresql.index;
 
-import com.junbo.identity.data.dao.index.UserNameReverseIndexDAO;
 import com.junbo.identity.data.dao.impl.postgresql.ShardedDAOBase;
+import com.junbo.identity.data.dao.index.UserNameReverseIndexDAO;
 import com.junbo.identity.data.entity.reverselookup.UserNameReverseIndexEntity;
 import com.junbo.sharding.annotations.SeedParam;
-
-import java.util.List;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 
 /**
  * Created by liangfu on 3/18/14.
@@ -39,12 +39,9 @@ public class UserNameReverseIndexDAOImpl extends ShardedDAOBase implements UserN
     }
 
     @Override
-    public UserNameReverseIndexEntity get(@SeedParam String userName) {
-        String query = "select * from user_name_reverse_index where user_name = :userName";
-        List<UserNameReverseIndexEntity> entities =
-                currentSession().createSQLQuery(query).addEntity(UserNameReverseIndexEntity.class)
-                        .setParameter("userName", userName).list();
-
-        return entities.size() == 0? null : entities.get(0);
+    public UserNameReverseIndexEntity get(@SeedParam String username) {
+        Criteria criteria = currentSession().createCriteria(UserNameReverseIndexEntity.class);
+        criteria.add(Restrictions.eq("username", username));
+        return criteria.list().size() == 0 ? null : (UserNameReverseIndexEntity)criteria.list().get(0);
     }
 }

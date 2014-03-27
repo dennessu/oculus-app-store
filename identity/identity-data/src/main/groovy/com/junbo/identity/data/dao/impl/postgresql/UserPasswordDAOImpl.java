@@ -8,6 +8,9 @@ package com.junbo.identity.data.dao.impl.postgresql;
 import com.junbo.identity.data.dao.UserPasswordDAO;
 import com.junbo.identity.data.entity.user.UserPasswordEntity;
 import com.junbo.identity.spec.options.list.UserPasswordListOptions;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -38,14 +41,20 @@ public class UserPasswordDAOImpl extends ShardedDAOBase implements UserPasswordD
 
     @Override
     public List<UserPasswordEntity> search(Long userId, UserPasswordListOptions getOption) {
-        String query = "select * from user_password where user_id = " + (getOption.getUserId().getValue()) +
-                (getOption.getActive() == null ? "" : " and active = " + (getOption.getActive())) +
-                (" order by id limit " + (getOption.getLimit() == null ? "ALL" : getOption.getLimit().toString())) +
-                " offset " + (getOption.getOffset() == null ? "0" : getOption.getOffset().toString());
-        List entities = currentSession().createSQLQuery(query)
-                .addEntity(UserPasswordEntity.class).list();
+        Criteria criteria = currentSession().createCriteria(UserPasswordEntity.class);
+        criteria.add(Restrictions.eq("userId", getOption.getUserId().getValue()));
+        if (getOption.getActive() != null) {
+            criteria.add(Restrictions.eq("active", getOption.getActive()));
+        }
+        criteria.addOrder(Order.asc("id"));
+        if (getOption.getLimit() != null) {
+            criteria.setMaxResults(getOption.getLimit());
+        }
+        if (getOption.getOffset() != null) {
+            criteria.setFirstResult(getOption.getOffset());
+        }
 
-        return entities;
+        return criteria.list();
     }
 
     @Override
