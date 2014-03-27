@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <import resource="classpath*:spring/core-context.xml"/>
+
+    <!-- Transactional listener demo -->
+    <bean id="testQueue2" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg index="0" value="TEST_QUEUE_2"/>
+    </bean>
+
+    <bean id="queueTemplate2" class="org.springframework.jms.core.JmsTemplate">
+        <property name="defaultDestination" ref="testQueue2"/>
+        <property name="connectionFactory" ref="connectionFactory"/>
+        <property name="explicitQosEnabled" value="true"/>
+        <property name="deliveryPersistent" value="true"/>
+    </bean>
+
+    <bean id="testProducer2" class="com.junbo.notification.queue.TestProducer">
+        <property name="template" ref="queueTemplate2"/>
+        <property name="destination" ref="testQueue2"/>
+    </bean>
+
+    <bean id="transactionalListener" class="com.junbo.notification.retry.TransactionalListener"/>
+
+    <bean id="transactionListenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+        <property name="connectionFactory" ref="connectionFactory"/>
+        <property name="destination" ref="testQueue2"/>
+        <property name="messageListener" ref="transactionalListener"/>
+        <!--<property name="sessionTransacted" value="true"/>-->
+        <property name="sessionAcknowledgeMode" value="2"/>
+    </bean>
+</beans>

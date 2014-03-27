@@ -88,7 +88,7 @@ class GroupRepositoryImpl implements GroupRepository {
     @Override
     Promise<Group> searchByName(String name) {
         def groupReverseIndexEntity = groupReverseIndexDAO.get(name)
-        if(groupReverseIndexEntity == null) {
+        if (groupReverseIndexEntity == null) {
             return Promise.pure(null)
         }
         def group = get(new GroupId(groupReverseIndexEntity.groupId))

@@ -3,27 +3,23 @@
     <h2>Your Account</h2>
     <h3>Account Settings</h3>
     <dl>
-        <dt>{{#link-to-animated "account.index" animation="account:slideOverLeft"}}Change Account Settings{{/link-to-animated}}</dt>
-        <dd>(Name,Email,Password,and Parental info)</dd>
+        <dt>{{#link-to "account.index"}}Change Account Settings{{/link-to}}</dt>
+        <dd>(Name,Password,and Parental info)</dd>
     </dl>
     <dl>
-        <dt>{{#link-to-animated "account.profile" animation="account:slideOverLeft"}}Change Profile Settings{{/link-to-animated}}</dt>
-        <dd>(About Me,Social Media)</dd>
-    </dl>
-    <dl>
-        <dt>{{#link-to-animated "account.history" animation="account:slideOverLeft"}}Purchase History{{/link-to-animated}}</dt>
+        <dt>{{#link-to "account.history"}}Purchase History{{/link-to}}</dt>
         <dd></dd>
     </dl>
     <div class="line1"></div>
     <h3>Payment Methods</h3>
     <dl>
-        <dt>{{#link-to-animated "account.payment" animation="account:slideOverLeft"}}Manage Payment Options{{/link-to-animated}}</dt>
-        <dd>(Add/Delete Payments,Edit PIN)</dd>
+        <dt>{{#link-to "account.payment" }}Manage Payment Options{{/link-to}}</dt>
+        <dd>(Add/Delete Payments)</dd>
     </dl>
+    <div class="line1"></div>
+    <h3>Shipping Address</h3>
     <dl>
-        <dt><a href="#">Add funds to Store Wallet</a></dt>
-    </dl>
-    <dl>
-        <dt><a href="#">Apply Gift Card to Your Account</a></dt>
+        <dt>{{#link-to "account.payment" }}Manage Shipping Address Options{{/link-to}}</dt>
+        <dd>(Add/Delete Shipping Address)</dd>
     </dl>
 </nav>

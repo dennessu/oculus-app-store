@@ -6,6 +6,7 @@
 package com.junbo.oauth.spec.model
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.junbo.common.id.UserId
 import groovy.transform.CompileStatic
 
 /**
@@ -13,7 +14,7 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class TokenInfo {
-    String sub
+    UserId sub
 
     @JsonProperty('expires_in')
     Long expiresIn

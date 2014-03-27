@@ -136,6 +136,80 @@ Identity.prototype.PostCreateAccount = function(dataObj, cb){
 
   var client = new RestClient();
   client.Request(options, dataObj, cb);
+};
+
+Identity.prototype.GetUserById = function(userId, cb){
+    /*
+     Method: GET
+     URL: /rest/users/{userId}
+     Data Type: JSON
+     Content-Type: 'application/json'
+     Request:
+     Response:
+     {
+     "createdTime": "2014-02-28T07:41:01Z",
+     "resourceAge": 0,
+     "userName": "tom14@ea.com",
+     "status": "ACTIVE",
+     "self": {
+     "href": "https://xxx.xxx.xxx",
+     "id": "728917210477568936"
+     }
+     }
+     */
+
+    var options = {
+        host: this.Host,
+        port: this.Port,
+        path: "/rest/users/" + userId,
+        method: 'GET',
+        headers:{
+            'Content-Type': 'application/json'
+        }
+    };
+
+    var client = new RestClient();
+    client.Request(options, null, cb);
+}
+
+Identity.prototype.PutUser = function(userId, dataObj, cb){
+    /*
+     Method: PUT
+     URL: /rest/users/{userId}
+     Data Type: JSON
+     Content-Type: 'application/json'
+     Request:
+     {
+     "userName": "tom14@ea.com",
+     "password": "password",
+     "passwordStrength": "WEAK",
+     "status": "ACTIVE"
+     }
+     Response:
+     {
+     "createdTime": "2014-02-28T07:41:01Z",
+     "resourceAge": 0,
+     "userName": "tom14@ea.com",
+     "status": "ACTIVE",
+     "self": {
+     "href": "https://xxx.xxx.xxx",
+     "id": "728917210477568936"
+     }
+     }
+     */
+
+    var options = {
+        host: this.Host,
+        port: this.Port,
+        path: "/rest/users/" + userId,
+        method: 'PUT',
+        headers:{
+            'Content-Type': 'application/json'
+        }
+    };
+
+    var client = new RestClient();
+    client.Request(options, dataObj, cb);
 }
 
 Identity.prototype.PostCreateProfiles = function(userId, dataObj, cb){
@@ -194,7 +268,31 @@ Identity.prototype.PostCreateProfiles = function(userId, dataObj, cb){
   client.Request(options, dataObj, cb);
 }
 
-Identity.prototype.GetPayinProfilesByUserId = function(userId, dataObj, cb){
+Identity.prototype.PutProfile = function(profileId, userId, dataObj, cb){
+    /*
+     Method: Pur
+     URL: /rest/users/{userId}/profiles
+     Data Type: JSON
+     Content-Type: 'application/json'
+     Request:
+     Response:
+     */
+
+    var options = {
+        host: this.Host,
+        port: this.Port,
+        path: "/rest/users/"+ userId +"/profiles/" + profileId,
+        method: 'PUT',
+        headers:{
+            'Content-Type': 'application/json'
+        }
+    };
+
+    var client = new RestClient();
+    client.Request(options, dataObj, cb);
+}
+
+Identity.prototype.GetPayinProfilesByUserId = function(userId, cb){
     /*
      Method: GET
      URL: /rest/users/{userId}/profiles?type=PAYIN
@@ -234,7 +332,7 @@ Identity.prototype.GetPayinProfilesByUserId = function(userId, dataObj, cb){
     };
 
     var client = new RestClient();
-    client.Request(options, dataObj, cb);
+    client.Request(options, null, cb);
 }
 
 Identity.prototype.GetUser = function(userId, cb){
@@ -257,6 +355,50 @@ Identity.prototype.GetUser = function(userId, cb){
 
   var client = new RestClient();
   client.Request(options, null, cb);
+}
+
+Identity.prototype.GetOptIns = function(userId, cb){
+    /*
+     Method: GET
+     URL: /rest//users/{userId}/opt-ins
+     Data Type: JSON
+     Content-Type: 'application/json'
+     */
+
+    var options = {
+        host: this.Host,
+        port: this.Port,
+        path: "/rest/users/" + userId + "/opt-ins",
+        method: 'GET',
+        headers:{
+            'Content-Type': 'application/json'
+        }
+    };
+
+    var client = new RestClient();
+    client.Request(options, null, cb);
+}
+
+Identity.prototype.PostOptIns = function(userId, dataObj, cb){
+    /*
+     Method: GET
+     URL: /rest//users/{userId}/opt-ins
+     Data Type: JSON
+     Content-Type: 'application/json'
+     */
+
+    var options = {
+        host: this.Host,
+        port: this.Port,
+        path: "/rest/users/" + userId + "/opt-ins",
+        method: 'GET',
+        headers:{
+            'Content-Type': 'application/json'
+        }
+    };
+
+    var client = new RestClient();
+    client.Request(options, dataObj, cb);
 }
 
 module.exports = Identity;

@@ -1,9 +1,12 @@
 package com.junbo.order.core.impl.common
 
+import com.junbo.common.error.AppError
+import com.junbo.common.error.AppErrorException
 import com.junbo.order.clientproxy.model.OrderOffer
 import com.junbo.order.clientproxy.model.OrderOfferItem
 import com.junbo.order.db.entity.enums.ItemType
 import groovy.transform.CompileStatic
+
 /**
  * Created by chriszhu on 3/19/14.
  */
@@ -20,4 +23,12 @@ class CoreUtils {
         if (hasPhysical) { return ItemType.PHYSICAL }
         return ItemType.DIGITAL
     }
+
+    static AppError[] toAppErrors(Throwable throwable) {
+        if (throwable instanceof AppErrorException) {
+            return [throwable.error] as AppError[]
+        }
+        return new AppError[0]
+    }
+
 }

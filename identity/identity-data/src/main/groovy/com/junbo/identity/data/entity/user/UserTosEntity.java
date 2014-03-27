@@ -1,3 +1,8 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
+ */
 package com.junbo.identity.data.entity.user;
 
 import com.junbo.identity.data.entity.common.ResourceMetaEntity;
@@ -9,7 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
- * UserEntity model for user_device_profile table
+ * UserEntity model for user_device_profile table.
  */
 @Entity
 @Table(name = "user_tos")

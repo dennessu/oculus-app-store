@@ -1,10 +1,15 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
+ */
 package com.junbo.identity.data.entity.user;
 
 import javax.persistence.*;
 import java.util.Date;
 
 /**
- * UserEntity model for user password entity table
+ * UserEntity model for user password entity table.
  */
 @Entity
 @Table(name = "password_blacklist")

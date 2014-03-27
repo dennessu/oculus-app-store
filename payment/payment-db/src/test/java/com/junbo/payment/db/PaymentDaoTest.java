@@ -187,6 +187,7 @@ public class PaymentDaoTest extends BaseTest {
         entity.setNetAmount(new BigDecimal(23));
         entity.setPaymentInstrumentId(pi.getId());
         entity.setPaymentProviderId(0);
+        entity.setBillingRefId("123");
         entity.setStatus(PaymentStatus.AUTH_CREATED);
         entity.setType(PaymentType.AUTHORIZE);
         return entity;

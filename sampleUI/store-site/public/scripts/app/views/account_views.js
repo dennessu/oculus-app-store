@@ -7,13 +7,16 @@ var AccountViews = {
         template: Ember.TEMPLATES[AppConfig.Templates.Account.Index]
     }),
     EditInfoView: Ember.View.extend({
-        template: Ember.TEMPLATES[AppConfig.Templates.Account.EditInfo]
+        template: Ember.TEMPLATES[AppConfig.Templates.Account.EditInfo],
+        didInsertElement: function(){
+            $("form").validate();
+        }
     }),
     EditPasswordView: Ember.View.extend({
-        template: Ember.TEMPLATES[AppConfig.Templates.Account.EditPassword]
-    }),
-    EditShippingView: Ember.View.extend({
-        template: Ember.TEMPLATES[AppConfig.Templates.Account.EditShipping]
+        template: Ember.TEMPLATES[AppConfig.Templates.Account.EditPassword],
+        didInsertElement: function(){
+            $("form").validate();
+        }
     }),
     ProfileView: Ember.View.extend({
         template: Ember.TEMPLATES[AppConfig.Templates.Account.Profile]
@@ -26,5 +29,12 @@ var AccountViews = {
     }),
     PaymentView: Ember.View.extend({
         template: Ember.TEMPLATES[AppConfig.Templates.Account.Payment]
+    }),
+    AddPaymentView: Ember.View.extend({
+        template: Ember.TEMPLATES[AppConfig.Templates.Account.AddPayment],
+        didInsertElement: function(){
+            $("form").validate();
+        }
     })
+
 };

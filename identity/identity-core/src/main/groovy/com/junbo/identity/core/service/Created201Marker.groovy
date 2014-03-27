@@ -1,5 +1,9 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
+ */
 package com.junbo.identity.core.service
-
 import com.google.common.base.Function
 import com.junbo.common.id.Id
 import groovy.transform.CompileStatic
@@ -10,10 +14,8 @@ import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 
 import javax.ws.rs.container.ContainerRequestContext
-import javax.ws.rs.core.Context
 import javax.ws.rs.core.Response
 import javax.ws.rs.ext.Provider
-
 /**
  * Created by kg on 3/17/14.
  */
