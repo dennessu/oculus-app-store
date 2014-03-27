@@ -40,10 +40,14 @@
         </td>
     </tr>
     <tr>
+        <td>Price Type</td>
+        <td>{{ offer.priceType }}</td>
+    </tr>
+    <tr ng-show="offer.priceType=='TierPricing'">
         <td>PriceTier</td>
         <td><a href="/api/price-tiers/{{ offer.priceTier.id }}">{{ offer.priceTier.id }}</a></td>
     </tr>
-    <tr>
+    <tr ng-show="offer.priceType!='Free'">
         <td>Prices</td>
         <td>
             <table class="table table-bordered vertical-table">
