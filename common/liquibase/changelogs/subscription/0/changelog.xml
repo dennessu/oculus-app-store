@@ -16,7 +16,6 @@
               item_id varchar(256) not null,
               subs_start_date timestamp,
               subs_end_date timestamp,
-              subs_end_date timestamp,
               anniversary_day smallint,
               source varchar(256),
               billing_mode varchar(32),
