@@ -26,7 +26,6 @@ App.Router.map(function(){
     this.resource("thanks", {path: "/thanks"});
 
     this.resource("account", {path: "/account"}, function(){
-
         this.route("editinfo");
         this.route("editpassword");
         this.route("profile");
@@ -34,8 +33,10 @@ App.Router.map(function(){
         this.route("history");
         this.route("payment");
         this.route("addpayment");
-
+        this.route("shipping");
+        this.route("addshipping");
     });
+    this.resource("devcenter", {path: "/devcenter"});
 });
 
 App.ApplicationRoute = StoreRoutes.ApplicationRoute;
@@ -51,7 +52,7 @@ App.ShippingEditRoute = ShippingInfoRoutes.EditRoute;
 App.PaymentRoute = PaymentRoutes.LayoutRoute;
 App.PaymentIndexRoute = PaymentRoutes.IndexRoute;
 App.PaymentEditRoute = PaymentRoutes.EditRoute;
-
+App.DevcenterRoute = DevCenterRoutes.Index;
 App.AccountRoute = AccountRoutes.LayoutRoute;
 App.AccountIndexRoute = AccountRoutes.IndexRoute;
 App.AccountEditinfoRoute = AccountRoutes.EditInfoRoute;
@@ -61,7 +62,8 @@ App.AccountEditprofileRoute = AccountRoutes.EditProfileRoute;
 App.AccountHistoryRoute = AccountRoutes.HistoryRoute;
 App.AccountPaymentRoute = AccountRoutes.PaymentRoute;
 App.AccountAddpaymentRoute = AccountRoutes.AddPaymentRoute;
-
+App.AccountShippingRoute = AccountRoutes.ShippingRoute;
+App.AccountAddshippingRoute = AccountRoutes.AddShippingRoute;
 
 App.IndexView = StoreViews.IndexView;
 App.DetailView = StoreViews.DetailView;
@@ -75,7 +77,7 @@ App.ShippingEditView = ShippingInfoViews.EditView;
 App.PaymentView = PaymentViews.LayoutView;
 App.PaymentIndexView = PaymentViews.IndexView;
 App.PaymentEditView = PaymentViews.EditView;
-
+App.DevcenterView = DevCenterViews.IndexView;
 App.AccountView = AccountViews.LayoutView;
 App.AccountIndexView = AccountViews.IndexView;
 App.AccountEditinfoView = AccountViews.EditInfoView;
@@ -85,6 +87,8 @@ App.AccountEditprofileView = AccountViews.EditProfileView;
 App.AccountHistoryView = AccountViews.HistoryView;
 App.AccountPaymentView = AccountViews.PaymentView;
 App.AccountAddpaymentView = AccountViews.AddPaymentView;
+App.AccountShippingView = AccountViews.ShippingView;
+App.AccountAddshippingView = AccountViews.AddShippingView;
 
 App.ApplicationController = StoreControllers.ApplicationController;
 App.DetailController = StoreControllers.DetailController;
@@ -98,7 +102,7 @@ App.ShippingAddressController = ShippingInfoControllers.AddressController;
 App.ShippingEditController = ShippingInfoControllers.EditController;
 App.PaymentIndexController = PaymentControllers.IndexController;
 App.PaymentEditController = PaymentControllers.EditController;
-
+App.DevcenterController = DevCenterControllers.Index;
 App.AccountIndexController = AccountControllers.IndexController;
 App.AccountEditinfoController = AccountControllers.EditInfoController;
 App.AccountEditpasswordController = AccountControllers.EditPasswordController;
@@ -108,6 +112,10 @@ App.AccountHistoryController = AccountControllers.HistoryController;
 App.AccountHistoryItemController = AccountControllers.HistoryItemController;
 App.AccountHistoryItemProductsController = AccountControllers.HistoryItemProductsController;
 App.AccountPaymentController = AccountControllers.PaymentController;
+App.AccountPaymentItemController = AccountControllers.PaymentItemController;
 App.AccountAddpaymentController = AccountControllers.AddPaymentIndexController;
+App.AccountShippingController = AccountControllers.ShippingController;
+App.AccountShippingItemController = AccountControllers.ShippingItemController;
+App.AccountAddshippingController = AccountControllers.AddShippingIndexController;
 
 

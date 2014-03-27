@@ -35,6 +35,15 @@ var AccountViews = {
         didInsertElement: function(){
             $("form").validate();
         }
+    }),
+    ShippingView: Ember.View.extend({
+        template: Ember.TEMPLATES[AppConfig.Templates.Account.Shipping]
+    }),
+    AddShippingView: Ember.View.extend({
+        template: Ember.TEMPLATES[AppConfig.Templates.Account.AddShipping],
+        didInsertElement: function(){
+            $("form").validate();
+        }
     })
 
 };

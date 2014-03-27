@@ -51,7 +51,7 @@ module.exports = function(data, cb){
                         redirectModel.target = DomainModels.RedirectTargetsEnum.Self;
 
                         if (typeof(redirectUrl) != "undefined" && redirectUrl != null && redirectUrl != "") {
-                            redirectModel.url = "/back";
+                            redirectModel.url = redirectUrl;
                         } else {
                             redirectModel.url = "/my";
                         }

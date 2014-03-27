@@ -138,3 +138,25 @@ exports.PostOptIns = function(data, cb){
         cb(Utils.GenerateResponseModel(resultModel));
     });
 };
+
+exports.GetEndSession = function(data, cb){
+    var body = data.data;
+    var cookies = data.cookies;
+    var query = data.query;
+
+    var userId = cookies[process.AppConfig.CookiesName.UserId];
+    var dataProvider = new IdentityProvider(process.AppConfig.Identity_API_Host, process.AppConfig.Identity_API_Port);
+
+    console.log("Gen End Session")
+
+    dataProvider.GetEndSession(function(resultData){
+        var resultModel = new DomainModels.ResultModel();
+        if(resultData.StatusCode == 200){
+            resultModel.status = DomainModels.ResultStatusEnum.Normal;
+        }else{
+            resultModel.status = DomainModels.ResultStatusEnum.APIError;
+        }
+        resultModel.data = resultData.Data;
+        cb(Utils.GenerateResponseModel(resultModel));
+    });
+};

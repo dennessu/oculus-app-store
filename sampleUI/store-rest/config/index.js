@@ -1486,7 +1486,7 @@ module.exports = {
                                     "href": "http://api.wan-san.com/v1/payment-instrument-types/CREDITCARD",
                                     "id": "111"
                                 },
-                                "accountName": "VISA 1234",
+                                "accountName": "Tom Slick",
                                 "accountNum": "4111111111111111",
                                 "isValidated": "false",
                                 "isDefault": "true",
@@ -1495,6 +1495,7 @@ module.exports = {
                                     "id": "CREDITCARD"
                                 },
                                 "creditCardRequest": {
+                                    "creditCardType": "VISA",
                                     "expireDate": "1999-11-27",
                                     "encryptedCvmCode": "111"
                                 },
@@ -1516,8 +1517,8 @@ module.exports = {
                                     "href": "http://api.wan-san.com/v1/payment-instrument-types/CREDITCARD",
                                     "id": "222"
                                 },
-                                "accountName": "MaterCard 1234",
-                                "accountNum": "4111111111111111",
+                                "accountName": "Tom 2 Slick",
+                                "accountNum": "4111111111155555",
                                 "isValidated": "false",
                                 "isDefault": "true",
                                 "type": {
@@ -1525,6 +1526,7 @@ module.exports = {
                                     "id": "CREDITCARD"
                                 },
                                 "creditCardRequest": {
+                                    "creditCardType": "MaterCard",
                                     "expireDate": "1999-11-27",
                                     "encryptedCvmCode": "111"
                                 },
@@ -1699,7 +1701,7 @@ module.exports = {
         },
 
         DeletePaymentInstrumentsById: {
-            Method: 'DELETE',
+            Method: 'GET', // TODO: DELETE
             Path: '/rest/users/:userId/payment-instruments/:paymentInstrumentId',
             ResponseItem: 'Succeed',
             Items: {
@@ -1707,6 +1709,100 @@ module.exports = {
                     statusCode: 200,
                     headers: null,
                     data: null
+                },
+
+                'Failed': {
+                    statusCode: 404,
+                    headers: null,
+                    data: null
+                }
+            }
+        }
+    },
+
+    Entitlement:{
+        GetEntitlements: {
+            Method: 'GET',
+            Path: '/rest/users/:userId/entitlements', //'/rest/users/:userId/payment-instruments/search',
+            ResponseItem: 'SucceedNotExists',
+            Items: {
+                'Succeed': {
+                    statusCode: 200,
+                    headers: null,
+                    data:{
+                        "items": [
+                            {
+                                "self": {
+                                    "href": "http://api.wan-san.com/v1/entitlements/00200B050000",
+                                    "id": "00200B050000"
+                                },
+                                "user": {
+                                    "href": "http://api.wan-san.com/v1/users/000001234444",
+                                    "id": "000001234444"
+                                },
+                                "developer": {
+                                    "href": "http://api.wan-san.com/v1/users/000000001234",
+                                    "id": "000000001234"
+                                },
+                                "status": "ACTIVE",
+                                "type": "DEVELOPER",
+                                "group": "",
+                                "tag": "",
+                                "grantTime": "2014-03-25T08:47:46Z",
+                                "consumable": false,
+                                "useCount": 0,
+                                "managedLifecycle": true
+                            }
+                        ],
+                        "next": {
+                            "href": "END"
+                        }
+                    }
+                },
+
+                'SucceedNotExists': {
+                    statusCode: 200,
+                    headers: null,
+                    data:{
+                        "items": [],
+                        "next": {
+                            "href": "END"
+                        }
+                    }
+                },
+
+                'Failed': {
+                    statusCode: 404,
+                    headers: null,
+                    data: null
+                }
+            }
+        },
+
+        PostEntitlement: {
+            Method: 'POST',
+            Path: '/rest/users/:userId/entitlements', //?developerId=1234',
+            ResponseItem: 'Succeed',
+            Items: {
+                'Succeed': {
+                    statusCode: 200,
+                    headers: null,
+                    data:
+                    {
+                        "self": {
+                            "href": "http://api.wan-san.com/v1/entitlements/00200B050000",
+                            "id": "00200B050000"
+                        },
+                        "user": {
+                            "href": "https://data.oculusvr.com/v1/users/123",
+                            "id": 1234444
+                        },
+                        "developer": {
+                            "href": "https://data.oculusvr.com/v1/users/123",
+                            "id": 1234
+                        },
+                        "type":"developer"
+                    }
                 },
 
                 'Failed': {
