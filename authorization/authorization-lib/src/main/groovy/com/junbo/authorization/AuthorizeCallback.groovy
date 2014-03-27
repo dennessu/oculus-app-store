@@ -5,8 +5,7 @@
  */
 package com.junbo.authorization
 
-import com.junbo.authorization.model.AuthorizeContext
-import com.junbo.authorization.model.Role
+import com.junbo.oauth.spec.model.TokenInfo
 import groovy.transform.CompileStatic
 
 /**
@@ -14,11 +13,9 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 interface AuthorizeCallback<T> {
-    AuthorizeContext newContext(Map<String, Object> map)
+    String getApiName()
 
-    AuthorizeContext newContext(T resourceEntity)
+    void setTokenInfo(TokenInfo tokenInfo)
 
-    Boolean hasRole(Role role, AuthorizeContext context)
-
-    T postFilter(T resourceEntity, AuthorizeContext context)
+    T postFilter()
 }

@@ -3,10 +3,8 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.authorization.test
+package com.junbo.authorization
 
-import com.junbo.authorization.model.AccessToken
-import com.junbo.authorization.model.AuthorizeContext
 import groovy.transform.CompileStatic
 
 /**
@@ -14,5 +12,7 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 interface EntityService {
-    Entity get(Long id, AccessToken accessToken, AuthorizeContext context)
+    Entity annotatedGet(Long id)
+
+    Entity get(Long id)
 }

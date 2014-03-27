@@ -3,16 +3,15 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.authorization.model
+package com.junbo.authorization.service
 
+import com.junbo.authorization.AuthorizeCallback
 import groovy.transform.CompileStatic
 
 /**
- * AccessToken.
+ * AuthorizeService.
  */
 @CompileStatic
-class AccessToken {
-    String tokenValue
-    Long userId
-    Set<Scope> scopes
+interface AuthorizeService {
+    Set<String> getClaims(AuthorizeCallback callback)
 }

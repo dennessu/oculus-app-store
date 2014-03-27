@@ -12,6 +12,5 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class AuthorizeContext {
-    Set<String> claims = []
-    Map<String, Object> context
+    static final ThreadLocal<Set<String>> CLAIMS = new ThreadLocal<>()
 }

@@ -3,16 +3,14 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.authorization.test
+package com.junbo.authorization.service
 
 import groovy.transform.CompileStatic
 
 /**
- * Entity.
+ * ConditionEvaluator.
  */
 @CompileStatic
-class Entity {
-    Long id
-    String name
-    String createdBy
+interface ConditionEvaluator {
+    Boolean evaluate(String condition, Object object)
 }
