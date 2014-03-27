@@ -37,6 +37,7 @@ import com.junbo.test.common.apihelper.payment.impl.PaymentServiceImpl;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.common.Entities.enums.Currency;
+import com.junbo.test.common.libs.EnumHelper;
 import com.junbo.test.common.libs.EnumHelper.UserStatus;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.RandomFactory;
@@ -80,11 +81,11 @@ public class TestDataProvider {
     }
 
     public String postDefaultItem() throws Exception {
-        return itemClient.postDefaultItem(true);
+        return itemClient.postDefaultItem(EnumHelper.CatalogItemType.PHYSICAL);
     }
 
-    public String postDefaultOffer(boolean isPhysical) throws Exception {
-        return offerClient.postDefaultOffer(isPhysical);
+    public String postDefaultOffer(EnumHelper.CatalogItemType itemType) throws Exception {
+        return offerClient.postDefaultOffer(itemType);
     }
 
     public void postOffersToPrimaryCart(String uid, ArrayList<String> offers) throws Exception {
@@ -109,8 +110,8 @@ public class TestDataProvider {
         cartClient.updateCart(uid, primaryCartId, primaryCart);
     }
 
-    public void postDefaultOffersToPrimaryCart(String uid, boolean isPhysical) throws Exception {
-        String offerId = this.postDefaultOffer(isPhysical);
+    public void postDefaultOffersToPrimaryCart(String uid, EnumHelper.CatalogItemType itemType) throws Exception {
+        String offerId = this.postDefaultOffer(itemType);
         //String offerId = IdConverter.idLongToHexString(OfferId.class, new OfferId(100001L).getValue());
         ArrayList<String> offerList = new ArrayList<>();
         offerList.add(offerId);

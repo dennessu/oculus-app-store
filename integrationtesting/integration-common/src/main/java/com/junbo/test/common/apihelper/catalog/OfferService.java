@@ -6,6 +6,7 @@
 package com.junbo.test.common.apihelper.catalog;
 
 import com.junbo.catalog.spec.model.offer.Offer;
+import com.junbo.test.common.libs.EnumHelper;
 
 import java.util.HashMap;
 import java.util.List;
@@ -23,11 +24,13 @@ public interface OfferService {
     List<String> getOffer(HashMap<String, String> httpPara) throws Exception;
     List<String> getOffer(HashMap<String, String> httpPara, int expectedResponseCode) throws Exception;
 
-    String postDefaultOffer(boolean isPhysical) throws Exception;
-    Offer prepareOfferEntity(String fileName, boolean isPhysical) throws Exception;
+    String postDefaultOffer(EnumHelper.CatalogItemType itemType) throws Exception;
+    Offer prepareOfferEntity(String fileName, EnumHelper.CatalogItemType itemType) throws Exception;
     String postOffer(Offer offer) throws Exception;
     String postOffer(Offer offer, int expectedResponseCode) throws Exception;
 
     String updateOffer(Offer offer) throws Exception;
     String updateOffer(Offer offer, int expectedResponseCode) throws Exception;
+
+    String getOfferIdByName(String offerName) throws  Exception;
 }
