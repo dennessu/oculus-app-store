@@ -51,7 +51,8 @@ class OrderResourceImpl implements OrderResource {
         orderValidator.notNull(order, 'order').notNull(order.trackingUuid, 'trackingUuid').notNull(order.user, 'user')
         def persistedOrder = orderService.getOrderByTrackingUuid(order.trackingUuid)
         if (persistedOrder != null) {
-            LOGGER.info('name=Order_Already_Exist. userId:{}, trackingUuid: {}', [order.user.value, order.trackingUuid])
+            LOGGER.info('name=Order_Already_Exist. userId:{}, trackingUuid: {}, orderId:{}',
+                    order.user.value, order.trackingUuid, order.id.value)
             return Promise.pure(persistedOrder)
         }
         if (!order?.tentative) {
@@ -65,7 +66,8 @@ class OrderResourceImpl implements OrderResource {
         orderValidator.notNull(order, 'order').notNull(order.trackingUuid, 'trackingUuid').notNull(order.user, 'user')
         def persistedOrder = orderService.getOrderByTrackingUuid(order.trackingUuid)
         if (persistedOrder != null) {
-            LOGGER.info('name=Order_Already_Exist. userId:{}, trackingUuid: {}', [order.user.value, order.trackingUuid])
+            LOGGER.info('name=Order_Already_Exist. userId:{}, trackingUuid: {}, orderId:{}',
+                    order.user.value, order.trackingUuid, order.id.value)
             return Promise.pure(persistedOrder)
         }
         order.id = orderId
