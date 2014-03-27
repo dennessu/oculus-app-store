@@ -100,6 +100,25 @@ module.exports = {
             }
         },
 
+        PutUsers: {
+            Method: 'PUT',
+            Path: '/rest/users/:userId',
+            ResponseItem: 'Succeed',
+            Items: {
+                'Succeed': {
+                    statusCode: 200,
+                    headers: null,
+                    data: {"createdTime": "2014-02-27T09:15:26Z", "resourceAge": 0, "userName": "tom@wan-san.com", "status": "ACTIVE", "self": {"href": "https://xxx.xxx.xxx", "id": "12345"}}
+                },
+
+                'Failed': {
+                    statusCode: 404,
+                    headers: null,
+                    data: ""
+                }
+            }
+        },
+
         /* [Get]  Users -------------------------------------------------------------- */
         GetUsers: {
             Method: 'GET',
@@ -153,9 +172,9 @@ module.exports = {
                         "resourceAge": 0,
                         "type": "PAYIN",
                         "region": "en_US",
-                        "firstName": "tom14",
+                        "firstName": "tom",
                         "middleName": "",
-                        "lastName": "tom14",
+                        "lastName": "slick",
                         "dateOfBirth": "2010-02-24T09:45:27Z",
                         "locale": "en_US",
                         "self": {
@@ -166,6 +185,80 @@ module.exports = {
                             "href": "https://xxx.xxx.xxx",
                             "id": "728917210477568936"
                         }
+                    }
+                },
+
+                'Failed': {
+                    statusCode: 404,
+                    headers: null,
+                    data: "Error"
+                }
+            }
+        },
+
+        PutProfiles: {
+            Method: 'PUT',
+            Path: '/rest/users/:userId/profiles/:profileId',
+            ResponseItem: 'Succeed',
+            Items: {
+                'Succeed': {
+                    statusCode: 200,
+                    headers: null,
+                    data: {
+                        "createdTime": "2014-02-28T07:44:32Z",
+                        "resourceAge": 0,
+                        "type": "PAYIN",
+                        "region": "en_US",
+                        "firstName": "tom",
+                        "middleName": "",
+                        "lastName": "slick",
+                        "dateOfBirth": "2010-02-24T09:45:27Z",
+                        "locale": "en_US",
+                        "self": {
+                            "href": "https://xxx.xxx.xxx",
+                            "id": "728917210477570936"
+                        },
+                        "user": {
+                            "href": "https://xxx.xxx.xxx",
+                            "id": "728917210477568936"
+                        }
+                    }
+                },
+
+                'Failed': {
+                    statusCode: 404,
+                    headers: null,
+                    data: "Error"
+                }
+            }
+        },
+
+        GetOptIns: {
+            Method: 'GET',
+            Path: '/rest/users/:userId/opt-ins',
+            ResponseItem: 'Succeed',
+            Items: {
+                'Succeed': {
+                    statusCode: 200,
+                    headers: null,
+                    data: {
+                        items: [
+                            {
+                                "user": {
+                                    "href": "https://xxx.xxx.xxx",
+                                    "id": "728917210477568936"
+                                },
+                                type: "promotion"
+                            },
+                            {
+                                "user": {
+                                    "href": "https://xxx.xxx.xxx",
+                                    "id": "728917210477568936"
+                                },
+                                type: "newsweekly 2"
+                            }
+                        ]
+
                     }
                 },
 
@@ -338,6 +431,30 @@ module.exports = {
             }
         },
 
+        GetItemById: {
+            Method: 'GET',
+            Path: '/rest/items/:itemId',
+            ResponseItem: 'Succeed',
+            Items: {
+                'Succeed': {
+                    statusCode: 200,
+                    headers: null,
+                    data: {
+                        name: "APP Name",
+                        properties:{
+                            downloadLink: "http://www.google.com"
+                        }
+                    }
+                },
+
+                'Failed': {
+                    statusCode: 404,
+                    headers: null,
+                    data: null
+                }
+            }
+        },
+
         GetOfferById: {
             Method: 'GET',
             Path: '/rest/offers/:offerId',
@@ -367,6 +484,14 @@ module.exports = {
                         },
                         "subOffers": [],
                         "items": [
+                            {
+                                "itemId": {
+                                    "href": "http://api.oculusvr.com/v1/Item/100000",
+                                    "id": "100000"
+                                },
+                                "sku": null,
+                                "quantity": null
+                            },
                             {
                                 "itemId": {
                                     "href": "http://api.oculusvr.com/v1/Item/100000",
@@ -776,116 +901,137 @@ module.exports = {
                 'Succeed': {
                     statusCode: 200,
                     headers: null,
-                    data: [
+                    data:
                         {
-                            "self": {
-                                "href": "https://xxx.xxx.xxx",
-                                "id": "0000-0027-8528"
-                            },
-                            "user": {
-                                "href": "https://xxx.xxx.xxx",
-                                "id": "000002040040"
-                            },
-                            "trackingUuid": "56a7c1c6-45c6-429b-8790-f352b1e27767",
-                            "type": "PAY_IN",
-                            "status": "FAILED",
-                            "country": "US",
-                            "currency": "USD",
-                            "tentative": false,
-                            "paymentInstruments": [
+                            items: [
                                 {
-                                    "href": "https://xxx.xxx.xxx",
-                                    "id": "000002140000"
-                                }
-                            ],
-                            "discounts": [],
-                            "orderItems": [
-                                {
-                                    "type": "DIGITAL",
-                                    "offer": {
+                                    "self": {
                                         "href": "https://xxx.xxx.xxx",
-                                        "id": "0000002C0040"
+                                        "id": "0000-0027-8528"
                                     },
-                                    "quantity": 1,
-                                    "unitPrice": 9.99,
-                                    "totalAmount": 9.99,
-                                    "totalDiscount": 0,
-                                    "totalTax": 0,
+                                    "user": {
+                                        "href": "https://xxx.xxx.xxx",
+                                        "id": "000002040040"
+                                    },
+                                    "trackingUuid": "56a7c1c6-45c6-429b-8790-f352b1e27767",
+                                    "type": "PAY_IN",
+                                    "status": "FAILED",
+                                    "country": "US",
+                                    "currency": "USD",
+                                    "tentative": false,
+                                    "paymentInstruments": [
+                                        {
+                                            "href": "https://xxx.xxx.xxx",
+                                            "id": "000002140000"
+                                        }
+                                    ],
+                                    "discounts": [],
+                                    "orderItems": [
+                                        {
+                                            "type": "DIGITAL",
+                                            "offer": {
+                                                "href": "https://xxx.xxx.xxx",
+                                                "id": "0000002C0040"
+                                            },
+                                            "quantity": 2,
+                                            "unitPrice": 9.99,
+                                            "totalAmount": 18.98,
+                                            "totalDiscount": 0,
+                                            "totalTax": 0,
+                                            "createdTime": "2014-03-24T08:02:45Z",
+                                            "createdBy": "dev",
+                                            "updatedTime": "2014-03-24T08:02:45Z",
+                                            "updatedBy": "dev",
+                                            "isTaxExempted": false,
+                                            "honoredTime": "2014-03-24T08:02:39Z"
+                                        },
+                                        {
+                                            "type": "DIGITAL",
+                                            "offer": {
+                                                "href": "https://xxx.xxx.xxx",
+                                                "id": "0000002C0040"
+                                            },
+                                            "quantity": 2,
+                                            "unitPrice": 9.99,
+                                            "totalAmount": 9.99,
+                                            "totalDiscount": 0,
+                                            "totalTax": 0,
+                                            "createdTime": "2014-03-24T08:02:45Z",
+                                            "createdBy": "dev",
+                                            "updatedTime": "2014-03-24T08:02:45Z",
+                                            "updatedBy": "dev",
+                                            "isTaxExempted": false,
+                                            "honoredTime": "2014-03-24T08:02:39Z"
+                                        }
+                                    ],
                                     "createdTime": "2014-03-24T08:02:45Z",
                                     "createdBy": "dev",
-                                    "updatedTime": "2014-03-24T08:02:45Z",
+                                    "updatedTime": "2014-03-25T07:17:33Z",
                                     "updatedBy": "dev",
-                                    "isTaxExempted": false,
-                                    "honoredTime": "2014-03-24T08:02:39Z"
-                                }
-                            ],
-                            "createdTime": "2014-03-24T08:02:45Z",
-                            "createdBy": "dev",
-                            "updatedTime": "2014-03-25T07:17:33Z",
-                            "updatedBy": "dev",
-                            "totalAmount": 9.99,
-                            "totalTax": 0,
-                            "isTaxInclusive": false,
-                            "totalDiscount": 0,
-                            "totalShippingFee": 0,
-                            "totalShippingFeeDiscount": 0,
-                            "honoredTime": "2014-03-24T08:02:39Z"
-                        },
-                        {
-                            "self": {
-                                "href": "https://xxx.xxx.xxx",
-                                "id": "2222-0027-8528"
-                            },
-                            "user": {
-                                "href": "https://xxx.xxx.xxx",
-                                "id": "000002040040"
-                            },
-                            "trackingUuid": "56a7c1c6-45c6-429b-8790-f352b1e27767",
-                            "type": "PAY_IN",
-                            "status": "FAILED",
-                            "country": "US",
-                            "currency": "USD",
-                            "tentative": false,
-                            "paymentInstruments": [
-                                {
-                                    "href": "https://xxx.xxx.xxx",
-                                    "id": "000002140000"
-                                }
-                            ],
-                            "discounts": [],
-                            "orderItems": [
-                                {
-                                    "type": "PHYSICAL",
-                                    "offer": {
-                                        "href": "https://xxx.xxx.xxx",
-                                        "id": "0000002C0040"
-                                    },
-                                    "quantity": 1,
-                                    "unitPrice": 9.99,
-                                    "totalAmount": 9.99,
-                                    "totalDiscount": 0,
+                                    "totalAmount": 28.97,
                                     "totalTax": 0,
+                                    "isTaxInclusive": false,
+                                    "totalDiscount": 0,
+                                    "totalShippingFee": 0,
+                                    "totalShippingFeeDiscount": 0,
+                                    "honoredTime": "2014-03-24T08:02:39Z"
+                                },
+                                {
+                                    "self": {
+                                        "href": "https://xxx.xxx.xxx",
+                                        "id": "2222-0027-8528"
+                                    },
+                                    "user": {
+                                        "href": "https://xxx.xxx.xxx",
+                                        "id": "000002040040"
+                                    },
+                                    "trackingUuid": "56a7c1c6-45c6-429b-8790-f352b1e27767",
+                                    "type": "PAY_IN",
+                                    "status": "FAILED",
+                                    "country": "US",
+                                    "currency": "USD",
+                                    "tentative": false,
+                                    "paymentInstruments": [
+                                        {
+                                            "href": "https://xxx.xxx.xxx",
+                                            "id": "000002140000"
+                                        }
+                                    ],
+                                    "discounts": [],
+                                    "orderItems": [
+                                        {
+                                            "type": "PHYSICAL",
+                                            "offer": {
+                                                "href": "https://xxx.xxx.xxx",
+                                                "id": "0000002C0040"
+                                            },
+                                            "quantity": 1,
+                                            "unitPrice": 9.99,
+                                            "totalAmount": 9.99,
+                                            "totalDiscount": 0,
+                                            "totalTax": 0,
+                                            "createdTime": "2014-03-24T08:02:45Z",
+                                            "createdBy": "dev",
+                                            "updatedTime": "2014-03-24T08:02:45Z",
+                                            "updatedBy": "dev",
+                                            "isTaxExempted": false,
+                                            "honoredTime": "2014-03-24T08:02:39Z"
+                                        }
+                                    ],
                                     "createdTime": "2014-03-24T08:02:45Z",
                                     "createdBy": "dev",
-                                    "updatedTime": "2014-03-24T08:02:45Z",
+                                    "updatedTime": "2014-03-25T07:17:33Z",
                                     "updatedBy": "dev",
-                                    "isTaxExempted": false,
+                                    "totalAmount": 9.99,
+                                    "totalTax": 0,
+                                    "isTaxInclusive": false,
+                                    "totalDiscount": 0,
+                                    "totalShippingFee": 0,
+                                    "totalShippingFeeDiscount": 0,
                                     "honoredTime": "2014-03-24T08:02:39Z"
                                 }
-                            ],
-                            "createdTime": "2014-03-24T08:02:45Z",
-                            "createdBy": "dev",
-                            "updatedTime": "2014-03-25T07:17:33Z",
-                            "updatedBy": "dev",
-                            "totalAmount": 9.99,
-                            "totalTax": 0,
-                            "isTaxInclusive": false,
-                            "totalDiscount": 0,
-                            "totalShippingFee": 0,
-                            "totalShippingFeeDiscount": 0,
-                            "honoredTime": "2014-03-24T08:02:39Z"
+                            ]
                         }
-                    ]
                 },
 
                 'Failed': {

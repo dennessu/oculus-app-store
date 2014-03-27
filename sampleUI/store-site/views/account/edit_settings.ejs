@@ -1,37 +1,24 @@
-<div class="container account">
-    <%- include sidebar%>
+<div class="content">
+    <form class="box1 settings" {{action "SaveChanges" on="submit"}}>
+        <h2>Account Setting</h2>
 
-    <div class="content">
-        <section class="box1 settings">
-            <h2>Account Setting</h2>
-
-            <dl>
-                <dt>First Name</dt>
-                <dd><input type="text"></dd>
-            </dl>
-            <dl>
-                <dt>Last  Name</dt>
-                <dd><input type="text"></dd>
-            </dl>
-            <dl>
-                <dt>Email Address</dt>
-                <dd><input type="text"></dd>
-            </dl>
-            <dl>
-                <dt>Phone Number</dt>
-                <dd><input type="text"></dd>
-            </dl>
-            <dl class="agreement">
-                <dt>Email Opt-Ins</dt>
-                <dd><label><input type="checkbox"><span>Let me know of any promotion deals regarding Store Products.</span></label></dd>
-                <dd><label><input type="checkbox"><span>Keep me up to date with the latest Store News(Weekly).</span></label></dd>
-                <dd><label><input type="checkbox"><span>Send me updates on the latest Store Deals for Games, Apps, and Experiences.</span></label></dd>
-            </dl>
-            <div class="actions">
-                <button type="submit" class="btn btn-primary">Save Changes</button>
-                <button type="button" class="btn btn-cancel">Cancel</button>
-            </div>
-        </section>
-    </div>
-    <div class="clear"></div>
+        <dl>
+            <dt>First Name</dt>
+            <dd>{{input type="text" class="{maxlength:20}" id="FistName" name="firstname" value=content.firstName}}</dd>
+        </dl>
+        <dl>
+            <dt>Last Name</dt>
+            <dd>{{input type="text" class="{maxlength:20}" id="LastName" name="lastname" value=content.lastName}}</dd>
+        </dl>
+        <dl class="agreement">
+            <dt>Email Opt-Ins</dt>
+            <dd><label>{{input type="checkbox" id="IsOptInPromotion" name="isOptInPromotion" checked=content.isOptInPromotion value="promotion"}}<span>Let me know of any promotion deals regarding Store Products.</span></label></dd>
+            <dd><label>{{input type="checkbox" id="IsOptInNewsWeekly" name="isOptInNewsWeekly" checked=content.isOptInNewsWeekly value="newsweekly"}}<span>Keep me up to date with the latest Store News(Weekly).</span></label></dd>
+        </dl>
+        <div class="actions">
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <button type="button" class="btn btn-cancel" {{action "Cancel"}}>Cancel</button>
+        </div>
+    </form>
 </div>
+<div class="clear"></div>

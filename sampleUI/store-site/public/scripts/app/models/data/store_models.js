@@ -10,7 +10,7 @@ var ProductModel = DS.Model.extend({
 
 var CartItemModel = DS.Model.extend({
     // id
-    product_id: DS.attr("number"),
+    product_id: DS.attr("string"),
     selected: DS.attr("boolean"),
     qty: DS.attr("number")
 

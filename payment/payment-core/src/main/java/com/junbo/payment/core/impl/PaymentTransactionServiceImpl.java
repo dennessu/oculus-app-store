@@ -72,15 +72,15 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
 
     @Override
     public Promise<PaymentTransaction> authorize(final PaymentTransaction request) {
-        PaymentInstrument pi = validateAndGetPI(request);
+        validateRequest(request, true, true);
+        PaymentInstrument pi = getPaymentInstrument(request);
         final PaymentAPI api = PaymentAPI.Auth;
         LOGGER.info("authorize for PI:" + request.getPaymentInstrumentId());
         PaymentTransaction trackingResult = getResultByTrackingUuid(request, api);
         if(trackingResult != null){
             return Promise.pure(trackingResult);
         }
-        final PaymentProviderService provider = providerRoutingService.getPaymentProvider(
-                PaymentUtil.getPIType(pi.getType()));
+        final PaymentProviderService provider = getPaymentProviderService(pi);
         String merchantRef = getMerchantRef(request, provider.getProviderName());
         request.setPaymentProvider(provider.getProviderName());
         request.setMerchantAccount(merchantRef);
@@ -114,23 +114,9 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
         });
     }
 
-    private Promise<PaymentTransaction> handleProviderException(Throwable throwable,
-             PaymentProviderService provider, PaymentTransaction request, PaymentAPI api,
-             PaymentStatus status, PaymentEventType event) {
-        ProxyExceptionResponse proxyResponse = new ProxyExceptionResponse(throwable);
-        LOGGER.error(api.toString() + " declined by " + provider.getProviderName() +
-                "; error detail: " + proxyResponse.getBody());
-        request.setStatus(status.toString());
-        PaymentEvent authDeclined = createPaymentEvent(request, event, status, proxyResponse.getBody());
-        addPaymentEvent(request, authDeclined);
-        updatePaymentAndSaveEvent(request, Arrays.asList(authDeclined), api, status, false);
-        throw AppServerExceptions.INSTANCE.providerProcessError(
-                provider.getProviderName(), proxyResponse.getBody()).exception();
-    }
-
     @Override
     public Promise<PaymentTransaction> capture(final Long paymentId, final PaymentTransaction request) {
-        validateRequest(request, true);
+        validateRequest(request, false, true);
         final PaymentAPI api = PaymentAPI.Capture;
         LOGGER.info("capture for payment:" + paymentId);
         PaymentTransaction trackingResult = getResultByTrackingUuid(request, api);
@@ -149,10 +135,8 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
         //commit the payment event
         updatePaymentAndSaveEvent(existedTransaction, Arrays.asList(submitCreateEvent),
                 api, PaymentStatus.SETTLE_CREATED, false);
-        PaymentInstrument pi = paymentInstrumentService.getById(null,
-                existedTransaction.getPaymentInstrumentId().getPaymentInstrumentId());
-        final PaymentProviderService provider = providerRoutingService.getPaymentProvider(
-                PaymentUtil.getPIType(pi.getType()));
+        PaymentInstrument pi = getPaymentInstrument(existedTransaction);
+        final PaymentProviderService provider = getPaymentProviderService(pi);
         return provider.capture(existedTransaction.getExternalToken(), request).
                 recover(new Promise.Func<Throwable, Promise<PaymentTransaction>>() {
             @Override
@@ -175,34 +159,17 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
 
     }
 
-    private void validateCapturable(Long paymentId, PaymentTransaction request, PaymentTransaction existedTransaction) {
-        if(existedTransaction == null){
-            LOGGER.error("the payment id is invalid for the event.");
-            throw AppClientExceptions.INSTANCE.invalidPaymentId(paymentId.toString()).exception();
-        }
-        if(request.getChargeInfo() != null && request.getChargeInfo().getAmount() != null &&
-          existedTransaction.getChargeInfo().getAmount().compareTo(request.getChargeInfo().getAmount()) < 0){
-            LOGGER.error("capture amount should not exceed the authorized amount.");
-            throw AppClientExceptions.INSTANCE.invalidAmount(
-                    request.getChargeInfo().getAmount().toString()).exception();
-        }
-        if(!PaymentStatus.valueOf(existedTransaction.getStatus()).equals(PaymentStatus.AUTHORIZED)){
-            LOGGER.error("the payment status is not allowed to be captured.");
-            throw AppServerExceptions.INSTANCE.invalidPaymentStatus(existedTransaction.getStatus()).exception();
-        }
-    }
-
     @Override
     public Promise<PaymentTransaction> charge(final PaymentTransaction request) {
-        PaymentInstrument pi = validateAndGetPI(request);
+        validateRequest(request, true, true);
+        PaymentInstrument pi =getPaymentInstrument(request);
         final PaymentAPI api = PaymentAPI.Charge;
         LOGGER.info("charge for PI:" + request.getPaymentInstrumentId());
         PaymentTransaction trackingResult = getResultByTrackingUuid(request, api);
         if(trackingResult != null){
             return Promise.pure(trackingResult);
         }
-        final PaymentProviderService provider = providerRoutingService.getPaymentProvider(
-                PaymentUtil.getPIType(pi.getType()));
+        final PaymentProviderService provider = getPaymentProviderService(pi);
         String merchantRef = getMerchantRef(request, provider.getProviderName());
         request.setPaymentProvider(provider.getProviderName());
         request.setMerchantAccount(merchantRef);
@@ -238,7 +205,7 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
 
     @Override
     public Promise<PaymentTransaction> reverse(final Long paymentId, final PaymentTransaction request) {
-        validateRequest(request, false);
+        validateRequest(request, false, false);
         final PaymentAPI api = PaymentAPI.Reverse;
         LOGGER.info("reverse for payment:" + paymentId);
         PaymentTransaction trackingResult = getResultByTrackingUuid(request, api);
@@ -246,6 +213,7 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
             return Promise.pure(trackingResult);
         }
         final PaymentTransaction existedTransaction = getPaymentById(paymentId);
+        validateReverse(paymentId, request, existedTransaction);
         CloneRequest(request, existedTransaction);
         final PaymentEventType eventType;
         if(PaymentStatus.valueOf(existedTransaction.getStatus()).equals(PaymentStatus.AUTHORIZED)){
@@ -255,16 +223,14 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
         }else{
             throw AppServerExceptions.INSTANCE.invalidPaymentStatus(existedTransaction.getStatus()).exception();
         }
-        PaymentInstrument pi = paymentInstrumentService.getById(null,
-                existedTransaction.getPaymentInstrumentId().getPaymentInstrumentId());
+        PaymentInstrument pi = getPaymentInstrument(existedTransaction);;
         PaymentStatus createStatus = PaymentStatus.REVERSE_CREATED;
         PaymentEvent reverseCreateEvent = createPaymentEvent(existedTransaction,
                 PaymentEventType.REVERSE_CREATE, createStatus, SUCCESS_EVENT_RESPONSE);
         existedTransaction.setStatus(createStatus.toString());
         addPaymentEvent(existedTransaction, reverseCreateEvent);
         updatePaymentAndSaveEvent(existedTransaction, Arrays.asList(reverseCreateEvent), api, createStatus, false);
-        final PaymentProviderService provider =
-                providerRoutingService.getPaymentProvider(PaymentUtil.getPIType(pi.getType()));
+        final PaymentProviderService provider = getPaymentProviderService(pi);
         return provider.reverse(existedTransaction.getExternalToken(), request)
                 .recover(new Promise.Func<Throwable, Promise<PaymentTransaction>>() {
             @Override
@@ -284,12 +250,6 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
                 return Promise.pure(existedTransaction);
             }
         });
-    }
-
-    private void CloneRequest(PaymentTransaction request, PaymentTransaction existedTransaction) {
-        existedTransaction.setTrackingUuid(request.getTrackingUuid());
-        existedTransaction.setUserId(request.getUserId());
-        request.setId(existedTransaction.getId());
     }
 
     @Override
@@ -320,16 +280,83 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
         return null;
     }
 
-    private PaymentTransaction getResultByTrackingUuid(PaymentTransaction request, PaymentAPI api){
+    private Promise<PaymentTransaction> handleProviderException(Throwable throwable,
+                                         PaymentProviderService provider, PaymentTransaction request, PaymentAPI api,
+                                         PaymentStatus status, PaymentEventType event) {
+        ProxyExceptionResponse proxyResponse = new ProxyExceptionResponse(throwable);
+        LOGGER.error(api.toString() + " declined by " + provider.getProviderName() +
+                "; error detail: " + proxyResponse.getBody());
+        request.setStatus(status.toString());
+        PaymentEvent authDeclined = createPaymentEvent(request, event, status, proxyResponse.getBody());
+        addPaymentEvent(request, authDeclined);
+        updatePaymentAndSaveEvent(request, Arrays.asList(authDeclined), api, status, false);
+        throw AppServerExceptions.INSTANCE.providerProcessError(
+                provider.getProviderName(), proxyResponse.getBody()).exception();
+    }
+
+    private void validateCapturable(Long paymentId, PaymentTransaction request, PaymentTransaction existed) {
+        if(existed == null){
+            LOGGER.error("the payment id is invalid for the event." + paymentId);
+            throw AppClientExceptions.INSTANCE.invalidPaymentId(paymentId.toString()).exception();
+        }
+        if(!existed.getBillingRefId().equalsIgnoreCase(request.getBillingRefId())){
+            LOGGER.error("the billing ref id is different with the one before for payment: " + paymentId);
+        }
+        if(request.getChargeInfo() != null && request.getChargeInfo().getAmount() != null &&
+                existed.getChargeInfo().getAmount().compareTo(request.getChargeInfo().getAmount()) < 0){
+            LOGGER.error("capture amount should not exceed the authorized amount.");
+            throw AppClientExceptions.INSTANCE.invalidAmount(
+                    request.getChargeInfo().getAmount().toString()).exception();
+        }
+        if(!PaymentStatus.valueOf(existed.getStatus()).equals(PaymentStatus.AUTHORIZED)){
+            LOGGER.error("the payment status is not allowed to be captured.");
+            throw AppServerExceptions.INSTANCE.invalidPaymentStatus(existed.getStatus()).exception();
+        }
+    }
+
+
+    private PaymentProviderService getPaymentProviderService(PaymentInstrument pi) {
+        PaymentProviderService provider = providerRoutingService.getPaymentProvider(
+                PaymentUtil.getPIType(pi.getType()));
+        if(provider == null){
+            throw AppServerExceptions.INSTANCE.providerNotFound(pi.getType()).exception();
+        }
+        return provider;
+    }
+
+    //use new transaction for business data to avoid hibernate cache in the service level transaction
+    private PaymentTransaction getResultByTrackingUuid(final PaymentTransaction request, final PaymentAPI api) {
         if(request.getTrackingUuid() == null){
             throw AppClientExceptions.INSTANCE.missingTrackingUuid().exception();
         }
-        TrackingUuid trackingUuid = trackingUuidRepository.getByTrackUuid(
-                request.getUserId(), request.getTrackingUuid());
-        if(trackingUuid != null && trackingUuid.getApi().equals(api)){
-            return CommonUtil.parseJson(trackingUuid.getResponse(), PaymentTransaction.class);
+        AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager);
+        template.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRES_NEW);
+        return template.execute(new TransactionCallback<PaymentTransaction>() {
+            public PaymentTransaction doInTransaction(TransactionStatus txnStatus) {
+                TrackingUuid  trackingUuid = trackingUuidRepository.getByTrackUuid(
+                        request.getUserId(), request.getTrackingUuid());
+                if(trackingUuid != null && trackingUuid.getApi().equals(api)){
+                    return CommonUtil.parseJson(trackingUuid.getResponse(), PaymentTransaction.class);
+                }
+                return null;
+            }
+        });
+    }
+
+    private void validateReverse(Long paymentId, PaymentTransaction request, PaymentTransaction existedTransaction){
+        if(existedTransaction == null){
+            LOGGER.error("the payment id is invalid for the event." + paymentId);
+            throw AppClientExceptions.INSTANCE.invalidPaymentId(paymentId.toString()).exception();
         }
-        return null;
+        if(!existedTransaction.getBillingRefId().equalsIgnoreCase(request.getBillingRefId())){
+            LOGGER.error("the billing ref id is different with the one before for payment: " + paymentId);
+        }
+    }
+
+    private void CloneRequest(PaymentTransaction request, PaymentTransaction existedTransaction) {
+        existedTransaction.setTrackingUuid(request.getTrackingUuid());
+        existedTransaction.setUserId(request.getUserId());
+        request.setId(existedTransaction.getId());
     }
 
     private void addPaymentEvent(PaymentTransaction request, PaymentEvent event){
@@ -352,13 +379,20 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
         return event;
     }
 
-    private PaymentTransaction getPaymentById(Long paymentId){
-        PaymentTransaction existedTransaction = paymentRepository.getByPaymentId(paymentId);
-        if(existedTransaction == null){
-            LOGGER.error("the payment id is invalid for the event.");
-            throw AppClientExceptions.INSTANCE.invalidPaymentId(paymentId.toString()).exception();
-        }
-        return existedTransaction;
+    //use new transaction for business data to avoid hibernate cache in the service level transaction
+    private PaymentTransaction getPaymentById(final Long paymentId){
+        AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager);
+        template.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRES_NEW);
+        return template.execute(new TransactionCallback<PaymentTransaction>() {
+            public PaymentTransaction doInTransaction(TransactionStatus txnStatus) {
+                PaymentTransaction existedTransaction = paymentRepository.getByPaymentId(paymentId);
+                if(existedTransaction == null){
+                    LOGGER.error("the payment id is invalid for the event.");
+                    throw AppClientExceptions.INSTANCE.invalidPaymentId(paymentId.toString()).exception();
+                }
+                return existedTransaction;
+            }
+        });
     }
 
     private void saveTrackingUuid(PaymentTransaction request, PaymentAPI api){
@@ -375,32 +409,35 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
         trackingUuidRepository.saveTrackingUuid(trackingUuid);
     }
 
-    private void validateRequest(PaymentTransaction request, boolean allowChargeInfo){
+    private void validateRequest(PaymentTransaction request, boolean needChargeInfo, boolean supportChargeInfo){
         if(request.getUserId() == null){
             throw AppClientExceptions.INSTANCE.missingUserId().exception();
         }
         if(request.getTrackingUuid() == null){
             throw AppClientExceptions.INSTANCE.missingTrackingUuid().exception();
         }
-        if(!allowChargeInfo && request.getChargeInfo() != null){
-            throw AppClientExceptions.INSTANCE.fieldNotNeeded("chargeInfo").exception();
+        if(CommonUtil.isNullOrEmpty(request.getBillingRefId())){
+            throw AppClientExceptions.INSTANCE.missingBillingRefId().exception();
         }
-    }
-
-    private PaymentInstrument validateAndGetPI(PaymentTransaction request) {
-        validateRequest(request, true);
-        if(request.getPaymentInstrumentId() == null){
-            throw AppClientExceptions.INSTANCE.missingPaymentInstrumentId().exception();
-        }
-        if(request.getChargeInfo() == null){
-            throw AppClientExceptions.INSTANCE.missingAmount().exception();
-        }else{
+        if(needChargeInfo){
+            if(request.getChargeInfo() == null){
+                throw AppClientExceptions.INSTANCE.missingAmount().exception();
+            }
             if(request.getChargeInfo().getAmount() == null){
                 throw AppClientExceptions.INSTANCE.missingAmount().exception();
             }
             if(CommonUtil.isNullOrEmpty(request.getChargeInfo().getCurrency())){
                 throw AppClientExceptions.INSTANCE.missingCurrency().exception();
             }
+        }
+        if(!supportChargeInfo && request.getChargeInfo() != null){
+            throw AppClientExceptions.INSTANCE.fieldNotNeeded("chargeInfo").exception();
+        }
+    }
+
+    private PaymentInstrument getPaymentInstrument(PaymentTransaction request) {
+        if(request.getPaymentInstrumentId() == null){
+            throw AppClientExceptions.INSTANCE.missingPaymentInstrumentId().exception();
         }
         PaymentInstrument pi = paymentInstrumentService.getById(null,
                 request.getPaymentInstrumentId().getPaymentInstrumentId());

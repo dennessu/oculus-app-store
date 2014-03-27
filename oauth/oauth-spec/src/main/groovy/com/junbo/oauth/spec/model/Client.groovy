@@ -64,4 +64,7 @@ class Client {
 
     @JsonIgnore
     String revision
+
+    @JsonProperty('need_consent')
+    Boolean needConsent
 }

@@ -67,6 +67,7 @@ class ClientRepositoryImpl implements ClientRepository {
                 defaultLogoutRedirectUri: client.defaultLogoutRedirectUri,
                 logoUri: client.logoUri,
                 contacts: client.contacts,
+                needConsent: client.needConsent,
                 revision: client.revision
         )
     }
@@ -92,6 +93,7 @@ class ClientRepositoryImpl implements ClientRepository {
                 defaultLogoutRedirectUri: entity.defaultLogoutRedirectUri,
                 logoUri: entity.logoUri,
                 contacts: entity.contacts,
+                needConsent: entity.needConsent,
                 revision: entity.revision
         )
     }

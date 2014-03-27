@@ -128,6 +128,7 @@ var StoreControllers = {
 
     CartItemController: Ember.ObjectController.extend({
         product: function(){
+            console.log("Cart Item Product Id: ", this.get('model').get('product_id'));
             return this.store.find('Product', this.get('model').get('product_id'));
         }.property('model'),
 

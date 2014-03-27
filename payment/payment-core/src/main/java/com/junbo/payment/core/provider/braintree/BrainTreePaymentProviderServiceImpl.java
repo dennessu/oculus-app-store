@@ -271,7 +271,7 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
         TransactionRequest request = new TransactionRequest()
                 .amount(paymentRequest.getChargeInfo().getAmount())
                 //use payment_id as order id
-                .orderId(paymentRequest.getId().toString())
+                .orderId(paymentRequest.getBillingRefId())
                 .paymentMethodToken(piToken)
                 .descriptor()
                     .name(paymentRequest.getChargeInfo().getBusinessDescriptor())

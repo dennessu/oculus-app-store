@@ -108,4 +108,8 @@ public interface AppClientExceptions {
     @ErrorDef(httpStatusCode = 400, code = "40022",
             description = "the field {0} is not needed")
     AppError fieldNotNeeded(String fieldName);
+
+    @ErrorDef(httpStatusCode = 400, code = "40023",
+            description = "the billing ref id is missing for the payment")
+    AppError missingBillingRefId();
 }
