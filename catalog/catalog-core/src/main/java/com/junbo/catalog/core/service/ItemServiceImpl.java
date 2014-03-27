@@ -53,6 +53,12 @@ public class ItemServiceImpl extends BaseServiceImpl<Item> implements ItemServic
         return super.create(item);
     }
 
+    @Override
+    public Item update(Long entityId, Item entity) {
+        validateId(entityId, entity);
+        return updateEntity(entityId, entity);
+    }
+
     private void validateItem(Item item) {
         checkFieldNotEmpty(item.getType(), "type");
         checkFieldNotEmpty(item.getName(), "name");

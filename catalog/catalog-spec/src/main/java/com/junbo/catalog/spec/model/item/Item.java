@@ -29,7 +29,7 @@ public class Item extends VersionedModel {
     private List<Sku> skus;
     private Map<String, Object> properties;
 
-    @JsonIgnore
+    @JsonProperty("entitlementDef")
     private Long entitlementDefId;
 
     public Long getId() {
