@@ -1,5 +1,4 @@
 package com.junbo.order.core.action
-
 import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.OrderId
 import com.junbo.common.id.OrderItemId
@@ -7,6 +6,7 @@ import com.junbo.fulfilment.spec.constant.FulfilmentStatus
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.clientproxy.fulfillment.FulfillmentFacade
+import com.junbo.order.core.BaseTest
 import com.junbo.order.core.common.TestBuilder
 import com.junbo.order.core.impl.orderaction.ActionUtils
 import com.junbo.order.core.impl.orderaction.FulfillmentAction
@@ -17,20 +17,24 @@ import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.FulfillmentEvent
 import org.easymock.EasyMock
+import org.springframework.test.annotation.Rollback
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
+
+import javax.annotation.Resource
 /**
  * Created by fzhang on 14-3-10.
  */
-class FulfillmentActionTest {
+class FulfillmentActionTest extends BaseTest{
 
-    def action = new FulfillmentAction()
+    @Resource(name='fulfillmentAction')
+    FulfillmentAction fulfillmentAction
 
     @BeforeMethod
     void setUp() {
-        action.facadeContainer = new FacadeContainer()
-        action.facadeContainer.fulfillmentFacade = EasyMock.createMock(FulfillmentFacade.class)
-        action.orderRepository = EasyMock.createMock(OrderRepository.class)
+        fulfillmentAction.facadeContainer = new FacadeContainer()
+        fulfillmentAction.facadeContainer.fulfillmentFacade = EasyMock.createMock(FulfillmentFacade.class)
+        fulfillmentAction.orderRepository = EasyMock.createMock(OrderRepository.class)
     }
 
     @Test(enabled = true)
@@ -57,35 +61,40 @@ class FulfillmentActionTest {
             fulfillmentId =  fulfilmentResult.items[1].fulfilmentId
         }
 
-        EasyMock.expect(action.facadeContainer.fulfillmentFacade.postFulfillment(
+        EasyMock.expect(fulfillmentAction.facadeContainer.fulfillmentFacade.postFulfillment(
                 EasyMock.same(order))).andReturn(Promise.pure(fulfilmentResult))
-        EasyMock.expect(action.orderRepository.createFulfillmentEvent(EasyMock.eq(order.id.value),
+        EasyMock.expect(fulfillmentAction.orderRepository.createFulfillmentEvent(EasyMock.eq(order.id.value),
                 Matcher.memberEquals(fulfillmentEvents[0]))).andReturn(null)
-        EasyMock.expect(action.orderRepository.createFulfillmentEvent(EasyMock.eq(order.id.value),
+        EasyMock.expect(fulfillmentAction.orderRepository.createFulfillmentEvent(EasyMock.eq(order.id.value),
                 Matcher.memberEquals(fulfillmentEvents[1]))).andReturn(null)
 
-        EasyMock.replay(action.facadeContainer.fulfillmentFacade, action.orderRepository)
+        EasyMock.replay(fulfillmentAction.facadeContainer.fulfillmentFacade, fulfillmentAction.orderRepository)
 
-        def actionResult = (OrderActionResult) action.execute(TestBuilder.buildActionContext(order)).wrapped().
+        def actionResult = (OrderActionResult) fulfillmentAction.execute(TestBuilder.buildActionContext(order)).wrapped().
                 get().data[ActionUtils.DATA_ORDER_ACTION_RESULT]
         assert actionResult.returnedEventStatus == EventStatus.PENDING
-        EasyMock.verify(action.facadeContainer.fulfillmentFacade, action.orderRepository)
+        EasyMock.verify(fulfillmentAction.facadeContainer.fulfillmentFacade, fulfillmentAction.orderRepository)
     }
 
     @Test(enabled = true)
+    @Rollback
     void testExecuteFulfillmentError() {
         def order = TestBuilder.buildOrderRequest()
-        EasyMock.expect(action.facadeContainer.fulfillmentFacade.postFulfillment(EasyMock.same(order))).andReturn(
-            Promise.throwing(new IllegalArgumentException())
+        order.id = new OrderId(TestBuilder.generateLong())
+        EasyMock.expect(fulfillmentAction.facadeContainer.fulfillmentFacade.postFulfillment(EasyMock.same(order))).andReturn(
+                Promise.throwing(new IllegalArgumentException())
         )
-        EasyMock.replay(action.facadeContainer.fulfillmentFacade, action.orderRepository)
-        try {
-            (OrderActionResult) action.execute(TestBuilder.buildActionContext(order)).wrapped().
-                    get().data[ActionUtils.DATA_ORDER_ACTION_RESULT]
-            assert false
-        } catch (ex) {
-            assert ((AppErrorException)(ex.cause)).error.code == AppErrors.INSTANCE.fulfillmentConnectionError().code
-        }
-        EasyMock.verify(action.facadeContainer.fulfillmentFacade, action.orderRepository)
+        EasyMock.replay(fulfillmentAction.facadeContainer.fulfillmentFacade, fulfillmentAction.orderRepository)
+        Boolean recovered = false
+        fulfillmentAction.execute(TestBuilder.buildActionContext(order)).syncRecover { Throwable ex ->
+            assert ex instanceof AppErrorException
+            assert ((AppErrorException) ex).error.code == AppErrors.INSTANCE.fulfillmentConnectionError().code
+            recovered = true
+            return null
+        }.syncThen {
+            return null
+        }.wrapped()?.get()
+        assert recovered
+        EasyMock.verify(fulfillmentAction.facadeContainer.fulfillmentFacade, fulfillmentAction.orderRepository)
     }
 }

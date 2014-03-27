@@ -90,7 +90,11 @@ public class UserServiceImpl implements UserService {
 
     public String GetUserByUserId(String userId, int expectedResponseCode) throws Exception {
 
-        String url = identityServerURL + "/" + userId;
+        String url = identityServerURL;
+
+        if (userId != null && !userId.isEmpty()) {
+            url = identityServerURL + "/" + userId;
+        }
 
         Request req = new RequestBuilder("GET")
                 .addHeader(RestUrl.requestHeaderName, RestUrl.requestHeaderValue)
@@ -115,11 +119,20 @@ public class UserServiceImpl implements UserService {
 
     public List<String> GetUserByUserName(String userName, int expectedResponseCode) throws Exception {
 
-        Request req = new RequestBuilder("GET")
-                .addHeader(RestUrl.requestHeaderName, RestUrl.requestHeaderValue)
-                .addQueryParameter("userName", userName)
-                .setUrl(identityServerURL)
-                .build();
+        Request req;
+        if (userName != null && !userName.isEmpty()) {
+            req = new RequestBuilder("GET")
+                    .addHeader(RestUrl.requestHeaderName, RestUrl.requestHeaderValue)
+                    .addQueryParameter("userName", userName)
+                    .setUrl(identityServerURL)
+                    .build();
+        }
+        else {
+            req = new RequestBuilder("GET")
+                    .addHeader(RestUrl.requestHeaderName, RestUrl.requestHeaderValue)
+                    .setUrl(identityServerURL)
+                    .build();
+        }
 
         logger.LogRequest(req);
 
