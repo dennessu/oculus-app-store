@@ -127,8 +127,13 @@ ext {
 
             btm:                    'com.junbo.btm:btm:3.0.0-SNAPSHOT', // switch to org.codehaus.btm if release version available
 
-
             querydsl_apt:           'com.mysema.querydsl:querydsl-apt:3.3.2',
             querydsl_jpa:           'com.mysema.querydsl:querydsl-jpa:3.3.2',
+
+
+            //****** common test lib dependencies ******
+            gson:                   'com.google.code.gson:gson:2.2.4',
+            apache_commons_lang:    'org.apache.commons:commons-lang3:3.1',
+            apache_httpclient:      'org.apache.httpcomponents:httpclient:4.3.3',
     ]
 }

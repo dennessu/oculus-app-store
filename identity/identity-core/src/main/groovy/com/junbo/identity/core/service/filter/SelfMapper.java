@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.core.service.filter;
 
+import com.junbo.identity.spec.model.users.Group;
 import com.junbo.identity.spec.model.users.User;
 import com.junbo.oom.core.Mapper;
 import com.junbo.oom.core.MappingContext;
@@ -16,7 +17,8 @@ import com.junbo.oom.core.MappingContext;
 public interface SelfMapper {
 
     User filterUser(User user, MappingContext context);
-
     User mergeUser(User source, User base, MappingContext context);
 
+    Group filterGroup(Group group, MappingContext context);
+    Group mergeGroup(Group source, Group base, MappingContext context);
 }

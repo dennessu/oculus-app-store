@@ -11,7 +11,6 @@ import com.junbo.email.db.entity.BaseEntity;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
 import java.util.List;
@@ -21,13 +20,17 @@ import java.util.List;
  * @param <T> Entity Type
  */
 public abstract class BaseDaoImpl<T extends BaseEntity> implements BaseDao<T> {
-    @Autowired
+
     private SessionFactory sessionFactory;
 
     private Class<T> entityType;
 
     protected Session currentSession() {
         return sessionFactory.getCurrentSession();
+    }
+
+    public void setSessionFactory(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
     }
 
     public Class<T> getEntityType() {

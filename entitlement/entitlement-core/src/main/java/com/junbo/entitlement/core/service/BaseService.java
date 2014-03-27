@@ -157,7 +157,8 @@ public class BaseService {
         validateEquals(existingEntitlement.getType(), entitlement.getType(), "type");
         validateEquals(existingEntitlement.getGroup(), entitlement.getGroup(), "group");
         validateEquals(existingEntitlement.getTag(), entitlement.getTag(), "tag");
-        validateEquals(existingEntitlement.getManagedLifecycle(), entitlement.getManagedLifecycle(), "managedLifecycle");
+        validateEquals(existingEntitlement.getManagedLifecycle(),
+                entitlement.getManagedLifecycle(), "managedLifecycle");
         validateEquals(existingEntitlement.getGrantTime(), entitlement.getGrantTime(), "grantTime");
         validateGrantTimeBeforeExpirationTime(existingEntitlement);
     }

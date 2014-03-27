@@ -9,6 +9,8 @@ import com.junbo.identity.data.dao.impl.postgresql.ShardedDAOBase;
 import com.junbo.identity.data.dao.index.GroupReverseIndexDAO;
 import com.junbo.identity.data.entity.reverselookup.GroupReverseIndexEntity;
 import com.junbo.sharding.annotations.SeedParam;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 
 /**
  * Created by liangfu on 3/21/14.
@@ -31,7 +33,9 @@ public class GroupReverseIndexDAOImpl extends ShardedDAOBase implements GroupRev
 
     @Override
     public GroupReverseIndexEntity get(@SeedParam String name) {
-        return (GroupReverseIndexEntity)currentSession().get(GroupReverseIndexEntity.class, name);
+        Criteria criteria = currentSession().createCriteria(GroupReverseIndexEntity.class);
+        criteria.add(Restrictions.eq("name", name));
+        return criteria.list().size() == 0 ? null : (GroupReverseIndexEntity)criteria.list().get(0);
     }
 
     @Override

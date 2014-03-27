@@ -27,9 +27,9 @@ dependencies {
     compile (libraries.bonecp_spring)
     compile (libraries.rs_api)
 
-    compile (libraries.querydsl_jpa)
+    // compile (libraries.querydsl_jpa)
 
-    processor (libraries.querydsl_apt)
+    // processor (libraries.querydsl_apt)
     processor (libraries.persistence_api)
     processor (libraries.oom_processor)
 
@@ -42,5 +42,5 @@ dependencies {
 
 
 ext {
-    processorClass = 'com.mysema.query.apt.jpa.JPAAnnotationProcessor,com.junbo.oom.processor.MappingProcessor'
+    processorClass = 'com.junbo.oom.processor.MappingProcessor'
 }

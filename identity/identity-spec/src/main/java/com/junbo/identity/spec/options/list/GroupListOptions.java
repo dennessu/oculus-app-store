@@ -14,11 +14,22 @@ public class GroupListOptions extends PagingGetOptions {
     @QueryParam("name")
     private String name;
 
+    @QueryParam("properties")
+    private String properties;
+
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getProperties() {
+        return properties;
+    }
+
+    public void setProperties(String properties) {
+        this.properties = properties;
     }
 }

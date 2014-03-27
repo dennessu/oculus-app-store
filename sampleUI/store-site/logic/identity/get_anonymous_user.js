@@ -16,7 +16,7 @@ module.exports = function (data, callback) {
     var userModel = new IdentityModels.UserModel();
     userModel.userName = Guid.raw();
     userModel.password = "password";
-    userModel.passwordStrength = pi.GetIntensity(userModel.password);
+    //userModel.passwordStrength = pi.GetIntensity(userModel.password);
     userModel.status = "ACTIVE";
 
     var dataProvider = new DataProvider.Identity(process.AppConfig.Identity_API_Host, process.AppConfig.Identity_API_Port);

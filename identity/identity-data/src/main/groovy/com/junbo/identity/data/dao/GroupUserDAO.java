@@ -8,6 +8,8 @@ package com.junbo.identity.data.dao;
 import com.junbo.identity.data.entity.group.GroupUserEntity;
 import com.junbo.sharding.annotations.SeedParam;
 
+import java.util.List;
+
 /**
  * Created by liangfu on 3/21/14.
  */
@@ -17,7 +19,9 @@ public interface GroupUserDAO {
 
     GroupUserEntity update(GroupUserEntity entity);
 
-    GroupUserEntity findByGroupId(@SeedParam Long groupId, @SeedParam Long userId);
+    GroupUserEntity findByGroupIdAndUserId(@SeedParam Long groupId, Long userId);
+
+    List<GroupUserEntity> findByGroupId(@SeedParam Long groupId);
 
     GroupUserEntity get(@SeedParam Long id);
 

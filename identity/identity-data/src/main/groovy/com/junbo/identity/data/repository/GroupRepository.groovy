@@ -6,12 +6,16 @@
 package com.junbo.identity.data.repository
 import com.junbo.common.id.GroupId
 import com.junbo.identity.spec.model.users.Group
+import com.junbo.identity.spec.model.users.UserGroup
+import com.junbo.langur.core.promise.Promise
+
 /**
  * Created by liangfu on 3/14/14.
  */
 interface GroupRepository {
-    Group get(GroupId groupId)
-    Group save(Group group)
-    Group update(Group group)
-    List<Group> searchByName(String name)
+    Promise<Group> get(GroupId groupId)
+    Promise<Group> create(Group group)
+    Promise<Group> update(Group group)
+    Promise<Group> searchByName(String name)
+    Promise<List<UserGroup>> searchByGroupId(GroupId groupId)
 }

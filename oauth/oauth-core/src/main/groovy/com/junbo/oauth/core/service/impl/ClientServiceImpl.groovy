@@ -75,6 +75,7 @@ class ClientServiceImpl implements ClientService {
 
         client.clientId = clientId
         client.clientSecret = tokenGenerator.generateClientSecret()
+        client.needConsent = true
 
         clientRepository.saveClient(client)
         return client
@@ -155,12 +156,17 @@ class ClientServiceImpl implements ClientService {
             throw AppExceptions.INSTANCE.cantUpdateFields('id_token_issuer').exception()
         }
 
+        if (client.needConsent != null && existingClient.needConsent != client.needConsent) {
+            throw AppExceptions.INSTANCE.cantUpdateFields('need_consent').exception()
+        }
+
         validateClient(client)
 
         client.clientId = clientId
         client.clientSecret = existingClient.clientSecret
         client.ownerUserId = existingClient.ownerUserId
         client.idTokenIssuer = existingClient.idTokenIssuer
+        client.needConsent = existingClient.needConsent
         client.revision = existingClient.revision
 
         try {

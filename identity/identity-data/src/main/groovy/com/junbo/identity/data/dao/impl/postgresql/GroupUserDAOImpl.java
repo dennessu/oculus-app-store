@@ -31,7 +31,7 @@ public class GroupUserDAOImpl  extends ShardedDAOBase implements GroupUserDAO {
     }
 
     @Override
-    public GroupUserEntity findByGroupId(@SeedParam Long groupId, @SeedParam Long userId) {
+    public GroupUserEntity findByGroupIdAndUserId(@SeedParam Long groupId, Long userId) {
         String query = "select * from group_user where group_id = " + groupId + " and user_id = " + userId;
 
         List list = currentSession().createSQLQuery(query).addEntity(GroupUserEntity.class).list();
@@ -39,6 +39,14 @@ public class GroupUserDAOImpl  extends ShardedDAOBase implements GroupUserDAO {
             return (GroupUserEntity)list.get(0);
         }
         return null;
+    }
+
+    @Override
+    public List<GroupUserEntity> findByGroupId(@SeedParam Long groupId) {
+        String query = "select * from group_user where group_id = " + groupId;
+
+        List list = currentSession().createSQLQuery(query).addEntity(GroupUserEntity.class).list();
+        return list;
     }
 
     @Override

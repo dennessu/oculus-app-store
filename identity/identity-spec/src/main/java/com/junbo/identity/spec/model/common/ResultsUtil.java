@@ -20,7 +20,7 @@ public class ResultsUtil {
     public static <T> Results<T> init(List<T> entities, Integer count) {
         Results<T> resultList = new Results<T>();
 
-        if (entities.size() > count) {
+        if (entities != null && count != null && entities.size() > count) {
             resultList.setHasNext(true);
             resultList.setItems(entities.subList(0, count));
         } else {

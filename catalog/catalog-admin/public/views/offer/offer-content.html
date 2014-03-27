@@ -1,7 +1,7 @@
 <table class="table table-bordered vertical-table">
     <tr>
-        <td>Offer Id</td>
-        <td>{{ offer.self.id }}</td>
+        <td style="width: 200px;">Offer Id</td>
+        <td><a href="{{ offer.self.href }}">{{ offer.self.id }}</a></td>
     </tr>
     <tr>
         <td>Offer Name</td>
@@ -13,11 +13,35 @@
     </tr>
     <tr>
         <td>Developer</td>
-        <td>{{ offer.developer.id }}</td>
+        <td><a href="{{ offer.developer.href }}">{{ offer.developer.id }}</a></td>
     </tr>
     <tr>
         <td>Category</td>
-        <td>{{ offer.categories[0].id }}</td>
+        <td>
+            <div ng-repeat="category in offer.categories">
+                <a href="#/attributes/{{category.id}}" >{{ category.id }}</a>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>Genre</td>
+        <td>
+            <div ng-repeat="genre in offer.genres">
+                <a href="#/attributes/{{genre.id}}">{{ genre.id }}</a>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>Items</td>
+        <td>
+            <div ng-repeat="item in offer.items">
+                <a href="#/items/{{item.itemId.id}}">{{ item.itemId.id }}</a>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>PriceTier</td>
+        <td><a href="#/price-tiers/{{ offer.priceTier.id }}">{{ offer.priceTier.id }}</a></td>
     </tr>
     <tr>
         <td>Prices</td>
@@ -26,16 +50,28 @@
                 <thead>
                 <tr>
                     <th>Country</th>
-                    <th>Amount</th>
                     <th>Currency</th>
+                    <th>Amount</th>
                 </tr>
                 </thead>
                 <tr ng-repeat="(country, price) in offer.prices">
                     <td>{{ country }}</td>
-                    <td>{{ price.amount }}</td>
                     <td>{{ price.currency }}</td>
+                    <td>{{ price.amount }}</td>
                 </tr>
             </table>
         </td>
+    </tr>
+    <tr>
+        <td>Limit Per Customer</td>
+        <td>{{ offer.restriction.limitPerCustomer }}</td>
+    </tr>
+    <tr>
+        <td>Limit Per Order</td>
+        <td>{{ offer.restriction.limitPerOrder }}</td>
+    </tr>
+    <tr>
+        <td>Available Countries</td>
+        <td>{{ offer.eligibleCountries }}</td>
     </tr>
 </table>

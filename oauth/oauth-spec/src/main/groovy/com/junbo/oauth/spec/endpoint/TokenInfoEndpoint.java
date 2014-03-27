@@ -26,5 +26,5 @@ public interface TokenInfoEndpoint {
 
     @ApiOperation("Get the token info")
     @GET
-    Promise<TokenInfo> getTokenInfo(@PathParam("access_token") String tokenValue);
+    Promise<TokenInfo> getTokenInfo(@QueryParam("access_token") String tokenValue);
 }

@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.catalog.spec.model.common.VersionedModel;
 import com.junbo.common.jackson.annotation.AttributeId;
 import com.junbo.common.jackson.annotation.OfferId;
+import com.junbo.common.jackson.annotation.PriceTierId;
 import com.junbo.common.jackson.annotation.UserId;
 
 import java.util.ArrayList;
@@ -29,7 +30,8 @@ public class Offer extends VersionedModel {
     @JsonProperty("developer")
     private Long ownerId;
 
-    private Integer priceTier;
+    @PriceTierId
+    private Long priceTier;
     private Map<String, Price> prices;
 
     private List<OfferEntry> subOffers;
@@ -65,11 +67,11 @@ public class Offer extends VersionedModel {
         this.ownerId = ownerId;
     }
 
-    public Integer getPriceTier() {
+    public Long getPriceTier() {
         return priceTier;
     }
 
-    public void setPriceTier(Integer priceTier) {
+    public void setPriceTier(Long priceTier) {
         this.priceTier = priceTier;
     }
 

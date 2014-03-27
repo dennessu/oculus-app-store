@@ -9,19 +9,19 @@
     <context:component-scan base-package="com.junbo.identity.core.service" />
 
     <!-- resource implementation -->
-    <bean id="defaultGroupResource" class="com.junbo.identity.rest.resource.GroupResourceImpl" />
-    <bean id="defaultUserPasswordResource" class="com.junbo.identity.rest.resource.UserPasswordResourceImpl" />
-    <bean id="defaultUserPinResource" class="com.junbo.identity.rest.resource.UserPinResourceImpl" />
-    <bean id="defaultUserAuthenticatorResource" class="com.junbo.identity.rest.resource.UserAuthenticatorResourceImpl" />
-    <bean id="defaultUserDeviceResource" class="com.junbo.identity.rest.resource.UserDeviceResourceImpl" />
-    <bean id="defaultUserEmailResource" class="com.junbo.identity.rest.resource.UserEmailResourceImpl" />
-    <bean id="defaultUserGroupResource" class="com.junbo.identity.rest.resource.UserGroupResourceImpl" />
-    <bean id="defaultUserLoginAttemptResource" class="com.junbo.identity.rest.resource.UserLoginAttemptResourceImpl" />
-    <bean id="defaultUserOptinResource" class="com.junbo.identity.rest.resource.UserOptinResourceImpl" />
-    <bean id="defaultUserPhoneNumberResource" class="com.junbo.identity.rest.resource.UserPhoneNumberResourceImpl" />
+    <bean id="defaultGroupResource" class="com.junbo.identity.rest.resource.GroupResourceImpl" scope="prototype" />
+    <bean id="defaultUserPasswordResource" class="com.junbo.identity.rest.resource.UserPasswordResourceImpl" scope="prototype" />
+    <bean id="defaultUserPinResource" class="com.junbo.identity.rest.resource.UserPinResourceImpl" scope="prototype" />
+    <bean id="defaultUserAuthenticatorResource" class="com.junbo.identity.rest.resource.UserAuthenticatorResourceImpl" scope="prototype" />
+    <bean id="defaultUserDeviceResource" class="com.junbo.identity.rest.resource.UserDeviceResourceImpl" scope="prototype" />
+    <bean id="defaultUserEmailResource" class="com.junbo.identity.rest.resource.UserEmailResourceImpl" scope="prototype" />
+    <bean id="defaultUserGroupResource" class="com.junbo.identity.rest.resource.UserGroupResourceImpl" scope="prototype" />
+    <bean id="defaultUserLoginAttemptResource" class="com.junbo.identity.rest.resource.UserLoginAttemptResourceImpl" scope="prototype" />
+    <bean id="defaultUserOptinResource" class="com.junbo.identity.rest.resource.UserOptinResourceImpl" scope="prototype" />
+    <bean id="defaultUserPhoneNumberResource" class="com.junbo.identity.rest.resource.UserPhoneNumberResourceImpl" scope="prototype" />
     <bean id="defaultUserResource" class="com.junbo.identity.rest.resource.UserResourceImpl" scope="prototype"/>
-    <bean id="defaultUserSecurityQuestionResource" class="com.junbo.identity.rest.resource.UserSecurityQuestionResourceImpl" />
-    <bean id="defaultUserTosResource" class="com.junbo.identity.rest.resource.UserTosResourceImpl" />
-    <bean id="defaultSecurityQuestionResource" class="com.junbo.identity.rest.resource.SecurityQuestionResourceImpl" />
-    <bean id="defaultUserSecurityQuestionAttemptResource" class="com.junbo.identity.rest.resource.UserSecurityQuestionAttemptResourceImpl" />
+    <bean id="defaultUserSecurityQuestionResource" class="com.junbo.identity.rest.resource.UserSecurityQuestionResourceImpl" scope="prototype" />
+    <bean id="defaultUserTosResource" class="com.junbo.identity.rest.resource.UserTosResourceImpl" scope="prototype" />
+    <bean id="defaultSecurityQuestionResource" class="com.junbo.identity.rest.resource.SecurityQuestionResourceImpl" scope="prototype" />
+    <bean id="defaultUserSecurityQuestionAttemptResource" class="com.junbo.identity.rest.resource.UserSecurityQuestionAttemptResourceImpl" scope="prototype" />
 </beans>

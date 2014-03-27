@@ -49,8 +49,37 @@
                 <value>preferredLanguage</value>
                 <value>locale</value>
                 <value>timezone</value>
+                <value>resourceAge</value>
             </list>
         </property>
 
+    </bean>
+
+    <bean id="groupFilter" class="com.junbo.identity.core.service.filter.GroupFilter">
+        <property name="readableProperties">
+            <list>
+                <value>id</value>
+                <value>name</value>
+                <value>active</value>
+                <value>resourceAge</value>
+                <value>createdTime</value>
+                <value>updatedTime</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForCreate">
+            <list>
+                <value>name</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForUpdate">
+            <list>
+                <value>id</value>
+                <value>name</value>
+                <value>active</value>
+                <value>resourceAge</value>
+            </list>
+        </property>
     </bean>
 </beans>

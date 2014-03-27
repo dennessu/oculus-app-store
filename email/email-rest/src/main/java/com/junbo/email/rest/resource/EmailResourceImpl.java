@@ -5,6 +5,7 @@
  */
 package com.junbo.email.rest.resource;
 
+import com.junbo.common.id.EmailId;
 import com.junbo.email.core.EmailService;
 import com.junbo.email.spec.model.Email;
 import com.junbo.email.spec.resource.EmailResource;
@@ -33,18 +34,18 @@ public class EmailResourceImpl implements EmailResource {
     }
 
     @Override
-    public Promise<Email> getEmail(Long id) {
-        return emailService.getEmail(id);
+    public Promise<Email> getEmail(EmailId id) {
+        return emailService.getEmail(id.getValue());
     }
 
     @Override
-    public Promise<Email> putEmail(Long id, Email email) {
-        return emailService.updateEmail(id, email);
+    public Promise<Email> putEmail(EmailId id, Email email) {
+        return emailService.updateEmail(id.getValue(), email);
     }
 
     @Override
-    public Promise<Response> deleteEmail(Long id) {
-        emailService.deleteEmail(id);
+    public Promise<Response> deleteEmail(EmailId id) {
+        emailService.deleteEmail(id.getValue());
         return Promise.pure(Response.status(204).build());
     }
 }
