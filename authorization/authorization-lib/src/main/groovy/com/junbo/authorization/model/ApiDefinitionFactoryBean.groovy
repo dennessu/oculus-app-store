@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.authorization
+package com.junbo.authorization.model
 
 import com.junbo.authorization.model.ApiDefinition
 import com.junbo.authorization.model.Scope
@@ -21,7 +21,7 @@ class ApiDefinitionFactoryBean implements FactoryBean<ApiDefinition> {
                                          'guest': ['read'].toSet(),
                                          'admin': ['read', 'admin'].toSet()])
 
-        return new ApiDefinition(availableScopes: ['entity': scope])
+        return new ApiDefinition(availableScopes: ['identity': scope])
     }
 
     @Override

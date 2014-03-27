@@ -7,7 +7,7 @@ package com.junbo.authorization.interceptor
 
 import com.junbo.authorization.AuthorizeCallback
 import com.junbo.authorization.annotation.AuthorizeRequired
-import com.junbo.authorization.annotation.ContextParam
+import com.junbo.authorization.annotation.AuthContextParam
 import com.junbo.authorization.model.AuthorizeContext
 import com.junbo.authorization.service.AuthorizeService
 import groovy.transform.CompileStatic
@@ -27,10 +27,15 @@ import java.lang.reflect.Method
 @Aspect
 class AuthorizeAspect {
     private AuthorizeService authorizeService
+    private boolean authorizeEnabled = true
 
     @Required
     void setAuthorizeService(AuthorizeService authorizeService) {
         this.authorizeService = authorizeService
+    }
+
+    void setAuthorizeEnabled(boolean authorizeEnabled) {
+        this.authorizeEnabled = authorizeEnabled
     }
 
     @Around('@annotation(requiredAnnotation)')
@@ -46,8 +51,8 @@ class AuthorizeAspect {
         method.parameterAnnotations.eachWithIndex { Annotation[] annotations, int i ->
             if (annotations.length > 0) {
                 annotations.each { Annotation anno ->
-                    if (anno instanceof ContextParam) {
-                        ContextParam contextParam = (ContextParam) anno
+                    if (anno instanceof AuthContextParam) {
+                        AuthContextParam contextParam = (AuthContextParam) anno
                         map[contextParam.value()] = joinPoint.args[i]
                     }
                 }
@@ -58,6 +63,7 @@ class AuthorizeAspect {
         AuthorizeCallback callback = (AuthorizeCallback) requiredAnnotation.authCallBack().newInstance(map)
         Set<String> claims = authorizeService.getClaims(callback)
         AuthorizeContext.CLAIMS.set(claims)
+        AuthorizeContext.authorizedEnabled = authorizeEnabled
         Object result = joinPoint.proceed()
 
         if (Collection.isAssignableFrom(result.class)) {
@@ -83,6 +89,7 @@ class AuthorizeAspect {
         AuthorizeCallback callback = (AuthorizeCallback) annotation.authCallBack().newInstance(map)
         Set<String> claims = authorizeService.getClaims(callback)
         AuthorizeContext.CLAIMS.set(claims)
+        AuthorizeContext.authorizedEnabled = authorizeEnabled
 
         return callback.postFilter()
     }

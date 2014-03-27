@@ -6,7 +6,7 @@
 package com.junbo.authorization
 
 import com.junbo.authorization.annotation.AuthorizeRequired
-import com.junbo.authorization.annotation.ContextParam
+import com.junbo.authorization.annotation.AuthContextParam
 import com.junbo.authorization.model.AuthorizeContext
 import com.junbo.authorization.service.AuthorizeService
 import groovy.transform.CompileStatic
@@ -27,7 +27,7 @@ class EntityServiceImpl implements EntityService {
 
     @Override
     @AuthorizeRequired(authCallBack = EntityAuthorizeCallback, apiName = 'entity_get')
-    Entity annotatedGet(@ContextParam('id') Long id) {
+    Entity annotatedGet(@AuthContextParam('id') Long id) {
         Set<String> claims = AuthorizeContext.CLAIMS.get()
         if (claims.contains('read')) {
             return new Entity(id: id, name: 'name', createdBy: 'system')
