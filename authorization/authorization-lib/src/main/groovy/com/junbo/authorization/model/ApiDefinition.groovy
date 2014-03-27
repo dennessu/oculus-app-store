@@ -8,11 +8,9 @@ package com.junbo.authorization.model
 import groovy.transform.CompileStatic
 
 /**
- * Role.
+ * ApiDefinition.
  */
 @CompileStatic
-enum Role {
-    OWNER,
-    ADMIN,
-    GUEST
+class ApiDefinition {
+    Map<String, Scope> availableScopes
 }

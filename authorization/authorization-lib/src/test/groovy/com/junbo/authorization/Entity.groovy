@@ -3,14 +3,16 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.authorization.model
+package com.junbo.authorization
 
 import groovy.transform.CompileStatic
 
 /**
- * Scope.
+ * Entity.
  */
 @CompileStatic
-class Scope {
-    Map<String, Set<String>> claims
+class Entity {
+    Long id
+    String name
+    String createdBy
 }
