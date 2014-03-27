@@ -58,9 +58,12 @@ public class OfferServiceImpl extends BaseServiceImpl<Offer> implements OfferSer
             }
         }
 
-        if (offer.getPriceTier() != null) {
+        if (PriceType.TIER_PRICING.equalsIgnoreCase(offer.getPriceType())) {
             PriceTier priceTier = priceTierService.getPriceTier(offer.getPriceTier());
             offer.setPrices(priceTier.getPrices());
+        } else if (PriceType.FREE.equalsIgnoreCase(offer.getPriceType())) {
+            offer.setPriceTier(null);
+            offer.setPrices(null);
         }
 
         if (!actions.isEmpty()) {
