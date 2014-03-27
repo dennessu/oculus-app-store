@@ -56,5 +56,22 @@ class AvalaraAddress {
     // If a non-zero value is entered into TaxRegionId, other fields will be ignored.
     @JsonProperty('TaxRegionId')
     String taxRegionId
+
+    @Override
+    String toString() {
+        return 'AvalaraAddress{' +
+                "addressCode='" + addressCode + '\'' +
+                ", line1='" + line1 + '\'' +
+                ", line2='" + line2 + '\'' +
+                ", line3='" + line3 + '\'' +
+                ", city='" + city + '\'' +
+                ", region='" + region + '\'' +
+                ", postalCode='" + postalCode + '\'' +
+                ", country='" + country + '\'' +
+                ', latitude=' + latitude +
+                ', longitude=' + longitude +
+                ", taxRegionId='" + taxRegionId + '\'' +
+                '}'
+    }
 }
 

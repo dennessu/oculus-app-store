@@ -1,5 +1,8 @@
+var Async = require('async');
+var Emitter = require('events').EventEmitter;
 var CatalogDataProvider = require('store-data-provider').Catalog;
 var DomainModels = require('../../models/domain');
+var Utils = require('../../utils/utils');
 
 exports.Products = function (data, cb) {
     var body = data.data;
@@ -41,4 +44,72 @@ exports.Products = function (data, cb) {
             cb(responseModel);
         });
     }
+};
+
+exports.GetDownloadLinksByOfferId = function(data, callback){
+    var body = data.data;
+    var cookies = data.cookies;
+    var query = data.query;
+    var offerId = body["productId"];
+    var itemsCount = 0;
+    var itemsIndex = 0;
+
+    // get offer
+    // get offer items
+    // get
+
+    var callBackResult = new Array(); //{name: "", link: ""}
+    var emitter = new Emitter();
+    var dataProvider = new CatalogDataProvider(process.AppConfig.Catalog_API_Host, process.AppConfig.Catalog_API_Port);
+
+      dataProvider.GetOfferById(offerId, null, function(result){
+          if(result.StatusCode == 200){
+              var offer = JSON.parse(result.Data);
+              if(offer["items"] != undefined && offer["items"].length > 0){
+                  itemsCount = offer.items.length;
+                  offer.items.forEach(function(item){
+                      dataProvider.GetItemById(item.id, function(itemResult){
+                          if(itemResult.StatusCode == 200){
+                              var itemObj = JSON.parse(itemResult.Data);
+                              emitter.emit("AppendLink", itemObj.name, itemObj.properties["downloadLink"]);
+                          }else{
+                              var resultModel = new DomainModels.ResultModel;
+                              resultModel.status = DomainModels.ResultStatusEnum.Normal;
+                              resultModel.data = callBackResult;
+
+                              callback(Utils.GenerateResponseModel(resultModel));
+                          }
+                      });
+                  });
+              }else{
+                  var resultModel = new DomainModels.ResultModel;
+                  resultModel.status = DomainModels.ResultStatusEnum.Normal;
+                  resultModel.data = callBackResult;
+
+                  callback(Utils.GenerateResponseModel(resultModel));
+              }
+          }else{
+              var resultModel = new DomainModels.ResultModel;
+              resultModel.status = DomainModels.ResultStatusEnum.APIError;
+              resultModel.data = result.Data;
+
+              callback(Utils.GenerateResponseModel(resultModel));
+          }
+      });
+
+
+    emitter.on("AppendLink", function(name, link){
+        if(link != undefined){
+            callBackResult.push({name: name, link: link});
+        }
+        itemsIndex++;
+
+        if(itemsIndex >= itemsCount){
+            var resultModel = new DomainModels.ResultModel;
+            resultModel.status = DomainModels.ResultStatusEnum.Normal;
+            resultModel.data = callBackResult;
+
+            callback(Utils.GenerateResponseModel(resultModel));
+        }
+    });
 };

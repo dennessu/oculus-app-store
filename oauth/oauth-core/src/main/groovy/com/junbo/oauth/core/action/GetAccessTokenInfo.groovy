@@ -5,6 +5,7 @@
  */
 package com.junbo.oauth.core.action
 
+import com.junbo.common.id.UserId
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
@@ -54,7 +55,7 @@ class GetAccessTokenInfo implements Action {
 
         TokenInfo tokenInfo = new TokenInfo(
                 clientId: accessToken.clientId,
-                sub: accessToken.userId.toString(),
+                sub: new UserId(accessToken.userId),
                 scopes: StringUtils.collectionToDelimitedString(accessToken.scopes, ' '),
                 expiresIn: (Long) (accessToken.expiredBy.time - System.currentTimeMillis()) / 1000
         )

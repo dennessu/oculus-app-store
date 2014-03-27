@@ -14,4 +14,5 @@
     <bean id="offerService" class="com.junbo.catalog.core.service.OfferServiceImpl"/>
     <bean id="promotionService" class="com.junbo.catalog.core.service.PromotionServiceImpl"/>
     <bean id="entitlementDefinitionService" class="com.junbo.catalog.core.service.EntitlementDefinitionServiceImpl"/>
+    <bean id="priceTierService" class="com.junbo.catalog.core.service.PriceTierServiceImpl"/>
 </beans>

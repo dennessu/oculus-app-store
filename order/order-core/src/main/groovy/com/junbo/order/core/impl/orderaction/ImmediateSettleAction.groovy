@@ -8,14 +8,12 @@ import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.core.annotation.OrderEventAwareAfter
 import com.junbo.order.core.annotation.OrderEventAwareBefore
+import com.junbo.order.core.impl.common.BillingEventBuilder
 import com.junbo.order.core.impl.common.CoreBuilder
-import com.junbo.order.core.impl.common.OrderStatusBuilder
+import com.junbo.order.core.impl.common.CoreUtils
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
-import com.junbo.order.db.entity.enums.BillingAction
-import com.junbo.order.db.entity.enums.EventStatus
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.error.AppErrors
-import com.junbo.order.spec.model.BillingEvent
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.slf4j.Logger
@@ -52,24 +50,14 @@ class ImmediateSettleAction extends BaseOrderEventAwareAction {
                         CoreBuilder.buildBalance(context.orderServiceContext, BalanceType.DEBIT))
         return promise.syncRecover { Throwable throwable ->
             LOGGER.error('name=Order_ImmediateSettle_Error', throwable)
-            throw AppErrors.INSTANCE.billingConnectionError().exception()
-        }.syncThen { Balance balance ->
-            if (balance == null) {
-                // todo: log order charge action error?
-                LOGGER.info('fail to create balance')
-                CoreBuilder.buildActionResultForOrderEventAwareAction(context, EventStatus.ERROR)
-                throw AppErrors.INSTANCE.billingConnectionError().exception()
-            }
-            def billingEvent = new BillingEvent()
-            billingEvent.balanceId = (balance.balanceId == null || balance.balanceId.value == null) ?
-                    null : balance.balanceId.value.toString()
-            billingEvent.action = BillingAction.CHARGE.name()
-            billingEvent.status = OrderStatusBuilder.buildEventStatusFromBalance(balance.status)
+            throw AppErrors.INSTANCE.
+                    billingConnectionError(CoreUtils.toAppErrors(throwable)).exception()
+        }.then { Balance balance ->
+            def billingEvent = BillingEventBuilder.buildBillingEvent(balance)
             orderRepository.createBillingEvent(order.id.value, billingEvent)
             orderServiceContextBuilder.refreshBalances(context.orderServiceContext).syncThen {
                 // TODO: save order level tax
-                return CoreBuilder.buildActionResultForOrderEventAwareAction(context,
-                        CoreBuilder.buildEventStatusFromBalance(balance.status))
+                return CoreBuilder.buildActionResultForOrderEventAwareAction(context, billingEvent.status)
             }
         }
     }

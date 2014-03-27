@@ -1,5 +1,5 @@
 package com.junbo.order.core.impl.common
-import com.junbo.billing.spec.enums.BalanceStatus
+
 import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.BalanceItem
@@ -35,6 +35,7 @@ class CoreBuilder {
         }
 
         Balance balance = new Balance()
+        balance.trackingUuid = UUID.randomUUID()
         balance.country = context.order.country
         balance.currency = context.order.currency
         balance.orderId = context.order.id
@@ -167,6 +168,11 @@ class CoreBuilder {
     }
 
     static ActionResult  buildActionResultForOrderEventAwareAction(OrderActionContext context,
+                                                                   String eventStatus) {
+        return buildActionResultForOrderEventAwareAction(context, EventStatus.valueOf(eventStatus))
+    }
+
+    static ActionResult  buildActionResultForOrderEventAwareAction(OrderActionContext context,
                                                                    EventStatus eventStatus) {
         def orderActionResult = new OrderActionResult()
         orderActionResult.orderActionContext = context
@@ -178,24 +184,4 @@ class CoreBuilder {
         return actionResult
     }
 
-    static EventStatus buildEventStatusFromBalance(String balanceStatus) {
-        switch (balanceStatus) {
-            case BalanceStatus.COMPLETED:
-                return EventStatus.COMPLETED
-            case BalanceStatus.AWAITING_PAYMENT:
-                return EventStatus.PENDING
-            case BalanceStatus.PENDING_CAPTURE: // Authorize completed
-                return EventStatus.COMPLETED
-            case BalanceStatus.UNCONFIRMED:
-                return EventStatus.PROCESSING
-            case BalanceStatus.INIT:
-                return EventStatus.PROCESSING
-            case BalanceStatus.CANCELLED:
-            case BalanceStatus.FAILED:
-            case BalanceStatus.ERROR:
-                return EventStatus.FAILED
-            default:
-                return EventStatus.FAILED
-        }
-    }
 }

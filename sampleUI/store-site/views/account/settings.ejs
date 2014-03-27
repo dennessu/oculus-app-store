@@ -3,31 +3,19 @@
         <h2>Account Settings</h2>
         <dl>
             <dt>Name
-                <button type="button" class="btn btn-primary">Edit</button>
+                {{#link-to "account.editinfo" class="btn btn-primary"}}Edit{{/link-to}}
             </dt>
-            <dd>John Doe</dd>
+            <dd>{{content.firstName}} {{content.lastName}}</dd>
         </dl>
         <dl>
-            <dt>Email Address</dt>
-            <dd>johndoe@gmail.com</dd>
-        </dl>
-        <dl>
-            <dt>Password</dt>
+            <dt>Password
+                {{#link-to "account.editpassword" class="btn btn-primary"}}Edit{{/link-to}}
+                </dt>
             <dd>******</dd>
-        </dl>
-        <dl>
-            <dt>Phone Number</dt>
-            <dd>123-456-7890</dd>
         </dl>
         <dl>
             <dt>Email Opt-In</dt>
             <dd>Deals, Promotions, News</dd>
-        </dl>
-        <dl>
-            <dt>Shipping Address
-                <button type="button" class="btn btn-primary">Edit</button>
-            </dt>
-            <dd>17421 Magnolia Blvd. Long Beach CA, 93156</dd>
         </dl>
     </div>
 </div>

@@ -44,6 +44,31 @@ module.exports = function(io){
                 fn(data);
             });
         });
+        socket.on('/api/identity/get_profile', function (data, fn) {
+            Identity.GetProfile(data, function(data){
+                fn(data);
+            });
+        });
+        socket.on('/api/identity/put_profile', function (data, fn) {
+            Identity.PutProfile(data, function(data){
+                fn(data);
+            });
+        });
+        socket.on('/api/identity/get_opt_ins', function (data, fn) {
+            Identity.GetOptIns(data, function(data){
+                fn(data);
+            });
+        });
+        socket.on('/api/identity/post_opt_ins', function (data, fn) {
+            Identity.PostOptIns(data, function(data){
+                fn(data);
+            });
+        });
+        socket.on('/api/identity/put_user', function (data, fn) {
+            Identity.PutUser(data, function(data){
+                fn(data);
+            });
+        });
 
         socket.on('/api/identity/pin', function (data, fn) {
             Identity.PIN(data, function(data){
@@ -53,6 +78,11 @@ module.exports = function(io){
 
         socket.on('/api/catalog/products', function (data, fn) {
             Catalog.Products(data, function(data){
+                fn(data);
+            });
+        });
+        socket.on('/api/catalog/get_download_links', function (data, fn) {
+            Catalog.GetDownloadLinksByOfferId(data, function(data){
                 fn(data);
             });
         });
@@ -83,8 +113,28 @@ module.exports = function(io){
                 fn(data);
             });
         });
+        socket.on('/api/cart/get_order_by_id', function (data, fn) {
+            Cart.GetOrderById(data, function(data){
+                fn(data);
+            });
+        });
+        socket.on('/api/cart/get_order_by_user', function (data, fn) {
+            Cart.GetOrders(data, function(data){
+                fn(data);
+            });
+        });
         socket.on('/api/cart/post_order', function (data, fn) {
             Cart.PostOrder(data, function(data){
+                fn(data);
+            });
+        });
+        socket.on('/api/cart/put_order', function (data, fn) {
+            Cart.PutOrder(data, function(data){
+                fn(data);
+            });
+        });
+        socket.on('/api/cart/purchase_order', function (data, fn) {
+            Cart.PurchaseOrder(data, function(data){
                 fn(data);
             });
         });
@@ -92,6 +142,12 @@ module.exports = function(io){
         /* Billing -------------------------------------------------------------- */
         socket.on('/api/billing/get_shipping_info', function (data, fn) {
             Billing.GetShippingInfo(data, function(data){
+                fn(data);
+            });
+        });
+
+        socket.on('/api/billing/get_shipping_info_by_id', function (data, fn) {
+            Billing.GetShippingInfoById(data, function(data){
                 fn(data);
             });
         });
@@ -107,8 +163,14 @@ module.exports = function(io){
                 fn(data);
             });
         });
+
+        socket.on('/api/payment/get_payment_instruments_by_id', function (data, fn) {
+            Payment.GetPaymentById(data, function(data){
+                fn(data);
+            });
+        });
         socket.on('/api/payment/add', function (data, fn) {
-            Billing.PostPayment(data, function(data){
+            Payment.PostPayment(data, function(data){
                 fn(data);
             });
         });

@@ -5,6 +5,7 @@
  */
 package com.junbo.email.spec.resource;
 
+import com.junbo.common.id.EmailId;
 import com.junbo.email.spec.model.Email;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
@@ -31,16 +32,16 @@ public interface EmailResource {
     @ApiOperation("Get an email sending history")
     @GET
     @Path("/{id}")
-    Promise<Email> getEmail(@PathParam("id") Long id);
+    Promise<Email> getEmail(@PathParam("id") EmailId id);
 
     @ApiOperation("Modify the email sending request")
     @PUT
     @Path("/{id}")
-    Promise<Email> putEmail(@PathParam("id") Long id, Email email);
+    Promise<Email> putEmail(@PathParam("id") EmailId id, Email email);
 
     @ApiOperation("Delete the email sending request")
     @DELETE
     @Path("/{id}")
-    Promise<Response> deleteEmail(@PathParam("id") Long id);
+    Promise<Response> deleteEmail(@PathParam("id") EmailId id);
 
 }
