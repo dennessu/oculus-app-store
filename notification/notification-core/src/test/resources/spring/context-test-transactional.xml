@@ -4,6 +4,24 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
     <import resource="classpath*:spring/core-context.xml"/>
 
+    <!--
+    #sessionAcknowledgeMode
+    - AUTO_ACKNOWLEDGE (default):
+        Automatic message acknowledgment before listener execution;
+        no redelivery in case of exception thrown.
+
+    - CLIENT_ACKNOWLEDGE:
+        Automatic message acknowledgment after successful listener execution;
+        no redelivery in case of exception thrown.
+
+    - DUPS_OK_ACKNOWLEDGE:
+        Lazy message acknowledgment during or after listener execution;
+        potential redelivery in case of exception thrown.
+
+    #sessionTransacted:
+    - true: Transactional acknowledgment after successful listener execution; guaranteed redelivery in case of exception thrown.
+    -->
+
     <!-- Transactional listener demo -->
     <bean id="testQueue2" class="org.apache.activemq.command.ActiveMQQueue">
         <constructor-arg index="0" value="TEST_QUEUE_2"/>
@@ -27,7 +45,85 @@
         <property name="connectionFactory" ref="connectionFactory"/>
         <property name="destination" ref="testQueue2"/>
         <property name="messageListener" ref="transactionalListener"/>
-        <!--<property name="sessionTransacted" value="true"/>-->
+        <!--<property name="sessionAcknowledgeMode" value="2"/>-->
+        <property name="sessionTransacted" value="true"/>
+    </bean>
+
+    <!-- session aware listener demo -->
+    <bean id="testQueue3" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg index="0" value="TEST_QUEUE_3"/>
+    </bean>
+
+    <bean id="queueTemplate3" class="org.springframework.jms.core.JmsTemplate">
+        <property name="defaultDestination" ref="testQueue3"/>
+        <property name="connectionFactory" ref="connectionFactory"/>
+        <property name="explicitQosEnabled" value="true"/>
+        <property name="deliveryPersistent" value="true"/>
+    </bean>
+
+    <bean id="testProducer3" class="com.junbo.notification.queue.TestProducer">
+        <property name="template" ref="queueTemplate3"/>
+        <property name="destination" ref="testQueue3"/>
+    </bean>
+
+    <bean id="sessionAwareListener" class="com.junbo.notification.retry.SessionAwareListener"/>
+
+    <bean id="sessionAwareListenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+        <property name="connectionFactory" ref="connectionFactory"/>
+        <property name="destination" ref="testQueue3"/>
+        <property name="messageListener" ref="sessionAwareListener"/>
         <property name="sessionAcknowledgeMode" value="2"/>
+    </bean>
+
+    <!-- topic retry demo -->
+    <bean id="redeliveryPolicy" class="org.apache.activemq.RedeliveryPolicy">
+        <!--<property name="backOffMultiplier" value="3" />-->
+        <property name="initialRedeliveryDelay" value="200" />
+        <property name="maximumRedeliveries" value="6" />
+        <property name="topic" value="TEST_TOPIC_2" />
+        <property name="redeliveryDelay" value="200" />
+        <!--<property name="useExponentialBackOff" value="true" />-->
+    </bean>
+
+    <bean id="connectionFactory2" class="org.apache.activemq.ActiveMQConnectionFactory" depends-on="broker">
+        <property name="brokerURL" value="tcp://127.0.0.1:61616"/>
+        <property name="userName" value="system"/>
+        <property name="password" value="manager"/>
+        <property name="useAsyncSend" value="true"/>
+        <property name="redeliveryPolicy" ref="redeliveryPolicy"/>
+    </bean>
+
+    <bean id="testTopic2" class="org.apache.activemq.command.ActiveMQTopic">
+        <constructor-arg index="0" value="TEST_TOPIC_2"/>
+    </bean>
+
+    <bean id="topicTemplate2" class="org.springframework.jms.core.JmsTemplate">
+        <property name="defaultDestination" ref="testTopic2"/>
+        <property name="connectionFactory" ref="connectionFactory2"/>
+        <property name="explicitQosEnabled" value="true"/>
+        <property name="deliveryPersistent" value="true"/>
+    </bean>
+
+    <bean id="testPublisher2" class="com.junbo.notification.topic.TestPublisher">
+        <property name="template" ref="topicTemplate2"/>
+        <property name="destination" ref="testTopic2"/>
+    </bean>
+
+    <bean id="testSubscriber11" class="com.junbo.notification.retry.TestSubscriber11"/>
+    <bean id="testSubscriber22" class="com.junbo.notification.retry.TestSubscriber22"/>
+
+    <bean id="baseSubscriberContainer2" abstract="true"
+          class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+        <property name="connectionFactory" ref="connectionFactory2"/>
+        <property name="destination" ref="testTopic2"/>
+    </bean>
+
+    <bean id="subsciberContainer11" parent="baseSubscriberContainer2">
+        <property name="messageListener" ref="testSubscriber11"/>
+        <property name="sessionAcknowledgeMode" value="2"/>
+    </bean>
+
+    <bean id="subsciberContainer22" parent="baseSubscriberContainer2">
+        <property name="messageListener" ref="testSubscriber22"/>
     </bean>
 </beans>
