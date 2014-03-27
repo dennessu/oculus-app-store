@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.test.common;
+package com.junbo.test.common.libs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.junbo.common.json.ObjectMapperProvider;
