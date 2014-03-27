@@ -7,7 +7,6 @@
 package com.junbo.payment.core.impl;
 
 import com.junbo.langur.core.promise.Promise;
-import com.junbo.langur.core.transaction.AsyncTransactionTemplate;
 import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.common.exception.AppClientExceptions;
 import com.junbo.payment.common.exception.AppServerExceptions;
@@ -30,10 +29,6 @@ import com.junbo.payment.spec.model.PaymentInstrumentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.Date;
 import java.util.List;
@@ -50,8 +45,6 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
     }
     @Autowired
     private PaymentInstrumentRepository paymentInstrumentRepository;
-    @Autowired
-    private PlatformTransactionManager transactionManager;
     @Autowired
     private TrackingUuidRepository trackingUuidRepository;
     @Autowired
@@ -106,18 +99,11 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
     }
 
     private void saveAndCommitPI(final PaymentInstrument request) {
-        AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager);
-        template.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRES_NEW);
-        template.execute(new TransactionCallback<Void>() {
-            public Void doInTransaction(TransactionStatus txnStatus) {
-                paymentInstrumentRepository.save(request);
-                if(CommonUtil.toBool(request.getIsDefault())){
-                    paymentInstrumentRepository.setDefault(request.getId().getPaymentInstrumentId());
-                }
-                saveTrackingUuid(request, PaymentAPI.AddPI);
-                return null;
-            }
-        });
+        paymentInstrumentRepository.save(request);
+        if(CommonUtil.toBool(request.getIsDefault())){
+            paymentInstrumentRepository.setDefault(request.getId().getPaymentInstrumentId());
+        }
+        saveTrackingUuid(request, PaymentAPI.AddPI);
     }
 
     @Override

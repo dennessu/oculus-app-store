@@ -1,0 +1,97 @@
+package com.junbo.test.buyerscenario;
+
+
+import com.junbo.test.buyerscenario.util.BaseTestClass;
+import com.junbo.test.common.Entities.ShippingAddressInfo;
+import com.junbo.test.common.Entities.enums.Country;
+import com.junbo.test.common.Entities.enums.Currency;
+import com.junbo.test.common.libs.EnumHelper;
+import com.junbo.test.common.libs.LogHelper;
+import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
+import com.junbo.test.common.property.*;
+
+import org.testng.annotations.Test;
+
+/**
+ * Created by Yunlong on 3/20/14.
+ */
+public class CartCheckout extends BaseTestClass {
+
+    private LogHelper logger = new LogHelper(CartCheckout.class);
+
+    @Property(
+            priority = Priority.BVT,
+            features = "BuyerScenarios",
+            component = Component.Order,
+            owner = "ZhaoYunlong",
+            status = Status.Incomplete,
+            description = "Test digital good checkout",
+            steps = {
+                    "1. Post a random user",
+                    "2. Add digital offer to user's primary cart",
+                    "3. Post a new user",
+                    "4. Post new credit card to new user.",
+                    "5. Merge the previous anonymous cart to the new user",
+                    "6. Post order to checkout",
+                    "7. Verify the order response info",
+                    "8. Close the primary cart",
+                    "9  Update order tentative to false",
+                    "10. Verify Email sent successfully"
+            }
+    )
+    @Test
+    public void testDigitalGoodCheckout() throws Exception {
+        String randomUid = testDataProvider.createUser();
+
+        testDataProvider.postDefaultOffersToPrimaryCart(randomUid, EnumHelper.CatalogItemType.APP);
+
+        String uid = testDataProvider.createUser();
+
+        CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
+        testDataProvider.postCreditCardToUser(uid, creditCardInfo);
+
+        testDataProvider.mergeCart(uid, randomUid);
+
+    }
+
+    @Property(
+            priority = Priority.BVT,
+            features = "BuyerScenarios",
+            component = Component.Order,
+            owner = "ZhaoYunlong",
+            status = Status.Incomplete,
+            description = "Test physical good checkout",
+            steps = {
+                    "1. Post a random user",
+                    "2. Add physical offer to user's primary cart",
+                    "3. Post a new user",
+                    "4. Post new credit card and shipping address to new user.",
+                    "5. Merge the previous anonymous cart to the new user",
+                    "6. Post order to checkout",
+                    "7  Verify order info correct",
+                    "8. Close the primary cart",
+                    "9  Update order tentative to false",
+                    "10. Verify Email sent successfully"
+            }
+    )
+    @Test
+    public void testPhysicalGoodCheckout() throws Exception {
+        String randomUid = testDataProvider.createUser();
+        testDataProvider.postDefaultOffersToPrimaryCart(randomUid, EnumHelper.CatalogItemType.PHYSICAL);
+
+        String uid = testDataProvider.createUser();
+
+        CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
+        String creditCardId = testDataProvider.postCreditCardToUser(uid, creditCardInfo);
+
+        ShippingAddressInfo shippingAddressInfo = ShippingAddressInfo.getRandomShippingAddress(Country.DEFAULT);
+        String shippingAddressId = testDataProvider.postShippingAddressToUser(uid, shippingAddressInfo);
+
+        String cartId = testDataProvider.mergeCart(uid, randomUid);
+
+        String orderId = testDataProvider.postOrderByCartId(uid, cartId, Country.DEFAULT, Currency.DEFAULT, creditCardId, shippingAddressId);
+
+    }
+
+}
+

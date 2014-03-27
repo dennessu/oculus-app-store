@@ -15,6 +15,7 @@ public class TokenItem {
     private Long orderId;
     private String disableReason;
     private String status;
+    private String encryptedString;
 
     public Long getHashValue() {
         return hashValue;
@@ -46,5 +47,13 @@ public class TokenItem {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getEncryptedString() {
+        return encryptedString;
+    }
+
+    public void setEncryptedString(String encryptedString) {
+        this.encryptedString = encryptedString;
     }
 }

@@ -39,7 +39,6 @@ class OfferLoader {
             new Offer(
                     name: '3D Parking Simulator',
                     ownerId: owner.value,
-                    status: 'Design',
                     categories: [123],
                     prices: [US:new Price(amount: 9.99, currency: 'USD')],
                     subOffers: [],
