@@ -120,29 +120,10 @@ public class ItemServiceImpl implements ItemService {
 
     public Item prepareItemEntity(String fileName) throws Exception {
 
-        String resourceLocation = String.format("testItems/%s.json", fileName);
-        InputStream inStream = ClassLoader.getSystemResourceAsStream(resourceLocation);
-        BufferedReader br = new BufferedReader(new InputStreamReader(inStream));
-
-        StringBuilder strDefaultItem = new StringBuilder();
-        try {
-            String sCurrentLine;
-            while ((sCurrentLine = br.readLine()) != null) {
-                strDefaultItem.append(sCurrentLine + "\n");
-            }
-        } catch (IOException e) {
-            throw e;
-        } finally {
-            if (br != null){
-                br.close();
-            }
-            if (inStream != null) {
-                inStream.close();
-            }
-        }
+       String strItem = this.readFileContent(fileName);
 
         Item itemForPost = new JsonMessageTranscoder().decode(new TypeReference<Item>() {},
-                strDefaultItem.toString());
+                strItem.toString());
         itemForPost.setName("testItem_" + RandomFactory.getRandomStringOfAlphabetOrNumeric(10));
         UserService us = UserServiceImpl.instance();
         String developerId = us.PostUser();
@@ -231,4 +212,29 @@ public class ItemServiceImpl implements ItemService {
         return itemRtnId;
     }
 
+    private String readFileContent(String fileName) throws Exception {
+
+        String resourceLocation = String.format("testItems/%s.json", fileName);
+        InputStream inStream = ClassLoader.getSystemResourceAsStream(resourceLocation);
+        BufferedReader br = new BufferedReader(new InputStreamReader(inStream));
+
+        StringBuilder strItem = new StringBuilder();
+        try {
+            String sCurrentLine;
+            while ((sCurrentLine = br.readLine()) != null) {
+                strItem.append(sCurrentLine + "\n");
+            }
+        } catch (IOException e) {
+            throw e;
+        } finally {
+            if (br != null){
+                br.close();
+            }
+            if (inStream != null) {
+                inStream.close();
+            }
+        }
+
+        return strItem.toString();
+    }
 }

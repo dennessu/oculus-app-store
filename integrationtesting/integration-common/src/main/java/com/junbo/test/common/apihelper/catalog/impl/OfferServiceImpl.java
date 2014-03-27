@@ -238,6 +238,7 @@ public class OfferServiceImpl implements OfferService {
         if (!offerLoaded){
             this.loadAllOffers();
             this.loadAllItems();
+            this.loadAllUsers();
             this.postPredefindeOffer();
             offerLoaded = true;
         }
@@ -253,6 +254,10 @@ public class OfferServiceImpl implements OfferService {
         itemService.getItem(null);
     }
 
+    private void loadAllUsers() throws Exception {
+        userService.GetUserByUserName(null);
+    }
+
     private void postPredefindeOffer() throws Exception {
 
         InputStream inStream = ClassLoader.getSystemResourceAsStream("testOffers/predefinedofferlist.txt");
@@ -260,12 +265,16 @@ public class OfferServiceImpl implements OfferService {
         try {
             String sCurrentLine;
             while ((sCurrentLine = br.readLine()) != null) {
-                System.out.println(sCurrentLine);
+                logger.logInfo(sCurrentLine);
                 String[] strLine = sCurrentLine.split(",");
                 if (Master.getInstance().getOfferIdByName(strLine[0]) == null) {
                     Offer offer = this.preparePredefindeOffer(strLine[0], strLine[1], strLine[2], strLine[3]);
-                    this.postOffer(offer);
-                }
+                    String offerId = this.postOffer(offer);
+                    //Release the offer
+                Offer offerRtn = Master.getInstance().getOffer(offerId);
+                offerRtn.setStatus(EnumHelper.CatalogEntityStatus.RELEASED.getEntityStatus());
+                this.updateOffer(offerRtn);
+            }
             }
         } catch (IOException e) {
             throw e;
@@ -286,19 +295,20 @@ public class OfferServiceImpl implements OfferService {
         Offer offerForPost = new JsonMessageTranscoder().decode(new TypeReference<Offer>() {}, strOfferContent);
 
         String itemId = Master.getInstance().getItemIdByName(itemName);
+        String userId = Master.getInstance().getUserIdByName(userName);
+
+        if (userId == null) {
+            User user = new User();
+            user.setUserName(userName);
+            user.setPassword("password");
+            user.setStatus(EnumHelper.UserStatus.ACTIVE.getStatus());
+            userId = userService.PostUser(user);
+        }
+
         if (itemId == null) {
             Item item = itemService.prepareItemEntity(itemName);
             item.setName(itemName);
             item.setType(offerType);
-            String userId = Master.getInstance().getUserIdByName(userName);
-            if (userId == null) {
-                User user = new User();
-                user.setUserName(userName);
-                user.setPassword("password");
-                user.setStatus(EnumHelper.UserStatus.ACTIVE.getStatus());
-                userId = userService.PostUser();
-            }
-
             item.setOwnerId(IdConverter.hexStringToId(UserId.class, userId));
 
             itemId = itemService.postItem(item);
@@ -313,6 +323,7 @@ public class OfferServiceImpl implements OfferService {
         itemEntry.setQuantity(1);
         itemEntities.add(itemEntry);
         offerForPost.setItems(itemEntities);
+        offerForPost.setOwnerId(IdConverter.hexStringToId(UserId.class, userId));
 
         return offerForPost;
     }
