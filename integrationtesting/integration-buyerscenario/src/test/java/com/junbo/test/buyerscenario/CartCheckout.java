@@ -5,6 +5,7 @@ import com.junbo.test.buyerscenario.util.BaseTestClass;
 import com.junbo.test.common.Entities.ShippingAddressInfo;
 import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.common.Entities.enums.Currency;
+import com.junbo.test.common.libs.EnumHelper;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
 import com.junbo.test.common.property.*;
@@ -42,7 +43,7 @@ public class CartCheckout extends BaseTestClass {
     public void testDigitalGoodCheckout() throws Exception {
         String randomUid = testDataProvider.createUser();
 
-        testDataProvider.postDefaultOffersToPrimaryCart(randomUid, false);
+        testDataProvider.postDefaultOffersToPrimaryCart(randomUid, EnumHelper.CatalogItemType.APP);
 
         String uid = testDataProvider.createUser();
 
@@ -76,7 +77,7 @@ public class CartCheckout extends BaseTestClass {
     @Test
     public void testPhysicalGoodCheckout() throws Exception {
         String randomUid = testDataProvider.createUser();
-        testDataProvider.postDefaultOffersToPrimaryCart(randomUid, false);
+        testDataProvider.postDefaultOffersToPrimaryCart(randomUid, EnumHelper.CatalogItemType.PHYSICAL);
 
         String uid = testDataProvider.createUser();
 

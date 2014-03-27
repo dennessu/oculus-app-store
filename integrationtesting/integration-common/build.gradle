@@ -20,6 +20,7 @@ dependencies {
     compile(libraries.jackson_databind)
     compile(libraries.common_lib)
     compile(libraries.async_http_client)
+    compile(libraries.testng)
 
     compile 'com.junbo.identity:identity-spec:0.0.1-SNAPSHOT'
     compile 'com.junbo.catalog:catalog-spec:0.0.1-SNAPSHOT'
