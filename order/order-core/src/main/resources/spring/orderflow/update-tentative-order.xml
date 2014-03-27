@@ -8,6 +8,7 @@
     <wf:flow id="UPDATE_TENTATIVE">
         <wf:end-state id="endState">
             <wf:on-entry>
+                <wf:action ref="validateTentativeOrderAction"/>
                 <wf:action ref="validateUserAction"/>
                 <wf:action ref="ratingAction"/>
                 <wf:action ref="update_tentative_updateOrderAction"/>

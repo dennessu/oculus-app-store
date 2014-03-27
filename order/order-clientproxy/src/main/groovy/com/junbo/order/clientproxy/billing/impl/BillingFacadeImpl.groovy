@@ -3,6 +3,7 @@ package com.junbo.order.clientproxy.billing.impl
 import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.ShippingAddress
 import com.junbo.billing.spec.resource.BalanceResource
+import com.junbo.billing.spec.resource.CurrencyResource
 import com.junbo.billing.spec.resource.ShippingAddressResource
 import com.junbo.common.id.BalanceId
 import com.junbo.common.id.OrderId
@@ -28,6 +29,10 @@ class BillingFacadeImpl implements BillingFacade {
     BalanceResource balanceResource
     @Resource(name='order.billingShippingAddressClient')
     ShippingAddressResource shippingAddressResource
+    @Resource(name='order.billingCurrencyClient')
+    CurrencyResource currencyResource
+
+    private Map<String, com.junbo.billing.spec.model.Currency> currencyMap
 
     @Override
     Promise<Balance> createBalance(Balance balance) {
@@ -65,5 +70,26 @@ class BillingFacadeImpl implements BillingFacade {
     @Override
     Promise<Balance> quoteBalance(Balance balance) {
         return balanceResource.quoteBalance(balance)
+    }
+
+    @Override
+    Promise<List<com.junbo.billing.spec.model.Currency>> getCurrencies() {
+        if (currencyMap != null) {
+            return Promise.pure(new ArrayList<com.junbo.billing.spec.model.Currency>(currencyMap.values()))
+        }
+        currencyResource.currencies.syncThen { Results<Currency> results ->
+            def val = new HashMap<>()
+            results?.items?.each { com.junbo.billing.spec.model.Currency currency ->
+                val[currency.name] = currency
+            }
+            currencyMap = val
+        }
+    }
+
+    @Override
+    Promise<com.junbo.billing.spec.model.Currency> getCurrency(String name) {
+        currencies.syncThen {
+            return currencyMap.get(name)
+        }
     }
 }

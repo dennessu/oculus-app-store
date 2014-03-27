@@ -238,7 +238,6 @@ public class OfferServiceImpl implements OfferService {
         if (!offerLoaded){
             this.loadAllOffers();
             this.loadAllItems();
-            this.loadAllUsers();
             this.postPredefindeOffer();
             offerLoaded = true;
         }
@@ -252,10 +251,6 @@ public class OfferServiceImpl implements OfferService {
 
     private void loadAllItems() throws Exception {
         itemService.getItem(null);
-    }
-
-    private void loadAllUsers() throws Exception {
-        userService.GetUserByUserName(null);
     }
 
     private void postPredefindeOffer() throws Exception {
@@ -295,14 +290,18 @@ public class OfferServiceImpl implements OfferService {
         Offer offerForPost = new JsonMessageTranscoder().decode(new TypeReference<Offer>() {}, strOfferContent);
 
         String itemId = Master.getInstance().getItemIdByName(itemName);
-        String userId = Master.getInstance().getUserIdByName(userName);
+        List<String> userIdList = userService.GetUserByUserName(userName);
+        String userId;
 
-        if (userId == null) {
+        if (userIdList == null || userIdList.isEmpty()) {
             User user = new User();
             user.setUserName(userName);
             user.setPassword("password");
             user.setStatus(EnumHelper.UserStatus.ACTIVE.getStatus());
             userId = userService.PostUser(user);
+        }
+        else{
+            userId = userIdList.get(0);
         }
 
         if (itemId == null) {
