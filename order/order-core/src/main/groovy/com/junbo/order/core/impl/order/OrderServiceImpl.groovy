@@ -228,6 +228,9 @@ class OrderServiceImpl implements OrderService {
             return null
         }
         def order = orderRepository.getOrderByTrackingUuid(trackingUuid)
+        if(order!=null) {
+            completeOrder(order)
+        }
         return order
     }
 
