@@ -46,6 +46,7 @@ class TestHelper {
     }
 
     static long generateLong() {
+        sleep(1)
         return nextId++
     }
 

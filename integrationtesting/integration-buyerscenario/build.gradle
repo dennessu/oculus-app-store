@@ -33,7 +33,7 @@ dependencies {
 
     compile (libraries.asyncclient)
     compile (libraries.postgresql)
-    compile project(':integration-common')
+    compile project(':common-testlib')
 
     testCompile (libraries.asyncclient)
     testCompile (libraries.slf4j_api)
@@ -41,6 +41,6 @@ dependencies {
     testCompile 'org.testng:testng:6.8.8'
     testCompile 'com.junbo.identity:identity-spec:0.0.1-SNAPSHOT'
     testCompile 'com.junbo.catalog:catalog-spec:0.0.1-SNAPSHOT'
-    testCompile project(':integration-common')
+    testCompile project(':common-testlib')
 
 }

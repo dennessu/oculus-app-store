@@ -54,6 +54,7 @@ var StoreRoutes = {
         },
         actions: {
             logout: function() {
+                $.get(AppConfig.LogoutAjaxUrl);
                 App.AuthManager.reset();
             }
         }

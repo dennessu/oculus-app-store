@@ -11,6 +11,7 @@
     <bean id="mockBillingFacade" class="com.junbo.order.clientproxy.billing.impl.BillingFacadeImpl">
         <property name="balanceResource" ref="mockBalanceResource"/>
         <property name="shippingAddressResource" ref="mockShippingAddressResource"/>
+        <property name="currencyResource" ref="mockCurrencyResource"/>
     </bean>
 
     <bean id="mockRatingFacade" class="com.junbo.order.clientproxy.rating.impl.RatingFacadeImpl">

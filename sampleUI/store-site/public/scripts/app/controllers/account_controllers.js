@@ -119,15 +119,51 @@ var AccountControllers = {
         }.property("model")
     }),
     PaymentController: Ember.ObjectController.extend({
+        errMessage: null,
+        content:{
+            payments: []
+        },
         actions:{
             AddPayment: function(){
                 this.transitionToRoute("account.addpayment");
             },
-            ShowDelPayment: function(){
-                console.log("Delete Payment");
-            },
-            DelPayment: function(){
 
+            DelDialogYes: function(){
+                var _self = this;
+                var provider = new PaymentProvider();
+                var paymentId = $("#SelectedPaymentId").val();
+                provider.Del(Utils.GenerateRequestModel({paymentId: paymentId}), function(result){
+                    if(result.data.status == 200){
+                        _self.set("errMessage", null);
+                        $("#DelPaymentDialog").hide();
+                    }else{
+                        _self.set("errMessage", "Please try again later!");
+                    }
+                });
+            },
+
+            DelDialogNo: function(){
+                $("#DelPaymentDialog").hide();
+            }
+        }
+    }),
+    PaymentItemController: Ember.ObjectController.extend({
+        cardDisplay: function(){
+            var type = this.get("model").creditCardRequest.creditCardType;
+            var number = this.get("model").accountNum;
+
+            return type+" ****"+ number.substr(number.length - 4, 4);
+        }.property('model'),
+
+        expDisplay: function(){
+            var expDate = new Date(this.get("model").creditCardRequest.expireDate);
+            return (expDate.getMonth() + 1) + "/" + expDate.getFullYear();
+        }.property('model'),
+
+        actions:{
+            DisplayDelDialog: function(){
+                $("#SelectedPaymentId").val(this.get("model").self.id);
+                $("#DelPaymentDialog").show();
             }
         }
     }),
@@ -209,6 +245,80 @@ var AccountControllers = {
             },
             Cancel: function () {
                 this.transitionToRoute("account.payment");
+            }
+        }
+    }),
+    ShippingController: Ember.ObjectController.extend({
+        errMessage: null,
+        content:{
+            shippings: []
+        },
+        actions:{
+            AddShipping: function(){
+                this.transitionToRoute("account.addshipping");
+            },
+
+            DelDialogYes: function(){
+                var _self = this;
+                var provider = new BillingProvider();
+                provider.Del(Utils.GenerateRequestModel({shippingId: $("#SelectedId").val()}), function(result){
+                    if(result.data.status == 200){
+                        _self.set("errMessage", null);
+                        $("#DelDialog").hide();
+                    }else{
+                        _self.set("errMessage", "Please try again later!");
+                    }
+                });
+            },
+
+            DelDialogNo: function(){
+                $("#DelDialog").hide();
+            }
+        }
+    }),
+    ShippingItemController: Ember.ObjectController.extend({
+        actions:{
+            DisplayDelDialog: function(){
+                $("#SelectedId").val(this.get("model").self.id);
+
+                $("#DelDialog").show();
+            }
+        }
+    }),
+    AddShippingIndexController: Ember.ObjectController.extend({
+        errMessage: null,
+        countries: (function(){
+            var result = new Array();
+            for(var i = 0; i < AppConfig.Countries.length; ++i) result.push({t: AppConfig.Countries[i].name, v: AppConfig.Countries[i].value});
+            return result;
+        }()),
+        content:{
+            country: "",
+            firstName:"",
+            lastName: "",
+            street: "",
+            city: "",
+            state: "",
+            postCode: "",
+            phoneNumber: ""
+        },
+
+        actions: {
+            Continue: function(){
+                var _self = this;
+
+                var dataProvider = new BillingProvider();
+                dataProvider.Add(Utils.GenerateRequestModel(this.get("content")), function(result){
+                    if(result.data.status == 200){
+                        _self.set("errMessage", null);
+                        _self.transitionToRoute('account.shipping');
+                    }else{
+                        _self.set("errMessage", "Please try again later!");
+                    }
+                });
+            },
+            Cancel: function(){
+                this.transitionToRoute('account.shipping');
             }
         }
     })

@@ -47,10 +47,10 @@ exports.Login = function (req, res) {
                     if (result.StatusCode == 200) {
                         if (typeof(result.Data) != "undefined" && result.Data != null) {
                             var resObj = JSON.parse(result.Data);
-                            if (typeof(resObj[process.AppConfig.FieldNames.TokenInfoUserId]) != "undefined") {
-                                store.Set(process.AppConfig.CookiesName.UserId, resObj[process.AppConfig.FieldNames.TokenInfoUserId]);
+                            if (typeof(resObj[process.AppConfig.FieldNames.TokenInfoUser]) != "undefined") {
+                                store.Set(process.AppConfig.CookiesName.UserId, resObj[process.AppConfig.FieldNames.TokenInfoUser].id);
 
-                                cb(null, resObj[process.AppConfig.FieldNames.TokenInfoUserId]);
+                                cb(null, resObj[process.AppConfig.FieldNames.TokenInfoUser].id);
                             } else {
                                 console.log("Get token info 200, but user id is undefined, Result: ", result);
                                 cb("error", result);
