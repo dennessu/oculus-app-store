@@ -42,4 +42,7 @@ public interface AppServerExceptions {
 
     @ErrorDef(httpStatusCode = 500, code = "50007", description = "merchantRef not available for currency:{0}")
     AppError merchantRefNotAvailable(String currency);
+
+    @ErrorDef(httpStatusCode = 500, code = "50008", description = "No provider found for criteria: {0}")
+    AppError providerNotFound(String criteria);
 }

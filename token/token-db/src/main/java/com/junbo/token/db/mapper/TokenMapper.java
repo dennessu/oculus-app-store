@@ -15,7 +15,7 @@ import com.junbo.token.db.entity.TokenSetEntity;
 import com.junbo.token.spec.internal.TokenSet;
 import com.junbo.token.spec.model.TokenConsumption;
 import com.junbo.token.spec.model.TokenItem;
-import com.junbo.token.spec.model.TokenOrder;
+import com.junbo.token.spec.internal.TokenOrder;
 
 /**
  * oom mapper model.
@@ -30,8 +30,8 @@ public interface TokenMapper {
     TokenOrderEntity toTokenOrderEntity(TokenOrder order, MappingContext context);
     TokenOrder toTokenOrder(TokenOrderEntity tokenSet, MappingContext context);
 
-    TokenItemEntity toTokenSetEntity(TokenItem tokenItem, MappingContext context);
-    TokenItem toTokenSet(TokenItemEntity tokenItem, MappingContext context);
+    TokenItemEntity toTokenItemEntity(TokenItem tokenItem, MappingContext context);
+    TokenItem toTokenItem(TokenItemEntity tokenItem, MappingContext context);
 
     TokenConsumptionEntity toTokenConsumptionEntity(TokenConsumption tokenConsumption, MappingContext context);
     TokenConsumption toTokenConsumption(TokenConsumptionEntity tokenConsumption, MappingContext context);

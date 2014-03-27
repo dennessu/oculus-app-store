@@ -24,17 +24,17 @@ public class TokenResourceImpl implements TokenResource{
     private TokenService tokenService;
 
     @Override
-    public Promise<TokenOrder> postOrder(TokenOrder request) {
-        return tokenService.createTokenOrder(request);
+    public Promise<OrderRequest> postOrder(OrderRequest request) {
+        return tokenService.createOrderRequest(request);
     }
 
     @Override
-    public Promise<TokenOrder> getOrderById(Long tokenOrderId) {
-        return tokenService.getTokenOrder(tokenOrderId);
+    public Promise<OrderRequest> getOrderById(Long tokenOrderId) {
+        return tokenService.getOrderRequest(tokenOrderId);
     }
 
     @Override
-    public Promise<ResultList<TokenOrder>> searchOrder(@BeanParam TokenOrderSearchParam searchParam,
+    public Promise<ResultList<OrderRequest>> searchOrder(@BeanParam TokenOrderSearchParam searchParam,
                                                        @BeanParam PageMetaData pageMetadata) {
         return null;
     }

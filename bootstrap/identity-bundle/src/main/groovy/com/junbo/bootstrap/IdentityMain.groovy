@@ -6,7 +6,6 @@
 package com.junbo.bootstrap
 
 import com.junbo.common.error.RestExceptionMapper
-import com.junbo.common.id.converter.IdTypeFromStringConverter
 import com.junbo.common.id.provider.IdTypeFromStringProvider
 import com.junbo.common.json.JacksonFeature
 import com.junbo.common.json.ObjectMapperProvider
@@ -32,14 +31,13 @@ class IdentityMain {
 
         // present properties
         resourceConfig.register(ConfigResource)
-        resourceConfig.property('contextConfigLocation', 'classpath*:/spring/*.xml')
+        resourceConfig.property('contextConfigLocation', 'classpath*:/spring/**/*.xml')
 
         // packages
         resourceConfig.packages('com.junbo.identity.spec.resource.adapter')
-        // resourceConfig.packages('com.junbo.oauth.spec.endpoint.adapter')
+        resourceConfig.packages('com.junbo.oauth.spec.endpoint.adapter')
 
         // Id type feature
-        resourceConfig.register(IdTypeFromStringConverter)
         resourceConfig.register(IdTypeFromStringProvider)
 
         resourceConfig.register(RestExceptionMapper)
@@ -57,13 +55,9 @@ class IdentityMain {
         SLF4JBridgeHandler.install()
 
         System.setProperty('net.spy.log.LoggerImpl', 'net.spy.memcached.compat.log.SLF4JLogger')
-        System.setProperty('logback.configurationFile', 'logback-identity.xml')
+        System.setProperty('logback.configurationFile', './conf/logback-identity-bundle.xml')
 
 
         startServer()
-
-        //System.out.println('started\nHit enter to stop it...')
-        //System.in.read()
-        //server.shutdown()
     }
 }

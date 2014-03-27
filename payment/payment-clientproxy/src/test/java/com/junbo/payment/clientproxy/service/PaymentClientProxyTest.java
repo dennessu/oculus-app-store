@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 import java.util.concurrent.ExecutionException;
 
 public class PaymentClientProxyTest extends BaseTest {
+    private static String BILLING_REF_ID = "123";
     @Autowired
     private PaymentInstrumentResourceClientProxy piClient;
     @Autowired
@@ -61,6 +62,7 @@ public class PaymentClientProxyTest extends BaseTest {
                 setTrackingUuid(generateUUID());
                 setUserId(userId.getValue());
                 setPaymentInstrumentId(result.getId());
+                setBillingRefId(BILLING_REF_ID);
                 setChargeInfo(new ChargeInfo(){
                     {
                         setCurrency("USD");
@@ -81,6 +83,7 @@ public class PaymentClientProxyTest extends BaseTest {
             {
                 setTrackingUuid(generateUUID());
                 setUserId(userId.getValue());
+                setBillingRefId(BILLING_REF_ID);
             }
         };
         PaymentTransaction captureResult = paymentClient.postPaymentCapture(paymentResult.getId(), captureTrx).wrapped().get();
@@ -123,6 +126,7 @@ public class PaymentClientProxyTest extends BaseTest {
                 setTrackingUuid(generateUUID());
                 setUserId(userId.getValue());
                 setPaymentInstrumentId(result.getId());
+                setBillingRefId(BILLING_REF_ID);
                 setChargeInfo(new ChargeInfo(){
                     {
                         setCurrency("USD");
@@ -138,6 +142,7 @@ public class PaymentClientProxyTest extends BaseTest {
             {
                 setTrackingUuid(generateUUID());
                 setUserId(userId.getValue());
+                setBillingRefId(BILLING_REF_ID);
                 setChargeInfo(new ChargeInfo(){
                     {
                         setCurrency("USD");
@@ -184,6 +189,7 @@ public class PaymentClientProxyTest extends BaseTest {
             {
                 setTrackingUuid(generateUUID());
                 setUserId(userId.getValue());
+                setBillingRefId(BILLING_REF_ID);
                 setPaymentInstrumentId(result.getId());
                 setChargeInfo(new ChargeInfo(){
                     {
@@ -199,6 +205,7 @@ public class PaymentClientProxyTest extends BaseTest {
         PaymentTransaction reverseTrx = new PaymentTransaction(){
             {
                 setTrackingUuid(generateUUID());
+                setBillingRefId(BILLING_REF_ID);
                 setUserId(userId.getValue());
             }
         };
@@ -241,6 +248,7 @@ public class PaymentClientProxyTest extends BaseTest {
                 setTrackingUuid(generateUUID());
                 setUserId(userId.getValue());
                 setPaymentInstrumentId(result.getId());
+                setBillingRefId(BILLING_REF_ID);
                 setChargeInfo(new ChargeInfo(){
                     {
                         setCurrency("USD");
@@ -255,6 +263,7 @@ public class PaymentClientProxyTest extends BaseTest {
         PaymentTransaction reverseTrx = new PaymentTransaction(){
             {
                 setTrackingUuid(generateUUID());
+                setBillingRefId(BILLING_REF_ID);
                 setUserId(userId.getValue());
             }
         };
@@ -296,6 +305,7 @@ public class PaymentClientProxyTest extends BaseTest {
             {
                 setTrackingUuid(generateUUID());
                 setUserId(userId.getValue());
+                setBillingRefId(BILLING_REF_ID);
                 setPaymentInstrumentId(result.getId());
                 setChargeInfo(new ChargeInfo(){
                     {
@@ -349,6 +359,7 @@ public class PaymentClientProxyTest extends BaseTest {
                 setTrackingUuid(generateUUID());
                 setUserId(userId.getValue());
                 setPaymentInstrumentId(result.getId());
+                setBillingRefId(BILLING_REF_ID);
                 setChargeInfo(new ChargeInfo(){
                     {
                         setCurrency("USD");
@@ -364,6 +375,7 @@ public class PaymentClientProxyTest extends BaseTest {
             {
                 setTrackingUuid(generateUUID());
                 setUserId(userId.getValue());
+                setBillingRefId(BILLING_REF_ID);
                 setChargeInfo(new ChargeInfo(){
                     {
                         setCurrency("USD");
@@ -423,6 +435,7 @@ public class PaymentClientProxyTest extends BaseTest {
             {
                 setTrackingUuid(generateUUID());
                 setUserId(userId.getValue());
+                setBillingRefId(BILLING_REF_ID);
                 setPaymentInstrumentId(result.getId());
                 setChargeInfo(new ChargeInfo(){
                     {
@@ -438,6 +451,7 @@ public class PaymentClientProxyTest extends BaseTest {
         PaymentTransaction reverseTrx = new PaymentTransaction(){
             {
                 setTrackingUuid(generateUUID());
+                setBillingRefId(BILLING_REF_ID);
                 setUserId(userId.getValue());
             }
         };
