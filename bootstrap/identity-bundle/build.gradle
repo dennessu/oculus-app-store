@@ -5,7 +5,7 @@ mainClassName = "com.junbo.bootstrap.IdentityMain"
 
 dependencies {
     compile "com.junbo.identity:identity-app:${junboVersion}"
-    // compile "com.junbo.oauth:oauth-app:${junboVersion}"
+    compile "com.junbo.oauth:oauth-app:${junboVersion}"
 
     compile (libraries.common_lib)
     compile (libraries.common_configuration)

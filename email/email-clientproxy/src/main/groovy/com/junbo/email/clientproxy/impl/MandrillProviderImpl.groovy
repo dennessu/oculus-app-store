@@ -2,6 +2,9 @@ package com.junbo.email.clientproxy.impl
 
 import static com.ning.http.client.extra.ListenableFutureAdapter.asGuavaFuture
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.JavaType
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -26,6 +29,8 @@ import org.springframework.beans.factory.annotation.Autowired
  * Email Provider implement by Mandrill.
  */
 class MandrillProviderImpl implements EmailProvider {
+    private final static Logger LOGGER = LoggerFactory.getLogger(MandrillProviderImpl)
+
     private static final String TO_TYPE='to'
     private static final String VARS_NAME ='name'
     private static final String VARS_CONTENT ='content'
@@ -51,14 +56,19 @@ class MandrillProviderImpl implements EmailProvider {
         requestBuilder.setBody(toJson(request))
         Promise<Response> future = Promise.wrap(asGuavaFuture(requestBuilder.execute()))
 
-        future.then {
+        future.recover {
+            LOGGER.error('Failed to build request')
+            throw AppErrors.INSTANCE.emailSendError('Fail to build request').exception()
+        } .then {
             def response = (Response)it
             if (response == null) {
+                LOGGER.error('Fail to get the response')
                 throw AppErrors.INSTANCE.emailSendError('Fail to get the response').exception()
             }
             try {
                 return Promise.pure( transcoder(response, email))
             } catch (IOException e) {
+                LOGGER.error('Fail to parse the response:',e)
                 throw AppErrors.INSTANCE.emailSendError('Fail to parse the response').exception()
             }
         }
@@ -89,6 +99,11 @@ class MandrillProviderImpl implements EmailProvider {
                     break
             }
         }
+        else {
+            LOGGER.error('Failed to send email:{}', response.responseBody)
+            returnEmail.status = EmailStatus.FAILED.toString()
+            returnEmail.statusReason = 'error'
+        }
 
         return returnEmail
     }
@@ -107,7 +122,7 @@ class MandrillProviderImpl implements EmailProvider {
         if (email.properties != null) {
             def properties = []
             email.properties.keySet().each {
-                def map = new HashMap()
+                def map = [:]
                 map.put(VARS_NAME, it)
                 map.put(VARS_CONTENT, email.properties.get(it))
                 properties << map
@@ -115,9 +130,8 @@ class MandrillProviderImpl implements EmailProvider {
             message.properties = properties
         }
         request.message = message
-        String templateName = String.format('%s.%s.%s', email.source, email.action, email.locale)
-        request.templateName = templateName
-        request.templateContent = new HashMap<>()
+        request.templateName = "${email.source}.${email.action}.${email.locale}"
+        request.templateContent = [:]
 
         return request
     }

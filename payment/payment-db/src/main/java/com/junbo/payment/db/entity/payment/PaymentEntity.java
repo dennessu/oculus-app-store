@@ -59,6 +59,9 @@ public class PaymentEntity extends GenericEntity {
     @Column(name = "external_token")
     private String externalToken;
 
+    @Column(name = "billing_ref_id")
+    private String billingRefId;
+
     public Long getId() {
         return id;
     }
@@ -158,5 +161,13 @@ public class PaymentEntity extends GenericEntity {
 
     public void setExternalToken(String externalToken) {
         this.externalToken = externalToken;
+    }
+
+    public String getBillingRefId() {
+        return billingRefId;
+    }
+
+    public void setBillingRefId(String billingRefId) {
+        this.billingRefId = billingRefId;
     }
 }

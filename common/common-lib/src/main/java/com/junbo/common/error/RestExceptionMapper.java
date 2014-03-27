@@ -5,6 +5,7 @@
  */
 package com.junbo.common.error;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,6 +27,11 @@ public class RestExceptionMapper implements ExceptionMapper<Exception> {
     public Response toResponse(Exception exception) {
         if (exception instanceof WebApplicationException) {
             return ((WebApplicationException) exception).getResponse();
+        }
+
+        if (exception instanceof JsonMappingException) {
+            Error error = new Error("invalid_json", exception.getMessage(), null, null);
+            return Response.status(Response.Status.BAD_REQUEST).entity(error).type(MediaType.APPLICATION_JSON).build();
         }
 
         LOGGER.error("Log unhandled exception", exception);

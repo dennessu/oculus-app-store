@@ -1,3 +1,5 @@
+include 'common-testlib'
+include 'identity-integration'
 include 'integration-common'
 include 'integration-catalogscenario'
 include 'integration-csrscenario'

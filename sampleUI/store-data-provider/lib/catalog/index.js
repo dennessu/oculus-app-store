@@ -54,4 +54,29 @@ Catalog.prototype.GetOfferById = function(offerId, dataObj, cb){
     client.Request(options, dataObj, cb);
 };
 
+Catalog.prototype.GetItemById = function(itemId, cb){
+    /*
+     Method: GET
+     URL: /rest/offers/{offerId}
+     Data Type: QueryString
+     Content-Type: 'application/json'
+     Request: null
+     Response: offer list
+     */
+
+    var options = {
+        host: this.Host,
+        port: this.Port,
+        path: "/rest/items/" + itemId,
+        method: 'GET',
+        headers:{
+            'Content-Type': 'application/json'
+        }
+    };
+
+    var client = new RestClient();
+    client.Request(options, null, cb);
+};
+
+
 module.exports = Catalog;

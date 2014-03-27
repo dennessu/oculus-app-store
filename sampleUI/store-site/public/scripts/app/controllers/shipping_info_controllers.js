@@ -83,7 +83,7 @@ var ShippingInfoControllers = {
             Cancel: function(){
                 var _self = this;
 
-                _self.transitionToRouteAnimated("shipping.index", {shipping: "flip"});
+                _self.transitionToRouteAnimated("shipping.address", {shipping: "flip"});
             }
         }
     })
