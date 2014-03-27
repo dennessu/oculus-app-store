@@ -13,6 +13,7 @@ import com.junbo.common.id.OfferId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.common.model.Results;
+import com.junbo.identity.spec.model.user.User;
 import com.junbo.langur.core.client.TypeReference;
 import com.junbo.test.common.apihelper.catalog.ItemService;
 import com.junbo.test.common.apihelper.catalog.OfferService;
