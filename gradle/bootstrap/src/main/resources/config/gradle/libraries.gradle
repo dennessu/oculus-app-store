@@ -48,7 +48,7 @@ ext {
             // javax
             rs_api:                 'javax.ws.rs:javax.ws.rs-api:2.0',
             servlet_api:            'javax.servlet:javax.servlet-api:3.1.0',
-            persistence_api:        'javax.persistence:persistence-api:1.0.2',
+            persistence_api:        'org.hibernate.javax.persistence:hibernate-jpa-2.0-api:1.0.1.Final',
             validation_api:         'javax.validation:validation-api:1.1.0.Final',
             el_api:                 'javax.el:javax.el-api:2.2.4',
             el:                     'org.glassfish.web:javax.el:2.2.4',
@@ -126,5 +126,9 @@ ext {
             easy_mock:              'org.easymock:easymock:3.2',
 
             btm:                    'com.junbo.btm:btm:3.0.0-SNAPSHOT', // switch to org.codehaus.btm if release version available
+
+
+            querydsl_apt:           'com.mysema.querydsl:querydsl-apt:3.3.2',
+            querydsl_jpa:           'com.mysema.querydsl:querydsl-jpa:3.3.2',
     ]
 }
