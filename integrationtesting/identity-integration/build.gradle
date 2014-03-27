@@ -5,8 +5,10 @@ sourceCompatibility = '1.7'
 
 test{
     useTestNG()
+    systemProperty 'test.config', System.properties['test.config']
     options {
         listeners << 'org.testng.reporters.XMLReporter'
+        listeners << 'com.junbo.test.common.property.PropertyTransformer'
     }
     testLogging {
         events "passed", "skipped", "failed"

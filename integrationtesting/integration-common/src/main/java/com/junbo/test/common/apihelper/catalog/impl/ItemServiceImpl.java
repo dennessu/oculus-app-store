@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.testing.common.apihelper.catalog.impl;
+package com.junbo.test.common.apihelper.catalog.impl;
 
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.common.id.UserId;
@@ -11,11 +11,11 @@ import com.junbo.common.model.Results;
 import com.junbo.common.id.ItemId;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
-import com.junbo.testing.common.apihelper.catalog.ItemService;
-import com.junbo.testing.common.apihelper.identity.UserService;
-import com.junbo.testing.common.apihelper.identity.impl.UserServiceImpl;
-import com.junbo.testing.common.blueprint.Master;
-import com.junbo.testing.common.libs.*;
+import com.junbo.test.common.apihelper.catalog.ItemService;
+import com.junbo.test.common.apihelper.identity.UserService;
+import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
+import com.junbo.test.common.blueprint.Master;
+import com.junbo.test.common.libs.*;
 
 import com.ning.http.client.*;
 import com.ning.http.client.providers.netty.NettyResponse;
@@ -62,7 +62,7 @@ public class ItemServiceImpl implements ItemService {
         RequestBuilder reqBuilder = new RequestBuilder("GET");
         reqBuilder.addHeader(RestUrl.requestHeaderName, RestUrl.requestHeaderValue);
         reqBuilder.setUrl(url);
-        if (!httpPara.isEmpty()) {
+        if (httpPara != null && !httpPara.isEmpty()) {
             for (String key: httpPara.keySet()) {
                 reqBuilder.addQueryParameter(key, httpPara.get(key));
             }
@@ -92,7 +92,7 @@ public class ItemServiceImpl implements ItemService {
         RequestBuilder reqBuilder = new RequestBuilder("GET");
         reqBuilder.addHeader(RestUrl.requestHeaderName, RestUrl.requestHeaderValue);
         reqBuilder.setUrl(catalogServerURL);
-        if (!httpPara.isEmpty()) {
+        if (httpPara != null && !httpPara.isEmpty()) {
             for (String key: httpPara.keySet()) {
                 reqBuilder.addQueryParameter(key, httpPara.get(key));
             }
@@ -151,21 +151,10 @@ public class ItemServiceImpl implements ItemService {
         return itemForPost;
     }
 
-    public String postDefaultItem(boolean isPhysical) throws Exception {
+    public String postDefaultItem(EnumHelper.CatalogItemType itemType) throws Exception {
 
         Item itemForPost = prepareItemEntity(defaultItemFileName);
-        //To post a digital or physical item:
-        if (isPhysical) {
-            itemForPost.setType(EnumHelper.CatalogItemType.PHYSICAL.getItemType());
-        }
-        else {
-            if ((int) (Math.random() * 2) == 1) {
-                itemForPost.setType(EnumHelper.CatalogItemType.APP.getItemType());
-            }
-            else {
-                itemForPost.setType(EnumHelper.CatalogItemType.IAP.getItemType());
-            }
-        }
+        itemForPost.setType(itemType.getItemType());
 
         RequestBuilder reqBuilder = new RequestBuilder("POST");
         reqBuilder.addHeader(RestUrl.requestHeaderName, RestUrl.requestHeaderValue);

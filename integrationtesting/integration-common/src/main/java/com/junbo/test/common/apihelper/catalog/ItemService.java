@@ -3,9 +3,11 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.testing.common.apihelper.catalog;
+package com.junbo.test.common.apihelper.catalog;
 
 import com.junbo.catalog.spec.model.item.Item;
+import com.junbo.test.common.libs.EnumHelper;
+
 import java.util.HashMap;
 import java.util.List;
 
@@ -22,7 +24,7 @@ public interface ItemService {
     List<String> getItem(HashMap<String, String> httpPara) throws Exception;
     List<String> getItem(HashMap<String, String> httpPara, int expectedResponseCode) throws Exception;
 
-    String postDefaultItem(boolean isPhysical) throws Exception;
+    String postDefaultItem(EnumHelper.CatalogItemType itemType) throws Exception;
     Item prepareItemEntity(String fileName) throws Exception;
     String postItem(Item item) throws Exception;
     String postItem(Item item, int expectedResponseCode) throws Exception;

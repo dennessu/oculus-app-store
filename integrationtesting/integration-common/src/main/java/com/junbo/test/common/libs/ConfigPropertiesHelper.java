@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.testing.common.libs;
+package com.junbo.test.common.libs;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -55,7 +55,7 @@ public final class ConfigPropertiesHelper {
     private static void init() {
         String config = System.getProperty("test.config");
         if (config != null && config.length() > 0 && !config.startsWith("${")) {
-            logger.logInfo("universe: " + config);
+            logger.logInfo("test config: " + config);
             loadTestProperties(String.format("testconfig/%s.config", config));
         }
         else {

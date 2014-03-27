@@ -15,7 +15,7 @@ test{
     systemProperty 'test.config', System.properties['test.config']
     options {
         listeners << 'org.testng.reporters.XMLReporter'
-        listeners << 'com.junbo.testing.common.property.PropertyTransformer'
+        listeners << 'com.junbo.test.common.property.PropertyTransformer'
     }
     testLogging {
         events "passed", "skipped", "failed"
