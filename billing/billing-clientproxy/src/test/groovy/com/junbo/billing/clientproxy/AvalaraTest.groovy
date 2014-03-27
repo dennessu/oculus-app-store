@@ -32,7 +32,7 @@ public class AvalaraTest extends BaseTest {
         shippingAddress.city = "Commerce City"
         shippingAddress.state = "CO"
         shippingAddress.postalCode = "80022"
-        shippingAddress.country = "USA"
+        shippingAddress.country = "US"
 
         balance.balanceItems.each { BalanceItem balanceItem ->
             item.orderItemId = new OrderItemId(321L)
@@ -52,6 +52,7 @@ public class AvalaraTest extends BaseTest {
         shippingAddress.city = "Commerce City"
         shippingAddress.state = "CO"
         shippingAddress.postalCode = "80022"
+        shippingAddress.country = "US"
 
         def validatedAddress = avalaraFacade.validateShippingAddress(shippingAddress).wrapped().get()
         Assert.assertNotNull(validatedAddress, "Fail to validate address.")
