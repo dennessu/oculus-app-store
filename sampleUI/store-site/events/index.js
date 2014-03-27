@@ -81,6 +81,11 @@ module.exports = function(io){
                 fn(data);
             });
         });
+        socket.on('/api/catalog/get_download_links', function (data, fn) {
+            Catalog.GetDownloadLinksByOfferId(data, function(data){
+                fn(data);
+            });
+        });
 
         /* Cart -------------------------------------------------------------- */
         socket.on('/api/cart/get', function (data, fn) {

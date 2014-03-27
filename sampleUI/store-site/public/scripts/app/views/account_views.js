@@ -29,5 +29,12 @@ var AccountViews = {
     }),
     PaymentView: Ember.View.extend({
         template: Ember.TEMPLATES[AppConfig.Templates.Account.Payment]
+    }),
+    AddPaymentView: Ember.View.extend({
+        template: Ember.TEMPLATES[AppConfig.Templates.Account.AddPayment],
+        didInsertElement: function(){
+            $("form").validate();
+        }
     })
+
 };

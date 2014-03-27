@@ -1,14 +1,14 @@
 <div class="content">
     <div class="box2 payment">
         <h2>Payment Profiles</h2>
-        <p><button type="button" class="btn btn-large btn-primary">Add Payment Method</button></p>
+        <p><button type="button" class="btn btn-large btn-primary" {{action "AddPayment"}}>Add Payment Method</button></p>
 
         <div class="list">
             <dl>
                 <dd><label>VISA</label></dd>
                 <dd class="number">VISA ****7890</dd>
                 <dd class="exp">Exp 05/02/17</dd>
-                <dd><a href="#" class="btn btn-small btn-primary">Delete</a></dd>
+                <dd><a href="#" class="btn btn-small btn-primary" {{action "ShowDelPayment"}}>Delete</a></dd>
             </dl>
             <div class="line1"></div>
             <dl>

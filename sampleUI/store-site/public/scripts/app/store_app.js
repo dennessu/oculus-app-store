@@ -33,6 +33,7 @@ App.Router.map(function(){
         this.route("editprofile");
         this.route("history");
         this.route("payment");
+        this.route("addpayment");
 
     });
 });
@@ -59,6 +60,8 @@ App.AccountProfileRoute = AccountRoutes.ProfileRoute;
 App.AccountEditprofileRoute = AccountRoutes.EditProfileRoute;
 App.AccountHistoryRoute = AccountRoutes.HistoryRoute;
 App.AccountPaymentRoute = AccountRoutes.PaymentRoute;
+App.AccountAddpaymentRoute = AccountRoutes.AddPaymentRoute;
+
 
 App.IndexView = StoreViews.IndexView;
 App.DetailView = StoreViews.DetailView;
@@ -81,6 +84,7 @@ App.AccountProfileView = AccountViews.ProfileView;
 App.AccountEditprofileView = AccountViews.EditProfileView;
 App.AccountHistoryView = AccountViews.HistoryView;
 App.AccountPaymentView = AccountViews.PaymentView;
+App.AccountAddpaymentView = AccountViews.AddPaymentView;
 
 App.ApplicationController = StoreControllers.ApplicationController;
 App.DetailController = StoreControllers.DetailController;
@@ -102,6 +106,8 @@ App.AccountProfileController = AccountControllers.ProfileController;
 App.AccountEditprofileController = AccountControllers.EditProfileController;
 App.AccountHistoryController = AccountControllers.HistoryController;
 App.AccountHistoryItemController = AccountControllers.HistoryItemController;
-App.AccountHistoryItemProductsController = AccountControllers.HistoryItemProducts;
+App.AccountHistoryItemProductsController = AccountControllers.HistoryItemProductsController;
 App.AccountPaymentController = AccountControllers.PaymentController;
+App.AccountAddpaymentController = AccountControllers.AddPaymentIndexController;
+
 

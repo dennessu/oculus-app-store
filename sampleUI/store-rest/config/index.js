@@ -440,7 +440,7 @@ module.exports = {
                     statusCode: 200,
                     headers: null,
                     data: {
-                        name: "APP",
+                        name: "APP Name",
                         properties:{
                             downloadLink: "http://www.google.com"
                         }
@@ -492,7 +492,6 @@ module.exports = {
                                 "sku": null,
                                 "quantity": null
                             },
-
                             {
                                 "itemId": {
                                     "href": "http://api.oculusvr.com/v1/Item/100000",

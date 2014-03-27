@@ -162,13 +162,15 @@ body header > nav{ line-height: 25px; color: #CCC; border-bottom: solid 1px #BCB
 .create_payment .cvv dd input{ width: 60px;}
 
 /* account */
+.account .modules{ margin: 0; padding: 0; width: 690px;}
+
 .account .sidebar{ float: left; width: 200px;}
 .account .content{ float: right; width: 690px; }
 .account .settings dl dt{ position: relative;}
 .account .settings dl dt .btn-primary{ position: absolute; right: 0px; min-width: 10px; width: auto;}
 .account .settings dl dd{ width: 200px;}
 
-.account .payment .list{ padding: 10px; border: solid 1px #CCC; background-color: #F2F2F2;}
+.account .payment .list{ padding: 10px; border: solid 1px #CCC; }
 .account .payment .list dl{ margin: 0; height: 24px; line-height: 24px;  }
 .account .payment .list dl dd{ margin: 0; float: left;  }
 .account .payment .list dl dd:first-child{ width: 60px; }
@@ -188,6 +190,10 @@ body header > nav{ line-height: 25px; color: #CCC; border-bottom: solid 1px #BCB
 .account .history > .item .detail > dl dt{ float: left; width: 50%;}
 .account .history > .item .detail > dl dd{float: left; margin: 0; width: 15%;}
 .account .history > .item .detail > dl dd:last-child{ float: right; width: 15%; text-align: right; font-weight: bold;}
+.account .history > .item .detail > dl dt .download{display: inline-block; position: relative; padding: 0 4px; line-height: 16px; color: #FFF; background-color: #FF6600; cursor: pointer; }
+.account .history > .item .detail > dl dt .download ul{display: none;}
+.account .history > .item .detail > dl dt .download:hover ul{display:block; margin: 0; padding: 0; position: absolute; top: 0px; left: 0px; width: 100px; background-color: #f7f7f7; border: solid 1px #CCC; z-index: 1000; box-shadow: 0 0 2px rgba(0,0,0, .2); }
+.account .history > .item .detail > dl dt .download:hover ul li{display:block; padding: 0 0 0 10px; height: 25px; line-height: 25px; list-style: none; border-bottom: solid 1px #CCC; }
 .account .history > .item .detail .money{ float: right; width: 270px;}
 .account .history > .item .detail .money dl{ margin: 0; line-height: 22px; height: 22px;}
 .account .history > .item .detail .money dt{float: left; width: 150px; text-align: right;}

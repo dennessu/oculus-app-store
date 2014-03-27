@@ -22,7 +22,8 @@ AppConfig.API = {
         Config: {
             Namespace: "/api/catalog/"
         },
-        Products: { Path: "products" }
+        GetProducts: { Path: "products" },
+        GetDownloadLinks: { Path: "get_download_links" }
     },
 
     Cart: {

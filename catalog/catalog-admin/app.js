@@ -2,6 +2,7 @@ var express = require('express');
 var offers = require('./api-proxy/offers');
 var items = require('./api-proxy/items');
 var attributes = require('./api-proxy/attributes');
+var priceTiers = require('./api-proxy/price-tiers');
 var http = require('http');
 var path = require('path');
 
@@ -37,6 +38,10 @@ app.put('/api/items/:id', items.updateItem);
 app.get('/api/attributes', attributes.getAttributes);
 app.post('/api/attributes', attributes.createAttribute);
 app.get('/api/attributes/:id', attributes.getAttribute);
+
+app.get('/api/price-tiers', priceTiers.getPriceTiers);
+app.post('/api/price-tiers', priceTiers.createPriceTier);
+app.get('/api/price-tiers/:id', priceTiers.getPriceTier);
 
 /*app.engine('.html', require('ejs').renderFile);
 app.set('views', __dirname + '/public');

@@ -25,3 +25,6 @@ exports.History = function(req, res){
 exports.Payment = function(req, res){
     res.render('account/payment', {layout: false, title: "Store Demo"});
 };
+exports.AddPayment = function(req, res){
+    res.render('modules/payment_edit', {layout: false, title: "Store Demo"});
+};

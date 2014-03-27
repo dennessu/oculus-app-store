@@ -4,10 +4,11 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.token.spec.model;
+package com.junbo.token.spec.internal;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.jackson.annotation.TokenOrderId;
+import com.junbo.token.spec.model.TokenItem;
 
 import java.util.Date;
 import java.util.List;

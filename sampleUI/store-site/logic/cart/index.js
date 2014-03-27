@@ -598,6 +598,7 @@ Cart.PurchaseOrder = function(data, callback){
     });
 };
 
+
 Cart._getIndexByOffers = function (offerId, offers) {
     for (var i = 0; i < offers.length; ++i) {
         var currentOfferId = offers[i].offer.id;
