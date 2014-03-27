@@ -238,7 +238,7 @@ public class OfferServiceImpl implements OfferService {
         if (!offerLoaded){
             this.loadAllOffers();
             this.loadAllItems();
-            this.loadAllUsers();
+            //this.loadAllUsers();
             this.postPredefindeOffer();
             offerLoaded = true;
         }
@@ -268,13 +268,13 @@ public class OfferServiceImpl implements OfferService {
                 logger.logInfo(sCurrentLine);
                 String[] strLine = sCurrentLine.split(",");
                 if (Master.getInstance().getOfferIdByName(strLine[0]) == null) {
-                    Offer offer = this.preparePredefindeOffer(strLine[0], strLine[1], strLine[2], strLine[3]);
+                    Offer offer = this.preparePredefindeOffer(strLine[0], strLine[1], strLine[3]);
                     String offerId = this.postOffer(offer);
                     //Release the offer
-                Offer offerRtn = Master.getInstance().getOffer(offerId);
-                offerRtn.setStatus(EnumHelper.CatalogEntityStatus.RELEASED.getEntityStatus());
-                this.updateOffer(offerRtn);
-            }
+                    Offer offerRtn = Master.getInstance().getOffer(offerId);
+                    offerRtn.setStatus(EnumHelper.CatalogEntityStatus.RELEASED.getEntityStatus());
+                    this.updateOffer(offerRtn);
+                }
             }
         } catch (IOException e) {
             throw e;
@@ -288,22 +288,14 @@ public class OfferServiceImpl implements OfferService {
         }
     }
 
-    private Offer preparePredefindeOffer(String offerName, String itemName, String userName, String offerType)
+    private Offer preparePredefindeOffer(String offerName, String itemName, String offerType)
             throws  Exception {
 
         String strOfferContent = readFileContent(offerName);
         Offer offerForPost = new JsonMessageTranscoder().decode(new TypeReference<Offer>() {}, strOfferContent);
 
         String itemId = Master.getInstance().getItemIdByName(itemName);
-        String userId = Master.getInstance().getUserIdByName(userName);
-
-        if (userId == null) {
-            User user = new User();
-            user.setUserName(userName);
-            user.setPassword("password");
-            user.setStatus(EnumHelper.UserStatus.ACTIVE.getStatus());
-            userId = userService.PostUser(user);
-        }
+        String userId = userService.PostUser();
 
         if (itemId == null) {
             Item item = itemService.prepareItemEntity(itemName);
