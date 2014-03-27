@@ -219,18 +219,6 @@ public class Master {
         return null;
     }
 
-    public String getUserIdByName(String userName) {
-
-        for (Map.Entry<String, User> entry : users.entrySet()) {
-            String key = entry.getKey();
-            User user = entry.getValue();
-            if (user.getUserName().equals(userName)) {
-                return key;
-            }
-        }
-        return null;
-    }
-
     public Cart getCart(String cartId) {
         return this.carts.get(cartId);
     }

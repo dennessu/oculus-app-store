@@ -35,7 +35,7 @@ import java.util.concurrent.Future;
 public class AttributeServiceImpl implements AttributeService {
 
     private final String catalogServerURL = RestUrl.getRestUrl(RestUrl.ComponentName.CATALOG) + "attributes";
-    private LogHelper logger = new LogHelper(ItemServiceImpl.class);
+    private LogHelper logger = new LogHelper(AttributeServiceImpl.class);
     private AsyncHttpClient asyncClient;
     private static AttributeService instance;
 
