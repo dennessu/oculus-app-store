@@ -8,12 +8,14 @@ package com.junbo.catalog.core.service;
 
 import com.junbo.catalog.core.ItemService;
 import com.junbo.catalog.core.OfferService;
+import com.junbo.catalog.core.PriceTierService;
 import com.junbo.catalog.db.repo.OfferDraftRepository;
 import com.junbo.catalog.db.repo.OfferRepository;
 import com.junbo.catalog.spec.model.common.EntityGetOptions;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.item.ItemType;
 import com.junbo.catalog.spec.model.offer.*;
+import com.junbo.catalog.spec.model.pricetier.PriceTier;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -29,6 +31,8 @@ public class OfferServiceImpl extends BaseServiceImpl<Offer> implements OfferSer
     private OfferDraftRepository offerDraftRepository;
     @Autowired
     private ItemService itemService;
+    @Autowired
+    private PriceTierService priceTierService;
 
     @Override
     public OfferRepository getEntityRepo() {
@@ -52,6 +56,11 @@ public class OfferServiceImpl extends BaseServiceImpl<Offer> implements OfferSer
                 action.setEntitlementDefId(item.getEntitlementDefId());
                 actions.add(action);
             }
+        }
+
+        if (offer.getPriceTier() != null) {
+            PriceTier priceTier = priceTierService.getPriceTier(offer.getPriceTier());
+            offer.setPrices(priceTier.getPrices());
         }
 
         if (!actions.isEmpty()) {
