@@ -9,6 +9,7 @@ package com.junbo.catalog.spec.model.item;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.catalog.spec.model.common.VersionedModel;
+import com.junbo.common.jackson.annotation.EntitlementDefinitionId;
 import com.junbo.common.jackson.annotation.ItemId;
 import com.junbo.common.jackson.annotation.UserId;
 
@@ -29,7 +30,8 @@ public class Item extends VersionedModel {
     private List<Sku> skus;
     private Map<String, Object> properties;
 
-    @JsonIgnore
+    @EntitlementDefinitionId
+    @JsonProperty("entitlementDef")
     private Long entitlementDefId;
 
     public Long getId() {

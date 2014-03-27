@@ -1,6 +1,12 @@
 var AccountRoutes = {
     LayoutRoute: Ember.Route.extend({
         beforeModel: function(){
+            if(!Ember.App.AuthManager.isAuthenticated()){
+                Utils.Cookies.Set(AppConfig.CookiesName.BeforeRoute, "account");
+                location.href = AppConfig.LoginUrl;
+                return;
+            }
+
             Utils.GetViews(AppConfig.Templates.Account.Layout);
         }
     }),
@@ -96,6 +102,17 @@ var AccountRoutes = {
     PaymentRoute: Ember.Route.extend({
         beforeModel: function(){
             Utils.GetViews(AppConfig.Templates.Account.Payment);
+        },
+        setupController: function(controoler, model){
+            var provider = new PaymentProvider();
+            provider.PaymentInstruments(Utils.GenerateRequestModel(null), function(result){
+                if(result.data.status == 200){
+                    var payments = JSON.parse(result.data.data).items;
+                    controoler.set("content.payments", payments);
+                }else{
+                    console.log("Can't get the payment instruments");
+                }
+            });
         }
     }),
     AddPaymentRoute: Ember.Route.extend({
@@ -123,7 +140,26 @@ var AccountRoutes = {
                 }
             });
         }
+    }),
+    ShippingRoute: Ember.Route.extend({
+        beforeModel: function(){
+            Utils.GetViews(AppConfig.Templates.Account.Shipping);
+        },
+        setupController: function(controoler, model){
+            var provider = new BillingProvider();
+            provider.ShippingInfo(Utils.GenerateRequestModel(null), function(result){
+                if(result.data.status == 200){
+                    var shippings = JSON.parse(result.data.data);
+                    controoler.set("content.shippings", shippings);
+                }else{
+                    console.log("Can't get the shippings");
+                }
+            });
+        }
+    }),
+    AddShippingRoute: Ember.Route.extend({
+        beforeModel: function(){
+            Utils.GetViews(AppConfig.Templates.Account.AddShipping);
+        }
     })
-
-
 };

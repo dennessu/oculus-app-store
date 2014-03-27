@@ -7,6 +7,7 @@
 package com.junbo.order.clientproxy.billing;
 
 import com.junbo.billing.spec.model.Balance;
+import com.junbo.billing.spec.model.Currency;
 import com.junbo.billing.spec.model.ShippingAddress;
 import com.junbo.langur.core.promise.Promise;
 
@@ -23,4 +24,7 @@ public interface BillingFacade {
     Promise<List<Balance>> getBalancesByOrderId(Long orderId);
     Promise<ShippingAddress> getShippingAddress(Long userId, Long shippingAddressId);
     Promise<Balance> quoteBalance(Balance balance);
+    Promise<List<Currency>> getCurrencies();
+    Promise<Currency> getCurrency(String name);
+
 }

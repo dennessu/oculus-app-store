@@ -7,7 +7,7 @@ package com.junbo.test.identity;
 
 import com.junbo.identity.spec.model.user.User;
 
-import org.testng.annotations.*;
+import org.testng.annotations.Test;
 
 import static org.testng.AssertJUnit.*;
 

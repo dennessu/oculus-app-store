@@ -11,6 +11,7 @@ import com.junbo.catalog.core.ItemService;
 import com.junbo.catalog.db.repo.ItemDraftRepository;
 import com.junbo.catalog.db.repo.ItemRepository;
 import com.junbo.catalog.spec.error.AppErrors;
+import com.junbo.catalog.spec.model.common.Status;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementType;
 import com.junbo.catalog.spec.model.item.Item;
@@ -41,16 +42,28 @@ public class ItemServiceImpl extends BaseServiceImpl<Item> implements ItemServic
     @Override
     public Item create(Item item) {
         validateItem(item);
+        item.setStatus(Status.DESIGN);
+        Long itemId = itemDraftRepository.create(item);
+        item.setId(itemId);
+
         if (ItemType.APP.equalsIgnoreCase(item.getType())) {
             EntitlementDefinition entitlementDef = new EntitlementDefinition();
             entitlementDef.setDeveloperId(item.getOwnerId());
-            entitlementDef.setGroup(item.getName());
+            entitlementDef.setGroup(itemId.toString());
             entitlementDef.setType(EntitlementType.DOWNLOAD.name());
-            entitlementDef.setTag(EntitlementType.DOWNLOAD.name());
+            entitlementDef.setTag(item.getName());
             Long entitlementDefId = entitlementDefService.createEntitlementDefinition(entitlementDef);
             item.setEntitlementDefId(entitlementDefId);
         }
-        return super.create(item);
+        itemDraftRepository.update(item);
+
+        return itemDraftRepository.get(itemId);
+    }
+
+    @Override
+    public Item update(Long entityId, Item entity) {
+        validateId(entityId, entity);
+        return updateEntity(entityId, entity);
     }
 
     private void validateItem(Item item) {
