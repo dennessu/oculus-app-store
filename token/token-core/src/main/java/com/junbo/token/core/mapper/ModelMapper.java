@@ -50,6 +50,7 @@ public final class ModelMapper {
         request.setQuantity(tokenOrder.getQuantity());
         request.setTokenItems(tokenOrder.getTokenItems());
         request.setUsageLimit(tokenOrder.getUsageLimit());
+        request.setId(tokenOrder.getId());
         return request;
     }
 }

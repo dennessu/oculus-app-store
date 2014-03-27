@@ -15,6 +15,8 @@ import com.junbo.token.common.TokenUtil;
 import com.junbo.token.db.repository.TokenRepository;
 import com.junbo.token.spec.enums.CreateMethod;
 import com.junbo.token.spec.enums.ItemStatus;
+import com.junbo.token.spec.enums.OrderStatus;
+import com.junbo.token.spec.enums.SetStatus;
 import com.junbo.token.spec.internal.TokenSet;
 import com.junbo.token.spec.model.OrderRequest;
 import com.junbo.token.spec.model.TokenItem;
@@ -88,10 +90,12 @@ public class TokenServiceImpl implements TokenService {
     }
 
     private TokenSet addSet(TokenSet request){
+        request.setStatus(SetStatus.ACTIVE.toString());
         return tokenRepository.addTokenSet(request);
     }
 
     private TokenOrder addOrder(TokenOrder request) {
+        request.setStatus(OrderStatus.COMPLETED.toString());
         TokenOrder result = tokenRepository.addTokenOrder(request);
         TokenSet tokenSet = tokenRepository.getTokenSet(request.getTokenSetId());
         List<TokenItem> tokenItems = new ArrayList<TokenItem>();

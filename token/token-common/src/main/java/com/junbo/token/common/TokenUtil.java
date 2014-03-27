@@ -23,7 +23,7 @@ public class TokenUtil {
     }
 
     public static String generateToken(String length, Long seed){
-        Random random = new Random(seed);
+        Random random = new Random(System.currentTimeMillis());
         return String.valueOf(random.nextLong());
     }
 
