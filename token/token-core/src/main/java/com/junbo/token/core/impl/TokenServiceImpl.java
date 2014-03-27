@@ -13,10 +13,7 @@ import com.junbo.token.core.mapper.ModelMapper;
 import com.junbo.token.core.mapper.OrderWrapper;
 import com.junbo.token.common.TokenUtil;
 import com.junbo.token.db.repository.TokenRepository;
-import com.junbo.token.spec.enums.CreateMethod;
-import com.junbo.token.spec.enums.ItemStatus;
-import com.junbo.token.spec.enums.OrderStatus;
-import com.junbo.token.spec.enums.SetStatus;
+import com.junbo.token.spec.enums.*;
 import com.junbo.token.spec.internal.TokenSet;
 import com.junbo.token.spec.model.OrderRequest;
 import com.junbo.token.spec.model.TokenItem;
@@ -100,13 +97,16 @@ public class TokenServiceImpl implements TokenService {
         TokenSet tokenSet = tokenRepository.getTokenSet(request.getTokenSetId());
         List<TokenItem> tokenItems = new ArrayList<TokenItem>();
         if(request.getCreateMethod().equalsIgnoreCase(CreateMethod.GENERATION.toString())){
-            for(String item : TokenUtil.generateToken(tokenSet.getGenerationLength(),
-                    tokenSet.getGenerationSeed(), request.getQuantity())){
+            int genLen = tokenSet.getGenerationLength().equalsIgnoreCase(TokenLength.LEN16.toString()) ? 16 : (
+                    tokenSet.getGenerationLength().equalsIgnoreCase(TokenLength.LEN20.toString()) ? 20 : (
+                    tokenSet.getGenerationLength().equalsIgnoreCase(TokenLength.LEN25.toString()) ? 25 : 0)
+                    );
+            for(String item : TokenUtil.generateToken(genLen, request.getQuantity())){
                 TokenItem tokenItem = new TokenItem();
                 tokenItem.setOrderId(result.getId());
                 tokenItem.setStatus(CommonUtil.toBool(request.getActivation())
                         ? ItemStatus.ACTIVATED.toString() : ItemStatus.DEACTIVATED.toString());
-                tokenItem.setHashValue(CommonUtil.computeHash(item));
+                tokenItem.setHashValue(TokenUtil.computeHash(item).getHashValue());
                 tokenItem.setEncryptedString(CommonUtil.encrypt(item));
                 tokenItems.add(tokenItem);
             }
@@ -116,7 +116,8 @@ public class TokenServiceImpl implements TokenService {
                 tokenItem.setOrderId(result.getId());
                 tokenItem.setStatus(CommonUtil.toBool(request.getActivation())
                         ? ItemStatus.ACTIVATED.toString() : ItemStatus.DEACTIVATED.toString());
-                tokenItem.setHashValue(CommonUtil.computeHash(CommonUtil.decrypt(item.getEncryptedString())));
+                String itemString = item.getEncryptedString();
+                tokenItem.setHashValue(TokenUtil.computeHash(CommonUtil.decrypt(itemString)).getHashValue());
                 tokenItems.add(tokenItem);
             }
         }

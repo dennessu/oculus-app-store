@@ -10,7 +10,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.JSONSerializer;
 import com.alibaba.fastjson.serializer.PropertyFilter;
 import com.alibaba.fastjson.serializer.SerializeWriter;
-import org.apache.commons.codec.digest.DigestUtils;
 
 import java.util.*;
 
@@ -50,12 +49,6 @@ public final class CommonUtil {
 
     public static boolean toBool(String value){
         return value.equalsIgnoreCase("Yes") || value.equalsIgnoreCase("True");
-    }
-
-    //TODO: need find a better way other than truncate the hex.
-    public static Long computeHash(String text){
-        String hexValue = DigestUtils.sha256Hex(text);
-        return Long.parseLong(hexValue.substring(0,14), 16);
     }
 
     //TODO:
