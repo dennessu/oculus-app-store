@@ -14,11 +14,11 @@ public class GroupGetOptions {
     @QueryParam("properties")
     private String properties;
 
-    public String getProperties() {
-        return properties;
-    }
-
     public void setProperties(String properties) {
         this.properties = properties;
+    }
+
+    public String getProperties() {
+        return properties;
     }
 }

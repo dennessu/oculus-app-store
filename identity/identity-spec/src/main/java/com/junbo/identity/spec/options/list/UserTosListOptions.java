@@ -13,12 +13,6 @@ import javax.ws.rs.QueryParam;
  * Created by liangfu on 3/14/14.
  */
 public class UserTosListOptions extends PagingGetOptions {
-    @QueryParam("tosUri")
-    private String tosUri;
-
-    @QueryParam("userId")
-    private UserId userId;
-
     public String getTosUri() {
         return tosUri;
     }
@@ -34,4 +28,9 @@ public class UserTosListOptions extends PagingGetOptions {
     public void setUserId(UserId userId) {
         this.userId = userId;
     }
+
+    @QueryParam("tosUri")
+    private String tosUri;
+    @QueryParam("userId")
+    private UserId userId;
 }

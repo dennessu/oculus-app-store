@@ -96,7 +96,7 @@ class NameValidatorImpl implements NameValidator {
         }
 
         if (name.firstName.length() > firstNameMaxLength) {
-            throw AppErrors.INSTANCE.fieldTooShort('name.firstName', firstNameMaxLength).exception()
+            throw AppErrors.INSTANCE.fieldTooLong('name.firstName', firstNameMaxLength).exception()
         }
 
         if (name.lastName == null) {
@@ -108,7 +108,7 @@ class NameValidatorImpl implements NameValidator {
         }
 
         if (name.lastName.length() > lastNameMaxLength) {
-            throw AppErrors.INSTANCE.fieldTooShort('name.lastName', lastNameMaxLength).exception()
+            throw AppErrors.INSTANCE.fieldTooLong('name.lastName', lastNameMaxLength).exception()
         }
 
         if (name.middleName != null) {
@@ -117,7 +117,7 @@ class NameValidatorImpl implements NameValidator {
             }
 
             if (name.middleName.length() > middleNameMaxLength) {
-                throw AppErrors.INSTANCE.fieldTooShort('name.middleName', middleNameMaxLength).exception()
+                throw AppErrors.INSTANCE.fieldTooLong('name.middleName', middleNameMaxLength).exception()
             }
         }
 
@@ -127,7 +127,7 @@ class NameValidatorImpl implements NameValidator {
             }
 
             if (name.honorificPrefix.length() > honorificPrefixMaxLength) {
-                throw AppErrors.INSTANCE.fieldTooShort('name.honorificPrefix', honorificPrefixMaxLength).exception()
+                throw AppErrors.INSTANCE.fieldTooLong('name.honorificPrefix', honorificPrefixMaxLength).exception()
             }
         }
 
@@ -137,7 +137,7 @@ class NameValidatorImpl implements NameValidator {
             }
 
             if (name.honorificSuffix.length() > honorificSuffixMaxLength) {
-                throw AppErrors.INSTANCE.fieldTooShort('name.honorificSuffix', honorificSuffixMaxLength).exception()
+                throw AppErrors.INSTANCE.fieldTooLong('name.honorificSuffix', honorificSuffixMaxLength).exception()
             }
         }
     }

@@ -68,4 +68,10 @@
         <property name="groupValueMaxLength" value="255" />
         <property name="groupValueMinLength" value="1" />
     </bean>
+
+    <bean id="" class="com.junbo.identity.core.service.validator.impl.SecurityQuestionValidatorImpl">
+        <property name="securityQuestionValueMinLength" value="10" />
+        <property name="securityQuestionValueMaxLength" value="1000" />
+        <property name="securityQuestionRepository" ref="securityQuestionRepository" />
+    </bean>
 </beans>

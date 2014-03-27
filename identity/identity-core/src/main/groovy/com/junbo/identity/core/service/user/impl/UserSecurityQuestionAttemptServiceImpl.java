@@ -58,7 +58,7 @@ public class UserSecurityQuestionAttemptServiceImpl implements UserSecurityQuest
 
         userSecurityQuestionAttempt.setUserId(userId);
         userSecurityQuestionAttempt.setSucceeded(hashValue.equals(attempts.get(0).getAnswerHash()));
-        // todo:    Need to throw exception and save
+        // todo:    Need to throw exception and create
         return repository.save(userSecurityQuestionAttempt);
     }
 

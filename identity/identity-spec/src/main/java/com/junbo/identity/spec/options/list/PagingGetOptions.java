@@ -11,12 +11,6 @@ import javax.ws.rs.QueryParam;
  * Created by liangfu on 3/13/14.
  */
 public class PagingGetOptions {
-    @QueryParam("limit")
-    private Integer limit;
-
-    @QueryParam("offset")
-    private Integer offset;
-
     public Integer getLimit() {
         return limit;
     }
@@ -32,4 +26,9 @@ public class PagingGetOptions {
     public void setOffset(Integer offset) {
         this.offset = offset;
     }
+
+    @QueryParam("limit")
+    private Integer limit;
+    @QueryParam("offset")
+    private Integer offset;
 }

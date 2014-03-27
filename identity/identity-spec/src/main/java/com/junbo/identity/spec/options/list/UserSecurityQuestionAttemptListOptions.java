@@ -14,13 +14,6 @@ import javax.ws.rs.QueryParam;
  * Created by liangfu on 3/25/14.
  */
 public class UserSecurityQuestionAttemptListOptions extends PagingGetOptions {
-
-    @QueryParam("userId")
-    private UserId userId;
-
-    @QueryParam("securityQuestionId")
-    private SecurityQuestionId securityQuestionId;
-
     public UserId getUserId() {
         return userId;
     }
@@ -36,4 +29,9 @@ public class UserSecurityQuestionAttemptListOptions extends PagingGetOptions {
     public void setSecurityQuestionId(SecurityQuestionId securityQuestionId) {
         this.securityQuestionId = securityQuestionId;
     }
+
+    @QueryParam("userId")
+    private UserId userId;
+    @QueryParam("securityQuestionId")
+    private SecurityQuestionId securityQuestionId;
 }

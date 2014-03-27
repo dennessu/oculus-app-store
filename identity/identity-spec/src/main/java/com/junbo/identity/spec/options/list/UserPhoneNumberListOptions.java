@@ -13,7 +13,6 @@ import javax.ws.rs.QueryParam;
  * Created by liangfu on 3/14/14.
  */
 public class UserPhoneNumberListOptions extends PagingGetOptions {
-
     @QueryParam("value")
     private String value;
 

@@ -32,10 +32,10 @@ import javax.ws.rs.ext.Provider
  */
 @Provider
 @Component
-@Scope("prototype")
+@Scope('prototype')
 @Transactional
 @CompileStatic
-public class GroupResourceImpl implements GroupResource {
+class GroupResourceImpl implements GroupResource {
 
     @Autowired
     private GroupRepository groupRepository
@@ -50,7 +50,7 @@ public class GroupResourceImpl implements GroupResource {
     private GroupValidator groupValidator
 
     @Override
-    public Promise<Group> create(Group group) {
+    Promise<Group> create(Group group) {
         group = groupFilter.filterForCreate(group)
 
         groupValidator.validateForCreate(group).then {
@@ -64,9 +64,9 @@ public class GroupResourceImpl implements GroupResource {
     }
 
     @Override
-    public Promise<Group> put(GroupId groupId, Group group) {
-        if(groupId == null) {
-            throw new IllegalArgumentException();
+    Promise<Group> put(GroupId groupId, Group group) {
+        if (groupId == null) {
+            throw new IllegalArgumentException()
         }
         groupRepository.get(groupId).then { Group oldGroup ->
             if (oldGroup == null) {
@@ -77,7 +77,7 @@ public class GroupResourceImpl implements GroupResource {
 
             groupValidator.validateForUpdate(groupId, group, oldGroup).then {
                 groupRepository.update(group).then { Group newGroup ->
-                    newGroup = groupFilter.filterForGet(group, null)
+                    newGroup = groupFilter.filterForGet(newGroup, null)
                     return Promise.pure(newGroup)
                 }
             }
@@ -85,7 +85,7 @@ public class GroupResourceImpl implements GroupResource {
     }
 
     @Override
-    public Promise<Group> patch(GroupId groupId, Group group) {
+    Promise<Group> patch(GroupId groupId, Group group) {
         if (groupId == null) {
             throw new IllegalArgumentException('groupId is null')
         }
@@ -99,7 +99,7 @@ public class GroupResourceImpl implements GroupResource {
 
             groupValidator.validateForUpdate(groupId, group, oldGroup).then {
                 groupRepository.update(group).then { Group newGroup ->
-                    newGroup = groupFilter.filterForGet(group, null)
+                    newGroup = groupFilter.filterForGet(newGroup, null)
                     return Promise.pure(newGroup)
                 }
             }
@@ -107,13 +107,13 @@ public class GroupResourceImpl implements GroupResource {
     }
 
     @Override
-    public Promise<Group> get(GroupId groupId, GroupGetOptions groupGetOptions) {
-        if(groupGetOptions == null) {
+    Promise<Group> get(GroupId groupId, GroupGetOptions groupGetOptions) {
+        if (groupGetOptions == null) {
             throw new IllegalArgumentException()
         }
         groupValidator.validateForGet(groupId).then {
             groupRepository.get(groupId).then { Group newGroup ->
-                if(newGroup == null) {
+                if (newGroup == null) {
                     throw AppErrors.INSTANCE.groupNotFound(groupId).exception()
                 }
 
@@ -124,11 +124,10 @@ public class GroupResourceImpl implements GroupResource {
     }
 
     @Override
-    public Promise<Results<Group>> list(GroupListOptions listOptions) {
+    Promise<Results<Group>> list(GroupListOptions listOptions) {
         groupValidator.validateForSearch(listOptions).then {
+            def resultList = new Results<Group>(items: [])
             groupRepository.searchByName(listOptions.name).then { Group newGroup ->
-                def resultList = new Results<Group>(items: [])
-
                 if (newGroup != null) {
                     newGroup = groupFilter.filterForGet(newGroup, listOptions.properties?.split(',') as List<String>)
                 }
@@ -136,29 +135,30 @@ public class GroupResourceImpl implements GroupResource {
                 if (newGroup != null) {
                     resultList.items.add(newGroup)
                 }
-
-                return Promise.pure(resultList)
             }
+
+            return Promise.pure(resultList)
         }
     }
 
     @Override
-    public Promise<Results<UserGroup>> listUserGroups(GroupId groupId, UserGroupListOptions listOptions) {
+    Promise<Results<UserGroup>> listUserGroups(GroupId groupId, UserGroupListOptions listOptions) {
         groupValidator.validateForGet(groupId).then { Group newGroup ->
-            if(newGroup == null) {
+            if (newGroup == null) {
                 throw AppErrors.INSTANCE.groupNotFound(groupId).exception()
             }
 
             groupValidator.validateForSearchUserGroup(groupId, listOptions).then {
-                def resultList = new Results<UserGroup>(items: [])
+                def resultList = new Results<UserGroup>()
                 groupRepository.searchByGroupId(groupId).then { UserGroup userGroup ->
 
-                    if(userGroup != null) {
+                    /*
+                    if (userGroup != null) {
                     // todo:    Need to use userGroupFilter for get
-                    //    userGroup = groupFilter.filterForGet(userGroup, listOptions.properties?.split(',') as List<String>)
+                 //userGroup = groupFilter.filterForGet(userGroup, listOptions.properties?.split(',') as List<String>)
                     }
-
-                    if(userGroup != null) {
+                    */
+                    if (userGroup != null) {
                         resultList.items.add(userGroup)
                     }
                 }

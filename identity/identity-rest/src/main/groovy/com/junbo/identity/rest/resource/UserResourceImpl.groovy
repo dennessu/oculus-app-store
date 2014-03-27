@@ -91,7 +91,7 @@ class UserResourceImpl implements UserResource {
 
             userValidator.validateForUpdate(user, oldUser).then {
                 userRepository.update(user).then { User newUser ->
-                    newUser = userFilter.filterForGet(user, null)
+                    newUser = userFilter.filterForGet(newUser, null)
                     return Promise.pure(newUser)
                 }
             }
@@ -117,7 +117,7 @@ class UserResourceImpl implements UserResource {
 
             userValidator.validateForUpdate(user, oldUser).then {
                 userRepository.update(user).then { User newUser ->
-                    newUser = userFilter.filterForGet(user, null)
+                    newUser = userFilter.filterForGet(newUser, null)
                     return Promise.pure(newUser)
                 }
             }

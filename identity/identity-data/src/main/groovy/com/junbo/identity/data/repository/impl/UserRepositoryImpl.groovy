@@ -51,7 +51,7 @@ class UserRepositoryImpl implements UserRepository {
         UserEntity userEntity = modelMapper.toUser(user, new MappingContext())
         userEntity = userDAO.save(userEntity)
 
-        // save name structure
+        // create name structure
         UserNameEntity userNameEntity = modelMapper.toUserName(user.name, new MappingContext())
         userNameEntity.setUserId(userEntity.id)
         userNameDAO.save(userNameEntity)

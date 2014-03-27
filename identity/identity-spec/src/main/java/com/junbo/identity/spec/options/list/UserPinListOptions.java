@@ -13,12 +13,6 @@ import javax.ws.rs.QueryParam;
  * Created by liangfu on 3/14/14.
  */
 public class UserPinListOptions extends PagingGetOptions {
-    @QueryParam("userId")
-    private UserId userId;
-
-    @QueryParam("active")
-    private Boolean active;
-
     public UserId getUserId() {
         return userId;
     }
@@ -34,4 +28,9 @@ public class UserPinListOptions extends PagingGetOptions {
     public void setActive(Boolean active) {
         this.active = active;
     }
+
+    @QueryParam("userId")
+    private UserId userId;
+    @QueryParam("active")
+    private Boolean active;
 }

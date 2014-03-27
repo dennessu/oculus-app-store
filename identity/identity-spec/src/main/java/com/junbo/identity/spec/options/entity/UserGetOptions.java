@@ -11,7 +11,6 @@ import javax.ws.rs.QueryParam;
  * Created by liangfu on 3/14/14.
  */
 public class UserGetOptions {
-
     @QueryParam("properties")
     private String properties;
 

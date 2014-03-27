@@ -5,11 +5,14 @@
  */
 package com.junbo.identity.spec.options.list;
 
+import groovy.transform.CompileStatic;
+
 import javax.ws.rs.QueryParam;
 
 /**
  * Created by liangfu on 3/25/14.
  */
+@CompileStatic
 public class UserListOptions extends PagingGetOptions {
     @QueryParam("username")
     private String username;

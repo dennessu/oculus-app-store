@@ -35,7 +35,7 @@ class NickNameValidatorImpl implements NickNameValidator {
         }
 
         if (nickName.length() > nickNameMaxLength) {
-            throw AppErrors.INSTANCE.fieldTooShort('nickName', nickNameMaxLength).exception()
+            throw AppErrors.INSTANCE.fieldTooLong('nickName', nickNameMaxLength).exception()
         }
     }
 }

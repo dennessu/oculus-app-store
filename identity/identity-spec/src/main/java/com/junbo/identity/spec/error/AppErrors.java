@@ -9,6 +9,7 @@ import com.junbo.common.error.AppError;
 import com.junbo.common.error.ErrorDef;
 import com.junbo.common.error.ErrorProxy;
 import com.junbo.common.id.GroupId;
+import com.junbo.common.id.SecurityQuestionId;
 import com.junbo.common.id.UserId;
 
 /**
@@ -159,4 +160,7 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 409, code = "2000010", description = "Param name {0} required.", field = "{0}")
     AppError parameterRequired(String paraName);
+
+    @ErrorDef(httpStatusCode = 409, code = "2000011", description = "Security Question {0} not found.")
+    AppError securityQuestionNotFound(SecurityQuestionId securityQuestionId);
 }

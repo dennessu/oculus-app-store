@@ -28,6 +28,8 @@ public class SecurityQuestion extends ResourceMeta implements Identifiable<Secur
 
     public void setId(SecurityQuestionId id) {
         this.id = id;
+        support.setPropertyAssigned("self");
+        support.setPropertyAssigned("id");
     }
 
     public String getValue() {
@@ -36,6 +38,7 @@ public class SecurityQuestion extends ResourceMeta implements Identifiable<Secur
 
     public void setValue(String value) {
         this.value = value;
+        support.setPropertyAssigned("value");
     }
 
     public Boolean getActive() {
@@ -44,5 +47,6 @@ public class SecurityQuestion extends ResourceMeta implements Identifiable<Secur
 
     public void setActive(Boolean active) {
         this.active = active;
+        support.setPropertyAssigned("active");
     }
 }

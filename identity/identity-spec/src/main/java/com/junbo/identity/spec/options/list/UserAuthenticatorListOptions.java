@@ -6,12 +6,14 @@
 package com.junbo.identity.spec.options.list;
 
 import com.junbo.common.id.UserId;
+import groovy.transform.CompileStatic;
 
 import javax.ws.rs.QueryParam;
 
 /**
  * Created by liangfu on 3/14/14.
  */
+@CompileStatic
 public class UserAuthenticatorListOptions extends PagingGetOptions {
     @QueryParam("value")
     private String value;
