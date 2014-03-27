@@ -104,8 +104,8 @@ class OrderEventAspect {
                     repo.createOrderEvent(oe)
                 }
             }
-            return null
-            //throw throwable
+            LOGGER.error('name=Save_Error_Order_Event_AfterReturning', throwable)
+            throw throwable
         }
         .syncThen { ActionResult ar ->
             try {
@@ -117,7 +117,7 @@ class OrderEventAspect {
                 }
                 return ar
             } catch (e) {
-                LOGGER.error('name=Save_Order_Event_AfterReturning', e)
+                LOGGER.error('name=Save_Order_Event_AfterReturning_Failed', e)
                 throw e
             }
         }
