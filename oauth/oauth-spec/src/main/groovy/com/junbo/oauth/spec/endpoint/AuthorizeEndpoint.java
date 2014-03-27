@@ -17,7 +17,7 @@ import javax.ws.rs.core.*;
 /**
  * Javadoc.
  */
-@Api(value = "oauth2", basePath = "oauth2")
+@Api("oauth2")
 @Path("/oauth2/authorize")
 @RestResource
 @Produces(MediaType.APPLICATION_JSON)
