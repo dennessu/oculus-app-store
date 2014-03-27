@@ -15,6 +15,7 @@ import com.junbo.test.common.apihelper.entitlement.impl.EntitlementServiceImpl;
 import com.junbo.test.common.apihelper.identity.UserService;
 import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
 import com.junbo.test.common.blueprint.Master;
+import com.junbo.test.common.libs.EnumHelper;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.common.property.Component;
@@ -81,7 +82,7 @@ public class DeveloperManager {
         //user1 upload an offer as a developer
 
         String offerName = "defaultOffer";
-        Offer offerToPost = os.prepareOfferEntity(offerName, false);
+        Offer offerToPost = os.prepareOfferEntity(offerName, EnumHelper.CatalogItemType.APP);
         offerToPost.setOwnerId(Master.getInstance().getUser(developerUser).getId().getValue());
         String offerId = os.postOffer(offerToPost);
 

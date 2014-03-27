@@ -8,12 +8,17 @@ package com.junbo.test.common.apihelper.catalog.impl;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.offer.ItemEntry;
 import com.junbo.catalog.spec.model.offer.Offer;
+import com.junbo.common.id.ItemId;
 import com.junbo.common.id.OfferId;
+import com.junbo.common.id.UserId;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.common.model.Results;
+import com.junbo.identity.spec.model.user.User;
 import com.junbo.langur.core.client.TypeReference;
 import com.junbo.test.common.apihelper.catalog.ItemService;
 import com.junbo.test.common.apihelper.catalog.OfferService;
+import com.junbo.test.common.apihelper.identity.UserService;
+import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.EnumHelper;
 import com.junbo.test.common.libs.IdConverter;
@@ -25,13 +30,8 @@ import com.ning.http.client.Request;
 import com.ning.http.client.RequestBuilder;
 import com.ning.http.client.providers.netty.NettyResponse;
 import junit.framework.Assert;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.core.io.support.ResourcePatternResolver;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -45,13 +45,14 @@ import java.util.concurrent.Future;
 public class OfferServiceImpl implements OfferService {
 
     private final String catalogServerURL = RestUrl.getRestUrl(RestUrl.ComponentName.CATALOG) + "offers";
-    private static String defaultOfferFileName = "defaultOffer";
-    ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-
-    private LogHelper logger = new LogHelper(ItemServiceImpl.class);
+    private final String defaultOfferFileName = "defaultOffer";
+    private LogHelper logger = new LogHelper(OfferServiceImpl.class);
     private AsyncHttpClient asyncClient;
-
     private static OfferService instance;
+    private boolean offerLoaded;
+
+    private ItemService itemService = ItemServiceImpl.instance();
+    private UserService userService = UserServiceImpl.instance();
 
     public static synchronized OfferService instance() {
         if (instance == null) {
@@ -76,7 +77,7 @@ public class OfferServiceImpl implements OfferService {
         RequestBuilder reqBuilder = new RequestBuilder("GET");
         reqBuilder.addHeader(RestUrl.requestHeaderName, RestUrl.requestHeaderValue);
         reqBuilder.setUrl(url);
-        if (!httpPara.isEmpty()) {
+        if ((httpPara != null) && !httpPara.isEmpty()) {
             for (String key: httpPara.keySet()) {
                 reqBuilder.addQueryParameter(key, httpPara.get(key));
             }
@@ -106,7 +107,7 @@ public class OfferServiceImpl implements OfferService {
         RequestBuilder reqBuilder = new RequestBuilder("GET");
         reqBuilder.addHeader(RestUrl.requestHeaderName, RestUrl.requestHeaderValue);
         reqBuilder.setUrl(catalogServerURL);
-        if (!httpPara.isEmpty()) {
+        if ((httpPara != null) && !httpPara.isEmpty()) {
             for (String key: httpPara.keySet()) {
                 reqBuilder.addQueryParameter(key, httpPara.get(key));
             }
@@ -132,9 +133,9 @@ public class OfferServiceImpl implements OfferService {
         return listOfferId;
     }
 
-    public String postDefaultOffer(boolean isPhysical) throws Exception {
+    public String postDefaultOffer(EnumHelper.CatalogItemType itemType) throws Exception {
 
-        Offer offerForPost = prepareOfferEntity(defaultOfferFileName, isPhysical);
+        Offer offerForPost = prepareOfferEntity(defaultOfferFileName, itemType);
 
         RequestBuilder reqBuilder = new RequestBuilder("POST");
         reqBuilder.addHeader(RestUrl.requestHeaderName, RestUrl.requestHeaderValue);
@@ -156,30 +157,11 @@ public class OfferServiceImpl implements OfferService {
         return offerRtnId;
     }
 
-    public Offer prepareOfferEntity(String fileName, boolean isPhysical) throws Exception {
-        String resourceLocation = String.format("classpath:testOffers/%s.json", defaultOfferFileName);
-        Resource resource = resolver.getResource(resourceLocation);
-        Assert.assertNotNull(resource);
+    public Offer prepareOfferEntity(String fileName, EnumHelper.CatalogItemType itemType) throws Exception {
 
-        BufferedReader br = new BufferedReader(new FileReader(resource.getFile().getPath()));
-        StringBuilder strDefaultOffer = new StringBuilder();
-        try {
-            String sCurrentLine;
-            while ((sCurrentLine = br.readLine()) != null) {
-                strDefaultOffer.append(sCurrentLine + "\n");
-            }
-        } catch (IOException e) {
-            throw e;
-        } finally {
-            if (br != null){
-                br.close();
-            }
-        }
-
-        Offer offerForPost = new JsonMessageTranscoder().decode(new TypeReference<Offer>() {},
-                strDefaultOffer.toString());
-        ItemService itemService = ItemServiceImpl.instance();
-        String defaultItemId = itemService.postDefaultItem(isPhysical);
+        String strOfferContent = readFileContent(fileName);
+        Offer offerForPost = new JsonMessageTranscoder().decode(new TypeReference<Offer>() {}, strOfferContent);
+        String defaultItemId = itemService.postDefaultItem(itemType);
         //Release the item
         Item item =  Master.getInstance().getItem(defaultItemId);
         item.setStatus(EnumHelper.CatalogEntityStatus.RELEASED.getEntityStatus());
@@ -249,6 +231,116 @@ public class OfferServiceImpl implements OfferService {
         Master.getInstance().addOffer(offerRtnId, offerPut);
 
         return offerRtnId;
+    }
+
+    public String getOfferIdByName(String offerName) throws  Exception {
+
+        if (!offerLoaded){
+            this.loadAllOffers();
+            this.loadAllItems();
+            this.postPredefindeOffer();
+            offerLoaded = true;
+        }
+
+        return Master.getInstance().getOfferIdByName(offerName);
+    }
+
+    private void loadAllOffers() throws Exception {
+        this.getOffer(null);
+    }
+
+    private void loadAllItems() throws Exception {
+        itemService.getItem(null);
+    }
+
+    private void postPredefindeOffer() throws Exception {
+
+        InputStream inStream = ClassLoader.getSystemResourceAsStream("testOffers/predefinedofferlist.txt");
+        BufferedReader br = new BufferedReader(new InputStreamReader(inStream));
+        try {
+            String sCurrentLine;
+            while ((sCurrentLine = br.readLine()) != null) {
+                System.out.println(sCurrentLine);
+                String[] strLine = sCurrentLine.split(",");
+                if (Master.getInstance().getOfferIdByName(strLine[0]) == null) {
+                    Offer offer = this.preparePredefindeOffer(strLine[0], strLine[1], strLine[2], strLine[3]);
+                    this.postOffer(offer);
+                }
+            }
+        } catch (IOException e) {
+            throw e;
+        } finally {
+            if (br != null){
+                br.close();
+            }
+            if (inStream != null) {
+                inStream.close();
+            }
+        }
+    }
+
+    private Offer preparePredefindeOffer(String offerName, String itemName, String userName, String offerType)
+            throws  Exception {
+
+        String strOfferContent = readFileContent(offerName);
+        Offer offerForPost = new JsonMessageTranscoder().decode(new TypeReference<Offer>() {}, strOfferContent);
+
+        String itemId = Master.getInstance().getItemIdByName(itemName);
+        if (itemId == null) {
+            Item item = itemService.prepareItemEntity(itemName);
+            item.setName(itemName);
+            item.setType(offerType);
+            String userId = Master.getInstance().getUserIdByName(userName);
+            if (userId == null) {
+                User user = new User();
+                user.setUserName(userName);
+                user.setPassword("password");
+                user.setStatus(EnumHelper.UserStatus.ACTIVE.getStatus());
+                userId = userService.PostUser();
+            }
+
+            item.setOwnerId(IdConverter.hexStringToId(UserId.class, userId));
+
+            itemId = itemService.postItem(item);
+            item = Master.getInstance().getItem(itemId);
+            item.setStatus(EnumHelper.CatalogEntityStatus.RELEASED.getEntityStatus());
+            itemService.updateItem(item);
+        }
+
+        ItemEntry itemEntry = new ItemEntry();
+        List<ItemEntry> itemEntities = new ArrayList<>();
+        itemEntry.setItemId(IdConverter.hexStringToId(ItemId.class, itemId));
+        itemEntry.setQuantity(1);
+        itemEntities.add(itemEntry);
+        offerForPost.setItems(itemEntities);
+
+        return offerForPost;
+    }
+
+    private String readFileContent(String fileName) throws Exception {
+
+        String resourceLocation = String.format("testOffers/%s.json", fileName);
+        InputStream inStream = ClassLoader.getSystemResourceAsStream(resourceLocation);
+        BufferedReader br = new BufferedReader(new InputStreamReader(inStream));
+
+        StringBuilder strOffer = new StringBuilder();
+        try {
+            String sCurrentLine;
+            while ((sCurrentLine = br.readLine()) != null) {
+                strOffer.append(sCurrentLine + "\n");
+            }
+        } catch (IOException e) {
+            throw e;
+        } finally {
+            if (br != null){
+                br.close();
+            }
+            if (inStream != null) {
+                inStream.close();
+            }
+        }
+
+        return strOffer.toString();
     }
 
 }
