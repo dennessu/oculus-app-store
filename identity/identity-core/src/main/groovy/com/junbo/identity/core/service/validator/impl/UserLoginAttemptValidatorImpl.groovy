@@ -70,7 +70,7 @@ class UserLoginAttemptValidatorImpl implements UserLoginAttemptValidator {
                     throw AppErrors.INSTANCE.userInInvalidStatus(userLoginAttempt.userId).exception()
                 }
 
-                return Promise.pure(null)
+                return Promise.pure(userLoginAttempt)
             }
         }
     }
