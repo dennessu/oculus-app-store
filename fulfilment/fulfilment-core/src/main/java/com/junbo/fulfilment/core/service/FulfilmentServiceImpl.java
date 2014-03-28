@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -134,6 +135,8 @@ public class FulfilmentServiceImpl extends TransactionSupport implements Fulfilm
     public void distill(FulfilmentRequest request) {
         for (FulfilmentItem item : request.getItems()) {
             Offer offer = catalogGateway.getOffer(item.getOfferId(), item.getTimestamp());
+            item.setActions(new ArrayList<FulfilmentAction>());
+
             _distill(offer, item.getQuantity(), item);
         }
     }
@@ -150,6 +153,10 @@ public class FulfilmentServiceImpl extends TransactionSupport implements Fulfilm
                 for (FulfilmentItem item : request.getItems()) {
                     item.setRequestId(request.getRequestId());
                     fulfilmentRepo.create(item);
+
+                    if (item.getActions() == null) {
+                        continue;
+                    }
 
                     // store fulfilment actions
                     for (FulfilmentAction action : item.getActions()) {

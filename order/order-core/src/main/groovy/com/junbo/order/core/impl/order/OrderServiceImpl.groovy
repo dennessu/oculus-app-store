@@ -26,6 +26,7 @@ import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderEvent
 import com.junbo.order.spec.model.OrderItem
 import groovy.transform.CompileStatic
+import groovy.transform.TypeChecked
 import org.apache.commons.collections.CollectionUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -37,6 +38,7 @@ import org.springframework.transaction.annotation.Transactional
  * Created by chriszhu on 2/7/14.
  */
 @CompileStatic
+@TypeChecked
 @Service('orderService')
 class OrderServiceImpl implements OrderService {
     @Qualifier('orderFacadeContainer')
@@ -156,10 +158,6 @@ class OrderServiceImpl implements OrderService {
         if (orderId == null) {
             throw AppErrors.INSTANCE.fieldInvalid('orderId', 'orderId cannot be null').exception()
         }
-        def persistedOrder = this.getOrderByTrackingUuid(UUID.randomUUID())
-        if (persistedOrder != null) {
-            return Promise.pure(persistedOrder)
-        }
         // get Order by id
         def order = orderRepository.getOrder(orderId)
         if (order == null) {
@@ -228,6 +226,9 @@ class OrderServiceImpl implements OrderService {
             return null
         }
         def order = orderRepository.getOrderByTrackingUuid(trackingUuid)
+        if (order != null) {
+            completeOrder(order)
+        }
         return order
     }
 

@@ -1,5 +1,4 @@
 package com.junbo.order.mock
-
 import com.junbo.langur.core.promise.Promise
 import com.junbo.rating.spec.model.request.*
 import com.junbo.rating.spec.resource.RatingResource
@@ -7,7 +6,6 @@ import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
-
 /**
  * Created by chriszhu on 2/21/14.
  */

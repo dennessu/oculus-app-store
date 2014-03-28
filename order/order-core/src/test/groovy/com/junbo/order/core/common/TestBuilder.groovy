@@ -14,10 +14,12 @@ import com.junbo.order.spec.model.OrderEvent
 import com.junbo.order.spec.model.OrderItem
 import com.junbo.payment.spec.model.PaymentInstrument
 import groovy.transform.CompileStatic
+import groovy.transform.TypeChecked
 /**
  * Created by chriszhu on 2/14/14.
  */
 @CompileStatic
+@TypeChecked
 class TestBuilder {
 
     static long generateLong() {

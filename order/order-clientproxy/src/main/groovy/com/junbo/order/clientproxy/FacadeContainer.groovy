@@ -8,6 +8,7 @@ import com.junbo.order.clientproxy.identity.IdentityFacade
 import com.junbo.order.clientproxy.payment.PaymentFacade
 import com.junbo.order.clientproxy.rating.RatingFacade
 import groovy.transform.CompileStatic
+import groovy.transform.TypeChecked
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Component
  */
 @Component('orderFacadeContainer')
 @CompileStatic
+@TypeChecked
 class FacadeContainer {
     @Autowired
     @Qualifier('orderPaymentFacade')

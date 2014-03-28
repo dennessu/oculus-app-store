@@ -6,6 +6,7 @@ import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.OrderEvent
 import groovy.transform.CompileStatic
+import groovy.transform.TypeChecked
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -15,6 +16,7 @@ import javax.annotation.Resource
  * Created by LinYi on 14-3-20.
  */
 @CompileStatic
+@TypeChecked
 @Service('orderEventService')
 class OrderEventServiceImpl implements OrderEventService {
     @Resource

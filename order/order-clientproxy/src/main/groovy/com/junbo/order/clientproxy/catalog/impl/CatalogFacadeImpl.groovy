@@ -18,6 +18,7 @@ import com.junbo.order.clientproxy.catalog.CatalogFacade
 import com.junbo.order.clientproxy.model.OrderOffer
 import com.junbo.order.clientproxy.model.OrderOfferItem
 import groovy.transform.CompileStatic
+import groovy.transform.TypeChecked
 import org.springframework.stereotype.Component
 
 import javax.annotation.Resource
@@ -26,6 +27,7 @@ import javax.annotation.Resource
  */
 @Component('orderCatalogFacade')
 @CompileStatic
+@TypeChecked
 class CatalogFacadeImpl implements CatalogFacade {
 
     @Resource(name='order.offerClient')
