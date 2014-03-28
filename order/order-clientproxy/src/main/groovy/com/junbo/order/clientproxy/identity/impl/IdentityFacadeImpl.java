@@ -11,7 +11,6 @@ import com.junbo.identity.spec.model.user.User;
 import com.junbo.identity.spec.resource.UserResource;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.order.clientproxy.identity.IdentityFacade;
-import groovy.transform.CompileStatic;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -20,7 +19,6 @@ import javax.annotation.Resource;
  * Created by linyi on 14-2-19.
  */
 @Component("orderIdentityFacade")
-@CompileStatic
 public class IdentityFacadeImpl implements IdentityFacade {
     @Resource(name="order.identityUserClient")
     private UserResource userResource;

@@ -3,6 +3,7 @@ package com.junbo.order.core.impl.common
 import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.spec.error.AppErrors
 import groovy.transform.CompileStatic
+import groovy.transform.TypeChecked
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component
  * Created by chriszhu on 3/18/14.
  */
 @CompileStatic
+@TypeChecked
 @Component('orderValidator')
 class OrderValidator {
 

@@ -6,6 +6,7 @@ import com.junbo.order.core.OrderEventService
 import com.junbo.order.spec.model.OrderEvent
 import com.junbo.order.spec.resource.OrderEventResource
 import groovy.transform.CompileStatic
+import groovy.transform.TypeChecked
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 
@@ -15,6 +16,7 @@ import javax.ws.rs.core.HttpHeaders
  * Created by chriszhu on 3/12/14.
  */
 @CompileStatic
+@TypeChecked
 @Scope('prototype')
 @Component('defaultOrderEventResource')
 class OrderEventResourceImpl implements OrderEventResource {

@@ -117,22 +117,28 @@ public class CatalogGatewayImpl implements CatalogGateway {
         }
 
         // fill fulfilment actions
-        for (Event event : offer.getEvents()) {
-            if (!Utils.equals(PURCHASE_EVENT, event.getName())) {
-                continue;
-            }
+        if (offer.getEvents() != null) {
+            for (Event event : offer.getEvents()) {
+                if (!Utils.equals(PURCHASE_EVENT, event.getName())) {
+                    continue;
+                }
 
-            for (Action action : event.getActions()) {
-                OfferAction offerAction = new OfferAction();
-                offerAction.setType(action.getType());
+                if (event.getActions() == null) {
+                    continue;
+                }
 
-                Map<String, Object> entitlementDef = getEntitlementDef(action);
-                offerAction.setProperties(new SevereMap<>(entitlementDef));
+                for (Action action : event.getActions()) {
+                    OfferAction offerAction = new OfferAction();
+                    offerAction.setType(action.getType());
 
-                // fill item info for physical delivery action
-                offerAction.setItems(result.getItems());
+                    Map<String, Object> entitlementDef = getEntitlementDef(action);
+                    offerAction.setProperties(new SevereMap<>(entitlementDef));
 
-                result.addFulfilmentAction(offerAction);
+                    // fill item info for physical delivery action
+                    offerAction.setItems(result.getItems());
+
+                    result.addFulfilmentAction(offerAction);
+                }
             }
         }
 

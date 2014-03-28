@@ -41,7 +41,7 @@ Fields:
             "country":"US",
             "currency":"USD",
             "payoutAmount":"123.45",
-            "resourceAge": 1,
+            "rev": 1,
             "createdTime":"2014-02-25T17:08:07Z",
             "createdBy":"payoutService",
             "modifiledTime":"2014-02-25T17:08:07Z",
@@ -76,7 +76,7 @@ Fields:
                 "country":"US",
                 "currency":"USD",
                 "payoutAmount":"123.45",
-                "resourceAge": 1,
+                "rev": 1,
                 "createdTime":"2014-02-25T17:08:07Z",
                 "createdBy":"payoutService",
                 "modifiledTime":"2014-02-25T17:08:07Z",
@@ -100,7 +100,7 @@ Fields:
                 "country":"US",
                 "currency":"USD",
                 "payoutAmount":"123.45",
-                "resourceAge": 1,
+                "rev": 1,
                 "createdTime":"2014-01-25T17:08:07Z",
                 "createdBy":"payoutService",
                 "modifiledTime":"2014-01-25T17:08:07Z",
@@ -121,7 +121,7 @@ Fields:
                     "href": "http://api.oculusvr.com/order-items/12345"
                     "id": "12345"
                 }
-                "resourceAge": 1
+                "rev": 1
          }
 
 ## GET /subledgers(?sellerId, status, fromDate, toDate)

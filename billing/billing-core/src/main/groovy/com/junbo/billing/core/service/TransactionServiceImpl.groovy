@@ -61,8 +61,7 @@ class TransactionServiceImpl implements TransactionService {
         if (amount != null) {
             paymentTransaction.chargeInfo.setAmount(amount)
         }
-        def transaction = balance.transactions[0]
-        String paymentRefId = transaction.paymentRefId
+        String paymentRefId = balance.transactions[0].paymentRefId
         Long paymentId
         try {
             paymentId = Long.parseLong(paymentRefId)
@@ -70,27 +69,40 @@ class TransactionServiceImpl implements TransactionService {
             throw AppErrors.INSTANCE.invalidPaymentId(paymentRefId).exception()
         }
 
+        def newTransaction = new Transaction()
+        newTransaction.setAmount(amount)
+        newTransaction.setCurrency(balance.currency)
+        newTransaction.setType(TransactionType.CAPTURE.name())
+        newTransaction.setPiId(balance.piId)
+
         LOGGER.info('name=Capture_Balance. balance currency: {0}, authed amount: {1}, settled amount: {1}, pi id: {3}',
                 balance.currency, balance.totalAmount, amount, balance.piId)
         return paymentFacade.postPaymentCapture(paymentId, paymentTransaction).recover { Throwable throwable ->
             LOGGER.error('name=Capture_Balance_Error. error in post payment capture', throwable)
-            transaction.setStatus(TransactionStatus.ERROR.name())
+            newTransaction.setStatus(TransactionStatus.ERROR.name())
+            balance.addTransaction(newTransaction)
             balance.setStatus(BalanceStatus.ERROR.name())
+            return Promise.pure(null)
         }.then { PaymentTransaction pt ->
+            if (pt == null) {
+                return Promise.pure(balance)
+            }
+
             LOGGER.info('name=Capture_Balance. payment id: {0}, amount: {1}, status: {2}',
                     pt.id, pt.chargeInfo.amount, pt.status)
-            transaction.setType(TransactionType.CAPTURE.name())
-            transaction.setAmount(pt.chargeInfo.amount)
+            newTransaction.setPaymentRefId(pt.id.toString())
+            newTransaction.setAmount(pt.chargeInfo.amount)
             if (pt.status == PaymentStatus.SETTLEMENT_SUBMITTED.name()) {
-                transaction.setStatus(TransactionStatus.SUCCESS.name())
+                newTransaction.setStatus(TransactionStatus.SUCCESS.name())
                 balance.setStatus(BalanceStatus.AWAITING_PAYMENT.name())
             } else if (pt.status == PaymentStatus.SETTLEMENT_DECLINED) {
-                transaction.setStatus(TransactionStatus.DECLINE.name())
+                newTransaction.setStatus(TransactionStatus.DECLINE.name())
                 balance.setStatus(BalanceStatus.FAILED.name())
             } else {
-                transaction.setStatus(TransactionStatus.ERROR.name())
+                newTransaction.setStatus(TransactionStatus.ERROR.name())
                 balance.setStatus(BalanceStatus.ERROR.name())
             }
+            balance.addTransaction(newTransaction)
             return Promise.pure(balance)
         }
     }
@@ -111,8 +123,12 @@ class TransactionServiceImpl implements TransactionService {
             transaction.setStatus(TransactionStatus.ERROR.name())
             balance.addTransaction(transaction)
             balance.setStatus(BalanceStatus.ERROR.name())
-            return Promise.pure(balance)
+            return Promise.pure(null)
         }.then { PaymentTransaction pt ->
+            if (pt == null) {
+                return Promise.pure(balance)
+            }
+
             LOGGER.info('name=Charge_Balance. payment id: {0}, status: {1}', pt.id, pt.status)
             transaction.setPaymentRefId(pt.id.toString())
             PaymentStatus paymentStatus = PaymentStatus.valueOf(pt.status)
@@ -151,8 +167,12 @@ class TransactionServiceImpl implements TransactionService {
             transaction.setStatus(TransactionStatus.ERROR.name())
             balance.addTransaction(transaction)
             balance.setStatus(BalanceStatus.ERROR.name())
-            return Promise.pure(balance)
+            return Promise.pure(null)
         }.then { PaymentTransaction pt ->
+            if (pt == null) {
+                return Promise.pure(balance)
+            }
+
             LOGGER.info('name=Authorize_Balance. payment id: {0}, status: {1}', pt.id, pt.status)
             transaction.setPaymentRefId(pt.id.toString())
             PaymentStatus paymentStatus = PaymentStatus.valueOf(pt.status)

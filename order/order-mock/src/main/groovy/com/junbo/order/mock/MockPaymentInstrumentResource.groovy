@@ -12,6 +12,7 @@ import com.junbo.payment.spec.model.PaymentInstrument
 import com.junbo.payment.spec.model.PaymentInstrumentSearchParam
 import com.junbo.payment.spec.resource.PaymentInstrumentResource
 import groovy.transform.CompileStatic
+import groovy.transform.TypeChecked
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 
@@ -21,6 +22,7 @@ import javax.ws.rs.core.Response
  * Created by chriszhu on 2/11/14.
  */
 @CompileStatic
+@TypeChecked
 @Scope('prototype')
 @Component('mockPaymentInstrumentResource')
 class MockPaymentInstrumentResource extends BaseMock implements PaymentInstrumentResource {
