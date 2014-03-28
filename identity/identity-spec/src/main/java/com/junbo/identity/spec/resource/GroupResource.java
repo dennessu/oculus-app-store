@@ -14,6 +14,8 @@ import com.junbo.identity.spec.options.list.GroupListOptions;
 import com.junbo.identity.spec.options.list.UserGroupListOptions;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -21,32 +23,39 @@ import javax.ws.rs.core.MediaType;
 /**
  * Created by liangfu on 3/13/14.
  */
+@Api(value= "groups")
 @RestResource
 @Path("/groups")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 public interface GroupResource {
 
+    @ApiOperation("Create a new Group")
     @POST
     @Path("/")
     Promise<Group> create(Group group);
 
+    @ApiOperation("Update an existing Group")
     @PUT
     @Path("/{groupId}")
     Promise<Group> put(@PathParam("groupId") GroupId groupId, Group group);
 
+    @ApiOperation("Patch update an existing Group")
     @POST
     @Path("/{groupId}")
     Promise<Group> patch(@PathParam("groupId") GroupId groupId, Group group);
 
+    @ApiOperation("Get a group")
     @GET
     @Path("/{groupId}")
     Promise<Group> get(@PathParam("groupId") GroupId groupId, @BeanParam GroupGetOptions getOptions);
 
+    @ApiOperation("Search groups")
     @GET
     @Path("/")
     Promise<Results<Group>> list(@BeanParam GroupListOptions listOptions);
 
+    @ApiOperation("Search users in one group")
     @GET
     @Path("/{groupId}/users")
     Promise<Results<UserGroup>> listUserGroups(@PathParam("groupId") GroupId groupId,

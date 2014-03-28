@@ -13,6 +13,7 @@ import com.junbo.identity.spec.options.entity.UserTosGetOptions;
 import com.junbo.identity.spec.options.list.UserTosListOptions;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
+import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.ws.rs.*;
@@ -21,6 +22,7 @@ import javax.ws.rs.core.MediaType;
 /**
  * Created by liangfu on 3/13/14.
  */
+@Api("userTos")
 @RestResource
 @Path("/users/{userId}/tos")
 @Produces({MediaType.APPLICATION_JSON})

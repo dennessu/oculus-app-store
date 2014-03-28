@@ -12,6 +12,7 @@ import com.junbo.identity.spec.options.entity.UserGetOptions;
 import com.junbo.identity.spec.options.list.UserListOptions;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
+import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.ws.rs.*;
@@ -20,6 +21,7 @@ import javax.ws.rs.core.MediaType;
 /**
  * Created by liangfu on 3/13/14.
  */
+@Api("users")
 @RestResource
 @Path("/users")
 @Produces({MediaType.APPLICATION_JSON})
