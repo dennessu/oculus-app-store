@@ -23,10 +23,39 @@ public class DBHelper {
         this.postgresPassword = ConfigPropertiesHelper.instance().getProperty("db.postgresql.password");
     }
 
-    private Connection getConnection() throws Exception {
+    /**
+     * Enum for password Strength.
+     *
+     * @author Yunlongzhao
+     */
+    public enum DBName {
+        BILLING("billing"),
+        CART("cart"),
+        CATALOG("catalog"),
+        EMAIL("email"),
+        ENTITLEMENT("entitlement"),
+        FULFILMENT("fulfilment"),
+        IDENTITY("identity"),
+        ORDER("order"),
+        PAYMENT("payment"),
+        SHARDING("sharding");
+
+        private String dbName;
+
+        private DBName(String dbName) {
+            this.dbName = dbName;
+        }
+
+        public String getDBName() {
+            return this.dbName;
+        }
+    }
+
+
+    private Connection getConnection(DBName dbName) throws Exception {
         try {
             Class.forName("org.postgresql.Driver").newInstance();
-            String url = this.postgresConnectionString;
+            String url = this.postgresConnectionString + "/" + dbName.getDBName();
             Connection conn = DriverManager.getConnection(url, this.postgresUserName, this.postgresPassword);
             return conn;
         } catch (ClassNotFoundException classNotFoundException) {
@@ -34,20 +63,26 @@ public class DBHelper {
         }
     }
 
-    public String executeScalar(String sqlStatement) throws Exception {
+    public String executeScalar(String sqlStatement, DBName dbName) throws Exception {
         try {
             logger.logInfo("============Execute SQL Scalar: Start==============================");
             logger.logInfo(sqlStatement);
-            Connection conn = getConnection();
+            Connection conn = getConnection(dbName);
             Statement statement = conn.createStatement();
+            //String sql="set clint_encoding to ''utf8'' ";
+            //sql+=sqlStatement;
             ResultSet resultSet = statement.executeQuery(sqlStatement);
+            /*
             if (resultSet.getFetchSize() <= 0) {
                 return null;
             }
+            */
             String value = new String();
             if (resultSet.next()) {
                 value = resultSet.getString(1);
             }
+            logger.logInfo(String.format("Get sql query result value : %s", value));
+            logger.logInfo("============Execute SQL Scalar: END ================================");
             closeConnection(conn);
             statement.close();
             return value;
@@ -58,17 +93,18 @@ public class DBHelper {
         }
     }
 
-    public int executeUpdate(String sqlStatement) throws Exception {
+    public int executeUpdate(String sqlStatement, DBName dbName) throws Exception {
         try {
             logger.logInfo("============Execute SQL Update: Start==============================");
             logger.logInfo(sqlStatement);
-            Connection conn = getConnection();
+            Connection conn = getConnection(dbName);
             Statement statement = conn.createStatement();
             int affectedRows = statement.executeUpdate(sqlStatement);
             closeConnection(conn);
             statement.close();
             logger.logInfo(String.format(
                     "============Execute SQL Update Complete. Affected Rows: %s============", affectedRows));
+            logger.logInfo("============Execute SQL Scalar: END ================================");
             return affectedRows;
         } catch (SQLException sqlEx) {
             throw new RuntimeException(

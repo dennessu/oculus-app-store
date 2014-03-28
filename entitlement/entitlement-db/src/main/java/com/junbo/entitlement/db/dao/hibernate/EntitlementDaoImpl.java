@@ -31,11 +31,10 @@ public class EntitlementDaoImpl extends BaseDao<EntitlementEntity> implements En
             EntitlementSearchParam entitlementSearchParam, PageMetadata pageMetadata) {
         StringBuilder queryStringBuilder = new StringBuilder(
                 "select * from entitlement" +
-                        " where user_id = (:userId)" +
-                        " and developer_id = (:developerId)");
+                        " where user_id = (:userId)");
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("userId", entitlementSearchParam.getUserId().getValue());
-        params.put("developerId", entitlementSearchParam.getDeveloperId().getValue());
+
         addSearchParam(entitlementSearchParam, queryStringBuilder, params);
         Query q = currentSession().createSQLQuery(
                 queryStringBuilder.toString()).addEntity(EntitlementEntity.class);
@@ -46,6 +45,11 @@ public class EntitlementDaoImpl extends BaseDao<EntitlementEntity> implements En
     private void addSearchParam(EntitlementSearchParam entitlementSearchParam,
                                 StringBuilder queryStringBuilder,
                                 Map<String, Object> params) {
+        if (CommonUtils.isNotNull(entitlementSearchParam.getDeveloperId())) {
+            addSingleParam("developer_id", "developerId",
+                    entitlementSearchParam.getDeveloperId().getValue(),
+                    "=", queryStringBuilder, params);
+        }
         if (entitlementSearchParam.getStatus() != null) {
             Date now = EntitlementContext.current().getNow();
             EntitlementStatus status = EntitlementStatus.valueOf(entitlementSearchParam.getStatus());

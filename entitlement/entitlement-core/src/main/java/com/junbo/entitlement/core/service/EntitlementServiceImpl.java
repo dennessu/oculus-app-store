@@ -80,9 +80,12 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     public List<Entitlement> searchEntitlement(EntitlementSearchParam entitlementSearchParam,
                                                PageMetadata pageMetadata) {
         validateNotNull(entitlementSearchParam.getUserId(), "user");
-        validateNotNull(entitlementSearchParam.getDeveloperId(), "developer");
+        if(entitlementSearchParam.getDeveloperId() == null){
+            //TODO: check if clientId is admin
+        } else {
+            CheckDeveloper(entitlementSearchParam.getDeveloperId().getValue());
+        }
         checkUser(entitlementSearchParam.getUserId().getValue());
-        CheckDeveloper(entitlementSearchParam.getDeveloperId().getValue());
         List<Entitlement> entitlementEntities = entitlementRepository.getBySearchParam(
                 entitlementSearchParam, pageMetadata);
         return entitlementEntities;
