@@ -87,7 +87,7 @@ public class MockCatalogGatewayImpl extends CatalogGatewayImpl {
                     }});
                     add(new Action() {{
                         setType(Constant.ACTION_GRANT_ENTITLEMENT);
-                        setProperties(new HashMap<String, String>() {{
+                        setProperties(new HashMap<String, Object>() {{
                             put(Constant.ENTITLEMENT_DEF_ID, "12345");
                         }});
                     }});
@@ -124,7 +124,7 @@ public class MockCatalogGatewayImpl extends CatalogGatewayImpl {
                 setActions(new ArrayList<Action>() {{
                     add(new Action() {{
                         setType(Constant.ACTION_GRANT_ENTITLEMENT);
-                        setProperties(new HashMap<String, String>() {{
+                        setProperties(new HashMap<String, Object>() {{
                             put(Constant.ENTITLEMENT_DEF_ID, "12345");
                         }});
                     }});
