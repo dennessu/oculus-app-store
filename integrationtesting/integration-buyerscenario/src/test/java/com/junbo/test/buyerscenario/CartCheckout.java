@@ -65,7 +65,7 @@ public class CartCheckout extends BaseTestClass {
 
         testDataProvider.emptyCartByCartId(uid, cartId);
 
-        validationHelper.validateEmailHistory(uid);
+        validationHelper.validateEmailHistory(uid , orderId);
     }
 
     @Property(
@@ -118,7 +118,7 @@ public class CartCheckout extends BaseTestClass {
 
         testDataProvider.emptyCartByCartId(uid, cartId);
 
-        validationHelper.validateEmailHistory(uid);
+        validationHelper.validateEmailHistory(uid , orderId);
     }
 
 }
