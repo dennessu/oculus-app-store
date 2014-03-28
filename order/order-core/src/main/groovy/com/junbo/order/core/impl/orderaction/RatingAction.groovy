@@ -1,4 +1,5 @@
 package com.junbo.order.core.impl.orderaction
+
 import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.model.Balance
 import com.junbo.langur.core.promise.Promise
@@ -7,7 +8,7 @@ import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.core.impl.common.CoreBuilder
-import com.junbo.order.db.entity.enums.ItemType
+import com.junbo.order.core.impl.common.CoreUtils
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.OrderItem
 import com.junbo.rating.spec.model.request.OrderRatingRequest
@@ -18,6 +19,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
+
 /**
  * Created by fzhang on 14-2-25.
  */
@@ -59,9 +61,7 @@ class RatingAction implements Action {
                 LOGGER.info('name=Skip_Calculate_Tax_Zero_Total_Amount')
                 return Promise.pure(null)
             }
-            if (order.orderItems.any { OrderItem oi ->
-                oi.type == ItemType.PHYSICAL.toString()
-            }) {
+            if (CoreUtils.hasPhysicalOffer(order)) {
                 // check whether the shipping method id and shipping address id are there
                 if (order.shippingAddressId == null) {
                     if (order.tentative) {
@@ -70,14 +70,6 @@ class RatingAction implements Action {
                     }
                     LOGGER.error('name=Missing_shippingAddressId_To_Calculate_Tax')
                         throw AppErrors.INSTANCE.missingParameterField('shippingAddressId').exception()
-                }
-                if (order.shippingMethodId == null) {
-                    if (order.tentative) {
-                        LOGGER.info('name=Skip_Calculate_Tax_Without_shippingMethodId')
-                        return Promise.pure(null)
-                    }
-                    LOGGER.error('name=Missing_shippingMethodId_To_Calculate_Tax')
-                        throw AppErrors.INSTANCE.missingParameterField('shippingMethodId').exception()
                 }
             } else {
                 // check pi is there
