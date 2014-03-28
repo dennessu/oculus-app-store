@@ -2,11 +2,9 @@ package com.junbo.identity.core.service.filter
 import com.junbo.identity.spec.model.users.User
 import com.junbo.oom.core.MappingContext
 import groovy.transform.CompileStatic
-import org.springframework.stereotype.Component
 /**
  * Created by kg on 3/19/2014.
  */
-@Component
 @CompileStatic
 class UserFilter extends ResourceFilterImpl<User> {
     @Override

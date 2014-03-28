@@ -422,22 +422,22 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userTos.setTosUri(UUID.randomUUID().toString())
         userTos.setCreatedBy('lixia')
         userTos.setCreatedTime(new Date())
-        userTos = userTosRepository.save(userTos)
+        userTos = userTosRepository.create(userTos).wrapped().get()
 
-        UserTos newUserTos = userTosRepository.get(userTos.getId())
+        UserTos newUserTos = userTosRepository.get(userTos.getId()).wrapped().get()
         Assert.assertEquals(userTos.getTosUri(), newUserTos.getTosUri())
 
         String value = UUID.randomUUID().toString()
         newUserTos.setTosUri(value)
         userTosRepository.update(newUserTos)
 
-        newUserTos = userTosRepository.get(userTos.getId())
+        newUserTos = userTosRepository.get(userTos.getId()).wrapped().get()
         Assert.assertEquals(value, newUserTos.getTosUri())
 
         UserTosListOptions userTosGetOption = new UserTosListOptions()
         userTosGetOption.setUserId(new UserId(userId))
         userTosGetOption.setTosUri(value)
-        List<UserTos> userToses = userTosRepository.search(userTosGetOption)
+        List<UserTos> userToses = userTosRepository.search(userTosGetOption).wrapped().get()
         Assert.assertEquals(userToses.size(), 1)
     }
 

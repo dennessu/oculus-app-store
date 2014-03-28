@@ -8,10 +8,12 @@ package com.junbo.identity.data.dao
 import com.junbo.identity.data.entity.user.UserTosEntity
 import com.junbo.identity.spec.options.list.UserTosListOptions
 import com.junbo.sharding.annotations.SeedParam
+import groovy.transform.CompileStatic
 
 /**
  * User tos acceptance DAO is used to fetch/update/delete/get user tos Acceptance(eg, legal) from the database
  */
+@CompileStatic
 interface UserTosDAO {
 
     UserTosEntity save(UserTosEntity entity)

@@ -8,19 +8,22 @@ package com.junbo.identity.data.repository
 import com.junbo.common.id.UserTosId
 import com.junbo.identity.spec.model.users.UserTos
 import com.junbo.identity.spec.options.list.UserTosListOptions
+import com.junbo.langur.core.promise.Promise
+import groovy.transform.CompileStatic
 
 /**
  * User tos acceptance DAO is used to fetch/update/delete/get user tos Acceptance(eg, legal) from the database
  */
+@CompileStatic
 interface UserTosRepository {
 
-    UserTos save(UserTos entity)
+    Promise<UserTos> create(UserTos entity)
 
-    UserTos update(UserTos entity)
+    Promise<UserTos> update(UserTos entity)
 
-    UserTos get(UserTosId id)
+    Promise<UserTos> get(UserTosId id)
 
-    List<UserTos> search(UserTosListOptions getOption)
+    Promise<List<UserTos>> search(UserTosListOptions getOption)
 
-    void delete(UserTosId id)
+    Promise<Void> delete(UserTosId id)
 }

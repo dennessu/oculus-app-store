@@ -243,4 +243,30 @@
             </list>
         </property>
     </bean>
+
+    <bean id="userTosFilter" class="com.junbo.identity.core.service.filter.UserTosFilter">
+        <property name="readableProperties">
+            <list>
+                <value>id</value>
+                <value>tosUri</value>
+                <value>resourceAge</value>
+                <value>createdTime</value>
+                <value>updatedTime</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForCreate">
+            <list>
+                <value>tosUri</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForUpdate">
+            <list>
+                <value>id</value>
+                <value>tosUri</value>
+                <value>resourceAge</value>
+            </list>
+        </property>
+    </bean>
 </beans>

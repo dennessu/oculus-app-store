@@ -7,6 +7,7 @@ package com.junbo.identity.data.dao.impl.postgresql
 import com.junbo.identity.data.dao.UserTosDAO
 import com.junbo.identity.data.entity.user.UserTosEntity
 import com.junbo.identity.spec.options.list.UserTosListOptions
+import groovy.transform.CompileStatic
 import org.hibernate.Criteria
 import org.hibernate.criterion.Order
 import org.hibernate.criterion.Restrictions
@@ -15,6 +16,7 @@ import org.springframework.util.StringUtils
 /**
  * Implementation for User Tos Acceptance DAO interface.
  */
+@CompileStatic
 class UserTosDAOImpl extends ShardedDAOBase implements UserTosDAO {
     @Override
     UserTosEntity save(UserTosEntity entity) {
@@ -32,7 +34,7 @@ class UserTosDAOImpl extends ShardedDAOBase implements UserTosDAO {
 
     @Override
     UserTosEntity get(Long id) {
-        return currentSession().get(UserTosEntity, id)
+        return (UserTosEntity)currentSession().get(UserTosEntity, id)
     }
 
     @Override
@@ -54,7 +56,7 @@ class UserTosDAOImpl extends ShardedDAOBase implements UserTosDAO {
 
     @Override
     void delete(Long id) {
-        UserTosEntity entity = currentSession().get(UserTosEntity, id)
+        UserTosEntity entity = (UserTosEntity)currentSession().get(UserTosEntity, id)
         currentSession().delete(entity)
     }
 }

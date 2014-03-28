@@ -189,5 +189,7 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 404, code = "2000020", description = "User pin is incorrect.")
     AppError userPinIncorrect();
 
+    @ErrorDef(httpStatusCode = 409, code = "2000021", description = "User Tos {0} not found.", field = "{0}")
+    AppError userTosNotFound(UserTosId userTosId);
 
 }

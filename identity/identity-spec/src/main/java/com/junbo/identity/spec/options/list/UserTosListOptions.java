@@ -29,8 +29,20 @@ public class UserTosListOptions extends PagingGetOptions {
         this.userId = userId;
     }
 
+    public String getProperties() {
+        return properties;
+    }
+
+    public void setProperties(String properties) {
+        this.properties = properties;
+    }
+
     @QueryParam("tosUri")
     private String tosUri;
+
     @QueryParam("userId")
     private UserId userId;
+
+    @QueryParam("properties")
+    private String properties;
 }
