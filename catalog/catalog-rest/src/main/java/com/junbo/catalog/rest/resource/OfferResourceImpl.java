@@ -16,6 +16,8 @@ import com.junbo.common.model.Results;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.ws.rs.core.Response;
+
 /**
  * Offer resource implementation.
  */
@@ -36,6 +38,11 @@ public class OfferResourceImpl extends BaseResourceImpl<Offer> implements OfferR
     @Override
     public Promise<Offer> update(OfferId offerId, Offer offer) {
         return super.update(offerId, offer);
+    }
+
+    @Override
+    public Promise<Response> delete(OfferId offerId) {
+        return delete(offerId.getValue());
     }
 
     @Override

@@ -26,6 +26,15 @@ public abstract class VersionedDaoImpl<T extends VersionedEntity> extends BaseDa
         return super.create(entity);
     }
 
+    @Override
+    public T get(Long id) {
+        T entity = super.get(id);
+        if (entity!=null && Status.DELETED.equalsIgnoreCase(entity.getStatus())) {
+            entity = null;
+        }
+        return entity;
+    }
+
     protected T get(final Long id, final Long timestamp, final String idPropertyName) {
         T entity = findBy(new Action<Criteria>() {
             public void apply(Criteria criteria) {
