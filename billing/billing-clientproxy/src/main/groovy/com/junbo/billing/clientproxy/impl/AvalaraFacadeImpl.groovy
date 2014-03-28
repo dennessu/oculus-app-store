@@ -246,7 +246,7 @@ class AvalaraFacadeImpl implements TaxFacade {
         }.then { Response response ->
             if (response.statusCode / STATUS_CODE_MASK == SUCCESSFUL_STATUS_CODE_PREFIX) {
                 try {
-                     return Promise.pure(new ObjectMapper().readValue(response.responseBody, GetTaxResponse))
+                    return Promise.pure(new ObjectMapper().readValue(response.responseBody, GetTaxResponse))
                 } catch (IOException ex) {
                     LOGGER.error('name=Error_Read_Avalara_Response.', ex)
                     return Promise.pure(null)
