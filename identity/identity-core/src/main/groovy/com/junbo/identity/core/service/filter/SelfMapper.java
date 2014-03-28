@@ -6,10 +6,7 @@
 package com.junbo.identity.core.service.filter;
 
 import com.junbo.identity.spec.model.domaindata.SecurityQuestion;
-import com.junbo.identity.spec.model.users.Group;
-import com.junbo.identity.spec.model.users.User;
-import com.junbo.identity.spec.model.users.UserAuthenticator;
-import com.junbo.identity.spec.model.users.UserDevice;
+import com.junbo.identity.spec.model.users.*;
 import com.junbo.oom.core.Mapper;
 import com.junbo.oom.core.MappingContext;
 
@@ -33,4 +30,7 @@ public interface SelfMapper {
 
     UserDevice filterUserDevice(UserDevice userDevice, MappingContext context);
     UserDevice mergeUserDevice(UserDevice source, UserDevice base, MappingContext context);
+
+    UserGroup filterUserGroup(UserGroup userGroup, MappingContext context);
+    UserGroup mergeUserGroup(UserGroup source, UserGroup base, MappingContext context);
 }

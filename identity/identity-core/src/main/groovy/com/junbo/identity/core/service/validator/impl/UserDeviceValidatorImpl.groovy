@@ -181,16 +181,16 @@ class UserDeviceValidatorImpl implements UserDeviceValidator {
             }
 
             if (userDevice.deviceId != oldUserDevice.deviceId) {
-                userDeviceRepository.search(new UserDeviceListOptions(
+                return userDeviceRepository.search(new UserDeviceListOptions(
                         userId: userId,
                         deviceId: userDevice.deviceId
                 )).then { List<UserDevice> existing ->
                     if (!CollectionUtils.isEmpty(existing)) {
                         throw AppErrors.INSTANCE.fieldDuplicate('deviceId').exception()
                     }
+                    userDevice.setUserId(userId)
+                    return Promise.pure(null)
                 }
-                userDevice.setUserId(userId)
-                return Promise.pure(null)
             }
 
             return Promise.pure(null)

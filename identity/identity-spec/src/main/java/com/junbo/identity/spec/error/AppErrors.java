@@ -171,4 +171,6 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 409, code = "2000014", description = "User Device {0} not found.", field = "{0}")
     AppError userDeviceNotFound(UserDeviceId userDeviceId);
 
+    @ErrorDef(httpStatusCode = 409, code = "2000015", description = "User Group {0} not found.", field = "{0}")
+    AppError userGroupNotFound(UserGroupId userGroupId);
 }

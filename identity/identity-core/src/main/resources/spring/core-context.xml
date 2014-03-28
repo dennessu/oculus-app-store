@@ -176,4 +176,31 @@
             </list>
         </property>
     </bean>
+
+    <bean id="userGroupFilter" class="com.junbo.identity.core.service.filter.UserGroupFilter">
+        <property name="readableProperties">
+            <list>
+                <value>id</value>
+                <value>userId</value>
+                <value>groupId</value>
+                <value>resourceAge</value>
+                <value>createdTime</value>
+                <value>updatedTime</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForCreate">
+            <list>
+                <value>groupId</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForUpdate">
+            <list>
+                <value>id</value>
+                <value>groupId</value>
+                <value>resourceAge</value>
+            </list>
+        </property>
+    </bean>
 </beans>
