@@ -6,6 +6,8 @@
 
 package com.junbo.langur.core.promise;
 
+import java.util.concurrent.Callable;
+
 /**
  * Created by kg on 2/14/14.
  */
@@ -25,8 +27,7 @@ class Wrapper {
                 snapshot.resume();
                 try {
                     callback0.invoke();
-                }
-                finally {
+                } finally {
                     oldSnapshot.resume();
                 }
             }
@@ -43,8 +44,7 @@ class Wrapper {
                 snapshot.resume();
                 try {
                     callback.invoke(a);
-                }
-                finally {
+                } finally {
                     oldSnapshot.resume();
                 }
             }
@@ -61,8 +61,7 @@ class Wrapper {
                 snapshot.resume();
                 try {
                     return func.apply();
-                }
-                finally {
+                } finally {
                     oldSnapshot.resume();
                 }
             }
@@ -79,12 +78,42 @@ class Wrapper {
                 snapshot.resume();
                 try {
                     return func.apply(a);
-                }
-                finally {
+                } finally {
                     oldSnapshot.resume();
                 }
             }
         };
     }
 
+    public static <R> Callable<R> wrap(final Callable<R> callable) {
+        return new Callable<R>() {
+            final Snapshot snapshot = new Snapshot();
+
+            public R call() throws Exception {
+                Snapshot oldSnapshot = new Snapshot();
+                snapshot.resume();
+                try {
+                    return callable.call();
+                } finally {
+                    oldSnapshot.resume();
+                }
+            }
+        };
+    }
+
+    public static Runnable wrap(final Runnable runnable) {
+        return new Runnable() {
+            final Snapshot snapshot = new Snapshot();
+
+            public void run() {
+                Snapshot oldSnapshot = new Snapshot();
+                snapshot.resume();
+                try {
+                    runnable.run();
+                } finally {
+                    oldSnapshot.resume();
+                }
+            }
+        };
+    }
 }

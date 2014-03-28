@@ -20,6 +20,7 @@ import com.junbo.order.spec.model.OrderItem
 import com.junbo.payment.spec.enums.PIType
 import com.junbo.payment.spec.model.PaymentInstrument
 import groovy.transform.CompileStatic
+import groovy.transform.TypeChecked
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -30,6 +31,7 @@ import org.springframework.util.CollectionUtils
  * Created by chriszhu on 2/7/14.
  */
 @CompileStatic
+@TypeChecked
 @Component('defaultFlowSelector')
 class DefaultFlowSelector implements FlowSelector {
 

@@ -1,6 +1,8 @@
 package com.junbo.notification;
 
 import com.junbo.notification.queue.TestProducer;
+import com.junbo.notification.retry.SessionAwareListener;
+import com.junbo.notification.retry.TestSubscriber11;
 import com.junbo.notification.retry.TransactionalListener;
 import com.junbo.notification.topic.TestPublisher;
 import org.apache.activemq.broker.BrokerService;
@@ -28,7 +30,16 @@ public class JMSTest extends AbstractTestNGSpringContextTests {
     private TestProducer producer2;
 
     @Autowired
+    @Qualifier("testProducer3")
+    private TestProducer producer3;
+
+    @Autowired
+    @Qualifier("testPublisher")
     private TestPublisher publisher;
+
+    @Autowired
+    @Qualifier("testPublisher2")
+    private TestPublisher publisher2;
 
     @BeforeClass
     public void setUp() throws Exception {
@@ -50,10 +61,26 @@ public class JMSTest extends AbstractTestNGSpringContextTests {
         publisher.send("come on baby!");
     }
 
-    @Test
+    @Test(enabled = false)
     public void testTransactionalListener() throws Exception {
         TransactionalListener.FAILED_COUNT = new AtomicInteger(0);
         producer2.send("come on failure!");
+
+        Thread.sleep(5000);
+    }
+
+    @Test(enabled = false)
+    public void testSessionAwareListener() throws Exception {
+        SessionAwareListener.FAILED_COUNT = new AtomicInteger(0);
+        producer3.send("come on session aware failure!");
+
+        Thread.sleep(5000);
+    }
+
+    @Test(enabled = false)
+    public void testTopicRetry() throws Exception {
+        TestSubscriber11.FAILED_COUNT = new AtomicInteger(0);
+        publisher2.send("test topic retry!");
 
         Thread.sleep(5000);
     }

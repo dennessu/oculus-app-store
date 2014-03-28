@@ -5,6 +5,7 @@ import com.junbo.order.core.OrderServiceOperation
 import com.junbo.order.core.common.TestBuilder
 import com.junbo.order.core.impl.orderflow.DefaultFlowSelector
 import groovy.transform.CompileStatic
+import groovy.transform.TypeChecked
 import org.testng.annotations.Test
 
 import javax.annotation.Resource
@@ -12,6 +13,7 @@ import javax.annotation.Resource
  * Created by chriszhu on 2/7/14.
  */
 @CompileStatic
+@TypeChecked
 class FlowSelectorTest extends BaseTest {
 
     @Resource(name = 'defaultFlowSelector')

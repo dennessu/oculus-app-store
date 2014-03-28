@@ -10,6 +10,7 @@ import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.clientproxy.model.OrderOffer
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
 import groovy.transform.CompileStatic
+import groovy.transform.TypeChecked
 import org.apache.commons.collections.CollectionUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -22,6 +23,7 @@ import javax.annotation.Resource
  * Created by LinYi on 14-3-14.
  */
 @CompileStatic
+@TypeChecked
 class SendEmailAction implements Action {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SendEmailAction)

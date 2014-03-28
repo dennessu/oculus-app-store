@@ -13,6 +13,7 @@ import com.junbo.order.clientproxy.payment.PaymentFacade
 import com.junbo.payment.spec.model.PaymentInstrument
 import com.junbo.payment.spec.resource.PaymentInstrumentResource
 import groovy.transform.CompileStatic
+import groovy.transform.TypeChecked
 import org.springframework.stereotype.Component
 
 import javax.annotation.Resource
@@ -22,6 +23,7 @@ import javax.annotation.Resource
  */
 @Component('orderPaymentFacade')
 @CompileStatic
+@TypeChecked
 class PaymentFacadeImpl implements PaymentFacade {
 
     @Resource(name='order.paymentInstrumentClient')

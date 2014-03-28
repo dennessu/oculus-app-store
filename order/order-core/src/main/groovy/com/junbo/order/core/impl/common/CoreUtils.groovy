@@ -6,11 +6,13 @@ import com.junbo.order.clientproxy.model.OrderOffer
 import com.junbo.order.clientproxy.model.OrderOfferItem
 import com.junbo.order.db.entity.enums.ItemType
 import groovy.transform.CompileStatic
+import groovy.transform.TypeChecked
 
 /**
  * Created by chriszhu on 3/19/14.
  */
 @CompileStatic
+@TypeChecked
 class CoreUtils {
 
     static final String OFFER_ITEM_TYPE_PHYSICAL = 'PHYSICAL'
