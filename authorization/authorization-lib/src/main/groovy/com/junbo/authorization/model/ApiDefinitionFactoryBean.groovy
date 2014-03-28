@@ -5,12 +5,13 @@
  */
 package com.junbo.authorization.model
 
-import com.junbo.authorization.model.ApiDefinition
-import com.junbo.authorization.model.Scope
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.FactoryBean
 
 /**
+ * !!!HACK
+ * This is just a temporal solution for api definition.
+ * TODO: add api endpoint at oauth. dynamically get the api definition from OAuth.
  * ApiDefinitionFactoryBean.
  */
 @CompileStatic
