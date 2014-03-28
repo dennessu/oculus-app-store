@@ -6,7 +6,7 @@
 
     <context:component-scan base-package="com.junbo.billing.db.*"/>
     <context:component-scan base-package="com.junbo.billing.clientproxy.*"/>
-
+    <context:component-scan base-package="com.junbo.billing.core"/>
 
     <bean id="shippingAddressService" class="com.junbo.billing.core.service.ShippingAddressServiceImpl"/>
     <bean id="balanceService" class="com.junbo.billing.core.service.BalanceServiceImpl"/>

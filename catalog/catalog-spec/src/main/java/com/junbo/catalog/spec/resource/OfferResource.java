@@ -18,6 +18,7 @@ import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  * Offer resource definition.
@@ -54,4 +55,9 @@ public interface OfferResource {
     @PUT
     @Path("/{offerId}")
     Promise<Offer> update(@PathParam("offerId") OfferId offerId, Offer offer);
+
+    @ApiOperation("Delete an offer")
+    @DELETE
+    @Path("/{offerId}")
+    Promise<Response> delete(@PathParam("offerId") OfferId offerId);
 }

@@ -7,11 +7,13 @@ import com.junbo.common.id.PaymentInstrumentId
 import com.junbo.common.id.UserId
 import com.junbo.identity.spec.model.user.User
 import groovy.transform.CompileStatic
+import groovy.transform.TypeChecked
 
 /**
  * Created by chriszhu on 2/19/14.
  */
 @CompileStatic
+@TypeChecked
 class TestBuilder {
 
     static long generateLong() {

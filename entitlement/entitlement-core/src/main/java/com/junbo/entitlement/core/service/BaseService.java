@@ -121,14 +121,14 @@ public class BaseService {
                     .exception();
         }
         CheckDeveloper(entitlement.getDeveloperId());
+        if (!entitlement.getManagedLifecycle()) {
+            validateNotNull(entitlement.getStatus(), "status");
+        }
         if (EntitlementStatus.LIFECYCLE_NOT_MANAGED_STATUS.contains(
                 EntitlementStatus.valueOf(entitlement.getStatus().toUpperCase()))) {
             LOGGER.error("Can not created {} entitlement.", entitlement.getStatus());
             throw AppErrors.INSTANCE.fieldNotCorrect("status",
                     "status can not be DELETED or BANNED when created").exception();
-        }
-        if (!entitlement.getManagedLifecycle()) {
-            validateNotNull(entitlement.getStatus(), "status");
         }
         validateGrantTimeBeforeExpirationTime(entitlement);
     }

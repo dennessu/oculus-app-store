@@ -53,7 +53,7 @@ public class BaseDaoImpl<T extends CommonDbEntityWithDate> implements BaseDao<T>
         Date now = new Date();
         t.setCreatedTime(now);
         t.setUpdatedTime(now);
-        //t.setResourceAge(0);
+        //t.setRev(0);
         if(t instanceof CommonDbEntityDeletable) {
             ((CommonDbEntityDeletable) t).setDeleted(false);
         }

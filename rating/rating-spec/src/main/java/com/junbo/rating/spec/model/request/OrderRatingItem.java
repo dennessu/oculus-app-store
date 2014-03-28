@@ -20,23 +20,27 @@ import java.util.Set;
 public class OrderRatingItem {
     @OfferId
     private Long offerId;
+
     private int quantity;
 
-    @ShippingMethodId
-    private Long shippingMethodId;
+    @Null
+    private BigDecimal originalUnitPrice;
 
     @Null
-    private BigDecimal originalAmount;
+    private BigDecimal originalTotalPrice;
 
     @Null
-    private BigDecimal discountAmount;
+    private BigDecimal finalTotalAmount;
 
     @Null
-    private BigDecimal finalAmount;
+    private BigDecimal totalDiscountAmount;
 
     @Null
     @PromotionId
     private Set<Long> promotions;
+
+    @ShippingMethodId
+    private Long shippingMethodId;
 
     public Long getOfferId() {
         return offerId;
@@ -54,36 +58,36 @@ public class OrderRatingItem {
         this.quantity = quantity;
     }
 
-    public Long getShippingMethodId() {
-        return shippingMethodId;
+    public BigDecimal getOriginalUnitPrice() {
+        return originalUnitPrice;
     }
 
-    public void setShippingMethodId(Long shippingMethodId) {
-        this.shippingMethodId = shippingMethodId;
+    public void setOriginalUnitPrice(BigDecimal originalUnitPrice) {
+        this.originalUnitPrice = originalUnitPrice;
     }
 
-    public BigDecimal getOriginalAmount() {
-        return originalAmount;
+    public BigDecimal getOriginalTotalPrice() {
+        return originalTotalPrice;
     }
 
-    public void setOriginalAmount(BigDecimal originalAmount) {
-        this.originalAmount = originalAmount;
+    public void setOriginalTotalPrice(BigDecimal originalTotalPrice) {
+        this.originalTotalPrice = originalTotalPrice;
     }
 
-    public BigDecimal getDiscountAmount() {
-        return discountAmount;
+    public BigDecimal getFinalTotalAmount() {
+        return finalTotalAmount;
     }
 
-    public void setDiscountAmount(BigDecimal discountAmount) {
-        this.discountAmount = discountAmount;
+    public void setFinalTotalAmount(BigDecimal finalTotalAmount) {
+        this.finalTotalAmount = finalTotalAmount;
     }
 
-    public BigDecimal getFinalAmount() {
-        return finalAmount;
+    public BigDecimal getTotalDiscountAmount() {
+        return totalDiscountAmount;
     }
 
-    public void setFinalAmount(BigDecimal finalAmount) {
-        this.finalAmount = finalAmount;
+    public void setTotalDiscountAmount(BigDecimal totalDiscountAmount) {
+        this.totalDiscountAmount = totalDiscountAmount;
     }
 
     public Set<Long> getPromotions() {
@@ -92,5 +96,13 @@ public class OrderRatingItem {
 
     public void setPromotions(Set<Long> promotions) {
         this.promotions = promotions;
+    }
+
+    public Long getShippingMethodId() {
+        return shippingMethodId;
+    }
+
+    public void setShippingMethodId(Long shippingMethodId) {
+        this.shippingMethodId = shippingMethodId;
     }
 }

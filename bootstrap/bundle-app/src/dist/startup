@@ -1,4 +1,0 @@
-#!/usr/bin/env bash
-
-export BUNDLE_APP_OPTS=-DconfigDir=./conf
-./bin/bundle-app

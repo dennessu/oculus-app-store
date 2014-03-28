@@ -1,5 +1,4 @@
 package com.junbo.order.core.impl.orderaction
-
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 
 import javax.annotation.Resource
-
 /**
  * Created by chriszhu on 2/18/14.
  */
