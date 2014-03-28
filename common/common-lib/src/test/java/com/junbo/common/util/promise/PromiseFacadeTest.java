@@ -3,8 +3,10 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.langur.core.promise;
+package com.junbo.common.util.promise;
 
+import com.junbo.common.util.PromiseFacade;
+import com.junbo.langur.core.promise.Promise;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -14,10 +16,10 @@ import java.util.concurrent.ExecutionException;
 /**
  * PromiseShellTest.
  */
-public class PromiseShellTest {
+public class PromiseFacadeTest {
     @Test(expectedExceptions = ExecutionException.class)
     public void testFailure() throws Exception {
-        PromiseShell.PAYMENT.decorate(new Callable<Long>() {
+        PromiseFacade.PAYMENT.decorate(new Callable<Long>() {
             public Long call() throws Exception {
                 return BrainTreeSDK.charge(-10, "USD");
             }
@@ -34,7 +36,7 @@ public class PromiseShellTest {
 
     @Test
     public void testAccuracy() throws Exception {
-        PromiseShell.PAYMENT.decorate(new Callable<Long>() {
+        PromiseFacade.PAYMENT.decorate(new Callable<Long>() {
             public Long call() throws Exception {
                 return BrainTreeSDK.charge(9.99, "USD");
             }
