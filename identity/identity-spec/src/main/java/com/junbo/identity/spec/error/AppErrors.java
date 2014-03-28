@@ -8,10 +8,7 @@ package com.junbo.identity.spec.error;
 import com.junbo.common.error.AppError;
 import com.junbo.common.error.ErrorDef;
 import com.junbo.common.error.ErrorProxy;
-import com.junbo.common.id.GroupId;
-import com.junbo.common.id.SecurityQuestionId;
-import com.junbo.common.id.UserAuthenticatorId;
-import com.junbo.common.id.UserId;
+import com.junbo.common.id.*;
 
 /**
  * Interface for AppError.
@@ -170,5 +167,8 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 409, code = "2000013", description = "Param invalid due to {0}.", field = "{0}")
     AppError parameterInvalid(String message);
+
+    @ErrorDef(httpStatusCode = 409, code = "2000014", description = "User Device {0} not found.", field = "{0}")
+    AppError userDeviceNotFound(UserDeviceId userDeviceId);
 
 }

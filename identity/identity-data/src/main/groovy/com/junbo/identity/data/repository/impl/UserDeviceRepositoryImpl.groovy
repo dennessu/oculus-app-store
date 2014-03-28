@@ -11,13 +11,16 @@ import com.junbo.identity.data.mapper.ModelMapper
 import com.junbo.identity.data.repository.UserDeviceRepository
 import com.junbo.identity.spec.model.users.UserDevice
 import com.junbo.identity.spec.options.list.UserDeviceListOptions
+import com.junbo.langur.core.promise.Promise
 import com.junbo.oom.core.MappingContext
+import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 
 /**
  * Implementation for UserDeviceDAO.
  */
+@CompileStatic
 class UserDeviceRepositoryImpl implements UserDeviceRepository {
     @Autowired
     @Qualifier('userDeviceDAO')
@@ -28,7 +31,7 @@ class UserDeviceRepositoryImpl implements UserDeviceRepository {
     private ModelMapper modelMapper
 
     @Override
-    UserDevice save(UserDevice entity) {
+    Promise<UserDevice> create(UserDevice entity) {
         UserDeviceEntity userDeviceProfileEntity = modelMapper.toUserDevice(entity, new MappingContext())
         userDeviceDAO.save(userDeviceProfileEntity)
 
@@ -36,31 +39,32 @@ class UserDeviceRepositoryImpl implements UserDeviceRepository {
     }
 
     @Override
-    UserDevice update(UserDevice entity) {
+    Promise<UserDevice> update(UserDevice entity) {
         UserDeviceEntity userDeviceEntity = modelMapper.toUserDevice(entity, new MappingContext())
         userDeviceDAO.update(userDeviceEntity)
 
-        return get(entity.id)
+        return get((UserDeviceId)entity.id)
     }
 
     @Override
-    UserDevice get(UserDeviceId id) {
-        return modelMapper.toUserDevice(userDeviceDAO.get(id.value), new MappingContext())
+    Promise<UserDevice> get(UserDeviceId id) {
+        return Promise.pure(modelMapper.toUserDevice(userDeviceDAO.get(id.value), new MappingContext()))
     }
 
     @Override
-    List<UserDevice> search(UserDeviceListOptions getOption) {
+    Promise<List<UserDevice>> search(UserDeviceListOptions getOption) {
         def result = []
         def entities = userDeviceDAO.search(getOption.userId.value, getOption)
 
-        entities.flatten { i ->
-            result.add(modelMapper.toUserDevice(i, new MappingContext()))
+        entities.each { i ->
+            result.add(modelMapper.toUserDevice((UserDeviceEntity)i, new MappingContext()))
         }
-        return result
+        return Promise.pure(result)
     }
 
     @Override
-    void delete(UserDeviceId id) {
+    Promise<Void> delete(UserDeviceId id) {
         userDeviceDAO.delete(id.value)
+        return Promise.pure(null)
     }
 }

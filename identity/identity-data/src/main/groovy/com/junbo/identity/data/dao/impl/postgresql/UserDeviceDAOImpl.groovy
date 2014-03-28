@@ -39,7 +39,7 @@ class UserDeviceDAOImpl extends ShardedDAOBase implements UserDeviceDAO {
         Criteria criteria = currentSession().createCriteria(UserDeviceEntity)
         criteria.add(Restrictions.eq('userId', getOption.userId.value))
         if (getOption.deviceId != null) {
-            criteria.add('deviceId', getOption.deviceId)
+            criteria.add(Restrictions.eq('deviceId', getOption.deviceId))
         }
         criteria.addOrder(Order.asc('id'))
         if (getOption.limit != null) {

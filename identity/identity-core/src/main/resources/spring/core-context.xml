@@ -140,4 +140,40 @@
             </list>
         </property>
     </bean>
+
+    <bean id="userDeviceFilter" class="com.junbo.identity.core.service.filter.UserDeviceFilter">
+        <property name="readableProperties">
+            <list>
+                <value>id</value>
+                <value>deviceId</value>
+                <value>os</value>
+                <value>type</value>
+                <value>name</value>
+                <value>userId</value>
+                <value>resourceAge</value>
+                <value>createdTime</value>
+                <value>updatedTime</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForCreate">
+            <list>
+                <value>deviceId</value>
+                <value>os</value>
+                <value>type</value>
+                <value>name</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForUpdate">
+            <list>
+                <value>id</value>
+                <value>deviceId</value>
+                <value>os</value>
+                <value>type</value>
+                <value>name</value>
+                <value>resourceAge</value>
+            </list>
+        </property>
+    </bean>
 </beans>

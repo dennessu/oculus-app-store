@@ -19,6 +19,9 @@ public class UserDeviceListOptions extends PagingGetOptions {
     @QueryParam("userId")
     private UserId userId;
 
+    @QueryParam("properties")
+    private String properties;
+
     public String getDeviceId() {
         return deviceId;
     }
@@ -33,5 +36,13 @@ public class UserDeviceListOptions extends PagingGetOptions {
 
     public void setUserId(UserId userId) {
         this.userId = userId;
+    }
+
+    public String getProperties() {
+        return properties;
+    }
+
+    public void setProperties(String properties) {
+        this.properties = properties;
     }
 }

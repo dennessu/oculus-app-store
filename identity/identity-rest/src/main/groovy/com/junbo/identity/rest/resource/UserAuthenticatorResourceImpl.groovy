@@ -150,10 +150,6 @@ class UserAuthenticatorResourceImpl implements UserAuthenticatorResource {
         }
 
         userAuthenticatorValidator.validateForGet(userId, userAuthenticatorId).then { UserAuthenticator authenticator ->
-            if (authenticator == null) {
-                throw AppErrors.INSTANCE.userAuthenticatorNotFound(userAuthenticatorId).exception()
-            }
-
             authenticator = userAuthenticatorFilter.filterForGet(authenticator,
                     getOptions.properties?.split(',') as List<String>)
 

@@ -58,5 +58,4 @@ public interface UserDeviceResource {
     @Path("/")
     Promise<Results<UserDevice>> list(@PathParam("userId") UserId userId,
                                          @BeanParam UserDeviceListOptions listOptions);
-
 }

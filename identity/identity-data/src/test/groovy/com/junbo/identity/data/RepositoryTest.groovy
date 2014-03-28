@@ -233,21 +233,21 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userDevice.setCreatedBy('lixia')
         userDevice.setCreatedTime(new Date())
 
-        userDevice = userDeviceRepository.save(userDevice)
+        userDevice = userDeviceRepository.create(userDevice).wrapped().get()
 
-        UserDevice newUserDevice = userDeviceRepository.get(userDevice.getId())
+        UserDevice newUserDevice = userDeviceRepository.get(userDevice.getId()).wrapped().get()
         Assert.assertEquals(userDevice.getName(), newUserDevice.getName())
 
         String newName = UUID.randomUUID().toString()
         newUserDevice.setName(newName)
         userDeviceRepository.update(newUserDevice)
 
-        newUserDevice = userDeviceRepository.get(userDevice.getId())
+        newUserDevice = userDeviceRepository.get(userDevice.getId()).wrapped().get()
         Assert.assertEquals(newName, newUserDevice.getName())
 
         UserDeviceListOptions getOption = new UserDeviceListOptions()
         getOption.setUserId(new UserId(userId))
-        List<UserDevice> userDevices = userDeviceRepository.search(getOption)
+        List<UserDevice> userDevices = userDeviceRepository.search(getOption).wrapped().get()
         assert userDevices.size() != 0
     }
 

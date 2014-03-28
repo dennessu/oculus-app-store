@@ -6,21 +6,24 @@
 package com.junbo.identity.data.repository
 
 import com.junbo.common.id.UserDeviceId
-import com.junbo.identity.spec.options.list.UserDeviceListOptions
 import com.junbo.identity.spec.model.users.UserDevice
+import com.junbo.identity.spec.options.list.UserDeviceListOptions
+import com.junbo.langur.core.promise.Promise
+import groovy.transform.CompileStatic
 
 /**
  * User Device Profile DAO is used to fetch/update/delete/get user device profile data from the database
  */
+@CompileStatic
 interface UserDeviceRepository {
 
-    UserDevice save(UserDevice entity)
+    Promise<UserDevice> create(UserDevice entity)
 
-    UserDevice update(UserDevice entity)
+    Promise<UserDevice> update(UserDevice entity)
 
-    UserDevice get(UserDeviceId id)
+    Promise<UserDevice> get(UserDeviceId id)
 
-    List<UserDevice> search(UserDeviceListOptions getOption)
+    Promise<List<UserDevice>> search(UserDeviceListOptions getOption)
 
-    void delete(UserDeviceId id)
+    Promise<Void> delete(UserDeviceId id)
 }

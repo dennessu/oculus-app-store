@@ -37,6 +37,8 @@ public class UserDevice extends ResourceMeta implements Identifiable<UserDeviceI
 
     public void setId(UserDeviceId id) {
         this.id = id;
+        support.setPropertyAssigned("self");
+        support.setPropertyAssigned("id");
     }
 
     public String getDeviceId() {
@@ -45,6 +47,7 @@ public class UserDevice extends ResourceMeta implements Identifiable<UserDeviceI
 
     public void setDeviceId(String deviceId) {
         this.deviceId = deviceId;
+        support.setPropertyAssigned("deviceId");
     }
 
     public String getOs() {
@@ -53,6 +56,7 @@ public class UserDevice extends ResourceMeta implements Identifiable<UserDeviceI
 
     public void setOs(String os) {
         this.os = os;
+        support.setPropertyAssigned("os");
     }
 
     public String getType() {
@@ -61,6 +65,7 @@ public class UserDevice extends ResourceMeta implements Identifiable<UserDeviceI
 
     public void setType(String type) {
         this.type = type;
+        support.setPropertyAssigned("type");
     }
 
     public String getName() {
@@ -69,6 +74,7 @@ public class UserDevice extends ResourceMeta implements Identifiable<UserDeviceI
 
     public void setName(String name) {
         this.name = name;
+        support.setPropertyAssigned("name");
     }
 
     public UserId getUserId() {
@@ -77,5 +83,6 @@ public class UserDevice extends ResourceMeta implements Identifiable<UserDeviceI
 
     public void setUserId(UserId userId) {
         this.userId = userId;
+        support.setPropertyAssigned("userId");
     }
 }

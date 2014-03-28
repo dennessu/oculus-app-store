@@ -9,6 +9,7 @@ import com.junbo.identity.spec.model.domaindata.SecurityQuestion;
 import com.junbo.identity.spec.model.users.Group;
 import com.junbo.identity.spec.model.users.User;
 import com.junbo.identity.spec.model.users.UserAuthenticator;
+import com.junbo.identity.spec.model.users.UserDevice;
 import com.junbo.oom.core.Mapper;
 import com.junbo.oom.core.MappingContext;
 
@@ -29,4 +30,7 @@ public interface SelfMapper {
 
     UserAuthenticator filterUserAuthenticator(UserAuthenticator userAuthenticator, MappingContext context);
     UserAuthenticator mergeUserAuthenticator(UserAuthenticator source, UserAuthenticator base, MappingContext context);
+
+    UserDevice filterUserDevice(UserDevice userDevice, MappingContext context);
+    UserDevice mergeUserDevice(UserDevice source, UserDevice base, MappingContext context);
 }
