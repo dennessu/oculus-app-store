@@ -23,7 +23,7 @@ public class CartCheckout extends BaseTestClass {
             features = "BuyerScenarios",
             component = Component.Order,
             owner = "ZhaoYunlong",
-            status = Status.Incomplete,
+            status = Status.Enable,
             description = "Test digital good checkout",
             steps = {
                     "1. Post a random user",
@@ -73,7 +73,7 @@ public class CartCheckout extends BaseTestClass {
             features = "BuyerScenarios",
             component = Component.Order,
             owner = "ZhaoYunlong",
-            status = Status.Incomplete,
+            status = Status.Enable,
             description = "Test physical good checkout",
             steps = {
                     "1. Post a random user",
