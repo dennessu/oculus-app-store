@@ -6,6 +6,7 @@
 
 package com.junbo.token.common;
 
+import com.junbo.token.common.exception.AppClientExceptions;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.security.SecureRandom;
@@ -17,7 +18,7 @@ import java.util.List;
  */
 public class TokenUtil {
     private static final SecureRandom SECURE_RANDOM = new SecureRandom();
-    private static final String VALID_CHARS = "75284396JKLMNPQRABCDEFGHSTUVWXYZ";
+    private static final String ITEM_MAP = "75284396JKLMNPQRABCDEFGHSTUVWXYZ";
     private TokenUtil(){
 
     }
@@ -32,8 +33,8 @@ public class TokenUtil {
     public static String generateToken(int length){
         StringBuilder sb = new StringBuilder();
         for(int i = 0; i < length; i++){
-            int index = (int)(SECURE_RANDOM.nextDouble() * VALID_CHARS.length());
-            sb.append(VALID_CHARS.charAt(index));
+            int index = (int)(SECURE_RANDOM.nextDouble() * ITEM_MAP.length());
+            sb.append(ITEM_MAP.charAt(index));
         }
         return sb.toString();
     }
@@ -45,6 +46,22 @@ public class TokenUtil {
             quantity--;
         }
         return items;
+    }
+
+    public static <T extends Enum<T>> T getEnumValue(Class<T> enumType, String name){
+        try{
+            return Enum.valueOf(enumType, name.toUpperCase());
+        }catch (Exception ex){
+            throw AppClientExceptions.INSTANCE.invalidType(enumType.toString()).exception();
+        }
+    }
+
+    public static Long getUsage(String usage){
+        try{
+            return Long.valueOf(usage);
+        }catch(Exception ex){
+            throw AppClientExceptions.INSTANCE.invalidField("usageLimit").exception();
+        }
     }
 
     public static void main(String[] args){

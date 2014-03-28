@@ -46,7 +46,7 @@ public class TokenDaoTest extends BaseTest {
         TokenSetOfferEntity entity = new TokenSetOfferEntity();
         entity.setId(generateId());
         entity.setProductId(generateId());
-        entity.setProductType("OFFER");
+        entity.setProductType(ProductType.OFFER);
         entity.setTokenSetId(set.getId());
         return entity;
     }
@@ -55,7 +55,6 @@ public class TokenDaoTest extends BaseTest {
         TokenSetEntity entity = new TokenSetEntity();
         entity.setId(generateId());
         entity.setDescription("ut");
-        entity.setGenerationSeed(generateId());
         entity.setStatus(SetStatus.ACTIVE);
         entity.setGenerationLength(TokenLength.LEN16);
         return entity;
@@ -71,7 +70,7 @@ public class TokenDaoTest extends BaseTest {
         entity.setExpiredTime(new Date());
         entity.setQuantity(100L);
         entity.setTokenSetId(set.getId());
-        entity.setUsageLimit(1L);
+        entity.setUsageLimit("1");
         return entity;
     }
 

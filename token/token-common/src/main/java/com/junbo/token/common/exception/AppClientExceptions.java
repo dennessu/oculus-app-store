@@ -4,7 +4,7 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.token.core.exception;
+package com.junbo.token.common.exception;
 
 import com.junbo.common.error.AppError;
 import com.junbo.common.error.ErrorDef;
@@ -24,5 +24,21 @@ public interface AppClientExceptions {
     @ErrorDef(httpStatusCode = 404, code = "40401",
             description = "the resource {0} is not found", field = "resource")
     AppError resourceNotFound(String resource);
+
+    @ErrorDef(httpStatusCode = 400, code = "40002",
+            description = "the field {0} is not needed")
+    AppError fieldNotNeeded(String field);
+
+    @ErrorDef(httpStatusCode = 400, code = "40003",
+            description = "the type {0} is not correct", field = "type")
+    AppError invalidType(String type);
+
+    @ErrorDef(httpStatusCode = 400, code = "40004",
+            description = "the field {0} is missing")
+    AppError missingField(String fieldName);
+
+    @ErrorDef(httpStatusCode = 400, code = "40005",
+            description = "the field {0} is invalid")
+    AppError invalidField(String fieldName);
 
 }

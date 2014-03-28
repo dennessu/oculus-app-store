@@ -1,6 +1,8 @@
 apply plugin: 'java'
 
 dependencies {
+    compile project(':token-common')
+
     compile (libraries.jersey_bean_validation)
 	compile (libraries.langur)
     compile (libraries.common_lib)

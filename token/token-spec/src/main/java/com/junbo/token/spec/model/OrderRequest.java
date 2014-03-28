@@ -8,6 +8,8 @@ package com.junbo.token.spec.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.jackson.annotation.TokenOrderId;
+import com.junbo.token.common.FilterIn;
+import com.junbo.token.common.InnerFilter;
 
 import java.util.Date;
 import java.util.List;
@@ -20,18 +22,17 @@ public class OrderRequest {
     @TokenOrderId
     private Long id;
     private String description;
-
     private String generationLength;
-    private Long generationSeed;
     private List<Long> offerIds;
-    private String offerType;
-
+    private String productType;
+    @FilterIn
     private String status;
     private Date expiredTime;
-    private Long usageLimit;
+    private String usageLimit;
     private String createMethod;
     private Long quantity;
     private String activation;
+    @InnerFilter
     private List<TokenItem> tokenItems;
 
     public Long getId() {
@@ -58,14 +59,6 @@ public class OrderRequest {
         this.generationLength = generationLength;
     }
 
-    public Long getGenerationSeed() {
-        return generationSeed;
-    }
-
-    public void setGenerationSeed(Long generationSeed) {
-        this.generationSeed = generationSeed;
-    }
-
     public List<Long> getOfferIds() {
         return offerIds;
     }
@@ -74,12 +67,12 @@ public class OrderRequest {
         this.offerIds = offerIds;
     }
 
-    public String getOfferType() {
-        return offerType;
+    public String getProductType() {
+        return productType;
     }
 
-    public void setOfferType(String offerType) {
-        this.offerType = offerType;
+    public void setProductType(String productType) {
+        this.productType = productType;
     }
 
     public String getStatus() {
@@ -98,11 +91,11 @@ public class OrderRequest {
         this.expiredTime = expiredTime;
     }
 
-    public Long getUsageLimit() {
+    public String getUsageLimit() {
         return usageLimit;
     }
 
-    public void setUsageLimit(Long usageLimit) {
+    public void setUsageLimit(String usageLimit) {
         this.usageLimit = usageLimit;
     }
 
