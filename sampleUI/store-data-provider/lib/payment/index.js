@@ -19,7 +19,7 @@ Payment.prototype.GetPaymentInstruments = function(userId, cb){
   var options = {
     host: this.Host,
     port: this.Port,
-    path: "/rest/users/" + userId + "/payment-instruments", //TODO: Product Edit
+    path: "/rest/users/" + userId + "/payment-instruments/search",
     method: 'GET',
     headers:{
         'Content-Type': 'application/json'

@@ -9,9 +9,27 @@ var PaymentRoutes = {
         beforeModel: function(){
             Utils.GetViews(AppConfig.Templates.Payment.Index);
         },
-        model: function(){
-            return this.store.findAll("CreditCard");
+        setupController: function(controller, model){
+
+            var provider = new PaymentProvider();
+            provider.PaymentInstruments(Utils.GenerateRequestModel(null), function(result){
+                if(result.data.status == 200){
+                    var payments = JSON.parse(result.data.data).results;
+                    var paymentList = new Array();
+                    for(var i = 0; i < payments.length; ++i){
+                        var item = payments[i];
+                        paymentList.push({
+                            t: item.creditCardRequest.type + " " + item.accountNum.substr(item.accountNum.length - 4, 4),
+                            v: item.self.id
+                        });
+                    }
+                    controller.set("content.paymentList", paymentList);
+                }else{
+                    // Error
+                }
+            });
         }
+
     }),
     EditRoute: Ember.Route.extend({
         beforeModel: function(){

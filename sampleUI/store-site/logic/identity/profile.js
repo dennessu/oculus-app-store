@@ -10,27 +10,16 @@ exports.PutUser = function(data, cb){
 
     var userId = cookies[process.AppConfig.CookiesName.UserId];
     var dataProvider = new IdentityProvider(process.AppConfig.Identity_API_Host, process.AppConfig.Identity_API_Port);
-    dataProvider.GetUserById(userId, function(resultData){
-        if(resultData.StatusCode == 200){
-            var user = JSON.parse(resultData.Data);
-            user.password = body["password"];
 
-            dataProvider.PutUser(userId, user, function(resultData){
-                var resultModel = new DomainModels.ResultModel();
-                if(resultData.StatusCode == 200){
-                    resultModel.status = DomainModels.ResultStatusEnum.Normal;
-                }else{
-                    resultModel.status = DomainModels.ResultStatusEnum.APIError;
-                }
-                resultModel.data = resultData.Data;
-                cb(Utils.GenerateResponseModel(resultModel));
-            });
+    dataProvider.PostRestPassword(userId, body["password"], function(resultData){
+        var resultModel = new DomainModels.ResultModel();
+        if(resultData.StatusCode == 200){
+            resultModel.status = DomainModels.ResultStatusEnum.Normal;
         }else{
-            var resultModel = new DomainModels.ResultModel();
             resultModel.status = DomainModels.ResultStatusEnum.APIError;
-            resultModel.data = resultData.Data;
-            cb(Utils.GenerateResponseModel(resultModel));
         }
+        resultModel.data = resultData.Data;
+        cb(Utils.GenerateResponseModel(resultModel));
     });
 };
 
@@ -64,10 +53,11 @@ exports.PutProfile = function(data, cb){
 
     dataProvider.GetPayinProfilesByUserId(userId, function(resultData){
         if(resultData.StatusCode == 200){
-            var profile = JSON.parse(resultData.Data);
+            var profile = JSON.parse(resultData.Data).items[0];
 
             profile.firstName = body["firstName"];
             profile.lastName = body["lastName"];
+            profile.createdTime = undefined;
 
             dataProvider.PutProfile(profile.self.id, userId, profile, function(resultData){
                 var resultModel = new DomainModels.ResultModel();

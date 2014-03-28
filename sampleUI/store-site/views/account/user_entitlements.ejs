@@ -1,0 +1,18 @@
+<div class="content">
+    <div class="box2 entitlements">
+        <h2>Entitlements</h2>
+        <div class="list">
+            {{#each results}}
+            <dl>
+                <dt>
+                    <b>Group:</b> {{group}}<br>
+                    <b>Status:</b> {{status}}&nbsp;&nbsp;&nbsp;&nbsp;Type:</b> {{type}}&nbsp;&nbsp;&nbsp;&nbsp;<b>Grant Time:</b> {{grantTime}}<br>
+                    <b>Consumable:</b> {{consumable}}&nbsp;&nbsp;&nbsp;&nbsp;<b>Use Count:</b> {{useCount}}&nbsp;&nbsp;&nbsp;&nbsp;<b>Managed Lifecycle:</b> {{managedLifecycle}}
+                </dt>
+            </dl>
+            {{/each}}
+        </div>
+    </div>
+
+</div>
+<div class="clear"></div>
