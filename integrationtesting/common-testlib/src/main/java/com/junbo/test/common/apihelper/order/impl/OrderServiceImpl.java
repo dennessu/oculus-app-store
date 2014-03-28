@@ -123,40 +123,38 @@ public class OrderServiceImpl extends HttpClientBase implements OrderService {
 
     @Override
     public String getOrderByOrderId(String orderId, int expectedResponseCode) throws Exception {
-        /*
-        Order orderResult = restApiCall(HTTPMethod.GET, orderUrl + orderId, expectedResponseCode);
-        orderId = IdConverter.idToHexString(orderResult.getId());
+
+        String responseBody = restApiCall(HTTPMethod.GET, orderUrl + "orders/" + orderId, expectedResponseCode);
+
+        Order orderResult = new JsonMessageTranscoder().decode(
+                new TypeReference<Order>() {
+                }, responseBody);
+
+        String responseOrderId = IdConverter.idToHexString(orderResult.getId());
         Master.getInstance().addOrder(orderId, orderResult);
-        return orderId;
-        */
-        return null;
+
+        return responseOrderId;
     }
 
     @Override
-    public String updateOrderByOrderId(Order order) throws Exception {
-        /*
-        String orderId = IdConverter.idLongToHexString(OrderId.class, order.getId().getValue());
-        Order orderResult = restApiCall(HTTPMethod.PUT, orderUrl + orderId, order, 200);
-        orderId = IdConverter.idToHexString(orderResult.getId());
-        Master.getInstance().addOrder(orderId, orderResult);
-
-        return orderId;
-         */
-        return null;
+    public String updateOrder(Order order) throws Exception {
+        return updateOrder(order, 200);
     }
 
     @Override
-    public String updateOrderByOrderId(Order order, int expectedResponseCode) throws Exception {
-    /*
-        String orderId = IdConverter.idLongToHexString(OrderId.class, order.getId().getValue());
-        Order orderResult = restApiCall(HTTPMethod.PUT, orderUrl + orderId, order, expectedResponseCode);
-        orderId = IdConverter.idToHexString(orderResult.getId());
+    public String updateOrder(Order order, int expectedResponseCode) throws Exception {
+        String orderId = IdConverter.idToHexString(order.getId());
+
+        String responseBody = restApiCall(HTTPMethod.PUT, orderUrl + "orders/" + orderId, order, expectedResponseCode);
+
+        Order orderResult = new JsonMessageTranscoder().decode(
+                new TypeReference<Order>() {
+                }, responseBody);
+
+        String responseOrderId = IdConverter.idToHexString(orderResult.getId());
         Master.getInstance().addOrder(orderId, orderResult);
 
-
-        return orderId;
-        */
-        return null;
+        return responseOrderId;
     }
 
 }

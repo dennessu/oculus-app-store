@@ -97,8 +97,8 @@ public class TestDataProvider {
             OfferItem offerItem = new OfferItem();
             offerItem.setQuantity(RandomFactory.getRandomLong(5L));
             offerItem.setSelected(true);
-            OfferId offerId = new OfferId();
-            offerId.setValue(Master.getInstance().getOffer(offers.get(i)).getId());
+            OfferId offerId = new OfferId(
+                    IdConverter.hexStringToId(OfferId.class, offerClient.getOfferIdByName(offers.get(i))));
             offerItem.setOffer(offerId);
 
             offerItemList.add(offerItem);
@@ -126,32 +126,6 @@ public class TestDataProvider {
         //Cart destinationCart = Master.getInstance().getCart(destinationCartId);
 
         return cartClient.mergeCart(destinationUid, destinationCartId, sourceCart);
-    }
-
-    public String transferPrimaryCartToOrder(String uid, Country country, Currency currency) throws Exception {
-        String primaryCartId = cartClient.getCartPrimary(uid);
-        Cart primaryCart = Master.getInstance().getCart(primaryCartId);
-
-        Order order = new Order();
-        //set required fields
-        order.setUser(primaryCart.getUser());
-        order.setCountry(country.toString());
-        order.setCurrency(currency.toString());
-        //TODO order.setPaymentInstruments();
-        //TODO order.setShippingAddressId();
-
-        List<OrderItem> orderItemList = new ArrayList<>();
-        List<OfferItem> offerItemList = primaryCart.getOffers();
-        for (int i = 0; i < offerItemList.size(); i++) {
-            OfferId offerId = offerItemList.get(i).getOffer();
-
-            OrderItem orderItem = new OrderItem();
-            orderItem.setQuantity(Integer.parseInt(offerItemList.get(i).getQuantity().toString()));
-            orderItem.setOffer(offerId);
-        }
-        order.setOrderItems(orderItemList);
-
-        return orderClient.postOrder(order);
     }
 
     public String postCreditCardToUser(String uid, CreditCardInfo creditCardInfo) throws Exception {
@@ -201,6 +175,11 @@ public class TestDataProvider {
     }
 
     public String postOrderByCartId(String uid, String cartId, Country country, Currency currency,
+                                    String paymentInstrumentId) throws Exception {
+        return postOrderByCartId(uid, cartId, country, currency, paymentInstrumentId, null);
+    }
+
+    public String postOrderByCartId(String uid, String cartId, Country country, Currency currency,
                                     String paymentInstrumentId, String shippingAddressId) throws Exception {
         if (cartId == null) {
             cartId = cartClient.getCartPrimary(uid);
@@ -216,7 +195,9 @@ public class TestDataProvider {
         order.setCountry(country.toString());
         order.setCurrency(currency.toString());
         order.setPaymentInstruments(paymentInstruments);
-        order.setShippingAddressId(Master.getInstance().getShippingAddress(shippingAddressId).getAddressId());
+        if (shippingAddressId != null) {
+            order.setShippingAddressId(Master.getInstance().getShippingAddress(shippingAddressId).getAddressId());
+        }
 
         List<OrderItem> orderItemList = new ArrayList<>();
         List<OfferItem> offerItemList = cart.getOffers();
@@ -236,11 +217,18 @@ public class TestDataProvider {
         return orderClient.postOrder(order);
     }
 
-    public String orderPrimaryCart(String uid, String cartId, Country country, Currency currency) throws Exception {
-        String orderId = this.transferPrimaryCartToOrder(uid, country, currency);
-        return null;
+    public String updateOrderTentative(String orderId, boolean isTentative) throws Exception {
+        Order order = Master.getInstance().getOrder(orderClient.getOrderByOrderId(orderId));
+        order.setTentative(isTentative);
+        order.setTrackingUuid(UUID.randomUUID());
+        return orderClient.updateOrder(order);
     }
 
+    public void emptyCartByCartId(String uid, String cartId) throws Exception {
+        if (cartId == null) {
+            cartId = cartClient.getCartPrimary(uid);
+        }
+        cartClient.updateCart(uid, cartId, new Cart());
+    }
 
 }
-

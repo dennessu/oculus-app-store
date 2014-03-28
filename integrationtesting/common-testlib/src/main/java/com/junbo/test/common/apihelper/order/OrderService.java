@@ -36,9 +36,9 @@ public interface OrderService {
 
     String getOrderByOrderId(String orderId, int expectedResponseCode) throws Exception;
 
-    String updateOrderByOrderId(Order order) throws Exception;
+    String updateOrder(Order order) throws Exception;
 
-    String updateOrderByOrderId(Order order, int expectedResponseCode) throws Exception;
+    String updateOrder(Order order, int expectedResponseCode) throws Exception;
 
     String updateOrderBillingStatus(OrderEvent orderEvent) throws Exception;
 

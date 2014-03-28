@@ -121,7 +121,11 @@ app.controller('OfferEditCtrl',
             };
 
             $scope.updatePriceType = function(priceType) {
-                if (priceType=="TierPricing") {
+                if (priceType=="Free") {
+                    $scope.offer.priceTier = {};
+                    $scope.selectedTier = {};
+                    $scope.offer.prices = {};
+                }else if (priceType=="TierPricing") {
                     $scope.offer.prices = {};
                 } else {
                     $scope.offer.priceTier = {};
@@ -199,11 +203,16 @@ app.controller('OfferDetailCtrl', ['$scope', 'OfferFactory', 'ItemFactory', 'Met
             $location.path('/offers/' + $routeParams.id);
         };
 
+        $scope.selectedItems = {};
         $scope.offer = OfferFactory.query($routeParams, function(offer){
-           $scope.selectedTier = PriceTierFactory.query({id:offer.priceTier.id});
-           $scope.selectedItems = {};
-           for (var i=0; i<offer.items.length; i++) {
+           if (offer.priceType == "TierPricing") {
+             $scope.selectedTier = PriceTierFactory.query({id:offer.priceTier.id});
+           }
+
+           if (typeof offer.items != "undefined") {
+             for (var i=0; i<offer.items.length; i++) {
                $scope.selectedItems[offer.items[i].itemId.id] = ItemFactory.query({id:offer.items[i].itemId.id});
+             }
            }
         });
 

@@ -78,6 +78,30 @@ Billing.prototype.PutShippingInfo = function(shippingId, userId, dataObj, cb){
     client.Request(options, dataObj, cb);
 };
 
+Billing.prototype.DeleteShippingInfo = function(shippingId, userId, cb){
+    /*
+     Method: DELETE
+     URL: /rest/users/{userId}/ship-to-info/{shippingId}"
+     Data Type: QueryString
+     Content-Type: 'application/json'
+     Request:
+     Response:
+     */
+
+    var options = {
+        host: this.Host,
+        port: this.Port,
+        path: "/rest/users/" + userId + "/ship-to-info/" + shippingId,
+        method: 'DELETE', // TODO: DELETE
+        headers:{
+            'Content-Type': 'application/json'
+        }
+    };
+
+    var client = new RestClient();
+    client.Request(options, null, cb);
+};
+
 Billing.prototype.PostShippingInfo = function(userId, dataObj, cb){
     /*
      Method: POST

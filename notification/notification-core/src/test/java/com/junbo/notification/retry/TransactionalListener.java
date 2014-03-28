@@ -26,6 +26,6 @@ public class TransactionalListener implements MessageListener {
             throw new RuntimeException("Error occurred in TransactionalListener");
         }
 
-        System.out.println("SUCCEED!");
+        System.out.println("TransactionalListener SUCCEED!");
     }
 }
