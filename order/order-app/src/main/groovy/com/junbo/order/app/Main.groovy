@@ -1,19 +1,19 @@
 package com.junbo.order.app
-
 import com.junbo.common.error.RestExceptionMapper
 import com.junbo.common.id.provider.IdTypeFromStringProvider
 import com.junbo.common.json.JacksonFeature
 import com.junbo.common.json.ObjectMapperProvider
 import groovy.transform.CompileStatic
+import groovy.transform.TypeChecked
 import org.glassfish.grizzly.http.server.HttpServer
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory
 import org.glassfish.jersey.server.ResourceConfig
 import org.slf4j.bridge.SLF4JBridgeHandler
-
 /**
  * Created by chriszhu on 24/1/2014.
  */
 @CompileStatic
+@TypeChecked
 class Main {
 
     static HttpServer startServer() {

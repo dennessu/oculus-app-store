@@ -22,8 +22,8 @@ import javax.annotation.Resource
  * Created by chriszhu on 2/19/14.
  */
 @CompileStatic
-@Component('orderBillingFacade')
 @TypeChecked
+@Component('orderBillingFacade')
 class BillingFacadeImpl implements BillingFacade {
     @Resource(name='order.billingBalanceClient')
     BalanceResource balanceResource

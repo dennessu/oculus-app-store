@@ -68,11 +68,11 @@ public class CommonDbEntityWithDate implements Serializable {
 
 //    @Column(name = "RESOURCE_AGE")
 //    @NotEmpty(message = ValidationMessages.MISSING_VALUE)
-//    public Integer getResourceAge() {
+//    public Integer getRev() {
 //        return resourceAge;
 //    }
 //
-//    public void setResourceAge(Integer resourceAge) {
+//    public void setRev(Integer resourceAge) {
 //        this.resourceAge = resourceAge;
 //    }
 }

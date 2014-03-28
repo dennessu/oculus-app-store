@@ -10,6 +10,7 @@ import com.junbo.order.spec.model.ApiContext
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.resource.OrderResource
 import groovy.transform.CompileStatic
+import groovy.transform.TypeChecked
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -25,6 +26,7 @@ import javax.ws.rs.container.ContainerRequestContext
  * Created by chriszhu on 2/10/14.
  */
 @CompileStatic
+@TypeChecked
 @Scope('prototype')
 @Component('defaultOrderResource')
 class OrderResourceImpl implements OrderResource {
@@ -52,7 +54,7 @@ class OrderResourceImpl implements OrderResource {
         def persistedOrder = orderService.getOrderByTrackingUuid(order.trackingUuid)
         if (persistedOrder != null) {
             LOGGER.info('name=Order_Already_Exist. userId:{}, trackingUuid: {}, orderId:{}',
-                    order.user.value, order.trackingUuid, order.id.value)
+                    persistedOrder.user.value, persistedOrder.trackingUuid, persistedOrder.id.value)
             return Promise.pure(persistedOrder)
         }
         if (!order?.tentative) {
@@ -64,12 +66,6 @@ class OrderResourceImpl implements OrderResource {
     @Override
     Promise<Order> updateOrderByOrderId(OrderId orderId, Order order) {
         orderValidator.notNull(order, 'order').notNull(order.trackingUuid, 'trackingUuid').notNull(order.user, 'user')
-        def persistedOrder = orderService.getOrderByTrackingUuid(order.trackingUuid)
-        if (persistedOrder != null) {
-            LOGGER.info('name=Order_Already_Exist. userId:{}, trackingUuid: {}, orderId:{}',
-                    order.user.value, order.trackingUuid, order.id.value)
-            return Promise.pure(persistedOrder)
-        }
         order.id = orderId
         orderService.getOrderByOrderId(orderId.value).then { Order oldOrder ->
             // handle the update request per scenario
@@ -93,7 +89,7 @@ class OrderResourceImpl implements OrderResource {
         orderService.getOrdersByUserId(userId.value).syncThen { List<Order> orders ->
             Results<Order> results = new Results<>()
             results.setItems(orders)
-            return Promise.pure(results)
+            return results
         }
     }
 }

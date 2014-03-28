@@ -16,6 +16,7 @@ import com.junbo.order.db.entity.enums.OrderActionType
 import com.junbo.order.db.entity.enums.OrderStatus
 import com.junbo.order.db.entity.enums.OrderType
 import groovy.transform.CompileStatic
+import groovy.transform.TypeChecked
 import org.apache.commons.lang.RandomStringUtils
 
 import java.security.SecureRandom
@@ -25,6 +26,7 @@ import java.security.SecureRandom
  */
 
 @CompileStatic
+@TypeChecked
 class TestHelper {
 
     private static final int DEFAULT_PRICE = 10
