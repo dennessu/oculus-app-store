@@ -136,6 +136,15 @@ var AccountControllers = {
                     if(result.data.status == 200){
                         _self.set("errMessage", null);
                         $("#DelPaymentDialog").hide();
+                        var provider = new PaymentProvider();
+                        provider.PaymentInstruments(Utils.GenerateRequestModel(null), function(result){
+                            if(result.data.status == 200){
+                                var payments = JSON.parse(result.data.data).results;
+                                _self.set("content.payments", payments);
+                            }else{
+                                console.log("Can't get the payment instruments");
+                            }
+                        });
                     }else{
                         _self.set("errMessage", "Please try again later!");
                     }
@@ -149,7 +158,7 @@ var AccountControllers = {
     }),
     PaymentItemController: Ember.ObjectController.extend({
         cardDisplay: function(){
-            var type = this.get("model").creditCardRequest.creditCardType;
+            var type = this.get("model").creditCardRequest.type;
             var number = this.get("model").accountNum;
 
             return type+" ****"+ number.substr(number.length - 4, 4);
@@ -265,6 +274,15 @@ var AccountControllers = {
                     if(result.data.status == 200){
                         _self.set("errMessage", null);
                         $("#DelDialog").hide();
+                        var provider = new BillingProvider();
+                        provider.ShippingInfo(Utils.GenerateRequestModel(null), function(result){
+                            if(result.data.status == 200){
+                                var shippings = JSON.parse(result.data.data).results;
+                                _self.set("content.shippings", shippings);
+                            }else{
+                                console.log("Can't get the shippings");
+                            }
+                        });
                     }else{
                         _self.set("errMessage", "Please try again later!");
                     }
@@ -299,7 +317,7 @@ var AccountControllers = {
             street: "",
             city: "",
             state: "",
-            postCode: "",
+            postalCode: "",
             phoneNumber: ""
         },
 
@@ -320,6 +338,12 @@ var AccountControllers = {
             Cancel: function(){
                 this.transitionToRoute('account.shipping');
             }
+        }
+    }),
+    EntitlementsController: Ember.ObjectController.extend({
+        errMessage: null,
+        content:{
+            results: []
         }
     })
 };

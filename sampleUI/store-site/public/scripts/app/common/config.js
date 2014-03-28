@@ -65,6 +65,7 @@ AppConfig.API = {
             Namespace: "/api/entitlement/"
         },
         Get: {Path: "get"},
+        GetByUser: { Path: "get_by_user"},
         Post: {Path: "post"}
     }
 };

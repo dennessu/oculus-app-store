@@ -13,7 +13,7 @@ var DevCenterRoutes = {
             var provider = new EntitlementProvider();
             provider.Get(Utils.GenerateRequestModel(null), function(resultData){
                 if(resultData.data.status == 200){
-                    var items = JSON.parse(resultData.data.data).items;
+                    var items = JSON.parse(resultData.data.data).results;
 
                     console.log("[DevCenter: setupController] dev items length: ", items.length);
 

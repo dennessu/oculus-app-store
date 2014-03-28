@@ -1,10 +1,6 @@
 
 module.exports = function(){
-    this.self = {
-        "href": "http://api.wan-san.com/ship-to-info/70953532335535",
-         "id": "70953532335535"
-    },
-    this.user = {
+    this.userId = {
         "href": "http://api.wan-san.com/users/12345",
         "id": "12345"
     },

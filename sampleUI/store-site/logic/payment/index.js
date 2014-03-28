@@ -59,7 +59,7 @@ Payment.PostPayment = function (data, callback) {
 
     var model = new PaymentModels.CreditCardModel();
     Utils.FillObject(model, body, 2);
-    model.creditCardRequest.expireDate = body["expireDate"];
+    model.creditCardRequest.expireDate = Utils.DateFormat((new Date(body["expireDate"])), "yyyy-MM");
     model.creditCardRequest.encryptedCvmCode = body["encryptedCvmCode"];
     model.address.addressLine1 = body["addressLine1"];
     model.address.city = body["city"];
@@ -101,7 +101,7 @@ Payment.DeletePayment = function (data, callback) {
 
     dataProvider.DeltePaymentInstruments(paymentId, userId, function(result){
         var resultModel = new DomainModels.ResultModel();
-        if(result.StatusCode == 200){
+        if(result.StatusCode == 200 || result.StatusCode == 204){
             resultModel.status = DomainModels.ResultStatusEnum.Normal;
         }else{
             resultModel.status = DomainModels.ResultStatusEnum.APIError;

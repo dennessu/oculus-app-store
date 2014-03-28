@@ -78,7 +78,8 @@ var Configs = {
             Payment: "Account/Payment",
             AddPayment: "Account/AddPayment",
             Shipping: "Account/Shipping",
-            AddShipping: "Account/AddShipping"
+            AddShipping: "Account/AddShipping",
+            Entitlements: "Account/Entitlements"
         },
         DevCenter: {
             Index: "DevCenter"

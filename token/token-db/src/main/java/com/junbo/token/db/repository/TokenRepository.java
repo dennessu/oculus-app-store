@@ -7,12 +7,14 @@
 package com.junbo.token.db.repository;
 
 import com.junbo.oom.core.MappingContext;
+import com.junbo.token.common.TokenUtil;
 import com.junbo.token.db.dao.*;
 import com.junbo.token.db.entity.TokenItemEntity;
 import com.junbo.token.db.entity.TokenOrderEntity;
 import com.junbo.token.db.entity.TokenSetEntity;
 import com.junbo.token.db.entity.TokenSetOfferEntity;
 import com.junbo.token.db.mapper.TokenMapper;
+import com.junbo.token.spec.enums.ProductType;
 import com.junbo.token.spec.internal.TokenSet;
 import com.junbo.token.spec.internal.TokenOrder;
 import com.junbo.token.spec.model.TokenItem;
@@ -45,7 +47,7 @@ public class TokenRepository {
             TokenSetOfferEntity setOfferEntity = new TokenSetOfferEntity();
             setOfferEntity.setProductId(offerId);
             setOfferEntity.setTokenSetId(setId);
-            setOfferEntity.setProductType(tokenSet.getOfferType());
+            setOfferEntity.setProductType(TokenUtil.getEnumValue(ProductType.class, tokenSet.getProductType()));
             tokenSetOfferDao.save(setOfferEntity);
         }
         tokenSet.setId(setId);
@@ -58,7 +60,7 @@ public class TokenRepository {
         tokenSet.setOfferIds(new ArrayList<Long>());
         for(TokenSetOfferEntity setOfferEntity : tokenSetOfferDao.getByTokenSetId(tokenSetId)){
             tokenSet.getOfferIds().add(setOfferEntity.getProductId());
-            tokenSet.setOfferType(setOfferEntity.getProductType());
+            tokenSet.setProductType(setOfferEntity.getProductType().toString());
         }
         return tokenSet;
     }

@@ -19,8 +19,6 @@ import java.util.UUID;
  */
 public interface OrderService {
 
-    Promise<Order> createOrder(Order order, ApiContext context);
-
     Promise<Order> settleQuote(Order order, ApiContext context);
 
     Promise<Order> createQuote(Order order, ApiContext context);

@@ -201,13 +201,22 @@ body header > nav{ line-height: 25px; color: #CCC; border-bottom: solid 1px #BCB
 .account .history > .item .detail > dl dd:last-child{ float: right; width: 15%; text-align: right; font-weight: bold;}
 .account .history > .item .detail > dl dt .download{display: inline-block; position: relative; padding: 0 4px; line-height: 16px; color: #FFF; background-color: #FF6600; cursor: pointer; }
 .account .history > .item .detail > dl dt .download ul{display: none;}
-.account .history > .item .detail > dl dt .download:hover ul{display:block; margin: 0; padding: 0; position: absolute; top: 0px; left: 0px; width: 100px; background-color: #f7f7f7; border: solid 1px #CCC; z-index: 1000; box-shadow: 0 0 2px rgba(0,0,0, .2); }
+.account .history > .item .detail > dl dt .download:hover ul{display:block; margin: 0; padding: 0; position: absolute; top: 0px; left: 0px; width: 200px; background-color: #f7f7f7; border: solid 1px #CCC; z-index: 1000; box-shadow: 0 0 2px rgba(0,0,0, .2); }
 .account .history > .item .detail > dl dt .download:hover ul li{display:block; padding: 0 0 0 10px; height: 25px; line-height: 25px; list-style: none; border-bottom: solid 1px #CCC; }
 .account .history > .item .detail .money{ float: right; width: 270px;}
 .account .history > .item .detail .money dl{ margin: 0; line-height: 22px; height: 22px;}
 .account .history > .item .detail .money dt{float: left; width: 150px; text-align: right;}
 .account .history > .item .detail .money dd{float: right; margin: 0; width: 120px; text-align: right;}
 .account .history > .item .detail .money dl.total{ margin-top: 3px; padding-top: 3px; line-height: 30px; font-size: 18px; font-weight: bold;  }
+
+.account .entitlements{ position: relative;}
+.account .entitlements .list{ padding: 10px; border: solid 1px #CCC; }
+.account .entitlements .list dl{ margin: 5px 0 0 0; padding-bottom: 5px; height: 24px; line-height: 24px;  border-bottom: solid 1px #ddd; }
+.account .entitlements .list dl:last-child{ border-bottom: none;}
+.account .entitlements .list dl{min-height: 60px; line-height: 20px;}
+.account .entitlements .list dl dt{ }
+
+
 /* modules */
 .modules{ padding-top: 30px;}
 
