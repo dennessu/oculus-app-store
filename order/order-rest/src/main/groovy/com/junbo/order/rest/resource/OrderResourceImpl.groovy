@@ -10,6 +10,7 @@ import com.junbo.order.spec.model.ApiContext
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.resource.OrderResource
 import groovy.transform.CompileStatic
+import groovy.transform.TypeChecked
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -25,6 +26,7 @@ import javax.ws.rs.container.ContainerRequestContext
  * Created by chriszhu on 2/10/14.
  */
 @CompileStatic
+@TypeChecked
 @Scope('prototype')
 @Component('defaultOrderResource')
 class OrderResourceImpl implements OrderResource {

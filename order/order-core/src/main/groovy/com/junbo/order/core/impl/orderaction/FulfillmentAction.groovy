@@ -17,6 +17,7 @@ import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.FulfillmentEvent
 import groovy.transform.CompileStatic
+import groovy.transform.TypeChecked
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -27,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional
  * Created by fzhang on 14-2-25.
  */
 @CompileStatic
+@TypeChecked
 class  FulfillmentAction extends BaseOrderEventAwareAction {
 
     @Autowired

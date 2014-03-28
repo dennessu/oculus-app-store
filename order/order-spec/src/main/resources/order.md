@@ -67,7 +67,7 @@ Fields:
                     "href": "http://api.wan-san.com/coupons/ABCD-EFGH-0012"
                     "id": ""
                 },
-                "resourceAge": 1,
+                "rev": 1,
                 "createdTime: "2014-01-25T17:08:07Z"
                 "createdBy": "CheckoutService"
                 "updatedTime: "2014-01-25T17:09:07Z"
@@ -95,7 +95,7 @@ Fields:
                 }
                 "action": "fulfill",
                 "status": "completed",
-                "resourceAge": 1,
+                "rev": 1,
                 "createdTime: "2014-01-25 17:08:07",
                 "createdBy": "CheckoutService",
                 "updatedTime: "2014-01-25 17:09:07",
@@ -123,7 +123,7 @@ Fields:
                 }
                 "action": "fulfill",
                 "status": "completed"
-                "resourceAge": 1,
+                "rev": 1,
                 "createdTime: "2014-01-25 17:08:07",
                 "createdBy": "CheckoutService",
                 "updatedTime: "2014-01-25 17:09:07",
@@ -172,7 +172,7 @@ Fields:
             "createdBy": "CheckoutService",
             "updatedTime": "2014-01-25T17:08:10Z",
             "updatedBy": "CheckoutService",
-            "resourceAge": 1,
+            "rev": 1,
             "fulfillments": {
                 "href": "http://api.wan-san.com/fulfillments?orderItem=12345",
                 "id": ""
@@ -224,7 +224,7 @@ Fields:
             "country": "US",
             "currency": "USD",
             "tentative" false,
-            "resourceAge": 1,
+            "rev": 1,
             "originalOrder": {
                 "href": "http://api.wan-san.com/orders/12346",
                 "id": "12346"
@@ -304,7 +304,7 @@ Fields:
             "country": "US",
             "currency": "USD",
             "tentative": true,
-            "resourceAge": 1,
+            "rev": 1,
             "originalOrder": {} // this is a refund order
             "createdTime: "2014-01-25 17:08:07",
             "createdBy": "CheckoutService",
@@ -388,7 +388,7 @@ Update orders
                 "country": "US",
                 "currency": "USD",
                 "tentative": false, // this is the updated column
-                "resourceAge": null,
+                "rev": null,
                 "originalOrder": {} // this is a refund order
                 "createdTime: null,
                 "createdBy": null,
@@ -453,7 +453,7 @@ Update orders
                 "country": "US",
                 "currency": "USD",
                 "tentative": true,
-                "resourceAge": null,
+                "rev": null,
                 "originalOrder": {} // this is a refund order
                 "createdTime: null,
                 "createdBy": null,
@@ -527,7 +527,7 @@ Post a refund order.
                 "country": "US",
                 "currency": "USD",
                 "tentative" true, // this is the updated column
-                "resourceAge": null,
+                "rev": null,
                 "originalOrder": {} // this is a refund order
                 "createdTime: null,
                 "createdBy": null,
@@ -592,7 +592,7 @@ Post a refund order.
                 "country": "US",
                 "currency": "USD",
                 "tentative" false, // this is the updated column
-                "resourceAge": null,
+                "rev": null,
                 "originalOrder": {
                     "href": "http://api.wan-san.com/orders/12346",
                     "id": "12346"

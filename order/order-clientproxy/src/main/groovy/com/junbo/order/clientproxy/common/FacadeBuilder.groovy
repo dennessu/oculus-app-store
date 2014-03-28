@@ -11,6 +11,7 @@ import com.junbo.order.spec.model.OrderItem
 import com.junbo.rating.spec.model.request.OrderRatingItem
 import com.junbo.rating.spec.model.request.OrderRatingRequest
 import groovy.transform.CompileStatic
+import groovy.transform.TypeChecked
 
 import java.text.SimpleDateFormat
 
@@ -18,6 +19,7 @@ import java.text.SimpleDateFormat
  * Created by LinYi on 14-3-4.
  */
 @CompileStatic
+@TypeChecked
 class FacadeBuilder {
 
     public static final String ORDER_NUMBER = 'ORDERNUMBER'
