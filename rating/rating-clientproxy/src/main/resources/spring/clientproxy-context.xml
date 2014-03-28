@@ -28,10 +28,6 @@
     <bean id="ratingCatalogGateway" class="com.junbo.rating.clientproxy.impl.CatalogGatewayImpl"/>
     <bean id="ratingEntitlementGateway" class="com.junbo.rating.clientproxy.impl.EntitlementGatewayImpl"/>
 
-    <!--mock-->
-    <!--bean id="mockCatalogGateway" class="com.junbo.rating.clientproxy.mock.MockCatalogGatewayImpl"/>
-    <bean id="mockEntitlementGateway" class="com.junbo.rating.clientproxy.mock.MockEntitlementGatewayImpl"/-->
-
     <!-- async http client -->
     <bean id="asyncHttpClient" class="com.ning.http.client.AsyncHttpClient"/>
 
