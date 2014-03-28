@@ -158,10 +158,6 @@ class OrderServiceImpl implements OrderService {
         if (orderId == null) {
             throw AppErrors.INSTANCE.fieldInvalid('orderId', 'orderId cannot be null').exception()
         }
-        def persistedOrder = this.getOrderByTrackingUuid(UUID.randomUUID())
-        if (persistedOrder != null) {
-            return Promise.pure(persistedOrder)
-        }
         // get Order by id
         def order = orderRepository.getOrder(orderId)
         if (order == null) {
