@@ -40,8 +40,8 @@ import com.junbo.test.common.Entities.enums.Currency;
 import com.junbo.test.common.libs.EnumHelper;
 import com.junbo.test.common.libs.EnumHelper.UserStatus;
 import com.junbo.test.common.libs.IdConverter;
-import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
+import com.junbo.test.common.libs.RandomFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,14 +88,14 @@ public class TestDataProvider {
         return offerClient.postDefaultOffer(itemType);
     }
 
-    public void postOffersToPrimaryCart(String uid, ArrayList<String> offers) throws Exception {
+    public String postOffersToPrimaryCart(String uid, ArrayList<String> offers) throws Exception {
         String primaryCartId = cartClient.getCartPrimary(uid);
         Cart primaryCart = Master.getInstance().getCart(primaryCartId);
         List<OfferItem> offerItemList = new ArrayList<>();
         List<CouponItem> couponItemList = new ArrayList<>();
         for (int i = 0; i < offers.size(); i++) {
             OfferItem offerItem = new OfferItem();
-            offerItem.setQuantity(RandomFactory.getRandomLong(5L));
+            offerItem.setQuantity(RandomFactory.getRandomLong(1L, 5L));
             offerItem.setSelected(true);
             OfferId offerId = new OfferId(
                     IdConverter.hexStringToId(OfferId.class, offerClient.getOfferIdByName(offers.get(i))));
@@ -107,15 +107,15 @@ public class TestDataProvider {
         primaryCart.setCoupons(couponItemList);
 
         Master.getInstance().addCart(primaryCartId, primaryCart);
-        cartClient.updateCart(uid, primaryCartId, primaryCart);
+        return cartClient.updateCart(uid, primaryCartId, primaryCart);
     }
 
-    public void postDefaultOffersToPrimaryCart(String uid, EnumHelper.CatalogItemType itemType) throws Exception {
+    public String postDefaultOffersToPrimaryCart(String uid, EnumHelper.CatalogItemType itemType) throws Exception {
         String offerId = this.postDefaultOffer(itemType);
         //String offerId = IdConverter.idLongToHexString(OfferId.class, new OfferId(100001L).getValue());
         ArrayList<String> offerList = new ArrayList<>();
         offerList.add(offerId);
-        this.postOffersToPrimaryCart(uid, offerList);
+        return this.postOffersToPrimaryCart(uid, offerList);
     }
 
     public String mergeCart(String destinationUid, String sourceUid) throws Exception {

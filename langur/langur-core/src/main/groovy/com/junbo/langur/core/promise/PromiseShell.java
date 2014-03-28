@@ -10,33 +10,30 @@ import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 
 import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 
 /**
  * PromiseShell.
  */
-public enum PromiseShell {
-    DEFAULT,
-    PAYMENT,
-    BILLING,
-    CATALOG,
-    SUBSCRIPTION,
-    ORDER,
-    IDENTITY,
-    RATING,
-    CART,
-    FULFILMENT;
-
+public class PromiseShell {
     private static final int POOL_THREADS = 50;
 
-    private ListeningExecutorService executorService =
-            MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(POOL_THREADS));
+    private static ConcurrentHashMap<String, ListeningExecutorService> pool = new ConcurrentHashMap<>();
 
-    public <R> Promise<R> decorate(final Callable<R> callable) {
-        return Promise.wrap(executorService.submit(Wrapper.wrap(callable)));
+    public static <R> Promise<R> decorate(String poolName, final Callable<R> callable) {
+        return Promise.wrap(locate(poolName).submit(Wrapper.wrap(callable)));
     }
 
-    public Promise<Void> decorate(final Runnable runnable) {
-        return Promise.wrap((ListenableFuture<Void>) executorService.submit(Wrapper.wrap(runnable)));
+    public static Promise<Void> decorate(String poolName, final Runnable runnable) {
+        return Promise.wrap((ListenableFuture<Void>) locate(poolName).submit(Wrapper.wrap(runnable)));
+    }
+
+    private static ListeningExecutorService locate(String poolName) {
+        if (!pool.containsKey(poolName)) {
+            pool.putIfAbsent(poolName, MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(POOL_THREADS)));
+        }
+
+        return pool.get(poolName);
     }
 }
