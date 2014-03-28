@@ -7,11 +7,13 @@ package com.junbo.order.clientproxy.model
 
 import com.junbo.catalog.spec.model.item.Item
 import groovy.transform.CompileStatic
+import groovy.transform.TypeChecked
 
 /**
  * Created by chriszhu on 3/21/14.
  */
 @CompileStatic
+@TypeChecked
 class OrderOfferItem {
     Item catalogItem
 }

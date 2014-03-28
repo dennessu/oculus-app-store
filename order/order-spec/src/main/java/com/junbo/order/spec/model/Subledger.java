@@ -92,11 +92,11 @@ public class Subledger extends BaseModelWithDate {
         this.payoutAmount = payoutAmount;
     }
 
-    public Integer getResourceAge() {
+    public Integer getRev() {
         return resourceAge;
     }
 
-    public void setResourceAge(Integer resourceAge) {
+    public void setRev(Integer resourceAge) {
         this.resourceAge = resourceAge;
     }
 }

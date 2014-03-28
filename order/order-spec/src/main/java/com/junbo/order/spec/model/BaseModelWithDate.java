@@ -5,17 +5,24 @@
  */
 package com.junbo.order.spec.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.Date;
 
 /**
  * Created by LinYi on 2/10/14.
  */
 public class BaseModelWithDate {
+    @JsonIgnore
     private Date createdTime;
+    @JsonIgnore
     private String createdBy;
+    @JsonIgnore
     private Date updatedTime;
+    @JsonIgnore
     private String updatedBy;
-    private Integer resourceAge;
+    @JsonIgnore
+    private Integer rev;
 
     public Date getCreatedTime() {
         return createdTime;
@@ -49,11 +56,11 @@ public class BaseModelWithDate {
         this.updatedBy = updatedBy;
     }
 
-    public Integer getResourceAge() {
-        return resourceAge;
+    public Integer getRev() {
+        return rev;
     }
 
-    public void setResourceAge(Integer resourceAge) {
-        this.resourceAge = resourceAge;
+    public void setRev(Integer rev) {
+        this.rev = rev;
     }
 }

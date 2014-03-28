@@ -11,6 +11,7 @@ import com.junbo.order.core.impl.order.OrderServiceContext
 import com.junbo.order.core.impl.order.OrderServiceImpl
 import com.junbo.order.spec.model.Order
 import groovy.transform.CompileStatic
+import groovy.transform.TypeChecked
 import org.springframework.beans.factory.annotation.Autowired
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
@@ -18,6 +19,7 @@ import org.testng.annotations.Test
  * Created by chriszhu on 2/14/14.
  */
 @CompileStatic
+@TypeChecked
 class OrderServiceTest extends BaseTest {
 
     @Autowired

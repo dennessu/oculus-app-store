@@ -5,6 +5,7 @@ import com.junbo.identity.spec.model.user.User
 import com.junbo.identity.spec.resource.UserResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
+import groovy.transform.TypeChecked
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 
@@ -17,6 +18,7 @@ import javax.ws.rs.QueryParam
 
 @Component('mockIdentityResource')
 @CompileStatic
+@TypeChecked
 @Scope('prototype')
 class MockIdentityResource implements UserResource {
     @Override

@@ -53,6 +53,6 @@ public class ShippingAddressResourceImpl implements ShippingAddressResource {
     @Override
     public Promise<Void> deleteShippingAddress(UserId userId, ShippingAddressId addressId) {
         shippingAddressService.deleteShippingAddress(userId.getValue(), addressId.getValue());
-        return null;
+        return Promise.pure(null);
     }
 }

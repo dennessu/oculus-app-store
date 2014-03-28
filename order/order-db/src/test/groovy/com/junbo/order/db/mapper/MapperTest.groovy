@@ -12,6 +12,7 @@ import com.junbo.order.db.common.TestHelper
 import com.junbo.order.db.entity.*
 import com.junbo.order.spec.model.*
 import groovy.transform.CompileStatic
+import groovy.transform.TypeChecked
 import org.springframework.beans.factory.annotation.Autowired
 import org.testng.annotations.Test
 
@@ -19,6 +20,7 @@ import org.testng.annotations.Test
  * Created by LinYi on 14-2-25.
  */
 @CompileStatic
+@TypeChecked
 class MapperTest extends BaseTest {
     @Autowired
     ModelMapper modelMapper

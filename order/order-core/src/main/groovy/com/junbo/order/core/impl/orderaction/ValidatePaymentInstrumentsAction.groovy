@@ -8,6 +8,7 @@ import com.junbo.order.spec.error.AppErrors
 import com.junbo.payment.spec.enums.PIStatus
 import com.junbo.payment.spec.model.PaymentInstrument
 import groovy.transform.CompileStatic
+import groovy.transform.TypeChecked
 import org.apache.commons.collections.CollectionUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Component
  * Created by chriszhu on 3/10/14.
  */
 @CompileStatic
+@TypeChecked
 @Component('validatePaymentInstrumentsAction')
 class ValidatePaymentInstrumentsAction implements com.junbo.langur.core.webflow.action.Action {
 

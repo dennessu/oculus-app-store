@@ -18,6 +18,7 @@ import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.OrderItem
 import com.junbo.payment.spec.model.PaymentInstrument
 import groovy.transform.CompileStatic
+import groovy.transform.TypeChecked
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -29,6 +30,7 @@ import org.springframework.util.CollectionUtils
  */
 @Component('orderServiceContextBuilder')
 @CompileStatic
+@TypeChecked
 class OrderServiceContextBuilder {
 
     @Autowired
