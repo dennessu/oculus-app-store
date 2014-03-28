@@ -4,7 +4,7 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.rating.clientproxy.mock;
+package com.junbo.rating.core.mock;
 
 import com.junbo.catalog.spec.model.domaindata.ShippingMethod;
 import com.junbo.catalog.spec.model.item.Item;
@@ -21,12 +21,9 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
- * Created by lizwu on 2/26/14.
- * @deprecated just for internal test
+ * Created by lizwu on 3/28/14.
  */
-
-@Deprecated
-public class MockCatalogGatewayImpl implements CatalogGateway {
+public class MockCatalogGatewayImpl implements CatalogGateway{
     Map<Long, RatingOffer> mockOffers = new HashMap<Long, RatingOffer>() {{
         put(100L, genOffer100());
         put(102L, genOffer102());

@@ -28,7 +28,7 @@ import com.junbo.rating.spec.model.request.OfferRatingRequest;
 public interface RatingResource {
     @POST
     @Path("/offers")
-    Promise<OfferRatingRequest> offersRating(@Valid OfferRatingRequest request);
+    Promise<OfferRatingRequest> offerRating(@Valid OfferRatingRequest request);
 
     @POST
     @Path("/order")

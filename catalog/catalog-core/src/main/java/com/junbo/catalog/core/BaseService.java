@@ -26,6 +26,6 @@ public interface BaseService<T extends VersionedModel> {
     T review(Long entityId);
     T release(Long entityId);
     T reject(Long entityId);
-    Long remove(Long entityId);
+    T remove(Long entityId);
     Long delete(Long entityId);
 }
