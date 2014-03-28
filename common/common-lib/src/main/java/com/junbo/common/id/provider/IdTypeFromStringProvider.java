@@ -26,8 +26,7 @@ import java.lang.reflect.Type;
 public class IdTypeFromStringProvider implements ParamConverterProvider {
     @Override
     public <T> ParamConverter<T> getConverter(final Class<T> rawType, Type genericType, Annotation[] annotations) {
-        return !Id.class.isAssignableFrom(rawType.getClass()) ? null :
-                new IdTypeFromStringConverter.AbstractStringReader<T>() {
+        return Id.class.isAssignableFrom(rawType) ? new IdTypeFromStringConverter.AbstractStringReader<T>() {
             @Override
             protected T _fromString(String value) throws Exception {
                 T obj = rawType.newInstance();
@@ -37,6 +36,6 @@ public class IdTypeFromStringProvider implements ParamConverterProvider {
                 ((Id)obj).setValue(IdFormatter.decodeId(rawType, value));
                 return obj;
             }
-        };
+        } : null;
     }
 }
