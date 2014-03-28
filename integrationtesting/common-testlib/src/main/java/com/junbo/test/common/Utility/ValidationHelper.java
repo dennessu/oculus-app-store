@@ -8,6 +8,7 @@ package com.junbo.test.common.Utility;
 import com.junbo.cart.spec.model.item.OfferItem;
 import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.common.id.ShippingAddressId;
+import com.junbo.common.id.UserId;
 import com.junbo.order.spec.model.OrderItem;
 import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.common.Entities.enums.Currency;
@@ -19,6 +20,7 @@ import com.junbo.cart.spec.model.Cart;
 import com.junbo.test.common.libs.IdConverter;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 /**
@@ -41,7 +43,7 @@ public class ValidationHelper {
         //verifyEqual(order.getTentative(), false, "verify tentative after order complete");
         verifyEqual(order.getCountry(), country.toString(), "verify country field in order");
         verifyEqual(order.getCurrency(), currency.toString(), "verify currency field in order");
-        verifyEqual(order.getStatus(), "OPEN", "verify order status");
+        verifyEqual(order.getStatus(), "COMPLETED", "verify order status");
 
         verifyEqual(order.getOrderItems().size(), cart.getOffers().size(), "verify offer items in order");
         if (shippingAddressId != null) {
@@ -68,9 +70,10 @@ public class ValidationHelper {
                     verifyEqual(orderItem.getTotalAmount().toString(),
                             expectedOrderItemAmount.toString(), "verify order item amount");
                     verifyEqual(orderItem.getTotalTax(),
-                            expectedOrderItemAmount.multiply(new BigDecimal(0.87)), "Verify total tax ");
-                    expectedTotalTaxAmount.add(orderItem.getTotalTax());
-                    expectedTotalAmount.add(expectedOrderItemAmount);
+                            expectedOrderItemAmount.multiply(new BigDecimal(0.087)).
+                                    setScale(2, RoundingMode.UP), "Verify total tax");
+                    expectedTotalTaxAmount = expectedTotalTaxAmount.add(orderItem.getTotalTax());
+                    expectedTotalAmount = expectedTotalAmount.add(expectedOrderItemAmount);
                     break;
                 }
             }
@@ -81,12 +84,14 @@ public class ValidationHelper {
     }
 
     public void validateEmailHistory(String uid) throws Exception {
-        String sql = "";
-        verifyEqual(dbHelper.executeScalar(sql), "", "");
+        String id = IdConverter.hexStringToId(UserId.class, uid).toString();
+        String sql = String.format("select action from email_history where user_id=\'%s\'", id);
+        verifyEqual(dbHelper.executeScalar(
+                sql, DBHelper.DBName.EMAIL), "OrderConfirmation", "Verify email sent successfully");
     }
 
     public static void verifyEqual(BigDecimal actual, BigDecimal expect, String message) {
-        if (actual != expect) {
+        if (actual.doubleValue() != expect.doubleValue()) {
             throw new TestException(
                     String.format("Verify failed for %s, expect %s, but found %s", message, expect, actual));
         }
