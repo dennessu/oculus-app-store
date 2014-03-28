@@ -8,6 +8,7 @@ package com.junbo.fulfilment.common.async;
 import com.google.common.util.concurrent.*;
 import com.junbo.fulfilment.common.promise.PromiseShell;
 import com.junbo.langur.core.promise.Promise;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.concurrent.Callable;
@@ -52,14 +53,15 @@ public class AsyncTest {
     @Test
     public void testFulfilmentSDK1() throws Exception {
         logThreadInfo();
-        MyContext.current().setName("shakrmao");
+        MyContext.current().setName("sharkmao");
+        System.out.println(MyContext.current().getName());
 
         PromiseShell.FULFILMENT.decorate(new Runnable() {
             public void run() {
                 logThreadInfo();
                 FulfilmentSDK.ship("test shipping info", 1000);
 
-                //Assert.assertEquals(MyContext.current().getName(), "sharkmao");
+                Assert.assertEquals(MyContext.current().getName(), "sharkmao");
                 MyContext.current().setAge(1000);
             }
         }).then(new Promise.Func<Void, Promise<Void>>() {
@@ -67,7 +69,8 @@ public class AsyncTest {
                 System.out.println("then1...");
                 logThreadInfo();
 
-                //Assert.assertEquals(MyContext.current().getAge(), new Integer(1000));
+                Assert.assertEquals(MyContext.current().getName(), "sharkmao");
+                Assert.assertEquals(MyContext.current().getAge(), new Integer(1000));
                 MyContext.current().setSalary(123456789L);
 
                 return Promise.pure(null);
@@ -77,7 +80,9 @@ public class AsyncTest {
                 System.out.println("then2...");
                 logThreadInfo();
 
-                //Assert.assertEquals(MyContext.current().getSalary(), new Long(123456789L));
+                Assert.assertEquals(MyContext.current().getName(), "sharkmao");
+                Assert.assertEquals(MyContext.current().getAge(), new Integer(1000));
+                Assert.assertEquals(MyContext.current().getSalary(), new Long(123456789L));
 
                 return Promise.pure(null);
             }
@@ -87,34 +92,36 @@ public class AsyncTest {
     @Test
     public void testFulfilmentSDK2() throws Exception {
         logThreadInfo();
-        MyContext.current().setName("shakrmao");
+        MyContext.current().setName("sharkmao");
 
         PromiseShell.FULFILMENT.decorate(new Callable<Long>() {
             public Long call() {
                 logThreadInfo();
 
-
-                //Assert.assertEquals(MyContext.current().getName(), "sharkmao");
+                Assert.assertEquals(MyContext.current().getName(), "sharkmao");
                 MyContext.current().setAge(1000);
 
                 return FulfilmentSDK.query("test shipping info", 1000);
             }
-        }).then(new Promise.Func<Long, Promise<Long>>() {
-            public Promise<Long> apply(Long input) {
+        }).then(new Promise.Func<Long, Promise<String>>() {
+            public Promise<String> apply(Long input) {
                 System.out.println("then1..." + input);
                 logThreadInfo();
 
-                //Assert.assertEquals(MyContext.current().getAge(), new Integer(1000));
+                Assert.assertEquals(MyContext.current().getName(), "sharkmao");
+                Assert.assertEquals(MyContext.current().getAge(), new Integer(1000));
                 MyContext.current().setSalary(123456789L);
 
-                return Promise.pure(input + 100000L);
+                return Promise.pure("hello:" + input);
             }
-        }).then(new Promise.Func<Long, Promise<Long>>() {
-            public Promise<Long> apply(Long input) {
+        }).then(new Promise.Func<String, Promise<Void>>() {
+            public Promise<Void> apply(String input) {
                 System.out.println("then2..." + input);
                 logThreadInfo();
 
-                //Assert.assertEquals(MyContext.current().getSalary(), new Long(123456789L));
+                Assert.assertEquals(MyContext.current().getName(), "sharkmao");
+                Assert.assertEquals(MyContext.current().getAge(), new Integer(1000));
+                Assert.assertEquals(MyContext.current().getSalary(), new Long(123456789L));
 
                 return Promise.pure(null);
             }
