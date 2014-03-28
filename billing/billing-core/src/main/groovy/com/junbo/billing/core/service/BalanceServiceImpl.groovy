@@ -10,14 +10,10 @@ import com.junbo.billing.clientproxy.IdentityFacade
 import com.junbo.billing.clientproxy.PaymentFacade
 import com.junbo.billing.db.repository.BalanceRepository
 import com.junbo.billing.spec.enums.BalanceStatus
+import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.enums.TaxStatus
 import com.junbo.billing.spec.error.AppErrors
-import com.junbo.billing.spec.model.Balance
-import com.junbo.billing.spec.model.BalanceItem
-import com.junbo.billing.spec.enums.BalanceType
-import com.junbo.billing.spec.model.Currency
-import com.junbo.billing.spec.model.DiscountItem
-import com.junbo.billing.spec.model.TaxItem
+import com.junbo.billing.spec.model.*
 import com.junbo.common.id.BalanceId
 import com.junbo.common.id.OrderId
 import com.junbo.identity.spec.model.user.User
@@ -82,9 +78,10 @@ class BalanceServiceImpl implements BalanceService {
                     // set the balance status to INIT
                     taxedBalance.setStatus(BalanceStatus.INIT.name())
 
-                    return transactionService.processBalance(taxedBalance).then {
-                        //persist the balance entity
-                        Balance resultBalance = balanceRepository.saveBalance(taxedBalance)
+                    Balance savedBalance = balanceRepository.saveBalance(taxedBalance)
+
+                    return transactionService.processBalance(savedBalance).then {
+                        Balance resultBalance = balanceRepository.updateBalance(savedBalance)
                         return Promise.pure(resultBalance)
                     }
                 }

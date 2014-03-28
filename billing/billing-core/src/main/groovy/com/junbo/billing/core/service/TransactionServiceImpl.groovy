@@ -9,23 +9,22 @@ package com.junbo.billing.core.service
 import com.junbo.billing.clientproxy.PaymentFacade
 import com.junbo.billing.db.repository.TransactionRepository
 import com.junbo.billing.spec.enums.BalanceStatus
+import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.enums.TransactionStatus
+import com.junbo.billing.spec.enums.TransactionType
 import com.junbo.billing.spec.error.AppErrors
 import com.junbo.billing.spec.model.Balance
-import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.model.Transaction
-import com.junbo.billing.spec.enums.TransactionType
 import com.junbo.langur.core.promise.Promise
 import com.junbo.payment.spec.enums.PaymentStatus
 import com.junbo.payment.spec.model.ChargeInfo
-import com.junbo.payment.spec.model.PaymentTransaction
 import com.junbo.payment.spec.model.PIId
+import com.junbo.payment.spec.model.PaymentTransaction
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
-
 
 /**
  * Created by xmchen on 14-2-19.
@@ -185,6 +184,7 @@ class TransactionServiceImpl implements TransactionService {
         paymentTransaction.setTrackingUuid(UUID.randomUUID())
         paymentTransaction.setUserId(balance.userId.value)
         paymentTransaction.setPaymentInstrumentId(piid)
+        paymentTransaction.setBillingRefId(balance.balanceId.toString())
 
         def chargeInfo = new ChargeInfo()
         chargeInfo.setCurrency(balance.currency)
