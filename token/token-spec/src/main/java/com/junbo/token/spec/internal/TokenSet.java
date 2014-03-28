@@ -16,9 +16,8 @@ public class TokenSet {
     private String description;
     private String status;
     private String generationLength;
-    private Long generationSeed;
     private List<Long> offerIds;
-    private String offerType;
+    private String productType;
 
     public Long getId() {
         return id;
@@ -52,14 +51,6 @@ public class TokenSet {
         this.generationLength = generationLength;
     }
 
-    public Long getGenerationSeed() {
-        return generationSeed;
-    }
-
-    public void setGenerationSeed(Long generationSeed) {
-        this.generationSeed = generationSeed;
-    }
-
     public List<Long> getOfferIds() {
         return offerIds;
     }
@@ -68,11 +59,11 @@ public class TokenSet {
         this.offerIds = offerIds;
     }
 
-    public String getOfferType() {
-        return offerType;
+    public String getProductType() {
+        return productType;
     }
 
-    public void setOfferType(String offerType) {
-        this.offerType = offerType;
+    public void setProductType(String productType) {
+        this.productType = productType;
     }
 }

@@ -53,4 +53,12 @@ public class CommonMapper {
     public String toTokenLength(TokenLength piType){
         return piType.toString();
     }
+
+    public ProductType toProductTYpeEnum(String productType){
+        return ProductType.valueOf(productType);
+    }
+
+    public String toProductType(ProductType productType){
+        return productType.toString();
+    }
 }

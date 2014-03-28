@@ -260,6 +260,7 @@ Cart.CartProcess = function (action, data, callback) {
             for (var i = 0; i < offerItems.length; ++i) {
                 var currentOffer = offerItems[i];
                 var offerIndex = Cart._getIndexByOffers(currentOffer.offer.id, cartObj.offers);
+                console.log(Utils.Format("[{1}] current offerId:{2}  index:{3}"), action, currentOffer.offer.id, offerIndex);
 
                 switch (action) {
                     case "merge":
@@ -276,6 +277,7 @@ Cart.CartProcess = function (action, data, callback) {
                             cartObj.offers.push(currentOffer);
                         } else {
                             cartObj.offers[offerIndex].quantity = currentOffer.quantity;
+                            cartObj.offers[offerIndex].selected = currentOffer.selected;
                         }
                         needUpdate = true;
                         break;
@@ -439,9 +441,9 @@ Cart.PostOrder = function(data, callback){
             orderModel.country = "US";
             orderModel.currency = "USD";
             orderModel.tentative = true;
-            orderModel.shippingMethodId = null;
-            orderModel.shippingAddressId = null;
-            orderModel.paymentInstruments = null;
+            orderModel.shippingMethodId = undefined;
+            orderModel.shippingAddressId = undefined;
+            orderModel.paymentInstruments = undefined;
             orderModel.orderItems = new Array();
 
             var indexArray = new Array();
@@ -468,7 +470,7 @@ Cart.PostOrder = function(data, callback){
         // Update Cart
         function(orderResult, result, indexArray, cb){
             var cartObj = JSON.parse(result);
-            for(var i = 0; i < indexArray.length; ++i){
+            for(var i = indexArray.length; i > -1; --i){
                 cartObj.offers.splice(indexArray[i], 1);
             }
 
@@ -531,8 +533,8 @@ Cart.PutOrder = function(data, callback){
         // Get cart by url
         function (result, cb) {
            var order = JSON.parse(result);
-            order.shippingMethodId = shippingMethodId;
-            order.shippingAddressId = shippingAddressId;
+            order["shippingMethodId"] ={id: shippingMethodId};
+            order["shippingAddressId"]={id: shippingAddressId};
             order.paymentInstruments.push(payment);
             order.trackingUuid = Guid.create();
 

@@ -130,7 +130,7 @@ var StoreRoutes = {
                     paymentProvider.Get(Utils.GenerateRequestModel({paymentId: order.paymentInstruments[0].id}), function(resultData){
                         if(resultData.data.status == 200){
                             var payment = JSON.parse(resultData.data.data);
-                            controller.set("content.paymentMethodName", payment.creditCardRequest.creditCardType + " " + payment.accountNum.substr(payment.accountNum.length - 4, 4));
+                            controller.set("content.paymentMethodName", payment.creditCardRequest.type + " " + payment.accountNum.substr(payment.accountNum.length - 4, 4));
                         }else{
 
                         }

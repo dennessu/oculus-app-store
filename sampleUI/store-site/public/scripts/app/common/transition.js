@@ -34,9 +34,9 @@ var Transition = {
 
     OffersToProduct: function (data) {
         var result = null;
-        if (data["items"] != undefined && data["items"] instanceof Array && typeof(data["self"]) == "undefined") {
+        if (data["results"] != undefined && data["results"] instanceof Array && typeof(data["self"]) == "undefined") {
             // get offers
-            var offers = data["items"];
+            var offers = data["results"];
             var resultList = new Array();
             for (var i = 0; i < offers.length; ++i) {
                 var item = offers[i];
@@ -85,8 +85,8 @@ var Transition = {
     },
 
     ShippingInfo: function(data){
-        if(data instanceof Array){
-            var result = new Array();
+        if(data["results"] != undefined && data["results"] instanceof Array && typeof(data["self"]) == "undefined"){
+            var result = data["results"];
             for(var i = 0; i < data.length; ++i){
                 var item = data[i];
                 result.push({
@@ -120,8 +120,8 @@ var Transition = {
 
     CreditCard: function(data){
         var result = null;
-        if(data["items"] != undefined && data["items"] instanceof Array && typeof(data["self"]) == "undefined"){
-            var payments = data["items"];
+        if(data["results"] != undefined && data["results"] instanceof Array && typeof(data["self"]) == "undefined"){
+            var payments = data["results"];
             var paymentArray = new Array();
             for(var i = 0; i < payments.length; ++i){
                 var item = payments[i];

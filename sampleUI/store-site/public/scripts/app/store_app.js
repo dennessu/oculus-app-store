@@ -35,6 +35,7 @@ App.Router.map(function(){
         this.route("addpayment");
         this.route("shipping");
         this.route("addshipping");
+        this.route("entitlements");
     });
     this.resource("devcenter", {path: "/devcenter"});
 });
@@ -64,6 +65,7 @@ App.AccountPaymentRoute = AccountRoutes.PaymentRoute;
 App.AccountAddpaymentRoute = AccountRoutes.AddPaymentRoute;
 App.AccountShippingRoute = AccountRoutes.ShippingRoute;
 App.AccountAddshippingRoute = AccountRoutes.AddShippingRoute;
+App.AccountEntitlementsRoute = AccountRoutes.EntitlementsRoute;
 
 App.IndexView = StoreViews.IndexView;
 App.DetailView = StoreViews.DetailView;
@@ -89,6 +91,7 @@ App.AccountPaymentView = AccountViews.PaymentView;
 App.AccountAddpaymentView = AccountViews.AddPaymentView;
 App.AccountShippingView = AccountViews.ShippingView;
 App.AccountAddshippingView = AccountViews.AddShippingView;
+App.AccountEntitlementsView = AccountViews.EntitlementsView;
 
 App.ApplicationController = StoreControllers.ApplicationController;
 App.DetailController = StoreControllers.DetailController;
@@ -117,5 +120,6 @@ App.AccountAddpaymentController = AccountControllers.AddPaymentIndexController;
 App.AccountShippingController = AccountControllers.ShippingController;
 App.AccountShippingItemController = AccountControllers.ShippingItemController;
 App.AccountAddshippingController = AccountControllers.AddShippingIndexController;
+App.AccountEntitlementsController = AccountControllers.EntitlementsController;
 
 

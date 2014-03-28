@@ -163,7 +163,7 @@ module.exports = function(io){
             });
         });
         socket.on('/api/billing/del', function (data, fn) {
-            Billing.PostShippingInfo(data, function(data){
+            Billing.DeleteShippingInfo(data, function(data){
                 fn(data);
             });
         });
@@ -194,6 +194,11 @@ module.exports = function(io){
         /* Entitlement -------------------------------------------------------------- */
         socket.on('/api/entitlement/get', function (data, fn) {
             Entitlement.GetEntitlements(data, function(data){
+                fn(data);
+            });
+        });
+        socket.on('/api/entitlement/get_by_user', function (data, fn) {
+            Entitlement.GetEntitlementsByUserId(data, function(data){
                 fn(data);
             });
         });
