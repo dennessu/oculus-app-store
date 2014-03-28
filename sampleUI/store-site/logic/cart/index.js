@@ -439,7 +439,9 @@ Cart.PostOrder = function(data, callback){
             orderModel.country = "US";
             orderModel.currency = "USD";
             orderModel.tentative = true;
-            orderModel.paymentInstruments = new Array();
+            orderModel.shippingMethodId = null;
+            orderModel.shippingAddressId = null;
+            orderModel.paymentInstruments = null;
             orderModel.orderItems = new Array();
 
             var indexArray = new Array();
@@ -447,7 +449,7 @@ Cart.PostOrder = function(data, callback){
                 var item = cartObj.offers[i];
                 if(item.selected == true){
                     var orderItem = new OrderModels.OrderItemModel();
-                    orderItem.offer = item.self;
+                    orderItem.offer = item.offer;
                     orderItem.quantity = item.quantity;
                     orderModel.orderItems.push(orderItem);
                     indexArray.push(i);

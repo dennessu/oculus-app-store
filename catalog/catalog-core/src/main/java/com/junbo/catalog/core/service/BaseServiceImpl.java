@@ -99,15 +99,7 @@ public abstract class BaseServiceImpl<T extends VersionedModel> implements BaseS
         return getEntityDraftRepo().get(entityId);
     }
 
-    @Override
-    public T update(Long entityId, T entity) {
-        if (entity.getId() == null) {
-            throw AppErrors.INSTANCE.missingField("id").exception();
-        }
-        if (!entityId.equals(entity.getId())) {
-            throw AppErrors.INSTANCE.fieldNotMatch("id", entity.getId(), entityId).exception();
-        }
-
+    protected T updateEntity(Long entityId, T entity) {
         getEntityDraftRepo().update(entity);
         return getEntityDraftRepo().get(entity.getId());
     }
@@ -148,6 +140,15 @@ public abstract class BaseServiceImpl<T extends VersionedModel> implements BaseS
     @Override
     public Long delete(Long entityId) {
         return updateStatus(entityId, Status.DELETED);
+    }
+
+    protected void validateId(Long entityId, T entity) {
+        if (entity.getId() == null) {
+            throw AppErrors.INSTANCE.missingField("id").exception();
+        }
+        if (!entityId.equals(entity.getId())) {
+            throw AppErrors.INSTANCE.fieldNotMatch("id", entity.getId(), entityId).exception();
+        }
     }
 
     protected <T> void checkFieldNotNull(T field, String fieldName) {

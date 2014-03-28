@@ -18,3 +18,4 @@ exports.PutProfile = Profile.PutProfile;
 exports.GetOptIns = Profile.GetOptIns;
 exports.PostOptIns = Profile.PostOptIns;
 exports.PutUser = Profile.PutUser;
+exports.Logout = Profile.GetEndSession;

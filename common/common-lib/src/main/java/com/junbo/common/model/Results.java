@@ -23,6 +23,7 @@ public class Results<T> {
     @JsonProperty("self")
     private Link self;
 
+    @JsonProperty("results")
     private List<T> items;
 
     @JsonProperty("next")

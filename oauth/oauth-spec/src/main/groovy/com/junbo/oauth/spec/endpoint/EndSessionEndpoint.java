@@ -21,7 +21,7 @@ import javax.ws.rs.core.UriInfo;
 /**
  * EndSessionEndpoint.
  */
-@Api(value = "oauth2", basePath = "oauth2")
+@Api("oauth2")
 @Path("/oauth2/end-session")
 @RestResource
 public interface EndSessionEndpoint {

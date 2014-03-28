@@ -3,6 +3,7 @@ var Catalog = require('../logic/catalog');
 var Cart = require('../logic/cart');
 var Billing = require('../logic/billing');
 var Payment = require('../logic/payment');
+var Entitlement = require('../logic/entitlement');
 
 module.exports = function(io){
     io.set("log level", 0);
@@ -66,6 +67,11 @@ module.exports = function(io){
         });
         socket.on('/api/identity/put_user', function (data, fn) {
             Identity.PutUser(data, function(data){
+                fn(data);
+            });
+        });
+        socket.on('/api/identity/logout', function (data, fn) {
+            Identity.Logout(data, function(data){
                 fn(data);
             });
         });
@@ -156,6 +162,11 @@ module.exports = function(io){
                 fn(data);
             });
         });
+        socket.on('/api/billing/del', function (data, fn) {
+            Billing.PostShippingInfo(data, function(data){
+                fn(data);
+            });
+        });
 
         /* Payment -------------------------------------------------------------- */
         socket.on('/api/payment/get_payment_instruments', function (data, fn) {
@@ -174,7 +185,22 @@ module.exports = function(io){
                 fn(data);
             });
         });
+        socket.on('/api/payment/del', function (data, fn) {
+            Payment.DeletePayment(data, function(data){
+                fn(data);
+            });
+        });
 
-
+        /* Entitlement -------------------------------------------------------------- */
+        socket.on('/api/entitlement/get', function (data, fn) {
+            Entitlement.GetEntitlements(data, function(data){
+                fn(data);
+            });
+        });
+        socket.on('/api/entitlement/post', function (data, fn) {
+            Entitlement.PostEntitlement(data, function(data){
+                fn(data);
+            });
+        });
     });
 };
