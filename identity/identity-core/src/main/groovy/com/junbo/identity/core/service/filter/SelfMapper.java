@@ -33,4 +33,7 @@ public interface SelfMapper {
 
     UserGroup filterUserGroup(UserGroup userGroup, MappingContext context);
     UserGroup mergeUserGroup(UserGroup source, UserGroup base, MappingContext context);
+
+    UserLoginAttempt filterUserLoginAttempt(UserLoginAttempt userLoginAttempt, MappingContext context);
+    UserLoginAttempt mergeUserLoginAttempt(UserLoginAttempt source, UserLoginAttempt base, MappingContext context);
 }

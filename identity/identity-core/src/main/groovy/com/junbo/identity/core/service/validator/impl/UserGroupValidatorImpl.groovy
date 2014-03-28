@@ -24,7 +24,7 @@ import org.springframework.util.CollectionUtils
  * Created by liangfu on 3/25/14.
  */
 @CompileStatic
-class UserGroupValidatorImpl extends CommonValidator implements UserGroupValidator {
+class UserGroupValidatorImpl implements UserGroupValidator {
 
     private UserGroupRepository userGroupRepository
 

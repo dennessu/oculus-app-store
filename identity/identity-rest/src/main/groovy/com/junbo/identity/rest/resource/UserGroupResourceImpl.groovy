@@ -174,7 +174,6 @@ class UserGroupResourceImpl implements UserGroupResource {
                         result.items.add(newUserGroup)
                     }
                 }
-                result.setItems(userGroupList)
 
                 return Promise.pure(result)
             }

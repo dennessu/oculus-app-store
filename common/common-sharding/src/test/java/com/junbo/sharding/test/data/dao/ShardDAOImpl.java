@@ -5,8 +5,6 @@ import com.junbo.sharding.util.Helper;
 import org.hibernate.Session;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.RollbackException;
-
 
 /**
  * Created by haomin on 14-3-4.
@@ -19,7 +17,7 @@ public class ShardDAOImpl implements ShardDAO {
     }
 
     private Session currentSession() {
-        return sessionFactoryWrapper.resolve(Helper.getCurrentThreadLocalShardId()).getCurrentSession();
+        return sessionFactoryWrapper.resolve(Helper.fetchCurrentThreadLocalShardId()).getCurrentSession();
     }
 
     @Override

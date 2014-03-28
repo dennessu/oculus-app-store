@@ -149,20 +149,20 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userPassword.setCreatedBy('lixia')
         userPassword.setUpdatedTime(new Date())
         userPassword.setUpdatedBy('lixia')
-        userPassword = userPasswordRepository.save(userPassword)
+        userPassword = userPasswordRepository.save(userPassword).wrapped().get()
 
-        UserPassword newUserPassword = userPasswordRepository.get(userPassword.getId())
+        UserPassword newUserPassword = userPasswordRepository.get(userPassword.getId()).wrapped().get()
         Assert.assertEquals(userPassword.getActive(), newUserPassword.getActive())
 
         Boolean newValue = !userPassword.getActive()
         newUserPassword.setActive(newValue)
         userPasswordRepository.update(newUserPassword)
-        newUserPassword = userPasswordRepository.get(newUserPassword.getId())
+        newUserPassword = userPasswordRepository.get(newUserPassword.getId()).wrapped().get()
         Assert.assertEquals(newValue, newUserPassword.getActive())
 
         UserPasswordListOptions getOption = new UserPasswordListOptions()
         getOption.setUserId(new UserId(userId))
-        List<UserPassword> userPasswordList = userPasswordRepository.search(getOption)
+        List<UserPassword> userPasswordList = userPasswordRepository.search(getOption).wrapped().get()
         assert userPasswordList.size() != 0
     }
 
@@ -179,20 +179,20 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userPIN.setCreatedBy('lixia')
         userPIN.setUpdatedTime(new Date())
         userPIN.setUpdatedBy('lixia')
-        userPIN = userPinRepository.save(userPIN)
+        userPIN = userPinRepository.save(userPIN).wrapped().get()
 
-        UserPin newUserPin = userPinRepository.get(userPIN.getId())
+        UserPin newUserPin = userPinRepository.get(userPIN.getId()).wrapped().get()
         Assert.assertEquals(userPIN.getActive(), newUserPin.getActive())
 
         Boolean newValue = !userPIN.getActive()
         newUserPin.setActive(newValue)
         userPinRepository.update(newUserPin)
-        newUserPin = userPinRepository.get(newUserPin.getId())
+        newUserPin = userPinRepository.get(newUserPin.getId()).wrapped().get()
         Assert.assertEquals(newValue, newUserPin.getActive())
 
         UserPinListOptions getOption = new UserPinListOptions()
         getOption.setUserId(new UserId(userId))
-        List<UserPin> userPins = userPinRepository.search(getOption)
+        List<UserPin> userPins = userPinRepository.search(getOption).wrapped().get()
         assert userPins.size() != 0
     }
 
@@ -312,22 +312,22 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userLoginAttempt.setCreatedBy('lixia')
         userLoginAttempt.setCreatedTime(new Date())
 
-        userLoginAttempt = userLoginAttemptRepository.save(userLoginAttempt)
+        userLoginAttempt = userLoginAttemptRepository.create(userLoginAttempt).wrapped().get()
 
-        UserLoginAttempt newUserLoginAttempt = userLoginAttemptRepository.get(userLoginAttempt.getId())
+        UserLoginAttempt newUserLoginAttempt = userLoginAttemptRepository.get(userLoginAttempt.getId()).wrapped().get()
         Assert.assertEquals(userLoginAttempt.getIpAddress(), newUserLoginAttempt.getIpAddress())
 
         String value = UUID.randomUUID().toString()
         newUserLoginAttempt.setIpAddress(value)
         userLoginAttemptRepository.update(newUserLoginAttempt)
 
-        newUserLoginAttempt = userLoginAttemptRepository.get(userLoginAttempt.getId())
+        newUserLoginAttempt = userLoginAttemptRepository.get(userLoginAttempt.getId()).wrapped().get()
         Assert.assertEquals(newUserLoginAttempt.getIpAddress(), value)
 
-        LoginAttemptListOptions getOption = new LoginAttemptListOptions()
+        UserLoginAttemptListOptions getOption = new UserLoginAttemptListOptions()
         getOption.setUserId(new UserId(userId))
         getOption.setIpAddress(value)
-        List<UserLoginAttempt> userLoginAttempts = userLoginAttemptRepository.search(getOption)
+        List<UserLoginAttempt> userLoginAttempts = userLoginAttemptRepository.search(getOption).wrapped().get()
         Assert.assertEquals(userLoginAttempts.size(), 1)
     }
 

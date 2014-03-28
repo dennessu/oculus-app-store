@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by liangfu on 3/24/14.
@@ -35,7 +36,15 @@ public class UserPinServiceImpl implements UserPinService {
     @Override
     public UserPin get(UserId userId, UserPinId userPinId) {
         validator.validateGet(userId, userPinId);
-        return userPinRepository.get(userPinId);
+        try {
+            return userPinRepository.get(userPinId).wrapped().get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     @Override
@@ -45,11 +54,25 @@ public class UserPinServiceImpl implements UserPinService {
         userPin.setPinSalt(UUID.randomUUID().toString());
         //todo: Need to refactor UserPasswordUtil
         userPin.setPinHash(UserPasswordUtil.hashPassword(userPin.getValue(), userPin.getPinSalt()));
-        return userPinRepository.save(userPin);
+        try {
+            return userPinRepository.save(userPin).wrapped().get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override
     public List<UserPin> search(UserPinListOptions getOptions) {
-        return userPinRepository.search(getOptions);
+        try {
+            return userPinRepository.search(getOptions).wrapped().get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

@@ -12,6 +12,7 @@ import com.junbo.identity.data.mapper.ModelMapper;
 import com.junbo.identity.data.repository.UserPinRepository;
 import com.junbo.identity.spec.options.list.UserPinListOptions;
 import com.junbo.identity.spec.model.users.UserPin;
+import com.junbo.langur.core.promise.Promise;
 import com.junbo.oom.core.MappingContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -34,7 +35,7 @@ public class UserPinRepositoryImpl implements UserPinRepository {
     private ModelMapper modelMapper;
 
     @Override
-    public UserPin save(UserPin entity) {
+    public Promise<UserPin> save(UserPin entity) {
         UserPinEntity userPinEntity = modelMapper.toUserPin(entity, new MappingContext());
         userPinDAO.save(userPinEntity);
 
@@ -42,7 +43,7 @@ public class UserPinRepositoryImpl implements UserPinRepository {
     }
 
     @Override
-    public UserPin update(UserPin entity) {
+    public Promise<UserPin> update(UserPin entity) {
         UserPinEntity userPINEntity = modelMapper.toUserPin(entity, new MappingContext());
         userPinDAO.update(userPINEntity);
 
@@ -50,23 +51,24 @@ public class UserPinRepositoryImpl implements UserPinRepository {
     }
 
     @Override
-    public UserPin get(UserPinId id) {
-        return modelMapper.toUserPin(userPinDAO.get(id.getValue()), new MappingContext());
+    public Promise<UserPin> get(UserPinId id) {
+        return Promise.pure(modelMapper.toUserPin(userPinDAO.get(id.getValue()), new MappingContext()));
     }
 
     @Override
-    public List<UserPin> search(UserPinListOptions getOption) {
+    public Promise<List<UserPin>> search(UserPinListOptions getOption) {
         List entities = userPinDAO.search(getOption.getUserId().getValue(), getOption);
 
         List<UserPin> results = new ArrayList<UserPin>();
         for(int i =0 ; i< entities.size(); i++) {
             results.add(modelMapper.toUserPin((UserPinEntity) entities.get(i), new MappingContext()));
         }
-        return results;
+        return Promise.pure(results);
     }
 
     @Override
-    public void delete(UserPinId id) {
+    public Promise<Void> delete(UserPinId id) {
         userPinDAO.delete(id.getValue());
+        return Promise.pure(null);
     }
 }

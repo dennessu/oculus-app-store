@@ -12,7 +12,7 @@ import javax.ws.rs.QueryParam;
 /**
  * Created by liangfu on 3/14/14.
  */
-public class LoginAttemptListOptions extends PagingGetOptions {
+public class UserLoginAttemptListOptions extends PagingGetOptions {
     @QueryParam("type")
     private String type;
 
@@ -21,6 +21,9 @@ public class LoginAttemptListOptions extends PagingGetOptions {
 
     @QueryParam("userId")
     private UserId userId;
+
+    @QueryParam("properties")
+    private String properties;
 
     public String getType() {
         return type;
@@ -44,5 +47,13 @@ public class LoginAttemptListOptions extends PagingGetOptions {
 
     public void setUserId(UserId userId) {
         this.userId = userId;
+    }
+
+    public String getProperties() {
+        return properties;
+    }
+
+    public void setProperties(String properties) {
+        this.properties = properties;
     }
 }

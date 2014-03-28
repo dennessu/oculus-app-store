@@ -173,4 +173,21 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 409, code = "2000015", description = "User Group {0} not found.", field = "{0}")
     AppError userGroupNotFound(UserGroupId userGroupId);
+
+    @ErrorDef(httpStatusCode = 409, code = "2000016", description = "User Login Attempt {0} not found.", field = "{0}")
+    AppError userLoginAttemptNotFound(UserLoginAttemptId userLoginAttemptId);
+
+    @ErrorDef(httpStatusCode = 404, code = "2000017", description = "User {0} is not in valid status.", field = "{0}")
+    AppError userInInvalidStatus(UserId userId);
+
+    @ErrorDef(httpStatusCode = 404, code = "2000018", description = "Username {0} not found.", field = "{0}")
+    AppError userNotFound(String username);
+
+    @ErrorDef(httpStatusCode = 404, code = "2000019", description = "User password is incorrect.")
+    AppError userPasswordIncorrect();
+
+    @ErrorDef(httpStatusCode = 404, code = "2000020", description = "User pin is incorrect.")
+    AppError userPinIncorrect();
+
+
 }

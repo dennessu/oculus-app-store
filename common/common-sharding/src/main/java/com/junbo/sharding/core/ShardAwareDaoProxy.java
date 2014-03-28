@@ -57,7 +57,7 @@ public class ShardAwareDaoProxy implements InvocationHandler {
         for (int i = 0; i < a.length; i++) {
             for (Annotation annotation : a[i]) {
                 if (annotation instanceof SeedParam) {
-                    return Helper.getShardId(args[i], args[i].getClass());
+                    return Helper.calcShardId(args[i], args[i].getClass());
                 }
             }
         }
@@ -157,12 +157,12 @@ public class ShardAwareDaoProxy implements InvocationHandler {
 
         if (idGetMethod != null) {
             if (idGetMethod.invoke(entity) != null) {
-                return Helper.getShardId(idGetMethod.invoke(entity), idGetMethod.getReturnType());
+                return Helper.calcShardId(idGetMethod.invoke(entity), idGetMethod.getReturnType());
             }
             else if (seedIdGetMethod == null) {
                 long nextId = idGeneratorFacade.nextId(UserId.class);
                 idSetMethod.invoke(entity, nextId);
-                return Helper.getShardId(nextId, Long.class);
+                return Helper.calcShardId(nextId, Long.class);
             }
             else {
                 long seed = (Long)seedIdGetMethod.invoke(entity);
@@ -170,12 +170,12 @@ public class ShardAwareDaoProxy implements InvocationHandler {
                         .equalsIgnoreCase("com.junbo.order.db.entity.OrderEntity")) {
                     long nextId = idGeneratorFacade.nextId(OrderId.class, seed);
                     idSetMethod.invoke(entity, nextId);
-                    return Helper.getShardId(nextId, Long.class);
+                    return Helper.calcShardId(nextId, Long.class);
                 }
                 else {
                     long nextId = idGeneratorFacade.nextId(UserId.class, seed);
                     idSetMethod.invoke(entity, nextId);
-                    return Helper.getShardId(nextId, Long.class);
+                    return Helper.calcShardId(nextId, Long.class);
                 }
             }
         }

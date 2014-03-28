@@ -41,7 +41,7 @@ public class Helper {
      * @param cls
      * @return shardId
      */
-    public static int getShardId(Object obj, Class cls) {
+    public static int calcShardId(Object obj, Class cls) {
         if(cls == Long.class) {
             Long id = (Long)obj;
             int shardId = (int)((id >> 6) & 0xff);
@@ -62,7 +62,7 @@ public class Helper {
                 }
             }
 
-            return getShardId(h, Long.class);
+            return calcShardId(h, Long.class);
         }
         else {
             throw new RuntimeException("current shardId only support Long and String");
@@ -73,7 +73,7 @@ public class Helper {
         currentShardId.set(shardId);
     }
 
-    public static int getCurrentThreadLocalShardId() {
+    public static int fetchCurrentThreadLocalShardId() {
         if (currentShardId.get() == null) {
             throw new RuntimeException("current shardId hasn't been set.");
         }
@@ -89,7 +89,7 @@ public class Helper {
                 propertyName.substring(0, 1).toUpperCase(Locale.ENGLISH) + propertyName.substring(1);
 
         // try getXxx method
-        Method result = getFirstMethodByFilter(clazz, new Func<Method, Boolean>() {
+        Method result = fetchFirstMethodByFilter(clazz, new Func<Method, Boolean>() {
             @Override
             public Boolean execute(Method method) {
                 return (method.getName().equals("get" + upperPropertyName) && method.getParameterTypes().length == 0);
@@ -101,7 +101,7 @@ public class Helper {
         }
 
         // try isXxx method
-        result = getFirstMethodByFilter(clazz, new Func<Method, Boolean>() {
+        result = fetchFirstMethodByFilter(clazz, new Func<Method, Boolean>() {
             @Override
             public Boolean execute(Method method) {
                 return method.getName().equals("is" + upperPropertyName) && method.getParameterTypes().length == 0
@@ -119,7 +119,7 @@ public class Helper {
         final String methodName = "set" + propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1);
 
         // try setXxx method
-        Method result = getFirstMethodByFilter(clazz, new Func<Method, Boolean>() {
+        Method result = fetchFirstMethodByFilter(clazz, new Func<Method, Boolean>() {
             @Override
             public Boolean execute(Method method) {
                 return method.getName().equals(methodName) && method.getParameterTypes().length == 1
@@ -130,7 +130,7 @@ public class Helper {
         return result;
     }
 
-    private static Method getFirstMethodByFilter(Class<?> clazz, Func<Method, Boolean> filter) {
+    private static Method fetchFirstMethodByFilter(Class<?> clazz, Func<Method, Boolean> filter) {
         for (Method method : clazz.getMethods()) {
             if (filter.execute(method)) {
                 return method;

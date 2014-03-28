@@ -203,4 +203,44 @@
             </list>
         </property>
     </bean>
+
+    <bean id="userLoginAttemptFilter" class="com.junbo.identity.core.service.filter.UserLoginAttemptFilter">
+        <property name="readableProperties">
+            <list>
+                <value>id</value>
+                <value>type</value>
+                <value>ipAddress</value>
+                <value>userAgent</value>
+                <value>clientId</value>
+                <value>succeeded</value>
+                <value>userId</value>
+                <value>resourceAge</value>
+                <value>createdTime</value>
+                <value>updatedTime</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForCreate">
+            <list>
+                <value>type</value>
+                <value>value</value>
+                <value>ipAddress</value>
+                <value>userAgent</value>
+                <value>clientId</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForUpdate">
+            <list>
+                <value>id</value>
+                <value>type</value>
+                <value>value</value>
+                <value>ipAddress</value>
+                <value>userAgent</value>
+                <value>clientId</value>
+                <value>userId</value>
+                <value>resourceAge</value>
+            </list>
+        </property>
+    </bean>
 </beans>

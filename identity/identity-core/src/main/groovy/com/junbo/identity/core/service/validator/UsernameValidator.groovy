@@ -7,5 +7,6 @@ interface UsernameValidator {
 
     void validateUsername(String username)
 
+    // todo:    Should remove out of this interface
     String normalizeUsername(String username)
 }

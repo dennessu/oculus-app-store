@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by liangfu on 3/24/14.
@@ -35,7 +36,15 @@ public class UserPasswordServiceImpl implements UserPasswordService {
     @Override
     public UserPassword get(UserId userId, UserPasswordId userPasswordId) {
         userPasswordValidator.validateGet(userId, userPasswordId);
-        return userPasswordRepository.get(userPasswordId);
+        try {
+            return userPasswordRepository.get(userPasswordId).wrapped().get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     @Override
@@ -46,11 +55,27 @@ public class UserPasswordServiceImpl implements UserPasswordService {
         userPassword.setStrength(UserPasswordUtil.calcPwdStrength(userPassword.getValue()));
         userPassword.setPasswordHash(
                 UserPasswordUtil.hashPassword(userPassword.getValue(), userPassword.getPasswordSalt()));
-        return userPasswordRepository.save(userPassword);
+        try {
+            return userPasswordRepository.save(userPassword).wrapped().get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     @Override
     public List<UserPassword> search(UserPasswordListOptions getOptions) {
-        return userPasswordRepository.search(getOptions);
+        try {
+            return userPasswordRepository.search(getOptions).wrapped().get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }

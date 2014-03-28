@@ -33,6 +33,7 @@ public class UserLoginAttempt extends ResourceMeta implements Identifiable<UserL
     // readonly field
     private Boolean succeeded;
 
+    @JsonProperty("user")
     private UserId userId;
 
     public UserLoginAttemptId getId() {
@@ -41,6 +42,8 @@ public class UserLoginAttempt extends ResourceMeta implements Identifiable<UserL
 
     public void setId(UserLoginAttemptId id) {
         this.id = id;
+        support.setPropertyAssigned("id");
+        support.setPropertyAssigned("self");
     }
 
     public String getType() {
@@ -49,6 +52,7 @@ public class UserLoginAttempt extends ResourceMeta implements Identifiable<UserL
 
     public void setType(String type) {
         this.type = type;
+        support.setPropertyAssigned("type");
     }
 
     public String getValue() {
@@ -57,6 +61,7 @@ public class UserLoginAttempt extends ResourceMeta implements Identifiable<UserL
 
     public void setValue(String value) {
         this.value = value;
+        support.setPropertyAssigned("value");
     }
 
     public String getIpAddress() {
@@ -65,6 +70,7 @@ public class UserLoginAttempt extends ResourceMeta implements Identifiable<UserL
 
     public void setIpAddress(String ipAddress) {
         this.ipAddress = ipAddress;
+        support.setPropertyAssigned("ipAddress");
     }
 
     public String getUserAgent() {
@@ -73,6 +79,7 @@ public class UserLoginAttempt extends ResourceMeta implements Identifiable<UserL
 
     public void setUserAgent(String userAgent) {
         this.userAgent = userAgent;
+        support.setPropertyAssigned("userAgent");
     }
 
     public String getClientId() {
@@ -81,6 +88,7 @@ public class UserLoginAttempt extends ResourceMeta implements Identifiable<UserL
 
     public void setClientId(String clientId) {
         this.clientId = clientId;
+        support.setPropertyAssigned("clientId");
     }
 
     public Boolean getSucceeded() {
@@ -89,6 +97,7 @@ public class UserLoginAttempt extends ResourceMeta implements Identifiable<UserL
 
     public void setSucceeded(Boolean succeeded) {
         this.succeeded = succeeded;
+        support.setPropertyAssigned("succeeded");
     }
 
     public UserId getUserId() {
@@ -97,5 +106,7 @@ public class UserLoginAttempt extends ResourceMeta implements Identifiable<UserL
 
     public void setUserId(UserId userId) {
         this.userId = userId;
+        support.setPropertyAssigned("userId");
+        support.setPropertyAssigned("user");
     }
 }

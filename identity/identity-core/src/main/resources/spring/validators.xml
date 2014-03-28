@@ -105,4 +105,34 @@
         <property name="userGroupRepository" ref="userGroupRepository" />
         <property name="userRepository" ref="userRepository" />
     </bean>
+
+    <bean id="userLoginAttemptValidator" class="com.junbo.identity.core.service.validator.impl.UserLoginAttemptValidatorImpl">
+        <property name="userRepository" ref="userRepository" />
+        <property name="userLoginAttemptRepository" ref="userLoginAttemptRepository" />
+        <property name="userPasswordRepository" ref="userPasswordRepository" />
+        <property name="userPinRepository" ref="userPinRepository" />
+        <property name="usernameValidator" ref="usernameValidator" />
+        <property name="allowedIpAddressPatterns">
+            <list>
+                <!-- IPv4Pattern -->
+                <value>(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.(25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}</value>
+                <!-- IPv6Pattern -->
+                <value>(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}</value>
+                <!-- IPv6Pattern_HEXCompressed -->
+                <value>((?:[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4})*)?)::((?:[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4})*)?)</value>
+                <!-- IPv6Pattern_6Hex4Dec -->
+                <value>((?:[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4})*)?) ::((?:[0-9A-Fa-f]{1,4}:)*)(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.(25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}</value>
+            </list>
+        </property>
+        <property name="allowedTypes">
+            <list>
+                <value>pin</value>
+                <value>password</value>
+            </list>
+        </property>
+        <property name="clientIdMinLength" value="1" />
+        <property name="clientIdMaxLength" value="255" />
+        <property name="userAgentMinLength" value="1" />
+        <property name="userAgentMaxLength" value="255" />
+    </bean>
 </beans>
