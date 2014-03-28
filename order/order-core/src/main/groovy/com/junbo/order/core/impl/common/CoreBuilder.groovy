@@ -22,11 +22,13 @@ import com.junbo.order.spec.model.OrderItem
 import com.junbo.rating.spec.model.request.OrderRatingItem
 import com.junbo.rating.spec.model.request.OrderRatingRequest
 import groovy.transform.CompileStatic
+import groovy.transform.TypeChecked
 import org.apache.commons.collections.CollectionUtils
 /**
  * Created by chriszhu on 2/24/14.
  */
 @CompileStatic
+@TypeChecked
 class CoreBuilder {
 
     static Balance buildBalance(OrderServiceContext context, BalanceType balanceType) {

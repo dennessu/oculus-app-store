@@ -16,7 +16,6 @@ import groovy.transform.TypeChecked
 import org.springframework.stereotype.Component
 
 import javax.annotation.Resource
-
 /**
  * Rating facade implementation.
  */

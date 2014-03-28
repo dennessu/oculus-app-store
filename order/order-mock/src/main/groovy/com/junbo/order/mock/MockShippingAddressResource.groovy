@@ -5,6 +5,7 @@ import com.junbo.common.id.ShippingAddressId
 import com.junbo.common.id.UserId
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
+import groovy.transform.TypeChecked
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 /**
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component
 @Component('mockShippingAddressResource')
 @Scope('prototype')
 @CompileStatic
+@TypeChecked
 class MockShippingAddressResource extends BaseMock implements ShippingAddressResource {
 
     @Override

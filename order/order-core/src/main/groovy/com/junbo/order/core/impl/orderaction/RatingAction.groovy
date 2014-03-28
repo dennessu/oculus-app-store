@@ -12,6 +12,7 @@ import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.OrderItem
 import com.junbo.rating.spec.model.request.OrderRatingRequest
 import groovy.transform.CompileStatic
+import groovy.transform.TypeChecked
 import org.apache.commons.collections.CollectionUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -21,6 +22,7 @@ import org.springframework.beans.factory.annotation.Qualifier
  * Created by fzhang on 14-2-25.
  */
 @CompileStatic
+@TypeChecked
 class RatingAction implements Action {
 
     @Autowired

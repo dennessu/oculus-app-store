@@ -7,6 +7,7 @@ import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.error.AppErrors
 import groovy.transform.CompileStatic
+import groovy.transform.TypeChecked
 import org.springframework.transaction.annotation.Transactional
 
 import javax.annotation.Resource
@@ -15,6 +16,7 @@ import javax.annotation.Resource
  * Created by fzhang on 14-3-25.
  */
 @CompileStatic
+@TypeChecked
 class MarkSettleAction implements Action {
 
     @Resource(name = 'orderRepository')

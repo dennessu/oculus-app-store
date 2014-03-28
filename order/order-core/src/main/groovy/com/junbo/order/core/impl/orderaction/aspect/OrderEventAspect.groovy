@@ -16,6 +16,7 @@ import com.junbo.order.db.entity.enums.OrderActionType
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.model.OrderEvent
 import groovy.transform.CompileStatic
+import groovy.transform.TypeChecked
 import org.aspectj.lang.JoinPoint
 import org.aspectj.lang.annotation.AfterReturning
 import org.aspectj.lang.annotation.AfterThrowing
@@ -33,6 +34,7 @@ import javax.annotation.Resource
 @Aspect
 @Component('orderEventAspect')
 @CompileStatic
+@TypeChecked
 class OrderEventAspect {
 
     @Resource(name = 'orderRepository')

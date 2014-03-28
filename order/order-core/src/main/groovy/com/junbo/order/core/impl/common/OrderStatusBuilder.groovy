@@ -7,6 +7,7 @@ import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderEvent
 import groovy.transform.CompileStatic
+import groovy.transform.TypeChecked
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import org.springframework.util.CollectionUtils
@@ -15,6 +16,7 @@ import org.springframework.util.CollectionUtils
  * Created by chriszhu on 3/18/14.
  */
 @CompileStatic
+@TypeChecked
 @Component('orderStatusBuilder')
 class OrderStatusBuilder {
 

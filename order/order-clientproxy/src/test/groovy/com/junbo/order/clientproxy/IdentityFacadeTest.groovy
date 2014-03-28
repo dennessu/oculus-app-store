@@ -5,6 +5,7 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.common.TestBuilder
 import com.junbo.order.clientproxy.identity.IdentityFacade
 import groovy.transform.CompileStatic
+import groovy.transform.TypeChecked
 import org.testng.annotations.Test
 
 import javax.annotation.Resource
@@ -13,6 +14,7 @@ import javax.annotation.Resource
  * Created by LinYi on 14-2-25.
  */
 @CompileStatic
+@TypeChecked
 class IdentityFacadeTest extends BaseTest {
     @Resource(name = 'mockIdentityFacade')
     IdentityFacade identityFacade

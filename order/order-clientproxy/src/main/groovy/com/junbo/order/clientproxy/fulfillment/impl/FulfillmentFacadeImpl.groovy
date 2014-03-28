@@ -13,6 +13,7 @@ import com.junbo.order.clientproxy.common.FacadeBuilder
 import com.junbo.order.clientproxy.fulfillment.FulfillmentFacade
 import com.junbo.order.spec.model.Order
 import groovy.transform.CompileStatic
+import groovy.transform.TypeChecked
 import org.springframework.stereotype.Component
 
 import javax.annotation.Resource
@@ -21,6 +22,7 @@ import javax.annotation.Resource
  * Created by fzhang on 14-2-25.
  */
 @CompileStatic
+@TypeChecked
 @Component('orderFulfillmentFacade')
 class FulfillmentFacadeImpl implements FulfillmentFacade {
 
