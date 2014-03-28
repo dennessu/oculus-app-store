@@ -104,6 +104,8 @@ class CoreBuilder {
                 order.discounts.add(d)
             }
         }
+        order.totalTax = order.totalTax ?: BigDecimal.ZERO
+        order.isTaxInclusive = order.isTaxInclusive ?: false
     }
 
     static Discount buildDiscount(OrderRatingItem ri) {
@@ -127,10 +129,10 @@ class CoreBuilder {
         }
         item.totalAmount = ratingItem.finalAmount
         item.totalDiscount = ratingItem.discountAmount
-        // todo get unit price from rating
-        item.unitPrice =
-                ratingItem.quantity == 0 ? ratingItem.originalAmount : ratingItem.originalAmount / ratingItem.quantity
+        item.unitPrice = ratingItem.originalAmount
         item.honorUntilTime = null
+        item.totalTax = item.totalTax ?: BigDecimal.ZERO
+        item.isTaxExempted = item.isTaxExempted ?: false
         return item
     }
 
