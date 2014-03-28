@@ -5,6 +5,7 @@ import com.junbo.common.id.UserId
 import com.junbo.common.model.Results
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.core.OrderService
+import com.junbo.order.core.impl.common.OrderValidator
 import com.junbo.order.spec.model.ApiContext
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.resource.OrderResource
@@ -12,6 +13,7 @@ import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 
@@ -33,6 +35,10 @@ class OrderResourceImpl implements OrderResource {
     @Autowired
     OrderService orderService
 
+    @Qualifier('orderValidator')
+    @Autowired
+    OrderValidator orderValidator
+
     private static final Logger LOGGER = LoggerFactory.getLogger(OrderResourceImpl)
 
     @Override
@@ -42,7 +48,7 @@ class OrderResourceImpl implements OrderResource {
 
     @Override
     Promise<Order> createOrder(Order order) {
-        assert (order != null && order.trackingUuid != null && order.user != null)
+        orderValidator.notNull(order, 'order').notNull(order.trackingUuid, 'trackingUuid').notNull(order.user, 'user')
         def persistedOrder = orderService.getOrderByTrackingUuid(order.trackingUuid)
         if (persistedOrder != null) {
             LOGGER.info('name=Order_Already_Exist. userId:{}, trackingUuid: {}, orderId:{}',
@@ -57,7 +63,7 @@ class OrderResourceImpl implements OrderResource {
 
     @Override
     Promise<Order> updateOrderByOrderId(OrderId orderId, Order order) {
-        assert (order != null && order.trackingUuid != null && order.user != null)
+        orderValidator.notNull(order, 'order').notNull(order.trackingUuid, 'trackingUuid').notNull(order.user, 'user')
         def persistedOrder = orderService.getOrderByTrackingUuid(order.trackingUuid)
         if (persistedOrder != null) {
             LOGGER.info('name=Order_Already_Exist. userId:{}, trackingUuid: {}, orderId:{}',

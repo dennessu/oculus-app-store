@@ -32,6 +32,12 @@ public class PromotionServiceImpl extends BaseServiceImpl<Promotion> implements 
     }
 
     @Override
+    public Promotion update(Long entityId, Promotion entity) {
+        validateId(entityId, entity);
+        return updateEntity(entityId, entity);
+    }
+
+    @Override
     protected String getEntityType() {
         return "Promotion";
     }

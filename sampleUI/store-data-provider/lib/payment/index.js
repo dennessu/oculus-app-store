@@ -104,7 +104,7 @@ Payment.prototype.PostPaymentInstruments = function(userId, dataObj, cb){
 
 Payment.prototype.DeltePaymentInstruments = function(paymentId, userId, cb){
     /*
-     Method: GET
+     Method: DELETE
      URL: /users/{userId}/payment-instruments/{paymentInstrumentId}
      Data Type: QueryString
      Content-Type: none
@@ -116,7 +116,7 @@ Payment.prototype.DeltePaymentInstruments = function(paymentId, userId, cb){
         host: this.Host,
         port: this.Port,
         path: "/rest/users/" + userId + "/payment-instruments/" + paymentId,
-        method: 'DELETE',
+        method: 'DELETE', //TODO: DELETE
         headers:{
             'Content-Type': 'application/json'
         }

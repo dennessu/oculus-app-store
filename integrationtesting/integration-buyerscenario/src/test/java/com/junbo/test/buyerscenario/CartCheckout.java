@@ -12,19 +12,18 @@ import com.junbo.test.common.property.*;
 
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
+
 /**
  * Created by Yunlong on 3/20/14.
  */
 public class CartCheckout extends BaseTestClass {
-
-    private LogHelper logger = new LogHelper(CartCheckout.class);
-
     @Property(
             priority = Priority.BVT,
             features = "BuyerScenarios",
             component = Component.Order,
             owner = "ZhaoYunlong",
-            status = Status.Incomplete,
+            status = Status.Enable,
             description = "Test digital good checkout",
             steps = {
                     "1. Post a random user",
@@ -34,7 +33,7 @@ public class CartCheckout extends BaseTestClass {
                     "5. Merge the previous anonymous cart to the new user",
                     "6. Post order to checkout",
                     "7. Verify the order response info",
-                    "8. Close the primary cart",
+                    "8. Empty the primary cart",
                     "9  Update order tentative to false",
                     "10. Verify Email sent successfully"
             }
@@ -43,15 +42,30 @@ public class CartCheckout extends BaseTestClass {
     public void testDigitalGoodCheckout() throws Exception {
         String randomUid = testDataProvider.createUser();
 
-        testDataProvider.postDefaultOffersToPrimaryCart(randomUid, EnumHelper.CatalogItemType.APP);
+        ArrayList<String> offerList = new ArrayList<>();
+        offerList.add(offer_digital_normal1);
+        offerList.add(offer_digital_normal2);
+
+        testDataProvider.postOffersToPrimaryCart(randomUid, offerList);
 
         String uid = testDataProvider.createUser();
 
         CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
-        testDataProvider.postCreditCardToUser(uid, creditCardInfo);
+        String creditCardId = testDataProvider.postCreditCardToUser(uid, creditCardInfo);
 
-        testDataProvider.mergeCart(uid, randomUid);
+        String cartId = testDataProvider.mergeCart(uid, randomUid);
 
+        String orderId = testDataProvider.postOrderByCartId(
+                uid, cartId, Country.DEFAULT, Currency.DEFAULT, creditCardId, null);
+
+        orderId = testDataProvider.updateOrderTentative(orderId, false);
+
+        validationHelper.validateOrderInfoByCartId(
+                uid, orderId, cartId, Country.DEFAULT, Currency.DEFAULT, creditCardId, null);
+
+        testDataProvider.emptyCartByCartId(uid, cartId);
+
+        //TODO CHECK DB
     }
 
     @Property(
@@ -59,7 +73,7 @@ public class CartCheckout extends BaseTestClass {
             features = "BuyerScenarios",
             component = Component.Order,
             owner = "ZhaoYunlong",
-            status = Status.Incomplete,
+            status = Status.Enable,
             description = "Test physical good checkout",
             steps = {
                     "1. Post a random user",
@@ -69,7 +83,7 @@ public class CartCheckout extends BaseTestClass {
                     "5. Merge the previous anonymous cart to the new user",
                     "6. Post order to checkout",
                     "7  Verify order info correct",
-                    "8. Close the primary cart",
+                    "8. Empty the primary cart",
                     "9  Update order tentative to false",
                     "10. Verify Email sent successfully"
             }
@@ -77,7 +91,12 @@ public class CartCheckout extends BaseTestClass {
     @Test
     public void testPhysicalGoodCheckout() throws Exception {
         String randomUid = testDataProvider.createUser();
-        testDataProvider.postDefaultOffersToPrimaryCart(randomUid, EnumHelper.CatalogItemType.PHYSICAL);
+
+        ArrayList<String> offerList = new ArrayList<>();
+        offerList.add(offer_physical_normal1);
+        offerList.add(offer_physical_normal2);
+
+        testDataProvider.postOffersToPrimaryCart(randomUid, offerList);
 
         String uid = testDataProvider.createUser();
 
@@ -89,9 +108,19 @@ public class CartCheckout extends BaseTestClass {
 
         String cartId = testDataProvider.mergeCart(uid, randomUid);
 
-        String orderId = testDataProvider.postOrderByCartId(uid, cartId, Country.DEFAULT, Currency.DEFAULT, creditCardId, shippingAddressId);
+        String orderId = testDataProvider.postOrderByCartId(
+                uid, cartId, Country.DEFAULT, Currency.DEFAULT, creditCardId, shippingAddressId);
 
+        orderId = testDataProvider.updateOrderTentative(orderId, false);
+
+        validationHelper.validateOrderInfoByCartId(
+                uid, orderId, cartId, Country.DEFAULT, Currency.DEFAULT, creditCardId, shippingAddressId);
+
+        testDataProvider.emptyCartByCartId(uid, cartId);
+
+        //TODO CHECK DB
     }
 
 }
+
 
