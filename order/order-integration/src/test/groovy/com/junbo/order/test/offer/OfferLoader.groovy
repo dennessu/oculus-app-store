@@ -39,27 +39,10 @@ class OfferLoader {
             new Offer(
                     name: '3D Parking Simulator',
                     ownerId: owner.value,
-                    status: 'Design',
                     categories: [123],
                     prices: [US:new Price(amount: 9.99, currency: 'USD')],
                     subOffers: [],
-                    events: [
-                            new Event
-                            (
-                                name: 'PURCHASE',
-                                actions: [
-                                    new Action (
-                                        type: 'GRANT_ENTITLEMENT',
-                                        properties: [
-                                            tag: 'item001_ANGRY.BIRD_ONLINE_ACCESS',
-                                            group: 'Angry Bird',
-                                            type: 'ONLINE_ACCESS',
-                                            duration: '3Month'
-                                        ]
-                                    )
-                                ]
-                            )
-                    ],
+                    events: [],
                     localeProperties: [
                         DEFAULT: [
                             description: '3D Parking Simulator is a VR driving simulator specialized for parking.'

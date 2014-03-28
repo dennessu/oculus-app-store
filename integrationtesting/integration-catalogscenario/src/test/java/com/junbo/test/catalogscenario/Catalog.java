@@ -103,11 +103,11 @@ public class Catalog extends BaseTestClass {
         ItemService itemServiceAPI = ItemServiceImpl.instance();
 
         //Post a Physical item
-        String itemId = itemServiceAPI.postDefaultItem(true);
+        String itemId = itemServiceAPI.postDefaultItem(EnumHelper.CatalogItemType.PHYSICAL);
         Assert.assertNotNull(Master.getInstance().getItem(itemId));
 
         //Post a Digital item
-        itemId = itemServiceAPI.postDefaultItem(false);
+        itemId = itemServiceAPI.postDefaultItem(EnumHelper.CatalogItemType.APP);
         Assert.assertNotNull(Master.getInstance().getItem(itemId));
 
         //Get the item by its id(other conditions in paraMap are empty)
@@ -160,11 +160,11 @@ public class Catalog extends BaseTestClass {
         OfferService offerServiceAPI = OfferServiceImpl.instance();
 
         //Post a Physical offer
-        String offerId = offerServiceAPI.postDefaultOffer(true);
+        String offerId = offerServiceAPI.postDefaultOffer(EnumHelper.CatalogItemType.PHYSICAL);
         Assert.assertNotNull(Master.getInstance().getOffer(offerId));
 
         ////Post a Digital offer
-        offerId = offerServiceAPI.postDefaultOffer(false);
+        offerId = offerServiceAPI.postDefaultOffer(EnumHelper.CatalogItemType.APP);
         Assert.assertNotNull(Master.getInstance().getOffer(offerId));
 
         //Get the offer by its id(other conditions in paraMap are empty)
@@ -193,5 +193,30 @@ public class Catalog extends BaseTestClass {
         offerGet.setStatus(EnumHelper.CatalogEntityStatus.RELEASED.getEntityStatus());
         offerId = offerServiceAPI.updateOffer(offerGet);
         Assert.assertEquals(Master.getInstance().getOffer(offerId).getStatus(), "Released");
+    }
+
+    @Property(
+            priority = Priority.BVT,
+            features = "CatalogScenarios",
+            component = Component.Catalog,
+            owner = "JasonFu",
+            status = Status.Disable,
+            description = "Test predefined offers",
+            steps = {
+            }
+    )
+    @Test
+    public void testGetPredefinedOffers() throws Exception {
+        String offer1 = "testOffer_CartCheckout_Digital1";
+        String offer2 = "testOffer_CartCheckout_Digital2";
+        String offer3 = "testOffer_CartCheckout_Physical1";
+        String offer4 = "testOffer_CartCheckout_Physical2";
+
+        OfferService offerServiceAPI = OfferServiceImpl.instance();
+
+        offerServiceAPI.getOfferIdByName(offer1);
+        offerServiceAPI.getOfferIdByName(offer2);
+        offerServiceAPI.getOfferIdByName(offer3);
+        offerServiceAPI.getOfferIdByName(offer4);
     }
 }

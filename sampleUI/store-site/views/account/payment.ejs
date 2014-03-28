@@ -4,36 +4,29 @@
         <p><button type="button" class="btn btn-large btn-primary" {{action "AddPayment"}}>Add Payment Method</button></p>
 
         <div class="list">
+            {{#each payments itemController="AccountPaymentItem"}}
             <dl>
-                <dd><label>VISA</label></dd>
-                <dd class="number">VISA ****7890</dd>
-                <dd class="exp">Exp 05/02/17</dd>
-                <dd><a href="#" class="btn btn-small btn-primary" {{action "ShowDelPayment"}}>Delete</a></dd>
+                <dd><label>{{creditCardRequest.creditCardType}}</label></dd>
+                <dd class="number">{{cardDisplay}}</dd>
+                <dd class="exp">Exp {{expDisplay}}</dd>
+                <dd><a href="#" class="btn btn-small btn-primary" {{action "DisplayDelDialog"}}>Delete</a></dd>
             </dl>
-            <div class="line1"></div>
-            <dl>
-                <dd><label>VISA</label></dd>
-                <dd class="number">VISA ****7890</dd>
-                <dd class="exp">Exp 05/02/17</dd>
-                <dd><a href="#" class="btn btn-small btn-primary">Delete</a></dd>
-            </dl>
-            <div class="line1"></div>
-            <dl>
-                <dd><label>VISA</label></dd>
-                <dd class="number">VISA ****7890</dd>
-                <dd class="exp">Exp 05/02/17</dd>
-                <dd><a href="#" class="btn btn-small btn-primary">Delete</a></dd>
-            </dl>
+            {{/each}}
+        </div>
+
+        <div id="DelPaymentDialog" class="alert">
+            <input id="SelectedPaymentId" type="hidden" value="">
+            <h3>Delete Payment Profile</h3>
+            <p>Are you sure you want to delete this payment profile from your account?</p>
+            {{#if errMessage}}
+                <p class="error">{{errMessage}}</p>
+            {{/if}}
+            <div>
+                <button class="btn btn-cancel" {{action DelDialogNo}}>No</button>
+                <button class="btn btn-primary" {{action DelDialogYes}}>Yes</button>
+            </div>
         </div>
     </div>
 
-    <div class="alert">
-        <h3>Delete Payment Profile</h3>
-        <p>Are you sure you want to delete this payment profile from your account?</p>
-        <div>
-            <button class="btn btn-cancel">No</button>
-            <button class="btn btn-primary">Yes</button>
-        </div>
-    </div>
 </div>
 <div class="clear"></div>

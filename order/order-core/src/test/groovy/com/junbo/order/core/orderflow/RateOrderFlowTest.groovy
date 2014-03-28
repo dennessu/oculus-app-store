@@ -6,7 +6,6 @@ import com.junbo.order.core.common.TestBuilder
 import com.junbo.order.core.impl.order.OrderServiceContext
 import com.junbo.order.core.impl.orderaction.ActionUtils
 import com.junbo.order.core.impl.orderaction.context.OrderActionContext
-import com.junbo.order.db.entity.enums.OrderActionType
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.model.Discount
 import org.springframework.beans.factory.annotation.Autowired
@@ -32,7 +31,6 @@ class RateOrderFlowTest extends BaseTest{
         Map<String, Object> requestScope = [:]
         requestScope.put(ActionUtils.REQUEST_FLOW_TYPE, (Object) 'MOCK_RATE_ORDER')
         def orderActionContext = new OrderActionContext()
-        orderActionContext.orderActionType = OrderActionType.RATE
         orderActionContext.orderServiceContext = new OrderServiceContext(order)
         orderActionContext.trackingUuid = order.trackingUuid
         requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object)orderActionContext)

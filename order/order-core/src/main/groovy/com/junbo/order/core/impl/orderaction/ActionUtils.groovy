@@ -32,12 +32,16 @@ final class ActionUtils {
         return (OrderActionResult)actionResult?.data[DATA_ORDER_ACTION_RESULT]
     }
 
-    static OrderActionContext putOrderActionContext(OrderActionContext context, ActionContext actionContext) {
+    static void putOrderActionContext(OrderActionContext context, ActionContext actionContext) {
         actionContext?.requestScope[SCOPE_ORDER_ACTION_CONTEXT] = context
     }
 
     static String getFlowType(ActionContext actionContext) {
         return actionContext?.requestScope[REQUEST_FLOW_TYPE]
+    }
+
+    static void putFlowType(String flowType, ActionContext actionContext) {
+        actionContext?.requestScope[REQUEST_FLOW_TYPE] = flowType
     }
 
     static Map<String, Object> initRequestScope(OrderServiceContext context) {

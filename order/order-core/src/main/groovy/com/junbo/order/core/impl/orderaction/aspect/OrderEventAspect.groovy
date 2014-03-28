@@ -18,6 +18,7 @@ import com.junbo.order.spec.model.OrderEvent
 import groovy.transform.CompileStatic
 import org.aspectj.lang.JoinPoint
 import org.aspectj.lang.annotation.AfterReturning
+import org.aspectj.lang.annotation.AfterThrowing
 import org.aspectj.lang.annotation.Aspect
 import org.aspectj.lang.annotation.Before
 import org.slf4j.Logger
@@ -65,6 +66,28 @@ class OrderEventAspect {
         }
     }
 
+    @AfterThrowing(value = '@annotation(orderEventAwareAfter)',
+            argNames = 'jp, orderEventAwareAfter, ex', throwing = 'ex')
+    Promise<ActionResult> afterThrowingOrderEventAwareAction(
+            JoinPoint jp,
+            OrderEventAwareAfter orderEventAwareAfter,
+            Throwable ex) {
+        assert (orderEventAwareAfter != null)
+        LOGGER.info('name=Save_Order_Event_AfterThrowing. action: {}', orderEventAwareAfter.action())
+        try {
+            if (getOrderActionType(jp) != null) { // only create event if action type is set
+                def oe = getReturnedOrderEvent(jp, EventStatus.ERROR)
+                transactionHelper.executeInNewTransaction {
+                    repo.createOrderEvent(oe)
+                }
+            }
+            throw ex
+        } catch (e) {
+            LOGGER.error('name=Save_Order_Event_AfterThrowing', e)
+            throw e
+        }
+    }
+
     @AfterReturning(value = '@annotation(orderEventAwareAfter)',
             argNames = 'jp, orderEventAwareAfter, rv', returning = 'rv')
     Promise<ActionResult> afterOrderEventAwareAction(
@@ -81,6 +104,7 @@ class OrderEventAspect {
                     repo.createOrderEvent(oe)
                 }
             }
+            LOGGER.error('name=Save_Error_Order_Event_AfterReturning', throwable)
             throw throwable
         }
         .syncThen { ActionResult ar ->
@@ -93,7 +117,7 @@ class OrderEventAspect {
                 }
                 return ar
             } catch (e) {
-                LOGGER.error('name=Save_Order_Event_AfterReturning', e)
+                LOGGER.error('name=Save_Order_Event_AfterReturning_Failed', e)
                 throw e
             }
         }

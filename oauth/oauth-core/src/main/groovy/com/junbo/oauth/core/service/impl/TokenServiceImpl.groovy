@@ -5,6 +5,8 @@
  */
 package com.junbo.oauth.core.service.impl
 
+import com.junbo.common.id.UserId
+import com.junbo.common.util.IdFormatter
 import com.junbo.oauth.common.JsonMarshaller
 import com.junbo.oauth.core.exception.AppExceptions
 import com.junbo.oauth.core.service.TokenService
@@ -178,7 +180,7 @@ class TokenServiceImpl implements TokenService {
 
         IdToken idToken = new IdToken(
                 iss: issuer,
-                sub: userId.toString(),
+                sub: IdFormatter.encodeId(new UserId(userId)),
                 aud: client.clientId,
                 exp: (Long) (new Date(System.currentTimeMillis() +
                         defaultIdTokenExpiration * MILLISECONDS_PER_SECOND).time / MILLISECONDS_PER_SECOND),
