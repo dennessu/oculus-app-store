@@ -90,10 +90,13 @@ public class ValidationHelper {
         String resultString = dbHelper.executeScalar(sql, DBHelper.DBName.EMAIL);
 
         verifyEqual(resultString.indexOf("OrderConfirmation") >= 0, true, "Verify email type");
-        verifyEqual(resultString.indexOf(IdConverter.hexStringToId(OrderId.class, orderId).toString()) >= 0, true, "verify order Id");
+        verifyEqual(resultString.indexOf(
+                IdConverter.hexStringToId(OrderId.class, orderId).toString()) >= 0, true, "verify order Id");
         verifyEqual(resultString.indexOf("SUCCEED") >= 0, true, "Verify email sent status");
-        verifyEqual(resultString.indexOf(Master.getInstance().getUser(uid).getUserName()) >= 0, true, "verify email receipt correct");
-        verifyEqual(resultString.indexOf(IdConverter.hexStringToId(UserId.class, uid).toString()) >= 0, true, "verify user id");
+        verifyEqual(resultString.indexOf(
+                Master.getInstance().getUser(uid).getUserName()) >= 0, true, "verify email receipt correct");
+        verifyEqual(resultString.indexOf(
+                IdConverter.hexStringToId(UserId.class, uid).toString()) >= 0, true, "verify user id");
 
     }
 
