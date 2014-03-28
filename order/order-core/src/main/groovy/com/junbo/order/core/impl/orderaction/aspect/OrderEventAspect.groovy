@@ -99,7 +99,7 @@ class OrderEventAspect {
 
         rv.syncRecover { Throwable throwable ->
             def oe = getReturnedOrderEvent(jp, EventStatus.ERROR)
-            if (oe != null) {
+            if (oe != null && oe.order != null) {
                 transactionHelper.executeInNewTransaction {
                     repo.createOrderEvent(oe)
                 }
