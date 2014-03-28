@@ -11,10 +11,10 @@ import java.lang.annotation.RetentionPolicy
 import java.lang.annotation.Target
 
 /**
- * ContextParam.
+ * AuthContextParam.
  */
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
-@interface ContextParam {
+@interface AuthContextParam {
     String value() default ''
 }

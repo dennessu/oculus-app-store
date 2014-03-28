@@ -14,7 +14,7 @@
         <property name="authorizeService" ref="authorizeService"/>
     </bean>
 
-    <bean id="entityApiDefinition" class="com.junbo.authorization.ApiDefinitionFactoryBean"/>
+    <bean id="entityApiDefinition" class="com.junbo.authorization.model.ApiDefinitionFactoryBean"/>
 
     <bean id="tokenInfoEndpoint" class="com.junbo.authorization.TokenInfoEndpointImpl"/>
 
