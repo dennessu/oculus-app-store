@@ -78,7 +78,7 @@ public class SubscriptionEntity extends Entity {
     @Override
     @Transient
     public Long getShardMasterId() {
-        return userId;
+        return subscriptionId;
     }
 
     @Column(name = "item_id")

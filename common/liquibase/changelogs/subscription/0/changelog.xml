@@ -45,8 +45,10 @@
               event_type_id smallint not null,
               event_status_id smallint not null,
               retry_count int,
-              inserted_time timestamp,
-              updated_time timestamp,
+              created_time timestamp not null,
+              created_by varchar(256) not null,
+              modified_time timestamp,
+              modified_by varchar(256),
               primary key (subscription_id, subs_event_id)
             );
 
@@ -68,9 +70,11 @@
               retry_count int,
               request text,
               response text,
-              inserted_time timestamp,
-              updated_time timestamp,
-              primary key (subscription_id, subs_event_id)
+              created_time timestamp not null,
+              created_by varchar(256) not null,
+              modified_time timestamp,
+              modified_by varchar(256),
+              primary key (subscription_id, subs_event_id, subs_action_id)
             );
 
             create table subs_action_status (
