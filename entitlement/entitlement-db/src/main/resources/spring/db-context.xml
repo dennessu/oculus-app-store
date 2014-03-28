@@ -44,9 +44,9 @@
     <tx:annotation-driven/>
 
     <!-- Dao -->
-    <bean id="baseDao" class="com.junbo.entitlement.db.dao.hibernate.BaseDao" abstract="true"/>
+    <bean id="entitlementBaseDao" class="com.junbo.entitlement.db.dao.hibernate.BaseDao" abstract="true"/>
 
-    <bean id="entitlementDao" class="com.junbo.entitlement.db.dao.hibernate.EntitlementDaoImpl" parent="baseDao">
+    <bean id="entitlementDao" class="com.junbo.entitlement.db.dao.hibernate.EntitlementDaoImpl" parent="entitlementBaseDao">
         <property name="entityType" value="com.junbo.entitlement.db.entity.EntitlementEntity"/>
     </bean>
     <bean id="entitlementHistoryDao" class="com.junbo.entitlement.db.dao.hibernate.EntitlementHistoryDaoImpl"/>
