@@ -72,16 +72,23 @@ Required (*)
         </td>
     </tr>
     <tr>
+        <td>Price type:</td>
+        <td>
+            <select ng-model="offer.priceType" ng-init="offer.priceType='Free'" ng-change="updatePriceType(offer.priceType)">
+                <option>Free</option>
+                <option>TierPricing</option>
+                <option>NormalPricing</option>
+            </select>
+        </td>
+    </tr>
+    <tr>
         <td>Prices *</td>
         <td>
             <div>
-                Price type:
-                <select ng-model="priceType" ng-init="priceType='TierPricing'" ng-change="updatePriceType(priceType)">
-                    <option>TierPricing</option>
-                    <option>NormalPricing</option>
-                </select>
-                <hr />
-                <div ng-show="priceType=='NormalPricing'">
+                <div ng-show="offer.priceType=='Free'">
+                    Free
+                </div>
+                <div ng-show="offer.priceType=='NormalPricing'">
                     Add price:
                     <select ng-model="selectedCountry" ng-change="addPrice(selectedCountry)" ng-options="country.code for country in countries">
                     </select>
@@ -95,7 +102,7 @@ Required (*)
                         </tr>
                     </table>
                 </div>
-                <div ng-show="priceType=='TierPricing'">
+                <div ng-show="offer.priceType=='TierPricing'">
                     Select a price tier
                     <select ng-model="selectedTierIndex" ng-change="updatePriceTier()">
                         <option ng-repeat="priceTier in priceTiers" value="{{$index}}"
