@@ -6,6 +6,7 @@
 package com.junbo.test.common.Utility;
 
 import com.junbo.cart.spec.model.item.OfferItem;
+import com.junbo.common.id.OrderId;
 import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.common.id.ShippingAddressId;
 import com.junbo.common.id.UserId;
@@ -83,11 +84,20 @@ public class ValidationHelper {
         verifyEqual(order.getTotalTax(), expectedTotalTaxAmount, "verify order total tax");
     }
 
-    public void validateEmailHistory(String uid) throws Exception {
+    public void validateEmailHistory(String uid, String orderId) throws Exception {
         String id = IdConverter.hexStringToId(UserId.class, uid).toString();
-        String sql = String.format("select action from email_history where user_id=\'%s\'", id);
-        verifyEqual(dbHelper.executeScalar(
-                sql, DBHelper.DBName.EMAIL), "OrderConfirmation", "Verify email sent successfully");
+        String sql = String.format("select payload from email_history where user_id=\'%s\'", id);
+        String resultString = dbHelper.executeScalar(sql, DBHelper.DBName.EMAIL);
+
+        verifyEqual(resultString.indexOf("OrderConfirmation") >= 0, true, "Verify email type");
+        verifyEqual(resultString.indexOf(
+                IdConverter.hexStringToId(OrderId.class, orderId).toString()) >= 0, true, "verify order Id");
+        verifyEqual(resultString.indexOf("SUCCEED") >= 0, true, "Verify email sent status");
+        verifyEqual(resultString.indexOf(
+                Master.getInstance().getUser(uid).getUserName()) >= 0, true, "verify email receipt correct");
+        verifyEqual(resultString.indexOf(
+                IdConverter.hexStringToId(UserId.class, uid).toString()) >= 0, true, "verify user id");
+
     }
 
     public static void verifyEqual(BigDecimal actual, BigDecimal expect, String message) {
