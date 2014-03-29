@@ -41,4 +41,12 @@ public interface AppClientExceptions {
             description = "the field {0} is invalid")
     AppError invalidField(String fieldName);
 
+    @ErrorDef(httpStatusCode = 400, code = "40006", description = "The token status {0} is not activated")
+    AppError invalidTokenStatus(String tokenStatus);
+
+    @ErrorDef(httpStatusCode = 400, code = "40007", description = "The token is expired")
+    AppError tokenExpired();
+
+    @ErrorDef(httpStatusCode = 400, code = "40008", description = "exceed the token usage limitation")
+    AppError exceedTokenUsageLimit();
 }

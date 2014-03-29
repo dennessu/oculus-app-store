@@ -53,8 +53,8 @@ public class TokenResourceImpl implements TokenResource{
     }
 
     @Override
-    public Promise<TokenItem> consumeToken(String tokenString) {
-        return tokenService.consumeToken(tokenString);
+    public Promise<TokenItem> consumeToken(String tokenString, TokenConsumption consumption) {
+        return tokenService.consumeToken(tokenString, consumption);
     }
 
     @Override

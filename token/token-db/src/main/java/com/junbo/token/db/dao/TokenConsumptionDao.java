@@ -6,6 +6,10 @@
 package com.junbo.token.db.dao;
 
 import com.junbo.token.db.entity.TokenConsumptionEntity;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
+
+import java.util.List;
 
 /**
  * Created by Administrator on 14-3-18.
@@ -13,5 +17,12 @@ import com.junbo.token.db.entity.TokenConsumptionEntity;
 public class TokenConsumptionDao extends CommonDataDAOImpl<TokenConsumptionEntity, Long> {
     public TokenConsumptionDao() {
         super(TokenConsumptionEntity.class);
+    }
+
+    public List<TokenConsumptionEntity> getByTokenHashValue(final Long tokenHashValue) {
+        Criteria criteria = currentSession().createCriteria(TokenConsumptionEntity.class);
+        criteria.add(Restrictions.eq("hashValue", tokenHashValue));
+        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+        return criteria.list();
     }
 }
