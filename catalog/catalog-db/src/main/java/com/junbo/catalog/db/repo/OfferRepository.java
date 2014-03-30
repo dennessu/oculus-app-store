@@ -6,25 +6,36 @@
 
 package com.junbo.catalog.db.repo;
 
-import com.junbo.catalog.db.convertor.OfferConverter;
 import com.junbo.catalog.db.dao.OfferDao;
+import com.junbo.catalog.db.entity.OfferEntity;
+import com.junbo.catalog.db.mapper.OfferMapper;
+import com.junbo.catalog.spec.model.common.Status;
 import com.junbo.catalog.spec.model.offer.Offer;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Offer repository.
  */
-public class OfferRepository implements EntityRepository<Offer> {
+public class OfferRepository implements BaseEntityRepository<Offer> {
     @Autowired
     private OfferDao offerDao;
 
-    @Override
     public Long create(Offer offer) {
-        return offerDao.create(OfferConverter.toEntity(offer));
+        return offerDao.create(OfferMapper.toDBEntity(offer));
+    }
+
+    public Offer get(Long offerId) {
+        OfferEntity offerEntity = offerDao.get(offerId);
+        if (Status.DELETED.equalsIgnoreCase(offerEntity.getStatus())) {
+            return null;
+        }
+        return OfferMapper.toModel(offerEntity);
     }
 
     @Override
-    public Offer get(Long offerId, Long timestamp) {
-        return OfferConverter.toModel(offerDao.getOffer(offerId, timestamp));
+    public Long update(Offer offer) {
+        OfferEntity dbEntity = offerDao.get(offer.getOfferId());
+        OfferMapper.fillDBEntity(offer, dbEntity);
+        return offerDao.update(dbEntity);
     }
 }

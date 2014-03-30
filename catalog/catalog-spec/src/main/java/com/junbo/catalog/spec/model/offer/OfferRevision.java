@@ -6,26 +6,32 @@
 
 package com.junbo.catalog.spec.model.offer;
 
-import com.junbo.catalog.spec.model.common.BaseModel;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.junbo.catalog.spec.model.common.BaseRevisionModel;
+import com.junbo.common.jackson.annotation.OfferId;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 /**
  * Offer revision.
  */
-public class OfferRevision extends BaseModel {
+public class OfferRevision extends BaseRevisionModel {
+    @OfferId
+    @JsonProperty("offer")
     private Long offerId;
-    private String status;
     private String priceType;
     private Long priceTierId;
     private Map<String, Price> prices;
     private Restriction restriction;
+    private List<OfferEntry> subOffers;
+    private List<ItemEntry> items = new ArrayList<>();
     private List<String> eligibleCountries;
     private Map<String, Event> events;
     private Map<String, Map<String, Object>> countryProperties;
     private Map<String, Map<String, Object>> localeProperties;
-    private Map<String, Object> properties;
 
     public Long getOfferId() {
         return offerId;
@@ -33,14 +39,6 @@ public class OfferRevision extends BaseModel {
 
     public void setOfferId(Long offerId) {
         this.offerId = offerId;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
     public String getPriceType() {
@@ -75,6 +73,22 @@ public class OfferRevision extends BaseModel {
         this.restriction = restriction;
     }
 
+    public List<OfferEntry> getSubOffers() {
+        return subOffers;
+    }
+
+    public void setSubOffers(List<OfferEntry> subOffers) {
+        this.subOffers = subOffers;
+    }
+
+    public List<ItemEntry> getItems() {
+        return items;
+    }
+
+    public void setItems(List<ItemEntry> items) {
+        this.items = items;
+    }
+
     public List<String> getEligibleCountries() {
         return eligibleCountries;
     }
@@ -107,11 +121,9 @@ public class OfferRevision extends BaseModel {
         this.localeProperties = localeProperties;
     }
 
-    public Map<String, Object> getProperties() {
-        return properties;
-    }
-
-    public void setProperties(Map<String, Object> properties) {
-        this.properties = properties;
+    @Override
+    @JsonIgnore
+    public Long getEntityId() {
+        return offerId;
     }
 }

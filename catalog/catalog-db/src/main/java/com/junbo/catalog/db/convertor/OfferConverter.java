@@ -27,10 +27,10 @@ public class OfferConverter {
     }
 
     public static void fillDraftEntity(Offer model, OfferDraftEntity entity) {
-        entity.setName(model.getName());
+        /*entity.setName(model.getName());
         entity.setStatus(model.getStatus());
         entity.setOwnerId(model.getOwnerId());
-        entity.setPayload(Utils.toJson(model));
+        entity.setPayload(Utils.toJson(model));*/
     }
 
     public static Offer toModel(OfferDraftEntity entity) {
@@ -38,11 +38,11 @@ public class OfferConverter {
             return null;
         }
         Offer model = Utils.fromJson(entity.getPayload(), Offer.class);
-        model.setId(entity.getId());
+      /*  model.setId(entity.getId());
         model.setName(entity.getName());
         model.setStatus(entity.getStatus());
         model.setOwnerId(entity.getOwnerId());
-        model.setTimestamp(entity.getTimestamp());
+        model.setTimestamp(entity.getTimestamp());*/
         model.setCreatedBy(entity.getCreatedBy());
         model.setCreatedTime(entity.getCreatedTime());
         model.setUpdatedBy(entity.getUpdatedBy());
@@ -55,11 +55,11 @@ public class OfferConverter {
             return null;
         }
         OfferEntity entity = new OfferEntity();
-        entity.setOfferId(model.getId());
+      /*  entity.setOfferId(model.getId());
         entity.setName(model.getName());
         entity.setStatus(model.getStatus());
         entity.setOwnerId(model.getOwnerId());
-        entity.setPayload(Utils.toJson(model));
+        entity.setPayload(Utils.toJson(model));*/
         return entity;
     }
 
@@ -68,7 +68,7 @@ public class OfferConverter {
         if (entity == null) {
             return null;
         }
-        Offer model = Utils.fromJson(entity.getPayload(), Offer.class);
+        /*Offer model = Utils.fromJson(entity.getPayload(), Offer.class);
         model.setId(entity.getOfferId());
         model.setName(entity.getName());
         model.setStatus(entity.getStatus());
@@ -77,7 +77,7 @@ public class OfferConverter {
         model.setCreatedBy(entity.getCreatedBy());
         model.setCreatedTime(entity.getCreatedTime());
         model.setUpdatedBy(entity.getUpdatedBy());
-        model.setUpdatedTime(entity.getUpdatedTime());
-        return model;
+        model.setUpdatedTime(entity.getUpdatedTime());*/
+        return null;
     }
 }

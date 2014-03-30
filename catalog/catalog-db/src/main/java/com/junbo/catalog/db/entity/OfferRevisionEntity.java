@@ -18,17 +18,25 @@ import javax.persistence.*;
  * Offer DB entity.
  */
 @Entity
-@Table(name="offer")
+@Table(name="offer_revision")
 @TypeDefs(@TypeDef(name="json-string", typeClass=StringJsonUserType.class))
-public class OfferEntity extends BaseEntity {
+public class OfferRevisionEntity extends BaseEntity {
+    private Long revisionId;
     private Long offerId;
-    private String offerName;
     private Long ownerId;
     private String status;
-    private Long currentRevisionId;
-    private String categories;
+    private String payload;
 
     @Id
+    @Column(name = "revision_id")
+    public Long getRevisionId() {
+        return revisionId;
+    }
+
+    public void setRevisionId(Long revisionId) {
+        this.revisionId = revisionId;
+    }
+
     @Column(name = "offer_id")
     public Long getOfferId() {
         return offerId;
@@ -36,15 +44,6 @@ public class OfferEntity extends BaseEntity {
 
     public void setOfferId(Long offerId) {
         this.offerId = offerId;
-    }
-
-    @Column(name = "offer_name")
-    public String getOfferName() {
-        return offerName;
-    }
-
-    public void setOfferName(String offerName) {
-        this.offerName = offerName;
     }
 
     @Column(name = "owner_id")
@@ -65,33 +64,24 @@ public class OfferEntity extends BaseEntity {
         this.status = status;
     }
 
-    @Column(name = "current_revision_id")
-    public Long getCurrentRevisionId() {
-        return currentRevisionId;
-    }
-
-    public void setCurrentRevisionId(Long currentRevisionId) {
-        this.currentRevisionId = currentRevisionId;
-    }
-
-    @Column(name = "categories")
+    @Column(name = "payload")
     @Type(type = "json-string")
-    public String getCategories() {
-        return categories;
+    public String getPayload() {
+        return payload;
     }
 
-    public void setCategories(String categories) {
-        this.categories = categories;
+    public void setPayload(String payload) {
+        this.payload = payload;
     }
 
     @Override
     @Transient
     public Long getId() {
-        return offerId;
+        return revisionId;
     }
 
     @Override
     public void setId(Long id) {
-        this.offerId = id;
+        this.revisionId = id;
     }
 }

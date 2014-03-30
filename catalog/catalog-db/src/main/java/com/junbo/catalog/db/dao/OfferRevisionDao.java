@@ -6,11 +6,11 @@
 
 package com.junbo.catalog.db.dao;
 
-import com.junbo.catalog.db.entity.OfferEntity;
+import com.junbo.catalog.db.entity.OfferRevisionEntity;
 
 /**
  * Offer DAO definition.
  */
-public interface OfferDao extends BaseDao<OfferEntity> {
-    Long update(OfferEntity offerEntity);
+public interface OfferRevisionDao extends BaseDao<OfferRevisionEntity> {
+    Long update(OfferRevisionEntity entity);
 }

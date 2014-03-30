@@ -6,25 +6,48 @@
 
 package com.junbo.catalog.core.service;
 
-import com.junbo.catalog.core.ItemService;
 import com.junbo.catalog.core.OfferService;
-import com.junbo.catalog.core.PriceTierService;
-import com.junbo.catalog.db.repo.OfferDraftRepository;
 import com.junbo.catalog.db.repo.OfferRepository;
-import com.junbo.catalog.spec.model.common.EntityGetOptions;
-import com.junbo.catalog.spec.model.item.Item;
-import com.junbo.catalog.spec.model.item.ItemType;
-import com.junbo.catalog.spec.model.offer.*;
-import com.junbo.catalog.spec.model.pricetier.PriceTier;
+import com.junbo.catalog.db.repo.OfferRevisionRepository;
+import com.junbo.catalog.spec.model.offer.Offer;
+import com.junbo.catalog.spec.model.offer.OfferRevision;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.*;
 
 /**
  * Offer service implementation.
  */
-public class OfferServiceImpl extends BaseServiceImpl<Offer> implements OfferService {
+public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevision> implements OfferService {
     @Autowired
+    private OfferRepository offerRepo;
+    @Autowired
+    private OfferRevisionRepository offerRevisionRepo;
+
+    @Override
+    protected OfferRepository getEntityRepo() {
+        return offerRepo;
+    }
+
+    @Override
+    protected OfferRevisionRepository getRevisionRepo() {
+        return offerRevisionRepo;
+    }
+
+    @Override
+    protected String getRevisionType() {
+        return "offer-revision";
+    }
+
+    @Override
+    protected String getEntityType() {
+        return "offer";
+    }
+
+    private void validateOffer(Offer offer) {
+        //checkFieldNotEmpty(offer.getName(), "name");
+        //checkFieldNotNull(offer.getOwnerId(), "developer");
+    }
+
+    /*@Autowired
     private OfferRepository offerRepository;
     @Autowired
     private OfferDraftRepository offerDraftRepository;
@@ -123,5 +146,5 @@ public class OfferServiceImpl extends BaseServiceImpl<Offer> implements OfferSer
     @Override
     protected String getEntityType() {
         return "Offer";
-    }
+    }*/
 }

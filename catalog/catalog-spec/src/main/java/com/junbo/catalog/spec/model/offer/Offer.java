@@ -6,114 +6,43 @@
 
 package com.junbo.catalog.spec.model.offer;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.junbo.catalog.spec.model.common.VersionedModel;
+import com.junbo.catalog.spec.model.common.BaseEntityModel;
 import com.junbo.common.jackson.annotation.AttributeId;
 import com.junbo.common.jackson.annotation.OfferId;
-import com.junbo.common.jackson.annotation.PriceTierId;
-import com.junbo.common.jackson.annotation.UserId;
+import com.junbo.common.jackson.annotation.OfferRevisionId;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Offer model.
  */
-public class Offer extends VersionedModel {
+public class Offer extends BaseEntityModel {
     @OfferId
     @JsonProperty("self")
-    private Long id;
+    private Long offerId;
 
-    @UserId
-    @JsonProperty("developer")
-    private Long ownerId;
-
-    private String priceType;
-    @PriceTierId
-    private Long priceTier;
-    private Map<String, Price> prices;
-
-    private List<OfferEntry> subOffers;
-
-    private List<ItemEntry> items = new ArrayList<>();
-
-    private Restriction restriction;
+    @OfferRevisionId
+    @JsonProperty("currentRevision")
+    private Long currentRevisionId;
 
     @AttributeId
     private List<Long> categories;
-    @AttributeId
-    private List<Long> genres;
 
-    private List<Event> events = new ArrayList<>();
-    private List<String> eligibleCountries;
-    private Map<String, Map<String, Object>> countryProperties;
-    private Map<String, Map<String, Object>> localeProperties;
-    private Map<String, Object> properties;
-
-    public Long getId() {
-        return id;
+    public Long getOfferId() {
+        return offerId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setOfferId(Long offerId) {
+        this.offerId = offerId;
     }
 
-    public Long getOwnerId() {
-        return ownerId;
+    public Long getCurrentRevisionId() {
+        return currentRevisionId;
     }
 
-    public void setOwnerId(Long ownerId) {
-        this.ownerId = ownerId;
-    }
-
-    public String getPriceType() {
-        return priceType;
-    }
-
-    public void setPriceType(String priceType) {
-        this.priceType = priceType;
-    }
-
-    public Long getPriceTier() {
-        return priceTier;
-    }
-
-    public void setPriceTier(Long priceTier) {
-        this.priceTier = priceTier;
-    }
-
-    public Map<String, Price> getPrices() {
-        return prices;
-    }
-
-    public void setPrices(Map<String, Price> prices) {
-        this.prices = prices;
-    }
-
-    public List<OfferEntry> getSubOffers() {
-        return subOffers;
-    }
-
-    public void setSubOffers(List<OfferEntry> subOffers) {
-        this.subOffers = subOffers;
-    }
-
-    public List<ItemEntry> getItems() {
-        return items;
-    }
-
-    public void setItems(List<ItemEntry> items) {
-        this.items = items;
-    }
-
-    public Restriction getRestriction() {
-        return restriction;
-    }
-
-    public void setRestriction(Restriction restriction) {
-        this.restriction = restriction;
+    public void setCurrentRevisionId(Long currentRevisionId) {
+        this.currentRevisionId = currentRevisionId;
     }
 
     public List<Long> getCategories() {
@@ -122,59 +51,5 @@ public class Offer extends VersionedModel {
 
     public void setCategories(List<Long> categories) {
         this.categories = categories;
-    }
-
-    public List<Long> getGenres() {
-        return genres;
-    }
-
-    public void setGenres(List<Long> genres) {
-        this.genres = genres;
-    }
-
-    public List<Event> getEvents() {
-        return events;
-    }
-
-    public void setEvents(List<Event> events) {
-        this.events = events;
-    }
-
-    public List<String> getEligibleCountries() {
-        return eligibleCountries;
-    }
-
-    public void setEligibleCountries(List<String> eligibleCountries) {
-        this.eligibleCountries = eligibleCountries;
-    }
-
-    public Map<String, Map<String, Object>> getCountryProperties() {
-        return countryProperties;
-    }
-
-    public void setCountryProperties(Map<String, Map<String, Object>> countryProperties) {
-        this.countryProperties = countryProperties;
-    }
-
-    public Map<String, Map<String, Object>> getLocaleProperties() {
-        return localeProperties;
-    }
-
-    public void setLocaleProperties(Map<String, Map<String, Object>> localeProperties) {
-        this.localeProperties = localeProperties;
-    }
-
-    public Map<String, Object> getProperties() {
-        return properties;
-    }
-
-    public void setProperties(Map<String, Object> properties) {
-        this.properties = properties;
-    }
-
-    @Override
-    @JsonIgnore
-    public String getEntityType() {
-        return "Offer";
     }
 }

@@ -41,35 +41,33 @@
               primary key (id)
             );
 
-            create table offer_draft (
+            create table offer (
               offer_id                bigint            not null,
               offer_name              varchar(64)       not null,
               status                  varchar(64)       not null,
               owner_id                bigint            not null,
-              timestamp               bigint            not null,
-              payload                 json              not null,
+              current_revision_id     bigint            null,
+              categories              json              null,
               created_by              varchar(64)       not null,
               created_time            timestamp         not null,
-              updated_by              varchar(64)       default null,
-              updated_time            timestamp         default null,
+              updated_by              varchar(64)       not null,
+              updated_time            timestamp         not null,
 
               primary key (offer_id)
             );
 
-            create table offer (
-              id                      bigint            not null,
+            create table offer_revision (
+              revision_id             bigint            not null,
               offer_id                bigint            not null,
-              offer_name              varchar(64)       not null,
               status                  varchar(64)       not null,
               owner_id                bigint            not null,
-              timestamp               bigint            not null,
               payload                 json              not null,
               created_by              varchar(64)       not null,
               created_time            timestamp         not null,
-              updated_by              varchar(64)       default null,
-              updated_time            timestamp         default null,
+              updated_by              varchar(64)       not null,
+              updated_time            timestamp         not null,
 
-              primary key (id)
+              primary key (revision_id)
             );
 
             create table attribute (

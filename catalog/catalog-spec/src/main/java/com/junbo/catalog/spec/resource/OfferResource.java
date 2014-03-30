@@ -6,7 +6,6 @@
 
 package com.junbo.catalog.spec.resource;
 
-import com.junbo.catalog.spec.model.common.EntityGetOptions;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OffersGetOptions;
 import com.junbo.common.id.OfferId;
@@ -28,7 +27,6 @@ import javax.ws.rs.core.MediaType;
 @Consumes({MediaType.APPLICATION_JSON})
 @RestResource
 public interface OfferResource {
-
     @ApiOperation("Get or search offers")
     @GET
     @Path("/")
@@ -37,14 +35,8 @@ public interface OfferResource {
     @ApiOperation("Get an offer")
     @GET
     @Path("/{offerId}")
-    Promise<Offer> getOffer(@PathParam("offerId") OfferId offerId, @BeanParam EntityGetOptions options);
+    Promise<Offer> getOffer(@PathParam("offerId") OfferId offerId);
 
-    /**
-     * Create a draft offer, the created offer is not purchasable until it is released.
-     *
-     * @param offer the offer to be created.
-     * @return the created offer.
-     */
     @ApiOperation("Create an offer")
     @POST
     @Path("/")

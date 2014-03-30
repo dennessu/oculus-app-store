@@ -104,8 +104,11 @@
     <bean id="offerDraftDao" class="com.junbo.catalog.db.dao.impl.OfferDraftDaoImpl" parent="baseDao">
         <property name="entityType" value="com.junbo.catalog.db.entity.OfferDraftEntity"/>
     </bean>
-    <bean id="offerHistoryDao" class="com.junbo.catalog.db.dao.impl.OfferDaoImpl" parent="baseDao">
+    <bean id="offerDao" class="com.junbo.catalog.db.dao.impl.OfferDaoImpl" parent="baseDao">
         <property name="entityType" value="com.junbo.catalog.db.entity.OfferEntity"/>
+    </bean>
+    <bean id="offerRevisionDao" class="com.junbo.catalog.db.dao.impl.OfferRevisionDaoImpl" parent="baseDao">
+        <property name="entityType" value="com.junbo.catalog.db.entity.OfferRevisionEntity"/>
     </bean>
     <bean id="entitlementDefinitionDao" class="com.junbo.catalog.db.dao.impl.EntitlementDefinitionDaoImpl" parent="baseDao">
         <property name="entityType" value="com.junbo.catalog.db.entity.EntitlementDefinitionEntity"/>
@@ -121,8 +124,8 @@
     <!-- Repository -->
     <bean id="itemDraftRepository" class="com.junbo.catalog.db.repo.ItemDraftRepository"/>
     <bean id="itemHistoryRepository" class="com.junbo.catalog.db.repo.ItemRepository"/>
-    <bean id="offerDraftRepository" class="com.junbo.catalog.db.repo.OfferDraftRepository"/>
-    <bean id="offerHistoryRepository" class="com.junbo.catalog.db.repo.OfferRepository"/>
+    <bean id="offerRepository" class="com.junbo.catalog.db.repo.OfferRepository"/>
+    <bean id="offerRevisionRepository" class="com.junbo.catalog.db.repo.OfferRevisionRepository"/>
     <bean id="promotionDraftRepository" class="com.junbo.catalog.db.repo.PromotionDraftRepository"/>
     <bean id="promotionHistoryRepository" class="com.junbo.catalog.db.repo.PromotionRepository"/>
     <bean id="entitlementDefinitionRepository" class="com.junbo.catalog.db.repo.EntitlementDefinitionRepository"/>

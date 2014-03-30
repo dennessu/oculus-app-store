@@ -12,9 +12,5 @@ import com.junbo.catalog.db.entity.OfferEntity;
 /**
  * Offer DAO implementation.
  */
-public class OfferDaoImpl extends VersionedDaoImpl<OfferEntity> implements OfferDao {
-    @Override
-    public OfferEntity getOffer(Long offerId, Long timestamp) {
-        return get(offerId, timestamp, "offerId");
-    }
+public class OfferDaoImpl extends BaseDaoImpl<OfferEntity> implements OfferDao {
 }

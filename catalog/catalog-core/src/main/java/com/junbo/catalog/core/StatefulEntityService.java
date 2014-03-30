@@ -6,26 +6,23 @@
 
 package com.junbo.catalog.core;
 
-import com.junbo.catalog.spec.model.common.BaseModel;
+import com.junbo.catalog.spec.model.common.BaseEntityModel;
 import com.junbo.catalog.spec.model.common.EntitiesGetOptions;
-import com.junbo.catalog.spec.model.common.EntityGetOptions;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 /**
- * Base service.
+ * Stateful entity service.
  * @param <T> the model type.
  */
 @Transactional
-public interface BaseService<T extends BaseModel> {
-    T get(Long entityId, EntityGetOptions options);
-    List<T> getEntities(EntitiesGetOptions options);
+public interface StatefulEntityService<T extends BaseEntityModel> {
+    T get(Long entityId);
+    List<T> getAll(EntitiesGetOptions options);
     T create(T entity);
     T update(Long entityId, T entity);
-    T review(Long entityId);
-    T release(Long entityId);
-    T reject(Long entityId);
-    Long remove(Long entityId);
+    T publish(Long entityId);
+    Long unpublish(Long entityId);
     Long delete(Long entityId);
 }
