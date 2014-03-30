@@ -7,7 +7,6 @@ package com.junbo.test.oauth;
 
 import com.junbo.oauth.spec.model.AccessTokenResponse;
 import com.junbo.oauth.spec.model.TokenInfo;
-import com.junbo.test.common.GsonHelper;
 import com.junbo.test.common.HttpclientHelper;
 import com.junbo.test.common.JsonHelper;
 import com.junbo.test.identity.Identity;
@@ -53,8 +52,10 @@ public class Oauth {
 
     public static String GetLoginCid() throws Exception {
         CloseableHttpResponse response = HttpclientHelper.SimpleGet(
-                DefaultAuthorizeURI + "?client_id=client&response_type=code&scope=identity&redirect_uri=http://localhost",
-                false);
+                DefaultAuthorizeURI +
+                        "?client_id=client&response_type=code&scope=identity&redirect_uri=http://localhost",
+                false
+        );
         try {
             String tarHeader = "Location";
             for (Header h : response.getAllHeaders()) {
@@ -80,20 +81,23 @@ public class Oauth {
             String tarHeader = "Location";
             for (Header h : response.getAllHeaders()) {
                 if (h.toString().contains(tarHeader)) {
-                    CloseableHttpResponse response2 = HttpclientHelper.SimpleGet(h.toString().replace("Location:", "").trim(), false);
+                    CloseableHttpResponse response2 = HttpclientHelper.SimpleGet(
+                            h.toString().replace("Location:", "").trim(), false);
                     try {
                         for (Header h2 : response2.getAllHeaders()) {
                             if (h2.toString().contains(tarHeader)) {
                                 return h2.toString().split("&")[1].replace("code=", "").trim();
                             }
                         }
-                        throw new NotFoundException("Did not found expected response header: " + tarHeader + " in response2");
+                        throw new NotFoundException(
+                                "Did not found expected response header: " + tarHeader + " in response2");
                     } finally {
                         response2.close();
                     }
                 }
             }
-            throw new NotFoundException("Did not found expected response header: " + tarHeader + " in response");
+            throw new NotFoundException(
+                    "Did not found expected response header: " + tarHeader + " in response");
         } finally {
             response.close();
         }
