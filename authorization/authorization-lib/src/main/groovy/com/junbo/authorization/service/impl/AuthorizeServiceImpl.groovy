@@ -6,15 +6,16 @@
 package com.junbo.authorization.service.impl
 
 import com.junbo.authorization.AuthorizeCallback
-import com.junbo.authorization.model.ApiDefinition
-import com.junbo.authorization.model.Scope
+import com.junbo.authorization.model.AuthorizeContext
 import com.junbo.authorization.service.AuthorizeService
 import com.junbo.authorization.service.ConditionEvaluator
+import com.junbo.oauth.spec.endpoint.ApiEndpoint
+import com.junbo.oauth.spec.endpoint.TokenEndpoint
 import com.junbo.oauth.spec.endpoint.TokenInfoEndpoint
-import com.junbo.oauth.spec.model.TokenInfo
-import com.junbo.oauth.spec.model.TokenType
+import com.junbo.oauth.spec.model.*
 import groovy.transform.CompileStatic
 import org.springframework.beans.BeansException
+import org.springframework.beans.factory.InitializingBean
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.context.ApplicationContext
 import org.springframework.context.ApplicationContextAware
@@ -26,16 +27,32 @@ import javax.ws.rs.core.HttpHeaders
  * AuthorizeServiceImpl.
  */
 @CompileStatic
-class AuthorizeServiceImpl implements AuthorizeService, ApplicationContextAware {
+class AuthorizeServiceImpl implements AuthorizeService, ApplicationContextAware, InitializingBean {
     private static final String AUTHORIZATION_HEADER = 'Authorization'
+    private static final String API_SCOPE = 'api.info'
     private static final int TOKENS_LENGTH = 2
     private ApplicationContext applicationContext
 
+    private TokenEndpoint tokenEndpoint
+
     private TokenInfoEndpoint tokenInfoEndpoint
 
-    private Map<String, ApiDefinition> apiDefinitions
+    private ApiEndpoint apiEndpoint
+
+    private final Map<String, ApiDefinition> apiDefinitions = [:]
 
     private ConditionEvaluator conditionEvaluator
+
+    private String serviceClientId
+
+    private String serviceClientSecret
+
+    private Boolean authorizeEnabled
+
+    @Required
+    void setTokenEndpoint(TokenEndpoint tokenEndpoint) {
+        this.tokenEndpoint = tokenEndpoint
+    }
 
     @Required
     void setTokenInfoEndpoint(TokenInfoEndpoint tokenInfoEndpoint) {
@@ -43,13 +60,33 @@ class AuthorizeServiceImpl implements AuthorizeService, ApplicationContextAware 
     }
 
     @Required
-    void setApiDefinitions(Map<String, ApiDefinition> apiDefinitions) {
-        this.apiDefinitions = apiDefinitions
+    void setApiEndpoint(ApiEndpoint apiEndpoint) {
+        this.apiEndpoint = apiEndpoint
     }
 
     @Required
     void setConditionEvaluator(ConditionEvaluator conditionEvaluator) {
         this.conditionEvaluator = conditionEvaluator
+    }
+
+    @Required
+    void setServiceClientId(String serviceClientId) {
+        this.serviceClientId = serviceClientId
+    }
+
+    @Required
+    void setServiceClientSecret(String serviceClientSecret) {
+        this.serviceClientSecret = serviceClientSecret
+    }
+
+    @Override
+    Boolean getAuthorizeEnabled() {
+        return authorizeEnabled
+    }
+
+    @Required
+    void setAuthorizeEnabled(Boolean authorizeEnabled) {
+        this.authorizeEnabled = authorizeEnabled
     }
 
     @Override
@@ -61,14 +98,14 @@ class AuthorizeServiceImpl implements AuthorizeService, ApplicationContextAware 
         tokenScopes.addAll(tokenInfo.scopes.split(' '))
 
         ApiDefinition api = apiDefinitions.get(callback.apiName)
-        Collection<String> scopes = api.availableScopes.keySet().intersect(tokenScopes)
+        Collection<String> scopes = api.authorizePolicies.keySet().intersect(tokenScopes)
 
         callback.tokenInfo = tokenInfo
 
         Set<String> claimSet = []
         scopes.each { String scopeName ->
-            Scope scope = api.availableScopes[scopeName]
-            scope.claims.each { String condition, Set<String> claims ->
+            AuthorizePolicy policy = api.authorizePolicies[scopeName]
+            policy.claims.each { String condition, Set<String> claims ->
                 if (conditionEvaluator.evaluate(condition, callback)) {
                     claimSet.addAll(claims)
                 }
@@ -99,5 +136,21 @@ class AuthorizeServiceImpl implements AuthorizeService, ApplicationContextAware 
         }
 
         return tokens[1]
+    }
+
+    @Override
+    void afterPropertiesSet() throws Exception {
+        if (authorizeEnabled) {
+            AccessTokenResponse token = tokenEndpoint.postToken(serviceClientId,  serviceClientSecret,
+                    GrantType.CLIENT_CREDENTIALS.name(), null, API_SCOPE, null, null, null, null, null).wrapped().get()
+
+            List<ApiDefinition> apis = apiEndpoint.getAllApis("Bearer $token.accessToken").wrapped().get()
+
+            apis.each { ApiDefinition api ->
+                apiDefinitions[api.apiName] = api
+            }
+        }
+
+        AuthorizeContext.authorizedEnabled = authorizeEnabled
     }
 }

@@ -38,7 +38,7 @@ class ApiEndpointImpl implements ApiEndpoint {
 
     @Override
     Promise<ApiDefinition> postApi(String authorization, ApiDefinition apiDefinition) {
-        return Promise.pure(apiService.createApi(authorization, apiDefinition))
+        return Promise.pure(apiService.saveApi(authorization, apiDefinition))
     }
 
     @Override

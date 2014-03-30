@@ -17,10 +17,10 @@ import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.Assert
 
 /**
- * GrantTokenByPassword.
+ * GrantTokenByClientCredentials.
  */
 @CompileStatic
-class GrantTokenByPassword implements Action {
+class GrantTokenByClientCredentials implements Action {
 
     private TokenService tokenService
 
@@ -35,17 +35,14 @@ class GrantTokenByPassword implements Action {
 
         def oauthInfo = contextWrapper.oauthInfo
         def client = contextWrapper.client
-        def loginState = contextWrapper.loginState
 
         Assert.notNull(oauthInfo, 'oauthInfo is null')
         Assert.notNull(client, 'client is null')
-        Assert.notNull(loginState, 'loginState is null')
 
-        AccessToken accessToken = tokenService.generateAccessToken(client,
-                loginState.userId, oauthInfo.scopes)
+        AccessToken accessToken = tokenService.generateAccessToken(client, 0L, oauthInfo.scopes)
 
         contextWrapper.accessToken = accessToken
 
-        return Promise.pure(new ActionResult('grantRefreshToken'))
+        return Promise.pure(null)
     }
 }

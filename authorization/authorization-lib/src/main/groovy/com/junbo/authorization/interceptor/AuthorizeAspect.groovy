@@ -27,15 +27,10 @@ import java.lang.reflect.Method
 @Aspect
 class AuthorizeAspect {
     private AuthorizeService authorizeService
-    private boolean authorizeEnabled = true
 
     @Required
     void setAuthorizeService(AuthorizeService authorizeService) {
         this.authorizeService = authorizeService
-    }
-
-    void setAuthorizeEnabled(boolean authorizeEnabled) {
-        this.authorizeEnabled = authorizeEnabled
     }
 
     @Around('@annotation(requiredAnnotation)')
@@ -63,7 +58,6 @@ class AuthorizeAspect {
         AuthorizeCallback callback = (AuthorizeCallback) requiredAnnotation.authCallBack().newInstance(map)
         Set<String> claims = authorizeService.getClaims(callback)
         AuthorizeContext.CLAIMS.set(claims)
-        AuthorizeContext.authorizedEnabled = authorizeEnabled
         Object result = joinPoint.proceed()
 
         if (Collection.isAssignableFrom(result.class)) {
@@ -89,7 +83,6 @@ class AuthorizeAspect {
         AuthorizeCallback callback = (AuthorizeCallback) annotation.authCallBack().newInstance(map)
         Set<String> claims = authorizeService.getClaims(callback)
         AuthorizeContext.CLAIMS.set(claims)
-        AuthorizeContext.authorizedEnabled = authorizeEnabled
 
         return callback.postFilter()
     }

@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:aop="http://www.springframework.org/schema/aop"
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-
-       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
     <context:annotation-config />
     <context:component-scan base-package="com.junbo.oom.core.builtin"/>
@@ -24,40 +21,4 @@
     <bean id="defaultUserOptInResource" class="com.junbo.identity.rest.resource.UserOptInResourceImpl" />
     <bean id="defaultUserTosAcceptanceResource" class="com.junbo.identity.rest.resource.UserTosAcceptanceResourceImpl" />
     <bean id="defaultPasswordResource" class="com.junbo.identity.rest.resource.PasswordResourceImpl" />
-
-    <aop:aspectj-autoproxy/>
-    <bean id="asyncHttpClient" class="com.ning.http.client.AsyncHttpClient"/>
-
-    <bean id="pathParamTranscoder" class="com.junbo.common.json.IdPathParamTranscoder"/>
-
-    <bean id="queryParamTranscoder" class="com.junbo.common.json.QueryParamTranscoderImpl"/>
-
-    <bean id="transcoder" class="com.junbo.common.json.JsonMessageTranscoder"/>
-
-    <bean id="tokenInfoEndpoint" class="com.junbo.oauth.spec.endpoint.proxy.TokenInfoEndpointClientProxy">
-        <constructor-arg name="client" ref="asyncHttpClient"/>
-        <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
-        <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder"/>
-        <constructor-arg name="transcoder" ref="transcoder"/>
-        <constructor-arg name="target" value="http://localhost:8082"/>
-    </bean>
-
-    <bean id="conditionEvaluator" class="com.junbo.authorization.service.impl.SPELConditionEvaluator"/>
-
-    <bean id="userGetApiDefinition" class="com.junbo.authorization.model.ApiDefinitionFactoryBean"/>
-
-    <bean id="authorizeService" class="com.junbo.authorization.service.impl.AuthorizeServiceImpl">
-        <property name="apiDefinitions">
-            <map>
-                <entry key="user_get" value-ref="userGetApiDefinition"/>
-            </map>
-        </property>
-        <property name="tokenInfoEndpoint" ref="tokenInfoEndpoint"/>
-        <property name="conditionEvaluator" ref="conditionEvaluator"/>
-    </bean>
-
-    <bean id="authorizeAspect" class="com.junbo.authorization.interceptor.AuthorizeAspect">
-        <property name="authorizeService" ref="authorizeService"/>
-        <property name="authorizeEnabled" value="false"/>
-    </bean>
 </beans>

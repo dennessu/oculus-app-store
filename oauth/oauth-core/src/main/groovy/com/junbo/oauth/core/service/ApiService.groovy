@@ -17,7 +17,7 @@ interface ApiService {
 
     List<ApiDefinition> getAllApis(String authorization)
 
-    ApiDefinition createApi(String authorization, ApiDefinition apiDefinition)
+    ApiDefinition saveApi(String authorization, ApiDefinition apiDefinition)
 
     ApiDefinition updateApi(String authorization, String apiName, ApiDefinition apiDefinition)
 

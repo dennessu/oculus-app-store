@@ -27,7 +27,7 @@ public interface ApiEndpoint {
     Promise<List<ApiDefinition>> getAllApis(@HeaderParam("Authorization") String authorization);
 
     @GET
-    @Path("/oauth2/apis/{apiName}")
+    @Path("/{apiName}")
     Promise<ApiDefinition> getApi(@HeaderParam("Authorization") String authorization,
                                   @PathParam("apiName") String apiName);
 
@@ -36,12 +36,12 @@ public interface ApiEndpoint {
                                    ApiDefinition apiDefinition);
 
     @PUT
-    @Path("/oauth2/apis/{apiName}")
+    @Path("/{apiName}")
     Promise<ApiDefinition> putApi(@HeaderParam("Authorization") String authorization,
                                   @PathParam("apiName") String apiName, ApiDefinition apiDefinition);
 
     @DELETE
-    @Path("/oauth2/apis/{apiName}")
+    @Path("/{apiName}")
     Promise<Response> deleteApi(@HeaderParam("Authorization") String authorization,
                                 @PathParam("apiName") String apiName);
 }

@@ -95,6 +95,24 @@ abstract class CouchBaseDAO<T extends BaseEntity> implements InitializingBean, B
         return entity.deleted ? null : entity
     }
 
+    protected List<T> getAll() {
+        def response = executeRequest(HttpMethod.GET, '_all_docs', [:], null)
+
+        if (response.statusCode != HttpStatus.OK.value()) {
+            CouchError couchError = JsonMarshaller.unmarshall(response.responseBody, CouchError)
+
+            throw new DBException("Failed to execute get all operation, error: $couchError.error," +
+                    " reason: $couchError.reason")
+        }
+
+        def couchSearchResult = (CouchSearchResult) JsonMarshaller.unmarshall(response.responseBody, CouchSearchResult,
+                CouchSearchResult.AllResultEntity)
+
+        return couchSearchResult.rows.collect { CouchSearchResult.ResultObject result ->
+            return get(result.id)
+        }
+    }
+
     @Override
     T update(T entity) {
         def response = executeRequest(HttpMethod.PUT, entity.id, [:], entity)

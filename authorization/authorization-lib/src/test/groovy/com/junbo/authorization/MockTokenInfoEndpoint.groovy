@@ -12,11 +12,11 @@ import com.junbo.oauth.spec.model.TokenInfo
 import groovy.transform.CompileStatic
 
 /**
- * TokenInfoEndpointImpl.
+ * MockTokenInfoEndpoint.
  */
 @CompileStatic
-class TokenInfoEndpointImpl implements TokenInfoEndpoint {
+class MockTokenInfoEndpoint implements TokenInfoEndpoint {
     Promise<TokenInfo> getTokenInfo(String tokenValue) {
-        return Promise.pure(new TokenInfo(sub: new UserId(Long.parseLong(tokenValue)), clientId: 'client', scopes: 'entity identity'))
+        return Promise.pure(new TokenInfo(sub: new UserId(Long.parseLong(tokenValue)), clientId: 'client', scopes: 'entity identity api.info'))
     }
 }

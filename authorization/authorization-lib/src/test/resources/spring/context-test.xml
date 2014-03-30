@@ -14,21 +14,23 @@
         <property name="authorizeService" ref="authorizeService"/>
     </bean>
 
-    <bean id="entityApiDefinition" class="com.junbo.authorization.model.ApiDefinitionFactoryBean"/>
+    <bean id="tokenEndpoint" class="com.junbo.authorization.MockTokenEndpoint"/>
 
-    <bean id="tokenInfoEndpoint" class="com.junbo.authorization.TokenInfoEndpointImpl"/>
+    <bean id="tokenInfoEndpoint" class="com.junbo.authorization.MockTokenInfoEndpoint"/>
+
+    <bean id="apiEndpoint" class="com.junbo.authorization.MockApiEndpoint"/>
 
     <bean id="conditionEvaluator" class="com.junbo.authorization.service.impl.SPELConditionEvaluator"/>
 
     <bean id="httpHeaders" class="com.junbo.authorization.MockHttpHeaders"/>
 
     <bean id="authorizeService" class="com.junbo.authorization.service.impl.AuthorizeServiceImpl">
-        <property name="apiDefinitions">
-            <map>
-                <entry key="entity_get" value-ref="entityApiDefinition"/>
-            </map>
-        </property>
+        <property name="tokenEndpoint" ref="tokenEndpoint"/>
         <property name="tokenInfoEndpoint" ref="tokenInfoEndpoint"/>
+        <property name="apiEndpoint" ref="apiEndpoint"/>
+        <property name="serviceClientId" value="service"/>
+        <property name="serviceClientSecret" value="secret"/>
         <property name="conditionEvaluator" ref="conditionEvaluator"/>
+        <property name="authorizeEnabled" value="true"/>
     </bean>
 </beans>

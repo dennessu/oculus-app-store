@@ -59,7 +59,6 @@ public class UserAuthorizeCallback implements AuthorizeCallback<User> {
             return user;
         }
 
-
         if (!AuthorizeContext.hasClaim("admin")) {
             entity.setCreatedTime(null);
             entity.setUpdatedTime(null);
