@@ -3,7 +3,7 @@ apply plugin: 'java'
 sourceCompatibility = '1.7'
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
-test{
+test {
     useTestNG()
     systemProperty 'test.config', System.properties['test.config']
     options {
@@ -30,10 +30,13 @@ repositories {
 }
 
 dependencies {
+
+    compile(libraries.common_testlib)
+
     compile 'com.junbo.identity:identity-spec:0.0.1-SNAPSHOT'
     compile 'com.junbo.oauth:oauth-spec:0.0.1-SNAPSHOT'
-    compile 'com.junbo.test:common-testlib:0.0.1-SNAPSHOT'
     compile 'com.junbo.test:identity-integration:0.0.1-SNAPSHOT'
-    testCompile 'junit:junit:4.10'
-    testCompile 'org.testng:testng:6.0.1'
+
+    testCompile(libraries.junit)
+    testCompile(libraries.testng)
 }
