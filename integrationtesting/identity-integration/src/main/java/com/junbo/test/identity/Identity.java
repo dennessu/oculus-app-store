@@ -9,16 +9,16 @@ import com.junbo.common.id.UserId;
 import com.junbo.common.util.IdFormatter;
 import com.junbo.identity.spec.model.user.User;
 import com.junbo.test.common.GsonHelper;
-import com.junbo.test.common.libs.HttpclientHelper;
-import com.junbo.test.common.libs.RandomFactory;
-import com.junbo.test.common.libs.RestUrl;
+import com.junbo.test.common.HttpclientHelper;
+import com.junbo.test.common.RandomHelper;
+
 
 /**
  * @author dw
  */
 public class Identity {
 
-    public static final String DefaultIdentityURI = RestUrl.getRestUrl(RestUrl.ComponentName.IDENTITY) + "users";
+    public static final String DefaultIdentityURI = "http://localhost:8080/rest/users";
     public static final String DefaultUserPwd = "1234qwerASDF";
     public static final String DefaultUserStatus = "ACTIVE";
 
@@ -27,7 +27,7 @@ public class Identity {
     }
 
     public static User DefaultPostUser() throws Exception {
-        String userName = RandomFactory.getRandomStringOfAlphabet(15);
+        String userName = RandomHelper.randomAlphabetic(15);
         User user = new User();
         user.setUserName(userName);
         user.setPassword(DefaultUserPwd);
