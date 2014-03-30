@@ -3,9 +3,10 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.test.common.libs;
+package com.junbo.test.common;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import com.junbo.common.json.ObjectMapperProvider;
 
 import java.io.Reader;
@@ -27,5 +28,20 @@ public class JsonHelper {
         ObjectMapperProvider provider = new ObjectMapperProvider();
         ObjectMapper objectMapper = provider.getContext(Object.class);
         return objectMapper.readValue(reader, cls);
+    }
+
+    /**
+     * @author dw
+     */
+    public static class GsonHelper {
+
+        private GsonHelper() {
+
+        }
+
+        public static String GsonSerializer(Object obj) throws Exception {
+            Gson gson = new Gson();
+            return gson.toJson(obj);
+        }
     }
 }

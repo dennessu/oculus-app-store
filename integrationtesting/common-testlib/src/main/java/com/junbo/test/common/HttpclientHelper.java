@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.test.common.libs;
+package com.junbo.test.common;
 
 //import java.io.BufferedReader;
 
@@ -90,7 +90,8 @@ public class HttpclientHelper {
         return SimplePost(requestURI, nvps, true);
     }
 
-    public static CloseableHttpResponse SimplePost(String requestURI, List<NameValuePair> nvps, Boolean enableRedirect) throws Exception {
+    public static CloseableHttpResponse SimplePost(String requestURI, List<NameValuePair> nvps, Boolean enableRedirect)
+            throws Exception {
         HttpPost httpost = new HttpPost(requestURI);
         httpost.setConfig(RequestConfig.custom().setRedirectsEnabled(enableRedirect).build());
         httpost.setEntity(new UrlEncodedFormEntity(nvps, Consts.UTF_8));
