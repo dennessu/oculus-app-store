@@ -1,6 +1,10 @@
 package com.junbo.email.clientproxy.impl
 
+
 import static com.ning.http.client.extra.ListenableFutureAdapter.asGuavaFuture
+
+import com.junbo.common.id.Id
+import com.junbo.common.util.IdFormatter
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -52,6 +56,7 @@ class MandrillProviderImpl implements EmailProvider {
     Promise<Email> sendEmail(Email email) {
         def requestBuilder = asyncHttpClient.preparePost(configuration.url)
         requestBuilder.addHeader(CONTENT_TYPE, APPLICATION_JSON)
+        encoder(email)
         def request = populateRequest(email)
         requestBuilder.setBody(toJson(request))
         Promise<Response> future = Promise.wrap(asGuavaFuture(requestBuilder.execute()))
@@ -141,4 +146,35 @@ class MandrillProviderImpl implements EmailProvider {
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL)
         mapper.writeValueAsString(object)
     }
+
+    static void encoder(Email email) {
+        if (email.properties != null) {
+            def properties = [:]
+            email.properties.each {
+                def value = it.value
+                def key = it.key.split(':').first()
+                def type = it.key.split(':').last()
+                if (!type.isEmpty()) {
+                    def canonicalName = Id.package.name + '.' + type
+                    try {
+                        Class c = getClass().classLoader.loadClass(canonicalName)
+                        if (c.superclass.canonicalName ==  Id.canonicalName) {
+                            def id = c.newInstance(Long.parseLong(it.value)) as Id
+                            value = IdFormatter.encodeId(id)
+                        }
+                    }
+                    catch (NumberFormatException nfe) {
+                        LOGGER.error('Failed to parse Id', nfe)
+                    }
+                    catch (ClassNotFoundException e) {
+                        //ignore exception
+                        LOGGER.error('Failed to reflect Id', e)
+                    }
+                }
+                properties.put(key, value)
+            }
+            email.properties = properties
+        }
+    }
 }
+
