@@ -18,7 +18,7 @@ import com.junbo.test.common.libs.RestUrl;
  */
 public class Identity {
 
-    public static final String DefaultIdentityURI = RestUrl.getRestUrl(RestUrl.ComponentName.IDENTITY) + "users";
+    public static final String DefaultIdentityURI = "http://localhost:8080/rest/users";
     public static final String DefaultUserPwd = "1234qwerASDF";
     public static final String DefaultUserStatus = "ACTIVE";
 

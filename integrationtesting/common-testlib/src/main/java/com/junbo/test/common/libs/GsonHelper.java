@@ -7,8 +7,6 @@ package com.junbo.test.common;
 
 import com.google.gson.Gson;
 
-import java.io.Reader;
-
 /**
  * @author dw
  */
@@ -22,10 +20,4 @@ public class GsonHelper {
         Gson gson = new Gson();
         return gson.toJson(obj);
     }
-
-    public static Object GsonDeserializer(Reader reader, Class<?> cls) throws Exception {
-        Gson gson = new Gson();
-        return gson.fromJson(reader, cls);
-    }
-
 }
