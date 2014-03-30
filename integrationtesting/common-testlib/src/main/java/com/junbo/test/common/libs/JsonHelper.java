@@ -19,8 +19,8 @@ public class JsonHelper {
 
     }
 
-    public static void JsonSerializer() {
-
+    public static String JsonSerializer(Object obj) throws Exception {
+        return GsonHelper.GsonSerializer(obj);
     }
 
     public static <T> T JsonDeserializer(Reader reader, Class<T> cls) throws Exception {
