@@ -763,7 +763,7 @@ var SwaggerOperation = function(nickname, path, method, parameters, summary, not
 }
 
 SwaggerOperation.prototype.isListType = function(type) {
-  if (type && type.indexOf('[') >= 0) {
+  if (type && type.indexOf('array[') >= 0) {
     return type.substring(type.indexOf('[') + 1, type.indexOf(']'));
   } else {
     return void 0;
