@@ -3,13 +3,13 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.notification.util;
+package com.junbo.notification.core;
 
 /**
- * Utils.
+ * BasePublisher.
  */
-public final class Utils {
-    private Utils() {
+public final class BasePublisher {
+    private BasePublisher() {
 
     }
 }
