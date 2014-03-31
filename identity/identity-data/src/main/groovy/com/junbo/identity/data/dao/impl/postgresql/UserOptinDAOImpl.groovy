@@ -7,6 +7,7 @@ package com.junbo.identity.data.dao.impl.postgresql
 import com.junbo.identity.data.dao.UserOptinDAO
 import com.junbo.identity.data.entity.user.UserOptinEntity
 import com.junbo.identity.spec.options.list.UserOptinListOptions
+import groovy.transform.CompileStatic
 import org.hibernate.Criteria
 import org.hibernate.criterion.Order
 import org.hibernate.criterion.Restrictions
@@ -15,6 +16,7 @@ import org.springframework.util.StringUtils
 /**
  * Implementation for UserOptinDAO.
  */
+@CompileStatic
 class UserOptinDAOImpl extends ShardedDAOBase implements UserOptinDAO {
 
     @Override
@@ -34,7 +36,7 @@ class UserOptinDAOImpl extends ShardedDAOBase implements UserOptinDAO {
 
     @Override
     UserOptinEntity get(Long id) {
-        return currentSession().get(UserOptinEntity, id)
+        return (UserOptinEntity)currentSession().get(UserOptinEntity, id)
     }
 
     @Override
@@ -56,7 +58,7 @@ class UserOptinDAOImpl extends ShardedDAOBase implements UserOptinDAO {
 
     @Override
     void delete(Long id) {
-        UserOptinEntity entity = currentSession().get(UserOptinEntity, id)
+        UserOptinEntity entity = (UserOptinEntity)currentSession().get(UserOptinEntity, id)
         currentSession().delete(entity)
     }
 }

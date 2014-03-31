@@ -244,6 +244,33 @@
         </property>
     </bean>
 
+    <bean id="userOptinFilter" class="com.junbo.identity.core.service.filter.UserOptinFilter">
+        <property name="readableProperties">
+            <list>
+                <value>id</value>
+                <value>type</value>
+                <value>userId</value>
+                <value>resourceAge</value>
+                <value>createdTime</value>
+                <value>updatedTime</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForCreate">
+            <list>
+                <value>type</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForUpdate">
+            <list>
+                <value>id</value>
+                <value>type</value>
+                <value>resourceAge</value>
+            </list>
+        </property>
+    </bean>
+
     <bean id="userTosFilter" class="com.junbo.identity.core.service.filter.UserTosFilter">
         <property name="readableProperties">
             <list>
@@ -270,4 +297,5 @@
             </list>
         </property>
     </bean>
+
 </beans>

@@ -338,22 +338,22 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userOptin.setType(UUID.randomUUID().toString())
         userOptin.setCreatedBy('lixia')
         userOptin.setCreatedTime(new Date())
-        userOptin = userOptinRepository.save(userOptin)
+        userOptin = userOptinRepository.create(userOptin).wrapped().get()
 
-        UserOptin newUserOptin = userOptinRepository.get(userOptin.getId())
+        UserOptin newUserOptin = userOptinRepository.get(userOptin.getId()).wrapped().get()
         Assert.assertEquals(userOptin.getType(), newUserOptin.getType())
 
         String value = UUID.randomUUID().toString()
         userOptin.setType(value)
         userOptinRepository.update(userOptin)
 
-        newUserOptin = userOptinRepository.get(userOptin.getId())
+        newUserOptin = userOptinRepository.get(userOptin.getId()).wrapped().get()
         Assert.assertEquals(value, newUserOptin.getType())
 
         UserOptinListOptions getOption = new UserOptinListOptions()
         getOption.setType(value)
         getOption.setUserId(new UserId(userId))
-        List<UserOptin> userOptins = userOptinRepository.search(getOption)
+        List<UserOptin> userOptins = userOptinRepository.search(getOption).wrapped().get()
         Assert.assertEquals(userOptins.size(), 1)
     }
 

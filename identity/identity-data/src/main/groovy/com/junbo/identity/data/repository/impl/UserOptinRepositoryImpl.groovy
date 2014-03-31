@@ -11,13 +11,16 @@ import com.junbo.identity.data.mapper.ModelMapper
 import com.junbo.identity.data.repository.UserOptinRepository
 import com.junbo.identity.spec.model.users.UserOptin
 import com.junbo.identity.spec.options.list.UserOptinListOptions
+import com.junbo.langur.core.promise.Promise
 import com.junbo.oom.core.MappingContext
+import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 
 /**
  * Implementation for UserOptinDAO.
  */
+@CompileStatic
 class UserOptinRepositoryImpl implements UserOptinRepository {
     @Autowired
     @Qualifier('userOptinDAO')
@@ -28,7 +31,7 @@ class UserOptinRepositoryImpl implements UserOptinRepository {
     private ModelMapper modelMapper
 
     @Override
-    UserOptin save(UserOptin entity) {
+    Promise<UserOptin> create(UserOptin entity) {
         UserOptinEntity userOptInEntity = modelMapper.toUserOptin(entity, new MappingContext())
         userOptinDAO.save(userOptInEntity)
 
@@ -36,31 +39,32 @@ class UserOptinRepositoryImpl implements UserOptinRepository {
     }
 
     @Override
-    UserOptin update(UserOptin entity) {
+    Promise<UserOptin> update(UserOptin entity) {
         UserOptinEntity userOptInEntity = modelMapper.toUserOptin(entity, new MappingContext())
         userOptinDAO.update(userOptInEntity)
 
-        return get(entity.id)
+        return get((UserOptinId)entity.id)
     }
 
     @Override
-    UserOptin get(UserOptinId id) {
-        return modelMapper.toUserOptin(userOptinDAO.get(id.value), new MappingContext())
+    Promise<UserOptin> get(UserOptinId id) {
+        return Promise.pure(modelMapper.toUserOptin(userOptinDAO.get(id.value), new MappingContext()))
     }
 
     @Override
-    List<UserOptin> search(UserOptinListOptions getOption) {
+    Promise<List<UserOptin>> search(UserOptinListOptions getOption) {
         def result = []
         def entities = userOptinDAO.search(getOption.userId.value, getOption)
 
-        entities.flatten { i ->
+        entities.each { UserOptinEntity i ->
             result.add(modelMapper.toUserOptin(i, new MappingContext()))
         }
-        return result
+        return Promise.pure(result)
     }
 
     @Override
-    void delete(UserOptinId id) {
+    Promise<Void> delete(UserOptinId id) {
         userOptinDAO.delete(id.value)
+        return Promise.pure(null)
     }
 }

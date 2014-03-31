@@ -19,6 +19,9 @@ public class UserOptinListOptions extends PagingGetOptions {
     @QueryParam("userId")
     private UserId userId;
 
+    @QueryParam("properties")
+    private String properties;
+
     public String getType() {
         return type;
     }
@@ -33,5 +36,13 @@ public class UserOptinListOptions extends PagingGetOptions {
 
     public void setUserId(UserId userId) {
         this.userId = userId;
+    }
+
+    public String getProperties() {
+        return properties;
+    }
+
+    public void setProperties(String properties) {
+        this.properties = properties;
     }
 }

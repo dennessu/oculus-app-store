@@ -99,8 +99,8 @@ public class UserTosResourceImpl implements UserTosResource {
     @Override
     public Promise<UserTos> patch(UserId userId, UserTosId userTosId, UserTos userTos) {
         if (userId == null) {
-        throw new IllegalArgumentException('userId is null')
-    }
+            throw new IllegalArgumentException('userId is null')
+        }
 
         if (userTosId == null) {
             throw new IllegalArgumentException('userTosId is null')

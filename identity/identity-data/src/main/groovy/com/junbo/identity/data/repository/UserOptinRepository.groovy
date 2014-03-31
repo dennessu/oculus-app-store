@@ -8,19 +8,22 @@ package com.junbo.identity.data.repository
 import com.junbo.common.id.UserOptinId
 import com.junbo.identity.spec.model.users.UserOptin
 import com.junbo.identity.spec.options.list.UserOptinListOptions
+import com.junbo.langur.core.promise.Promise
+import groovy.transform.CompileStatic
 
 /**
  * User OptIn DAO is used to fetch/update/delete/get user OptIn data(such as sports, news) from the database
  */
+@CompileStatic
 interface UserOptinRepository {
 
-    UserOptin save(UserOptin entity)
+    Promise<UserOptin> create(UserOptin entity)
 
-    UserOptin update(UserOptin entity)
+    Promise<UserOptin> update(UserOptin entity)
 
-    UserOptin get(UserOptinId id)
+    Promise<UserOptin> get(UserOptinId id)
 
-    List<UserOptin> search(UserOptinListOptions getOption)
+    Promise<List<UserOptin>> search(UserOptinListOptions getOption)
 
-    void delete(UserOptinId id)
+    Promise<Void> delete(UserOptinId id)
 }

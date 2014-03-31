@@ -37,6 +37,9 @@ public interface SelfMapper {
     UserLoginAttempt filterUserLoginAttempt(UserLoginAttempt userLoginAttempt, MappingContext context);
     UserLoginAttempt mergeUserLoginAttempt(UserLoginAttempt source, UserLoginAttempt base, MappingContext context);
 
+    UserOptin filterUserOptin(UserOptin userOptin, MappingContext context);
+    UserOptin mergeUserOptin(UserOptin source, UserOptin base, MappingContext context);
+
     UserTos filterUserTos(UserTos userTos, MappingContext context);
     UserTos mergeUserTos(UserTos source, UserTos base, MappingContext context);
 }
