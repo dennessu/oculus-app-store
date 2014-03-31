@@ -249,6 +249,7 @@
             <list>
                 <value>id</value>
                 <value>tosUri</value>
+                <value>userId</value>
                 <value>resourceAge</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>

@@ -31,6 +31,8 @@ public class UserTos extends ResourceMeta implements Identifiable<UserTosId> {
 
     public void setId(UserTosId id) {
         this.id = id;
+        support.setPropertyAssigned("id");
+        support.setPropertyAssigned("self");
     }
 
     public String getTosUri() {
@@ -39,6 +41,7 @@ public class UserTos extends ResourceMeta implements Identifiable<UserTosId> {
 
     public void setTosUri(String tosUri) {
         this.tosUri = tosUri;
+        support.setPropertyAssigned("tosUri");
     }
 
     public UserId getUserId() {
@@ -47,5 +50,6 @@ public class UserTos extends ResourceMeta implements Identifiable<UserTosId> {
 
     public void setUserId(UserId userId) {
         this.userId = userId;
+        support.setPropertyAssigned("userId");
     }
 }
