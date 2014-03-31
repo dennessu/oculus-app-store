@@ -1,6 +1,5 @@
 package com.junbo.order.core.impl.common
 
-import com.junbo.billing.spec.enums.BalanceStatus
 import com.junbo.order.db.entity.enums.EventStatus
 import com.junbo.order.db.entity.enums.OrderActionType
 import com.junbo.order.db.entity.enums.OrderStatus
@@ -8,8 +7,7 @@ import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderEvent
 import groovy.transform.CompileStatic
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import groovy.transform.TypeChecked
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import org.springframework.util.CollectionUtils
@@ -18,10 +16,9 @@ import org.springframework.util.CollectionUtils
  * Created by chriszhu on 3/18/14.
  */
 @CompileStatic
+@TypeChecked
 @Component('orderStatusBuilder')
 class OrderStatusBuilder {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(OrderStatusBuilder)
 
     @Autowired
     OrderRepository orderRepository
@@ -96,8 +93,8 @@ class OrderStatusBuilder {
         }
         def orderEvent = orderEvents.find { OrderEvent oe ->
             oe.action == OrderActionType.CHARGE.toString() &&
-                    (oe.status == EventStatus.PENDING ||
-                    oe.status == EventStatus.PROCESSING)
+                    (oe.status == EventStatus.PENDING.toString() ||
+                    oe.status == EventStatus.PROCESSING.toString())
         }
         return orderEvent != null
     }
@@ -119,8 +116,8 @@ class OrderStatusBuilder {
         }
         def orderEvent = orderEvents.find { OrderEvent oe ->
             oe.action == OrderActionType.FULFILL.toString() &&
-                    (oe.status == EventStatus.PENDING ||
-                            oe.status == EventStatus.PROCESSING)
+                    (oe.status == EventStatus.PENDING.toString() ||
+                            oe.status == EventStatus.PROCESSING.toString())
         }
         return orderEvent != null
     }
@@ -147,29 +144,10 @@ class OrderStatusBuilder {
         return orderEvent != null
     }
 
-    static EventStatus buildEventStatusFromBalance(String balanceStatus) {
-        switch (balanceStatus) {
-            case BalanceStatus.COMPLETED:
-                return EventStatus.COMPLETED
-            case BalanceStatus.AWAITING_PAYMENT:
-            case BalanceStatus.UNCONFIRMED:
-            case BalanceStatus.INIT:
-                return EventStatus.PENDING
-            case BalanceStatus.PENDING_CAPTURE:
-                return EventStatus.OPEN
-            case BalanceStatus.CANCELLED:
-            case BalanceStatus.FAILED:
-            case BalanceStatus.ERROR:
-                return EventStatus.FAILED
-            default:
-                LOGGER.warn('name=Unknown_Balance_Status, status={}', balanceStatus)
-                return EventStatus.PENDING
-        }
-    }
-
     private static void sortOrderEventsReversely(List<OrderEvent> orderEvents) {
         orderEvents.sort { OrderEvent oe ->
             oe.createdTime
         }.reverse(true)
     }
+
 }

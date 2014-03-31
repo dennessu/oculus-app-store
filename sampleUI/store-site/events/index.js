@@ -3,6 +3,7 @@ var Catalog = require('../logic/catalog');
 var Cart = require('../logic/cart');
 var Billing = require('../logic/billing');
 var Payment = require('../logic/payment');
+var Entitlement = require('../logic/entitlement');
 
 module.exports = function(io){
     io.set("log level", 0);
@@ -49,6 +50,31 @@ module.exports = function(io){
                 fn(data);
             });
         });
+        socket.on('/api/identity/put_profile', function (data, fn) {
+            Identity.PutProfile(data, function(data){
+                fn(data);
+            });
+        });
+        socket.on('/api/identity/get_opt_ins', function (data, fn) {
+            Identity.GetOptIns(data, function(data){
+                fn(data);
+            });
+        });
+        socket.on('/api/identity/post_opt_ins', function (data, fn) {
+            Identity.PostOptIns(data, function(data){
+                fn(data);
+            });
+        });
+        socket.on('/api/identity/put_user', function (data, fn) {
+            Identity.PutUser(data, function(data){
+                fn(data);
+            });
+        });
+        socket.on('/api/identity/logout', function (data, fn) {
+            Identity.Logout(data, function(data){
+                fn(data);
+            });
+        });
 
         socket.on('/api/identity/pin', function (data, fn) {
             Identity.PIN(data, function(data){
@@ -58,6 +84,11 @@ module.exports = function(io){
 
         socket.on('/api/catalog/products', function (data, fn) {
             Catalog.Products(data, function(data){
+                fn(data);
+            });
+        });
+        socket.on('/api/catalog/get_download_links', function (data, fn) {
+            Catalog.GetDownloadLinksByOfferId(data, function(data){
                 fn(data);
             });
         });
@@ -88,8 +119,13 @@ module.exports = function(io){
                 fn(data);
             });
         });
-        socket.on('/api/cart/get_order', function (data, fn) {
-            Cart.GetOrder(data, function(data){
+        socket.on('/api/cart/get_order_by_id', function (data, fn) {
+            Cart.GetOrderById(data, function(data){
+                fn(data);
+            });
+        });
+        socket.on('/api/cart/get_order_by_user', function (data, fn) {
+            Cart.GetOrders(data, function(data){
                 fn(data);
             });
         });
@@ -126,6 +162,11 @@ module.exports = function(io){
                 fn(data);
             });
         });
+        socket.on('/api/billing/del', function (data, fn) {
+            Billing.DeleteShippingInfo(data, function(data){
+                fn(data);
+            });
+        });
 
         /* Payment -------------------------------------------------------------- */
         socket.on('/api/payment/get_payment_instruments', function (data, fn) {
@@ -144,7 +185,27 @@ module.exports = function(io){
                 fn(data);
             });
         });
+        socket.on('/api/payment/del', function (data, fn) {
+            Payment.DeletePayment(data, function(data){
+                fn(data);
+            });
+        });
 
-
+        /* Entitlement -------------------------------------------------------------- */
+        socket.on('/api/entitlement/get', function (data, fn) {
+            Entitlement.GetEntitlements(data, function(data){
+                fn(data);
+            });
+        });
+        socket.on('/api/entitlement/get_by_user', function (data, fn) {
+            Entitlement.GetEntitlementsByUserId(data, function(data){
+                fn(data);
+            });
+        });
+        socket.on('/api/entitlement/post', function (data, fn) {
+            Entitlement.PostEntitlement(data, function(data){
+                fn(data);
+            });
+        });
     });
 };

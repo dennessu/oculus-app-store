@@ -43,16 +43,16 @@
     <tx:annotation-driven transaction-manager="transactionManager"/>
 
     <!-- Dao -->
-    <bean id="baseDao" class="com.junbo.email.db.dao.impl.BaseDaoImpl" abstract="true">
+    <bean id="emailBaseDao" class="com.junbo.email.db.dao.impl.BaseDaoImpl" abstract="true">
         <property name="sessionFactory" ref="emailSessionFactory"/>
     </bean>
-    <bean id="emailHistoryDao" class="com.junbo.email.db.dao.impl.EmailHistoryDaoImpl" parent="baseDao">
+    <bean id="emailHistoryDao" class="com.junbo.email.db.dao.impl.EmailHistoryDaoImpl" parent="emailBaseDao">
         <property name="entityType" value="com.junbo.email.db.entity.EmailHistoryEntity"/>
     </bean>
-    <bean id="emailTemplateDao" class="com.junbo.email.db.dao.impl.EmailTemplateDaoImpl" parent="baseDao">
+    <bean id="emailTemplateDao" class="com.junbo.email.db.dao.impl.EmailTemplateDaoImpl" parent="emailBaseDao">
         <property name="entityType" value="com.junbo.email.db.entity.EmailTemplateEntity"/>
     </bean>
-    <bean id="emailScheduleDao" class="com.junbo.email.db.dao.impl.EmailScheduleDaoImpl" parent="baseDao">
+    <bean id="emailScheduleDao" class="com.junbo.email.db.dao.impl.EmailScheduleDaoImpl" parent="emailBaseDao">
         <property name="entityType" value="com.junbo.email.db.entity.EmailScheduleEntity"/>
     </bean>
 

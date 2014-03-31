@@ -5,7 +5,6 @@
  */
 
 package com.junbo.order.core.impl.order
-
 import com.junbo.common.error.AppErrorException
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.executor.FlowExecutor
@@ -17,10 +16,10 @@ import com.junbo.order.core.OrderService
 import com.junbo.order.core.OrderServiceOperation
 import com.junbo.order.core.impl.common.CoreUtils
 import com.junbo.order.core.impl.common.OrderStatusBuilder
+import com.junbo.order.core.impl.common.OrderValidator
 import com.junbo.order.core.impl.common.TransactionHelper
 import com.junbo.order.core.impl.orderaction.ActionUtils
 import com.junbo.order.core.impl.orderaction.context.OrderActionContext
-import com.junbo.order.db.entity.enums.OrderActionType
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.ApiContext
@@ -28,6 +27,7 @@ import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderEvent
 import com.junbo.order.spec.model.OrderItem
 import groovy.transform.CompileStatic
+import groovy.transform.TypeChecked
 import org.apache.commons.collections.CollectionUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -35,11 +35,11 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-
 /**
  * Created by chriszhu on 2/7/14.
  */
 @CompileStatic
+@TypeChecked
 @Service('orderService')
 class OrderServiceImpl implements OrderService {
     @Qualifier('orderFacadeContainer')
@@ -54,7 +54,9 @@ class OrderServiceImpl implements OrderService {
     @Qualifier('orderTransactionHelper')
     @Autowired
     TransactionHelper transactionHelper
-
+    @Qualifier('orderValidator')
+    @Autowired
+    OrderValidator orderValidator
     private static final Logger LOGGER = LoggerFactory.getLogger(OrderServiceImpl)
 
 
@@ -63,33 +65,11 @@ class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    Promise<Order> createOrder(Order order, ApiContext context) {
-        // TODO: split orders
-        // TODO: expand external resources
-        // TODO: change this flow to 2 steps:
-        //      1. createQuote
-        //      2. settleQuote
-        // TODO validate
-        LOGGER.info('name=Create_Not_Tentative_Order. userId: {}', order.user.value)
-        def orderServiceContext = initOrderServiceContext(order)
-        flowSelector.select(
-                new OrderServiceContext(order), OrderServiceOperation.CREATE).syncThen { FlowType flowType ->
-            // Prepare Flow Request
-            Map<String, Object> requestScope = [:]
-            def orderActionContext = new OrderActionContext()
-            orderActionContext.orderServiceContext = orderServiceContext
-            orderActionContext.trackingUuid = order.trackingUuid
-            requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object) orderActionContext)
-            executeFlow(flowType, orderServiceContext, requestScope)
-        }.syncThen {
-            return orderServiceContext.order
-        }
-    }
-
-    @Override
     Promise<Order> settleQuote(Order order, ApiContext context) {
         LOGGER.info('name=Settle_Tentative_Order. userId: {}', order.user.value)
         order.tentative = false
+        orderValidator.validateSettleOrderRequest(order)
+
         def orderServiceContext = initOrderServiceContext(order)
         flowSelector.select(orderServiceContext, OrderServiceOperation.SETTLE_TENTATIVE).then { FlowType flowType ->
             // Prepare Flow Request
@@ -119,7 +99,6 @@ class OrderServiceImpl implements OrderService {
                 // Prepare Flow Request
                 Map<String, Object> requestScope = [:]
                 def orderActionContext = new OrderActionContext()
-                orderActionContext.orderActionType = OrderActionType.RATE
                 orderActionContext.orderServiceContext = orderServiceContext
                 orderActionContext.trackingUuid = order.trackingUuid
                 requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object) orderActionContext)
@@ -132,8 +111,8 @@ class OrderServiceImpl implements OrderService {
 
     @Override
     Promise<Order> createQuote(Order order, ApiContext context) {
-        assert (order != null && order.user != null)
         LOGGER.info('name=Create_Tentative_Order. userId: {}', order.user.value)
+
         setHonoredTime(order)
         def orderServiceContext = initOrderServiceContext(order)
         prepareOrder(order).then {
@@ -143,7 +122,6 @@ class OrderServiceImpl implements OrderService {
                 LOGGER.info('name=Create_Tentative_Order. flowType: {}', flowType)
                 Map<String, Object> requestScope = [:]
                 def orderActionContext = new OrderActionContext()
-                orderActionContext.orderActionType = OrderActionType.RATE
                 orderActionContext.orderServiceContext = orderServiceContext
                 orderActionContext.trackingUuid = order.trackingUuid
                 requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object) orderActionContext)
@@ -160,10 +138,6 @@ class OrderServiceImpl implements OrderService {
 
         if (orderId == null) {
             throw AppErrors.INSTANCE.fieldInvalid('orderId', 'orderId cannot be null').exception()
-        }
-        def persistedOrder = this.getOrderByTrackingUuid(UUID.randomUUID())
-        if (persistedOrder != null) {
-            return Promise.pure(persistedOrder)
         }
         // get Order by id
         def order = orderRepository.getOrder(orderId)
@@ -233,6 +207,9 @@ class OrderServiceImpl implements OrderService {
             return null
         }
         def order = orderRepository.getOrderByTrackingUuid(trackingUuid)
+        if (order != null) {
+            completeOrder(order)
+        }
         return order
     }
 

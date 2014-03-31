@@ -17,7 +17,7 @@ import javax.ws.rs.core.MediaType;
 /**
  * Javadoc.
  */
-@Api(value = "oauth2", basePath = "oauth2")
+@Api("oauth2")
 @Path("/oauth2/tokeninfo")
 @RestResource
 @Produces(MediaType.APPLICATION_JSON)
@@ -26,5 +26,5 @@ public interface TokenInfoEndpoint {
 
     @ApiOperation("Get the token info")
     @GET
-    Promise<TokenInfo> getTokenInfo(@PathParam("access_token") String tokenValue);
+    Promise<TokenInfo> getTokenInfo(@QueryParam("access_token") String tokenValue);
 }

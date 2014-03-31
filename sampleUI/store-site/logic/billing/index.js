@@ -57,8 +57,15 @@ Billing.PostShippingInfo = function (data, callback) {
     var userId = cookies[process.AppConfig.CookiesName.UserId];
 
     var model = new BillingModels.ShippingInfoModel();
-    Utils.FillObject(model, body, 2);
-    model.user.id = userId;
+    model.firstName = body["firstName"];
+    model.lastName = body["lastName"];
+    model.street = body["street"];
+    model.city = body["city"];
+    model.state = body["state"];
+    model.postalCode = body["postalCode"];
+    model.country = body["country"];
+    model.phoneNumber = body["phoneNumber"];
+    model.userId.id = userId;
 
     var dataProvider = new DataProvider(process.AppConfig.Billing_API_Host, process.AppConfig.Billing_API_Port);
 
@@ -77,6 +84,26 @@ Billing.PostShippingInfo = function (data, callback) {
             resultModel.data = result.Data;
             callback(Utils.GenerateResponseModel(resultModel));
         }
+    });
+};
+
+Billing.DeleteShippingInfo = function (data, callback) {
+    var body = data.data;
+    var cookies = data.cookies;
+    var query = data.query;
+
+    var userId = cookies[process.AppConfig.CookiesName.UserId];
+    var dataProvider = new DataProvider(process.AppConfig.Billing_API_Host, process.AppConfig.Billing_API_Port);
+
+    dataProvider.DeleteShippingInfo(body["shippingId"], userId, function(result){
+        var resultModel = new DomainModels.ResultModel();
+        if(result.StatusCode == 200 || result.StatusCode == 204){
+            resultModel.status = DomainModels.ResultStatusEnum.Normal;
+        }else{
+            resultModel.status = DomainModels.ResultStatusEnum.APIError;
+        }
+        resultModel.data = result.Data;
+        callback(Utils.GenerateResponseModel(resultModel));
     });
 };
 

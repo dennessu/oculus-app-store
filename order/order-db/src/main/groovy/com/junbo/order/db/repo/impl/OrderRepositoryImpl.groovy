@@ -5,9 +5,10 @@
  */
 
 package com.junbo.order.db.repo.impl
-
 import com.google.common.collect.HashMultimap
-import com.junbo.common.id.*
+import com.junbo.common.id.OrderId
+import com.junbo.common.id.OrderItemId
+import com.junbo.common.id.PaymentInstrumentId
 import com.junbo.oom.core.MappingContext
 import com.junbo.order.db.dao.*
 import com.junbo.order.db.entity.*
@@ -23,7 +24,6 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-
 /**
  * Created by chriszhu on 2/18/14.
  */
@@ -112,8 +112,9 @@ class OrderRepositoryImpl implements OrderRepository {
 
     @Override
     OrderEvent createOrderEvent(OrderEvent event) {
+        assert (event != null && event.order != null)
         LOGGER.info('name=Create_Order_Event, event: {},{},{},{},{}',
-                [event.flowType, event.order.value, event.action, event.status, event.trackingUuid])
+                event.flowType, event.order.value, event.action, event.status, event.trackingUuid)
         def entity = modelMapper.toOrderEventEntity(event, new MappingContext())
         entity.eventId = idGenerator.nextId(entity.orderId)
         orderEventDao.create(entity)

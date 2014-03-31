@@ -7,14 +7,20 @@
 package com.junbo.token.spec.model;
 
 
+import com.junbo.token.common.FilterIn;
+import com.junbo.token.common.FilterOut;
+
 /**
  * Token item model.
  */
 public class TokenItem {
+    @FilterOut
     private Long hashValue;
     private Long orderId;
     private String disableReason;
+    @FilterIn
     private String status;
+    private String encryptedString;
 
     public Long getHashValue() {
         return hashValue;
@@ -46,5 +52,13 @@ public class TokenItem {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getEncryptedString() {
+        return encryptedString;
+    }
+
+    public void setEncryptedString(String encryptedString) {
+        this.encryptedString = encryptedString;
     }
 }

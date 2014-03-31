@@ -35,8 +35,12 @@ public abstract class BaseServiceImpl<T extends VersionedModel> implements BaseS
     @Override
     public T get(Long entityId, EntityGetOptions options) {
         T entity;
-        if (Status.RELEASED.equalsIgnoreCase(options.getStatus())) {
+        if (Status.RELEASED.equalsIgnoreCase(options.getStatus())
+                || Status.REMOVED.equalsIgnoreCase(options.getStatus())) {
             entity = getEntityRepo().get(entityId, options.getTimestamp());
+            if (entity == null|| !options.getStatus().equalsIgnoreCase(entity.getStatus())) {
+                throw AppErrors.INSTANCE.notFound(getEntityType(), entityId).exception();
+            }
         } else {
             entity = getEntityDraftRepo().get(entityId);
             if (entity == null
@@ -99,15 +103,7 @@ public abstract class BaseServiceImpl<T extends VersionedModel> implements BaseS
         return getEntityDraftRepo().get(entityId);
     }
 
-    @Override
-    public T update(Long entityId, T entity) {
-        if (entity.getId() == null) {
-            throw AppErrors.INSTANCE.missingField("id").exception();
-        }
-        if (!entityId.equals(entity.getId())) {
-            throw AppErrors.INSTANCE.fieldNotMatch("id", entity.getId(), entityId).exception();
-        }
-
+    protected T updateEntity(Long entityId, T entity) {
         getEntityDraftRepo().update(entity);
         return getEntityDraftRepo().get(entity.getId());
     }
@@ -136,8 +132,9 @@ public abstract class BaseServiceImpl<T extends VersionedModel> implements BaseS
      * @return the removed entity id.
      */
     @Override
-    public Long remove(Long entityId) {
-        return updateReleasedStatus(entityId, Status.DELETED);
+    public T remove(Long entityId) {
+        updateStatus(entityId, Status.REMOVED);
+        return getEntityRepo().get(entityId, null);
     }
 
     /**
@@ -148,6 +145,15 @@ public abstract class BaseServiceImpl<T extends VersionedModel> implements BaseS
     @Override
     public Long delete(Long entityId) {
         return updateStatus(entityId, Status.DELETED);
+    }
+
+    protected void validateId(Long entityId, T entity) {
+        if (entity.getId() == null) {
+            throw AppErrors.INSTANCE.missingField("id").exception();
+        }
+        if (!entityId.equals(entity.getId())) {
+            throw AppErrors.INSTANCE.fieldNotMatch("id", entity.getId(), entityId).exception();
+        }
     }
 
     protected <T> void checkFieldNotNull(T field, String fieldName) {

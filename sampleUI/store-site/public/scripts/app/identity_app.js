@@ -324,7 +324,7 @@ App.RegisterController = Ember.ObjectController.extend({
                     }
                 }else if(resultModel.status == 302){
                     // redirect back
-                    location.href = resultModel.data.url;
+                    location.href = unescape(resultModel.data.url);
                 }else{
                     // error
                     _self.set("errMessage", Utils.GetErrorMessage(resultModel));

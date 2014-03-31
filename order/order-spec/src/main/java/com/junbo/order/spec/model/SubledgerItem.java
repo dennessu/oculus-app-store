@@ -32,11 +32,11 @@ public class SubledgerItem extends BaseModelWithDate {
         this.orderItemId = orderItemId;
     }
 
-    public Integer getResourceAge() {
+    public Integer getRev() {
         return resourceAge;
     }
 
-    public void setResourceAge(Integer resourceAge) {
+    public void setRev(Integer resourceAge) {
         this.resourceAge = resourceAge;
     }
 }

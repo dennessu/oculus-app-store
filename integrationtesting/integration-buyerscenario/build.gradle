@@ -10,10 +10,12 @@ if (!hasProperty('mainClass')) {
     ext.mainClass = ''
 }
 
-test{
+test {
     useTestNG()
+    systemProperty 'test.config', System.properties['test.config']
     options {
         listeners << 'org.testng.reporters.XMLReporter'
+        listeners << 'com.junbo.test.common.property.PropertyTransformer'
     }
     testLogging {
         events "passed", "skipped", "failed"
@@ -25,18 +27,16 @@ test{
 
 dependencies {
 
-    // TODO: Add dependencies here ...
-    // You can read more about how to add dependency here:
-    //   http://www.gradle.org/docs/current/userguide/dependency_management.html#sec:how_to_declare_your_dependencies
+    compile(libraries.asyncclient)
+    compile(libraries.common_testlib)
+    compile(libraries.postgresql)
 
-    compile (libraries.asyncclient)
-    compile project(':integration-common')
+    testCompile(libraries.asyncclient)
+    testCompile(libraries.junit)
+    testCompile(libraries.slf4j_api)
+    testCompile(libraries.testng)
 
-    testCompile (libraries.asyncclient)
-    testCompile (libraries.slf4j_api)
-    testCompile 'junit:junit:4.11'
-    testCompile 'org.testng:testng:6.8.8'
-    testCompile 'com.junbo.identity:identity-spec:0.0.1-SNAPSHOT'
     testCompile 'com.junbo.catalog:catalog-spec:0.0.1-SNAPSHOT'
-    testCompile project(':integration-common')
+    testCompile 'com.junbo.identity:identity-spec:0.0.1-SNAPSHOT'
+
 }

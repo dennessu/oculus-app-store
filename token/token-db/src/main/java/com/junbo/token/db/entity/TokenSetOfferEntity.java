@@ -6,6 +6,8 @@
 
 package com.junbo.token.db.entity;
 
+import com.junbo.token.spec.enums.ProductType;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -29,7 +31,7 @@ public class TokenSetOfferEntity extends GenericEntity {
     private Long productId;
 
     @Column(name = "product_type")
-    private String productType;
+    private ProductType productType;
 
     public Long getId() {
         return id;
@@ -55,11 +57,11 @@ public class TokenSetOfferEntity extends GenericEntity {
         this.productId = productId;
     }
 
-    public String getProductType() {
+    public ProductType getProductType() {
         return productType;
     }
 
-    public void setProductType(String productType) {
+    public void setProductType(ProductType productType) {
         this.productType = productType;
     }
 }

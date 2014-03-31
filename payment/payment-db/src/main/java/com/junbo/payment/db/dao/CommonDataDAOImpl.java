@@ -43,11 +43,12 @@ public class CommonDataDAOImpl<T extends GenericEntity, ID extends Serializable>
 
     @Override
     public T update(T entity) {
-        T newt = (T) currentSession().merge(entity);
-        if(newt.getUpdatedTime() == null){
-            newt.setUpdatedTime(new Date());
+        if(entity.getUpdatedTime() == null){
+            entity.setUpdatedTime(new Date());
         }
-        currentSession().update(newt);
+        T newt = (T) currentSession().merge(entity);
+        //currentSession().update(newt);
+        //currentSession().evict(newt);
         return newt;
     }
 }

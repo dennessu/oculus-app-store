@@ -2,6 +2,7 @@ package com.junbo.token.app
 
 import com.fasterxml.jackson.jaxrs.base.JsonMappingExceptionMapper
 import com.junbo.common.id.provider.IdTypeFromStringProvider
+import com.junbo.token.core.exception.RestExceptionMapper
 import com.junbo.token.rest.jackson.JacksonFeature
 import com.junbo.token.rest.jackson.MapperConfigurator
 import org.glassfish.grizzly.http.server.HttpServer
@@ -32,7 +33,7 @@ class Main {
         resourceConfig.register(JacksonFeature)
         resourceConfig.register(MapperConfigurator)
         resourceConfig.register(JsonMappingExceptionMapper)
-        //resourceConfig.register(RestExceptionMapper)
+        resourceConfig.register(RestExceptionMapper)
         resourceConfig.register(IdTypeFromStringProvider)
         resourceConfig.property(ServerProperties.BV_SEND_ERROR_IN_RESPONSE, true)
         resourceConfig.property(ServerProperties.TRACING, 'ALL')

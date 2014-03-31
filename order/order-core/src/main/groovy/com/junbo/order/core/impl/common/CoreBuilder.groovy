@@ -1,5 +1,5 @@
 package com.junbo.order.core.impl.common
-import com.junbo.billing.spec.enums.BalanceStatus
+
 import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.BalanceItem
@@ -22,11 +22,13 @@ import com.junbo.order.spec.model.OrderItem
 import com.junbo.rating.spec.model.request.OrderRatingItem
 import com.junbo.rating.spec.model.request.OrderRatingRequest
 import groovy.transform.CompileStatic
+import groovy.transform.TypeChecked
 import org.apache.commons.collections.CollectionUtils
 /**
  * Created by chriszhu on 2/24/14.
  */
 @CompileStatic
+@TypeChecked
 class CoreBuilder {
 
     static Balance buildBalance(OrderServiceContext context, BalanceType balanceType) {
@@ -104,11 +106,13 @@ class CoreBuilder {
                 order.discounts.add(d)
             }
         }
+        order.totalTax = order.totalTax ?: BigDecimal.ZERO
+        order.isTaxInclusive = order.isTaxInclusive ?: false
     }
 
     static Discount buildDiscount(OrderRatingItem ri) {
         def discount = new Discount()
-        discount.discountAmount = ri.discountAmount
+        discount.discountAmount = ri.totalDiscountAmount
         discount.discountType = DiscountType.OFFER_DISCOUNT
         // TODO: need to discuss the coupon logic
         if (CollectionUtils.isEmpty(ri.promotions)) {
@@ -125,12 +129,12 @@ class CoreBuilder {
         if (ratingItem == null) {
             return item
         }
-        item.totalAmount = ratingItem.finalAmount
-        item.totalDiscount = ratingItem.discountAmount
-        // todo get unit price from rating
-        item.unitPrice =
-                ratingItem.quantity == 0 ? ratingItem.originalAmount : ratingItem.originalAmount / ratingItem.quantity
+        item.totalAmount = ratingItem.finalTotalAmount
+        item.totalDiscount = ratingItem.totalDiscountAmount
+        item.unitPrice = ratingItem.originalUnitPrice
         item.honorUntilTime = null
+        item.totalTax = item.totalTax ?: BigDecimal.ZERO
+        item.isTaxExempted = item.isTaxExempted ?: false
         return item
     }
 
@@ -168,6 +172,11 @@ class CoreBuilder {
     }
 
     static ActionResult  buildActionResultForOrderEventAwareAction(OrderActionContext context,
+                                                                   String eventStatus) {
+        return buildActionResultForOrderEventAwareAction(context, EventStatus.valueOf(eventStatus))
+    }
+
+    static ActionResult  buildActionResultForOrderEventAwareAction(OrderActionContext context,
                                                                    EventStatus eventStatus) {
         def orderActionResult = new OrderActionResult()
         orderActionResult.orderActionContext = context
@@ -179,24 +188,4 @@ class CoreBuilder {
         return actionResult
     }
 
-    static EventStatus buildEventStatusFromBalance(String balanceStatus) {
-        switch (balanceStatus) {
-            case BalanceStatus.COMPLETED:
-                return EventStatus.COMPLETED
-            case BalanceStatus.AWAITING_PAYMENT:
-                return EventStatus.PENDING
-            case BalanceStatus.PENDING_CAPTURE: // Authorize completed
-                return EventStatus.COMPLETED
-            case BalanceStatus.UNCONFIRMED:
-                return EventStatus.PROCESSING
-            case BalanceStatus.INIT:
-                return EventStatus.PROCESSING
-            case BalanceStatus.CANCELLED:
-            case BalanceStatus.FAILED:
-            case BalanceStatus.ERROR:
-                return EventStatus.FAILED
-            default:
-                return EventStatus.FAILED
-        }
-    }
 }

@@ -39,7 +39,7 @@ public class TokenOrderEntity extends GenericEntity {
     private Date expiredTime;
 
     @Column(name = "usage_limit")
-    private Long usageLimit;
+    private String usageLimit;
 
     @Column(name = "creation_method")
     private CreateMethod createMethod;
@@ -90,11 +90,11 @@ public class TokenOrderEntity extends GenericEntity {
         this.expiredTime = expiredTime;
     }
 
-    public Long getUsageLimit() {
+    public String getUsageLimit() {
         return usageLimit;
     }
 
-    public void setUsageLimit(Long usageLimit) {
+    public void setUsageLimit(String usageLimit) {
         this.usageLimit = usageLimit;
     }
 

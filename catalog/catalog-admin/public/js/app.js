@@ -25,5 +25,8 @@ app.config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/items/:id/response', {templateUrl: 'views/item/item-response.html', controller: 'ItemResponseCtrl'});
   $routeProvider.when('/items/:id/edit', {templateUrl: 'views/item/item-detail-edit.html', controller: 'ItemDetailCtrl'});
 
-  $routeProvider.otherwise({redirectTo: '/offers'});
+  $routeProvider.when('/attributes', {templateUrl: '../views/attribute/attribute-list.html', controller: 'AttributeListCtrl'});
+  $routeProvider.when('/attributes/:id', {templateUrl: '../views/attribute/attribute-detail.html', controller: 'AttributeDetailCtrl'});
+
+    $routeProvider.otherwise({redirectTo: '/offers'});
 }]);

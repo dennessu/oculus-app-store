@@ -1,5 +1,4 @@
 package com.junbo.order.core.impl.orderaction
-
 import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.model.Balance
 import com.junbo.langur.core.promise.Promise
@@ -8,6 +7,7 @@ import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.core.annotation.OrderEventAwareAfter
 import com.junbo.order.core.annotation.OrderEventAwareBefore
+import com.junbo.order.core.impl.common.BillingEventBuilder
 import com.junbo.order.core.impl.common.CoreBuilder
 import com.junbo.order.core.impl.common.CoreUtils
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
@@ -20,7 +20,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.transaction.annotation.Transactional
-
 /**
  * Auth Settle Action.
  */
@@ -49,11 +48,11 @@ class AuthSettleAction extends BaseOrderEventAwareAction {
             LOGGER.error('name=Order_AuthSettle_Error', throwable)
             throw AppErrors.INSTANCE.
                     billingConnectionError(CoreUtils.toAppErrors(throwable)).exception()
-        }.then {
+        }.then { Balance resultBalance ->
+            def billingEvent = BillingEventBuilder.buildBillingEvent(resultBalance)
             orderServiceContextBuilder.refreshBalances(context.orderServiceContext).syncThen {
                 // TODO: save order level tax
-                return CoreBuilder.buildActionResultForOrderEventAwareAction(context,
-                        CoreBuilder.buildEventStatusFromBalance(balance.status))
+                return CoreBuilder.buildActionResultForOrderEventAwareAction(context, billingEvent.status)
             }
         }
     }

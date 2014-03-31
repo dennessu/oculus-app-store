@@ -1,0 +1,17 @@
+{
+    "name": "testItem_CartCheckout_Digital1",
+    "type": "APP",
+    "status": "Design",
+    "skus": [],
+    "developer": {
+        "href": "https://api.oculusvr.com/v1/users/3234",
+        "id": "3234"
+    },
+    "properties": {
+        "gameModes": "Single-Player",
+        "platforms": "Mac, Windows, Linux",
+        "minSystemRequirements": "Windows 7 or later (64 bit)",
+        "description": "3D Parking Simulator is a VR driving simulator specialized for parking. Currently you can practice car parking in 5 small courses. You can see stereoscopic rear-view and door mirrors. Both left and right driving seats are supported (switch by 'C' key).",
+        "downloadLink": "http://www.google.com/"
+    }
+}

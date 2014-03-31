@@ -10,14 +10,12 @@ import com.junbo.billing.clientproxy.IdentityFacade
 import com.junbo.billing.clientproxy.PaymentFacade
 import com.junbo.billing.db.repository.BalanceRepository
 import com.junbo.billing.spec.enums.BalanceStatus
+import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.enums.TaxStatus
 import com.junbo.billing.spec.error.AppErrors
-import com.junbo.billing.spec.model.Balance
-import com.junbo.billing.spec.model.BalanceItem
-import com.junbo.billing.spec.enums.BalanceType
-import com.junbo.billing.spec.model.Currency
-import com.junbo.billing.spec.model.DiscountItem
-import com.junbo.billing.spec.model.TaxItem
+import com.junbo.billing.spec.model.*
+import com.junbo.common.id.BalanceId
+import com.junbo.common.id.OrderId
 import com.junbo.identity.spec.model.user.User
 import com.junbo.langur.core.promise.Promise
 import com.junbo.payment.spec.model.PaymentInstrument
@@ -62,6 +60,7 @@ class BalanceServiceImpl implements BalanceService {
 
         Balance tmpBalance = checkTrackingUUID(balance.trackingUuid)
         if (tmpBalance != null) {
+            LOGGER.info('name=Add_Balance_Same_UUID. tracking uuid: {0}', balance.trackingUuid)
             return Promise.pure(tmpBalance)
         }
 
@@ -79,9 +78,10 @@ class BalanceServiceImpl implements BalanceService {
                     // set the balance status to INIT
                     taxedBalance.setStatus(BalanceStatus.INIT.name())
 
-                    return transactionService.processBalance(taxedBalance).then {
-                        //persist the balance entity
-                        Balance resultBalance = balanceRepository.saveBalance(taxedBalance)
+                    Balance savedBalance = balanceRepository.saveBalance(taxedBalance)
+
+                    return transactionService.processBalance(savedBalance).then {
+                        Balance resultBalance = balanceRepository.updateBalance(savedBalance)
                         return Promise.pure(resultBalance)
                     }
                 }
@@ -114,6 +114,7 @@ class BalanceServiceImpl implements BalanceService {
 
         Balance tmpBalance = checkTrackingUUID(balance.trackingUuid)
         if (tmpBalance != null) {
+            LOGGER.info('name=Capture_Balance_Same_UUID. tracking uuid: {0}', balance.trackingUuid)
             return Promise.pure(tmpBalance)
         }
 
@@ -143,13 +144,19 @@ class BalanceServiceImpl implements BalanceService {
     }
 
     @Override
-    Promise<Balance> getBalance(Long balanceId) {
-        return Promise.pure(balanceRepository.getBalance(balanceId))
+    Promise<Balance> getBalance(BalanceId balanceId) {
+        if (balanceId == null) {
+            throw AppErrors.INSTANCE.fieldMissingValue('balanceId').exception()
+        }
+        return Promise.pure(balanceRepository.getBalance(balanceId.value))
     }
 
     @Override
-    Promise<List<Balance>> getBalances(Long orderId) {
-        return Promise.pure(balanceRepository.getBalances(orderId))
+    Promise<List<Balance>> getBalances(OrderId orderId) {
+        if (orderId == null) {
+            throw AppErrors.INSTANCE.fieldMissingValue('orderId').exception()
+        }
+        return Promise.pure(balanceRepository.getBalances(orderId.value))
     }
 
     private Balance checkTrackingUUID(UUID uuid) {
@@ -170,9 +177,11 @@ class BalanceServiceImpl implements BalanceService {
             throw AppErrors.INSTANCE.userNotFound(userId.toString()).exception()
         }.then { User user ->
             if (user == null) {
+                LOGGER.error('name=Error_Get_User. Get null for the user id: {0}', userId)
                 throw AppErrors.INSTANCE.userNotFound(userId.toString()).exception()
             }
             if (user.status != 'ACTIVE') {
+                LOGGER.error('name=Error_Get_User. User not active with id: {0}', userId)
                 throw AppErrors.INSTANCE.userStatusInvalid(userId.toString()).exception()
             }
             return Promise.pure(null)

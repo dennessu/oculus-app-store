@@ -6,35 +6,48 @@
 
 package com.junbo.token.rest.resource;
 
+import com.junbo.common.id.TokenOrderId;
 import com.junbo.langur.core.promise.Promise;
+import com.junbo.token.common.CommonUtil;
 import com.junbo.token.core.TokenService;
-import com.junbo.token.core.exception.AppClientExceptions;
+import com.junbo.token.common.exception.AppClientExceptions;
 import com.junbo.token.spec.model.*;
 import com.junbo.token.spec.resource.TokenResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.ws.rs.BeanParam;
+import javax.ws.rs.*;
 
 /**
  * token resource implementation.
  */
 public class TokenResourceImpl implements TokenResource{
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(TokenResourceImpl.class);
     @Autowired
     private TokenService tokenService;
 
     @Override
-    public Promise<TokenOrder> postOrder(TokenOrder request) {
-        return tokenService.createTokenOrder(request);
+    public Promise<OrderRequest> postOrder(OrderRequest request) {
+        CommonUtil.preValidation(request);
+        return tokenService.createOrderRequest(request).
+                then(new Promise.Func<OrderRequest, Promise<OrderRequest>>() {
+            @Override
+            public Promise<OrderRequest> apply(OrderRequest request) {
+                CommonUtil.postFilter(request);
+                return Promise.pure(request);
+            }
+        });
     }
 
     @Override
-    public Promise<TokenOrder> getOrderById(Long tokenOrderId) {
-        return tokenService.getTokenOrder(tokenOrderId);
+    public Promise<OrderRequest> getOrderById(TokenOrderId tokenOrderId) {
+        return tokenService.getOrderRequest(tokenOrderId.getValue());
     }
 
     @Override
-    public Promise<ResultList<TokenOrder>> searchOrder(@BeanParam TokenOrderSearchParam searchParam,
+    public Promise<ResultList<OrderRequest>> searchOrder(@BeanParam TokenOrderSearchParam searchParam,
                                                        @BeanParam PageMetaData pageMetadata) {
         return null;
     }

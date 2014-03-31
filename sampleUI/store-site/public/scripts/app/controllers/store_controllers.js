@@ -128,6 +128,7 @@ var StoreControllers = {
 
     CartItemController: Ember.ObjectController.extend({
         product: function(){
+            console.log("Cart Item Product Id: ", this.get('model').get('product_id'));
             return this.store.find('Product', this.get('model').get('product_id'));
         }.property('model'),
 
@@ -149,8 +150,10 @@ var StoreControllers = {
             }
         }.observes('model.qty'),
 
+
         changeStatus: function(){
             var _self = this;
+            console.log("[Change Status]:", _self.get("model.selected"));
 
             var data = {"cart_items": [{
                 product_id: _self.get("model.product_id"),
@@ -171,7 +174,8 @@ var StoreControllers = {
                     //TODO: ?
                 }
             });
-        }.observes('model.selected'),
+        }.observes('selected'),
+
 
         actions: {
             Change: function(value){

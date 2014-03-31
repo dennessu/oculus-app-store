@@ -6,6 +6,7 @@
 
 package com.junbo.token.spec.resource;
 
+import com.junbo.common.id.TokenOrderId;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.token.spec.model.*;
@@ -17,34 +18,35 @@ import javax.ws.rs.core.MediaType;
 /**
  * token resource interface.
  */
+@Path("/tokens")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 @RestResource
 public interface TokenResource {
     @POST
-    @Path("/token-orders")
-    Promise<TokenOrder> postOrder(TokenOrder request);
+    @Path("/orders")
+    Promise<OrderRequest> postOrder(OrderRequest request);
 
     @GET
-    @Path("/token-orders/{tokenOrderId}")
-    Promise<TokenOrder> getOrderById(@PathParam("tokenOrderId") Long tokenOrderId);
+    @Path("/orders/{tokenOrderId}")
+    Promise<OrderRequest> getOrderById(@PathParam("tokenOrderId") TokenOrderId tokenOrderId);
 
     @GET
-    @Path("/token-orders/search")
-    Promise<ResultList<TokenOrder>> searchOrder(
+    @Path("/orders/search")
+    Promise<ResultList<OrderRequest>> searchOrder(
             @BeanParam TokenOrderSearchParam searchParam,
             @BeanParam PageMetaData pageMetadata);
 
     @POST
-    @Path("/tokens/{tokenString}/consumption")
+    @Path("/{tokenString}/consumption")
     Promise<TokenItem> consumeToken(@PathParam("tokenString") String tokenString);
 
     @PUT
-    @Path("/tokens/{tokenString}")
+    @Path("/{tokenString}")
     Promise<TokenItem> updateToken(@PathParam("tokenString") String tokenString,
                                    TokenItem token);
 
     @GET
-    @Path("/tokens/{tokenString}")
+    @Path("/{tokenString}")
     Promise<TokenItem> getToken(@PathParam("tokenString") String tokenString);
 }

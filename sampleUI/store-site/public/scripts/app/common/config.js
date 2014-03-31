@@ -12,13 +12,19 @@ AppConfig.API = {
         Register: { Path: "register" },
         PIN: { Path: "pin" },
         GetAnonymousUser: { Path: "get_anonymous_user" },
-        GetProfile: { Path: "get_profile" }
+        GetProfile: { Path: "get_profile" },
+        PutProfile: { Path: "put_profile" },
+        PutUser: { Path: "put_user" },
+        GetOptIns: {Path: "get_opt_ins"},
+        PostOptIns: {Path: "post_opt_ins"},
+        Logout: {Path: "logout"}
     },
     Catalog: {
         Config: {
             Namespace: "/api/catalog/"
         },
-        Products: { Path: "products" }
+        GetProducts: { Path: "products" },
+        GetDownloadLinks: { Path: "get_download_links" }
     },
 
     Cart: {
@@ -31,7 +37,8 @@ AppConfig.API = {
         Update: { Path: "update" },
         Merge: { Path: "merge" },
         PostOrder: { Path: "post_order" },
-        GetOrder: { Path: "get_order" },
+        GetOrder: { Path: "get_order_by_id" },
+        GetOrders: { Path: "get_order_by_user" },
         PutOrder: { Path: "put_order" },
         PurchaseOrder: { Path: "purchase_order" }
     },
@@ -41,7 +48,8 @@ AppConfig.API = {
         },
         ShippingInfo: {Path: "get_shipping_info"},
         Get: {Path: "get_shipping_info_by_id"},
-        Add: {Path: "add"}
+        Add: {Path: "add"},
+        Del: {Path: "del"}
     },
     Payment:{
         Config: {
@@ -49,7 +57,16 @@ AppConfig.API = {
         },
         PaymentInstruments: {Path: "get_payment_instruments" },
         Get: {Path: "get_payment_instruments_by_id"},
-        Add: {Path: "add"}
+        Add: {Path: "add"},
+        Del: {Path: "del"}
+    },
+    Entitlement:{
+        Config: {
+            Namespace: "/api/entitlement/"
+        },
+        Get: {Path: "get"},
+        GetByUser: { Path: "get_by_user"},
+        Post: {Path: "post"}
     }
 };
 

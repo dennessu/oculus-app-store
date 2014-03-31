@@ -249,7 +249,6 @@ Cart.CartProcess = function (action, data, callback) {
             var offerItems = new Array();
             for (var i = 0; i < cartItems.length; ++i) {
                 var offer = new CartModels.OfferItemModel();
-                offer.self.id = cartId;
                 offer.offer.id = cartItems[i].product_id;
                 offer.quantity = cartItems[i].qty;
                 offer.selected = cartItems[i].selected;
@@ -261,6 +260,7 @@ Cart.CartProcess = function (action, data, callback) {
             for (var i = 0; i < offerItems.length; ++i) {
                 var currentOffer = offerItems[i];
                 var offerIndex = Cart._getIndexByOffers(currentOffer.offer.id, cartObj.offers);
+                console.log(Utils.Format("[{1}] current offerId:{2}  index:{3}"), action, currentOffer.offer.id, offerIndex);
 
                 switch (action) {
                     case "merge":
@@ -277,6 +277,7 @@ Cart.CartProcess = function (action, data, callback) {
                             cartObj.offers.push(currentOffer);
                         } else {
                             cartObj.offers[offerIndex].quantity = currentOffer.quantity;
+                            cartObj.offers[offerIndex].selected = currentOffer.selected;
                         }
                         needUpdate = true;
                         break;
@@ -327,7 +328,28 @@ Cart.CartProcess = function (action, data, callback) {
     });
 };
 
-Cart.GetOrder = function(data, callback){
+Cart.GetOrders = function(data, callback){
+    var body = data.data;
+    var cookies = data.cookies;
+    var query = data.query;
+
+    var userId = cookies[process.AppConfig.CookiesName.UserId];
+
+    var orderProvider = new OrderDataProvider(process.AppConfig.Order_API_Host, process.AppConfig.Order_API_Port);
+    orderProvider.GetOrdersByUserId(userId, function(resultData){
+        var resultModel = new DomainModels.ResultModel;
+        if(resultData.StatusCode == 200){
+            resultModel.status = DomainModels.ResultStatusEnum.Normal;
+        }else{
+            resultModel.status = DomainModels.ResultStatusEnum.APIError;
+        }
+        resultModel.data = resultData.Data;
+
+        callback(Utils.GenerateResponseModel(resultModel));
+    });
+};
+
+Cart.GetOrderById = function(data, callback){
     var body = data.data;
     var cookies = data.cookies;
     var query = data.query;
@@ -347,7 +369,8 @@ Cart.GetOrder = function(data, callback){
         resultModel.data = resultData.Data;
 
         callback(Utils.GenerateResponseModel(resultModel));
-    });};
+    });
+};
 
 Cart.PostOrder = function(data, callback){
     var body = data.data;
@@ -418,7 +441,9 @@ Cart.PostOrder = function(data, callback){
             orderModel.country = "US";
             orderModel.currency = "USD";
             orderModel.tentative = true;
-            orderModel.paymentInstruments = new Array();
+            orderModel.shippingMethodId = undefined;
+            orderModel.shippingAddressId = undefined;
+            orderModel.paymentInstruments = undefined;
             orderModel.orderItems = new Array();
 
             var indexArray = new Array();
@@ -426,7 +451,7 @@ Cart.PostOrder = function(data, callback){
                 var item = cartObj.offers[i];
                 if(item.selected == true){
                     var orderItem = new OrderModels.OrderItemModel();
-                    orderItem.offer = item.self;
+                    orderItem.offer = item.offer;
                     orderItem.quantity = item.quantity;
                     orderModel.orderItems.push(orderItem);
                     indexArray.push(i);
@@ -445,7 +470,7 @@ Cart.PostOrder = function(data, callback){
         // Update Cart
         function(orderResult, result, indexArray, cb){
             var cartObj = JSON.parse(result);
-            for(var i = 0; i < indexArray.length; ++i){
+            for(var i = indexArray.length; i > -1; --i){
                 cartObj.offers.splice(indexArray[i], 1);
             }
 
@@ -508,8 +533,8 @@ Cart.PutOrder = function(data, callback){
         // Get cart by url
         function (result, cb) {
            var order = JSON.parse(result);
-            order.shippingMethodId = shippingMethodId;
-            order.shippingAddressId = shippingAddressId;
+            order["shippingMethodId"] ={id: shippingMethodId};
+            order["shippingAddressId"]={id: shippingAddressId};
             order.paymentInstruments.push(payment);
             order.trackingUuid = Guid.create();
 
@@ -576,6 +601,7 @@ Cart.PurchaseOrder = function(data, callback){
         }
     });
 };
+
 
 Cart._getIndexByOffers = function (offerId, offers) {
     for (var i = 0; i < offers.length; ++i) {

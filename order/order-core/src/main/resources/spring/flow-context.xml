@@ -40,4 +40,7 @@
 
     <bean id="markSettleAction" class="com.junbo.order.core.impl.orderaction.MarkSettleAction">
     </bean>
+
+    <bean id="validateTentativeOrderAction" class="com.junbo.order.core.impl.orderaction.ValidateOrderAction">
+    </bean>
 </beans>

@@ -25,14 +25,14 @@ var ShippingInfoControllers = {
             }
         }
     }),
-    AddressController: Ember.ArrayController.extend({
+    AddressController: Ember.ObjectController.extend({
         isValid: false,
+        content:{
+            results: []
+        },
         actions: {
             CreateNew: function(){
-                var _self = this;
-
-                _self.transitionToRouteAnimated("shipping.edit", {shipping: "flip"});
-
+                this.transitionToRouteAnimated("shipping.edit", {shipping: "flip"});
             },
             Continue: function(){
                 var _self = this;
@@ -62,7 +62,7 @@ var ShippingInfoControllers = {
             street: "",
             city: "",
             state: "",
-            postCode: "",
+            postalCode: "",
             phoneNumber: ""
         },
 
@@ -83,7 +83,7 @@ var ShippingInfoControllers = {
             Cancel: function(){
                 var _self = this;
 
-                _self.transitionToRouteAnimated("shipping.index", {shipping: "flip"});
+                _self.transitionToRouteAnimated("shipping.address", {shipping: "flip"});
             }
         }
     })

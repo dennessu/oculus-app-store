@@ -13,6 +13,7 @@ import com.junbo.order.clientproxy.model.OrderOffer
 import com.junbo.order.spec.model.Order
 import com.junbo.payment.spec.model.PaymentInstrument
 import groovy.transform.CompileStatic
+import groovy.transform.TypeChecked
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Component
 @Component('orderServiceContext')
 @Scope('prototype')
 @CompileStatic
+@TypeChecked
 class OrderServiceContext {
 
     Order order

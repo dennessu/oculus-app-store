@@ -5,6 +5,7 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.billing.BillingFacade
 import com.junbo.order.clientproxy.common.TestBuilder
 import groovy.transform.CompileStatic
+import groovy.transform.TypeChecked
 import org.testng.annotations.Test
 
 import javax.annotation.Resource
@@ -12,6 +13,7 @@ import javax.annotation.Resource
  * Created by chriszhu on 2/19/14.
  */
 @CompileStatic
+@TypeChecked
 class BillingFacadeTest extends BaseTest {
 
     @Resource(name = 'mockBillingFacade')

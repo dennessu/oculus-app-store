@@ -1,7 +1,5 @@
 package com.junbo.order.core.common
-
 import com.junbo.common.id.*
-import com.junbo.fulfilment.spec.model.FulfilmentAction
 import com.junbo.fulfilment.spec.model.FulfilmentItem
 import com.junbo.fulfilment.spec.model.FulfilmentRequest
 import com.junbo.langur.core.webflow.action.ActionContext
@@ -9,22 +7,19 @@ import com.junbo.langur.core.webflow.state.Conversation
 import com.junbo.order.core.impl.order.OrderServiceContext
 import com.junbo.order.core.impl.orderaction.ActionUtils
 import com.junbo.order.core.impl.orderaction.context.OrderActionContext
-import com.junbo.order.db.entity.enums.DiscountType
-import com.junbo.order.db.entity.enums.EventStatus
-import com.junbo.order.db.entity.enums.ItemType
-import com.junbo.order.db.entity.enums.OrderActionType
-import com.junbo.order.db.entity.enums.OrderType
+import com.junbo.order.db.entity.enums.*
 import com.junbo.order.spec.model.Discount
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderEvent
 import com.junbo.order.spec.model.OrderItem
 import com.junbo.payment.spec.model.PaymentInstrument
 import groovy.transform.CompileStatic
-
+import groovy.transform.TypeChecked
 /**
  * Created by chriszhu on 2/14/14.
  */
 @CompileStatic
+@TypeChecked
 class TestBuilder {
 
     static long generateLong() {
@@ -89,8 +84,10 @@ class TestBuilder {
     static ActionContext buildActionContext(Order order) {
         def orderActionContext = new OrderActionContext()
         orderActionContext.orderServiceContext = new OrderServiceContext(order)
+        orderActionContext.trackingUuid = UUID.randomUUID()
         def actionContext = new ActionContext(new Conversation(), new HashMap<String, Object>())
         ActionUtils.putOrderActionContext(orderActionContext, actionContext)
+        ActionUtils.putFlowType('testFlowType', actionContext)
         return actionContext
     }
 

@@ -32,27 +32,41 @@ app.controller('OfferCreationCtrl', ['$scope', 'OffersFactory', '$location',
 
         var init = function() {
             $scope.offer = {};
+            $scope.offer.items = [];
             $scope.offer.categories = [];
             $scope.offer.properties = {};
             $scope.offer.eligibleCountries = [];
+            $scope.selectedItems = {};
         };
 
         init();
     }]);
 
 app.controller('OfferEditCtrl',
-    ['$scope', 'OffersFactory', 'ItemsFactory', 'MetaFactory', 'AttributesFactory', '$routeParams', '$location',
-        function($scope, OffersFactory, ItemsFactory, MetaFactory, AttributesFactory, $routeParams, $location) {
+    ['$scope', 'OffersFactory', 'ItemsFactory', 'MetaFactory', 'AttributesFactory', 'PriceTiersFactory', 'PriceTierFactory','$routeParams',
+        function($scope, OffersFactory, ItemsFactory, MetaFactory, AttributesFactory, PriceTiersFactory, PriceTierFactory, $routeParams) {
             $scope.addItem = function(item) {
-                $scope.selectedItems[item.self.id] = item;
+                if (typeof $scope.selectedItems[item.self.id] == "undefined") {
+                    $scope.selectedItems[item.self.id] = item;
+                    $scope.offer.items.push({itemId:item.self});
+                }
             };
             $scope.removeItem = function(item) {
                 delete $scope.selectedItems[item.self.id];
+
+                for (var i=0; i<$scope.offer.items.length; i++) {
+                    if ($scope.offer.items[i].itemId.id == item.self.id) {
+                        break;
+                    }
+                }
+                $scope.offer.items.splice(i, 1);
             };
+
             $scope.saveItems = function() {
                 $scope.offer.items = [];
                 Object.keys( $scope.selectedItems ).forEach(function( key ) {
-                    $scope.offer.items.push({itemId: $scope.selectedItems[key].self});
+                    console.log(key);
+                    $scope.offer.items.push($scope.selectedItems[key].self);
                 });
             };
             $scope.removePrice = function(countryCode) {
@@ -69,6 +83,10 @@ app.controller('OfferEditCtrl',
             };
             $scope.updateGenres = function() {
                 $scope.offer.genres = [$scope.selectedGenre];
+            };
+            $scope.updatePriceTier = function(priceTier) {
+                $scope.offer.priceTier = priceTier.self;
+                $scope.selectedTier = priceTier;
             };
             $scope.addPrice = function(country) {
                 if (angular.isUndefined($scope.offer)) {
@@ -92,10 +110,32 @@ app.controller('OfferEditCtrl',
                 $scope.offer.eligibleCountries = [];
             };
 
-            $scope.selectedItems = {};
+            $scope.updateSelectedPriceTier = function(priceTier) {
+                console.log(priceTier);
+                $scope.selectedTier = priceTier;
+            };
+
+            $scope.updatePriceTier = function() {
+                $scope.offer.priceTier = $scope.priceTiers[$scope.selectedTierIndex].self;
+                $scope.selectedTier = $scope.priceTiers[$scope.selectedTierIndex];
+            };
+
+            $scope.updatePriceType = function(priceType) {
+                if (priceType=="Free") {
+                    $scope.offer.priceTier = {};
+                    $scope.selectedTier = {};
+                    $scope.offer.prices = {};
+                }else if (priceType=="TierPricing") {
+                    $scope.offer.prices = {};
+                } else {
+                    $scope.offer.priceTier = {};
+                    $scope.selectedTier = {};
+                }
+            };
+
             $scope.isCollapsed = true;
             $scope.items = ItemsFactory.query({status: "Released"});
-
+            $scope.priceTiers = PriceTiersFactory.query();
             $scope.categoryAttributes = AttributesFactory.query({type: "Category"});
             $scope.genreAttributes = AttributesFactory.query({type: "Genre"});
             $scope.offers = OffersFactory.query($routeParams);
@@ -121,8 +161,8 @@ app.controller('OfferResponseCtrl', ['$scope', '$routeParams', 'OfferResponse',
         $scope.offerId = $routeParams.id;
     }]);
 
-app.controller('OfferDetailCtrl', ['$scope', 'OfferFactory', 'MetaFactory', 'AttributesFactory', '$routeParams', '$location','OfferResponse',
-    function($scope, OfferFactory, MetaFactory, AttributesFactory, $routeParams, $location, OfferResponse) {
+app.controller('OfferDetailCtrl', ['$scope', 'OfferFactory', 'ItemFactory', 'MetaFactory', 'AttributesFactory', 'PriceTierFactory', '$routeParams', '$location','OfferResponse',
+    function($scope, OfferFactory, ItemFactory, MetaFactory, AttributesFactory, PriceTierFactory, $routeParams, $location, OfferResponse) {
         console.log("OfferDetailCtrl");
         console.log($routeParams);
 
@@ -163,7 +203,19 @@ app.controller('OfferDetailCtrl', ['$scope', 'OfferFactory', 'MetaFactory', 'Att
             $location.path('/offers/' + $routeParams.id);
         };
 
-        $scope.offer = OfferFactory.query($routeParams);
+        $scope.selectedItems = {};
+        $scope.offer = OfferFactory.query($routeParams, function(offer){
+           if (offer.priceType == "TierPricing") {
+             $scope.selectedTier = PriceTierFactory.query({id:offer.priceTier.id});
+           }
+
+           if (typeof offer.items != "undefined") {
+             for (var i=0; i<offer.items.length; i++) {
+               $scope.selectedItems[offer.items[i].itemId.id] = ItemFactory.query({id:offer.items[i].itemId.id});
+             }
+           }
+        });
+
     }]);
 
 app.controller('ItemListCtrl', ['$scope', 'ItemsFactory', '$routeParams', '$location',

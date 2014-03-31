@@ -16,8 +16,10 @@ import com.junbo.order.db.entity.enums.OrderActionType
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.model.OrderEvent
 import groovy.transform.CompileStatic
+import groovy.transform.TypeChecked
 import org.aspectj.lang.JoinPoint
 import org.aspectj.lang.annotation.AfterReturning
+import org.aspectj.lang.annotation.AfterThrowing
 import org.aspectj.lang.annotation.Aspect
 import org.aspectj.lang.annotation.Before
 import org.slf4j.Logger
@@ -32,6 +34,7 @@ import javax.annotation.Resource
 @Aspect
 @Component('orderEventAspect')
 @CompileStatic
+@TypeChecked
 class OrderEventAspect {
 
     @Resource(name = 'orderRepository')
@@ -53,7 +56,7 @@ class OrderEventAspect {
             if (getOrderActionType(jp) != null) { // only create event if action type is set
                 def orderEvent = getOpenOrderEvent(jp)
                 if (orderEvent != null && orderEvent.order != null) {
-                    transactionHelper.executeInTransaction {
+                    transactionHelper.executeInNewTransaction {
                         repo.createOrderEvent(orderEvent)
                     }
                 }
@@ -61,6 +64,28 @@ class OrderEventAspect {
             return Promise.pure(null)
         } catch (e) {
             LOGGER.error('name=Save_Order_Event_Before', e)
+            throw e
+        }
+    }
+
+    @AfterThrowing(value = '@annotation(orderEventAwareAfter)',
+            argNames = 'jp, orderEventAwareAfter, ex', throwing = 'ex')
+    Promise<ActionResult> afterThrowingOrderEventAwareAction(
+            JoinPoint jp,
+            OrderEventAwareAfter orderEventAwareAfter,
+            Throwable ex) {
+        assert (orderEventAwareAfter != null)
+        LOGGER.info('name=Save_Order_Event_AfterThrowing. action: {}', orderEventAwareAfter.action())
+        try {
+            if (getOrderActionType(jp) != null) { // only create event if action type is set
+                def oe = getReturnedOrderEvent(jp, EventStatus.ERROR)
+                transactionHelper.executeInNewTransaction {
+                    repo.createOrderEvent(oe)
+                }
+            }
+            throw ex
+        } catch (e) {
+            LOGGER.error('name=Save_Order_Event_AfterThrowing', e)
             throw e
         }
     }
@@ -76,24 +101,25 @@ class OrderEventAspect {
 
         rv.syncRecover { Throwable throwable ->
             def oe = getReturnedOrderEvent(jp, EventStatus.ERROR)
-            if (oe != null) {
-                transactionHelper.executeInTransaction {
+            if (oe != null && oe.order != null) {
+                transactionHelper.executeInNewTransaction {
                     repo.createOrderEvent(oe)
                 }
             }
+            LOGGER.error('name=Save_Error_Order_Event_AfterReturning', throwable)
             throw throwable
         }
         .syncThen { ActionResult ar ->
             try {
                 def oe = getReturnedOrderEvent(jp, ar)
                 if (oe != null) {
-                    transactionHelper.executeInTransaction {
+                    transactionHelper.executeInNewTransaction {
                         repo.createOrderEvent(oe)
                     }
                 }
                 return ar
             } catch (e) {
-                LOGGER.error('name=Save_Order_Event_AfterReturning', e)
+                LOGGER.error('name=Save_Order_Event_AfterReturning_Failed', e)
                 throw e
             }
         }

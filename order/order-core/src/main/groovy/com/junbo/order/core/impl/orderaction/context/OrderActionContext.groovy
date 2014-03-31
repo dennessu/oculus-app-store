@@ -1,17 +1,15 @@
 package com.junbo.order.core.impl.orderaction.context
-
 import com.junbo.order.core.impl.order.OrderServiceContext
-import com.junbo.order.db.entity.enums.OrderActionType
 import groovy.transform.CompileStatic
+import groovy.transform.TypeChecked
 /**
  * Created by chriszhu on 2/18/14.
  */
 @CompileStatic
+@TypeChecked
 class OrderActionContext {
 
     OrderServiceContext orderServiceContext
-    Long orderId
     // For order event
-    OrderActionType orderActionType
     UUID trackingUuid
 }

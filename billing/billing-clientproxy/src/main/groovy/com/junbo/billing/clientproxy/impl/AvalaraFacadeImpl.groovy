@@ -56,6 +56,7 @@ class AvalaraFacadeImpl implements TaxFacade {
 
     static final int STATUS_CODE_MASK = 100
     static final int SUCCESSFUL_STATUS_CODE_PREFIX = 2
+    static final String[] SUPPORT_COUNTRY_LIST = ['US', 'CA']
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AvalaraFacadeImpl)
 
@@ -71,20 +72,28 @@ class AvalaraFacadeImpl implements TaxFacade {
 
     @Override
     Promise<ShippingAddress> validateShippingAddress(ShippingAddress shippingAddress) {
-        AvalaraAddress address = getAvalaraAddress(shippingAddress)
-        LOGGER.info('name=Validate_Address_Request, request={}', address.toString())
-        return validateAddress(address).then { ValidateAddressResponse response ->
-            return Promise.pure(updateShippingAddress(response, shippingAddress))
+        if (SUPPORT_COUNTRY_LIST.contains(shippingAddress.country)) {
+            AvalaraAddress address = getAvalaraAddress(shippingAddress)
+            LOGGER.info('name=Validate_Address_Request, request={}', address.toString())
+            return validateAddress(address).then { ValidateAddressResponse response ->
+                return Promise.pure(updateShippingAddress(response, shippingAddress))
+            }
         }
+
+        return Promise.pure(shippingAddress)
     }
 
     @Override
     Promise<Address> validatePiAddress(Address piAddress) {
-        AvalaraAddress address = getAvalaraAddress(piAddress)
-        LOGGER.info('name=Validate_Address_Request, request={}', address.toString())
-        return validateAddress(address).then { ValidateAddressResponse response ->
-            return Promise.pure(updatePiAddress(response, piAddress))
+        if (SUPPORT_COUNTRY_LIST.contains(piAddress.country)) {
+            AvalaraAddress address = getAvalaraAddress(piAddress)
+            LOGGER.info('name=Validate_Address_Request, request={}', address.toString())
+            return validateAddress(address).then { ValidateAddressResponse response ->
+                return Promise.pure(updatePiAddress(response, piAddress))
+            }
         }
+
+        return Promise.pure(piAddress)
     }
 
     ShippingAddress updateShippingAddress(ValidateAddressResponse response, ShippingAddress shippingAddress) {
@@ -197,7 +206,8 @@ class AvalaraFacadeImpl implements TaxFacade {
     Promise<ValidateAddressResponse> validateAddress(AvalaraAddress address) {
         String validateAddressUrl = configuration.baseUrl + 'address/validate'
         def requestBuilder = buildRequest(validateAddressUrl, address)
-        return Promise.wrap(asGuavaFuture(requestBuilder.execute())).recover {
+        return Promise.wrap(asGuavaFuture(requestBuilder.execute())).recover { Throwable throwable ->
+            LOGGER.error('Error_Build_Avalara_Request.', throwable)
             throw AppErrors.INSTANCE.addressValidationError('Fail to build request.').exception()
         }.then { Response response ->
             ValidateAddressResponse validateAddressResponse
@@ -205,6 +215,7 @@ class AvalaraFacadeImpl implements TaxFacade {
                 validateAddressResponse = new ObjectMapper().readValue(response.responseBody,
                         ValidateAddressResponse)
             } catch (IOException ex) {
+                LOGGER.error('name=Error_Read_Avalara_Response.', ex)
                 throw AppErrors.INSTANCE.addressValidationError('Fail to read response.').exception()
             }
             if (response.statusCode / STATUS_CODE_MASK == SUCCESSFUL_STATUS_CODE_PREFIX) {
@@ -213,10 +224,15 @@ class AvalaraFacadeImpl implements TaxFacade {
 
             LOGGER.error('name=Error_Address_Validation.')
             LOGGER.info('name=Address_Validation_Response_Status_Code, statusCode={}', response.statusCode)
+            String detail = ''
             validateAddressResponse.messages.each { ResponseMessage message ->
                 LOGGER.info('name=Address_Validation_Response_Error_Message, message={}', message.details)
+                if (message.refersTo != null) {
+                    detail += 'Field: ' + message.refersTo + '. Detail: '
+                }
+                detail += message.details
             }
-            throw AppErrors.INSTANCE.addressValidationError('Fail to pass address validation.').exception()
+            throw AppErrors.INSTANCE.addressValidationError(detail).exception()
         }
     }
 
@@ -224,19 +240,20 @@ class AvalaraFacadeImpl implements TaxFacade {
         String getTaxUrl = configuration.baseUrl + 'tax/get'
         String content = transcoder.encode(request)
         def requestBuilder = buildRequest(getTaxUrl, content)
-        return Promise.wrap(asGuavaFuture(requestBuilder.execute())).recover {
+        return Promise.wrap(asGuavaFuture(requestBuilder.execute())).recover { Throwable throwable ->
+            LOGGER.error('Error_Build_Avalara_Request.', throwable)
             return Promise.pure(null)
         }.then { Response response ->
             if (response.statusCode / STATUS_CODE_MASK == SUCCESSFUL_STATUS_CODE_PREFIX) {
                 try {
-                    // use new ObjectMapper instead of transcoder here since the DocDate is not ISO8601DateFormat
                     return Promise.pure(new ObjectMapper().readValue(response.responseBody, GetTaxResponse))
                 } catch (IOException ex) {
+                    LOGGER.error('name=Error_Read_Avalara_Response.', ex)
                     return Promise.pure(null)
                 }
             }
             else {
-                LOGGER.error('name=Error_Tax_Calculation.')
+                LOGGER.error('name=Error_Tax_Calculation. statusCode: ' + response.statusCode)
                 return Promise.pure(null)
             }
         }

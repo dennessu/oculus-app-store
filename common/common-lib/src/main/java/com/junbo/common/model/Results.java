@@ -9,6 +9,7 @@ package com.junbo.common.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.List;
 
@@ -20,11 +21,15 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Results<T> {
 
+    @ApiModelProperty(value = "The link to the current result set", position = 1, required = true)
     @JsonProperty("self")
     private Link self;
 
+    @ApiModelProperty(value = "The result set items", position = 2, required = true)
+    @JsonProperty("results")
     private List<T> items;
 
+    @ApiModelProperty(value = "The link to next set of results if there are more items", position = 3)
     @JsonProperty("next")
     private Link next;
 

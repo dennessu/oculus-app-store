@@ -87,17 +87,18 @@ class ServiceFacade {
                 encryptedCvmCode = '111'
                 it
             }
+
             address = new Address().with {
-                addressLine1 = 'ThirdStreetFerriday'
-                city = 'LA'
+                addressLine1 = '19800 MacArthur Blvd'
+                city = 'Irvine'
                 state = 'CA'
                 country = 'US'
-                postalCode = '12345'
+                postalCode = '92612'
                 it
             }
             phone = new Phone().with {
                 type = 'Home'
-                number = '12345678'
+                number = '16018984661'
                 it
             }
             it
@@ -128,10 +129,10 @@ class ServiceFacade {
     ShippingAddress postShippingAddress(UserId userId) {
         def shippingAddress = new ShippingAddress(
                 userId: userId,
-                street: 'Ridgewood Rd',
-                city: 'Ridgeland',
-                state: 'MS',
-                postalCode: '39157',
+                street: '19800 MacArthur Blvd',
+                city: 'Irvine',
+                state: 'CA',
+                postalCode: '92612',
                 country: 'US',
                 firstName: 'Mike',
                 lastName: 'Test',

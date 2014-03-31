@@ -1,7 +1,10 @@
 
 var PaymentControllers = {
-    IndexController: Ember.ArrayController.extend({
+    IndexController: Ember.ObjectController.extend({
         errMessage: null,
+        content:{
+            paymentList: []
+        },
         paymentId: "",
         actions: {
             CreateNew: function(){

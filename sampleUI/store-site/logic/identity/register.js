@@ -13,7 +13,7 @@ module.exports = function(data, cb){
     var userModel = new IdentityModels.UserModel();
     userModel.userName = body.username;
     userModel.password = body.password;
-    userModel.passwordStrength = pi.GetIntensity(body.password);
+    //userModel.passwordStrength = pi.GetIntensity(body.password);
     userModel.status = "ACTIVE";
 
     var profileModel = new IdentityModels.ProfileModel();
@@ -51,7 +51,7 @@ module.exports = function(data, cb){
                         redirectModel.target = DomainModels.RedirectTargetsEnum.Self;
 
                         if (typeof(redirectUrl) != "undefined" && redirectUrl != null && redirectUrl != "") {
-                            redirectModel.url = "/back";
+                            redirectModel.url = redirectUrl;
                         } else {
                             redirectModel.url = "/my";
                         }

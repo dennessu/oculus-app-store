@@ -9,7 +9,7 @@ var Identity = function(host, port){
 Identity.prototype.PostAuthenticate = function(dataObj, cb){
   /*
    Method: POST
-   URL: /rest/authenticate
+   URL: /rest/authorize
    Data Type: QueryString
    Content-Type: 'application/x-www-form-urlencoded'
    Request: fs={fs}&username={username}&password={password}
@@ -19,7 +19,7 @@ Identity.prototype.PostAuthenticate = function(dataObj, cb){
   var options = {
     host: this.Host,
     port: this.Port,
-    path: "/rest/authenticate",
+    path: "/rest/oauth2/authorize",
     method: 'POST',
     headers:{
       'Content-Type': 'application/x-www-form-urlencoded'
@@ -49,7 +49,7 @@ Identity.prototype.GetTokenInfo = function(accessToken, dataObj, cb){
     var options = {
         host: this.Host,
         port: this.Port,
-        path: "/rest/tokeninfo?access_token=" + accessToken,
+        path: "/rest/oauth2/tokeninfo?access_token=" + accessToken,
         method: 'GET',
         headers:{
             'Content-Type': 'application/json'
@@ -87,7 +87,7 @@ Identity.prototype.PostTokenInfoByCode = function(dataObj, cb){
     var options = {
         host: this.Host,
         port: this.Port,
-        path: "/rest/token",
+        path: "/rest/oauth2/token",
         method: 'POST',
         headers:{
             'Content-Type': 'application/x-www-form-urlencoded'
@@ -96,6 +96,31 @@ Identity.prototype.PostTokenInfoByCode = function(dataObj, cb){
 
     var client = new RestClient();
     client.Request(options, dataObj, cb);
+}
+
+Identity.prototype.GetEndSession = function(cb){
+    /*
+     Only Client
+     Method: GET
+     URL: /rest/tokeninfo?access_token={access_token}
+     Data Type: QueryString
+     Content-Type: 'application/json'
+     Request: null
+     Response:
+     */
+
+    var options = {
+        host: this.Host,
+        port: this.Port,
+        path: "/rest/oauth2/end-session",
+        method: 'GET',
+        headers:{
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+    };
+
+    var client = new RestClient();
+    client.Request(options, null, cb);
 }
 
 Identity.prototype.PostCreateAccount = function(dataObj, cb){
@@ -136,6 +161,104 @@ Identity.prototype.PostCreateAccount = function(dataObj, cb){
 
   var client = new RestClient();
   client.Request(options, dataObj, cb);
+};
+
+Identity.prototype.GetUserById = function(userId, cb){
+    /*
+     Method: GET
+     URL: /rest/users/{userId}
+     Data Type: JSON
+     Content-Type: 'application/json'
+     Request:
+     Response:
+     {
+     "createdTime": "2014-02-28T07:41:01Z",
+     "resourceAge": 0,
+     "userName": "tom14@ea.com",
+     "status": "ACTIVE",
+     "self": {
+     "href": "https://xxx.xxx.xxx",
+     "id": "728917210477568936"
+     }
+     }
+     */
+
+    var options = {
+        host: this.Host,
+        port: this.Port,
+        path: "/rest/users/" + userId,
+        method: 'GET',
+        headers:{
+            'Content-Type': 'application/json'
+        }
+    };
+
+    var client = new RestClient();
+    client.Request(options, null, cb);
+}
+
+Identity.prototype.PutUser = function(userId, dataObj, cb){
+    /*
+     Method: PUT
+     URL: /rest/users/{userId}
+     Data Type: JSON
+     Content-Type: 'application/json'
+     Request:
+     {
+     "userName": "tom14@ea.com",
+     "password": "password",
+     "passwordStrength": "WEAK",
+     "status": "ACTIVE"
+     }
+     Response:
+     {
+     "createdTime": "2014-02-28T07:41:01Z",
+     "resourceAge": 0,
+     "userName": "tom14@ea.com",
+     "status": "ACTIVE",
+     "self": {
+     "href": "https://xxx.xxx.xxx",
+     "id": "728917210477568936"
+     }
+     }
+     */
+
+    var options = {
+        host: this.Host,
+        port: this.Port,
+        path: "/rest/users/" + userId,
+        method: 'PUT',
+        headers:{
+            'Content-Type': 'application/json'
+        }
+    };
+
+    var client = new RestClient();
+    client.Request(options, dataObj, cb);
+}
+
+Identity.prototype.PostRestPassword = function(userId, newPassword, cb){
+    /*
+     Method: POST
+     URL: /rest/users/{userId}/reset-password?newPassword=asdfasdf
+     Data Type: JSON
+     Content-Type: 'application/json'
+     Request:
+     Response:
+     */
+
+    var options = {
+        host: this.Host,
+        port: this.Port,
+        path: "/rest/users/" + userId + "/reset-password?newPassword=" + newPassword,
+        method: 'POST',
+        headers:{
+            'Content-Type': 'application/json'
+        }
+    };
+
+    var client = new RestClient();
+    client.Request(options, null, cb);
 }
 
 Identity.prototype.PostCreateProfiles = function(userId, dataObj, cb){
@@ -192,6 +315,30 @@ Identity.prototype.PostCreateProfiles = function(userId, dataObj, cb){
 
   var client = new RestClient();
   client.Request(options, dataObj, cb);
+}
+
+Identity.prototype.PutProfile = function(profileId, userId, dataObj, cb){
+    /*
+     Method: Pur
+     URL: /rest/users/{userId}/profiles
+     Data Type: JSON
+     Content-Type: 'application/json'
+     Request:
+     Response:
+     */
+
+    var options = {
+        host: this.Host,
+        port: this.Port,
+        path: "/rest/users/"+ userId +"/profiles/" + profileId,
+        method: 'PUT',
+        headers:{
+            'Content-Type': 'application/json'
+        }
+    };
+
+    var client = new RestClient();
+    client.Request(options, dataObj, cb);
 }
 
 Identity.prototype.GetPayinProfilesByUserId = function(userId, cb){
@@ -257,6 +404,50 @@ Identity.prototype.GetUser = function(userId, cb){
 
   var client = new RestClient();
   client.Request(options, null, cb);
+}
+
+Identity.prototype.GetOptIns = function(userId, cb){
+    /*
+     Method: GET
+     URL: /rest//users/{userId}/opt-ins
+     Data Type: JSON
+     Content-Type: 'application/json'
+     */
+
+    var options = {
+        host: this.Host,
+        port: this.Port,
+        path: "/rest/users/" + userId + "/opt-ins",
+        method: 'GET',
+        headers:{
+            'Content-Type': 'application/json'
+        }
+    };
+
+    var client = new RestClient();
+    client.Request(options, null, cb);
+}
+
+Identity.prototype.PostOptIns = function(userId, dataObj, cb){
+    /*
+     Method: GET
+     URL: /rest//users/{userId}/opt-ins
+     Data Type: JSON
+     Content-Type: 'application/json'
+     */
+
+    var options = {
+        host: this.Host,
+        port: this.Port,
+        path: "/rest/users/" + userId + "/opt-ins",
+        method: 'GET',
+        headers:{
+            'Content-Type': 'application/json'
+        }
+    };
+
+    var client = new RestClient();
+    client.Request(options, dataObj, cb);
 }
 
 module.exports = Identity;

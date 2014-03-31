@@ -30,4 +30,5 @@ class ClientEntity extends BaseEntity {
     TokenEndpointAuthMethod tokenEndpointAuthMethod
     String logoUri
     Set<String> contacts
+    Boolean needConsent
 }

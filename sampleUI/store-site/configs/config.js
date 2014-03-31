@@ -26,7 +26,6 @@ var Configs = {
         PaymentId: "payment_id",
         OrderId: "order_id",
 
-
         BeforeRoute: "before_route"
     },
     QueryStrings: {
@@ -76,7 +75,14 @@ var Configs = {
             Profile: "Account/Profile",
             EditProfile: "Account/EditProfile",
             History: "Account/History",
-            Payment: "Account/Payment"
+            Payment: "Account/Payment",
+            AddPayment: "Account/AddPayment",
+            Shipping: "Account/Shipping",
+            AddShipping: "Account/AddShipping",
+            Entitlements: "Account/Entitlements"
+        },
+        DevCenter: {
+            Index: "DevCenter"
         }
     },
 
@@ -92,7 +98,7 @@ var Configs = {
         IdTokenUserId: "userId",
         Username: "userName",
 
-        TokenInfoUserId: "user_id",
+        TokenInfoUser: "sub",
         ProfileFirstname: "firstName",
         ProfileLastname: "lastName"
     },
@@ -106,7 +112,7 @@ var Configs = {
             return Utils.Format("{1}/callback/register", Utils.GetCurrentDomain(req));
         },
         GetLoginUrl: function(req){
-            return Utils.Format("{1}/rest/authorize?client_id=client&response_type=code&redirect_uri={2}&scope=openid%20identity&nonce=123",
+            return Utils.Format("{1}/rest/oauth2/authorize?client_id=client&response_type=code&redirect_uri={2}&scope=openid%20identity&nonce=123",
                     process.AppConfig.OauthUri,
                     process.AppConfig.Urls.GetCallbackLoginUrl(req));
         },

@@ -26,6 +26,9 @@
             <div ng-if="metaDefinitions[key].controlType=='TEXT_INPUT'">
                 <input type="text" class="form-control" ng-model="item.properties[key]">
             </div>
+            <div ng-if="metaDefinitions[key].controlType=='URL_INPUT'">
+                <input type="url" class="form-control" ng-model="item.properties[key]">
+            </div>
             <div ng-if="metaDefinitions[key].controlType=='MULTI_SELECT'">
                 <label ng-repeat="allowedValue in metaDefinitions[key].allowedValues">
                     <input type="checkbox" checklist-model="item.properties[key]" checklist-value="allowedValue" class="chooseItem">{{ allowedValue }}

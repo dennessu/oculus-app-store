@@ -72,14 +72,15 @@ body header > nav{ line-height: 25px; color: #CCC; border-bottom: solid 1px #BCB
 .box1 .month.error, .box1 .day.error,.box1 .year.error{ display: inline-block;}
 .box1 .line1{ margin: 10px 0;}
 
-.alert{ padding: 15px 15px 10px 15px; min-width: 200px; width: 200px; border: solid 1px #CCC; background-color: #F7F7F7;}
+.alert{ padding: 15px 15px 10px 15px; min-width: 200px; width: 200px; border: solid 1px #CCC; background-color: #F7F7F7; box-shadow: 0 2px 20px rgba(0,0,0, .5); z-index: 9999;}
 .alert div{ margin-top: 30px; text-align: center;}
+.alert .error{margin: 0 0 10px 0; padding: 4px 0px 4px 2px; color: #f00;  border: solid 1px #C4AC09; background-color: #FCF8E3;}
 
-
+#ShadowLayer{ position: absolute; top: 0; left: 0; margin: 0 auto; padding: 0; width: 100%; height: 100%; visibility: visible; background-color: rgba(0,0,0,.5); z-index:9998; }
 .container{ margin: 0 auto; padding-top: 30px; background-color: #FFF;}
 .container > .categories{ float: left; width: 168px;}
 .container > .product_list{}
-.container .ember-animated-container{ margin: 0 auto; width: auto;}
+.container .ember-animated-container{ margin: 0 auto; width: auto; height: auto;}
 
 .categories > ul{ margin: 15px 0 0 0; padding-left: 0px;}
 .categories > ul >  li{ display: block; padding-left: 10px; line-height: 22px;}
@@ -162,20 +163,66 @@ body header > nav{ line-height: 25px; color: #CCC; border-bottom: solid 1px #BCB
 .create_payment .cvv dd input{ width: 60px;}
 
 /* account */
-.account .sidebar{ float: left;}
-.account .content{ float: right; width: 650px; }
+.account .modules{ margin: 0; padding: 0; width: 690px;}
+
+.account .sidebar{ float: left; width: 200px;}
+.account .content{ float: right; width: 690px; }
 .account .settings dl dt{ position: relative;}
-.account .settings dl dt .btn-primary{ position: absolute; right: 0px; min-width: 50px; width: 50px;}
+.account .settings dl dt .btn-primary{ position: absolute; right: 0px; min-width: 10px; width: auto;}
 .account .settings dl dd{ width: 200px;}
 
-.account .payment .list{ padding: 10px; border: solid 1px #CCC; background-color: #F2F2F2;}
-.account .payment .list dl{ margin: 0; height: 24px; line-height: 24px;  }
-.account .payment .list dl dd{ margin: 0; float: left;  }
-.account .payment .list dl dd:first-child{ width: 60px; }
+.account .payment, .account .shipping{ position: relative;}
+.account .payment .list, .account .shipping .list{ padding: 10px; border: solid 1px #CCC; }
+.account .payment .list dl,
+.account .shipping .list dl{ margin: 5px 0 0 0; padding-bottom: 5px; height: 24px; line-height: 24px;  border-bottom: solid 1px #ddd; }
+.account .payment .list dl:last-child,
+.account .shipping .list dl:last-child{ border-bottom: none;}
+.account .payment .list dl dd, .account .shipping .list dl dd{ margin: 0; float: left;  }
+.account .payment .list dl dd:first-child{ width: 100px; }
 .account .payment .list dl dd:first-child label{ display: inline-block; padding: 0 5px; line-height: 18px; background-color: #FFF; color: #999; border: solid 1px #CCC; }
-.account .payment .list dl dd.number{ width: 120px; }
+.account .payment .list dl dd.number{ width: 150px; }
 .account .payment .list dl dd.exp{ width: 100px; }
-.account .payment .list dl dd:last-child{ float: right;  }
+.account .payment .list dl dd:last-child,
+.account .shipping .list dl dd:last-child{ float: right;  }
+.account .payment .alert,.account .shipping .alert{ display: none; position: absolute; top: 40px; left: 200px;}
+.account .shipping .list dl{min-height: 80px; line-height: 20px;}
+.account .shipping .list dl dt{ float: left; width: 200px;}
+
+.account .history{  min-height: 300px; }
+.account .history > h2{ margin: 0; padding-bottom: 10px; }
+.account .history > .item{ margin-bottom: 10px; border: solid 1px #ddd;}
+.account .history > .item .header{ margin: 0; padding: 0 10px; height: 35px; line-height: 35px; background-color: #F2F2F2; cursor: pointer; }
+.account .history > .item .header dt{ float: left; width: 32%; font-weight: bold;}
+.account .history > .item .header dt:last-child{ float: right; width: 20%; text-align: right;}
+.account .history > .item .detail{ padding: 10px; border-top: solid 1px #CCC; }
+.account .history > .item .detail > dl{ height: 25px; line-height: 25px; border-bottom: solid 1px #ddd;}
+.account .history > .item .detail > dl dt{ float: left; width: 50%;}
+.account .history > .item .detail > dl dd{float: left; margin: 0; width: 15%;}
+.account .history > .item .detail > dl dd:last-child{ float: right; width: 15%; text-align: right; font-weight: bold;}
+.account .history > .item .detail > dl dt .download{display: inline-block; position: relative; padding: 0 4px; line-height: 16px; color: #FFF; background-color: #FF6600; cursor: pointer; }
+.account .history > .item .detail > dl dt .download ul{display: none;}
+.account .history > .item .detail > dl dt .download:hover ul{display:block; margin: 0; padding: 0; position: absolute; top: 0px; left: 0px; width: 200px; background-color: #f7f7f7; border: solid 1px #CCC; z-index: 1000; box-shadow: 0 0 2px rgba(0,0,0, .2); }
+.account .history > .item .detail > dl dt .download:hover ul li{display:block; padding: 0 0 0 10px; height: 25px; line-height: 25px; list-style: none; border-bottom: solid 1px #CCC; }
+.account .history > .item .detail .money{ float: right; width: 270px;}
+.account .history > .item .detail .money dl{ margin: 0; line-height: 22px; height: 22px;}
+.account .history > .item .detail .money dt{float: left; width: 150px; text-align: right;}
+.account .history > .item .detail .money dd{float: right; margin: 0; width: 120px; text-align: right;}
+.account .history > .item .detail .money dl.total{ margin-top: 3px; padding-top: 3px; line-height: 30px; font-size: 18px; font-weight: bold;  }
+
+.account .entitlements{ position: relative;}
+.account .entitlements .list{ padding: 10px; border: solid 1px #CCC; }
+.account .entitlements .list dl{ margin: 5px 0 0 0; padding-bottom: 5px; height: 24px; line-height: 24px;  border-bottom: solid 1px #ddd; }
+.account .entitlements .list dl:last-child{ border-bottom: none;}
+.account .entitlements .list dl{min-height: 60px; line-height: 20px;}
+.account .entitlements .list dl dt{ }
+
 
 /* modules */
 .modules{ padding-top: 30px;}
+
+.dev_center .sidebar{ float: left; width: 200px;}
+.dev_center .content{ float: right; width: 690px; position: relative; }
+
+.dev_center .alert{  position: absolute; top: 0px; left: 10px; width: 350px; min-height: 150px;}
+.dev_center .alert p{ min-height: 50px;}
+.dev_center .alert div{ text-align: right;}
