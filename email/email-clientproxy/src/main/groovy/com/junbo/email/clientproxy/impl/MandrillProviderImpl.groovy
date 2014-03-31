@@ -2,6 +2,9 @@ package com.junbo.email.clientproxy.impl
 
 import static com.ning.http.client.extra.ListenableFutureAdapter.asGuavaFuture
 
+import com.junbo.common.id.Id
+import com.junbo.common.util.IdFormatter
+
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -12,7 +15,6 @@ import com.junbo.email.clientproxy.EmailProvider
 import com.junbo.email.clientproxy.impl.mandrill.MandrillConfiguration
 import com.junbo.email.clientproxy.impl.mandrill.MandrillRequest
 import com.junbo.email.clientproxy.impl.mandrill.MandrillResponse
-
 import com.junbo.email.clientproxy.impl.mandrill.Message
 import com.junbo.email.clientproxy.impl.mandrill.SendStatus
 import com.junbo.email.clientproxy.impl.mandrill.To
@@ -52,6 +54,7 @@ class MandrillProviderImpl implements EmailProvider {
     Promise<Email> sendEmail(Email email) {
         def requestBuilder = asyncHttpClient.preparePost(configuration.url)
         requestBuilder.addHeader(CONTENT_TYPE, APPLICATION_JSON)
+        encoder(email)
         def request = populateRequest(email)
         requestBuilder.setBody(toJson(request))
         Promise<Response> future = Promise.wrap(asGuavaFuture(requestBuilder.execute()))
@@ -100,7 +103,7 @@ class MandrillProviderImpl implements EmailProvider {
             }
         }
         else {
-            LOGGER.error('Failed to send email:{}', response.responseBody)
+            LOGGER.error('Failed to send email:' + response.responseBody)
             returnEmail.status = EmailStatus.FAILED.toString()
             returnEmail.statusReason = 'error'
         }
@@ -141,4 +144,35 @@ class MandrillProviderImpl implements EmailProvider {
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL)
         mapper.writeValueAsString(object)
     }
+
+    static void encoder(Email email) {
+        if (email.properties != null) {
+            def properties = [:]
+            email.properties.each {
+                def value = it.value
+                def split = it.key.split(':')
+                def key = split.first()
+                def type = split.length == 2 ? split.last() : ''
+                if (!type.isEmpty()) {
+                    def canonicalName = Id.package.name + '.' + type
+                    try {
+                        Class c = getClass().classLoader.loadClass(canonicalName)
+                        if (c.superclass ==  Id) {
+                            def id = c.newInstance(Long.parseLong(it.value)) as Id
+                            value = IdFormatter.encodeId(id)
+                        }
+                    }
+                    catch (NumberFormatException ex) {
+                        LOGGER.error('Failed to parse:' + it.value, ex)
+                    }
+                    catch (ClassNotFoundException e) {
+                        LOGGER.error('Failed to reflect:' + canonicalName, e)
+                    }
+                }
+                properties.put(key, value)
+            }
+            email.properties = properties
+        }
+    }
 }
+

@@ -27,6 +27,8 @@ public class UserSecurityQuestion extends ResourceMeta implements Identifiable<U
     private String answer;
 
     // not read and write possible
+    private Boolean active;
+
     @JsonIgnore
     private String answerSalt;
     @JsonIgnore
@@ -40,6 +42,8 @@ public class UserSecurityQuestion extends ResourceMeta implements Identifiable<U
 
     public void setId(UserSecurityQuestionId id) {
         this.id = id;
+        support.setPropertyAssigned("id");
+        support.setPropertyAssigned("self");
     }
 
     public SecurityQuestionId getSecurityQuestionId() {
@@ -48,14 +52,26 @@ public class UserSecurityQuestion extends ResourceMeta implements Identifiable<U
 
     public void setSecurityQuestionId(SecurityQuestionId securityQuestionId) {
         this.securityQuestionId = securityQuestionId;
+        support.setPropertyAssigned("securityQuestionId");
+        support.setPropertyAssigned("securityQuestion");
     }
 
     public String getAnswer() {
         return answer;
     }
 
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
+        support.setPropertyAssigned("active");
+    }
+
     public void setAnswer(String answer) {
         this.answer = answer;
+        support.setPropertyAssigned("answer");
     }
 
     public String getAnswerSalt() {
@@ -64,6 +80,7 @@ public class UserSecurityQuestion extends ResourceMeta implements Identifiable<U
 
     public void setAnswerSalt(String answerSalt) {
         this.answerSalt = answerSalt;
+        support.setPropertyAssigned("answerSalt");
     }
 
     public String getAnswerHash() {
@@ -72,6 +89,7 @@ public class UserSecurityQuestion extends ResourceMeta implements Identifiable<U
 
     public void setAnswerHash(String answerHash) {
         this.answerHash = answerHash;
+        support.setPropertyAssigned("answerHash");
     }
 
     public UserId getUserId() {
@@ -80,5 +98,6 @@ public class UserSecurityQuestion extends ResourceMeta implements Identifiable<U
 
     public void setUserId(UserId userId) {
         this.userId = userId;
+        support.setPropertyAssigned("userId");
     }
 }

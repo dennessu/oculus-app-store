@@ -430,7 +430,7 @@ Identity.prototype.GetOptIns = function(userId, cb){
 
 Identity.prototype.PostOptIns = function(userId, dataObj, cb){
     /*
-     Method: GET
+     Method: POST
      URL: /rest//users/{userId}/opt-ins
      Data Type: JSON
      Content-Type: 'application/json'
@@ -440,7 +440,7 @@ Identity.prototype.PostOptIns = function(userId, dataObj, cb){
         host: this.Host,
         port: this.Port,
         path: "/rest/users/" + userId + "/opt-ins",
-        method: 'GET',
+        method: 'POST',
         headers:{
             'Content-Type': 'application/json'
         }

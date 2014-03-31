@@ -179,7 +179,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userPIN.setCreatedBy('lixia')
         userPIN.setUpdatedTime(new Date())
         userPIN.setUpdatedBy('lixia')
-        userPIN = userPinRepository.save(userPIN).wrapped().get()
+        userPIN = userPinRepository.create(userPIN).wrapped().get()
 
         UserPin newUserPin = userPinRepository.get(userPIN.getId()).wrapped().get()
         Assert.assertEquals(userPIN.getActive(), newUserPin.getActive())
@@ -396,22 +396,23 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userSecurityQuestion.setCreatedBy('lixia')
         userSecurityQuestion.setCreatedTime(new Date())
 
-        userSecurityQuestion = userSecurityQuestionRepository.save(userSecurityQuestion)
+        userSecurityQuestion = userSecurityQuestionRepository.create(userSecurityQuestion).wrapped().get()
 
-        UserSecurityQuestion newUserSecurityQuestion = userSecurityQuestionRepository.get(userSecurityQuestion.getId())
+        UserSecurityQuestion newUserSecurityQuestion =
+                userSecurityQuestionRepository.get(userSecurityQuestion.getId()).wrapped().get()
         Assert.assertEquals(userSecurityQuestion.getAnswerHash(), newUserSecurityQuestion.getAnswerHash())
 
         String value = UUID.randomUUID().toString()
         newUserSecurityQuestion.setAnswerSalt(value)
         userSecurityQuestionRepository.update(newUserSecurityQuestion)
 
-        newUserSecurityQuestion = userSecurityQuestionRepository.get(userSecurityQuestion.getId())
+        newUserSecurityQuestion = userSecurityQuestionRepository.get(userSecurityQuestion.getId()).wrapped().get()
         Assert.assertEquals(newUserSecurityQuestion.getAnswerSalt(), value)
 
         UserSecurityQuestionListOptions getOption = new UserSecurityQuestionListOptions()
         getOption.setUserId(new UserId(userId))
         getOption.setSecurityQuestionId(new SecurityQuestionId(123L))
-        List<UserSecurityQuestion> securityQuestions = userSecurityQuestionRepository.search(getOption)
+        List<UserSecurityQuestion> securityQuestions = userSecurityQuestionRepository.search(getOption).wrapped().get()
         assert securityQuestions.size() != 0
     }
 
@@ -452,22 +453,24 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         attempt.setSecurityQuestionId(new SecurityQuestionId(123L))
         attempt.setUserAgent(UUID.randomUUID().toString())
 
-        attempt = userSecurityQuestionAttemptRepository.save(attempt)
+        attempt = userSecurityQuestionAttemptRepository.create(attempt).wrapped().get()
 
-        UserSecurityQuestionAttempt newAttempt = userSecurityQuestionAttemptRepository.get(attempt.getId())
+        UserSecurityQuestionAttempt newAttempt =
+                userSecurityQuestionAttemptRepository.get(attempt.getId()).wrapped().get()
         Assert.assertEquals(attempt.getIpAddress(), newAttempt.getIpAddress())
 
         String value = UUID.randomUUID().toString()
         newAttempt.setIpAddress(value)
         userSecurityQuestionAttemptRepository.update(newAttempt)
 
-        newAttempt = userSecurityQuestionAttemptRepository.get(attempt.getId())
+        newAttempt = userSecurityQuestionAttemptRepository.get(attempt.getId()).wrapped().get()
         Assert.assertEquals(newAttempt.getIpAddress(), value)
 
         UserSecurityQuestionAttemptListOptions option = new UserSecurityQuestionAttemptListOptions()
         option.setUserId(new UserId(userId))
         option.setSecurityQuestionId(new SecurityQuestionId(123L))
-        List<UserSecurityQuestionAttempt> attempts = userSecurityQuestionAttemptRepository.search(option)
+        List<UserSecurityQuestionAttempt> attempts =
+                userSecurityQuestionAttemptRepository.search(option).wrapped().get()
         assert attempts.size() != 0
     }
 

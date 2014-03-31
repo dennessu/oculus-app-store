@@ -129,21 +129,25 @@ class SecurityQuestionResourceImpl implements SecurityQuestionResource {
     }
 
     @Override
-    Promise<List<SecurityQuestion>> list(@BeanParam SecurityQuestionListOptions listOptions) {
+    Promise<Results<SecurityQuestion>> list(@BeanParam SecurityQuestionListOptions listOptions) {
 
         securityQuestionValidator.validateForSearch(listOptions).then {
-            def result = new Results<SecurityQuestion>(items: [])
-            securityQuestionRepository.search(listOptions).then { SecurityQuestion newSecurityQuestion ->
-                if (newSecurityQuestion != null) {
-                    newSecurityQuestion = securityQuestionFilter.filterForGet(newSecurityQuestion,
-                            listOptions.properties?.split(',') as List<String>)
+            securityQuestionRepository.search(listOptions).then { List<SecurityQuestion> securityQuestionList ->
+                def result = new Results<SecurityQuestion>(items: [])
+
+                securityQuestionList.each { SecurityQuestion newSecurityQuestion ->
+                    if (newSecurityQuestion != null) {
+                        newSecurityQuestion = securityQuestionFilter.filterForGet(newSecurityQuestion,
+                                listOptions.properties?.split(',') as List<String>)
+                    }
+
+                    if (newSecurityQuestion != null) {
+                        result.items.add(newSecurityQuestion)
+                    }
                 }
 
-                if (newSecurityQuestion != null) {
-                    result.items.add(newSecurityQuestion)
-                }
+                return Promise.pure(result)
             }
-            return Promise.pure(result)
         }
     }
 }

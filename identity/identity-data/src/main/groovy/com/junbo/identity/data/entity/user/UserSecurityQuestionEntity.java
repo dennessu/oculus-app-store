@@ -30,6 +30,9 @@ public class UserSecurityQuestionEntity extends ResourceMetaEntity {
     @Column(name = "security_question_id")
     private Long securityQuestionId;
 
+    @Column(name = "is_active")
+    private Boolean active;
+
     @Column(name = "answer_salt")
     private String answerSalt;
 
@@ -58,6 +61,14 @@ public class UserSecurityQuestionEntity extends ResourceMetaEntity {
 
     public void setSecurityQuestionId(Long securityQuestionId) {
         this.securityQuestionId = securityQuestionId;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 
     public String getAnswerSalt() {

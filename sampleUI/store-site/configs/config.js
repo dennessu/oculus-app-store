@@ -39,6 +39,19 @@ var Configs = {
     SettingTypeEnum:{
         Cookie: 'cookie'
     },
+    UrlConstants: {
+        LogoutUrl: "http://10.0.1.133:8081/rest/oauth2/end-session?post_logout_redirect_uri={1}&id_token_hint={2}",
+        CatalogManageAPPsUrl: "",
+        CatalogManageOffersUrl: ""
+    },
+    Runtime: {
+        SocketAddress: "",
+        LoginCallbackUrl: "{1}/callback/login",
+        RegisterCallbackUrl: "{1}/callback/register",
+        LogoutCallbackUrl: "{1}/callback/logout",
+        LoginUrl: "{1}/rest/oauth2/authorize?client_id=client&response_type=code&redirect_uri={2}&scope=openid%20identity&nonce=123",
+        RegisterUrl: "{1}/identity?redirect_url={2}#/register"
+    },
     Templates: {
         Identity: {
             Login: "Login",
@@ -86,6 +99,7 @@ var Configs = {
         }
     },
 
+
     // only on server
     Google_Captcha_Hostname: "www.google.com",
     Google_Captcha_VerifyUrl: "/recaptcha/api/verify",
@@ -102,24 +116,7 @@ var Configs = {
         ProfileFirstname: "firstName",
         ProfileLastname: "lastName"
     },
-    SaveQueryStringArray: ["cid", "event", "id_token", "access_token", "redirect_url"],
-
-    Urls:{
-        GetCallbackLoginUrl: function(req){
-            return Utils.Format("{1}/callback/login", Utils.GetCurrentDomain(req));
-        },
-        GetCallbackRegisterUrl: function(req){
-            return Utils.Format("{1}/callback/register", Utils.GetCurrentDomain(req));
-        },
-        GetLoginUrl: function(req){
-            return Utils.Format("{1}/rest/oauth2/authorize?client_id=client&response_type=code&redirect_uri={2}&scope=openid%20identity&nonce=123",
-                    process.AppConfig.OauthUri,
-                    process.AppConfig.Urls.GetCallbackLoginUrl(req));
-        },
-        GetRegisterUrl: function(req){
-            return Utils.Format("{1}/identity?redirect_url={2}#/register", process.AppConfig.RegisterUri, process.AppConfig.Urls.GetCallbackRegisterUrl(req));
-        }
-    }
+    SaveQueryStringArray: ["cid", "event", "id_token", "access_token", "redirect_url"]
 };
 
 module.exports = Configs;
