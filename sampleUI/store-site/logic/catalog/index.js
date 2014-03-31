@@ -65,9 +65,9 @@ exports.GetDownloadLinksByOfferId = function(data, callback){
       dataProvider.GetOfferById(offerId, null, function(result){
           if(result.StatusCode == 200){
               var offer = JSON.parse(result.Data);
-              if(offer["items"] != undefined && offer["items"].length > 0){
-                  itemsCount = offer.items.length;
-                  offer.items.forEach(function(item){
+              if(offer["results"] != undefined && offer["results"].length > 0){
+                  itemsCount = offer.results.length;
+                  offer.results.forEach(function(item){
                       dataProvider.GetItemById(item.itemId.id, function(itemResult){
                           if(itemResult.StatusCode == 200){
                               var itemObj = JSON.parse(itemResult.Data);

@@ -9,14 +9,13 @@ package com.junbo.token.db.repository;
 import com.junbo.oom.core.MappingContext;
 import com.junbo.token.common.TokenUtil;
 import com.junbo.token.db.dao.*;
-import com.junbo.token.db.entity.TokenItemEntity;
-import com.junbo.token.db.entity.TokenOrderEntity;
-import com.junbo.token.db.entity.TokenSetEntity;
-import com.junbo.token.db.entity.TokenSetOfferEntity;
+import com.junbo.token.db.entity.*;
 import com.junbo.token.db.mapper.TokenMapper;
+import com.junbo.token.spec.enums.ItemStatus;
 import com.junbo.token.spec.enums.ProductType;
 import com.junbo.token.spec.internal.TokenSet;
 import com.junbo.token.spec.internal.TokenOrder;
+import com.junbo.token.spec.model.TokenConsumption;
 import com.junbo.token.spec.model.TokenItem;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -83,6 +82,39 @@ public class TokenRepository {
             Long itemEntityId = tokenItemDao.save(itemEntity);
         }
         return items;
+    }
+
+    public TokenItem getTokenItem(Long hashValue){
+        TokenItem item = tokenMapper.toTokenItem(tokenItemDao.get(hashValue), new MappingContext());
+        if(item == null){
+            return null;
+        }
+        item.setTokenConsumptions(getTokenConsumption(hashValue));
+        return item;
+    }
+
+    public TokenConsumption addConsumption(TokenConsumption consumption){
+        TokenConsumptionEntity entity = tokenMapper.toTokenConsumptionEntity(
+                consumption, new MappingContext());
+        Long consumptionId = tokenConsumptionDao.save(entity);
+        consumption.setId(consumptionId);
+        return consumption;
+    }
+
+    public List<TokenConsumption> getTokenConsumption(Long hashValue){
+        List<TokenConsumption> consumptions = new ArrayList<TokenConsumption>();
+        for(TokenConsumptionEntity entity : tokenConsumptionDao.getByTokenHashValue(hashValue)){
+            if(entity != null){
+                consumptions.add(tokenMapper.toTokenConsumption(entity, new MappingContext()));
+            }
+        }
+        return consumptions;
+    }
+
+    public void updateTokenStatus(long hashValue, ItemStatus status){
+        TokenItemEntity entity = tokenItemDao.get(hashValue);
+        entity.setStatus(status);
+        tokenItemDao.update(entity);
     }
 
 }

@@ -17,12 +17,12 @@ import static org.testng.AssertJUnit.*;
  */
 public class postUser {
 
-    @BeforeTest
+    @BeforeMethod
     public void setup() {
         HttpclientHelper.CreateHttpClient();
     }
 
-    @AfterTest
+    @AfterMethod
     public void dispose() throws Exception {
         HttpclientHelper.CloseHttpClient();
     }

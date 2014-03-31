@@ -61,9 +61,9 @@ Utils.FillObject = function(original, target, type){
 };
 
 // {1} is {2}
-Utils.Format = function(str, args) {
-    var result = str;
+Utils.Format = function() {
     if (arguments.length > 0) {
+        var result = arguments[0];
         if (arguments.length == 1 && typeof (args) == "object") {
             for (var key in args) {
                 if(args[key]!=undefined){
@@ -80,8 +80,9 @@ Utils.Format = function(str, args) {
                 }
             }
         }
+        return result;
     }
-    return result;
+    return null;
 };
 
 Utils.DateFormat = function(date, fmt) { //author: meizz

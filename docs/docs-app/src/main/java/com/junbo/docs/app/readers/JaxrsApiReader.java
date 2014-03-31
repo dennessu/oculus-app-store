@@ -7,10 +7,9 @@
 package com.junbo.docs.app.readers;
 
 import com.junbo.common.id.Id;
-import com.junbo.common.model.Results;
-import com.junbo.docs.app.resultlists.ResultListUtils;
 import com.junbo.langur.core.promise.Promise;
 import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.core.util.ClassWrapper;
 import com.wordnik.swagger.model.Operation;
 import org.glassfish.hk2.utilities.reflection.ReflectionHelper;
 
@@ -25,26 +24,13 @@ import java.lang.reflect.Type;
 public class JaxrsApiReader extends com.wordnik.swagger.jaxrs.reader.DefaultJaxrsApiReader {
     @Override
     public Operation processOperation(Operation operation, Method method, ApiOperation apiOperation) {
-        String responseClass = operation.responseClass();
-
         Type actualType = getActualType(method.getGenericReturnType());
-
         if (actualType != method.getGenericReturnType()) {
-            // the type is replaced by something else, re-generate the Operation
-            if (actualType instanceof Class) {
-                responseClass = ((Class)actualType).getName();
-            } else if (actualType instanceof ParameterizedType) {
-                ParameterizedType parameterizedType = (ParameterizedType)actualType;
-                int lastTypeIndex = parameterizedType.getActualTypeArguments().length - 1;
-                responseClass = String.format("%s[%s]",
-                        "List",
-                        ((Class) parameterizedType.getActualTypeArguments()[lastTypeIndex]).getName());
-            }
             return new Operation(
                     operation.method(),
                     operation.summary(),
                     operation.notes(),
-                    responseClass,
+                    ClassWrapper.apply(actualType).getName(),
                     operation.nickname(),
                     operation.position(),
                     operation.produces(),
@@ -74,15 +60,7 @@ public class JaxrsApiReader extends com.wordnik.swagger.jaxrs.reader.DefaultJaxr
             Type actualType = parameterizedType.getActualTypeArguments()[0];
 
             return getActualType(actualType);
-        } else if (clazz.equals(Results.class)) {
-            ParameterizedType parameterizedType = (ParameterizedType)wrapperType;
-            Type actualType = ResultListUtils.getClass(parameterizedType);
-            if (actualType == null) {
-                throw new RuntimeException("Unhandled results type: " + wrapperType);
-            }
-            return getActualType(actualType);
         } else if (clazz.equals(Response.class)) {
-
             return void.class;
         } else {
             return wrapperType;

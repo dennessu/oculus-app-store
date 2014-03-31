@@ -54,7 +54,9 @@ var StoreRoutes = {
         },
         actions: {
             logout: function() {
-                $.get(AppConfig.LogoutAjaxUrl);
+                var logoutUrl = Utils.Format(AppConfig.UrlConstants.LogoutUrl, AppConfig.Runtime.SocketAddress, Utils.Cookies.Get(AppConfig.CookiesName.IdToken));
+                //$.get(logoutUrl);
+                location.href = logoutUrl;
                 App.AuthManager.reset();
             }
         }
@@ -83,6 +85,31 @@ var StoreRoutes = {
         model: function(){
             return this.store.findAll("CartItem");
         }
+        /*
+        setupController: function(controller, model){
+            var provider = new CartProvider();
+            provider.Get(Utils.GenerateRequestModel(null), function(result){
+                if(result.data.status == 200){
+                    var cartObj = JSON.parse(result.data.data);
+                    var cartItems = new Array();
+
+                    for(var i = 0; i < cartObj.orderItems.length; ++i){
+                        var item = cartObj.orderItems[i];
+                        cartItems.push({
+                            id: i,
+                            product_id: item.offer.id,
+                            qty: item.quantity,
+                            selected: item.selected
+                        });
+                    }
+
+                    controller.set("content.cartItems", cartItems);
+                }else{
+
+                }
+            });
+        }
+        */
     }),
 
     OrderSummaryRoute: Ember.Route.extend({
@@ -108,7 +135,7 @@ var StoreRoutes = {
                     var shippingMethod = "None";
                     for(var i = 0; i < AppConfig.ShippingMethods.length; ++i){
                         var item = AppConfig.ShippingMethods[i];
-                        if(item.value == order.shippingMethodId){
+                        if(item.value == order.shippingMethodId.id){
                             shippingMethod = item.name;
                             break;
                         }
@@ -117,7 +144,7 @@ var StoreRoutes = {
 
                     // set shipping info
                     var billingProvider = new BillingProvider();
-                    billingProvider.Get(Utils.GenerateRequestModel({shippingId: order.shippingAddressId}), function(resultData){
+                    billingProvider.Get(Utils.GenerateRequestModel({shippingId: order.shippingAddressId.id}), function(resultData){
                         if(resultData.data.status == 200){
                             controller.set("content.shippingAddress", JSON.parse(resultData.data.data));
                         }else{

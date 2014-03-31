@@ -8,6 +8,7 @@ dependencies {
     compile (libraries.spring_context)
     compile (libraries.guava)
     compile (libraries.asyncclient)
+    compile (libraries.common_lib)
 
     compile 'com.junbo.identity:identity-spec:0.0.1-SNAPSHOT'
 

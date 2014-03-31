@@ -7,7 +7,7 @@
 package com.junbo.billing.db.dao.impl;
 
 import com.junbo.billing.db.BaseDaoImpl;
-import com.junbo.billing.db.balance.OrderBalanceLinkEntity;
+import com.junbo.billing.db.entity.OrderBalanceLinkEntity;
 import com.junbo.billing.db.dao.OrderBalanceLinkEntityDao;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;

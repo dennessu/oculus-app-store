@@ -1,6 +1,6 @@
 
 var CartProvider = function(){
-    this._Provider = new DataProvider(AppConfig.API.Cart.Config, AppConfig.SocketAddress);
+    this._Provider = new DataProvider(AppConfig.API.Cart.Config, AppConfig.Runtime.SocketAddress);
     this._Namespace = AppConfig.API.Cart.Config.Namespace;
 
     for(var p in AppConfig.API.Cart){
