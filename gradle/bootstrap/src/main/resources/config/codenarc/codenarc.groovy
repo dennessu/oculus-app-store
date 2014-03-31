@@ -91,7 +91,7 @@ ruleset {
         // IfStatementCouldBeTernary
         InvertedIfElse
         LongLiteralWithLowerCaseL
-        ParameterReassignment
+        // ParameterReassignment
         TernaryCouldBeElvis
         VectorIsObsolete
 
@@ -118,7 +118,7 @@ ruleset {
         // rulesets/dry.xml
         DuplicateListLiteral
         DuplicateMapLiteral
-        DuplicateNumberLiteral
+        // DuplicateNumberLiteral
         // DuplicateStringLiteral
 
         // rulesets/enhanced.xml
@@ -144,7 +144,7 @@ ruleset {
         ThrowError
         ThrowException
         ThrowNullPointerException
-        ThrowRuntimeException
+        // ThrowRuntimeException
         ThrowThrowable
 
         // rulesets/formatting.xml
@@ -311,9 +311,9 @@ ruleset {
         // AbcMetric   // Requires the GMetrics jar
         ClassSize
         CrapMetric   // Requires the GMetrics jar and a Cobertura coverage file
-        CyclomaticComplexity   // Requires the GMetrics jar
+        // CyclomaticComplexity   // Requires the GMetrics jar
         // MethodCount
-        MethodSize
+        // MethodSize
         NestedBlockDepth
 
         // rulesets/unnecessary.xml

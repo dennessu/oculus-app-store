@@ -38,7 +38,9 @@
         </property>
     </bean>
 
-    <bean id="shardIdGlobalCounterDAO" class="com.junbo.sharding.id.dao.impl.IdGlobalCounterDAOImpl" />
+    <bean id="shardIdGlobalCounterDAO" class="com.junbo.sharding.id.dao.impl.IdGlobalCounterDAOImpl">
+        <property name="sessionFactory" ref="shardingSessionFactory" />
+    </bean>
 
     <!-- Id generate -->
     <!-- In id generator, we will have three implementation methods: -->
@@ -108,7 +110,10 @@
         <constructor-arg ref="globalCounterInDB" />
     </bean>
 
-    <bean id="globalCounterInDB" class="com.junbo.sharding.id.oculus.OculusGlobalCounterInDBImpl" />
+    <bean id="globalCounterInDB" class="com.junbo.sharding.id.oculus.OculusGlobalCounterInDBImpl">
+        <property name="shardIdGlobalCounterDAO" ref="shardIdGlobalCounterDAO" />
+    </bean>
+
     <!-- 2: Id generator proposed by oculus rift (Using 48 bits) -->
     <bean id="oculus48IdSchema" class="com.junbo.sharding.id.oculus.OculusIdSchema">
         <constructor-arg name="idType" value="2" />

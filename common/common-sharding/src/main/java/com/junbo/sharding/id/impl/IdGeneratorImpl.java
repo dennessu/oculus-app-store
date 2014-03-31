@@ -38,8 +38,11 @@ public class IdGeneratorImpl implements com.junbo.sharding.IdGenerator {
 
     private final Random random;
 
+    private final IdSchema idSchema;
+
     public IdGeneratorImpl(IdSchema idSchema, TimeGenerator timeGenerator, GlobalCounter globalCounter) {
 
+        this.idSchema = idSchema;
         slots = new ArrayList<IdGeneratorSlot>();
 
         for (int shardId = 0; shardId < idSchema.getNumberOfShards(); shardId++) {
@@ -59,7 +62,8 @@ public class IdGeneratorImpl implements com.junbo.sharding.IdGenerator {
 
     @Override
     public long nextId(long id) {
-        int shardId = (int) (id % slots.size());
+        ObjectId objectId = idSchema.parseObjectId(id);
+        int shardId = objectId.getShardId();
         return nextIdByShardId(shardId);
     }
 

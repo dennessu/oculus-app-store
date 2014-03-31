@@ -9,8 +9,7 @@ import com.junbo.sharding.id.dao.IdGlobalCounterDAO;
 import com.junbo.sharding.id.model.IdGlobalCounterEntity;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -23,9 +22,12 @@ import java.util.List;
 @Component
 @Transactional
 public class IdGlobalCounterDAOImpl implements IdGlobalCounterDAO {
-    @Autowired
-    @Qualifier("shardingSessionFactory")
     private SessionFactory sessionFactory;
+
+    @Required
+    public void setSessionFactory(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
     private Session currentSession() {
         return sessionFactory.getCurrentSession();
@@ -52,7 +54,6 @@ public class IdGlobalCounterDAOImpl implements IdGlobalCounterDAO {
     @Override
     public IdGlobalCounterEntity saveOrUpdate(IdGlobalCounterEntity entity) {
         IdGlobalCounterEntity entityInDB = get(entity.getOptionMode(), entity.getShardId());
-        currentSession().evict(entityInDB);
         if(entityInDB == null) {
             currentSession().save(entity);
         }
@@ -68,7 +69,7 @@ public class IdGlobalCounterDAOImpl implements IdGlobalCounterDAO {
 
     @Override
     public IdGlobalCounterEntity update(IdGlobalCounterEntity entity) {
-        currentSession().update(entity);
+        currentSession().merge(entity);
         return get(entity.getOptionMode(), entity.getShardId());
     }
 }

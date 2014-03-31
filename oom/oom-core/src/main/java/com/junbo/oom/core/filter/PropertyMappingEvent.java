@@ -5,7 +5,9 @@
  */
 package com.junbo.oom.core.filter;
 
+import java.util.HashMap;
 import java.util.Map;
+
 /**
  * Java doc.
  */
@@ -17,7 +19,13 @@ public class PropertyMappingEvent {
 
     private String sourcePropertyName;
 
+    private Object source;
+
+    private Object alternativeSource;
+
     private Object sourceProperty;
+
+    private Object alternativeSourceProperty;
 
     private Class<?> targetType;
 
@@ -25,7 +33,7 @@ public class PropertyMappingEvent {
 
     private String targetPropertyName;
 
-    private Map<String, Object> attributes;
+    private Map<Object, Object> attributes;
 
     public Class<?> getSourceType() {
         return sourceType;
@@ -51,12 +59,36 @@ public class PropertyMappingEvent {
         this.sourcePropertyName = sourcePropertyName;
     }
 
+    public Object getSource() {
+        return source;
+    }
+
+    public void setSource(Object source) {
+        this.source = source;
+    }
+
+    public Object getAlternativeSource() {
+        return alternativeSource;
+    }
+
+    public void setAlternativeSource(Object alternativeSource) {
+        this.alternativeSource = alternativeSource;
+    }
+
     public Object getSourceProperty() {
         return sourceProperty;
     }
 
     public void setSourceProperty(Object sourceProperty) {
         this.sourceProperty = sourceProperty;
+    }
+
+    public Object getAlternativeSourceProperty() {
+        return alternativeSourceProperty;
+    }
+
+    public void setAlternativeSourceProperty(Object alternativeSourceProperty) {
+        this.alternativeSourceProperty = alternativeSourceProperty;
     }
 
     public Class<?> getTargetType() {
@@ -83,11 +115,22 @@ public class PropertyMappingEvent {
         this.targetPropertyName = targetPropertyName;
     }
 
-    public Map<String, Object> getAttributes() {
+    public Map<Object, Object> getAttributes() {
+        if (attributes == null) {
+            attributes = new HashMap<>();
+        }
         return attributes;
     }
 
-    public void setAttributes(Map<String, Object> attributes) {
-        this.attributes = attributes;
+    @SuppressWarnings("unchecked")
+    public Map<Object, Object> getSubAttributes(Object key) {
+        Map<Object, Object> subAttributes = (Map<Object, Object>) getAttributes().get(key);
+
+        if (subAttributes == null) {
+            subAttributes = new HashMap<>();
+            getAttributes().put(key, subAttributes);
+        }
+
+        return subAttributes;
     }
 }

@@ -25,6 +25,8 @@ public class RestExceptionMapper implements ExceptionMapper<Exception> {
 
     @Override
     public Response toResponse(Exception exception) {
+
+        LOGGER.error("Log unhandled exception", exception);
         if (exception instanceof WebApplicationException) {
             return ((WebApplicationException) exception).getResponse();
         }

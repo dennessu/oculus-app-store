@@ -42,7 +42,7 @@ def run(inputParam):
         # arguments check
         if len(sys.argv) != 3:
             error("""
-        ./liquibase.py PROJECT ENVIRONMENT DBVERSION
+        ./liquibase.py DATABASE ENVIRONMENT DBVERSION
             """)
     
     #=========================================
@@ -50,13 +50,13 @@ def run(inputParam):
     #=========================================
     
     # Check config file existence
-    if not os.path.isdir("conf/"+inputParam.project+"/"+inputParam.environment) or len(str.strip(inputParam.environment)) == 0 :
-        error("Environment config '"+inputParam.environment+"' not found under ./conf/"+inputParam.project+". Quitting...\n")
+    if not os.path.isdir("conf/"+inputParam.database+"/"+inputParam.environment) or len(str.strip(inputParam.environment)) == 0 :
+        error("Environment config '"+inputParam.environment+"' not found under ./conf/"+inputParam.database+". Quitting...\n")
 
     # Load environment config.
     try:
         configuration = ConfigParser.SafeConfigParser()
-        configuration.readfp(open("conf/"+inputParam.project+"/"+inputParam.environment+"/db.conf"))
+        configuration.readfp(open("conf/"+inputParam.database+"/"+inputParam.environment+"/db.conf"))
         # Push the config into this map instead
         config = {}
         # Pass config values in as properties so we can use them in changelogs
@@ -94,13 +94,17 @@ def run(inputParam):
         cmd = list([os.path.abspath('.') + "/liquibase"])
         cmd.append("--logLevel=debug")
         cmd.append("--driver=" + config["jdbc_driver"])
-        change_log_file = "changelogs/"+inputParam.project+"/"+inputParam.dbVersion+"/changelog.xml"
+        change_log_file = "changelogs/"+inputParam.database+"/"+inputParam.dbVersion+"/changelog.xml"
         cmd.append("--changeLogFile="+change_log_file)
-        shard_user = config["shard_username"].replace('{0}', shardid)
-        cmd.append("--username="+shard_user)
-        cmd.append("--password="+config["shard_password"])
-        cmd.append("--defaultSchemaName=shard_" + shardid)
-        jdbc_url=config["jdbc_url_" + shardid]
+        login_user = config["login_username"].replace('{0}', shardid)
+        cmd.append("--username="+login_user)
+        cmd.append("--password="+config["login_password"])
+        cmd.append("--defaultSchemaName=" + login_user)
+        if (config.has_key("jdbc_url") and len(config["jdbc_url"]) != 0):
+            jdbc_url=config["jdbc_url"]
+        else:
+            jdbc_url=config["jdbc_url_" + shardid]
+
         cmd.append("--url="+jdbc_url)
         cmd.append(inputParam.command)
 
@@ -114,5 +118,6 @@ def run(inputParam):
 
     if config.has_key("shard_range"):
         shard_range = [str(x) for x in split_range(config["shard_range"])]
-
-    foreach(partition, shard_range, 1)
+        foreach(partition, shard_range, 1)
+    else:
+        partition("noshard")

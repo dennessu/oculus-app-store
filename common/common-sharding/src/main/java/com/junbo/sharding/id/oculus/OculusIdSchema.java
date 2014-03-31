@@ -55,6 +55,27 @@ public class OculusIdSchema {
         }
     }
 
+    public OculusObjectId parseObjectId(long value) {
+        if (value < 0) {
+            throw new IllegalArgumentException("ObjectId " + value + " should be >= 0");
+        }
+
+        int idVersion = (int)(value & masks(bitsInIdVersion));
+        value = value >> bitsInIdVersion;
+        int dataCenterId = (int)((value) & masks(bitsInDataCenterId));
+
+        value = value >> bitsInDataCenterId;
+        int shardId = (int)(value & masks(bitsInShard));
+
+        value = value >> bitsInShard;
+        long localCounter = value & masks(bitsInLocalCounter);
+
+        value = value >> bitsInLocalCounter;
+        long globalCounter = value & masks(bitsInGlobalCounter);
+
+        return new OculusObjectId(idVersion, dataCenterId, shardId, localCounter, globalCounter);
+    }
+
     public int getBitsInGlobalCounter() {
         return bitsInGlobalCounter;
     }

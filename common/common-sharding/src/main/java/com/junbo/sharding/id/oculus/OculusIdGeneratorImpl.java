@@ -38,8 +38,11 @@ public class OculusIdGeneratorImpl implements com.junbo.sharding.IdGenerator {
 
     private final Random random;
 
+    private final OculusIdSchema idSchema;
+
     public OculusIdGeneratorImpl(OculusIdSchema idSchema, OculusGlobalCounter globalCounter) {
 
+        this.idSchema = idSchema;
         slots = new ArrayList<OculusIdGeneratorSlot>();
 
         for (int shardId = 0; shardId < idSchema.getNumberOfShards(); shardId++) {
@@ -58,7 +61,8 @@ public class OculusIdGeneratorImpl implements com.junbo.sharding.IdGenerator {
 
     @Override
     public long nextId(long id) {
-        int shardId = (int) (id % slots.size());
+        OculusObjectId objectId = idSchema.parseObjectId(id);
+        int shardId = objectId.getShardId();
         return nextIdByShardId(shardId);
     }
 

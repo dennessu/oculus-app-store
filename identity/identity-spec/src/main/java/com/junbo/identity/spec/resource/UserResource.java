@@ -3,12 +3,13 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-
 package com.junbo.identity.spec.resource;
 
 import com.junbo.common.id.UserId;
 import com.junbo.common.model.Results;
-import com.junbo.identity.spec.model.user.User;
+import com.junbo.identity.spec.model.users.User;
+import com.junbo.identity.spec.options.entity.UserGetOptions;
+import com.junbo.identity.spec.options.list.UserListOptions;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.wordnik.swagger.annotations.Api;
@@ -18,53 +19,36 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
 /**
- * Java cod for UserResource.
+ * Created by liangfu on 3/13/14.
  */
-
-@Api(value= "users")
-@Path("/users")
+@Api("users")
 @RestResource
+@Path("/users")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 public interface UserResource {
     @ApiOperation("Create a new user")
     @POST
-    Promise<User> postUser(User user);
-
-    @ApiOperation("Get or search users")
-    @GET
-    Promise<Results<User>> getUsers(@QueryParam("userName") String userName,
-                        @QueryParam("userNamePrefix") String userNamePrefix,
-                        @QueryParam("cursor") Integer cursor,
-                        @QueryParam("count") Integer count);
-
-    @ApiOperation("Get a user")
-    @GET
-    @Path("/{key}")
-    Promise<User> getUser(@PathParam("key") UserId id);
+    @Path("/")
+    Promise<User> create(User user);
 
     @ApiOperation("Put a user")
     @PUT
-    @Path("/{key}")
-    Promise<User> putUser(@PathParam("key") UserId id,
-                 User user);
+    @Path("/{userId}")
+    Promise<User> put(@PathParam("userId") UserId userId, User user);
 
-    @ApiOperation("Authenticate user")
+    @ApiOperation("PATCH user")
     @POST
-    @Path("/authenticate-user")
-    Promise<User> authenticateUser(@QueryParam("userName") String userName,
-                                   @QueryParam("password") String password);
+    @Path("/{userId}")
+    Promise<User> patch(@PathParam("userId") UserId userId, User user);
 
-    @ApiOperation("Update password")
-    @POST
-    @Path("/{key}/update-password")
-    Promise<User> updatePassword(@PathParam("key") UserId id,
-                        @QueryParam("oldPassword") String oldPassword,
-                        @QueryParam("newPassword") String newPassword);
+    @ApiOperation("Get a user")
+    @GET
+    @Path("/{userId}")
+    Promise<User> get(@PathParam("userId") UserId userId, @BeanParam UserGetOptions getOptions);
 
-    @ApiOperation("Reset password")
-    @POST
-    @Path("/{key}/reset-password")
-    Promise<User> restPassword(@PathParam("key") UserId id,
-                      @QueryParam("newPassword") String newPassword);
+    @ApiOperation("Get or search users")
+    @GET
+    @Path("/")
+    Promise<Results<User>> list(@BeanParam UserListOptions listOptions);
 }

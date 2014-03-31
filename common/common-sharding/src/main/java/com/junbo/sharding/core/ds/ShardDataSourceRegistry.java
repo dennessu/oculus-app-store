@@ -18,7 +18,7 @@ public class ShardDataSourceRegistry {
 
     public void setDataSourceFactory(ShardDataSourceFactory factory) { this.dataSourceFactory = factory; }
 
-    public DataSource resolve(ShardDataSourceKey key) {
+    public DataSource resolve(int shardId, ShardDataSourceKey key) {
         if (key == null) {
             return null;
         }
@@ -26,7 +26,7 @@ public class ShardDataSourceRegistry {
             return cache.get(key);
         }
 
-        DataSource ds = this.dataSourceFactory.createDataSource(key);
+        DataSource ds = this.dataSourceFactory.createDataSource(shardId, key.getDatabaseName());
         cache.put(key, ds);
 
         return ds;

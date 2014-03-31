@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="0.1" author='minhao' context="PREDEPLOY">
+        <sql><![CDATA[
+			create table user_name_reverse_index (
+			  user_name varchar(255) not null,
+			  user_id bigint not null,
+			  
+			  primary key (user_name, user_id)
+			);
+			
+			create table group_name_reverse_index (
+				value varchar(255) not null,
+				group_id bigint not null,
+				
+				primary key (value, group_id)
+			);
+			
+			create table user_authenticator_reverse_index (
+				value varchar(255) not null,
+				authenticator_id bigint not null,
+				active boolean not null,
+				
+				primary key (value, authenticator_id)
+			);
+			
+			create table user_email_reverse_index (
+				value varchar(255) not null,
+				user_email_id bigint not null,
+				active boolean not null,
+				
+				primary key (value, user_email_id)
+			);
+        ]]></sql>
+    </changeSet>
+
+</databaseChangeLog>

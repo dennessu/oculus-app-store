@@ -5,7 +5,6 @@
  */
 package com.junbo.sharding.util;
 
-import com.junbo.common.id.Id;
 import org.springframework.util.Assert;
 
 import java.lang.reflect.Method;
@@ -18,15 +17,6 @@ public class Helper {
     private static ThreadLocal<Integer> currentShardId = new ThreadLocal<Integer>();
 
     private Helper() {}
-
-    /**
-     * return shardId value of id.
-     * @param id
-     * @return
-     */
-    public static int getShardId(Id id) {
-        return getShardId(id.getValue());
-    }
 
     /**
      * This shardId calculation is based on below Id format.
@@ -47,23 +37,43 @@ public class Helper {
      *    V is the ID version (hard coded 00)
      *    V is the least significant bits
      *
-     * @param id
+     * @param obj
+     * @param cls
      * @return shardId
      */
-    public static int getShardId(Long id) {
-        int shardId = (int)((id >> 6) & 0xff);
-        if (shardId < 0 || shardId > 255) {
-            throw new RuntimeException("invalid shardId value: " + shardId);
-        }
+    public static int calcShardId(Object obj, Class cls) {
+        if(cls == Long.class) {
+            Long id = (Long)obj;
+            int shardId = (int)((id >> 6) & 0xff);
+            if (shardId < 0 || shardId > 255) {
+                throw new RuntimeException("invalid shardId value: " + shardId);
+            }
 
-        return shardId;
+            return shardId;
+        }
+        else if(cls == String.class) {
+            String value = (String)obj;
+            long h = 0;
+            if (value.length() > 0) {
+                char val[] = value.toCharArray();
+
+                for (int i = 0; i < value.length(); i++) {
+                    h = 31 * h + val[i];
+                }
+            }
+
+            return calcShardId(h, Long.class);
+        }
+        else {
+            throw new RuntimeException("current shardId only support Long and String");
+        }
     }
 
     public static void setCurrentShardId(int shardId) {
         currentShardId.set(shardId);
     }
 
-    public static int getCurrentThreadLocalShardId() {
+    public static int fetchCurrentThreadLocalShardId() {
         if (currentShardId.get() == null) {
             throw new RuntimeException("current shardId hasn't been set.");
         }
@@ -71,7 +81,7 @@ public class Helper {
         return currentShardId.get().intValue();
     }
 
-    public static Method tryObtainGetterMethod(Class<?> clazz, final String propertyName, final Class<?> propertyType) {
+    public static Method tryObtainGetterMethod(Class<?> clazz, final String propertyName) {
         Assert.notNull(propertyName);
         Assert.isTrue(propertyName.length() > 1);
 
@@ -79,11 +89,10 @@ public class Helper {
                 propertyName.substring(0, 1).toUpperCase(Locale.ENGLISH) + propertyName.substring(1);
 
         // try getXxx method
-        Method result = getFirstMethodByFilter(clazz, new Func<Method, Boolean>() {
+        Method result = fetchFirstMethodByFilter(clazz, new Func<Method, Boolean>() {
             @Override
             public Boolean execute(Method method) {
-                return method.getName().equals("get" + upperPropertyName) && method.getParameterTypes().length == 0
-                        && (propertyType == null || method.getReturnType().equals(propertyType));
+                return (method.getName().equals("get" + upperPropertyName) && method.getParameterTypes().length == 0);
             }
         });
 
@@ -92,7 +101,7 @@ public class Helper {
         }
 
         // try isXxx method
-        result = getFirstMethodByFilter(clazz, new Func<Method, Boolean>() {
+        result = fetchFirstMethodByFilter(clazz, new Func<Method, Boolean>() {
             @Override
             public Boolean execute(Method method) {
                 return method.getName().equals("is" + upperPropertyName) && method.getParameterTypes().length == 0
@@ -103,19 +112,17 @@ public class Helper {
         return result;
     }
 
-    public static Method tryObtainSetterMethod(final Class<?> clazz, final String propertyName,
-                                                final Class<?> propertyType) {
+    public static Method tryObtainSetterMethod(final Class<?> clazz, final String propertyName) {
         Assert.notNull(propertyName);
         Assert.isTrue(propertyName.length() > 1);
 
         final String methodName = "set" + propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1);
 
         // try setXxx method
-        Method result = getFirstMethodByFilter(clazz, new Func<Method, Boolean>() {
+        Method result = fetchFirstMethodByFilter(clazz, new Func<Method, Boolean>() {
             @Override
             public Boolean execute(Method method) {
                 return method.getName().equals(methodName) && method.getParameterTypes().length == 1
-                        && (propertyType == null || method.getParameterTypes()[0].equals(propertyType))
                         && method.getReturnType().equals(Void.TYPE);
             }
         });
@@ -123,7 +130,7 @@ public class Helper {
         return result;
     }
 
-    private static Method getFirstMethodByFilter(Class<?> clazz, Func<Method, Boolean> filter) {
+    private static Method fetchFirstMethodByFilter(Class<?> clazz, Func<Method, Boolean> filter) {
         for (Method method : clazz.getMethods()) {
             if (filter.execute(method)) {
                 return method;

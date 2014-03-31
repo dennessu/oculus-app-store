@@ -1,0 +1,51 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
+ */
+package com.junbo.identity.rest.resource;
+
+import com.junbo.common.id.UserId;
+import com.junbo.common.id.UserPasswordId;
+import com.junbo.common.model.Results;
+import com.junbo.identity.core.service.user.UserPasswordService;
+import com.junbo.identity.spec.model.users.UserPassword;
+import com.junbo.identity.spec.options.entity.UserPasswordGetOptions;
+import com.junbo.identity.spec.options.list.UserPasswordListOptions;
+import com.junbo.identity.spec.resource.UserPasswordResource;
+import com.junbo.langur.core.promise.Promise;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import javax.ws.rs.BeanParam;
+import javax.ws.rs.ext.Provider;
+
+/**
+ * Created by liangfu on 3/14/14.
+ */
+@Provider
+@Component
+@org.springframework.context.annotation.Scope("prototype")
+public class UserPasswordResourceImpl implements UserPasswordResource {
+    @Autowired
+    private UserPasswordService userPasswordService;
+
+    @Override
+    public Promise<UserPassword> create(UserId userId, UserPassword userPassword) {
+        userPasswordService.create(userId, userPassword);
+        return Promise.pure(userPasswordService.create(userId, userPassword));
+    }
+
+    @Override
+    public Promise<UserPassword> get(UserId userId, UserPasswordId userPasswordId,
+                                     @BeanParam UserPasswordGetOptions getOptions) {
+        // todo:    Need to expand getOptions
+        return Promise.pure(userPasswordService.get(userId, userPasswordId));
+    }
+
+    @Override
+    public Promise<Results<UserPassword>> list(UserId userId, @BeanParam UserPasswordListOptions listOptions) {
+        // todo:    Need to split expand and list getOptions
+        return Promise.pure(null);
+    }
+}

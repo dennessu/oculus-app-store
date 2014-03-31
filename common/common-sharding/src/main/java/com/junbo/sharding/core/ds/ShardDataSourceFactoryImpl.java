@@ -9,6 +9,7 @@ import bitronix.tm.resource.jdbc.PoolingDataSource;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
 
@@ -25,12 +26,12 @@ public class ShardDataSourceFactoryImpl implements ShardDataSourceFactory, Appli
     public void setMapper(ShardDataSourceMapper mapper) { this.mapper = mapper; }
 
     @Override
-    public DataSource createDataSource(ShardDataSourceKey key) {
+    public DataSource createDataSource(int shardId, String dbName) {
         if (this.applicationContext == null) {
             throw new RuntimeException("applicationContext is null in ShardDataSourceFactory!");
         }
         if (this.mapper == null) {
-            throw new RuntimeException("datasource mapper is null in ShardDataSourceFactory!");
+            throw new RuntimeException("data source mapper is null in ShardDataSourceFactory!");
         }
 
         DataSource dataSource = applicationContext.getBean(dataSourceBeanName, DataSource.class);
@@ -39,22 +40,27 @@ public class ShardDataSourceFactoryImpl implements ShardDataSourceFactory, Appli
                     "Can't get prototype dataSource of name [%s] from ApplicationContext", dataSourceBeanName));
         }
 
+        DataSourceConfig config = mapper.getDataSourceConfigByShardId(shardId);
         if (dataSource instanceof PoolingDataSource) {
             // reset btmDataSource unique name and url
             PoolingDataSource btmDataSource = (PoolingDataSource)dataSource;
-            btmDataSource.setUniqueName(String.format("jdbc/%s_ds_%s", key.getDatabaseName(), key.getShardId()));
+            btmDataSource.setUniqueName(String.format("jdbc/%s_ds_%s", dbName, config.getLoginRole()));
 
-            DataSourceConfig config = mapper.getDataSourceConfigByShardId(key.getShardId());
-            String url = config.getJdbcUrlTemplate().replaceFirst("%DB_NAME%", key.getDatabaseName());
+            String url = config.getJdbcUrlTemplate().replaceFirst("%DB_NAME%", dbName);
             btmDataSource.getDriverProperties().setProperty("url", url);
-            btmDataSource.getDriverProperties().setProperty("user", "shard_"+key.getShardId());
+            if (StringUtils.isEmpty(config.getLoginRole())) {
+                btmDataSource.getDriverProperties().setProperty("user", "shard_"+shardId);
+            }
+            else {
+                btmDataSource.getDriverProperties().setProperty("user", config.getLoginRole());
+            }
             btmDataSource.init();
 
             return btmDataSource;
         }
         else {
             throw new RuntimeException("Unrecognized dataSource type: " + dataSource.getClass()
-                    + ", sharding not support with this type of datasource");
+                    + ", sharding not support with this type of data source");
         }
     }
 

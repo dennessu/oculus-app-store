@@ -57,13 +57,7 @@ public class ShardAwareDaoProxy implements InvocationHandler {
         for (int i = 0; i < a.length; i++) {
             for (Annotation annotation : a[i]) {
                 if (annotation instanceof SeedParam) {
-                    if (args[i].getClass().equals(Long.class)) {
-                        return Helper.getShardId((Long)args[i]);
-                    }
-                    else {
-                        throw new RuntimeException("@SeedParam annotation must be placed with Long type field, " +
-                                "error with class " + args[i].getClass().getCanonicalName());
-                    }
+                    return Helper.calcShardId(args[i], args[i].getClass());
                 }
             }
         }
@@ -98,8 +92,8 @@ public class ShardAwareDaoProxy implements InvocationHandler {
                     for(Field idField : idClazz.getDeclaredFields()) {
                         Id idAnnotation = idField.getAnnotation(Id.class);
                         if (idAnnotation != null) {
-                            Method idGetMethod = Helper.tryObtainGetterMethod(leafClazz, idField.getName(), Long.class);
-                            Method idSetMethod = Helper.tryObtainSetterMethod(leafClazz, idField.getName(), Long.class);
+                            Method idGetMethod = Helper.tryObtainGetterMethod(leafClazz, idField.getName());
+                            Method idSetMethod = Helper.tryObtainSetterMethod(leafClazz, idField.getName());
 
                             if (idGetMethod == null || idSetMethod == null) {
                                 throw new RuntimeException("@Id annotation must be placed with Long type field," +
@@ -109,14 +103,15 @@ public class ShardAwareDaoProxy implements InvocationHandler {
                             methods[0] = idGetMethod;
                             methods[1] = idSetMethod;
 
-                            if (idGetMethod.invoke(arg) == null) { //id not set yet
+                            //id not set yet
+                            if (idGetMethod.invoke(arg) == null) {
                                 Class<?> seedIdClazz = leafClazz;
                                 do {
                                     for(Field seedField : seedIdClazz.getDeclaredFields()) {
                                         SeedId seedIdAnnotation = seedField.getAnnotation(SeedId.class);
                                         if (seedIdAnnotation != null) {
                                             Method seedGetMethod = Helper.tryObtainGetterMethod(leafClazz,
-                                                    seedField.getName(), Long.class);
+                                                    seedField.getName());
                                             if (seedGetMethod == null) {
                                                 throw new RuntimeException("@SeedId annotation must be placed with " +
                                                         "Long type field, and with proper getter method available. "
@@ -137,7 +132,8 @@ public class ShardAwareDaoProxy implements InvocationHandler {
                                 throw new RuntimeException("@SeedId annotation not found on entity class "
                                         + leafClazz.getCanonicalName());
                             }
-                            else {  // entity id has been set, not POST method
+                            else {
+                                // entity id has been set, not POST method
                                 return setIdAndGetShardId(arg, methods);
                             }
                         }
@@ -161,12 +157,12 @@ public class ShardAwareDaoProxy implements InvocationHandler {
 
         if (idGetMethod != null) {
             if (idGetMethod.invoke(entity) != null) {
-                return Helper.getShardId((Long)idGetMethod.invoke(entity));
+                return Helper.calcShardId(idGetMethod.invoke(entity), idGetMethod.getReturnType());
             }
             else if (seedIdGetMethod == null) {
                 long nextId = idGeneratorFacade.nextId(UserId.class);
                 idSetMethod.invoke(entity, nextId);
-                return Helper.getShardId(nextId);
+                return Helper.calcShardId(nextId, Long.class);
             }
             else {
                 long seed = (Long)seedIdGetMethod.invoke(entity);
@@ -174,12 +170,12 @@ public class ShardAwareDaoProxy implements InvocationHandler {
                         .equalsIgnoreCase("com.junbo.order.db.entity.OrderEntity")) {
                     long nextId = idGeneratorFacade.nextId(OrderId.class, seed);
                     idSetMethod.invoke(entity, nextId);
-                    return Helper.getShardId(nextId);
+                    return Helper.calcShardId(nextId, Long.class);
                 }
                 else {
                     long nextId = idGeneratorFacade.nextId(UserId.class, seed);
                     idSetMethod.invoke(entity, nextId);
-                    return Helper.getShardId(nextId);
+                    return Helper.calcShardId(nextId, Long.class);
                 }
             }
         }

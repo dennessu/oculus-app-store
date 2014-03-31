@@ -10,11 +10,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.junbo.common.id.*;
 import com.junbo.common.util.EnumRegistry;
-import com.junbo.identity.data.entity.user.UserPasswordStrength;
-import com.junbo.identity.data.entity.user.UserProfileType;
-import com.junbo.identity.data.entity.user.UserStatus;
+import com.junbo.identity.data.identifiable.UserPasswordStrength;
+import com.junbo.identity.data.identifiable.UserProfileType;
 import com.junbo.identity.spec.error.AppErrors;
-import com.junbo.identity.spec.model.password.PasswordRuleDetail;
 import org.springframework.util.StringUtils;
 
 import java.io.StringWriter;
@@ -25,6 +23,132 @@ import java.util.List;
  */
 public class CommonMapper {
     private ObjectMapper objectMapper = new ObjectMapper();
+
+    Long toGroupId(GroupId groupId) {
+        if (groupId == null) {
+            return null;
+        }
+        return groupId.getValue();
+    }
+
+    GroupId toGroupId(Long groupId) {
+        if (groupId == null) {
+            return null;
+        }
+        return new GroupId(groupId);
+    }
+
+    UserPasswordId toUserPasswordId(Long userPasswordId) {
+        if (userPasswordId == null) {
+            return null;
+        }
+        return new UserPasswordId(userPasswordId);
+    }
+
+    Long toUserPasswordId(UserPasswordId userPasswordId) {
+        if (userPasswordId == null) {
+            return null;
+        }
+        return userPasswordId.getValue();
+    }
+
+    UserPinId toUserPinId(Long userPinId) {
+        if (userPinId == null) {
+            return null;
+        }
+        return new UserPinId(userPinId);
+    }
+
+    Long toUserPinId(UserPinId userPINId) {
+        if(userPINId == null) {
+            return null;
+        }
+        return userPINId.getValue();
+    }
+
+    SecurityQuestionId toSecurityQuestionId(Long securityQuestionId) {
+        if(securityQuestionId == null) {
+            return null;
+        }
+        return new SecurityQuestionId(securityQuestionId);
+    }
+
+    Long toSecurityQuestionId(SecurityQuestionId id) {
+        if(id == null) {
+            return null;
+        }
+        return id.getValue();
+    }
+
+    UserSecurityQuestionId toUserSecurityQuestionId(Long id) {
+        if(id == null) {
+            return null;
+        }
+        return new UserSecurityQuestionId(id);
+    }
+
+    Long toUserPhoneNumberId(UserPhoneNumberId id) {
+        if(id == null) {
+            return null;
+        }
+        return id.getValue();
+    }
+
+    UserPhoneNumberId toUserPhoneNumberId(Long id) {
+        if(id == null) {
+            return null;
+        }
+        return new UserPhoneNumberId(id);
+    }
+
+    Long toUserLoginAttemptId(UserLoginAttemptId id) {
+        if(id == null) {
+            return null;
+        }
+        return id.getValue();
+    }
+
+    UserLoginAttemptId toUserLoginAttemptId(Long id) {
+        if(id == null) {
+            return null;
+        }
+        return new UserLoginAttemptId(id);
+    }
+
+    Long toUserSecurityQuestionId(UserSecurityQuestionId id) {
+        if(id == null) {
+            return null;
+        }
+        return id.getValue();
+    }
+
+    Long toUserGroupId(UserGroupId id) {
+        if(id == null) {
+            return null;
+        }
+        return id.getValue();
+    }
+
+    UserGroupId toUserGroupId(Long id) {
+        if(id == null) {
+            return null;
+        }
+        return new UserGroupId(id);
+    }
+
+    UserEmailId toUserEmailId(Long id) {
+        if(id == null) {
+            return null;
+        }
+        return new UserEmailId(id);
+    }
+
+    Long toUserEmailId(UserEmailId id) {
+        if(id == null) {
+            return null;
+        }
+        return id.getValue();
+    }
 
     public Short explicitMethod_toUserPasswordStrength(String passwordStrength) {
         if(StringUtils.isEmpty(passwordStrength)) {
@@ -44,29 +168,6 @@ public class CommonMapper {
         }
         else {
             return EnumRegistry.resolve(userPasswordStrength, UserPasswordStrength.class).toString();
-        }
-    }
-
-    public Short explicitMethod_toUserStatus(String userStatus) {
-        if(!StringUtils.isEmpty(userStatus)) {
-            try {
-                return UserStatus.valueOf(UserStatus.class, userStatus).getId();
-            }
-            catch (Exception e) {
-                throw AppErrors.INSTANCE.enumConversionError(userStatus, "UserStatus").exception();
-            }
-        }
-        else {
-            return null;
-        }
-    }
-
-    public String explicitMethod_toUserStatus(Short userStatus) {
-        if(userStatus == null) {
-            return null;
-        }
-        else {
-            return EnumRegistry.resolve(userStatus, UserStatus.class).toString();
         }
     }
 
@@ -93,8 +194,8 @@ public class CommonMapper {
         }
     }
 
-    public Integer toInteger(Integer resourceAge) {
-        return resourceAge;
+    public Long fromStringToLong(String str) {
+        return Long.parseLong(str);
     }
 
     public Long toUserId(UserId user) {
@@ -111,98 +212,70 @@ public class CommonMapper {
         return new UserId(id);
     }
 
-    public Long toUserDeviceProfileId(UserDeviceProfileId id) {
+    public Long toUserDeviceId(UserDeviceId id) {
         if(id == null) {
             return null;
         }
         return id.getValue();
     }
 
-    public UserDeviceProfileId toUserDeviceProfileId(Long id) {
+    public UserDeviceId toUserDeviceId(Long id) {
         if(id == null) {
             return null;
         }
-        return new UserDeviceProfileId(id);
+        return new UserDeviceId(id);
     }
 
-    public Long toDeviceId(DeviceId id) {
+    public UserAuthenticatorId toUserAuthenticatorId(Long id) {
         if(id == null) {
             return null;
         }
-        return id.getValue();
+        return new UserAuthenticatorId(id);
     }
 
-    public DeviceId toDeviceId(Long id) {
-        if(id == null) {
-            return null;
-        }
-        return new DeviceId(id);
-    }
-
-    public AppId toAppId(Long id) {
-        if(id == null) {
-            return null;
-        }
-        return new AppId(id);
-    }
-
-    public Long toAppId(AppId id) {
+    public Long toUserAuthenticatorId(UserAuthenticatorId id) {
         if(id == null) {
             return null;
         }
         return id.getValue();
     }
 
-    public UserFederationId toUserFederationId(Long id) {
+    public UserOptinId toUserOptinId(Long id) {
         if(id == null) {
             return null;
         }
-        return new UserFederationId(id);
+        return new UserOptinId(id);
     }
 
-    public Long toUserFederationId(UserFederationId id) {
-        if(id == null) {
-            return null;
-        }
-        return id.getValue();
-    }
-
-    public UserOptInId toUserOptInId(Long id) {
-        if(id == null) {
-            return null;
-        }
-        return new UserOptInId(id);
-    }
-
-    public Long toUserOptInId(UserOptInId id) {
+    public Long toUserOptInId(UserOptinId id) {
         if(id == null) {
             return null;
         }
         return id.getValue();
     }
 
-    public UserProfileId toUserProfileId(Long id) {
+    public UserTosId toUserTosId(Long id) {
         if(id == null) {
             return null;
         }
-        return new UserProfileId(id);
+        return new UserTosId(id);
     }
 
-    public Long toUserProfileId(UserProfileId id) {
+    public Long toUserTosId(UserTosId id) {
         if(id == null) {
             return null;
         }
         return id.getValue();
     }
 
-    public UserTosAcceptanceId toUserTosAcceptanceId(Long id) {
+    public UserSecurityQuestionAttemptId toUserSecurityQuestionAttemptId(Long id) {
         if(id == null) {
             return null;
         }
-        return new UserTosAcceptanceId(id);
+        return new UserSecurityQuestionAttemptId(id);
     }
 
-    public Long toUserTosAcceptanceId(UserTosAcceptanceId id) {
+    public Long toUserSecurityQuestionAttemptId(UserSecurityQuestionAttemptId id) {
         if(id == null) {
             return null;
         }
@@ -232,30 +305,10 @@ public class CommonMapper {
         }
     }
 
-    public List<PasswordRuleDetail> jsonToListPasswordRuleDetails(String json) {
-        try {
-            return objectMapper.readValue(json, new TypeReference<List<PasswordRuleDetail>>() { });
-        }
-        catch (Exception e) {
-            throw AppErrors.INSTANCE.serializerError(json).exception();
-        }
-    }
-
     public String explicitMethod_listStringToJson(List<String> strings) {
         try {
             StringWriter sw = new StringWriter();
             objectMapper.writeValue(sw, strings);
-            return sw.toString();
-        }
-        catch (Exception e) {
-            throw AppErrors.INSTANCE.deSerializerError().exception();
-        }
-    }
-
-    public String listPasswordRuleDetailsToJson(List<PasswordRuleDetail> passwordRuleDetails) {
-        try {
-            StringWriter sw = new StringWriter();
-            objectMapper.writeValue(sw, passwordRuleDetails);
             return sw.toString();
         }
         catch (Exception e) {
