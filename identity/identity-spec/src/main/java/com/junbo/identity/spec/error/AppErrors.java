@@ -223,4 +223,7 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 404, code = "2000031", description = "User security question is incorrect.")
     AppError userSecurityQuestionIncorrect();
+
+    @ErrorDef(httpStatusCode = 409, code = "2000032", description = "User Email {0} not found.", field = "{0}")
+    AppError userEmailNotFound(UserEmailId userEmailId);
 }
