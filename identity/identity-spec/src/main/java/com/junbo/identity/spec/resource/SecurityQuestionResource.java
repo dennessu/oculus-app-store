@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * Created by liangfu on 3/13/14.
  */
-@Api("securityQuestions")
+@Api("security-questions")
 @RestResource
 @Path("/security-questions")
 @Produces({MediaType.APPLICATION_JSON})

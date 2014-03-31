@@ -22,7 +22,7 @@ import javax.ws.rs.core.MediaType;
 /**
  * Created by liangfu on 3/13/14.
  */
-@Api("userPassword")
+@Api("users")
 @RestResource
 @Path("/users/{userId}/passwords")
 @Produces({MediaType.APPLICATION_JSON})
