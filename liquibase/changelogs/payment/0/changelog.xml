@@ -237,7 +237,7 @@
                     currency_code                   char(3)        not null, 
                     implied_decimals                smallint       not null, 
                     base_unit                       smallint       not null,
-                    min_auth_amount                 money          not null default 1,
+                    min_auth_amount                 numeric        not null default 1,
                     created_time                    date           not null,
                     created_by                      varchar(50)    not null,
                     
@@ -367,15 +367,16 @@
                   payment_id                      bigint           not null,
                   user_id                         bigint           not null,
                   payment_type_id                 smallint         not null,
-                  currency_code                   char(3)              null,
-                  net_amount                      money            not null,
-                  country_code                    char(3)          not null,
+                  currency_code                   char(3)          not null,
+                  net_amount                      numeric          not null,
+                  country_code                    char(3)              null,
 				  business_descriptor             varchar(50)          null,
                   payment_instrument_id           bigint           not null,
                   payment_provider_id             int              not null,
                   merchant_account_id             int                  null,
                   payment_status_id               smallint         not null,                  
 				  external_token                  varchar(128)         null,
+				  billing_ref_id                  varchar(128)     not null,
                   created_time                    date             not null,
                   created_by                      varchar(50)          null,
                   updated_time                    date                 null,
@@ -405,12 +406,12 @@
         <![CDATA[
             create table payment_event
                 (
-                  payment_event_id           bigint              not null,
+                  payment_event_id           bigint           not null,
                   payment_id                 bigint           not null,
                   payment_event_type_id      smallint         not null,
 				  event_status_id            smallint         not null,
-                  currency_code              char(3)         null,
-                  net_amount                 money            not null,
+                  currency_code              char(3)              null,
+                  net_amount                 numeric              null,
 				  request                    json             not null,
 				  response                   json             not null,
                   created_time               date             not null,
@@ -846,15 +847,24 @@
         </sql>
     </changeSet>
 
-
     <changeSet id="24" author='WenhongZhu' context="PREDEPLOY">
         <sql>
         <![CDATA[
             insert into payment_status values
-                  (0, 'COMPLETED', 'Payment complete successfully', '2014-02-10', 'wenhongzhu')
-                 ,(1,'COMPLETED_WITH_WARNING', 'Payment complete but with some warning', '2014-02-10', 'wenhongzhu')
-                 ,(2,'FAILED', 'Payment failed due to some error', '2014-02-10', 'wenhongzhu')
-                 ,(3,'PROCESSING', 'Async payment in progress', '2014-02-10', 'wenhongzhu');
+                  (0, 'AUTH_CREATED', 'Authorize created', '2014-02-10', 'wenhongzhu')
+                 ,(1,'AUTHORIZED', 'Authorized successfully', '2014-02-10', 'wenhongzhu')
+                 ,(2,'AUTH_DECLINED', 'Authorize declined by provider', '2014-02-10', 'wenhongzhu')
+                 ,(3,'AUTHORIZATION_EXPIRED', 'Authorize is expired', '2014-02-10', 'wenhongzhu')
+                 ,(4,'AUTHORIZING', 'Authorize is processing', '2014-02-10', 'wenhongzhu')
+                 ,(5,'SETTLE_CREATED', 'Settlement created', '2014-02-10', 'wenhongzhu')
+                 ,(6,'SETTLEMENT_SUBMITTED', 'Settlement is submitted', '2014-02-10', 'wenhongzhu')
+                 ,(7,'SETTLEMENT_DECLINED', 'Settlement is declined by provider', '2014-02-10', 'wenhongzhu')
+                 ,(8,'REVERSE_CREATED', 'Reverse created', '2014-02-10', 'wenhongzhu')
+                 ,(9,'REVERSED', 'Reverse successfully', '2014-02-10', 'wenhongzhu')
+                 ,(10,'REVERSE_DECLINED', 'Reverse is declined by provider', '2014-02-10', 'wenhongzhu')
+                 ,(11,'SETTLED', 'Settlement is completed', '2014-02-10', 'wenhongzhu')
+                 ,(12,'SETTLING', 'Settlement is processing', '2014-02-10', 'wenhongzhu')
+                 ,(13,'UNRECOGNIZED', 'Unkonw status', '2014-02-10', 'wenhongzhu');
         ]]>
         </sql>
     </changeSet>
@@ -874,35 +884,17 @@
         </sql>
     </changeSet>
 
+
     <changeSet id="26" author='WenhongZhu' context="PREDEPLOY">
         <sql>
         <![CDATA[
-            insert into payment_event_type values (0,'CREATE', 'The payment was created.', '2014-02-14', 'wenhongzhu')
-                  ,(1,'AUTHORIZE','The payment was authorized by the payment provider.', '2014-02-14', 'wenhongzhu')
-                  ,(2,'CREATE_SEND','The payment was created and immediately sent to the payment provider.', '2014-02-14', 'wenhongzhu')
-                  ,(3,'SEND', 'The payment was sent to the payment provider.', '2014-02-14', 'wenhongzhu')
-                  ,(4,'AUTHORIZATION_SETTLE','The authorized payment was settled.', '2014-02-14', 'wenhongzhu')
-                  ,(5,'AUTHORIZATION_REVERSAL','The authorization was reversed', '2014-02-14', 'wenhongzhu')
-                  ,(6,'SETTLE','The payment was settled by the payment provider.', '2014-02-14', 'wenhongzhu')   
-                  ,(7,'DECLINE', 'The payment was declined by the payment provider.', '2014-02-14', 'wenhongzhu')
-                  ,(8,'RECONCILE','The payment was reconciled with the payment provider.', '2014-02-14', 'wenhongzhu')
-                  ,(9,'ORIGINAL_CHARGE_REVERSAL','The charge was reversed.', '2014-02-14', 'wenhongzhu')
-                  ,(10,'SETTLEMENT_REVERSAL','The payment was declined after it was already settled.', '2014-02-14', 'wenhongzhu')
-                  ,(11,'SETTLEMENT_REVERSAL_DUPLICATE','The payment was declined again after it was already settled.', '2014-02-14', 'wenhongzhu')
-                  ,(12,'SETTLEMENT_CONFIRMATION','The payment was confirmed to be settled.', '2014-02-14', 'wenhongzhu')
-                  ,(13,'SETTLEMENT_REVERSAL_REVERSAL','The payment was withdraw reversed after it was already reversed.', '2014-02-14', 'wenhongzhu')
-                  ,(14,'NOTIFY_PARTNER','This event type is used to schedule a partner notification payment event', '2014-02-14', 'wenhongzhu')
-                  ,(15,'SETTLEMENT_DISCREPANCY','A settlement occurred but there was a discrepancy.', '2014-02-14', 'wenhongzhu')
-                  ,(16,'RECONCILE_DISCREPANCY','A reconcile occurred but there was a discrepancy.', '2014-02-14', 'wenhongzhu')
-                  ,(17,'ZOMBIE_POTENTIAL','A payment was detected to be a zombie and automatic zombie reversal will be attempted.', '2014-02-14', 'wenhongzhu')
-                  ,(18,'ZOMBIE_REVERSAL_SUCCESS','A payment was detected to be a zombie and automatic reversal succeeded.', '2014-02-14', 'wenhongzhu')
-                  ,(19,'ZOMBIE_REVERSAL_FAILURE','A payment was detected to be a zombie and automatic reversal failed.', '2014-02-14', 'wenhongzhu')
-                  ,(20,'ZOMBIE_REVERSAL_RECONCILE','A reconcile ocurred for a ZOMBIE_REVERSAL_SUCCESS.', '2014-02-14', 'wenhongzhu')
-                  ,(21,'ZOMBIE','A payment was detected to be a zombie and automatic zombie reversal will not be attempted.', '2014-02-14', 'wenhongzhu')
-                  ,(22,'ZOMBIE_UNDO_SUCCESS','zombie retry (undo process)success', '2014-02-14', 'wenhongzhu')
-                  ,(23,'ZOMBIE_UNDO_FAILURE','zombie retry (undo process)fail', '2014-02-14', 'wenhongzhu')
-                  ,(24,'ZOMBIE_REDO_SUCCESS','zombie retry (redo process)success', '2014-02-14', 'wenhongzhu')
-                  ,(25,'ZOMBIE_REDO_FAILURE','zombie retry (redo process)fail', '2014-02-14', 'wenhongzhu');
+            insert into payment_event_type values (0,'AUTH_CREATE', 'create an authorize transaction.', '2014-02-14', 'wenhongzhu')
+                  ,(1,'AUTHORIZE','authorize a payment.', '2014-02-14', 'wenhongzhu')
+                  ,(2,'SUBMIT_SETTLE_CREATE','create a settlement submit.', '2014-02-14', 'wenhongzhu')
+                  ,(3,'SUBMIT_SETTLE', 'submit a settlement.', '2014-02-14', 'wenhongzhu')
+                  ,(4,'REVERSE_CREATE','create a reverse transaction.', '2014-02-14', 'wenhongzhu')
+                  ,(5,'AUTH_REVERSE','reverse an authorize transaction', '2014-02-14', 'wenhongzhu')
+				  ,(6,'SUBMIT_SETTLE_REVERSE','reverse a settlement_submit transaction', '2014-02-14', 'wenhongzhu');
         ]]>
         </sql>
     </changeSet>

@@ -1,6 +1,6 @@
 #!/bin/sh
 if [ -z "$*" ]; then
-    GRADLE_CMD="gradle clean build install"
+    GRADLE_CMD="gradle build install"
 else
     GRADLE_CMD="gradle $*"
 fi

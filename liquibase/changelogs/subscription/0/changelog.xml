@@ -14,15 +14,15 @@
               pi_id bigint,
               status_id smallint not null,
               item_id varchar(256) not null,
-              revision int not null,
               subs_start_date timestamp,
               subs_end_date timestamp,
-              partner_id varchar(256),
-              tag varchar(256),
+              anniversary_day smallint,
+              source varchar(256),
+              billing_mode varchar(32),
               created_time timestamp not null,
               created_by varchar(256) not null,
-              updated_time timestamp,
-              updated_by varchar(256),
+              modified_time timestamp,
+              modified_by varchar(256),
               primary key (subscription_id)
             );
 

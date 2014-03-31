@@ -10,12 +10,14 @@
         <sql><![CDATA[
 			CREATE TABLE balance (
 				balance_id BIGINT NOT NULL,
+				tracking_uuid UUID NOT NULL,
 				user_id BIGINT NOT NULL,
 				pi_id BIGINT NOT NULL,
 				balance_type_id SMALLINT NOT NULL,
 				total_amount DECIMAL NOT NULL,
 				tax_amount DECIMAL NOT NULL,
 				tax_included BOOLEAN,
+				tax_status_id SMALLINT,
 				discount_amount DECIMAL NOT NULL,
 				currency CHAR(3) NOT NULL,
 				country_code CHAR(2),
@@ -33,6 +35,7 @@
 				modified_by VARCHAR(64),
 				PRIMARY KEY(balance_id)
 			);
+			CREATE UNIQUE INDEX balance_tracking_uuid_idx ON balance (tracking_uuid);
 			CREATE INDEX balance_user_id_idx ON balance (user_id);
 			CREATE INDEX balance_pi_id_idx ON balance (pi_id);
 			CREATE INDEX balance_status_id_idx ON balance (status_id);
@@ -55,7 +58,6 @@
 				order_item_id BIGINT NOT NULL,
 				amount DECIMAL NOT NULL,
 				tax_amount DECIMAL NOT NULL,
-				tax_included BOOLEAN,
 				discount_amount DECIMAL NOT NULL,
 				finance_id VARCHAR(64),
 				is_tax_exempt BOOLEAN,
@@ -153,7 +155,7 @@
 				balance_id BIGINT NOT NULL,
 				pi_id BIGINT NOT NULL,
 				type_id SMALLINT NOT NULL,
-				payment_ref_id VARCHAR(128) NOT NULL,
+				payment_ref_id VARCHAR(128),
 				amount DECIMAL NOT NULL,
 				currency CHAR(3) NOT NULL,
 				status_id SMALLINT NOT NULL,
@@ -165,17 +167,6 @@
 			);
 			CREATE INDEX billing_transaction_balance_id_idx ON billing_transaction (balance_id);
 			CREATE INDEX billing_transaction_piid_id_idx ON billing_transaction (pi_id);
-
-			CREATE TABLE transaction_event (
-				event_id BIGINT NOT NULL,
-				transaction_id BIGINT NOT NULL,
-				amount DECIMAL NOT NULL,
-				action_type_id SMALLINT NOT NULL,
-				status_id SMALLINT NOT NULL,
-				event_date TIMESTAMP NOT NULL,
-				PRIMARY KEY(event_id)
-			);
-			CREATE INDEX billing_transaction_event_transaction_id_idx ON transaction_event (transaction_id);
                 ]]>
         </sql>
     </changeSet>

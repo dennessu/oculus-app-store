@@ -1,7 +1,8 @@
 #!/bin/sh
+set -e
 
-pushd common/liquibase
+pushd liquibase
 ./dropdb.sh && ./createdb.sh && ./updatedb.sh
 popd
 
-./build
+./build clean build install
