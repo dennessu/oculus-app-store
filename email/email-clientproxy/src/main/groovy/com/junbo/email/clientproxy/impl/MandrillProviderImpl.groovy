@@ -105,7 +105,7 @@ class MandrillProviderImpl implements EmailProvider {
             }
         }
         else {
-            LOGGER.error('Failed to send email:{}', response.responseBody)
+            LOGGER.error('Failed to send email:' + response.responseBody)
             returnEmail.status = EmailStatus.FAILED.toString()
             returnEmail.statusReason = 'error'
         }
@@ -152,23 +152,23 @@ class MandrillProviderImpl implements EmailProvider {
             def properties = [:]
             email.properties.each {
                 def value = it.value
-                def key = it.key.split(':').first()
-                def type = it.key.split(':').last()
+                def split = it.key.split(':')
+                def key = split.first()
+                def type = split.length == 2 ? split.last() : ''
                 if (!type.isEmpty()) {
                     def canonicalName = Id.package.name + '.' + type
                     try {
                         Class c = getClass().classLoader.loadClass(canonicalName)
-                        if (c.superclass.canonicalName ==  Id.canonicalName) {
+                        if (c.superclass ==  Id) {
                             def id = c.newInstance(Long.parseLong(it.value)) as Id
                             value = IdFormatter.encodeId(id)
                         }
                     }
-                    catch (NumberFormatException nfe) {
-                        LOGGER.error('Failed to parse Id', nfe)
+                    catch (NumberFormatException ex) {
+                        LOGGER.error('Failed to parse:' + it.value, ex)
                     }
                     catch (ClassNotFoundException e) {
-                        //ignore exception
-                        LOGGER.error('Failed to reflect Id', e)
+                        LOGGER.error('Failed to reflect:' + canonicalName, e)
                     }
                 }
                 properties.put(key, value)
