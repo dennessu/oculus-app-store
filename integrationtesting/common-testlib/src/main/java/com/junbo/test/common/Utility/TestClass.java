@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.test.catalogscenario.util;
+package com.junbo.test.common.Utility;
 
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
@@ -12,9 +12,9 @@ import org.slf4j.bridge.SLF4JBridgeHandler;
   * Time: 3/19/2014
   * Base test class for each scenarios
  */
-public class BaseTestClass {
+public class TestClass {
 
-    public BaseTestClass() {
+    public TestClass() {
         //set loggging info
         SLF4JBridgeHandler.removeHandlersForRootLogger();
         SLF4JBridgeHandler.install();
