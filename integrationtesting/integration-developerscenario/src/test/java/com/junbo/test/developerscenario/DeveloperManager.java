@@ -8,6 +8,7 @@ package com.junbo.test.developerscenario;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.common.id.UserId;
 import com.junbo.entitlement.spec.model.Entitlement;
+import com.junbo.test.common.Utility.TestClass;
 import com.junbo.test.common.apihelper.catalog.OfferService;
 import com.junbo.test.common.apihelper.catalog.impl.OfferServiceImpl;
 import com.junbo.test.common.apihelper.entitlement.EntitlementService;
@@ -30,7 +31,7 @@ import java.util.List;
 /**
  * Created by JieFeng on 3/7/14.
  */
-public class DeveloperManager {
+public class DeveloperManager extends TestClass {
 
     private LogHelper logger = new LogHelper(DeveloperManager.class);
 

@@ -5,9 +5,10 @@
  */
 package com.junbo.subscription.db.mapper;
 
-import com.junbo.subscription.db.entity.SubscriptionEntity;
-import com.junbo.subscription.db.entity.SubscriptionStatus;
+import com.junbo.subscription.db.entity.*;
 import com.junbo.subscription.spec.model.Subscription;
+import com.junbo.subscription.spec.model.SubscriptionEvent;
+import com.junbo.subscription.spec.model.SubscriptionEventAction;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -48,6 +49,54 @@ public class SubscriptionMapper {
         return subscriptions;
     }
 
+    public SubscriptionEvent toSubsEvent(SubscriptionEventEntity eventEntity) {
+        if (eventEntity == null){
+            return null;
+        }
+        SubscriptionEvent event = new SubscriptionEvent();
+        event.setSubscriptionId(eventEntity.getSubscriptionId());
+        event.setSubscriptionEventId(eventEntity.getSubsEventId());
+        event.setEventStatus(eventEntity.getEventStatusId().toString());
+        event.setEventTypeId(eventEntity.getEventTypeId().toString());
+        event.setRetryCount(eventEntity.getRetryCount());
+        return event;
+    }
 
+    public SubscriptionEventEntity toSubscriptionEntity(SubscriptionEvent event) {
+        SubscriptionEventEntity eventEntity = new SubscriptionEventEntity();
+        eventEntity.setSubscriptionId(event.getSubscriptionId());
+        eventEntity.setSubsEventId(event.getSubscriptionEventId());
+        eventEntity.setEventTypeId(SubscriptionEventType.valueOf(event.getEventType()));
+        eventEntity.setEventStatusId(SubscriptionStatus.valueOf(event.getEventStatus()));
+        eventEntity.setRetryCount(event.getRetryCount());
+        return eventEntity;
+    }
+
+    public SubscriptionEventAction toSubsEventAction(SubscriptionEventActionEntity actionEntity) {
+        if (actionEntity == null){
+            return null;
+        }
+        SubscriptionEventAction action = new SubscriptionEventAction();
+        action.setSubscriptionId(actionEntity.getSubscriptionId());
+        action.setSubscriptionEventId(actionEntity.getSubsEventId());
+        action.setSubscriptionActionId(actionEntity.getSubsActionId());
+        action.setActionStatus(actionEntity.getActionStatusId().toString());
+        action.setActionType(actionEntity.getActionTypeId().toString());
+        action.setRequest(actionEntity.getRequest());
+        action.setResponse(actionEntity.getResponse());
+        return action;
+    }
+
+    public SubscriptionEventActionEntity toSubsEventActionEntity(SubscriptionEventAction action) {
+        SubscriptionEventActionEntity actionEntity = new SubscriptionEventActionEntity();
+        actionEntity.setSubscriptionId(action.getSubscriptionId());
+        actionEntity.setSubsEventId(action.getSubscriptionEventId());
+        actionEntity.setSubsActionId(action.getSubscriptionActionId());
+        actionEntity.setActionStatusId(SubscriptionStatus.valueOf(action.getActionStatus()));
+        actionEntity.setActionTypeId(SubscriptionActionType.valueOf(action.getActionType()));
+        actionEntity.setRequest(action.getRequest());
+        actionEntity.setResponse(action.getResponse());
+        return actionEntity;
+    }
 
 }

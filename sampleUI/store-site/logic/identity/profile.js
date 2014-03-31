@@ -53,11 +53,12 @@ exports.PutProfile = function(data, cb){
 
     dataProvider.GetPayinProfilesByUserId(userId, function(resultData){
         if(resultData.StatusCode == 200){
-            var profile = JSON.parse(resultData.Data).items[0];
+            var profile = JSON.parse(resultData.Data).results[0];
 
             profile.firstName = body["firstName"];
             profile.lastName = body["lastName"];
             profile.createdTime = undefined;
+            profile.updatedTime = undefined;
 
             dataProvider.PutProfile(profile.self.id, userId, profile, function(resultData){
                 var resultModel = new DomainModels.ResultModel();

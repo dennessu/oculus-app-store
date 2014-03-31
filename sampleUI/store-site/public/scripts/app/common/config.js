@@ -107,10 +107,9 @@ AppConfig.PaymentHolderType = [
 ];
 
 AppConfig.ShippingMethods = [
-    {name: "Standard", value: "1"},
-    {name: "Economy", value: "2"},
-    {name: "Express", value: "3"}
-
+    {name: "Standard", value: "000000000001"},
+    {name: "Economy", value: "000000000002"},
+    {name: "Express", value: "000000000003"}
 ];
 
 AppConfig.Countries = [

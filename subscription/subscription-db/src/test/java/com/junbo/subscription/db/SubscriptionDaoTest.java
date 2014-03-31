@@ -48,14 +48,13 @@ public class SubscriptionDaoTest extends AbstractTransactionalTestNGSpringContex
         super.setDataSource(dataSource);
     }
 
-    //@Test
+    @Test
     public void testGet() {
         SubscriptionEntity entity = buildSubscriptionEntity();
         dao.insert(entity);
 
         Assert.assertNotNull(dao.get(entity.getId()), "Entity should not be null.");
     }
-
 
     @Test
     public void testInsert() {

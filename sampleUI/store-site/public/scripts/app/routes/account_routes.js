@@ -3,7 +3,7 @@ var AccountRoutes = {
         beforeModel: function(){
             if(!Ember.App.AuthManager.isAuthenticated()){
                 Utils.Cookies.Set(AppConfig.CookiesName.BeforeRoute, "account");
-                location.href = AppConfig.LoginUrl;
+                location.href = AppConfig.Runtime.LoginUrl;
                 return;
             }
 
@@ -19,7 +19,7 @@ var AccountRoutes = {
             var provider = new IdentityProvider();
             provider.GetProfile(Utils.GenerateRequestModel(null), function(resultData){
                 if(resultData.data.status == 200){
-                    var profile = JSON.parse(resultData.data.data);
+                    var profile = JSON.parse(resultData.data.data).results[0];
                     controller.set("content.firstName", profile.firstName);
                     controller.set("content.lastName", profile.lastName);
                 }else{
@@ -37,7 +37,7 @@ var AccountRoutes = {
             var provider = new IdentityProvider();
             provider.GetProfile(Utils.GenerateRequestModel(null), function(resultData){
                if(resultData.data.status == 200){
-                   var profile = JSON.parse(resultData.data.data).items[0];
+                   var profile = JSON.parse(resultData.data.data).results[0];
                    controller.set("content.firstName", profile.firstName);
                    controller.set("content.lastName", profile.lastName);
                }else{
@@ -48,7 +48,7 @@ var AccountRoutes = {
             // get opt-in
             provider.GetOptIns(Utils.GenerateRequestModel(null), function(resultData){
                 if(resultData.data.status == 200){
-                    var optIns = JSON.parse(resultData.data.data).items;
+                    var optIns = JSON.parse(resultData.data.data).results;
                     for(var i = 0; i < optIns.length; ++i){
                         if(optIns[i].type.toLowerCase() == "promotion"){
                             controller.set("content.isOptInPromotion", true);

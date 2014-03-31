@@ -15,6 +15,7 @@ import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.common.model.Results;
 import com.junbo.identity.spec.model.user.User;
 import com.junbo.langur.core.client.TypeReference;
+import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.common.apihelper.catalog.ItemService;
 import com.junbo.test.common.apihelper.catalog.OfferService;
 import com.junbo.test.common.apihelper.identity.UserService;
@@ -24,30 +25,22 @@ import com.junbo.test.common.libs.EnumHelper;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.common.libs.RestUrl;
-import com.ning.http.client.AsyncHttpClient;
-import com.ning.http.client.AsyncHttpClientConfig;
-import com.ning.http.client.Request;
-import com.ning.http.client.RequestBuilder;
-import com.ning.http.client.providers.netty.NettyResponse;
-import junit.framework.Assert;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.Future;
 
 /**
  @author Jason
   * Time: 3/14/2014
   * The implementation for Offer related APIs
  */
-public class OfferServiceImpl implements OfferService {
+public class OfferServiceImpl extends HttpClientBase implements OfferService {
 
     private final String catalogServerURL = RestUrl.getRestUrl(RestUrl.ComponentName.CATALOG) + "offers";
     private final String defaultOfferFileName = "defaultOffer";
     private LogHelper logger = new LogHelper(OfferServiceImpl.class);
-    private AsyncHttpClient asyncClient;
     private static OfferService instance;
     private boolean offerLoaded;
 
@@ -62,7 +55,6 @@ public class OfferServiceImpl implements OfferService {
     }
 
     private OfferServiceImpl() {
-        asyncClient = new AsyncHttpClient(new AsyncHttpClientConfig.Builder().build());
     }
 
     public String getOffer(String offerId, HashMap<String, String> httpPara) throws Exception {
@@ -73,25 +65,9 @@ public class OfferServiceImpl implements OfferService {
             throws Exception {
 
         String url = catalogServerURL + "/" + offerId;
-
-        RequestBuilder reqBuilder = new RequestBuilder("GET");
-        reqBuilder.addHeader(RestUrl.requestHeaderName, RestUrl.requestHeaderValue);
-        reqBuilder.setUrl(url);
-        if ((httpPara != null) && !httpPara.isEmpty()) {
-            for (String key: httpPara.keySet()) {
-                reqBuilder.addQueryParameter(key, httpPara.get(key));
-            }
-        }
-        Request req = reqBuilder.build();
-
-        logger.LogRequest(req);
-        Future future = asyncClient.prepareRequest(req).execute();
-        NettyResponse nettyResponse = (NettyResponse) future.get();
-        logger.LogResponse(nettyResponse);
-        Assert.assertEquals(expectedResponseCode, nettyResponse.getStatusCode());
-
+        String responseBody = restApiCall(HTTPMethod.GET, url, null, expectedResponseCode, httpPara);
         Offer offerGet = new JsonMessageTranscoder().decode(new TypeReference<Offer>() {},
-                nettyResponse.getResponseBody());
+                responseBody);
         String offerRtnId = IdConverter.idLongToHexString(OfferId.class, offerGet.getId());
         Master.getInstance().addOffer(offerRtnId, offerGet);
 
@@ -104,25 +80,9 @@ public class OfferServiceImpl implements OfferService {
 
     public List<String> getOffer(HashMap<String, String> httpPara, int expectedResponseCode) throws Exception {
 
-        RequestBuilder reqBuilder = new RequestBuilder("GET");
-        reqBuilder.addHeader(RestUrl.requestHeaderName, RestUrl.requestHeaderValue);
-        reqBuilder.setUrl(catalogServerURL);
-        if ((httpPara != null) && !httpPara.isEmpty()) {
-            for (String key: httpPara.keySet()) {
-                reqBuilder.addQueryParameter(key, httpPara.get(key));
-            }
-        }
-        Request req = reqBuilder.build();
-
-        logger.LogRequest(req);
-        Future future = asyncClient.prepareRequest(req).execute();
-        NettyResponse nettyResponse = (NettyResponse) future.get();
-        logger.LogResponse(nettyResponse);
-        Assert.assertEquals(expectedResponseCode, nettyResponse.getStatusCode());
-
+        String responseBody = restApiCall(HTTPMethod.GET, catalogServerURL, null, expectedResponseCode, httpPara);
         Results<Offer> offerGet = new JsonMessageTranscoder().decode(new TypeReference<Results<Offer>>() {},
-                nettyResponse.getResponseBody());
-
+                responseBody);
         List<String> listOfferId = new ArrayList<>();
         for (Offer offer : offerGet.getItems()){
             String offerRtnId = IdConverter.idLongToHexString(OfferId.class, offer.getId());
@@ -136,23 +96,11 @@ public class OfferServiceImpl implements OfferService {
     public String postDefaultOffer(EnumHelper.CatalogItemType itemType) throws Exception {
 
         Offer offerForPost = prepareOfferEntity(defaultOfferFileName, itemType);
-
-        RequestBuilder reqBuilder = new RequestBuilder("POST");
-        reqBuilder.addHeader(RestUrl.requestHeaderName, RestUrl.requestHeaderValue);
-        reqBuilder.setUrl(catalogServerURL);
-        reqBuilder.setBody(new JsonMessageTranscoder().encode(offerForPost));
-        Request req = reqBuilder.build();
-
-        logger.LogRequest(req);
-        Future future = asyncClient.prepareRequest(req).execute();
-        NettyResponse nettyResponse = (NettyResponse) future.get();
-        logger.LogResponse(nettyResponse);
-
-        offerForPost = new JsonMessageTranscoder().decode(new TypeReference<Offer>() {},
-                nettyResponse.getResponseBody());
-
-        String offerRtnId = IdConverter.idLongToHexString(OfferId.class, offerForPost.getId());
-        Master.getInstance().addOffer(offerRtnId, offerForPost);
+        String responseBody = restApiCall(HTTPMethod.POST, catalogServerURL, offerForPost, 200);
+        Offer offerGet = new JsonMessageTranscoder().decode(new TypeReference<Offer>() {},
+                responseBody);
+        String offerRtnId = IdConverter.idLongToHexString(OfferId.class, offerGet.getId());
+        Master.getInstance().addOffer(offerRtnId, offerGet);
 
         return offerRtnId;
     }
@@ -173,7 +121,7 @@ public class OfferServiceImpl implements OfferService {
         itemEntry.setQuantity(1);
         itemEntities.add(itemEntry);
         offerForPost.setItems(itemEntities);
-        offerForPost.setOwnerId(Master.getInstance().getItem(defaultItemId).getOwnerId());
+        offerForPost.setOwnerId(item.getOwnerId());
 
         return offerForPost;
     }
@@ -184,21 +132,9 @@ public class OfferServiceImpl implements OfferService {
 
     public String postOffer(Offer offer, int expectedResponseCode) throws Exception {
 
-        RequestBuilder reqBuilder = new RequestBuilder("POST");
-        reqBuilder.addHeader(RestUrl.requestHeaderName, RestUrl.requestHeaderValue);
-        reqBuilder.setUrl(catalogServerURL);
-        reqBuilder.setBody(new JsonMessageTranscoder().encode(offer));
-        Request req = reqBuilder.build();
-
-        logger.LogRequest(req);
-        Future future = asyncClient.prepareRequest(req).execute();
-        NettyResponse nettyResponse = (NettyResponse) future.get();
-        logger.LogResponse(nettyResponse);
-        Assert.assertEquals(expectedResponseCode, nettyResponse.getStatusCode());
-
+        String responseBody = restApiCall(HTTPMethod.POST, catalogServerURL, offer, expectedResponseCode);
         Offer offerPost = new JsonMessageTranscoder().decode(new TypeReference<Offer>() {},
-                nettyResponse.getResponseBody());
-
+                responseBody);
         String offerRtnId = IdConverter.idLongToHexString(OfferId.class, offerPost.getId());
         Master.getInstance().addOffer(offerRtnId, offerPost);
 
@@ -212,21 +148,9 @@ public class OfferServiceImpl implements OfferService {
     public String updateOffer(Offer offer, int expectedResponseCode) throws Exception {
 
         String putUrl = catalogServerURL + "/" + IdConverter.idLongToHexString(OfferId.class, offer.getId());
-        RequestBuilder reqBuilder = new RequestBuilder("PUT");
-        reqBuilder.addHeader(RestUrl.requestHeaderName, RestUrl.requestHeaderValue);
-        reqBuilder.setUrl(putUrl);
-        reqBuilder.setBody(new JsonMessageTranscoder().encode(offer));
-        Request req = reqBuilder.build();
-
-        logger.LogRequest(req);
-        Future future = asyncClient.prepareRequest(req).execute();
-        NettyResponse nettyResponse = (NettyResponse) future.get();
-        logger.LogResponse(nettyResponse);
-        Assert.assertEquals(expectedResponseCode, nettyResponse.getStatusCode());
-
+        String responseBody = restApiCall(HTTPMethod.PUT, putUrl, offer, expectedResponseCode);
         Offer offerPut = new JsonMessageTranscoder().decode(new TypeReference<Offer>() {},
-                nettyResponse.getResponseBody());
-
+                responseBody);
         String offerRtnId = IdConverter.idLongToHexString(OfferId.class, offerPut.getId());
         Master.getInstance().addOffer(offerRtnId, offerPut);
 
@@ -300,7 +224,7 @@ public class OfferServiceImpl implements OfferService {
             user.setStatus(EnumHelper.UserStatus.ACTIVE.getStatus());
             userId = userService.PostUser(user);
         }
-        else{
+        else {
             userId = userIdList.get(0);
         }
 

@@ -1,6 +1,7 @@
 module.exports = process.C = {
 
     RunProcessNumber: 2, // useful for cluster launch
+    Localhost: "10.0.1.143",
     ListenOnPort: 80,
 
     Identity_API_Host: "10.0.1.133",
@@ -24,13 +25,8 @@ module.exports = process.C = {
     Entitlement_API_Host: "10.0.1.133",
     Entitlement_API_Port: 8082,
 
-    OauthUri: "http://10.0.1.133:8081",   //http://54.186.20.200:8081
-    LogoutAjaxUrl: "http://10.0.1.133:8081/rest/oauth2/end-session",
-    RegisterUri: "http://10.0.1.143",
+    Emails_API_Host: "10.0.1.133",
+    Emails_API_Port: 8082,
 
-    CatalogManageAPPsUrl: "#P",
-    CatalogManageOffersUrl: "#P",
-
-    // async client config
-    SocketAddress: "http://10.0.1.143"
+    OauthHost: "http://10.0.1.133:8081"   //http://54.186.20.200:8081
 };

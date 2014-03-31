@@ -133,16 +133,16 @@ var AccountControllers = {
                 var provider = new PaymentProvider();
                 var paymentId = $("#SelectedPaymentId").val();
                 provider.Del(Utils.GenerateRequestModel({paymentId: paymentId}), function(result){
-                    if(result.data.status == 200){
+                    if(result.data.status == 200) {
                         _self.set("errMessage", null);
                         $("#DelPaymentDialog").hide();
                         var provider = new PaymentProvider();
-                        provider.PaymentInstruments(Utils.GenerateRequestModel(null), function(result){
-                            if(result.data.status == 200){
+                        provider.PaymentInstruments(Utils.GenerateRequestModel(null), function (result) {
+                            if (result.data.status == 200) {
                                 var payments = JSON.parse(result.data.data).results;
                                 _self.set("content.payments", payments);
-                            }else{
-                                console.log("Can't get the payment instruments");
+                            } else {
+                                _self.set("content.payments", []);
                             }
                         });
                     }else{

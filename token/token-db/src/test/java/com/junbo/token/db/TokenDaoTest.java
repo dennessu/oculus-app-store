@@ -86,7 +86,7 @@ public class TokenDaoTest extends BaseTest {
         TokenConsumptionEntity entity = new TokenConsumptionEntity();
         entity.setHashValue(123L);
         entity.setId(generateId());
-        entity.setProducts("ut");
+        entity.setProduct(123L);
         entity.setUserId(generateId());
         return entity;
     }
