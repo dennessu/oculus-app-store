@@ -3,31 +3,18 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.notification.queue;
+package com.junbo.notification.core;
 
-import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
 
-import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.Session;
 
 /**
- * TestProducer.
+ * EmailPublisher.
  */
-public class TestProducer {
-    private JmsTemplate template;
-    private Destination destination;
-
-    public void setTemplate(JmsTemplate template) {
-        this.template = template;
-    }
-
-    public void setDestination(Destination destination) {
-        this.destination = destination;
-    }
-
+public class EmailPublisher extends BasePublisher {
     public void send(final String content) {
         template.send(destination, new MessageCreator() {
             @Override

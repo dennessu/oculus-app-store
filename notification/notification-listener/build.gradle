@@ -1,9 +1,6 @@
 apply plugin: 'java'
 
 dependencies {
-    compile (libraries.common_lib)
-    compile (libraries.common_configuration)
-
     compile (libraries.spring_core)
     compile (libraries.spring_expression)
     compile (libraries.spring_tx)
@@ -15,6 +12,8 @@ dependencies {
     compile 'org.apache.activemq:activemq-all:5.7.0'
     compile 'org.apache.xbean:xbean-spring:3.16'
     compile 'javax:javaee-api:6.0'
+
+    compile project(':notification-core')
 
     testCompile (libraries.spring_test)
 }
