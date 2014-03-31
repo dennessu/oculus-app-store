@@ -35,7 +35,7 @@ import javax.ws.rs.ext.Provider
 @Scope('prototype')
 @Transactional
 @CompileStatic
-public class UserPasswordResourceImpl implements UserPasswordResource {
+class UserPasswordResourceImpl implements UserPasswordResource {
 
     @Autowired
     private UserPasswordRepository userPasswordRepository
@@ -50,7 +50,7 @@ public class UserPasswordResourceImpl implements UserPasswordResource {
     private UserPasswordValidator userPasswordValidator
 
     @Override
-    public Promise<UserPassword> create(UserId userId, UserPassword userPassword) {
+    Promise<UserPassword> create(UserId userId, UserPassword userPassword) {
 
         if (userPassword == null) {
             throw new IllegalArgumentException('userPassword is null')
@@ -85,7 +85,7 @@ public class UserPasswordResourceImpl implements UserPasswordResource {
     }
 
     @Override
-    public Promise<UserPassword> get(UserId userId, UserPasswordId userPasswordId,
+    Promise<UserPassword> get(UserId userId, UserPasswordId userPasswordId,
                                      @BeanParam UserPasswordGetOptions getOptions) {
         if (getOptions == null) {
             throw new IllegalArgumentException('getOptions is null')
@@ -100,7 +100,7 @@ public class UserPasswordResourceImpl implements UserPasswordResource {
     }
 
     @Override
-    public Promise<Results<UserPassword>> list(UserId userId, @BeanParam UserPasswordListOptions listOptions) {
+    Promise<Results<UserPassword>> list(UserId userId, @BeanParam UserPasswordListOptions listOptions) {
         if (listOptions == null) {
             throw new IllegalArgumentException('listOptions is null')
         }
