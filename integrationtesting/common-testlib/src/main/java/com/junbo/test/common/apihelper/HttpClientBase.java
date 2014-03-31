@@ -104,12 +104,10 @@ public abstract class HttpClientBase {
                 Future future = asyncClient.prepareRequest(req).execute();
                 NettyResponse nettyResponse = (NettyResponse) future.get();
 
-                logger.logInfo(String.format("http response code: %s", nettyResponse.getStatusCode()));
+                logger.LogResponse(nettyResponse);
                 if (expectedResponseCode != 0) {
                     Assert.assertEquals(expectedResponseCode, nettyResponse.getStatusCode());
                 }
-
-                logger.LogResponse(nettyResponse);
 
                 return nettyResponse.getResponseBody();
             }
@@ -126,7 +124,6 @@ public abstract class HttpClientBase {
                         .setUrl(restUrl)
                         .setHeaders(getHeader())
                         .build();
-
 
                 logger.LogRequest(req);
 
@@ -148,13 +145,10 @@ public abstract class HttpClientBase {
                     nettyResponse = (NettyResponse) future.get();
                 }
 
-                logger.logInfo(String.format("http response code: %s", nettyResponse.getStatusCode()));
-
+                logger.LogResponse(nettyResponse);
                 if (expectedResponseCode != 0) {
                     Assert.assertEquals(expectedResponseCode, nettyResponse.getStatusCode());
                 }
-
-                logger.LogResponse(nettyResponse);
 
                 return nettyResponse.getResponseBody();
             }
@@ -164,7 +158,6 @@ public abstract class HttpClientBase {
                 //TODO
             default:
                 throw new TestException(String.format("Unsupported http method found: %s", httpMethod.getHttpMethod()));
-
         }
     }
 
