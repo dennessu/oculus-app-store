@@ -34,7 +34,7 @@ import javax.ws.rs.ext.Provider
 @Scope('prototype')
 @Transactional
 @CompileStatic
-public class UserTosResourceImpl implements UserTosResource {
+class UserTosResourceImpl implements UserTosResource {
 
     @Autowired
     private UserTosRepository userTosRepository
@@ -49,7 +49,7 @@ public class UserTosResourceImpl implements UserTosResource {
     private UserTosValidator userTosValidator
 
     @Override
-    public Promise<UserTos> create(UserId userId, UserTos userTos) {
+    Promise<UserTos> create(UserId userId, UserTos userTos) {
         if (userTos == null) {
             throw new IllegalArgumentException('userTos is null')
         }
@@ -67,7 +67,7 @@ public class UserTosResourceImpl implements UserTosResource {
     }
 
     @Override
-    public Promise<UserTos> put(UserId userId, UserTosId userTosId, UserTos userTos) {
+    Promise<UserTos> put(UserId userId, UserTosId userTosId, UserTos userTos) {
         if (userId == null) {
             throw new IllegalArgumentException('userId is null')
         }
@@ -97,7 +97,7 @@ public class UserTosResourceImpl implements UserTosResource {
     }
 
     @Override
-    public Promise<UserTos> patch(UserId userId, UserTosId userTosId, UserTos userTos) {
+    Promise<UserTos> patch(UserId userId, UserTosId userTosId, UserTos userTos) {
         if (userId == null) {
             throw new IllegalArgumentException('userId is null')
         }
@@ -128,7 +128,7 @@ public class UserTosResourceImpl implements UserTosResource {
     }
 
     @Override
-    public Promise<Void> delete(UserId userId, UserTosId userTosId) {
+    Promise<Void> delete(UserId userId, UserTosId userTosId) {
         return userTosValidator.validateForGet(userId, userTosId).then {
             userTosRepository.delete(userTosId)
 
@@ -137,7 +137,7 @@ public class UserTosResourceImpl implements UserTosResource {
     }
 
     @Override
-    public Promise<UserTos> get(UserId userId, UserTosId userTosId, @BeanParam UserTosGetOptions getOptions) {
+    Promise<UserTos> get(UserId userId, UserTosId userTosId, @BeanParam UserTosGetOptions getOptions) {
         if (getOptions == null) {
             throw new IllegalArgumentException('getOptions is null')
         }
@@ -151,7 +151,7 @@ public class UserTosResourceImpl implements UserTosResource {
     }
 
     @Override
-    public Promise<Results<UserTos>> list(UserId userId, @BeanParam UserTosListOptions listOptions) {
+    Promise<Results<UserTos>> list(UserId userId, @BeanParam UserTosListOptions listOptions) {
 
         if (listOptions == null) {
             throw new IllegalArgumentException('listOptions is null')

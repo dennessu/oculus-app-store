@@ -32,7 +32,7 @@ class UserPasswordRepositoryImpl implements UserPasswordRepository {
     private ModelMapper modelMapper
 
     @Override
-    Promise<UserPassword> save(UserPassword entity) {
+    Promise<UserPassword> create(UserPassword entity) {
         UserPasswordEntity userPasswordEntity = modelMapper.toUserPassword(entity, new MappingContext())
         userPasswordDAO.save(userPasswordEntity)
 

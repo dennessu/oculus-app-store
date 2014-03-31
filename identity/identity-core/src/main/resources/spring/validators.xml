@@ -147,6 +147,11 @@
         </property>
     </bean>
 
+    <bean id="userPasswordValidator" class="com.junbo.identity.core.service.validator.impl.UserPasswordValidatorImpl">
+        <property name="userRepository" ref="userRepository" />
+        <property name="userPasswordRepository" ref="userPasswordRepository" />
+    </bean>
+
     <bean id="userTosValidator" class="com.junbo.identity.core.service.validator.impl.UserTosValidatorImpl">
         <property name="tosUriMinLength" value="1" />
         <property name="tosUriMaxLength" value="255" />

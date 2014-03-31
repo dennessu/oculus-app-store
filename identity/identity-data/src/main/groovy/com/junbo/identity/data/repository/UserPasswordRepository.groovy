@@ -15,7 +15,7 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 interface UserPasswordRepository {
-    Promise<UserPassword> save(UserPassword entity)
+    Promise<UserPassword> create(UserPassword entity)
 
     Promise<UserPassword> update(UserPassword entity)
 

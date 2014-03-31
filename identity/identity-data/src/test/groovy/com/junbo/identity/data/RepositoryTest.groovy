@@ -149,7 +149,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userPassword.setCreatedBy('lixia')
         userPassword.setUpdatedTime(new Date())
         userPassword.setUpdatedBy('lixia')
-        userPassword = userPasswordRepository.save(userPassword).wrapped().get()
+        userPassword = userPasswordRepository.create(userPassword).wrapped().get()
 
         UserPassword newUserPassword = userPasswordRepository.get(userPassword.getId()).wrapped().get()
         Assert.assertEquals(userPassword.getActive(), newUserPassword.getActive())

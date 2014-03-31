@@ -34,7 +34,7 @@ import javax.ws.rs.ext.Provider
 @Scope('prototype')
 @Transactional
 @CompileStatic
-public class UserOptinResourceImpl implements UserOptinResource {
+class UserOptinResourceImpl implements UserOptinResource {
 
     @Autowired
     private UserOptinRepository userOptinRepository
@@ -49,7 +49,7 @@ public class UserOptinResourceImpl implements UserOptinResource {
     private UserOptinValidator userOptinValidator
 
     @Override
-    public Promise<UserOptin> create(UserId userId, UserOptin userOptin) {
+    Promise<UserOptin> create(UserId userId, UserOptin userOptin) {
         if (userOptin == null) {
             throw new IllegalArgumentException('userOptin is null')
         }
@@ -67,7 +67,7 @@ public class UserOptinResourceImpl implements UserOptinResource {
     }
 
     @Override
-    public Promise<UserOptin> put(UserId userId, UserOptinId userOptinId, UserOptin userOptin) {
+    Promise<UserOptin> put(UserId userId, UserOptinId userOptinId, UserOptin userOptin) {
         if (userId == null) {
             throw new IllegalArgumentException('userId is null')
         }
@@ -97,7 +97,7 @@ public class UserOptinResourceImpl implements UserOptinResource {
     }
 
     @Override
-    public Promise<UserOptin> patch(UserId userId, UserOptinId userOptinId, UserOptin userOptin) {
+    Promise<UserOptin> patch(UserId userId, UserOptinId userOptinId, UserOptin userOptin) {
         if (userId == null) {
             throw new IllegalArgumentException('userId is null')
         }
@@ -128,7 +128,7 @@ public class UserOptinResourceImpl implements UserOptinResource {
     }
 
     @Override
-    public Promise<Void> delete(UserId userId, UserOptinId userOptinId) {
+    Promise<Void> delete(UserId userId, UserOptinId userOptinId) {
         return userOptinValidator.validateForGet(userId, userOptinId).then {
             userOptinRepository.delete(userOptinId)
 
@@ -137,7 +137,7 @@ public class UserOptinResourceImpl implements UserOptinResource {
     }
 
     @Override
-    public Promise<UserOptin> get(UserId userId, UserOptinId userOptinId, @BeanParam UserOptinGetOptions getOptions) {
+    Promise<UserOptin> get(UserId userId, UserOptinId userOptinId, @BeanParam UserOptinGetOptions getOptions) {
         if (getOptions == null) {
             throw new IllegalArgumentException('getOptions is null')
         }
@@ -151,7 +151,7 @@ public class UserOptinResourceImpl implements UserOptinResource {
     }
 
     @Override
-    public Promise<Results<UserOptin>> list(UserId userId, @BeanParam UserOptinListOptions listOptions) {
+    Promise<Results<UserOptin>> list(UserId userId, @BeanParam UserOptinListOptions listOptions) {
         if (listOptions == null) {
             throw new IllegalArgumentException('listOptions is null')
         }

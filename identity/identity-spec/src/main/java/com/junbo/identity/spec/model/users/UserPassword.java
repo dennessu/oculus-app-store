@@ -23,15 +23,15 @@ public class UserPassword extends ResourceMeta implements Identifiable<UserPassw
 
     private String value;
 
-    private Boolean active;
-
     private Date expiresBy;
 
     private Boolean changeAtNextLogin;
 
+    // Read only field
     private UserId userId;
 
-    // Read only field
+    private Boolean active;
+
     private String strength;
 
     // Won't return field
@@ -46,6 +46,8 @@ public class UserPassword extends ResourceMeta implements Identifiable<UserPassw
 
     public void setId(UserPasswordId id) {
         this.id = id;
+        support.setPropertyAssigned("id");
+        support.setPropertyAssigned("self");
     }
 
     public String getValue() {
@@ -54,6 +56,7 @@ public class UserPassword extends ResourceMeta implements Identifiable<UserPassw
 
     public void setValue(String value) {
         this.value = value;
+        support.setPropertyAssigned("value");
     }
 
     public String getStrength() {
@@ -62,6 +65,7 @@ public class UserPassword extends ResourceMeta implements Identifiable<UserPassw
 
     public void setStrength(String strength) {
         this.strength = strength;
+        support.setPropertyAssigned("strength");
     }
 
     public Boolean getActive() {
@@ -70,6 +74,7 @@ public class UserPassword extends ResourceMeta implements Identifiable<UserPassw
 
     public void setActive(Boolean active) {
         this.active = active;
+        support.setPropertyAssigned("active");
     }
 
     public Date getExpiresBy() {
@@ -78,6 +83,7 @@ public class UserPassword extends ResourceMeta implements Identifiable<UserPassw
 
     public void setExpiresBy(Date expiresBy) {
         this.expiresBy = expiresBy;
+        support.setPropertyAssigned("expiresBy");
     }
 
     public Boolean getChangeAtNextLogin() {
@@ -86,6 +92,7 @@ public class UserPassword extends ResourceMeta implements Identifiable<UserPassw
 
     public void setChangeAtNextLogin(Boolean changeAtNextLogin) {
         this.changeAtNextLogin = changeAtNextLogin;
+        support.setPropertyAssigned("changeAtNextLogin");
     }
 
     public String getPasswordSalt() {
@@ -94,6 +101,7 @@ public class UserPassword extends ResourceMeta implements Identifiable<UserPassw
 
     public void setPasswordSalt(String passwordSalt) {
         this.passwordSalt = passwordSalt;
+        support.setPropertyAssigned("passwordSalt");
     }
 
     public String getPasswordHash() {
@@ -102,6 +110,7 @@ public class UserPassword extends ResourceMeta implements Identifiable<UserPassw
 
     public void setPasswordHash(String passwordHash) {
         this.passwordHash = passwordHash;
+        support.setPropertyAssigned("passwordHash");
     }
 
     public UserId getUserId() {
@@ -110,5 +119,6 @@ public class UserPassword extends ResourceMeta implements Identifiable<UserPassw
 
     public void setUserId(UserId userId) {
         this.userId = userId;
+        support.setPropertyAssigned("userId");
     }
 }
