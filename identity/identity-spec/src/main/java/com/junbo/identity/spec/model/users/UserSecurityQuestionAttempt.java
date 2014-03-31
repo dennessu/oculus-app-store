@@ -41,6 +41,8 @@ public class UserSecurityQuestionAttempt extends ResourceMeta implements Identif
 
     public void setId(UserSecurityQuestionAttemptId id) {
         this.id = id;
+        support.setPropertyAssigned("self");
+        support.setPropertyAssigned("id");
     }
 
     public UserId getUserId() {
@@ -49,6 +51,8 @@ public class UserSecurityQuestionAttempt extends ResourceMeta implements Identif
 
     public void setUserId(UserId userId) {
         this.userId = userId;
+        support.setPropertyAssigned("userId");
+        support.setPropertyAssigned("user");
     }
 
     public SecurityQuestionId getSecurityQuestionId() {
@@ -57,6 +61,8 @@ public class UserSecurityQuestionAttempt extends ResourceMeta implements Identif
 
     public void setSecurityQuestionId(SecurityQuestionId securityQuestionId) {
         this.securityQuestionId = securityQuestionId;
+        support.setPropertyAssigned("securityQuestionId");
+        support.setPropertyAssigned("securityQuestion");
     }
 
     public String getValue() {
@@ -65,6 +71,7 @@ public class UserSecurityQuestionAttempt extends ResourceMeta implements Identif
 
     public void setValue(String value) {
         this.value = value;
+        support.setPropertyAssigned("value");
     }
 
     public String getIpAddress() {
@@ -73,6 +80,7 @@ public class UserSecurityQuestionAttempt extends ResourceMeta implements Identif
 
     public void setIpAddress(String ipAddress) {
         this.ipAddress = ipAddress;
+        support.setPropertyAssigned("ipAddress");
     }
 
     public String getUserAgent() {
@@ -81,6 +89,7 @@ public class UserSecurityQuestionAttempt extends ResourceMeta implements Identif
 
     public void setUserAgent(String userAgent) {
         this.userAgent = userAgent;
+        support.setPropertyAssigned("userAgent");
     }
 
     public String getClientId() {
@@ -89,6 +98,7 @@ public class UserSecurityQuestionAttempt extends ResourceMeta implements Identif
 
     public void setClientId(String clientId) {
         this.clientId = clientId;
+        support.setPropertyAssigned("clientId");
     }
 
     public Boolean getSucceeded() {
@@ -97,5 +107,6 @@ public class UserSecurityQuestionAttempt extends ResourceMeta implements Identif
 
     public void setSucceeded(Boolean succeeded) {
         this.succeeded = succeeded;
+        support.setPropertyAssigned("succeeded");
     }
 }

@@ -179,9 +179,9 @@ class UserLoginAttemptValidatorImpl implements UserLoginAttemptValidator {
             throw AppErrors.INSTANCE.fieldRequired('ipAddress').exception()
         }
 
-        if (allowedIpAddressPatterns.find {
+        if (!allowedIpAddressPatterns.any {
                     Pattern pattern -> pattern.matcher(userLoginAttempt.ipAddress).matches()
-                } == null) {
+                }) {
             throw AppErrors.INSTANCE.fieldInvalid('ipAddress').exception()
         }
 

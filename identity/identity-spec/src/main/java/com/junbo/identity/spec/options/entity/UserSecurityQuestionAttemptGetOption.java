@@ -5,8 +5,21 @@
  */
 package com.junbo.identity.spec.options.entity;
 
+import javax.ws.rs.QueryParam;
+
 /**
  * Created by liangfu on 3/25/14.
  */
 public class UserSecurityQuestionAttemptGetOption {
+
+    @QueryParam("properties")
+    private String properties;
+
+    public String getProperties() {
+        return properties;
+    }
+
+    public void setProperties(String properties) {
+        this.properties = properties;
+    }
 }

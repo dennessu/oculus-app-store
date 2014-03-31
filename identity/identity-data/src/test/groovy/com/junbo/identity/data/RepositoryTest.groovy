@@ -453,22 +453,24 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         attempt.setSecurityQuestionId(new SecurityQuestionId(123L))
         attempt.setUserAgent(UUID.randomUUID().toString())
 
-        attempt = userSecurityQuestionAttemptRepository.save(attempt)
+        attempt = userSecurityQuestionAttemptRepository.create(attempt).wrapped().get()
 
-        UserSecurityQuestionAttempt newAttempt = userSecurityQuestionAttemptRepository.get(attempt.getId())
+        UserSecurityQuestionAttempt newAttempt =
+                userSecurityQuestionAttemptRepository.get(attempt.getId()).wrapped().get()
         Assert.assertEquals(attempt.getIpAddress(), newAttempt.getIpAddress())
 
         String value = UUID.randomUUID().toString()
         newAttempt.setIpAddress(value)
         userSecurityQuestionAttemptRepository.update(newAttempt)
 
-        newAttempt = userSecurityQuestionAttemptRepository.get(attempt.getId())
+        newAttempt = userSecurityQuestionAttemptRepository.get(attempt.getId()).wrapped().get()
         Assert.assertEquals(newAttempt.getIpAddress(), value)
 
         UserSecurityQuestionAttemptListOptions option = new UserSecurityQuestionAttemptListOptions()
         option.setUserId(new UserId(userId))
         option.setSecurityQuestionId(new SecurityQuestionId(123L))
-        List<UserSecurityQuestionAttempt> attempts = userSecurityQuestionAttemptRepository.search(option)
+        List<UserSecurityQuestionAttempt> attempts =
+                userSecurityQuestionAttemptRepository.search(option).wrapped().get()
         assert attempts.size() != 0
     }
 

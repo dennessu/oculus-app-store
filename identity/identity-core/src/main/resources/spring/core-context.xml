@@ -394,6 +394,38 @@
         </property>
     </bean>
 
+    <bean id="userSecurityQuestionAttemptFilter" class="com.junbo.identity.core.service.filter.UserSecurityQuestionAttemptFilter">
+        <property name="readableProperties">
+            <list>
+                <value>id</value>
+                <value>userId</value>
+                <value>securityQuestionId</value>
+                <value>ipAddress</value>
+                <value>userAgent</value>
+                <value>clientId</value>
+                <value>succeeded</value>
+                <value>resourceAge</value>
+                <value>createdTime</value>
+                <value>updatedTime</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForCreate">
+            <list>
+                <value>securityQuestionId</value>
+                <value>ipAddress</value>
+                <value>value</value>
+                <value>userAgent</value>
+                <value>clientId</value>
+                <value>succeeded</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForUpdate">
+            <list></list>
+        </property>
+    </bean>
+
     <bean id="userTosFilter" class="com.junbo.identity.core.service.filter.UserTosFilter">
         <property name="readableProperties">
             <list>

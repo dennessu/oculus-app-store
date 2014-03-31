@@ -210,4 +210,17 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 409, code = "2000027", description = "Security Question {0} not found.", field = "{0}")
     AppError securityQuestionNotActive(SecurityQuestionId securityQuestionId);
+
+    @ErrorDef(httpStatusCode = 409, code = "2000028",
+            description = "User Security Question Attempt {0} not found.", field = "{0}")
+    AppError userSecurityQuestionAttemptNotFound(UserSecurityQuestionAttemptId userSecurityQuestionAttemptId);
+
+    @ErrorDef(httpStatusCode = 409, code = "2000029", description = "User Security Question isn't valid.")
+    AppError userSecurityQuestionNotValid();
+
+    @ErrorDef(httpStatusCode = 409, code = "2000030", description = "User Security Question not found.")
+    AppError userSecurityQuestionNotFound();
+
+    @ErrorDef(httpStatusCode = 404, code = "2000031", description = "User security question is incorrect.")
+    AppError userSecurityQuestionIncorrect();
 }

@@ -53,6 +53,11 @@ public interface SelfMapper {
     UserSecurityQuestion mergeUserSecurityQuestion(UserSecurityQuestion source,
                                                    UserSecurityQuestion base, MappingContext context);
 
+    UserSecurityQuestionAttempt filterUserSecurityQuestionAttempt(UserSecurityQuestionAttempt entity,
+                                                                  MappingContext mappingContext);
+    UserSecurityQuestionAttempt mergeUserSecurityQuestionAttempt(UserSecurityQuestionAttempt source,
+                                                      UserSecurityQuestionAttempt base, MappingContext mappingContext);
+
     UserTos filterUserTos(UserTos userTos, MappingContext context);
     UserTos mergeUserTos(UserTos source, UserTos base, MappingContext context);
 }
