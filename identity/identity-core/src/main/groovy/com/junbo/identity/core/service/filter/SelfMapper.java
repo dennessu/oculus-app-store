@@ -40,6 +40,9 @@ public interface SelfMapper {
     UserOptin filterUserOptin(UserOptin userOptin, MappingContext context);
     UserOptin mergeUserOptin(UserOptin source, UserOptin base, MappingContext context);
 
+    UserPassword filterUserPassword(UserPassword userPassword, MappingContext context);
+    UserPassword mergeUserPassword(UserPassword source, UserPassword base, MappingContext context);
+
     UserTos filterUserTos(UserTos userTos, MappingContext context);
     UserTos mergeUserTos(UserTos source, UserTos base, MappingContext context);
 }

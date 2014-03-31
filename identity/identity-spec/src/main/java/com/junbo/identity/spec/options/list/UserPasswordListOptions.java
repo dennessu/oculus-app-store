@@ -19,6 +19,9 @@ public class UserPasswordListOptions extends PagingGetOptions {
     @QueryParam("active")
     private Boolean active;
 
+    @QueryParam("properties")
+    private String properties;
+
     public UserId getUserId() {
         return userId;
     }
@@ -33,5 +36,13 @@ public class UserPasswordListOptions extends PagingGetOptions {
 
     public void setActive(Boolean active) {
         this.active = active;
+    }
+
+    public String getProperties() {
+        return properties;
+    }
+
+    public void setProperties(String properties) {
+        this.properties = properties;
     }
 }

@@ -271,6 +271,36 @@
         </property>
     </bean>
 
+    <bean id="userPasswordFilter" class="com.junbo.identity.core.service.filter.UserPasswordFilter">
+        <property name="readableProperties">
+            <list>
+                <value>id</value>
+                <value>expiresBy</value>
+                <value>changeAtNextLogin</value>
+                <value>userId</value>
+                <value>active</value>
+                <value>strength</value>
+                <value>resourceAge</value>
+                <value>createdTime</value>
+                <value>updatedTime</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForCreate">
+            <list>
+                <value>expiresBy</value>
+                <value>changeAtNextLogin</value>
+                <value>value</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForUpdate">
+            <list>
+
+            </list>
+        </property>
+    </bean>
+
     <bean id="userTosFilter" class="com.junbo.identity.core.service.filter.UserTosFilter">
         <property name="readableProperties">
             <list>
