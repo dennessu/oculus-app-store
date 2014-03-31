@@ -49,12 +49,16 @@ public class ValidationHelper {
         verifyEqual(order.getOrderItems().size(), cart.getOffers().size(), "verify offer items in order");
         if (shippingAddressId != null) {
             verifyEqual(IdConverter.idLongToHexString(
-                    ShippingAddressId.class, order.getShippingAddressId().getValue()), shippingAddressId,
-                    "verify shipping address id");
+                            ShippingAddressId.class, order.getShippingAddressId().getValue()), shippingAddressId,
+                    "verify shipping address id"
+            );
         }
-        verifyEqual(IdConverter.idLongToHexString(
-                PaymentInstrumentId.class, order.getPaymentInstruments().get(0).getValue()), paymentInstrumentId,
-                "verify payment instrument id");
+        verifyEqual(
+                IdConverter.idLongToHexString(
+                        PaymentInstrumentId.class, order.getPaymentInstruments().get(0).getValue()),
+                paymentInstrumentId,
+                "verify payment instrument id"
+        );
 
         BigDecimal expectedTotalAmount = new BigDecimal(0);
         BigDecimal expectedTotalTaxAmount = new BigDecimal(0);
@@ -72,7 +76,8 @@ public class ValidationHelper {
                             expectedOrderItemAmount.toString(), "verify order item amount");
                     verifyEqual(orderItem.getTotalTax(),
                             expectedOrderItemAmount.multiply(new BigDecimal(0.087)).
-                                    setScale(2, RoundingMode.UP), "Verify total tax");
+                                    setScale(2, RoundingMode.UP), "Verify total tax"
+                    );
                     expectedTotalTaxAmount = expectedTotalTaxAmount.add(orderItem.getTotalTax());
                     expectedTotalAmount = expectedTotalAmount.add(expectedOrderItemAmount);
                     break;

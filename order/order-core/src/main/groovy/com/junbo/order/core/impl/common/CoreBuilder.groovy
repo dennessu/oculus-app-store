@@ -112,7 +112,7 @@ class CoreBuilder {
 
     static Discount buildDiscount(OrderRatingItem ri) {
         def discount = new Discount()
-        discount.discountAmount = ri.discountAmount
+        discount.discountAmount = ri.totalDiscountAmount
         discount.discountType = DiscountType.OFFER_DISCOUNT
         // TODO: need to discuss the coupon logic
         if (CollectionUtils.isEmpty(ri.promotions)) {
@@ -129,9 +129,9 @@ class CoreBuilder {
         if (ratingItem == null) {
             return item
         }
-        item.totalAmount = ratingItem.finalAmount
-        item.totalDiscount = ratingItem.discountAmount
-        item.unitPrice = ratingItem.originalAmount
+        item.totalAmount = ratingItem.finalTotalAmount
+        item.totalDiscount = ratingItem.totalDiscountAmount
+        item.unitPrice = ratingItem.originalUnitPrice
         item.honorUntilTime = null
         item.totalTax = item.totalTax ?: BigDecimal.ZERO
         item.isTaxExempted = item.isTaxExempted ?: false

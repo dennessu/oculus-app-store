@@ -6,6 +6,7 @@ import com.junbo.common.model.Results
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.core.OrderService
 import com.junbo.order.core.impl.common.OrderValidator
+import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.ApiContext
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.resource.OrderResource
@@ -58,7 +59,7 @@ class OrderResourceImpl implements OrderResource {
             return Promise.pure(persistedOrder)
         }
         if (!order?.tentative) {
-            return orderService.createOrder(order, new ApiContext(requestContext.headers))
+            throw AppErrors.INSTANCE.fieldInvalid('tentative').exception()
         }
         return orderService.createQuote(order, new ApiContext(requestContext.headers))
     }

@@ -237,6 +237,30 @@ Identity.prototype.PutUser = function(userId, dataObj, cb){
     client.Request(options, dataObj, cb);
 }
 
+Identity.prototype.PostRestPassword = function(userId, newPassword, cb){
+    /*
+     Method: POST
+     URL: /rest/users/{userId}/reset-password?newPassword=asdfasdf
+     Data Type: JSON
+     Content-Type: 'application/json'
+     Request:
+     Response:
+     */
+
+    var options = {
+        host: this.Host,
+        port: this.Port,
+        path: "/rest/users/" + userId + "/reset-password?newPassword=" + newPassword,
+        method: 'POST',
+        headers:{
+            'Content-Type': 'application/json'
+        }
+    };
+
+    var client = new RestClient();
+    client.Request(options, null, cb);
+}
+
 Identity.prototype.PostCreateProfiles = function(userId, dataObj, cb){
   /*
    Method: POST

@@ -58,8 +58,8 @@ RestClient.prototype.Request = function(options, data, cb){
   // Create request
   var request = http.request(requestOpts, function(res){
 
-    console.log("-------------------------------------------------------");
-    console.log(requestOpts.path);
+    console.log("HTTP Response ---------------------------------------");
+    console.log("[" + requestOpts.method+ "]", requestOpts.path);
     console.log('Response Status: ', res.statusCode);
     console.log('Response Headers: \n', res.headers);
 
@@ -71,7 +71,7 @@ RestClient.prototype.Request = function(options, data, cb){
       resData += chunk;
     });
     res.on('end', function(){
-        console.log("------------");
+      console.log("------------");
       console.log("Receive Data:\n", resData);
       console.log("-------------------------------------------------------");
 

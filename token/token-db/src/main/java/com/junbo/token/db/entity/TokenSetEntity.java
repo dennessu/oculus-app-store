@@ -33,9 +33,6 @@ public class TokenSetEntity extends GenericEntity {
     @Column(name = "generation_length")
     private TokenLength generationLength;
 
-    @Column(name = "generation_seed")
-    private Long generationSeed;
-
     public Long getId() {
         return id;
     }
@@ -66,14 +63,6 @@ public class TokenSetEntity extends GenericEntity {
 
     public void setGenerationLength(TokenLength generationLength) {
         this.generationLength = generationLength;
-    }
-
-    public Long getGenerationSeed() {
-        return generationSeed;
-    }
-
-    public void setGenerationSeed(Long generationSeed) {
-        this.generationSeed = generationSeed;
     }
 
 }

@@ -7,7 +7,8 @@ package com.junbo.test.identity;
 
 import com.junbo.identity.spec.model.user.User;
 
-import org.testng.annotations.Test;
+import com.junbo.test.common.HttpclientHelper;
+import org.testng.annotations.*;
 
 import static org.testng.AssertJUnit.*;
 
@@ -15,6 +16,16 @@ import static org.testng.AssertJUnit.*;
  * @author dw
  */
 public class postUser {
+
+    @BeforeTest
+    public void setup() {
+        HttpclientHelper.CreateHttpClient();
+    }
+
+    @AfterTest
+    public void dispose() throws Exception {
+        HttpclientHelper.CloseHttpClient();
+    }
 
     @Test(groups = "bvt")
     public void postUser() throws Exception {

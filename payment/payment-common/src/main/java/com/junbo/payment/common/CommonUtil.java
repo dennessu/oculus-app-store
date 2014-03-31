@@ -72,6 +72,11 @@ public final class CommonUtil {
     }
 
     public static void preValidation(Object obj) {
+        if(obj instanceof List){
+            for(int i = 0; i < ((List) obj).size(); i ++){
+                preValidation(((List) obj).get(i));
+            }
+        }
         for(Field field : obj.getClass().getDeclaredFields()){
             for(Annotation annotation : field.getAnnotations()){
                 if(annotation instanceof FilterIn){
@@ -100,6 +105,11 @@ public final class CommonUtil {
     }
 
     public static void postFilter(Object obj) {
+        if(obj instanceof List){
+            for(int i = 0; i < ((List) obj).size(); i ++){
+                postFilter(((List) obj).get(i));
+            }
+        }
         for(Field field : obj.getClass().getDeclaredFields()){
             for(Annotation annotation : field.getAnnotations()){
                 if(annotation instanceof FilterOut){

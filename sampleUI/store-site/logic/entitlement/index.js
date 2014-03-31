@@ -31,6 +31,28 @@ Entitlement.GetEntitlements = function (data, callback) {
     });
 };
 
+Entitlement.GetEntitlementsByUserId = function (data, callback) {
+    var body = data.data;
+    var cookies = data.cookies;
+    var query = data.query;
+
+    var userId = cookies[process.AppConfig.CookiesName.UserId];
+
+    var dataProvider = new DataProvider(process.AppConfig.Entitlement_API_Host, process.AppConfig.Entitlement_API_Port);
+
+    dataProvider.GetEntitlementsByUserId(userId, function(result){
+        var resultModel = new DomainModels.ResultModel();
+        if(result.StatusCode == 200){
+            resultModel.status = DomainModels.ResultStatusEnum.Normal;
+        }else{
+            resultModel.status = DomainModels.ResultStatusEnum.APIError;
+        }
+        resultModel.data = result.Data;
+
+        callback(Utils.GenerateResponseModel(resultModel));
+    });
+};
+
 Entitlement.PostEntitlement = function (data, callback) {
     var body = data.data;
     var cookies = data.cookies;
@@ -47,7 +69,7 @@ Entitlement.PostEntitlement = function (data, callback) {
 
     var dataProvider = new DataProvider(process.AppConfig.Billing_API_Host, process.AppConfig.Billing_API_Port);
 
-    dataProvider.PostEntitlement(userId, devId, model, function(result){
+    dataProvider.PostEntitlement(model, function(result){
         var resultModel = new DomainModels.ResultModel();
 
         if(result.StatusCode == 200){

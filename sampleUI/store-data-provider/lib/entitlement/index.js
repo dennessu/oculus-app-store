@@ -30,7 +30,31 @@ Entitlement.prototype.GetEntitlements = function(userId, devId, type, cb){
   client.Request(options, null, cb);
 };
 
-Entitlement.prototype.PostEntitlement = function(userId, devId, dataObj, cb){
+Entitlement.prototype.GetEntitlementsByUserId = function(userId, cb){
+    /*
+     Method: GET
+     URL: /rest/users/{userId}/entitlements
+     Data Type: QueryString
+     Content-Type: none
+     Request: null
+     Response: 200
+     */
+
+    var options = {
+        host: this.Host,
+        port: this.Port,
+        path: "/rest/users/"+ userId +"/entitlements",
+        method: 'GET',
+        headers:{
+            'Content-Type': 'application/json'
+        }
+    };
+
+    var client = new RestClient();
+    client.Request(options, null, cb);
+};
+
+Entitlement.prototype.PostEntitlement = function(dataObj, cb){
     /*
      Method: POST
      URL: /rest/users/{userId}/entitlements?developerId={devId}
@@ -43,7 +67,7 @@ Entitlement.prototype.PostEntitlement = function(userId, devId, dataObj, cb){
     var options = {
         host: this.Host,
         port: this.Port,
-        path: "/rest/users/" + userId + "/entitlements?developerId=" + devId,
+        path: "/rest/entitlements",
         method: 'POST',
         headers:{
             'Content-Type': 'application/json'
