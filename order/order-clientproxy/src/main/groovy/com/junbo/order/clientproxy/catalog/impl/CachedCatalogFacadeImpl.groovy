@@ -5,6 +5,7 @@ import com.junbo.order.clientproxy.catalog.CatalogFacade
 import com.junbo.order.clientproxy.model.OrderOffer
 import com.junbo.order.spec.error.AppErrors
 import groovy.transform.CompileStatic
+import groovy.transform.TypeChecked
 import net.sf.ehcache.Cache
 import net.sf.ehcache.CacheManager
 import net.sf.ehcache.Element
@@ -18,6 +19,7 @@ import org.springframework.cache.ehcache.EhCacheCacheManager
  * Implementation of catalog facade with cache
  */
 @CompileStatic
+@TypeChecked
 class CachedCatalogFacadeImpl implements CatalogFacade {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(CachedCatalogFacadeImpl)

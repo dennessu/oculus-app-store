@@ -1,5 +1,4 @@
 package com.junbo.order.mock
-
 import com.junbo.langur.core.promise.Promise
 import com.junbo.rating.spec.model.request.*
 import com.junbo.rating.spec.resource.RatingResource
@@ -7,7 +6,6 @@ import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
-
 /**
  * Created by chriszhu on 2/21/14.
  */
@@ -29,9 +27,9 @@ class MockRatingResource extends BaseMock implements RatingResource {
         request.shippingBenefit = new ShippingBenefit()
         request.shippingBenefit.shippingFee = ten
         request.lineItems?.each { OrderRatingItem item ->
-            item.finalAmount = fifty
-            item.discountAmount = ten
-            item.originalAmount = sixty
+            item.finalTotalAmount = fifty
+            item.totalDiscountAmount = ten
+            item.originalUnitPrice = sixty
             List<Long> proms = []
             proms.add(generateLong())
             item.promotions = ((Long[])proms?.toArray()) as Set
@@ -41,7 +39,7 @@ class MockRatingResource extends BaseMock implements RatingResource {
     }
 
     @Override
-    Promise<OfferRatingRequest> offersRating(OfferRatingRequest request) {
+    Promise<OfferRatingRequest> offerRating(OfferRatingRequest request) {
         return null
     }
 }

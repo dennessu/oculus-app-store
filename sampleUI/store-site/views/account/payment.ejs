@@ -6,7 +6,7 @@
         <div class="list">
             {{#each payments itemController="AccountPaymentItem"}}
             <dl>
-                <dd><label>{{creditCardRequest.creditCardType}}</label></dd>
+                <dd><label>{{creditCardRequest.type}}</label></dd>
                 <dd class="number">{{cardDisplay}}</dd>
                 <dd class="exp">Exp {{expDisplay}}</dd>
                 <dd><a href="#" class="btn btn-small btn-primary" {{action "DisplayDelDialog"}}>Delete</a></dd>

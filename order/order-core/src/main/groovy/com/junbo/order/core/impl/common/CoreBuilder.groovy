@@ -22,11 +22,13 @@ import com.junbo.order.spec.model.OrderItem
 import com.junbo.rating.spec.model.request.OrderRatingItem
 import com.junbo.rating.spec.model.request.OrderRatingRequest
 import groovy.transform.CompileStatic
+import groovy.transform.TypeChecked
 import org.apache.commons.collections.CollectionUtils
 /**
  * Created by chriszhu on 2/24/14.
  */
 @CompileStatic
+@TypeChecked
 class CoreBuilder {
 
     static Balance buildBalance(OrderServiceContext context, BalanceType balanceType) {
@@ -104,11 +106,13 @@ class CoreBuilder {
                 order.discounts.add(d)
             }
         }
+        order.totalTax = order.totalTax ?: BigDecimal.ZERO
+        order.isTaxInclusive = order.isTaxInclusive ?: false
     }
 
     static Discount buildDiscount(OrderRatingItem ri) {
         def discount = new Discount()
-        discount.discountAmount = ri.discountAmount
+        discount.discountAmount = ri.totalDiscountAmount
         discount.discountType = DiscountType.OFFER_DISCOUNT
         // TODO: need to discuss the coupon logic
         if (CollectionUtils.isEmpty(ri.promotions)) {
@@ -125,12 +129,12 @@ class CoreBuilder {
         if (ratingItem == null) {
             return item
         }
-        item.totalAmount = ratingItem.finalAmount
-        item.totalDiscount = ratingItem.discountAmount
-        // todo get unit price from rating
-        item.unitPrice =
-                ratingItem.quantity == 0 ? ratingItem.originalAmount : ratingItem.originalAmount / ratingItem.quantity
+        item.totalAmount = ratingItem.finalTotalAmount
+        item.totalDiscount = ratingItem.totalDiscountAmount
+        item.unitPrice = ratingItem.originalUnitPrice
         item.honorUntilTime = null
+        item.totalTax = item.totalTax ?: BigDecimal.ZERO
+        item.isTaxExempted = item.isTaxExempted ?: false
         return item
     }
 

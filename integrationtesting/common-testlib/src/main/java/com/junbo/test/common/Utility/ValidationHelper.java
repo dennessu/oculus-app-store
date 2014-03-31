@@ -6,8 +6,10 @@
 package com.junbo.test.common.Utility;
 
 import com.junbo.cart.spec.model.item.OfferItem;
+import com.junbo.common.id.OrderId;
 import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.common.id.ShippingAddressId;
+import com.junbo.common.id.UserId;
 import com.junbo.order.spec.model.OrderItem;
 import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.common.Entities.enums.Currency;
@@ -19,6 +21,7 @@ import com.junbo.cart.spec.model.Cart;
 import com.junbo.test.common.libs.IdConverter;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 /**
@@ -41,17 +44,21 @@ public class ValidationHelper {
         //verifyEqual(order.getTentative(), false, "verify tentative after order complete");
         verifyEqual(order.getCountry(), country.toString(), "verify country field in order");
         verifyEqual(order.getCurrency(), currency.toString(), "verify currency field in order");
-        verifyEqual(order.getStatus(), "OPEN", "verify order status");
+        verifyEqual(order.getStatus(), "COMPLETED", "verify order status");
 
         verifyEqual(order.getOrderItems().size(), cart.getOffers().size(), "verify offer items in order");
         if (shippingAddressId != null) {
             verifyEqual(IdConverter.idLongToHexString(
-                    ShippingAddressId.class, order.getShippingAddressId().getValue()), shippingAddressId,
-                    "verify shipping address id");
+                            ShippingAddressId.class, order.getShippingAddressId().getValue()), shippingAddressId,
+                    "verify shipping address id"
+            );
         }
-        verifyEqual(IdConverter.idLongToHexString(
-                PaymentInstrumentId.class, order.getPaymentInstruments().get(0).getValue()), paymentInstrumentId,
-                "verify payment instrument id");
+        verifyEqual(
+                IdConverter.idLongToHexString(
+                        PaymentInstrumentId.class, order.getPaymentInstruments().get(0).getValue()),
+                paymentInstrumentId,
+                "verify payment instrument id"
+        );
 
         BigDecimal expectedTotalAmount = new BigDecimal(0);
         BigDecimal expectedTotalTaxAmount = new BigDecimal(0);
@@ -68,9 +75,11 @@ public class ValidationHelper {
                     verifyEqual(orderItem.getTotalAmount().toString(),
                             expectedOrderItemAmount.toString(), "verify order item amount");
                     verifyEqual(orderItem.getTotalTax(),
-                            expectedOrderItemAmount.multiply(new BigDecimal(0.87)), "Verify total tax ");
-                    expectedTotalTaxAmount.add(orderItem.getTotalTax());
-                    expectedTotalAmount.add(expectedOrderItemAmount);
+                            expectedOrderItemAmount.multiply(new BigDecimal(0.087)).
+                                    setScale(2, RoundingMode.UP), "Verify total tax"
+                    );
+                    expectedTotalTaxAmount = expectedTotalTaxAmount.add(orderItem.getTotalTax());
+                    expectedTotalAmount = expectedTotalAmount.add(expectedOrderItemAmount);
                     break;
                 }
             }
@@ -80,13 +89,24 @@ public class ValidationHelper {
         verifyEqual(order.getTotalTax(), expectedTotalTaxAmount, "verify order total tax");
     }
 
-    public void validateEmailHistory(String uid) throws Exception {
-        String sql = "";
-        verifyEqual(dbHelper.executeScalar(sql), "", "");
+    public void validateEmailHistory(String uid, String orderId) throws Exception {
+        String id = IdConverter.hexStringToId(UserId.class, uid).toString();
+        String sql = String.format("select payload from email_history where user_id=\'%s\'", id);
+        String resultString = dbHelper.executeScalar(sql, DBHelper.DBName.EMAIL);
+
+        verifyEqual(resultString.indexOf("OrderConfirmation") >= 0, true, "Verify email type");
+        verifyEqual(resultString.indexOf(
+                IdConverter.hexStringToId(OrderId.class, orderId).toString()) >= 0, true, "verify order Id");
+        verifyEqual(resultString.indexOf("SUCCEED") >= 0, true, "Verify email sent status");
+        verifyEqual(resultString.indexOf(
+                Master.getInstance().getUser(uid).getUserName()) >= 0, true, "verify email receipt correct");
+        verifyEqual(resultString.indexOf(
+                IdConverter.hexStringToId(UserId.class, uid).toString()) >= 0, true, "verify user id");
+
     }
 
     public static void verifyEqual(BigDecimal actual, BigDecimal expect, String message) {
-        if (actual != expect) {
+        if (actual.doubleValue() != expect.doubleValue()) {
             throw new TestException(
                     String.format("Verify failed for %s, expect %s, but found %s", message, expect, actual));
         }

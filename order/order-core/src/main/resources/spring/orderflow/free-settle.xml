@@ -9,7 +9,6 @@
         <wf:end-state id="endState">
             <wf:on-entry>
                 <wf:action ref="validateUserAction"/>
-
                 <wf:action ref="markSettleAction"/>
                 <wf:action ref="fulfillmentAction"/>
                 <wf:action ref="sendEmailAction"/>

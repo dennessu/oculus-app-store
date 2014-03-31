@@ -167,17 +167,6 @@
 			);
 			CREATE INDEX billing_transaction_balance_id_idx ON billing_transaction (balance_id);
 			CREATE INDEX billing_transaction_piid_id_idx ON billing_transaction (pi_id);
-
-			CREATE TABLE transaction_event (
-				event_id BIGINT NOT NULL,
-				transaction_id BIGINT NOT NULL,
-				amount DECIMAL NOT NULL,
-				action_type_id SMALLINT NOT NULL,
-				status_id SMALLINT NOT NULL,
-				event_date TIMESTAMP NOT NULL,
-				PRIMARY KEY(event_id)
-			);
-			CREATE INDEX billing_transaction_event_transaction_id_idx ON transaction_event (transaction_id);
                 ]]>
         </sql>
     </changeSet>

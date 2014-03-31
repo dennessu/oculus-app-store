@@ -1,17 +1,19 @@
 package com.junbo.order.core.impl.common
-
 import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.spec.error.AppErrors
+import com.junbo.order.spec.model.Order
 import groovy.transform.CompileStatic
+import groovy.transform.TypeChecked
+import org.apache.commons.collections.CollectionUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
-
 /**
  * Class to do some general validation on order
  * Created by chriszhu on 3/18/14.
  */
 @CompileStatic
+@TypeChecked
 @Component('orderValidator')
 class OrderValidator {
 
@@ -22,6 +24,13 @@ class OrderValidator {
     OrderValidator notNull(Object val, String fieldName) {
         if (val == null) {
             throw AppErrors.INSTANCE.fieldInvalid(fieldName, 'value could not be null').exception()
+        }
+        return this
+    }
+
+    OrderValidator notEmpty(Collection val, String fieldName) {
+        if (CollectionUtils.isEmpty(val)) {
+            throw AppErrors.INSTANCE.fieldInvalid(fieldName, 'value could not be empty').exception()
         }
         return this
     }
@@ -55,5 +64,19 @@ class OrderValidator {
         return this
     }
 
-
+    OrderValidator validateSettleOrderRequest(Order order) {
+        assert (order != null)
+        if (!order.tentative) {
+            // validate pi is there if amount is zero
+            if (!order.tentative) {
+                if (CoreUtils.hasPhysicalOffer(order)) {
+                    notNull(order.shippingMethodId, 'shippingMethodId')
+                    notNull(order.shippingAddressId, 'shippingAddressId')
+                }
+                if (!CoreUtils.isFreeOrder(order)) {
+                    notEmpty(order.paymentInstruments, 'paymentInstruments')
+                }
+            }
+        }
+    }
 }

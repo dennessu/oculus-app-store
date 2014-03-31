@@ -5,10 +5,10 @@
     <p class="error">Please select!</p>
     {{/if}}
     <dl class="radio">
-        {{#each}}
+        {{#each results}}
         <dt>
             <lable>
-                {{input type="radio" name="ShippingInfo" value=id}}
+                {{input type="radio" name="ShippingInfo" value=self.id}}
                 <span>{{street}}<br>{{city}} {{state}} {{postalCode}}</span>
             </lable>
         </dt>

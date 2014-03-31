@@ -23,7 +23,5 @@ module.exports = function(){
         "type": "Home",
         "number": "12345678"
     };
-    this.relationship = "",
-    this.email = "",
     this.trackingUuid = ""; //"f48d6fae-adec-43d0-a865-00a0c91e6bf7"
 }

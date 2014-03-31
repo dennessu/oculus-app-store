@@ -16,6 +16,7 @@ import com.junbo.common.id.Id;
 import com.junbo.common.model.Results;
 import com.junbo.langur.core.promise.Promise;
 
+import javax.ws.rs.core.Response;
 import java.util.List;
 
 /**
@@ -71,18 +72,23 @@ public abstract class BaseResourceImpl<T extends VersionedModel> {
             return reject(entityId.getValue());
         } else if (Status.RELEASED.equalsIgnoreCase(entity.getStatus())) {
             return release(entityId.getValue());
+        } else if (Status.REMOVED.equalsIgnoreCase(entity.getStatus())) {
+            return remove(entityId.getValue());
+        }
+
+        if (entity.getStatus()==null) {
+            entity.setStatus(Status.DESIGN);
         }
 
         return Promise.pure(getEntityService().update(entityId.getValue(), entity));
     }
 
-    public Promise<Void> remove(Long entityId) {
-        getEntityService().remove(entityId);
-        return Promise.pure(null);
+    public Promise<T> remove(Long entityId) {
+        return Promise.pure(getEntityService().remove(entityId));
     }
 
-    public Promise<Void> delete(Long entityId) {
+    public Promise<Response> delete(Long entityId) {
         getEntityService().delete(entityId);
-        return Promise.pure(null);
+        return Promise.pure(Response.status(204).build());
     }
 }
