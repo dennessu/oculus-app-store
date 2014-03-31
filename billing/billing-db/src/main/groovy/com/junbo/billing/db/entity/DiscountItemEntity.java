@@ -4,7 +4,7 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.billing.db.balance;
+package com.junbo.billing.db.entity;
 
 import com.junbo.billing.db.BaseEntity;
 import com.junbo.billing.db.EntityValidationCode;
