@@ -122,7 +122,9 @@ class OrderServiceImpl implements OrderService {
     Promise<Order> createQuote(Order order, ApiContext context) {
         LOGGER.info('name=Create_Tentative_Order. userId: {}', order.user.value)
 
+        order.id = null
         setHonoredTime(order)
+
         def orderServiceContext = initOrderServiceContext(order)
         prepareOrder(order).then {
             flowSelector.select(orderServiceContext, OrderServiceOperation.CREATE_TENTATIVE).then { FlowType flowType ->
