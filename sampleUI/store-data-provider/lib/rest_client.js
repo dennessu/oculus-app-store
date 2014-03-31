@@ -24,7 +24,7 @@ RestClient.GetDefaultOptions = function(){
 
 RestClient.prototype.Request = function(options, data, cb){
 
-  console.log("HTTP Request ------------------------------------");
+  console.log("HTTP Request --------------------", new Date());
   console.log("Request Options:\n", options);
   console.log("Request Data:\n", JSON.stringify(data));
 
@@ -58,7 +58,7 @@ RestClient.prototype.Request = function(options, data, cb){
   // Create request
   var request = http.request(requestOpts, function(res){
 
-    console.log("HTTP Response ---------------------------------------");
+    console.log("HTTP Response -----------------", new Date());
     console.log("[" + requestOpts.method+ "]", requestOpts.path);
     console.log('Response Status: ', res.statusCode);
     console.log('Response Headers: \n', res.headers);
@@ -71,7 +71,6 @@ RestClient.prototype.Request = function(options, data, cb){
       resData += chunk;
     });
     res.on('end', function(){
-      console.log("------------");
       console.log("Receive Data:\n", resData);
       console.log("-------------------------------------------------------");
 

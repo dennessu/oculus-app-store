@@ -1,6 +1,6 @@
 
 var EntitlementProvider = function(){
-    this._Provider = new DataProvider(AppConfig.API.Entitlement.Config, AppConfig.SocketAddress);
+    this._Provider = new DataProvider(AppConfig.API.Entitlement.Config, AppConfig.Runtime.SocketAddress);
     this._Namespace = AppConfig.API.Entitlement.Config.Namespace;
 
     for(var p in AppConfig.API.Entitlement){
