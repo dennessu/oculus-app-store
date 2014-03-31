@@ -18,8 +18,8 @@ import com.junbo.common.error.ErrorProxy;
 public interface AppClientExceptions {
     AppClientExceptions INSTANCE = ErrorProxy.newProxyInstance(AppClientExceptions.class);
 
-    @ErrorDef(httpStatusCode = 400, code = "40001", description = "The token {0} is invalid", field = "token_id")
-    AppError invalidToken(String tokenString);
+    @ErrorDef(httpStatusCode = 400, code = "40001", description = "The token is invalid", field = "token_id")
+    AppError invalidToken();
 
     @ErrorDef(httpStatusCode = 404, code = "40401",
             description = "the resource {0} is not found", field = "resource")
@@ -49,4 +49,7 @@ public interface AppClientExceptions {
 
     @ErrorDef(httpStatusCode = 400, code = "40008", description = "exceed the token usage limitation")
     AppError exceedTokenUsageLimit();
+
+    @ErrorDef(httpStatusCode = 400, code = "40008", description = "the product {0} is invalid to consume")
+    AppError invalidProduct(String product);
 }

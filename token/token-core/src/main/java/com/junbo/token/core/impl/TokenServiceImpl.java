@@ -9,6 +9,7 @@ package com.junbo.token.core.impl;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.token.common.CommonUtil;
 import com.junbo.token.common.exception.AppClientExceptions;
+import com.junbo.token.common.exception.AppServerExceptions;
 import com.junbo.token.core.TokenService;
 import com.junbo.token.core.mapper.ModelMapper;
 import com.junbo.token.core.mapper.OrderWrapper;
@@ -87,8 +88,18 @@ public class TokenServiceImpl implements TokenService {
         String decryptedToken = TokenUtil.decrypt(token);
         Long hashValue = TokenUtil.computeHash(decryptedToken).getHashValue();
         TokenItem item = tokenRepository.getTokenItem(hashValue);
+        if(item == null){
+            throw AppClientExceptions.INSTANCE.invalidToken().exception();
+        }
         TokenOrder order= tokenRepository.getTokenOrder(item.getOrderId());
-        validateTokenItem(item, order);
+        if(order == null){
+            throw AppServerExceptions.INSTANCE.InvalidTokenOrder(item.getOrderId().toString()).exception();
+        }
+        TokenSet tokenSet = tokenRepository.getTokenSet(order.getTokenSetId());
+        if(tokenSet == null){
+            throw AppServerExceptions.INSTANCE.InvalidTokenSet(order.getTokenSetId().toString()).exception();
+        }
+        validateTokenItem(item, order, tokenSet, consumption);
         updateTokenItem(item, order);
         consumption.setHashValue(hashValue);
         TokenConsumption result = tokenRepository.addConsumption(consumption);
@@ -97,8 +108,20 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override
-    public Promise<TokenItem> updateToken(TokenItem token) {
-        return null;
+    public Promise<TokenItem> updateToken(String tokenString, TokenItem token) {
+        if(CommonUtil.isNullOrEmpty(token.getStatus())){
+           throw AppClientExceptions.INSTANCE.missingField("status").exception();
+        }
+        if(CommonUtil.isNullOrEmpty(token.getDisableReason())){
+            throw AppClientExceptions.INSTANCE.missingField("disableReason").exception();
+        }
+        String decryptedToken = TokenUtil.decrypt(tokenString);
+        Long hashValue = TokenUtil.computeHash(decryptedToken).getHashValue();
+        if(!hashValue.equals(token.getHashValue())){
+            throw AppClientExceptions.INSTANCE.invalidToken().exception();
+        }
+        tokenRepository.updateTokenStatus(token.getHashValue(), ItemStatus.valueOf(token.getStatus()));
+        return Promise.pure(token);
     }
 
     @Override
@@ -196,17 +219,20 @@ public class TokenServiceImpl implements TokenService {
         if(consumption.getUserId() == null){
             throw AppClientExceptions.INSTANCE.missingField("user_id").exception();
         }
-        if(CommonUtil.isNullOrEmpty(consumption.getProducts())){
+        if(consumption.getProduct() == null){
             throw AppClientExceptions.INSTANCE.missingField("product").exception();
         }
     }
 
-    private void validateTokenItem(TokenItem item, TokenOrder order){
-        if(item.getStatus().equalsIgnoreCase(ItemStatus.ACTIVATED.toString())){
+    private void validateTokenItem(TokenItem item, TokenOrder order, TokenSet set, TokenConsumption consumption){
+        if(!item.getStatus().equalsIgnoreCase(ItemStatus.ACTIVATED.toString())){
             throw AppClientExceptions.INSTANCE.invalidTokenStatus(item.getStatus()).exception();
         }
-        if(order.getExpiredTime().before(new Date())){
+        if(order.getExpiredTime() != null && order.getExpiredTime().before(new Date())){
             throw AppClientExceptions.INSTANCE.tokenExpired().exception();
+        }
+        if(!set.getOfferIds().contains(consumption.getProduct())){
+            throw AppClientExceptions.INSTANCE.invalidProduct(consumption.getProduct().toString()).exception();
         }
         if(!order.getUsageLimit().equalsIgnoreCase(UNLIMIT_USE)){
             Long usageLimit = TokenUtil.getUsage(order.getUsageLimit());
@@ -221,6 +247,7 @@ public class TokenServiceImpl implements TokenService {
             Long usageLimit = TokenUtil.getUsage(order.getUsageLimit());
             if(usageLimit <= item.getTokenConsumptions().size() + 1){
                 tokenRepository.updateTokenStatus(item.getHashValue(), ItemStatus.USED);
+                item.setStatus(ItemStatus.USED.toString());
             }
         }
     }

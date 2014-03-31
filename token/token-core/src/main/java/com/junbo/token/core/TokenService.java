@@ -34,7 +34,7 @@ public interface TokenService {
     @Transactional
     Promise<TokenItem> consumeToken(String token, TokenConsumption consumption);
     @Transactional
-    Promise<TokenItem> updateToken(TokenItem token);
+    Promise<TokenItem> updateToken(String tokenString, TokenItem token);
     @Transactional(readOnly = true)
     Promise<TokenItem> getToken(String token);
 }
