@@ -6,11 +6,13 @@ import com.junbo.fulfilment.spec.model.FulfilmentRequest
 import com.junbo.fulfilment.spec.resource.FulfilmentResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
+import groovy.transform.TypeChecked
 import org.springframework.stereotype.Component
 /**
  * Created by fzhang on 14-3-7.
  */
 @CompileStatic
+@TypeChecked
 @Component('mockFulfillmentResource')
 class MockFulfillmentResource extends BaseMock implements FulfilmentResource {
 

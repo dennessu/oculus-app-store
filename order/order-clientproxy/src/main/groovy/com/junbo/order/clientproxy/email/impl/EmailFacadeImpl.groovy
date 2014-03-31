@@ -1,5 +1,4 @@
 package com.junbo.order.clientproxy.email.impl
-
 import com.junbo.catalog.spec.model.offer.Offer
 import com.junbo.email.spec.model.Email
 import com.junbo.email.spec.resource.EmailResource
@@ -13,13 +12,12 @@ import groovy.transform.TypeChecked
 import org.springframework.stereotype.Component
 
 import javax.annotation.Resource
-
 /**
  * Created by LinYi on 14-3-14.
  */
 @CompileStatic
-@Component('orderEmailFacade')
 @TypeChecked
+@Component('orderEmailFacade')
 class EmailFacadeImpl implements EmailFacade {
     @Resource(name='order.emailClient')
     EmailResource emailResource

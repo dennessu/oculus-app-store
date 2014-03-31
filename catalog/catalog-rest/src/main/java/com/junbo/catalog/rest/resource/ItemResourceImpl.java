@@ -16,6 +16,8 @@ import com.junbo.common.model.Results;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.ws.rs.core.Response;
+
 /**
  * Item resource implementation.
  */
@@ -36,6 +38,11 @@ public class ItemResourceImpl extends BaseResourceImpl<Item> implements ItemReso
     @Override
     public Promise<Item> update(ItemId itemId, Item item) {
         return super.update(itemId, item);
+    }
+
+    @Override
+    public Promise<Response> delete(ItemId itemId) {
+        return delete(itemId.getValue());
     }
 
     @Override

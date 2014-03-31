@@ -37,7 +37,7 @@ var AccountRoutes = {
             var provider = new IdentityProvider();
             provider.GetProfile(Utils.GenerateRequestModel(null), function(resultData){
                if(resultData.data.status == 200){
-                   var profile = JSON.parse(resultData.data.data);
+                   var profile = JSON.parse(resultData.data.data).items[0];
                    controller.set("content.firstName", profile.firstName);
                    controller.set("content.lastName", profile.lastName);
                }else{
@@ -91,7 +91,7 @@ var AccountRoutes = {
             var provider = new CartProvider();
             provider.GetOrders(Utils.GenerateRequestModel(null), function(resultData){
                 if(resultData.data.status == 200){
-                    var orders = JSON.parse(resultData.data.data).items;
+                    var orders = JSON.parse(resultData.data.data).results;
                     controller.set("content.orders", orders);
                 }else{
                     // TODO: Error
@@ -107,7 +107,7 @@ var AccountRoutes = {
             var provider = new PaymentProvider();
             provider.PaymentInstruments(Utils.GenerateRequestModel(null), function(result){
                 if(result.data.status == 200){
-                    var payments = JSON.parse(result.data.data).items;
+                    var payments = JSON.parse(result.data.data).results;
                     controoler.set("content.payments", payments);
                 }else{
                     console.log("Can't get the payment instruments");
@@ -149,7 +149,7 @@ var AccountRoutes = {
             var provider = new BillingProvider();
             provider.ShippingInfo(Utils.GenerateRequestModel(null), function(result){
                 if(result.data.status == 200){
-                    var shippings = JSON.parse(result.data.data);
+                    var shippings = JSON.parse(result.data.data).results;
                     controoler.set("content.shippings", shippings);
                 }else{
                     console.log("Can't get the shippings");
@@ -161,5 +161,21 @@ var AccountRoutes = {
         beforeModel: function(){
             Utils.GetViews(AppConfig.Templates.Account.AddShipping);
         }
-    })
+    }),
+    EntitlementsRoute: Ember.Route.extend({
+        beforeModel: function(){
+            Utils.GetViews(AppConfig.Templates.Account.Entitlements);
+        },
+        setupController: function(controoler, model){
+            var provider = new EntitlementProvider();
+            provider.GetByUser(Utils.GenerateRequestModel(null), function(result){
+                if(result.data.status == 200){
+                    var results = JSON.parse(result.data.data).results;
+                    controoler.set("content.results", results);
+                }else{
+                    console.log("Can't get the entitlements");
+                }
+            });
+        }
+    }),
 };

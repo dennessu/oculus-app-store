@@ -8,4 +8,6 @@ dependencies {
     compile (libraries.json_path)
     compile (libraries.fastjson)
     compile (libraries.common_codec)
+
+    compile (libraries.common_lib)
 }

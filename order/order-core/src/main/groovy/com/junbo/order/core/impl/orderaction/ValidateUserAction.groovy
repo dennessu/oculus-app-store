@@ -7,6 +7,7 @@ import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
 import com.junbo.order.spec.error.AppErrors
 import groovy.transform.CompileStatic
+import groovy.transform.TypeChecked
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
@@ -16,6 +17,7 @@ import javax.annotation.Resource
  * Created by chriszhu on 3/10/14.
  */
 @CompileStatic
+@TypeChecked
 @Component('validateUserAction')
 class ValidateUserAction implements Action {
 

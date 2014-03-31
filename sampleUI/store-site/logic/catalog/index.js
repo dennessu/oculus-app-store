@@ -68,7 +68,7 @@ exports.GetDownloadLinksByOfferId = function(data, callback){
               if(offer["items"] != undefined && offer["items"].length > 0){
                   itemsCount = offer.items.length;
                   offer.items.forEach(function(item){
-                      dataProvider.GetItemById(item.id, function(itemResult){
+                      dataProvider.GetItemById(item.itemId.id, function(itemResult){
                           if(itemResult.StatusCode == 200){
                               var itemObj = JSON.parse(itemResult.Data);
                               emitter.emit("AppendLink", itemObj.name, itemObj.properties["downloadLink"]);

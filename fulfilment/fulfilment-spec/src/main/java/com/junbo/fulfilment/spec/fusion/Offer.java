@@ -14,14 +14,11 @@ import java.util.List;
 public class Offer {
     private Long offerId;
 
-    private List<OfferAction> actions;
-    private List<LinkedEntry> items;
-    private List<LinkedEntry> subOffers;
+    private List<OfferAction> actions = new ArrayList<>();
+    private List<LinkedEntry> items = new ArrayList<>();
+    private List<LinkedEntry> subOffers = new ArrayList<>();
 
     public Offer() {
-        actions = new ArrayList<OfferAction>();
-        items = new ArrayList<LinkedEntry>();
-        subOffers = new ArrayList<LinkedEntry>();
     }
 
     public void addItem(LinkedEntry item) {

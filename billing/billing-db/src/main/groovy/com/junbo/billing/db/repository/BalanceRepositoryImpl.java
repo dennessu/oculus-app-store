@@ -189,7 +189,13 @@ public class BalanceRepositoryImpl implements BalanceRepository {
         balanceEntityDao.update(savedEntity);
 
         for(Transaction transaction : balance.getTransactions()) {
-            transactionRepository.updateTransaction(transaction);
+            if (transaction.getTransactionId() == null) {
+                transaction.setBalanceId(new BalanceId(balanceEntity.getBalanceId()));
+                transactionRepository.saveTransaction(transaction);
+            }
+            else {
+                transactionRepository.updateTransaction(transaction);
+            }
         }
 
         balanceEntityDao.flush();

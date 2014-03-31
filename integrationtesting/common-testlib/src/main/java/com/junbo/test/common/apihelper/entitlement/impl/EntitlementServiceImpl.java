@@ -10,7 +10,6 @@ import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.common.model.Results;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.langur.core.client.TypeReference;
-import com.junbo.test.common.apihelper.cart.impl.CartServiceImpl;
 import com.junbo.test.common.apihelper.entitlement.EntitlementService;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
@@ -34,7 +33,7 @@ public class EntitlementServiceImpl implements EntitlementService {
 
     private static String entitlementUrl = RestUrl.getRestUrl("entitlement");
 
-    private LogHelper logger = new LogHelper(CartServiceImpl.class);
+    private LogHelper logger = new LogHelper(EntitlementServiceImpl.class);
     private AsyncHttpClient asyncClient;
 
     private static EntitlementService instance;

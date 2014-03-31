@@ -35,7 +35,7 @@ class ValidateOrderAction implements Action {
 
         order.orderItems?.eachWithIndex { OrderItem item, int index ->
             orderValidator.notNull(item.offer, "orderItems[${index}].offer")
-            orderValidator.between(item.quantity, 0, null, "orderItems[${index}].quantity")
+            orderValidator.between(item.quantity, 1, 100, "orderItems[${index}].quantity")
         }
         return Promise.pure(null)
     }

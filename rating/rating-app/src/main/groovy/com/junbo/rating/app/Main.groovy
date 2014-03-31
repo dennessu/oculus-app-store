@@ -8,10 +8,20 @@ import org.glassfish.grizzly.http.server.HttpServer
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory
 import org.glassfish.jersey.server.ResourceConfig
 import org.glassfish.jersey.server.ServerProperties
+import org.slf4j.bridge.SLF4JBridgeHandler
+
 /**
  * App to launch Server.
  */
 class Main {
+    static {
+        SLF4JBridgeHandler.removeHandlersForRootLogger()
+        SLF4JBridgeHandler.install()
+
+        System.setProperty('net.spy.log.LoggerImpl', 'net.spy.memcached.compat.log.SLF4JLogger')
+        System.setProperty('logback.configurationFile', 'logback-identity.xml')
+    }
+
     static HttpServer startServer() {
         def resourceConfig = new ResourceConfig()
 

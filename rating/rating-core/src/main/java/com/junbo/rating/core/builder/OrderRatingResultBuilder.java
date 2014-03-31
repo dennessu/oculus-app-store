@@ -37,9 +37,10 @@ public class OrderRatingResultBuilder {
             item.setOfferId(entry.getOfferId());
             item.setQuantity(entry.getQuantity());
             item.setShippingMethodId(entry.getShippingMethodId());
-            item.setOriginalAmount(entry.getOriginalAmount().getValue());
-            item.setDiscountAmount(entry.getDiscountAmount().getValue());
-            item.setFinalAmount(item.getOriginalAmount().subtract(item.getDiscountAmount()));
+            item.setOriginalUnitPrice(entry.getOriginalAmount().getValue());
+            item.setOriginalTotalPrice(entry.getOriginalAmount().multiple(entry.getQuantity()).getValue());
+            item.setTotalDiscountAmount(entry.getDiscountAmount().multiple(entry.getQuantity()).getValue());
+            item.setFinalTotalAmount(item.getOriginalTotalPrice().subtract(item.getTotalDiscountAmount()));
             item.setPromotions(new HashSet<Long>());
             item.getPromotions().addAll(entry.getAppliedPromotion());
             result.getLineItems().add(item);

@@ -94,11 +94,6 @@
         <property name="entityType" value="com.junbo.billing.db.transaction.TransactionEntity"/>
     </bean>
 
-    <bean id="transactionEventEntityDao"
-          class="com.junbo.billing.db.dao.impl.TransactionEventEntityDaoImpl" parent="billingBaseDao">
-        <property name="entityType" value="com.junbo.billing.db.transaction.TransactionEventEntity"/>
-    </bean>
-
     <!--Mapper-->
     <bean class="com.junbo.billing.db.mapper.CommonMapper" />
     <bean id="modelMapper" class="com.junbo.billing.db.mapper.ModelMapperImpl"/>

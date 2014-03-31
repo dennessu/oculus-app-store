@@ -34,3 +34,7 @@ exports.Shipping = function(req, res){
 exports.AddShipping = function(req, res){
     res.render('modules/shipping_info_edit', {layout: false, title: "Store Demo"});
 };
+
+exports.Entitlements = function(req, res){
+    res.render('account/user_entitlements', {layout: false, title: "Store Demo"});
+};

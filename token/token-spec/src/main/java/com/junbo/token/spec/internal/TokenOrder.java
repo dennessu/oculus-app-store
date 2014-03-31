@@ -24,7 +24,7 @@ public class TokenOrder {
     private Long tokenSetId;
     private String status;
     private Date expiredTime;
-    private Long usageLimit;
+    private String usageLimit;
     private String createMethod;
     private Long quantity;
     private String activation;
@@ -70,11 +70,11 @@ public class TokenOrder {
         this.expiredTime = expiredTime;
     }
 
-    public Long getUsageLimit() {
+    public String getUsageLimit() {
         return usageLimit;
     }
 
-    public void setUsageLimit(Long usageLimit) {
+    public void setUsageLimit(String usageLimit) {
         this.usageLimit = usageLimit;
     }
 

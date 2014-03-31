@@ -150,8 +150,10 @@ var StoreControllers = {
             }
         }.observes('model.qty'),
 
+
         changeStatus: function(){
             var _self = this;
+            console.log("[Change Status]:", _self.get("model.selected"));
 
             var data = {"cart_items": [{
                 product_id: _self.get("model.product_id"),
@@ -172,7 +174,8 @@ var StoreControllers = {
                     //TODO: ?
                 }
             });
-        }.observes('model.selected'),
+        }.observes('selected'),
+
 
         actions: {
             Change: function(value){

@@ -4,6 +4,7 @@ import com.junbo.billing.spec.resource.CurrencyResource
 import com.junbo.common.model.Results
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
+import groovy.transform.TypeChecked
 import org.springframework.stereotype.Component
 
 import javax.ws.rs.PathParam
@@ -12,6 +13,7 @@ import javax.ws.rs.PathParam
  * Created by fzhang on 14-3-27.
  */
 @CompileStatic
+@TypeChecked
 @Component('mockCurrencyResource')
 class MockCurrencyResource implements CurrencyResource {
     @Override

@@ -150,13 +150,16 @@ public class OrderRatingService extends RatingServiceSupport{
         for (Long shippingMethodId : shippingDetail.keySet()) {
             int quantity = shippingDetail.get(shippingMethodId);
             ShippingMethod shippingMethod = catalogGateway.getShippingMethod(shippingMethodId);
-            shippingFee = shippingFee.add(shippingMethod.getBasePrice());
-            if (quantity > shippingMethod.getBaseUnit()) {
-                int additionalUnit = quantity > shippingMethod.getCapUnit() ?
-                        shippingMethod.getCapUnit() - shippingMethod.getBaseUnit()
-                        : quantity - shippingMethod.getBaseUnit();
-                shippingFee = shippingFee.add(
-                        shippingMethod.getAdditionalPrice().multiply(new BigDecimal(additionalUnit)));
+            // TODO throw exception if the shipping method is not found
+            if (shippingMethod != null) {
+                shippingFee = shippingFee.add(shippingMethod.getBasePrice());
+                if (quantity > shippingMethod.getBaseUnit()) {
+                    int additionalUnit = quantity > shippingMethod.getCapUnit() ?
+                            shippingMethod.getCapUnit() - shippingMethod.getBaseUnit()
+                            : quantity - shippingMethod.getBaseUnit();
+                    shippingFee = shippingFee.add(
+                            shippingMethod.getAdditionalPrice().multiply(new BigDecimal(additionalUnit)));
+                }
             }
         }
 
