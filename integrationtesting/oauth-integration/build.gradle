@@ -31,10 +31,12 @@ repositories {
 
 dependencies {
 
-    compile 'com.junbo.identity:identity-spec:0.0.1-SNAPSHOT'
     compile(libraries.common_testlib)
+
+    compile 'com.junbo.identity:identity-spec:0.0.1-SNAPSHOT'
+    compile 'com.junbo.oauth:oauth-spec:0.0.1-SNAPSHOT'
+    compile 'com.junbo.test:identity-integration:0.0.1-SNAPSHOT'
 
     testCompile(libraries.junit)
     testCompile(libraries.testng)
-
 }
