@@ -43,6 +43,9 @@ public interface SelfMapper {
     UserPassword filterUserPassword(UserPassword userPassword, MappingContext context);
     UserPassword mergeUserPassword(UserPassword source, UserPassword base, MappingContext context);
 
+    UserPhoneNumber filterUserPhoneNumber(UserPhoneNumber userPhoneNumber, MappingContext context);
+    UserPhoneNumber mergeUserPhoneNumber(UserPhoneNumber source, UserPhoneNumber base, MappingContext context);
+
     UserTos filterUserTos(UserTos userTos, MappingContext context);
     UserTos mergeUserTos(UserTos source, UserTos base, MappingContext context);
 }
