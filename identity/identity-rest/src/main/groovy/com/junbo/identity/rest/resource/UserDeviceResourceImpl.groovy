@@ -177,7 +177,6 @@ class UserDeviceResourceImpl implements UserDeviceResource {
                         result.items.add(newUserDevice)
                     }
                 }
-                result.setItems(userDeviceList)
 
                 return Promise.pure(result)
             }

@@ -172,7 +172,6 @@ class UserTosResourceImpl implements UserTosResource {
                         result.items.add(newUserTos)
                     }
                 }
-                result.setItems(userTosList)
 
                 return Promise.pure(result)
             }

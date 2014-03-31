@@ -197,4 +197,7 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 409, code = "2000023", description = "User Password {0} not found.", field = "{0}")
     AppError userPasswordNotFound(UserPasswordId userPasswordId);
+
+    @ErrorDef(httpStatusCode = 409, code = "2000024", description = "User PhoneNumber {0} not found.", field = "{0}")
+    AppError userPhoneNumberNotFound(UserPhoneNumberId userPhoneNumberId);
 }

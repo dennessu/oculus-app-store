@@ -120,7 +120,6 @@ class UserPasswordResourceImpl implements UserPasswordResource {
                         result.items.add(newUserPassword)
                     }
                 }
-                result.setItems(userPasswordList)
 
                 return Promise.pure(result)
             }

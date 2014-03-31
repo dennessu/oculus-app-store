@@ -192,7 +192,6 @@ class UserAuthenticatorResourceImpl implements UserAuthenticatorResource {
                         result.items.add(newUserAuthenticator)
                     }
                 }
-                result.setItems(authenticatorList)
 
                 return Promise.pure(result)
             }

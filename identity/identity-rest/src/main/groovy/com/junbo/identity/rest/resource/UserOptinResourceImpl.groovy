@@ -171,7 +171,6 @@ class UserOptinResourceImpl implements UserOptinResource {
                         result.items.add(newUserOptin)
                     }
                 }
-                result.setItems(userOptinList)
 
                 return Promise.pure(result)
             }

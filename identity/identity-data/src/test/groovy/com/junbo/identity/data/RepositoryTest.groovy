@@ -367,22 +367,22 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userPhoneNumber.setVerified(true)
         userPhoneNumber.setCreatedTime(new Date())
         userPhoneNumber.setCreatedBy('lixia')
-        userPhoneNumber = userPhoneNumberRepository.save(userPhoneNumber)
+        userPhoneNumber = userPhoneNumberRepository.create(userPhoneNumber).wrapped().get()
 
-        UserPhoneNumber newUserPhoneNumber = userPhoneNumberRepository.get(userPhoneNumber.getId())
+        UserPhoneNumber newUserPhoneNumber = userPhoneNumberRepository.get(userPhoneNumber.getId()).wrapped().get()
         Assert.assertEquals(userPhoneNumber.getValue(), newUserPhoneNumber.getValue())
 
         String value = UUID.randomUUID().toString()
         newUserPhoneNumber.setValue(value)
         userPhoneNumberRepository.update(newUserPhoneNumber)
 
-        newUserPhoneNumber = userPhoneNumberRepository.get(userPhoneNumber.getId())
+        newUserPhoneNumber = userPhoneNumberRepository.get(userPhoneNumber.getId()).wrapped().get()
         Assert.assertEquals(value, newUserPhoneNumber.getValue())
 
         UserPhoneNumberListOptions getOption = new UserPhoneNumberListOptions()
         getOption.setUserId(new UserId(userId))
         getOption.setValue(value)
-        List<UserPhoneNumber> userPhoneNumbers = userPhoneNumberRepository.search(getOption)
+        List<UserPhoneNumber> userPhoneNumbers = userPhoneNumberRepository.search(getOption).wrapped().get()
         Assert.assertEquals(userPhoneNumbers.size(), 1)
     }
 

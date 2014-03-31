@@ -152,6 +152,23 @@
         <property name="userPasswordRepository" ref="userPasswordRepository" />
     </bean>
 
+    <bean id="userPhoneNumberValidator" class="com.junbo.identity.core.service.validator.impl.UserPhoneNumberValidatorImpl">
+        <property name="userRepository" ref="userRepository" />
+        <property name="userPhoneNumberRepository" ref="userPhoneNumberRepository" />
+        <property name="allowedValuePatterns">
+            <list>
+                <!-- http://regexlib.com/Search.aspx?k=phone+number&c=0&m=0&ps=20&p=12
+                    it should be the above configuration. Currently hard code it to 11 digital
+                -->
+                <value>[1-9][0-9]{10}</value>
+            </list>
+        </property>
+        <property name="typeMinLength" value="1" />
+        <property name="typeMaxLength" value="255" />
+        <property name="valueMinLength" value="1" />
+        <property name="valueMaxLength" value="255" />
+    </bean>
+
     <bean id="userTosValidator" class="com.junbo.identity.core.service.validator.impl.UserTosValidatorImpl">
         <property name="tosUriMinLength" value="1" />
         <property name="tosUriMaxLength" value="255" />
