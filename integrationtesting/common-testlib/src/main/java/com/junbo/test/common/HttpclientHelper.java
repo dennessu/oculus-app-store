@@ -54,12 +54,24 @@ public class HttpclientHelper {
     }
 
     public static CloseableHttpResponse SimpleGet(String requestURI) throws Exception {
-        return SimpleGet(requestURI, true);
+        return SimpleGet(requestURI, null, true);
     }
 
-    public static CloseableHttpResponse SimpleGet(String requestURI, Boolean enableRedirect) throws Exception {
+    public static CloseableHttpResponse SimpleGet(String requestURI, Boolean enableRedirect)
+            throws Exception {
+        return SimpleGet(requestURI, null, enableRedirect);
+    }
+
+    public static CloseableHttpResponse SimpleGet(
+            String requestURI, List<NameValuePair> nvpHeaders, Boolean enableRedirect)
+            throws Exception {
         HttpGet httpGet = new HttpGet(requestURI);
         httpGet.addHeader("Content-Type", "application/json");
+        if (nvpHeaders != null && !nvpHeaders.isEmpty()) {
+            for (NameValuePair nvp : nvpHeaders) {
+                httpGet.addHeader(nvp.getName(), nvp.getValue());
+            }
+        }
         httpGet.setConfig(RequestConfig.custom().setRedirectsEnabled(enableRedirect).build());
         return httpclient.execute(httpGet);
     }
