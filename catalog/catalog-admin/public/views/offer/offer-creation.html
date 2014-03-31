@@ -1,11 +1,11 @@
 <h1>Offer creation</h1>
-<form novalidate="novalidate" class="form-horizontal">
+<form novalidate="novalidate" class="form-horizontal" name="offerCreationForm">
     <div ng-include src="'views/offer/offer-edit.html'"></div>
 
     <div class="control-group">
         <div class="controls">
             <a ng-click="cancel()" class="btn btn-small btn-default">Cancel</a>
-            <a ng-click="createOffer()" class="btn btn-small btn-default">Save</a>
+            <a ng-click="offerCreationForm.$valid && createOffer()" class="btn btn-small btn-default">Save</a>
         </div>
     </div>
 </form>
