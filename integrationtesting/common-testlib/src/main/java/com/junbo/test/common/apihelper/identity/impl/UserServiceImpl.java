@@ -14,17 +14,9 @@ import com.junbo.test.common.libs.*;
 import com.junbo.test.common.apihelper.identity.UserService;
 import com.junbo.identity.spec.model.user.User;
 
-import com.ning.http.client.AsyncHttpClient;
-import com.ning.http.client.AsyncHttpClientConfig;
-import com.ning.http.client.Request;
-import com.ning.http.client.RequestBuilder;
-import com.ning.http.client.providers.netty.NettyResponse;
-import junit.framework.Assert;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.Future;
 
 /**
  * @author Jason
