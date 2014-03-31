@@ -14,4 +14,5 @@ import groovy.transform.CompileStatic
 @CompileStatic
 interface AuthorizeService {
     Set<String> getClaims(AuthorizeCallback callback)
+    Boolean getAuthorizeEnabled()
 }

@@ -190,14 +190,22 @@ class ClientProxyParser implements RestResourceHandler {
             )
         }
 
+        FormParam formParam = variableElement.getAnnotation(FormParam)
+        if (formParam != null) {
+            return new FormParameterModel(
+                    paramType: variableElement.asType().toString(),
+                    paramName: variableElement.toString(),
+                    formName: formParam.value()
+            )
+        }
+
         return new EntityParameterModel(
                 paramType:variableElement.asType().toString(),
                 paramName:variableElement.toString(),
         )
     }
 
-    private
-    static List<ClientParameterModel> getBeanParameters(Elements elementUtils, String variableName,
+    private static List<ClientParameterModel> getBeanParameters(Elements elementUtils, String variableName,
                                                         TypeMirror variableType) {
         def simpleNames = []
         def result = []
@@ -237,14 +245,22 @@ class ClientProxyParser implements RestResourceHandler {
                 simpleNames.add(fieldGetMethodName)
                 return
             }
+            FormParam formParam = variableElement.getAnnotation(FormParam)
+            if (formParam != null && !simpleNames.contains(fieldGetMethodName)) {
+                result.add(new FormParameterModel(
+                        paramType:variableElement.asType().toString(),
+                        paramName:variableName + DOT + fieldGetMethodName + BRACET,
+                        formName:formParam.value()
+                ))
+                simpleNames.add(fieldGetMethodName)
+                return
+            }
         }
-
         typeElement = (TypeElement) ((DeclaredType) variableType).asElement()
         ElementFilter.methodsIn(elementUtils.getAllMembers(typeElement)).each { ExecutableElement executableElement ->
             if (executableElement.enclosingElement.toString() == OBJECT_TYPE) {
                 return
             }
-
             QueryParam queryParam = executableElement.getAnnotation(QueryParam)
             if (queryParam != null && !simpleNames.contains(executableElement.simpleName.toString())) {
                 result.add(new QueryParameterModel(
@@ -255,7 +271,6 @@ class ClientProxyParser implements RestResourceHandler {
                 simpleNames.add(executableElement.simpleName.toString())
                 return
             }
-
             PathParam pathParam = executableElement.getAnnotation(PathParam)
             if (pathParam != null && !simpleNames.contains(executableElement.simpleName.toString())) {
                 result.add(new PathParameterModel(
@@ -266,7 +281,6 @@ class ClientProxyParser implements RestResourceHandler {
                 simpleNames.add(executableElement.simpleName.toString())
                 return
             }
-
             HeaderParam headerParam = executableElement.getAnnotation(HeaderParam)
             if (headerParam != null && !simpleNames.contains(executableElement.simpleName.toString())) {
                 result.add(new HeaderParameterModel(
@@ -276,6 +290,15 @@ class ClientProxyParser implements RestResourceHandler {
                 ))
                 simpleNames.add(executableElement.simpleName.toString())
                 return
+            }
+            FormParam formParam = executableElement.getAnnotation(FormParam)
+            if (formParam != null && !simpleNames.contains(executableElement.simpleName.toString())) {
+                result.add(new FormParameterModel(
+                        paramType:executableElement.returnType.toString(),
+                        paramName:variableName + DOT + executableElement.simpleName.toString() + BRACET,
+                        formName:formParam.value()
+                ))
+                simpleNames.add(executableElement.simpleName.toString())
             }
         }
 

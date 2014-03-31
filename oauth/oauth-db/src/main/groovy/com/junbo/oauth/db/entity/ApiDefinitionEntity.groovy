@@ -3,16 +3,15 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.oauth.spec.model
+package com.junbo.oauth.db.entity
 
+import com.junbo.oauth.spec.model.AuthorizePolicy
 import groovy.transform.CompileStatic
 
 /**
- * ApiDefinition.
+ * ApiDefinitionEntity.
  */
 @CompileStatic
-class ApiDefinition {
-    String apiName
+class ApiDefinitionEntity extends BaseEntity {
     Map<String, AuthorizePolicy> authorizePolicies
-    String revision
 }
