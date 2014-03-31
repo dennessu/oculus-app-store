@@ -6,4 +6,33 @@
 
     <context:component-scan base-package="com.junbo.notification.core"/>
     <context:annotation-config/>
+
+    <!-- connection factory -->
+    <bean id="connectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+        <property name="brokerURL" value="${notification.activemq.brokerURL}"/>
+        <property name="userName" value="${notification.activemq.userName}"/>
+        <property name="password" value="${notification.activemq.password}"/>
+        <property name="useAsyncSend" value="${notification.activemq.useAsyncSend}"/>
+    </bean>
+
+    <!-- base definition -->
+    <bean id="basePublisher" class="com.junbo.notification.core.BasePublisher" abstract="true"/>
+
+    <bean id="baseJmsTemplate" class="org.springframework.jms.core.JmsTemplate" abstract="true">
+        <property name="connectionFactory" ref="connectionFactory"/>
+        <property name="explicitQosEnabled" value="true"/>
+        <property name="deliveryPersistent" value="true"/>
+    </bean>
+
+    <!-- queue -->
+    <bean id="emailQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="EMAIL_QUEUE"/>
+    </bean>
+
+    <!-- topic -->
+
+    <!-- JMS template -->
+    <bean id="emailJmsTemplate" class="org.springframework.jms.core.JmsTemplate" parent="baseJmsTemplate">
+        <property name="defaultDestination" ref="emailQueue"/>
+    </bean>
 </beans>

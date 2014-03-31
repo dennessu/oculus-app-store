@@ -5,11 +5,26 @@
  */
 package com.junbo.notification.core;
 
+import org.springframework.jms.core.JmsTemplate;
+
+import javax.jms.Destination;
+
 /**
  * BasePublisher.
  */
-public final class BasePublisher {
-    private BasePublisher() {
+public abstract class BasePublisher {
+    protected JmsTemplate template;
+    protected Destination destination;
+
+    public void setTemplate(JmsTemplate template) {
+        this.template = template;
+    }
+
+    public void setDestination(Destination destination) {
+        this.destination = destination;
+    }
+
+    public BasePublisher() {
 
     }
 }
