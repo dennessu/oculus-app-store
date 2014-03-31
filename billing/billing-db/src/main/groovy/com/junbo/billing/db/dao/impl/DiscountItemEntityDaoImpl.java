@@ -7,7 +7,7 @@
 package com.junbo.billing.db.dao.impl;
 
 import com.junbo.billing.db.BaseDaoImpl;
-import com.junbo.billing.db.balance.DiscountItemEntity;
+import com.junbo.billing.db.entity.DiscountItemEntity;
 import com.junbo.billing.db.dao.DiscountItemEntityDao;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;

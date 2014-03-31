@@ -7,7 +7,7 @@
 package com.junbo.billing.db.dao.impl;
 
 import com.junbo.billing.db.BaseDaoImpl;
-import com.junbo.billing.db.balance.BalanceEventEntity;
+import com.junbo.billing.db.entity.BalanceEventEntity;
 import com.junbo.billing.db.dao.BalanceEventEntityDao;
 
 /**

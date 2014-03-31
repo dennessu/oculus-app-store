@@ -8,6 +8,7 @@ package com.junbo.docs.app.readers;
 
 import com.junbo.common.id.Id;
 import com.junbo.common.model.Link;
+import com.wordnik.swagger.core.util.ClassWrapper;
 import com.wordnik.swagger.model.Model;
 import com.wordnik.swagger.reader.PropertyMetaInfo;
 import groovy.lang.MetaClass;
@@ -35,40 +36,34 @@ public class ModelReader implements com.wordnik.swagger.reader.ModelReader {
     }
 
     @Override
-    public PropertyMetaInfo parseMethod(Method method, PropertyMetaInfo metaInfo) {
-        if (MetaClass.class.isAssignableFrom(metaInfo.returnClass())) {
+    public PropertyMetaInfo parseMethod(ClassWrapper clazz, Method method, PropertyMetaInfo metaInfo) {
+        if (MetaClass.class.isAssignableFrom(metaInfo.returnClass().getRawClass())) {
             return null;
         }
-        if (Response.class.isAssignableFrom(metaInfo.returnClass())) {
+        if (Response.class.isAssignableFrom(metaInfo.returnClass().getRawClass())) {
             return null;
         }
-        if (UUID.class.isAssignableFrom(metaInfo.returnClass())) {
+        if (UUID.class.isAssignableFrom(metaInfo.returnClass().getRawClass())) {
             return new PropertyMetaInfo(
-                    String.class,
+                    new ClassWrapper(String.class, null),
                     metaInfo.propertyName(),
-                    metaInfo.propertyAnnotations(),
-                    String.class,
-                    String.class);
+                    metaInfo.propertyAnnotations());
         }
-        if (BigDecimal.class.isAssignableFrom(metaInfo.returnClass())) {
+        if (BigDecimal.class.isAssignableFrom(metaInfo.returnClass().getRawClass())) {
             return new PropertyMetaInfo(
-                    String.class,
+                    new ClassWrapper(String.class, null),
                     metaInfo.propertyName(),
-                    metaInfo.propertyAnnotations(),
-                    String.class,
-                    String.class);
+                    metaInfo.propertyAnnotations());
         }
-        if (Id.class.isAssignableFrom(metaInfo.returnClass())) {
+        if (Id.class.isAssignableFrom(metaInfo.returnClass().getRawClass())) {
             Class refClass = Link.class;
             return new PropertyMetaInfo(
-                    refClass,
+                    new ClassWrapper(refClass, null),
                     metaInfo.propertyName(),
-                    metaInfo.propertyAnnotations(),
-                    refClass,
-                    refClass);
-        } else if (Collection.class.isAssignableFrom(metaInfo.returnClass())) {
-            if (metaInfo.genericReturnType() instanceof ParameterizedType) {
-                ParameterizedType type = (ParameterizedType)metaInfo.genericReturnType();
+                    metaInfo.propertyAnnotations());
+        } else if (Collection.class.isAssignableFrom(metaInfo.returnClass().getRawClass())) {
+            if (metaInfo.returnClass().getRawType() instanceof ParameterizedType) {
+                ParameterizedType type = (ParameterizedType)metaInfo.returnClass().getRawType();
                 Type[] types = type.getActualTypeArguments();
 
                 List<Type> newTypes = new ArrayList<Type>();
@@ -83,16 +78,14 @@ public class ModelReader implements com.wordnik.swagger.reader.ModelReader {
                 return new PropertyMetaInfo(
                         metaInfo.returnClass(),
                         metaInfo.propertyName(),
-                        metaInfo.propertyAnnotations(),
-                        new ParameterizedTypeImpl(metaInfo.returnClass(), newTypes.toArray(new Type[0])),
-                        metaInfo.returnClass());
+                        metaInfo.propertyAnnotations());
             }
         }
         return metaInfo;
     }
 
     @Override
-    public PropertyMetaInfo parseField(Field field, PropertyMetaInfo metaInfo) {
+    public PropertyMetaInfo parseField(ClassWrapper clazz, Field field, PropertyMetaInfo metaInfo) {
         // We not using public fields. This should never be hit.
         assert(false);
         return metaInfo;

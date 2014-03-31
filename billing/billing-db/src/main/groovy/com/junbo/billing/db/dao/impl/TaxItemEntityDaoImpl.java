@@ -7,7 +7,7 @@
 package com.junbo.billing.db.dao.impl;
 
 import com.junbo.billing.db.BaseDaoImpl;
-import com.junbo.billing.db.balance.TaxItemEntity;
+import com.junbo.billing.db.entity.TaxItemEntity;
 import com.junbo.billing.db.dao.TaxItemEntityDao;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;

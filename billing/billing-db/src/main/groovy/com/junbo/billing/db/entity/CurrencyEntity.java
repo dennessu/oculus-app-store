@@ -4,7 +4,7 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.billing.db.currency;
+package com.junbo.billing.db.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

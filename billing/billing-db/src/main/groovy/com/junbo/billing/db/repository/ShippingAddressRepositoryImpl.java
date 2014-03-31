@@ -8,7 +8,7 @@ package com.junbo.billing.db.repository;
 
 import com.junbo.common.id.ShippingAddressId;
 import com.junbo.oom.core.MappingContext;
-import com.junbo.billing.db.address.ShippingAddressEntity;
+import com.junbo.billing.db.entity.ShippingAddressEntity;
 import com.junbo.billing.db.dao.ShippingAddressEntityDao;
 import com.junbo.billing.db.mapper.ModelMapper;
 import com.junbo.billing.spec.model.ShippingAddress;
@@ -41,7 +41,7 @@ public class ShippingAddressRepositoryImpl implements ShippingAddressRepository 
         sae.setAddressId(idGenerator.nextId(ShippingAddressId.class, sae.getUserId()));
 
         sae.setCreatedBy("BILLING");
-        sae.setCreatedDate(new Date());
+        sae.setCreatedTime(new Date());
         sae.setRequestorId("GOD");
 
         shippingAddressEntityDao.insert(sae);
