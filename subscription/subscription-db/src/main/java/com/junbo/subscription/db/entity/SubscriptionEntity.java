@@ -16,7 +16,7 @@ import java.util.Date;
  * subscription entity.
  */
 @javax.persistence.Entity
-@Table(name = "SUBSCRIPTION")
+@Table(name = "subscription")
 public class SubscriptionEntity extends Entity {
     private Long subscriptionId;
     private Long userId;
@@ -30,7 +30,7 @@ public class SubscriptionEntity extends Entity {
     private String billingMode;
 
     @Id
-    @Column(name = "subscription_Id")
+    @Column(name = "subscription_id")
     public Long getSubscriptionId() {
         return subscriptionId;
     }
@@ -78,7 +78,7 @@ public class SubscriptionEntity extends Entity {
     @Override
     @Transient
     public Long getShardMasterId() {
-        return subscriptionId;
+        return userId;
     }
 
     @Column(name = "item_id")

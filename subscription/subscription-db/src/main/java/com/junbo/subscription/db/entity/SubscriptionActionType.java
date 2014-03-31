@@ -6,13 +6,13 @@
 package com.junbo.subscription.db.entity;
 
 /**
- * Subscription Status.
+ * Created by Administrator on 14-3-31.
  */
-public enum SubscriptionStatus {
-    ENABLED,
-    EXPIRED,
-    CANCELLED,
-    CONVERTED,
-    SUCCEEDED,
-    FAILED
+public enum SubscriptionActionType {
+    CREATE,
+    CHARGE,
+    NOTIFICATION,
+    PROVISION,
+    DEPROVISION,
+    CANCELLATION
 }

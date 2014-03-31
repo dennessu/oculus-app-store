@@ -14,17 +14,16 @@ import javax.persistence.Transient;
  * Created by Administrator on 14-3-28.
  */
 @javax.persistence.Entity
-@Table(name = "SUBSCRIPTION_EVENT")
+@Table(name = "subscription_event")
 public class SubscriptionEventEntity extends Entity {
 
     private Long subscriptionId;
-    private Integer subsEventId;
-    private Integer eventTypeId;
-    private Integer eventStatusId;
+    private Long subsEventId;
+    private SubscriptionEventType eventTypeId;
+    private SubscriptionStatus eventStatusId;
     private Integer retryCount;
 
-    @Id
-    @Column(name = "subscription_Id")
+    @Column(name = "subscription_id")
     public Long getSubscriptionId() {
         return subscriptionId;
     }
@@ -35,35 +34,32 @@ public class SubscriptionEventEntity extends Entity {
 
     @Id
     @Column(name = "subs_event_id")
-    public Integer getSubsEventId() {
+    public Long getSubsEventId() {
         return subsEventId;
     }
 
-    public void setSubsEventId(Integer subsEventId) {
+    public void setSubsEventId(Long subsEventId) {
         this.subsEventId = subsEventId;
     }
 
-    @Id
     @Column(name = "event_type_id")
-    public Integer getEventTypeId() {
+    public SubscriptionEventType getEventTypeId() {
         return eventTypeId;
     }
 
-    public void setEventTypeId(Integer eventTypeId) {
+    public void setEventTypeId(SubscriptionEventType eventTypeId) {
         this.eventTypeId = eventTypeId;
     }
 
-    @Id
     @Column(name = "event_status_id")
-    public Integer getEventStatusId() {
+    public SubscriptionStatus getEventStatusId() {
         return eventStatusId;
     }
 
-    public void setEventStatusId(Integer eventStatusId) {
+    public void setEventStatusId(SubscriptionStatus eventStatusId) {
         this.eventStatusId = eventStatusId;
     }
 
-    @Id
     @Column(name = "retry_count")
     public Integer getRetryCount() {
         return retryCount;
@@ -76,12 +72,12 @@ public class SubscriptionEventEntity extends Entity {
     @Transient
     @Override
     public Long getId() {
-        return this.subscriptionId;
+        return this.subsEventId;
     }
 
     @Override
     public void setId(Long id) {
-        this.subscriptionId = id;
+        this.subsEventId = id;
     }
 
     @Transient

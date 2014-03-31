@@ -40,8 +40,8 @@
             insert into subs_status values( 4, 'Converted', '', '2013-01-23');
 
             create table subscription_event (
+              subs_event_id bigint not null,
               subscription_id bigint not null,
-              subs_event_id int not null,
               event_type_id smallint not null,
               event_status_id smallint not null,
               retry_count int,
@@ -49,7 +49,7 @@
               created_by varchar(256) not null,
               modified_time timestamp,
               modified_by varchar(256),
-              primary key (subscription_id, subs_event_id)
+              primary key (subs_event_id)
             );
 
             create table subs_event_status (
@@ -62,19 +62,18 @@
 
 
             create table subscription_event_action (
+              subs_action_id bigint not null,
               subscription_id bigint not null,
-              subs_event_id int not null,
-              subs_action_id int not null,
+              subs_event_id bigint not null,
               action_type_id smallint not null,
               action_status_id smallint not null,
-              retry_count int,
               request text,
               response text,
               created_time timestamp not null,
               created_by varchar(256) not null,
               modified_time timestamp,
               modified_by varchar(256),
-              primary key (subscription_id, subs_event_id, subs_action_id)
+              primary key (subs_action_id)
             );
 
             create table subs_action_status (
@@ -86,22 +85,24 @@
             );
 
             create table subscription_entitlement (
+              id bigint not null,
               subscription_id bigint not null,
               entitlement_id bigint not null,
               entitlement_status varchar(32),
               inserted_time timestamp,
               updated_time timestamp,
-              primary key (subscription_id, entitlement_id)
+              primary key (id)
             );
 
             create table subscription_invoice (
+              id bigint not null,
               subscription_id bigint not null,
               invoice_id bigint not null,
               invoice_item_id bigint not null,
               invoice_status varchar(32),
               inserted_time timestamp,
               updated_time timestamp,
-              primary key (subscription_id, invoice_id, invoice_item_id)
+              primary key (id)
             );  
 
             ]]>

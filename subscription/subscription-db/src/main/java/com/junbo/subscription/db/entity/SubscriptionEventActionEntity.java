@@ -14,19 +14,18 @@ import javax.persistence.Transient;
  * Created by Administrator on 14-3-28.
  */
 @javax.persistence.Entity
-@Table(name = "SUBSCRIPTION_EVENT_ACTION")
+@Table(name = "subscription_event_action")
 public class SubscriptionEventActionEntity extends Entity {
 
     private Long subscriptionId;
-    private Integer subsEventId;
-    private Integer subsActionId;
-    private Integer actionTypeId;
-    private Integer actionStatusId;
+    private Long subsEventId;
+    private Long subsActionId;
+    private SubscriptionActionType actionTypeId;
+    private SubscriptionStatus actionStatusId;
     private String request;
     private String response;
 
-    @Id
-    @Column(name = "subscription_Id")
+    @Column(name = "subscription_id")
     public Long getSubscriptionId() {
         return subscriptionId;
     }
@@ -35,47 +34,43 @@ public class SubscriptionEventActionEntity extends Entity {
         this.subscriptionId = subscriptionId;
     }
 
-    @Id
     @Column(name = "subs_event_id")
-    public Integer getSubsEventId() {
+    public Long getSubsEventId() {
         return subsEventId;
     }
 
-    public void setSubsEventId(Integer subsEventId) {
+    public void setSubsEventId(Long subsEventId) {
         this.subsEventId = subsEventId;
     }
 
     @Id
     @Column(name = "subs_action_id")
-    public Integer getSubsActionId() {
+    public Long getSubsActionId() {
         return subsActionId;
     }
 
-    public void setSubsActionId(Integer subsActionId) {
+    public void setSubsActionId(Long subsActionId) {
         this.subsActionId = subsActionId;
     }
 
-    @Id
     @Column(name = "action_type_id")
-    public Integer getActionTypeId() {
+    public SubscriptionActionType getActionTypeId() {
         return actionTypeId;
     }
 
-    public void setActionTypeId(Integer actionTypeId) {
+    public void setActionTypeId(SubscriptionActionType actionTypeId) {
         this.actionTypeId = actionTypeId;
     }
 
-    @Id
     @Column(name = "action_status_id")
-    public Integer getActionStatusId() {
+    public SubscriptionStatus getActionStatusId() {
         return actionStatusId;
     }
 
-    public void setActionStatusId(Integer actionStatusId) {
+    public void setActionStatusId(SubscriptionStatus actionStatusId) {
         this.actionStatusId = actionStatusId;
     }
 
-    @Id
     @Column(name = "request")
     public String getRequest() {
         return request;
@@ -85,7 +80,6 @@ public class SubscriptionEventActionEntity extends Entity {
         this.request = request;
     }
 
-    @Id
     @Column(name = "response")
     public String getResponse() {
         return response;
@@ -98,12 +92,12 @@ public class SubscriptionEventActionEntity extends Entity {
     @Transient
     @Override
     public Long getId() {
-        return this.subscriptionId;
+        return this.subsActionId;
     }
 
     @Override
     public void setId(Long id) {
-        this.subscriptionId = id;
+        this.subsActionId = id;
     }
 
     @Override
