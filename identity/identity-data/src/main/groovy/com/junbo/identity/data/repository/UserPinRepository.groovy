@@ -17,7 +17,7 @@ import groovy.transform.CompileStatic
 @CompileStatic
 interface UserPinRepository {
 
-    Promise<UserPin> save(UserPin entity)
+    Promise<UserPin> create(UserPin entity)
 
     Promise<UserPin> update(UserPin entity)
 

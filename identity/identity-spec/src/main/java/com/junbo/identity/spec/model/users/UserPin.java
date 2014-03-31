@@ -25,13 +25,14 @@ public class UserPin extends ResourceMeta implements Identifiable<UserPinId> {
     // write only
     private String value;
 
-    private Boolean active;
-
     private Date expiresBy;
 
     private Boolean changeAtNextLogin;
 
+    // read only
     private UserId userId;
+
+    private Boolean active;
 
     // Won't return field
     @JsonIgnore
@@ -45,6 +46,8 @@ public class UserPin extends ResourceMeta implements Identifiable<UserPinId> {
 
     public void setId(UserPinId id) {
         this.id = id;
+        support.setPropertyAssigned("id");
+        support.setPropertyAssigned("self");
     }
 
     public String getValue() {
@@ -53,6 +56,7 @@ public class UserPin extends ResourceMeta implements Identifiable<UserPinId> {
 
     public void setValue(String value) {
         this.value = value;
+        support.setPropertyAssigned("value");
     }
 
     public Boolean getActive() {
@@ -61,6 +65,7 @@ public class UserPin extends ResourceMeta implements Identifiable<UserPinId> {
 
     public void setActive(Boolean active) {
         this.active = active;
+        support.setPropertyAssigned("active");
     }
 
     public Date getExpiresBy() {
@@ -69,6 +74,7 @@ public class UserPin extends ResourceMeta implements Identifiable<UserPinId> {
 
     public void setExpiresBy(Date expiresBy) {
         this.expiresBy = expiresBy;
+        support.setPropertyAssigned("expiresBy");
     }
 
     public Boolean getChangeAtNextLogin() {
@@ -77,6 +83,7 @@ public class UserPin extends ResourceMeta implements Identifiable<UserPinId> {
 
     public void setChangeAtNextLogin(Boolean changeAtNextLogin) {
         this.changeAtNextLogin = changeAtNextLogin;
+        support.setPropertyAssigned("changeAtNextLogin");
     }
 
     public String getPinSalt() {
@@ -85,6 +92,7 @@ public class UserPin extends ResourceMeta implements Identifiable<UserPinId> {
 
     public void setPinSalt(String pinSalt) {
         this.pinSalt = pinSalt;
+        support.setPropertyAssigned("pinSalt");
     }
 
     public String getPinHash() {
@@ -93,6 +101,7 @@ public class UserPin extends ResourceMeta implements Identifiable<UserPinId> {
 
     public void setPinHash(String pinHash) {
         this.pinHash = pinHash;
+        support.setPropertyAssigned("pinHash");
     }
 
     public UserId getUserId() {
@@ -101,7 +110,6 @@ public class UserPin extends ResourceMeta implements Identifiable<UserPinId> {
 
     public void setUserId(UserId userId) {
         this.userId = userId;
+        support.setPropertyAssigned("userId");
     }
-
-
 }

@@ -169,6 +169,13 @@
         <property name="valueMaxLength" value="255" />
     </bean>
 
+    <bean id="userPinValidator" class="com.junbo.identity.core.service.validator.impl.UserPinValidatorImpl">
+        <property name="userRepository" ref="userRepository" />
+        <property name="userPinRepository" ref="userPinRepository" />
+        <property name="valueMinLength" value="4" />
+        <property name="valueMaxLength" value="255" />
+    </bean>
+
     <bean id="userTosValidator" class="com.junbo.identity.core.service.validator.impl.UserTosValidatorImpl">
         <property name="tosUriMinLength" value="1" />
         <property name="tosUriMaxLength" value="255" />

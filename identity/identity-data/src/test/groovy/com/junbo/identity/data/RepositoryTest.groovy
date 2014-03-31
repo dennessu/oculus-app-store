@@ -179,7 +179,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userPIN.setCreatedBy('lixia')
         userPIN.setUpdatedTime(new Date())
         userPIN.setUpdatedBy('lixia')
-        userPIN = userPinRepository.save(userPIN).wrapped().get()
+        userPIN = userPinRepository.create(userPIN).wrapped().get()
 
         UserPin newUserPin = userPinRepository.get(userPIN.getId()).wrapped().get()
         Assert.assertEquals(userPIN.getActive(), newUserPin.getActive())

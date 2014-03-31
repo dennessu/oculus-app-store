@@ -35,7 +35,7 @@ public class UserPinRepositoryImpl implements UserPinRepository {
     private ModelMapper modelMapper;
 
     @Override
-    public Promise<UserPin> save(UserPin entity) {
+    public Promise<UserPin> create(UserPin entity) {
         UserPinEntity userPinEntity = modelMapper.toUserPin(entity, new MappingContext());
         userPinDAO.save(userPinEntity);
 

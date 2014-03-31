@@ -301,6 +301,35 @@
         </property>
     </bean>
 
+    <bean id="userPinFilter" class="com.junbo.identity.core.service.filter.UserPinFilter">
+        <property name="readableProperties">
+            <list>
+                <value>id</value>
+                <value>expiresBy</value>
+                <value>changeAtNextLogin</value>
+                <value>userId</value>
+                <value>active</value>
+                <value>resourceAge</value>
+                <value>createdTime</value>
+                <value>updatedTime</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForCreate">
+            <list>
+                <value>expiresBy</value>
+                <value>changeAtNextLogin</value>
+                <value>value</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForUpdate">
+            <list>
+
+            </list>
+        </property>
+    </bean>
+
     <bean id="userPhoneNumberFilter" class="com.junbo.identity.core.service.filter.UserPhoneNumberFilter">
         <property name="readableProperties">
             <list>
