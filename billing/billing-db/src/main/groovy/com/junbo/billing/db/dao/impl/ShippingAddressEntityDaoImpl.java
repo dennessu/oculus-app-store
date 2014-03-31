@@ -7,7 +7,7 @@
 package com.junbo.billing.db.dao.impl;
 
 import com.junbo.billing.db.BaseDaoImpl;
-import com.junbo.billing.db.address.ShippingAddressEntity;
+import com.junbo.billing.db.entity.ShippingAddressEntity;
 import com.junbo.billing.db.dao.ShippingAddressEntityDao;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
