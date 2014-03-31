@@ -1,6 +1,5 @@
 package com.junbo.email.clientproxy.impl
 
-
 import static com.ning.http.client.extra.ListenableFutureAdapter.asGuavaFuture
 
 import com.junbo.common.id.Id
@@ -16,7 +15,6 @@ import com.junbo.email.clientproxy.EmailProvider
 import com.junbo.email.clientproxy.impl.mandrill.MandrillConfiguration
 import com.junbo.email.clientproxy.impl.mandrill.MandrillRequest
 import com.junbo.email.clientproxy.impl.mandrill.MandrillResponse
-
 import com.junbo.email.clientproxy.impl.mandrill.Message
 import com.junbo.email.clientproxy.impl.mandrill.SendStatus
 import com.junbo.email.clientproxy.impl.mandrill.To
