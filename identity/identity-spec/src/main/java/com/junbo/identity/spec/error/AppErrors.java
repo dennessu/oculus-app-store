@@ -203,4 +203,11 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 409, code = "2000025", description = "User Pin {0} not found.", field = "{0}")
     AppError userPinNotFound(UserPinId userPinId);
+
+    @ErrorDef(httpStatusCode = 409, code = "2000026",
+            description = "User Security Question {0} not found.", field = "{0}")
+    AppError userSecurityQuestionNotFound(UserSecurityQuestionId userSecurityQuestionId);
+
+    @ErrorDef(httpStatusCode = 409, code = "2000027", description = "Security Question {0} not found.", field = "{0}")
+    AppError securityQuestionNotActive(SecurityQuestionId securityQuestionId);
 }

@@ -49,6 +49,10 @@ public interface SelfMapper {
     UserPin filterUserPin(UserPin userPin, MappingContext context);
     UserPin mergeUserPin(UserPin source, UserPin base, MappingContext context);
 
+    UserSecurityQuestion filterUserSecurityQuestion(UserSecurityQuestion userSecurityQuestion, MappingContext context);
+    UserSecurityQuestion mergeUserSecurityQuestion(UserSecurityQuestion source,
+                                                   UserSecurityQuestion base, MappingContext context);
+
     UserTos filterUserTos(UserTos userTos, MappingContext context);
     UserTos mergeUserTos(UserTos source, UserTos base, MappingContext context);
 }

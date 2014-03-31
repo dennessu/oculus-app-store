@@ -366,6 +366,34 @@
         </property>
     </bean>
 
+    <bean id="userSecurityQuestionFilter" class="com.junbo.identity.core.service.filter.UserSecurityQuestionFilter">
+        <property name="readableProperties">
+            <list>
+                <value>id</value>
+                <value>securityQuestionId</value>
+                <value>active</value>
+                <value>userId</value>
+                <value>resourceAge</value>
+                <value>createdTime</value>
+                <value>updatedTime</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForCreate">
+            <list>
+                <value>securityQuestionId</value>
+                <value>answer</value>
+                <value>active</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForUpdate">
+            <list>
+
+            </list>
+        </property>
+    </bean>
+
     <bean id="userTosFilter" class="com.junbo.identity.core.service.filter.UserTosFilter">
         <property name="readableProperties">
             <list>

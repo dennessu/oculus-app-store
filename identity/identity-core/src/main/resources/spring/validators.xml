@@ -176,6 +176,14 @@
         <property name="valueMaxLength" value="255" />
     </bean>
 
+    <bean id="userSecurityQuestionValidator" class="com.junbo.identity.core.service.validator.impl.UserSecurityQuestionValidatorImpl">
+        <property name="userRepository" ref="userRepository" />
+        <property name="userSecurityQuestionRepository" ref="userSecurityQuestionRepository" />
+        <property name="securityQuestionRepository" ref="securityQuestionRepository" />
+        <property name="answerMinLength" value="10" />
+        <property name="answerMaxLength" value="255" />
+    </bean>
+
     <bean id="userTosValidator" class="com.junbo.identity.core.service.validator.impl.UserTosValidatorImpl">
         <property name="tosUriMinLength" value="1" />
         <property name="tosUriMaxLength" value="255" />

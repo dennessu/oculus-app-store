@@ -396,22 +396,23 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userSecurityQuestion.setCreatedBy('lixia')
         userSecurityQuestion.setCreatedTime(new Date())
 
-        userSecurityQuestion = userSecurityQuestionRepository.save(userSecurityQuestion)
+        userSecurityQuestion = userSecurityQuestionRepository.create(userSecurityQuestion).wrapped().get()
 
-        UserSecurityQuestion newUserSecurityQuestion = userSecurityQuestionRepository.get(userSecurityQuestion.getId())
+        UserSecurityQuestion newUserSecurityQuestion =
+                userSecurityQuestionRepository.get(userSecurityQuestion.getId()).wrapped().get()
         Assert.assertEquals(userSecurityQuestion.getAnswerHash(), newUserSecurityQuestion.getAnswerHash())
 
         String value = UUID.randomUUID().toString()
         newUserSecurityQuestion.setAnswerSalt(value)
         userSecurityQuestionRepository.update(newUserSecurityQuestion)
 
-        newUserSecurityQuestion = userSecurityQuestionRepository.get(userSecurityQuestion.getId())
+        newUserSecurityQuestion = userSecurityQuestionRepository.get(userSecurityQuestion.getId()).wrapped().get()
         Assert.assertEquals(newUserSecurityQuestion.getAnswerSalt(), value)
 
         UserSecurityQuestionListOptions getOption = new UserSecurityQuestionListOptions()
         getOption.setUserId(new UserId(userId))
         getOption.setSecurityQuestionId(new SecurityQuestionId(123L))
-        List<UserSecurityQuestion> securityQuestions = userSecurityQuestionRepository.search(getOption)
+        List<UserSecurityQuestion> securityQuestions = userSecurityQuestionRepository.search(getOption).wrapped().get()
         assert securityQuestions.size() != 0
     }
 
