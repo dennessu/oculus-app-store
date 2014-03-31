@@ -21,7 +21,7 @@ import javax.ws.rs.core.MediaType;
 /**
  * Created by liangfu on 3/13/14.
  */
-@Api("loginAttempt")
+@Api("users")
 @RestResource
 @Path("/users/login-attempts")
 @Produces({MediaType.APPLICATION_JSON})
