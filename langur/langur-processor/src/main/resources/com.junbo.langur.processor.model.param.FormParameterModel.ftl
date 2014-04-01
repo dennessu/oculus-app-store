@@ -6,6 +6,6 @@ for (${innerParamType} __item : ${paramName}) {
 __requestBuilder.addParameter("${formName}", __item);
 }
 [#else]
-__requestBuilder.addParameter("${formName}", ${formName});
+__requestBuilder.addParameter("${formName}", ${paramName});
 [/#if]
 }
