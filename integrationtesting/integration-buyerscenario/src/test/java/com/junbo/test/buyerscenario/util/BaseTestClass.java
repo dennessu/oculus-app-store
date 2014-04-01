@@ -5,6 +5,7 @@
  */
 package com.junbo.test.buyerscenario.util;
 
+import com.junbo.test.common.Utility.TestClass;
 import com.junbo.test.common.Utility.TestDataProvider;
 import com.junbo.test.common.Utility.ValidationHelper;
 import com.junbo.test.common.libs.ConfigPropertiesHelper;
@@ -15,7 +16,7 @@ import org.slf4j.bridge.SLF4JBridgeHandler;
   * Time: 3/7/2014
   * Base test class
  */
-public class BaseTestClass {
+public class BaseTestClass extends TestClass {
     protected TestDataProvider testDataProvider = new TestDataProvider();
     protected ValidationHelper validationHelper = new ValidationHelper();
 
@@ -26,12 +27,6 @@ public class BaseTestClass {
 
 
     public BaseTestClass() {
-        //set loggging info
-        SLF4JBridgeHandler.removeHandlersForRootLogger();
-        SLF4JBridgeHandler.install();
-        System.setProperty("net.spy.log.LoggerImpl", "net.spy.memcached.compat.log.SLF4JLogger");
-        System.setProperty("logback.configurationFile", "logback-test.xml");
-
         loadOffers();
     }
 

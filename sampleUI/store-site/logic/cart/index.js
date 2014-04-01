@@ -260,7 +260,6 @@ Cart.CartProcess = function (action, data, callback) {
             for (var i = 0; i < offerItems.length; ++i) {
                 var currentOffer = offerItems[i];
                 var offerIndex = Cart._getIndexByOffers(currentOffer.offer.id, cartObj.offers);
-                console.log(Utils.Format("[{1}] current offerId:{2}  index:{3}"), action, currentOffer.offer.id, offerIndex);
 
                 switch (action) {
                     case "merge":
@@ -533,8 +532,12 @@ Cart.PutOrder = function(data, callback){
         // Get cart by url
         function (result, cb) {
            var order = JSON.parse(result);
-            order["shippingMethodId"] ={id: shippingMethodId};
-            order["shippingAddressId"]={id: shippingAddressId};
+            if(!Utils.IsEmpty(shippingMethodId)) {
+                order["shippingMethodId"] = {id: shippingMethodId};
+            }
+            if(!Utils.IsEmpty(shippingAddressId)) {
+                order["shippingAddressId"] = {id: shippingAddressId};
+            }
             order.paymentInstruments.push(payment);
             order.trackingUuid = Guid.create();
 

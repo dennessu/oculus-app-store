@@ -9,6 +9,7 @@ package com.junbo.token.core;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.token.spec.internal.TokenSet;
 import com.junbo.token.spec.model.OrderRequest;
+import com.junbo.token.spec.model.TokenConsumption;
 import com.junbo.token.spec.model.TokenItem;
 import com.junbo.token.spec.internal.TokenOrder;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,9 +32,9 @@ public interface TokenService {
     @Transactional(readOnly = true)
     Promise<TokenOrder> getTokenOrder(Long tokenOrderId);
     @Transactional
-    Promise<TokenItem> consumeToken(String token);
+    Promise<TokenItem> consumeToken(String token, TokenConsumption consumption);
     @Transactional
-    Promise<TokenItem> updateToken(TokenItem token);
+    Promise<TokenItem> updateToken(String tokenString, TokenItem token);
     @Transactional(readOnly = true)
     Promise<TokenItem> getToken(String token);
 }

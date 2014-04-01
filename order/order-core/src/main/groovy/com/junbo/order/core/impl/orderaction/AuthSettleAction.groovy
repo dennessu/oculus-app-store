@@ -46,6 +46,7 @@ class AuthSettleAction extends BaseOrderEventAwareAction {
         Promise promise = facadeContainer.billingFacade.createBalance(balance)
         promise.syncRecover {  Throwable throwable ->
             LOGGER.error('name=Order_AuthSettle_Error', throwable)
+            context.orderServiceContext.order.tentative = true
             throw AppErrors.INSTANCE.
                     billingConnectionError(CoreUtils.toAppErrors(throwable)).exception()
         }.then { Balance resultBalance ->

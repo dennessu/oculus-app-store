@@ -76,6 +76,7 @@ class OrderServiceImpl implements OrderService {
         orderValidator.validateSettleOrderRequest(order)
 
         def orderServiceContext = initOrderServiceContext(order)
+        Throwable error
         flowSelector.select(orderServiceContext, OrderServiceOperation.SETTLE_TENTATIVE).then { FlowType flowType ->
             // Prepare Flow Request
             Map<String, Object> requestScope = [:]
@@ -85,10 +86,18 @@ class OrderServiceImpl implements OrderService {
             requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object) orderActionContext)
             executeFlow(flowType, orderServiceContext, requestScope)
         }.syncRecover { Throwable throwable ->
-            refreshOrderStatus(orderServiceContext.order)
-            throw throwable
+            error = throwable
         }.syncThen {
+            if (orderServiceContext.order.tentative) {
+                LOGGER.info('name=Order_RollBack_To_Tentative, orderId={}', orderServiceContext.order.id)
+                transactionHelper.executeInTransaction {
+                    orderRepository.updateOrder(orderServiceContext.order, true)
+                }
+            }
             refreshOrderStatus(orderServiceContext.order)
+            if (error != null) {
+                throw error
+            }
             return orderServiceContext.order
         }
     }
@@ -118,7 +127,9 @@ class OrderServiceImpl implements OrderService {
     Promise<Order> createQuote(Order order, ApiContext context) {
         LOGGER.info('name=Create_Tentative_Order. userId: {}', order.user.value)
 
+        order.id = null
         setHonoredTime(order)
+
         def orderServiceContext = initOrderServiceContext(order)
         prepareOrder(order).then {
             flowSelector.select(orderServiceContext, OrderServiceOperation.CREATE_TENTATIVE).then { FlowType flowType ->

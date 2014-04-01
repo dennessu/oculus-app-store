@@ -84,6 +84,33 @@ var StoreControllers = {
             });
         }.property("@each.qty"),
 
+        statusChange: function(){
+            var _self = this;
+            var cartItmes = new Array();
+
+            this.forEach(function(item, index, enumerable){
+                cartItmes.push({
+                    product_id: item.get("product_id"),
+                    selected: item.get("selected"),
+                    qty: item.get("qty")
+                });
+            });
+
+            var data = {"cart_items": cartItmes};
+
+            var provider = new CartProvider();
+            provider.Update(Utils.GenerateRequestModel(data), function(resultData){
+                var resultModel = resultData.data;
+                if (resultModel.status == 200) {
+                    console.log("[CartItemController:Change Status] Success");
+                    _self.set("errMessage", null);
+                } else {
+                    console.log("[CartItemController:Change Status] Failed!");
+                    _self.set("errMessage", Utils.GetErrorMessage(resultModel));
+                }
+            });
+        }.property("@each.selected"),
+
         actions: {
             Checkout: function(){
                 var _self = this;
@@ -123,7 +150,6 @@ var StoreControllers = {
                 }
             }
         }
-
     }),
 
     CartItemController: Ember.ObjectController.extend({
@@ -150,35 +176,8 @@ var StoreControllers = {
             }
         }.observes('model.qty'),
 
-
-        changeStatus: function(){
-            var _self = this;
-            console.log("[Change Status]:", _self.get("model.selected"));
-
-            var data = {"cart_items": [{
-                product_id: _self.get("model.product_id"),
-                selected: _self.get("model.selected"),
-                qty: _self.get("model.qty")
-            }]};
-
-            var provider = new CartProvider();
-            provider.Update(Utils.GenerateRequestModel(data), function(resultData){
-                var resultModel = resultData.data;
-                if (resultModel.status == 200) {
-                    console.log("[CartItemController:Change Status] Success");
-                    _self.set("errMessage", null);
-                } else {
-                    console.log("[CartItemController:Change Status] Failed!");
-                    _self.set("errMessage", Utils.GetErrorMessage(resultModel));
-
-                    //TODO: ?
-                }
-            });
-        }.observes('selected'),
-
-
         actions: {
-            Change: function(value){
+            ChangeCount: function(value){
                 var _self = this;
 
                 if(value != undefined && !isNaN(value) && value > 0){
@@ -222,11 +221,11 @@ var StoreControllers = {
                     var resultModel = resultData.data;
                     if (resultModel.status == 200) {
                         console.log("[CartItemController:removeItem] Success");
-                        _self.set("errMessage", null);
+
+                        item.deleteRecord();
+                        item.save();
                     } else {
                         console.log("[CartItemController:removeItem] Failed!");
-                        _self.set("errMessage", Utils.GetErrorMessage(resultModel));
-
                         //TODO: ?
                     }
                 });

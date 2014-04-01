@@ -14,7 +14,7 @@ public class TokenConsumption {
     private Long id;
     private Long hashValue;
     private Long userId;
-    private String products;
+    private Long product;
 
     public Long getId() {
         return id;
@@ -40,11 +40,11 @@ public class TokenConsumption {
         this.userId = userId;
     }
 
-    public String getProducts() {
-        return products;
+    public Long getProduct() {
+        return product;
     }
 
-    public void setProducts(String products) {
-        this.products = products;
+    public void setProduct(Long product) {
+        this.product = product;
     }
 }

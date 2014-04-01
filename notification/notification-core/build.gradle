@@ -1,6 +1,9 @@
 apply plugin: 'java'
 
 dependencies {
+    compile (libraries.common_lib)
+    compile (libraries.common_configuration)
+
     compile (libraries.spring_core)
     compile (libraries.spring_expression)
     compile (libraries.spring_tx)

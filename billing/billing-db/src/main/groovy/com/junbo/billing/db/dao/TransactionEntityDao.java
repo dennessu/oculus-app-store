@@ -7,7 +7,7 @@
 package com.junbo.billing.db.dao;
 
 import com.junbo.billing.db.BaseDao;
-import com.junbo.billing.db.transaction.TransactionEntity;
+import com.junbo.billing.db.entity.TransactionEntity;
 
 import java.util.List;
 

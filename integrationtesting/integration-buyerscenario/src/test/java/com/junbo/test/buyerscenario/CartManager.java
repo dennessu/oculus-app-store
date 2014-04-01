@@ -10,6 +10,7 @@ import com.junbo.cart.spec.model.item.CouponItem;
 import com.junbo.cart.spec.model.item.OfferItem;
 import com.junbo.common.id.CouponId;
 import com.junbo.common.id.OfferId;
+import com.junbo.test.common.Utility.TestClass;
 import com.junbo.test.common.apihelper.cart.CartService;
 import com.junbo.test.common.apihelper.cart.impl.CartServiceImpl;
 import com.junbo.test.common.apihelper.identity.UserService;
@@ -29,7 +30,7 @@ import java.util.*;
 /**
  * Created by jiefeng on 14-3-19.
  */
-public class CartManager {
+public class CartManager extends TestClass {
 
     private LogHelper logger = new LogHelper(CartManager.class);
 

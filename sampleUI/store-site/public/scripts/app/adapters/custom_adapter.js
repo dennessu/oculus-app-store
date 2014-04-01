@@ -61,6 +61,12 @@ var CustomAdapter = DS.RESTAdapter.extend({
                 }
             });
         });
+    },
+
+    deleteRecord: function (store, type, record) {
+        var id = record.get('id');
+
+        return Ember.RSVP.resolve();
     }
 });
 

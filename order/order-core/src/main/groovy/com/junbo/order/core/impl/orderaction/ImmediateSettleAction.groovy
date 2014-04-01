@@ -48,6 +48,7 @@ class ImmediateSettleAction extends BaseOrderEventAwareAction {
                         CoreBuilder.buildBalance(context.orderServiceContext.order, BalanceType.DEBIT))
         return promise.syncRecover { Throwable throwable ->
             LOGGER.error('name=Order_ImmediateSettle_Error', throwable)
+            context.orderServiceContext.order.tentative = true
             throw AppErrors.INSTANCE.
                     billingConnectionError(CoreUtils.toAppErrors(throwable)).exception()
         }.then { Balance balance ->

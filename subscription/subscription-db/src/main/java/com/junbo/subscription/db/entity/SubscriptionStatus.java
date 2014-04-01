@@ -12,5 +12,7 @@ public enum SubscriptionStatus {
     ENABLED,
     EXPIRED,
     CANCELLED,
-    CONVERTED
+    CONVERTED,
+    SUCCEEDED,
+    FAILED
 }
