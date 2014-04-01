@@ -14,7 +14,7 @@
 
     <bean id="userService" class="com.junbo.oauth.core.service.impl.UserServiceImpl">
         <property name="tokenService" ref="tokenService"/>
-        <property name="userProfileResource" ref="identityUserProfileClient"/>
+        <property name="userLoginAttemptResource" ref="identityUserLoginAttemptClient"/>
         <property name="userResource" ref="identityUserClient"/>
     </bean>
 

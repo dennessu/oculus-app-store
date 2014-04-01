@@ -6,10 +6,10 @@
 package com.junbo.oauth.core.service.impl
 
 import com.junbo.common.id.UserId
-import com.junbo.common.model.Results
-import com.junbo.identity.spec.model.user.User
-import com.junbo.identity.spec.model.user.UserProfile
-import com.junbo.identity.spec.resource.UserProfileResource
+import com.junbo.identity.spec.model.users.User
+import com.junbo.identity.spec.model.users.UserLoginAttempt
+import com.junbo.identity.spec.options.entity.UserGetOptions
+import com.junbo.identity.spec.resource.UserLoginAttemptResource
 import com.junbo.identity.spec.resource.UserResource
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oauth.core.exception.AppExceptions
@@ -18,6 +18,7 @@ import com.junbo.oauth.core.service.UserService
 import com.junbo.oauth.spec.model.AccessToken
 import com.junbo.oauth.spec.model.UserInfo
 import groovy.transform.CompileStatic
+import org.apache.commons.codec.binary.Base64
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.StringUtils
 
@@ -31,7 +32,7 @@ class UserServiceImpl implements UserService {
 
     private UserResource userResource
 
-    private UserProfileResource userProfileResource
+    private UserLoginAttemptResource userLoginAttemptResource
 
     @Required
     void setTokenService(TokenService tokenService) {
@@ -44,13 +45,20 @@ class UserServiceImpl implements UserService {
     }
 
     @Required
-    void setUserProfileResource(UserProfileResource userProfileResource) {
-        this.userProfileResource = userProfileResource
+    void setUserLoginAttemptResource(UserLoginAttemptResource userLoginAttemptResource) {
+        this.userLoginAttemptResource = userLoginAttemptResource
     }
 
     @Override
-    Promise<User> authenticateUser(String username, String password) {
-        return userResource.authenticateUser(username, password)
+    Promise<UserLoginAttempt> authenticateUser(String username, String password, String clientId, String ipAddress) {
+        UserLoginAttempt loginAttempt = new UserLoginAttempt(
+                type: 'password',
+                value: new String(Base64.encodeBase64("$username:$password".bytes)),
+                clientId: clientId,
+                ipAddress: ipAddress
+        )
+
+        return userLoginAttemptResource.create(loginAttempt)
     }
 
     @Override
@@ -69,25 +77,17 @@ class UserServiceImpl implements UserService {
             throw AppExceptions.INSTANCE.expiredAccessToken().exception()
         }
 
-        Promise<User> userPromise = userResource.getUser(new UserId(accessToken.userId))
+        Promise<User> userPromise = userResource.get(new UserId(accessToken.userId), new UserGetOptions())
 
         User user = userPromise.wrapped().get()
 
         UserInfo userInfo = new UserInfo(
                 sub: user.id.toString(),
-                email: user.userName
+                email: user.username,
+                givenName: user.name.firstName,
+                middleName: user.name.middleName,
+                familyName: user.name.lastName
         )
-
-        Promise<Results<UserProfile>> userProfilePromise = userProfileResource.
-                getUserProfiles(new UserId(accessToken.userId), 'PAYIN', 0, 1)
-
-        if (userProfileResource != null && userProfilePromise.wrapped().get() != null
-                && !userProfilePromise.wrapped().get().items.isEmpty()) {
-            UserProfile profile = userProfilePromise.wrapped().get().items.get(0)
-            userInfo.givenName = profile.firstName
-            userInfo.familyName = profile.lastName
-            userInfo.middleName = profile.middleName
-        }
 
         return userInfo
     }
