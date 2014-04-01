@@ -135,7 +135,7 @@ var StoreRoutes = {
                     var shippingMethod = "None";
                     for(var i = 0; i < AppConfig.ShippingMethods.length; ++i){
                         var item = AppConfig.ShippingMethods[i];
-                        if(item.value == order.shippingMethodId.id){
+                        if(typeof(order.shippingMethodId) != "undefined" && item.value == order.shippingMethodId.id){
                             shippingMethod = item.name;
                             break;
                         }
@@ -143,14 +143,16 @@ var StoreRoutes = {
                     controller.set("content.shippingMethodName", shippingMethod);
 
                     // set shipping info
-                    var billingProvider = new BillingProvider();
-                    billingProvider.Get(Utils.GenerateRequestModel({shippingId: order.shippingAddressId.id}), function(resultData){
-                        if(resultData.data.status == 200){
-                            controller.set("content.shippingAddress", JSON.parse(resultData.data.data));
-                        }else{
+                    if(typeof(order.shippingAddressId) != "undefined") {
+                        var billingProvider = new BillingProvider();
+                        billingProvider.Get(Utils.GenerateRequestModel({shippingId: order.shippingAddressId.id}), function (resultData) {
+                            if (resultData.data.status == 200) {
+                                controller.set("content.shippingAddress", JSON.parse(resultData.data.data));
+                            } else {
 
-                        }
-                    });
+                            }
+                        });
+                    }
 
                     // set payment method
                     var paymentProvider = new PaymentProvider();

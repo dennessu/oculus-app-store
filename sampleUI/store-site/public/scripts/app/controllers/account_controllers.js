@@ -96,6 +96,10 @@ var AccountControllers = {
                 result+= products[i].totalAmount;
             }
             return result
+        }.property("content.products"),
+
+        total: function(){
+            return parseFloat(this.get("model.totalAmount")) + parseFloat(this.get("model.totalTax"));
         }.property("content.products")
     }),
     HistoryItemProductsController: Ember.ObjectController.extend({

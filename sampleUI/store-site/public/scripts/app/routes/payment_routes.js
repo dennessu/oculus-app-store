@@ -16,6 +16,10 @@ var PaymentRoutes = {
                 if(result.data.status == 200){
                     var payments = JSON.parse(result.data.data).results;
                     var paymentList = new Array();
+                    paymentList.push({
+                        t: "Please choose",
+                        v: ""
+                    });
                     for(var i = 0; i < payments.length; ++i){
                         var item = payments[i];
                         paymentList.push({

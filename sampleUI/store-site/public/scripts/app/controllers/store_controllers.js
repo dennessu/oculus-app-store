@@ -127,6 +127,14 @@ var StoreControllers = {
                             // set order id to cookie
                             Utils.Cookies.Set(AppConfig.CookiesName.OrderId, order.self.id);
 
+                            _self.get("model").forEach(function(item){
+                                if(item.selected){
+                                    item.deleteRecord();
+                                    item.save();
+                                }
+                            });
+                            _self.store.findAll("CartItem");
+
                             var allDigital = true;
                             for(var i = 0; i < order.orderItems.length; ++i){
                                 if(order.orderItems[i].type == "PHYSICAL"){
@@ -247,6 +255,10 @@ var StoreControllers = {
                 result+= item.subTotal;
             });
             return result
+        }.property("content.products"),
+
+        total: function(){
+            return  parseFloat(this.get("content.totalAmount")) + parseFloat(this.get("content.totalTax"));
         }.property("content.products"),
 
         actions:{
