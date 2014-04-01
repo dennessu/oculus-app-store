@@ -3,10 +3,10 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.identity.data.dao.impl.postgresql
-import com.junbo.identity.data.dao.UserPasswordDAO
-import com.junbo.identity.data.entity.user.UserPasswordEntity
-import com.junbo.identity.spec.options.list.UserPasswordListOptions
+package com.junbo.identity.data.dao.impl
+import com.junbo.identity.data.dao.UserPinDAO
+import com.junbo.identity.data.entity.user.UserPinEntity
+import com.junbo.identity.spec.options.list.UserPinListOptions
 import groovy.transform.CompileStatic
 import org.hibernate.Criteria
 import org.hibernate.criterion.Order
@@ -15,29 +15,29 @@ import org.hibernate.criterion.Restrictions
  * Created by liangfu on 3/16/14.
  */
 @CompileStatic
-class UserPasswordDAOImpl extends ShardedDAOBase implements UserPasswordDAO {
-
+class UserPinDAOImpl extends ShardedDAOBase implements UserPinDAO {
     @Override
-    UserPasswordEntity save(UserPasswordEntity entity) {
+    UserPinEntity save(UserPinEntity entity) {
         currentSession().save(entity)
-
         return get(entity.id)
     }
 
     @Override
-    UserPasswordEntity update(UserPasswordEntity entity) {
+    UserPinEntity update(UserPinEntity entity) {
         currentSession().merge(entity)
+        currentSession().flush()
+
         return get(entity.id)
     }
 
     @Override
-    UserPasswordEntity get(Long id) {
-        return (UserPasswordEntity)currentSession().get(UserPasswordEntity, id)
+    UserPinEntity get(Long id) {
+        return (UserPinEntity)currentSession().get(UserPinEntity, id)
     }
 
     @Override
-    List<UserPasswordEntity> search(Long userId, UserPasswordListOptions getOption) {
-        Criteria criteria = currentSession().createCriteria(UserPasswordEntity)
+    List<UserPinEntity> search(Long userId, UserPinListOptions getOption) {
+        Criteria criteria = currentSession().createCriteria(UserPinEntity)
         criteria.add(Restrictions.eq('userId', getOption.userId.value))
         if (getOption.active != null) {
             criteria.add(Restrictions.eq('active', getOption.active))
@@ -49,14 +49,12 @@ class UserPasswordDAOImpl extends ShardedDAOBase implements UserPasswordDAO {
         if (getOption.offset != null) {
             criteria.setFirstResult(getOption.offset)
         }
-
         return criteria.list()
     }
 
     @Override
     void delete(Long id) {
-        UserPasswordEntity entity =
-                (UserPasswordEntity)currentSession().get(UserPasswordEntity, id)
+        UserPinEntity entity = (UserPinEntity)currentSession().get(UserPinEntity, id)
         currentSession().delete(entity)
     }
 }

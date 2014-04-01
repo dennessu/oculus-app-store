@@ -37,7 +37,7 @@
         </property>
     </bean>
 
-    <bean id="securityQuestionDAO" class="com.junbo.identity.data.dao.impl.postgresql.SecurityQuestionDAOImpl">
+    <bean id="securityQuestionDAO" class="com.junbo.identity.data.dao.impl.SecurityQuestionDAOImpl">
         <property name="sessionFactory" ref="configSessionFactory"/>
     </bean>
 
@@ -79,136 +79,134 @@
         <property name="packagesToScan" value="com.junbo.identity.data.entity.reverselookup"/>
     </bean>
 
-    <bean id="identityModelMapperImpl" class="com.junbo.identity.data.mapper.ModelMapperImpl" />
-
     <bean id="baseDao" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" abstract="true">
         <property name="idGeneratorFacade" ref="idGeneratorFacade"/>
     </bean>
 
-    <bean id="entityDAOBase" class="com.junbo.identity.data.dao.impl.postgresql.ShardedDAOBase" abstract="true">
+    <bean id="entityDAOBase" class="com.junbo.identity.data.dao.impl.ShardedDAOBase" abstract="true">
         <property name="sessionFactoryWrapper" ref="sessionFactoryWrapper" />
     </bean>
 
-    <bean id="entityIndexDAOBase" class="com.junbo.identity.data.dao.impl.postgresql.ShardedDAOBase" abstract="true">
+    <bean id="entityIndexDAOBase" class="com.junbo.identity.data.dao.impl.ShardedDAOBase" abstract="true">
         <property name="sessionFactoryWrapper" ref="indexSessionFactoryWrapper" />
     </bean>
 
-    <bean id="userDAOTarget" class="com.junbo.identity.data.dao.impl.postgresql.UserDAOImpl" parent="entityDAOBase" />
+    <bean id="userDAOTarget" class="com.junbo.identity.data.dao.impl.UserDAOImpl" parent="entityDAOBase" />
     <bean id="userDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
         <property name="daoInterface" value="com.junbo.identity.data.dao.UserDAO"/>
         <property name="daoTarget" ref="userDAOTarget"/>
     </bean>
 
-    <bean id="groupDAOTarget" class="com.junbo.identity.data.dao.impl.postgresql.GroupDAOImpl" parent="entityDAOBase"/>
+    <bean id="groupDAOTarget" class="com.junbo.identity.data.dao.impl.GroupDAOImpl" parent="entityDAOBase"/>
     <bean id="groupDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
         <property name="daoInterface" value="com.junbo.identity.data.dao.GroupDAO" />
         <property name="daoTarget" ref="groupDAOTarget" />
     </bean>
 
-    <bean id="userAuthenticatorDAOTarget" class="com.junbo.identity.data.dao.impl.postgresql.UserAuthenticatorDAOImpl" parent="entityDAOBase" />
+    <bean id="userAuthenticatorDAOTarget" class="com.junbo.identity.data.dao.impl.UserAuthenticatorDAOImpl" parent="entityDAOBase" />
     <bean id="userAuthenticatorDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
         <property name="daoInterface" value="com.junbo.identity.data.dao.UserAuthenticatorDAO" />
         <property name="daoTarget" ref="userAuthenticatorDAOTarget" />
     </bean>
 
-    <bean id="userDeviceDAOTarget" class="com.junbo.identity.data.dao.impl.postgresql.UserDeviceDAOImpl" parent="entityDAOBase"/>
+    <bean id="userDeviceDAOTarget" class="com.junbo.identity.data.dao.impl.UserDeviceDAOImpl" parent="entityDAOBase"/>
     <bean id="userDeviceDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
         <property name="daoInterface" value="com.junbo.identity.data.dao.UserDeviceDAO" />
         <property name="daoTarget" ref="userDeviceDAOTarget" />
     </bean>
 
-    <bean id="userEmailDAOTarget" class="com.junbo.identity.data.dao.impl.postgresql.UserEmailDAOImpl" parent="entityDAOBase"/>
+    <bean id="userEmailDAOTarget" class="com.junbo.identity.data.dao.impl.UserEmailDAOImpl" parent="entityDAOBase"/>
     <bean id="userEmailDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
         <property name="daoInterface" value="com.junbo.identity.data.dao.UserEmailDAO" />
         <property name="daoTarget" ref="userEmailDAOTarget" />
     </bean>
 
-    <bean id="userGroupDAOTarget" class="com.junbo.identity.data.dao.impl.postgresql.UserGroupDAOImpl" parent="entityDAOBase"/>
+    <bean id="userGroupDAOTarget" class="com.junbo.identity.data.dao.impl.UserGroupDAOImpl" parent="entityDAOBase"/>
     <bean id="userGroupDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
         <property name="daoInterface" value="com.junbo.identity.data.dao.UserGroupDAO" />
         <property name="daoTarget" ref="userGroupDAOTarget" />
     </bean>
 
-    <bean id="groupUserDAOTarget" class="com.junbo.identity.data.dao.impl.postgresql.GroupUserDAOImpl" parent="entityDAOBase"/>
+    <bean id="groupUserDAOTarget" class="com.junbo.identity.data.dao.impl.GroupUserDAOImpl" parent="entityDAOBase"/>
     <bean id="groupUserDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
         <property name="daoInterface" value="com.junbo.identity.data.dao.GroupUserDAO" />
         <property name="daoTarget" ref="groupUserDAOTarget" />
     </bean>
 
-    <bean id="userLoginAttemptDAOTarget" class="com.junbo.identity.data.dao.impl.postgresql.UserLoginAttemptDAOImpl" parent="entityDAOBase"/>
+    <bean id="userLoginAttemptDAOTarget" class="com.junbo.identity.data.dao.impl.UserLoginAttemptDAOImpl" parent="entityDAOBase"/>
     <bean id="userLoginAttemptDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
         <property name="daoInterface" value="com.junbo.identity.data.dao.UserLoginAttemptDAO" />
         <property name="daoTarget" ref="userLoginAttemptDAOTarget" />
     </bean>
 
-    <bean id="userOptinDAOTarget" class="com.junbo.identity.data.dao.impl.postgresql.UserOptinDAOImpl" parent="entityDAOBase"/>
+    <bean id="userOptinDAOTarget" class="com.junbo.identity.data.dao.impl.UserOptinDAOImpl" parent="entityDAOBase"/>
     <bean id="userOptinDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
         <property name="daoInterface" value="com.junbo.identity.data.dao.UserOptinDAO" />
         <property name="daoTarget" ref="userOptinDAOTarget" />
     </bean>
 
-    <bean id="userPasswordDAOTarget" class="com.junbo.identity.data.dao.impl.postgresql.UserPasswordDAOImpl" parent="entityDAOBase"/>
+    <bean id="userPasswordDAOTarget" class="com.junbo.identity.data.dao.impl.UserPasswordDAOImpl" parent="entityDAOBase"/>
     <bean id="userPasswordDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
         <property name="daoInterface" value="com.junbo.identity.data.dao.UserPasswordDAO" />
         <property name="daoTarget" ref="userPasswordDAOTarget" />
     </bean>
 
-    <bean id="userPhoneNumberDAOTarget" class="com.junbo.identity.data.dao.impl.postgresql.UserPhoneNumberDAOImpl" parent="entityDAOBase" />
+    <bean id="userPhoneNumberDAOTarget" class="com.junbo.identity.data.dao.impl.UserPhoneNumberDAOImpl" parent="entityDAOBase" />
     <bean id="userPhoneNumberDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
         <property name="daoInterface" value="com.junbo.identity.data.dao.UserPhoneNumberDAO" />
         <property name="daoTarget" ref="userPhoneNumberDAOTarget" />
     </bean>
 
-    <bean id="userPinDAOTarget" class="com.junbo.identity.data.dao.impl.postgresql.UserPinDAOImpl" parent="entityDAOBase" />
+    <bean id="userPinDAOTarget" class="com.junbo.identity.data.dao.impl.UserPinDAOImpl" parent="entityDAOBase" />
     <bean id="userPinDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
         <property name="daoInterface" value="com.junbo.identity.data.dao.UserPinDAO" />
         <property name="daoTarget" ref="userPinDAOTarget" />
     </bean>
 
-    <bean id="userSecurityQuestionDAOTarget" class="com.junbo.identity.data.dao.impl.postgresql.UserSecurityQuestionDAOImpl" parent="entityDAOBase" />
+    <bean id="userSecurityQuestionDAOTarget" class="com.junbo.identity.data.dao.impl.UserSecurityQuestionDAOImpl" parent="entityDAOBase" />
     <bean id="userSecurityQuestionDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
         <property name="daoInterface" value="com.junbo.identity.data.dao.UserSecurityQuestionDAO" />
         <property name="daoTarget" ref="userSecurityQuestionDAOTarget" />
     </bean>
 
-    <bean id="userTosDAOTarget" class="com.junbo.identity.data.dao.impl.postgresql.UserTosDAOImpl" parent="entityDAOBase" />
+    <bean id="userTosDAOTarget" class="com.junbo.identity.data.dao.impl.UserTosDAOImpl" parent="entityDAOBase" />
     <bean id="userTosDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
         <property name="daoInterface" value="com.junbo.identity.data.dao.UserTosDAO" />
         <property name="daoTarget" ref="userTosDAOTarget" />
     </bean>
 
-    <bean id="userNameDAOTarget" class="com.junbo.identity.data.dao.impl.postgresql.UserNameDAOImpl" parent="entityDAOBase"/>
+    <bean id="userNameDAOTarget" class="com.junbo.identity.data.dao.impl.UserNameDAOImpl" parent="entityDAOBase"/>
     <bean id="userNameDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
         <property name="daoInterface" value="com.junbo.identity.data.dao.UserNameDAO" />
         <property name="daoTarget" ref="userNameDAOTarget" />
     </bean>
 
-    <bean id="userSecurityQuestionAttemptDAOTarget" class="com.junbo.identity.data.dao.impl.postgresql.UserSecurityQuestionAttemptDAOImpl" parent="entityDAOBase" />
+    <bean id="userSecurityQuestionAttemptDAOTarget" class="com.junbo.identity.data.dao.impl.UserSecurityQuestionAttemptDAOImpl" parent="entityDAOBase" />
     <bean id="userSecurityQuestionAttemptDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
         <property name="daoInterface" value="com.junbo.identity.data.dao.UserSecurityQuestionAttemptDAO" />
         <property name="daoTarget" ref="userSecurityQuestionAttemptDAOTarget" />
     </bean>
 
     <!-- identity reverse index -->
-    <bean id="userNameReverseIndexDAOTarget" class="com.junbo.identity.data.dao.impl.postgresql.index.UserNameReverseIndexDAOImpl" parent="entityIndexDAOBase" />
+    <bean id="userNameReverseIndexDAOTarget" class="com.junbo.identity.data.dao.impl.index.UserNameReverseIndexDAOImpl" parent="entityIndexDAOBase" />
     <bean id="userNameReverseIndexDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
         <property name="daoInterface" value="com.junbo.identity.data.dao.index.UserNameReverseIndexDAO" />
         <property name="daoTarget" ref="userNameReverseIndexDAOTarget" />
     </bean>
 
-    <bean id="groupReverseIndexDAOTarget" class="com.junbo.identity.data.dao.impl.postgresql.index.GroupReverseIndexDAOImpl" parent="entityIndexDAOBase" />
+    <bean id="groupReverseIndexDAOTarget" class="com.junbo.identity.data.dao.impl.index.GroupReverseIndexDAOImpl" parent="entityIndexDAOBase" />
     <bean id="groupReverseIndexDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
         <property name="daoInterface" value="com.junbo.identity.data.dao.index.GroupReverseIndexDAO" />
         <property name="daoTarget" ref="groupReverseIndexDAOTarget" />
     </bean>
 
-    <bean id="userAuthenticatorReverseIndexDAOTarget" class="com.junbo.identity.data.dao.impl.postgresql.index.UserAuthenticatorReverseIndexDAOImpl" parent="entityIndexDAOBase" />
+    <bean id="userAuthenticatorReverseIndexDAOTarget" class="com.junbo.identity.data.dao.impl.index.UserAuthenticatorReverseIndexDAOImpl" parent="entityIndexDAOBase" />
     <bean id="userAuthenticatorReverseIndexDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
         <property name="daoInterface" value="com.junbo.identity.data.dao.index.UserAuthenticatorReverseIndexDAO" />
         <property name="daoTarget" ref="userAuthenticatorReverseIndexDAOTarget" />
     </bean>
 
-    <bean id="userEmailReverseIndexDAOTarget" class="com.junbo.identity.data.dao.impl.postgresql.index.UserEmailReverseIndexDAOImpl" parent="entityIndexDAOBase" />
+    <bean id="userEmailReverseIndexDAOTarget" class="com.junbo.identity.data.dao.impl.index.UserEmailReverseIndexDAOImpl" parent="entityIndexDAOBase" />
     <bean id="userEmailReverseIndexDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
         <property name="daoInterface" value="com.junbo.identity.data.dao.index.UserEmailReverseIndexDAO" />
         <property name="daoTarget" ref="userEmailReverseIndexDAOTarget" />

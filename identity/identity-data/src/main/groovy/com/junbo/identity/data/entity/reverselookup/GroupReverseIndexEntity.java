@@ -18,14 +18,6 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "group_name_reverse_index")
 public class GroupReverseIndexEntity {
-    @Id
-    @SeedId
-    @Column(name = "value")
-    private String name;
-
-    @Column(name = "group_id")
-    private Long groupId;
-
     public String getName() {
         return name;
     }
@@ -41,4 +33,11 @@ public class GroupReverseIndexEntity {
     public void setGroupId(Long groupId) {
         this.groupId = groupId;
     }
+
+    @Id
+    @SeedId
+    @Column(name = "value")
+    private String name;
+    @Column(name = "group_id")
+    private Long groupId;
 }

@@ -18,16 +18,6 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "security_question")
 public class SecurityQuestionEntity extends ResourceMetaEntity {
-    @Id
-    @Column(name = "id")
-    private Long id;
-
-    @Column(name = "value")
-    private String value;
-
-    @Column(name = "active")
-    private Boolean active;
-
     public Long getId() {
         return id;
     }
@@ -52,4 +42,11 @@ public class SecurityQuestionEntity extends ResourceMetaEntity {
         this.active = active;
     }
 
+    @Id
+    @Column(name = "id")
+    private Long id;
+    @Column(name = "value")
+    private String value;
+    @Column(name = "active")
+    private Boolean active;
 }

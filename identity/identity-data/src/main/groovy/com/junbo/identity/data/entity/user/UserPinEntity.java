@@ -17,30 +17,6 @@ import java.util.Date;
 @Entity
 @Table(name = "user_pin")
 public class UserPinEntity extends ResourceMetaEntity {
-    @Id
-    @Column(name = "id")
-    private Long id;
-
-    @SeedId
-    @Column(name = "user_id")
-    private Long userId;
-
-    @Column(name = "pin_hash")
-    private String pinHash;
-
-    @Column(name = "pin_salt")
-    private String pinSalt;
-
-    @Column(name = "active")
-    private Boolean active;
-
-    @Column(name = "change_at_next_login")
-    private Boolean changeAtNextLogin;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "expires_by")
-    private Date expiresBy;
-
     public Long getId() {
         return id;
     }
@@ -96,4 +72,22 @@ public class UserPinEntity extends ResourceMetaEntity {
     public void setExpiresBy(Date expiresBy) {
         this.expiresBy = expiresBy;
     }
+
+    @Id
+    @Column(name = "id")
+    private Long id;
+    @SeedId
+    @Column(name = "user_id")
+    private Long userId;
+    @Column(name = "pin_hash")
+    private String pinHash;
+    @Column(name = "pin_salt")
+    private String pinSalt;
+    @Column(name = "active")
+    private Boolean active;
+    @Column(name = "change_at_next_login")
+    private Boolean changeAtNextLogin;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "expires_by")
+    private Date expiresBy;
 }

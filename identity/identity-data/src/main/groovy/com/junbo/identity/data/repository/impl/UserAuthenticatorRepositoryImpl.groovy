@@ -31,7 +31,6 @@ class UserAuthenticatorRepositoryImpl implements UserAuthenticatorRepository {
     private UserAuthenticatorDAO authenticatorDAO
 
     @Autowired
-    @Qualifier('identityModelMapperImpl')
     private ModelMapper modelMapper
 
     @Autowired

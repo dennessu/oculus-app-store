@@ -3,28 +3,28 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.identity.data.identifiable;
+package com.junbo.identity.data.identifiable
 
-import com.junbo.common.util.Identifiable;
+import com.junbo.common.util.Identifiable
 
 /**
  * Created by liangfu on 2/24/14.
  */
-public enum PasswordCharacterSetType implements Identifiable<Short> {
+enum PasswordCharacterSetType implements Identifiable<Short> {
     UPPER_ALPHA((short)0),
     LOWER_ALPHA((short)1),
     DIGITAL((short)2),
     SPECIAL_ENGLISH_CHARACTER((short)3),
-    SPACE((short)4);
+    SPACE((short)4)
 
-    private Short id;
+    final private Short id
 
     PasswordCharacterSetType(Short id) {
-        this.id = id;
+        this.id = id
     }
 
     @Override
-    public Short getId() {
-        return id;
+    Short getId() {
+        return id
     }
 }

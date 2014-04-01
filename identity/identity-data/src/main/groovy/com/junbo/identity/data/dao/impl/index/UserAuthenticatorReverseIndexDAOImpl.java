@@ -3,9 +3,9 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.identity.data.dao.impl.postgresql.index;
+package com.junbo.identity.data.dao.impl.index;
 
-import com.junbo.identity.data.dao.impl.postgresql.ShardedDAOBase;
+import com.junbo.identity.data.dao.impl.ShardedDAOBase;
 import com.junbo.identity.data.dao.index.UserAuthenticatorReverseIndexDAO;
 import com.junbo.identity.data.entity.reverselookup.UserAuthenticatorReverseIndexEntity;
 import com.junbo.sharding.annotations.SeedParam;

@@ -19,19 +19,6 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "user_tos")
 public class UserTosEntity extends ResourceMetaEntity {
-
-    @Id
-    @Column(name = "id")
-    private Long id;
-
-    @SeedId
-    @Column(name = "user_id")
-    private Long userId;
-
-    @Column(name = "tos_uri")
-    private String tosUri;
-
-
     public Long getId() {
         return id;
     }
@@ -56,4 +43,12 @@ public class UserTosEntity extends ResourceMetaEntity {
         this.tosUri = tosUri;
     }
 
+    @Id
+    @Column(name = "id")
+    private Long id;
+    @SeedId
+    @Column(name = "user_id")
+    private Long userId;
+    @Column(name = "tos_uri")
+    private String tosUri;
 }

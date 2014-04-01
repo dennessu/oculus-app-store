@@ -36,7 +36,6 @@ class UserGroupRepositoryImpl implements UserGroupRepository {
     private GroupUserDAO groupUserDAO
 
     @Autowired
-    @Qualifier('identityModelMapperImpl')
     private ModelMapper modelMapper
 
     @Override
@@ -49,7 +48,7 @@ class UserGroupRepositoryImpl implements UserGroupRepository {
         groupUserEntity.setUserId(userGroupEntity.userId)
         groupUserEntity.setCreatedBy(userGroupEntity.createdBy)
         groupUserEntity.setCreatedTime(userGroupEntity.createdTime)
-        groupUserDAO.save(groupUserEntity)
+        groupUserDAO.create(groupUserEntity)
 
         return get(new UserGroupId(userGroupEntity.id))
     }

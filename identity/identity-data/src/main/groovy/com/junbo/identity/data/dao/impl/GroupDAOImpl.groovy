@@ -4,7 +4,7 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.identity.data.dao.impl.postgresql
+package com.junbo.identity.data.dao.impl
 import com.junbo.identity.data.dao.GroupDAO
 import com.junbo.identity.data.entity.group.GroupEntity
 /**

@@ -17,40 +17,6 @@ import java.util.Date;
 @Entity
 @Table(name = "user_account")
 public class UserEntity extends ResourceMetaEntity {
-
-    @Id
-    @SeedId
-    @Column(name = "id")
-    private Long id;
-
-    @Column(name = "user_name")
-    private String username;
-
-    @Column(name = "nick_name")
-    private String nickName;
-
-    @Column(name = "preferred_language")
-    private String preferredLanguage;
-
-    @Column(name = "locale")
-    private String locale;
-
-    @Column(name = "time_zone")
-    private String timezone;
-
-    @Column(name = "is_active")
-    private Boolean active;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "birthday")
-    private Date birthday;
-
-    @Column(name = "gender")
-    private String gender;
-
-    @Column(name = "type")
-    private String type;
-
     public Long getId() {
         return id;
     }
@@ -131,4 +97,27 @@ public class UserEntity extends ResourceMetaEntity {
         this.type = type;
     }
 
+    @Id
+    @SeedId
+    @Column(name = "id")
+    private Long id;
+    @Column(name = "user_name")
+    private String username;
+    @Column(name = "nick_name")
+    private String nickName;
+    @Column(name = "preferred_language")
+    private String preferredLanguage;
+    @Column(name = "locale")
+    private String locale;
+    @Column(name = "time_zone")
+    private String timezone;
+    @Column(name = "is_active")
+    private Boolean active;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "birthday")
+    private Date birthday;
+    @Column(name = "gender")
+    private String gender;
+    @Column(name = "type")
+    private String type;
 }

@@ -19,27 +19,6 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "user_device")
 public class UserDeviceEntity extends ResourceMetaEntity {
-
-    @Id
-    @Column(name = "id")
-    private Long id;
-
-    @SeedId
-    @Column(name = "user_id")
-    private Long userId;
-
-    @Column(name = "type")
-    private String type;
-
-    @Column(name = "device_id")
-    private String deviceId;
-
-    @Column(name = "os")
-    private String os;
-
-    @Column(name = "name")
-    private String name;
-
     public Long getId() {
         return id;
     }
@@ -88,5 +67,18 @@ public class UserDeviceEntity extends ResourceMetaEntity {
         this.name = name;
     }
 
+    @Id
+    @Column(name = "id")
+    private Long id;
+    @SeedId
+    @Column(name = "user_id")
+    private Long userId;
+    @Column(name = "type")
+    private String type;
+    @Column(name = "device_id")
+    private String deviceId;
+    @Column(name = "os")
+    private String os;
+    @Column(name = "name")
+    private String name;
 }
-

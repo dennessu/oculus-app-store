@@ -30,7 +30,6 @@ class UserLoginAttemptRepositoryImpl implements UserLoginAttemptRepository {
     private UserLoginAttemptDAO userLoginAttemptDAO
 
     @Autowired
-    @Qualifier('identityModelMapperImpl')
     private ModelMapper modelMapper
 
     @Override

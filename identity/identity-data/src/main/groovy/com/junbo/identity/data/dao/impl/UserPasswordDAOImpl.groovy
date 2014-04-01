@@ -3,45 +3,44 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.identity.data.dao.impl.postgresql
-import com.junbo.identity.data.dao.UserGroupDAO
-import com.junbo.identity.data.entity.user.UserGroupEntity
-import com.junbo.identity.spec.options.list.UserGroupListOptions
+package com.junbo.identity.data.dao.impl
+import com.junbo.identity.data.dao.UserPasswordDAO
+import com.junbo.identity.data.entity.user.UserPasswordEntity
+import com.junbo.identity.spec.options.list.UserPasswordListOptions
 import groovy.transform.CompileStatic
 import org.hibernate.Criteria
 import org.hibernate.criterion.Order
 import org.hibernate.criterion.Restrictions
 /**
- * Created by liangfu on 3/17/14.
+ * Created by liangfu on 3/16/14.
  */
 @CompileStatic
-class UserGroupDAOImpl extends ShardedDAOBase implements UserGroupDAO {
+class UserPasswordDAOImpl extends ShardedDAOBase implements UserPasswordDAO {
+
     @Override
-    UserGroupEntity save(UserGroupEntity entity) {
+    UserPasswordEntity save(UserPasswordEntity entity) {
         currentSession().save(entity)
 
         return get(entity.id)
     }
 
     @Override
-    UserGroupEntity update(UserGroupEntity entity) {
+    UserPasswordEntity update(UserPasswordEntity entity) {
         currentSession().merge(entity)
-        currentSession().flush()
-
         return get(entity.id)
     }
 
     @Override
-    UserGroupEntity get(Long id) {
-        return (UserGroupEntity)currentSession().get(UserGroupEntity, id)
+    UserPasswordEntity get(Long id) {
+        return (UserPasswordEntity)currentSession().get(UserPasswordEntity, id)
     }
 
     @Override
-    List<UserGroupEntity> search(Long userId, UserGroupListOptions getOption) {
-        Criteria criteria = currentSession().createCriteria(UserGroupEntity)
+    List<UserPasswordEntity> search(Long userId, UserPasswordListOptions getOption) {
+        Criteria criteria = currentSession().createCriteria(UserPasswordEntity)
         criteria.add(Restrictions.eq('userId', getOption.userId.value))
-        if (getOption.groupId != null) {
-            criteria.add(Restrictions.eq('groupId', getOption.groupId.value))
+        if (getOption.active != null) {
+            criteria.add(Restrictions.eq('active', getOption.active))
         }
         criteria.addOrder(Order.asc('id'))
         if (getOption.limit != null) {
@@ -50,12 +49,14 @@ class UserGroupDAOImpl extends ShardedDAOBase implements UserGroupDAO {
         if (getOption.offset != null) {
             criteria.setFirstResult(getOption.offset)
         }
+
         return criteria.list()
     }
 
     @Override
     void delete(Long id) {
-        UserGroupEntity entity = (UserGroupEntity)currentSession().get(UserGroupEntity, id)
+        UserPasswordEntity entity =
+                (UserPasswordEntity)currentSession().get(UserPasswordEntity, id)
         currentSession().delete(entity)
     }
 }

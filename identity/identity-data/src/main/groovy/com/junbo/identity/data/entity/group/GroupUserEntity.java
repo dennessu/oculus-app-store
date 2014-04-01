@@ -19,17 +19,6 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "group_user")
 public class GroupUserEntity extends ResourceMetaEntity {
-    @Id
-    @Column(name = "id")
-    private Long id;
-
-    @Column(name = "user_id")
-    private Long userId;
-
-    @SeedId
-    @Column(name = "group_id")
-    private Long groupId;
-
     public Long getId() {
         return id;
     }
@@ -53,4 +42,13 @@ public class GroupUserEntity extends ResourceMetaEntity {
     public void setGroupId(Long groupId) {
         this.groupId = groupId;
     }
+
+    @Id
+    @Column(name = "id")
+    private Long id;
+    @Column(name = "user_id")
+    private Long userId;
+    @SeedId
+    @Column(name = "group_id")
+    private Long groupId;
 }

@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.identity.data.dao.impl.postgresql
+package com.junbo.identity.data.dao.impl
 import com.junbo.common.id.UserId
 import com.junbo.identity.data.dao.SecurityQuestionDAO
 import com.junbo.identity.data.entity.domaindata.SecurityQuestionEntity

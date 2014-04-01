@@ -31,7 +31,6 @@ import org.springframework.util.StringUtils
 @CompileStatic
 class UserRepositoryImpl implements UserRepository {
     @Autowired
-    @Qualifier('identityModelMapperImpl')
     private ModelMapper modelMapper
 
     @Autowired
@@ -54,7 +53,7 @@ class UserRepositoryImpl implements UserRepository {
         // create name structure
         UserNameEntity userNameEntity = modelMapper.toUserName(user.name, new MappingContext())
         userNameEntity.setUserId(userEntity.id)
-        userNameDAO.save(userNameEntity)
+        userNameDAO.create(userNameEntity)
 
         // build reverse lookup
         UserNameReverseIndexEntity reverseLookupEntity = new UserNameReverseIndexEntity()

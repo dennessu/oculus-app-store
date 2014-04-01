@@ -19,18 +19,6 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "user_optin")
 public class UserOptinEntity extends ResourceMetaEntity {
-
-    @Id
-    @Column(name = "id")
-    private Long id;
-
-    @SeedId
-    @Column(name = "user_id")
-    private Long userId;
-
-    @Column(name = "type")
-    private String type;
-
     public Long getId() {
         return id;
     }
@@ -55,5 +43,12 @@ public class UserOptinEntity extends ResourceMetaEntity {
         this.type = type;
     }
 
+    @Id
+    @Column(name = "id")
+    private Long id;
+    @SeedId
+    @Column(name = "user_id")
+    private Long userId;
+    @Column(name = "type")
+    private String type;
 }
-

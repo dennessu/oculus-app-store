@@ -3,11 +3,11 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.identity.data.dao.impl.postgresql
+package com.junbo.identity.data.dao.impl
 
-import com.junbo.identity.data.dao.UserPhoneNumberDAO
-import com.junbo.identity.data.entity.user.UserPhoneNumberEntity
-import com.junbo.identity.spec.options.list.UserPhoneNumberListOptions
+import com.junbo.identity.data.dao.UserLoginAttemptDAO
+import com.junbo.identity.data.entity.user.UserLoginAttemptEntity
+import com.junbo.identity.spec.options.list.UserLoginAttemptListOptions
 import groovy.transform.CompileStatic
 import org.hibernate.Criteria
 import org.hibernate.criterion.Order
@@ -17,16 +17,16 @@ import org.springframework.util.StringUtils
  * Created by liangfu on 3/17/14.
  */
 @CompileStatic
-class UserPhoneNumberDAOImpl extends ShardedDAOBase implements UserPhoneNumberDAO {
+class UserLoginAttemptDAOImpl extends ShardedDAOBase implements UserLoginAttemptDAO {
     @Override
-    UserPhoneNumberEntity save(UserPhoneNumberEntity entity) {
+    UserLoginAttemptEntity save(UserLoginAttemptEntity entity) {
         currentSession().save(entity)
 
         return get(entity.id)
     }
 
     @Override
-    UserPhoneNumberEntity update(UserPhoneNumberEntity entity) {
+    UserLoginAttemptEntity update(UserLoginAttemptEntity entity) {
         currentSession().merge(entity)
         currentSession().flush()
 
@@ -34,19 +34,19 @@ class UserPhoneNumberDAOImpl extends ShardedDAOBase implements UserPhoneNumberDA
     }
 
     @Override
-    UserPhoneNumberEntity get(Long id) {
-        return (UserPhoneNumberEntity)currentSession().get(UserPhoneNumberEntity, id)
+    UserLoginAttemptEntity get(Long id) {
+        return (UserLoginAttemptEntity)currentSession().get(UserLoginAttemptEntity, id)
     }
 
     @Override
-    List<UserPhoneNumberEntity> search(Long userId, UserPhoneNumberListOptions getOption) {
-        Criteria criteria = currentSession().createCriteria(UserPhoneNumberEntity)
+    List<UserLoginAttemptEntity> search(Long userId, UserLoginAttemptListOptions getOption) {
+        Criteria criteria = currentSession().createCriteria(UserLoginAttemptEntity)
         criteria.add(Restrictions.eq('userId', getOption.userId.value))
         if (!StringUtils.isEmpty(getOption.type)) {
             criteria.add(Restrictions.eq('type', getOption.type))
         }
-        if (!StringUtils.isEmpty(getOption.value)) {
-            criteria.add(Restrictions.eq('value', getOption.value))
+        if (!StringUtils.isEmpty(getOption.ipAddress)) {
+            criteria.add(Restrictions.eq('ipAddress', getOption.ipAddress))
         }
         criteria.addOrder(Order.asc('id'))
         if (getOption.limit != null) {
@@ -60,8 +60,8 @@ class UserPhoneNumberDAOImpl extends ShardedDAOBase implements UserPhoneNumberDA
 
     @Override
     void delete(Long id) {
-        UserPhoneNumberEntity entity =
-                (UserPhoneNumberEntity)currentSession().get(UserPhoneNumberEntity, id)
+        UserLoginAttemptEntity entity =
+                (UserLoginAttemptEntity)currentSession().get(UserLoginAttemptEntity, id)
         currentSession().delete(entity)
     }
 }

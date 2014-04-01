@@ -19,29 +19,6 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "user_login_attempt")
 public class UserLoginAttemptEntity extends ResourceMetaEntity {
-    @Id
-    @Column(name = "id")
-    private Long id;
-
-    @SeedId
-    @Column(name = "user_id")
-    private Long userId;
-
-    @Column(name = "type")
-    private String type;
-
-    @Column(name = "ip_address")
-    private String ipAddress;
-
-    @Column(name = "user_agent")
-    private String userAgent;
-
-    @Column(name = "client_id")
-    private String clientId;
-
-    @Column(name = "succeeded")
-    private Boolean succeeded;
-
     public Long getId() {
         return id;
     }
@@ -97,4 +74,21 @@ public class UserLoginAttemptEntity extends ResourceMetaEntity {
     public void setSucceeded(Boolean succeeded) {
         this.succeeded = succeeded;
     }
+
+    @Id
+    @Column(name = "id")
+    private Long id;
+    @SeedId
+    @Column(name = "user_id")
+    private Long userId;
+    @Column(name = "type")
+    private String type;
+    @Column(name = "ip_address")
+    private String ipAddress;
+    @Column(name = "user_agent")
+    private String userAgent;
+    @Column(name = "client_id")
+    private String clientId;
+    @Column(name = "succeeded")
+    private Boolean succeeded;
 }

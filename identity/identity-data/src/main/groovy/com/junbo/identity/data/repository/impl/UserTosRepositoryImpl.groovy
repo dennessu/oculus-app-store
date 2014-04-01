@@ -17,10 +17,12 @@ import com.junbo.oom.core.MappingContext
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.stereotype.Component
 
 /**
  * Implementation for User Tos Acceptance DAO interface.
  */
+@Component
 @CompileStatic
 class UserTosRepositoryImpl implements UserTosRepository {
     @Autowired
@@ -28,7 +30,6 @@ class UserTosRepositoryImpl implements UserTosRepository {
     private UserTosDAO userTosDAO
 
     @Autowired
-    @Qualifier('identityModelMapperImpl')
     private ModelMapper modelMapper
 
     @Override

@@ -3,26 +3,28 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.identity.data.dao.impl.postgresql
-import com.junbo.identity.data.dao.UserDeviceDAO
-import com.junbo.identity.data.entity.user.UserDeviceEntity
-import com.junbo.identity.spec.options.list.UserDeviceListOptions
+package com.junbo.identity.data.dao.impl
+import com.junbo.identity.data.dao.UserGroupDAO
+import com.junbo.identity.data.entity.user.UserGroupEntity
+import com.junbo.identity.spec.options.list.UserGroupListOptions
+import groovy.transform.CompileStatic
 import org.hibernate.Criteria
 import org.hibernate.criterion.Order
 import org.hibernate.criterion.Restrictions
 /**
- * Implementation for UserDeviceDAO.
+ * Created by liangfu on 3/17/14.
  */
-class UserDeviceDAOImpl extends ShardedDAOBase implements UserDeviceDAO {
-
+@CompileStatic
+class UserGroupDAOImpl extends ShardedDAOBase implements UserGroupDAO {
     @Override
-    UserDeviceEntity save(UserDeviceEntity entity) {
+    UserGroupEntity save(UserGroupEntity entity) {
         currentSession().save(entity)
+
         return get(entity.id)
     }
 
     @Override
-    UserDeviceEntity update(UserDeviceEntity entity) {
+    UserGroupEntity update(UserGroupEntity entity) {
         currentSession().merge(entity)
         currentSession().flush()
 
@@ -30,16 +32,16 @@ class UserDeviceDAOImpl extends ShardedDAOBase implements UserDeviceDAO {
     }
 
     @Override
-    UserDeviceEntity get(Long id) {
-        return (UserDeviceEntity)currentSession().get(UserDeviceEntity, id)
+    UserGroupEntity get(Long id) {
+        return (UserGroupEntity)currentSession().get(UserGroupEntity, id)
     }
 
     @Override
-    List<UserDeviceEntity> search(Long userId, UserDeviceListOptions getOption) {
-        Criteria criteria = currentSession().createCriteria(UserDeviceEntity)
+    List<UserGroupEntity> search(Long userId, UserGroupListOptions getOption) {
+        Criteria criteria = currentSession().createCriteria(UserGroupEntity)
         criteria.add(Restrictions.eq('userId', getOption.userId.value))
-        if (getOption.deviceId != null) {
-            criteria.add(Restrictions.eq('deviceId', getOption.deviceId))
+        if (getOption.groupId != null) {
+            criteria.add(Restrictions.eq('groupId', getOption.groupId.value))
         }
         criteria.addOrder(Order.asc('id'))
         if (getOption.limit != null) {
@@ -53,7 +55,7 @@ class UserDeviceDAOImpl extends ShardedDAOBase implements UserDeviceDAO {
 
     @Override
     void delete(Long id) {
-        UserDeviceEntity entity = currentSession().get(UserDeviceEntity, id.value)
+        UserGroupEntity entity = (UserGroupEntity)currentSession().get(UserGroupEntity, id)
         currentSession().delete(entity)
     }
 }
