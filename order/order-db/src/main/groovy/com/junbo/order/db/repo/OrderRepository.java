@@ -21,7 +21,7 @@ public interface OrderRepository {
 
     Order getOrder(Long orderId);
 
-    List<Order> getOrdersByUserId(Long userId);
+    List<Order> getOrdersByUserId(Long userId, OrderQueryParam orderQueryParam, PageParam pageParam);
 
     OrderEvent createOrderEvent(OrderEvent event);
 
@@ -39,5 +39,5 @@ public interface OrderRepository {
 
     Order getOrderByTrackingUuid(UUID trackingUuid);
     
-    List<OrderEvent> getOrderEvents(Long orderId);
+    List<OrderEvent> getOrderEvents(Long orderId, PageParam pageParam);
 }

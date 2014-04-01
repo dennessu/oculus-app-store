@@ -10,6 +10,7 @@ import com.junbo.common.model.Results;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.order.spec.model.OrderEvent;
+import com.junbo.order.spec.model.PageParam;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 
@@ -30,7 +31,7 @@ public interface OrderEventResource {
 
     @ApiOperation("Get order events")
     @GET
-    Promise<Results<OrderEvent>> getOrderEvents(@QueryParam("orderId") OrderId orderId,
+    Promise<Results<OrderEvent>> getOrderEvents(@QueryParam("orderId") OrderId orderId, @BeanParam PageParam pageParam,
                                              @Context HttpHeaders headers);
 
     @POST

@@ -7,9 +7,7 @@
 package com.junbo.order.core;
 
 import com.junbo.langur.core.promise.Promise;
-import com.junbo.order.spec.model.ApiContext;
-import com.junbo.order.spec.model.Order;
-import com.junbo.order.spec.model.OrderEvent;
+import com.junbo.order.spec.model.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -29,7 +27,7 @@ public interface OrderService {
 
     Promise<Order> refundOrder(Order request);
 
-    Promise<List<Order>> getOrdersByUserId(Long userId);
+    Promise<List<Order>> getOrdersByUserId(Long userId, OrderQueryParam orderQueryParam, PageParam pageParam);
 
     Promise<OrderEvent> updateOrderBillingStatus(OrderEvent event);
 
