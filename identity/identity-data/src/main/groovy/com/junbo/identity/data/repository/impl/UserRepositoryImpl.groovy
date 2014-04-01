@@ -54,7 +54,7 @@ class UserRepositoryImpl implements UserRepository {
         // create name structure
         UserNameEntity userNameEntity = modelMapper.toUserName(user.name, new MappingContext())
         userNameEntity.setUserId(userEntity.id)
-        userNameDAO.save(userNameEntity)
+        userNameDAO.create(userNameEntity)
 
         // build reverse lookup
         UserNameReverseIndexEntity reverseLookupEntity = new UserNameReverseIndexEntity()
