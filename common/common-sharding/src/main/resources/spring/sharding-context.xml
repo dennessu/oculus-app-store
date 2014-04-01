@@ -148,4 +148,17 @@
         </constructor-arg>
         <constructor-arg name="idGenerator" ref="oculus48IdGenerator" />
     </bean>
+
+    <bean id="hashAlgorithm" class="com.junbo.sharding.DefaultHashAlgorithm"/>
+
+    <bean id="userShardAlgorithm" class="com.junbo.sharding.DefaultShardAlgorithm">
+        <property name="hashAlgorithm" ref="hashAlgorithm"/>
+        <property name="availableShards" value="2"/>
+    </bean>
+
+    <bean id="externalShardAlgorithm" class="com.junbo.sharding.DefaultShardAlgorithm">
+        <property name="hashAlgorithm" ref="hashAlgorithm"/>
+        <property name="availableShards" value="256"/>
+    </bean>
+
 </beans>

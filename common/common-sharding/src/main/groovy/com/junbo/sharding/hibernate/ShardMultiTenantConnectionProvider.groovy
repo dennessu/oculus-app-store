@@ -1,8 +1,8 @@
 package com.junbo.sharding.hibernate
 
 import groovy.transform.CompileStatic
+import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider
 import org.hibernate.service.UnknownUnwrapTypeException
-import org.hibernate.service.jdbc.connections.spi.MultiTenantConnectionProvider
 
 import javax.sql.DataSource
 import java.sql.Connection
