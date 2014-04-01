@@ -6,8 +6,10 @@
 package com.junbo.notification.core;
 
 import org.apache.activemq.broker.BrokerService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 
@@ -19,6 +21,9 @@ public class BaseTest extends AbstractTestNGSpringContextTests {
     private static String brokerUrl;
 
     private BrokerService broker;
+
+    @Autowired
+    protected PlatformTransactionManager transactionManager;
 
     public static void setBrokerUrl(String brokerUrl) {
         BaseTest.brokerUrl = brokerUrl;
