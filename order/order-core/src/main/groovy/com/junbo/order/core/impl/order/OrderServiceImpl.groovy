@@ -5,6 +5,9 @@
  */
 
 package com.junbo.order.core.impl.order
+
+import com.junbo.billing.spec.enums.BalanceType
+import com.junbo.billing.spec.model.Balance
 import com.junbo.common.error.AppErrorException
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.executor.FlowExecutor
@@ -14,6 +17,7 @@ import com.junbo.order.core.FlowSelector
 import com.junbo.order.core.FlowType
 import com.junbo.order.core.OrderService
 import com.junbo.order.core.OrderServiceOperation
+import com.junbo.order.core.impl.common.CoreBuilder
 import com.junbo.order.core.impl.common.CoreUtils
 import com.junbo.order.core.impl.common.OrderStatusBuilder
 import com.junbo.order.core.impl.common.OrderValidator
@@ -26,6 +30,7 @@ import com.junbo.order.spec.model.ApiContext
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderEvent
 import com.junbo.order.spec.model.OrderItem
+import com.junbo.rating.spec.model.request.OrderRatingRequest
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.apache.commons.collections.CollectionUtils
@@ -145,6 +150,76 @@ class OrderServiceImpl implements OrderService {
             throw AppErrors.INSTANCE.orderNotFound().exception()
         }
         return Promise.pure(completeOrder(order))
+    }
+
+    @Override
+    Promise<Order> rateOrder(Order order, Boolean save) {
+        return rateOrder(order).syncThen {
+            if (save) {
+                updateTentativeOrder(order, null)
+            }
+            return order
+        }
+    }
+
+    @Override
+    Promise<Order> rateOrder(Order order) {
+        return facadeContainer.ratingFacade.rateOrder(order).syncRecover { Throwable throwable ->
+            LOGGER.error('name=Order_Rating_Error', throwable)
+            // TODO parse the rating error
+            throw AppErrors.INSTANCE.ratingConnectionError().exception()
+        }.then { OrderRatingRequest ratingResult ->
+            // todo handle rating violation
+            if (ratingResult == null) {
+                // TODO: log order charge action error?
+                LOGGER.error('name=Rating_Result_Null')
+                throw AppErrors.INSTANCE.ratingResultInvalid().exception()
+            }
+            CoreBuilder.fillRatingInfo(order, ratingResult)
+            //  no need to log event for rating
+            // call billing to calculate tax
+            if (order.totalAmount == 0) {
+                LOGGER.info('name=Skip_Calculate_Tax_Zero_Total_Amount')
+                return Promise.pure(order)
+            }
+            if (CoreUtils.hasPhysicalOffer(order)) {
+                // check whether the shipping method id and shipping address id are there
+                if (order.shippingAddressId == null) {
+                    if (order.tentative) {
+                        LOGGER.info('name=Skip_Calculate_Tax_Without_shippingAddressId')
+                        return Promise.pure(order)
+                    }
+                    LOGGER.error('name=Missing_shippingAddressId_To_Calculate_Tax')
+                    throw AppErrors.INSTANCE.missingParameterField('shippingAddressId').exception()
+                }
+            } else {
+                // check pi is there
+                if (CollectionUtils.isEmpty(order.paymentInstruments)) {
+                    if (order.tentative) {
+                        LOGGER.info('name=Skip_Calculate_Tax_Without_PI')
+                        return Promise.pure(order)
+                    }
+                    LOGGER.error('name=Missing_paymentInstruments_To_Calculate_Tax')
+                    throw AppErrors.INSTANCE.missingParameterField('paymentInstruments').exception()
+                }
+            }
+            return facadeContainer.billingFacade.quoteBalance(
+                    CoreBuilder.buildBalance(order, BalanceType.DEBIT)).syncRecover {
+                Throwable throwable ->
+                    LOGGER.error('name=Fail_To_Calculate_Tax', throwable)
+                    // TODO parse the tax error
+                    throw AppErrors.INSTANCE.billingConnectionError().exception()
+            }.then { Balance balance ->
+                if (balance == null) {
+                    // TODO: log order charge action error?
+                    LOGGER.info('name=Fail_To_Calculate_Tax_Balance_Not_Found')
+                    throw AppErrors.INSTANCE.balanceNotFound().exception()
+                } else {
+                    CoreBuilder.fillTaxInfo(order, balance)
+                }
+                return Promise.pure(order)
+            }
+        }
     }
 
     private Order completeOrder(Order order) {

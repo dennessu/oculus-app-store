@@ -38,4 +38,8 @@ public interface OrderService {
     Promise<Order> updateTentativeOrder(Order order, ApiContext context);
 
     Order getOrderByTrackingUuid(UUID trackingUuid);
+
+    Promise<Order> rateOrder(Order order, Boolean save);
+
+    Promise<Order> rateOrder(Order order);
 }

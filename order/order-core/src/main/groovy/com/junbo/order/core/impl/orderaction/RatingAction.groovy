@@ -83,7 +83,7 @@ class RatingAction implements Action {
                 }
             }
             return facadeContainer.billingFacade.quoteBalance(
-                    CoreBuilder.buildBalance(context.orderServiceContext, BalanceType.DEBIT)).syncRecover {
+                    CoreBuilder.buildBalance(context.orderServiceContext.order, BalanceType.DEBIT)).syncRecover {
                 Throwable throwable ->
                     LOGGER.error('name=Fail_To_Calculate_Tax', throwable)
                     // TODO parse the tax error
