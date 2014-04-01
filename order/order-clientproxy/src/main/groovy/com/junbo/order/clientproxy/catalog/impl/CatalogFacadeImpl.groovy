@@ -52,16 +52,17 @@ class CatalogFacadeImpl implements CatalogFacade {
                     catalogOffer: offer,
                     orderOfferItems: []
             )
-            offer.items?.each { ItemEntry ite ->
+            Promise.each(offer?.items?.iterator()) { ItemEntry ite ->
                 itemResource.getItem(new ItemId(ite.itemId), entityGetOption).syncRecover {
                     // TODO add logger and exception
-                }.then { Item it ->
+                }.syncThen { Item it ->
                     orderOffer.orderOfferItems.add(new OrderOfferItem(
                             catalogItem: it
                     ))
                 }
+            }.syncThen {
+                return orderOffer
             }
-            return Promise.pure(orderOffer)
         }
     }
 
