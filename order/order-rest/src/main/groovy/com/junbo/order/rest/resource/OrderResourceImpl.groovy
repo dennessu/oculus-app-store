@@ -1,5 +1,4 @@
 package com.junbo.order.rest.resource
-
 import com.junbo.common.id.OrderId
 import com.junbo.common.id.UserId
 import com.junbo.common.model.Results
@@ -21,7 +20,6 @@ import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 
 import javax.ws.rs.container.ContainerRequestContext
-
 //import javax.ws.rs.container.ContainerRequestContext
 //import javax.ws.rs.core.Context
 /**
@@ -50,7 +48,7 @@ class OrderResourceImpl implements OrderResource {
         orderService.getOrderByOrderId(orderId.value).then { Order order ->
             if (order.tentative && CoreUtils.isRateExpired(order)) {
                 // rate the order according to the honored until time
-                return Promise.pure(orderService.rateOrder(order, true))
+                return orderService.updateTentativeOrder(order, null)
             }
             return Promise.pure(order)
         }
@@ -94,10 +92,18 @@ class OrderResourceImpl implements OrderResource {
 
     @Override
     Promise<Results<Order>> getOrderByUserId(UserId userId) {
-        orderService.getOrdersByUserId(userId.value).syncThen { List<Order> orders ->
-            Results<Order> results = new Results<>()
-            results.setItems(orders)
-            return results
+        // tentative orders are filtered out in this case
+        return orderService.getOrdersByUserId(userId.value).then { List<Order> orders ->
+            List<Order> resultList = []
+            return Promise.each(orders.iterator()) { Order order ->
+                if (!order.tentative) {
+                    resultList.add(order)
+                }
+            }.then {
+                Results<Order> results = new Results<>()
+                results.setItems(resultList)
+                return Promise.pure(results)
+            }
         }
     }
 }

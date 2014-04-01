@@ -100,7 +100,7 @@ class OrderRepositoryImpl implements OrderRepository {
     }
 
     @Override
-    List<Order> getOrdersByUserId(Long userId) {
+    List<Order> getOrdersByUserId(Long userId, Boolean includeTentative) {
         List<Order> orders = []
         List<OrderEntity> orderEntities = orderDao.readByUserId(userId)
         MappingContext context = new MappingContext()

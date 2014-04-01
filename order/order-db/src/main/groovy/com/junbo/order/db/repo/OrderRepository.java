@@ -21,7 +21,7 @@ public interface OrderRepository {
 
     Order getOrder(Long orderId);
 
-    List<Order> getOrdersByUserId(Long userId);
+    List<Order> getOrdersByUserId(Long userId, Boolean includeTentative);
 
     OrderEvent createOrderEvent(OrderEvent event);
 
