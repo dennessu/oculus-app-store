@@ -31,7 +31,6 @@ import org.springframework.util.StringUtils
 @CompileStatic
 class UserRepositoryImpl implements UserRepository {
     @Autowired
-    @Qualifier('identityModelMapperImpl')
     private ModelMapper modelMapper
 
     @Autowired

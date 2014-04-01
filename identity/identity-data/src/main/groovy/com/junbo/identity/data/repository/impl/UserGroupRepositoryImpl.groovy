@@ -36,7 +36,6 @@ class UserGroupRepositoryImpl implements UserGroupRepository {
     private GroupUserDAO groupUserDAO
 
     @Autowired
-    @Qualifier('identityModelMapperImpl')
     private ModelMapper modelMapper
 
     @Override

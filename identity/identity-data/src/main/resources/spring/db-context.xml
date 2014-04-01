@@ -79,8 +79,6 @@
         <property name="packagesToScan" value="com.junbo.identity.data.entity.reverselookup"/>
     </bean>
 
-    <bean id="identityModelMapperImpl" class="com.junbo.identity.data.mapper.ModelMapperImpl" />
-
     <bean id="baseDao" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" abstract="true">
         <property name="idGeneratorFacade" ref="idGeneratorFacade"/>
     </bean>

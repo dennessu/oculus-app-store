@@ -28,7 +28,6 @@ class UserPinRepositoryImpl implements UserPinRepository {
     private UserPinDAO userPinDAO
 
     @Autowired
-    @Qualifier('identityModelMapperImpl')
     private ModelMapper modelMapper
 
     @Override
