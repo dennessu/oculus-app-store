@@ -3,27 +3,29 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.identity.data.dao.impl.postgresql
-import com.junbo.identity.data.dao.UserPinDAO
-import com.junbo.identity.data.entity.user.UserPinEntity
-import com.junbo.identity.spec.options.list.UserPinListOptions
+package com.junbo.identity.data.dao.impl
+import com.junbo.identity.data.dao.UserTosDAO
+import com.junbo.identity.data.entity.user.UserTosEntity
+import com.junbo.identity.spec.options.list.UserTosListOptions
 import groovy.transform.CompileStatic
 import org.hibernate.Criteria
 import org.hibernate.criterion.Order
 import org.hibernate.criterion.Restrictions
+import org.springframework.util.StringUtils
+
 /**
- * Created by liangfu on 3/16/14.
+ * Implementation for User Tos Acceptance DAO interface.
  */
 @CompileStatic
-class UserPinDAOImpl extends ShardedDAOBase implements UserPinDAO {
+class UserTosDAOImpl extends ShardedDAOBase implements UserTosDAO {
     @Override
-    UserPinEntity save(UserPinEntity entity) {
+    UserTosEntity save(UserTosEntity entity) {
         currentSession().save(entity)
         return get(entity.id)
     }
 
     @Override
-    UserPinEntity update(UserPinEntity entity) {
+    UserTosEntity update(UserTosEntity entity) {
         currentSession().merge(entity)
         currentSession().flush()
 
@@ -31,16 +33,16 @@ class UserPinDAOImpl extends ShardedDAOBase implements UserPinDAO {
     }
 
     @Override
-    UserPinEntity get(Long id) {
-        return (UserPinEntity)currentSession().get(UserPinEntity, id)
+    UserTosEntity get(Long id) {
+        return (UserTosEntity)currentSession().get(UserTosEntity, id)
     }
 
     @Override
-    List<UserPinEntity> search(Long userId, UserPinListOptions getOption) {
-        Criteria criteria = currentSession().createCriteria(UserPinEntity)
+    List<UserTosEntity> search(Long userId, UserTosListOptions getOption) {
+        Criteria criteria = currentSession().createCriteria(UserTosEntity)
         criteria.add(Restrictions.eq('userId', getOption.userId.value))
-        if (getOption.active != null) {
-            criteria.add(Restrictions.eq('active', getOption.active))
+        if (!StringUtils.isEmpty(getOption.tosUri)) {
+            criteria.add(Restrictions.eq('tosUri', getOption.tosUri))
         }
         criteria.addOrder(Order.asc('id'))
         if (getOption.limit != null) {
@@ -54,7 +56,7 @@ class UserPinDAOImpl extends ShardedDAOBase implements UserPinDAO {
 
     @Override
     void delete(Long id) {
-        UserPinEntity entity = (UserPinEntity)currentSession().get(UserPinEntity, id)
+        UserTosEntity entity = (UserTosEntity)currentSession().get(UserTosEntity, id)
         currentSession().delete(entity)
     }
 }
