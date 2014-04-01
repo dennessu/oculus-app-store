@@ -17,7 +17,7 @@ var AccountRoutes = {
         setupController: function(controller, model){
             // get profile
             var provider = new IdentityProvider();
-            provider.GetProfile(Utils.GenerateRequestModel(null), function(resultData){
+            provider.GetPayinProfiles(Utils.GenerateRequestModel(null), function(resultData){
                 if(resultData.data.status == 200){
                     var profile = JSON.parse(resultData.data.data).results[0];
                     controller.set("content.firstName", profile.firstName);
@@ -35,7 +35,7 @@ var AccountRoutes = {
         setupController: function(controller, model){
             // get profile
             var provider = new IdentityProvider();
-            provider.GetProfile(Utils.GenerateRequestModel(null), function(resultData){
+            provider.GetPayinProfiles(Utils.GenerateRequestModel(null), function(resultData){
                if(resultData.data.status == 200){
                    var profile = JSON.parse(resultData.data.data).results[0];
                    controller.set("content.firstName", profile.firstName);
@@ -111,7 +111,7 @@ var AccountRoutes = {
         },
         setupController: function(controoler, model){
             var provider = new PaymentProvider();
-            provider.PaymentInstruments(Utils.GenerateRequestModel(null), function(result){
+            provider.GetPayments(Utils.GenerateRequestModel(null), function(result){
                 if(result.data.status == 200){
                     var payments = JSON.parse(result.data.data).results;
                     controoler.set("content.payments", payments);
@@ -127,7 +127,7 @@ var AccountRoutes = {
         },
         setupController:function(controller, model){
             var identityProvider = new IdentityProvider();
-            identityProvider.GetProfile(Utils.GenerateRequestModel(null), function(resultData){
+            identityProvider.GetPayinProfiles(Utils.GenerateRequestModel(null), function(resultData){
                 if(resultData.data.status == 200){
                     var birthday = new Date(JSON.parse(resultData.data.data).dateOfBirth);
                     var nowYear = new Date().getFullYear();
@@ -153,7 +153,7 @@ var AccountRoutes = {
         },
         setupController: function(controoler, model){
             var provider = new BillingProvider();
-            provider.ShippingInfo(Utils.GenerateRequestModel(null), function(result){
+            provider.GetShippingInfos(Utils.GenerateRequestModel(null), function(result){
                 if(result.data.status == 200){
                     var shippings = JSON.parse(result.data.data).results;
                     controoler.set("content.shippings", shippings);
@@ -174,7 +174,7 @@ var AccountRoutes = {
         },
         setupController: function(controoler, model){
             var provider = new EntitlementProvider();
-            provider.GetByUser(Utils.GenerateRequestModel(null), function(result){
+            provider.GetEntitlements(Utils.GenerateRequestModel(null), function(result){
                 if(result.data.status == 200){
                     var results = JSON.parse(result.data.data).results;
                     controoler.set("content.results", results);

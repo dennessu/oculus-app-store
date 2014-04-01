@@ -38,18 +38,18 @@ var PaymentControllers = {
         isHolder: false,
         paymentTypes: (function(){
             var result = new Array();
-            for(var i = 0; i < AppConfig.PaymentType.length; ++i) result.push({t: AppConfig.PaymentType[i].name, v: AppConfig.PaymentType[i].value});
+            for(var i = 0; i < AppConfig.PaymentTypes.length; ++i) result.push({t: AppConfig.PaymentTypes[i].name, v: AppConfig.PaymentTypes[i].value});
             return result;
         }()),
         cardTypes: (function(){
             var result = new Array();
-            for(var i = 0; i < AppConfig.CardType.CreditCard.length; ++i)
-                result.push({t: AppConfig.CardType.CreditCard[i].name, v: AppConfig.CardType.CreditCard[i].value});
+            for(var i = 0; i < AppConfig.CardTypes.CreditCard.length; ++i)
+                result.push({t: AppConfig.CardTypes.CreditCard[i].name, v: AppConfig.CardTypes.CreditCard[i].value});
             return result;
         }()),
         paymentHolderType: (function(){
             var result = new Array();
-            for(var i = 0; i < AppConfig.PaymentHolderType.length; ++i) result.push({t: AppConfig.PaymentHolderType[i].name, v: AppConfig.PaymentHolderType[i].value});
+            for(var i = 0; i < AppConfig.PaymentHolderTypes.length; ++i) result.push({t: AppConfig.PaymentHolderTypes[i].name, v: AppConfig.PaymentHolderTypes[i].value});
             return result;
         }()),
         countries: (function(){
@@ -100,7 +100,7 @@ var PaymentControllers = {
                 model.expireDate = new Date(parseInt(_self.get("content.year")), parseInt(_self.get("content.month")) - 1);
 
                 var provider = new PaymentProvider();
-                provider.Add(Utils.GenerateRequestModel(model), function(resultData){
+                provider.PostPayment(Utils.GenerateRequestModel(model), function(resultData){
                     if(resultData.data.status == 200){
                         _self.set("errMessage", null);
 

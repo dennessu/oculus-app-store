@@ -2,7 +2,7 @@ var ResultModel = require('./lib/result_model');
 var Configs = require('./lib/config');
 var RestClient = require('./lib/rest_client');
 
-var DataProvider = {};
+var DataProvider = function(){};
 
 DataProvider._BuildUrl = function(url, namespace, argsObj){
     if(url.indexOf('/') == 0){
@@ -66,6 +66,7 @@ for(var s in Configs) {
             var args = Configs[s][api].Arguments;
             var options = Configs[s][api].Options;
 
+            console.log("Build Arguments for ", options["method"], options["path"], " Arguments: ", arguments);
             var argsObj = DataProvider._BuildArgumentsObject(args, arguments);
             options["host"] = this.Host;
             options["port"] = this.Port;

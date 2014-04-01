@@ -12,7 +12,7 @@ var StoreRoutes = {
                 console.log("[ApplicationRoute] Authenticated");
 
                 var provider = new CartProvider();
-                provider.Merge(Utils.GenerateRequestModel(null), function(resultData){
+                provider.MergeCart(Utils.GenerateRequestModel(null), function(resultData){
                     var resultModel = resultData.data;
                     if (resultModel.status == 200) {
                         console.log("[ApplicationRoute:Init] Merge Car Success");
@@ -54,8 +54,7 @@ var StoreRoutes = {
         },
         actions: {
             logout: function() {
-                var logoutUrl = Utils.Format(AppConfig.UrlConstants.LogoutUrl, AppConfig.Runtime.SocketAddress, Utils.Cookies.Get(AppConfig.CookiesName.IdToken));
-                //$.get(logoutUrl);
+                var logoutUrl = Utils.Format(AppConfig.Runtime.LogoutUrl, null, AppConfig.Runtime.SocketAddress, Utils.Cookies.Get(AppConfig.CookiesName.IdToken));
                 location.href = logoutUrl;
                 App.AuthManager.reset();
             }
@@ -85,31 +84,6 @@ var StoreRoutes = {
         model: function(){
             return this.store.findAll("CartItem");
         }
-        /*
-        setupController: function(controller, model){
-            var provider = new CartProvider();
-            provider.Get(Utils.GenerateRequestModel(null), function(result){
-                if(result.data.status == 200){
-                    var cartObj = JSON.parse(result.data.data);
-                    var cartItems = new Array();
-
-                    for(var i = 0; i < cartObj.orderItems.length; ++i){
-                        var item = cartObj.orderItems[i];
-                        cartItems.push({
-                            id: i,
-                            product_id: item.offer.id,
-                            qty: item.quantity,
-                            selected: item.selected
-                        });
-                    }
-
-                    controller.set("content.cartItems", cartItems);
-                }else{
-
-                }
-            });
-        }
-        */
     }),
 
     OrderSummaryRoute: Ember.Route.extend({
@@ -118,7 +92,7 @@ var StoreRoutes = {
         },
         setupController: function(controller, model){
             var provider = new CartProvider();
-            provider.GetOrder(Utils.GenerateRequestModel(null), function(resultData){
+            provider.GetOrderById(Utils.GenerateRequestModel(null), function(resultData){
                 if(resultData.data.status == 200){
                     var order = JSON.parse(resultData.data.data);
                     // set products
@@ -145,7 +119,7 @@ var StoreRoutes = {
                     // set shipping info
                     if(typeof(order.shippingAddressId) != "undefined") {
                         var billingProvider = new BillingProvider();
-                        billingProvider.Get(Utils.GenerateRequestModel({shippingId: order.shippingAddressId.id}), function (resultData) {
+                        billingProvider.GetShippingInfoById(Utils.GenerateRequestModel({shippingId: order.shippingAddressId.id}), function (resultData) {
                             if (resultData.data.status == 200) {
                                 controller.set("content.shippingAddress", JSON.parse(resultData.data.data));
                             } else {
@@ -156,7 +130,7 @@ var StoreRoutes = {
 
                     // set payment method
                     var paymentProvider = new PaymentProvider();
-                    paymentProvider.Get(Utils.GenerateRequestModel({paymentId: order.paymentInstruments[0].id}), function(resultData){
+                    paymentProvider.GetPaymentById(Utils.GenerateRequestModel({paymentId: order.paymentInstruments[0].id}), function(resultData){
                         if(resultData.data.status == 200){
                             var payment = JSON.parse(resultData.data.data);
                             controller.set("content.paymentMethodName", payment.creditCardRequest.type + " " + payment.accountNum.substr(payment.accountNum.length - 4, 4));

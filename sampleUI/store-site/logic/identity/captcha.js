@@ -9,7 +9,7 @@ module.exports = function(data, cb){
     var query = data.query;
 
     var privatekey = process.AppConfig.Google_Captcha_PrivateKey;
-    var remoteip = body.ip;
+    var remoteip = query.ip;
     var challenge = body["recaptcha_challenge_field"];
     var response = body["recaptcha_response_field"];
 
