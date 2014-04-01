@@ -11,6 +11,8 @@ import com.junbo.common.model.Results;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.order.spec.model.Order;
+import com.junbo.order.spec.model.OrderQueryParam;
+import com.junbo.order.spec.model.PageParam;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 
@@ -38,7 +40,9 @@ public interface OrderResource {
 
     @ApiOperation("Get orders by user")
     @GET
-    Promise<Results<Order>> getOrderByUserId(@QueryParam("userId") UserId userId);
+    Promise<Results<Order>> getOrderByUserId(@QueryParam("userId") UserId userId,
+                                             @BeanParam OrderQueryParam orderQueryParam,
+                                             @BeanParam PageParam pageParam);
 
     @ApiOperation("Put an order")
     @PUT

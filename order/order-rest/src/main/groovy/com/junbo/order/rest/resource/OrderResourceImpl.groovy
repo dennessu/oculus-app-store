@@ -1,5 +1,4 @@
 package com.junbo.order.rest.resource
-
 import com.junbo.common.id.OrderId
 import com.junbo.common.id.UserId
 import com.junbo.common.model.Results
@@ -9,6 +8,8 @@ import com.junbo.order.core.impl.common.OrderValidator
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.ApiContext
 import com.junbo.order.spec.model.Order
+import com.junbo.order.spec.model.OrderQueryParam
+import com.junbo.order.spec.model.PageParam
 import com.junbo.order.spec.resource.OrderResource
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
@@ -20,7 +21,6 @@ import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 
 import javax.ws.rs.container.ContainerRequestContext
-
 //import javax.ws.rs.container.ContainerRequestContext
 //import javax.ws.rs.core.Context
 /**
@@ -92,8 +92,8 @@ class OrderResourceImpl implements OrderResource {
     }
 
     @Override
-    Promise<Results<Order>> getOrderByUserId(UserId userId) {
-        orderService.getOrdersByUserId(userId.value).syncThen { List<Order> orders ->
+    Promise<Results<Order>> getOrderByUserId(UserId userId, OrderQueryParam orderQueryParam, PageParam pageParam) {
+        orderService.getOrdersByUserId(userId.value, orderQueryParam, pageParam).syncThen { List<Order> orders ->
             Results<Order> results = new Results<>()
             results.setItems(orders)
             return results
