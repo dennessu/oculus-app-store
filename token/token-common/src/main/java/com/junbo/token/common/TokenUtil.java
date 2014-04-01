@@ -23,6 +23,16 @@ public class TokenUtil {
 
     }
 
+    //TODO:
+    public static String encrypt(String text){
+        return text;
+    }
+
+    //TODO:
+    public static String decrypt(String text){
+        return text;
+    }
+
     public static TokenHash computeHash(String text){
         String hexValue = DigestUtils.sha256Hex(text);
         Long hashValue = Long.parseLong(hexValue.substring(0,14), 16);

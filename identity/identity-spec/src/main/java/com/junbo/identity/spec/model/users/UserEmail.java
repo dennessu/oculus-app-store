@@ -35,6 +35,8 @@ public class UserEmail extends ResourceMeta implements Identifiable<UserEmailId>
 
     public void setId(UserEmailId id) {
         this.id = id;
+        support.setPropertyAssigned("id");
+        support.setPropertyAssigned("self");
     }
 
     public String getValue() {
@@ -43,6 +45,7 @@ public class UserEmail extends ResourceMeta implements Identifiable<UserEmailId>
 
     public void setValue(String value) {
         this.value = value;
+        support.setPropertyAssigned("value");
     }
 
     public String getType() {
@@ -51,6 +54,7 @@ public class UserEmail extends ResourceMeta implements Identifiable<UserEmailId>
 
     public void setType(String type) {
         this.type = type;
+        support.setPropertyAssigned("type");
     }
 
     public Boolean getPrimary() {
@@ -59,6 +63,7 @@ public class UserEmail extends ResourceMeta implements Identifiable<UserEmailId>
 
     public void setPrimary(Boolean primary) {
         this.primary = primary;
+        support.setPropertyAssigned("primary");
     }
 
     public Boolean getVerified() {
@@ -67,6 +72,7 @@ public class UserEmail extends ResourceMeta implements Identifiable<UserEmailId>
 
     public void setVerified(Boolean verified) {
         this.verified = verified;
+        support.setPropertyAssigned("verified");
     }
 
     public UserId getUserId() {
@@ -75,5 +81,7 @@ public class UserEmail extends ResourceMeta implements Identifiable<UserEmailId>
 
     public void setUserId(UserId userId) {
         this.userId = userId;
+        support.setPropertyAssigned("userId");
+        support.setPropertyAssigned("user");
     }
 }

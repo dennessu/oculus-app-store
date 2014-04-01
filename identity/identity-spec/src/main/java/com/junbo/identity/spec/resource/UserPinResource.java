@@ -22,7 +22,7 @@ import javax.ws.rs.core.MediaType;
 /**
  * Created by liangfu on 3/13/14.
  */
-@Api("userPin")
+@Api("users")
 @RestResource
 @Path("/users/{userId}/pins")
 @Produces({MediaType.APPLICATION_JSON})

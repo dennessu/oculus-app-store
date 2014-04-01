@@ -10,6 +10,8 @@ dependencies {
 
     processor (libraries.langur_processor)
     processor (libraries.log4j)
+
+    testCompile(libraries.spring_test)
 }
 
 ext {

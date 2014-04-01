@@ -238,6 +238,7 @@
 			  version bigint not null,
 			  user_id bigint not null,
 
+			  is_active boolean not null,
 		      security_question_id bigint not null,
 			  answer_salt varchar(255) not null,
 			  answer_hash varchar(255) not null,

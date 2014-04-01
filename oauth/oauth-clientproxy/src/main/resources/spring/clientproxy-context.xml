@@ -18,7 +18,8 @@
         <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder"/>
     </bean>
 
-    <bean id="identityUserProfileClient" class="com.junbo.identity.spec.resource.proxy.UserProfileResourceClientProxy">
+    <bean id="identityUserLoginAttemptClient"
+          class="com.junbo.identity.spec.resource.proxy.UserLoginAttemptResourceClientProxy">
         <constructor-arg name="client" ref="asyncHttpClient"/>
         <constructor-arg name="target" value="${oauth.clientproxy.identity.url}"/>
         <constructor-arg name="transcoder" ref="transcoder"/>

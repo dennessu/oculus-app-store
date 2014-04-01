@@ -1,6 +1,6 @@
 
 var BillingProvider = function(){
-    this._Provider = new DataProvider(AppConfig.API.Billing.Config, AppConfig.SocketAddress);
+    this._Provider = new DataProvider(AppConfig.API.Billing.Config, AppConfig.Runtime.SocketAddress);
     this._Namespace = AppConfig.API.Billing.Config.Namespace;
 
     for(var p in AppConfig.API.Billing){

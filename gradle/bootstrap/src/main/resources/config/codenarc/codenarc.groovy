@@ -365,7 +365,7 @@ ruleset {
 
         // rulesets/unused.xml
         UnusedArray
-        UnusedMethodParameter
+        // UnusedMethodParameter
         UnusedObject
         UnusedPrivateField
         UnusedPrivateMethod

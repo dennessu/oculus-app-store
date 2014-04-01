@@ -6,6 +6,7 @@
 package com.junbo.identity.spec.resource;
 
 import com.junbo.common.id.SecurityQuestionId;
+import com.junbo.common.model.Results;
 import com.junbo.identity.spec.model.domaindata.SecurityQuestion;
 import com.junbo.identity.spec.options.entity.SecurityQuestionGetOptions;
 import com.junbo.identity.spec.options.list.SecurityQuestionListOptions;
@@ -16,12 +17,11 @@ import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.util.List;
 
 /**
  * Created by liangfu on 3/13/14.
  */
-@Api("securityQuestions")
+@Api("security-questions")
 @RestResource
 @Path("/security-questions")
 @Produces({MediaType.APPLICATION_JSON})
@@ -53,5 +53,5 @@ public interface SecurityQuestionResource {
     @ApiOperation("Search security questions")
     @GET
     @Path("/")
-    Promise<List<SecurityQuestion>> list(@BeanParam SecurityQuestionListOptions listOptions);
+    Promise<Results<SecurityQuestion>> list(@BeanParam SecurityQuestionListOptions listOptions);
 }

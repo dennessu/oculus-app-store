@@ -49,7 +49,7 @@ class SecurityQuestionValidatorImpl implements SecurityQuestionValidator {
             throw AppErrors.INSTANCE.parameterRequired('value').exception()
         }
 
-        return null
+        return Promise.pure(null)
     }
 
     @Override

@@ -6,10 +6,10 @@
 
 package com.junbo.billing.db.repository;
 
+import com.junbo.billing.db.entity.*;
 import com.junbo.billing.spec.model.*;
 import com.junbo.common.id.*;
 import com.junbo.oom.core.MappingContext;
-import com.junbo.billing.db.balance.*;
 import com.junbo.billing.db.dao.*;
 import com.junbo.billing.db.mapper.ModelMapper;
 import com.junbo.sharding.IdGeneratorFacade;
@@ -60,7 +60,7 @@ public class BalanceRepositoryImpl implements BalanceRepository {
         balanceEntity.setBalanceId(idGenerator.nextId(BalanceId.class, balanceEntity.getUserId()));
         balanceEntity.setRequestorId("GOD");
         balanceEntity.setCreatedBy("Billing");
-        balanceEntity.setCreatedDate(new Date());
+        balanceEntity.setCreatedTime(new Date());
         balanceEntityDao.insert(balanceEntity);
 
         for(BalanceItem item : balance.getBalanceItems()) {
@@ -68,7 +68,7 @@ public class BalanceRepositoryImpl implements BalanceRepository {
 
             balanceItemEntity.setBalanceItemId(idGenerator.nextId(Id.class, balanceEntity.getUserId()));
             balanceItemEntity.setBalanceId(balanceEntity.getBalanceId());
-            balanceItemEntity.setCreatedDate(new Date());
+            balanceItemEntity.setCreatedTime(new Date());
             balanceItemEntity.setCreatedBy("Billing");
             balanceItemEntityDao.insert(balanceItemEntity);
 
@@ -77,7 +77,7 @@ public class BalanceRepositoryImpl implements BalanceRepository {
 
                 taxItemEntity.setTaxItemId(idGenerator.nextId(Id.class, balanceEntity.getUserId()));
                 taxItemEntity.setBalanceItemId(balanceItemEntity.getBalanceItemId());
-                taxItemEntity.setCreatedDate(new Date());
+                taxItemEntity.setCreatedTime(new Date());
                 taxItemEntity.setCreatedBy("Billing");
                 taxItemEntityDao.insert(taxItemEntity);
             }
@@ -88,7 +88,7 @@ public class BalanceRepositoryImpl implements BalanceRepository {
                 discountItemEntity.setDiscountItemId(
                         idGenerator.nextId(Id.class, balanceEntity.getUserId()));
                 discountItemEntity.setBalanceItemId(balanceItemEntity.getBalanceItemId());
-                discountItemEntity.setCreatedDate(new Date());
+                discountItemEntity.setCreatedTime(new Date());
                 discountItemEntity.setCreatedBy("Billing");
                 discountItemEntityDao.insert(discountItemEntity);
             }
@@ -105,7 +105,7 @@ public class BalanceRepositoryImpl implements BalanceRepository {
         orderBalanceLinkEntity.setLinkId(idGenerator.nextId(Id.class, balanceEntity.getUserId()));
         orderBalanceLinkEntity.setBalanceId(balanceEntity.getBalanceId());
         orderBalanceLinkEntity.setOrderId(balance.getOrderId().getValue());
-        orderBalanceLinkEntity.setCreatedDate(new Date());
+        orderBalanceLinkEntity.setCreatedTime(new Date());
         orderBalanceLinkEntity.setCreatedBy("Billing");
         orderBalanceLinkEntityDao.insert(orderBalanceLinkEntity);
 
@@ -184,7 +184,7 @@ public class BalanceRepositoryImpl implements BalanceRepository {
 
         savedEntity.setTypeId(balanceEntity.getTypeId());
         savedEntity.setStatusId(balanceEntity.getStatusId());
-        savedEntity.setModifiedDate(new Date());
+        savedEntity.setModifiedTime(new Date());
         savedEntity.setModifiedBy("BILLING");
         balanceEntityDao.update(savedEntity);
 

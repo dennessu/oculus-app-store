@@ -15,6 +15,19 @@ import javax.ws.rs.QueryParam;
  */
 @CompileStatic
 public class UserEmailListOptions extends PagingGetOptions {
+
+    @QueryParam("value")
+    private String value;
+
+    @QueryParam("type")
+    private String type;
+
+    @QueryParam("userId")
+    private UserId userId;
+
+    @QueryParam("properties")
+    private String properties;
+
     public String getValue() {
         return value;
     }
@@ -39,12 +52,11 @@ public class UserEmailListOptions extends PagingGetOptions {
         this.userId = userId;
     }
 
-    @QueryParam("value")
-    private String value;
+    public String getProperties() {
+        return properties;
+    }
 
-    @QueryParam("type")
-    private String type;
-
-    @QueryParam("userId")
-    private UserId userId;
+    public void setProperties(String properties) {
+        this.properties = properties;
+    }
 }

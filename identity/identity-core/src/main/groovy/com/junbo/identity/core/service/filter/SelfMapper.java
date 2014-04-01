@@ -49,6 +49,18 @@ public interface SelfMapper {
     UserPin filterUserPin(UserPin userPin, MappingContext context);
     UserPin mergeUserPin(UserPin source, UserPin base, MappingContext context);
 
+    UserSecurityQuestion filterUserSecurityQuestion(UserSecurityQuestion userSecurityQuestion, MappingContext context);
+    UserSecurityQuestion mergeUserSecurityQuestion(UserSecurityQuestion source,
+                                                   UserSecurityQuestion base, MappingContext context);
+
+    UserSecurityQuestionAttempt filterUserSecurityQuestionAttempt(UserSecurityQuestionAttempt entity,
+                                                                  MappingContext mappingContext);
+    UserSecurityQuestionAttempt mergeUserSecurityQuestionAttempt(UserSecurityQuestionAttempt source,
+                                                      UserSecurityQuestionAttempt base, MappingContext mappingContext);
+
+    UserEmail filterUserEmail(UserEmail userEmail, MappingContext context);
+    UserEmail mergeUserEmail(UserEmail source, UserEmail base, MappingContext context);
+
     UserTos filterUserTos(UserTos userTos, MappingContext context);
     UserTos mergeUserTos(UserTos source, UserTos base, MappingContext context);
 }

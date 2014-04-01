@@ -10,7 +10,7 @@ import com.junbo.common.id.TransactionId;
 import com.junbo.oom.core.MappingContext;
 import com.junbo.billing.db.dao.TransactionEntityDao;
 import com.junbo.billing.db.mapper.ModelMapper;
-import com.junbo.billing.db.transaction.TransactionEntity;
+import com.junbo.billing.db.entity.TransactionEntity;
 import com.junbo.billing.spec.model.Transaction;
 import com.junbo.sharding.IdGeneratorFacade;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +39,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
 
         entity.setTransactionId(idGenerator.nextId(TransactionId.class, entity.getBalanceId()));
         entity.setCreatedBy("BILLING");
-        entity.setCreatedDate(new Date());
+        entity.setCreatedTime(new Date());
         Long id = transactionEntityDao.insert(entity);
 
         transactionEntityDao.flush();
@@ -78,7 +78,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         savedEntity.setStatusId(entity.getStatusId());
         savedEntity.setAmount(entity.getAmount());
         savedEntity.setModifiedBy("BILLING");
-        savedEntity.setModifiedDate(new Date());
+        savedEntity.setModifiedTime(new Date());
         transactionEntityDao.update(savedEntity);
 
         transactionEntityDao.flush();

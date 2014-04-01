@@ -95,7 +95,7 @@ class UserAuthenticatorValidatorImpl implements UserAuthenticatorValidator {
         }
 
         return userAuthenticatorRepository.search(new UserAuthenticatorListOptions(
-                userId: userAuthenticator.userId,
+                userId: userId,
                 type: userAuthenticator.type,
                 value: userAuthenticator.value
         )).then { List<UserAuthenticator> existing ->
@@ -129,13 +129,15 @@ class UserAuthenticatorValidatorImpl implements UserAuthenticatorValidator {
                 throw AppErrors.INSTANCE.fieldInvalid('id', oldAuthenticator.id.toString()).exception()
             }
 
-            // todo:    Liangfu:    Here we have the assumption that value should always different
-            // todo:    each different type should have different value
-            if (authenticator.value != oldAuthenticator.value) {
-                userAuthenticatorRepository.search(new UserAuthenticatorListOptions(value: authenticator.value)).then {
+            if (authenticator.value != oldAuthenticator.value || authenticator.type != oldAuthenticator.type) {
+                userAuthenticatorRepository.search(new UserAuthenticatorListOptions(
+                        userId: userId,
+                        value: authenticator.value,
+                        type: authenticator.type
+                )).then {
                     List<UserAuthenticator> existing ->
                         if (existing != null && existing.size() != 0) {
-                            throw AppErrors.INSTANCE.fieldDuplicate('value').exception()
+                            throw AppErrors.INSTANCE.fieldDuplicate('type & value').exception()
                         }
                 }
                 authenticator.setUserId(userId)

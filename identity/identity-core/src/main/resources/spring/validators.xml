@@ -176,10 +176,63 @@
         <property name="valueMaxLength" value="255" />
     </bean>
 
+    <bean id="userSecurityQuestionValidator" class="com.junbo.identity.core.service.validator.impl.UserSecurityQuestionValidatorImpl">
+        <property name="userRepository" ref="userRepository" />
+        <property name="userSecurityQuestionRepository" ref="userSecurityQuestionRepository" />
+        <property name="securityQuestionRepository" ref="securityQuestionRepository" />
+        <property name="answerMinLength" value="10" />
+        <property name="answerMaxLength" value="255" />
+    </bean>
+    
+    <bean id="userSecurityQuestionAttemptValidator" class="com.junbo.identity.core.service.validator.impl.UserSecurityQuestionAttemptValidatorImpl">
+        <property name="attemptRepository" ref="userSecurityQuestionAttemptRepository" />
+        <property name="securityQuestionRepository" ref="securityQuestionRepository" />
+        <property name="userRepository" ref="userRepository" />
+        <property name="userSecurityQuestionRepository" ref="userSecurityQuestionRepository" />
+        <property name="allowedIPPatterns">
+            <list>
+                <!-- IPv4Pattern -->
+                <value>(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.(25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}</value>
+                <!-- IPv6Pattern -->
+                <value>(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}</value>
+                <!-- IPv6Pattern_HEXCompressed -->
+                <value>((?:[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4})*)?)::((?:[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4})*)?)</value>
+                <!-- IPv6Pattern_6Hex4Dec -->
+                <value>((?:[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4})*)?) ::((?:[0-9A-Fa-f]{1,4}:)*)(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.(25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}</value>
+            </list>
+        </property>
+        <property name="clientIdMinLength" value="1" />
+        <property name="clientIdMaxLength" value="255" />
+        <property name="valueMinLength" value="10" />
+        <property name="valueMaxLength" value="255" />
+        <property name="userAgentMinLength" value="1" />
+        <property name="userAgentMaxLength" value="255" />
+    </bean>
+
     <bean id="userTosValidator" class="com.junbo.identity.core.service.validator.impl.UserTosValidatorImpl">
         <property name="tosUriMinLength" value="1" />
         <property name="tosUriMaxLength" value="255" />
         <property name="userRepository" ref="userRepository" />
         <property name="userTosRepository" ref="userTosRepository" />
+    </bean>
+
+    <bean id="userEmailValidator" class="com.junbo.identity.core.service.validator.impl.UserEmailValidatorImpl">
+        <property name="userRepository" ref="userRepository" />
+        <property name="userEmailRepository" ref="userEmailRepository" />
+        <property name="allowedEmailPatterns">
+            <list>
+                <!--  todo: need to refactor this -->
+                <value>[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}</value>
+            </list>
+        </property>
+        <property name="allowedEmailTypes">
+            <list>
+                <value>google</value>
+                <value>hotmail</value>
+                <value>qq</value>
+            </list>
+        </property>
+        <property name="emailMinLength" value="5" />
+        <property name="emailMaxLength" value="255" />
     </bean>
 </beans>

@@ -261,21 +261,21 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userEmail.setVerified(true)
         userEmail.setCreatedBy('lixia')
         userEmail.setCreatedTime(new Date())
-        userEmail = userEmailRepository.save(userEmail)
+        userEmail = userEmailRepository.create(userEmail).wrapped().get()
 
-        UserEmail newUserEmail = userEmailRepository.get(userEmail.getId())
+        UserEmail newUserEmail = userEmailRepository.get(userEmail.getId()).wrapped().get()
         Assert.assertEquals(userEmail.getValue(), newUserEmail.getValue())
 
         String value = UUID.randomUUID().toString()
         newUserEmail.setValue(value)
         userEmailRepository.update(newUserEmail)
 
-        newUserEmail = userEmailRepository.get(userEmail.getId())
+        newUserEmail = userEmailRepository.get(userEmail.getId()).wrapped().get()
         Assert.assertEquals(newUserEmail.getValue(), value)
 
         UserEmailListOptions getOption = new UserEmailListOptions()
         getOption.setValue(value)
-        List<UserEmail> userEmails = userEmailRepository.search(getOption)
+        List<UserEmail> userEmails = userEmailRepository.search(getOption).wrapped().get()
         Assert.assertEquals(userEmails.size(), 1)
     }
 
@@ -396,22 +396,23 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userSecurityQuestion.setCreatedBy('lixia')
         userSecurityQuestion.setCreatedTime(new Date())
 
-        userSecurityQuestion = userSecurityQuestionRepository.save(userSecurityQuestion)
+        userSecurityQuestion = userSecurityQuestionRepository.create(userSecurityQuestion).wrapped().get()
 
-        UserSecurityQuestion newUserSecurityQuestion = userSecurityQuestionRepository.get(userSecurityQuestion.getId())
+        UserSecurityQuestion newUserSecurityQuestion =
+                userSecurityQuestionRepository.get(userSecurityQuestion.getId()).wrapped().get()
         Assert.assertEquals(userSecurityQuestion.getAnswerHash(), newUserSecurityQuestion.getAnswerHash())
 
         String value = UUID.randomUUID().toString()
         newUserSecurityQuestion.setAnswerSalt(value)
         userSecurityQuestionRepository.update(newUserSecurityQuestion)
 
-        newUserSecurityQuestion = userSecurityQuestionRepository.get(userSecurityQuestion.getId())
+        newUserSecurityQuestion = userSecurityQuestionRepository.get(userSecurityQuestion.getId()).wrapped().get()
         Assert.assertEquals(newUserSecurityQuestion.getAnswerSalt(), value)
 
         UserSecurityQuestionListOptions getOption = new UserSecurityQuestionListOptions()
         getOption.setUserId(new UserId(userId))
         getOption.setSecurityQuestionId(new SecurityQuestionId(123L))
-        List<UserSecurityQuestion> securityQuestions = userSecurityQuestionRepository.search(getOption)
+        List<UserSecurityQuestion> securityQuestions = userSecurityQuestionRepository.search(getOption).wrapped().get()
         assert securityQuestions.size() != 0
     }
 
@@ -452,22 +453,24 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         attempt.setSecurityQuestionId(new SecurityQuestionId(123L))
         attempt.setUserAgent(UUID.randomUUID().toString())
 
-        attempt = userSecurityQuestionAttemptRepository.save(attempt)
+        attempt = userSecurityQuestionAttemptRepository.create(attempt).wrapped().get()
 
-        UserSecurityQuestionAttempt newAttempt = userSecurityQuestionAttemptRepository.get(attempt.getId())
+        UserSecurityQuestionAttempt newAttempt =
+                userSecurityQuestionAttemptRepository.get(attempt.getId()).wrapped().get()
         Assert.assertEquals(attempt.getIpAddress(), newAttempt.getIpAddress())
 
         String value = UUID.randomUUID().toString()
         newAttempt.setIpAddress(value)
         userSecurityQuestionAttemptRepository.update(newAttempt)
 
-        newAttempt = userSecurityQuestionAttemptRepository.get(attempt.getId())
+        newAttempt = userSecurityQuestionAttemptRepository.get(attempt.getId()).wrapped().get()
         Assert.assertEquals(newAttempt.getIpAddress(), value)
 
         UserSecurityQuestionAttemptListOptions option = new UserSecurityQuestionAttemptListOptions()
         option.setUserId(new UserId(userId))
         option.setSecurityQuestionId(new SecurityQuestionId(123L))
-        List<UserSecurityQuestionAttempt> attempts = userSecurityQuestionAttemptRepository.search(option)
+        List<UserSecurityQuestionAttempt> attempts =
+                userSecurityQuestionAttemptRepository.search(option).wrapped().get()
         assert attempts.size() != 0
     }
 

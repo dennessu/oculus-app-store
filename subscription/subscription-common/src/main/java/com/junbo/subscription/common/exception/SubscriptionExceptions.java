@@ -22,9 +22,10 @@ public interface SubscriptionExceptions {
     AppError missingTrackingUuid();
 
 
-
-
     @ErrorDef(httpStatusCode = 500, code = "50001", description = "this is not a subscrption offer")
     AppError subscriptionTypeError();
+
+    @ErrorDef(httpStatusCode = 500, code = "50002", description = "Exception occurred during calling [{0}] component.")
+    AppError gatewayFailure(String gateway);
 
 }

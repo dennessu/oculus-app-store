@@ -56,7 +56,6 @@ public interface PaymentInstrumentResource {
 
     @ApiOperation("Search a payment instrument")
     @GET
-    @Path("/search")
     Promise<Results<PaymentInstrument>> searchPaymentInstrument(
             @PathParam("userId")UserId userId,
             @BeanParam PaymentInstrumentSearchParam searchParam,
