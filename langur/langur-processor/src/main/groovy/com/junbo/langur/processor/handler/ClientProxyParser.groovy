@@ -211,7 +211,8 @@ class ClientProxyParser implements RestResourceHandler {
             return new BeanParameterModel(
                     paramType:variableElement.asType().toString(),
                     paramName:variableElement.toString(),
-                    parameters: getBeanParameters(elementUtils, typeUtils, variableElement.toString(), variableElement.asType())
+                    parameters: getBeanParameters(elementUtils, typeUtils, variableElement.toString(),
+                            variableElement.asType())
             )
         }
 
