@@ -22,7 +22,7 @@ import javax.ws.rs.core.MediaType;
 /**
  * Java cod for UserOptinResource.
  */
-@Api("userOptin")
+@Api("users")
 @Path("/users/{userId}/opt-ins")
 @RestResource
 @Produces({MediaType.APPLICATION_JSON})
