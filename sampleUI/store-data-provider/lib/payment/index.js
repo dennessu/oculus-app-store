@@ -9,7 +9,7 @@ var Payment = function(host, port){
 Payment.prototype.GetPaymentInstruments = function(userId, cb){
     /*
      Method: GET
-     URL: /users/{userId}/payment-instruments/search
+     URL: /users/{userId}/payment-instruments
      Data Type: QueryString
      Content-Type: none
      Request: null
@@ -19,7 +19,7 @@ Payment.prototype.GetPaymentInstruments = function(userId, cb){
   var options = {
     host: this.Host,
     port: this.Port,
-    path: "/rest/users/" + userId + "/payment-instruments/search",
+    path: "/rest/users/" + userId + "/payment-instruments",
     method: 'GET',
     headers:{
         'Content-Type': 'application/json'
