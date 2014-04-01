@@ -183,6 +183,7 @@ class OrderRepositoryImpl implements OrderRepository {
         def orderEntity = modelMapper.toOrderEntity(order, new MappingContext())
         orderEntity.createdTime = oldEntity.createdTime
         orderEntity.createdBy = oldEntity.createdBy
+        orderEntity.trackingUuid = oldEntity.trackingUuid // trackingUuid for order will not be updated
         orderDao.update(orderEntity)
         fillDateInfo(order, orderEntity)
 
@@ -200,7 +201,10 @@ class OrderRepositoryImpl implements OrderRepository {
         if (CollectionUtils.isEmpty(orderEvents)) {
             return null
         }
+
         // assert all the order events are linked to the same order
+        checkEventsOrder(orderEvents, orderEvents[0].orderId)
+
         def orderEntity = orderDao.read(orderEvents[0].orderId)
         return modelMapper.toOrderModel(orderEntity, new MappingContext())
     }
@@ -392,5 +396,16 @@ class OrderRepositoryImpl implements OrderRepository {
         baseModelWithDate.createdTime = commonDbEntityWithDate.createdTime
         baseModelWithDate.updatedBy = commonDbEntityWithDate.updatedBy
         baseModelWithDate.updatedTime = commonDbEntityWithDate.updatedTime
+    }
+
+    static void checkEventsOrder(List<OrderEventEntity> orderEvents, Long orderId) {
+        for (OrderEventEntity event: orderEvents) {
+            if (event.orderId != orderId) {
+                LOGGER.error('name=Order_Events_Order_Id_Inconsistent, ' +
+                        'orderEventId={}, trackingGUID={}, expectedOrderId={}, actualOrderId={}',
+                        event.eventId, event.trackingUuid, orderId, event.orderId)
+                return
+            }
+        }
     }
 }

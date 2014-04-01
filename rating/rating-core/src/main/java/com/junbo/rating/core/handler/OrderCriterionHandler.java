@@ -21,13 +21,13 @@ public class OrderCriterionHandler implements CriterionHandler<OrderCriterion> {
         switch (criterion.getPredicate()) {
             case ORDER_ABSOLUTE_VALUE_ABOVE:
                 BigDecimal totalAmount = context.getOrderResult().getOriginalAmount().getValue();
-                if (criterion.getThresholdValue().compareTo(totalAmount) < 0) {
+                if (criterion.getThresholdValue().compareTo(totalAmount) <= 0) {
                     return true;
                 }
                 break;
             case ORDER_ITEM_COUNT_ABOVE:
                 BigDecimal quantity = new BigDecimal(getQuantity(context));
-                if (criterion.getThresholdValue().compareTo(quantity) < 0) {
+                if (criterion.getThresholdValue().compareTo(quantity) <= 0) {
                     return true;
                 }
                 break;
