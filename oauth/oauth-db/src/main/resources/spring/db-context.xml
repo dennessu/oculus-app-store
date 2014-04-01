@@ -30,7 +30,7 @@
     </bean>
 
     <bean id="baseDAO" class="com.junbo.oauth.db.dao.couch.CouchBaseDAO" abstract="true">
-        <property name="asyncHttpClient" ref="asyncHttpClient"/>
+        <property name="asyncHttpClient" ref="commonAsyncHttpClient"/>
         <property name="couchDBUri" value="${oauth.db.couchDB.uri}"/>
     </bean>
 
@@ -64,6 +64,10 @@
 
     <bean id="consentDAO" class="com.junbo.oauth.db.dao.couch.CouchConsentDAOImpl" parent="baseDAO">
         <property name="dbName" value="consent"/>
+    </bean>
+
+    <bean id="apiDefinitionDAO" class="com.junbo.oauth.db.dao.couch.CouchApiDefinitionDAOImpl" parent="baseDAO">
+        <property name="dbName" value="api_definition"/>
     </bean>
 
     <bean id="clientRepository" class="com.junbo.oauth.db.repo.impl.ClientRepositoryImpl">
@@ -102,6 +106,10 @@
 
     <bean id="consentRepository" class="com.junbo.oauth.db.repo.impl.ConsentRepositoryImpl">
         <property name="consentDAO" ref="consentDAO"/>
+    </bean>
+
+    <bean id="apiDefinitionRepository" class="com.junbo.oauth.db.repo.impl.ApiDefinitionRepositoryImpl">
+        <property name="apiDefinitionDAO" ref="apiDefinitionDAO"/>
     </bean>
 
 </beans>

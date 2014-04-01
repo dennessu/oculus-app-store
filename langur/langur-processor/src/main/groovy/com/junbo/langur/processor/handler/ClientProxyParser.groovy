@@ -19,6 +19,7 @@ import javax.lang.model.type.DeclaredType
 import javax.lang.model.type.TypeMirror
 import javax.lang.model.util.ElementFilter
 import javax.lang.model.util.Elements
+import javax.lang.model.util.Types
 import javax.ws.rs.*
 /**
  * Created by kevingu on 11/28/13.
@@ -32,9 +33,15 @@ class ClientProxyParser implements RestResourceHandler {
     private static final String PRIMARY_BOOLEAN = 'boolean'
     private static final String DOT = '.'
 
+    private static TypeMirror collectionType
+
     @Override
     void handle(TypeElement mapperType, HandlerContext handlerContext) {
         def elementUtils = handlerContext.processingEnv.elementUtils
+        def typeUtils = handlerContext.processingEnv.typeUtils
+
+        collectionType = elementUtils.getTypeElement(Collection.canonicalName).asType()
+        collectionType = typeUtils.erasure(collectionType)
 
         def clientProxy = new ClientProxyModel()
         clientProxy.packageName = elementUtils.getPackageOf(mapperType).qualifiedName.toString() + '.proxy'
@@ -70,7 +77,7 @@ class ClientProxyParser implements RestResourceHandler {
 
                 clientMethod.parameters = executableElement.parameters.collect {
                     VariableElement variableElement ->
-                        intiParameter(elementUtils, variableElement)
+                        intiParameter(elementUtils, typeUtils, variableElement)
                 }
 
                 clientMethod.httpMethodName = normalizeHttpMethodName(getHttpMethodName(executableElement))
@@ -153,13 +160,29 @@ class ClientProxyParser implements RestResourceHandler {
         return [] as List
     }
 
-    private static ClientParameterModel intiParameter(Elements elementUtils, VariableElement variableElement) {
+    private static String parseInnerParamType(TypeMirror typeMirror) {
+        if (typeMirror instanceof DeclaredType) {
+            DeclaredType declaredType = (DeclaredType) typeMirror
+            if (!declaredType.typeArguments.empty) {
+                return declaredType.typeArguments[0]
+            }
+
+            return null
+        }
+
+        return null
+    }
+
+    private
+    static ClientParameterModel intiParameter(Elements elementUtils, Types typeUtils, VariableElement variableElement) {
         QueryParam queryParam = variableElement.getAnnotation(QueryParam)
         if (queryParam != null) {
             return new QueryParameterModel(
                     paramType:variableElement.asType().toString(),
                     paramName:variableElement.toString(),
-                    queryName:queryParam.value()
+                    queryName: queryParam.value(),
+                    collection: typeUtils.isSubtype(variableElement.asType(), collectionType),
+                    innerParamType: parseInnerParamType(variableElement.asType())
             )
         }
 
@@ -177,7 +200,9 @@ class ClientProxyParser implements RestResourceHandler {
             return new HeaderParameterModel(
                     paramType:variableElement.asType().toString(),
                     paramName:variableElement.toString(),
-                    headerName:headerParam.value()
+                    headerName: headerParam.value(),
+                    collection: typeUtils.isSubtype(variableElement.asType(), collectionType),
+                    innerParamType: parseInnerParamType(variableElement.asType())
             )
         }
 
@@ -186,7 +211,18 @@ class ClientProxyParser implements RestResourceHandler {
             return new BeanParameterModel(
                     paramType:variableElement.asType().toString(),
                     paramName:variableElement.toString(),
-                    parameters:getBeanParameters(elementUtils, variableElement.toString(), variableElement.asType())
+                    parameters: getBeanParameters(elementUtils, typeUtils, variableElement.toString(), variableElement.asType())
+            )
+        }
+
+        FormParam formParam = variableElement.getAnnotation(FormParam)
+        if (formParam != null) {
+            return new FormParameterModel(
+                    paramType: variableElement.asType().toString(),
+                    paramName: variableElement.toString(),
+                    formName: formParam.value(),
+                    collection: typeUtils.isSubtype(variableElement.asType(), collectionType),
+                    innerParamType: parseInnerParamType(variableElement.asType())
             )
         }
 
@@ -196,9 +232,8 @@ class ClientProxyParser implements RestResourceHandler {
         )
     }
 
-    private
-    static List<ClientParameterModel> getBeanParameters(Elements elementUtils, String variableName,
-                                                        TypeMirror variableType) {
+    private static List<ClientParameterModel> getBeanParameters(Elements elementUtils, Types typeUtils,
+                                                                String variableName, TypeMirror variableType) {
         def simpleNames = []
         def result = []
 
@@ -210,7 +245,9 @@ class ClientProxyParser implements RestResourceHandler {
                 result.add(new QueryParameterModel(
                         paramType:variableElement.asType().toString(),
                         paramName:variableName + DOT + fieldGetMethodName + BRACET,
-                        queryName:queryParam.value()
+                        queryName: queryParam.value(),
+                        collection: typeUtils.isSubtype(variableElement.asType(), collectionType),
+                        innerParamType: parseInnerParamType(variableElement.asType())
                 ))
                 simpleNames.add(fieldGetMethodName)
                 return
@@ -232,30 +269,43 @@ class ClientProxyParser implements RestResourceHandler {
                 result.add(new HeaderParameterModel(
                         paramType:variableElement.asType().toString(),
                         paramName:variableName + DOT + fieldGetMethodName + BRACET,
-                        headerName:headerParam.value()
+                        headerName: headerParam.value(),
+                        collection: typeUtils.isSubtype(variableElement.asType(), collectionType),
+                        innerParamType: parseInnerParamType(variableElement.asType())
+                ))
+                simpleNames.add(fieldGetMethodName)
+                return
+            }
+            FormParam formParam = variableElement.getAnnotation(FormParam)
+            if (formParam != null && !simpleNames.contains(fieldGetMethodName)) {
+                result.add(new FormParameterModel(
+                        paramType:variableElement.asType().toString(),
+                        paramName:variableName + DOT + fieldGetMethodName + BRACET,
+                        formName: formParam.value(),
+                        collection: typeUtils.isSubtype(variableElement.asType(), collectionType),
+                        innerParamType: parseInnerParamType(variableElement.asType())
                 ))
                 simpleNames.add(fieldGetMethodName)
                 return
             }
         }
-
         typeElement = (TypeElement) ((DeclaredType) variableType).asElement()
         ElementFilter.methodsIn(elementUtils.getAllMembers(typeElement)).each { ExecutableElement executableElement ->
             if (executableElement.enclosingElement.toString() == OBJECT_TYPE) {
                 return
             }
-
             QueryParam queryParam = executableElement.getAnnotation(QueryParam)
             if (queryParam != null && !simpleNames.contains(executableElement.simpleName.toString())) {
                 result.add(new QueryParameterModel(
                         paramType:executableElement.returnType.toString(),
                         paramName:variableName + DOT + executableElement.simpleName.toString() + BRACET,
-                        queryName:queryParam.value()
+                        queryName: queryParam.value(),
+                        collection: typeUtils.isSubtype(executableElement.returnType, collectionType),
+                        innerParamType: parseInnerParamType(executableElement.returnType)
                 ))
                 simpleNames.add(executableElement.simpleName.toString())
                 return
             }
-
             PathParam pathParam = executableElement.getAnnotation(PathParam)
             if (pathParam != null && !simpleNames.contains(executableElement.simpleName.toString())) {
                 result.add(new PathParameterModel(
@@ -266,16 +316,28 @@ class ClientProxyParser implements RestResourceHandler {
                 simpleNames.add(executableElement.simpleName.toString())
                 return
             }
-
             HeaderParam headerParam = executableElement.getAnnotation(HeaderParam)
             if (headerParam != null && !simpleNames.contains(executableElement.simpleName.toString())) {
                 result.add(new HeaderParameterModel(
                         paramType:executableElement.returnType.toString(),
                         paramName:variableName + DOT + executableElement.simpleName.toString() + BRACET,
-                        headerName:headerParam.value()
+                        headerName: headerParam.value(),
+                        collection: typeUtils.isSubtype(executableElement.returnType, collectionType),
+                        innerParamType: parseInnerParamType(executableElement.returnType)
                 ))
                 simpleNames.add(executableElement.simpleName.toString())
                 return
+            }
+            FormParam formParam = executableElement.getAnnotation(FormParam)
+            if (formParam != null && !simpleNames.contains(executableElement.simpleName.toString())) {
+                result.add(new FormParameterModel(
+                        paramType:executableElement.returnType.toString(),
+                        paramName:variableName + DOT + executableElement.simpleName.toString() + BRACET,
+                        formName: formParam.value(),
+                        collection: typeUtils.isSubtype(executableElement.returnType, collectionType),
+                        innerParamType: parseInnerParamType(executableElement.returnType)
+                ))
+                simpleNames.add(executableElement.simpleName.toString())
             }
         }
 

@@ -3,16 +3,16 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.authorization.model
+package com.junbo.oauth.spec.model
 
 import groovy.transform.CompileStatic
 
 /**
- * AccessToken.
+ * ApiDefinition.
  */
 @CompileStatic
-class AccessToken {
-    String tokenValue
-    Long userId
-    Set<Scope> scopes
+class ApiDefinition {
+    String apiName
+    Map<String, AuthorizePolicy> authorizePolicies
+    String revision
 }

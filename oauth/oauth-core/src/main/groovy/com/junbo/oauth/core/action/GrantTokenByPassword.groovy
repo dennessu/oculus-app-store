@@ -46,6 +46,6 @@ class GrantTokenByPassword implements Action {
 
         contextWrapper.accessToken = accessToken
 
-        return Promise.pure(null)
+        return Promise.pure(new ActionResult('grantRefreshToken'))
     }
 }

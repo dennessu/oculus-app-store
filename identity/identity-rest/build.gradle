@@ -20,6 +20,8 @@ dependencies {
 
     compile (libraries.oom)
     compile (libraries.jersey_common)
+    compile ('com.junbo.authorization:authorization-lib:0.0.1-SNAPSHOT')
+    compile('com.junbo.oauth:oauth-spec:0.0.1-SNAPSHOT')
 
     compile project(':identity-core')
     compile project(':identity-spec')

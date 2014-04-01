@@ -3,16 +3,14 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.authorization.model
+package com.junbo.authorization.service
 
 import groovy.transform.CompileStatic
 
 /**
- * Role.
+ * ConditionEvaluator.
  */
 @CompileStatic
-enum Role {
-    OWNER,
-    ADMIN,
-    GUEST
+interface ConditionEvaluator {
+    Boolean evaluate(String condition, Object object)
 }
