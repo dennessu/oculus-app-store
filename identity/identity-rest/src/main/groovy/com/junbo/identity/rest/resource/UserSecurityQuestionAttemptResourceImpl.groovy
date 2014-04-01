@@ -4,7 +4,6 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.identity.rest.resource
-
 import com.junbo.common.id.Id
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserSecurityQuestionAttemptId
@@ -32,7 +31,6 @@ import org.springframework.transaction.support.TransactionCallback
 
 import javax.ws.rs.BeanParam
 import javax.ws.rs.ext.Provider
-
 /**
  * Created by liangfu on 3/25/14.
  */
@@ -40,6 +38,7 @@ import javax.ws.rs.ext.Provider
 @Component
 @Scope('prototype')
 @CompileStatic
+@Transactional
 class UserSecurityQuestionAttemptResourceImpl implements UserSecurityQuestionAttemptResource {
 
     @Autowired
@@ -58,7 +57,6 @@ class UserSecurityQuestionAttemptResourceImpl implements UserSecurityQuestionAtt
     private PlatformTransactionManager transactionManager
 
     @Override
-    @Transactional
     Promise<UserSecurityQuestionAttempt> create(UserId userId,
                                                        UserSecurityQuestionAttempt userSecurityQuestionAttempt) {
         if (userId == null) {
