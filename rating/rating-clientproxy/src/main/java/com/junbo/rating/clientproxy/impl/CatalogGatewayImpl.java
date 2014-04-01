@@ -81,7 +81,7 @@ public class CatalogGatewayImpl implements CatalogGateway{
                 LinkedEntry item = new LinkedEntry();
                 item.setEntryId(entry.getItemId());
                 item.setType(EntryType.ITEM);
-                item.setQuantity(entry.getQuantity());
+                item.setQuantity(entry.getQuantity() == null? 1 : entry.getQuantity());
                 result.getItems().add(item);
             }
         }
@@ -91,7 +91,7 @@ public class CatalogGatewayImpl implements CatalogGateway{
                 LinkedEntry subOffer = new LinkedEntry();
                 subOffer.setEntryId(entry.getOfferId());
                 subOffer.setType(EntryType.OFFER);
-                subOffer.setQuantity(entry.getQuantity());
+                subOffer.setQuantity(entry.getQuantity() == null ? 1 : entry.getQuantity());
                 result.getSubOffers().add(subOffer);
             }
         }
