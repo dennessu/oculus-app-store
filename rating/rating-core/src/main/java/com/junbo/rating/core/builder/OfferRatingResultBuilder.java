@@ -33,8 +33,7 @@ public class OfferRatingResultBuilder {
             item.setOriginalAmount(entry.getOriginalAmount().getValue());
             item.setDiscountAmount(entry.getDiscountAmount().getValue());
             item.setFinalAmount(item.getOriginalAmount().subtract(item.getDiscountAmount()));
-            item.setPromotions(new HashSet<Long>());
-            item.getPromotions().addAll(entry.getAppliedPromotion());
+            item.setPromotions(entry.getAppliedPromotion());
             result.getOffers().add(item);
         }
 
