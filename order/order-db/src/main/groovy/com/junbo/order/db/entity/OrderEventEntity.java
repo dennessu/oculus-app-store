@@ -28,6 +28,7 @@ public class OrderEventEntity extends CommonEventEntity {
     private OrderActionType actionId;
     private EventStatus statusId;
     private UUID trackingUuid;
+    private UUID eventTrackingUuid;
     private String flowType;
 
     @Column(name = "ORDER_ID")
@@ -70,6 +71,16 @@ public class OrderEventEntity extends CommonEventEntity {
 
     public void setTrackingUuid(UUID trackingUuid) {
         this.trackingUuid = trackingUuid;
+    }
+
+    @Column (name = "EVENT_TRACKING_UUID")
+    @Type(type = "pg-uuid")
+    public UUID getEventTrackingUuid() {
+        return eventTrackingUuid;
+    }
+
+    public void setEventTrackingUuid(UUID eventTrackingUuid) {
+        this.eventTrackingUuid = eventTrackingUuid;
     }
 
     @Column (name = "FLOW_NAME")

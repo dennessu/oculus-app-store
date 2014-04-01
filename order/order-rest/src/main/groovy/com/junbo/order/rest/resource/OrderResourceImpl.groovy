@@ -67,6 +67,12 @@ class OrderResourceImpl implements OrderResource {
     @Override
     Promise<Order> updateOrderByOrderId(OrderId orderId, Order order) {
         orderValidator.notNull(order, 'order').notNull(order.trackingUuid, 'trackingUuid').notNull(order.user, 'user')
+
+        def persistedOrder = orderService.getOrderByTrackingUuid(order.trackingUuid)
+        if (persistedOrder != null) {
+            throw AppErrors.INSTANCE.orderDuplicateTrackingGuid().exception()
+        }
+
         order.id = orderId
         orderService.getOrderByOrderId(orderId.value).then { Order oldOrder ->
             // handle the update request per scenario
