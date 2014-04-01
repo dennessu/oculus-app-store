@@ -8,6 +8,10 @@ package com.junbo.notification.core;
 import org.springframework.jms.core.JmsTemplate;
 
 import javax.jms.Destination;
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.Session;
+import java.io.Serializable;
 
 /**
  * BasePublisher.
@@ -26,5 +30,33 @@ public abstract class BasePublisher {
 
     public BasePublisher() {
 
+    }
+
+    protected void publish(final Event event) {
+        template.send(event);
+    }
+
+    protected void publishText(final String eventId, final String message) {
+        publish(new Event() {
+            public String getId() {
+                return eventId;
+            }
+
+            public Message createMessage(Session session) throws JMSException {
+                return session.createTextMessage(message);
+            }
+        });
+    }
+
+    protected void publishObject(final String eventId, final Serializable message) {
+        publish(new Event() {
+            public String getId() {
+                return eventId;
+            }
+
+            public Message createMessage(Session session) throws JMSException {
+                return session.createObjectMessage(message);
+            }
+        });
     }
 }

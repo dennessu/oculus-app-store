@@ -24,15 +24,44 @@
         <property name="deliveryPersistent" value="true"/>
     </bean>
 
+    <!--
+        #sessionAcknowledgeMode
+        - AUTO_ACKNOWLEDGE (default):
+            Automatic message acknowledgment before listener execution;
+            no redelivery in case of exception thrown.
+
+        - CLIENT_ACKNOWLEDGE:
+            Automatic message acknowledgment after successful listener execution;
+            no redelivery in case of exception thrown.
+
+        - DUPS_OK_ACKNOWLEDGE:
+            Lazy message acknowledgment during or after listener execution;
+            potential redelivery in case of exception thrown.
+
+        #sessionTransacted:
+        - true: Transactional acknowledgment after successful listener execution; guaranteed redelivery in case of exception thrown.
+    -->
+    <bean id="baseListenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer"
+          abstract="true">
+        <property name="connectionFactory" ref="connectionFactory"/>
+        <property name="sessionAcknowledgeMode" value="2"/>
+    </bean>
+
     <!-- queue -->
     <bean id="emailQueue" class="org.apache.activemq.command.ActiveMQQueue">
         <constructor-arg value="EMAIL_QUEUE"/>
     </bean>
 
-    <!-- topic -->
+    <bean id="offerQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="OFFER_QUEUE"/>
+    </bean>
 
     <!-- JMS template -->
     <bean id="emailJmsTemplate" class="org.springframework.jms.core.JmsTemplate" parent="baseJmsTemplate">
         <property name="defaultDestination" ref="emailQueue"/>
+    </bean>
+
+    <bean id="offerJmsTemplate" class="org.springframework.jms.core.JmsTemplate" parent="baseJmsTemplate">
+        <property name="defaultDestination" ref="offerQueue"/>
     </bean>
 </beans>

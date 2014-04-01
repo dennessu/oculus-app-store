@@ -132,6 +132,7 @@ class OrderEventAspect {
             orderEvent.action = getOrderActionType(jp)
             orderEvent.status = EventStatus.OPEN.toString()
             orderEvent.trackingUuid = getTrackingUuid(jp)
+            orderEvent.eventTrackingUuid = UUID.randomUUID()
             orderEvent.flowType = getFlowType(jp)
             return orderEvent
         }
