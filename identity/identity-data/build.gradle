@@ -6,7 +6,6 @@ dependencies {
     compile (libraries.oom)
     compile (libraries.common_configuration)
 
-    compile (libraries.persistence_api)
     compile (libraries.validation_api)
 
     compile (libraries.spring_aop)

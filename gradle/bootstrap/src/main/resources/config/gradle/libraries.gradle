@@ -48,7 +48,7 @@ ext {
         // javax
         rs_api:                 'javax.ws.rs:javax.ws.rs-api:2.0',
         servlet_api:            'javax.servlet:javax.servlet-api:3.1.0',
-        persistence_api:        'org.hibernate.javax.persistence:hibernate-jpa-2.0-api:1.0.1.Final',
+        persistence_api:        'org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.0.Final',
         validation_api:         'javax.validation:validation-api:1.1.0.Final',
         el_api:                 'javax.el:javax.el-api:2.2.4',
         el:                     'org.glassfish.web:javax.el:2.2.4',
