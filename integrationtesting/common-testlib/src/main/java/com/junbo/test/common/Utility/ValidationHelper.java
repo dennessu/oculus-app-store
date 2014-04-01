@@ -76,7 +76,7 @@ public class ValidationHelper {
                             expectedOrderItemAmount.toString(), "verify order item amount");
                     BigDecimal expectedTaxUpper = expectedOrderItemAmount.multiply(new BigDecimal(0.089)).
                             setScale(2, RoundingMode.UP);
-                    BigDecimal expectedTaxLower = expectedOrderItemAmount.multiply(new BigDecimal(0.086)).
+                    BigDecimal expectedTaxLower = expectedOrderItemAmount.multiply(new BigDecimal(0.085)).
                             setScale(2, RoundingMode.UP);
                     if (orderItem.getTotalTax().compareTo(expectedTaxUpper) > 0 ||
                             orderItem.getTotalTax().compareTo(expectedTaxLower) < 0) {
