@@ -469,7 +469,7 @@ Cart.PostOrder = function(data, callback){
         // Update Cart
         function(orderResult, result, indexArray, cb){
             var cartObj = JSON.parse(result);
-            for(var i = indexArray.length; i > -1; --i){
+            for(var i = indexArray.length-1; i >= 0; --i){
                 cartObj.offers.splice(indexArray[i], 1);
             }
 

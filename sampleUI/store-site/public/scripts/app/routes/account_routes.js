@@ -92,7 +92,13 @@ var AccountRoutes = {
             provider.GetOrders(Utils.GenerateRequestModel(null), function(resultData){
                 if(resultData.data.status == 200){
                     var orders = JSON.parse(resultData.data.data).results;
-                    controller.set("content.orders", orders);
+                    var realOrders = [];
+                    for(var i = 0; i < orders.length; ++i){
+                        var item = orders[i];
+                        if(item.tentative == false) realOrders.push(item);
+                    }
+
+                    controller.set("content.orders", realOrders);
                 }else{
                     // TODO: Error
                 }

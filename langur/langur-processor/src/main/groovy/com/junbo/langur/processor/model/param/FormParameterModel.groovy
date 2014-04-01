@@ -16,4 +16,8 @@ class FormParameterModel extends ClientParameterModel {
     String formName
 
     final String parameterType = 'form'
+
+    Boolean collection = false
+
+    String innerParamType
 }

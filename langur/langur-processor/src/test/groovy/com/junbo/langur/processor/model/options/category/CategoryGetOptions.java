@@ -8,6 +8,7 @@ package com.junbo.langur.processor.model.options.category;
 import com.junbo.langur.processor.model.options.GetOptions;
 
 import javax.ws.rs.QueryParam;
+import java.util.List;
 
 /**
  * Created by kevingu on 11/28/13.
@@ -31,6 +32,9 @@ public class CategoryGetOptions extends GetOptions {
 
     @QueryParam("categoryId")
     private String categoryId;
+
+    @QueryParam("group")
+    private List<String> groups;
 
     @QueryParam("name")
     public String getName() {
@@ -82,5 +86,14 @@ public class CategoryGetOptions extends GetOptions {
 
     public void setCategoryId(String categoryId) {
         this.categoryId = categoryId;
+    }
+
+    @QueryParam("group")
+    public List<String> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(List<String> groups) {
+        this.groups = groups;
     }
 }
