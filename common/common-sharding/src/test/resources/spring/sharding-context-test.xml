@@ -52,6 +52,7 @@
                 <entry key="hibernate.show_sql" value="${sharding.hibernate.show_sql}"/>
 
                 <entry key="hibernate.multiTenancy" value="SCHEMA"/>
+                <entry key="hibernate.current_session_context_class" value="com.junbo.sharding.hibernate.MultiTenantJTASessionContext"/>
                 <entry key="hibernate.tenant_identifier_resolver" value="com.junbo.sharding.hibernate.ShardCurrentTenantIdentifierResolver"/>
                 <entry key="hibernate.multi_tenant_connection_provider" value-ref="identityDataSource"/>
             </map>
