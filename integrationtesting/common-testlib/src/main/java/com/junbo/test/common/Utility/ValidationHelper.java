@@ -49,7 +49,7 @@ public class ValidationHelper {
         verifyEqual(order.getOrderItems().size(), cart.getOffers().size(), "verify offer items in order");
         if (shippingAddressId != null) {
             verifyEqual(IdConverter.idLongToHexString(
-                            ShippingAddressId.class, order.getShippingAddressId().getValue()), shippingAddressId,
+                    ShippingAddressId.class, order.getShippingAddressId().getValue()), shippingAddressId,
                     "verify shipping address id"
             );
         }
@@ -74,10 +74,14 @@ public class ValidationHelper {
                     BigDecimal expectedOrderItemAmount = unitPrice.multiply(new BigDecimal(offerItem.getQuantity()));
                     verifyEqual(orderItem.getTotalAmount().toString(),
                             expectedOrderItemAmount.toString(), "verify order item amount");
-                    verifyEqual(orderItem.getTotalTax(),
-                            expectedOrderItemAmount.multiply(new BigDecimal(0.087)).
-                                    setScale(2, RoundingMode.UP), "Verify total tax"
-                    );
+                    BigDecimal expectedTaxUpper = expectedOrderItemAmount.multiply(new BigDecimal(0.088)).
+                            setScale(2, RoundingMode.UP);
+                    BigDecimal expectedTaxLower = expectedOrderItemAmount.multiply(new BigDecimal(0.086)).
+                            setScale(2, RoundingMode.UP);
+                    if (orderItem.getTotalTax().compareTo(expectedTaxUpper) > 0 ||
+                            orderItem.getTotalTax().compareTo(expectedTaxLower) < 0) {
+                        throw new TestException("verify tax failed");
+                    }
                     expectedTotalTaxAmount = expectedTotalTaxAmount.add(orderItem.getTotalTax());
                     expectedTotalAmount = expectedTotalAmount.add(expectedOrderItemAmount);
                     break;
