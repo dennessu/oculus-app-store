@@ -55,11 +55,32 @@ public class OrderEventDaoTest extends BaseTest {
     public void testReadByOrderId() {
         OrderEventEntity entity = TestHelper.generateOrderEventEntity();
         Long orderId = entity.getOrderId();
-        List<OrderEventEntity> resultBefore = orderEventDao.readByOrderId(orderId);
+        List<OrderEventEntity> resultBefore = orderEventDao.readByOrderId(orderId, null, null);
         orderEventDao.create(entity);
         orderEventDao.flush();
-        List<OrderEventEntity> resultAfter = orderEventDao.readByOrderId(orderId);
+        List<OrderEventEntity> resultAfter = orderEventDao.readByOrderId(orderId, null, null);
 
         Assert.assertEquals(resultAfter.size(), resultBefore.size() + 1, "Result size should increase.");
+        Assert.assertEquals(orderEventDao.readByOrderId(orderId, resultBefore.size(), 1).size(), 1);
+        Assert.assertEquals(orderEventDao.readByOrderId(orderId, 0, 1).size(), 1);
+        Assert.assertEquals(orderEventDao.readByOrderId(orderId, resultBefore.size() + 1, 1).size(), 0);
+    }
+
+    @Test
+    public void testReadByOrderIdWithPage() {
+        Long orderId = TestHelper.generateId();
+        for (int i = 0;i < 3;++i) {
+            OrderEventEntity entity = TestHelper.generateOrderEventEntity();
+            entity.setOrderId(orderId);
+            orderEventDao.create(entity);
+            orderEventDao.flush();
+        }
+
+        Assert.assertEquals(orderEventDao.readByOrderId(orderId, null, null).size(), 3);
+        Assert.assertEquals(orderEventDao.readByOrderId(orderId, 1, 2).size(), 2);
+        Assert.assertEquals(orderEventDao.readByOrderId(orderId, null, 2).size(), 2);
+        Assert.assertEquals(orderEventDao.readByOrderId(orderId, 1, null).size(), 2);
+        Assert.assertEquals(orderEventDao.readByOrderId(orderId, 1, 4).size(), 2);
+        Assert.assertEquals(orderEventDao.readByOrderId(orderId, 1, 1).size(), 1);
     }
 }
