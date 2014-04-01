@@ -3,7 +3,7 @@ var DevCenterRoutes = {
         beforeModel: function(){
             if(!Ember.App.AuthManager.isAuthenticated()){
                 Utils.Cookies.Set(AppConfig.CookiesName.BeforeRoute, "devcenter");
-                location.href = AppConfig.LoginUrl;
+                location.href = AppConfig.Runtime.LoginUrl;
                 return;
             }
 

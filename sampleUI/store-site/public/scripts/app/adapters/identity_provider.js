@@ -1,6 +1,6 @@
 
 var IdentityProvider = function(){
-    this._Provider = new DataProvider(AppConfig.API.Identity.Config, AppConfig.SocketAddress);
+    this._Provider = new DataProvider(AppConfig.API.Identity.Config, AppConfig.Runtime.SocketAddress);
     this._Namespace = AppConfig.API.Identity.Config.Namespace;
 
     for(var p in AppConfig.API.Identity){

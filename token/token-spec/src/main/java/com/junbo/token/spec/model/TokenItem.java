@@ -10,6 +10,8 @@ package com.junbo.token.spec.model;
 import com.junbo.token.common.FilterIn;
 import com.junbo.token.common.FilterOut;
 
+import java.util.List;
+
 /**
  * Token item model.
  */
@@ -21,6 +23,8 @@ public class TokenItem {
     @FilterIn
     private String status;
     private String encryptedString;
+    @FilterIn
+    private List<TokenConsumption> tokenConsumptions;
 
     public Long getHashValue() {
         return hashValue;
@@ -60,5 +64,13 @@ public class TokenItem {
 
     public void setEncryptedString(String encryptedString) {
         this.encryptedString = encryptedString;
+    }
+
+    public List<TokenConsumption> getTokenConsumptions() {
+        return tokenConsumptions;
+    }
+
+    public void setTokenConsumptions(List<TokenConsumption> tokenConsumptions) {
+        this.tokenConsumptions = tokenConsumptions;
     }
 }

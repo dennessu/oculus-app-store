@@ -1,6 +1,6 @@
 
 var CatalogProvider = function(){
-    this._Provider = new DataProvider(AppConfig.API.Catalog.Config, AppConfig.SocketAddress);
+    this._Provider = new DataProvider(AppConfig.API.Catalog.Config, AppConfig.Runtime.SocketAddress);
     this._Namespace = AppConfig.API.Catalog.Config.Namespace;
 
     for(var p in AppConfig.API.Catalog){
