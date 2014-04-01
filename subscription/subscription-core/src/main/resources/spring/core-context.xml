@@ -11,8 +11,6 @@
 
     <bean id="subscriptionService" class="com.junbo.subscription.core.service.SubscriptionServiceImpl"/>
 
-    <bean id="catalogGateway" class="com.junbo.subscription.clientproxy.impl.CatalogGatewayImpl" />
-
     <bean id="subscriptionRepository" class="com.junbo.subscription.db.repository.SubscriptionRepository" />
 
 </beans>

@@ -1,6 +1,6 @@
 
 var PaymentProvider = function(){
-    this._Provider = new DataProvider(AppConfig.API.Payment.Config, AppConfig.SocketAddress);
+    this._Provider = new DataProvider(AppConfig.API.Payment.Config, AppConfig.Runtime.SocketAddress);
     this._Namespace = AppConfig.API.Payment.Config.Namespace;
 
     for(var p in AppConfig.API.Payment){

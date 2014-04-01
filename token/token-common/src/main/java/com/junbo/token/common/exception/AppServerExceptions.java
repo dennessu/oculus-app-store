@@ -31,4 +31,10 @@ public interface AppServerExceptions {
 
     @ErrorDef(httpStatusCode = 500, code = "50005", description = "The required field {0} is missing while processing")
     AppError missingRequiredField(String field);
+
+    @ErrorDef(httpStatusCode = 500, code = "50006", description = "The order is invalid for the token")
+    AppError InvalidTokenOrder(String field);
+
+    @ErrorDef(httpStatusCode = 500, code = "50007", description = "The Token Set is invalid for the token")
+    AppError InvalidTokenSet(String field);
 }
