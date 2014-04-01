@@ -60,9 +60,9 @@ ext {
         jackson_annotations:    "com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}",
 
         // hibernate
-        hibernate_core:              'org.hibernate:hibernate-core:4.1.7.Final',
-        hibernate_entitymanager:     'org.hibernate:hibernate-entitymanager:4.1.7.Final',
-        hibernate_annotation:        'org.hibernate.common:hibernate-commons-annotations:4.0.1.Final',
+        hibernate_core:              'org.hibernate:hibernate-core:4.3.4.Final',
+        hibernate_entitymanager:     'org.hibernate:hibernate-entitymanager:4.3.4.Final',
+        hibernate_annotation:        'org.hibernate.common:hibernate-commons-annotations:4.0.4.Final',
         hibernate_validator:         'org.hibernate:hibernate-validator:5.0.2.Final',
 
         // postgresql
