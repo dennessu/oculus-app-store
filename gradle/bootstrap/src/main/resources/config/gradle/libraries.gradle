@@ -95,7 +95,7 @@ ext {
         freemarker:             'org.freemarker:freemarker:2.3.20',
 
         // groovy
-        groovy:                 'org.codehaus.groovy:groovy-all:2.2.0',
+        groovy:                 'org.codehaus.groovy:groovy-all:2.2.2',
 
         //hickory
         hickory:                'com.jolira:hickory:1.0.0',
@@ -126,12 +126,13 @@ ext {
         easy_mock:              'org.easymock:easymock:3.2',
 
         btm:                    'com.junbo.btm:btm:3.0.0-SNAPSHOT', // switch to org.codehaus.btm if release version available
-            
+
         //****** common.junbo.test ******
         common_testlib:         "com.junbo.test:common-testlib:${junboVersion}",
 
         querydsl_apt:           'com.mysema.querydsl:querydsl-apt:3.3.2',
         querydsl_jpa:           'com.mysema.querydsl:querydsl-jpa:3.3.2',
+        querydsl_collections:   'com.mysema.querydsl:querydsl-collections:3.3.2',
 
         //****** common test lib dependencies ******
         apache_commons_lang:    'org.apache.commons:commons-lang3:3.1',

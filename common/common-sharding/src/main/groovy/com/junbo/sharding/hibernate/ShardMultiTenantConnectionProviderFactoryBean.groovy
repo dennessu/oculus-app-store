@@ -116,7 +116,7 @@ class ShardMultiTenantConnectionProviderFactoryBean
     private static final String PATTERN_STR = '^(0|[1-9][0-9]*)[\\.]{2}(0|[1-9][0-9]*)$'
     private static final Pattern PATTERN = Pattern.compile(PATTERN_STR)
 
-    private static int[] parseRange(String range) {
+    private static List<Integer> parseRange(String range) {
 
         Matcher matcher = PATTERN.matcher(range)
         if (!matcher.matches()) {

@@ -20,6 +20,25 @@ class ShardScope implements AutoCloseable {
         return currentShardId
     }
 
+    static <T> T withNull(Closure<T> closure) {
+        def shardScope = new ShardScope()
+        try {
+            return closure()
+        } finally {
+            shardScope.close()
+        }
+    }
+
+    static <T> T with(Integer shardId, Closure<T> closure) {
+        def shardScope = new ShardScope(shardId)
+        try {
+            return closure()
+        } finally {
+            shardScope.close()
+        }
+    }
+
+
     private final Integer oldShardId
 
     ShardScope() {
