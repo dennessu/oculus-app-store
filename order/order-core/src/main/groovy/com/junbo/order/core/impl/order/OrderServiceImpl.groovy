@@ -14,21 +14,14 @@ import com.junbo.order.core.FlowSelector
 import com.junbo.order.core.FlowType
 import com.junbo.order.core.OrderService
 import com.junbo.order.core.OrderServiceOperation
-import com.junbo.order.core.impl.common.CoreUtils
-import com.junbo.order.core.impl.common.OrderStatusBuilder
-import com.junbo.order.core.impl.common.OrderValidator
-import com.junbo.order.core.impl.common.TransactionHelper
+import com.junbo.order.core.impl.common.*
 import com.junbo.order.core.impl.orderaction.ActionUtils
 import com.junbo.order.core.impl.orderaction.context.OrderActionContext
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.error.AppErrors
-import com.junbo.order.spec.model.ApiContext
-import com.junbo.order.spec.model.Order
-import com.junbo.order.spec.model.OrderEvent
-import com.junbo.order.spec.model.OrderItem
+import com.junbo.order.spec.model.*
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
-import org.apache.commons.collections.CollectionUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -71,6 +64,7 @@ class OrderServiceImpl implements OrderService {
         orderValidator.validateSettleOrderRequest(order)
 
         def orderServiceContext = initOrderServiceContext(order)
+        Throwable error
         flowSelector.select(orderServiceContext, OrderServiceOperation.SETTLE_TENTATIVE).then { FlowType flowType ->
             // Prepare Flow Request
             Map<String, Object> requestScope = [:]
@@ -80,10 +74,18 @@ class OrderServiceImpl implements OrderService {
             requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object) orderActionContext)
             executeFlow(flowType, orderServiceContext, requestScope)
         }.syncRecover { Throwable throwable ->
-            refreshOrderStatus(orderServiceContext.order)
-            throw throwable
+            error = throwable
         }.syncThen {
+            if (orderServiceContext.order.tentative) {
+                LOGGER.info('name=Order_RollBack_To_Tentative, orderId={}', orderServiceContext.order.id)
+                transactionHelper.executeInTransaction {
+                    orderRepository.updateOrder(orderServiceContext.order, true)
+                }
+            }
             refreshOrderStatus(orderServiceContext.order)
+            if (error != null) {
+                throw error
+            }
             return orderServiceContext.order
         }
     }
@@ -113,7 +115,9 @@ class OrderServiceImpl implements OrderService {
     Promise<Order> createQuote(Order order, ApiContext context) {
         LOGGER.info('name=Create_Tentative_Order. userId: {}', order.user.value)
 
+        order.id = null
         setHonoredTime(order)
+
         def orderServiceContext = initOrderServiceContext(order)
         prepareOrder(order).then {
             flowSelector.select(orderServiceContext, OrderServiceOperation.CREATE_TENTATIVE).then { FlowType flowType ->
@@ -173,17 +177,16 @@ class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    Promise<List<Order>> getOrdersByUserId(Long userId) {
+    Promise<List<Order>> getOrdersByUserId(Long userId, OrderQueryParam orderQueryParam, PageParam pageParam) {
 
         if (userId == null) {
             throw AppErrors.INSTANCE.fieldInvalid('userId', 'userId cannot be null').exception()
         }
 
         // get Orders by userId
-        def orders = orderRepository.getOrdersByUserId(userId)
-        if (CollectionUtils.isEmpty(orders)) {
-            throw AppErrors.INSTANCE.orderNotFound().exception()
-        }
+        def orders = orderRepository.getOrdersByUserId(userId,
+                ParamUtils.processOrderQueryParam(orderQueryParam),
+                ParamUtils.processPageParam(pageParam))
         orders.each { Order order ->
             completeOrder(order)
         }
@@ -216,7 +219,7 @@ class OrderServiceImpl implements OrderService {
     private void refreshOrderStatus(Order order) {
         transactionHelper.executeInTransaction {
             def status = OrderStatusBuilder.buildOrderStatus(order,
-                    orderRepository.getOrderEvents(order.id.value))
+                    orderRepository.getOrderEvents(order.id.value, null))
             if (status != order.status) {
                 order.status = status
                 orderRepository.updateOrder(order, true)

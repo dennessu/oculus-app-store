@@ -165,9 +165,6 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
             throw AppClientExceptions.INSTANCE.missingUserId().exception();
         }
         List<PaymentInstrument> results = paymentInstrumentRepository.search(userId, searchParam, page);
-        if(results == null || results.isEmpty()){
-            throw AppClientExceptions.INSTANCE.resourceNotFound("payment_instrument").exception();
-        }
         return results;
     }
 

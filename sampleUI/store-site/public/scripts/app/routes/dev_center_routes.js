@@ -3,7 +3,7 @@ var DevCenterRoutes = {
         beforeModel: function(){
             if(!Ember.App.AuthManager.isAuthenticated()){
                 Utils.Cookies.Set(AppConfig.CookiesName.BeforeRoute, "devcenter");
-                location.href = AppConfig.LoginUrl;
+                location.href = AppConfig.Runtime.LoginUrl;
                 return;
             }
 
@@ -11,7 +11,7 @@ var DevCenterRoutes = {
         },
         setupController: function(controller, model){
             var provider = new EntitlementProvider();
-            provider.Get(Utils.GenerateRequestModel(null), function(resultData){
+            provider.GetEntitlements(Utils.GenerateRequestModel(null), function(resultData){
                 if(resultData.data.status == 200){
                     var items = JSON.parse(resultData.data.data).results;
 

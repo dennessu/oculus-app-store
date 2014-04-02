@@ -1,12 +1,11 @@
-var Async = require('async');
-var DataProvider = require('store-data-provider').Billing;
+var DataProvider = require('store-data-provider').DataProvider.Billing;
 var BillingModels = require('store-model').Billing;
 
 var DomainModels = require('../../models/domain');
 var Utils = require('../../utils/utils');
 
 var Billing = function () {};
-Billing.GetShippingInfo = function (data, callback) {
+Billing.GetShippingInfos = function (data, callback) {
     var body = data.data;
     var cookies = data.cookies;
     var query = data.query;
@@ -14,7 +13,7 @@ Billing.GetShippingInfo = function (data, callback) {
     var userId = cookies[process.AppConfig.CookiesName.UserId];
     var dataProvider = new DataProvider(process.AppConfig.Billing_API_Host, process.AppConfig.Billing_API_Port);
 
-    dataProvider.GetShippingInfo(userId, function(result){
+    dataProvider.GetShippingInfosByUserId(userId, function(result){
         var resultModel = new DomainModels.ResultModel();
        if(result.StatusCode == 200){
            resultModel.status = DomainModels.ResultStatusEnum.Normal;
@@ -36,7 +35,7 @@ Billing.GetShippingInfoById = function (data, callback) {
     var shippingId = body["shippingId"];
     var dataProvider = new DataProvider(process.AppConfig.Billing_API_Host, process.AppConfig.Billing_API_Port);
 
-    dataProvider.GetShippingInfoById(shippingId, userId, function(result){
+    dataProvider.GetShippingInfoById(userId, shippingId, function(result){
         var resultModel = new DomainModels.ResultModel();
         if(result.StatusCode == 200){
             resultModel.status = DomainModels.ResultStatusEnum.Normal;
@@ -95,7 +94,7 @@ Billing.DeleteShippingInfo = function (data, callback) {
     var userId = cookies[process.AppConfig.CookiesName.UserId];
     var dataProvider = new DataProvider(process.AppConfig.Billing_API_Host, process.AppConfig.Billing_API_Port);
 
-    dataProvider.DeleteShippingInfo(body["shippingId"], userId, function(result){
+    dataProvider.DeleteShippingInfo(userId, body["shippingId"], function(result){
         var resultModel = new DomainModels.ResultModel();
         if(result.StatusCode == 200 || result.StatusCode == 204){
             resultModel.status = DomainModels.ResultStatusEnum.Normal;

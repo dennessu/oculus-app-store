@@ -76,10 +76,20 @@
 
     <!-- Dao -->
     <bean id="baseDao" class="com.junbo.subscription.db.dao.BaseDao" abstract="true"/>
-    <bean id="SubscriptionDao"
+    <bean id="subscriptionDao"
           class="com.junbo.subscription.db.dao.SubscriptionDao" parent="baseDao">
         <property name="classType" value="com.junbo.subscription.db.entity.SubscriptionEntity"/>
     </bean>
+    <bean id="subscriptionEventDao"
+          class="com.junbo.subscription.db.dao.SubscriptionEventDao" parent="baseDao">
+        <property name="classType" value="com.junbo.subscription.db.entity.SubscriptionEventEntity"/>
+    </bean>
+    <bean id="subscriptionEventActionDao"
+          class="com.junbo.subscription.db.dao.SubscriptionEventActionDao" parent="baseDao">
+        <property name="classType" value="com.junbo.subscription.db.entity.SubscriptionEventActionEntity"/>
+    </bean>
 
     <bean id="subscriptionRepository" class="com.junbo.subscription.db.repository.SubscriptionRepository"></bean>
+    <bean id="subscriptionEventRepository" class="com.junbo.subscription.db.repository.SubscriptionEventRepository"></bean>
+    <bean id="subscriptionEventActionRepository" class="com.junbo.subscription.db.repository.SubscriptionEventActionRepository"></bean>
 </beans>

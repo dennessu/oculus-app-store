@@ -17,8 +17,8 @@ app.controller('OfferListCtrl', ['$scope', 'OffersFactory', '$routeParams',
   	  $scope.offers = OffersFactory.query($routeParams);
   }]);
 
-app.controller('OfferCreationCtrl', ['$scope', 'OffersFactory', '$location',
-    function($scope, OffersFactory, $location) {
+app.controller('OfferCreationCtrl', ['$scope', 'OffersFactory', 'MetaFactory', '$location',
+    function($scope, OffersFactory, MetaFactory, $location) {
         $scope.createOffer = function () {
             $scope.submitted = true;
             OffersFactory.create($scope.offer, function(offer){
@@ -30,11 +30,19 @@ app.controller('OfferCreationCtrl', ['$scope', 'OffersFactory', '$location',
             $location.path('/offers');
         };
 
+        $scope.offerMetaDefinitions = MetaFactory.offerMeta;
+
         var init = function() {
             $scope.offer = {};
             $scope.offer.items = [];
             $scope.offer.categories = [];
             $scope.offer.properties = {};
+            Object.keys($scope.offerMetaDefinitions).forEach(function(key) {
+                $scope.offer.properties[key] = "";
+                if ($scope.offerMetaDefinitions[key].controlType == "MULTI_SELECT") {
+                    $scope.offer.properties[key] = [];
+                }
+            });
             $scope.offer.eligibleCountries = [];
             $scope.selectedItems = {};
         };
@@ -204,6 +212,8 @@ app.controller('OfferDetailCtrl', ['$scope', 'OfferFactory', 'ItemFactory', 'Met
         };
 
         $scope.selectedItems = {};
+        $scope.offerMetaDefinitions = MetaFactory.offerMeta;
+
         $scope.offer = OfferFactory.query($routeParams, function(offer){
            if (offer.priceType == "TierPricing") {
              $scope.selectedTier = PriceTierFactory.query({id:offer.priceTier.id});
@@ -214,6 +224,19 @@ app.controller('OfferDetailCtrl', ['$scope', 'OfferFactory', 'ItemFactory', 'Met
                $scope.selectedItems[offer.items[i].itemId.id] = ItemFactory.query({id:offer.items[i].itemId.id});
              }
            }
+
+            if (typeof $scope.offer.properties == "undefined") {
+                $scope.offer.properties = {};
+            }
+            Object.keys($scope.offerMetaDefinitions).forEach(function(key) {
+                if (typeof $scope.offer.properties[key] == "undefined") {
+                    $scope.offer.properties[key] = "";
+                    if ($scope.offerMetaDefinitions[key].controlType == "MULTI_SELECT") {
+                        $scope.offer.properties[key] = [];
+                    }
+                }
+            });
+
         });
 
     }]);
@@ -308,8 +331,24 @@ app.controller('ItemDetailCtrl', ['$scope', 'ItemFactory', 'MetaFactory', '$rout
             });
         };
 
+        $scope.cancel = function () {
+            $location.path('/items/' + $routeParams.id);
+        };
+
         $scope.metaDefinitions = MetaFactory.itemMeta;
-        $scope.item = ItemFactory.query($routeParams);
+        $scope.item = ItemFactory.query($routeParams, function(item) {
+            if (typeof $scope.item.properties == "undefined") {
+                $scope.item.properties = {};
+            }
+            Object.keys($scope.metaDefinitions).forEach(function(key) {
+                if (typeof $scope.item.properties[key]=="undefined") {
+                    $scope.item.properties[key] = "";
+                    if ($scope.metaDefinitions[key].controlType == "MULTI_SELECT") {
+                        $scope.item.properties[key] = [];
+                    }
+                }
+            });
+        });
     }]);
 
 app.controller('ItemAdminListCtrl', ['$scope', 'ItemsFactory',

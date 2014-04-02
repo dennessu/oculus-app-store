@@ -5,7 +5,7 @@ exports.Index = function(req, res){
         {
             layout: false,
             title: "Store Demo",
-            CatalogManageAPPsUrl: process.AppConfig.CatalogManageAPPsUrl,
-            CatalogManageOffersUrl: process.AppConfig.CatalogManageOffersUrl
+            CatalogManageAPPsUrl: process.AppConfig.UrlConstants.CatalogManageAPPsUrl,
+            CatalogManageOffersUrl: process.AppConfig.UrlConstants.CatalogManageOffersUrl
         });
 };
