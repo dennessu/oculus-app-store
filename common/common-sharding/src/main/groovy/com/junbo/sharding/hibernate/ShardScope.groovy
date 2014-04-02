@@ -6,6 +6,7 @@ import groovy.transform.CompileStatic
  * Created by Shenhua on 3/31/2014.
  */
 @CompileStatic
+@SuppressWarnings('CloseWithoutCloseable')
 class ShardScope implements AutoCloseable {
 
     private static final ThreadLocal<Integer> SHARD_ID = new ThreadLocal<>()

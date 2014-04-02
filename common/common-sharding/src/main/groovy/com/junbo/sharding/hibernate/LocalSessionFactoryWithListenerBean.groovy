@@ -22,24 +22,24 @@ class LocalSessionFactoryWithListenerBean extends LocalSessionFactoryBean {
 
     private PostDeleteEventListener[] postDeleteEventListeners
 
-    public void setPostInsertEventListeners(PostInsertEventListener[] postInsertEventListeners) {
+    void setPostInsertEventListeners(PostInsertEventListener[] postInsertEventListeners) {
         this.postInsertEventListeners = postInsertEventListeners
     }
 
-    public void setPostUpdateEventListeners(PostUpdateEventListener[] postUpdateEventListeners) {
+    void setPostUpdateEventListeners(PostUpdateEventListener[] postUpdateEventListeners) {
         this.postUpdateEventListeners = postUpdateEventListeners
     }
 
-    public void setPostDeleteEventListeners(PostDeleteEventListener[] postDeleteEventListeners) {
+    void setPostDeleteEventListeners(PostDeleteEventListener[] postDeleteEventListeners) {
         this.postDeleteEventListeners = postDeleteEventListeners
     }
 
 
     @Override
     SessionFactory getObject() {
-        def sessionFactory = (SessionFactoryImpl) super.getObject()
+        def sessionFactory = (SessionFactoryImpl) super.object
 
-        EventListenerRegistry registry = sessionFactory.getServiceRegistry().getService(EventListenerRegistry.class);
+        EventListenerRegistry registry = sessionFactory.serviceRegistry.getService(EventListenerRegistry)
 
         if (postInsertEventListeners != null) {
             registry.appendListeners(EventType.POST_INSERT, postInsertEventListeners)

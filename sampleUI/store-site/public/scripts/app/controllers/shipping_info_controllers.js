@@ -71,7 +71,7 @@ var ShippingInfoControllers = {
                 var _self = this;
 
                 var dataProvider = new BillingProvider();
-                dataProvider.Add(Utils.GenerateRequestModel(this.get("content")), function(result){
+                dataProvider.PostShippingInfo(Utils.GenerateRequestModel(this.get("content")), function(result){
                     if(result.data.status == 200){
                         _self.set("errMessage", null);
                         _self.transitionToRouteAnimated("payment", {main: "slideOverLeft"});

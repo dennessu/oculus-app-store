@@ -13,10 +13,10 @@ import java.util.concurrent.ConcurrentHashMap
  * Created by Shenhua on 3/31/2014.
  */
 @CompileStatic
-class MultiTenantJTASessionContext extends AbstractCurrentSessionContext {
+@SuppressWarnings('ImplementationAsType')
+class MultiTenantJTASessionContext extends AbstractCurrentSessionContext implements Serializable {
 
     private final transient ConcurrentHashMap<String, JTASessionContext> sessionContextMap
-
     MultiTenantJTASessionContext(SessionFactoryImplementor factory) {
         super(factory)
 

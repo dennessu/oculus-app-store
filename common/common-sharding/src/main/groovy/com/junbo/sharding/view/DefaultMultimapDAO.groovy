@@ -87,7 +87,7 @@ WHERE key = ? AND value = ?""")
     }
 
     @Override
-    public List get(EntityView view, Object key) {
+    List get(EntityView view, Object key) {
         if (view == null) {
             throw new IllegalArgumentException('view is null')
         }

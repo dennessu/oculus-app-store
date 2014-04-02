@@ -46,7 +46,7 @@ var Utils = {
     Format: function() {
         if (arguments.length > 0) {
             var result = arguments[0];
-            if (arguments.length == 1 && typeof (args) == "object") {
+            if (arguments.length == 1 && typeof (arguments) == "object") {
                 for (var key in args) {
                     if (args[key] != undefined) {
                         var reg = new RegExp("({" + key + "})", "g");

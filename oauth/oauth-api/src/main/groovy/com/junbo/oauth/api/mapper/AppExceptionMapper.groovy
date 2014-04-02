@@ -5,6 +5,7 @@
  */
 package com.junbo.oauth.api.mapper
 
+import com.fasterxml.jackson.core.JsonParseException
 import com.fasterxml.jackson.databind.JsonMappingException
 import com.junbo.common.error.Error
 import groovy.transform.CompileStatic
@@ -38,7 +39,7 @@ class AppExceptionMapper implements ExceptionMapper<Exception> {
             return ((WebApplicationException) exception).response
         }
 
-        if (exception instanceof JsonMappingException) {
+        if (exception instanceof JsonMappingException || exception instanceof JsonParseException) {
             Error error = new Error('invalid_json', exception.message, null, null)
 
             return Response.status(Response.Status.BAD_REQUEST).entity(error).type(MediaType.APPLICATION_JSON).build()

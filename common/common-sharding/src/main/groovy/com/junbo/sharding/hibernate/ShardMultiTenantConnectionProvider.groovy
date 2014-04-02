@@ -12,6 +12,7 @@ import java.sql.SQLException
  * Created by Shenhua on 4/1/2014.
  */
 @CompileStatic
+@SuppressWarnings('JdbcConnectionReference')
 class ShardMultiTenantConnectionProvider implements MultiTenantConnectionProvider {
 
     private final List<DataSource> dataSourceList
@@ -34,17 +35,17 @@ class ShardMultiTenantConnectionProvider implements MultiTenantConnectionProvide
     }
 
     @Override
-    public Connection getAnyConnection() throws SQLException {
+    Connection getAnyConnection() throws SQLException {
         throw new IllegalStateException('anyConnection not supported')
     }
 
     @Override
-    public void releaseAnyConnection(Connection connection) throws SQLException {
+    void releaseAnyConnection(Connection connection) throws SQLException {
         throw new IllegalStateException('anyConnection not supported')
     }
 
     @Override
-    public Connection getConnection(String tenantIdentifier) throws SQLException {
+    Connection getConnection(String tenantIdentifier) throws SQLException {
         if (tenantIdentifier == null) {
             throw new IllegalArgumentException('tenantIdentifier is null')
         }
@@ -58,34 +59,33 @@ class ShardMultiTenantConnectionProvider implements MultiTenantConnectionProvide
         def dataSource = dataSourceList.get(shardId)
         def schema = schemaList.get(shardId)
 
-        def connection = dataSource.getConnection()
+        def connection = dataSource.connection
         connection.createStatement().execute("SET SCHEMA '$schema'")
         return connection
     }
 
     @Override
-    public void releaseConnection(String tenantIdentifier, Connection connection) throws SQLException {
+    void releaseConnection(String tenantIdentifier, Connection connection) throws SQLException {
         connection.createStatement().execute("SET SCHEMA 'public'")
         connection.close()
     }
 
     @Override
-    public boolean supportsAggressiveRelease() {
+    boolean supportsAggressiveRelease() {
         return true
     }
 
     @Override
-    public boolean isUnwrappableAs(Class unwrapType) {
-        return MultiTenantConnectionProvider.class.equals(unwrapType) ||
-                ShardMultiTenantConnectionProvider.class.isAssignableFrom(unwrapType)
+    boolean isUnwrappableAs(Class unwrapType) {
+        return MultiTenantConnectionProvider == unwrapType ||
+                ShardMultiTenantConnectionProvider.isAssignableFrom(unwrapType)
     }
 
     @Override
-    public <T> T unwrap(Class<T> unwrapType) {
+    <T> T unwrap(Class<T> unwrapType) {
         if (isUnwrappableAs(unwrapType)) {
             return (T) this
-        } else {
-            throw new UnknownUnwrapTypeException(unwrapType)
         }
+        throw new UnknownUnwrapTypeException(unwrapType)
     }
 }

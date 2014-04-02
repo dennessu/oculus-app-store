@@ -2,7 +2,22 @@
 API about entitlement. trackingUuid is only used for post and put.
 
 ##resource entitlement
-period is only used in post and put actions with timeUnit SECOND and has higher priority than expirationTime.
++ self...only appears in response.
++ trackingUuid(optional)...to track and retry in post and put actions.
++ user(required)
++ developer(optional)...will be replaced by owner in future. Should not be null if entitlementDefinition is null.
++ offer(opitional)...default is null.
++ entitlementDefinition(optional)...default is null. Should not be null if developer is null. Will help to fill group, tag, type and developer when developer is null.
++ status(optional)...ACTIVE, DISABLED, PENDING, DELETED, BANNED. Should not be be null if managedLifcycle is false. If managedLifecycle is true, status will be determined by comsumable, useCount, grantTime, expirationTime and now.
++ grantTime(optional)...default is now.
++ expirationTime(optional)...null represents for never expried. Not effective when period is not null.
++ period(optional)...only used in post and put actions with timeUnit SECOND and has higher priority than expirationTime.
++ consumable(optional)...default is false.
++ useCount(optional)...default is 0.
++ managedLifecycle(optional)...default is true. If set to false, developers should manage the lifecycle all by themselves.
++ group(optional)...default is an empty string.
++ tag(optional)...default is an empty string.
++ type(optional)...DEFAULT, DEVELOPER, DOWNLOAD, ONLINE_ACCESS, IAP, SUBSCRIPTIONS. Default is DEFAULT.
 
         { 
             "self": {

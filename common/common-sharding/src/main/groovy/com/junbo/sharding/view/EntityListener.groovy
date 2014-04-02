@@ -86,9 +86,6 @@ class EntityListener implements PostInsertEventListener, PostUpdateEventListener
                 multimapDAO.put(entityView, key, entity.id)
             }
         }
-
-
-        System.out.println(event.entity);
     }
 
     @Override

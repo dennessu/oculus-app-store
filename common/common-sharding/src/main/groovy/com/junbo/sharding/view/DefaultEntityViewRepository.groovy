@@ -10,7 +10,7 @@ class DefaultEntityViewRepository implements EntityViewRepository {
     private Map<Class, List<EntityView>> multimap
 
     @Required
-    public void setEntityViews(List<EntityView> entityViews) {
+    void setEntityViews(List<EntityView> entityViews) {
         if (entityViews == null) {
             throw new IllegalArgumentException('entityViews is null')
         }

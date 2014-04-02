@@ -41,4 +41,6 @@ public class ErrorCode {
 
     public static final String ORDER_NOT_TENTATIVE = "20005";
 
+    public static final String DUPLICATE_TRACKING_GUID = "20006";
+
 }

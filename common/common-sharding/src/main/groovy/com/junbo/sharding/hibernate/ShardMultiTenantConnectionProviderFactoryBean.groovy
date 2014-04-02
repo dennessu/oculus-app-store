@@ -29,7 +29,7 @@ class ShardMultiTenantConnectionProviderFactoryBean
 
     private Map<String, PoolingDataSource> dataSourceMap
 
-    private ShardMultiTenantConnectionProvider connectionProvider;
+    private ShardMultiTenantConnectionProvider connectionProvider
 
     @Override
     ShardMultiTenantConnectionProvider getObject() throws Exception {
@@ -100,8 +100,8 @@ class ShardMultiTenantConnectionProviderFactoryBean
     private PoolingDataSource getOrCreateDataSource(String url) {
         def result = dataSourceMap.get(url)
         if (result == null) {
-            result = new PoolingDataSource();
-            PropertyUtils.setProperties(result, PropertyUtils.getProperties(this));
+            result = new PoolingDataSource()
+            PropertyUtils.setProperties(result, PropertyUtils.getProperties(this))
 
             result.uniqueName = result.uniqueName + '_' + dataSourceMap.size()
             result.properties.put('url', url)

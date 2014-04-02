@@ -89,10 +89,10 @@
     </bean>
 
     <bean id="globalCounterInMemory" class="com.junbo.sharding.id.impl.GlobalCounterInMemoryImpl" />
-    <bean id="globalCounterMemcached" class="com.junbo.sharding.id.impl.GlobalCounterMemcachedImpl">
-        <constructor-arg ref="idGeneratorClient" />
-        <constructor-arg value="${sharding.memcached.secondsToTrack}" />
-    </bean>
+    <!--<bean id="globalCounterMemcached" class="com.junbo.sharding.id.impl.GlobalCounterMemcachedImpl">-->
+        <!--<constructor-arg ref="idGeneratorClient" />-->
+        <!--<constructor-arg value="${sharding.memcached.secondsToTrack}" />-->
+    <!--</bean>-->
     <bean id="idGenerator" class="com.junbo.sharding.id.impl.IdGeneratorImpl">
         <constructor-arg ref="idSchema" />
         <constructor-arg ref="timeGenerator" />

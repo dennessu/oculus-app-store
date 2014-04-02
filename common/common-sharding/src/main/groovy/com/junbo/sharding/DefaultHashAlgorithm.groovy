@@ -31,7 +31,7 @@ class DefaultHashAlgorithm implements HashAlgorithm {
                 h = 31 * h + ((int) strKey.charAt(i))
             }
 
-            return h;
+            return h
         }
 
         throw new IllegalArgumentException('unknown key type ' + key.class)

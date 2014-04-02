@@ -9,7 +9,5 @@ package com.junbo.notification.listener;
  * EmailListener.
  */
 public final class EmailListener {
-    private EmailListener() {
 
-    }
 }
