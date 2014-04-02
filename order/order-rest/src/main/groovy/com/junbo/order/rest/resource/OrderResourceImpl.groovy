@@ -4,6 +4,7 @@ import com.junbo.common.id.UserId
 import com.junbo.common.model.Results
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.core.OrderService
+import com.junbo.order.core.impl.common.CoreUtils
 import com.junbo.order.core.impl.common.OrderValidator
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.ApiContext
@@ -46,7 +47,13 @@ class OrderResourceImpl implements OrderResource {
 
     @Override
     Promise<Order> getOrderByOrderId(OrderId orderId) {
-        return orderService.getOrderByOrderId(orderId.value)
+        orderService.getOrderByOrderId(orderId.value).then { Order order ->
+            if (order.tentative && CoreUtils.isRateExpired(order)) {
+                // rate the order according to the honored until time
+                return orderService.updateTentativeOrder(order, null)
+            }
+            return Promise.pure(order)
+        }
     }
 
     @Override

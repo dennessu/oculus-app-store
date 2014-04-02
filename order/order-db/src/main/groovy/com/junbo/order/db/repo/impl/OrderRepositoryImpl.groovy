@@ -184,7 +184,6 @@ class OrderRepositoryImpl implements OrderRepository {
         def orderEntity = modelMapper.toOrderEntity(order, new MappingContext())
         orderEntity.createdTime = oldEntity.createdTime
         orderEntity.createdBy = oldEntity.createdBy
-        orderEntity.trackingUuid = oldEntity.trackingUuid // trackingUuid for order will not be updated
         orderDao.update(orderEntity)
         fillDateInfo(order, orderEntity)
 
