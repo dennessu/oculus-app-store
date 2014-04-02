@@ -125,7 +125,6 @@ var StoreControllers = {
                     return;
                 }
 
-
                 if(App.AuthManager.isAuthenticated()){
                     console.log("[CartController:CheckOut]");
 
@@ -138,6 +137,9 @@ var StoreControllers = {
 
                             // set order id to cookie
                             Utils.Cookies.Set(AppConfig.CookiesName.OrderId, order.self.id);
+                            // clear shipping method and shipping address cookies
+                            Utils.Cookies.Remove(AppConfig.CookiesName.ShippingMethodId);
+                            Utils.Cookies.Remove(AppConfig.CookiesName.ShippingId);
 
                             _self.get("model").forEach(function(item){
                                 if(item.get("selected") == true){
@@ -166,7 +168,7 @@ var StoreControllers = {
                     });
                 }else{
                     Utils.Cookies.Set(AppConfig.CookiesName.BeforeRoute, "cart");
-                    location.href = AppConfig.LoginUrl;
+                    location.href = AppConfig.Runtime.LoginUrl;
                 }
             }
         }
@@ -270,7 +272,8 @@ var StoreControllers = {
         }.property("content.products"),
 
         total: function(){
-            return  parseFloat(this.get("content.totalAmount")) + parseFloat(this.get("content.totalTax"));
+            //console.log("Sum Total", this.get("content.totalAmount"), " ", this.get("content.totalTax"));
+            return parseFloat(this.get("content.totalAmount")) + parseFloat(this.get("content.tax"));
         }.property("content.products"),
 
         actions:{

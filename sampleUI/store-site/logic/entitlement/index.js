@@ -1,6 +1,6 @@
 var Async = require('async');
-var DataProvider = require('store-data-provider').DataProvider.Entitlements;
-var EmailsProvider = require('store-data-provider').DataProvider.Emails;
+var DataProvider = require('store-data-provider').Entitlements;
+var EmailsProvider = require('store-data-provider').Emails;
 var Models = require('store-model').Entitlement;
 var EmailsModels = require('store-model').Emails;
 

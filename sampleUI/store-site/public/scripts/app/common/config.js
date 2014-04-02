@@ -7,19 +7,15 @@ AppConfig.DataModelMapTable = {
     },
     "Ember.App.CartItem": {
         Provider: "CartProvider",
-        Method: "Get"
+        Method: "GetCart"
     },
     "Ember.App.ShippingInfo": {
         Provider: "BillingProvider",
-        Method: "ShippingInfo"
+        Method: "GetShippingInfos"
     },
     "Ember.App.CreditCard": {
         Provider: "PaymentProvider",
-        Method: "PaymentInstruments"
-    },
-    "Ember.App.Profile": {
-        Provider: "IdentityProvider",
-        Method: "GetProfile"
+        Method: "GetPayments"
     }
 };
 
