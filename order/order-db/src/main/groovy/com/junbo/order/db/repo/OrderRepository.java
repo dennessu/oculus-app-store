@@ -40,4 +40,6 @@ public interface OrderRepository {
     Order getOrderByTrackingUuid(UUID trackingUuid);
     
     List<OrderEvent> getOrderEvents(Long orderId, PageParam pageParam);
+
+    List<PreorderInfo> getPreorderInfo(Long orderItemId);
 }

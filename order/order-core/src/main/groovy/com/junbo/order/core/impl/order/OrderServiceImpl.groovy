@@ -157,6 +157,12 @@ class OrderServiceImpl implements OrderService {
         if (order.orderItems == null) {
             throw AppErrors.INSTANCE.orderItemNotFound().exception()
         }
+        order.orderItems.each { OrderItem orderItem ->
+            List<PreorderInfo> preorderInfoList = orderRepository.getPreorderInfo(orderItem.orderItemId.value)
+            if (preorderInfoList?.size() > 0) {
+                orderItem.preorderInfo = preorderInfoList[0]
+            }
+        }
         // payment instrument
         order.setPaymentInstruments(orderRepository.getPaymentInstrumentIds(order.id.value))
         // discount

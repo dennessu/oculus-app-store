@@ -224,6 +224,16 @@ class OrderRepositoryImpl implements OrderRepository {
         return events
     }
 
+    @Override
+    List<PreorderInfo> getPreorderInfo(Long orderItemId) {
+        List<PreorderInfo> preorderInfoList = []
+        MappingContext context = new MappingContext()
+        orderItemPreorderInfoDao.readByOrderItemId(orderItemId).each { OrderItemPreorderInfoEntity entity ->
+            preorderInfoList << modelMapper.toPreOrderInfoModel(entity, context)
+        }
+        return preorderInfoList
+    }
+
     void saveOrderItems(OrderId orderId, List<OrderItem> orderItems) {
         def repositoryFuncSet = new RepositoryFuncSet()
         orderItems.each { OrderItem item ->
