@@ -24,7 +24,7 @@ public class SubscriptionResourceImpl implements SubscriptionResource {
 
     @Override
     public Promise<Subscription> getSubscription(HttpHeaders httpHeaders, SubscriptionId subscriptionId){
-        Subscription subscription = subscriptionService.getsubscription(subscriptionId.getValue());
+        Subscription subscription = subscriptionService.getSubscription(subscriptionId.getValue());
         return Promise.pure(subscription);
     }
 
@@ -32,12 +32,14 @@ public class SubscriptionResourceImpl implements SubscriptionResource {
     public Promise<Subscription> postSubscription(Subscription subscription){
         UUID trackingUuid = subscription.getTrackingUuid();
         if (trackingUuid != null) {
-//            Subscription existingSubscription = subscriptionService.getSubsByTrackingUuid(trackingUuid);
-//            if (existingSubscription != null) {
-//                return Promise.pure(existingSubscription);
-//            }
+            Subscription existingSubscription =
+                    subscriptionService.getSubsByTrackingUuid(subscription.getUserId(), trackingUuid);
+            if (existingSubscription != null) {
+                return Promise.pure(existingSubscription);
+            }
         }
-        return Promise.pure(subscriptionService.addsubscription(subscription));
+
+        return Promise.pure(subscriptionService.addSubscription(subscription));
     }
 
 

@@ -26,17 +26,27 @@ public class SubscriptionMapper {
         }
         Subscription subscription = new Subscription();
         subscription.setSubscriptionId(subscriptionEntity.getSubscriptionId());
+        subscription.setTrackingUuid(subscriptionEntity.getTrackingUuid());
         subscription.setUserId(subscriptionEntity.getUserId());
-        subscription.setStatus(subscriptionEntity.getStatusId().toString()); //subscriptionEntity.getStatusId()
+        subscription.setOfferId(Long.getLong(subscriptionEntity.getItemId()));
+        subscription.setStatus(subscriptionEntity.getStatusId().toString());
+        subscription.setSubsStartDate(subscriptionEntity.getSubsStartDate());
+        subscription.setSubsEndDate(subscriptionEntity.getSubsEndDate());
+        subscription.setAnniversaryDay(subscriptionEntity.getAnniversaryDay());
+
         return subscription;
     }
 
     public SubscriptionEntity toSubscriptionEntity(Subscription subscription) {
         SubscriptionEntity subscriptionEntity = new SubscriptionEntity();
         subscriptionEntity.setSubscriptionId(subscription.getSubscriptionId());
+        subscriptionEntity.setTrackingUuid(subscription.getTrackingUuid());
         subscriptionEntity.setUserId(subscription.getUserId());
         subscriptionEntity.setItemId(subscription.getOfferId().toString());
         subscriptionEntity.setStatusId(SubscriptionStatus.valueOf(subscription.getStatus()));
+        subscriptionEntity.setSubsStartDate(subscription.getSubsStartDate());
+        subscriptionEntity.setSubsEndDate(subscription.getSubsEndDate());
+        subscriptionEntity.setAnniversaryDay(subscription.getAnniversaryDay());
         return subscriptionEntity;
     }
 

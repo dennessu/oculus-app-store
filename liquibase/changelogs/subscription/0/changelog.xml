@@ -10,6 +10,7 @@
         <sql><![CDATA[
             create table subscription (
               subscription_id bigint not null,
+              tracking_uuid uuid not null,
               user_id bigint not null,
               pi_id bigint,
               status_id smallint not null,

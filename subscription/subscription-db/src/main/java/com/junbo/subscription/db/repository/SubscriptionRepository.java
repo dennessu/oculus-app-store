@@ -11,6 +11,7 @@ import com.junbo.subscription.spec.model.Subscription;
 import com.junbo.subscription.db.entity.SubscriptionEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -44,7 +45,11 @@ public class SubscriptionRepository {
         return subscriptionDao.update(subscriptionMapper.toSubscriptionEntity(subscription));
     }
 
-    public Subscription getByTrackingUuid(UUID trackingUuid) {
-        return subscriptionMapper.toSubscription(subscriptionDao.getByTrackingUuid(trackingUuid));
+    public Subscription getByTrackingUuid(Long userId, UUID trackingUuid) {
+        List<SubscriptionEntity> subsList = subscriptionDao.getByTrackingUuid(userId, trackingUuid);
+        if(subsList != null && !subsList.isEmpty()){
+            return subscriptionMapper.toSubscription(subsList.get(0));
+        }
+        return null;
     }
 }

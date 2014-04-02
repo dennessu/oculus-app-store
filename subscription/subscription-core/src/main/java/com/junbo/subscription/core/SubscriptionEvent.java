@@ -11,5 +11,5 @@ import com.junbo.subscription.spec.model.Subscription;
  * Created by Administrator on 14-3-28.
  */
 public interface SubscriptionEvent {
-    Subscription excute(Subscription subscription);
+    Subscription execute(Subscription subscription);
 }

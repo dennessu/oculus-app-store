@@ -14,11 +14,12 @@
 
     <!--
     <bean id="catalogGateway" class="com.junbo.subscription.clientproxy.impl.CatalogGatewayImpl"/>
-    -->
     <bean id="entitlementGateway" class="com.junbo.subscription.clientproxy.impl.EntitlementGatewayImpl"/>
+    -->
 
     <!-- fusion mock (will be removed in the future)-->
     <bean id="catalogGateway" class="com.junbo.subscription.clientproxy.mock.MockCatalogGatewayImpl"/>
+    <bean id="entitlementGateway" class="com.junbo.subscription.clientproxy.mock.MockEntitlementGatewayImpl"/>
 
     <!-- async http client -->
     <bean id="asyncHttpClient" class="com.ning.http.client.AsyncHttpClient"/>

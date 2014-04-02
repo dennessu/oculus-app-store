@@ -25,6 +25,7 @@ import org.testng.annotations.Test;
 import javax.sql.DataSource;
 import java.util.Date;
 import java.util.Random;
+import java.util.UUID;
 
 /**
  * Subscription dao test.
@@ -66,6 +67,7 @@ public class SubscriptionDaoTest extends AbstractTransactionalTestNGSpringContex
     private Subscription buildSubscription() {
         Subscription subscription = new Subscription();
 
+        subscription.setTrackingUuid(UUID.randomUUID());
         subscription.setUserId(idGenerator.nextId());
         subscription.setPaymentMethodId(new Random().nextLong());
         subscription.setOfferId(idGenerator.nextId());
@@ -79,6 +81,7 @@ public class SubscriptionDaoTest extends AbstractTransactionalTestNGSpringContex
     private SubscriptionEntity buildSubscriptionEntity() {
         SubscriptionEntity entity = new SubscriptionEntity();
 
+        entity.setTrackingUuid(UUID.randomUUID());
         entity.setUserId(idGenerator.nextId());
         entity.setPiId(new Random().nextLong());
         entity.setItemId("FreeSubsOffer");
