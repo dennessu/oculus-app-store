@@ -47,11 +47,13 @@
                     updated_time timestamp not null,
                     updated_by varchar(128) not null,
                     order_id bigint not null,
-                    tracking_uuid uuid default null,
+                    tracking_uuid uuid not null,
+                    event_tracking_uuid uuid not null,
                     flow_name varchar(128) default null,
                     primary key (event_id)
                 );
-                create unique index order_event_id_updated_time_tracking_uuid_index on order_event (event_id, updated_time, tracking_uuid);
+                create unique index order_event_order_id_event_tracking_uuid on order_event (order_id, event_tracking_uuid);
+                create index order_event_tracking_uuid on order_event (tracking_uuid);
 
                 create table order_item (
                     order_item_id bigint not null,

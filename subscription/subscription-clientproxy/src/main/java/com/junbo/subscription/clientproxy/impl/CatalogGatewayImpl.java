@@ -6,8 +6,11 @@
 package com.junbo.subscription.clientproxy.impl;
 
 import com.junbo.catalog.spec.model.common.EntityGetOptions;
+import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.offer.Offer;
+import com.junbo.catalog.spec.resource.ItemResource;
 import com.junbo.catalog.spec.resource.OfferResource;
+import com.junbo.common.id.ItemId;
 import com.junbo.common.id.OfferId;
 import com.junbo.subscription.clientproxy.CatalogGateway;
 
@@ -25,18 +28,26 @@ public class CatalogGatewayImpl implements CatalogGateway {
     @Qualifier("offerClient")
     private OfferResource offerResource;
 
+    @Autowired
+    @Qualifier("itemClient")
+    private ItemResource itemResource;
+
     @Override
     public Offer getOffer(Long offerId, Long timestamp) {
-        return retrieve(offerId, timestamp);
+        return retrieveOffer(offerId, timestamp);
     }
 
     @Override
     public Offer getOffer(Long offerId) {
-        return retrieve(offerId, OFFER_TIMESTAMP_NOT_SPECIFIED);
+        return retrieveOffer(offerId, OFFER_TIMESTAMP_NOT_SPECIFIED);
     }
 
+    @Override
+    public Item getItem(Long itemId) {
+        return retrieveItem(itemId);
+    }
 
-    protected Offer retrieve(Long offerId, Long timestamp) {
+    protected Offer retrieveOffer(Long offerId, Long timestamp) {
         try {
             // TODO
             com.junbo.catalog.spec.model.offer.Offer offer =
@@ -53,5 +64,20 @@ public class CatalogGatewayImpl implements CatalogGateway {
         }
     }
 
+    protected Item retrieveItem(Long itemId) {
+        try {
+            // TODO
+            Item item =
+                    itemResource.getItem(new ItemId(itemId), EntityGetOptions.getDefault()).wrapped().get();
 
+            if (item == null) {
+                throw new ResourceNotFoundException(
+                        "Item [" + itemId + "] does not exist");
+            }
+
+            return item;
+        } catch (Exception e) {
+            throw new ResourceNotFoundException("Error occurred during calling [Catalog] component service.", e);
+        }
+    }
 }

@@ -24,7 +24,7 @@ public abstract class TransactionSupport {
 
     public void executeInNewTransaction(final Callback callback) {
         TransactionTemplate template = new TransactionTemplate(transactionManager);
-        template.setPropagationBehavior(TransactionDefinition.PROPAGATION_MANDATORY);
+        template.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
 
         template.execute(new TransactionCallback<Void>() {
             public Void doInTransaction(TransactionStatus status) {

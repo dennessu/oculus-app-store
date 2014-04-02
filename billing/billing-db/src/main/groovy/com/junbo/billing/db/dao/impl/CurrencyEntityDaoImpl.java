@@ -7,7 +7,7 @@
 package com.junbo.billing.db.dao.impl;
 
 import com.junbo.billing.db.BaseDaoImpl;
-import com.junbo.billing.db.currency.CurrencyEntity;
+import com.junbo.billing.db.entity.CurrencyEntity;
 import com.junbo.billing.db.dao.CurrencyEntityDao;
 import org.hibernate.Criteria;
 

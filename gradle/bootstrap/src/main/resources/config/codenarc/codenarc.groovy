@@ -313,7 +313,7 @@ ruleset {
         CrapMetric   // Requires the GMetrics jar and a Cobertura coverage file
         CyclomaticComplexity   // Requires the GMetrics jar
         // MethodCount
-        MethodSize
+        MethodSize(maxLines:200)
         NestedBlockDepth
 
         // rulesets/unnecessary.xml

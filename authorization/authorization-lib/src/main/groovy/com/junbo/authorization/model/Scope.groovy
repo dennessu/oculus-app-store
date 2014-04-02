@@ -12,5 +12,5 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class Scope {
-    Map<Role, Set<String>> claims
+    Map<String, Set<String>> claims
 }

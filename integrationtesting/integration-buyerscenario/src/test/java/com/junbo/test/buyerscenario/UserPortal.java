@@ -5,7 +5,7 @@
  */
 package com.junbo.test.buyerscenario;
 
-import com.junbo.test.buyerscenario.util.BaseTestClass;
+import com.junbo.test.common.Utility.TestClass;
 import com.junbo.test.common.apihelper.identity.UserService;
 import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
 import com.junbo.test.common.blueprint.Master;
@@ -22,7 +22,7 @@ import java.util.List;
   * Time: 3/7/2014
   * For holding test cases of User portal
  */
-public class UserPortal extends BaseTestClass {
+public class UserPortal extends TestClass {
 
     private LogHelper logger = new LogHelper(UserPortal.class);
 
@@ -62,7 +62,7 @@ public class UserPortal extends BaseTestClass {
             features = "BuyerScenario",
             component = Component.Identity,
             owner = "JasonFu",
-            status = Status.Enable,
+            status = Status.Incomplete,
             description = "Test user registration",
             steps = {
                     "Just call Post http://localhost:8080/rest/users, no need to call OAuth"
@@ -78,7 +78,7 @@ public class UserPortal extends BaseTestClass {
             features = "BuyerScenario",
             component = Component.Identity,
             owner = "JasonFu",
-            status = Status.Enable,
+            status = Status.Incomplete,
             description = "Test user Login without captcha, twofactor, securityquestions and tos",
             steps = {
                     "1. ",

@@ -39,7 +39,8 @@ public interface TokenResource {
 
     @POST
     @Path("/{tokenString}/consumption")
-    Promise<TokenItem> consumeToken(@PathParam("tokenString") String tokenString);
+    Promise<TokenItem> consumeToken(@PathParam("tokenString") String tokenString,
+                                    TokenConsumption consumption);
 
     @PUT
     @Path("/{tokenString}")

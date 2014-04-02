@@ -43,27 +43,28 @@ var Utils = {
     },
 
     // {1} is {2}
-    Format: function(str, args) {
-    var result = str;
-    if (arguments.length > 0) {
-        if (arguments.length == 1 && typeof (args) == "object") {
-            for (var key in args) {
-                if(args[key]!=undefined){
-                    var reg = new RegExp("({" + key + "})", "g");
-                    result = result.replace(reg, args[key]);
+    Format: function() {
+        if (arguments.length > 0) {
+            var result = arguments[0];
+            if (arguments.length == 1 && typeof (arguments) == "object") {
+                for (var key in args) {
+                    if (args[key] != undefined) {
+                        var reg = new RegExp("({" + key + "})", "g");
+                        result = result.replace(reg, args[key]);
+                    }
                 }
             }
-        }
-        else {
-            for (var i = 0; i < arguments.length; i++) {
-                if (arguments[i] != undefined) {
-                    var reg= new RegExp("({)" + i + "(})", "g");
-                    result = result.replace(reg, arguments[i]);
+            else {
+                for (var i = 0; i < arguments.length; i++) {
+                    if (arguments[i] != undefined) {
+                        var reg = new RegExp("({)" + i + "(})", "g");
+                        result = result.replace(reg, arguments[i]);
+                    }
                 }
             }
+            return result;
         }
-    }
-    return result;
+        return null;
     },
 
     GetViews: function (templateName) {
@@ -128,7 +129,7 @@ var Utils = {
                     for (var i = 0; i < cookieArr.length; ++i) {
                         var item = cookieArr[i].split("=");
                         if(item.length > 1){
-                            result[item[0].trim()] = item[1].trim();
+                            result[item[0].trim()] = unescape(item[1].trim());
                         }else{
                             result[item[0].trim()] = "";
                         }
@@ -136,7 +137,7 @@ var Utils = {
                 } else {
                     var item = document.cookie.split("=");
                     if(item.length > 1){
-                        result[item[0].trim()] = item[1].trim();
+                        result[item[0].trim()] = unescape(item[1].trim());
                     }else{
                         result[item[0].trim()] = "";
                     }

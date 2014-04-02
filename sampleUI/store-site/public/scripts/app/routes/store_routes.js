@@ -12,7 +12,7 @@ var StoreRoutes = {
                 console.log("[ApplicationRoute] Authenticated");
 
                 var provider = new CartProvider();
-                provider.Merge(Utils.GenerateRequestModel(null), function(resultData){
+                provider.MergeCart(Utils.GenerateRequestModel(null), function(resultData){
                     var resultModel = resultData.data;
                     if (resultModel.status == 200) {
                         console.log("[ApplicationRoute:Init] Merge Car Success");
@@ -54,7 +54,8 @@ var StoreRoutes = {
         },
         actions: {
             logout: function() {
-                $.get(AppConfig.LogoutAjaxUrl);
+                var logoutUrl = Utils.Format(AppConfig.Runtime.LogoutUrl, null, AppConfig.Runtime.SocketAddress, Utils.Cookies.Get(AppConfig.CookiesName.IdToken));
+                location.href = logoutUrl;
                 App.AuthManager.reset();
             }
         }
@@ -91,7 +92,7 @@ var StoreRoutes = {
         },
         setupController: function(controller, model){
             var provider = new CartProvider();
-            provider.GetOrder(Utils.GenerateRequestModel(null), function(resultData){
+            provider.GetOrderById(Utils.GenerateRequestModel(null), function(resultData){
                 if(resultData.data.status == 200){
                     var order = JSON.parse(resultData.data.data);
                     // set products
@@ -108,7 +109,7 @@ var StoreRoutes = {
                     var shippingMethod = "None";
                     for(var i = 0; i < AppConfig.ShippingMethods.length; ++i){
                         var item = AppConfig.ShippingMethods[i];
-                        if(item.value == order.shippingMethodId){
+                        if(typeof(order.shippingMethodId) != "undefined" && item.value == order.shippingMethodId.id){
                             shippingMethod = item.name;
                             break;
                         }
@@ -116,18 +117,20 @@ var StoreRoutes = {
                     controller.set("content.shippingMethodName", shippingMethod);
 
                     // set shipping info
-                    var billingProvider = new BillingProvider();
-                    billingProvider.Get(Utils.GenerateRequestModel({shippingId: order.shippingAddressId}), function(resultData){
-                        if(resultData.data.status == 200){
-                            controller.set("content.shippingAddress", JSON.parse(resultData.data.data));
-                        }else{
+                    if(typeof(order.shippingAddressId) != "undefined") {
+                        var billingProvider = new BillingProvider();
+                        billingProvider.GetShippingInfoById(Utils.GenerateRequestModel({shippingId: order.shippingAddressId.id}), function (resultData) {
+                            if (resultData.data.status == 200) {
+                                controller.set("content.shippingAddress", JSON.parse(resultData.data.data));
+                            } else {
 
-                        }
-                    });
+                            }
+                        });
+                    }
 
                     // set payment method
                     var paymentProvider = new PaymentProvider();
-                    paymentProvider.Get(Utils.GenerateRequestModel({paymentId: order.paymentInstruments[0].id}), function(resultData){
+                    paymentProvider.GetPaymentById(Utils.GenerateRequestModel({paymentId: order.paymentInstruments[0].id}), function(resultData){
                         if(resultData.data.status == 200){
                             var payment = JSON.parse(resultData.data.data);
                             controller.set("content.paymentMethodName", payment.creditCardRequest.type + " " + payment.accountNum.substr(payment.accountNum.length - 4, 4));

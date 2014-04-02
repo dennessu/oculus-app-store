@@ -44,7 +44,7 @@ Cart.GetCart = function (data, callback) {
     } else {
         Async.waterfall([
             function (cb) {
-                dataProvider.GetPrimaryCart(userId, function (result) {
+                dataProvider.GetPrimaryCartByUserId(userId, function (result) {
                     if (result.StatusCode == 302) {
                         cb(null, result.Headers.location);
                     } else {
@@ -53,7 +53,7 @@ Cart.GetCart = function (data, callback) {
                 });
             },
             function (url, cb) {
-                dataProvider.GetCartByUrl(url, null, function (result) {
+                dataProvider.GetCartByUrl(url, function (result) {
                     if (result.StatusCode == 200) {
                         cb(null, result.Data);
                     } else {
@@ -83,7 +83,7 @@ Cart.GetCart = function (data, callback) {
     }
 };
 
-Cart.MergeCartItem = function (data, callback) {
+Cart.MergeCart = function (data, callback) {
     var body = data.data;
     var cookies = data.cookies;
     var query = data.query;
@@ -108,7 +108,7 @@ Cart.MergeCartItem = function (data, callback) {
     var dataProvider = new CartDataProvider(process.AppConfig.Cart_API_Host, process.AppConfig.Cart_API_Port);
 
     if(!Utils.IsEmpty(cartId)){
-        dataProvider.PostMerge(userId, cartId, cartModel, function (result) {
+        dataProvider.PostMergeCart(userId, cartId, cartModel, function (result) {
             var resultModel = new DomainModels.ResultModel;
             if (result.StatusCode == 200) {
                 console.log("[MergeCart] Success");
@@ -127,7 +127,7 @@ Cart.MergeCartItem = function (data, callback) {
     }else{
         Async.waterfall([
             function (cb) {
-                dataProvider.GetPrimaryCart(userId, function (result) {
+                dataProvider.GetPrimaryCartByUserId(userId, function (result) {
                     if (result.StatusCode == 302) {
                         cb(null, result.Headers.location);
                     } else {
@@ -136,7 +136,7 @@ Cart.MergeCartItem = function (data, callback) {
                 });
             },
             function (url, cb) {
-                dataProvider.GetCartByUrl(url, null, function (result) {
+                dataProvider.GetCartByUrl(url, function (result) {
                     if (result.StatusCode == 200) {
                         cb(null, result.Data);
                     } else {
@@ -159,7 +159,7 @@ Cart.MergeCartItem = function (data, callback) {
                 var resultObj = JSON.parse(result);
                 cartId = resultObj.self.id;
 
-                dataProvider.PostMerge(userId, cartId, cartModel, function (result) {
+                dataProvider.PostMergeCart(userId, cartId, cartModel, function (result) {
                     var resultModel = new DomainModels.ResultModel;
                     if (result.StatusCode == 200) {
                         console.log("[MergeCart] Success");
@@ -180,7 +180,7 @@ Cart.MergeCartItem = function (data, callback) {
     }
 };
 
-Cart.UPdateCartItem = function (data, cb) {
+Cart.UpdateCartItem = function (data, cb) {
     Cart.CartProcess('update', data, cb);
 };
 
@@ -225,7 +225,7 @@ Cart.CartProcess = function (action, data, callback) {
     var dataProvider = new CartDataProvider(process.AppConfig.Cart_API_Host, process.AppConfig.Cart_API_Port);
     Async.waterfall([
         function (cb) {
-            dataProvider.GetPrimaryCart(userId, function (result) {
+            dataProvider.GetPrimaryCartByUserId(userId, function (result) {
                 if (result.StatusCode == 302) {
                     cb(null, result.Headers.location);
                 } else {
@@ -234,7 +234,7 @@ Cart.CartProcess = function (action, data, callback) {
             });
         },
         function (url, cb) {
-            dataProvider.GetCartByUrl(url, null, function (result) {
+            dataProvider.GetCartByUrl(url, function (result) {
                 if (result.StatusCode == 200) {
                     cb(null, result.Data);
                 } else {
@@ -260,7 +260,6 @@ Cart.CartProcess = function (action, data, callback) {
             for (var i = 0; i < offerItems.length; ++i) {
                 var currentOffer = offerItems[i];
                 var offerIndex = Cart._getIndexByOffers(currentOffer.offer.id, cartObj.offers);
-                console.log(Utils.Format("[{1}] current offerId:{2}  index:{3}"), action, currentOffer.offer.id, offerIndex);
 
                 switch (action) {
                     case "merge":
@@ -303,7 +302,7 @@ Cart.CartProcess = function (action, data, callback) {
             }
 
             if (needUpdate) {
-                dataProvider.PutCartUpdate(userId, cartId, cartObj, function (result) {
+                dataProvider.PutCart(userId, cartId, cartObj, function (result) {
                     if (result.StatusCode == 200) {
                         cb(null, result);
                     } else {
@@ -392,7 +391,7 @@ Cart.PostOrder = function(data, callback){
     Async.waterfall([
         function (cb) {
             if (Utils.IsEmpty(cardId)) {
-            dataProvider.GetPrimaryCart(userId, function (result) {
+            dataProvider.GetPrimaryCartByUserId(userId, function (result) {
                 if (result.StatusCode == 302) {
                     cb(null, result.Headers.location);
                 } else {
@@ -470,11 +469,11 @@ Cart.PostOrder = function(data, callback){
         // Update Cart
         function(orderResult, result, indexArray, cb){
             var cartObj = JSON.parse(result);
-            for(var i = indexArray.length; i > -1; --i){
+            for(var i = indexArray.length-1; i >= 0; --i){
                 cartObj.offers.splice(indexArray[i], 1);
             }
 
-            dataProvider.PutCartUpdate(userId, cardId, cartObj, function (result) {
+            dataProvider.PutCart(userId, cardId, cartObj, function (result) {
                 if (result.StatusCode == 200) {
                     cb(null, orderResult);
                 } else {
@@ -533,8 +532,12 @@ Cart.PutOrder = function(data, callback){
         // Get cart by url
         function (result, cb) {
            var order = JSON.parse(result);
-            order["shippingMethodId"] ={id: shippingMethodId};
-            order["shippingAddressId"]={id: shippingAddressId};
+            if(!Utils.IsEmpty(shippingMethodId)) {
+                order["shippingMethodId"] = {id: shippingMethodId};
+            }
+            if(!Utils.IsEmpty(shippingAddressId)) {
+                order["shippingAddressId"] = {id: shippingAddressId};
+            }
             order.paymentInstruments.push(payment);
             order.trackingUuid = Guid.create();
 

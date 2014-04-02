@@ -193,7 +193,7 @@ class ClientServiceImpl implements ClientService {
         return client
     }
 
-    private static void validateClient(Client client) {
+    private void validateClient(Client client) {
         validateScope(client)
         validateRedirectUri(client)
         validateLogoutRedirectUri(client)
@@ -201,7 +201,7 @@ class ClientServiceImpl implements ClientService {
         validateContacts(client)
     }
 
-    private static void validateScope(Client client) {
+    private void validateScope(Client client) {
         Collection<String> invalidScopes = client.scopes.findAll {
             String scope -> scopeService.getScope(scope) == null
         }

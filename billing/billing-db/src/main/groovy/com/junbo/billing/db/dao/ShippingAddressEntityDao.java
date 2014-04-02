@@ -7,7 +7,7 @@
 package com.junbo.billing.db.dao;
 
 import com.junbo.billing.db.BaseDao;
-import com.junbo.billing.db.address.ShippingAddressEntity;
+import com.junbo.billing.db.entity.ShippingAddressEntity;
 
 import java.util.List;
 

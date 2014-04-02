@@ -44,4 +44,8 @@
     <bean id="defaultScopeEndpoint" class="com.junbo.oauth.api.endpoint.ScopeEndpointImpl">
         <property name="scopeService" ref="scopeService"/>
     </bean>
+
+    <bean id="defaultApiEndpoint" class="com.junbo.oauth.api.endpoint.ApiEndpointImpl">
+        <property name="apiService" ref="apiService"/>
+    </bean>
 </beans>

@@ -5,7 +5,11 @@
  */
 package com.junbo.identity.rest.service.user.impl;
 
+import com.junbo.authorization.annotation.AuthContextParam;
+import com.junbo.authorization.annotation.AuthorizeRequired;
+import com.junbo.authorization.model.AuthorizeContext;
 import com.junbo.identity.data.dao.UserDAO;
+import com.junbo.identity.rest.auth.UserAuthorizeCallback;
 import com.junbo.identity.rest.service.user.UserService;
 import com.junbo.identity.rest.service.validator.UserServiceValidator;
 import com.junbo.identity.spec.model.user.User;
@@ -37,8 +41,12 @@ class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User get(Long id) {
-        return userDAO.getUser(id);
+    @AuthorizeRequired(authCallBack = UserAuthorizeCallback.class, apiName = "user_get")
+    public User get(@AuthContextParam("id") Long id) {
+        if (AuthorizeContext.hasClaim("read")) {
+            return userDAO.getUser(id);
+        }
+        return null;
     }
 
     @Override

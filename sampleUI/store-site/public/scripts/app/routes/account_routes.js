@@ -3,7 +3,7 @@ var AccountRoutes = {
         beforeModel: function(){
             if(!Ember.App.AuthManager.isAuthenticated()){
                 Utils.Cookies.Set(AppConfig.CookiesName.BeforeRoute, "account");
-                location.href = AppConfig.LoginUrl;
+                location.href = AppConfig.Runtime.LoginUrl;
                 return;
             }
 
@@ -17,9 +17,9 @@ var AccountRoutes = {
         setupController: function(controller, model){
             // get profile
             var provider = new IdentityProvider();
-            provider.GetProfile(Utils.GenerateRequestModel(null), function(resultData){
+            provider.GetPayinProfiles(Utils.GenerateRequestModel(null), function(resultData){
                 if(resultData.data.status == 200){
-                    var profile = JSON.parse(resultData.data.data);
+                    var profile = JSON.parse(resultData.data.data).results[0];
                     controller.set("content.firstName", profile.firstName);
                     controller.set("content.lastName", profile.lastName);
                 }else{
@@ -35,9 +35,9 @@ var AccountRoutes = {
         setupController: function(controller, model){
             // get profile
             var provider = new IdentityProvider();
-            provider.GetProfile(Utils.GenerateRequestModel(null), function(resultData){
+            provider.GetPayinProfiles(Utils.GenerateRequestModel(null), function(resultData){
                if(resultData.data.status == 200){
-                   var profile = JSON.parse(resultData.data.data).items[0];
+                   var profile = JSON.parse(resultData.data.data).results[0];
                    controller.set("content.firstName", profile.firstName);
                    controller.set("content.lastName", profile.lastName);
                }else{
@@ -48,7 +48,7 @@ var AccountRoutes = {
             // get opt-in
             provider.GetOptIns(Utils.GenerateRequestModel(null), function(resultData){
                 if(resultData.data.status == 200){
-                    var optIns = JSON.parse(resultData.data.data).items;
+                    var optIns = JSON.parse(resultData.data.data).results;
                     for(var i = 0; i < optIns.length; ++i){
                         if(optIns[i].type.toLowerCase() == "promotion"){
                             controller.set("content.isOptInPromotion", true);
@@ -92,7 +92,13 @@ var AccountRoutes = {
             provider.GetOrders(Utils.GenerateRequestModel(null), function(resultData){
                 if(resultData.data.status == 200){
                     var orders = JSON.parse(resultData.data.data).results;
-                    controller.set("content.orders", orders);
+                    var realOrders = [];
+                    for(var i = 0; i < orders.length; ++i){
+                        var item = orders[i];
+                        if(item.tentative == false) realOrders.push(item);
+                    }
+
+                    controller.set("content.orders", realOrders);
                 }else{
                     // TODO: Error
                 }
@@ -105,7 +111,7 @@ var AccountRoutes = {
         },
         setupController: function(controoler, model){
             var provider = new PaymentProvider();
-            provider.PaymentInstruments(Utils.GenerateRequestModel(null), function(result){
+            provider.GetPayments(Utils.GenerateRequestModel(null), function(result){
                 if(result.data.status == 200){
                     var payments = JSON.parse(result.data.data).results;
                     controoler.set("content.payments", payments);
@@ -121,7 +127,7 @@ var AccountRoutes = {
         },
         setupController:function(controller, model){
             var identityProvider = new IdentityProvider();
-            identityProvider.GetProfile(Utils.GenerateRequestModel(null), function(resultData){
+            identityProvider.GetPayinProfiles(Utils.GenerateRequestModel(null), function(resultData){
                 if(resultData.data.status == 200){
                     var birthday = new Date(JSON.parse(resultData.data.data).dateOfBirth);
                     var nowYear = new Date().getFullYear();
@@ -147,7 +153,7 @@ var AccountRoutes = {
         },
         setupController: function(controoler, model){
             var provider = new BillingProvider();
-            provider.ShippingInfo(Utils.GenerateRequestModel(null), function(result){
+            provider.GetShippingInfos(Utils.GenerateRequestModel(null), function(result){
                 if(result.data.status == 200){
                     var shippings = JSON.parse(result.data.data).results;
                     controoler.set("content.shippings", shippings);
@@ -168,7 +174,7 @@ var AccountRoutes = {
         },
         setupController: function(controoler, model){
             var provider = new EntitlementProvider();
-            provider.GetByUser(Utils.GenerateRequestModel(null), function(result){
+            provider.GetEntitlements(Utils.GenerateRequestModel(null), function(result){
                 if(result.data.status == 200){
                     var results = JSON.parse(result.data.data).results;
                     controoler.set("content.results", results);
