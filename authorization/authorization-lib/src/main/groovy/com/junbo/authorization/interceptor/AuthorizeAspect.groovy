@@ -6,8 +6,8 @@
 package com.junbo.authorization.interceptor
 
 import com.junbo.authorization.AuthorizeCallback
-import com.junbo.authorization.annotation.AuthorizeRequired
 import com.junbo.authorization.annotation.AuthContextParam
+import com.junbo.authorization.annotation.AuthorizeRequired
 import com.junbo.authorization.model.AuthorizeContext
 import com.junbo.authorization.service.AuthorizeService
 import groovy.transform.CompileStatic
@@ -35,45 +35,49 @@ class AuthorizeAspect {
 
     @Around('@annotation(requiredAnnotation)')
     Object doAuthorize(ProceedingJoinPoint joinPoint, AuthorizeRequired requiredAnnotation) {
-        String methodName = joinPoint.signature.name
-        MethodSignature methodSignature = (MethodSignature) joinPoint.signature
-        Method method = methodSignature.method
-        if (method.declaringClass.isInterface()) {
-            method = joinPoint.target.class.getDeclaredMethod(methodName, method.parameterTypes)
-        }
+        if (authorizeService.authorizeEnabled) {
+            String methodName = joinPoint.signature.name
+            MethodSignature methodSignature = (MethodSignature) joinPoint.signature
+            Method method = methodSignature.method
+            if (method.declaringClass.isInterface()) {
+                method = joinPoint.target.class.getDeclaredMethod(methodName, method.parameterTypes)
+            }
 
-        Map<String, Object> map = [:]
-        method.parameterAnnotations.eachWithIndex { Annotation[] annotations, int i ->
-            if (annotations.length > 0) {
-                annotations.each { Annotation anno ->
-                    if (anno instanceof AuthContextParam) {
-                        AuthContextParam contextParam = (AuthContextParam) anno
-                        map[contextParam.value()] = joinPoint.args[i]
+            Map<String, Object> map = [:]
+            method.parameterAnnotations.eachWithIndex { Annotation[] annotations, int i ->
+                if (annotations.length > 0) {
+                    annotations.each { Annotation anno ->
+                        if (anno instanceof AuthContextParam) {
+                            AuthContextParam contextParam = (AuthContextParam) anno
+                            map[contextParam.value()] = joinPoint.args[i]
+                        }
                     }
                 }
             }
-        }
 
-        map['apiName'] = requiredAnnotation.apiName()
-        AuthorizeCallback callback = (AuthorizeCallback) requiredAnnotation.authCallBack().newInstance(map)
-        Set<String> claims = authorizeService.getClaims(callback)
-        AuthorizeContext.CLAIMS.set(claims)
-        Object result = joinPoint.proceed()
+            map['apiName'] = requiredAnnotation.apiName()
+            AuthorizeCallback callback = (AuthorizeCallback) requiredAnnotation.authCallBack().newInstance(map)
+            Set<String> claims = authorizeService.getClaims(callback)
+            AuthorizeContext.CLAIMS.set(claims)
+            Object result = joinPoint.proceed()
 
-        if (Collection.isAssignableFrom(result.class)) {
-            Collection filteredResult = (Collection) result.class.newInstance()
-            Collection resultCollection = (Collection) result
-            resultCollection.each { Object entity ->
-                Object filtered = postFilter(requiredAnnotation, entity)
-                if (filtered != null) {
-                    filteredResult.add(filtered)
+            if (Collection.isAssignableFrom(result.class)) {
+                Collection filteredResult = (Collection) result.class.newInstance()
+                Collection resultCollection = (Collection) result
+                resultCollection.each { Object entity ->
+                    Object filtered = postFilter(requiredAnnotation, entity)
+                    if (filtered != null) {
+                        filteredResult.add(filtered)
+                    }
                 }
+
+                return filteredResult
             }
 
-            return filteredResult
+            return postFilter(requiredAnnotation, result)
         }
 
-        return postFilter(requiredAnnotation, result)
+        return joinPoint.proceed()
     }
 
     private Object postFilter(AuthorizeRequired annotation, Object entity) {
