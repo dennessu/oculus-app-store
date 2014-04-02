@@ -31,7 +31,7 @@ public class EntitlementHistoryEntity implements Shardable {
     private String action;
     private Long entitlementId;
     private Long userId;
-    private Long developerId;
+    private String ownerId;
     private String group;
     private String tag;
     private EntitlementType type;
@@ -56,7 +56,7 @@ public class EntitlementHistoryEntity implements Shardable {
         this.action = action;
         this.entitlementId = entitlementEntity.getEntitlementId();
         this.entitlementDefinitionId = entitlementEntity.getEntitlementDefinitionId();
-        this.developerId = entitlementEntity.getDeveloperId();
+        this.ownerId = entitlementEntity.getOwnerId();
         this.group = entitlementEntity.getGroup();
         this.tag = entitlementEntity.getTag();
         this.type = entitlementEntity.getType();
@@ -230,13 +230,13 @@ public class EntitlementHistoryEntity implements Shardable {
         this.modifiedBy = modifiedBy;
     }
 
-    @Column(name = "developer_id")
-    public Long getDeveloperId() {
-        return developerId;
+    @Column(name = "owner_id")
+    public String getOwnerId() {
+        return ownerId;
     }
 
-    public void setDeveloperId(Long developerId) {
-        this.developerId = developerId;
+    public void setOwnerId(String ownerId) {
+        this.ownerId = ownerId;
     }
 
     @Column(name = "entitlement_group")

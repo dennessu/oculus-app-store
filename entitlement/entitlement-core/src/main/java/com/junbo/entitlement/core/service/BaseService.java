@@ -17,6 +17,7 @@ import com.junbo.entitlement.spec.model.EntitlementTransfer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -30,7 +31,7 @@ public class BaseService {
     private EntitlementDefinitionFacade definitionFacade;
 
     protected void fillCreate(Entitlement entitlement) {
-        if (entitlement.getDeveloperId() == null && entitlement.getEntitlementDefinitionId() != null) {
+        if (StringUtils.isEmpty(entitlement.getOwnerId()) && entitlement.getEntitlementDefinitionId() != null) {
             fillDefinition(entitlement);
         } else {
             if (entitlement.getType() == null) {
@@ -79,7 +80,7 @@ public class BaseService {
         entitlement.setType(definition.getType());
         entitlement.setGroup(definition.getGroup());
         entitlement.setTag(definition.getTag());
-        entitlement.setDeveloperId(definition.getDeveloperId());
+        entitlement.setOwnerId(definition.getDeveloperId().toString());
     }
 
     protected void fillUpdate(Entitlement entitlement, Entitlement existingEntitlement) {
@@ -115,12 +116,12 @@ public class BaseService {
 
     protected void validateCreate(Entitlement entitlement) {
         checkUser(entitlement.getUserId());
-        if (entitlement.getDeveloperId() == null && entitlement.getEntitlementDefinitionId() == null) {
+        if (StringUtils.isEmpty(entitlement.getOwnerId()) && entitlement.getEntitlementDefinitionId() == null) {
             throw AppErrors.INSTANCE.common(
                     "One of developer and entitlementDefinition should not be null.")
                     .exception();
         }
-        CheckDeveloper(entitlement.getDeveloperId());
+        checkOwner(entitlement.getOwnerId());
         if (!entitlement.getManagedLifecycle()) {
             validateNotNull(entitlement.getStatus(), "status");
         }
@@ -145,12 +146,12 @@ public class BaseService {
 
     protected void validateUpdate(Entitlement entitlement, Entitlement existingEntitlement) {
         checkUser(existingEntitlement.getUserId());
-        CheckDeveloper(existingEntitlement.getDeveloperId());
+        checkOwner(existingEntitlement.getOwnerId());
         if (!entitlement.getManagedLifecycle()) {
             validateNotNull(existingEntitlement.getStatus(), "status");
         }
         validateEquals(existingEntitlement.getUserId(), entitlement.getUserId(), "user");
-        validateEquals(existingEntitlement.getDeveloperId(), entitlement.getDeveloperId(), "developer");
+        validateEquals(existingEntitlement.getOwnerId(), entitlement.getOwnerId(), "owner");
         validateEquals(existingEntitlement.getOfferId(), entitlement.getOfferId(), "offer");
         validateEquals(existingEntitlement.getEntitlementDefinitionId(),
                 entitlement.getEntitlementDefinitionId(), "definition");
@@ -227,8 +228,8 @@ public class BaseService {
         validateNotNull(userId, "targetUser");
     }
 
-    protected void CheckDeveloper(Long developerId) {
-        validateNotNull(developerId, "developer");
+    protected void checkOwner(String ownerId) {
+        validateNotNull(ownerId, "owner");
         //TODO: check clientId
     }
 }

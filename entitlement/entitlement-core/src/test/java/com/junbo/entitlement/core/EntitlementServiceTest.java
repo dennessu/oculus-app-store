@@ -112,7 +112,7 @@ public class EntitlementServiceTest extends AbstractTransactionalTestNGSpringCon
 
         EntitlementSearchParam searchParam = new EntitlementSearchParam();
         searchParam.setUserId(new UserId(userId));
-        searchParam.setDeveloperId(new UserId(userId));
+        searchParam.setOwnerId(userId.toString());
         searchParam.setStatus(EntitlementStatus.ACTIVE.toString());
         List<Entitlement> entitlements = entitlementService.searchEntitlement(searchParam, new PageMetadata());
 
@@ -185,7 +185,7 @@ public class EntitlementServiceTest extends AbstractTransactionalTestNGSpringCon
         entitlement.setGroup("TEST");
         entitlement.setTag("TEST");
         entitlement.setType(EntitlementType.DEFAULT.toString());
-        entitlement.setDeveloperId(idGenerator.nextId());
+        entitlement.setOwnerId(String.valueOf(idGenerator.nextId()));
         entitlement.setOfferId(idGenerator.nextId());
         entitlement.setStatus(EntitlementStatus.ACTIVE.toString());
         entitlement.setUseCount(0);

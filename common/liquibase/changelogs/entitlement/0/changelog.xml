@@ -11,7 +11,7 @@
             create table entitlement (
               entitlement_id bigint not null,
               user_id bigint not null,
-              developer_id bigint not null,
+              owner_id varchar(256) not null,
               offer_id varchar(64) default null,
               type smallint not null,
               entitlement_group varchar(64) not null,
@@ -38,7 +38,7 @@
               entitlement_definition_id bigint default null,
               user_id bigint not null,
               offer_id varchar(64) default null,
-              developer_id bigint not null,
+              owner_id varchar(256) not null,
               type smallint not null,
               entitlement_group varchar(64) not null,
               tag varchar(64) not null,

@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -80,10 +81,10 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     public List<Entitlement> searchEntitlement(EntitlementSearchParam entitlementSearchParam,
                                                PageMetadata pageMetadata) {
         validateNotNull(entitlementSearchParam.getUserId(), "user");
-        if (entitlementSearchParam.getDeveloperId() == null) {
+        if (StringUtils.isEmpty(entitlementSearchParam.getOwnerId())) {
             //TODO: check if clientId is admin
         } else {
-            CheckDeveloper(entitlementSearchParam.getDeveloperId().getValue());
+            checkOwner(entitlementSearchParam.getOwnerId());
         }
         checkUser(entitlementSearchParam.getUserId().getValue());
         List<Entitlement> entitlementEntities = entitlementRepository.getBySearchParam(
@@ -125,7 +126,8 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
             } else {
                 existingEntitlement = entitlementRepository.getExistingManagedEntitlement(
                         entitlement.getUserId(), entitlement.getType(),
-                        entitlement.getDeveloperId(), entitlement.getGroup(), entitlement.getTag());
+                        entitlement.getOwnerId(), entitlement.getGroup(),
+                        entitlement.getTag(), entitlement.getConsumable());
             }
             if (existingEntitlement != null) {
                 LOGGER.info("Merge added entitlement into existing entitlement [{}].",
@@ -142,6 +144,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
                 if (entitlement.getConsumable()) {
                     existingEntitlement.setUseCount(existingEntitlement.getUseCount() + entitlement.getUseCount());
                 }
+
                 return entitlementRepository.update(existingEntitlement);
             }
         }

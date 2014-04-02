@@ -45,9 +45,9 @@ public class EntitlementDaoImpl extends BaseDao<EntitlementEntity> implements En
     private void addSearchParam(EntitlementSearchParam entitlementSearchParam,
                                 StringBuilder queryStringBuilder,
                                 Map<String, Object> params) {
-        if (CommonUtils.isNotNull(entitlementSearchParam.getDeveloperId())) {
-            addSingleParam("developer_id", "developerId",
-                    entitlementSearchParam.getDeveloperId().getValue(),
+        if (CommonUtils.isNotNull(entitlementSearchParam.getOwnerId())) {
+            addSingleParam("owner_id", "owner_id",
+                    entitlementSearchParam.getOwnerId(),
                     "=", queryStringBuilder, params);
         }
         if (entitlementSearchParam.getStatus() != null) {
@@ -156,21 +156,23 @@ public class EntitlementDaoImpl extends BaseDao<EntitlementEntity> implements En
 
     @Override
     public EntitlementEntity getExistingManagedEntitlement(
-            Long userId, EntitlementType type, Long developerId, String group, String tag) {
+            Long userId, EntitlementType type, String ownerId, String group, String tag, Boolean consumable) {
         String queryString = "from EntitlementEntity" +
                 " where userId =(:userId)" +
-                " and developerId = (:developerId)" +
+                " and ownerId = (:ownerId)" +
                 " and type = (:type)" +
                 " and group = (:group)" +
                 " and tag = (:tag)" +
                 " and status >= 0" +
+                " and consumable = (:consumable)" +
                 " and managedLifecycle = true";
         Query q = currentSession().createQuery(queryString)
                 .setLong("userId", userId)
-                .setLong("developerId", developerId)
+                .setString("ownerId", ownerId)
                 .setInteger("type", type.getId())
                 .setString("group", group)
-                .setString("tag", tag);
+                .setString("tag", tag)
+                .setBoolean("consumable", consumable);
         return (EntitlementEntity) q.uniqueResult();
     }
 }

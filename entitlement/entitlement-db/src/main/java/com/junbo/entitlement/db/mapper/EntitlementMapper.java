@@ -32,7 +32,7 @@ public class EntitlementMapper {
         entitlement.setType(entitlementEntity.getType().toString());
         entitlement.setGroup(entitlementEntity.getGroup());
         entitlement.setTag(entitlementEntity.getTag());
-        entitlement.setDeveloperId(entitlementEntity.getDeveloperId());
+        entitlement.setOwnerId(entitlementEntity.getOwnerId());
         entitlement.setEntitlementDefinitionId(entitlementEntity.getEntitlementDefinitionId());
         entitlement.setStatus(getStatus(entitlementEntity).toString());
         entitlement.setStatusReason(entitlementEntity.getStatusReason());
@@ -52,7 +52,7 @@ public class EntitlementMapper {
 
         entitlementEntity.setEntitlementDefinitionId(
                 entitlement.getEntitlementDefinitionId());
-        entitlementEntity.setDeveloperId(entitlement.getDeveloperId());
+        entitlementEntity.setOwnerId(entitlement.getOwnerId());
         entitlementEntity.setType(EntitlementType.valueOf(entitlement.getType().toUpperCase()));
         entitlementEntity.setGroup(entitlement.getGroup());
         entitlementEntity.setTag(entitlement.getTag());

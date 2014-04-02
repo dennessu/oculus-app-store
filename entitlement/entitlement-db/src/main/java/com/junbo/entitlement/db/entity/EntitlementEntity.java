@@ -26,7 +26,7 @@ import java.util.Date;
 public class EntitlementEntity extends Entity {
     private Long entitlementId;
     private Long userId;
-    private Long developerId;
+    private String ownerId;
     private EntitlementStatus status;
     private String statusReason;
     private Long entitlementDefinitionId;
@@ -141,13 +141,13 @@ public class EntitlementEntity extends Entity {
         this.useCount = useCount;
     }
 
-    @Column(name = "developer_id")
-    public Long getDeveloperId() {
-        return developerId;
+    @Column(name = "owner_id")
+    public String getOwnerId() {
+        return ownerId;
     }
 
-    public void setDeveloperId(Long developerId) {
-        this.developerId = developerId;
+    public void setOwnerId(String ownerId) {
+        this.ownerId = ownerId;
     }
 
     @Column(name = "type")

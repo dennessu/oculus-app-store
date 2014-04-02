@@ -32,5 +32,5 @@ public interface EntitlementDao {
     EntitlementEntity getExistingManagedEntitlement(Long userId, Long definitionId);
 
     EntitlementEntity getExistingManagedEntitlement(
-            Long userId, EntitlementType type, Long developerId, String group, String tag);
+            Long userId, EntitlementType type, String ownerId, String group, String tag, Boolean consumable);
 }

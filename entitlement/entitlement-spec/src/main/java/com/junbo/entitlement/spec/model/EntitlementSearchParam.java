@@ -20,8 +20,8 @@ import java.util.Set;
 public class EntitlementSearchParam {
     @QueryParam("userId")
     private UserId userId;
-    @QueryParam("developerId")
-    private UserId developerId;
+    @QueryParam("ownerId")
+    private String ownerId;
     @QueryParam("offerIds")
     private Set<OfferId> offerIds;
     @QueryParam("type")
@@ -58,12 +58,12 @@ public class EntitlementSearchParam {
         this.userId = userId;
     }
 
-    public UserId getDeveloperId() {
-        return developerId;
+    public String getOwnerId() {
+        return ownerId;
     }
 
-    public void setDeveloperId(UserId developerId) {
-        this.developerId = developerId;
+    public void setOwnerId(String ownerId) {
+        this.ownerId = ownerId;
     }
 
     public Set<OfferId> getOfferIds() {
@@ -160,7 +160,7 @@ public class EntitlementSearchParam {
      */
     public static class Builder {
         private UserId userId;
-        private UserId developerId;
+        private String ownerId;
         private Set<OfferId> offerIds;
         private String type;
         private String status;
@@ -176,9 +176,9 @@ public class EntitlementSearchParam {
 
         private Date lastModifiedTime;
 
-        public Builder(UserId userId, UserId developerId) {
+        public Builder(UserId userId, String ownerId) {
             this.userId = userId;
-            this.developerId = developerId;
+            this.ownerId = ownerId;
         }
 
         public Builder offerIds(Set<OfferId> val) {
@@ -243,7 +243,7 @@ public class EntitlementSearchParam {
 
     private EntitlementSearchParam(Builder builder) {
         userId = builder.userId;
-        developerId = builder.developerId;
+        ownerId = builder.ownerId;
         offerIds = builder.offerIds;
         type = builder.type;
         status = builder.status;

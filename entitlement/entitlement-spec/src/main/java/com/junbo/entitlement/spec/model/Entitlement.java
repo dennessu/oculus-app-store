@@ -32,9 +32,8 @@ public class Entitlement{
     @UserId
     @JsonProperty("user")
     private Long userId;
-    @UserId
-    @JsonProperty("developer")
-    private Long developerId;
+    @JsonProperty("owner")
+    private String ownerId;
     private String type;
     private String status;
     private String statusReason;
@@ -173,12 +172,12 @@ public class Entitlement{
         this.tag = tag;
     }
 
-    public Long getDeveloperId() {
-        return developerId;
+    public String getOwnerId() {
+        return ownerId;
     }
 
-    public void setDeveloperId(Long developerId) {
-        this.developerId = developerId;
+    public void setOwnerId(String ownerId) {
+        this.ownerId = ownerId;
     }
 
     public void setPeriod(Long period) {

@@ -62,7 +62,7 @@ public class UserEntitlementResourceImpl implements UserEntitlementResource {
         UriBuilder builder = uriInfo.getBaseUriBuilder().path("users")
                 .path(IdFormatter.encodeId(searchParam.getUserId()))
                 .path("entitlements")
-                .queryParam("developerId", IdFormatter.encodeId(searchParam.getDeveloperId()));
+                .queryParam("ownerId", searchParam.getOwnerId());
         if (!StringUtils.isEmpty(searchParam.getType())) {
             builder = builder.queryParam("type", searchParam.getType());
         }
