@@ -80,7 +80,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     public List<Entitlement> searchEntitlement(EntitlementSearchParam entitlementSearchParam,
                                                PageMetadata pageMetadata) {
         validateNotNull(entitlementSearchParam.getUserId(), "user");
-        if(entitlementSearchParam.getDeveloperId() == null){
+        if (entitlementSearchParam.getDeveloperId() == null) {
             //TODO: check if clientId is admin
         } else {
             CheckDeveloper(entitlementSearchParam.getDeveloperId().getValue());
@@ -131,9 +131,11 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
                 LOGGER.info("Merge added entitlement into existing entitlement [{}].",
                         existingEntitlement.getEntitlementId());
                 if (entitlement.getExpirationTime() != null) {
-                    existingEntitlement.setExpirationTime(new Date(existingEntitlement.getExpirationTime().getTime()
-                            + entitlement.getExpirationTime().getTime()
-                            - entitlement.getGrantTime().getTime()));
+                    if (existingEntitlement.getExpirationTime() != null) {
+                        existingEntitlement.setExpirationTime(new Date(existingEntitlement.getExpirationTime().getTime()
+                                + entitlement.getExpirationTime().getTime()
+                                - entitlement.getGrantTime().getTime()));
+                    }
                 } else {
                     existingEntitlement.setExpirationTime(null);
                 }

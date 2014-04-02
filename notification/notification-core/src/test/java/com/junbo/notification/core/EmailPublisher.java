@@ -5,22 +5,14 @@
  */
 package com.junbo.notification.core;
 
-import org.springframework.jms.core.MessageCreator;
-
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.Session;
+import java.util.UUID;
 
 /**
  * EmailPublisher.
  */
-public class EmailPublisher extends BasePublisher {
+public class EmailPublisher extends TransactionalPublisher {
     public void send(final String content) {
-        template.send(destination, new MessageCreator() {
-            @Override
-            public Message createMessage(Session session) throws JMSException {
-                return session.createTextMessage(content);
-            }
-        });
+        final String eventId = UUID.randomUUID().toString();
+        publishText(eventId, content);
     }
 }

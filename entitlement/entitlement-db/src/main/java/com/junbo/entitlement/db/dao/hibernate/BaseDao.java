@@ -93,18 +93,18 @@ public class BaseDao<T extends Entity> {
     }
 
     protected void addCollectionParam(String columnName, String paramName,
-                                      Set set, StringBuilder queryStringBuilder,
+                                      Collection collection, StringBuilder queryStringBuilder,
                                       Map<String, Object> params) {
-        if (!CollectionUtils.isEmpty(set)) {
-            if (set.size() == 1) {
-                Object value = set.iterator().next();
+        if (!CollectionUtils.isEmpty(collection)) {
+            if (collection.size() == 1) {
+                Object value = collection.iterator().next();
                 if (CommonUtils.isNotNull(value)) {
                     queryStringBuilder.append(" and " + columnName + " = (:" + paramName + ")");
                     params.put(paramName, value);
                 }
             } else {
                 queryStringBuilder.append(" and " + columnName + " in (:" + paramName + ")");
-                params.put(paramName, set);
+                params.put(paramName, collection);
             }
         }
     }

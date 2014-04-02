@@ -23,5 +23,7 @@ dependencies {
     compile(libraries.aspectjrt)
     compile(libraries.aspectjweaver)
 
+    compile('com.junbo.oauth:oauth-spec:0.0.1-SNAPSHOT')
+
     testCompile(libraries.spring_test)
 }

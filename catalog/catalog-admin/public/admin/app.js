@@ -24,5 +24,5 @@ app.config(['$routeProvider', function($routeProvider) {
     $routeProvider.when('/attributes/:id', {templateUrl: '../views/attribute/attribute-detail.html', controller: 'AttributeDetailCtrl'});
 
     $routeProvider.when('/view2', {templateUrl: '../views/partial2.html', controller: 'MyCtrl2'});
-    $routeProvider.otherwise({redirectTo: '/offers/review'});
+    $routeProvider.otherwise({redirectTo: '/offers'});
     }]);

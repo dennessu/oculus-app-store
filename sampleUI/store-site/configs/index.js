@@ -27,6 +27,7 @@ Application.Init = function(args){
     process.AppConfig.Runtime.RegisterCallbackUrl = Utils.Format(process.AppConfig.Runtime.RegisterCallbackUrl, localhost);
     process.AppConfig.Runtime.LogoutCallbackUrl = Utils.Format(process.AppConfig.Runtime.LogoutCallbackUrl, localhost);
     process.AppConfig.Runtime.LoginUrl = Utils.Format(process.AppConfig.Runtime.LoginUrl, process.AppConfig.OauthHost, process.AppConfig.Runtime.LoginCallbackUrl);
+    process.AppConfig.Runtime.LogoutUrl = Utils.Format(process.AppConfig.Runtime.LogoutUrl, process.AppConfig.OauthHost);
     process.AppConfig.Runtime.RegisterUrl = Utils.Format(process.AppConfig.Runtime.RegisterUrl, localhost, process.AppConfig.Runtime.RegisterCallbackUrl);
 };
 
