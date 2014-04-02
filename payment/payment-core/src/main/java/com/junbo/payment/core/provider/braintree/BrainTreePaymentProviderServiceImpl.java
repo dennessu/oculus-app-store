@@ -37,6 +37,7 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
     private String merchantId;
     private String publicKey;
     private String privateKey;
+    private String companyName;
 
     public void afterPropertiesSet(){
         Environment env = null;
@@ -200,6 +201,7 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
     private <T> void handleProviderError(Result<T> result) {
         StringBuffer sbErrorCodes = new StringBuffer();
         for (ValidationError error : result.getErrors().getAllDeepValidationErrors()) {
+            LOGGER.error("gateway validations errors message: " + error.getMessage());
             sbErrorCodes.append(error.getCode()).append("&");
         }
         LOGGER.error("gateway validations errors with codes: " + sbErrorCodes.toString());
@@ -294,9 +296,7 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
         }
         CustomerRequest request = new CustomerRequest()
                 .id(customerId)
-                .firstName("Junbo")
-                .lastName("Zhang")
-                .company("Junbo Inc.");
+                .company(companyName);
         Result<Customer> dummyCustomer = null;
         try{
             dummyCustomer = gateway.customer().create(request);
@@ -342,5 +342,13 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
 
     public void setPrivateKey(String privateKey) {
         this.privateKey = privateKey;
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
     }
 }
