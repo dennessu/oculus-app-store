@@ -15,4 +15,8 @@ class QueryParameterModel extends ClientParameterModel {
     String queryName
 
     final String parameterType = 'query'
+
+    Boolean collection = false
+
+    String innerParamType
 }

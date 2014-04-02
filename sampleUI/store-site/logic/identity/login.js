@@ -8,7 +8,7 @@ module.exports = function(data, cb){
 
     var dataProvider = new IdentityProvider(process.AppConfig.Identity_API_Host, process.AppConfig.Identity_API_Port);
 
-    dataProvider.PostAuthenticate(body, function(resultData){
+    dataProvider.PostAuthorize(body, function(resultData){
         var resultModel = new DomainModels.ResultModel();
         var settingArray = new Array();
 

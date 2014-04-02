@@ -16,7 +16,7 @@ var ShippingInfoRoutes = {
         },
         setupController: function(controller, model){
             var provider = new BillingProvider();
-            provider.ShippingInfo(Utils.GenerateRequestModel(null), function(result){
+            provider.GetShippingInfos(Utils.GenerateRequestModel(null), function(result){
                 if(result.data.status == 200){
                     var lists = JSON.parse(result.data.data).results;
                     controller.set("content.results", lists);

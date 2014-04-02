@@ -6,12 +6,6 @@ var Auth = require('./auth');
 
 module.exports = function(app){
 
-    /*
-        Application
-        1.Store
-        2.Auth
-    */
-
     // Application
     app.get('/', function(req, res){
         res.render("index",

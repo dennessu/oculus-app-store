@@ -100,9 +100,10 @@ class OrderRepositoryImpl implements OrderRepository {
     }
 
     @Override
-    List<Order> getOrdersByUserId(Long userId) {
+    List<Order> getOrdersByUserId(Long userId, OrderQueryParam orderQueryParam, PageParam pageParam) {
         List<Order> orders = []
-        List<OrderEntity> orderEntities = orderDao.readByUserId(userId)
+        List<OrderEntity> orderEntities = orderDao.readByUserId(userId,
+                orderQueryParam.tentative, pageParam?.start, pageParam?.count)
         MappingContext context = new MappingContext()
         orderEntities.each { OrderEntity orderEntity ->
             orders.add(modelMapper.toOrderModel(orderEntity, context))
@@ -210,9 +211,9 @@ class OrderRepositoryImpl implements OrderRepository {
     }
 
     @Override
-    List<OrderEvent> getOrderEvents(Long orderId) {
+    List<OrderEvent> getOrderEvents(Long orderId, PageParam pageParam) {
         List<OrderEvent> events = []
-        orderEventDao.readByOrderId(orderId).each { OrderEventEntity entity ->
+        orderEventDao.readByOrderId(orderId, pageParam?.start, pageParam?.count).each { OrderEventEntity entity ->
             OrderEvent event = modelMapper.toOrderEventModel(entity, new MappingContext())
             events << event
         }

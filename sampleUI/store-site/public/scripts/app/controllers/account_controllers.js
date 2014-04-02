@@ -51,7 +51,7 @@ var AccountControllers = {
             SaveChanges: function(){
                 var _self = this;
                 var provider = new IdentityProvider();
-                provider.PutUser(Utils.GenerateRequestModel({password: _self.get("content.password")}), function(resultData){
+                provider.RestPassword(Utils.GenerateRequestModel({password: _self.get("content.password")}), function(resultData){
                     if(resultData.data.status == 200){
                         _self.set("errMessage", null);
                         console.log("[EditPasswordController:SaveChanges] success");
@@ -96,12 +96,17 @@ var AccountControllers = {
                 result+= products[i].totalAmount;
             }
             return result
+        }.property("content.products"),
+
+        total: function(){
+            return parseFloat(this.get("model.totalAmount")) + parseFloat(this.get("model.totalTax"));
         }.property("content.products")
     }),
     HistoryItemProductsController: Ember.ObjectController.extend({
         product: function(){
             return this.store.find('Product', this.get('model').offer.id);
         }.property('model'),
+
         downloadLinksObserver: function(){
             var _self = this;
 
@@ -132,12 +137,12 @@ var AccountControllers = {
                 var _self = this;
                 var provider = new PaymentProvider();
                 var paymentId = $("#SelectedPaymentId").val();
-                provider.Del(Utils.GenerateRequestModel({paymentId: paymentId}), function(result){
+                provider.DeletePayment(Utils.GenerateRequestModel({paymentId: paymentId}), function(result){
                     if(result.data.status == 200) {
                         _self.set("errMessage", null);
                         $("#DelPaymentDialog").hide();
                         var provider = new PaymentProvider();
-                        provider.PaymentInstruments(Utils.GenerateRequestModel(null), function (result) {
+                        provider.GetPayments(Utils.GenerateRequestModel(null), function (result) {
                             if (result.data.status == 200) {
                                 var payments = JSON.parse(result.data.data).results;
                                 _self.set("content.payments", payments);
@@ -181,18 +186,18 @@ var AccountControllers = {
         isHolder: false,
         paymentTypes: (function(){
             var result = new Array();
-            for(var i = 0; i < AppConfig.PaymentType.length; ++i) result.push({t: AppConfig.PaymentType[i].name, v: AppConfig.PaymentType[i].value});
+            for(var i = 0; i < AppConfig.PaymentTypes.length; ++i) result.push({t: AppConfig.PaymentTypes[i].name, v: AppConfig.PaymentTypes[i].value});
             return result;
         }()),
         cardTypes: (function(){
             var result = new Array();
-            for(var i = 0; i < AppConfig.CardType.CreditCard.length; ++i)
-                result.push({t: AppConfig.CardType.CreditCard[i].name, v: AppConfig.CardType.CreditCard[i].value});
+            for(var i = 0; i < AppConfig.CardTypes.CreditCard.length; ++i)
+                result.push({t: AppConfig.CardTypes.CreditCard[i].name, v: AppConfig.CardTypes.CreditCard[i].value});
             return result;
         }()),
         paymentHolderType: (function(){
             var result = new Array();
-            for(var i = 0; i < AppConfig.PaymentHolderType.length; ++i) result.push({t: AppConfig.PaymentHolderType[i].name, v: AppConfig.PaymentHolderType[i].value});
+            for(var i = 0; i < AppConfig.PaymentHolderTypes.length; ++i) result.push({t: AppConfig.PaymentHolderTypes[i].name, v: AppConfig.PaymentHolderTypes[i].value});
             return result;
         }()),
         countries: (function(){
@@ -243,7 +248,7 @@ var AccountControllers = {
                 model.expireDate = new Date(parseInt(_self.get("content.year")), parseInt(_self.get("content.month")) - 1);
 
                 var provider = new PaymentProvider();
-                provider.Add(Utils.GenerateRequestModel(model), function(resultData){
+                provider.PostPayment(Utils.GenerateRequestModel(model), function(resultData){
                     if(resultData.data.status == 200){
                         _self.set("errMessage", null);
                         _self.transitionToRoute("account.payment");
@@ -270,7 +275,7 @@ var AccountControllers = {
             DelDialogYes: function(){
                 var _self = this;
                 var provider = new BillingProvider();
-                provider.Del(Utils.GenerateRequestModel({shippingId: $("#SelectedId").val()}), function(result){
+                provider.DeleteShippingInfo(Utils.GenerateRequestModel({shippingId: $("#SelectedId").val()}), function(result){
                     if(result.data.status == 200){
                         _self.set("errMessage", null);
                         $("#DelDialog").hide();
@@ -326,7 +331,7 @@ var AccountControllers = {
                 var _self = this;
 
                 var dataProvider = new BillingProvider();
-                dataProvider.Add(Utils.GenerateRequestModel(this.get("content")), function(result){
+                dataProvider.PostShippingInfo(Utils.GenerateRequestModel(this.get("content")), function(result){
                     if(result.data.status == 200){
                         _self.set("errMessage", null);
                         _self.transitionToRoute('account.shipping');

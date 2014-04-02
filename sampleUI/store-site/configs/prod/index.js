@@ -1,7 +1,7 @@
 module.exports = process.C = {
 
     RunProcessNumber: 1, // useful for cluster launch
-    Localhost: "10.0.1.143",
+    Localhost: "127.0.0.1",
     ListenOnPort: 80,
 
     Identity_API_Host: "54.201.246.252",

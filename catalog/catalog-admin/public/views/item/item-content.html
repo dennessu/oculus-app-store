@@ -1,6 +1,6 @@
 <table class="table table-bordered vertical-table">
     <tr>
-        <td>Item Id</td>
+        <td style="width: 200px;">Item Id</td>
         <td>{{ item.self.id }}</td>
     </tr>
     <tr>
@@ -20,7 +20,7 @@
         <td>{{ item.type }}</td>
     </tr>
     <tr ng-repeat="(key, value) in item.properties">
-        <td>{{ metaDefinitions[key].display }}</td>
+        <td>{{ metaDefinitions[key].display || key }}</td>
         <td>
             {{ item.properties[key] }}
         </td>
