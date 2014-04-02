@@ -87,6 +87,22 @@ public class CommonMapper {
         return orderId.getValue();
     }
 
+    public PreorderId fromLongToPreorderId(Long preorderId) {
+        if (preorderId == null) {
+            return null;
+        }
+
+        return new PreorderId(preorderId);
+    }
+
+    public Long fromPreorderIdToLong(PreorderId preorderId) {
+        if (preorderId == null) {
+            return null;
+        }
+
+        return preorderId.getValue();
+    }
+
     public String fromOrderTypeToString(OrderType type) {
         if (type == null) {
             return null;

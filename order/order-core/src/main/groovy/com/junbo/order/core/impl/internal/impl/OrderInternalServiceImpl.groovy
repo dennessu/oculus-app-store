@@ -13,8 +13,10 @@ import com.junbo.order.core.impl.internal.OrderInternalService
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.Order
+import com.junbo.order.spec.model.OrderItem
 import com.junbo.order.spec.model.OrderQueryParam
 import com.junbo.order.spec.model.PageParam
+import com.junbo.order.spec.model.PreorderInfo
 import com.junbo.rating.spec.model.request.OrderRatingRequest
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
@@ -154,6 +156,12 @@ class OrderInternalServiceImpl implements OrderInternalService {
         order.orderItems = orderRepository.getOrderItems(order.id.value)
         if (order.orderItems == null) {
             throw AppErrors.INSTANCE.orderItemNotFound().exception()
+        }
+        order.orderItems.each { OrderItem orderItem ->
+            List<PreorderInfo> preorderInfoList = orderRepository.getPreorderInfo(orderItem.orderItemId.value)
+            if (preorderInfoList?.size() > 0) {
+                orderItem.preorderInfo = preorderInfoList[0]
+            }
         }
         // payment instrument
         order.setPaymentInstruments(orderRepository.getPaymentInstrumentIds(order.id.value))

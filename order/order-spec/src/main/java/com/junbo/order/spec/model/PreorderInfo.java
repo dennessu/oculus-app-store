@@ -7,6 +7,7 @@ package com.junbo.order.spec.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.junbo.common.id.OrderItemId;
+import com.junbo.common.id.PreorderId;
 
 import java.util.Date;
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.List;
  */
 public class PreorderInfo extends BaseModelWithDate {
     @JsonIgnore
-    private Long preorderInfoId;
+    private PreorderId preorderInfoId;
     private Date billingTime;
     private Date preNotificationTime;
     private Date releaseTime;
@@ -24,11 +25,11 @@ public class PreorderInfo extends BaseModelWithDate {
     @JsonIgnore
     private OrderItemId orderItemId;
 
-    public Long getPreorderInfoId() {
+    public PreorderId getPreorderInfoId() {
         return preorderInfoId;
     }
 
-    public void setPreorderInfoId(Long preorderInfoId) {
+    public void setPreorderInfoId(PreorderId preorderInfoId) {
         this.preorderInfoId = preorderInfoId;
     }
 
