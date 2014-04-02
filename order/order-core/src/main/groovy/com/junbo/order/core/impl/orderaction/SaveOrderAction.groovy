@@ -20,6 +20,8 @@ import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 
 import javax.annotation.Resource
+import java.text.SimpleDateFormat
+
 /**
  * Created by chriszhu on 2/18/14.
  */
@@ -59,14 +61,13 @@ class SaveOrderAction extends BaseOrderEventAwareAction {
         Date now = new Date()
         def preorderInfo = null
         ofs.each { OrderOffer orderOffer ->
-            // TODO: update preorder detection with Catalog component
-            Date releaseDate = orderOffer.catalogOffer.properties.get('releaseTime') as Date
+            Date releaseDate = getDate(orderOffer.catalogOffer.properties, 'releaseTime')
             if (releaseDate?.after(now)) {
                 // pre-order
                 preorderInfo = new PreorderInfo()
                 preorderInfo.releaseTime = releaseDate
-                preorderInfo.billingTime = orderOffer.catalogOffer.properties.get('billingTime') as Date
-                preorderInfo.preNotificationTime = orderOffer.catalogOffer.properties.get('preNotificationTime') as Date
+                preorderInfo.billingTime = getDate(orderOffer.catalogOffer.properties, 'billingTime')
+                preorderInfo.preNotificationTime = getDate(orderOffer.catalogOffer.properties, 'preNotificationTime')
             }
             order.orderItems.each { OrderItem orderItem ->
                 if (orderItem.offer.value == orderOffer.catalogOffer.id) {
@@ -74,5 +75,16 @@ class SaveOrderAction extends BaseOrderEventAwareAction {
                 }
             }
         }
+    }
+
+    private Date getDate(Map<String, Object> properties, String key) {
+        // TODO: update this method when CATALOG is ready
+        if (properties == null) {
+            return null
+        }
+        Date date = null
+        def format = new SimpleDateFormat('yyyy-MM-dd', Locale.US)
+        date = format.parse(properties.get(key).toString())
+        return date
     }
 }
