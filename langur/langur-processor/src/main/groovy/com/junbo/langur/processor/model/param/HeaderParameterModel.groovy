@@ -15,4 +15,8 @@ class HeaderParameterModel extends ClientParameterModel {
     String headerName
 
     final String parameterType = 'header'
+
+    Boolean collection = false
+
+    String innerParamType
 }

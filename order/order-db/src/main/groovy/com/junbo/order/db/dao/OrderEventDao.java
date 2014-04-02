@@ -15,6 +15,6 @@ import java.util.UUID;
  * Created by linyi on 14-2-7.
  */
 public interface OrderEventDao extends BaseDao<OrderEventEntity> {
-    List<OrderEventEntity> readByOrderId(final Long orderId);
+    List<OrderEventEntity> readByOrderId(final Long orderId, Integer start, Integer count);
     List<OrderEventEntity> readByTrackingUuid(final UUID trackingUuid);
 }

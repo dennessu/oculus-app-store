@@ -24,4 +24,8 @@ class CouchSearchResult<T> {
         String key
         T value
     }
+
+    static class AllResultEntity {
+        String rev
+    }
 }
