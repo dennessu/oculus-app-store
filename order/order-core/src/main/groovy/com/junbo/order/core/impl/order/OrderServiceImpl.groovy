@@ -89,7 +89,7 @@ class OrderServiceImpl implements OrderService {
                     orderRepository.updateOrder(orderServiceContext.order, true)
                 }
             }
-            refreshOrderStatus(orderServiceContext.order)
+            orderInternalService.refreshOrderStatus(orderServiceContext.order)
             if (error != null) {
                 throw error
             }
@@ -178,25 +178,7 @@ class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     Order getOrderByTrackingUuid(UUID trackingUuid) {
-        if (trackingUuid == null) {
-            return null
-        }
-        def order = orderRepository.getOrderByTrackingUuid(trackingUuid)
-        if (order != null) {
-            completeOrder(order)
-        }
-        return order
-    }
-
-    private void refreshOrderStatus(Order order) {
-        transactionHelper.executeInTransaction {
-            def status = OrderStatusBuilder.buildOrderStatus(order,
-                    orderRepository.getOrderEvents(order.id.value, null))
-            if (status != order.status) {
-                order.status = status
-                orderRepository.updateOrder(order, true)
-            }
-        }
+        return orderInternalService.getOrderByTrackingUuid(trackingUuid)
     }
 
     private Promise<OrderServiceContext> executeFlow(

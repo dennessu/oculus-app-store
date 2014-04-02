@@ -16,21 +16,26 @@ import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderQueryParam
 import com.junbo.order.spec.model.PageParam
 import com.junbo.rating.spec.model.request.OrderRatingRequest
+import groovy.transform.CompileStatic
+import groovy.transform.TypeChecked
 import org.apache.commons.collections.CollectionUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
+
+import javax.annotation.Resource
+
 /**
  * Created by chriszhu on 4/1/14.
  */
-
+@CompileStatic
+@TypeChecked
 @Service('orderInternalService')
 class OrderInternalServiceImpl implements OrderInternalService {
 
-    @Qualifier('orderFacadeContainer')
-    @Autowired
+    @Resource(name = 'orderFacadeContainer')
     FacadeContainer facadeContainer
     @Autowired
     OrderRepository orderRepository
@@ -132,6 +137,18 @@ class OrderInternalServiceImpl implements OrderInternalService {
         return Promise.pure(orders)
     }
 
+    @Override
+    Order getOrderByTrackingUuid(UUID trackingUuid) {
+        if (trackingUuid == null) {
+            return null
+        }
+        def order = orderRepository.getOrderByTrackingUuid(trackingUuid)
+        if (order != null) {
+            completeOrder(order)
+        }
+        return order
+    }
+
     private Order completeOrder(Order order) {
         // order items
         order.orderItems = orderRepository.getOrderItems(order.id.value)
@@ -144,5 +161,17 @@ class OrderInternalServiceImpl implements OrderInternalService {
         order.setDiscounts(orderRepository.getDiscounts(order.id.value))
         refreshOrderStatus(order)
         return order
+    }
+
+    @Override
+    void refreshOrderStatus(Order order) {
+        transactionHelper.executeInTransaction {
+            def status = OrderStatusBuilder.buildOrderStatus(order,
+                    orderRepository.getOrderEvents(order.id.value, null))
+            if (status != order.status) {
+                order.status = status
+                orderRepository.updateOrder(order, true)
+            }
+        }
     }
 }

@@ -1,11 +1,9 @@
 package com.junbo.order.core.impl.orderaction
-
 import com.junbo.common.error.AppErrorException
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
-import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.core.impl.internal.OrderInternalService
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.Order
@@ -14,11 +12,8 @@ import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Qualifier
 
 import javax.annotation.Resource
-
 /**
  * Created by fzhang on 14-2-25.
  */
@@ -26,9 +21,6 @@ import javax.annotation.Resource
 @TypeChecked
 class RatingAction implements Action {
 
-    @Autowired
-    @Qualifier('orderFacadeContainer')
-    FacadeContainer facadeContainer
     @Resource(name = 'orderInternalService')
     OrderInternalService orderInternalService
 
@@ -44,7 +36,7 @@ class RatingAction implements Action {
                 oi.honoredTime = order.honoredTime
             }
         }
-        return orderInternalService.rateOrder(order).recover{ Throwable ex ->
+        return orderInternalService.rateOrder(order).recover { Throwable ex ->
             LOGGER.error('name=Rating_Action_Error', ex)
             if (ex instanceof AppErrorException) {
                 throw ex
