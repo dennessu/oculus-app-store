@@ -14,198 +14,35 @@ module.exports = function(io){
             io.sockets.emit('user disconnected');
         });
 
-        socket.on('/api/identity/login', function (data, fn) {
-            Identity.Login(data, function(data){
-                fn(data);
-            });
-        });
+        var Events = {
+            Identity: Identity,
+            Catalog: Catalog,
+            Cart: Cart,
+            Billing: Billing,
+            Payment: Payment,
+            Entitlement: Entitlement
+        };
 
-        socket.on('/api/identity/captcha', function (data, fn) {
-            var address = socket.handshake.address;
-            data.data.ip = address.address;
+        var APIs = process.AppConfig.APIs;
+        for(var s in APIs){
+            var server = APIs[s];
 
-            Identity.Captcha(data, function(data){
-                fn(data);
-            });
-        });
+            for(var e in APIs[s]){
+                if(e.toLowerCase() == "config") continue;
 
-        socket.on('/api/identity/tfa', function (data, fn) {
-            Identity.TFA(data, function(data){
-                fn(data);
-            });
-        });
+                var eventName = server.Config.namespace + server[e].path;
 
-        socket.on('/api/identity/register', function (data, fn) {
-            Identity.Register(data, function(data){
-                fn(data);
-            });
-        });
-        socket.on('/api/identity/get_anonymous_user', function (data, fn) {
-            Identity.GetAnonymousUser(data, function(data){
-                fn(data);
-            });
-        });
-        socket.on('/api/identity/get_profile', function (data, fn) {
-            Identity.GetProfile(data, function(data){
-                fn(data);
-            });
-        });
-        socket.on('/api/identity/put_profile', function (data, fn) {
-            Identity.PutProfile(data, function(data){
-                fn(data);
-            });
-        });
-        socket.on('/api/identity/get_opt_ins', function (data, fn) {
-            Identity.GetOptIns(data, function(data){
-                fn(data);
-            });
-        });
-        socket.on('/api/identity/post_opt_ins', function (data, fn) {
-            Identity.PostOptIns(data, function(data){
-                fn(data);
-            });
-        });
-        socket.on('/api/identity/put_user', function (data, fn) {
-            Identity.PutUser(data, function(data){
-                fn(data);
-            });
-        });
-        socket.on('/api/identity/logout', function (data, fn) {
-            Identity.Logout(data, function(data){
-                fn(data);
-            });
-        });
+                console.log("Register Event: ", eventName);
 
-        socket.on('/api/identity/pin', function (data, fn) {
-            Identity.PIN(data, function(data){
-                fn(data);
-            });
-        });
+                socket.on(eventName, function (data, fn) {
+                    var address = socket.handshake.address;
+                    data.query.ip = address.address;
 
-        socket.on('/api/catalog/products', function (data, fn) {
-            Catalog.Products(data, function(data){
-                fn(data);
-            });
-        });
-        socket.on('/api/catalog/get_download_links', function (data, fn) {
-            Catalog.GetDownloadLinksByOfferId(data, function(data){
-                fn(data);
-            });
-        });
-
-        /* Cart -------------------------------------------------------------- */
-        socket.on('/api/cart/get', function (data, fn) {
-            Cart.GetCart(data, function(data){
-                fn(data);
-            });
-        });
-        socket.on('/api/cart/add', function (data, fn) {
-            Cart.AddCartItem(data, function(data){
-                fn(data);
-            });
-        });
-        socket.on('/api/cart/remove', function (data, fn) {
-            Cart.RemoveCartItem(data, function(data){
-                fn(data);
-            });
-        });
-        socket.on('/api/cart/update', function (data, fn) {
-            Cart.UPdateCartItem(data, function(data){
-                fn(data);
-            });
-        });
-        socket.on('/api/cart/merge', function (data, fn) {
-            Cart.MergeCartItem(data, function(data){
-                fn(data);
-            });
-        });
-        socket.on('/api/cart/get_order_by_id', function (data, fn) {
-            Cart.GetOrderById(data, function(data){
-                fn(data);
-            });
-        });
-        socket.on('/api/cart/get_order_by_user', function (data, fn) {
-            Cart.GetOrders(data, function(data){
-                fn(data);
-            });
-        });
-        socket.on('/api/cart/post_order', function (data, fn) {
-            Cart.PostOrder(data, function(data){
-                fn(data);
-            });
-        });
-        socket.on('/api/cart/put_order', function (data, fn) {
-            Cart.PutOrder(data, function(data){
-                fn(data);
-            });
-        });
-        socket.on('/api/cart/purchase_order', function (data, fn) {
-            Cart.PurchaseOrder(data, function(data){
-                fn(data);
-            });
-        });
-
-        /* Billing -------------------------------------------------------------- */
-        socket.on('/api/billing/get_shipping_info', function (data, fn) {
-            Billing.GetShippingInfo(data, function(data){
-                fn(data);
-            });
-        });
-
-        socket.on('/api/billing/get_shipping_info_by_id', function (data, fn) {
-            Billing.GetShippingInfoById(data, function(data){
-                fn(data);
-            });
-        });
-        socket.on('/api/billing/add', function (data, fn) {
-            Billing.PostShippingInfo(data, function(data){
-                fn(data);
-            });
-        });
-        socket.on('/api/billing/del', function (data, fn) {
-            Billing.DeleteShippingInfo(data, function(data){
-                fn(data);
-            });
-        });
-
-        /* Payment -------------------------------------------------------------- */
-        socket.on('/api/payment/get_payment_instruments', function (data, fn) {
-            Payment.GetPayment(data, function(data){
-                fn(data);
-            });
-        });
-
-        socket.on('/api/payment/get_payment_instruments_by_id', function (data, fn) {
-            Payment.GetPaymentById(data, function(data){
-                fn(data);
-            });
-        });
-        socket.on('/api/payment/add', function (data, fn) {
-            Payment.PostPayment(data, function(data){
-                fn(data);
-            });
-        });
-        socket.on('/api/payment/del', function (data, fn) {
-            Payment.DeletePayment(data, function(data){
-                fn(data);
-            });
-        });
-
-        /* Entitlement -------------------------------------------------------------- */
-        socket.on('/api/entitlement/get', function (data, fn) {
-            Entitlement.GetEntitlements(data, function(data){
-                fn(data);
-            });
-        });
-        socket.on('/api/entitlement/get_by_user', function (data, fn) {
-            Entitlement.GetEntitlementsByUserId(data, function(data){
-                fn(data);
-            });
-        });
-        socket.on('/api/entitlement/post', function (data, fn) {
-            Entitlement.PostEntitlement(data, function(data){
-                fn(data);
-            });
-        });
+                    Events[s][e](data, function(data){
+                        fn(data);
+                    });
+                });
+            }
+        }
     });
 };

@@ -66,7 +66,7 @@ Required (*)
         </td>
     </tr>
     <tr>
-        <td>Price type:</td>
+        <td>Price type *</td>
         <td>
             <select ng-model="offer.priceType" ng-init="offer.priceType='Free'" ng-change="updatePriceType(offer.priceType)">
                 <option>Free</option>
@@ -133,6 +133,28 @@ Required (*)
             <label ng-repeat="country in countries | filter: '!DEFAULT'">
                 <input type="checkbox" checklist-model="offer.eligibleCountries" checklist-value="country.code" class="chooseItem">{{ country.name }}
             </label>
+        </td>
+    </tr>
+    <tr ng-repeat="(key, value) in offer.properties">
+        <td>{{ offerMetaDefinitions[key].display }}&nbsp;<label ng-if="offerMetaDefinitions[key].required=='true'">*</label>
+        </td>
+        <td>
+            <div ng-if="offerMetaDefinitions[key].controlType=='TEXT_INPUT'">
+                <input type="text" class="form-control" ng-model="offer.properties[key]" ng-required="{{offerMetaDefinitions[key].required}}">
+            </div>
+            <div ng-if="offerMetaDefinitions[key].controlType=='URL_INPUT'">
+                <input type="url" class="form-control" ng-model="offer.properties[key]" ng-required="{{offerMetaDefinitions[key].required}}">
+            </div>
+            <div ng-if="offerMetaDefinitions[key].controlType=='MULTI_SELECT'">
+                <label ng-repeat="allowedValue in metaDefinitions[key].allowedValues">
+                    <input type="checkbox" checklist-model="offer.properties[key]" checklist-value="allowedValue" class="chooseItem" ng-required="{{offerMetaDefinitions[key].required}}">{{ allowedValue }}
+                </label>
+            </div>
+            <div ng-if="offerMetaDefinitions[key].controlType=='SINGLE_SELECT'">
+                <label ng-repeat="allowedValue in metaDefinitions[key].allowedValues" ng-required="{{offerMetaDefinitions[key].required}}">
+                    <input type="radio" ng-model="offer.properties[key]" value="{{allowedValue}}" class="chooseItem">{{ allowedValue }}
+                </label>
+            </div>
         </td>
     </tr>
 </table>

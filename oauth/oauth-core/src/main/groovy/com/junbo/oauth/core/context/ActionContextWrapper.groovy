@@ -10,11 +10,7 @@ import com.junbo.oauth.spec.model.*
 import groovy.transform.CompileStatic
 import org.springframework.web.util.UriComponentsBuilder
 
-import javax.ws.rs.container.ContainerRequestContext
-import javax.ws.rs.core.Cookie
-import javax.ws.rs.core.MultivaluedMap
-import javax.ws.rs.core.NewCookie
-import javax.ws.rs.core.Response
+import javax.ws.rs.core.*
 
 /**
  * A wrapper for ActionContext, provide some util functions.
@@ -49,11 +45,11 @@ class ActionContextWrapper {
         this.actionContext = actionContext
     }
 
-    ContainerRequestContext getRequest() {
-        return (ContainerRequestContext) actionContext.requestScope[REQUEST]
+    Request getRequest() {
+        return (Request) actionContext.requestScope[REQUEST]
     }
 
-    void setRequest(ContainerRequestContext request) {
+    void setRequest(Request request) {
         actionContext.requestScope[REQUEST] = request
     }
 

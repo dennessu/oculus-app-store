@@ -23,7 +23,7 @@ module.exports = function (data, callback) {
     var cartProvider = new DataProvider.Cart(process.AppConfig.Cart_API_Host, process.AppConfig.Cart_API_Port);
 
     Async.waterfall([function (cb) {
-        dataProvider.PostCreateAccount(userModel, function (resultData) {
+        dataProvider.PostUser(userModel, function (resultData) {
             if (resultData.StatusCode == 200) {
                 var resultUser = JSON.parse(resultData.Data);
                 console.log("Get Anonymous User Result:", resultUser);
@@ -34,7 +34,7 @@ module.exports = function (data, callback) {
         });
     },
         function (userId, cb) {
-            cartProvider.GetPrimaryCart(userId, function (result) {
+            cartProvider.GetPrimaryCartByUserId(userId, function (result) {
                 if (result.StatusCode == 302) {
                     cb(null, result.Headers.location);
                 } else {
@@ -43,7 +43,7 @@ module.exports = function (data, callback) {
             });
         },
         function (url, cb) {
-            cartProvider.GetCartByUrl(url, null, function (result) {
+            cartProvider.GetCartByUrl(url, function (result) {
                 if (result.StatusCode == 200) {
                     cb(null, result);
                 } else {

@@ -46,7 +46,7 @@ var StoreControllers = {
                         qty: defaultCount
                     }]};
 
-                    provider.Add(Utils.GenerateRequestModel(data), function(resultData){
+                    provider.AddCartItem(Utils.GenerateRequestModel(data), function(resultData){
                         var resultModel = resultData.data;
                         if (resultModel.status == 200) {
                             console.log("[DetailController:AddToCartHandler] Success");
@@ -99,7 +99,7 @@ var StoreControllers = {
             var data = {"cart_items": cartItmes};
 
             var provider = new CartProvider();
-            provider.Update(Utils.GenerateRequestModel(data), function(resultData){
+            provider.UpdateCartItem(Utils.GenerateRequestModel(data), function(resultData){
                 var resultModel = resultData.data;
                 if (resultModel.status == 200) {
                     console.log("[CartItemController:Change Status] Success");
@@ -114,6 +114,18 @@ var StoreControllers = {
         actions: {
             Checkout: function(){
                 var _self = this;
+                var hasSelected = false;
+                _self.get("model").forEach(function(item){
+                    if(item.get("selected") == true){
+                        hasSelected = true;
+                    }
+                });
+                if(!hasSelected){
+                    alert("Please choose an items!");
+                    return;
+                }
+
+
                 if(App.AuthManager.isAuthenticated()){
                     console.log("[CartController:CheckOut]");
 
@@ -126,6 +138,14 @@ var StoreControllers = {
 
                             // set order id to cookie
                             Utils.Cookies.Set(AppConfig.CookiesName.OrderId, order.self.id);
+
+                            _self.get("model").forEach(function(item){
+                                if(item.get("selected") == true){
+                                    console.log("Selected Product Id:", item.get("product_id"));
+                                    item.deleteRecord();
+                                    item.save();
+                                }
+                            });
 
                             var allDigital = true;
                             for(var i = 0; i < order.orderItems.length; ++i){
@@ -190,7 +210,7 @@ var StoreControllers = {
                     }]};
 
                     var provider = new CartProvider();
-                    provider.Update(Utils.GenerateRequestModel(data), function(resultData){
+                    provider.UpdateCartItem(Utils.GenerateRequestModel(data), function(resultData){
                         var resultModel = resultData.data;
                         if (resultModel.status == 200) {
                             console.log("[CartItemController:change] Success");
@@ -217,7 +237,7 @@ var StoreControllers = {
                 }]};
 
                 var provider = new CartProvider();
-                provider.Remove(Utils.GenerateRequestModel(data), function(resultData){
+                provider.RemoveCartItem(Utils.GenerateRequestModel(data), function(resultData){
                     var resultModel = resultData.data;
                     if (resultModel.status == 200) {
                         console.log("[CartItemController:removeItem] Success");
@@ -247,6 +267,10 @@ var StoreControllers = {
                 result+= item.subTotal;
             });
             return result
+        }.property("content.products"),
+
+        total: function(){
+            return  parseFloat(this.get("content.totalAmount")) + parseFloat(this.get("content.totalTax"));
         }.property("content.products"),
 
         actions:{

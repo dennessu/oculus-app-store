@@ -9,7 +9,7 @@ var DevCenterControllers = {
                 var _self = this;
 
                 var provider = new EntitlementProvider();
-                provider.Post(Utils.GenerateRequestModel(null), function (result) {
+                provider.PostEntitlement(Utils.GenerateRequestModel(null), function (result) {
                     if (result.data.status == 200) {
                         _self.set("errMessage", null);
                         $("#ConfirmDialog").hide();

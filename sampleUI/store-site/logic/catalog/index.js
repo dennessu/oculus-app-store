@@ -12,7 +12,7 @@ exports.Products = function (data, cb) {
     var dataProvider = new CatalogDataProvider(process.AppConfig.Catalog_API_Host, process.AppConfig.Catalog_API_Port);
 
     if (body !=undefined && body != null && body["id"] != undefined && body["id"] != null) {
-        dataProvider.GetOfferById(body.id, null, function (result) {
+        dataProvider.GetOfferById(body.id, function (result) {
             var resultModel = new DomainModels.ResultModel();
             var responseModel = new DomainModels.ResponseModel();
 
@@ -28,7 +28,7 @@ exports.Products = function (data, cb) {
             cb(responseModel);
         });
     } else {
-        dataProvider.GetOffers(null, function (result) {
+        dataProvider.GetOffers(function (result) {
             var resultModel = new DomainModels.ResultModel();
             var responseModel = new DomainModels.ResponseModel();
 
@@ -62,7 +62,7 @@ exports.GetDownloadLinksByOfferId = function(data, callback){
     var emitter = new Emitter();
     var dataProvider = new CatalogDataProvider(process.AppConfig.Catalog_API_Host, process.AppConfig.Catalog_API_Port);
 
-      dataProvider.GetOfferById(offerId, null, function(result){
+      dataProvider.GetOfferById(offerId, function(result){
           if(result.StatusCode == 200){
               var offer = JSON.parse(result.Data);
               if(offer["results"] != undefined && offer["results"].length > 0){

@@ -31,7 +31,7 @@ module.exports = function(data, cb){
     var dataProvider = new IdentityProvider(process.AppConfig.Identity_API_Host, process.AppConfig.Identity_API_Port);
     var mailProvider = new EmailsProvider(process.AppConfig.Emails_API_Host, process.AppConfig.Emails_API_Port);
 
-    dataProvider.PostCreateAccount(userModel, function(resultData){
+    dataProvider.PostUser(userModel, function(resultData){
         var responseModel = new DomainModels.ResponseModel();
         var resultModel = new DomainModels.ResultModel();
         var settingArray = new Array();
@@ -40,7 +40,7 @@ module.exports = function(data, cb){
             var resultUser = JSON.parse(resultData.Data);
             profileModel.user = resultUser.self;
 
-            dataProvider.PostCreateProfiles(profileModel.user.id, profileModel, function(result){
+            dataProvider.PostProfile(profileModel.user.id, profileModel, function(result){
                 if (result.StatusCode == 200) {
 
                     var welcomeModel = new EmailsModels.WelcomeModel();

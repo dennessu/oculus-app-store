@@ -49,7 +49,7 @@ class ScopeServiceImpl implements ScopeService {
         Scope existingScope = scopeRepository.getScope(scope.name)
 
         if (existingScope != null) {
-            throw AppExceptions.INSTANCE.duplicateScopeName().exception()
+            throw AppExceptions.INSTANCE.duplicateEntityName('scope', scope.name).exception()
         }
 
         if (scope.logoUri != null && !UriUtil.isValidUri(scope.logoUri)) {
