@@ -9,6 +9,8 @@ import com.junbo.order.core.impl.common.OrderValidator
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.ApiContext
 import com.junbo.order.spec.model.Order
+import com.junbo.order.spec.model.OrderQueryParam
+import com.junbo.order.spec.model.PageParam
 import com.junbo.order.spec.resource.OrderResource
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
@@ -72,6 +74,12 @@ class OrderResourceImpl implements OrderResource {
     @Override
     Promise<Order> updateOrderByOrderId(OrderId orderId, Order order) {
         orderValidator.notNull(order, 'order').notNull(order.trackingUuid, 'trackingUuid').notNull(order.user, 'user')
+
+        def persistedOrder = orderService.getOrderByTrackingUuid(order.trackingUuid)
+        if (persistedOrder != null) {
+            throw AppErrors.INSTANCE.orderDuplicateTrackingGuid().exception()
+        }
+
         order.id = orderId
         orderService.getOrderByOrderId(orderId.value).then { Order oldOrder ->
             // handle the update request per scenario
@@ -91,19 +99,11 @@ class OrderResourceImpl implements OrderResource {
     }
 
     @Override
-    Promise<Results<Order>> getOrderByUserId(UserId userId) {
-        // tentative orders are filtered out in this case
-        return orderService.getOrdersByUserId(userId.value).then { List<Order> orders ->
-            List<Order> resultList = []
-            return Promise.each(orders.iterator()) { Order order ->
-                if (!order.tentative) {
-                    resultList.add(order)
-                }
-            }.then {
-                Results<Order> results = new Results<>()
-                results.setItems(resultList)
-                return Promise.pure(results)
-            }
+    Promise<Results<Order>> getOrderByUserId(UserId userId, OrderQueryParam orderQueryParam, PageParam pageParam) {
+        orderService.getOrdersByUserId(userId.value, orderQueryParam, pageParam).syncThen { List<Order> orders ->
+            Results<Order> results = new Results<>()
+            results.setItems(orders)
+            return results
         }
     }
 }

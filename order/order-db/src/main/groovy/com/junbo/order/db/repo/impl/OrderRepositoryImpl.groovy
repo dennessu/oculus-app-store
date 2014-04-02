@@ -100,9 +100,10 @@ class OrderRepositoryImpl implements OrderRepository {
     }
 
     @Override
-    List<Order> getOrdersByUserId(Long userId, Boolean includeTentative) {
+    List<Order> getOrdersByUserId(Long userId, OrderQueryParam orderQueryParam, PageParam pageParam) {
         List<Order> orders = []
-        List<OrderEntity> orderEntities = orderDao.readByUserId(userId)
+        List<OrderEntity> orderEntities = orderDao.readByUserId(userId,
+                orderQueryParam.tentative, pageParam?.start, pageParam?.count)
         MappingContext context = new MappingContext()
         orderEntities.each { OrderEntity orderEntity ->
             orders.add(modelMapper.toOrderModel(orderEntity, context))
@@ -200,15 +201,18 @@ class OrderRepositoryImpl implements OrderRepository {
         if (CollectionUtils.isEmpty(orderEvents)) {
             return null
         }
+
         // assert all the order events are linked to the same order
+        checkEventsOrder(orderEvents, orderEvents[0].orderId)
+
         def orderEntity = orderDao.read(orderEvents[0].orderId)
         return modelMapper.toOrderModel(orderEntity, new MappingContext())
     }
 
     @Override
-    List<OrderEvent> getOrderEvents(Long orderId) {
+    List<OrderEvent> getOrderEvents(Long orderId, PageParam pageParam) {
         List<OrderEvent> events = []
-        orderEventDao.readByOrderId(orderId).each { OrderEventEntity entity ->
+        orderEventDao.readByOrderId(orderId, pageParam?.start, pageParam?.count).each { OrderEventEntity entity ->
             OrderEvent event = modelMapper.toOrderEventModel(entity, new MappingContext())
             events << event
         }
@@ -392,5 +396,16 @@ class OrderRepositoryImpl implements OrderRepository {
         baseModelWithDate.createdTime = commonDbEntityWithDate.createdTime
         baseModelWithDate.updatedBy = commonDbEntityWithDate.updatedBy
         baseModelWithDate.updatedTime = commonDbEntityWithDate.updatedTime
+    }
+
+    static void checkEventsOrder(List<OrderEventEntity> orderEvents, Long orderId) {
+        for (OrderEventEntity event: orderEvents) {
+            if (event.orderId != orderId) {
+                LOGGER.error('name=Order_Events_Order_Id_Inconsistent, ' +
+                        'orderEventId={}, trackingGUID={}, expectedOrderId={}, actualOrderId={}',
+                        event.eventId, event.trackingUuid, orderId, event.orderId)
+                return
+            }
+        }
     }
 }

@@ -7,6 +7,8 @@ package com.junbo.order.core.impl.internal;
 
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.order.spec.model.Order;
+import com.junbo.order.spec.model.OrderQueryParam;
+import com.junbo.order.spec.model.PageParam;
 
 import java.util.List;
 
@@ -18,6 +20,6 @@ public interface OrderInternalService {
 
     Promise<Order> getOrderByOrderId(Long orderId);
 
-    Promise<List<Order>> getOrdersByUserId(Long userId);
+    Promise<List<Order>> getOrdersByUserId(Long userId, OrderQueryParam orderQueryParam, PageParam pageParam);
 
 }

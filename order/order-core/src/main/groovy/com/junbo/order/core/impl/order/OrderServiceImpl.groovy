@@ -15,22 +15,15 @@ import com.junbo.order.core.FlowSelector
 import com.junbo.order.core.FlowType
 import com.junbo.order.core.OrderService
 import com.junbo.order.core.OrderServiceOperation
-import com.junbo.order.core.impl.common.CoreUtils
-import com.junbo.order.core.impl.common.OrderStatusBuilder
-import com.junbo.order.core.impl.common.OrderValidator
-import com.junbo.order.core.impl.common.TransactionHelper
 import com.junbo.order.core.impl.internal.OrderInternalService
+import com.junbo.order.core.impl.common.*
 import com.junbo.order.core.impl.orderaction.ActionUtils
 import com.junbo.order.core.impl.orderaction.context.OrderActionContext
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.error.AppErrors
-import com.junbo.order.spec.model.ApiContext
-import com.junbo.order.spec.model.Order
-import com.junbo.order.spec.model.OrderEvent
-import com.junbo.order.spec.model.OrderItem
+import com.junbo.order.spec.model.*
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
-import org.apache.commons.collections.CollectionUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -64,7 +57,6 @@ class OrderServiceImpl implements OrderService {
     OrderValidator orderValidator
     @Resource(name = 'orderInternalService')
     OrderInternalService orderInternalService
-    OrderValidator orderValidator
     private static final Logger LOGGER = LoggerFactory.getLogger(OrderServiceImpl)
 
 
@@ -169,8 +161,8 @@ class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    Promise<List<Order>> getOrdersByUserId(Long userId) {
-        return orderInternalService.getOrdersByUserId(userId)
+    Promise<List<Order>> getOrdersByUserId(Long userId, OrderQueryParam orderQueryParam, PageParam pageParam) {
+        return orderInternalService.getOrdersByUserId(userId, orderQueryParam, pageParam)
     }
 
     @Override
@@ -199,7 +191,7 @@ class OrderServiceImpl implements OrderService {
     private void refreshOrderStatus(Order order) {
         transactionHelper.executeInTransaction {
             def status = OrderStatusBuilder.buildOrderStatus(order,
-                    orderRepository.getOrderEvents(order.id.value))
+                    orderRepository.getOrderEvents(order.id.value, null))
             if (status != order.status) {
                 order.status = status
                 orderRepository.updateOrder(order, true)

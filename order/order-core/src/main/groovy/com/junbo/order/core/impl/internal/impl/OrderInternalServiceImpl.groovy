@@ -8,14 +8,13 @@ import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.model.Balance
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.FacadeContainer
-import com.junbo.order.core.impl.common.CoreBuilder
-import com.junbo.order.core.impl.common.CoreUtils
-import com.junbo.order.core.impl.common.OrderValidator
-import com.junbo.order.core.impl.common.TransactionHelper
+import com.junbo.order.core.impl.common.*
 import com.junbo.order.core.impl.internal.OrderInternalService
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.Order
+import com.junbo.order.spec.model.OrderQueryParam
+import com.junbo.order.spec.model.PageParam
 import com.junbo.rating.spec.model.request.OrderRatingRequest
 import org.apache.commons.collections.CollectionUtils
 import org.slf4j.Logger
@@ -118,17 +117,15 @@ class OrderInternalServiceImpl implements OrderInternalService {
     }
 
     @Override
-    Promise<List<Order>> getOrdersByUserId(Long userId) {
+    Promise<List<Order>> getOrdersByUserId(Long userId, OrderQueryParam orderQueryParam, PageParam pageParam) {
 
         if (userId == null) {
             throw AppErrors.INSTANCE.fieldInvalid('userId', 'userId cannot be null').exception()
         }
-
         // get Orders by userId
-        def orders = orderRepository.getOrdersByUserId(userId, false)
-        if (CollectionUtils.isEmpty(orders)) {
-            throw AppErrors.INSTANCE.orderNotFound().exception()
-        }
+        def orders = orderRepository.getOrdersByUserId(userId,
+                ParamUtils.processOrderQueryParam(orderQueryParam),
+                ParamUtils.processPageParam(pageParam))
         orders.each { Order order ->
             completeOrder(order)
         }
