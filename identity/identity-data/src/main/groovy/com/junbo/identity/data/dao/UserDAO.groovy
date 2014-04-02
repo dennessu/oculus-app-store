@@ -18,4 +18,6 @@ interface UserDAO {
     UserEntity get(@SeedParam Long userId)
 
     void delete(@SeedParam Long userId)
+
+    Long getIdByCanonicalUsername(@SeedParam String username)
 }

@@ -22,6 +22,7 @@ class UserOptinDAOImpl extends ShardedDAOBase implements UserOptinDAO {
     @Override
     UserOptinEntity save(UserOptinEntity entity) {
         currentSession().save(entity)
+        currentSession().flush()
 
         return get(entity.id)
     }
@@ -60,5 +61,6 @@ class UserOptinDAOImpl extends ShardedDAOBase implements UserOptinDAO {
     void delete(Long id) {
         UserOptinEntity entity = (UserOptinEntity)currentSession().get(UserOptinEntity, id)
         currentSession().delete(entity)
+        currentSession().flush()
     }
 }

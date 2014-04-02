@@ -40,6 +40,7 @@ class SecurityQuestionDAOImpl implements SecurityQuestionDAO {
     SecurityQuestionEntity save(SecurityQuestionEntity entity) {
         entity.setId(idGenerator.nextId(UserId))
         currentSession().save(entity)
+        currentSession().flush()
         return get(entity.id)
     }
 
@@ -78,5 +79,6 @@ class SecurityQuestionDAOImpl implements SecurityQuestionDAO {
     void delete(Long id) {
         SecurityQuestionEntity entity = (SecurityQuestionEntity)currentSession().get(SecurityQuestionEntity, id)
         currentSession().delete(entity)
+        currentSession().flush()
     }
 }

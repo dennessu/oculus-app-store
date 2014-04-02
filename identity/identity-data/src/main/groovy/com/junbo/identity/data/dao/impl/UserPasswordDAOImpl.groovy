@@ -20,6 +20,7 @@ class UserPasswordDAOImpl extends ShardedDAOBase implements UserPasswordDAO {
     @Override
     UserPasswordEntity save(UserPasswordEntity entity) {
         currentSession().save(entity)
+        currentSession().flush()
 
         return get(entity.id)
     }
@@ -27,6 +28,7 @@ class UserPasswordDAOImpl extends ShardedDAOBase implements UserPasswordDAO {
     @Override
     UserPasswordEntity update(UserPasswordEntity entity) {
         currentSession().merge(entity)
+        currentSession().flush()
         return get(entity.id)
     }
 
@@ -58,5 +60,6 @@ class UserPasswordDAOImpl extends ShardedDAOBase implements UserPasswordDAO {
         UserPasswordEntity entity =
                 (UserPasswordEntity)currentSession().get(UserPasswordEntity, id)
         currentSession().delete(entity)
+        currentSession().flush()
     }
 }

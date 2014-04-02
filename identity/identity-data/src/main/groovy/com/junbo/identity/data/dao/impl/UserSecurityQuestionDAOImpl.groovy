@@ -19,6 +19,7 @@ class UserSecurityQuestionDAOImpl extends ShardedDAOBase implements UserSecurity
     @Override
     UserSecurityQuestionEntity save(UserSecurityQuestionEntity entity) {
         currentSession().save(entity)
+        currentSession().flush()
 
         return get(entity.id)
     }
@@ -61,5 +62,6 @@ class UserSecurityQuestionDAOImpl extends ShardedDAOBase implements UserSecurity
         UserSecurityQuestionEntity entity = (UserSecurityQuestionEntity)currentSession().
                 get(UserSecurityQuestionEntity, id)
         currentSession().delete(entity)
+        currentSession().flush()
     }
 }

@@ -18,7 +18,7 @@ class UserAuthenticatorDAOImpl extends ShardedDAOBase implements UserAuthenticat
     @Override
     UserAuthenticatorEntity save(UserAuthenticatorEntity entity) {
         currentSession().save(entity)
-
+        currentSession().flush()
         return get(entity.id)
     }
 
@@ -59,5 +59,6 @@ class UserAuthenticatorDAOImpl extends ShardedDAOBase implements UserAuthenticat
     void delete(Long id) {
         UserAuthenticatorEntity entity = currentSession().get(UserAuthenticatorEntity, id)
         currentSession().delete(entity)
+        currentSession().flush()
     }
 }

@@ -1,24 +1,22 @@
 package com.junbo.sharding.view
-
 import com.junbo.sharding.ShardAlgorithm
+import com.junbo.sharding.core.hibernate.SessionFactoryWrapper
 import com.junbo.sharding.hibernate.ShardScope
 import groovy.transform.CompileStatic
-import org.hibernate.SessionFactory
 import org.springframework.beans.factory.annotation.Required
-
 /**
  * Created by kg on 3/30/2014.
  */
 @CompileStatic
 class DefaultMultimapDAO implements MultimapDAO {
 
-    private SessionFactory sessionFactory
+    private SessionFactoryWrapper sessionFactoryWrapper
 
     private ShardAlgorithm shardAlgorithm
 
     @Required
-    void setSessionFactory(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory
+    void setSessionFactoryWrapper(SessionFactoryWrapper sessionFactoryWrapper) {
+        this.sessionFactoryWrapper = sessionFactoryWrapper
     }
 
     @Required
@@ -41,7 +39,7 @@ class DefaultMultimapDAO implements MultimapDAO {
         }
 
         ShardScope.with(shardAlgorithm.shardId(key)) {
-            def sqlQuery = sessionFactory.currentSession.createSQLQuery("""
+            def sqlQuery = sessionFactoryWrapper.resolve(shardAlgorithm.shardId(key)).currentSession.createSQLQuery("""
 INSERT INTO ${view.name}
 (key, value, created_by, created_time, modified_by, modified_time, deleted)
 VALUES (?, ?, ?, ?, ?, ?, FALSE)""")
@@ -72,8 +70,9 @@ VALUES (?, ?, ?, ?, ?, ?, FALSE)""")
         }
 
         ShardScope.with(shardAlgorithm.shardId(key)) {
-            def sqlQuery = sessionFactory.currentSession.createSQLQuery("""UPDATE ${view.name}
-SET deleted = TRUE, modified_by = ?, modified_date = ?
+            def sqlQuery = sessionFactoryWrapper.resolve(shardAlgorithm.shardId(key)).currentSession
+                    .createSQLQuery("""UPDATE ${view.name}
+SET deleted = TRUE, modified_by = ?, modified_time = ?
 WHERE key = ? AND value = ?""")
 
 
@@ -97,12 +96,12 @@ WHERE key = ? AND value = ?""")
         }
 
         ShardScope.with(shardAlgorithm.shardId(key)) {
-            def sqlQuery = sessionFactory.currentSession.createSQLQuery("""SELECT value
+            def sqlQuery = sessionFactoryWrapper.resolve(shardAlgorithm.shardId(key)).currentSession
+                    .createSQLQuery("""SELECT value
 FROM ${view.name}
 WHERE key = ? AND deleted = FALSE""")
 
             sqlQuery.setParameter(0, key)
-            sqlQuery.addEntity(view.idType)
 
             return sqlQuery.list()
         }

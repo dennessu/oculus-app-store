@@ -21,6 +21,7 @@ class UserPhoneNumberDAOImpl extends ShardedDAOBase implements UserPhoneNumberDA
     @Override
     UserPhoneNumberEntity save(UserPhoneNumberEntity entity) {
         currentSession().save(entity)
+        currentSession().flush()
 
         return get(entity.id)
     }
@@ -63,5 +64,6 @@ class UserPhoneNumberDAOImpl extends ShardedDAOBase implements UserPhoneNumberDA
         UserPhoneNumberEntity entity =
                 (UserPhoneNumberEntity)currentSession().get(UserPhoneNumberEntity, id)
         currentSession().delete(entity)
+        currentSession().flush()
     }
 }

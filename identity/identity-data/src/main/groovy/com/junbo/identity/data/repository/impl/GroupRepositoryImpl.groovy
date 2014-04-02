@@ -8,10 +8,10 @@ package com.junbo.identity.data.repository.impl
 import com.junbo.common.id.GroupId
 import com.junbo.identity.data.dao.GroupDAO
 import com.junbo.identity.data.dao.GroupUserDAO
-import com.junbo.identity.data.dao.index.GroupReverseIndexDAO
+
 import com.junbo.identity.data.entity.group.GroupEntity
 import com.junbo.identity.data.entity.group.GroupUserEntity
-import com.junbo.identity.data.entity.reverselookup.GroupReverseIndexEntity
+
 import com.junbo.identity.data.entity.user.UserGroupEntity
 import com.junbo.identity.data.mapper.ModelMapper
 import com.junbo.identity.data.repository.GroupRepository
@@ -41,10 +41,6 @@ class GroupRepositoryImpl implements GroupRepository {
     @Autowired
     private ModelMapper modelMapper
 
-    @Autowired
-    @Qualifier('groupReverseIndexDAO')
-    private GroupReverseIndexDAO groupReverseIndexDAO
-
     @Override
     Promise<Group> get(GroupId groupId) {
         GroupEntity entity = groupDAO.get(groupId.value)
@@ -57,28 +53,12 @@ class GroupRepositoryImpl implements GroupRepository {
 
         groupDAO.save(groupEntity)
 
-        GroupReverseIndexEntity entity = new GroupReverseIndexEntity()
-        entity.setGroupId(groupEntity.id)
-        entity.setName(groupEntity.name)
-        groupReverseIndexDAO.save(entity)
-
-        return get(new GroupId(groupEntity.id))
+        return get(new GroupId((Long)groupEntity.id))
     }
 
     @Override
     Promise<Group> update(Group group) {
         GroupEntity groupEntity = modelMapper.toGroup(group, new MappingContext())
-
-        GroupEntity existingGroupEntity = groupDAO.get(((GroupId)group.id).value)
-
-        if (existingGroupEntity.name != groupEntity.name) {
-            groupReverseIndexDAO.delete(existingGroupEntity.name)
-
-            GroupReverseIndexEntity entity = new GroupReverseIndexEntity()
-            entity.setName(groupEntity.name)
-            entity.setGroupId(groupEntity.id)
-            groupReverseIndexDAO.save(entity)
-        }
 
         groupDAO.update(groupEntity)
         return get((GroupId)group.id)
@@ -86,11 +66,11 @@ class GroupRepositoryImpl implements GroupRepository {
 
     @Override
     Promise<Group> searchByName(String name) {
-        def groupReverseIndexEntity = groupReverseIndexDAO.get(name)
-        if (groupReverseIndexEntity == null) {
+        Long id = groupDAO.findIdByName(name)
+        if (id == null) {
             return Promise.pure(null)
         }
-        def group = get(new GroupId(groupReverseIndexEntity.groupId))
+        def group = get(new GroupId(id))
         return group
     }
 

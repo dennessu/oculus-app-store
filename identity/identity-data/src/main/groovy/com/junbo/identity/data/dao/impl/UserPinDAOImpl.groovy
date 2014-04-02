@@ -19,6 +19,7 @@ class UserPinDAOImpl extends ShardedDAOBase implements UserPinDAO {
     @Override
     UserPinEntity save(UserPinEntity entity) {
         currentSession().save(entity)
+        currentSession().flush()
         return get(entity.id)
     }
 
@@ -56,5 +57,6 @@ class UserPinDAOImpl extends ShardedDAOBase implements UserPinDAO {
     void delete(Long id) {
         UserPinEntity entity = (UserPinEntity)currentSession().get(UserPinEntity, id)
         currentSession().delete(entity)
+        currentSession().flush()
     }
 }

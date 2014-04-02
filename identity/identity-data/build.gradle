@@ -27,6 +27,7 @@ dependencies {
     compile (libraries.rs_api)
 
     compile (libraries.querydsl_jpa)
+    compile (libraries.querydsl_collections)
 
     processor (libraries.querydsl_apt)
     processor (libraries.persistence_api)
@@ -41,5 +42,5 @@ dependencies {
 
 
 ext {
-    processorClass = 'com.mysema.query.apt.jpa.JPAAnnotationProcessor,com.junbo.oom.processor.MappingProcessor'
+    processorClass = 'com.junbo.oom.processor.MappingProcessor,com.mysema.query.apt.jpa.JPAAnnotationProcessor'
 }

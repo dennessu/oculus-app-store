@@ -25,6 +25,7 @@ class UserNameDAOImpl extends ShardedDAOBase implements UserNameDAO {
     @Override
     UserNameEntity create(UserNameEntity entity) {
         currentSession().save(entity)
+        currentSession().flush()
         return get(entity.id)
     }
 
@@ -40,6 +41,7 @@ class UserNameDAOImpl extends ShardedDAOBase implements UserNameDAO {
     void delete(@SeedParam Long id) {
         UserNameEntity entity = (UserNameEntity)currentSession().get(UserNameEntity, id)
         currentSession().delete(entity)
+        currentSession().flush()
     }
 
     @Override

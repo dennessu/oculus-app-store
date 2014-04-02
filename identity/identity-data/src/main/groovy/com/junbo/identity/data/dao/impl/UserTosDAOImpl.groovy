@@ -21,6 +21,7 @@ class UserTosDAOImpl extends ShardedDAOBase implements UserTosDAO {
     @Override
     UserTosEntity save(UserTosEntity entity) {
         currentSession().save(entity)
+        currentSession().flush()
         return get(entity.id)
     }
 
@@ -58,5 +59,6 @@ class UserTosDAOImpl extends ShardedDAOBase implements UserTosDAO {
     void delete(Long id) {
         UserTosEntity entity = (UserTosEntity)currentSession().get(UserTosEntity, id)
         currentSession().delete(entity)
+        currentSession().flush()
     }
 }

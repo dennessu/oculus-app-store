@@ -11,6 +11,12 @@ import com.junbo.sharding.core.ds.ShardDataSourceMapper;
 import com.junbo.sharding.core.ds.ShardDataSourceRegistry;
 import org.hibernate.Interceptor;
 import org.hibernate.SessionFactory;
+import org.hibernate.event.service.spi.EventListenerRegistry;
+import org.hibernate.event.spi.EventType;
+import org.hibernate.event.spi.PostDeleteEventListener;
+import org.hibernate.event.spi.PostInsertEventListener;
+import org.hibernate.event.spi.PostUpdateEventListener;
+import org.hibernate.internal.SessionFactoryImpl;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -31,6 +37,13 @@ public class SessionFactoryWrapper implements ApplicationContextAware {
     private String dataBaseName;
     private String[] packagesToScan;
     private Interceptor entityInterceptor;
+
+
+    private PostInsertEventListener[] postInsertEventListeners;
+
+    private PostUpdateEventListener[] postUpdateEventListeners;
+
+    private PostDeleteEventListener[] postDeleteEventListeners;
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
@@ -59,6 +72,18 @@ public class SessionFactoryWrapper implements ApplicationContextAware {
 
     public void setEntityInterceptor(Interceptor entityInterceptor) {
         this.entityInterceptor = entityInterceptor;
+    }
+
+    public void setPostInsertEventListeners(PostInsertEventListener[] postInsertEventListeners) {
+        this.postInsertEventListeners = postInsertEventListeners;
+    }
+
+    public void setPostUpdateEventListeners(PostUpdateEventListener[] postUpdateEventListeners) {
+        this.postUpdateEventListeners = postUpdateEventListeners;
+    }
+
+    public void setPostDeleteEventListeners(PostDeleteEventListener[] postDeleteEventListeners) {
+        this.postDeleteEventListeners = postDeleteEventListeners;
     }
 
     private Map<Integer, SessionFactory> cache = new HashMap<Integer, SessionFactory>();
@@ -102,6 +127,22 @@ public class SessionFactoryWrapper implements ApplicationContextAware {
             }
         }
 
-        return factoryBean.getObject();
+        SessionFactoryImpl sessionFactory = (SessionFactoryImpl) factoryBean.getObject();
+
+        EventListenerRegistry registry = sessionFactory.getServiceRegistry().getService(EventListenerRegistry.class);
+
+        if (postInsertEventListeners != null) {
+            registry.appendListeners(EventType.POST_INSERT, postInsertEventListeners);
+        }
+
+        if (postUpdateEventListeners != null) {
+            registry.appendListeners(EventType.POST_UPDATE, postUpdateEventListeners);
+        }
+
+        if (postDeleteEventListeners != null) {
+            registry.appendListeners(EventType.POST_DELETE, postDeleteEventListeners);
+        }
+
+        return sessionFactory;
     }
 }

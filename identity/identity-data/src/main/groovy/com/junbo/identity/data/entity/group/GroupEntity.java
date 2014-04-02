@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.data.entity.group;
 
+import com.junbo.common.util.Identifiable;
 import com.junbo.identity.data.entity.common.ResourceMetaEntity;
 import com.junbo.sharding.annotations.SeedId;
 
@@ -18,7 +19,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "group_entity")
-public class GroupEntity extends ResourceMetaEntity {
+public class GroupEntity extends ResourceMetaEntity implements Identifiable<Long> {
     public Long getId() {
         return id;
     }

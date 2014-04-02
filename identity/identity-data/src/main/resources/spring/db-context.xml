@@ -66,6 +66,9 @@
         </property>
         <property name="dataBaseName" value="identity"/>
         <property name="packagesToScan" value="com.junbo.identity.data.entity.*"/>
+        <property name="postInsertEventListeners" ref="entityListener" />
+        <property name="postUpdateEventListeners" ref="entityListener" />
+        <property name="postDeleteEventListeners" ref="entityListener" />
     </bean>
 
     <bean id="indexSessionFactoryWrapper" class="com.junbo.sharding.core.hibernate.SessionFactoryWrapper">
@@ -77,6 +80,9 @@
         </property>
         <property name="dataBaseName" value="index"/>
         <property name="packagesToScan" value="com.junbo.identity.data.entity.reverselookup"/>
+        <property name="postInsertEventListeners" ref="entityListener" />
+        <property name="postUpdateEventListeners" ref="entityListener" />
+        <property name="postDeleteEventListeners" ref="entityListener" />
     </bean>
 
     <bean id="baseDao" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" abstract="true">
@@ -188,18 +194,6 @@
     </bean>
 
     <!-- identity reverse index -->
-    <bean id="userNameReverseIndexDAOTarget" class="com.junbo.identity.data.dao.impl.index.UserNameReverseIndexDAOImpl" parent="entityIndexDAOBase" />
-    <bean id="userNameReverseIndexDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
-        <property name="daoInterface" value="com.junbo.identity.data.dao.index.UserNameReverseIndexDAO" />
-        <property name="daoTarget" ref="userNameReverseIndexDAOTarget" />
-    </bean>
-
-    <bean id="groupReverseIndexDAOTarget" class="com.junbo.identity.data.dao.impl.index.GroupReverseIndexDAOImpl" parent="entityIndexDAOBase" />
-    <bean id="groupReverseIndexDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
-        <property name="daoInterface" value="com.junbo.identity.data.dao.index.GroupReverseIndexDAO" />
-        <property name="daoTarget" ref="groupReverseIndexDAOTarget" />
-    </bean>
-
     <bean id="userAuthenticatorReverseIndexDAOTarget" class="com.junbo.identity.data.dao.impl.index.UserAuthenticatorReverseIndexDAOImpl" parent="entityIndexDAOBase" />
     <bean id="userAuthenticatorReverseIndexDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
         <property name="daoInterface" value="com.junbo.identity.data.dao.index.UserAuthenticatorReverseIndexDAO" />
@@ -227,4 +221,28 @@
     <bean id="userTosRepository" class="com.junbo.identity.data.repository.impl.UserTosRepositoryImpl" />
     <bean id="securityQuestionRepository" class="com.junbo.identity.data.repository.impl.SecurityQuestionRepositoryImpl"/>
     <bean id="userSecurityQuestionAttemptRepository" class="com.junbo.identity.data.repository.impl.UserSecurityQuestionAttemptRepositoryImpl" />
+
+    <bean id="defaultEntityViewRepository" class="com.junbo.sharding.view.DefaultEntityViewRepository">
+        <property name="entityViews">
+            <list>
+                <bean class="com.junbo.identity.data.view.UsernameView" />
+                <bean class="com.junbo.identity.data.view.GroupNameView" />
+            </list>
+        </property>
+    </bean>
+
+    <bean id="multimapDAO" class="com.junbo.sharding.view.DefaultMultimapDAO">
+        <property name="sessionFactoryWrapper" ref="indexSessionFactoryWrapper" />
+        <property name="shardAlgorithm" ref="userShardAlgorithm" />
+    </bean>
+
+    <bean id="entityListener" class="com.junbo.sharding.view.EntityListener">
+        <property name="entityViewRepository" ref="defaultEntityViewRepository" />
+        <property name="multimapDAO" ref="multimapDAO" />
+    </bean>
+
+    <bean id="defaultViewQueryFactory" class="com.junbo.sharding.view.DefaultViewQueryFactory">
+        <property name="entityViewRepository" ref="defaultEntityViewRepository" />
+        <property name="multimapDAO" ref="multimapDAO" />
+    </bean>
 </beans>

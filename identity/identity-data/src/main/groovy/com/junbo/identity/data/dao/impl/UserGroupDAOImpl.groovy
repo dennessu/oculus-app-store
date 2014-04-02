@@ -19,6 +19,7 @@ class UserGroupDAOImpl extends ShardedDAOBase implements UserGroupDAO {
     @Override
     UserGroupEntity save(UserGroupEntity entity) {
         currentSession().save(entity)
+        currentSession().flush()
 
         return get(entity.id)
     }
@@ -57,5 +58,6 @@ class UserGroupDAOImpl extends ShardedDAOBase implements UserGroupDAO {
     void delete(Long id) {
         UserGroupEntity entity = (UserGroupEntity)currentSession().get(UserGroupEntity, id)
         currentSession().delete(entity)
+        currentSession().flush()
     }
 }

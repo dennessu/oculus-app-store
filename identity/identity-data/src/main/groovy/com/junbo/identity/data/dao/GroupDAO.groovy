@@ -13,4 +13,5 @@ interface GroupDAO {
     GroupEntity get(@SeedParam Long groupId)
     GroupEntity save(GroupEntity group)
     GroupEntity update(GroupEntity group)
+    Long findIdByName(@SeedParam String name)
 }

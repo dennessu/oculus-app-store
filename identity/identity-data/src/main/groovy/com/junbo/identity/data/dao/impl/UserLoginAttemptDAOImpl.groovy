@@ -21,6 +21,7 @@ class UserLoginAttemptDAOImpl extends ShardedDAOBase implements UserLoginAttempt
     @Override
     UserLoginAttemptEntity save(UserLoginAttemptEntity entity) {
         currentSession().save(entity)
+        currentSession().flush()
 
         return get(entity.id)
     }
@@ -63,5 +64,6 @@ class UserLoginAttemptDAOImpl extends ShardedDAOBase implements UserLoginAttempt
         UserLoginAttemptEntity entity =
                 (UserLoginAttemptEntity)currentSession().get(UserLoginAttemptEntity, id)
         currentSession().delete(entity)
+        currentSession().flush()
     }
 }

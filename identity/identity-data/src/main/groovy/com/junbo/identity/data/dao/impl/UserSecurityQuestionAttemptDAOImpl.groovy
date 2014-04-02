@@ -21,6 +21,7 @@ class UserSecurityQuestionAttemptDAOImpl extends ShardedDAOBase implements UserS
     @Override
     UserSecurityQuestionAttemptEntity save(UserSecurityQuestionAttemptEntity entity) {
         currentSession().save(entity)
+        currentSession().flush()
 
         return get(entity.id)
     }

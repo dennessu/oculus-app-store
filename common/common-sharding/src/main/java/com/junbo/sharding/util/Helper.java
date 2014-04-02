@@ -52,17 +52,16 @@ public class Helper {
             return shardId;
         }
         else if(cls == String.class) {
-            String value = (String)obj;
-            long h = 0;
-            if (value.length() > 0) {
-                char val[] = value.toCharArray();
+            String strKey = (String) obj;
 
-                for (int i = 0; i < value.length(); i++) {
-                    h = 31 * h + val[i];
-                }
+            int h = 0;
+            for (int i = 0; i < strKey.length(); i++) {
+                h = 31 * h + ((int) strKey.charAt(i));
             }
 
-            return calcShardId(h, Long.class);
+            h = h & 0xff;
+            // todo:    Liangfu:    When kgu's sharding ready, remove this hack
+            return h % 2;
         }
         else {
             throw new RuntimeException("current shardId only support Long and String");
@@ -92,7 +91,8 @@ public class Helper {
         Method result = fetchFirstMethodByFilter(clazz, new Func<Method, Boolean>() {
             @Override
             public Boolean execute(Method method) {
-                return (method.getName().equals("get" + upperPropertyName) && method.getParameterTypes().length == 0);
+                return (method.getName().equals("get" + upperPropertyName) && method.getParameterTypes().length == 0)
+                        && (method.getReturnType() != Object.class);
             }
         });
 

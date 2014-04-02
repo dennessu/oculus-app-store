@@ -2,11 +2,13 @@ package com.junbo.sharding.view
 
 import com.junbo.common.util.Identifiable
 import com.junbo.identity.data.view.*
+import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 
 /**
  * Created by kg on 3/30/2014.
  */
+@CompileStatic
 class DefaultViewQueryFactory implements ViewQueryFactory {
 
     private EntityViewRepository entityViewRepository

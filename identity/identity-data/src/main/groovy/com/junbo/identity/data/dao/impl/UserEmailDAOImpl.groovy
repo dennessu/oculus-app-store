@@ -23,6 +23,7 @@ class UserEmailDAOImpl extends ShardedDAOBase implements UserEmailDAO {
     void delete(Long id) {
         UserEmailEntity entity = (UserEmailEntity)currentSession().get(UserEmailEntity, id)
         currentSession().delete(entity)
+        currentSession().flush()
     }
 
     @Override
@@ -61,6 +62,7 @@ class UserEmailDAOImpl extends ShardedDAOBase implements UserEmailDAO {
     @Override
     UserEmailEntity save(UserEmailEntity entity) {
         currentSession().save(entity)
+        currentSession().flush()
 
         return get(entity.id)
     }

@@ -40,10 +40,7 @@ class DefaultShardAlgorithm implements ShardAlgorithm {
             shardId = hashAlgorithm.hash(key) & 0xff
         }
 
-        if (shardId >= availableShards) {
-            throw new IllegalArgumentException("shardId $shardId out of range")
-        }
-
-        return shardId
+        // todo:    Liangfu:    Will define one common id mapping to replace current method
+        return shardId % availableShards
     }
 }

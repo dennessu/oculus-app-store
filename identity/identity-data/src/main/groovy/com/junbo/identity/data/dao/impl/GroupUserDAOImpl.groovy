@@ -18,6 +18,7 @@ class GroupUserDAOImpl  extends ShardedDAOBase implements GroupUserDAO {
     @Override
     GroupUserEntity create(GroupUserEntity entity) {
         currentSession().save(entity)
+        currentSession().flush()
 
         return get(entity.id)
     }
@@ -54,5 +55,6 @@ class GroupUserDAOImpl  extends ShardedDAOBase implements GroupUserDAO {
     void delete(@SeedParam Long id) {
         GroupUserEntity entity = (GroupUserEntity)currentSession().get(GroupUserEntity, id)
         currentSession().delete(entity)
+        currentSession().flush()
     }
 }

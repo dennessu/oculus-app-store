@@ -18,6 +18,7 @@ class UserDeviceDAOImpl extends ShardedDAOBase implements UserDeviceDAO {
     @Override
     UserDeviceEntity save(UserDeviceEntity entity) {
         currentSession().save(entity)
+        currentSession().flush()
         return get(entity.id)
     }
 
@@ -55,5 +56,6 @@ class UserDeviceDAOImpl extends ShardedDAOBase implements UserDeviceDAO {
     void delete(Long id) {
         UserDeviceEntity entity = currentSession().get(UserDeviceEntity, id.value)
         currentSession().delete(entity)
+        currentSession().flush()
     }
 }
