@@ -15,6 +15,6 @@ import java.util.UUID;
  * Created by linyi on 14-2-7.
  */
 public interface OrderDao extends BaseDao<OrderEntity> {
-    List<OrderEntity> readByUserId(final Long userId);
+    List<OrderEntity> readByUserId(final Long userId,  Boolean tentative, Integer start, Integer count);
     List<OrderEntity> readByTrackingUuid(final UUID trackingUuid);
 }

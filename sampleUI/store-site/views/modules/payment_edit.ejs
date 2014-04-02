@@ -9,10 +9,6 @@
         <dd>{{view Ember.Select content=paymentTypes optionValuePath="content.v" optionLabelPath="content.t" value=paymentType id="PaymentType" name="PaymentType" class="{required:true}"}}</dd>
     </dl>
     <dl>
-        <dt>Credit Card Type</dt>
-        <dd>{{view Ember.Select content=cardTypes optionValuePath="content.v" optionLabelPath="content.t" value=cardType id="CardType" name="CardType" class="{required:true}"}}</dd>
-    </dl>
-    <dl>
         <dt>Name on Card</dt>
         <dd>{{input type="text" id="AccountName" name="AccountName" value=accountName class="{required:true}"}}</dd>
     </dl>
@@ -23,6 +19,10 @@
     <dl>
         <dt>City</dt>
         <dd>{{input type="text" id="City" name="City" value=city class="{required:true}"}}</dd>
+    </dl>
+    <dl>
+        <dt>State</dt>
+        <dd>{{input type="text" class="{required:true}" name="State" id="State" value=state}}</dd>
     </dl>
     <dl>
         <dt>Zip Code</dt>

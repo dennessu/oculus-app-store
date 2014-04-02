@@ -16,10 +16,12 @@ import com.junbo.oom.core.MappingContext
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.stereotype.Component
 
 /**
  * Implementation for UserDeviceDAO.
  */
+@Component
 @CompileStatic
 class UserDeviceRepositoryImpl implements UserDeviceRepository {
     @Autowired
@@ -27,7 +29,6 @@ class UserDeviceRepositoryImpl implements UserDeviceRepository {
     private UserDeviceDAO userDeviceDAO
 
     @Autowired
-    @Qualifier('identityModelMapperImpl')
     private ModelMapper modelMapper
 
     @Override

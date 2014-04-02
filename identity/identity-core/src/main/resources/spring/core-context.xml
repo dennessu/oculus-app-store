@@ -453,4 +453,40 @@
         </property>
     </bean>
 
+    <bean id="userEmailFilter" class="com.junbo.identity.core.service.filter.UserEmailFilter">
+        <property name="readableProperties">
+            <list>
+                <value>id</value>
+                <value>value</value>
+                <value>type</value>
+                <value>primary</value>
+                <value>verified</value>
+                <value>userId</value>
+                <value>resourceAge</value>
+                <value>createdTime</value>
+                <value>updatedTime</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForCreate">
+            <list>
+                <value>value</value>
+                <value>type</value>
+                <value>primary</value>
+                <value>verified</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForUpdate">
+            <list>
+                <value>id</value>
+                <value>value</value>
+                <value>type</value>
+                <value>primary</value>
+                <value>verified</value>
+                <value>resourceAge</value>
+            </list>
+        </property>
+    </bean>
+
 </beans>

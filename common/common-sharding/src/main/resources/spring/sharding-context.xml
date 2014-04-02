@@ -89,10 +89,10 @@
     </bean>
 
     <bean id="globalCounterInMemory" class="com.junbo.sharding.id.impl.GlobalCounterInMemoryImpl" />
-    <bean id="globalCounterMemcached" class="com.junbo.sharding.id.impl.GlobalCounterMemcachedImpl">
-        <constructor-arg ref="idGeneratorClient" />
-        <constructor-arg value="${sharding.memcached.secondsToTrack}" />
-    </bean>
+    <!--<bean id="globalCounterMemcached" class="com.junbo.sharding.id.impl.GlobalCounterMemcachedImpl">-->
+        <!--<constructor-arg ref="idGeneratorClient" />-->
+        <!--<constructor-arg value="${sharding.memcached.secondsToTrack}" />-->
+    <!--</bean>-->
     <bean id="idGenerator" class="com.junbo.sharding.id.impl.IdGeneratorImpl">
         <constructor-arg ref="idSchema" />
         <constructor-arg ref="timeGenerator" />
@@ -148,4 +148,17 @@
         </constructor-arg>
         <constructor-arg name="idGenerator" ref="oculus48IdGenerator" />
     </bean>
+
+    <bean id="hashAlgorithm" class="com.junbo.sharding.DefaultHashAlgorithm"/>
+
+    <bean id="userShardAlgorithm" class="com.junbo.sharding.DefaultShardAlgorithm">
+        <property name="hashAlgorithm" ref="hashAlgorithm"/>
+        <property name="availableShards" value="2"/>
+    </bean>
+
+    <bean id="externalShardAlgorithm" class="com.junbo.sharding.DefaultShardAlgorithm">
+        <property name="hashAlgorithm" ref="hashAlgorithm"/>
+        <property name="availableShards" value="256"/>
+    </bean>
+
 </beans>

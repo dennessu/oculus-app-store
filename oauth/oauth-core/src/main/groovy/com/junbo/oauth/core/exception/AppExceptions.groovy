@@ -220,9 +220,9 @@ interface AppExceptions {
     AppError tokenClientNotMatch()
 
     @ErrorDef(httpStatusCode = 409, code = '20051',
-            description = 'The scope name {0} already exists',
+            description = 'The {0} name {1} already exists',
             field = 'name')
-    AppError duplicateScopeName()
+    AppError duplicateEntityName(String entityName, String value)
 
     @ErrorDef(httpStatusCode = 400, code = '20052',
             description = 'The revision is not provided',
@@ -231,4 +231,7 @@ interface AppExceptions {
 
     @ErrorDef(httpStatusCode = 500, code = '20053', description = 'Error happened while calling the identity')
     AppError errorCallingIdentity()
+
+    @ErrorDef(httpStatusCode = 400, code = '20054', description = 'The input name and entity name do not match')
+    AppError mismatchEntityName()
 }

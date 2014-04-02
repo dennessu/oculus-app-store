@@ -19,17 +19,6 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "group_entity")
 public class GroupEntity extends ResourceMetaEntity {
-    @Id
-    @SeedId
-    @Column(name = "id")
-    private Long id;
-
-    @Column(name = "value")
-    private String name;
-
-    @Column(name = "active", nullable = false)
-    private Boolean active;
-
     public Long getId() {
         return id;
     }
@@ -54,4 +43,14 @@ public class GroupEntity extends ResourceMetaEntity {
         this.active = active;
     }
 
+    @Id
+    @SeedId
+    @Column(name = "id")
+    private Long id;
+
+    @Column(name = "value")
+    private String name;
+
+    @Column(name = "active", nullable = false)
+    private Boolean active;
 }

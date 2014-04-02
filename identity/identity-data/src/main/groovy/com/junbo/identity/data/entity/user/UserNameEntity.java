@@ -18,29 +18,6 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "user_name")
 public class UserNameEntity {
-    @Id
-    @Column(name = "id")
-    private Long id;
-
-    @SeedId
-    @Column(name = "user_id")
-    private Long userId;
-
-    @Column(name = "first_name")
-    private String firstName;
-
-    @Column(name = "middle_name")
-    private String middleName;
-
-    @Column(name = "last_name")
-    private String lastName;
-
-    @Column(name = "honorific_prefix")
-    private String honorificPrefix;
-
-    @Column(name = "honorific_suffix")
-    private String honorificSuffix;
-
     public Long getId() {
         return id;
     }
@@ -96,4 +73,21 @@ public class UserNameEntity {
     public void setHonorificSuffix(String honorificSuffix) {
         this.honorificSuffix = honorificSuffix;
     }
+
+    @Id
+    @Column(name = "id")
+    private Long id;
+    @SeedId
+    @Column(name = "user_id")
+    private Long userId;
+    @Column(name = "first_name")
+    private String firstName;
+    @Column(name = "middle_name")
+    private String middleName;
+    @Column(name = "last_name")
+    private String lastName;
+    @Column(name = "honorific_prefix")
+    private String honorificPrefix;
+    @Column(name = "honorific_suffix")
+    private String honorificSuffix;
 }

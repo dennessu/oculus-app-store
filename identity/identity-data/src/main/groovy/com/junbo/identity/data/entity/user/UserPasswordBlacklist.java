@@ -14,20 +14,6 @@ import java.util.Date;
 @Entity
 @Table(name = "password_blacklist")
 public class UserPasswordBlacklist {
-    @Id
-    @Column(name = "id")
-    private Long key;
-
-    @Column(name = "password")
-    private String password;
-
-    @Column(name = "created_by")
-    private String createdBy;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "created_time")
-    private Date createdTime;
-
     public Long getKey() {
         return key;
     }
@@ -59,4 +45,15 @@ public class UserPasswordBlacklist {
     public void setCreatedTime(Date createdTime) {
         this.createdTime = createdTime;
     }
+
+    @Id
+    @Column(name = "id")
+    private Long key;
+    @Column(name = "password")
+    private String password;
+    @Column(name = "created_by")
+    private String createdBy;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "created_time")
+    private Date createdTime;
 }

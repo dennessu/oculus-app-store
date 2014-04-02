@@ -17,35 +17,6 @@ import java.util.Date;
 @Entity
 @Table(name = "user_password")
 public class UserPasswordEntity extends ResourceMetaEntity {
-
-    @Id
-    @Column(name = "id")
-    private Long id;
-
-    @SeedId
-    @Column(name = "user_id")
-    private Long userId;
-
-    @Column(name = "password_hash")
-    private String passwordHash;
-
-    @Column(name = "password_salt")
-    private String passwordSalt;
-
-    @Column(name = "password_strength")
-    private Short strength;
-
-    @Column(name = "active")
-    private Boolean active;
-
-    @Column(name = "change_at_next_login")
-    private Boolean changeAtNextLogin;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "expires_by")
-    private Date expiresBy;
-
-
     public Long getId() {
         return id;
     }
@@ -110,4 +81,23 @@ public class UserPasswordEntity extends ResourceMetaEntity {
         this.expiresBy = expiresBy;
     }
 
+    @Id
+    @Column(name = "id")
+    private Long id;
+    @SeedId
+    @Column(name = "user_id")
+    private Long userId;
+    @Column(name = "password_hash")
+    private String passwordHash;
+    @Column(name = "password_salt")
+    private String passwordSalt;
+    @Column(name = "password_strength")
+    private Short strength;
+    @Column(name = "active")
+    private Boolean active;
+    @Column(name = "change_at_next_login")
+    private Boolean changeAtNextLogin;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "expires_by")
+    private Date expiresBy;
 }

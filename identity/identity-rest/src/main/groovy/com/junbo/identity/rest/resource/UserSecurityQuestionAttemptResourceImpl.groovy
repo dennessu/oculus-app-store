@@ -4,7 +4,6 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.identity.rest.resource
-
 import com.junbo.common.id.Id
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserSecurityQuestionAttemptId
@@ -19,12 +18,16 @@ import com.junbo.identity.spec.options.entity.UserSecurityQuestionAttemptGetOpti
 import com.junbo.identity.spec.options.list.UserSecurityQuestionAttemptListOptions
 import com.junbo.identity.spec.resource.UserSecurityQuestionAttemptResource
 import com.junbo.langur.core.promise.Promise
+import com.junbo.langur.core.transaction.AsyncTransactionTemplate
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.PlatformTransactionManager
+import org.springframework.transaction.TransactionDefinition
+import org.springframework.transaction.TransactionStatus
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.transaction.support.TransactionCallback
 
 import javax.ws.rs.BeanParam
 import javax.ws.rs.ext.Provider
@@ -34,8 +37,8 @@ import javax.ws.rs.ext.Provider
 @Provider
 @Component
 @Scope('prototype')
-@Transactional
 @CompileStatic
+@Transactional
 class UserSecurityQuestionAttemptResourceImpl implements UserSecurityQuestionAttemptResource {
 
     @Autowired
@@ -49,6 +52,9 @@ class UserSecurityQuestionAttemptResourceImpl implements UserSecurityQuestionAtt
 
     @Autowired
     private UserSecurityQuestionAttemptValidator userSecurityQuestionAttemptValidator
+
+    @Autowired
+    private PlatformTransactionManager transactionManager
 
     @Override
     Promise<UserSecurityQuestionAttempt> create(UserId userId,
@@ -74,7 +80,7 @@ class UserSecurityQuestionAttemptResourceImpl implements UserSecurityQuestionAtt
                     return Promise.pure(attempt)
                 }
 
-                throw AppErrors.INSTANCE.userPasswordIncorrect().exception()
+                throw AppErrors.INSTANCE.userSecurityQuestionIncorrect().exception()
             }
         }
     }
@@ -118,8 +124,14 @@ class UserSecurityQuestionAttemptResourceImpl implements UserSecurityQuestionAtt
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     Promise<UserSecurityQuestionAttempt> createInNewTran(UserSecurityQuestionAttempt userLoginAttempt) {
-        return userSecurityQuestionAttemptRepository.create(userLoginAttempt)
+        AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager)
+        template.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW)
+        return template.execute(new TransactionCallback<Promise<UserSecurityQuestionAttempt>>() {
+            Promise<UserSecurityQuestionAttempt> doInTransaction(TransactionStatus txnStatus) {
+                return userSecurityQuestionAttemptRepository.create(userLoginAttempt)
+            }
+        }
+        )
     }
 }

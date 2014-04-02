@@ -4,7 +4,6 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.identity.rest.resource
-
 import com.junbo.common.id.Id
 import com.junbo.common.id.UserLoginAttemptId
 import com.junbo.common.model.Results
@@ -18,16 +17,19 @@ import com.junbo.identity.spec.options.entity.UserLoginAttemptGetOptions
 import com.junbo.identity.spec.options.list.UserLoginAttemptListOptions
 import com.junbo.identity.spec.resource.UserLoginAttemptResource
 import com.junbo.langur.core.promise.Promise
+import com.junbo.langur.core.transaction.AsyncTransactionTemplate
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.PlatformTransactionManager
+import org.springframework.transaction.TransactionDefinition
+import org.springframework.transaction.TransactionStatus
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.transaction.support.TransactionCallback
 
 import javax.ws.rs.BeanParam
 import javax.ws.rs.ext.Provider
-
 /**
  * Created by liangfu on 3/14/14.
  */
@@ -49,6 +51,9 @@ class UserLoginAttemptResourceImpl implements UserLoginAttemptResource {
 
     @Autowired
     private UserLoginAttemptValidator userLoginAttemptValidator
+
+    @Autowired
+    private PlatformTransactionManager transactionManager
 
     @Override
     Promise<UserLoginAttempt> create(UserLoginAttempt userLoginAttempt) {
@@ -111,8 +116,14 @@ class UserLoginAttemptResourceImpl implements UserLoginAttemptResource {
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     Promise<UserLoginAttempt> createInNewTran(UserLoginAttempt userLoginAttempt) {
-        return userLoginAttemptRepository.create(userLoginAttempt)
+        AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager)
+        template.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW)
+        return template.execute(new TransactionCallback<Promise<UserLoginAttempt>>() {
+            Promise<UserLoginAttempt> doInTransaction(TransactionStatus txnStatus) {
+                return userLoginAttemptRepository.create(userLoginAttempt)
+            }
+        }
+        )
     }
 }

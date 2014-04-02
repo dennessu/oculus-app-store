@@ -11,7 +11,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.junbo.common.id.*;
 import com.junbo.common.util.EnumRegistry;
 import com.junbo.identity.data.identifiable.UserPasswordStrength;
-import com.junbo.identity.data.identifiable.UserProfileType;
 import com.junbo.identity.spec.error.AppErrors;
 import org.springframework.util.StringUtils;
 
@@ -158,7 +157,7 @@ public class CommonMapper {
             return UserPasswordStrength.valueOf(UserPasswordStrength.class, passwordStrength).getId();
         }
         catch (Exception e) {
-            throw AppErrors.INSTANCE.enumConversionError(passwordStrength, "UserPasswordStrength").exception();
+            throw AppErrors.INSTANCE.fieldInvalid("passwordStrength").exception();
         }
     }
 
@@ -168,29 +167,6 @@ public class CommonMapper {
         }
         else {
             return EnumRegistry.resolve(userPasswordStrength, UserPasswordStrength.class).toString();
-        }
-    }
-
-    public Short explicitMethod_toUserProfileType(String userProfileType) {
-        if(!StringUtils.isEmpty(userProfileType)) {
-            try {
-                return UserProfileType.valueOf(UserProfileType.class, userProfileType).getId();
-            }
-            catch (Exception e) {
-                throw AppErrors.INSTANCE.enumConversionError(userProfileType, "UserProfileType").exception();
-            }
-        }
-        else {
-            return null;
-        }
-    }
-
-    public String explicitMethod_toUserProfileType(Short userProfileType) {
-        if(userProfileType == null) {
-            return null;
-        }
-        else {
-            return EnumRegistry.resolve(userProfileType, UserProfileType.class).toString();
         }
     }
 

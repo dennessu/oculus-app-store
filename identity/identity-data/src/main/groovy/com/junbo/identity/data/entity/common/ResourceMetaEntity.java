@@ -13,24 +13,6 @@ import java.util.Date;
  */
 @MappedSuperclass
 public abstract class ResourceMetaEntity {
-    @Column(name = "version")
-    @Version
-    private Integer resourceAge;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "created_time")
-    private Date createdTime;
-
-    @Column(name = "created_by")
-    private String createdBy;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "modified_time")
-    private Date updatedTime;
-
-    @Column(name = "modified_by")
-    private String updatedBy;
-
     public Integer getResourceAge() {
         return resourceAge;
     }
@@ -71,4 +53,17 @@ public abstract class ResourceMetaEntity {
         this.updatedBy = updatedBy;
     }
 
+    @Column(name = "version")
+    @Version
+    private Integer resourceAge;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "created_time")
+    private Date createdTime;
+    @Column(name = "created_by")
+    private String createdBy;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "modified_time")
+    private Date updatedTime;
+    @Column(name = "modified_by")
+    private String updatedBy;
 }

@@ -16,9 +16,12 @@ import com.junbo.oom.core.MappingContext
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.stereotype.Component
+
 /**
  * Created by liangfu on 3/17/14.
  */
+@Component
 @CompileStatic
 class UserSecurityQuestionRepositoryImpl implements UserSecurityQuestionRepository {
     @Autowired
@@ -26,7 +29,6 @@ class UserSecurityQuestionRepositoryImpl implements UserSecurityQuestionReposito
     private UserSecurityQuestionDAO userSecurityQuestionDAO
 
     @Autowired
-    @Qualifier('identityModelMapperImpl')
     private ModelMapper modelMapper
 
     @Override

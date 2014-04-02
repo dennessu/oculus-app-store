@@ -82,7 +82,7 @@ class PropertyUtil {
         def executableType = (ExecutableType) processingEnv.typeUtils.asMemberOf((DeclaredType) typeElement.asType(),
                 executableElement)
 
-        return executableType.parameterTypes[0]
+        return (TypeMirror)(executableType.parameterTypes[0])
     }
 
     static TypeMirror getGetterType(TypeModel type, ExecutableElement executableElement,

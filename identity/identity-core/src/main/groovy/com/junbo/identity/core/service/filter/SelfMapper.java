@@ -58,6 +58,9 @@ public interface SelfMapper {
     UserSecurityQuestionAttempt mergeUserSecurityQuestionAttempt(UserSecurityQuestionAttempt source,
                                                       UserSecurityQuestionAttempt base, MappingContext mappingContext);
 
+    UserEmail filterUserEmail(UserEmail userEmail, MappingContext context);
+    UserEmail mergeUserEmail(UserEmail source, UserEmail base, MappingContext context);
+
     UserTos filterUserTos(UserTos userTos, MappingContext context);
     UserTos mergeUserTos(UserTos source, UserTos base, MappingContext context);
 }

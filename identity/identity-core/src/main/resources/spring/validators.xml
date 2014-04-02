@@ -215,4 +215,24 @@
         <property name="userRepository" ref="userRepository" />
         <property name="userTosRepository" ref="userTosRepository" />
     </bean>
+
+    <bean id="userEmailValidator" class="com.junbo.identity.core.service.validator.impl.UserEmailValidatorImpl">
+        <property name="userRepository" ref="userRepository" />
+        <property name="userEmailRepository" ref="userEmailRepository" />
+        <property name="allowedEmailPatterns">
+            <list>
+                <!--  todo: need to refactor this -->
+                <value>[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}</value>
+            </list>
+        </property>
+        <property name="allowedEmailTypes">
+            <list>
+                <value>google</value>
+                <value>hotmail</value>
+                <value>qq</value>
+            </list>
+        </property>
+        <property name="emailMinLength" value="5" />
+        <property name="emailMaxLength" value="255" />
+    </bean>
 </beans>

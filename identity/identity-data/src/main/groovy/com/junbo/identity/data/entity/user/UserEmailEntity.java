@@ -17,28 +17,8 @@ import javax.persistence.Table;
  * Created by liangfu on 3/16/14.
  */
 @Entity
-@Table(name="user_email")
+@Table(name = "user_email")
 public class UserEmailEntity extends ResourceMetaEntity {
-    @Id
-    @Column(name = "id")
-    private Long id;
-
-    @SeedId
-    @Column(name = "user_id")
-    private Long userId;
-
-    @Column(name = "value")
-    private String value;
-
-    @Column(name = "type")
-    private String type;
-
-    @Column(name = "is_primary")
-    private Boolean primary;
-
-    @Column(name = "is_verified")
-    private Boolean verified;
-
     public Long getId() {
         return id;
     }
@@ -86,4 +66,19 @@ public class UserEmailEntity extends ResourceMetaEntity {
     public void setVerified(Boolean verified) {
         this.verified = verified;
     }
+
+    @Id
+    @Column(name = "id")
+    private Long id;
+    @SeedId
+    @Column(name = "user_id")
+    private Long userId;
+    @Column(name = "value")
+    private String value;
+    @Column(name = "type")
+    private String type;
+    @Column(name = "is_primary")
+    private Boolean primary;
+    @Column(name = "is_verified")
+    private Boolean verified;
 }

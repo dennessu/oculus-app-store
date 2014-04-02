@@ -18,15 +18,6 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "user_name_reverse_index")
 public class UserNameReverseIndexEntity {
-
-    @Id
-    @SeedId
-    @Column(name = "user_name")
-    private String username;
-
-    @Column(name = "user_id")
-    private Long userId;
-
     public String getUsername() {
         return username;
     }
@@ -42,4 +33,11 @@ public class UserNameReverseIndexEntity {
     public void setUserId(Long userId) {
         this.userId = userId;
     }
+
+    @Id
+    @SeedId
+    @Column(name = "user_name")
+    private String username;
+    @Column(name = "user_id")
+    private Long userId;
 }

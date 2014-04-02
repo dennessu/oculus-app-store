@@ -261,21 +261,21 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userEmail.setVerified(true)
         userEmail.setCreatedBy('lixia')
         userEmail.setCreatedTime(new Date())
-        userEmail = userEmailRepository.save(userEmail)
+        userEmail = userEmailRepository.create(userEmail).wrapped().get()
 
-        UserEmail newUserEmail = userEmailRepository.get(userEmail.getId())
+        UserEmail newUserEmail = userEmailRepository.get(userEmail.getId()).wrapped().get()
         Assert.assertEquals(userEmail.getValue(), newUserEmail.getValue())
 
         String value = UUID.randomUUID().toString()
         newUserEmail.setValue(value)
         userEmailRepository.update(newUserEmail)
 
-        newUserEmail = userEmailRepository.get(userEmail.getId())
+        newUserEmail = userEmailRepository.get(userEmail.getId()).wrapped().get()
         Assert.assertEquals(newUserEmail.getValue(), value)
 
         UserEmailListOptions getOption = new UserEmailListOptions()
         getOption.setValue(value)
-        List<UserEmail> userEmails = userEmailRepository.search(getOption)
+        List<UserEmail> userEmails = userEmailRepository.search(getOption).wrapped().get()
         Assert.assertEquals(userEmails.size(), 1)
     }
 

@@ -58,7 +58,7 @@ public class UserPasswordUtil {
 
     public static void validatePassword(String password) {
         if(StringUtils.isEmpty(password)) {
-            throw AppErrors.INSTANCE.invalidPassword("Password is null or empty.").exception();
+            throw AppErrors.INSTANCE.fieldInvalid("password").exception();
         }
 
         if(!isValidLength(password)) {

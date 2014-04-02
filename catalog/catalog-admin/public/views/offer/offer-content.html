@@ -76,4 +76,10 @@
         <td>Available Countries</td>
         <td>{{ offer.eligibleCountries }}</td>
     </tr>
+    <tr ng-repeat="(key, value) in offer.properties">
+        <td>{{ offerMetaDefinitions[key].display  || key }}</td>
+        <td>
+            {{ offer.properties[key] }}
+        </td>
+    </tr>
 </table>

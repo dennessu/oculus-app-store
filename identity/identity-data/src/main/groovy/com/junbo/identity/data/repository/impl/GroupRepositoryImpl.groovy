@@ -39,7 +39,6 @@ class GroupRepositoryImpl implements GroupRepository {
     private GroupUserDAO groupUserDAO
 
     @Autowired
-    @Qualifier('identityModelMapperImpl')
     private ModelMapper modelMapper
 
     @Autowired
