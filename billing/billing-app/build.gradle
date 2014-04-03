@@ -2,6 +2,7 @@ apply plugin: 'groovy'
 
 dependencies {
     compile project(':billing-rest')
+    compile project(':billing-jobs')
 
     compile (libraries.jersey_container_grizzly2_http)
     compile (libraries.jersey_spring3)
