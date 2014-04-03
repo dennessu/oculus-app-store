@@ -12,6 +12,7 @@ import com.junbo.ewallet.db.entity.WalletEntity;
 import com.junbo.ewallet.db.entity.WalletLotEntity;
 import com.junbo.ewallet.spec.def.Currency;
 import com.junbo.ewallet.spec.def.Status;
+import com.junbo.ewallet.spec.def.WalletLotType;
 import com.junbo.ewallet.spec.def.WalletType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;

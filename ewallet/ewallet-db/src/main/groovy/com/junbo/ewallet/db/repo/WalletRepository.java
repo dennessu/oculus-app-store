@@ -12,7 +12,7 @@ import com.junbo.ewallet.db.entity.TransactionEntity;
 import com.junbo.ewallet.db.entity.WalletEntity;
 import com.junbo.ewallet.db.entity.WalletLotEntity;
 import com.junbo.ewallet.db.entity.def.TransactionType;
-import com.junbo.ewallet.db.entity.def.WalletLotType;
+import com.junbo.ewallet.spec.def.WalletLotType;
 import com.junbo.ewallet.spec.def.WalletType;
 import com.junbo.ewallet.db.mapper.WalletMapper;
 import com.junbo.ewallet.spec.model.CreditRequest;
