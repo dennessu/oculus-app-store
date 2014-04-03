@@ -6,6 +6,7 @@
 
 package com.junbo.rating.spec.model.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.jackson.annotation.ShippingMethodId;
 import com.junbo.common.jackson.annotation.UserId;
 
@@ -26,6 +27,7 @@ public class OrderRatingRequest {
     private Set<OrderRatingItem> lineItems;
 
     @ShippingMethodId
+    @JsonProperty("defaultShippingMethod")
     private Long shippingMethodId;
 
     @Null
