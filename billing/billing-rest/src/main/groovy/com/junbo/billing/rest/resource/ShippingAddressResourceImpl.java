@@ -16,6 +16,7 @@ import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 
+import javax.ws.rs.core.Response;
 import java.util.List;
 
 /**
@@ -51,8 +52,8 @@ public class ShippingAddressResourceImpl implements ShippingAddressResource {
     }
 
     @Override
-    public Promise<Void> deleteShippingAddress(UserId userId, ShippingAddressId addressId) {
+    public Promise<Response> deleteShippingAddress(UserId userId, ShippingAddressId addressId) {
         shippingAddressService.deleteShippingAddress(userId.getValue(), addressId.getValue());
-        return Promise.pure(null);
+        return Promise.pure(Response.status(204).build());
     }
 }

@@ -2,6 +2,7 @@ include 'common-testlib'
 
 include 'identity-integration'
 include 'oauth-integration'
+include 'cart-integration'
 
 include 'integration-buyerscenario'
 include 'integration-catalogscenario'
