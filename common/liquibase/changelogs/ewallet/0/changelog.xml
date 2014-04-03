@@ -13,7 +13,7 @@
               user_id bigint not null,
               type smallint not null,
               status smallint not null,
-              currency int not null,
+              currency varchar(128) not null,
               balance money not null,
               created_time timestamp not null,
               created_by varchar(256) not null,

@@ -100,17 +100,30 @@ class WalletServiceImpl implements WalletService {
 
     @Override
     @Transactional
-    Wallet credit(Long walletId, CreditRequest creditRequest) {
+    Wallet credit(CreditRequest creditRequest) {
         if (creditRequest.type == null) {
             creditRequest.type = WalletLotType.CASH.toString()
         }
 
         validateAmount(creditRequest.amount)
 
-        Wallet wallet = get(walletId)
-        if (wallet.status.equalsIgnoreCase(Status.LOCKED.toString())) {
-            throw AppErrors.INSTANCE.locked(walletId).exception()
+        def wallet
+        if (creditRequest.walletId != null) {
+            wallet = walletRepo.get(creditRequest.walletId)
+        } else if (creditRequest.userId != null && creditRequest.currency != null) {
+            wallet = walletRepo.get(creditRequest.userId, creditRequest.type, creditRequest.currency)
+        } else {
+            throw AppErrors.INSTANCE.common('wallet or user and currency should not be null').exception()
         }
+
+        if (wallet == null) {
+            throw AppErrors.INSTANCE.common('wallet not found').exception()
+        }
+        checkUserId(wallet.userId)
+        if (wallet.status.equalsIgnoreCase(Status.LOCKED.toString())) {
+            throw AppErrors.INSTANCE.locked(wallet.walletId).exception()
+        }
+
         Wallet result = walletRepo.credit(wallet, creditRequest)
         return result
     }
@@ -148,8 +161,10 @@ class WalletServiceImpl implements WalletService {
 
     @Override
     @Transactional
-    List<Transaction> getTransactions(Long walletId) {
-        List<Transaction> result = walletRepo.getTransactions(walletId)
+    Wallet getTransactions(Long walletId) {
+        Wallet result = get(walletId)
+        List<Transaction> transactions = walletRepo.getTransactions(walletId)
+        result.transactions = transactions
         return result
     }
 

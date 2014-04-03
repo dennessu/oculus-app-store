@@ -6,7 +6,7 @@
 
 package com.junbo.ewallet.db.dao.hibernate;
 
-import com.junbo.ewallet.db.entity.hibernate.EntityWithCreated;
+import com.junbo.ewallet.db.entity.EntityWithCreated;
 import com.junbo.sharding.IdGenerator;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
