@@ -22,6 +22,7 @@
         <property name="cronExpression" value="${billing.jobs.balanceprocess.cronexpression}" />
     </bean>
 
+    <!-- Billing Balance Process Job -->
     <bean id="billingBalanceProcessJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
         <property name="targetObject" ref="billingBalanceProcessJob" />
         <property name="targetMethod" value="execute" />
