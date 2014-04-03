@@ -5,9 +5,11 @@
  */
 package com.junbo.test.buyerscenario.util;
 
+import com.junbo.test.buyerscenario.helper.TestDataProvider;
+import com.junbo.test.buyerscenario.helper.ValidationHelper;
 import com.junbo.test.common.Utility.TestClass;
-import com.junbo.test.common.Utility.TestDataProvider;
-import com.junbo.test.common.Utility.ValidationHelper;
+
+
 import com.junbo.test.common.libs.ConfigPropertiesHelper;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 

@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.test.common.apihelper.payment;
+package com.junbo.test.payment.apihelper;
 
 import com.junbo.payment.spec.model.PaymentInstrument;
 

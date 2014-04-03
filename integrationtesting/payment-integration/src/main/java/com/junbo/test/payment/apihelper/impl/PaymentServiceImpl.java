@@ -3,12 +3,12 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.test.common.apihelper.payment.impl;
+package com.junbo.test.payment.apihelper.impl;
 
 import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.test.common.apihelper.HttpClientBase;
-import com.junbo.test.common.apihelper.payment.PaymentService;
+import com.junbo.test.payment.apihelper.PaymentService;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
@@ -23,7 +23,7 @@ import java.util.List;
  */
 public class PaymentServiceImpl extends HttpClientBase implements PaymentService {
 
-    private static String paymentInstrumentUrl = RestUrl.getRestUrl(RestUrl.ComponentName.PAYMENT);
+    private static String paymentInstrumentUrl = RestUrl.getRestUrl(RestUrl.ComponentName.COMMERCE);
 
     private LogHelper logger = new LogHelper(PaymentServiceImpl.class);
 

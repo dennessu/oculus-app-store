@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.test.common.Utility;
+package com.junbo.test.buyerscenario.helper;
 
 import com.junbo.billing.spec.model.ShippingAddress;
 import com.junbo.cart.spec.model.Cart;
@@ -32,8 +32,6 @@ import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
 import com.junbo.test.common.apihelper.order.OrderService;
 import com.junbo.test.common.apihelper.order.impl.OrderServiceImpl;
 
-import com.junbo.test.common.apihelper.payment.PaymentService;
-import com.junbo.test.common.apihelper.payment.impl.PaymentServiceImpl;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.common.Entities.enums.Currency;
@@ -42,6 +40,8 @@ import com.junbo.test.common.libs.EnumHelper.UserStatus;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
 import com.junbo.test.common.libs.RandomFactory;
+import com.junbo.test.payment.apihelper.PaymentService;
+import com.junbo.test.payment.apihelper.impl.PaymentServiceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
