@@ -98,10 +98,11 @@
         <property name="sessionFactoryWrapper" ref="indexSessionFactoryWrapper" />
     </bean>
 
-    <bean id="userDAOTarget" class="com.junbo.identity.data.dao.impl.UserDAOImpl" parent="entityDAOBase" />
-    <bean id="userDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
-        <property name="daoInterface" value="com.junbo.identity.data.dao.UserDAO"/>
-        <property name="daoTarget" ref="userDAOTarget"/>
+    <bean id="userDAO" class="com.junbo.identity.data.dao.impl.UserDAOImpl">
+        <property name="sessionFactory" ref="identitySessionFactory"/>
+        <property name="shardAlgorithm" ref="userShardAlgorithm"/>
+        <property name="viewQueryFactory" ref="defaultViewQueryFactory"/>
+        <property name="idGenerator" ref="oculus48IdGenerator"/>
     </bean>
 
     <bean id="groupDAOTarget" class="com.junbo.identity.data.dao.impl.GroupDAOImpl" parent="entityDAOBase"/>
@@ -233,8 +234,8 @@
     </bean>
 
     <bean id="multimapDAO" class="com.junbo.sharding.view.DefaultMultimapDAO">
-        <property name="sessionFactoryWrapper" ref="indexSessionFactoryWrapper" />
-        <property name="shardAlgorithm" ref="userShardAlgorithm" />
+        <property name="sessionFactory" ref="indexSessionFactory" />
+        <property name="shardAlgorithm" ref="externalShardAlgorithm" />
     </bean>
 
     <bean id="entityListener" class="com.junbo.sharding.view.EntityListener">
@@ -245,5 +246,82 @@
     <bean id="defaultViewQueryFactory" class="com.junbo.sharding.view.DefaultViewQueryFactory">
         <property name="entityViewRepository" ref="defaultEntityViewRepository" />
         <property name="multimapDAO" ref="multimapDAO" />
+    </bean>
+
+
+    <bean id="indexDataSource" class="com.junbo.sharding.hibernate.ShardMultiTenantConnectionProviderFactoryBean">
+        <property name="jdbcUrls" value="${index.db.jdbcUrls}"/>
+
+        <property name="uniqueName" value="jdbc/index"/>
+        <property name="className" value="${index.db.driverClassName}"/>
+        <property name="minPoolSize" value="${index.db.minPoolSize}"/>
+        <property name="maxPoolSize" value="${index.db.maxPoolSize}"/>
+        <property name="driverProperties">
+            <props>
+                <prop key="user">${index.db.username}</prop>
+                <prop key="password">${index.db.password}</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="indexSessionFactory" class="com.junbo.sharding.hibernate.LocalSessionFactoryWithListenerBean">
+        <property name="jtaTransactionManager" ref="transactionManager"/>
+        <property name="hibernateProperties">
+            <map>
+                <entry key="hibernate.dialect" value="${sharding.hibernate.dialect}"/>
+                <entry key="hibernate.max_fetch_depth" value="${sharding.hibernate.max_fetch_depth}"/>
+                <entry key="hibernate.jdbc.fetch_size" value="${sharding.hibernate.jdbc.fetch_size}"/>
+                <entry key="hibernate.jdbc.batch_size" value="${sharding.hibernate.jdbc.batch_size}"/>
+                <entry key="hibernate.show_sql" value="${sharding.hibernate.show_sql}"/>
+
+                <entry key="hibernate.multiTenancy" value="SCHEMA"/>
+                <entry key="hibernate.current_session_context_class" value="com.junbo.sharding.hibernate.MultiTenantJTASessionContext"/>
+                <entry key="hibernate.tenant_identifier_resolver" value="com.junbo.sharding.hibernate.ShardCurrentTenantIdentifierResolver"/>
+                <entry key="hibernate.multi_tenant_connection_provider" value-ref="indexDataSource"/>
+                <entry key="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="identityDataSource" class="com.junbo.sharding.hibernate.ShardMultiTenantConnectionProviderFactoryBean">
+        <property name="jdbcUrls" value="${identity.db.jdbcUrls}"/>
+
+        <property name="uniqueName" value="jdbc/identity"/>
+        <property name="className" value="${identity.db.driverClassName}"/>
+        <property name="minPoolSize" value="${identity.db.minPoolSize}"/>
+        <property name="maxPoolSize" value="${identity.db.maxPoolSize}"/>
+        <property name="driverProperties">
+            <props>
+                <prop key="user">${identity.db.username}</prop>
+                <prop key="password">${identity.db.password}</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="identitySessionFactory" class="com.junbo.sharding.hibernate.LocalSessionFactoryWithListenerBean">
+        <property name="jtaTransactionManager" ref="transactionManager"/>
+        <property name="hibernateProperties">
+            <map>
+                <entry key="hibernate.dialect" value="${sharding.hibernate.dialect}"/>
+                <entry key="hibernate.max_fetch_depth" value="${sharding.hibernate.max_fetch_depth}"/>
+                <entry key="hibernate.jdbc.fetch_size" value="${sharding.hibernate.jdbc.fetch_size}"/>
+                <entry key="hibernate.jdbc.batch_size" value="${sharding.hibernate.jdbc.batch_size}"/>
+                <entry key="hibernate.show_sql" value="${sharding.hibernate.show_sql}"/>
+
+                <entry key="hibernate.multiTenancy" value="SCHEMA"/>
+                <entry key="hibernate.current_session_context_class" value="com.junbo.sharding.hibernate.MultiTenantJTASessionContext"/>
+                <entry key="hibernate.tenant_identifier_resolver" value="com.junbo.sharding.hibernate.ShardCurrentTenantIdentifierResolver"/>
+                <entry key="hibernate.multi_tenant_connection_provider" value-ref="identityDataSource"/>
+                <entry key="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
+            </map>
+        </property>
+
+        <property name="packagesToScan" value="com.junbo.identity.data.entity.*"/>
+        <property name="postInsertEventListeners" ref="entityListener" />
+        <property name="postUpdateEventListeners" ref="entityListener" />
+        <property name="postDeleteEventListeners" ref="entityListener" />
+        <property name="entityInterceptor">
+            <bean class="com.junbo.identity.data.dao.interceptor.AuditInterceptor" />
+        </property>
     </bean>
 </beans>

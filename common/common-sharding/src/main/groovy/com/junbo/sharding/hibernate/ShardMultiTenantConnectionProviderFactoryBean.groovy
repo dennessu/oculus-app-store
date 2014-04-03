@@ -104,7 +104,7 @@ class ShardMultiTenantConnectionProviderFactoryBean
             PropertyUtils.setProperties(result, PropertyUtils.getProperties(this))
 
             result.uniqueName = result.uniqueName + '_' + dataSourceMap.size()
-            result.properties.put('url', url)
+            result.driverProperties.put('url', url)
 
             result.init()
             dataSourceMap.put(url, result)
