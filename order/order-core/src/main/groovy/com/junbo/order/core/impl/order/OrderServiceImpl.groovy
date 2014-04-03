@@ -14,27 +14,24 @@ import com.junbo.order.core.FlowSelector
 import com.junbo.order.core.FlowType
 import com.junbo.order.core.OrderService
 import com.junbo.order.core.OrderServiceOperation
-import com.junbo.order.core.impl.common.CoreUtils
-import com.junbo.order.core.impl.common.OrderStatusBuilder
-import com.junbo.order.core.impl.common.OrderValidator
-import com.junbo.order.core.impl.common.TransactionHelper
+import com.junbo.order.core.impl.internal.OrderInternalService
+import com.junbo.order.core.impl.common.*
 import com.junbo.order.core.impl.orderaction.ActionUtils
 import com.junbo.order.core.impl.orderaction.context.OrderActionContext
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.error.AppErrors
-import com.junbo.order.spec.model.ApiContext
-import com.junbo.order.spec.model.Order
-import com.junbo.order.spec.model.OrderEvent
-import com.junbo.order.spec.model.OrderItem
+import com.junbo.order.spec.model.*
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
-import org.apache.commons.collections.CollectionUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+
+import javax.annotation.Resource
+
 /**
  * Created by chriszhu on 2/7/14.
  */
@@ -57,6 +54,8 @@ class OrderServiceImpl implements OrderService {
     @Qualifier('orderValidator')
     @Autowired
     OrderValidator orderValidator
+    @Resource(name = 'orderInternalService')
+    OrderInternalService orderInternalService
     private static final Logger LOGGER = LoggerFactory.getLogger(OrderServiceImpl)
 
 
@@ -71,6 +70,7 @@ class OrderServiceImpl implements OrderService {
         orderValidator.validateSettleOrderRequest(order)
 
         def orderServiceContext = initOrderServiceContext(order)
+        Throwable error
         flowSelector.select(orderServiceContext, OrderServiceOperation.SETTLE_TENTATIVE).then { FlowType flowType ->
             // Prepare Flow Request
             Map<String, Object> requestScope = [:]
@@ -80,10 +80,18 @@ class OrderServiceImpl implements OrderService {
             requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object) orderActionContext)
             executeFlow(flowType, orderServiceContext, requestScope)
         }.syncRecover { Throwable throwable ->
-            refreshOrderStatus(orderServiceContext.order)
-            throw throwable
+            error = throwable
         }.syncThen {
-            refreshOrderStatus(orderServiceContext.order)
+            if (orderServiceContext.order.tentative) {
+                LOGGER.info('name=Order_RollBack_To_Tentative, orderId={}', orderServiceContext.order.id)
+                transactionHelper.executeInTransaction {
+                    orderRepository.updateOrder(orderServiceContext.order, true)
+                }
+            }
+            orderInternalService.refreshOrderStatus(orderServiceContext.order)
+            if (error != null) {
+                throw error
+            }
             return orderServiceContext.order
         }
     }
@@ -113,7 +121,9 @@ class OrderServiceImpl implements OrderService {
     Promise<Order> createQuote(Order order, ApiContext context) {
         LOGGER.info('name=Create_Tentative_Order. userId: {}', order.user.value)
 
+        order.id = null
         setHonoredTime(order)
+
         def orderServiceContext = initOrderServiceContext(order)
         prepareOrder(order).then {
             flowSelector.select(orderServiceContext, OrderServiceOperation.CREATE_TENTATIVE).then { FlowType flowType ->
@@ -135,30 +145,7 @@ class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     Promise<Order> getOrderByOrderId(Long orderId) {
-
-        if (orderId == null) {
-            throw AppErrors.INSTANCE.fieldInvalid('orderId', 'orderId cannot be null').exception()
-        }
-        // get Order by id
-        def order = orderRepository.getOrder(orderId)
-        if (order == null) {
-            throw AppErrors.INSTANCE.orderNotFound().exception()
-        }
-        return Promise.pure(completeOrder(order))
-    }
-
-    private Order completeOrder(Order order) {
-        // order items
-        order.orderItems = orderRepository.getOrderItems(order.id.value)
-        if (order.orderItems == null) {
-            throw AppErrors.INSTANCE.orderItemNotFound().exception()
-        }
-        // payment instrument
-        order.setPaymentInstruments(orderRepository.getPaymentInstrumentIds(order.id.value))
-        // discount
-        order.setDiscounts(orderRepository.getDiscounts(order.id.value))
-        refreshOrderStatus(order)
-        return order
+        return orderInternalService.getOrderByOrderId(orderId)
     }
 
     @Override
@@ -173,21 +160,8 @@ class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    Promise<List<Order>> getOrdersByUserId(Long userId) {
-
-        if (userId == null) {
-            throw AppErrors.INSTANCE.fieldInvalid('userId', 'userId cannot be null').exception()
-        }
-
-        // get Orders by userId
-        def orders = orderRepository.getOrdersByUserId(userId)
-        if (CollectionUtils.isEmpty(orders)) {
-            throw AppErrors.INSTANCE.orderNotFound().exception()
-        }
-        orders.each { Order order ->
-            completeOrder(order)
-        }
-        return Promise.pure(orders)
+    Promise<List<Order>> getOrdersByUserId(Long userId, OrderQueryParam orderQueryParam, PageParam pageParam) {
+        return orderInternalService.getOrdersByUserId(userId, orderQueryParam, pageParam)
     }
 
     @Override
@@ -203,25 +177,7 @@ class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     Order getOrderByTrackingUuid(UUID trackingUuid) {
-        if (trackingUuid == null) {
-            return null
-        }
-        def order = orderRepository.getOrderByTrackingUuid(trackingUuid)
-        if (order != null) {
-            completeOrder(order)
-        }
-        return order
-    }
-
-    private void refreshOrderStatus(Order order) {
-        transactionHelper.executeInTransaction {
-            def status = OrderStatusBuilder.buildOrderStatus(order,
-                    orderRepository.getOrderEvents(order.id.value))
-            if (status != order.status) {
-                order.status = status
-                orderRepository.updateOrder(order, true)
-            }
-        }
+        return orderInternalService.getOrderByTrackingUuid(trackingUuid)
     }
 
     private Promise<OrderServiceContext> executeFlow(

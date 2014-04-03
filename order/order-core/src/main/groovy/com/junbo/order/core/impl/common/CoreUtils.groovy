@@ -50,4 +50,14 @@ class CoreUtils {
         }
         return false
     }
+
+    static Boolean isRateExpired(Order order) {
+        if (order.honorUntilTime == null) {
+            return true
+        }
+        if (order.honorUntilTime > new Date()) {
+            return true
+        }
+        return false
+    }
 }

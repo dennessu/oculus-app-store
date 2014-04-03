@@ -10,13 +10,13 @@ import com.junbo.oom.core.Mapper;
 import com.junbo.oom.core.Mapping;
 import com.junbo.oom.core.MappingContext;
 import com.junbo.oom.core.Mappings;
-import com.junbo.billing.db.address.ShippingAddressEntity;
-import com.junbo.billing.db.balance.BalanceEntity;
-import com.junbo.billing.db.balance.BalanceItemEntity;
-import com.junbo.billing.db.balance.DiscountItemEntity;
-import com.junbo.billing.db.balance.TaxItemEntity;
-import com.junbo.billing.db.currency.CurrencyEntity;
-import com.junbo.billing.db.transaction.TransactionEntity;
+import com.junbo.billing.db.entity.ShippingAddressEntity;
+import com.junbo.billing.db.entity.BalanceEntity;
+import com.junbo.billing.db.entity.BalanceItemEntity;
+import com.junbo.billing.db.entity.DiscountItemEntity;
+import com.junbo.billing.db.entity.TaxItemEntity;
+import com.junbo.billing.db.entity.CurrencyEntity;
+import com.junbo.billing.db.entity.TransactionEntity;
 import com.junbo.billing.spec.model.*;
 
 /**
@@ -104,8 +104,7 @@ public interface ModelMapper {
     @Mappings({
             @Mapping(source = "typeId", target = "type", explicitMethod = "convertTransactionType"),
             @Mapping(source = "statusId", target = "status", explicitMethod = "convertTransactionStatus"),
-            @Mapping(source = "createdTime", target = "insertedDate", excluded = true, bidirectional = false),
-            @Mapping(source = "updatedTime", target = "updatedDate", excluded = true, bidirectional = false),
+            @Mapping(source = "createdTime", target = "transactionTime", bidirectional = false),
     })
     Transaction toTransaction(TransactionEntity entity, MappingContext context);
 

@@ -7,7 +7,7 @@
 package com.junbo.billing.db.repository;
 
 import com.junbo.oom.core.MappingContext;
-import com.junbo.billing.db.currency.CurrencyEntity;
+import com.junbo.billing.db.entity.CurrencyEntity;
 import com.junbo.billing.db.dao.CurrencyEntityDao;
 import com.junbo.billing.db.mapper.ModelMapper;
 import com.junbo.billing.spec.model.Currency;

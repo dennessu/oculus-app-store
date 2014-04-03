@@ -73,7 +73,7 @@ public class EmailValidatorImpl extends CommonValidator implements EmailValidato
         if(template.getListOfVariables() != null) {
             List<String> variables = toLowerCase(template.getListOfVariables());
             for(String key : email.getProperties().keySet()) {
-                if(!variables.contains(key.replaceAll("\\d*$","").toLowerCase())) {
+                if(!variables.contains(key.replaceAll("\\d*(:\\w*)?$","").toLowerCase())) {
                     throw AppErrors.INSTANCE.invalidProperty(key).exception();
                 }
             }

@@ -12,10 +12,14 @@ var PaymentRoutes = {
         setupController: function(controller, model){
 
             var provider = new PaymentProvider();
-            provider.PaymentInstruments(Utils.GenerateRequestModel(null), function(result){
+            provider.GetPayments(Utils.GenerateRequestModel(null), function(result){
                 if(result.data.status == 200){
                     var payments = JSON.parse(result.data.data).results;
                     var paymentList = new Array();
+                    paymentList.push({
+                        t: "Please choose",
+                        v: ""
+                    });
                     for(var i = 0; i < payments.length; ++i){
                         var item = payments[i];
                         paymentList.push({
@@ -37,7 +41,7 @@ var PaymentRoutes = {
         },
         setupController:function(controller, model){
             var identityProvider = new IdentityProvider();
-            identityProvider.GetProfile(Utils.GenerateRequestModel(null), function(resultData){
+            identityProvider.GetPayinProfiles(Utils.GenerateRequestModel(null), function(resultData){
                 if(resultData.data.status == 200){
                     var birthday = new Date(JSON.parse(resultData.data.data).dateOfBirth);
                     var nowYear = new Date().getFullYear();

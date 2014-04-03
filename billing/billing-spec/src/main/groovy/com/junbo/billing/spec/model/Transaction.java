@@ -12,6 +12,7 @@ import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.common.id.TransactionId;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * Created by xmchen on 14-2-24.
@@ -27,6 +28,7 @@ public class Transaction {
     private String status;
     private BigDecimal amount;
     private String currency;
+    private Date transactionTime;
 
     public TransactionId getTransactionId() {
         return transactionId;
@@ -90,5 +92,13 @@ public class Transaction {
 
     public void setCurrency(String currency) {
         this.currency = currency;
+    }
+
+    public Date getTransactionTime() {
+        return transactionTime;
+    }
+
+    public void setTransactionTime(Date transactionTime) {
+        this.transactionTime = transactionTime;
     }
 }

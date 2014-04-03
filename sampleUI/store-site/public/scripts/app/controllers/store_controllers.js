@@ -46,7 +46,7 @@ var StoreControllers = {
                         qty: defaultCount
                     }]};
 
-                    provider.Add(Utils.GenerateRequestModel(data), function(resultData){
+                    provider.AddCartItem(Utils.GenerateRequestModel(data), function(resultData){
                         var resultModel = resultData.data;
                         if (resultModel.status == 200) {
                             console.log("[DetailController:AddToCartHandler] Success");
@@ -84,9 +84,47 @@ var StoreControllers = {
             });
         }.property("@each.qty"),
 
+        statusChange: function(){
+            var _self = this;
+            var cartItmes = new Array();
+
+            this.forEach(function(item, index, enumerable){
+                cartItmes.push({
+                    product_id: item.get("product_id"),
+                    selected: item.get("selected"),
+                    qty: item.get("qty")
+                });
+            });
+
+            var data = {"cart_items": cartItmes};
+
+            var provider = new CartProvider();
+            provider.UpdateCartItem(Utils.GenerateRequestModel(data), function(resultData){
+                var resultModel = resultData.data;
+                if (resultModel.status == 200) {
+                    console.log("[CartItemController:Change Status] Success");
+                    _self.set("errMessage", null);
+                } else {
+                    console.log("[CartItemController:Change Status] Failed!");
+                    _self.set("errMessage", Utils.GetErrorMessage(resultModel));
+                }
+            });
+        }.property("@each.selected"),
+
         actions: {
             Checkout: function(){
                 var _self = this;
+                var hasSelected = false;
+                _self.get("model").forEach(function(item){
+                    if(item.get("selected") == true){
+                        hasSelected = true;
+                    }
+                });
+                if(!hasSelected){
+                    alert("Please choose an items!");
+                    return;
+                }
+
                 if(App.AuthManager.isAuthenticated()){
                     console.log("[CartController:CheckOut]");
 
@@ -99,6 +137,17 @@ var StoreControllers = {
 
                             // set order id to cookie
                             Utils.Cookies.Set(AppConfig.CookiesName.OrderId, order.self.id);
+                            // clear shipping method and shipping address cookies
+                            Utils.Cookies.Remove(AppConfig.CookiesName.ShippingMethodId);
+                            Utils.Cookies.Remove(AppConfig.CookiesName.ShippingId);
+
+                            _self.get("model").forEach(function(item){
+                                if(item.get("selected") == true){
+                                    console.log("Selected Product Id:", item.get("product_id"));
+                                    item.deleteRecord();
+                                    item.save();
+                                }
+                            });
 
                             var allDigital = true;
                             for(var i = 0; i < order.orderItems.length; ++i){
@@ -119,11 +168,10 @@ var StoreControllers = {
                     });
                 }else{
                     Utils.Cookies.Set(AppConfig.CookiesName.BeforeRoute, "cart");
-                    location.href = AppConfig.LoginUrl;
+                    location.href = AppConfig.Runtime.LoginUrl;
                 }
             }
         }
-
     }),
 
     CartItemController: Ember.ObjectController.extend({
@@ -150,35 +198,8 @@ var StoreControllers = {
             }
         }.observes('model.qty'),
 
-
-        changeStatus: function(){
-            var _self = this;
-            console.log("[Change Status]:", _self.get("model.selected"));
-
-            var data = {"cart_items": [{
-                product_id: _self.get("model.product_id"),
-                selected: _self.get("model.selected"),
-                qty: _self.get("model.qty")
-            }]};
-
-            var provider = new CartProvider();
-            provider.Update(Utils.GenerateRequestModel(data), function(resultData){
-                var resultModel = resultData.data;
-                if (resultModel.status == 200) {
-                    console.log("[CartItemController:Change Status] Success");
-                    _self.set("errMessage", null);
-                } else {
-                    console.log("[CartItemController:Change Status] Failed!");
-                    _self.set("errMessage", Utils.GetErrorMessage(resultModel));
-
-                    //TODO: ?
-                }
-            });
-        }.observes('selected'),
-
-
         actions: {
-            Change: function(value){
+            ChangeCount: function(value){
                 var _self = this;
 
                 if(value != undefined && !isNaN(value) && value > 0){
@@ -191,7 +212,7 @@ var StoreControllers = {
                     }]};
 
                     var provider = new CartProvider();
-                    provider.Update(Utils.GenerateRequestModel(data), function(resultData){
+                    provider.UpdateCartItem(Utils.GenerateRequestModel(data), function(resultData){
                         var resultModel = resultData.data;
                         if (resultModel.status == 200) {
                             console.log("[CartItemController:change] Success");
@@ -218,15 +239,15 @@ var StoreControllers = {
                 }]};
 
                 var provider = new CartProvider();
-                provider.Remove(Utils.GenerateRequestModel(data), function(resultData){
+                provider.RemoveCartItem(Utils.GenerateRequestModel(data), function(resultData){
                     var resultModel = resultData.data;
                     if (resultModel.status == 200) {
                         console.log("[CartItemController:removeItem] Success");
-                        _self.set("errMessage", null);
+
+                        item.deleteRecord();
+                        item.save();
                     } else {
                         console.log("[CartItemController:removeItem] Failed!");
-                        _self.set("errMessage", Utils.GetErrorMessage(resultModel));
-
                         //TODO: ?
                     }
                 });
@@ -248,6 +269,11 @@ var StoreControllers = {
                 result+= item.subTotal;
             });
             return result
+        }.property("content.products"),
+
+        total: function(){
+            //console.log("Sum Total", this.get("content.totalAmount"), " ", this.get("content.totalTax"));
+            return parseFloat(this.get("content.totalAmount")) + parseFloat(this.get("content.tax"));
         }.property("content.products"),
 
         actions:{

@@ -6,20 +6,14 @@ var Auth = require('./auth');
 
 module.exports = function(app){
 
-    /*
-        Application
-        1.Store
-        2.Auth
-    */
-
     // Application
     app.get('/', function(req, res){
         res.render("index",
             {
                 layout: false,
                 title: "Store Demo",
-                loginUrl: process.AppConfig.Urls.GetLoginUrl(req),
-                registerUrl: process.AppConfig.Urls.GetRegisterUrl(req)
+                loginUrl: process.AppConfig.Runtime.LoginUrl,
+                registerUrl: process.AppConfig.Runtime.RegisterUrl
             });
     });
     app.get('/Identity', function(req, res){
@@ -28,8 +22,6 @@ module.exports = function(app){
 
     // Config
     app.get('/config', function(req, res){
-        ClientConfigs["LoginUrl"] = process.AppConfig.Urls.GetLoginUrl(req);
-
         ClientConfigs = Utils.FillObject(ClientConfigs, process.AppConfig, 1);
 
         res.json(ClientConfigs);
@@ -46,7 +38,7 @@ module.exports = function(app){
     // Redirect back handler
     app.get('/Callback/Login', Auth.Login);
     app.get('/Callback/Register', Auth.Register);
-    app.get('/Logout', Auth.Register);
+    app.get('/Callback/Logout', Auth.Logout);
 
     // API Rest
 

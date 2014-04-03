@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <import resource="classpath*:spring/*-context.xml"/>
+
+    <import resource="classpath*:spring/transaction.xml"/>
+
+    <bean id="baseTest" class="com.junbo.notification.core.BaseTest">
+        <!-- static injection -->
+        <property name="brokerUrl" value="${notification.activemq.brokerURL}"/>
+    </bean>
+
+    <bean id="emailPublisher" class="com.junbo.notification.core.EmailPublisher" parent="basePublisher">
+        <property name="template" ref="emailJmsTemplate"/>
+        <property name="destination" ref="emailQueue"/>
+    </bean>
+</beans>

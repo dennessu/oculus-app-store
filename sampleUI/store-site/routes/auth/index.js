@@ -18,7 +18,7 @@ exports.Login = function (req, res) {
             function (cb) {
                 var model = new CodeMode();
                 model.code = code;
-                model.redirect_uri = process.AppConfig.Urls.GetCallbackLoginUrl(req);
+                model.redirect_uri = process.AppConfig.Runtime.LoginCallbackUrl;
 
                 identity.PostTokenInfoByCode(model, function (result) {
                     if (result.StatusCode == 200) {
@@ -26,6 +26,7 @@ exports.Login = function (req, res) {
                             var resObj = JSON.parse(result.Data);
                             if (typeof(resObj[process.AppConfig.FieldNames.AccessToken]) != "undefined") {
                                 store.Set(process.AppConfig.CookiesName.AccessToken, resObj[process.AppConfig.FieldNames.AccessToken]);
+                                store.Set(process.AppConfig.CookiesName.IdToken, resObj[process.AppConfig.FieldNames.IdToken]);
 
                                 cb(null, resObj[process.AppConfig.FieldNames.AccessToken]);
                             } else {
@@ -43,7 +44,7 @@ exports.Login = function (req, res) {
                 });
             },
             function (accessToken, cb) {
-                identity.GetTokenInfo(accessToken, null, function (result) {
+                identity.GetTokenInfo(accessToken, function (result) {
                     if (result.StatusCode == 200) {
                         if (typeof(result.Data) != "undefined" && result.Data != null) {
                             var resObj = JSON.parse(result.Data);
@@ -66,7 +67,7 @@ exports.Login = function (req, res) {
                 });
             },
             function (userId, cb) {
-                identity.GetUser(userId, function(result){
+                identity.GetUserById(userId, function(result){
                     if (result.StatusCode == 200) {
                         if (typeof(result.Data) != "undefined" && result.Data != null) {
                             var resObj = JSON.parse(result.Data);

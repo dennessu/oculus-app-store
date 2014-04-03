@@ -1,8 +1,8 @@
 
 var http = require("http");
 var QueryString = require("querystring");
+var Utils = require('./utils');
 var APIResultModel = require("./result_model");
-var Utils = require("./utils");
 
 var RestClient = function(){};
 
@@ -24,7 +24,7 @@ RestClient.GetDefaultOptions = function(){
 
 RestClient.prototype.Request = function(options, data, cb){
 
-  console.log("HTTP Request ------------------------------------");
+  console.log("HTTP Request --------------------", new Date());
   console.log("Request Options:\n", options);
   console.log("Request Data:\n", JSON.stringify(data));
 
@@ -58,7 +58,7 @@ RestClient.prototype.Request = function(options, data, cb){
   // Create request
   var request = http.request(requestOpts, function(res){
 
-    console.log("HTTP Response ---------------------------------------");
+    console.log("HTTP Response -----------------", new Date());
     console.log("[" + requestOpts.method+ "]", requestOpts.path);
     console.log('Response Status: ', res.statusCode);
     console.log('Response Headers: \n', res.headers);
@@ -71,17 +71,16 @@ RestClient.prototype.Request = function(options, data, cb){
       resData += chunk;
     });
     res.on('end', function(){
-      console.log("------------");
       console.log("Receive Data:\n", resData);
       console.log("-------------------------------------------------------");
 
-      RestClient.CallBack(res, resData, null, cb);
+      RestClient.CallBack(res, resData, cb);
     });
   });
 
   request.on("error", function(e){
     console.log("Request Error:\n" + e.message);
-    RestClient.CallBack(e, null, null, cb);
+    RestClient.CallBack(null, e, cb);
   });
 
   if(data != null && typeof(data) != "undefined"){
@@ -91,7 +90,7 @@ RestClient.prototype.Request = function(options, data, cb){
   request.end();
 };
 
-RestClient.CallBack = function(res, data, err, cb){
+RestClient.CallBack = function(res, data, cb){
   var result = new APIResultModel();
   if(res != null){
     result.StatusCode = res.statusCode;
@@ -101,7 +100,6 @@ RestClient.CallBack = function(res, data, err, cb){
     result.Headers = null;
   }
   result.Data = data;
-  result.HttpError = err;
 
   cb(result);
 };

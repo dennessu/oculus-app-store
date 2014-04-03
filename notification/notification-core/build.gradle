@@ -1,18 +1,30 @@
 apply plugin: 'java'
 
 dependencies {
-    compile (libraries.spring_core)
-    compile (libraries.spring_expression)
-    compile (libraries.spring_tx)
-    compile (libraries.spring_aop)
-    compile (libraries.spring_context)
-    compile (libraries.spring_expression)
+    compile(libraries.common_lib)
+    compile(libraries.common_sharding)
+    compile(libraries.common_configuration)
+
+    compile(libraries.spring_core)
+    compile(libraries.spring_expression)
+    compile(libraries.spring_tx)
+    compile(libraries.spring_aop)
+    compile(libraries.spring_context)
+    compile(libraries.spring_expression)
+
+    compile(libraries.log4j)
+    compile(libraries.slf4j_api)
+    compile(libraries.log4j_over_slf4j)
+    compile(libraries.jul_to_slf4j)
+    compile(libraries.jcl_over_slf4j)
+    compile(libraries.slf4j_api)
+    compile 'org.slf4j:slf4j-simple:1.7.6'
 
     compile 'org.springframework:spring-jms:4.0.2.RELEASE'
     compile 'org.apache.activemq:activemq-all:5.7.0'
     compile 'org.apache.xbean:xbean-spring:3.16'
-    compile 'javax:javaee-api:6.0'
+    compile 'javax:javaee-api:7.0'
 
-    testCompile (libraries.spring_test)
+    testCompile(libraries.spring_test)
 }
 

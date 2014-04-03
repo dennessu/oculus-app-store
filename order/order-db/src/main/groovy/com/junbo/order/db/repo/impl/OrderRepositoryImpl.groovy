@@ -9,6 +9,7 @@ import com.google.common.collect.HashMultimap
 import com.junbo.common.id.OrderId
 import com.junbo.common.id.OrderItemId
 import com.junbo.common.id.PaymentInstrumentId
+import com.junbo.common.id.PreorderId
 import com.junbo.oom.core.MappingContext
 import com.junbo.order.db.dao.*
 import com.junbo.order.db.entity.*
@@ -88,7 +89,6 @@ class OrderRepositoryImpl implements OrderRepository {
         savePaymentInstruments(order.id, order.paymentInstruments)
 
         // Save Order Item Tax Info
-        // Save Order Item Preorder Info
         return order
     }
 
@@ -100,9 +100,10 @@ class OrderRepositoryImpl implements OrderRepository {
     }
 
     @Override
-    List<Order> getOrdersByUserId(Long userId) {
+    List<Order> getOrdersByUserId(Long userId, OrderQueryParam orderQueryParam, PageParam pageParam) {
         List<Order> orders = []
-        List<OrderEntity> orderEntities = orderDao.readByUserId(userId)
+        List<OrderEntity> orderEntities = orderDao.readByUserId(userId,
+                orderQueryParam.tentative, pageParam?.start, pageParam?.count)
         MappingContext context = new MappingContext()
         orderEntities.each { OrderEntity orderEntity ->
             orders.add(modelMapper.toOrderModel(orderEntity, context))
@@ -200,15 +201,18 @@ class OrderRepositoryImpl implements OrderRepository {
         if (CollectionUtils.isEmpty(orderEvents)) {
             return null
         }
+
         // assert all the order events are linked to the same order
+        checkEventsOrder(orderEvents, orderEvents[0].orderId)
+
         def orderEntity = orderDao.read(orderEvents[0].orderId)
         return modelMapper.toOrderModel(orderEntity, new MappingContext())
     }
 
     @Override
-    List<OrderEvent> getOrderEvents(Long orderId) {
+    List<OrderEvent> getOrderEvents(Long orderId, PageParam pageParam) {
         List<OrderEvent> events = []
-        orderEventDao.readByOrderId(orderId).each { OrderEventEntity entity ->
+        orderEventDao.readByOrderId(orderId, pageParam?.start, pageParam?.count).each { OrderEventEntity entity ->
             OrderEvent event = modelMapper.toOrderEventModel(entity, new MappingContext())
             events << event
         }
@@ -217,6 +221,16 @@ class OrderRepositoryImpl implements OrderRepository {
                     orderEventsNumThreshHold, events.size())
         }
         return events
+    }
+
+    @Override
+    List<PreorderInfo> getPreorderInfo(Long orderItemId) {
+        List<PreorderInfo> preorderInfoList = []
+        MappingContext context = new MappingContext()
+        orderItemPreorderInfoDao.readByOrderItemId(orderItemId).each { OrderItemPreorderInfoEntity entity ->
+            preorderInfoList << modelMapper.toPreOrderInfoModel(entity, context)
+        }
+        return preorderInfoList
     }
 
     void saveOrderItems(OrderId orderId, List<OrderItem> orderItems) {
@@ -349,6 +363,16 @@ class OrderRepositoryImpl implements OrderRepository {
             orderItem.orderItemId = new OrderItemId(idGeneratorFacade.nextId(OrderItemId, orderItem.orderId.value))
             entity = modelMapper.toOrderItemEntity(orderItem, new MappingContext())
             orderItemDao.create(entity)
+            def preorderInfo = orderItem.preorderInfo
+            if (preorderInfo != null) {
+                preorderInfo.orderItemId = orderItem.orderItemId
+                preorderInfo.preorderInfoId = new PreorderId(idGeneratorFacade.nextId(PreorderId,
+                        preorderInfo.orderItemId.value))
+                def preorderEntity = modelMapper.toOrderItemPreorderInfoEntity(preorderInfo,
+                        new MappingContext())
+                orderItemPreorderInfoDao.create(preorderEntity)
+                fillDateInfo(preorderInfo, preorderEntity)
+            }
         } else {
             entity = modelMapper.toOrderItemEntity(orderItem, new MappingContext())
             def oldEntity = orderItemDao.read(entity.orderItemId)
@@ -392,5 +416,16 @@ class OrderRepositoryImpl implements OrderRepository {
         baseModelWithDate.createdTime = commonDbEntityWithDate.createdTime
         baseModelWithDate.updatedBy = commonDbEntityWithDate.updatedBy
         baseModelWithDate.updatedTime = commonDbEntityWithDate.updatedTime
+    }
+
+    static void checkEventsOrder(List<OrderEventEntity> orderEvents, Long orderId) {
+        for (OrderEventEntity event: orderEvents) {
+            if (event.orderId != orderId) {
+                LOGGER.error('name=Order_Events_Order_Id_Inconsistent, ' +
+                        'orderEventId={}, trackingGUID={}, expectedOrderId={}, actualOrderId={}',
+                        event.eventId, event.trackingUuid, orderId, event.orderId)
+                return
+            }
+        }
     }
 }

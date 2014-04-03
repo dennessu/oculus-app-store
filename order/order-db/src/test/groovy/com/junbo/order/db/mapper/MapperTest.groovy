@@ -78,6 +78,8 @@ class MapperTest extends BaseTest {
         assert orderEvent != null : 'Fail to map order event entity to model.'
         assert returnedOrderEventEntity != null : 'Fail to map order event model to entity.'
         assert orderEvent.action == orderEventEntity.actionId.toString() :'The order action should not be different.'
+        assert orderEvent.eventTrackingUuid == orderEventEntity.eventTrackingUuid
+        assert returnedOrderEventEntity.eventTrackingUuid == orderEventEntity.eventTrackingUuid
         assert orderEvent.action == returnedOrderEventEntity.actionId.toString() :
                 'The order action should not be different.'
     }
@@ -119,8 +121,7 @@ class MapperTest extends BaseTest {
         assert returnedOrderBillingEventEntity.status == orderBillingEventEntity.status
     }
 
-    // TODO Fix this case
-    @Test(enabled = false)
+    @Test(enabled = true)
     void testPreorderInfoEventMapper() {
         MappingContext context = new MappingContext()
 

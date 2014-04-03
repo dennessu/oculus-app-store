@@ -7,7 +7,7 @@ var DomainModels = require('../../models/domain');
 var Utils = require('../../utils/utils');
 
 var Payment = function () {};
-Payment.GetPayment = function (data, callback) {
+Payment.GetPayments = function (data, callback) {
     var body = data.data;
     var cookies = data.cookies;
     var query = data.query;
@@ -15,7 +15,7 @@ Payment.GetPayment = function (data, callback) {
     var userId = cookies[process.AppConfig.CookiesName.UserId];
     var dataProvider = new DataProvider(process.AppConfig.Payment_API_Host, process.AppConfig.Payment_API_Port);
 
-    dataProvider.GetPaymentInstruments(userId, function(result){
+    dataProvider.GetPaymentInstrumentsByUserId(userId, function(result){
         var resultModel = new DomainModels.ResultModel();
        if(result.StatusCode == 200){
            resultModel.status = DomainModels.ResultStatusEnum.Normal;
@@ -37,7 +37,7 @@ Payment.GetPaymentById = function (data, callback) {
     var paymentId = body["paymentId"];
     var dataProvider = new DataProvider(process.AppConfig.Payment_API_Host, process.AppConfig.Payment_API_Port);
 
-    dataProvider.GetPaymentInstrumentsById(paymentId, userId, function(result){
+    dataProvider.GetPaymentInstrumentById(userId, paymentId, function(result){
         var resultModel = new DomainModels.ResultModel();
         if(result.StatusCode == 200){
             resultModel.status = DomainModels.ResultStatusEnum.Normal;
@@ -71,7 +71,7 @@ Payment.PostPayment = function (data, callback) {
 
     var dataProvider = new DataProvider(process.AppConfig.Payment_API_Host, process.AppConfig.Payment_API_Port);
 
-    dataProvider.PostPaymentInstruments(userId, model, function(result){
+    dataProvider.PostPaymentInstrument(userId, model, function(result){
         var resultModel = new DomainModels.ResultModel();
 
         if(result.StatusCode == 200){
@@ -99,7 +99,7 @@ Payment.DeletePayment = function (data, callback) {
 
     var dataProvider = new DataProvider(process.AppConfig.Payment_API_Host, process.AppConfig.Payment_API_Port);
 
-    dataProvider.DeltePaymentInstruments(paymentId, userId, function(result){
+    dataProvider.DeltePaymentInstrument(userId, paymentId, function(result){
         var resultModel = new DomainModels.ResultModel();
         if(result.StatusCode == 200 || result.StatusCode == 204){
             resultModel.status = DomainModels.ResultStatusEnum.Normal;

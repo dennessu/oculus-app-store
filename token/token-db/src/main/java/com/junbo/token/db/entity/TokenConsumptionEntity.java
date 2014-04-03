@@ -28,8 +28,8 @@ public class TokenConsumptionEntity extends GenericEntity {
     @Column(name = "user_id")
     private Long userId;
 
-    @Column(name = "products")
-    private String products;
+    @Column(name = "product")
+    private Long product;
 
     public Long getId() {
         return id;
@@ -55,12 +55,12 @@ public class TokenConsumptionEntity extends GenericEntity {
         this.userId = userId;
     }
 
-    public String getProducts() {
-        return products;
+    public Long getProduct() {
+        return product;
     }
 
-    public void setProducts(String products) {
-        this.products = products;
+    public void setProduct(Long product) {
+        this.product = product;
     }
 
 

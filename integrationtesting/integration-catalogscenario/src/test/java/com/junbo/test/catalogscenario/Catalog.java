@@ -7,7 +7,7 @@ package com.junbo.test.catalogscenario;
 
 import com.junbo.catalog.spec.model.attribute.Attribute;
 import com.junbo.catalog.spec.model.offer.Offer;
-import com.junbo.test.catalogscenario.util.BaseTestClass;
+import com.junbo.test.common.Utility.TestClass;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.test.common.apihelper.catalog.AttributeService;
 import com.junbo.test.common.apihelper.catalog.ItemService;
@@ -32,7 +32,7 @@ import java.util.List;
   * Time: 3/14/2014
   * For testing catalog scenarios
  */
-public class Catalog extends BaseTestClass {
+public class Catalog extends TestClass {
 
     private LogHelper logger = new LogHelper(Catalog.class);
 

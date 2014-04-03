@@ -4,7 +4,7 @@ var CatalogDataProvider = require('store-data-provider').Catalog;
 var DomainModels = require('../../models/domain');
 var Utils = require('../../utils/utils');
 
-exports.Products = function (data, cb) {
+exports.GetProducts = function (data, cb) {
     var body = data.data;
     var cookies = data.cookies;
     var query = data.query;
@@ -12,7 +12,7 @@ exports.Products = function (data, cb) {
     var dataProvider = new CatalogDataProvider(process.AppConfig.Catalog_API_Host, process.AppConfig.Catalog_API_Port);
 
     if (body !=undefined && body != null && body["id"] != undefined && body["id"] != null) {
-        dataProvider.GetOfferById(body.id, null, function (result) {
+        dataProvider.GetOfferById(body.id, function (result) {
             var resultModel = new DomainModels.ResultModel();
             var responseModel = new DomainModels.ResponseModel();
 
@@ -28,7 +28,7 @@ exports.Products = function (data, cb) {
             cb(responseModel);
         });
     } else {
-        dataProvider.GetOffers(null, function (result) {
+        dataProvider.GetOffers(function (result) {
             var resultModel = new DomainModels.ResultModel();
             var responseModel = new DomainModels.ResponseModel();
 
@@ -46,7 +46,7 @@ exports.Products = function (data, cb) {
     }
 };
 
-exports.GetDownloadLinksByOfferId = function(data, callback){
+exports.GetDownloadLinks = function(data, callback){
     var body = data.data;
     var cookies = data.cookies;
     var query = data.query;
@@ -54,20 +54,17 @@ exports.GetDownloadLinksByOfferId = function(data, callback){
     var itemsCount = 0;
     var itemsIndex = 0;
 
-    // get offer
-    // get offer items
-    // get
-
     var callBackResult = new Array(); //{name: "", link: ""}
     var emitter = new Emitter();
     var dataProvider = new CatalogDataProvider(process.AppConfig.Catalog_API_Host, process.AppConfig.Catalog_API_Port);
 
-      dataProvider.GetOfferById(offerId, null, function(result){
+      dataProvider.GetOfferById(offerId, function(result){
           if(result.StatusCode == 200){
               var offer = JSON.parse(result.Data);
-              if(offer["items"] != undefined && offer["items"].length > 0){
-                  itemsCount = offer.items.length;
-                  offer.items.forEach(function(item){
+              if(offer["results"] != undefined && offer["results"].length > 0){
+                  itemsCount = offer.results.length;
+                  offer.results.forEach(function(item){
+
                       dataProvider.GetItemById(item.itemId.id, function(itemResult){
                           if(itemResult.StatusCode == 200){
                               var itemObj = JSON.parse(itemResult.Data);

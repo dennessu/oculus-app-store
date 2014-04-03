@@ -17,9 +17,9 @@ Fields:
 +  <span id="currency">currency...3 character ISO 4217 currency code.</span>
 +  <span id="dueDate">dueDate...due date to collect the balance.</span>
 +  <span id="balanceItems">balanceItems...list of the balance items.</span>
-+  <span id="createdDate">createdDate...the balance's created date</span>
++  <span id="createdTime">createdTime...the balance's created date</span>
 +  <span id="createdBy">createdBy...indicates who creates the balance</span>
-+  <span id="modifiedDate">modifiedDate...the balance's modified date</span>
++  <span id="modifiedTime">modifiedTime...the balance's modified date</span>
 +  <span id="modifiedBy">modifiedBy...indicates who modifies the balance</span>
 
 

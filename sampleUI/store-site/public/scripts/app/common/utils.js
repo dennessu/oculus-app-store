@@ -1,41 +1,56 @@
 var Utils = {
     /*
+     Deep Clone
+     */
+    Clone: function (sObj) {
+        if (typeof sObj !== "object") return sObj;
+
+        var s = {};
+        if (sObj.constructor == Array) s = [];
+
+        for (var i in sObj) s[i] = Utils.Clone(sObj[i]);
+
+        return s;
+    },
+
+    /*
      Fill original object use target object
-     @type: 0:full, 1:ChildFull, 2:OneWay
-     @return: original object
+     @type: 0:full(if property not exists, add a new property), 1:ChildFull(child properties is full fill), 2:OneWay(fill original from target just have properties)
+     @return: original object(reference).
      */
     FillObject: function (original, target, type) {
-        if (type == 0 && (original == undefined || original == null)) return target;
 
+        if (original == undefined || original == null) {
+            original = Utils.Clone(target);
+            return original;
+        }
+
+        // fill exists properties
         for (var p in original) {
             var p_type = typeof(original[p]);
 
-            if (p_type != "function") {
-                if (p_type == "object") {
-                    if (typeof(target[p]) != "undefined" && target[p] != null) {
-                        if (type == 1) {
-                            original[p] = this.FillObject(original[p], target[p], 0);
-                        } else {
-                            original[p] = this.FillObject(original[p], target[p], type);
-                        }
+            if (p_type == "object") {
+                if (typeof(target[p]) != "undefined") {
+                    if (type == 1) {
+                        original[p] = Utils.Clone(target[p]);
+                    } else {
+                        original[p] = Utils.FillObject(original[p], target[p], type);
                     }
-                } else {
-                    if (typeof(target[p]) != "undefined" && target[p] != null) {
-                        original[p] = target[p];
-                    }
+                }
+            } else {
+                // base type、Array or function
+                if (typeof(target[p]) != "undefined") {
+                    original[p] = Utils.Clone(target[p]);
                 }
             }
         }
 
+        // add new properties
         if (type == 0) {
-            // Append new property
             for (var p in target) {
                 var p_type = typeof(target[p]);
-
-                if (p_type != "function") {
-                    if (typeof(original[p]) != "undefined" && original[p] != null) continue;
-                    original[p] = target[p];
-                }
+                if (typeof(original[p]) != "undefined") continue;
+                original[p] = Utils.Clone(target[p]);
             }
         }
 
@@ -43,27 +58,28 @@ var Utils = {
     },
 
     // {1} is {2}
-    Format: function(str, args) {
-    var result = str;
-    if (arguments.length > 0) {
-        if (arguments.length == 1 && typeof (args) == "object") {
-            for (var key in args) {
-                if(args[key]!=undefined){
-                    var reg = new RegExp("({" + key + "})", "g");
-                    result = result.replace(reg, args[key]);
+    Format: function() {
+        if (arguments.length > 0) {
+            var result = arguments[0];
+            if (arguments.length == 1 && typeof (arguments) == "object") {
+                for (var key in args) {
+                    if (args[key] != undefined) {
+                        var reg = new RegExp("({" + key + "})", "g");
+                        result = result.replace(reg, args[key]);
+                    }
                 }
             }
-        }
-        else {
-            for (var i = 0; i < arguments.length; i++) {
-                if (arguments[i] != undefined) {
-                    var reg= new RegExp("({)" + i + "(})", "g");
-                    result = result.replace(reg, arguments[i]);
+            else {
+                for (var i = 0; i < arguments.length; i++) {
+                    if (arguments[i] != undefined) {
+                        var reg = new RegExp("({)" + i + "(})", "g");
+                        result = result.replace(reg, arguments[i]);
+                    }
                 }
             }
+            return result;
         }
-    }
-    return result;
+        return null;
     },
 
     GetViews: function (templateName) {
@@ -128,7 +144,7 @@ var Utils = {
                     for (var i = 0; i < cookieArr.length; ++i) {
                         var item = cookieArr[i].split("=");
                         if(item.length > 1){
-                            result[item[0].trim()] = item[1].trim();
+                            result[item[0].trim()] = unescape(item[1].trim());
                         }else{
                             result[item[0].trim()] = "";
                         }
@@ -136,7 +152,7 @@ var Utils = {
                 } else {
                     var item = document.cookie.split("=");
                     if(item.length > 1){
-                        result[item[0].trim()] = item[1].trim();
+                        result[item[0].trim()] = unescape(item[1].trim());
                     }else{
                         result[item[0].trim()] = "";
                     }

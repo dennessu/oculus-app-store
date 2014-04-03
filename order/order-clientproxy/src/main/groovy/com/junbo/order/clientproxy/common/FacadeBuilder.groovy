@@ -22,7 +22,7 @@ import java.text.SimpleDateFormat
 @TypeChecked
 class FacadeBuilder {
 
-    public static final String ORDER_NUMBER = 'ORDERNUMBER'
+    public static final String ORDER_NUMBER = 'ORDERNUMBER:OrderId'
     public static final String ORDER_DATE = 'ORDERDATE'
     public static final String NAME = 'NAME'
     public static final String OFFER_NAME = 'OFFERNAME'
