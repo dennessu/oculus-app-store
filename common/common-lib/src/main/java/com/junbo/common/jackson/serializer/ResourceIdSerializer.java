@@ -28,7 +28,7 @@ public class ResourceIdSerializer extends JsonSerializer<Object> implements Reso
     // thread safe
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
-    protected static final String RESOURCE_URL_PREFIX = "http://api.wan-san.com/v1";
+    protected static final String RESOURCE_URL_PREFIX = "http://api.oculusvr.com/v1";
 
     protected String resourcePath;
 

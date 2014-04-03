@@ -15,6 +15,7 @@ import com.junbo.langur.core.promise.Promise;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  * Created by xmchen on 14-1-26.
@@ -37,6 +38,6 @@ public interface ShippingAddressResource {
 
     @DELETE
     @Path("/{addressId}")
-    Promise<Void> deleteShippingAddress(@PathParam("userId") UserId userId,
+    Promise<Response> deleteShippingAddress(@PathParam("userId") UserId userId,
                                         @PathParam("addressId") ShippingAddressId addressId);
 }

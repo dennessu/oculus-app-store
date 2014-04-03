@@ -6,7 +6,7 @@
 
 package com.junbo.ewallet.db.dao;
 
-import com.junbo.ewallet.db.entity.hibernate.TransactionEntity;
+import com.junbo.ewallet.db.entity.TransactionEntity;
 
 import java.util.List;
 
@@ -16,7 +16,7 @@ import java.util.List;
 public interface TransactionDao {
     TransactionEntity get(Long id);
 
-    Long insert(TransactionEntity transactionEntity);
+    TransactionEntity insert(TransactionEntity transactionEntity);
 
     List<TransactionEntity> getByWalletId(Long walletId);
 }

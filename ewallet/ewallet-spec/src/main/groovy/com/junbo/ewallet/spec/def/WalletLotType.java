@@ -4,21 +4,20 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.ewallet.db.entity.def;
+package com.junbo.ewallet.spec.def;
 
 import com.junbo.common.util.Identifiable;
 
 /**
- * Enum for status.
+ * Enum for WalletLotType. Can be sorted by type.
  */
-public enum Status implements Identifiable<Integer> {
-    ACTIVE(1),
-    LOCKED(-1),
-    EXPIRED(-2);
+public enum WalletLotType implements Identifiable<Integer> {
+    CASH(0),
+    PROMOTION(1000);
 
     private Integer id;
 
-    Status(Integer id) {
+    WalletLotType(Integer id) {
         this.id = id;
     }
 

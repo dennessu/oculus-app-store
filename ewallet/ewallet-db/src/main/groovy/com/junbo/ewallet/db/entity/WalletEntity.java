@@ -4,12 +4,11 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.ewallet.db.entity.hibernate;
+package com.junbo.ewallet.db.entity;
 
-import com.junbo.ewallet.db.entity.def.Currency;
 import com.junbo.ewallet.db.entity.def.IdentifiableType;
-import com.junbo.ewallet.db.entity.def.Status;
-import com.junbo.ewallet.db.entity.def.WalletType;
+import com.junbo.ewallet.spec.def.Status;
+import com.junbo.ewallet.spec.def.WalletType;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;
@@ -28,7 +27,7 @@ public class WalletEntity extends Entity {
     private Long userId;
     private WalletType type;
     private Status status;
-    private Currency currency;
+    private String currency;
     private BigDecimal balance;
 
     @Column(name = "tracking_uuid")
@@ -71,12 +70,11 @@ public class WalletEntity extends Entity {
     }
 
     @Column(name = "currency")
-    @Type(type = IdentifiableType.TYPE)
-    public Currency getCurrency() {
+    public String getCurrency() {
         return currency;
     }
 
-    public void setCurrency(Currency currency) {
+    public void setCurrency(String currency) {
         this.currency = currency;
     }
 

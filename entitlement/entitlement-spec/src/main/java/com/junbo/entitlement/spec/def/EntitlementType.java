@@ -4,20 +4,19 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.ewallet.db.entity.def;
+package com.junbo.entitlement.spec.def;
 
 import com.junbo.common.util.Identifiable;
 
 /**
- * Enum for WalletLotType. Can be sorted by type.
+ * EntitlementType enum.
  */
-public enum WalletLotType implements Identifiable<Integer> {
-    CASH(0),
-    PROMOTION(1000);
+public enum EntitlementType implements Identifiable<Integer> {
+    DEFAULT(0), DEVELOPER(1), DOWNLOAD(2), ONLINE_ACCESS(3), IAP(4), SUBSCRIPTIONS(4);
 
     private Integer id;
 
-    WalletLotType(Integer id) {
+    EntitlementType(Integer id) {
         this.id = id;
     }
 

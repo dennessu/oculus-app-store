@@ -6,7 +6,7 @@
 
 package com.junbo.ewallet.db.dao;
 
-import com.junbo.ewallet.db.entity.hibernate.WalletLotEntity;
+import com.junbo.ewallet.db.entity.WalletLotEntity;
 
 import java.math.BigDecimal;
 
@@ -16,11 +16,11 @@ import java.math.BigDecimal;
 public interface WalletLotDao {
     WalletLotEntity get(Long id);
 
-    WalletLotEntity insert(WalletLotEntity walletLotEntity);
+    WalletLotEntity insert(WalletLotEntity walletLotEntity, Long transactionId);
 
     WalletLotEntity update(WalletLotEntity walletLotEntity);
 
     void delete(Long id);
 
-    void debit(Long walletId, BigDecimal sum);
+    void debit(Long walletId, BigDecimal sum, Long transactionId);
 }

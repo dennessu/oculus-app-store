@@ -1,5 +1,4 @@
 package com.junbo.order.core.impl.common
-
 import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.BalanceItem
@@ -8,7 +7,6 @@ import com.junbo.common.id.OrderId
 import com.junbo.common.id.OrderItemId
 import com.junbo.common.id.PromotionId
 import com.junbo.langur.core.webflow.action.ActionResult
-import com.junbo.order.core.impl.order.OrderServiceContext
 import com.junbo.order.core.impl.orderaction.ActionUtils
 import com.junbo.order.core.impl.orderaction.context.OrderActionContext
 import com.junbo.order.core.impl.orderaction.context.OrderActionResult
@@ -31,22 +29,22 @@ import org.apache.commons.collections.CollectionUtils
 @TypeChecked
 class CoreBuilder {
 
-    static Balance buildBalance(OrderServiceContext context, BalanceType balanceType) {
-        if (context == null || context.order == null) {
+    static Balance buildBalance(Order order, BalanceType balanceType) {
+        if (order == null) {
             return null
         }
 
         Balance balance = new Balance()
         balance.trackingUuid = UUID.randomUUID()
-        balance.country = context.order.country
-        balance.currency = context.order.currency
-        balance.orderId = context.order.id
-        balance.userId = context.order.user
-        balance.piId = context.order.paymentInstruments?.get(0)
+        balance.country = order.country
+        balance.currency = order.currency
+        balance.orderId = order.id
+        balance.userId = order.user
+        balance.piId = order.paymentInstruments?.get(0)
         balance.type = balanceType.toString()
         balance.trackingUuid = UUID.randomUUID()
 
-        context.order.orderItems.eachWithIndex { OrderItem item, int i ->
+        order.orderItems.eachWithIndex { OrderItem item, int i ->
             def balanceItem = buildBalanceItem(item)
             if (item.orderItemId == null) {
                 balanceItem.orderItemId = new OrderItemId(i)

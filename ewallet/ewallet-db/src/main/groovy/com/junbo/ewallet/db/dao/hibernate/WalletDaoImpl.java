@@ -7,9 +7,8 @@
 package com.junbo.ewallet.db.dao.hibernate;
 
 import com.junbo.ewallet.db.dao.WalletDao;
-import com.junbo.ewallet.db.entity.def.Currency;
-import com.junbo.ewallet.db.entity.def.WalletType;
-import com.junbo.ewallet.db.entity.hibernate.WalletEntity;
+import com.junbo.ewallet.db.entity.WalletEntity;
+import com.junbo.ewallet.spec.def.WalletType;
 import org.hibernate.Query;
 
 import java.util.UUID;
@@ -17,7 +16,7 @@ import java.util.UUID;
 /**
  * Hibernate impl of WalletDao.
  */
-public class WalletDaoImpl extends BaseDao<WalletEntity> implements WalletDao{
+public class WalletDaoImpl extends BaseDao<WalletEntity> implements WalletDao {
     @Override
     public WalletEntity getByTrackingUuid(UUID uuid) {
         String queryString = "from WalletEntity where trackingUuid = (:trackingUuid)";
@@ -26,17 +25,12 @@ public class WalletDaoImpl extends BaseDao<WalletEntity> implements WalletDao{
     }
 
     @Override
-    public WalletEntity get(Long userId, WalletType type, Currency currency) {
-        String queryString = "from WalletEntity where userId = (:userId) and type = (:type)";
-        if(currency != null){
-            queryString += " and currency = (:currency)";
-        }
+    public WalletEntity get(Long userId, WalletType type, String currency) {
+        String queryString = "from WalletEntity where userId = (:userId) and type = (:type) and currency = (:currency)";
         Query q = currentSession().createQuery(queryString)
                 .setLong("userId", userId)
-                .setInteger("type", type.getId());
-        if(currency != null){
-            q.setInteger("currency", currency.getId());
-        }
+                .setInteger("type", type.getId())
+                .setString("currency", currency);
         return (WalletEntity) q.uniqueResult();
     }
 }

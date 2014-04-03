@@ -4,7 +4,7 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.ewallet.db.entity.hibernate;
+package com.junbo.ewallet.db.entity;
 
 import com.junbo.ewallet.db.entity.def.IdentifiableType;
 import com.junbo.ewallet.db.entity.def.TransactionType;
@@ -23,6 +23,7 @@ import java.math.BigDecimal;
 public class LotTransactionEntity extends EntityWithCreated {
     private Long walletId;
     private Long walletLotId;
+    private Long transactionId;
     private TransactionType type;
     private BigDecimal amount;
 
@@ -42,6 +43,15 @@ public class LotTransactionEntity extends EntityWithCreated {
 
     public void setWalletLotId(Long walletLotId) {
         this.walletLotId = walletLotId;
+    }
+
+    @Column(name = "transaction_id")
+    public Long getTransactionId() {
+        return transactionId;
+    }
+
+    public void setTransactionId(Long transactionId) {
+        this.transactionId = transactionId;
     }
 
     @Column(name = "type")

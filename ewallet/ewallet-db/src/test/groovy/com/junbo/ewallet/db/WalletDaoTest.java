@@ -8,14 +8,19 @@ package com.junbo.ewallet.db;
 import com.junbo.ewallet.db.dao.WalletDao;
 import com.junbo.ewallet.db.dao.WalletLotDao;
 import com.junbo.ewallet.db.entity.def.*;
-import com.junbo.ewallet.db.entity.hibernate.WalletEntity;
-import com.junbo.ewallet.db.entity.hibernate.WalletLotEntity;
+import com.junbo.ewallet.db.entity.WalletEntity;
+import com.junbo.ewallet.db.entity.WalletLotEntity;
+import com.junbo.ewallet.spec.def.Currency;
+import com.junbo.ewallet.spec.def.Status;
+import com.junbo.ewallet.spec.def.WalletLotType;
+import com.junbo.ewallet.spec.def.WalletType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Random;
 
 /**
  * Test for WalletDao.
@@ -45,23 +50,25 @@ public class WalletDaoTest extends BaseTest {
 
     @Test
     public void testDebit() {
+        Random random = new Random();
         WalletEntity wallet = walletDao.insert(buildAWallet());
-        WalletLotEntity lot1 = walletLotDao.insert(buildALot(wallet.getId(), WalletLotType.CASH));
-        WalletLotEntity lot2 = walletLotDao.insert(buildALot(wallet.getId(), WalletLotType.PROMOTION));
-        walletLotDao.debit(wallet.getId(), new BigDecimal(17));
+        WalletLotEntity lot1 = walletLotDao.insert(buildALot(wallet.getId(), WalletLotType.CASH), random.nextLong());
+        WalletLotEntity lot2 = walletLotDao.insert(buildALot(wallet.getId(), WalletLotType.PROMOTION), random.nextLong());
+        walletLotDao.debit(wallet.getId(), new BigDecimal(17), random.nextLong());
         Assert.assertEquals(walletLotDao.get(lot1.getId()).getRemainingAmount(), new BigDecimal(3));
         Assert.assertEquals(walletLotDao.get(lot2.getId()).getRemainingAmount(), BigDecimal.ZERO);
     }
 
     @Test
     public void testExpiredWalletLot() {
+        Random random = new Random();
         WalletEntity wallet = walletDao.insert(buildAWallet());
-        WalletLotEntity lot1 = walletLotDao.insert(buildALot(wallet.getId(), WalletLotType.CASH));
+        WalletLotEntity lot1 = walletLotDao.insert(buildALot(wallet.getId(), WalletLotType.CASH), random.nextLong());
         WalletLotEntity lot2 = buildALot(wallet.getId(), WalletLotType.PROMOTION);
         lot2.setExpirationDate(new Date(new Date().getTime() - 2000));
-        walletLotDao.insert(lot2);
+        walletLotDao.insert(lot2, random.nextLong());
         try{
-            walletLotDao.debit(wallet.getId(), new BigDecimal(17));
+            walletLotDao.debit(wallet.getId(), new BigDecimal(17), random.nextLong());
         } catch (Exception e){
             Assert.assertEquals(e.getClass(), NotEnoughMoneyException.class);
             Assert.assertEquals(walletLotDao.get(lot1.getId()).getRemainingAmount(), new BigDecimal(10));
@@ -73,7 +80,7 @@ public class WalletDaoTest extends BaseTest {
         walletEntity.setUserId(idGenerator.nextId());
         walletEntity.setType(WalletType.SV);
         walletEntity.setStatus(Status.ACTIVE);
-        walletEntity.setCurrency(Currency.USD);
+        walletEntity.setCurrency(Currency.USD.toString());
         walletEntity.setBalance(BigDecimal.ZERO);
         return walletEntity;
     }
