@@ -96,6 +96,9 @@ class UserRepositoryImpl implements UserRepository {
         }
 
         Long id = userDAO.getIdByCanonicalUsername(canonicalUsername)
+        if (id == null) {
+            return Promise.pure(null)
+        }
         UserEntity entity = userDAO.get(id)
         return get(new UserId((Long)(entity.id)))
     }

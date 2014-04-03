@@ -90,6 +90,7 @@
     </bean>
 
     <bean id="entityDAOBase" class="com.junbo.identity.data.dao.impl.ShardedDAOBase" abstract="true">
+        <property name="viewQueryFactory" ref="defaultViewQueryFactory" />
         <property name="sessionFactoryWrapper" ref="sessionFactoryWrapper" />
     </bean>
 
