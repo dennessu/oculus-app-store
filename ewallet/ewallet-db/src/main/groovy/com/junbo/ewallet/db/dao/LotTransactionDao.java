@@ -7,6 +7,9 @@ package com.junbo.ewallet.db.dao;
 
 import com.junbo.ewallet.db.entity.LotTransactionEntity;
 
+/**
+ * interface of LotTransactionDao.
+ */
 public interface LotTransactionDao {
     LotTransactionEntity get(Long id);
 
