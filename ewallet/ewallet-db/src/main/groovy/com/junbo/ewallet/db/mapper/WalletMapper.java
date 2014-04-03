@@ -5,11 +5,10 @@
  */
 package com.junbo.ewallet.db.mapper;
 
-import com.junbo.ewallet.db.entity.def.Currency;
+import com.junbo.ewallet.db.entity.TransactionEntity;
+import com.junbo.ewallet.db.entity.WalletEntity;
 import com.junbo.ewallet.db.entity.def.Status;
 import com.junbo.ewallet.db.entity.def.WalletType;
-import com.junbo.ewallet.db.entity.hibernate.TransactionEntity;
-import com.junbo.ewallet.db.entity.hibernate.WalletEntity;
 import com.junbo.ewallet.spec.model.Transaction;
 import com.junbo.ewallet.spec.model.Wallet;
 
@@ -27,7 +26,7 @@ public class WalletMapper {
         Wallet wallet = new Wallet();
         wallet.setWalletId(walletEntity.getId());
         wallet.setBalance(walletEntity.getBalance());
-        wallet.setCurrency(walletEntity.getCurrency().toString());
+        wallet.setCurrency(walletEntity.getCurrency());
         wallet.setStatus(walletEntity.getStatus().toString());
         wallet.setUserId(walletEntity.getUserId());
         wallet.setType(walletEntity.getType().toString());
@@ -41,7 +40,7 @@ public class WalletMapper {
         walletEntity.setId(wallet.getWalletId());
         walletEntity.setStatus(Status.valueOf(wallet.getStatus()));
         walletEntity.setType(WalletType.valueOf(wallet.getType()));
-        walletEntity.setCurrency(Currency.valueOf(wallet.getCurrency()));
+        walletEntity.setCurrency(wallet.getCurrency());
         walletEntity.setBalance(wallet.getBalance());
         walletEntity.setTrackingUuid(wallet.getTrackingUuid());
         return walletEntity;

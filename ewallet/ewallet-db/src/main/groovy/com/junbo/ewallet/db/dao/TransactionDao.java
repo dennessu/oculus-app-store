@@ -6,7 +6,7 @@
 
 package com.junbo.ewallet.db.dao;
 
-import com.junbo.ewallet.db.entity.hibernate.TransactionEntity;
+import com.junbo.ewallet.db.entity.TransactionEntity;
 
 import java.util.List;
 
