@@ -4,7 +4,8 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.identity.data.repository
-import com.junbo.common.id.UserSecurityQuestionAttemptId
+
+import com.junbo.common.id.UserSecurityQuestionVerifyAttemptId
 import com.junbo.identity.spec.model.users.UserSecurityQuestionAttempt
 import com.junbo.identity.spec.options.list.UserSecurityQuestionAttemptListOptions
 import com.junbo.langur.core.promise.Promise
@@ -20,7 +21,7 @@ interface UserSecurityQuestionAttemptRepository {
 
     Promise<UserSecurityQuestionAttempt> update(UserSecurityQuestionAttempt entity)
 
-    Promise<UserSecurityQuestionAttempt> get(UserSecurityQuestionAttemptId id)
+    Promise<UserSecurityQuestionAttempt> get(UserSecurityQuestionVerifyAttemptId id)
 
     Promise<List<UserSecurityQuestionAttempt>> search(UserSecurityQuestionAttemptListOptions getOption)
 }

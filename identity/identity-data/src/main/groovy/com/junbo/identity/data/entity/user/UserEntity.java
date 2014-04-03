@@ -13,7 +13,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 /**
- * UserEntity model for user_device_profile table.
+ * UserEntity list for user_device_profile table.
  */
 @Entity
 @Table(name = "user_account")

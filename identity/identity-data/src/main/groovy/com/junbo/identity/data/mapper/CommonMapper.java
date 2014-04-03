@@ -244,14 +244,14 @@ public class CommonMapper {
         return id.getValue();
     }
 
-    public UserSecurityQuestionAttemptId toUserSecurityQuestionAttemptId(Long id) {
+    public UserSecurityQuestionVerifyAttemptId toUserSecurityQuestionVerifyAttemptId(Long id) {
         if(id == null) {
             return null;
         }
-        return new UserSecurityQuestionAttemptId(id);
+        return new UserSecurityQuestionVerifyAttemptId(id);
     }
 
-    public Long toUserSecurityQuestionAttemptId(UserSecurityQuestionAttemptId id) {
+    public Long toUserSecurityQuestionVerifyAttemptId(UserSecurityQuestionVerifyAttemptId id) {
         if(id == null) {
             return null;
         }

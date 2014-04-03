@@ -13,8 +13,6 @@ import com.junbo.identity.spec.options.entity.UserPinGetOptions;
 import com.junbo.identity.spec.options.list.UserPinListOptions;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
-import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -22,26 +20,22 @@ import javax.ws.rs.core.MediaType;
 /**
  * Created by liangfu on 3/13/14.
  */
-@Api("users")
 @RestResource
 @Path("/users/{userId}/pins")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 public interface UserPinResource {
 
-    @ApiOperation("create user pin")
     @POST
     @Path("/")
     Promise<UserPin> create(@PathParam("userId") UserId userId, UserPin userPin);
 
-    @ApiOperation("get user pin")
     @GET
     @Path("/{userPinId}")
     Promise<UserPin> get(@PathParam("userId") UserId userId,
                          @PathParam("userPinId") UserPinId userPinId,
                          @BeanParam UserPinGetOptions getOptions);
 
-    @ApiOperation("search user pins")
     @GET
     @Path("/")
     Promise<Results<UserPin>> list(@PathParam("userId") UserId userId,

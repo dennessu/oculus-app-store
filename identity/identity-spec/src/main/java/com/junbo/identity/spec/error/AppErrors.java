@@ -117,7 +117,8 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 409, code = "2000028",
             description = "User Security Question Attempt {0} not found.", field = "{0}")
-    AppError userSecurityQuestionAttemptNotFound(UserSecurityQuestionAttemptId userSecurityQuestionAttemptId);
+    AppError userSecurityQuestionAttemptNotFound(
+            UserSecurityQuestionVerifyAttemptId userSecurityQuestionVerifyAttemptId);
 
     @ErrorDef(httpStatusCode = 409, code = "2000029", description = "User Security Question isn't valid.")
     AppError userSecurityQuestionNotValid();

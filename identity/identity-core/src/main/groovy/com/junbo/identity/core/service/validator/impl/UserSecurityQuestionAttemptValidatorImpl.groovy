@@ -6,7 +6,7 @@
 package com.junbo.identity.core.service.validator.impl
 
 import com.junbo.common.id.UserId
-import com.junbo.common.id.UserSecurityQuestionAttemptId
+import com.junbo.common.id.UserSecurityQuestionVerifyAttemptId
 import com.junbo.identity.core.service.util.UserPasswordUtil
 import com.junbo.identity.core.service.validator.UserSecurityQuestionAttemptValidator
 import com.junbo.identity.data.repository.SecurityQuestionRepository
@@ -25,6 +25,7 @@ import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 
 import java.util.regex.Pattern
+
 /**
  * Created by liangfu on 3/25/14.
  */
@@ -48,7 +49,7 @@ class UserSecurityQuestionAttemptValidatorImpl implements UserSecurityQuestionAt
     private Integer clientIdMaxLength
 
     @Override
-    Promise<UserSecurityQuestionAttempt> validateForGet(UserId userId, UserSecurityQuestionAttemptId attemptId) {
+    Promise<UserSecurityQuestionAttempt> validateForGet(UserId userId, UserSecurityQuestionVerifyAttemptId attemptId) {
         if (attemptId == null) {
             throw new IllegalArgumentException('userSecurityQuestionAttemptId is null')
         }

@@ -71,7 +71,7 @@ public class UserPasswordUtil {
         }
 
         if(isInBlackList(password)) {
-            throw AppErrors.INSTANCE.invalidPassword("Current password is in black list.").exception();
+            throw AppErrors.INSTANCE.invalidPassword("Current password is in black model.").exception();
         }
 
         if(isSingleCharacterRepeated(password)) {

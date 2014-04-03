@@ -14,7 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
- * UserAuthenticatorEntity model for user_device_profile table.
+ * UserAuthenticatorEntity list for user_device_profile table.
  */
 @Entity
 @Table(name = "user_authenticator")

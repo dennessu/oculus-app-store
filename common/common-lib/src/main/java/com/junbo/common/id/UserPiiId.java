@@ -6,11 +6,11 @@
 package com.junbo.common.id;
 
 /**
- * Created by liangfu on 3/13/14.
+ * Created by liangfu on 4/3/14.
  */
-public class UserSecurityQuestionAttemptId extends Id {
-    public UserSecurityQuestionAttemptId() {}
-    public UserSecurityQuestionAttemptId(long value) {
+public class UserPiiId extends Id {
+    public UserPiiId() {}
+    public UserPiiId(long value) {
         super(value);
     }
 }

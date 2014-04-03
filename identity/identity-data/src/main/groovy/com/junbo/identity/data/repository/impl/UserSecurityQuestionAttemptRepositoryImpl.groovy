@@ -4,7 +4,7 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.identity.data.repository.impl
-import com.junbo.common.id.UserSecurityQuestionAttemptId
+import com.junbo.common.id.UserSecurityQuestionVerifyAttemptId
 import com.junbo.identity.data.dao.UserSecurityQuestionAttemptDAO
 import com.junbo.identity.data.entity.user.UserSecurityQuestionAttemptEntity
 import com.junbo.identity.data.mapper.ModelMapper
@@ -39,7 +39,7 @@ class UserSecurityQuestionAttemptRepositoryImpl implements UserSecurityQuestionA
 
         userSecurityQuestionAttemptDAO.save(userSecurityQuestionAttemptEntity)
 
-        return get(new UserSecurityQuestionAttemptId(userSecurityQuestionAttemptEntity.id))
+        return get(new UserSecurityQuestionVerifyAttemptId(userSecurityQuestionAttemptEntity.id))
     }
 
     @Override
@@ -49,11 +49,11 @@ class UserSecurityQuestionAttemptRepositoryImpl implements UserSecurityQuestionA
 
         userSecurityQuestionAttemptDAO.update(userSecurityQuestionAttemptEntity)
 
-        return get((UserSecurityQuestionAttemptId)entity.id)
+        return get((UserSecurityQuestionVerifyAttemptId)entity.id)
     }
 
     @Override
-    Promise<UserSecurityQuestionAttempt> get(UserSecurityQuestionAttemptId id) {
+    Promise<UserSecurityQuestionAttempt> get(UserSecurityQuestionVerifyAttemptId id) {
         return Promise.pure(modelMapper.toUserSecurityQuestionAttempt(userSecurityQuestionAttemptDAO.get(id.value),
                 new MappingContext()))
     }
