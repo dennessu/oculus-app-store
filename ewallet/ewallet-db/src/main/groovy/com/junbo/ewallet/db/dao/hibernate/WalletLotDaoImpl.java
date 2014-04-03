@@ -45,7 +45,7 @@ public class WalletLotDaoImpl extends BaseDao<WalletLotEntity> implements Wallet
     public void debit(Long walletId, BigDecimal sum, Long transactionId) {
         String queryString = "select * from ewallet_lot " +
                 "where ewallet_id = (:walletId)" +
-                " and remaining > money(0)" +
+                " and remaining > 0" +
                 " and (expiration_date is null or expiration_date >= (:now))" +
                 " order by type desc";
         Query q = currentSession().createSQLQuery(queryString)
@@ -80,7 +80,8 @@ public class WalletLotDaoImpl extends BaseDao<WalletLotEntity> implements Wallet
         }
     }
 
-    private LotTransactionEntity buildDebitLotTransaction(WalletLotEntity lotEntity, BigDecimal amount, Long transactionId) {
+    private LotTransactionEntity buildDebitLotTransaction(
+            WalletLotEntity lotEntity, BigDecimal amount, Long transactionId) {
         LotTransactionEntity lotTransaction = new LotTransactionEntity();
         lotTransaction.setId(generateId(lotEntity.getId()));
         lotTransaction.setTransactionId(transactionId);

@@ -8,5 +8,8 @@ package com.junbo.ewallet.db.dao.hibernate;
 import com.junbo.ewallet.db.dao.LotTransactionDao;
 import com.junbo.ewallet.db.entity.LotTransactionEntity;
 
+/**
+ * LotTransactionDao Impl.
+ */
 public class LotTransactionDaoImpl extends TransactionBaseDao<LotTransactionEntity> implements LotTransactionDao{
 }
