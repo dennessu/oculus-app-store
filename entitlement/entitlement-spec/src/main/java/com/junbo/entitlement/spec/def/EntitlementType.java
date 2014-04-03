@@ -4,21 +4,19 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.ewallet.db.entity.def;
+package com.junbo.entitlement.spec.def;
 
 import com.junbo.common.util.Identifiable;
 
 /**
- * Enum for status.
+ * EntitlementType enum.
  */
-public enum Status implements Identifiable<Integer> {
-    ACTIVE(1),
-    LOCKED(-1),
-    EXPIRED(-2);
+public enum EntitlementType implements Identifiable<Integer> {
+    DEFAULT(0), DEVELOPER(1), DOWNLOAD(2), ONLINE_ACCESS(3), IAP(4), SUBSCRIPTIONS(4);
 
     private Integer id;
 
-    Status(Integer id) {
+    EntitlementType(Integer id) {
         this.id = id;
     }
 

@@ -56,9 +56,9 @@ class WalletServiceTest extends AbstractTransactionalTestNGSpringContextTests {
     @Test
     public void testUpdate() {
         Wallet wallet = walletService.add(buildAWallet())
-        wallet.status = com.junbo.ewallet.db.entity.def.Status.LOCKED.toString()
+        wallet.status = com.junbo.ewallet.spec.def.Status.LOCKED.toString()
         Wallet updated = walletService.update(wallet.walletId, wallet)
-        Assert.assertEquals(updated.status, com.junbo.ewallet.db.entity.def.Status.LOCKED.toString())
+        Assert.assertEquals(updated.status, com.junbo.ewallet.spec.def.Status.LOCKED.toString())
     }
 
     @Test
@@ -112,8 +112,8 @@ class WalletServiceTest extends AbstractTransactionalTestNGSpringContextTests {
     private Wallet buildAWallet() {
         Wallet wallet = new Wallet()
         wallet.setUserId(idGenerator.nextId())
-        wallet.setType(com.junbo.ewallet.db.entity.def.WalletType.SV.toString())
-        wallet.setCurrency(com.junbo.ewallet.db.entity.def.Currency.USD.toString())
+        wallet.setType(com.junbo.ewallet.spec.def.WalletType.SV.toString())
+        wallet.setCurrency(com.junbo.ewallet.spec.def.Currency.USD.toString())
         wallet.setBalance(BigDecimal.ZERO)
         return wallet
     }

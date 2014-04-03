@@ -7,7 +7,7 @@
 package com.junbo.ewallet.db.dao;
 
 import com.junbo.ewallet.db.entity.WalletEntity;
-import com.junbo.ewallet.db.entity.def.WalletType;
+import com.junbo.ewallet.spec.def.WalletType;
 
 import java.util.UUID;
 

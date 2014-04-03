@@ -8,7 +8,7 @@ package com.junbo.ewallet.db.dao.hibernate;
 
 import com.junbo.ewallet.db.dao.WalletDao;
 import com.junbo.ewallet.db.entity.WalletEntity;
-import com.junbo.ewallet.db.entity.def.WalletType;
+import com.junbo.ewallet.spec.def.WalletType;
 import org.hibernate.Query;
 
 import java.util.UUID;
