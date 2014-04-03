@@ -85,7 +85,7 @@ class AvalaraFacadeImpl implements TaxFacade {
 
     @Override
     Promise<Address> validatePiAddress(Address piAddress) {
-        if (SUPPORT_COUNTRY_LIST.contains(piAddress.country)) {
+        if (SUPPORT_COUNTRY_LIST.contains(piAddress.country.trim().toUpperCase())) {
             AvalaraAddress address = getAvalaraAddress(piAddress)
             LOGGER.info('name=Validate_Address_Request, request={}', address.toString())
             return validateAddress(address).then { ValidateAddressResponse response ->
