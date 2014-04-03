@@ -1,8 +1,11 @@
 package com.junbo.sharding.view
+
+import com.junbo.common.util.Identifiable
+
 /**
  * Created by kg on 3/28/2014.
  */
-interface EntityView<ID, E, K> {
+interface EntityView<ID, E extends Identifiable<ID>, K> {
 
     String getName()
 
