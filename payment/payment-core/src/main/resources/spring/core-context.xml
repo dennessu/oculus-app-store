@@ -21,6 +21,7 @@
         <property name="merchantId" value="${payment.provider.braintree.merchantid}"/>
         <property name="publicKey" value="${payment.provider.braintree.publickey}"/>
         <property name="privateKey" value="${payment.provider.braintree.privatekey}"/>
+        <property name="companyName" value="${payment.provider.braintree.companyname}"/>
     </bean>
 
     <bean id="brainTreeRestProviderService" class="com.junbo.payment.core.provider.braintree.BrainTreeRestProviderServiceImpl">

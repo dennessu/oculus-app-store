@@ -8,8 +8,12 @@ package com.junbo.ewallet.db;
 import com.junbo.ewallet.db.dao.WalletDao;
 import com.junbo.ewallet.db.dao.WalletLotDao;
 import com.junbo.ewallet.db.entity.def.*;
-import com.junbo.ewallet.db.entity.hibernate.WalletEntity;
-import com.junbo.ewallet.db.entity.hibernate.WalletLotEntity;
+import com.junbo.ewallet.db.entity.WalletEntity;
+import com.junbo.ewallet.db.entity.WalletLotEntity;
+import com.junbo.ewallet.spec.def.Currency;
+import com.junbo.ewallet.spec.def.Status;
+import com.junbo.ewallet.spec.def.WalletLotType;
+import com.junbo.ewallet.spec.def.WalletType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -73,7 +77,7 @@ public class WalletDaoTest extends BaseTest {
         walletEntity.setUserId(idGenerator.nextId());
         walletEntity.setType(WalletType.SV);
         walletEntity.setStatus(Status.ACTIVE);
-        walletEntity.setCurrency(Currency.USD);
+        walletEntity.setCurrency(Currency.USD.toString());
         walletEntity.setBalance(BigDecimal.ZERO);
         return walletEntity;
     }

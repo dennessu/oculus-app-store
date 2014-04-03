@@ -43,8 +43,8 @@ public interface WalletResource {
 
     @ApiOperation("Credit a wallet")
     @POST
-    @Path("/{walletId}/credit")
-    Promise<Wallet> credit(@PathParam("walletId") WalletId walletId, CreditRequest creditRequest);
+    @Path("/credit")
+    Promise<Wallet> credit(CreditRequest creditRequest);
 
     @ApiOperation("Debit a wallet")
     @POST

@@ -102,9 +102,24 @@ public interface ModelMapper {
 
     BillingEvent toOrderBillingEventModel(OrderBillingEventEntity orderBillingEventEntity,
                                              MappingContext context);
-
+    @Mappings({
+            @Mapping(source = "orderItemPreorderInfoId", target = "preorderInfoId",
+                    excluded = false, bidirectional = false),
+            @Mapping(source = "billingDate", target = "billingTime", excluded = false, bidirectional = false),
+            @Mapping(source = "preNotificationDate", target = "preNotificationTime",
+                    excluded = false, bidirectional = false),
+            @Mapping(source = "releaseDate", target = "releaseTime", excluded = false, bidirectional = false),
+    })
     PreorderInfo toPreOrderInfoModel(OrderItemPreorderInfoEntity orderItemPreorderInfoEntity, MappingContext context);
 
+    @Mappings({
+            @Mapping(source = "preorderInfoId", target = "orderItemPreorderInfoId",
+                    excluded = false, bidirectional = false),
+            @Mapping(source = "billingTime", target = "billingDate", excluded = false, bidirectional = false),
+            @Mapping(source = "preNotificationTime", target = "preNotificationDate",
+                    excluded = false, bidirectional = false),
+            @Mapping(source = "releaseTime", target = "releaseDate", excluded = false, bidirectional = false),
+    })
     OrderItemPreorderInfoEntity toOrderItemPreorderInfoEntity(PreorderInfo preorderInfo, MappingContext context);
 
     @Mappings({

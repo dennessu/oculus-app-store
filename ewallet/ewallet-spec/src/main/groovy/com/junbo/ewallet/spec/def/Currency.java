@@ -4,7 +4,7 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.ewallet.db.entity.def;
+package com.junbo.ewallet.spec.def;
 
 
 import com.junbo.common.util.Identifiable;

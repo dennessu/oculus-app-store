@@ -6,7 +6,7 @@
 
 package com.junbo.ewallet.db.dao;
 
-import com.junbo.ewallet.db.entity.hibernate.WalletLotEntity;
+import com.junbo.ewallet.db.entity.WalletLotEntity;
 
 import java.math.BigDecimal;
 

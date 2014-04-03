@@ -5,18 +5,15 @@
  */
 
 package com.junbo.ewallet.rest.resource
-
 import com.junbo.common.id.WalletId
 import com.junbo.ewallet.service.WalletService
 import com.junbo.ewallet.spec.model.CreditRequest
 import com.junbo.ewallet.spec.model.DebitRequest
-import com.junbo.ewallet.spec.model.Transaction
 import com.junbo.ewallet.spec.model.Wallet
 import com.junbo.ewallet.spec.resource.WalletResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
-
 /**
  * WalletResource Impl.
  */
@@ -52,12 +49,12 @@ class WalletResourceImpl implements WalletResource {
     }
 
     @Override
-    Promise<Wallet> credit(WalletId walletId, CreditRequest creditRequest) {
+    Promise<Wallet> credit(CreditRequest creditRequest) {
         Wallet existed = getByTrackingUuid(creditRequest.trackingUuid)
         if (existed != null) {
             return Promise.pure(existed)
         }
-        Wallet result = walletService.credit(walletId.value, creditRequest)
+        Wallet result = walletService.credit(creditRequest)
         return Promise.pure(result)
     }
 
@@ -73,10 +70,7 @@ class WalletResourceImpl implements WalletResource {
 
     @Override
     Promise<Wallet> getTransactions(WalletId walletId) {
-        Wallet result = walletService.get(walletId.value)
-        List<Transaction> transactions = walletService.getTransactions(walletId.value)
-        result.transactions = transactions
-        return Promise.pure(result)
+        return Promise.pure(walletService.getTransactions(walletId.value))
     }
 
     private Wallet getByTrackingUuid(UUID trackingUuid) {

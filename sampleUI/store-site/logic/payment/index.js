@@ -1,6 +1,6 @@
 var Async = require('async');
 var Guid = require('guid');
-var DataProvider = require('store-data-provider').DataProvider.Payment;
+var DataProvider = require('store-data-provider').Payment;
 var PaymentModels = require('store-model').Payment;
 
 var DomainModels = require('../../models/domain');
