@@ -103,7 +103,7 @@ FROM ${view.name}
 WHERE key = ? AND deleted = FALSE""")
 
         sqlQuery.setParameter(0, key)
-        sqlQuery.addScalar("value", sessionFactory.typeHelper.basic(view.idType))
+        sqlQuery.addScalar('value', sessionFactory.typeHelper.basic(view.idType))
 
         return sqlQuery.list()
     }

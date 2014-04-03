@@ -79,7 +79,6 @@
             <bean class="com.junbo.identity.data.dao.interceptor.AuditInterceptor" />
         </property>
         <property name="dataBaseName" value="index"/>
-        <property name="packagesToScan" value="com.junbo.identity.data.entity.reverselookup"/>
         <property name="postInsertEventListeners" ref="entityListener" />
         <property name="postUpdateEventListeners" ref="entityListener" />
         <property name="postDeleteEventListeners" ref="entityListener" />
