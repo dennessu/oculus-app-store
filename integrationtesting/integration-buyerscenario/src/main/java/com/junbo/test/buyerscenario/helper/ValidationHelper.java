@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.test.common.Utility;
+package com.junbo.test.buyerscenario.helper;
 
 import com.junbo.cart.spec.model.item.OfferItem;
 import com.junbo.common.id.OrderId;

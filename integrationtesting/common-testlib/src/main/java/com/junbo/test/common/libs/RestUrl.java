@@ -22,14 +22,9 @@ public final class RestUrl {
      * @author Yunlongzhao
      */
     public enum ComponentName {
-        OAUTH("oauth"),
         IDENTITY("identity"),
-        CART("cart"),
         CATALOG("catalog"),
-        ORDER("order"),
-        PAYMENT("payment"),
-        BILLING("billing"),
-        ENTITLEMENT("entitlement");
+        COMMERCE("commerce");
 
         private String name;
 
