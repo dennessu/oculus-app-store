@@ -18,7 +18,7 @@ class AuthenticatorValueView implements EntityView<Long, UserAuthenticatorEntity
 
     @Override
     String getName() {
-        return 'authenticator_authenticatorname'
+        return 'authenticator_authenticatorvalue'
     }
 
     @Override

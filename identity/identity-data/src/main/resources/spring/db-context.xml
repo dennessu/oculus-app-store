@@ -194,13 +194,6 @@
         <property name="daoTarget" ref="userSecurityQuestionAttemptDAOTarget" />
     </bean>
 
-    <!-- identity reverse index -->
-    <bean id="userEmailReverseIndexDAOTarget" class="com.junbo.identity.data.dao.impl.index.UserEmailReverseIndexDAOImpl" parent="entityIndexDAOBase" />
-    <bean id="userEmailReverseIndexDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
-        <property name="daoInterface" value="com.junbo.identity.data.dao.index.UserEmailReverseIndexDAO" />
-        <property name="daoTarget" ref="userEmailReverseIndexDAOTarget" />
-    </bean>
-
     <bean id="groupRepository" class="com.junbo.identity.data.repository.impl.GroupRepositoryImpl" />
     <bean id="userAuthenticatorRepository" class="com.junbo.identity.data.repository.impl.UserAuthenticatorRepositoryImpl" />
     <bean id="userDeviceRepository" class="com.junbo.identity.data.repository.impl.UserDeviceRepositoryImpl" />
@@ -223,6 +216,7 @@
                 <bean class="com.junbo.identity.data.view.UsernameView" />
                 <bean class="com.junbo.identity.data.view.GroupNameView" />
                 <bean class="com.junbo.identity.data.view.AuthenticatorValueView" />
+                <bean class="com.junbo.identity.data.view.UserEmailView" />
             </list>
         </property>
     </bean>

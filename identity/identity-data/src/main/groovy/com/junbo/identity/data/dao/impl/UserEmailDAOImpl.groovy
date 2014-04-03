@@ -9,6 +9,7 @@ import com.junbo.identity.data.entity.user.UserEmailEntity
 import com.junbo.identity.spec.options.list.UserEmailListOptions
 import com.junbo.sharding.annotations.SeedParam
 import groovy.transform.CompileStatic
+import org.apache.commons.collections.CollectionUtils
 import org.hibernate.Criteria
 import org.hibernate.criterion.Order
 import org.hibernate.criterion.Restrictions
@@ -56,7 +57,7 @@ class UserEmailDAOImpl extends ShardedDAOBase implements UserEmailDAO {
         currentSession().merge(entity)
         currentSession().flush()
 
-        return get(entity.id)
+        return get((Long)(entity.id))
     }
 
     @Override
@@ -64,6 +65,21 @@ class UserEmailDAOImpl extends ShardedDAOBase implements UserEmailDAO {
         currentSession().save(entity)
         currentSession().flush()
 
-        return get(entity.id)
+        return get((Long)(entity.id))
+    }
+
+    @Override
+    Long findIdByEmail(String email) {
+        UserEmailEntity example = new UserEmailEntity()
+        example.setValue(email)
+
+        def viewQuery = viewQueryFactory.from(example)
+        if (viewQuery != null) {
+            def userIds = viewQuery.list()
+
+            return CollectionUtils.isEmpty(userIds) ? null : (Long)(userIds.get(0))
+        }
+
+        throw new RuntimeException()
     }
 }

@@ -22,7 +22,7 @@
 			
 			create index idx_group_groupname on group_groupname(key, value);
 					
-			create table authenticator_authenticatorname
+			create table authenticator_authenticatorvalue
 			(
 			  key character varying(255) NOT NULL,
 			  value bigint NOT NULL,
@@ -33,16 +33,21 @@
 			  deleted boolean NOT NULL
 			);
 			
-			create index idx_authenticator_authenticatorname on authenticator_authenticatorname(key, value);
+			create index idx_authenticator_authenticatorvalue on authenticator_authenticatorvalue(key, value);
 					
-			create table user_email_reverse_index (
-				value varchar(255) not null,
-				user_email_id bigint not null,
-				active boolean not null,
-				
-				primary key (value, user_email_id)
+			create table user_useremail
+			(
+			  key character varying(255) NOT NULL,
+			  value bigint NOT NULL,
+			  created_by character varying(255) NOT NULL,
+			  created_time time without time zone NOT NULL,
+			  modified_by character varying(255) NOT NULL,
+			  modified_time time without time zone NOT NULL,
+			  deleted boolean NOT NULL
 			);
 			
+			create index idx_user_useremail on user_useremail(key, value);		
+					
 			create table user_username
 			(
 			  key character varying(255) NOT NULL,

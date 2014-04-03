@@ -23,4 +23,6 @@ interface UserEmailDAO {
     void delete(@SeedParam Long id)
 
     List<UserEmailEntity> search(@SeedParam Long userId, UserEmailListOptions getOption)
+
+    Long findIdByEmail(@SeedParam String email)
 }
