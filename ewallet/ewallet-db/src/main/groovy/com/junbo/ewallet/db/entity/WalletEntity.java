@@ -7,8 +7,8 @@
 package com.junbo.ewallet.db.entity;
 
 import com.junbo.ewallet.db.entity.def.IdentifiableType;
-import com.junbo.ewallet.db.entity.def.Status;
-import com.junbo.ewallet.db.entity.def.WalletType;
+import com.junbo.ewallet.spec.def.Status;
+import com.junbo.ewallet.spec.def.WalletType;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;

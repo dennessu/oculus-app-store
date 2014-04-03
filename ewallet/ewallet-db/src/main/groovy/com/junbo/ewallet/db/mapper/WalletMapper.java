@@ -7,8 +7,8 @@ package com.junbo.ewallet.db.mapper;
 
 import com.junbo.ewallet.db.entity.TransactionEntity;
 import com.junbo.ewallet.db.entity.WalletEntity;
-import com.junbo.ewallet.db.entity.def.Status;
-import com.junbo.ewallet.db.entity.def.WalletType;
+import com.junbo.ewallet.spec.def.Status;
+import com.junbo.ewallet.spec.def.WalletType;
 import com.junbo.ewallet.spec.model.Transaction;
 import com.junbo.ewallet.spec.model.Wallet;
 
