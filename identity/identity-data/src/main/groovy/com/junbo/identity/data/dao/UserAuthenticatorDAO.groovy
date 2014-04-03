@@ -24,5 +24,7 @@ interface UserAuthenticatorDAO {
     // only possible when userId is existing
     List<UserAuthenticatorEntity> search(@SeedParam Long userId, UserAuthenticatorListOptions getOption)
 
+    Long getIdByAuthenticatorValue(@SeedParam String value)
+
     void delete(@SeedParam Long id)
 }

@@ -195,12 +195,6 @@
     </bean>
 
     <!-- identity reverse index -->
-    <bean id="userAuthenticatorReverseIndexDAOTarget" class="com.junbo.identity.data.dao.impl.index.UserAuthenticatorReverseIndexDAOImpl" parent="entityIndexDAOBase" />
-    <bean id="userAuthenticatorReverseIndexDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
-        <property name="daoInterface" value="com.junbo.identity.data.dao.index.UserAuthenticatorReverseIndexDAO" />
-        <property name="daoTarget" ref="userAuthenticatorReverseIndexDAOTarget" />
-    </bean>
-
     <bean id="userEmailReverseIndexDAOTarget" class="com.junbo.identity.data.dao.impl.index.UserEmailReverseIndexDAOImpl" parent="entityIndexDAOBase" />
     <bean id="userEmailReverseIndexDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
         <property name="daoInterface" value="com.junbo.identity.data.dao.index.UserEmailReverseIndexDAO" />
@@ -228,6 +222,7 @@
             <list>
                 <bean class="com.junbo.identity.data.view.UsernameView" />
                 <bean class="com.junbo.identity.data.view.GroupNameView" />
+                <bean class="com.junbo.identity.data.view.AuthenticatorValueView" />
             </list>
         </property>
     </bean>

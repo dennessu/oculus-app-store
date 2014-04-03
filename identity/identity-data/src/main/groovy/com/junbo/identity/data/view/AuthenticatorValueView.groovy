@@ -5,20 +5,20 @@
  */
 package com.junbo.identity.data.view
 
-import com.junbo.identity.data.entity.group.GroupEntity
+import com.junbo.identity.data.entity.user.UserAuthenticatorEntity
 import com.junbo.sharding.view.EntityView
 import groovy.transform.CompileStatic
 
 /**
- * Created by liangfu on 4/2/14.
+ * Created by liangfu on 4/3/14.
  */
 @CompileStatic
 @SuppressWarnings('GetterMethodCouldBeProperty')
-class GroupNameView implements EntityView<Long, GroupEntity, String>  {
+class AuthenticatorValueView implements EntityView<Long, UserAuthenticatorEntity, String>  {
 
     @Override
     String getName() {
-        return 'group_groupname'
+        return 'authenticator_authenticatorname'
     }
 
     @Override
@@ -27,8 +27,8 @@ class GroupNameView implements EntityView<Long, GroupEntity, String>  {
     }
 
     @Override
-    Class<GroupEntity> getEntityType() {
-        return GroupEntity
+    Class<UserAuthenticatorEntity> getEntityType() {
+        return UserAuthenticatorEntity
     }
 
     @Override
@@ -37,20 +37,20 @@ class GroupNameView implements EntityView<Long, GroupEntity, String>  {
     }
 
     @Override
-    boolean handlesEntity(GroupEntity entity) {
+    boolean handlesEntity(UserAuthenticatorEntity entity) {
         if (entity == null) {
             throw new IllegalArgumentException('entity is null')
         }
 
-        return entity.name != null
+        return entity.value != null
     }
 
     @Override
-    List<String> mapEntity(GroupEntity entity) {
+    List<String> mapEntity(UserAuthenticatorEntity entity) {
         if (entity == null) {
             throw new IllegalArgumentException('entity is null')
         }
 
-        return [entity.name]
+        return [entity.value]
     }
 }

@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.data.entity.user;
 
+import com.junbo.common.util.Identifiable;
 import com.junbo.identity.data.entity.common.ResourceMetaEntity;
 import com.junbo.sharding.annotations.SeedId;
 
@@ -18,7 +19,8 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "user_authenticator")
-public class UserAuthenticatorEntity extends ResourceMetaEntity {
+public class UserAuthenticatorEntity extends ResourceMetaEntity implements Identifiable<Long> {
+    @Override
     public Long getId() {
         return id;
     }
