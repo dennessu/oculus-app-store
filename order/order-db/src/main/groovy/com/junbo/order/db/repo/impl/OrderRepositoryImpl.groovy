@@ -151,6 +151,11 @@ class OrderRepositoryImpl implements OrderRepository {
     }
 
     @Override
+    List<OrderItem> getOrderItem(Long orderItemId) {
+        return null
+    }
+
+    @Override
     List<Discount> getDiscounts(Long orderId) {
         List<Discount> discounts = []
         MappingContext context = new MappingContext()

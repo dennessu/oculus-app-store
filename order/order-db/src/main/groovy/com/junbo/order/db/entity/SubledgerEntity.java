@@ -7,6 +7,7 @@
 package com.junbo.order.db.entity;
 
 import com.junbo.order.db.ValidationMessages;
+import com.junbo.order.db.entity.enums.SubledgerStatus;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.Column;
@@ -15,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * Created by chriszhu on 1/29/14.
@@ -28,6 +30,9 @@ public class SubledgerEntity extends CommonDbEntityWithDate {
     private Long sellerTaxProfileId;
     private Short currencyId;
     private BigDecimal totalAmount;
+    private SubledgerStatus subledgerStatus;
+    private Date startTime;
+    private Date endTime;
     private String property;
 
     @Id
@@ -78,6 +83,36 @@ public class SubledgerEntity extends CommonDbEntityWithDate {
 
     public void setTotalAmount(BigDecimal totalAmount) {
         this.totalAmount = totalAmount;
+    }
+
+    @Column(name = "STATUS_ID")
+    @NotNull(message = ValidationMessages.MISSING_VALUE)
+    public SubledgerStatus getSubledgerStatus() {
+        return subledgerStatus;
+    }
+
+    public void setSubledgerStatus(SubledgerStatus subledgerStatus) {
+        this.subledgerStatus = subledgerStatus;
+    }
+
+    @Column(name = "START_TIME")
+    @NotNull(message = ValidationMessages.MISSING_VALUE)
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
+    @Column(name = "END_TIME")
+    @NotNull(message = ValidationMessages.MISSING_VALUE)
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
     }
 
     @Column(name = "PROPERTY")

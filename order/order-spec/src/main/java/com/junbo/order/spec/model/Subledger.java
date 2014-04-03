@@ -6,9 +6,9 @@
 package com.junbo.order.spec.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.junbo.common.id.SellerId;
 import com.junbo.common.id.SellerTaxProfileId;
 import com.junbo.common.id.SubledgerId;
+import com.junbo.common.id.UserId;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -19,13 +19,14 @@ import java.util.Date;
 public class Subledger extends BaseModelWithDate {
     @JsonProperty("self")
     private SubledgerId subledgerId;
-    private SellerId sellerId;
+    private UserId sellerId;
     private SellerTaxProfileId sellerTaxProfileId;
-    private PayoutStatus payoutStatus;
-    private Date payoutTime;
+    private String status;
+    private Date startTime;
+    private Date endTime;
     private String country;
     private String currency;
-    private BigDecimal payoutAmount;
+    private BigDecimal totalAmount;
     private Integer resourceAge;
 
     public SubledgerId getSubledgerId() {
@@ -36,11 +37,11 @@ public class Subledger extends BaseModelWithDate {
         this.subledgerId = subledgerId;
     }
 
-    public SellerId getSellerId() {
+    public UserId getSellerId() {
         return sellerId;
     }
 
-    public void setSellerId(SellerId sellerId) {
+    public void setSellerId(UserId sellerId) {
         this.sellerId = sellerId;
     }
 
@@ -52,20 +53,36 @@ public class Subledger extends BaseModelWithDate {
         this.sellerTaxProfileId = sellerTaxProfileId;
     }
 
-    public PayoutStatus getPayoutStatus() {
-        return payoutStatus;
+    public String getStatus() {
+        return status;
     }
 
-    public void setPayoutStatus(PayoutStatus payoutStatus) {
-        this.payoutStatus = payoutStatus;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
-    public Date getPayoutTime() {
-        return payoutTime;
+    public Date getStartTime() {
+        return startTime;
     }
 
-    public void setPayoutTime(Date payoutTime) {
-        this.payoutTime = payoutTime;
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
+
+    public Integer getResourceAge() {
+        return resourceAge;
+    }
+
+    public void setResourceAge(Integer resourceAge) {
+        this.resourceAge = resourceAge;
     }
 
     public String getCountry() {
@@ -84,12 +101,12 @@ public class Subledger extends BaseModelWithDate {
         this.currency = currency;
     }
 
-    public BigDecimal getPayoutAmount() {
-        return payoutAmount;
+    public BigDecimal getTotalAmount() {
+        return totalAmount;
     }
 
-    public void setPayoutAmount(BigDecimal payoutAmount) {
-        this.payoutAmount = payoutAmount;
+    public void setTotalAmount(BigDecimal totalAmount) {
+        this.totalAmount = totalAmount;
     }
 
     public Integer getRev() {

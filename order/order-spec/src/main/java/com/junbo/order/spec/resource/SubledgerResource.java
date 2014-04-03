@@ -5,16 +5,16 @@
  */
 package com.junbo.order.spec.resource;
 
+import com.junbo.common.id.SubledgerId;
 import com.junbo.common.model.Results;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
+import com.junbo.order.spec.model.PageParam;
 import com.junbo.order.spec.model.Subledger;
+import com.junbo.order.spec.model.SubledgerParam;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
-import java.util.Date;
 
 /**
  * Created by chriszhu on 2/10/14.
@@ -25,12 +25,15 @@ import java.util.Date;
 @RestResource
 public interface SubledgerResource {
 
+    @PUT
+    @Path("/{subledgerId}")
+    Promise<Subledger> putSubledger(@PathParam("subledgerId")SubledgerId subledgerId, Subledger subledger);
+
     @GET
-    Promise<Results<Subledger>> getSubledgers(
-            @QueryParam("sellerId") String sellerId,
-            @QueryParam("status") String status,
-            @QueryParam("fromDate") Date fromDate,
-            @QueryParam("toDate") Date toDate,
-            @Context HttpHeaders headers);
+    @Path("/{subledgerId}")
+    Promise<Subledger> getSubledger(@PathParam("subledgerId")SubledgerId subledgerId);
+
+    @GET
+    Promise<Results<Subledger>> getSubledgers(@BeanParam SubledgerParam subledgerParam, @BeanParam PageParam pageParam);
 
 }
