@@ -21,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -48,8 +47,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     public Entitlement addEntitlement(Entitlement entitlement) {
         fillCreate(entitlement);
         validateCreate(entitlement);
-        //if managedLifecycle is true, try to merge the added entitlement into existing entitlement
-        return merge(entitlement);
+        return entitlementRepository.insert(entitlement);
     }
 
     @Override
@@ -115,39 +113,5 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     @Transactional
     public Entitlement getByTrackingUuid(UUID trackingUuid) {
         return entitlementRepository.getByTrackingUuid(trackingUuid);
-    }
-
-    private Entitlement merge(Entitlement entitlement) {
-        if (Boolean.TRUE.equals(entitlement.getManagedLifecycle())) {
-            Entitlement existingEntitlement;
-            if (entitlement.getEntitlementDefinitionId() != null) {
-                existingEntitlement = entitlementRepository.getExistingManagedEntitlement(
-                        entitlement.getUserId(), entitlement.getEntitlementDefinitionId());
-            } else {
-                existingEntitlement = entitlementRepository.getExistingManagedEntitlement(
-                        entitlement.getUserId(), entitlement.getType(),
-                        entitlement.getOwnerId(), entitlement.getGroup(),
-                        entitlement.getTag(), entitlement.getConsumable());
-            }
-            if (existingEntitlement != null) {
-                LOGGER.info("Merge added entitlement into existing entitlement [{}].",
-                        existingEntitlement.getEntitlementId());
-                if (entitlement.getExpirationTime() != null) {
-                    if (existingEntitlement.getExpirationTime() != null) {
-                        existingEntitlement.setExpirationTime(new Date(existingEntitlement.getExpirationTime().getTime()
-                                + entitlement.getExpirationTime().getTime()
-                                - entitlement.getGrantTime().getTime()));
-                    }
-                } else {
-                    existingEntitlement.setExpirationTime(null);
-                }
-                if (entitlement.getConsumable()) {
-                    existingEntitlement.setUseCount(existingEntitlement.getUseCount() + entitlement.getUseCount());
-                }
-
-                return entitlementRepository.update(existingEntitlement);
-            }
-        }
-        return entitlementRepository.insert(entitlement);
     }
 }

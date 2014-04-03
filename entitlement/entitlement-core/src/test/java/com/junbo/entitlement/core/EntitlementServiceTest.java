@@ -9,7 +9,6 @@ package com.junbo.entitlement.core;
 import com.junbo.common.error.AppErrorException;
 import com.junbo.common.id.UserId;
 import com.junbo.entitlement.common.def.EntitlementStatusReason;
-import com.junbo.entitlement.common.lib.CloneUtils;
 import com.junbo.entitlement.common.lib.EntitlementContext;
 import com.junbo.entitlement.db.entity.def.EntitlementStatus;
 import com.junbo.entitlement.db.entity.def.EntitlementType;
@@ -69,7 +68,6 @@ public class EntitlementServiceTest extends AbstractTransactionalTestNGSpringCon
     public void testGetEntitlementWithManagedLifecycle() {
         Entitlement entitlement = buildAnEntitlement();
         entitlement.setExpirationTime(new Date(System.currentTimeMillis() - 1 * 24 * 3600 * 1000));
-        entitlement.setManagedLifecycle(true);
         Entitlement addedEntitlement = entitlementService.addEntitlement(entitlement);
         Assert.assertEquals(addedEntitlement.getStatus(), EntitlementStatus.DISABLED.toString());
     }
@@ -102,7 +100,6 @@ public class EntitlementServiceTest extends AbstractTransactionalTestNGSpringCon
         for (int i = 0; i < 48; i++) {
             Entitlement entitlementEntity = buildAnEntitlement();
             entitlementEntity.setUserId(userId);
-            entitlementEntity.setManagedLifecycle(true);
             entitlementEntity.setEntitlementDefinitionId(idGenerator.nextId());
             entitlementEntity.setExpirationTime(new Date(114, 2, 20));
             entitlementService.addEntitlement(entitlementEntity);
@@ -134,45 +131,6 @@ public class EntitlementServiceTest extends AbstractTransactionalTestNGSpringCon
         Assert.assertEquals(newEntitlement.getOfferId(), entitlement.getOfferId());
     }
 
-    @Test
-    public void testStackableEntitlement() {
-        Entitlement entitlement = buildAnEntitlement();
-        entitlement.setManagedLifecycle(true);
-        entitlement.setConsumable(true);
-        entitlement.setUseCount(0);
-        Entitlement addedEntitlement = entitlementService.addEntitlement(entitlement);
-        Assert.assertEquals(addedEntitlement.getStatus(), EntitlementStatus.DISABLED.toString());
-
-        Entitlement e1 = CloneUtils.clone(addedEntitlement);
-        e1.setUseCount(20);
-        Entitlement entitlement1 = entitlementService.addEntitlement(e1);
-        Assert.assertEquals(addedEntitlement.getEntitlementId(), entitlement1.getEntitlementId());
-        Assert.assertEquals(entitlement1.getStatus(), EntitlementStatus.DISABLED.toString());
-        Assert.assertEquals(entitlement1.getUseCount().intValue(), 20);
-
-        Entitlement e2 = CloneUtils.clone(e1);
-        e2.setUseCount(20);
-        e2.setExpirationTime(new Date(814, 0, 22));
-        Entitlement entitlement2 = entitlementService.addEntitlement(e2);
-        Assert.assertEquals(addedEntitlement.getEntitlementId(), entitlement2.getEntitlementId());
-        Assert.assertEquals(entitlement2.getStatus(), EntitlementStatus.ACTIVE.toString());
-        Assert.assertEquals(entitlement2.getUseCount().intValue(), 40);
-
-        entitlement = buildAnEntitlement();
-        entitlement.setManagedLifecycle(true);
-        entitlement.setConsumable(true);
-        entitlement.setUseCount(0);
-        addedEntitlement = entitlementService.addEntitlement(entitlement);
-        e1 = CloneUtils.clone(addedEntitlement);
-        e1.setUseCount(40);
-        e1.setExpirationTime(new Date(814, 0, 22));
-        e1.setEntitlementDefinitionId(null);
-        e2 = entitlementService.addEntitlement(e1);
-        Assert.assertEquals(addedEntitlement.getEntitlementId(), e2.getEntitlementId());
-        Assert.assertEquals(e2.getStatus(), EntitlementStatus.ACTIVE.toString());
-        Assert.assertEquals(e2.getUseCount().intValue(), 40);
-    }
-
     private Entitlement buildAnEntitlement() {
         Entitlement entitlement = new Entitlement();
 
@@ -189,7 +147,6 @@ public class EntitlementServiceTest extends AbstractTransactionalTestNGSpringCon
         entitlement.setOfferId(idGenerator.nextId());
         entitlement.setStatus(EntitlementStatus.ACTIVE.toString());
         entitlement.setUseCount(0);
-        entitlement.setManagedLifecycle(false);
         return entitlement;
     }
 }

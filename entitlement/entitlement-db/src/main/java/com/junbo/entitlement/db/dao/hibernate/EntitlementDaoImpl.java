@@ -55,28 +55,22 @@ public class EntitlementDaoImpl extends BaseDao<EntitlementEntity> implements En
             EntitlementStatus status = EntitlementStatus.valueOf(entitlementSearchParam.getStatus());
             if (EntitlementStatus.LIFECYCLE_NOT_MANAGED_STATUS.contains(status)) {
                 queryStringBuilder.append(" and status = (:status)");
+                params.put("status", status.getId());
             } else if (status.equals(EntitlementStatus.ACTIVE)) {
-                queryStringBuilder.append(" and ( status = (:status)" +
-                        " or ( managed_lifecycle = true" +
+                queryStringBuilder.append(
                         " and ( consumable = false or ( consumable = true and use_count > 0 ))" +
-                        " and ( grant_time <= (:now) and ( expiration_time is null or expiration_time >= (:now) ))" +
-                        " ))");
+                        " and ( grant_time <= (:now) and ( expiration_time is null or expiration_time >= (:now) ))");
                 params.put("now", now);
             } else if (status.equals(EntitlementStatus.PENDING)) {
-                queryStringBuilder.append(" and ( status = (:status)" +
-                        " or ( managed_lifecycle = true" +
-                        " and grant_time >= (:now)" +
-                        " ))");
+                queryStringBuilder.append(
+                        " and grant_time >= (:now)");
                 params.put("now", now);
             } else if (status.equals(EntitlementStatus.DISABLED)) {
-                queryStringBuilder.append(" and ( status = (:status)" +
-                        " or ( managed_lifecycle = true" +
-                        " and ( consumable = true and use_count < 1" +
-                        " or expiration_time <= (:now) )" +
-                        " ))");
+                queryStringBuilder.append(
+                        "and ( consumable = true and use_count < 1" +
+                        " or expiration_time <= (:now) )");
                 params.put("now", now);
             }
-            params.put("status", status.getId());
         } else {
             //default not to search DELETED and BANNED Entitlement
             queryStringBuilder.append(" and status >= 0");
@@ -138,41 +132,6 @@ public class EntitlementDaoImpl extends BaseDao<EntitlementEntity> implements En
     public EntitlementEntity getByTrackingUuid(UUID trackingUuid) {
         String queryString = "from EntitlementEntity where trackingUuid = (:trackingUuid)";
         Query q = currentSession().createQuery(queryString).setParameter("trackingUuid", trackingUuid);
-        return (EntitlementEntity) q.uniqueResult();
-    }
-
-    @Override
-    public EntitlementEntity getExistingManagedEntitlement(Long userId, Long definitionId) {
-        String queryString = "from EntitlementEntity" +
-                " where userId = (:userId)" +
-                " and entitlementDefinitionId = (:definitionId)" +
-                " and status >= 0" +
-                " and managedLifecycle = true";
-        Query q = currentSession().createQuery(queryString)
-                .setLong("userId", userId)
-                .setLong("definitionId", definitionId);
-        return (EntitlementEntity) q.uniqueResult();
-    }
-
-    @Override
-    public EntitlementEntity getExistingManagedEntitlement(
-            Long userId, EntitlementType type, String ownerId, String group, String tag, Boolean consumable) {
-        String queryString = "from EntitlementEntity" +
-                " where userId =(:userId)" +
-                " and ownerId = (:ownerId)" +
-                " and type = (:type)" +
-                " and group = (:group)" +
-                " and tag = (:tag)" +
-                " and status >= 0" +
-                " and consumable = (:consumable)" +
-                " and managedLifecycle = true";
-        Query q = currentSession().createQuery(queryString)
-                .setLong("userId", userId)
-                .setString("ownerId", ownerId)
-                .setInteger("type", type.getId())
-                .setString("group", group)
-                .setString("tag", tag)
-                .setBoolean("consumable", consumable);
         return (EntitlementEntity) q.uniqueResult();
     }
 }

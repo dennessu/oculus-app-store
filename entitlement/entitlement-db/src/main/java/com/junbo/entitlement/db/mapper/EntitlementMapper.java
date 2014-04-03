@@ -41,7 +41,6 @@ public class EntitlementMapper {
         entitlement.setExpirationTime(entitlementEntity.getExpirationTime());
         entitlement.setConsumable(entitlementEntity.getConsumable());
         entitlement.setUseCount(entitlementEntity.getUseCount());
-        entitlement.setManagedLifecycle(entitlementEntity.getManagedLifecycle());
         return entitlement;
     }
 
@@ -58,7 +57,6 @@ public class EntitlementMapper {
         entitlementEntity.setTag(entitlement.getTag());
 
         entitlementEntity.setUserId(entitlement.getUserId());
-        entitlementEntity.setManagedLifecycle(entitlement.getManagedLifecycle());
         entitlementEntity.setStatus(getStatus(entitlement));
         entitlementEntity.setStatusReason(entitlement.getStatusReason());
         entitlementEntity.setOfferId(entitlement.getOfferId());
@@ -82,9 +80,7 @@ public class EntitlementMapper {
         if (EntitlementStatus.LIFECYCLE_NOT_MANAGED_STATUS
                 .contains(entitlementEntity.getStatus())) {
             return entitlementEntity.getStatus();
-        }
-        if (entitlementEntity.getManagedLifecycle() != null
-                && entitlementEntity.getManagedLifecycle()) {
+        } else {
             Date now = EntitlementContext.current().getNow();
             if (entitlementEntity.getConsumable()
                     && entitlementEntity.getUseCount() < 1) {
@@ -98,13 +94,14 @@ public class EntitlementMapper {
                 return EntitlementStatus.DISABLED;
             }
         }
-        return entitlementEntity.getStatus();
     }
 
     private EntitlementStatus getStatus(Entitlement entitlement) {
-        if (entitlement.getManagedLifecycle()) {
-            return EntitlementStatus.MANAGED;
+        EntitlementStatus status = EntitlementStatus.valueOf(entitlement.getStatus().toUpperCase());
+        if (EntitlementStatus.LIFECYCLE_NOT_MANAGED_STATUS
+                .contains(status)) {
+            return status;
         }
-        return EntitlementStatus.valueOf(entitlement.getStatus().toUpperCase());
+        return EntitlementStatus.MANAGED;
     }
 }

@@ -20,9 +20,9 @@ import java.util.UUID;
 /**
  * Entitlement Model.
  */
-@JsonPropertyOrder(value = {"entitlementId", "userId", "developerId", "offerId", "status", "statusReason",
-        "type", "group", "tag", "entitlementDefinitionId", "grantTime", "expirationTime",
-        "consumable", "useCount", "managedLifecycle"})
+@JsonPropertyOrder(value = {"entitlementId", "userId", "ownerId", "offerId", "status", "statusReason",
+        "entitlementDefinitionId", "type", "group", "tag", "grantTime", "expirationTime",
+        "consumable", "useCount"})
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Entitlement{
     private UUID trackingUuid;
@@ -50,7 +50,6 @@ public class Entitlement{
     private String tag;
     private Boolean consumable;
     private Integer useCount;
-    private Boolean managedLifecycle;
 
     public UUID getTrackingUuid() {
         return trackingUuid;
@@ -138,14 +137,6 @@ public class Entitlement{
 
     public void setUseCount(Integer useCount) {
         this.useCount = useCount;
-    }
-
-    public Boolean getManagedLifecycle() {
-        return managedLifecycle;
-    }
-
-    public void setManagedLifecycle(Boolean managedLifecycle) {
-        this.managedLifecycle = managedLifecycle;
     }
 
     public String getType() {

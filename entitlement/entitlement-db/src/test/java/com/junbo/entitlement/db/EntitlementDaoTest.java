@@ -119,7 +119,6 @@ public class EntitlementDaoTest extends AbstractTransactionalTestNGSpringContext
             Entitlement entitlement = buildAnEntitlement();
             entitlement.setUserId(userId);
             entitlement.setOwnerId(ownerId);
-            entitlement.setManagedLifecycle(true);
             entitlementRepository.insert(entitlement);
         }
 
@@ -165,7 +164,6 @@ public class EntitlementDaoTest extends AbstractTransactionalTestNGSpringContext
         entitlement.setOfferId(idGenerator.nextId());
         entitlement.setStatus(EntitlementStatus.ACTIVE.toString());
         entitlement.setUseCount(0);
-        entitlement.setManagedLifecycle(false);
         return entitlement;
     }
 }

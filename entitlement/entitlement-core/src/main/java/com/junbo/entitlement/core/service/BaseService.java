@@ -45,19 +45,9 @@ public class BaseService {
             }
         }
 
-        if (entitlement.getManagedLifecycle() == null) {
-            LOGGER.warn("managedLifecycle not found, set true as default.");
-            entitlement.setManagedLifecycle(true);
-        }
-
-        if (entitlement.getManagedLifecycle()) {
-            entitlement.setStatus(EntitlementStatus.MANAGED.toString());
-        }
-
-        if (entitlement.getConsumable() == null || !entitlement.getConsumable()) {
-            LOGGER.warn("consumable not found, set false and set useCount to 0 as default.");
+        if (entitlement.getConsumable() == null) {
+            LOGGER.warn("consumable not found, set false and set useCount to null as default.");
             entitlement.setConsumable(false);
-            entitlement.setUseCount(0);
         }
 
         if (entitlement.getGrantTime() == null) {
@@ -93,7 +83,6 @@ public class BaseService {
 
         if (entitlement.getConsumable() == null || !entitlement.getConsumable()) {
             existingEntitlement.setConsumable(false);
-            existingEntitlement.setUseCount(0);
         } else {
             existingEntitlement.setConsumable(entitlement.getConsumable());
             existingEntitlement.setUseCount(entitlement.getUseCount());
@@ -101,17 +90,6 @@ public class BaseService {
 
         existingEntitlement.setStatus(entitlement.getStatus());
         existingEntitlement.setStatusReason(entitlement.getStatusReason());
-
-        if (existingEntitlement.getStatus() != null) {
-            if (EntitlementStatus.LIFECYCLE_NOT_MANAGED_STATUS
-                    .contains(EntitlementStatus.valueOf(existingEntitlement.getStatus().toUpperCase()))) {
-                LOGGER.info("Delete or ban entitlement [{}], set managedLifecycle" +
-                        " and consumable to false and set useCount to 0.", existingEntitlement.getEntitlementId());
-                existingEntitlement.setManagedLifecycle(false);
-                existingEntitlement.setConsumable(false);
-                existingEntitlement.setUseCount(0);
-            }
-        }
     }
 
     protected void validateCreate(Entitlement entitlement) {
@@ -122,14 +100,16 @@ public class BaseService {
                     .exception();
         }
         checkOwner(entitlement.getOwnerId());
-        if (!entitlement.getManagedLifecycle()) {
-            validateNotNull(entitlement.getStatus(), "status");
-        }
         if (EntitlementStatus.LIFECYCLE_NOT_MANAGED_STATUS.contains(
                 EntitlementStatus.valueOf(entitlement.getStatus().toUpperCase()))) {
             LOGGER.error("Can not created {} entitlement.", entitlement.getStatus());
             throw AppErrors.INSTANCE.fieldNotCorrect("status",
                     "status can not be DELETED or BANNED when created").exception();
+        }
+        if (!entitlement.getConsumable() && entitlement.getUseCount() != null) {
+            throw AppErrors.INSTANCE.fieldNotCorrect("useCount", "useCount should be null when consumable is false").exception();
+        } else if (entitlement.getUseCount() == null) {
+            throw AppErrors.INSTANCE.missingField("useCount").exception();
         }
         validateGrantTimeBeforeExpirationTime(entitlement);
     }
@@ -147,9 +127,6 @@ public class BaseService {
     protected void validateUpdate(Entitlement entitlement, Entitlement existingEntitlement) {
         checkUser(existingEntitlement.getUserId());
         checkOwner(existingEntitlement.getOwnerId());
-        if (!entitlement.getManagedLifecycle()) {
-            validateNotNull(existingEntitlement.getStatus(), "status");
-        }
         validateEquals(existingEntitlement.getUserId(), entitlement.getUserId(), "user");
         validateEquals(existingEntitlement.getOwnerId(), entitlement.getOwnerId(), "owner");
         validateEquals(existingEntitlement.getOfferId(), entitlement.getOfferId(), "offer");
@@ -158,8 +135,6 @@ public class BaseService {
         validateEquals(existingEntitlement.getType(), entitlement.getType(), "type");
         validateEquals(existingEntitlement.getGroup(), entitlement.getGroup(), "group");
         validateEquals(existingEntitlement.getTag(), entitlement.getTag(), "tag");
-        validateEquals(existingEntitlement.getManagedLifecycle(),
-                entitlement.getManagedLifecycle(), "managedLifecycle");
         validateEquals(existingEntitlement.getGrantTime(), entitlement.getGrantTime(), "grantTime");
         validateGrantTimeBeforeExpirationTime(existingEntitlement);
     }

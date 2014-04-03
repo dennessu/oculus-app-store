@@ -43,7 +43,6 @@ public class EntitlementHistoryEntity implements Shardable {
     private Long offerId;
     private Boolean consumable;
     private Integer useCount;
-    private Boolean managedLifecycle;
     private Date createdTime;
     private String createdBy;
     private Date modifiedTime;
@@ -183,15 +182,6 @@ public class EntitlementHistoryEntity implements Shardable {
 
     public void setUseCount(Integer useCount) {
         this.useCount = useCount;
-    }
-
-    @Column(name = "managed_lifecycle")
-    public Boolean getManagedLifecycle() {
-        return managedLifecycle;
-    }
-
-    public void setManagedLifecycle(Boolean managedLifecycle) {
-        this.managedLifecycle = managedLifecycle;
     }
 
     @Column(name = "created_time")

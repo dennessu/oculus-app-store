@@ -38,7 +38,6 @@ public class EntitlementEntity extends Entity {
     private Long offerId;
     private Boolean consumable;
     private Integer useCount;
-    private Boolean managedLifecycle;
 
     @Id
     @Column(name = "entitlement_id")
@@ -57,15 +56,6 @@ public class EntitlementEntity extends Entity {
 
     public void setUserId(Long userId) {
         this.userId = userId;
-    }
-
-    @Column(name = "managed_lifecycle")
-    public Boolean getManagedLifecycle() {
-        return managedLifecycle;
-    }
-
-    public void setManagedLifecycle(Boolean managedLifecycle) {
-        this.managedLifecycle = managedLifecycle;
     }
 
     @Column(name = "status")
