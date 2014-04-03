@@ -2,7 +2,7 @@ package com.junbo.ewallet.service.impl
 
 import com.junbo.ewallet.db.entity.def.NotEnoughMoneyException
 import com.junbo.ewallet.spec.def.Status
-import com.junbo.ewallet.db.entity.def.WalletLotType
+import com.junbo.ewallet.spec.def.WalletLotType
 import com.junbo.ewallet.spec.def.WalletType
 import com.junbo.ewallet.db.repo.WalletRepository
 import com.junbo.ewallet.service.WalletService

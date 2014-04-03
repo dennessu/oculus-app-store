@@ -7,7 +7,7 @@
 package com.junbo.ewallet.db.entity;
 
 import com.junbo.ewallet.db.entity.def.IdentifiableType;
-import com.junbo.ewallet.db.entity.def.WalletLotType;
+import com.junbo.ewallet.spec.def.WalletLotType;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;
