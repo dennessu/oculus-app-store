@@ -27,6 +27,19 @@ public enum TaxAuthority implements Identifiable<Short> {
     QST((short)13),
     HST((short)14),
     SPECIAL((short)15),
+    ESTIMATE((short)16),
+    SERVICE((short)17),
+    EDUCESS((short)18),
+    SHECESS((short)19),
+    IPI((short)20),
+    PIS((short)21),
+    COF((short)22),
+    ICMS((short)23),
+    ISS((short)24),
+    BT((short)25),
+    SURCHARGE((short)26),
+    USWHT((short)27),
+    BACKUPUSWHT((short)28),
 
     UNKNOWN((short)999);
 

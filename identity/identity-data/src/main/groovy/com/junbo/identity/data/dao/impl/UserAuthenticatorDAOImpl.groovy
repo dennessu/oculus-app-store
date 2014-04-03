@@ -4,9 +4,11 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.identity.data.dao.impl
+
 import com.junbo.identity.data.dao.UserAuthenticatorDAO
 import com.junbo.identity.data.entity.user.UserAuthenticatorEntity
 import com.junbo.identity.spec.options.list.UserAuthenticatorListOptions
+import org.apache.commons.collections.CollectionUtils
 import org.hibernate.Criteria
 import org.hibernate.criterion.Order
 import org.hibernate.criterion.Restrictions
@@ -53,6 +55,21 @@ class UserAuthenticatorDAOImpl extends ShardedDAOBase implements UserAuthenticat
             criteria.setFirstResult(getOption.offset)
         }
         return criteria.list()
+    }
+
+    @Override
+    Long getIdByAuthenticatorValue(String value) {
+        UserAuthenticatorEntity example = new UserAuthenticatorEntity()
+        example.setValue(value)
+
+        def viewQuery = viewQueryFactory.from(example)
+        if (viewQuery != null) {
+            def userIds = viewQuery.list()
+
+            return CollectionUtils.isEmpty(userIds) ? null : (Long)(userIds.get(0))
+        }
+
+        throw new RuntimeException()
     }
 
     @Override

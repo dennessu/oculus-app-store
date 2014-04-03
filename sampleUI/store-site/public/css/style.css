@@ -75,6 +75,13 @@ body header > nav{ line-height: 25px; color: #CCC; border-bottom: solid 1px #BCB
 .alert{ padding: 15px 15px 10px 15px; min-width: 200px; width: 200px; border: solid 1px #CCC; background-color: #F7F7F7; box-shadow: 0 2px 20px rgba(0,0,0, .5); z-index: 9999;}
 .alert div{ margin-top: 30px; text-align: center;}
 .alert .error{margin: 0 0 10px 0; padding: 4px 0px 4px 2px; color: #f00;  border: solid 1px #C4AC09; background-color: #FCF8E3;}
+.alert dl.agreement > dd,
+.alert dl.agreement > dt,
+.alert dl.agreement > dd,
+.alert dl.agreement > dt{ margin: 0; margin-bottom: 10px; line-height: 16px;  }
+.alert dl.agreement > dd input,
+.alert dl.agreement > dd input{ float: left; }
+.alert dl.agreement .error{ display: block;}
 
 #ShadowLayer{ position: absolute; top: 0; left: 0; margin: 0 auto; padding: 0; width: 100%; height: 100%; visibility: visible; background-color: rgba(0,0,0,.5); z-index:9998; }
 .container{ margin: 0 auto; padding-top: 30px; background-color: #FFF;}

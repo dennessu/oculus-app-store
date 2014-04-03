@@ -31,6 +31,8 @@ var AccountControllers = {
                             });
                         }
                         console.log("[EditInfoController: SaveChanges] success");
+
+                        _self.transitionToRoute("account.index");
                     }else{
                         //TODO: Error
                         console.log("[EditInfoController: SaveChanges] Failed");
@@ -280,7 +282,7 @@ var AccountControllers = {
                         _self.set("errMessage", null);
                         $("#DelDialog").hide();
                         var provider = new BillingProvider();
-                        provider.ShippingInfo(Utils.GenerateRequestModel(null), function(result){
+                        provider.GetShippingInfos(Utils.GenerateRequestModel(null), function(result){
                             if(result.data.status == 200){
                                 var shippings = JSON.parse(result.data.data).results;
                                 _self.set("content.shippings", shippings);

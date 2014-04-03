@@ -6,9 +6,9 @@
 package com.junbo.identity.rest.auth;
 /*
 import com.junbo.authorization.AuthorizeCallback;
-import com.junbo.authorization.model.AuthorizeContext;
-import com.junbo.identity.spec.model.user.User;
-import com.junbo.oauth.spec.model.TokenInfo;
+import com.junbo.authorization.list.AuthorizeContext;
+import com.junbo.identity.spec.list.user.User;
+import com.junbo.oauth.spec.list.TokenInfo;
 import groovy.transform.CompileStatic;
 import java.util.Map;
 */

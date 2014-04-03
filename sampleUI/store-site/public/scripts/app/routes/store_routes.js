@@ -123,7 +123,7 @@ var StoreRoutes = {
                             if (resultData.data.status == 200) {
                                 controller.set("content.shippingAddress", JSON.parse(resultData.data.data));
                             } else {
-
+                                controller.set("content.shippingAddress", null);
                             }
                         });
                     }

@@ -6,7 +6,7 @@
 package com.junbo.identity.rest.resource
 import com.junbo.common.id.Id
 import com.junbo.common.id.UserId
-import com.junbo.common.id.UserSecurityQuestionAttemptId
+import com.junbo.common.id.UserSecurityQuestionVerifyAttemptId
 import com.junbo.common.model.Results
 import com.junbo.identity.core.service.Created201Marker
 import com.junbo.identity.core.service.filter.UserSecurityQuestionAttemptFilter
@@ -86,7 +86,7 @@ class UserSecurityQuestionAttemptResourceImpl implements UserSecurityQuestionAtt
     }
 
     @Override
-    Promise<UserSecurityQuestionAttempt> get(UserId userId, UserSecurityQuestionAttemptId id,
+    Promise<UserSecurityQuestionAttempt> get(UserId userId, UserSecurityQuestionVerifyAttemptId id,
                                                     @BeanParam UserSecurityQuestionAttemptGetOption getOptions) {
         if (getOptions == null) {
             throw new IllegalArgumentException('getOptions is null')

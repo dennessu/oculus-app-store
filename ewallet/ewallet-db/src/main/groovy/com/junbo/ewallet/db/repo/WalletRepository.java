@@ -8,13 +8,12 @@ package com.junbo.ewallet.db.repo;
 import com.junbo.ewallet.db.dao.TransactionDao;
 import com.junbo.ewallet.db.dao.WalletDao;
 import com.junbo.ewallet.db.dao.WalletLotDao;
-import com.junbo.ewallet.db.entity.def.Currency;
+import com.junbo.ewallet.db.entity.TransactionEntity;
+import com.junbo.ewallet.db.entity.WalletEntity;
+import com.junbo.ewallet.db.entity.WalletLotEntity;
 import com.junbo.ewallet.db.entity.def.TransactionType;
-import com.junbo.ewallet.db.entity.def.WalletLotType;
-import com.junbo.ewallet.db.entity.def.WalletType;
-import com.junbo.ewallet.db.entity.hibernate.TransactionEntity;
-import com.junbo.ewallet.db.entity.hibernate.WalletEntity;
-import com.junbo.ewallet.db.entity.hibernate.WalletLotEntity;
+import com.junbo.ewallet.spec.def.WalletLotType;
+import com.junbo.ewallet.spec.def.WalletType;
 import com.junbo.ewallet.db.mapper.WalletMapper;
 import com.junbo.ewallet.spec.model.CreditRequest;
 import com.junbo.ewallet.spec.model.DebitRequest;
@@ -45,7 +44,7 @@ public class WalletRepository {
     public Wallet get(Long userId, String type, String currency) {
         return mapper.toWallet(
                 walletDao.get(userId, WalletType.valueOf(type),
-                        currency == null ? null : Currency.valueOf(currency)));
+                        currency == null ? null : currency));
     }
 
     public Wallet create(Wallet wallet) {

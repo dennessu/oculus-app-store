@@ -121,8 +121,7 @@ class MapperTest extends BaseTest {
         assert returnedOrderBillingEventEntity.status == orderBillingEventEntity.status
     }
 
-    // TODO Fix this case
-    @Test(enabled = false)
+    @Test(enabled = true)
     void testPreorderInfoEventMapper() {
         MappingContext context = new MappingContext()
 

@@ -12,7 +12,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 /**
- * UserEntity model for user password entity table.
+ * UserEntity list for user password entity table.
  */
 @Entity
 @Table(name = "user_password")

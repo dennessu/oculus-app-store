@@ -17,7 +17,7 @@ import com.junbo.oom.core.MappingContext;
 import com.junbo.oom.core.Mappings;
 
 /**
- * Model Mapper for wrap entity to model, vice versa.
+ * Model Mapper for wrap entity to list, vice versa.
  */
 @Mapper(uses = {
         CommonMapper.class

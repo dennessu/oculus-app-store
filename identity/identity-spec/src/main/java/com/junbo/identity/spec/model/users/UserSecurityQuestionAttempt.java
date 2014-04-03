@@ -8,15 +8,16 @@ package com.junbo.identity.spec.model.users;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.SecurityQuestionId;
 import com.junbo.common.id.UserId;
-import com.junbo.common.id.UserSecurityQuestionAttemptId;
+import com.junbo.common.id.UserSecurityQuestionVerifyAttemptId;
 import com.junbo.common.util.Identifiable;
 
 /**
  * Created by liangfu on 3/25/14.
  */
-public class UserSecurityQuestionAttempt extends ResourceMeta implements Identifiable<UserSecurityQuestionAttemptId> {
+public class UserSecurityQuestionAttempt extends ResourceMeta
+        implements Identifiable<UserSecurityQuestionVerifyAttemptId> {
     @JsonProperty("self")
-    private UserSecurityQuestionAttemptId id;
+    private UserSecurityQuestionVerifyAttemptId id;
 
     @JsonProperty("user")
     private UserId userId;
@@ -35,11 +36,11 @@ public class UserSecurityQuestionAttempt extends ResourceMeta implements Identif
     // readonly field
     private Boolean succeeded;
 
-    public UserSecurityQuestionAttemptId getId() {
+    public UserSecurityQuestionVerifyAttemptId getId() {
         return id;
     }
 
-    public void setId(UserSecurityQuestionAttemptId id) {
+    public void setId(UserSecurityQuestionVerifyAttemptId id) {
         this.id = id;
         support.setPropertyAssigned("self");
         support.setPropertyAssigned("id");

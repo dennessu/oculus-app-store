@@ -14,7 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
- * UserEntity model for user device profile table.
+ * UserEntity list for user device profile table.
  */
 @Entity
 @Table(name = "user_device")
