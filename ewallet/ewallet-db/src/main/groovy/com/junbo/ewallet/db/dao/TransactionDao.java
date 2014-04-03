@@ -16,7 +16,7 @@ import java.util.List;
 public interface TransactionDao {
     TransactionEntity get(Long id);
 
-    Long insert(TransactionEntity transactionEntity);
+    TransactionEntity insert(TransactionEntity transactionEntity);
 
     List<TransactionEntity> getByWalletId(Long walletId);
 }

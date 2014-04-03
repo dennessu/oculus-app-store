@@ -5,9 +5,11 @@
  */
 package com.junbo.ewallet.db.repo;
 
+import com.junbo.ewallet.db.dao.LotTransactionDao;
 import com.junbo.ewallet.db.dao.TransactionDao;
 import com.junbo.ewallet.db.dao.WalletDao;
 import com.junbo.ewallet.db.dao.WalletLotDao;
+import com.junbo.ewallet.db.entity.LotTransactionEntity;
 import com.junbo.ewallet.db.entity.TransactionEntity;
 import com.junbo.ewallet.db.entity.WalletEntity;
 import com.junbo.ewallet.db.entity.WalletLotEntity;
@@ -21,6 +23,7 @@ import com.junbo.ewallet.spec.model.Transaction;
 import com.junbo.ewallet.spec.model.Wallet;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,6 +39,8 @@ public class WalletRepository {
     private WalletLotDao walletLotDao;
     @Autowired
     private TransactionDao transactionDao;
+    @Autowired
+    private LotTransactionDao lotTransactionDao;
 
     public Wallet get(Long walletId) {
         return mapper.toWallet(walletDao.get(walletId));
@@ -58,19 +63,25 @@ public class WalletRepository {
     }
 
     public Wallet credit(Wallet wallet, CreditRequest creditRequest) {
-        walletLotDao.insert(buildWalletLot(wallet.getWalletId(), creditRequest));
-        transactionDao.insert(buildCreditTransaction(wallet.getWalletId(), creditRequest));
+        TransactionEntity transaction =
+                transactionDao.insert(buildCreditTransaction(wallet.getWalletId(), creditRequest));
+        walletLotDao.insert(buildWalletLot(wallet.getWalletId(), creditRequest), transaction.getId());
         wallet.setBalance(wallet.getBalance().add(creditRequest.getAmount()));
         wallet.setTrackingUuid(creditRequest.getTrackingUuid());
-        return update(wallet);
+        Wallet result = mapper.toWallet(walletDao.update(mapper.toWalletEntity(wallet)));
+        result.setTransactions(Collections.singletonList(mapper.toTransaction(transaction)));
+        return result;
     }
 
     public Wallet debit(Wallet wallet, DebitRequest debitRequest) {
-        walletLotDao.debit(wallet.getWalletId(), debitRequest.getAmount());
-        transactionDao.insert(buildDebitTransaction(wallet.getWalletId(), debitRequest));
+        TransactionEntity transaction =
+                transactionDao.insert(buildDebitTransaction(wallet.getWalletId(), debitRequest));
+        walletLotDao.debit(wallet.getWalletId(), debitRequest.getAmount(), transaction.getId());
         wallet.setBalance(wallet.getBalance().subtract(debitRequest.getAmount()));
         wallet.setTrackingUuid(debitRequest.getTrackingUuid());
-        return update(wallet);
+        Wallet result = mapper.toWallet(walletDao.update(mapper.toWalletEntity(wallet)));
+        result.setTransactions(Collections.singletonList(mapper.toTransaction(transaction)));
+        return result;
     }
 
     public List<Transaction> getTransactions(Long walletId) {
@@ -110,5 +121,13 @@ public class WalletRepository {
         return transactionEntity;
     }
 
+    private LotTransactionEntity buildLotTransaction(TransactionEntity transactionEntity, CreditRequest creditRequest){
+        LotTransactionEntity lotTransactionEntity = new LotTransactionEntity();
+        lotTransactionEntity.setType(TransactionType.CREDIT);
+        lotTransactionEntity.setAmount(creditRequest.getAmount());
+        lotTransactionEntity.setWalletId(transactionEntity.getWalletId());
+        lotTransactionEntity.setTransactionId(transactionEntity.getId());
+        return lotTransactionEntity;
+    }
 
 }

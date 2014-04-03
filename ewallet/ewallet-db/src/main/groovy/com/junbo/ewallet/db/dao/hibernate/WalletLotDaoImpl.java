@@ -7,10 +7,10 @@
 package com.junbo.ewallet.db.dao.hibernate;
 
 import com.junbo.ewallet.db.dao.WalletLotDao;
-import com.junbo.ewallet.db.entity.def.NotEnoughMoneyException;
-import com.junbo.ewallet.db.entity.def.TransactionType;
 import com.junbo.ewallet.db.entity.LotTransactionEntity;
 import com.junbo.ewallet.db.entity.WalletLotEntity;
+import com.junbo.ewallet.db.entity.def.NotEnoughMoneyException;
+import com.junbo.ewallet.db.entity.def.TransactionType;
 import org.hibernate.CacheMode;
 import org.hibernate.Query;
 import org.hibernate.ScrollMode;
@@ -24,7 +24,7 @@ import java.util.Date;
  */
 public class WalletLotDaoImpl extends BaseDao<WalletLotEntity> implements WalletLotDao {
     @Override
-    public WalletLotEntity insert(WalletLotEntity lot) {
+    public WalletLotEntity insert(WalletLotEntity lot, Long transactionId) {
         Date now = new Date();
         lot.setId(generateId(lot.getShardMasterId()));
         lot.setCreatedBy("DEFAULT"); //TODO
@@ -32,7 +32,7 @@ public class WalletLotDaoImpl extends BaseDao<WalletLotEntity> implements Wallet
         lot.setModifiedBy("DEFAULT");   //TODO
         lot.setModifiedTime(now);
         WalletLotEntity result = get((Long) currentSession().save(lot));
-        currentSession().save(buildCreditLotTransaction(result));
+        currentSession().save(buildCreditLotTransaction(result, transactionId));
         return result;
     }
 
@@ -42,7 +42,7 @@ public class WalletLotDaoImpl extends BaseDao<WalletLotEntity> implements Wallet
     }
 
     @Override
-    public void debit(Long walletId, BigDecimal sum) {
+    public void debit(Long walletId, BigDecimal sum, Long transactionId) {
         String queryString = "select * from ewallet_lot " +
                 "where ewallet_id = (:walletId)" +
                 " and remaining > money(0)" +
@@ -62,12 +62,12 @@ public class WalletLotDaoImpl extends BaseDao<WalletLotEntity> implements Wallet
                 if (sum.compareTo(remaining) <= 0) {
                     lot.setRemainingAmount(remaining.subtract(sum));
                     update(lot);
-                    currentSession().save(buildDebitLotTransaction(lot, sum));
+                    currentSession().save(buildDebitLotTransaction(lot, sum, transactionId));
                     return;
                 } else {
                     lot.setRemainingAmount(BigDecimal.ZERO);
                     update(lot);
-                    currentSession().save(buildDebitLotTransaction(lot, remaining));
+                    currentSession().save(buildDebitLotTransaction(lot, remaining, transactionId));
                 }
                 sum = sum.subtract(remaining);
             }
@@ -80,9 +80,10 @@ public class WalletLotDaoImpl extends BaseDao<WalletLotEntity> implements Wallet
         }
     }
 
-    private LotTransactionEntity buildDebitLotTransaction(WalletLotEntity lotEntity, BigDecimal amount) {
+    private LotTransactionEntity buildDebitLotTransaction(WalletLotEntity lotEntity, BigDecimal amount, Long transactionId) {
         LotTransactionEntity lotTransaction = new LotTransactionEntity();
         lotTransaction.setId(generateId(lotEntity.getId()));
+        lotTransaction.setTransactionId(transactionId);
         lotTransaction.setType(TransactionType.DEBIT);
         lotTransaction.setWalletId(lotEntity.getWalletId());
         lotTransaction.setWalletLotId(lotEntity.getId());
@@ -92,9 +93,10 @@ public class WalletLotDaoImpl extends BaseDao<WalletLotEntity> implements Wallet
         return lotTransaction;
     }
 
-    private LotTransactionEntity buildCreditLotTransaction(WalletLotEntity lotEntity) {
+    private LotTransactionEntity buildCreditLotTransaction(WalletLotEntity lotEntity, Long transactionId) {
         LotTransactionEntity lotTransaction = new LotTransactionEntity();
         lotTransaction.setId(generateId(lotEntity.getId()));
+        lotTransaction.setTransactionId(transactionId);
         lotTransaction.setType(TransactionType.CREDIT);
         lotTransaction.setWalletId(lotEntity.getWalletId());
         lotTransaction.setWalletLotId(lotEntity.getId());
