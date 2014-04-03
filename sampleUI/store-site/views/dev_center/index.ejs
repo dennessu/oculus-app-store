@@ -6,7 +6,7 @@
 
         <div id="ConfirmDialog" class="alert">
             <form {{action "DialogYes" on="submit"}}>
-            <h3>Regist as a developer</h3>
+            <h3>Developer sign up</h3>
             <p>Create cool Rift Apps.</p>
             {{#if errMessage}}
             <span class="error">{{errMessage}}</span>
@@ -18,7 +18,7 @@
             </dl>
             <div>
                 <button class="btn btn-cancel" {{action DialogNo}}>Cancel</button>
-                <button class="btn btn-primary" type="submit">Become a Developer Now</button>
+                <button id="BtnSignUp" class="btn btn-primary" type="submit">Become a Developer Now</button>
             </div>
             </form>
         </div>

@@ -29,7 +29,7 @@ body header > nav{ line-height: 25px; color: #CCC; border-bottom: solid 1px #BCB
 .btn-orange:hover, .btn-orange:focus, .btn-orange:active, .btn-orange.active{ background-color: #FF6600; border-color: #E85C00; }
 .btn-cancel{ background-color: #fff; border-color: #ccc; color: #333;}
 .btn-cancel:hover, .btn-cancel:focus, .btn-cancel:active, .btn-cancel.active{ background-color: #ebebeb; border-color: #adadad; }
-
+.btn-primary.load,.btn-orange.load,.btn-cancel.load{ color: transparent; background: #FFF url("/images/loader.gif") no-repeat center center;}
 
 .box1, .box2{ padding: 15px; border: solid 1px #ccc; background-color: #fff;}
 .box1{ margin: 0 auto; width: 250px;}
@@ -54,6 +54,7 @@ body header > nav{ line-height: 25px; color: #CCC; border-bottom: solid 1px #BCB
 .box2 > dl.agreement > dt{ margin-bottom: 10px; line-height: 16px;  }
 .box1 > dl.agreement > dd input,
 .box2 > dl.agreement > dd input{ float: left; }
+.box1 dl.agreement .error, .box2 dl.agreement .error{ display: block; color: #f00;}
 .box1 > .actions, .box2 > .actions{ margin: 20px 0 0 0;}
 .box1 > .actions > button,
 .box1 > .actions > input[type=submit],

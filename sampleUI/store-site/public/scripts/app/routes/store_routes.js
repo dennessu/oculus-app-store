@@ -10,19 +10,6 @@ var StoreRoutes = {
 
             if(App.AuthManager.isAuthenticated()){
                 console.log("[ApplicationRoute] Authenticated");
-
-                var provider = new CartProvider();
-                provider.MergeCart(Utils.GenerateRequestModel(null), function(resultData){
-                    var resultModel = resultData.data;
-                    if (resultModel.status == 200) {
-                        console.log("[ApplicationRoute:Init] Merge Car Success");
-
-                        Utils.Cookies.Remove(AppConfig.CookiesName.AnonymousUserId);
-                        Utils.Cookies.Remove(AppConfig.CookiesName.AnonymousCartId);
-                    } else {
-                        console.log("[ApplicationRoute:Init] Merge Car Failed!");
-                    }
-                });
             }else{
                 if(Ember.isEmpty(App.AuthManager.getUserId())){
                     var provider = new IdentityProvider();
@@ -39,17 +26,29 @@ var StoreRoutes = {
             }
         },
         beforeModel: function(){
-
-        },
-        afterModel: function(){
+            var _self = this;
             if(App.AuthManager.isAuthenticated()){
-                // to before route
-                var beforeRoute = Utils.Cookies.Get(AppConfig.CookiesName.BeforeRoute);
-                if(!Ember.isEmpty(beforeRoute)){
-                    console.log("[ApplicationRoute] After Model: transitionTo ", beforeRoute);
-                    Utils.Cookies.Remove(AppConfig.CookiesName.BeforeRoute);
-                    this.transitionTo(beforeRoute);
-                }
+                var provider = new CartProvider();
+                provider.MergeCart(Utils.GenerateRequestModel(null), function(resultData){
+                    var resultModel = resultData.data;
+                    if (resultModel.status == 200) {
+                        console.log("[ApplicationRoute:Init] Merge Car Success");
+
+                        Utils.Cookies.Remove(AppConfig.CookiesName.AnonymousUserId);
+                        Utils.Cookies.Remove(AppConfig.CookiesName.AnonymousCartId);
+                    } else {
+                        console.log("[ApplicationRoute:Init] Merge Car Failed!");
+                    }
+
+                    // redirect to before route
+                    var beforeRoute = Utils.Cookies.Get(AppConfig.CookiesName.BeforeRoute);
+                    if(!Ember.isEmpty(beforeRoute)){
+                        console.log("[ApplicationRoute] After Model: transitionTo ", beforeRoute);
+                        Utils.Cookies.Remove(AppConfig.CookiesName.BeforeRoute);
+                        _self.transitionTo(beforeRoute);
+                        return;
+                    }
+                });
             }
         },
         actions: {

@@ -1,3 +1,7 @@
+jQuery.validator.addMethod("ValidEmpty", function(value, element) {
+    return $(element).val().toLowerCase().trim() != "please choose" && $(element).val().toLowerCase().trim() != "";
+}, "Please choose");
+
 
 var App = Ember.App = Ember.Application.create();
 
