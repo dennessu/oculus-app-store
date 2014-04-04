@@ -5,11 +5,12 @@
  */
 package com.junbo.ewallet.db;
 
-import com.junbo.ewallet.db.entity.def.Currency;
-import com.junbo.ewallet.db.entity.def.Status;
-import com.junbo.ewallet.db.entity.def.WalletLotType;
-import com.junbo.ewallet.db.entity.def.WalletType;
+import com.junbo.ewallet.db.entity.def.NotEnoughMoneyException;
 import com.junbo.ewallet.db.repo.WalletRepository;
+import com.junbo.ewallet.spec.def.Currency;
+import com.junbo.ewallet.spec.def.Status;
+import com.junbo.ewallet.spec.def.WalletLotType;
+import com.junbo.ewallet.spec.def.WalletType;
 import com.junbo.ewallet.spec.model.CreditRequest;
 import com.junbo.ewallet.spec.model.DebitRequest;
 import com.junbo.ewallet.spec.model.Transaction;
@@ -19,6 +20,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -59,6 +61,27 @@ public class WalletRepoTest extends BaseTest {
     }
 
     @Test
+    public void testExpiredWalletLot() {
+        Wallet wallet = walletRepo.create(buildAWallet());
+        CreditRequest creditRequest = buildACreditRequest();
+        creditRequest.setAmount(new BigDecimal(10));
+        creditRequest.setType(WalletLotType.CASH.toString());
+        walletRepo.credit(wallet, creditRequest);
+        creditRequest.setType(WalletLotType.PROMOTION.toString());
+        creditRequest.setExpirationDate(new Date(new Date().getTime() - 2000));
+        walletRepo.credit(wallet, creditRequest);
+
+        DebitRequest debitRequest = buildADebitRequest();
+        debitRequest.setAmount(new BigDecimal(17));
+        try {
+            walletRepo.debit(wallet, debitRequest);
+        } catch (Exception e) {
+            Assert.assertEquals(e.getClass(), NotEnoughMoneyException.class);
+            Assert.assertEquals(walletRepo.get(wallet.getWalletId()).getBalance(), new BigDecimal(20));
+        }
+    }
+
+    @Test
     public void testGetTransactions() {
         Wallet wallet = walletRepo.create(buildAWallet());
         CreditRequest creditRequest = buildACreditRequest();
@@ -79,7 +102,7 @@ public class WalletRepoTest extends BaseTest {
         return wallet;
     }
 
-    private CreditRequest buildACreditRequest(){
+    private CreditRequest buildACreditRequest() {
         CreditRequest creditRequest = new CreditRequest();
         creditRequest.setType(WalletLotType.PROMOTION.toString());
         creditRequest.setOfferId(idGenerator.nextId());

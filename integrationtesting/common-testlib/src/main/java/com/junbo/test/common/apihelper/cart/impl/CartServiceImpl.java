@@ -28,7 +28,7 @@ import java.util.concurrent.Future;
  */
 public class CartServiceImpl implements CartService {
 
-    private static String cartUrl = RestUrl.getRestUrl("cart");
+    private static String cartUrl = RestUrl.getRestUrl(RestUrl.ComponentName.COMMERCE);
 
     private LogHelper logger = new LogHelper(CartServiceImpl.class);
     private AsyncHttpClient asyncClient;

@@ -8,6 +8,7 @@ package com.junbo.test.cart;
 import com.junbo.cart.spec.model.Cart;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
+import com.junbo.test.common.HttpclientHelper;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
@@ -27,7 +28,7 @@ import java.util.concurrent.Future;
  */
 public class CartService {
 
-    private static String cartUrl = RestUrl.getRestUrl(RestUrl.ComponentName.CART);
+    private static String cartUrl = RestUrl.getRestUrl(RestUrl.ComponentName.COMMERCE);
     private static LogHelper logger = new LogHelper(Cart.class);
     private static AsyncHttpClient asyncClient = new AsyncHttpClient(new AsyncHttpClientConfig.Builder().build());
 
@@ -70,6 +71,7 @@ public class CartService {
     public static String getCart(String userId, String cartId, int expectedResponseCode) throws Exception {
         String cartEndpointUrl = cartUrl + "users/" + userId + "/carts/" + cartId;
 
+        /*
         Request req = new RequestBuilder("GET")
                 .setUrl(cartEndpointUrl)
                 .addHeader(RestUrl.requestHeaderName, RestUrl.requestHeaderValue)
@@ -83,6 +85,8 @@ public class CartService {
         Cart rtnCart = new JsonMessageTranscoder().decode(new TypeReference<Cart>() {
         },
                 nettyResponse.getResponseBody());
+                */
+        Cart rtnCart = (Cart) HttpclientHelper.SimpleGet(cartEndpointUrl, Cart.class);
         String rtnCartId = IdConverter.idToHexString(rtnCart.getId());
         Master.getInstance().addCart(rtnCartId, rtnCart);
         return rtnCartId;

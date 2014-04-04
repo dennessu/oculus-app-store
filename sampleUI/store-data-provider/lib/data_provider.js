@@ -29,7 +29,7 @@ DataProvider._BuildUrl = function(url, isFullPath, namespace, argsObj){
         var varName = result[0].replace("{", "").replace("}", "");
         var varValue = argsObj[varName];
 
-        if(varValue == undefined || varValue == null) throw "Parameters invalid! URL:" + resultUrl;
+        if(varValue == undefined || varValue == null) throw "Parameters invalid! URL";
 
         resultUrl = resultUrl.replace(re, varValue);
     }
