@@ -31,7 +31,8 @@ repositories {
 
 dependencies {
 
-    compile(libraries.common_testlib)
+    compile project(':common-testlib')
+    //compile(libraries.common_testlib)
 
     compile 'com.junbo.identity:identity-spec:0.0.1-SNAPSHOT'
     compile 'com.junbo.oauth:oauth-spec:0.0.1-SNAPSHOT'
