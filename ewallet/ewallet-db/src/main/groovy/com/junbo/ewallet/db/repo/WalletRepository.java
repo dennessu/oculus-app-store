@@ -5,6 +5,7 @@
  */
 package com.junbo.ewallet.db.repo;
 
+import com.junbo.ewallet.common.util.Callback;
 import com.junbo.ewallet.db.dao.LotTransactionDao;
 import com.junbo.ewallet.db.dao.TransactionDao;
 import com.junbo.ewallet.db.dao.WalletDao;
@@ -44,6 +45,8 @@ public class WalletRepository {
     private TransactionDao transactionDao;
     @Autowired
     private LotTransactionDao lotTransactionDao;
+    @Autowired
+    private TransactionSupport transactionSupport;
 
     public Wallet get(Long walletId) {
         return mapper.toWallet(walletDao.get(walletId));
@@ -83,36 +86,49 @@ public class WalletRepository {
     public Wallet debit(Wallet wallet, DebitRequest debitRequest) {
         wallet.setBalance(wallet.getBalance().subtract(debitRequest.getAmount()));
         wallet.setTrackingUuid(debitRequest.getTrackingUuid());
-        Wallet result = mapper.toWallet(walletDao.update(mapper.toWalletEntity(wallet)));
+        WalletEntity resultEntity = mapper.toWalletEntity(wallet);
+        Wallet result = mapper.toWallet(walletDao.update(resultEntity));
 
         TransactionEntity transaction =
                 transactionDao.insert(buildDebitTransaction(wallet.getWalletId(), debitRequest));
         result.setTransactions(Collections.singletonList(mapper.toTransaction(transaction)));
 
         List<WalletLotEntity> lots = walletLotDao.getValidLot(wallet.getWalletId());
-        debit(lots, debitRequest.getAmount(), transaction.getId());
+        debit(resultEntity, lots, debitRequest.getAmount(), transaction.getId());
 
         return result;
     }
 
-    private void debit(List<WalletLotEntity> lots, BigDecimal sum, Long transactionId) {
+    private void debit(final WalletEntity wallet,
+                       final List<WalletLotEntity> lots, BigDecimal sum, Long transactionId) {
+        BigDecimal availableAmount = BigDecimal.ZERO;
         for (int i = 0; i < lots.size(); i++) {
             WalletLotEntity lot = lots.get(i);
             BigDecimal remaining = lot.getRemainingAmount();
+            availableAmount = availableAmount.add(remaining);
             if (sum.compareTo(remaining) <= 0) {
                 lot.setRemainingAmount(remaining.subtract(sum));
                 walletLotDao.update(lot);
                 lotTransactionDao.insert(buildDebitLotTransaction(lot, sum, transactionId));
                 return;
             } else {
+                BigDecimal remainingAmount = lot.getRemainingAmount();
                 lot.setRemainingAmount(BigDecimal.ZERO);
                 walletLotDao.update(lot);
-                lotTransactionDao.insert(buildDebitLotTransaction(lot, sum, transactionId));
+                lotTransactionDao.insert(buildDebitLotTransaction(lot, remainingAmount, transactionId));
             }
             sum = sum.subtract(remaining);
         }
 
         if (sum.compareTo(BigDecimal.ZERO) > 0) {
+            final BigDecimal remainingAmount = availableAmount;
+            transactionSupport.executeInNewTransaction(new Callback() {
+                @Override
+                public void apply() {
+                    wallet.setBalance(remainingAmount);
+                    walletDao.update(wallet);
+                }
+            });
             throw new NotEnoughMoneyException();
         }
     }
