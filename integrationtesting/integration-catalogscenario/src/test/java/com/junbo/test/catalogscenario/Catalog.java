@@ -107,35 +107,42 @@ public class Catalog extends TestClass {
         ItemService itemServiceAPI = ItemServiceImpl.instance();
 
         //Post a Physical item
+        logger.LogSample("Post a physical item");
         String itemId = itemServiceAPI.postDefaultItem(EnumHelper.CatalogItemType.PHYSICAL);
         Assert.assertNotNull(Master.getInstance().getItem(itemId));
 
         //Post a Digital item
+        logger.LogSample("Post a digital(app) item");
         itemId = itemServiceAPI.postDefaultItem(EnumHelper.CatalogItemType.APP);
         Assert.assertNotNull(Master.getInstance().getItem(itemId));
 
         //Get the item by its id(other conditions in paraMap are empty)
+        logger.LogSample("Get the item by its Id");
         String itemGetId = itemServiceAPI.getItem(itemId, paraMap);
         Assert.assertNotNull(Master.getInstance().getItem(itemGetId));
 
         //Get the item(s) by some conditions: by status firstly
+        logger.LogSample("Get item(s) only by status");
         paraMap.put("status", EnumHelper.CatalogEntityStatus.DESIGN.getEntityStatus());
         List<String> itemResultList = itemServiceAPI.getItem(paraMap);
         Assert.assertNotNull(itemResultList);
 
         //Get item by id and status
+        logger.LogSample("Get item(s) by id and status");
         paraMap.put("id", itemGetId);
         itemResultList.clear();
         itemResultList = itemServiceAPI.getItem(paraMap);
         Assert.assertNotNull(itemResultList);
 
         //Get all items without any search condition
+        logger.LogSample("Get all items(without any search condition)");
         paraMap.clear();
         itemResultList.clear();
         itemResultList = itemServiceAPI.getItem(paraMap);
         Assert.assertNotNull(itemResultList);
 
         //Update item to released
+        logger.LogSample("Release an item)");
         Item item = Master.getInstance().getItem(itemId);
         item.setStatus(EnumHelper.CatalogEntityStatus.RELEASED.getEntityStatus());
         itemId = itemServiceAPI.updateItem(item);
@@ -164,35 +171,42 @@ public class Catalog extends TestClass {
         OfferService offerServiceAPI = OfferServiceImpl.instance();
 
         //Post a Physical offer
+        logger.LogSample("Post a physical offer");
         String offerId = offerServiceAPI.postDefaultOffer(EnumHelper.CatalogItemType.PHYSICAL);
         Assert.assertNotNull(Master.getInstance().getOffer(offerId));
 
         ////Post a Digital offer
+        logger.LogSample("Post a digital(app) offer");
         offerId = offerServiceAPI.postDefaultOffer(EnumHelper.CatalogItemType.APP);
         Assert.assertNotNull(Master.getInstance().getOffer(offerId));
 
         //Get the offer by its id(other conditions in paraMap are empty)
+        logger.LogSample("Get the offer by its id");
         String offerGetId = offerServiceAPI.getOffer(offerId, paraMap);
         Assert.assertNotNull(Master.getInstance().getOffer(offerGetId));
 
         //Get the offer(s) by some conditions: by status firstly
+        logger.LogSample("Get the offer just by status");
         paraMap.put("status", EnumHelper.CatalogEntityStatus.DESIGN.getEntityStatus());
         List<String> offerResultList = offerServiceAPI.getOffer(paraMap);
         Assert.assertNotNull(offerResultList);
 
         //Get offer by id and status
+        logger.LogSample("Get offers by id and status");
         paraMap.put("id", offerGetId);
         offerResultList.clear();
         offerResultList = offerServiceAPI.getOffer(paraMap);
         Assert.assertNotNull(offerResultList);
 
         //Get all offers without any search condition
+        logger.LogSample("Get all offers without any search conditions");
         paraMap.clear();
         offerResultList.clear();
         offerResultList = offerServiceAPI.getOffer(paraMap);
         Assert.assertNotNull(offerResultList);
 
         //Update offer to released
+        logger.LogSample("Release an offer");
         Offer offerGet = Master.getInstance().getOffer(offerId);
         offerGet.setStatus(EnumHelper.CatalogEntityStatus.RELEASED.getEntityStatus());
         offerId = offerServiceAPI.updateOffer(offerGet);
