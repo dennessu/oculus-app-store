@@ -95,7 +95,7 @@ class OrderServiceContextBuilder {
     }
 
     Promise<ShippingAddress> getShippingAddress(OrderServiceContext context) {
-        if (context == null || context.order == null || context.order.shippingAddressId == null) {
+        if (context == null || context.order == null || context.order.shippingAddress == null) {
             return Promise.pure(null)
         }
 
@@ -107,11 +107,11 @@ class OrderServiceContextBuilder {
 
     Promise<ShippingAddress> refreshShippingAddress(OrderServiceContext context) {
 
-        if (context == null || context.order == null || context.order.shippingAddressId == null) {
+        if (context == null || context.order == null || context.order.shippingAddress == null) {
             return Promise.pure(null)
         }
         return facadeContainer.billingFacade.getShippingAddress(
-                context.order.user.value, context.order.shippingAddressId.value).syncThen { ShippingAddress sa ->
+                context.order.user.value, context.order.shippingAddress.value).syncThen { ShippingAddress sa ->
             context.shippingAddress = sa
             return sa
         }
