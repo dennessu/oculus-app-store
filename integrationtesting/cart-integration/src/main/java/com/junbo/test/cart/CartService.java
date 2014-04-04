@@ -7,8 +7,6 @@ package com.junbo.test.cart;
 
 import com.junbo.cart.spec.model.Cart;
 import com.junbo.common.json.JsonMessageTranscoder;
-import com.junbo.common.util.IdFormatter;
-import com.junbo.identity.spec.model.user.User;
 import com.junbo.langur.core.client.TypeReference;
 import com.junbo.test.common.HttpclientHelper;
 import com.junbo.test.common.blueprint.Master;
