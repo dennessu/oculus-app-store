@@ -3,18 +3,20 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.sharding.annotations;
+
+package com.junbo.sharding.core.annotations;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import static java.lang.annotation.ElementType.PARAMETER;
+import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Created by haomin on 14-3-17.
+ * Java doc for SeedId.
  */
-@Target({PARAMETER})
+
+@Target({FIELD})
 @Retention(RUNTIME)
-public @interface SeedParam {
+public @interface SeedId {
 }

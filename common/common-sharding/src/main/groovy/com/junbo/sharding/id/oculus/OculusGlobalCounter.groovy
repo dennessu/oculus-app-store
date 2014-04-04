@@ -4,12 +4,15 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.sharding.id.oculus;
+package com.junbo.sharding.id.oculus
+
+import groovy.transform.CompileStatic
 
 /**
  * Java doc for interface OculusGlobalCounter.
  */
-public interface OculusGlobalCounter {
+@CompileStatic
+interface OculusGlobalCounter {
 
-    int getAndIncrease(int shardId, int idType);
+    int getAndIncrease(int shardId, int idType)
 }

@@ -5,41 +5,44 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
        ">
 
-    <!-- Shard db configuration -->
-    <bean id="shardingDataSource" class="bitronix.tm.resource.jdbc.PoolingDataSource"
-          init-method="init" destroy-method="close">
-        <property name="uniqueName" value="jdbc/sharding"/>
-        <property name="className" value="org.postgresql.xa.PGXADataSource"/>
-        <property name="minPoolSize" value="${sharding.db.minConnectionsPerPartition}"/>
-        <property name="maxPoolSize" value="${sharding.db.maxConnectionsPerPartition}"/>
+    <bean id="shardingDataSource" class="com.junbo.sharding.hibernate.ShardMultiTenantConnectionProviderFactoryBean">
+        <property name="jdbcUrls" value="${sharding.db.jdbcUrls}"/>
+
+        <property name="uniqueName" value="jdbc/shardingUnique"/>
+        <property name="className" value="${sharding.db.driverClassName}"/>
+        <property name="minPoolSize" value="${sharding.db.minPoolSize}"/>
+        <property name="maxPoolSize" value="${sharding.db.maxPoolSize}"/>
         <property name="driverProperties">
             <props>
-                <prop key="url">${sharding.db.url}</prop>
                 <prop key="user">${sharding.db.username}</prop>
                 <prop key="password">${sharding.db.password}</prop>
             </props>
         </property>
     </bean>
 
-    <!-- SessonFactory for Hibernate -->
-    <bean id="shardingSessionFactory"
-          class="org.springframework.orm.hibernate4.LocalSessionFactoryBean" lazy-init="false">
-        <property name="dataSource" ref="shardingDataSource"/>
-        <property name="packagesToScan" value="com.junbo.sharding.*" />
+    <bean id="shardingSessionFactory" class="com.junbo.sharding.hibernate.LocalSessionFactoryWithListenerBean">
         <property name="jtaTransactionManager" ref="transactionManager"/>
         <property name="hibernateProperties">
-            <props>
-                <prop key="hibernate.dialect">${sharding.hibernate.dialect}</prop>
-                <prop key="hibernate.max_fetch_depth">${sharding.hibernate.max_fetch_depth}</prop>
-                <prop key="hibernate.jdbc.fetch_size">${sharding.hibernate.jdbc.fetch_size}</prop>
-                <prop key="hibernate.jdbc.batch_size">${sharding.hibernate.jdbc.batch_size}</prop>
-                <prop key="hibernate.show_sql">${sharding.hibernate.show_sql}</prop>
-            </props>
+            <map>
+                <entry key="hibernate.dialect" value="${sharding.hibernate.dialect}"/>
+                <entry key="hibernate.max_fetch_depth" value="${sharding.hibernate.max_fetch_depth}"/>
+                <entry key="hibernate.jdbc.fetch_size" value="${sharding.hibernate.jdbc.fetch_size}"/>
+                <entry key="hibernate.jdbc.batch_size" value="${sharding.hibernate.jdbc.batch_size}"/>
+                <entry key="hibernate.show_sql" value="${sharding.hibernate.show_sql}"/>
+
+                <entry key="hibernate.multiTenancy" value="SCHEMA"/>
+                <entry key="hibernate.current_session_context_class" value="com.junbo.sharding.hibernate.MultiTenantJTASessionContext"/>
+                <entry key="hibernate.tenant_identifier_resolver" value="com.junbo.sharding.hibernate.ShardCurrentTenantIdentifierResolver"/>
+                <entry key="hibernate.multi_tenant_connection_provider" value-ref="shardingDataSource"/>
+                <entry key="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
+            </map>
         </property>
+        <property name="packagesToScan" value="com.junbo.sharding.id.model"/>
     </bean>
 
     <bean id="shardIdGlobalCounterDAO" class="com.junbo.sharding.id.dao.impl.IdGlobalCounterDAOImpl">
         <property name="sessionFactory" ref="shardingSessionFactory" />
+        <property name="shardAlgorithm" ref="externalShardAlgorithm" />
     </bean>
 
     <!-- Id generate -->
@@ -158,7 +161,7 @@
 
     <bean id="externalShardAlgorithm" class="com.junbo.sharding.DefaultShardAlgorithm">
         <property name="hashAlgorithm" ref="hashAlgorithm"/>
-        <property name="availableShards" value="256"/>
+        <property name="availableShards" value="255"/>
     </bean>
 
 </beans>

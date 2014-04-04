@@ -4,12 +4,15 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.sharding.id.impl;
+package com.junbo.sharding.id.impl
+
+import groovy.transform.CompileStatic
 
 /**
  * Java doc for TimeGenerator.
  */
-public interface TimeGenerator {
+@CompileStatic
+interface TimeGenerator {
 
-    int currentTimeSec(int timeSecOffset);
+    int currentTimeSec(int timeSecOffset)
 }
