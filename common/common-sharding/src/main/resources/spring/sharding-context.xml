@@ -37,13 +37,8 @@
                 <entry key="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
             </map>
         </property>
-        <property name="packagesToScan" value="com.junbo.sharding.id.model"/>
     </bean>
 
-    <bean id="shardIdGlobalCounterDAO" class="com.junbo.sharding.id.dao.impl.IdGlobalCounterDAOImpl">
-        <property name="sessionFactory" ref="shardingSessionFactory" />
-        <property name="shardAlgorithm" ref="externalShardAlgorithm" />
-    </bean>
 
     <!-- Id generate -->
     <!-- In id generator, we will have three implementation methods: -->
@@ -114,7 +109,8 @@
     </bean>
 
     <bean id="globalCounterInDB" class="com.junbo.sharding.id.oculus.OculusGlobalCounterInDBImpl">
-        <property name="shardIdGlobalCounterDAO" ref="shardIdGlobalCounterDAO" />
+        <property name="shardAlgorithm" ref="userShardAlgorithm" />
+        <property name="sessionFactory" ref="shardingSessionFactory" />
     </bean>
 
     <!-- 2: Id generator proposed by oculus rift (Using 48 bits) -->
