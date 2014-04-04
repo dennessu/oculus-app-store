@@ -17,8 +17,10 @@ var DevCenterControllers = {
                     if (result.data.status == 200) {
                         _self.set("errMessage", null);
                         $("#ConfirmDialog").hide();
+                        Utils.Cookies.Set(AppConfig.CookiesName.IsDev, true);
                     } else {
                         _self.set("errMessage", "Please try again later!");
+                        Utils.Cookies.Set(AppConfig.CookiesName.IsDev, false);
                         $("#BtnSignUp").removeClass('load');
                     }
                 });

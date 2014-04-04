@@ -8,6 +8,14 @@ var DevCenterViews = {
                     error.appendTo(element.parent());
                 }
             });
+
+            var isDev = Utils.Cookies.Get(AppConfig.CookiesName.IsDev);
+            console.log("Is Developer: ", isDev);
+            if(isDev == "true"){
+                $("#ConfirmDialog").hide();
+            }else{
+                $("#ConfirmDialog").show();
+            }
         }
     })
 };

@@ -25,7 +25,19 @@ var ShippingInfoControllers = {
                     this.set("isValid", false);
                     Utils.Cookies.Set(AppConfig.CookiesName.ShippingMethodId, selectedValue);
 
-                    _self.transitionToRouteAnimated("shipping.address", {main: "slideOverLeft"});
+                    var provider = new BillingProvider();
+                    provider.GetShippingInfos(Utils.GenerateRequestModel(null), function(result){
+                        if(result.data.status == 200){
+                            var lists = JSON.parse(result.data.data).results;
+                            if(lists.length <= 0) {
+                                _self.transitionToRouteAnimated("shipping.edit", {shipping: "flip"});
+                            }else {
+                                _self.transitionToRouteAnimated("shipping.address", {main: "slideOverLeft"});
+                            }
+                        }else{
+                           _self.transitionToRouteAnimated("shipping.address", {main: "slideOverLeft"});
+                        }
+                    });
                 }
             }
         }
