@@ -72,15 +72,7 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
         }).then(new Promise.Func<PaymentInstrument, Promise<PaymentInstrument>>() {
             @Override
             public Promise<PaymentInstrument> apply(PaymentInstrument paymentInstrument) {
-                request.setAccountNum(paymentInstrument.getAccountNum());
-                request.getCreditCardRequest().setExternalToken(
-                        paymentInstrument.getCreditCardRequest().getExternalToken());
-                request.getCreditCardRequest().setType(paymentInstrument.getCreditCardRequest().getType());
-                request.getCreditCardRequest().setCommercial(paymentInstrument.getCreditCardRequest().getCommercial());
-                request.getCreditCardRequest().setDebit(paymentInstrument.getCreditCardRequest().getDebit());
-                request.getCreditCardRequest().setPrepaid(paymentInstrument.getCreditCardRequest().getPrepaid());
-                request.getCreditCardRequest().setIssueCountry(
-                        paymentInstrument.getCreditCardRequest().getIssueCountry());
+                provider.clonePIResult(paymentInstrument, request);
                 request.setStatus(PIStatus.ACTIVE.toString());
                 if(request.getIsValidated()){
                     request.setLastValidatedTime(new Date());
@@ -198,9 +190,6 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
         if(request.getId().getUserId() == null){
             throw AppClientExceptions.INSTANCE.missingUserId().exception();
         }
-        if(CommonUtil.isNullOrEmpty(request.getAccountNum())){
-            throw AppClientExceptions.INSTANCE.missingAccountName().exception();
-        }
         if(CommonUtil.isNullOrEmpty(request.getType())){
             throw AppClientExceptions.INSTANCE.missingPIType().exception();
         }
@@ -229,6 +218,12 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
 
     private void validateCreditCard(PaymentInstrument request){
         if(request.getType().equalsIgnoreCase(PIType.CREDITCARD.toString())){
+            if(CommonUtil.isNullOrEmpty(request.getAccountName())){
+                throw AppClientExceptions.INSTANCE.missingAccountName().exception();
+            }
+            if(CommonUtil.isNullOrEmpty(request.getAccountNum())){
+                throw AppClientExceptions.INSTANCE.missingAccountNum().exception();
+            }
             if(request.getCreditCardRequest() == null){
                 throw AppClientExceptions.INSTANCE.missingExpireDate().exception();
             }

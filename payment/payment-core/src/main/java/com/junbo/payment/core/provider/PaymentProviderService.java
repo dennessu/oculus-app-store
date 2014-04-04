@@ -18,15 +18,17 @@ import java.util.List;
  */
 public interface PaymentProviderService{
     String getProviderName();
+    void clonePIResult(PaymentInstrument source, PaymentInstrument target);
+    void cloneTransactionResult(PaymentTransaction source, PaymentTransaction target);
 
     Promise<PaymentInstrument> add(PaymentInstrument request);
-    Promise<Response> delete(String token);
+    Promise<Response> delete(PaymentInstrument pi);
 
-    Promise<PaymentTransaction> authorize(String piToken, PaymentTransaction paymentRequest);
+    Promise<PaymentTransaction> authorize(PaymentInstrument pi, PaymentTransaction paymentRequest);
     Promise<PaymentTransaction> capture(String transactionId, PaymentTransaction paymentRequest);
-    Promise<PaymentTransaction> charge(String piToken, PaymentTransaction paymentRequest);
+    Promise<PaymentTransaction> charge(PaymentInstrument pi, PaymentTransaction paymentRequest);
     Promise<PaymentTransaction> reverse(String transactionId, PaymentTransaction paymentRequest);
     Promise<PaymentTransaction> refund(String transactionId, PaymentTransaction request);
-    List<PaymentTransaction> getByOrderId(String orderId);
+    List<PaymentTransaction> getByBillingRefId(String orderId);
     Promise<PaymentTransaction> getByTransactionToken(String token);
 }

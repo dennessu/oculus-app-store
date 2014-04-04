@@ -26,6 +26,22 @@ public class MockPaymentProviderServiceImpl implements PaymentProviderService {
     }
 
     @Override
+    public void clonePIResult(PaymentInstrument source, PaymentInstrument target) {
+        target.setAccountNum(source.getAccountNum());
+        target.getCreditCardRequest().setExternalToken(source.getCreditCardRequest().getExternalToken());
+        target.getCreditCardRequest().setType(source.getCreditCardRequest().getType());
+        target.getCreditCardRequest().setCommercial(source.getCreditCardRequest().getCommercial());
+        target.getCreditCardRequest().setDebit(source.getCreditCardRequest().getDebit());
+        target.getCreditCardRequest().setPrepaid(source.getCreditCardRequest().getPrepaid());
+        target.getCreditCardRequest().setIssueCountry(source.getCreditCardRequest().getIssueCountry());
+    }
+
+    @Override
+    public void cloneTransactionResult(PaymentTransaction source, PaymentTransaction target) {
+        target.setExternalToken(source.getExternalToken());
+    }
+
+    @Override
     public Promise<PaymentInstrument> add(PaymentInstrument request) {
         request.setAccountNum("1111");
         request.setStatus(PIStatus.ACTIVE.toString());
@@ -43,12 +59,12 @@ public class MockPaymentProviderServiceImpl implements PaymentProviderService {
     }
 
     @Override
-    public Promise<Response> delete(String token) {
+    public Promise<Response> delete(PaymentInstrument request) {
         return null;
     }
 
     @Override
-    public Promise<PaymentTransaction> authorize(String piToken, PaymentTransaction paymentRequest) {
+    public Promise<PaymentTransaction> authorize(PaymentInstrument request, PaymentTransaction paymentRequest) {
         paymentRequest.setExternalToken(authExternalToken);
         return Promise.pure(paymentRequest);
     }
@@ -60,7 +76,7 @@ public class MockPaymentProviderServiceImpl implements PaymentProviderService {
     }
 
     @Override
-    public Promise<PaymentTransaction> charge(String piToken, PaymentTransaction paymentRequest) {
+    public Promise<PaymentTransaction> charge(PaymentInstrument request, PaymentTransaction paymentRequest) {
         paymentRequest.setExternalToken(chargeExternalToken);
         return Promise.pure(paymentRequest);
     }
@@ -76,7 +92,7 @@ public class MockPaymentProviderServiceImpl implements PaymentProviderService {
     }
 
     @Override
-    public List<PaymentTransaction> getByOrderId(String orderId) {
+    public List<PaymentTransaction> getByBillingRefId(String orderId) {
         return null;
     }
 
