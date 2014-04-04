@@ -12,7 +12,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr ng-repeat="offer in offers">
+      <tr ng-repeat="offer in offers | filter: user_id">
         <td><a href="#/offers/{{ offer.self.id }}">{{ offer.self.id }}</a></td>
         <td>{{ offer.name }}</td>
           <td>{{ offer.status }}</td>

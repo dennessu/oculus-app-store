@@ -10,6 +10,23 @@ var StoreRoutes = {
 
             if(App.AuthManager.isAuthenticated()){
                 console.log("[ApplicationRoute] Authenticated");
+
+                var provider = new EntitlementProvider();
+                provider.GetEntitlements(Utils.GenerateRequestModel(null), function(resultData){
+                    if(resultData.data.status == 200){
+                        var items = JSON.parse(resultData.data.data).results;
+
+                        console.log("[ApplicationRoute] dev items length: ", items.length);
+                        if(items.length <= 0){
+                            Utils.Cookies.Set(AppConfig.CookiesName.IsDev, false);
+                        }else{
+                            Utils.Cookies.Set(AppConfig.CookiesName.IsDev, true);
+                        }
+                    }else{
+                        // TODO: Error
+                        Utils.Cookies.Set(AppConfig.CookiesName.IsDev, false);
+                    }
+                });
             }else{
                 if(Ember.isEmpty(App.AuthManager.getUserId())){
                     var provider = new IdentityProvider();

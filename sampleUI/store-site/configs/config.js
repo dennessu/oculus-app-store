@@ -26,6 +26,7 @@ var Configs = {
         PaymentId: "payment_id",
         OrderId: "order_id",
 
+        IsDev: "is_dev",
         BeforeRoute: "before_route"
     },
     QueryStrings: {
@@ -41,7 +42,7 @@ var Configs = {
     },
     UrlConstants: {
         CatalogManageAPPsUrl: "",
-        CatalogManageOffersUrl: "http://store.oculusvr-demo.com:8081"
+        CatalogManageOffersUrl: "http://catalog.oculusvr-demo.com:8081"
     },
     Runtime: {
         SocketAddress: "",
