@@ -10,6 +10,7 @@ import com.junbo.cart.spec.model.item.CouponItem;
 import com.junbo.cart.spec.model.item.OfferItem;
 import com.junbo.common.id.CouponId;
 import com.junbo.common.id.OfferId;
+import com.junbo.test.common.HttpclientHelper;
 import com.junbo.test.common.Utility.TestClass;
 import com.junbo.test.common.apihelper.identity.UserService;
 import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
@@ -20,6 +21,8 @@ import com.junbo.test.common.property.Priority;
 import com.junbo.test.common.property.Property;
 import com.junbo.test.common.property.Status;
 import org.testng.Assert;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
@@ -39,6 +42,17 @@ public class CartTesting extends TestClass {
 
     private CouponId testCoupon1 = new CouponId(200001L);
     private CouponId testCoupon2 = new CouponId(200002L);
+
+
+    @BeforeMethod
+    public void setup() {
+        HttpclientHelper.CreateHttpClient();
+    }
+
+    @AfterMethod
+    public void dispose() throws Exception {
+        HttpclientHelper.CloseHttpClient();
+    }
 
     @Property(
             priority = Priority.Dailies,
@@ -60,6 +74,7 @@ public class CartTesting extends TestClass {
         String user = us.PostUser();
         //get primary cart
         String primaryCartId = CartService.getCartPrimary(user);
+        logger.LogSample("Get user's primary cart");
         Cart primaryCart = Master.getInstance().getCart(primaryCartId);
         Assert.assertNotNull(primaryCart, "No Primary cart respond!");
         Assert.assertEquals(primaryCart.getOffers().size(), 0);//no offers when first call get primary cart.
@@ -196,7 +211,7 @@ public class CartTesting extends TestClass {
         newCart.setId(primaryCart.getId());
         addOrRemoveOfferInCart(newCart, testOffer2, 1, true);
         addOrRemoveOfferInCart(newCart, testOffer3, 3, true);
-        addCouponInCart(newCart,testCoupon2);
+        addCouponInCart(newCart, testCoupon2);
         String updateCartId = CartService.updateCart(user, primaryCartId, newCart);
         Cart rtnCart = Master.getInstance().getCart(updateCartId);
 
@@ -205,7 +220,7 @@ public class CartTesting extends TestClass {
         Assert.assertTrue(checkOfferQuantity(rtnCart, testOffer3, 3L));
         Assert.assertTrue(!checkOfferExist(rtnCart, testOffer1));
         Assert.assertTrue(checkCouponExist(rtnCart, testCoupon2));
-        Assert.assertTrue(!checkCouponExist(rtnCart,testCoupon1));
+        Assert.assertTrue(!checkCouponExist(rtnCart, testCoupon1));
     }
 
     @Property(
@@ -238,7 +253,7 @@ public class CartTesting extends TestClass {
         CartService.addCart(user, cart);
 
         //get offer by name
-        String rtnCartId = CartService.getCartByName(user,cartName);
+        String rtnCartId = CartService.getCartByName(user, cartName);
         Cart rtnCart = Master.getInstance().getCart(rtnCartId);
         //validation
         Assert.assertEquals(rtnCart.getCartName(), cartName);
