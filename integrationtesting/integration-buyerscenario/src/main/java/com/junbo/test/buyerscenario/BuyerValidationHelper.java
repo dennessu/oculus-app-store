@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.test.buyerscenario.helper;
+package com.junbo.test.buyerscenario;
 
 import com.junbo.cart.spec.model.item.OfferItem;
 import com.junbo.common.id.OrderId;
@@ -13,6 +13,7 @@ import com.junbo.common.id.UserId;
 import com.junbo.order.spec.model.OrderItem;
 import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.common.Entities.enums.Currency;
+import com.junbo.test.common.Utility.BaseValidationHelper;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.exception.TestException;
 import com.junbo.test.common.libs.DBHelper;
@@ -22,17 +23,16 @@ import com.junbo.test.common.libs.IdConverter;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.List;
 
 /**
  * Created by Yunlong on 3/27/14.
  */
-public class ValidationHelper {
+public class BuyerValidationHelper extends BaseValidationHelper {
     DBHelper dbHelper = new DBHelper();
-    TestDataProvider testDataProvider = new TestDataProvider();
+    BuyerTestDataProvider testDataProvider = new BuyerTestDataProvider();
 
-    public ValidationHelper() {
-
+    public BuyerValidationHelper() {
+        super();
     }
 
     public void validateOrderInfoByCartId(String uid, String orderId,
@@ -108,65 +108,5 @@ public class ValidationHelper {
                 IdConverter.hexStringToId(UserId.class, uid).toString()) >= 0, true, "verify user id");
 
     }
-
-    public static void verifyEqual(BigDecimal actual, BigDecimal expect, String message) {
-        if (actual.doubleValue() != expect.doubleValue()) {
-            throw new TestException(
-                    String.format("Verify failed for %s, expect %s, but found %s", message, expect, actual));
-        }
-    }
-
-
-    public static void verifyEqual(int actual, int expect, String message) {
-        if (actual != expect) {
-            throw new TestException(
-                    String.format("Verify failed for %s, expect %s, but found %s", message, expect, actual));
-        }
-    }
-
-    public static void verifyEqual(long actual, long expect, String message) {
-        if (actual != expect) {
-            throw new TestException(
-                    String.format("Verify failed for %s, expect %s, but found %s", message, expect, actual));
-        }
-    }
-
-    public static void verifyEqual(boolean actual, boolean expect, String message) {
-        if (actual != expect) {
-            throw new TestException(
-                    String.format("Verify failed for %s, expect %s, but found %s", message, expect, actual));
-        }
-    }
-
-    public static void verifyEqual(List<String> actual, List<String> expect, String message) {
-        if (actual.size() != expect.size() || !(actual.equals(expect))) {
-            throw new TestException(
-                    String.format("Verify failed for %s, expect %s, but found %s", message, expect, actual));
-        }
-    }
-
-    public static void verifyEqual(String actual, String expect, String message) {
-        verifyEqual(actual, expect, true, true, message);
-    }
-
-    public static void verifyEqual(
-            String actual, String expect, boolean ignoreCase, boolean ignoreWhitespace, String message) {
-        boolean sameString = false;
-        if (ignoreCase && !ignoreWhitespace) {
-            sameString = expect.equalsIgnoreCase(actual);
-        } else if (!ignoreCase & ignoreWhitespace) {
-            sameString = (expect.trim()).equals((actual.trim()));
-        } else if (ignoreCase & ignoreWhitespace) {
-            sameString = (expect.trim()).equalsIgnoreCase((actual.trim()));
-        } else if (!ignoreCase & !ignoreWhitespace) {
-            sameString = expect.equals(actual);
-        }
-
-        if (!sameString) {
-            throw new TestException(
-                    String.format("Verify failed for %s, expect %s, but found %s", message, expect, actual));
-        }
-    }
-
 
 }
