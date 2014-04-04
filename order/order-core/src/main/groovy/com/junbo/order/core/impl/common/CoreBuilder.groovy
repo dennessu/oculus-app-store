@@ -43,6 +43,7 @@ class CoreBuilder {
         balance.piId = order.paymentInstruments?.get(0)
         balance.type = balanceType.toString()
         balance.trackingUuid = UUID.randomUUID()
+        balance.shippingAddressId = order.shippingAddressId
 
         order.orderItems.eachWithIndex { OrderItem item, int i ->
             def balanceItem = buildBalanceItem(item)
