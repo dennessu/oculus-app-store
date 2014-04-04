@@ -7,6 +7,7 @@ package com.junbo.subscription.db.mapper;
 
 import com.junbo.subscription.db.entity.*;
 import com.junbo.subscription.spec.model.Subscription;
+import com.junbo.subscription.spec.model.SubscriptionEntitlement;
 import com.junbo.subscription.spec.model.SubscriptionEvent;
 import com.junbo.subscription.spec.model.SubscriptionEventAction;
 import org.springframework.stereotype.Component;
@@ -107,6 +108,25 @@ public class SubscriptionMapper {
         actionEntity.setRequest(action.getRequest());
         actionEntity.setResponse(action.getResponse());
         return actionEntity;
+    }
+
+    public SubscriptionEntitlement toSubsEntitlement(SubscriptionEntitlementEntiy subsEntEntiy) {
+        if (subsEntEntiy == null){
+            return null;
+        }
+        SubscriptionEntitlement entitlement = new SubscriptionEntitlement();
+        entitlement.setSubscriptionId(subsEntEntiy.getSubscriptionId());
+        entitlement.setEntitlementId(subsEntEntiy.getEntitlementId());
+        entitlement.setEntitlementStatus(subsEntEntiy.getEntitlementStatus());
+        return entitlement;
+    }
+
+    public SubscriptionEntitlementEntiy toSubsEntitlementEntity(SubscriptionEntitlement entitlement) {
+        SubscriptionEntitlementEntiy entiy = new SubscriptionEntitlementEntiy();
+        entiy.setSubscriptionId(entitlement.getSubscriptionId());
+        entiy.setEntitlementId(entitlement.getEntitlementId());
+        entiy.setEntitlementStatus(entitlement.getEntitlementStatus());
+        return entiy;
     }
 
 }

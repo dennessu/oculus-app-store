@@ -90,8 +90,10 @@
               subscription_id bigint not null,
               entitlement_id bigint not null,
               entitlement_status varchar(32),
-              inserted_time timestamp,
-              updated_time timestamp,
+              created_time timestamp not null,
+              created_by varchar(256) not null,
+              modified_time timestamp,
+              modified_by varchar(256),
               primary key (id)
             );
 
@@ -101,8 +103,10 @@
               invoice_id bigint not null,
               invoice_item_id bigint not null,
               invoice_status varchar(32),
-              inserted_time timestamp,
-              updated_time timestamp,
+              created_time timestamp not null,
+              created_by varchar(256) not null,
+              modified_time timestamp,
+              modified_by varchar(256),
               primary key (id)
             );  
 

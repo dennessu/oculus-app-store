@@ -16,8 +16,10 @@ import com.junbo.subscription.clientproxy.EntitlementGateway;
 import com.junbo.subscription.common.exception.SubscriptionExceptions;
 import com.junbo.subscription.core.SubscriptionService;
 import com.junbo.subscription.db.entity.SubscriptionStatus;
+import com.junbo.subscription.db.repository.SubscriptionEntitlementRepository;
 import com.junbo.subscription.spec.model.Subscription;
 import com.junbo.subscription.db.repository.SubscriptionRepository;
+import com.junbo.subscription.spec.model.SubscriptionEntitlement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +37,9 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     @Autowired
     private SubscriptionRepository subscriptionRepository;
+
+    @Autowired
+    private SubscriptionEntitlementRepository subscriptionEntitlementRepository;
 
     @Autowired
     private CatalogGateway catalogGateway;
@@ -59,12 +64,14 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
         //get and verify offer.
         validateOffer(subscription, subscription.getOfferId());
+        subscription.setStatus(SubscriptionStatus.ENABLED.toString());
+        subscription = subscriptionRepository.insert(subscription);
 
         grantEntitlement(subscription);
 
         subscription.setStatus(SubscriptionStatus.ENABLED.toString());
-
-        return subscriptionRepository.insert(subscription);
+        //subscriptionRepository.update(subscription);
+        return subscription;
     }
 
     @Override
@@ -120,7 +127,13 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         entitlement.setType("SUBSCRIPTIONS");
         entitlement.setTag("SUBS_TAG");
         entitlement.setGroup("SUBS_TAG");
-        entitlementGateway.grantEntitlement(entitlement);
+        Long entitlementId = entitlementGateway.grantEntitlement(entitlement);
+
+        SubscriptionEntitlement subscriptionEntitlement = new SubscriptionEntitlement();
+        subscriptionEntitlement.setSubscriptionId(subscription.getId());
+        subscriptionEntitlement.setEntitlementId(entitlementId);
+        subscriptionEntitlement.setEntitlementStatus(0);
+        subscriptionEntitlementRepository.insert(subscriptionEntitlement);
 
     }
 }

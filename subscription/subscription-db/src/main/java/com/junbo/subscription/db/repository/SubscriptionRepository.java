@@ -41,8 +41,10 @@ public class SubscriptionRepository {
 
     }
 
-    public Long update(Subscription subscription) {
-        return subscriptionDao.update(subscriptionMapper.toSubscriptionEntity(subscription));
+    public Subscription update(Subscription subscription) {
+        subscriptionDao.update(subscriptionMapper.toSubscriptionEntity(subscription));
+        SubscriptionEntity result = subscriptionDao.get(subscription.getId());
+        return subscriptionMapper.toSubscription(result);
     }
 
     public Subscription getByTrackingUuid(Long userId, UUID trackingUuid) {
