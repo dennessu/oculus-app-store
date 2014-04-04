@@ -194,4 +194,18 @@ public class Oauth {
         }
         throw new NotFoundException("Did not found expected property: " + property + " in " + input);
     }
+
+    // ****** start API sample logging ******
+    public static final String MessageGetLoginCid =
+            "[Include In Sample][1] Description: Get_Login_Cid";
+    public static final String MessageGetAuthCodeByCidAndUserName =
+            "[Include In Sample][2] Description: Get_AuthCode_By_CidAndUserName";
+    public static final String MessageGetAccessTokenByAuthCode =
+            "[Include In Sample][1] Description: Get_Access_Token_By_AuthCode";
+    public static final String MessageGetTokenInfoByAccessToken =
+            "[Include In Sample][1] Description: Get_Token_Info_Access_Token";
+
+    public static void StartLoggingAPISample(String message) {
+        System.out.println(message);
+    }
 }
