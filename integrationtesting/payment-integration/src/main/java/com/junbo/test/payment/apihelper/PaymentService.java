@@ -16,11 +16,12 @@ public interface PaymentService {
     String postPaymentInstrumentToUser(String uid, PaymentInstrument paymentInstrument) throws Exception;
 
     String postPaymentInstrumentToUser(String uid, PaymentInstrument paymentInstrument,
-                                int expectedResponseCode) throws Exception;
+                                       int expectedResponseCode) throws Exception;
 
-    List<String> getPaymentInstrumentsByUserId(String uid) throws Exception;
+    String getPaymentInstrumentByPaymentId(String uid, String paymentInstrumentId) throws Exception;
 
-    List<String> getPaymentInstrumentsByUserId(String uid, int expectedResponseCode) throws Exception;
+    String getPaymentInstrumentByPaymentId(String uid, String paymentInstrumentId,
+                                           int expectedResponseCode) throws Exception;
 
     String updatePaymentInstrument(String uid, String paymentId, PaymentInstrument paymentInstrument) throws Exception;
 
@@ -32,8 +33,8 @@ public interface PaymentService {
 
     void deletePaymentInstrument(String uid, String paymentId, int expectedResponseCode) throws Exception;
 
-    String searchPaymentInstrument(String uid) throws Exception;
+    List<String> searchPaymentInstrumentsByUserId(String uid) throws Exception;
 
-    String searchPaymentInstrument(String uid, int expectedResponseCode) throws Exception;
+    List<String> searchPaymentInstrumentsByUserId(String uid, int expectedResponseCode) throws Exception;
 
 }
