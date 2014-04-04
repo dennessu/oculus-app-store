@@ -7,6 +7,7 @@ package com.junbo.test.oauth;
 
 import com.junbo.oauth.spec.model.AccessTokenResponse;
 import com.junbo.oauth.spec.model.TokenInfo;
+import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.HttpclientHelper;
 import com.junbo.test.common.JsonHelper;
 import com.junbo.test.identity.Identity;
@@ -31,14 +32,14 @@ public class Oauth {
     }
 
     public static final String DefaultAuthCodeEvent = "login";
-    public static final String DefaultAuthorizeURI = "http://localhost:8082/oauth2/authorize";
+    public static final String DefaultAuthorizeURI = ConfigHelper.getSetting("defaultAuthorizeURI");
     public static final String DefaultClientId = "client";
     public static final String DefaultClientScopes = "identity";
     public static final String DefaultClientSecret = "secret";
     public static final String DefaultGrantType = "authorization_code";
-    public static final String DefaultRedirectURI = "http://localhost";
-    public static final String DefaultTokenURI = "http://localhost:8082/oauth2/token";
-    public static final String DefaultTokenInfoURI = "http://localhost:8082/oauth2/tokeninfo";
+    public static final String DefaultRedirectURI = ConfigHelper.getSetting("defaultRedirectURI");
+    public static final String DefaultTokenURI = ConfigHelper.getSetting("defaultTokenURI");
+    public static final String DefaultTokenInfoURI = ConfigHelper.getSetting("defaultTokenInfoURI");
 
     public static final String DefaultFNCode = "code";
     public static final String DefaultFNCid = "cid";
