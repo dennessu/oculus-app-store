@@ -8,6 +8,7 @@ package com.junbo.test.identity;
 import com.junbo.common.id.UserId;
 import com.junbo.common.util.IdFormatter;
 import com.junbo.identity.spec.model.user.User;
+import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.GsonHelper;
 import com.junbo.test.common.HttpclientHelper;
 import com.junbo.test.common.RandomHelper;
@@ -18,7 +19,7 @@ import com.junbo.test.common.RandomHelper;
  */
 public class Identity {
 
-    public static final String DefaultIdentityURI = "http://localhost:8080/rest/users";
+    public static final String DefaultIdentityURI = ConfigHelper.getSetting("defaultIdentityURI");
     public static final String DefaultUserPwd = "1234qwerASDF";
     public static final String DefaultUserStatus = "ACTIVE";
 

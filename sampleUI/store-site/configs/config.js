@@ -41,7 +41,7 @@ var Configs = {
     },
     UrlConstants: {
         CatalogManageAPPsUrl: "",
-        CatalogManageOffersUrl: ""
+        CatalogManageOffersUrl: "http://store.oculusvr-demo.com:8081"
     },
     Runtime: {
         SocketAddress: "",
@@ -55,23 +55,28 @@ var Configs = {
 
     // hard code
     PaymentTypes: [
+        {name: "Please choose", value: ""},
         {name: "Credit Card", value: "CREDITCARD"}
     ],
     CardTypes: {
         CreditCard: [
+            {name: "Please choose", value: ""},
             {name: "VISA", value: "VISA"},
             {name: "MASTERCARD", value: "MASTERCARD"}
         ]
     },
     PaymentHolderTypes: [
+        {name: "Please choose", value: ""},
         {name: "Parent", value: "Parent"}
     ],
     ShippingMethods: [
+        {name: "Please choose", value: ""},
         {name: "Standard", value: "000000000001"},
         {name: "Economy", value: "000000000002"},
         {name: "Express", value: "000000000003"}
     ],
     Countries: [
+        {name: "Please choose", value: ""},
         {name: "Canada", value: "CA"},
         {name: "China", value: "CN"},
         {name: "France", value: "FR"},
@@ -193,7 +198,6 @@ var Configs = {
             Index: "DevCenter"
         }
     },
-
 
     // only on server
     Google_Captcha_Hostname: "www.google.com",

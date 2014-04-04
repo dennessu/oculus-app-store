@@ -70,6 +70,15 @@ class OrderInternalServiceImpl implements OrderInternalService {
                 LOGGER.info('name=Skip_Calculate_Tax_Zero_Total_Amount')
                 return Promise.pure(order)
             }
+            // check pi is there, it means the billing address is there.
+            if (CollectionUtils.isEmpty(order.paymentInstruments)) {
+                if (order.tentative) {
+                    LOGGER.info('name=Skip_Calculate_Tax_Without_PI')
+                    return Promise.pure(order)
+                }
+                LOGGER.error('name=Missing_paymentInstruments_To_Calculate_Tax')
+                throw AppErrors.INSTANCE.missingParameterField('paymentInstruments').exception()
+            }
             if (CoreUtils.hasPhysicalOffer(order)) {
                 // check whether the shipping address id are there
                 if (order.shippingAddressId == null) {
@@ -79,16 +88,6 @@ class OrderInternalServiceImpl implements OrderInternalService {
                     }
                     LOGGER.error('name=Missing_shippingAddressId_To_Calculate_Tax')
                     throw AppErrors.INSTANCE.missingParameterField('shippingAddressId').exception()
-                }
-            } else {
-                // check pi is there
-                if (CollectionUtils.isEmpty(order.paymentInstruments)) {
-                    if (order.tentative) {
-                        LOGGER.info('name=Skip_Calculate_Tax_Without_PI')
-                        return Promise.pure(order)
-                    }
-                    LOGGER.error('name=Missing_paymentInstruments_To_Calculate_Tax')
-                    throw AppErrors.INSTANCE.missingParameterField('paymentInstruments').exception()
                 }
             }
             return facadeContainer.billingFacade.quoteBalance(

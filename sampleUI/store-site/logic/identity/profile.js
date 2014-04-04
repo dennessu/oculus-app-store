@@ -52,25 +52,27 @@ exports.PutProfile = function(data, cb){
     var dataProvider = new IdentityProvider(process.AppConfig.Identity_API_Host, process.AppConfig.Identity_API_Port);
 
     dataProvider.GetPayinProfilesByUserId(userId, function(resultData){
-        if(resultData.StatusCode == 200){
-            var profile = JSON.parse(resultData.Data).results[0];
+        if (resultData.StatusCode == 200) {
+            var profileArr = JSON.parse(resultData.Data).results;
 
+            var profile = new IdentityModels.ProfileModel();
+            profile = profileArr[0];
             profile.firstName = body["firstName"];
             profile.lastName = body["lastName"];
             profile.createdTime = undefined;
             profile.updatedTime = undefined;
 
-            dataProvider.PutProfile(userId, profile.self.id, profile, function(resultData){
+            dataProvider.PutProfile(userId, profile.self.id, profile, function (resultData) {
                 var resultModel = new DomainModels.ResultModel();
-                if(resultData.StatusCode == 200){
+                if (resultData.StatusCode == 200) {
                     resultModel.status = DomainModels.ResultStatusEnum.Normal;
-                }else{
+                } else {
                     resultModel.status = DomainModels.ResultStatusEnum.APIError;
                 }
                 resultModel.data = resultData.Data;
                 cb(Utils.GenerateResponseModel(resultModel));
             });
-        }else{
+        } else {
             var resultModel = new DomainModels.ResultModel();
             resultModel.status = DomainModels.ResultStatusEnum.APIError;
             resultModel.data = resultData.Data;

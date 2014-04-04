@@ -5,17 +5,24 @@
  */
 
 package com.junbo.ewallet.spec.model
-
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.junbo.common.jackson.annotation.OfferId
+import com.junbo.common.jackson.annotation.UserId
+import com.junbo.common.jackson.annotation.WalletId
 import groovy.transform.CompileStatic
-
 /**
  * credit request.
  */
 @CompileStatic
 class CreditRequest {
     UUID trackingUuid
+    @WalletId
+    @JsonProperty('wallet')
+    Long walletId
+    @UserId
+    @JsonProperty('user')
+    Long userId
+    String currency
     @OfferId
     @JsonProperty('offer')
     Long offerId

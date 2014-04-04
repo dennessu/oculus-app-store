@@ -9,9 +9,13 @@ Application.Init = function(args){
     if(args.length > 2 && args[2].toLowerCase() == 'prod'){
         console.log('Application environment is Production.');
         Config = require('./prod');
+
+        process.env.NAME = "production";
     }else{
         console.log('Application environment is Development.');
         Config = require('./dev');
+
+        process.env.NAME = "development";
     }
 
     process.env.PORT = Config.ListenOnPort;

@@ -6,7 +6,7 @@
     {{/if}}
     <dl>
         <dt>Payment Type</dt>
-        <dd>{{view Ember.Select content=paymentTypes optionValuePath="content.v" optionLabelPath="content.t" value=paymentType id="PaymentType" name="PaymentType" class="{required:true}"}}</dd>
+        <dd>{{view Ember.Select content=paymentTypes optionValuePath="content.v" optionLabelPath="content.t" value=paymentType id="PaymentType" name="PaymentType" class="{required:true, ValidEmpty:true}"}}</dd>
     </dl>
     <dl>
         <dt>Name on Card</dt>
@@ -34,7 +34,7 @@
     </dl>
     <dl>
         <dt>Country</dt>
-        <dd>{{view Ember.Select content=countries optionValuePath="content.v" optionLabelPath="content.t" value=country id="Country" name="Country" class="{required:true}"}}</dd>
+        <dd>{{view Ember.Select content=countries optionValuePath="content.v" optionLabelPath="content.t" value=country id="Country" name="Country" class="{required:true, ValidEmpty:true}"}}</dd>
     </dl>
     <dl>
         <dt>Card #</dt>
@@ -68,7 +68,7 @@
     {{/if}}
 
     <div class="actions">
-        <button type="submit" class="btn btn-primary">Continue</button>
+        <button id="BtnPayment" type="submit" class="btn btn-primary">Continue</button>
         <button type="button" class="btn btn-cancel" {{action "Cancel"}}>Cancel</button>
     </div>
     </form>

@@ -8,8 +8,8 @@ package com.junbo.entitlement.db;
 
 import com.junbo.common.id.UserId;
 import com.junbo.entitlement.common.lib.EntitlementContext;
-import com.junbo.entitlement.db.entity.def.EntitlementStatus;
-import com.junbo.entitlement.db.entity.def.EntitlementType;
+import com.junbo.entitlement.spec.def.EntitlementStatus;
+import com.junbo.entitlement.spec.def.EntitlementType;
 import com.junbo.entitlement.db.repository.EntitlementRepository;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.model.EntitlementSearchParam;
