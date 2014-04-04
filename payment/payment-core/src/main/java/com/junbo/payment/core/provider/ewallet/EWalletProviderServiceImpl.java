@@ -102,7 +102,11 @@ public class EWalletProviderServiceImpl implements PaymentProviderService {
                 }).then(new Promise.Func<Wallet, Promise<PaymentTransaction>>() {
             @Override
             public Promise<PaymentTransaction> apply(Wallet wallet) {
-                //TODO: change thee offerId to be Transaction ID
+                if(wallet.getTransactions() == null || wallet.getTransactions().isEmpty() ||
+                        wallet.getTransactions().get(0).getTransactionId() == null){
+                    throw AppServerExceptions.INSTANCE.providerProcessError(
+                            PROVIDER_NAME, "No transaction happens").exception();
+                }
                 paymentRequest.setExternalToken(wallet.getTransactions().get(0).getTransactionId().toString());
                 return Promise.pure(paymentRequest);
             }

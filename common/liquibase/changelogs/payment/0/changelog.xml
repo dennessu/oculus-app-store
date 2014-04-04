@@ -920,8 +920,7 @@
         <sql>
         <![CDATA[
             insert into merchant_account values (0, '5ck86h27m34nrh6f', 0, 0, null, null, 'USD', '2014-02-10','wenhongzhu')
-			                                   ,(1, 'jb_GBP', 0, 0, null, null, 'GBP', '2014-02-10','wenhongzhu')
-			                                   ,(2, 'wallet', 1, 1, null, null, 'USD','2014-02-10','wenhongzhu');
+			                                   ,(1, 'jb_GBP', 0, 0, null, null, 'GBP', '2014-02-10','wenhongzhu');
         ]]>
         </sql>
     </changeSet>
