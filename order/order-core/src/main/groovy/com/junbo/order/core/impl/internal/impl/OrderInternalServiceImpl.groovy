@@ -81,7 +81,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
             }
             if (CoreUtils.hasPhysicalOffer(order)) {
                 // check whether the shipping address id are there
-                if (order.shippingAddressId == null) {
+                if (order.shippingAddress == null) {
                     if (order.tentative) {
                         LOGGER.info('name=Skip_Calculate_Tax_Without_shippingAddressId')
                         return Promise.pure(order)
@@ -139,12 +139,16 @@ class OrderInternalServiceImpl implements OrderInternalService {
     }
 
     @Override
-    Order getOrderByTrackingUuid(UUID trackingUuid) {
+    Order getOrderByTrackingUuid(UUID trackingUuid, Long userId) {
         if (trackingUuid == null) {
             return null
         }
         def order = orderRepository.getOrderByTrackingUuid(trackingUuid)
         if (order != null) {
+            if (order.user.value != userId) {
+                LOGGER.error('name=Dup_Tracking_Uuid')
+                throw AppErrors.INSTANCE.orderDuplicateTrackingGuid().exception()
+            }
             completeOrder(order)
         }
         return order
