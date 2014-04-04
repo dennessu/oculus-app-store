@@ -10,24 +10,24 @@
         <property name="autoStartup" value="${billing.jobs.scheduler.start}" />
         <property name="triggers">
             <list>
-                <ref bean="billingBalanceProcessJobTrigger"/>
+                <ref bean="billingAsyncChargeJobTrigger"/>
             </list>
         </property>
         <property name="applicationContextSchedulerContextKey" value="applicationContext" />
     </bean>
 
     <!-- Billing Balance Process Job Trigger -->
-    <bean id="billingBalanceProcessJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean" >
-        <property name="jobDetail" ref="billingBalanceProcessJobDetail" />
-        <property name="cronExpression" value="${billing.jobs.balanceprocess.cronexpression}" />
+    <bean id="billingAsyncChargeJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean" >
+        <property name="jobDetail" ref="billingAsyncChargeJobDetail" />
+        <property name="cronExpression" value="${billing.jobs.asynccharge.cronexpression}" />
     </bean>
 
     <!-- Billing Balance Process Job -->
-    <bean id="billingBalanceProcessJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-        <property name="targetObject" ref="billingBalanceProcessJob" />
+    <bean id="billingAsyncChargeJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="billingAsyncChargeJob" />
         <property name="targetMethod" value="execute" />
     </bean>
 
-    <bean id="billingBalanceProcessJob" class="com.junbo.billing.jobs.BalanceProcessJob" />
+    <bean id="billingAsyncChargeJob" class="com.junbo.billing.jobs.AsyncChargeJob" />
 
 </beans>

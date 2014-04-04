@@ -10,17 +10,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Created by xmchen on 14-4-3.
+ * Created by xmchen on 14-4-4.
  */
-public class BalanceProcessJob {
+public class AsyncChargeJob {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(BalanceProcessJob.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AsyncChargeJob.class);
 
     protected void execute() {
-        LOGGER.info("Starting billing balance process job");
+        LOGGER.info("Starting billing async charge job");
 
 
 
-        LOGGER.info("Billing balance process job finished");
+        LOGGER.info("Billing async charge job finished");
     }
 }

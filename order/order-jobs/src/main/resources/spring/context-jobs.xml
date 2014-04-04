@@ -19,7 +19,7 @@
     <!-- Order Job Trigger -->
     <bean id="orderJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean" >
         <property name="jobDetail" ref="orderJobDetail" />
-        <property name="cronExpression" value="${order.jobs.balanceprocess.cronexpression}" />
+        <property name="cronExpression" value="${order.jobs.orderjob.cronexpression}" />
     </bean>
 
     <!-- Order Job -->
