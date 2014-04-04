@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.test.buyerscenario.helper;
+package com.junbo.test.buyerscenario;
 
 import com.junbo.billing.spec.model.ShippingAddress;
 import com.junbo.cart.spec.model.Cart;
@@ -18,6 +18,7 @@ import com.junbo.payment.spec.model.CreditCardRequest;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.Phone;
 import com.junbo.test.common.Entities.ShippingAddressInfo;
+import com.junbo.test.common.Utility.BaseTestDataProvider;
 import com.junbo.test.common.apihelper.billing.ShippingAddressService;
 import com.junbo.test.common.apihelper.billing.impl.ShippingAddressServiceImpl;
 import com.junbo.test.common.apihelper.cart.CartService;
@@ -50,7 +51,7 @@ import java.util.UUID;
 /**
  * Created by Yunlong on 3/20/14.
  */
-public class TestDataProvider {
+public class BuyerTestDataProvider extends BaseTestDataProvider{
     private UserService identityClient = UserServiceImpl.instance();
     private ItemService itemClient = ItemServiceImpl.instance();
     private OfferService offerClient = OfferServiceImpl.instance();
@@ -60,7 +61,7 @@ public class TestDataProvider {
     private ShippingAddressService shippingClient = ShippingAddressServiceImpl.getInstance();
 
 
-    public TestDataProvider() {
+    public BuyerTestDataProvider() {
     }
 
     public String createUser(String email, String password, UserStatus status) throws Exception {
