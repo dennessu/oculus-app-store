@@ -11,6 +11,7 @@ import com.junbo.identity.spec.options.list.UserAuthenticatorListOptions
 import groovy.transform.CompileStatic
 import org.apache.commons.collections.CollectionUtils
 import org.hibernate.Criteria
+import org.hibernate.Session
 import org.hibernate.criterion.Order
 import org.hibernate.criterion.Restrictions
 
@@ -23,15 +24,17 @@ class UserAuthenticatorDAOImpl extends BaseDAO implements UserAuthenticatorDAO {
     UserAuthenticatorEntity save(UserAuthenticatorEntity entity) {
         entity.id = idGenerator.nextId(entity.userId)
 
-        currentSession(entity.id).save(entity)
-        currentSession(entity.id).flush()
+        Session session = currentSession(entity.id)
+        session.save(entity)
+        session.flush()
         return get((Long)entity.id)
     }
 
     @Override
     UserAuthenticatorEntity update(UserAuthenticatorEntity entity) {
-        currentSession(entity.id).merge(entity)
-        currentSession(entity.id).flush()
+        Session session = currentSession(entity.id)
+        session.merge(entity)
+        session.flush()
 
         return get((Long)entity.id)
     }
@@ -82,8 +85,9 @@ class UserAuthenticatorDAOImpl extends BaseDAO implements UserAuthenticatorDAO {
 
     @Override
     void delete(Long id) {
-        UserAuthenticatorEntity entity = (UserAuthenticatorEntity)currentSession(id).get(UserAuthenticatorEntity, id)
-        currentSession(id).delete(entity)
-        currentSession(id).flush()
+        Session session = currentSession(id)
+        UserAuthenticatorEntity entity = (UserAuthenticatorEntity)session.get(UserAuthenticatorEntity, id)
+        session.delete(entity)
+        session.flush()
     }
 }

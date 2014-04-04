@@ -9,6 +9,7 @@ import com.junbo.identity.data.entity.user.UserSecurityQuestionEntity
 import com.junbo.identity.spec.options.list.UserSecurityQuestionListOptions
 import groovy.transform.CompileStatic
 import org.hibernate.Criteria
+import org.hibernate.Session
 import org.hibernate.criterion.Order
 import org.hibernate.criterion.Restrictions
 /**
@@ -19,16 +20,18 @@ class UserSecurityQuestionDAOImpl extends BaseDAO implements UserSecurityQuestio
     @Override
     UserSecurityQuestionEntity save(UserSecurityQuestionEntity entity) {
         entity.id = idGenerator.nextId(entity.userId)
-        currentSession(entity.id).save(entity)
-        currentSession(entity.id).flush()
+        Session session = currentSession(entity.id)
+        session.save(entity)
+        session.flush()
 
         return get(entity.id)
     }
 
     @Override
     UserSecurityQuestionEntity update(UserSecurityQuestionEntity entity) {
-        currentSession(entity.id).merge(entity)
-        currentSession(entity.id).flush()
+        Session session = currentSession(entity.id)
+        session.merge(entity)
+        session.flush()
 
         return get(entity.id)
     }
@@ -60,9 +63,9 @@ class UserSecurityQuestionDAOImpl extends BaseDAO implements UserSecurityQuestio
 
     @Override
     void delete(Long id) {
-        UserSecurityQuestionEntity entity = (UserSecurityQuestionEntity)currentSession(id).
-                get(UserSecurityQuestionEntity, id)
-        currentSession(id).delete(entity)
-        currentSession(id).flush()
+        Session session = currentSession(id)
+        UserSecurityQuestionEntity entity = (UserSecurityQuestionEntity)session.get(UserSecurityQuestionEntity, id)
+        session.delete(entity)
+        session.flush()
     }
 }

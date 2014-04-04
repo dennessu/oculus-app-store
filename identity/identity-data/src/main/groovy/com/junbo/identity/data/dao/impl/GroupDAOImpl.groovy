@@ -10,6 +10,7 @@ import com.junbo.identity.data.dao.GroupDAO
 import com.junbo.identity.data.entity.group.GroupEntity
 import groovy.transform.CompileStatic
 import org.apache.commons.collections.CollectionUtils
+import org.hibernate.Session
 
 /**
  * Created by liangfu on 3/14/14.
@@ -26,15 +27,17 @@ class GroupDAOImpl extends BaseDAO implements GroupDAO {
     GroupEntity save(GroupEntity group) {
         group.id = idGenerator.nextIdByShardId(shardAlgorithm.shardId())
 
-        currentSession(group.id).save(group)
-        currentSession(group.id).flush()
+        Session session = currentSession(group.id)
+        session.save(group)
+        session.flush()
         return get((Long)group.id)
     }
 
     @Override
     GroupEntity update(GroupEntity group) {
-        currentSession(group.id).merge(group)
-        currentSession(group.id).flush()
+        Session session = currentSession(group.id)
+        session.merge(group)
+        session.flush()
 
         return get((Long)group.id)
     }

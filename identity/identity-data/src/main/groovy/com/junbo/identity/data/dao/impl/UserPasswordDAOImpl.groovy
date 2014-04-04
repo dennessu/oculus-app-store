@@ -9,6 +9,7 @@ import com.junbo.identity.data.entity.user.UserPasswordEntity
 import com.junbo.identity.spec.options.list.UserPasswordListOptions
 import groovy.transform.CompileStatic
 import org.hibernate.Criteria
+import org.hibernate.Session
 import org.hibernate.criterion.Order
 import org.hibernate.criterion.Restrictions
 /**
@@ -21,16 +22,18 @@ class UserPasswordDAOImpl extends BaseDAO implements UserPasswordDAO {
     UserPasswordEntity save(UserPasswordEntity entity) {
         entity.id = idGenerator.nextId(entity.userId)
 
-        currentSession(entity.id).save(entity)
-        currentSession(entity.id).flush()
+        Session session = currentSession(entity.id)
+        session.save(entity)
+        session.flush()
 
         return get(entity.id)
     }
 
     @Override
     UserPasswordEntity update(UserPasswordEntity entity) {
-        currentSession(entity.id).merge(entity)
-        currentSession(entity.id).flush()
+        Session session = currentSession(entity.id)
+        session.merge(entity)
+        session.flush()
         return get(entity.id)
     }
 
@@ -59,9 +62,9 @@ class UserPasswordDAOImpl extends BaseDAO implements UserPasswordDAO {
 
     @Override
     void delete(Long id) {
-        UserPasswordEntity entity =
-                (UserPasswordEntity)currentSession(id).get(UserPasswordEntity, id)
-        currentSession(id).delete(entity)
-        currentSession(id).flush()
+        Session session = currentSession(id)
+        UserPasswordEntity entity = (UserPasswordEntity)session.get(UserPasswordEntity, id)
+        session.delete(entity)
+        session.flush()
     }
 }

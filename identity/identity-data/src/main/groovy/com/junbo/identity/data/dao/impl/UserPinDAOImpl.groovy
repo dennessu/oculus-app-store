@@ -9,6 +9,7 @@ import com.junbo.identity.data.entity.user.UserPinEntity
 import com.junbo.identity.spec.options.list.UserPinListOptions
 import groovy.transform.CompileStatic
 import org.hibernate.Criteria
+import org.hibernate.Session
 import org.hibernate.criterion.Order
 import org.hibernate.criterion.Restrictions
 /**
@@ -20,15 +21,17 @@ class UserPinDAOImpl extends BaseDAO implements UserPinDAO {
     UserPinEntity save(UserPinEntity entity) {
         entity.id = idGenerator.nextId(entity.userId)
 
-        currentSession(entity.id).save(entity)
-        currentSession(entity.id).flush()
+        Session session = currentSession(entity.id)
+        session.save(entity)
+        session.flush()
         return get(entity.id)
     }
 
     @Override
     UserPinEntity update(UserPinEntity entity) {
-        currentSession(entity.id).merge(entity)
-        currentSession(entity.id).flush()
+        Session session = currentSession(entity.id)
+        session.merge(entity)
+        session.flush()
 
         return get(entity.id)
     }
@@ -57,8 +60,9 @@ class UserPinDAOImpl extends BaseDAO implements UserPinDAO {
 
     @Override
     void delete(Long id) {
-        UserPinEntity entity = (UserPinEntity)currentSession(id).get(UserPinEntity, id)
-        currentSession(id).delete(entity)
-        currentSession(id).flush()
+        Session session = currentSession(id)
+        UserPinEntity entity = (UserPinEntity)session.get(UserPinEntity, id)
+        session.delete(entity)
+        session.flush()
     }
 }

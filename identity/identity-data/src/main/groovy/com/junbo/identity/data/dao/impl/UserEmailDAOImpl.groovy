@@ -11,6 +11,7 @@ import com.junbo.identity.spec.options.list.UserEmailListOptions
 import groovy.transform.CompileStatic
 import org.apache.commons.collections.CollectionUtils
 import org.hibernate.Criteria
+import org.hibernate.Session
 import org.hibernate.criterion.Order
 import org.hibernate.criterion.Restrictions
 import org.springframework.util.StringUtils
@@ -23,9 +24,10 @@ class UserEmailDAOImpl extends BaseDAO implements UserEmailDAO {
 
     @Override
     void delete(Long id) {
-        UserEmailEntity entity = (UserEmailEntity)currentSession(id).get(UserEmailEntity, id)
-        currentSession(id).delete(entity)
-        currentSession(id).flush()
+        Session session = currentSession(id)
+        UserEmailEntity entity = (UserEmailEntity)session.get(UserEmailEntity, id)
+        session.delete(entity)
+        session.flush()
     }
 
     @Override
@@ -55,8 +57,9 @@ class UserEmailDAOImpl extends BaseDAO implements UserEmailDAO {
 
     @Override
     UserEmailEntity update(UserEmailEntity entity) {
-        currentSession(entity.id).merge(entity)
-        currentSession(entity.id).flush()
+        Session session = currentSession(entity.id)
+        session.merge(entity)
+        session.flush()
 
         return get((Long)(entity.id))
     }
@@ -64,8 +67,9 @@ class UserEmailDAOImpl extends BaseDAO implements UserEmailDAO {
     @Override
     UserEmailEntity save(UserEmailEntity entity) {
         entity.id = idGenerator.nextId(entity.userId)
-        currentSession(entity.id).save(entity)
-        currentSession(entity.id).flush()
+        Session session = currentSession(entity.id)
+        session.save(entity)
+        session.flush()
 
         return get((Long)(entity.id))
     }

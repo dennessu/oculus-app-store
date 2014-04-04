@@ -9,7 +9,7 @@
 
     <tx:annotation-driven />
     <context:component-scan base-package="com.junbo.identity.data" />
-    <import resource="classpath*:spring/sharding.xml"/>
+    <import resource="classpath*:spring/transaction.xml"/>
     <import resource="classpath*:spring/sharding-context.xml"/>
 
     <bean id="__builtinMapper" class="com.junbo.oom.core.builtin.BuiltinMapper" />
@@ -159,21 +159,37 @@
         </property>
     </bean>
 
-    <bean id="configSessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
-        <property name="dataSource" ref="configDataSource"/>
-        <property name="packagesToScan" value="com.junbo.identity.data.entity.domaindata"/>
-        <property name="jtaTransactionManager" ref="transactionManager"/>
-        <property name="entityInterceptor">
-            <bean class="com.junbo.identity.data.dao.interceptor.AuditInterceptor" />
-        </property>
-        <property name="hibernateProperties">
+    <bean id="configDataSource" class="com.junbo.sharding.hibernate.ShardMultiTenantConnectionProviderFactoryBean">
+        <property name="jdbcUrls" value="${config.db.jdbcUrls}"/>
+
+        <property name="uniqueName" value="jdbc/config"/>
+        <property name="className" value="${config.db.driverClassName}"/>
+        <property name="minPoolSize" value="${config.db.minPoolSize}"/>
+        <property name="maxPoolSize" value="${config.db.maxPoolSize}"/>
+        <property name="driverProperties">
             <props>
-                <prop key="hibernate.dialect">${config.hibernate.dialect}</prop>
-                <prop key="hibernate.max_fetch_depth">${config.hibernate.max_fetch_depth}</prop>
-                <prop key="hibernate.jdbc.fetch_size">${config.hibernate.fetch_size}</prop>
-                <prop key="hibernate.jdbc.batch_size">${config.hibernate.batch_size}</prop>
-                <prop key="hibernate.show_sql">${config.hibernate.show_sql}</prop>
+                <prop key="user">${config.db.username}</prop>
+                <prop key="password">${config.db.password}</prop>
             </props>
+        </property>
+    </bean>
+
+    <bean id="configSessionFactory" class="com.junbo.sharding.hibernate.LocalSessionFactoryWithListenerBean">
+        <property name="jtaTransactionManager" ref="transactionManager"/>
+        <property name="hibernateProperties">
+            <map>
+                <entry key="hibernate.dialect" value="${sharding.hibernate.dialect}"/>
+                <entry key="hibernate.max_fetch_depth" value="${sharding.hibernate.max_fetch_depth}"/>
+                <entry key="hibernate.jdbc.fetch_size" value="${sharding.hibernate.jdbc.fetch_size}"/>
+                <entry key="hibernate.jdbc.batch_size" value="${sharding.hibernate.jdbc.batch_size}"/>
+                <entry key="hibernate.show_sql" value="${sharding.hibernate.show_sql}"/>
+
+                <entry key="hibernate.multiTenancy" value="SCHEMA"/>
+                <entry key="hibernate.current_session_context_class" value="com.junbo.sharding.hibernate.MultiTenantJTASessionContext"/>
+                <entry key="hibernate.tenant_identifier_resolver" value="com.junbo.sharding.hibernate.ShardCurrentTenantIdentifierResolver"/>
+                <entry key="hibernate.multi_tenant_connection_provider" value-ref="indexDataSource"/>
+                <entry key="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
+            </map>
         </property>
     </bean>
 

@@ -39,6 +39,7 @@ class SecurityQuestionDAOImpl implements SecurityQuestionDAO {
     @Override
     SecurityQuestionEntity save(SecurityQuestionEntity entity) {
         entity.setId(idGenerator.nextId(UserId))
+
         currentSession().save(entity)
         currentSession().flush()
         return get(entity.id)

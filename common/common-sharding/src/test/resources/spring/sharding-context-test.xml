@@ -4,58 +4,6 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <import resource="classpath:spring/sharding-context.xml"/>
-    <import resource="classpath:spring/sharding.xml"/>
     <import resource="classpath*:spring/common-context.xml"/>
 
-    <bean id="sessionFactoryWrapper" class="com.junbo.sharding.core.hibernate.SessionFactoryWrapper">
-        <property name="mapper" ref="shardDataSourceMapper"/>
-        <property name="dataSourceRegistry" ref="shardDataSourceRegistry"/>
-        <property name="sessionFactoryBeanName" value="sessionFactoryTemplate"/>
-        <property name="dataBaseName" value="test"/>
-        <property name="packagesToScan" value="com.junbo.sharding.test.data.dao"/>
-    </bean>
-
-    <bean id="shardDaoTarget" class="com.junbo.sharding.test.data.dao.ShardDAOImpl">
-        <property name="sessionFactoryWrapper" ref="sessionFactoryWrapper"/>
-    </bean>
-    <bean id="shardDao" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean">
-        <property name="daoInterface" value="com.junbo.sharding.test.data.dao.ShardDAO"/>
-        <property name="daoTarget" ref="shardDaoTarget"/>
-        <property name="idGeneratorFacade" ref="idGeneratorFacade"/>
-    </bean>
-
-    <bean id="identityDataSource" class="com.junbo.sharding.hibernate.ShardMultiTenantConnectionProviderFactoryBean">
-        <property name="jdbcUrls" value=""/>
-
-        <property name="uniqueName" value="jdbc/identity"/>
-        <property name="className" value="${config.db.driverClassName}"/>
-        <property name="minPoolSize" value="${config.db.minConnections}"/>
-        <property name="maxPoolSize" value="${config.db.maxConnections}"/>
-        <property name="driverProperties">
-            <props>
-                <prop key="user">${config.db.username}</prop>
-                <prop key="password">${sharding.dataSource.db.password}</prop>
-            </props>
-        </property>
-    </bean>
-
-    <!-- SessonFactory for Hibernate -->
-    <bean id="identitySessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
-        <property name="jtaTransactionManager" ref="transactionManager"/>
-        <property name="packagesToScan" value="com.junbo.sharding.*"/>
-        <property name="hibernateProperties">
-            <map>
-                <entry key="hibernate.dialect" value="${sharding.hibernate.dialect}"/>
-                <entry key="hibernate.max_fetch_depth" value="${sharding.hibernate.max_fetch_depth}"/>
-                <entry key="hibernate.jdbc.fetch_size" value="${sharding.hibernate.jdbc.fetch_size}"/>
-                <entry key="hibernate.jdbc.batch_size" value="${sharding.hibernate.jdbc.batch_size}"/>
-                <entry key="hibernate.show_sql" value="${sharding.hibernate.show_sql}"/>
-
-                <entry key="hibernate.multiTenancy" value="SCHEMA"/>
-                <entry key="hibernate.current_session_context_class" value="com.junbo.sharding.hibernate.MultiTenantJTASessionContext"/>
-                <entry key="hibernate.tenant_identifier_resolver" value="com.junbo.sharding.hibernate.ShardCurrentTenantIdentifierResolver"/>
-                <entry key="hibernate.multi_tenant_connection_provider" value-ref="identityDataSource"/>
-            </map>
-        </property>
-    </bean>
 </beans>

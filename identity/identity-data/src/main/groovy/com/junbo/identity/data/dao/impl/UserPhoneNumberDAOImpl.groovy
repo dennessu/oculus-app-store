@@ -10,6 +10,7 @@ import com.junbo.identity.data.entity.user.UserPhoneNumberEntity
 import com.junbo.identity.spec.options.list.UserPhoneNumberListOptions
 import groovy.transform.CompileStatic
 import org.hibernate.Criteria
+import org.hibernate.Session
 import org.hibernate.criterion.Order
 import org.hibernate.criterion.Restrictions
 import org.springframework.util.StringUtils
@@ -22,16 +23,18 @@ class UserPhoneNumberDAOImpl extends BaseDAO implements UserPhoneNumberDAO {
     UserPhoneNumberEntity save(UserPhoneNumberEntity entity) {
         entity.id = idGenerator.nextId(entity.userId)
 
-        currentSession(entity.id).save(entity)
-        currentSession(entity.id).flush()
+        Session session = currentSession(entity.id)
+        session.save(entity)
+        session.flush()
 
         return get(entity.id)
     }
 
     @Override
     UserPhoneNumberEntity update(UserPhoneNumberEntity entity) {
-        currentSession(entity.id).merge(entity)
-        currentSession(entity.id).flush()
+        Session session = currentSession(entity.id)
+        session.merge(entity)
+        session.flush()
 
         return get(entity.id)
     }
@@ -63,9 +66,9 @@ class UserPhoneNumberDAOImpl extends BaseDAO implements UserPhoneNumberDAO {
 
     @Override
     void delete(Long id) {
-        UserPhoneNumberEntity entity =
-                (UserPhoneNumberEntity)currentSession(id).get(UserPhoneNumberEntity, id)
-        currentSession(id).delete(entity)
-        currentSession(id).flush()
+        Session session = currentSession(id)
+        UserPhoneNumberEntity entity = (UserPhoneNumberEntity)session.get(UserPhoneNumberEntity, id)
+        session.delete(entity)
+        session.flush()
     }
 }

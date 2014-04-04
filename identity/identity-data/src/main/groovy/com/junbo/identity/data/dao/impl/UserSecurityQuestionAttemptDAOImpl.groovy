@@ -10,6 +10,7 @@ import com.junbo.identity.data.entity.user.UserSecurityQuestionAttemptEntity
 import com.junbo.identity.spec.options.list.UserSecurityQuestionAttemptListOptions
 import groovy.transform.CompileStatic
 import org.hibernate.Criteria
+import org.hibernate.Session
 import org.hibernate.criterion.Order
 import org.hibernate.criterion.Restrictions
 
@@ -22,16 +23,18 @@ class UserSecurityQuestionAttemptDAOImpl extends BaseDAO implements UserSecurity
     @Override
     UserSecurityQuestionAttemptEntity save(UserSecurityQuestionAttemptEntity entity) {
         entity.id = idGenerator.nextId(entity.userId)
-        currentSession(entity.id).save(entity)
-        currentSession(entity.id).flush()
+        Session session = currentSession(entity.id)
+        session.save(entity)
+        session.flush()
 
         return get(entity.id)
     }
 
     @Override
     UserSecurityQuestionAttemptEntity update(UserSecurityQuestionAttemptEntity entity) {
-        currentSession(entity.id).merge(entity)
-        currentSession(entity.id).flush()
+        Session session = currentSession(entity.id)
+        session.merge(entity)
+        session.flush()
 
         return get(entity.id)
     }

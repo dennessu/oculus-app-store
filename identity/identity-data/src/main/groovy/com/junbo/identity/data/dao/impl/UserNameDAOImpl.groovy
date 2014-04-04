@@ -9,6 +9,7 @@ import com.junbo.identity.data.dao.UserNameDAO
 import com.junbo.identity.data.entity.user.UserNameEntity
 import groovy.transform.CompileStatic
 import org.hibernate.Criteria
+import org.hibernate.Session
 import org.hibernate.criterion.Restrictions
 
 /**
@@ -25,24 +26,27 @@ class UserNameDAOImpl extends BaseDAO implements UserNameDAO {
     UserNameEntity create(UserNameEntity entity) {
         entity.id = idGenerator.nextId(entity.userId)
 
-        currentSession(entity.id).save(entity)
-        currentSession(entity.id).flush()
+        Session session = currentSession(entity.id)
+        session.save(entity)
+        session.flush()
         return get(entity.id)
     }
 
     @Override
     UserNameEntity update(UserNameEntity entity) {
-        currentSession(entity.id).merge(entity)
-        currentSession(entity.id).flush()
+        Session session = currentSession(entity.id)
+        session.merge(entity)
+        session.flush()
 
         return get(entity.id)
     }
 
     @Override
     void delete(Long id) {
-        UserNameEntity entity = (UserNameEntity)currentSession(id).get(UserNameEntity, id)
-        currentSession(id).delete(entity)
-        currentSession(id).flush()
+        Session session = currentSession(id)
+        UserNameEntity entity = (UserNameEntity)session.get(UserNameEntity, id)
+        session.delete(entity)
+        session.flush()
     }
 
     @Override

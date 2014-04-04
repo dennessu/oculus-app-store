@@ -9,6 +9,7 @@ import com.junbo.identity.data.entity.user.UserOptinEntity
 import com.junbo.identity.spec.options.list.UserOptinListOptions
 import groovy.transform.CompileStatic
 import org.hibernate.Criteria
+import org.hibernate.Session
 import org.hibernate.criterion.Order
 import org.hibernate.criterion.Restrictions
 import org.springframework.util.StringUtils
@@ -23,16 +24,18 @@ class UserOptinDAOImpl extends BaseDAO implements UserOptinDAO {
     UserOptinEntity save(UserOptinEntity entity) {
         entity.id = idGenerator.nextId(entity.userId)
 
-        currentSession(entity.id).save(entity)
-        currentSession(entity.id).flush()
+        Session session = currentSession(entity.id)
+        session.save(entity)
+        session.flush()
 
         return get(entity.id)
     }
 
     @Override
     UserOptinEntity update(UserOptinEntity entity) {
-        currentSession(entity.id).merge(entity)
-        currentSession(entity.id).flush()
+        Session session = currentSession(entity.id)
+        session.merge(entity)
+        session.flush()
 
         return get(entity.id)
     }
@@ -61,8 +64,9 @@ class UserOptinDAOImpl extends BaseDAO implements UserOptinDAO {
 
     @Override
     void delete(Long id) {
-        UserOptinEntity entity = (UserOptinEntity)currentSession(id).get(UserOptinEntity, id)
-        currentSession(id).delete(entity)
-        currentSession(id).flush()
+        Session session = currentSession(id)
+        UserOptinEntity entity = (UserOptinEntity)session.get(UserOptinEntity, id)
+        session.delete(entity)
+        session.flush()
     }
 }

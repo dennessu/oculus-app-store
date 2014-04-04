@@ -9,6 +9,7 @@ import com.junbo.identity.data.entity.user.UserGroupEntity
 import com.junbo.identity.spec.options.list.UserGroupListOptions
 import groovy.transform.CompileStatic
 import org.hibernate.Criteria
+import org.hibernate.Session
 import org.hibernate.criterion.Order
 import org.hibernate.criterion.Restrictions
 /**
@@ -20,16 +21,18 @@ class UserGroupDAOImpl extends BaseDAO implements UserGroupDAO {
     UserGroupEntity save(UserGroupEntity entity) {
         entity.id = idGenerator.nextId(entity.userId)
 
-        currentSession(entity.id).save(entity)
-        currentSession(entity.id).flush()
+        Session session = currentSession(entity.id)
+        session.save(entity)
+        session.flush()
 
         return get(entity.id)
     }
 
     @Override
     UserGroupEntity update(UserGroupEntity entity) {
-        currentSession(entity.id).merge(entity)
-        currentSession(entity.id).flush()
+        Session session = currentSession(entity.id)
+        session.merge(entity)
+        session.flush()
 
         return get(entity.id)
     }
@@ -58,8 +61,9 @@ class UserGroupDAOImpl extends BaseDAO implements UserGroupDAO {
 
     @Override
     void delete(Long id) {
-        UserGroupEntity entity = (UserGroupEntity)currentSession(id).get(UserGroupEntity, id)
-        currentSession(id).delete(entity)
-        currentSession(id).flush()
+        Session session = currentSession(id)
+        UserGroupEntity entity = (UserGroupEntity)session.get(UserGroupEntity, id)
+        session.delete(entity)
+        session.flush()
     }
 }

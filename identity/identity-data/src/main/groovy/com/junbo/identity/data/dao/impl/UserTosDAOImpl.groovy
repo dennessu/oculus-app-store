@@ -9,6 +9,7 @@ import com.junbo.identity.data.entity.user.UserTosEntity
 import com.junbo.identity.spec.options.list.UserTosListOptions
 import groovy.transform.CompileStatic
 import org.hibernate.Criteria
+import org.hibernate.Session
 import org.hibernate.criterion.Order
 import org.hibernate.criterion.Restrictions
 import org.springframework.util.StringUtils
@@ -21,15 +22,17 @@ class UserTosDAOImpl extends BaseDAO implements UserTosDAO {
     @Override
     UserTosEntity save(UserTosEntity entity) {
         entity.id = idGenerator.nextId(entity.userId)
-        currentSession(entity.id).save(entity)
-        currentSession(entity.id).flush()
+        Session session = currentSession(entity.id)
+        session.save(entity)
+        session.flush()
         return get(entity.id)
     }
 
     @Override
     UserTosEntity update(UserTosEntity entity) {
-        currentSession(entity.id).merge(entity)
-        currentSession(entity.id).flush()
+        Session session = currentSession(entity.id)
+        session.merge(entity)
+        session.flush()
 
         return get(entity.id)
     }
@@ -58,8 +61,9 @@ class UserTosDAOImpl extends BaseDAO implements UserTosDAO {
 
     @Override
     void delete(Long id) {
-        UserTosEntity entity = (UserTosEntity)currentSession(id).get(UserTosEntity, id)
-        currentSession(id).delete(entity)
-        currentSession(id).flush()
+        Session session = currentSession(id)
+        UserTosEntity entity = (UserTosEntity)session.get(UserTosEntity, id)
+        session.delete(entity)
+        session.flush()
     }
 }

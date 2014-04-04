@@ -9,6 +9,7 @@ import com.junbo.identity.data.dao.UserDAO
 import com.junbo.identity.data.entity.user.UserEntity
 import groovy.transform.CompileStatic
 import org.apache.commons.collections.CollectionUtils
+import org.hibernate.Session
 
 /**
  * Implementation for User DAO..
@@ -24,8 +25,9 @@ class UserDAOImpl extends BaseDAO implements UserDAO {
 
         user.id = idGenerator.nextIdByShardId(shardAlgorithm.shardId())
 
-        currentSession(user.id).save(user)
-        currentSession(user.id).flush()
+        Session session = currentSession(user.id)
+        session.save(user)
+        session.flush()
 
         return get((Long) user.id)
     }
@@ -36,8 +38,9 @@ class UserDAOImpl extends BaseDAO implements UserDAO {
             throw new IllegalArgumentException('user is null')
         }
 
-        currentSession(user.id).merge(user)
-        currentSession(user.id).flush()
+        Session session = currentSession(user.id)
+        session.merge(user)
+        session.flush()
 
         return get((Long) user.id)
     }
@@ -49,9 +52,10 @@ class UserDAOImpl extends BaseDAO implements UserDAO {
 
     @Override
     void delete(Long userId) {
-        UserEntity entity = (UserEntity) currentSession(userId).get(UserEntity, userId)
-        currentSession(userId).delete(entity)
-        currentSession(userId).flush()
+        Session session = currentSession(userId)
+        UserEntity entity = (UserEntity) session.get(UserEntity, userId)
+        session.delete(entity)
+        session.flush()
     }
 
     @Override

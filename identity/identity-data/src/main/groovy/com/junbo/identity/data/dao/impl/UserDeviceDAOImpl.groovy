@@ -9,6 +9,7 @@ import com.junbo.identity.data.entity.user.UserDeviceEntity
 import com.junbo.identity.spec.options.list.UserDeviceListOptions
 import groovy.transform.CompileStatic
 import org.hibernate.Criteria
+import org.hibernate.Session
 import org.hibernate.criterion.Order
 import org.hibernate.criterion.Restrictions
 /**
@@ -21,15 +22,17 @@ class UserDeviceDAOImpl extends BaseDAO implements UserDeviceDAO {
     UserDeviceEntity save(UserDeviceEntity entity) {
         entity.id = idGenerator.nextId(entity.userId)
 
-        currentSession(entity.id).save(entity)
-        currentSession(entity.id).flush()
+        Session session = currentSession(entity.id)
+        session.save(entity)
+        session.flush()
         return get(entity.id)
     }
 
     @Override
     UserDeviceEntity update(UserDeviceEntity entity) {
-        currentSession(entity.id).merge(entity)
-        currentSession(entity.id).flush()
+        Session session = currentSession(entity.id)
+        session.merge(entity)
+        session.flush()
 
         return get(entity.id)
     }
@@ -58,8 +61,9 @@ class UserDeviceDAOImpl extends BaseDAO implements UserDeviceDAO {
 
     @Override
     void delete(Long id) {
-        UserDeviceEntity entity = (UserDeviceEntity)currentSession(id).get(UserDeviceEntity, id)
-        currentSession(id).delete(entity)
-        currentSession(id).flush()
+        Session session = currentSession(id)
+        UserDeviceEntity entity = (UserDeviceEntity)session.get(UserDeviceEntity, id)
+        session.delete(entity)
+        session.flush()
     }
 }
