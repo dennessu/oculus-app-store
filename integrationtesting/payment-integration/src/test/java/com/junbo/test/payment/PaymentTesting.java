@@ -86,7 +86,7 @@ public class PaymentTesting extends BaseTestClass {
             features = "PUT /users/{userId}/payment-instruments/{paymentInstrumentId}",
             component = Component.Payment,
             owner = "Yunlongzhao",
-            status = Status.Enable,
+            status = Status.Disable,
             description = "put payment instruments",
             steps = {
                     "1. Create an user",
@@ -125,7 +125,7 @@ public class PaymentTesting extends BaseTestClass {
             }
     )
     @Test
-    public void deletePaymentInstrument() throws Exception {
+    public void testDeletePaymentInstrument() throws Exception {
         String randomUid = testDataProvider.CreateUser();
 
         CreditCardInfo creditCardInfo1 = CreditCardInfo.getRandomCreditCardInfo(country);
@@ -156,7 +156,7 @@ public class PaymentTesting extends BaseTestClass {
             }
     )
     @Test
-    public void searchPaymentInstrument() throws Exception {
+    public void testSearchPaymentInstrument() throws Exception {
         String randomUid = testDataProvider.CreateUser();
 
         CreditCardInfo creditCardInfo1 = CreditCardInfo.getRandomCreditCardInfo(country);

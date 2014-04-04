@@ -148,7 +148,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider{
         phone.setNumber(creditCardInfo.getPhone().getNumber());
 
         paymentInstrument.setAccountName(creditCardInfo.getAccountName());
-        paymentInstrument.setAccountNum("4111111111111111");
+        paymentInstrument.setAccountNum(creditCardInfo.getAccountNum());
         //paymentInstrument.setAccountNum(creditCardInfo.getAccountNum());
         paymentInstrument.setAddress(address);
         paymentInstrument.setCreditCardRequest(creditCardRequest);
