@@ -109,16 +109,16 @@ public class Catalog extends TestClass {
         ItemService itemServiceAPI = ItemServiceImpl.instance();
 
         //Post a Physical item
-        logger.LogSample("Post a physical item");
         Item item = itemServiceAPI.prepareItemEntity(defaultItemFileName);
         item.setType(EnumHelper.CatalogItemType.PHYSICAL.getItemType());
+        logger.LogSample("Post a physical item");
         String itemId = itemServiceAPI.postItem(item);
         Assert.assertNotNull(Master.getInstance().getItem(itemId));
 
         //Post a Digital item
-        logger.LogSample("Post a digital(app) item");
         item = itemServiceAPI.prepareItemEntity(defaultItemFileName);
         item.setType(EnumHelper.CatalogItemType.APP.getItemType());
+        logger.LogSample("Post a digital(app) item");
         itemId = itemServiceAPI.postItem(item);
         Assert.assertNotNull(Master.getInstance().getItem(itemId));
 
@@ -177,14 +177,14 @@ public class Catalog extends TestClass {
         OfferService offerServiceAPI = OfferServiceImpl.instance();
 
         //Post a Physical offer
-        logger.LogSample("Post a physical offer");
         Offer offer = offerServiceAPI.prepareOfferEntity(defaultOfferFileName, EnumHelper.CatalogItemType.PHYSICAL);
+        logger.LogSample("Post a physical offer");
         String offerId = offerServiceAPI.postOffer(offer);
         Assert.assertNotNull(Master.getInstance().getOffer(offerId));
 
-        ////Post a Digital offer
-        logger.LogSample("Post a digital(app) offer");
+        //Post a Digital offer
         offer = offerServiceAPI.prepareOfferEntity(defaultOfferFileName, EnumHelper.CatalogItemType.APP);
+        logger.LogSample("Post a digital(app) offer");
         offerId = offerServiceAPI.postOffer(offer);
         Assert.assertNotNull(Master.getInstance().getOffer(offerId));
 

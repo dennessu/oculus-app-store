@@ -156,7 +156,7 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         if (!offerLoaded){
             this.loadAllOffers();
             this.loadAllItems();
-            this.postPredefindeOffer();
+            this.postPredefinedOffer();
             offerLoaded = true;
         }
 
@@ -171,7 +171,7 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         itemService.getItem(null);
     }
 
-    private void postPredefindeOffer() throws Exception {
+    private void postPredefinedOffer() throws Exception {
 
         InputStream inStream = ClassLoader.getSystemResourceAsStream("testOffers/predefinedofferlist.txt");
         BufferedReader br = new BufferedReader(new InputStreamReader(inStream));
@@ -181,7 +181,7 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
                 logger.logInfo(sCurrentLine);
                 String[] strLine = sCurrentLine.split(",");
                 if (Master.getInstance().getOfferIdByName(strLine[0]) == null) {
-                    Offer offer = this.preparePredefindeOffer(strLine[0], strLine[1], strLine[2], strLine[3]);
+                    Offer offer = this.preparePredefinedOffer(strLine[0], strLine[1], strLine[2], strLine[3]);
                     String offerId = this.postOffer(offer);
                     //Release the offer
                 Offer offerRtn = Master.getInstance().getOffer(offerId);
@@ -201,7 +201,7 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         }
     }
 
-    private Offer preparePredefindeOffer(String offerName, String itemName, String userName, String offerType)
+    private Offer preparePredefinedOffer(String offerName, String itemName, String userName, String offerType)
             throws  Exception {
 
         String strOfferContent = readFileContent(offerName);
