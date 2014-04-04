@@ -14,8 +14,8 @@ import com.junbo.test.common.Entities.paymentInstruments.PaymentInstrumentBase;
 import com.junbo.test.common.Utility.BaseTestDataProvider;
 import com.junbo.test.common.apihelper.identity.UserService;
 import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
+import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.exception.TestException;
-import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.test.payment.apihelper.PaymentService;
 import com.junbo.test.payment.apihelper.impl.PaymentServiceImpl;
 
@@ -59,8 +59,7 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
                 phone.setNumber(creditCardInfo.getPhone().getNumber());
 
                 paymentInstrument.setAccountName(creditCardInfo.getAccountName());
-                String[] creditCardArray = new String[]{"4111111111111111", "4012888888881881"};
-                paymentInstrument.setAccountNum(creditCardArray[RandomFactory.getRandomInteger(1)]);
+                paymentInstrument.setAccountNum(creditCardInfo.getAccountNum());
                 //paymentInstrument.setAccountNum(creditCardInfo.getAccountNum());
                 paymentInstrument.setAddress(address);
                 paymentInstrument.setCreditCardRequest(creditCardRequest);
@@ -82,9 +81,9 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
                                           PaymentInstrumentBase paymentInfo) throws Exception {
         switch (paymentInfo.getType()) {
             case CREDITCARD:
-                PaymentInstrument paymentInstrument = new PaymentInstrument();
+                PaymentInstrument paymentInstrument = Master.getInstance().getPaymentInstrument(paymentId);
                 CreditCardInfo creditCardInfo = (CreditCardInfo) paymentInfo;
-                CreditCardRequest creditCardRequest = new CreditCardRequest();
+                CreditCardRequest creditCardRequest = paymentInstrument.getCreditCardRequest();
                 //creditCardRequest.setType(creditCardInfo.getType().toString());
                 creditCardRequest.setExpireDate(creditCardInfo.getExpireDate());
                 creditCardRequest.setEncryptedCvmCode(creditCardInfo.getEncryptedCVMCode());
@@ -101,16 +100,12 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
                 phone.setNumber(creditCardInfo.getPhone().getNumber());
 
                 paymentInstrument.setAccountName(creditCardInfo.getAccountName());
-                String[] creditCardArray = new String[]{"4111111111111111", "4012888888881881"};
-                paymentInstrument.setAccountNum(creditCardArray[RandomFactory.getRandomInteger(1)]);
-                //paymentInstrument.setAccountNum(creditCardInfo.getAccountNum());
                 paymentInstrument.setAddress(address);
                 paymentInstrument.setCreditCardRequest(creditCardRequest);
                 paymentInstrument.setPhone(phone);
                 paymentInstrument.setIsValidated(creditCardInfo.isValidated());
                 paymentInstrument.setIsDefault(String.valueOf(creditCardInfo.isDefault()));
                 paymentInstrument.setType(creditCardInfo.getType().toString());
-                paymentInstrument.setTrackingUuid(UUID.randomUUID());
 
                 return paymentClient.updatePaymentInstrument(uid, paymentId, paymentInstrument);
             default:

@@ -29,15 +29,15 @@ public class PaymentValidationHelper extends BaseValidationHelper {
         switch (expectedPaymentInfo.getType()) {
             case CREDITCARD:
                 CreditCardInfo expectedCreditCard = (CreditCardInfo) expectedPaymentInfo;
-                String maskedCCNum = expectedCreditCard.getAccountNum().substring(0, 5) + "******" +
-                        expectedCreditCard.getAccountName().substring(13);
+                String maskedCCNum = expectedCreditCard.getAccountNum().substring(0, 6) + "******" +
+                        expectedCreditCard.getAccountNum().substring(12);
                 //verify basic credit card info
                 verifyEqual(actualPI.getAccountNum(), maskedCCNum, "verify credit card number");
                 verifyEqual(actualPI.getAccountName(), expectedCreditCard.getAccountName(), "verify credit card name");
                 CreditCardRequest creditCardRequest = actualPI.getCreditCardRequest();
                 verifyEqual(creditCardRequest.getExpireDate(), expectedCreditCard.getExpireDate(),
                         "verify expire date");
-                verifyEqual(creditCardRequest.getType(), expectedCreditCard.getType().toString(),
+                verifyEqual(creditCardRequest.getType(), CreditCardInfo.CreditCardGenerator.VISA.toString(),
                         "verify credit card type");
 
 
