@@ -96,13 +96,7 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
     public String postDefaultOffer(EnumHelper.CatalogItemType itemType) throws Exception {
 
         Offer offerForPost = prepareOfferEntity(defaultOfferFileName, itemType);
-        String responseBody = restApiCall(HTTPMethod.POST, catalogServerURL, offerForPost, 200);
-        Offer offerGet = new JsonMessageTranscoder().decode(new TypeReference<Offer>() {},
-                responseBody);
-        String offerRtnId = IdConverter.idLongToHexString(OfferId.class, offerGet.getId());
-        Master.getInstance().addOffer(offerRtnId, offerGet);
-
-        return offerRtnId;
+        return postOffer(offerForPost);
     }
 
     public Offer prepareOfferEntity(String fileName, EnumHelper.CatalogItemType itemType) throws Exception {

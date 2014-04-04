@@ -4,6 +4,7 @@ include 'identity-integration'
 include 'oauth-integration'
 include 'cart-integration'
 include 'payment-integration'
+include 'catalog-integration'
 
 include 'integration-buyerscenario'
 include 'integration-catalogscenario'
