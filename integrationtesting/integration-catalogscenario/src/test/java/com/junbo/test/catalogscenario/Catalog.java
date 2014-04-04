@@ -60,21 +60,25 @@ public class Catalog extends TestClass {
         Attribute attribute = new Attribute();
         attribute.setName("testAttribute_" + RandomFactory.getRandomStringOfAlphabetOrNumeric(10));
         attribute.setType(EnumHelper.CatalogAttributeType.getRandom());
+        logger.LogSample("Post an attribute");
         String attributeId = attributeServiceAPI.postAttribute(attribute);
         Attribute attributeRtn = Master.getInstance().getAttribute(attributeId);
         Assert.assertNotNull(attributeRtn);
 
         //Get the attribute by its id and assert the return value is not null
+        logger.LogSample("Get the attribute by its id");
         String attributeGetId = attributeServiceAPI.getAttribute(attributeId);
         Assert.assertNotNull(Master.getInstance().getAttribute(attributeGetId));
 
         //Get attributes by some get conditions, like type and id.
+        logger.LogSample("Get attributes by its id and type");
         paraMap.put("type", attributeRtn.getType());
         paraMap.put("id", attributeId);
         List<String> attributeResultList = attributeServiceAPI.getAttribute(paraMap);
         Assert.assertNotNull(attributeResultList);
 
         //Get all attributes without any search condition
+        logger.LogSample("Get all attributes(without any search condition)");
         paraMap.clear();
         attributeResultList.clear();
         attributeResultList = attributeServiceAPI.getAttribute(paraMap);
