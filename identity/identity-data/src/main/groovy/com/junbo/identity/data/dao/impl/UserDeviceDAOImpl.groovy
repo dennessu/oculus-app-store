@@ -7,37 +7,41 @@ package com.junbo.identity.data.dao.impl
 import com.junbo.identity.data.dao.UserDeviceDAO
 import com.junbo.identity.data.entity.user.UserDeviceEntity
 import com.junbo.identity.spec.options.list.UserDeviceListOptions
+import groovy.transform.CompileStatic
 import org.hibernate.Criteria
 import org.hibernate.criterion.Order
 import org.hibernate.criterion.Restrictions
 /**
  * Implementation for UserDeviceDAO.
  */
-class UserDeviceDAOImpl extends ShardedDAOBase implements UserDeviceDAO {
+@CompileStatic
+class UserDeviceDAOImpl extends BaseDAO implements UserDeviceDAO {
 
     @Override
     UserDeviceEntity save(UserDeviceEntity entity) {
-        currentSession().save(entity)
-        currentSession().flush()
+        entity.id = idGenerator.nextId(entity.userId)
+
+        currentSession(entity.id).save(entity)
+        currentSession(entity.id).flush()
         return get(entity.id)
     }
 
     @Override
     UserDeviceEntity update(UserDeviceEntity entity) {
-        currentSession().merge(entity)
-        currentSession().flush()
+        currentSession(entity.id).merge(entity)
+        currentSession(entity.id).flush()
 
         return get(entity.id)
     }
 
     @Override
     UserDeviceEntity get(Long id) {
-        return (UserDeviceEntity)currentSession().get(UserDeviceEntity, id)
+        return (UserDeviceEntity)currentSession(id).get(UserDeviceEntity, id)
     }
 
     @Override
     List<UserDeviceEntity> search(Long userId, UserDeviceListOptions getOption) {
-        Criteria criteria = currentSession().createCriteria(UserDeviceEntity)
+        Criteria criteria = currentSession(userId).createCriteria(UserDeviceEntity)
         criteria.add(Restrictions.eq('userId', getOption.userId.value))
         if (getOption.deviceId != null) {
             criteria.add(Restrictions.eq('deviceId', getOption.deviceId))
@@ -54,8 +58,8 @@ class UserDeviceDAOImpl extends ShardedDAOBase implements UserDeviceDAO {
 
     @Override
     void delete(Long id) {
-        UserDeviceEntity entity = currentSession().get(UserDeviceEntity, id.value)
-        currentSession().delete(entity)
-        currentSession().flush()
+        UserDeviceEntity entity = (UserDeviceEntity)currentSession(id).get(UserDeviceEntity, id)
+        currentSession(id).delete(entity)
+        currentSession(id).flush()
     }
 }

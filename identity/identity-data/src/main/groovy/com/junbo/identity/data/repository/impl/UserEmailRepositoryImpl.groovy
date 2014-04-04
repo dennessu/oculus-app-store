@@ -76,11 +76,7 @@ class UserEmailRepositoryImpl implements UserEmailRepository {
     }
 
     private UserEmail searchByUserEmail(String value) {
-        Long id = userEmailDAO.findIdByEmail(value)
-        if (id == null) {
-            return null
-        }
-        UserEmailEntity userEmailEntity = userEmailDAO.get(id)
+        UserEmailEntity userEmailEntity = userEmailDAO.findIdByEmail(value)
 
         return modelMapper.toUserEmail(userEmailEntity, new MappingContext())
     }

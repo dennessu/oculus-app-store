@@ -17,31 +17,33 @@ import org.springframework.util.StringUtils
  * Created by liangfu on 3/17/14.
  */
 @CompileStatic
-class UserPhoneNumberDAOImpl extends ShardedDAOBase implements UserPhoneNumberDAO {
+class UserPhoneNumberDAOImpl extends BaseDAO implements UserPhoneNumberDAO {
     @Override
     UserPhoneNumberEntity save(UserPhoneNumberEntity entity) {
-        currentSession().save(entity)
-        currentSession().flush()
+        entity.id = idGenerator.nextId(entity.userId)
+
+        currentSession(entity.id).save(entity)
+        currentSession(entity.id).flush()
 
         return get(entity.id)
     }
 
     @Override
     UserPhoneNumberEntity update(UserPhoneNumberEntity entity) {
-        currentSession().merge(entity)
-        currentSession().flush()
+        currentSession(entity.id).merge(entity)
+        currentSession(entity.id).flush()
 
         return get(entity.id)
     }
 
     @Override
     UserPhoneNumberEntity get(Long id) {
-        return (UserPhoneNumberEntity)currentSession().get(UserPhoneNumberEntity, id)
+        return (UserPhoneNumberEntity)currentSession(id).get(UserPhoneNumberEntity, id)
     }
 
     @Override
     List<UserPhoneNumberEntity> search(Long userId, UserPhoneNumberListOptions getOption) {
-        Criteria criteria = currentSession().createCriteria(UserPhoneNumberEntity)
+        Criteria criteria = currentSession(userId).createCriteria(UserPhoneNumberEntity)
         criteria.add(Restrictions.eq('userId', getOption.userId.value))
         if (!StringUtils.isEmpty(getOption.type)) {
             criteria.add(Restrictions.eq('type', getOption.type))
@@ -62,8 +64,8 @@ class UserPhoneNumberDAOImpl extends ShardedDAOBase implements UserPhoneNumberDA
     @Override
     void delete(Long id) {
         UserPhoneNumberEntity entity =
-                (UserPhoneNumberEntity)currentSession().get(UserPhoneNumberEntity, id)
-        currentSession().delete(entity)
-        currentSession().flush()
+                (UserPhoneNumberEntity)currentSession(id).get(UserPhoneNumberEntity, id)
+        currentSession(id).delete(entity)
+        currentSession(id).flush()
     }
 }

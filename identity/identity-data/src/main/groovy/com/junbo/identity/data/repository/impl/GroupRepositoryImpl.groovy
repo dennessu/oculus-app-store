@@ -66,11 +66,9 @@ class GroupRepositoryImpl implements GroupRepository {
 
     @Override
     Promise<Group> searchByName(String name) {
-        Long id = groupDAO.findIdByName(name)
-        if (id == null) {
-            return Promise.pure(null)
-        }
-        def group = get(new GroupId(id))
+        GroupEntity groupEntity = groupDAO.findIdByName(name)
+
+        def group = get(new GroupId((Long)groupEntity.id))
         return group
     }
 

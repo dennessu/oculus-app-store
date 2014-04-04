@@ -7,7 +7,6 @@ package com.junbo.identity.data.entity.user;
 
 import com.junbo.common.util.Identifiable;
 import com.junbo.identity.data.entity.common.ResourceMetaEntity;
-import com.junbo.sharding.annotations.SeedId;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -100,7 +99,6 @@ public class UserEntity extends ResourceMetaEntity implements Identifiable<Long>
     }
 
     @Id
-    @SeedId
     @Column(name = "id")
     private Long id;
     @Column(name = "user_name")

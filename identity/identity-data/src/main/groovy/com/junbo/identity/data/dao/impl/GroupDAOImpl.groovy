@@ -8,36 +8,39 @@ package com.junbo.identity.data.dao.impl
 
 import com.junbo.identity.data.dao.GroupDAO
 import com.junbo.identity.data.entity.group.GroupEntity
+import groovy.transform.CompileStatic
 import org.apache.commons.collections.CollectionUtils
 
 /**
  * Created by liangfu on 3/14/14.
  */
-class GroupDAOImpl extends ShardedDAOBase implements GroupDAO {
+@CompileStatic
+class GroupDAOImpl extends BaseDAO implements GroupDAO {
 
     @Override
     GroupEntity get(Long groupId) {
-        return (GroupEntity)currentSession().get(GroupEntity, groupId)
+        return (GroupEntity)currentSession(groupId).get(GroupEntity, groupId)
     }
 
     @Override
     GroupEntity save(GroupEntity group) {
-        currentSession().save(group)
-        currentSession().flush()
-        return get(group.id)
+        group.id = idGenerator.nextIdByShardId(shardAlgorithm.shardId())
+
+        currentSession(group.id).save(group)
+        currentSession(group.id).flush()
+        return get((Long)group.id)
     }
 
     @Override
     GroupEntity update(GroupEntity group) {
-        currentSession().merge(group)
-        currentSession().flush()
+        currentSession(group.id).merge(group)
+        currentSession(group.id).flush()
 
-        return get(group.id)
+        return get((Long)group.id)
     }
 
     @Override
-    // Todo:    Liangfu:    Need to implement this after Kgu's new sharding
-    Long findIdByName(String name) {
+    GroupEntity findIdByName(String name) {
         GroupEntity example = new GroupEntity()
         example.setName(name)
 
@@ -45,9 +48,12 @@ class GroupDAOImpl extends ShardedDAOBase implements GroupDAO {
         if (viewQuery != null) {
             def ids = viewQuery.list()
 
-            return CollectionUtils.isEmpty(ids) ? null : (Long)(ids.get(0))
+            Long id = CollectionUtils.isEmpty(ids) ? null : (Long)(ids.get(0))
+            if (id != null) {
+                return get(id)
+            }
         }
 
-        throw new RuntimeException()
+        return null
     }
 }

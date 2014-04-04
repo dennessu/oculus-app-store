@@ -4,9 +4,9 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.identity.data.dao
+
 import com.junbo.identity.data.entity.user.UserOptinEntity
 import com.junbo.identity.spec.options.list.UserOptinListOptions
-import com.junbo.sharding.annotations.SeedParam
 import groovy.transform.CompileStatic
 
 /**
@@ -16,7 +16,7 @@ import groovy.transform.CompileStatic
 interface UserOptinDAO {
     UserOptinEntity save(UserOptinEntity entity)
     UserOptinEntity update(UserOptinEntity entity)
-    UserOptinEntity get(@SeedParam Long id)
-    List<UserOptinEntity> search(@SeedParam Long userId, UserOptinListOptions getOption)
-    void delete(@SeedParam Long id)
+    UserOptinEntity get(Long id)
+    List<UserOptinEntity> search(Long userId, UserOptinListOptions getOption)
+    void delete(Long id)
 }

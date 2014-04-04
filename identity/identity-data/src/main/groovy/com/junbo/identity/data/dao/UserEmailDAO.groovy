@@ -4,9 +4,9 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.identity.data.dao
+
 import com.junbo.identity.data.entity.user.UserEmailEntity
 import com.junbo.identity.spec.options.list.UserEmailListOptions
-import com.junbo.sharding.annotations.SeedParam
 import groovy.transform.CompileStatic
 
 /**
@@ -18,11 +18,11 @@ interface UserEmailDAO {
 
     UserEmailEntity update(UserEmailEntity entity)
 
-    UserEmailEntity get(@SeedParam Long id)
+    UserEmailEntity get(Long id)
 
-    void delete(@SeedParam Long id)
+    void delete(Long id)
 
-    List<UserEmailEntity> search(@SeedParam Long userId, UserEmailListOptions getOption)
+    List<UserEmailEntity> search(Long userId, UserEmailListOptions getOption)
 
-    Long findIdByEmail(@SeedParam String email)
+    UserEmailEntity findIdByEmail(String email)
 }

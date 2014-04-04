@@ -15,30 +15,32 @@ import org.hibernate.criterion.Restrictions
  * Created by liangfu on 3/16/14.
  */
 @CompileStatic
-class UserPinDAOImpl extends ShardedDAOBase implements UserPinDAO {
+class UserPinDAOImpl extends BaseDAO implements UserPinDAO {
     @Override
     UserPinEntity save(UserPinEntity entity) {
-        currentSession().save(entity)
-        currentSession().flush()
+        entity.id = idGenerator.nextId(entity.userId)
+
+        currentSession(entity.id).save(entity)
+        currentSession(entity.id).flush()
         return get(entity.id)
     }
 
     @Override
     UserPinEntity update(UserPinEntity entity) {
-        currentSession().merge(entity)
-        currentSession().flush()
+        currentSession(entity.id).merge(entity)
+        currentSession(entity.id).flush()
 
         return get(entity.id)
     }
 
     @Override
     UserPinEntity get(Long id) {
-        return (UserPinEntity)currentSession().get(UserPinEntity, id)
+        return (UserPinEntity)currentSession(id).get(UserPinEntity, id)
     }
 
     @Override
     List<UserPinEntity> search(Long userId, UserPinListOptions getOption) {
-        Criteria criteria = currentSession().createCriteria(UserPinEntity)
+        Criteria criteria = currentSession(userId).createCriteria(UserPinEntity)
         criteria.add(Restrictions.eq('userId', getOption.userId.value))
         if (getOption.active != null) {
             criteria.add(Restrictions.eq('active', getOption.active))
@@ -55,8 +57,8 @@ class UserPinDAOImpl extends ShardedDAOBase implements UserPinDAO {
 
     @Override
     void delete(Long id) {
-        UserPinEntity entity = (UserPinEntity)currentSession().get(UserPinEntity, id)
-        currentSession().delete(entity)
-        currentSession().flush()
+        UserPinEntity entity = (UserPinEntity)currentSession(id).get(UserPinEntity, id)
+        currentSession(id).delete(entity)
+        currentSession(id).flush()
     }
 }

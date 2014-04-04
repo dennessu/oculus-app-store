@@ -15,31 +15,32 @@ import org.hibernate.criterion.Restrictions
  * Created by liangfu on 3/17/14.
  */
 @CompileStatic
-class UserSecurityQuestionDAOImpl extends ShardedDAOBase implements UserSecurityQuestionDAO {
+class UserSecurityQuestionDAOImpl extends BaseDAO implements UserSecurityQuestionDAO {
     @Override
     UserSecurityQuestionEntity save(UserSecurityQuestionEntity entity) {
-        currentSession().save(entity)
-        currentSession().flush()
+        entity.id = idGenerator.nextId(entity.userId)
+        currentSession(entity.id).save(entity)
+        currentSession(entity.id).flush()
 
         return get(entity.id)
     }
 
     @Override
     UserSecurityQuestionEntity update(UserSecurityQuestionEntity entity) {
-        currentSession().merge(entity)
-        currentSession().flush()
+        currentSession(entity.id).merge(entity)
+        currentSession(entity.id).flush()
 
         return get(entity.id)
     }
 
     @Override
     UserSecurityQuestionEntity get(Long id) {
-        return (UserSecurityQuestionEntity)currentSession().get(UserSecurityQuestionEntity, id)
+        return (UserSecurityQuestionEntity)currentSession(id).get(UserSecurityQuestionEntity, id)
     }
 
     @Override
     List<UserSecurityQuestionEntity> search(Long userId, UserSecurityQuestionListOptions getOption) {
-        Criteria criteria = currentSession().createCriteria(UserSecurityQuestionEntity)
+        Criteria criteria = currentSession(userId).createCriteria(UserSecurityQuestionEntity)
         criteria.add(Restrictions.eq('userId', getOption.userId.value))
         if (getOption.securityQuestionId) {
             criteria.add(Restrictions.eq('securityQuestionId', getOption.securityQuestionId.value))
@@ -59,9 +60,9 @@ class UserSecurityQuestionDAOImpl extends ShardedDAOBase implements UserSecurity
 
     @Override
     void delete(Long id) {
-        UserSecurityQuestionEntity entity = (UserSecurityQuestionEntity)currentSession().
+        UserSecurityQuestionEntity entity = (UserSecurityQuestionEntity)currentSession(id).
                 get(UserSecurityQuestionEntity, id)
-        currentSession().delete(entity)
-        currentSession().flush()
+        currentSession(id).delete(entity)
+        currentSession(id).flush()
     }
 }

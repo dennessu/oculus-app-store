@@ -6,7 +6,6 @@
 package com.junbo.identity.data.entity.user;
 
 import com.junbo.identity.data.entity.common.ResourceMetaEntity;
-import com.junbo.sharding.annotations.SeedId;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -76,7 +75,6 @@ public class UserPinEntity extends ResourceMetaEntity {
     @Id
     @Column(name = "id")
     private Long id;
-    @SeedId
     @Column(name = "user_id")
     private Long userId;
     @Column(name = "pin_hash")

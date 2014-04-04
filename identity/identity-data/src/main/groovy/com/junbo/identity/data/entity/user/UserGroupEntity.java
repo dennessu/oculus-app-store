@@ -6,7 +6,6 @@
 package com.junbo.identity.data.entity.user;
 
 import com.junbo.identity.data.entity.common.ResourceMetaEntity;
-import com.junbo.sharding.annotations.SeedId;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -46,7 +45,6 @@ public class UserGroupEntity extends ResourceMetaEntity {
     @Id
     @Column(name = "id")
     private Long id;
-    @SeedId
     @Column(name = "user_id")
     private Long userId;
     @Column(name = "group_id")

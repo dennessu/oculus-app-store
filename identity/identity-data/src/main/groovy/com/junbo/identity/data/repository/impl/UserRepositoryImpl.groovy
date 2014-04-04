@@ -95,11 +95,10 @@ class UserRepositoryImpl implements UserRepository {
             throw new IllegalArgumentException('canonicalUsername is empty')
         }
 
-        Long id = userDAO.getIdByCanonicalUsername(canonicalUsername)
-        if (id == null) {
+        UserEntity entity = userDAO.getIdByCanonicalUsername(canonicalUsername)
+        if (entity == null) {
             return Promise.pure(null)
         }
-        UserEntity entity = userDAO.get(id)
         return get(new UserId((Long)(entity.id)))
     }
 }

@@ -4,9 +4,9 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.identity.data.dao
+
 import com.junbo.identity.data.entity.user.UserPasswordEntity
 import com.junbo.identity.spec.options.list.UserPasswordListOptions
-import com.junbo.sharding.annotations.SeedParam
 import groovy.transform.CompileStatic
 
 /**
@@ -18,9 +18,9 @@ interface UserPasswordDAO {
 
     UserPasswordEntity update(UserPasswordEntity entity)
 
-    UserPasswordEntity get(@SeedParam Long id)
+    UserPasswordEntity get(Long id)
 
-    List<UserPasswordEntity> search(@SeedParam Long userId, UserPasswordListOptions getOption)
+    List<UserPasswordEntity> search(Long userId, UserPasswordListOptions getOption)
 
-    void delete(@SeedParam Long id)
+    void delete(Long id)
 }

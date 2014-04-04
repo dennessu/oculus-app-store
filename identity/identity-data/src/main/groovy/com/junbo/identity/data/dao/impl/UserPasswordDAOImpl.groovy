@@ -15,31 +15,33 @@ import org.hibernate.criterion.Restrictions
  * Created by liangfu on 3/16/14.
  */
 @CompileStatic
-class UserPasswordDAOImpl extends ShardedDAOBase implements UserPasswordDAO {
+class UserPasswordDAOImpl extends BaseDAO implements UserPasswordDAO {
 
     @Override
     UserPasswordEntity save(UserPasswordEntity entity) {
-        currentSession().save(entity)
-        currentSession().flush()
+        entity.id = idGenerator.nextId(entity.userId)
+
+        currentSession(entity.id).save(entity)
+        currentSession(entity.id).flush()
 
         return get(entity.id)
     }
 
     @Override
     UserPasswordEntity update(UserPasswordEntity entity) {
-        currentSession().merge(entity)
-        currentSession().flush()
+        currentSession(entity.id).merge(entity)
+        currentSession(entity.id).flush()
         return get(entity.id)
     }
 
     @Override
     UserPasswordEntity get(Long id) {
-        return (UserPasswordEntity)currentSession().get(UserPasswordEntity, id)
+        return (UserPasswordEntity)currentSession(id).get(UserPasswordEntity, id)
     }
 
     @Override
     List<UserPasswordEntity> search(Long userId, UserPasswordListOptions getOption) {
-        Criteria criteria = currentSession().createCriteria(UserPasswordEntity)
+        Criteria criteria = currentSession(userId).createCriteria(UserPasswordEntity)
         criteria.add(Restrictions.eq('userId', getOption.userId.value))
         if (getOption.active != null) {
             criteria.add(Restrictions.eq('active', getOption.active))
@@ -58,8 +60,8 @@ class UserPasswordDAOImpl extends ShardedDAOBase implements UserPasswordDAO {
     @Override
     void delete(Long id) {
         UserPasswordEntity entity =
-                (UserPasswordEntity)currentSession().get(UserPasswordEntity, id)
-        currentSession().delete(entity)
-        currentSession().flush()
+                (UserPasswordEntity)currentSession(id).get(UserPasswordEntity, id)
+        currentSession(id).delete(entity)
+        currentSession(id).flush()
     }
 }

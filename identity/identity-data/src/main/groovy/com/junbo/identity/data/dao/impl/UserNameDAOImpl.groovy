@@ -7,7 +7,6 @@ package com.junbo.identity.data.dao.impl
 
 import com.junbo.identity.data.dao.UserNameDAO
 import com.junbo.identity.data.entity.user.UserNameEntity
-import com.junbo.sharding.annotations.SeedParam
 import groovy.transform.CompileStatic
 import org.hibernate.Criteria
 import org.hibernate.criterion.Restrictions
@@ -16,37 +15,39 @@ import org.hibernate.criterion.Restrictions
  * Created by liangfu on 3/18/14.
  */
 @CompileStatic
-class UserNameDAOImpl extends ShardedDAOBase implements UserNameDAO {
+class UserNameDAOImpl extends BaseDAO implements UserNameDAO {
     @Override
-    UserNameEntity get(@SeedParam Long id) {
-        return (UserNameEntity)currentSession().get(UserNameEntity, id)
+    UserNameEntity get(Long id) {
+        return (UserNameEntity)currentSession(id).get(UserNameEntity, id)
     }
 
     @Override
     UserNameEntity create(UserNameEntity entity) {
-        currentSession().save(entity)
-        currentSession().flush()
+        entity.id = idGenerator.nextId(entity.userId)
+
+        currentSession(entity.id).save(entity)
+        currentSession(entity.id).flush()
         return get(entity.id)
     }
 
     @Override
     UserNameEntity update(UserNameEntity entity) {
-        currentSession().merge(entity)
-        currentSession().flush()
+        currentSession(entity.id).merge(entity)
+        currentSession(entity.id).flush()
 
         return get(entity.id)
     }
 
     @Override
-    void delete(@SeedParam Long id) {
-        UserNameEntity entity = (UserNameEntity)currentSession().get(UserNameEntity, id)
-        currentSession().delete(entity)
-        currentSession().flush()
+    void delete(Long id) {
+        UserNameEntity entity = (UserNameEntity)currentSession(id).get(UserNameEntity, id)
+        currentSession(id).delete(entity)
+        currentSession(id).flush()
     }
 
     @Override
-    UserNameEntity findByUserId(@SeedParam Long userId) {
-        Criteria criteria = currentSession().createCriteria(UserNameEntity)
+    UserNameEntity findByUserId(Long userId) {
+        Criteria criteria = currentSession(userId).createCriteria(UserNameEntity)
         criteria.add(Restrictions.eq('userId', userId))
 
         return criteria.list() == null ? null : (UserNameEntity)criteria.list().get(0)

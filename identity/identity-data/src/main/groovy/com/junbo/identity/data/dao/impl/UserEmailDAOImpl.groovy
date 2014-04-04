@@ -4,32 +4,33 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.identity.data.dao.impl
+
 import com.junbo.identity.data.dao.UserEmailDAO
 import com.junbo.identity.data.entity.user.UserEmailEntity
 import com.junbo.identity.spec.options.list.UserEmailListOptions
-import com.junbo.sharding.annotations.SeedParam
 import groovy.transform.CompileStatic
 import org.apache.commons.collections.CollectionUtils
 import org.hibernate.Criteria
 import org.hibernate.criterion.Order
 import org.hibernate.criterion.Restrictions
 import org.springframework.util.StringUtils
+
 /**
  * Created by liangfu on 3/17/14.
  */
 @CompileStatic
-class UserEmailDAOImpl extends ShardedDAOBase implements UserEmailDAO {
+class UserEmailDAOImpl extends BaseDAO implements UserEmailDAO {
 
     @Override
     void delete(Long id) {
-        UserEmailEntity entity = (UserEmailEntity)currentSession().get(UserEmailEntity, id)
-        currentSession().delete(entity)
-        currentSession().flush()
+        UserEmailEntity entity = (UserEmailEntity)currentSession(id).get(UserEmailEntity, id)
+        currentSession(id).delete(entity)
+        currentSession(id).flush()
     }
 
     @Override
-    List<UserEmailEntity> search(@SeedParam Long userId, UserEmailListOptions getOption) {
-        Criteria criteria = currentSession().createCriteria(UserEmailEntity)
+    List<UserEmailEntity> search(Long userId, UserEmailListOptions getOption) {
+        Criteria criteria = currentSession(userId).createCriteria(UserEmailEntity)
         criteria.add(Restrictions.eq('userId', getOption.userId.value))
         if (!StringUtils.isEmpty(getOption.type)) {
             criteria.add(Restrictions.eq('type', getOption.type))
@@ -49,37 +50,41 @@ class UserEmailDAOImpl extends ShardedDAOBase implements UserEmailDAO {
 
     @Override
     UserEmailEntity get(Long id) {
-        return (UserEmailEntity)currentSession().get(UserEmailEntity, id)
+        return (UserEmailEntity)currentSession(id).get(UserEmailEntity, id)
     }
 
     @Override
     UserEmailEntity update(UserEmailEntity entity) {
-        currentSession().merge(entity)
-        currentSession().flush()
+        currentSession(entity.id).merge(entity)
+        currentSession(entity.id).flush()
 
         return get((Long)(entity.id))
     }
 
     @Override
     UserEmailEntity save(UserEmailEntity entity) {
-        currentSession().save(entity)
-        currentSession().flush()
+        entity.id = idGenerator.nextId(entity.userId)
+        currentSession(entity.id).save(entity)
+        currentSession(entity.id).flush()
 
         return get((Long)(entity.id))
     }
 
     @Override
-    Long findIdByEmail(String email) {
+    UserEmailEntity findIdByEmail(String email) {
         UserEmailEntity example = new UserEmailEntity()
         example.setValue(email)
 
         def viewQuery = viewQueryFactory.from(example)
         if (viewQuery != null) {
-            def userIds = viewQuery.list()
+            def ids = viewQuery.list()
 
-            return CollectionUtils.isEmpty(userIds) ? null : (Long)(userIds.get(0))
+            Long id = CollectionUtils.isEmpty(ids) ? null : (Long)(ids.get(0))
+            if (id == null) {
+                return get(id)
+            }
         }
 
-        throw new RuntimeException()
+        return null
     }
 }

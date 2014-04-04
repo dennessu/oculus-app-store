@@ -15,31 +15,33 @@ import org.hibernate.criterion.Restrictions
  * Created by liangfu on 3/17/14.
  */
 @CompileStatic
-class UserGroupDAOImpl extends ShardedDAOBase implements UserGroupDAO {
+class UserGroupDAOImpl extends BaseDAO implements UserGroupDAO {
     @Override
     UserGroupEntity save(UserGroupEntity entity) {
-        currentSession().save(entity)
-        currentSession().flush()
+        entity.id = idGenerator.nextId(entity.userId)
+
+        currentSession(entity.id).save(entity)
+        currentSession(entity.id).flush()
 
         return get(entity.id)
     }
 
     @Override
     UserGroupEntity update(UserGroupEntity entity) {
-        currentSession().merge(entity)
-        currentSession().flush()
+        currentSession(entity.id).merge(entity)
+        currentSession(entity.id).flush()
 
         return get(entity.id)
     }
 
     @Override
     UserGroupEntity get(Long id) {
-        return (UserGroupEntity)currentSession().get(UserGroupEntity, id)
+        return (UserGroupEntity)currentSession(id).get(UserGroupEntity, id)
     }
 
     @Override
     List<UserGroupEntity> search(Long userId, UserGroupListOptions getOption) {
-        Criteria criteria = currentSession().createCriteria(UserGroupEntity)
+        Criteria criteria = currentSession(userId).createCriteria(UserGroupEntity)
         criteria.add(Restrictions.eq('userId', getOption.userId.value))
         if (getOption.groupId != null) {
             criteria.add(Restrictions.eq('groupId', getOption.groupId.value))
@@ -56,8 +58,8 @@ class UserGroupDAOImpl extends ShardedDAOBase implements UserGroupDAO {
 
     @Override
     void delete(Long id) {
-        UserGroupEntity entity = (UserGroupEntity)currentSession().get(UserGroupEntity, id)
-        currentSession().delete(entity)
-        currentSession().flush()
+        UserGroupEntity entity = (UserGroupEntity)currentSession(id).get(UserGroupEntity, id)
+        currentSession(id).delete(entity)
+        currentSession(id).flush()
     }
 }

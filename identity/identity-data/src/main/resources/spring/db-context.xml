@@ -17,182 +17,28 @@
 
     <tx:annotation-driven transaction-manager="transactionManager"/>
 
-    <!-- SessonFactory for Hibernate -->
-    <bean id="configSessionFactory"
-          class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
-        <property name="dataSource" ref="configDataSource"/>
-        <property name="packagesToScan" value="com.junbo.identity.data.entity.domaindata"/>
-        <property name="jtaTransactionManager" ref="transactionManager"/>
-        <property name="entityInterceptor">
-            <bean class="com.junbo.identity.data.dao.interceptor.AuditInterceptor" />
-        </property>
-        <property name="hibernateProperties">
-            <props>
-                <prop key="hibernate.dialect">${config.hibernate.dialect}</prop>
-                <prop key="hibernate.max_fetch_depth">${config.hibernate.max_fetch_depth}</prop>
-                <prop key="hibernate.jdbc.fetch_size">${config.hibernate.fetch_size}</prop>
-                <prop key="hibernate.jdbc.batch_size">${config.hibernate.batch_size}</prop>
-                <prop key="hibernate.show_sql">${config.hibernate.show_sql}</prop>
-            </props>
-        </property>
-    </bean>
-
-    <bean id="securityQuestionDAO" class="com.junbo.identity.data.dao.impl.SecurityQuestionDAOImpl">
-        <property name="sessionFactory" ref="configSessionFactory"/>
-    </bean>
-
-    <bean id="sessionFactoryTemplateWithInterceptor" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
-        <property name="jtaTransactionManager" ref="transactionManager"/>
-        <property name="entityInterceptor">
-            <bean class="com.junbo.identity.data.dao.interceptor.AuditInterceptor" />
-        </property>
-        <property name="hibernateProperties">
-            <props>
-                <prop key="hibernate.dialect">${sharding.hibernate.dialect}</prop>
-                <prop key="hibernate.max_fetch_depth">${sharding.hibernate.max_fetch_depth}</prop>
-                <prop key="hibernate.jdbc.fetch_size">${sharding.hibernate.fetch_size}</prop>
-                <prop key="hibernate.jdbc.batch_size">${sharding.hibernate.batch_size}</prop>
-                <prop key="hibernate.show_sql">${sharding.hibernate.show_sql}</prop>
-            </props>
-        </property>
-    </bean>
-
-    <bean id="sessionFactoryWrapper" class="com.junbo.sharding.core.hibernate.SessionFactoryWrapper">
-        <property name="mapper" ref="shardDataSourceMapper"/>
-        <property name="dataSourceRegistry" ref="shardDataSourceRegistry"/>
-        <property name="sessionFactoryBeanName" value="sessionFactoryTemplateWithInterceptor"/>
-        <property name="entityInterceptor">
-            <bean class="com.junbo.identity.data.dao.interceptor.AuditInterceptor" />
-        </property>
-        <property name="dataBaseName" value="identity"/>
-        <property name="packagesToScan" value="com.junbo.identity.data.entity.*"/>
-        <property name="postInsertEventListeners" ref="entityListener" />
-        <property name="postUpdateEventListeners" ref="entityListener" />
-        <property name="postDeleteEventListeners" ref="entityListener" />
-    </bean>
-
-    <bean id="indexSessionFactoryWrapper" class="com.junbo.sharding.core.hibernate.SessionFactoryWrapper">
-        <property name="mapper" ref="indexDataSourceMapper"/>
-        <property name="dataSourceRegistry" ref="indexDataSourceRegistry"/>
-        <property name="sessionFactoryBeanName" value="sessionFactoryTemplateWithInterceptor"/>
-        <property name="entityInterceptor">
-            <bean class="com.junbo.identity.data.dao.interceptor.AuditInterceptor" />
-        </property>
-        <property name="dataBaseName" value="index"/>
-        <property name="postInsertEventListeners" ref="entityListener" />
-        <property name="postUpdateEventListeners" ref="entityListener" />
-        <property name="postDeleteEventListeners" ref="entityListener" />
-    </bean>
-
-    <bean id="baseDao" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" abstract="true">
-        <property name="idGeneratorFacade" ref="idGeneratorFacade"/>
-    </bean>
-
-    <bean id="entityDAOBase" class="com.junbo.identity.data.dao.impl.ShardedDAOBase" abstract="true">
-        <property name="viewQueryFactory" ref="defaultViewQueryFactory" />
-        <property name="sessionFactoryWrapper" ref="sessionFactoryWrapper" />
-    </bean>
-
-    <bean id="entityIndexDAOBase" class="com.junbo.identity.data.dao.impl.ShardedDAOBase" abstract="true">
-        <property name="sessionFactoryWrapper" ref="indexSessionFactoryWrapper" />
-    </bean>
-
-    <bean id="userDAO" class="com.junbo.identity.data.dao.impl.UserDAOImpl">
+    <bean id="baseDAO" class="com.junbo.identity.data.dao.impl.BaseDAO" abstract="true">
         <property name="sessionFactory" ref="identitySessionFactory"/>
         <property name="shardAlgorithm" ref="userShardAlgorithm"/>
         <property name="viewQueryFactory" ref="defaultViewQueryFactory"/>
         <property name="idGenerator" ref="oculus48IdGenerator"/>
     </bean>
-
-    <bean id="groupDAOTarget" class="com.junbo.identity.data.dao.impl.GroupDAOImpl" parent="entityDAOBase"/>
-    <bean id="groupDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
-        <property name="daoInterface" value="com.junbo.identity.data.dao.GroupDAO" />
-        <property name="daoTarget" ref="groupDAOTarget" />
-    </bean>
-
-    <bean id="userAuthenticatorDAOTarget" class="com.junbo.identity.data.dao.impl.UserAuthenticatorDAOImpl" parent="entityDAOBase" />
-    <bean id="userAuthenticatorDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
-        <property name="daoInterface" value="com.junbo.identity.data.dao.UserAuthenticatorDAO" />
-        <property name="daoTarget" ref="userAuthenticatorDAOTarget" />
-    </bean>
-
-    <bean id="userDeviceDAOTarget" class="com.junbo.identity.data.dao.impl.UserDeviceDAOImpl" parent="entityDAOBase"/>
-    <bean id="userDeviceDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
-        <property name="daoInterface" value="com.junbo.identity.data.dao.UserDeviceDAO" />
-        <property name="daoTarget" ref="userDeviceDAOTarget" />
-    </bean>
-
-    <bean id="userEmailDAOTarget" class="com.junbo.identity.data.dao.impl.UserEmailDAOImpl" parent="entityDAOBase"/>
-    <bean id="userEmailDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
-        <property name="daoInterface" value="com.junbo.identity.data.dao.UserEmailDAO" />
-        <property name="daoTarget" ref="userEmailDAOTarget" />
-    </bean>
-
-    <bean id="userGroupDAOTarget" class="com.junbo.identity.data.dao.impl.UserGroupDAOImpl" parent="entityDAOBase"/>
-    <bean id="userGroupDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
-        <property name="daoInterface" value="com.junbo.identity.data.dao.UserGroupDAO" />
-        <property name="daoTarget" ref="userGroupDAOTarget" />
-    </bean>
-
-    <bean id="groupUserDAOTarget" class="com.junbo.identity.data.dao.impl.GroupUserDAOImpl" parent="entityDAOBase"/>
-    <bean id="groupUserDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
-        <property name="daoInterface" value="com.junbo.identity.data.dao.GroupUserDAO" />
-        <property name="daoTarget" ref="groupUserDAOTarget" />
-    </bean>
-
-    <bean id="userLoginAttemptDAOTarget" class="com.junbo.identity.data.dao.impl.UserLoginAttemptDAOImpl" parent="entityDAOBase"/>
-    <bean id="userLoginAttemptDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
-        <property name="daoInterface" value="com.junbo.identity.data.dao.UserLoginAttemptDAO" />
-        <property name="daoTarget" ref="userLoginAttemptDAOTarget" />
-    </bean>
-
-    <bean id="userOptinDAOTarget" class="com.junbo.identity.data.dao.impl.UserOptinDAOImpl" parent="entityDAOBase"/>
-    <bean id="userOptinDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
-        <property name="daoInterface" value="com.junbo.identity.data.dao.UserOptinDAO" />
-        <property name="daoTarget" ref="userOptinDAOTarget" />
-    </bean>
-
-    <bean id="userPasswordDAOTarget" class="com.junbo.identity.data.dao.impl.UserPasswordDAOImpl" parent="entityDAOBase"/>
-    <bean id="userPasswordDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
-        <property name="daoInterface" value="com.junbo.identity.data.dao.UserPasswordDAO" />
-        <property name="daoTarget" ref="userPasswordDAOTarget" />
-    </bean>
-
-    <bean id="userPhoneNumberDAOTarget" class="com.junbo.identity.data.dao.impl.UserPhoneNumberDAOImpl" parent="entityDAOBase" />
-    <bean id="userPhoneNumberDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
-        <property name="daoInterface" value="com.junbo.identity.data.dao.UserPhoneNumberDAO" />
-        <property name="daoTarget" ref="userPhoneNumberDAOTarget" />
-    </bean>
-
-    <bean id="userPinDAOTarget" class="com.junbo.identity.data.dao.impl.UserPinDAOImpl" parent="entityDAOBase" />
-    <bean id="userPinDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
-        <property name="daoInterface" value="com.junbo.identity.data.dao.UserPinDAO" />
-        <property name="daoTarget" ref="userPinDAOTarget" />
-    </bean>
-
-    <bean id="userSecurityQuestionDAOTarget" class="com.junbo.identity.data.dao.impl.UserSecurityQuestionDAOImpl" parent="entityDAOBase" />
-    <bean id="userSecurityQuestionDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
-        <property name="daoInterface" value="com.junbo.identity.data.dao.UserSecurityQuestionDAO" />
-        <property name="daoTarget" ref="userSecurityQuestionDAOTarget" />
-    </bean>
-
-    <bean id="userTosDAOTarget" class="com.junbo.identity.data.dao.impl.UserTosDAOImpl" parent="entityDAOBase" />
-    <bean id="userTosDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
-        <property name="daoInterface" value="com.junbo.identity.data.dao.UserTosDAO" />
-        <property name="daoTarget" ref="userTosDAOTarget" />
-    </bean>
-
-    <bean id="userNameDAOTarget" class="com.junbo.identity.data.dao.impl.UserNameDAOImpl" parent="entityDAOBase"/>
-    <bean id="userNameDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
-        <property name="daoInterface" value="com.junbo.identity.data.dao.UserNameDAO" />
-        <property name="daoTarget" ref="userNameDAOTarget" />
-    </bean>
-
-    <bean id="userSecurityQuestionAttemptDAOTarget" class="com.junbo.identity.data.dao.impl.UserSecurityQuestionAttemptDAOImpl" parent="entityDAOBase" />
-    <bean id="userSecurityQuestionAttemptDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
-        <property name="daoInterface" value="com.junbo.identity.data.dao.UserSecurityQuestionAttemptDAO" />
-        <property name="daoTarget" ref="userSecurityQuestionAttemptDAOTarget" />
-    </bean>
+    <bean id="userDAO" class="com.junbo.identity.data.dao.impl.UserDAOImpl" parent="baseDAO" />
+    <bean id="groupDAO" class="com.junbo.identity.data.dao.impl.GroupDAOImpl" parent="baseDAO" />
+    <bean id="userAuthenticatorDAO" class="com.junbo.identity.data.dao.impl.UserAuthenticatorDAOImpl" parent="baseDAO" />
+    <bean id="userDeviceDAO" class="com.junbo.identity.data.dao.impl.UserDeviceDAOImpl" parent="baseDAO" />
+    <bean id="userEmailDAO" class="com.junbo.identity.data.dao.impl.UserEmailDAOImpl" parent="baseDAO" />
+    <bean id="userGroupDAO" class="com.junbo.identity.data.dao.impl.UserGroupDAOImpl" parent="baseDAO" />
+    <bean id="groupUserDAO" class="com.junbo.identity.data.dao.impl.GroupUserDAOImpl" parent="baseDAO" />
+    <bean id="userLoginAttemptDAO" class="com.junbo.identity.data.dao.impl.UserLoginAttemptDAOImpl" parent="baseDAO" />
+    <bean id="userOptinDAO" class="com.junbo.identity.data.dao.impl.UserOptinDAOImpl" parent="baseDAO" />
+    <bean id="userPasswordDAO" class="com.junbo.identity.data.dao.impl.UserPasswordDAOImpl" parent="baseDAO" />
+    <bean id="userPhoneNumberDAO" class="com.junbo.identity.data.dao.impl.UserPhoneNumberDAOImpl" parent="baseDAO" />
+    <bean id="userPinDAO" class="com.junbo.identity.data.dao.impl.UserPinDAOImpl" parent="baseDAO" />
+    <bean id="userSecurityQuestionDAO" class="com.junbo.identity.data.dao.impl.UserSecurityQuestionDAOImpl" parent="baseDAO" />
+    <bean id="userTosDAO" class="com.junbo.identity.data.dao.impl.UserTosDAOImpl" parent="baseDAO" />
+    <bean id="userNameDAO" class="com.junbo.identity.data.dao.impl.UserNameDAOImpl" parent="baseDAO" />
+    <bean id="userSecurityQuestionAttemptDAO" class="com.junbo.identity.data.dao.impl.UserSecurityQuestionAttemptDAOImpl" parent="baseDAO" />
 
     <bean id="groupRepository" class="com.junbo.identity.data.repository.impl.GroupRepositoryImpl" />
     <bean id="userAuthenticatorRepository" class="com.junbo.identity.data.repository.impl.UserAuthenticatorRepositoryImpl" />
@@ -311,5 +157,27 @@
         <property name="entityInterceptor">
             <bean class="com.junbo.identity.data.dao.interceptor.AuditInterceptor" />
         </property>
+    </bean>
+
+    <bean id="configSessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="dataSource" ref="configDataSource"/>
+        <property name="packagesToScan" value="com.junbo.identity.data.entity.domaindata"/>
+        <property name="jtaTransactionManager" ref="transactionManager"/>
+        <property name="entityInterceptor">
+            <bean class="com.junbo.identity.data.dao.interceptor.AuditInterceptor" />
+        </property>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">${config.hibernate.dialect}</prop>
+                <prop key="hibernate.max_fetch_depth">${config.hibernate.max_fetch_depth}</prop>
+                <prop key="hibernate.jdbc.fetch_size">${config.hibernate.fetch_size}</prop>
+                <prop key="hibernate.jdbc.batch_size">${config.hibernate.batch_size}</prop>
+                <prop key="hibernate.show_sql">${config.hibernate.show_sql}</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="securityQuestionDAO" class="com.junbo.identity.data.dao.impl.SecurityQuestionDAOImpl">
+        <property name="sessionFactory" ref="configSessionFactory"/>
     </bean>
 </beans>

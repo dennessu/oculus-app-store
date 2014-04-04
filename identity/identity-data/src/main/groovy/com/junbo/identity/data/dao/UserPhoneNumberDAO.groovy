@@ -4,9 +4,9 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.identity.data.dao
+
 import com.junbo.identity.data.entity.user.UserPhoneNumberEntity
 import com.junbo.identity.spec.options.list.UserPhoneNumberListOptions
-import com.junbo.sharding.annotations.SeedParam
 import groovy.transform.CompileStatic
 
 /**
@@ -18,9 +18,9 @@ interface UserPhoneNumberDAO {
 
     UserPhoneNumberEntity update(UserPhoneNumberEntity entity)
 
-    UserPhoneNumberEntity get(@SeedParam Long id)
+    UserPhoneNumberEntity get(Long id)
 
-    List<UserPhoneNumberEntity> search(@SeedParam Long userId, UserPhoneNumberListOptions getOption)
+    List<UserPhoneNumberEntity> search(Long userId, UserPhoneNumberListOptions getOption)
 
-    void delete(@SeedParam Long id)
+    void delete(Long id)
 }

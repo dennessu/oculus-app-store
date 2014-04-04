@@ -17,31 +17,33 @@ import org.springframework.util.StringUtils
  * Created by liangfu on 3/17/14.
  */
 @CompileStatic
-class UserLoginAttemptDAOImpl extends ShardedDAOBase implements UserLoginAttemptDAO {
+class UserLoginAttemptDAOImpl extends BaseDAO implements UserLoginAttemptDAO {
     @Override
     UserLoginAttemptEntity save(UserLoginAttemptEntity entity) {
-        currentSession().save(entity)
-        currentSession().flush()
+        entity.id = idGenerator.nextId(entity.userId)
+
+        currentSession(entity.id).save(entity)
+        currentSession(entity.id).flush()
 
         return get(entity.id)
     }
 
     @Override
     UserLoginAttemptEntity update(UserLoginAttemptEntity entity) {
-        currentSession().merge(entity)
-        currentSession().flush()
+        currentSession(entity.id).merge(entity)
+        currentSession(entity.id).flush()
 
         return get(entity.id)
     }
 
     @Override
     UserLoginAttemptEntity get(Long id) {
-        return (UserLoginAttemptEntity)currentSession().get(UserLoginAttemptEntity, id)
+        return (UserLoginAttemptEntity)currentSession(id).get(UserLoginAttemptEntity, id)
     }
 
     @Override
     List<UserLoginAttemptEntity> search(Long userId, UserLoginAttemptListOptions getOption) {
-        Criteria criteria = currentSession().createCriteria(UserLoginAttemptEntity)
+        Criteria criteria = currentSession(userId).createCriteria(UserLoginAttemptEntity)
         criteria.add(Restrictions.eq('userId', getOption.userId.value))
         if (!StringUtils.isEmpty(getOption.type)) {
             criteria.add(Restrictions.eq('type', getOption.type))
@@ -62,8 +64,8 @@ class UserLoginAttemptDAOImpl extends ShardedDAOBase implements UserLoginAttempt
     @Override
     void delete(Long id) {
         UserLoginAttemptEntity entity =
-                (UserLoginAttemptEntity)currentSession().get(UserLoginAttemptEntity, id)
-        currentSession().delete(entity)
-        currentSession().flush()
+                (UserLoginAttemptEntity)currentSession(id).get(UserLoginAttemptEntity, id)
+        currentSession(id).delete(entity)
+        currentSession(id).flush()
     }
 }

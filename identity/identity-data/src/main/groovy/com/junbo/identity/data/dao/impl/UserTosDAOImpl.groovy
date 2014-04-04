@@ -17,30 +17,31 @@ import org.springframework.util.StringUtils
  * Implementation for User Tos Acceptance DAO interface.
  */
 @CompileStatic
-class UserTosDAOImpl extends ShardedDAOBase implements UserTosDAO {
+class UserTosDAOImpl extends BaseDAO implements UserTosDAO {
     @Override
     UserTosEntity save(UserTosEntity entity) {
-        currentSession().save(entity)
-        currentSession().flush()
+        entity.id = idGenerator.nextId(entity.userId)
+        currentSession(entity.id).save(entity)
+        currentSession(entity.id).flush()
         return get(entity.id)
     }
 
     @Override
     UserTosEntity update(UserTosEntity entity) {
-        currentSession().merge(entity)
-        currentSession().flush()
+        currentSession(entity.id).merge(entity)
+        currentSession(entity.id).flush()
 
         return get(entity.id)
     }
 
     @Override
     UserTosEntity get(Long id) {
-        return (UserTosEntity)currentSession().get(UserTosEntity, id)
+        return (UserTosEntity)currentSession(id).get(UserTosEntity, id)
     }
 
     @Override
     List<UserTosEntity> search(Long userId, UserTosListOptions getOption) {
-        Criteria criteria = currentSession().createCriteria(UserTosEntity)
+        Criteria criteria = currentSession(userId).createCriteria(UserTosEntity)
         criteria.add(Restrictions.eq('userId', getOption.userId.value))
         if (!StringUtils.isEmpty(getOption.tosUri)) {
             criteria.add(Restrictions.eq('tosUri', getOption.tosUri))
@@ -57,8 +58,8 @@ class UserTosDAOImpl extends ShardedDAOBase implements UserTosDAO {
 
     @Override
     void delete(Long id) {
-        UserTosEntity entity = (UserTosEntity)currentSession().get(UserTosEntity, id)
-        currentSession().delete(entity)
-        currentSession().flush()
+        UserTosEntity entity = (UserTosEntity)currentSession(id).get(UserTosEntity, id)
+        currentSession(id).delete(entity)
+        currentSession(id).flush()
     }
 }

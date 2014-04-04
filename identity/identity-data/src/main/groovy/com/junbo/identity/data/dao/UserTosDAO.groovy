@@ -7,7 +7,6 @@ package com.junbo.identity.data.dao
 
 import com.junbo.identity.data.entity.user.UserTosEntity
 import com.junbo.identity.spec.options.list.UserTosListOptions
-import com.junbo.sharding.annotations.SeedParam
 import groovy.transform.CompileStatic
 
 /**
@@ -20,9 +19,9 @@ interface UserTosDAO {
 
     UserTosEntity update(UserTosEntity entity)
 
-    UserTosEntity get(@SeedParam Long id)
+    UserTosEntity get(Long id)
 
-    List<UserTosEntity> search(@SeedParam Long userId, UserTosListOptions getOption)
+    List<UserTosEntity> search(Long userId, UserTosListOptions getOption)
 
-    void delete(@SeedParam Long id)
+    void delete(Long id)
 }

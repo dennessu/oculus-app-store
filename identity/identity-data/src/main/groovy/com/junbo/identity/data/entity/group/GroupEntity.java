@@ -7,7 +7,6 @@ package com.junbo.identity.data.entity.group;
 
 import com.junbo.common.util.Identifiable;
 import com.junbo.identity.data.entity.common.ResourceMetaEntity;
-import com.junbo.sharding.annotations.SeedId;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -45,7 +44,6 @@ public class GroupEntity extends ResourceMetaEntity implements Identifiable<Long
     }
 
     @Id
-    @SeedId
     @Column(name = "id")
     private Long id;
 

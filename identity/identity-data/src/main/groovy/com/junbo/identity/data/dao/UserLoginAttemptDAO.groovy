@@ -4,9 +4,9 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.identity.data.dao
+
 import com.junbo.identity.data.entity.user.UserLoginAttemptEntity
 import com.junbo.identity.spec.options.list.UserLoginAttemptListOptions
-import com.junbo.sharding.annotations.SeedParam
 import groovy.transform.CompileStatic
 
 /**
@@ -18,9 +18,9 @@ interface UserLoginAttemptDAO {
 
     UserLoginAttemptEntity update(UserLoginAttemptEntity entity)
 
-    UserLoginAttemptEntity get(@SeedParam Long id)
+    UserLoginAttemptEntity get(Long id)
 
-    List<UserLoginAttemptEntity> search(@SeedParam Long userId, UserLoginAttemptListOptions getOption)
+    List<UserLoginAttemptEntity> search(Long userId, UserLoginAttemptListOptions getOption)
 
-    void delete(@SeedParam Long id)
+    void delete(Long id)
 }

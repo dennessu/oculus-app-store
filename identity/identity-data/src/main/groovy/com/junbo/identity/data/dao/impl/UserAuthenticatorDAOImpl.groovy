@@ -8,6 +8,7 @@ package com.junbo.identity.data.dao.impl
 import com.junbo.identity.data.dao.UserAuthenticatorDAO
 import com.junbo.identity.data.entity.user.UserAuthenticatorEntity
 import com.junbo.identity.spec.options.list.UserAuthenticatorListOptions
+import groovy.transform.CompileStatic
 import org.apache.commons.collections.CollectionUtils
 import org.hibernate.Criteria
 import org.hibernate.criterion.Order
@@ -16,36 +17,39 @@ import org.hibernate.criterion.Restrictions
 /**
  * Implementation for UserAuthenticatorDAO.
  */
-class UserAuthenticatorDAOImpl extends ShardedDAOBase implements UserAuthenticatorDAO {
+@CompileStatic
+class UserAuthenticatorDAOImpl extends BaseDAO implements UserAuthenticatorDAO {
     @Override
     UserAuthenticatorEntity save(UserAuthenticatorEntity entity) {
-        currentSession().save(entity)
-        currentSession().flush()
-        return get(entity.id)
+        entity.id = idGenerator.nextId(entity.userId)
+
+        currentSession(entity.id).save(entity)
+        currentSession(entity.id).flush()
+        return get((Long)entity.id)
     }
 
     @Override
     UserAuthenticatorEntity update(UserAuthenticatorEntity entity) {
-        currentSession().merge(entity)
-        currentSession().flush()
+        currentSession(entity.id).merge(entity)
+        currentSession(entity.id).flush()
 
-        return get(entity.id)
+        return get((Long)entity.id)
     }
 
     @Override
     UserAuthenticatorEntity get(Long id) {
-        return (UserAuthenticatorEntity)currentSession().get(UserAuthenticatorEntity, id)
+        return (UserAuthenticatorEntity)currentSession(id).get(UserAuthenticatorEntity, id)
     }
 
     @Override
     List<UserAuthenticatorEntity> search(Long userId, UserAuthenticatorListOptions getOption) {
-        Criteria criteria = currentSession().createCriteria(UserAuthenticatorEntity)
+        Criteria criteria = currentSession(userId).createCriteria(UserAuthenticatorEntity)
         criteria.add(Restrictions.eq('userId', getOption.userId.value))
         if (getOption.type != null) {
-            criteria.add('type', getOption.type)
+            criteria.add(Restrictions.eq('type', getOption.type))
         }
         if (getOption.value != null) {
-            criteria.add('value', getOption.value)
+            criteria.add(Restrictions.eq('value', getOption.value))
         }
         criteria.addOrder(Order.asc('id'))
         if (getOption.limit != null) {
@@ -58,24 +62,28 @@ class UserAuthenticatorDAOImpl extends ShardedDAOBase implements UserAuthenticat
     }
 
     @Override
-    Long getIdByAuthenticatorValue(String value) {
+    UserAuthenticatorEntity getIdByAuthenticatorValue(String value) {
         UserAuthenticatorEntity example = new UserAuthenticatorEntity()
         example.setValue(value)
 
         def viewQuery = viewQueryFactory.from(example)
         if (viewQuery != null) {
-            def userIds = viewQuery.list()
+            def ids = viewQuery.list()
 
-            return CollectionUtils.isEmpty(userIds) ? null : (Long)(userIds.get(0))
+            Long id = CollectionUtils.isEmpty(ids) ? null : (Long)(ids.get(0))
+
+            if (id != null) {
+                return get(id)
+            }
         }
 
-        throw new RuntimeException()
+        return null
     }
 
     @Override
     void delete(Long id) {
-        UserAuthenticatorEntity entity = currentSession().get(UserAuthenticatorEntity, id)
-        currentSession().delete(entity)
-        currentSession().flush()
+        UserAuthenticatorEntity entity = (UserAuthenticatorEntity)currentSession(id).get(UserAuthenticatorEntity, id)
+        currentSession(id).delete(entity)
+        currentSession(id).flush()
     }
 }
