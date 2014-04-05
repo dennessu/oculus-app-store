@@ -1,7 +1,5 @@
 package com.junbo.sharding.hibernate
 
-import bitronix.tm.resource.jdbc.ConnectionCustomizer
-import bitronix.tm.resource.jdbc.PooledConnectionProxy
 import bitronix.tm.resource.jdbc.PoolingDataSource
 import groovy.transform.CompileStatic
 import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider
@@ -9,7 +7,6 @@ import org.hibernate.service.UnknownUnwrapTypeException
 
 import java.sql.Connection
 import java.sql.SQLException
-import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Created by Shenhua on 4/1/2014.

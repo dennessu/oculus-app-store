@@ -12,22 +12,23 @@ import java.util.concurrent.ConcurrentHashMap
  * Created by Shenhua on 4/1/2014.
  */
 @CompileStatic
+@SuppressWarnings('JdbcConnectionReference')
 class SchemaSetter implements ConnectionCustomizer {
 
-    private final Map<Connection, String> lastSchema
+    private final Map<Connection, String> lastSchemaMap
 
     SchemaSetter() {
-        lastSchema = new ConcurrentHashMap<>()
+        lastSchemaMap = new ConcurrentHashMap<>()
     }
 
     @Override
     void onAcquire(Connection connection, String uniqueName) {
-        lastSchema.put(connection, 'public')
+        lastSchemaMap.put(connection, 'public')
     }
 
     @Override
     void onDestroy(Connection connection, String uniqueName) {
-        lastSchema.remove(connection)
+        lastSchemaMap.remove(connection)
     }
 
     void setSchema(Connection connection, String schema) throws SQLException {
@@ -35,12 +36,17 @@ class SchemaSetter implements ConnectionCustomizer {
             connection = ((PooledConnectionProxy) connection).proxiedDelegate
         }
 
-        if (lastSchema.get(connection) != schema) {
+        def lastSchema = lastSchemaMap.get(connection)
+        if (lastSchema == null) {
+            throw new IllegalStateException('lastSchema is null')
+        }
+
+        if (lastSchema != schema) {
             def statement = connection.createStatement()
 
             try {
                 statement.execute("SET SCHEMA '$schema'")
-                lastSchema.put(connection, schema)
+                lastSchemaMap.put(connection, schema)
             } finally {
                 statement.close()
             }

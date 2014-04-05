@@ -85,7 +85,7 @@ WHERE id_type = ? AND shard_id = ?""")
 
         def list = sqlQuery.list()
 
-        return list.size() == 1 ? (Integer) list[0] : (Integer) null
+        return list.size() == 1 ? (Integer) list.get(0) : (Integer) null
     }
 
     private boolean saveValue(int idType, int shardId) {
