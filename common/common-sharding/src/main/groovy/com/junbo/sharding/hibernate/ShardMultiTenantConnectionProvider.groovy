@@ -1,12 +1,15 @@
 package com.junbo.sharding.hibernate
 
+import bitronix.tm.resource.jdbc.ConnectionCustomizer
+import bitronix.tm.resource.jdbc.PooledConnectionProxy
+import bitronix.tm.resource.jdbc.PoolingDataSource
 import groovy.transform.CompileStatic
 import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider
 import org.hibernate.service.UnknownUnwrapTypeException
 
-import javax.sql.DataSource
 import java.sql.Connection
 import java.sql.SQLException
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Created by Shenhua on 4/1/2014.
@@ -15,23 +18,36 @@ import java.sql.SQLException
 @SuppressWarnings('JdbcConnectionReference')
 class ShardMultiTenantConnectionProvider implements MultiTenantConnectionProvider {
 
-    private final List<DataSource> dataSourceList
+    private final List<PoolingDataSource> dataSourceList
 
     private final List<String> schemaList
 
-    ShardMultiTenantConnectionProvider(List<DataSource> dataSourceList, List<String> schemaList) {
+    private final SchemaSetter schemaSetter
+
+    ShardMultiTenantConnectionProvider(
+            List<PoolingDataSource> dataSourceList,
+            List<String> schemaList,
+            SchemaSetter schemaSetter) {
+
         if (dataSourceList == null) {
             throw new IllegalArgumentException('dataSourceList is null')
         }
+
         if (schemaList == null) {
             throw new IllegalArgumentException('schemaList is null')
         }
+
         if (schemaList.size() != dataSourceList.size()) {
             throw new IllegalArgumentException('schemaList.size != dataSourceList.size')
         }
 
+        if (schemaSetter == null) {
+            throw new IllegalArgumentException('schemaSetter is null')
+        }
+
         this.dataSourceList = dataSourceList
         this.schemaList = schemaList
+        this.schemaSetter = schemaSetter
     }
 
     @Override
@@ -60,13 +76,14 @@ class ShardMultiTenantConnectionProvider implements MultiTenantConnectionProvide
         def schema = schemaList.get(shardId)
 
         def connection = dataSource.connection
-        connection.createStatement().execute("SET SCHEMA '$schema'")
+
+        schemaSetter.setSchema(connection, schema)
+
         return connection
     }
 
     @Override
     void releaseConnection(String tenantIdentifier, Connection connection) throws SQLException {
-        connection.createStatement().execute("SET SCHEMA 'public'")
         connection.close()
     }
 

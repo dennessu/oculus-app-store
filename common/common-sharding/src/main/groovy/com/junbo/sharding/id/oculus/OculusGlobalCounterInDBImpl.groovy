@@ -6,15 +6,19 @@
 
 package com.junbo.sharding.id.oculus
 
+import com.junbo.langur.core.transaction.AsyncTransactionTemplate
 import com.junbo.sharding.ShardAlgorithm
 import com.junbo.sharding.hibernate.ShardScope
 import groovy.transform.CompileStatic
-import org.hibernate.Session
 import org.hibernate.SessionFactory
+import org.hibernate.exception.ConstraintViolationException
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Propagation
-import org.springframework.transaction.annotation.Transactional
+import org.springframework.transaction.PlatformTransactionManager
+import org.springframework.transaction.TransactionDefinition
+import org.springframework.transaction.support.TransactionTemplate
 
 /**
  * Created by liangfu on 3/5/14.
@@ -23,9 +27,20 @@ import org.springframework.transaction.annotation.Transactional
 @CompileStatic
 @SuppressWarnings('UnnecessaryGString')
 class OculusGlobalCounterInDBImpl implements OculusGlobalCounter {
-    private final Integer step = 1
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(OculusGlobalCounterInDBImpl)
+
+    private TransactionTemplate transactionTemplate
+
     private SessionFactory sessionFactory
-    protected ShardAlgorithm shardAlgorithm
+
+    private ShardAlgorithm shardAlgorithm
+
+    @Required
+    void setTransactionManager(PlatformTransactionManager transactionManager) {
+        transactionTemplate = new AsyncTransactionTemplate(transactionManager)
+        transactionTemplate.propagationBehavior = TransactionDefinition.PROPAGATION_NOT_SUPPORTED
+    }
 
     @Required
     void setSessionFactory(SessionFactory sessionFactory) {
@@ -38,30 +53,28 @@ class OculusGlobalCounterInDBImpl implements OculusGlobalCounter {
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     int getAndIncrease(int shardId, int idType) {
-        def currentSession = ShardScope.with(shardId) { sessionFactory.currentSession }
+        transactionTemplate.execute {
+            while (true) {
+                Integer value = getValue(idType, shardId)
 
-        while (true) {
-            Integer value = getValue(currentSession, idType, shardId)
-
-            value = null
-
-
-            if (value == null) {
-                if (saveValue(currentSession, idType, shardId)) {
-                    return 0
-                }
-            } else {
-                if (updateValue(currentSession, idType, shardId, value)) {
-                    return value + 1
+                if (value == null) {
+                    if (saveValue(idType, shardId)) {
+                        return 0
+                    }
+                } else {
+                    if (updateValue(idType, shardId, value)) {
+                        return value + 1
+                    }
                 }
             }
         }
     }
 
-    private Integer getValue(Session session, int idType, int shardId) {
-        def sqlQuery = session.createSQLQuery("""
+    private Integer getValue(int idType, int shardId) {
+        def currentSession = ShardScope.with(shardId) { sessionFactory.openSession() }
+
+        def sqlQuery = currentSession.createSQLQuery("""
 SELECT global_count FROM id_global_counter
 WHERE id_type = ? AND shard_id = ?""")
 
@@ -71,29 +84,31 @@ WHERE id_type = ? AND shard_id = ?""")
         sqlQuery.addScalar('global_count', sessionFactory.typeHelper.basic(Integer))
 
         def list = sqlQuery.list()
-        if (list.size() == 1) {
-            return (int) list[0]
-        } else {
-            return null
-        }
+
+        return list.size() == 1 ? (Integer) list[0] : (Integer) null
     }
 
-    private boolean saveValue(Session session, int idType, int shardId) {
-        def sqlQuery = session.createSQLQuery("""
+    private boolean saveValue(int idType, int shardId) {
+        def currentSession = ShardScope.with(shardId) { sessionFactory.openSession() }
+
+        def sqlQuery = currentSession.createSQLQuery("""
 INSERT INTO id_global_counter (id_type, shard_id, global_count)
 VALUES (?, ?, 0)""")
-        sqlQuery.setParameter(0, 2)
-        sqlQuery.setParameter(1, 86)
+        sqlQuery.setParameter(0, idType)
+        sqlQuery.setParameter(1, shardId)
 
         try {
             return sqlQuery.executeUpdate() == 1
-        } catch (Exception e) {
+        } catch (ConstraintViolationException ex) {
+            LOGGER.warn("Unable to insert a counter due to race condition", ex)
             return false
         }
     }
 
-    private boolean updateValue(Session session, int idType, int shardId, int value) {
-        def sqlQuery = session.createSQLQuery("""
+    private boolean updateValue(int idType, int shardId, int value) {
+        def currentSession = ShardScope.with(shardId) { sessionFactory.openSession() }
+
+        def sqlQuery = currentSession.createSQLQuery("""
 UPDATE id_global_counter
 SET global_count = global_count + 1
 WHERE id_type = ? AND shard_id = ? AND global_count = ?""")

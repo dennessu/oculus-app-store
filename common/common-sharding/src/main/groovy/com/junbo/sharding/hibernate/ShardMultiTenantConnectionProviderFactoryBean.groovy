@@ -22,10 +22,32 @@ class ShardMultiTenantConnectionProviderFactoryBean
 
     private String jdbcUrls
 
+    private boolean enableJdbc4ConnectionTest
+
+    private boolean localAutoCommit
+
     @Required
     void setJdbcUrls(String jdbcUrls) {
         this.jdbcUrls = jdbcUrls
     }
+
+    void setEnableJdbc4ConnectionTest(boolean enableJdbc4ConnectionTest) {
+        this.enableJdbc4ConnectionTest = enableJdbc4ConnectionTest
+    }
+
+    void setLocalAutoCommit(boolean localAutoCommit) {
+        this.localAutoCommit = localAutoCommit
+    }
+
+    ShardMultiTenantConnectionProviderFactoryBean() {
+        // default override
+        this.shareTransactionConnections = true
+        this.enableJdbc4ConnectionTest = true
+        this.localAutoCommit = true
+        this.allowLocalTransactions = true
+    }
+
+    private final SchemaSetter schemaSetter = new SchemaSetter()
 
     private Map<String, PoolingDataSource> dataSourceMap
 
@@ -41,7 +63,7 @@ class ShardMultiTenantConnectionProviderFactoryBean
             dataSourceMap = new HashMap<>()
 
             List<String> schemaList = []
-            List<DataSource> dataSourceList = []
+            List<PoolingDataSource> dataSourceList = []
 
             for (String url : jdbcUrls.split(',')) {
                 url = url.trim()
@@ -69,7 +91,8 @@ class ShardMultiTenantConnectionProviderFactoryBean
                 }
             }
 
-            connectionProvider = new ShardMultiTenantConnectionProvider(dataSourceList, schemaList)
+            connectionProvider = new ShardMultiTenantConnectionProvider(
+                    dataSourceList, schemaList, schemaSetter)
         }
 
         return connectionProvider
@@ -106,6 +129,10 @@ class ShardMultiTenantConnectionProviderFactoryBean
             result.uniqueName = result.uniqueName + '_' + dataSourceMap.size()
             result.driverProperties.put('url', url)
 
+            result.enableJdbc4ConnectionTest = enableJdbc4ConnectionTest
+            result.localAutoCommit = localAutoCommit
+
+            result.addConnectionCustomizer(schemaSetter)
             result.init()
             dataSourceMap.put(url, result)
         }

@@ -12,6 +12,7 @@
         <property name="className" value="${sharding.db.driverClassName}"/>
         <property name="minPoolSize" value="${sharding.db.minPoolSize}"/>
         <property name="maxPoolSize" value="${sharding.db.maxPoolSize}"/>
+
         <property name="driverProperties">
             <props>
                 <prop key="user">${sharding.db.username}</prop>
@@ -111,6 +112,7 @@
     <bean id="globalCounterInDB" class="com.junbo.sharding.id.oculus.OculusGlobalCounterInDBImpl">
         <property name="shardAlgorithm" ref="userShardAlgorithm" />
         <property name="sessionFactory" ref="shardingSessionFactory" />
+        <property name="transactionManager" ref="transactionManager"/>
     </bean>
 
     <!-- 2: Id generator proposed by oculus rift (Using 48 bits) -->
