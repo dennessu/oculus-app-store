@@ -8,7 +8,7 @@
     <bean id="shardingDataSource" class="com.junbo.sharding.hibernate.ShardMultiTenantConnectionProviderFactoryBean">
         <property name="jdbcUrls" value="${sharding.db.jdbcUrls}"/>
 
-        <property name="uniqueName" value="jdbc/shardingUnique"/>
+        <property name="uniqueName" value="jdbc/sharding"/>
         <property name="className" value="${sharding.db.driverClassName}"/>
         <property name="minPoolSize" value="${sharding.db.minPoolSize}"/>
         <property name="maxPoolSize" value="${sharding.db.maxPoolSize}"/>
