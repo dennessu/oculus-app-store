@@ -11,7 +11,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.junbo.common.jackson.annotation.EntitlementDefinitionId;
 import com.junbo.common.jackson.annotation.EntitlementId;
-import com.junbo.common.jackson.annotation.OfferId;
 import com.junbo.common.jackson.annotation.UserId;
 
 import java.util.Date;
@@ -20,7 +19,7 @@ import java.util.UUID;
 /**
  * Entitlement Model.
  */
-@JsonPropertyOrder(value = {"entitlementId", "userId", "ownerId", "offerId", "status", "statusReason",
+@JsonPropertyOrder(value = {"entitlementId", "userId", "ownerId", "status", "statusReason",
         "entitlementDefinitionId", "type", "group", "tag", "grantTime", "expirationTime",
         "consumable", "useCount"})
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -42,10 +41,6 @@ public class Entitlement{
     private Long entitlementDefinitionId;
     private Date grantTime;
     private Date expirationTime;
-    private Long period;
-    @OfferId
-    @JsonProperty("offer")
-    private Long offerId;
     private String group;
     private String tag;
     private Boolean consumable;
@@ -115,14 +110,6 @@ public class Entitlement{
         this.expirationTime = expirationTime;
     }
 
-    public Long getOfferId() {
-        return offerId;
-    }
-
-    public void setOfferId(Long offerId) {
-        this.offerId = offerId;
-    }
-
     public Boolean getConsumable() {
         return consumable;
     }
@@ -169,13 +156,5 @@ public class Entitlement{
 
     public void setOwnerId(String ownerId) {
         this.ownerId = ownerId;
-    }
-
-    public void setPeriod(Long period) {
-        this.period = period;
-    }
-
-    public Long getPeriod() {
-        return period;
     }
 }

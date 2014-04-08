@@ -7,7 +7,6 @@
 package com.junbo.entitlement.db.dao.hibernate;
 
 import com.junbo.common.id.EntitlementDefinitionId;
-import com.junbo.common.id.OfferId;
 import com.junbo.entitlement.common.def.Function;
 import com.junbo.entitlement.common.lib.CommonUtils;
 import com.junbo.entitlement.common.lib.EntitlementContext;
@@ -59,7 +58,8 @@ public class EntitlementDaoImpl extends BaseDao<EntitlementEntity> implements En
             } else if (status.equals(EntitlementStatus.ACTIVE)) {
                 queryStringBuilder.append(
                         " and ( consumable = false or ( consumable = true and use_count > 0 ))" +
-                        " and ( grant_time <= (:now) and ( expiration_time is null or expiration_time >= (:now) ))");
+                                " and ( grant_time <= (:now)" +
+                                " and ( expiration_time is null or expiration_time >= (:now) ))");
                 params.put("now", now);
             } else if (status.equals(EntitlementStatus.PENDING)) {
                 queryStringBuilder.append(
@@ -68,7 +68,7 @@ public class EntitlementDaoImpl extends BaseDao<EntitlementEntity> implements En
             } else if (status.equals(EntitlementStatus.DISABLED)) {
                 queryStringBuilder.append(
                         "and ( consumable = true and use_count < 1" +
-                        " or expiration_time <= (:now) )");
+                                " or expiration_time <= (:now) )");
                 params.put("now", now);
             }
         } else {
@@ -94,17 +94,6 @@ public class EntitlementDaoImpl extends BaseDao<EntitlementEntity> implements En
             addSingleParam("type", "type",
                     EntitlementType.valueOf(entitlementSearchParam.getType()).getId(),
                     "=", queryStringBuilder, params);
-        }
-        if (!CollectionUtils.isEmpty(entitlementSearchParam.getOfferIds())) {
-            addCollectionParam("offer_id", "offerIds",
-                    CommonUtils.select(entitlementSearchParam.getOfferIds(),
-                            new Function<Long, OfferId>() {
-                                @Override
-                                public Long apply(OfferId offerId) {
-                                    return offerId.getValue();
-                                }
-                            }),
-                    queryStringBuilder, params);
         }
         addSingleParam("grant_time", "startGrantTime",
                 entitlementSearchParam.getStartGrantTime(),

@@ -52,7 +52,7 @@ public class EntitlementServiceTest extends AbstractTransactionalTestNGSpringCon
     public void testAddEntitlement() {
         Entitlement entitlement = buildAnEntitlement();
         Entitlement addedEntitlement = entitlementService.addEntitlement(entitlement);
-        Assert.assertEquals(addedEntitlement.getOfferId(), entitlement.getOfferId());
+        Assert.assertEquals(addedEntitlement.getTag(), entitlement.getTag());
     }
 
     @Test(expectedExceptions = AppErrorException.class)
@@ -128,7 +128,6 @@ public class EntitlementServiceTest extends AbstractTransactionalTestNGSpringCon
         Assert.assertEquals(oldEntitlement.getStatus(), EntitlementStatus.DELETED.toString());
         Assert.assertEquals(oldEntitlement.getStatusReason(), EntitlementStatusReason.TRANSFERRED);
         Assert.assertEquals(newEntitlement.getUserId(), transfer.getTargetUserId());
-        Assert.assertEquals(newEntitlement.getOfferId(), entitlement.getOfferId());
     }
 
     private Entitlement buildAnEntitlement() {
@@ -144,9 +143,7 @@ public class EntitlementServiceTest extends AbstractTransactionalTestNGSpringCon
         entitlement.setTag("TEST");
         entitlement.setType(EntitlementType.DEFAULT.toString());
         entitlement.setOwnerId(String.valueOf(idGenerator.nextId()));
-        entitlement.setOfferId(idGenerator.nextId());
         entitlement.setStatus(EntitlementStatus.ACTIVE.toString());
-        entitlement.setUseCount(0);
         return entitlement;
     }
 }

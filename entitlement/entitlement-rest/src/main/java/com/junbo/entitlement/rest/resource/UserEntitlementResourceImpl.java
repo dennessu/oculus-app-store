@@ -6,7 +6,6 @@
 package com.junbo.entitlement.rest.resource;
 
 import com.junbo.common.id.EntitlementDefinitionId;
-import com.junbo.common.id.OfferId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.model.Link;
 import com.junbo.common.model.Results;
@@ -68,11 +67,6 @@ public class UserEntitlementResourceImpl implements UserEntitlementResource {
         }
         if (!StringUtils.isEmpty(searchParam.getStatus())) {
             builder = builder.queryParam("status", searchParam.getStatus());
-        }
-        if (!CollectionUtils.isEmpty(searchParam.getOfferIds())) {
-            for (OfferId offerId : searchParam.getOfferIds()) {
-                builder = builder.queryParam("offerIds", IdFormatter.encodeId(offerId));
-            }
         }
         if (!CollectionUtils.isEmpty(searchParam.getGroups())) {
             for (String group : searchParam.getGroups()) {

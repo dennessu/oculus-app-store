@@ -36,7 +36,6 @@ public class EntitlementMapper {
         entitlement.setEntitlementDefinitionId(entitlementEntity.getEntitlementDefinitionId());
         entitlement.setStatus(getStatus(entitlementEntity).toString());
         entitlement.setStatusReason(entitlementEntity.getStatusReason());
-        entitlement.setOfferId(entitlementEntity.getOfferId());
         entitlement.setGrantTime(entitlementEntity.getGrantTime());
         entitlement.setExpirationTime(entitlementEntity.getExpirationTime());
         entitlement.setConsumable(entitlementEntity.getConsumable());
@@ -59,7 +58,6 @@ public class EntitlementMapper {
         entitlementEntity.setUserId(entitlement.getUserId());
         entitlementEntity.setStatus(getStatus(entitlement));
         entitlementEntity.setStatusReason(entitlement.getStatusReason());
-        entitlementEntity.setOfferId(entitlement.getOfferId());
         entitlementEntity.setGrantTime(entitlement.getGrantTime());
         entitlementEntity.setExpirationTime(entitlement.getExpirationTime());
         entitlementEntity.setConsumable(entitlement.getConsumable());

@@ -35,7 +35,6 @@ public class EntitlementEntity extends Entity {
     private String tag;
     private Date grantTime;
     private Date expirationTime;
-    private Long offerId;
     private Boolean consumable;
     private Integer useCount;
 
@@ -102,15 +101,6 @@ public class EntitlementEntity extends Entity {
 
     public void setExpirationTime(Date expirationTime) {
         this.expirationTime = expirationTime;
-    }
-
-    @Column(name = "offer_id")
-    public Long getOfferId() {
-        return offerId;
-    }
-
-    public void setOfferId(Long itemId) {
-        this.offerId = itemId;
     }
 
     @Column(name = "consumable")

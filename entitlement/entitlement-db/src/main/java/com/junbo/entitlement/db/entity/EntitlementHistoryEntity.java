@@ -40,7 +40,6 @@ public class EntitlementHistoryEntity implements Shardable {
     private String statusReason;
     private Date grantTime;
     private Date expirationTime;
-    private Long offerId;
     private Boolean consumable;
     private Integer useCount;
     private Date createdTime;
@@ -65,7 +64,6 @@ public class EntitlementHistoryEntity implements Shardable {
         this.entitlementDefinitionId = entitlementEntity.getEntitlementDefinitionId();
         this.grantTime = entitlementEntity.getGrantTime();
         this.expirationTime = entitlementEntity.getExpirationTime();
-        this.offerId = entitlementEntity.getOfferId();
         this.consumable = entitlementEntity.getConsumable();
         this.useCount = entitlementEntity.getUseCount();
         this.setCreatedBy(entitlementEntity.getCreatedBy());
@@ -155,15 +153,6 @@ public class EntitlementHistoryEntity implements Shardable {
 
     public void setExpirationTime(Date expirationTime) {
         this.expirationTime = expirationTime;
-    }
-
-    @Column(name = "offer_id")
-    public Long getOfferId() {
-        return offerId;
-    }
-
-    public void setOfferId(Long itemId) {
-        this.offerId = itemId;
     }
 
     @Column(name = "consumable")

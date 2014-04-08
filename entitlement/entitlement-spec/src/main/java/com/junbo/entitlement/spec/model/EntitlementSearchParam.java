@@ -22,8 +22,6 @@ public class EntitlementSearchParam {
     private UserId userId;
     @QueryParam("ownerId")
     private String ownerId;
-    @QueryParam("offerIds")
-    private Set<OfferId> offerIds;
     @QueryParam("type")
     private String type;
     @QueryParam("status")
@@ -64,14 +62,6 @@ public class EntitlementSearchParam {
 
     public void setOwnerId(String ownerId) {
         this.ownerId = ownerId;
-    }
-
-    public Set<OfferId> getOfferIds() {
-        return offerIds;
-    }
-
-    public void setOfferIds(Set<OfferId> offerIds) {
-        this.offerIds = offerIds;
     }
 
     public Set<EntitlementDefinitionId> getDefinitionIds() {
@@ -181,11 +171,6 @@ public class EntitlementSearchParam {
             this.ownerId = ownerId;
         }
 
-        public Builder offerIds(Set<OfferId> val) {
-            offerIds = val;
-            return this;
-        }
-
         public Builder type(String val) {
             type = val;
             return this;
@@ -244,7 +229,6 @@ public class EntitlementSearchParam {
     private EntitlementSearchParam(Builder builder) {
         userId = builder.userId;
         ownerId = builder.ownerId;
-        offerIds = builder.offerIds;
         type = builder.type;
         status = builder.status;
         definitionIds = builder.definitionIds;

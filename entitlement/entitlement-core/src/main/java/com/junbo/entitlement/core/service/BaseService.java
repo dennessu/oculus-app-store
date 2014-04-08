@@ -7,9 +7,7 @@
 package com.junbo.entitlement.core.service;
 
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
-import com.junbo.catalog.spec.model.entitlementdef.EntitlementType;
 import com.junbo.entitlement.clientproxy.catalog.EntitlementDefinitionFacade;
-import com.junbo.entitlement.common.lib.EntitlementContext;
 import com.junbo.entitlement.db.entity.def.EntitlementStatus;
 import com.junbo.entitlement.spec.error.AppErrors;
 import com.junbo.entitlement.spec.model.Entitlement;
@@ -20,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Base service.
@@ -31,31 +28,8 @@ public class BaseService {
     private EntitlementDefinitionFacade definitionFacade;
 
     protected void fillCreate(Entitlement entitlement) {
-        if (StringUtils.isEmpty(entitlement.getOwnerId()) && entitlement.getEntitlementDefinitionId() != null) {
+        if (entitlement.getOwnerId() == null && entitlement.getEntitlementDefinitionId() != null) {
             fillDefinition(entitlement);
-        } else {
-            if (entitlement.getType() == null) {
-                entitlement.setType(EntitlementType.DEFAULT.toString());
-            }
-            if (entitlement.getGroup() == null) {
-                entitlement.setGroup("");
-            }
-            if (entitlement.getTag() == null) {
-                entitlement.setTag("");
-            }
-        }
-
-        if (entitlement.getConsumable() == null) {
-            LOGGER.warn("consumable not found, set false and set useCount to null as default.");
-            entitlement.setConsumable(false);
-        }
-
-        if (entitlement.getGrantTime() == null) {
-            entitlement.setGrantTime(EntitlementContext.current().getNow());
-        }
-        if (entitlement.getPeriod() != null) {
-            entitlement.setExpirationTime(new Date(entitlement.getGrantTime().getTime()
-                    + TimeUnit.SECONDS.toMillis(entitlement.getPeriod())));
         }
     }
 
@@ -74,20 +48,7 @@ public class BaseService {
     }
 
     protected void fillUpdate(Entitlement entitlement, Entitlement existingEntitlement) {
-        if (entitlement.getPeriod() != null) {
-            existingEntitlement.setExpirationTime(new Date(existingEntitlement.getGrantTime().getTime()
-                    + TimeUnit.SECONDS.toMillis(entitlement.getPeriod())));
-        } else {
-            existingEntitlement.setExpirationTime(entitlement.getExpirationTime());
-        }
-
-        if (entitlement.getConsumable() == null || !entitlement.getConsumable()) {
-            existingEntitlement.setConsumable(false);
-        } else {
-            existingEntitlement.setConsumable(entitlement.getConsumable());
-            existingEntitlement.setUseCount(entitlement.getUseCount());
-        }
-
+        existingEntitlement.setExpirationTime(entitlement.getExpirationTime());
         existingEntitlement.setStatus(entitlement.getStatus());
         existingEntitlement.setStatusReason(entitlement.getStatusReason());
     }
@@ -106,8 +67,17 @@ public class BaseService {
             throw AppErrors.INSTANCE.fieldNotCorrect("status",
                     "status can not be DELETED or BANNED when created").exception();
         }
-        if (!entitlement.getConsumable() && entitlement.getUseCount() != null) {
-            throw AppErrors.INSTANCE.fieldNotCorrect("useCount", "useCount should be null when consumable is false").exception();
+        validateNotNull(entitlement.getType(), "type");
+        validateNotNull(entitlement.getConsumable(), "consumable");
+        validateNotNull(entitlement.getGrantTime(), "grantTime");
+        validateNotNull(entitlement.getType(), "type");
+        validateNotNull(entitlement.getGroup(), "group");
+        validateNotNull(entitlement.getTag(), "tag");
+        if (!entitlement.getConsumable()) {
+            if (entitlement.getUseCount() != null) {
+                throw AppErrors.INSTANCE.fieldNotCorrect("useCount",
+                        "useCount should be null when consumable is false").exception();
+            }
         } else if (entitlement.getUseCount() == null) {
             throw AppErrors.INSTANCE.missingField("useCount").exception();
         }
@@ -129,12 +99,12 @@ public class BaseService {
         checkOwner(existingEntitlement.getOwnerId());
         validateEquals(existingEntitlement.getUserId(), entitlement.getUserId(), "user");
         validateEquals(existingEntitlement.getOwnerId(), entitlement.getOwnerId(), "owner");
-        validateEquals(existingEntitlement.getOfferId(), entitlement.getOfferId(), "offer");
         validateEquals(existingEntitlement.getEntitlementDefinitionId(),
                 entitlement.getEntitlementDefinitionId(), "definition");
         validateEquals(existingEntitlement.getType(), entitlement.getType(), "type");
         validateEquals(existingEntitlement.getGroup(), entitlement.getGroup(), "group");
         validateEquals(existingEntitlement.getTag(), entitlement.getTag(), "tag");
+        validateEquals(existingEntitlement.getConsumable(), entitlement.getConsumable(), "consumable");
         validateEquals(existingEntitlement.getGrantTime(), entitlement.getGrantTime(), "grantTime");
         validateGrantTimeBeforeExpirationTime(existingEntitlement);
     }

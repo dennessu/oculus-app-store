@@ -52,7 +52,7 @@ public class EntitlementDaoTest extends AbstractTransactionalTestNGSpringContext
     public void testInsert() {
         Entitlement entitlement = buildAnEntitlement();
         Entitlement insertedEntitlement = entitlementRepository.insert(entitlement);
-        Assert.assertEquals(insertedEntitlement.getOfferId(), entitlement.getOfferId());
+        Assert.assertEquals(insertedEntitlement.getGroup(), entitlement.getGroup());
     }
 
     @Test
@@ -161,9 +161,7 @@ public class EntitlementDaoTest extends AbstractTransactionalTestNGSpringContext
         entitlement.setTag("TEST");
         entitlement.setType(EntitlementType.DEFAULT.toString());
         entitlement.setOwnerId(String.valueOf(idGenerator.nextId()));
-        entitlement.setOfferId(idGenerator.nextId());
         entitlement.setStatus(EntitlementStatus.ACTIVE.toString());
-        entitlement.setUseCount(0);
         return entitlement;
     }
 }
