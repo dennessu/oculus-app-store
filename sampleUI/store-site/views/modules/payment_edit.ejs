@@ -1,5 +1,5 @@
 <div class="container modules">
-    <form class="box1 create_payment" {{action "Continue" on="submit"}}>
+    <form class="box1 edit_payment" {{action "Continue" on="submit"}}>
     <h2>Enter your Payment info</h2>
     {{#if errMessage}}
     <p class="error">{{errMessage}}</p>
@@ -8,63 +8,83 @@
         <dt>Payment Type</dt>
         <dd>{{view Ember.Select content=paymentTypes optionValuePath="content.v" optionLabelPath="content.t" value=paymentType id="PaymentType" name="PaymentType" class="{required:true, ValidEmpty:true}"}}</dd>
     </dl>
-    <dl>
-        <dt>Name on Card</dt>
-        <dd>{{input type="text" id="AccountName" name="AccountName" value=accountName class="{required:true}"}}</dd>
-    </dl>
-    <dl>
-        <dt>Street Address</dt>
-        <dd>{{input type="text" id="AddressLine1" name="AddressLine1" value=addressLine1 class="{required:true}"}}</dd>
-    </dl>
-    <dl>
-        <dt>City</dt>
-        <dd>{{input type="text" id="City" name="City" value=city class="{required:true}"}}</dd>
-    </dl>
-    <dl>
-        <dt>State</dt>
-        <dd>{{input type="text" class="{required:true}" name="State" id="State" value=state}}</dd>
-    </dl>
-    <dl>
-        <dt>Zip Code</dt>
-        <dd>{{input type="text" id="PostalCode" name="PostalCode" value=postalCode class="{required:true}"}}</dd>
-    </dl>
-    <dl>
-        <dt>Phone Number</dt>
-        <dd>{{input type="text" id="PhoneNumber" name="PhoneNumber" value=phoneNumber class="{required:true}"}}</dd>
-    </dl>
+    <div class="row">
+        <dl>
+            <dt>Card #</dt>
+            <dd>{{input type="text" id="AccountNum" name="AccountNum" value=accountNum class="{required:true}"}}</dd>
+        </dl>
+        <dl>
+            <dt>Name on Card</dt>
+            <dd>{{input type="text" id="AccountName" name="AccountName" value=accountName class="{required:true}"}}</dd>
+        </dl>
+        <div class="clear"></div>
+    </div>
+
+    <div class="row">
+        <dl>
+            <dt>Exp Date</dt>
+            <dd>
+                {{view Ember.Select content=months optionValuePath="content.v" optionLabelPath="content.t" value=month id="Month" name="Month" class="month {required:true}"}}
+                {{view Ember.Select content=years optionValuePath="content.v" optionLabelPath="content.t" value=year id="Year" name="Year" class="year {required:true}"}}
+            </dd>
+        </dl>
+        <dl class="cvv">
+            <dt>CVV #</dt>
+            <dd>{{input type="text" id="EncryptedCvmCode" name="EncryptedCvmCode" value=encryptedCvmCode class="{required:true}"}}</dd>
+        </dl>
+        <div class="clear"></div>
+    </div>
+
     <dl>
         <dt>Country</dt>
         <dd>{{view Ember.Select content=countries optionValuePath="content.v" optionLabelPath="content.t" value=country id="Country" name="Country" class="{required:true, ValidEmpty:true}"}}</dd>
     </dl>
+    <div class="row">
+        <dl>
+            <dt>Street Address</dt>
+            <dd>{{input type="text" id="AddressLine1" name="AddressLine1" value=addressLine1 class="{required:true}"}}</dd>
+        </dl>
+        <dl>
+            <dt>City</dt>
+            <dd>{{input type="text" id="City" name="City" value=city class="{required:true}"}}</dd>
+        </dl>
+        <div class="clear"></div>
+    </div>
+
+    <div class="row">
+        <dl>
+            <dt>State</dt>
+            <dd>{{input type="text" class="{required:true}" name="State" id="State" value=state}}</dd>
+        </dl>
+        <dl>
+            <dt>Zip Code</dt>
+            <dd>{{input type="text" id="PostalCode" name="PostalCode" value=postalCode class="{required:true}"}}</dd>
+        </dl>
+        <div class="clear"></div>
+    </div>
+
     <dl>
-        <dt>Card #</dt>
-        <dd>{{input type="text" id="AccountNum" name="AccountNum" value=accountNum class="{required:true}"}}</dd>
+        <dt>Phone Number</dt>
+        <dd>{{input type="text" id="PhoneNumber" name="PhoneNumber" value=phoneNumber class="{required:true}"}}</dd>
     </dl>
-    <dl>
-        <dt>Exp Date</dt>
-        <dd>
-            {{view Ember.Select content=months optionValuePath="content.v" optionLabelPath="content.t" value=month id="Month" name="Month" class="month {required:true}"}}
-            {{view Ember.Select content=years optionValuePath="content.v" optionLabelPath="content.t" value=year id="Year" name="Year" class="year {required:true}"}}
-        </dd>
-    </dl>
-    <dl class="cvv">
-        <dt>CVV #</dt>
-        <dd>{{input type="text" id="EncryptedCvmCode" name="EncryptedCvmCode" value=encryptedCvmCode class="{required:true}"}}</dd>
-    </dl>
+
     {{#if isHolder}}
     <div class="line1"></div>
     <dl>
         <dt>Relationship to Payment Holder</dt>
         <dd>{{view Ember.Select content=paymentHolderType optionValuePath="content.v" optionLabelPath="content.t" value=relationship id="HolderType" name="HolderType" class="{required:true}"}}</dd>
     </dl>
-    <dl>
-        <dt>Payment Holder's Phone Number</dt>
-        <dd>{{input type="text" id="HolderPhoneNumber" name="HolderPhoneNumber" value=holderPhoneNumber class="{required:true}"}}</dd>
-    </dl>
-    <dl>
-        <dt>Payment Holder's Email Address</dt>
-        <dd>{{input type="email" id="HolderEmail" name="HolderEmail" value=email class="{required:true}"}}</dd>
-    </dl>
+    <div class="row">
+        <dl>
+            <dt>Payment Holder's Phone Number</dt>
+            <dd>{{input type="text" id="HolderPhoneNumber" name="HolderPhoneNumber" value=holderPhoneNumber class="{required:true}"}}</dd>
+        </dl>
+        <dl>
+            <dt>Payment Holder's Email Address</dt>
+            <dd>{{input type="email" id="HolderEmail" name="HolderEmail" value=email class="{required:true}"}}</dd>
+        </dl>
+        <div class="clear"></div>
+    </div>
     {{/if}}
 
     <div class="actions">

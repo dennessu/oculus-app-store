@@ -97,13 +97,7 @@ public class ItemServiceImpl extends HttpClientBase implements ItemService {
         Item itemForPost = prepareItemEntity(defaultItemFileName);
         itemForPost.setType(itemType.getItemType());
 
-        String responseBody = restApiCall(HTTPMethod.POST, catalogServerURL, itemForPost, 200);
-        Item itemGet = new JsonMessageTranscoder().decode(new TypeReference<Item>() {},
-                responseBody);
-        String itemRtnId = IdConverter.idLongToHexString(ItemId.class, itemGet.getId());
-        Master.getInstance().addItem(itemRtnId, itemGet);
-
-        return itemRtnId;
+        return postItem(itemForPost);
     }
 
     public String postItem(Item item) throws Exception {

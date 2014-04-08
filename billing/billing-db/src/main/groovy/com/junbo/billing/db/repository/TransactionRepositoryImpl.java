@@ -42,8 +42,6 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         entity.setCreatedTime(new Date());
         Long id = transactionEntityDao.insert(entity);
 
-        transactionEntityDao.flush();
-
         return getTransaction(id);
     }
 
@@ -80,8 +78,6 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         savedEntity.setModifiedBy("BILLING");
         savedEntity.setModifiedTime(new Date());
         transactionEntityDao.update(savedEntity);
-
-        transactionEntityDao.flush();
 
         return getTransaction(entity.getTransactionId());
     }

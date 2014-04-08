@@ -14,6 +14,7 @@ import com.junbo.order.db.dao.*
 import com.junbo.order.db.entity.*
 import com.junbo.order.db.mapper.ModelMapper
 import com.junbo.order.db.repo.OrderRepository
+import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.*
 import com.junbo.sharding.IdGenerator
 import com.junbo.sharding.IdGeneratorFacade
@@ -114,7 +115,7 @@ class OrderRepositoryImpl implements OrderRepository {
     OrderEvent createOrderEvent(OrderEvent event) {
         assert (event != null && event.order != null)
         LOGGER.info('name=Create_Order_Event, event: {},{},{},{},{}',
-                event.flowType, event.order.value, event.action, event.status, event.trackingUuid)
+                event.flowName, event.order.value, event.action, event.status, event.trackingUuid)
         def entity = modelMapper.toOrderEventEntity(event, new MappingContext())
         entity.eventId = idGenerator.nextId(entity.orderId)
         orderEventDao.create(entity)
@@ -172,8 +173,12 @@ class OrderRepositoryImpl implements OrderRepository {
     Order updateOrder(Order order, boolean updateOnlyOrder) {
         // Validations
         // TODO Log error and throw exception
-        if (order == null) { return null }
-        if (order.id == null) { return null }
+        if (order == null) {
+            return null
+        }
+        if (order.id == null) {
+            return null
+        }
         def oldEntity = orderDao.read(order.id.value)
         if (oldEntity == null) {
             throw new IllegalArgumentException('name=Order_Not_Found')
@@ -196,16 +201,14 @@ class OrderRepositoryImpl implements OrderRepository {
 
     @Override
     Order getOrderByTrackingUuid(UUID trackingUuid) {
-        def orderEvents = orderEventDao.readByTrackingUuid(trackingUuid)
-        if (CollectionUtils.isEmpty(orderEvents)) {
+        def orders = orderDao.readByTrackingUuid(trackingUuid)
+        if (CollectionUtils.isEmpty(orders)) {
             return null
         }
 
-        // assert all the order events are linked to the same order
-        checkEventsOrder(orderEvents, orderEvents[0].orderId)
-
-        def orderEntity = orderDao.read(orderEvents[0].orderId)
-        return modelMapper.toOrderModel(orderEntity, new MappingContext())
+        // assert only one order is returned.
+        checkOrdersByTrackingUuid(orders)
+        return modelMapper.toOrderModel(orders[0], new MappingContext())
     }
 
     @Override
@@ -400,21 +403,19 @@ class OrderRepositoryImpl implements OrderRepository {
         orderPaymentInfoDao.create(orderPaymentInfoEntity)
     }
 
-    void fillDateInfo (BaseModelWithDate baseModelWithDate, CommonDbEntityWithDate commonDbEntityWithDate) {
+    void fillDateInfo(BaseModelWithDate baseModelWithDate, CommonDbEntityWithDate commonDbEntityWithDate) {
         baseModelWithDate.createdBy = commonDbEntityWithDate.createdBy
         baseModelWithDate.createdTime = commonDbEntityWithDate.createdTime
         baseModelWithDate.updatedBy = commonDbEntityWithDate.updatedBy
         baseModelWithDate.updatedTime = commonDbEntityWithDate.updatedTime
     }
 
-    static void checkEventsOrder(List<OrderEventEntity> orderEvents, Long orderId) {
-        for (OrderEventEntity event: orderEvents) {
-            if (event.orderId != orderId) {
-                LOGGER.error('name=Order_Events_Order_Id_Inconsistent, ' +
-                        'orderEventId={}, trackingGUID={}, expectedOrderId={}, actualOrderId={}',
-                        event.eventId, event.trackingUuid, orderId, event.orderId)
-                return
-            }
+    static void checkOrdersByTrackingUuid(List<OrderEntity> orders) {
+        if (orders.size() > 1) {
+            LOGGER.error('name=Multiple_Orders_With_Same_TrackingUuid, ' +
+                    'trackingUuid={}',
+                    orders[0].trackingUuid)
+            throw AppErrors.INSTANCE.orderDuplicateTrackingGuid().exception()
         }
     }
 }

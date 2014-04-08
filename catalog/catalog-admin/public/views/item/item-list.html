@@ -12,10 +12,10 @@
       </tr>
     </thead>
     <tbody>
-      <tr ng-repeat="item in items">
-        <td><a href="#/items/{{ item.self.id }}">{{ item.self.id }}</a></td>
-        <td>{{ item.name }}</td>
-          <td>{{ item.status }}</td>
+      <tr ng-repeat="item in items | filter: user_id">
+            <td><a href="#/items/{{ item.self.id }}">{{ item.self.id }}</a></td>
+            <td>{{ item.name }}</td>
+            <td>{{ item.status }}</td>
       </tr>
     </tbody>
   </table>

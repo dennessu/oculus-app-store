@@ -24,7 +24,7 @@ public class OrderEvent extends BaseEventModel {
     private UUID eventTrackingUuid;
 
     @JsonIgnore
-    private String flowType;
+    private String flowName;
 
     public OrderEventId getId() {
         return id;
@@ -50,11 +50,11 @@ public class OrderEvent extends BaseEventModel {
         this.eventTrackingUuid = eventTrackingUuid;
     }
 
-    public String getFlowType() {
-        return flowType;
+    public String getFlowName() {
+        return flowName;
     }
 
-    public void setFlowType(String flowType) {
-        this.flowType = flowType;
+    public void setFlowName(String flowName) {
+        this.flowName = flowName;
     }
 }

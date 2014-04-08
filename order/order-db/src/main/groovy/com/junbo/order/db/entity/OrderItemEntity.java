@@ -34,7 +34,6 @@ public class OrderItemEntity extends CommonDbEntityDeletable {
     private String productItemId;
     private BigDecimal unitPrice;
     private Integer quantity;
-    private String federatedId;
     private String properties;
     private Long shippingAddressId;
     private Long shippingMethodId;
@@ -110,15 +109,6 @@ public class OrderItemEntity extends CommonDbEntityDeletable {
 
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
-    }
-
-    @Column(name = "FEDERATED_ID")
-    public String getFederatedId() {
-        return federatedId;
-    }
-
-    public void setFederatedId(String federatedId) {
-        this.federatedId = federatedId;
     }
 
     @Column(name = "PROPERTIES")

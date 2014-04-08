@@ -133,7 +133,7 @@ class OrderEventAspect {
             orderEvent.status = EventStatus.OPEN.toString()
             orderEvent.trackingUuid = getTrackingUuid(jp)
             orderEvent.eventTrackingUuid = UUID.randomUUID()
-            orderEvent.flowType = getFlowType(jp)
+            orderEvent.flowName = getFlowName(jp)
             return orderEvent
         }
         return null
@@ -162,9 +162,9 @@ class OrderEventAspect {
         return orderEventAwareAction?.orderActionType
     }
 
-    private String getFlowType(JoinPoint jp) {
+    private String getFlowName(JoinPoint jp) {
         ActionContext context = getActionContext(jp)
-        return ActionUtils.getFlowType(context)
+        return ActionUtils.getFlowName(context)
     }
 
     private UUID getTrackingUuid(JoinPoint jp) {

@@ -45,7 +45,6 @@ public class ShippingAddressRepositoryImpl implements ShippingAddressRepository 
         sae.setRequestorId("GOD");
 
         shippingAddressEntityDao.insert(sae);
-        shippingAddressEntityDao.flush();
 
         return getShippingAddress(sae.getAddressId());
     }

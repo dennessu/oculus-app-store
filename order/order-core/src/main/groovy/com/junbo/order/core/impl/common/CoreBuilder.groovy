@@ -43,7 +43,7 @@ class CoreBuilder {
         balance.piId = order.paymentInstruments?.get(0)
         balance.type = balanceType.toString()
         balance.trackingUuid = UUID.randomUUID()
-        balance.shippingAddressId = order.shippingAddressId
+        balance.shippingAddressId = order.shippingAddress
 
         order.orderItems.eachWithIndex { OrderItem item, int i ->
             def balanceItem = buildBalanceItem(item)
@@ -160,12 +160,12 @@ class CoreBuilder {
     }
 
     static OrderEvent buildOrderEvent(OrderId orderId, OrderActionType action,
-                                      EventStatus status, String flowType, UUID trackingUuid) {
+                                      EventStatus status, String flowName, UUID trackingUuid) {
         def event = new OrderEvent()
         event.order = orderId
         event.action = action
         event.status = status.name()
-        event.flowType = flowType
+        event.flowName = flowName
         event.trackingUuid = trackingUuid
         return event
     }
