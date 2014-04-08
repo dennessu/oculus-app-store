@@ -16,12 +16,13 @@
         <property name="applicationContextSchedulerContextKey" value="applicationContext" />
     </bean>
 
-    <!-- Billing Balance Process Job Trigger -->
+    <!-- Order Job Trigger -->
     <bean id="orderJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean" >
         <property name="jobDetail" ref="orderJobDetail" />
-        <property name="cronExpression" value="${order.jobs.balanceprocess.cronexpression}" />
+        <property name="cronExpression" value="${order.jobs.orderjob.cronexpression}" />
     </bean>
 
+    <!-- Order Job -->
     <bean id="orderJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
         <property name="targetObject" ref="orderJob" />
         <property name="targetMethod" value="execute" />
