@@ -282,7 +282,7 @@
 			  
 			  primary key (id)
 			);
-            
+
             create table device (
              id bigint not null,
              
@@ -296,6 +296,36 @@
             modified_by varchar(255),
              
              primary key (id)
+            );
+
+            CREATE TABLE role (
+                id BIGINT NOT NULL,
+                name VARCHAR(256) NOT NULL,
+                resource_type VARCHAR(256),
+                resource_id BIGINT,
+                sub_resource_type VARCHAR(256),
+                active BOOLEAN,
+                version BIGINT NOT NULL,
+                created_time TIMESTAMP,
+                created_by VARCHAR(256),
+                modified_time TIMESTAMP,
+                modified_by VARCHAR(256),
+                PRIMARY KEY(id)
+            );
+
+            CREATE TABLE role_assignment (
+                id BIGINT NOT NULL,
+                role_id BIGINT NOT NULL,
+                assignee_type VARCHAR(256),
+                assignee_id BIGINT,
+                sub_resource_type VARCHAR(256),
+                active BOOLEAN,
+                version BIGINT NOT NULL,
+                created_time TIMESTAMP,
+                created_by VARCHAR(256),
+                modified_time TIMESTAMP,
+                modified_by VARCHAR(256),
+                PRIMARY KEY(id)
             );
         ]]></sql>
     </changeSet>
