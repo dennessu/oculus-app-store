@@ -3,17 +3,18 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.test.common.apihelper.billing.impl;
+package com.junbo.test.billing.apihelper.impl;
 
 import com.junbo.billing.spec.model.ShippingAddress;
-import com.junbo.test.common.apihelper.HttpClientBase;
-import com.junbo.test.common.apihelper.billing.ShippingAddressService;
 import com.junbo.common.json.JsonMessageTranscoder;
-import com.junbo.test.common.blueprint.Master;
 import com.junbo.langur.core.client.TypeReference;
+import com.junbo.test.billing.apihelper.ShippingAddressService;
+import com.junbo.test.common.apihelper.HttpClientBase;
+
+import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
-import com.junbo.test.common.libs.RestUrl;
 import com.junbo.test.common.libs.LogHelper;
+import com.junbo.test.common.libs.RestUrl;
 
 import java.util.List;
 

@@ -5,6 +5,7 @@
  */
 package com.junbo.test.common.blueprint;
 
+import com.junbo.billing.spec.model.Balance;
 import com.junbo.billing.spec.model.ShippingAddress;
 import com.junbo.cart.spec.model.Cart;
 import com.junbo.catalog.spec.model.offer.Offer;
@@ -45,6 +46,7 @@ public class Master {
     private Map<String, Attribute> attributes;
     private Map<String, PaymentInstrument> paymentInstruments;
     private Map<String, Entitlement> entitlements;
+    private Map<String, Balance> balances;
 
     public void initializeMaster() {
         this.initializeUsers();
@@ -121,6 +123,13 @@ public class Master {
         this.paymentInstruments.clear();
     }
 
+    public void initializeBalances() {
+        if (this.balances == null) {
+            this.balances = new HashMap<>();
+        }
+        this.balances.clear();
+    }
+
     public void addUser(String userId, User user) {
         if (this.users.containsKey(userId)) {
             this.users.remove(userId);
@@ -187,6 +196,13 @@ public class Master {
         this.entitlements.put(entitlementId, entitlement);
     }
 
+    public void addBalances(String balanceId, Balance balance) {
+        if (this.balances.containsKey(balanceId)) {
+            this.balances.remove(balanceId);
+        }
+        this.balances.put(balanceId, balance);
+    }
+
     public User getUser(String userId) {
         return this.users.get(userId);
     }
@@ -247,6 +263,10 @@ public class Master {
         return this.entitlements.get(entitlementId);
     }
 
+    public Balance getBalance(String balanceId) {
+        return this.balances.get(balanceId);
+    }
+
     public void removeShippingAddress(String addressId) {
         if (this.shippingAddresses.containsKey(addressId)) {
             this.shippingAddresses.remove(addressId);
@@ -256,6 +276,12 @@ public class Master {
     public void removePaymentInstrument(String paymentInstrumentId) {
         if (this.paymentInstruments.containsKey(paymentInstrumentId)) {
             this.paymentInstruments.remove(paymentInstrumentId);
+        }
+    }
+
+    public void removeBalance(String balanceId) {
+        if (this.balances.containsKey(balanceId)) {
+            this.balances.remove(balanceId);
         }
     }
 
