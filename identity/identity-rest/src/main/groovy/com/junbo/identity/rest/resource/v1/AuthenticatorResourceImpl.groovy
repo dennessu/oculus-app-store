@@ -1,24 +1,17 @@
-/*
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
- *
- * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
- */
-package com.junbo.identity.rest.resource
+package com.junbo.identity.rest.resource.v1
 
 import com.junbo.common.id.Id
 import com.junbo.common.id.UserAuthenticatorId
-import com.junbo.common.id.UserId
 import com.junbo.common.model.Results
 import com.junbo.identity.core.service.Created201Marker
 import com.junbo.identity.core.service.filter.UserAuthenticatorFilter
-
 import com.junbo.identity.core.service.validator.UserAuthenticatorValidator
 import com.junbo.identity.data.repository.UserAuthenticatorRepository
 import com.junbo.identity.spec.error.AppErrors
-import com.junbo.identity.spec.model.users.UserAuthenticator
-import com.junbo.identity.spec.options.entity.UserAuthenticatorGetOptions
-import com.junbo.identity.spec.options.list.UserAuthenticatorListOptions
-import com.junbo.identity.spec.resource.UserAuthenticatorResource
+import com.junbo.identity.spec.v1.model.UserAuthenticator
+import com.junbo.identity.spec.v1.option.list.AuthenticatorListOptions
+import com.junbo.identity.spec.v1.option.model.AuthenticatorGetOptions
+import com.junbo.identity.spec.v1.resource.AuthenticatorResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
@@ -26,18 +19,18 @@ import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 
-import javax.ws.rs.BeanParam
 import javax.ws.rs.ext.Provider
 
 /**
- * Created by liangfu on 3/14/14.
+ * Created by xiali_000 on 4/8/2014.
  */
 @Provider
 @Component
 @Scope('prototype')
 @Transactional
 @CompileStatic
-class UserAuthenticatorResourceImpl implements UserAuthenticatorResource {
+class AuthenticatorResourceImpl implements AuthenticatorResource {
+
     @Autowired
     private UserAuthenticatorRepository userAuthenticatorRepository
 
@@ -51,14 +44,14 @@ class UserAuthenticatorResourceImpl implements UserAuthenticatorResource {
     private UserAuthenticatorValidator userAuthenticatorValidator
 
     @Override
-    Promise<UserAuthenticator> create(UserId userId, UserAuthenticator userAuthenticator) {
+    Promise<UserAuthenticator> create(UserAuthenticator userAuthenticator) {
         if (userAuthenticator == null) {
             throw new IllegalArgumentException('userAuthenticator is null')
         }
 
         userAuthenticator = userAuthenticatorFilter.filterForCreate(userAuthenticator)
 
-        userAuthenticatorValidator.validateForCreate(userId, userAuthenticator).then {
+        userAuthenticatorValidator.validateForCreate(userAuthenticator).then {
             userAuthenticatorRepository.create(userAuthenticator).then { UserAuthenticator newUserAuthenticator ->
                 created201Marker.mark((Id)newUserAuthenticator.id)
 
@@ -69,11 +62,7 @@ class UserAuthenticatorResourceImpl implements UserAuthenticatorResource {
     }
 
     @Override
-    Promise<UserAuthenticator> put(UserId userId, UserAuthenticatorId userAuthenticatorId,
-                                          UserAuthenticator userAuthenticator) {
-        if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
-        }
+    Promise<UserAuthenticator> put(UserAuthenticatorId userAuthenticatorId, UserAuthenticator userAuthenticator) {
 
         if (userAuthenticatorId == null) {
             throw new IllegalArgumentException('userAuthenticatorId is null')
@@ -90,7 +79,7 @@ class UserAuthenticatorResourceImpl implements UserAuthenticatorResource {
 
             userAuthenticator = userAuthenticatorFilter.filterForPut(userAuthenticator, oldUserAuthenticator)
 
-            userAuthenticatorValidator.validateForUpdate(userId,
+            userAuthenticatorValidator.validateForUpdate(
                     userAuthenticatorId, userAuthenticator, oldUserAuthenticator).then {
                 userAuthenticatorRepository.update(userAuthenticator).then { UserAuthenticator newUserAuthenticator ->
                     newUserAuthenticator = userAuthenticatorFilter.filterForGet(newUserAuthenticator, null)
@@ -101,11 +90,7 @@ class UserAuthenticatorResourceImpl implements UserAuthenticatorResource {
     }
 
     @Override
-    Promise<UserAuthenticator> patch(UserId userId, UserAuthenticatorId userAuthenticatorId,
-                                            UserAuthenticator userAuthenticator) {
-        if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
-        }
+    Promise<UserAuthenticator> patch(UserAuthenticatorId userAuthenticatorId, UserAuthenticator userAuthenticator) {
 
         if (userAuthenticatorId == null) {
             throw new IllegalArgumentException('userAuthenticatorId is null')
@@ -122,7 +107,7 @@ class UserAuthenticatorResourceImpl implements UserAuthenticatorResource {
 
             userAuthenticator = userAuthenticatorFilter.filterForPatch(userAuthenticator, oldUserAuthenticator)
 
-            userAuthenticatorValidator.validateForUpdate(userId,
+            userAuthenticatorValidator.validateForUpdate(
                     userAuthenticatorId, userAuthenticator, oldUserAuthenticator).then {
                 userAuthenticatorRepository.update(userAuthenticator).then { UserAuthenticator newUserAuthenticator ->
                     newUserAuthenticator = userAuthenticatorFilter.filterForGet(newUserAuthenticator, null)
@@ -133,47 +118,23 @@ class UserAuthenticatorResourceImpl implements UserAuthenticatorResource {
     }
 
     @Override
-    Promise<Void> delete(UserId userId, UserAuthenticatorId userAuthenticatorId) {
-        return userAuthenticatorValidator.validateForGet(userId, userAuthenticatorId).then {
-            userAuthenticatorRepository.delete(userAuthenticatorId)
-
-            return Promise.pure(null)
-        }
-    }
-
-    @Override
-    Promise<UserAuthenticator> get(UserId userId, UserAuthenticatorId userAuthenticatorId,
-                                          @BeanParam UserAuthenticatorGetOptions getOptions) {
+    Promise<UserAuthenticator> get(UserAuthenticatorId userAuthenticatorId, AuthenticatorGetOptions getOptions) {
 
         if (getOptions == null) {
             throw new IllegalArgumentException('getOptions is null')
         }
 
-        userAuthenticatorValidator.validateForGet(userId, userAuthenticatorId).then { UserAuthenticator authenticator ->
+        userAuthenticatorValidator.validateForGet(userAuthenticatorId).then { UserAuthenticator authenticator ->
             authenticator = userAuthenticatorFilter.filterForGet(authenticator,
                     getOptions.properties?.split(',') as List<String>)
 
             return Promise.pure(authenticator)
         }
+
     }
 
     @Override
-    Promise<Results<UserAuthenticator>> list(UserId userId,
-                                                    @BeanParam UserAuthenticatorListOptions listOptions) {
-        if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
-        }
-
-        if (listOptions == null) {
-            throw new IllegalArgumentException('listOptions is null')
-        }
-
-        listOptions.setUserId(userId)
-        return list(listOptions)
-    }
-
-    @Override
-    Promise<Results<UserAuthenticator>> list(@BeanParam UserAuthenticatorListOptions listOptions) {
+    Promise<Results<UserAuthenticator>> list(AuthenticatorListOptions listOptions) {
         if (listOptions == null) {
             throw new IllegalArgumentException('listOptions is null')
         }

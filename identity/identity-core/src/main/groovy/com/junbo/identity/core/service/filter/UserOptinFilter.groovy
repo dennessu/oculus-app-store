@@ -1,5 +1,6 @@
 package com.junbo.identity.core.service.filter
-import com.junbo.identity.spec.model.users.UserOptin
+
+import com.junbo.identity.spec.v1.model.UserOptin
 import com.junbo.oom.core.MappingContext
 import groovy.transform.CompileStatic
 /**

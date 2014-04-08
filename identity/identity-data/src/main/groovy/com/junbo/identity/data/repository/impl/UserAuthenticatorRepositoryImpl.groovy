@@ -10,8 +10,8 @@ import com.junbo.identity.data.dao.UserAuthenticatorDAO
 import com.junbo.identity.data.entity.user.UserAuthenticatorEntity
 import com.junbo.identity.data.mapper.ModelMapper
 import com.junbo.identity.data.repository.UserAuthenticatorRepository
-import com.junbo.identity.spec.model.users.UserAuthenticator
-import com.junbo.identity.spec.options.list.UserAuthenticatorListOptions
+import com.junbo.identity.spec.v1.model.UserAuthenticator
+import com.junbo.identity.spec.v1.option.list.AuthenticatorListOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oom.core.MappingContext
 import groovy.transform.CompileStatic
@@ -54,7 +54,7 @@ class UserAuthenticatorRepositoryImpl implements UserAuthenticatorRepository {
     }
 
     @Override
-    Promise<List<UserAuthenticator>> search(UserAuthenticatorListOptions getOption) {
+    Promise<List<UserAuthenticator>> search(AuthenticatorListOptions getOption) {
         def result = []
         if (getOption != null && getOption.userId != null) {
             def entities = authenticatorDAO.search(getOption.userId.value, getOption)

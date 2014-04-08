@@ -11,6 +11,8 @@ import com.junbo.identity.data.identifiable.UserPasswordStrength
 import com.junbo.identity.data.repository.*
 import com.junbo.identity.spec.model.users.*
 import com.junbo.identity.spec.options.list.*
+import com.junbo.identity.spec.v1.model.UserAuthenticator
+import com.junbo.identity.spec.v1.option.list.AuthenticatorListOptions
 import groovy.transform.CompileStatic
 import org.glassfish.jersey.internal.util.Base64
 import org.springframework.beans.factory.annotation.Autowired
@@ -116,7 +118,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
     @Test(enabled = true)
     public void testGroupRepository() {
         Group group = new Group()
-        group.setName('test ' + UUID.randomUUID().toString())
+        group.setName(UUID.randomUUID().toString())
         group.setActive(true)
         group.setCreatedTime(new Date())
         group = groupRepository.create(group).wrapped().get()
@@ -216,7 +218,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
 
         Assert.assertEquals(newValue, newUserAuthenticator.getValue())
 
-        UserAuthenticatorListOptions getOption = new UserAuthenticatorListOptions()
+        AuthenticatorListOptions getOption = new AuthenticatorListOptions()
         getOption.setValue(newValue)
         List<UserAuthenticator> userAuthenticators = userAuthenticatorRepository.search(getOption).wrapped().get()
         assert userAuthenticators.size() != 0

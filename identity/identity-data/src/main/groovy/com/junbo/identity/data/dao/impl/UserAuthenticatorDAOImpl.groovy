@@ -7,7 +7,7 @@ package com.junbo.identity.data.dao.impl
 
 import com.junbo.identity.data.dao.UserAuthenticatorDAO
 import com.junbo.identity.data.entity.user.UserAuthenticatorEntity
-import com.junbo.identity.spec.options.list.UserAuthenticatorListOptions
+import com.junbo.identity.spec.v1.option.list.AuthenticatorListOptions
 import groovy.transform.CompileStatic
 import org.apache.commons.collections.CollectionUtils
 import org.hibernate.Criteria
@@ -45,7 +45,7 @@ class UserAuthenticatorDAOImpl extends BaseDAO implements UserAuthenticatorDAO {
     }
 
     @Override
-    List<UserAuthenticatorEntity> search(Long userId, UserAuthenticatorListOptions getOption) {
+    List<UserAuthenticatorEntity> search(Long userId, AuthenticatorListOptions getOption) {
         Criteria criteria = currentSession(userId).createCriteria(UserAuthenticatorEntity)
         criteria.add(Restrictions.eq('userId', getOption.userId.value))
         if (getOption.type != null) {

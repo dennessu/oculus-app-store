@@ -7,6 +7,16 @@ package com.junbo.identity.core.service.filter;
 
 import com.junbo.identity.spec.model.domaindata.SecurityQuestion;
 import com.junbo.identity.spec.model.users.*;
+import com.junbo.identity.spec.v1.model.*;
+import com.junbo.identity.spec.v1.model.Group;
+import com.junbo.identity.spec.v1.model.User;
+import com.junbo.identity.spec.v1.model.UserAuthenticator;
+import com.junbo.identity.spec.v1.model.UserDevice;
+import com.junbo.identity.spec.v1.model.UserEmail;
+import com.junbo.identity.spec.v1.model.UserGroup;
+import com.junbo.identity.spec.v1.model.UserOptin;
+import com.junbo.identity.spec.v1.model.UserPhoneNumber;
+import com.junbo.identity.spec.v1.model.UserSecurityQuestion;
 import com.junbo.oom.core.Mapper;
 import com.junbo.oom.core.MappingContext;
 

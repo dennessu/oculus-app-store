@@ -1,6 +1,6 @@
 package com.junbo.identity.core.service.filter
 
-import com.junbo.identity.spec.model.users.UserGroup
+import com.junbo.identity.spec.v1.model.UserGroup
 import com.junbo.oom.core.MappingContext
 import groovy.transform.CompileStatic
 

@@ -6,8 +6,8 @@
 package com.junbo.identity.data.repository
 
 import com.junbo.common.id.UserAuthenticatorId
-import com.junbo.identity.spec.model.users.UserAuthenticator
-import com.junbo.identity.spec.options.list.UserAuthenticatorListOptions
+import com.junbo.identity.spec.v1.model.UserAuthenticator
+import com.junbo.identity.spec.v1.option.list.AuthenticatorListOptions
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 
@@ -24,7 +24,7 @@ interface UserAuthenticatorRepository {
 
     Promise<UserAuthenticator> get(UserAuthenticatorId id)
 
-    Promise<List<UserAuthenticator>> search(UserAuthenticatorListOptions getOption)
+    Promise<List<UserAuthenticator>> search(AuthenticatorListOptions getOption)
 
     Promise<Void> delete(UserAuthenticatorId id)
 }

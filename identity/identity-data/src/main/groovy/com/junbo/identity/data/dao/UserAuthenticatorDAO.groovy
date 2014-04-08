@@ -6,7 +6,7 @@
 package com.junbo.identity.data.dao
 
 import com.junbo.identity.data.entity.user.UserAuthenticatorEntity
-import com.junbo.identity.spec.options.list.UserAuthenticatorListOptions
+import com.junbo.identity.spec.v1.option.list.AuthenticatorListOptions
 
 /**
  * User Federation DAO is used to fetch/update/delete/get user
@@ -21,7 +21,7 @@ interface UserAuthenticatorDAO {
     UserAuthenticatorEntity get(Long id)
 
     // only possible when userId is existing
-    List<UserAuthenticatorEntity> search(Long userId, UserAuthenticatorListOptions getOption)
+    List<UserAuthenticatorEntity> search(Long userId, AuthenticatorListOptions getOption)
 
     UserAuthenticatorEntity getIdByAuthenticatorValue(String value)
 
