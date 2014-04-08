@@ -15,12 +15,12 @@ public interface BalanceService {
 
     String postBalance(String uid, Balance balance, int expectedResponseCode) throws Exception;
 
-    String getBalanceByBalanceId(String balanceId) throws Exception;
+    String getBalanceByBalanceId(String uid, String balanceId) throws Exception;
 
-    String getBalanceByBalanceId(String balanceId, int expectedResponseCode) throws Exception;
+    String getBalanceByBalanceId(String uid, String balanceId, int expectedResponseCode) throws Exception;
 
-    String getBalanceByOrderId(String orderId) throws  Exception;
+    String getBalanceByOrderId(String uid, String orderId) throws Exception;
 
-    String getBalanceByOrderId(String orderId, int expectedResponseCode) throws  Exception;
+    String getBalanceByOrderId(String uid, String orderId, int expectedResponseCode) throws Exception;
 
 }

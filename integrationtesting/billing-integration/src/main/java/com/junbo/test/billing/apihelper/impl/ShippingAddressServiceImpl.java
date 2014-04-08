@@ -6,16 +6,18 @@
 package com.junbo.test.billing.apihelper.impl;
 
 import com.junbo.billing.spec.model.ShippingAddress;
+import com.junbo.common.id.ShippingAddressId;
 import com.junbo.common.json.JsonMessageTranscoder;
+import com.junbo.common.model.Results;
 import com.junbo.langur.core.client.TypeReference;
 import com.junbo.test.billing.apihelper.ShippingAddressService;
 import com.junbo.test.common.apihelper.HttpClientBase;
 
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
-import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.common.libs.RestUrl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,9 +26,6 @@ import java.util.List;
 public class ShippingAddressServiceImpl extends HttpClientBase implements ShippingAddressService {
 
     private static String shippingAddressUrl = RestUrl.getRestUrl(RestUrl.ComponentName.COMMERCE);
-
-    private LogHelper logger = new LogHelper(ShippingAddressServiceImpl.class);
-
     private static ShippingAddressService instance;
 
     public static synchronized ShippingAddressService getInstance() {
@@ -60,28 +59,18 @@ public class ShippingAddressServiceImpl extends HttpClientBase implements Shippi
 
     @Override
     public List<String> getShippingAddresses(String uid) throws Exception {
-        /*
-        Results<ShippingAddress> shippingAddressResults =
-                restApiCall(HTTPMethod.GET, shippingAddressUrl + uid, 200);
-
-        List<String> addressIdList = new ArrayList<>();
-        for (ShippingAddress address : shippingAddressResults.getItems()) {
-            String addressId = IdConverter.idLongToHexString(
-                    ShippingAddressId.class, address.getAddressId().getValue());
-            Master.getInstance().addShippingAddress(addressId, address);
-            addressIdList.add(addressId);
-        }
-
-        return addressIdList;
-        */
-        return null;
+        return getShippingAddresses(uid, 200);
     }
 
     @Override
     public List<String> getShippingAddresses(String uid, int expectedResponseCode) throws Exception {
-    /*
+        String responseBody = restApiCall(HTTPMethod.GET, shippingAddressUrl +
+                "users/" + uid + "/ship-to-info", expectedResponseCode);
+
         Results<ShippingAddress> shippingAddressResults =
-                restApiCall(HTTPMethod.GET, shippingAddressUrl + uid, expectedResponseCode);
+                new JsonMessageTranscoder().decode(
+                        new TypeReference<Results<ShippingAddress>>() {
+                        }, responseBody);
 
         List<String> addressIdList = new ArrayList<>();
         for (ShippingAddress address : shippingAddressResults.getItems()) {
@@ -92,40 +81,47 @@ public class ShippingAddressServiceImpl extends HttpClientBase implements Shippi
         }
 
         return addressIdList;
-        */
-        return null;
     }
 
     @Override
     public String getShippingAddress(String uid, String addressId) throws Exception {
-    /*
         return getShippingAddress(uid, addressId, 200);
-        */
-        return null;
     }
 
     @Override
     public String getShippingAddress(String uid, String addressId, int expectedResponseCode) throws Exception {
-    /*
-        ShippingAddress shippingAddressResult =
-                restApiCall(HTTPMethod.GET, shippingAddressUrl + uid, expectedResponseCode);
-        String shippingAddressId = IdConverter.idLongToHexString(
-                ShippingAddressId.class, shippingAddressResult.getAddressId().getValue());
-        Master.getInstance().addShippingAddress(addressId, shippingAddressResult);
-        return shippingAddressId;
-        */
-        return null;
+        String responseBody = restApiCall(HTTPMethod.GET, shippingAddressUrl +
+                "users/" + uid + "/ship-to-info/" + addressId, expectedResponseCode);
+
+        ShippingAddress shippingResult =
+                new JsonMessageTranscoder().decode(
+                        new TypeReference<ShippingAddress>() {
+                        }, responseBody);
+
+        addressId = IdConverter.idToHexString(shippingResult.getAddressId());
+        Master.getInstance().addShippingAddress(addressId, shippingResult);
+
+        return addressId;
 
     }
 
     @Override
     public void deleteShippingAddress(String uid, String addressId) throws Exception {
-        restApiCall(HTTPMethod.DELETE, shippingAddressUrl + uid, 200);
+        deleteShippingAddress(uid, addressId, 204);
+
     }
 
     @Override
     public void deleteShippingAddress(String uid, String addressId, int expectedResponseCode) throws Exception {
-        restApiCall(HTTPMethod.DELETE, shippingAddressUrl + uid, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.DELETE, shippingAddressUrl +
+                "users/" + uid + "/ship-to-info/" + addressId, expectedResponseCode);
+
+        ShippingAddress shippingResult =
+                new JsonMessageTranscoder().decode(
+                        new TypeReference<ShippingAddress>() {
+                        }, responseBody);
+
+        addressId = IdConverter.idToHexString(shippingResult.getAddressId());
         Master.getInstance().removeShippingAddress(addressId);
     }
 
