@@ -24,7 +24,7 @@ import java.util.Date;
         "id", "status", "type", "offer", "quantity", "shippingInfo",
         "unitPrice", "totalAmount", "totalDiscount", "totalTax", "isTaxInclusive", "totalPreorderAmount",
         "totalPreorderTax", "createdTime", "createdBy", "updatedTime", "updatedBy", "resourceAge",
-        "fulfillmentIds", "preorderInfo", "sellerInfo", "federatedId", "properties"
+        "fulfillmentIds", "preorderInfo", "properties"
 })
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class OrderItem extends BaseModelWithDate {
@@ -32,13 +32,12 @@ public class OrderItem extends BaseModelWithDate {
     private OrderItemId orderItemId;
     @JsonIgnore
     private OrderId orderId;
-    private String status;
     private String type;
     private OfferId offer;
     private Integer quantity;
-    private ShippingAddressId shippingAddressId;
+    private ShippingAddressId shippingAddress;
     @ShippingMethodId
-    private Long shippingMethodId;
+    private Long shippingMethod;
 
     // expand ratingInfo to simplify oom
     private BigDecimal unitPrice;
@@ -48,13 +47,13 @@ public class OrderItem extends BaseModelWithDate {
     private BigDecimal totalDiscount;
     private BigDecimal totalPreorderAmount;
     private BigDecimal totalPreorderTax;
+    @JsonIgnore
     private Date honorUntilTime;
+    @JsonIgnore
     private Date honoredTime;
     // end of ratingInfo
 
     private PreorderInfo preorderInfo;
-    private SellerInfo sellerInfo;
-    private String federatedId;
     private String properties;
 
     public OrderItemId getOrderItemId() {
@@ -71,14 +70,6 @@ public class OrderItem extends BaseModelWithDate {
 
     public void setOrderId(OrderId orderId) {
         this.orderId = orderId;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
     public String getType() {
@@ -105,20 +96,20 @@ public class OrderItem extends BaseModelWithDate {
         this.quantity = quantity;
     }
 
-    public ShippingAddressId getShippingAddressId() {
-        return shippingAddressId;
+    public ShippingAddressId getShippingAddress() {
+        return shippingAddress;
     }
 
-    public void setShippingAddressId(ShippingAddressId shippingAddressId) {
-        this.shippingAddressId = shippingAddressId;
+    public void setShippingAddress(ShippingAddressId shippingAddress) {
+        this.shippingAddress = shippingAddress;
     }
 
-    public Long getShippingMethodId() {
-        return shippingMethodId;
+    public Long getShippingMethod() {
+        return shippingMethod;
     }
 
-    public void setShippingMethodId(Long shippingMethodId) {
-        this.shippingMethodId = shippingMethodId;
+    public void setShippingMethod(Long shippingMethod) {
+        this.shippingMethod = shippingMethod;
     }
 
     public BigDecimal getUnitPrice() {
@@ -199,22 +190,6 @@ public class OrderItem extends BaseModelWithDate {
 
     public void setPreorderInfo(PreorderInfo preorderInfo) {
         this.preorderInfo = preorderInfo;
-    }
-
-    public SellerInfo getSellerInfo() {
-        return sellerInfo;
-    }
-
-    public void setSellerInfo(SellerInfo sellerInfo) {
-        this.sellerInfo = sellerInfo;
-    }
-
-    public String getFederatedId() {
-        return federatedId;
-    }
-
-    public void setFederatedId(String federatedId) {
-        this.federatedId = federatedId;
     }
 
     public String getProperties() {

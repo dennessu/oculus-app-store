@@ -13,10 +13,15 @@ var PaymentControllers = {
 
             },
             Continue: function(){
+
+                if($("#BtnPaymentId").hasClass('load')) return;
+                $("#BtnPaymentId").addClass('load');
+
                 var _self = this;
                 console.log("[PaymentIndexController:Continue] Select Payment Id: ", _self.get("paymentId"));
                 if(_self.get("paymentId") == ""){
                     _self.set("errMessage", "Please select payment method");
+                    $("#BtnPaymentId").removeClass('load');
                 }else{
                     _self.set("errMessage", null);
                     Utils.Cookies.Set(AppConfig.CookiesName.PaymentId, _self.get("paymentId"));
@@ -27,6 +32,7 @@ var PaymentControllers = {
                             _self.transitionToRouteAnimated("ordersummary", {main: "slideOverLeft"});
                         } else{
                             _self.set("errMessage", "Please try again later!");
+                            $("#BtnPaymentId").removeClass('load');
                         }
                     });
                 }
@@ -82,7 +88,7 @@ var PaymentControllers = {
             encryptedCvmCode: "",
             addressLine1: "",
             city: "",
-            state: "CA",
+            state: "",
             country: "",
             postalCode: "",
             phoneType: "home",
@@ -94,6 +100,10 @@ var PaymentControllers = {
         },
         actions: {
             Continue: function () {
+
+                if($("#BtnPayment").hasClass('load')) return;
+                $("#BtnPayment").addClass('load');
+
                 var _self = this;
                 var model = _self.get("content");
 
@@ -111,10 +121,12 @@ var PaymentControllers = {
                                _self.transitionToRouteAnimated("ordersummary", {main: "slideOverLeft"});
                            } else{
                                _self.set("errMessage", "Please try again later!");
+                               $("#BtnPayment").removeClass('load');
                            }
                         });
                     }else{
                         _self.set("errMessage", "Please try again later!");
+                        $("#BtnPayment").removeClass('load');
                     }
                 });
             },

@@ -102,12 +102,12 @@ exports.Logout = function(req, res){
         store.Remove(process.AppConfig.CookiesName[p]);
     }
 
-    res.redirect("/");
+    res.redirect('/');
     res.end();
 };
 
 exports.Register = function(req, res){
 
-    res.redirect('/');
+    res.redirect(process.AppConfig.Runtime.LoginUrl);
     res.end();
 };

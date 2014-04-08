@@ -11,13 +11,13 @@ module.exports = function(app){
         res.render("index",
             {
                 layout: false,
-                title: "Store Demo",
+                title: "Oculus VR Store",
                 loginUrl: process.AppConfig.Runtime.LoginUrl,
                 registerUrl: process.AppConfig.Runtime.RegisterUrl
             });
     });
     app.get('/Identity', function(req, res){
-        res.render("identity/index", {layout: false, title: "Store Demo"});
+        res.render("identity/index", {layout: false, title: "Oculus VR Store"});
     });
 
     // Config

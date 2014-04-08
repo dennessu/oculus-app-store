@@ -6,10 +6,10 @@
     {{/if}}
     <dl>
         <dt>Shipping Method</dt>
-        <dd>{{view Ember.Select content=methods optionValuePath="content.v" optionLabelPath="content.t" value=shippingMethodId id="ShippingMethodId" name="ShippingMethodId" class="{required:true}"}}</dd>
+        <dd>{{view Ember.Select content=methods optionValuePath="content.v" optionLabelPath="content.t" value=shippingMethodId id="ShippingMethodId" name="ShippingMethodId" class="{required:true, ValidEmpty:true}"}}</dd>
     </dl>
     <div class="actions">
-        <button type="submit" class="btn btn-primary">Continue</button>
+        <button id="BtnShippingMethod" type="submit" class="btn btn-primary">Continue</button>
     </div>
     </form>
 </div>

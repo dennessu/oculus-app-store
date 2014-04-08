@@ -63,7 +63,7 @@ module.exports = function(data, cb){
                         if (typeof(redirectUrl) != "undefined" && redirectUrl != null && redirectUrl != "") {
                             redirectModel.url = redirectUrl;
                         } else {
-                            redirectModel.url = "/my";
+                            redirectModel.url = process.AppConfig.Runtime.LoginUrl;
                         }
 
                         resultModel.status = DomainModels.ResultStatusEnum.Redirect;

@@ -57,7 +57,7 @@
                 <dd>{{content.shippingMethodName}}</dd>
             </dl>
             <dl class="billing_address">
-                <dt>Billing Address:</dt>
+                <dt>Shipping Address:</dt>
                 <dd>
                     {{content.shippingAddress.firstName}} {{content.shippingAddress.lastName}}<br>
                     {{content.shippingAddress.street}}<br>
@@ -68,7 +68,7 @@
         </div>
 
         <div class="actions">
-            <button type="button" class="btn btn-orange" {{action "Purchase"}}>Purchase Now</button>
+            <button id="BtnPurchase" type="button" class="btn btn-orange" {{action "Purchase"}}>Purchase Now</button>
         </div>
     </div>
 </div>

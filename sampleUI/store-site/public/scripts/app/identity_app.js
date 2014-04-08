@@ -1,3 +1,7 @@
+jQuery.validator.addMethod("ValidEmpty", function(value, element) {
+    return $(element).val().toLowerCase().trim() != "please choose" && $(element).val().toLowerCase().trim() != "";
+}, "Please choose");
+
 var App = Ember.App = Ember.Application.create();
 
 App.Router.map(function(){
@@ -77,6 +81,7 @@ App.TfaView = Ember.View.extend({
 });
 App.RegisterView = Ember.View.extend({
     template: Ember.TEMPLATES[AppConfig.Templates.Identity.Register],
+
     didInsertElement: function(){
         jQuery.validator.addMethod("VerifyNumberValue", function(value, element) {
             if(!isNaN(value)){
@@ -92,6 +97,8 @@ App.RegisterView = Ember.View.extend({
             errorPlacement:function(error,element) {
                 if (element.attr("id") == "RMonth" || element.attr("id") == "RDay" || element.attr("id") == "RYear")
                     error.insertAfter("#RYear");
+                else if(element.attr("id") == "RIsAgree")
+                    error.appendTo(element.parent());
                 else
                     error.insertAfter(element);
             }
@@ -120,6 +127,8 @@ App.LoginController = Ember.ObjectController.extend({
     actions: {
         Submit: function(){
             console.log("[LoginController:Submit] Click Login");
+            if($("#BtnLogin").hasClass('load')) return;
+            $("#BtnLogin").addClass('load');
 
             var _self = this;
             var provider = new IdentityProvider();
@@ -155,6 +164,7 @@ App.LoginController = Ember.ObjectController.extend({
                 }else{
                     // error
                     _self.set("content.errMessage", Utils.GetErrorMessage(resultModel));
+                    $("#BtnLogin").removeClass('load');
                 }
             });
         },
@@ -296,6 +306,10 @@ App.RegisterController = Ember.ObjectController.extend({
     actions: {
         Submit: function(){
             console.log("[RegisterController:Submit] Click Continue");
+
+            if($("#BtnRegister").hasClass('load')) return;
+            $("#BtnRegister").addClass('load');
+
             var _self = this;
             var provider = new IdentityProvider();
 
@@ -328,6 +342,7 @@ App.RegisterController = Ember.ObjectController.extend({
                 }else{
                     // error
                     _self.set("errMessage", Utils.GetErrorMessage(resultModel));
+                    $("#BtnRegister").removeClass('load');
                 }
             });
         },

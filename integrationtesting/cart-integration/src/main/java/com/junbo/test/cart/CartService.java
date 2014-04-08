@@ -27,11 +27,11 @@ import java.util.concurrent.Future;
  */
 public class CartService {
 
-    private static String cartUrl = RestUrl.getRestUrl(RestUrl.ComponentName.CART);
+    private static String cartUrl = RestUrl.getRestUrl(RestUrl.ComponentName.COMMERCE);
     private static LogHelper logger = new LogHelper(Cart.class);
     private static AsyncHttpClient asyncClient = new AsyncHttpClient(new AsyncHttpClientConfig.Builder().build());
 
-    private CartService(){
+    private CartService() {
     }
 
     public static String addCart(String userId, Cart cart) throws Exception {
@@ -70,6 +70,7 @@ public class CartService {
     public static String getCart(String userId, String cartId, int expectedResponseCode) throws Exception {
         String cartEndpointUrl = cartUrl + "users/" + userId + "/carts/" + cartId;
 
+
         Request req = new RequestBuilder("GET")
                 .setUrl(cartEndpointUrl)
                 .addHeader(RestUrl.requestHeaderName, RestUrl.requestHeaderValue)
@@ -80,12 +81,19 @@ public class CartService {
         NettyResponse nettyResponse = (NettyResponse) future.get();
         logger.LogResponse(nettyResponse);
         Assert.assertEquals(expectedResponseCode, nettyResponse.getStatusCode());
-        Cart rtnCart = new JsonMessageTranscoder().decode(new TypeReference<Cart>() {
-        },
-                nettyResponse.getResponseBody());
-        String rtnCartId = IdConverter.idToHexString(rtnCart.getId());
-        Master.getInstance().addCart(rtnCartId, rtnCart);
-        return rtnCartId;
+        if (expectedResponseCode == 200) {
+            Cart rtnCart = new JsonMessageTranscoder().decode(new TypeReference<Cart>() {
+            },
+                    nettyResponse.getResponseBody());
+
+            //Cart rtnCart = (Cart) HttpclientHelper.SimpleGet(cartEndpointUrl, Cart.class);
+            String rtnCartId = IdConverter.idToHexString(rtnCart.getId());
+            Master.getInstance().addCart(rtnCartId, rtnCart);
+            return rtnCartId;
+        }
+        else{
+            return null;
+        }
     }
 
     public static String getCartPrimary(String userId) throws Exception {

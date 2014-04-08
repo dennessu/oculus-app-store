@@ -23,7 +23,10 @@ public interface OrderInternalService {
 
     Promise<List<Order>> getOrdersByUserId(Long userId, OrderQueryParam orderQueryParam, PageParam pageParam);
 
-    Order getOrderByTrackingUuid(UUID trackingUuid);
+    Order getOrderByTrackingUuid(UUID trackingUuid, Long userId);
 
     void refreshOrderStatus(Order order);
+
+    void markSettlement(Order order);
+
 }

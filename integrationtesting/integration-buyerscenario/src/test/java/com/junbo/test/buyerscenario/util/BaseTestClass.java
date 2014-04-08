@@ -5,11 +5,12 @@
  */
 package com.junbo.test.buyerscenario.util;
 
+import com.junbo.test.buyerscenario.BuyerTestDataProvider;
+import com.junbo.test.buyerscenario.BuyerValidationHelper;
 import com.junbo.test.common.Utility.TestClass;
-import com.junbo.test.common.Utility.TestDataProvider;
-import com.junbo.test.common.Utility.ValidationHelper;
+
+
 import com.junbo.test.common.libs.ConfigPropertiesHelper;
-import org.slf4j.bridge.SLF4JBridgeHandler;
 
 /**
  @author Jason
@@ -17,8 +18,8 @@ import org.slf4j.bridge.SLF4JBridgeHandler;
   * Base test class
  */
 public class BaseTestClass extends TestClass {
-    protected TestDataProvider testDataProvider = new TestDataProvider();
-    protected ValidationHelper validationHelper = new ValidationHelper();
+    protected BuyerTestDataProvider testDataProvider = new BuyerTestDataProvider();
+    protected BuyerValidationHelper validationHelper = new BuyerValidationHelper();
 
     protected String offer_digital_normal1;
     protected String offer_digital_normal2;

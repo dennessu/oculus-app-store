@@ -24,7 +24,7 @@ import java.util.List;
  */
 public class OrderServiceImpl extends HttpClientBase implements OrderService {
 
-    private static String orderUrl = RestUrl.getRestUrl(RestUrl.ComponentName.ORDER);
+    private static String orderUrl = RestUrl.getRestUrl(RestUrl.ComponentName.COMMERCE);
 
     private LogHelper logger = new LogHelper(OrderServiceImpl.class);
 

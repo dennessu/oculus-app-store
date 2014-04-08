@@ -12,11 +12,7 @@ import com.junbo.order.core.impl.common.*
 import com.junbo.order.core.impl.internal.OrderInternalService
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.error.AppErrors
-import com.junbo.order.spec.model.Order
-import com.junbo.order.spec.model.OrderItem
-import com.junbo.order.spec.model.OrderQueryParam
-import com.junbo.order.spec.model.PageParam
-import com.junbo.order.spec.model.PreorderInfo
+import com.junbo.order.spec.model.*
 import com.junbo.rating.spec.model.request.OrderRatingRequest
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
@@ -26,9 +22,9 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 import javax.annotation.Resource
-
 /**
  * Created by chriszhu on 4/1/14.
  */
@@ -70,25 +66,24 @@ class OrderInternalServiceImpl implements OrderInternalService {
                 LOGGER.info('name=Skip_Calculate_Tax_Zero_Total_Amount')
                 return Promise.pure(order)
             }
+            // check pi is there, it means the billing address is there.
+            if (CollectionUtils.isEmpty(order.paymentInstruments)) {
+                if (order.tentative) {
+                    LOGGER.info('name=Skip_Calculate_Tax_Without_PI')
+                    return Promise.pure(order)
+                }
+                LOGGER.error('name=Missing_paymentInstruments_To_Calculate_Tax')
+                throw AppErrors.INSTANCE.missingParameterField('paymentInstruments').exception()
+            }
             if (CoreUtils.hasPhysicalOffer(order)) {
                 // check whether the shipping address id are there
-                if (order.shippingAddressId == null) {
+                if (order.shippingAddress == null) {
                     if (order.tentative) {
                         LOGGER.info('name=Skip_Calculate_Tax_Without_shippingAddressId')
                         return Promise.pure(order)
                     }
                     LOGGER.error('name=Missing_shippingAddressId_To_Calculate_Tax')
                     throw AppErrors.INSTANCE.missingParameterField('shippingAddressId').exception()
-                }
-            } else {
-                // check pi is there
-                if (CollectionUtils.isEmpty(order.paymentInstruments)) {
-                    if (order.tentative) {
-                        LOGGER.info('name=Skip_Calculate_Tax_Without_PI')
-                        return Promise.pure(order)
-                    }
-                    LOGGER.error('name=Missing_paymentInstruments_To_Calculate_Tax')
-                    throw AppErrors.INSTANCE.missingParameterField('paymentInstruments').exception()
                 }
             }
             return facadeContainer.billingFacade.quoteBalance(
@@ -111,6 +106,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
     }
 
     @Override
+    @Transactional
     Promise<Order> getOrderByOrderId(Long orderId) {
         if (orderId == null) {
             throw AppErrors.INSTANCE.fieldInvalid('orderId', 'orderId cannot be null').exception()
@@ -124,6 +120,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
     }
 
     @Override
+    @Transactional
     Promise<List<Order>> getOrdersByUserId(Long userId, OrderQueryParam orderQueryParam, PageParam pageParam) {
 
         if (userId == null) {
@@ -140,12 +137,17 @@ class OrderInternalServiceImpl implements OrderInternalService {
     }
 
     @Override
-    Order getOrderByTrackingUuid(UUID trackingUuid) {
+    @Transactional
+    Order getOrderByTrackingUuid(UUID trackingUuid, Long userId) {
         if (trackingUuid == null) {
             return null
         }
         def order = orderRepository.getOrderByTrackingUuid(trackingUuid)
         if (order != null) {
+            if (order.user.value != userId) {
+                LOGGER.error('name=Dup_Tracking_Uuid')
+                throw AppErrors.INSTANCE.orderDuplicateTrackingGuid().exception()
+            }
             completeOrder(order)
         }
         return order
@@ -181,5 +183,18 @@ class OrderInternalServiceImpl implements OrderInternalService {
                 orderRepository.updateOrder(order, true)
             }
         }
+    }
+
+    @Override
+    @Transactional
+    void markSettlement(Order order) {
+
+        def latest = orderRepository.getOrder(order.id.value)
+
+        if (!latest?.tentative) {
+            throw AppErrors.INSTANCE.orderNotTentative().exception()
+        }
+        order.tentative = false
+        orderRepository.updateOrder(order, true)
     }
 }

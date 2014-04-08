@@ -23,8 +23,8 @@ class FlowSelectorTest extends BaseTest {
     void testSelector_CREATE_PayIn_CreditCard_Digital() {
         def context = TestBuilder.buildDefaultContext()
         context.paymentInstruments = [TestBuilder.buildCreditCartPI()]
-        flowSelector.select(context, OrderServiceOperation.CREATE).syncThen { FlowType type ->
-            assert(type == FlowType.IMMEDIATE_SETTLE)
+        flowSelector.select(context, OrderServiceOperation.CREATE).syncThen { String name ->
+            assert(name == FlowType.IMMEDIATE_SETTLE.name())
         }
     }
 
@@ -32,8 +32,8 @@ class FlowSelectorTest extends BaseTest {
     void testSelector_CREATE_PayIn_NoPI_Digital() {
         def context = TestBuilder.buildDefaultContext()
         context.order.paymentInstruments = null
-        flowSelector.select(context, OrderServiceOperation.CREATE).syncThen { FlowType type ->
-            assert(type == FlowType.FREE_SETTLE)
+        flowSelector.select(context, OrderServiceOperation.CREATE).syncThen { String name ->
+            assert(name == FlowType.FREE_SETTLE.name())
         }
     }
 
