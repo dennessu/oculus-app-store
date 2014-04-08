@@ -9,7 +9,6 @@ import com.google.common.collect.HashMultimap
 import com.junbo.common.id.OrderId
 import com.junbo.common.id.OrderItemId
 import com.junbo.common.id.PaymentInstrumentId
-import com.junbo.common.id.PreorderId
 import com.junbo.oom.core.MappingContext
 import com.junbo.order.db.dao.*
 import com.junbo.order.db.entity.*
@@ -363,16 +362,6 @@ class OrderRepositoryImpl implements OrderRepository {
             orderItem.orderItemId = new OrderItemId(idGeneratorFacade.nextId(OrderItemId, orderItem.orderId.value))
             entity = modelMapper.toOrderItemEntity(orderItem, new MappingContext())
             orderItemDao.create(entity)
-            def preorderInfo = orderItem.preorderInfo
-            if (preorderInfo != null) {
-                preorderInfo.orderItemId = orderItem.orderItemId
-                preorderInfo.preorderInfoId = new PreorderId(idGeneratorFacade.nextId(PreorderId,
-                        preorderInfo.orderItemId.value))
-                def preorderEntity = modelMapper.toOrderItemPreorderInfoEntity(preorderInfo,
-                        new MappingContext())
-                orderItemPreorderInfoDao.create(preorderEntity)
-                fillDateInfo(preorderInfo, preorderEntity)
-            }
         } else {
             entity = modelMapper.toOrderItemEntity(orderItem, new MappingContext())
             def oldEntity = orderItemDao.read(entity.orderItemId)
