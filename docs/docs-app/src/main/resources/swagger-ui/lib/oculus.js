@@ -53,9 +53,13 @@ var showSamples = function(swaggerApi) {
         }
     }
     var setContentCode = function(elem, text) {
-        var jsonObj = $.parseJSON(text)
         if (text) {
-            elem.find("pre code").text(JSON.stringify(jsonObj, null, 2))
+            try {
+                var jsonObj = $.parseJSON(text)
+                elem.find("pre code").text(JSON.stringify(jsonObj, null, 2))
+            } catch (e) {
+                elem.find("pre code").text(text)
+            }
         } else {
             elem.hide()
         }
