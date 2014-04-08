@@ -17,10 +17,11 @@ import com.junbo.payment.spec.model.Address;
 import com.junbo.payment.spec.model.CreditCardRequest;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.Phone;
+import com.junbo.test.billing.apihelper.ShippingAddressService;
+import com.junbo.test.billing.apihelper.impl.ShippingAddressServiceImpl;
 import com.junbo.test.common.Entities.ShippingAddressInfo;
 import com.junbo.test.common.Utility.BaseTestDataProvider;
-import com.junbo.test.common.apihelper.billing.ShippingAddressService;
-import com.junbo.test.common.apihelper.billing.impl.ShippingAddressServiceImpl;
+
 import com.junbo.test.common.apihelper.cart.CartService;
 import com.junbo.test.common.apihelper.cart.impl.CartServiceImpl;
 import com.junbo.test.common.apihelper.catalog.ItemService;
@@ -197,7 +198,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider{
         order.setCurrency(currency.toString());
         order.setPaymentInstruments(paymentInstruments);
         if (shippingAddressId != null) {
-            order.setShippingAddressId(Master.getInstance().getShippingAddress(shippingAddressId).getAddressId());
+            order.setShippingAddress(Master.getInstance().getShippingAddress(shippingAddressId).getAddressId());
         }
 
         List<OrderItem> orderItemList = new ArrayList<>();

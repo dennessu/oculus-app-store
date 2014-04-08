@@ -32,6 +32,7 @@ dependencies {
     //compile(libraries.common_testlib)
     compile(libraries.postgresql)
     compile project(':payment-integration')
+    compile project(':billing-integration')
     testCompile(libraries.asyncclient)
     testCompile(libraries.junit)
     testCompile(libraries.slf4j_api)
