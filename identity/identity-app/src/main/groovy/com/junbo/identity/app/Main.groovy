@@ -38,7 +38,7 @@ class Main {
         def resourceConfig = new ResourceConfig()
 
         // jackson feature
-        resourceConfig.packages('com.junbo.identity.spec.resource.adapter')
+        resourceConfig.packages('com.junbo.identity.spec.v1.resource.adapter')
         resourceConfig.property('contextConfigLocation', 'classpath*:/spring/*.xml')
 
         resourceConfig.register(JacksonFeature)

@@ -5,18 +5,17 @@
  */
 
 package com.junbo.identity.data.repository.impl
+
 import com.junbo.common.id.GroupId
 import com.junbo.identity.data.dao.GroupDAO
 import com.junbo.identity.data.dao.GroupUserDAO
-
 import com.junbo.identity.data.entity.group.GroupEntity
 import com.junbo.identity.data.entity.group.GroupUserEntity
-
 import com.junbo.identity.data.entity.user.UserGroupEntity
 import com.junbo.identity.data.mapper.ModelMapper
 import com.junbo.identity.data.repository.GroupRepository
-import com.junbo.identity.spec.model.users.Group
 import com.junbo.identity.spec.model.users.UserGroup
+import com.junbo.identity.spec.v1.model.Group
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oom.core.MappingContext
 import groovy.transform.CompileStatic

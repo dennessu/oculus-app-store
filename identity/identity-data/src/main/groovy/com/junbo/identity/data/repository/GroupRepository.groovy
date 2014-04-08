@@ -4,9 +4,10 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.identity.data.repository
+
 import com.junbo.common.id.GroupId
-import com.junbo.identity.spec.model.users.Group
 import com.junbo.identity.spec.model.users.UserGroup
+import com.junbo.identity.spec.v1.model.Group
 import com.junbo.langur.core.promise.Promise
 
 /**

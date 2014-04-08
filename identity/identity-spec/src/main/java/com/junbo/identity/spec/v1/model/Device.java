@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.spec.v1.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.DeviceId;
 import com.junbo.common.util.Identifiable;
 import com.junbo.identity.spec.model.users.ResourceMeta;
@@ -14,7 +15,12 @@ import com.junbo.identity.spec.model.users.ResourceMeta;
  */
 public class Device extends ResourceMeta implements Identifiable<DeviceId> {
 
+    @JsonProperty("self")
     private DeviceId id;
+
+    // This is the unique external reference to device
+    // such as device sequence id or something like that
+    private String externalRef;
 
     private String description;
 
@@ -27,6 +33,17 @@ public class Device extends ResourceMeta implements Identifiable<DeviceId> {
 
     public void setId(DeviceId id) {
         this.id = id;
+        support.setPropertyAssigned("id");
+        support.setPropertyAssigned("self");
+    }
+
+    public String getExternalRef() {
+        return externalRef;
+    }
+
+    public void setExternalRef(String externalRef) {
+        this.externalRef = externalRef;
+        support.setPropertyAssigned("externalRef");
     }
 
     public String getDescription() {
@@ -35,5 +52,6 @@ public class Device extends ResourceMeta implements Identifiable<DeviceId> {
 
     public void setDescription(String description) {
         this.description = description;
+        support.setPropertyAssigned("description");
     }
 }

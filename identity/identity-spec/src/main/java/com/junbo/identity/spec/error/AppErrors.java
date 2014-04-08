@@ -131,4 +131,7 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 409, code = "2000032", description = "User Email {0} not found.", field = "{0}")
     AppError userEmailNotFound(UserEmailId userEmailId);
+
+    @ErrorDef(httpStatusCode = 409, code = "2000033", description = "Device {0} not found.", field = "{0}")
+    AppError deviceNotFound(DeviceId deviceId);
 }

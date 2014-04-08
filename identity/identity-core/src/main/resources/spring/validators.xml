@@ -235,4 +235,12 @@
         <property name="emailMinLength" value="5" />
         <property name="emailMaxLength" value="255" />
     </bean>
+
+    <bean id="deviceValidator" class="com.junbo.identity.core.service.validator.impl.DeviceValidatorImpl">
+        <property name="deviceRepository" ref="deviceRepository" />
+        <property name="deviceDescriptionMinLength" value="1" />
+        <property name="deviceDescriptionMaxLength" value="255" />
+        <property name="deviceExternalRefMinLength" value="1" />
+        <property name="deviceExternalRefMaxLength" value="255" />
+    </bean>
 </beans>

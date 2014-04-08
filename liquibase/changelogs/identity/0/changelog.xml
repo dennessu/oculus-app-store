@@ -282,6 +282,21 @@
 			  
 			  primary key (id)
 			);
+            
+            create table device (
+             id bigint not null,
+             
+             external_ref varchar(255) not null,
+             description varchar(255) not null,
+             
+            version bigint not null,
+            created_time timestamp,
+            created_by varchar(255),
+            modified_time timestamp,
+            modified_by varchar(255),
+             
+             primary key (id)
+            );
         ]]></sql>
     </changeSet>
 

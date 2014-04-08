@@ -7,11 +7,11 @@ package com.junbo.identity.spec.resource;
 
 import com.junbo.common.id.GroupId;
 import com.junbo.common.model.Results;
-import com.junbo.identity.spec.model.users.Group;
 import com.junbo.identity.spec.model.users.UserGroup;
 import com.junbo.identity.spec.options.entity.GroupGetOptions;
 import com.junbo.identity.spec.options.list.GroupListOptions;
 import com.junbo.identity.spec.options.list.UserGroupListOptions;
+import com.junbo.identity.spec.v1.model.Group;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 

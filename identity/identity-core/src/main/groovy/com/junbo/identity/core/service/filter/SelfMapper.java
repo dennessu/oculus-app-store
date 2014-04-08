@@ -73,4 +73,7 @@ public interface SelfMapper {
 
     UserTos filterUserTos(UserTos userTos, MappingContext context);
     UserTos mergeUserTos(UserTos source, UserTos base, MappingContext context);
+
+    Device filterDevice(Device device, MappingContext context);
+    Device mergeDevice(Device source, Device base, MappingContext context);
 }

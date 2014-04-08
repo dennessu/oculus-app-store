@@ -60,6 +60,19 @@
 			);
 			
 			create index idx_user_username on user_username(key, value);
+            
+            create table device_deviceExternalRef
+			(
+			  key character varying(255) NOT NULL,
+			  value bigint NOT NULL,
+			  created_by character varying(255) NOT NULL,
+			  created_time time without time zone NOT NULL,
+			  modified_by character varying(255) NOT NULL,
+			  modified_time time without time zone NOT NULL,
+			  deleted boolean NOT NULL
+			);
+			
+			create index idx_device_deviceExternalRef on device_deviceExternalRef(key, value);
         ]]></sql>
     </changeSet>
 

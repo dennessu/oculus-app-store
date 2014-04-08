@@ -6,9 +6,9 @@
 package com.junbo.identity.core.service.validator
 
 import com.junbo.common.id.GroupId
-import com.junbo.identity.spec.model.users.Group
 import com.junbo.identity.spec.options.list.GroupListOptions
 import com.junbo.identity.spec.options.list.UserGroupListOptions
+import com.junbo.identity.spec.v1.model.Group
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 

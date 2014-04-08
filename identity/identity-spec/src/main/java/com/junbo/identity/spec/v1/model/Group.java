@@ -20,6 +20,8 @@ public class Group extends ResourceMeta implements Identifiable<GroupId> {
 
     private String name;
 
+    private Boolean active;
+
     @Override
     public GroupId getId() {
         return id;
@@ -35,5 +37,13 @@ public class Group extends ResourceMeta implements Identifiable<GroupId> {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 }

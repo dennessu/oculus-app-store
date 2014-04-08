@@ -489,4 +489,32 @@
         </property>
     </bean>
 
+    <bean id="deviceFilter" class="com.junbo.identity.core.service.filter.DeviceFilter">
+        <property name="readableProperties">
+            <list>
+                <value>id</value>
+                <value>externalRef</value>
+                <value>description</value>
+                <value>resourceAge</value>
+                <value>createdTime</value>
+                <value>updatedTime</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForCreate">
+            <list>
+                <value>externalRef</value>
+                <value>description</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForUpdate">
+            <list>
+                <value>id</value>
+                <value>externalRef</value>
+                <value>description</value>
+                <value>resourceAge</value>
+            </list>
+        </property>
+    </bean>
 </beans>

@@ -291,4 +291,18 @@ public class CommonMapper {
             throw AppErrors.INSTANCE.deSerializerError().exception();
         }
     }
+
+    public Long toDeviceId(DeviceId id) {
+        if (id == null) {
+            return null;
+        }
+        return id.getValue();
+    }
+
+    public DeviceId toDeviceId(Long id) {
+        if (id == null) {
+            return null;
+        }
+        return new DeviceId(id);
+    }
 }

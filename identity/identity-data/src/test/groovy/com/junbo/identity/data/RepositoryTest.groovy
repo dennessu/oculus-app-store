@@ -4,13 +4,19 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.identity.data
+
+import com.junbo.common.id.DeviceId
 import com.junbo.common.id.GroupId
 import com.junbo.common.id.SecurityQuestionId
 import com.junbo.common.id.UserId
 import com.junbo.identity.data.identifiable.UserPasswordStrength
 import com.junbo.identity.data.repository.*
+import com.junbo.identity.spec.model.users.UserDevice
+import com.junbo.identity.spec.model.users.UserPassword
 import com.junbo.identity.spec.model.users.*
 import com.junbo.identity.spec.options.list.*
+import com.junbo.identity.spec.v1.model.Device
+import com.junbo.identity.spec.v1.model.Group
 import com.junbo.identity.spec.v1.model.UserAuthenticator
 import com.junbo.identity.spec.v1.option.list.AuthenticatorListOptions
 import groovy.transform.CompileStatic
@@ -77,6 +83,9 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
 
     @Autowired
     private UserSecurityQuestionAttemptRepository userSecurityQuestionAttemptRepository
+
+    @Autowired
+    private DeviceRepository deviceRepository
 
     @Test(enabled = true)
     public void testUserRepository() throws Exception {
@@ -488,5 +497,27 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         String[] split = decode.split(':')
         Assert.assertEquals(userName, split[0])
         Assert.assertEquals(password, split[1])
+    }
+
+    @Test
+    public void testDeviceRepository() {
+        Device device = new Device()
+        device.setExternalRef(UUID.randomUUID().toString())
+        device.setDescription(UUID.randomUUID().toString())
+
+        Device newDevice = deviceRepository.create(device).wrapped().get()
+        newDevice = deviceRepository.get((DeviceId)newDevice.id).wrapped().get()
+
+        assert  device.externalRef == newDevice.externalRef
+
+        String newDescription = UUID.randomUUID().toString()
+        newDevice.setDescription(newDescription)
+        deviceRepository.update(newDevice)
+
+        device = deviceRepository.get((DeviceId)newDevice.id).wrapped().get()
+        assert device.description == newDescription
+
+        device = deviceRepository.searchByExternalRef(device.externalRef).wrapped().get()
+        assert device.description == newDescription
     }
 }

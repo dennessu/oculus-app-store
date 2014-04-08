@@ -5,8 +5,33 @@
  */
 package com.junbo.identity.spec.v1.option.list;
 
+import com.junbo.identity.spec.options.list.PagingGetOptions;
+
+import javax.ws.rs.QueryParam;
+
 /**
  * Created by liangfu on 4/3/14.
  */
-public class DeviceListOptions {
+public class DeviceListOptions extends PagingGetOptions{
+    @QueryParam("properties")
+    private String properties;
+
+    @QueryParam("externalRef")
+    private String externalRef;
+
+    public String getProperties() {
+        return properties;
+    }
+
+    public void setProperties(String properties) {
+        this.properties = properties;
+    }
+
+    public String getExternalRef() {
+        return externalRef;
+    }
+
+    public void setExternalRef(String externalRef) {
+        this.externalRef = externalRef;
+    }
 }
