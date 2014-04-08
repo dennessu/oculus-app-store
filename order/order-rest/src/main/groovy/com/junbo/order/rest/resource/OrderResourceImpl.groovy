@@ -59,12 +59,6 @@ class OrderResourceImpl implements OrderResource {
     @Override
     Promise<Order> createOrder(Order order) {
         orderValidator.notNull(order, 'order').notNull(order.trackingUuid, 'trackingUuid').notNull(order.user, 'user')
-        def persistedOrder = orderService.getOrderByTrackingUuid(order.trackingUuid)
-        if (persistedOrder != null) {
-            LOGGER.info('name=Order_Already_Exist. userId:{}, trackingUuid: {}, orderId:{}',
-                    persistedOrder.user.value, persistedOrder.trackingUuid, persistedOrder.id.value)
-            return Promise.pure(persistedOrder)
-        }
         if (!order?.tentative) {
             throw AppErrors.INSTANCE.fieldInvalid('tentative').exception()
         }
@@ -73,12 +67,7 @@ class OrderResourceImpl implements OrderResource {
 
     @Override
     Promise<Order> updateOrderByOrderId(OrderId orderId, Order order) {
-        orderValidator.notNull(order, 'order').notNull(order.trackingUuid, 'trackingUuid').notNull(order.user, 'user')
-
-        def persistedOrder = orderService.getOrderByTrackingUuid(order.trackingUuid)
-        if (persistedOrder != null) {
-            throw AppErrors.INSTANCE.orderDuplicateTrackingGuid().exception()
-        }
+        orderValidator.notNull(order, 'order').notNull(order.user, 'user')
 
         order.id = orderId
         orderService.getOrderByOrderId(orderId.value).then { Order oldOrder ->
@@ -93,6 +82,7 @@ class OrderResourceImpl implements OrderResource {
                     orderService.settleQuote(oldOrder, new ApiContext(requestContext.headers))
                 }
             } else { // order already settle
+                LOGGER.info('name=Update_Non_Tentative_offer')
                 Promise.pure(oldOrder) // todo implement update on settled order
             }
         }

@@ -11,7 +11,6 @@ import com.junbo.langur.core.webflow.executor.FlowExecutor
 import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.clientproxy.model.OrderOffer
 import com.junbo.order.core.FlowSelector
-import com.junbo.order.core.FlowType
 import com.junbo.order.core.OrderService
 import com.junbo.order.core.OrderServiceOperation
 import com.junbo.order.core.impl.internal.OrderInternalService
@@ -71,14 +70,14 @@ class OrderServiceImpl implements OrderService {
 
         def orderServiceContext = initOrderServiceContext(order)
         Throwable error
-        flowSelector.select(orderServiceContext, OrderServiceOperation.SETTLE_TENTATIVE).then { FlowType flowType ->
+        flowSelector.select(orderServiceContext, OrderServiceOperation.SETTLE_TENTATIVE).then { String flowName ->
             // Prepare Flow Request
             Map<String, Object> requestScope = [:]
             def orderActionContext = new OrderActionContext()
             orderActionContext.orderServiceContext = orderServiceContext
             orderActionContext.trackingUuid = order.trackingUuid
             requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object) orderActionContext)
-            executeFlow(flowType, orderServiceContext, requestScope)
+            executeFlow(flowName, orderServiceContext, requestScope)
         }.syncRecover { Throwable throwable ->
             error = throwable
         }.syncThen {
@@ -103,14 +102,14 @@ class OrderServiceImpl implements OrderService {
         setHonoredTime(order)
         def orderServiceContext = initOrderServiceContext(order)
         prepareOrder(order).then {
-            flowSelector.select(orderServiceContext, OrderServiceOperation.UPDATE_TENTATIVE).then { FlowType flowType ->
+            flowSelector.select(orderServiceContext, OrderServiceOperation.UPDATE_TENTATIVE).then { String flowName ->
                 // Prepare Flow Request
                 Map<String, Object> requestScope = [:]
                 def orderActionContext = new OrderActionContext()
                 orderActionContext.orderServiceContext = orderServiceContext
                 orderActionContext.trackingUuid = order.trackingUuid
                 requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object) orderActionContext)
-                executeFlow(flowType, orderServiceContext, requestScope)
+                executeFlow(flowName, orderServiceContext, requestScope)
             }.syncThen {
                 return orderServiceContext.order
             }
@@ -121,21 +120,28 @@ class OrderServiceImpl implements OrderService {
     Promise<Order> createQuote(Order order, ApiContext context) {
         LOGGER.info('name=Create_Tentative_Order. userId: {}', order.user.value)
 
+        def persistedOrder = orderInternalService.getOrderByTrackingUuid(order.trackingUuid, order.user.value)
+        if (persistedOrder != null) {
+            LOGGER.info('name=Order_Already_Exist. userId:{}, trackingUuid: {}, orderId:{}',
+                    persistedOrder.user.value, persistedOrder.trackingUuid, persistedOrder.id.value)
+            return Promise.pure(persistedOrder)
+        }
+
         order.id = null
         setHonoredTime(order)
 
         def orderServiceContext = initOrderServiceContext(order)
         prepareOrder(order).then {
-            flowSelector.select(orderServiceContext, OrderServiceOperation.CREATE_TENTATIVE).then { FlowType flowType ->
+            flowSelector.select(orderServiceContext, OrderServiceOperation.CREATE_TENTATIVE).then { String flowName ->
                 // Prepare Flow Request
-                assert (flowType != null)
-                LOGGER.info('name=Create_Tentative_Order. flowType: {}', flowType)
+                assert (flowName != null)
+                LOGGER.info('name=Create_Tentative_Order. flowName: {}', flowName)
                 Map<String, Object> requestScope = [:]
                 def orderActionContext = new OrderActionContext()
                 orderActionContext.orderServiceContext = orderServiceContext
                 orderActionContext.trackingUuid = order.trackingUuid
                 requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object) orderActionContext)
-                executeFlow(flowType, orderServiceContext, requestScope)
+                executeFlow(flowName, orderServiceContext, requestScope)
             }.syncThen {
                 return orderServiceContext.order
             }
@@ -176,20 +182,20 @@ class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    Order getOrderByTrackingUuid(UUID trackingUuid) {
-        return orderInternalService.getOrderByTrackingUuid(trackingUuid)
+    Order getOrderByTrackingUuid(UUID trackingUuid, Long userId) {
+        return orderInternalService.getOrderByTrackingUuid(trackingUuid, userId)
     }
 
     private Promise<OrderServiceContext> executeFlow(
-            FlowType flowType, OrderServiceContext context,
+            String flowName, OrderServiceContext context,
             Map<String, Object> requestScope) {
         def scope = requestScope
         if (requestScope == null) {
             scope = ActionUtils.initRequestScope(context)
         }
-        scope.put(ActionUtils.REQUEST_FLOW_TYPE, (Object) flowType)
-        return flowExecutor.start(flowType.name(), scope).syncRecover { Throwable throwable ->
-            LOGGER.error('name=Flow_Execution_Failed. flowType: ' + flowType, throwable)
+        scope.put(ActionUtils.REQUEST_FLOW_NAME, (Object) flowName)
+        return flowExecutor.start(flowName, scope).syncRecover { Throwable throwable ->
+            LOGGER.error('name=Flow_Execution_Failed. flowName: ' + flowName, throwable)
             if (throwable instanceof AppErrorException) {
                 throw throwable
             } else {

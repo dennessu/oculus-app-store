@@ -6,7 +6,7 @@
 
 package com.junbo.ewallet.db.dao.hibernate;
 
-import com.junbo.ewallet.db.entity.hibernate.Entity;
+import com.junbo.ewallet.db.entity.Entity;
 import com.junbo.sharding.IdGenerator;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -49,7 +49,7 @@ public class BaseDao<T extends Entity> {
     }
 
     public T update(T t) {
-        T existed = (T) currentSession().load(entityType, t.getId());
+        T existed = (T) currentSession().get(entityType, t.getId());
         t.setCreatedTime(existed.getCreatedTime());
         t.setCreatedBy(existed.getCreatedBy());
         Date now = new Date();

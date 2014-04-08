@@ -29,7 +29,9 @@ public class postUser {
 
     @Test(groups = "bvt")
     public void postUser() throws Exception {
+        Identity.StartLoggingAPISample(Identity.MessageDefaultPostUser);
         User newUser = Identity.DefaultPostUser();
+        Identity.StartLoggingAPISample(Identity.MessageGetUserByUserId);
         User storedUser = Identity.GetUserByUserId(newUser.getId());
         assertEquals("validate user name is correct",
                 newUser.getUserName(), storedUser.getUserName());

@@ -31,9 +31,13 @@ public class authorizeUser {
     @Test(groups = "bvt")
     public void authorizeUser() throws Exception {
         User user = Identity.DefaultPostUser();
+        Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
         String cid = Oauth.GetLoginCid();
+        Oauth.StartLoggingAPISample(Oauth.MessageGetAuthCodeByCidAndUserName);
         String authCode = Oauth.GetAuthCode(cid, user.getUserName());
+        Oauth.StartLoggingAPISample(Oauth.MessageGetAccessTokenByAuthCode);
         String accessToken = Oauth.GetAccessToken(authCode);
+        Oauth.StartLoggingAPISample(Oauth.MessageGetTokenInfoByAccessToken);
         TokenInfo tokenInfo = Oauth.GetTokenInfo(accessToken);
         assertEquals("validate token->client is correct", Oauth.DefaultClientId, tokenInfo.getClientId());
         assertEquals("validate token->scopes is correct", Oauth.DefaultClientScopes, tokenInfo.getScopes());

@@ -86,7 +86,7 @@ class OrderPayInTest extends AbstractTestNGSpringContextTests {
             country = 'US'
             currency = 'USD'
             tentative = true
-            shippingAddressId = address.addressId
+            shippingAddress = address.addressId
             paymentInstruments = [
                     new PaymentInstrumentId(paymentInstrument.id.paymentInstrumentId)
             ]

@@ -29,7 +29,7 @@ class RateOrderFlowTest extends BaseTest{
         def order = TestBuilder.buildOrderRequest()
 
         Map<String, Object> requestScope = [:]
-        requestScope.put(ActionUtils.REQUEST_FLOW_TYPE, (Object) 'MOCK_RATE_ORDER')
+        requestScope.put(ActionUtils.REQUEST_FLOW_NAME, (Object) 'MOCK_RATE_ORDER')
         def orderActionContext = new OrderActionContext()
         orderActionContext.orderServiceContext = new OrderServiceContext(order)
         orderActionContext.trackingUuid = order.trackingUuid

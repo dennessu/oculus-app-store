@@ -2,6 +2,7 @@ apply plugin: 'groovy'
 
 dependencies {
     compile project(':order-rest')
+    compile project(':order-jobs')
 
     compile "com.junbo.billing:billing-app:${junboVersion}"
     compile "com.junbo.identity:identity-app:${junboVersion}"

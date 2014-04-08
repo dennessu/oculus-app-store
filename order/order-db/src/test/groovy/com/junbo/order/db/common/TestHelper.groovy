@@ -89,7 +89,6 @@ class TestHelper {
         entity.setProductItemId(generateLong().toString())
         entity.setUnitPrice(BigDecimal.valueOf(DEFAULT_PRICE))
         entity.setQuantity(Integer.valueOf(DEFAULT_QUANTITY))
-        entity.setFederatedId('TestFederatedId')
         entity.setCreatedTime(new Date())
         entity.setCreatedBy('Test')
         entity.setUpdatedBy('Test')
@@ -126,7 +125,7 @@ class TestHelper {
         orderEventEntity.setStatusId(EventStatus.COMPLETED)
         orderEventEntity.trackingUuid = UUID.randomUUID()
         orderEventEntity.eventTrackingUuid = UUID.randomUUID()
-        orderEventEntity.flowType = UUID.randomUUID().toString()
+        orderEventEntity.flowName = UUID.randomUUID().toString()
         return orderEventEntity
     }
 

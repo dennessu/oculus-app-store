@@ -27,8 +27,9 @@ test{
 
 dependencies {
 
+    compile project(':common-testlib')
     compile(libraries.asyncclient)
-    compile(libraries.common_testlib)
+    //compile(libraries.common_testlib)
 
     testCompile(libraries.asyncclient)
     testCompile(libraries.junit)

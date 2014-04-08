@@ -3,6 +3,7 @@ var offers = require('./api-proxy/offers');
 var items = require('./api-proxy/items');
 var attributes = require('./api-proxy/attributes');
 var priceTiers = require('./api-proxy/price-tiers');
+var auth = require('./api-proxy/auth');
 var http = require('http');
 var path = require('path');
 
@@ -17,6 +18,7 @@ app.use(express.urlencoded());
 app.use(express.methodOverride());
 app.use(express.bodyParser());
 app.use(app.router);
+app.use(express.cookieParser());
 
 app.use("/", express.static(path.join(__dirname, 'public')));
 
@@ -24,6 +26,9 @@ app.use("/", express.static(path.join(__dirname, 'public')));
 if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
+
+app.get('/auth', auth.Callback);
+app.get('/login', auth.Login);
 
 app.get('/api/offers', offers.getOffers);
 app.post('/api/offers', offers.createOffer);

@@ -67,6 +67,12 @@ services.factory('PriceTierFactory', function ($resource) {
     })
 });
 
+services.factory('AuthFactory', function ($resource) {
+    return $resource('/api/developer', {}, {
+        query: { method: 'GET' }
+    })
+});
+
 services.factory('OfferResponse', function() {
     return {
         data:{}
@@ -77,6 +83,25 @@ services.factory('ItemResponse', function() {
     return {
         data:{}
     };
+});
+
+services.factory('Developer', function() {
+    var developer = {};
+    var email = "";
+    var userId = 0;
+    developer.getEmail = function() {
+        return email;
+    };
+    developer.setEmail = function(newEmail) {
+        email = newEmail;
+    };
+    developer.getId = function() {
+        return userId;
+    };
+    developer.setId = function(newId) {
+        userId = newId;
+    };
+    return developer;
 });
 
 services.factory('MetaFactory', function() {

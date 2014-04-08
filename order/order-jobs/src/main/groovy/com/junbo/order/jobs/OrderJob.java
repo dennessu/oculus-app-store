@@ -6,8 +6,21 @@
 
 package com.junbo.order.jobs;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Created by xmchen on 14-4-2.
  */
 public class OrderJob {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(OrderJob.class);
+
+    protected void execute() {
+        LOGGER.info("Starting order job");
+
+
+
+        LOGGER.info("Order job finished");
+    }
 }

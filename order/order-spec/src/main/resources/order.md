@@ -149,11 +149,11 @@ Fields:
             "quantity": 1,
             "shippingInfo":
             {
-                "shippingMethod": {
+                "shippingMethodId": {
                     "href": "http://api.wan-san.com/shipping-methods/1",
                     "id": "1"
                 },
-                "shippingAddress": {
+                "shippingAddressId": {
                     "href: "http://api.wan-san.com/shipping-addresses/12345",
                     "id": "12345"
                 },
@@ -246,11 +246,11 @@ Fields:
             },
             "shippingInfo":
             {
-                "shippingMethod": {
+                "shippingMethodId": {
                     "href": "http://api.wan-san.com/shipping-methods/1",
                     "id": "1"
                 },
-                "shippingAddress": {
+                "shippingAddressId": {
                     "href: "http://api.wan-san.com/shipping-addresses/12345",
                     "id": "12345"
                 },
@@ -323,11 +323,11 @@ Fields:
             },
             "shippingInfo":
             {
-                "shippingMethod": {
+                "shippingMethodId": {
                     "href": "http://api.wan-san.com/shipping-methods/1",
                     "id": "1"
                 },
-                "shippingAddress": {
+                "shippingAddressId": {
                     "href: "http://api.wan-san.com/shipping-addresses/12345",
                     "id": "12345"
                 },
@@ -407,11 +407,11 @@ Update orders
                 },
                 "shippingInfo":
                 {
-                    "shippingMethod": {
+                    "shippingMethodId": {
                         "href": "http://api.wan-san.com/shipping-methods/1",
                         "id": "1"
                     },
-                    "shippingAddress": {
+                    "shippingAddressId": {
                         "href: "http://api.wan-san.com/shipping-addresses/12345",
                         "id": "12345"
                     },
@@ -472,11 +472,11 @@ Update orders
                 },
                 "shippingInfo":
                 {
-                    "shippingMethod": {
+                    "shippingMethodId": {
                         "href": "http://api.wan-san.com/shipping-methods/1",
                         "id": "1"
                     },
-                    "shippingAddress": {
+                    "shippingAddressId": {
                         "href: "http://api.wan-san.com/shipping-addresses/12345",
                         "id": "12345"
                     },
@@ -536,11 +536,11 @@ Post a refund order.
                 "ratingInfo:" {},
                 "shippingInfo":
                 {
-                    "shippingMethod": {
+                    "shippingMethodId": {
                         "href": "http://api.wan-san.com/shipping-methods/1",
                         "id": "1"
                     },
-                    "shippingAddress": {
+                    "shippingAddressId": {
                         "href: "http://api.wan-san.com/shipping-addresses/12345",
                         "id": "12345"
                     },

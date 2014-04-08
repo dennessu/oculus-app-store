@@ -22,8 +22,10 @@ import java.lang.reflect.Type;
  * The hook to change API parameter types when reading API.
  */
 public class JaxrsApiReader extends com.wordnik.swagger.jaxrs.reader.DefaultJaxrsApiReader {
+    private SamplesReader samplesReader = new SamplesReader();
+
     @Override
-    public Operation processOperation(Operation operation, Method method, ApiOperation apiOperation) {
+    public Operation processOperation(String endpoint, Operation operation, Method method, ApiOperation apiOperation) {
         Type actualType = getActualType(method.getGenericReturnType());
         if (actualType != method.getGenericReturnType()) {
             return new Operation(
@@ -39,7 +41,8 @@ public class JaxrsApiReader extends com.wordnik.swagger.jaxrs.reader.DefaultJaxr
                     operation.authorizations(),
                     operation.parameters(),
                     operation.responseMessages(),
-                    operation.deprecated());
+                    operation.deprecated(),
+                    samplesReader.readSamples(operation.method(), endpoint));
         }
         return operation;
     }
