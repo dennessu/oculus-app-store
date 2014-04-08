@@ -6,40 +6,47 @@
 
 package com.junbo.catalog.spec.model.item;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.junbo.catalog.spec.model.common.VersionedModel;
-import com.junbo.common.jackson.annotation.EntitlementDefinitionId;
+import com.junbo.catalog.spec.model.common.BaseEntityModel;
+import com.junbo.common.jackson.annotation.AttributeId;
 import com.junbo.common.jackson.annotation.ItemId;
-import com.junbo.common.jackson.annotation.UserId;
+import com.junbo.common.jackson.annotation.ItemRevisionId;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Item model.
  */
-public class Item extends VersionedModel {
+public class Item extends BaseEntityModel {
     @ItemId
     @JsonProperty("self")
-    private Long id;
+    private Long itemId;
+
+    @ItemRevisionId
+    @JsonProperty("currentRevision")
+    private Long currentRevisionId;
+
     private String type;
-    @UserId
-    @JsonProperty("developer")
-    private Long ownerId;
-    private List<Sku> skus;
-    private Map<String, Object> properties;
 
-    @EntitlementDefinitionId
-    @JsonProperty("entitlementDef")
-    private Long entitlementDefId;
+    @AttributeId
+    private List<Long> genres;
 
-    public Long getId() {
-        return id;
+    private String sku;
+
+    public Long getItemId() {
+        return itemId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setItemId(Long itemId) {
+        this.itemId = itemId;
+    }
+
+    public Long getCurrentRevisionId() {
+        return currentRevisionId;
+    }
+
+    public void setCurrentRevisionId(Long currentRevisionId) {
+        this.currentRevisionId = currentRevisionId;
     }
 
     public String getType() {
@@ -50,41 +57,19 @@ public class Item extends VersionedModel {
         this.type = type;
     }
 
-    public Long getOwnerId() {
-        return ownerId;
+    public List<Long> getGenres() {
+        return genres;
     }
 
-    public void setOwnerId(Long ownerId) {
-        this.ownerId = ownerId;
+    public void setGenres(List<Long> genres) {
+        this.genres = genres;
     }
 
-    public List<Sku> getSkus() {
-        return skus;
+    public String getSku() {
+        return sku;
     }
 
-    public void setSkus(List<Sku> skus) {
-        this.skus = skus;
-    }
-
-    public Map<String, Object> getProperties() {
-        return properties;
-    }
-
-    public void setProperties(Map<String, Object> properties) {
-        this.properties = properties;
-    }
-
-    public Long getEntitlementDefId() {
-        return entitlementDefId;
-    }
-
-    public void setEntitlementDefId(Long entitlementDefId) {
-        this.entitlementDefId = entitlementDefId;
-    }
-
-    @Override
-    @JsonIgnore
-    public String getEntityType() {
-        return "Item";
+    public void setSku(String sku) {
+        this.sku = sku;
     }
 }

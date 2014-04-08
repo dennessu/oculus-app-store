@@ -6,23 +6,43 @@
 
 package com.junbo.catalog.core.service;
 
-import com.junbo.catalog.core.EntitlementDefinitionService;
 import com.junbo.catalog.core.ItemService;
-import com.junbo.catalog.db.repo.ItemDraftRepository;
 import com.junbo.catalog.db.repo.ItemRepository;
-import com.junbo.catalog.spec.error.AppErrors;
-import com.junbo.catalog.spec.model.common.Status;
-import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
-import com.junbo.catalog.spec.model.entitlementdef.EntitlementType;
+import com.junbo.catalog.db.repo.ItemRevisionRepository;
 import com.junbo.catalog.spec.model.item.Item;
-import com.junbo.catalog.spec.model.item.ItemType;
+import com.junbo.catalog.spec.model.item.ItemRevision;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Item service implementation.
  */
-public class ItemServiceImpl extends BaseServiceImpl<Item> implements ItemService {
+public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevision> implements ItemService {
     @Autowired
+    private ItemRepository itemRepo;
+    @Autowired
+    private ItemRevisionRepository itemRevisionRepo;
+
+    @Override
+    protected ItemRepository getEntityRepo() {
+        return itemRepo;
+    }
+
+    @Override
+    protected ItemRevisionRepository getRevisionRepo() {
+        return itemRevisionRepo;
+    }
+
+    @Override
+    protected String getEntityType() {
+        return "item";
+    }
+
+    @Override
+    protected String getRevisionType() {
+        return "item-revision";
+    }
+
+    /*@Autowired
     private ItemRepository itemRepository;
     @Autowired
     private ItemDraftRepository itemDraftRepository;
@@ -79,5 +99,5 @@ public class ItemServiceImpl extends BaseServiceImpl<Item> implements ItemServic
     @Override
     protected String getEntityType() {
         return "Item";
-    }
+    }*/
 }

@@ -16,30 +16,32 @@ import com.junbo.common.model.Results;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.ws.rs.BeanParam;
+
 /**
  * Item resource implementation.
  */
-public class ItemResourceImpl extends BaseResourceImpl<Item> implements ItemResource {
+public class ItemResourceImpl implements ItemResource {
     @Autowired
     private ItemService itemService;
 
     @Override
     public Promise<Results<Item>> getItems(ItemsGetOptions options) {
-        return getEntities(options);
+        return null;
     }
 
     @Override
-    public Promise<Item> getItem(ItemId itemId, EntityGetOptions options) {
-        return get(itemId, options);
+    public Promise<Item> getItem(ItemId itemId, @BeanParam EntityGetOptions options) {
+        return Promise.pure(itemService.getEntity(itemId.getValue()));
     }
 
     @Override
     public Promise<Item> update(ItemId itemId, Item item) {
-        return super.update(itemId, item);
+        return Promise.pure(itemService.updateEntity(itemId.getValue(), item));
     }
 
     @Override
-    protected ItemService getEntityService() {
-        return itemService;
+    public Promise<Item> create(Item item) {
+        return Promise.pure(itemService.createEntity(item));
     }
 }

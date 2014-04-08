@@ -38,12 +38,6 @@ public interface ItemResource {
     @Path("/{itemId}")
     Promise<Item> getItem(@PathParam("itemId") ItemId itemId, @BeanParam EntityGetOptions options);
 
-    /**
-     * Create a draft item.
-     *
-     * @param item the Item to be created.
-     * @return the created Item.
-     */
     @ApiOperation("Create an item")
     @POST
     @Path("/")

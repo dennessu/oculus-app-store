@@ -4,7 +4,7 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.catalog.db.convertor;
+package com.junbo.catalog.db.mapper;
 
 import com.junbo.catalog.db.entity.EntitlementDefinitionEntity;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
@@ -18,8 +18,10 @@ import java.util.List;
  * Mapper for entitlement.
  */
 @Component
-public class EntitlementDefinitionConverter {
-    public EntitlementDefinition toEntitlementDefinition(
+public class EntitlementDefinitionMapper {
+    private EntitlementDefinitionMapper(){}
+
+    public static EntitlementDefinition toEntitlementDefinition(
             EntitlementDefinitionEntity entitlementDefinitionEntity) {
         if (entitlementDefinitionEntity == null) {
             return null;
@@ -34,7 +36,7 @@ public class EntitlementDefinitionConverter {
         return entitlementDefinition;
     }
 
-    public EntitlementDefinitionEntity toEntitlementDefinitionEntity(
+    public static EntitlementDefinitionEntity toEntitlementDefinitionEntity(
             EntitlementDefinition entitlementDefinition) {
         EntitlementDefinitionEntity entitlementDefinitionEntity = new EntitlementDefinitionEntity();
         entitlementDefinitionEntity.setTrackingUuid(entitlementDefinition.getTrackingUuid());
@@ -47,7 +49,7 @@ public class EntitlementDefinitionConverter {
         return entitlementDefinitionEntity;
     }
 
-    public List<EntitlementDefinition> toEntitlementDefinitionList(
+    public static List<EntitlementDefinition> toEntitlementDefinitionList(
             List<EntitlementDefinitionEntity> entitlementDefinitionEntities) {
         List<EntitlementDefinition> entitlementDefinitions =
                 new ArrayList<EntitlementDefinition>(entitlementDefinitionEntities.size());

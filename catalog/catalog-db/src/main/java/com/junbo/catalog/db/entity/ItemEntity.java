@@ -28,6 +28,7 @@ public class ItemEntity extends VersionedEntity {
     private Long itemId;
     private String name;
     private Long ownerId;
+    private Long currentRevisionId;
     private String payload;
 
     @Id
@@ -74,6 +75,15 @@ public class ItemEntity extends VersionedEntity {
 
     public void setOwnerId(Long ownerId) {
         this.ownerId = ownerId;
+    }
+
+    @Column(name = "current_revision_id")
+    public Long getCurrentRevisionId() {
+        return currentRevisionId;
+    }
+
+    public void setCurrentRevisionId(Long currentRevisionId) {
+        this.currentRevisionId = currentRevisionId;
     }
 
     @Column(name = "payload")

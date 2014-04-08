@@ -11,40 +11,38 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
- * Offer draft DB entity.
+ * Item DB entity.
  */
 @Entity
-@Table(name="offer_draft")
+@Table(name="item_revision")
 @TypeDefs(@TypeDef(name="json-string", typeClass=StringJsonUserType.class))
-public class OfferDraftEntity extends VersionedEntity {
-    private Long id;
-    private String name;
+public class ItemRevisionEntity extends BaseEntity {
+    private Long revisionId;
+    private Long itemId;
     private Long ownerId;
+    private String status;
     private String payload;
 
     @Id
-    @Column(name = "offer_id")
-    public Long getId() {
-        return id;
+    @Column(name = "revision_id")
+    public Long getRevisionId() {
+        return revisionId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setRevisionId(Long revisionId) {
+        this.revisionId = revisionId;
     }
 
-    @Column(name = "offer_name")
-    public String getName() {
-        return name;
+    @Column(name = "item_id")
+    public Long getItemId() {
+        return itemId;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setItemId(Long itemId) {
+        this.itemId = itemId;
     }
 
     @Column(name = "owner_id")
@@ -56,6 +54,15 @@ public class OfferDraftEntity extends VersionedEntity {
         this.ownerId = ownerId;
     }
 
+    @Column(name = "status")
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     @Column(name = "payload")
     @Type(type = "json-string")
     public String getPayload() {
@@ -64,5 +71,16 @@ public class OfferDraftEntity extends VersionedEntity {
 
     public void setPayload(String payload) {
         this.payload = payload;
+    }
+
+    @Override
+    @Transient
+    public Long getId() {
+        return revisionId;
+    }
+
+    @Override
+    public void setId(Long id) {
+        this.revisionId = id;
     }
 }

@@ -6,7 +6,6 @@
 
 package com.junbo.catalog.db.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.junbo.catalog.db.dao.StringJsonUserType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
@@ -20,11 +19,10 @@ import javax.persistence.*;
 @Entity
 @Table(name="offer")
 @TypeDefs(@TypeDef(name="json-string", typeClass=StringJsonUserType.class))
-public class OfferEntity extends BaseEntity {
+public class OfferEntity extends VersionedEntity {
     private Long offerId;
     private String offerName;
     private Long ownerId;
-    private String status;
     private Long currentRevisionId;
     private String categories;
 
@@ -54,15 +52,6 @@ public class OfferEntity extends BaseEntity {
 
     public void setOwnerId(Long ownerId) {
         this.ownerId = ownerId;
-    }
-
-    @Column(name = "status")
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
     @Column(name = "current_revision_id")

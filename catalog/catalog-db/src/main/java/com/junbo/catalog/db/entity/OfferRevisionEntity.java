@@ -6,7 +6,6 @@
 
 package com.junbo.catalog.db.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.junbo.catalog.db.dao.StringJsonUserType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
