@@ -81,12 +81,6 @@ class OrderServiceImpl implements OrderService {
         }.syncRecover { Throwable throwable ->
             error = throwable
         }.syncThen {
-            if (orderServiceContext.order.tentative) {
-                LOGGER.info('name=Order_RollBack_To_Tentative, orderId={}', orderServiceContext.order.id)
-                transactionHelper.executeInTransaction {
-                    orderRepository.updateOrder(orderServiceContext.order, true)
-                }
-            }
             orderInternalService.refreshOrderStatus(orderServiceContext.order)
             if (error != null) {
                 throw error
@@ -124,6 +118,12 @@ class OrderServiceImpl implements OrderService {
         if (persistedOrder != null) {
             LOGGER.info('name=Order_Already_Exist. userId:{}, trackingUuid: {}, orderId:{}',
                     persistedOrder.user.value, persistedOrder.trackingUuid, persistedOrder.id.value)
+            if (order.tentative != persistedOrder.tentative) {
+                LOGGER.error('name=Order_Can_Not_Post_Non_Tentative_Order_With_Same_TrackingUuid. ' +
+                        'userId:{}, trackingUuid: {}, orderId:{}',
+                        persistedOrder.user.value, persistedOrder.trackingUuid, persistedOrder.id.value)
+                throw AppErrors.INSTANCE.orderDuplicateTrackingGuid().exception()
+            }
             return Promise.pure(persistedOrder)
         }
 

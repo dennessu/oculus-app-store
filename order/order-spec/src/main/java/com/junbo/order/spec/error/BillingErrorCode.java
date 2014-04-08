@@ -16,4 +16,6 @@ public class BillingErrorCode {
     public static final String BALANCE_NOT_FOUND = "33000";
 
     public static final String BILLING_CONNECTION_ERROR = "33001";
+
+    public static final String BILLING_CHARGE_FAILED = "33002";
 }

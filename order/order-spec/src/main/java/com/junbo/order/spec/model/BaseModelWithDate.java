@@ -20,7 +20,6 @@ public class BaseModelWithDate {
     private Date updatedTime;
     @JsonIgnore
     private String updatedBy;
-    @JsonIgnore
     private Integer rev;
 
     public Date getCreatedTime() {
