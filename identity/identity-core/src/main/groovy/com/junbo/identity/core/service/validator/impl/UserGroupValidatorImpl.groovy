@@ -11,10 +11,11 @@ import com.junbo.identity.data.repository.GroupRepository
 import com.junbo.identity.data.repository.UserGroupRepository
 import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.spec.error.AppErrors
-import com.junbo.identity.spec.model.users.Group
+
 import com.junbo.identity.spec.model.users.User
 import com.junbo.identity.spec.model.users.UserGroup
 import com.junbo.identity.spec.options.list.UserGroupListOptions
+import com.junbo.identity.spec.v1.model.Group
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required

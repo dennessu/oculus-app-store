@@ -29,6 +29,8 @@ public class Group extends ResourceMeta implements Identifiable<GroupId> {
 
     public void setId(GroupId id) {
         this.id = id;
+        support.setPropertyAssigned("self");
+        support.setPropertyAssigned("id");
     }
 
     public String getName() {
@@ -37,6 +39,7 @@ public class Group extends ResourceMeta implements Identifiable<GroupId> {
 
     public void setName(String name) {
         this.name = name;
+        support.setPropertyAssigned("name");
     }
 
     public Boolean getActive() {
@@ -45,5 +48,6 @@ public class Group extends ResourceMeta implements Identifiable<GroupId> {
 
     public void setActive(Boolean active) {
         this.active = active;
+        support.setPropertyAssigned("active");
     }
 }

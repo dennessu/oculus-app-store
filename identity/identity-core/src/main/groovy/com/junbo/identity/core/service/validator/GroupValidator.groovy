@@ -6,9 +6,8 @@
 package com.junbo.identity.core.service.validator
 
 import com.junbo.common.id.GroupId
-import com.junbo.identity.spec.options.list.GroupListOptions
-import com.junbo.identity.spec.options.list.UserGroupListOptions
 import com.junbo.identity.spec.v1.model.Group
+import com.junbo.identity.spec.v1.option.list.GroupListOptions
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 
@@ -17,9 +16,8 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 interface GroupValidator {
-    Promise<Void> validateForGet(GroupId groupId)
+    Promise<Group> validateForGet(GroupId groupId)
     Promise<Void> validateForSearch(GroupListOptions options)
-    Promise<Void> validateForSearchUserGroup(GroupId groupId, UserGroupListOptions options)
     Promise<Void> validateForCreate(Group group)
     Promise<Void> validateForUpdate(GroupId groupId, Group group, Group oldGroup)
 }

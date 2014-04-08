@@ -9,13 +9,13 @@ import com.junbo.common.id.GroupId
 import com.junbo.identity.core.service.validator.GroupValidator
 import com.junbo.identity.data.repository.GroupRepository
 import com.junbo.identity.spec.error.AppErrors
-import com.junbo.identity.spec.options.list.GroupListOptions
-import com.junbo.identity.spec.options.list.UserGroupListOptions
 import com.junbo.identity.spec.v1.model.Group
+import com.junbo.identity.spec.v1.option.list.GroupListOptions
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.StringUtils
+
 /**
  * Created by liangfu on 3/14/14.
  */
@@ -44,39 +44,30 @@ class GroupValidatorImpl implements GroupValidator {
     }
 
     @Override
-    Promise<Void> validateForGet(GroupId groupId) {
+    Promise<Group> validateForGet(GroupId groupId) {
         if (groupId == null || groupId.value == null) {
-            throw new IllegalArgumentException()
+            throw new IllegalArgumentException('groupId is null')
         }
-        return Promise.pure(null)
+
+        return groupRepository.get(groupId).then { Group group ->
+            if (group == null) {
+                throw AppErrors.INSTANCE.groupNotFound(groupId).exception()
+            }
+
+            return Promise.pure(group)
+        }
     }
 
     @Override
     Promise<Void> validateForSearch(GroupListOptions options) {
         if (options == null) {
-            throw new IllegalArgumentException()
+            throw new IllegalArgumentException('options is null')
         }
 
         if (options.name == null) {
             throw AppErrors.INSTANCE.parameterRequired('name').exception()
         }
         return Promise.pure(null)
-    }
-
-    @Override
-    Promise<Void> validateForSearchUserGroup(GroupId groupId, UserGroupListOptions options) {
-        if (groupId == null) {
-            throw new IllegalArgumentException()
-        }
-
-        if (options == null) {
-            throw new IllegalArgumentException()
-        }
-
-        if (options.groupId != null && groupId != options) {
-            throw AppErrors.INSTANCE.fieldInvalid('groupId', groupId.value.toString()).exception()
-        }
-        options.setGroupId(groupId)
     }
 
     @Override
@@ -123,6 +114,7 @@ class GroupValidatorImpl implements GroupValidator {
                 return Promise.pure(null)
             }
         }
+        return Promise.pure(null)
     }
 
     private void basicCheckForGroup(Group group) {

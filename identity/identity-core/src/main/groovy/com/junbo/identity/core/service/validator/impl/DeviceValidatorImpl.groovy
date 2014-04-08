@@ -9,7 +9,6 @@ import com.junbo.identity.spec.v1.option.list.DeviceListOptions
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
-import org.springframework.stereotype.Component
 
 /**
  * Created by xiali_000 on 4/8/2014.
