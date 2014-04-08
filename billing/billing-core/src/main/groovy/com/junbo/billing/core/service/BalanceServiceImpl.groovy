@@ -87,6 +87,9 @@ class BalanceServiceImpl implements BalanceService {
 
                     // set the balance status to INIT
                     taxedBalance.setStatus(BalanceStatus.INIT.name())
+                    if (taxedBalance.isAsyncCharge == null) {
+                        taxedBalance.isAsyncCharge = false
+                    }
 
                     Balance savedBalance = balanceRepository.saveBalance(taxedBalance)
 

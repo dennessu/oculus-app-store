@@ -109,12 +109,6 @@ public class BalanceRepositoryImpl implements BalanceRepository {
         orderBalanceLinkEntity.setCreatedBy("Billing");
         orderBalanceLinkEntityDao.insert(orderBalanceLinkEntity);
 
-        balanceEntityDao.flush();
-        balanceItemEntityDao.flush();
-        taxItemEntityDao.flush();
-        discountItemEntityDao.flush();
-        orderBalanceLinkEntityDao.flush();
-
         // create balance event
         saveBalanceEventEntity(balanceEntity);
 
@@ -198,8 +192,6 @@ public class BalanceRepositoryImpl implements BalanceRepository {
             }
         }
 
-        balanceEntityDao.flush();
-
         // create balance event
         saveBalanceEventEntity(savedEntity);
 
@@ -232,6 +224,5 @@ public class BalanceRepositoryImpl implements BalanceRepository {
         balanceEventEntity.setStatusId(balanceEntity.getStatusId());
         balanceEventEntity.setEventDate(new Date());
         balanceEventEntityDao.insert(balanceEventEntity);
-        balanceEventEntityDao.flush();
     }
 }
