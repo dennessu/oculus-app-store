@@ -38,6 +38,7 @@ public class BalanceEntity extends BaseEntity {
     private String country;
     private Short statusId;
     private Date dueDate;
+    private Boolean isAsyncCharge = false;
     private Long shippingAddressId;
     private Long originalBalanceId;
     private Integer retryCount = 0;
@@ -160,6 +161,15 @@ public class BalanceEntity extends BaseEntity {
     }
     public void setDueDate(Date dueDate) {
         this.dueDate = dueDate;
+    }
+
+    @Column(name = "is_async_charge")
+    @NotNull(message = EntityValidationCode.MISSING_VALUE)
+    public Boolean getIsAsyncCharge() {
+        return isAsyncCharge;
+    }
+    public void setIsAsyncCharge(Boolean isAsyncCharge) {
+        this.isAsyncCharge = isAsyncCharge;
     }
 
     @Column(name = "retry_count")

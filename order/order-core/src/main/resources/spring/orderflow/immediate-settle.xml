@@ -10,7 +10,6 @@
             <wf:on-entry>
                 <wf:action ref="validateUserAction"/>
                 <wf:action ref="validatePaymentInstrumentsAction"/>
-                <wf:action ref="markSettleAction"/>
                 <wf:action ref="immediateSettleAction"/>
                 <wf:action ref="fulfillmentAction"/>
                 <wf:action ref="sendEmailAction"/>
