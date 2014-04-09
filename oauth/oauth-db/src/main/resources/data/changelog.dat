@@ -12,7 +12,9 @@ client	client	{
         "scope.manage",
         "scope.info",
         "client.info",
-        "consent.manage"
+        "consent.manage",
+        "api.info",
+        "api.manage"
     ],
     "default_scopes": [
         "identity",
@@ -47,4 +49,44 @@ scope	openid	{
 
 scope	offline	{
     "description": "Scope to allow offline access of the service. If offline scope is presented, a refresh token will be issued"
+}
+
+api	user_get	{
+   "authorizePolicies": {
+       "identity": {
+           "claims": {
+               "owner": [
+                   "owner",
+                   "read"
+               ],
+               "guest": [
+                   "read"
+               ],
+               "admin": [
+                   "admin",
+                   "read"
+               ]
+           }
+       }
+   }
+}
+
+api	item_get	{
+   "authorizePolicies": {
+       "catalog": {
+           "claims": {
+               "owner": [
+                   "owner",
+                   "read"
+               ],
+               "guest": [
+                   "read"
+               ],
+               "admin": [
+                   "admin",
+                   "read"
+               ]
+           }
+       }
+   }
 }

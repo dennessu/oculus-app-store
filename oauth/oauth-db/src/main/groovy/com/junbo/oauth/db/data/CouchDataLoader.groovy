@@ -7,14 +7,19 @@
 package com.junbo.oauth.db.data
 
 import com.junbo.oauth.common.JsonMarshaller
+import com.junbo.oauth.db.dao.ApiDefinitionDAO
 import com.junbo.oauth.db.dao.ClientDAO
 import com.junbo.oauth.db.dao.ScopeDAO
+import com.junbo.oauth.db.dao.couch.CouchApiDefinitionDAOImpl
 import com.junbo.oauth.db.dao.couch.CouchClientDAOImpl
 import com.junbo.oauth.db.dao.couch.CouchScopeDAOImpl
+import com.junbo.oauth.db.repo.ApiDefinitionRepository
 import com.junbo.oauth.db.repo.ClientRepository
 import com.junbo.oauth.db.repo.ScopeRepository
+import com.junbo.oauth.db.repo.impl.ApiDefinitionRepositoryImpl
 import com.junbo.oauth.db.repo.impl.ClientRepositoryImpl
 import com.junbo.oauth.db.repo.impl.ScopeRepositoryImpl
+import com.junbo.oauth.spec.model.ApiDefinition
 import com.junbo.oauth.spec.model.Client
 import com.junbo.oauth.spec.model.Scope
 import com.ning.http.client.AsyncHttpClient
@@ -37,6 +42,8 @@ class CouchDataLoader {
 
     private final ClientRepository clientRepository
     private final ScopeRepository scopeRepository
+    private final ApiDefinitionRepository apiDefinitionRepository
+
 
     CouchDataLoader(String dbUri) {
         this.dbUri = dbUri
@@ -61,6 +68,16 @@ class CouchDataLoader {
         ScopeRepositoryImpl scopeRepositoryImpl = new ScopeRepositoryImpl()
         scopeRepositoryImpl.scopeDAO = scopeDAO
         scopeRepository = scopeRepositoryImpl
+
+        ApiDefinitionDAO apiDefinitionDAO = new CouchApiDefinitionDAOImpl()
+        apiDefinitionDAO.dbName = 'api_definition'
+        apiDefinitionDAO.asyncHttpClient = asyncHttpClient
+        apiDefinitionDAO.couchDBUri = dbUri
+        apiDefinitionDAO.afterPropertiesSet()
+
+        ApiDefinitionRepositoryImpl apiDefinitionRepositoryImpl = new ApiDefinitionRepositoryImpl()
+        apiDefinitionRepositoryImpl.apiDefinitionDAO = apiDefinitionDAO
+        apiDefinitionRepository = apiDefinitionRepositoryImpl
     }
 
     static void main(String[] args) {
@@ -94,6 +111,10 @@ class CouchDataLoader {
             if (tokens[ENTITY_TYPE_INDEX] == 'scope') {
                 populateScope(tokens[ENTITY_KEY_INDEX], tokens[ENTITY_BODY_INDEX])
             }
+
+            if (tokens[ENTITY_TYPE_INDEX] == 'api') {
+                populateApiDefinition(tokens[ENTITY_KEY_INDEX], tokens[ENTITY_BODY_INDEX])
+            }
         }
     }
 
@@ -120,6 +141,19 @@ class CouchDataLoader {
             scopeRepository.updateScope(scope)
         } else {
             scopeRepository.saveScope(scope)
+        }
+    }
+
+    private void populateApiDefinition(String apiName, String entity) {
+        ApiDefinition api = JsonMarshaller.unmarshall(entity, ApiDefinition)
+        ApiDefinition existing = apiDefinitionRepository.getApi(apiName)
+
+        api.apiName = apiName
+        if (existing != null) {
+            api.revision = existing.revision
+            apiDefinitionRepository.updateApi(api)
+        } else {
+            apiDefinitionRepository.saveApi(api)
         }
     }
 }
