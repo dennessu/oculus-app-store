@@ -426,7 +426,7 @@ class OrderRepositoryImpl implements OrderRepository {
             LOGGER.error('name=Multiple_Orders_With_Same_TrackingUuid, ' +
                     'trackingUuid={}',
                     orders[0].trackingUuid)
-            throw AppErrors.INSTANCE.orderDuplicateTrackingGuid().exception()
+            throw AppErrors.INSTANCE.orderDuplicateTrackingGuid(0L, orders[0].trackingUuid).exception()
         }
     }
 }

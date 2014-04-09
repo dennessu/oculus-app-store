@@ -58,6 +58,13 @@ class OrderResourceImpl implements OrderResource {
     @Override
     Promise<Order> createOrder(Order order) {
         orderValidator.notNull(order, 'order').notNull(order.trackingUuid, 'trackingUuid').notNull(order.user, 'user')
+
+        def persistedOrder = orderService.getOrderByTrackingUuid(order.trackingUuid, order.user.value)
+        if (persistedOrder != null) {
+            LOGGER.info('name=Order_Same_TrackingUuid_Existed')
+            return Promise.pure(persistedOrder)
+        }
+
         orderValidator.validateSettleOrderRequest(order)
         Boolean isTentative = order.tentative
         order.tentative = true
