@@ -31,6 +31,7 @@ public class EntitlementDefinitionConverter {
         entitlementDefinition.setType(entitlementDefinitionEntity.getType().toString());
         entitlementDefinition.setGroup(entitlementDefinitionEntity.getGroup());
         entitlementDefinition.setTag(entitlementDefinitionEntity.getTag());
+        entitlementDefinition.setConsumable(entitlementDefinitionEntity.getConsumable());
         return entitlementDefinition;
     }
 
@@ -44,6 +45,7 @@ public class EntitlementDefinitionConverter {
         entitlementDefinitionEntity.setType(EntitlementType.valueOf(entitlementDefinition.getType()));
         entitlementDefinitionEntity.setGroup(entitlementDefinition.getGroup());
         entitlementDefinitionEntity.setTag(entitlementDefinition.getTag());
+        entitlementDefinitionEntity.setConsumable(entitlementDefinition.getConsumable());
         return entitlementDefinitionEntity;
     }
 

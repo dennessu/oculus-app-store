@@ -11,7 +11,6 @@ import com.junbo.catalog.db.repo.EntitlementDefinitionRepository;
 import com.junbo.catalog.spec.error.AppErrors;
 import com.junbo.catalog.spec.model.common.PageableGetOptions;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
-import com.junbo.catalog.spec.model.entitlementdef.EntitlementType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,18 +39,16 @@ public class EntitlementDefinitionServiceImpl implements EntitlementDefinitionSe
     @Override
     public List<EntitlementDefinition> getEntitlementDefinitions(Long developerId, String group, String tag,
                                                                  String type, PageableGetOptions pageMetadata) {
-        if (developerId == null) {
-            throw AppErrors.INSTANCE.missingField("developerId").exception();
-        }
         checkDeveloper(developerId);
         return entitlementDefinitionRepository.getByParams(developerId, group, tag, type, pageMetadata);
     }
 
     @Override
     public Long createEntitlementDefinition(EntitlementDefinition entitlementDefinition) {
-        if (entitlementDefinition.getType() == null) {
-            entitlementDefinition.setType(EntitlementType.DEFAULT.toString());
-        }
+        validateNotNull(entitlementDefinition.getType(), "type");
+        validateNotNull(entitlementDefinition.getGroup(), "group");
+        validateNotNull(entitlementDefinition.getTag(), "tag");
+        validateNotNull(entitlementDefinition.getConsumable(), "consumable");
         checkDeveloper(entitlementDefinition.getDeveloperId());
         return entitlementDefinitionRepository.create(entitlementDefinition);
     }
@@ -59,6 +56,12 @@ public class EntitlementDefinitionServiceImpl implements EntitlementDefinitionSe
     @Override
     public EntitlementDefinition getByTrackingUuid(UUID trackingUuid) {
         return entitlementDefinitionRepository.getByTrackingUuid(trackingUuid);
+    }
+
+    protected void validateNotNull(Object value, String fieldName) {
+        if (value == null) {
+            throw AppErrors.INSTANCE.missingField(fieldName).exception();
+        }
     }
 
     private void checkDeveloper(Long developerId) {

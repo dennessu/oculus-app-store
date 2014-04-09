@@ -30,6 +30,7 @@ public class EntitlementDefinitionDaoTest extends BaseTest {
         definitionEntity.setDeveloperId(generateId());
         definitionEntity.setTag("TEST");
         definitionEntity.setGroup("TEST");
+        definitionEntity.setConsumable(true);
         definitionEntity.setType(EntitlementType.DEFAULT);
         return definitionEntity;
     }

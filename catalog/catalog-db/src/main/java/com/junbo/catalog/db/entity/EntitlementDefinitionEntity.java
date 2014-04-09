@@ -23,6 +23,7 @@ public class EntitlementDefinitionEntity extends BaseEntity {
     private EntitlementType type;
     private String group;
     private String tag;
+    private Boolean consumable;
     private UUID trackingUuid;
 
     @Id
@@ -69,6 +70,15 @@ public class EntitlementDefinitionEntity extends BaseEntity {
 
     public void setTag(String tag) {
         this.tag = tag;
+    }
+
+    @Column(name = "consumable")
+    public Boolean getConsumable() {
+        return consumable;
+    }
+
+    public void setConsumable(Boolean consumable) {
+        this.consumable = consumable;
     }
 
     @Column(name = "tracking_uuid")

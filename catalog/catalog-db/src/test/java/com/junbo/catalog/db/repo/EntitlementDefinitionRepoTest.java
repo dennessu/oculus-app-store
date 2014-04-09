@@ -29,6 +29,7 @@ public class EntitlementDefinitionRepoTest extends BaseTest {
         definition.setDeveloperId(generateId());
         definition.setTag("TEST");
         definition.setGroup("TEST");
+        definition.setConsumable(true);
         definition.setType(EntitlementType.DEFAULT.toString());
         return definition;
     }

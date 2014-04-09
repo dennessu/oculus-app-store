@@ -22,6 +22,7 @@ import java.util.UUID;
         "type",
         "group",
         "tag",
+        "consumable",
         "developerId"})
 public class EntitlementDefinition {
     private UUID trackingUuid;
@@ -34,6 +35,7 @@ public class EntitlementDefinition {
     private String type;
     private String group;
     private String tag;
+    private Boolean consumable;
 
     @JsonIgnore
     public UUID getTrackingUuid() {
@@ -83,5 +85,13 @@ public class EntitlementDefinition {
 
     public void setTag(String tag) {
         this.tag = tag;
+    }
+
+    public Boolean getConsumable() {
+        return consumable;
+    }
+
+    public void setConsumable(Boolean consumable) {
+        this.consumable = consumable;
     }
 }
