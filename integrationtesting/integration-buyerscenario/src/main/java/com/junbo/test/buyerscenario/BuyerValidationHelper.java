@@ -49,7 +49,7 @@ public class BuyerValidationHelper extends BaseValidationHelper {
         verifyEqual(order.getOrderItems().size(), cart.getOffers().size(), "verify offer items in order");
         if (shippingAddressId != null) {
             verifyEqual(IdConverter.idLongToHexString(
-                    ShippingAddressId.class, order.getShippingAddressId().getValue()), shippingAddressId,
+                    ShippingAddressId.class, order.getShippingAddress().getValue()), shippingAddressId,
                     "verify shipping address id"
             );
         }

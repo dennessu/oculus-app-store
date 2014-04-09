@@ -764,7 +764,6 @@ table {
   font-family: "Anonymous Pro", "Menlo", "Consolas", "Bitstream Vera Sans Mono", "Courier New", monospace;
   padding: 10px;
   font-size: 0.9em;
-  max-height: 400px;
   overflow-y: auto;
 }
 

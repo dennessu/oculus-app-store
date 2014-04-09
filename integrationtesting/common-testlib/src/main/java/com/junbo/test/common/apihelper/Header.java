@@ -11,6 +11,11 @@ package com.junbo.test.common.apihelper;
  */
 public final class Header {
     public static final String CONTENT_TYPE = "Content-Type";
+    public static final String DELEGATE_USER_ID = "Delegate-User-Id";
+    public static final String REQUESTOR_ID = "Requestor-Id";
+    public static final String ON_BEHALF_OF_REQUESTOR_ID = "On-Behalf-Of-Requestor-Id";
+    public static final String USER_IP = "User-Ip";
+
 
     private Header() {
     }

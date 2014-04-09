@@ -26,4 +26,7 @@ public interface OrderInternalService {
     Order getOrderByTrackingUuid(UUID trackingUuid, Long userId);
 
     void refreshOrderStatus(Order order);
+
+    void markSettlement(Order order);
+
 }
