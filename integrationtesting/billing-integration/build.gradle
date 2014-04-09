@@ -28,6 +28,8 @@ test {
 dependencies {
     compile project(':common-testlib')
     compile(libraries.asyncclient)
+    compile(libraries.postgresql)
+    compile project(':payment-integration')
     //compile(libraries.common_testlib)
     compile 'com.junbo.billing:billing-spec:0.0.1-SNAPSHOT'
 

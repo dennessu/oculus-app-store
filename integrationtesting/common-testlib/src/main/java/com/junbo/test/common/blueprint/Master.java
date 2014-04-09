@@ -58,6 +58,7 @@ public class Master {
         this.initializeEntitlements();
         this.initializePayments();
         this.initializeShippingAddresses();
+        this.initializeBalances();
     }
 
     public void initializeUsers() {
