@@ -44,7 +44,7 @@ class PhysicalSettleAction extends BaseOrderEventAwareAction {
     @Transactional
     Promise<ActionResult> execute(ActionContext actionContext) {
         def context = ActionUtils.getOrderActionContext(actionContext)
-        Balance balance = CoreBuilder.buildBalance(context.orderServiceContext.order, BalanceType.DEBIT)
+        Balance balance = CoreBuilder.buildPartialChargeBalance(context.orderServiceContext.order, BalanceType.DEBIT)
         Promise promise = facadeContainer.billingFacade.createBalance(balance)
         promise.syncRecover {  Throwable throwable ->
             LOGGER.error('name=Order_PhysicalSettle_Error', throwable)
@@ -55,7 +55,6 @@ class PhysicalSettleAction extends BaseOrderEventAwareAction {
             def billingEvent = BillingEventBuilder.buildBillingEvent(resultBalance)
             orderRepository.createBillingEvent(context.orderServiceContext.order.id.value, billingEvent)
             orderServiceContextBuilder.refreshBalances(context.orderServiceContext).syncThen {
-                // TODO: save order level tax
                 return CoreBuilder.buildActionResultForOrderEventAwareAction(context, billingEvent.status)
             }
         }

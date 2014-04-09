@@ -16,5 +16,6 @@ public enum FlowType {
     AUTH_SETTLE,
     FREE_SETTLE,
     IMMEDIATE_SETTLE,
-    GET_ORDER
+    GET_ORDER,
+    PHYSICAL_SETTLE
 }
