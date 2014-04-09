@@ -6,9 +6,8 @@
 package com.junbo.identity.core.service.validator
 
 import com.junbo.common.id.UserDeviceId
-import com.junbo.common.id.UserId
-import com.junbo.identity.spec.model.users.UserDevice
-import com.junbo.identity.spec.options.list.UserDeviceListOptions
+import com.junbo.identity.spec.v1.model.UserDevice
+import com.junbo.identity.spec.v1.option.list.UserDeviceListOptions
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 
@@ -17,9 +16,8 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 interface UserDeviceValidator {
-    Promise<UserDevice> validateForGet(UserId userId, UserDeviceId userDeviceId)
+    Promise<UserDevice> validateForGet(UserDeviceId userDeviceId)
     Promise<Void> validateForSearch(UserDeviceListOptions options)
-    Promise<Void> validateForCreate(UserId userId, UserDevice userDevice)
-    Promise<Void> validateForUpdate(UserId userId, UserDeviceId userDeviceId,
-                                    UserDevice userDevice, UserDevice oldUserDevice)
+    Promise<Void> validateForCreate(UserDevice userDevice)
+    Promise<Void> validateForUpdate(UserDeviceId userDeviceId, UserDevice userDevice, UserDevice oldUserDevice)
 }

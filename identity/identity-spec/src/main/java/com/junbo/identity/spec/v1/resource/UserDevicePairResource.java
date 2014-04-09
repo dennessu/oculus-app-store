@@ -36,7 +36,7 @@ public interface UserDevicePairResource {
     @GET
     @Path("/{userDevicePairId}")
     Promise<UserDevice> get(@PathParam("userDevicePairId") UserDeviceId userDeviceId,
-                            UserDeviceGetOptions getOptions);
+                            @BeanParam UserDeviceGetOptions getOptions);
 
     @ApiOperation("Partial update one user device pair")
     @POST
@@ -58,5 +58,5 @@ public interface UserDevicePairResource {
     @ApiOperation("Search user device pairs")
     @GET
     @Path("/")
-    Promise<Results<UserDevice>> list(UserDeviceListOptions listOptions);
+    Promise<Results<UserDevice>> list(@BeanParam UserDeviceListOptions listOptions);
 }

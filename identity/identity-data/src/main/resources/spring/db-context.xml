@@ -68,6 +68,7 @@
                 <bean class="com.junbo.identity.data.view.AuthenticatorValueView" />
                 <bean class="com.junbo.identity.data.view.UserEmailView" />
                 <bean class="com.junbo.identity.data.view.DeviceExternalRefView" />
+                <bean class="com.junbo.identity.data.view.UserDeviceIdView" />
             </list>
         </property>
     </bean>

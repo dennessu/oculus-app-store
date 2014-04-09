@@ -18,7 +18,7 @@ class DeviceExternalRefView implements EntityView<Long, DeviceEntity, String> {
 
     @Override
     String getName() {
-        return 'device_deviceExternalRef'
+        return 'device_device_external_ref'
     }
 
     @Override

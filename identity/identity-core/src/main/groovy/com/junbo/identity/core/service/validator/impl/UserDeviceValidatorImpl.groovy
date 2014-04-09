@@ -4,116 +4,47 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.identity.core.service.validator.impl
+
 import com.junbo.common.id.UserDeviceId
-import com.junbo.common.id.UserId
 import com.junbo.identity.core.service.validator.UserDeviceValidator
+import com.junbo.identity.data.repository.DeviceRepository
 import com.junbo.identity.data.repository.UserDeviceRepository
 import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.model.users.User
-import com.junbo.identity.spec.model.users.UserDevice
-import com.junbo.identity.spec.options.list.UserDeviceListOptions
+import com.junbo.identity.spec.v1.model.Device
+import com.junbo.identity.spec.v1.model.UserDevice
+import com.junbo.identity.spec.v1.option.list.UserDeviceListOptions
 import com.junbo.langur.core.promise.Promise
+import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.CollectionUtils
+
 /**
  * Created by liangfu on 3/27/14.
  */
+@CompileStatic
 class UserDeviceValidatorImpl implements UserDeviceValidator {
 
     private UserDeviceRepository userDeviceRepository
 
     private UserRepository userRepository
 
-    private Integer deviceIdMinLength
-    private Integer deviceIdMaxLength
-
-    private Integer osMinLength
-    private Integer osMaxLength
-
-    private Integer typeMinLength
-    private Integer typeMaxLength
-
-    private Integer nameMinLength
-    private Integer nameMaxLength
-
-    @Required
-    void setUserDeviceRepository(UserDeviceRepository userDeviceRepository) {
-        this.userDeviceRepository = userDeviceRepository
-    }
-
-    @Required
-    void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository
-    }
-
-    @Required
-    void setDeviceIdMinLength(Integer deviceIdMinLength) {
-        this.deviceIdMinLength = deviceIdMinLength
-    }
-
-    @Required
-    void setDeviceIdMaxLength(Integer deviceIdMaxLength) {
-        this.deviceIdMaxLength = deviceIdMaxLength
-    }
-
-    @Required
-    void setOsMinLength(Integer osMinLength) {
-        this.osMinLength = osMinLength
-    }
-
-    @Required
-    void setOsMaxLength(Integer osMaxLength) {
-        this.osMaxLength = osMaxLength
-    }
-
-    @Required
-    void setTypeMinLength(Integer typeMinLength) {
-        this.typeMinLength = typeMinLength
-    }
-
-    @Required
-    void setTypeMaxLength(Integer typeMaxLength) {
-        this.typeMaxLength = typeMaxLength
-    }
-
-    @Required
-    void setNameMinLength(Integer nameMinLength) {
-        this.nameMinLength = nameMinLength
-    }
-
-    @Required
-    void setNameMaxLength(Integer nameMaxLength) {
-        this.nameMaxLength = nameMaxLength
-    }
+    private DeviceRepository deviceRepository
 
     @Override
-    Promise<UserDevice> validateForGet(UserId userId, UserDeviceId userDeviceId) {
-
-        if (userId == null) {
-            throw AppErrors.INSTANCE.parameterRequired('userId').exception()
-        }
+    Promise<UserDevice> validateForGet(UserDeviceId userDeviceId) {
 
         if (userDeviceId == null) {
             throw AppErrors.INSTANCE.parameterRequired('userDeviceId').exception()
         }
 
-        return userRepository.get(userId).then { User user ->
-            if (user == null) {
-                throw AppErrors.INSTANCE.userNotFound(userId).exception()
+        return userDeviceRepository.get(userDeviceId).then { UserDevice userDevice ->
+            if (userDevice == null) {
+                throw AppErrors.INSTANCE.userDeviceNotFound(userDeviceId).exception()
             }
 
-            userDeviceRepository.get(userDeviceId).then { UserDevice userDevice ->
-                if (userDevice == null) {
-                    throw AppErrors.INSTANCE.userDeviceNotFound(userDeviceId).exception()
-                }
-
-                if (userId != userDevice.userId) {
-                    throw AppErrors.INSTANCE.parameterInvalid('userId and userDeviceId doesn\'t match.').exception()
-                }
-
-                return Promise.pure(userDevice)
-            }
+            return Promise.pure(userDevice)
         }
     }
 
@@ -123,49 +54,27 @@ class UserDeviceValidatorImpl implements UserDeviceValidator {
             throw new IllegalArgumentException('options is null')
         }
 
-        if (options.userId == null) {
-            throw AppErrors.INSTANCE.parameterRequired('userId').exception()
+        if (options.userId == null && options.deviceId == null) {
+            throw AppErrors.INSTANCE.parameterRequired('userId or deviceId').exception()
         }
 
         return Promise.pure(null)
     }
 
     @Override
-    Promise<Void> validateForCreate(UserId userId, UserDevice userDevice) {
+    Promise<Void> validateForCreate(UserDevice userDevice) {
 
-        if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
-        }
         checkBasicUserDeviceInfo(userDevice)
         if (userDevice.id != null) {
             throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
         }
-        if (userDevice.userId != null && userDevice.userId != userId) {
-            throw AppErrors.INSTANCE.fieldInvalid('userId', userDevice.userId.toString()).exception()
-        }
 
-        // todo:    The deviceId should identity only one device, other fileds can be seen as the properties of it
-        return userDeviceRepository.search(new UserDeviceListOptions(
-                userId: userId,
-                deviceId: userDevice.deviceId
-        )).then { List<UserDevice> existing ->
-            if (!CollectionUtils.isEmpty(existing)) {
-                throw AppErrors.INSTANCE.fieldDuplicate('deviceId').exception()
-            }
-
-            userDevice.setUserId(userId)
-            return Promise.pure(null)
-        }
+        return Promise.pure(null)
     }
 
     @Override
-    Promise<Void> validateForUpdate(UserId userId, UserDeviceId userDeviceId,
-                                    UserDevice userDevice, UserDevice oldUserDevice) {
-        if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
-        }
-
-        validateForGet(userId, userDeviceId).then {
+    Promise<Void> validateForUpdate(UserDeviceId userDeviceId, UserDevice userDevice, UserDevice oldUserDevice) {
+        validateForGet(userDeviceId).then {
             checkBasicUserDeviceInfo(userDevice)
 
             if (userDevice.id == null) {
@@ -182,13 +91,13 @@ class UserDeviceValidatorImpl implements UserDeviceValidator {
 
             if (userDevice.deviceId != oldUserDevice.deviceId) {
                 return userDeviceRepository.search(new UserDeviceListOptions(
-                        userId: userId,
+                        userId: userDevice.userId,
                         deviceId: userDevice.deviceId
                 )).then { List<UserDevice> existing ->
                     if (!CollectionUtils.isEmpty(existing)) {
                         throw AppErrors.INSTANCE.fieldDuplicate('deviceId').exception()
                     }
-                    userDevice.setUserId(userId)
+
                     return Promise.pure(null)
                 }
             }
@@ -206,48 +115,48 @@ class UserDeviceValidatorImpl implements UserDeviceValidator {
             throw AppErrors.INSTANCE.fieldRequired('deviceId').exception()
         }
 
-        if (userDevice.deviceId.size() < deviceIdMinLength) {
-            throw AppErrors.INSTANCE.fieldTooShort('deviceId', deviceIdMinLength).exception()
+        if (userDevice.userId == null) {
+            throw AppErrors.INSTANCE.fieldRequired('userId').exception()
         }
 
-        if (userDevice.deviceId.size() > deviceIdMaxLength) {
-            throw AppErrors.INSTANCE.fieldTooLong('deviceId', deviceIdMaxLength).exception()
-        }
+        userRepository.get(userDevice.userId).then { User existingUser ->
+            if (existingUser == null) {
+                throw AppErrors.INSTANCE.userNotFound(userDevice.userId).exception()
+            }
 
-        if (userDevice.name == null) {
-            throw AppErrors.INSTANCE.fieldRequired('name').exception()
-        }
+            if (existingUser.active == null || existingUser.active == false) {
+                throw AppErrors.INSTANCE.userInInvalidStatus(userDevice.userId).exception()
+            }
 
-        if (userDevice.name.size() < nameMinLength) {
-            throw AppErrors.INSTANCE.fieldTooShort('name', nameMinLength).exception()
-        }
+            deviceRepository.get(userDevice.deviceId).then { Device existingDevice ->
+                if (existingDevice == null) {
+                    throw AppErrors.INSTANCE.deviceNotFound(userDevice.deviceId).exception()
+                }
 
-        if (userDevice.name.size() > nameMaxLength) {
-            throw AppErrors.INSTANCE.fieldTooLong('name', nameMaxLength).exception()
+                userDeviceRepository.search(new UserDeviceListOptions(
+                        userId: userDevice.userId,
+                        deviceId: userDevice.deviceId
+                )).then { List<UserDevice> existingUserDeviceList ->
+                    if (!CollectionUtils.isEmpty(existingUserDeviceList)) {
+                        throw AppErrors.INSTANCE.fieldInvalid('deviceId').exception()
+                    }
+                }
+            }
         }
+    }
 
-        if (userDevice.os == null) {
-            throw AppErrors.INSTANCE.fieldRequired('os').exception()
-        }
+    @Required
+    void setUserDeviceRepository(UserDeviceRepository userDeviceRepository) {
+        this.userDeviceRepository = userDeviceRepository
+    }
 
-        if (userDevice.os.size() < osMinLength) {
-            throw AppErrors.INSTANCE.fieldTooShort('os', osMinLength).exception()
-        }
+    @Required
+    void setUserRepository(UserRepository userRepository) {
+        this.userRepository = userRepository
+    }
 
-        if (userDevice.os.size() > osMaxLength) {
-            throw AppErrors.INSTANCE.fieldTooLong('os', osMaxLength).exception()
-        }
-
-        if (userDevice.type == null) {
-            throw AppErrors.INSTANCE.fieldRequired('type').exception()
-        }
-
-        if (userDevice.type.size() < typeMinLength) {
-            throw AppErrors.INSTANCE.fieldTooShort('type', typeMinLength).exception()
-        }
-
-        if (userDevice.type.size() > typeMaxLength) {
-            throw AppErrors.INSTANCE.fieldTooLong('type', typeMaxLength).exception()
-        }
+    @Required
+    void setDeviceRepository(DeviceRepository deviceRepository) {
+        this.deviceRepository = deviceRepository
     }
 }

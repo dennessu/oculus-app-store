@@ -10,7 +10,7 @@ import com.junbo.identity.data.entity.user.UserPasswordEntity
 import com.junbo.identity.data.mapper.ModelMapper
 import com.junbo.identity.data.repository.UserPasswordRepository
 import com.junbo.identity.spec.model.users.UserPassword
-import com.junbo.identity.spec.options.list.UserPasswordListOptions
+import com.junbo.identity.spec.v1.option.list.UserPasswordListOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oom.core.MappingContext
 import groovy.transform.CompileStatic

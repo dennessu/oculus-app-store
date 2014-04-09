@@ -4,14 +4,17 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.identity.data.dao.impl
+
 import com.junbo.identity.data.dao.UserDeviceDAO
 import com.junbo.identity.data.entity.user.UserDeviceEntity
-import com.junbo.identity.spec.options.list.UserDeviceListOptions
+import com.junbo.identity.spec.v1.option.list.UserDeviceListOptions
 import groovy.transform.CompileStatic
 import org.hibernate.Criteria
 import org.hibernate.Session
 import org.hibernate.criterion.Order
 import org.hibernate.criterion.Restrictions
+import org.springframework.util.CollectionUtils
+
 /**
  * Implementation for UserDeviceDAO.
  */
@@ -25,7 +28,7 @@ class UserDeviceDAOImpl extends BaseDAO implements UserDeviceDAO {
         Session session = currentSession(entity.id)
         session.save(entity)
         session.flush()
-        return get(entity.id)
+        return get((Long)entity.id)
     }
 
     @Override
@@ -34,7 +37,7 @@ class UserDeviceDAOImpl extends BaseDAO implements UserDeviceDAO {
         session.merge(entity)
         session.flush()
 
-        return get(entity.id)
+        return get((Long)entity.id)
     }
 
     @Override
@@ -65,5 +68,29 @@ class UserDeviceDAOImpl extends BaseDAO implements UserDeviceDAO {
         UserDeviceEntity entity = (UserDeviceEntity)session.get(UserDeviceEntity, id)
         session.delete(entity)
         session.flush()
+    }
+
+    @Override
+    List<UserDeviceEntity> findByDeviceId(Long deviceId, UserDeviceListOptions getOption) {
+        UserDeviceEntity example = new UserDeviceEntity()
+        example.setDeviceId(deviceId)
+
+        def viewQuery = viewQueryFactory.from(example)
+        if (viewQuery != null) {
+            def ids = viewQuery.list()
+
+            if (CollectionUtils.isEmpty(ids)) {
+                return new ArrayList<UserDeviceEntity>()
+            }
+
+            def result = []
+            ids.each { Long id ->
+                result.add(get(id))
+            }
+
+            return result
+        }
+
+        return new ArrayList<UserDeviceEntity>()
     }
 }

@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.data.entity.user;
 
+import com.junbo.common.util.Identifiable;
 import com.junbo.identity.data.entity.common.ResourceMetaEntity;
 
 import javax.persistence.Column;
@@ -17,7 +18,18 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "user_device")
-public class UserDeviceEntity extends ResourceMetaEntity {
+public class UserDeviceEntity extends ResourceMetaEntity implements Identifiable<Long> {
+    @Id
+    @Column(name = "id")
+    private Long id;
+
+    @Column(name = "user_id")
+    private Long userId;
+
+    @Column(name = "device_id")
+    private Long deviceId;
+
+    @Override
     public Long getId() {
         return id;
     }
@@ -34,49 +46,11 @@ public class UserDeviceEntity extends ResourceMetaEntity {
         this.userId = userId;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getDeviceId() {
+    public Long getDeviceId() {
         return deviceId;
     }
 
-    public void setDeviceId(String deviceId) {
+    public void setDeviceId(Long deviceId) {
         this.deviceId = deviceId;
     }
-
-    public String getOs() {
-        return os;
-    }
-
-    public void setOs(String os) {
-        this.os = os;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Id
-    @Column(name = "id")
-    private Long id;
-    @Column(name = "user_id")
-    private Long userId;
-    @Column(name = "type")
-    private String type;
-    @Column(name = "device_id")
-    private String deviceId;
-    @Column(name = "os")
-    private String os;
-    @Column(name = "name")
-    private String name;
 }
