@@ -90,7 +90,7 @@ class DefaultFlowSelector implements FlowSelector {
                     Boolean isPhysical = context.order.orderItems.any { OrderItem orderItem ->
                         orderItem.type?.toUpperCase() == ItemType.PHYSICAL.name()
                     }
-                    return isPhysical ? Promise.pure(FlowType.AUTH_SETTLE.name()) :
+                    return isPhysical ? Promise.pure(FlowType.PHYSICAL_SETTLE.name()) :
                             Promise.pure(FlowType.IMMEDIATE_SETTLE.name())
                 default:
                     LOGGER.error('name=Payment_Instrument_Type_Not_Supported, action: {}', pis[0]?.type)

@@ -45,4 +45,7 @@ public interface AppServerExceptions {
 
     @ErrorDef(httpStatusCode = 500, code = "50008", description = "No provider found for criteria: {0}")
     AppError providerNotFound(String criteria);
+
+    @ErrorDef(httpStatusCode = 500, code = "50009", description = "Service {0} is not Implemented")
+    AppError serviceNotImplemented(String serviceName);
 }

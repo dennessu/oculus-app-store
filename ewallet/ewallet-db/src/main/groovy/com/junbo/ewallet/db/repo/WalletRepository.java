@@ -26,10 +26,7 @@ import com.junbo.ewallet.spec.model.Wallet;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * repo of wallet.
@@ -102,6 +99,12 @@ public class WalletRepository {
     private void debit(final WalletEntity wallet,
                        final List<WalletLotEntity> lots, BigDecimal sum, Long transactionId) {
         BigDecimal availableAmount = BigDecimal.ZERO;
+        Collections.sort(lots, new Comparator<WalletLotEntity>() {
+            @Override
+            public int compare(WalletLotEntity o1, WalletLotEntity o2) {
+                return o1.getRemainingAmount().compareTo(o2.getRemainingAmount());
+            }
+        });
         for (int i = 0; i < lots.size(); i++) {
             WalletLotEntity lot = lots.get(i);
             BigDecimal remaining = lot.getRemainingAmount();

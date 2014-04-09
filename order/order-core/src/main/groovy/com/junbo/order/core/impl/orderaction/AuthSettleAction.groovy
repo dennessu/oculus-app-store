@@ -56,12 +56,12 @@ class AuthSettleAction extends BaseOrderEventAwareAction {
                     billingConnectionError(CoreUtils.toAppErrors(throwable)).exception()
         }.then { Balance resultBalance ->
             context.orderServiceContext.order.tentative = true
-            if (balance == null) {
+            if (resultBalance == null) {
                 LOGGER.error('name=Order_AuthSettle_Error_Balance_Null')
                 throw AppErrors.INSTANCE.
                         billingConnectionError().exception()
             }
-            if (balance.status != BalanceStatus.PENDING_CAPTURE.name()) {
+            if (resultBalance.status != BalanceStatus.PENDING_CAPTURE.name()) {
                 LOGGER.error('name=Order_AuthSettle_Failed')
                 throw AppErrors.INSTANCE.
                         billingChargeFailed().exception()
