@@ -6,6 +6,11 @@
 
 package com.junbo.catalog.db.entity;
 
+import com.junbo.catalog.db.dao.StringJsonUserType;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
+
 import javax.persistence.*;
 
 /**
@@ -13,6 +18,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name="item")
+@TypeDefs(@TypeDef(name="json-string", typeClass=StringJsonUserType.class))
 public class ItemEntity extends BaseEntity {
     private String type;
     private Long itemId;
@@ -20,6 +26,7 @@ public class ItemEntity extends BaseEntity {
     private Long ownerId;
     private boolean curated;
     private Long currentRevisionId;
+    private String payload;
 
     @Id
     @Column(name = "item_id")
@@ -74,6 +81,16 @@ public class ItemEntity extends BaseEntity {
 
     public void setCurrentRevisionId(Long currentRevisionId) {
         this.currentRevisionId = currentRevisionId;
+    }
+
+    @Column(name = "payload")
+    @Type(type = "json-string")
+    public String getPayload() {
+        return payload;
+    }
+
+    public void setPayload(String payload) {
+        this.payload = payload;
     }
 
     @Override

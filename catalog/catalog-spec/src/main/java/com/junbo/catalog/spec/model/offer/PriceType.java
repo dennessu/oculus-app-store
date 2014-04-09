@@ -6,8 +6,7 @@
 
 package com.junbo.catalog.spec.model.offer;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * Price Type.
@@ -15,20 +14,9 @@ import java.util.List;
 public class PriceType {
     public static final String FREE = "FREE";
     public static final String TIERED = "TIERED";
-    public static final String EXPLICIT = "EXPLICIT";
-
-    public static List<String> getPriceTypes() {
-        return Arrays.asList(FREE, TIERED, EXPLICIT);
-    }
-
-    public static boolean isValidType(String priceType) {
-        for (String type : getPriceTypes()) {
-            if (type.equals(priceType)) {
-                return true;
-            }
-        }
-        return false;
-    }
+    public static final String CUSTOM = "CUSTOM";
+    public static final Set<String> ALL_TYPES =
+            Collections.unmodifiableSet(new HashSet<>(Arrays.asList(FREE, TIERED, CUSTOM)));
 
     private PriceType() {}
 }

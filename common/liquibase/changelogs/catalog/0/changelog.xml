@@ -15,6 +15,7 @@
               curated                 boolean           not null default false,
               owner_id                bigint            not null,
               current_revision_id     bigint            null,
+              payload                 json              not null,
               deleted                 boolean           not null default false,
               created_by              varchar(64)       not null,
               created_time            timestamp         not null,

@@ -18,7 +18,6 @@ public abstract class BaseEntityModel extends BaseModel {
     @NotNull
     private String name;
 
-    // Status: Design, Published, Unpublished, Deleted
     private Boolean curated;
     @UserId
     @JsonProperty("developer")

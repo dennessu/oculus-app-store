@@ -5,6 +5,7 @@
  */
 
 package com.junbo.catalog.db.mapper;
+import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.db.entity.ItemEntity;
 import com.junbo.catalog.spec.model.item.Item;
 
@@ -26,20 +27,22 @@ public class ItemMapper {
     public static void fillDBEntity(Item model, ItemEntity entity) {
         entity.setItemId(model.getItemId());
         entity.setName(model.getName());
-        entity.setCurated(model.getCurated()==null?false:model.getCurated());
+        entity.setCurated(model.getCurated() == null ? false : model.getCurated());
         entity.setType(model.getType());
         entity.setOwnerId(model.getOwnerId());
         entity.setCurrentRevisionId(model.getCurrentRevisionId());
+        entity.setPayload(Utils.toJson(model));
     }
 
     public static Item toModel(ItemEntity entity) {
         if (entity == null) {
             return null;
         }
-        Item model = new Item();
+        Item model = Utils.fromJson(entity.getPayload(), Item.class);
         model.setItemId(entity.getItemId());
         model.setName(entity.getName());
         model.setCurated(entity.isCurated());
+        model.setType(entity.getType());
         model.setCurrentRevisionId(entity.getCurrentRevisionId());
         model.setOwnerId(entity.getOwnerId());
         model.setCreatedBy(entity.getCreatedBy());
