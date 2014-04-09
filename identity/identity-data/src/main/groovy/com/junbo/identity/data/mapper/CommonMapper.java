@@ -305,4 +305,18 @@ public class CommonMapper {
         }
         return new DeviceId(id);
     }
+
+    public Long toTosId(TosId id) {
+        if (id == null) {
+            return null;
+        }
+        return id.getValue();
+    }
+
+    public TosId toTosId(Long id) {
+        if (id == null) {
+            return null;
+        }
+        return new TosId(id);
+    }
 }

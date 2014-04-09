@@ -93,4 +93,7 @@ public interface ModelMapper {
 
     Device toDevice(DeviceEntity entity, MappingContext context);
     DeviceEntity toDevice(Device entity, MappingContext context);
+
+    Tos toTos(TosEntity entity, MappingContext context);
+    TosEntity toTos(Tos entity, MappingContext context);
 }

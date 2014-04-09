@@ -40,6 +40,7 @@
     <bean id="userNameDAO" class="com.junbo.identity.data.dao.impl.UserNameDAOImpl" parent="baseDAO" />
     <bean id="userSecurityQuestionAttemptDAO" class="com.junbo.identity.data.dao.impl.UserSecurityQuestionAttemptDAOImpl" parent="baseDAO" />
     <bean id="deviceDAO" class="com.junbo.identity.data.dao.impl.DeviceDAOImpl" parent="baseDAO" />
+    <bean id="tosDAO" class="com.junbo.identity.data.dao.impl.TosDAOImpl" parent="baseDAO" />
 
     <bean id="groupRepository" class="com.junbo.identity.data.repository.impl.GroupRepositoryImpl" />
     <bean id="userAuthenticatorRepository" class="com.junbo.identity.data.repository.impl.UserAuthenticatorRepositoryImpl" />
@@ -57,6 +58,7 @@
     <bean id="securityQuestionRepository" class="com.junbo.identity.data.repository.impl.SecurityQuestionRepositoryImpl"/>
     <bean id="userSecurityQuestionAttemptRepository" class="com.junbo.identity.data.repository.impl.UserSecurityQuestionAttemptRepositoryImpl" />
     <bean id="deviceRepository" class="com.junbo.identity.data.repository.impl.DeviceRepositoryImpl" />
+    <bean id="tosRepository" class="com.junbo.identity.data.repository.impl.TosRepositoryImpl" />
 
     <bean id="defaultEntityViewRepository" class="com.junbo.sharding.view.DefaultEntityViewRepository">
         <property name="entityViews">

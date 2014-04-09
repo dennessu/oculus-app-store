@@ -28,4 +28,5 @@
     <bean id="defaultUserAuthenticatorResource" class="com.junbo.identity.rest.resource.v1.AuthenticatorResourceImpl" scope="prototype" />
     <bean id="defaultDeviceResource" class="com.junbo.identity.rest.resource.v1.DeviceResourceImpl" scope="prototype" />
     <bean id="defaultGroupResource" class="com.junbo.identity.rest.resource.v1.GroupResourceImpl" scope="prototype" />
+    <bean id="defaultTosResource" class="com.junbo.identity.rest.resource.v1.TosResourceImpl" scope="prototype" />
 </beans>

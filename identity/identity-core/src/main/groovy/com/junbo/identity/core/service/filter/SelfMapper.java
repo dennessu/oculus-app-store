@@ -76,4 +76,7 @@ public interface SelfMapper {
 
     Device filterDevice(Device device, MappingContext context);
     Device mergeDevice(Device source, Device base, MappingContext context);
+
+    Tos filterTos(Tos tos, MappingContext context);
+    Tos mergeTos(Tos source, Tos base, MappingContext context);
 }

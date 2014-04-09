@@ -517,4 +517,30 @@
             </list>
         </property>
     </bean>
+
+    <bean id="" class="com.junbo.identity.core.service.filter.TosFilter">
+        <property name="readableProperties">
+            <list>
+                <value>id</value>
+                <value>locale</value>
+                <value>title</value>
+                <value>content</value>
+                <value>resourceAge</value>
+                <value>createdTime</value>
+                <value>updatedTime</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForCreate">
+            <list>
+                <value>locale</value>
+                <value>title</value>
+                <value>content</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForUpdate">
+            <list></list>
+        </property>
+    </bean>
 </beans>

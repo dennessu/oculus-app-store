@@ -134,4 +134,7 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 409, code = "2000033", description = "Device {0} not found.", field = "{0}")
     AppError deviceNotFound(DeviceId deviceId);
+
+    @ErrorDef(httpStatusCode = 409, code = "2000034", description = "Tos {0} not found.", field = "{0}")
+    AppError tosNotFound(TosId tosId);
 }

@@ -243,4 +243,18 @@
         <property name="deviceExternalRefMinLength" value="1" />
         <property name="deviceExternalRefMaxLength" value="255" />
     </bean>
+    
+    <bean id="tosValidator" class="com.junbo.identity.core.service.validator.impl.TosValidatorImpl">
+        <property name="tosRepository" ref="tosRepository" />
+        <property name="allowedLocales">
+            <list>
+                <value>en_US</value>
+                <value>default</value>
+            </list>
+        </property>
+        <property name="titleMinLength" value="1" />
+        <property name="titleMaxLength" value="255" />
+        <property name="contentMinLength" value="1" />
+        <property name="contentMaxLength" value="1073741824" />
+    </bean>
 </beans>
