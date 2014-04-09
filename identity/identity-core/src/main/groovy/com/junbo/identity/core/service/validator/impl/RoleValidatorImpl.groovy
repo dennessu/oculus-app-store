@@ -44,7 +44,8 @@ class RoleValidatorImpl implements RoleValidator {
             throw AppErrors.INSTANCE.fieldRequired('resourceId').exception()
         }
 
-        roleRepository.findByRoleName(role.name).then { Role existing ->
+        roleRepository.findByRoleName(role.name, role.resourceType,
+                role.resourceId, role.subResourceType).then { Role existing ->
             if (existing != null) {
                 throw AppErrors.INSTANCE.fieldDuplicate('name').exception()
             }
@@ -53,11 +54,18 @@ class RoleValidatorImpl implements RoleValidator {
     }
 
     @Override
-    Promise<Void> validateForGet(RoleId roleId) {
+    Promise<Role> validateForGet(RoleId roleId) {
         if (roleId == null) {
             throw AppErrors.INSTANCE.fieldRequired('roleId').exception()
         }
-        return Promise.pure(null)
+
+        return roleRepository.get(roleId).then { Role role ->
+            if (role == null) {
+                throw AppErrors.INSTANCE.roleNotFound(roleId).exception()
+            }
+
+            return Promise.pure(role)
+        }
     }
 
     @Override
@@ -67,7 +75,7 @@ class RoleValidatorImpl implements RoleValidator {
             throw AppErrors.INSTANCE.fieldRequired('name').exception()
         }
 
-        if (role.id == null || role.id.value == null) {
+        if (role.id == null || ((RoleId) role.id).value == null) {
             throw AppErrors.INSTANCE.fieldRequired('id').exception()
         }
 
@@ -75,13 +83,12 @@ class RoleValidatorImpl implements RoleValidator {
             throw AppErrors.INSTANCE.fieldInvalid('roleId').exception()
         }
 
-        if (role.name != oldRole.name) {
-            roleRepository.findByRoleName(role.name).then { Role existing ->
-                if (existing != null) {
-                    throw AppErrors.INSTANCE.fieldDuplicate('name').exception()
-                }
-                return Promise.pure(null)
+        roleRepository.findByRoleName(role.name, role.resourceType,
+                role.resourceId, role.subResourceType).then { Role existing ->
+            if (existing != null) {
+                throw AppErrors.INSTANCE.fieldDuplicate('name').exception()
             }
+            return Promise.pure(null)
         }
 
         return Promise.pure(null)
@@ -89,6 +96,12 @@ class RoleValidatorImpl implements RoleValidator {
 
     @Override
     Promise<Void> validateForList(RoleListOptions options) {
-        return null
+        Assert.notNull(options)
+
+        if (options.name == null || options.resourceId == null || options.resourceType == null) {
+            throw AppErrors.INSTANCE.fieldRequired('name').exception()
+        }
+
+        return Promise.pure(null)
     }
 }

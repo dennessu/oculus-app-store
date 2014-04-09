@@ -7,52 +7,57 @@ package com.junbo.identity.data.dao.impl
 
 import com.junbo.identity.data.dao.RoleAssignmentDAO
 import com.junbo.identity.data.entity.role.RoleAssignmentEntity
-import com.junbo.sharding.annotations.SeedParam
 import groovy.transform.CompileStatic
-import org.hibernate.Criteria
-import org.hibernate.criterion.Restrictions
+import org.hibernate.Session
 
 /**
  * RoleAssignmentDAOImpl.
  */
 @CompileStatic
-class RoleAssignmentDAOImpl extends ShardedDAOBase implements RoleAssignmentDAO {
+class RoleAssignmentDAOImpl extends BaseDAO implements RoleAssignmentDAO {
     @Override
     RoleAssignmentEntity create(RoleAssignmentEntity entity) {
-        currentSession().save(entity)
-        currentSession().flush()
+        entity.id = idGenerator.nextIdByShardId(shardAlgorithm.shardId())
 
-        return get(entity.id)
+        Session session = currentSession(entity.id)
+        session.save(entity)
+        session.flush()
+
+        return get((Long) entity.id)
     }
 
     @Override
-    RoleAssignmentEntity get(@SeedParam Long roleAssignmentId) {
-        return (RoleAssignmentEntity) currentSession().get(RoleAssignmentEntity, roleAssignmentId)
+    RoleAssignmentEntity get(Long roleAssignmentId) {
+        return (RoleAssignmentEntity) currentSession(roleAssignmentId).get(RoleAssignmentEntity, roleAssignmentId)
     }
 
     @Override
     RoleAssignmentEntity update(RoleAssignmentEntity entity) {
-        currentSession().merge(entity)
-        currentSession().flush()
+        Session session = currentSession(entity.id)
+        session.merge(entity)
+        session.flush()
 
-        return get(entity.id)
+        return get((Long) entity.id)
     }
 
     @Override
-    RoleAssignmentEntity findByRoleIdAssignee(@SeedParam Long roleId, String assigneeType, Long assigneeId) {
-        Criteria criteria = currentSession().createCriteria(RoleAssignmentEntity)
-        if (roleId != null) {
-            criteria.add(Restrictions.eq('roleId', roleId))
+    RoleAssignmentEntity findByRoleIdAssignee(Long roleId, String assigneeType, Long assigneeId) {
+        RoleAssignmentEntity example = new RoleAssignmentEntity()
+        example.roleId = roleId
+        example.assigneeType = assigneeType
+        example.assigneeId = assigneeId
+
+        def viewQuery = viewQueryFactory.from(example)
+        if (viewQuery != null) {
+            def ids = viewQuery.list()
+
+            Long id = ids.empty ? null : (Long) ids.get(0)
+
+            if (id != null) {
+                return get(id)
+            }
         }
 
-        if (assigneeType != null) {
-            criteria.add(Restrictions.eq('assigneeType', assigneeType))
-        }
-
-        if (assigneeId != null) {
-            criteria.add(Restrictions.eq('assigneeId', assigneeId))
-        }
-
-        return (RoleAssignmentEntity) criteria.uniqueResult()
+        return null
     }
 }

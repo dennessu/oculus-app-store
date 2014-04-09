@@ -6,7 +6,7 @@
 package com.junbo.oauth.core.action
 
 import com.junbo.common.error.AppErrorException
-import com.junbo.identity.spec.model.users.UserLoginAttempt
+import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
@@ -74,7 +74,7 @@ class AuthenticateUser implements Action {
         // Authenticate the user will the username and password.
         try {
             userService.authenticateUser(username, password, client.clientId, null)
-                    .then { UserLoginAttempt loginAttempt ->
+                    .then { UserCredentialVerifyAttempt loginAttempt ->
                 if (loginAttempt == null || !loginAttempt.succeeded) {
                     throw AppExceptions.INSTANCE.invalidCredential().exception()
                 }

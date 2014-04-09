@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.spec.v1.resource;
 
+import com.junbo.common.id.RoleId;
 import com.junbo.common.model.Results;
 import com.junbo.identity.spec.v1.model.Role;
 import com.junbo.identity.spec.v1.option.list.RoleListOptions;
@@ -32,17 +33,17 @@ public interface RoleResource {
     @ApiOperation("Get a role")
     @GET
     @Path("/{roleId}")
-    Promise<Role> get(@PathParam("roleId") Long roleId);
+    Promise<Role> get(@PathParam("roleId") RoleId roleId);
 
     @ApiOperation("Partial update one role")
     @POST
     @Path("/{roleId}")
-    Promise<Role> patch(@PathParam("roleId") Long roleId, Role role);
+    Promise<Role> patch(@PathParam("roleId") RoleId roleId, Role role);
 
     @ApiOperation("Full update one role")
     @PUT
     @Path("/{roleId}")
-    Promise<Role> put(@PathParam("roleId") Long roleId, Role role);
+    Promise<Role> put(@PathParam("roleId") RoleId roleId, Role role);
 
     @ApiOperation("search role")
     @GET

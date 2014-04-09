@@ -5,7 +5,7 @@
  */
 package com.junbo.oauth.core.service
 
-import com.junbo.identity.spec.model.users.UserLoginAttempt
+import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oauth.spec.model.UserInfo
 import groovy.transform.CompileStatic
@@ -15,7 +15,8 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 interface UserService {
-    Promise<UserLoginAttempt> authenticateUser(String username, String password, String clientId, String ipAddress)
+    Promise<UserCredentialVerifyAttempt> authenticateUser(String username, String password,
+                                                          String clientId, String ipAddress)
 
     UserInfo getUserInfo(String authorization)
 }

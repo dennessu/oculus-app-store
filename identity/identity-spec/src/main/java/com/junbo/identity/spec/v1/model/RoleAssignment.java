@@ -26,11 +26,13 @@ public class RoleAssignment extends ResourceMeta implements Identifiable<RoleAss
 
     @Override
     public RoleAssignmentId getId() {
-        return null;
+        return id;
     }
 
     public void setId(RoleAssignmentId id) {
         this.id = id;
+        support.setPropertyAssigned("self");
+        support.setPropertyAssigned("id");
     }
 
     public RoleId getRoleId() {
@@ -39,6 +41,7 @@ public class RoleAssignment extends ResourceMeta implements Identifiable<RoleAss
 
     public void setRoleId(RoleId roleId) {
         this.roleId = roleId;
+        support.setPropertyAssigned("roleId");
     }
 
     public String getAssigneeType() {
@@ -47,6 +50,7 @@ public class RoleAssignment extends ResourceMeta implements Identifiable<RoleAss
 
     public void setAssigneeType(String assigneeType) {
         this.assigneeType = assigneeType;
+        support.setPropertyAssigned("assigneeType");
     }
 
     public Long getAssigneeId() {
@@ -55,5 +59,6 @@ public class RoleAssignment extends ResourceMeta implements Identifiable<RoleAss
 
     public void setAssigneeId(Long assigneeId) {
         this.assigneeId = assigneeId;
+        support.setPropertyAssigned("assigneeId");
     }
 }

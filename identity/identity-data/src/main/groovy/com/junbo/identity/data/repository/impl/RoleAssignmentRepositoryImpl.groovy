@@ -29,9 +29,9 @@ class RoleAssignmentRepositoryImpl implements RoleAssignmentRepository {
 
     @Override
     Promise<RoleAssignment> create(RoleAssignment roleAssignment) {
-        roleAssignmentDAO.create(unwrap(roleAssignment))
+        RoleAssignmentEntity entity = roleAssignmentDAO.create(unwrap(roleAssignment))
 
-        return get(roleAssignment.id)
+        return Promise.pure(wrap(roleAssignmentDAO.get((Long) entity.id)))
     }
 
     @Override
@@ -41,9 +41,9 @@ class RoleAssignmentRepositoryImpl implements RoleAssignmentRepository {
 
     @Override
     Promise<RoleAssignment> update(RoleAssignment roleAssignment) {
-        roleAssignmentDAO.update(unwrap(roleAssignment))
+        RoleAssignmentEntity entity = roleAssignmentDAO.update(unwrap(roleAssignment))
 
-        return get(roleAssignment.id)
+        return Promise.pure(wrap(roleAssignmentDAO.get((Long) entity.id)))
     }
 
     @Override
@@ -57,7 +57,7 @@ class RoleAssignmentRepositoryImpl implements RoleAssignmentRepository {
         }
 
         return new RoleAssignment(
-                id: new RoleAssignmentId(entity.id),
+                id: new RoleAssignmentId((Long) entity.id),
                 roleId: new RoleId(entity.roleId),
                 assigneeType: entity.assigneeType,
                 assigneeId: entity.assigneeId,
@@ -75,7 +75,7 @@ class RoleAssignmentRepositoryImpl implements RoleAssignmentRepository {
         }
 
         return new RoleAssignmentEntity(
-                id: entity.id.value,
+                id: entity.id == null ? null : ((RoleAssignmentId) entity.id).value,
                 roleId: entity.roleId.value,
                 assigneeType: entity.assigneeType,
                 assigneeId: entity.assigneeId,

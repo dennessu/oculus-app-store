@@ -7,59 +7,57 @@ package com.junbo.identity.data.dao.impl
 
 import com.junbo.identity.data.dao.RoleDAO
 import com.junbo.identity.data.entity.role.RoleEntity
-import com.junbo.sharding.annotations.SeedParam
 import groovy.transform.CompileStatic
-import org.hibernate.Criteria
-import org.hibernate.criterion.Restrictions
+import org.hibernate.Session
 
 /**
  * RoleDAOImpl.
  */
 @CompileStatic
-class RoleDAOImpl extends ShardedDAOBase implements RoleDAO {
+class RoleDAOImpl extends BaseDAO implements RoleDAO {
     @Override
     RoleEntity create(RoleEntity entity) {
-        currentSession().save(entity)
-        currentSession().flush()
+        entity.id = idGenerator.nextIdByShardId(shardAlgorithm.shardId())
 
-        return get(entity.id)
+        Session session = currentSession(entity.id)
+        session.save(entity)
+        session.flush()
+
+        return get((Long) entity.id)
     }
 
     @Override
     RoleEntity update(RoleEntity entity) {
-        currentSession().merge(entity)
-        currentSession().flush()
+        Session session = currentSession(entity.id)
+        session.merge(entity)
+        session.flush()
 
-        return get(entity.id)
+        return get((Long) entity.id)
     }
 
     @Override
-    RoleEntity get(@SeedParam Long roleId) {
-        return (RoleEntity) currentSession().get(RoleEntity, roleId)
+    RoleEntity get(Long roleId) {
+        return (RoleEntity) currentSession(roleId).get(RoleEntity, roleId)
     }
 
     @Override
-    RoleEntity findByRoleName(String roleName) {
-        Criteria criteria = currentSession().createCriteria(RoleEntity)
-        criteria.add(Restrictions.eq('name', roleName))
-        return (RoleEntity) criteria.uniqueResult()
-    }
+    RoleEntity findByRoleName(String name, String resourceType, Long resourceId, String subResourceType) {
+        RoleEntity example = new RoleEntity()
+        example.name = name
+        example.resourceType = resourceType
+        example.resourceId = resourceId
+        example.subResourceType = subResourceType
 
-    @Override
-    List<RoleEntity> findByResourceId(String resourceType, @SeedParam Long resourceId, String subResourceType) {
-        Criteria criteria = currentSession().createCriteria(RoleEntity)
-        if (resourceType != null) {
-            criteria.add(Restrictions.eq('resourceType', resourceType))
+        def viewQuery = viewQueryFactory.from(example)
+        if (viewQuery != null) {
+            def roleIds = viewQuery.list()
+
+            Long id = roleIds.empty ? null : roleIds.get(0)
+            if (id != null) {
+                return get(id)
+            }
         }
 
-        if (resourceId != null) {
-            criteria.add(Restrictions.eq('resourceId', resourceId))
-        }
-
-        if (subResourceType != null) {
-            criteria.add(Restrictions.eq('subResourceType', subResourceType))
-        }
-
-        return criteria.list()
+        return null
     }
 }

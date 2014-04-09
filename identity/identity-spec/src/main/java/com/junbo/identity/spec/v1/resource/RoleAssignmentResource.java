@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.spec.v1.resource;
 
+import com.junbo.common.id.RoleAssignmentId;
 import com.junbo.common.model.Results;
 import com.junbo.identity.spec.v1.model.Role;
 import com.junbo.identity.spec.v1.model.RoleAssignment;
@@ -33,17 +34,18 @@ public interface RoleAssignmentResource {
     @ApiOperation("Get a role assignment")
     @GET
     @Path("/{roleAssignmentId}")
-    Promise<Role> get(@PathParam("roleAssignmentId") Long roleAssignmentId);
+    Promise<Role> get(@PathParam("roleAssignmentId") RoleAssignmentId roleAssignmentId);
 
     @ApiOperation("Partial update one role assignment")
     @POST
     @Path("/{roleAssignmentId}")
-    Promise<Role> patch(@PathParam("roleAssignmentId") Long roleAssignmentId, RoleAssignment roleAssignment);
+    Promise<Role> patch(@PathParam("roleAssignmentId") RoleAssignmentId roleAssignmentId,
+                        RoleAssignment roleAssignment);
 
     @ApiOperation("Full update one role assignment")
     @PUT
     @Path("/{roleAssignmentId}")
-    Promise<Role> put(@PathParam("roleAssignmentId") Long roleAssignmentId, RoleAssignment roleAssignment);
+    Promise<Role> put(@PathParam("roleAssignmentId") RoleAssignmentId roleAssignmentId, RoleAssignment roleAssignment);
 
     @ApiOperation("search role assignment")
     @GET

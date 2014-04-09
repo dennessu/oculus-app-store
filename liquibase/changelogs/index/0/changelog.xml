@@ -8,59 +8,83 @@
 
     <changeSet id="0.1" author='minhao' context="PREDEPLOY">
         <sql><![CDATA[
-		
-			create table group_groupname
-			(
-			  key character varying(255) NOT NULL,
-			  value bigint NOT NULL,
-			  created_by character varying(255) NOT NULL,
-			  created_time time without time zone NOT NULL,
-			  modified_by character varying(255) NOT NULL,
-			  modified_time time without time zone NOT NULL,
-			  deleted boolean NOT NULL
-			);
-			
-			create index idx_group_groupname on group_groupname(key, value);
-					
-			create table authenticator_authenticatorvalue
-			(
-			  key character varying(255) NOT NULL,
-			  value bigint NOT NULL,
-			  created_by character varying(255) NOT NULL,
-			  created_time time without time zone NOT NULL,
-			  modified_by character varying(255) NOT NULL,
-			  modified_time time without time zone NOT NULL,
-			  deleted boolean NOT NULL
-			);
-			
-			create index idx_authenticator_authenticatorvalue on authenticator_authenticatorvalue(key, value);
-					
-			create table user_useremail
-			(
-			  key character varying(255) NOT NULL,
-			  value bigint NOT NULL,
-			  created_by character varying(255) NOT NULL,
-			  created_time time without time zone NOT NULL,
-			  modified_by character varying(255) NOT NULL,
-			  modified_time time without time zone NOT NULL,
-			  deleted boolean NOT NULL
-			);
-			
-			create index idx_user_useremail on user_useremail(key, value);		
-					
-			create table user_username
-			(
-			  key character varying(255) NOT NULL,
-			  value bigint NOT NULL,
-			  created_by character varying(255) NOT NULL,
-			  created_time time without time zone NOT NULL,
-			  modified_by character varying(255) NOT NULL,
-			  modified_time time without time zone NOT NULL,
-			  deleted boolean NOT NULL
-			);
-			
-			create index idx_user_username on user_username(key, value);
+        
+            create table group_groupname
+            (
+              key character varying(255) NOT NULL,
+              value bigint NOT NULL,
+              created_by character varying(255) NOT NULL,
+              created_time time without time zone NOT NULL,
+              modified_by character varying(255) NOT NULL,
+              modified_time time without time zone NOT NULL,
+              deleted boolean NOT NULL
+            );
             
+            create index idx_group_groupname on group_groupname(key, value);
+                    
+            create table authenticator_authenticatorvalue
+            (
+              key character varying(255) NOT NULL,
+              value bigint NOT NULL,
+              created_by character varying(255) NOT NULL,
+              created_time time without time zone NOT NULL,
+              modified_by character varying(255) NOT NULL,
+              modified_time time without time zone NOT NULL,
+              deleted boolean NOT NULL
+            );
+            
+            create index idx_authenticator_authenticatorvalue on authenticator_authenticatorvalue(key, value);
+                    
+            create table user_useremail
+            (
+              key character varying(255) NOT NULL,
+              value bigint NOT NULL,
+              created_by character varying(255) NOT NULL,
+              created_time time without time zone NOT NULL,
+              modified_by character varying(255) NOT NULL,
+              modified_time time without time zone NOT NULL,
+              deleted boolean NOT NULL
+            );
+            
+            create index idx_user_useremail on user_useremail(key, value);        
+                    
+            create table user_username
+            (
+              key character varying(255) NOT NULL,
+              value bigint NOT NULL,
+              created_by character varying(255) NOT NULL,
+              created_time time without time zone NOT NULL,
+              modified_by character varying(255) NOT NULL,
+              modified_time time without time zone NOT NULL,
+              deleted boolean NOT NULL
+            );
+            
+            create index idx_user_username on user_username(key, value);
+
+            CREATE TABLE role_role_name (
+                key CHARACTER VARYING(255) NOT NULL,
+                value BIGINT NOT NULL,
+                created_by CHARACTER varying(255) NOT NULL,
+                created_time TIME WITHOUT TIME ZONE NOT NULL,
+                modified_by CHARACTER VARYING(255) NOT NULL,
+                modified_time TIME WITHOUT TIME ZONE NOT NULL,
+                deleted BOOLEAN NOT NULL
+            );
+
+            CREATE INDEX idx_role_role_name ON role_role_name(key, value);
+
+            CREATE TABLE role_assignment_role_assignee(
+                key CHARACTER VARYING(255) NOT NULL,
+                value BIGINT NOT NULL,
+                created_by CHARACTER varying(255) NOT NULL,
+                created_time TIME WITHOUT TIME ZONE NOT NULL,
+                modified_by CHARACTER VARYING(255) NOT NULL,
+                modified_time TIME WITHOUT TIME ZONE NOT NULL,
+                deleted BOOLEAN NOT NULL
+            );
+
+            CREATE INDEX idx_role_assignment_role_assignee ON role_assignment_role_assignee(key, value);
+
             create table device_device_external_ref
 			(
 			  key character varying(255) NOT NULL,

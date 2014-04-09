@@ -7,10 +7,10 @@ package com.junbo.oauth.core.service.impl
 
 import com.junbo.common.id.UserId
 import com.junbo.identity.spec.model.users.User
-import com.junbo.identity.spec.model.users.UserLoginAttempt
 import com.junbo.identity.spec.options.entity.UserGetOptions
-import com.junbo.identity.spec.resource.UserLoginAttemptResource
 import com.junbo.identity.spec.resource.UserResource
+import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
+import com.junbo.identity.spec.v1.resource.UserCredentialVerifyAttemptResource
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oauth.core.exception.AppExceptions
 import com.junbo.oauth.core.service.TokenService
@@ -32,7 +32,7 @@ class UserServiceImpl implements UserService {
 
     private UserResource userResource
 
-    private UserLoginAttemptResource userLoginAttemptResource
+    private UserCredentialVerifyAttemptResource userCredentialVerifyAttemptResource
 
     @Required
     void setTokenService(TokenService tokenService) {
@@ -45,20 +45,22 @@ class UserServiceImpl implements UserService {
     }
 
     @Required
-    void setUserLoginAttemptResource(UserLoginAttemptResource userLoginAttemptResource) {
-        this.userLoginAttemptResource = userLoginAttemptResource
+    void setUserCredentialVerifyAttemptResource(UserCredentialVerifyAttemptResource
+                                                        userCredentialVerifyAttemptResource) {
+        this.userCredentialVerifyAttemptResource = userCredentialVerifyAttemptResource
     }
 
     @Override
-    Promise<UserLoginAttempt> authenticateUser(String username, String password, String clientId, String ipAddress) {
-        UserLoginAttempt loginAttempt = new UserLoginAttempt(
+    Promise<UserCredentialVerifyAttempt> authenticateUser(String username, String password,
+                                                          String clientId, String ipAddress) {
+        UserCredentialVerifyAttempt loginAttempt = new UserCredentialVerifyAttempt(
                 type: 'password',
                 value: new String(Base64.encodeBase64("$username:$password".bytes)),
                 clientId: clientId,
                 ipAddress: ipAddress
         )
 
-        return userLoginAttemptResource.create(loginAttempt)
+        return userCredentialVerifyAttemptResource.create(loginAttempt)
     }
 
     @Override

@@ -32,6 +32,8 @@ public class Role extends ResourceMeta implements Identifiable<RoleId> {
 
     public void setId(RoleId id) {
         this.id = id;
+        support.setPropertyAssigned("self");
+        support.setPropertyAssigned("id");
     }
 
     public String getName() {
@@ -40,6 +42,7 @@ public class Role extends ResourceMeta implements Identifiable<RoleId> {
 
     public void setName(String name) {
         this.name = name;
+        support.setPropertyAssigned("name");
     }
 
     public String getResourceType() {
@@ -48,6 +51,7 @@ public class Role extends ResourceMeta implements Identifiable<RoleId> {
 
     public void setResourceType(String resourceType) {
         this.resourceType = resourceType;
+        support.setPropertyAssigned("resourceType");
     }
 
     public Long getResourceId() {
@@ -56,6 +60,7 @@ public class Role extends ResourceMeta implements Identifiable<RoleId> {
 
     public void setResourceId(Long resourceId) {
         this.resourceId = resourceId;
+        support.setPropertyAssigned("resourceId");
     }
 
     public String getSubResourceType() {
@@ -64,5 +69,6 @@ public class Role extends ResourceMeta implements Identifiable<RoleId> {
 
     public void setSubResourceType(String subResourceType) {
         this.subResourceType = subResourceType;
+        support.setPropertyAssigned("subResourceType");
     }
 }

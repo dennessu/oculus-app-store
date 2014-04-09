@@ -51,7 +51,7 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 409, code = "2000006", description = "Field {0} duplicate.", field = "{0}")
     AppError fieldDuplicate(String field);
 
-    @ErrorDef(httpStatusCode = 409, code = "2000007", description = "Field {0} required.", field = "{0}")
+    @ErrorDef(httpStatusCode = 400, code = "2000007", description = "Field {0} required.", field = "{0}")
     AppError fieldRequired(String field);
 
     @ErrorDef(httpStatusCode = 404, code = "2000008", description = "User {0} not found.", field = "{0}")
@@ -137,4 +137,11 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 409, code = "2000034", description = "Tos {0} not found.", field = "{0}")
     AppError tosNotFound(TosId tosId);
+
+    @ErrorDef(httpStatusCode = 404, code = "2000035", description = "Role {0} not found.", field = "{0}")
+    AppError roleNotFound(RoleId roleId);
+
+    @ErrorDef(httpStatusCode = 404, code = "2000036", description = "RoleAssignment {0} not found.", field = "{0}")
+    AppError roleAssignmentNotFound(RoleAssignmentId roleAssignmentId);
+
 }

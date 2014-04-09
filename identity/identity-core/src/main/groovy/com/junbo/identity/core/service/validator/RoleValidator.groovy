@@ -6,9 +6,9 @@
 package com.junbo.identity.core.service.validator
 
 import com.junbo.common.id.RoleId
+import com.junbo.identity.spec.v1.model.Role
 import com.junbo.identity.spec.v1.option.list.RoleListOptions
 import com.junbo.langur.core.promise.Promise
-import com.junbo.identity.spec.v1.model.Role
 import groovy.transform.CompileStatic
 
 /**
@@ -17,7 +17,10 @@ import groovy.transform.CompileStatic
 @CompileStatic
 interface RoleValidator {
     Promise<Void> validateForCreate(Role role)
-    Promise<Void> validateForGet(RoleId roleId)
+
+    Promise<Role> validateForGet(RoleId roleId)
+
     Promise<Void> validateForUpdate(Role role, Role oldRole)
+
     Promise<Void> validateForList(RoleListOptions options)
 }

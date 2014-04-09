@@ -14,7 +14,5 @@ interface RoleDAO {
 
     RoleEntity get(Long roleId)
 
-    RoleEntity findByRoleName(String roleName)
-
-    List<RoleEntity> findByResourceId(String resourceType, Long resourceId, String subResourceType)
+    RoleEntity findByRoleName(String roleName, String resourceType, Long resourceId, String subResourceType)
 }

@@ -28,9 +28,9 @@ class RoleRepositoryImpl implements RoleRepository {
 
     @Override
     Promise<Role> create(Role role) {
-        roleDAO.create(unwrap(role))
+        RoleEntity entity = roleDAO.create(unwrap(role))
 
-        return get(role.id)
+        return Promise.pure(wrap(roleDAO.get((Long) entity.id)))
     }
 
     @Override
@@ -41,24 +41,16 @@ class RoleRepositoryImpl implements RoleRepository {
 
     @Override
     Promise<Role> update(Role role) {
-        roleDAO.update(unwrap(role))
+        RoleEntity entity = roleDAO.update(unwrap(role))
 
-        return get(role.id)
+        return Promise.pure(wrap(roleDAO.get((Long) entity.id)))
     }
 
-    @Override
-    Promise<Role> findByRoleName(String roleName) {
-        return Promise.pure(wrap(roleDAO.findByRoleName(roleName)))
-    }
 
     @Override
-    Promise<List<Role>> findByResourceId(String resourceType, Long resourceId, String subResourceType) {
-        List<Role> list = roleDAO.findByResourceId(resourceType, resourceId, subResourceType)
-                .collect { RoleEntity entity ->
-            return wrap(entity)
-        }
-
-        return Promise.pure(list)
+    Promise<Role> findByRoleName(String roleName, String resourceType,
+                                 Long resourceId, String subResourceType) {
+        return Promise.pure(wrap(roleDAO.findByRoleName(roleName, resourceType, resourceId, subResourceType)))
     }
 
     private static Role wrap(RoleEntity entity) {
@@ -67,7 +59,7 @@ class RoleRepositoryImpl implements RoleRepository {
         }
 
         return new Role(
-                id: new RoleId(entity.id),
+                id: new RoleId((Long) entity.id),
                 name: entity.name,
                 resourceType: entity.resourceType,
                 resourceId: entity.resourceId,
@@ -86,7 +78,7 @@ class RoleRepositoryImpl implements RoleRepository {
         }
 
         return new RoleEntity(
-                id: entity.id.value,
+                id: entity.id == null ? null : ((RoleId) entity.id).value,
                 name: entity.name,
                 resourceType: entity.resourceType,
                 resourceId: entity.resourceId,

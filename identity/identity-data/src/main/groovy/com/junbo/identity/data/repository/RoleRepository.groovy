@@ -21,7 +21,5 @@ interface RoleRepository {
 
     Promise<Role> update(Role role)
 
-    Promise<Role> findByRoleName(String roleName)
-
-    Promise<List<Role>> findByResourceId(String resourceType, Long resourceId, String subResourceType)
+    Promise<Role> findByRoleName(String roleName, String resourceType, Long resourceId, String subResourceType)
 }
