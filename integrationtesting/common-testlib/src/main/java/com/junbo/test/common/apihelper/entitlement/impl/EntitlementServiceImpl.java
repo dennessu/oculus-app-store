@@ -31,7 +31,7 @@ import java.util.concurrent.Future;
  */
 public class EntitlementServiceImpl implements EntitlementService {
 
-    private static String entitlementUrl = RestUrl.getRestUrl("entitlement");
+    private static String entitlementUrl = RestUrl.getRestUrl(RestUrl.ComponentName.COMMERCE);
 
     private LogHelper logger = new LogHelper(EntitlementServiceImpl.class);
     private AsyncHttpClient asyncClient;

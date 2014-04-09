@@ -1,4 +1,5 @@
 package com.junbo.order.core.impl.orderaction
+import com.junbo.billing.spec.enums.BalanceStatus
 import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.model.Balance
 import com.junbo.langur.core.promise.Promise
@@ -10,6 +11,7 @@ import com.junbo.order.core.annotation.OrderEventAwareBefore
 import com.junbo.order.core.impl.common.BillingEventBuilder
 import com.junbo.order.core.impl.common.CoreBuilder
 import com.junbo.order.core.impl.common.CoreUtils
+import com.junbo.order.core.impl.internal.OrderInternalService
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.error.AppErrors
@@ -33,6 +35,8 @@ class AuthSettleAction extends BaseOrderEventAwareAction {
     OrderRepository orderRepository
     @Autowired
     OrderServiceContextBuilder orderServiceContextBuilder
+    @Autowired
+    OrderInternalService orderInternalService
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthSettleAction)
 
@@ -42,14 +46,27 @@ class AuthSettleAction extends BaseOrderEventAwareAction {
     @Transactional
     Promise<ActionResult> execute(ActionContext actionContext) {
         def context = ActionUtils.getOrderActionContext(actionContext)
+        orderInternalService.markSettlement(context.orderServiceContext.order)
         Balance balance = CoreBuilder.buildBalance(context.orderServiceContext.order, BalanceType.DELAY_DEBIT)
         Promise promise = facadeContainer.billingFacade.createBalance(balance)
-        promise.syncRecover {  Throwable throwable ->
+        promise.syncRecover { Throwable throwable ->
             LOGGER.error('name=Order_AuthSettle_Error', throwable)
             context.orderServiceContext.order.tentative = true
             throw AppErrors.INSTANCE.
                     billingConnectionError(CoreUtils.toAppErrors(throwable)).exception()
         }.then { Balance resultBalance ->
+            context.orderServiceContext.order.tentative = true
+            if (balance == null) {
+                LOGGER.error('name=Order_AuthSettle_Error_Balance_Null')
+                throw AppErrors.INSTANCE.
+                        billingConnectionError().exception()
+            }
+            if (balance.status != BalanceStatus.PENDING_CAPTURE.name()) {
+                LOGGER.error('name=Order_AuthSettle_Failed')
+                throw AppErrors.INSTANCE.
+                        billingChargeFailed().exception()
+            }
+            context.orderServiceContext.order.tentative = false
             def billingEvent = BillingEventBuilder.buildBillingEvent(resultBalance)
             orderServiceContextBuilder.refreshBalances(context.orderServiceContext).syncThen {
                 // TODO: save order level tax

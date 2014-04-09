@@ -17,10 +17,11 @@ import com.junbo.payment.spec.model.Address;
 import com.junbo.payment.spec.model.CreditCardRequest;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.Phone;
+import com.junbo.test.billing.apihelper.ShippingAddressService;
+import com.junbo.test.billing.apihelper.impl.ShippingAddressServiceImpl;
 import com.junbo.test.common.Entities.ShippingAddressInfo;
 import com.junbo.test.common.Utility.BaseTestDataProvider;
-import com.junbo.test.common.apihelper.billing.ShippingAddressService;
-import com.junbo.test.common.apihelper.billing.impl.ShippingAddressServiceImpl;
+
 import com.junbo.test.common.apihelper.cart.CartService;
 import com.junbo.test.common.apihelper.cart.impl.CartServiceImpl;
 import com.junbo.test.common.apihelper.catalog.ItemService;
@@ -40,6 +41,7 @@ import com.junbo.test.common.libs.EnumHelper;
 import com.junbo.test.common.libs.EnumHelper.UserStatus;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
+import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.test.payment.apihelper.PaymentService;
 import com.junbo.test.payment.apihelper.impl.PaymentServiceImpl;
@@ -60,6 +62,8 @@ public class BuyerTestDataProvider extends BaseTestDataProvider{
     private PaymentService paymentClient = PaymentServiceImpl.getInstance();
     private ShippingAddressService shippingClient = ShippingAddressServiceImpl.getInstance();
 
+    private LogHelper logger = new LogHelper(BuyerTestDataProvider.class);
+
 
     public BuyerTestDataProvider() {
     }
@@ -69,7 +73,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider{
         userToPost.setUserName(email);
         userToPost.setPassword(password);
         userToPost.setStatus(status.getStatus());
-
+        logger.LogSample("Create a new user");
         return identityClient.PostUser(userToPost);
     }
 
@@ -86,6 +90,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider{
     }
 
     public String postDefaultOffer(EnumHelper.CatalogItemType itemType) throws Exception {
+        logger.LogSample("Post a offer");
         return offerClient.postDefaultOffer(itemType);
     }
 
@@ -125,7 +130,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider{
 
         String destinationCartId = cartClient.getCartPrimary(destinationUid);
         //Cart destinationCart = Master.getInstance().getCart(destinationCartId);
-
+        logger.LogSample("Merge the carts");
         return cartClient.mergeCart(destinationUid, destinationCartId, sourceCart);
     }
 
@@ -157,7 +162,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider{
         paymentInstrument.setIsDefault(String.valueOf(creditCardInfo.isDefault()));
         paymentInstrument.setType(creditCardInfo.getType().toString());
         paymentInstrument.setTrackingUuid(UUID.randomUUID());
-
+        logger.LogSample("Post a new credit card to user");
         return paymentClient.postPaymentInstrumentToUser(uid, paymentInstrument);
     }
 
@@ -171,7 +176,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider{
         shippingAddress.setFirstName(shippingAddressInfo.getFirstName());
         shippingAddress.setLastName(shippingAddressInfo.getLastName());
         shippingAddress.setPhoneNumber(shippingAddressInfo.getPhoneNumber());
-
+        logger.LogSample("Post shipping address to user");
         return shippingClient.postShippingAddressToUser(uid, shippingAddress);
     }
 
@@ -197,7 +202,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider{
         order.setCurrency(currency.toString());
         order.setPaymentInstruments(paymentInstruments);
         if (shippingAddressId != null) {
-            order.setShippingAddressId(Master.getInstance().getShippingAddress(shippingAddressId).getAddressId());
+            order.setShippingAddress(Master.getInstance().getShippingAddress(shippingAddressId).getAddressId());
         }
 
         List<OrderItem> orderItemList = new ArrayList<>();
@@ -214,7 +219,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider{
         order.setTrackingUuid(UUID.randomUUID());
         order.setTentative(true);
         order.setType("PAY_IN");
-
+        logger.LogSample("Post an order");
         return orderClient.postOrder(order);
     }
 
@@ -222,6 +227,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider{
         Order order = Master.getInstance().getOrder(orderClient.getOrderByOrderId(orderId));
         order.setTentative(isTentative);
         order.setTrackingUuid(UUID.randomUUID());
+        logger.LogSample("Put an order");
         return orderClient.updateOrder(order);
     }
 
@@ -229,6 +235,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider{
         if (cartId == null) {
             cartId = cartClient.getCartPrimary(uid);
         }
+        logger.LogSample("Put cart");
         cartClient.updateCart(uid, cartId, new Cart());
     }
 
