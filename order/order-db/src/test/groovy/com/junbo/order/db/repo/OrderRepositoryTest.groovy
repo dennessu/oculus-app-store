@@ -38,8 +38,8 @@ class OrderRepositoryTest extends BaseTest {
         verifyByRead(order)
 
         // add order item, discount, paymentId
-        order.shippingAddressId = new ShippingAddressId(TestHelper.generateId())
-        order.shippingMethodId = TestHelper.generateLong() % 100
+        order.shippingAddress = new ShippingAddressId(TestHelper.generateId())
+        order.shippingMethod = TestHelper.generateLong() % 100
         order.orderItems << createOrderItem()
         order.discounts << createDiscount(order, order.orderItems.last())
         order.paymentInstruments << new PaymentInstrumentId(TestHelper.generateId())
@@ -135,7 +135,6 @@ class OrderRepositoryTest extends BaseTest {
     void assertOrderItemEquals(OrderItem actual, OrderItem expected) {
         assert actual.orderId == expected.orderId
         assert actual.offer == expected.offer
-        assert actual.federatedId == expected.federatedId
         assert actual.type == expected.type
     }
 
@@ -154,8 +153,8 @@ class OrderRepositoryTest extends BaseTest {
         assert actual.id == expected.id
         assert actual.currency == expected.currency
         assert actual.tentative == expected.tentative
-        assert actual.shippingMethodId == expected.shippingMethodId
-        assert actual.shippingAddressId == expected.shippingAddressId
+        assert actual.shippingMethod == expected.shippingMethod
+        assert actual.shippingAddress == expected.shippingAddress
     }
 
     private void assertListEquals(List actual, List expected, Closure idFunc, Closure assertFunc) {

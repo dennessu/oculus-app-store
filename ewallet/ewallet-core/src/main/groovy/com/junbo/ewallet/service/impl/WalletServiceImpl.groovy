@@ -1,11 +1,11 @@
 package com.junbo.ewallet.service.impl
 
 import com.junbo.ewallet.db.entity.def.NotEnoughMoneyException
+import com.junbo.ewallet.db.repo.WalletRepository
+import com.junbo.ewallet.service.WalletService
 import com.junbo.ewallet.spec.def.Status
 import com.junbo.ewallet.spec.def.WalletLotType
 import com.junbo.ewallet.spec.def.WalletType
-import com.junbo.ewallet.db.repo.WalletRepository
-import com.junbo.ewallet.service.WalletService
 import com.junbo.ewallet.spec.error.AppErrors
 import com.junbo.ewallet.spec.model.CreditRequest
 import com.junbo.ewallet.spec.model.DebitRequest
@@ -106,6 +106,7 @@ class WalletServiceImpl implements WalletService {
         }
 
         validateAmount(creditRequest.amount)
+        validateExpirationDate(creditRequest.expirationDate)
 
         def wallet
         if (creditRequest.walletId != null) {
@@ -156,6 +157,17 @@ class WalletServiceImpl implements WalletService {
             throw AppErrors.INSTANCE.missingField('amount').exception()
         } else if (amount <= 0) {
             throw AppErrors.INSTANCE.fieldNotCorrect('amount', 'Amount should be positive.').exception()
+        }
+    }
+
+    private void validateExpirationDate(Date expirationDate) {
+        if (expirationDate != null) {
+            Date now = new Date()
+            if (expirationDate.before(now)) {
+                throw AppErrors.INSTANCE.fieldNotCorrect(
+                        'expirationDate', 'expirationDate should not be before now.')
+                        .exception()
+            }
         }
     }
 

@@ -9,7 +9,11 @@
     <script type="text/javascript" src="/scripts/libs/jquery.metadata.js"></script>
     <script type="text/javascript" src="/scripts/libs/jquery.validate.min.js"></script>
     <script type="text/javascript" src="/scripts/libs/handlebars-v1.2.1.js"></script>
+    <%if(process.env.NAME == "development"){%>
     <script type="text/javascript" src="/scripts/libs/ember.js"></script>
+    <%}else{%>
+    <script type="text/javascript" src="/scripts/libs/ember.min.js"></script>
+    <%}%>
     <script type="text/javascript" src="/scripts/libs/ember-animated-outlet.js"></script>
     <script type="text/javascript" src="/scripts/libs/ember-data.js"></script>
     <script type="text/javascript" src="/scripts/libs/recaptcha_ajax.js"></script>

@@ -16,9 +16,10 @@ import groovy.transform.CompileStatic
  * Transaction Entity. Only for response.
  */
 @CompileStatic
-@JsonPropertyOrder(['type', 'amount', 'offerId', 'createdBy', 'createdTime'])
+@JsonPropertyOrder(['transactionId', 'type', 'amount', 'offerId', 'createdBy', 'createdTime'])
 @JsonInclude(JsonInclude.Include.NON_NULL)
 class Transaction {
+    Long transactionId
     String type
     BigDecimal amount
     @OfferId

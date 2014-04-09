@@ -83,7 +83,6 @@ class WalletServiceTest extends AbstractTransactionalTestNGSpringContextTests {
         creditRequest.expirationDate = new Date(100000)
         creditRequest.amount = new BigDecimal(100)
         walletService.credit(creditRequest)
-        walletService.debit(wallet.walletId, buildADebitRequest())
     }
 
     @Test(expectedExceptions = [WebApplicationException])

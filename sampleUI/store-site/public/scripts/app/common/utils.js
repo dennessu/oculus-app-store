@@ -82,6 +82,27 @@ var Utils = {
         return null;
     },
 
+    FormatNumber: function (number, fix, fh, jg)
+    {
+        var fix = arguments[1] ? arguments[1] : 2;
+        var fh = arguments[2] ? arguments[2] : ',';
+        var jg = arguments[3] ? arguments[3] : 3;
+        var str = '';
+        number = number.toFixed(fix);
+        var zsw = number.split('.')[0];
+        var xsw = number.split('.')[1];
+        var zswarr = zsw.split('');
+        for (var i = 1; i <= zswarr.length; i++) {
+            str = zswarr[zswarr.length - i] + str;
+            if (i % jg == 0) {
+                str = fh + str;
+            }
+        }
+        str = (zsw.length % jg == 0) ? str.substr(1) : str;
+        zsw = str + '.' + xsw;
+        return zsw;
+    },
+
     GetViews: function (templateName) {
         templateName = templateName.toLowerCase();
         if (Ember.isEmpty(templateName)) {
@@ -163,7 +184,7 @@ var Utils = {
         Get: function (name) {
             var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
             if (arr = document.cookie.match(reg))
-                return unescape(arr[2]);
+                return unescape(arr[2].trim()).trim();
             else
                 return null;
         },
@@ -222,5 +243,6 @@ var Utils = {
 
         return requestModel;
     }
+
 
 };

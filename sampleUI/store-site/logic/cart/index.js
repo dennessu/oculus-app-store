@@ -468,6 +468,10 @@ Cart.PostOrder = function(data, callback){
         },
         // Update Cart
         function(orderResult, result, indexArray, cb){
+            cb(null, orderResult);
+
+            // TODO: can't clear cart
+            /*
             var cartObj = JSON.parse(result);
             for(var i = indexArray.length-1; i >= 0; --i){
                 cartObj.offers.splice(indexArray[i], 1);
@@ -480,7 +484,7 @@ Cart.PostOrder = function(data, callback){
                     cb("Can't update cart. Error: ", result.Data);
                 }
             });
-
+            */
         }
     ], function (error, result) {
         var resultModel = new DomainModels.ResultModel;
@@ -576,32 +580,83 @@ Cart.PurchaseOrder = function(data, callback){
     var cookies = data.cookies;
     var query = data.query;
 
+    var userId = cookies[process.AppConfig.CookiesName.UserId];
     var orderId = cookies[process.AppConfig.CookiesName.OrderId];
-    var dataProvider = new OrderDataProvider(process.AppConfig.Order_API_Host, process.AppConfig.Order_API_Port);
+    var cartId = cookies[process.AppConfig.CookiesName.CartId];
+    var orderProvider = new OrderDataProvider(process.AppConfig.Order_API_Host, process.AppConfig.Order_API_Port);
+    var cartProvider = new CartDataProvider(process.AppConfig.Cart_API_Host, process.AppConfig.Cart_API_Port);
 
-    var resultModel = new DomainModels.ResultModel();
-    dataProvider.GetOrderById(orderId, function(resultData){
-        if(resultData.StatusCode == 200){
-            var order = JSON.parse(resultData.Data);
+    Async.waterfall([
+        function(cb){
+            orderProvider.GetOrderById(orderId, function(resultData){
+                if(resultData.StatusCode == 200){
+                    var order = JSON.parse(resultData.Data);
+                    order.trackingUuid = Guid.create();
+                    order.tentative = false;
 
-            order.trackingUuid = Guid.create();
-            order.tentative = false;
-
-            dataProvider.PutOrder(orderId, order, function(result){
-               if(result.StatusCode == 200){
-                   resultModel.status == DomainModels.ResultStatusEnum.Normal;
-               } else{
-                   resultModel.status == DomainModels.ResultStatusEnum.APIError;
-               }
-               resultModel.data = result.Data;
-
-                callback(Utils.GenerateResponseModel(resultModel));
+                    cb(null, order);
+                }else{
+                    cb("Can't get order by Id, Order Id:" + orderId, resultData.Data);
+                }
             });
-        }else{
-            resultModel.status == DomainModels.ResultStatusEnum.APIError;
-            resultModel.data = resultData.Data;
-            callback(Utils.GenerateResponseModel(resultModel));
+        },
+        function(order, cb){
+            cartProvider.GetCartById(userId, cartId, function(resultData){
+                if(resultData.StatusCode == 200){
+                    var cart = JSON.parse(resultData.Data);
+                    var cartItems = Utils.Clone(cart.offers);
+
+                    for(var i = cartItems.length-1; i >=0 ; --i){
+                        var item = cartItems[i];
+
+                        var orderQty = (function(offerId, orderItems){
+                            for(var k = 0; k < orderItems.length; ++k){
+                                if(offerId == orderItems[k].offer.id) return parseInt(orderItems[k].quantity);
+                            }
+                            return 0;
+                        })(item.offer.id, order.orderItems);
+
+                        if(orderQty > 0){
+                            if(typeof(cart.offers[i])!= "undefined") {
+                                if (parseInt(cart.offers[i].quantity) > orderQty) {
+                                    cart.offers[i].quantity = cart.offers[i].quantity - orderQty;
+                                } else {
+                                    cart.offers.splice(i, 1);
+                                }
+                            }
+                        }
+                    }
+                    cartProvider.PutCart(userId, cartId, cart, function(resultData){
+                        if(resultData.StatusCode == 200){
+                            cb(null, order);
+                        }else{
+                            cb("Can't put cart by Id, Cart Id:" + cartId, resultData.Data);
+                        }
+                    });
+                }else{
+                    cb("Can't get cart by Id, Cart Id:" + cartId, resultData.Data);
+                }
+            });
+        },
+        function(order, cb){
+            orderProvider.PutOrder(orderId, order, function(resultData){
+                if(resultData.StatusCode == 200){
+                    cb(null, order);
+                }else{
+                    cb("Can't put order by Id, Order Id:" + orderId, resultData.Data);
+                }
+            });
         }
+    ], function(err, result){
+        var resultModel = new DomainModels.ResultModel();
+        if(err){
+            resultModel.status == DomainModels.ResultStatusEnum.APIError;
+        } else{
+            resultModel.status == DomainModels.ResultStatusEnum.Normal;
+        }
+        resultModel.data = result;
+
+        callback(Utils.GenerateResponseModel(resultModel));
     });
 };
 

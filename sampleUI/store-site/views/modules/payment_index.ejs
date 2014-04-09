@@ -9,7 +9,7 @@
         <dd>{{view Ember.Select content=paymentList optionValuePath="content.v" optionLabelPath="content.t" value=paymentId id="Payment" name="Payment" class="{required:true}"}}</dd>
     </dl>
     <div class="actions">
-        <button type="submit" class="btn btn-primary">Continue</button>
+        <button id="BtnPaymentId" type="submit" class="btn btn-primary">Continue</button>
         <button type="button" class="btn btn-primary" {{action "CreateNew"}}>Create a New</button>
     </div>
 </form>

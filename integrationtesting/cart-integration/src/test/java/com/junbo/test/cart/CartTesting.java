@@ -10,6 +10,7 @@ import com.junbo.cart.spec.model.item.CouponItem;
 import com.junbo.cart.spec.model.item.OfferItem;
 import com.junbo.common.id.CouponId;
 import com.junbo.common.id.OfferId;
+import com.junbo.test.common.HttpclientHelper;
 import com.junbo.test.common.Utility.TestClass;
 import com.junbo.test.common.apihelper.identity.UserService;
 import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
@@ -20,6 +21,8 @@ import com.junbo.test.common.property.Priority;
 import com.junbo.test.common.property.Property;
 import com.junbo.test.common.property.Status;
 import org.testng.Assert;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
@@ -39,6 +42,17 @@ public class CartTesting extends TestClass {
 
     private CouponId testCoupon1 = new CouponId(200001L);
     private CouponId testCoupon2 = new CouponId(200002L);
+
+
+    @BeforeMethod
+    public void setup() {
+        HttpclientHelper.CreateHttpClient();
+    }
+
+    @AfterMethod
+    public void dispose() throws Exception {
+        HttpclientHelper.CloseHttpClient();
+    }
 
     @Property(
             priority = Priority.Dailies,
@@ -60,6 +74,7 @@ public class CartTesting extends TestClass {
         String user = us.PostUser();
         //get primary cart
         String primaryCartId = CartService.getCartPrimary(user);
+        logger.LogSample("Get user's primary cart");
         Cart primaryCart = Master.getInstance().getCart(primaryCartId);
         Assert.assertNotNull(primaryCart, "No Primary cart respond!");
         Assert.assertEquals(primaryCart.getOffers().size(), 0);//no offers when first call get primary cart.
@@ -151,6 +166,7 @@ public class CartTesting extends TestClass {
         CartService.updateCart(user2, primaryCartId2, primaryCart2);
 
         //merge user2's cart to user1's primary cart
+        logger.LogSample("Merge cart included in request body to an user's cart in URI");
         CartService.mergeCart(user1, primaryCartId1, primaryCart2);
         //verify merge result
         //5 testOffer1 + 2 testOffer2 + 3 testOffer3 + testCoupon1 + testCoupon2
@@ -196,8 +212,9 @@ public class CartTesting extends TestClass {
         newCart.setId(primaryCart.getId());
         addOrRemoveOfferInCart(newCart, testOffer2, 1, true);
         addOrRemoveOfferInCart(newCart, testOffer3, 3, true);
-        addCouponInCart(newCart,testCoupon2);
+        addCouponInCart(newCart, testCoupon2);
         String updateCartId = CartService.updateCart(user, primaryCartId, newCart);
+        logger.LogSample("update user's cart");
         Cart rtnCart = Master.getInstance().getCart(updateCartId);
 
         //validation:
@@ -205,7 +222,7 @@ public class CartTesting extends TestClass {
         Assert.assertTrue(checkOfferQuantity(rtnCart, testOffer3, 3L));
         Assert.assertTrue(!checkOfferExist(rtnCart, testOffer1));
         Assert.assertTrue(checkCouponExist(rtnCart, testCoupon2));
-        Assert.assertTrue(!checkCouponExist(rtnCart,testCoupon1));
+        Assert.assertTrue(!checkCouponExist(rtnCart, testCoupon1));
     }
 
     @Property(
@@ -238,7 +255,8 @@ public class CartTesting extends TestClass {
         CartService.addCart(user, cart);
 
         //get offer by name
-        String rtnCartId = CartService.getCartByName(user,cartName);
+        logger.LogSample("Get user's cart according to cart name");
+        String rtnCartId = CartService.getCartByName(user, cartName);
         Cart rtnCart = Master.getInstance().getCart(rtnCartId);
         //validation
         Assert.assertEquals(rtnCart.getCartName(), cartName);
@@ -277,6 +295,7 @@ public class CartTesting extends TestClass {
         String newCartId = CartService.addCart(user, cart);
 
         //get offer by name
+        logger.LogSample("Get user's cart by cart id");
         String rtnCartId = CartService.getCart(user, newCartId);
         Cart rtnCart = Master.getInstance().getCart(rtnCartId);
         //validation
@@ -286,6 +305,60 @@ public class CartTesting extends TestClass {
         checkCouponExist(rtnCart, testCoupon1);
     }
 
+    @Property(
+            priority = Priority.Comprehensive,
+            features = "GET /users/{invalidkey}/carts/primary",
+            component = Component.Cart,
+            owner = "JieFeng",
+            status = Status.Enable,
+            description = "update shopping cart",
+            steps = {
+                    "1. Create an user" +
+                            "/n 2. Get user's primary cart with an invalid user id" +
+                            "/n 3. Check response code"
+            }
+    )
+    @Test
+    public void testGetPrimaryCartWithInvalidUser() throws Exception {
+
+        String invalidUserId = "12345";
+        logger.LogSample("call get primary cart with invalid user id");
+        CartService.getCartPrimary(invalidUserId, 404);//response code to be defined
+    }
+
+    @Property(
+            priority = Priority.Comprehensive,
+            features = "GET /users/{keyUser}/carts/{invalidKeyCart}",
+            component = Component.Cart,
+            owner = "JieFeng",
+            status = Status.Enable,
+            description = "Get user's cart with an invalid cart id",
+            steps = {
+                    "1. Create an user" +
+                            "/n 2. post a new cart" +
+                            "/n 3. Get user's  cart with an invalid cart id" +
+                            "/n 4. Check response code"
+            }
+    )
+    @Test
+    public void testGetCartWithInvalidCartId() throws Exception {
+
+        UserService us = UserServiceImpl.instance();
+        //create a user
+        String user = us.PostUser();
+        //Create a cart
+        Cart cart = new Cart();
+        String cartName = "Automation Testing";
+        cart.setCartName(cartName);
+        addOrRemoveOfferInCart(cart, testOffer1, 3, true);
+        addOrRemoveOfferInCart(cart, testOffer2, 5, true);
+        addCouponInCart(cart, testCoupon1);
+        CartService.addCart(user, cart);
+
+        String invalidCartId = "12345";
+        logger.LogSample("Get user's cart with an invalid cart id");
+        CartService.getCart(user, invalidCartId, 404);
+    }
 
     //helper functions:
     private void addOrRemoveOfferInCart(Cart cart, OfferId offerId, long quantity, boolean selected) {

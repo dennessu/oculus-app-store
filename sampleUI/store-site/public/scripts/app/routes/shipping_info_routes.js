@@ -15,13 +15,14 @@ var ShippingInfoRoutes = {
             Utils.GetViews(AppConfig.Templates.ShippingInfo.Address);
         },
         setupController: function(controller, model){
+            var _self = this;
             var provider = new BillingProvider();
             provider.GetShippingInfos(Utils.GenerateRequestModel(null), function(result){
                 if(result.data.status == 200){
                     var lists = JSON.parse(result.data.data).results;
                     controller.set("content.results", lists);
                 }else{
-
+                    // TODO: Error
                 }
             });
         }

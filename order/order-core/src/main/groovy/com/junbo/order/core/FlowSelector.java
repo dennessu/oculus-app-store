@@ -13,5 +13,5 @@ import com.junbo.order.core.impl.order.OrderServiceContext;
  * Created by fzhang on 14-2-26.
  */
 public interface FlowSelector {
-    Promise<FlowType> select(OrderServiceContext expOrder, OrderServiceOperation operation);
+    Promise<String> select(OrderServiceContext expOrder, OrderServiceOperation operation);
 }

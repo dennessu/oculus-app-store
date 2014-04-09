@@ -43,8 +43,8 @@ class TestBuilder {
         order.setUser(userId)
         order.setPaymentInstruments([])
         order.paymentInstruments.add(new PaymentInstrumentId(generateLong()))
-        order.setShippingAddressId(new ShippingAddressId(generateLong()))
-        order.setShippingMethodId(generateLong())
+        order.setShippingAddress(new ShippingAddressId(generateLong()))
+        order.setShippingMethod(generateLong())
         order.setTentative(true)
         order.setTrackingUuid(generateUUID())
         order.discounts = []
@@ -87,7 +87,7 @@ class TestBuilder {
         orderActionContext.trackingUuid = UUID.randomUUID()
         def actionContext = new ActionContext(new Conversation(), new HashMap<String, Object>())
         ActionUtils.putOrderActionContext(orderActionContext, actionContext)
-        ActionUtils.putFlowType('testFlowType', actionContext)
+        ActionUtils.putFlowName('testFlowName', actionContext)
         return actionContext
     }
 
