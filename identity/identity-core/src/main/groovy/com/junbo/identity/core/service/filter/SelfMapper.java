@@ -44,8 +44,10 @@ public interface SelfMapper {
     UserGroup filterUserGroup(UserGroup userGroup, MappingContext context);
     UserGroup mergeUserGroup(UserGroup source, UserGroup base, MappingContext context);
 
-    UserLoginAttempt filterUserLoginAttempt(UserLoginAttempt userLoginAttempt, MappingContext context);
-    UserLoginAttempt mergeUserLoginAttempt(UserLoginAttempt source, UserLoginAttempt base, MappingContext context);
+    UserCredentialVerifyAttempt filterUserCredentialVerifyAttempt(
+            UserCredentialVerifyAttempt userLoginAttempt, MappingContext context);
+    UserCredentialVerifyAttempt mergeUserCredentialVerifyAttempt(
+            UserCredentialVerifyAttempt source, UserCredentialVerifyAttempt base, MappingContext context);
 
     UserOptin filterUserOptin(UserOptin userOptin, MappingContext context);
     UserOptin mergeUserOptin(UserOptin source, UserOptin base, MappingContext context);

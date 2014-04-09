@@ -67,8 +67,10 @@ public interface ModelMapper {
     UserGroup toUserGroup(UserGroupEntity entity, MappingContext context);
     UserGroupEntity toUserGroup(UserGroup entity, MappingContext context);
 
-    UserLoginAttempt toUserLoginAttempt(UserLoginAttemptEntity entity, MappingContext context);
-    UserLoginAttemptEntity toUserLoginAttempt(UserLoginAttempt entity, MappingContext context);
+    UserCredentialVerifyAttempt toUserCredentialVerifyAttempt(
+            UserCredentialVerifyAttemptEntity entity, MappingContext context);
+    UserCredentialVerifyAttemptEntity toUserCredentialVerifyAttempt(
+            UserCredentialVerifyAttempt entity, MappingContext context);
 
     UserOptin toUserOptin(UserOptinEntity entity, MappingContext context);
     UserOptinEntity toUserOptin(UserOptin entity, MappingContext context);

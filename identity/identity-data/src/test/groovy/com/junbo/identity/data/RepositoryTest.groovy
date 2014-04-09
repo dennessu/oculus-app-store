@@ -18,7 +18,9 @@ import com.junbo.identity.spec.options.list.*
 import com.junbo.identity.spec.v1.model.Device
 import com.junbo.identity.spec.v1.model.Group
 import com.junbo.identity.spec.v1.model.UserAuthenticator
+import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
 import com.junbo.identity.spec.v1.option.list.AuthenticatorListOptions
+import com.junbo.identity.spec.v1.option.list.UserCredentialAttemptListOptions
 import groovy.transform.CompileStatic
 import org.glassfish.jersey.internal.util.Base64
 import org.springframework.beans.factory.annotation.Autowired
@@ -64,7 +66,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
     private UserGroupRepository userGroupRepository
 
     @Autowired
-    private UserLoginAttemptRepository userLoginAttemptRepository
+    private UserCredentialVerifyAttemptRepository userLoginAttemptRepository
 
     @Autowired
     private UserOptinRepository userOptinRepository
@@ -312,7 +314,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
 
     @Test(enabled = true)
     public void testUserLoginAttemptRepository() {
-        UserLoginAttempt userLoginAttempt = new UserLoginAttempt()
+        UserCredentialVerifyAttempt userLoginAttempt = new UserCredentialVerifyAttempt()
         userLoginAttempt.setUserId(new UserId(userId))
         userLoginAttempt.setType('pin')
         userLoginAttempt.setValue(UUID.randomUUID().toString())
@@ -325,7 +327,8 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
 
         userLoginAttempt = userLoginAttemptRepository.create(userLoginAttempt).wrapped().get()
 
-        UserLoginAttempt newUserLoginAttempt = userLoginAttemptRepository.get(userLoginAttempt.getId()).wrapped().get()
+        UserCredentialVerifyAttempt newUserLoginAttempt =
+                userLoginAttemptRepository.get(userLoginAttempt.getId()).wrapped().get()
         Assert.assertEquals(userLoginAttempt.getIpAddress(), newUserLoginAttempt.getIpAddress())
 
         String value = UUID.randomUUID().toString()
@@ -335,10 +338,11 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         newUserLoginAttempt = userLoginAttemptRepository.get(userLoginAttempt.getId()).wrapped().get()
         Assert.assertEquals(newUserLoginAttempt.getIpAddress(), value)
 
-        UserLoginAttemptListOptions getOption = new UserLoginAttemptListOptions()
+        UserCredentialAttemptListOptions getOption = new UserCredentialAttemptListOptions()
         getOption.setUserId(new UserId(userId))
-        getOption.setIpAddress(value)
-        List<UserLoginAttempt> userLoginAttempts = userLoginAttemptRepository.search(getOption).wrapped().get()
+        getOption.setType('pin')
+        List<UserCredentialVerifyAttempt> userLoginAttempts =
+                userLoginAttemptRepository.search(getOption).wrapped().get()
         Assert.assertEquals(userLoginAttempts.size(), 1)
     }
 
@@ -488,7 +492,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
     @Test
     public void test() {
         String userName = 'liangfuxia'
-        String password = '#Bugsfor$'
+        String password = '#Bugsfor$4'
 
         String original = userName + ':' + password
         String encode = Base64.encodeAsString(original)

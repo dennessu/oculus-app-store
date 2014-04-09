@@ -204,7 +204,7 @@
         </property>
     </bean>
 
-    <bean id="userLoginAttemptFilter" class="com.junbo.identity.core.service.filter.UserLoginAttemptFilter">
+    <bean id="userCredentialVerifyAttemptFilter" class="com.junbo.identity.core.service.filter.UserCredentialVerifyAttemptFilter">
         <property name="readableProperties">
             <list>
                 <value>id</value>

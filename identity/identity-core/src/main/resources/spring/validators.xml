@@ -106,9 +106,9 @@
         <property name="userRepository" ref="userRepository" />
     </bean>
 
-    <bean id="userLoginAttemptValidator" class="com.junbo.identity.core.service.validator.impl.UserLoginAttemptValidatorImpl">
+    <bean id="userCredentialVerifyAttemptValidator" class="com.junbo.identity.core.service.validator.impl.UserCredentialVerifyAttemptValidatorImpl">
         <property name="userRepository" ref="userRepository" />
-        <property name="userLoginAttemptRepository" ref="userLoginAttemptRepository" />
+        <property name="userLoginAttemptRepository" ref="userCredentialVerifyAttemptRepository" />
         <property name="userPasswordRepository" ref="userPasswordRepository" />
         <property name="userPinRepository" ref="userPinRepository" />
         <property name="usernameValidator" ref="usernameValidator" />

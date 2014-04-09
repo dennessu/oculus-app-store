@@ -34,5 +34,5 @@ public interface UserCredentialVerifyAttemptResource {
     @ApiOperation("Search login history")
     @GET
     @Path("/")
-    Promise<Results<UserCredentialVerifyAttempt>> list(UserCredentialAttemptListOptions listOptions);
+    Promise<Results<UserCredentialVerifyAttempt>> list(@BeanParam UserCredentialAttemptListOptions listOptions);
 }

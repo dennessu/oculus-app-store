@@ -79,7 +79,7 @@ public interface AppErrors {
     AppError userGroupNotFound(UserGroupId userGroupId);
 
     @ErrorDef(httpStatusCode = 409, code = "2000016", description = "User Login Attempt {0} not found.", field = "{0}")
-    AppError userLoginAttemptNotFound(UserLoginAttemptId userLoginAttemptId);
+    AppError userLoginAttemptNotFound(UserCredentialVerifyAttemptId userLoginAttemptId);
 
     @ErrorDef(httpStatusCode = 404, code = "2000017", description = "User {0} is not in valid status.", field = "{0}")
     AppError userInInvalidStatus(UserId userId);
