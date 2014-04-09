@@ -3,6 +3,7 @@ import com.junbo.common.id.SubledgerId
 import com.junbo.common.model.Results
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.core.SubledgerService
+import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.PageParam
 import com.junbo.order.spec.model.Subledger
 import com.junbo.order.spec.model.SubledgerParam
@@ -12,7 +13,6 @@ import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 
 import javax.annotation.Resource
-
 /**
  * Created by fzhang on 4/2/2014.
  */
@@ -27,16 +27,24 @@ class SubledgerResourceImpl implements SubledgerResource {
     @Override
     Promise<Subledger> putSubledger(SubledgerId subledgerId, Subledger subledger) {
         subledger.subledgerId = subledgerId
-        return Promise.pure(null)
+        def result = subledgerService.updateSubledger(subledger)
+        return Promise.pure(result)
     }
 
     @Override
     Promise<Subledger> getSubledger(SubledgerId subledgerId) {
-        return Promise.pure(null)
+        def result = subledgerService.getSubledger(subledgerId)
+        if (result == null) {
+            throw AppErrors.INSTANCE.subledgerNotFound().exception()
+        }
+        return Promise.pure(result)
     }
 
     @Override
     Promise<Results<Subledger>> getSubledgers(SubledgerParam subledgerParam, PageParam pageParam) {
-        return Promise.pure(null)
+        def subledgers = subledgerService.getSubledgers(subledgerParam, pageParam)
+        Results<Subledger> results = new Results<>()
+        results.setItems(subledgers)
+        return Promise.pure(results)
     }
 }

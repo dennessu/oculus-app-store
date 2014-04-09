@@ -461,7 +461,7 @@ public class CommonMapper {
         }
     }
 
-    public String fromSubledgerStatusToString(SubledgerStatus status) {
+    public String fromSubledgerPayoutStatusToString(PayoutStatus status) {
         if (status == null) {
             return null;
         }
@@ -469,12 +469,12 @@ public class CommonMapper {
         return status.toString();
     }
 
-    public SubledgerStatus fromStringToSubledgerStatus(String status) {
+    public PayoutStatus fromStringToSubledgerPayoutStatus(String status) {
         if (status == null) {
             return null;
         }
         try {
-            return SubledgerStatus.valueOf(status);
+            return PayoutStatus.valueOf(status);
         } catch (Exception e) {
             throw AppErrors.INSTANCE.enumConversionError(status, "status").exception();
         }

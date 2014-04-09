@@ -10,13 +10,13 @@ import com.junbo.common.util.Identifiable;
 /**
  * Created by fzhang on 4/2/2014.
  */
-public enum SubledgerStatus implements Identifiable<Short> {
+public enum PayoutStatus implements Identifiable<Short> {
 
     PENDING(0),
     COMPLETED(1),
     FAILED(2);
 
-    private SubledgerStatus(int id) {
+    private PayoutStatus(int id) {
         this.id = (short) id;
     }
 

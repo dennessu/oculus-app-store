@@ -5,14 +5,14 @@
  */
 package com.junbo.order.db.entity.type;
 
-import com.junbo.order.db.entity.enums.SubledgerStatus;
+import com.junbo.order.db.entity.enums.PayoutStatus;
 
 /**
  * Created by fzhang on 4/2/2014.
  */
-public class SubledgerStatusType extends IdentifiableEnumType  {
+public class SubledgerPayoutStatusType extends IdentifiableEnumType  {
     @Override
     public Class returnedClass() {
-        return SubledgerStatus.class;
+        return PayoutStatus.class;
     }
 }

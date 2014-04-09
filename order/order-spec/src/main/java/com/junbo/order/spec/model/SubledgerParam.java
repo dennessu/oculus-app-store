@@ -5,6 +5,7 @@
  */
 package com.junbo.order.spec.model;
 
+import com.junbo.common.id.OfferId;
 import com.junbo.common.id.UserId;
 
 import javax.ws.rs.QueryParam;
@@ -15,17 +16,23 @@ import java.util.Date;
  */
 public class SubledgerParam {
 
+    @QueryParam("payOutStatus")
+    private String payOutStatus;
+
     @QueryParam("sellerId")
     private UserId sellerId;
-
-    @QueryParam("status")
-    private String status;
 
     @QueryParam("fromDate")
     private Date fromDate;
 
     @QueryParam("toDate")
     private Date toDate;
+
+    private OfferId offerId;
+
+    private String country;
+
+    private String currency;
 
     public UserId getSellerId() {
         return sellerId;
@@ -35,12 +42,12 @@ public class SubledgerParam {
         this.sellerId = sellerId;
     }
 
-    public String getStatus() {
-        return status;
+    public String getPayOutStatus() {
+        return payOutStatus;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setPayOutStatus(String payOutStatus) {
+        this.payOutStatus = payOutStatus;
     }
 
     public Date getFromDate() {
@@ -57,5 +64,29 @@ public class SubledgerParam {
 
     public void setToDate(Date toDate) {
         this.toDate = toDate;
+    }
+
+    public OfferId getOfferId() {
+        return offerId;
+    }
+
+    public void setOfferId(OfferId offerId) {
+        this.offerId = offerId;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 }

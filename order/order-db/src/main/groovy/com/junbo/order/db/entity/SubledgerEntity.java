@@ -7,7 +7,8 @@
 package com.junbo.order.db.entity;
 
 import com.junbo.order.db.ValidationMessages;
-import com.junbo.order.db.entity.enums.SubledgerStatus;
+import com.junbo.order.db.entity.enums.PayoutStatus;
+import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.Column;
@@ -27,10 +28,12 @@ import java.util.Date;
 public class SubledgerEntity extends CommonDbEntityWithDate {
     private Long subledgerId;
     private Long sellerId;
+    private String productItemId;
     private Long sellerTaxProfileId;
     private Short currencyId;
+    private String country;
     private BigDecimal totalAmount;
-    private SubledgerStatus subledgerStatus;
+    private PayoutStatus payoutStatus;
     private Date startTime;
     private Date endTime;
     private String property;
@@ -56,6 +59,16 @@ public class SubledgerEntity extends CommonDbEntityWithDate {
         this.sellerId = sellerId;
     }
 
+    @Column(name = "PRODUCT_ITEM_ID")
+    @NotNull(message = ValidationMessages.MISSING_VALUE)
+    public String getProductItemId() {
+        return productItemId;
+    }
+
+    public void setProductItemId(String productItemId) {
+        this.productItemId = productItemId;
+    }
+
     @Column(name = "SELLER_TAX_PROFILE_ID")
     public Long getSellerTaxProfileId() {
         return sellerTaxProfileId;
@@ -75,6 +88,16 @@ public class SubledgerEntity extends CommonDbEntityWithDate {
         this.currencyId = currencyId;
     }
 
+    @Column(name = "COUNTRY")
+    @NotNull(message = ValidationMessages.MISSING_VALUE)
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
     @Column(name = "TOTAL_AMOUNT")
     @NotNull(message = ValidationMessages.MISSING_VALUE)
     public BigDecimal getTotalAmount() {
@@ -85,14 +108,15 @@ public class SubledgerEntity extends CommonDbEntityWithDate {
         this.totalAmount = totalAmount;
     }
 
-    @Column(name = "STATUS_ID")
+    @Column(name = "PAYOUT_STATUS_ID")
     @NotNull(message = ValidationMessages.MISSING_VALUE)
-    public SubledgerStatus getSubledgerStatus() {
-        return subledgerStatus;
+    @Type(type = "com.junbo.order.db.entity.type.SubledgerPayoutStatusType")
+    public PayoutStatus getPayoutStatus() {
+        return payoutStatus;
     }
 
-    public void setSubledgerStatus(SubledgerStatus subledgerStatus) {
-        this.subledgerStatus = subledgerStatus;
+    public void setPayoutStatus(PayoutStatus payoutStatus) {
+        this.payoutStatus = payoutStatus;
     }
 
     @Column(name = "START_TIME")

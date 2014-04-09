@@ -31,7 +31,7 @@ public interface OrderRepository {
 
     List<OrderItem> getOrderItems(Long orderId);
 
-    List<OrderItem> getOrderItem(Long orderItemId);
+    OrderItem getOrderItem(Long orderItemId);
 
     List<Discount> getDiscounts(Long orderId);
 

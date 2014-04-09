@@ -25,6 +25,6 @@ class SubledgerItemResourceImpl implements SubledgerItemResource {
 
     @Override
     Promise<SubledgerItem> createSubledgerItem(SubledgerItem subledgerItem) {
-        return subledgerService.createSubledgerItem(subledgerItem)
+        return Promise.pure(subledgerService.createSubledgerItem(subledgerItem))
     }
 }

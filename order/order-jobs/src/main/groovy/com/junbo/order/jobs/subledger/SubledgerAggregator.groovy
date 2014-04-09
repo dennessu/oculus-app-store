@@ -1,4 +1,4 @@
-package com.junbo.order.jobs.impl
+package com.junbo.order.jobs.subledger
 
 import com.junbo.common.id.UserId
 import com.junbo.order.clientproxy.catalog.CatalogFacade
@@ -6,7 +6,9 @@ import com.junbo.order.core.SubledgerService
 import com.junbo.order.core.impl.common.TransactionHelper
 import com.junbo.order.db.entity.enums.SubledgerItemAction
 import com.junbo.order.db.entity.enums.SubledgerItemStatus
-import com.junbo.order.db.entity.enums.SubledgerStatus
+import com.junbo.order.db.entity.enums.PayoutStatus
+import com.junbo.order.db.repo.SubledgerRepository
+import com.junbo.order.spec.model.PageParam
 import com.junbo.order.spec.model.Subledger
 import com.junbo.order.spec.model.SubledgerItem
 import com.junbo.order.spec.model.SubledgerParam
@@ -14,11 +16,11 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 /**
- * Created by fzhang on 4/2/2014.
+ * Created by fzhang on 4/8/2014.
  */
-class SubledgerProcessor {
+class SubledgerAggregator {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(SubledgerProcessor)
+    private final static Logger LOGGER = LoggerFactory.getLogger(SubledgerAggregator)
 
     TransactionHelper transactionHelper
 
@@ -26,21 +28,38 @@ class SubledgerProcessor {
 
     SubledgerService subledgerService
 
-    private int processNumLimit
+    SubledgerRepository subledgerRepository
+
+    private int aggregateNumThreshHold
+
+    private int pageSize
 
     void setProcessNumLimit(int processNumLimit) {
         this.processNumLimit = processNumLimit
     }
 
-    void processSubledgerItem() {
-/*
-  get subleger item by item id
-     get matching subleger (create one if not exsted, by develper id, item created time, item currency)
-     aggregate subleger
-     save subleger
+    void aggregateSubledger() {
+        def start = System.currentTimeMillis()
+        LOGGER.info('name=Subledger_Aggregate_Job_Start')
 
-* */
-    }
+        def numAggregated = 0
+        while (numAggregated <= aggregateNumThreshHold) {
+            def subledgerItems = subledgerRepository.getSubledgerItem(SubledgerItemStatus.PENDING.name(),
+                    new PageParam(count: this.pageSize, start: 0))
+            if (subledgerItems.isEmpty()) {
+                break
+            }
+            numAggregated += subledgerItems.size()
+            subledgerItems.each { SubledgerItem subledgerItem ->
+                transactionHelper.executeInTransaction {
+                    subledgerService.aggregateSubledgerItem(subledgerItem)
+                }
+            }
+        }
+
+        LOGGER.info('name=Subledger_Aggregate_Job_End, numItemAggregated={}, duration={}ms',
+                numAggregated, System.currentTimeMillis() - start)
+     }
 
     void aggregateToSubledger(Subledger subledger, List<SubledgerItem> items) {
         items.each { SubledgerItem item ->
@@ -72,15 +91,10 @@ class SubledgerProcessor {
 
         offer.catalogOffer.ownerId*/
         SubledgerParam param = new SubledgerParam(
-              sellerId: new UserId(ownerId),
-              status: SubledgerStatus.PENDING,
+                sellerId: new UserId(ownerId),
+                status: PayoutStatus.PENDING,
 
         )
-        return null
-    }
-
-    Subledger createSubledger(SubledgerItem subledgerItem, Long ownerId) {
-
         return null
     }
 }

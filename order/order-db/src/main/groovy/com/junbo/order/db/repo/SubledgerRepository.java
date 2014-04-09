@@ -27,6 +27,10 @@ public interface SubledgerRepository {
     List<Subledger> getSubledgers(SubledgerParam subledgerParam, PageParam pageParam);
 
     SubledgerItem createSubledgerItem(SubledgerItem subledgerItem);
+
+    List<SubledgerItem> getSubledgerItem(String status, PageParam pageParam);
+
+    SubledgerItem updateSubledgerItem(SubledgerItem subledgerItem);
 }
 
 
