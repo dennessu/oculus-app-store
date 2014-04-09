@@ -11,7 +11,6 @@
 
     <!-- resource implementation -->
     <bean id="defaultUserEmailResource" class="com.junbo.identity.rest.resource.UserEmailResourceImpl" scope="prototype" />
-    <bean id="defaultUserGroupResource" class="com.junbo.identity.rest.resource.UserGroupResourceImpl" scope="prototype" />
     <bean id="defaultUserOptinResource" class="com.junbo.identity.rest.resource.UserOptinResourceImpl" scope="prototype" />
     <bean id="defaultUserPhoneNumberResource" class="com.junbo.identity.rest.resource.UserPhoneNumberResourceImpl" scope="prototype" />
     <bean id="defaultUserResource" class="com.junbo.identity.rest.resource.UserResourceImpl" scope="prototype"/>
@@ -28,4 +27,5 @@
     <bean id="defaultUserCredentialResource" class="com.junbo.identity.rest.resource.v1.UserCredentialResourceImpl" scope="prototype" />
     <bean id="defaultUserCredentialVerifyAttemptResource" class="com.junbo.identity.rest.resource.v1.UserCredentialVerifyAttemptResourceImpl" scope="prototype" />
     <bean id="defaultUserDevicePairResource" class="com.junbo.identity.rest.resource.v1.UserDevicePairResourceImpl" scope="prototype" />
+    <bean id="defaultUserGroupMembershipResource" class="com.junbo.identity.rest.resource.v1.UserGroupMembershipResourceImpl" scope="prototype" />
 </beans>

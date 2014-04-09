@@ -36,7 +36,7 @@ public interface UserGroupMembershipResource {
     @GET
     @Path("/{userGroupMembershipId}")
     Promise<UserGroup> get(@PathParam("userGroupMembershipId") UserGroupId userGroupId,
-                            UserGroupGetOptions getOptions);
+                            @BeanParam UserGroupGetOptions getOptions);
 
     @ApiOperation("Partial update one user group membership")
     @POST
@@ -58,5 +58,5 @@ public interface UserGroupMembershipResource {
     @ApiOperation("search user group memberships")
     @GET
     @Path("/")
-    Promise<Results<UserGroup>> list(UserGroupListOptions listOptions);
+    Promise<Results<UserGroup>> list(@BeanParam UserGroupListOptions listOptions);
 }

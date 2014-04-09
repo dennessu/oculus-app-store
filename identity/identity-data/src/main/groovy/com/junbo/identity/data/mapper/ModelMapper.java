@@ -13,7 +13,6 @@ import com.junbo.identity.data.entity.user.*;
 import com.junbo.identity.spec.model.domaindata.SecurityQuestion;
 import com.junbo.identity.spec.model.users.User;
 import com.junbo.identity.spec.model.users.UserEmail;
-import com.junbo.identity.spec.model.users.UserGroup;
 import com.junbo.identity.spec.model.users.*;
 import com.junbo.identity.spec.model.users.UserName;
 import com.junbo.identity.spec.model.users.UserOptin;

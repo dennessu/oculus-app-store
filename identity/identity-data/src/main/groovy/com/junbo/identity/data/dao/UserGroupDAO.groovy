@@ -6,7 +6,7 @@
 package com.junbo.identity.data.dao
 
 import com.junbo.identity.data.entity.user.UserGroupEntity
-import com.junbo.identity.spec.options.list.UserGroupListOptions
+import com.junbo.identity.spec.v1.option.list.UserGroupListOptions
 import groovy.transform.CompileStatic
 
 /**
@@ -21,6 +21,8 @@ interface UserGroupDAO {
     UserGroupEntity get(Long id)
 
     List<UserGroupEntity> search(Long userId, UserGroupListOptions getOption)
+
+    List<UserGroupEntity> findByGroupId(Long groupId, UserGroupListOptions getOption)
 
     void delete(Long id)
 }

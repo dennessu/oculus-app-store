@@ -4,18 +4,17 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.identity.core.service.validator.impl
+
 import com.junbo.common.id.UserGroupId
-import com.junbo.common.id.UserId
 import com.junbo.identity.core.service.validator.UserGroupValidator
 import com.junbo.identity.data.repository.GroupRepository
 import com.junbo.identity.data.repository.UserGroupRepository
 import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.spec.error.AppErrors
-
 import com.junbo.identity.spec.model.users.User
-import com.junbo.identity.spec.model.users.UserGroup
-import com.junbo.identity.spec.options.list.UserGroupListOptions
 import com.junbo.identity.spec.v1.model.Group
+import com.junbo.identity.spec.v1.model.UserGroup
+import com.junbo.identity.spec.v1.option.list.UserGroupListOptions
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
@@ -33,47 +32,18 @@ class UserGroupValidatorImpl implements UserGroupValidator {
 
     private GroupRepository groupRepository
 
-    @Required
-    void setUserGroupRepository(UserGroupRepository userGroupRepository) {
-        this.userGroupRepository = userGroupRepository
-    }
-
-    @Required
-    void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository
-    }
-
-    @Required
-    void setGroupRepository(GroupRepository groupRepository) {
-        this.groupRepository = groupRepository
-    }
-
     @Override
-    Promise<UserGroup> validateForGet(UserId userId, UserGroupId userGroupId) {
-        if (userId == null) {
-            throw AppErrors.INSTANCE.parameterRequired('userId').exception()
-        }
-
+    Promise<UserGroup> validateForGet(UserGroupId userGroupId) {
         if (userGroupId == null) {
             throw AppErrors.INSTANCE.parameterRequired('userGroupId').exception()
         }
 
-        return userRepository.get(userId).then { User user ->
-            if (user == null) {
-                throw AppErrors.INSTANCE.userNotFound(userId).exception()
+        return userGroupRepository.get(userGroupId).then { UserGroup userGroup ->
+            if (userGroup == null) {
+                throw AppErrors.INSTANCE.userGroupNotFound(userGroupId).exception()
             }
 
-            userGroupRepository.get(userGroupId).then { UserGroup userGroup ->
-                if (userGroup == null) {
-                    throw AppErrors.INSTANCE.userGroupNotFound(userGroupId).exception()
-                }
-
-                if (userId != userGroup.userId) {
-                    throw AppErrors.INSTANCE.parameterInvalid('userId and userGroupId doesn\'t match.').exception()
-                }
-
-                return Promise.pure(userGroup)
-            }
+            return Promise.pure(userGroup)
         }
     }
 
@@ -83,55 +53,38 @@ class UserGroupValidatorImpl implements UserGroupValidator {
             throw new IllegalArgumentException('options is null')
         }
 
-        if (options.userId == null) {
-            throw AppErrors.INSTANCE.parameterRequired('userId').exception()
+        if (options.userId == null && options.groupId == null) {
+            throw AppErrors.INSTANCE.parameterRequired('userId or groupId').exception()
         }
 
         return Promise.pure(null)
     }
 
     @Override
-    Promise<Void> validateForCreate(UserId userId, UserGroup userGroup) {
+    Promise<Void> validateForCreate(UserGroup userGroup) {
 
-        if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
-        }
         checkBasicUserGroupInfo(userGroup)
 
         if (userGroup.id != null) {
             throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
         }
-        if (userGroup.userId != null && userGroup.userId != userId) {
-            throw AppErrors.INSTANCE.fieldInvalid('userId', userGroup.userId.toString()).exception()
-        }
 
         return userGroupRepository.search(new UserGroupListOptions(
-                userId: userId,
+                userId: userGroup.userId,
                 groupId: userGroup.groupId
         )).then { List<UserGroup> existing ->
             if (!CollectionUtils.isEmpty(existing)) {
                 throw AppErrors.INSTANCE.fieldDuplicate('groupId').exception()
             }
 
-            return groupRepository.get(userGroup.groupId).then { Group newGroup ->
-                if (newGroup == null) {
-                    throw AppErrors.INSTANCE.groupNotFound(userGroup.groupId).exception()
-                }
-
-                userGroup.setUserId(userId)
-                return Promise.pure(null)
-            }
+            return Promise.pure(null)
         }
     }
 
     @Override
-    Promise<Void> validateForUpdate(UserId userId, UserGroupId userGroupId,
-                                           UserGroup userGroup, UserGroup oldUserGroup) {
-        if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
-        }
+    Promise<Void> validateForUpdate(UserGroupId userGroupId, UserGroup userGroup, UserGroup oldUserGroup) {
 
-        return validateForGet(userId, userGroupId).then {
+        return validateForGet(userGroupId).then {
             checkBasicUserGroupInfo(userGroup)
 
             if (userGroup.id == null) {
@@ -148,21 +101,14 @@ class UserGroupValidatorImpl implements UserGroupValidator {
 
             if (userGroup.groupId != oldUserGroup.groupId) {
                 return userGroupRepository.search(new UserGroupListOptions(
-                        userId: userId,
+                        userId: userGroup.userId,
                         groupId: userGroup.groupId
                 )).then { List<UserGroup> existing ->
                     if (!CollectionUtils.isEmpty(existing)) {
                         throw AppErrors.INSTANCE.fieldDuplicate('groupId').exception()
                     }
 
-                    return groupRepository.get(userGroup.groupId).then { Group existingGroup ->
-                        if (existingGroup == null) {
-                            throw AppErrors.INSTANCE.groupNotFound(userGroup.groupId).exception()
-                        }
-
-                        userGroup.setUserId(userId)
-                        return Promise.pure(null)
-                    }
+                    return Promise.pure(null)
                 }
             }
             return Promise.pure(null)
@@ -177,5 +123,51 @@ class UserGroupValidatorImpl implements UserGroupValidator {
         if (userGroup.groupId == null) {
             throw AppErrors.INSTANCE.fieldRequired('groupId').exception()
         }
+
+        if (userGroup.userId == null) {
+            throw AppErrors.INSTANCE.fieldRequired('userId').exception()
+        }
+
+        userRepository.get(userGroup.userId).then { User existingUser ->
+            if (existingUser == null) {
+                throw AppErrors.INSTANCE.userNotFound(userGroup.userId).exception()
+            }
+
+            if (existingUser.active == null || existingUser.active == false) {
+                throw AppErrors.INSTANCE.userInInvalidStatus(userGroup.userId).exception()
+            }
+
+            groupRepository.get(userGroup.groupId).then { Group existingGroup ->
+                if (existingGroup == null) {
+                    throw AppErrors.INSTANCE.groupNotFound(userGroup.groupId).exception()
+                }
+
+                userGroupRepository.search(new UserGroupListOptions(
+                        userId: userGroup.userId,
+                        groupId: userGroup.groupId
+                )).then { List<UserGroup> existingUserDeviceList ->
+                    if (!CollectionUtils.isEmpty(existingUserDeviceList)) {
+                        throw AppErrors.INSTANCE.fieldInvalid('groupId').exception()
+                    }
+                }
+            }
+        }
     }
+
+
+    @Required
+    void setUserGroupRepository(UserGroupRepository userGroupRepository) {
+        this.userGroupRepository = userGroupRepository
+    }
+
+    @Required
+    void setUserRepository(UserRepository userRepository) {
+        this.userRepository = userRepository
+    }
+
+    @Required
+    void setGroupRepository(GroupRepository groupRepository) {
+        this.groupRepository = groupRepository
+    }
+
 }

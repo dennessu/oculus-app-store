@@ -29,7 +29,6 @@
     <bean id="userDeviceDAO" class="com.junbo.identity.data.dao.impl.UserDeviceDAOImpl" parent="baseDAO" />
     <bean id="userEmailDAO" class="com.junbo.identity.data.dao.impl.UserEmailDAOImpl" parent="baseDAO" />
     <bean id="userGroupDAO" class="com.junbo.identity.data.dao.impl.UserGroupDAOImpl" parent="baseDAO" />
-    <bean id="groupUserDAO" class="com.junbo.identity.data.dao.impl.GroupUserDAOImpl" parent="baseDAO" />
     <bean id="userCredentialVerifyAttemptDAO" class="com.junbo.identity.data.dao.impl.UserCredentialVerifyAttemptDAOImpl" parent="baseDAO" />
     <bean id="userOptinDAO" class="com.junbo.identity.data.dao.impl.UserOptinDAOImpl" parent="baseDAO" />
     <bean id="userPasswordDAO" class="com.junbo.identity.data.dao.impl.UserPasswordDAOImpl" parent="baseDAO" />
@@ -69,6 +68,7 @@
                 <bean class="com.junbo.identity.data.view.UserEmailView" />
                 <bean class="com.junbo.identity.data.view.DeviceExternalRefView" />
                 <bean class="com.junbo.identity.data.view.UserDeviceIdView" />
+                <bean class="com.junbo.identity.data.view.UserGroupIdView" />
             </list>
         </property>
     </bean>
