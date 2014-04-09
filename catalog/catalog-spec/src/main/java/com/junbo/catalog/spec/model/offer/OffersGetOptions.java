@@ -27,7 +27,7 @@ public class OffersGetOptions extends PageableGetOptions {
     }
 
     public static OffersGetOptions getDesign() {
-        return new OffersGetOptions().setStatus(Status.DESIGN);
+        return new OffersGetOptions().setStatus(Status.DRAFT);
     }
 
     public List<OfferId> getOfferIds() {

@@ -6,41 +6,22 @@
 
 package com.junbo.catalog.db.entity;
 
-import com.junbo.catalog.db.dao.StringJsonUserType;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-import org.hibernate.annotations.TypeDefs;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * Item DB entity.
  */
 @Entity
 @Table(name="item")
-@TypeDefs(@TypeDef(name="json-string", typeClass=StringJsonUserType.class))
-public class ItemEntity extends VersionedEntity {
-    private Long id;
+public class ItemEntity extends BaseEntity {
     private String type;
     private Long itemId;
     private String name;
     private Long ownerId;
+    private boolean curated;
     private Long currentRevisionId;
-    private String payload;
 
     @Id
-    @Column(name = "id")
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     @Column(name = "item_id")
     public Long getItemId() {
         return itemId;
@@ -77,6 +58,15 @@ public class ItemEntity extends VersionedEntity {
         this.ownerId = ownerId;
     }
 
+    @Column(name = "curated")
+    public boolean isCurated() {
+        return curated;
+    }
+
+    public void setCurated(boolean curated) {
+        this.curated = curated;
+    }
+
     @Column(name = "current_revision_id")
     public Long getCurrentRevisionId() {
         return currentRevisionId;
@@ -86,13 +76,14 @@ public class ItemEntity extends VersionedEntity {
         this.currentRevisionId = currentRevisionId;
     }
 
-    @Column(name = "payload")
-    @Type(type = "json-string")
-    public String getPayload() {
-        return payload;
+    @Override
+    @Transient
+    public Long getId() {
+        return itemId;
     }
 
-    public void setPayload(String payload) {
-        this.payload = payload;
+    @Override
+    public void setId(Long id) {
+        this.itemId = id;
     }
 }

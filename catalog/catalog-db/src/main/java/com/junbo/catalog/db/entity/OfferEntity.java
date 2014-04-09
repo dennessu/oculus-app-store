@@ -19,10 +19,11 @@ import javax.persistence.*;
 @Entity
 @Table(name="offer")
 @TypeDefs(@TypeDef(name="json-string", typeClass=StringJsonUserType.class))
-public class OfferEntity extends VersionedEntity {
+public class OfferEntity extends BaseEntity {
     private Long offerId;
     private String offerName;
     private Long ownerId;
+    private boolean curated;
     private Long currentRevisionId;
     private String categories;
 
@@ -52,6 +53,15 @@ public class OfferEntity extends VersionedEntity {
 
     public void setOwnerId(Long ownerId) {
         this.ownerId = ownerId;
+    }
+
+    @Column(name = "curated")
+    public boolean isCurated() {
+        return curated;
+    }
+
+    public void setCurated(boolean curated) {
+        this.curated = curated;
     }
 
     @Column(name = "current_revision_id")

@@ -47,7 +47,7 @@ public abstract class BaseDaoImpl<T extends BaseEntity> implements BaseDao<T> {
 
     public T get(Long id) {
         T entity = (T) currentSession().get(entityType, id);
-        return entity.isDeleted() ? null : entity;
+        return (entity == null || entity.isDeleted()) ? null : entity;
     }
 
     public Long update(T entity) {

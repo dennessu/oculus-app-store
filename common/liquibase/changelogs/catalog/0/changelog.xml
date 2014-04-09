@@ -8,38 +8,20 @@
 
     <changeSet id="1" author='baojing' context="PREDEPLOY">
         <sql><![CDATA[
-            create table item_draft (
-              item_id                 bigint            not null,
-              type                    varchar(64)       not null,
-              item_name               varchar(64)       not null,
-              status                  varchar(64)       not null,
-              owner_id                bigint            not null,
-              timestamp               bigint            not null,
-              payload                 json              not null,
-              created_by              varchar(64)       not null,
-              created_time            timestamp         not null,
-              updated_by              varchar(64)       default null,
-              updated_time            timestamp         default null,
-
-              primary key (item_id)
-            );
-
             create table item (
-              id                      bigint            not null,
               item_id                 bigint            not null,
               type                    varchar(64)       not null,
               item_name               varchar(64)       not null,
-              status                  varchar(64)       not null,
+              curated                 boolean           not null default false,
               owner_id                bigint            not null,
               current_revision_id     bigint            null,
-              payload                 json              not null,
               deleted                 boolean           not null default false,
               created_by              varchar(64)       not null,
               created_time            timestamp         not null,
               updated_by              varchar(64)       default null,
               updated_time            timestamp         default null,
 
-              primary key (id)
+              primary key (item_id)
             );
 
             create table item_revision (
@@ -60,7 +42,7 @@
             create table offer (
               offer_id                bigint            not null,
               offer_name              varchar(64)       not null,
-              status                  varchar(64)       not null,
+              curated                 boolean           not null default false,
               owner_id                bigint            not null,
               current_revision_id     bigint            null,
               categories              json              null,

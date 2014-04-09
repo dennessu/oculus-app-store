@@ -7,7 +7,9 @@
 package com.junbo.catalog.db.repo;
 
 import com.junbo.catalog.db.dao.ItemDao;
+import com.junbo.catalog.db.entity.ItemEntity;
 import com.junbo.catalog.db.mapper.ItemMapper;
+import com.junbo.catalog.spec.error.AppErrors;
 import com.junbo.catalog.spec.model.item.Item;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -29,7 +31,22 @@ public class ItemRepository implements BaseEntityRepository<Item> {
     }
 
     @Override
-    public Long update(Item entity) {
-        return null;
+    public Long update(Item item) {
+        ItemEntity dbEntity = itemDao.get(item.getItemId());
+        if (dbEntity == null) {
+            throw AppErrors.INSTANCE.notFound("item", item.getItemId()).exception();
+        }
+        ItemMapper.fillDBEntity(item, dbEntity);
+        return itemDao.update(dbEntity);
+    }
+
+    @Override
+    public void delete(Long itemId) {
+        ItemEntity dbEntity = itemDao.get(itemId);
+        if (dbEntity == null) {
+            throw AppErrors.INSTANCE.notFound("item", itemId).exception();
+        }
+        dbEntity.setDeleted(true);
+        itemDao.update(dbEntity);
     }
 }

@@ -18,8 +18,10 @@ import java.util.Map;
  */
 public class ItemRevision extends BaseRevisionModel {
     @OfferId
-    @JsonProperty("offer")
+    @JsonProperty("item")
     private Long itemId;
+    private String type;
+    private String sku;
     private Map<String, Map<String, Object>> localeProperties;
 
     public Long getItemId() {
@@ -28,6 +30,22 @@ public class ItemRevision extends BaseRevisionModel {
 
     public void setItemId(Long itemId) {
         this.itemId = itemId;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getSku() {
+        return sku;
+    }
+
+    public void setSku(String sku) {
+        this.sku = sku;
     }
 
     public Map<String, Map<String, Object>> getLocaleProperties() {

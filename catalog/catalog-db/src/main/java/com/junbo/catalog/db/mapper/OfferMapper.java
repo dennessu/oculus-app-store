@@ -31,7 +31,7 @@ public class OfferMapper {
     public static void fillDBEntity(Offer model, OfferEntity entity) {
         entity.setOfferId(model.getOfferId());
         entity.setOfferName(model.getName());
-        entity.setStatus(model.getStatus());
+        entity.setCurated(model.getCurated()==null?false:model.getCurated());
         entity.setOwnerId(model.getOwnerId());
         entity.setCurrentRevisionId(model.getCurrentRevisionId());
         entity.setCategories(Utils.toJson(model.getCategories()));
@@ -44,7 +44,7 @@ public class OfferMapper {
         Offer model = new Offer();
         model.setOfferId(entity.getOfferId());
         model.setName(entity.getOfferName());
-        model.setStatus(entity.getStatus());
+        model.setCurated(entity.isCurated());
         model.setCurrentRevisionId(entity.getCurrentRevisionId());
         model.setOwnerId(entity.getOwnerId());
         model.setCategories(Utils.fromJson(entity.getCategories(), List.class));

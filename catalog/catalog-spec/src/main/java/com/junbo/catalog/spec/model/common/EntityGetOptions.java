@@ -27,7 +27,7 @@ public class EntityGetOptions {
 
     public static EntityGetOptions getDraft() {
         EntityGetOptions options = new EntityGetOptions();
-        options.setStatus(Status.DESIGN);
+        options.setStatus(Status.DRAFT);
 
         return options;
     }

@@ -16,4 +16,5 @@ public interface BaseRevisionRepository<T extends BaseRevisionModel>  {
     Long create(T revision);
     T get(Long revisionId);
     Long update(T revision);
+    void delete(Long entityId);
 }

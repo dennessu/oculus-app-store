@@ -12,9 +12,5 @@ import com.junbo.catalog.db.entity.ItemEntity;
 /**
  * Item DAO implementation.
  */
-public class ItemDaoImpl extends VersionedDaoImpl<ItemEntity> implements ItemDao {
-    @Override
-    public ItemEntity getItem(Long itemId, Long timestamp) {
-        return get(itemId, timestamp, "itemId");
-    }
+public class ItemDaoImpl extends BaseDaoImpl<ItemEntity> implements ItemDao {
 }

@@ -92,7 +92,7 @@ public abstract class BaseServiceImpl<T extends VersionedModel> implements BaseS
 
     @Override
     public T create(T entity) {
-        entity.setStatus(Status.DESIGN);
+        entity.setStatus(Status.DRAFT);
 
         Long entityId = getEntityDraftRepo().create(entity);
 

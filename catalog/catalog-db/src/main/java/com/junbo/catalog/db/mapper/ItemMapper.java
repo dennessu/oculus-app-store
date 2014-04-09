@@ -26,7 +26,8 @@ public class ItemMapper {
     public static void fillDBEntity(Item model, ItemEntity entity) {
         entity.setItemId(model.getItemId());
         entity.setName(model.getName());
-        entity.setStatus(model.getStatus());
+        entity.setCurated(model.getCurated()==null?false:model.getCurated());
+        entity.setType(model.getType());
         entity.setOwnerId(model.getOwnerId());
         entity.setCurrentRevisionId(model.getCurrentRevisionId());
     }
@@ -38,7 +39,7 @@ public class ItemMapper {
         Item model = new Item();
         model.setItemId(entity.getItemId());
         model.setName(entity.getName());
-        model.setStatus(entity.getStatus());
+        model.setCurated(entity.isCurated());
         model.setCurrentRevisionId(entity.getCurrentRevisionId());
         model.setOwnerId(entity.getOwnerId());
         model.setCreatedBy(entity.getCreatedBy());

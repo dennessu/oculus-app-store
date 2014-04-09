@@ -6,11 +6,16 @@
 
 package com.junbo.catalog.core.service;
 
+import com.junbo.catalog.core.EntitlementDefinitionService;
 import com.junbo.catalog.core.ItemService;
 import com.junbo.catalog.db.repo.ItemRepository;
 import com.junbo.catalog.db.repo.ItemRevisionRepository;
+import com.junbo.catalog.spec.error.AppErrors;
+import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
+import com.junbo.catalog.spec.model.entitlementdef.EntitlementType;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.item.ItemRevision;
+import com.junbo.catalog.spec.model.item.ItemType;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -21,6 +26,23 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
     private ItemRepository itemRepo;
     @Autowired
     private ItemRevisionRepository itemRevisionRepo;
+    @Autowired
+    private EntitlementDefinitionService entitlementDefService;
+
+    @Override
+    public Item createEntity(Item item) {
+        if (Boolean.TRUE.equals(item.getCurated())) {
+            throw AppErrors.INSTANCE.fieldNotCorrect("curated", "Cannot create an item with curated true.").exception();
+        }
+        validateItem(item);
+
+        Long itemId = itemRepo.create(item);
+        item.setItemId(itemId);
+        generateEntitlementDef(item);
+        itemRepo.update(item);
+
+        return itemRepo.get(itemId);
+    }
 
     @Override
     protected ItemRepository getEntityRepo() {
@@ -42,48 +64,16 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
         return "item-revision";
     }
 
-    /*@Autowired
-    private ItemRepository itemRepository;
-    @Autowired
-    private ItemDraftRepository itemDraftRepository;
-    @Autowired
-    private EntitlementDefinitionService entitlementDefService;
-
-    @Override
-    public ItemRepository getEntityRepo() {
-        return itemRepository;
-    }
-
-    @Override
-    public ItemDraftRepository getEntityDraftRepo() {
-        return itemDraftRepository;
-    }
-
-    @Override
-    public Item create(Item item) {
-        validateItem(item);
-        item.setStatus(Status.DESIGN);
-        Long itemId = itemDraftRepository.create(item);
-        item.setId(itemId);
-
+    private void generateEntitlementDef(Item item) {
         if (ItemType.APP.equalsIgnoreCase(item.getType())) {
             EntitlementDefinition entitlementDef = new EntitlementDefinition();
             entitlementDef.setDeveloperId(item.getOwnerId());
-            entitlementDef.setGroup(itemId.toString());
+            entitlementDef.setGroup(item.getItemId().toString());
             entitlementDef.setType(EntitlementType.DOWNLOAD.name());
-            entitlementDef.setTag(item.getName());
+            entitlementDef.setTag(item.getItemId().toString());
             Long entitlementDefId = entitlementDefService.createEntitlementDefinition(entitlementDef);
             item.setEntitlementDefId(entitlementDefId);
         }
-        itemDraftRepository.update(item);
-
-        return itemDraftRepository.get(itemId);
-    }
-
-    @Override
-    public Item update(Long entityId, Item entity) {
-        validateId(entityId, entity);
-        return updateEntity(entityId, entity);
     }
 
     private void validateItem(Item item) {
@@ -95,9 +85,4 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
             throw AppErrors.INSTANCE.unnecessaryField("entitlementDefinition").exception();
         }
     }
-
-    @Override
-    protected String getEntityType() {
-        return "Item";
-    }*/
 }

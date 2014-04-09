@@ -11,9 +11,12 @@ import com.junbo.catalog.db.repo.BaseEntityRepository;
 import com.junbo.catalog.db.repo.BaseRevisionRepository;
 import com.junbo.catalog.spec.error.AppErrors;
 import com.junbo.catalog.spec.model.common.*;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Base service implementation for revisioned entity.
@@ -26,7 +29,7 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
     @Override
     public E getEntity(Long entityId) {
         E entity = getEntityRepo().get(entityId);
-        checkNotNull(entityId, entity, getEntityType());
+        checkEntityNotNull(entityId, entity, getEntityType());
         return entity;
     }
 
@@ -44,9 +47,9 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
     @Override
     public E updateEntity(Long entityId, E entity) {
         E existingEntity = getEntityRepo().get(entityId);
-        checkNotNull(entityId, existingEntity, getEntityType());
+        checkEntityNotNull(entityId, existingEntity, getEntityType());
 
-        if (Status.PUBLISHED.equalsIgnoreCase(entity.getStatus())){
+        if (Boolean.TRUE.equals(entity.getCurated())){
             checkFieldNotNull(entity.getCurrentRevisionId(), "currentRevision");
         }
 
@@ -57,9 +60,8 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
     @Override
     public void deleteEntity(Long entityId) {
         E existingEntity = getEntityRepo().get(entityId);
-        checkNotNull(entityId, existingEntity, getEntityType());
-        existingEntity.setStatus(Status.DELETED);
-        getEntityRepo().update(existingEntity);
+        checkEntityNotNull(entityId, existingEntity, getEntityType());
+        getEntityRepo().delete(entityId);
     }
 
     @Override
@@ -69,6 +71,7 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
 
     @Override
     public T createRevision(T revision) {
+        //TODO: validation
         Long revisionId = getRevisionRepo().create(revision);
         return getRevisionRepo().get(revisionId);
     }
@@ -76,7 +79,7 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
     @Override
     public T updateRevision(Long revisionId, T revision) {
         T existingRevision = getRevisionRepo().get(revisionId);
-        checkNotNull(revisionId, existingRevision, getRevisionType());
+        checkEntityNotNull(revisionId, existingRevision, getRevisionType());
 
         getRevisionRepo().update(existingRevision);
         return getRevisionRepo().get(revisionId);
@@ -86,11 +89,11 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
     @Override
     public void deleteRevision(Long revisionId) {
         T existingRevision = getRevisionRepo().get(revisionId);
-        existingRevision.setStatus(Status.DELETED);
-        getRevisionRepo().update(existingRevision);
+        checkEntityNotNull(revisionId, existingRevision, getRevisionType());
+        getRevisionRepo().delete(revisionId);
     }
 
-    private void checkNotNull(Long entityId, BaseModel entity, String name) {
+    protected void checkEntityNotNull(Long entityId, BaseModel entity, String name) {
         if (entity == null) {
             throw AppErrors.INSTANCE.notFound(name, entityId).exception();
         }
@@ -106,6 +109,39 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
     protected void checkFieldNotEmpty(String field, String fieldName) {
         if (StringUtils.isEmpty(field)) {
             throw AppErrors.INSTANCE.missingField(fieldName).exception();
+        }
+    }
+
+    protected void checkFieldShouldNull(Object field, String fieldName) {
+        if (field != null) {
+            throw AppErrors.INSTANCE.fieldNotCorrect(fieldName, "Should be null.").exception();
+        }
+    }
+
+    protected void checkFieldShouldEmpty(Collection collection, String fieldName) {
+        if (!CollectionUtils.isEmpty(collection)) {
+            throw AppErrors.INSTANCE.fieldNotCorrect(fieldName, "Should be null.").exception();
+        }
+    }
+
+    protected void checkFieldShouldEmpty(Map map, String fieldName) {
+        if (!CollectionUtils.isEmpty(map)) {
+            throw AppErrors.INSTANCE.fieldNotCorrect(fieldName, "Should be null.").exception();
+        }
+    }
+
+    protected void checkFieldShouldEmpty(String field, String fieldName) {
+        if (!StringUtils.isEmpty(field)) {
+            throw AppErrors.INSTANCE.fieldNotCorrect(fieldName, "Should be null.").exception();
+        }
+    }
+
+    protected void validateId(Long expectedId, Long actualId) {
+        if (actualId == null) {
+            throw AppErrors.INSTANCE.missingField("id").exception();
+        }
+        if (!expectedId.equals(actualId)) {
+            throw AppErrors.INSTANCE.fieldNotMatch("id", actualId, expectedId).exception();
         }
     }
 

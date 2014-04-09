@@ -13,12 +13,21 @@ import java.util.List;
  * Price Type.
  */
 public class PriceType {
-    public static final String FREE = "Free";
-    public static final String TIER_PRICING = "TierPricing";
-    public static final String NORMAL_PRICING = "NormalPricing";
+    public static final String FREE = "FREE";
+    public static final String TIERED = "TIERED";
+    public static final String EXPLICIT = "EXPLICIT";
 
     public static List<String> getPriceTypes() {
-        return Arrays.asList(FREE, TIER_PRICING, NORMAL_PRICING);
+        return Arrays.asList(FREE, TIERED, EXPLICIT);
+    }
+
+    public static boolean isValidType(String priceType) {
+        for (String type : getPriceTypes()) {
+            if (type.equals(priceType)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private PriceType() {}

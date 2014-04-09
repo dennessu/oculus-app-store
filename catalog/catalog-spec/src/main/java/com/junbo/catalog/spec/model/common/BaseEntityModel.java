@@ -19,7 +19,7 @@ public abstract class BaseEntityModel extends BaseModel {
     private String name;
 
     // Status: Design, Published, Unpublished, Deleted
-    private String status;
+    private Boolean curated;
     @UserId
     @JsonProperty("developer")
     private Long ownerId;
@@ -32,12 +32,12 @@ public abstract class BaseEntityModel extends BaseModel {
         this.name = name;
     }
 
-    public String getStatus() {
-        return status;
+    public Boolean getCurated() {
+        return curated;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setCurated(Boolean curated) {
+        this.curated = curated;
     }
 
     public Long getOwnerId() {

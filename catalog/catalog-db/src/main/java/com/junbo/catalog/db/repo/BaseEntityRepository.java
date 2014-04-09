@@ -16,4 +16,5 @@ public interface BaseEntityRepository<T extends BaseEntityModel>  {
     Long create(T entity);
     T get(Long entityId);
     Long update(T entity);
+    void delete(Long entityId);
 }

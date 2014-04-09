@@ -6,12 +6,19 @@
 
 package com.junbo.catalog.core.service;
 
+import com.junbo.catalog.core.ItemService;
 import com.junbo.catalog.core.OfferService;
 import com.junbo.catalog.db.repo.OfferRepository;
 import com.junbo.catalog.db.repo.OfferRevisionRepository;
-import com.junbo.catalog.spec.model.offer.Offer;
-import com.junbo.catalog.spec.model.offer.OfferRevision;
+import com.junbo.catalog.spec.error.AppErrors;
+import com.junbo.catalog.spec.model.item.Item;
+import com.junbo.catalog.spec.model.item.ItemType;
+import com.junbo.catalog.spec.model.offer.*;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Offer service implementation.
@@ -21,6 +28,41 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     private OfferRepository offerRepo;
     @Autowired
     private OfferRevisionRepository offerRevisionRepo;
+    @Autowired
+    private ItemService itemService;
+
+    @Override
+    public Offer createEntity(Offer offer) {
+        if (Boolean.TRUE.equals(offer.getCurated())) {
+            throw AppErrors.INSTANCE
+                    .fieldNotCorrect("curated", "Cannot create an offer with curated true.").exception();
+        }
+        validateOffer(offer);
+        return super.createEntity(offer);
+    }
+
+    @Override
+    public Offer updateEntity(Long offerId, Offer offer) {
+        validateId(offerId, offer.getOfferId());
+        validateOffer(offer);
+        return super.updateEntity(offerId, offer);
+    }
+
+    @Override
+    public OfferRevision createRevision(OfferRevision revision) {
+        validateRevision(revision);
+        generateDownloadEntitlement(revision);
+        return super.createRevision(revision);
+    }
+
+    @Override
+    public OfferRevision updateRevision(Long revisionId, OfferRevision revision) {
+        validateId(revisionId, revision.getRevisionId());
+        validateRevision(revision);
+        generateDownloadEntitlement(revision);
+
+        return super.updateRevision(revisionId, revision);
+    }
 
     @Override
     protected OfferRepository getEntityRepo() {
@@ -43,76 +85,42 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     }
 
     private void validateOffer(Offer offer) {
-        //checkFieldNotEmpty(offer.getName(), "name");
-        //checkFieldNotNull(offer.getOwnerId(), "developer");
-    }
-
-    /*@Autowired
-    private OfferRepository offerRepository;
-    @Autowired
-    private OfferDraftRepository offerDraftRepository;
-    @Autowired
-    private ItemService itemService;
-    @Autowired
-    private PriceTierService priceTierService;
-
-    @Override
-    public OfferRepository getEntityRepo() {
-        return offerRepository;
-    }
-
-    @Override
-    public OfferDraftRepository getEntityDraftRepo() {
-        return offerDraftRepository;
-    }
-
-    @Override
-    public Offer create(Offer offer) {
-        validateOffer(offer);
-        checkPrice(offer);
-        generateDownloadEntitlement(offer);
-
-        return super.create(offer);
-    }
-
-    @Override
-    public Offer update(Long offerId, Offer offer) {
-        validateId(offerId, offer);
-        checkPrice(offer);
-        generateDownloadEntitlement(offer);
-
-        return updateEntity(offerId, offer);
-    }
-
-    private void validateOffer(Offer offer) {
+        checkFieldNotNull(offer.getOwnerId(), "offerId");
         checkFieldNotEmpty(offer.getName(), "name");
-        checkFieldNotNull(offer.getOwnerId(), "developer");
+        checkFieldNotNull(offer.getOwnerId(), "publisher");
     }
 
-    private void checkPrice(Offer offer) {
-        if (PriceType.TIER_PRICING.equalsIgnoreCase(offer.getPriceType())) {
-            PriceTier priceTier = priceTierService.getPriceTier(offer.getPriceTier());
-            offer.setPrices(priceTier.getPrices());
-        } else if (PriceType.FREE.equalsIgnoreCase(offer.getPriceType())) {
-            offer.setPriceTier(null);
-            offer.setPrices(null);
+    private void validateRevision(OfferRevision revision) {
+        checkFieldNotNull(revision.getOwnerId(), "publisher");
+        checkFieldNotNull(revision.getOfferId(), "offerId");
+        if (!PriceType.isValidType(revision.getPriceType())) {
+            throw AppErrors.INSTANCE
+                    .fieldNotCorrect("priceType", "Valid price types are 'FREE', 'TIERED', 'EXPLICIT'.").exception();
+        }
+        checkPrice(revision);
+    }
+    private void checkPrice(OfferRevision revision) {
+        if (PriceType.TIERED.equals(revision.getPriceType())) {
+            checkFieldShouldEmpty(revision.getPrices(), "prices");
+        } else if (PriceType.FREE.equals(revision.getPriceType())) {
+            checkFieldShouldNull(revision.getPriceTierId(), "priceTier");
+            checkFieldShouldEmpty(revision.getPrices(), "prices");
+        } else if (PriceType.EXPLICIT.equals(revision.getPriceType())) {
+            checkFieldShouldNull(revision.getPriceTierId(), "priceTier");
         }
     }
 
-    private Event preparePurchaseEvent(Offer offer) {
-        if (offer.getEvents()==null) {
-            offer.setEvents(new ArrayList<Event>());
+    private Event preparePurchaseEvent(OfferRevision revision) {
+        if (revision.getEvents()==null) {
+            revision.setEvents(new HashMap<String, Event>());
         }
-        for (Event event : offer.getEvents()) {
-            if (EventType.PURCHASE.equalsIgnoreCase(event.getName())) {
-                return event;
-            }
+        Event event = revision.getEvents().get(EventType.PURCHASE);
+        if (event == null) {
+            event = new Event();
+            event.setName(EventType.PURCHASE);
+            event.setActions(new ArrayList<Action>());
+            revision.getEvents().put(EventType.PURCHASE, event);
         }
-
-        Event event = new Event();
-        event.setName(EventType.PURCHASE);
-        event.setActions(new ArrayList<Action>());
-        offer.getEvents().add(event);
 
         return event;
     }
@@ -127,12 +135,13 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
         purchaseEvent.getActions().removeAll(autoGeneratedActions);
     }
 
-    private void generateDownloadEntitlement(Offer offer) {
-        Event purchaseEvent = preparePurchaseEvent(offer);
+    private void generateDownloadEntitlement(OfferRevision revision) {
+        Event purchaseEvent = preparePurchaseEvent(revision);
         removeAutoGeneratedActions(purchaseEvent);
 
-        for (ItemEntry itemEntry : offer.getItems()) {
-            Item item = itemService.get(itemEntry.getItemId(), EntityGetOptions.getDefault());
+        for (ItemEntry itemEntry : revision.getItems()) {
+            Item item = itemService.getEntity(itemEntry.getItemId());
+            checkEntityNotNull(itemEntry.getItemId(), item, "item");
             if (ItemType.APP.equalsIgnoreCase(item.getType())) {
                 Action action = new Action();
                 action.setAutoGenerated(true);
@@ -142,9 +151,4 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
             }
         }
     }
-
-    @Override
-    protected String getEntityType() {
-        return "Offer";
-    }*/
 }
