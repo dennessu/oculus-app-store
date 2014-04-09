@@ -81,7 +81,7 @@ class UserCredentialVerifyAttemptResourceImpl implements UserCredentialVerifyAtt
     Promise<Results<UserCredentialVerifyAttempt>> list(UserCredentialAttemptListOptions listOptions) {
         credentialVerifyAttemptValidator.validateForSearch(listOptions).then {
             userLoginAttemptRepository.search(listOptions).then { List<UserCredentialVerifyAttempt> attempts ->
-                def result = new Results<UserCredentialVerifyAttempt>()
+                def result = new Results<UserCredentialVerifyAttempt>(items: [])
 
                 attempts.each { UserCredentialVerifyAttempt attempt ->
                     attempt = userCredentialVerifyAttemptFilter.filterForGet(attempt,
