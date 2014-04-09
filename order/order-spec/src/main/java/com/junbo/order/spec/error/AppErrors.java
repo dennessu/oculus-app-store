@@ -9,6 +9,8 @@ import com.junbo.common.error.AppError;
 import com.junbo.common.error.ErrorDef;
 import com.junbo.common.error.ErrorProxy;
 
+import java.util.UUID;
+
 /**
  * Interface for AppError.
  * HttpStatusCode please refer to http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
@@ -54,8 +56,8 @@ public interface AppErrors {
     AppError orderNotTentative();
 
     @ErrorDef(httpStatusCode = 409, code = ErrorCode.DUPLICATE_TRACKING_GUID,
-            description = "Order duplicate tracking GUID")
-    AppError orderDuplicateTrackingGuid();
+            description = "Order duplicate tracking GUID. orderId: {0}, trackingUuid: {1}")
+    AppError orderDuplicateTrackingGuid(Long orderId, UUID trackingUuid);
 
     @ErrorDef(httpStatusCode = 404, code = UserErrorCode.USER_NOT_FOUND,
             description = "User not found {0}")

@@ -144,9 +144,9 @@ class OrderInternalServiceImpl implements OrderInternalService {
         }
         def order = orderRepository.getOrderByTrackingUuid(trackingUuid)
         if (order != null) {
-            if (order.user.value != userId) {
-                LOGGER.error('name=Dup_Tracking_Uuid')
-                throw AppErrors.INSTANCE.orderDuplicateTrackingGuid().exception()
+             if (order.user.value != userId) {
+                LOGGER.error('name=Dup_Tracking_Uuid_Different_User')
+                throw AppErrors.INSTANCE.orderDuplicateTrackingGuid(0L, trackingUuid).exception()
             }
             completeOrder(order)
         }
