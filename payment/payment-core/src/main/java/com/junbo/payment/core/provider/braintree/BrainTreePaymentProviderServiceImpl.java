@@ -56,6 +56,22 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
     }
 
     @Override
+    public void clonePIResult(PaymentInstrument source, PaymentInstrument target) {
+        target.setAccountNum(source.getAccountNum());
+        target.getCreditCardRequest().setExternalToken(source.getCreditCardRequest().getExternalToken());
+        target.getCreditCardRequest().setType(source.getCreditCardRequest().getType());
+        target.getCreditCardRequest().setCommercial(source.getCreditCardRequest().getCommercial());
+        target.getCreditCardRequest().setDebit(source.getCreditCardRequest().getDebit());
+        target.getCreditCardRequest().setPrepaid(source.getCreditCardRequest().getPrepaid());
+        target.getCreditCardRequest().setIssueCountry(source.getCreditCardRequest().getIssueCountry());
+    }
+
+    @Override
+    public void cloneTransactionResult(PaymentTransaction source, PaymentTransaction target) {
+        target.setExternalToken(source.getExternalToken());
+    }
+
+    @Override
     public Promise<PaymentInstrument> add(PaymentInstrument request) {
         String expireDate = request.getCreditCardRequest().getExpireDate();
         String[] tokens = expireDate.split("-");
@@ -106,7 +122,8 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
     }
 
     @Override
-    public Promise<Response> delete(String token) {
+    public Promise<Response> delete(PaymentInstrument pi) {
+        String token = pi.getCreditCardRequest().getExternalToken();
         Result<CreditCard> result = null;
         LOGGER.info("delete credit card :" + token);
         try{
@@ -121,7 +138,8 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
     }
 
     @Override
-    public Promise<PaymentTransaction> authorize(String piToken, PaymentTransaction paymentRequest) {
+    public Promise<PaymentTransaction> authorize(PaymentInstrument pi, PaymentTransaction paymentRequest) {
+        String piToken = pi.getCreditCardRequest().getExternalToken();
         TransactionRequest request = getTransactionRequest(piToken, paymentRequest);
         Result<Transaction> result = null;
         LOGGER.info("authorize credit card :" + piToken);
@@ -161,7 +179,8 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
     }
 
     @Override
-    public Promise<PaymentTransaction> charge(String piToken, PaymentTransaction paymentRequest) {
+    public Promise<PaymentTransaction> charge(PaymentInstrument pi, PaymentTransaction paymentRequest) {
+        String piToken = pi.getCreditCardRequest().getExternalToken();
         TransactionRequest request = getTransactionRequest(piToken, paymentRequest);
         request.options()
                 .submitForSettlement(true)
@@ -228,7 +247,7 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
     }
 
     @Override
-    public List<PaymentTransaction> getByOrderId(String orderId) {
+    public List<PaymentTransaction> getByBillingRefId(String orderId) {
         ResourceCollection<Transaction> collection = null;
         try{
             TransactionSearchRequest request = new TransactionSearchRequest()
