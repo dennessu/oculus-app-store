@@ -11,17 +11,16 @@ import com.junbo.identity.data.entity.domaindata.SecurityQuestionEntity;
 import com.junbo.identity.data.entity.group.GroupEntity;
 import com.junbo.identity.data.entity.user.*;
 import com.junbo.identity.spec.model.domaindata.SecurityQuestion;
-import com.junbo.identity.spec.model.users.*;
 import com.junbo.identity.spec.model.users.User;
-import com.junbo.identity.spec.v1.model.*;
 import com.junbo.identity.spec.model.users.UserDevice;
 import com.junbo.identity.spec.model.users.UserEmail;
 import com.junbo.identity.spec.model.users.UserGroup;
+import com.junbo.identity.spec.model.users.*;
 import com.junbo.identity.spec.model.users.UserName;
 import com.junbo.identity.spec.model.users.UserOptin;
 import com.junbo.identity.spec.model.users.UserPhoneNumber;
 import com.junbo.identity.spec.model.users.UserSecurityQuestion;
-import com.junbo.identity.spec.v1.model.Group;
+import com.junbo.identity.spec.v1.model.*;
 import com.junbo.oom.core.Mapper;
 import com.junbo.oom.core.Mapping;
 import com.junbo.oom.core.MappingContext;
@@ -96,4 +95,11 @@ public interface ModelMapper {
 
     Tos toTos(TosEntity entity, MappingContext context);
     TosEntity toTos(Tos entity, MappingContext context);
+
+
+    UserPassword credentialToPassword(UserCredential userCredential);
+    UserCredential passwordToCredential(UserPassword password);
+
+    UserPin credentialToPin(UserCredential userCredential);
+    UserCredential pinToCredential(UserPin userPin);
 }

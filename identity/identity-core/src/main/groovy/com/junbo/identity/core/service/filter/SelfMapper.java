@@ -79,4 +79,7 @@ public interface SelfMapper {
 
     Tos filterTos(Tos tos, MappingContext context);
     Tos mergeTos(Tos source, Tos base, MappingContext context);
+
+    UserCredential filterUserCredential(UserCredential userCredential, MappingContext context);
+    UserCredential mergeUserCredential(UserCredential source, UserCredential base, MappingContext context);
 }

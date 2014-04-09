@@ -15,4 +15,6 @@ interface UserPasswordValidator {
     Promise<UserPassword> validateForGet(UserId userId, UserPasswordId userPasswordId)
     Promise<Void> validateForSearch(UserPasswordListOptions options)
     Promise<Void> validateForCreate(UserId userId, UserPassword userPassword)
+
+    Promise<Void> validateForOldPassword(UserId userId, String oldPassword)
 }

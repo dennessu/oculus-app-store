@@ -42,6 +42,7 @@ public class UserCredential extends ResourceMeta implements Identifiable<UserCre
 
     public void setId(UserCredentialId id) {
         this.id = id;
+        support.setPropertyAssigned("id");
     }
 
     public UserId getUserId() {
@@ -50,6 +51,8 @@ public class UserCredential extends ResourceMeta implements Identifiable<UserCre
 
     public void setUserId(UserId userId) {
         this.userId = userId;
+        support.setPropertyAssigned("user");
+        support.setPropertyAssigned("userId");
     }
 
     public String getOldValue() {
@@ -58,6 +61,7 @@ public class UserCredential extends ResourceMeta implements Identifiable<UserCre
 
     public void setOldValue(String oldValue) {
         this.oldValue = oldValue;
+        support.setPropertyAssigned("oldValue");
     }
 
     public String getValue() {
@@ -66,6 +70,7 @@ public class UserCredential extends ResourceMeta implements Identifiable<UserCre
 
     public void setValue(String value) {
         this.value = value;
+        support.setPropertyAssigned("value");
     }
 
     public String getType() {
@@ -74,6 +79,7 @@ public class UserCredential extends ResourceMeta implements Identifiable<UserCre
 
     public void setType(String type) {
         this.type = type;
+        support.setPropertyAssigned("type");
     }
 
     public Date getExpiresBy() {
@@ -82,6 +88,7 @@ public class UserCredential extends ResourceMeta implements Identifiable<UserCre
 
     public void setExpiresBy(Date expiresBy) {
         this.expiresBy = expiresBy;
+        support.setPropertyAssigned("expiresBy");
     }
 
     public Boolean getChangeAtNextLogin() {
@@ -90,5 +97,6 @@ public class UserCredential extends ResourceMeta implements Identifiable<UserCre
 
     public void setChangeAtNextLogin(Boolean changeAtNextLogin) {
         this.changeAtNextLogin = changeAtNextLogin;
+        support.setPropertyAssigned("expiresBy");
     }
 }

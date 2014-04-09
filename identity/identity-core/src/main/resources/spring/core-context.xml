@@ -518,7 +518,7 @@
         </property>
     </bean>
 
-    <bean id="" class="com.junbo.identity.core.service.filter.TosFilter">
+    <bean id="tosFilter" class="com.junbo.identity.core.service.filter.TosFilter">
         <property name="readableProperties">
             <list>
                 <value>id</value>
@@ -536,6 +536,36 @@
                 <value>locale</value>
                 <value>title</value>
                 <value>content</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForUpdate">
+            <list></list>
+        </property>
+    </bean>
+
+    <bean id="userCredentialFilter" class="com.junbo.identity.core.service.filter.UserCredentialFilter">
+        <property name="readableProperties">
+            <list>
+                <value>id</value>
+                <value>userId</value>
+                <value>type</value>
+                <value>expiresBy</value>
+                <value>changeAtNextLogin</value>
+                <value>resourceAge</value>
+                <value>createdTime</value>
+                <value>updatedTime</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForCreate">
+            <list>
+                <value>userId</value>
+                <value>type</value>
+                <value>oldValue</value>
+                <value>value</value>
+                <value>expiresBy</value>
+                <value>changeAtNextLogin</value>
             </list>
         </property>
 
