@@ -23,8 +23,8 @@ import com.junbo.test.common.property.Component;
 import com.junbo.test.common.property.Priority;
 import com.junbo.test.common.property.Property;
 import com.junbo.test.common.property.Status;
-import org.testng.annotations.Test;
 import org.testng.Assert;
+import org.testng.annotations.Test;
 
 import java.util.List;
 
@@ -70,6 +70,8 @@ public class DeveloperManager extends TestClass {
         developerEntitlement.setUserId(Master.getInstance().getUser(developerUser).getId().getValue());
         developerEntitlement.setDeveloperId(Master.getInstance().getUser(partnerUser).getId().getValue());
         developerEntitlement.setType(entitlementType);
+
+        logger.LogSample("grant Developer entitlement for user");
         String entitlementId = es.grantEntitlement(developerEntitlement);
 
         //check user1's entitlement to verify developer registration
@@ -85,6 +87,7 @@ public class DeveloperManager extends TestClass {
         String offerName = "defaultOffer";
         Offer offerToPost = os.prepareOfferEntity(offerName, EnumHelper.CatalogItemType.APP);
         offerToPost.setOwnerId(Master.getInstance().getUser(developerUser).getId().getValue());
+        logger.LogSample("post an offer for a developer");
         String offerId = os.postOffer(offerToPost);
 
         //check user1's offer ownerId
