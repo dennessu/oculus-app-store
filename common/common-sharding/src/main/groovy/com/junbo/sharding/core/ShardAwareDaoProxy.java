@@ -11,6 +11,7 @@ import com.junbo.sharding.IdGeneratorFacade;
 import com.junbo.sharding.core.annotations.SeedId;
 import com.junbo.sharding.core.annotations.SeedParam;
 import com.junbo.sharding.util.Helper;
+import com.junbo.common.util.Utils;
 import junit.framework.Assert;
 import org.springframework.core.annotation.AnnotationUtils;
 
@@ -92,8 +93,8 @@ public class ShardAwareDaoProxy implements InvocationHandler {
                     for(Field idField : idClazz.getDeclaredFields()) {
                         Id idAnnotation = idField.getAnnotation(Id.class);
                         if (idAnnotation != null) {
-                            Method idGetMethod = Helper.tryObtainGetterMethod(leafClazz, idField.getName());
-                            Method idSetMethod = Helper.tryObtainSetterMethod(leafClazz, idField.getName());
+                            Method idGetMethod = Utils.tryObtainGetterMethod(leafClazz, idField.getName());
+                            Method idSetMethod = Utils.tryObtainSetterMethod(leafClazz, idField.getName());
 
                             if (idGetMethod == null || idSetMethod == null) {
                                 throw new RuntimeException("@Id annotation must be placed with Long type field," +
@@ -110,7 +111,7 @@ public class ShardAwareDaoProxy implements InvocationHandler {
                                     for(Field seedField : seedIdClazz.getDeclaredFields()) {
                                         SeedId seedIdAnnotation = seedField.getAnnotation(SeedId.class);
                                         if (seedIdAnnotation != null) {
-                                            Method seedGetMethod = Helper.tryObtainGetterMethod(leafClazz,
+                                            Method seedGetMethod = Utils.tryObtainGetterMethod(leafClazz,
                                                     seedField.getName());
                                             if (seedGetMethod == null) {
                                                 throw new RuntimeException("@SeedId annotation must be placed with " +

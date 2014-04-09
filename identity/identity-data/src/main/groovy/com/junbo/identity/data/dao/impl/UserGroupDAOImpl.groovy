@@ -7,11 +7,14 @@ package com.junbo.identity.data.dao.impl
 import com.junbo.identity.data.dao.UserGroupDAO
 import com.junbo.identity.data.entity.user.UserGroupEntity
 import com.junbo.identity.spec.options.list.UserGroupListOptions
+import com.junbo.identity.spec.v1.option.list.UserGroupListOptions
 import groovy.transform.CompileStatic
 import org.hibernate.Criteria
 import org.hibernate.Session
 import org.hibernate.criterion.Order
 import org.hibernate.criterion.Restrictions
+import org.springframework.util.CollectionUtils
+
 /**
  * Created by liangfu on 3/17/14.
  */
@@ -25,7 +28,7 @@ class UserGroupDAOImpl extends BaseDAO implements UserGroupDAO {
         session.save(entity)
         session.flush()
 
-        return get(entity.id)
+        return get((Long)entity.id)
     }
 
     @Override
@@ -34,7 +37,7 @@ class UserGroupDAOImpl extends BaseDAO implements UserGroupDAO {
         session.merge(entity)
         session.flush()
 
-        return get(entity.id)
+        return get((Long)entity.id)
     }
 
     @Override
@@ -57,6 +60,30 @@ class UserGroupDAOImpl extends BaseDAO implements UserGroupDAO {
             criteria.setFirstResult(getOption.offset)
         }
         return criteria.list()
+    }
+
+    @Override
+    List<UserGroupEntity> findByGroupId(Long groupId, UserGroupListOptions getOption) {
+        UserGroupEntity example = new UserGroupEntity()
+        example.setGroupId(groupId)
+
+        def viewQuery = viewQueryFactory.from(example)
+        if (viewQuery != null) {
+            def ids = viewQuery.list()
+
+            if (CollectionUtils.isEmpty(ids)) {
+                return new ArrayList<UserGroupEntity>()
+            }
+
+            def result = []
+            ids.each { Long id ->
+                result.add(get(id))
+            }
+
+            return result
+        }
+
+        return new ArrayList<UserGroupEntity>()
     }
 
     @Override

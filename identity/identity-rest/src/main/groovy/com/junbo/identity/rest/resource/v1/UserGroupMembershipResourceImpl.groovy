@@ -1,22 +1,17 @@
-/*
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
- *
- * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
- */
-package com.junbo.identity.rest.resource
+package com.junbo.identity.rest.resource.v1
+
 import com.junbo.common.id.Id
 import com.junbo.common.id.UserGroupId
-import com.junbo.common.id.UserId
 import com.junbo.common.model.Results
 import com.junbo.identity.core.service.Created201Marker
 import com.junbo.identity.core.service.filter.UserGroupFilter
 import com.junbo.identity.core.service.validator.UserGroupValidator
 import com.junbo.identity.data.repository.UserGroupRepository
 import com.junbo.identity.spec.error.AppErrors
-import com.junbo.identity.spec.model.users.UserGroup
-import com.junbo.identity.spec.options.entity.UserGroupGetOptions
-import com.junbo.identity.spec.options.list.UserGroupListOptions
-import com.junbo.identity.spec.resource.UserGroupResource
+import com.junbo.identity.spec.v1.model.UserGroup
+import com.junbo.identity.spec.v1.option.list.UserGroupListOptions
+import com.junbo.identity.spec.v1.option.model.UserGroupGetOptions
+import com.junbo.identity.spec.v1.resource.UserGroupMembershipResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
@@ -24,17 +19,17 @@ import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 
-import javax.ws.rs.BeanParam
 import javax.ws.rs.ext.Provider
+
 /**
- * Created by liangfu on 3/14/14.
+ * Created by liangfu on 4/9/14.
  */
 @Provider
 @Component
 @Scope('prototype')
 @Transactional
 @CompileStatic
-class UserGroupResourceImpl implements UserGroupResource {
+class UserGroupMembershipResourceImpl implements UserGroupMembershipResource {
 
     @Autowired
     private UserGroupRepository userGroupRepository
@@ -49,15 +44,14 @@ class UserGroupResourceImpl implements UserGroupResource {
     private UserGroupValidator userGroupValidator
 
     @Override
-    Promise<UserGroup> create(UserId userId, UserGroup userGroup) {
-
+    Promise<UserGroup> create(UserGroup userGroup) {
         if (userGroup == null) {
             throw new IllegalArgumentException('userGroup is null')
         }
 
         userGroup = userGroupFilter.filterForCreate(userGroup)
 
-        return userGroupValidator.validateForCreate(userId, userGroup).then {
+        userGroupValidator.validateForCreate(userGroup).then {
             userGroupRepository.create(userGroup).then { UserGroup newUserGroup ->
                 created201Marker.mark((Id)newUserGroup.id)
 
@@ -68,42 +62,21 @@ class UserGroupResourceImpl implements UserGroupResource {
     }
 
     @Override
-    Promise<UserGroup> put(UserId userId, UserGroupId userGroupId, UserGroup userGroup) {
-
-        if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
+    Promise<UserGroup> get(UserGroupId userGroupId, UserGroupGetOptions getOptions) {
+        if (getOptions == null) {
+            throw new IllegalArgumentException('getOptions is null')
         }
 
-        if (userGroupId == null) {
-            throw new IllegalArgumentException('userGroupId is null')
-        }
+        userGroupValidator.validateForGet(userGroupId).then { UserGroup newUserGroup ->
+            newUserGroup = userGroupFilter.filterForGet(newUserGroup,
+                    getOptions.properties?.split(',') as List<String>)
 
-        if (userGroup == null) {
-            throw new IllegalArgumentException('userGroup is null')
-        }
-
-        return userGroupRepository.get(userGroupId).then { UserGroup oldUserGroup ->
-            if (oldUserGroup == null) {
-                throw AppErrors.INSTANCE.userGroupNotFound(userGroupId).exception()
-            }
-
-            userGroup = userGroupFilter.filterForPut(userGroup, oldUserGroup)
-
-            userGroupValidator.validateForUpdate(userId, userGroupId, userGroup, oldUserGroup).then {
-                userGroupRepository.update(userGroup).then { UserGroup newUserGroup ->
-                    newUserGroup = userGroupFilter.filterForGet(newUserGroup, null)
-                    return Promise.pure(newUserGroup)
-                }
-            }
+            return Promise.pure(newUserGroup)
         }
     }
 
     @Override
-    Promise<UserGroup> patch(UserId userId, UserGroupId userGroupId, UserGroup userGroup) {
-        if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
-        }
-
+    Promise<UserGroup> patch(UserGroupId userGroupId, UserGroup userGroup) {
         if (userGroupId == null) {
             throw new IllegalArgumentException('userGroupId is null')
         }
@@ -119,7 +92,7 @@ class UserGroupResourceImpl implements UserGroupResource {
 
             userGroup = userGroupFilter.filterForPatch(userGroup, oldUserGroup)
 
-            userGroupValidator.validateForUpdate(userId, userGroupId, userGroup, oldUserGroup).then {
+            userGroupValidator.validateForUpdate(userGroupId, userGroup, oldUserGroup).then {
 
                 userGroupRepository.update(userGroup).then { UserGroup newUserGroup ->
                     newUserGroup = userGroupFilter.filterForGet(newUserGroup, null)
@@ -130,9 +103,34 @@ class UserGroupResourceImpl implements UserGroupResource {
     }
 
     @Override
-    Promise<UserGroup> delete(UserId userId, UserGroupId userGroupId) {
+    Promise<UserGroup> put(UserGroupId userGroupId, UserGroup userGroup) {
+        if (userGroupId == null) {
+            throw new IllegalArgumentException('userGroupId is null')
+        }
 
-        return userGroupValidator.validateForGet(userId, userGroupId).then {
+        if (userGroup == null) {
+            throw new IllegalArgumentException('userGroup is null')
+        }
+
+        return userGroupRepository.get(userGroupId).then { UserGroup oldUserGroup ->
+            if (oldUserGroup == null) {
+                throw AppErrors.INSTANCE.userGroupNotFound(userGroupId).exception()
+            }
+
+            userGroup = userGroupFilter.filterForPut(userGroup, oldUserGroup)
+
+            userGroupValidator.validateForUpdate(userGroupId, userGroup, oldUserGroup).then {
+                userGroupRepository.update(userGroup).then { UserGroup newUserGroup ->
+                    newUserGroup = userGroupFilter.filterForGet(newUserGroup, null)
+                    return Promise.pure(newUserGroup)
+                }
+            }
+        }
+    }
+
+    @Override
+    Promise<Void> delete(UserGroupId userGroupId) {
+        return userGroupValidator.validateForGet(userGroupId).then {
             userGroupRepository.delete(userGroupId)
 
             return Promise.pure(null)
@@ -140,25 +138,10 @@ class UserGroupResourceImpl implements UserGroupResource {
     }
 
     @Override
-    Promise<UserGroup> get(UserId userId, UserGroupId userGroupId, @BeanParam UserGroupGetOptions getOptions) {
-        if (getOptions == null) {
-            throw new IllegalArgumentException('getOptions is null')
-        }
-
-        userGroupValidator.validateForGet(userId, userGroupId).then { UserGroup newUserGroup ->
-            newUserGroup = userGroupFilter.filterForGet(newUserGroup, getOptions.properties?.split(',') as List<String>)
-
-            return Promise.pure(newUserGroup)
-        }
-    }
-
-    @Override
-    Promise<Results<UserGroup>> list(UserId userId, @BeanParam UserGroupListOptions listOptions) {
-
+    Promise<Results<UserGroup>> list(UserGroupListOptions listOptions) {
         if (listOptions == null) {
             throw new IllegalArgumentException('listOptions is null')
         }
-        listOptions.setUserId(userId)
 
         return userGroupValidator.validateForSearch(listOptions).then {
             userGroupRepository.search(listOptions).then { List<UserGroup> userGroupList ->

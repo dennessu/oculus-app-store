@@ -32,6 +32,8 @@ public class UserGroup extends ResourceMeta implements Identifiable<UserGroupId>
 
     public void setId(UserGroupId id) {
         this.id = id;
+        support.setPropertyAssigned("self");
+        support.setPropertyAssigned("id");
     }
 
     public UserId getUserId() {
@@ -40,6 +42,8 @@ public class UserGroup extends ResourceMeta implements Identifiable<UserGroupId>
 
     public void setUserId(UserId userId) {
         this.userId = userId;
+        support.setPropertyAssigned("userId");
+        support.setPropertyAssigned("user");
     }
 
     public GroupId getGroupId() {
@@ -48,5 +52,7 @@ public class UserGroup extends ResourceMeta implements Identifiable<UserGroupId>
 
     public void setGroupId(GroupId groupId) {
         this.groupId = groupId;
+        support.setPropertyAssigned("groupId");
+        support.setPropertyAssigned("group");
     }
 }

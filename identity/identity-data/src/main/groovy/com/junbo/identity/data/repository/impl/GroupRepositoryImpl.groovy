@@ -8,13 +8,9 @@ package com.junbo.identity.data.repository.impl
 
 import com.junbo.common.id.GroupId
 import com.junbo.identity.data.dao.GroupDAO
-import com.junbo.identity.data.dao.GroupUserDAO
 import com.junbo.identity.data.entity.group.GroupEntity
-import com.junbo.identity.data.entity.group.GroupUserEntity
-import com.junbo.identity.data.entity.user.UserGroupEntity
 import com.junbo.identity.data.mapper.ModelMapper
 import com.junbo.identity.data.repository.GroupRepository
-import com.junbo.identity.spec.model.users.UserGroup
 import com.junbo.identity.spec.v1.model.Group
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oom.core.MappingContext
@@ -32,10 +28,6 @@ class GroupRepositoryImpl implements GroupRepository {
     @Autowired
     @Qualifier('groupDAO')
     private GroupDAO groupDAO
-
-    @Autowired
-    @Qualifier('groupUserDAO')
-    private GroupUserDAO groupUserDAO
 
     @Autowired
     private ModelMapper modelMapper
@@ -70,22 +62,5 @@ class GroupRepositoryImpl implements GroupRepository {
             return Promise.pure(null)
         }
         return get(new GroupId((Long)groupEntity.id))
-    }
-
-    @Override
-    Promise<List<UserGroup>> searchByGroupId(GroupId groupId) {
-        def list = groupUserDAO.findByGroupId(groupId.value)
-
-        def results = []
-        list.each { GroupUserEntity entity ->
-            UserGroupEntity userGroup = new UserGroupEntity(
-                groupId: entity.groupId,
-                userId:entity.userId
-            )
-
-            results.add(modelMapper.toUserGroup(userGroup, new MappingContext()))
-        }
-
-        return Promise.pure(results)
     }
 }

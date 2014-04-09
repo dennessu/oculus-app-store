@@ -69,7 +69,16 @@ class UserDeviceValidatorImpl implements UserDeviceValidator {
             throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
         }
 
-        return Promise.pure(null)
+        return userDeviceRepository.search(new UserDeviceListOptions(
+                userId: userDevice.userId,
+                deviceId: userDevice.deviceId
+        )).then { List<UserDevice> existing ->
+            if (!CollectionUtils.isEmpty(existing)) {
+                throw AppErrors.INSTANCE.fieldDuplicate('deviceId').exception()
+            }
+
+            return Promise.pure(null)
+        }
     }
 
     @Override

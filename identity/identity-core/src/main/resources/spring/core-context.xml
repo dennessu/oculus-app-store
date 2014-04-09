@@ -180,6 +180,7 @@
 
         <property name="writablePropertiesForCreate">
             <list>
+                <value>userId</value>
                 <value>groupId</value>
             </list>
         </property>
