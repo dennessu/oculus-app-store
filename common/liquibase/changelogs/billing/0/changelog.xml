@@ -43,6 +43,7 @@
 			CREATE INDEX balance_due_date_idx ON balance (due_date);
 			CREATE INDEX balance_is_async_charge_idx ON balance (is_async_charge);
 			CREATE INDEX balance_original_balance_id_idx ON balance (original_balance_id);
+			CREATE INDEX balance_created_date_idx ON balance (created_date);
 
 			CREATE TABLE balance_event (
 				event_id BIGINT NOT NULL,
