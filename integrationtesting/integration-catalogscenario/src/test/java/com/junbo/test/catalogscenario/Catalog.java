@@ -124,7 +124,7 @@ public class Catalog extends TestClass {
 
         //Get the item by its id(other conditions in paraMap are empty)
         logger.LogSample("Get the item by its Id");
-        String itemGetId = itemServiceAPI.getItem(itemId, paraMap);
+        String itemGetId = itemServiceAPI.getItem(itemId, null);
         Assert.assertNotNull(Master.getInstance().getItem(itemGetId));
 
         //Get the item(s) by some conditions: by status firstly
@@ -142,9 +142,8 @@ public class Catalog extends TestClass {
 
         //Get all items without any search condition
         logger.LogSample("Get all items(without any search condition)");
-        paraMap.clear();
         itemResultList.clear();
-        itemResultList = itemServiceAPI.getItem(paraMap);
+        itemResultList = itemServiceAPI.getItem(null);
         Assert.assertNotNull(itemResultList);
 
         //Update item to released
@@ -190,7 +189,7 @@ public class Catalog extends TestClass {
 
         //Get the offer by its id(other conditions in paraMap are empty)
         logger.LogSample("Get the offer by its id");
-        String offerGetId = offerServiceAPI.getOffer(offerId, paraMap);
+        String offerGetId = offerServiceAPI.getOffer(offerId, null);
         Assert.assertNotNull(Master.getInstance().getOffer(offerGetId));
 
         //Get the offer(s) by some conditions: by status firstly
@@ -208,9 +207,8 @@ public class Catalog extends TestClass {
 
         //Get all offers without any search condition
         logger.LogSample("Get all offers without any search conditions");
-        paraMap.clear();
         offerResultList.clear();
-        offerResultList = offerServiceAPI.getOffer(paraMap);
+        offerResultList = offerServiceAPI.getOffer(null);
         Assert.assertNotNull(offerResultList);
 
         //Update offer to released

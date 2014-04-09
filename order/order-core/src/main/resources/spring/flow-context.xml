@@ -21,6 +21,10 @@
         <property name="orderActionType" value="AUTHORIZE"/>
     </bean>
 
+    <bean id="physicalSettleAction" class="com.junbo.order.core.impl.orderaction.PhysicalSettleAction">
+        <property name="orderActionType" value="PARTIAL_CHARGE"/>
+    </bean>
+
     <bean id="fulfillmentAction" class="com.junbo.order.core.impl.orderaction.FulfillmentAction">
         <property name="orderActionType" value="FULFILL"/>
     </bean>

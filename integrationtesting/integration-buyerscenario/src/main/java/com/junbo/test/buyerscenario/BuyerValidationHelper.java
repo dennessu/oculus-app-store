@@ -6,7 +6,6 @@
 package com.junbo.test.buyerscenario;
 
 import com.junbo.cart.spec.model.item.OfferItem;
-import com.junbo.common.id.OrderId;
 import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.common.id.ShippingAddressId;
 import com.junbo.common.id.UserId;
@@ -99,8 +98,7 @@ public class BuyerValidationHelper extends BaseValidationHelper {
         String resultString = dbHelper.executeScalar(sql, DBHelper.DBName.EMAIL);
 
         verifyEqual(resultString.indexOf("OrderConfirmation") >= 0, true, "Verify email type");
-        verifyEqual(resultString.indexOf(
-                IdConverter.hexStringToId(OrderId.class, orderId).toString()) >= 0, true, "verify order Id");
+        verifyEqual(resultString.indexOf(orderId) >= 0, true, "verify order Id");
         verifyEqual(resultString.indexOf("SUCCEED") >= 0, true, "Verify email sent status");
         verifyEqual(resultString.indexOf(
                 Master.getInstance().getUser(uid).getUserName()) >= 0, true, "verify email receipt correct");
