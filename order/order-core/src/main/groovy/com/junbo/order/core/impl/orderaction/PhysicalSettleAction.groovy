@@ -1,5 +1,5 @@
 package com.junbo.order.core.impl.orderaction
-import com.junbo.billing.spec.enums.BalanceStatus
+
 import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.model.Balance
 import com.junbo.langur.core.promise.Promise
@@ -11,7 +11,6 @@ import com.junbo.order.core.annotation.OrderEventAwareBefore
 import com.junbo.order.core.impl.common.BillingEventBuilder
 import com.junbo.order.core.impl.common.CoreBuilder
 import com.junbo.order.core.impl.common.CoreUtils
-import com.junbo.order.core.impl.internal.OrderInternalService
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.error.AppErrors
@@ -22,12 +21,13 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.transaction.annotation.Transactional
+
 /**
- * Auth Settle Action.
+ * Settle Action for Physical Goods.
  */
 @CompileStatic
 @TypeChecked
-class AuthSettleAction extends BaseOrderEventAwareAction {
+class PhysicalSettleAction extends BaseOrderEventAwareAction {
     @Autowired
     @Qualifier('orderFacadeContainer')
     FacadeContainer facadeContainer
@@ -35,41 +35,26 @@ class AuthSettleAction extends BaseOrderEventAwareAction {
     OrderRepository orderRepository
     @Autowired
     OrderServiceContextBuilder orderServiceContextBuilder
-    @Autowired
-    OrderInternalService orderInternalService
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AuthSettleAction)
+    private static final Logger LOGGER = LoggerFactory.getLogger(PhysicalSettleAction)
 
     @Override
-    @OrderEventAwareBefore(action = 'AuthSettleAction')
-    @OrderEventAwareAfter(action = 'AuthSettleAction')
+    @OrderEventAwareBefore(action = 'PhysicalSettleAction')
+    @OrderEventAwareAfter(action = 'PhysicalSettleAction')
     @Transactional
     Promise<ActionResult> execute(ActionContext actionContext) {
         def context = ActionUtils.getOrderActionContext(actionContext)
-        orderInternalService.markSettlement(context.orderServiceContext.order)
-        Balance balance = CoreBuilder.buildBalance(context.orderServiceContext.order, BalanceType.DELAY_DEBIT)
+        Balance balance = CoreBuilder.buildPartialChargeBalance(context.orderServiceContext.order, BalanceType.DEBIT)
         Promise promise = facadeContainer.billingFacade.createBalance(balance)
-        promise.syncRecover { Throwable throwable ->
-            LOGGER.error('name=Order_AuthSettle_Error', throwable)
+        promise.syncRecover {  Throwable throwable ->
+            LOGGER.error('name=Order_PhysicalSettle_Error', throwable)
             context.orderServiceContext.order.tentative = true
             throw AppErrors.INSTANCE.
                     billingConnectionError(CoreUtils.toAppErrors(throwable)).exception()
         }.then { Balance resultBalance ->
-            context.orderServiceContext.order.tentative = true
-            if (resultBalance == null) {
-                LOGGER.error('name=Order_AuthSettle_Error_Balance_Null')
-                throw AppErrors.INSTANCE.
-                        billingConnectionError().exception()
-            }
-            if (resultBalance.status != BalanceStatus.PENDING_CAPTURE.name()) {
-                LOGGER.error('name=Order_AuthSettle_Failed')
-                throw AppErrors.INSTANCE.
-                        billingChargeFailed().exception()
-            }
-            context.orderServiceContext.order.tentative = false
             def billingEvent = BillingEventBuilder.buildBillingEvent(resultBalance)
+            orderRepository.createBillingEvent(context.orderServiceContext.order.id.value, billingEvent)
             orderServiceContextBuilder.refreshBalances(context.orderServiceContext).syncThen {
-                // TODO: save order level tax
                 return CoreBuilder.buildActionResultForOrderEventAwareAction(context, billingEvent.status)
             }
         }
