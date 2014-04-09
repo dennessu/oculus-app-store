@@ -28,6 +28,9 @@
         <property name="brainTreeResource" ref="brainTreeClient"/>
     </bean>
 
+    <bean id="walletProviderService" class="com.junbo.payment.core.provider.ewallet.EWalletProviderServiceImpl">
+    </bean>
+
     <bean id="providerRoutingService" class="com.junbo.payment.core.provider.impl.ProviderRoutingServiceImpl"/>
 
     <!-- regiester brainTreeRestProviderService for async and brainTreePaymentProviderService for sync call -->
@@ -35,6 +38,7 @@
         <property name="registry">
             <util:map id="handlerRegistryMap">
                 <entry key="BrainTree" value-ref="brainTreeRestProviderService"/>
+                <entry key="Wallet" value-ref="walletProviderService"/>
             </util:map>
         </property>
     </bean>
