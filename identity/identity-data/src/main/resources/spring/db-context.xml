@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
-       xmlns:context="http://www.springframework.org/schema/context"
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+       xmlns="http://www.springframework.org/schema/beans"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
        ">
 
@@ -29,7 +29,6 @@
     <bean id="userDeviceDAO" class="com.junbo.identity.data.dao.impl.UserDeviceDAOImpl" parent="baseDAO" />
     <bean id="userEmailDAO" class="com.junbo.identity.data.dao.impl.UserEmailDAOImpl" parent="baseDAO" />
     <bean id="userGroupDAO" class="com.junbo.identity.data.dao.impl.UserGroupDAOImpl" parent="baseDAO" />
-    <bean id="groupUserDAO" class="com.junbo.identity.data.dao.impl.GroupUserDAOImpl" parent="baseDAO" />
     <bean id="userCredentialVerifyAttemptDAO" class="com.junbo.identity.data.dao.impl.UserCredentialVerifyAttemptDAOImpl" parent="baseDAO" />
     <bean id="userOptinDAO" class="com.junbo.identity.data.dao.impl.UserOptinDAOImpl" parent="baseDAO" />
     <bean id="userPasswordDAO" class="com.junbo.identity.data.dao.impl.UserPasswordDAOImpl" parent="baseDAO" />
@@ -77,6 +76,7 @@
                 <bean class="com.junbo.identity.data.view.UserEmailView" />
                 <bean class="com.junbo.identity.data.view.DeviceExternalRefView" />
                 <bean class="com.junbo.identity.data.view.UserDeviceIdView" />
+                <bean class="com.junbo.identity.data.view.UserGroupIdView"/>
                 <bean class="com.junbo.identity.data.view.RoleNameView"/>
                 <bean class="com.junbo.identity.data.view.RoleAssignmentRoleIdAssigneeView"/>
             </list>
