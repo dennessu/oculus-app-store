@@ -36,5 +36,5 @@ public interface UserCredentialResource {
     @GET
     @Path("/credentials")
     Promise<Results<UserCredential>> list(@PathParam("userId") UserId userId,
-                                          UserCredentialListOptions listOptions);
+                                          @BeanParam UserCredentialListOptions listOptions);
 }

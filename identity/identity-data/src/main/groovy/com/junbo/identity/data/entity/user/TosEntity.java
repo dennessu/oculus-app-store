@@ -3,36 +3,41 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.identity.spec.v1.model;
+package com.junbo.identity.data.entity.user;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.junbo.common.id.TosId;
-import com.junbo.common.util.Identifiable;
-import com.junbo.identity.spec.model.users.ResourceMeta;
+import com.junbo.identity.data.entity.common.ResourceMetaEntity;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
- * Created by liangfu on 4/3/14.
+ * Created by liangfu on 4/9/14.
  */
-public class Tos extends ResourceMeta implements Identifiable<TosId> {
+@Entity
+@Table(name = "tos")
+public class TosEntity extends ResourceMetaEntity {
 
-    @JsonProperty("self")
-    private TosId id;
+    @Id
+    @Column(name = "id")
+    private Long id;
 
+    @Column(name = "locale")
     private String locale;
 
+    @Column(name = "title")
     private String title;
 
+    @Column(name = "content")
     private String content;
 
-    @Override
-    public TosId getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(TosId id) {
+    public void setId(Long id) {
         this.id = id;
-        support.setPropertyAssigned("id");
-        support.setPropertyAssigned("self");
     }
 
     public String getLocale() {
@@ -41,7 +46,6 @@ public class Tos extends ResourceMeta implements Identifiable<TosId> {
 
     public void setLocale(String locale) {
         this.locale = locale;
-        support.setPropertyAssigned("locale");
     }
 
     public String getTitle() {
@@ -50,7 +54,6 @@ public class Tos extends ResourceMeta implements Identifiable<TosId> {
 
     public void setTitle(String title) {
         this.title = title;
-        support.setPropertyAssigned("title");
     }
 
     public String getContent() {
@@ -59,6 +62,5 @@ public class Tos extends ResourceMeta implements Identifiable<TosId> {
 
     public void setContent(String content) {
         this.content = content;
-        support.setPropertyAssigned("content");
     }
 }

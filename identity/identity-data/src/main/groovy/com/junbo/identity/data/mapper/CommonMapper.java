@@ -100,18 +100,18 @@ public class CommonMapper {
         return new UserPhoneNumberId(id);
     }
 
-    Long toUserLoginAttemptId(UserLoginAttemptId id) {
+    Long toUserLoginAttemptId(UserCredentialVerifyAttemptId id) {
         if(id == null) {
             return null;
         }
         return id.getValue();
     }
 
-    UserLoginAttemptId toUserLoginAttemptId(Long id) {
+    UserCredentialVerifyAttemptId toUserLoginAttemptId(Long id) {
         if(id == null) {
             return null;
         }
-        return new UserLoginAttemptId(id);
+        return new UserCredentialVerifyAttemptId(id);
     }
 
     Long toUserSecurityQuestionId(UserSecurityQuestionId id) {
@@ -304,5 +304,19 @@ public class CommonMapper {
             return null;
         }
         return new DeviceId(id);
+    }
+
+    public Long toTosId(TosId id) {
+        if (id == null) {
+            return null;
+        }
+        return id.getValue();
+    }
+
+    public TosId toTosId(Long id) {
+        if (id == null) {
+            return null;
+        }
+        return new TosId(id);
     }
 }

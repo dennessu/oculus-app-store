@@ -15,4 +15,6 @@ interface UserPinValidator {
     Promise<UserPin> validateForGet(UserId userId, UserPinId userPinId)
     Promise<Void> validateForSearch(UserPinListOptions options)
     Promise<Void> validateForCreate(UserId userId, UserPin userPin)
+
+    Promise<Void> validateForOldPassword(UserId userId, String oldPassword)
 }
