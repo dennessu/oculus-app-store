@@ -27,5 +27,8 @@ dependencies {
     compile project(':catalog-clientproxy')
     compile project(':catalog-core')
 
+    compile ('com.junbo.authorization:authorization-lib:0.0.1-SNAPSHOT')
+    compile ('com.junbo.identity:identity-spec:0.0.1-SNAPSHOT')
+
     processor (libraries.langur_processor)
 }

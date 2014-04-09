@@ -15,7 +15,11 @@ import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.annotation.Around
 import org.aspectj.lang.annotation.Aspect
 import org.aspectj.lang.reflect.MethodSignature
+import org.springframework.beans.BeansException
+import org.springframework.beans.factory.FactoryBean
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.context.ApplicationContext
+import org.springframework.context.ApplicationContextAware
 
 import java.lang.annotation.Annotation
 import java.lang.reflect.Method
@@ -25,8 +29,9 @@ import java.lang.reflect.Method
  */
 @CompileStatic
 @Aspect
-class AuthorizeAspect {
+class AuthorizeAspect implements ApplicationContextAware {
     private AuthorizeService authorizeService
+    private ApplicationContext applicationContext
 
     @Required
     void setAuthorizeService(AuthorizeService authorizeService) {
@@ -56,7 +61,9 @@ class AuthorizeAspect {
             }
 
             map['apiName'] = requiredAnnotation.apiName()
-            AuthorizeCallback callback = (AuthorizeCallback) requiredAnnotation.authCallBack().newInstance(map)
+            FactoryBean<AuthorizeCallback> factoryBean = (FactoryBean<AuthorizeCallback>)applicationContext
+                    .getBean(requiredAnnotation.authCallBackFactoryBean())
+            AuthorizeCallback callback = factoryBean.object.initialize(map)
             Set<String> claims = authorizeService.getClaims(callback)
             AuthorizeContext.CLAIMS.set(claims)
             Object result = joinPoint.proceed()
@@ -84,10 +91,19 @@ class AuthorizeAspect {
         Map<String, Object> map = [:]
         map['apiName'] = annotation.apiName()
         map['entity'] = entity
-        AuthorizeCallback callback = (AuthorizeCallback) annotation.authCallBack().newInstance(map)
+
+        FactoryBean<AuthorizeCallback> factoryBean = (FactoryBean<AuthorizeCallback>)applicationContext
+                .getBean(annotation.authCallBackFactoryBean())
+        AuthorizeCallback callback = factoryBean.object.initialize(map)
+
         Set<String> claims = authorizeService.getClaims(callback)
         AuthorizeContext.CLAIMS.set(claims)
 
         return callback.postFilter()
+    }
+
+    @Override
+    void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext
     }
 }
