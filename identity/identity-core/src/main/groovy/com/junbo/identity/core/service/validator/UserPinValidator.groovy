@@ -3,7 +3,7 @@ package com.junbo.identity.core.service.validator
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPinId
 import com.junbo.identity.spec.model.users.UserPin
-import com.junbo.identity.spec.options.list.UserPinListOptions
+import com.junbo.identity.spec.v1.option.list.UserPinListOptions
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 

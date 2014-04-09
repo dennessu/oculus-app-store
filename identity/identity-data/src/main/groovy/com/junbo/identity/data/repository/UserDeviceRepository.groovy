@@ -6,8 +6,8 @@
 package com.junbo.identity.data.repository
 
 import com.junbo.common.id.UserDeviceId
-import com.junbo.identity.spec.model.users.UserDevice
-import com.junbo.identity.spec.options.list.UserDeviceListOptions
+import com.junbo.identity.spec.v1.model.UserDevice
+import com.junbo.identity.spec.v1.option.list.UserDeviceListOptions
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 

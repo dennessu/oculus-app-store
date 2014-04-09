@@ -10,7 +10,6 @@
     <context:component-scan base-package="com.junbo.identity.core.service" />
 
     <!-- resource implementation -->
-    <bean id="defaultUserDeviceResource" class="com.junbo.identity.rest.resource.UserDeviceResourceImpl" scope="prototype" />
     <bean id="defaultUserEmailResource" class="com.junbo.identity.rest.resource.UserEmailResourceImpl" scope="prototype" />
     <bean id="defaultUserGroupResource" class="com.junbo.identity.rest.resource.UserGroupResourceImpl" scope="prototype" />
     <bean id="defaultUserOptinResource" class="com.junbo.identity.rest.resource.UserOptinResourceImpl" scope="prototype" />
@@ -28,4 +27,5 @@
     <bean id="defaultTosResource" class="com.junbo.identity.rest.resource.v1.TosResourceImpl" scope="prototype" />
     <bean id="defaultUserCredentialResource" class="com.junbo.identity.rest.resource.v1.UserCredentialResourceImpl" scope="prototype" />
     <bean id="defaultUserCredentialVerifyAttemptResource" class="com.junbo.identity.rest.resource.v1.UserCredentialVerifyAttemptResourceImpl" scope="prototype" />
+    <bean id="defaultUserDevicePairResource" class="com.junbo.identity.rest.resource.v1.UserDevicePairResourceImpl" scope="prototype" />
 </beans>

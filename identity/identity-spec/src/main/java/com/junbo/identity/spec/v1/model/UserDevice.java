@@ -32,6 +32,8 @@ public class UserDevice extends ResourceMeta implements Identifiable<UserDeviceI
 
     public void setId(UserDeviceId id) {
         this.id = id;
+        support.setPropertyAssigned("id");
+        support.setPropertyAssigned("self");
     }
 
     public UserId getUserId() {
@@ -40,6 +42,8 @@ public class UserDevice extends ResourceMeta implements Identifiable<UserDeviceI
 
     public void setUserId(UserId userId) {
         this.userId = userId;
+        support.setPropertyAssigned("userId");
+        support.setPropertyAssigned("user");
     }
 
     public DeviceId getDeviceId() {
@@ -48,5 +52,7 @@ public class UserDevice extends ResourceMeta implements Identifiable<UserDeviceI
 
     public void setDeviceId(DeviceId deviceId) {
         this.deviceId = deviceId;
+        support.setPropertyAssigned("deviceId");
+        support.setPropertyAssigned("device");
     }
 }

@@ -90,14 +90,7 @@
     <bean id="userDeviceValidator" class="com.junbo.identity.core.service.validator.impl.UserDeviceValidatorImpl">
         <property name="userRepository" ref="userRepository" />
         <property name="userDeviceRepository" ref="userDeviceRepository" />
-        <property name="deviceIdMinLength" value="1" />
-        <property name="deviceIdMaxLength" value="255" />
-        <property name="osMinLength" value="1" />
-        <property name="osMaxLength" value="255" />
-        <property name="typeMinLength" value="1" />
-        <property name="typeMaxLength" value="255" />
-        <property name="nameMinLength" value="1" />
-        <property name="nameMaxLength" value="255" />
+        <property name="deviceRepository" ref="deviceRepository" />
     </bean>
 
     <bean id="userGroupValidator" class="com.junbo.identity.core.service.validator.impl.UserGroupValidatorImpl">

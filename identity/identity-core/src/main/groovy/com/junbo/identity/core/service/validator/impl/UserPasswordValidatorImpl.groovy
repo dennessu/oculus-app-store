@@ -9,7 +9,7 @@ import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.model.users.User
 import com.junbo.identity.spec.model.users.UserPassword
-import com.junbo.identity.spec.options.list.UserPasswordListOptions
+import com.junbo.identity.spec.v1.option.list.UserPasswordListOptions
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required

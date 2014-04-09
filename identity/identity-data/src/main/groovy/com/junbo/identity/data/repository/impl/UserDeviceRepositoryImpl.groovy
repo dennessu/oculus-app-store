@@ -4,28 +4,25 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.identity.data.repository.impl
+
 import com.junbo.common.id.UserDeviceId
 import com.junbo.identity.data.dao.UserDeviceDAO
 import com.junbo.identity.data.entity.user.UserDeviceEntity
 import com.junbo.identity.data.mapper.ModelMapper
 import com.junbo.identity.data.repository.UserDeviceRepository
-import com.junbo.identity.spec.model.users.UserDevice
-import com.junbo.identity.spec.options.list.UserDeviceListOptions
+import com.junbo.identity.spec.v1.model.UserDevice
+import com.junbo.identity.spec.v1.option.list.UserDeviceListOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oom.core.MappingContext
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Qualifier
-import org.springframework.stereotype.Component
 
 /**
  * Implementation for UserDeviceDAO.
  */
-@Component
 @CompileStatic
 class UserDeviceRepositoryImpl implements UserDeviceRepository {
     @Autowired
-    @Qualifier('userDeviceDAO')
     private UserDeviceDAO userDeviceDAO
 
     @Autowired
@@ -36,7 +33,7 @@ class UserDeviceRepositoryImpl implements UserDeviceRepository {
         UserDeviceEntity userDeviceProfileEntity = modelMapper.toUserDevice(entity, new MappingContext())
         userDeviceDAO.save(userDeviceProfileEntity)
 
-        return get(new UserDeviceId(userDeviceProfileEntity.id))
+        return get(new UserDeviceId((Long)userDeviceProfileEntity.id))
     }
 
     @Override
@@ -55,10 +52,18 @@ class UserDeviceRepositoryImpl implements UserDeviceRepository {
     @Override
     Promise<List<UserDevice>> search(UserDeviceListOptions getOption) {
         def result = []
-        def entities = userDeviceDAO.search(getOption.userId.value, getOption)
+        def entities = []
+        if (getOption.userId != null) {
+            entities = userDeviceDAO.search(getOption.userId.value, getOption)
 
-        entities.each { i ->
-            result.add(modelMapper.toUserDevice((UserDeviceEntity)i, new MappingContext()))
+        } else if (getOption.deviceId != null) {
+            entities = userDeviceDAO.findByDeviceId(getOption.deviceId.value, getOption)
+        }
+        if (entities == null) {
+            return Promise.pure(null)
+        }
+        entities.each { UserDeviceEntity entity ->
+            result.add(modelMapper.toUserDevice(entity, new MappingContext()))
         }
         return Promise.pure(result)
     }
