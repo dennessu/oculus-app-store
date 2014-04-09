@@ -6,7 +6,7 @@
 package com.junbo.identity.data.dao.impl
 import com.junbo.identity.data.dao.UserPasswordDAO
 import com.junbo.identity.data.entity.user.UserPasswordEntity
-import com.junbo.identity.spec.options.list.UserPasswordListOptions
+import com.junbo.identity.spec.v1.option.list.UserPasswordListOptions
 import groovy.transform.CompileStatic
 import org.hibernate.Criteria
 import org.hibernate.Session

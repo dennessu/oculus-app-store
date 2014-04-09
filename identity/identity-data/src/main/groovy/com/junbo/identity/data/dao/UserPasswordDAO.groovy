@@ -6,7 +6,7 @@
 package com.junbo.identity.data.dao
 
 import com.junbo.identity.data.entity.user.UserPasswordEntity
-import com.junbo.identity.spec.options.list.UserPasswordListOptions
+import com.junbo.identity.spec.v1.option.list.UserPasswordListOptions
 import groovy.transform.CompileStatic
 
 /**

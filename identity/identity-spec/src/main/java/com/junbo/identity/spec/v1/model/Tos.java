@@ -18,8 +18,11 @@ public class Tos extends ResourceMeta implements Identifiable<TosId> {
     @JsonProperty("self")
     private TosId id;
 
-    // todo:    Liangfu:    Need to investigate the tos
-    private String text;
+    private String locale;
+
+    private String title;
+
+    private String content;
 
     @Override
     public TosId getId() {
@@ -28,13 +31,34 @@ public class Tos extends ResourceMeta implements Identifiable<TosId> {
 
     public void setId(TosId id) {
         this.id = id;
+        support.setPropertyAssigned("id");
+        support.setPropertyAssigned("self");
     }
 
-    public String getText() {
-        return text;
+    public String getLocale() {
+        return locale;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setLocale(String locale) {
+        this.locale = locale;
+        support.setPropertyAssigned("locale");
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+        support.setPropertyAssigned("title");
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+        support.setPropertyAssigned("content");
     }
 }

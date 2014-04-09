@@ -6,7 +6,7 @@
 package com.junbo.identity.data.dao.impl
 import com.junbo.identity.data.dao.UserPinDAO
 import com.junbo.identity.data.entity.user.UserPinEntity
-import com.junbo.identity.spec.options.list.UserPinListOptions
+import com.junbo.identity.spec.v1.option.list.UserPinListOptions
 import groovy.transform.CompileStatic
 import org.hibernate.Criteria
 import org.hibernate.Session

@@ -3,16 +3,18 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.identity.spec.options.list;
+package com.junbo.identity.spec.v1.option.list;
 
 import com.junbo.common.id.UserId;
+import com.junbo.identity.spec.options.list.PagingGetOptions;
 
 import javax.ws.rs.QueryParam;
 
 /**
  * Created by liangfu on 3/14/14.
  */
-public class UserPasswordListOptions extends PagingGetOptions {
+public class UserPinListOptions extends PagingGetOptions {
+
     @QueryParam("userId")
     private UserId userId;
 

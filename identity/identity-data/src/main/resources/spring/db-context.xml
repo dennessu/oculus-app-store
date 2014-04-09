@@ -30,7 +30,7 @@
     <bean id="userEmailDAO" class="com.junbo.identity.data.dao.impl.UserEmailDAOImpl" parent="baseDAO" />
     <bean id="userGroupDAO" class="com.junbo.identity.data.dao.impl.UserGroupDAOImpl" parent="baseDAO" />
     <bean id="groupUserDAO" class="com.junbo.identity.data.dao.impl.GroupUserDAOImpl" parent="baseDAO" />
-    <bean id="userLoginAttemptDAO" class="com.junbo.identity.data.dao.impl.UserLoginAttemptDAOImpl" parent="baseDAO" />
+    <bean id="userCredentialVerifyAttemptDAO" class="com.junbo.identity.data.dao.impl.UserCredentialVerifyAttemptDAOImpl" parent="baseDAO" />
     <bean id="userOptinDAO" class="com.junbo.identity.data.dao.impl.UserOptinDAOImpl" parent="baseDAO" />
     <bean id="userPasswordDAO" class="com.junbo.identity.data.dao.impl.UserPasswordDAOImpl" parent="baseDAO" />
     <bean id="userPhoneNumberDAO" class="com.junbo.identity.data.dao.impl.UserPhoneNumberDAOImpl" parent="baseDAO" />
@@ -40,6 +40,7 @@
     <bean id="userNameDAO" class="com.junbo.identity.data.dao.impl.UserNameDAOImpl" parent="baseDAO" />
     <bean id="userSecurityQuestionAttemptDAO" class="com.junbo.identity.data.dao.impl.UserSecurityQuestionAttemptDAOImpl" parent="baseDAO" />
     <bean id="deviceDAO" class="com.junbo.identity.data.dao.impl.DeviceDAOImpl" parent="baseDAO" />
+    <bean id="tosDAO" class="com.junbo.identity.data.dao.impl.TosDAOImpl" parent="baseDAO" />
 
     <bean id="roleDAOTarget" class="com.junbo.identity.data.dao.impl.RoleDAOImpl" parent="entityDAOBase"/>
     <bean id="roleDAO" class="com.junbo.sharding.core.ShardAwareDaoFactoryBean" parent="baseDao">
@@ -58,7 +59,7 @@
     <bean id="userDeviceRepository" class="com.junbo.identity.data.repository.impl.UserDeviceRepositoryImpl" />
     <bean id="userEmailRepository" class="com.junbo.identity.data.repository.impl.UserEmailRepositoryImpl" />
     <bean id="userGroupRepository" class="com.junbo.identity.data.repository.impl.UserGroupRepositoryImpl" />
-    <bean id="userLoginAttemptRepository" class="com.junbo.identity.data.repository.impl.UserLoginAttemptRepositoryImpl" />
+    <bean id="userCredentialVerifyAttemptRepository" class="com.junbo.identity.data.repository.impl.UserCredentialVerifyAttemptRepositoryImpl" />
     <bean id="userOptinRepository" class="com.junbo.identity.data.repository.impl.UserOptinRepositoryImpl" />
     <bean id="userPasswordRepository" class="com.junbo.identity.data.repository.impl.UserPasswordRepositoryImpl" />
     <bean id="userPhoneNumberRepository" class="com.junbo.identity.data.repository.impl.UserPhoneNumberRepositoryImpl" />
@@ -69,6 +70,7 @@
     <bean id="securityQuestionRepository" class="com.junbo.identity.data.repository.impl.SecurityQuestionRepositoryImpl"/>
     <bean id="userSecurityQuestionAttemptRepository" class="com.junbo.identity.data.repository.impl.UserSecurityQuestionAttemptRepositoryImpl" />
     <bean id="deviceRepository" class="com.junbo.identity.data.repository.impl.DeviceRepositoryImpl" />
+    <bean id="tosRepository" class="com.junbo.identity.data.repository.impl.TosRepositoryImpl" />
 
     <bean id="roleRepository" class="com.junbo.identity.data.repository.impl.RoleRepositoryImpl">
         <property name="roleDAO" ref="roleDAO"/>
@@ -86,6 +88,7 @@
                 <bean class="com.junbo.identity.data.view.AuthenticatorValueView" />
                 <bean class="com.junbo.identity.data.view.UserEmailView" />
                 <bean class="com.junbo.identity.data.view.DeviceExternalRefView" />
+                <bean class="com.junbo.identity.data.view.UserDeviceIdView" />
             </list>
         </property>
     </bean>

@@ -5,9 +5,9 @@
  */
 package com.junbo.identity.data.dao.impl
 
-import com.junbo.identity.data.dao.UserLoginAttemptDAO
-import com.junbo.identity.data.entity.user.UserLoginAttemptEntity
-import com.junbo.identity.spec.options.list.UserLoginAttemptListOptions
+import com.junbo.identity.data.dao.UserCredentialVerifyAttemptDAO
+import com.junbo.identity.data.entity.user.UserCredentialVerifyAttemptEntity
+import com.junbo.identity.spec.v1.option.list.UserCredentialAttemptListOptions
 import groovy.transform.CompileStatic
 import org.hibernate.Criteria
 import org.hibernate.Session
@@ -18,9 +18,9 @@ import org.springframework.util.StringUtils
  * Created by liangfu on 3/17/14.
  */
 @CompileStatic
-class UserLoginAttemptDAOImpl extends BaseDAO implements UserLoginAttemptDAO {
+class UserCredentialVerifyAttemptDAOImpl extends BaseDAO implements UserCredentialVerifyAttemptDAO {
     @Override
-    UserLoginAttemptEntity save(UserLoginAttemptEntity entity) {
+    UserCredentialVerifyAttemptEntity save(UserCredentialVerifyAttemptEntity entity) {
         entity.id = idGenerator.nextId(entity.userId)
 
         Session session = currentSession(entity.id)
@@ -31,7 +31,7 @@ class UserLoginAttemptDAOImpl extends BaseDAO implements UserLoginAttemptDAO {
     }
 
     @Override
-    UserLoginAttemptEntity update(UserLoginAttemptEntity entity) {
+    UserCredentialVerifyAttemptEntity update(UserCredentialVerifyAttemptEntity entity) {
         Session session = currentSession(entity.id)
         session.merge(entity)
         session.flush()
@@ -40,19 +40,16 @@ class UserLoginAttemptDAOImpl extends BaseDAO implements UserLoginAttemptDAO {
     }
 
     @Override
-    UserLoginAttemptEntity get(Long id) {
-        return (UserLoginAttemptEntity)currentSession(id).get(UserLoginAttemptEntity, id)
+    UserCredentialVerifyAttemptEntity get(Long id) {
+        return (UserCredentialVerifyAttemptEntity)currentSession(id).get(UserCredentialVerifyAttemptEntity, id)
     }
 
     @Override
-    List<UserLoginAttemptEntity> search(Long userId, UserLoginAttemptListOptions getOption) {
-        Criteria criteria = currentSession(userId).createCriteria(UserLoginAttemptEntity)
+    List<UserCredentialVerifyAttemptEntity> search(Long userId, UserCredentialAttemptListOptions getOption) {
+        Criteria criteria = currentSession(userId).createCriteria(UserCredentialVerifyAttemptEntity)
         criteria.add(Restrictions.eq('userId', getOption.userId.value))
         if (!StringUtils.isEmpty(getOption.type)) {
             criteria.add(Restrictions.eq('type', getOption.type))
-        }
-        if (!StringUtils.isEmpty(getOption.ipAddress)) {
-            criteria.add(Restrictions.eq('ipAddress', getOption.ipAddress))
         }
         criteria.addOrder(Order.asc('id'))
         if (getOption.limit != null) {
@@ -67,7 +64,8 @@ class UserLoginAttemptDAOImpl extends BaseDAO implements UserLoginAttemptDAO {
     @Override
     void delete(Long id) {
         Session session = currentSession(id)
-        UserLoginAttemptEntity entity = (UserLoginAttemptEntity)session.get(UserLoginAttemptEntity, id)
+        UserCredentialVerifyAttemptEntity entity =
+                (UserCredentialVerifyAttemptEntity)session.get(UserCredentialVerifyAttemptEntity, id)
         session.delete(entity)
         session.flush()
     }

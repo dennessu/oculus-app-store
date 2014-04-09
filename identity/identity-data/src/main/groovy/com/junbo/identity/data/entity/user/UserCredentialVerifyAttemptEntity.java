@@ -17,7 +17,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "user_login_attempt")
-public class UserLoginAttemptEntity extends ResourceMetaEntity {
+public class UserCredentialVerifyAttemptEntity extends ResourceMetaEntity {
     public Long getId() {
         return id;
     }

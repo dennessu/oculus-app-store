@@ -10,7 +10,7 @@ import com.junbo.identity.data.entity.user.UserPinEntity
 import com.junbo.identity.data.mapper.ModelMapper
 import com.junbo.identity.data.repository.UserPinRepository
 import com.junbo.identity.spec.model.users.UserPin
-import com.junbo.identity.spec.options.list.UserPinListOptions
+import com.junbo.identity.spec.v1.option.list.UserPinListOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oom.core.MappingContext
 import groovy.transform.CompileStatic

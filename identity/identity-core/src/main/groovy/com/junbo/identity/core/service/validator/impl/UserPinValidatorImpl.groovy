@@ -9,10 +9,11 @@ import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.model.users.User
 import com.junbo.identity.spec.model.users.UserPin
-import com.junbo.identity.spec.options.list.UserPinListOptions
+import com.junbo.identity.spec.v1.option.list.UserPinListOptions
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.util.StringUtils
 
 /**
  * Created by liangfu on 3/31/14.
@@ -92,6 +93,31 @@ class UserPinValidatorImpl implements UserPinValidator {
         userPin.setActive(true)
 
         return Promise.pure(null)
+    }
+
+    @Override
+    Promise<Void> validateForOldPassword(UserId userId, String oldPassword) {
+        if (userId == null) {
+            throw new IllegalArgumentException('userId is null')
+        }
+
+        if (StringUtils.isEmpty(oldPassword)) {
+            return Promise.pure(null)
+        }
+
+        userPinRepository.search(new UserPinListOptions(
+                userId: userId,
+                active: true
+        )).then { List<UserPin> userPinList ->
+            if (userPinList == null || userPinList.size() == 0 || userPinList.size() > 1) {
+                throw AppErrors.INSTANCE.userPinIncorrect().exception()
+            }
+
+            if (UserPasswordUtil.hashPassword(oldPassword, userPinList.get(0).pinSalt) != userPinList.get(0).pinHash) {
+                throw AppErrors.INSTANCE.userPinIncorrect().exception()
+            }
+            return Promise.pure(null)
+        }
     }
 
     private void checkBasicUserPinInfo(UserPin userPin) {

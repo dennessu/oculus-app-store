@@ -1,22 +1,22 @@
 package com.junbo.identity.core.service.validator.impl
 
 import com.junbo.common.id.UserId
-import com.junbo.common.id.UserLoginAttemptId
+import com.junbo.common.id.UserCredentialVerifyAttemptId
 import com.junbo.identity.core.service.util.UserPasswordUtil
-import com.junbo.identity.core.service.validator.UserLoginAttemptValidator
+import com.junbo.identity.core.service.validator.UserCredentialVerifyAttemptValidator
 import com.junbo.identity.core.service.validator.UsernameValidator
-import com.junbo.identity.data.repository.UserLoginAttemptRepository
+import com.junbo.identity.data.repository.UserCredentialVerifyAttemptRepository
 import com.junbo.identity.data.repository.UserPasswordRepository
 import com.junbo.identity.data.repository.UserPinRepository
 import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.model.users.User
-import com.junbo.identity.spec.model.users.UserLoginAttempt
 import com.junbo.identity.spec.model.users.UserPassword
 import com.junbo.identity.spec.model.users.UserPin
-import com.junbo.identity.spec.options.list.UserLoginAttemptListOptions
-import com.junbo.identity.spec.options.list.UserPasswordListOptions
-import com.junbo.identity.spec.options.list.UserPinListOptions
+import com.junbo.identity.spec.v1.option.list.UserPasswordListOptions
+import com.junbo.identity.spec.v1.option.list.UserPinListOptions
+import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
+import com.junbo.identity.spec.v1.option.list.UserCredentialAttemptListOptions
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.glassfish.jersey.internal.util.Base64
@@ -28,9 +28,9 @@ import java.util.regex.Pattern
  * Created by liangfu on 3/28/14.
  */
 @CompileStatic
-class UserLoginAttemptValidatorImpl implements UserLoginAttemptValidator {
+class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAttemptValidator {
 
-    private UserLoginAttemptRepository userLoginAttemptRepository
+    private UserCredentialVerifyAttemptRepository userLoginAttemptRepository
 
     private UserRepository userRepository
 
@@ -51,12 +51,12 @@ class UserLoginAttemptValidatorImpl implements UserLoginAttemptValidator {
     private Integer clientIdMaxLength
 
     @Override
-    Promise<UserLoginAttempt> validateForGet(UserLoginAttemptId userLoginAttemptId) {
+    Promise<UserCredentialVerifyAttempt> validateForGet(UserCredentialVerifyAttemptId userLoginAttemptId) {
         if (userLoginAttemptId == null) {
             throw new IllegalArgumentException('userLoginAttemptId is null')
         }
 
-        return userLoginAttemptRepository.get(userLoginAttemptId).then { UserLoginAttempt userLoginAttempt ->
+        return userLoginAttemptRepository.get(userLoginAttemptId).then { UserCredentialVerifyAttempt userLoginAttempt ->
             if (userLoginAttempt == null) {
                 throw AppErrors.INSTANCE.userLoginAttemptNotFound(userLoginAttemptId).exception()
             }
@@ -76,7 +76,7 @@ class UserLoginAttemptValidatorImpl implements UserLoginAttemptValidator {
     }
 
     @Override
-    Promise<Void> validateForSearch(UserLoginAttemptListOptions options) {
+    Promise<Void> validateForSearch(UserCredentialAttemptListOptions options) {
         if (options == null) {
             throw new IllegalArgumentException('options is null')
         }
@@ -89,7 +89,7 @@ class UserLoginAttemptValidatorImpl implements UserLoginAttemptValidator {
     }
 
     @Override
-    Promise<Void> validateForCreate(UserLoginAttempt userLoginAttempt) {
+    Promise<Void> validateForCreate(UserCredentialVerifyAttempt userLoginAttempt) {
         if (userLoginAttempt == null) {
             throw new IllegalArgumentException('userLoginAttempt is null')
         }
@@ -158,7 +158,7 @@ class UserLoginAttemptValidatorImpl implements UserLoginAttemptValidator {
         }
     }
 
-    private void checkBasicUserLoginAttemptInfo(UserLoginAttempt userLoginAttempt) {
+    private void checkBasicUserLoginAttemptInfo(UserCredentialVerifyAttempt userLoginAttempt) {
         if (userLoginAttempt == null) {
             throw new IllegalArgumentException('userLoginAttempt is null')
         }
@@ -216,7 +216,7 @@ class UserLoginAttemptValidatorImpl implements UserLoginAttemptValidator {
     }
 
     @Required
-    void setUserLoginAttemptRepository(UserLoginAttemptRepository userLoginAttemptRepository) {
+    void setUserLoginAttemptRepository(UserCredentialVerifyAttemptRepository userLoginAttemptRepository) {
         this.userLoginAttemptRepository = userLoginAttemptRepository
     }
 

@@ -9,10 +9,11 @@ import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.model.users.User
 import com.junbo.identity.spec.model.users.UserPassword
-import com.junbo.identity.spec.options.list.UserPasswordListOptions
+import com.junbo.identity.spec.v1.option.list.UserPasswordListOptions
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.util.StringUtils
 
 /**
  * Created by liangfu on 3/31/14.
@@ -90,6 +91,32 @@ class UserPasswordValidatorImpl implements UserPasswordValidator {
         userPassword.setActive(true)
 
         return Promise.pure(null)
+    }
+
+    @Override
+    Promise<Void> validateForOldPassword(UserId userId, String oldPassword) {
+        if (userId == null) {
+            throw new IllegalArgumentException('userId is null')
+        }
+
+        if (StringUtils.isEmpty(oldPassword)) {
+            return Promise.pure(null)
+        }
+
+        userPasswordRepository.search(new UserPasswordListOptions(
+                userId: userId,
+                active: true
+        )).then { List<UserPassword> userPasswordList ->
+            if (userPasswordList == null || userPasswordList.size() == 0 || userPasswordList.size() > 1) {
+                throw AppErrors.INSTANCE.userPasswordIncorrect().exception()
+            }
+
+            if (UserPasswordUtil.hashPassword(oldPassword, userPasswordList.get(0).passwordSalt)
+                    != userPasswordList.get(0).passwordHash) {
+                throw AppErrors.INSTANCE.userPasswordIncorrect().exception()
+            }
+            return Promise.pure(null)
+        }
     }
 
     private void checkBasicUserPasswordInfo(UserPassword userPassword) {

@@ -5,8 +5,20 @@
  */
 package com.junbo.identity.spec.v1.option.model;
 
+import javax.ws.rs.QueryParam;
+
 /**
  * Created by liangfu on 4/3/14.
  */
 public class TosGetOptions {
+    @QueryParam("properties")
+    private String properties;
+
+    public String getProperties() {
+        return properties;
+    }
+
+    public void setProperties(String properties) {
+        this.properties = properties;
+    }
 }

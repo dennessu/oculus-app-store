@@ -99,13 +99,15 @@ def run(inputParam):
         login_user = config["login_username"].replace('{0}', shardid)
         cmd.append("--username="+login_user)
         cmd.append("--password="+config["login_password"])
-        cmd.append("--defaultSchemaName=" + login_user)
         if (config.has_key("jdbc_url") and len(config["jdbc_url"]) != 0):
             jdbc_url=config["jdbc_url"]
         else:
             jdbc_url=config["jdbc_url_" + shardid]
+        x = jdbc_url.split(';')
 
-        cmd.append("--url="+jdbc_url)
+        cmd.append("--defaultSchemaName=" + x[1])
+        cmd.append("--url="+x[0])
+
         cmd.append(inputParam.command)
 
         try:
