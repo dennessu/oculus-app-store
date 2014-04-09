@@ -28,18 +28,34 @@ public class BrainTreeRestProviderServiceImpl implements PaymentProviderService 
     }
 
     @Override
+    public void clonePIResult(PaymentInstrument source, PaymentInstrument target) {
+        target.setAccountNum(source.getAccountNum());
+        target.getCreditCardRequest().setExternalToken(source.getCreditCardRequest().getExternalToken());
+        target.getCreditCardRequest().setType(source.getCreditCardRequest().getType());
+        target.getCreditCardRequest().setCommercial(source.getCreditCardRequest().getCommercial());
+        target.getCreditCardRequest().setDebit(source.getCreditCardRequest().getDebit());
+        target.getCreditCardRequest().setPrepaid(source.getCreditCardRequest().getPrepaid());
+        target.getCreditCardRequest().setIssueCountry(source.getCreditCardRequest().getIssueCountry());
+    }
+
+    @Override
+    public void cloneTransactionResult(PaymentTransaction source, PaymentTransaction target) {
+        target.setExternalToken(source.getExternalToken());
+    }
+
+    @Override
     public Promise<PaymentInstrument> add(PaymentInstrument request) {
         return brainTreeResource.addPaymentInstrument(request);
     }
 
     @Override
-    public Promise<Response> delete(String token) {
-        return brainTreeResource.deletePaymentInstrument(token);
+    public Promise<Response> delete(PaymentInstrument pi) {
+        return brainTreeResource.deletePaymentInstrument(pi.getCreditCardRequest().getExternalToken());
     }
 
     @Override
-    public Promise<PaymentTransaction> authorize(String piToken, PaymentTransaction paymentRequest) {
-        return brainTreeResource.postAuthorization(piToken, paymentRequest);
+    public Promise<PaymentTransaction> authorize(PaymentInstrument pi, PaymentTransaction paymentRequest) {
+        return brainTreeResource.postAuthorization(pi.getCreditCardRequest().getExternalToken(), paymentRequest);
     }
 
     @Override
@@ -48,8 +64,8 @@ public class BrainTreeRestProviderServiceImpl implements PaymentProviderService 
     }
 
     @Override
-    public Promise<PaymentTransaction> charge(String piToken, PaymentTransaction paymentRequest) {
-        return brainTreeResource.postCharge(piToken, paymentRequest);
+    public Promise<PaymentTransaction> charge(PaymentInstrument pi, PaymentTransaction paymentRequest) {
+        return brainTreeResource.postCharge(pi.getCreditCardRequest().getExternalToken(), paymentRequest);
     }
 
     @Override
@@ -63,7 +79,7 @@ public class BrainTreeRestProviderServiceImpl implements PaymentProviderService 
     }
 
     @Override
-    public List<PaymentTransaction> getByOrderId(String orderId) {
+    public List<PaymentTransaction> getByBillingRefId(String orderId) {
         return null;
     }
 

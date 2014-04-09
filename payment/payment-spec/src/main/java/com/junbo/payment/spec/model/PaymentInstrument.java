@@ -34,6 +34,7 @@ public class PaymentInstrument {
     private String relationToHolder;
     @InnerFilter
     private CreditCardRequest creditCardRequest;
+    private WalletRequest walletRequest;
     //response:
     private String status;
 
@@ -147,5 +148,13 @@ public class PaymentInstrument {
 
     public void setIsDefault(String isDefault) {
         this.isDefault = isDefault;
+    }
+
+    public WalletRequest getWalletRequest() {
+        return walletRequest;
+    }
+
+    public void setWalletRequest(WalletRequest walletRequest) {
+        this.walletRequest = walletRequest;
     }
 }
