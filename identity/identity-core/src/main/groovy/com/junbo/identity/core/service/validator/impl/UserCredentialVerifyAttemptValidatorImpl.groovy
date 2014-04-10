@@ -2,7 +2,8 @@ package com.junbo.identity.core.service.validator.impl
 
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserCredentialVerifyAttemptId
-import com.junbo.identity.core.service.util.UserPasswordUtil
+import com.junbo.identity.core.service.normalize.NormalizeService
+import com.junbo.identity.core.service.util.CipherHelper
 import com.junbo.identity.core.service.validator.UserCredentialVerifyAttemptValidator
 import com.junbo.identity.core.service.validator.UsernameValidator
 import com.junbo.identity.data.repository.UserCredentialVerifyAttemptRepository
@@ -10,9 +11,9 @@ import com.junbo.identity.data.repository.UserPasswordRepository
 import com.junbo.identity.data.repository.UserPinRepository
 import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.spec.error.AppErrors
-import com.junbo.identity.spec.model.users.User
 import com.junbo.identity.spec.model.users.UserPassword
 import com.junbo.identity.spec.model.users.UserPin
+import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.option.list.UserPasswordListOptions
 import com.junbo.identity.spec.v1.option.list.UserPinListOptions
 import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
@@ -49,6 +50,8 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
 
     private Integer clientIdMinLength
     private Integer clientIdMaxLength
+
+    private NormalizeService normalizeService
 
     @Override
     Promise<UserCredentialVerifyAttempt> validateForGet(UserCredentialVerifyAttemptId userLoginAttemptId) {
@@ -105,8 +108,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
 
         String decoded = Base64.decodeAsString(userLoginAttempt.value)
         String[] split = decoded.split(':')
-        return userRepository.getUserByCanonicalUsername(
-                usernameValidator.normalizeUsername(split[0])).then { User user ->
+        return userRepository.getUserByCanonicalUsername(normalizeService.normalize(split[0])).then { User user ->
             if (user == null) {
                 throw AppErrors.INSTANCE.userNotFound(split[0]).exception()
             }
@@ -126,7 +128,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                         throw AppErrors.INSTANCE.userPasswordIncorrect().exception()
                     }
 
-                    if (UserPasswordUtil.hashPassword(split[1], userPasswordList.get(0).passwordSalt)
+                    if (CipherHelper.hashPassword(split[1], userPasswordList.get(0).passwordSalt)
                             == userPasswordList.get(0).passwordHash) {
                         userLoginAttempt.setSucceeded(true)
                     }
@@ -144,7 +146,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                         throw AppErrors.INSTANCE.userPinIncorrect().exception()
                     }
 
-                    if (UserPasswordUtil.hashPassword(split[1], userPinList.get(0).pinSalt)
+                    if (CipherHelper.hashPassword(split[1], userPinList.get(0).pinSalt)
                             == userPinList.get(0).pinHash) {
                         userLoginAttempt.setSucceeded(true)
                     }
@@ -270,5 +272,10 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     @Required
     void setUserPinRepository(UserPinRepository userPinRepository) {
         this.userPinRepository = userPinRepository
+    }
+
+    @Required
+    void setNormalizeService(NormalizeService normalizeService) {
+        this.normalizeService = normalizeService
     }
 }

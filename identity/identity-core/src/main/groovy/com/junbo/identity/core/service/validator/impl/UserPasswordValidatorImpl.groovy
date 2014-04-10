@@ -2,13 +2,13 @@ package com.junbo.identity.core.service.validator.impl
 
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPasswordId
-import com.junbo.identity.core.service.util.UserPasswordUtil
+import com.junbo.identity.core.service.util.CipherHelper
 import com.junbo.identity.core.service.validator.UserPasswordValidator
 import com.junbo.identity.data.repository.UserPasswordRepository
 import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.spec.error.AppErrors
-import com.junbo.identity.spec.model.users.User
 import com.junbo.identity.spec.model.users.UserPassword
+import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.option.list.UserPasswordListOptions
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
@@ -85,8 +85,8 @@ class UserPasswordValidatorImpl implements UserPasswordValidator {
         }
 
         userPassword.setPasswordSalt(UUID.randomUUID().toString())
-        userPassword.setStrength(UserPasswordUtil.calcPwdStrength(userPassword.value))
-        userPassword.setPasswordHash(UserPasswordUtil.hashPassword(userPassword.value, userPassword.passwordSalt))
+        userPassword.setStrength(CipherHelper.calcPwdStrength(userPassword.value))
+        userPassword.setPasswordHash(CipherHelper.hashPassword(userPassword.value, userPassword.passwordSalt))
         userPassword.setUserId(userId)
         userPassword.setActive(true)
 
@@ -111,7 +111,7 @@ class UserPasswordValidatorImpl implements UserPasswordValidator {
                 throw AppErrors.INSTANCE.userPasswordIncorrect().exception()
             }
 
-            if (UserPasswordUtil.hashPassword(oldPassword, userPasswordList.get(0).passwordSalt)
+            if (CipherHelper.hashPassword(oldPassword, userPasswordList.get(0).passwordSalt)
                     != userPasswordList.get(0).passwordHash) {
                 throw AppErrors.INSTANCE.userPasswordIncorrect().exception()
             }
@@ -128,7 +128,7 @@ class UserPasswordValidatorImpl implements UserPasswordValidator {
             throw new IllegalArgumentException('value is null')
         }
 
-        UserPasswordUtil.validatePassword(userPassword.value)
+        CipherHelper.validatePassword(userPassword.value)
 
         if (userPassword.expiresBy != null) {
             if (userPassword.expiresBy.before(new Date())) {
@@ -137,7 +137,7 @@ class UserPasswordValidatorImpl implements UserPasswordValidator {
         }
 
         if (userPassword.strength != null) {
-            String strength = UserPasswordUtil.calcPwdStrength(userPassword.value)
+            String strength = CipherHelper.calcPwdStrength(userPassword.value)
             if (strength == userPassword.strength) {
                 throw AppErrors.INSTANCE.fieldInvalid(userPassword.value).exception()
             }

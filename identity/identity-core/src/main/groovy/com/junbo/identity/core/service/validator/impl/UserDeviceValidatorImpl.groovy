@@ -11,8 +11,8 @@ import com.junbo.identity.data.repository.DeviceRepository
 import com.junbo.identity.data.repository.UserDeviceRepository
 import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.spec.error.AppErrors
-import com.junbo.identity.spec.model.users.User
 import com.junbo.identity.spec.v1.model.Device
+import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserDevice
 import com.junbo.identity.spec.v1.option.list.UserDeviceListOptions
 import com.junbo.langur.core.promise.Promise

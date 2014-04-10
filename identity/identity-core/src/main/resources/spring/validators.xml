@@ -4,7 +4,6 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <bean id="usernameValidator" class="com.junbo.identity.core.service.validator.impl.UsernameValidatorImpl">
-        <property name="charsToDelete" value="."/>
         <property name="minLength" value="4"/>
         <property name="maxLength" value="30"/>
         <property name="disallowedPatterns">
@@ -29,6 +28,17 @@
         <property name="honorificPrefixMaxLength" value="30"/>
         <property name="honorificSuffixMinLength" value="1"/>
         <property name="honorificSuffixMaxLength" value="30"/>
+    </bean>
+
+    <bean id="currencyValidator" class="com.junbo.identity.core.service.validator.impl.CurrencyValidatorImpl">
+        <property name="validCurrencies">
+            <list>
+                <value>USD</value>
+                <value>CNY</value>
+                <value>JPY</value>
+            </list>
+        </property>
+        <property name="defaultCurrency" value="USD" />
     </bean>
 
     <bean id="localeValidator" class="com.junbo.identity.core.service.validator.impl.LocaleValidatorImpl">
@@ -107,6 +117,7 @@
         <property name="userLoginAttemptRepository" ref="userCredentialVerifyAttemptRepository"/>
         <property name="userPasswordRepository" ref="userPasswordRepository"/>
         <property name="userPinRepository" ref="userPinRepository"/>
+        <property name="normalizeService" ref="normalizeService" />
         <property name="usernameValidator" ref="usernameValidator"/>
         <property name="allowedIpAddressPatterns">
             <list>

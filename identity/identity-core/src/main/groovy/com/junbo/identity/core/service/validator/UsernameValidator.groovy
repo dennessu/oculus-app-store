@@ -6,7 +6,4 @@ package com.junbo.identity.core.service.validator
 interface UsernameValidator {
 
     void validateUsername(String username)
-
-    // todo:    Should remove out of this interface
-    String normalizeUsername(String username)
 }

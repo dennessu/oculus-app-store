@@ -43,7 +43,7 @@ class UsernameView implements EntityView<Long, UserEntity, String> {
             throw new IllegalArgumentException('entity is null')
         }
 
-        return entity.username != null
+        return entity.canonicalUsername != null
     }
 
     @Override
@@ -52,6 +52,6 @@ class UsernameView implements EntityView<Long, UserEntity, String> {
             throw new IllegalArgumentException('entity is null')
         }
 
-        return [entity.username]
+        return [entity.canonicalUsername]
     }
 }

@@ -17,8 +17,8 @@ import java.util.regex.Pattern;
 /**
  * Created by liangfu on 3/16/14.
  */
-public class UserPasswordUtil {
-    private UserPasswordUtil() {
+public class CipherHelper {
+    private CipherHelper() {
 
     }
 

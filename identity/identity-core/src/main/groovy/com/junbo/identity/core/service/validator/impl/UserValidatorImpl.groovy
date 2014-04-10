@@ -1,9 +1,10 @@
 package com.junbo.identity.core.service.validator.impl
 
+import com.junbo.identity.core.service.normalize.NormalizeService
 import com.junbo.identity.core.service.validator.*
 import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.spec.error.AppErrors
-import com.junbo.identity.spec.model.users.User
+import com.junbo.identity.spec.v1.model.User
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
@@ -23,22 +24,19 @@ class UserValidatorImpl implements UserValidator {
     private UsernameValidator usernameValidator
 
     @Autowired
-    private NameValidator nameValidator
+    private LocaleValidator localeValidator
 
     @Autowired
-    private LocaleValidator localeValidator
+    private CurrencyValidator currencyValidator
 
     @Autowired
     private TimezoneValidator timezoneValidator
 
     @Autowired
-    private BirthdayValidator birthdayValidator
-
-    @Autowired
     private NickNameValidator nickNameValidator
 
     @Autowired
-    private DisplayNameValidator displayNameValidator
+    private NormalizeService normalizeService
 
     @Override
     Promise<Void> validateForCreate(User user) {
@@ -50,18 +48,18 @@ class UserValidatorImpl implements UserValidator {
             throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
         }
 
+        validateUserInfo(user)
+
         if (user.active == null) {
             user.active = true
         } else if (!user.active) {
             throw AppErrors.INSTANCE.fieldInvalid('active', 'true').exception()
         }
 
-        validateUserInfo(user)
-
         if (user.username != null) {
             usernameValidator.validateUsername(user.username)
 
-            user.canonicalUsername = usernameValidator.normalizeUsername(user.username)
+            user.canonicalUsername = normalizeService.normalize(user.username)
 
             return userRepository.getUserByCanonicalUsername(user.canonicalUsername).then { User existingUser ->
                 if (existingUser != null) {
@@ -115,10 +113,6 @@ class UserValidatorImpl implements UserValidator {
             throw AppErrors.INSTANCE.fieldInvalid('type', 'user, anonymousUser').exception()
         }
 
-        if (user.name != null) {
-            nameValidator.validateName(user.name)
-        }
-
         if (user.preferredLanguage != null) {
             if (!localeValidator.isValidLocale(user.preferredLanguage)) {
                 throw AppErrors.INSTANCE.fieldInvalid('preferredLanguage').exception()
@@ -135,6 +129,14 @@ class UserValidatorImpl implements UserValidator {
             user.locale = localeValidator.defaultLocale
         }
 
+        if (user.currency != null) {
+            if (!currencyValidator.isValid(user.currency)) {
+                throw AppErrors.INSTANCE.fieldInvalid('currency').exception()
+            }
+        } else {
+            user.currency = currencyValidator.default
+        }
+
         if (user.timezone != null) {
             if (!timezoneValidator.isValidTimezone(user.timezone)) {
                 throw AppErrors.INSTANCE.fieldInvalid('timezone').exception()
@@ -143,30 +145,8 @@ class UserValidatorImpl implements UserValidator {
             user.timezone = timezoneValidator.defaultTimezone
         }
 
-        if (user.birthday != null) {
-            if (!birthdayValidator.isValidBirthday(user.birthday)) {
-                throw AppErrors.INSTANCE.fieldInvalid('birthday').exception()
-            }
-        }
-
-        if (user.gender != null) {
-            if (!(user.gender in ['male', 'female'])) {
-                throw AppErrors.INSTANCE.fieldInvalid('gender', 'male, female').exception()
-            }
-        }
-
-        if (user.displayNameType != null) {
-            throw AppErrors.INSTANCE.fieldNotWritable('displayNameType').exception()
-        }
-
-        user.displayNameType = displayNameValidator.getDisplayNameType(user)
-
         if (user.nickName != null) {
             nickNameValidator.validateNickName(user.nickName)
-        }
-
-        if (user.canonicalUsername != null) {
-            throw AppErrors.INSTANCE.fieldNotWritable('canonicalUsername').exception()
         }
     }
 }

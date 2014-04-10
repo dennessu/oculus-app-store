@@ -1,13 +1,14 @@
 package com.junbo.identity.core.service.validator.impl
+
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserOptinId
 import com.junbo.identity.core.service.validator.UserOptinValidator
 import com.junbo.identity.data.repository.UserOptinRepository
 import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.spec.error.AppErrors
-import com.junbo.identity.spec.model.users.User
 import com.junbo.identity.spec.model.users.UserOptin
 import com.junbo.identity.spec.options.list.UserOptinListOptions
+import com.junbo.identity.spec.v1.model.User
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required

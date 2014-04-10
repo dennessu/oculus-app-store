@@ -12,12 +12,12 @@ import com.junbo.common.id.UserDeviceId
 import com.junbo.common.id.UserId
 import com.junbo.identity.data.identifiable.UserPasswordStrength
 import com.junbo.identity.data.repository.*
-import com.junbo.identity.spec.model.users.UserDevice
 import com.junbo.identity.spec.model.users.UserPassword
 import com.junbo.identity.spec.model.users.*
 import com.junbo.identity.spec.options.list.*
 import com.junbo.identity.spec.v1.model.Device
 import com.junbo.identity.spec.v1.model.Group
+import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserAuthenticator
 import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
 import com.junbo.identity.spec.v1.model.UserDevice
@@ -100,17 +100,8 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
     public void testUserRepository() throws Exception {
         User user = new User()
         user.setActive(true)
-        user.setBirthday(new Date())
-        user.setDisplayName(UUID.randomUUID().toString())
-        user.setGender('male')
+        user.setCurrency('USD')
         user.setLocale('en_US')
-        UserName userName = new UserName()
-        userName.setFirstName(UUID.randomUUID().toString())
-        userName.setHonorificPrefix(UUID.randomUUID().toString())
-        userName.setHonorificSuffix(UUID.randomUUID().toString())
-        userName.setLastName(UUID.randomUUID().toString())
-        userName.setMiddleName(UUID.randomUUID().toString())
-        user.setName(userName)
         user.setNickName(UUID.randomUUID().toString())
         user.setPreferredLanguage(UUID.randomUUID().toString())
         user.setTimezone(UUID.randomUUID().toString())
@@ -120,14 +111,13 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         user.setCreatedBy('lixia')
         user = userRepository.create(user).wrapped().get()
 
-        User newUser = null
-        newUser = userRepository.get(user.getId()).wrapped().get()
-        Assert.assertEquals(user.getBirthday(), newUser.getBirthday())
+        User newUser = userRepository.get(user.getId()).wrapped().get()
+        Assert.assertEquals(user.getType(), newUser.getType())
 
-        Date newValue = new Date()
-        newUser.setBirthday(newValue)
+        String newType = UUID.randomUUID().toString()
+        newUser.setType(newType)
         newUser = userRepository.update(newUser).wrapped().get()
-        Assert.assertEquals(newUser.getBirthday(), newValue)
+        Assert.assertEquals(newUser.getType(), newType)
 
         User findUser = userRepository.getUserByCanonicalUsername(newUser.getUsername()).wrapped().get()
         Assert.assertNotNull(findUser)

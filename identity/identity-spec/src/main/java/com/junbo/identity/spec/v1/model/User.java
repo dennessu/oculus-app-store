@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.spec.v1.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.UserId;
 import com.junbo.common.util.Identifiable;
@@ -35,6 +36,9 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
 
     private String currency;
 
+    @JsonIgnore
+    private String canonicalUsername;
+
     @Override
     public UserId getId() {
         return id;
@@ -42,6 +46,8 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
 
     public void setId(UserId id) {
         this.id = id;
+        support.setPropertyAssigned("self");
+        support.setPropertyAssigned("id");
     }
 
     public String getUsername() {
@@ -50,6 +56,7 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
 
     public void setUsername(String username) {
         this.username = username;
+        support.setPropertyAssigned("username");
     }
 
     public String getType() {
@@ -58,6 +65,7 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
 
     public void setType(String type) {
         this.type = type;
+        support.setPropertyAssigned("type");
     }
 
     public String getPreferredLanguage() {
@@ -66,6 +74,7 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
 
     public void setPreferredLanguage(String preferredLanguage) {
         this.preferredLanguage = preferredLanguage;
+        support.setPropertyAssigned("preferredLanguage");
     }
 
     public String getLocale() {
@@ -74,6 +83,7 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
 
     public void setLocale(String locale) {
         this.locale = locale;
+        support.setPropertyAssigned("locale");
     }
 
     public String getTimezone() {
@@ -82,6 +92,7 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
 
     public void setTimezone(String timezone) {
         this.timezone = timezone;
+        support.setPropertyAssigned("timezone");
     }
 
     public Boolean getActive() {
@@ -90,6 +101,7 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
 
     public void setActive(Boolean active) {
         this.active = active;
+        support.setPropertyAssigned("active");
     }
 
     public String getNickName() {
@@ -98,6 +110,7 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
 
     public void setNickName(String nickName) {
         this.nickName = nickName;
+        support.setPropertyAssigned("nickName");
     }
 
     public String getCurrency() {
@@ -106,5 +119,15 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
 
     public void setCurrency(String currency) {
         this.currency = currency;
+        support.setPropertyAssigned("currency");
+    }
+
+    public String getCanonicalUsername() {
+        return canonicalUsername;
+    }
+
+    public void setCanonicalUsername(String canonicalUsername) {
+        this.canonicalUsername = canonicalUsername;
+        support.setPropertyAssigned("canonicalUsername");
     }
 }

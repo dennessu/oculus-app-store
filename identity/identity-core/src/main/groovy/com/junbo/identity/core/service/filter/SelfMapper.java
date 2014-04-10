@@ -75,7 +75,7 @@ public interface SelfMapper {
                                                                   MappingContext mappingContext);
 
     UserSecurityQuestionAttempt mergeUserSecurityQuestionAttempt(UserSecurityQuestionAttempt source,
-                                                                 UserSecurityQuestionAttempt base, MappingContext mappingContext);
+                                                  UserSecurityQuestionAttempt base, MappingContext mappingContext);
 
     UserEmail filterUserEmail(UserEmail userEmail, MappingContext context);
 

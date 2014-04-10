@@ -2,13 +2,13 @@ package com.junbo.identity.core.service.validator.impl
 
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPinId
-import com.junbo.identity.core.service.util.UserPasswordUtil
+import com.junbo.identity.core.service.util.CipherHelper
 import com.junbo.identity.core.service.validator.UserPinValidator
 import com.junbo.identity.data.repository.UserPinRepository
 import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.spec.error.AppErrors
-import com.junbo.identity.spec.model.users.User
 import com.junbo.identity.spec.model.users.UserPin
+import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.option.list.UserPinListOptions
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
@@ -88,7 +88,7 @@ class UserPinValidatorImpl implements UserPinValidator {
         }
 
         userPin.setPinSalt(UUID.randomUUID().toString())
-        userPin.setPinHash(UserPasswordUtil.hashPassword(userPin.value, userPin.pinSalt))
+        userPin.setPinHash(CipherHelper.hashPassword(userPin.value, userPin.pinSalt))
         userPin.setUserId(userId)
         userPin.setActive(true)
 
@@ -113,7 +113,7 @@ class UserPinValidatorImpl implements UserPinValidator {
                 throw AppErrors.INSTANCE.userPinIncorrect().exception()
             }
 
-            if (UserPasswordUtil.hashPassword(oldPassword, userPinList.get(0).pinSalt) != userPinList.get(0).pinHash) {
+            if (CipherHelper.hashPassword(oldPassword, userPinList.get(0).pinSalt) != userPinList.get(0).pinHash) {
                 throw AppErrors.INSTANCE.userPinIncorrect().exception()
             }
             return Promise.pure(null)

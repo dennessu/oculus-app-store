@@ -43,9 +43,6 @@ function createdb {
         
         if [ "$dbname" == "config" ] || [ "$dbname" == "catalog" ]; then
             createschema $dbname $dbname
-        elif [ "$dbname" == "index" ]; then
-            createschema $dbname schema_0
-            createschema $dbname schema_1
         else
             createschema $dbname shard_0
             createschema $dbname shard_1

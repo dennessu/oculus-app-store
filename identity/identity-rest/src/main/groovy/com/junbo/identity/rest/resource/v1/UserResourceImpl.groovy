@@ -1,23 +1,18 @@
-/*
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
- *
- * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
- */
-package com.junbo.identity.rest.resource
+package com.junbo.identity.rest.resource.v1
 
 import com.junbo.common.id.Id
 import com.junbo.common.id.UserId
 import com.junbo.common.model.Results
 import com.junbo.identity.core.service.Created201Marker
 import com.junbo.identity.core.service.filter.UserFilter
+import com.junbo.identity.core.service.normalize.NormalizeService
 import com.junbo.identity.core.service.validator.UserValidator
-import com.junbo.identity.core.service.validator.UsernameValidator
 import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.spec.error.AppErrors
-import com.junbo.identity.spec.model.users.User
-import com.junbo.identity.spec.options.entity.UserGetOptions
-import com.junbo.identity.spec.options.list.UserListOptions
-import com.junbo.identity.spec.resource.UserResource
+import com.junbo.identity.spec.v1.model.User
+import com.junbo.identity.spec.v1.option.list.UserListOptions
+import com.junbo.identity.spec.v1.option.model.UserGetOptions
+import com.junbo.identity.spec.v1.resource.UserResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
@@ -26,11 +21,10 @@ import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.util.StringUtils
 
-import javax.ws.rs.BeanParam
 import javax.ws.rs.ext.Provider
 
 /**
- * Created by kg on 3/17/14.
+ * Created by liangfu on 4/10/14.
  */
 @Provider
 @Component
@@ -49,10 +43,10 @@ class UserResourceImpl implements UserResource {
     private UserValidator userValidator
 
     @Autowired
-    private UsernameValidator usernameValidator
+    private UserFilter userFilter
 
     @Autowired
-    private UserFilter userFilter
+    private NormalizeService normalizeService
 
     @Override
     Promise<User> create(User user) {
@@ -125,7 +119,7 @@ class UserResourceImpl implements UserResource {
     }
 
     @Override
-    Promise<User> get(UserId userId, @BeanParam UserGetOptions getOptions) {
+    Promise<User> get(UserId userId, UserGetOptions getOptions) {
         if (userId == null) {
             throw new IllegalArgumentException('userId is null')
         }
@@ -146,7 +140,7 @@ class UserResourceImpl implements UserResource {
     }
 
     @Override
-    Promise<Results<User>> list(@BeanParam UserListOptions listOptions) {
+    Promise<Results<User>> list(UserListOptions listOptions) {
         if (listOptions == null) {
             throw new IllegalArgumentException('listOptions is null')
         }
@@ -155,7 +149,7 @@ class UserResourceImpl implements UserResource {
             throw AppErrors.INSTANCE.fieldRequired('username').exception()
         }
 
-        String canonicalUsername = usernameValidator.normalizeUsername(listOptions.username)
+        String canonicalUsername = normalizeService.normalize(listOptions.username)
         userRepository.getUserByCanonicalUsername(canonicalUsername).then { User user ->
             def resultList = new Results<User>(items: [])
 
