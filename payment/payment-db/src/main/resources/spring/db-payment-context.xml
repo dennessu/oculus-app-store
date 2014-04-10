@@ -107,11 +107,6 @@
         <property name="persistentClass" value="com.junbo.payment.db.entity.paymentinstrument.AddressEntity"/>
     </bean>
 
-    <bean id="phoneDao"
-          class="com.junbo.payment.db.dao.paymentinstrument.PhoneDao" parent="genericDao">
-        <property name="persistentClass" value="com.junbo.payment.db.entity.paymentinstrument.PhoneEntity"/>
-    </bean>
-
     <bean id="PaymentInstrumentDao"
           class="com.junbo.payment.db.dao.paymentinstrument.PaymentInstrumentDao" parent="genericDao">
         <property name="persistentClass" value="com.junbo.payment.db.entity.paymentinstrument.PaymentInstrumentEntity"/>

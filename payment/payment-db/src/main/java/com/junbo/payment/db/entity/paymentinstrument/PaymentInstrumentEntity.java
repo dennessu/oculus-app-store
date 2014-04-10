@@ -53,8 +53,8 @@ public class PaymentInstrumentEntity extends GenericEntity {
     @Column(name = "address_id")
     private Long addressId;
 
-    @Column(name = "phone_id")
-    private Long phoneId;
+    @Column(name = "phone_num")
+    private String phoneNum;
 
     @Column(name = "email")
     private String email;
@@ -68,9 +68,6 @@ public class PaymentInstrumentEntity extends GenericEntity {
     @Column(name = "last_validated_time")
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastValidatedTime;
-
-    @Column(name = "is_default")
-    private String isDefault;
 
     public Long getId() {
         return id;
@@ -133,12 +130,12 @@ public class PaymentInstrumentEntity extends GenericEntity {
         this.addressId = addressId;
     }
 
-    public Long getPhoneId() {
-        return phoneId;
+    public String getPhoneNum() {
+        return phoneNum;
     }
 
-    public void setPhoneId(Long phoneId) {
-        this.phoneId = phoneId;
+    public void setPhoneNum(String phoneNum) {
+        this.phoneNum = phoneNum;
     }
 
     public String getRelationToHolder() {
@@ -171,14 +168,6 @@ public class PaymentInstrumentEntity extends GenericEntity {
 
     public void setLastValidatedTime(Date lastValidatedTime) {
         this.lastValidatedTime = lastValidatedTime;
-    }
-
-    public String getIsDefault() {
-        return isDefault;
-    }
-
-    public void setIsDefault(String isDefault) {
-        this.isDefault = isDefault;
     }
 
     public String toString() {

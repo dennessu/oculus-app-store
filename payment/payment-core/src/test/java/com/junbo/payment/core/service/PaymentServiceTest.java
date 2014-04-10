@@ -172,18 +172,12 @@ public class PaymentServiceTest extends BaseTest {
                 setPostalCode("12345");
             }
         });
-        request.setPhone(new Phone(){
-            {
-                setType("Home");
-                setNumber("12345678");
-            }
-        });
+        request.setPhoneNum("12344555");
         return request;
     }
     private PaymentInstrument buildPIRequest() {
         PaymentInstrument request = buildBasePIRequest();
         request.setType(PIType.CREDITCARD.toString());
-        request.setIsDefault(Boolean.TRUE.toString());
         request.setCreditCardRequest(new CreditCardRequest(){
             {
                 setEncryptedCvmCode("111");
@@ -196,7 +190,6 @@ public class PaymentServiceTest extends BaseTest {
     private PaymentInstrument buildWalletPIRequest() {
         PaymentInstrument request = buildBasePIRequest();
         request.setType(PIType.WALLET.toString());
-        request.setIsDefault(Boolean.FALSE.toString());
         request.setWalletRequest(new WalletRequest() {
             {
                 setType("SV");

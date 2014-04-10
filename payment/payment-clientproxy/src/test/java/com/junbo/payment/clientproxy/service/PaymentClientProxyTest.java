@@ -30,7 +30,6 @@ public class PaymentClientProxyTest extends BaseTest {
                 setAccountName("ut");
                 setAccountNum("4111111111111111");
                 setIsValidated(false);
-                setIsDefault("true");
                 setType("CREDITCARD");
                 setTrackingUuid(generateUUID());
                 setAddress(new Address() {
@@ -99,7 +98,6 @@ public class PaymentClientProxyTest extends BaseTest {
                 setAccountName("ut");
                 setAccountNum("4111111111111111");
                 setIsValidated(false);
-                setIsDefault("true");
                 setType("CREDITCARD");
                 setTrackingUuid(generateUUID());
                 setAddress(new Address() {
@@ -163,7 +161,6 @@ public class PaymentClientProxyTest extends BaseTest {
                 setAccountName("ut");
                 setAccountNum("4111111111111111");
                 setIsValidated(false);
-                setIsDefault("true");
                 setType("CREDITCARD");
                 setTrackingUuid(generateUUID());
                 setAddress(new Address() {
@@ -221,7 +218,6 @@ public class PaymentClientProxyTest extends BaseTest {
                 setAccountName("ut");
                 setAccountNum("4111111111111111");
                 setIsValidated(false);
-                setIsDefault("true");
                 setType("CREDITCARD");
                 setTrackingUuid(generateUUID());
                 setAddress(new Address() {
@@ -279,7 +275,6 @@ public class PaymentClientProxyTest extends BaseTest {
                 setAccountName("ut");
                 setAccountNum("4111111111111111");
                 setIsValidated(false);
-                setIsDefault("true");
                 setType("CREDITCARD");
                 setTrackingUuid(generateUUID());
                 setAddress(new Address() {
@@ -332,7 +327,6 @@ public class PaymentClientProxyTest extends BaseTest {
                 setAccountName("ut");
                 setAccountNum("4111111111111111");
                 setIsValidated(false);
-                setIsDefault("true");
                 setType("CREDITCARD");
                 setTrackingUuid(generateUUID());
                 setAddress(new Address() {
@@ -409,7 +403,6 @@ public class PaymentClientProxyTest extends BaseTest {
                 setAccountName("ut");
                 setAccountNum("4111111111111111");
                 setIsValidated(false);
-                setIsDefault("true");
                 setType("CREDITCARD");
                 setTrackingUuid(generateUUID());
                 setAddress(new Address() {
