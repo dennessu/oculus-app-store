@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="serviceLocator" class="com.junbo.langur.core.hk2.ServiceLocatorComponentProvider"
+          factory-method="getServiceLocator"/>
+
+    <bean class="org.springframework.beans.factory.config.CustomScopeConfigurer">
+        <property name="scopes">
+            <map>
+                <entry key="hk2">
+                    <bean class="org.jvnet.hk2.spring.bridge.api.SpringScopeImpl">
+                        <property name="serviceLocator" ref="serviceLocator"/>
+                    </bean>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="javax.ws.rs.core.UriInfo"
+          class="javax.ws.rs.core.UriInfo" scope="hk2"/>
+
+    <bean id="javax.ws.rs.core.HttpHeaders"
+          class="javax.ws.rs.core.HttpHeaders" scope="hk2"/>
+
+    <bean id="javax.ws.rs.core.Request"
+          class="javax.ws.rs.core.Request" scope="hk2"/>
+
+    <bean id="javax.ws.rs.container.ContainerRequestContext"
+          class="javax.ws.rs.container.ContainerRequestContext" scope="hk2"/>
+
+    <bean id="org.glassfish.jersey.server.internal.process.RespondingContext"
+          class="org.glassfish.jersey.server.internal.process.RespondingContext" scope="hk2"/>
+</beans>

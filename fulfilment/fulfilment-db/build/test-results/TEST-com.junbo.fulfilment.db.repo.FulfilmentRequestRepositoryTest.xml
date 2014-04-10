@@ -1,0 +1,12 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<testsuite name="com.junbo.fulfilment.db.repo.FulfilmentRequestRepositoryTest" tests="1" failures="0" errors="0" timestamp="2014-03-31T08:05:27" hostname="XumengChendeMacBook-Pro.local" time="0.019">
+  <properties/>
+  <testcase name="testCreate" classname="com.junbo.fulfilment.db.repo.FulfilmentRequestRepositoryTest" time="0.019"/>
+  <system-out><![CDATA[16:05:27.202 [Test worker] DEBUG bitronix.tm.BitronixTransaction - registering synchronization org.hibernate.engine.transaction.synchronization.internal.RegisteredSynchronization@4c498013
+16:05:27.202 [Test worker] DEBUG o.h.e.t.i.TransactionCoordinatorImpl - successfully registered Synchronization
+16:05:27.202 [Test worker] DEBUG org.hibernate.internal.SessionImpl - Opened session at timestamp: 13962531272
+16:05:27.202 [Test worker] DEBUG bitronix.tm.BitronixTransaction - registering synchronization org.hibernate.context.internal.JTASessionContext$CleanupSynch@747c1c55
+16:05:27.203 [Test worker] DEBUG o.h.e.i.AbstractSaveEventListener - Generated identifier: 755089472, using strategy: org.hibernate.id.Assigned
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

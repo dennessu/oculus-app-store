@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="5.6">
+<file name="/Users/xmchen/Workspace/git/main/payment/payment-core/src/main/java/com/junbo/payment/core/PaymentInstrumentService.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/payment/payment-core/src/main/java/com/junbo/payment/core/PaymentTransactionService.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/payment/payment-core/src/main/java/com/junbo/payment/core/exception/RestExceptionMapper.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/payment/payment-core/src/main/java/com/junbo/payment/core/impl/PaymentInstrumentServiceImpl.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/payment/payment-core/src/main/java/com/junbo/payment/core/impl/PaymentTransactionServiceImpl.java">
+<error line="226" column="73" severity="warning" message="Empty statement." source="com.puppycrawl.tools.checkstyle.checks.coding.EmptyStatementCheck"/>
+</file>
+<file name="/Users/xmchen/Workspace/git/main/payment/payment-core/src/main/java/com/junbo/payment/core/provider/PaymentProvider.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/payment/payment-core/src/main/java/com/junbo/payment/core/provider/PaymentProviderService.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/payment/payment-core/src/main/java/com/junbo/payment/core/provider/ProviderRoutingService.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/payment/payment-core/src/main/java/com/junbo/payment/core/provider/braintree/BrainTreePaymentProviderServiceImpl.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/payment/payment-core/src/main/java/com/junbo/payment/core/provider/braintree/BrainTreeRestProviderServiceImpl.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/payment/payment-core/src/main/java/com/junbo/payment/core/provider/impl/PaymentProviderRegistry.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/payment/payment-core/src/main/java/com/junbo/payment/core/provider/impl/ProviderRoutingServiceImpl.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/payment/payment-core/src/main/java/com/junbo/payment/core/util/PaymentUtil.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/payment/payment-core/src/main/java/com/junbo/payment/core/util/ProxyExceptionResponse.java">
+</file>
+</checkstyle>

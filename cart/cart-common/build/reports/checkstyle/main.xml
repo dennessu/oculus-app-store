@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="5.6">
+<file name="/Users/xmchen/Workspace/git/main/cart/cart-common/src/main/java/com/junbo/cart/common/exception/CartException.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/cart/cart-common/src/main/java/com/junbo/cart/common/util/IdentifiableEnumType.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/cart/cart-common/src/main/java/com/junbo/cart/common/util/SystemOperation.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/cart/cart-common/src/main/java/com/junbo/cart/common/util/SystemOperationImpl.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/cart/cart-common/src/main/java/com/junbo/cart/common/validate/Group.java">
+</file>
+</checkstyle>

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <import resource="classpath*:spring/common-context.xml"/>
+    <import resource="classpath*:spring/transaction.xml"/>
+    <import resource="classpath*:spring/sharding-context.xml"/>
+
+    <context:annotation-config/>
+    <tx:annotation-driven/>
+
+    <context:component-scan base-package="com.junbo.fulfilment.db"/>
+
+    <!-- fulfilment dataSource -->
+    <!--<bean id="fulfilmentDataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
+        <property name="driverClass" value="${fulfilment.db.driverClassName}"/>
+        <property name="jdbcUrl" value="${fulfilment.db.url}"/>
+        <property name="username" value="${fulfilment.db.username}"/>
+        <property name="password" value="${fulfilment.db.password}"/>
+        <property name="maxConnectionsPerPartition" value="${fulfilment.db.maxConnectionsPerPartition}"/>
+        <property name="minConnectionsPerPartition" value="${fulfilment.db.minConnectionsPerPartition}"/>
+        <property name="partitionCount" value="${fulfilment.db.partitionCount}"/>
+        <property name="acquireIncrement" value="${fulfilment.db.acquireIncrement}"/>
+        <property name="statementsCacheSize" value="${fulfilment.db.statementsCacheSize}"/>
+        <property name="releaseHelperThreads" value="${fulfilment.db.releaseHelperThreads}"/>
+    </bean>-->
+
+    <bean id="fulfilmentDataSource" class="bitronix.tm.resource.jdbc.PoolingDataSource"
+          init-method="init" destroy-method="close">
+        <property name="uniqueName" value="jdbc/fulfilment_ds1"/>
+        <property name="className" value="org.postgresql.xa.PGXADataSource"/>
+        <property name="minPoolSize" value="${fulfilment.db.minConnectionsPerPartition}"/>
+        <property name="maxPoolSize" value="${fulfilment.db.maxConnectionsPerPartition}"/>
+
+        <property name="useTmJoin" value="true"/>
+        <property name="allowLocalTransactions" value="true"/>
+
+        <property name="driverProperties">
+            <props>
+                <prop key="url">${fulfilment.db.url}</prop>
+                <prop key="user">${fulfilment.db.username}</prop>
+                <prop key="password">${fulfilment.db.password}</prop>
+            </props>
+        </property>
+    </bean>
+
+    <!-- SessonFactory for Hibernate -->
+    <!--<bean id="sessionFactory"
+          class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="dataSource" ref="fulfilmentDataSource"/>
+        <property name="packagesToScan" value="com.junbo.fulfilment.db.entity"/>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">${fulfilment.hibernate.dialect}</prop>
+                <prop key="hibernate.max_fetch_depth">${fulfilment.hibernate.max_fetch_depth}</prop>
+                <prop key="hibernate.jdbc.fetch_size">${fulfilment.hibernate.fetch_size}</prop>
+                <prop key="hibernate.jdbc.batch_size">${fulfilment.hibernate.batch_size}</prop>
+                <prop key="hibernate.show_sql">${fulfilment.hibernate.show_sql}</prop>
+            </props>
+        </property>
+    </bean>-->
+    <bean id="fulfilmentSessionFactory"
+          class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="dataSource" ref="fulfilmentDataSource"/>
+        <property name="packagesToScan" value="com.junbo.fulfilment.db.entity"/>
+        <property name="jtaTransactionManager" ref="transactionManager"/>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">${fulfilment.hibernate.dialect}</prop>
+                <prop key="hibernate.max_fetch_depth">${fulfilment.hibernate.max_fetch_depth}</prop>
+                <prop key="hibernate.jdbc.fetch_size">${fulfilment.hibernate.fetch_size}</prop>
+                <prop key="hibernate.jdbc.batch_size">${fulfilment.hibernate.batch_size}</prop>
+                <prop key="hibernate.show_sql">${fulfilment.hibernate.show_sql}</prop>
+            </props>
+        </property>
+    </bean>
+
+    <!-- Transaction Manager -->
+    <!--<bean id="transactionManager"
+          class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <tx:annotation-driven/>-->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <!-- Dao -->
+    <bean id="fulfilmentBaseDao"
+          class="com.junbo.fulfilment.db.dao.impl.BaseDaoImpl" abstract="true">
+    </bean>
+
+    <bean id="fulfilmentRequestDao"
+          class="com.junbo.fulfilment.db.dao.impl.FulfilmentRequestDaoImpl" parent="fulfilmentBaseDao">
+        <property name="entityType" value="com.junbo.fulfilment.db.entity.FulfilmentRequestEntity"/>
+    </bean>
+
+    <bean id="fulfilmentDao"
+          class="com.junbo.fulfilment.db.dao.impl.FulfilmentDaoImpl" parent="fulfilmentBaseDao">
+        <property name="entityType" value="com.junbo.fulfilment.db.entity.FulfilmentEntity"/>
+    </bean>
+
+    <bean id="fulfilmentActionDao"
+          class="com.junbo.fulfilment.db.dao.impl.FulfilmentActionDaoImpl" parent="fulfilmentBaseDao">
+        <property name="entityType" value="com.junbo.fulfilment.db.entity.FulfilmentActionEntity"/>
+    </bean>
+
+    <!-- Repository -->
+    <bean id="fulfilmentRepository"
+          class="com.junbo.fulfilment.db.repo.FulfilmentRepository">
+    </bean>
+
+    <bean id="fulfilmentRequestRepository"
+          class="com.junbo.fulfilment.db.repo.FulfilmentRequestRepository">
+    </bean>
+
+    <bean id="fulfilmentActionRepository"
+          class="com.junbo.fulfilment.db.repo.FulfilmentActionRepository">
+    </bean>
+</beans>

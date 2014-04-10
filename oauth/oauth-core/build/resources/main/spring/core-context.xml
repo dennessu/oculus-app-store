@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="tokenService" class="com.junbo.oauth.core.service.impl.TokenServiceImpl">
+        <property name="accessTokenRepository" ref="accessTokenRepository"/>
+        <property name="defaultAccessTokenExpiration" value="${oauth.core.accessToken.default.expiration}"/>
+        <property name="defaultRefreshTokenExpiration" value="${oauth.core.refreshToken.default.expiration}"/>
+        <property name="defaultIdTokenExpiration" value="${oauth.core.idToken.default.expiration}"/>
+        <property name="refreshTokenRepository" ref="refreshTokenRepository"/>
+        <property name="clientRepository" ref="clientRepository"/>
+    </bean>
+
+    <bean id="userService" class="com.junbo.oauth.core.service.impl.UserServiceImpl">
+        <property name="tokenService" ref="tokenService"/>
+        <property name="userProfileResource" ref="identityUserProfileClient"/>
+        <property name="userResource" ref="identityUserClient"/>
+    </bean>
+
+    <bean id="clientService" class="com.junbo.oauth.core.service.impl.ClientServiceImpl">
+        <property name="clientRepository" ref="clientRepository"/>
+        <property name="tokenService" ref="tokenService"/>
+        <property name="tokenGenerator" ref="tokenGenerator"/>
+        <property name="scopeService" ref="scopeService"/>
+    </bean>
+
+    <bean id="scopeService" class="com.junbo.oauth.core.service.impl.ScopeServiceImpl">
+        <property name="tokenService" ref="tokenService"/>
+        <property name="scopeRepository" ref="scopeRepository"/>
+    </bean>
+
+    <bean id="apiService" class="com.junbo.oauth.core.service.impl.ApiServiceImpl">
+        <property name="apiDefinitionRepository" ref="apiDefinitionRepository"/>
+        <property name="tokenService" ref="tokenService"/>
+    </bean>
+
+</beans>

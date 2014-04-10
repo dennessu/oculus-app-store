@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <bean id="propertyPlaceholderConfigurer"
+          class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:${test.env}.properties</value>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Config service -->
+    <bean id="configService" class="com.junbo.configuration.impl.ConfigServiceImpl" />
+    <bean id="configPropertyPlaceholderConfigurer" class="com.junbo.configuration.impl.ConfigPropertyPlaceholderConfigurer">
+        <property name="configService" ref="configService" />
+    </bean>
+    <bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
+        <property name="converters">
+            <set>
+                <bean class="com.junbo.configuration.reloadable.impl.ReloadableConfigConverterFactory">
+                    <property name="configService" ref="configService" />
+                </bean>
+            </set>
+        </property>
+    </bean>
+
+    <bean id="asyncHttpClientFactory" class="com.junbo.cart.test.util.AsyncHttpClientFactory"/>
+    <bean id="httpClient" class="com.ning.http.client.AsyncHttpClient"
+          factory-bean="asyncHttpClientFactory" factory-method="createAsyncHttpClient"/>
+
+    <bean id="pathParamTranscoder" class="com.junbo.common.json.IdPathParamTranscoder"/>
+    <bean id="transcoder" class="com.junbo.common.json.JsonMessageTranscoder"/>
+    <bean id="queryParamTranscoder" class="com.junbo.common.json.QueryParamTranscoderImpl"/>
+
+    <bean id="userResource" class="com.junbo.identity.spec.resource.proxy.UserResourceClientProxy">
+        <constructor-arg ref="httpClient"/>
+        <constructor-arg name="transcoder" ref="transcoder"/>
+        <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
+        <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder"/>
+        <constructor-arg value="${cart.test.client.identity.url}"/>
+    </bean>
+
+    <bean id="cartResource" class="com.junbo.cart.spec.resource.proxy.CartResourceClientProxy">
+        <constructor-arg ref="httpClient"/>
+        <constructor-arg name="transcoder" ref="transcoder"/>
+        <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
+        <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder"/>
+        <constructor-arg value="${cart.test.client.cart.url}"/>
+    </bean>
+
+    <bean id="identityClient" class="com.junbo.cart.test.client.IdentityClient">
+        <property name="userResource" ref="userResource"/>
+    </bean>
+
+    <bean id="cartClient" class="com.junbo.cart.test.client.CartClient">
+        <property name="cartResource" ref="cartResource"/>
+    </bean>
+</beans>

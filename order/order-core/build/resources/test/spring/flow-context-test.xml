@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans" xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!-- mock -->
+    <import resource="classpath*:spring/*-context.xml"/>
+    <context:component-scan base-package="com.junbo.order.mock"/>
+
+    <bean id="mockAuthSettleAction" class="com.junbo.order.core.impl.orderaction.AuthSettleAction">
+        <property name="orderServiceContextBuilder" ref="mockOrderServiceContextBuilder"/>
+        <property name="facadeContainer" ref="mockFacadeContainer"/>
+    </bean>
+
+    <bean id="mockCreateOrderAction" class="com.junbo.order.core.impl.orderaction.SaveOrderAction">
+        <property name="builder" ref="mockOrderServiceContextBuilder"/>
+    </bean>
+
+    <bean id="mockFulfillmentAction" class="com.junbo.order.core.impl.orderaction.FulfillmentAction">
+        <property name="facadeContainer" ref="mockFacadeContainer"/>
+    </bean>
+
+    <bean id="mockImmediateSettleAction" class="com.junbo.order.core.impl.orderaction.ImmediateSettleAction">
+        <property name="orderServiceContextBuilder" ref="mockOrderServiceContextBuilder"/>
+        <property name="facadeContainer" ref="mockFacadeContainer"/>
+    </bean>
+
+    <bean id="mockRatingAction" class="com.junbo.order.core.impl.orderaction.RatingAction">
+        <property name="orderInternalService" ref="mockOrderInternalService"/>
+    </bean>
+
+    <bean id="mockUpdateFulfillmentAction" class="com.junbo.order.core.impl.orderaction.UpdateFulfillmentAction">
+    </bean>
+
+    <bean id="mockValidateUserAction" class="com.junbo.order.core.impl.orderaction.ValidateUserAction">
+        <property name="orderServiceContextBuilder" ref="mockOrderServiceContextBuilder"/>
+    </bean>
+
+    <bean id="mockValidatePaymentInstrumentsAction" class="com.junbo.order.core.impl.orderaction.ValidatePaymentInstrumentsAction">
+        <property name="orderServiceContextBuilder" ref="mockOrderServiceContextBuilder"/>
+    </bean>
+
+    <bean id="mockOrderService" class="com.junbo.order.core.impl.order.OrderServiceImpl">
+        <property name="facadeContainer" ref="mockFacadeContainer"/>
+        <property name="flowExecutor" ref="flowExecutor"/>
+        <property name="orderRepository" ref="orderRepository"/>
+    </bean>
+
+    <bean id="mockFacadeContainer" class="com.junbo.order.clientproxy.FacadeContainer">
+        <property name="ratingFacade" ref="mockRatingFacade"/>
+        <property name="billingFacade" ref="mockBillingFacade"/>
+        <property name="catalogFacade" ref="mockCachedCatalogFacade"/>
+        <property name="fulfillmentFacade" ref="mockFulfillmentFacade"/>
+        <property name="identityFacade" ref="mockIdentityFacade"/>
+        <property name="paymentFacade" ref="mockPaymentFacade"/>
+    </bean>
+
+    <bean id="mockOrderInternalService" class="com.junbo.order.core.impl.internal.impl.OrderInternalServiceImpl">
+        <property name="facadeContainer" ref="mockFacadeContainer"/>
+    </bean>
+
+    <bean id="mockOrderServiceContextBuilder" class="com.junbo.order.core.impl.order.OrderServiceContextBuilder">
+        <property name="facadeContainer" ref="mockFacadeContainer"/>
+    </bean>
+
+    <bean id="mockBillingFacade" class="com.junbo.order.clientproxy.billing.impl.BillingFacadeImpl">
+        <property name="balanceResource" ref="mockBalanceResource"/>
+        <property name="shippingAddressResource" ref="mockShippingAddressResource"/>
+    </bean>
+
+    <bean id="mockRatingFacade" class="com.junbo.order.clientproxy.rating.impl.RatingFacadeImpl">
+        <property name="ratingResource" ref="mockRatingResource"/>
+    </bean>
+
+    <bean id="mockIdentityFacade" class="com.junbo.order.clientproxy.identity.impl.IdentityFacadeImpl">
+        <property name="userResource" ref="mockIdentityResource"/>
+    </bean>
+
+    <bean id="mockCatalogFacade" class="com.junbo.order.clientproxy.catalog.impl.CatalogFacadeImpl">
+        <property name="offerResource" ref="mockCatalogResource"/>
+    </bean>
+
+    <bean id="mockCachedCatalogFacade" class="com.junbo.order.clientproxy.catalog.impl.CachedCatalogFacadeImpl">
+        <property name="catalogFacade" ref="mockCatalogFacade"/>
+        <constructor-arg name="ehCacheCacheManager" ref="orderCacheManager"/>
+    </bean>
+
+    <bean id="mockFulfillmentFacade" class="com.junbo.order.clientproxy.fulfillment.impl.FulfillmentFacadeImpl">
+        <property name="fulfilmentResource" ref="mockFulfillmentResource"/>
+    </bean>
+
+    <bean id="mockPaymentFacade" class="com.junbo.order.clientproxy.payment.impl.PaymentFacadeImpl">
+        <property name="paymentInstrumentResource" ref="mockPaymentInstrumentResource"/>
+    </bean>
+</beans>

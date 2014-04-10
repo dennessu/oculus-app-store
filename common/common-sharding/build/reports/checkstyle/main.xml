@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="5.6">
+<file name="/Users/xmchen/Workspace/git/main/common/common-sharding/src/main/java/com/junbo/sharding/IdGenerator.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-sharding/src/main/java/com/junbo/sharding/IdGeneratorFacade.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-sharding/src/main/java/com/junbo/sharding/IdGeneratorFacadeImpl.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-sharding/src/main/java/com/junbo/sharding/annotations/SeedId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-sharding/src/main/java/com/junbo/sharding/annotations/SeedParam.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-sharding/src/main/java/com/junbo/sharding/core/ShardAwareDaoFactoryBean.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-sharding/src/main/java/com/junbo/sharding/core/ShardAwareDaoProxy.java">
+<error line="112" severity="warning" message="Don&apos;t use trailing comments." source="com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"/>
+<error line="140" severity="warning" message="Don&apos;t use trailing comments." source="com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"/>
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-sharding/src/main/java/com/junbo/sharding/core/ds/DataSourceConfig.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-sharding/src/main/java/com/junbo/sharding/core/ds/ShardDataSourceFactory.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-sharding/src/main/java/com/junbo/sharding/core/ds/ShardDataSourceFactoryImpl.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-sharding/src/main/java/com/junbo/sharding/core/ds/ShardDataSourceKey.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-sharding/src/main/java/com/junbo/sharding/core/ds/ShardDataSourceMapper.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-sharding/src/main/java/com/junbo/sharding/core/ds/ShardDataSourceRegistry.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-sharding/src/main/java/com/junbo/sharding/core/hibernate/SessionFactoryWrapper.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-sharding/src/main/java/com/junbo/sharding/id/dao/IdGlobalCounterDAO.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-sharding/src/main/java/com/junbo/sharding/id/dao/impl/IdGlobalCounterDAOImpl.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-sharding/src/main/java/com/junbo/sharding/id/impl/GlobalCounter.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-sharding/src/main/java/com/junbo/sharding/id/impl/GlobalCounterInMemoryImpl.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-sharding/src/main/java/com/junbo/sharding/id/impl/GlobalCounterMemcachedImpl.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-sharding/src/main/java/com/junbo/sharding/id/impl/IdGeneratorImpl.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-sharding/src/main/java/com/junbo/sharding/id/impl/IdGeneratorSlot.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-sharding/src/main/java/com/junbo/sharding/id/impl/IdGeneratorSlotImpl.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-sharding/src/main/java/com/junbo/sharding/id/impl/IdSchema.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-sharding/src/main/java/com/junbo/sharding/id/impl/ObjectId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-sharding/src/main/java/com/junbo/sharding/id/impl/TimeGenerator.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-sharding/src/main/java/com/junbo/sharding/id/impl/TimeGeneratorImpl.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-sharding/src/main/java/com/junbo/sharding/id/model/IdGlobalCounterEntity.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-sharding/src/main/java/com/junbo/sharding/id/oculus/OculusGlobalCounter.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-sharding/src/main/java/com/junbo/sharding/id/oculus/OculusGlobalCounterInDBImpl.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-sharding/src/main/java/com/junbo/sharding/id/oculus/OculusIdGeneratorImpl.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-sharding/src/main/java/com/junbo/sharding/id/oculus/OculusIdGeneratorSlot.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-sharding/src/main/java/com/junbo/sharding/id/oculus/OculusIdGeneratorSlotImpl.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-sharding/src/main/java/com/junbo/sharding/id/oculus/OculusIdSchema.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-sharding/src/main/java/com/junbo/sharding/util/Helper.java">
+</file>
+</checkstyle>

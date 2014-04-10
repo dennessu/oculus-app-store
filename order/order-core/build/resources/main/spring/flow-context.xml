@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <import resource="classpath*:spring/orderflow/*.xml"/>
+
+    <bean id="flowDefLoader" class="com.junbo.langur.core.webflow.definition.FlowDefLoaderImpl"/>
+
+    <bean id="stateRepository" class="com.junbo.langur.core.webflow.state.InMemoryStateRepository"/>
+
+    <bean id="stateExecutorFactory" class="com.junbo.langur.core.webflow.executor.StateExecutorFactoryImpl"/>
+
+    <bean id="flowExecutor" class="com.junbo.langur.core.webflow.executor.FlowExecutorImpl">
+        <property name="flowDefLoader" ref="flowDefLoader"/>
+        <property name="stateExecutorFactory" ref="stateExecutorFactory"/>
+        <property name="stateRepository" ref="stateRepository"/>
+    </bean>
+
+    <bean id="authSettleAction" class="com.junbo.order.core.impl.orderaction.AuthSettleAction">
+        <property name="orderActionType" value="AUTHORIZE"/>
+    </bean>
+
+    <bean id="fulfillmentAction" class="com.junbo.order.core.impl.orderaction.FulfillmentAction">
+        <property name="orderActionType" value="FULFILL"/>
+    </bean>
+
+    <bean id="immediateSettleAction" class="com.junbo.order.core.impl.orderaction.ImmediateSettleAction">
+        <property name="orderActionType" value="CHARGE"/>
+    </bean>
+
+    <bean id="ratingAction" class="com.junbo.order.core.impl.orderaction.RatingAction">
+    </bean>
+
+    <bean id="updateFulfillmentAction" class="com.junbo.order.core.impl.orderaction.UpdateFulfillmentAction">
+    </bean>
+
+    <bean id="sendEmailAction" class="com.junbo.order.core.impl.orderaction.SendEmailAction">
+    </bean>
+
+    <bean id="markSettleAction" class="com.junbo.order.core.impl.orderaction.MarkSettleAction">
+    </bean>
+
+    <bean id="validateTentativeOrderAction" class="com.junbo.order.core.impl.orderaction.ValidateOrderAction">
+    </bean>
+</beans>

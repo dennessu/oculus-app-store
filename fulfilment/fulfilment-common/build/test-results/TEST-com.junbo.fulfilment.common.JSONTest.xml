@@ -1,0 +1,12 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<testsuite name="com.junbo.fulfilment.common.JSONTest" tests="1" failures="0" errors="0" timestamp="2014-03-31T08:05:09" hostname="XumengChendeMacBook-Pro.local" time="0.117">
+  <properties/>
+  <testcase name="testDemo" classname="com.junbo.fulfilment.common.JSONTest" time="0.117"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/Users/xmchen/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-simple/1.7.6/12aaccff7811a8c619bad5954b96823589d2476e/slf4j-simple-1.7.6.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/Users/xmchen/.gradle/caches/modules-2/files-2.1/ch.qos.logback/logback-classic/1.1.1/19e1e2be2670b33c5dcc835550527028dddddcd1/logback-classic-1.1.1.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [org.slf4j.impl.SimpleLoggerFactory]
+]]></system-err>
+</testsuite>

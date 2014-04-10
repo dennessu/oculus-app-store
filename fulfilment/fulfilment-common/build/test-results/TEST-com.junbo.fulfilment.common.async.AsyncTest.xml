@@ -1,0 +1,23 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<testsuite name="com.junbo.fulfilment.common.async.AsyncTest" tests="2" failures="0" errors="0" timestamp="2014-03-31T08:05:07" hostname="XumengChendeMacBook-Pro.local" time="2.042">
+  <properties/>
+  <testcase name="testFulfilmentSDK1" classname="com.junbo.fulfilment.common.async.AsyncTest" time="1.036"/>
+  <testcase name="testFulfilmentSDK2" classname="com.junbo.fulfilment.common.async.AsyncTest" time="1.004"/>
+  <system-out><![CDATA[Test worker
+sharkmao
+pool-4-thread-1
+shipping...
+then1...
+pool-4-thread-1
+then2...
+pool-4-thread-1
+Test worker
+pool-4-thread-2
+querying...
+then1...123456
+pool-4-thread-2
+then2...hello:123456
+pool-4-thread-2
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

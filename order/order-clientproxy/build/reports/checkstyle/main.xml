@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="5.6">
+<file name="/Users/xmchen/Workspace/git/main/order/order-clientproxy/src/main/groovy/com/junbo/order/clientproxy/billing/BillingFacade.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/order/order-clientproxy/src/main/groovy/com/junbo/order/clientproxy/catalog/CatalogFacade.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/order/order-clientproxy/src/main/groovy/com/junbo/order/clientproxy/fulfillment/FulfillmentFacade.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/order/order-clientproxy/src/main/groovy/com/junbo/order/clientproxy/identity/IdentityFacade.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/order/order-clientproxy/src/main/groovy/com/junbo/order/clientproxy/identity/impl/IdentityFacadeImpl.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/order/order-clientproxy/src/main/groovy/com/junbo/order/clientproxy/payment/PaymentFacade.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/order/order-clientproxy/src/main/groovy/com/junbo/order/clientproxy/rating/RatingFacade.java">
+</file>
+</checkstyle>

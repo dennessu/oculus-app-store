@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="5.6">
+<file name="/Users/xmchen/Workspace/git/main/payment/payment-spec/src/main/java/com/junbo/payment/spec/enums/CreditCardType.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/payment/payment-spec/src/main/java/com/junbo/payment/spec/enums/PIStatus.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/payment/payment-spec/src/main/java/com/junbo/payment/spec/enums/PIType.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/payment/payment-spec/src/main/java/com/junbo/payment/spec/enums/PaymentEventType.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/payment/payment-spec/src/main/java/com/junbo/payment/spec/enums/PaymentStatus.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/payment/payment-spec/src/main/java/com/junbo/payment/spec/enums/PaymentType.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/payment/payment-spec/src/main/java/com/junbo/payment/spec/enums/PhoneType.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/payment/payment-spec/src/main/java/com/junbo/payment/spec/internal/BrainTreeResource.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/payment/payment-spec/src/main/java/com/junbo/payment/spec/model/Address.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/payment/payment-spec/src/main/java/com/junbo/payment/spec/model/ChargeInfo.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/payment/payment-spec/src/main/java/com/junbo/payment/spec/model/CreditCardRequest.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/payment/payment-spec/src/main/java/com/junbo/payment/spec/model/PIId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/payment/payment-spec/src/main/java/com/junbo/payment/spec/model/PageMetaData.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/payment/payment-spec/src/main/java/com/junbo/payment/spec/model/PaymentEvent.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/payment/payment-spec/src/main/java/com/junbo/payment/spec/model/PaymentInstrument.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/payment/payment-spec/src/main/java/com/junbo/payment/spec/model/PaymentInstrumentSearchParam.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/payment/payment-spec/src/main/java/com/junbo/payment/spec/model/PaymentInstrumentType.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/payment/payment-spec/src/main/java/com/junbo/payment/spec/model/PaymentTransaction.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/payment/payment-spec/src/main/java/com/junbo/payment/spec/model/Phone.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/payment/payment-spec/src/main/java/com/junbo/payment/spec/resource/PaymentInstrumentResource.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/payment/payment-spec/src/main/java/com/junbo/payment/spec/resource/PaymentInstrumentTypeResource.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/payment/payment-spec/src/main/java/com/junbo/payment/spec/resource/PaymentTransactionResource.java">
+</file>
+</checkstyle>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xmlns:wf="http://www.junbo.com/schema/webflow"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.junbo.com/schema/webflow http://www.junbo.com/schema/webflow-config/webflow.xsd">
+
+    <wf:flow id="authorizeFlow">
+        <wf:action-state id="validation">
+            <wf:action ref="validateClient"/>
+            <wf:action ref="validateScope"/>
+            <wf:action ref="validateRedirectUri"/>
+            <wf:action ref="validateResponseType"/>
+            <wf:action ref="validateDisplay"/>
+            <wf:action ref="validatePrompt"/>
+            <wf:action ref="validateMaxAge"/>
+            <wf:action ref="validateNonce"/>
+            <wf:transition on="*" to="loadLoginState"/>
+        </wf:action-state>
+
+        <wf:action-state id="loadLoginState">
+            <wf:action ref="loadIdTokenHint"/>
+            <wf:action ref="loadLoginState"/>
+            <wf:action ref="loadRememberMeToken"/>
+            <wf:transition on="*" to="validateLoginStateAction"/>
+        </wf:action-state>
+
+        <wf:action-state id="validateLoginStateAction">
+            <wf:action ref="validateLoginState"/>
+            <wf:action ref="saveLoginState"/>
+            <wf:transition on="redirectLogin" to="redirectToLogin"/>
+            <wf:transition on="*" to="validateConsent"/>
+        </wf:action-state>
+
+        <wf:action-state id="validateConsent">
+            <wf:action ref="validateConsent"/>
+            <wf:transition on="redirectToConsent" to="redirectToConsent"/>
+            <wf:transition on="*" to="grantAuthorizationCodeAction"/>
+        </wf:action-state>
+
+        <wf:action-state id="grantAuthorizationCodeAction">
+            <wf:action ref="grantAuthorizationCode"/>
+            <wf:action ref="grantImplicitAccessToken"/>
+            <wf:action ref="grantRememberMeToken"/>
+            <wf:action ref="grantIdToken"/>
+            <wf:action ref="buildRedirectUri"/>
+            <wf:transition on="*" to="endRedirect"/>
+        </wf:action-state>
+
+        <wf:view-state id="redirectToLogin">
+            <wf:on-render>
+                <wf:action ref="redirect"/>
+            </wf:on-render>
+            <wf:transition on="login" to="redirectToAuth">
+                <wf:action ref="authenticateUser"/>
+            </wf:transition>
+        </wf:view-state>
+
+        <wf:view-state id="redirectToConsent">
+            <wf:on-entry>
+                <wf:action ref="redirect"/>
+            </wf:on-entry>
+            <wf:transition on="consentSuccess" to="grantAuthorizationCodeAction">
+                <wf:action ref="saveConsent"/>
+            </wf:transition>
+            <wf:transition on="consentFail" to="endRedirect">
+                <wf:action ref="consentError"/>
+            </wf:transition>
+        </wf:view-state>
+
+        <wf:view-state id="redirectToAuth">
+            <wf:on-render>
+                <wf:action ref="redirect"/>
+            </wf:on-render>
+            <wf:transition on="loginSuccess" to="validateLoginStateAction"/>
+        </wf:view-state>
+
+        <wf:end-state id="endRedirect">
+            <wf:on-entry>
+                <wf:action ref="redirect"/>
+            </wf:on-entry>
+        </wf:end-state>
+    </wf:flow>
+
+</beans>

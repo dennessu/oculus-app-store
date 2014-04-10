@@ -1,0 +1,16 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<testsuite name="com.junbo.order.db.mapper.MapperTest" tests="10" failures="0" errors="0" timestamp="2014-04-04T09:27:48" hostname="XumengChendeMacBook-Pro.local" time="0.107">
+  <properties/>
+  <testcase name="testMapper" classname="com.junbo.order.db.mapper.MapperTest" time="0.012"/>
+  <testcase name="testOrderBillingEventMapper" classname="com.junbo.order.db.mapper.MapperTest" time="0.005"/>
+  <testcase name="testOrderDiscountMapper" classname="com.junbo.order.db.mapper.MapperTest" time="0.005"/>
+  <testcase name="testOrderEventMapper" classname="com.junbo.order.db.mapper.MapperTest" time="0.002"/>
+  <testcase name="testOrderItemFulfillmentEventMapper" classname="com.junbo.order.db.mapper.MapperTest" time="0.003"/>
+  <testcase name="testOrderItemMapper" classname="com.junbo.order.db.mapper.MapperTest" time="0.002"/>
+  <testcase name="testPreorderInfoEventMapper" classname="com.junbo.order.db.mapper.MapperTest" time="0.001"/>
+  <testcase name="testSubledgerItemMapper" classname="com.junbo.order.db.mapper.MapperTest" time="0.004"/>
+  <testcase name="testSubledgerMapper" classname="com.junbo.order.db.mapper.MapperTest" time="0.003"/>
+  <testcase name="testUpdateHistoryMapper" classname="com.junbo.order.db.mapper.MapperTest" time="0.002"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,413 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta httpEquiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>Test results - Class com.junbo.catalog.core.entitlementdef.EntitlementDefinitionServiceTest</title>
+<link href="css/base-style.css" rel="stylesheet" type="text/css"/>
+<link href="css/style.css" rel="stylesheet" type="text/css"/>
+<script src="js/report.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="content">
+<h1>Class com.junbo.catalog.core.entitlementdef.EntitlementDefinitionServiceTest</h1>
+<div class="breadcrumbs">
+<a href="../index.html">all</a> &gt; 
+<a href="../packages/com.junbo.catalog.core.entitlementdef.html">com.junbo.catalog.core.entitlementdef</a> &gt; EntitlementDefinitionServiceTest</div>
+<div id="summary">
+<table>
+<tr>
+<td>
+<div class="summaryGroup">
+<table>
+<tr>
+<td>
+<div class="infoBox" id="tests">
+<div class="counter">1</div>
+<p>tests</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="failures">
+<div class="counter">0</div>
+<p>failures</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="duration">
+<div class="counter">0.335s</div>
+<p>duration</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</td>
+<td>
+<div class="infoBox success" id="successRate">
+<div class="percent">100%</div>
+<p>successful</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div id="tabs">
+<ul class="tabLinks">
+<li>
+<a href="#tab0">Tests</a>
+</li>
+<li>
+<a href="#tab1">Standard output</a>
+</li>
+</ul>
+<div id="tab0" class="tab">
+<h2>Tests</h2>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>Duration</th>
+<th>Result</th>
+</tr>
+</thead>
+<tr>
+<td class="success">testCreate</td>
+<td>0.335s</td>
+<td class="success">passed</td>
+</tr>
+</table>
+</div>
+<div id="tab1" class="tab">
+<h2>Standard output</h2>
+<span class="code">
+<pre>15:58:37.942 [Test worker] DEBUG o.s.b.f.s.DefaultListableBeanFactory - Returning cached instance of singleton bean 'org.springframework.transaction.interceptor.TransactionInterceptor#0'
+15:58:37.948 [Test worker] DEBUG o.s.t.a.AnnotationTransactionAttributeSource - Adding transactional method 'EntitlementDefinitionServiceImpl.createEntitlementDefinition' with attribute: PROPAGATION_REQUIRED,ISOLATION_DEFAULT; ''
+15:58:37.950 [Test worker] DEBUG o.s.b.f.s.DefaultListableBeanFactory - Returning cached instance of singleton bean 'transactionManager'
+15:58:37.951 [Test worker] DEBUG o.s.t.jta.JtaTransactionManager - Participating in existing transaction
+15:58:37.956 [Test worker] DEBUG o.s.t.a.AnnotationTransactionAttributeSource - Adding transactional method 'OculusGlobalCounterInDBImpl.getAndIncrease' with attribute: PROPAGATION_REQUIRES_NEW,ISOLATION_DEFAULT; ''
+15:58:37.956 [Test worker] DEBUG o.s.b.f.s.DefaultListableBeanFactory - Returning cached instance of singleton bean 'transactionManager'
+15:58:37.956 [Test worker] DEBUG o.s.t.jta.JtaTransactionManager - Suspending current transaction, creating new transaction with name [com.junbo.sharding.id.oculus.OculusGlobalCounterInDBImpl.getAndIncrease]
+15:58:37.956 [Test worker] DEBUG b.tm.BitronixTransactionManager - suspending transaction a Bitronix Transaction with GTRID [737072696E672D62746D000001451725B35F00000001], status=ACTIVE, 0 resource(s) enlisted (started Mon Mar 31 15:58:37 CST 2014)
+15:58:37.957 [Test worker] DEBUG b.tm.BitronixTransactionManager - clearing current thread context: a ThreadContext (1760720802) with transaction a Bitronix Transaction with GTRID [737072696E672D62746D000001451725B35F00000001], status=ACTIVE, 0 resource(s) enlisted (started Mon Mar 31 15:58:37 CST 2014), default timeout 60s
+15:58:37.957 [Test worker] DEBUG b.tm.BitronixTransactionManager - beginning a new transaction
+15:58:37.957 [Test worker] DEBUG b.tm.BitronixTransactionManager - dumping 1 transaction context(s)
+15:58:37.957 [Test worker] DEBUG b.tm.BitronixTransactionManager - a Bitronix Transaction with GTRID [737072696E672D62746D000001451725B35F00000001], status=ACTIVE, 0 resource(s) enlisted (started Mon Mar 31 15:58:37 CST 2014)
+15:58:37.957 [Test worker] DEBUG bitronix.tm.BitronixTransaction - creating new transaction with GTRID [737072696E672D62746D000001451725B38500000002]
+15:58:37.957 [Test worker] DEBUG bitronix.tm.internal.ThreadContext - assigning &lt;a Bitronix Transaction with GTRID [737072696E672D62746D000001451725B38500000002], status=NO_TRANSACTION, 0 resource(s) enlisted (started null)&gt; to &lt;a ThreadContext (1760720802) with transaction null, default timeout 60s&gt;
+15:58:37.957 [Test worker] DEBUG bitronix.tm.BitronixTransaction - changing transaction status to ACTIVE
+15:58:37.957 [Test worker] DEBUG bitronix.tm.BitronixTransaction - transaction status is changing from NO_TRANSACTION to ACTIVE - executing 0 listener(s)
+15:58:37.957 [Test worker] DEBUG bitronix.tm.timer.TaskScheduler - scheduling transaction timeout task on a Bitronix Transaction with GTRID [737072696E672D62746D000001451725B38500000002], status=ACTIVE, 0 resource(s) enlisted (started Mon Mar 31 15:58:37 CST 2014) for Mon Mar 31 15:59:37 CST 2014
+15:58:37.957 [Test worker] DEBUG bitronix.tm.timer.TaskScheduler - removing task by a Bitronix Transaction with GTRID [737072696E672D62746D000001451725B38500000002], status=ACTIVE, 0 resource(s) enlisted (started Mon Mar 31 15:58:37 CST 2014)
+15:58:37.958 [Test worker] DEBUG bitronix.tm.timer.TaskScheduler - scheduled a TransactionTimeoutTask on a Bitronix Transaction with GTRID [737072696E672D62746D000001451725B38500000002], status=ACTIVE, 0 resource(s) enlisted (started Mon Mar 31 15:58:37 CST 2014) scheduled for Mon Mar 31 15:59:37 CST 2014, total task(s) queued: 5
+15:58:37.958 [Test worker] DEBUG b.tm.BitronixTransactionManager - begun new transaction at Mon Mar 31 15:58:37 CST 2014
+15:58:37.958 [Test worker] DEBUG o.s.t.a.AnnotationTransactionAttributeSource - Adding transactional method 'IdGlobalCounterDAOImpl.get' with attribute: PROPAGATION_REQUIRED,ISOLATION_DEFAULT; ''
+15:58:37.958 [Test worker] DEBUG o.s.b.f.s.DefaultListableBeanFactory - Returning cached instance of singleton bean 'transactionManager'
+15:58:37.958 [Test worker] DEBUG o.s.t.jta.JtaTransactionManager - Participating in existing transaction
+15:58:38.023 [Test worker] DEBUG bitronix.tm.BitronixTransaction - registering synchronization org.hibernate.engine.transaction.synchronization.internal.RegisteredSynchronization@e80719c
+15:58:38.025 [Test worker] DEBUG bitronix.tm.BitronixTransaction - registering synchronization org.hibernate.context.internal.JTASessionContext$CleanupSynch@4afcf7b
+15:58:38.025 [bitronix-async-jmx-worker] DEBUG b.tm.utils.ManagementRegistrar - Calling ManagementRegisterCommand on object with name bitronix.tm:type=Transaction,Gtrid=737072696E672D62746D000001451725B35F00000001
+15:58:38.025 [bitronix-async-jmx-worker] DEBUG b.tm.utils.ManagementRegistrar - Calling ManagementRegisterCommand on object with name bitronix.tm:type=Transaction,Gtrid=737072696E672D62746D000001451725B38500000002
+15:58:38.067 [Test worker] DEBUG b.tm.resource.jdbc.PoolingDataSource - acquiring connection from a PoolingDataSource containing an XAPool of resource jdbc/sharding with 3 connection(s) (3 still available)
+15:58:38.067 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - trying to recycle a NOT_ACCESSIBLE connection of an XAPool of resource jdbc/sharding with 3 connection(s) (3 still available)
+15:58:38.067 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - current transaction GTRID is [737072696E672D62746D000001451725B38500000002]
+15:58:38.067 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - no NOT_ACCESSIBLE connection enlisted in this transaction
+15:58:38.067 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - getting IN_POOL connection from an XAPool of resource jdbc/sharding with 3 connection(s) (3 still available), waiting if necessary
+15:58:38.067 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - checking if connection can be closed: a JdbcPooledConnection from datasource jdbc/sharding in state IN_POOL with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2 - closing time: 1396252775439, now time: 1396252718067
+15:58:38.067 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - found IN_POOL connection a JdbcPooledConnection from datasource jdbc/sharding in state IN_POOL with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2 from an XAPool of resource jdbc/sharding with 3 connection(s) (2 still available)
+15:58:38.067 [Test worker] DEBUG b.t.r.jdbc.JdbcPooledConnection - getting connection handle from a JdbcPooledConnection from datasource jdbc/sharding in state IN_POOL with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.067 [Test worker] DEBUG b.t.r.c.AbstractXAStatefulHolder - notifying 2 stateChangeEventListener(s) about state changing from IN_POOL to ACCESSIBLE in a JdbcPooledConnection from datasource jdbc/sharding in state IN_POOL with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.067 [Test worker] DEBUG b.t.r.c.AbstractXAStatefulHolder - state changing from IN_POOL to ACCESSIBLE in a JdbcPooledConnection from datasource jdbc/sharding in state IN_POOL with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.067 [Test worker] DEBUG b.t.r.c.AbstractXAStatefulHolder - notifying 2 stateChangeEventListener(s) about state changed from IN_POOL to ACCESSIBLE in a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.067 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - added a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2 to the accessible pool
+15:58:38.067 [Test worker] DEBUG b.t.r.jdbc.JdbcPooledConnection - connection org.postgresql.xa.PGXAConnection@98798f2 was in state IN_POOL, testing it
+15:58:38.067 [Test worker] DEBUG b.t.r.jdbc.JdbcPooledConnection - no query to test connection of a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2, skipping test
+15:58:38.067 [Test worker] DEBUG b.t.r.jdbc.JdbcPooledConnection - got connection handle from a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.067 [Test worker] DEBUG b.tm.resource.jdbc.PoolingDataSource - acquired connection from a PoolingDataSource containing an XAPool of resource jdbc/sharding with 3 connection(s) (2 still available)
+15:58:38.067 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - enlisting a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2 into a Bitronix Transaction with GTRID [737072696E672D62746D000001451725B38500000002], status=ACTIVE, 0 resource(s) enlisted (started Mon Mar 31 15:58:37 CST 2014)
+15:58:38.069 [Test worker] DEBUG b.tm.resource.ResourceRegistrar - XAResource org.postgresql.xa.PGXAConnection@98798f2 belongs to a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2 that itself belongs to a PoolingDataSource containing an XAPool of resource jdbc/sharding with 3 connection(s) (2 still available)
+15:58:38.070 [Test worker] DEBUG b.tm.internal.XAResourceManager - creating new branch with a Bitronix XID [737072696E672D62746D000001451725B38500000002 : 737072696E672D62746D000001451725B3F600000003]
+15:58:38.071 [Test worker] DEBUG b.tm.internal.XAResourceHolderState - assigning &lt;a Bitronix XID [737072696E672D62746D000001451725B38500000002 : 737072696E672D62746D000001451725B3F600000003]&gt; to &lt;an XAResourceHolderState with uniqueName=jdbc/sharding XAResource=org.postgresql.xa.PGXAConnection@98798f2 with XID null&gt;
+15:58:38.071 [Test worker] DEBUG b.tm.internal.XAResourceHolderState - starting an XAResourceHolderState with uniqueName=jdbc/sharding XAResource=org.postgresql.xa.PGXAConnection@98798f2 with XID a Bitronix XID [737072696E672D62746D000001451725B38500000002 : 737072696E672D62746D000001451725B3F600000003] with NOFLAGS
+15:58:38.071 [Test worker] DEBUG b.tm.internal.XAResourceHolderState - started an XAResourceHolderState with uniqueName=jdbc/sharding XAResource=org.postgresql.xa.PGXAConnection@98798f2 (started) with XID a Bitronix XID [737072696E672D62746D000001451725B38500000002 : 737072696E672D62746D000001451725B3F600000003] with NOFLAGS
+15:58:38.071 [Test worker] DEBUG b.t.r.c.AbstractXAResourceHolder - putting XAResourceHolderState [an XAResourceHolderState with uniqueName=jdbc/sharding XAResource=org.postgresql.xa.PGXAConnection@98798f2 (started) with XID a Bitronix XID [737072696E672D62746D000001451725B38500000002 : 737072696E672D62746D000001451725B3F600000003]] on a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.071 [Test worker] DEBUG b.t.r.c.AbstractXAResourceHolder - GTRID [737072696E672D62746D000001451725B38500000002] previously unknown to a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2, adding it to the resource's transactions list
+Hibernate: select * from id_global_counter where shard_id = ? and option_mode = ?
+15:58:38.133 [Test worker] DEBUG b.t.r.jdbc.proxy.ConnectionJavaProxy - closing a ConnectionJavaProxy of a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2 on Pooled connection wrapping physical connection org.postgresql.jdbc4.Jdbc4Connection@11a390fc
+15:58:38.134 [Test worker] DEBUG b.t.r.jdbc.JdbcPooledConnection - releasing to pool a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.134 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - delisting a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2 from a Bitronix Transaction with GTRID [737072696E672D62746D000001451725B38500000002], status=ACTIVE, 1 resource(s) enlisted (started Mon Mar 31 15:58:37 CST 2014)
+15:58:38.134 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - resource is in enlisting global transaction context: a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.134 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - requeuing a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2 from a Bitronix Transaction with GTRID [737072696E672D62746D000001451725B38500000002], status=ACTIVE, 1 resource(s) enlisted (started Mon Mar 31 15:58:37 CST 2014)
+15:58:38.134 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - resource is in enlisting global transaction context: a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.134 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - deferring release to pool of a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.135 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2 is not already registered for deferred release in a Bitronix Transaction with GTRID [737072696E672D62746D000001451725B38500000002], status=ACTIVE, 1 resource(s) enlisted (started Mon Mar 31 15:58:37 CST 2014)
+15:58:38.135 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - registering DeferredReleaseSynchronization for a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.136 [Test worker] DEBUG b.t.r.c.AbstractXAStatefulHolder - notifying 2 stateChangeEventListener(s) about state changing from ACCESSIBLE to NOT_ACCESSIBLE in a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.136 [Test worker] DEBUG b.t.r.jdbc.JdbcPooledConnection - closing 0 dangling uncached statement(s)
+15:58:38.136 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - removed a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2 from the accessible pool
+15:58:38.136 [Test worker] DEBUG b.t.r.c.AbstractXAStatefulHolder - state changing from ACCESSIBLE to NOT_ACCESSIBLE in a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.136 [Test worker] DEBUG b.t.r.c.AbstractXAStatefulHolder - notifying 2 stateChangeEventListener(s) about state changed from ACCESSIBLE to NOT_ACCESSIBLE in a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.136 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - added a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2 to the inaccessible pool
+15:58:38.136 [Test worker] DEBUG b.t.r.jdbc.JdbcPooledConnection - released to pool a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.142 [Test worker] DEBUG o.s.t.a.AnnotationTransactionAttributeSource - Adding transactional method 'IdGlobalCounterDAOImpl.saveOrUpdate' with attribute: PROPAGATION_REQUIRED,ISOLATION_DEFAULT; ''
+15:58:38.142 [Test worker] DEBUG o.s.b.f.s.DefaultListableBeanFactory - Returning cached instance of singleton bean 'transactionManager'
+15:58:38.142 [Test worker] DEBUG o.s.t.jta.JtaTransactionManager - Participating in existing transaction
+15:58:38.170 [Test worker] DEBUG b.tm.resource.jdbc.PoolingDataSource - acquiring connection from a PoolingDataSource containing an XAPool of resource jdbc/sharding with 3 connection(s) (2 still available)
+15:58:38.170 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - trying to recycle a NOT_ACCESSIBLE connection of an XAPool of resource jdbc/sharding with 3 connection(s) (2 still available)
+15:58:38.171 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - current transaction GTRID is [737072696E672D62746D000001451725B38500000002]
+15:58:38.171 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - found a connection in NOT_ACCESSIBLE state: a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.171 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - 1 xa resource(s) created by connection in NOT_ACCESSIBLE state: a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.171 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - NOT_ACCESSIBLE xa resource GTRID: 737072696E672D62746D000001451725B38500000002
+15:58:38.171 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - NOT_ACCESSIBLE xa resource's GTRID matched this transaction's GTRID, recycling it
+15:58:38.171 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - found NOT_ACCESSIBLE connection a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2 from an XAPool of resource jdbc/sharding with 3 connection(s) (2 still available)
+15:58:38.171 [Test worker] DEBUG b.t.r.jdbc.JdbcPooledConnection - getting connection handle from a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.171 [Test worker] DEBUG b.t.r.c.AbstractXAStatefulHolder - notifying 2 stateChangeEventListener(s) about state changing from NOT_ACCESSIBLE to ACCESSIBLE in a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.172 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - removed a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2 from the inaccessible pool
+15:58:38.172 [Test worker] DEBUG b.t.r.c.AbstractXAStatefulHolder - state changing from NOT_ACCESSIBLE to ACCESSIBLE in a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.172 [Test worker] DEBUG b.t.r.c.AbstractXAStatefulHolder - notifying 2 stateChangeEventListener(s) about state changed from NOT_ACCESSIBLE to ACCESSIBLE in a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.172 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - marking a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2 as recycled in a Bitronix Transaction with GTRID [737072696E672D62746D000001451725B38500000002], status=ACTIVE, 1 resource(s) enlisted (started Mon Mar 31 15:58:37 CST 2014)
+15:58:38.172 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2 has been recycled, unregistering deferred release from a Bitronix Transaction with GTRID [737072696E672D62746D000001451725B38500000002], status=ACTIVE, 1 resource(s) enlisted (started Mon Mar 31 15:58:37 CST 2014)
+15:58:38.173 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - added a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2 to the accessible pool
+15:58:38.173 [Test worker] DEBUG b.t.r.jdbc.JdbcPooledConnection - connection org.postgresql.xa.PGXAConnection@98798f2 was in state NOT_ACCESSIBLE, no need to test it
+15:58:38.173 [Test worker] DEBUG b.t.r.jdbc.JdbcPooledConnection - got connection handle from a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.173 [Test worker] DEBUG b.tm.resource.jdbc.PoolingDataSource - acquired connection from a PoolingDataSource containing an XAPool of resource jdbc/sharding with 3 connection(s) (2 still available)
+15:58:38.173 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - enlisting a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2 into a Bitronix Transaction with GTRID [737072696E672D62746D000001451725B38500000002], status=ACTIVE, 1 resource(s) enlisted (started Mon Mar 31 15:58:37 CST 2014)
+15:58:38.174 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - avoiding re-enlistment of already enlisted but not ended resource an XAResourceHolderState with uniqueName=jdbc/sharding XAResource=org.postgresql.xa.PGXAConnection@98798f2 (started) with XID a Bitronix XID [737072696E672D62746D000001451725B38500000002 : 737072696E672D62746D000001451725B3F600000003]
+Hibernate: update id_global_counter set global_count=?, option_mode=?, shard_id=? where id=?
+15:58:38.177 [Test worker] DEBUG b.t.r.jdbc.proxy.ConnectionJavaProxy - closing a ConnectionJavaProxy of a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2 on Pooled connection wrapping physical connection org.postgresql.jdbc4.Jdbc4Connection@11a390fc
+15:58:38.177 [Test worker] DEBUG b.t.r.jdbc.JdbcPooledConnection - releasing to pool a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.177 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - delisting a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2 from a Bitronix Transaction with GTRID [737072696E672D62746D000001451725B38500000002], status=ACTIVE, 1 resource(s) enlisted (started Mon Mar 31 15:58:37 CST 2014)
+15:58:38.177 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - resource is in enlisting global transaction context: a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.177 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - requeuing a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2 from a Bitronix Transaction with GTRID [737072696E672D62746D000001451725B38500000002], status=ACTIVE, 1 resource(s) enlisted (started Mon Mar 31 15:58:37 CST 2014)
+15:58:38.177 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - resource is in enlisting global transaction context: a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.177 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - deferring release to pool of a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.177 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2 is not already registered for deferred release in a Bitronix Transaction with GTRID [737072696E672D62746D000001451725B38500000002], status=ACTIVE, 1 resource(s) enlisted (started Mon Mar 31 15:58:37 CST 2014)
+15:58:38.178 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - registering DeferredReleaseSynchronization for a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.178 [Test worker] DEBUG b.t.r.c.AbstractXAStatefulHolder - notifying 2 stateChangeEventListener(s) about state changing from ACCESSIBLE to NOT_ACCESSIBLE in a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.178 [Test worker] DEBUG b.t.r.jdbc.JdbcPooledConnection - closing 0 dangling uncached statement(s)
+15:58:38.178 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - removed a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2 from the accessible pool
+15:58:38.178 [Test worker] DEBUG b.t.r.c.AbstractXAStatefulHolder - state changing from ACCESSIBLE to NOT_ACCESSIBLE in a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.178 [Test worker] DEBUG b.t.r.c.AbstractXAStatefulHolder - notifying 2 stateChangeEventListener(s) about state changed from ACCESSIBLE to NOT_ACCESSIBLE in a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.178 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - added a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2 to the inaccessible pool
+15:58:38.178 [Test worker] DEBUG b.t.r.jdbc.JdbcPooledConnection - released to pool a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.179 [Test worker] DEBUG b.tm.resource.jdbc.PoolingDataSource - acquiring connection from a PoolingDataSource containing an XAPool of resource jdbc/sharding with 3 connection(s) (2 still available)
+15:58:38.179 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - trying to recycle a NOT_ACCESSIBLE connection of an XAPool of resource jdbc/sharding with 3 connection(s) (2 still available)
+15:58:38.179 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - current transaction GTRID is [737072696E672D62746D000001451725B38500000002]
+15:58:38.179 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - found a connection in NOT_ACCESSIBLE state: a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.179 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - 1 xa resource(s) created by connection in NOT_ACCESSIBLE state: a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.179 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - NOT_ACCESSIBLE xa resource GTRID: 737072696E672D62746D000001451725B38500000002
+15:58:38.179 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - NOT_ACCESSIBLE xa resource's GTRID matched this transaction's GTRID, recycling it
+15:58:38.179 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - found NOT_ACCESSIBLE connection a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2 from an XAPool of resource jdbc/sharding with 3 connection(s) (2 still available)
+15:58:38.179 [Test worker] DEBUG b.t.r.jdbc.JdbcPooledConnection - getting connection handle from a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.179 [Test worker] DEBUG b.t.r.c.AbstractXAStatefulHolder - notifying 2 stateChangeEventListener(s) about state changing from NOT_ACCESSIBLE to ACCESSIBLE in a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.179 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - removed a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2 from the inaccessible pool
+15:58:38.179 [Test worker] DEBUG b.t.r.c.AbstractXAStatefulHolder - state changing from NOT_ACCESSIBLE to ACCESSIBLE in a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.179 [Test worker] DEBUG b.t.r.c.AbstractXAStatefulHolder - notifying 2 stateChangeEventListener(s) about state changed from NOT_ACCESSIBLE to ACCESSIBLE in a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.179 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - marking a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2 as recycled in a Bitronix Transaction with GTRID [737072696E672D62746D000001451725B38500000002], status=ACTIVE, 1 resource(s) enlisted (started Mon Mar 31 15:58:37 CST 2014)
+15:58:38.180 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2 has been recycled, unregistering deferred release from a Bitronix Transaction with GTRID [737072696E672D62746D000001451725B38500000002], status=ACTIVE, 1 resource(s) enlisted (started Mon Mar 31 15:58:37 CST 2014)
+15:58:38.180 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - added a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2 to the accessible pool
+15:58:38.180 [Test worker] DEBUG b.t.r.jdbc.JdbcPooledConnection - connection org.postgresql.xa.PGXAConnection@98798f2 was in state NOT_ACCESSIBLE, no need to test it
+15:58:38.180 [Test worker] DEBUG b.t.r.jdbc.JdbcPooledConnection - got connection handle from a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.180 [Test worker] DEBUG b.tm.resource.jdbc.PoolingDataSource - acquired connection from a PoolingDataSource containing an XAPool of resource jdbc/sharding with 3 connection(s) (2 still available)
+15:58:38.180 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - enlisting a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2 into a Bitronix Transaction with GTRID [737072696E672D62746D000001451725B38500000002], status=ACTIVE, 1 resource(s) enlisted (started Mon Mar 31 15:58:37 CST 2014)
+15:58:38.180 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - avoiding re-enlistment of already enlisted but not ended resource an XAResourceHolderState with uniqueName=jdbc/sharding XAResource=org.postgresql.xa.PGXAConnection@98798f2 (started) with XID a Bitronix XID [737072696E672D62746D000001451725B38500000002 : 737072696E672D62746D000001451725B3F600000003]
+Hibernate: select * from id_global_counter where shard_id = ? and option_mode = ?
+15:58:38.183 [Test worker] DEBUG b.t.r.jdbc.proxy.ConnectionJavaProxy - closing a ConnectionJavaProxy of a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2 on Pooled connection wrapping physical connection org.postgresql.jdbc4.Jdbc4Connection@11a390fc
+15:58:38.183 [Test worker] DEBUG b.t.r.jdbc.JdbcPooledConnection - releasing to pool a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.183 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - delisting a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2 from a Bitronix Transaction with GTRID [737072696E672D62746D000001451725B38500000002], status=ACTIVE, 1 resource(s) enlisted (started Mon Mar 31 15:58:37 CST 2014)
+15:58:38.183 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - resource is in enlisting global transaction context: a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.183 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - requeuing a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2 from a Bitronix Transaction with GTRID [737072696E672D62746D000001451725B38500000002], status=ACTIVE, 1 resource(s) enlisted (started Mon Mar 31 15:58:37 CST 2014)
+15:58:38.183 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - resource is in enlisting global transaction context: a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.183 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - deferring release to pool of a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.184 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2 is not already registered for deferred release in a Bitronix Transaction with GTRID [737072696E672D62746D000001451725B38500000002], status=ACTIVE, 1 resource(s) enlisted (started Mon Mar 31 15:58:37 CST 2014)
+15:58:38.184 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - registering DeferredReleaseSynchronization for a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.184 [Test worker] DEBUG b.t.r.c.AbstractXAStatefulHolder - notifying 2 stateChangeEventListener(s) about state changing from ACCESSIBLE to NOT_ACCESSIBLE in a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.184 [Test worker] DEBUG b.t.r.jdbc.JdbcPooledConnection - closing 0 dangling uncached statement(s)
+15:58:38.184 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - removed a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2 from the accessible pool
+15:58:38.184 [Test worker] DEBUG b.t.r.c.AbstractXAStatefulHolder - state changing from ACCESSIBLE to NOT_ACCESSIBLE in a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.184 [Test worker] DEBUG b.t.r.c.AbstractXAStatefulHolder - notifying 2 stateChangeEventListener(s) about state changed from ACCESSIBLE to NOT_ACCESSIBLE in a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.184 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - added a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2 to the inaccessible pool
+15:58:38.184 [Test worker] DEBUG b.t.r.jdbc.JdbcPooledConnection - released to pool a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.193 [Test worker] DEBUG b.tm.resource.jdbc.PoolingDataSource - acquiring connection from a PoolingDataSource containing an XAPool of resource jdbc/sharding with 3 connection(s) (2 still available)
+15:58:38.193 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - trying to recycle a NOT_ACCESSIBLE connection of an XAPool of resource jdbc/sharding with 3 connection(s) (2 still available)
+15:58:38.193 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - current transaction GTRID is [737072696E672D62746D000001451725B38500000002]
+15:58:38.193 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - found a connection in NOT_ACCESSIBLE state: a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.193 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - 1 xa resource(s) created by connection in NOT_ACCESSIBLE state: a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.193 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - NOT_ACCESSIBLE xa resource GTRID: 737072696E672D62746D000001451725B38500000002
+15:58:38.193 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - NOT_ACCESSIBLE xa resource's GTRID matched this transaction's GTRID, recycling it
+15:58:38.193 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - found NOT_ACCESSIBLE connection a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2 from an XAPool of resource jdbc/sharding with 3 connection(s) (2 still available)
+15:58:38.193 [Test worker] DEBUG b.t.r.jdbc.JdbcPooledConnection - getting connection handle from a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.193 [Test worker] DEBUG b.t.r.c.AbstractXAStatefulHolder - notifying 2 stateChangeEventListener(s) about state changing from NOT_ACCESSIBLE to ACCESSIBLE in a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.194 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - removed a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2 from the inaccessible pool
+15:58:38.194 [Test worker] DEBUG b.t.r.c.AbstractXAStatefulHolder - state changing from NOT_ACCESSIBLE to ACCESSIBLE in a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.194 [Test worker] DEBUG b.t.r.c.AbstractXAStatefulHolder - notifying 2 stateChangeEventListener(s) about state changed from NOT_ACCESSIBLE to ACCESSIBLE in a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.194 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - marking a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2 as recycled in a Bitronix Transaction with GTRID [737072696E672D62746D000001451725B38500000002], status=ACTIVE, 1 resource(s) enlisted (started Mon Mar 31 15:58:37 CST 2014)
+15:58:38.194 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2 has been recycled, unregistering deferred release from a Bitronix Transaction with GTRID [737072696E672D62746D000001451725B38500000002], status=ACTIVE, 1 resource(s) enlisted (started Mon Mar 31 15:58:37 CST 2014)
+15:58:38.194 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - added a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2 to the accessible pool
+15:58:38.194 [Test worker] DEBUG b.t.r.jdbc.JdbcPooledConnection - connection org.postgresql.xa.PGXAConnection@98798f2 was in state NOT_ACCESSIBLE, no need to test it
+15:58:38.195 [Test worker] DEBUG b.t.r.jdbc.JdbcPooledConnection - got connection handle from a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.195 [Test worker] DEBUG b.tm.resource.jdbc.PoolingDataSource - acquired connection from a PoolingDataSource containing an XAPool of resource jdbc/sharding with 3 connection(s) (2 still available)
+15:58:38.195 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - enlisting a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2 into a Bitronix Transaction with GTRID [737072696E672D62746D000001451725B38500000002], status=ACTIVE, 1 resource(s) enlisted (started Mon Mar 31 15:58:37 CST 2014)
+15:58:38.195 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - avoiding re-enlistment of already enlisted but not ended resource an XAResourceHolderState with uniqueName=jdbc/sharding XAResource=org.postgresql.xa.PGXAConnection@98798f2 (started) with XID a Bitronix XID [737072696E672D62746D000001451725B38500000002 : 737072696E672D62746D000001451725B3F600000003]
+Hibernate: update id_global_counter set global_count=?, option_mode=?, shard_id=? where id=?
+15:58:38.198 [Test worker] DEBUG b.t.r.jdbc.proxy.ConnectionJavaProxy - closing a ConnectionJavaProxy of a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2 on Pooled connection wrapping physical connection org.postgresql.jdbc4.Jdbc4Connection@11a390fc
+15:58:38.198 [Test worker] DEBUG b.t.r.jdbc.JdbcPooledConnection - releasing to pool a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.199 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - delisting a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2 from a Bitronix Transaction with GTRID [737072696E672D62746D000001451725B38500000002], status=ACTIVE, 1 resource(s) enlisted (started Mon Mar 31 15:58:37 CST 2014)
+15:58:38.199 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - resource is in enlisting global transaction context: a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.199 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - requeuing a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2 from a Bitronix Transaction with GTRID [737072696E672D62746D000001451725B38500000002], status=ACTIVE, 1 resource(s) enlisted (started Mon Mar 31 15:58:37 CST 2014)
+15:58:38.200 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - resource is in enlisting global transaction context: a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.200 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - deferring release to pool of a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.200 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2 is not already registered for deferred release in a Bitronix Transaction with GTRID [737072696E672D62746D000001451725B38500000002], status=ACTIVE, 1 resource(s) enlisted (started Mon Mar 31 15:58:37 CST 2014)
+15:58:38.201 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - registering DeferredReleaseSynchronization for a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.201 [Test worker] DEBUG b.t.r.c.AbstractXAStatefulHolder - notifying 2 stateChangeEventListener(s) about state changing from ACCESSIBLE to NOT_ACCESSIBLE in a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.201 [Test worker] DEBUG b.t.r.jdbc.JdbcPooledConnection - closing 0 dangling uncached statement(s)
+15:58:38.201 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - removed a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2 from the accessible pool
+15:58:38.202 [Test worker] DEBUG b.t.r.c.AbstractXAStatefulHolder - state changing from ACCESSIBLE to NOT_ACCESSIBLE in a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.202 [Test worker] DEBUG b.t.r.c.AbstractXAStatefulHolder - notifying 2 stateChangeEventListener(s) about state changed from ACCESSIBLE to NOT_ACCESSIBLE in a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.202 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - added a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2 to the inaccessible pool
+15:58:38.202 [Test worker] DEBUG b.t.r.jdbc.JdbcPooledConnection - released to pool a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.203 [Test worker] DEBUG b.tm.resource.jdbc.PoolingDataSource - acquiring connection from a PoolingDataSource containing an XAPool of resource jdbc/sharding with 3 connection(s) (2 still available)
+15:58:38.203 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - trying to recycle a NOT_ACCESSIBLE connection of an XAPool of resource jdbc/sharding with 3 connection(s) (2 still available)
+15:58:38.203 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - current transaction GTRID is [737072696E672D62746D000001451725B38500000002]
+15:58:38.203 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - found a connection in NOT_ACCESSIBLE state: a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.204 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - 1 xa resource(s) created by connection in NOT_ACCESSIBLE state: a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.205 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - NOT_ACCESSIBLE xa resource GTRID: 737072696E672D62746D000001451725B38500000002
+15:58:38.205 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - NOT_ACCESSIBLE xa resource's GTRID matched this transaction's GTRID, recycling it
+15:58:38.205 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - found NOT_ACCESSIBLE connection a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2 from an XAPool of resource jdbc/sharding with 3 connection(s) (2 still available)
+15:58:38.205 [Test worker] DEBUG b.t.r.jdbc.JdbcPooledConnection - getting connection handle from a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.205 [Test worker] DEBUG b.t.r.c.AbstractXAStatefulHolder - notifying 2 stateChangeEventListener(s) about state changing from NOT_ACCESSIBLE to ACCESSIBLE in a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.205 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - removed a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2 from the inaccessible pool
+15:58:38.206 [Test worker] DEBUG b.t.r.c.AbstractXAStatefulHolder - state changing from NOT_ACCESSIBLE to ACCESSIBLE in a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.206 [Test worker] DEBUG b.t.r.c.AbstractXAStatefulHolder - notifying 2 stateChangeEventListener(s) about state changed from NOT_ACCESSIBLE to ACCESSIBLE in a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.206 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - marking a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2 as recycled in a Bitronix Transaction with GTRID [737072696E672D62746D000001451725B38500000002], status=ACTIVE, 1 resource(s) enlisted (started Mon Mar 31 15:58:37 CST 2014)
+15:58:38.207 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2 has been recycled, unregistering deferred release from a Bitronix Transaction with GTRID [737072696E672D62746D000001451725B38500000002], status=ACTIVE, 1 resource(s) enlisted (started Mon Mar 31 15:58:37 CST 2014)
+15:58:38.208 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - added a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2 to the accessible pool
+15:58:38.208 [Test worker] DEBUG b.t.r.jdbc.JdbcPooledConnection - connection org.postgresql.xa.PGXAConnection@98798f2 was in state NOT_ACCESSIBLE, no need to test it
+15:58:38.209 [Test worker] DEBUG b.t.r.jdbc.JdbcPooledConnection - got connection handle from a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.209 [Test worker] DEBUG b.tm.resource.jdbc.PoolingDataSource - acquired connection from a PoolingDataSource containing an XAPool of resource jdbc/sharding with 3 connection(s) (2 still available)
+15:58:38.209 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - enlisting a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2 into a Bitronix Transaction with GTRID [737072696E672D62746D000001451725B38500000002], status=ACTIVE, 1 resource(s) enlisted (started Mon Mar 31 15:58:37 CST 2014)
+15:58:38.209 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - avoiding re-enlistment of already enlisted but not ended resource an XAResourceHolderState with uniqueName=jdbc/sharding XAResource=org.postgresql.xa.PGXAConnection@98798f2 (started) with XID a Bitronix XID [737072696E672D62746D000001451725B38500000002 : 737072696E672D62746D000001451725B3F600000003]
+Hibernate: select * from id_global_counter where shard_id = ? and option_mode = ?
+15:58:38.212 [Test worker] DEBUG b.t.r.jdbc.proxy.ConnectionJavaProxy - closing a ConnectionJavaProxy of a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2 on Pooled connection wrapping physical connection org.postgresql.jdbc4.Jdbc4Connection@11a390fc
+15:58:38.212 [Test worker] DEBUG b.t.r.jdbc.JdbcPooledConnection - releasing to pool a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.212 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - delisting a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2 from a Bitronix Transaction with GTRID [737072696E672D62746D000001451725B38500000002], status=ACTIVE, 1 resource(s) enlisted (started Mon Mar 31 15:58:37 CST 2014)
+15:58:38.212 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - resource is in enlisting global transaction context: a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.212 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - requeuing a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2 from a Bitronix Transaction with GTRID [737072696E672D62746D000001451725B38500000002], status=ACTIVE, 1 resource(s) enlisted (started Mon Mar 31 15:58:37 CST 2014)
+15:58:38.212 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - resource is in enlisting global transaction context: a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.212 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - deferring release to pool of a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.213 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2 is not already registered for deferred release in a Bitronix Transaction with GTRID [737072696E672D62746D000001451725B38500000002], status=ACTIVE, 1 resource(s) enlisted (started Mon Mar 31 15:58:37 CST 2014)
+15:58:38.213 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - registering DeferredReleaseSynchronization for a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.213 [Test worker] DEBUG b.t.r.c.AbstractXAStatefulHolder - notifying 2 stateChangeEventListener(s) about state changing from ACCESSIBLE to NOT_ACCESSIBLE in a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.213 [Test worker] DEBUG b.t.r.jdbc.JdbcPooledConnection - closing 0 dangling uncached statement(s)
+15:58:38.213 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - removed a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2 from the accessible pool
+15:58:38.213 [Test worker] DEBUG b.t.r.c.AbstractXAStatefulHolder - state changing from ACCESSIBLE to NOT_ACCESSIBLE in a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.213 [Test worker] DEBUG b.t.r.c.AbstractXAStatefulHolder - notifying 2 stateChangeEventListener(s) about state changed from ACCESSIBLE to NOT_ACCESSIBLE in a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.213 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - added a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2 to the inaccessible pool
+15:58:38.213 [Test worker] DEBUG b.t.r.jdbc.JdbcPooledConnection - released to pool a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.214 [Test worker] DEBUG b.tm.resource.jdbc.PoolingDataSource - acquiring connection from a PoolingDataSource containing an XAPool of resource jdbc/sharding with 3 connection(s) (2 still available)
+15:58:38.215 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - trying to recycle a NOT_ACCESSIBLE connection of an XAPool of resource jdbc/sharding with 3 connection(s) (2 still available)
+15:58:38.215 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - current transaction GTRID is [737072696E672D62746D000001451725B38500000002]
+15:58:38.215 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - found a connection in NOT_ACCESSIBLE state: a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.215 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - 1 xa resource(s) created by connection in NOT_ACCESSIBLE state: a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.216 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - NOT_ACCESSIBLE xa resource GTRID: 737072696E672D62746D000001451725B38500000002
+15:58:38.216 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - NOT_ACCESSIBLE xa resource's GTRID matched this transaction's GTRID, recycling it
+15:58:38.216 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - found NOT_ACCESSIBLE connection a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2 from an XAPool of resource jdbc/sharding with 3 connection(s) (2 still available)
+15:58:38.217 [Test worker] DEBUG b.t.r.jdbc.JdbcPooledConnection - getting connection handle from a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.217 [Test worker] DEBUG b.t.r.c.AbstractXAStatefulHolder - notifying 2 stateChangeEventListener(s) about state changing from NOT_ACCESSIBLE to ACCESSIBLE in a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.218 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - removed a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2 from the inaccessible pool
+15:58:38.218 [Test worker] DEBUG b.t.r.c.AbstractXAStatefulHolder - state changing from NOT_ACCESSIBLE to ACCESSIBLE in a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.218 [Test worker] DEBUG b.t.r.c.AbstractXAStatefulHolder - notifying 2 stateChangeEventListener(s) about state changed from NOT_ACCESSIBLE to ACCESSIBLE in a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.219 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - marking a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2 as recycled in a Bitronix Transaction with GTRID [737072696E672D62746D000001451725B38500000002], status=ACTIVE, 1 resource(s) enlisted (started Mon Mar 31 15:58:37 CST 2014)
+15:58:38.219 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2 has been recycled, unregistering deferred release from a Bitronix Transaction with GTRID [737072696E672D62746D000001451725B38500000002], status=ACTIVE, 1 resource(s) enlisted (started Mon Mar 31 15:58:37 CST 2014)
+15:58:38.219 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - added a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2 to the accessible pool
+15:58:38.219 [Test worker] DEBUG b.t.r.jdbc.JdbcPooledConnection - connection org.postgresql.xa.PGXAConnection@98798f2 was in state NOT_ACCESSIBLE, no need to test it
+15:58:38.220 [Test worker] DEBUG b.t.r.jdbc.JdbcPooledConnection - got connection handle from a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.220 [Test worker] DEBUG b.tm.resource.jdbc.PoolingDataSource - acquired connection from a PoolingDataSource containing an XAPool of resource jdbc/sharding with 3 connection(s) (2 still available)
+15:58:38.221 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - enlisting a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2 into a Bitronix Transaction with GTRID [737072696E672D62746D000001451725B38500000002], status=ACTIVE, 1 resource(s) enlisted (started Mon Mar 31 15:58:37 CST 2014)
+15:58:38.221 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - avoiding re-enlistment of already enlisted but not ended resource an XAResourceHolderState with uniqueName=jdbc/sharding XAResource=org.postgresql.xa.PGXAConnection@98798f2 (started) with XID a Bitronix XID [737072696E672D62746D000001451725B38500000002 : 737072696E672D62746D000001451725B3F600000003]
+Hibernate: select * from id_global_counter where shard_id = ? and option_mode = ?
+15:58:38.225 [Test worker] DEBUG b.t.r.jdbc.proxy.ConnectionJavaProxy - closing a ConnectionJavaProxy of a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2 on Pooled connection wrapping physical connection org.postgresql.jdbc4.Jdbc4Connection@11a390fc
+15:58:38.225 [Test worker] DEBUG b.t.r.jdbc.JdbcPooledConnection - releasing to pool a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 1 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.225 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - delisting a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2 from a Bitronix Transaction with GTRID [737072696E672D62746D000001451725B38500000002], status=ACTIVE, 1 resource(s) enlisted (started Mon Mar 31 15:58:37 CST 2014)
+15:58:38.225 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - resource is in enlisting global transaction context: a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.225 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - requeuing a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2 from a Bitronix Transaction with GTRID [737072696E672D62746D000001451725B38500000002], status=ACTIVE, 1 resource(s) enlisted (started Mon Mar 31 15:58:37 CST 2014)
+15:58:38.225 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - resource is in enlisting global transaction context: a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.225 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - deferring release to pool of a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.225 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2 is not already registered for deferred release in a Bitronix Transaction with GTRID [737072696E672D62746D000001451725B38500000002], status=ACTIVE, 1 resource(s) enlisted (started Mon Mar 31 15:58:37 CST 2014)
+15:58:38.226 [Test worker] DEBUG b.t.r.c.TransactionContextHelper - registering DeferredReleaseSynchronization for a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.226 [Test worker] DEBUG b.t.r.c.AbstractXAStatefulHolder - notifying 2 stateChangeEventListener(s) about state changing from ACCESSIBLE to NOT_ACCESSIBLE in a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.226 [Test worker] DEBUG b.t.r.jdbc.JdbcPooledConnection - closing 0 dangling uncached statement(s)
+15:58:38.226 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - removed a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2 from the accessible pool
+15:58:38.226 [Test worker] DEBUG b.t.r.c.AbstractXAStatefulHolder - state changing from ACCESSIBLE to NOT_ACCESSIBLE in a JdbcPooledConnection from datasource jdbc/sharding in state ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.226 [Test worker] DEBUG b.t.r.c.AbstractXAStatefulHolder - notifying 2 stateChangeEventListener(s) about state changed from ACCESSIBLE to NOT_ACCESSIBLE in a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.226 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - added a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2 to the inaccessible pool
+15:58:38.226 [Test worker] DEBUG b.t.r.jdbc.JdbcPooledConnection - released to pool a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.226 [Test worker] DEBUG o.s.t.jta.JtaTransactionManager - Initiating transaction commit
+15:58:38.226 [Test worker] DEBUG b.tm.BitronixTransactionManager - committing transaction a Bitronix Transaction with GTRID [737072696E672D62746D000001451725B38500000002], status=ACTIVE, 1 resource(s) enlisted (started Mon Mar 31 15:58:37 CST 2014)
+15:58:38.226 [Test worker] DEBUG bitronix.tm.timer.TaskScheduler - cancelling transaction timeout task on a Bitronix Transaction with GTRID [737072696E672D62746D000001451725B38500000002], status=ACTIVE, 1 resource(s) enlisted (started Mon Mar 31 15:58:37 CST 2014)
+15:58:38.226 [Test worker] DEBUG bitronix.tm.timer.TaskScheduler - removing task by a Bitronix Transaction with GTRID [737072696E672D62746D000001451725B38500000002], status=ACTIVE, 1 resource(s) enlisted (started Mon Mar 31 15:58:37 CST 2014)
+15:58:38.233 [Test worker] DEBUG bitronix.tm.timer.TaskScheduler - cancelled a TransactionTimeoutTask on a Bitronix Transaction with GTRID [737072696E672D62746D000001451725B38500000002], status=ACTIVE, 1 resource(s) enlisted (started Mon Mar 31 15:58:37 CST 2014) scheduled for Mon Mar 31 15:59:37 CST 2014, total task(s) still queued: 4
+15:58:38.233 [Test worker] DEBUG bitronix.tm.BitronixTransaction - before completion, 4 synchronization(s) to execute
+15:58:38.235 [Test worker] DEBUG bitronix.tm.BitronixTransaction - executing synchronization a DeferredReleaseSynchronization of a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.235 [Test worker] DEBUG bitronix.tm.BitronixTransaction - executing synchronization a ClearContextSynchronization for a Bitronix Transaction with GTRID [737072696E672D62746D000001451725B38500000002], status=ACTIVE, 1 resource(s) enlisted (started Mon Mar 31 15:58:37 CST 2014)
+15:58:38.235 [Test worker] DEBUG bitronix.tm.BitronixTransaction - executing synchronization org.hibernate.engine.transaction.synchronization.internal.RegisteredSynchronization@e80719c
+15:58:38.236 [Test worker] DEBUG bitronix.tm.BitronixTransaction - executing synchronization org.hibernate.context.internal.JTASessionContext$CleanupSynch@4afcf7b
+15:58:38.236 [Test worker] DEBUG bitronix.tm.BitronixTransaction - found unclosed resource to delist: an XAResourceHolderState with uniqueName=jdbc/sharding XAResource=org.postgresql.xa.PGXAConnection@98798f2 (started) with XID a Bitronix XID [737072696E672D62746D000001451725B38500000002 : 737072696E672D62746D000001451725B3F600000003]
+15:58:38.236 [Test worker] DEBUG b.tm.internal.XAResourceManager - delisting resource an XAResourceHolderState with uniqueName=jdbc/sharding XAResource=org.postgresql.xa.PGXAConnection@98798f2 (started) with XID a Bitronix XID [737072696E672D62746D000001451725B38500000002 : 737072696E672D62746D000001451725B3F600000003]
+15:58:38.236 [Test worker] DEBUG b.tm.internal.XAResourceHolderState - ending an XAResourceHolderState with uniqueName=jdbc/sharding XAResource=org.postgresql.xa.PGXAConnection@98798f2 (started) with XID a Bitronix XID [737072696E672D62746D000001451725B38500000002 : 737072696E672D62746D000001451725B3F600000003] with SUCCESS
+15:58:38.236 [Test worker] DEBUG b.tm.internal.XAResourceHolderState - ended an XAResourceHolderState with uniqueName=jdbc/sharding XAResource=org.postgresql.xa.PGXAConnection@98798f2 (started) with XID a Bitronix XID [737072696E672D62746D000001451725B38500000002 : 737072696E672D62746D000001451725B3F600000003] with SUCCESS
+15:58:38.237 [Test worker] DEBUG bitronix.tm.BitronixTransaction - committing, 1 enlisted resource(s)
+15:58:38.237 [Test worker] DEBUG bitronix.tm.BitronixTransaction - changing transaction status to PREPARING
+15:58:38.237 [Test worker] DEBUG bitronix.tm.BitronixTransaction - transaction status is changing from ACTIVE to PREPARING - executing 0 listener(s)
+15:58:38.237 [Test worker] DEBUG bitronix.tm.twopc.Preparer - 1 resource enlisted, no prepare needed (1PC)
+15:58:38.238 [Test worker] DEBUG bitronix.tm.BitronixTransaction - changing transaction status to PREPARED
+15:58:38.238 [Test worker] DEBUG bitronix.tm.BitronixTransaction - transaction status is changing from PREPARING to PREPARED - executing 0 listener(s)
+15:58:38.238 [Test worker] DEBUG bitronix.tm.BitronixTransaction - 1 interested resource(s)
+15:58:38.238 [Test worker] DEBUG bitronix.tm.BitronixTransaction - changing transaction status to COMMITTING
+15:58:38.239 [Test worker] DEBUG bitronix.tm.BitronixTransaction - transaction status is changing from PREPARED to COMMITTING - executing 0 listener(s)
+15:58:38.239 [Test worker] DEBUG b.tm.twopc.AbstractPhaseEngine - executing phase on 1 resource(s) enlisted in 1 position(s) in reverse position order
+15:58:38.240 [Test worker] DEBUG b.tm.twopc.AbstractPhaseEngine - running 1 job(s) for position '1'
+15:58:38.241 [Test worker] DEBUG bitronix.tm.twopc.Committer - committing resource an XAResourceHolderState with uniqueName=jdbc/sharding XAResource=org.postgresql.xa.PGXAConnection@98798f2 (ended) with XID a Bitronix XID [737072696E672D62746D000001451725B38500000002 : 737072696E672D62746D000001451725B3F600000003] (with one-phase optimization)
+15:58:38.243 [Test worker] DEBUG bitronix.tm.twopc.Committer - committed resource an XAResourceHolderState with uniqueName=jdbc/sharding XAResource=org.postgresql.xa.PGXAConnection@98798f2 (ended) with XID a Bitronix XID [737072696E672D62746D000001451725B38500000002 : 737072696E672D62746D000001451725B3F600000003]
+15:58:38.243 [Test worker] DEBUG b.tm.twopc.AbstractPhaseEngine - phase executed with 0 exception(s)
+15:58:38.244 [Test worker] DEBUG b.tm.twopc.AbstractPhaseEngine - ran 1 job(s) for position '1'
+15:58:38.244 [Test worker] DEBUG bitronix.tm.twopc.Committer - phase 2 commit executed on resources [jdbc/sharding]
+15:58:38.245 [Test worker] DEBUG bitronix.tm.twopc.Committer - phase 2 commit succeeded on resources [jdbc/sharding]
+15:58:38.245 [Test worker] DEBUG bitronix.tm.BitronixTransaction - changing transaction status to COMMITTED
+15:58:38.245 [Test worker] DEBUG bitronix.tm.BitronixTransaction - transaction status is changing from COMMITTING to COMMITTED - executing 0 listener(s)
+15:58:38.245 [Test worker] DEBUG bitronix.tm.BitronixTransaction - successfully committed a Bitronix Transaction with GTRID [737072696E672D62746D000001451725B38500000002], status=COMMITTED, 1 resource(s) enlisted (started Mon Mar 31 15:58:37 CST 2014)
+15:58:38.245 [Test worker] DEBUG b.tm.internal.XAResourceManager - clearing XAResourceHolder states on 1 resource(s)
+15:58:38.245 [Test worker] DEBUG b.t.r.c.AbstractXAResourceHolder - removing XAResourceHolderState of xid a Bitronix XID [737072696E672D62746D000001451725B38500000002 : 737072696E672D62746D000001451725B3F600000003] from a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.245 [Test worker] DEBUG b.tm.internal.XAResourceManager - resource a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2 cleaned up all transaction states for GTRID [737072696E672D62746D000001451725B38500000002]
+15:58:38.245 [Test worker] DEBUG bitronix.tm.BitronixTransaction - after completion, 4 synchronization(s) to execute
+15:58:38.245 [Test worker] DEBUG bitronix.tm.BitronixTransaction - executing synchronization org.hibernate.engine.transaction.synchronization.internal.RegisteredSynchronization@e80719c with status=COMMITTED
+15:58:38.248 [Test worker] DEBUG bitronix.tm.BitronixTransaction - executing synchronization org.hibernate.context.internal.JTASessionContext$CleanupSynch@4afcf7b with status=COMMITTED
+15:58:38.248 [Test worker] DEBUG bitronix.tm.BitronixTransaction - executing synchronization a ClearContextSynchronization for a Bitronix Transaction with GTRID [737072696E672D62746D000001451725B38500000002], status=COMMITTED, 0 resource(s) enlisted (started Mon Mar 31 15:58:37 CST 2014) with status=COMMITTED
+15:58:38.248 [Test worker] DEBUG b.tm.BitronixTransactionManager - clearing transaction from thread context: a ThreadContext (1760720802) with transaction a Bitronix Transaction with GTRID [737072696E672D62746D000001451725B38500000002], status=COMMITTED, 0 resource(s) enlisted (started Mon Mar 31 15:58:37 CST 2014), default timeout 60s
+15:58:38.248 [Test worker] DEBUG b.tm.BitronixTransactionManager - removing transaction from in-flight transactions: a Bitronix Transaction with GTRID [737072696E672D62746D000001451725B38500000002], status=COMMITTED, 0 resource(s) enlisted (started Mon Mar 31 15:58:37 CST 2014)
+15:58:38.248 [Test worker] DEBUG bitronix.tm.BitronixTransaction - executing synchronization a DeferredReleaseSynchronization of a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2 with status=COMMITTED
+15:58:38.248 [Test worker] DEBUG b.t.r.c.DeferredReleaseSynchronization - DeferredReleaseSynchronization requeuing a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.248 [Test worker] DEBUG b.t.r.c.AbstractXAStatefulHolder - notifying 2 stateChangeEventListener(s) about state changing from NOT_ACCESSIBLE to IN_POOL in a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.248 [Test worker] DEBUG b.t.r.jdbc.JdbcPooledConnection - closing 0 dangling uncached statement(s)
+15:58:38.249 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - removed a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2 from the inaccessible pool
+15:58:38.249 [Test worker] DEBUG b.t.r.c.AbstractXAStatefulHolder - state changing from NOT_ACCESSIBLE to IN_POOL in a JdbcPooledConnection from datasource jdbc/sharding in state NOT_ACCESSIBLE with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.249 [Test worker] DEBUG b.t.r.c.AbstractXAStatefulHolder - notifying 2 stateChangeEventListener(s) about state changed from NOT_ACCESSIBLE to IN_POOL in a JdbcPooledConnection from datasource jdbc/sharding in state IN_POOL with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.249 [Test worker] DEBUG bitronix.tm.resource.common.XAPool - added a JdbcPooledConnection from datasource jdbc/sharding in state IN_POOL with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2 to the available pool
+15:58:38.249 [Test worker] DEBUG b.t.r.c.DeferredReleaseSynchronization - DeferredReleaseSynchronization requeued a JdbcPooledConnection from datasource jdbc/sharding in state IN_POOL with usage count 0 wrapping org.postgresql.xa.PGXAConnection@98798f2
+15:58:38.249 [Test worker] DEBUG o.s.t.jta.JtaTransactionManager - Resuming suspended transaction after completion of inner transaction
+15:58:38.249 [Test worker] DEBUG b.tm.BitronixTransactionManager - resuming a Bitronix Transaction with GTRID [737072696E672D62746D000001451725B35F00000001], status=ACTIVE, 0 resource(s) enlisted (started Mon Mar 31 15:58:37 CST 2014)
+15:58:38.249 [Test worker] DEBUG bitronix.tm.internal.ThreadContext - assigning &lt;a Bitronix Transaction with GTRID [737072696E672D62746D000001451725B35F00000001], status=ACTIVE, 0 resource(s) enlisted (started Mon Mar 31 15:58:37 CST 2014)&gt; to &lt;a ThreadContext (1760720802) with transaction null, default timeout 60s&gt;
+15:58:38.252 [Test worker] DEBUG bitronix.tm.BitronixTransaction - registering synchronization org.hibernate.engine.transaction.synchronization.internal.RegisteredSynchronization@6ac145f4
+15:58:38.252 [Test worker] DEBUG bitronix.tm.BitronixTransaction - registering synchronization org.hibernate.context.internal.JTASessionContext$CleanupSynch@1777d2d
+15:58:38.258 [Test worker] DEBUG o.s.t.a.AnnotationTransactionAttributeSource - Adding transactional method 'EntitlementDefinitionServiceImpl.getEntitlementDefinition' with attribute: PROPAGATION_REQUIRED,ISOLATION_DEFAULT; ''
+15:58:38.258 [Test worker] DEBUG o.s.b.f.s.DefaultListableBeanFactory - Returning cached instance of singleton bean 'transactionManager'
+15:58:38.259 [Test worker] DEBUG o.s.t.jta.JtaTransactionManager - Participating in existing transaction
+</pre>
+</span>
+</div>
+</div>
+<div id="footer">
+<p>Generated by 
+<a href="http://www.gradle.org">Gradle 1.10</a> at 2014-3-31 15:58:39</p>
+</div>
+</div>
+</body>

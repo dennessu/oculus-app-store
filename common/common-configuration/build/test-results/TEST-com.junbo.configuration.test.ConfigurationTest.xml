@@ -1,0 +1,20 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<testsuite name="com.junbo.configuration.test.ConfigurationTest" tests="2" failures="0" errors="0" timestamp="2014-04-09T09:47:02" hostname="XumengChendeMacBook-Pro.local" time="0.838">
+  <properties/>
+  <testcase name="testConfigurations" classname="com.junbo.configuration.test.ConfigurationTest" time="0.604"/>
+  <testcase name="testLoadConfig" classname="com.junbo.configuration.test.ConfigurationTest" time="0.233"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[四月 09, 2014 5:47:02 下午 org.springframework.context.support.ClassPathXmlApplicationContext prepareRefresh
+信息: Refreshing org.springframework.context.support.ClassPathXmlApplicationContext@29ed4306: startup date [Wed Apr 09 17:47:02 CST 2014]; root of context hierarchy
+四月 09, 2014 5:47:02 下午 org.springframework.beans.factory.xml.XmlBeanDefinitionReader loadBeanDefinitions
+信息: Loading XML bean definitions from file [/Users/xmchen/Workspace/git/main/common/common-configuration/build/resources/test/spring/configuration-test-context.xml]
+四月 09, 2014 5:47:02 下午 org.springframework.beans.factory.xml.XmlBeanDefinitionReader loadBeanDefinitions
+信息: Loading XML bean definitions from file [/Users/xmchen/Workspace/git/main/common/common-configuration/build/resources/main/spring/common-context.xml]
+四月 09, 2014 5:47:03 下午 org.springframework.context.support.ClassPathXmlApplicationContext prepareRefresh
+信息: Refreshing org.springframework.context.support.ClassPathXmlApplicationContext@7dc647de: startup date [Wed Apr 09 17:47:03 CST 2014]; root of context hierarchy
+四月 09, 2014 5:47:03 下午 org.springframework.beans.factory.xml.XmlBeanDefinitionReader loadBeanDefinitions
+信息: Loading XML bean definitions from file [/Users/xmchen/Workspace/git/main/common/common-configuration/build/resources/test/spring/configuration-test-context.xml]
+四月 09, 2014 5:47:03 下午 org.springframework.beans.factory.xml.XmlBeanDefinitionReader loadBeanDefinitions
+信息: Loading XML bean definitions from file [/Users/xmchen/Workspace/git/main/common/common-configuration/build/resources/main/spring/common-context.xml]
+]]></system-err>
+</testsuite>

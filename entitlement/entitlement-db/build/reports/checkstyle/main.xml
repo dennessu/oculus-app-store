@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="5.6">
+<file name="/Users/xmchen/Workspace/git/main/entitlement/entitlement-db/src/main/java/com/junbo/entitlement/db/dao/EntitlementDao.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/entitlement/entitlement-db/src/main/java/com/junbo/entitlement/db/dao/EntitlementHistoryDao.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/entitlement/entitlement-db/src/main/java/com/junbo/entitlement/db/dao/hibernate/BaseDao.java">
+<error line="46" severity="warning" message="Don&apos;t use trailing comments." source="com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"/>
+<error line="48" severity="warning" message="Don&apos;t use trailing comments." source="com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"/>
+<error line="61" severity="warning" message="Don&apos;t use trailing comments." source="com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"/>
+</file>
+<file name="/Users/xmchen/Workspace/git/main/entitlement/entitlement-db/src/main/java/com/junbo/entitlement/db/dao/hibernate/EntitlementDaoImpl.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/entitlement/entitlement-db/src/main/java/com/junbo/entitlement/db/dao/hibernate/EntitlementHistoryDaoImpl.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/entitlement/entitlement-db/src/main/java/com/junbo/entitlement/db/entity/EntitlementEntity.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/entitlement/entitlement-db/src/main/java/com/junbo/entitlement/db/entity/EntitlementHistoryEntity.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/entitlement/entitlement-db/src/main/java/com/junbo/entitlement/db/entity/Entity.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/entitlement/entitlement-db/src/main/java/com/junbo/entitlement/db/entity/def/EntitlementStatus.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/entitlement/entitlement-db/src/main/java/com/junbo/entitlement/db/entity/def/EntitlementType.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/entitlement/entitlement-db/src/main/java/com/junbo/entitlement/db/entity/def/IdentifiableType.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/entitlement/entitlement-db/src/main/java/com/junbo/entitlement/db/entity/def/Shardable.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/entitlement/entitlement-db/src/main/java/com/junbo/entitlement/db/mapper/EntitlementMapper.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/entitlement/entitlement-db/src/main/java/com/junbo/entitlement/db/repository/EntitlementRepository.java">
+</file>
+</checkstyle>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="5.6">
+<file name="/Users/xmchen/Workspace/git/main/fulfilment/fulfilment-spec/src/main/java/com/junbo/fulfilment/spec/constant/FulfilmentActionType.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/fulfilment/fulfilment-spec/src/main/java/com/junbo/fulfilment/spec/constant/FulfilmentStatus.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/fulfilment/fulfilment-spec/src/main/java/com/junbo/fulfilment/spec/error/AppErrors.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/fulfilment/fulfilment-spec/src/main/java/com/junbo/fulfilment/spec/fusion/CatalogEntityType.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/fulfilment/fulfilment-spec/src/main/java/com/junbo/fulfilment/spec/fusion/Entitlement.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/fulfilment/fulfilment-spec/src/main/java/com/junbo/fulfilment/spec/fusion/LinkedEntry.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/fulfilment/fulfilment-spec/src/main/java/com/junbo/fulfilment/spec/fusion/Offer.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/fulfilment/fulfilment-spec/src/main/java/com/junbo/fulfilment/spec/fusion/OfferAction.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/fulfilment/fulfilment-spec/src/main/java/com/junbo/fulfilment/spec/fusion/ShipingMethod.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/fulfilment/fulfilment-spec/src/main/java/com/junbo/fulfilment/spec/fusion/ShippingAddress.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/fulfilment/fulfilment-spec/src/main/java/com/junbo/fulfilment/spec/fusion/ShippingMethod.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/fulfilment/fulfilment-spec/src/main/java/com/junbo/fulfilment/spec/model/FulfilmentAction.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/fulfilment/fulfilment-spec/src/main/java/com/junbo/fulfilment/spec/model/FulfilmentItem.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/fulfilment/fulfilment-spec/src/main/java/com/junbo/fulfilment/spec/model/FulfilmentRequest.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/fulfilment/fulfilment-spec/src/main/java/com/junbo/fulfilment/spec/resource/FulfilmentResource.java">
+</file>
+</checkstyle>

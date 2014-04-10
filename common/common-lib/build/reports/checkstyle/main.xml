@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="5.6">
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/constant/HttpHeadersConstants.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/deser/IdDeserializer.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/error/AppError.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/error/AppErrorException.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/error/Error.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/error/ErrorDef.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/error/ErrorProxy.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/error/RestExceptionMapper.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/id/AppId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/id/AttributeId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/id/BalanceId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/id/BalanceLinkId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/id/BillingAddressId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/id/CartId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/id/CartItemId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/id/CategoryId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/id/CouponId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/id/DeviceId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/id/DiscountId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/id/EmailId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/id/EntitlementDefinitionId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/id/EntitlementId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/id/FulfillmentEventId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/id/FulfilmentId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/id/Id.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/id/ItemId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/id/OfferId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/id/OrderEventId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/id/OrderId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/id/OrderItemId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/id/PasswordRuleId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/id/PaymentInstrumentId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/id/PreorderId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/id/PriceTierId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/id/PromotionId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/id/SellerId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/id/SellerTaxProfileId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/id/ShippingAddressId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/id/SubledgerId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/id/SubscriptionId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/id/TokenOrderId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/id/TokenSetId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/id/TosId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/id/TransactionId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/id/UserDeviceProfileId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/id/UserFederationId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/id/UserId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/id/UserOptInId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/id/UserProfileId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/id/UserTosAcceptanceId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/id/WalletId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/id/converter/IdTypeFromStringConverter.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/id/provider/IdTypeFromStringProvider.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/jackson/annotation/AppId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/jackson/annotation/AttributeId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/jackson/annotation/CategoryId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/jackson/annotation/EntitlementDefinitionId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/jackson/annotation/EntitlementId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/jackson/annotation/FulfilmentId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/jackson/annotation/FulfilmentRequestId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/jackson/annotation/ItemId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/jackson/annotation/OfferId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/jackson/annotation/OrderId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/jackson/annotation/OrderItemId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/jackson/annotation/PaymentInstrumentId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/jackson/annotation/PaymentInstrumentTypeId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/jackson/annotation/PaymentTransactionId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/jackson/annotation/PriceTierId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/jackson/annotation/PromotionId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/jackson/annotation/ResourcePath.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/jackson/annotation/ShippingAddressId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/jackson/annotation/ShippingMethodId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/jackson/annotation/SubscriptionId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/jackson/annotation/TokenOrderId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/jackson/annotation/TokenSetId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/jackson/annotation/UserId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/jackson/annotation/WalletId.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/jackson/common/ResourceAware.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/jackson/common/ResourceCollectionAware.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/jackson/deserializer/CompoundIdDeserializer.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/jackson/deserializer/OrderIdDeserializer.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/jackson/deserializer/ResourceAwareDeserializationContext.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/jackson/deserializer/ResourceIdDeserializer.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/jackson/model/ResourceRef.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/jackson/serializer/CascadeResource.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/jackson/serializer/CascadeResourceIdSerializer.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/jackson/serializer/CompoundAware.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/jackson/serializer/CompoundIdSerializer.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/jackson/serializer/OrderIdSerializer.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/jackson/serializer/ResourceAwareSerializerProvider.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/jackson/serializer/ResourceIdSerializer.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/json/IdPathParamTranscoder.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/json/JacksonFeature.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/json/JsonMessageTranscoder.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/json/ObjectMapperProvider.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/json/PropertyAssignedAware.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/json/PropertyAssignedAwareFilter.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/json/PropertyAssignedAwareIntrospector.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/json/PropertyAssignedAwareSupport.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/json/QueryParamTranscoderImpl.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/memcached/MemcachedClientFactoryBean.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/model/Link.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/model/Results.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/ser/IdSerializer.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/shuffle/Oculus40Id.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/shuffle/Oculus48Id.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/util/EnumRegistry.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/util/IdFormatter.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/util/Identifiable.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/util/JsonMarshaller.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/common/common-lib/src/main/java/com/junbo/common/util/PromiseFacade.java">
+</file>
+</checkstyle>
