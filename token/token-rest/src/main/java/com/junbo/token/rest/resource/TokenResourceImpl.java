@@ -10,7 +10,6 @@ import com.junbo.common.id.TokenOrderId;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.token.common.CommonUtil;
 import com.junbo.token.core.TokenService;
-import com.junbo.token.common.exception.AppClientExceptions;
 import com.junbo.token.spec.model.*;
 import com.junbo.token.spec.resource.TokenResource;
 import org.slf4j.Logger;
