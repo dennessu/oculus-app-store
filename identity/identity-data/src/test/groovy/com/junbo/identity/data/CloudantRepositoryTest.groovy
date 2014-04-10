@@ -11,7 +11,6 @@ import com.junbo.common.id.SecurityQuestionId
 import com.junbo.common.id.UserId
 import com.junbo.identity.data.identifiable.UserPasswordStrength
 import com.junbo.identity.data.repository.*
-import com.junbo.identity.spec.model.users.UserDevice
 import com.junbo.identity.spec.model.users.UserPassword
 import com.junbo.identity.spec.model.users.*
 import com.junbo.identity.spec.options.list.*
@@ -19,8 +18,14 @@ import com.junbo.identity.spec.v1.model.Device
 import com.junbo.identity.spec.v1.model.Group
 import com.junbo.identity.spec.v1.model.UserAuthenticator
 import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
+import com.junbo.identity.spec.v1.model.UserDevice
+import com.junbo.identity.spec.v1.model.UserGroup
 import com.junbo.identity.spec.v1.option.list.AuthenticatorListOptions
 import com.junbo.identity.spec.v1.option.list.UserCredentialAttemptListOptions
+import com.junbo.identity.spec.v1.option.list.UserDeviceListOptions
+import com.junbo.identity.spec.v1.option.list.UserGroupListOptions
+import com.junbo.identity.spec.v1.option.list.UserPasswordListOptions
+import com.junbo.identity.spec.v1.option.list.UserPinListOptions
 import groovy.transform.CompileStatic
 import org.glassfish.jersey.internal.util.Base64
 import org.springframework.beans.factory.annotation.Autowired
@@ -240,10 +245,7 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
     @Test(enabled = true)
     public void testUserDeviceRepository() {
         UserDevice userDevice = new UserDevice()
-        userDevice.setType('Oculus')
-        userDevice.setDeviceId(UUID.randomUUID().toString())
-        userDevice.setName(UUID.randomUUID().toString())
-        userDevice.setOs(UUID.randomUUID().toString())
+        userDevice.setDeviceId(new DeviceId(123L))
         userDevice.setUserId(new UserId(userId))
         userDevice.setCreatedBy('lixia')
         userDevice.setCreatedTime(new Date())
@@ -251,14 +253,11 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
         userDevice = userDeviceRepository.create(userDevice).wrapped().get()
 
         UserDevice newUserDevice = userDeviceRepository.get(userDevice.getId()).wrapped().get()
-        Assert.assertEquals(userDevice.getName(), newUserDevice.getName())
 
         String newName = UUID.randomUUID().toString()
-        newUserDevice.setName(newName)
         userDeviceRepository.update(newUserDevice)
 
         newUserDevice = userDeviceRepository.get(userDevice.getId()).wrapped().get()
-        Assert.assertEquals(newName, newUserDevice.getName())
 
         UserDeviceListOptions getOption = new UserDeviceListOptions()
         getOption.setUserId(new UserId(userId))

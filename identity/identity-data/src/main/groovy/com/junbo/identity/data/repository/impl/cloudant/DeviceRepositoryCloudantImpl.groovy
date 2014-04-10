@@ -65,6 +65,6 @@ class DeviceRepositoryCloudantImpl extends CloudantClient<Device> implements Dev
 
     @Override
     protected CloudantViews getCloudantViews() {
-        return views;
+        return views
     }
 }
