@@ -31,4 +31,6 @@ public interface PaymentProviderService{
     Promise<PaymentTransaction> refund(String transactionId, PaymentTransaction request);
     List<PaymentTransaction> getByBillingRefId(String orderId);
     Promise<PaymentTransaction> getByTransactionToken(String token);
+
+    Promise<PaymentTransaction> confirm(String transactionId, PaymentTransaction paymentRequest);
 }

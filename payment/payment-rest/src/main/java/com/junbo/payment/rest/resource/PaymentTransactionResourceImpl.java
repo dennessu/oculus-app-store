@@ -48,4 +48,9 @@ public class PaymentTransactionResourceImpl implements PaymentTransactionResourc
         PaymentTransaction result = paymentService.getById(paymentId);
         return Promise.pure(result);
     }
+
+    @Override
+    public Promise<PaymentTransaction> getExternalPayment(Long paymentId) {
+        return paymentService.getProviderTransaction(paymentId);
+    }
 }
