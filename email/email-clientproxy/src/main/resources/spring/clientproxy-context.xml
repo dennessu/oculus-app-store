@@ -10,7 +10,7 @@
      <tx:annotation-driven/>
 
     <!-- proxy -->
-    <bean id="ascynHttpClient" class="com.ning.http.client.AsyncHttpClient" />
+    <bean id="asyncHttpClient" class="com.ning.http.client.AsyncHttpClient" />
 
     <bean id="emailIdentityFacade" class="com.junbo.email.clientproxy.impl.IdentityFacadeImpl">
         <property name="url" value="${email.client.identity.url}"/>

@@ -25,9 +25,9 @@ import org.springframework.beans.factory.annotation.Autowired
 class IdentityFacadeImpl implements IdentityFacade {
 
     @Autowired
-    final AsyncHttpClient asyncHttpClient
+    private final AsyncHttpClient asyncHttpClient
 
-    String url
+    private String url
 
     void setUrl(String url) {
         this.url = url
