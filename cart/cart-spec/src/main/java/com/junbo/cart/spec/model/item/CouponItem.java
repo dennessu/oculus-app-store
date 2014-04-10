@@ -6,7 +6,6 @@
 package com.junbo.cart.spec.model.item;
 
 import com.junbo.cart.common.validate.Group;
-import com.junbo.common.id.CouponId;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import javax.validation.Valid;
@@ -20,13 +19,13 @@ public class CouponItem extends CartItem {
     @ApiModelProperty(required = true, position = 1, value = "The coupon code.")
     @Valid
     @NotNull(groups = {Group.CartItem.class})
-    private CouponId coupon;
+    private String couponCode;
 
-    public CouponId getCoupon() {
-        return coupon;
+    public String getCouponCode() {
+        return couponCode;
     }
 
-    public void setCoupon(CouponId coupon) {
-        this.coupon = coupon;
+    public void setCouponCode(String couponCode) {
+        this.couponCode = couponCode;
     }
 }
