@@ -1,5 +1,6 @@
 package com.junbo.order.core.impl.orderaction
 
+import com.junbo.billing.spec.enums.BalanceStatus
 import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.model.Balance
 import com.junbo.langur.core.promise.Promise
@@ -52,6 +53,16 @@ class PhysicalSettleAction extends BaseOrderEventAwareAction {
             throw AppErrors.INSTANCE.
                     billingConnectionError(CoreUtils.toAppErrors(throwable)).exception()
         }.then { Balance resultBalance ->
+            if (resultBalance == null) {
+                LOGGER.error('name=Order_PhysicalSettle_Error_Balance_Null')
+                throw AppErrors.INSTANCE.
+                        billingConnectionError().exception()
+            }
+            if (resultBalance.status != BalanceStatus.AWAITING_PAYMENT.name()) {
+                LOGGER.error('name=Order_PhysicalSettle_Failed')
+                throw AppErrors.INSTANCE.
+                        billingChargeFailed().exception()
+            }
             def billingEvent = BillingEventBuilder.buildBillingEvent(resultBalance)
             orderRepository.createBillingEvent(context.orderServiceContext.order.id.value, billingEvent)
             orderServiceContextBuilder.refreshBalances(context.orderServiceContext).syncThen {
