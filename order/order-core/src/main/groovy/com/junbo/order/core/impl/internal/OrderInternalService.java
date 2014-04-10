@@ -11,7 +11,6 @@ import com.junbo.order.spec.model.OrderQueryParam;
 import com.junbo.order.spec.model.PageParam;
 
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Created by chriszhu on 4/1/14.
@@ -22,8 +21,6 @@ public interface OrderInternalService {
     Promise<Order> getOrderByOrderId(Long orderId);
 
     Promise<List<Order>> getOrdersByUserId(Long userId, OrderQueryParam orderQueryParam, PageParam pageParam);
-
-    Order getOrderByTrackingUuid(UUID trackingUuid, Long userId);
 
     void refreshOrderStatus(Order order);
 
