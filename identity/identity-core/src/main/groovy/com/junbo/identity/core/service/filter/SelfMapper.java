@@ -104,4 +104,8 @@ public interface SelfMapper {
     UserCredential filterUserCredential(UserCredential userCredential, MappingContext context);
 
     UserCredential mergeUserCredential(UserCredential source, UserCredential base, MappingContext context);
+
+    UserPii filterUserPii(UserPii userPii, MappingContext context);
+
+    UserPii mergeUserPii(UserPii source, UserPii base, MappingContext context);
 }

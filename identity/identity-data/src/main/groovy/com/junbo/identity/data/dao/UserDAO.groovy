@@ -6,10 +6,12 @@
 package com.junbo.identity.data.dao
 
 import com.junbo.identity.data.entity.user.UserEntity
+import groovy.transform.CompileStatic
 
 /**
  * User DAO is used to fetch/update/delete/get user data from the database
  */
+@CompileStatic
 interface UserDAO {
     // User Model Layer
     UserEntity save(UserEntity user)

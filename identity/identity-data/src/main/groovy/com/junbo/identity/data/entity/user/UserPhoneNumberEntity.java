@@ -26,12 +26,12 @@ public class UserPhoneNumberEntity extends ResourceMetaEntity {
         this.id = id;
     }
 
-    public Long getUserId() {
-        return userId;
+    public Long getUserPiiId() {
+        return userPiiId;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setUserPiiId(Long userPiiId) {
+        this.userPiiId = userPiiId;
     }
 
     public String getType() {
@@ -50,14 +50,6 @@ public class UserPhoneNumberEntity extends ResourceMetaEntity {
         this.value = value;
     }
 
-    public Boolean getPrimary() {
-        return primary;
-    }
-
-    public void setPrimary(Boolean primary) {
-        this.primary = primary;
-    }
-
     public Boolean getVerified() {
         return verified;
     }
@@ -69,14 +61,12 @@ public class UserPhoneNumberEntity extends ResourceMetaEntity {
     @Id
     @Column(name = "id")
     private Long id;
-    @Column(name = "user_id")
-    private Long userId;
+    @Column(name = "user_pii_id")
+    private Long userPiiId;
     @Column(name = "type")
     private String type;
     @Column(name = "value")
     private String value;
-    @Column(name = "is_primary")
-    private Boolean primary;
     @Column(name = "is_verified")
     private Boolean verified;
 }

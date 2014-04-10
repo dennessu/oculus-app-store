@@ -2,7 +2,7 @@ package com.junbo.identity.core.service.validator.impl
 
 import com.junbo.identity.core.service.validator.NameValidator
 import com.junbo.identity.spec.error.AppErrors
-import com.junbo.identity.spec.model.users.UserName
+import com.junbo.identity.spec.v1.model.UserName
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 

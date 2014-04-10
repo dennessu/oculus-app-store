@@ -13,6 +13,7 @@ import com.junbo.common.util.Identifiable;
 import com.junbo.identity.spec.model.users.ResourceMeta;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -46,9 +47,9 @@ public class UserPii extends ResourceMeta implements Identifiable<UserPiiId> {
     // This won't save in DB
     private String displayName;
 
-    private Map<String, UserEmail> emails;
+    private Map<String, UserEmail> emails = new HashMap<>();
 
-    private Map<String, UserPhoneNumber> phoneNumbers;
+    private Map<String, UserPhoneNumber> phoneNumbers = new HashMap<>();
 
     @Override
     public UserPiiId getId() {
@@ -57,6 +58,8 @@ public class UserPii extends ResourceMeta implements Identifiable<UserPiiId> {
 
     public void setId(UserPiiId id) {
         this.id = id;
+        support.setPropertyAssigned("id");
+        support.setPropertyAssigned("self");
     }
 
     public UserId getUserId() {
@@ -65,6 +68,8 @@ public class UserPii extends ResourceMeta implements Identifiable<UserPiiId> {
 
     public void setUserId(UserId userId) {
         this.userId = userId;
+        support.setPropertyAssigned("userId");
+        support.setPropertyAssigned("user");
     }
 
     public UserName getName() {
@@ -73,6 +78,7 @@ public class UserPii extends ResourceMeta implements Identifiable<UserPiiId> {
 
     public void setName(UserName name) {
         this.name = name;
+        support.setPropertyAssigned("name");
     }
 
     public Map<String, UserEmail> getEmails() {
@@ -81,6 +87,7 @@ public class UserPii extends ResourceMeta implements Identifiable<UserPiiId> {
 
     public void setEmails(Map<String, UserEmail> emails) {
         this.emails = emails;
+        support.setPropertyAssigned("emails");
     }
 
     public Map<String, UserPhoneNumber> getPhoneNumbers() {
@@ -89,6 +96,7 @@ public class UserPii extends ResourceMeta implements Identifiable<UserPiiId> {
 
     public void setPhoneNumbers(Map<String, UserPhoneNumber> phoneNumbers) {
         this.phoneNumbers = phoneNumbers;
+        support.setPropertyAssigned("phoneNumbers");
     }
 
     public Date getBirthday() {
@@ -97,6 +105,7 @@ public class UserPii extends ResourceMeta implements Identifiable<UserPiiId> {
 
     public void setBirthday(Date birthday) {
         this.birthday = birthday;
+        support.setPropertyAssigned("birthday");
     }
 
     public String getGender() {
@@ -105,6 +114,7 @@ public class UserPii extends ResourceMeta implements Identifiable<UserPiiId> {
 
     public void setGender(String gender) {
         this.gender = gender;
+        support.setPropertyAssigned("gender");
     }
 
     public Integer getDisplayNameType() {
@@ -113,6 +123,7 @@ public class UserPii extends ResourceMeta implements Identifiable<UserPiiId> {
 
     public void setDisplayNameType(Integer displayNameType) {
         this.displayNameType = displayNameType;
+        support.setPropertyAssigned("displayNameType");
     }
 
     public String getDisplayName() {
@@ -121,5 +132,6 @@ public class UserPii extends ResourceMeta implements Identifiable<UserPiiId> {
 
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
+        support.setPropertyAssigned("displayName");
     }
 }

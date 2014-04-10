@@ -23,6 +23,7 @@ import javax.ws.rs.core.MediaType;
  */
 @Api(value = "users")
 @RestResource
+// todo:    Liangfuxia: Need to change it to users
 @Path("/userResources")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})

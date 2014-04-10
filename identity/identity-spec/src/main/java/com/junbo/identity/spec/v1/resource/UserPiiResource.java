@@ -36,7 +36,7 @@ public interface UserPiiResource {
     @GET
     @Path("/{userPiiId}")
     Promise<UserPii> get(@PathParam("userPiiId") UserPiiId userPiiId,
-                           UserPiiGetOptions getOptions);
+                         @BeanParam  UserPiiGetOptions getOptions);
 
     @ApiOperation("Partial update user's pii information")
     @POST
@@ -58,5 +58,5 @@ public interface UserPiiResource {
     @ApiOperation("Se")
     @GET
     @Path("/")
-    Promise<Results<UserPii>> list(UserPiiListOptions listOptions);
+    Promise<Results<UserPii>> list(@BeanParam UserPiiListOptions listOptions);
 }

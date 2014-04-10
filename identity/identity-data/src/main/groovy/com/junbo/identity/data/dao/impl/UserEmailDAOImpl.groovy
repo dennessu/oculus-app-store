@@ -31,9 +31,9 @@ class UserEmailDAOImpl extends BaseDAO implements UserEmailDAO {
     }
 
     @Override
-    List<UserEmailEntity> search(Long userId, UserEmailListOptions getOption) {
-        Criteria criteria = currentSession(userId).createCriteria(UserEmailEntity)
-        criteria.add(Restrictions.eq('userId', getOption.userId.value))
+    List<UserEmailEntity> search(Long userPiiId, UserEmailListOptions getOption) {
+        Criteria criteria = currentSession(userPiiId).createCriteria(UserEmailEntity)
+        criteria.add(Restrictions.eq('userPiiId', getOption.userPiiId.value))
         if (!StringUtils.isEmpty(getOption.type)) {
             criteria.add(Restrictions.eq('type', getOption.type))
         }
@@ -66,7 +66,7 @@ class UserEmailDAOImpl extends BaseDAO implements UserEmailDAO {
 
     @Override
     UserEmailEntity save(UserEmailEntity entity) {
-        entity.id = idGenerator.nextId(entity.userId)
+        entity.id = idGenerator.nextId(entity.userPiiId)
         Session session = currentSession(entity.id)
         session.save(entity)
         session.flush()
@@ -75,7 +75,7 @@ class UserEmailDAOImpl extends BaseDAO implements UserEmailDAO {
     }
 
     @Override
-    UserEmailEntity findIdByEmail(String email) {
+    UserEmailEntity findByEmail(String email) {
         UserEmailEntity example = new UserEmailEntity()
         example.setValue(email)
 
@@ -84,7 +84,7 @@ class UserEmailDAOImpl extends BaseDAO implements UserEmailDAO {
             def ids = viewQuery.list()
 
             Long id = CollectionUtils.isEmpty(ids) ? null : (Long)(ids.get(0))
-            if (id == null) {
+            if (id != null) {
                 return get(id)
             }
         }

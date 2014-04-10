@@ -22,6 +22,8 @@
                 <value>active</value>
                 <value>type</value>
                 <value>resourceAge</value>
+                <value>createdTime</value>
+                <value>updatedTime</value>
             </list>
         </property>
 
@@ -623,6 +625,53 @@
                 <value>roleId</value>
                 <value>assigneeType</value>
                 <value>assigneeId</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="userPiiFilter" class="com.junbo.identity.core.service.filter.UserPiiFilter">
+        <property name="readableProperties">
+            <list>
+                <value>id</value>
+                <value>userId</value>
+                <value>name</value>
+                <value>birthday</value>
+                <value>gender</value>
+                <value>displayNameType</value>
+                <value>displayName</value>
+                <value>emails</value>
+                <value>phoneNumbers</value>
+                <value>resourceAge</value>
+                <value>createdTime</value>
+                <value>updatedTime</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForCreate">
+            <list>
+                <value>userId</value>
+                <value>name</value>
+                <value>birthday</value>
+                <value>gender</value>
+                <value>displayNameType</value>
+                <value>displayName</value>
+                <value>emails</value>
+                <value>phoneNumbers</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForUpdate">
+            <list>
+                <value>id</value>
+                <value>userId</value>
+                <value>name</value>
+                <value>birthday</value>
+                <value>gender</value>
+                <value>displayNameType</value>
+                <value>displayName</value>
+                <value>emails</value>
+                <value>phoneNumbers</value>
+                <value>resourceAge</value>
             </list>
         </property>
     </bean>

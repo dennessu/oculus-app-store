@@ -319,4 +319,18 @@ public class CommonMapper {
         }
         return new TosId(id);
     }
+
+    public UserPiiId toUserPiiId(Long id) {
+        if (id == null) {
+            return null;
+        }
+        return new UserPiiId(id);
+    }
+
+    public Long toUserPiiId(UserPiiId id) {
+        if (id == null) {
+            return null;
+        }
+        return id.getValue();
+    }
 }

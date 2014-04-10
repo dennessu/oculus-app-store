@@ -19,6 +19,22 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "user_email")
 public class UserEmailEntity extends ResourceMetaEntity implements Identifiable<Long> {
+    @Id
+    @Column(name = "id")
+    private Long id;
+
+    @Column(name = "user_pii_id")
+    private Long userPiiId;
+
+    @Column(name = "value")
+    private String value;
+
+    @Column(name = "type")
+    private String type;
+
+    @Column(name = "is_verified")
+    private Boolean verified;
+
     @Override
     public Long getId() {
         return id;
@@ -28,12 +44,12 @@ public class UserEmailEntity extends ResourceMetaEntity implements Identifiable<
         this.id = id;
     }
 
-    public Long getUserId() {
-        return userId;
+    public Long getUserPiiId() {
+        return userPiiId;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setUserPiiId(Long userPiiId) {
+        this.userPiiId = userPiiId;
     }
 
     public String getValue() {
@@ -52,14 +68,6 @@ public class UserEmailEntity extends ResourceMetaEntity implements Identifiable<
         this.type = type;
     }
 
-    public Boolean getPrimary() {
-        return primary;
-    }
-
-    public void setPrimary(Boolean primary) {
-        this.primary = primary;
-    }
-
     public Boolean getVerified() {
         return verified;
     }
@@ -68,17 +76,4 @@ public class UserEmailEntity extends ResourceMetaEntity implements Identifiable<
         this.verified = verified;
     }
 
-    @Id
-    @Column(name = "id")
-    private Long id;
-    @Column(name = "user_id")
-    private Long userId;
-    @Column(name = "value")
-    private String value;
-    @Column(name = "type")
-    private String type;
-    @Column(name = "is_primary")
-    private Boolean primary;
-    @Column(name = "is_verified")
-    private Boolean verified;
 }

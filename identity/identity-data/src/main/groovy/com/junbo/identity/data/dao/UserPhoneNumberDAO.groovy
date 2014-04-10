@@ -20,7 +20,7 @@ interface UserPhoneNumberDAO {
 
     UserPhoneNumberEntity get(Long id)
 
-    List<UserPhoneNumberEntity> search(Long userId, UserPhoneNumberListOptions getOption)
+    List<UserPhoneNumberEntity> search(Long userPiiId, UserPhoneNumberListOptions getOption)
 
     void delete(Long id)
 }

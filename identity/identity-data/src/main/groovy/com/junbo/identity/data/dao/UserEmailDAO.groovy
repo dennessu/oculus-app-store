@@ -22,7 +22,7 @@ interface UserEmailDAO {
 
     void delete(Long id)
 
-    List<UserEmailEntity> search(Long userId, UserEmailListOptions getOption)
+    List<UserEmailEntity> search(Long userPiiId, UserEmailListOptions getOption)
 
-    UserEmailEntity findIdByEmail(String email)
+    UserEmailEntity findByEmail(String email)
 }

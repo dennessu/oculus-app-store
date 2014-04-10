@@ -67,9 +67,6 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
     private UserDeviceRepository userDeviceRepository
 
     @Autowired
-    private UserEmailRepository userEmailRepository
-
-    @Autowired
     private UserGroupRepository userGroupRepository
 
     @Autowired
@@ -77,9 +74,6 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
 
     @Autowired
     private UserOptinRepository userOptinRepository
-
-    @Autowired
-    private UserPhoneNumberRepository userPhoneNumberRepository
 
     @Autowired
     private UserPasswordRepository userPasswordRepository
@@ -258,34 +252,6 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
     }
 
     @Test(enabled = true)
-    public void testUserEmailRepository() {
-        UserEmail userEmail = new UserEmail()
-        userEmail.setUserId(new UserId(userId))
-        userEmail.setType('Google')
-        userEmail.setValue(UUID.randomUUID().toString())
-        userEmail.setPrimary(true)
-        userEmail.setVerified(true)
-        userEmail.setCreatedBy('lixia')
-        userEmail.setCreatedTime(new Date())
-        userEmail = userEmailRepository.create(userEmail).wrapped().get()
-
-        UserEmail newUserEmail = userEmailRepository.get(userEmail.getId()).wrapped().get()
-        Assert.assertEquals(userEmail.getValue(), newUserEmail.getValue())
-
-        String value = UUID.randomUUID().toString()
-        newUserEmail.setValue(value)
-        userEmailRepository.update(newUserEmail)
-
-        newUserEmail = userEmailRepository.get(userEmail.getId()).wrapped().get()
-        Assert.assertEquals(newUserEmail.getValue(), value)
-
-        UserEmailListOptions getOption = new UserEmailListOptions()
-        getOption.setValue(value)
-        List<UserEmail> userEmails = userEmailRepository.search(getOption).wrapped().get()
-        Assert.assertEquals(userEmails.size(), 1)
-    }
-
-    @Test(enabled = true)
     public void testUserGroupRepository() {
         UserGroup userGroup = new UserGroup()
         userGroup.setUserId(new UserId(userId))
@@ -363,35 +329,6 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
         getOption.setUserId(new UserId(userId))
         List<UserOptin> userOptins = userOptinRepository.search(getOption).wrapped().get()
         Assert.assertEquals(userOptins.size(), 1)
-    }
-
-    @Test(enabled = true)
-    public void testUserPhoneNumberRepository() {
-        UserPhoneNumber userPhoneNumber = new UserPhoneNumber()
-        userPhoneNumber.setUserId(new UserId(userId))
-        userPhoneNumber.setValue(UUID.randomUUID().toString())
-        userPhoneNumber.setType('Google')
-        userPhoneNumber.setPrimary(true)
-        userPhoneNumber.setVerified(true)
-        userPhoneNumber.setCreatedTime(new Date())
-        userPhoneNumber.setCreatedBy('lixia')
-        userPhoneNumber = userPhoneNumberRepository.create(userPhoneNumber).wrapped().get()
-
-        UserPhoneNumber newUserPhoneNumber = userPhoneNumberRepository.get(userPhoneNumber.getId()).wrapped().get()
-        Assert.assertEquals(userPhoneNumber.getValue(), newUserPhoneNumber.getValue())
-
-        String value = UUID.randomUUID().toString()
-        newUserPhoneNumber.setValue(value)
-        userPhoneNumberRepository.update(newUserPhoneNumber)
-
-        newUserPhoneNumber = userPhoneNumberRepository.get(userPhoneNumber.getId()).wrapped().get()
-        Assert.assertEquals(value, newUserPhoneNumber.getValue())
-
-        UserPhoneNumberListOptions getOption = new UserPhoneNumberListOptions()
-        getOption.setUserId(new UserId(userId))
-        getOption.setValue(value)
-        List<UserPhoneNumber> userPhoneNumbers = userPhoneNumberRepository.search(getOption).wrapped().get()
-        Assert.assertEquals(userPhoneNumbers.size(), 1)
     }
 
     @Test(enabled = true)

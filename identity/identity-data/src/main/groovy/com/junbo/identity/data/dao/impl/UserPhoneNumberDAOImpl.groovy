@@ -21,7 +21,7 @@ import org.springframework.util.StringUtils
 class UserPhoneNumberDAOImpl extends BaseDAO implements UserPhoneNumberDAO {
     @Override
     UserPhoneNumberEntity save(UserPhoneNumberEntity entity) {
-        entity.id = idGenerator.nextId(entity.userId)
+        entity.id = idGenerator.nextId(entity.userPiiId)
 
         Session session = currentSession(entity.id)
         session.save(entity)
@@ -45,9 +45,9 @@ class UserPhoneNumberDAOImpl extends BaseDAO implements UserPhoneNumberDAO {
     }
 
     @Override
-    List<UserPhoneNumberEntity> search(Long userId, UserPhoneNumberListOptions getOption) {
-        Criteria criteria = currentSession(userId).createCriteria(UserPhoneNumberEntity)
-        criteria.add(Restrictions.eq('userId', getOption.userId.value))
+    List<UserPhoneNumberEntity> search(Long userPiiId, UserPhoneNumberListOptions getOption) {
+        Criteria criteria = currentSession(userPiiId).createCriteria(UserPhoneNumberEntity)
+        criteria.add(Restrictions.eq('userPiiId', getOption.userPiiId.value))
         if (!StringUtils.isEmpty(getOption.type)) {
             criteria.add(Restrictions.eq('type', getOption.type))
         }
