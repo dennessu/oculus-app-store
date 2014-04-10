@@ -1,16 +1,17 @@
 package com.junbo.identity.core.service.validator.impl
+
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserSecurityQuestionId
-import com.junbo.identity.core.service.util.UserPasswordUtil
+import com.junbo.identity.core.service.util.CipherHelper
 import com.junbo.identity.core.service.validator.UserSecurityQuestionValidator
 import com.junbo.identity.data.repository.SecurityQuestionRepository
 import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.data.repository.UserSecurityQuestionRepository
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.model.domaindata.SecurityQuestion
-import com.junbo.identity.spec.model.users.User
 import com.junbo.identity.spec.model.users.UserSecurityQuestion
 import com.junbo.identity.spec.options.list.UserSecurityQuestionListOptions
+import com.junbo.identity.spec.v1.model.User
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
@@ -89,7 +90,7 @@ class UserSecurityQuestionValidatorImpl implements UserSecurityQuestionValidator
         userSecurityQuestion.setActive(true)
         userSecurityQuestion.setAnswerSalt(UUID.randomUUID().toString())
         userSecurityQuestion.setAnswerHash(
-                UserPasswordUtil.hashPassword(userSecurityQuestion.answer, userSecurityQuestion.answerSalt))
+                CipherHelper.hashPassword(userSecurityQuestion.answer, userSecurityQuestion.answerSalt))
         return Promise.pure(null)
     }
 

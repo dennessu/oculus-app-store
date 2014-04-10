@@ -1,13 +1,14 @@
 package com.junbo.identity.core.service.validator.impl
+
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPhoneNumberId
 import com.junbo.identity.core.service.validator.UserPhoneNumberValidator
 import com.junbo.identity.data.repository.UserPhoneNumberRepository
 import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.spec.error.AppErrors
-import com.junbo.identity.spec.model.users.User
 import com.junbo.identity.spec.model.users.UserPhoneNumber
 import com.junbo.identity.spec.options.list.UserPhoneNumberListOptions
+import com.junbo.identity.spec.v1.model.User
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required

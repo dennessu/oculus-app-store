@@ -4,7 +4,6 @@ import com.junbo.identity.core.service.validator.UsernameValidator
 import com.junbo.identity.spec.error.AppErrors
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
-import org.springframework.util.StringUtils
 
 import java.util.regex.Pattern
 
@@ -14,8 +13,6 @@ import java.util.regex.Pattern
 @CompileStatic
 class UsernameValidatorImpl implements UsernameValidator {
 
-    private String charsToDelete
-
     private Integer minLength
 
     private Integer maxLength
@@ -23,11 +20,6 @@ class UsernameValidatorImpl implements UsernameValidator {
     private List<Pattern> disallowedPatterns
 
     private List<Pattern> allowedPatterns
-
-    @Required
-    void setCharsToDelete(String charsToDelete) {
-        this.charsToDelete = charsToDelete
-    }
 
     @Required
     void setMinLength(Integer minLength) {
@@ -69,15 +61,5 @@ class UsernameValidatorImpl implements UsernameValidator {
         if (!allowedPatterns.any { Pattern pattern -> pattern.matcher(username).matches() }) {
             throw AppErrors.INSTANCE.fieldInvalid('username').exception()
         }
-    }
-
-    String normalizeUsername(String username) {
-        if (username == null) {
-            throw new IllegalArgumentException('username is null')
-        }
-
-        def result = StringUtils.deleteAny(username, charsToDelete)
-
-        return result.toLowerCase()
     }
 }

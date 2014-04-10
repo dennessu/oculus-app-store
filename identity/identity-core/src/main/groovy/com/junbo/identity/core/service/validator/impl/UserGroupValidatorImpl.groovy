@@ -11,8 +11,8 @@ import com.junbo.identity.data.repository.GroupRepository
 import com.junbo.identity.data.repository.UserGroupRepository
 import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.spec.error.AppErrors
-import com.junbo.identity.spec.model.users.User
 import com.junbo.identity.spec.v1.model.Group
+import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserGroup
 import com.junbo.identity.spec.v1.option.list.UserGroupListOptions
 import com.junbo.langur.core.promise.Promise

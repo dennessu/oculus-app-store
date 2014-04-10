@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.spec.v1.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserPiiId;
@@ -27,15 +28,27 @@ public class UserPii extends ResourceMeta implements Identifiable<UserPiiId> {
 
     private UserName name;
 
-    private Map<String, UserEmail> emails;
-
-    private Map<String, UserPhoneNumber> phoneNumbers;
-
     private Date birthday;
 
     private String gender;
 
+    /*
+     * Possible values:
+     * 1. firstName_lastName_then_username
+     * 2. lastName_firstName_then_username
+     * 3. firstName_middleName_lastName_then_username
+     * 4. lastName_middleName_firstName_then_username
+     * 5. username
+     */
+    @JsonIgnore
+    private Integer displayNameType;
+
+    // This won't save in DB
     private String displayName;
+
+    private Map<String, UserEmail> emails;
+
+    private Map<String, UserPhoneNumber> phoneNumbers;
 
     @Override
     public UserPiiId getId() {
@@ -92,6 +105,14 @@ public class UserPii extends ResourceMeta implements Identifiable<UserPiiId> {
 
     public void setGender(String gender) {
         this.gender = gender;
+    }
+
+    public Integer getDisplayNameType() {
+        return displayNameType;
+    }
+
+    public void setDisplayNameType(Integer displayNameType) {
+        this.displayNameType = displayNameType;
     }
 
     public String getDisplayName() {

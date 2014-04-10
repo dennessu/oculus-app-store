@@ -36,7 +36,7 @@ class TosRepositoryImpl implements TosRepository {
     Promise<Tos> get(TosId tosId) {
         def entity = tosDAO.get(tosId.value)
         if (entity == null) {
-            return null
+            return Promise.pure(null)
         }
         return Promise.pure(modelMapper.toTos(entity, new MappingContext()))
     }

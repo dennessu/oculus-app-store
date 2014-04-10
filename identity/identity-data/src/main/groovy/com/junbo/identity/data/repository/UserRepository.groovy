@@ -4,8 +4,9 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.identity.data.repository
+
 import com.junbo.common.id.UserId
-import com.junbo.identity.spec.model.users.User
+import com.junbo.identity.spec.v1.model.User
 import com.junbo.langur.core.promise.Promise
 /**
  * User DAO is used to fetch/update/delete/get user data from the database

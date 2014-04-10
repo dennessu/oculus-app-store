@@ -8,8 +8,10 @@ package com.junbo.identity.data.entity.user;
 import com.junbo.common.util.Identifiable;
 import com.junbo.identity.data.entity.common.ResourceMetaEntity;
 
-import javax.persistence.*;
-import java.util.Date;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
  * UserEntity list for user_device_profile table.
@@ -17,6 +19,37 @@ import java.util.Date;
 @Entity
 @Table(name = "user_account")
 public class UserEntity extends ResourceMetaEntity implements Identifiable<Long> {
+    @Id
+    @Column(name = "id")
+    private Long id;
+
+    @Column(name = "user_name")
+    private String username;
+
+    @Column(name = "type")
+    private String type;
+
+    @Column(name = "preferred_language")
+    private String preferredLanguage;
+
+    @Column(name = "locale")
+    private String locale;
+
+    @Column(name = "time_zone")
+    private String timezone;
+
+    @Column(name = "is_active")
+    private Boolean active;
+
+    @Column(name = "nick_name")
+    private String nickName;
+
+    @Column(name = "currency")
+    private String currency;
+
+    @Column(name = "canonical_username")
+    private String canonicalUsername;
+
     @Override
     public Long getId() {
         return id;
@@ -34,12 +67,12 @@ public class UserEntity extends ResourceMetaEntity implements Identifiable<Long>
         this.username = username;
     }
 
-    public String getNickName() {
-        return nickName;
+    public String getType() {
+        return type;
     }
 
-    public void setNickName(String nickName) {
-        this.nickName = nickName;
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getPreferredLanguage() {
@@ -74,50 +107,27 @@ public class UserEntity extends ResourceMetaEntity implements Identifiable<Long>
         this.active = active;
     }
 
-    public Date getBirthday() {
-        return birthday;
+    public String getNickName() {
+        return nickName;
     }
 
-    public void setBirthday(Date birthday) {
-        this.birthday = birthday;
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
     }
 
-    public String getGender() {
-        return gender;
+    public String getCurrency() {
+        return currency;
     }
 
-    public void setGender(String gender) {
-        this.gender = gender;
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 
-    public String getType() {
-        return type;
+    public String getCanonicalUsername() {
+        return canonicalUsername;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setCanonicalUsername(String canonicalUsername) {
+        this.canonicalUsername = canonicalUsername;
     }
-
-    @Id
-    @Column(name = "id")
-    private Long id;
-    @Column(name = "user_name")
-    private String username;
-    @Column(name = "nick_name")
-    private String nickName;
-    @Column(name = "preferred_language")
-    private String preferredLanguage;
-    @Column(name = "locale")
-    private String locale;
-    @Column(name = "time_zone")
-    private String timezone;
-    @Column(name = "is_active")
-    private Boolean active;
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "birthday")
-    private Date birthday;
-    @Column(name = "gender")
-    private String gender;
-    @Column(name = "type")
-    private String type;
 }

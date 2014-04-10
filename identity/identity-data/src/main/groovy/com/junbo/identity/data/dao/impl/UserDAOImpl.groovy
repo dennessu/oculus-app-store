@@ -61,7 +61,7 @@ class UserDAOImpl extends BaseDAO implements UserDAO {
     @Override
     UserEntity getIdByCanonicalUsername(String username) {
         UserEntity example = new UserEntity()
-        example.setUsername(username)
+        example.setCanonicalUsername(username)
 
         def viewQuery = viewQueryFactory.from(example)
         if (viewQuery != null) {

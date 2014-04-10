@@ -5,9 +5,12 @@
  */
 package com.junbo.identity.core.service.util
 
+import groovy.transform.CompileStatic
+
 /**
  * Created by liangfu on 3/26/14.
  */
+@CompileStatic
 class FilterUtil {
     static boolean isSimpleType(Class type) {
         return type == Boolean ||
