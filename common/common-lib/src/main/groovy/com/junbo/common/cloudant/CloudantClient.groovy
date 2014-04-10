@@ -121,9 +121,9 @@ abstract class CloudantClient<T> implements  InitializingBean {
         return entity
     }
 
-    void cloudantDelete(T entity) {
-        def cloudantDoc = getCloudantDocument(entity.id.toString())
-        def response = executeRequest(HttpMethod.DELETE, entity.id.toString(), ['rev': cloudantDoc.cloudantRev], null)
+    void cloudantDelete(Long id) {
+        def cloudantDoc = getCloudantDocument(id.toString())
+        def response = executeRequest(HttpMethod.DELETE, id.toString(), ['rev': cloudantDoc.cloudantRev], null)
 
         if (response.statusCode != HttpStatus.OK.value() && response.statusCode != HttpStatus.NOT_FOUND.value()) {
             CloudantError cloudantError = JsonMarshaller.unmarshall(response.responseBody, CloudantError)
@@ -203,14 +203,28 @@ abstract class CloudantClient<T> implements  InitializingBean {
         }
     }
 
-    private CloudantSearchResult internalQueryView(String viewName, String key) {
+    private CloudantSearchResult internalQueryView(String viewName, String key, Integer limit,
+                                                   Integer skip, boolean descending) {
         CloudantViews.CloudantView cloudantView = cloudantViews.views[viewName]
         if (cloudantView == null) {
             throw new CloudantException("The view $viewName does not exist")
         }
 
-        def response = executeRequest(HttpMethod.GET, VIEW_PATH + viewName,
-                key == null ? [:] : ['key': "\"$key\""], null)
+        def query = [:]
+        if (key != null) {
+            query.put('key', "\"$key\"")
+        }
+        if (limit != null) {
+            query.put('limit', limit)
+        }
+        if (skip != null) {
+            query.put('skip', skip)
+        }
+        if (descending) {
+            query.put('descending', 'true')
+        }
+
+        def response = executeRequest(HttpMethod.GET, VIEW_PATH + viewName, query, null)
 
         if (response.statusCode != HttpStatus.OK.value()) {
             CloudantError cloudantError = JsonMarshaller.unmarshall(response.responseBody, CloudantError)
@@ -222,8 +236,8 @@ abstract class CloudantClient<T> implements  InitializingBean {
                 cloudantView.resultClass)
     }
 
-    protected List<T> queryView(String viewName, String key) {
-        CloudantSearchResult searchResult = internalQueryView(viewName, key)
+    protected List<T> queryView(String viewName, String key, Integer limit, Integer skip, boolean descending) {
+        CloudantSearchResult searchResult = internalQueryView(viewName, key, limit, skip, descending)
         if (searchResult.rows != null) {
             return searchResult.rows.collect { CloudantSearchResult.ResultObject result ->
                 return cloudantGet(result.id)
@@ -231,6 +245,10 @@ abstract class CloudantClient<T> implements  InitializingBean {
         }
 
         return []
+    }
+
+    protected List<T> queryView(String viewName, String key) {
+        return queryView(viewName, key, null, null, false)
     }
 
     protected Response executeRequest(HttpMethod method, String path, Map<String, String> queryParams, Object body) {
