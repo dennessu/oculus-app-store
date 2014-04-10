@@ -11,7 +11,7 @@ import com.braintreegateway.exceptions.DownForMaintenanceException;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.common.exception.AppClientExceptions;
 import com.junbo.payment.common.exception.AppServerExceptions;
-import com.junbo.payment.core.provider.PaymentProviderService;
+import com.junbo.payment.core.provider.AbstractPaymentProviderService;
 import com.junbo.payment.core.util.PaymentUtil;
 import com.junbo.payment.spec.enums.PaymentStatus;
 import com.junbo.payment.spec.model.PaymentInstrument;
@@ -29,7 +29,7 @@ import java.util.List;
 /**
  * brain tree sdk implementation.
  */
-public class BrainTreePaymentProviderServiceImpl implements PaymentProviderService, InitializingBean {
+public class BrainTreePaymentProviderServiceImpl extends AbstractPaymentProviderService implements InitializingBean {
     private static final String PROVIDER_NAME = "BrainTree";
     private static final Logger LOGGER = LoggerFactory.getLogger(BrainTreePaymentProviderServiceImpl.class);
     private static BraintreeGateway gateway;
@@ -262,7 +262,7 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
         List<PaymentTransaction> results = new ArrayList<PaymentTransaction>();
         for(Transaction transaction : collection){
             PaymentTransaction result = new PaymentTransaction();
-            result.setStatus(PaymentUtil.mapPaymentStatus(PaymentStatus.BrainTreeStatus.valueOf(
+            result.setStatus(PaymentUtil.mapBraintreePaymentStatus(PaymentStatus.BrainTreeStatus.valueOf(
                     transaction.getStatus().toString())).toString());
             //TODO: need add transaction.getSettlementBatchId(); for the batch job processing
             results.add(result);
@@ -282,7 +282,7 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
             return null;
         }
         PaymentTransaction result = new PaymentTransaction();
-        result.setStatus(PaymentUtil.mapPaymentStatus(PaymentStatus.BrainTreeStatus.valueOf(
+        result.setStatus(PaymentUtil.mapBraintreePaymentStatus(PaymentStatus.BrainTreeStatus.valueOf(
                 transaction.getStatus().toString())).toString());
         //TODO: need add transaction.getSettlementBatchId(); for the batch job processing
         return Promise.pure(result);

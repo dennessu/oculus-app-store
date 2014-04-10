@@ -52,12 +52,4 @@ public class CommonMapper {
     public Long fromOfferToLong(OfferId source) {
         return source == null ? null : source.getValue();
     }
-
-    public CouponId fromStringToCouponId(String source) {
-        return source == null ? null : new CouponId(Long.parseLong(source));
-    }
-
-    public String fromCouponToString(CouponId source) {
-        return source == null ? null : source.getValue().toString();
-    }
 }

@@ -23,6 +23,7 @@ public enum PaymentStatus {
     REVERSE_DECLINED,
     SETTLED,
     SETTLING,
+    UNCONFIRMED,
     UNRECOGNIZED;
 
 
