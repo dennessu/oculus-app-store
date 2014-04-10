@@ -8,10 +8,15 @@ package com.junbo.catalog.spec.model.offer;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.junbo.catalog.spec.model.common.BaseRevisionModel;
+import com.junbo.catalog.spec.model.common.ExtensibleProperties;
+import com.junbo.catalog.spec.model.common.TypedProperties;
 import com.junbo.common.jackson.annotation.OfferId;
+import com.junbo.common.jackson.annotation.OfferRevisionId;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +24,10 @@ import java.util.Map;
  * Offer revision.
  */
 public class OfferRevision extends BaseRevisionModel {
+    @OfferRevisionId
+    @JsonProperty("self")
+    private Long revisionId;
+
     @OfferId
     @JsonProperty("offer")
     private Long offerId;
@@ -30,8 +39,16 @@ public class OfferRevision extends BaseRevisionModel {
     private List<ItemEntry> items = new ArrayList<>();
     private List<String> eligibleCountries;
     private Map<String, Event> events;
-    private Map<String, Map<String, Object>> countryProperties;
-    private Map<String, Map<String, Object>> localeProperties;
+    private TypedProperties<Date> startTime;
+    private TypedProperties<Date> endTime;
+
+    public Long getRevisionId() {
+        return revisionId;
+    }
+
+    public void setRevisionId(Long revisionId) {
+        this.revisionId = revisionId;
+    }
 
     public Long getOfferId() {
         return offerId;
@@ -105,20 +122,20 @@ public class OfferRevision extends BaseRevisionModel {
         this.events = events;
     }
 
-    public Map<String, Map<String, Object>> getCountryProperties() {
-        return countryProperties;
+    public TypedProperties getStartTime() {
+        return startTime;
     }
 
-    public void setCountryProperties(Map<String, Map<String, Object>> countryProperties) {
-        this.countryProperties = countryProperties;
+    public void setStartTime(TypedProperties startTime) {
+        this.startTime = startTime;
     }
 
-    public Map<String, Map<String, Object>> getLocaleProperties() {
-        return localeProperties;
+    public TypedProperties getEndTime() {
+        return endTime;
     }
 
-    public void setLocaleProperties(Map<String, Map<String, Object>> localeProperties) {
-        this.localeProperties = localeProperties;
+    public void setEndTime(TypedProperties endTime) {
+        this.endTime = endTime;
     }
 
     @Override

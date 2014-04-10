@@ -8,32 +8,26 @@ package com.junbo.catalog.spec.model.common;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.junbo.common.jackson.annotation.UserId;
 
-import java.util.Map;
+import javax.validation.constraints.NotNull;
 
 /**
  * Base entity revision model.
  */
 public abstract class BaseRevisionModel extends BaseModel {
-    @JsonProperty("self")
-    private Long revisionId;
-
     //(Design, PendingReview, Rejected) => (Released, Deleted)
     private String status;
     @UserId
     @JsonProperty("developer")
     private Long ownerId;
 
-    private Map<String, Object> properties;
+    @NotNull
+    private LocalizableProperty displayName;
 
-    public Long getRevisionId() {
-        return revisionId;
-    }
-
-    public void setRevisionId(Long revisionId) {
-        this.revisionId = revisionId;
-    }
+    @JsonUnwrapped
+    private ExtensibleProperties properties;
 
     public String getStatus() {
         return status;
@@ -51,11 +45,19 @@ public abstract class BaseRevisionModel extends BaseModel {
         this.ownerId = ownerId;
     }
 
-    public Map<String, Object> getProperties() {
+    public LocalizableProperty getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(LocalizableProperty displayName) {
+        this.displayName = displayName;
+    }
+
+    public ExtensibleProperties getProperties() {
         return properties;
     }
 
-    public void setProperties(Map<String, Object> properties) {
+    public void setProperties(ExtensibleProperties properties) {
         this.properties = properties;
     }
 

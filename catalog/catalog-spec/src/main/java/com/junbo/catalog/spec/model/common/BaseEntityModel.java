@@ -16,18 +16,18 @@ import javax.validation.constraints.NotNull;
  */
 public abstract class BaseEntityModel extends BaseModel {
     @NotNull
-    private String name;
+    private LocalizableProperty name;
 
     private Boolean curated;
     @UserId
     @JsonProperty("developer")
     private Long ownerId;
 
-    public String getName() {
+    public LocalizableProperty getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(LocalizableProperty name) {
         this.name = name;
     }
 
