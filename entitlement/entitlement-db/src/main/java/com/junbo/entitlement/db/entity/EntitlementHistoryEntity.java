@@ -11,10 +11,7 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
@@ -31,6 +28,7 @@ public class EntitlementHistoryEntity implements Shardable {
     private Long entitlementHistoryId;
     private String action;
     private Long entitlementId;
+    private Integer rev;
     private Long userId;
     private List<String> inAppContext;
     private String group;
@@ -53,6 +51,7 @@ public class EntitlementHistoryEntity implements Shardable {
     public EntitlementHistoryEntity(String action, EntitlementEntity entitlementEntity) {
         this.action = action;
         this.entitlementId = entitlementEntity.getEntitlementId();
+        this.rev = entitlementEntity.getRev();
         this.entitlementDefinitionId = entitlementEntity.getEntitlementDefinitionId();
         this.inAppContext = entitlementEntity.getInAppContext();
         this.group = entitlementEntity.getGroup();
@@ -97,6 +96,15 @@ public class EntitlementHistoryEntity implements Shardable {
 
     public void setEntitlementId(Long entitlementId) {
         this.entitlementId = entitlementId;
+    }
+
+    @Column(name = "rev")
+    public Integer getRev() {
+        return rev;
+    }
+
+    public void setRev(Integer rev) {
+        this.rev = rev;
     }
 
     @Column(name = "user_id")

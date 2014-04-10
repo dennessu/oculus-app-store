@@ -15,10 +15,7 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
@@ -30,6 +27,7 @@ import java.util.List;
 @TypeDefs(@TypeDef(name="json-string", typeClass=StringJsonUserType.class))
 public class EntitlementEntity extends Entity {
     private Long entitlementId;
+    private Integer rev;
     private Long userId;
     private List<String> inAppContext;
     private EntitlementStatus status;
@@ -50,6 +48,16 @@ public class EntitlementEntity extends Entity {
 
     public void setEntitlementId(Long entitlementId) {
         this.entitlementId = entitlementId;
+    }
+
+    @Version
+    @Column(name = "rev")
+    public Integer getRev() {
+        return rev;
+    }
+
+    public void setRev(Integer rev) {
+        this.rev = rev;
     }
 
     @Column(name = "user_id")

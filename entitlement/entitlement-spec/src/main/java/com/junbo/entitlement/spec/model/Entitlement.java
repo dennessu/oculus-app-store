@@ -20,7 +20,7 @@ import java.util.UUID;
 /**
  * Entitlement Model.
  */
-@JsonPropertyOrder(value = {"entitlementId", "userId", "inAppContext", "status", "statusReason",
+@JsonPropertyOrder(value = {"entitlementId", "rev", "userId", "inAppContext", "status", "statusReason",
         "entitlementDefinitionId", "type", "group", "tag", "grantTime", "expirationTime", "useCount"})
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Entitlement{
@@ -28,6 +28,7 @@ public class Entitlement{
     @JsonProperty("self")
     @EntitlementId
     private Long entitlementId;
+    private Integer rev;
     @UserId
     @JsonProperty("user")
     private Long userId;
@@ -58,6 +59,14 @@ public class Entitlement{
 
     public void setEntitlementId(Long entitlementId) {
         this.entitlementId = entitlementId;
+    }
+
+    public Integer getRev() {
+        return rev;
+    }
+
+    public void setRev(Integer rev) {
+        this.rev = rev;
     }
 
     public Long getUserId() {

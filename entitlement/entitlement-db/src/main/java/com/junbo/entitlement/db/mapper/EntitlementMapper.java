@@ -28,6 +28,7 @@ public class EntitlementMapper {
         }
         Entitlement entitlement = new Entitlement();
         entitlement.setEntitlementId(entitlementEntity.getEntitlementId());
+        entitlement.setRev(entitlementEntity.getRev());
         entitlement.setUserId(entitlementEntity.getUserId());
         entitlement.setType(entitlementEntity.getType().toString());
         entitlement.setGroup(entitlementEntity.getGroup());
@@ -46,7 +47,7 @@ public class EntitlementMapper {
         EntitlementEntity entitlementEntity = new EntitlementEntity();
         entitlementEntity.setTrackingUuid(entitlement.getTrackingUuid());
         entitlementEntity.setEntitlementId(entitlement.getEntitlementId());
-
+        entitlementEntity.setRev(entitlement.getRev());
         entitlementEntity.setEntitlementDefinitionId(
                 entitlement.getEntitlementDefinitionId());
         entitlementEntity.setInAppContext(entitlement.getInAppContext());

@@ -10,6 +10,7 @@
         <sql><![CDATA[
             create table entitlement (
               entitlement_id bigint not null,
+              rev int not null,
               user_id bigint not null,
               type smallint not null,
               entitlement_group varchar(512) not null,
@@ -32,6 +33,7 @@
               entitlement_history_id bigint not null,
               action varchar(32) not null,
               entitlement_id bigint not null,
+              rev int not null,
               entitlement_definition_id bigint default null,
               user_id bigint not null,
               type smallint not null,
@@ -52,7 +54,7 @@
             CREATE OR REPLACE FUNCTION json_val_arr(_j json)
   				RETURNS text[] AS
 				$$
-					SELECT array_agg(elem)
+					SELECT array_agg(text(elem))
 					FROM json_array_elements(_j) AS x(elem)
 				$$
   			LANGUAGE sql IMMUTABLE;

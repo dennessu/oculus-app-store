@@ -65,6 +65,7 @@ public class BaseService {
         existingEntitlement.setExpirationTime(entitlement.getExpirationTime());
         existingEntitlement.setStatus(entitlement.getStatus());
         existingEntitlement.setStatusReason(entitlement.getStatusReason());
+        existingEntitlement.setRev(entitlement.getRev());
     }
 
     protected void validateCreate(Entitlement entitlement) {
