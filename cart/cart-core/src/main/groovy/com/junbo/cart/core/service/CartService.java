@@ -28,6 +28,10 @@ public interface CartService {
 
     Promise<Cart> updateCart(UserId userId, CartId cartId, Cart cart);
 
+    /**
+     * @deprecated the merge logic does not needed anymore
+     */
+    @Deprecated
     Promise<Cart> mergeCart(UserId userId, CartId cartId, Cart fromCart);
 
     Promise<Cart> addOfferItem(UserId userId, CartId cartId, OfferItem offerItem);

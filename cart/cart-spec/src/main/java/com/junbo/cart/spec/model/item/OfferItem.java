@@ -29,6 +29,7 @@ public class OfferItem extends CartItem {
     private Long quantity;
 
     @ApiModelProperty(required = true, position = 3, value = "Whether the item is selected for checkout.")
+    @NotNull(groups = {Group.CartItem.class})
     private Boolean selected;
 
     public OfferId getOffer() {

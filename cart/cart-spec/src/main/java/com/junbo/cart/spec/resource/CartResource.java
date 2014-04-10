@@ -8,6 +8,7 @@ package com.junbo.cart.spec.resource;
 import com.junbo.cart.spec.model.Cart;
 import com.junbo.common.id.CartId;
 import com.junbo.common.id.UserId;
+import com.junbo.common.model.Results;
 import com.junbo.common.swagger.ApiErrors;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
@@ -48,7 +49,7 @@ public interface CartResource {
     @ApiOperation("Get cart by name")
     @GET
     @Path("/{userId}/carts")
-    Promise<Cart> getCartByName(@PathParam("userId") UserId userId, @QueryParam("cartName") String cartName);
+    Promise<Results<Cart>> getCartByName(@PathParam("userId") UserId userId, @QueryParam("cartName") String cartName);
 
     @ApiOperation("Update a cart")
     @ApiErrors(errors = { "cartNotFound", "fieldInvalid" })
@@ -56,9 +57,4 @@ public interface CartResource {
     @Path("/{userId}/carts/{cartId}")
     Promise<Cart> updateCart(@PathParam("userId") UserId userId,
                                       @PathParam("cartId") CartId cartId, Cart cart);
-
-    @POST
-    @Path("/{userId}/carts/{cartId}/merge")
-    Promise<Cart> mergeCart(@PathParam("userId") UserId userId,
-                                     @PathParam("cartId") CartId cartId, Cart fromCart);
 }
