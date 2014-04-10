@@ -19,10 +19,10 @@ import junit.framework.Assert;
 import org.testng.annotations.Test;
 
 /**
- @author Jason
+  * @author Jason
   * Time: 4/1/2014
   * For testing catalog get item(s) API
- */
+*/
 public class TestGetItem extends BaseTestClass {
 
     private LogHelper logger = new LogHelper(TestGetItem.class);
