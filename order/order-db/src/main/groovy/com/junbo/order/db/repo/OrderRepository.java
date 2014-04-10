@@ -30,6 +30,8 @@ public interface OrderRepository {
 
     List<OrderItem> getOrderItems(Long orderId);
 
+    OrderItem getOrderItem(Long orderItemId);
+
     List<Discount> getDiscounts(Long orderId);
 
     List<PaymentInstrumentId> getPaymentInstrumentIds(Long orderId);

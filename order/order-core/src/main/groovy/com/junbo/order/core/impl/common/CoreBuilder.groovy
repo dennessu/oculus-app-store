@@ -29,21 +29,16 @@ import org.apache.commons.collections.CollectionUtils
 @TypeChecked
 class CoreBuilder {
 
+    static final BigDecimal PARTIAL_CHARGE_THRESHOLD = 50
+    static final BigDecimal PARTIAL_CHARGE_PERCENTAGE = 0.1
+
     static Balance buildBalance(Order order, BalanceType balanceType) {
         if (order == null) {
             return null
         }
 
-        Balance balance = new Balance()
-        balance.trackingUuid = UUID.randomUUID()
-        balance.country = order.country
-        balance.currency = order.currency
-        balance.orderId = order.id
-        balance.userId = order.user
-        balance.piId = order.paymentInstruments?.get(0)
+        Balance balance = buildBalance(order)
         balance.type = balanceType.toString()
-        balance.trackingUuid = UUID.randomUUID()
-        balance.shippingAddressId = order.shippingAddress
 
         order.orderItems.eachWithIndex { OrderItem item, int i ->
             def balanceItem = buildBalanceItem(item)
@@ -54,6 +49,42 @@ class CoreBuilder {
             }
             balance.addBalanceItem(balanceItem)
         }
+
+        return balance
+    }
+
+    static Balance buildPartialChargeBalance(Order order, BalanceType balanceType) {
+        if (order == null) {
+            return null
+        }
+
+        Balance balance = buildBalance(order)
+        balance.type = balanceType.toString()
+        balance.skipTaxCalculation = true
+
+        order.orderItems.eachWithIndex { OrderItem item, int i ->
+            def balanceItem = buildPartialChargeBalanceItem(item)
+            if (item.orderItemId == null) {
+                balanceItem.orderItemId = new OrderItemId(i)
+            } else {
+                balanceItem.orderItemId = item.orderItemId
+            }
+            balance.addBalanceItem(balanceItem)
+        }
+
+        return  balance
+    }
+
+    static Balance buildBalance(Order order) {
+        Balance balance = new Balance()
+        balance.trackingUuid = UUID.randomUUID()
+        balance.country = order.country
+        balance.currency = order.currency
+        balance.orderId = order.id
+        balance.userId = order.user
+        balance.piId = order.paymentInstruments?.get(0)
+        balance.trackingUuid = UUID.randomUUID()
+        balance.shippingAddressId = order.shippingAddress
 
         return balance
     }
@@ -70,6 +101,19 @@ class CoreBuilder {
             discountItem.discountAmount = item.totalDiscount
             balanceItem.addDiscountItem(discountItem)
         }
+        return balanceItem
+    }
+
+    static BalanceItem buildPartialChargeBalanceItem(OrderItem item) {
+        if (item == null) {
+            return null
+        }
+
+        BalanceItem balanceItem = new BalanceItem()
+        // TODO: update the threshold & percentage, use 50 & 10% for now
+        balanceItem.amount = item.totalAmount > PARTIAL_CHARGE_THRESHOLD ?
+                PARTIAL_CHARGE_THRESHOLD : item.totalAmount * PARTIAL_CHARGE_PERCENTAGE
+
         return balanceItem
     }
 
