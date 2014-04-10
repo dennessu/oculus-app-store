@@ -21,15 +21,15 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Results<T> {
 
-    @ApiModelProperty(value = "The link to the current result set", position = 1, required = true)
+    @ApiModelProperty(position = 1, required = true, value = "The link to the current result set")
     @JsonProperty("self")
     private Link self;
 
-    @ApiModelProperty(value = "The result set items", position = 2, required = true)
+    @ApiModelProperty(position = 2, required = true, value = "The result set items")
     @JsonProperty("results")
     private List<T> items;
 
-    @ApiModelProperty(value = "The link to next set of results if there are more items", position = 3)
+    @ApiModelProperty(position = 3, required = true, value = "The link to next set of results if there are more items")
     @JsonProperty("next")
     private Link next;
 
