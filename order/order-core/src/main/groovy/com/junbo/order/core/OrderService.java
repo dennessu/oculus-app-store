@@ -10,7 +10,6 @@ import com.junbo.langur.core.promise.Promise;
 import com.junbo.order.spec.model.*;
 
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Created by chriszhu on 2/7/14.
@@ -34,6 +33,4 @@ public interface OrderService {
     Promise<OrderEvent> updateOrderFulfillmentStatus(OrderEvent event);
 
     Promise<Order> updateTentativeOrder(Order order, ApiContext context);
-
-    Order getOrderByTrackingUuid(UUID trackingUuid, Long userId);
 }
