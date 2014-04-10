@@ -1,11 +1,13 @@
 #!/bin/sh
+(set -o igncr) 2>/dev/null && set -o igncr; # some comment
+
 function dropdb {
     dbname=$1
 
-    if psql -lqt | cut -d \| -f 1 | (grep -w $dbname > /dev/null); then
+    if psql -lqt postgres postgres | cut -d \| -f 1 | (grep -w $dbname > /dev/null); then
         # database exists
         echo database $dbname exists.
-        psql postgres postgres -q -X -c "DROP DATABASE \"$dbname\""
+        psql -q -X -c "DROP DATABASE \"$dbname\"" postgres postgres
     else
         # create database
         echo database $dbname not exists

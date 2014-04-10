@@ -1,4 +1,5 @@
 #!/bin/sh
+(set -o igncr) 2>/dev/null && set -o igncr; # some comment
 set -e 
 
 function createrole {
@@ -6,14 +7,14 @@ function createrole {
     password='#Bugsfor$'
     
     echo creating role $rolename
-    psql postgres postgres -q -X -c "DO
+    psql -q -X -c "DO
 \$body$
 BEGIN
    IF NOT EXISTS (SELECT * FROM pg_catalog.pg_roles WHERE rolname = '$rolename') THEN
       CREATE ROLE $rolename LOGIN PASSWORD '$password';
    END IF;
 END
-\$body$"
+\$body$" postgres postgres
 
 }
 
@@ -24,21 +25,21 @@ function createschema {
 
     echo creating schema $dbname.$schemaname
     createrole $rolename
-    psql $dbname postgres -q -X -c "CREATE SCHEMA IF NOT EXISTS $schemaname"
-    psql $dbname postgres -q -X -c "ALTER SCHEMA $schemaname OWNER TO $rolename"
-    psql $dbname postgres -q -X -c "ALTER ROLE $rolename SET search_path=$schemaname;"
+    psql -q -X -c "CREATE SCHEMA IF NOT EXISTS $schemaname" $dbname postgres
+    psql -q -X -c "ALTER SCHEMA $schemaname OWNER TO $rolename" $dbname postgres
+    psql -q -X -c "ALTER ROLE $rolename SET search_path=$schemaname;" $dbname postgres
 }
 
 function createdb {
     dbname=$1
 
-    if psql -lqt | cut -d \| -f 1 | (grep -w $dbname > /dev/null); then
+    if psql -lqt postgres postgres | cut -d \| -f 1 | (grep -w $dbname > /dev/null); then
         # database exists
         echo database $dbname already exists.
     else
         # create database
         echo creating database $dbname
-        psql postgres postgres -q -X -c "CREATE DATABASE \"$dbname\""
+        psql -q -X -c "CREATE DATABASE \"$dbname\"" postgres postgres
         
         if [ "$dbname" == "config" ] || [ "$dbname" == "catalog" ]; then
             createschema $dbname $dbname
