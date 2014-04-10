@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <import resource="classpath*:spring/common-context.xml"/>
+    <import resource="classpath*:spring/transaction.xml"/>
+    <import resource="classpath*:spring/sharding-context.xml"/>
+
+    <context:annotation-config/>
+    <tx:annotation-driven/>
+
+    <context:component-scan base-package="com.junbo.subscription.db"/>
+
+    <!--Data source has the database information -->
+    <!--Data source has the database information -->
+    <bean id="subscriptionDataSource" class="bitronix.tm.resource.jdbc.PoolingDataSource"
+          init-method="init" destroy-method="close">
+        <property name="uniqueName" value="jdbc/subscription"/>
+        <property name="className" value="org.postgresql.xa.PGXADataSource"/>
+        <property name="minPoolSize" value="${subscription.db.minConnectionsPerPartition}"/>
+        <property name="maxPoolSize" value="${subscription.db.maxConnectionsPerPartition}"/>
+
+        <property name="useTmJoin" value="true"/>
+        <property name="allowLocalTransactions" value="true"/>
+
+        <property name="driverProperties">
+            <props>
+                <prop key="url">${subscription.db.url}</prop>
+                <prop key="user">${subscription.db.username}</prop>
+                <prop key="password">${subscription.db.password}</prop>
+            </props>
+        </property>
+    </bean>
+
+    <!-- SessonFactory for Hibernate -->
+    <bean id="subscriptionSessionFactory"
+          class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="dataSource" ref="subscriptionDataSource"/>
+        <property name="packagesToScan" value="com.junbo.subscription.db.entity"/>
+        <property name="jtaTransactionManager" ref="transactionManager"/>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">${subscription.hibernate.dialect}</prop>
+                <prop key="hibernate.max_fetch_depth">${subscription.hibernate.max_fetch_depth}</prop>
+                <prop key="hibernate.jdbc.fetch_size">${subscription.hibernate.fetch_size}</prop>
+                <prop key="hibernate.jdbc.batch_size">${subscription.hibernate.batch_size}</prop>
+                <prop key="hibernate.show_sql">${subscription.hibernate.show_sql}</prop>
+            </props>
+        </property>
+    </bean>
+
+    <!--bean id="subscriptionSessionFactory"
+          class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="dataSource" ref="subscriptionDataSource"/>
+        <property name="packagesToScan" value="com.junbo.subscription.db.entity"/>
+        <property name="jtaTransactionManager" ref="transactionManager"/>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">${subscription.hibernate.dialect}</prop>
+                <prop key="hibernate.max_fetch_depth">${subscription.hibernate.max_fetch_depth}</prop>
+                <prop key="hibernate.jdbc.fetch_size">${subscription.hibernate.fetch_size}</prop>
+                <prop key="hibernate.jdbc.batch_size">${subscription.hibernate.batch_size}</prop>
+                <prop key="hibernate.show_sql">${subscription.hibernate.show_sql}</prop>
+            </props>
+        </property>
+    </bean-->
+
+    <!-- Transaction Manager -->
+    <!--bean id="transactionManager"
+          class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean-->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <!-- Dao -->
+    <bean id="baseDao" class="com.junbo.subscription.db.dao.BaseDao" abstract="true"/>
+    <bean id="subscriptionDao"
+          class="com.junbo.subscription.db.dao.SubscriptionDao" parent="baseDao">
+        <property name="classType" value="com.junbo.subscription.db.entity.SubscriptionEntity"/>
+    </bean>
+    <bean id="subscriptionEventDao"
+          class="com.junbo.subscription.db.dao.SubscriptionEventDao" parent="baseDao">
+        <property name="classType" value="com.junbo.subscription.db.entity.SubscriptionEventEntity"/>
+    </bean>
+    <bean id="subscriptionEventActionDao"
+          class="com.junbo.subscription.db.dao.SubscriptionEventActionDao" parent="baseDao">
+        <property name="classType" value="com.junbo.subscription.db.entity.SubscriptionEventActionEntity"/>
+    </bean>
+
+    <bean id="subscriptionRepository" class="com.junbo.subscription.db.repository.SubscriptionRepository"></bean>
+    <bean id="subscriptionEventRepository" class="com.junbo.subscription.db.repository.SubscriptionEventRepository"></bean>
+    <bean id="subscriptionEventActionRepository" class="com.junbo.subscription.db.repository.SubscriptionEventActionRepository"></bean>
+</beans>

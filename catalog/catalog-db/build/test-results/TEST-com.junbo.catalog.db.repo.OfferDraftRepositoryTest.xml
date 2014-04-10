@@ -1,0 +1,10 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<testsuite name="com.junbo.catalog.db.repo.OfferDraftRepositoryTest" tests="1" failures="0" errors="0" timestamp="2014-03-31T07:58:46" hostname="XumengChendeMacBook-Pro.local" time="0.136">
+  <properties/>
+  <testcase name="testCreate" classname="com.junbo.catalog.db.repo.OfferDraftRepositoryTest" time="0.136"/>
+  <system-out><![CDATA[15:58:46.907 [bitronix-async-jmx-worker] DEBUG b.tm.utils.ManagementRegistrar - Calling ManagementRegisterCommand on object with name bitronix.tm:type=Transaction,Gtrid=737072696E672D62746D000001451725D6750000000F
+15:58:47.038 [Test worker] DEBUG bitronix.tm.BitronixTransaction - registering synchronization org.hibernate.engine.transaction.synchronization.internal.RegisteredSynchronization@4ec25aad
+15:58:47.038 [Test worker] DEBUG bitronix.tm.BitronixTransaction - registering synchronization org.hibernate.context.internal.JTASessionContext$CleanupSynch@7a9373c8
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

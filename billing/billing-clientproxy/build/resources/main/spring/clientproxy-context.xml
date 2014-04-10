@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <context:component-scan base-package="com.junbo.billing.clientproxy"/>
+
+    <!-- <tx:annotation-driven/> -->
+
+    <!-- proxy -->
+    <!-- using mock for development
+    <bean id="ascynHttpClient" class="com.ning.http.client.AsyncHttpClient" />
+    -->
+    <bean id="identityFacade" class="com.junbo.billing.clientproxy.impl.IdentityFacadeImpl">
+        <property name="url" value="${billing.client.identity.url}"/>
+    </bean>
+    <bean id="paymentFacade" class="com.junbo.billing.clientproxy.impl.PaymentFacadeImpl">
+        <property name="url" value="${billing.client.payment.url}"/>
+    </bean>
+
+    <!--<bean id="identityFacade" class="com.junbo.billing.clientproxy.mock.MockIdentityFacadeImpl" />
+    <bean id="paymentFacade" class="com.junbo.billing.clientproxy.mock.MockPaymentFacadeImpl" />-->
+    <bean id="avalaraFacade" class="com.junbo.billing.clientproxy.impl.AvalaraFacadeImpl" />
+    <bean id="avalaraConfiguration" class="com.junbo.billing.clientproxy.impl.avalara.AvalaraConfiguration">
+        <property name="baseUrl" value="${avalara.baseUrl}"/>
+        <property name="companyCode" value="${avalara.companyCode}"/>
+        <property name="customerCode" value="${avalara.customerCode}"/>
+        <property name="detailLevel" value="${avalara.detailLevel}"/>
+        <property name="authorization" value="${avalara.authorization}"/>
+        <property name="shipFromStreet" value="${shipFrom.address.street}"/>
+        <property name="shipFromCity" value="${shipFrom.address.city}"/>
+        <property name="shipFromState" value="${shipFrom.address.state}"/>
+        <property name="shipFromPostalCode" value="${shipFrom.address.postal.code}"/>
+        <property name="shipFromCountry" value="${shipFrom.address.country}"/>
+    </bean>
+    <bean id="asyncHttpClient" class="com.ning.http.client.AsyncHttpClient"/>
+    <bean id="transcoder" class="com.junbo.common.json.JsonMessageTranscoder"/>
+</beans>

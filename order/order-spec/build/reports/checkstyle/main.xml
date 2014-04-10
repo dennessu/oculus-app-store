@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="5.6">
+<file name="/Users/xmchen/Workspace/git/main/order/order-spec/src/main/java/com/junbo/order/spec/error/AppErrors.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/order/order-spec/src/main/java/com/junbo/order/spec/error/BillingErrorCode.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/order/order-spec/src/main/java/com/junbo/order/spec/error/CatalogErrorCode.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/order/order-spec/src/main/java/com/junbo/order/spec/error/EmailErrorCode.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/order/order-spec/src/main/java/com/junbo/order/spec/error/ErrorCode.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/order/order-spec/src/main/java/com/junbo/order/spec/error/FulfillmentErrorCode.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/order/order-spec/src/main/java/com/junbo/order/spec/error/PaymentErrorCode.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/order/order-spec/src/main/java/com/junbo/order/spec/error/RatingErrorCode.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/order/order-spec/src/main/java/com/junbo/order/spec/error/UserErrorCode.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/order/order-spec/src/main/java/com/junbo/order/spec/model/ApiContext.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/order/order-spec/src/main/java/com/junbo/order/spec/model/BaseEventModel.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/order/order-spec/src/main/java/com/junbo/order/spec/model/BaseModelWithDate.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/order/order-spec/src/main/java/com/junbo/order/spec/model/BillingEvent.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/order/order-spec/src/main/java/com/junbo/order/spec/model/Discount.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/order/order-spec/src/main/java/com/junbo/order/spec/model/FulfillmentEvent.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/order/order-spec/src/main/java/com/junbo/order/spec/model/Order.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/order/order-spec/src/main/java/com/junbo/order/spec/model/OrderEvent.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/order/order-spec/src/main/java/com/junbo/order/spec/model/OrderItem.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/order/order-spec/src/main/java/com/junbo/order/spec/model/OrderQueryParam.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/order/order-spec/src/main/java/com/junbo/order/spec/model/PageParam.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/order/order-spec/src/main/java/com/junbo/order/spec/model/PayoutStatus.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/order/order-spec/src/main/java/com/junbo/order/spec/model/PreorderInfo.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/order/order-spec/src/main/java/com/junbo/order/spec/model/PreorderUpdateHistory.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/order/order-spec/src/main/java/com/junbo/order/spec/model/SellerInfo.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/order/order-spec/src/main/java/com/junbo/order/spec/model/Subledger.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/order/order-spec/src/main/java/com/junbo/order/spec/model/SubledgerItem.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/order/order-spec/src/main/java/com/junbo/order/spec/resource/OrderEventResource.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/order/order-spec/src/main/java/com/junbo/order/spec/resource/OrderResource.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/order/order-spec/src/main/java/com/junbo/order/spec/resource/SubledgerItemResource.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/order/order-spec/src/main/java/com/junbo/order/spec/resource/SubledgerResource.java">
+</file>
+</checkstyle>

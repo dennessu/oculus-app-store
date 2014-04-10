@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="5.6">
+<file name="/Users/xmchen/Workspace/git/main/ewallet/ewallet-db/src/main/groovy/com/junbo/ewallet/db/dao/TransactionDao.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/ewallet/ewallet-db/src/main/groovy/com/junbo/ewallet/db/dao/WalletDao.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/ewallet/ewallet-db/src/main/groovy/com/junbo/ewallet/db/dao/WalletLotDao.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/ewallet/ewallet-db/src/main/groovy/com/junbo/ewallet/db/dao/hibernate/BaseDao.java">
+<error line="44" severity="warning" message="Don&apos;t use trailing comments." source="com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"/>
+<error line="46" severity="warning" message="Don&apos;t use trailing comments." source="com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"/>
+<error line="56" severity="warning" message="Don&apos;t use trailing comments." source="com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"/>
+</file>
+<file name="/Users/xmchen/Workspace/git/main/ewallet/ewallet-db/src/main/groovy/com/junbo/ewallet/db/dao/hibernate/TransactionBaseDao.java">
+<error line="43" severity="warning" message="Don&apos;t use trailing comments." source="com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"/>
+</file>
+<file name="/Users/xmchen/Workspace/git/main/ewallet/ewallet-db/src/main/groovy/com/junbo/ewallet/db/dao/hibernate/TransactionDaoImpl.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/ewallet/ewallet-db/src/main/groovy/com/junbo/ewallet/db/dao/hibernate/WalletDaoImpl.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/ewallet/ewallet-db/src/main/groovy/com/junbo/ewallet/db/dao/hibernate/WalletLotDaoImpl.java">
+<error line="30" severity="warning" message="Don&apos;t use trailing comments." source="com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"/>
+<error line="32" severity="warning" message="Don&apos;t use trailing comments." source="com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"/>
+<error line="90" severity="warning" message="Don&apos;t use trailing comments." source="com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"/>
+<error line="102" severity="warning" message="Don&apos;t use trailing comments." source="com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"/>
+</file>
+<file name="/Users/xmchen/Workspace/git/main/ewallet/ewallet-db/src/main/groovy/com/junbo/ewallet/db/entity/def/Currency.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/ewallet/ewallet-db/src/main/groovy/com/junbo/ewallet/db/entity/def/IdentifiableType.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/ewallet/ewallet-db/src/main/groovy/com/junbo/ewallet/db/entity/def/NotEnoughMoneyException.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/ewallet/ewallet-db/src/main/groovy/com/junbo/ewallet/db/entity/def/Shardable.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/ewallet/ewallet-db/src/main/groovy/com/junbo/ewallet/db/entity/def/Status.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/ewallet/ewallet-db/src/main/groovy/com/junbo/ewallet/db/entity/def/TransactionType.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/ewallet/ewallet-db/src/main/groovy/com/junbo/ewallet/db/entity/def/WalletLotType.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/ewallet/ewallet-db/src/main/groovy/com/junbo/ewallet/db/entity/def/WalletType.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/ewallet/ewallet-db/src/main/groovy/com/junbo/ewallet/db/entity/hibernate/Entity.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/ewallet/ewallet-db/src/main/groovy/com/junbo/ewallet/db/entity/hibernate/EntityWithCreated.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/ewallet/ewallet-db/src/main/groovy/com/junbo/ewallet/db/entity/hibernate/LotTransactionEntity.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/ewallet/ewallet-db/src/main/groovy/com/junbo/ewallet/db/entity/hibernate/TransactionEntity.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/ewallet/ewallet-db/src/main/groovy/com/junbo/ewallet/db/entity/hibernate/WalletEntity.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/ewallet/ewallet-db/src/main/groovy/com/junbo/ewallet/db/entity/hibernate/WalletLotEntity.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/ewallet/ewallet-db/src/main/groovy/com/junbo/ewallet/db/mapper/WalletMapper.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/ewallet/ewallet-db/src/main/groovy/com/junbo/ewallet/db/repo/WalletRepository.java">
+</file>
+</checkstyle>

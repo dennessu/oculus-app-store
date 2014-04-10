@@ -1,0 +1,9 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<testsuite name="com.junbo.fulfilment.common.collection.MapTest" tests="3" failures="0" errors="0" timestamp="2014-03-31T08:05:09" hostname="XumengChendeMacBook-Pro.local" time="0.006">
+  <properties/>
+  <testcase name="testClassifyMap" classname="com.junbo.fulfilment.common.collection.MapTest" time="0.001"/>
+  <testcase name="testCountingMap" classname="com.junbo.fulfilment.common.collection.MapTest" time="0.001"/>
+  <testcase name="testSevereMap" classname="com.junbo.fulfilment.common.collection.MapTest" time="0.002"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

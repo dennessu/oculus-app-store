@@ -1,0 +1,8 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<testsuite name="com.junbo.common.util.promise.PromiseFacadeTest" tests="2" failures="0" errors="0" timestamp="2014-04-09T09:47:07" hostname="XumengChendeMacBook-Pro.local" time="0.187">
+  <properties/>
+  <testcase name="testAccuracy" classname="com.junbo.common.util.promise.PromiseFacadeTest" time="0.175"/>
+  <testcase name="testFailure" classname="com.junbo.common.util.promise.PromiseFacadeTest" time="0.012"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

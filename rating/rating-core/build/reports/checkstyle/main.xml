@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="5.6">
+<file name="/Users/xmchen/Workspace/git/main/rating/rating-core/src/main/java/com/junbo/rating/core/RatingService.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/rating/rating-core/src/main/java/com/junbo/rating/core/builder/OfferRatingResultBuilder.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/rating/rating-core/src/main/java/com/junbo/rating/core/builder/OrderRatingResultBuilder.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/rating/rating-core/src/main/java/com/junbo/rating/core/context/RatingContext.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/rating/rating-core/src/main/java/com/junbo/rating/core/handler/CouponCriterionHandler.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/rating/rating-core/src/main/java/com/junbo/rating/core/handler/CriterionHandler.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/rating/rating-core/src/main/java/com/junbo/rating/core/handler/EntitlementCriterionHandler.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/rating/rating-core/src/main/java/com/junbo/rating/core/handler/HandlerRegister.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/rating/rating-core/src/main/java/com/junbo/rating/core/handler/OrderCriterionHandler.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/rating/rating-core/src/main/java/com/junbo/rating/core/handler/ScopeCriterionHandler.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/rating/rating-core/src/main/java/com/junbo/rating/core/service/OfferRatingService.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/rating/rating-core/src/main/java/com/junbo/rating/core/service/OrderRatingService.java">
+</file>
+<file name="/Users/xmchen/Workspace/git/main/rating/rating-core/src/main/java/com/junbo/rating/core/service/RatingServiceSupport.java">
+</file>
+</checkstyle>

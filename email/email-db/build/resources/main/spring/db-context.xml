@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+       ">
+    <context:annotation-config />
+    <context:component-scan base-package="com.junbo.email.db" />
+    <context:component-scan base-package="com.junbo.sharding" />
+    <context:component-scan base-package="com.junbo.configuration" />
+
+    <bean id="emailDataSource" class="bitronix.tm.resource.jdbc.PoolingDataSource" init-method="init" destroy-method="close">
+        <property name="uniqueName" value="jdbc/email_ds1"/>
+        <property name="className" value="${email.db.driverClassName}"/>
+        <property name="minPoolSize" value="${email.db.minConnectionsPerPartition}"/>
+        <property name="maxPoolSize" value="${email.db.maxConnectionsPerPartition}"/>
+        <property name="driverProperties">
+            <props>
+                <prop key="url">${email.db.url}</prop>
+                <prop key="user">${email.db.username}</prop>
+                <prop key="password">${email.db.password}</prop>
+            </props>
+        </property>
+    </bean>
+
+    <!-- SessonFactory for Hibernate -->
+    <bean id="emailSessionFactory"
+          class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="dataSource" ref="emailDataSource"/>
+        <property name="packagesToScan" value="com.junbo.email.db.entity"/>
+        <property name="jtaTransactionManager" ref="transactionManager"/>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">${email.hibernate.dialect}</prop>
+                <prop key="hibernate.max_fetch_depth">${email.hibernate.max_fetch_depth}</prop>
+                <prop key="hibernate.jdbc.fetch_size">${email.hibernate.fetch_size}</prop>
+                <prop key="hibernate.jdbc.batch_size">${email.hibernate.batch_size}</prop>
+                <prop key="hibernate.show_sql">${email.hibernate.show_sql}</prop>
+            </props>
+        </property>
+    </bean>
+
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <!-- Dao -->
+    <bean id="emailBaseDao" class="com.junbo.email.db.dao.impl.BaseDaoImpl" abstract="true">
+        <property name="sessionFactory" ref="emailSessionFactory"/>
+    </bean>
+    <bean id="emailHistoryDao" class="com.junbo.email.db.dao.impl.EmailHistoryDaoImpl" parent="emailBaseDao">
+        <property name="entityType" value="com.junbo.email.db.entity.EmailHistoryEntity"/>
+    </bean>
+    <bean id="emailTemplateDao" class="com.junbo.email.db.dao.impl.EmailTemplateDaoImpl" parent="emailBaseDao">
+        <property name="entityType" value="com.junbo.email.db.entity.EmailTemplateEntity"/>
+    </bean>
+    <bean id="emailScheduleDao" class="com.junbo.email.db.dao.impl.EmailScheduleDaoImpl" parent="emailBaseDao">
+        <property name="entityType" value="com.junbo.email.db.entity.EmailScheduleEntity"/>
+    </bean>
+
+    <!-- Mapper -->
+    <bean id="emailMapper" class="com.junbo.email.db.mapper.EmailMapper"></bean>
+
+    <!-- Repository -->
+    <bean id="emailHistoryRepository" class="com.junbo.email.db.repo.EmailHistoryRepository"></bean>
+    <bean id="emailTemplateRepository" class="com.junbo.email.db.repo.EmailTemplateRepository"></bean>
+    <bean id="emailScheduleRepository" class="com.junbo.email.db.repo.EmailScheduleRepository"></bean>
+
+</beans>

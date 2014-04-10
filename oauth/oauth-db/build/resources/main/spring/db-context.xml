@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd ">
+
+    <bean id="tokenGenerator" class="com.junbo.oauth.db.generator.impl.SecureRandomTokenGenerator">
+        <property name="accessTokenLength" value="${oauth.db.accessTokenLength}"/>
+        <property name="accessTokenPostfix" value="${oauth.db.accessTokenPostfix}"/>
+        <property name="authorizationCodeLength" value="${oauth.db.authorizationCodeLength}"/>
+        <property name="authorizationCodePostfix" value="${oauth.db.authorizationCodePostfix}"/>
+        <property name="flowStateLength" value="${oauth.db.flowStateLength}"/>
+        <property name="flowStatePostfix" value="${oauth.db.flowStatePostfix}"/>
+        <property name="loginStateLength" value="${oauth.db.loginStateLength}"/>
+        <property name="loginStatePostfix" value="${oauth.db.loginStatePostfix}"/>
+        <property name="refreshTokenLength" value="${oauth.db.refreshTokenLength}"/>
+        <property name="refreshTokenPostfix" value="${oauth.db.refreshTokenPostfix}"/>
+        <property name="refreshTokenSeriesLength" value="${oauth.db.refreshTokenSeriesLength}"/>
+        <property name="rememberMeTokenLength" value="${oauth.db.rememberMeTokenLength}"/>
+        <property name="rememberMeTokenPostfix" value="${oauth.db.rememberMeTokenPostfix}"/>
+        <property name="rememberMeTokenSeriesLength" value="${oauth.db.rememberMeTokenSeriesLength}"/>
+        <property name="sessionStateLength" value="${oauth.db.sessionStateLength}"/>
+        <property name="sessionStatePostfix" value="${oauth.db.sessionStatePostfix}"/>
+        <property name="clientIdLength" value="${oauth.db.clientIdLength}"/>
+        <property name="clientSecretLength" value="${oauth.db.clientSecretLength}"/>
+    </bean>
+
+    <bean id="jedisInstance" class="redis.clients.jedis.Jedis">
+        <constructor-arg name="host" value="${oauth.db.redis.host}"/>
+        <constructor-arg name="port" value="${oauth.db.redis.port}"/>
+    </bean>
+
+    <bean id="baseDAO" class="com.junbo.oauth.db.dao.couch.CouchBaseDAO" abstract="true">
+        <property name="asyncHttpClient" ref="commonAsyncHttpClient"/>
+        <property name="couchDBUri" value="${oauth.db.couchDB.uri}"/>
+    </bean>
+
+    <bean id="authorizationCodeDAO" class="com.junbo.oauth.db.dao.couch.CouchAuthorizationCodeDAOImpl" parent="baseDAO">
+        <property name="dbName" value="authorization_code"/>
+    </bean>
+
+    <bean id="accessTokenDAO" class="com.junbo.oauth.db.dao.couch.CouchAccessTokenDAOImpl" parent="baseDAO">
+        <property name="dbName" value="access_token"/>
+    </bean>
+
+    <bean id="refreshTokenDAO" class="com.junbo.oauth.db.dao.couch.CouchRefreshTokenDAOImpl" parent="baseDAO">
+        <property name="dbName" value="refresh_token"/>
+    </bean>
+
+    <bean id="rememberMeTokenDAO" class="com.junbo.oauth.db.dao.couch.CouchRememberMeTokenDAOImpl" parent="baseDAO">
+        <property name="dbName" value="remember_me_token"/>
+    </bean>
+
+    <bean id="clientDAO" class="com.junbo.oauth.db.dao.couch.CouchClientDAOImpl" parent="baseDAO">
+        <property name="dbName" value="client"/>
+    </bean>
+
+    <bean id="loginStateDAO" class="com.junbo.oauth.db.dao.couch.CouchLoginStateDAOImpl" parent="baseDAO">
+        <property name="dbName" value="login_state"/>
+    </bean>
+
+    <bean id="scopeDAO" class="com.junbo.oauth.db.dao.couch.CouchScopeDAOImpl" parent="baseDAO">
+        <property name="dbName" value="scope"/>
+    </bean>
+
+    <bean id="consentDAO" class="com.junbo.oauth.db.dao.couch.CouchConsentDAOImpl" parent="baseDAO">
+        <property name="dbName" value="consent"/>
+    </bean>
+
+    <bean id="apiDefinitionDAO" class="com.junbo.oauth.db.dao.couch.CouchApiDefinitionDAOImpl" parent="baseDAO">
+        <property name="dbName" value="api_definition"/>
+    </bean>
+
+    <bean id="clientRepository" class="com.junbo.oauth.db.repo.impl.ClientRepositoryImpl">
+        <property name="clientDAO" ref="clientDAO"/>
+    </bean>
+
+    <bean id="loginStateRepository" class="com.junbo.oauth.db.repo.impl.LoginStateRepositoryImpl">
+        <property name="loginStateDAO" ref="loginStateDAO"/>
+        <property name="tokenGenerator" ref="tokenGenerator"/>
+        <property name="defaultLoginStateExpiration" value="${oauth.db.loginState.default.expiration}"/>
+    </bean>
+
+    <bean id="authorizationCodeRepository" class="com.junbo.oauth.db.repo.impl.AuthorizationCodeRepositoryImpl">
+        <property name="authorizationCodeDAO" ref="authorizationCodeDAO"/>
+        <property name="tokenGenerator" ref="tokenGenerator"/>
+    </bean>
+
+    <bean id="accessTokenRepository" class="com.junbo.oauth.db.repo.impl.AccessTokenRepositoryImpl">
+        <property name="accessTokenDAO" ref="accessTokenDAO"/>
+        <property name="tokenGenerator" ref="tokenGenerator"/>
+    </bean>
+
+    <bean id="refreshTokenRepository" class="com.junbo.oauth.db.repo.impl.RefreshTokenRepositoryImpl">
+        <property name="refreshTokenDAO" ref="refreshTokenDAO"/>
+        <property name="tokenGenerator" ref="tokenGenerator"/>
+    </bean>
+
+    <bean id="rememberMeTokenRepository" class="com.junbo.oauth.db.repo.impl.RememberMeTokenRepositoryImpl">
+        <property name="rememberMeTokenDAO" ref="rememberMeTokenDAO"/>
+        <property name="tokenGenerator" ref="tokenGenerator"/>
+    </bean>
+
+    <bean id="scopeRepository" class="com.junbo.oauth.db.repo.impl.ScopeRepositoryImpl">
+        <property name="scopeDAO" ref="scopeDAO"/>
+    </bean>
+
+    <bean id="consentRepository" class="com.junbo.oauth.db.repo.impl.ConsentRepositoryImpl">
+        <property name="consentDAO" ref="consentDAO"/>
+    </bean>
+
+    <bean id="apiDefinitionRepository" class="com.junbo.oauth.db.repo.impl.ApiDefinitionRepositoryImpl">
+        <property name="apiDefinitionDAO" ref="apiDefinitionDAO"/>
+    </bean>
+
+</beans>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="commonAsyncHttpClient" class="com.ning.http.client.AsyncHttpClient" />
+
+    <bean id="commonPathParamTranscoder" class="com.junbo.common.json.IdPathParamTranscoder"/>
+
+    <bean id="commonQueryParamTranscoder" class="com.junbo.common.json.QueryParamTranscoderImpl"/>
+
+    <bean id="commonTranscoder" class="com.junbo.common.json.JsonMessageTranscoder"/>
+
+    <bean id="oculus40IdShuffle" class="com.junbo.common.shuffle.Oculus40Id" />
+    <bean id="oculus48IdShuffle" class="com.junbo.common.shuffle.Oculus48Id" />
+</beans>

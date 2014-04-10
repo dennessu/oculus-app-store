@@ -1,0 +1,20 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<testsuite name="com.junbo.common.jackson.JacksonCustomizationTest" tests="14" failures="0" errors="0" timestamp="2014-04-09T09:47:07" hostname="XumengChendeMacBook-Pro.local" time="0.277">
+  <properties/>
+  <testcase name="testAnnotatedFieldIgnore" classname="com.junbo.common.jackson.JacksonCustomizationTest" time="0.138"/>
+  <testcase name="testAnnotatedFieldIgnore2" classname="com.junbo.common.jackson.JacksonCustomizationTest" time="0.001"/>
+  <testcase name="testBVT" classname="com.junbo.common.jackson.JacksonCustomizationTest" time="0.089"/>
+  <testcase name="testCascadeId" classname="com.junbo.common.jackson.JacksonCustomizationTest" time="0.016"/>
+  <testcase name="testFulfilmentId" classname="com.junbo.common.jackson.JacksonCustomizationTest" time="0.007"/>
+  <testcase name="testGetIgnore" classname="com.junbo.common.jackson.JacksonCustomizationTest" time="0.005"/>
+  <testcase name="testListLong" classname="com.junbo.common.jackson.JacksonCustomizationTest" time="0.0"/>
+  <testcase name="testNull" classname="com.junbo.common.jackson.JacksonCustomizationTest" time="0.001"/>
+  <testcase name="testNullCascadeId" classname="com.junbo.common.jackson.JacksonCustomizationTest" time="0.001"/>
+  <testcase name="testNullCascadeId2" classname="com.junbo.common.jackson.JacksonCustomizationTest" time="0.001"/>
+  <testcase name="testOrderId" classname="com.junbo.common.jackson.JacksonCustomizationTest" time="0.0"/>
+  <testcase name="testRawIgnore" classname="com.junbo.common.jackson.JacksonCustomizationTest" time="0.004"/>
+  <testcase name="testSetIgnore" classname="com.junbo.common.jackson.JacksonCustomizationTest" time="0.002"/>
+  <testcase name="testStringId" classname="com.junbo.common.jackson.JacksonCustomizationTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!-- mock -->
+    <import resource="classpath*:spring/*-context.xml"/>
+    <context:component-scan base-package="com.junbo.order.mock"/>
+
+    <bean id="mockBillingFacade" class="com.junbo.order.clientproxy.billing.impl.BillingFacadeImpl">
+        <property name="balanceResource" ref="mockBalanceResource"/>
+        <property name="shippingAddressResource" ref="mockShippingAddressResource"/>
+        <property name="currencyResource" ref="mockCurrencyResource"/>
+    </bean>
+
+    <bean id="mockRatingFacade" class="com.junbo.order.clientproxy.rating.impl.RatingFacadeImpl">
+        <property name="ratingResource" ref="mockRatingResource"/>
+    </bean>
+
+    <bean id="mockIdentityFacade" class="com.junbo.order.clientproxy.identity.impl.IdentityFacadeImpl">
+        <property name="userResource" ref="mockIdentityResource"/>
+    </bean>
+
+    <bean id="mockCatalogFacade" class="com.junbo.order.clientproxy.catalog.impl.CatalogFacadeImpl">
+        <property name="offerResource" ref="mockCatalogResource"/>
+    </bean>
+
+</beans>

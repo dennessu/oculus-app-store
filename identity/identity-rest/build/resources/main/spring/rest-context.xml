@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:annotation-config />
+    <context:component-scan base-package="com.junbo.oom.core.builtin"/>
+    <context:component-scan base-package="com.junbo.identity.spec.resource.adapter" />
+    <context:component-scan base-package="com.junbo.identity.rest.service" />
+
+    <bean class="com.junbo.identity.data.mapper.CommonMapper" />
+
+    <!-- resource implementation -->
+    <bean id="defaultUserResource" class="com.junbo.identity.rest.resource.UserResourceImpl" />
+    <bean id="defaultUserProfileResource" class="com.junbo.identity.rest.resource.UserProfileResourceImpl" />
+    <bean id="defaultAppResource" class="com.junbo.identity.rest.resource.AppResourceImpl" />
+    <bean id="defaultUserDeviceProfileResource" class="com.junbo.identity.rest.resource.UserDeviceProfileResourceImpl" />
+    <bean id="defaultUserFederationResource" class="com.junbo.identity.rest.resource.UserFederationResourceImpl" />
+    <bean id="defaultUserOptInResource" class="com.junbo.identity.rest.resource.UserOptInResourceImpl" />
+    <bean id="defaultUserTosAcceptanceResource" class="com.junbo.identity.rest.resource.UserTosAcceptanceResourceImpl" />
+    <bean id="defaultPasswordResource" class="com.junbo.identity.rest.resource.PasswordResourceImpl" />
+</beans>

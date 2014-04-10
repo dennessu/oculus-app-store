@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <import resource="classpath*:spring/*-context.xml"/>
+
+    <bean id="abstractDao" class="com.junbo.cart.db.dao.impl.AbstractDao" abstract="true">
+        <property name="sessionFactory" ref="cartSessionFactory"/>
+    </bean>
+
+    <bean id="cartDao" class="com.junbo.cart.db.dao.impl.CartDaoImpl" parent="abstractDao">
+    </bean>
+
+    <bean id="offerItemDao" class="com.junbo.cart.db.dao.impl.CartItemDaoImpl" parent="abstractDao">
+        <property name="entityClass" value="com.junbo.cart.db.entity.OfferItemEntity"/>
+    </bean>
+
+    <bean id="couponItemDao" class="com.junbo.cart.db.dao.impl.CartItemDaoImpl" parent="abstractDao">
+        <property name="entityClass" value="com.junbo.cart.db.entity.CouponItemEntity"/>
+    </bean>
+
+    <context:component-scan base-package="com.junbo.cart.db.entity"/>
+</beans>
