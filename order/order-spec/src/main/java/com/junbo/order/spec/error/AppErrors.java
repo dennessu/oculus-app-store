@@ -146,4 +146,8 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 500, code = FulfillmentErrorCode.FULFILLMENT_CONNECTION_ERROR,
             description = "Fulfilment connection error")
     AppError fulfilmentConnectionError(AppError[] causes);
+
+    @ErrorDef(httpStatusCode = 404, code = ErrorCode.SUBLEDGER_NOT_FOUND,
+            description = "SubledgerNotFound")
+    AppError subledgerNotFound();
 }

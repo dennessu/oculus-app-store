@@ -151,6 +151,11 @@ class OrderRepositoryImpl implements OrderRepository {
     }
 
     @Override
+    OrderItem getOrderItem(Long orderItemId) {
+        return modelMapper.toOrderItemModel(orderItemDao.read(orderItemId), new MappingContext())
+    }
+
+    @Override
     List<Discount> getDiscounts(Long orderId) {
         List<Discount> discounts = []
         MappingContext context = new MappingContext()
