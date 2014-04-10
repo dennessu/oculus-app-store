@@ -4,7 +4,6 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.cart.core.service.impl
-
 import com.junbo.cart.core.client.IdentityClient
 import com.junbo.cart.core.service.CartPersistService
 import com.junbo.cart.core.service.CartService
@@ -16,14 +15,12 @@ import com.junbo.cart.spec.model.item.CouponItem
 import com.junbo.cart.spec.model.item.OfferItem
 import com.junbo.common.id.CartId
 import com.junbo.common.id.CartItemId
-import com.junbo.common.id.CouponId
 import com.junbo.common.id.OfferId
 import com.junbo.common.id.UserId
 import com.junbo.identity.spec.model.user.User
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.util.CollectionUtils
-
 /**
  * Created by fzhang@wan-san.com on 14-2-14.
  */
@@ -83,7 +80,7 @@ class CartServiceImpl implements CartService {
             validation.validateUser((User) it)
             Cart cart = cartPersistService.getCart(clientId, cartName, userId, true)
             if (cart == null) {
-                throw AppErrors.INSTANCE.cartNotFound().exception()
+                return Promise.pure(null)
             }
             validation.validateCartOwner(cart, userId)
             return Promise.pure(cart)
@@ -124,6 +121,10 @@ class CartServiceImpl implements CartService {
         }
     }
 
+    /**
+     * @deprecated the merge logic does not needed anymore
+     */
+    @Deprecated
     @Override
     Promise<Cart> mergeCart(UserId userId, CartId cartId, Cart fromCart) {
         validation.validateMerge(fromCart)
@@ -153,9 +154,6 @@ class CartServiceImpl implements CartService {
         return getCart(userId, cartId).then {
             Cart cart = (Cart) it
             validation.validateOfferAdd(offerItem)
-            if (offerItem.selected == null) {
-                offerItem.selected = true
-            }
             addCartItems(cart, [offerItem], [])
             cartPersistService.updateCart(cart)
             return Promise.pure(cart)
@@ -172,9 +170,7 @@ class CartServiceImpl implements CartService {
             if (o == null) {
                 throw AppErrors.INSTANCE.cartItemNotFound().exception()
             }
-            if (offerItem.selected == null) {
-                offerItem.selected = true
-            }
+
             validation.validateOfferUpdate(offerItem)
             // update the offer and save
             o.offer = offerItem.offer
@@ -240,12 +236,12 @@ class CartServiceImpl implements CartService {
     }
 
     private static List<CouponItem> mergeCoupons(List<CouponItem> coupons) {
-        Map<CouponId, CouponItem> couponsMap = new HashMap<CouponId, CouponItem>()
+        Map<String, CouponItem> couponsMap = new HashMap<String, CouponItem>()
         coupons.each {
             CouponItem e = (CouponItem) it
-            CouponItem current = couponsMap[e.coupon]
+            CouponItem current = couponsMap[e.couponCode]
             if (current == null) {
-                couponsMap[e.coupon] = e
+                couponsMap[e.couponCode] = e
             } else {
                 if (current.id == null && e.id != null) {
                     current.id = e.id
@@ -295,11 +291,7 @@ class CartServiceImpl implements CartService {
                 (List<CartItem>) (oldCart == null ? null : oldCart.offers))
         setCartItemId((List<CartItem>) cart.coupons,
                 (List<CartItem>) (oldCart == null ? null : oldCart.coupons))
-        cart.offers.each {
-            if (((OfferItem) it).selected == null) {
-                ((OfferItem) it).selected = true
-            }
-        }
+
         cart.offers = mergeOffers(cart.offers)
         cart.coupons = mergeCoupons(cart.coupons)
         removeZeroQuantityOffer(cart.offers)

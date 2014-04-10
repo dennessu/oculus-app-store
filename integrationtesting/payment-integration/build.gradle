@@ -28,7 +28,6 @@ test {
 dependencies {
     compile project(':common-testlib')
     compile(libraries.asyncclient)
-    //compile(libraries.common_testlib)
     compile 'com.junbo.payment:payment-spec:0.0.1-SNAPSHOT'
 
     testCompile(libraries.asyncclient)

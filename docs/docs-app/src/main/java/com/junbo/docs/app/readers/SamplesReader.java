@@ -73,15 +73,18 @@ public class SamplesReader {
                     }
                     catch (SAXException ex) {
                         logger.warn("Failed to parse xml: " + path);
+                        throw new RuntimeException(ex);
                     }
                     catch (IOException ex) {
                         logger.warn("Failed to load xml: " + path);
+                        throw new RuntimeException(ex);
                     }
                 }
             }
         }
         catch (IOException ex) {
             logger.warn("Failed to read jar file for samples.");
+            throw new RuntimeException(ex);
         }
 
         Map<String, List<Sample>> finalResults = new HashMap<>();
@@ -116,8 +119,9 @@ public class SamplesReader {
                         resourcePathes.add(entryName);
                     }
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (Exception ex) {
+                logger.warn("Unable to getJarFiles: " + jarPath);
+                throw new RuntimeException(ex);
             }
         } else {
             // check whether this is just a folder

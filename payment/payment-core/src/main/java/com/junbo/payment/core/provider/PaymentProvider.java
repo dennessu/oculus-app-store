@@ -11,5 +11,6 @@ package com.junbo.payment.core.provider;
  */
 public enum PaymentProvider {
     BrainTree,
-    PayPal
+    PayPal,
+    Wallet
 }

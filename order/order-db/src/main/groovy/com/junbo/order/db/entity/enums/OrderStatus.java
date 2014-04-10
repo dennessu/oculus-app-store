@@ -21,6 +21,7 @@ public enum OrderStatus implements Identifiable<Short> {
     CANCELED(7),
     REFUNDED(8),
     PREORDERED(9),
+    PARTIAL_CHARGED(10),
     ERROR(-1);
 
     private OrderStatus(int id) {

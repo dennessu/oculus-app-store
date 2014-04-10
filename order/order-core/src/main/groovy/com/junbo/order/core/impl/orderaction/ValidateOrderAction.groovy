@@ -26,7 +26,6 @@ class ValidateOrderAction implements Action {
 
         orderValidator.notNull(order, 'order')
         orderValidator.notNull(order.user, 'user')
-        orderValidator.notNull(order.trackingUuid, 'trackingUuid')
 
         orderValidator.notNull(order.type, 'type').validEnumString(order.type, 'type', OrderType)
 

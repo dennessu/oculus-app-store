@@ -75,18 +75,12 @@ class OrderServiceImpl implements OrderService {
             Map<String, Object> requestScope = [:]
             def orderActionContext = new OrderActionContext()
             orderActionContext.orderServiceContext = orderServiceContext
-            orderActionContext.trackingUuid = order.trackingUuid
+            orderActionContext.trackingUuid = UUID.randomUUID()
             requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object) orderActionContext)
             executeFlow(flowName, orderServiceContext, requestScope)
         }.syncRecover { Throwable throwable ->
             error = throwable
         }.syncThen {
-            if (orderServiceContext.order.tentative) {
-                LOGGER.info('name=Order_RollBack_To_Tentative, orderId={}', orderServiceContext.order.id)
-                transactionHelper.executeInTransaction {
-                    orderRepository.updateOrder(orderServiceContext.order, true)
-                }
-            }
             orderInternalService.refreshOrderStatus(orderServiceContext.order)
             if (error != null) {
                 throw error
@@ -107,7 +101,7 @@ class OrderServiceImpl implements OrderService {
                 Map<String, Object> requestScope = [:]
                 def orderActionContext = new OrderActionContext()
                 orderActionContext.orderServiceContext = orderServiceContext
-                orderActionContext.trackingUuid = order.trackingUuid
+                orderActionContext.trackingUuid = UUID.randomUUID()
                 requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object) orderActionContext)
                 executeFlow(flowName, orderServiceContext, requestScope)
             }.syncThen {
@@ -119,13 +113,6 @@ class OrderServiceImpl implements OrderService {
     @Override
     Promise<Order> createQuote(Order order, ApiContext context) {
         LOGGER.info('name=Create_Tentative_Order. userId: {}', order.user.value)
-
-        def persistedOrder = orderInternalService.getOrderByTrackingUuid(order.trackingUuid, order.user.value)
-        if (persistedOrder != null) {
-            LOGGER.info('name=Order_Already_Exist. userId:{}, trackingUuid: {}, orderId:{}',
-                    persistedOrder.user.value, persistedOrder.trackingUuid, persistedOrder.id.value)
-            return Promise.pure(persistedOrder)
-        }
 
         order.id = null
         setHonoredTime(order)
@@ -139,7 +126,7 @@ class OrderServiceImpl implements OrderService {
                 Map<String, Object> requestScope = [:]
                 def orderActionContext = new OrderActionContext()
                 orderActionContext.orderServiceContext = orderServiceContext
-                orderActionContext.trackingUuid = order.trackingUuid
+                orderActionContext.trackingUuid = UUID.randomUUID()
                 requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object) orderActionContext)
                 executeFlow(flowName, orderServiceContext, requestScope)
             }.syncThen {
@@ -178,12 +165,6 @@ class OrderServiceImpl implements OrderService {
     @Override
     Promise<OrderEvent> updateOrderFulfillmentStatus(OrderEvent event) {
         return null
-    }
-
-    @Override
-    @Transactional
-    Order getOrderByTrackingUuid(UUID trackingUuid, Long userId) {
-        return orderInternalService.getOrderByTrackingUuid(trackingUuid, userId)
     }
 
     private Promise<OrderServiceContext> executeFlow(

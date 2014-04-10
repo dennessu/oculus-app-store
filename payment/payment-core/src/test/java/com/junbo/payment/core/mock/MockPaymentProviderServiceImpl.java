@@ -2,6 +2,7 @@ package com.junbo.payment.core.mock;
 
 
 import com.junbo.langur.core.promise.Promise;
+import com.junbo.payment.core.provider.AbstractPaymentProviderService;
 import com.junbo.payment.core.provider.PaymentProviderService;
 import com.junbo.payment.spec.enums.CreditCardType;
 import com.junbo.payment.spec.enums.PIStatus;
@@ -14,7 +15,7 @@ import java.util.Date;
 import java.util.List;
 
 
-public class MockPaymentProviderServiceImpl implements PaymentProviderService {
+public class MockPaymentProviderServiceImpl extends AbstractPaymentProviderService {
     private static final String providerName = "BrainTree";
     public static final String piExternalToken = "123";
     public static final String authExternalToken = "1234";
@@ -23,6 +24,22 @@ public class MockPaymentProviderServiceImpl implements PaymentProviderService {
     @Override
     public String getProviderName() {
         return providerName;
+    }
+
+    @Override
+    public void clonePIResult(PaymentInstrument source, PaymentInstrument target) {
+        target.setAccountNum(source.getAccountNum());
+        target.getCreditCardRequest().setExternalToken(source.getCreditCardRequest().getExternalToken());
+        target.getCreditCardRequest().setType(source.getCreditCardRequest().getType());
+        target.getCreditCardRequest().setCommercial(source.getCreditCardRequest().getCommercial());
+        target.getCreditCardRequest().setDebit(source.getCreditCardRequest().getDebit());
+        target.getCreditCardRequest().setPrepaid(source.getCreditCardRequest().getPrepaid());
+        target.getCreditCardRequest().setIssueCountry(source.getCreditCardRequest().getIssueCountry());
+    }
+
+    @Override
+    public void cloneTransactionResult(PaymentTransaction source, PaymentTransaction target) {
+        target.setExternalToken(source.getExternalToken());
     }
 
     @Override
@@ -43,12 +60,12 @@ public class MockPaymentProviderServiceImpl implements PaymentProviderService {
     }
 
     @Override
-    public Promise<Response> delete(String token) {
+    public Promise<Response> delete(PaymentInstrument request) {
         return null;
     }
 
     @Override
-    public Promise<PaymentTransaction> authorize(String piToken, PaymentTransaction paymentRequest) {
+    public Promise<PaymentTransaction> authorize(PaymentInstrument request, PaymentTransaction paymentRequest) {
         paymentRequest.setExternalToken(authExternalToken);
         return Promise.pure(paymentRequest);
     }
@@ -60,7 +77,7 @@ public class MockPaymentProviderServiceImpl implements PaymentProviderService {
     }
 
     @Override
-    public Promise<PaymentTransaction> charge(String piToken, PaymentTransaction paymentRequest) {
+    public Promise<PaymentTransaction> charge(PaymentInstrument request, PaymentTransaction paymentRequest) {
         paymentRequest.setExternalToken(chargeExternalToken);
         return Promise.pure(paymentRequest);
     }
@@ -76,7 +93,7 @@ public class MockPaymentProviderServiceImpl implements PaymentProviderService {
     }
 
     @Override
-    public List<PaymentTransaction> getByOrderId(String orderId) {
+    public List<PaymentTransaction> getByBillingRefId(String orderId) {
         return null;
     }
 

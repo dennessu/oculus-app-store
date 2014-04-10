@@ -112,4 +112,8 @@ public interface AppClientExceptions {
     @ErrorDef(httpStatusCode = 400, code = "40023",
             description = "the billing ref id is missing for the payment")
     AppError missingBillingRefId();
+
+    @ErrorDef(httpStatusCode = 400, code = "40024",
+            description = "The account_num is missing", field = "account_number")
+    AppError missingAccountNum();
 }

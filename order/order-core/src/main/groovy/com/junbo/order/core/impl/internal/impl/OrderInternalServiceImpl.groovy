@@ -12,11 +12,7 @@ import com.junbo.order.core.impl.common.*
 import com.junbo.order.core.impl.internal.OrderInternalService
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.error.AppErrors
-import com.junbo.order.spec.model.Order
-import com.junbo.order.spec.model.OrderItem
-import com.junbo.order.spec.model.OrderQueryParam
-import com.junbo.order.spec.model.PageParam
-import com.junbo.order.spec.model.PreorderInfo
+import com.junbo.order.spec.model.*
 import com.junbo.rating.spec.model.request.OrderRatingRequest
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
@@ -26,9 +22,9 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 import javax.annotation.Resource
-
 /**
  * Created by chriszhu on 4/1/14.
  */
@@ -110,6 +106,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
     }
 
     @Override
+    @Transactional
     Promise<Order> getOrderByOrderId(Long orderId) {
         if (orderId == null) {
             throw AppErrors.INSTANCE.fieldInvalid('orderId', 'orderId cannot be null').exception()
@@ -123,6 +120,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
     }
 
     @Override
+    @Transactional
     Promise<List<Order>> getOrdersByUserId(Long userId, OrderQueryParam orderQueryParam, PageParam pageParam) {
 
         if (userId == null) {
@@ -136,22 +134,6 @@ class OrderInternalServiceImpl implements OrderInternalService {
             completeOrder(order)
         }
         return Promise.pure(orders)
-    }
-
-    @Override
-    Order getOrderByTrackingUuid(UUID trackingUuid, Long userId) {
-        if (trackingUuid == null) {
-            return null
-        }
-        def order = orderRepository.getOrderByTrackingUuid(trackingUuid)
-        if (order != null) {
-            if (order.user.value != userId) {
-                LOGGER.error('name=Dup_Tracking_Uuid')
-                throw AppErrors.INSTANCE.orderDuplicateTrackingGuid().exception()
-            }
-            completeOrder(order)
-        }
-        return order
     }
 
     private Order completeOrder(Order order) {
@@ -184,5 +166,18 @@ class OrderInternalServiceImpl implements OrderInternalService {
                 orderRepository.updateOrder(order, true)
             }
         }
+    }
+
+    @Override
+    @Transactional
+    void markSettlement(Order order) {
+
+        def latest = orderRepository.getOrder(order.id.value)
+
+        if (!latest?.tentative) {
+            throw AppErrors.INSTANCE.orderNotTentative().exception()
+        }
+        order.tentative = false
+        orderRepository.updateOrder(order, true)
     }
 }

@@ -6,7 +6,6 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.order.core.OrderService
 import com.junbo.order.core.impl.common.CoreUtils
 import com.junbo.order.core.impl.common.OrderValidator
-import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.ApiContext
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderQueryParam
@@ -58,11 +57,18 @@ class OrderResourceImpl implements OrderResource {
 
     @Override
     Promise<Order> createOrder(Order order) {
-        orderValidator.notNull(order, 'order').notNull(order.trackingUuid, 'trackingUuid').notNull(order.user, 'user')
-        if (!order?.tentative) {
-            throw AppErrors.INSTANCE.fieldInvalid('tentative').exception()
+        orderValidator.notNull(order, 'order').notNull(order.user, 'user')
+
+        orderValidator.validateSettleOrderRequest(order)
+        Boolean isTentative = order.tentative
+        order.tentative = true
+        return orderService.createQuote(order, new ApiContext(requestContext.headers)).then { Order ratedOrder ->
+            if (!isTentative) {
+                ratedOrder.tentative = isTentative
+                return orderService.settleQuote(ratedOrder, new ApiContext(requestContext.headers))
+            }
+            return Promise.pure(ratedOrder)
         }
-        return orderService.createQuote(order, new ApiContext(requestContext.headers))
     }
 
     @Override

@@ -50,6 +50,8 @@ class OrderStatusBuilder {
 
         if (isOrderPreordered(orderEvents)) { return OrderStatus.PREORDERED }
 
+        if (isOrderPartialCharged(orderEvents)) { return OrderStatus.PARTIAL_CHARGED }
+
         return OrderStatus.OPEN
     }
 
@@ -82,6 +84,17 @@ class OrderStatusBuilder {
         }
         def orderEvent = orderEvents.find { OrderEvent oe ->
             oe.action == OrderActionType.CHARGE.toString() &&
+                    oe.status == EventStatus.COMPLETED.toString()
+        }
+        return orderEvent != null
+    }
+
+    static Boolean isOrderPartialCharged(List<OrderEvent> orderEvents) {
+        if (orderEvents == null) {
+            return false
+        }
+        def orderEvent = orderEvents.find { OrderEvent oe ->
+            oe.action == OrderActionType.PARTIAL_CHARGE.toString() &&
                     oe.status == EventStatus.COMPLETED.toString()
         }
         return orderEvent != null

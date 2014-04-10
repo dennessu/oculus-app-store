@@ -27,6 +27,8 @@ public interface PaymentTransactionService {
     Promise<PaymentTransaction> refund(Long paymentId, PaymentTransaction request);
     @Transactional(readOnly = true)
     PaymentTransaction getById(Long paymentId);
+    @Transactional(readOnly = true)
+    Promise<PaymentTransaction> getProviderTransaction(Long paymentId);
     @Transactional
     void reportPaymentEvent(PaymentEvent event);
 }

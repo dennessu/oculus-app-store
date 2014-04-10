@@ -6,6 +6,7 @@
 
 package com.junbo.token.db.mapper;
 
+import com.junbo.token.common.CommonUtil;
 import com.junbo.token.spec.enums.*;
 
 
@@ -47,11 +48,14 @@ public class CommonMapper {
     }
 
     public TokenLength toTokenLengthEnum(String piType){
+        if(CommonUtil.isNullOrEmpty(piType)){
+            return null;
+        }
         return TokenLength.valueOf(piType.toUpperCase());
     }
 
     public String toTokenLength(TokenLength piType){
-        return piType.toString();
+        return piType == null ? null : piType.toString();
     }
 
     public ProductType toProductTYpeEnum(String productType){

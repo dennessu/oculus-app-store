@@ -8,6 +8,7 @@ package com.junbo.billing.core.service
 
 import com.junbo.billing.clientproxy.PaymentFacade
 import com.junbo.billing.clientproxy.TaxFacade
+import com.junbo.billing.spec.enums.TaxStatus
 import com.junbo.billing.spec.error.AppErrors
 import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.ShippingAddress
@@ -58,6 +59,10 @@ class TaxServiceImpl implements TaxService {
 
     @Override
     Promise<Balance> calculateTax(Balance balance) {
+        if (balance.skipTaxCalculation) {
+            balance.taxStatus = TaxStatus.NOT_TAXED.name()
+            return Promise.pure(balance)
+        }
 
         chooseTaxProvider()
 
