@@ -7,14 +7,12 @@ package com.junbo.test.billing.apihelper.impl;
 
 import com.junbo.billing.spec.model.Balance;
 import com.junbo.test.billing.apihelper.BalanceService;
-import com.junbo.test.common.apihelper.Header;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.RestUrl;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
-import com.ning.http.client.FluentCaseInsensitiveStringsMap;
 
 /**
  * Created by Yunlong on 4/8/14.
@@ -41,6 +39,7 @@ public class BalanceServiceImpl extends HttpClientBase implements BalanceService
         return instance;
     }
 
+    /*
     @Override
     protected FluentCaseInsensitiveStringsMap getHeader() {
         FluentCaseInsensitiveStringsMap headers = new FluentCaseInsensitiveStringsMap();
@@ -52,6 +51,7 @@ public class BalanceServiceImpl extends HttpClientBase implements BalanceService
 
         return headers;
     }
+    */
 
     @Override
     public String postBalance(String uid, Balance balance) throws Exception {
@@ -61,7 +61,7 @@ public class BalanceServiceImpl extends HttpClientBase implements BalanceService
     @Override
     public String postBalance(String uid, Balance balance, int expectedResponseCode) throws Exception {
         setUserId(uid);
-        String responseBody = restApiCall(HTTPMethod.POST, balanceUrl + "/balances", balance);
+        String responseBody = restApiCall(HTTPMethod.POST, balanceUrl + "balances", balance);
 
         Balance balanceResult =
                 new JsonMessageTranscoder().decode(
@@ -105,7 +105,7 @@ public class BalanceServiceImpl extends HttpClientBase implements BalanceService
     public String getBalanceByOrderId(String uid, String orderId, int expectedResponseCode) throws Exception {
         setUserId(uid);
         String responseBody = restApiCall(HTTPMethod.GET, balanceUrl +
-                "/balances?orderId=" + orderId, expectedResponseCode);
+                "balances?orderId=" + orderId, expectedResponseCode);
 
         Balance balanceResult =
                 new JsonMessageTranscoder().decode(

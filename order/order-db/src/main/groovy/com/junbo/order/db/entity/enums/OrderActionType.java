@@ -20,7 +20,8 @@ public enum OrderActionType implements Identifiable<Short> {
     UPDATE(6),
     PREORDER(7),
     PARTIAL_REFUND(8),
-    CAPTURE(10);
+    CAPTURE(10),
+    PARTIAL_CHARGE(11);
 
     private OrderActionType(int id) {
         this.id = (short) id;

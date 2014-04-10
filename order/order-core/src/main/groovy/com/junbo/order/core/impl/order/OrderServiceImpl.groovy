@@ -114,19 +114,6 @@ class OrderServiceImpl implements OrderService {
     Promise<Order> createQuote(Order order, ApiContext context) {
         LOGGER.info('name=Create_Tentative_Order. userId: {}', order.user.value)
 
-        def persistedOrder = orderInternalService.getOrderByTrackingUuid(order.trackingUuid, order.user.value)
-        if (persistedOrder != null) {
-            LOGGER.info('name=Order_Already_Exist. userId:{}, trackingUuid: {}, orderId:{}',
-                    persistedOrder.user.value, persistedOrder.trackingUuid, persistedOrder.id.value)
-            if (order.tentative != persistedOrder.tentative) {
-                LOGGER.error('name=Order_Can_Not_Post_Non_Tentative_Order_With_Same_TrackingUuid. ' +
-                        'userId:{}, trackingUuid: {}, orderId:{}',
-                        persistedOrder.user.value, persistedOrder.trackingUuid, persistedOrder.id.value)
-                throw AppErrors.INSTANCE.orderDuplicateTrackingGuid().exception()
-            }
-            return Promise.pure(persistedOrder)
-        }
-
         order.id = null
         setHonoredTime(order)
 
