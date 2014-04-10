@@ -73,13 +73,13 @@ public class EntitlementDaoTest extends AbstractTransactionalTestNGSpringContext
         for (int i = 0; i < 48; i++) {
             Entitlement entitlementEntity = buildAnEntitlement();
             entitlementEntity.setUserId(userId);
-            entitlementEntity.setOwnerId(ownerId);
+            entitlementEntity.setInAppContext(Collections.singletonList(ownerId));
             entitlementRepository.insert(entitlementEntity);
         }
 
         EntitlementSearchParam searchParam = new EntitlementSearchParam();
         searchParam.setUserId(new UserId(userId));
-        searchParam.setOwnerId(ownerId);
+        searchParam.setClientId(ownerId);
 
         PageMetadata pageMetadata = new PageMetadata();
         pageMetadata.setStart(0);
@@ -118,12 +118,12 @@ public class EntitlementDaoTest extends AbstractTransactionalTestNGSpringContext
         for (int i = 0; i < 48; i++) {
             Entitlement entitlement = buildAnEntitlement();
             entitlement.setUserId(userId);
-            entitlement.setOwnerId(ownerId);
+            entitlement.setInAppContext(Collections.singletonList(ownerId));
             entitlementRepository.insert(entitlement);
         }
 
-        EntitlementSearchParam searchParam = new EntitlementSearchParam.Builder(new UserId(userId), ownerId)
-                .status(EntitlementStatus.ACTIVE.toString()).build();
+        EntitlementSearchParam searchParam = new EntitlementSearchParam.Builder(new UserId(userId))
+                .clientId(ownerId).status(EntitlementStatus.ACTIVE.toString()).build();
 
         PageMetadata pageMetadata = new PageMetadata();
         pageMetadata.setStart(0);
@@ -152,7 +152,6 @@ public class EntitlementDaoTest extends AbstractTransactionalTestNGSpringContext
 
         entitlement.setEntitlementId(new Random().nextLong());
         entitlement.setUserId(idGenerator.nextId());
-        entitlement.setConsumable(false);
         entitlement.setGrantTime(new Date(114, 0, 22));
         entitlement.setExpirationTime(new Date(114, 0, 28));
 
@@ -160,7 +159,7 @@ public class EntitlementDaoTest extends AbstractTransactionalTestNGSpringContext
         entitlement.setGroup("TEST");
         entitlement.setTag("TEST");
         entitlement.setType(EntitlementType.DEFAULT.toString());
-        entitlement.setOwnerId(String.valueOf(idGenerator.nextId()));
+        entitlement.setInAppContext(Collections.singletonList(String.valueOf(idGenerator.nextId())));
         entitlement.setStatus(EntitlementStatus.ACTIVE.toString());
         return entitlement;
     }

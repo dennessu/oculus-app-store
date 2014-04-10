@@ -10,23 +10,28 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.junbo.entitlement.db.entity.def.EntitlementStatus;
 import com.junbo.entitlement.db.entity.def.EntitlementType;
 import com.junbo.entitlement.db.entity.def.IdentifiableType;
+import com.junbo.entitlement.db.entity.def.StringJsonUserType;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Entitlement Entity.
  */
 @javax.persistence.Entity
 @Table(name = "entitlement")
+@TypeDefs(@TypeDef(name="json-string", typeClass=StringJsonUserType.class))
 public class EntitlementEntity extends Entity {
     private Long entitlementId;
     private Long userId;
-    private String ownerId;
+    private List<String> inAppContext;
     private EntitlementStatus status;
     private String statusReason;
     private Long entitlementDefinitionId;
@@ -35,7 +40,6 @@ public class EntitlementEntity extends Entity {
     private String tag;
     private Date grantTime;
     private Date expirationTime;
-    private Boolean consumable;
     private Integer useCount;
 
     @Id
@@ -103,15 +107,6 @@ public class EntitlementEntity extends Entity {
         this.expirationTime = expirationTime;
     }
 
-    @Column(name = "consumable")
-    public Boolean getConsumable() {
-        return consumable;
-    }
-
-    public void setConsumable(Boolean consumable) {
-        this.consumable = consumable;
-    }
-
     @Column(name = "use_count")
     public Integer getUseCount() {
         return useCount;
@@ -121,13 +116,14 @@ public class EntitlementEntity extends Entity {
         this.useCount = useCount;
     }
 
-    @Column(name = "owner_id")
-    public String getOwnerId() {
-        return ownerId;
+    @Column(name = "in_app_context")
+    @Type(type = "json-string")
+    public List<String> getInAppContext() {
+        return inAppContext;
     }
 
-    public void setOwnerId(String ownerId) {
-        this.ownerId = ownerId;
+    public void setInAppContext(List<String> inAppContext) {
+        this.inAppContext = inAppContext;
     }
 
     @Column(name = "type")

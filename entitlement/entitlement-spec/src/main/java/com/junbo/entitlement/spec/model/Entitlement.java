@@ -14,14 +14,14 @@ import com.junbo.common.jackson.annotation.EntitlementId;
 import com.junbo.common.jackson.annotation.UserId;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 /**
  * Entitlement Model.
  */
-@JsonPropertyOrder(value = {"entitlementId", "userId", "ownerId", "status", "statusReason",
-        "entitlementDefinitionId", "type", "group", "tag", "grantTime", "expirationTime",
-        "consumable", "useCount"})
+@JsonPropertyOrder(value = {"entitlementId", "userId", "inAppContext", "status", "statusReason",
+        "entitlementDefinitionId", "type", "group", "tag", "grantTime", "expirationTime", "useCount"})
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Entitlement{
     private UUID trackingUuid;
@@ -31,8 +31,7 @@ public class Entitlement{
     @UserId
     @JsonProperty("user")
     private Long userId;
-    @JsonProperty("owner")
-    private String ownerId;
+    private List<String> inAppContext;
     private String type;
     private String status;
     private String statusReason;
@@ -43,7 +42,6 @@ public class Entitlement{
     private Date expirationTime;
     private String group;
     private String tag;
-    private Boolean consumable;
     private Integer useCount;
 
     public UUID getTrackingUuid() {
@@ -110,14 +108,6 @@ public class Entitlement{
         this.expirationTime = expirationTime;
     }
 
-    public Boolean getConsumable() {
-        return consumable;
-    }
-
-    public void setConsumable(Boolean consumable) {
-        this.consumable = consumable;
-    }
-
     public Integer getUseCount() {
         return useCount;
     }
@@ -150,11 +140,11 @@ public class Entitlement{
         this.tag = tag;
     }
 
-    public String getOwnerId() {
-        return ownerId;
+    public List<String> getInAppContext() {
+        return inAppContext;
     }
 
-    public void setOwnerId(String ownerId) {
-        this.ownerId = ownerId;
+    public void setInAppContext(List<String> inAppContext) {
+        this.inAppContext = inAppContext;
     }
 }

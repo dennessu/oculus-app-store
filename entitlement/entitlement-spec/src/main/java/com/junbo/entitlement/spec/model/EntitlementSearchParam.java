@@ -7,7 +7,6 @@
 package com.junbo.entitlement.spec.model;
 
 import com.junbo.common.id.EntitlementDefinitionId;
-import com.junbo.common.id.OfferId;
 import com.junbo.common.id.UserId;
 
 import javax.ws.rs.QueryParam;
@@ -20,8 +19,8 @@ import java.util.Set;
 public class EntitlementSearchParam {
     @QueryParam("userId")
     private UserId userId;
-    @QueryParam("ownerId")
-    private String ownerId;
+    @QueryParam("clientId")
+    private String clientId;
     @QueryParam("type")
     private String type;
     @QueryParam("status")
@@ -56,12 +55,12 @@ public class EntitlementSearchParam {
         this.userId = userId;
     }
 
-    public String getOwnerId() {
-        return ownerId;
+    public String getClientId() {
+        return clientId;
     }
 
-    public void setOwnerId(String ownerId) {
-        this.ownerId = ownerId;
+    public void setClientId(String ownerId) {
+        this.clientId = ownerId;
     }
 
     public Set<EntitlementDefinitionId> getDefinitionIds() {
@@ -150,8 +149,7 @@ public class EntitlementSearchParam {
      */
     public static class Builder {
         private UserId userId;
-        private String ownerId;
-        private Set<OfferId> offerIds;
+        private String clientId;
         private String type;
         private String status;
 
@@ -166,9 +164,8 @@ public class EntitlementSearchParam {
 
         private Date lastModifiedTime;
 
-        public Builder(UserId userId, String ownerId) {
+        public Builder(UserId userId) {
             this.userId = userId;
-            this.ownerId = ownerId;
         }
 
         public Builder type(String val) {
@@ -216,6 +213,11 @@ public class EntitlementSearchParam {
             return this;
         }
 
+        public Builder clientId(String val){
+            clientId = val;
+            return this;
+        }
+
         public Builder definitionIds(Set<EntitlementDefinitionId> val) {
             definitionIds = val;
             return this;
@@ -228,7 +230,7 @@ public class EntitlementSearchParam {
 
     private EntitlementSearchParam(Builder builder) {
         userId = builder.userId;
-        ownerId = builder.ownerId;
+        clientId = builder.clientId;
         type = builder.type;
         status = builder.status;
         definitionIds = builder.definitionIds;

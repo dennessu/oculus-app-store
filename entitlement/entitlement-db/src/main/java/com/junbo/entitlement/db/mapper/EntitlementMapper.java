@@ -32,13 +32,12 @@ public class EntitlementMapper {
         entitlement.setType(entitlementEntity.getType().toString());
         entitlement.setGroup(entitlementEntity.getGroup());
         entitlement.setTag(entitlementEntity.getTag());
-        entitlement.setOwnerId(entitlementEntity.getOwnerId());
+        entitlement.setInAppContext(entitlementEntity.getInAppContext());
         entitlement.setEntitlementDefinitionId(entitlementEntity.getEntitlementDefinitionId());
         entitlement.setStatus(getStatus(entitlementEntity).toString());
         entitlement.setStatusReason(entitlementEntity.getStatusReason());
         entitlement.setGrantTime(entitlementEntity.getGrantTime());
         entitlement.setExpirationTime(entitlementEntity.getExpirationTime());
-        entitlement.setConsumable(entitlementEntity.getConsumable());
         entitlement.setUseCount(entitlementEntity.getUseCount());
         return entitlement;
     }
@@ -50,17 +49,15 @@ public class EntitlementMapper {
 
         entitlementEntity.setEntitlementDefinitionId(
                 entitlement.getEntitlementDefinitionId());
-        entitlementEntity.setOwnerId(entitlement.getOwnerId());
+        entitlementEntity.setInAppContext(entitlement.getInAppContext());
         entitlementEntity.setType(EntitlementType.valueOf(entitlement.getType().toUpperCase()));
         entitlementEntity.setGroup(entitlement.getGroup());
         entitlementEntity.setTag(entitlement.getTag());
-
         entitlementEntity.setUserId(entitlement.getUserId());
         entitlementEntity.setStatus(getStatus(entitlement));
         entitlementEntity.setStatusReason(entitlement.getStatusReason());
         entitlementEntity.setGrantTime(entitlement.getGrantTime());
         entitlementEntity.setExpirationTime(entitlement.getExpirationTime());
-        entitlementEntity.setConsumable(entitlement.getConsumable());
         entitlementEntity.setUseCount(entitlement.getUseCount());
         return entitlementEntity;
     }
@@ -80,7 +77,7 @@ public class EntitlementMapper {
             return entitlementEntity.getStatus();
         } else {
             Date now = EntitlementContext.current().getNow();
-            if (entitlementEntity.getConsumable()
+            if (entitlementEntity.getUseCount() != null
                     && entitlementEntity.getUseCount() < 1) {
                 return EntitlementStatus.DISABLED;
             } else if (now.before(entitlementEntity.getGrantTime())) {
@@ -95,10 +92,12 @@ public class EntitlementMapper {
     }
 
     private EntitlementStatus getStatus(Entitlement entitlement) {
-        EntitlementStatus status = EntitlementStatus.valueOf(entitlement.getStatus().toUpperCase());
-        if (EntitlementStatus.LIFECYCLE_NOT_MANAGED_STATUS
-                .contains(status)) {
-            return status;
+        if (entitlement.getStatus() != null) {
+            EntitlementStatus status = EntitlementStatus.valueOf(entitlement.getStatus().toUpperCase());
+            if (EntitlementStatus.LIFECYCLE_NOT_MANAGED_STATUS
+                    .contains(status)) {
+                return status;
+            }
         }
         return EntitlementStatus.MANAGED;
     }

@@ -11,14 +11,13 @@
             create table entitlement (
               entitlement_id bigint not null,
               user_id bigint not null,
-              owner_id varchar(512) not null,
               type smallint not null,
               entitlement_group varchar(512) not null,
               tag varchar(512) not null,
               status smallint not null,
               grant_time timestamp not null,
               expiration_time timestamp default null,
-              consumable boolean default null,
+              in_app_context json default null,
               use_count bigint default null,
               entitlement_definition_id bigint default null,
               status_reason varchar(32) default null,
@@ -35,14 +34,13 @@
               entitlement_id bigint not null,
               entitlement_definition_id bigint default null,
               user_id bigint not null,
-              owner_id varchar(512) not null,
               type smallint not null,
               entitlement_group varchar(512) not null,
               tag varchar(512) not null,
               status smallint not null,
               grant_time timestamp not null,
               expiration_time timestamp default null,
-              consumable boolean default null,
+              in_app_context json default null,
               use_count bigint default null,
               status_reason varchar(32) default null,
               created_by varchar(32) default null,
@@ -51,6 +49,15 @@
               modified_time timestamp not null,
               primary key (entitlement_history_id)
             );
+            CREATE OR REPLACE FUNCTION json_val_arr(_j json)
+  				RETURNS text[] AS
+				$$
+					SELECT array_agg(elem)
+					FROM json_array_elements(_j) AS x(elem)
+				$$
+  			LANGUAGE sql IMMUTABLE;
+  			CREATE INDEX entitlement_in_app_context_gin_idx ON entitlement
+			USING GIN (json_val_arr(in_app_context));
                 ]]>
         </sql>
     </changeSet>

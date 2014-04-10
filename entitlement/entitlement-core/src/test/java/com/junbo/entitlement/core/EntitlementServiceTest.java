@@ -26,6 +26,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import javax.sql.DataSource;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -109,7 +110,7 @@ public class EntitlementServiceTest extends AbstractTransactionalTestNGSpringCon
 
         EntitlementSearchParam searchParam = new EntitlementSearchParam();
         searchParam.setUserId(new UserId(userId));
-        searchParam.setOwnerId(userId.toString());
+        searchParam.setClientId(userId.toString());
         searchParam.setStatus(EntitlementStatus.ACTIVE.toString());
         List<Entitlement> entitlements = entitlementService.searchEntitlement(searchParam, new PageMetadata());
 
@@ -134,7 +135,6 @@ public class EntitlementServiceTest extends AbstractTransactionalTestNGSpringCon
         Entitlement entitlement = new Entitlement();
 
         entitlement.setUserId(idGenerator.nextId());
-        entitlement.setConsumable(false);
         entitlement.setGrantTime(new Date(114, 0, 22));
         entitlement.setExpirationTime(new Date(114, 0, 28));
 
@@ -142,7 +142,7 @@ public class EntitlementServiceTest extends AbstractTransactionalTestNGSpringCon
         entitlement.setGroup("TEST");
         entitlement.setTag("TEST");
         entitlement.setType(EntitlementType.DEFAULT.toString());
-        entitlement.setOwnerId(String.valueOf(idGenerator.nextId()));
+        entitlement.setInAppContext(Collections.singletonList(String.valueOf(idGenerator.nextId())));
         entitlement.setStatus(EntitlementStatus.ACTIVE.toString());
         return entitlement;
     }

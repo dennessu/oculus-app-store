@@ -8,6 +8,7 @@ package com.junbo.entitlement.core.service;
 
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
 import com.junbo.entitlement.clientproxy.catalog.EntitlementDefinitionFacade;
+import com.junbo.entitlement.common.lib.EntitlementContext;
 import com.junbo.entitlement.db.entity.def.EntitlementStatus;
 import com.junbo.entitlement.spec.error.AppErrors;
 import com.junbo.entitlement.spec.model.Entitlement;
@@ -15,9 +16,11 @@ import com.junbo.entitlement.spec.model.EntitlementTransfer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
+import org.springframework.util.CollectionUtils;
 
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Base service.
@@ -28,8 +31,18 @@ public class BaseService {
     private EntitlementDefinitionFacade definitionFacade;
 
     protected void fillCreate(Entitlement entitlement) {
-        if (entitlement.getOwnerId() == null && entitlement.getEntitlementDefinitionId() != null) {
+        if (CollectionUtils.isEmpty(entitlement.getInAppContext())
+                && entitlement.getEntitlementDefinitionId() != null) {
             fillDefinition(entitlement);
+        }
+        if(entitlement.getGroup() == null){
+            entitlement.setGroup("");
+        }
+        if(entitlement.getTag() == null){
+            entitlement.setTag("");
+        }
+        if(entitlement.getGrantTime() == null){
+            entitlement.setGrantTime(EntitlementContext.current().getNow());
         }
     }
 
@@ -44,10 +57,11 @@ public class BaseService {
         entitlement.setType(definition.getType());
         entitlement.setGroup(definition.getGroup());
         entitlement.setTag(definition.getTag());
-        entitlement.setOwnerId(definition.getDeveloperId().toString());
+        entitlement.setInAppContext(Collections.singletonList(definition.getDeveloperId().toString()));
     }
 
     protected void fillUpdate(Entitlement entitlement, Entitlement existingEntitlement) {
+        existingEntitlement.setUseCount(entitlement.getUseCount());
         existingEntitlement.setExpirationTime(entitlement.getExpirationTime());
         existingEntitlement.setStatus(entitlement.getStatus());
         existingEntitlement.setStatusReason(entitlement.getStatusReason());
@@ -55,32 +69,25 @@ public class BaseService {
 
     protected void validateCreate(Entitlement entitlement) {
         checkUser(entitlement.getUserId());
-        if (StringUtils.isEmpty(entitlement.getOwnerId()) && entitlement.getEntitlementDefinitionId() == null) {
+        if (CollectionUtils.isEmpty(entitlement.getInAppContext())
+                && entitlement.getEntitlementDefinitionId() == null) {
             throw AppErrors.INSTANCE.common(
                     "One of developer and entitlementDefinition should not be null.")
                     .exception();
         }
-        checkOwner(entitlement.getOwnerId());
-        if (EntitlementStatus.LIFECYCLE_NOT_MANAGED_STATUS.contains(
+        checkInAppContext(entitlement.getInAppContext());
+        if (entitlement.getStatus() != null
+                && EntitlementStatus.LIFECYCLE_NOT_MANAGED_STATUS.contains(
                 EntitlementStatus.valueOf(entitlement.getStatus().toUpperCase()))) {
             LOGGER.error("Can not created {} entitlement.", entitlement.getStatus());
             throw AppErrors.INSTANCE.fieldNotCorrect("status",
                     "status can not be DELETED or BANNED when created").exception();
         }
         validateNotNull(entitlement.getType(), "type");
-        validateNotNull(entitlement.getConsumable(), "consumable");
         validateNotNull(entitlement.getGrantTime(), "grantTime");
         validateNotNull(entitlement.getType(), "type");
         validateNotNull(entitlement.getGroup(), "group");
         validateNotNull(entitlement.getTag(), "tag");
-        if (!entitlement.getConsumable()) {
-            if (entitlement.getUseCount() != null) {
-                throw AppErrors.INSTANCE.fieldNotCorrect("useCount",
-                        "useCount should be null when consumable is false").exception();
-            }
-        } else if (entitlement.getUseCount() == null) {
-            throw AppErrors.INSTANCE.missingField("useCount").exception();
-        }
         validateGrantTimeBeforeExpirationTime(entitlement);
     }
 
@@ -96,15 +103,14 @@ public class BaseService {
 
     protected void validateUpdate(Entitlement entitlement, Entitlement existingEntitlement) {
         checkUser(existingEntitlement.getUserId());
-        checkOwner(existingEntitlement.getOwnerId());
+        checkInAppContext(existingEntitlement.getInAppContext());
         validateEquals(existingEntitlement.getUserId(), entitlement.getUserId(), "user");
-        validateEquals(existingEntitlement.getOwnerId(), entitlement.getOwnerId(), "owner");
+        validateEquals(existingEntitlement.getInAppContext(), entitlement.getInAppContext(), "inAppContext");
         validateEquals(existingEntitlement.getEntitlementDefinitionId(),
                 entitlement.getEntitlementDefinitionId(), "definition");
         validateEquals(existingEntitlement.getType(), entitlement.getType(), "type");
         validateEquals(existingEntitlement.getGroup(), entitlement.getGroup(), "group");
         validateEquals(existingEntitlement.getTag(), entitlement.getTag(), "tag");
-        validateEquals(existingEntitlement.getConsumable(), entitlement.getConsumable(), "consumable");
         validateEquals(existingEntitlement.getGrantTime(), entitlement.getGrantTime(), "grantTime");
         validateGrantTimeBeforeExpirationTime(existingEntitlement);
     }
@@ -173,8 +179,7 @@ public class BaseService {
         validateNotNull(userId, "targetUser");
     }
 
-    protected void checkOwner(String ownerId) {
-        validateNotNull(ownerId, "owner");
+    protected void checkInAppContext(List<String> clientIds) {
         //TODO: check clientId
     }
 }

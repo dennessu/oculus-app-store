@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -79,10 +80,10 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     public List<Entitlement> searchEntitlement(EntitlementSearchParam entitlementSearchParam,
                                                PageMetadata pageMetadata) {
         validateNotNull(entitlementSearchParam.getUserId(), "user");
-        if (StringUtils.isEmpty(entitlementSearchParam.getOwnerId())) {
+        if (StringUtils.isEmpty(entitlementSearchParam.getClientId())) {
             //TODO: check if clientId is admin
         } else {
-            checkOwner(entitlementSearchParam.getOwnerId());
+            checkInAppContext(Collections.singletonList(entitlementSearchParam.getClientId()));
         }
         checkUser(entitlementSearchParam.getUserId().getValue());
         List<Entitlement> entitlementEntities = entitlementRepository.getBySearchParam(

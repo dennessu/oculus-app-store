@@ -44,10 +44,11 @@ public class EntitlementDaoImpl extends BaseDao<EntitlementEntity> implements En
     private void addSearchParam(EntitlementSearchParam entitlementSearchParam,
                                 StringBuilder queryStringBuilder,
                                 Map<String, Object> params) {
-        if (CommonUtils.isNotNull(entitlementSearchParam.getOwnerId())) {
-            addSingleParam("owner_id", "owner_id",
-                    entitlementSearchParam.getOwnerId(),
-                    "=", queryStringBuilder, params);
+        if (CommonUtils.isNotNull(entitlementSearchParam.getClientId())) {
+            //TODO:
+            queryStringBuilder.append(" and '{\"\\\"" +
+                    entitlementSearchParam.getClientId() +
+                    "\\\"\"}'\\:\\:text[] <@ (json_val_arr(in_app_context))");
         }
         if (entitlementSearchParam.getStatus() != null) {
             Date now = EntitlementContext.current().getNow();
@@ -57,7 +58,7 @@ public class EntitlementDaoImpl extends BaseDao<EntitlementEntity> implements En
                 params.put("status", status.getId());
             } else if (status.equals(EntitlementStatus.ACTIVE)) {
                 queryStringBuilder.append(
-                        " and ( consumable = false or ( consumable = true and use_count > 0 ))" +
+                        " and ( use_count is null or use_count > 0 )" +
                                 " and ( grant_time <= (:now)" +
                                 " and ( expiration_time is null or expiration_time >= (:now) ))");
                 params.put("now", now);
@@ -67,7 +68,7 @@ public class EntitlementDaoImpl extends BaseDao<EntitlementEntity> implements En
                 params.put("now", now);
             } else if (status.equals(EntitlementStatus.DISABLED)) {
                 queryStringBuilder.append(
-                        "and ( consumable = true and use_count < 1" +
+                        "and ( use_count < 1" +
                                 " or expiration_time <= (:now) )");
                 params.put("now", now);
             }

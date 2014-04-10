@@ -6,23 +6,24 @@
 
 package com.junbo.entitlement.db.entity;
 
-import com.junbo.entitlement.db.entity.def.EntitlementStatus;
-import com.junbo.entitlement.db.entity.def.EntitlementType;
-import com.junbo.entitlement.db.entity.def.IdentifiableType;
-import com.junbo.entitlement.db.entity.def.Shardable;
+import com.junbo.entitlement.db.entity.def.*;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import java.util.Date;
+import java.util.List;
 
 /**
  * EntitlementHistory Entity.
  */
 @javax.persistence.Entity
 @Table(name = "entitlement_history")
+@TypeDefs(@TypeDef(name="json-string", typeClass=StringJsonUserType.class))
 public class EntitlementHistoryEntity implements Shardable {
     public static final String CREATE_ACTION = "CREATE";
     public static final String UPDATE_ACTION = "UPDATE";
@@ -31,7 +32,7 @@ public class EntitlementHistoryEntity implements Shardable {
     private String action;
     private Long entitlementId;
     private Long userId;
-    private String ownerId;
+    private List<String> inAppContext;
     private String group;
     private String tag;
     private EntitlementType type;
@@ -40,7 +41,6 @@ public class EntitlementHistoryEntity implements Shardable {
     private String statusReason;
     private Date grantTime;
     private Date expirationTime;
-    private Boolean consumable;
     private Integer useCount;
     private Date createdTime;
     private String createdBy;
@@ -54,7 +54,7 @@ public class EntitlementHistoryEntity implements Shardable {
         this.action = action;
         this.entitlementId = entitlementEntity.getEntitlementId();
         this.entitlementDefinitionId = entitlementEntity.getEntitlementDefinitionId();
-        this.ownerId = entitlementEntity.getOwnerId();
+        this.inAppContext = entitlementEntity.getInAppContext();
         this.group = entitlementEntity.getGroup();
         this.tag = entitlementEntity.getTag();
         this.type = entitlementEntity.getType();
@@ -64,7 +64,6 @@ public class EntitlementHistoryEntity implements Shardable {
         this.entitlementDefinitionId = entitlementEntity.getEntitlementDefinitionId();
         this.grantTime = entitlementEntity.getGrantTime();
         this.expirationTime = entitlementEntity.getExpirationTime();
-        this.consumable = entitlementEntity.getConsumable();
         this.useCount = entitlementEntity.getUseCount();
         this.setCreatedBy(entitlementEntity.getCreatedBy());
         this.setCreatedTime(entitlementEntity.getCreatedTime());
@@ -155,15 +154,6 @@ public class EntitlementHistoryEntity implements Shardable {
         this.expirationTime = expirationTime;
     }
 
-    @Column(name = "consumable")
-    public Boolean getConsumable() {
-        return consumable;
-    }
-
-    public void setConsumable(Boolean consumable) {
-        this.consumable = consumable;
-    }
-
     @Column(name = "use_count")
     public Integer getUseCount() {
         return useCount;
@@ -209,13 +199,14 @@ public class EntitlementHistoryEntity implements Shardable {
         this.modifiedBy = modifiedBy;
     }
 
-    @Column(name = "owner_id")
-    public String getOwnerId() {
-        return ownerId;
+    @Column(name = "in_app_context")
+    @Type(type = "json-string")
+    public List<String> getInAppContext() {
+        return inAppContext;
     }
 
-    public void setOwnerId(String ownerId) {
-        this.ownerId = ownerId;
+    public void setInAppContext(List<String> inAppContext) {
+        this.inAppContext = inAppContext;
     }
 
     @Column(name = "entitlement_group")
