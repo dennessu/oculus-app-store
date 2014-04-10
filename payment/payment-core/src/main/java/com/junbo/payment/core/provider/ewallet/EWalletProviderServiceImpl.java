@@ -12,7 +12,7 @@ import com.junbo.ewallet.spec.model.Wallet;
 import com.junbo.ewallet.spec.resource.WalletResource;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.common.exception.AppServerExceptions;
-import com.junbo.payment.core.provider.PaymentProviderService;
+import com.junbo.payment.core.provider.AbstractPaymentProviderService;
 import com.junbo.payment.core.util.ProxyExceptionResponse;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentTransaction;
@@ -26,7 +26,7 @@ import java.util.List;
 /**
  * e-wallet provider service implementation.
  */
-public class EWalletProviderServiceImpl implements PaymentProviderService {
+public class EWalletProviderServiceImpl extends AbstractPaymentProviderService {
     private static final String PROVIDER_NAME = "Wallet";
     private static final Logger LOGGER = LoggerFactory.getLogger(EWalletProviderServiceImpl.class);
     @Autowired

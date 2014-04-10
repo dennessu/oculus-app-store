@@ -44,7 +44,6 @@ public class TokenServiceImpl implements TokenService {
 
     @Override
     public Promise<TokenSet> createTokenSet(TokenSet request) {
-        validateTokenSet(request);
         return Promise.pure(addSet(request));
     }
 
@@ -136,6 +135,7 @@ public class TokenServiceImpl implements TokenService {
     }
 
     private TokenSet addSet(TokenSet request){
+        validateTokenSet(request);
         request.setStatus(SetStatus.ACTIVE.toString());
         return tokenRepository.addTokenSet(request);
     }
@@ -143,10 +143,16 @@ public class TokenServiceImpl implements TokenService {
     private TokenOrder addOrder(TokenOrder request) {
         validateTokenOrder(request);
         request.setStatus(OrderStatus.COMPLETED.toString());
+        if(request.getQuantity() == null){
+            request.setQuantity((long)request.getTokenItems().size());
+        }
         TokenOrder result = tokenRepository.addTokenOrder(request);
         TokenSet tokenSet = tokenRepository.getTokenSet(request.getTokenSetId());
         List<TokenItem> tokenItems = new ArrayList<TokenItem>();
         if(request.getCreateMethod().equalsIgnoreCase(CreateMethod.GENERATION.toString())){
+            if(CommonUtil.isNullOrEmpty(tokenSet.getGenerationLength())){
+                throw AppServerExceptions.INSTANCE.InvalidTokenSet(request.getTokenSetId().toString()).exception();
+            }
             int genLen = tokenSet.getGenerationLength().equalsIgnoreCase(TokenLength.LEN16.toString()) ? 16 : (
                     tokenSet.getGenerationLength().equalsIgnoreCase(TokenLength.LEN20.toString()) ? 20 : (
                     tokenSet.getGenerationLength().equalsIgnoreCase(TokenLength.LEN25.toString()) ? 25 : 0)
@@ -177,9 +183,6 @@ public class TokenServiceImpl implements TokenService {
     }
 
     private void validateTokenSet(TokenSet request){
-        if(CommonUtil.isNullOrEmpty(request.getGenerationLength())){
-            throw AppClientExceptions.INSTANCE.missingField("generationLength").exception();
-        }
         if(request.getOfferIds() == null || request.getOfferIds().isEmpty()){
             throw AppClientExceptions.INSTANCE.missingField("offers").exception();
         }
@@ -189,20 +192,34 @@ public class TokenServiceImpl implements TokenService {
     }
 
     private void validateTokenOrder(TokenOrder request){
-        if(CommonUtil.isNullOrEmpty(request.getCreateMethod())){
-            throw AppClientExceptions.INSTANCE.missingField("creationMethod").exception();
-        }
         if(CommonUtil.isNullOrEmpty(request.getActivation())){
             throw AppClientExceptions.INSTANCE.missingField("activation").exception();
         }
-        if(request.getQuantity() == null){
-            throw AppClientExceptions.INSTANCE.missingField("activation").exception();
-        }
-        if(request.getQuantity() < 0 || request.getQuantity() > MAX_QUANTITY){
-            throw AppClientExceptions.INSTANCE.invalidField("quantity").exception();
+        if(CommonUtil.isNullOrEmpty(request.getCreateMethod())){
+            throw AppClientExceptions.INSTANCE.missingField("creationMethod").exception();
         }
         if(request.getTokenSetId() == null){
             throw AppClientExceptions.INSTANCE.missingField("tokenSet").exception();
+        }
+        if(request.getCreateMethod().equalsIgnoreCase(CreateMethod.GENERATION.toString())){
+            if(request.getQuantity() == null){
+                throw AppClientExceptions.INSTANCE.missingField("quantity").exception();
+            }
+            if(request.getQuantity() < 0 || request.getQuantity() > MAX_QUANTITY){
+                throw AppClientExceptions.INSTANCE.invalidField("quantity").exception();
+            }
+            if(request.getTokenItems() != null && !request.getTokenItems().isEmpty()){
+                throw AppClientExceptions.INSTANCE.fieldNotNeeded("tokenItems").exception();
+            }
+        }else if(request.getCreateMethod().equalsIgnoreCase(CreateMethod.UPLOAD.toString())){
+            if(request.getQuantity() != null){
+                throw AppClientExceptions.INSTANCE.fieldNotNeeded("quantity").exception();
+            }
+            if(request.getTokenItems() == null || request.getTokenItems().isEmpty()){
+                throw AppClientExceptions.INSTANCE.missingField("tokenItems").exception();
+            }
+        }else{
+            throw AppClientExceptions.INSTANCE.invalidField("createMethod").exception();
         }
         if(request.getUsageLimit() == null){
             throw AppClientExceptions.INSTANCE.missingField("usageLimit").exception();

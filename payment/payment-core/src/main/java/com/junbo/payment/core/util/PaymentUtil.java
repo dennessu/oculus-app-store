@@ -45,7 +45,15 @@ public final class PaymentUtil {
         }
     }
 
-    public static PaymentStatus mapPaymentStatus(PaymentStatus.BrainTreeStatus brainTreeStatus){
+    private enum PayPalStatus{
+        PAYMENT_ACTION_NOT_INITIATED,
+        PAYMENT_ACTION_FAILED,
+        PAYMENT_ACTION_IN_PROGRESS,
+        PAYMENT_COMPLETED,
+        PAYMENT_ACTION_COMPLETED
+    }
+
+    public static PaymentStatus mapBraintreePaymentStatus(PaymentStatus.BrainTreeStatus brainTreeStatus){
         switch (brainTreeStatus){
             case FAILED:
             case GATEWAY_REJECTED:
@@ -63,6 +71,21 @@ public final class PaymentUtil {
                     return PaymentStatus.UNRECOGNIZED;
                 }
             }
+        }
+    }
+
+    public static PaymentStatus mapPayPalPaymentStatus(String checkoutStatus){
+        if(checkoutStatus.equalsIgnoreCase(PayPalStatus.PAYMENT_ACTION_NOT_INITIATED.toString())){
+            return PaymentStatus.UNCONFIRMED;
+        }else if(checkoutStatus.equalsIgnoreCase(PayPalStatus.PAYMENT_ACTION_COMPLETED.toString())
+                || checkoutStatus.equalsIgnoreCase(PayPalStatus.PAYMENT_COMPLETED.toString())){
+            return PaymentStatus.SETTLED;
+        }else if(checkoutStatus.equalsIgnoreCase(PayPalStatus.PAYMENT_ACTION_IN_PROGRESS.toString())){
+            return PaymentStatus.SETTLING;
+        }else if(checkoutStatus.equalsIgnoreCase(PayPalStatus.PAYMENT_ACTION_FAILED.toString())){
+            return PaymentStatus.SETTLEMENT_DECLINED;
+        }else{
+            return PaymentStatus.UNRECOGNIZED;
         }
     }
 }

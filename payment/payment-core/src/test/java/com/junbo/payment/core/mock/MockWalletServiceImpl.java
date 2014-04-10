@@ -1,6 +1,7 @@
 package com.junbo.payment.core.mock;
 
 import com.junbo.langur.core.promise.Promise;
+import com.junbo.payment.core.provider.AbstractPaymentProviderService;
 import com.junbo.payment.core.provider.PaymentProviderService;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentTransaction;
@@ -11,7 +12,7 @@ import java.util.List;
 /**
  * mock wallet service.
  */
-public class MockWalletServiceImpl implements PaymentProviderService {
+public class MockWalletServiceImpl extends AbstractPaymentProviderService {
     private static final String PROVIDER_NAME = "Wallet";
     private static final String WALLET_ACCT = "12345";
     private static final String TRANSACTION_ID = "54321";
