@@ -34,6 +34,8 @@ public class SubledgerParam {
 
     private String currency;
 
+    private Boolean toDateInclusive;
+
     public UserId getSellerId() {
         return sellerId;
     }
@@ -88,5 +90,13 @@ public class SubledgerParam {
 
     public void setCurrency(String currency) {
         this.currency = currency;
+    }
+
+    public Boolean getToDateInclusive() {
+        return toDateInclusive;
+    }
+
+    public void setToDateInclusive(Boolean toDateInclusive) {
+        this.toDateInclusive = toDateInclusive;
     }
 }

@@ -105,6 +105,9 @@ public class SubledgerItemEntity extends CommonDbEntityWithDate{
         this.subledgerItemAction = subledgerItemAction;
     }
 
+    @Column (name = "status_id")
+    @NotNull (message = ValidationMessages.MISSING_VALUE)
+    @Type(type = "com.junbo.order.db.entity.type.SubledgerItemStatusType")
     public SubledgerItemStatus getStatus() {
         return status;
     }

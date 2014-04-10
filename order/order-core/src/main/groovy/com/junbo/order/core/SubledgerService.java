@@ -26,6 +26,4 @@ public interface SubledgerService {
     SubledgerItem createSubledgerItem(SubledgerItem subledgerItem);
 
     void aggregateSubledgerItem(SubledgerItem item);
-
-    Subledger getMatchingSubledger(OrderItem orderItem, Order order);
 }

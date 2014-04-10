@@ -151,8 +151,8 @@ class OrderRepositoryImpl implements OrderRepository {
     }
 
     @Override
-    List<OrderItem> getOrderItem(Long orderItemId) {
-        return null
+    OrderItem getOrderItem(Long orderItemId) {
+        return modelMapper.toOrderItemModel(orderItemDao.read(orderItemId), new MappingContext())
     }
 
     @Override

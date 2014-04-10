@@ -1,7 +1,5 @@
 package com.junbo.order.core.impl.subledger
-
 import com.junbo.common.id.SubledgerId
-import com.junbo.common.id.UserId
 import com.junbo.order.core.SubledgerService
 import com.junbo.order.core.impl.common.OrderValidator
 import com.junbo.order.core.impl.common.ParamUtils
@@ -11,10 +9,12 @@ import com.junbo.order.db.entity.enums.SubledgerItemStatus
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.db.repo.SubledgerRepository
 import com.junbo.order.spec.error.AppErrors
-import com.junbo.order.spec.model.*
+import com.junbo.order.spec.model.PageParam
+import com.junbo.order.spec.model.Subledger
+import com.junbo.order.spec.model.SubledgerItem
+import com.junbo.order.spec.model.SubledgerParam
 import groovy.transform.CompileStatic
 import org.springframework.stereotype.Component
-
 /**
  * Created by fzhang on 4/2/2014.
  */
@@ -45,7 +45,7 @@ class SubledgerServiceImpl implements SubledgerService {
         persisted.payoutStatus = subledger.payoutStatus
 
         Subledger result = subledgerRepository.updateSubledger(persisted)
-        return result;
+        return result
     }
 
     @Override
@@ -88,36 +88,5 @@ class SubledgerServiceImpl implements SubledgerService {
         subledgerRepository.updateSubledgerItem(subledgerItem)
 
         subledgerRepository.updateSubledger(subledger)
-    }
-
-    @Override
-    Subledger getMatchingSubledger(OrderItem orderItem, Order order) {
-        return null
-    }
-
-    @Override
-    Subledger getMatchingSubledger(OrderItem orderItem, Order order, UserId sellerId) {
-       /* subledgerItem.offerId
-
-        def orderItem = orderRepository.getOrderItem(subledgerItem.orderItemId.value)
-        if (orderItem == null) {
-            AppErrors.INSTANCE.orderItemNotFound()
-        }
-
-        def order = orderRepository.getOrder(orderItem.orderId.value)
-        if (order == null) {
-            AppErrors.INSTANCE.orderItemNotFound()
-        }
-
-*/
-        def param = new SubledgerParam(
-                payOutStatus: PayoutStatus.PENDING.name(),
-                sellerId: sellerId,
-                offerId: orderItem.offer,
-                country: order.country,
-                currency: order.currency
-        )
-        // subledgerRepository.getSubledgers()
-        return null
     }
 }
