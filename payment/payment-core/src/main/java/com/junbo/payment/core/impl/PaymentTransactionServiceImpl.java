@@ -259,6 +259,24 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
     }
 
     @Override
+    public Promise<PaymentTransaction> getProviderTransaction(Long paymentId) {
+        PaymentTransaction request = paymentRepository.getByPaymentId(paymentId);
+        PaymentInstrument pi = getPaymentInstrument(request);
+        final PaymentProviderService provider = getPaymentProviderService(pi);
+        return provider.getByTransactionToken(request.getExternalToken())
+                .recover(new Promise.Func<Throwable, Promise<PaymentTransaction>>() {
+                    @Override
+                    public Promise<PaymentTransaction> apply(Throwable throwable) {
+                        ProxyExceptionResponse proxyResponse = new ProxyExceptionResponse(throwable);
+                        LOGGER.error("error get transaction for" + provider.getProviderName() +
+                                "; error detail: " + proxyResponse.getBody());
+                        throw AppServerExceptions.INSTANCE.providerProcessError(
+                                provider.getProviderName(), proxyResponse.getBody()).exception();
+                    }
+                });
+    }
+
+    @Override
     public void reportPaymentEvent(PaymentEvent event) {
         if(event.getPaymentId() == null){
             LOGGER.error("the payment id is missing for the event.");

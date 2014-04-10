@@ -7,7 +7,7 @@
 package com.junbo.payment.core.provider.braintree;
 
 import com.junbo.langur.core.promise.Promise;
-import com.junbo.payment.core.provider.PaymentProviderService;
+import com.junbo.payment.core.provider.AbstractPaymentProviderService;
 import com.junbo.payment.spec.internal.BrainTreeResource;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentTransaction;
@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * brain tree rest implementation.
  */
-public class BrainTreeRestProviderServiceImpl implements PaymentProviderService {
+public class BrainTreeRestProviderServiceImpl extends AbstractPaymentProviderService {
     private static final String PROVIDER_NAME = "BrainTree";
     private BrainTreeResource brainTreeResource;
 
