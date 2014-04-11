@@ -26,12 +26,4 @@ public class PaymentInstrumentDao extends CommonDataDAOImpl<PaymentInstrumentEnt
         criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         return criteria.list();
     }
-
-    public void updateDefault(final Long userId, final Long piId){
-        String query = "update " + PaymentInstrumentEntity.class.getSimpleName() +
-                " set is_default = CASE WHEN payment_instrument_id = " + piId  +
-                " THEN true ELSE false END" +
-                " where user_id = " + userId;
-        currentSession().createQuery(query).executeUpdate();
-    }
 }

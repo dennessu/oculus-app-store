@@ -66,7 +66,6 @@ class TestHelper {
         order.setCountry('US')
         order.setCurrency('USD')
         order.setOrderTypeId(OrderType.PAY_IN)
-        order.setTrackingUuid(UUID.randomUUID())
         order.setCreatedTime(new Date())
         order.setCreatedBy('Test')
         order.setUpdatedBy('Test')

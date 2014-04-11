@@ -97,9 +97,8 @@ class BalanceServiceImpl implements BalanceService {
                         LOGGER.info('name=Async_Charge_Balance. balance id: ' + savedBalance.balanceId.value)
                         return Promise.pure(savedBalance)
                     }
-                    return transactionService.processBalance(savedBalance).then {
-                        Balance resultBalance = balanceRepository.updateBalance(savedBalance)
-                        return Promise.pure(resultBalance)
+                    return transactionService.processBalance(savedBalance).then { Balance returnedBalance ->
+                        return Promise.pure(balanceRepository.updateBalance(returnedBalance))
                     }
                 }
             }
@@ -157,6 +156,29 @@ class BalanceServiceImpl implements BalanceService {
             savedBalance.setType(BalanceType.MANUAL_CAPTURE.name())
             Balance resultBalance = balanceRepository.updateBalance(savedBalance)
             return Promise.pure(resultBalance)
+        }
+    }
+
+    @Override
+    Promise<Balance> processAsyncBalance(Balance balance) {
+
+        if (balance.balanceId == null) {
+            throw AppErrors.INSTANCE.fieldMissingValue('balanceId').exception()
+        }
+        Balance savedBalance = balanceRepository.getBalance(balance.balanceId.value)
+        if (savedBalance == null) {
+            throw AppErrors.INSTANCE.balanceNotFound(balance.balanceId.value.toString()).exception()
+        }
+        if (savedBalance.status != BalanceStatus.INIT.name()) {
+            throw AppErrors.INSTANCE.invalidBalanceStatus(savedBalance.status).exception()
+        }
+        if (savedBalance.isAsyncCharge != true) {
+            throw AppErrors.INSTANCE.notAsyncChargeBalance(balance.balanceId.value.toString()).exception()
+        }
+
+
+        return transactionService.processBalance(savedBalance).then { Balance returnedBalance ->
+            return Promise.pure(balanceRepository.updateBalance(returnedBalance))
         }
     }
 

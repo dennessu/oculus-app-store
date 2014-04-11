@@ -42,8 +42,6 @@ public class OrderItemEntity extends CommonDbEntityDeletable {
     private BigDecimal totalTax;
     private Boolean isTaxExempted;
     private BigDecimal totalDiscount;
-    private BigDecimal totalPreorderAmount;
-    private BigDecimal totalPreorderTax;
     private Date honorUntilTime;
     private Date honoredTime;
     // end of ratingInfo
@@ -167,24 +165,6 @@ public class OrderItemEntity extends CommonDbEntityDeletable {
 
     public void setTotalDiscount(BigDecimal totalDiscount) {
         this.totalDiscount = totalDiscount;
-    }
-
-    @Column(name = "TOTAL_PREORDER_AMOUNT")
-    public BigDecimal getTotalPreorderAmount() {
-        return totalPreorderAmount;
-    }
-
-    public void setTotalPreorderAmount(BigDecimal totalPreorderAmount) {
-        this.totalPreorderAmount = totalPreorderAmount;
-    }
-
-    @Column(name = "TOTAL_PREORDER_TAX")
-    public BigDecimal getTotalPreorderTax() {
-        return totalPreorderTax;
-    }
-
-    public void setTotalPreorderTax(BigDecimal totalPreorderTax) {
-        this.totalPreorderTax = totalPreorderTax;
     }
 
     @Column(name = "HONOR_UNTIL_TIME")

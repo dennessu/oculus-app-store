@@ -136,23 +136,6 @@ class OrderInternalServiceImpl implements OrderInternalService {
         return Promise.pure(orders)
     }
 
-    @Override
-    @Transactional
-    Order getOrderByTrackingUuid(UUID trackingUuid, Long userId) {
-        if (trackingUuid == null) {
-            return null
-        }
-        def order = orderRepository.getOrderByTrackingUuid(trackingUuid)
-        if (order != null) {
-             if (order.user.value != userId) {
-                LOGGER.error('name=Dup_Tracking_Uuid_Different_User')
-                throw AppErrors.INSTANCE.orderDuplicateTrackingGuid(0L, trackingUuid).exception()
-            }
-            completeOrder(order)
-        }
-        return order
-    }
-
     private Order completeOrder(Order order) {
         // order items
         order.orderItems = orderRepository.getOrderItems(order.id.value)

@@ -75,7 +75,7 @@ class OrderServiceImpl implements OrderService {
             Map<String, Object> requestScope = [:]
             def orderActionContext = new OrderActionContext()
             orderActionContext.orderServiceContext = orderServiceContext
-            orderActionContext.trackingUuid = order.trackingUuid
+            orderActionContext.trackingUuid = UUID.randomUUID()
             requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object) orderActionContext)
             executeFlow(flowName, orderServiceContext, requestScope)
         }.syncRecover { Throwable throwable ->
@@ -101,7 +101,7 @@ class OrderServiceImpl implements OrderService {
                 Map<String, Object> requestScope = [:]
                 def orderActionContext = new OrderActionContext()
                 orderActionContext.orderServiceContext = orderServiceContext
-                orderActionContext.trackingUuid = order.trackingUuid
+                orderActionContext.trackingUuid = UUID.randomUUID()
                 requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object) orderActionContext)
                 executeFlow(flowName, orderServiceContext, requestScope)
             }.syncThen {
@@ -126,7 +126,7 @@ class OrderServiceImpl implements OrderService {
                 Map<String, Object> requestScope = [:]
                 def orderActionContext = new OrderActionContext()
                 orderActionContext.orderServiceContext = orderServiceContext
-                orderActionContext.trackingUuid = order.trackingUuid
+                orderActionContext.trackingUuid = UUID.randomUUID()
                 requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object) orderActionContext)
                 executeFlow(flowName, orderServiceContext, requestScope)
             }.syncThen {
@@ -165,12 +165,6 @@ class OrderServiceImpl implements OrderService {
     @Override
     Promise<OrderEvent> updateOrderFulfillmentStatus(OrderEvent event) {
         return null
-    }
-
-    @Override
-    @Transactional
-    Order getOrderByTrackingUuid(UUID trackingUuid, Long userId) {
-        return orderInternalService.getOrderByTrackingUuid(trackingUuid, userId)
     }
 
     private Promise<OrderServiceContext> executeFlow(
