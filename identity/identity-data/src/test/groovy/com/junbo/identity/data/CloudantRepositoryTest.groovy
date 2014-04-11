@@ -16,6 +16,7 @@ import com.junbo.identity.spec.model.users.UserPin
 import com.junbo.identity.spec.v1.model.Device
 import com.junbo.identity.spec.v1.model.Group
 import com.junbo.identity.spec.v1.model.Tos
+import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserAuthenticator
 import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
 import com.junbo.identity.spec.v1.model.UserDevice
@@ -100,6 +101,10 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
     @Autowired
     @Qualifier('cloudantUserPiiRepository')
     private UserPiiRepository userPiiRepository
+
+    @Autowired
+    @Qualifier('cloudantUserRepository')
+    private UserRepository userRepository
 
     @Test
     public void test() {
@@ -412,5 +417,34 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
         options.setEmail(search)
         userPiiList = userPiiRepository.search(options).wrapped().get()
         assert userPiiList.size() != 0
+    }
+
+    @Test
+    public void testUserRepository() throws Exception {
+        User user = new User()
+        user.setActive(true)
+        user.setCurrency('USD')
+        user.setLocale('en_US')
+        def random = UUID.randomUUID().toString()
+        user.setNickName(random)
+        user.setPreferredLanguage(random)
+        user.setTimezone(random)
+        user.setType(random)
+        user.setUsername(random)
+        user.setCanonicalUsername(random)
+        user.setCreatedTime(new Date())
+        user.setCreatedBy('lixia')
+        user = userRepository.create(user).wrapped().get()
+
+        User newUser = userRepository.get(user.getId()).wrapped().get()
+        Assert.assertEquals(user.getType(), newUser.getType())
+
+        String newType = UUID.randomUUID().toString()
+        newUser.setType(newType)
+        newUser = userRepository.update(newUser).wrapped().get()
+        Assert.assertEquals(newUser.getType(), newType)
+
+        User findUser = userRepository.getUserByCanonicalUsername(newUser.getUsername()).wrapped().get()
+        Assert.assertNotNull(findUser)
     }
 }

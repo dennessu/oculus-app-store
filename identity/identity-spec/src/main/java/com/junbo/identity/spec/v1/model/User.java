@@ -5,7 +5,6 @@
  */
 package com.junbo.identity.spec.v1.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.UserId;
 import com.junbo.common.util.Identifiable;
@@ -36,7 +35,6 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
 
     private String currency;
 
-    @JsonIgnore
     private String canonicalUsername;
 
     @Override
