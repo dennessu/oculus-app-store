@@ -9,8 +9,6 @@ package com.junbo.catalog.core;
 import com.junbo.catalog.spec.model.common.*;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 /**
  * Base service for revisioned entity.
  * @param <E> entity.
@@ -19,7 +17,6 @@ import java.util.List;
 @Transactional
 public interface BaseRevisionedService<E extends BaseEntityModel, T extends BaseRevisionModel> {
     E getEntity(Long entityId);
-    List<E> getEntities(EntitiesGetOptions options);
     E createEntity(E entity);
     E updateEntity(Long entityId, E entity);
     void deleteEntity(Long entityId);

@@ -15,7 +15,6 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -31,11 +30,6 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
         E entity = getEntityRepo().get(entityId);
         checkEntityNotNull(entityId, entity, getEntityType());
         return entity;
-    }
-
-    @Override
-    public List getEntities(EntitiesGetOptions options) {
-        return null;
     }
 
     @Override

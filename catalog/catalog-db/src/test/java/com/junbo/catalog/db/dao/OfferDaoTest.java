@@ -6,14 +6,14 @@
 
 package com.junbo.catalog.db.dao;
 
-import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.db.BaseTest;
 import com.junbo.catalog.db.entity.OfferEntity;
+import com.junbo.catalog.spec.model.offer.OffersGetOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class OfferDaoTest extends BaseTest {
@@ -23,11 +23,27 @@ public class OfferDaoTest extends BaseTest {
     @Test
     public void testCreateAndGet() {
         OfferEntity entity = buildOfferEntity();
-        List<Long> res = Utils.fromJson(Utils.toJson(new ArrayList<Long>()), List.class);
-        System.out.println(res);
-        System.out.println(Utils.toJson(Utils.toJson(new ArrayList<Long>())));
-        //offerDao.create(entity);
-        //Assert.assertNotNull(offerDao.get(entity.getId()), "Entity should not be null.");
+        //List<Long> res = Utils.fromJson(Utils.toJson(new ArrayList<Long>()), List.class);
+        //System.out.println(res);
+        //System.out.println(Utils.toJson(Utils.toJson(new ArrayList<Long>())));
+        offerDao.create(entity);
+       /* OffersGetOptions options = new OffersGetOptions();
+        options.setCategory(5L);
+        options.setStart(3);
+        options.setSize(2);
+
+        List<OfferEntity> offers = offerDao.getOffers(options);
+        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++");
+        System.out.println(offers.size());
+
+        for (OfferEntity offerEntity : offers) {
+            System.out.println(offerEntity.getOfferId());
+        }
+        Assert.assertNotNull(offers, "Entity should not be null.");
+        */
+        Assert.assertNotNull(offerDao.get(entity.getId()), "Entity should not be null.");
+
+       // Assert.assertNotNull(offer, "Entity should not be null.");
         //System.out.println(offerDao.get(entity.getId()).getCategories());
     }
 
@@ -38,7 +54,7 @@ public class OfferDaoTest extends BaseTest {
         entity.setCurated(false);
         entity.setOwnerId(generateId());
         entity.setCurrentRevisionId(1L);
-        entity.setCategories(null);
+        entity.setCategories(Arrays.asList(1L, 2L, 8L));
 
         return entity;
     }

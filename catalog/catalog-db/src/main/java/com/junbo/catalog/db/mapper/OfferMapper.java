@@ -11,9 +11,6 @@ import com.junbo.catalog.db.entity.OfferEntity;
 import com.junbo.catalog.spec.model.common.LocalizableProperty;
 import com.junbo.catalog.spec.model.offer.Offer;
 
-import java.util.List;
-
-
 /**
  * Offer mapper between model and DB entity.
  */
@@ -35,7 +32,8 @@ public class OfferMapper {
         entity.setCurated(model.getCurated()==null?false:model.getCurated());
         entity.setOwnerId(model.getOwnerId());
         entity.setCurrentRevisionId(model.getCurrentRevisionId());
-        entity.setCategories(Utils.toJson(model.getCategories()));
+        //entity.setCategories(Utils.toJson(model.getCategories()));
+        entity.setCategories(model.getCategories());
     }
 
     public static Offer toModel(OfferEntity entity) {
@@ -48,7 +46,8 @@ public class OfferMapper {
         model.setCurated(entity.isCurated());
         model.setCurrentRevisionId(entity.getCurrentRevisionId());
         model.setOwnerId(entity.getOwnerId());
-        model.setCategories(Utils.fromJson(entity.getCategories(), List.class));
+        //model.setCategories(Utils.fromJson(entity.getCategories(), List.class));
+        model.setCategories(entity.getCategories());
         model.setCreatedBy(entity.getCreatedBy());
         model.setCreatedTime(entity.getCreatedTime());
         model.setUpdatedBy(entity.getUpdatedBy());

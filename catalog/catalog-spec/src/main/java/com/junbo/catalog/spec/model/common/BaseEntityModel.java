@@ -6,9 +6,6 @@
 
 package com.junbo.catalog.spec.model.common;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.junbo.common.jackson.annotation.UserId;
-
 import javax.validation.constraints.NotNull;
 
 /**

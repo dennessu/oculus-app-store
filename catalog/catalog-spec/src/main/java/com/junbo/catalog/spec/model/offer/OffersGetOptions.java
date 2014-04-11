@@ -7,8 +7,8 @@
 package com.junbo.catalog.spec.model.offer;
 
 import com.junbo.catalog.spec.model.common.PageableGetOptions;
-import com.junbo.catalog.spec.model.common.Status;
 import com.junbo.common.id.OfferId;
+import com.junbo.common.jackson.annotation.AttributeId;
 
 import javax.ws.rs.QueryParam;
 import java.util.List;
@@ -19,32 +19,33 @@ import java.util.List;
 public class OffersGetOptions extends PageableGetOptions {
     @QueryParam("id")
     private List<OfferId> offerIds;
-    @QueryParam("status")
-    private String status;
-
-    public static OffersGetOptions getDefault() {
-        return new OffersGetOptions().setStatus(Status.RELEASED);
-    }
-
-    public static OffersGetOptions getDesign() {
-        return new OffersGetOptions().setStatus(Status.DRAFT);
-    }
+    @QueryParam("curated")
+    private Boolean curated;
+    @AttributeId
+    @QueryParam("category")
+    private Long category;
 
     public List<OfferId> getOfferIds() {
         return offerIds;
     }
 
-    public OffersGetOptions setOfferIds(List<OfferId> offerIds) {
+    public void setOfferIds(List<OfferId> offerIds) {
         this.offerIds = offerIds;
-        return this;
     }
 
-    public String getStatus() {
-        return status;
+    public Boolean getCurated() {
+        return curated;
     }
 
-    public OffersGetOptions setStatus(String status) {
-        this.status = status;
-        return this;
+    public void setCurated(Boolean curated) {
+        this.curated = curated;
+    }
+
+    public Long getCategory() {
+        return category;
+    }
+
+    public void setCategory(Long category) {
+        this.category = category;
     }
 }

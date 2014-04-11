@@ -7,9 +7,7 @@
 package com.junbo.catalog.spec.model.common;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import com.junbo.common.jackson.annotation.UserId;
 
 import javax.validation.constraints.NotNull;
 

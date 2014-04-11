@@ -16,6 +16,7 @@ import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.ws.rs.BeanParam;
+import java.util.List;
 
 /**
  * Offer resource implementation.
@@ -26,7 +27,10 @@ public class OfferResourceImpl implements OfferResource {
 
     @Override
     public Promise<Results<Offer>> getOffers(@BeanParam OffersGetOptions options) {
-        return null;
+        List<Offer> offers = offerService.getOffers(options);
+        Results<Offer> results = new Results<>();
+        results.setItems(offers);
+        return Promise.pure(results);
     }
 
     @Override

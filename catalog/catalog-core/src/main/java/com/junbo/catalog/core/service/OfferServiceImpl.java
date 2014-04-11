@@ -49,6 +49,11 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     }
 
     @Override
+    public List<Offer> getOffers(OffersGetOptions options) {
+        return offerRepo.getOffers(options);
+    }
+
+    @Override
     public OfferRevision createRevision(OfferRevision revision) {
         validateRevision(revision);
         generateDownloadEntitlement(revision);

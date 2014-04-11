@@ -6,26 +6,27 @@
 
 package com.junbo.catalog.db.entity;
 
-import com.junbo.catalog.db.dao.StringJsonUserType;
+import com.junbo.catalog.db.dao.LongArrayUserType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * Offer DB entity.
  */
 @Entity
 @Table(name="offer")
-@TypeDefs(@TypeDef(name="json-string", typeClass=StringJsonUserType.class))
+@TypeDefs(@TypeDef(name="long-array", typeClass=LongArrayUserType.class))
 public class OfferEntity extends BaseEntity {
     private Long offerId;
     private String offerName;
     private Long ownerId;
     private boolean curated;
     private Long currentRevisionId;
-    private String categories;
+    private List<Long> categories;
 
     @Id
     @Column(name = "offer_id")
@@ -74,12 +75,12 @@ public class OfferEntity extends BaseEntity {
     }
 
     @Column(name = "categories")
-    @Type(type = "json-string")
-    public String getCategories() {
+    @Type(type = "long-array")
+    public List<Long> getCategories() {
         return categories;
     }
 
-    public void setCategories(String categories) {
+    public void setCategories(List<Long> categories) {
         this.categories = categories;
     }
 
