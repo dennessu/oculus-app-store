@@ -10,7 +10,6 @@ import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.order.spec.model.*;
 
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Created by chriszhu on 2/18/14.
@@ -31,14 +30,14 @@ public interface OrderRepository {
 
     List<OrderItem> getOrderItems(Long orderId);
 
+    OrderItem getOrderItem(Long orderItemId);
+
     List<Discount> getDiscounts(Long orderId);
 
     List<PaymentInstrumentId> getPaymentInstrumentIds(Long orderId);
 
     Order updateOrder(Order order, boolean updateOnlyOrder);
 
-    Order getOrderByTrackingUuid(UUID trackingUuid);
-    
     List<OrderEvent> getOrderEvents(Long orderId, PageParam pageParam);
 
     List<PreorderInfo> getPreorderInfo(Long orderItemId);

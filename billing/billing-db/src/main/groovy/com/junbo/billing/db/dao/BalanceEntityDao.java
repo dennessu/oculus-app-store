@@ -17,4 +17,5 @@ import java.util.UUID;
  */
 public interface BalanceEntityDao extends BaseDao<BalanceEntity, Long> {
     List<BalanceEntity> getByTrackingUuid(UUID trackingUuid);
+    List<BalanceEntity> getAsyncChargeInitBalances(Integer count);
 }

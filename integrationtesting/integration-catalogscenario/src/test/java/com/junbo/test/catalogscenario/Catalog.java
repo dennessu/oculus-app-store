@@ -28,10 +28,10 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- @author Jason
+  * @author Jason
   * Time: 3/14/2014
   * For testing catalog scenarios
- */
+*/
 public class Catalog extends TestClass {
 
     private LogHelper logger = new LogHelper(Catalog.class);

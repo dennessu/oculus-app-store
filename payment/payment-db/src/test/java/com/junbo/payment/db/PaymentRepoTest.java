@@ -1,9 +1,5 @@
 package com.junbo.payment.db;
 
-import com.junbo.payment.db.dao.TrackingUuidDao;
-import com.junbo.payment.db.entity.paymentinstrument.AddressEntity;
-import com.junbo.payment.db.entity.paymentinstrument.PaymentInstrumentEntity;
-import com.junbo.payment.db.entity.paymentinstrument.PhoneEntity;
 import com.junbo.payment.db.repository.PaymentInstrumentRepository;
 import com.junbo.payment.spec.enums.CreditCardType;
 import com.junbo.payment.spec.enums.PIStatus;
@@ -30,7 +26,6 @@ public class PaymentRepoTest extends BaseTest {
         Assert.assertEquals(pi.getAccountName(), result.getAccountName());
         Assert.assertEquals(pi.getAccountNum(), result.getAccountNum());
         Assert.assertEquals(pi.getAddress().getAddressLine1(), result.getAddress().getAddressLine1());
-        Assert.assertEquals(pi.getPhone().getNumber(), result.getPhone().getNumber());
     }
 
     private PaymentInstrument buildPIRequest(){
@@ -47,12 +42,7 @@ public class PaymentRepoTest extends BaseTest {
                 setPostalCode("12345");
             }
         });
-        pi.setPhone(new Phone(){
-            {
-                setType(PhoneType.HOME.toString());
-                setNumber("12334455");
-            }
-        });
+        pi.setPhoneNum("12345676");
         pi.setCreditCardRequest(new CreditCardRequest(){
             {
                 setExpireDate("2025-10-12");

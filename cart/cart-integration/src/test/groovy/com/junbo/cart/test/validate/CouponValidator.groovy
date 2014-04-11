@@ -1,7 +1,6 @@
 package com.junbo.cart.test.validate
 
 import com.junbo.cart.spec.model.item.CouponItem
-import com.junbo.common.id.CouponId
 
 /**
  * Created by fzhang on 14-3-3.
@@ -16,7 +15,7 @@ class CouponValidator {
         return val
     }
 
-    CouponValidator coupon(CouponId coupon) {
-        assert coupon.value == result.coupon.value
+    CouponValidator coupon(String couponCode) {
+        assert couponCode == result.couponCode
     }
 }
