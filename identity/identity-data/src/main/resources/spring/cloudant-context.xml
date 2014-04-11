@@ -67,4 +67,9 @@
         <property name="idGenerator" ref="oculus48IdGenerator"/>
     </bean>
 
+    <bean id="cloudantUserPiiRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserPiiRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="user_pii"/>
+        <property name="shardAlgorithm" ref="userShardAlgorithm"/>
+        <property name="idGenerator" ref="oculus48IdGenerator"/>
+    </bean>
 </beans>

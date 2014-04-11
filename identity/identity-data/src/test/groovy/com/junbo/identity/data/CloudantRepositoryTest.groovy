@@ -19,14 +19,18 @@ import com.junbo.identity.spec.v1.model.Tos
 import com.junbo.identity.spec.v1.model.UserAuthenticator
 import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
 import com.junbo.identity.spec.v1.model.UserDevice
+import com.junbo.identity.spec.v1.model.UserEmail
 import com.junbo.identity.spec.v1.model.UserGroup
+import com.junbo.identity.spec.v1.model.UserName
 import com.junbo.identity.spec.v1.model.UserOptin
+import com.junbo.identity.spec.v1.model.UserPii
 import com.junbo.identity.spec.v1.option.list.AuthenticatorListOptions
 import com.junbo.identity.spec.v1.option.list.UserCredentialAttemptListOptions
 import com.junbo.identity.spec.v1.option.list.UserDeviceListOptions
 import com.junbo.identity.spec.v1.option.list.UserGroupListOptions
 import com.junbo.identity.spec.v1.option.list.UserOptinListOptions
 import com.junbo.identity.spec.v1.option.list.UserPasswordListOptions
+import com.junbo.identity.spec.v1.option.list.UserPiiListOptions
 import com.junbo.identity.spec.v1.option.list.UserPinListOptions
 import groovy.transform.CompileStatic
 import org.glassfish.jersey.internal.util.Base64
@@ -92,6 +96,10 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
     @Autowired
     @Qualifier('cloudantUserOptinRepository')
     private UserOptinRepository userOptinRepository
+
+    @Autowired
+    @Qualifier('cloudantUserPiiRepository')
+    private UserPiiRepository userPiiRepository
 
     @Test
     public void test() {
@@ -264,7 +272,8 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
     public void testUserLoginAttemptRepository() {
         UserCredentialVerifyAttempt userLoginAttempt = new UserCredentialVerifyAttempt()
         userLoginAttempt.setUserId(new UserId(userId))
-        userLoginAttempt.setType('pin')
+        def type = UUID.randomUUID().toString()
+        userLoginAttempt.setType(type)
         userLoginAttempt.setValue(UUID.randomUUID().toString())
         userLoginAttempt.setClientId(UUID.randomUUID().toString())
         userLoginAttempt.setIpAddress(UUID.randomUUID().toString())
@@ -277,7 +286,7 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
 
         UserCredentialAttemptListOptions getOption = new UserCredentialAttemptListOptions()
         getOption.setUserId(new UserId(userId))
-        getOption.setType('pin')
+        getOption.setType(type)
         List<UserCredentialVerifyAttempt> userLoginAttempts =
                 userCredentialVerifyAttemptRepository.search(getOption).wrapped().get()
         Assert.assertEquals(userLoginAttempts.size(), 1)
@@ -367,5 +376,41 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
         getOption.setUserId(new UserId(userId))
         List<UserOptin> userOptins = userOptinRepository.search(getOption).wrapped().get()
         assert userOptins.size() != 0
+    }
+
+    @Test
+    public void testUserPiiRepository() {
+        UserPii userPii = new UserPii()
+        userPii.setUserId(new UserId(userId))
+        userPii.setBirthday(new Date())
+        userPii.setDisplayName('hao')
+        userPii.setDisplayNameType(0)
+        userPii.setGender('male')
+        userPii.setName(new UserName(firstName: 'first_name', lastName: 'last_name'))
+        def search = UUID.randomUUID().toString()
+        userPii.setEmails(['primary': new UserEmail(value: 'primary@silkcloud.com', verified: false),
+                           'secondary': new UserEmail(value: search, verified: false)])
+        userPii.setCreatedBy('lixia')
+        userPii.setCreatedTime(new Date())
+        userPii = userPiiRepository.create(userPii).wrapped().get()
+
+        UserPii newUserPii = userPiiRepository.get(userPii.getId()).wrapped().get()
+        Assert.assertEquals(userPii.getBirthday(), newUserPii.getBirthday())
+
+        userPii.setGender('female')
+        userPiiRepository.update(userPii)
+
+        newUserPii = userPiiRepository.get(userPii.getId()).wrapped().get()
+        Assert.assertEquals(userPii.getGender(), newUserPii.getGender())
+
+        UserPiiListOptions options = new UserPiiListOptions()
+        options.setUserId(new UserId(userId))
+        List<UserPii> userPiiList = userPiiRepository.search(options).wrapped().get()
+        assert userPiiList.size() != 0
+
+        options.setUserId(null)
+        options.setEmail(search)
+        userPiiList = userPiiRepository.search(options).wrapped().get()
+        assert userPiiList.size() != 0
     }
 }

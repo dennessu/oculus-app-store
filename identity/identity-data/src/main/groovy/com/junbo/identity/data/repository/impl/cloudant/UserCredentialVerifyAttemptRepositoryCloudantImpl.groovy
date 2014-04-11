@@ -56,19 +56,13 @@ class UserCredentialVerifyAttemptRepositoryCloudantImpl extends CloudantClient<U
 
     @Override
     Promise<List<UserCredentialVerifyAttempt>> search(UserCredentialAttemptListOptions getOption) {
-        def result = []
         def list = super.queryView('by_user_id', getOption.userId.value.toString())
         if (getOption.type != null) {
-            list.each { UserCredentialVerifyAttempt attempt ->
-                if (getOption.type == attempt.type) {
-                    result.add(attempt)
-                }
+            list.removeAll { UserCredentialVerifyAttempt attempt ->
+                attempt.type != getOption.type
             }
         }
-        else {
-            result.addAll(list)
-        }
-        return Promise.pure(result)
+        return Promise.pure(list)
     }
 
     @Override
@@ -78,12 +72,12 @@ class UserCredentialVerifyAttemptRepositoryCloudantImpl extends CloudantClient<U
     }
 
     protected CloudantViews views = new CloudantViews(
-            views: [
-                    'by_user_id': new CloudantViews.CloudantView(
-                            map: 'function(doc) {' +
-                                    '  emit(doc.user.value.toString(), doc._id)' +
-                                    '}',
-                            resultClass: String)
-            ]
+        views: [
+            'by_user_id': new CloudantViews.CloudantView(
+                map: 'function(doc) {' +
+                        '  emit(doc.user.value.toString(), doc._id)' +
+                        '}',
+                resultClass: String)
+        ]
     )
 }

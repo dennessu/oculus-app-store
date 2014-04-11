@@ -55,20 +55,14 @@ class UserPinRepositoryCloudantImpl extends CloudantClient<UserPin> implements U
 
     @Override
     Promise<List<UserPin>> search(UserPinListOptions getOption) {
-        def result = []
         def list = super.queryView('by_user_id', getOption.userId.value.toString())
         if (getOption.active != null) {
-            list.each { UserPin element ->
-                if (getOption.active == element.active) {
-                    result.add(element)
-                }
+            list.retainAll { UserPin element ->
+                element.active == getOption.active
             }
         }
-        else {
-            result.addAll(list)
-        }
 
-        return Promise.pure(result)
+        return Promise.pure(list)
     }
 
     @Override
