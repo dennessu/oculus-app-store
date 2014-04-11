@@ -25,3 +25,5 @@ cd ../../ewallet/ewallet-spec
 gradle clean install -x test
 cd ../../order/order-spec
 gradle clean install -x test
+cd ../../payment/payment-spec
+gradle clean install -x test
