@@ -64,8 +64,8 @@ class AuthorizeAspect implements ApplicationContextAware {
             FactoryBean<AuthorizeCallback> factoryBean = (FactoryBean<AuthorizeCallback>)applicationContext
                     .getBean(requiredAnnotation.authCallBackFactoryBean())
             AuthorizeCallback callback = factoryBean.object.initialize(map)
-            Set<String> claims = authorizeService.getClaims(callback)
-            AuthorizeContext.CLAIMS.set(claims)
+            Set<String> rights = authorizeService.getRights(callback)
+            AuthorizeContext.RIGHTS.set(rights)
             Object result = joinPoint.proceed()
 
             if (Collection.isAssignableFrom(result.class)) {
@@ -96,8 +96,8 @@ class AuthorizeAspect implements ApplicationContextAware {
                 .getBean(annotation.authCallBackFactoryBean())
         AuthorizeCallback callback = factoryBean.object.initialize(map)
 
-        Set<String> claims = authorizeService.getClaims(callback)
-        AuthorizeContext.CLAIMS.set(claims)
+        Set<String> rights = authorizeService.getRights(callback)
+        AuthorizeContext.RIGHTS.set(rights)
 
         return callback.postFilter()
     }

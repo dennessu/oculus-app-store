@@ -8,9 +8,12 @@ package com.junbo.oauth.spec.model
 import groovy.transform.CompileStatic
 
 /**
- * AuthorizePolicy.
+ * MatrixRow.
  */
 @CompileStatic
-class AuthorizePolicy {
-    Map<String, Set<String>> claims
+class MatrixRow {
+
+    String precondition
+
+    List<String> rights
 }

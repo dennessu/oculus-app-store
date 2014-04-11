@@ -73,7 +73,7 @@ class AuthenticateUser implements Action {
 
         // Authenticate the user will the username and password.
         try {
-            userService.authenticateUser(username, password, client.clientId, null)
+            userService.authenticateUser(username, password, client.clientId, "127.0.0.1")
                     .then { UserCredentialVerifyAttempt loginAttempt ->
                 if (loginAttempt == null || !loginAttempt.succeeded) {
                     throw AppExceptions.INSTANCE.invalidCredential().exception()

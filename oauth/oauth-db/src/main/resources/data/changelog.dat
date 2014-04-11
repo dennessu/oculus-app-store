@@ -28,7 +28,8 @@ client	client	{
     "grant_types": [
         "PASSWORD",
         "AUTHORIZATION_CODE",
-        "REFRESH_TOKEN"
+        "REFRESH_TOKEN",
+        "CLIENT_CREDENTIALS"
     ],
     "id_token_issuer": "www.junbo.com",
     "logout_redirect_uris": [
@@ -52,41 +53,60 @@ scope	offline	{
 }
 
 api	user_get	{
-   "authorizePolicies": {
-       "identity": {
-           "claims": {
-               "owner": [
-                   "owner",
-                   "read"
-               ],
-               "guest": [
-                   "read"
-               ],
-               "admin": [
-                   "admin",
-                   "read"
-               ]
-           }
-       }
+   "scopes": {
+       "identity": [{
+           "precondition": "owner",
+           "rights": ["read"]
+       }, {
+           "precondition": "group('guest')",
+           "rights": ["read"]
+       }, {
+           "precondition": "role('admin')",
+           "rights": ["read"]
+       }]
    }
 }
 
 api	item_get	{
-   "authorizePolicies": {
-       "catalog": {
-           "claims": {
-               "owner": [
-                   "owner",
+   "scopes": {
+       "catalog": [
+           {
+               "precondition": "owner",
+               "rights": [
                    "read"
-               ],
-               "guest": [
+               ]
+           },
+           {
+               "precondition": "group('guest')",
+               "rights": [
                    "read"
-               ],
-               "admin": [
-                   "admin",
+               ]
+           },
+           {
+               "precondition": "role('admin')",
+               "rights": [
                    "read"
                ]
            }
-       }
+       ]
+   }
+}
+
+api	item_create	{
+   "scopes": {
+        "catalog.write": [
+            {
+                "precondition": "owner",
+                "rights": [
+                    "create"
+                ]
+            },
+            {
+                "precondition": "group('csr')",
+                "rights": [
+                    "create"
+                ]
+            }
+        ]
    }
 }

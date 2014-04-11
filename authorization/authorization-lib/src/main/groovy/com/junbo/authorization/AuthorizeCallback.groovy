@@ -17,10 +17,6 @@ interface AuthorizeCallback<T> {
 
     void setTokenInfo(TokenInfo tokenInfo)
 
-    boolean isInGroup(String groupName)
-
-    boolean hasRoleAssignment(String roleName)
-
     AuthorizeCallback<T> initialize(Map<String, Object> context)
 
     T postFilter()

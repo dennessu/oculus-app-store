@@ -25,21 +25,22 @@ public class JsonMessageTranscoder implements MessageTranscoder {
     @SuppressWarnings("unchecked")
     public <T> T decode(TypeReference typeRef, String body) {
         try {
-            ObjectMapper objectMapper = provider.getContext(Object.class);
+            ObjectMapper objectMapper = provider.getContext(null);
 
             JavaType javaType = objectMapper.getTypeFactory().constructType(typeRef.getType());
             return objectMapper.readValue(body, javaType);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(
+                    "Unable to decode to type " + typeRef.getType() + ": " + body, e);
         }
     }
 
     @Override
     public <T> String encode(T body) {
         try {
-            return provider.getContext(Object.class).writeValueAsString(body);
+            return provider.getContext(null).writeValueAsString(body);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Unable to encode: " + body, e);
         }
     }
 }

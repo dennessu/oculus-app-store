@@ -90,29 +90,37 @@ class AuthorizeServiceImpl implements AuthorizeService, ApplicationContextAware,
     }
 
     @Override
-    Set<String> getClaims(AuthorizeCallback callback) {
+    Set<String> getRights(AuthorizeCallback callback) {
+        if (!authorizeEnabled) {
+            return [] as Set
+        }
+
         String accessToken = parseAccessToken()
 
         TokenInfo tokenInfo = tokenInfoEndpoint.getTokenInfo(accessToken).wrapped().get()
         Set<String> tokenScopes = []
         tokenScopes.addAll(tokenInfo.scopes.split(' '))
 
-        ApiDefinition api = apiDefinitions.get(callback.apiName)
-        Collection<String> scopes = api.authorizePolicies.keySet().intersect(tokenScopes)
+        ApiDefinition api = getApiDefinition(callback.apiName)
+        if (api == null) {
+            return [] as Set
+        }
+
+        Collection<String> scopes = api.scopes.keySet().intersect(tokenScopes)
 
         callback.tokenInfo = tokenInfo
 
-        Set<String> claimSet = []
+        Set<String> rights = []
         scopes.each { String scopeName ->
-            AuthorizePolicy policy = api.authorizePolicies[scopeName]
-            policy.claims.each { String condition, Set<String> claims ->
-                if (conditionEvaluator.evaluate(condition, callback)) {
-                    claimSet.addAll(claims)
+            List<MatrixRow> matrixRows = api.scopes[scopeName]
+            matrixRows.each { MatrixRow row ->
+                if (conditionEvaluator.evaluate(row.precondition, callback)) {
+                    rights.addAll(row.rights)
                 }
             }
         }
 
-        return claimSet
+        return rights
     }
 
     private String parseAccessToken() {
@@ -138,19 +146,16 @@ class AuthorizeServiceImpl implements AuthorizeService, ApplicationContextAware,
         return tokens[1]
     }
 
+
+    private ApiDefinition getApiDefinition(String apiName) {
+        AccessTokenResponse token = tokenEndpoint.postToken(serviceClientId,  serviceClientSecret,
+                GrantType.CLIENT_CREDENTIALS.name(), null, API_SCOPE, null, null, null, null, null).wrapped().get()
+
+        return apiEndpoint.getApi("Bearer $token.accessToken", apiName).wrapped().get()
+    }
+
     @Override
     void afterPropertiesSet() throws Exception {
-        if (authorizeEnabled) {
-            AccessTokenResponse token = tokenEndpoint.postToken(serviceClientId,  serviceClientSecret,
-                    GrantType.CLIENT_CREDENTIALS.name(), null, API_SCOPE, null, null, null, null, null).wrapped().get()
-
-            List<ApiDefinition> apis = apiEndpoint.getAllApis("Bearer $token.accessToken").wrapped().get()
-
-            apis.each { ApiDefinition api ->
-                apiDefinitions[api.apiName] = api
-            }
-        }
-
-        AuthorizeContext.authorizedEnabled = authorizeEnabled
+        AuthorizeContext.authorizeEnabled = authorizeEnabled
     }
 }

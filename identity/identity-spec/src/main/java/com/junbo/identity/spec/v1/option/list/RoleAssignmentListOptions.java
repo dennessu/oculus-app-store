@@ -14,7 +14,7 @@ import javax.ws.rs.QueryParam;
  * RoleAssignmentListOptions.
  */
 public class RoleAssignmentListOptions extends PagingGetOptions {
-    @QueryParam("roleId")
+    @QueryParam("role")
     private RoleId roleId;
 
     @QueryParam("assigneeType")

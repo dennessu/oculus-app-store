@@ -9,8 +9,11 @@ import com.junbo.common.id.UserId
 import com.junbo.identity.spec.model.users.User
 import com.junbo.identity.spec.options.entity.UserGetOptions
 import com.junbo.identity.spec.resource.UserResource
+import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
+import com.junbo.identity.spec.v1.option.model.UserGetOptions
 import com.junbo.identity.spec.v1.resource.UserCredentialVerifyAttemptResource
+import com.junbo.identity.spec.v1.resource.UserResource
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oauth.core.exception.AppExceptions
 import com.junbo.oauth.core.service.TokenService
@@ -57,7 +60,8 @@ class UserServiceImpl implements UserService {
                 type: 'password',
                 value: new String(Base64.encodeBase64("$username:$password".bytes)),
                 clientId: clientId,
-                ipAddress: ipAddress
+                ipAddress: ipAddress,
+                userAgent: "testAgent",
         )
 
         return userCredentialVerifyAttemptResource.create(loginAttempt)
@@ -86,9 +90,12 @@ class UserServiceImpl implements UserService {
         UserInfo userInfo = new UserInfo(
                 sub: user.id.toString(),
                 email: user.username,
+
+                /*
                 givenName: user.name.firstName,
                 middleName: user.name.middleName,
                 familyName: user.name.lastName
+                */
         )
 
         return userInfo
