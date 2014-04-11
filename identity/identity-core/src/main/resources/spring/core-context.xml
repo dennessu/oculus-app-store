@@ -367,9 +367,7 @@
         <property name="readableProperties">
             <list>
                 <value>id</value>
-                <value>securityQuestionId</value>
-                <value>active</value>
-                <value>userId</value>
+                <value>securityQuestion</value>
                 <value>resourceAge</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
@@ -378,15 +376,17 @@
 
         <property name="writablePropertiesForCreate">
             <list>
-                <value>securityQuestionId</value>
+                <value>securityQuestion</value>
                 <value>answer</value>
-                <value>active</value>
             </list>
         </property>
 
         <property name="writablePropertiesForUpdate">
             <list>
-
+                <value>id</value>
+                <value>securityQuestion</value>
+                <value>answer</value>
+                <value>resourceAge</value>
             </list>
         </property>
     </bean>

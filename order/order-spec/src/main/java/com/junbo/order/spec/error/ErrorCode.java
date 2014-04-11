@@ -43,4 +43,8 @@ public class ErrorCode {
 
     public static final String DUPLICATE_TRACKING_GUID = "20006";
 
+    // subledger error starts from 20000
+    public static final String SUBLEDGER_NOT_FOUND = "20200";
+
+
 }

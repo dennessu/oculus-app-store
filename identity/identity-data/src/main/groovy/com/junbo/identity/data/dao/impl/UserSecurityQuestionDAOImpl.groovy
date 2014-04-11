@@ -4,9 +4,10 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.identity.data.dao.impl
+
 import com.junbo.identity.data.dao.UserSecurityQuestionDAO
 import com.junbo.identity.data.entity.user.UserSecurityQuestionEntity
-import com.junbo.identity.spec.options.list.UserSecurityQuestionListOptions
+import com.junbo.identity.spec.v1.option.list.UserSecurityQuestionListOptions
 import groovy.transform.CompileStatic
 import org.hibernate.Criteria
 import org.hibernate.Session
@@ -44,13 +45,7 @@ class UserSecurityQuestionDAOImpl extends BaseDAO implements UserSecurityQuestio
     @Override
     List<UserSecurityQuestionEntity> search(Long userId, UserSecurityQuestionListOptions getOption) {
         Criteria criteria = currentSession(userId).createCriteria(UserSecurityQuestionEntity)
-        criteria.add(Restrictions.eq('userId', getOption.userId.value))
-        if (getOption.securityQuestionId) {
-            criteria.add(Restrictions.eq('securityQuestionId', getOption.securityQuestionId.value))
-        }
-        if (getOption.active != null) {
-            criteria.add(Restrictions.eq('active', getOption.active))
-        }
+        criteria.add(Restrictions.eq('userId', userId))
         criteria.addOrder(Order.asc('id'))
         if (getOption.limit != null) {
             criteria.setMaxResults(getOption.limit)

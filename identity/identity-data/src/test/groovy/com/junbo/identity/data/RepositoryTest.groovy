@@ -23,6 +23,7 @@ import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
 import com.junbo.identity.spec.v1.model.UserDevice
 import com.junbo.identity.spec.v1.model.UserGroup
 import com.junbo.identity.spec.v1.model.UserOptin
+import com.junbo.identity.spec.v1.model.UserSecurityQuestion
 import com.junbo.identity.spec.v1.option.list.AuthenticatorListOptions
 import com.junbo.identity.spec.v1.option.list.UserCredentialAttemptListOptions
 import com.junbo.identity.spec.v1.option.list.UserDeviceListOptions
@@ -30,6 +31,7 @@ import com.junbo.identity.spec.v1.option.list.UserGroupListOptions
 import com.junbo.identity.spec.v1.option.list.UserOptinListOptions
 import com.junbo.identity.spec.v1.option.list.UserPasswordListOptions
 import com.junbo.identity.spec.v1.option.list.UserPinListOptions
+import com.junbo.identity.spec.v1.option.list.UserSecurityQuestionListOptions
 import groovy.transform.CompileStatic
 import org.glassfish.jersey.internal.util.Base64
 import org.springframework.beans.factory.annotation.Autowired
@@ -336,7 +338,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
     public void testUserSecurityQuestionRepository() {
         UserSecurityQuestion userSecurityQuestion = new UserSecurityQuestion()
         userSecurityQuestion.setUserId(new UserId(userId))
-        userSecurityQuestion.setSecurityQuestionId(new SecurityQuestionId(123L))
+        userSecurityQuestion.setSecurityQuestion('whosyourdaddy')
         userSecurityQuestion.setAnswerHash(UUID.randomUUID().toString())
         userSecurityQuestion.setAnswerSalt(UUID.randomUUID().toString())
         userSecurityQuestion.setCreatedBy('lixia')
@@ -355,10 +357,8 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         newUserSecurityQuestion = userSecurityQuestionRepository.get(userSecurityQuestion.getId()).wrapped().get()
         Assert.assertEquals(newUserSecurityQuestion.getAnswerSalt(), value)
 
-        UserSecurityQuestionListOptions getOption = new UserSecurityQuestionListOptions()
-        getOption.setUserId(new UserId(userId))
-        getOption.setSecurityQuestionId(new SecurityQuestionId(123L))
-        List<UserSecurityQuestion> securityQuestions = userSecurityQuestionRepository.search(getOption).wrapped().get()
+        List<UserSecurityQuestion> securityQuestions = userSecurityQuestionRepository.
+                search(new UserId(userId), new UserSecurityQuestionListOptions()).wrapped().get()
         assert securityQuestions.size() != 0
     }
 

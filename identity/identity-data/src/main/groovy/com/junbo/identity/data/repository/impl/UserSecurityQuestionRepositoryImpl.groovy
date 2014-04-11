@@ -5,13 +5,14 @@
  */
 package com.junbo.identity.data.repository.impl
 
+import com.junbo.common.id.UserId
 import com.junbo.common.id.UserSecurityQuestionId
 import com.junbo.identity.data.dao.UserSecurityQuestionDAO
 import com.junbo.identity.data.entity.user.UserSecurityQuestionEntity
 import com.junbo.identity.data.mapper.ModelMapper
 import com.junbo.identity.data.repository.UserSecurityQuestionRepository
-import com.junbo.identity.spec.model.users.UserSecurityQuestion
-import com.junbo.identity.spec.options.list.UserSecurityQuestionListOptions
+import com.junbo.identity.spec.v1.model.UserSecurityQuestion
+import com.junbo.identity.spec.v1.option.list.UserSecurityQuestionListOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oom.core.MappingContext
 import groovy.transform.CompileStatic
@@ -53,8 +54,8 @@ class UserSecurityQuestionRepositoryImpl implements UserSecurityQuestionReposito
     }
 
     @Override
-    Promise<List<UserSecurityQuestion>> search(UserSecurityQuestionListOptions getOption) {
-        List entities = userSecurityQuestionDAO.search(getOption.userId.value, getOption)
+    Promise<List<UserSecurityQuestion>> search(UserId userId, UserSecurityQuestionListOptions getOption) {
+        List entities = userSecurityQuestionDAO.search(userId.value, getOption)
 
         List<UserSecurityQuestion> results = new ArrayList<UserSecurityQuestion>()
         entities.each { UserSecurityQuestionEntity entity ->

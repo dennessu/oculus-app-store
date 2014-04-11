@@ -15,6 +15,9 @@ import com.junbo.order.db.entity.enums.ItemType
 import com.junbo.order.db.entity.enums.OrderActionType
 import com.junbo.order.db.entity.enums.OrderStatus
 import com.junbo.order.db.entity.enums.OrderType
+import com.junbo.order.db.entity.enums.PayoutStatus
+import com.junbo.order.db.entity.enums.SubledgerItemAction
+import com.junbo.order.db.entity.enums.SubledgerItemStatus
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.apache.commons.lang.RandomStringUtils
@@ -63,7 +66,6 @@ class TestHelper {
         order.setCountry('US')
         order.setCurrency('USD')
         order.setOrderTypeId(OrderType.PAY_IN)
-        order.setTrackingUuid(UUID.randomUUID())
         order.setCreatedTime(new Date())
         order.setCreatedBy('Test')
         order.setUpdatedBy('Test')
@@ -191,6 +193,11 @@ class TestHelper {
         entity.setCreatedBy('TESTER')
         entity.setUpdatedTime(new Date())
         entity.setUpdatedBy('TESTER')
+        entity.setStartTime(new Date())
+        entity.setEndTime(new Date())
+        entity.setPayoutStatus(PayoutStatus.PENDING)
+        entity.setProductItemId(generateId().toString())
+        entity.setCountry('US')
         return entity
     }
 
@@ -205,7 +212,10 @@ class TestHelper {
         entity.setCreatedTime(new Date())
         entity.setCreatedBy('TESTER')
         entity.setUpdatedTime(new Date())
+        entity.setSubledgerItemAction(SubledgerItemAction.CHARGE)
+        entity.setProductItemId(generateId().toString())
         entity.setUpdatedBy('Tester')
+        entity.setStatus(SubledgerItemStatus.PENDING)
         return entity
     }
 }

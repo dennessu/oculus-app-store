@@ -3,5 +3,5 @@ apply plugin: 'groovy'
 dependencies {
     compile 'org.quartz-scheduler:quartz:2.2.1'
     compile project(':billing-spec')
-    compile project(':billing-core')
+    compile project(':billing-db')
 }

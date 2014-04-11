@@ -7,6 +7,7 @@
 package com.junbo.billing.db.repository;
 
 import com.junbo.billing.spec.model.Balance;
+import com.junbo.common.id.BalanceId;
 
 import java.util.List;
 import java.util.UUID;
@@ -24,6 +25,8 @@ public interface BalanceRepository {
     Balance getBalanceByUuid(UUID uuid);
 
     Balance updateBalance(Balance balance);
+
+    List<BalanceId> fetchAsyncChargeBalanceIds(Integer count);
 
     List<Balance> getBalancesByOrderItemId(List<Long> orderItemIds);
 }

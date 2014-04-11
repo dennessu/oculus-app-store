@@ -2,6 +2,7 @@ package com.junbo.payment.core.mock;
 
 
 import com.junbo.langur.core.promise.Promise;
+import com.junbo.payment.core.provider.AbstractPaymentProviderService;
 import com.junbo.payment.core.provider.PaymentProviderService;
 import com.junbo.payment.spec.enums.CreditCardType;
 import com.junbo.payment.spec.enums.PIStatus;
@@ -14,7 +15,7 @@ import java.util.Date;
 import java.util.List;
 
 
-public class MockPaymentProviderServiceImpl implements PaymentProviderService {
+public class MockPaymentProviderServiceImpl extends AbstractPaymentProviderService {
     private static final String providerName = "BrainTree";
     public static final String piExternalToken = "123";
     public static final String authExternalToken = "1234";

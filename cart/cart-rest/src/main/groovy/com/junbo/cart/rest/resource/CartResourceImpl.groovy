@@ -11,6 +11,7 @@ import com.junbo.cart.spec.model.Cart
 import com.junbo.cart.spec.resource.CartResource
 import com.junbo.common.id.CartId
 import com.junbo.common.id.UserId
+import com.junbo.common.model.Results
 import com.junbo.langur.core.client.PathParamTranscoder
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
@@ -108,22 +109,20 @@ class CartResourceImpl implements CartResource {
     }
 
     @Override
-    Promise<Cart> getCartByName(UserId userId, String cartName) {
-        return cartService.getCartByName(clientId, cartName, userId).then {
-            Cart cart = (Cart) it
-            respondingContext.push(new RedirectFunction(cart, requestContext))
-            return Promise.pure(null)
+    Promise<Results<Cart>> getCartByName(UserId userId, String cartName) {
+        return cartService.getCartByName(clientId, cartName, userId).syncThen { Cart cart ->
+            def results = new Results()
+            results.items = []
+            if (cart != null) {
+                results.items << cart
+            }
+            return results
         }
     }
 
     @Override
     Promise<Cart> updateCart(UserId userId, CartId cartId, Cart fromCart) {
         return cartService.updateCart(userId, cartId, fromCart)
-    }
-
-    @Override
-    Promise<Cart> mergeCart(UserId userId, CartId cartId,  Cart fromCart) {
-        return cartService.mergeCart(userId, cartId, fromCart)
     }
 
     private String getClientId() {

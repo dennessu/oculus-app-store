@@ -39,7 +39,7 @@ public interface UserSecurityQuestionResource {
     @Path("/{userSecurityQuestionId}")
     Promise<UserSecurityQuestion> get(@PathParam("userId") UserId userId,
             @PathParam("userSecurityQuestionId") UserSecurityQuestionId userSecurityQuestionId,
-            UserSecurityQuestionGetOptions getOptions);
+            @BeanParam UserSecurityQuestionGetOptions getOptions);
 
     @ApiOperation("Partial update one user security question")
     @POST
@@ -65,5 +65,5 @@ public interface UserSecurityQuestionResource {
     @GET
     @Path("/")
     Promise<Results<UserSecurityQuestion>> list(@PathParam("userId") UserId userId,
-            UserSecurityQuestionListOptions listOptions);
+            @BeanParam UserSecurityQuestionListOptions listOptions);
 }

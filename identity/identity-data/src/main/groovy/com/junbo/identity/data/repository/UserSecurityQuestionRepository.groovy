@@ -4,9 +4,11 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.identity.data.repository
+
+import com.junbo.common.id.UserId
 import com.junbo.common.id.UserSecurityQuestionId
-import com.junbo.identity.spec.model.users.UserSecurityQuestion
-import com.junbo.identity.spec.options.list.UserSecurityQuestionListOptions
+import com.junbo.identity.spec.v1.model.UserSecurityQuestion
+import com.junbo.identity.spec.v1.option.list.UserSecurityQuestionListOptions
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 
@@ -21,7 +23,7 @@ interface UserSecurityQuestionRepository {
 
     Promise<UserSecurityQuestion> get(UserSecurityQuestionId id)
 
-    Promise<List<UserSecurityQuestion>> search(UserSecurityQuestionListOptions getOption)
+    Promise<List<UserSecurityQuestion>> search(UserId userId, UserSecurityQuestionListOptions getOption)
 
     Promise<Void> delete(UserSecurityQuestionId id)
 }

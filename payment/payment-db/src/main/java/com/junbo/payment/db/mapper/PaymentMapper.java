@@ -19,7 +19,6 @@ import com.junbo.payment.db.entity.payment.PaymentEventEntity;
 import com.junbo.payment.db.entity.paymentinstrument.AddressEntity;
 import com.junbo.payment.db.entity.paymentinstrument.CreditCardPaymentInstrumentEntity;
 import com.junbo.payment.db.entity.paymentinstrument.PaymentInstrumentEntity;
-import com.junbo.payment.db.entity.paymentinstrument.PhoneEntity;
 import com.junbo.payment.spec.model.*;
 
 /**
@@ -39,10 +38,6 @@ public interface PaymentMapper {
     CreditCardPaymentInstrumentEntity toCreditCardEntity(CreditCardRequest ccRequest, MappingContext context);
 
     CreditCardRequest toCreditCardRequest(CreditCardPaymentInstrumentEntity ccEntity, MappingContext context);
-
-    PhoneEntity toPhoneEntity(Phone phone, MappingContext context);
-
-    Phone toPhone(PhoneEntity phoneEntity, MappingContext context);
 
     CountryTypeEntity toCountryEntity(Country country, MappingContext context);
 
