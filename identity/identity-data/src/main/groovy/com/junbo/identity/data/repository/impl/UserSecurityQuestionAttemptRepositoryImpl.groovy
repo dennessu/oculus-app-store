@@ -10,8 +10,8 @@ import com.junbo.identity.data.dao.UserSecurityQuestionAttemptDAO
 import com.junbo.identity.data.entity.user.UserSecurityQuestionAttemptEntity
 import com.junbo.identity.data.mapper.ModelMapper
 import com.junbo.identity.data.repository.UserSecurityQuestionAttemptRepository
-import com.junbo.identity.spec.model.users.UserSecurityQuestionAttempt
-import com.junbo.identity.spec.options.list.UserSecurityQuestionAttemptListOptions
+import com.junbo.identity.spec.v1.model.UserSecurityQuestionVerifyAttempt
+import com.junbo.identity.spec.v1.option.list.UserSecurityQuestionAttemptListOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oom.core.MappingContext
 import groovy.transform.CompileStatic
@@ -30,7 +30,7 @@ class UserSecurityQuestionAttemptRepositoryImpl implements UserSecurityQuestionA
     private ModelMapper modelMapper
 
     @Override
-    Promise<UserSecurityQuestionAttempt> create(UserSecurityQuestionAttempt entity) {
+    Promise<UserSecurityQuestionVerifyAttempt> create(UserSecurityQuestionVerifyAttempt entity) {
         UserSecurityQuestionAttemptEntity userSecurityQuestionAttemptEntity =
                 modelMapper.toUserSecurityQuestionAttempt(entity, new MappingContext())
 
@@ -40,27 +40,18 @@ class UserSecurityQuestionAttemptRepositoryImpl implements UserSecurityQuestionA
     }
 
     @Override
-    Promise<UserSecurityQuestionAttempt> update(UserSecurityQuestionAttempt entity) {
-        UserSecurityQuestionAttemptEntity userSecurityQuestionAttemptEntity =
-                modelMapper.toUserSecurityQuestionAttempt(entity, new MappingContext())
+    Promise<UserSecurityQuestionVerifyAttempt> get(UserSecurityQuestionVerifyAttemptId id) {
+        UserSecurityQuestionAttemptEntity entity = userSecurityQuestionAttemptDAO.get(id.value)
 
-        userSecurityQuestionAttemptDAO.update(userSecurityQuestionAttemptEntity)
-
-        return get((UserSecurityQuestionVerifyAttemptId)entity.id)
+        return Promise.pure(modelMapper.toUserSecurityQuestionAttempt(entity, new MappingContext()))
     }
 
     @Override
-    Promise<UserSecurityQuestionAttempt> get(UserSecurityQuestionVerifyAttemptId id) {
-        return Promise.pure(modelMapper.toUserSecurityQuestionAttempt(userSecurityQuestionAttemptDAO.get(id.value),
-                new MappingContext()))
-    }
-
-    @Override
-    Promise<List<UserSecurityQuestionAttempt>> search(UserSecurityQuestionAttemptListOptions getOption) {
+    Promise<List<UserSecurityQuestionVerifyAttempt>> search(UserSecurityQuestionAttemptListOptions getOption) {
         List<UserSecurityQuestionAttemptEntity> entities =
                 userSecurityQuestionAttemptDAO.search(getOption.userId.value, getOption)
 
-        List<UserSecurityQuestionAttempt> results = new ArrayList<>()
+        List<UserSecurityQuestionVerifyAttempt> results = new ArrayList<>()
         entities.each { UserSecurityQuestionAttemptEntity entity ->
             results.add(modelMapper.toUserSecurityQuestionAttempt(entity, new MappingContext()))
         }

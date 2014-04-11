@@ -6,8 +6,8 @@
 package com.junbo.identity.data.repository
 
 import com.junbo.common.id.UserSecurityQuestionVerifyAttemptId
-import com.junbo.identity.spec.model.users.UserSecurityQuestionAttempt
-import com.junbo.identity.spec.options.list.UserSecurityQuestionAttemptListOptions
+import com.junbo.identity.spec.v1.model.UserSecurityQuestionVerifyAttempt
+import com.junbo.identity.spec.v1.option.list.UserSecurityQuestionAttemptListOptions
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 
@@ -17,11 +17,9 @@ import groovy.transform.CompileStatic
 @CompileStatic
 interface UserSecurityQuestionAttemptRepository {
 
-    Promise<UserSecurityQuestionAttempt> create(UserSecurityQuestionAttempt entity)
+    Promise<UserSecurityQuestionVerifyAttempt> create(UserSecurityQuestionVerifyAttempt entity)
 
-    Promise<UserSecurityQuestionAttempt> update(UserSecurityQuestionAttempt entity)
+    Promise<UserSecurityQuestionVerifyAttempt> get(UserSecurityQuestionVerifyAttemptId id)
 
-    Promise<UserSecurityQuestionAttempt> get(UserSecurityQuestionVerifyAttemptId id)
-
-    Promise<List<UserSecurityQuestionAttempt>> search(UserSecurityQuestionAttemptListOptions getOption)
+    Promise<List<UserSecurityQuestionVerifyAttempt>> search(UserSecurityQuestionAttemptListOptions getOption)
 }

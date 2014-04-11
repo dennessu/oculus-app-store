@@ -12,6 +12,7 @@ import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.option.list.UserPinListOptions
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
+import org.glassfish.jersey.internal.util.Base64
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.StringUtils
 
@@ -105,6 +106,10 @@ class UserPinValidatorImpl implements UserPinValidator {
             return Promise.pure(null)
         }
 
+        String decoded = Base64.decodeAsString(oldPassword)
+        String[] split = decoded.split(':')
+        String decryptPassword = split[1]
+
         userPinRepository.search(new UserPinListOptions(
                 userId: userId,
                 active: true
@@ -113,7 +118,7 @@ class UserPinValidatorImpl implements UserPinValidator {
                 throw AppErrors.INSTANCE.userPinIncorrect().exception()
             }
 
-            if (CipherHelper.hashPassword(oldPassword, userPinList.get(0).pinSalt) != userPinList.get(0).pinHash) {
+            if (CipherHelper.hashPassword(decryptPassword, userPinList.get(0).pinSalt) != userPinList.get(0).pinHash) {
                 throw AppErrors.INSTANCE.userPinIncorrect().exception()
             }
             return Promise.pure(null)

@@ -6,7 +6,7 @@
 package com.junbo.identity.data.dao
 
 import com.junbo.identity.data.entity.user.UserSecurityQuestionAttemptEntity
-import com.junbo.identity.spec.options.list.UserSecurityQuestionAttemptListOptions
+import com.junbo.identity.spec.v1.option.list.UserSecurityQuestionAttemptListOptions
 import groovy.transform.CompileStatic
 
 /**

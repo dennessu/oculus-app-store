@@ -7,8 +7,8 @@ package com.junbo.identity.core.service.validator
 
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserSecurityQuestionVerifyAttemptId
-import com.junbo.identity.spec.model.users.UserSecurityQuestionAttempt
-import com.junbo.identity.spec.options.list.UserSecurityQuestionAttemptListOptions
+import com.junbo.identity.spec.v1.model.UserSecurityQuestionVerifyAttempt
+import com.junbo.identity.spec.v1.option.list.UserSecurityQuestionAttemptListOptions
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 
@@ -17,7 +17,8 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 interface UserSecurityQuestionAttemptValidator {
-    Promise<UserSecurityQuestionAttempt> validateForGet(UserId userId, UserSecurityQuestionVerifyAttemptId attemptId)
+    Promise<UserSecurityQuestionVerifyAttempt> validateForGet(
+            UserId userId, UserSecurityQuestionVerifyAttemptId attemptId)
     Promise<Void> validateForSearch(UserSecurityQuestionAttemptListOptions options)
-    Promise<Void> validateForCreate(UserId userId, UserSecurityQuestionAttempt userLoginAttempt)
+    Promise<Void> validateForCreate(UserId userId, UserSecurityQuestionVerifyAttempt userLoginAttempt)
 }

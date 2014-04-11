@@ -18,6 +18,28 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "user_security_question_attempt")
 public class UserSecurityQuestionAttemptEntity extends ResourceMetaEntity {
+    @Id
+    @Column(name = "id")
+    private Long id;
+
+    @Column(name = "user_id")
+    private Long userId;
+
+    @Column(name = "user_security_question_id")
+    private Long userSecurityQuestionId;
+
+    @Column(name = "ip_address")
+    private String ipAddress;
+
+    @Column(name = "user_agent")
+    private String userAgent;
+
+    @Column(name = "client_id")
+    private String clientId;
+
+    @Column(name = "succeeded")
+    private Boolean succeeded;
+
     public Long getId() {
         return id;
     }
@@ -34,12 +56,12 @@ public class UserSecurityQuestionAttemptEntity extends ResourceMetaEntity {
         this.userId = userId;
     }
 
-    public Long getSecurityQuestionId() {
-        return securityQuestionId;
+    public Long getUserSecurityQuestionId() {
+        return userSecurityQuestionId;
     }
 
-    public void setSecurityQuestionId(Long securityQuestionId) {
-        this.securityQuestionId = securityQuestionId;
+    public void setUserSecurityQuestionId(Long userSecurityQuestionId) {
+        this.userSecurityQuestionId = userSecurityQuestionId;
     }
 
     public String getIpAddress() {
@@ -73,20 +95,4 @@ public class UserSecurityQuestionAttemptEntity extends ResourceMetaEntity {
     public void setSucceeded(Boolean succeeded) {
         this.succeeded = succeeded;
     }
-
-    @Id
-    @Column(name = "id")
-    private Long id;
-    @Column(name = "user_id")
-    private Long userId;
-    @Column(name = "security_question_id")
-    private Long securityQuestionId;
-    @Column(name = "ip_address")
-    private String ipAddress;
-    @Column(name = "user_agent")
-    private String userAgent;
-    @Column(name = "client_id")
-    private String clientId;
-    @Column(name = "succeeded")
-    private Boolean succeeded;
 }

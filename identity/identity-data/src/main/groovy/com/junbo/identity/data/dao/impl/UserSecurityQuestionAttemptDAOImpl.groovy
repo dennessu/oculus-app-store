@@ -7,7 +7,7 @@ package com.junbo.identity.data.dao.impl
 
 import com.junbo.identity.data.dao.UserSecurityQuestionAttemptDAO
 import com.junbo.identity.data.entity.user.UserSecurityQuestionAttemptEntity
-import com.junbo.identity.spec.options.list.UserSecurityQuestionAttemptListOptions
+import com.junbo.identity.spec.v1.option.list.UserSecurityQuestionAttemptListOptions
 import groovy.transform.CompileStatic
 import org.hibernate.Criteria
 import org.hibernate.Session
@@ -45,12 +45,11 @@ class UserSecurityQuestionAttemptDAOImpl extends BaseDAO implements UserSecurity
     }
 
     @Override
-    List<UserSecurityQuestionAttemptEntity> search(Long userId,
-                                                          UserSecurityQuestionAttemptListOptions getOption) {
+    List<UserSecurityQuestionAttemptEntity> search(Long userId, UserSecurityQuestionAttemptListOptions getOption) {
         Criteria criteria = currentSession(userId).createCriteria(UserSecurityQuestionAttemptEntity)
         criteria.add(Restrictions.eq('userId', getOption.userId.value))
-        if (getOption.securityQuestionId != null) {
-           criteria.add(Restrictions.eq('securityQuestionId', getOption.securityQuestionId.value))
+        if (getOption.userSecurityQuestionId != null) {
+           criteria.add(Restrictions.eq('userSecurityQuestionId', getOption.userSecurityQuestionId.value))
         }
         criteria.addOrder(Order.asc('id'))
         if (getOption.limit != null) {

@@ -197,7 +197,6 @@
     <bean id="userSecurityQuestionAttemptValidator"
           class="com.junbo.identity.core.service.validator.impl.UserSecurityQuestionAttemptValidatorImpl">
         <property name="attemptRepository" ref="userSecurityQuestionAttemptRepository"/>
-        <property name="securityQuestionRepository" ref="securityQuestionRepository"/>
         <property name="userRepository" ref="userRepository"/>
         <property name="userSecurityQuestionRepository" ref="userSecurityQuestionRepository"/>
         <property name="allowedIPPatterns">
