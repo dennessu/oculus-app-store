@@ -95,11 +95,10 @@
 			create table user_email (
               id bigint not null,
 			  version bigint not null,
-              user_id bigint not null,
+              user_pii_id bigint not null,
 			  
 			  value varchar(255) not null,
 			  type varchar(255) not null,
-			  is_primary boolean not null,
 			  is_verified boolean not null,
               
               created_by varchar(32) not null,
@@ -176,11 +175,10 @@
               id bigint not null,
               
 			  version bigint not null,
-			  user_id bigint not null,
+			  user_pii_id bigint not null,
 
 		      type varchar(255) not null,
               value varchar(255) not null,
-			  is_primary boolean not null,
 			  is_verified boolean not null,
 
               created_by varchar(32) not null,
@@ -339,6 +337,23 @@
              
              primary key (id)
             );
+			
+			create table user_pii (
+				id bigint not null,
+				
+				user_id bigint not null,
+				display_name_type integer not null,
+				gender varchar(32) not null,
+				birthday timestamp,
+				
+				version bigint not null,
+				created_time timestamp,
+				created_by varchar(255),
+				modified_time timestamp,
+				modified_by varchar(255),
+				
+				primary key (id)
+			);
         ]]></sql>
     </changeSet>
 

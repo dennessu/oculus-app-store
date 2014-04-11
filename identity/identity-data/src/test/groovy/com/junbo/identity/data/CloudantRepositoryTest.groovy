@@ -66,6 +66,7 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
     private UserPasswordRepository userPasswordRepository
 
     @Autowired
+    private UserGroupRepository userGroupRepository
     @Qualifier('cloudantUserPinRepository')
     private UserPinRepository userPinRepository
 
@@ -96,6 +97,7 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
         Device newDevice = deviceRepository.create(device).wrapped().get()
         newDevice = deviceRepository.get((DeviceId)newDevice.id).wrapped().get()
 
+
         assert  device.externalRef == newDevice.externalRef
 
         String newDescription = UUID.randomUUID().toString()
@@ -107,36 +109,6 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
 
         device = deviceRepository.searchByExternalRef(device.externalRef).wrapped().get()
         assert device.description == newDescription
-    }
-
-    @Test
-    public void testUserAuthenticatorRepository() {
-        UserAuthenticator authenticator = new UserAuthenticator()
-        authenticator.setUserId(new UserId(userId))
-        authenticator.setType('Google_account')
-        authenticator.setValue(UUID.randomUUID().toString())
-        authenticator.setCreatedTime(new Date())
-        authenticator.setCreatedBy('lixia')
-        authenticator = userAuthenticatorRepository.create(authenticator).wrapped().get()
-
-        UserAuthenticator newUserAuthenticator = userAuthenticatorRepository.get(authenticator.getId()).wrapped().get()
-        Assert.assertEquals(authenticator.getValue(), newUserAuthenticator.getValue())
-
-        String newValue = UUID.randomUUID().toString()
-        newUserAuthenticator.setValue(newValue)
-        userAuthenticatorRepository.update(newUserAuthenticator)
-        newUserAuthenticator = userAuthenticatorRepository.get(authenticator.getId()).wrapped().get()
-
-        Assert.assertEquals(newValue, newUserAuthenticator.getValue())
-
-        AuthenticatorListOptions getOption = new AuthenticatorListOptions()
-        getOption.setValue(newValue)
-        List<UserAuthenticator> userAuthenticators = userAuthenticatorRepository.search(getOption).wrapped().get()
-        assert userAuthenticators.size() != 0
-
-        getOption.userId = userAuthenticators.get(0).userId
-        userAuthenticators = userAuthenticatorRepository.search(getOption).wrapped().get()
-        assert userAuthenticators.size() != 0
     }
 
     @Test
@@ -241,10 +213,32 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
         getOption.setUserId(new UserId(userId))
         List<UserPin> userPins = userPinRepository.search(getOption).wrapped().get()
         assert userPins.size() != 0
+    }
 
-        getOption.active = newUserPin.active
-        userPins = userPinRepository.search(getOption).wrapped().get()
-        assert userPins.size() != 0
+    @Test(enabled = true)
+    public void testUserAuthenticatorRepository() {
+        UserAuthenticator authenticator = new UserAuthenticator()
+        authenticator.setUserId(new UserId(userId))
+        authenticator.setType('Google_account')
+        authenticator.setValue(UUID.randomUUID().toString())
+        authenticator.setCreatedTime(new Date())
+        authenticator.setCreatedBy('lixia')
+        authenticator = userAuthenticatorRepository.create(authenticator).wrapped().get()
+
+        UserAuthenticator newUserAuthenticator = userAuthenticatorRepository.get(authenticator.getId()).wrapped().get()
+        Assert.assertEquals(authenticator.getValue(), newUserAuthenticator.getValue())
+
+        String newValue = UUID.randomUUID().toString()
+        newUserAuthenticator.setValue(newValue)
+        userAuthenticatorRepository.update(newUserAuthenticator)
+        newUserAuthenticator = userAuthenticatorRepository.get(authenticator.getId()).wrapped().get()
+
+        Assert.assertEquals(newValue, newUserAuthenticator.getValue())
+
+        AuthenticatorListOptions getOption = new AuthenticatorListOptions()
+        getOption.setValue(newValue)
+        List<UserAuthenticator> userAuthenticators = userAuthenticatorRepository.search(getOption).wrapped().get()
+        assert userAuthenticators.size() != 0
     }
 
     @Test

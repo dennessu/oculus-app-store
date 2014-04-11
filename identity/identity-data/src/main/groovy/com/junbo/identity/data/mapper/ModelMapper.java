@@ -11,11 +11,8 @@ import com.junbo.identity.data.entity.domaindata.SecurityQuestionEntity;
 import com.junbo.identity.data.entity.group.GroupEntity;
 import com.junbo.identity.data.entity.user.*;
 import com.junbo.identity.spec.model.domaindata.SecurityQuestion;
-import com.junbo.identity.spec.model.users.UserEmail;
 import com.junbo.identity.spec.model.users.*;
-import com.junbo.identity.spec.model.users.UserName;
 import com.junbo.identity.spec.model.users.UserOptin;
-import com.junbo.identity.spec.model.users.UserPhoneNumber;
 import com.junbo.identity.spec.model.users.UserSecurityQuestion;
 import com.junbo.identity.spec.v1.model.*;
 import com.junbo.oom.core.Mapper;
@@ -96,9 +93,12 @@ public interface ModelMapper {
     TosEntity toTos(Tos entity, MappingContext context);
 
 
-    UserPassword credentialToPassword(UserCredential userCredential);
-    UserCredential passwordToCredential(UserPassword password);
+    UserPassword credentialToPassword(UserCredential userCredential, MappingContext context);
+    UserCredential passwordToCredential(UserPassword password, MappingContext context);
 
-    UserPin credentialToPin(UserCredential userCredential);
-    UserCredential pinToCredential(UserPin userPin);
+    UserPin credentialToPin(UserCredential userCredential, MappingContext context);
+    UserCredential pinToCredential(UserPin userPin, MappingContext context);
+
+    UserPii toUserPii(UserPiiEntity entity, MappingContext context);
+    UserPiiEntity toUserPii(UserPii entity, MappingContext context);
 }

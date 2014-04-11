@@ -17,6 +17,7 @@ import com.junbo.identity.spec.v1.model.UserCredential
 import com.junbo.identity.spec.v1.option.list.UserCredentialListOptions
 import com.junbo.identity.spec.v1.resource.UserCredentialResource
 import com.junbo.langur.core.promise.Promise
+import com.junbo.oom.core.MappingContext
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Scope
@@ -84,7 +85,8 @@ class UserCredentialResourceImpl implements UserCredentialResource {
                         throw new RuntimeException()
                     }
 
-                    UserCredential newUserCredential = modelMapper.passwordToCredential(userPassword)
+                    UserCredential newUserCredential =
+                            modelMapper.passwordToCredential(userPassword, new MappingContext())
                     created201Marker.mark((Id) newUserCredential.id)
 
                     newUserCredential = userCredentialFilter.filterForGet(newUserCredential, null)
@@ -106,7 +108,7 @@ class UserCredentialResourceImpl implements UserCredentialResource {
                         throw new RuntimeException()
                     }
 
-                    UserCredential newUserCredential = modelMapper.pinToCredential(userPin)
+                    UserCredential newUserCredential = modelMapper.pinToCredential(userPin, new MappingContext())
                     created201Marker.mark((Id) newUserCredential.id)
 
                     newUserCredential = userCredentialFilter.filterForGet(newUserCredential, null)
@@ -133,7 +135,8 @@ class UserCredentialResourceImpl implements UserCredentialResource {
 
                     userPasswordList.each { UserPassword userPassword ->
 
-                        UserCredential newUserCredential = modelMapper.passwordToCredential(userPassword)
+                        UserCredential newUserCredential =
+                                modelMapper.passwordToCredential(userPassword, new MappingContext())
                         if (newUserCredential != null) {
                             newUserCredential = userCredentialFilter.filterForGet(newUserCredential,
                                     listOptions.properties?.split(',') as List<String>)
@@ -152,7 +155,7 @@ class UserCredentialResourceImpl implements UserCredentialResource {
                     }
 
                     userPinList.each { UserPin userPin ->
-                        UserCredential newUserCredential = modelMapper.pinToCredential(userPin)
+                        UserCredential newUserCredential = modelMapper.pinToCredential(userPin, new MappingContext())
                         if (newUserCredential != null) {
                             newUserCredential = userCredentialFilter.filterForGet(newUserCredential,
                                     listOptions.properties?.split(',') as List<String>)

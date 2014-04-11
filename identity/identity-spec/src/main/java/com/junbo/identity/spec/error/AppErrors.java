@@ -144,4 +144,6 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 404, code = "2000036", description = "RoleAssignment {0} not found.", field = "{0}")
     AppError roleAssignmentNotFound(RoleAssignmentId roleAssignmentId);
 
+    @ErrorDef(httpStatusCode = 404, code = "2000037", description = "User Pii {0} not found.", field = "{0}")
+    AppError userPiiNotFound(UserPiiId userPiiId);
 }

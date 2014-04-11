@@ -42,16 +42,15 @@
     <bean id="tosDAO" class="com.junbo.identity.data.dao.impl.TosDAOImpl" parent="baseDAO" />
     <bean id="roleDAO" class="com.junbo.identity.data.dao.impl.RoleDAOImpl" parent="baseDAO"/>
     <bean id="roleAssignmentDAO" class="com.junbo.identity.data.dao.impl.RoleAssignmentDAOImpl" parent="baseDAO"/>
+    <bean id="userPiiDAO" class="com.junbo.identity.data.dao.impl.UserPiiDAOImpl" parent="baseDAO" />
 
     <bean id="groupRepository" class="com.junbo.identity.data.repository.impl.GroupRepositoryImpl" />
     <bean id="userAuthenticatorRepository" class="com.junbo.identity.data.repository.impl.UserAuthenticatorRepositoryImpl" />
     <bean id="userDeviceRepository" class="com.junbo.identity.data.repository.impl.UserDeviceRepositoryImpl" />
-    <bean id="userEmailRepository" class="com.junbo.identity.data.repository.impl.UserEmailRepositoryImpl" />
     <bean id="userGroupRepository" class="com.junbo.identity.data.repository.impl.UserGroupRepositoryImpl" />
     <bean id="userCredentialVerifyAttemptRepository" class="com.junbo.identity.data.repository.impl.UserCredentialVerifyAttemptRepositoryImpl" />
     <bean id="userOptinRepository" class="com.junbo.identity.data.repository.impl.UserOptinRepositoryImpl" />
     <bean id="userPasswordRepository" class="com.junbo.identity.data.repository.impl.UserPasswordRepositoryImpl" />
-    <bean id="userPhoneNumberRepository" class="com.junbo.identity.data.repository.impl.UserPhoneNumberRepositoryImpl" />
     <bean id="userPinRepository" class="com.junbo.identity.data.repository.impl.UserPinRepositoryImpl" />
     <bean id="userRepository" class="com.junbo.identity.data.repository.impl.UserRepositoryImpl" />
     <bean id="userSecurityQuestionRepository" class="com.junbo.identity.data.repository.impl.UserSecurityQuestionRepositoryImpl" />
@@ -66,6 +65,7 @@
     <bean id="roleAssignmentRepository" class="com.junbo.identity.data.repository.impl.RoleAssignmentRepositoryImpl">
         <property name="roleAssignmentDAO" ref="roleAssignmentDAO"/>
     </bean>
+    <bean id="userPiiRepository" class="com.junbo.identity.data.repository.impl.UserPiiRepositoryImpl" />
     
     <bean id="defaultEntityViewRepository" class="com.junbo.sharding.view.DefaultEntityViewRepository">
         <property name="entityViews">

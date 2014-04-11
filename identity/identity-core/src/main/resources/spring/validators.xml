@@ -20,13 +20,13 @@
     <bean id="nameValidator" class="com.junbo.identity.core.service.validator.impl.NameValidatorImpl">
         <property name="firstNameMinLength" value="1"/>
         <property name="firstNameMaxLength" value="30"/>
-        <property name="middleNameMinLength" value="1"/>
+        <property name="middleNameMinLength" value="0"/>
         <property name="middleNameMaxLength" value="30"/>
         <property name="lastNameMinLength" value="1"/>
         <property name="lastNameMaxLength" value="30"/>
         <property name="honorificPrefixMinLength" value="1"/>
         <property name="honorificPrefixMaxLength" value="30"/>
-        <property name="honorificSuffixMinLength" value="1"/>
+        <property name="honorificSuffixMinLength" value="0"/>
         <property name="honorificSuffixMaxLength" value="30"/>
     </bean>
 
@@ -164,8 +164,6 @@
 
     <bean id="userPhoneNumberValidator"
           class="com.junbo.identity.core.service.validator.impl.UserPhoneNumberValidatorImpl">
-        <property name="userRepository" ref="userRepository"/>
-        <property name="userPhoneNumberRepository" ref="userPhoneNumberRepository"/>
         <property name="allowedValuePatterns">
             <list>
                 <!-- http://regexlib.com/Search.aspx?k=phone+number&c=0&m=0&ps=20&p=12
@@ -233,8 +231,6 @@
     </bean>
 
     <bean id="userEmailValidator" class="com.junbo.identity.core.service.validator.impl.UserEmailValidatorImpl">
-        <property name="userRepository" ref="userRepository"/>
-        <property name="userEmailRepository" ref="userEmailRepository"/>
         <property name="allowedEmailPatterns">
             <list>
                 <!--  todo: need to refactor this -->
@@ -297,6 +293,22 @@
           class="com.junbo.identity.core.service.validator.impl.RoleAssignmentValidatorImpl">
         <property name="roleAssignmentRepository" ref="roleAssignmentRepository"/>
         <property name="roleRepository" ref="roleRepository"/>
+    </bean>
+
+    <bean id="userPiiValidator" class="com.junbo.identity.core.service.validator.impl.UserPiiValidatorImpl">
+        <property name="allowedGenders">
+            <list>
+                <value>male</value>
+                <value>female</value>
+            </list>
+        </property>
+        <property name="birthdayValidator" ref="birthdayValidator" />
+        <property name="displayNameValidator" ref="displayNameValidator" />
+        <property name="nameValidator" ref="nameValidator" />
+        <property name="userEmailValidator" ref="userEmailValidator" />
+        <property name="userPhoneNumberValidator" ref="userPhoneNumberValidator" />
+        <property name="userPiiRepository" ref="userPiiRepository" />
+        <property name="userRepository" ref="userRepository" />
     </bean>
 
 </beans>

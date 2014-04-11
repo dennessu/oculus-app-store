@@ -11,6 +11,7 @@ import com.junbo.identity.spec.model.users.UserPin
 import com.junbo.identity.spec.v1.model.UserCredential
 import com.junbo.identity.spec.v1.option.list.UserCredentialListOptions
 import com.junbo.langur.core.promise.Promise
+import com.junbo.oom.core.MappingContext
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 
@@ -72,7 +73,7 @@ class UserCredentialValidatorImpl implements UserCredentialValidator {
 
         if (userCredential.type == 'password') {
             return userPasswordValidator.validateForOldPassword(userId, userCredential.oldValue).then {
-                UserPassword userPassword = modelMapper.credentialToPassword(userCredential)
+                UserPassword userPassword = modelMapper.credentialToPassword(userCredential, new MappingContext())
                 if (userPassword == null) {
                     throw new IllegalArgumentException('mapping to password exception')
                 }
@@ -82,7 +83,7 @@ class UserCredentialValidatorImpl implements UserCredentialValidator {
             }
         } else if (userCredential.type == 'pin') {
             return userPinValidator.validateForOldPassword(userId, userCredential.oldValue).then {
-                UserPin userPin = modelMapper.credentialToPin(userCredential)
+                UserPin userPin = modelMapper.credentialToPin(userCredential, new MappingContext())
                 if (userPin == null) {
                     throw new IllegalArgumentException('mapping to pin exception')
                 }
