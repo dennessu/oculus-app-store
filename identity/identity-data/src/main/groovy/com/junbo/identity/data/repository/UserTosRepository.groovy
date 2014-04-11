@@ -5,9 +5,9 @@
  */
 package com.junbo.identity.data.repository
 
-import com.junbo.common.id.UserTosId
-import com.junbo.identity.spec.model.users.UserTos
-import com.junbo.identity.spec.options.list.UserTosListOptions
+import com.junbo.common.id.UserTosAgreementId
+import com.junbo.identity.spec.v1.model.UserTosAgreement
+import com.junbo.identity.spec.v1.option.list.UserTosAgreementListOptions
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 
@@ -17,13 +17,13 @@ import groovy.transform.CompileStatic
 @CompileStatic
 interface UserTosRepository {
 
-    Promise<UserTos> create(UserTos entity)
+    Promise<UserTosAgreement> create(UserTosAgreement entity)
 
-    Promise<UserTos> update(UserTos entity)
+    Promise<UserTosAgreement> update(UserTosAgreement entity)
 
-    Promise<UserTos> get(UserTosId id)
+    Promise<UserTosAgreement> get(UserTosAgreementId id)
 
-    Promise<List<UserTos>> search(UserTosListOptions getOption)
+    Promise<List<UserTosAgreement>> search(UserTosAgreementListOptions getOption)
 
-    Promise<Void> delete(UserTosId id)
+    Promise<Void> delete(UserTosAgreementId id)
 }

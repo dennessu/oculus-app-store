@@ -1,9 +1,9 @@
 package com.junbo.identity.core.service.validator
 
 import com.junbo.common.id.UserId
-import com.junbo.common.id.UserTosId
-import com.junbo.identity.spec.model.users.UserTos
-import com.junbo.identity.spec.options.list.UserTosListOptions
+import com.junbo.common.id.UserTosAgreementId
+import com.junbo.identity.spec.v1.model.UserTosAgreement
+import com.junbo.identity.spec.v1.option.list.UserTosAgreementListOptions
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 
@@ -12,9 +12,9 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 interface UserTosValidator {
-    Promise<UserTos> validateForGet(UserId userId, UserTosId userTosId)
-    Promise<Void> validateForSearch(UserTosListOptions options)
-    Promise<Void> validateForCreate(UserId userId, UserTos userTos)
-    Promise<Void> validateForUpdate(UserId userId, UserTosId userTosId,
-                                    UserTos userTos, UserTos oldUserTos)
+    Promise<UserTosAgreement> validateForGet(UserId userId, UserTosAgreementId userTosId)
+    Promise<Void> validateForSearch(UserTosAgreementListOptions options)
+    Promise<Void> validateForCreate(UserId userId, UserTosAgreement userTos)
+    Promise<Void> validateForUpdate(UserId userId, UserTosAgreementId userTosId,
+                                    UserTosAgreement userTos, UserTosAgreement oldUserTos)
 }

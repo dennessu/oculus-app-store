@@ -94,7 +94,7 @@ public interface AppErrors {
     AppError userPinIncorrect();
 
     @ErrorDef(httpStatusCode = 409, code = "2000021", description = "User Tos {0} not found.", field = "{0}")
-    AppError userTosNotFound(UserTosId userTosId);
+    AppError userTosAgreementNotFound(UserTosAgreementId userTosId);
 
     @ErrorDef(httpStatusCode = 409, code = "2000022", description = "User Optin {0} not found.", field = "{0}")
     AppError userOptinNotFound(UserOptinId userOptinId);

@@ -32,6 +32,8 @@ public class UserTosAgreement extends ResourceMeta implements Identifiable<UserT
 
     public void setId(UserTosAgreementId id) {
         this.id = id;
+        support.setPropertyAssigned("self");
+        support.setPropertyAssigned("id");
     }
 
     public UserId getUserId() {
@@ -40,6 +42,8 @@ public class UserTosAgreement extends ResourceMeta implements Identifiable<UserT
 
     public void setUserId(UserId userId) {
         this.userId = userId;
+        support.setPropertyAssigned("userId");
+        support.setPropertyAssigned("user");
     }
 
     public TosId getTosId() {
@@ -48,5 +52,7 @@ public class UserTosAgreement extends ResourceMeta implements Identifiable<UserT
 
     public void setTosId(TosId tosId) {
         this.tosId = tosId;
+        support.setPropertyAssigned("tosId");
+        support.setPropertyAssigned("tos");
     }
 }

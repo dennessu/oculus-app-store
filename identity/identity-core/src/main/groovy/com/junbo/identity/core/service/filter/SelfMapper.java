@@ -8,7 +8,6 @@ package com.junbo.identity.core.service.filter;
 import com.junbo.identity.spec.model.domaindata.SecurityQuestion;
 import com.junbo.identity.spec.model.users.UserPassword;
 import com.junbo.identity.spec.model.users.UserPin;
-import com.junbo.identity.spec.model.users.UserTos;
 import com.junbo.identity.spec.v1.model.*;
 import com.junbo.oom.core.Mapper;
 import com.junbo.oom.core.MappingContext;
@@ -80,9 +79,9 @@ public interface SelfMapper {
 
     UserEmail mergeUserEmail(UserEmail source, UserEmail base, MappingContext context);
 
-    UserTos filterUserTos(UserTos userTos, MappingContext context);
+    UserTosAgreement filterUserTos(UserTosAgreement userTos, MappingContext context);
 
-    UserTos mergeUserTos(UserTos source, UserTos base, MappingContext context);
+    UserTosAgreement mergeUserTos(UserTosAgreement source, UserTosAgreement base, MappingContext context);
 
     Device filterDevice(Device device, MappingContext context);
 

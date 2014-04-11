@@ -1,14 +1,16 @@
 package com.junbo.identity.core.service.validator.impl
 
 import com.junbo.common.id.UserId
-import com.junbo.common.id.UserTosId
+import com.junbo.common.id.UserTosAgreementId
 import com.junbo.identity.core.service.validator.UserTosValidator
+import com.junbo.identity.data.repository.TosRepository
 import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.data.repository.UserTosRepository
 import com.junbo.identity.spec.error.AppErrors
-import com.junbo.identity.spec.model.users.UserTos
-import com.junbo.identity.spec.options.list.UserTosListOptions
+import com.junbo.identity.spec.v1.model.Tos
 import com.junbo.identity.spec.v1.model.User
+import com.junbo.identity.spec.v1.model.UserTosAgreement
+import com.junbo.identity.spec.v1.option.list.UserTosAgreementListOptions
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
@@ -24,11 +26,10 @@ class UserTosValidatorImpl implements UserTosValidator {
 
     private UserTosRepository userTosRepository
 
-    private Integer tosUriMinLength
-    private Integer tosUriMaxLength
+    private TosRepository tosRepository
 
     @Override
-    Promise<UserTos> validateForGet(UserId userId, UserTosId userTosId) {
+    Promise<UserTosAgreement> validateForGet(UserId userId, UserTosAgreementId userTosId) {
 
         if (userId == null) {
             throw AppErrors.INSTANCE.parameterRequired('userId').exception()
@@ -43,13 +44,14 @@ class UserTosValidatorImpl implements UserTosValidator {
                 throw AppErrors.INSTANCE.userNotFound(userId).exception()
             }
 
-            return userTosRepository.get(userTosId).then { UserTos userTos ->
+            return userTosRepository.get(userTosId).then { UserTosAgreement userTos ->
                 if (userTos == null) {
-                    throw AppErrors.INSTANCE.userTosNotFound(userTosId).exception()
+                    throw AppErrors.INSTANCE.userTosAgreementNotFound(userTosId).exception()
                 }
 
                 if (userId != userTos.userId) {
-                    throw AppErrors.INSTANCE.parameterInvalid('userId and userTosId doesn\'t match.').exception()
+                    throw AppErrors.INSTANCE.parameterInvalid('userId and userTosAgreementId doesn\'t match.').
+                            exception()
                 }
 
                 return Promise.pure(userTos)
@@ -58,7 +60,7 @@ class UserTosValidatorImpl implements UserTosValidator {
     }
 
     @Override
-    Promise<Void> validateForSearch(UserTosListOptions options) {
+    Promise<Void> validateForSearch(UserTosAgreementListOptions options) {
         if (options == null) {
             throw new IllegalArgumentException('options is null')
         }
@@ -71,7 +73,7 @@ class UserTosValidatorImpl implements UserTosValidator {
     }
 
     @Override
-    Promise<Void> validateForCreate(UserId userId, UserTos userTos) {
+    Promise<Void> validateForCreate(UserId userId, UserTosAgreement userTos) {
         if (userId == null) {
             throw new IllegalArgumentException('userId is null')
         }
@@ -83,12 +85,12 @@ class UserTosValidatorImpl implements UserTosValidator {
             throw AppErrors.INSTANCE.fieldInvalid('userId', userTos.userId.toString()).exception()
         }
 
-        return userTosRepository.search(new UserTosListOptions(
+        return userTosRepository.search(new UserTosAgreementListOptions(
                 userId: userId,
-                tosUri: userTos.tosUri
-        )).then { List<UserTos> existing ->
+                tosId: userTos.tosId
+        )).then { List<UserTosAgreement> existing ->
             if (!CollectionUtils.isEmpty(existing)) {
-                throw AppErrors.INSTANCE.fieldDuplicate('tosUri').exception()
+                throw AppErrors.INSTANCE.fieldDuplicate('tosId').exception()
             }
 
             userTos.setUserId(userId)
@@ -97,7 +99,8 @@ class UserTosValidatorImpl implements UserTosValidator {
     }
 
     @Override
-    Promise<Void> validateForUpdate(UserId userId, UserTosId userTosId, UserTos userTos, UserTos oldUserTos) {
+    Promise<Void> validateForUpdate(UserId userId, UserTosAgreementId userTosId,
+                                    UserTosAgreement userTos, UserTosAgreement oldUserTos) {
         if (userId == null) {
             throw new IllegalArgumentException('userId is null')
         }
@@ -117,13 +120,13 @@ class UserTosValidatorImpl implements UserTosValidator {
                 throw AppErrors.INSTANCE.fieldInvalid('id', oldUserTos.id.toString()).exception()
             }
 
-            if (userTos.tosUri != oldUserTos.tosUri) {
-                return userTosRepository.search(new UserTosListOptions(
+            if (userTos.tosId != oldUserTos.tosId) {
+                return userTosRepository.search(new UserTosAgreementListOptions(
                         userId: userId,
-                        tosUri: userTos.tosUri
-                )).then { List<UserTos> existing ->
+                        tosId: userTos.tosId
+                )).then { List<UserTosAgreement> existing ->
                     if (!CollectionUtils.isEmpty(existing)) {
-                        throw AppErrors.INSTANCE.fieldDuplicate('tosUri').exception()
+                        throw AppErrors.INSTANCE.fieldDuplicate('tosId').exception()
                     }
                     userTos.setUserId(userId)
                     return Promise.pure(null)
@@ -134,21 +137,19 @@ class UserTosValidatorImpl implements UserTosValidator {
         }
     }
 
-    private void checkBasicUserTosInfo(UserTos userTos) {
+    private void checkBasicUserTosInfo(UserTosAgreement userTos) {
         if (userTos == null) {
             throw new IllegalArgumentException('userTos is null')
         }
 
-        if (userTos.tosUri == null) {
-            throw AppErrors.INSTANCE.fieldRequired('tosUri').exception()
+        if (userTos.tosId == null) {
+            throw AppErrors.INSTANCE.fieldRequired('tosId').exception()
         }
 
-        if (userTos.tosUri.size() < tosUriMinLength) {
-            throw AppErrors.INSTANCE.fieldTooShort('tosUri', tosUriMinLength).exception()
-        }
-
-        if (userTos.tosUri.size() > tosUriMaxLength) {
-            throw AppErrors.INSTANCE.fieldTooLong('tosUri', tosUriMaxLength).exception()
+        tosRepository.get(userTos.tosId).then { Tos tos ->
+            if (tos == null) {
+                throw AppErrors.INSTANCE.tosNotFound(userTos.tosId).exception()
+            }
         }
     }
 
@@ -163,12 +164,7 @@ class UserTosValidatorImpl implements UserTosValidator {
     }
 
     @Required
-    void setTosUriMinLength(Integer tosUriMinLength) {
-        this.tosUriMinLength = tosUriMinLength
-    }
-
-    @Required
-    void setTosUriMaxLength(Integer tosUriMaxLength) {
-        this.tosUriMaxLength = tosUriMaxLength
+    void setTosRepository(TosRepository tosRepository) {
+        this.tosRepository = tosRepository
     }
 }

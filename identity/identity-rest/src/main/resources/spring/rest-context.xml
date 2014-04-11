@@ -10,7 +10,6 @@
     <context:component-scan base-package="com.junbo.identity.core.service" />
 
     <!-- resource implementation -->
-    <bean id="defaultUserTosResource" class="com.junbo.identity.rest.resource.UserTosResourceImpl" scope="prototype" />
     <bean id="defaultSecurityQuestionResource" class="com.junbo.identity.rest.resource.SecurityQuestionResourceImpl" scope="prototype" />
 
     <bean id="defaultUserAuthenticatorResource" class="com.junbo.identity.rest.resource.v1.AuthenticatorResourceImpl" scope="prototype" />
@@ -26,6 +25,7 @@
     <bean id="defaultUserOptinResource" class="com.junbo.identity.rest.resource.v1.UserOptinResourceImpl" scope="prototype" />
     <bean id="defaultUserSecurityQuestionResource" class="com.junbo.identity.rest.resource.v1.UserSecurityQuestionResourceImpl" scope="prototype" />
     <bean id="defaultUserSecurityQuestionVerifyAttemptResource" class="com.junbo.identity.rest.resource.v1.UserSecurityQuestionVerifyAttemptResourceImpl" scope="prototype" />
+    <bean id="defaultUserTosAgreementResource" class="com.junbo.identity.rest.resource.v1.UserTosAgreementResourceImpl" scope="prototype" />
 
     <bean id="defaultRoleResource" class="com.junbo.identity.rest.resource.v1.RoleResourceImpl" scope="prototype">
         <property name="created201Marker" ref="created201Marker"/>

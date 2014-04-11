@@ -230,14 +230,14 @@ public class CommonMapper {
         return id.getValue();
     }
 
-    public UserTosId toUserTosId(Long id) {
+    public UserTosAgreementId toUserTosAgreementId(Long id) {
         if(id == null) {
             return null;
         }
-        return new UserTosId(id);
+        return new UserTosAgreementId(id);
     }
 
-    public Long toUserTosId(UserTosId id) {
+    public Long toUserTosAgreementId(UserTosAgreementId id) {
         if(id == null) {
             return null;
         }
