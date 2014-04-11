@@ -4,10 +4,8 @@ import com.junbo.order.clientproxy.model.OrderOffer
 import com.junbo.order.db.entity.enums.PayoutStatus
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.db.repo.SubledgerRepository
-import com.junbo.order.spec.model.PageParam
 import com.junbo.order.spec.model.Subledger
 import com.junbo.order.spec.model.SubledgerItem
-import com.junbo.order.spec.model.SubledgerParam
 import groovy.transform.CompileStatic
 
 import java.math.RoundingMode
@@ -76,21 +74,11 @@ class SubledgerHelper {
 
     private Subledger getMatchingSubledgerByContext(SubledgerItemContext subledgerItemContext) {
         def sellerId = subledgerItemContext.sellerId
-        def subledgerDate = getSubledgerStartTime(subledgerItemContext.createdTime)
+        def startTime = getSubledgerStartTime(subledgerItemContext.createdTime)
 
-        def param = new SubledgerParam(
-                payOutStatus: PayoutStatus.PENDING.name(),
-                sellerId: sellerId,
-                offerId: subledgerItemContext.offerId,
-                country: subledgerItemContext.country,
-                currency: subledgerItemContext.currency,
-                fromDate:  subledgerDate,
-                toDate: subledgerDate,
-                toDateInclusive: true
-        )
-
-        def results = subledgerRepository.getSubledgers(param, new PageParam(count: 1, start: 0))
-        return results.isEmpty() ? null : results.iterator().next()
+        return subledgerRepository.findSubledger(sellerId, PayoutStatus.PENDING.name(),
+                subledgerItemContext.offerId, startTime, subledgerItemContext.currency,
+                subledgerItemContext.country)
     }
 
 

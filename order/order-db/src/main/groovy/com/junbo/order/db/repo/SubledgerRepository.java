@@ -5,12 +5,15 @@
  */
 package com.junbo.order.db.repo;
 
+import com.junbo.common.id.OfferId;
 import com.junbo.common.id.SubledgerId;
+import com.junbo.common.id.UserId;
 import com.junbo.order.spec.model.PageParam;
 import com.junbo.order.spec.model.Subledger;
 import com.junbo.order.spec.model.SubledgerItem;
 import com.junbo.order.spec.model.SubledgerParam;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -24,7 +27,12 @@ public interface SubledgerRepository {
 
     Subledger getSubledger(SubledgerId subledgerId);
 
-    List<Subledger> getSubledgers(SubledgerParam subledgerParam, PageParam pageParam);
+    List<Subledger> getSubledgers(SubledgerParam subledgerParam,
+                                  PageParam pageParam);
+
+    Subledger findSubledger(UserId sellerId, String payoutStatus,
+                                          OfferId offerId, Date startTime,  String currency,
+                                          String country);
 
     SubledgerItem createSubledgerItem(SubledgerItem subledgerItem);
 
