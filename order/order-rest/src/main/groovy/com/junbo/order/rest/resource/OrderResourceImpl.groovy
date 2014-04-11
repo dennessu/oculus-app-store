@@ -95,9 +95,20 @@ class OrderResourceImpl implements OrderResource {
                 }
             } else { // order already settle
                 LOGGER.info('name=Update_Non_Tentative_offer')
-                Promise.pure(oldOrder) // todo implement update on settled order
+                // update shipping address after settlement
+                if (allowModification(oldOrder, order)) {
+                    oldOrder.shippingAddress = order.shippingAddress
+                    return orderService.updateNonTentativeOrder(oldOrder,  new ApiContext(requestContext.headers))
+                }
+                LOGGER.info('name=Update_Not_Allow')
+                return Promise.pure(oldOrder)
             }
         }
+    }
+
+    boolean allowModification(Order oldOrder, Order order) {
+        // TODO: check the modification is allowed
+        return oldOrder.shippingAddress.value != order.shippingAddress.value
     }
 
     @Override

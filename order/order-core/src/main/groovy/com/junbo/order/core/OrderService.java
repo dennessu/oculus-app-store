@@ -35,6 +35,8 @@ public interface OrderService {
 
     Promise<Order> updateTentativeOrder(Order order, ApiContext context);
 
+    Promise<Order> updateNonTentativeOrder(Order order, ApiContext context);
+
     Order getOrderByTrackingUuid(UUID trackingUuid, Long userId);
 
     Promise<Order> completeChargeOrder(Long orderId, ApiContext context);

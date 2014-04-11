@@ -111,6 +111,26 @@ class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    Promise<Order> updateNonTentativeOrder(Order order, ApiContext context) {
+        LOGGER.info('name=Update_Non_Tentative_Order. orderId: {}', order.id.value)
+        def orderServiceContext = initOrderServiceContext(order)
+        prepareOrder(order).then {
+            flowSelector.select(
+                    orderServiceContext, OrderServiceOperation.UPDATE_NON_TENTATIVE).then { String flowName ->
+                // Prepare Flow Request
+                Map<String, Object> requestScope = [:]
+                def orderActionContext = new OrderActionContext()
+                orderActionContext.orderServiceContext = orderServiceContext
+                orderActionContext.trackingUuid = order.trackingUuid
+                requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object) orderActionContext)
+                executeFlow(flowName, orderServiceContext, requestScope)
+            }.syncThen {
+                return orderServiceContext.order
+            }
+        }
+    }
+
+    @Override
     Promise<Order> createQuote(Order order, ApiContext context) {
         LOGGER.info('name=Create_Tentative_Order. userId: {}', order.user.value)
 

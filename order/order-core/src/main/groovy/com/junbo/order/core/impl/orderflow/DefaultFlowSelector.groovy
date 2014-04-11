@@ -51,6 +51,8 @@ class DefaultFlowSelector implements FlowSelector {
                 return Promise.pure(FlowType.RATE_ORDER.name())
             case OrderServiceOperation.UPDATE_TENTATIVE:
                 return Promise.pure(FlowType.UPDATE_TENTATIVE.name())
+            case OrderServiceOperation.UPDATE_NON_TENTATIVE:
+                return Promise.pure(FlowType.UPDATE_NON_TENTATIVE.name())
             case OrderServiceOperation.GET:
                 return Promise.pure(FlowType.GET_ORDER.name())
             case OrderServiceOperation.COMPLETE_CHARGE:
