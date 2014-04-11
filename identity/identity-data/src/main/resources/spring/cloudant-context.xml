@@ -60,4 +60,11 @@
         <property name="shardAlgorithm" ref="userShardAlgorithm"/>
         <property name="idGenerator" ref="oculus48IdGenerator"/>
     </bean>
+
+    <bean id="cloudantUserOptinRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserOptinRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="user_optin"/>
+        <property name="shardAlgorithm" ref="userShardAlgorithm"/>
+        <property name="idGenerator" ref="oculus48IdGenerator"/>
+    </bean>
+
 </beans>

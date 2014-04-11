@@ -20,10 +20,12 @@ import com.junbo.identity.spec.v1.model.UserAuthenticator
 import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
 import com.junbo.identity.spec.v1.model.UserDevice
 import com.junbo.identity.spec.v1.model.UserGroup
+import com.junbo.identity.spec.v1.model.UserOptin
 import com.junbo.identity.spec.v1.option.list.AuthenticatorListOptions
 import com.junbo.identity.spec.v1.option.list.UserCredentialAttemptListOptions
 import com.junbo.identity.spec.v1.option.list.UserDeviceListOptions
 import com.junbo.identity.spec.v1.option.list.UserGroupListOptions
+import com.junbo.identity.spec.v1.option.list.UserOptinListOptions
 import com.junbo.identity.spec.v1.option.list.UserPasswordListOptions
 import com.junbo.identity.spec.v1.option.list.UserPinListOptions
 import groovy.transform.CompileStatic
@@ -86,6 +88,10 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
     @Autowired
     @Qualifier('cloudantUserGroupRepository')
     private UserGroupRepository userGroupRepository
+
+    @Autowired
+    @Qualifier('cloudantUserOptinRepository')
+    private UserOptinRepository userOptinRepository
 
     @Test
     public void test() {
@@ -336,5 +342,30 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
         getOption.setUserId(null)
         userGroups = userGroupRepository.search(getOption).wrapped().get()
         assert userGroups.size() != 0
+    }
+
+    @Test
+    public void testUserOptinRepository() {
+        UserOptin userOptin = new UserOptin()
+        userOptin.setUserId(new UserId(userId))
+        userOptin.setType(UUID.randomUUID().toString())
+        userOptin.setCreatedBy('lixia')
+        userOptin.setCreatedTime(new Date())
+        userOptin = userOptinRepository.create(userOptin).wrapped().get()
+
+        UserOptin newUserOptin = userOptinRepository.get(userOptin.getId()).wrapped().get()
+        Assert.assertEquals(userOptin.getType(), newUserOptin.getType())
+
+        String value = UUID.randomUUID().toString()
+        userOptin.setType(value)
+        userOptinRepository.update(userOptin)
+
+        newUserOptin = userOptinRepository.get(userOptin.getId()).wrapped().get()
+        Assert.assertEquals(value, newUserOptin.getType())
+
+        UserOptinListOptions getOption = new UserOptinListOptions()
+        getOption.setUserId(new UserId(userId))
+        List<UserOptin> userOptins = userOptinRepository.search(getOption).wrapped().get()
+        assert userOptins.size() != 0
     }
 }

@@ -6,13 +6,14 @@
 package com.junbo.identity.spec.v1.option.list;
 
 import com.junbo.common.id.UserId;
+import com.junbo.identity.spec.options.list.PagingGetOptions;
 
 import javax.ws.rs.QueryParam;
 
 /**
  * Created by liangfu on 4/3/14.
  */
-public class UserOptinListOptions {
+public class UserOptinListOptions extends PagingGetOptions {
     @QueryParam("type")
     private String type;
 
