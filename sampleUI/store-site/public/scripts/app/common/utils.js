@@ -1,41 +1,56 @@
 var Utils = {
     /*
+     Deep Clone
+     */
+    Clone: function (sObj) {
+        if (typeof sObj !== "object") return sObj;
+
+        var s = {};
+        if (sObj.constructor == Array) s = [];
+
+        for (var i in sObj) s[i] = Utils.Clone(sObj[i]);
+
+        return s;
+    },
+
+    /*
      Fill original object use target object
-     @type: 0:full, 1:ChildFull, 2:OneWay
-     @return: original object
+     @type: 0:full(if property not exists, add a new property), 1:ChildFull(child properties is full fill), 2:OneWay(fill original from target just have properties)
+     @return: original object(reference).
      */
     FillObject: function (original, target, type) {
-        if (type == 0 && (original == undefined || original == null)) return target;
 
+        if (original == undefined || original == null) {
+            original = Utils.Clone(target);
+            return original;
+        }
+
+        // fill exists properties
         for (var p in original) {
             var p_type = typeof(original[p]);
 
-            if (p_type != "function") {
-                if (p_type == "object") {
-                    if (typeof(target[p]) != "undefined" && target[p] != null) {
-                        if (type == 1) {
-                            original[p] = this.FillObject(original[p], target[p], 0);
-                        } else {
-                            original[p] = this.FillObject(original[p], target[p], type);
-                        }
+            if (p_type == "object") {
+                if (typeof(target[p]) != "undefined") {
+                    if (type == 1) {
+                        original[p] = Utils.Clone(target[p]);
+                    } else {
+                        original[p] = Utils.FillObject(original[p], target[p], type);
                     }
-                } else {
-                    if (typeof(target[p]) != "undefined" && target[p] != null) {
-                        original[p] = target[p];
-                    }
+                }
+            } else {
+                // base type、Array or function
+                if (typeof(target[p]) != "undefined") {
+                    original[p] = Utils.Clone(target[p]);
                 }
             }
         }
 
+        // add new properties
         if (type == 0) {
-            // Append new property
             for (var p in target) {
                 var p_type = typeof(target[p]);
-
-                if (p_type != "function") {
-                    if (typeof(original[p]) != "undefined" && original[p] != null) continue;
-                    original[p] = target[p];
-                }
+                if (typeof(original[p]) != "undefined") continue;
+                original[p] = Utils.Clone(target[p]);
             }
         }
 
@@ -65,6 +80,27 @@ var Utils = {
             return result;
         }
         return null;
+    },
+
+    FormatNumber: function (number, fix, fh, jg)
+    {
+        var fix = arguments[1] ? arguments[1] : 2;
+        var fh = arguments[2] ? arguments[2] : ',';
+        var jg = arguments[3] ? arguments[3] : 3;
+        var str = '';
+        number = number.toFixed(fix);
+        var zsw = number.split('.')[0];
+        var xsw = number.split('.')[1];
+        var zswarr = zsw.split('');
+        for (var i = 1; i <= zswarr.length; i++) {
+            str = zswarr[zswarr.length - i] + str;
+            if (i % jg == 0) {
+                str = fh + str;
+            }
+        }
+        str = (zsw.length % jg == 0) ? str.substr(1) : str;
+        zsw = str + '.' + xsw;
+        return zsw;
     },
 
     GetViews: function (templateName) {
@@ -148,7 +184,7 @@ var Utils = {
         Get: function (name) {
             var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
             if (arr = document.cookie.match(reg))
-                return unescape(arr[2]);
+                return unescape(arr[2].trim()).trim();
             else
                 return null;
         },
@@ -207,5 +243,6 @@ var Utils = {
 
         return requestModel;
     }
+
 
 };

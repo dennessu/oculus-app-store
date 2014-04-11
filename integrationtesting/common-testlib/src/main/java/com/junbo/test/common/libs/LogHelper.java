@@ -83,4 +83,8 @@ public class LogHelper {
             logger.warn("The response is null");
         }
     }
+
+    public void LogSample(String description) throws IOException{
+        logger.info("[Include In Sample] Description:" + description);
+    }
 }

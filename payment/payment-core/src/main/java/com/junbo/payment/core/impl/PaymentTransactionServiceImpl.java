@@ -19,10 +19,7 @@ import com.junbo.payment.core.util.PaymentUtil;
 import com.junbo.payment.core.util.ProxyExceptionResponse;
 import com.junbo.payment.db.mapper.*;
 import com.junbo.payment.db.repository.*;
-import com.junbo.payment.spec.enums.PIStatus;
-import com.junbo.payment.spec.enums.PaymentEventType;
-import com.junbo.payment.spec.enums.PaymentStatus;
-import com.junbo.payment.spec.enums.PaymentType;
+import com.junbo.payment.spec.enums.*;
 import com.junbo.payment.spec.model.PaymentEvent;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentTransaction;
@@ -81,7 +78,7 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
             return Promise.pure(trackingResult);
         }
         final PaymentProviderService provider = getPaymentProviderService(pi);
-        String merchantRef = getMerchantRef(request, provider.getProviderName());
+        String merchantRef = getMerchantRef(pi, request, provider.getProviderName());
         request.setPaymentProvider(provider.getProviderName());
         request.setMerchantAccount(merchantRef);
         request.setStatus(PaymentStatus.AUTH_CREATED.toString());
@@ -92,8 +89,7 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
         //commit the transaction with trackingUuid
         saveAndCommitPayment(request);
         //call braintree.
-        return provider.authorize(pi.getCreditCardRequest().getExternalToken(), request)
-                .recover(new Promise.Func<Throwable, Promise<PaymentTransaction>>() {
+        return provider.authorize(pi, request).recover(new Promise.Func<Throwable, Promise<PaymentTransaction>>() {
             @Override
             public Promise<PaymentTransaction> apply(Throwable throwable) {
                 return handleProviderException(throwable, provider, request, api,
@@ -104,7 +100,7 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
             public Promise<PaymentTransaction> apply(PaymentTransaction paymentTransaction) {
                 PaymentStatus authStatus = PaymentStatus.AUTHORIZED;
                 request.setStatus(authStatus.toString());
-                request.setExternalToken(paymentTransaction.getExternalToken());
+                provider.cloneTransactionResult(paymentTransaction, request);
                 PaymentEvent authEvent = createPaymentEvent(request,
                         PaymentEventType.AUTHORIZE, authStatus, SUCCESS_EVENT_RESPONSE);
                 addPaymentEvent(request, authEvent);
@@ -170,7 +166,7 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
             return Promise.pure(trackingResult);
         }
         final PaymentProviderService provider = getPaymentProviderService(pi);
-        String merchantRef = getMerchantRef(request, provider.getProviderName());
+        String merchantRef = getMerchantRef(pi, request, provider.getProviderName());
         request.setPaymentProvider(provider.getProviderName());
         request.setMerchantAccount(merchantRef);
         request.setStatus(PaymentStatus.SETTLE_CREATED.toString());
@@ -181,8 +177,7 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
         //commit the transaction
         saveAndCommitPayment(request);
         //call brain tree
-        return provider.charge(pi.getCreditCardRequest().getExternalToken(), request)
-                .recover(new Promise.Func<Throwable, Promise<PaymentTransaction>>() {
+        return provider.charge(pi, request).recover(new Promise.Func<Throwable, Promise<PaymentTransaction>>() {
             @Override
             public Promise<PaymentTransaction> apply(Throwable throwable) {
                 return handleProviderException(throwable, provider, request, api,
@@ -192,7 +187,7 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
             @Override
             public Promise<PaymentTransaction> apply(PaymentTransaction paymentTransaction) {
                 PaymentStatus submitStatus = PaymentStatus.SETTLEMENT_SUBMITTED;
-                request.setExternalToken(paymentTransaction.getExternalToken());
+                provider.cloneTransactionResult(paymentTransaction, request);
                 request.setStatus(submitStatus.toString());
                 PaymentEvent submitEvent = createPaymentEvent(request,
                         PaymentEventType.SUBMIT_SETTLE, submitStatus, SUCCESS_EVENT_RESPONSE);
@@ -223,7 +218,7 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
         }else{
             throw AppServerExceptions.INSTANCE.invalidPaymentStatus(existedTransaction.getStatus()).exception();
         }
-        PaymentInstrument pi = getPaymentInstrument(existedTransaction);;
+        PaymentInstrument pi = getPaymentInstrument(existedTransaction);
         PaymentStatus createStatus = PaymentStatus.REVERSE_CREATED;
         PaymentEvent reverseCreateEvent = createPaymentEvent(existedTransaction,
                 PaymentEventType.REVERSE_CREATE, createStatus, SUCCESS_EVENT_RESPONSE);
@@ -481,11 +476,10 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
         });
     }
 
-    private String getMerchantRef(PaymentTransaction request, String providerName){
+    private String getMerchantRef(PaymentInstrument pi, PaymentTransaction request, String providerName){
         String merchantRef = merchantAccountRepository.getMerchantAccountRef(
-                paymentProviderRepository.getProviderId(providerName)
-                , request.getChargeInfo().getCurrency());
-        if(CommonUtil.isNullOrEmpty(merchantRef)){
+                paymentProviderRepository.getProviderId(providerName), request.getChargeInfo().getCurrency());
+        if(pi.getType().equalsIgnoreCase(PIType.CREDITCARD.toString()) && CommonUtil.isNullOrEmpty(merchantRef)){
             throw AppServerExceptions.INSTANCE.merchantRefNotAvailable(
                     request.getChargeInfo().getCurrency()).exception();
         }

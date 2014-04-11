@@ -9,6 +9,8 @@ import com.junbo.order.spec.model.OrderEvent
 import com.junbo.order.spec.model.PageParam
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -24,6 +26,8 @@ class OrderEventServiceImpl implements OrderEventService {
     @Resource
     OrderRepository orderRepository
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(OrderEventServiceImpl)
+
     @Override
     @Transactional
     Promise<List<OrderEvent>> getOrderEvents(Long orderId, PageParam pageParam) {
@@ -38,5 +42,30 @@ class OrderEventServiceImpl implements OrderEventService {
         def orderEvents = orderRepository.getOrderEvents(orderId, ParamUtils.processPageParam(pageParam))
 
         return Promise.pure(orderEvents)
+    }
+
+    @Override
+    @Transactional
+    OrderEvent getOrderEventByTrackingUuid(UUID trackingUuid, Long orderId) {
+        if (trackingUuid == null) {
+            return null
+        }
+        def orderEvent = orderRepository.getOrderEventByTrackingUuid(trackingUuid)
+        if (orderEvent != null) {
+            if (orderEvent.order.value != orderId) {
+                LOGGER.error('name=Dup_Tracking_Uuid_Different_Order')
+                throw AppErrors.INSTANCE.orderEventDuplicateTrackingGuid(0L, trackingUuid).exception()
+            }
+        }
+        return  orderEvent
+    }
+
+    @Override
+    @Transactional
+    OrderEvent createOrderEvent(OrderEvent orderEvent) {
+        LOGGER.info('name=Create_Order_Event. orderId: {}', orderEvent.order.value)
+
+        orderEvent.id = null
+        return orderRepository.createOrderEvent(orderEvent)
     }
 }

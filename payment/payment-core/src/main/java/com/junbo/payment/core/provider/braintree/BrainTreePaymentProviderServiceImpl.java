@@ -37,6 +37,7 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
     private String merchantId;
     private String publicKey;
     private String privateKey;
+    private String companyName;
 
     public void afterPropertiesSet(){
         Environment env = null;
@@ -52,6 +53,22 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
     @Override
     public String getProviderName() {
         return PROVIDER_NAME;
+    }
+
+    @Override
+    public void clonePIResult(PaymentInstrument source, PaymentInstrument target) {
+        target.setAccountNum(source.getAccountNum());
+        target.getCreditCardRequest().setExternalToken(source.getCreditCardRequest().getExternalToken());
+        target.getCreditCardRequest().setType(source.getCreditCardRequest().getType());
+        target.getCreditCardRequest().setCommercial(source.getCreditCardRequest().getCommercial());
+        target.getCreditCardRequest().setDebit(source.getCreditCardRequest().getDebit());
+        target.getCreditCardRequest().setPrepaid(source.getCreditCardRequest().getPrepaid());
+        target.getCreditCardRequest().setIssueCountry(source.getCreditCardRequest().getIssueCountry());
+    }
+
+    @Override
+    public void cloneTransactionResult(PaymentTransaction source, PaymentTransaction target) {
+        target.setExternalToken(source.getExternalToken());
     }
 
     @Override
@@ -105,7 +122,8 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
     }
 
     @Override
-    public Promise<Response> delete(String token) {
+    public Promise<Response> delete(PaymentInstrument pi) {
+        String token = pi.getCreditCardRequest().getExternalToken();
         Result<CreditCard> result = null;
         LOGGER.info("delete credit card :" + token);
         try{
@@ -120,7 +138,8 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
     }
 
     @Override
-    public Promise<PaymentTransaction> authorize(String piToken, PaymentTransaction paymentRequest) {
+    public Promise<PaymentTransaction> authorize(PaymentInstrument pi, PaymentTransaction paymentRequest) {
+        String piToken = pi.getCreditCardRequest().getExternalToken();
         TransactionRequest request = getTransactionRequest(piToken, paymentRequest);
         Result<Transaction> result = null;
         LOGGER.info("authorize credit card :" + piToken);
@@ -160,7 +179,8 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
     }
 
     @Override
-    public Promise<PaymentTransaction> charge(String piToken, PaymentTransaction paymentRequest) {
+    public Promise<PaymentTransaction> charge(PaymentInstrument pi, PaymentTransaction paymentRequest) {
+        String piToken = pi.getCreditCardRequest().getExternalToken();
         TransactionRequest request = getTransactionRequest(piToken, paymentRequest);
         request.options()
                 .submitForSettlement(true)
@@ -200,6 +220,7 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
     private <T> void handleProviderError(Result<T> result) {
         StringBuffer sbErrorCodes = new StringBuffer();
         for (ValidationError error : result.getErrors().getAllDeepValidationErrors()) {
+            LOGGER.error("gateway validations errors message: " + error.getMessage());
             sbErrorCodes.append(error.getCode()).append("&");
         }
         LOGGER.error("gateway validations errors with codes: " + sbErrorCodes.toString());
@@ -226,7 +247,7 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
     }
 
     @Override
-    public List<PaymentTransaction> getByOrderId(String orderId) {
+    public List<PaymentTransaction> getByBillingRefId(String orderId) {
         ResourceCollection<Transaction> collection = null;
         try{
             TransactionSearchRequest request = new TransactionSearchRequest()
@@ -294,9 +315,7 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
         }
         CustomerRequest request = new CustomerRequest()
                 .id(customerId)
-                .firstName("Junbo")
-                .lastName("Zhang")
-                .company("Junbo Inc.");
+                .company(companyName);
         Result<Customer> dummyCustomer = null;
         try{
             dummyCustomer = gateway.customer().create(request);
@@ -342,5 +361,13 @@ public class BrainTreePaymentProviderServiceImpl implements PaymentProviderServi
 
     public void setPrivateKey(String privateKey) {
         this.privateKey = privateKey;
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
     }
 }

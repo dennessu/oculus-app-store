@@ -35,6 +35,8 @@ import java.util.List;
 public class Catalog extends TestClass {
 
     private LogHelper logger = new LogHelper(Catalog.class);
+    private final String defaultItemFileName = "defaultItem";
+    private final String defaultOfferFileName = "defaultOffer";
 
     @Property(
             priority = Priority.BVT,
@@ -60,21 +62,25 @@ public class Catalog extends TestClass {
         Attribute attribute = new Attribute();
         attribute.setName("testAttribute_" + RandomFactory.getRandomStringOfAlphabetOrNumeric(10));
         attribute.setType(EnumHelper.CatalogAttributeType.getRandom());
+        logger.LogSample("Post an attribute");
         String attributeId = attributeServiceAPI.postAttribute(attribute);
         Attribute attributeRtn = Master.getInstance().getAttribute(attributeId);
         Assert.assertNotNull(attributeRtn);
 
         //Get the attribute by its id and assert the return value is not null
+        logger.LogSample("Get the attribute by its id");
         String attributeGetId = attributeServiceAPI.getAttribute(attributeId);
         Assert.assertNotNull(Master.getInstance().getAttribute(attributeGetId));
 
         //Get attributes by some get conditions, like type and id.
+        logger.LogSample("Get attributes by its id and type");
         paraMap.put("type", attributeRtn.getType());
         paraMap.put("id", attributeId);
         List<String> attributeResultList = attributeServiceAPI.getAttribute(paraMap);
         Assert.assertNotNull(attributeResultList);
 
         //Get all attributes without any search condition
+        logger.LogSample("Get all attributes(without any search condition)");
         paraMap.clear();
         attributeResultList.clear();
         attributeResultList = attributeServiceAPI.getAttribute(paraMap);
@@ -103,36 +109,46 @@ public class Catalog extends TestClass {
         ItemService itemServiceAPI = ItemServiceImpl.instance();
 
         //Post a Physical item
-        String itemId = itemServiceAPI.postDefaultItem(EnumHelper.CatalogItemType.PHYSICAL);
+        Item item = itemServiceAPI.prepareItemEntity(defaultItemFileName);
+        item.setType(EnumHelper.CatalogItemType.PHYSICAL.getItemType());
+        logger.LogSample("Post a physical item");
+        String itemId = itemServiceAPI.postItem(item);
         Assert.assertNotNull(Master.getInstance().getItem(itemId));
 
         //Post a Digital item
-        itemId = itemServiceAPI.postDefaultItem(EnumHelper.CatalogItemType.APP);
+        item = itemServiceAPI.prepareItemEntity(defaultItemFileName);
+        item.setType(EnumHelper.CatalogItemType.APP.getItemType());
+        logger.LogSample("Post a digital(app) item");
+        itemId = itemServiceAPI.postItem(item);
         Assert.assertNotNull(Master.getInstance().getItem(itemId));
 
         //Get the item by its id(other conditions in paraMap are empty)
-        String itemGetId = itemServiceAPI.getItem(itemId, paraMap);
+        logger.LogSample("Get the item by its Id");
+        String itemGetId = itemServiceAPI.getItem(itemId, null);
         Assert.assertNotNull(Master.getInstance().getItem(itemGetId));
 
         //Get the item(s) by some conditions: by status firstly
+        logger.LogSample("Get item(s) only by status");
         paraMap.put("status", EnumHelper.CatalogEntityStatus.DESIGN.getEntityStatus());
         List<String> itemResultList = itemServiceAPI.getItem(paraMap);
         Assert.assertNotNull(itemResultList);
 
         //Get item by id and status
+        logger.LogSample("Get item(s) by id and status");
         paraMap.put("id", itemGetId);
         itemResultList.clear();
         itemResultList = itemServiceAPI.getItem(paraMap);
         Assert.assertNotNull(itemResultList);
 
         //Get all items without any search condition
-        paraMap.clear();
+        logger.LogSample("Get all items(without any search condition)");
         itemResultList.clear();
-        itemResultList = itemServiceAPI.getItem(paraMap);
+        itemResultList = itemServiceAPI.getItem(null);
         Assert.assertNotNull(itemResultList);
 
         //Update item to released
-        Item item = Master.getInstance().getItem(itemId);
+        logger.LogSample("Release an item)");
+        item = Master.getInstance().getItem(itemId);
         item.setStatus(EnumHelper.CatalogEntityStatus.RELEASED.getEntityStatus());
         itemId = itemServiceAPI.updateItem(item);
         Assert.assertEquals(Master.getInstance().getItem(itemId).getStatus(), "Released");
@@ -160,35 +176,43 @@ public class Catalog extends TestClass {
         OfferService offerServiceAPI = OfferServiceImpl.instance();
 
         //Post a Physical offer
-        String offerId = offerServiceAPI.postDefaultOffer(EnumHelper.CatalogItemType.PHYSICAL);
+        Offer offer = offerServiceAPI.prepareOfferEntity(defaultOfferFileName, EnumHelper.CatalogItemType.PHYSICAL);
+        logger.LogSample("Post a physical offer");
+        String offerId = offerServiceAPI.postOffer(offer);
         Assert.assertNotNull(Master.getInstance().getOffer(offerId));
 
-        ////Post a Digital offer
-        offerId = offerServiceAPI.postDefaultOffer(EnumHelper.CatalogItemType.APP);
+        //Post a Digital offer
+        offer = offerServiceAPI.prepareOfferEntity(defaultOfferFileName, EnumHelper.CatalogItemType.APP);
+        logger.LogSample("Post a digital(app) offer");
+        offerId = offerServiceAPI.postOffer(offer);
         Assert.assertNotNull(Master.getInstance().getOffer(offerId));
 
         //Get the offer by its id(other conditions in paraMap are empty)
-        String offerGetId = offerServiceAPI.getOffer(offerId, paraMap);
+        logger.LogSample("Get the offer by its id");
+        String offerGetId = offerServiceAPI.getOffer(offerId, null);
         Assert.assertNotNull(Master.getInstance().getOffer(offerGetId));
 
         //Get the offer(s) by some conditions: by status firstly
+        logger.LogSample("Get the offer just by status");
         paraMap.put("status", EnumHelper.CatalogEntityStatus.DESIGN.getEntityStatus());
         List<String> offerResultList = offerServiceAPI.getOffer(paraMap);
         Assert.assertNotNull(offerResultList);
 
         //Get offer by id and status
+        logger.LogSample("Get offers by id and status");
         paraMap.put("id", offerGetId);
         offerResultList.clear();
         offerResultList = offerServiceAPI.getOffer(paraMap);
         Assert.assertNotNull(offerResultList);
 
         //Get all offers without any search condition
-        paraMap.clear();
+        logger.LogSample("Get all offers without any search conditions");
         offerResultList.clear();
-        offerResultList = offerServiceAPI.getOffer(paraMap);
+        offerResultList = offerServiceAPI.getOffer(null);
         Assert.assertNotNull(offerResultList);
 
         //Update offer to released
+        logger.LogSample("Release an offer");
         Offer offerGet = Master.getInstance().getOffer(offerId);
         offerGet.setStatus(EnumHelper.CatalogEntityStatus.RELEASED.getEntityStatus());
         offerId = offerServiceAPI.updateOffer(offerGet);

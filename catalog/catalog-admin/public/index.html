@@ -7,13 +7,16 @@
   <link rel="stylesheet" href="css/bootstrap.min.css"/>
 </head>
 <body>
-  <ul class="menu">
+<div id="container" style="width:1000px; margin:0 auto;">
+  <ul class="menu" ng-controller="DeveloperInfoCtrl">
+    <li ng-show="email">{{ email }}</li>
+    <li ng-show="email" ng><a ng-click="Logout()" style="cursor: pointer;">Logout</a></li>
     <li><a href="#/offers">Offers</a></li>
     <li><a href="#/items">Items</a></li>
   </ul>
 
   <div ng-view></div>
-
+</div>
   <!-- In production use:
   <script src="//ajax.googleapis.com/ajax/libs/angularjs/x.x.x/angular.min.js"></script>
   -->

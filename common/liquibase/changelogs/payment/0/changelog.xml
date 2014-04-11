@@ -163,7 +163,7 @@
                   payment_instrument_id             bigint              not null,
                   user_id                           bigint              not null,
                   payment_instrument_type_id        smallint            not null,
-                  payment_instrument_holder_name    varchar(100)        not null,
+                  payment_instrument_holder_name    varchar(100)            null,
                   encrypted_account_number          varchar(200)            null,
                   account_number                    varchar(100)            null,
                   address_id                        bigint                  null,
@@ -902,7 +902,8 @@
     <changeSet id="27" author='WenhongZhu' context="PREDEPLOY">
         <sql>
         <![CDATA[
-            insert into payment_provider values (0, 'BrainTree', 0, null, 'USD', '2014-02-10','wenhongzhu');
+            insert into payment_provider values (0, 'BrainTree', 0, null, 'USD', '2014-02-10','wenhongzhu')
+                                               ,(1, 'Wallet', 2, null, 'WLT', '2014-02-10', 'wenhongzhu');
         ]]>
         </sql>
     </changeSet>
@@ -918,7 +919,7 @@
 	<changeSet id="280" author='WenhongZhu' context="PREDEPLOY">
         <sql>
         <![CDATA[
-            insert into merchant_account values (0, '8qnzm4r4ytckyf4d', 0, 0, null, null, 'USD', '2014-02-10','wenhongzhu')
+            insert into merchant_account values (0, '5ck86h27m34nrh6f', 0, 0, null, null, 'USD', '2014-02-10','wenhongzhu')
 			                                   ,(1, 'jb_GBP', 0, 0, null, null, 'GBP', '2014-02-10','wenhongzhu');
         ]]>
         </sql>

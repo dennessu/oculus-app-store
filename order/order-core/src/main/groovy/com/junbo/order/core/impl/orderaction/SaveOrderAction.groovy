@@ -10,10 +10,7 @@ import com.junbo.order.core.impl.common.OrderStatusBuilder
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
 import com.junbo.order.db.entity.enums.EventStatus
 import com.junbo.order.db.repo.OrderRepository
-import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderEvent
-import com.junbo.order.spec.model.OrderItem
-import com.junbo.order.spec.model.PreorderInfo
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.springframework.stereotype.Component
@@ -45,34 +42,11 @@ class SaveOrderAction extends BaseOrderEventAwareAction {
         order.status = OrderStatusBuilder.buildOrderStatus(order,
                 order.id == null ? (List<OrderEvent>)[] : repo.getOrderEvents(order.id.value, null))
         // Save Order
-        // Fetch Preorder Info from catalog
         builder.getOffers(context.orderServiceContext).syncThen { List<OrderOffer> ofs ->
-            fillPreorderInfo(ofs, order)
             def orderWithId = newOrder ? repo.createOrder(context.orderServiceContext.order) :
                     repo.updateOrder(order, updateOnlyOrder)
             order = orderWithId
             return CoreBuilder.buildActionResultForOrderEventAwareAction(context, EventStatus.COMPLETED)
-        }
-    }
-
-    private void fillPreorderInfo(List<OrderOffer> ofs, Order order) {
-        Date now = new Date()
-        def preorderInfo = null
-        ofs.each { OrderOffer orderOffer ->
-            // TODO: update preorder detection with Catalog component
-            Date releaseDate = orderOffer.catalogOffer.properties.get('releaseTime') as Date
-            if (releaseDate?.after(now)) {
-                // pre-order
-                preorderInfo = new PreorderInfo()
-                preorderInfo.releaseTime = releaseDate
-                preorderInfo.billingTime = orderOffer.catalogOffer.properties.get('billingTime') as Date
-                preorderInfo.preNotificationTime = orderOffer.catalogOffer.properties.get('preNotificationTime') as Date
-            }
-            order.orderItems.each { OrderItem orderItem ->
-                if (orderItem.offer.value == orderOffer.catalogOffer.id) {
-                    orderItem.preorderInfo = preorderInfo as PreorderInfo
-                }
-            }
         }
     }
 }

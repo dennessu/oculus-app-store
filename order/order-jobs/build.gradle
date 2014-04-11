@@ -1,4 +1,7 @@
 apply plugin: 'groovy'
 
 dependencies {
+    compile project(":order-spec")
+    compile project(":order-core")
+    compile 'org.quartz-scheduler:quartz:2.2.1'
 }

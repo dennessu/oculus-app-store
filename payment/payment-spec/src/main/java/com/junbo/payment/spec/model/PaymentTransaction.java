@@ -31,6 +31,7 @@ public class PaymentTransaction {
     private ChargeInfo chargeInfo;
     @PaymentTransactionId
     @FilterIn
+    @JsonProperty("self")
     private Long id;
     @FilterIn
     private String paymentProvider;

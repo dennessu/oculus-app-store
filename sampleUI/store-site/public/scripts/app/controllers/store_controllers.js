@@ -14,6 +14,10 @@ var StoreControllers = {
 
         actions:{
             AddToCart: function(){
+
+                if($("#BtnAddToCart").hasClass('load')) return;
+                $("#BtnAddToCart").addClass('load');
+
                 var _self = this;
                 console.log("[DetailController:AddToCart]");
                 var currentId = _self.get('model').get('id');
@@ -57,6 +61,7 @@ var StoreControllers = {
                         } else {
                             console.log("[DetailController:AddToCartHandler] Failed!");
                             _self.set("errMessage", Utils.GetErrorMessage(resultModel));
+                            $("#BtnAddToCart").removeClass('load');
 
                             //TODO: ?
                         }
@@ -72,11 +77,13 @@ var StoreControllers = {
 
             var subtotal = 0;
             this.forEach(function(item, index, enumerable){
-                subtotal += item.get("subTotal");
+                if(item.get("selected") == true) {
+                    subtotal += item.get("subTotal");
+                }
             });
-            return subtotal;
+            return Utils.FormatNumber(subtotal, 2, ",", 3);
 
-        }.property("@each.qty", "@each.subTotal"),
+        }.property("@each.qty", "@each.subTotal", "@each.selected"),
 
         totalCount: function(){
             return this.getEach("qty").reduce(function(previousValue, item, index, enumerable){
@@ -113,6 +120,10 @@ var StoreControllers = {
 
         actions: {
             Checkout: function(){
+
+                if($("#BtnCheckout").hasClass('load')) return;
+                $("#BtnCheckout").addClass('load');
+
                 var _self = this;
                 var hasSelected = false;
                 _self.get("model").forEach(function(item){
@@ -122,9 +133,9 @@ var StoreControllers = {
                 });
                 if(!hasSelected){
                     alert("Please choose an items!");
+                    $("#BtnCheckout").removeClass('load');
                     return;
                 }
-
 
                 if(App.AuthManager.isAuthenticated()){
                     console.log("[CartController:CheckOut]");
@@ -138,14 +149,16 @@ var StoreControllers = {
 
                             // set order id to cookie
                             Utils.Cookies.Set(AppConfig.CookiesName.OrderId, order.self.id);
+                            // clear shipping method and shipping address cookies
+                            Utils.Cookies.Remove(AppConfig.CookiesName.ShippingMethodId);
+                            Utils.Cookies.Remove(AppConfig.CookiesName.ShippingId);
+
 
                             _self.get("model").forEach(function(item){
-                                if(item.get("selected") == true){
-                                    console.log("Selected Product Id:", item.get("product_id"));
-                                    item.deleteRecord();
-                                    item.save();
-                                }
+                                item.deleteRecord();
+                                item.save();
                             });
+
 
                             var allDigital = true;
                             for(var i = 0; i < order.orderItems.length; ++i){
@@ -161,12 +174,14 @@ var StoreControllers = {
 
                         }else{
                             console.log("[CartController:Checkout] Post order failed!");
+                            $("#BtnCheckout").removeClass('load');
                             // TODO: do something
                         }
                     });
                 }else{
                     Utils.Cookies.Set(AppConfig.CookiesName.BeforeRoute, "cart");
-                    location.href = AppConfig.LoginUrl;
+                    location.href = AppConfig.Runtime.LoginUrl;
+                    return;
                 }
             }
         }
@@ -184,7 +199,7 @@ var StoreControllers = {
             var subTotal = (count > 0 ? count : 1) * this.get("product.price");
             this.set("model.subTotal", subTotal);
 
-            return subTotal;
+            return Utils.FormatNumber(subTotal, 2, ",", 3);
         }.property('model.qty', 'product.price'),
 
         changeQty: function(){
@@ -266,22 +281,32 @@ var StoreControllers = {
             this.get("content.products").forEach(function(item){
                 result+= item.subTotal;
             });
-            return result
+            return Utils.FormatNumber(result, 2, ",", 3);
         }.property("content.products"),
 
         total: function(){
-            return  parseFloat(this.get("content.totalAmount")) + parseFloat(this.get("content.totalTax"));
+            //console.log("Sum Total", this.get("content.totalAmount"), " ", this.get("content.totalTax"));
+            return parseFloat(this.get("content.totalAmount")) + parseFloat(this.get("content.tax"));
         }.property("content.products"),
 
         actions:{
             Purchase: function(){
+
+                if($("#BtnPurchase").hasClass('load')) return;
+                $("#BtnPurchase").addClass('load');
+
                 var _self = this;
 
                 var cartProvider = new CartProvider();
                 cartProvider.PurchaseOrder(Utils.GenerateRequestModel(null), function(resultData){
                     if(resultData.data.status == 200){
+                        try {
+                            _self.get('store').unloadAll(App.CartItem);
+                        }catch(e){}
+
                         _self.transitionToRouteAnimated("thanks", {main: "slideOverLeft"});
                     } else{
+                        $("#BtnPurchase").removeClass('load');
                         // TODO: Show Error
                     }
                 });

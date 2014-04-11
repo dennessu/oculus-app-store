@@ -29,19 +29,19 @@ body header > nav{ line-height: 25px; color: #CCC; border-bottom: solid 1px #BCB
 .btn-orange:hover, .btn-orange:focus, .btn-orange:active, .btn-orange.active{ background-color: #FF6600; border-color: #E85C00; }
 .btn-cancel{ background-color: #fff; border-color: #ccc; color: #333;}
 .btn-cancel:hover, .btn-cancel:focus, .btn-cancel:active, .btn-cancel.active{ background-color: #ebebeb; border-color: #adadad; }
-
+.btn-primary.load,.btn-orange.load,.btn-cancel.load{ color: transparent; background: #FFF url("/images/loader.gif") no-repeat center center;}
 
 .box1, .box2{ padding: 15px; border: solid 1px #ccc; background-color: #fff;}
 .box1{ margin: 0 auto; width: 250px;}
 .box1 > h2, .box2 > h2{ margin: 0 0 10px 0;}
-.box1 > p, .box2 > p{ margin: 0 0 25px 0;}
-.box1 > p.error, .box2 > p.error{ margin: 0 0 10px 0; padding: 4px 0px 4px 2px; color: #f00;  border: solid 1px #C4AC09; background-color: #FCF8E3;}
-.box1 > dl > dt, .box2 > dl > dt{ line-height: 20px; font-weight: bold;}
-.box1 > dl > dd, .box2 > dl > dd{ margin: 0;}
-.box1 > dl > dd > .error,
-.box2 > dl > dd > .error{ display:block; line-height: 20px; color: #f00;}
-.box1 > dl.radio > dt > lable{ display: inline-block; position: relative; padding-left: 22px; line-height: 18px;}
-.box1 > dl.radio > dt > lable input{ position: absolute; left: 0px; top: 0px;}
+.box1 p, .box2 p{ margin: 0 0 25px 0;}
+.box1 p.error, .box2 p.error{ margin: 0 0 10px 0; padding: 4px 0px 4px 2px; color: #f00;  border: solid 1px #C4AC09; background-color: #FCF8E3;}
+.box1 dl dt, .box2 dl dt{ line-height: 20px; font-weight: bold;}
+.box1 dl dd, .box2 dl dd{ margin: 0;}
+.box1 dl > dd > .error,
+.box2 dl > dd > .error{ display:block; line-height: 20px; color: #f00;}
+.box1 dl.radio dt lable{ display: inline-block; position: relative; padding-left: 22px; line-height: 18px;}
+.box1 dl.radio dt lable input{ position: absolute; left: 0px; top: 0px;}
 .box1 input[type=text],
 .box1 input[type=number],
 .box1 input[type=email],
@@ -54,6 +54,7 @@ body header > nav{ line-height: 25px; color: #CCC; border-bottom: solid 1px #BCB
 .box2 > dl.agreement > dt{ margin-bottom: 10px; line-height: 16px;  }
 .box1 > dl.agreement > dd input,
 .box2 > dl.agreement > dd input{ float: left; }
+.box1 dl.agreement .error, .box2 dl.agreement .error{ display: block; color: #f00;}
 .box1 > .actions, .box2 > .actions{ margin: 20px 0 0 0;}
 .box1 > .actions > button,
 .box1 > .actions > input[type=submit],
@@ -75,6 +76,13 @@ body header > nav{ line-height: 25px; color: #CCC; border-bottom: solid 1px #BCB
 .alert{ padding: 15px 15px 10px 15px; min-width: 200px; width: 200px; border: solid 1px #CCC; background-color: #F7F7F7; box-shadow: 0 2px 20px rgba(0,0,0, .5); z-index: 9999;}
 .alert div{ margin-top: 30px; text-align: center;}
 .alert .error{margin: 0 0 10px 0; padding: 4px 0px 4px 2px; color: #f00;  border: solid 1px #C4AC09; background-color: #FCF8E3;}
+.alert dl.agreement > dd,
+.alert dl.agreement > dt,
+.alert dl.agreement > dd,
+.alert dl.agreement > dt{ margin: 0; margin-bottom: 10px; line-height: 16px;  }
+.alert dl.agreement > dd input,
+.alert dl.agreement > dd input{ float: left; }
+.alert dl.agreement .error{ display: block;}
 
 #ShadowLayer{ position: absolute; top: 0; left: 0; margin: 0 auto; padding: 0; width: 100%; height: 100%; visibility: visible; background-color: rgba(0,0,0,.5); z-index:9998; }
 .container{ margin: 0 auto; padding-top: 30px; background-color: #FFF;}
@@ -160,7 +168,13 @@ body header > nav{ line-height: 25px; color: #CCC; border-bottom: solid 1px #BCB
 .captcha{ width: 450px;}
 
 /* create payment */
-.create_payment .cvv dd input{ width: 60px;}
+.edit_payment{ width: 540px;}
+.edit_payment .row{}
+.edit_payment .row dl{ float: right; width: 260px;}
+.edit_payment .row dl:first-child{ float: left;}
+.edit_payment .cvv dd input{ width: 60px;}
+.edit_payment .actions button{ display: inline-block;}
+.edit_payment .actions button:first-child{ margin-right: 30px;}
 
 /* account */
 .account .modules{ margin: 0; padding: 0; width: 690px;}
@@ -223,6 +237,6 @@ body header > nav{ line-height: 25px; color: #CCC; border-bottom: solid 1px #BCB
 .dev_center .sidebar{ float: left; width: 200px;}
 .dev_center .content{ float: right; width: 690px; position: relative; }
 
-.dev_center .alert{  position: absolute; top: 0px; left: 10px; width: 350px; min-height: 150px;}
+.dev_center .alert{ display: none; position: absolute; top: 0px; left: 10px; width: 350px; min-height: 150px;}
 .dev_center .alert p{ min-height: 50px;}
 .dev_center .alert div{ text-align: right;}

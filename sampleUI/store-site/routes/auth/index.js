@@ -44,7 +44,7 @@ exports.Login = function (req, res) {
                 });
             },
             function (accessToken, cb) {
-                identity.GetTokenInfo(accessToken, null, function (result) {
+                identity.GetTokenInfo(accessToken, function (result) {
                     if (result.StatusCode == 200) {
                         if (typeof(result.Data) != "undefined" && result.Data != null) {
                             var resObj = JSON.parse(result.Data);
@@ -67,7 +67,7 @@ exports.Login = function (req, res) {
                 });
             },
             function (userId, cb) {
-                identity.GetUser(userId, function(result){
+                identity.GetUserById(userId, function(result){
                     if (result.StatusCode == 200) {
                         if (typeof(result.Data) != "undefined" && result.Data != null) {
                             var resObj = JSON.parse(result.Data);
@@ -102,12 +102,12 @@ exports.Logout = function(req, res){
         store.Remove(process.AppConfig.CookiesName[p]);
     }
 
-    res.redirect("/");
+    res.redirect('/');
     res.end();
 };
 
 exports.Register = function(req, res){
 
-    res.redirect('/');
+    res.redirect(process.AppConfig.Runtime.LoginUrl);
     res.end();
 };

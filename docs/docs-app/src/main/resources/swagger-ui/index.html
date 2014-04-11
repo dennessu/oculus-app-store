@@ -24,9 +24,12 @@
       dom_id: "swagger-ui-container",
       supportedSubmitMethods: ['get', 'post', 'put', 'delete'],
       onComplete: function(swaggerApi, swaggerUi){
-        log("Loaded SwaggerUI")
-        $('pre code').each(function(i, e) {hljs.highlightBlock(e)});
-        alphabetizeResources();
+        if (swaggerApi.ready) {
+          log("Loaded SwaggerUI")
+          $('pre code').each(function(i, e) {hljs.highlightBlock(e)});
+          alphabetizeResources();
+          showSamples(swaggerApi);
+        }
       },
       onFailure: function(data) {
         log("Unable to Load SwaggerUI");

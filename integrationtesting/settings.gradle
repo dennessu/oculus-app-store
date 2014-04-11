@@ -2,6 +2,10 @@ include 'common-testlib'
 
 include 'identity-integration'
 include 'oauth-integration'
+include 'cart-integration'
+include 'payment-integration'
+include 'catalog-integration'
+include 'billing-integration'
 
 include 'integration-buyerscenario'
 include 'integration-catalogscenario'

@@ -13,7 +13,6 @@ import java.util.Date;
  * Created by LinYi on 2/10/14.
  */
 public class BaseModelWithDate {
-    @JsonIgnore
     private Date createdTime;
     @JsonIgnore
     private String createdBy;
@@ -21,7 +20,6 @@ public class BaseModelWithDate {
     private Date updatedTime;
     @JsonIgnore
     private String updatedBy;
-    @JsonIgnore
     private Integer rev;
 
     public Date getCreatedTime() {

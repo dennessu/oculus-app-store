@@ -1,4 +1,6 @@
 package com.junbo.order.core.impl.orderaction
+
+import com.junbo.billing.spec.enums.BalanceStatus
 import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.model.Balance
 import com.junbo.langur.core.promise.Promise
@@ -10,6 +12,7 @@ import com.junbo.order.core.annotation.OrderEventAwareBefore
 import com.junbo.order.core.impl.common.BillingEventBuilder
 import com.junbo.order.core.impl.common.CoreBuilder
 import com.junbo.order.core.impl.common.CoreUtils
+import com.junbo.order.core.impl.internal.OrderInternalService
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.error.AppErrors
@@ -33,6 +36,8 @@ class ImmediateSettleAction extends BaseOrderEventAwareAction {
     OrderRepository orderRepository
     @Autowired
     OrderServiceContextBuilder orderServiceContextBuilder
+    @Autowired
+    OrderInternalService orderInternalService
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ImmediateSettleAction)
 
@@ -43,15 +48,25 @@ class ImmediateSettleAction extends BaseOrderEventAwareAction {
     Promise<ActionResult> execute(ActionContext actionContext) {
         def context = ActionUtils.getOrderActionContext(actionContext)
         def order = context.orderServiceContext.order
+        orderInternalService.markSettlement(order)
         Promise promise =
                 facadeContainer.billingFacade.createBalance(
-                        CoreBuilder.buildBalance(context.orderServiceContext, BalanceType.DEBIT))
+                        CoreBuilder.buildBalance(context.orderServiceContext.order, BalanceType.DEBIT))
         return promise.syncRecover { Throwable throwable ->
             LOGGER.error('name=Order_ImmediateSettle_Error', throwable)
-            context.orderServiceContext.order.tentative = true
             throw AppErrors.INSTANCE.
                     billingConnectionError(CoreUtils.toAppErrors(throwable)).exception()
         }.then { Balance balance ->
+            if (balance == null) {
+                LOGGER.error('name=Order_ImmediateSettle_Error_Balance_Null')
+                throw AppErrors.INSTANCE.
+                        billingConnectionError().exception()
+            }
+            if (balance.status != BalanceStatus.AWAITING_PAYMENT.name()) {
+                LOGGER.error('name=Order_ImmediateSettle_Failed')
+                throw AppErrors.INSTANCE.
+                        billingChargeFailed().exception()
+            }
             def billingEvent = BillingEventBuilder.buildBillingEvent(balance)
             orderRepository.createBillingEvent(order.id.value, billingEvent)
             orderServiceContextBuilder.refreshBalances(context.orderServiceContext).syncThen {

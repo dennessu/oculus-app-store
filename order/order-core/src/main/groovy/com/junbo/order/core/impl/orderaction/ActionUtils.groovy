@@ -17,7 +17,7 @@ final class ActionUtils {
     static final String SCOPE_CREATE_ORDER_ACTION_CONTEXT = 'CREATE_ORDER_ACTION_CONTEXT'
     static final String DATA_ORDER_ACTION_RESULT = 'ORDER_ACTION_RESULT'
 
-    static final String REQUEST_FLOW_TYPE = 'FLOW_TYPE'
+    static final String REQUEST_FLOW_NAME = 'FLOW_NAME'
     static final String REQUEST_ORDER_ID = 'ORDER_ID'
 
     static OrderActionContext getOrderActionContext(ActionContext actionContext) {
@@ -36,12 +36,12 @@ final class ActionUtils {
         actionContext?.requestScope[SCOPE_ORDER_ACTION_CONTEXT] = context
     }
 
-    static String getFlowType(ActionContext actionContext) {
-        return actionContext?.requestScope[REQUEST_FLOW_TYPE]
+    static String getFlowName(ActionContext actionContext) {
+        return actionContext?.requestScope[REQUEST_FLOW_NAME]
     }
 
-    static void putFlowType(String flowType, ActionContext actionContext) {
-        actionContext?.requestScope[REQUEST_FLOW_TYPE] = flowType
+    static void putFlowName(String flowName, ActionContext actionContext) {
+        actionContext?.requestScope[REQUEST_FLOW_NAME] = flowName
     }
 
     static Map<String, Object> initRequestScope(OrderServiceContext context) {

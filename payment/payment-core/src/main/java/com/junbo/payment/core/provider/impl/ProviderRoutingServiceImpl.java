@@ -19,7 +19,14 @@ public class ProviderRoutingServiceImpl implements ProviderRoutingService{
     @Override
     public PaymentProviderService getPaymentProvider(PIType piType) {
         //TODO: hard code braintree first
-        return PaymentProviderRegistry.getPaymentProviderService(PaymentProvider.BrainTree);
+        if(piType.equals(PIType.CREDITCARD)){
+            return PaymentProviderRegistry.getPaymentProviderService(PaymentProvider.BrainTree);
+        }else if(piType.equals(PIType.WALLET)){
+            return PaymentProviderRegistry.getPaymentProviderService(PaymentProvider.Wallet);
+        }
+        else{
+            return null;
+        }
     }
 
     @Override

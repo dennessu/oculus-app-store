@@ -6,7 +6,7 @@
 
 package com.junbo.ewallet.db.dao.hibernate;
 
-import com.junbo.ewallet.db.entity.hibernate.EntityWithCreated;
+import com.junbo.ewallet.db.entity.EntityWithCreated;
 import com.junbo.sharding.IdGenerator;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -37,12 +37,12 @@ public class TransactionBaseDao<T extends EntityWithCreated> {
         return (T) currentSession().get(entityType, id);
     }
 
-    public Long insert(T t) {
+    public T insert(T t) {
         Date now = new Date();
         t.setId(generateId(t.getShardMasterId()));
         t.setCreatedBy("DEFAULT"); //TODO
         t.setCreatedTime(now);
-        return (Long) currentSession().save(t);
+        return get((Long) currentSession().save(t));
     }
 
     protected Long generateId(Long shardId) {

@@ -1,4 +1,4 @@
-var DataProvider = require('store-data-provider').DataProvider.Billing;
+var DataProvider = require('store-data-provider').Billing;
 var BillingModels = require('store-model').Billing;
 
 var DomainModels = require('../../models/domain');
