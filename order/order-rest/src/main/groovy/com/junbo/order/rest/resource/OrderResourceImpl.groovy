@@ -57,7 +57,8 @@ class OrderResourceImpl implements OrderResource {
 
     @Override
     Promise<Order> createOrder(Order order) {
-        orderValidator.notNull(order, 'order').notNull(order.trackingUuid, 'trackingUuid').notNull(order.user, 'user')
+        orderValidator.notNull(order, 'order').notNull(order.user, 'user')
+
         orderValidator.validateSettleOrderRequest(order)
         Boolean isTentative = order.tentative
         order.tentative = true

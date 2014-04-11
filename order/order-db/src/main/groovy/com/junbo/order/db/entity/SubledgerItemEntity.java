@@ -7,6 +7,9 @@
 package com.junbo.order.db.entity;
 
 import com.junbo.order.db.ValidationMessages;
+import com.junbo.order.db.entity.enums.SubledgerItemAction;
+import com.junbo.order.db.entity.enums.SubledgerItemStatus;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,11 +24,15 @@ import java.math.BigDecimal;
 @Entity
 @Table(name = "SUBLEDGER_ITEM")
 public class SubledgerItemEntity extends CommonDbEntityWithDate{
+
     private Long subledgerItemId;
     private Long originalSubledgerItemId;
     private Long subledgerId;
     private BigDecimal totalAmount;
     private Long orderItemId;
+    private String productItemId;
+    private SubledgerItemAction subledgerItemAction;
+    private SubledgerItemStatus status;
 
     @Id
     @Column(name = "SUBLEDGER_ITEM_ID")
@@ -49,7 +56,6 @@ public class SubledgerItemEntity extends CommonDbEntityWithDate{
     }
 
     @Column(name = "SUBLEDGER_ID")
-    @NotNull(message = ValidationMessages.MISSING_VALUE)
     public Long getSubledgerId() {
         return subledgerId;
     }
@@ -76,5 +82,37 @@ public class SubledgerItemEntity extends CommonDbEntityWithDate{
 
     public void setOrderItemId(Long orderItemId) {
         this.orderItemId = orderItemId;
+    }
+
+    @Column (name = "product_item_id")
+    @NotNull (message = ValidationMessages.MISSING_VALUE)
+    public String getProductItemId() {
+        return productItemId;
+    }
+
+    public void setProductItemId(String productItemId) {
+        this.productItemId = productItemId;
+    }
+
+    @Column (name = "subledger_item_action")
+    @NotNull (message = ValidationMessages.MISSING_VALUE)
+    @Type(type = "com.junbo.order.db.entity.type.EventStatusType")
+    public SubledgerItemAction getSubledgerItemAction() {
+        return subledgerItemAction;
+    }
+
+    public void setSubledgerItemAction(SubledgerItemAction subledgerItemAction) {
+        this.subledgerItemAction = subledgerItemAction;
+    }
+
+    @Column (name = "status_id")
+    @NotNull (message = ValidationMessages.MISSING_VALUE)
+    @Type(type = "com.junbo.order.db.entity.type.SubledgerItemStatusType")
+    public SubledgerItemStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(SubledgerItemStatus status) {
+        this.status = status;
     }
 }

@@ -53,10 +53,6 @@ public interface AppErrors {
             description = "Order not tentative")
     AppError orderNotTentative();
 
-    @ErrorDef(httpStatusCode = 409, code = ErrorCode.DUPLICATE_TRACKING_GUID,
-            description = "Order duplicate tracking GUID")
-    AppError orderDuplicateTrackingGuid();
-
     @ErrorDef(httpStatusCode = 404, code = UserErrorCode.USER_NOT_FOUND,
             description = "User not found {0}")
     AppError userNotFound(String userId);
@@ -144,4 +140,8 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 500, code = FulfillmentErrorCode.FULFILLMENT_CONNECTION_ERROR,
             description = "Fulfilment connection error")
     AppError fulfilmentConnectionError(AppError[] causes);
+
+    @ErrorDef(httpStatusCode = 404, code = ErrorCode.SUBLEDGER_NOT_FOUND,
+            description = "SubledgerNotFound")
+    AppError subledgerNotFound();
 }

@@ -9,7 +9,6 @@ import com.junbo.cart.test.util.Generator
 import com.junbo.cart.test.validate.CartValidator
 import com.junbo.cart.test.validate.CouponValidator
 import com.junbo.cart.test.validate.OfferValidator
-import com.junbo.common.id.CouponId
 import com.junbo.common.id.OfferId
 import org.springframework.beans.factory.annotation.Autowired
 import org.testng.annotations.Test
@@ -84,20 +83,20 @@ class CartTest extends TestBase {
         cartUserA.coupons << couponA
         cartUserA = cartClient.updateCart(userA.id, cartUserA.id, cartUserA)
         CartValidator.fromResult(cartUserA).resourceAge(7).couponNumber(1)
-        CouponValidator.fromResult(cartUserA.coupons[0]).coupon(couponA.coupon)
+        CouponValidator.fromResult(cartUserA.coupons[0]).coupon(couponA.couponCode)
 
         // add coupon cB by update
         def couponB = generator.couponItem()
         cartUserA.coupons << couponB
         cartUserA = cartClient.updateCart(userA.id, cartUserA.id, cartUserA)
         CartValidator.fromResult(cartUserA).resourceAge(8).couponNumber(2)
-        CouponValidator.fromResult(coupon(cartUserA, couponB)).coupon(couponB.coupon)
+        CouponValidator.fromResult(coupon(cartUserA, couponB)).coupon(couponB.couponCode)
 
         // remove by update
         cartUserA.coupons = [couponA]
         cartUserA = cartClient.updateCart(userA.id, cartUserA.id, cartUserA)
         CartValidator.fromResult(cartUserA).resourceAge(9).couponNumber(1)
-        CouponValidator.fromResult(cartUserA.coupons[0]).coupon(couponA.coupon)
+        CouponValidator.fromResult(cartUserA.coupons[0]).coupon(couponA.couponCode)
 
         // create cartUserB and update items
         def userB = identityClient.randomUser()
@@ -107,16 +106,6 @@ class CartTest extends TestBase {
         def couponC = generator.couponItem()
         cartUserB.coupons << couponC
         cartUserB = cartClient.updateCart(userB.id, cartUserB.id, cartUserB)
-
-        // merge from cartUserB to cartUserA
-        cartUserA = cartClient.mergeCart(userA.id, cartUserA.id, cartUserB)
-        CartValidator.fromResult(cartUserA).couponNumber(2).offerNumber(3)
-        OfferValidator.fromResult(offer(cartUserA, offerA)).selected(false)
-        OfferValidator.fromResult(offer(cartUserA, offerB)).selected(false)
-        OfferValidator.fromResult(offer(cartUserA, offerC)).selected(true)
-
-        cartUserB = cartClient.getPrimaryCart(userB.id)
-        CartValidator.fromResult(cartUserB).couponNumber(0).offerNumber(0).resourceAge(2)
 
     }
 
@@ -132,13 +121,13 @@ class CartTest extends TestBase {
 
     static private CouponItem coupon(Cart cart, CouponItem couponItem) {
         return cart.coupons.find {
-            return it.coupon == couponItem.coupon
+            return it.couponCode == couponItem.couponCode
         }
     }
 
-    static private CouponItem coupon(Cart cart, CouponId couponId) {
+    static private CouponItem coupon(Cart cart, String couponCode) {
         return cart.coupons.find {
-            return it.coupon == couponId
+            return it.couponCode == couponCode
         }
     }
 }

@@ -36,6 +36,10 @@ public interface BalanceResource {
     @Path("/capture")
     Promise<Balance> captureBalance(Balance balance);
 
+    @POST
+    @Path("/process-async")
+    Promise<Balance> processAsyncBalance(Balance balance);
+
     @GET
     @Path("/{balanceId}")
     Promise<Balance> getBalance(@PathParam("balanceId") BalanceId balanceId);

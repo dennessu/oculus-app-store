@@ -6,8 +6,9 @@
 package com.junbo.test.catalog.item;
 
 /**
- * @author Jason
- *         Time: 3/14/2014
+  * @author Jason
+  * Time: 4/1/2014
+  * For testing catalog post item(s) API
  */
 public class TestPostItem {
 }

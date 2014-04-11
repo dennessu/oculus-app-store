@@ -2,7 +2,6 @@ package com.junbo.cart.test.util
 
 import com.junbo.cart.spec.model.item.CouponItem
 import com.junbo.cart.spec.model.item.OfferItem
-import com.junbo.common.id.CouponId
 import com.junbo.common.id.OfferId
 
 /**
@@ -20,16 +19,17 @@ class Generator {
         def ret = new OfferItem()
         ret.quantity = 1
         ret.offer = new OfferId(offerId)
+        ret.selected = true
         return ret
     }
 
     CouponItem couponItem() {
-        return couponItem(genNextId())
+        return couponItem(genNextId().toString())
     }
 
-    CouponItem couponItem(long couponId) {
+    CouponItem couponItem(String couponCode) {
         def ret = new CouponItem()
-        ret.coupon = new CouponId(couponId)
+        ret.couponCode = couponCode
         return ret
     }
 
