@@ -6,10 +6,14 @@
 
 package com.junbo.catalog.db.entity;
 
+import com.junbo.catalog.db.dao.ListJsonUserType;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementType;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -17,13 +21,16 @@ import java.util.UUID;
  */
 @Entity
 @Table(name = "entitlement_definition")
+@TypeDefs(@TypeDef(name="json-list", typeClass=ListJsonUserType.class))
 public class EntitlementDefinitionEntity extends BaseEntity {
     private Long entitlementDefinitionId;
+    private Integer rev;
     private Long developerId;
     private EntitlementType type;
     private String group;
     private String tag;
     private Boolean consumable;
+    private List<String> inAppContext;
     private UUID trackingUuid;
 
     @Id
@@ -34,6 +41,26 @@ public class EntitlementDefinitionEntity extends BaseEntity {
 
     public void setEntitlementDefinitionId(Long entitlementDefinitionId) {
         this.entitlementDefinitionId = entitlementDefinitionId;
+    }
+
+    @Version
+    @Column(name = "rev")
+    public Integer getRev() {
+        return rev;
+    }
+
+    public void setRev(Integer rev) {
+        this.rev = rev;
+    }
+
+    @Column(name = "in_app_context")
+    @Type(type = "json-list")
+    public List<String> getInAppContext() {
+        return inAppContext;
+    }
+
+    public void setInAppContext(List<String> inAppContext) {
+        this.inAppContext = inAppContext;
     }
 
     @Column(name = "developer_id")

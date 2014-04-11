@@ -41,6 +41,7 @@ public interface EntitlementDefinitionResource {
     Promise<Results<EntitlementDefinition>>
     getEntitlementDefinitions(
             @NotNull @QueryParam("developerId") UserId developerId,
+            @QueryParam("clientId") String clientId,
             @QueryParam("type") String type,
             @QueryParam("group") String group,
             @QueryParam("tag") String tag,

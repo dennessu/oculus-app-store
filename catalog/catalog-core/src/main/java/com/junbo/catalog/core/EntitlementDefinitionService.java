@@ -21,7 +21,7 @@ import java.util.UUID;
 public interface EntitlementDefinitionService {
     EntitlementDefinition getEntitlementDefinition(Long entitlementDefinitionId);
 
-    List<EntitlementDefinition> getEntitlementDefinitions(Long developerId, String group, String tag,
+    List<EntitlementDefinition> getEntitlementDefinitions(Long developerId, String clientId, String group, String tag,
                                                           String type, PageableGetOptions pageMetadata);
 
     Long createEntitlementDefinition(EntitlementDefinition entitlementDefinition);

@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.util.Collections;
+
 public class EntitlementDefinitionDaoTest extends BaseTest {
     @Autowired
     private EntitlementDefinitionDao entitlementDefinitionDao;
@@ -31,6 +33,7 @@ public class EntitlementDefinitionDaoTest extends BaseTest {
         definitionEntity.setTag("TEST");
         definitionEntity.setGroup("TEST");
         definitionEntity.setConsumable(true);
+        definitionEntity.setInAppContext(Collections.singletonList(String.valueOf(generateId())));
         definitionEntity.setType(EntitlementType.DEFAULT);
         return definitionEntity;
     }

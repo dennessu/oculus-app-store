@@ -28,6 +28,8 @@ public class EntitlementDefinitionConverter {
         entitlementDefinition.setEntitlementDefId(
                 entitlementDefinitionEntity.getEntitlementDefinitionId());
         entitlementDefinition.setDeveloperId(entitlementDefinitionEntity.getDeveloperId());
+        entitlementDefinition.setRev(entitlementDefinitionEntity.getRev());
+        entitlementDefinition.setInAppContext(entitlementDefinitionEntity.getInAppContext());
         entitlementDefinition.setType(entitlementDefinitionEntity.getType().toString());
         entitlementDefinition.setGroup(entitlementDefinitionEntity.getGroup());
         entitlementDefinition.setTag(entitlementDefinitionEntity.getTag());
@@ -41,6 +43,8 @@ public class EntitlementDefinitionConverter {
         entitlementDefinitionEntity.setTrackingUuid(entitlementDefinition.getTrackingUuid());
         entitlementDefinitionEntity.setEntitlementDefinitionId(
                 entitlementDefinition.getEntitlementDefId());
+        entitlementDefinitionEntity.setRev(entitlementDefinition.getRev());
+        entitlementDefinitionEntity.setInAppContext(entitlementDefinition.getInAppContext());
         entitlementDefinitionEntity.setDeveloperId(entitlementDefinition.getDeveloperId());
         entitlementDefinitionEntity.setType(EntitlementType.valueOf(entitlementDefinition.getType()));
         entitlementDefinitionEntity.setGroup(entitlementDefinition.getGroup());

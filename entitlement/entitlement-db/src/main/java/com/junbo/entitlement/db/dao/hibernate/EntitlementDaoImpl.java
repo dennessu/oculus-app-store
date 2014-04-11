@@ -45,7 +45,6 @@ public class EntitlementDaoImpl extends BaseDao<EntitlementEntity> implements En
                                 StringBuilder queryStringBuilder,
                                 Map<String, Object> params) {
         if (CommonUtils.isNotNull(entitlementSearchParam.getClientId())) {
-            //TODO:
             queryStringBuilder.append(" and '{\"\\\"" +
                     entitlementSearchParam.getClientId() +
                     "\\\"\"}'\\:\\:text[] <@ (json_val_arr(in_app_context))");

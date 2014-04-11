@@ -37,20 +37,31 @@ public class EntitlementDefinitionServiceImpl implements EntitlementDefinitionSe
     }
 
     @Override
-    public List<EntitlementDefinition> getEntitlementDefinitions(Long developerId, String group, String tag,
+    public List<EntitlementDefinition> getEntitlementDefinitions(Long developerId, String clientId,
+                                                                 String group, String tag,
                                                                  String type, PageableGetOptions pageMetadata) {
         checkDeveloper(developerId);
-        return entitlementDefinitionRepository.getByParams(developerId, group, tag, type, pageMetadata);
+        return entitlementDefinitionRepository.getByParams(developerId, clientId, group, tag, type, pageMetadata);
     }
 
     @Override
     public Long createEntitlementDefinition(EntitlementDefinition entitlementDefinition) {
         validateNotNull(entitlementDefinition.getType(), "type");
-        validateNotNull(entitlementDefinition.getGroup(), "group");
-        validateNotNull(entitlementDefinition.getTag(), "tag");
-        validateNotNull(entitlementDefinition.getConsumable(), "consumable");
+        if(entitlementDefinition.getGroup() == null){
+            entitlementDefinition.setGroup("");
+        }
+        if(entitlementDefinition.getTag() == null){
+            entitlementDefinition.setTag("");
+        }
+        if(entitlementDefinition.getConsumable() == null){
+            entitlementDefinition.setConsumable(false);
+        }
         checkDeveloper(entitlementDefinition.getDeveloperId());
+        checkInAppContext(entitlementDefinition.getInAppContext());
         return entitlementDefinitionRepository.create(entitlementDefinition);
+    }
+
+    private void checkInAppContext(List<String> inAppContext) {
     }
 
     @Override

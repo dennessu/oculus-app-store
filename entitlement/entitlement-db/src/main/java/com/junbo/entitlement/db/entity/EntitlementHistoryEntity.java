@@ -20,7 +20,7 @@ import java.util.List;
  */
 @javax.persistence.Entity
 @Table(name = "entitlement_history")
-@TypeDefs(@TypeDef(name="json-string", typeClass=StringJsonUserType.class))
+@TypeDefs(@TypeDef(name="json-string", typeClass=ListJsonUserType.class))
 public class EntitlementHistoryEntity implements Shardable {
     public static final String CREATE_ACTION = "CREATE";
     public static final String UPDATE_ACTION = "UPDATE";

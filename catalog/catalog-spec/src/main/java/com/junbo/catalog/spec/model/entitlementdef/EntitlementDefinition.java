@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.junbo.common.jackson.annotation.EntitlementDefinitionId;
 import com.junbo.common.jackson.annotation.UserId;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -19,19 +20,24 @@ import java.util.UUID;
  */
 @JsonPropertyOrder(value = {
         "entitlementDefId",
+        "rev",
+        "developerId",
+        "inAppContext",
         "type",
         "group",
         "tag",
-        "consumable",
-        "developerId"})
+        "consumable"
+})
 public class EntitlementDefinition {
     private UUID trackingUuid;
     @JsonProperty("self")
     @EntitlementDefinitionId
     private Long entitlementDefId;
+    private Integer rev;
     @UserId
     @JsonProperty("developer")
     private Long developerId;
+    private List<String> inAppContext;
     private String type;
     private String group;
     private String tag;
@@ -53,6 +59,14 @@ public class EntitlementDefinition {
 
     public void setEntitlementDefId(Long entitlementDefId) {
         this.entitlementDefId = entitlementDefId;
+    }
+
+    public Integer getRev() {
+        return rev;
+    }
+
+    public void setRev(Integer rev) {
+        this.rev = rev;
     }
 
     public Long getDeveloperId() {
@@ -93,5 +107,13 @@ public class EntitlementDefinition {
 
     public void setConsumable(Boolean consumable) {
         this.consumable = consumable;
+    }
+
+    public List<String> getInAppContext() {
+        return inAppContext;
+    }
+
+    public void setInAppContext(List<String> inAppContext) {
+        this.inAppContext = inAppContext;
     }
 }

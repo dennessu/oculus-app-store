@@ -13,6 +13,8 @@ import junit.framework.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.Test;
 
+import java.util.Collections;
+
 public class EntitlementDefinitionServiceTest extends BaseTest {
     @Autowired
     private EntitlementDefinitionService entitlementDefinitionService;
@@ -29,6 +31,7 @@ public class EntitlementDefinitionServiceTest extends BaseTest {
     private EntitlementDefinition buildADefinition() {
         EntitlementDefinition definition = new EntitlementDefinition();
         definition.setDeveloperId(generateId());
+        definition.setInAppContext(Collections.singletonList(String.valueOf(generateId())));
         definition.setTag("TEST");
         definition.setGroup("TEST");
         definition.setConsumable(true);

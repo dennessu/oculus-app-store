@@ -36,11 +36,11 @@ public class EntitlementDefinitionRepository {
                 definitionConverter.toEntitlementDefinitionEntity(entitlementDefinition));
     }
 
-    public List<EntitlementDefinition> getByParams(Long developerId,
+    public List<EntitlementDefinition> getByParams(Long developerId, String clientId,
                                                    String group, String tag,
                                                    String type, PageableGetOptions pageMetadata) {
         return definitionConverter.toEntitlementDefinitionList(
-                entitlementDefinitionDao.getByParams(developerId, group, tag,
+                entitlementDefinitionDao.getByParams(developerId, clientId, group, tag,
                         StringUtils.isEmpty(type) ? null : EntitlementType.valueOf(type),
                         pageMetadata == null ? new PageableGetOptions() : pageMetadata));
     }

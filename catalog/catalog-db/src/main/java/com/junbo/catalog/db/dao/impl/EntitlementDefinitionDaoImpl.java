@@ -24,19 +24,24 @@ import java.util.UUID;
 public class EntitlementDefinitionDaoImpl extends BaseDaoImpl<EntitlementDefinitionEntity>
         implements EntitlementDefinitionDao {
     @Override
-    public List<EntitlementDefinitionEntity> getByParams(Long developerId, String group, String tag,
+    public List<EntitlementDefinitionEntity> getByParams(Long developerId, String clientId, String group, String tag,
                                                          EntitlementType type, PageableGetOptions pageableGetOptions) {
-        StringBuilder queryString = new StringBuilder("from EntitlementDefinitionEntity" +
-                " where developerId = (:developerId)");
+        StringBuilder queryString = new StringBuilder("select * from entitlement_definition" +
+                " where developer_id = (:developerId)");
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("developerId", developerId);
 
+        if (!StringUtils.isEmpty(clientId)) {
+            queryString.append(" and '{\"\\\"" +
+                    clientId +
+                    "\\\"\"}'\\:\\:text[] <@ (json_val_arr(in_app_context))");
+        }
         if (type != null) {
             queryString.append(" and type = (:type)");
             params.put("type", type);
         }
         if (!StringUtils.isEmpty(group)) {
-            queryString.append(" and group = (:group)");
+            queryString.append(" and entitlement_group = (:group)");
             params.put("group", group);
         }
         if (!StringUtils.isEmpty(tag)) {
@@ -44,7 +49,7 @@ public class EntitlementDefinitionDaoImpl extends BaseDaoImpl<EntitlementDefinit
             params.put("tag", tag);
         }
 
-        Query q = currentSession().createQuery(queryString.toString());
+        Query q = currentSession().createSQLQuery(queryString.toString()).addEntity(this.getEntityType());
         for (Map.Entry<String, Object> entry : params.entrySet()) {
             q.setParameter(entry.getKey(), entry.getValue());
         }

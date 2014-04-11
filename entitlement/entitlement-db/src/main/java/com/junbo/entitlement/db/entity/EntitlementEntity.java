@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.junbo.entitlement.db.entity.def.EntitlementStatus;
 import com.junbo.entitlement.db.entity.def.EntitlementType;
 import com.junbo.entitlement.db.entity.def.IdentifiableType;
-import com.junbo.entitlement.db.entity.def.StringJsonUserType;
+import com.junbo.entitlement.db.entity.def.ListJsonUserType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
@@ -24,7 +24,7 @@ import java.util.List;
  */
 @javax.persistence.Entity
 @Table(name = "entitlement")
-@TypeDefs(@TypeDef(name="json-string", typeClass=StringJsonUserType.class))
+@TypeDefs(@TypeDef(name="json-string", typeClass=ListJsonUserType.class))
 public class EntitlementEntity extends Entity {
     private Long entitlementId;
     private Integer rev;

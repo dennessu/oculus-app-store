@@ -41,14 +41,15 @@ public class EntitlementDefinitionResourceImpl implements EntitlementDefinitionR
 
     @Override
     public Promise<Results<EntitlementDefinition>> getEntitlementDefinitions(
-            UserId developerId, String type, String group, String tag, PageableGetOptions pageMetadata) {
+            UserId developerId, String clientId, String type,
+            String group, String tag, PageableGetOptions pageMetadata) {
         pageMetadata.ensurePagingValid();
         List<EntitlementDefinition> entitlementDefinitions =
                 entitlementDefinitionService.getEntitlementDefinitions(
-                        developerId.getValue(), group, tag, type, pageMetadata);
+                        developerId.getValue(), clientId, group, tag, type, pageMetadata);
         Results<EntitlementDefinition> result = new Results<EntitlementDefinition>();
         result.setItems(entitlementDefinitions);
-        result.setNext(buildNextUrl(developerId.getValue(), type, group, tag, pageMetadata));
+        result.setNext(buildNextUrl(developerId.getValue(), clientId, type, group, tag, pageMetadata));
         return Promise.pure(result);
     }
 
@@ -67,11 +68,14 @@ public class EntitlementDefinitionResourceImpl implements EntitlementDefinitionR
         return Promise.pure(entitlementDefinitionService.getEntitlementDefinition(id));
     }
 
-    private Link buildNextUrl(Long developerId,
-                                String type, String group,
-                                String tag, PageableGetOptions pageMetadata) {
+    private Link buildNextUrl(Long developerId, String clientId,
+                              String type, String group,
+                              String tag, PageableGetOptions pageMetadata) {
         UriBuilder builder = uriInfo.getBaseUriBuilder()
-                .path("entitlementDefinitions").queryParam("developerId", developerId);
+                .path("entitlement-definitions").queryParam("developerId", developerId);
+        if (!StringUtils.isEmpty(clientId)) {
+            builder = builder.queryParam("clientId", clientId);
+        }
         if (!StringUtils.isEmpty(type)) {
             builder = builder.queryParam("type", type);
         }

@@ -21,7 +21,7 @@ public interface EntitlementDefinitionDao {
 
     EntitlementDefinitionEntity get(Long entitlementDefinitionId);
 
-    List<EntitlementDefinitionEntity> getByParams(Long developerId,
+    List<EntitlementDefinitionEntity> getByParams(Long developerId, String clientId,
                                                   String group, String tag,
                                                   EntitlementType type, PageableGetOptions pageableGetOptions);
 
