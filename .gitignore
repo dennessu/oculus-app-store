@@ -5,11 +5,9 @@
 # Build outputs
 **/build/**
 **/target/**
-# workaround bug of github client version 175
-*/build/**
-*/*/build/**
-*/target/**
-*/*/target/**
+build/
+target/
+
 
 # OS files
 Thumbs.db
@@ -24,6 +22,7 @@ Desktop.ini
 # Output files
 *.class
 **/classes/**
+classes/
 
 # IDE Files
 *.iws
@@ -35,6 +34,7 @@ Desktop.ini
 
 # Node modules
 **/node_modules/**
+node_modules/
 
 # tmux log
 tmux-*.log
@@ -48,6 +48,7 @@ tmux-*.log
 
 # activemq log
 **/activemq-data/**
+activemq-data/
 
 # ignore diff orig file
 *.orig
