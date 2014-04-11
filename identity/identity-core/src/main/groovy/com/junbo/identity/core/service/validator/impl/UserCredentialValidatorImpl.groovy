@@ -13,6 +13,7 @@ import com.junbo.identity.spec.v1.option.list.UserCredentialListOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oom.core.MappingContext
 import groovy.transform.CompileStatic
+import org.glassfish.jersey.internal.util.Base64
 import org.springframework.beans.factory.annotation.Required
 
 /**
@@ -72,8 +73,11 @@ class UserCredentialValidatorImpl implements UserCredentialValidator {
         }
 
         if (userCredential.type == 'password') {
-            return userPasswordValidator.validateForOldPassword(userId, userCredential.oldValue).then {
+            String decoded = Base64.decodeAsString(userCredential.oldValue)
+            String[] split = decoded.split(':')
+            return userPasswordValidator.validateForOldPassword(userId, split[1]).then {
                 UserPassword userPassword = modelMapper.credentialToPassword(userCredential, new MappingContext())
+                userPassword.value = split[1]
                 if (userPassword == null) {
                     throw new IllegalArgumentException('mapping to password exception')
                 }
@@ -82,8 +86,11 @@ class UserCredentialValidatorImpl implements UserCredentialValidator {
                 }
             }
         } else if (userCredential.type == 'pin') {
-            return userPinValidator.validateForOldPassword(userId, userCredential.oldValue).then {
+            String decoded = Base64.decodeAsString(userCredential.oldValue)
+            String[] split = decoded.split(':')
+            return userPinValidator.validateForOldPassword(userId, split[1]).then {
                 UserPin userPin = modelMapper.credentialToPin(userCredential, new MappingContext())
+                userPin.value = split[1]
                 if (userPin == null) {
                     throw new IllegalArgumentException('mapping to pin exception')
                 }
