@@ -112,7 +112,7 @@ class CartPersistServiceImpl implements CartPersistService {
 
         @Override
         boolean diff(CartItem left, CartItem right) {
-            return ((CouponItem) left).coupon != ((CouponItem) right).coupon
+            return ((CouponItem) left).couponCode != ((CouponItem) right).couponCode
         }
     }
 

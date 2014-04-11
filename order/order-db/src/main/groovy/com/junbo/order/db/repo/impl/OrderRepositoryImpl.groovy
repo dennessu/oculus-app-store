@@ -14,13 +14,11 @@ import com.junbo.order.db.dao.*
 import com.junbo.order.db.entity.*
 import com.junbo.order.db.mapper.ModelMapper
 import com.junbo.order.db.repo.OrderRepository
-import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.*
 import com.junbo.sharding.IdGenerator
 import com.junbo.sharding.IdGeneratorFacade
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
-import org.apache.commons.collections.CollectionUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -151,6 +149,11 @@ class OrderRepositoryImpl implements OrderRepository {
     }
 
     @Override
+    OrderItem getOrderItem(Long orderItemId) {
+        return modelMapper.toOrderItemModel(orderItemDao.read(orderItemId), new MappingContext())
+    }
+
+    @Override
     List<Discount> getDiscounts(Long orderId) {
         List<Discount> discounts = []
         MappingContext context = new MappingContext()
@@ -197,18 +200,6 @@ class OrderRepositoryImpl implements OrderRepository {
             savePaymentInstruments(order.id, order.paymentInstruments)
         }
         return order
-    }
-
-    @Override
-    Order getOrderByTrackingUuid(UUID trackingUuid) {
-        def orders = orderDao.readByTrackingUuid(trackingUuid)
-        if (CollectionUtils.isEmpty(orders)) {
-            return null
-        }
-
-        // assert only one order is returned.
-        checkOrdersByTrackingUuid(orders)
-        return modelMapper.toOrderModel(orders[0], new MappingContext())
     }
 
     @Override
@@ -408,14 +399,5 @@ class OrderRepositoryImpl implements OrderRepository {
         baseModelWithDate.createdTime = commonDbEntityWithDate.createdTime
         baseModelWithDate.updatedBy = commonDbEntityWithDate.updatedBy
         baseModelWithDate.updatedTime = commonDbEntityWithDate.updatedTime
-    }
-
-    static void checkOrdersByTrackingUuid(List<OrderEntity> orders) {
-        if (orders.size() > 1) {
-            LOGGER.error('name=Multiple_Orders_With_Same_TrackingUuid, ' +
-                    'trackingUuid={}',
-                    orders[0].trackingUuid)
-            throw AppErrors.INSTANCE.orderDuplicateTrackingGuid(0L, orders[0].trackingUuid).exception()
-        }
     }
 }

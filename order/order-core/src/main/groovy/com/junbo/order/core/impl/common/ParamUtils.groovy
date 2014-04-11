@@ -2,6 +2,7 @@ package com.junbo.order.core.impl.common
 
 import com.junbo.order.spec.model.OrderQueryParam
 import com.junbo.order.spec.model.PageParam
+import com.junbo.order.spec.model.SubledgerParam
 import groovy.transform.CompileStatic
 /**
  * Created by fzhang on 4/1/2014.
@@ -33,5 +34,9 @@ class ParamUtils {
             param = new OrderQueryParam()
         }
         return param
+    }
+
+    static SubledgerParam processSubledgerParam(SubledgerParam subledgerParam) {
+        return subledgerParam // todo implement this
     }
 }

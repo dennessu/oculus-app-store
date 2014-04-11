@@ -3,17 +3,17 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
+
 package com.junbo.common.id;
 
 /**
- * Created by fzhang on 14-3-19.
+ * Java doc for SubledgerItemId.
  */
-public class CouponId extends Id {
+public class SubledgerItemId extends Id {
 
-    public CouponId(){
-    }
+    public SubledgerItemId() {}
 
-    public CouponId(Long value) {
+    public SubledgerItemId(long value) {
         super(value);
     }
 }

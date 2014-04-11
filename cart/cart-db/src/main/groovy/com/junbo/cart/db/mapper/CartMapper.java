@@ -47,14 +47,12 @@ public interface CartMapper {
     OfferItemEntity toOfferItemEntity(OfferItem offerItem, MappingContext context);
 
     @Mappings({
-            @Mapping(source = "cartItemId", target = "id", bidirectional = false),
-            @Mapping(source = "couponCode", target = "coupon", bidirectional = false)
+            @Mapping(source = "cartItemId", target = "id", bidirectional = false)
     })
     CouponItem toCouponItemModel(CouponItemEntity couponItemEntity, MappingContext context);
 
     @Mappings({
-            @Mapping(source = "id", target = "cartItemId", bidirectional = false),
-            @Mapping(source = "coupon", target = "couponCode", bidirectional = false)
+            @Mapping(source = "id", target = "cartItemId", bidirectional = false)
     })
     CouponItemEntity toCouponItemEntity(CouponItem couponItem, MappingContext context);
 }

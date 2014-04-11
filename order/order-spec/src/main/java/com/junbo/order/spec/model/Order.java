@@ -18,13 +18,12 @@ import com.junbo.common.jackson.annotation.ShippingMethodId;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Created by chriszhu on 2/7/14.
  */
 @JsonPropertyOrder(value = {
-        "id", "user", "trackingUuid", "type", "status", "country", "currency",
+        "id", "user", "type", "status", "country", "currency",
         "tentative", "resourceAge", "originalOrder", "ratingInfo", "shippingMethod",
         "shippingAddress", "paymentInstruments", "refundOrders", "discounts", "orderItems"
 })
@@ -33,7 +32,6 @@ public class Order extends BaseModelWithDate {
     @JsonProperty("self")
     private OrderId id;
     private UserId user;
-    private UUID trackingUuid;
     private String type;
     private String status;
     private String country;
@@ -47,8 +45,6 @@ public class Order extends BaseModelWithDate {
     private BigDecimal totalDiscount;
     private BigDecimal totalShippingFee;
     private BigDecimal totalShippingFeeDiscount;
-    private BigDecimal totalPreorderAmount;
-    private BigDecimal totalPreorderTax;
     @JsonIgnore
     private Date honorUntilTime;
     @JsonIgnore
@@ -79,14 +75,6 @@ public class Order extends BaseModelWithDate {
 
     public void setUser(UserId user) {
         this.user = user;
-    }
-
-    public UUID getTrackingUuid() {
-        return trackingUuid;
-    }
-
-    public void setTrackingUuid(UUID trackingUuid) {
-        this.trackingUuid = trackingUuid;
     }
 
     public String getType() {
@@ -175,22 +163,6 @@ public class Order extends BaseModelWithDate {
 
     public void setTotalShippingFeeDiscount(BigDecimal totalShippingFeeDiscount) {
         this.totalShippingFeeDiscount = totalShippingFeeDiscount;
-    }
-
-    public BigDecimal getTotalPreorderAmount() {
-        return totalPreorderAmount;
-    }
-
-    public void setTotalPreorderAmount(BigDecimal totalPreorderAmount) {
-        this.totalPreorderAmount = totalPreorderAmount;
-    }
-
-    public BigDecimal getTotalPreorderTax() {
-        return totalPreorderTax;
-    }
-
-    public void setTotalPreorderTax(BigDecimal totalPreorderTax) {
-        this.totalPreorderTax = totalPreorderTax;
     }
 
     public Date getHonorUntilTime() {

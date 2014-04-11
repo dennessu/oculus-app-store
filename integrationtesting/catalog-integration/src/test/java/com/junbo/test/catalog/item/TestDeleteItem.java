@@ -10,10 +10,8 @@ import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.test.catalog.util.BaseTestClass;
 import com.junbo.test.common.apihelper.catalog.ItemService;
 import com.junbo.test.common.apihelper.catalog.impl.ItemServiceImpl;
-
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.EnumHelper;
-import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.common.property.Component;
 import com.junbo.test.common.property.Priority;
 import com.junbo.test.common.property.Property;
@@ -22,10 +20,10 @@ import junit.framework.Assert;
 import org.testng.annotations.Test;
 
 /**
- @author Jason
+  * @author Jason
   * Time: 4/3/2014
   * For testing catalog delete item(s) API
- */
+*/
 public class TestDeleteItem extends BaseTestClass {
 
     @Property(

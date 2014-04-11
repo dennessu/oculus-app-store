@@ -8,6 +8,7 @@ package com.junbo.order.core.impl.order
 
 import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.ShippingAddress
+import com.junbo.common.id.OfferId
 import com.junbo.common.id.PaymentInstrumentId
 import com.junbo.identity.spec.model.user.User
 import com.junbo.langur.core.promise.Promise
@@ -144,7 +145,11 @@ class OrderServiceContextBuilder {
                 offers << of
             }
         }.syncThen {
-            context.offers = offers
+            def offerMap = new HashMap<OfferId, OrderOffer>()
+            offers?.each { OrderOffer offer ->
+                offerMap.put(new OfferId(offer.catalogOffer.id), offer)
+            }
+            context.offers = offerMap
             return offers
         }
     }

@@ -8,6 +8,7 @@ package com.junbo.order.core.impl.order
 
 import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.ShippingAddress
+import com.junbo.common.id.OfferId
 import com.junbo.identity.spec.model.user.User
 import com.junbo.order.clientproxy.model.OrderOffer
 import com.junbo.order.spec.model.Order
@@ -31,7 +32,7 @@ class OrderServiceContext {
     List<PaymentInstrument> paymentInstruments
     List<Balance> balances
     ShippingAddress shippingAddress
-    List<OrderOffer> offers
+    Map<OfferId, OrderOffer> offers
     List<Order> orders
 
     OrderServiceContext(Order o) {

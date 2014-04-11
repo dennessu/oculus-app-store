@@ -14,7 +14,6 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Created by linyi on 14-2-7.
@@ -42,12 +41,4 @@ public class OrderDaoImpl extends BaseDaoImpl<OrderEntity> implements OrderDao {
         criteria.addOrder(Order.desc("orderId"));
         return criteria.list();
     }
-
-    @SuppressWarnings("unchecked")
-    public List<OrderEntity> readByTrackingUuid(final UUID trackingUuid) {
-        Criteria criteria = this.getSession().createCriteria(OrderEntity.class);
-        criteria.add(Restrictions.eq("trackingUuid", trackingUuid));
-        return criteria.list();
-    }
-
 }
