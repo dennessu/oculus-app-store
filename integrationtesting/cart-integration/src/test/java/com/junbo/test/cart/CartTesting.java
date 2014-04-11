@@ -8,7 +8,6 @@ package com.junbo.test.cart;
 import com.junbo.cart.spec.model.Cart;
 import com.junbo.cart.spec.model.item.CouponItem;
 import com.junbo.cart.spec.model.item.OfferItem;
-import com.junbo.common.id.CouponId;
 import com.junbo.common.id.OfferId;
 import com.junbo.test.common.HttpclientHelper;
 import com.junbo.test.common.Utility.TestClass;
@@ -40,8 +39,8 @@ public class CartTesting extends TestClass {
     private OfferId testOffer2 = new OfferId(100002L);
     private OfferId testOffer3 = new OfferId(100003L);
 
-    private CouponId testCoupon1 = new CouponId(200001L);
-    private CouponId testCoupon2 = new CouponId(200002L);
+    private String testCoupon1 = new String("200001L");
+    private String testCoupon2 = new String("200002L");
 
 
     @BeforeMethod
@@ -393,7 +392,7 @@ public class CartTesting extends TestClass {
         }
     }
 
-    private void addCouponInCart(Cart cart, CouponId couponId) {
+    private void addCouponInCart(Cart cart, String couponId) {
         List<CouponItem> curCoupons = cart.getCoupons();
         if (curCoupons == null) {
             curCoupons = new ArrayList<CouponItem>();
@@ -401,18 +400,18 @@ public class CartTesting extends TestClass {
         }
 
         CouponItem couponItem = new CouponItem();
-        couponItem.setCoupon(couponId);
+        couponItem.setCouponCode(couponId);
         curCoupons.add(couponItem);
     }
 
-    private void removeCouponInCart(Cart cart, CouponId couponId) {
+    private void removeCouponInCart(Cart cart, String couponId) {
         List<CouponItem> curCoupons = cart.getCoupons();
         if (curCoupons == null) {
             return;
         }
 
         for (CouponItem ci : curCoupons) {
-            if (ci.getCoupon().equals(couponId)) {
+            if (ci.getCouponCode().equals(couponId)) {
                 curCoupons.remove(ci);
                 break;
             }
@@ -430,11 +429,11 @@ public class CartTesting extends TestClass {
         return false;
     }
 
-    private boolean checkCouponExist(Cart cart, CouponId couponId) {
+    private boolean checkCouponExist(Cart cart, String couponId) {
         List<CouponItem> curCoupons = cart.getCoupons();
         if (curCoupons == null) return false;
         for (CouponItem ci : curCoupons) {
-            if (ci.getCoupon().equals(couponId)) {
+            if (ci.getCouponCode().equals(couponId)) {
                 return true;
             }
         }
