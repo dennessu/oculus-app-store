@@ -33,6 +33,7 @@ public class OrderEntity extends CommonDbEntityWithDate {
     private OrderType orderTypeId;
     private String currency;
     private String country;
+    private String locale;
     private Long shippingAddressId;
     private Long shippingMethodId;
 
@@ -207,5 +208,15 @@ public class OrderEntity extends CommonDbEntityWithDate {
 
     public void setHonoredTime(Date honoredTime) {
         this.honoredTime = honoredTime;
+    }
+
+    @Column(name = "LOCALE")
+    @NotNull(message = ValidationMessages.MISSING_VALUE)
+    public String getLocale() {
+        return locale;
+    }
+
+    public void setLocale(String locale) {
+        this.locale = locale;
     }
 }

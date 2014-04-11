@@ -14,6 +14,7 @@
                     order_type_id smallint not null,
                     country varchar(2) not null,
                     currency varchar(3) not null,
+                    locale varchar(5) not null,
                     shipping_method_id bigint default null,
                     shipping_address_id bigint default null,
                     total_amount decimal not null,

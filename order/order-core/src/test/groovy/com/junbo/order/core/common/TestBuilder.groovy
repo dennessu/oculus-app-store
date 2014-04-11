@@ -48,6 +48,7 @@ class TestBuilder {
         order.setTentative(true)
         order.discounts = []
         order.discounts.add(buildDiscount('AAA', orderItem))
+        order.locale = 'en-US'
         return order
     }
 
