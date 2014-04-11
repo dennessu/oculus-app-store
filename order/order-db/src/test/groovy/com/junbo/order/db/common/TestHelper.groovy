@@ -79,6 +79,7 @@ class TestHelper {
         order.setTotalShippingFee(BigDecimal.valueOf(DEFAULT_PRICE))
         order.setTotalShippingFeeDiscount(BigDecimal.valueOf(DEFAULT_PRICE))
         order.setHonoredTime(new Date())
+        order.setLocale('en-US')
         return order
     }
 
