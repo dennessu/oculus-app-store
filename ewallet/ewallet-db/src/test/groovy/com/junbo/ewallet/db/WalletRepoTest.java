@@ -95,7 +95,7 @@ public class WalletRepoTest extends BaseTest {
     private Wallet buildAWallet() {
         Wallet wallet = new Wallet();
         wallet.setUserId(idGenerator.nextId());
-        wallet.setType(WalletType.SV.toString());
+        wallet.setType(WalletType.STORED_VALUE.toString());
         wallet.setStatus(Status.ACTIVE.toString());
         wallet.setCurrency(Currency.USD.toString());
         wallet.setBalance(BigDecimal.ZERO);
