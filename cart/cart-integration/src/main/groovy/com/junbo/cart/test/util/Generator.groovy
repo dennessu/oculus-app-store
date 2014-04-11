@@ -1,9 +1,8 @@
 package com.junbo.cart.test.util
 
-import com.junbo.cart.spec.model.item.CouponItem
 import com.junbo.cart.spec.model.item.OfferItem
 import com.junbo.common.id.OfferId
-
+import org.apache.commons.lang.RandomStringUtils
 /**
  * Created by fzhang@wan-san.com on 14-2-24.
  */
@@ -23,14 +22,8 @@ class Generator {
         return ret
     }
 
-    CouponItem couponItem() {
-        return couponItem(genNextId().toString())
-    }
-
-    CouponItem couponItem(String couponCode) {
-        def ret = new CouponItem()
-        ret.couponCode = couponCode
-        return ret
+    String couponCode() {
+        return RandomStringUtils.randomAlphabetic(20)
     }
 
     private long genNextId() {

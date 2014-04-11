@@ -5,12 +5,13 @@ import com.junbo.cart.core.service.CartPersistService
 import com.junbo.cart.core.service.impl.CartServiceImpl
 import com.junbo.cart.spec.error.AppErrors
 import com.junbo.cart.spec.model.Cart
-import com.junbo.cart.spec.model.item.CouponItem
+
 import com.junbo.cart.spec.model.item.OfferItem
 import com.junbo.common.id.UserId
 import com.junbo.identity.spec.model.user.User
 import groovy.transform.CompileStatic
 import org.hibernate.validator.HibernateValidator
+import org.springframework.util.StringUtils
 
 import javax.validation.ValidationProviderResolver
 import javax.validation.Validator
@@ -61,6 +62,7 @@ class ValidationImpl implements Validation {
     @Override
     Validation validateCartAdd(String clientId, UserId userId, Cart cart) {
         validateField(cart, Group.CartCreate, Group.CartItem)
+        validateCouponCodes(cart)
         if (cart.cartName == CartServiceImpl.CART_NAME_PRIMARY) {
             throw AppErrors.INSTANCE.fieldInvalid('cartName').exception()
         }
@@ -74,6 +76,7 @@ class ValidationImpl implements Validation {
     @Override
     Validation validateCartUpdate(Cart newCart, Cart oldCart) {
         validateField(newCart, Group.CartUpdate, Group.CartItem)
+        validateCouponCodes(newCart)
     }
 
     @Override
@@ -98,16 +101,19 @@ class ValidationImpl implements Validation {
         validateField(offerItem, Group.CartItem)
     }
 
-    @Override
-    Validation validateCouponAdd(CouponItem couponItem) {
-        validateField(couponItem, Group.CartItem)
-    }
-
     private static void validateField(Object obj, Class... group) {
         def result = validator.validate(obj, group)
         if (!result.isEmpty()) {
             def error = result.iterator().next()
             throw AppErrors.INSTANCE.fieldInvalid(error.propertyPath.toString(), error.message).exception()
+        }
+    }
+
+    private static void validateCouponCodes(Cart cart) {
+        cart.couponCodes?.eachWithIndex { String couponCode, int i ->
+            if (StringUtils.isEmpty(couponCode)) {
+                throw AppErrors.INSTANCE.fieldInvalid("couponCodes[${i}]").exception()
+            }
         }
     }
 }
