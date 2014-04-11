@@ -7,7 +7,9 @@
 package com.junbo.billing.jobs;
 
 import com.junbo.billing.db.repository.BalanceRepository;
+import com.junbo.billing.spec.model.Balance;
 import com.junbo.common.id.BalanceId;
+import com.junbo.langur.core.promise.Promise;
 import groovy.transform.CompileStatic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +36,9 @@ public class AsyncChargeProcessor {
 
     @Autowired
     private BalanceRepository balanceRepository;
+
+    @Autowired
+    private BillingFacade billingFacade;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AsyncChargeProcessor.class);
     private static final BalanceId NO_MORE_BALANCES = new BalanceId(-1L);
@@ -76,7 +81,7 @@ public class AsyncChargeProcessor {
             consumers.execute(new BalanceProcessor(balanceIds));
         }
 
-        consumers.isShutdown();
+        consumers.shutdown();
 
         try {
             if (!consumers.awaitTermination(timeLimitMinutes, TimeUnit.MINUTES)) {
@@ -107,6 +112,26 @@ public class AsyncChargeProcessor {
 
     private void processBalance(BalanceId balanceId) {
         LOGGER.info("Sending async charge process request for balance id: " + balanceId);
+        Balance balance = new Balance();
+        balance.setBalanceId(balanceId);
+
+        billingFacade.processAsyncBalance(balance).recover(new Promise.Func<Throwable, Promise<Balance>>() {
+            @Override
+            public Promise<Balance> apply(Throwable throwable) {
+                LOGGER.error("Error in processing async charge balance", throwable);
+                return Promise.pure(null);
+            }
+        }).then(new Promise.Func<Balance, Promise<Balance>>() {
+            @Override
+            public Promise<Balance> apply(Balance balance) {
+                if(balance == null) {
+                    return Promise.pure(null);
+                }
+                LOGGER.info("The processed balance status is " + balance.getStatus() + "for balance id: " +
+                        balance.getBalanceId().getValue());
+                return Promise.pure(balance);
+            }
+        });
     }
 
     private class BalanceProcessor implements Runnable {
@@ -119,6 +144,7 @@ public class AsyncChargeProcessor {
 
         @Override
         public void run() {
+            LOGGER.info("Start thread to process async charge balance");
             BalanceId balanceId;
             while (true) {
                 try {
@@ -138,6 +164,7 @@ public class AsyncChargeProcessor {
             }
 
             balanceIds.add(NO_MORE_BALANCES);
+            LOGGER.info("Thread to process async charge balance finished");
         }
     }
 
