@@ -396,7 +396,7 @@
             <list>
                 <value>id</value>
                 <value>userId</value>
-                <value>securityQuestionId</value>
+                <value>userSecurityQuestionId</value>
                 <value>ipAddress</value>
                 <value>userAgent</value>
                 <value>clientId</value>
@@ -409,12 +409,12 @@
 
         <property name="writablePropertiesForCreate">
             <list>
-                <value>securityQuestionId</value>
-                <value>ipAddress</value>
+                <value>userId</value>
+                <value>userSecurityQuestionId</value>
                 <value>value</value>
+                <value>ipAddress</value>
                 <value>userAgent</value>
                 <value>clientId</value>
-                <value>succeeded</value>
             </list>
         </property>
 

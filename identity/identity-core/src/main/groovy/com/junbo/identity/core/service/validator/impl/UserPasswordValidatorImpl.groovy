@@ -12,6 +12,7 @@ import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.option.list.UserPasswordListOptions
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
+import org.glassfish.jersey.internal.util.Base64
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.StringUtils
 
@@ -103,6 +104,10 @@ class UserPasswordValidatorImpl implements UserPasswordValidator {
             return Promise.pure(null)
         }
 
+        String decoded = Base64.decodeAsString(oldPassword)
+        String[] split = decoded.split(':')
+        String decryptPassword = split[1]
+
         userPasswordRepository.search(new UserPasswordListOptions(
                 userId: userId,
                 active: true
@@ -111,7 +116,7 @@ class UserPasswordValidatorImpl implements UserPasswordValidator {
                 throw AppErrors.INSTANCE.userPasswordIncorrect().exception()
             }
 
-            if (CipherHelper.hashPassword(oldPassword, userPasswordList.get(0).passwordSalt)
+            if (CipherHelper.hashPassword(decryptPassword, userPasswordList.get(0).passwordSalt)
                     != userPasswordList.get(0).passwordHash) {
                 throw AppErrors.INSTANCE.userPasswordIncorrect().exception()
             }

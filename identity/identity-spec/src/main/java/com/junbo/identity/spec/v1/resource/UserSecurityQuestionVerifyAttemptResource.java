@@ -37,5 +37,5 @@ public interface UserSecurityQuestionVerifyAttemptResource {
     @GET
     @Path("/")
     Promise<Results<UserSecurityQuestionVerifyAttempt>> list(@PathParam("userId") UserId userId,
-                                                       UserSecurityQuestionAttemptListOptions listOptions);
+                                                   @BeanParam UserSecurityQuestionAttemptListOptions listOptions);
 }

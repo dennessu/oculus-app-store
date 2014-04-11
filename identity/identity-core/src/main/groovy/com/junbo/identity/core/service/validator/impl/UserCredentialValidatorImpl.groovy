@@ -73,9 +73,9 @@ class UserCredentialValidatorImpl implements UserCredentialValidator {
         }
 
         if (userCredential.type == 'password') {
-            String decoded = Base64.decodeAsString(userCredential.oldValue)
-            String[] split = decoded.split(':')
-            return userPasswordValidator.validateForOldPassword(userId, split[1]).then {
+            return userPasswordValidator.validateForOldPassword(userId, userCredential.oldValue).then {
+                String decoded = Base64.decodeAsString(userCredential.oldValue)
+                String[] split = decoded.split(':')
                 UserPassword userPassword = modelMapper.credentialToPassword(userCredential, new MappingContext())
                 userPassword.value = split[1]
                 if (userPassword == null) {
@@ -86,9 +86,9 @@ class UserCredentialValidatorImpl implements UserCredentialValidator {
                 }
             }
         } else if (userCredential.type == 'pin') {
-            String decoded = Base64.decodeAsString(userCredential.oldValue)
-            String[] split = decoded.split(':')
-            return userPinValidator.validateForOldPassword(userId, split[1]).then {
+            return userPinValidator.validateForOldPassword(userId, userCredential.oldValue).then {
+                String decoded = Base64.decodeAsString(userCredential.oldValue)
+                String[] split = decoded.split(':')
                 UserPin userPin = modelMapper.credentialToPin(userCredential, new MappingContext())
                 userPin.value = split[1]
                 if (userPin == null) {

@@ -8,7 +8,6 @@ package com.junbo.identity.core.service.filter;
 import com.junbo.identity.spec.model.domaindata.SecurityQuestion;
 import com.junbo.identity.spec.model.users.UserPassword;
 import com.junbo.identity.spec.model.users.UserPin;
-import com.junbo.identity.spec.model.users.UserSecurityQuestionAttempt;
 import com.junbo.identity.spec.model.users.UserTos;
 import com.junbo.identity.spec.v1.model.*;
 import com.junbo.oom.core.Mapper;
@@ -71,11 +70,11 @@ public interface SelfMapper {
     UserSecurityQuestion mergeUserSecurityQuestion(UserSecurityQuestion source,
                                                    UserSecurityQuestion base, MappingContext context);
 
-    UserSecurityQuestionAttempt filterUserSecurityQuestionAttempt(UserSecurityQuestionAttempt entity,
+    UserSecurityQuestionVerifyAttempt filterUserSecurityQuestionAttempt(UserSecurityQuestionVerifyAttempt entity,
                                                                   MappingContext mappingContext);
 
-    UserSecurityQuestionAttempt mergeUserSecurityQuestionAttempt(UserSecurityQuestionAttempt source,
-                                                  UserSecurityQuestionAttempt base, MappingContext mappingContext);
+    UserSecurityQuestionVerifyAttempt mergeUserSecurityQuestionAttempt(UserSecurityQuestionVerifyAttempt source,
+                                             UserSecurityQuestionVerifyAttempt base, MappingContext mappingContext);
 
     UserEmail filterUserEmail(UserEmail userEmail, MappingContext context);
 

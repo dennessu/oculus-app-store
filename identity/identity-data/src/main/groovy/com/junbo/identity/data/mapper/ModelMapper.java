@@ -13,7 +13,6 @@ import com.junbo.identity.data.entity.user.*;
 import com.junbo.identity.spec.model.domaindata.SecurityQuestion;
 import com.junbo.identity.spec.model.users.UserPassword;
 import com.junbo.identity.spec.model.users.UserPin;
-import com.junbo.identity.spec.model.users.UserSecurityQuestionAttempt;
 import com.junbo.identity.spec.model.users.UserTos;
 import com.junbo.identity.spec.v1.model.*;
 import com.junbo.oom.core.Mapper;
@@ -82,9 +81,9 @@ public interface ModelMapper {
     UserName toUserName(UserNameEntity entity, MappingContext context);
     UserNameEntity toUserName(UserName entity, MappingContext context);
 
-    UserSecurityQuestionAttempt toUserSecurityQuestionAttempt(UserSecurityQuestionAttemptEntity entity,
+    UserSecurityQuestionVerifyAttempt toUserSecurityQuestionAttempt(UserSecurityQuestionAttemptEntity entity,
                                                               MappingContext context);
-    UserSecurityQuestionAttemptEntity toUserSecurityQuestionAttempt(UserSecurityQuestionAttempt entity,
+    UserSecurityQuestionAttemptEntity toUserSecurityQuestionAttempt(UserSecurityQuestionVerifyAttempt entity,
                                                               MappingContext context);
 
     Device toDevice(DeviceEntity entity, MappingContext context);

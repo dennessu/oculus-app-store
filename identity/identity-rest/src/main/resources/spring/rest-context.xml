@@ -12,8 +12,6 @@
     <!-- resource implementation -->
     <bean id="defaultUserTosResource" class="com.junbo.identity.rest.resource.UserTosResourceImpl" scope="prototype" />
     <bean id="defaultSecurityQuestionResource" class="com.junbo.identity.rest.resource.SecurityQuestionResourceImpl" scope="prototype" />
-    <bean id="defaultUserSecurityQuestionAttemptResource" class="com.junbo.identity.rest.resource.UserSecurityQuestionAttemptResourceImpl" scope="prototype" />
-
 
     <bean id="defaultUserAuthenticatorResource" class="com.junbo.identity.rest.resource.v1.AuthenticatorResourceImpl" scope="prototype" />
     <bean id="defaultDeviceResource" class="com.junbo.identity.rest.resource.v1.DeviceResourceImpl" scope="prototype" />
@@ -27,6 +25,7 @@
     <bean id="defaultUserPiiResource" class="com.junbo.identity.rest.resource.v1.UserPiiResourceImpl" scope="prototype" />
     <bean id="defaultUserOptinResource" class="com.junbo.identity.rest.resource.v1.UserOptinResourceImpl" scope="prototype" />
     <bean id="defaultUserSecurityQuestionResource" class="com.junbo.identity.rest.resource.v1.UserSecurityQuestionResourceImpl" scope="prototype" />
+    <bean id="defaultUserSecurityQuestionVerifyAttemptResource" class="com.junbo.identity.rest.resource.v1.UserSecurityQuestionVerifyAttemptResourceImpl" scope="prototype" />
 
     <bean id="defaultRoleResource" class="com.junbo.identity.rest.resource.v1.RoleResourceImpl" scope="prototype">
         <property name="created201Marker" ref="created201Marker"/>

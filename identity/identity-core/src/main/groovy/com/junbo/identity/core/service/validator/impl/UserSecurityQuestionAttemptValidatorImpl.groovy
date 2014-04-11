@@ -9,17 +9,14 @@ import com.junbo.common.id.UserId
 import com.junbo.common.id.UserSecurityQuestionVerifyAttemptId
 import com.junbo.identity.core.service.util.CipherHelper
 import com.junbo.identity.core.service.validator.UserSecurityQuestionAttemptValidator
-import com.junbo.identity.data.repository.SecurityQuestionRepository
 import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.data.repository.UserSecurityQuestionAttemptRepository
 import com.junbo.identity.data.repository.UserSecurityQuestionRepository
 import com.junbo.identity.spec.error.AppErrors
-import com.junbo.identity.spec.model.domaindata.SecurityQuestion
-import com.junbo.identity.spec.model.users.UserSecurityQuestionAttempt
-import com.junbo.identity.spec.options.list.UserSecurityQuestionAttemptListOptions
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserSecurityQuestion
-import com.junbo.identity.spec.v1.option.list.UserSecurityQuestionListOptions
+import com.junbo.identity.spec.v1.model.UserSecurityQuestionVerifyAttempt
+import com.junbo.identity.spec.v1.option.list.UserSecurityQuestionAttemptListOptions
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
@@ -35,7 +32,6 @@ class UserSecurityQuestionAttemptValidatorImpl implements UserSecurityQuestionAt
     private UserRepository userRepository
     private UserSecurityQuestionAttemptRepository attemptRepository
     private UserSecurityQuestionRepository userSecurityQuestionRepository
-    private SecurityQuestionRepository securityQuestionRepository
 
     private Integer valueMinLength
     private Integer valueMaxLength
@@ -49,7 +45,8 @@ class UserSecurityQuestionAttemptValidatorImpl implements UserSecurityQuestionAt
     private Integer clientIdMaxLength
 
     @Override
-    Promise<UserSecurityQuestionAttempt> validateForGet(UserId userId, UserSecurityQuestionVerifyAttemptId attemptId) {
+    Promise<UserSecurityQuestionVerifyAttempt> validateForGet(
+            UserId userId, UserSecurityQuestionVerifyAttemptId attemptId) {
         if (attemptId == null) {
             throw new IllegalArgumentException('userSecurityQuestionAttemptId is null')
         }
@@ -58,7 +55,7 @@ class UserSecurityQuestionAttemptValidatorImpl implements UserSecurityQuestionAt
             throw new IllegalArgumentException('userId is null')
         }
 
-        return attemptRepository.get(attemptId).then { UserSecurityQuestionAttempt attempt ->
+        return attemptRepository.get(attemptId).then { UserSecurityQuestionVerifyAttempt attempt ->
             if (attempt == null) {
                 throw AppErrors.INSTANCE.userSecurityQuestionAttemptNotFound(attemptId).exception()
             }
@@ -67,13 +64,7 @@ class UserSecurityQuestionAttemptValidatorImpl implements UserSecurityQuestionAt
                 throw AppErrors.INSTANCE.parameterInvalid('userId and attemptId doesn\'t match').exception()
             }
 
-            return userRepository.get(userId).then { User user ->
-                if (user == null) {
-                    throw AppErrors.INSTANCE.userNotFound(attempt.userId).exception()
-                }
-
-                return Promise.pure(attempt)
-            }
+            return Promise.pure(attempt)
         }
     }
 
@@ -91,7 +82,7 @@ class UserSecurityQuestionAttemptValidatorImpl implements UserSecurityQuestionAt
     }
 
     @Override
-    Promise<Void> validateForCreate(UserId userId, UserSecurityQuestionAttempt attempt) {
+    Promise<Void> validateForCreate(UserId userId, UserSecurityQuestionVerifyAttempt attempt) {
         if (attempt == null) {
             throw new IllegalArgumentException('userSecurityQuationAttempt is null')
         }
@@ -113,17 +104,11 @@ class UserSecurityQuestionAttemptValidatorImpl implements UserSecurityQuestionAt
             }
             attempt.setUserId((UserId)user.id)
 
-            userSecurityQuestionRepository.search(userId, new UserSecurityQuestionListOptions()).
-                    then { List<UserSecurityQuestion> userSecurityQuestionList ->
-                if (userSecurityQuestionList == null) {
+            userSecurityQuestionRepository.get(attempt.userSecurityQuestionId).
+                    then { UserSecurityQuestion userSecurityQuestion ->
+                if (userSecurityQuestion == null) {
                     throw AppErrors.INSTANCE.userSecurityQuestionNotFound().exception()
                 }
-
-                if (userSecurityQuestionList.size() > 1) {
-                    throw AppErrors.INSTANCE.userSecurityQuestionNotValid().exception()
-                }
-
-                UserSecurityQuestion userSecurityQuestion = userSecurityQuestionList.get(0)
 
                 if (CipherHelper.hashPassword(attempt.value, userSecurityQuestion.answerSalt)
                         == userSecurityQuestion.answerHash) {
@@ -132,29 +117,15 @@ class UserSecurityQuestionAttemptValidatorImpl implements UserSecurityQuestionAt
                 else {
                     attempt.setSucceeded(false)
                 }
-            }
 
-            return Promise.pure(null)
+                return Promise.pure(null)
+            }
         }
     }
 
-    private void checkBasicUserSecurityQuestionAttemptInfo(UserSecurityQuestionAttempt attempt) {
+    private void checkBasicUserSecurityQuestionAttemptInfo(UserSecurityQuestionVerifyAttempt attempt) {
         if (attempt == null) {
             throw new IllegalArgumentException('userSecurityQuestionAttempt is null')
-        }
-
-        if (attempt.securityQuestionId == null) {
-            throw AppErrors.INSTANCE.fieldRequired('securityQuestionId').exception()
-        }
-
-        securityQuestionRepository.get(attempt.securityQuestionId).then { SecurityQuestion securityQuestion ->
-            if (securityQuestion == null) {
-                throw AppErrors.INSTANCE.securityQuestionNotFound(attempt.securityQuestionId).exception()
-            }
-
-            if (securityQuestion.active == false) {
-                throw AppErrors.INSTANCE.securityQuestionNotActive(attempt.securityQuestionId).exception()
-            }
         }
 
         if (attempt.value == null) {
@@ -195,6 +166,17 @@ class UserSecurityQuestionAttemptValidatorImpl implements UserSecurityQuestionAt
         if (attempt.userAgent.size() < userAgentMinLength) {
             throw AppErrors.INSTANCE.fieldTooShort('userAgent', userAgentMinLength).exception()
         }
+
+        if (attempt.userSecurityQuestionId == null) {
+            throw AppErrors.INSTANCE.fieldRequired('userSecurityQuestionId').exception()
+        }
+
+        userSecurityQuestionRepository.get(attempt.userSecurityQuestionId).then {
+            UserSecurityQuestion userSecurityQuestion ->
+                if (userSecurityQuestion == null) {
+                    throw AppErrors.INSTANCE.userSecurityQuestionNotFound(attempt.userSecurityQuestionId).exception()
+                }
+        }
     }
 
     @Required
@@ -210,11 +192,6 @@ class UserSecurityQuestionAttemptValidatorImpl implements UserSecurityQuestionAt
     @Required
     void setUserSecurityQuestionRepository(UserSecurityQuestionRepository userSecurityQuestionRepository) {
         this.userSecurityQuestionRepository = userSecurityQuestionRepository
-    }
-
-    @Required
-    void setSecurityQuestionRepository(SecurityQuestionRepository securityQuestionRepository) {
-        this.securityQuestionRepository = securityQuestionRepository
     }
 
     @Required
