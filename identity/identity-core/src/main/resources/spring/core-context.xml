@@ -427,7 +427,7 @@
         <property name="readableProperties">
             <list>
                 <value>id</value>
-                <value>tosUri</value>
+                <value>tosId</value>
                 <value>userId</value>
                 <value>resourceAge</value>
                 <value>createdTime</value>
@@ -437,7 +437,7 @@
 
         <property name="writablePropertiesForCreate">
             <list>
-                <value>tosUri</value>
+                <value>tosId</value>
             </list>
         </property>
 

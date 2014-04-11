@@ -248,7 +248,7 @@
               id bigint not null,
 			  version bigint not null,
               user_id bigint not null,
-              tos_uri varchar(2000) not null,
+              tos_id bigint not null,
               
               created_by varchar(32) not null,
               created_time timestamp not null,

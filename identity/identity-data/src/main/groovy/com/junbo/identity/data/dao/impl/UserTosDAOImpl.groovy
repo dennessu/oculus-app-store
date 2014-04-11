@@ -4,9 +4,10 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.identity.data.dao.impl
+
 import com.junbo.identity.data.dao.UserTosDAO
-import com.junbo.identity.data.entity.user.UserTosEntity
-import com.junbo.identity.spec.options.list.UserTosListOptions
+import com.junbo.identity.data.entity.user.UserTosAgreementEntity
+import com.junbo.identity.spec.v1.option.list.UserTosAgreementListOptions
 import groovy.transform.CompileStatic
 import org.hibernate.Criteria
 import org.hibernate.Session
@@ -20,7 +21,7 @@ import org.springframework.util.StringUtils
 @CompileStatic
 class UserTosDAOImpl extends BaseDAO implements UserTosDAO {
     @Override
-    UserTosEntity save(UserTosEntity entity) {
+    UserTosAgreementEntity save(UserTosAgreementEntity entity) {
         entity.id = idGenerator.nextId(entity.userId)
         Session session = currentSession(entity.id)
         session.save(entity)
@@ -29,7 +30,7 @@ class UserTosDAOImpl extends BaseDAO implements UserTosDAO {
     }
 
     @Override
-    UserTosEntity update(UserTosEntity entity) {
+    UserTosAgreementEntity update(UserTosAgreementEntity entity) {
         Session session = currentSession(entity.id)
         session.merge(entity)
         session.flush()
@@ -38,16 +39,16 @@ class UserTosDAOImpl extends BaseDAO implements UserTosDAO {
     }
 
     @Override
-    UserTosEntity get(Long id) {
-        return (UserTosEntity)currentSession(id).get(UserTosEntity, id)
+    UserTosAgreementEntity get(Long id) {
+        return (UserTosAgreementEntity)currentSession(id).get(UserTosAgreementEntity, id)
     }
 
     @Override
-    List<UserTosEntity> search(Long userId, UserTosListOptions getOption) {
-        Criteria criteria = currentSession(userId).createCriteria(UserTosEntity)
+    List<UserTosAgreementEntity> search(Long userId, UserTosAgreementListOptions getOption) {
+        Criteria criteria = currentSession(userId).createCriteria(UserTosAgreementEntity)
         criteria.add(Restrictions.eq('userId', getOption.userId.value))
-        if (!StringUtils.isEmpty(getOption.tosUri)) {
-            criteria.add(Restrictions.eq('tosUri', getOption.tosUri))
+        if (!StringUtils.isEmpty(getOption.tosId)) {
+            criteria.add(Restrictions.eq('tosId', getOption.tosId.value))
         }
         criteria.addOrder(Order.asc('id'))
         if (getOption.limit != null) {
@@ -62,7 +63,7 @@ class UserTosDAOImpl extends BaseDAO implements UserTosDAO {
     @Override
     void delete(Long id) {
         Session session = currentSession(id)
-        UserTosEntity entity = (UserTosEntity)session.get(UserTosEntity, id)
+        UserTosAgreementEntity entity = (UserTosAgreementEntity)session.get(UserTosAgreementEntity, id)
         session.delete(entity)
         session.flush()
     }

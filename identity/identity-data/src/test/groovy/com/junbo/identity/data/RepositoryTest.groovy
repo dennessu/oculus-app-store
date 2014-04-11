@@ -8,6 +8,7 @@ package com.junbo.identity.data
 import com.junbo.common.id.DeviceId
 import com.junbo.common.id.GroupId
 import com.junbo.common.id.SecurityQuestionId
+import com.junbo.common.id.TosId
 import com.junbo.common.id.UserDeviceId
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserSecurityQuestionId
@@ -26,6 +27,7 @@ import com.junbo.identity.spec.v1.model.UserGroup
 import com.junbo.identity.spec.v1.model.UserOptin
 import com.junbo.identity.spec.v1.model.UserSecurityQuestion
 import com.junbo.identity.spec.v1.model.UserSecurityQuestionVerifyAttempt
+import com.junbo.identity.spec.v1.model.UserTosAgreement
 import com.junbo.identity.spec.v1.option.list.AuthenticatorListOptions
 import com.junbo.identity.spec.v1.option.list.UserCredentialAttemptListOptions
 import com.junbo.identity.spec.v1.option.list.UserDeviceListOptions
@@ -35,6 +37,7 @@ import com.junbo.identity.spec.v1.option.list.UserPasswordListOptions
 import com.junbo.identity.spec.v1.option.list.UserPinListOptions
 import com.junbo.identity.spec.v1.option.list.UserSecurityQuestionAttemptListOptions
 import com.junbo.identity.spec.v1.option.list.UserSecurityQuestionListOptions
+import com.junbo.identity.spec.v1.option.list.UserTosAgreementListOptions
 import groovy.transform.CompileStatic
 import org.glassfish.jersey.internal.util.Base64
 import org.springframework.beans.factory.annotation.Autowired
@@ -367,28 +370,27 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
 
     @Test(enabled = true)
     public void testUserTosRepository() {
-        UserTos userTos = new UserTos()
+        UserTosAgreement userTos = new UserTosAgreement()
         userTos.setUserId(new UserId(userId))
-        userTos.setTosUri(UUID.randomUUID().toString())
+        userTos.setTosId(new TosId(123L))
         userTos.setCreatedBy('lixia')
         userTos.setCreatedTime(new Date())
         userTos = userTosRepository.create(userTos).wrapped().get()
 
-        UserTos newUserTos = userTosRepository.get(userTos.getId()).wrapped().get()
-        Assert.assertEquals(userTos.getTosUri(), newUserTos.getTosUri())
+        UserTosAgreement newUserTos = userTosRepository.get(userTos.getId()).wrapped().get()
+        Assert.assertEquals(userTos.getTosId(), newUserTos.getTosId())
 
-        String value = UUID.randomUUID().toString()
-        newUserTos.setTosUri(value)
+        newUserTos.setTosId(new TosId(456L))
         userTosRepository.update(newUserTos)
 
         newUserTos = userTosRepository.get(userTos.getId()).wrapped().get()
-        Assert.assertEquals(value, newUserTos.getTosUri())
+        Assert.assertEquals(new TosId(456L), newUserTos.getTosId())
 
-        UserTosListOptions userTosGetOption = new UserTosListOptions()
+        UserTosAgreementListOptions userTosGetOption = new UserTosAgreementListOptions()
         userTosGetOption.setUserId(new UserId(userId))
-        userTosGetOption.setTosUri(value)
-        List<UserTos> userToses = userTosRepository.search(userTosGetOption).wrapped().get()
-        Assert.assertEquals(userToses.size(), 1)
+        userTosGetOption.setTosId(new TosId(456L))
+        List<UserTosAgreement> userToses = userTosRepository.search(userTosGetOption).wrapped().get()
+        assert userToses.size() != 0
     }
 
     @Test(enabled = true)

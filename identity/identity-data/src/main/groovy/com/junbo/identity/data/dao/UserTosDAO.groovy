@@ -5,8 +5,9 @@
  */
 package com.junbo.identity.data.dao
 
-import com.junbo.identity.data.entity.user.UserTosEntity
-import com.junbo.identity.spec.options.list.UserTosListOptions
+import com.junbo.identity.data.entity.user.UserTosAgreementEntity
+import com.junbo.identity.spec.v1.model.UserTosAgreement
+import com.junbo.identity.spec.v1.option.list.UserTosAgreementListOptions
 import groovy.transform.CompileStatic
 
 /**
@@ -15,13 +16,13 @@ import groovy.transform.CompileStatic
 @CompileStatic
 interface UserTosDAO {
 
-    UserTosEntity save(UserTosEntity entity)
+    UserTosAgreementEntity save(UserTosAgreementEntity entity)
 
-    UserTosEntity update(UserTosEntity entity)
+    UserTosAgreementEntity update(UserTosAgreementEntity entity)
 
-    UserTosEntity get(Long id)
+    UserTosAgreementEntity get(Long id)
 
-    List<UserTosEntity> search(Long userId, UserTosListOptions getOption)
+    List<UserTosAgreementEntity> search(Long userId, UserTosAgreementListOptions getOption)
 
     void delete(Long id)
 }

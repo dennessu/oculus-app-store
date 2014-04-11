@@ -13,7 +13,6 @@ import com.junbo.identity.data.entity.user.*;
 import com.junbo.identity.spec.model.domaindata.SecurityQuestion;
 import com.junbo.identity.spec.model.users.UserPassword;
 import com.junbo.identity.spec.model.users.UserPin;
-import com.junbo.identity.spec.model.users.UserTos;
 import com.junbo.identity.spec.v1.model.*;
 import com.junbo.oom.core.Mapper;
 import com.junbo.oom.core.Mapping;
@@ -75,8 +74,8 @@ public interface ModelMapper {
     UserSecurityQuestion toUserSecurityQuestion(UserSecurityQuestionEntity entity, MappingContext context);
     UserSecurityQuestionEntity toUserSecurityQuestion(UserSecurityQuestion entity, MappingContext context);
 
-    UserTos toUserTos(UserTosEntity entity, MappingContext context);
-    UserTosEntity toUserTos(UserTos entity, MappingContext context);
+    UserTosAgreement toUserTos(UserTosAgreementEntity entity, MappingContext context);
+    UserTosAgreementEntity toUserTos(UserTosAgreement entity, MappingContext context);
 
     UserName toUserName(UserNameEntity entity, MappingContext context);
     UserNameEntity toUserName(UserName entity, MappingContext context);
