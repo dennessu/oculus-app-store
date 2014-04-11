@@ -269,7 +269,9 @@ abstract class CloudantClient<T> implements  InitializingBean {
         if (body != null && useNoAnnotationJackson) {
             def payload = NoAnnotationsJsonMarshaller.marshall(body)
             if (method == HttpMethod.POST) {
-                payload = payload.replaceFirst('_rev', 'none')
+                // [hack] "_rev" need to be absent for cloudant post. JsonIgnore annotation not enabled when
+                // using NoAnnotaionJsonMarshaller
+                payload = payload.replaceFirst('\"_rev\"', '\"none\"')
             }
             requestBuilder.setBody(payload)
         }
