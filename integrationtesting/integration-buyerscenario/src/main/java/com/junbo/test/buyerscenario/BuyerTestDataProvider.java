@@ -16,7 +16,6 @@ import com.junbo.order.spec.model.OrderItem;
 import com.junbo.payment.spec.model.Address;
 import com.junbo.payment.spec.model.CreditCardRequest;
 import com.junbo.payment.spec.model.PaymentInstrument;
-import com.junbo.payment.spec.model.Phone;
 import com.junbo.test.billing.apihelper.ShippingAddressService;
 import com.junbo.test.billing.apihelper.impl.ShippingAddressServiceImpl;
 import com.junbo.test.common.Entities.ShippingAddressInfo;
@@ -148,18 +147,13 @@ public class BuyerTestDataProvider extends BaseTestDataProvider{
         address.setCountry(creditCardInfo.getAddress().getCountry());
         address.setPostalCode(creditCardInfo.getAddress().getPostalCode());
 
-        Phone phone = new Phone();
-        phone.setType(creditCardInfo.getPhone().getType());
-        phone.setNumber(creditCardInfo.getPhone().getNumber());
-
         paymentInstrument.setAccountName(creditCardInfo.getAccountName());
         paymentInstrument.setAccountNum(creditCardInfo.getAccountNum());
         //paymentInstrument.setAccountNum(creditCardInfo.getAccountNum());
         paymentInstrument.setAddress(address);
         paymentInstrument.setCreditCardRequest(creditCardRequest);
-        paymentInstrument.setPhone(phone);
         paymentInstrument.setIsValidated(creditCardInfo.isValidated());
-        paymentInstrument.setIsDefault(String.valueOf(creditCardInfo.isDefault()));
+        paymentInstrument.setPhoneNum("650-253-0000");
         paymentInstrument.setType(creditCardInfo.getType().toString());
         paymentInstrument.setTrackingUuid(UUID.randomUUID());
         logger.LogSample("Post a new credit card to user");
@@ -216,7 +210,6 @@ public class BuyerTestDataProvider extends BaseTestDataProvider{
             orderItemList.add(orderItem);
         }
         order.setOrderItems(orderItemList);
-        order.setTrackingUuid(UUID.randomUUID());
         order.setTentative(true);
         order.setType("PAY_IN");
         logger.LogSample("Post an order");
@@ -226,7 +219,6 @@ public class BuyerTestDataProvider extends BaseTestDataProvider{
     public String updateOrderTentative(String orderId, boolean isTentative) throws Exception {
         Order order = Master.getInstance().getOrder(orderClient.getOrderByOrderId(orderId));
         order.setTentative(isTentative);
-        order.setTrackingUuid(UUID.randomUUID());
         logger.LogSample("Put an order");
         return orderClient.updateOrder(order);
     }

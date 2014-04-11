@@ -23,6 +23,11 @@ public abstract class PaymentInstrumentBase {
     private String email;
     private String status;
     private String relationToHolder;
+    private String phoneNumber;
+
+    public String getPhoneNumber() { return phoneNumber; }
+
+    public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
 
     public String getId() {
         return id;
