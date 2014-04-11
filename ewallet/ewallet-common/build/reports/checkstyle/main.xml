@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<checkstyle version="5.6">
-<file name="/Users/xmchen/Workspace/git/main/ewallet/ewallet-common/src/main/groovy/com/junbo/ewallet/common/def/WalletConst.java">
-<error line="12" column="1" severity="warning" message="Utility classes should not have a public or default constructor." source="com.puppycrawl.tools.checkstyle.checks.design.HideUtilityClassConstructorCheck"/>
-</file>
-</checkstyle>

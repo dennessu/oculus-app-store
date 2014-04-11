@@ -1,7 +1,0 @@
-<?xml version="1.1" encoding="UTF-8"?>
-<testsuite name="com.junbo.fulfilment.common.CacheTest" tests="1" failures="0" errors="0" timestamp="2014-03-31T08:05:09" hostname="XumengChendeMacBook-Pro.local" time="0.002">
-  <properties/>
-  <testcase name="testBVT" classname="com.junbo.fulfilment.common.CacheTest" time="0.002"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

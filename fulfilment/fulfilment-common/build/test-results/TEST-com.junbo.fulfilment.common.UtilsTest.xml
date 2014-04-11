@@ -1,8 +1,0 @@
-<?xml version="1.1" encoding="UTF-8"?>
-<testsuite name="com.junbo.fulfilment.common.UtilsTest" tests="2" failures="0" errors="0" timestamp="2014-03-31T08:05:09" hostname="XumengChendeMacBook-Pro.local" time="0.198">
-  <properties/>
-  <testcase name="testEquals" classname="com.junbo.fulfilment.common.UtilsTest" time="0.06"/>
-  <testcase name="testMap" classname="com.junbo.fulfilment.common.UtilsTest" time="0.138"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

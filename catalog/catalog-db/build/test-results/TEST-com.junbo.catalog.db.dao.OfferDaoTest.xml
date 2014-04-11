@@ -1,9 +1,0 @@
-<?xml version="1.1" encoding="UTF-8"?>
-<testsuite name="com.junbo.catalog.db.dao.OfferDaoTest" tests="1" failures="0" errors="0" timestamp="2014-03-31T07:58:46" hostname="XumengChendeMacBook-Pro.local" time="0.045">
-  <properties/>
-  <testcase name="testCreateAndGet" classname="com.junbo.catalog.db.dao.OfferDaoTest" time="0.045"/>
-  <system-out><![CDATA[15:58:46.599 [Test worker] DEBUG bitronix.tm.BitronixTransaction - registering synchronization org.hibernate.engine.transaction.synchronization.internal.RegisteredSynchronization@6707082d
-15:58:46.599 [Test worker] DEBUG bitronix.tm.BitronixTransaction - registering synchronization org.hibernate.context.internal.JTASessionContext$CleanupSynch@649b5cd2
-]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

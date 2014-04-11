@@ -1,6 +1,0 @@
-ê15:57:19.875 [Test worker] DEBUG o.h.e.i.AbstractSaveEventListener - Generated identifier: 889225216, using strategy: org.hibernate.id.Assigned
-ê15:57:19.876 [Test worker] DEBUG o.h.e.i.AbstractSaveEventListener - Generated identifier: 889241600, using strategy: org.hibernate.id.Assigned
-ÿ15:57:19.979 [bitronix-async-jmx-worker] DEBUG b.tm.utils.ManagementRegistrar - Calling ManagementUnregisterCommand on object with name bitronix.tm:type=Transaction,Gtrid=737072696E672D62746D000001451724811200000002
-ÿ15:57:19.979 [bitronix-async-jmx-worker] DEBUG b.tm.utils.ManagementRegistrar - Calling ManagementUnregisterCommand on object with name bitronix.tm:type=Transaction,Gtrid=737072696E672D62746D00000145172480F600000001
-÷15:57:19.979 [bitronix-async-jmx-worker] DEBUG b.tm.utils.ManagementRegistrar - Calling ManagementRegisterCommand on object with name bitronix.tm:type=Transaction,Gtrid=737072696E672D62746D00000145172482C500000007
-ê15:57:20.026 [Test worker] DEBUG o.h.e.i.AbstractSaveEventListener - Generated identifier: 889290752, using strategy: org.hibernate.id.Assigned
