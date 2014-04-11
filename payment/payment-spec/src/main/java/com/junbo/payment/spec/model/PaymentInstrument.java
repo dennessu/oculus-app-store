@@ -23,13 +23,12 @@ public class PaymentInstrument {
     private UUID trackingUuid;
     private boolean isValidated;
     private Date lastValidatedTime;
-    private String isDefault;
     @PaymentInstrumentTypeId
     private String type;
     private String accountName;
     private String accountNum;
     private Address address;
-    private Phone phone;
+    private String phoneNum;
     private String email;
     private String relationToHolder;
     @InnerFilter
@@ -102,12 +101,12 @@ public class PaymentInstrument {
         this.address = address;
     }
 
-    public Phone getPhone() {
-        return phone;
+    public String getPhoneNum() {
+        return phoneNum;
     }
 
-    public void setPhone(Phone phone) {
-        this.phone = phone;
+    public void setPhoneNum(String phoneNum) {
+        this.phoneNum = phoneNum;
     }
 
     public String getEmail() {
@@ -140,14 +139,6 @@ public class PaymentInstrument {
 
     public void setLastValidatedTime(Date lastValidatedTime) {
         this.lastValidatedTime = lastValidatedTime;
-    }
-
-    public String getIsDefault() {
-        return isDefault;
-    }
-
-    public void setIsDefault(String isDefault) {
-        this.isDefault = isDefault;
     }
 
     public WalletRequest getWalletRequest() {
