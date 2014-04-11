@@ -31,7 +31,7 @@ class GroupRepositoryCloudantImpl extends CloudantClient<Group> implements Group
 
     @Override
     Promise<Group> get(GroupId groupId) {
-        return Promise.pure((Group)super.cloudantGet(groupId.value))
+        return Promise.pure((Group)super.cloudantGet(groupId.toString()))
     }
 
     @Override
@@ -57,9 +57,9 @@ class GroupRepositoryCloudantImpl extends CloudantClient<Group> implements Group
             views: [
                     'by_name': new CloudantViews.CloudantView(
                             map: 'function(doc) {' +
-                                    '  emit(doc.name, doc.self.value)' +
+                                    '  emit(doc.name, doc._id)' +
                                     '}',
-                            resultClass: Long)
+                            resultClass: String)
             ]
     )
 

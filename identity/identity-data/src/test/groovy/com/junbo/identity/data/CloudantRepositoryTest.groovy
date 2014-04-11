@@ -15,7 +15,9 @@ import com.junbo.identity.spec.v1.model.Device
 import com.junbo.identity.spec.v1.model.Group
 import com.junbo.identity.spec.v1.model.Tos
 import com.junbo.identity.spec.v1.model.UserAuthenticator
+import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
 import com.junbo.identity.spec.v1.option.list.AuthenticatorListOptions
+import com.junbo.identity.spec.v1.option.list.UserCredentialAttemptListOptions
 import com.junbo.identity.spec.v1.option.list.UserPasswordListOptions
 import com.junbo.identity.spec.v1.option.list.UserPinListOptions
 import groovy.transform.CompileStatic
@@ -66,6 +68,10 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
     @Autowired
     @Qualifier('cloudantUserPinRepository')
     private UserPinRepository userPinRepository
+
+    @Autowired
+    @Qualifier('cloudantUserCredentialVerifyAttemptRepository')
+    private UserCredentialVerifyAttemptRepository userCredentialVerifyAttemptRepository
 
     @Test
     public void test() {
@@ -239,5 +245,28 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
         getOption.active = newUserPin.active
         userPins = userPinRepository.search(getOption).wrapped().get()
         assert userPins.size() != 0
+    }
+
+    @Test
+    public void testUserLoginAttemptRepository() {
+        UserCredentialVerifyAttempt userLoginAttempt = new UserCredentialVerifyAttempt()
+        userLoginAttempt.setUserId(new UserId(userId))
+        userLoginAttempt.setType('pin')
+        userLoginAttempt.setValue(UUID.randomUUID().toString())
+        userLoginAttempt.setClientId(UUID.randomUUID().toString())
+        userLoginAttempt.setIpAddress(UUID.randomUUID().toString())
+        userLoginAttempt.setUserAgent(UUID.randomUUID().toString())
+        userLoginAttempt.setSucceeded(true)
+        userLoginAttempt.setCreatedBy('lixia')
+        userLoginAttempt.setCreatedTime(new Date())
+
+        userCredentialVerifyAttemptRepository.create(userLoginAttempt).wrapped().get()
+
+        UserCredentialAttemptListOptions getOption = new UserCredentialAttemptListOptions()
+        getOption.setUserId(new UserId(userId))
+        getOption.setType('pin')
+        List<UserCredentialVerifyAttempt> userLoginAttempts =
+                userCredentialVerifyAttemptRepository.search(getOption).wrapped().get()
+        Assert.assertEquals(userLoginAttempts.size(), 1)
     }
 }

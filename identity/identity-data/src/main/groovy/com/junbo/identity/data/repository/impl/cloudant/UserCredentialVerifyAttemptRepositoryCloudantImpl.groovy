@@ -2,10 +2,10 @@ package com.junbo.identity.data.repository.impl.cloudant
 
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.cloudant.model.CloudantViews
-import com.junbo.common.id.UserPasswordId
-import com.junbo.identity.data.repository.UserPasswordRepository
-import com.junbo.identity.spec.model.users.UserPassword
-import com.junbo.identity.spec.v1.option.list.UserPasswordListOptions
+import com.junbo.common.id.UserCredentialVerifyAttemptId
+import com.junbo.identity.data.repository.UserCredentialVerifyAttemptRepository
+import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
+import com.junbo.identity.spec.v1.option.list.UserCredentialAttemptListOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.sharding.IdGenerator
 import com.junbo.sharding.ShardAlgorithm
@@ -16,7 +16,8 @@ import org.springframework.beans.factory.annotation.Required
  * Created by haomin on 14-4-10.
  */
 @CompileStatic
-class UserPasswordRepositoryCloudantImpl extends CloudantClient<UserPassword> implements UserPasswordRepository {
+class UserCredentialVerifyAttemptRepositoryCloudantImpl extends CloudantClient<UserCredentialVerifyAttempt>
+        implements UserCredentialVerifyAttemptRepository{
     private ShardAlgorithm shardAlgorithm
     private IdGenerator idGenerator
 
@@ -36,43 +37,42 @@ class UserPasswordRepositoryCloudantImpl extends CloudantClient<UserPassword> im
     }
 
     @Override
-    Promise<UserPassword> create(UserPassword userPassword) {
-        userPassword.id = new UserPasswordId(idGenerator.nextId(userPassword.userId.value))
-        super.cloudantPost(userPassword)
-        return get((UserPasswordId)userPassword.id)
+    Promise<UserCredentialVerifyAttempt> create(UserCredentialVerifyAttempt entity) {
+        entity.id = new UserCredentialVerifyAttemptId(idGenerator.nextId(entity.userId.value))
+        super.cloudantPost(entity)
+        return get((UserCredentialVerifyAttemptId)entity.id)
     }
 
     @Override
-    Promise<UserPassword> update(UserPassword userPassword) {
-        super.cloudantPut(userPassword)
-        return get((UserPasswordId)userPassword.id)
+    Promise<UserCredentialVerifyAttempt> update(UserCredentialVerifyAttempt entity) {
+        super.cloudantPut(entity)
+        return get((UserCredentialVerifyAttemptId)entity.id)
     }
 
     @Override
-    Promise<UserPassword> get(UserPasswordId id) {
-        return Promise.pure((UserPassword)super.cloudantGet(id.toString()))
+    Promise<UserCredentialVerifyAttempt> get(UserCredentialVerifyAttemptId id) {
+        return Promise.pure((UserCredentialVerifyAttempt)super.cloudantGet(id.toString()))
     }
 
     @Override
-    Promise<List<UserPassword>> search(UserPasswordListOptions getOption) {
+    Promise<List<UserCredentialVerifyAttempt>> search(UserCredentialAttemptListOptions getOption) {
         def result = []
         def list = super.queryView('by_user_id', getOption.userId.value.toString())
-        if (getOption.active != null) {
-            list.each { UserPassword element ->
-                if (getOption.active == element.active) {
-                    result.add(element)
+        if (getOption.type != null) {
+            list.each { UserCredentialVerifyAttempt attempt ->
+                if (getOption.type == attempt.type) {
+                    result.add(attempt)
                 }
             }
         }
         else {
             result.addAll(list)
         }
-
         return Promise.pure(result)
     }
 
     @Override
-    Promise<Void> delete(UserPasswordId id) {
+    Promise<Void> delete(UserCredentialVerifyAttemptId id) {
         super.cloudantDelete(id.value)
         return Promise.pure(null)
     }
@@ -81,7 +81,7 @@ class UserPasswordRepositoryCloudantImpl extends CloudantClient<UserPassword> im
             views: [
                     'by_user_id': new CloudantViews.CloudantView(
                             map: 'function(doc) {' +
-                                    '  emit(doc.userId.value.toString(), doc._id)' +
+                                    '  emit(doc.user.value.toString(), doc._id)' +
                                     '}',
                             resultClass: String)
             ]

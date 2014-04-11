@@ -46,7 +46,7 @@ class UserAuthenticatorRepositoryCloudantImpl extends CloudantClient<UserAuthent
 
     @Override
     Promise<UserAuthenticator> get(UserAuthenticatorId authenticatorId) {
-        return Promise.pure((UserAuthenticator)super.cloudantGet(authenticatorId.value))
+        return Promise.pure((UserAuthenticator)super.cloudantGet(authenticatorId.toString()))
     }
 
     @Override
@@ -85,24 +85,24 @@ class UserAuthenticatorRepositoryCloudantImpl extends CloudantClient<UserAuthent
             views: [
                     'by_authenticator_value': new CloudantViews.CloudantView(
                             map: 'function(doc) {' +
-                                    '  emit(doc.value, doc.self.value)' +
+                                    '  emit(doc.value, doc._id)' +
                                     '}',
-                            resultClass: Long),
+                            resultClass: String),
                     'by_user_id_auth_type': new CloudantViews.CloudantView(
                             map: 'function(doc) {' +
-                                    '  emit(doc.user.value + \':\' + doc.type, doc.self.value)' +
+                                    '  emit(doc.user.value + \':\' + doc.type, doc._id)' +
                                     '}',
-                            resultClass: Long),
+                            resultClass: String),
                     'by_user_id_auth_value': new CloudantViews.CloudantView(
                             map: 'function(doc) {' +
-                                    '  emit(doc.user.value + \':\' + doc.value, doc.self.value)' +
+                                    '  emit(doc.user.value + \':\' + doc.value, doc._id)' +
                                     '}',
-                            resultClass: Long),
+                            resultClass: String),
                     'by_user_id_auth_type_auth_value': new CloudantViews.CloudantView(
                             map: 'function(doc) {' +
-                                    '  emit(doc.user.value + \':\' + doc.type + \':\' + doc.value, doc.self.value)' +
+                                    '  emit(doc.user.value + \':\' + doc.type + \':\' + doc.value, doc._id)' +
                                     '}',
-                            resultClass: Long)
+                            resultClass: String)
             ]
     )
 

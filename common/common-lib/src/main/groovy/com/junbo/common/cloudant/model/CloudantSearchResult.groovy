@@ -10,13 +10,13 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class CloudantSearchResult<T> {
     @JsonProperty('total_rows')
-    Integer totalRows
+    Long totalRows
     Long offset
 
     List<ResultObject<T>> rows
 
     static class ResultObject<T> {
-        Long id
+        String id
         String key
         T value
     }

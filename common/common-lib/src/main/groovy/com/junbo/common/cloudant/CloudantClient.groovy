@@ -81,8 +81,8 @@ abstract class CloudantClient<T> implements  InitializingBean {
         return entity
     }
 
-    T cloudantGet(Long id) {
-        def response = executeRequest(HttpMethod.GET, id.toString(), [:], null)
+    T cloudantGet(String id) {
+        def response = executeRequest(HttpMethod.GET, id, [:], null)
 
         if (response.statusCode != HttpStatus.OK.value()) {
             return null

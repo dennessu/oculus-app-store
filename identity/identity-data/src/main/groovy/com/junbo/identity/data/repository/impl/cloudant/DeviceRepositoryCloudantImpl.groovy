@@ -31,7 +31,7 @@ class DeviceRepositoryCloudantImpl extends CloudantClient<Device> implements Dev
 
     @Override
     Promise<Device> get(DeviceId groupId) {
-        return Promise.pure((Device)super.cloudantGet(groupId.value))
+        return Promise.pure((Device)super.cloudantGet(groupId.toString()))
     }
 
     @Override
@@ -57,9 +57,9 @@ class DeviceRepositoryCloudantImpl extends CloudantClient<Device> implements Dev
             views: [
                     'by_external_ref': new CloudantViews.CloudantView(
                             map: 'function(doc) {' +
-                                    '  emit(doc.externalRef, doc.self.value)' +
+                                    '  emit(doc.externalRef, doc._id)' +
                                     '}',
-                            resultClass: Long)
+                            resultClass: String)
             ]
     )
 
