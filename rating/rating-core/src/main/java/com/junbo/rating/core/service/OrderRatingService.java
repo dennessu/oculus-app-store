@@ -10,13 +10,11 @@ import com.junbo.catalog.spec.model.domaindata.ShippingMethod;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.promotion.Promotion;
 import com.junbo.catalog.spec.model.promotion.PromotionType;
-import com.junbo.rating.core.builder.OrderRatingResultBuilder;
 import com.junbo.rating.core.context.RatingContext;
 import com.junbo.rating.spec.error.AppErrors;
 import com.junbo.rating.spec.fusion.LinkedEntry;
 import com.junbo.rating.spec.fusion.RatingOffer;
 import com.junbo.rating.spec.model.*;
-import com.junbo.rating.spec.model.request.OrderRatingRequest;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -29,9 +27,8 @@ import java.util.Set;
  */
 public class OrderRatingService extends RatingServiceSupport{
 
-    public OrderRatingRequest orderRating(RatingContext context) {
+    public void orderRating(RatingContext context) {
         rate(context);
-        return OrderRatingResultBuilder.build(context);
     }
 
     @Override

@@ -13,8 +13,8 @@ import com.junbo.rating.spec.model.*;
 import com.junbo.rating.spec.model.Currency;
 import com.junbo.rating.spec.model.request.OfferRatingItem;
 import com.junbo.rating.spec.model.request.OfferRatingRequest;
-import com.junbo.rating.spec.model.request.OrderRatingItem;
-import com.junbo.rating.spec.model.request.OrderRatingRequest;
+import com.junbo.rating.spec.model.request.RatingItem;
+import com.junbo.rating.spec.model.request.RatingRequest;
 
 import java.util.*;
 
@@ -65,7 +65,7 @@ public class RatingContext {
         }
     }
 
-    public void fromRequest(OrderRatingRequest request) {
+    public void fromRequest(RatingRequest request) {
         this.userId = request.getUserId();
         this.country = request.getCountry();
 
@@ -80,13 +80,17 @@ public class RatingContext {
             couponCodes.put(coupon, null);
         }
 
-        for (OrderRatingItem orderRatingItem : request.getLineItems()) {
+        for (RatingItem ratingItem : request.getLineItems()) {
             RatableItem item = new RatableItem();
-            item.setOfferId(orderRatingItem.getOfferId());
-            item.setQuantity(orderRatingItem.getQuantity());
-            item.setShippingMethodId(
-                    orderRatingItem.getShippingMethodId() == null ?
-                            request.getShippingMethodId() : orderRatingItem.getShippingMethodId());
+            item.setOfferId(ratingItem.getOfferId());
+
+            if (request.isReadyToBuy()) {
+                item.setQuantity(ratingItem.getQuantity());
+                item.setShippingMethodId(
+                        ratingItem.getShippingMethodId() == null ?
+                                request.getShippingMethodId() : ratingItem.getShippingMethodId());
+            }
+
             items.add(item);
         }
     }

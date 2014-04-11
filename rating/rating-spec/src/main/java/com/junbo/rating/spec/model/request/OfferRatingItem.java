@@ -19,7 +19,7 @@ import java.util.Set;
  */
 public class OfferRatingItem {
     @OfferId
-    @JsonProperty("Offer")
+    @JsonProperty("offer")
     private Long offerId;
 
     @Null

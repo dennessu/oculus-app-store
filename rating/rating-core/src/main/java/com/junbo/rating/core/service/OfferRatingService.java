@@ -8,14 +8,12 @@ package com.junbo.rating.core.service;
 
 import com.junbo.catalog.spec.model.promotion.Promotion;
 import com.junbo.catalog.spec.model.promotion.PromotionType;
-import com.junbo.rating.core.builder.OfferRatingResultBuilder;
 import com.junbo.rating.core.context.RatingContext;
 import com.junbo.rating.spec.error.AppErrors;
 import com.junbo.rating.spec.model.Currency;
 import com.junbo.rating.spec.model.Money;
 import com.junbo.rating.spec.model.RatableItem;
 import com.junbo.rating.spec.model.RatingResultEntry;
-import com.junbo.rating.spec.model.request.OfferRatingRequest;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
@@ -27,9 +25,8 @@ import java.util.Set;
  */
 public class OfferRatingService extends RatingServiceSupport{
 
-    public OfferRatingRequest offerRating(RatingContext context) {
+    public void offerRating(RatingContext context) {
         rate(context);
-        return OfferRatingResultBuilder.build(context);
     }
 
     @Override

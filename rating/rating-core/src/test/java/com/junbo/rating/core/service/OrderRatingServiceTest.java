@@ -7,10 +7,11 @@
 package com.junbo.rating.core.service;
 
 import com.junbo.rating.core.BaseTest;
+import com.junbo.rating.core.builder.RatingResultBuilder;
 import com.junbo.rating.core.context.RatingContext;
 import com.junbo.rating.spec.model.Currency;
 import com.junbo.rating.spec.model.RatableItem;
-import com.junbo.rating.spec.model.request.OrderRatingRequest;
+import com.junbo.rating.spec.model.request.RatingRequest;
 import org.junit.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.Test;
@@ -51,7 +52,8 @@ public class OrderRatingServiceTest extends BaseTest {
         item.setShippingMethodId(400L);
         context.getItems().add(item);
 
-        OrderRatingRequest result = orderRatingService.orderRating(context);
+        orderRatingService.orderRating(context);
+        RatingRequest result = RatingResultBuilder.buildForOrder(context);
 
         Assert.assertNotNull(result);
         Assert.assertEquals(result.getLineItems().size(), 3);

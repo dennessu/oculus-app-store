@@ -18,9 +18,9 @@ import java.util.Set;
 /**
  * Created by lizwu on 2/12/14.
  */
-public class OrderRatingItem {
+public class RatingItem {
     @OfferId
-    @JsonProperty("Offer")
+    @JsonProperty("offer")
     private Long offerId;
 
     private int quantity;
@@ -42,7 +42,7 @@ public class OrderRatingItem {
     private Set<Long> promotions;
 
     @ShippingMethodId
-    @JsonProperty("ShippingMethod")
+    @JsonProperty("shippingMethod")
     private Long shippingMethodId;
 
     public Long getOfferId() {
