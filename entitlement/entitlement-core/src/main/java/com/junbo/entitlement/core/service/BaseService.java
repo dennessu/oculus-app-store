@@ -35,13 +35,13 @@ public class BaseService {
                 && entitlement.getEntitlementDefinitionId() != null) {
             fillDefinition(entitlement);
         }
-        if(entitlement.getGroup() == null){
+        if (entitlement.getGroup() == null) {
             entitlement.setGroup("");
         }
-        if(entitlement.getTag() == null){
+        if (entitlement.getTag() == null) {
             entitlement.setTag("");
         }
-        if(entitlement.getGrantTime() == null){
+        if (entitlement.getGrantTime() == null) {
             entitlement.setGrantTime(EntitlementContext.current().getNow());
         }
     }
@@ -83,6 +83,9 @@ public class BaseService {
         validateNotNull(entitlement.getGrantTime(), "grantTime");
         validateNotNull(entitlement.getGroup(), "group");
         validateNotNull(entitlement.getTag(), "tag");
+        if (entitlement.getUseCount() != null && entitlement.getUseCount() < 1) {
+            throw AppErrors.INSTANCE.fieldNotCorrect("useCount", "useCount should not be negative").exception();
+        }
         validateGrantTimeBeforeExpirationTime(entitlement);
     }
 
@@ -107,6 +110,9 @@ public class BaseService {
         validateEquals(existingEntitlement.getGroup(), entitlement.getGroup(), "group");
         validateEquals(existingEntitlement.getTag(), entitlement.getTag(), "tag");
         validateEquals(existingEntitlement.getGrantTime(), entitlement.getGrantTime(), "grantTime");
+        if (entitlement.getUseCount() != null && entitlement.getUseCount() < 1) {
+            throw AppErrors.INSTANCE.fieldNotCorrect("useCount", "useCount should not be negative").exception();
+        }
         validateGrantTimeBeforeExpirationTime(existingEntitlement);
     }
 
