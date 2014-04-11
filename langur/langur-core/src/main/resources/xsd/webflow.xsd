@@ -62,6 +62,8 @@
                             </xsd:attribute>
                             <xsd:attribute name="view" type="xsd:string">
                             </xsd:attribute>
+                            <xsd:attribute name="model" type="xsd:string">
+                            </xsd:attribute>
                         </xsd:complexType>
                     </xsd:element>
                     <xsd:element name="subflow-state">
@@ -98,6 +100,8 @@
                             <xsd:attribute name="id" type="xsd:ID" use="required">
                             </xsd:attribute>
                             <xsd:attribute name="view" type="xsd:string">
+                            </xsd:attribute>
+                            <xsd:attribute name="model" type="xsd:string">
                             </xsd:attribute>
                         </xsd:complexType>
                     </xsd:element>

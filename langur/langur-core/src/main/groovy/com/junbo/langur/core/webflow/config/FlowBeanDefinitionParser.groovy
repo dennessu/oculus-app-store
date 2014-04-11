@@ -96,6 +96,8 @@ class FlowBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
 
         builder.addPropertyValue('view', element.getAttribute('view'))
 
+        builder.addPropertyValue('model', element.getAttribute('model'))
+
         builder.addPropertyValue('transitions', parseTransitions(element, parserContext))
 
         parseElement(builder, element, 'on-exit', 'exitActions')
@@ -129,6 +131,8 @@ class FlowBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
         parseElement(builder, element, 'on-entry', 'entryActions')
 
         builder.addPropertyValue('view', element.getAttribute('view'))
+
+        builder.addPropertyValue('model', element.getAttribute('model'))
 
         return beanReference(builder, parserContext)
     }
