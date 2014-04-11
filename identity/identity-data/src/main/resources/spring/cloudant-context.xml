@@ -54,4 +54,10 @@
         <property name="shardAlgorithm" ref="userShardAlgorithm"/>
         <property name="idGenerator" ref="oculus48IdGenerator"/>
     </bean>
+
+    <bean id="cloudantUserGroupRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserGroupRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="user_group"/>
+        <property name="shardAlgorithm" ref="userShardAlgorithm"/>
+        <property name="idGenerator" ref="oculus48IdGenerator"/>
+    </bean>
 </beans>

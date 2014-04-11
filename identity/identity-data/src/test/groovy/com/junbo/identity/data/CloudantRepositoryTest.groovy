@@ -6,6 +6,7 @@
 package com.junbo.identity.data
 
 import com.junbo.common.id.DeviceId
+import com.junbo.common.id.GroupId
 import com.junbo.common.id.UserDeviceId
 import com.junbo.common.id.UserId
 import com.junbo.identity.data.identifiable.UserPasswordStrength
@@ -18,9 +19,11 @@ import com.junbo.identity.spec.v1.model.Tos
 import com.junbo.identity.spec.v1.model.UserAuthenticator
 import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
 import com.junbo.identity.spec.v1.model.UserDevice
+import com.junbo.identity.spec.v1.model.UserGroup
 import com.junbo.identity.spec.v1.option.list.AuthenticatorListOptions
 import com.junbo.identity.spec.v1.option.list.UserCredentialAttemptListOptions
 import com.junbo.identity.spec.v1.option.list.UserDeviceListOptions
+import com.junbo.identity.spec.v1.option.list.UserGroupListOptions
 import com.junbo.identity.spec.v1.option.list.UserPasswordListOptions
 import com.junbo.identity.spec.v1.option.list.UserPinListOptions
 import groovy.transform.CompileStatic
@@ -79,6 +82,10 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
     @Autowired
     @Qualifier('cloudantUserDeviceRepository')
     private UserDeviceRepository userDeviceRepository
+
+    @Autowired
+    @Qualifier('cloudantUserGroupRepository')
+    private UserGroupRepository userGroupRepository
 
     @Test
     public void test() {
@@ -294,5 +301,40 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
         getOption.setUserId(new UserId(userId))
         List<UserDevice> userDevices = userDeviceRepository.search(getOption).wrapped().get()
         assert userDevices.size() != 0
+
+        getOption.setDeviceId(newUserDevice.deviceId)
+        userDevices = userDeviceRepository.search(getOption).wrapped().get()
+        assert userDevices.size() != 0
+
+        getOption.setUserId(null)
+        userDevices = userDeviceRepository.search(getOption).wrapped().get()
+        assert userDevices.size() != 0
+    }
+
+    @Test
+    public void testUserGroupRepository() {
+        UserGroup userGroup = new UserGroup()
+        userGroup.setUserId(new UserId(userId))
+        userGroup.setGroupId(new GroupId(1493188608L))
+        userGroup.setCreatedBy('lixia')
+        userGroup.setCreatedTime(new Date())
+        userGroup = userGroupRepository.create(userGroup).wrapped().get()
+
+        UserGroup newUserGroup = userGroupRepository.get(userGroup.getId()).wrapped().get()
+        Assert.assertEquals(userGroup.getGroupId().getValue(), newUserGroup.getGroupId().getValue())
+
+        UserGroupListOptions getOption = new UserGroupListOptions()
+        getOption.setUserId(new UserId(userId))
+        getOption.setGroupId(new GroupId(1493188608L))
+        List<UserGroup> userGroups = userGroupRepository.search(getOption).wrapped().get()
+        assert userGroups.size() != 0
+
+        getOption.setGroupId(newUserGroup.groupId)
+        userGroups = userGroupRepository.search(getOption).wrapped().get()
+        assert userGroups.size() != 0
+
+        getOption.setUserId(null)
+        userGroups = userGroupRepository.search(getOption).wrapped().get()
+        assert userGroups.size() != 0
     }
 }
