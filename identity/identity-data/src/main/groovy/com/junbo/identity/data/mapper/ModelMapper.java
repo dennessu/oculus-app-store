@@ -12,7 +12,6 @@ import com.junbo.identity.data.entity.group.GroupEntity;
 import com.junbo.identity.data.entity.user.*;
 import com.junbo.identity.spec.model.domaindata.SecurityQuestion;
 import com.junbo.identity.spec.model.users.*;
-import com.junbo.identity.spec.model.users.UserOptin;
 import com.junbo.identity.spec.model.users.UserSecurityQuestion;
 import com.junbo.identity.spec.v1.model.*;
 import com.junbo.oom.core.Mapper;

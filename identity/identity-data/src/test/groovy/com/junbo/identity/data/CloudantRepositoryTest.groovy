@@ -64,7 +64,6 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
     private UserPasswordRepository userPasswordRepository
 
     @Autowired
-    private UserGroupRepository userGroupRepository
     @Qualifier('cloudantUserPinRepository')
     private UserPinRepository userPinRepository
 

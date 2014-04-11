@@ -15,13 +15,11 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.oom.core.MappingContext
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
 import org.springframework.util.StringUtils
 
 /**
  * Implementation for User DAO..
  */
-@Component
 @CompileStatic
 class UserRepositoryImpl implements UserRepository {
     @Autowired

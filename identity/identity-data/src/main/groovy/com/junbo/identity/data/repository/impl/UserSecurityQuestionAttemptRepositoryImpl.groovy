@@ -4,6 +4,7 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.identity.data.repository.impl
+
 import com.junbo.common.id.UserSecurityQuestionVerifyAttemptId
 import com.junbo.identity.data.dao.UserSecurityQuestionAttemptDAO
 import com.junbo.identity.data.entity.user.UserSecurityQuestionAttemptEntity
@@ -15,18 +16,14 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.oom.core.MappingContext
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Qualifier
-import org.springframework.stereotype.Component
 
 /**
  * Created by liangfu on 3/25/14.
  */
-@Component
 @CompileStatic
 class UserSecurityQuestionAttemptRepositoryImpl implements UserSecurityQuestionAttemptRepository {
 
     @Autowired
-    @Qualifier('userSecurityQuestionAttemptDAO')
     private UserSecurityQuestionAttemptDAO userSecurityQuestionAttemptDAO
 
     @Autowired

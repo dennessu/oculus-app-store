@@ -4,28 +4,25 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.identity.data.repository.impl
+
 import com.junbo.common.id.UserOptinId
 import com.junbo.identity.data.dao.UserOptinDAO
 import com.junbo.identity.data.entity.user.UserOptinEntity
 import com.junbo.identity.data.mapper.ModelMapper
 import com.junbo.identity.data.repository.UserOptinRepository
-import com.junbo.identity.spec.model.users.UserOptin
-import com.junbo.identity.spec.options.list.UserOptinListOptions
+import com.junbo.identity.spec.v1.model.UserOptin
+import com.junbo.identity.spec.v1.option.list.UserOptinListOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oom.core.MappingContext
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Qualifier
-import org.springframework.stereotype.Component
 
 /**
  * Implementation for UserOptinDAO.
  */
-@Component
 @CompileStatic
 class UserOptinRepositoryImpl implements UserOptinRepository {
     @Autowired
-    @Qualifier('userOptinDAO')
     private UserOptinDAO userOptinDAO
 
     @Autowired
@@ -36,7 +33,7 @@ class UserOptinRepositoryImpl implements UserOptinRepository {
         UserOptinEntity userOptInEntity = modelMapper.toUserOptin(entity, new MappingContext())
         userOptinDAO.save(userOptInEntity)
 
-        return get(new UserOptinId(userOptInEntity.id))
+        return get(new UserOptinId((Long)userOptInEntity.id))
     }
 
     @Override
@@ -55,7 +52,18 @@ class UserOptinRepositoryImpl implements UserOptinRepository {
     @Override
     Promise<List<UserOptin>> search(UserOptinListOptions getOption) {
         def result = []
-        def entities = userOptinDAO.search(getOption.userId.value, getOption)
+        def entities = []
+        // todo:    Need to discuss with kevin about paging in view query
+        if (getOption.userId != null) {
+            entities = userOptinDAO.searchByUserId(getOption.userId.value)
+            if (getOption.type != null) {
+                entities.removeAll { UserOptinEntity entity ->
+                    entity.type != getOption.type
+                }
+            }
+        } else if (getOption.type != null) {
+            entities = userOptinDAO.searchByType(getOption.type)
+        }
 
         entities.each { UserOptinEntity i ->
             result.add(modelMapper.toUserOptin(i, new MappingContext()))

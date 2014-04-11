@@ -22,10 +22,12 @@ import com.junbo.identity.spec.v1.model.UserAuthenticator
 import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
 import com.junbo.identity.spec.v1.model.UserDevice
 import com.junbo.identity.spec.v1.model.UserGroup
+import com.junbo.identity.spec.v1.model.UserOptin
 import com.junbo.identity.spec.v1.option.list.AuthenticatorListOptions
 import com.junbo.identity.spec.v1.option.list.UserCredentialAttemptListOptions
 import com.junbo.identity.spec.v1.option.list.UserDeviceListOptions
 import com.junbo.identity.spec.v1.option.list.UserGroupListOptions
+import com.junbo.identity.spec.v1.option.list.UserOptinListOptions
 import com.junbo.identity.spec.v1.option.list.UserPasswordListOptions
 import com.junbo.identity.spec.v1.option.list.UserPinListOptions
 import groovy.transform.CompileStatic
@@ -300,10 +302,9 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
 
         UserCredentialAttemptListOptions getOption = new UserCredentialAttemptListOptions()
         getOption.setUserId(new UserId(userId))
-        getOption.setType('pin')
         List<UserCredentialVerifyAttempt> userLoginAttempts =
                 userLoginAttemptRepository.search(getOption).wrapped().get()
-        Assert.assertEquals(userLoginAttempts.size(), 1)
+        assert userLoginAttempts.size() != 0
     }
 
     @Test(enabled = true)
@@ -326,10 +327,9 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         Assert.assertEquals(value, newUserOptin.getType())
 
         UserOptinListOptions getOption = new UserOptinListOptions()
-        getOption.setType(value)
         getOption.setUserId(new UserId(userId))
         List<UserOptin> userOptins = userOptinRepository.search(getOption).wrapped().get()
-        Assert.assertEquals(userOptins.size(), 1)
+        assert userOptins.size() != 0
     }
 
     @Test(enabled = true)

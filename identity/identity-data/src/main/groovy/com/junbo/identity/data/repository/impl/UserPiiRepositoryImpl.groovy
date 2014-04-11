@@ -20,12 +20,10 @@ import com.junbo.oom.core.MappingContext
 import groovy.transform.CompileStatic
 import org.apache.commons.collections.CollectionUtils
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
 
 /**
  * Created by liangfu on 4/10/14.
  */
-@Component
 @CompileStatic
 class UserPiiRepositoryImpl implements UserPiiRepository {
 

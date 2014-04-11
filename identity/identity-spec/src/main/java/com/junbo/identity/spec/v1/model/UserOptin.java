@@ -32,6 +32,8 @@ public class UserOptin extends ResourceMeta implements Identifiable<UserOptinId>
 
     public void setId(UserOptinId id) {
         this.id = id;
+        support.setPropertyAssigned("self");
+        support.setPropertyAssigned("id");
     }
 
     public UserId getUserId() {
@@ -40,6 +42,8 @@ public class UserOptin extends ResourceMeta implements Identifiable<UserOptinId>
 
     public void setUserId(UserId userId) {
         this.userId = userId;
+        support.setPropertyAssigned("user");
+        support.setPropertyAssigned("userId");
     }
 
     public String getType() {
@@ -48,5 +52,6 @@ public class UserOptin extends ResourceMeta implements Identifiable<UserOptinId>
 
     public void setType(String type) {
         this.type = type;
+        support.setPropertyAssigned("type");
     }
 }

@@ -254,6 +254,7 @@
 
         <property name="writablePropertiesForCreate">
             <list>
+                <value>userId</value>
                 <value>type</value>
             </list>
         </property>

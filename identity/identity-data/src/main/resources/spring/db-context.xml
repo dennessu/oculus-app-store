@@ -79,6 +79,7 @@
                 <bean class="com.junbo.identity.data.view.UserGroupIdView"/>
                 <bean class="com.junbo.identity.data.view.RoleNameView"/>
                 <bean class="com.junbo.identity.data.view.RoleAssignmentRoleIdAssigneeView"/>
+                <bean class="com.junbo.identity.data.view.UserOptinTypeView" />
             </list>
         </property>
     </bean>

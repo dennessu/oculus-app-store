@@ -1,14 +1,13 @@
 package com.junbo.identity.core.service.validator.impl
 
-import com.junbo.common.id.UserId
 import com.junbo.common.id.UserOptinId
 import com.junbo.identity.core.service.validator.UserOptinValidator
 import com.junbo.identity.data.repository.UserOptinRepository
 import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.spec.error.AppErrors
-import com.junbo.identity.spec.model.users.UserOptin
-import com.junbo.identity.spec.options.list.UserOptinListOptions
 import com.junbo.identity.spec.v1.model.User
+import com.junbo.identity.spec.v1.model.UserOptin
+import com.junbo.identity.spec.v1.option.list.UserOptinListOptions
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
@@ -27,32 +26,18 @@ class UserOptinValidatorImpl implements UserOptinValidator {
     private List<String> allowedTypes
 
     @Override
-    Promise<UserOptin> validateForGet(UserId userId, UserOptinId userOptinId) {
-
-        if (userId == null) {
-            throw AppErrors.INSTANCE.parameterRequired('userId').exception()
-        }
+    Promise<UserOptin> validateForGet(UserOptinId userOptinId) {
 
         if (userOptinId == null) {
             throw AppErrors.INSTANCE.parameterRequired('userOptinId').exception()
         }
 
-        return userRepository.get(userId).then { User user ->
-            if (user == null) {
-                throw AppErrors.INSTANCE.userNotFound(userId).exception()
+        return userOptinRepository.get(userOptinId).then { UserOptin userOptin ->
+            if (userOptin == null) {
+                throw AppErrors.INSTANCE.userOptinNotFound(userOptinId).exception()
             }
 
-            return userOptinRepository.get(userOptinId).then { UserOptin userOptin ->
-                if (userOptin == null) {
-                    throw AppErrors.INSTANCE.userOptinNotFound(userOptinId).exception()
-                }
-
-                if (userId != userOptin.userId) {
-                    throw AppErrors.INSTANCE.parameterInvalid('userId and userOptinId doesn\'t match.').exception()
-                }
-
-                return Promise.pure(userOptin)
-            }
+            return Promise.pure(userOptin)
         }
     }
 
@@ -62,48 +47,49 @@ class UserOptinValidatorImpl implements UserOptinValidator {
             throw new IllegalArgumentException('options is null')
         }
 
-        if (options.userId == null) {
-            throw AppErrors.INSTANCE.parameterRequired('userId').exception()
+        if (options.userId == null && options.type == null) {
+            throw AppErrors.INSTANCE.parameterRequired('userId or type').exception()
+        }
+
+        if (options.userId != null && options.type != null) {
+            throw AppErrors.INSTANCE.parameterInvalid('userId and type can\'t set at the same time').exception()
         }
 
         return Promise.pure(null)
     }
 
     @Override
-    Promise<Void> validateForCreate(UserId userId, UserOptin userOptin) {
-        if (userId == null) {
-        throw new IllegalArgumentException('userId is null')
-    }
+    Promise<Void> validateForCreate(UserOptin userOptin) {
         checkBasicUserOptinInfo(userOptin)
         if (userOptin.id != null) {
             throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
         }
-        if (userOptin.userId != null && userOptin.userId != userId) {
-            throw AppErrors.INSTANCE.fieldInvalid('userId', userOptin.userId.toString()).exception()
-        }
 
         return userOptinRepository.search(new UserOptinListOptions(
-                userId: userId,
+                userId: userOptin.userId,
                 type: userOptin.type
         )).then { List<UserOptin> existing ->
             if (!CollectionUtils.isEmpty(existing)) {
                 throw AppErrors.INSTANCE.fieldDuplicate('type').exception()
             }
 
-            userOptin.setUserId(userId)
             return Promise.pure(null)
         }
     }
 
     @Override
-    Promise<Void> validateForUpdate(UserId userId, UserOptinId userOptinId, UserOptin userOptin,
-                                    UserOptin oldUserOptin) {
-        if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
-        }
+    Promise<Void> validateForUpdate(UserOptinId userOptinId, UserOptin userOptin, UserOptin oldUserOptin) {
 
-        return validateForGet(userId, userOptinId).then {
+        return validateForGet(userOptinId).then { UserOptin existingUserOptin ->
             checkBasicUserOptinInfo(userOptin)
+
+            if (existingUserOptin.userId != userOptin.userId) {
+                throw AppErrors.INSTANCE.fieldInvalid('userId').exception()
+            }
+
+            if (existingUserOptin.userId != oldUserOptin.userId) {
+                throw AppErrors.INSTANCE.fieldInvalid('userId').exception()
+            }
 
             if (userOptin.id == null) {
                 throw new IllegalArgumentException('id is null')
@@ -119,13 +105,13 @@ class UserOptinValidatorImpl implements UserOptinValidator {
 
             if (userOptin.type != oldUserOptin.type) {
                 return userOptinRepository.search(new UserOptinListOptions(
-                        userId: userId,
+                        userId: userOptin.userId,
                         type: userOptin.type
                 )).then { List<UserOptin> existing ->
                     if (!CollectionUtils.isEmpty(existing)) {
                         throw AppErrors.INSTANCE.fieldDuplicate('type').exception()
                     }
-                    userOptin.setUserId(userId)
+
                     return Promise.pure(null)
                 }
             }
@@ -160,6 +146,20 @@ class UserOptinValidatorImpl implements UserOptinValidator {
 
         if (!(userOptin.type in allowedTypes)) {
             throw AppErrors.INSTANCE.fieldInvalid('type', allowedTypes.join(',')).exception()
+        }
+
+        if (userOptin.userId == null) {
+            throw AppErrors.INSTANCE.fieldRequired('userId').exception()
+        }
+
+        userRepository.get(userOptin.userId).then { User existingUser ->
+            if (existingUser == null) {
+                throw AppErrors.INSTANCE.userNotFound(userOptin.userId).exception()
+            }
+
+            if (existingUser.active == null || existingUser.active == false) {
+                throw AppErrors.INSTANCE.userInInvalidStatus(userOptin.userId).exception()
+            }
         }
     }
 }

@@ -1,9 +1,8 @@
 package com.junbo.identity.core.service.validator
 
-import com.junbo.common.id.UserId
 import com.junbo.common.id.UserOptinId
-import com.junbo.identity.spec.model.users.UserOptin
-import com.junbo.identity.spec.options.list.UserOptinListOptions
+import com.junbo.identity.spec.v1.model.UserOptin
+import com.junbo.identity.spec.v1.option.list.UserOptinListOptions
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 
@@ -12,9 +11,8 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 interface UserOptinValidator {
-    Promise<UserOptin> validateForGet(UserId userId, UserOptinId userOptinId)
+    Promise<UserOptin> validateForGet(UserOptinId userOptinId)
     Promise<Void> validateForSearch(UserOptinListOptions options)
-    Promise<Void> validateForCreate(UserId userId, UserOptin userOptin)
-    Promise<Void> validateForUpdate(UserId userId, UserOptinId userOptinId,
-                                    UserOptin userOptin, UserOptin oldUserOptin)
+    Promise<Void> validateForCreate(UserOptin userOptin)
+    Promise<Void> validateForUpdate(UserOptinId userOptinId, UserOptin userOptin, UserOptin oldUserOptin)
 }

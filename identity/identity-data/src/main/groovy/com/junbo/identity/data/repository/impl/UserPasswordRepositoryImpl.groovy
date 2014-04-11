@@ -4,6 +4,7 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.identity.data.repository.impl
+
 import com.junbo.common.id.UserPasswordId
 import com.junbo.identity.data.dao.UserPasswordDAO
 import com.junbo.identity.data.entity.user.UserPasswordEntity
@@ -15,16 +16,13 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.oom.core.MappingContext
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Qualifier
-import org.springframework.stereotype.Component
+
 /**
  * Created by liangfu on 3/16/14.
  */
-@Component
 @CompileStatic
 class UserPasswordRepositoryImpl implements UserPasswordRepository {
     @Autowired
-    @Qualifier('userPasswordDAO')
     private UserPasswordDAO userPasswordDAO
 
     @Autowired
