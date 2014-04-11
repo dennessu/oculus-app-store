@@ -5,6 +5,11 @@
 # Build outputs
 **/build/**
 **/target/**
+# workaround bug of github client version 175
+*/build/**
+*/*/build/**
+*/target/**
+*/*/target/**
 
 # OS files
 Thumbs.db
