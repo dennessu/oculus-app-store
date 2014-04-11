@@ -83,19 +83,19 @@ class UserDeviceRepositoryCloudantImpl extends CloudantClient<UserDevice> implem
             views: [
                     'by_user_id': new CloudantViews.CloudantView(
                             map: 'function(doc) {' +
-                                    '  emit(doc.user.value.toString(), doc._id)' +
+                                    '  emit(doc.userId.value.toString(), doc._id)' +
                                     '}',
                             resultClass: String),
                     'by_device_id': new CloudantViews.CloudantView(
                             map: 'function(doc) {' +
-                                    '  emit(doc.device.value.toString(), doc._id)' +
+                                    '  emit(doc.deviceId.value.toString(), doc._id)' +
                                     '}',
                             resultClass: String),
                     'by_user_id_device_id': new CloudantViews.CloudantView(
-                            map: 'function(doc) {' +
-                                    '  emit(doc.user.value.toString() + \':\' + doc.device.value.toString(), doc._id)' +
-                                    '}',
-                            resultClass: String)
+                        map: 'function(doc) {' +
+                            '  emit(doc.userId.value.toString() + \':\' + doc.deviceId.value.toString(), doc._id)' +
+                            '}',
+                        resultClass: String)
             ]
     )
 }

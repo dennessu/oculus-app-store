@@ -75,7 +75,7 @@ class UserCredentialVerifyAttemptRepositoryCloudantImpl extends CloudantClient<U
         views: [
             'by_user_id': new CloudantViews.CloudantView(
                 map: 'function(doc) {' +
-                        '  emit(doc.user.value.toString(), doc._id)' +
+                        '  emit(doc.userId.value.toString(), doc._id)' +
                         '}',
                 resultClass: String)
         ]

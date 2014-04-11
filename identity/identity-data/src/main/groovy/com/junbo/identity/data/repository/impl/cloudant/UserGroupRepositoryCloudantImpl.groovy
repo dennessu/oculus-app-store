@@ -82,18 +82,18 @@ class UserGroupRepositoryCloudantImpl extends CloudantClient<UserGroup> implemen
             views: [
                     'by_user_id': new CloudantViews.CloudantView(
                             map: 'function(doc) {' +
-                                    '  emit(doc.user.value.toString(), doc._id)' +
+                                    '  emit(doc.userId.value.toString(), doc._id)' +
                                     '}',
                             resultClass: String),
                     'by_group_id': new CloudantViews.CloudantView(
                             map: 'function(doc) {' +
-                                    '  emit(doc.group.value.toString(), doc._id)' +
+                                    '  emit(doc.groupId.value.toString(), doc._id)' +
                                     '}',
                             resultClass: String),
                     'by_user_id_group_id': new CloudantViews.CloudantView(
-                            map: 'function(doc) {' +
-                                    '  emit(doc.user.value.toString() + \':\' + doc.group.value.toString(), doc._id)' +
-                                    '}',
+                        map: 'function(doc) {' +
+                            '  emit(doc.userId.value.toString() + \':\' + doc.groupId.value.toString(), doc._id)' +
+                            '}',
                             resultClass: String)
             ]
     )

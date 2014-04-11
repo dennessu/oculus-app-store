@@ -81,7 +81,7 @@ class UserOptinRepositoryCloudantImpl extends CloudantClient<UserOptin> implemen
             views: [
                     'by_user_id': new CloudantViews.CloudantView(
                             map: 'function(doc) {' +
-                                    '  emit(doc.user.value.toString(), doc._id)' +
+                                    '  emit(doc.userId.value.toString(), doc._id)' +
                                     '}',
                             resultClass: String),
                     'by_type': new CloudantViews.CloudantView(
@@ -91,7 +91,7 @@ class UserOptinRepositoryCloudantImpl extends CloudantClient<UserOptin> implemen
                             resultClass: String),
                     'by_user_id_type': new CloudantViews.CloudantView(
                             map: 'function(doc) {' +
-                                    '  emit(doc.user.value.toString() + \':\' + doc.type, doc._id)' +
+                                    '  emit(doc.userId.value.toString() + \':\' + doc.type, doc._id)' +
                                     '}',
                             resultClass: String)
             ]

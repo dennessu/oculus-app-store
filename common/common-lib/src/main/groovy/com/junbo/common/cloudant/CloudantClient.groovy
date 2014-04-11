@@ -50,17 +50,18 @@ abstract class CloudantClient<T> implements  InitializingBean {
     protected CloudantClient() {
         entityClass = (Class<T>) ((ParameterizedType) getClass().genericSuperclass).actualTypeArguments[0]
         def id = Utils.tryObtainGetterMethod(entityClass, 'id')
-        def cloudantId = Utils.tryObtainGetterMethod(entityClass, 'cloudantId')
-        def cloudantRev = Utils.tryObtainGetterMethod(entityClass, 'cloudantRev')
+        def cloudantId = Utils.tryObtainGetterMethod(entityClass, '_id')
+        def cloudantRev = Utils.tryObtainGetterMethod(entityClass, '_rev')
         if (id == null || cloudantId == null || cloudantRev == null) {
             throw new CloudantException("Failed to init cloudant client with entityClass: $entityClass, " +
-                    'one of properties[id, cloudantId, cloudantRev] not found')
+                    'one of properties[id, _id, _rev] not found')
         }
     }
 
     T cloudantPost(T entity) {
-        entity.cloudantId = entity.id.toString()
-        def response = executeRequest(HttpMethod.POST, '', [:], entity)
+        entity._id = entity.id.toString()
+        entity._rev = ''
+        def response = executeRequest(HttpMethod.POST, '', [:], entity, true)
         if (response.statusCode != HttpStatus.CREATED.value()) {
             CloudantError cloudantError = JsonMarshaller.unmarshall(response.responseBody, CloudantError)
 
@@ -92,14 +93,14 @@ abstract class CloudantClient<T> implements  InitializingBean {
             return null
         }
 
-        return (T) JsonMarshaller.unmarshall(response.responseBody, entityClass)
+        return (T) NoAnnotationsJsonMarshaller.unmarshall(response.responseBody, entityClass)
     }
 
     T cloudantPut(T entity) {
         def cloudantDoc = getCloudantDocument(entity.id.toString())
-        entity.cloudantId = entity.id.toString()
-        entity.cloudantRev = cloudantDoc.cloudantRev
-        def response = executeRequest(HttpMethod.PUT, entity.id.toString(), [:], entity)
+        entity._id = entity.id.toString()
+        entity._rev = cloudantDoc._rev
+        def response = executeRequest(HttpMethod.PUT, entity.id.toString(), [:], entity, true)
 
         if (response.statusCode != HttpStatus.CREATED.value()) {
             CloudantError cloudantError = JsonMarshaller.unmarshall(response.responseBody, CloudantError)
@@ -123,7 +124,7 @@ abstract class CloudantClient<T> implements  InitializingBean {
 
     void cloudantDelete(Long id) {
         def cloudantDoc = getCloudantDocument(id.toString())
-        def response = executeRequest(HttpMethod.DELETE, id.toString(), ['rev': cloudantDoc.cloudantRev], null)
+        def response = executeRequest(HttpMethod.DELETE, id.toString(), ['rev': cloudantDoc._rev], null)
 
         if (response.statusCode != HttpStatus.OK.value() && response.statusCode != HttpStatus.NOT_FOUND.value()) {
             CloudantError cloudantError = JsonMarshaller.unmarshall(response.responseBody, CloudantError)
@@ -157,7 +158,8 @@ abstract class CloudantClient<T> implements  InitializingBean {
             response = executeRequest(HttpMethod.PUT, '', [:], null)
 
             if (response.statusCode != HttpStatus.CREATED.value()) {
-                CloudantError cloudantError = JsonMarshaller.unmarshall(response.responseBody, CloudantError)
+                CloudantError cloudantError = JsonMarshaller.unmarshall(response.responseBody,
+                        CloudantError)
                 throw new CloudantException("Failed to create the database, error: $cloudantError.error," +
                         " reason: $cloudantError.reason")
             }
@@ -169,7 +171,8 @@ abstract class CloudantClient<T> implements  InitializingBean {
             if (response.statusCode == HttpStatus.NOT_FOUND.value()) {
                 putViews(cloudantViews)
             } else if (response.statusCode == HttpStatus.OK.value()) {
-                CloudantViews existingViews = JsonMarshaller.unmarshall(response.responseBody, CloudantViews)
+                CloudantViews existingViews = JsonMarshaller.unmarshall(response.responseBody,
+                        CloudantViews)
                 def newView = cloudantViews.views.keySet().find { !existingViews.views.containsKey(it) }
                 if (newView != null) {
                     cloudantViews.revision = existingViews.revision
@@ -190,7 +193,7 @@ abstract class CloudantClient<T> implements  InitializingBean {
             return null
         }
 
-        return (T) JsonMarshaller.unmarshall(response.responseBody, entityClass)
+        return (T) NoAnnotationsJsonMarshaller.unmarshall(response.responseBody, entityClass)
     }
 
     private void putViews(CloudantViews views) {
@@ -232,8 +235,8 @@ abstract class CloudantClient<T> implements  InitializingBean {
                     " reason: $cloudantError.reason")
         }
 
-        return (CloudantSearchResult) JsonMarshaller.unmarshall(response.responseBody, CloudantSearchResult,
-                cloudantView.resultClass)
+        return (CloudantSearchResult) JsonMarshaller.unmarshall(response.responseBody,
+                CloudantSearchResult, cloudantView.resultClass)
     }
 
     protected List<T> queryView(String viewName, String key, Integer limit, Integer skip, boolean descending) {
@@ -252,13 +255,25 @@ abstract class CloudantClient<T> implements  InitializingBean {
     }
 
     protected Response executeRequest(HttpMethod method, String path, Map<String, String> queryParams, Object body) {
+        return executeRequest(method, path, queryParams, body, false)
+    }
+
+    protected Response executeRequest(HttpMethod method, String path, Map<String, String> queryParams,
+                                      Object body, boolean useNoAnnotationJackson) {
         UriBuilder uriBuilder = UriBuilder.fromUri(cloudantDBUri)
         uriBuilder.path(dbName)
         uriBuilder.path(path)
 
         def requestBuilder = getRequestBuilder(method, uriBuilder.toTemplate())
 
-        if (body != null) {
+        if (body != null && useNoAnnotationJackson) {
+            def payload = NoAnnotationsJsonMarshaller.marshall(body)
+            if (method == HttpMethod.POST) {
+                payload = payload.replaceFirst('_rev', 'none')
+            }
+            requestBuilder.setBody(payload)
+        }
+        else if (body != null) {
             requestBuilder.setBody(JsonMarshaller.marshall(body))
         }
 

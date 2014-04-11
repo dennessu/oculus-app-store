@@ -247,7 +247,7 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
         assert userPins.size() != 0
     }
 
-    @Test(enabled = true)
+    @Test
     public void testUserAuthenticatorRepository() {
         UserAuthenticator authenticator = new UserAuthenticator()
         authenticator.setUserId(new UserId(userId))
@@ -277,8 +277,7 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
     public void testUserLoginAttemptRepository() {
         UserCredentialVerifyAttempt userLoginAttempt = new UserCredentialVerifyAttempt()
         userLoginAttempt.setUserId(new UserId(userId))
-        def type = UUID.randomUUID().toString()
-        userLoginAttempt.setType(type)
+        userLoginAttempt.setType('pin')
         userLoginAttempt.setValue(UUID.randomUUID().toString())
         userLoginAttempt.setClientId(UUID.randomUUID().toString())
         userLoginAttempt.setIpAddress(UUID.randomUUID().toString())
@@ -291,10 +290,10 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
 
         UserCredentialAttemptListOptions getOption = new UserCredentialAttemptListOptions()
         getOption.setUserId(new UserId(userId))
-        getOption.setType(type)
+        getOption.setType('pin')
         List<UserCredentialVerifyAttempt> userLoginAttempts =
                 userCredentialVerifyAttemptRepository.search(getOption).wrapped().get()
-        Assert.assertEquals(userLoginAttempts.size(), 1)
+        assert  userLoginAttempts.size() != 0
     }
 
     @Test

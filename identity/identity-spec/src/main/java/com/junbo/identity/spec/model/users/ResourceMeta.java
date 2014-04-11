@@ -1,3 +1,4 @@
+// CHECKSTYLE:OFF
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
@@ -7,7 +8,6 @@ package com.junbo.identity.spec.model.users;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.json.PropertyAssignedAware;
 import com.junbo.common.json.PropertyAssignedAwareSupport;
 
@@ -34,30 +34,26 @@ public abstract class ResourceMeta implements PropertyAssignedAware {
     @JsonIgnore
     private String updatedBy;
 
-    @JsonProperty("_id")
-    private String cloudantId;
+    @JsonIgnore
+    private String _id;
 
-    @JsonProperty("_rev")
-    private String cloudantRev;
+    @JsonIgnore
+    private String _rev;
 
-    public String getCloudantId() {
-        return cloudantId;
+    public String get_id() {
+        return _id;
     }
 
-    public void setCloudantId(String cloudantId) {
-        this.cloudantId = cloudantId;
-        support.setPropertyAssigned("cloudantId");
-        support.setPropertyAssigned("_id");
+    public void set_id(String id) {
+        this._id = id;
     }
 
-    public String getCloudantRev() {
-        return cloudantRev;
+    public String get_rev() {
+        return _rev;
     }
 
-    public void setCloudantRev(String cloudantRev) {
-        this.cloudantRev = cloudantRev;
-        support.setPropertyAssigned("cloudantRev");
-        support.setPropertyAssigned("_rev");
+    public void set_rev(String rev) {
+        this._rev = rev;
     }
 
     public Integer getResourceAge() {
