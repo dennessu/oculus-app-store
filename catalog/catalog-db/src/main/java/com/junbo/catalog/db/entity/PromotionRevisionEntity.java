@@ -13,46 +13,61 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 
 /**
- * Promotion draft DB entity.
+ * Promotion DB entity.
  */
-
 @Entity
-@Table(name = "promotion_draft")
+@Table(name = "promotion_revision")
 @TypeDefs({@TypeDef(name="json-string", typeClass=StringJsonUserType.class),
         @TypeDef(name="date-type", typeClass=DateUserType.class)})
-public class PromotionDraftEntity extends VersionedEntity {
-    private Long id;
-    private String name;
+public class PromotionRevisionEntity extends BaseEntity {
+    private Long revisionId;
+    private Long promotionId;
+    private String status;
+    private Long ownerId;
     private PromotionType type;
-
     private Date startDate;
     private Date endDate;
     private String payload;
 
     @Id
+    @Column(name = "revision_id")
+    public Long getRevisionId() {
+        return revisionId;
+    }
+
+    public void setRevisionId(Long revisionId) {
+        this.revisionId = revisionId;
+    }
+
     @Column(name = "promotion_id")
-    public Long getId() {
-        return id;
+    public Long getPromotionId() {
+        return promotionId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setPromotionId(Long promotionId) {
+        this.promotionId = promotionId;
     }
 
-    @Column(name = "promotion_name")
-    public String getName() {
-        return name;
+    @Column(name = "status")
+    public String getStatus() {
+        return status;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    @Column(name = "owner_id")
+    public Long getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(Long ownerId) {
+        this.ownerId = ownerId;
     }
 
     @Column(name = "type")
@@ -92,5 +107,16 @@ public class PromotionDraftEntity extends VersionedEntity {
 
     public void setPayload(String payload) {
         this.payload = payload;
+    }
+
+    @Override
+    @Transient
+    public Long getId() {
+        return revisionId;
+    }
+
+    @Override
+    public void setId(Long id) {
+        this.revisionId = id;
     }
 }

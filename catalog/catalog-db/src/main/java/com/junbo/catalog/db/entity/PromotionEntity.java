@@ -6,45 +6,30 @@
 
 package com.junbo.catalog.db.entity;
 
-import com.junbo.catalog.db.dao.DateUserType;
 import com.junbo.catalog.db.dao.StringJsonUserType;
 import com.junbo.catalog.spec.model.promotion.PromotionType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import java.util.Date;
+import javax.persistence.*;
 
 /**
  * Promotion DB entity.
  */
 @Entity
 @Table(name = "promotion")
-@TypeDefs({@TypeDef(name="json-string", typeClass=StringJsonUserType.class),
-        @TypeDef(name="date-type", typeClass=DateUserType.class)})
-public class PromotionEntity extends VersionedEntity {
-    private Long id;
+@TypeDefs(@TypeDef(name="json-string", typeClass=StringJsonUserType.class))
+public class PromotionEntity extends BaseEntity {
     private Long promotionId;
     private String name;
     private PromotionType type;
-    private Date startDate;
-    private Date endDate;
+    private boolean curated;
+    private Long currentRevisionId;
+    private Long ownerId;
     private String payload;
 
     @Id
-    @Column(name = "id")
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     @Column(name = "promotion_id")
     public Long getPromotionId() {
         return promotionId;
@@ -72,24 +57,31 @@ public class PromotionEntity extends VersionedEntity {
         this.type = type;
     }
 
-    @Column(name = "start_date")
-    @Type(type = "date-type")
-    public Date getStartDate() {
-        return startDate;
+    @Column(name = "curated")
+    public boolean isCurated() {
+        return curated;
     }
 
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
+    public void setCurated(boolean curated) {
+        this.curated = curated;
     }
 
-    @Column(name = "end_date")
-    @Type(type = "date-type")
-    public Date getEndDate() {
-        return endDate;
+    @Column(name = "current_revision_id")
+    public Long getCurrentRevisionId() {
+        return currentRevisionId;
     }
 
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
+    public void setCurrentRevisionId(Long currentRevisionId) {
+        this.currentRevisionId = currentRevisionId;
+    }
+
+    @Column(name = "owner_id")
+    public Long getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(Long ownerId) {
+        this.ownerId = ownerId;
     }
 
     @Column(name = "payload")
@@ -100,5 +92,16 @@ public class PromotionEntity extends VersionedEntity {
 
     public void setPayload(String payload) {
         this.payload = payload;
+    }
+
+    @Override
+    @Transient
+    public Long getId() {
+        return promotionId;
+    }
+
+    @Override
+    public void setId(Long id) {
+        this.promotionId = id;
     }
 }

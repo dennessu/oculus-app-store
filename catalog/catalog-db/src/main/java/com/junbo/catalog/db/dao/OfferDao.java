@@ -12,5 +12,4 @@ import com.junbo.catalog.db.entity.OfferEntity;
  * Offer DAO definition.
  */
 public interface OfferDao extends BaseDao<OfferEntity> {
-    Long update(OfferEntity offerEntity);
 }

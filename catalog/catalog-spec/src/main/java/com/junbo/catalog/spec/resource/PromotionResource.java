@@ -6,7 +6,6 @@
 
 package com.junbo.catalog.spec.resource;
 
-import com.junbo.catalog.spec.model.common.EntityGetOptions;
 import com.junbo.catalog.spec.model.promotion.Promotion;
 import com.junbo.catalog.spec.model.promotion.PromotionsGetOptions;
 import com.junbo.common.id.PromotionId;
@@ -37,15 +36,8 @@ public interface PromotionResource {
     @ApiOperation("Get a promotion")
     @GET
     @Path("/{promotionId}")
-    Promise<Promotion> getPromotion(@PathParam("promotionId") PromotionId promotionId,
-                                    @BeanParam EntityGetOptions options);
+    Promise<Promotion> getPromotion(@PathParam("promotionId") PromotionId promotionId);
 
-    /**
-     * Create a draft promotion, the created promotion is not purchasable until it is released.
-     *
-     * @param promotion the promotion to be created.
-     * @return the created promotion.
-     */
     @ApiOperation("Create a promotion")
     @POST
     @Path("/")

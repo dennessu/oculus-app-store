@@ -88,7 +88,7 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
 
     private void validateItem(Item item) {
         checkFieldNotEmpty(item.getType(), "type");
-        checkFieldNotEmpty(item.getName(), "name");
+        checkFieldNotNull(item.getName(), "name");
         checkFieldNotNull(item.getOwnerId(), "developer");
 
         if (!ItemType.ALL_TYPES.contains(item.getType())) {

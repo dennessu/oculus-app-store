@@ -8,12 +8,11 @@ package com.junbo.catalog.spec.model.item;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.junbo.catalog.spec.model.common.BaseRevisionModel;
 import com.junbo.catalog.spec.model.common.ExtensibleProperties;
-import com.junbo.catalog.spec.model.common.LocalizableProperty;
 import com.junbo.common.jackson.annotation.ItemRevisionId;
 import com.junbo.common.jackson.annotation.OfferId;
+import com.junbo.common.jackson.annotation.UserId;
 
 
 /**
@@ -23,6 +22,10 @@ public class ItemRevision extends BaseRevisionModel {
     @ItemRevisionId
     @JsonProperty("self")
     private Long revisionId;
+
+    @UserId
+    @JsonProperty("developer")
+    private Long ownerId;
 
     @OfferId
     @JsonProperty("item")
@@ -39,6 +42,14 @@ public class ItemRevision extends BaseRevisionModel {
 
     public void setRevisionId(Long revisionId) {
         this.revisionId = revisionId;
+    }
+
+    public Long getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(Long ownerId) {
+        this.ownerId = ownerId;
     }
 
     public Long getItemId() {

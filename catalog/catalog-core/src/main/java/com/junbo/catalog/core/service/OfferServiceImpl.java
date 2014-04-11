@@ -85,20 +85,20 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     }
 
     private void validateOffer(Offer offer) {
-        checkFieldNotNull(offer.getOwnerId(), "offerId");
-        checkFieldNotEmpty(offer.getName(), "name");
+        checkFieldNotNull(offer.getName(), "name");
         checkFieldNotNull(offer.getOwnerId(), "publisher");
     }
 
     private void validateRevision(OfferRevision revision) {
         checkFieldNotNull(revision.getOwnerId(), "publisher");
-        checkFieldNotNull(revision.getOfferId(), "offerId");
+        checkFieldNotNull(revision.getOfferId(), "offer");
         if (!PriceType.ALL_TYPES.contains(revision.getPriceType())) {
             throw AppErrors.INSTANCE
                     .fieldNotCorrect("priceType", "Valid price types: " + PriceType.ALL_TYPES).exception();
         }
         checkPrice(revision);
     }
+
     private void checkPrice(OfferRevision revision) {
         if (PriceType.TIERED.equals(revision.getPriceType())) {
             checkFieldShouldEmpty(revision.getPrices(), "prices");

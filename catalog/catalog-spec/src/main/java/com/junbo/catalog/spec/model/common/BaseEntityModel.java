@@ -19,9 +19,6 @@ public abstract class BaseEntityModel extends BaseModel {
     private LocalizableProperty name;
 
     private Boolean curated;
-    @UserId
-    @JsonProperty("developer")
-    private Long ownerId;
 
     public LocalizableProperty getName() {
         return name;
@@ -37,14 +34,6 @@ public abstract class BaseEntityModel extends BaseModel {
 
     public void setCurated(Boolean curated) {
         this.curated = curated;
-    }
-
-    public Long getOwnerId() {
-        return ownerId;
-    }
-
-    public void setOwnerId(Long ownerId) {
-        this.ownerId = ownerId;
     }
 
     public abstract Long getCurrentRevisionId();

@@ -19,9 +19,6 @@ import javax.validation.constraints.NotNull;
 public abstract class BaseRevisionModel extends BaseModel {
     //(Design, PendingReview, Rejected) => (Released, Deleted)
     private String status;
-    @UserId
-    @JsonProperty("developer")
-    private Long ownerId;
 
     @NotNull
     private LocalizableProperty displayName;
@@ -35,14 +32,6 @@ public abstract class BaseRevisionModel extends BaseModel {
 
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    public Long getOwnerId() {
-        return ownerId;
-    }
-
-    public void setOwnerId(Long ownerId) {
-        this.ownerId = ownerId;
     }
 
     public LocalizableProperty getDisplayName() {

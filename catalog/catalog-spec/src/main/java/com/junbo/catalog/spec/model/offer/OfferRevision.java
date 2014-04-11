@@ -8,12 +8,11 @@ package com.junbo.catalog.spec.model.offer;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.junbo.catalog.spec.model.common.BaseRevisionModel;
-import com.junbo.catalog.spec.model.common.ExtensibleProperties;
 import com.junbo.catalog.spec.model.common.TypedProperties;
 import com.junbo.common.jackson.annotation.OfferId;
 import com.junbo.common.jackson.annotation.OfferRevisionId;
+import com.junbo.common.jackson.annotation.UserId;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -27,6 +26,10 @@ public class OfferRevision extends BaseRevisionModel {
     @OfferRevisionId
     @JsonProperty("self")
     private Long revisionId;
+
+    @UserId
+    @JsonProperty("publisher")
+    private Long ownerId;
 
     @OfferId
     @JsonProperty("offer")
@@ -48,6 +51,14 @@ public class OfferRevision extends BaseRevisionModel {
 
     public void setRevisionId(Long revisionId) {
         this.revisionId = revisionId;
+    }
+
+    public Long getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(Long ownerId) {
+        this.ownerId = ownerId;
     }
 
     public Long getOfferId() {
@@ -122,19 +133,19 @@ public class OfferRevision extends BaseRevisionModel {
         this.events = events;
     }
 
-    public TypedProperties getStartTime() {
+    public TypedProperties<Date> getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(TypedProperties startTime) {
+    public void setStartTime(TypedProperties<Date> startTime) {
         this.startTime = startTime;
     }
 
-    public TypedProperties getEndTime() {
+    public TypedProperties<Date> getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(TypedProperties endTime) {
+    public void setEndTime(TypedProperties<Date> endTime) {
         this.endTime = endTime;
     }
 

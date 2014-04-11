@@ -89,10 +89,10 @@
     <bean id="baseDao" class="com.junbo.catalog.db.dao.impl.BaseDaoImpl" abstract="true">
         <property name="idGenerator" ref="oculus48IdGenerator" />
     </bean>
-    <bean id="promotionDraftDao" class="com.junbo.catalog.db.dao.impl.PromotionDraftDaoImpl" parent="baseDao">
-        <property name="entityType" value="com.junbo.catalog.db.entity.PromotionDraftEntity"/>
+    <bean id="promotionRevisionDao" class="com.junbo.catalog.db.dao.impl.PromotionRevisionDaoImpl" parent="baseDao">
+        <property name="entityType" value="com.junbo.catalog.db.entity.PromotionRevisionEntity"/>
     </bean>
-    <bean id="promotionHistoryDao" class="com.junbo.catalog.db.dao.impl.PromotionDaoImpl" parent="baseDao">
+    <bean id="promotionDao" class="com.junbo.catalog.db.dao.impl.PromotionDaoImpl" parent="baseDao">
         <property name="entityType" value="com.junbo.catalog.db.entity.PromotionEntity"/>
     </bean>
     <bean id="itemDao" class="com.junbo.catalog.db.dao.impl.ItemDaoImpl" parent="baseDao">
@@ -123,8 +123,8 @@
     <bean id="itemRevisionRepository" class="com.junbo.catalog.db.repo.ItemRevisionRepository"/>
     <bean id="offerRepository" class="com.junbo.catalog.db.repo.OfferRepository"/>
     <bean id="offerRevisionRepository" class="com.junbo.catalog.db.repo.OfferRevisionRepository"/>
-    <bean id="promotionDraftRepository" class="com.junbo.catalog.db.repo.PromotionDraftRepository"/>
-    <bean id="promotionHistoryRepository" class="com.junbo.catalog.db.repo.PromotionRepository"/>
+    <bean id="promotionRevisionRepository" class="com.junbo.catalog.db.repo.PromotionRevisionRepository"/>
+    <bean id="promotionRepository" class="com.junbo.catalog.db.repo.PromotionRepository"/>
     <bean id="entitlementDefinitionRepository" class="com.junbo.catalog.db.repo.EntitlementDefinitionRepository"/>
 
     <bean id="attributeRepository" class="com.junbo.catalog.db.repo.AttributeRepository"/>

@@ -11,6 +11,7 @@ import com.junbo.catalog.spec.model.common.BaseEntityModel;
 import com.junbo.common.jackson.annotation.AttributeId;
 import com.junbo.common.jackson.annotation.OfferId;
 import com.junbo.common.jackson.annotation.OfferRevisionId;
+import com.junbo.common.jackson.annotation.UserId;
 
 import java.util.List;
 
@@ -25,6 +26,10 @@ public class Offer extends BaseEntityModel {
     @OfferRevisionId
     @JsonProperty("currentRevision")
     private Long currentRevisionId;
+
+    @UserId
+    @JsonProperty("publisher")
+    private Long ownerId;
 
     @AttributeId
     private List<Long> categories;
@@ -43,6 +48,14 @@ public class Offer extends BaseEntityModel {
 
     public void setCurrentRevisionId(Long currentRevisionId) {
         this.currentRevisionId = currentRevisionId;
+    }
+
+    public Long getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(Long ownerId) {
+        this.ownerId = ownerId;
     }
 
     public List<Long> getCategories() {
