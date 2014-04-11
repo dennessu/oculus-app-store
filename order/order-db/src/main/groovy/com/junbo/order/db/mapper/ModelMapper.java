@@ -143,13 +143,11 @@ public interface ModelMapper {
                                                                MappingContext context);
 
     @Mappings({
-            @Mapping(source = "currencyId", target = "currency", excluded = false, bidirectional = false),
             @Mapping(source = "totalAmount", target = "totalAmount", excluded = false, bidirectional = false)
     })
     Subledger toSubledgerModel(SubledgerEntity subledgerEntity, MappingContext context);
 
     @Mappings({
-            @Mapping(source = "currency", target = "currencyId", excluded = false, bidirectional = false),
             @Mapping(source = "totalAmount", target = "totalAmount", excluded = false, bidirectional = false)
     })
     SubledgerEntity toSubledgerEntity(Subledger subledger, MappingContext context);

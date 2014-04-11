@@ -80,7 +80,7 @@ class OrderRepositoryImpl implements OrderRepository {
         def id = orderDao.create(orderEntity)
         def orderId = new OrderId(id)
         order.setId(orderId)
-        fillDateInfo(order, orderEntity)
+        Utils.fillDateInfo(order, orderEntity)
 
         saveOrderItems(order.id, order.orderItems)
         saveDiscounts(order.id, order.discounts)
@@ -192,7 +192,7 @@ class OrderRepositoryImpl implements OrderRepository {
         orderEntity.createdTime = oldEntity.createdTime
         orderEntity.createdBy = oldEntity.createdBy
         orderDao.update(orderEntity)
-        fillDateInfo(order, orderEntity)
+        Utils.fillDateInfo(order, orderEntity)
 
         if (!updateOnlyOrder) {
             saveOrderItems(order.id, order.orderItems)
@@ -363,7 +363,7 @@ class OrderRepositoryImpl implements OrderRepository {
             entity.createdBy = oldEntity.createdBy
             orderItemDao.update(entity)
         }
-        fillDateInfo(orderItem, entity)
+        Utils.fillDateInfo(orderItem, entity)
     }
 
     void saveDiscount(Discount discount, boolean isCreate) {
@@ -380,7 +380,7 @@ class OrderRepositoryImpl implements OrderRepository {
             entity.createdBy = oldEntity.createdBy
             discountDao.update(entity)
         }
-        fillDateInfo(discount, entity)
+        Utils.fillDateInfo(discount, entity)
     }
 
     void savePaymentInstrument(OrderId orderId, PaymentInstrumentId paymentInstrumentId) {
@@ -392,12 +392,5 @@ class OrderRepositoryImpl implements OrderRepository {
         orderPaymentInfoEntity.paymentInstrumentType = 'CREDIT_CAR' // todo may not need to save this field in db
         orderPaymentInfoEntity.orderPaymentId = idGenerator.nextId(orderId.value)
         orderPaymentInfoDao.create(orderPaymentInfoEntity)
-    }
-
-    void fillDateInfo(BaseModelWithDate baseModelWithDate, CommonDbEntityWithDate commonDbEntityWithDate) {
-        baseModelWithDate.createdBy = commonDbEntityWithDate.createdBy
-        baseModelWithDate.createdTime = commonDbEntityWithDate.createdTime
-        baseModelWithDate.updatedBy = commonDbEntityWithDate.updatedBy
-        baseModelWithDate.updatedTime = commonDbEntityWithDate.updatedTime
     }
 }
