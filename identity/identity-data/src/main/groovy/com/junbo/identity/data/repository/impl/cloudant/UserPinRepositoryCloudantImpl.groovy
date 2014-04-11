@@ -50,7 +50,7 @@ class UserPinRepositoryCloudantImpl extends CloudantClient<UserPin> implements U
 
     @Override
     Promise<UserPin> get(UserPinId id) {
-        return Promise.pure((UserPin)super.cloudantGet(id.value))
+        return Promise.pure((UserPin)super.cloudantGet(id.toString()))
     }
 
     @Override
@@ -73,16 +73,17 @@ class UserPinRepositoryCloudantImpl extends CloudantClient<UserPin> implements U
 
     @Override
     Promise<Void> delete(UserPinId id) {
-        return null
+        super.cloudantDelete(id.value)
+        return Promise.pure(null)
     }
 
     protected CloudantViews views = new CloudantViews(
             views: [
                     'by_user_id': new CloudantViews.CloudantView(
                             map: 'function(doc) {' +
-                                    '  emit(doc.userId.value.toString(), doc.self.value)' +
+                                    '  emit(doc.userId.value.toString(), doc._id)' +
                                     '}',
-                            resultClass: Long)
+                            resultClass: String)
             ]
     )
 }

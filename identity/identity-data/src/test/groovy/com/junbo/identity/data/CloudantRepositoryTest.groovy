@@ -6,6 +6,7 @@
 package com.junbo.identity.data
 
 import com.junbo.common.id.DeviceId
+import com.junbo.common.id.UserDeviceId
 import com.junbo.common.id.UserId
 import com.junbo.identity.data.identifiable.UserPasswordStrength
 import com.junbo.identity.data.repository.*
@@ -15,7 +16,11 @@ import com.junbo.identity.spec.v1.model.Device
 import com.junbo.identity.spec.v1.model.Group
 import com.junbo.identity.spec.v1.model.Tos
 import com.junbo.identity.spec.v1.model.UserAuthenticator
+import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
+import com.junbo.identity.spec.v1.model.UserDevice
 import com.junbo.identity.spec.v1.option.list.AuthenticatorListOptions
+import com.junbo.identity.spec.v1.option.list.UserCredentialAttemptListOptions
+import com.junbo.identity.spec.v1.option.list.UserDeviceListOptions
 import com.junbo.identity.spec.v1.option.list.UserPasswordListOptions
 import com.junbo.identity.spec.v1.option.list.UserPinListOptions
 import groovy.transform.CompileStatic
@@ -66,6 +71,14 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
     @Autowired
     @Qualifier('cloudantUserPinRepository')
     private UserPinRepository userPinRepository
+
+    @Autowired
+    @Qualifier('cloudantUserCredentialVerifyAttemptRepository')
+    private UserCredentialVerifyAttemptRepository userCredentialVerifyAttemptRepository
+
+    @Autowired
+    @Qualifier('cloudantUserDeviceRepository')
+    private UserDeviceRepository userDeviceRepository
 
     @Test
     public void test() {
@@ -232,5 +245,54 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
         getOption.setValue(newValue)
         List<UserAuthenticator> userAuthenticators = userAuthenticatorRepository.search(getOption).wrapped().get()
         assert userAuthenticators.size() != 0
+    }
+
+    @Test
+    public void testUserLoginAttemptRepository() {
+        UserCredentialVerifyAttempt userLoginAttempt = new UserCredentialVerifyAttempt()
+        userLoginAttempt.setUserId(new UserId(userId))
+        userLoginAttempt.setType('pin')
+        userLoginAttempt.setValue(UUID.randomUUID().toString())
+        userLoginAttempt.setClientId(UUID.randomUUID().toString())
+        userLoginAttempt.setIpAddress(UUID.randomUUID().toString())
+        userLoginAttempt.setUserAgent(UUID.randomUUID().toString())
+        userLoginAttempt.setSucceeded(true)
+        userLoginAttempt.setCreatedBy('lixia')
+        userLoginAttempt.setCreatedTime(new Date())
+
+        userCredentialVerifyAttemptRepository.create(userLoginAttempt).wrapped().get()
+
+        UserCredentialAttemptListOptions getOption = new UserCredentialAttemptListOptions()
+        getOption.setUserId(new UserId(userId))
+        getOption.setType('pin')
+        List<UserCredentialVerifyAttempt> userLoginAttempts =
+                userCredentialVerifyAttemptRepository.search(getOption).wrapped().get()
+        Assert.assertEquals(userLoginAttempts.size(), 1)
+    }
+
+    @Test
+    public void testUserDeviceRepository() {
+        UserDevice userDevice = new UserDevice()
+        userDevice.setDeviceId(new DeviceId(123L))
+        userDevice.setUserId(new UserId(userId))
+        userDevice.setCreatedBy('lixia')
+        userDevice.setCreatedTime(new Date())
+
+        userDevice = userDeviceRepository.create(userDevice).wrapped().get()
+
+        UserDevice newUserDevice = userDeviceRepository.get((UserDeviceId)userDevice.id).wrapped().get()
+        Assert.assertEquals(userDevice.deviceId, newUserDevice.deviceId)
+
+        DeviceId newDeviceId = new DeviceId(345L)
+        newUserDevice.setDeviceId(newDeviceId)
+        userDeviceRepository.update(newUserDevice)
+
+        newUserDevice = userDeviceRepository.get(userDevice.getId()).wrapped().get()
+        Assert.assertEquals(newDeviceId, newUserDevice.deviceId)
+
+        UserDeviceListOptions getOption = new UserDeviceListOptions()
+        getOption.setUserId(new UserId(userId))
+        List<UserDevice> userDevices = userDeviceRepository.search(getOption).wrapped().get()
+        assert userDevices.size() != 0
     }
 }

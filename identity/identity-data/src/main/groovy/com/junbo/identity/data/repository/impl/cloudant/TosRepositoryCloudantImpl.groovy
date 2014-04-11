@@ -32,7 +32,7 @@ class TosRepositoryCloudantImpl extends CloudantClient<Tos> implements TosReposi
 
     @Override
     Promise<Tos> get(TosId tosId) {
-        return Promise.pure((Tos)super.cloudantGet(tosId.value))
+        return Promise.pure((Tos)super.cloudantGet(tosId.toString()))
     }
 
     @Override

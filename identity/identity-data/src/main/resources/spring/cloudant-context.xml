@@ -42,4 +42,16 @@
         <property name="shardAlgorithm" ref="userShardAlgorithm"/>
         <property name="idGenerator" ref="oculus48IdGenerator"/>
     </bean>
+
+    <bean id="cloudantUserCredentialVerifyAttemptRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserCredentialVerifyAttemptRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="user_credential_verify_attempt"/>
+        <property name="shardAlgorithm" ref="userShardAlgorithm"/>
+        <property name="idGenerator" ref="oculus48IdGenerator"/>
+    </bean>
+
+    <bean id="cloudantUserDeviceRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserDeviceRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="user_device"/>
+        <property name="shardAlgorithm" ref="userShardAlgorithm"/>
+        <property name="idGenerator" ref="oculus48IdGenerator"/>
+    </bean>
 </beans>
