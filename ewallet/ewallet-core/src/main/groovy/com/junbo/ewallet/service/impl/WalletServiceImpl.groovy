@@ -57,7 +57,7 @@ class WalletServiceImpl implements WalletService {
 
         if (wallet.type == null) {
             throw AppErrors.INSTANCE.missingField('type').exception()
-        } else if (wallet.type.equalsIgnoreCase(WalletType.SV.toString()) && wallet.currency == null) {
+        } else if (wallet.type.equalsIgnoreCase(WalletType.STORED_VALUE.toString()) && wallet.currency == null) {
             throw AppErrors.INSTANCE.missingField('currency').exception()
         }
 
