@@ -1,7 +1,0 @@
-<?xml version="1.1" encoding="UTF-8"?>
-<testsuite name="com.junbo.order.clientproxy.CatalogFacadeTest" tests="1" failures="0" errors="0" timestamp="2014-04-04T09:27:00" hostname="XumengChendeMacBook-Pro.local" time="0.054">
-  <properties/>
-  <testcase name="testGetOffer" classname="com.junbo.order.clientproxy.CatalogFacadeTest" time="0.054"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>
