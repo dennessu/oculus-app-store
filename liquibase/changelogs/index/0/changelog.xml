@@ -123,6 +123,19 @@
 			);
 			
 			create index idx_user_group_group_id_ref on user_group_group_id_ref(key, value);
+			
+			create table user_optin_type_ref
+			(
+			  key character varying(255) NOT NULL,
+			  value bigint NOT NULL,
+			  created_by character varying(255) NOT NULL,
+			  created_time time without time zone NOT NULL,
+			  modified_by character varying(255) NOT NULL,
+			  modified_time time without time zone NOT NULL,
+			  deleted boolean NOT NULL
+			);
+			
+			create index idx_user_optin_type_ref on user_optin_type_ref(key, value);
         ]]></sql>
     </changeSet>
 

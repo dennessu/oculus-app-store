@@ -4,6 +4,7 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.identity.data.repository.impl
+
 import com.junbo.common.id.UserSecurityQuestionId
 import com.junbo.identity.data.dao.UserSecurityQuestionDAO
 import com.junbo.identity.data.entity.user.UserSecurityQuestionEntity
@@ -15,17 +16,13 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.oom.core.MappingContext
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Qualifier
-import org.springframework.stereotype.Component
 
 /**
  * Created by liangfu on 3/17/14.
  */
-@Component
 @CompileStatic
 class UserSecurityQuestionRepositoryImpl implements UserSecurityQuestionRepository {
     @Autowired
-    @Qualifier('userSecurityQuestionDAO')
     private UserSecurityQuestionDAO userSecurityQuestionDAO
 
     @Autowired

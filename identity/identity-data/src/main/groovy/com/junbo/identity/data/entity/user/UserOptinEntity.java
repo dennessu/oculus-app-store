@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.data.entity.user;
 
+import com.junbo.common.util.Identifiable;
 import com.junbo.identity.data.entity.common.ResourceMetaEntity;
 
 import javax.persistence.Column;
@@ -17,7 +18,17 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "user_optin")
-public class UserOptinEntity extends ResourceMetaEntity {
+public class UserOptinEntity extends ResourceMetaEntity implements Identifiable<Long> {
+    @Id
+    @Column(name = "id")
+    private Long id;
+
+    @Column(name = "user_id")
+    private Long userId;
+
+    @Column(name = "type")
+    private String type;
+
     public Long getId() {
         return id;
     }
@@ -41,12 +52,4 @@ public class UserOptinEntity extends ResourceMetaEntity {
     public void setType(String type) {
         this.type = type;
     }
-
-    @Id
-    @Column(name = "id")
-    private Long id;
-    @Column(name = "user_id")
-    private Long userId;
-    @Column(name = "type")
-    private String type;
 }

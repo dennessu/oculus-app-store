@@ -4,15 +4,13 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.identity.data.dao.impl
+
 import com.junbo.identity.data.dao.UserOptinDAO
 import com.junbo.identity.data.entity.user.UserOptinEntity
-import com.junbo.identity.spec.options.list.UserOptinListOptions
 import groovy.transform.CompileStatic
 import org.hibernate.Criteria
 import org.hibernate.Session
-import org.hibernate.criterion.Order
 import org.hibernate.criterion.Restrictions
-import org.springframework.util.StringUtils
 
 /**
  * Implementation for UserOptinDAO.
@@ -28,7 +26,7 @@ class UserOptinDAOImpl extends BaseDAO implements UserOptinDAO {
         session.save(entity)
         session.flush()
 
-        return get(entity.id)
+        return get((Long)entity.id)
     }
 
     @Override
@@ -37,7 +35,7 @@ class UserOptinDAOImpl extends BaseDAO implements UserOptinDAO {
         session.merge(entity)
         session.flush()
 
-        return get(entity.id)
+        return get((Long)entity.id)
     }
 
     @Override
@@ -46,20 +44,28 @@ class UserOptinDAOImpl extends BaseDAO implements UserOptinDAO {
     }
 
     @Override
-    List<UserOptinEntity> search(Long userId, UserOptinListOptions getOption) {
+    List<UserOptinEntity> searchByUserId(Long userId) {
         Criteria criteria = currentSession(userId).createCriteria(UserOptinEntity)
-        criteria.add(Restrictions.eq('userId', getOption.userId.value))
-        if (!StringUtils.isEmpty(getOption.type)) {
-           criteria.add(Restrictions.eq('type', getOption.type))
-        }
-        criteria.addOrder(Order.asc('id'))
-        if (getOption.limit != null) {
-            criteria.setMaxResults(getOption.limit)
-        }
-        if (getOption.offset != null) {
-            criteria.setFirstResult(getOption.offset)
-        }
+        criteria.add(Restrictions.eq('userId', userId))
         return criteria.list()
+    }
+
+    @Override
+    List<UserOptinEntity> searchByType(String type) {
+        UserOptinEntity example = new UserOptinEntity()
+        example.setType(type)
+
+        def result = []
+        def viewQuery = viewQueryFactory.from(example)
+        if (viewQuery != null) {
+            def userIds = viewQuery.list()
+
+            userIds.each { Long userId ->
+                result.add(get(userId))
+            }
+        }
+
+        return result
     }
 
     @Override

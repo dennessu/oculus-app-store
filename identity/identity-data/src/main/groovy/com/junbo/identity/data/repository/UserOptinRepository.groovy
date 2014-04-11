@@ -6,8 +6,8 @@
 package com.junbo.identity.data.repository
 
 import com.junbo.common.id.UserOptinId
-import com.junbo.identity.spec.model.users.UserOptin
-import com.junbo.identity.spec.options.list.UserOptinListOptions
+import com.junbo.identity.spec.v1.model.UserOptin
+import com.junbo.identity.spec.v1.option.list.UserOptinListOptions
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 

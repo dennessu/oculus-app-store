@@ -6,7 +6,6 @@
 package com.junbo.identity.data.dao
 
 import com.junbo.identity.data.entity.user.UserOptinEntity
-import com.junbo.identity.spec.options.list.UserOptinListOptions
 import groovy.transform.CompileStatic
 
 /**
@@ -17,6 +16,7 @@ interface UserOptinDAO {
     UserOptinEntity save(UserOptinEntity entity)
     UserOptinEntity update(UserOptinEntity entity)
     UserOptinEntity get(Long id)
-    List<UserOptinEntity> search(Long userId, UserOptinListOptions getOption)
+    List<UserOptinEntity> searchByUserId(Long userId)
+    List<UserOptinEntity> searchByType(String type)
     void delete(Long id)
 }
