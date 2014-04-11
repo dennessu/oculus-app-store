@@ -15,6 +15,7 @@ import com.junbo.order.core.impl.common.CoreUtils
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.error.AppErrors
+import com.junbo.order.spec.model.Order
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.slf4j.Logger
@@ -39,13 +40,35 @@ class PhysicalSettleAction extends BaseOrderEventAwareAction {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PhysicalSettleAction)
 
+    boolean completeCharge
+
     @Override
     @OrderEventAwareBefore(action = 'PhysicalSettleAction')
     @OrderEventAwareAfter(action = 'PhysicalSettleAction')
     @Transactional
     Promise<ActionResult> execute(ActionContext actionContext) {
         def context = ActionUtils.getOrderActionContext(actionContext)
-        Balance balance = CoreBuilder.buildPartialChargeBalance(context.orderServiceContext.order, BalanceType.DEBIT)
+        if (completeCharge) {
+            // complete charge, update the balance to the remaining amount
+            return facadeContainer.billingFacade.quoteBalance(
+                    CoreBuilder.buildBalance(context.orderServiceContext.order, BalanceType.DEBIT)).syncRecover {
+                Throwable throwable ->
+                    LOGGER.error('name=Fail_To_Calculate_Tax', throwable)
+                    throw AppErrors.INSTANCE.billingConnectionError().exception()
+            }.then { Balance taxedBalance ->
+                if (taxedBalance == null) {
+                    LOGGER.info('name=Fail_To_Calculate_Tax_Balance_Not_Found')
+                    throw AppErrors.INSTANCE.balanceNotFound().exception()
+                }
+                CoreBuilder.buildPartialChargeBalance(context.orderServiceContext.order,
+                        BalanceType.DEBIT, taxedBalance)
+                // TODO: put balance when BALANCE is ready
+                return Promise.pure(null)
+            }
+        }
+        // partial charge, post a 50$ balance
+        Balance balance = CoreBuilder.buildPartialChargeBalance(context.orderServiceContext.order,
+                BalanceType.DEBIT, null)
         Promise promise = facadeContainer.billingFacade.createBalance(balance)
         promise.syncRecover {  Throwable throwable ->
             LOGGER.error('name=Order_PhysicalSettle_Error', throwable)
@@ -58,16 +81,17 @@ class PhysicalSettleAction extends BaseOrderEventAwareAction {
                 throw AppErrors.INSTANCE.
                         billingConnectionError().exception()
             }
-            if (resultBalance.status != BalanceStatus.AWAITING_PAYMENT.name()) {
-                LOGGER.error('name=Order_PhysicalSettle_Failed')
-                throw AppErrors.INSTANCE.
-                        billingChargeFailed().exception()
-            }
+            //            if (resultBalance.status != BalanceStatus.AWAITING_PAYMENT.name()) {
+            //                LOGGER.error('name=Order_PhysicalSettle_Failed')
+            //                throw AppErrors.INSTANCE.
+            //                        billingChargeFailed().exception()
+            //            }
             def billingEvent = BillingEventBuilder.buildBillingEvent(resultBalance)
             orderRepository.createBillingEvent(context.orderServiceContext.order.id.value, billingEvent)
             orderServiceContextBuilder.refreshBalances(context.orderServiceContext).syncThen {
                 return CoreBuilder.buildActionResultForOrderEventAwareAction(context, billingEvent.status)
             }
         }
+
     }
 }

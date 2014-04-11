@@ -38,6 +38,8 @@ public interface OrderRepository {
     Order updateOrder(Order order, boolean updateOnlyOrder);
 
     Order getOrderByTrackingUuid(UUID trackingUuid);
+
+    OrderEvent getOrderEventByTrackingUuid(UUID trackingUuid);
     
     List<OrderEvent> getOrderEvents(Long orderId, PageParam pageParam);
 

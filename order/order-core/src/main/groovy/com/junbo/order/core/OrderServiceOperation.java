@@ -17,5 +17,6 @@ public enum OrderServiceOperation {
     SETTLE_TENTATIVE,
     UPDATE,
     CANCEL,
-    ADJUST
+    ADJUST,
+    COMPLETE_CHARGE
 }

@@ -173,6 +173,27 @@ class OrderServiceImpl implements OrderService {
         return orderInternalService.getOrderByTrackingUuid(trackingUuid, userId)
     }
 
+    @Override
+    Promise<Order> completeChargeOrder(Long orderId, ApiContext context) {
+        LOGGER.info('name=Complete_Charge_Order. orderId: {}', orderId)
+        return getOrderByOrderId(orderId).then { Order order ->
+            def orderServiceContext = initOrderServiceContext(order)
+            flowSelector.select(orderServiceContext, OrderServiceOperation.COMPLETE_CHARGE).then { String flowName ->
+                // Prepare Flow Request
+                assert (flowName != null)
+                LOGGER.info('name=Complete_Charge_Order. flowName: {}', flowName)
+                Map<String, Object> requestScope = [:]
+                def orderActionContext = new OrderActionContext()
+                orderActionContext.orderServiceContext = orderServiceContext
+                orderActionContext.trackingUuid = order.trackingUuid
+                requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object) orderActionContext)
+                executeFlow(flowName, orderServiceContext, requestScope)
+            }.syncThen {
+                return orderServiceContext.order
+            }
+        }
+    }
+
     private Promise<OrderServiceContext> executeFlow(
             String flowName, OrderServiceContext context,
             Map<String, Object> requestScope) {

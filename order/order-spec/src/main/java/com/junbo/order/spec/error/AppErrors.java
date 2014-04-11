@@ -59,6 +59,10 @@ public interface AppErrors {
             description = "Order duplicate tracking GUID. orderId: {0}, trackingUuid: {1}")
     AppError orderDuplicateTrackingGuid(Long orderId, UUID trackingUuid);
 
+    @ErrorDef(httpStatusCode = 409, code = ErrorCode.DUPLICATE_TRACKING_GUID,
+            description = "Order duplicate tracking GUID. orderEventId: {0}, trackingUuid: {1}")
+    AppError orderEventDuplicateTrackingGuid(Long orderEventId, UUID trackingUuid);
+
     @ErrorDef(httpStatusCode = 404, code = UserErrorCode.USER_NOT_FOUND,
             description = "User not found {0}")
     AppError userNotFound(String userId);

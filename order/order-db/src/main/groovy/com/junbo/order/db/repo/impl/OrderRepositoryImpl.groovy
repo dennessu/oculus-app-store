@@ -212,6 +212,20 @@ class OrderRepositoryImpl implements OrderRepository {
     }
 
     @Override
+    OrderEvent getOrderEventByTrackingUuid(UUID trackingUuid) {
+        def orderEvents = orderEventDao.readByTrackingUuid(trackingUuid)
+        if (CollectionUtils.isEmpty(orderEvents)) {
+            return null
+        }
+        if (orderEvents.size() > 1) {
+            LOGGER.error('name=Multiple_Order_Events_With_Same_TrackingUuid, ' +
+                    'trackingUuid={}', trackingUuid)
+            throw AppErrors.INSTANCE.orderEventDuplicateTrackingGuid(0L, trackingUuid).exception()
+        }
+        return modelMapper.toOrderEventModel(orderEvents[0], new MappingContext())
+    }
+
+    @Override
     List<OrderEvent> getOrderEvents(Long orderId, PageParam pageParam) {
         List<OrderEvent> events = []
         orderEventDao.readByOrderId(orderId, pageParam?.start, pageParam?.count).each { OrderEventEntity entity ->
