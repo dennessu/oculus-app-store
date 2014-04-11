@@ -458,8 +458,8 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
             throw AppClientExceptions.INSTANCE.invalidPaymentInstrumentId(
                     request.getPaymentInstrumentId().toString()).exception();
         }
-        if(!pi.getStatus().equalsIgnoreCase(PIStatus.ACTIVE.toString())){
-            throw AppServerExceptions.INSTANCE.invalidPIStatus(pi.getStatus()).exception();
+        if(!pi.getIsActive()){
+            throw AppServerExceptions.INSTANCE.invalidPI().exception();
         }
         return pi;
     }

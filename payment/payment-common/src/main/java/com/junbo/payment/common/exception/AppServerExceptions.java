@@ -24,8 +24,8 @@ public interface AppServerExceptions {
     AppError providerProcessError(String provider, String internalError);
 
     @ErrorDef(httpStatusCode = 500, code = "50003",
-            description = "The payment instrument status {0} is invalid to process")
-    AppError invalidPIStatus(String status);
+            description = "The payment instrument is invalid")
+    AppError invalidPI();
 
     @ErrorDef(httpStatusCode = 500, code = "50004",
             description = "The payment transaction status {0} is invalid to process")
