@@ -34,20 +34,12 @@ public class UserSecurityQuestionEntity extends ResourceMetaEntity {
         this.userId = userId;
     }
 
-    public Long getSecurityQuestionId() {
-        return securityQuestionId;
+    public String getSecurityQuestion() {
+        return securityQuestion;
     }
 
-    public void setSecurityQuestionId(Long securityQuestionId) {
-        this.securityQuestionId = securityQuestionId;
-    }
-
-    public Boolean getActive() {
-        return active;
-    }
-
-    public void setActive(Boolean active) {
-        this.active = active;
+    public void setSecurityQuestion(String securityQuestion) {
+        this.securityQuestion = securityQuestion;
     }
 
     public String getAnswerSalt() {
@@ -69,14 +61,16 @@ public class UserSecurityQuestionEntity extends ResourceMetaEntity {
     @Id
     @Column(name = "id")
     private Long id;
+
     @Column(name = "user_id")
     private Long userId;
-    @Column(name = "security_question_id")
-    private Long securityQuestionId;
-    @Column(name = "is_active")
-    private Boolean active;
+
+    @Column(name = "security_question")
+    private String securityQuestion;
+
     @Column(name = "answer_salt")
     private String answerSalt;
+
     @Column(name = "answer_hash")
     private String answerHash;
 }

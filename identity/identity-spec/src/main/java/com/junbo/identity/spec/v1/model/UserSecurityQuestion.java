@@ -5,7 +5,9 @@
  */
 package com.junbo.identity.spec.v1.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserSecurityQuestionId;
 import com.junbo.common.util.Identifiable;
 import com.junbo.identity.spec.model.users.ResourceMeta;
@@ -23,6 +25,15 @@ public class UserSecurityQuestion extends ResourceMeta implements Identifiable<U
     // This is the write only field
     private String answer;
 
+    @JsonIgnore
+    private String answerSalt;
+
+    @JsonIgnore
+    private String answerHash;
+
+    @JsonIgnore
+    private UserId userId;
+
     @Override
     public UserSecurityQuestionId getId() {
         return id;
@@ -30,6 +41,8 @@ public class UserSecurityQuestion extends ResourceMeta implements Identifiable<U
 
     public void setId(UserSecurityQuestionId id) {
         this.id = id;
+        support.setPropertyAssigned("self");
+        support.setPropertyAssigned("id");
     }
 
     public String getSecurityQuestion() {
@@ -38,6 +51,7 @@ public class UserSecurityQuestion extends ResourceMeta implements Identifiable<U
 
     public void setSecurityQuestion(String securityQuestion) {
         this.securityQuestion = securityQuestion;
+        support.setPropertyAssigned("securityQuestion");
     }
 
     public String getAnswer() {
@@ -46,5 +60,33 @@ public class UserSecurityQuestion extends ResourceMeta implements Identifiable<U
 
     public void setAnswer(String answer) {
         this.answer = answer;
+        support.setPropertyAssigned("answer");
+    }
+
+    public String getAnswerSalt() {
+        return answerSalt;
+    }
+
+    public void setAnswerSalt(String answerSalt) {
+        this.answerSalt = answerSalt;
+        support.setPropertyAssigned("answerSalt");
+    }
+
+    public String getAnswerHash() {
+        return answerHash;
+    }
+
+    public void setAnswerHash(String answerHash) {
+        this.answerHash = answerHash;
+        support.setPropertyAssigned("answerHash");
+    }
+
+    public UserId getUserId() {
+        return userId;
+    }
+
+    public void setUserId(UserId userId) {
+        this.userId = userId;
+        support.setPropertyAssigned("userId");
     }
 }

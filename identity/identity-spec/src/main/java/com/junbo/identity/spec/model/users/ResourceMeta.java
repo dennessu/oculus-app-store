@@ -46,6 +46,8 @@ public abstract class ResourceMeta implements PropertyAssignedAware {
 
     public void setCloudantId(String cloudantId) {
         this.cloudantId = cloudantId;
+        support.setPropertyAssigned("cloudantId");
+        support.setPropertyAssigned("_id");
     }
 
     public String getCloudantRev() {
@@ -54,6 +56,8 @@ public abstract class ResourceMeta implements PropertyAssignedAware {
 
     public void setCloudantRev(String cloudantRev) {
         this.cloudantRev = cloudantRev;
+        support.setPropertyAssigned("cloudantRev");
+        support.setPropertyAssigned("_rev");
     }
 
     public Integer getResourceAge() {
