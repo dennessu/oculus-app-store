@@ -6,7 +6,7 @@ import groovy.transform.CompileStatic
  * Created by kg on 2/26/14.
  */
 @CompileStatic
-class ConversationNotfFoundException extends RuntimeException {
+class ConversationNotfFoundException extends FlowException {
 
     ConversationNotfFoundException() {
     }
