@@ -81,7 +81,7 @@ public class ItemServiceImpl extends HttpClientBase implements ItemService {
 
     public Item prepareItemEntity(String fileName) throws Exception {
 
-       String strItem = this.readFileContent(fileName);
+        String strItem = this.readFileContent(fileName);
         Item itemForPost = new JsonMessageTranscoder().decode(new TypeReference<Item>() {},
                 strItem.toString());
         itemForPost.setName("testItem_" + RandomFactory.getRandomStringOfAlphabetOrNumeric(10));
