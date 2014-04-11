@@ -31,7 +31,6 @@ public class EntitlementResourceImpl implements EntitlementResource {
         return Promise.pure(entitlement);
     }
 
-
     @Override
     public Promise<Entitlement> postEntitlement(Entitlement entitlement) {
         Entitlement existing = getByTrackingUuid(entitlement.getTrackingUuid());

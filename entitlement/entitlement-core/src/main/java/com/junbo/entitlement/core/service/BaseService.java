@@ -63,8 +63,6 @@ public class BaseService {
     protected void fillUpdate(Entitlement entitlement, Entitlement existingEntitlement) {
         existingEntitlement.setUseCount(entitlement.getUseCount());
         existingEntitlement.setExpirationTime(entitlement.getExpirationTime());
-        existingEntitlement.setStatus(entitlement.getStatus());
-        existingEntitlement.setStatusReason(entitlement.getStatusReason());
         existingEntitlement.setRev(entitlement.getRev());
     }
 
@@ -77,16 +75,12 @@ public class BaseService {
                     .exception();
         }
         checkInAppContext(entitlement.getInAppContext());
-        if (entitlement.getStatus() != null
-                && EntitlementStatus.LIFECYCLE_NOT_MANAGED_STATUS.contains(
-                EntitlementStatus.valueOf(entitlement.getStatus().toUpperCase()))) {
-            LOGGER.error("Can not created {} entitlement.", entitlement.getStatus());
+        if (entitlement.getStatus() != null) {
             throw AppErrors.INSTANCE.fieldNotCorrect("status",
-                    "status can not be DELETED or BANNED when created").exception();
+                    "status can not be set").exception();
         }
         validateNotNull(entitlement.getType(), "type");
         validateNotNull(entitlement.getGrantTime(), "grantTime");
-        validateNotNull(entitlement.getType(), "type");
         validateNotNull(entitlement.getGroup(), "group");
         validateNotNull(entitlement.getTag(), "tag");
         validateGrantTimeBeforeExpirationTime(entitlement);

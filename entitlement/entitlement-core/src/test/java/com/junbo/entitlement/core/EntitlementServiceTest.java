@@ -77,11 +77,10 @@ public class EntitlementServiceTest extends AbstractTransactionalTestNGSpringCon
     public void testUpdateEntitlement() {
         Entitlement entitlement = buildAnEntitlement();
         Entitlement addedEntitlement = entitlementService.addEntitlement(entitlement);
-        addedEntitlement.setStatus(EntitlementStatus.BANNED.toString());
-        addedEntitlement.setStatusReason("CHEAT");
+        addedEntitlement.setUseCount(1);
         Entitlement updatedEntitlement = entitlementService.updateEntitlement(
                 addedEntitlement.getEntitlementId(), addedEntitlement);
-        Assert.assertEquals(updatedEntitlement.getStatus(), EntitlementStatus.BANNED.toString());
+        Assert.assertEquals(updatedEntitlement.getUseCount(), (Integer)1);
     }
 
     @Test
@@ -143,7 +142,6 @@ public class EntitlementServiceTest extends AbstractTransactionalTestNGSpringCon
         entitlement.setTag("TEST");
         entitlement.setType(EntitlementType.DEFAULT.toString());
         entitlement.setInAppContext(Collections.singletonList(String.valueOf(idGenerator.nextId())));
-        entitlement.setStatus(EntitlementStatus.ACTIVE.toString());
         return entitlement;
     }
 }

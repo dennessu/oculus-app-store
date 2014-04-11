@@ -106,6 +106,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
         LOGGER.info("Entitlement [{}] is deleted for transferring.", existingEntitlement.getEntitlementId());
         newEntitlement.setTrackingUuid(entitlementTransfer.getTrackingUuid());
         newEntitlement.setEntitlementId(null);
+        newEntitlement.setStatus(null);
         newEntitlement.setUserId(entitlementTransfer.getTargetUserId());
         return addEntitlement(newEntitlement);
     }
