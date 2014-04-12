@@ -84,7 +84,7 @@ class UserSecurityQuestionValidatorImpl implements UserSecurityQuestionValidator
         }
 
         // Check whether this security question is used before
-        userSecurityQuestionRepository.search(userId, new UserSecurityQuestionListOptions()).then {
+        userSecurityQuestionRepository.search(new UserSecurityQuestionListOptions(userId: userId)).then {
             List<UserSecurityQuestion> userSecurityQuestionList ->
                 if (!CollectionUtils.isEmpty(userSecurityQuestionList)) {
                     boolean exists = userSecurityQuestionList.any { UserSecurityQuestion existing ->
@@ -139,7 +139,7 @@ class UserSecurityQuestionValidatorImpl implements UserSecurityQuestionValidator
             }
 
             if (userSecurityQuestion.securityQuestion != oldUserSecurityQuestion.securityQuestion) {
-                userSecurityQuestionRepository.search(userId, new UserSecurityQuestionListOptions()).then {
+                userSecurityQuestionRepository.search(new UserSecurityQuestionListOptions(userId: userId)).then {
                     List<UserSecurityQuestion> userSecurityQuestionList ->
                     boolean securityQuestionExists = userSecurityQuestionList.any { UserSecurityQuestion existing ->
                         return (existing.securityQuestion == userSecurityQuestion.securityQuestion)

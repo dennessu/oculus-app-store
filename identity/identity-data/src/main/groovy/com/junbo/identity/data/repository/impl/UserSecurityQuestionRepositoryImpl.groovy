@@ -5,7 +5,6 @@
  */
 package com.junbo.identity.data.repository.impl
 
-import com.junbo.common.id.UserId
 import com.junbo.common.id.UserSecurityQuestionId
 import com.junbo.identity.data.dao.UserSecurityQuestionDAO
 import com.junbo.identity.data.entity.user.UserSecurityQuestionEntity
@@ -54,8 +53,8 @@ class UserSecurityQuestionRepositoryImpl implements UserSecurityQuestionReposito
     }
 
     @Override
-    Promise<List<UserSecurityQuestion>> search(UserId userId, UserSecurityQuestionListOptions getOption) {
-        List entities = userSecurityQuestionDAO.search(userId.value, getOption)
+    Promise<List<UserSecurityQuestion>> search(UserSecurityQuestionListOptions getOption) {
+        List entities = userSecurityQuestionDAO.search(getOption.userId.value, getOption)
 
         List<UserSecurityQuestion> results = new ArrayList<UserSecurityQuestion>()
         entities.each { UserSecurityQuestionEntity entity ->

@@ -55,20 +55,14 @@ class UserPasswordRepositoryCloudantImpl extends CloudantClient<UserPassword> im
 
     @Override
     Promise<List<UserPassword>> search(UserPasswordListOptions getOption) {
-        def result = []
         def list = super.queryView('by_user_id', getOption.userId.value.toString())
         if (getOption.active != null) {
-            list.each { UserPassword element ->
-                if (getOption.active == element.active) {
-                    result.add(element)
-                }
+            list.retainAll { UserPassword element ->
+                element.active == getOption.active
             }
         }
-        else {
-            result.addAll(list)
-        }
 
-        return Promise.pure(result)
+        return Promise.pure(list)
     }
 
     @Override

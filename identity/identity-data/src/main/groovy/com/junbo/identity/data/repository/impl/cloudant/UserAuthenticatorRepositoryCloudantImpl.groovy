@@ -68,8 +68,12 @@ class UserAuthenticatorRepositoryCloudantImpl extends CloudantClient<UserAuthent
                 list = super.queryView('by_user_id_auth_type', "${getOption.userId.value}:${getOption.type}",
                         getOption.limit, getOption.offset, false)
             }
-            else {
+            else if (getOption.value != null) {
                 list = super.queryView('by_user_id_auth_value', "${getOption.userId.value}:${getOption.value}",
+                        getOption.limit, getOption.offset, false)
+            }
+            else {
+                list = super.queryView('by_user_id', "${getOption.userId.value}",
                         getOption.limit, getOption.offset, false)
             }
         }
@@ -101,6 +105,11 @@ class UserAuthenticatorRepositoryCloudantImpl extends CloudantClient<UserAuthent
                     'by_user_id_auth_type_auth_value': new CloudantViews.CloudantView(
                             map: 'function(doc) {' +
                                     '  emit(doc.user.value + \':\' + doc.type + \':\' + doc.value, doc._id)' +
+                                    '}',
+                            resultClass: String),
+                    'by_user_id': new CloudantViews.CloudantView(
+                            map: 'function(doc) {' +
+                                    '  emit(doc.user.value, doc._id)' +
                                     '}',
                             resultClass: String)
             ]

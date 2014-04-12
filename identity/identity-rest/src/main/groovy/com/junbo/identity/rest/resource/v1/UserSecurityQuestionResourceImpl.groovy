@@ -159,9 +159,10 @@ class UserSecurityQuestionResourceImpl implements UserSecurityQuestionResource {
         if (listOptions == null) {
             throw new IllegalArgumentException('listOptions is null')
         }
+        listOptions.setUserId(userId)
 
         return userSecurityQuestionValidator.validateForSearch(listOptions).then {
-            userSecurityQuestionRepository.search(userId, listOptions)
+            userSecurityQuestionRepository.search(listOptions)
                     .then { List<UserSecurityQuestion> userSecurityQuestionList ->
                 def result = new Results<UserSecurityQuestion>(items: [])
 

@@ -5,7 +5,6 @@
  */
 package com.junbo.identity.data.repository
 
-import com.junbo.common.id.UserId
 import com.junbo.common.id.UserSecurityQuestionId
 import com.junbo.identity.spec.v1.model.UserSecurityQuestion
 import com.junbo.identity.spec.v1.option.list.UserSecurityQuestionListOptions
@@ -23,7 +22,7 @@ interface UserSecurityQuestionRepository {
 
     Promise<UserSecurityQuestion> get(UserSecurityQuestionId id)
 
-    Promise<List<UserSecurityQuestion>> search(UserId userId, UserSecurityQuestionListOptions getOption)
+    Promise<List<UserSecurityQuestion>> search(UserSecurityQuestionListOptions getOption)
 
     Promise<Void> delete(UserSecurityQuestionId id)
 }

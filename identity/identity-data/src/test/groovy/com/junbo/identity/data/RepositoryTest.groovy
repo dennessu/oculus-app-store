@@ -41,6 +41,7 @@ import com.junbo.identity.spec.v1.option.list.UserTosAgreementListOptions
 import groovy.transform.CompileStatic
 import org.glassfish.jersey.internal.util.Base64
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.TestExecutionListeners
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests
@@ -62,42 +63,55 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
     private final long userId = 1493188608L
 
     @Autowired
+    @Qualifier('userRepository')
     private UserRepository userRepository
 
     @Autowired
+    @Qualifier('groupRepository')
     private GroupRepository groupRepository
 
     @Autowired
+    @Qualifier('userPinRepository')
     private UserPinRepository userPinRepository
 
     @Autowired
+    @Qualifier('userAuthenticatorRepository')
     private UserAuthenticatorRepository userAuthenticatorRepository
 
     @Autowired
+    @Qualifier('userDeviceRepository')
     private UserDeviceRepository userDeviceRepository
 
     @Autowired
+    @Qualifier('userGroupRepository')
     private UserGroupRepository userGroupRepository
 
     @Autowired
-    private UserCredentialVerifyAttemptRepository userLoginAttemptRepository
+    @Qualifier('userCredentialVerifyAttemptRepository')
+    private UserCredentialVerifyAttemptRepository userCredentialVerifyAttemptRepository
 
     @Autowired
+    @Qualifier('userOptinRepository')
     private UserOptinRepository userOptinRepository
 
     @Autowired
+    @Qualifier('userPasswordRepository')
     private UserPasswordRepository userPasswordRepository
 
     @Autowired
+    @Qualifier('userSecurityQuestionRepository')
     private UserSecurityQuestionRepository userSecurityQuestionRepository
 
     @Autowired
+    @Qualifier('userTosRepository')
     private UserTosRepository userTosRepository
 
     @Autowired
+    @Qualifier('userSecurityQuestionAttemptRepository')
     private UserSecurityQuestionAttemptRepository userSecurityQuestionAttemptRepository
 
     @Autowired
+    @Qualifier('deviceRepository')
     private DeviceRepository deviceRepository
 
     @Test(enabled = true)
@@ -110,9 +124,11 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         user.setPreferredLanguage(UUID.randomUUID().toString())
         user.setTimezone(UUID.randomUUID().toString())
         user.setType(UUID.randomUUID().toString())
-        user.setUsername(UUID.randomUUID().toString())
+        def name = UUID.randomUUID().toString()
+        user.setUsername(name)
         user.setCreatedTime(new Date())
         user.setCreatedBy('lixia')
+        user.setCanonicalUsername(name)
         user = userRepository.create(user).wrapped().get()
 
         User newUser = userRepository.get(user.getId()).wrapped().get()
@@ -295,23 +311,23 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userLoginAttempt.setCreatedBy('lixia')
         userLoginAttempt.setCreatedTime(new Date())
 
-        userLoginAttempt = userLoginAttemptRepository.create(userLoginAttempt).wrapped().get()
+        userLoginAttempt = userCredentialVerifyAttemptRepository.create(userLoginAttempt).wrapped().get()
 
         UserCredentialVerifyAttempt newUserLoginAttempt =
-                userLoginAttemptRepository.get(userLoginAttempt.getId()).wrapped().get()
+                userCredentialVerifyAttemptRepository.get(userLoginAttempt.getId()).wrapped().get()
         Assert.assertEquals(userLoginAttempt.getIpAddress(), newUserLoginAttempt.getIpAddress())
 
         String value = UUID.randomUUID().toString()
         newUserLoginAttempt.setIpAddress(value)
-        userLoginAttemptRepository.update(newUserLoginAttempt)
+        userCredentialVerifyAttemptRepository.update(newUserLoginAttempt)
 
-        newUserLoginAttempt = userLoginAttemptRepository.get(userLoginAttempt.getId()).wrapped().get()
+        newUserLoginAttempt = userCredentialVerifyAttemptRepository.get(userLoginAttempt.getId()).wrapped().get()
         Assert.assertEquals(newUserLoginAttempt.getIpAddress(), value)
 
         UserCredentialAttemptListOptions getOption = new UserCredentialAttemptListOptions()
         getOption.setUserId(new UserId(userId))
         List<UserCredentialVerifyAttempt> userLoginAttempts =
-                userLoginAttemptRepository.search(getOption).wrapped().get()
+                userCredentialVerifyAttemptRepository.search(getOption).wrapped().get()
         assert userLoginAttempts.size() != 0
     }
 
@@ -364,7 +380,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         Assert.assertEquals(newUserSecurityQuestion.getAnswerSalt(), value)
 
         List<UserSecurityQuestion> securityQuestions = userSecurityQuestionRepository.
-                search(new UserId(userId), new UserSecurityQuestionListOptions()).wrapped().get()
+                search(new UserSecurityQuestionListOptions(userId: new UserId(userId))).wrapped().get()
         assert securityQuestions.size() != 0
     }
 
