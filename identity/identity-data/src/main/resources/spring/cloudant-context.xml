@@ -90,4 +90,11 @@
         <property name="shardAlgorithm" ref="userShardAlgorithm"/>
         <property name="idGenerator" ref="oculus48IdGenerator"/>
     </bean>
+
+    <bean id="cloudantUserTosRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserTosRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="user_tos"/>
+        <property name="shardAlgorithm" ref="userShardAlgorithm"/>
+        <property name="idGenerator" ref="oculus48IdGenerator"/>
+    </bean>
+
 </beans>
