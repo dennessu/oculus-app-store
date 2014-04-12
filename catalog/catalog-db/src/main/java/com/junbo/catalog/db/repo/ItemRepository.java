@@ -6,25 +6,47 @@
 
 package com.junbo.catalog.db.repo;
 
-import com.junbo.catalog.db.convertor.ItemConverter;
 import com.junbo.catalog.db.dao.ItemDao;
+import com.junbo.catalog.db.entity.ItemEntity;
+import com.junbo.catalog.db.mapper.ItemMapper;
+import com.junbo.catalog.spec.error.AppErrors;
 import com.junbo.catalog.spec.model.item.Item;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Item repository.
  */
-public class ItemRepository implements EntityRepository<Item> {
+public class ItemRepository implements BaseEntityRepository<Item> {
     @Autowired
     private ItemDao itemDao;
 
     @Override
     public Long create(Item item) {
-        return itemDao.create(ItemConverter.toEntity(item));
+        return itemDao.create(ItemMapper.toDBEntity(item));
     }
 
     @Override
-    public Item get(Long id, Long timestamp) {
-        return ItemConverter.toModel(itemDao.getItem(id, timestamp));
+    public Item get(Long entityId) {
+        return ItemMapper.toModel(itemDao.get(entityId));
+    }
+
+    @Override
+    public Long update(Item item) {
+        ItemEntity dbEntity = itemDao.get(item.getItemId());
+        if (dbEntity == null) {
+            throw AppErrors.INSTANCE.notFound("item", item.getItemId()).exception();
+        }
+        ItemMapper.fillDBEntity(item, dbEntity);
+        return itemDao.update(dbEntity);
+    }
+
+    @Override
+    public void delete(Long itemId) {
+        ItemEntity dbEntity = itemDao.get(itemId);
+        if (dbEntity == null) {
+            throw AppErrors.INSTANCE.notFound("item", itemId).exception();
+        }
+        dbEntity.setDeleted(true);
+        itemDao.update(dbEntity);
     }
 }

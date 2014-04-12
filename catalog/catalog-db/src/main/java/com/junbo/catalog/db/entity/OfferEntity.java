@@ -6,39 +6,29 @@
 
 package com.junbo.catalog.db.entity;
 
-import com.junbo.catalog.db.dao.StringJsonUserType;
+import com.junbo.catalog.db.dao.LongArrayUserType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 
 /**
  * Offer DB entity.
  */
 @Entity
 @Table(name="offer")
-@TypeDefs(@TypeDef(name="json-string", typeClass=StringJsonUserType.class))
-public class OfferEntity extends VersionedEntity {
-    private Long id;
+@TypeDefs(@TypeDef(name="long-array", typeClass=LongArrayUserType.class))
+public class OfferEntity extends BaseEntity {
     private Long offerId;
-    private String name;
+    private String offerName;
     private Long ownerId;
-    private String payload;
+    private boolean curated;
+    private Long currentRevisionId;
+    private List<Long> categories;
 
     @Id
-    @Column(name = "id")
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     @Column(name = "offer_id")
     public Long getOfferId() {
         return offerId;
@@ -49,12 +39,12 @@ public class OfferEntity extends VersionedEntity {
     }
 
     @Column(name = "offer_name")
-    public String getName() {
-        return name;
+    public String getOfferName() {
+        return offerName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setOfferName(String offerName) {
+        this.offerName = offerName;
     }
 
     @Column(name = "owner_id")
@@ -66,13 +56,42 @@ public class OfferEntity extends VersionedEntity {
         this.ownerId = ownerId;
     }
 
-    @Column(name = "payload")
-    @Type(type = "json-string")
-    public String getPayload() {
-        return payload;
+    @Column(name = "curated")
+    public boolean isCurated() {
+        return curated;
     }
 
-    public void setPayload(String payload) {
-        this.payload = payload;
+    public void setCurated(boolean curated) {
+        this.curated = curated;
+    }
+
+    @Column(name = "current_revision_id")
+    public Long getCurrentRevisionId() {
+        return currentRevisionId;
+    }
+
+    public void setCurrentRevisionId(Long currentRevisionId) {
+        this.currentRevisionId = currentRevisionId;
+    }
+
+    @Column(name = "categories")
+    @Type(type = "long-array")
+    public List<Long> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<Long> categories) {
+        this.categories = categories;
+    }
+
+    @Override
+    @Transient
+    public Long getId() {
+        return offerId;
+    }
+
+    @Override
+    public void setId(Long id) {
+        this.offerId = id;
     }
 }

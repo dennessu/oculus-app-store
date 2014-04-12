@@ -6,25 +6,60 @@
 
 package com.junbo.catalog.db.repo;
 
-import com.junbo.catalog.db.convertor.OfferConverter;
 import com.junbo.catalog.db.dao.OfferDao;
+import com.junbo.catalog.db.entity.OfferEntity;
+import com.junbo.catalog.db.mapper.OfferMapper;
+import com.junbo.catalog.spec.error.AppErrors;
 import com.junbo.catalog.spec.model.offer.Offer;
+import com.junbo.catalog.spec.model.offer.OffersGetOptions;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Offer repository.
  */
-public class OfferRepository implements EntityRepository<Offer> {
+public class OfferRepository implements BaseEntityRepository<Offer> {
     @Autowired
     private OfferDao offerDao;
 
-    @Override
     public Long create(Offer offer) {
-        return offerDao.create(OfferConverter.toEntity(offer));
+        return offerDao.create(OfferMapper.toDBEntity(offer));
+    }
+
+    public Offer get(Long offerId) {
+        return OfferMapper.toModel(offerDao.get(offerId));
+    }
+
+    public List<Offer> getOffers(OffersGetOptions options) {
+        List<OfferEntity> offerEntities = offerDao.getOffers(options);
+        List<Offer> offers = new ArrayList<>();
+        for (OfferEntity offerEntity : offerEntities) {
+            Offer offer = OfferMapper.toModel(offerEntity);
+            offers.add(offer);
+        }
+
+        return offers;
     }
 
     @Override
-    public Offer get(Long offerId, Long timestamp) {
-        return OfferConverter.toModel(offerDao.getOffer(offerId, timestamp));
+    public Long update(Offer offer) {
+        OfferEntity dbEntity = offerDao.get(offer.getOfferId());
+        if (dbEntity == null) {
+            throw AppErrors.INSTANCE.notFound("offer", offer.getOfferId()).exception();
+        }
+        OfferMapper.fillDBEntity(offer, dbEntity);
+        return offerDao.update(dbEntity);
+    }
+
+    @Override
+    public void delete(Long offerId) {
+        OfferEntity dbEntity = offerDao.get(offerId);
+        if (dbEntity == null) {
+            throw AppErrors.INSTANCE.notFound("offer", offerId).exception();
+        }
+        dbEntity.setDeleted(true);
+        offerDao.update(dbEntity);
     }
 }

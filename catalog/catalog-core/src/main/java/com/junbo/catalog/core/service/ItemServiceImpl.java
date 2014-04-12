@@ -8,76 +8,125 @@ package com.junbo.catalog.core.service;
 
 import com.junbo.catalog.core.EntitlementDefinitionService;
 import com.junbo.catalog.core.ItemService;
-import com.junbo.catalog.db.repo.ItemDraftRepository;
 import com.junbo.catalog.db.repo.ItemRepository;
+import com.junbo.catalog.db.repo.ItemRevisionRepository;
 import com.junbo.catalog.spec.error.AppErrors;
-import com.junbo.catalog.spec.model.common.Status;
+import com.junbo.catalog.spec.model.common.ExtensibleProperties;
+import com.junbo.catalog.spec.model.common.LocalizableProperty;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementType;
 import com.junbo.catalog.spec.model.item.Item;
+import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.catalog.spec.model.item.ItemType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 /**
  * Item service implementation.
  */
-public class ItemServiceImpl extends BaseServiceImpl<Item> implements ItemService {
+public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevision> implements ItemService {
     @Autowired
-    private ItemRepository itemRepository;
+    private ItemRepository itemRepo;
     @Autowired
-    private ItemDraftRepository itemDraftRepository;
+    private ItemRevisionRepository itemRevisionRepo;
     @Autowired
     private EntitlementDefinitionService entitlementDefService;
 
     @Override
-    public ItemRepository getEntityRepo() {
-        return itemRepository;
-    }
-
-    @Override
-    public ItemDraftRepository getEntityDraftRepo() {
-        return itemDraftRepository;
-    }
-
-    @Override
-    public Item create(Item item) {
+    public Item createEntity(Item item) {
+        if (Boolean.TRUE.equals(item.getCurated())) {
+            throw AppErrors.INSTANCE.fieldNotCorrect("curated", "Cannot create an item with curated true.").exception();
+        }
         validateItem(item);
-        item.setStatus(Status.DESIGN);
-        Long itemId = itemDraftRepository.create(item);
-        item.setId(itemId);
 
-        if (ItemType.APP.equalsIgnoreCase(item.getType())) {
+        Long itemId = itemRepo.create(item);
+        item.setItemId(itemId);
+        generateEntitlementDef(item);
+        itemRepo.update(item);
+
+        return itemRepo.get(itemId);
+    }
+
+    @Override
+    public ItemRevision createRevision(ItemRevision revision) {
+        validateRevision(revision);
+        return super.createRevision(revision);
+    }
+
+    @Override
+    protected ItemRepository getEntityRepo() {
+        return itemRepo;
+    }
+
+    @Override
+    protected ItemRevisionRepository getRevisionRepo() {
+        return itemRevisionRepo;
+    }
+
+    @Override
+    protected String getEntityType() {
+        return "item";
+    }
+
+    @Override
+    protected String getRevisionType() {
+        return "item-revision";
+    }
+
+    private void generateEntitlementDef(Item item) {
+        if (ItemType.DIGITAL.equalsIgnoreCase(item.getType())) {
             EntitlementDefinition entitlementDef = new EntitlementDefinition();
             entitlementDef.setDeveloperId(item.getOwnerId());
-            entitlementDef.setGroup(itemId.toString());
+            entitlementDef.setGroup(item.getItemId().toString());
             entitlementDef.setType(EntitlementType.DOWNLOAD.name());
-            entitlementDef.setTag(item.getName());
+            entitlementDef.setTag(item.getItemId().toString());
             Long entitlementDefId = entitlementDefService.createEntitlementDefinition(entitlementDef);
             item.setEntitlementDefId(entitlementDefId);
         }
-        itemDraftRepository.update(item);
-
-        return itemDraftRepository.get(itemId);
-    }
-
-    @Override
-    public Item update(Long entityId, Item entity) {
-        validateId(entityId, entity);
-        return updateEntity(entityId, entity);
     }
 
     private void validateItem(Item item) {
         checkFieldNotEmpty(item.getType(), "type");
-        checkFieldNotEmpty(item.getName(), "name");
+        checkFieldNotNull(item.getName(), "name");
         checkFieldNotNull(item.getOwnerId(), "developer");
+
+        if (!ItemType.ALL_TYPES.contains(item.getType())) {
+            throw AppErrors.INSTANCE.fieldNotCorrect("type", "Valid item types: " + ItemType.ALL_TYPES).exception();
+        }
 
         if (item.getEntitlementDefId() != null) {
             throw AppErrors.INSTANCE.unnecessaryField("entitlementDefinition").exception();
         }
     }
 
-    @Override
-    protected String getEntityType() {
-        return "Item";
+    private void validateRevision(ItemRevision revision) {
+        checkFieldNotEmpty(revision.getType(), "type");
+        checkFieldNotNull(revision.getItemId(), "item");
+        checkFieldNotNull(revision.getOwnerId(), "developer");
+
+        Item item = itemRepo.get(revision.getItemId());
+        checkEntityNotNull(revision.getItemId(), item, "item");
+        if (!revision.getType().equals(item.getType())) {
+            throw AppErrors.INSTANCE.fieldNotMatch("type", revision.getType(), item.getType()).exception();
+        }
+
+        if (ItemType.DIGITAL.equals(revision.getType())) {
+            ExtensibleProperties digitalProps = revision.getDigitalProperties();
+            if (digitalProps == null) {
+                throw AppErrors.INSTANCE.missingField("digitalProperties").exception();
+            }
+            if (StringUtils.isEmpty(revision.getDigitalProperties().get("downloadLink"))) {
+                throw AppErrors.INSTANCE.missingField("digitalProperties.downloadLink").exception();
+            }
+        }
+
+        if (revision.getDisplayName()==null || CollectionUtils.isEmpty(revision.getDisplayName().getLocales())) {
+            throw AppErrors.INSTANCE.missingField("displayName").exception();
+        }
+        if (StringUtils.isEmpty(revision.getDisplayName().locale(LocalizableProperty.DEFAULT))) {
+            throw AppErrors.INSTANCE.validation("displayName should have value for 'DEFAULT' locale.").exception();
+        }
+
     }
 }

@@ -7,11 +7,12 @@
 package com.junbo.catalog.core;
 
 import com.junbo.catalog.spec.model.item.Item;
+import com.junbo.catalog.spec.model.item.ItemRevision;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Item service definition.
  */
 @Transactional
-public interface ItemService extends BaseService<Item> {
+public interface ItemService extends BaseRevisionedService<Item, ItemRevision> {
 }

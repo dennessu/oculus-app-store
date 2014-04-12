@@ -6,8 +6,9 @@
 
 package com.junbo.catalog.spec.model.item;
 
-import com.junbo.catalog.spec.model.common.EntitiesGetOptions;
+import com.junbo.catalog.spec.model.common.PageableGetOptions;
 import com.junbo.common.id.ItemId;
+import com.junbo.common.jackson.annotation.AttributeId;
 
 import javax.ws.rs.QueryParam;
 import java.util.List;
@@ -15,13 +16,16 @@ import java.util.List;
 /**
  * Items get options.
  */
-public class ItemsGetOptions extends EntitiesGetOptions {
+public class ItemsGetOptions extends PageableGetOptions {
     @QueryParam("id")
     private List<ItemId> itemIds;
-
-    public static ItemsGetOptions getDefault() {
-        return setDefaults(new ItemsGetOptions());
-    }
+    @QueryParam("curated")
+    private Boolean curated;
+    @QueryParam("type")
+    private String type;
+    @AttributeId
+    @QueryParam("genre")
+    private Long genre;
 
     public List<ItemId> getItemIds() {
         return itemIds;
@@ -31,8 +35,27 @@ public class ItemsGetOptions extends EntitiesGetOptions {
         this.itemIds = itemIds;
     }
 
-    @Override
-    public List<ItemId> getEntityIds() {
-        return itemIds;
+    public Boolean getCurated() {
+        return curated;
+    }
+
+    public void setCurated(Boolean curated) {
+        this.curated = curated;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public Long getGenre() {
+        return genre;
+    }
+
+    public void setGenre(Long genre) {
+        this.genre = genre;
     }
 }

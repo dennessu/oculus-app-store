@@ -6,13 +6,20 @@
 
 package com.junbo.catalog.spec.model.item;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Item type.
  */
 public final class ItemType {
     public static final String PHYSICAL = "PHYSICAL";
-    public static final String APP = "APP";
-    public static final String IAP = "IAP";
+    public static final String DIGITAL = "DIGITAL";
+    public static final String EWALLET = "EWALLET";
+    public static final Set<String> ALL_TYPES =
+            Collections.unmodifiableSet(new HashSet<>(Arrays.asList(PHYSICAL, DIGITAL, EWALLET)));
 
     private ItemType() {}
 }
