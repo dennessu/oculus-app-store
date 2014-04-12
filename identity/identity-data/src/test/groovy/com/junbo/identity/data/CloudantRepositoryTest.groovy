@@ -9,6 +9,7 @@ import com.junbo.common.id.DeviceId
 import com.junbo.common.id.GroupId
 import com.junbo.common.id.UserDeviceId
 import com.junbo.common.id.UserId
+import com.junbo.common.id.UserSecurityQuestionId
 import com.junbo.identity.data.identifiable.UserPasswordStrength
 import com.junbo.identity.data.repository.*
 import com.junbo.identity.spec.model.users.UserPassword
@@ -25,6 +26,8 @@ import com.junbo.identity.spec.v1.model.UserGroup
 import com.junbo.identity.spec.v1.model.UserName
 import com.junbo.identity.spec.v1.model.UserOptin
 import com.junbo.identity.spec.v1.model.UserPii
+import com.junbo.identity.spec.v1.model.UserSecurityQuestion
+import com.junbo.identity.spec.v1.model.UserSecurityQuestionVerifyAttempt
 import com.junbo.identity.spec.v1.option.list.AuthenticatorListOptions
 import com.junbo.identity.spec.v1.option.list.UserCredentialAttemptListOptions
 import com.junbo.identity.spec.v1.option.list.UserDeviceListOptions
@@ -33,6 +36,8 @@ import com.junbo.identity.spec.v1.option.list.UserOptinListOptions
 import com.junbo.identity.spec.v1.option.list.UserPasswordListOptions
 import com.junbo.identity.spec.v1.option.list.UserPiiListOptions
 import com.junbo.identity.spec.v1.option.list.UserPinListOptions
+import com.junbo.identity.spec.v1.option.list.UserSecurityQuestionAttemptListOptions
+import com.junbo.identity.spec.v1.option.list.UserSecurityQuestionListOptions
 import groovy.transform.CompileStatic
 import org.glassfish.jersey.internal.util.Base64
 import org.springframework.beans.factory.annotation.Autowired
@@ -105,6 +110,15 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
     @Autowired
     @Qualifier('cloudantUserRepository')
     private UserRepository userRepository
+
+    @Autowired
+    @Qualifier('cloudantUserSecurityQuestionRepository')
+    private UserSecurityQuestionRepository userSecurityQuestionRepository
+
+
+    @Autowired
+    @Qualifier('cloudantUserSecurityQuestionAttemptRepository')
+    private UserSecurityQuestionAttemptRepository userSecurityQuestionAttemptRepository
 
     @Test
     public void test() {
@@ -445,5 +459,58 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
 
         User findUser = userRepository.getUserByCanonicalUsername(newUser.getUsername()).wrapped().get()
         Assert.assertNotNull(findUser)
+    }
+
+    @Test
+    public void testUserSecurityQuestionAttempt() {
+        UserSecurityQuestionVerifyAttempt attempt = new UserSecurityQuestionVerifyAttempt()
+        attempt.setUserId(new UserId(userId))
+        attempt.setSucceeded(true)
+        attempt.setValue(UUID.randomUUID().toString())
+        attempt.setClientId(UUID.randomUUID().toString())
+        attempt.setIpAddress(UUID.randomUUID().toString())
+        attempt.setUserSecurityQuestionId(new UserSecurityQuestionId(123L))
+        attempt.setUserAgent(UUID.randomUUID().toString())
+
+        attempt = userSecurityQuestionAttemptRepository.create(attempt).wrapped().get()
+
+        UserSecurityQuestionVerifyAttempt newAttempt =
+                userSecurityQuestionAttemptRepository.get(attempt.getId()).wrapped().get()
+        Assert.assertEquals(attempt.getIpAddress(), newAttempt.getIpAddress())
+
+        UserSecurityQuestionAttemptListOptions option = new UserSecurityQuestionAttemptListOptions()
+        option.setUserId(new UserId(userId))
+        option.setUserSecurityQuestionId(new UserSecurityQuestionId(123L))
+        List<UserSecurityQuestionVerifyAttempt> attempts =
+                userSecurityQuestionAttemptRepository.search(option).wrapped().get()
+        assert attempts.size() != 0
+    }
+
+    @Test
+    public void testUserSecurityQuestionRepository() {
+        UserSecurityQuestion userSecurityQuestion = new UserSecurityQuestion()
+        userSecurityQuestion.setUserId(new UserId(userId))
+        userSecurityQuestion.setSecurityQuestion('whosyourdaddy')
+        userSecurityQuestion.setAnswerHash(UUID.randomUUID().toString())
+        userSecurityQuestion.setAnswerSalt(UUID.randomUUID().toString())
+        userSecurityQuestion.setCreatedBy('lixia')
+        userSecurityQuestion.setCreatedTime(new Date())
+
+        userSecurityQuestion = userSecurityQuestionRepository.create(userSecurityQuestion).wrapped().get()
+
+        UserSecurityQuestion newUserSecurityQuestion =
+                userSecurityQuestionRepository.get(userSecurityQuestion.getId()).wrapped().get()
+        Assert.assertEquals(userSecurityQuestion.getAnswerHash(), newUserSecurityQuestion.getAnswerHash())
+
+        String value = UUID.randomUUID().toString()
+        newUserSecurityQuestion.setAnswerSalt(value)
+        userSecurityQuestionRepository.update(newUserSecurityQuestion)
+
+        newUserSecurityQuestion = userSecurityQuestionRepository.get(userSecurityQuestion.getId()).wrapped().get()
+        Assert.assertEquals(newUserSecurityQuestion.getAnswerSalt(), value)
+
+        List<UserSecurityQuestion> securityQuestions = userSecurityQuestionRepository.
+                search(new UserId(userId), new UserSecurityQuestionListOptions()).wrapped().get()
+        assert securityQuestions.size() != 0
     }
 }

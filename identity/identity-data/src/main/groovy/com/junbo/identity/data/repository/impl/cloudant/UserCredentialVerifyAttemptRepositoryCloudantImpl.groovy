@@ -56,7 +56,8 @@ class UserCredentialVerifyAttemptRepositoryCloudantImpl extends CloudantClient<U
 
     @Override
     Promise<List<UserCredentialVerifyAttempt>> search(UserCredentialAttemptListOptions getOption) {
-        def list = super.queryView('by_user_id', getOption.userId.value.toString())
+        def list = super.queryView('by_user_id', getOption.userId.value.toString(),
+                getOption.limit, getOption.offset, false)
         if (getOption.type != null) {
             list.removeAll { UserCredentialVerifyAttempt attempt ->
                 attempt.type != getOption.type
