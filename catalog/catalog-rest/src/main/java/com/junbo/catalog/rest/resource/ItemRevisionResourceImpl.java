@@ -8,12 +8,14 @@ package com.junbo.catalog.rest.resource;
 
 import com.junbo.catalog.core.ItemService;
 import com.junbo.catalog.spec.model.item.ItemRevision;
+import com.junbo.catalog.spec.model.item.ItemRevisionsGetOptions;
 import com.junbo.catalog.spec.resource.ItemRevisionResource;
-import com.junbo.common.id.ItemId;
 import com.junbo.common.id.ItemRevisionId;
 import com.junbo.common.model.Results;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 /**
  * Item revision resource implementation.
@@ -23,8 +25,11 @@ public class ItemRevisionResourceImpl implements ItemRevisionResource {
     private ItemService itemService;
 
     @Override
-    public Promise<Results<ItemRevision>> getItemRevisions(ItemId itemId) {
-        return null;
+    public Promise<Results<ItemRevision>> getItemRevisions(ItemRevisionsGetOptions options) {
+        List<ItemRevision> revisions = itemService.getRevisions(options);
+        Results<ItemRevision> results = new Results<>();
+        results.setItems(revisions);
+        return Promise.pure(results);
     }
 
     @Override

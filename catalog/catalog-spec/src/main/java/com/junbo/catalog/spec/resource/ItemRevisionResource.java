@@ -7,7 +7,7 @@
 package com.junbo.catalog.spec.resource;
 
 import com.junbo.catalog.spec.model.item.ItemRevision;
-import com.junbo.common.id.ItemId;
+import com.junbo.catalog.spec.model.item.ItemRevisionsGetOptions;
 import com.junbo.common.id.ItemRevisionId;
 import com.junbo.common.model.Results;
 import com.junbo.langur.core.RestResource;
@@ -30,7 +30,7 @@ public interface ItemRevisionResource {
     @ApiOperation("Get or search item revisions")
     @GET
     @Path("/")
-    Promise<Results<ItemRevision>> getItemRevisions(@QueryParam("itemId") ItemId itemId);
+    Promise<Results<ItemRevision>> getItemRevisions(@BeanParam ItemRevisionsGetOptions options);
 
     @ApiOperation("Get an item revision")
     @GET

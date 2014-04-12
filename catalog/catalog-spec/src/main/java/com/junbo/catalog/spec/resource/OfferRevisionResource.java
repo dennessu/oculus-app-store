@@ -7,7 +7,7 @@
 package com.junbo.catalog.spec.resource;
 
 import com.junbo.catalog.spec.model.offer.OfferRevision;
-import com.junbo.common.id.OfferId;
+import com.junbo.catalog.spec.model.offer.OfferRevisionsGetOptions;
 import com.junbo.common.id.OfferRevisionId;
 import com.junbo.common.model.Results;
 import com.junbo.langur.core.RestResource;
@@ -30,7 +30,7 @@ public interface OfferRevisionResource {
     @ApiOperation("Get or search offer revisions")
     @GET
     @Path("/")
-    Promise<Results<OfferRevision>> getOfferRevisions(@QueryParam("offerId") OfferId offerId);
+    Promise<Results<OfferRevision>> getOfferRevisions(@BeanParam OfferRevisionsGetOptions options);
 
     @ApiOperation("Get an offer revision")
     @GET

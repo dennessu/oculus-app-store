@@ -36,8 +36,7 @@ public class OfferRepository implements BaseEntityRepository<Offer> {
         List<OfferEntity> offerEntities = offerDao.getOffers(options);
         List<Offer> offers = new ArrayList<>();
         for (OfferEntity offerEntity : offerEntities) {
-            Offer offer = OfferMapper.toModel(offerEntity);
-            offers.add(offer);
+            offers.add(OfferMapper.toModel(offerEntity));
         }
 
         return offers;

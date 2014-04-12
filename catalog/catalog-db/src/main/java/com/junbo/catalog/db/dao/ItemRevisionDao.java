@@ -7,10 +7,13 @@
 package com.junbo.catalog.db.dao;
 
 import com.junbo.catalog.db.entity.ItemRevisionEntity;
+import com.junbo.catalog.spec.model.item.ItemRevisionsGetOptions;
+
+import java.util.List;
 
 /**
  * Item DAO definition.
  */
 public interface ItemRevisionDao extends BaseDao<ItemRevisionEntity> {
-    Long update(ItemRevisionEntity entity);
+    List<ItemRevisionEntity> getRevisions(ItemRevisionsGetOptions options);
 }

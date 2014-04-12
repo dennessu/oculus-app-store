@@ -10,12 +10,9 @@ import com.junbo.catalog.common.util.Action;
 import com.junbo.catalog.db.dao.OfferDao;
 import com.junbo.catalog.db.entity.OfferEntity;
 import com.junbo.catalog.spec.model.offer.OffersGetOptions;
-import com.junbo.common.id.OfferId;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
-import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,24 +24,15 @@ public class OfferDaoImpl extends BaseDaoImpl<OfferEntity> implements OfferDao {
         return findAllBy(new Action<Criteria>() {
             @Override
             public void apply(Criteria criteria) {
-                if (!CollectionUtils.isEmpty(options.getOfferIds())) {
-                    List<Long> offerIds = new ArrayList<>();
-                    for (OfferId offerId : options.getOfferIds()) {
-                        offerIds.add(offerId.getValue());
-                    }
-                    criteria.add(Restrictions.in("offerId", offerIds));
-                } else {
-                    options.ensurePagingValid();
-                    if (options.getCurated() != null) {
-                        criteria.add(Restrictions.eq("curated", options.getCurated()));
-                    }
-                    if (options.getCategory() != null) {
-                        criteria.add(Restrictions.sqlRestriction(options.getCategory() + "=ANY(categories)"));
-                    }
-                    criteria.setFirstResult(options.getStart());
-                    criteria.setMaxResults(options.getSize());
-                    //criteria.setFetchSize(options.getSize());
+                addIdRestriction("offerId", options.getOfferIds(), criteria);
+                if (options.getCurated() != null) {
+                    criteria.add(Restrictions.eq("curated", options.getCurated()));
                 }
+                if (options.getCategory() != null) {
+                    criteria.add(Restrictions.sqlRestriction(options.getCategory() + "=ANY(categories)"));
+                }
+                options.ensurePagingValid();
+                criteria.setFirstResult(options.getStart()).setMaxResults(options.getSize());
             }
         });
     }

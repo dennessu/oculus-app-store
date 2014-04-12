@@ -23,7 +23,7 @@ public class AttributeDaoImpl extends BaseDaoImpl<AttributeEntity> implements At
         return findAllBy(new Action<Criteria>() {
             public void apply(Criteria criteria) {
                 criteria.setFirstResult(start);
-                criteria.setFetchSize(size);
+                criteria.setMaxResults(size);
                 if (!StringUtils.isEmpty(attributeType)) {
                     criteria.add(Restrictions.eq("type", attributeType));
                 }

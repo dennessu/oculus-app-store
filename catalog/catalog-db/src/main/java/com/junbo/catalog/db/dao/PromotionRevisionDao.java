@@ -12,5 +12,4 @@ import com.junbo.catalog.db.entity.PromotionRevisionEntity;
  * Promotion revision DAO definition.
  */
 public interface PromotionRevisionDao extends BaseDao<PromotionRevisionEntity> {
-    Long update(PromotionRevisionEntity entity);
 }

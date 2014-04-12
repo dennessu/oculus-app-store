@@ -15,12 +15,12 @@ import com.junbo.catalog.spec.model.common.ExtensibleProperties;
 import com.junbo.catalog.spec.model.common.LocalizableProperty;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementType;
-import com.junbo.catalog.spec.model.item.Item;
-import com.junbo.catalog.spec.model.item.ItemRevision;
-import com.junbo.catalog.spec.model.item.ItemType;
+import com.junbo.catalog.spec.model.item.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+
+import java.util.List;
 
 /**
  * Item service implementation.
@@ -49,9 +49,19 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
     }
 
     @Override
+    public List<Item> getItems(ItemsGetOptions options) {
+        return itemRepo.getItems(options);
+    }
+
+    @Override
     public ItemRevision createRevision(ItemRevision revision) {
         validateRevision(revision);
         return super.createRevision(revision);
+    }
+
+    @Override
+    public List<ItemRevision> getRevisions(ItemRevisionsGetOptions options) {
+        return itemRevisionRepo.getRevisions(options);
     }
 
     @Override

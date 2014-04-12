@@ -35,10 +35,8 @@ public class RestExceptionMapper implements ExceptionMapper<Exception> {
         } else if (e instanceof JsonParseException) {
             return AppErrors.INSTANCE.invalidJson(e.getMessage()).exception().getResponse();
         } else if (e instanceof JsonMappingException) {
-           return AppErrors.INSTANCE.fieldNotCorrect( ((JsonMappingException) e).getPathReference(), e.getMessage())
+           return AppErrors.INSTANCE.fieldNotCorrect(((JsonMappingException) e).getPathReference(), e.getMessage())
                    .exception().getResponse();
-
-           // return AppErrors.INSTANCE.invalidJson(e.getMessage()).exception().getResponse();
         }
         else {    //other exceptions
             return AppErrors.INSTANCE.unCaught(e.getMessage()).exception().getResponse();

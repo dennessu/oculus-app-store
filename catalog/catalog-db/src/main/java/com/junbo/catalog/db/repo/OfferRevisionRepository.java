@@ -11,7 +11,11 @@ import com.junbo.catalog.db.entity.OfferRevisionEntity;
 import com.junbo.catalog.db.mapper.OfferRevisionMapper;
 import com.junbo.catalog.spec.error.AppErrors;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
+import com.junbo.catalog.spec.model.offer.OfferRevisionsGetOptions;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Offer revision repository.
@@ -26,6 +30,16 @@ public class OfferRevisionRepository implements BaseRevisionRepository<OfferRevi
 
     public OfferRevision get(Long revisionId) {
         return OfferRevisionMapper.toModel(offerRevisionDao.get(revisionId));
+    }
+
+    public List<OfferRevision> getRevisions(OfferRevisionsGetOptions options) {
+        List<OfferRevisionEntity> revisionEntities = offerRevisionDao.getRevisions(options);
+        List<OfferRevision> revisions = new ArrayList<>();
+        for (OfferRevisionEntity revisionEntity : revisionEntities) {
+            revisions.add(OfferRevisionMapper.toModel(revisionEntity));
+        }
+
+        return revisions;
     }
 
     @Override

@@ -11,7 +11,11 @@ import com.junbo.catalog.db.entity.ItemRevisionEntity;
 import com.junbo.catalog.db.mapper.ItemRevisionMapper;
 import com.junbo.catalog.spec.error.AppErrors;
 import com.junbo.catalog.spec.model.item.ItemRevision;
+import com.junbo.catalog.spec.model.item.ItemRevisionsGetOptions;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Offer revision repository.
@@ -26,6 +30,16 @@ public class ItemRevisionRepository implements BaseRevisionRepository<ItemRevisi
 
     public ItemRevision get(Long revisionId) {
         return ItemRevisionMapper.toModel(itemRevisionDao.get(revisionId));
+    }
+
+    public List<ItemRevision> getRevisions(ItemRevisionsGetOptions options) {
+        List<ItemRevisionEntity> revisionEntities = itemRevisionDao.getRevisions(options);
+        List<ItemRevision> revisions = new ArrayList<>();
+        for (ItemRevisionEntity revisionEntity : revisionEntities) {
+            revisions.add(ItemRevisionMapper.toModel(revisionEntity));
+        }
+
+        return revisions;
     }
 
     @Override

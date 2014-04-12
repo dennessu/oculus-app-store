@@ -55,6 +55,11 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     }
 
     @Override
+    public List<OfferRevision> getRevisions(OfferRevisionsGetOptions options) {
+        return offerRevisionRepo.getRevisions(options);
+    }
+
+    @Override
     public OfferRevision createRevision(OfferRevision revision) {
         if (!Status.DRAFT.equals(revision.getStatus())) {
             throw AppErrors.INSTANCE.fieldNotMatch("status", revision.getStatus(), Status.DRAFT).exception();

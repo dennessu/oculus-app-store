@@ -11,7 +11,11 @@ import com.junbo.catalog.db.entity.ItemEntity;
 import com.junbo.catalog.db.mapper.ItemMapper;
 import com.junbo.catalog.spec.error.AppErrors;
 import com.junbo.catalog.spec.model.item.Item;
+import com.junbo.catalog.spec.model.item.ItemsGetOptions;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Item repository.
@@ -28,6 +32,16 @@ public class ItemRepository implements BaseEntityRepository<Item> {
     @Override
     public Item get(Long entityId) {
         return ItemMapper.toModel(itemDao.get(entityId));
+    }
+
+    public List<Item> getItems(ItemsGetOptions options) {
+        List<ItemEntity> itemEntities = itemDao.getItems(options);
+        List<Item> items = new ArrayList<>();
+        for (ItemEntity itemEntity : itemEntities) {
+            items.add(ItemMapper.toModel(itemEntity));
+        }
+
+        return items;
     }
 
     @Override

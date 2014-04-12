@@ -7,10 +7,13 @@
 package com.junbo.catalog.db.dao;
 
 import com.junbo.catalog.db.entity.OfferRevisionEntity;
+import com.junbo.catalog.spec.model.offer.OfferRevisionsGetOptions;
+
+import java.util.List;
 
 /**
  * Offer DAO definition.
  */
 public interface OfferRevisionDao extends BaseDao<OfferRevisionEntity> {
-    Long update(OfferRevisionEntity entity);
+    List<OfferRevisionEntity> getRevisions(OfferRevisionsGetOptions options);
 }

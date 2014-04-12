@@ -17,6 +17,7 @@ import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.ws.rs.BeanParam;
+import java.util.List;
 
 /**
  * Item resource implementation.
@@ -27,7 +28,10 @@ public class ItemResourceImpl implements ItemResource {
 
     @Override
     public Promise<Results<Item>> getItems(ItemsGetOptions options) {
-        return null;
+        List<Item> offers = itemService.getItems(options);
+        Results<Item> results = new Results<>();
+        results.setItems(offers);
+        return Promise.pure(results);
     }
 
     @Override

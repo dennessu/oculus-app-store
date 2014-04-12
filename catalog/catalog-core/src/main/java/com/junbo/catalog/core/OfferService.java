@@ -8,6 +8,7 @@ package com.junbo.catalog.core;
 
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
+import com.junbo.catalog.spec.model.offer.OfferRevisionsGetOptions;
 import com.junbo.catalog.spec.model.offer.OffersGetOptions;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,4 +20,5 @@ import java.util.List;
 @Transactional
 public interface OfferService extends BaseRevisionedService<Offer, OfferRevision> {
     List<Offer> getOffers(OffersGetOptions options);
+    List<OfferRevision> getRevisions(OfferRevisionsGetOptions options);
 }

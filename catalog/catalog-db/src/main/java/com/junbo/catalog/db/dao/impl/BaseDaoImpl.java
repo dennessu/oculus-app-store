@@ -11,12 +11,16 @@ import com.junbo.catalog.common.util.Constants;
 import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.db.dao.BaseDao;
 import com.junbo.catalog.db.entity.BaseEntity;
+import com.junbo.common.id.Id;
 import com.junbo.sharding.IdGenerator;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -73,6 +77,16 @@ public abstract class BaseDaoImpl<T extends BaseEntity> implements BaseDao<T> {
         Criteria criteria = currentSession().createCriteria(entityType);
         filter.apply(criteria);
         return criteria.list();
+    }
+
+    protected <E extends Id> void addIdRestriction(String fieldName, List<E> ids, Criteria criteria) {
+        if (!CollectionUtils.isEmpty(ids)) {
+            List<Long> idValues = new ArrayList<>();
+            for (E id : ids) {
+                idValues.add(id.getValue());
+            }
+            criteria.add(Restrictions.in(fieldName, idValues));
+        }
     }
 
     public Class<T> getEntityType() {

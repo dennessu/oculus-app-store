@@ -8,12 +8,14 @@ package com.junbo.catalog.rest.resource;
 
 import com.junbo.catalog.core.OfferService;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
+import com.junbo.catalog.spec.model.offer.OfferRevisionsGetOptions;
 import com.junbo.catalog.spec.resource.OfferRevisionResource;
-import com.junbo.common.id.OfferId;
 import com.junbo.common.id.OfferRevisionId;
 import com.junbo.common.model.Results;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 /**
  * Offer revision resource implementation.
@@ -23,8 +25,11 @@ public class OfferRevisionResourceImpl implements OfferRevisionResource {
     private OfferService offerService;
 
     @Override
-    public Promise<Results<OfferRevision>> getOfferRevisions(OfferId offerId) {
-        return null;
+    public Promise<Results<OfferRevision>> getOfferRevisions(OfferRevisionsGetOptions options) {
+        List<OfferRevision> revisions = offerService.getRevisions(options);
+        Results<OfferRevision> results = new Results<>();
+        results.setItems(revisions);
+        return Promise.pure(results);
     }
 
     @Override
