@@ -20,7 +20,7 @@ public class EntityGetOptions {
 
     public static EntityGetOptions getDefault() {
         EntityGetOptions options = new EntityGetOptions();
-        options.setStatus(Status.RELEASED);
+        options.setStatus(Status.APPROVED);
 
         return options;
     }

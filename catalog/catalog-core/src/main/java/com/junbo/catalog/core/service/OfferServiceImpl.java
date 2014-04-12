@@ -11,6 +11,7 @@ import com.junbo.catalog.core.OfferService;
 import com.junbo.catalog.db.repo.OfferRepository;
 import com.junbo.catalog.db.repo.OfferRevisionRepository;
 import com.junbo.catalog.spec.error.AppErrors;
+import com.junbo.catalog.spec.model.common.Status;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.item.ItemType;
 import com.junbo.catalog.spec.model.offer.*;
@@ -55,6 +56,9 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
 
     @Override
     public OfferRevision createRevision(OfferRevision revision) {
+        if (!Status.DRAFT.equals(revision.getStatus())) {
+            throw AppErrors.INSTANCE.fieldNotMatch("status", revision.getStatus(), Status.DRAFT).exception();
+        }
         validateRevision(revision);
         generateDownloadEntitlement(revision);
         return super.createRevision(revision);
@@ -99,6 +103,10 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
         checkFieldNotNull(revision.getOfferId(), "offer");
         checkFieldNotNull(revision.getPrice(), "price");
         checkPrice(revision.getPrice());
+
+        if (!Status.ALL_STATUSES.contains(revision.getStatus())) {
+            throw AppErrors.INSTANCE.fieldNotCorrect("status", "Valid statuses: " + Status.ALL_STATUSES).exception();
+        }
     }
 
     private Event preparePurchaseEvent(OfferRevision revision) {
