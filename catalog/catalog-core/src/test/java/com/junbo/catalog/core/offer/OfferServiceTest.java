@@ -19,16 +19,7 @@ public class OfferServiceTest extends BaseTest {
 
     @Test
     public void testCreate() {
-        Offer offer = buildOffer();
-        Offer result = offerService.create(offer);
-        Assert.assertNotNull(result.getId(), "Entity id should not be null.");
+
     }
 
-    private Offer buildOffer() {
-        Offer offer = new Offer();
-        offer.setName("testName");
-        offer.setStatus("testStatus");
-        offer.setOwnerId(generateId());
-        return offer;
-    }
 }
