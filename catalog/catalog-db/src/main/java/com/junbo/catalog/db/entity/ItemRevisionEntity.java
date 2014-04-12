@@ -22,6 +22,7 @@ import javax.persistence.*;
 public class ItemRevisionEntity extends BaseEntity {
     private Long revisionId;
     private Long itemId;
+    private String type;
     private Long ownerId;
     private String status;
     private String payload;
@@ -43,6 +44,15 @@ public class ItemRevisionEntity extends BaseEntity {
 
     public void setItemId(Long itemId) {
         this.itemId = itemId;
+    }
+
+    @Column(name = "type")
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     @Column(name = "owner_id")

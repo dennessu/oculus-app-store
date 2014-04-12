@@ -38,6 +38,7 @@ public class PriceTierEntity extends BaseEntity {
     }
 
     @Column(name = "name")
+    @Type(type = "json-string")
     public String getName() {
         return name;
     }

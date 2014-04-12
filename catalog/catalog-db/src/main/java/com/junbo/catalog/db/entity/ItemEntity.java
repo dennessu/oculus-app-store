@@ -6,25 +6,29 @@
 
 package com.junbo.catalog.db.entity;
 
+import com.junbo.catalog.db.dao.LongArrayUserType;
 import com.junbo.catalog.db.dao.StringJsonUserType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * Item DB entity.
  */
 @Entity
 @Table(name="item")
-@TypeDefs(@TypeDef(name="json-string", typeClass=StringJsonUserType.class))
+@TypeDefs({@TypeDef(name="json-string", typeClass=StringJsonUserType.class),
+        @TypeDef(name="long-array", typeClass=LongArrayUserType.class)})
 public class ItemEntity extends BaseEntity {
     private String type;
     private Long itemId;
     private String name;
     private Long ownerId;
     private boolean curated;
+    private List<Long> genres;
     private Long currentRevisionId;
     private String payload;
 
@@ -48,6 +52,7 @@ public class ItemEntity extends BaseEntity {
     }
 
     @Column(name = "item_name")
+    @Type(type = "json-string")
     public String getName() {
         return name;
     }
@@ -72,6 +77,16 @@ public class ItemEntity extends BaseEntity {
 
     public void setCurated(boolean curated) {
         this.curated = curated;
+    }
+
+    @Column(name = "genres")
+    @Type(type = "long-array")
+    public List<Long> getGenres() {
+        return genres;
+    }
+
+    public void setGenres(List<Long> genres) {
+        this.genres = genres;
     }
 
     @Column(name = "current_revision_id")

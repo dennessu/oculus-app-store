@@ -30,6 +30,7 @@ public class ItemMapper {
         entity.setName(Utils.toJson(model.getName()));
         entity.setCurated(model.getCurated() == null ? false : model.getCurated());
         entity.setType(model.getType());
+        entity.setGenres(model.getGenres());
         entity.setOwnerId(model.getOwnerId());
         entity.setCurrentRevisionId(model.getCurrentRevisionId());
         entity.setPayload(Utils.toJson(model));
@@ -46,6 +47,7 @@ public class ItemMapper {
         model.setType(entity.getType());
         model.setCurrentRevisionId(entity.getCurrentRevisionId());
         model.setOwnerId(entity.getOwnerId());
+        model.setGenres(entity.getGenres());
         model.setCreatedBy(entity.getCreatedBy());
         model.setCreatedTime(entity.getCreatedTime());
         model.setUpdatedBy(entity.getUpdatedBy());

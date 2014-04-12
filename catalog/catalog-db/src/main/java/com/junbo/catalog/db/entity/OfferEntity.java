@@ -7,6 +7,7 @@
 package com.junbo.catalog.db.entity;
 
 import com.junbo.catalog.db.dao.LongArrayUserType;
+import com.junbo.catalog.db.dao.StringJsonUserType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
@@ -19,7 +20,8 @@ import java.util.List;
  */
 @Entity
 @Table(name="offer")
-@TypeDefs(@TypeDef(name="long-array", typeClass=LongArrayUserType.class))
+@TypeDefs({@TypeDef(name="json-string", typeClass=StringJsonUserType.class),
+        @TypeDef(name="long-array", typeClass=LongArrayUserType.class)})
 public class OfferEntity extends BaseEntity {
     private Long offerId;
     private String offerName;
@@ -39,6 +41,7 @@ public class OfferEntity extends BaseEntity {
     }
 
     @Column(name = "offer_name")
+    @Type(type = "json-string")
     public String getOfferName() {
         return offerName;
     }

@@ -11,9 +11,10 @@
             create table item (
               item_id                 bigint            not null,
               type                    varchar(64)       not null,
-              item_name               varchar(64)       not null,
+              item_name               json              not null,
               curated                 boolean           not null default false,
               owner_id                bigint            not null,
+              genres                  bigint[]          null,
               current_revision_id     bigint            null,
               payload                 json              not null,
               deleted                 boolean           not null default false,
@@ -28,6 +29,7 @@
             create table item_revision (
               revision_id             bigint            not null,
               item_id                 bigint            not null,
+              type                    varchar(64)       not null,
               status                  varchar(64)       not null,
               owner_id                bigint            not null,
               payload                 json              not null,
@@ -42,7 +44,7 @@
 
             create table offer (
               offer_id                bigint            not null,
-              offer_name              varchar(64)       not null,
+              offer_name              json              not null,
               curated                 boolean           not null default false,
               owner_id                bigint            not null,
               current_revision_id     bigint            null,
@@ -74,7 +76,8 @@
             create table attribute (
               id                      bigint            not null,
               type                    varchar(64)       not null,
-              name                    varchar(64)       not null,
+              name                    json              not null,
+              payload                 json              not null,
               deleted                 boolean           not null default false,
               created_by              varchar(64)       not null,
               created_time            timestamp         not null,
@@ -86,7 +89,7 @@
 
             create table price_tiers (
               id                      bigint            not null,
-              name                    varchar(64)       not null,
+              name                    json              not null,
               payload                 json              not null,
               deleted                 boolean           not null default false,
               created_by              varchar(64)       not null,
