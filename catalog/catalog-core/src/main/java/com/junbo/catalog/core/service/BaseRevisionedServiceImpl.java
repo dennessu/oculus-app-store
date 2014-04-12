@@ -139,6 +139,22 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
         }
     }
 
+    protected void checkPrice(Price price) {
+        if (!Price.ALL_TYPES.contains(price.getPriceType())) {
+            throw AppErrors.INSTANCE
+                    .fieldNotCorrect("priceType", "Valid price types: " + Price.ALL_TYPES).exception();
+        }
+
+        if (Price.TIERED.equals(price.getPriceType())) {
+            checkFieldShouldEmpty(price.getPrices(), "prices");
+        } else if (Price.FREE.equals(price.getPriceType())) {
+            checkFieldShouldNull(price.getPriceTier(), "priceTier");
+            checkFieldShouldEmpty(price.getPrices(), "prices");
+        } else if (Price.CUSTOM.equals(price.getPriceType())) {
+            checkFieldShouldNull(price.getPriceTier(), "priceTier");
+        }
+    }
+
     protected abstract <RE extends BaseEntityRepository<E>> RE getEntityRepo();
     protected abstract <RR extends BaseRevisionRepository<T>> RR getRevisionRepo();
     protected abstract String getEntityType();

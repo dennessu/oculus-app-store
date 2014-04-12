@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.catalog.spec.model.common.BaseRevisionModel;
 import com.junbo.catalog.spec.model.common.ExtensibleProperties;
+import com.junbo.catalog.spec.model.common.Price;
 import com.junbo.common.jackson.annotation.ItemRevisionId;
 import com.junbo.common.jackson.annotation.OfferId;
 import com.junbo.common.jackson.annotation.UserId;
@@ -32,6 +33,7 @@ public class ItemRevision extends BaseRevisionModel {
     private Long itemId;
     private String type;
     private String sku;
+    private Price msrp;
     private ExtensibleProperties digitalProperties;
     private ExtensibleProperties ewalletProperties;
     private ExtensibleProperties physicalProperties;
@@ -74,6 +76,14 @@ public class ItemRevision extends BaseRevisionModel {
 
     public void setSku(String sku) {
         this.sku = sku;
+    }
+
+    public Price getMsrp() {
+        return msrp;
+    }
+
+    public void setMsrp(Price msrp) {
+        this.msrp = msrp;
     }
 
     public ExtensibleProperties getDigitalProperties() {

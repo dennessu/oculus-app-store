@@ -128,5 +128,8 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
             throw AppErrors.INSTANCE.validation("displayName should have value for 'DEFAULT' locale.").exception();
         }
 
+        if (revision.getMsrp()!=null) {
+            checkPrice(revision.getMsrp());
+        }
     }
 }

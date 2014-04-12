@@ -9,6 +9,7 @@ package com.junbo.catalog.spec.model.offer;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.catalog.spec.model.common.BaseRevisionModel;
+import com.junbo.catalog.spec.model.common.Price;
 import com.junbo.catalog.spec.model.common.TypedProperties;
 import com.junbo.common.jackson.annotation.OfferId;
 import com.junbo.common.jackson.annotation.OfferRevisionId;
@@ -34,10 +35,10 @@ public class OfferRevision extends BaseRevisionModel {
     @OfferId
     @JsonProperty("offer")
     private Long offerId;
-    private String priceType;
-    private Long priceTierId;
-    private Map<String, Price> prices;
-    private Restriction restriction;
+
+    private Price price;
+
+    private Restriction restrictions;
     private List<OfferEntry> subOffers;
     private List<ItemEntry> items = new ArrayList<>();
     private List<String> eligibleCountries;
@@ -69,36 +70,20 @@ public class OfferRevision extends BaseRevisionModel {
         this.offerId = offerId;
     }
 
-    public String getPriceType() {
-        return priceType;
+    public Price getPrice() {
+        return price;
     }
 
-    public void setPriceType(String priceType) {
-        this.priceType = priceType;
+    public void setPrice(Price price) {
+        this.price = price;
     }
 
-    public Long getPriceTierId() {
-        return priceTierId;
+    public Restriction getRestrictions() {
+        return restrictions;
     }
 
-    public void setPriceTierId(Long priceTierId) {
-        this.priceTierId = priceTierId;
-    }
-
-    public Map<String, Price> getPrices() {
-        return prices;
-    }
-
-    public void setPrices(Map<String, Price> prices) {
-        this.prices = prices;
-    }
-
-    public Restriction getRestriction() {
-        return restriction;
-    }
-
-    public void setRestriction(Restriction restriction) {
-        this.restriction = restriction;
+    public void setRestrictions(Restriction restrictions) {
+        this.restrictions = restrictions;
     }
 
     public List<OfferEntry> getSubOffers() {
