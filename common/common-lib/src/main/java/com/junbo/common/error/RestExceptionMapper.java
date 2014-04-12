@@ -38,7 +38,7 @@ public class RestExceptionMapper implements ExceptionMapper<Exception> {
     /**
      * Created by kg on 7/4/14.
      */
-    public static interface Errors {
+    public interface Errors {
 
         @ErrorDef(httpStatusCode = 500, code = "20001", description = "Internal Server Error")
         AppError internalServerError();

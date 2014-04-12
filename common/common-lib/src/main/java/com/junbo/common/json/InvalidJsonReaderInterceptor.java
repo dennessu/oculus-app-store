@@ -40,7 +40,7 @@ public class InvalidJsonReaderInterceptor implements ReaderInterceptor {
     /**
      * Created by liangfu on 3/11/14.
      */
-    public static interface Errors {
+    public interface Errors {
 
         @ErrorDef(httpStatusCode = 400, code = "10001", description = "invalid Json: {0}", field = "request.body")
         AppError invalidJson(String detail);
