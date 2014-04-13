@@ -8,7 +8,6 @@ package com.junbo.test.payment.utility;
 import com.junbo.payment.spec.model.Address;
 import com.junbo.payment.spec.model.CreditCardRequest;
 import com.junbo.payment.spec.model.PaymentInstrument;
-import com.junbo.payment.spec.model.Phone;
 import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
 import com.junbo.test.common.Entities.paymentInstruments.PaymentInstrumentBase;
 import com.junbo.test.common.Utility.BaseTestDataProvider;
@@ -54,18 +53,14 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
                 address.setCountry(creditCardInfo.getAddress().getCountry());
                 address.setPostalCode(creditCardInfo.getAddress().getPostalCode());
 
-                Phone phone = new Phone();
-                phone.setType(creditCardInfo.getPhone().getType());
-                phone.setNumber(creditCardInfo.getPhone().getNumber());
-
                 paymentInstrument.setAccountName(creditCardInfo.getAccountName());
                 paymentInstrument.setAccountNum(creditCardInfo.getAccountNum());
                 //paymentInstrument.setAccountNum(creditCardInfo.getAccountNum());
                 paymentInstrument.setAddress(address);
                 paymentInstrument.setCreditCardRequest(creditCardRequest);
-                paymentInstrument.setPhone(phone);
+                paymentInstrument.setPhoneNum("650-253-0000");
                 paymentInstrument.setIsValidated(creditCardInfo.isValidated());
-                paymentInstrument.setIsDefault(String.valueOf(creditCardInfo.isDefault()));
+                //paymentInstrument.setIsDefault(String.valueOf(creditCardInfo.isDefault()));
                 paymentInstrument.setType(creditCardInfo.getType().toString());
                 paymentInstrument.setTrackingUuid(UUID.randomUUID());
 
@@ -95,16 +90,12 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
                 address.setCountry(creditCardInfo.getAddress().getCountry());
                 address.setPostalCode(creditCardInfo.getAddress().getPostalCode());
 
-                Phone phone = new Phone();
-                phone.setType(creditCardInfo.getPhone().getType());
-                phone.setNumber(creditCardInfo.getPhone().getNumber());
-
                 paymentInstrument.setAccountName(creditCardInfo.getAccountName());
                 paymentInstrument.setAddress(address);
                 paymentInstrument.setCreditCardRequest(creditCardRequest);
-                paymentInstrument.setPhone(phone);
                 paymentInstrument.setIsValidated(creditCardInfo.isValidated());
-                paymentInstrument.setIsDefault(String.valueOf(creditCardInfo.isDefault()));
+                paymentInstrument.setPhoneNum("650-253-0000");
+                //paymentInstrument.setIsDefault(String.valueOf(creditCardInfo.isDefault()));
                 paymentInstrument.setType(creditCardInfo.getType().toString());
 
                 return paymentClient.updatePaymentInstrument(uid, paymentId, paymentInstrument);

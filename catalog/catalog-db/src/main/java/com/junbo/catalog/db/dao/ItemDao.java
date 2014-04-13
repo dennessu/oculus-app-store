@@ -7,10 +7,13 @@
 package com.junbo.catalog.db.dao;
 
 import com.junbo.catalog.db.entity.ItemEntity;
+import com.junbo.catalog.spec.model.item.ItemsGetOptions;
+
+import java.util.List;
 
 /**
  * Item DAO definition.
  */
-public interface ItemDao extends VersionedDao<ItemEntity> {
-    ItemEntity getItem(Long itemId, Long timestamp);
+public interface ItemDao extends BaseDao<ItemEntity> {
+    List<ItemEntity> getItems(ItemsGetOptions options);
 }

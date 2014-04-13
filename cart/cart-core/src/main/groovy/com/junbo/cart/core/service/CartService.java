@@ -6,7 +6,6 @@
 package com.junbo.cart.core.service;
 
 import com.junbo.cart.spec.model.Cart;
-import com.junbo.cart.spec.model.item.CouponItem;
 import com.junbo.cart.spec.model.item.OfferItem;
 import com.junbo.common.id.CartId;
 import com.junbo.common.id.CartItemId;
@@ -39,8 +38,4 @@ public interface CartService {
     Promise<Cart> updateOfferItem(UserId userId, CartId cartId, CartItemId offerItemId, OfferItem offerItem);
 
     Promise<Cart> deleteOfferItem(UserId userId, CartId cartId, CartItemId offerItemId);
-
-    Promise<Cart> addCouponItem(UserId userId, CartId cartId, CouponItem couponItem);
-
-    Promise<Cart> deleteCouponItem(UserId userId, CartId cartId, CartItemId couponItemId);
 }

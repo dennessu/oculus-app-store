@@ -13,7 +13,6 @@ import com.junbo.order.spec.model.OrderItem;
 import com.junbo.payment.spec.model.Address;
 import com.junbo.payment.spec.model.CreditCardRequest;
 import com.junbo.payment.spec.model.PaymentInstrument;
-import com.junbo.payment.spec.model.Phone;
 import com.junbo.test.billing.apihelper.BalanceService;
 import com.junbo.test.billing.apihelper.ShippingAddressService;
 import com.junbo.test.billing.apihelper.impl.BalanceServiceImpl;
@@ -80,18 +79,13 @@ public class BillingTestDataProvider extends BaseTestDataProvider {
                 address.setCountry(creditCardInfo.getAddress().getCountry());
                 address.setPostalCode(creditCardInfo.getAddress().getPostalCode());
 
-                Phone phone = new Phone();
-                phone.setType(creditCardInfo.getPhone().getType());
-                phone.setNumber(creditCardInfo.getPhone().getNumber());
-
                 paymentInstrument.setAccountName(creditCardInfo.getAccountName());
                 paymentInstrument.setAccountNum(creditCardInfo.getAccountNum());
                 //paymentInstrument.setAccountNum(creditCardInfo.getAccountNum());
                 paymentInstrument.setAddress(address);
                 paymentInstrument.setCreditCardRequest(creditCardRequest);
-                paymentInstrument.setPhone(phone);
+                paymentInstrument.setPhoneNum("650-253-0000");
                 paymentInstrument.setIsValidated(creditCardInfo.isValidated());
-                paymentInstrument.setIsDefault(String.valueOf(creditCardInfo.isDefault()));
                 paymentInstrument.setType(creditCardInfo.getType().toString());
                 paymentInstrument.setTrackingUuid(UUID.randomUUID());
 
@@ -128,7 +122,6 @@ public class BillingTestDataProvider extends BaseTestDataProvider {
             orderItemList.add(orderItem);
         }
         order.setOrderItems(orderItemList);
-        order.setTrackingUuid(UUID.randomUUID());
         order.setTentative(true);
         order.setType("PAY_IN");
         return orderClient.postOrder(order);

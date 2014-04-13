@@ -6,7 +6,7 @@
 
 package com.junbo.catalog.spec.model.promotion;
 
-import com.junbo.catalog.spec.model.common.EntitiesGetOptions;
+import com.junbo.catalog.spec.model.common.PageableGetOptions;
 import com.junbo.common.id.PromotionId;
 
 import javax.ws.rs.QueryParam;
@@ -15,13 +15,11 @@ import java.util.List;
 /**
  * Promotions get options.
  */
-public class PromotionsGetOptions extends EntitiesGetOptions {
+public class PromotionsGetOptions extends PageableGetOptions {
     @QueryParam("id")
     private List<PromotionId> promotionIds;
-
-    public static PromotionsGetOptions getDefault() {
-        return setDefaults(new PromotionsGetOptions());
-    }
+    @QueryParam("curated")
+    private Boolean curated;
 
     public List<PromotionId> getPromotionIds() {
         return promotionIds;
@@ -31,8 +29,11 @@ public class PromotionsGetOptions extends EntitiesGetOptions {
         this.promotionIds = promotionIds;
     }
 
-    @Override
-    public List<PromotionId> getEntityIds() {
-        return promotionIds;
+    public Boolean getCurated() {
+        return curated;
+    }
+
+    public void setCurated(Boolean curated) {
+        this.curated = curated;
     }
 }

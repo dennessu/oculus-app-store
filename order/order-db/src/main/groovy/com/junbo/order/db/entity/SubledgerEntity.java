@@ -30,7 +30,7 @@ public class SubledgerEntity extends CommonDbEntityWithDate {
     private Long sellerId;
     private String productItemId;
     private Long sellerTaxProfileId;
-    private Short currencyId;
+    private String currency;
     private String country;
     private BigDecimal totalAmount;
     private PayoutStatus payoutStatus;
@@ -78,14 +78,14 @@ public class SubledgerEntity extends CommonDbEntityWithDate {
         this.sellerTaxProfileId = sellerTaxProfileId;
     }
 
-    @Column(name = "CURRENCY_ID")
+    @Column(name = "CURRENCY")
     @NotNull(message = ValidationMessages.MISSING_VALUE)
-    public Short getCurrencyId() {
-        return currencyId;
+    public String getCurrency() {
+        return currency;
     }
 
-    public void setCurrencyId(Short currencyId) {
-        this.currencyId = currencyId;
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 
     @Column(name = "COUNTRY")

@@ -79,6 +79,7 @@ class TestHelper {
         order.setTotalShippingFee(BigDecimal.valueOf(DEFAULT_PRICE))
         order.setTotalShippingFeeDiscount(BigDecimal.valueOf(DEFAULT_PRICE))
         order.setHonoredTime(new Date())
+        order.setLocale('en-US')
         return order
     }
 
@@ -187,7 +188,7 @@ class TestHelper {
         entity.setSubledgerId(generateId())
         entity.setSellerId(generateLong())
         entity.setSellerTaxProfileId(generateLong())
-        entity.setCurrencyId((short) rand.nextInt(RAND_INT_MAX))
+        entity.setCurrency(RandomStringUtils.randomAlphabetic(3))
         entity.setTotalAmount(BigDecimal.valueOf(rand.nextInt(RAND_INT_MAX)))
         entity.setCreatedTime(new Date())
         entity.setCreatedBy('TESTER')

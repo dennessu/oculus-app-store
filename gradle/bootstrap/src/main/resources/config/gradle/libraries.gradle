@@ -119,7 +119,7 @@ ext {
         common_lang:            'commons-lang:commons-lang:2.5',
         common_io:              'commons-io:commons-io:2.4',
         json_path:              'com.jayway.jsonpath:json-path:0.9.1',
-        fastjson:               'com.alibaba:fastjson:1.1.15',
+        fastjson:               'com.alibaba:fastjson:1.1.39',
         common_collection:      'commons-collections:commons-collections:3.2.1',
 
         spy_memcached:          'net.spy:spymemcached:2.10.4',

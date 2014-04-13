@@ -6,6 +6,7 @@
 
 package com.junbo.rating.spec.model.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.jackson.annotation.UserId;
 
 import java.util.Set;
@@ -15,6 +16,7 @@ import java.util.Set;
  */
 public class OfferRatingRequest {
     @UserId
+    @JsonProperty("User")
     private Long userId;
     private String country;
     private String currency;

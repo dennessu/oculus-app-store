@@ -12,7 +12,7 @@ import com.junbo.cart.db.entity.ItemStatus
 import com.junbo.cart.db.mapper.CartMapper
 import com.junbo.cart.db.util.Generator
 import com.junbo.cart.spec.model.Cart
-import com.junbo.cart.spec.model.item.CouponItem
+
 import com.junbo.cart.spec.model.item.OfferItem
 import com.junbo.common.id.CartId
 import org.easymock.EasyMock
@@ -60,14 +60,11 @@ class CartPersistServiceTest {
             EasyMock.expect(dataMapper.toOfferItemModel(EasyMock.same(it), EasyMock.isA(MappingContext))).
                     andReturn(new OfferItem())
         }
-        coupons.each {
-            EasyMock.expect(dataMapper.toCouponItemModel(EasyMock.same(it), EasyMock.isA(MappingContext))).
-                    andReturn(new CouponItem())
-        }
+
         replay()
         Assert.assertSame(service.getCart(new CartId(cartEntity.id), true), cart)
         assert cart.offers.size() == 1
-        assert cart.coupons.size() == 1
+        assert cart.couponCodes.size() == 1
         verify()
     }
 

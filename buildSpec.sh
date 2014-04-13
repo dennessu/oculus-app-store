@@ -1,5 +1,4 @@
 #!/bin/sh
-#!/bin/sh
 if [ -z "$*" ]; then
     GRADLE_CMD="gradle install -x test"
 else

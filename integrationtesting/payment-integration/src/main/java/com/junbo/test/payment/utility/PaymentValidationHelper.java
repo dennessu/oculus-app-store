@@ -55,15 +55,14 @@ public class PaymentValidationHelper extends BaseValidationHelper {
                         "verify billing address - PostalCode");
 
                 //verify phone
-                verifyEqual(actualPI.getPhone().getType(), expectedCreditCard.getPhone().getType(),
-                        "verify phone type");
-                verifyEqual(actualPI.getPhone().getNumber(), expectedCreditCard.getPhone().getNumber(),
+
+                verifyEqual(actualPI.getPhoneNum(), expectedCreditCard.getPhone().getNumber(),
                         "verify phone number");
 
                 //verify other info
                 verifyEqual(actualPI.getType(), expectedCreditCard.getType().toString(), "verify payment type");
-                verifyEqual(actualPI.getIsDefault(), String.valueOf(expectedCreditCard.isDefault()),
-                        "verify payment is default");
+                //verifyEqual(actualPI.getIsDefault(), String.valueOf(expectedCreditCard.isDefault()),
+                //        "verify payment is default");
 
                 break;
             default:

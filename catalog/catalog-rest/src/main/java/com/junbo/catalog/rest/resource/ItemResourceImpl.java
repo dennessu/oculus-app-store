@@ -17,38 +17,37 @@ import com.junbo.common.model.Results;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.ws.rs.core.Response;
+import javax.ws.rs.BeanParam;
+import java.util.List;
 
 /**
  * Item resource implementation.
  */
-public class ItemResourceImpl extends BaseResourceImpl<Item> implements ItemResource {
+public class ItemResourceImpl implements ItemResource {
     @Autowired
     private ItemService itemService;
 
     @Override
     public Promise<Results<Item>> getItems(ItemsGetOptions options) {
-        return getEntities(options);
+        List<Item> offers = itemService.getItems(options);
+        Results<Item> results = new Results<>();
+        results.setItems(offers);
+        return Promise.pure(results);
     }
 
     @Override
     @AuthorizeRequired(authCallBackFactoryBean = "itemAuthorizeCallbackFactoryBean", apiName = "item_get")
-    public Promise<Item> getItem(ItemId itemId, EntityGetOptions options) {
-        return get(itemId, options);
+    public Promise<Item> getItem(ItemId itemId, @BeanParam EntityGetOptions options) {
+        return Promise.pure(itemService.getEntity(itemId.getValue()));
     }
 
     @Override
     public Promise<Item> update(ItemId itemId, Item item) {
-        return super.update(itemId, item);
+        return Promise.pure(itemService.updateEntity(itemId.getValue(), item));
     }
 
     @Override
-    public Promise<Response> delete(ItemId itemId) {
-        return delete(itemId.getValue());
-    }
-
-    @Override
-    protected ItemService getEntityService() {
-        return itemService;
+    public Promise<Item> create(Item item) {
+        return Promise.pure(itemService.createEntity(item));
     }
 }

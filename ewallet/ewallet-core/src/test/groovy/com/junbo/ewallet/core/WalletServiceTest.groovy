@@ -111,7 +111,7 @@ class WalletServiceTest extends AbstractTransactionalTestNGSpringContextTests {
     private Wallet buildAWallet() {
         Wallet wallet = new Wallet()
         wallet.setUserId(idGenerator.nextId())
-        wallet.setType(com.junbo.ewallet.spec.def.WalletType.SV.toString())
+        wallet.setType(com.junbo.ewallet.spec.def.WalletType.STORED_VALUE.toString())
         wallet.setCurrency(com.junbo.ewallet.spec.def.Currency.USD.toString())
         wallet.setBalance(BigDecimal.ZERO)
         return wallet
