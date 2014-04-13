@@ -1,16 +1,8 @@
 #!/bin/sh
-set -e
+source "$(git rev-parse --show-toplevel)/scripts/common.sh"; # this comment is needed, see common.sh for detail
 
-function updatedb {
-    dbname=$1
-
-    python ./updatedb.py $dbname onebox 0 <<EOF
-update
-yes
-EOF
-}
-
-for dbname in `ls -d changelogs/*/ | cut -f2 -d'/'`
+dbVersion=0
+for dbname in `ls -d changelogs/*/$dbVersion | cut -f2 -d'/'`
 do
-    updatedb ${dbname%%/}
+    python ./dbcmd.py $dbname onebox $dbVersion update --yes
 done

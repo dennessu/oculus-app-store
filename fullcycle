@@ -1,8 +1,0 @@
-#!/bin/sh
-set -e
-
-pushd liquibase
-./dropdb.sh && ./createdb.sh && ./updatedb.sh
-popd
-
-./build clean build install

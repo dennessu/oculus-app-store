@@ -1,20 +1,8 @@
 #!/bin/sh
-(set -o igncr) 2>/dev/null && set -o igncr; # some comment
+source "$(git rev-parse --show-toplevel)/scripts/common.sh"; # this comment is needed, see common.sh for detail
 
-function dropdb {
-    dbname=$1
-
-    if psql -lqt postgres postgres | cut -d \| -f 1 | (grep -w $dbname > /dev/null); then
-        # database exists
-        echo database $dbname exists.
-        psql -q -X -c "DROP DATABASE \"$dbname\"" postgres postgres
-    else
-        # create database
-        echo database $dbname not exists
-    fi
-}
-
-for dbname in `ls -d changelogs/*/ | cut -f2 -d'/'`
+dbVersion=0
+for dbname in `ls -d changelogs/*/$dbVersion | cut -f2 -d'/'`
 do
-    dropdb ${dbname%%/}
+    python ./dbcmd.py $dbname onebox $dbVersion drop --yes
 done
