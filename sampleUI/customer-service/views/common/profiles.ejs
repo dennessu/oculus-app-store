@@ -1,0 +1,58 @@
+<script type="text/x-handlebars" data-template-name="profiles">
+<div id="Profiles" class="panel panel-default panel-csr profiles">
+    <div class="panel-heading">
+        <h3 class="panel-title">Profiles</h3>
+
+        <ul class="nav navbar-nav navbar-right">
+            <li id="fat-menu" class="dropdown">
+                <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">Actions<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="drop3">
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#" {{action Filter}}>Filter</a></li>
+                </ul>
+            </li>
+        </ul>
+        <div class="clearfix"></div>
+    </div>
+    <div class="panel-body">
+
+        <div class="panel-filter">
+            <button type="button" class="close" aria-hidden="true">&times;</button>
+            <p>
+                Type:
+                <select>
+                    <option>All</option>
+                    <option>Pay-In</option>
+                </select>
+            </p>
+            <p>Search: <input type="text"> <input type="button" class="btn btn-primary btn-xs" value="Filter" /></p>
+        </div>
+
+        {{#if isLoading}}
+        <div class="panel-loading"></div>
+        {{/if}}
+
+        <div class="panel-list">
+            <div class="item">
+                <div class="btns">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li id="fat-menu" class="dropdown">
+                            <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-list"></span></a>
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="drop3">
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Edit</a></li>
+                                <li role="presentation" class="divider"></li>
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Remove</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <h4>Tom Slick</h4>
+                <label><span>Type: </span>PAYIN</label>
+                <label><span>Region: </span>en_US</label>
+                <label><span>Locale: </span>en_US</label>
+                <label><span>Birthday: </span>2012-03-02</label>
+            </div>
+        </div>
+    </div>
+</div>
+</script>

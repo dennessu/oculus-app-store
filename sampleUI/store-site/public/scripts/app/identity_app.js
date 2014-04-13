@@ -145,6 +145,7 @@ App.LoginController = Ember.ObjectController.extend({
                     _self.set("content.errMessage", null);
 
                     var redirectUrl = Utils.Cookies.Get(AppConfig.CookiesName.RedirectUrl);
+
                     // show captcha
                     if(AppConfig.Feature.Captcha){
                         _self.transitionToRouteAnimated('captcha', {main: 'flip'});
@@ -154,6 +155,7 @@ App.LoginController = Ember.ObjectController.extend({
                         return;
                     }else if(redirectUrl != null && redirectUrl != ""){
                         location.href = redirectUrl;
+                        return;
                     }else{
                         this.transitionToRouteAnimated('my', {main: 'flip'});
                         return;
