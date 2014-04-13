@@ -18,4 +18,11 @@
     <bean id="defaultEntitlementDefinitionResource" class="com.junbo.catalog.rest.resource.EntitlementDefinitionResourceImpl" scope="prototype"/>
     <bean id="defaultPriceTierResource" class="com.junbo.catalog.rest.resource.PriceTierResourceImpl" scope="prototype"/>
 
+    <bean id="itemAuthorizeCallbackFactoryBean" class="com.junbo.catalog.rest.auth.ItemAuthorizeCallbackFactoryBean">
+        <property name="groupResource" ref="groupResource"/>
+        <property name="userGroupMembershipResource" ref="userGroupMembershipResource"/>
+        <property name="roleResource" ref="roleService"/>
+        <property name="roleAssignmentResource" ref="roleAssignmentService"/>
+    </bean>
+
 </beans>

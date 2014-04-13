@@ -6,6 +6,7 @@
 
 package com.junbo.catalog.rest.resource;
 
+import com.junbo.authorization.annotation.AuthorizeRequired;
 import com.junbo.catalog.core.ItemService;
 import com.junbo.catalog.spec.model.common.EntityGetOptions;
 import com.junbo.catalog.spec.model.item.Item;
@@ -35,6 +36,7 @@ public class ItemResourceImpl implements ItemResource {
     }
 
     @Override
+    @AuthorizeRequired(authCallBackFactoryBean = "itemAuthorizeCallbackFactoryBean", apiName = "item_get")
     public Promise<Item> getItem(ItemId itemId, @BeanParam EntityGetOptions options) {
         return Promise.pure(itemService.getEntity(itemId.getValue()));
     }

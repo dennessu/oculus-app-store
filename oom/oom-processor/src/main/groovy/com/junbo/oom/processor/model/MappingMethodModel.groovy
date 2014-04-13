@@ -16,6 +16,8 @@ class MappingMethodModel {
 
     ParameterModel sourceParameter
 
+    ParameterModel alternativeSourceParameter
+
     ParameterModel contextParameter
 
     TypeModel returnType

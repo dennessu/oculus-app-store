@@ -16,7 +16,7 @@ import com.junbo.langur.core.client.PathParamTranscoder;
 public class IdPathParamTranscoder implements PathParamTranscoder {
     @Override
     public <T> String encode(T pathParam) {
-        if(pathParam.getClass() == Id.class || pathParam.getClass().getSuperclass() == Id.class) {
+        if(Id.class.isAssignableFrom(pathParam.getClass())) {
             return IdFormatter.encodeId((Id)pathParam);
         }
         else {

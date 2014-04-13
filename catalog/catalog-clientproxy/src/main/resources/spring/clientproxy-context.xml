@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="groupResource" class="com.junbo.identity.spec.v1.resource.proxy.GroupResourceClientProxy">
+        <constructor-arg name="client" ref="commonAsyncHttpClient"/>
+        <constructor-arg name="target" value="${catalog.clientproxy.identity.url}"/>
+        <constructor-arg name="transcoder" ref="commonTranscoder"/>
+        <constructor-arg name="pathParamTranscoder" ref="commonPathParamTranscoder"/>
+        <constructor-arg name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
+    </bean>
+
+    <bean id="userGroupMembershipResource"
+          class="com.junbo.identity.spec.v1.resource.proxy.UserGroupMembershipResourceClientProxy">
+        <constructor-arg name="client" ref="commonAsyncHttpClient"/>
+        <constructor-arg name="target" value="${catalog.clientproxy.identity.url}"/>
+        <constructor-arg name="transcoder" ref="commonTranscoder"/>
+        <constructor-arg name="pathParamTranscoder" ref="commonPathParamTranscoder"/>
+        <constructor-arg name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
+    </bean>
+
+    <bean id="roleService" class="com.junbo.identity.spec.v1.resource.proxy.RoleResourceClientProxy">
+        <constructor-arg name="client" ref="commonAsyncHttpClient"/>
+        <constructor-arg name="target" value="${oauth.clientproxy.identity.url}"/>
+        <constructor-arg name="transcoder" ref="commonTranscoder"/>
+        <constructor-arg name="pathParamTranscoder" ref="commonPathParamTranscoder"/>
+        <constructor-arg name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
+    </bean>
+
+    <bean id="roleAssignmentService"
+          class="com.junbo.identity.spec.v1.resource.proxy.RoleAssignmentResourceClientProxy">
+        <constructor-arg name="client" ref="commonAsyncHttpClient"/>
+        <constructor-arg name="target" value="${oauth.clientproxy.identity.url}"/>
+        <constructor-arg name="transcoder" ref="commonTranscoder"/>
+        <constructor-arg name="pathParamTranscoder" ref="commonPathParamTranscoder"/>
+        <constructor-arg name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
+    </bean>
+</beans>

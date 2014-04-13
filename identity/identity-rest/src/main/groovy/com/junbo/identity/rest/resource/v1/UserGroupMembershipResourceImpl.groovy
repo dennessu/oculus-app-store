@@ -1,0 +1,165 @@
+package com.junbo.identity.rest.resource.v1
+
+import com.junbo.common.id.Id
+import com.junbo.common.id.UserGroupId
+import com.junbo.common.model.Results
+import com.junbo.identity.core.service.Created201Marker
+import com.junbo.identity.core.service.filter.UserGroupFilter
+import com.junbo.identity.core.service.validator.UserGroupValidator
+import com.junbo.identity.data.repository.UserGroupRepository
+import com.junbo.identity.spec.error.AppErrors
+import com.junbo.identity.spec.v1.model.UserGroup
+import com.junbo.identity.spec.v1.option.list.UserGroupListOptions
+import com.junbo.identity.spec.v1.option.model.UserGroupGetOptions
+import com.junbo.identity.spec.v1.resource.UserGroupMembershipResource
+import com.junbo.langur.core.promise.Promise
+import groovy.transform.CompileStatic
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Scope
+import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
+
+import javax.ws.rs.ext.Provider
+
+/**
+ * Created by liangfu on 4/9/14.
+ */
+@Provider
+@Component
+@Scope('prototype')
+@Transactional
+@CompileStatic
+class UserGroupMembershipResourceImpl implements UserGroupMembershipResource {
+
+    @Autowired
+    private UserGroupRepository userGroupRepository
+
+    @Autowired
+    private Created201Marker created201Marker
+
+    @Autowired
+    private UserGroupFilter userGroupFilter
+
+    @Autowired
+    private UserGroupValidator userGroupValidator
+
+    @Override
+    Promise<UserGroup> create(UserGroup userGroup) {
+        if (userGroup == null) {
+            throw new IllegalArgumentException('userGroup is null')
+        }
+
+        userGroup = userGroupFilter.filterForCreate(userGroup)
+
+        userGroupValidator.validateForCreate(userGroup).then {
+            userGroupRepository.create(userGroup).then { UserGroup newUserGroup ->
+                created201Marker.mark((Id)newUserGroup.id)
+
+                newUserGroup = userGroupFilter.filterForGet(newUserGroup, null)
+                return Promise.pure(newUserGroup)
+            }
+        }
+    }
+
+    @Override
+    Promise<UserGroup> get(UserGroupId userGroupId, UserGroupGetOptions getOptions) {
+        if (getOptions == null) {
+            throw new IllegalArgumentException('getOptions is null')
+        }
+
+        userGroupValidator.validateForGet(userGroupId).then { UserGroup newUserGroup ->
+            newUserGroup = userGroupFilter.filterForGet(newUserGroup,
+                    getOptions.properties?.split(',') as List<String>)
+
+            return Promise.pure(newUserGroup)
+        }
+    }
+
+    @Override
+    Promise<UserGroup> patch(UserGroupId userGroupId, UserGroup userGroup) {
+        if (userGroupId == null) {
+            throw new IllegalArgumentException('userGroupId is null')
+        }
+
+        if (userGroup == null) {
+            throw new IllegalArgumentException('userGroup is null')
+        }
+
+        return userGroupRepository.get(userGroupId).then { UserGroup oldUserGroup ->
+            if (oldUserGroup == null) {
+                throw AppErrors.INSTANCE.userGroupNotFound(userGroupId).exception()
+            }
+
+            userGroup = userGroupFilter.filterForPatch(userGroup, oldUserGroup)
+
+            userGroupValidator.validateForUpdate(userGroupId, userGroup, oldUserGroup).then {
+
+                userGroupRepository.update(userGroup).then { UserGroup newUserGroup ->
+                    newUserGroup = userGroupFilter.filterForGet(newUserGroup, null)
+                    return Promise.pure(newUserGroup)
+                }
+            }
+        }
+    }
+
+    @Override
+    Promise<UserGroup> put(UserGroupId userGroupId, UserGroup userGroup) {
+        if (userGroupId == null) {
+            throw new IllegalArgumentException('userGroupId is null')
+        }
+
+        if (userGroup == null) {
+            throw new IllegalArgumentException('userGroup is null')
+        }
+
+        return userGroupRepository.get(userGroupId).then { UserGroup oldUserGroup ->
+            if (oldUserGroup == null) {
+                throw AppErrors.INSTANCE.userGroupNotFound(userGroupId).exception()
+            }
+
+            userGroup = userGroupFilter.filterForPut(userGroup, oldUserGroup)
+
+            userGroupValidator.validateForUpdate(userGroupId, userGroup, oldUserGroup).then {
+                userGroupRepository.update(userGroup).then { UserGroup newUserGroup ->
+                    newUserGroup = userGroupFilter.filterForGet(newUserGroup, null)
+                    return Promise.pure(newUserGroup)
+                }
+            }
+        }
+    }
+
+    @Override
+    Promise<Void> delete(UserGroupId userGroupId) {
+        return userGroupValidator.validateForGet(userGroupId).then {
+            userGroupRepository.delete(userGroupId)
+
+            return Promise.pure(null)
+        }
+    }
+
+    @Override
+    Promise<Results<UserGroup>> list(UserGroupListOptions listOptions) {
+        if (listOptions == null) {
+            throw new IllegalArgumentException('listOptions is null')
+        }
+
+        return userGroupValidator.validateForSearch(listOptions).then {
+            userGroupRepository.search(listOptions).then { List<UserGroup> userGroupList ->
+                def result = new Results<UserGroup>(items: [])
+
+                userGroupList.each { UserGroup newUserGroup ->
+                    if (newUserGroup != null) {
+                        newUserGroup = userGroupFilter.filterForGet(newUserGroup,
+                                listOptions.properties?.split(',') as List<String>)
+                    }
+
+                    if (newUserGroup != null) {
+                        result.items.add(newUserGroup)
+                    }
+                }
+
+                return Promise.pure(result)
+            }
+        }
+    }
+}

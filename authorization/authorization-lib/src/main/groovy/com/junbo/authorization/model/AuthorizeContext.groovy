@@ -12,13 +12,13 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class AuthorizeContext {
-    static final ThreadLocal<Set<String>> CLAIMS = new ThreadLocal<>()
+    static final ThreadLocal<Set<String>> RIGHTS = new ThreadLocal<>()
 
-    static Boolean authorizedEnabled
+    static Boolean authorizeEnabled
 
-    static Boolean hasClaim(String claim) {
-        if (authorizedEnabled) {
-            return CLAIMS.get().contains(claim)
+    static Boolean hasRight(String right) {
+        if (authorizeEnabled) {
+            return RIGHTS.get().contains(right)
         }
         return true
     }

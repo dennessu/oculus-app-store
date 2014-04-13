@@ -16,9 +16,9 @@ class MappingPropertyInfo {
 
     String target
 
-    boolean excluded
+    Boolean excluded
 
-    boolean bidirectional
+    Boolean bidirectional
 
     String explicitMethodName
 }

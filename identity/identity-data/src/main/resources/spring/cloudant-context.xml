@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+       ">
+    <import resource="classpath*:spring/sharding-context.xml"/>
+    <import resource="classpath*:spring/common-lib-context.xml"/>
+
+    <bean id="cloudantDeviceRepository" class="com.junbo.identity.data.repository.impl.cloudant.DeviceRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="device"/>
+        <property name="shardAlgorithm" ref="userShardAlgorithm"/>
+        <property name="idGenerator" ref="oculus48IdGenerator"/>
+    </bean>
+
+    <bean id="cloudantUserAuthenticatorRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserAuthenticatorRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="user_authenticator"/>
+        <property name="shardAlgorithm" ref="userShardAlgorithm"/>
+        <property name="idGenerator" ref="oculus48IdGenerator"/>
+    </bean>
+
+    <bean id="cloudantGroupRepository" class="com.junbo.identity.data.repository.impl.cloudant.GroupRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="group"/>
+        <property name="shardAlgorithm" ref="userShardAlgorithm"/>
+        <property name="idGenerator" ref="oculus48IdGenerator"/>
+    </bean>
+
+    <bean id="cloudantTosRepository" class="com.junbo.identity.data.repository.impl.cloudant.TosRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="tos"/>
+        <property name="shardAlgorithm" ref="userShardAlgorithm"/>
+        <property name="idGenerator" ref="oculus48IdGenerator"/>
+    </bean>
+
+    <bean id="cloudantUserPasswordRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserPasswordRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="user_password"/>
+        <property name="shardAlgorithm" ref="userShardAlgorithm"/>
+        <property name="idGenerator" ref="oculus48IdGenerator"/>
+    </bean>
+
+    <bean id="cloudantUserPinRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserPinRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="user_pin"/>
+        <property name="shardAlgorithm" ref="userShardAlgorithm"/>
+        <property name="idGenerator" ref="oculus48IdGenerator"/>
+    </bean>
+
+    <bean id="cloudantUserCredentialVerifyAttemptRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserCredentialVerifyAttemptRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="user_credential_verify_attempt"/>
+        <property name="shardAlgorithm" ref="userShardAlgorithm"/>
+        <property name="idGenerator" ref="oculus48IdGenerator"/>
+    </bean>
+
+    <bean id="cloudantUserDeviceRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserDeviceRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="user_device"/>
+        <property name="shardAlgorithm" ref="userShardAlgorithm"/>
+        <property name="idGenerator" ref="oculus48IdGenerator"/>
+    </bean>
+
+    <bean id="cloudantUserGroupRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserGroupRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="user_group"/>
+        <property name="shardAlgorithm" ref="userShardAlgorithm"/>
+        <property name="idGenerator" ref="oculus48IdGenerator"/>
+    </bean>
+
+    <bean id="cloudantUserOptinRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserOptinRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="user_optin"/>
+        <property name="shardAlgorithm" ref="userShardAlgorithm"/>
+        <property name="idGenerator" ref="oculus48IdGenerator"/>
+    </bean>
+
+    <bean id="cloudantUserPiiRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserPiiRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="user_pii"/>
+        <property name="shardAlgorithm" ref="userShardAlgorithm"/>
+        <property name="idGenerator" ref="oculus48IdGenerator"/>
+    </bean>
+
+    <bean id="cloudantUserRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="user"/>
+        <property name="shardAlgorithm" ref="userShardAlgorithm"/>
+        <property name="idGenerator" ref="oculus48IdGenerator"/>
+    </bean>
+
+    <bean id="cloudantUserSecurityQuestionAttemptRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserSecurityQuestionAttemptRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="user_secqurity_question_attempt"/>
+        <property name="shardAlgorithm" ref="userShardAlgorithm"/>
+        <property name="idGenerator" ref="oculus48IdGenerator"/>
+    </bean>
+
+    <bean id="cloudantUserSecurityQuestionRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserSecurityQuestionRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="user_secqurity_question"/>
+        <property name="shardAlgorithm" ref="userShardAlgorithm"/>
+        <property name="idGenerator" ref="oculus48IdGenerator"/>
+    </bean>
+
+    <bean id="cloudantUserTosRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserTosRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="user_tos"/>
+        <property name="shardAlgorithm" ref="userShardAlgorithm"/>
+        <property name="idGenerator" ref="oculus48IdGenerator"/>
+    </bean>
+
+</beans>
