@@ -25,7 +25,7 @@ public final class RandomFactory {
     }
 
     public static String getRandomEmailAddress() {
-        String email = getRandomStringOfAlphabetOrNumeric(20) + String.format("@wan-san.com");
+        String email = getRandomStringOfAlphabetOrNumeric(10) + String.format("@silkcloud.com");
         return email;
     }
 
