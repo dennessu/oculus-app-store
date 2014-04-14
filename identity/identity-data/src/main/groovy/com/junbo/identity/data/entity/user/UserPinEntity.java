@@ -48,6 +48,14 @@ public class UserPinEntity extends ResourceMetaEntity {
         this.pinSalt = pinSalt;
     }
 
+    public String getPinPepper() {
+        return pinPepper;
+    }
+
+    public void setPinPepper(String pinPepper) {
+        this.pinPepper = pinPepper;
+    }
+
     public Boolean getActive() {
         return active;
     }
@@ -81,6 +89,8 @@ public class UserPinEntity extends ResourceMetaEntity {
     private String pinHash;
     @Column(name = "pin_salt")
     private String pinSalt;
+    @Column(name = "pin_pepper")
+    private String pinPepper;
     @Column(name = "active")
     private Boolean active;
     @Column(name = "change_at_next_login")

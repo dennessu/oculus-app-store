@@ -12,7 +12,7 @@ import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.*;
 import com.junbo.test.common.apihelper.identity.UserService;
-import com.junbo.identity.spec.model.user.User;
+import com.junbo.identity.spec.v1.model.User;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,15 +41,19 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
     public String PostUser() throws Exception {
 
         User user = new User();
-        user.setUserName(RandomFactory.getRandomEmailAddress());
-        user.setPassword("password");
-        user.setStatus(EnumHelper.UserStatus.ACTIVE.toString());
+        user.setUsername(RandomFactory.getRandomStringOfAlphabet(20));
+        user.setNickName(RandomFactory.getRandomStringOfAlphabet(10));
+        user.setType("user");
+        user.setCanonicalUsername(RandomFactory.getRandomStringOfAlphabet(10));
+        user.setCurrency("USD");
+        user.setLocale("en_US");
+        user.setPreferredLanguage("en_US");
 
         return PostUser(user);
     }
 
     public String PostUser(User user) throws Exception {
-        return PostUser(user, 200);
+        return PostUser(user, 201);
     }
 
     public String PostUser(User user, int expectedResponseCode) throws Exception {
@@ -90,7 +94,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
     public List<String> GetUserByUserName(String userName, int expectedResponseCode) throws Exception {
 
         HashMap<String, String> paraMap = new HashMap();
-        paraMap.put("userName", userName);
+        paraMap.put("username", userName);
         String responseBody = restApiCall(HTTPMethod.GET, identityServerURL, null, expectedResponseCode, paraMap);
 
         Results<User> userGet = new JsonMessageTranscoder().decode(

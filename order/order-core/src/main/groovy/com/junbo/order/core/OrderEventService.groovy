@@ -9,4 +9,6 @@ import com.junbo.order.spec.model.PageParam
  */
 interface OrderEventService {
     Promise<List<OrderEvent>> getOrderEvents(Long orderId, PageParam pageParam)
+
+    OrderEvent createOrderEvent(OrderEvent orderEvent)
 }

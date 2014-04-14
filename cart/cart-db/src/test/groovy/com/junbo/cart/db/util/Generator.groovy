@@ -9,12 +9,14 @@ import com.junbo.cart.spec.model.item.OfferItem
 import com.junbo.common.id.CartId
 import com.junbo.common.id.UserId
 import org.apache.commons.lang.RandomStringUtils
+import org.springframework.stereotype.Component
 
 import java.security.SecureRandom
 
 /**
  * Created by fzhang@wan-san.com on 14-2-15.
  */
+@Component("cartDbTestGenerator")
 class Generator {
 
     def rand = new SecureRandom()
@@ -62,8 +64,6 @@ class Generator {
         o.with {
             id = nextId
             offer = nextId
-            updatedTime = date()
-            createdTime = date()
             quantity = rand.nextLong()
             selected = rand.nextBoolean()
         }

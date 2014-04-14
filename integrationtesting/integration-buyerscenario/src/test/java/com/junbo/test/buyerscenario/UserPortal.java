@@ -46,14 +46,14 @@ public class UserPortal extends TestClass {
         String userPostId = us.PostUser();
 
         Assert.assertNotNull(Master.getInstance().getUser(userPostId));
-        Assert.assertNotNull(Master.getInstance().getUser(userPostId).getUserName());
+        Assert.assertNotNull(Master.getInstance().getUser(userPostId).getUsername());
 
         //Get the user with ID
         userPostId = us.GetUserByUserId(userPostId);
         Assert.assertNotNull(userPostId, "Can't get user by user ID");
 
         //Get the user with userName
-        List<String> userGetList = us.GetUserByUserName(Master.getInstance().getUser(userPostId).getUserName());
+        List<String> userGetList = us.GetUserByUserName(Master.getInstance().getUser(userPostId).getUsername());
         Assert.assertNotNull(userGetList, "Can't get user by user Name");
     }
 }
