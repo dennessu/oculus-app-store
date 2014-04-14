@@ -31,6 +31,7 @@ public class ItemRevisionMapper {
         entity.setType(model.getType());
         entity.setStatus(model.getStatus());
         entity.setOwnerId(model.getOwnerId());
+        entity.setTimestamp(model.getTimestamp());
         entity.setPayload(Utils.toJson(model));
     }
 
@@ -44,7 +45,7 @@ public class ItemRevisionMapper {
         model.setOwnerId(entity.getOwnerId());
         model.setRevisionId(entity.getRevisionId());
         model.setType(entity.getType());
-
+        model.setTimestamp(entity.getTimestamp());
         model.setCreatedBy(entity.getCreatedBy());
         model.setCreatedTime(entity.getCreatedTime());
         model.setUpdatedBy(entity.getUpdatedBy());

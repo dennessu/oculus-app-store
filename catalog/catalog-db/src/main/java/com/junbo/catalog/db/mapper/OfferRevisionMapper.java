@@ -30,6 +30,7 @@ public class OfferRevisionMapper {
         entity.setOfferId(model.getOfferId());
         entity.setStatus(model.getStatus());
         entity.setOwnerId(model.getOwnerId());
+        entity.setTimestamp(model.getTimestamp());
         entity.setPayload(Utils.toJson(model));
     }
 
@@ -42,7 +43,7 @@ public class OfferRevisionMapper {
         model.setStatus(entity.getStatus());
         model.setOwnerId(entity.getOwnerId());
         model.setRevisionId(entity.getRevisionId());
-
+        model.setTimestamp(entity.getTimestamp());
         model.setCreatedBy(entity.getCreatedBy());
         model.setCreatedTime(entity.getCreatedTime());
         model.setUpdatedBy(entity.getUpdatedBy());

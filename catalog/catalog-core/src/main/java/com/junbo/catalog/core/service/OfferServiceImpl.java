@@ -16,6 +16,7 @@ import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.item.ItemType;
 import com.junbo.catalog.spec.model.offer.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,7 +57,16 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
 
     @Override
     public List<OfferRevision> getRevisions(OfferRevisionsGetOptions options) {
-        return offerRevisionRepo.getRevisions(options);
+        if (options.getTimestamp()!=null) {
+            if (CollectionUtils.isEmpty(options.getOfferIds())) {
+                throw AppErrors.INSTANCE.validation("offerId must be specified when timestamp is present.").exception();
+            }
+
+            return offerRevisionRepo.getRevisions(options.getOfferIds(), options.getTimestamp());
+
+        } else {
+            return offerRevisionRepo.getRevisions(options);
+        }
     }
 
     @Override

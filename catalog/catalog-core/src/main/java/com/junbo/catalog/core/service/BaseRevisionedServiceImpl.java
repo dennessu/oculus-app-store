@@ -6,6 +6,7 @@
 
 package com.junbo.catalog.core.service;
 
+import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.core.BaseRevisionedService;
 import com.junbo.catalog.db.repo.BaseEntityRepository;
 import com.junbo.catalog.db.repo.BaseRevisionRepository;
@@ -43,6 +44,10 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
         E existingEntity = getEntityRepo().get(entityId);
         checkEntityNotNull(entityId, existingEntity, getEntityType());
 
+        if (existingEntity.getCurrentRevisionId() != entity.getCurrentRevisionId()) {
+            throw AppErrors.INSTANCE.fieldNotCorrect("currentRevision", "The field should not be explicitly updated.")
+                    .exception();
+        }
         if (Boolean.TRUE.equals(entity.getCurated())){
             checkFieldNotNull(entity.getCurrentRevisionId(), "currentRevision");
         }
@@ -73,9 +78,20 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
     @Override
     public T updateRevision(Long revisionId, T revision) {
         T existingRevision = getRevisionRepo().get(revisionId);
+        if (Status.APPROVED.equals(existingRevision.getStatus())) {
+            throw AppErrors.INSTANCE.validation("Cannot update a revision after it's approved.").exception();
+        }
         checkEntityNotNull(revisionId, existingRevision, getRevisionType());
 
-        getRevisionRepo().update(existingRevision);
+        if (Status.APPROVED.equals(revision.getStatus())) {
+            E existingEntity = getEntityRepo().get(revision.getEntityId());
+            checkEntityNotNull(revision.getEntityId(), existingEntity, getEntityType());
+            existingEntity.setCurated(Boolean.TRUE);
+            existingEntity.setCurrentRevisionId(revisionId);
+            getEntityRepo().update(existingEntity);
+            revision.setTimestamp(Utils.now());
+        }
+        getRevisionRepo().update(revision);
         return getRevisionRepo().get(revisionId);
     }
 

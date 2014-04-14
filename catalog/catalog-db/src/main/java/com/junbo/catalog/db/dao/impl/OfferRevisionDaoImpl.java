@@ -11,9 +11,11 @@ import com.junbo.catalog.db.dao.OfferRevisionDao;
 import com.junbo.catalog.db.entity.OfferRevisionEntity;
 import com.junbo.catalog.spec.model.offer.OfferRevisionsGetOptions;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.util.StringUtils;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -32,6 +34,18 @@ public class OfferRevisionDaoImpl extends BaseDaoImpl<OfferRevisionEntity> imple
                 }
                 options.ensurePagingValid();
                 criteria.setFirstResult(options.getStart()).setMaxResults(options.getSize());
+            }
+        });
+    }
+
+    public OfferRevisionEntity getRevision(final Long offerId, final Date timestamp) {
+        return findBy(new Action<Criteria>() {
+            @Override
+            public void apply(Criteria criteria) {
+                criteria.add(Restrictions.eq("offerId", offerId));
+                criteria.add(Restrictions.le("timestamp", timestamp));
+                criteria.addOrder(Order.desc("timestamp"));
+                criteria.setMaxResults(1);
             }
         });
     }
