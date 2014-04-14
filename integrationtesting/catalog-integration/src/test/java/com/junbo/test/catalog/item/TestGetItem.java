@@ -260,7 +260,7 @@ public class TestGetItem extends BaseTestClass {
                                       EnumHelper.CatalogEntityStatus expectedStatus) throws Exception {
         String itemRtnId = itemService.getItem(itemId, paraMap);
         Assert.assertNotNull("Can't get items", itemRtnId);
-        Assert.assertEquals(expectedStatus.getEntityStatus(), Master.getInstance().getItem(itemRtnId).getStatus());
+        Assert.assertEquals(expectedStatus.getEntityStatus(), Master.getInstance().getItem(itemRtnId).getCurated());
     }
 
     private void verifyInvalidScenarios(String itemId, HashMap<String, String> paraMap) throws Exception {
