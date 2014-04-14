@@ -13,7 +13,7 @@ import com.junbo.common.id.OfferId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.common.model.Results;
-import com.junbo.identity.spec.model.user.User;
+import com.junbo.identity.spec.v1.model.User;
 import com.junbo.langur.core.client.TypeReference;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.common.apihelper.catalog.ItemService;
@@ -21,10 +21,7 @@ import com.junbo.test.common.apihelper.catalog.OfferService;
 import com.junbo.test.common.apihelper.identity.UserService;
 import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
 import com.junbo.test.common.blueprint.Master;
-import com.junbo.test.common.libs.EnumHelper;
-import com.junbo.test.common.libs.IdConverter;
-import com.junbo.test.common.libs.LogHelper;
-import com.junbo.test.common.libs.RestUrl;
+import com.junbo.test.common.libs.*;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -213,9 +210,13 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
 
         if (userIdList == null || userIdList.isEmpty()) {
             User user = new User();
-            user.setUserName(userName);
-            user.setPassword("password");
-            user.setStatus(EnumHelper.UserStatus.ACTIVE.getStatus());
+            user.setUsername(userName);
+            user.setNickName(RandomFactory.getRandomStringOfAlphabet(10));
+            user.setType("user");
+            user.setCanonicalUsername(RandomFactory.getRandomStringOfAlphabet(10));
+            user.setCurrency("USD");
+            user.setLocale("en_US");
+            user.setPreferredLanguage("en_US");
             userId = userService.PostUser(user);
         }
         else {

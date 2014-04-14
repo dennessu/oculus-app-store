@@ -101,7 +101,7 @@ public class BuyerValidationHelper extends BaseValidationHelper {
         verifyEqual(resultString.indexOf(orderId) >= 0, true, "verify order Id");
         verifyEqual(resultString.indexOf("SUCCEED") >= 0, true, "Verify email sent status");
         verifyEqual(resultString.indexOf(
-                Master.getInstance().getUser(uid).getUserName()) >= 0, true, "verify email receipt correct");
+                Master.getInstance().getUser(uid).getUsername()) >= 0, true, "verify email receipt correct");
         verifyEqual(resultString.indexOf(
                 IdConverter.hexStringToId(UserId.class, uid).toString()) >= 0, true, "verify user id");
 

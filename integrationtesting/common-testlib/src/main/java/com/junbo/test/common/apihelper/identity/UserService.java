@@ -5,7 +5,7 @@
  */
 package com.junbo.test.common.apihelper.identity;
 
-import com.junbo.identity.spec.model.user.User;
+import com.junbo.identity.spec.v1.model.User;
 import java.util.List;
 
 /**
