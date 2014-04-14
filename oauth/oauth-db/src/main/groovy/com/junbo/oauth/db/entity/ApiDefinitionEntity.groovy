@@ -5,7 +5,7 @@
  */
 package com.junbo.oauth.db.entity
 
-import com.junbo.oauth.spec.model.AuthorizePolicy
+import com.junbo.oauth.spec.model.MatrixRow
 import groovy.transform.CompileStatic
 
 /**
@@ -13,5 +13,6 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class ApiDefinitionEntity extends BaseEntity {
-    Map<String, AuthorizePolicy> authorizePolicies
+
+    Map<String, List<MatrixRow>> scopes
 }

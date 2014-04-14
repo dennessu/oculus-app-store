@@ -7,12 +7,15 @@ package com.junbo.oom.processor.factory
 
 import com.junbo.oom.processor.model.MappingMethodRefModel
 import com.junbo.oom.processor.model.TypeModel
+
 /**
  * Java doc.
  */
 interface MappingMethodRefResolver {
 
-    MappingMethodRefModel resolve(TypeModel sourceType, TypeModel targetType, String explicitMappingMethod)
+    MappingMethodRefModel resolve(TypeModel sourceType, TypeModel targetType,
+                                  boolean hasAlternativeSourceParameter, boolean hasContextParameter,
+                                  String explicitMappingMethod)
 
     void register(TypeModel sourceType, TypeModel targetType, MappingMethodRefModel mappingMethodRef)
 }

@@ -1,0 +1,56 @@
+<script type="text/x-handlebars" data-template-name="histories">
+<div class="panel panel-default panel-csr" id="Histories">
+    <div class="panel-heading">
+        <h3 class="panel-title">Purchase Histories</h3>
+
+        <ul class="nav navbar-nav navbar-right">
+            <li id="fat-menu" class="dropdown">
+                <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">Actions<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="drop3">
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#" {{action Filter}}>Filter</a></li>
+                </ul>
+            </li>
+        </ul>
+        <div class="clearfix"></div>
+    </div>
+    <div class="panel-body">
+        <div class="panel-filter">
+            <button type="button" class="close" aria-hidden="true">&times;</button>
+            <p>
+                Type:
+                <select>
+                    <option>All</option>
+                    <option>Pay-In</option>
+                </select>
+            </p>
+            <p>Search: <input type="text"> <input type="button" class="btn btn-primary btn-xs" value="Filter" /></p>
+        </div>
+
+        {{#if isLoading}}
+        <div class="panel-loading"></div>
+        {{/if}}
+
+        <div class="panel-list">
+            <div class="item">
+                <div class="btns">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li id="fat-menu" class="dropdown">
+                            <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-list"></span></a>
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="drop3">
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Edit</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <h4>123-123-123</h4>
+                <label><span>Total Amount: </span>$ 123.00</label>
+                <label><span>Created Time: </span>createdTime</label>
+                <br>
+                <label><span>Status: </span>FAILED</label>
+                <label><span>Tentative: </span>true</label>
+            </div>
+        </div>
+    </div>
+</div>
+</script>

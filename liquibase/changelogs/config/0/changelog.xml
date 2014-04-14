@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author='minhao' context="PREDEPLOY">
+        <sql><![CDATA[
+			create table security_question (
+				id bigint primary key,
+				version bigint not null,
+				value varchar(255) not null,
+                active boolean not null,
+
+                created_by varchar(32),
+                created_time timestamp,
+                modified_by varchar(32),
+                modified_time timestamp
+			);
+
+        insert into security_question values(1, 0, 'What was your childhood nickname?', true, '', '2014-03-19', '', '2014-03-19');
+        insert into security_question values(2, 0, 'In what city did you meet your spouse/significant other?', true, '', '2014-03-19', '', '2014-03-19');
+        insert into security_question values(3, 0, 'What is the name of your favorite childhood friend?', true, '', '2014-03-19', '', '2014-03-19');
+        insert into security_question values(4, 0, 'What street did you live on in third grade?', true, '', '2014-03-19', '', '2014-03-19');
+        insert into security_question values(5, 0, 'What is your oldest sibling''s birthday month and year? (e.g., January 1900)', true, '', '2014-03-19', '', '2014-03-19');
+        insert into security_question values(6, 0, 'What is the middle name of your oldest child?', true, '', '2014-03-19', '', '2014-03-19');
+        insert into security_question values(7, 0, 'What is your oldest sibling''s middle name?', true, '', '2014-03-19', '', '2014-03-19');
+        insert into security_question values(8, 0, 'What school did you attend for sixth grade?', true, '', '2014-03-19', '', '2014-03-19');
+        insert into security_question values(9, 0, 'What was your childhood phone number including area code? (e.g., 000-000-0000)', true, '', '2014-03-19', '', '2014-03-19');
+        insert into security_question values(10, 0, 'What is your oldest cousin''s first and last name?', true, '', '2014-03-19', '', '2014-03-19');
+        insert into security_question values(11, 0, 'What was the name of your first stuffed animal?', true, '', '2014-03-19', '', '2014-03-19');
+        insert into security_question values(12, 0, 'In what city or town did your mother and father meet?', true, '', '2014-03-19', '', '2014-03-19');
+        insert into security_question values(13, 0, 'Where were you when you had your first kiss?', true, '', '2014-03-19', '', '2014-03-19');
+
+        ]]>
+        </sql>
+    </changeSet>
+</databaseChangeLog>

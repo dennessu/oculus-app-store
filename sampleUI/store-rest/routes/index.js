@@ -7,9 +7,11 @@ module.exports = function (app) {
 
         res.render("index", {title: "Redirect Test"});
     });
-    app.get("/rest/authorize", function (req, res) {
+    app.get("/rest/oauth2/authorize", function (req, res) {
 
-        res.redirect("http://localhost:3000/identity?event=TestEvent&cid=12345&redirect_url=http://localhost:3000/callback/login?code=123");
+        var redirect_url = req.query["redirect_uri"];
+
+        res.redirect("http://localhost:3100/identity?event=TestEvent&cid=12345&redirect_url="+redirect_url+"?code=123");
         res.end();
     });
 

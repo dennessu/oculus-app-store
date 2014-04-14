@@ -18,7 +18,7 @@ import java.lang.annotation.Target
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @interface AuthorizeRequired {
-    Class<? extends AuthorizeCallback> authCallBack()
+    String authCallBackFactoryBean()
 
     String apiName()
 }

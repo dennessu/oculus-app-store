@@ -2,7 +2,7 @@ module.exports = {
 
     RunProcessNumber: 2, // useful for cluster launch
     Localhost: "localhost",
-    ListenOnPort: 3000,
+    ListenOnPort: 3100,
 
     Identity_API_Host: "127.0.0.1",
     Identity_API_Port: 8000,

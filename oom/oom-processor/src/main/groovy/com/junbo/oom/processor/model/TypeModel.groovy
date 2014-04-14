@@ -23,9 +23,9 @@ class TypeModel {
 
     TypeModel implementationType
 
-    boolean collectionType
+    Boolean collectionType
 
-    boolean mapType
+    Boolean mapType
 
     String getQualifiedName() {
         return packageName == null ? name : packageName + '.' + name

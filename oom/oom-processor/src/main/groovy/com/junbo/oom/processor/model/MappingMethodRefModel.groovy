@@ -16,7 +16,9 @@ class MappingMethodRefModel {
 
     String name
 
-    boolean hasContextParameter
+    Boolean hasAlternativeSourceParameter
+
+    Boolean hasContextParameter
 
     Set<TypeModel> getImportedTypes() {
         def result = declaringMapper == null ? [] : declaringMapper.importedTypes

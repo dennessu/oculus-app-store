@@ -20,8 +20,7 @@ public class PriceTierDaoImpl extends BaseDaoImpl<PriceTierEntity> implements Pr
     public List<PriceTierEntity> getPriceTiers(final int start, final int size) {
         return findAllBy(new Action<Criteria>() {
             public void apply(Criteria criteria) {
-                criteria.setFirstResult(start);
-                criteria.setFetchSize(size);
+                criteria.setFirstResult(start).setMaxResults(size);
             }
         });
     }

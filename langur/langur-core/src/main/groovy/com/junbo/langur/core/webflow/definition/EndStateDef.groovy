@@ -9,4 +9,6 @@ import groovy.transform.CompileStatic
 class EndStateDef extends StateDef {
 
     String view
+
+    String model
 }

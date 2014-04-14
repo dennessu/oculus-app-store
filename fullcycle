@@ -1,7 +1,0 @@
-#!/bin/sh
-
-pushd common/liquibase
-./dropdb.sh && ./createdb.sh && ./updatedb.sh
-popd
-
-./build

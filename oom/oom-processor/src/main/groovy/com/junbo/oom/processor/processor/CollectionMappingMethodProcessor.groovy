@@ -27,14 +27,16 @@ class CollectionMappingMethodProcessor implements MappingMethodProcessor {
 
         def sourceElementType = mappingMethodInfo.sourceParameter.type.typeParameters[0]
         def targetElementType = mappingMethodInfo.returnType.typeParameters[0]
+        def hasAlterativeSourceParameter = mappingMethodInfo.alternativeSourceParameter != null
         def contextParameter = mappingMethodInfo.contextParameter
 
         MappingMethodRefModel elementMappingMethod = MappingMethodProcessorUtil.getOrCreateMappingMethodRef(
-                sourceElementType, targetElementType, contextParameter, processorContext)
+                sourceElementType, targetElementType, hasAlterativeSourceParameter, contextParameter, processorContext)
 
         return new CollectionMappingMethodModel(
                 name:mappingMethodInfo.name,
                 sourceParameter:mappingMethodInfo.sourceParameter,
+                alternativeSourceParameter: mappingMethodInfo.alternativeSourceParameter,
                 contextParameter:mappingMethodInfo.contextParameter,
                 returnType:mappingMethodInfo.returnType,
                 elementMappingMethod:elementMappingMethod)

@@ -3,10 +3,7 @@ package com.junbo.payment.core.mock;
 
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.core.provider.AbstractPaymentProviderService;
-import com.junbo.payment.core.provider.PaymentProviderService;
 import com.junbo.payment.spec.enums.CreditCardType;
-import com.junbo.payment.spec.enums.PIStatus;
-import com.junbo.payment.spec.model.ChargeInfo;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentTransaction;
 
@@ -45,7 +42,7 @@ public class MockPaymentProviderServiceImpl extends AbstractPaymentProviderServi
     @Override
     public Promise<PaymentInstrument> add(PaymentInstrument request) {
         request.setAccountNum("1111");
-        request.setStatus(PIStatus.ACTIVE.toString());
+        request.setIsActive(true);
         request.getCreditCardRequest().setExternalToken(piExternalToken);
         request.getCreditCardRequest().setType(CreditCardType.VISA.toString());
         request.getCreditCardRequest().setCommercial("UNKNOW");

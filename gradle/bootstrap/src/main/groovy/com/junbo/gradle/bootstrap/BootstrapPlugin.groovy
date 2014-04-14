@@ -19,7 +19,7 @@ class BootstrapPlugin implements Plugin<Project> {
     @Override
     void apply(Project rootProject) {
         rootProject.task('createWrapper', type: Wrapper) {
-            gradleVersion = '1.10'
+            gradleVersion = '1.11'
         }
 
         rootProject.apply plugin: 'idea'
@@ -103,7 +103,7 @@ class BootstrapPlugin implements Plugin<Project> {
                 targetCompatibility = 1.7
 
                 dependencies {
-                    testCompile 'org.testng:testng:6.8.7'
+                    testCompile libraries.testng
                 }
 
                 compileJava.doFirst {
@@ -173,7 +173,7 @@ class BootstrapPlugin implements Plugin<Project> {
             plugins.withType(GroovyPlugin) {
 
                 dependencies {
-                    compile 'org.codehaus.groovy:groovy-all:2.2.1'
+                    compile libraries.groovy
                 }
 
                 compileGroovy.doFirst {

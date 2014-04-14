@@ -3,10 +3,12 @@
 
 package ${packageName};
 
-import com.junbo.oom.core.filter.ElementMappingEvent;
-import com.junbo.oom.core.filter.ElementMappingFilter;
+import com.junbo.oom.core.filter.ItemMappingEvent;
+import com.junbo.oom.core.filter.ItemMappingFilter;
 import com.junbo.oom.core.filter.PropertyMappingEvent;
 import com.junbo.oom.core.filter.PropertyMappingFilter;
+
+import java.util.*;
 
 [#list importedTypes as importedType]
 import ${importedType.qualifiedName};
