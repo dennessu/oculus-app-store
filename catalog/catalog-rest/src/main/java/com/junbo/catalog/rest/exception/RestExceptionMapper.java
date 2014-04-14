@@ -38,7 +38,8 @@ public class RestExceptionMapper implements ExceptionMapper<Exception> {
            return AppErrors.INSTANCE.fieldNotCorrect(((JsonMappingException) e).getPathReference(), e.getMessage())
                    .exception().getResponse();
         }
-        else {    //other exceptions
+        //other exceptions
+        else {
             return AppErrors.INSTANCE.unCaught(e.getMessage()).exception().getResponse();
         }
     }

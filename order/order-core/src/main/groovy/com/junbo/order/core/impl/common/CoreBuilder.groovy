@@ -53,23 +53,31 @@ class CoreBuilder {
         return balance
     }
 
-    static Balance buildPartialChargeBalance(Order order, BalanceType balanceType) {
+    static Balance buildPartialChargeBalance(Order order, BalanceType balanceType, Balance taxedBalance) {
         if (order == null) {
             return null
         }
 
-        Balance balance = buildBalance(order)
-        balance.type = balanceType.toString()
-        balance.skipTaxCalculation = true
+        Balance balance = null
+        if (taxedBalance == null) {
+            balance = buildBalance(order)
+            balance.type = balanceType.toString()
+            balance.skipTaxCalculation = true
+        }
+        else {
+            balance = taxedBalance
+        }
 
         order.orderItems.eachWithIndex { OrderItem item, int i ->
-            def balanceItem = buildPartialChargeBalanceItem(item)
-            if (item.orderItemId == null) {
-                balanceItem.orderItemId = new OrderItemId(i)
-            } else {
-                balanceItem.orderItemId = item.orderItemId
+            def balanceItem = buildOrUpdatePartialChargeBalanceItem(item, taxedBalance)
+            if (taxedBalance == null) {
+                if (item.orderItemId == null) {
+                    balanceItem.orderItemId = new OrderItemId(i)
+                } else {
+                    balanceItem.orderItemId = item.orderItemId
+                }
+                balance.addBalanceItem(balanceItem)
             }
-            balance.addBalanceItem(balanceItem)
         }
 
         return  balance
@@ -104,16 +112,27 @@ class CoreBuilder {
         return balanceItem
     }
 
-    static BalanceItem buildPartialChargeBalanceItem(OrderItem item) {
+    static BalanceItem buildOrUpdatePartialChargeBalanceItem(OrderItem item, Balance taxedBalance) {
         if (item == null) {
             return null
         }
 
-        BalanceItem balanceItem = new BalanceItem()
+        BalanceItem balanceItem = null
         // TODO: update the threshold & percentage, use 50 & 10% for now
-        balanceItem.amount = item.totalAmount > PARTIAL_CHARGE_THRESHOLD ?
+        BigDecimal partialChargeAmount = item.totalAmount > PARTIAL_CHARGE_THRESHOLD ?
                 PARTIAL_CHARGE_THRESHOLD : item.totalAmount * PARTIAL_CHARGE_PERCENTAGE
-
+        if (taxedBalance != null) {
+            // complete charge
+            balanceItem = taxedBalance.balanceItems.find { BalanceItem taxedItem ->
+                taxedItem.orderItemId.value == item.orderItemId.value
+            }
+            balanceItem.amount = item.totalAmount - partialChargeAmount
+            taxedBalance.totalAmount -= partialChargeAmount
+        }
+        else {
+            balanceItem = new BalanceItem()
+            balanceItem.amount = partialChargeAmount
+        }
         return balanceItem
     }
 

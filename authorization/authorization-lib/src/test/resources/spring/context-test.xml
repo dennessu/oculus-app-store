@@ -10,8 +10,11 @@
         <property name="authorizeService" ref="authorizeService"/>
     </bean>
 
+    <bean id="entityAuthorizeCallbackFactory" class="com.junbo.authorization.EntityAuthorizeCallbackFactory"/>
+
     <bean id="service" class="com.junbo.authorization.EntityServiceImpl">
         <property name="authorizeService" ref="authorizeService"/>
+        <property name="entityAuthorizeCallbackFactory" ref="entityAuthorizeCallbackFactory"/>
     </bean>
 
     <bean id="tokenEndpoint" class="com.junbo.authorization.MockTokenEndpoint"/>
@@ -28,7 +31,7 @@
         <property name="tokenEndpoint" ref="tokenEndpoint"/>
         <property name="tokenInfoEndpoint" ref="tokenInfoEndpoint"/>
         <property name="apiEndpoint" ref="apiEndpoint"/>
-        <property name="serviceClientId" value="service"/>
+        <property name="serviceClientId" value="client"/>
         <property name="serviceClientSecret" value="secret"/>
         <property name="conditionEvaluator" ref="conditionEvaluator"/>
         <property name="authorizeEnabled" value="true"/>
