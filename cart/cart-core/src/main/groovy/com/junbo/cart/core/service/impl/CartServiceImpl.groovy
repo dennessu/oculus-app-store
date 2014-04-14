@@ -16,7 +16,7 @@ import com.junbo.common.id.CartId
 import com.junbo.common.id.CartItemId
 import com.junbo.common.id.OfferId
 import com.junbo.common.id.UserId
-import com.junbo.identity.spec.model.user.User
+import com.junbo.identity.spec.v1.model.User
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.util.CollectionUtils
@@ -48,8 +48,7 @@ class CartServiceImpl implements CartService {
 
     @Override
     Promise<Cart> addCart(Cart cart, String clientId, UserId userId) {
-        return identityClient.getUser(userId).then {
-            User user = (User) it
+        return identityClient.getUser(userId).then { User user ->
             validation.validateUser(user).validateCartAdd(clientId, userId, cart)
             cart.clientId = clientId
             cart.user = userId
