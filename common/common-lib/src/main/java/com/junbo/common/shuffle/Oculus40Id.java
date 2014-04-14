@@ -24,7 +24,7 @@ public class Oculus40Id {
     public static final int OCULUS40_DECIMAL_LENGTH = 12;
     private static DualHashBidiMap oculus40ShuffleMap;
 
-    private static final Long MAGIC_NUMBER = Long.parseLong("123412341234", 10);
+    private static final Long MAGIC_NUMBER = 365067025567L;
 
     static
     {
