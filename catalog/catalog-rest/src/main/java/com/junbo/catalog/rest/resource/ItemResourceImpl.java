@@ -6,8 +6,12 @@
 
 package com.junbo.catalog.rest.resource;
 
-import com.junbo.authorization.annotation.AuthorizeRequired;
+import com.junbo.authorization.AuthorizeCallback;
+import com.junbo.authorization.model.AuthorizeContext;
+import com.junbo.authorization.service.AuthorizeService;
 import com.junbo.catalog.core.ItemService;
+import com.junbo.catalog.rest.auth.ItemAuthorizeCallbackFactory;
+import com.junbo.catalog.spec.error.AppErrors;
 import com.junbo.catalog.spec.model.common.EntityGetOptions;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.item.ItemsGetOptions;
@@ -18,7 +22,9 @@ import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.ws.rs.BeanParam;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Item resource implementation.
@@ -26,6 +32,12 @@ import java.util.List;
 public class ItemResourceImpl implements ItemResource {
     @Autowired
     private ItemService itemService;
+
+    @Autowired
+    private ItemAuthorizeCallbackFactory itemAuthorizeCallbackFactory;
+
+    @Autowired
+    private AuthorizeService authorizeService;
 
     @Override
     public Promise<Results<Item>> getItems(ItemsGetOptions options) {
@@ -36,13 +48,36 @@ public class ItemResourceImpl implements ItemResource {
     }
 
     @Override
-    @AuthorizeRequired(authCallBackFactoryBean = "itemAuthorizeCallbackFactoryBean", apiName = "item_get")
     public Promise<Item> getItem(ItemId itemId, @BeanParam EntityGetOptions options) {
-        return Promise.pure(itemService.getEntity(itemId.getValue()));
+        Item item = itemService.getEntity(itemId.getValue());
+
+        Map<String, Object> context = new HashMap<>();
+        context.put("apiName", "item_get");
+        context.put("entity", item);
+
+        AuthorizeCallback callback = itemAuthorizeCallbackFactory.create(context);
+        authorizeService.authorize(callback);
+
+        if (!AuthorizeContext.hasRight("read")) {
+            throw AppErrors.INSTANCE.notFound("Item", item.getItemId()).exception();
+        }
+
+        return Promise.pure(item);
     }
 
     @Override
     public Promise<Item> update(ItemId itemId, Item item) {
+        Map<String, Object> context = new HashMap<>();
+        context.put("apiName", "item_update");
+        context.put("entity", item);
+
+        AuthorizeCallback callback = itemAuthorizeCallbackFactory.create(context);
+        authorizeService.authorize(callback);
+
+        if (!AuthorizeContext.hasRight("update")) {
+            throw AppErrors.INSTANCE.accessDenied().exception();
+        }
+
         return Promise.pure(itemService.updateEntity(itemId.getValue(), item));
     }
 

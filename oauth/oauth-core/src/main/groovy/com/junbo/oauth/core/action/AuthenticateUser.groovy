@@ -58,6 +58,7 @@ class AuthenticateUser implements Action {
 
         def parameterMap = contextWrapper.parameterMap
         def client = contextWrapper.client
+        def headerMap = contextWrapper.headerMap
 
         // Get and validate the username and password from the query parameter.
         String username = parameterMap.getFirst(OAuthParameters.USERNAME)
@@ -73,7 +74,8 @@ class AuthenticateUser implements Action {
 
         // Authenticate the user will the username and password.
         try {
-            userService.authenticateUser(username, password, client.clientId, "127.0.0.1")
+            userService.authenticateUser(username, password, client.clientId, '1.1.1.1',
+                    headerMap.getFirst('user-agent'))
                     .then { UserCredentialVerifyAttempt loginAttempt ->
                 if (loginAttempt == null || !loginAttempt.succeeded) {
                     throw AppExceptions.INSTANCE.invalidCredential().exception()
