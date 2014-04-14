@@ -24,7 +24,7 @@ public class Oculus48Id {
     public static final String OCULUS48_ID_DEFAULT_FILL_FIELD = "0";
     private static DualHashBidiMap oculus48ShuffleMap;
 
-    private static final Long MAGIC_NUMBER = Long.parseLong("6B54FFB0BC9F", 16);
+    private static final Long MAGIC_NUMBER = 0x6B54FFB0BC9FL;
 
     static
     {
