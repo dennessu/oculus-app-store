@@ -11,5 +11,7 @@ class ViewStateDef extends TransitionalStateDef {
 
     String view
 
+    String model
+
     List<Action> renderActions
 }

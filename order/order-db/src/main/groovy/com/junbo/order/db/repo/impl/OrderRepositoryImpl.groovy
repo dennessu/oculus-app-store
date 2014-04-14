@@ -14,13 +14,11 @@ import com.junbo.order.db.dao.*
 import com.junbo.order.db.entity.*
 import com.junbo.order.db.mapper.ModelMapper
 import com.junbo.order.db.repo.OrderRepository
-import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.*
 import com.junbo.sharding.IdGenerator
 import com.junbo.sharding.IdGeneratorFacade
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
-import org.apache.commons.collections.CollectionUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -82,7 +80,7 @@ class OrderRepositoryImpl implements OrderRepository {
         def id = orderDao.create(orderEntity)
         def orderId = new OrderId(id)
         order.setId(orderId)
-        fillDateInfo(order, orderEntity)
+        Utils.fillDateInfo(order, orderEntity)
 
         saveOrderItems(order.id, order.orderItems)
         saveDiscounts(order.id, order.discounts)
@@ -151,6 +149,11 @@ class OrderRepositoryImpl implements OrderRepository {
     }
 
     @Override
+    OrderItem getOrderItem(Long orderItemId) {
+        return modelMapper.toOrderItemModel(orderItemDao.read(orderItemId), new MappingContext())
+    }
+
+    @Override
     List<Discount> getDiscounts(Long orderId) {
         List<Discount> discounts = []
         MappingContext context = new MappingContext()
@@ -189,7 +192,7 @@ class OrderRepositoryImpl implements OrderRepository {
         orderEntity.createdTime = oldEntity.createdTime
         orderEntity.createdBy = oldEntity.createdBy
         orderDao.update(orderEntity)
-        fillDateInfo(order, orderEntity)
+        Utils.fillDateInfo(order, orderEntity)
 
         if (!updateOnlyOrder) {
             saveOrderItems(order.id, order.orderItems)
@@ -197,32 +200,6 @@ class OrderRepositoryImpl implements OrderRepository {
             savePaymentInstruments(order.id, order.paymentInstruments)
         }
         return order
-    }
-
-    @Override
-    Order getOrderByTrackingUuid(UUID trackingUuid) {
-        def orders = orderDao.readByTrackingUuid(trackingUuid)
-        if (CollectionUtils.isEmpty(orders)) {
-            return null
-        }
-
-        // assert only one order is returned.
-        checkOrdersByTrackingUuid(orders)
-        return modelMapper.toOrderModel(orders[0], new MappingContext())
-    }
-
-    @Override
-    OrderEvent getOrderEventByTrackingUuid(UUID trackingUuid) {
-        def orderEvents = orderEventDao.readByTrackingUuid(trackingUuid)
-        if (CollectionUtils.isEmpty(orderEvents)) {
-            return null
-        }
-        if (orderEvents.size() > 1) {
-            LOGGER.error('name=Multiple_Order_Events_With_Same_TrackingUuid, ' +
-                    'trackingUuid={}', trackingUuid)
-            throw AppErrors.INSTANCE.orderEventDuplicateTrackingGuid(0L, trackingUuid).exception()
-        }
-        return modelMapper.toOrderEventModel(orderEvents[0], new MappingContext())
     }
 
     @Override
@@ -386,7 +363,7 @@ class OrderRepositoryImpl implements OrderRepository {
             entity.createdBy = oldEntity.createdBy
             orderItemDao.update(entity)
         }
-        fillDateInfo(orderItem, entity)
+        Utils.fillDateInfo(orderItem, entity)
     }
 
     void saveDiscount(Discount discount, boolean isCreate) {
@@ -403,7 +380,7 @@ class OrderRepositoryImpl implements OrderRepository {
             entity.createdBy = oldEntity.createdBy
             discountDao.update(entity)
         }
-        fillDateInfo(discount, entity)
+        Utils.fillDateInfo(discount, entity)
     }
 
     void savePaymentInstrument(OrderId orderId, PaymentInstrumentId paymentInstrumentId) {
@@ -415,21 +392,5 @@ class OrderRepositoryImpl implements OrderRepository {
         orderPaymentInfoEntity.paymentInstrumentType = 'CREDIT_CAR' // todo may not need to save this field in db
         orderPaymentInfoEntity.orderPaymentId = idGenerator.nextId(orderId.value)
         orderPaymentInfoDao.create(orderPaymentInfoEntity)
-    }
-
-    void fillDateInfo(BaseModelWithDate baseModelWithDate, CommonDbEntityWithDate commonDbEntityWithDate) {
-        baseModelWithDate.createdBy = commonDbEntityWithDate.createdBy
-        baseModelWithDate.createdTime = commonDbEntityWithDate.createdTime
-        baseModelWithDate.updatedBy = commonDbEntityWithDate.updatedBy
-        baseModelWithDate.updatedTime = commonDbEntityWithDate.updatedTime
-    }
-
-    static void checkOrdersByTrackingUuid(List<OrderEntity> orders) {
-        if (orders.size() > 1) {
-            LOGGER.error('name=Multiple_Orders_With_Same_TrackingUuid, ' +
-                    'trackingUuid={}',
-                    orders[0].trackingUuid)
-            throw AppErrors.INSTANCE.orderDuplicateTrackingGuid(0L, orders[0].trackingUuid).exception()
-        }
     }
 }

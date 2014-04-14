@@ -9,13 +9,12 @@
                 create table user_order (
                     order_id bigint not null,
                     user_id bigint not null,
-                    tracking_uuid uuid default null,
                     order_status_id smallint not null,
                     is_tentative boolean not null,
-                    original_order_id bigint default null,
                     order_type_id smallint not null,
                     country varchar(2) not null,
                     currency varchar(3) not null,
+                    locale varchar(5) not null,
                     shipping_method_id bigint default null,
                     shipping_address_id bigint default null,
                     total_amount decimal not null,
@@ -24,8 +23,6 @@
                     total_discount decimal not null,
                     total_shipping_fee decimal not null,
                     total_shipping_fee_discount decimal not null,
-                    total_preorder_amount decimal default null,
-                    total_preorder_tax decimal default null,
                     honor_until_time timestamp default null,
                     honored_time timestamp not null,
                     properties varchar(4000) default null,
@@ -35,7 +32,7 @@
                     updated_by varchar(128) not null,
                     primary key (order_id)
                 );
-                create unique index user_order_tracking_uuid_index on user_order (user_id, order_id, tracking_uuid);
+                create unique index user_order_index on user_order (user_id, order_id);
                 create unique index user_order_time_index on user_order (user_id, order_id, updated_time, created_time);
 
                 create table order_event (
@@ -68,11 +65,8 @@
                     total_tax decimal not null,
                     is_tax_exempted boolean not null,
                     total_discount decimal not null,
-                    total_preorder_amount decimal default null,
-                    total_preorder_tax decimal default null,
                     honor_until_time timestamp default null,
                     honored_time timestamp not null,
-                    federated_id varchar(128) default null,
                     properties varchar(4000) default null,
                     is_deleted boolean not null,
                     created_time timestamp not null,
@@ -207,8 +201,13 @@
                     subledger_id bigint not null,
                     seller_id bigint not null,
                     seller_tax_profile_id bigint default null,
-                    currency_id smallint not null,
+                    product_item_id varchar(128) not null,
+                    currency varchar(3) not null,
+                    country varchar(2) not null,
+                    payout_status_id smallint not null,
                     total_amount decimal not null,
+                    start_time timestamp not null,
+                    end_time timestamp not null,
                     property varchar(4000) default null,
                     created_time timestamp not null,
                     created_by varchar(128) not null,
@@ -231,9 +230,12 @@
 
                 create table subledger_item (
                     subledger_item_id bigint not null,
-                    subledger_id bigint not null,
+                    subledger_id bigint default null,
                     order_item_id bigint not null,
+                    product_item_id varchar(128) not null,
                     original_subledger_item_id bigint default null,
+                    subledger_item_action smallint not null,
+                    status_id smallint not null,
                     total_amount decimal not null,
                     created_time timestamp not null,
                     created_by varchar(128) not null,

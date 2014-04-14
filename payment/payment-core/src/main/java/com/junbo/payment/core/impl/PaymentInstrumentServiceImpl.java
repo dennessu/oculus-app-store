@@ -92,9 +92,6 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
 
     private void saveAndCommitPI(final PaymentInstrument request) {
         paymentInstrumentRepository.save(request);
-        if(CommonUtil.toBool(request.getIsDefault())){
-            paymentInstrumentRepository.setDefault(request.getId().getPaymentInstrumentId());
-        }
         saveTrackingUuid(request, PaymentAPI.AddPI);
     }
 
@@ -118,16 +115,10 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
         if(request.getAddress().getId() == null){
             request.getAddress().setId(piTarget.getAddress().getId());
         }
-        if(request.getPhone().getId() == null){
-            request.getPhone().setId(piTarget.getPhone().getId());
-        }
         if(request.getType().equals(PIType.CREDITCARD.toString())){
             request.getCreditCardRequest().setId(request.getId().getPaymentInstrumentId());
         }
         paymentInstrumentRepository.update(request);
-        if(CommonUtil.toBool(request.getIsDefault()) && !CommonUtil.toBool(piTarget.getIsDefault())){
-            paymentInstrumentRepository.setDefault(request.getId().getPaymentInstrumentId());
-        }
     }
 
     @Override
@@ -194,10 +185,6 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
             throw AppClientExceptions.INSTANCE.missingPIType().exception();
         }
         PaymentUtil.getPIType(request.getType());
-        if(CommonUtil.toBool(request.getIsDefault()) &&
-                !request.getType().toString().equalsIgnoreCase(PIType.CREDITCARD.toString())){
-            throw AppClientExceptions.INSTANCE.invalidTypeForDefault(request.getType().toString()).exception();
-        }
         validateAddress(request);
         validateCreditCard(request);
     }

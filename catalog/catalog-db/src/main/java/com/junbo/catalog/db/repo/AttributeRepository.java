@@ -6,9 +6,11 @@
 
 package com.junbo.catalog.db.repo;
 
+import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.db.dao.AttributeDao;
 import com.junbo.catalog.db.entity.AttributeEntity;
 import com.junbo.catalog.spec.model.attribute.Attribute;
+import com.junbo.catalog.spec.model.common.LocalizableProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -23,7 +25,7 @@ public class AttributeRepository {
 
     public Long create(Attribute attribute) {
         AttributeEntity entity = new AttributeEntity();
-        entity.setName(attribute.getName());
+        entity.setName(Utils.toJson(attribute.getName()));
         entity.setType(attribute.getType());
         return attributeDao.create(entity);
     }
@@ -32,7 +34,7 @@ public class AttributeRepository {
         AttributeEntity entity = attributeDao.get(id);
         Attribute attribute = new Attribute();
         attribute.setId(entity.getId());
-        attribute.setName(entity.getName());
+        attribute.setName(Utils.fromJson(entity.getName(), LocalizableProperty.class));
         attribute.setType(entity.getType());
         return attribute;
     }
@@ -44,7 +46,7 @@ public class AttributeRepository {
             Attribute attribute = new Attribute();
             // TODO: extract these to a mapper
             attribute.setId(attributeEntity.getId());
-            attribute.setName(attributeEntity.getName());
+            attribute.setName(Utils.fromJson(attributeEntity.getName(), LocalizableProperty.class));
             attribute.setType(attributeEntity.getType());
             attribute.setCreatedBy(attributeEntity.getCreatedBy());
             attribute.setCreatedTime(attributeEntity.getCreatedTime());

@@ -10,7 +10,6 @@ import com.junbo.oom.core.MappingContext;
 import com.junbo.payment.db.dao.paymentinstrument.AddressDao;
 import com.junbo.payment.db.dao.paymentinstrument.CreditCardPaymentInstrumentDao;
 import com.junbo.payment.db.dao.paymentinstrument.PaymentInstrumentDao;
-import com.junbo.payment.db.dao.paymentinstrument.PhoneDao;
 import com.junbo.payment.db.entity.paymentinstrument.*;
 import com.junbo.payment.db.mapper.PaymentMapperExtension;
 import com.junbo.payment.spec.enums.PIStatus;
@@ -35,8 +34,6 @@ public class PaymentInstrumentRepository {
     @Autowired
     private AddressDao addressDao;
     @Autowired
-    private PhoneDao phoneDao;
-    @Autowired
     private CreditCardPaymentInstrumentDao ccPaymentInstrumentDao;
     @Autowired
     private PaymentMapper paymentMapperImpl;
@@ -54,12 +51,6 @@ public class PaymentInstrumentRepository {
             address.setId(piId);
             addressDao.save(address);
             piEntity.setAddressId(piId);
-        }
-        if(request.getPhone() != null){
-            PhoneEntity phone = paymentMapperImpl.toPhoneEntity(request.getPhone(), new MappingContext());
-            phone.setId(piId);
-            phoneDao.save(phone);
-            piEntity.setPhoneId(piId);
         }
         piEntity.setId(piId);
         paymentInstrumentDao.save(piEntity);
@@ -83,12 +74,8 @@ public class PaymentInstrumentRepository {
         if(request.getAddress().getId() != null){
             addressDao.update(paymentMapperImpl.toAddressEntity(request.getAddress(), new MappingContext()));
         }
-        if(request.getPhone().getId() != null){
-            phoneDao.update(paymentMapperImpl.toPhoneEntity(request.getPhone(), new MappingContext()));
-        }
         PaymentInstrumentEntity pi = paymentMapperExtension.toPIEntity(request);
         pi.setAddressId(request.getAddress().getId());
-        pi.setPhoneId(request.getPhone().getId());
         paymentInstrumentDao.update(pi);
         if(request.getType().equals(PIType.CREDITCARD.toString())){
             ccPaymentInstrumentDao.update(paymentMapperImpl.toCreditCardEntity(
@@ -110,10 +97,6 @@ public class PaymentInstrumentRepository {
         if(pi.getAddressId() != null){
             AddressEntity address = addressDao.get(pi.getAddressId());
             request.setAddress(paymentMapperImpl.toAddress(address, new MappingContext()));
-        }
-        if(pi.getPhoneId() != null){
-            PhoneEntity phone = phoneDao.get(pi.getPhoneId());
-            request.setPhone(paymentMapperImpl.toPhone(phone, new MappingContext()));
         }
         if(pi.getType().equals(PIType.CREDITCARD)){
             CreditCardPaymentInstrumentEntity ccPi = ccPaymentInstrumentDao.get(pi.getId());
@@ -137,10 +120,5 @@ public class PaymentInstrumentRepository {
     public List<PaymentInstrument> search(Long userId,
             PaymentInstrumentSearchParam searchParam, PageMetaData pageMetadata) {
         return getByUserId(userId);
-    }
-
-    public void setDefault(Long piId){
-        PaymentInstrumentEntity entity = paymentInstrumentDao.get(piId);
-        paymentInstrumentDao.updateDefault(entity.getUserId(), piId);
     }
 }

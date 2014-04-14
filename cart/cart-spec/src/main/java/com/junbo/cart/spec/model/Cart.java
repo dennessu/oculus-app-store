@@ -8,7 +8,6 @@ package com.junbo.cart.spec.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.cart.common.validate.Group;
-import com.junbo.cart.spec.model.item.CouponItem;
 import com.junbo.cart.spec.model.item.OfferItem;
 import com.junbo.common.id.CartId;
 import com.junbo.common.id.UserId;
@@ -55,9 +54,9 @@ public class Cart extends BaseResource {
     @Valid
     private List<OfferItem> offers;
 
-    @ApiModelProperty(required = true, position = 5, value = "The coupon items in the shopping cart.")
+    @ApiModelProperty(required = true, position = 5, value = "The coupon codes in the shopping cart.")
     @Valid
-    private List<CouponItem> coupons;
+    private List<String> couponCodes;
 
     public CartId getId() {
         return id;
@@ -107,11 +106,11 @@ public class Cart extends BaseResource {
         this.offers = offers;
     }
 
-    public List<CouponItem> getCoupons() {
-        return coupons;
+    public List<String> getCouponCodes() {
+        return couponCodes;
     }
 
-    public void setCoupons(List<CouponItem> coupons) {
-        this.coupons = coupons;
+    public void setCouponCodes(List<String> couponCodes) {
+        this.couponCodes = couponCodes;
     }
 }

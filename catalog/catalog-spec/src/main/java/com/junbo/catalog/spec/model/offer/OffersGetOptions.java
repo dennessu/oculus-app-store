@@ -6,8 +6,9 @@
 
 package com.junbo.catalog.spec.model.offer;
 
-import com.junbo.catalog.spec.model.common.EntitiesGetOptions;
+import com.junbo.catalog.spec.model.common.PageableGetOptions;
 import com.junbo.common.id.OfferId;
+import com.junbo.common.jackson.annotation.AttributeId;
 
 import javax.ws.rs.QueryParam;
 import java.util.List;
@@ -15,13 +16,14 @@ import java.util.List;
 /**
  * Offers get options.
  */
-public class OffersGetOptions extends EntitiesGetOptions {
+public class OffersGetOptions extends PageableGetOptions {
     @QueryParam("id")
     private List<OfferId> offerIds;
-
-    public static OffersGetOptions getDefault() {
-        return setDefaults(new OffersGetOptions());
-    }
+    @QueryParam("curated")
+    private Boolean curated;
+    @AttributeId
+    @QueryParam("category")
+    private Long category;
 
     public List<OfferId> getOfferIds() {
         return offerIds;
@@ -31,8 +33,19 @@ public class OffersGetOptions extends EntitiesGetOptions {
         this.offerIds = offerIds;
     }
 
-    @Override
-    public List<OfferId> getEntityIds() {
-        return offerIds;
+    public Boolean getCurated() {
+        return curated;
+    }
+
+    public void setCurated(Boolean curated) {
+        this.curated = curated;
+    }
+
+    public Long getCategory() {
+        return category;
+    }
+
+    public void setCategory(Long category) {
+        this.category = category;
     }
 }

@@ -10,7 +10,7 @@
     <!-- DataSource -->
     <bean id="ewalletDataSource" class="bitronix.tm.resource.jdbc.PoolingDataSource"
           init-method="init" destroy-method="close">
-        <property name="uniqueName" value="jdbc/id_ds1"/>
+        <property name="uniqueName" value="jdbc/ewallet_ds1"/>
         <property name="className" value="org.postgresql.xa.PGXADataSource"/>
         <property name="minPoolSize" value="${ewallet.db.minConnectionsPerPartition}"/>
         <property name="maxPoolSize" value="${ewallet.db.maxConnectionsPerPartition}"/>

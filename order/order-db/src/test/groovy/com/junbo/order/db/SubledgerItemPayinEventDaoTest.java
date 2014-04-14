@@ -50,7 +50,7 @@ public class SubledgerItemPayinEventDaoTest extends BaseTest {
         SubledgerItemPayinEventEntity entity = new SubledgerItemPayinEventEntity();
         entity.setEventId(generateId());
         //entity.setAction(OrderAction.FULFILL);
-        //entity.setStatus(OrderStatus.COMPLETED);
+        //entity.setPayoutStatus(OrderStatus.COMPLETED);
         entity.setSubledgerItemId(generateLong());
         return entity;
     }

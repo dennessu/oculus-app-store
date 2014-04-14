@@ -7,9 +7,19 @@
 package com.junbo.order.db.dao;
 
 import com.junbo.order.db.entity.SubledgerEntity;
+import com.junbo.order.db.entity.enums.PayoutStatus;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by linyi on 14-2-7.
  */
 public interface SubledgerDao extends BaseDao<SubledgerEntity> {
+
+    List<SubledgerEntity> getBySellerId(long sellerId, PayoutStatus payoutStatus, Date fromDate, Date toDate,
+                                               int start, int count);
+
+    SubledgerEntity find(long sellerId, PayoutStatus payoutStatus, Date startTime,
+                                               String productItemId, String country, String currency);
 }

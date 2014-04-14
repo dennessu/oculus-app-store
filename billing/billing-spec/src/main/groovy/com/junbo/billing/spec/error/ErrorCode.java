@@ -42,4 +42,6 @@ public class ErrorCode {
     public static final String INVALID_PAYMENT_ID = "INVALID_PAYMENT_ID";
 
     public static final String ADDRESS_VALIDATION_ERROR = "ADDRESS_VALIDATION_ERROR";
+
+    public static final String NOT_ASYNC_CHARGE_BALANCE = "NOT_ASYNC_CHARGE_BALANCE";
 }

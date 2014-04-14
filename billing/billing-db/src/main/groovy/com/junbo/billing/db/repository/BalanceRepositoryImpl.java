@@ -15,10 +15,7 @@ import com.junbo.billing.db.mapper.ModelMapper;
 import com.junbo.sharding.IdGeneratorFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created by xmchen on 14-2-19.
@@ -196,6 +193,19 @@ public class BalanceRepositoryImpl implements BalanceRepository {
         saveBalanceEventEntity(savedEntity);
 
         return getBalance(balanceEntity.getBalanceId());
+    }
+
+    @Override
+    public List<BalanceId>  fetchAsyncChargeBalanceIds(Integer count) {
+        List<BalanceEntity> balanceEntities = balanceEntityDao.getAsyncChargeInitBalances(count);
+        List<BalanceId> ids = new ArrayList<>();
+        if(balanceEntities != null) {
+            for(BalanceEntity entity : balanceEntities) {
+                BalanceId id = new BalanceId(entity.getBalanceId());
+                ids.add(id);
+            }
+        }
+        return ids;
     }
 
     @Override

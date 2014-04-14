@@ -422,4 +422,75 @@ public class CommonMapper {
 
         return promotionId.getValue().toString();
     }
+
+    public String fromSubledgerItemStatusToString(SubledgerItemStatus status) {
+        if (status == null) {
+            return null;
+        }
+
+        return status.toString();
+    }
+
+    public SubledgerItemStatus fromStringToSubledgerItemStatus(String status) {
+        if (status == null) {
+            return null;
+        }
+        try {
+            return SubledgerItemStatus.valueOf(status);
+        } catch (Exception e) {
+            throw AppErrors.INSTANCE.enumConversionError(status, "status").exception();
+        }
+    }
+
+    public String fromSubledgerItemActionToString(SubledgerItemAction action) {
+        if (action == null) {
+            return null;
+        }
+
+        return action.toString();
+    }
+
+    public SubledgerItemAction fromStringToSubledgerItemAction(String action) {
+        if (action == null) {
+            return null;
+        }
+        try {
+            return SubledgerItemAction.valueOf(action);
+        } catch (Exception e) {
+            throw AppErrors.INSTANCE.enumConversionError(action, "action").exception();
+        }
+    }
+
+    public String fromSubledgerPayoutStatusToString(PayoutStatus status) {
+        if (status == null) {
+            return null;
+        }
+
+        return status.toString();
+    }
+
+    public PayoutStatus fromStringToSubledgerPayoutStatus(String status) {
+        if (status == null) {
+            return null;
+        }
+        try {
+            return PayoutStatus.valueOf(status);
+        } catch (Exception e) {
+            throw AppErrors.INSTANCE.enumConversionError(status, "status").exception();
+        }
+    }
+
+    public Long fromSubledgerItemIdToLong(SubledgerItemId subledgerItemId) {
+        if (subledgerItemId == null) {
+            return null;
+        }
+        return subledgerItemId.getValue();
+    }
+
+    public SubledgerItemId fromLongToSubledgerItemId(Long id) {
+        if (id == null) {
+            return null;
+        }
+        return new SubledgerItemId(id);
+    }
 }

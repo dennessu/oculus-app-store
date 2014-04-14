@@ -12,7 +12,9 @@ client	client	{
         "scope.manage",
         "scope.info",
         "client.info",
-        "consent.manage"
+        "consent.manage",
+        "api.info",
+        "api.manage"
     ],
     "default_scopes": [
         "identity",
@@ -26,7 +28,8 @@ client	client	{
     "grant_types": [
         "PASSWORD",
         "AUTHORIZATION_CODE",
-        "REFRESH_TOKEN"
+        "REFRESH_TOKEN",
+        "CLIENT_CREDENTIALS"
     ],
     "id_token_issuer": "www.junbo.com",
     "logout_redirect_uris": [
@@ -47,4 +50,63 @@ scope	openid	{
 
 scope	offline	{
     "description": "Scope to allow offline access of the service. If offline scope is presented, a refresh token will be issued"
+}
+
+api	user_get	{
+   "scopes": {
+       "identity": [{
+           "precondition": "owner",
+           "rights": ["read"]
+       }, {
+           "precondition": "group('guest')",
+           "rights": ["read"]
+       }, {
+           "precondition": "role('admin')",
+           "rights": ["read"]
+       }]
+   }
+}
+
+api	item_get	{
+   "scopes": {
+       "catalog": [
+           {
+               "precondition": "owner",
+               "rights": [
+                   "read"
+               ]
+           },
+           {
+               "precondition": "group('guest')",
+               "rights": [
+                   "read"
+               ]
+           },
+           {
+               "precondition": "role('admin')",
+               "rights": [
+                   "read"
+               ]
+           }
+       ]
+   }
+}
+
+api	item_create	{
+   "scopes": {
+        "catalog.write": [
+            {
+                "precondition": "owner",
+                "rights": [
+                    "create"
+                ]
+            },
+            {
+                "precondition": "group('csr')",
+                "rights": [
+                    "create"
+                ]
+            }
+        ]
+   }
 }

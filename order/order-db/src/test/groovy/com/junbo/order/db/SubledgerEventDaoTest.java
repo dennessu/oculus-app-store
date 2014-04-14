@@ -50,7 +50,7 @@ public class SubledgerEventDaoTest extends BaseTest {
         SubledgerEventEntity entity = new SubledgerEventEntity();
         entity.setEventId(generateId());
         //entity.setAction(OrderAction.FULFILL);
-        //entity.setStatus(OrderStatus.COMPLETED);
+        //entity.setPayoutStatus(OrderStatus.COMPLETED);
         entity.setSubledgerId(generateLong());
         return entity;
     }

@@ -12,7 +12,10 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class ApiDefinition {
+
     String apiName
-    Map<String, AuthorizePolicy> authorizePolicies
+
+    Map<String, List<MatrixRow>> scopes
+
     String revision
 }

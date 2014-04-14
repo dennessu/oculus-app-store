@@ -45,8 +45,6 @@ public class OrderItem extends BaseModelWithDate {
     private BigDecimal totalTax;
     private Boolean isTaxExempted;
     private BigDecimal totalDiscount;
-    private BigDecimal totalPreorderAmount;
-    private BigDecimal totalPreorderTax;
     @JsonIgnore
     private Date honorUntilTime;
     @JsonIgnore
@@ -150,22 +148,6 @@ public class OrderItem extends BaseModelWithDate {
 
     public void setTotalDiscount(BigDecimal totalDiscount) {
         this.totalDiscount = totalDiscount;
-    }
-
-    public BigDecimal getTotalPreorderAmount() {
-        return totalPreorderAmount;
-    }
-
-    public void setTotalPreorderAmount(BigDecimal totalPreorderAmount) {
-        this.totalPreorderAmount = totalPreorderAmount;
-    }
-
-    public BigDecimal getTotalPreorderTax() {
-        return totalPreorderTax;
-    }
-
-    public void setTotalPreorderTax(BigDecimal totalPreorderTax) {
-        this.totalPreorderTax = totalPreorderTax;
     }
 
     public Date getHonorUntilTime() {

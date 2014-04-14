@@ -46,9 +46,9 @@ class TestBuilder {
         order.setShippingAddress(new ShippingAddressId(generateLong()))
         order.setShippingMethod(generateLong())
         order.setTentative(true)
-        order.setTrackingUuid(generateUUID())
         order.discounts = []
         order.discounts.add(buildDiscount('AAA', orderItem))
+        order.locale = 'en-US'
         return order
     }
 

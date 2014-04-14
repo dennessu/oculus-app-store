@@ -10,7 +10,7 @@ dependencies {
     compile (libraries.spring_tx)
     compile (libraries.spring_aop)
     compile (libraries.spring_context)
-    compile 'com.junbo.cart:cart-spec:0.0.1-SNAPSHOT'
+    compile project(':cart-spec')
     compile 'com.junbo.identity:identity-spec:0.0.1-SNAPSHOT'
 }
 

@@ -1,5 +1,4 @@
 package com.junbo.order.test
-
 import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.ShippingAddress
 import com.junbo.billing.spec.resource.BalanceResource
@@ -23,13 +22,11 @@ import com.junbo.order.spec.resource.OrderResource
 import com.junbo.payment.spec.model.Address
 import com.junbo.payment.spec.model.CreditCardRequest
 import com.junbo.payment.spec.model.PaymentInstrument
-import com.junbo.payment.spec.model.Phone
 import com.junbo.payment.spec.resource.PaymentInstrumentResource
 import org.apache.commons.lang.RandomStringUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import org.springframework.util.CollectionUtils
-
 /**
  * Created by fzhang on 14-3-17.
  */
@@ -79,7 +76,6 @@ class ServiceFacade {
         def pi = new PaymentInstrument().with {
             accountName = 'David'
             accountNum = '4111111111111111'
-            isDefault = true
             trackingUuid = UUID.randomUUID()
             type = 'CREDITCARD'
             creditCardRequest = new CreditCardRequest().with {
@@ -96,19 +92,13 @@ class ServiceFacade {
                 postalCode = '92612'
                 it
             }
-            phone = new Phone().with {
-                type = 'Home'
-                number = '16018984661'
-                it
-            }
-            it
+            phoneNum = '16018984661'
         }
         return paymentInstrumentResource.postPaymentInstrument(user.id, pi).wrapped().get()
     }
 
     Order postQuotes(Order order) {
         order.tentative = true
-        order.trackingUuid = UUID.randomUUID()
         return orderResource.createOrder(order).wrapped().get()
     }
 
@@ -116,13 +106,11 @@ class ServiceFacade {
         def order = new Order()
         order.tentative = false
         order.user = userId
-        order.trackingUuid = UUID.randomUUID()
         return orderResource.updateOrderByOrderId(orderId, order).wrapped().get()
     }
 
     Order putQuotes(Order order) {
         order.tentative = true
-        order.trackingUuid = UUID.randomUUID()
         return orderResource.updateOrderByOrderId(order.id, order).wrapped().get()
     }
 

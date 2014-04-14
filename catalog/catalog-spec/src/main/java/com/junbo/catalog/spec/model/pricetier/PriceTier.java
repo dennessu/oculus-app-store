@@ -8,10 +8,10 @@ package com.junbo.catalog.spec.model.pricetier;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.catalog.spec.model.common.BaseModel;
-import com.junbo.catalog.spec.model.offer.Price;
 import com.junbo.common.jackson.annotation.AttributeId;
 
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.util.Map;
 
 /**
@@ -24,7 +24,7 @@ public class PriceTier extends BaseModel {
     @NotNull
     private String name;
     @NotNull
-    private Map<String, Price> prices;
+    private Map<String, BigDecimal> prices;
 
     public Long getId() {
         return id;
@@ -42,11 +42,11 @@ public class PriceTier extends BaseModel {
         this.name = name;
     }
 
-    public Map<String, Price> getPrices() {
+    public Map<String, BigDecimal> getPrices() {
         return prices;
     }
 
-    public void setPrices(Map<String, Price> prices) {
+    public void setPrices(Map<String, BigDecimal> prices) {
         this.prices = prices;
     }
 }

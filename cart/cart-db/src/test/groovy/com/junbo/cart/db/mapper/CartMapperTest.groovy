@@ -60,20 +60,8 @@ class CartMapperTest extends AbstractTestNGSpringContextTests {
         assert model.selected == entity.selected
         assert model.quantity == entity.quantity
         assert model.offer.value == entity.offerId
-        assert model.createdTime == entity.createdTime
-        assert model.updatedTime == entity.updatedTime
     }
 
-    @Test
-    void testToCouponItemModel() {
-        def entity = generator.couponItemEntity()
-        def model = cartMapper.toCouponItemModel(entity, context)
-
-        assert model.id.value == entity.cartItemId
-        assert model.coupon.value.toString() == entity.couponCode
-        assert model.createdTime == entity.createdTime
-        assert model.updatedTime == entity.updatedTime
-    }
 }
 
 

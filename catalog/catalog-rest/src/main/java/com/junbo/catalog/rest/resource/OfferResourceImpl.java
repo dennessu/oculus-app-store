@@ -7,7 +7,6 @@
 package com.junbo.catalog.rest.resource;
 
 import com.junbo.catalog.core.OfferService;
-import com.junbo.catalog.spec.model.common.EntityGetOptions;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OffersGetOptions;
 import com.junbo.catalog.spec.resource.OfferResource;
@@ -16,37 +15,36 @@ import com.junbo.common.model.Results;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.ws.rs.core.Response;
+import javax.ws.rs.BeanParam;
+import java.util.List;
 
 /**
  * Offer resource implementation.
  */
-public class OfferResourceImpl extends BaseResourceImpl<Offer> implements OfferResource {
+public class OfferResourceImpl implements OfferResource {
     @Autowired
     private OfferService offerService;
 
     @Override
-    public Promise<Results<Offer>> getOffers(OffersGetOptions options) {
-        return getEntities(options);
+    public Promise<Results<Offer>> getOffers(@BeanParam OffersGetOptions options) {
+        List<Offer> offers = offerService.getOffers(options);
+        Results<Offer> results = new Results<>();
+        results.setItems(offers);
+        return Promise.pure(results);
     }
 
     @Override
-    public Promise<Offer> getOffer(OfferId offerId, EntityGetOptions options) {
-        return get(offerId, options);
+    public Promise<Offer> getOffer(OfferId offerId) {
+        return Promise.pure(offerService.getEntity(offerId.getValue()));
+    }
+
+    @Override
+    public Promise<Offer> create(Offer offer) {
+        return Promise.pure(offerService.createEntity(offer));
     }
 
     @Override
     public Promise<Offer> update(OfferId offerId, Offer offer) {
-        return super.update(offerId, offer);
-    }
-
-    @Override
-    public Promise<Response> delete(OfferId offerId) {
-        return delete(offerId.getValue());
-    }
-
-    @Override
-    protected OfferService getEntityService() {
-        return offerService;
+        return Promise.pure(offerService.updateEntity(offerId.getValue(), offer));
     }
 }

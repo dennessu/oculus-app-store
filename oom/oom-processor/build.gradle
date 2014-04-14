@@ -12,4 +12,5 @@ dependencies {
     compile project(':oom-core')
 
     testCompile (libraries.testng)
+    testCompile (libraries.common_lib)
 }
