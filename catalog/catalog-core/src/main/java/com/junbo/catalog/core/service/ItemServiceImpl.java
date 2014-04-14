@@ -13,6 +13,7 @@ import com.junbo.catalog.db.repo.ItemRevisionRepository;
 import com.junbo.catalog.spec.error.AppErrors;
 import com.junbo.catalog.spec.model.common.ExtensibleProperties;
 import com.junbo.catalog.spec.model.common.LocalizableProperty;
+import com.junbo.catalog.spec.model.common.Status;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementType;
 import com.junbo.catalog.spec.model.item.*;
@@ -107,6 +108,14 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
 
         if (item.getEntitlementDefId() != null) {
             throw AppErrors.INSTANCE.unnecessaryField("entitlementDefinition").exception();
+        }
+
+        if (item.getCurrentRevisionId() != null) {
+            ItemRevision revision = itemRevisionRepo.get(item.getCurrentRevisionId());
+            checkEntityNotNull(item.getCurrentRevisionId(), revision, "item-revision");
+            if (!Status.APPROVED.equals(revision.getStatus())) {
+                throw AppErrors.INSTANCE.validation("Cannot set current revision to unapproved revision").exception();
+            }
         }
     }
 
