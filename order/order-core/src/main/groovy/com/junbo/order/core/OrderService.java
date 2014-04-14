@@ -33,4 +33,8 @@ public interface OrderService {
     Promise<OrderEvent> updateOrderFulfillmentStatus(OrderEvent event);
 
     Promise<Order> updateTentativeOrder(Order order, ApiContext context);
+
+    Promise<Order> updateNonTentativeOrder(Order order, ApiContext context);
+
+    Promise<Order> completeChargeOrder(Long orderId, ApiContext context);
 }

@@ -6,9 +6,9 @@
 package com.junbo.authorization.interceptor
 
 import com.junbo.authorization.AuthorizeCallback
+import com.junbo.authorization.AuthorizeCallbackFactory
 import com.junbo.authorization.annotation.AuthContextParam
 import com.junbo.authorization.annotation.AuthorizeRequired
-import com.junbo.authorization.model.AuthorizeContext
 import com.junbo.authorization.service.AuthorizeService
 import groovy.transform.CompileStatic
 import org.aspectj.lang.ProceedingJoinPoint
@@ -16,7 +16,6 @@ import org.aspectj.lang.annotation.Around
 import org.aspectj.lang.annotation.Aspect
 import org.aspectj.lang.reflect.MethodSignature
 import org.springframework.beans.BeansException
-import org.springframework.beans.factory.FactoryBean
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.context.ApplicationContext
 import org.springframework.context.ApplicationContextAware
@@ -61,11 +60,11 @@ class AuthorizeAspect implements ApplicationContextAware {
             }
 
             map['apiName'] = requiredAnnotation.apiName()
-            FactoryBean<AuthorizeCallback> factoryBean = (FactoryBean<AuthorizeCallback>)applicationContext
+            AuthorizeCallbackFactory factoryBean = (AuthorizeCallbackFactory) applicationContext
                     .getBean(requiredAnnotation.authCallBackFactoryBean())
-            AuthorizeCallback callback = factoryBean.object.initialize(map)
-            Set<String> rights = authorizeService.getRights(callback)
-            AuthorizeContext.RIGHTS.set(rights)
+            AuthorizeCallback callback = factoryBean.create(map)
+            authorizeService.authorize(callback)
+
             Object result = joinPoint.proceed()
 
             if (Collection.isAssignableFrom(result.class)) {
@@ -92,12 +91,11 @@ class AuthorizeAspect implements ApplicationContextAware {
         map['apiName'] = annotation.apiName()
         map['entity'] = entity
 
-        FactoryBean<AuthorizeCallback> factoryBean = (FactoryBean<AuthorizeCallback>)applicationContext
+        AuthorizeCallbackFactory factoryBean = (AuthorizeCallbackFactory) applicationContext
                 .getBean(annotation.authCallBackFactoryBean())
-        AuthorizeCallback callback = factoryBean.object.initialize(map)
+        AuthorizeCallback callback = factoryBean.create(map)
 
-        Set<String> rights = authorizeService.getRights(callback)
-        AuthorizeContext.RIGHTS.set(rights)
+        authorizeService.authorize(callback)
 
         return callback.postFilter()
     }

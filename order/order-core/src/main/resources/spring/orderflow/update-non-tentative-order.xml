@@ -5,17 +5,17 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.junbo.com/schema/webflow http://www.junbo.com/schema/webflow-config/webflow.xsd">
 
-    <wf:flow id="PHYSICAL_SETTLE">
+    <wf:flow id="UPDATE_NON_TENTATIVE">
         <wf:end-state id="endState">
             <wf:on-entry>
-                <wf:action ref="validateUserAction"/>
-                <wf:action ref="validatePaymentInstrumentsAction"/>
-                <wf:action ref="physicalSettleAction"/>
-                <wf:action ref="fulfillmentAction"/>
-                <wf:action ref="sendEmailAction"/>
+                <wf:action ref="ratingAction"/>
+                <wf:action ref="update_non_tentative_updateOrderAction"/>
             </wf:on-entry>
         </wf:end-state>
     </wf:flow>
 
-
+    <bean id="update_non_tentative_updateOrderAction" class="com.junbo.order.core.impl.orderaction.SaveOrderAction">
+        <property name="newOrder" value="false"/>
+        <property name="orderActionType" value="RATE"/>
+    </bean>
 </beans>

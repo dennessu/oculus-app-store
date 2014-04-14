@@ -19,7 +19,9 @@ public abstract class BaseRevisionModel extends BaseModel {
     private String status;
 
     @NotNull
-    private LocalizableProperty displayName;
+    private LocalizableProperty name;
+
+    private Integer rev;
 
     @JsonUnwrapped
     private ExtensibleProperties properties;
@@ -32,12 +34,20 @@ public abstract class BaseRevisionModel extends BaseModel {
         this.status = status;
     }
 
-    public LocalizableProperty getDisplayName() {
-        return displayName;
+    public LocalizableProperty getName() {
+        return name;
     }
 
-    public void setDisplayName(LocalizableProperty displayName) {
-        this.displayName = displayName;
+    public void setName(LocalizableProperty name) {
+        this.name = name;
+    }
+
+    public Integer getRev() {
+        return rev;
+    }
+
+    public void setRev(Integer rev) {
+        this.rev = rev;
     }
 
     public ExtensibleProperties getProperties() {

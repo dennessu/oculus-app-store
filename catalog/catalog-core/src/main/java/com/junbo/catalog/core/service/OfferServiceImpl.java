@@ -101,6 +101,13 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     private void validateOffer(Offer offer) {
         checkFieldNotNull(offer.getName(), "name");
         checkFieldNotNull(offer.getOwnerId(), "publisher");
+        if (offer.getCurrentRevisionId() != null) {
+            OfferRevision revision = offerRevisionRepo.get(offer.getCurrentRevisionId());
+            checkEntityNotNull(offer.getCurrentRevisionId(), revision, "offer-revision");
+            if (!Status.APPROVED.equals(revision.getStatus())) {
+                throw AppErrors.INSTANCE.validation("Cannot set current revision to unapproved revision").exception();
+            }
+        }
     }
 
     private void validateRevision(OfferRevision revision) {
@@ -108,6 +115,9 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
         checkFieldNotNull(revision.getOfferId(), "offer");
         checkFieldNotNull(revision.getPrice(), "price");
         checkPrice(revision.getPrice());
+
+        Offer offer = offerRepo.get(revision.getOfferId());
+        checkEntityNotNull(revision.getOfferId(), offer, "offer");
 
         if (!Status.ALL_STATUSES.contains(revision.getStatus())) {
             throw AppErrors.INSTANCE.fieldNotCorrect("status", "Valid statuses: " + Status.ALL_STATUSES).exception();
