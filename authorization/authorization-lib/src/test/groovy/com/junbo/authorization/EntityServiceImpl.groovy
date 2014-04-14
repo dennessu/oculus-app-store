@@ -5,8 +5,8 @@
  */
 package com.junbo.authorization
 
-import com.junbo.authorization.annotation.AuthorizeRequired
 import com.junbo.authorization.annotation.AuthContextParam
+import com.junbo.authorization.annotation.AuthorizeRequired
 import com.junbo.authorization.model.AuthorizeContext
 import com.junbo.authorization.service.AuthorizeService
 import groovy.transform.CompileStatic
@@ -20,16 +20,22 @@ class EntityServiceImpl implements EntityService {
 
     private AuthorizeService authorizeService
 
+    private EntityAuthorizeCallbackFactory entityAuthorizeCallbackFactory
+
+    @Required
+    void setEntityAuthorizeCallbackFactory(EntityAuthorizeCallbackFactory entityAuthorizeCallbackFactory) {
+        this.entityAuthorizeCallbackFactory = entityAuthorizeCallbackFactory
+    }
+
     @Required
     void setAuthorizeService(AuthorizeService authorizeService) {
         this.authorizeService = authorizeService
     }
 
     @Override
-    @AuthorizeRequired(authCallBack = EntityAuthorizeCallback, apiName = 'entity_get')
+    @AuthorizeRequired(authCallBackFactoryBean = 'entityAuthorizeCallbackFactory', apiName = 'entity_get')
     Entity annotatedGet(@AuthContextParam('id') Long id) {
-        Set<String> claims = AuthorizeContext.CLAIMS.get()
-        if (claims.contains('read')) {
+        if (AuthorizeContext.hasRight('read')) {
             return new Entity(id: id, name: 'name', createdBy: 'system')
         }
         return null
@@ -37,23 +43,29 @@ class EntityServiceImpl implements EntityService {
 
     @Override
     Entity get(Long id) {
-        EntityAuthorizeCallback callback = new EntityAuthorizeCallback('entity_get', id)
-        Set<String> claims = authorizeService.getClaims(callback)
+        Map<String, Object> map = [:]
+        map['apiName'] = 'entity_get'
+        map['id'] = id
+        AuthorizeCallback callback = entityAuthorizeCallbackFactory.create(map)
+        authorizeService.authorize(callback)
 
-        if (!claims.contains('read')) {
+        if (!AuthorizeContext.hasRight('read')) {
             return null
         }
 
         Entity entity = new Entity(id: id, name: 'name', createdBy: 'system')
 
-        callback = new EntityAuthorizeCallback('entity_get', entity)
-        claims = authorizeService.getClaims(callback)
+        map.clear()
+        map['apiName'] = 'entity_get'
+        map['entity'] = entity
+        callback = entityAuthorizeCallbackFactory.create(map)
+        authorizeService.authorize(callback)
 
-        if (!claims.contains('owner') && !claims.contains('admin')) {
+        if (!AuthorizeContext.hasRight('owner') && !AuthorizeContext.hasRight('admin')) {
             entity.name = null
         }
 
-        if (!claims.contains('admin')) {
+        if (!AuthorizeContext.hasRight('admin')) {
             entity.createdBy = null
         }
         return entity

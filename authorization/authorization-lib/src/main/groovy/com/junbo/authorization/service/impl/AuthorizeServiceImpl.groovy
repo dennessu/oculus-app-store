@@ -90,9 +90,9 @@ class AuthorizeServiceImpl implements AuthorizeService, ApplicationContextAware,
     }
 
     @Override
-    Set<String> getRights(AuthorizeCallback callback) {
+    void authorize(AuthorizeCallback callback) {
         if (!authorizeEnabled) {
-            return [] as Set
+            return
         }
 
         String accessToken = parseAccessToken()
@@ -101,9 +101,9 @@ class AuthorizeServiceImpl implements AuthorizeService, ApplicationContextAware,
         Set<String> tokenScopes = []
         tokenScopes.addAll(tokenInfo.scopes.split(' '))
 
-        ApiDefinition api = getApiDefinition(callback.apiName)
+        ApiDefinition api = apiDefinitions[callback.apiName]
         if (api == null) {
-            return [] as Set
+            return
         }
 
         Collection<String> scopes = api.scopes.keySet().intersect(tokenScopes)
@@ -120,7 +120,7 @@ class AuthorizeServiceImpl implements AuthorizeService, ApplicationContextAware,
             }
         }
 
-        return rights
+        AuthorizeContext.RIGHTS.set(rights)
     }
 
     private String parseAccessToken() {
@@ -146,16 +146,19 @@ class AuthorizeServiceImpl implements AuthorizeService, ApplicationContextAware,
         return tokens[1]
     }
 
-
-    private ApiDefinition getApiDefinition(String apiName) {
-        AccessTokenResponse token = tokenEndpoint.postToken(serviceClientId,  serviceClientSecret,
-                GrantType.CLIENT_CREDENTIALS.name(), null, API_SCOPE, null, null, null, null, null).wrapped().get()
-
-        return apiEndpoint.getApi("Bearer $token.accessToken", apiName).wrapped().get()
-    }
-
     @Override
     void afterPropertiesSet() throws Exception {
+        if (authorizeEnabled) {
+            AccessTokenResponse token = tokenEndpoint.postToken(serviceClientId, serviceClientSecret,
+                    GrantType.CLIENT_CREDENTIALS.name(), null, API_SCOPE, null, null, null, null, null).wrapped().get()
+
+            List<ApiDefinition> apis = apiEndpoint.getAllApis("Bearer $token.accessToken").wrapped().get()
+
+            apis.each { ApiDefinition api ->
+                apiDefinitions[api.apiName] = api
+            }
+        }
+
         AuthorizeContext.authorizeEnabled = authorizeEnabled
     }
 }
