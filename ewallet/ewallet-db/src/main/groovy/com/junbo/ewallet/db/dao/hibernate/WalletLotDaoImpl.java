@@ -19,7 +19,7 @@ import java.util.List;
 public class WalletLotDaoImpl extends BaseDao<WalletLotEntity> implements WalletLotDao {
     @Override
     public void delete(Long id) {
-        currentSession().delete(get(id));
+        currentSession(id).delete(get(id));
     }
 
     public List<WalletLotEntity> getValidLot(Long walletId) {
@@ -28,7 +28,7 @@ public class WalletLotDaoImpl extends BaseDao<WalletLotEntity> implements Wallet
                 " and remaining > 0" +
                 " and (expiration_date is null or expiration_date >= (:now))" +
                 " order by type desc";
-        Query q = currentSession().createSQLQuery(queryString)
+        Query q = currentSession(walletId).createSQLQuery(queryString)
                 .addEntity(WalletLotEntity.class)
                 .setLong("walletId", walletId)
                 .setDate("now", new Date());
