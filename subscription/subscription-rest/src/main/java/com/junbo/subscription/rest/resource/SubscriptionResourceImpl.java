@@ -38,6 +38,7 @@ public class SubscriptionResourceImpl implements SubscriptionResource {
                 return Promise.pure(existingSubscription);
             }
         }
+        subscription.setTrackingUuid(UUID.randomUUID());
 
         return Promise.pure(subscriptionService.addSubscription(subscription));
     }

@@ -13,6 +13,7 @@ import com.junbo.subscription.db.entity.SubscriptionEntity;
 import com.junbo.subscription.db.entity.SubscriptionStatus;
 import com.junbo.subscription.db.repository.SubscriptionRepository;
 import com.junbo.subscription.spec.model.Subscription;
+import com.junbo.subscription.spec.model.SubscriptionEntitlement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
@@ -64,6 +65,7 @@ public class SubscriptionDaoTest extends AbstractTransactionalTestNGSpringContex
         Assert.assertEquals(insertedSubscription.getUserId(), subscription.getUserId());
     }
 
+
     private Subscription buildSubscription() {
         Subscription subscription = new Subscription();
 
@@ -77,6 +79,7 @@ public class SubscriptionDaoTest extends AbstractTransactionalTestNGSpringContex
         subscription.setStatus(SubscriptionStatus.ENABLED.toString());
         return subscription;
     }
+
 
     private SubscriptionEntity buildSubscriptionEntity() {
         SubscriptionEntity entity = new SubscriptionEntity();
