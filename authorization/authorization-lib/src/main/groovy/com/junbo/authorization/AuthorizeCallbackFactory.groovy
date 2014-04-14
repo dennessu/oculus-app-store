@@ -5,17 +5,12 @@
  */
 package com.junbo.authorization
 
-import com.junbo.oauth.spec.model.TokenInfo
 import groovy.transform.CompileStatic
 
 /**
- * AuthorizeCallback.
+ * AuthorizeCallbackFactory.
  */
 @CompileStatic
-interface AuthorizeCallback<T> {
-    String getApiName()
-
-    void setTokenInfo(TokenInfo tokenInfo)
-
-    T postFilter()
+interface AuthorizeCallbackFactory<T> {
+    AuthorizeCallback<T> create(Map<String, Object> context)
 }

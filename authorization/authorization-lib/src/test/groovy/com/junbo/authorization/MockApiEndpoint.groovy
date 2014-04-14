@@ -8,10 +8,9 @@ package com.junbo.authorization
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oauth.spec.endpoint.ApiEndpoint
 import com.junbo.oauth.spec.model.ApiDefinition
-import com.junbo.oauth.spec.model.AuthorizePolicy
+import com.junbo.oauth.spec.model.MatrixRow
 import groovy.transform.CompileStatic
 
-import javax.ws.rs.HeaderParam
 import javax.ws.rs.PathParam
 import javax.ws.rs.core.Response
 
@@ -20,19 +19,25 @@ import javax.ws.rs.core.Response
  */
 @CompileStatic
 class MockApiEndpoint implements ApiEndpoint {
-    @Override
-    Promise<List<ApiDefinition>> getAllApis(String authorization) {
-        AuthorizePolicy policy = new AuthorizePolicy(claims: ['owner':['owner', 'read'].toSet(),
-                                                              'admin':['admin', 'read'].toSet(),
-                                                              'guest':['read'].toSet()])
-        ApiDefinition api = new ApiDefinition(apiName: 'entity_get', authorizePolicies: ['entity':policy])
-        return Promise.pure([api].toList())
+    private ApiDefinition api
+
+    MockApiEndpoint() {
+        MatrixRow row1 = new MatrixRow(precondition: 'owner', rights: ['owner', 'read'])
+        MatrixRow row2 = new MatrixRow(precondition: 'admin', rights: ['admin', 'read'])
+        MatrixRow row3 = new MatrixRow(precondition: 'guest', rights: ['read'])
+        api = new ApiDefinition(apiName: 'entity_get', scopes: ['entity': [row1, row2, row3]])
     }
 
     @Override
-    Promise<ApiDefinition> getApi( String authorization,
-            @PathParam("apiName") String apiName) {
-        return null
+    Promise<List<ApiDefinition>> getAllApis(String authorization) {
+        return Promise.pure([api].asList())
+    }
+
+    @Override
+    Promise<ApiDefinition> getApi(String authorization,
+                                  @PathParam("apiName") String apiName) {
+
+        return Promise.pure(api)
     }
 
     @Override
@@ -41,12 +46,12 @@ class MockApiEndpoint implements ApiEndpoint {
     }
 
     @Override
-    Promise<ApiDefinition> putApi(String authorization,  String apiName, ApiDefinition apiDefinition) {
+    Promise<ApiDefinition> putApi(String authorization, String apiName, ApiDefinition apiDefinition) {
         return null
     }
 
     @Override
-    Promise<Response> deleteApi(String authorization,  String apiName) {
+    Promise<Response> deleteApi(String authorization, String apiName) {
         return null
     }
 }
