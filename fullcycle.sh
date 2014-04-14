@@ -7,4 +7,4 @@ pushd liquibase
 ./updatedb.sh
 popd
 
-./build clean build install
+./build.sh clean build install
