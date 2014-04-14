@@ -8,6 +8,8 @@ package com.junbo.ewallet.db.dao.hibernate;
 
 import com.junbo.ewallet.db.entity.EntityWithCreated;
 import com.junbo.sharding.IdGenerator;
+import com.junbo.sharding.ShardAlgorithm;
+import com.junbo.sharding.hibernate.ShardScope;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,16 +27,25 @@ public class TransactionBaseDao<T extends EntityWithCreated> {
     @Qualifier("ewalletSessionFactory")
     private SessionFactory sessionFactory;
     @Autowired
+    @Qualifier("oculus48IdGenerator")
     private IdGenerator idGenerator;
+    @Autowired
+    @Qualifier("userShardAlgorithm")
+    private ShardAlgorithm shardAlgorithm;
 
     private Class<T> entityType;
 
-    protected Session currentSession() {
-        return sessionFactory.getCurrentSession();
+    protected Session currentSession(Object key) {
+        ShardScope shardScope = new ShardScope(shardAlgorithm.shardId(key));
+        try {
+            return sessionFactory.getCurrentSession();
+        } finally {
+            shardScope.close();
+        }
     }
 
     public T get(Long id) {
-        return (T) currentSession().get(entityType, id);
+        return (T) currentSession(id).get(entityType, id);
     }
 
     public T insert(T t) {
@@ -42,7 +53,7 @@ public class TransactionBaseDao<T extends EntityWithCreated> {
         t.setId(generateId(t.getShardMasterId()));
         t.setCreatedBy("DEFAULT"); //TODO
         t.setCreatedTime(now);
-        return get((Long) currentSession().save(t));
+        return get((Long) currentSession(t.getShardMasterId()).save(t));
     }
 
     protected Long generateId(Long shardId) {

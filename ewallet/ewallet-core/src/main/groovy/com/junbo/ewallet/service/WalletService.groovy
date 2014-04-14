@@ -26,5 +26,5 @@ interface WalletService {
 
     Wallet getTransactions(Long walletId)
 
-    Wallet getByTrackingUuid(UUID trackingUuid)
+    Wallet getByTrackingUuid(Long shardMasterId, UUID trackingUuid)
 }

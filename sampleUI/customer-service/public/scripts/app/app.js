@@ -1,6 +1,7 @@
 /**
  * Created by Haiwei on 2014/4/11.
  */
+var IdentityProvider = new DataProvider.Identity(AppConfig.Identity_API_Host, AppConfig.Identity_API_Port);
 
 var App = Ember.App = Ember.Application.create();
 
@@ -15,21 +16,29 @@ App.ApplicationRoute = Ember.Route.extend({
         App.AuthManager = AuthManager.create();
     },
     beforeModel: function(){
+
+    }
+});
+App.IndexRoute = Ember.Route.extend({
+    beforeModel: function(){
         if(!App.AuthManager.isAuthenticated()){
             var code = Utils.Cookies.Get(AppConfig.CookiesName.Code);
             if(code == null) {
                 this.transitionTo("login");
             }else{
                 console.log("[Auth Code]", code);
+
+                var model = new Identity.TokenInfo();
+                model.code = code;
+                model.redirect_uri = Utils.Cookies.Get(AppConfig.CookiesName.RedirectUrl);
+                IdentityProvider.PostTokenInfoByCode({async: false}, model, function(result){
+                    console.log(result);
+                });
+
             }
         }else{
             this.transitionTo("index");
         }
-    }
-});
-App.IndexRoute = Ember.Route.extend({
-    beforeModel: function(){
-        console.log("[IndexRoute:beforeModel]");
     },
     renderTemplate: function(controller, model) {
         this.render('index');

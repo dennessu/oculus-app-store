@@ -75,8 +75,8 @@ public class EntitlementRepository {
         entitlementDao.update(entitlementEntity);
     }
 
-    public Entitlement getByTrackingUuid(UUID trackingUuid) {
-        return entitlementMapper.toEntitlement(entitlementDao.getByTrackingUuid(trackingUuid));
+    public Entitlement getByTrackingUuid(Long shardMasterId, UUID trackingUuid) {
+        return entitlementMapper.toEntitlement(entitlementDao.getByTrackingUuid(shardMasterId, trackingUuid));
     }
 
     public Entitlement getExistingManagedEntitlement(Long userId, Long definitionId) {
