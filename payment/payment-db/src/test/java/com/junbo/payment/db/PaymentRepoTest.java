@@ -2,9 +2,7 @@ package com.junbo.payment.db;
 
 import com.junbo.payment.db.repository.PaymentInstrumentRepository;
 import com.junbo.payment.spec.enums.CreditCardType;
-import com.junbo.payment.spec.enums.PIStatus;
 import com.junbo.payment.spec.enums.PIType;
-import com.junbo.payment.spec.enums.PhoneType;
 import com.junbo.payment.spec.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
@@ -34,7 +32,7 @@ public class PaymentRepoTest extends BaseTest {
         pi.setType(PIType.CREDITCARD.toString());
         pi.setAccountName("David");
         pi.setAccountNum("1111");
-        pi.setStatus(PIStatus.ACTIVE.toString());
+        pi.setIsActive(true);
         pi.setAddress(new Address(){
             {
                 setAddressLine1("third street");

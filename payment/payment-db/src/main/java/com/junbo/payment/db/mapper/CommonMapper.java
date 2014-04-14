@@ -32,14 +32,6 @@ public class CommonMapper {
         return creditCardType.toString();
     }
 
-    public PIStatus toPIStatusEnum(String status){
-        return PIStatus.valueOf(status.toUpperCase());
-    }
-
-    public String toPIStatus(PIStatus status){
-        return status.toString();
-    }
-
     public PIType toPITypeEnum(String piType){
         return PIType.valueOf(piType.toUpperCase());
     }

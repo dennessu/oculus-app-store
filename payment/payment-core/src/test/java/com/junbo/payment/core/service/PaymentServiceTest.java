@@ -1,14 +1,11 @@
 package com.junbo.payment.core.service;
 
-import com.junbo.common.error.AppErrorException;
 import com.junbo.langur.core.transaction.AsyncTransactionTemplate;
-import com.junbo.payment.common.exception.AppClientExceptions;
 import com.junbo.payment.core.BaseTest;
 import com.junbo.payment.core.PaymentInstrumentService;
 import com.junbo.payment.core.PaymentTransactionService;
 import com.junbo.payment.core.mock.MockPaymentProviderServiceImpl;
 import com.junbo.payment.spec.enums.CreditCardType;
-import com.junbo.payment.spec.enums.PIStatus;
 import com.junbo.payment.spec.enums.PIType;
 import com.junbo.payment.spec.enums.PaymentStatus;
 import com.junbo.payment.spec.model.*;
@@ -64,11 +61,11 @@ public class PaymentServiceTest extends BaseTest {
     public void testPutPI() throws ExecutionException, InterruptedException {
         PaymentInstrument request = buildPIRequest();
         PaymentInstrument result = piService.add(request).wrapped().get();
-        result.setStatus(PIStatus.DISABLE.toString());
+        result.setIsActive(false);
         result.getAddress().setPostalCode("123");
         piService.update(result);
         PaymentInstrument resultUpdate = piService.getById(userId, result.getId().getPaymentInstrumentId());
-        Assert.assertEquals(resultUpdate.getStatus().toString(), PIStatus.DISABLE.toString());
+        Assert.assertEquals(resultUpdate.getIsActive(), Boolean.FALSE);
         Assert.assertEquals(resultUpdate.getAddress().getPostalCode(), "123");
     }
 
