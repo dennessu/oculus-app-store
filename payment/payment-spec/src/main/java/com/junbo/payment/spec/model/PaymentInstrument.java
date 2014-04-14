@@ -5,6 +5,7 @@
  */
 package com.junbo.payment.spec.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.jackson.annotation.PaymentInstrumentId;
 import com.junbo.common.jackson.annotation.PaymentInstrumentTypeId;
@@ -20,6 +21,7 @@ public class PaymentInstrument {
     @PaymentInstrumentId
     @JsonProperty("self")
     private PIId id;
+    @JsonIgnore
     private UUID trackingUuid;
     private boolean isValidated;
     private Date lastValidatedTime;
@@ -27,6 +29,7 @@ public class PaymentInstrument {
     private String type;
     private String accountName;
     private String accountNum;
+    private Integer rev;
     private Address address;
     private String phoneNum;
     private String email;
@@ -35,7 +38,7 @@ public class PaymentInstrument {
     private CreditCardRequest creditCardRequest;
     private WalletRequest walletRequest;
     //response:
-    private String status;
+    private Boolean isActive;
 
     public PIId getId() {
         return id;
@@ -93,6 +96,14 @@ public class PaymentInstrument {
         this.accountNum = accountNum;
     }
 
+    public Integer getRev() {
+        return rev;
+    }
+
+    public void setRev(Integer rev) {
+        this.rev = rev;
+    }
+
     public Address getAddress() {
         return address;
     }
@@ -125,12 +136,12 @@ public class PaymentInstrument {
         this.relationToHolder = relationToHolder;
     }
 
-    public String getStatus() {
-        return status;
+    public Boolean getIsActive() {
+        return isActive;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setIsActive(Boolean isActive) {
+        this.isActive = isActive;
     }
 
     public Date getLastValidatedTime() {

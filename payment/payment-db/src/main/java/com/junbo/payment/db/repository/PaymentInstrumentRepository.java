@@ -12,7 +12,6 @@ import com.junbo.payment.db.dao.paymentinstrument.CreditCardPaymentInstrumentDao
 import com.junbo.payment.db.dao.paymentinstrument.PaymentInstrumentDao;
 import com.junbo.payment.db.entity.paymentinstrument.*;
 import com.junbo.payment.db.mapper.PaymentMapperExtension;
-import com.junbo.payment.spec.enums.PIStatus;
 import com.junbo.payment.spec.enums.PIType;
 import com.junbo.payment.db.mapper.PaymentMapper;
 import com.junbo.payment.spec.model.*;
@@ -44,6 +43,7 @@ public class PaymentInstrumentRepository {
     private IdGenerator idGenerator;
 
     public void save(PaymentInstrument request){
+        request.setRev(1);
         PaymentInstrumentEntity piEntity = paymentMapperExtension.toPIEntity(request);
         Long piId = idGenerator.nextId(piEntity.getUserId());
         if(request.getAddress() != null){
@@ -66,7 +66,7 @@ public class PaymentInstrumentRepository {
 
     public void delete(Long paymentInstrumentId){
         PaymentInstrumentEntity entity = paymentInstrumentDao.get(paymentInstrumentId);
-        entity.setStatus(PIStatus.DELETED);
+        entity.setDeleted(true);
         paymentInstrumentDao.update(entity);
     }
 
@@ -76,6 +76,7 @@ public class PaymentInstrumentRepository {
         }
         PaymentInstrumentEntity pi = paymentMapperExtension.toPIEntity(request);
         pi.setAddressId(request.getAddress().getId());
+        pi.setRev(request.getRev() + 1);
         paymentInstrumentDao.update(pi);
         if(request.getType().equals(PIType.CREDITCARD.toString())){
             ccPaymentInstrumentDao.update(paymentMapperImpl.toCreditCardEntity(
@@ -85,7 +86,7 @@ public class PaymentInstrumentRepository {
 
     public PaymentInstrument getByPIId(Long piId){
         PaymentInstrumentEntity pi = paymentInstrumentDao.get(piId);
-        if(pi == null || pi.getStatus().equals(PIStatus.DELETED)){
+        if(pi == null || pi.isDeleted()){
             return null;
         }
         PaymentInstrument request = paymentMapperExtension.toPaymentInstrument(pi);
@@ -108,7 +109,7 @@ public class PaymentInstrumentRepository {
         List<PaymentInstrument> request = new ArrayList<PaymentInstrument>();
         List<PaymentInstrumentEntity> piEntities = paymentInstrumentDao.getByUserId(userId);
         for(PaymentInstrumentEntity piEntity : piEntities){
-            if(!piEntity.getStatus().equals(PIStatus.DELETED)){
+            if(!piEntity.isDeleted()){
                 PaymentInstrument piRequest = paymentMapperExtension.toPaymentInstrument(piEntity);
                 setAdditionalInfo(piEntity, piRequest);
                 request.add(piRequest);
