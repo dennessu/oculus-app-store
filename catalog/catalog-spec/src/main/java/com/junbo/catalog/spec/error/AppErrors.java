@@ -32,7 +32,7 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 404, code = "10003", description = "{0} [{1}] not found.")
     AppError notFound(String entity, Long id);
 
-    @ErrorDef(httpStatusCode = 400, code = "10004", description = "invalid Json: {0}", field = "request.body")
+    @ErrorDef(httpStatusCode = 400, code = "10004", description = "invalid Json: {0}")
     AppError invalidJson(String detail);
 
     @ErrorDef(httpStatusCode = 400, code = "10005", description = "Field is not correct. {1}", field = "{0}")
