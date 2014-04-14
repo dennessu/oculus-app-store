@@ -7,7 +7,6 @@
 package com.junbo.catalog.rest.resource;
 
 import com.junbo.catalog.core.PromotionService;
-import com.junbo.catalog.spec.model.common.EntityGetOptions;
 import com.junbo.catalog.spec.model.promotion.Promotion;
 import com.junbo.catalog.spec.model.promotion.PromotionsGetOptions;
 import com.junbo.catalog.spec.resource.PromotionResource;
@@ -16,37 +15,30 @@ import com.junbo.common.model.Results;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.ws.rs.core.Response;
-
 /**
  * Promotion resource implementation.
  */
-public class PromotionResourceImpl extends BaseResourceImpl<Promotion> implements PromotionResource{
+public class PromotionResourceImpl implements PromotionResource{
     @Autowired
     private PromotionService promotionService;
 
     @Override
     public Promise<Results<Promotion>> getPromotions(PromotionsGetOptions options) {
-        return getEntities(options);
+        return null;
     }
 
     @Override
-    public Promise<Promotion> getPromotion(PromotionId promotionId, EntityGetOptions options) {
-        return get(promotionId, options);
+    public Promise<Promotion> getPromotion(PromotionId promotionId) {
+        return Promise.pure(promotionService.getEntity(promotionId.getValue()));
+    }
+
+    @Override
+    public Promise<Promotion> create(Promotion promotion) {
+        return Promise.pure(promotionService.createEntity(promotion));
     }
 
     @Override
     public Promise<Promotion> update(PromotionId promotionId, Promotion promotion) {
-        return super.update(promotionId, promotion);
-    }
-
-    @Override
-    public Promise<Response> delete(PromotionId promotionId) {
-        return delete(promotionId.getValue());
-    }
-
-    @Override
-    protected PromotionService getEntityService() {
-        return promotionService;
+        return Promise.pure(promotionService.updateEntity(promotionId.getValue(), promotion));
     }
 }

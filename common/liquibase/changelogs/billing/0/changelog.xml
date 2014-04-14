@@ -23,6 +23,7 @@
 				country_code CHAR(2),
 				status_id SMALLINT NOT NULL,
 				due_date DATE,
+				is_async_charge BOOLEAN NOT NULL DEFAULT(FALSE),
 				retry_count INT NOT NULL DEFAULT(0),
 				decline_count INT NOT NULL DEFAULT(0),
 				original_balance_id BIGINT NULL,
@@ -40,7 +41,9 @@
 			CREATE INDEX balance_pi_id_idx ON balance (pi_id);
 			CREATE INDEX balance_status_id_idx ON balance (status_id);
 			CREATE INDEX balance_due_date_idx ON balance (due_date);
+			CREATE INDEX balance_is_async_charge_idx ON balance (is_async_charge);
 			CREATE INDEX balance_original_balance_id_idx ON balance (original_balance_id);
+			CREATE INDEX balance_created_date_idx ON balance (created_date);
 
 			CREATE TABLE balance_event (
 				event_id BIGINT NOT NULL,

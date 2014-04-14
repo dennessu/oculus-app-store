@@ -23,7 +23,7 @@ public class IdFormatter {
             Long value = Oculus40Id.deFormat(formattedId);
             return Oculus40Id.unShuffle(value);
         }
-        else if(cls.getSuperclass() == Id.class){
+        else if(Id.class.isAssignableFrom(cls)){
             Oculus48Id.validateEncodedValue(formattedId);
             Long value = Oculus48Id.deFormat(formattedId);
             return Oculus48Id.unShuffle(value);

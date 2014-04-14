@@ -29,22 +29,6 @@
         </sql>
     </changeSet>
 
-    <changeSet id="2" author='WenhongZhu' context="PREDEPLOY">
-        <sql>
-        <![CDATA[
-            create table phone_type
-                (
-                  phone_type_id         smallint            not null,
-                  description           varchar(10)             null,
-                  created_time          date                    null,
-                  created_by            varchar(50)             null,
-
-                  constraint phone_type_id_pk primary key (phone_type_id)
-                );
-        ]]>
-        </sql>
-    </changeSet>
-
     <changeSet id="3" author='WenhongZhu' context="PREDEPLOY">
         <sql>
         <![CDATA[
@@ -109,52 +93,6 @@
         </sql>
     </changeSet>
 
-    
-
-    <changeSet id="6" author='WenhongZhu' context="PREDEPLOY">
-        <sql>
-        <![CDATA[
-            create table phone
-            (
-              phone_id                  bigint              not null,
-              phone_type_id             smallint                null,
-              phone_area_code           varchar(10)             null,
-              phone_local_number        varchar(15)         not null,
-              phone_extension           varchar(10)             null,
-              created_time              date                not null,
-              created_by                varchar(50)             null,
-              updated_time              date                    null,
-              updated_by                varchar(50)             null,
-
-              constraint phone_id_pk primary key (phone_id),              
-              constraint phone_type_id_fk foreign key (phone_type_id)
-                  references phone_type (phone_type_id) match simple
-                  on update no action on delete no action
-            );
-        ]]>
-        </sql>
-    </changeSet>
-  
-  
-  <changeSet id="7" author='WenhongZhu' context="PREDEPLOY">
-        <sql>
-        <![CDATA[
-            create table payment_instrument_status
-                (
-                    status_id                   smallint            not null,
-                    name                          varchar(128)        not null,
-                    description                   varchar(1024)       not null,
-                    created_time                  date                not null,
-                    created_by                    varchar(64)         not null,
-
-                    constraint status_id_pk primary key (status_id)
-                );
-        ]]>
-        </sql>
-    </changeSet>
-
-
-
     <changeSet id="8" author='WenhongZhu' context="PREDEPLOY">
         <sql>
         <![CDATA[
@@ -163,16 +101,17 @@
                   payment_instrument_id             bigint              not null,
                   user_id                           bigint              not null,
                   payment_instrument_type_id        smallint            not null,
-                  payment_instrument_holder_name    varchar(100)        not null,
+                  payment_instrument_holder_name    varchar(100)            null,
                   encrypted_account_number          varchar(200)            null,
                   account_number                    varchar(100)            null,
+                  revision                          int                 not null,
                   address_id                        bigint                  null,
-                  phone_id                          bigint                  null,
+                  phone_num                         varchar(64)             null,
                   email                             varchar(64)             null,
-                  relation_to_holder              varchar(32)             null,
-                  status_id                         smallint            not null,				  
+                  relation_to_holder                varchar(32)             null,
+                  active                            boolean             not null,
+                  deleted                           boolean                 null,
 				  last_validated_time               date                    null,
-				  is_default                        varchar(16)             null,
                   created_time                      date                not null,
                   created_by                        varchar(50)             null,
                   updated_time                      date                    null,
@@ -184,12 +123,6 @@
                       on update no action on delete no action,
                   constraint payment_instrument_type_id_fk foreign key (payment_instrument_type_id)
                       references payment_instrument_type (payment_instrument_type_id) match simple
-                      on update no action on delete no action,
-                  constraint payment_instrument_status_fk foreign key (status_id)
-                      references payment_instrument_status (status_id) match simple
-                      on update no action on delete no action,
-                  constraint phone_id_fk foreign key (phone_id)
-                      references phone (phone_id) match simple
                       on update no action on delete no action
                 );
         ]]>
@@ -818,18 +751,6 @@
         </sql>
     </changeSet>
 
-    <changeSet id="22" author='WenhongZhu' context="PREDEPLOY">
-        <sql>
-        <![CDATA[
-            insert into payment_instrument_status values
-                  (0, 'ACTIVE', 'Available for payment', '2014-02-10', 'wenhongzhu')
-                 ,(1,'BANNED', 'Not Allowed due to fraud', '2014-02-10', 'wenhongzhu')
-                 ,(2,'DELETED', 'Removed for soft delete', '2014-02-10', 'wenhongzhu')
-                 ,(3,'EXPIRED', 'Expired and not available currently', '2014-02-10', 'wenhongzhu');
-        ]]>
-        </sql>
-    </changeSet>
-
 
     <changeSet id="23" author='WenhongZhu' context="PREDEPLOY">
         <sql>
@@ -870,21 +791,6 @@
     </changeSet>
 
 
-    <changeSet id="25" author='WenhongZhu' context="PREDEPLOY">
-        <sql>
-        <![CDATA[
-            insert into phone_type values
-                  (0, 'Home', '2014-02-10', 'wenhongzhu')
-                 ,(1,'Primary', '2014-02-10', 'wenhongzhu')
-                 ,(2,'Work', '2014-02-10', 'wenhongzhu')
-                 ,(3,'Mobile', '2014-02-10', 'wenhongzhu')
-                 ,(4,'Fax', '2014-02-10', 'wenhongzhu')
-                 ,(5,'Alternate', '2014-02-10', 'wenhongzhu');
-        ]]>
-        </sql>
-    </changeSet>
-
-
     <changeSet id="26" author='WenhongZhu' context="PREDEPLOY">
         <sql>
         <![CDATA[
@@ -902,7 +808,8 @@
     <changeSet id="27" author='WenhongZhu' context="PREDEPLOY">
         <sql>
         <![CDATA[
-            insert into payment_provider values (0, 'BrainTree', 0, null, 'USD', '2014-02-10','wenhongzhu');
+            insert into payment_provider values (0, 'BrainTree', 0, null, 'USD', '2014-02-10','wenhongzhu')
+                                               ,(1, 'Wallet', 2, null, 'WLT', '2014-02-10', 'wenhongzhu');
         ]]>
         </sql>
     </changeSet>
@@ -918,7 +825,7 @@
 	<changeSet id="280" author='WenhongZhu' context="PREDEPLOY">
         <sql>
         <![CDATA[
-            insert into merchant_account values (0, '8qnzm4r4ytckyf4d', 0, 0, null, null, 'USD', '2014-02-10','wenhongzhu')
+            insert into merchant_account values (0, '5ck86h27m34nrh6f', 0, 0, null, null, 'USD', '2014-02-10','wenhongzhu')
 			                                   ,(1, 'jb_GBP', 0, 0, null, null, 'GBP', '2014-02-10','wenhongzhu');
         ]]>
         </sql>

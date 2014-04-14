@@ -36,7 +36,7 @@ class InMemoryStateRepository implements StateRepository {
 
         Conversation conversation = conversations.get(conversationId)
         if (conversation == null || conversation.flowStack == null || conversation.flowStack.empty) {
-            throw new IllegalArgumentException("conversation $conversationId not found")
+            return null
         }
 
         return conversation

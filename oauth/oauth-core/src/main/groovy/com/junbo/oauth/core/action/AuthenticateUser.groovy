@@ -6,7 +6,7 @@
 package com.junbo.oauth.core.action
 
 import com.junbo.common.error.AppErrorException
-import com.junbo.identity.spec.model.user.User
+import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
@@ -57,6 +57,7 @@ class AuthenticateUser implements Action {
         def contextWrapper = new ActionContextWrapper(context)
 
         def parameterMap = contextWrapper.parameterMap
+        def client = contextWrapper.client
 
         // Get and validate the username and password from the query parameter.
         String username = parameterMap.getFirst(OAuthParameters.USERNAME)
@@ -72,14 +73,15 @@ class AuthenticateUser implements Action {
 
         // Authenticate the user will the username and password.
         try {
-            userService.authenticateUser(username, password).then { User user ->
-                if (user == null) {
+            userService.authenticateUser(username, password, client.clientId, "127.0.0.1")
+                    .then { UserCredentialVerifyAttempt loginAttempt ->
+                if (loginAttempt == null || !loginAttempt.succeeded) {
                     throw AppExceptions.INSTANCE.invalidCredential().exception()
                 }
 
                 // Create the LoginState and save it in the ActionContext
                 def loginState = new LoginState(
-                        userId: user.id.value,
+                        userId: loginAttempt.userId.value,
                         lastAuthDate: new Date()
                 )
 

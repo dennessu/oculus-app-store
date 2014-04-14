@@ -13,10 +13,15 @@ var PaymentControllers = {
 
             },
             Continue: function(){
+
+                if($("#BtnPaymentId").hasClass('load')) return;
+                $("#BtnPaymentId").addClass('load');
+
                 var _self = this;
                 console.log("[PaymentIndexController:Continue] Select Payment Id: ", _self.get("paymentId"));
                 if(_self.get("paymentId") == ""){
                     _self.set("errMessage", "Please select payment method");
+                    $("#BtnPaymentId").removeClass('load');
                 }else{
                     _self.set("errMessage", null);
                     Utils.Cookies.Set(AppConfig.CookiesName.PaymentId, _self.get("paymentId"));
@@ -27,6 +32,7 @@ var PaymentControllers = {
                             _self.transitionToRouteAnimated("ordersummary", {main: "slideOverLeft"});
                         } else{
                             _self.set("errMessage", "Please try again later!");
+                            $("#BtnPaymentId").removeClass('load');
                         }
                     });
                 }
@@ -38,18 +44,18 @@ var PaymentControllers = {
         isHolder: false,
         paymentTypes: (function(){
             var result = new Array();
-            for(var i = 0; i < AppConfig.PaymentType.length; ++i) result.push({t: AppConfig.PaymentType[i].name, v: AppConfig.PaymentType[i].value});
+            for(var i = 0; i < AppConfig.PaymentTypes.length; ++i) result.push({t: AppConfig.PaymentTypes[i].name, v: AppConfig.PaymentTypes[i].value});
             return result;
         }()),
         cardTypes: (function(){
             var result = new Array();
-            for(var i = 0; i < AppConfig.CardType.CreditCard.length; ++i)
-                result.push({t: AppConfig.CardType.CreditCard[i].name, v: AppConfig.CardType.CreditCard[i].value});
+            for(var i = 0; i < AppConfig.CardTypes.CreditCard.length; ++i)
+                result.push({t: AppConfig.CardTypes.CreditCard[i].name, v: AppConfig.CardTypes.CreditCard[i].value});
             return result;
         }()),
         paymentHolderType: (function(){
             var result = new Array();
-            for(var i = 0; i < AppConfig.PaymentHolderType.length; ++i) result.push({t: AppConfig.PaymentHolderType[i].name, v: AppConfig.PaymentHolderType[i].value});
+            for(var i = 0; i < AppConfig.PaymentHolderTypes.length; ++i) result.push({t: AppConfig.PaymentHolderTypes[i].name, v: AppConfig.PaymentHolderTypes[i].value});
             return result;
         }()),
         countries: (function(){
@@ -82,7 +88,7 @@ var PaymentControllers = {
             encryptedCvmCode: "",
             addressLine1: "",
             city: "",
-            state: "CA",
+            state: "",
             country: "",
             postalCode: "",
             phoneType: "home",
@@ -94,13 +100,17 @@ var PaymentControllers = {
         },
         actions: {
             Continue: function () {
+
+                if($("#BtnPayment").hasClass('load')) return;
+                $("#BtnPayment").addClass('load');
+
                 var _self = this;
                 var model = _self.get("content");
 
                 model.expireDate = new Date(parseInt(_self.get("content.year")), parseInt(_self.get("content.month")) - 1);
 
                 var provider = new PaymentProvider();
-                provider.Add(Utils.GenerateRequestModel(model), function(resultData){
+                provider.PostPayment(Utils.GenerateRequestModel(model), function(resultData){
                     if(resultData.data.status == 200){
                         _self.set("errMessage", null);
 
@@ -111,10 +121,12 @@ var PaymentControllers = {
                                _self.transitionToRouteAnimated("ordersummary", {main: "slideOverLeft"});
                            } else{
                                _self.set("errMessage", "Please try again later!");
+                               $("#BtnPayment").removeClass('load');
                            }
                         });
                     }else{
                         _self.set("errMessage", "Please try again later!");
+                        $("#BtnPayment").removeClass('load');
                     }
                 });
             },

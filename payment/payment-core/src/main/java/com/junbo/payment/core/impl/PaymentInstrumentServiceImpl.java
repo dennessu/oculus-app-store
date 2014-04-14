@@ -16,7 +16,6 @@ import com.junbo.payment.core.PaymentInstrumentService;
 import com.junbo.payment.core.util.PaymentUtil;
 import com.junbo.payment.core.util.ProxyExceptionResponse;
 import com.junbo.payment.db.repository.PITypeRepository;
-import com.junbo.payment.spec.enums.PIStatus;
 import com.junbo.payment.spec.enums.PIType;
 import com.junbo.payment.db.mapper.PaymentAPI;
 import com.junbo.payment.db.mapper.TrackingUuid;
@@ -53,13 +52,12 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
     @Override
     public Promise<PaymentInstrument> add(final PaymentInstrument request) {
         validateRequest(request);
-        if(request.getTrackingUuid() == null){
-            throw AppClientExceptions.INSTANCE.missingTrackingUuid().exception();
-        }
-        TrackingUuid result = trackingUuidRepository.getByTrackUuid(request.getId().getUserId(),
-                request.getTrackingUuid());
-        if(result != null && result.getApi().equals(PaymentAPI.AddPI)){
-            return Promise.pure(CommonUtil.parseJson(result.getResponse(), PaymentInstrument.class));
+        if(request.getTrackingUuid() != null){
+            TrackingUuid result = trackingUuidRepository.getByTrackUuid(request.getId().getUserId(),
+                    request.getTrackingUuid());
+            if(result != null && result.getApi().equals(PaymentAPI.AddPI)){
+                return Promise.pure(CommonUtil.parseJson(result.getResponse(), PaymentInstrument.class));
+            }
         }
         final PaymentProviderService provider = providerRoutingService.getPaymentProvider(
                 PaymentUtil.getPIType(request.getType()));
@@ -72,16 +70,8 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
         }).then(new Promise.Func<PaymentInstrument, Promise<PaymentInstrument>>() {
             @Override
             public Promise<PaymentInstrument> apply(PaymentInstrument paymentInstrument) {
-                request.setAccountNum(paymentInstrument.getAccountNum());
-                request.getCreditCardRequest().setExternalToken(
-                        paymentInstrument.getCreditCardRequest().getExternalToken());
-                request.getCreditCardRequest().setType(paymentInstrument.getCreditCardRequest().getType());
-                request.getCreditCardRequest().setCommercial(paymentInstrument.getCreditCardRequest().getCommercial());
-                request.getCreditCardRequest().setDebit(paymentInstrument.getCreditCardRequest().getDebit());
-                request.getCreditCardRequest().setPrepaid(paymentInstrument.getCreditCardRequest().getPrepaid());
-                request.getCreditCardRequest().setIssueCountry(
-                        paymentInstrument.getCreditCardRequest().getIssueCountry());
-                request.setStatus(PIStatus.ACTIVE.toString());
+                provider.clonePIResult(paymentInstrument, request);
+                request.setIsActive(true);
                 if(request.getIsValidated()){
                     request.setLastValidatedTime(new Date());
                 }
@@ -100,9 +90,6 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
 
     private void saveAndCommitPI(final PaymentInstrument request) {
         paymentInstrumentRepository.save(request);
-        if(CommonUtil.toBool(request.getIsDefault())){
-            paymentInstrumentRepository.setDefault(request.getId().getPaymentInstrumentId());
-        }
         saveTrackingUuid(request, PaymentAPI.AddPI);
     }
 
@@ -115,8 +102,13 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
     @Override
     public void update(PaymentInstrument request) {
         validateRequest(request);
-        //no need to support tracking Uuid for put as it should be the same result if call twice
+        if(request.getRev() == null){
+            throw AppClientExceptions.INSTANCE.missingRevision().exception();
+        }
         PaymentInstrument piTarget = getById(request.getId().getUserId(), request.getId().getPaymentInstrumentId());
+        if(request.getRev() != piTarget.getRev()){
+            throw AppClientExceptions.INSTANCE.invalidRevision().exception();
+        }
         //Validate the info:
         if(!piTarget.getId().getUserId().equals(request.getId().getUserId())
                 || !piTarget.getType().equals(request.getType())
@@ -126,16 +118,10 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
         if(request.getAddress().getId() == null){
             request.getAddress().setId(piTarget.getAddress().getId());
         }
-        if(request.getPhone().getId() == null){
-            request.getPhone().setId(piTarget.getPhone().getId());
-        }
         if(request.getType().equals(PIType.CREDITCARD.toString())){
             request.getCreditCardRequest().setId(request.getId().getPaymentInstrumentId());
         }
         paymentInstrumentRepository.update(request);
-        if(CommonUtil.toBool(request.getIsDefault()) && !CommonUtil.toBool(piTarget.getIsDefault())){
-            paymentInstrumentRepository.setDefault(request.getId().getPaymentInstrumentId());
-        }
     }
 
     @Override
@@ -165,9 +151,6 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
             throw AppClientExceptions.INSTANCE.missingUserId().exception();
         }
         List<PaymentInstrument> results = paymentInstrumentRepository.search(userId, searchParam, page);
-        if(results == null || results.isEmpty()){
-            throw AppClientExceptions.INSTANCE.resourceNotFound("payment_instrument").exception();
-        }
         return results;
     }
 
@@ -184,6 +167,9 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
     }
 
     private void saveTrackingUuid(PaymentInstrument request, PaymentAPI api){
+        if(request.getTrackingUuid() == null){
+            return;
+        }
         if(request.getId() == null){
             LOGGER.error("payment id should not be empty when store tracking uuid.");
             throw AppServerExceptions.INSTANCE.missingRequiredField("payment_instrument_id").exception();
@@ -201,17 +187,10 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
         if(request.getId().getUserId() == null){
             throw AppClientExceptions.INSTANCE.missingUserId().exception();
         }
-        if(CommonUtil.isNullOrEmpty(request.getAccountNum())){
-            throw AppClientExceptions.INSTANCE.missingAccountName().exception();
-        }
         if(CommonUtil.isNullOrEmpty(request.getType())){
             throw AppClientExceptions.INSTANCE.missingPIType().exception();
         }
         PaymentUtil.getPIType(request.getType());
-        if(CommonUtil.toBool(request.getIsDefault()) &&
-                !request.getType().toString().equalsIgnoreCase(PIType.CREDITCARD.toString())){
-            throw AppClientExceptions.INSTANCE.invalidTypeForDefault(request.getType().toString()).exception();
-        }
         validateAddress(request);
         validateCreditCard(request);
     }
@@ -232,6 +211,12 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
 
     private void validateCreditCard(PaymentInstrument request){
         if(request.getType().equalsIgnoreCase(PIType.CREDITCARD.toString())){
+            if(CommonUtil.isNullOrEmpty(request.getAccountName())){
+                throw AppClientExceptions.INSTANCE.missingAccountName().exception();
+            }
+            if(CommonUtil.isNullOrEmpty(request.getAccountNum())){
+                throw AppClientExceptions.INSTANCE.missingAccountNum().exception();
+            }
             if(request.getCreditCardRequest() == null){
                 throw AppClientExceptions.INSTANCE.missingExpireDate().exception();
             }

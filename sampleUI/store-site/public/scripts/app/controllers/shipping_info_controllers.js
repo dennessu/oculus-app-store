@@ -8,19 +8,36 @@ var ShippingInfoControllers = {
             return result;
         }()),
         content:{
-            shippingMethodId: "0"
+            shippingMethodId: ""
         },
         actions: {
             Continue: function(){
+
+                if($("#BtnShippingMethod").hasClass('load')) return;
+                $("#BtnShippingMethod").addClass('load');
+
                 var _self = this;
                 var selectedValue = $('#ShippingMethodId').val();
                 if(selectedValue == undefined){
+                    $("#BtnShippingMethod").removeClass('load');
                     this.set("isValid", true);
                 }else{
                     this.set("isValid", false);
                     Utils.Cookies.Set(AppConfig.CookiesName.ShippingMethodId, selectedValue);
 
-                    _self.transitionToRouteAnimated("shipping.address", {main: "slideOverLeft"});
+                    var provider = new BillingProvider();
+                    provider.GetShippingInfos(Utils.GenerateRequestModel(null), function(result){
+                        if(result.data.status == 200){
+                            var lists = JSON.parse(result.data.data).results;
+                            if(lists.length <= 0) {
+                                _self.transitionToRouteAnimated("shipping.edit", {shipping: "flip"});
+                            }else {
+                                _self.transitionToRouteAnimated("shipping.address", {main: "slideOverLeft"});
+                            }
+                        }else{
+                           _self.transitionToRouteAnimated("shipping.address", {main: "slideOverLeft"});
+                        }
+                    });
                 }
             }
         }
@@ -35,10 +52,15 @@ var ShippingInfoControllers = {
                 this.transitionToRouteAnimated("shipping.edit", {shipping: "flip"});
             },
             Continue: function(){
+
+                if($("#BtnShippingId").hasClass('load')) return;
+                $("#BtnShippingId").addClass('load');
+
                 var _self = this;
                 var selectedValue = $('input:radio:checked').val();
                 if(selectedValue == undefined){
                     this.set("isValid", true);
+                    $("#BtnShippingId").removeClass('load');
                 }else{
                     this.set("isValid", false);
                     Utils.Cookies.Set(AppConfig.CookiesName.ShippingId, selectedValue);
@@ -68,15 +90,20 @@ var ShippingInfoControllers = {
 
         actions: {
             Continue: function(){
+
+                if($("#BtnShippingAddress").hasClass('load')) return;
+                $("#BtnShippingAddress").addClass('load');
+
                 var _self = this;
 
                 var dataProvider = new BillingProvider();
-                dataProvider.Add(Utils.GenerateRequestModel(this.get("content")), function(result){
+                dataProvider.PostShippingInfo(Utils.GenerateRequestModel(this.get("content")), function(result){
                     if(result.data.status == 200){
                         _self.set("errMessage", null);
                         _self.transitionToRouteAnimated("payment", {main: "slideOverLeft"});
                     }else{
                         _self.set("errMessage", "Please try again later!");
+                        $("#BtnShippingAddress").removeClass('load');
                     }
                 });
             },

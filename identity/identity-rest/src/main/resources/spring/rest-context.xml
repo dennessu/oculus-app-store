@@ -1,23 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
     <context:annotation-config />
-    <context:component-scan base-package="com.junbo.oom.core.builtin"/>
-    <context:component-scan base-package="com.junbo.identity.spec.resource.adapter" />
-    <context:component-scan base-package="com.junbo.identity.rest.service" />
-
-    <bean class="com.junbo.identity.data.mapper.CommonMapper" />
+    <context:component-scan base-package="com.junbo.identity.spec.v1.resource.adapter" />
+    <context:component-scan base-package="com.junbo.identity.core.service" />
 
     <!-- resource implementation -->
-    <bean id="defaultUserResource" class="com.junbo.identity.rest.resource.UserResourceImpl" />
-    <bean id="defaultUserProfileResource" class="com.junbo.identity.rest.resource.UserProfileResourceImpl" />
-    <bean id="defaultAppResource" class="com.junbo.identity.rest.resource.AppResourceImpl" />
-    <bean id="defaultUserDeviceProfileResource" class="com.junbo.identity.rest.resource.UserDeviceProfileResourceImpl" />
-    <bean id="defaultUserFederationResource" class="com.junbo.identity.rest.resource.UserFederationResourceImpl" />
-    <bean id="defaultUserOptInResource" class="com.junbo.identity.rest.resource.UserOptInResourceImpl" />
-    <bean id="defaultUserTosAcceptanceResource" class="com.junbo.identity.rest.resource.UserTosAcceptanceResourceImpl" />
-    <bean id="defaultPasswordResource" class="com.junbo.identity.rest.resource.PasswordResourceImpl" />
+    <bean id="defaultSecurityQuestionResource" class="com.junbo.identity.rest.resource.SecurityQuestionResourceImpl" scope="prototype" />
+
+    <bean id="defaultUserAuthenticatorResource" class="com.junbo.identity.rest.resource.v1.AuthenticatorResourceImpl" scope="prototype" />
+    <bean id="defaultDeviceResource" class="com.junbo.identity.rest.resource.v1.DeviceResourceImpl" scope="prototype" />
+    <bean id="defaultGroupResource" class="com.junbo.identity.rest.resource.v1.GroupResourceImpl" scope="prototype" />
+    <bean id="defaultTosResource" class="com.junbo.identity.rest.resource.v1.TosResourceImpl" scope="prototype" />
+    <bean id="defaultUserCredentialResource" class="com.junbo.identity.rest.resource.v1.UserCredentialResourceImpl" scope="prototype" />
+    <bean id="defaultUserCredentialVerifyAttemptResource" class="com.junbo.identity.rest.resource.v1.UserCredentialVerifyAttemptResourceImpl" scope="prototype" />
+    <bean id="defaultUserDevicePairResource" class="com.junbo.identity.rest.resource.v1.UserDevicePairResourceImpl" scope="prototype" />
+    <bean id="defaultUserGroupMembershipResource" class="com.junbo.identity.rest.resource.v1.UserGroupMembershipResourceImpl" scope="prototype"/>
+    <bean id="defaultUserResource" class="com.junbo.identity.rest.resource.v1.UserResourceImpl" scope="prototype" />
+    <bean id="defaultUserPiiResource" class="com.junbo.identity.rest.resource.v1.UserPiiResourceImpl" scope="prototype" />
+    <bean id="defaultUserOptinResource" class="com.junbo.identity.rest.resource.v1.UserOptinResourceImpl" scope="prototype" />
+    <bean id="defaultUserSecurityQuestionResource" class="com.junbo.identity.rest.resource.v1.UserSecurityQuestionResourceImpl" scope="prototype" />
+    <bean id="defaultUserSecurityQuestionVerifyAttemptResource" class="com.junbo.identity.rest.resource.v1.UserSecurityQuestionVerifyAttemptResourceImpl" scope="prototype" />
+    <bean id="defaultUserTosAgreementResource" class="com.junbo.identity.rest.resource.v1.UserTosAgreementResourceImpl" scope="prototype" />
+
+    <bean id="defaultRoleResource" class="com.junbo.identity.rest.resource.v1.RoleResourceImpl" scope="prototype">
+        <property name="created201Marker" ref="created201Marker"/>
+        <property name="roleFilter" ref="roleFilter"/>
+        <property name="roleRepository" ref="roleRepository"/>
+        <property name="roleValidator" ref="roleValidator"/>
+    </bean>
+
+    <bean id="defaultRoleAssignmentResource" class="com.junbo.identity.rest.resource.v1.RoleAssignmentResourceImpl"
+          scope="prototype">
+        <property name="created201Marker" ref="created201Marker"/>
+        <property name="roleAssignmentFilter" ref="roleAssignmentFilter"/>
+        <property name="roleAssignmentRepository" ref="roleAssignmentRepository"/>
+        <property name="roleAssignmentValidator" ref="roleAssignmentValidator"/>
+    </bean>
 </beans>

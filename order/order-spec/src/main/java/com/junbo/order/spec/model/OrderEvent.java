@@ -10,6 +10,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.OrderEventId;
 import com.junbo.common.id.OrderId;
 
+import java.util.UUID;
+
 /**
  * Created by LinYi on 2/10/14.
  */
@@ -19,8 +21,10 @@ public class OrderEvent extends BaseEventModel {
 
     private OrderId order;
 
+    private UUID eventTrackingUuid;
+
     @JsonIgnore
-    private String flowType;
+    private String flowName;
 
     public OrderEventId getId() {
         return id;
@@ -38,11 +42,19 @@ public class OrderEvent extends BaseEventModel {
         this.order = order;
     }
 
-    public String getFlowType() {
-        return flowType;
+    public UUID getEventTrackingUuid() {
+        return eventTrackingUuid;
     }
 
-    public void setFlowType(String flowType) {
-        this.flowType = flowType;
+    public void setEventTrackingUuid(UUID eventTrackingUuid) {
+        this.eventTrackingUuid = eventTrackingUuid;
+    }
+
+    public String getFlowName() {
+        return flowName;
+    }
+
+    public void setFlowName(String flowName) {
+        this.flowName = flowName;
     }
 }

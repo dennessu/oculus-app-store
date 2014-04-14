@@ -6,17 +6,20 @@
 package com.junbo.authorization.interceptor
 
 import com.junbo.authorization.AuthorizeCallback
+import com.junbo.authorization.annotation.AuthContextParam
 import com.junbo.authorization.annotation.AuthorizeRequired
-import com.junbo.authorization.annotation.ContextParam
-import com.junbo.authorization.model.AccessToken
 import com.junbo.authorization.model.AuthorizeContext
-import com.junbo.authorization.model.Role
-import com.junbo.authorization.model.Scope
+import com.junbo.authorization.service.AuthorizeService
 import groovy.transform.CompileStatic
 import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.annotation.Around
 import org.aspectj.lang.annotation.Aspect
 import org.aspectj.lang.reflect.MethodSignature
+import org.springframework.beans.BeansException
+import org.springframework.beans.factory.FactoryBean
+import org.springframework.beans.factory.annotation.Required
+import org.springframework.context.ApplicationContext
+import org.springframework.context.ApplicationContextAware
 
 import java.lang.annotation.Annotation
 import java.lang.reflect.Method
@@ -26,60 +29,81 @@ import java.lang.reflect.Method
  */
 @CompileStatic
 @Aspect
-class AuthorizeAspect {
-    //@Around('execution(* *.printSomething())')
-    @Around('@annotation(annotation)')
-    Object doAuthorize(ProceedingJoinPoint joinPoint, AuthorizeRequired annotation) {
-        final String methodName = joinPoint.getSignature().getName();
-        final MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
-        Method method = methodSignature.getMethod();
-        if (method.getDeclaringClass().isInterface()) {
-            method = joinPoint.getTarget().getClass().getDeclaredMethod(methodName, method.getParameterTypes());
-        }
+class AuthorizeAspect implements ApplicationContextAware {
+    private AuthorizeService authorizeService
+    private ApplicationContext applicationContext
 
-        Map<String, Object> map = [:]
-        method.getParameterAnnotations().eachWithIndex { Annotation[] annotations, int i ->
-            if (annotations.length > 0) {
-                annotations.each { Annotation anno ->
-                    if (anno instanceof ContextParam) {
-                        ContextParam contextParam = (ContextParam) anno
-                        map[contextParam.value()] = joinPoint.getArgs()[i]
+    @Required
+    void setAuthorizeService(AuthorizeService authorizeService) {
+        this.authorizeService = authorizeService
+    }
+
+    @Around('@annotation(requiredAnnotation)')
+    Object doAuthorize(ProceedingJoinPoint joinPoint, AuthorizeRequired requiredAnnotation) {
+        if (authorizeService.authorizeEnabled) {
+            String methodName = joinPoint.signature.name
+            MethodSignature methodSignature = (MethodSignature) joinPoint.signature
+            Method method = methodSignature.method
+            if (method.declaringClass.isInterface()) {
+                method = joinPoint.target.class.getDeclaredMethod(methodName, method.parameterTypes)
+            }
+
+            Map<String, Object> map = [:]
+            method.parameterAnnotations.eachWithIndex { Annotation[] annotations, int i ->
+                if (annotations.length > 0) {
+                    annotations.each { Annotation anno ->
+                        if (anno instanceof AuthContextParam) {
+                            AuthContextParam contextParam = (AuthContextParam) anno
+                            map[contextParam.value()] = joinPoint.args[i]
+                        }
                     }
                 }
             }
+
+            map['apiName'] = requiredAnnotation.apiName()
+            FactoryBean<AuthorizeCallback> factoryBean = (FactoryBean<AuthorizeCallback>)applicationContext
+                    .getBean(requiredAnnotation.authCallBackFactoryBean())
+            AuthorizeCallback callback = factoryBean.object.initialize(map)
+            Set<String> rights = authorizeService.getRights(callback)
+            AuthorizeContext.RIGHTS.set(rights)
+            Object result = joinPoint.proceed()
+
+            if (Collection.isAssignableFrom(result.class)) {
+                Collection filteredResult = (Collection) result.class.newInstance()
+                Collection resultCollection = (Collection) result
+                resultCollection.each { Object entity ->
+                    Object filtered = postFilter(requiredAnnotation, entity)
+                    if (filtered != null) {
+                        filteredResult.add(filtered)
+                    }
+                }
+
+                return filteredResult
+            }
+
+            return postFilter(requiredAnnotation, result)
         }
 
-        AuthorizeCallback callback = (AuthorizeCallback) annotation.authCallBack().newInstance()
-        AuthorizeContext context = callback.newContext(map)
-
-        AccessToken accessToken = (AccessToken) map['accessToken']
-
-        context.claims = getClaims(accessToken, callback, context)
-        Object[] arguments = new Object[method.parameterTypes.length]
-        for (int i = 0; i < joinPoint.getArgs().length; i++) {
-            arguments[i] = joinPoint.getArgs()[i]
-        }
-        arguments[arguments.length - 1] = context
-        Object object = joinPoint.proceed(arguments)
-
-        context = callback.newContext(object)
-        context.context['accessToken'] = accessToken
-        context.claims = getClaims(accessToken, callback, context)
-
-        return callback.postFilter(object, context)
-        // if object is a collection, handle collection
+        return joinPoint.proceed()
     }
 
-    static Set<String> getClaims(AccessToken accessToken, AuthorizeCallback callback, AuthorizeContext context) {
-        Set<String> claims = []
+    private Object postFilter(AuthorizeRequired annotation, Object entity) {
+        Map<String, Object> map = [:]
+        map['apiName'] = annotation.apiName()
+        map['entity'] = entity
 
-        accessToken.scopes.each { Scope scope ->
-            scope.claims.keySet().each { Role role ->
-                if (callback.hasRole(role, context)) {
-                    claims.addAll(scope.claims[role])
-                }
-            }
-        }
-        return claims
+        FactoryBean<AuthorizeCallback> factoryBean = (FactoryBean<AuthorizeCallback>)applicationContext
+                .getBean(annotation.authCallBackFactoryBean())
+        AuthorizeCallback callback = factoryBean.object.initialize(map)
+
+        Set<String> rights = authorizeService.getRights(callback)
+        AuthorizeContext.RIGHTS.set(rights)
+
+        return callback.postFilter()
+    }
+
+    @Override
+    void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext
     }
 }

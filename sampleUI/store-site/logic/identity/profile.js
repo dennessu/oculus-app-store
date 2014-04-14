@@ -3,7 +3,7 @@ var IdentityModels = require('store-model').Identity;
 var DomainModels = require('../../models/domain');
 var Utils = require('../../utils/utils');
 
-exports.PutUser = function(data, cb){
+exports.RestPassword = function(data, cb){
     var body = data.data;
     var cookies = data.cookies;
     var query = data.query;
@@ -23,7 +23,7 @@ exports.PutUser = function(data, cb){
     });
 };
 
-exports.GetProfile = function(data, cb){
+exports.GetPayinProfiles = function(data, cb){
     var body = data.data;
     var cookies = data.cookies;
     var query = data.query;
@@ -52,24 +52,27 @@ exports.PutProfile = function(data, cb){
     var dataProvider = new IdentityProvider(process.AppConfig.Identity_API_Host, process.AppConfig.Identity_API_Port);
 
     dataProvider.GetPayinProfilesByUserId(userId, function(resultData){
-        if(resultData.StatusCode == 200){
-            var profile = JSON.parse(resultData.Data).items[0];
+        if (resultData.StatusCode == 200) {
+            var profileArr = JSON.parse(resultData.Data).results;
 
+            var profile = new IdentityModels.ProfileModel();
+            profile = profileArr[0];
             profile.firstName = body["firstName"];
             profile.lastName = body["lastName"];
             profile.createdTime = undefined;
+            profile.updatedTime = undefined;
 
-            dataProvider.PutProfile(profile.self.id, userId, profile, function(resultData){
+            dataProvider.PutProfile(userId, profile.self.id, profile, function (resultData) {
                 var resultModel = new DomainModels.ResultModel();
-                if(resultData.StatusCode == 200){
+                if (resultData.StatusCode == 200) {
                     resultModel.status = DomainModels.ResultStatusEnum.Normal;
-                }else{
+                } else {
                     resultModel.status = DomainModels.ResultStatusEnum.APIError;
                 }
                 resultModel.data = resultData.Data;
                 cb(Utils.GenerateResponseModel(resultModel));
             });
-        }else{
+        } else {
             var resultModel = new DomainModels.ResultModel();
             resultModel.status = DomainModels.ResultStatusEnum.APIError;
             resultModel.data = resultData.Data;
@@ -86,7 +89,7 @@ exports.GetOptIns = function(data, cb){
     var userId = cookies[process.AppConfig.CookiesName.UserId];
     var dataProvider = new IdentityProvider(process.AppConfig.Identity_API_Host, process.AppConfig.Identity_API_Port);
 
-    dataProvider.GetOptIns(userId, function(resultData){
+    dataProvider.GetOptInsByUserId(userId, function(resultData){
         var resultModel = new DomainModels.ResultModel();
         if(resultData.StatusCode == 200){
             resultModel.status = DomainModels.ResultStatusEnum.Normal;
@@ -118,28 +121,6 @@ exports.PostOptIns = function(data, cb){
     model.type = body["optin"];
 
     dataProvider.PostOptIns(userId, model, function(resultData){
-        var resultModel = new DomainModels.ResultModel();
-        if(resultData.StatusCode == 200){
-            resultModel.status = DomainModels.ResultStatusEnum.Normal;
-        }else{
-            resultModel.status = DomainModels.ResultStatusEnum.APIError;
-        }
-        resultModel.data = resultData.Data;
-        cb(Utils.GenerateResponseModel(resultModel));
-    });
-};
-
-exports.GetEndSession = function(data, cb){
-    var body = data.data;
-    var cookies = data.cookies;
-    var query = data.query;
-
-    var userId = cookies[process.AppConfig.CookiesName.UserId];
-    var dataProvider = new IdentityProvider(process.AppConfig.Identity_API_Host, process.AppConfig.Identity_API_Port);
-
-    console.log("Gen End Session")
-
-    dataProvider.GetEndSession(function(resultData){
         var resultModel = new DomainModels.ResultModel();
         if(resultData.StatusCode == 200){
             resultModel.status = DomainModels.ResultStatusEnum.Normal;

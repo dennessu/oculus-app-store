@@ -24,8 +24,8 @@ public interface AppServerExceptions {
     AppError providerProcessError(String provider, String internalError);
 
     @ErrorDef(httpStatusCode = 500, code = "50003",
-            description = "The payment instrument status {0} is invalid to process")
-    AppError invalidPIStatus(String status);
+            description = "The payment instrument is invalid")
+    AppError invalidPI();
 
     @ErrorDef(httpStatusCode = 500, code = "50004",
             description = "The payment transaction status {0} is invalid to process")
@@ -45,4 +45,7 @@ public interface AppServerExceptions {
 
     @ErrorDef(httpStatusCode = 500, code = "50008", description = "No provider found for criteria: {0}")
     AppError providerNotFound(String criteria);
+
+    @ErrorDef(httpStatusCode = 500, code = "50009", description = "Service {0} is not Implemented")
+    AppError serviceNotImplemented(String serviceName);
 }

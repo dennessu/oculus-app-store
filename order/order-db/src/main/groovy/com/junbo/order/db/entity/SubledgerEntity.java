@@ -7,6 +7,8 @@
 package com.junbo.order.db.entity;
 
 import com.junbo.order.db.ValidationMessages;
+import com.junbo.order.db.entity.enums.PayoutStatus;
+import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.Column;
@@ -15,6 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * Created by chriszhu on 1/29/14.
@@ -25,9 +28,14 @@ import java.math.BigDecimal;
 public class SubledgerEntity extends CommonDbEntityWithDate {
     private Long subledgerId;
     private Long sellerId;
+    private String productItemId;
     private Long sellerTaxProfileId;
-    private Short currencyId;
+    private String currency;
+    private String country;
     private BigDecimal totalAmount;
+    private PayoutStatus payoutStatus;
+    private Date startTime;
+    private Date endTime;
     private String property;
 
     @Id
@@ -51,6 +59,16 @@ public class SubledgerEntity extends CommonDbEntityWithDate {
         this.sellerId = sellerId;
     }
 
+    @Column(name = "PRODUCT_ITEM_ID")
+    @NotNull(message = ValidationMessages.MISSING_VALUE)
+    public String getProductItemId() {
+        return productItemId;
+    }
+
+    public void setProductItemId(String productItemId) {
+        this.productItemId = productItemId;
+    }
+
     @Column(name = "SELLER_TAX_PROFILE_ID")
     public Long getSellerTaxProfileId() {
         return sellerTaxProfileId;
@@ -60,14 +78,24 @@ public class SubledgerEntity extends CommonDbEntityWithDate {
         this.sellerTaxProfileId = sellerTaxProfileId;
     }
 
-    @Column(name = "CURRENCY_ID")
+    @Column(name = "CURRENCY")
     @NotNull(message = ValidationMessages.MISSING_VALUE)
-    public Short getCurrencyId() {
-        return currencyId;
+    public String getCurrency() {
+        return currency;
     }
 
-    public void setCurrencyId(Short currencyId) {
-        this.currencyId = currencyId;
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    @Column(name = "COUNTRY")
+    @NotNull(message = ValidationMessages.MISSING_VALUE)
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
     }
 
     @Column(name = "TOTAL_AMOUNT")
@@ -78,6 +106,37 @@ public class SubledgerEntity extends CommonDbEntityWithDate {
 
     public void setTotalAmount(BigDecimal totalAmount) {
         this.totalAmount = totalAmount;
+    }
+
+    @Column(name = "PAYOUT_STATUS_ID")
+    @NotNull(message = ValidationMessages.MISSING_VALUE)
+    @Type(type = "com.junbo.order.db.entity.type.SubledgerPayoutStatusType")
+    public PayoutStatus getPayoutStatus() {
+        return payoutStatus;
+    }
+
+    public void setPayoutStatus(PayoutStatus payoutStatus) {
+        this.payoutStatus = payoutStatus;
+    }
+
+    @Column(name = "START_TIME")
+    @NotNull(message = ValidationMessages.MISSING_VALUE)
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
+    @Column(name = "END_TIME")
+    @NotNull(message = ValidationMessages.MISSING_VALUE)
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
     }
 
     @Column(name = "PROPERTY")

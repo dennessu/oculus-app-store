@@ -7,6 +7,7 @@ package com.junbo.test.oauth;
 
 import com.junbo.oauth.spec.model.AccessTokenResponse;
 import com.junbo.oauth.spec.model.TokenInfo;
+import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.HttpclientHelper;
 import com.junbo.test.common.JsonHelper;
 import com.junbo.test.identity.Identity;
@@ -31,20 +32,21 @@ public class Oauth {
     }
 
     public static final String DefaultAuthCodeEvent = "login";
-    public static final String DefaultAuthorizeURI = "http://localhost:8082/oauth2/authorize";
+    public static final String DefaultAuthorizeURI = ConfigHelper.getSetting("defaultAuthorizeURI");
     public static final String DefaultClientId = "client";
     public static final String DefaultClientScopes = "identity";
     public static final String DefaultClientSecret = "secret";
     public static final String DefaultGrantType = "authorization_code";
-    public static final String DefaultRedirectURI = "http://localhost";
-    public static final String DefaultTokenURI = "http://localhost:8082/oauth2/token";
-    public static final String DefaultTokeninfoURI = "http://localhost:8082/oauth2/tokeninfo";
+    public static final String DefaultRedirectURI = ConfigHelper.getSetting("defaultRedirectURI");
+    public static final String DefaultTokenURI = ConfigHelper.getSetting("defaultTokenURI");
+    public static final String DefaultTokenInfoURI = ConfigHelper.getSetting("defaultTokenInfoURI");
 
     public static final String DefaultFNCode = "code";
     public static final String DefaultFNCid = "cid";
     public static final String DefaultFNClientId = "client_id";
     public static final String DefaultFNClientSecret = "client_secret";
     public static final String DefaultFNGrantType = "grant_type";
+    public static final String DefaultFNLoginState = "ls";
     public static final String DefaultFNRedirectURI = "redirect_uri";
     public static final String DefaultFNEvent = "event";
     public static final String DefaultFNUserName = "username";
@@ -60,7 +62,7 @@ public class Oauth {
             String tarHeader = "Location";
             for (Header h : response.getAllHeaders()) {
                 if (h.toString().contains(tarHeader)) {
-                    return (h.toString().split("="))[1].split("&")[0];
+                    return GetPropertyValueFromString(h.toString(), DefaultFNCid, "&");
                 }
             }
             throw new NotFoundException("Did not found expected response header: " + tarHeader);
@@ -86,7 +88,42 @@ public class Oauth {
                     try {
                         for (Header h2 : response2.getAllHeaders()) {
                             if (h2.toString().contains(tarHeader)) {
-                                return h2.toString().split("&")[1].replace("code=", "").trim();
+                                return GetPropertyValueFromString(h2.toString(), DefaultFNCode, "&");
+                            }
+                        }
+                        throw new NotFoundException(
+                                "Did not found expected response header: " + tarHeader + " in response2");
+                    } finally {
+                        response2.close();
+                    }
+                }
+            }
+            throw new NotFoundException(
+                    "Did not found expected response header: " + tarHeader + " in response");
+        } finally {
+            response.close();
+        }
+    }
+
+    public static String GetLoginState(String cid, String userName) throws Exception {
+        List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+        nvps.add(new BasicNameValuePair(DefaultFNCid, cid));
+        nvps.add(new BasicNameValuePair(DefaultFNUserName, userName));
+        nvps.add(new BasicNameValuePair(DefaultFNPassword, Identity.DefaultUserPwd));
+        nvps.add(new BasicNameValuePair(DefaultFNEvent, DefaultAuthCodeEvent));
+
+        CloseableHttpResponse response = HttpclientHelper.SimplePost(DefaultAuthorizeURI, nvps, false);
+        try {
+            String tarHeader = "Location";
+            for (Header h : response.getAllHeaders()) {
+                if (h.toString().contains(tarHeader)) {
+                    CloseableHttpResponse response2 = HttpclientHelper.SimpleGet(
+                            h.toString().replace("Location:", "").trim(), false);
+                    try {
+                        String tarHeader2 = "Set-Cookie";
+                        for (Header h2 : response2.getAllHeaders()) {
+                            if (h2.toString().contains(tarHeader2)) {
+                                return GetPropertyValueFromString(h2.toString(), DefaultFNLoginState, ";");
                             }
                         }
                         throw new NotFoundException(
@@ -122,6 +159,53 @@ public class Oauth {
     }
 
     public static TokenInfo GetTokenInfo(String accessToken) throws Exception {
-        return HttpclientHelper.SimpleGet(DefaultTokeninfoURI + "?access_token=" + accessToken, TokenInfo.class);
+        return HttpclientHelper.SimpleGet(DefaultTokenInfoURI + "?access_token=" + accessToken, TokenInfo.class);
+    }
+
+    public static String SSO2GetAuthCode(String loginState) throws Exception {
+        List<NameValuePair> nvpHeaders = new ArrayList<NameValuePair>();
+        nvpHeaders.add(new BasicNameValuePair("Cookie", "ls=" + loginState));
+
+        CloseableHttpResponse response = HttpclientHelper.SimpleGet(
+                DefaultAuthorizeURI
+                        + "?client_id=client&response_type=code&scope=identity&redirect_uri=http://localhost",
+                nvpHeaders, false
+        );
+        try {
+            String tarHeader = "Location";
+            for (Header h : response.getAllHeaders()) {
+                if (h.toString().contains(tarHeader)) {
+                    return GetPropertyValueFromString(h.toString(), DefaultFNCode, "&");
+                }
+            }
+            throw new NotFoundException(
+                    "Did not found expected response header: " + tarHeader + " in response");
+        } finally {
+            response.close();
+        }
+    }
+
+    public static String GetPropertyValueFromString(String input, String property, String splitor) throws Exception {
+        String[] results = input.split(splitor);
+        for (String s : results) {
+            if (s.contains(property)) {
+                return s.split("=")[1].trim();
+            }
+        }
+        throw new NotFoundException("Did not found expected property: " + property + " in " + input);
+    }
+
+    // ****** start API sample logging ******
+    public static final String MessageGetLoginCid =
+            "[Include In Sample][1] Description: Get_Login_Cid";
+    public static final String MessageGetAuthCodeByCidAndUserName =
+            "[Include In Sample][2] Description: Get_AuthCode_By_CidAndUserName";
+    public static final String MessageGetAccessTokenByAuthCode =
+            "[Include In Sample][1] Description: Get_Access_Token_By_AuthCode";
+    public static final String MessageGetTokenInfoByAccessToken =
+            "[Include In Sample][1] Description: Get_Token_Info_Access_Token";
+
+    public static void StartLoggingAPISample(String message) {
+        System.out.println(message);
     }
 }

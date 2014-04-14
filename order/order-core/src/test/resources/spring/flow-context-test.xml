@@ -26,7 +26,7 @@
     </bean>
 
     <bean id="mockRatingAction" class="com.junbo.order.core.impl.orderaction.RatingAction">
-        <property name="facadeContainer" ref="mockFacadeContainer"/>
+        <property name="orderInternalService" ref="mockOrderInternalService"/>
     </bean>
 
     <bean id="mockUpdateFulfillmentAction" class="com.junbo.order.core.impl.orderaction.UpdateFulfillmentAction">
@@ -53,6 +53,10 @@
         <property name="fulfillmentFacade" ref="mockFulfillmentFacade"/>
         <property name="identityFacade" ref="mockIdentityFacade"/>
         <property name="paymentFacade" ref="mockPaymentFacade"/>
+    </bean>
+
+    <bean id="mockOrderInternalService" class="com.junbo.order.core.impl.internal.impl.OrderInternalServiceImpl">
+        <property name="facadeContainer" ref="mockFacadeContainer"/>
     </bean>
 
     <bean id="mockOrderServiceContextBuilder" class="com.junbo.order.core.impl.order.OrderServiceContextBuilder">

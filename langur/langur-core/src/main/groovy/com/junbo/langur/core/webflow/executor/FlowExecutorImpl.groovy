@@ -1,6 +1,7 @@
 package com.junbo.langur.core.webflow.executor
 
 import com.junbo.langur.core.promise.Promise
+import com.junbo.langur.core.webflow.ConversationNotfFoundException
 import com.junbo.langur.core.webflow.FlowException
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionList
@@ -71,6 +72,11 @@ class FlowExecutorImpl implements FlowExecutor {
         }
 
         def conversation = stateRepository.loadConversation(conversationId)
+
+        if (conversation == null) {
+            throw new ConversationNotfFoundException()
+        }
+
         def executionContext = new ExecutionContext(
                 conversation: conversation,
                 requestScope: requestScope

@@ -29,8 +29,10 @@ public class PaymentTransaction {
     private PIId paymentInstrumentId;
     private String billingRefId;
     private ChargeInfo chargeInfo;
+    private WebPaymentInfo webPaymentInfo;
     @PaymentTransactionId
     @FilterIn
+    @JsonProperty("self")
     private Long id;
     @FilterIn
     private String paymentProvider;
@@ -75,6 +77,14 @@ public class PaymentTransaction {
 
     public void setChargeInfo(ChargeInfo chargeInfo) {
         this.chargeInfo = chargeInfo;
+    }
+
+    public WebPaymentInfo getWebPaymentInfo() {
+        return webPaymentInfo;
+    }
+
+    public void setWebPaymentInfo(WebPaymentInfo webPaymentInfo) {
+        this.webPaymentInfo = webPaymentInfo;
     }
 
     public Long getId() {

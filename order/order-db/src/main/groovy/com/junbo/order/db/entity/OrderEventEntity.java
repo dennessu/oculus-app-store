@@ -28,7 +28,8 @@ public class OrderEventEntity extends CommonEventEntity {
     private OrderActionType actionId;
     private EventStatus statusId;
     private UUID trackingUuid;
-    private String flowType;
+    private UUID eventTrackingUuid;
+    private String flowName;
 
     @Column(name = "ORDER_ID")
     @NotNull (message = ValidationMessages.MISSING_VALUE)
@@ -72,12 +73,22 @@ public class OrderEventEntity extends CommonEventEntity {
         this.trackingUuid = trackingUuid;
     }
 
-    @Column (name = "FLOW_NAME")
-    public String getFlowType() {
-        return flowType;
+    @Column (name = "EVENT_TRACKING_UUID")
+    @Type(type = "pg-uuid")
+    public UUID getEventTrackingUuid() {
+        return eventTrackingUuid;
     }
 
-    public void setFlowType(String flowType) {
-        this.flowType = flowType;
+    public void setEventTrackingUuid(UUID eventTrackingUuid) {
+        this.eventTrackingUuid = eventTrackingUuid;
+    }
+
+    @Column (name = "FLOW_NAME")
+    public String getFlowName() {
+        return flowName;
+    }
+
+    public void setFlowName(String flowName) {
+        this.flowName = flowName;
     }
 }

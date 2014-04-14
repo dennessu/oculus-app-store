@@ -46,4 +46,12 @@ public class SubledgerItemDaoTest extends BaseTest {
         Assert.assertEquals(returnedEntity.getUpdatedBy(), subledgerItemEntity.getUpdatedBy(),
                 "The UpdatedBy field should not be different.");
     }
+
+    @Test
+    public void testGetByStatus() {
+        SubledgerItemEntity subledgerItemEntity = TestHelper.generateSubledgerItemEntity();
+        subledgerItemDao.create(subledgerItemEntity);
+        subledgerItemDao.flush();
+        Assert.assertEquals(subledgerItemDao.getByStatus(subledgerItemEntity.getStatus(), 0, 1).size(), 1);
+    }
 }

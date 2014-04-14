@@ -7,12 +7,12 @@
         <td style="width: 200px;">Item Name *</td>
         <td><input type="text" class="form-control required" ng-model="item.name" required /></td>
     </tr>
-    <tr>
+    <!--tr>
         <td>Developer *</td>
         <td>
             <input type="text" class="form-control required" ng-model="item.developer.id" ng-change="updateDeveloper()" required />
         </td>
-    </tr>
+    </tr-->
     <tr>
         <td>Type *</td>
         <td>
@@ -21,21 +21,23 @@
         </td>
     </tr>
     <tr ng-repeat="(key, value) in item.properties">
-        <td>{{ metaDefinitions[key].display }}</td>
+        <td>{{ metaDefinitions[key].display }}
+            &nbsp;<label ng-if="metaDefinitions[key].required=='true'">*</label>
+        </td>
         <td>
             <div ng-if="metaDefinitions[key].controlType=='TEXT_INPUT'">
-                <input type="text" class="form-control" ng-model="item.properties[key]">
+                <input type="text" class="form-control" ng-model="item.properties[key]" ng-required="{{metaDefinitions[key].required}}">
             </div>
             <div ng-if="metaDefinitions[key].controlType=='URL_INPUT'">
-                <input type="url" class="form-control" ng-model="item.properties[key]">
+                <input type="url" class="form-control" ng-model="item.properties[key]" ng-required="{{metaDefinitions[key].required}}">
             </div>
             <div ng-if="metaDefinitions[key].controlType=='MULTI_SELECT'">
                 <label ng-repeat="allowedValue in metaDefinitions[key].allowedValues">
-                    <input type="checkbox" checklist-model="item.properties[key]" checklist-value="allowedValue" class="chooseItem">{{ allowedValue }}
+                    <input type="checkbox" checklist-model="item.properties[key]" checklist-value="allowedValue" class="chooseItem" ng-required="{{metaDefinitions[key].required}}">{{ allowedValue }}
                 </label>
             </div>
             <div ng-if="metaDefinitions[key].controlType=='SINGLE_SELECT'">
-                <label ng-repeat="allowedValue in metaDefinitions[key].allowedValues">
+                <label ng-repeat="allowedValue in metaDefinitions[key].allowedValues" ng-required="{{metaDefinitions[key].required}}">
                     <input type="radio" ng-model="item.properties[key]" value="{{allowedValue}}" class="chooseItem">{{ allowedValue }}
                 </label>
             </div>

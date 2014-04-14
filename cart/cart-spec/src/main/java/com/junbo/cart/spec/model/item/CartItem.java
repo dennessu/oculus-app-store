@@ -6,25 +6,15 @@
 package com.junbo.cart.spec.model.item;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.CartItemId;
-
-import java.util.Date;
 
 /**
  * Created by fzhang@wan-san.com on 14-1-17.
  */
 public abstract class CartItem {
 
-    @JsonProperty("self")
     @JsonIgnore
     private CartItemId id;
-
-    @JsonIgnore
-    private Date createdTime;
-
-    @JsonIgnore
-    private Date updatedTime;
 
     public CartItemId getId() {
         return id;
@@ -32,21 +22,5 @@ public abstract class CartItem {
 
     public void setId(CartItemId id) {
         this.id = id;
-    }
-
-    public Date getCreatedTime() {
-        return createdTime;
-    }
-
-    public void setCreatedTime(Date createdTime) {
-        this.createdTime = createdTime;
-    }
-
-    public Date getUpdatedTime() {
-        return updatedTime;
-    }
-
-    public void setUpdatedTime(Date updatedTime) {
-        this.updatedTime = updatedTime;
     }
 }

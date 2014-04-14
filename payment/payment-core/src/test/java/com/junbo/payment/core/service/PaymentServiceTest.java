@@ -1,14 +1,11 @@
 package com.junbo.payment.core.service;
 
-import com.junbo.common.error.AppErrorException;
 import com.junbo.langur.core.transaction.AsyncTransactionTemplate;
-import com.junbo.payment.common.exception.AppClientExceptions;
 import com.junbo.payment.core.BaseTest;
 import com.junbo.payment.core.PaymentInstrumentService;
 import com.junbo.payment.core.PaymentTransactionService;
 import com.junbo.payment.core.mock.MockPaymentProviderServiceImpl;
 import com.junbo.payment.spec.enums.CreditCardType;
-import com.junbo.payment.spec.enums.PIStatus;
 import com.junbo.payment.spec.enums.PIType;
 import com.junbo.payment.spec.enums.PaymentStatus;
 import com.junbo.payment.spec.model.*;
@@ -64,11 +61,11 @@ public class PaymentServiceTest extends BaseTest {
     public void testPutPI() throws ExecutionException, InterruptedException {
         PaymentInstrument request = buildPIRequest();
         PaymentInstrument result = piService.add(request).wrapped().get();
-        result.setStatus(PIStatus.DISABLE.toString());
+        result.setIsActive(false);
         result.getAddress().setPostalCode("123");
         piService.update(result);
         PaymentInstrument resultUpdate = piService.getById(userId, result.getId().getPaymentInstrumentId());
-        Assert.assertEquals(resultUpdate.getStatus().toString(), PIStatus.DISABLE.toString());
+        Assert.assertEquals(resultUpdate.getIsActive(), Boolean.FALSE);
         Assert.assertEquals(resultUpdate.getAddress().getPostalCode(), "123");
     }
 
@@ -130,14 +127,39 @@ public class PaymentServiceTest extends BaseTest {
         Assert.assertEquals(getResult.getStatus().toString(), PaymentStatus.REVERSED.toString());
     }
 
-    private PaymentInstrument buildPIRequest() {
+    //commit addPI since there is standalone commit in payment transaction, so that PI is available fir them
+    private PaymentInstrument addWallet(){
+        final PaymentInstrument request = buildWalletPIRequest();
+        AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager);
+        template.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRES_NEW);
+        return template.execute(new TransactionCallback<PaymentInstrument>() {
+            public PaymentInstrument doInTransaction(TransactionStatus txnStatus) {
+                try {
+                    return piService.add(request).wrapped().get();
+                } catch (InterruptedException e) {
+                    return null;
+                } catch (ExecutionException e) {
+                    return null;
+                }
+            }
+        });
+    }
+
+    @Test
+    public void testWallet() throws ExecutionException, InterruptedException {
+        PaymentInstrument pi = addWallet();
+        PaymentTransaction payment = buildPaymentTransaction(pi);
+        PaymentTransaction result = paymentService.charge(payment).wrapped().get();
+        Assert.assertEquals(result.getStatus(), PaymentStatus.SETTLEMENT_SUBMITTED.toString());
+        Assert.assertNotNull(result.getExternalToken());
+    }
+
+    private PaymentInstrument buildBasePIRequest(){
         PaymentInstrument request = new PaymentInstrument();
         request.setId(new PIId(userId, null));
         request.setTrackingUuid(generateUUID());
         request.setAccountName("ut");
-        request.setIsDefault(Boolean.TRUE.toString());
         request.setIsValidated(true);
-        request.setType(PIType.CREDITCARD.toString());
         request.setAccountNum("4111111111111111");
         request.setAddress(new Address() {
             {
@@ -147,19 +169,30 @@ public class PaymentServiceTest extends BaseTest {
                 setPostalCode("12345");
             }
         });
-        request.setPhone(new Phone(){
-            {
-                setType("Home");
-                setNumber("12345678");
-            }
-        });
+        request.setPhoneNum("12344555");
+        return request;
+    }
+    private PaymentInstrument buildPIRequest() {
+        PaymentInstrument request = buildBasePIRequest();
+        request.setType(PIType.CREDITCARD.toString());
         request.setCreditCardRequest(new CreditCardRequest(){
             {
                 setEncryptedCvmCode("111");
                 setExpireDate("2025-11");
             }
         });
+        return request;
+    }
 
+    private PaymentInstrument buildWalletPIRequest() {
+        PaymentInstrument request = buildBasePIRequest();
+        request.setType(PIType.WALLET.toString());
+        request.setWalletRequest(new WalletRequest() {
+            {
+                setType("SV");
+                setCurrency("USD");
+            }
+        });
         return request;
     }
 

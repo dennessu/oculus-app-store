@@ -8,14 +8,12 @@ import com.junbo.payment.db.dao.payment.PaymentEventDao;
 import com.junbo.payment.db.dao.paymentinstrument.AddressDao;
 import com.junbo.payment.db.dao.paymentinstrument.CreditCardPaymentInstrumentDao;
 import com.junbo.payment.db.dao.paymentinstrument.PaymentInstrumentDao;
-import com.junbo.payment.db.dao.paymentinstrument.PhoneDao;
 import com.junbo.payment.db.entity.TrackingUuidEntity;
 import com.junbo.payment.db.entity.payment.MerchantAccountEntity;
 import com.junbo.payment.db.entity.payment.PaymentEntity;
 import com.junbo.payment.db.entity.payment.PaymentEventEntity;
 import com.junbo.payment.db.entity.paymentinstrument.AddressEntity;
 import com.junbo.payment.db.entity.paymentinstrument.PaymentInstrumentEntity;
-import com.junbo.payment.db.entity.paymentinstrument.PhoneEntity;
 import com.junbo.payment.db.mapper.*;
 import com.junbo.payment.db.repository.MerchantAccountRepository;
 import com.junbo.payment.spec.enums.*;
@@ -33,9 +31,7 @@ public class PaymentDaoTest extends BaseTest {
     @Autowired
     private PaymentInstrumentDao piDao;
     @Autowired
-    private AddressDao addressDao;
-    @Autowired
-    private PhoneDao phoneDao;
+    private AddressDao addressDao;   
     @Autowired
     private CreditCardPaymentInstrumentDao ccDao;
     @Autowired
@@ -52,24 +48,20 @@ public class PaymentDaoTest extends BaseTest {
     private static final Long userId = 123l;
 
     @Test
-    public void testCreate() {
-        PhoneEntity phone = buildPhoneRequest();
-        phoneDao.save(phone);
+    public void testCreate() {        
         AddressEntity address = buildAddressRequest();
         addressDao.save(address);
-        PaymentInstrumentEntity entity = buildRequest(phone, address, userId);
+        PaymentInstrumentEntity entity = buildRequest(address, userId);
         piDao.save(entity);
 
         Assert.assertNotNull(entity.getId(), "Entity id should not be null.");
     }
 
     @Test
-    public void testGet() {
-        PhoneEntity phone = buildPhoneRequest();
-        phoneDao.save(phone);
+    public void testGet() {        
         AddressEntity address = buildAddressRequest();
         addressDao.save(address);
-        PaymentInstrumentEntity entity = buildRequest(phone, address, userId);
+        PaymentInstrumentEntity entity = buildRequest(address, userId);
         Long piId = piDao.save(entity);
         PaymentInstrumentEntity getEntity = piDao.get(piId);
         Assert.assertNotNull(getEntity);
@@ -78,14 +70,12 @@ public class PaymentDaoTest extends BaseTest {
 
     @Test
     public void testGetByUser() {
-        Long user = generateId();
-        PhoneEntity phone = buildPhoneRequest();
-        phoneDao.save(phone);
+        Long user = generateId();        
         AddressEntity address = buildAddressRequest();
         addressDao.save(address);
-        PaymentInstrumentEntity entity1 = buildRequest(phone, address, user);
+        PaymentInstrumentEntity entity1 = buildRequest(address, user);
         Long piId1 = piDao.save(entity1);
-        PaymentInstrumentEntity entity2 = buildRequest(phone, address, user);
+        PaymentInstrumentEntity entity2 = buildRequest(address, user);
         Long piId2 = piDao.save(entity2);
         List<PaymentInstrumentEntity> getEntities = piDao.getByUserId(user);
         Assert.assertNotNull(getEntities);
@@ -94,11 +84,9 @@ public class PaymentDaoTest extends BaseTest {
 
     @Test
     public void testCreatePayment() {
-        PhoneEntity phone = buildPhoneRequest();
-        phoneDao.save(phone);
         AddressEntity address = buildAddressRequest();
         addressDao.save(address);
-        PaymentInstrumentEntity entity = buildRequest(phone, address, userId);
+        PaymentInstrumentEntity entity = buildRequest(address, userId);
         piDao.save(entity);
 
         PaymentEntity payment = buildPaymentRequest(entity);
@@ -112,11 +100,9 @@ public class PaymentDaoTest extends BaseTest {
 
     @Test
     public void testGetPayment() {
-        PhoneEntity phone = buildPhoneRequest();
-        phoneDao.save(phone);
         AddressEntity address = buildAddressRequest();
         addressDao.save(address);
-        PaymentInstrumentEntity entity = buildRequest(phone, address, userId);
+        PaymentInstrumentEntity entity = buildRequest(address, userId);
         piDao.save(entity);
 
         PaymentEntity payment = buildPaymentRequest(entity);
@@ -142,15 +128,6 @@ public class PaymentDaoTest extends BaseTest {
         Assert.assertEquals(entity.getId(), entities.get(0).getId());
     }
 
-    protected PhoneEntity buildPhoneRequest(){
-        PhoneEntity entity = new PhoneEntity();
-        entity.setId(generateId());
-        entity.setType(PhoneType.HOME);
-        entity.setNumber("12345");
-        entity.setCreatedTime(new Date());
-        return entity;
-    }
-
     protected AddressEntity buildAddressRequest(){
         AddressEntity entity = new AddressEntity();
         entity.setId(generateId());
@@ -161,13 +138,13 @@ public class PaymentDaoTest extends BaseTest {
         return entity;
     }
 
-    protected PaymentInstrumentEntity buildRequest(PhoneEntity phone, AddressEntity address, Long userId) {
+    protected PaymentInstrumentEntity buildRequest(AddressEntity address, Long userId) {
         PaymentInstrumentEntity entity = new PaymentInstrumentEntity();
         entity.setId(generateId());
         entity.setAccountName("David");
         entity.setAddressId(address.getId());
-        entity.setStatus(PIStatus.ACTIVE);
-        entity.setPhoneId(phone.getId());
+        entity.setIsActive(true);
+        entity.setRev(1);
         entity.setType(PIType.CREDITCARD);
         entity.setUserId(userId);
         entity.setUpdatedBy("ut");

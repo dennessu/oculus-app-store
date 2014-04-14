@@ -1,6 +1,7 @@
 <div class="container cart">
     <div class="cart_list">
         <h2>Items in Your Cart</h2>
+        {{statusChange}}
 
         {{#each itemController="CartItem"}}
         <section class="item">
@@ -10,7 +11,7 @@
                 <dl>
                     <dt>{{product.name}}</dt>
                     <dd>$ {{product.price}}</dd>
-                    <dd class="qty">{{input type="number" value=qty focus-out="Change"}}</dd>
+                    <dd class="qty">{{input type="number" value=qty focus-out="ChangeCount"}}</dd>
                     <dd>$ {{itemSubtotal}}</dd>
                 </dl>
                 <p>
@@ -45,7 +46,7 @@
         </div>
 
         <div class="actions">
-            <button type="button" class="btn btn-orange" {{action "Checkout"}}>Check Out</button>
+            <button id="BtnCheckout" type="button" class="btn btn-orange" {{action "Checkout"}}>Check Out</button>
         </div>
 
     </div>

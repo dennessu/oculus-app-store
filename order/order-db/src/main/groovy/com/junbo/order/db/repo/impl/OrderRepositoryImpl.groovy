@@ -19,7 +19,6 @@ import com.junbo.sharding.IdGenerator
 import com.junbo.sharding.IdGeneratorFacade
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
-import org.apache.commons.collections.CollectionUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -81,14 +80,13 @@ class OrderRepositoryImpl implements OrderRepository {
         def id = orderDao.create(orderEntity)
         def orderId = new OrderId(id)
         order.setId(orderId)
-        fillDateInfo(order, orderEntity)
+        Utils.fillDateInfo(order, orderEntity)
 
         saveOrderItems(order.id, order.orderItems)
         saveDiscounts(order.id, order.discounts)
         savePaymentInstruments(order.id, order.paymentInstruments)
 
         // Save Order Item Tax Info
-        // Save Order Item Preorder Info
         return order
     }
 
@@ -100,9 +98,10 @@ class OrderRepositoryImpl implements OrderRepository {
     }
 
     @Override
-    List<Order> getOrdersByUserId(Long userId) {
+    List<Order> getOrdersByUserId(Long userId, OrderQueryParam orderQueryParam, PageParam pageParam) {
         List<Order> orders = []
-        List<OrderEntity> orderEntities = orderDao.readByUserId(userId)
+        List<OrderEntity> orderEntities = orderDao.readByUserId(userId,
+                orderQueryParam.tentative, pageParam?.start, pageParam?.count)
         MappingContext context = new MappingContext()
         orderEntities.each { OrderEntity orderEntity ->
             orders.add(modelMapper.toOrderModel(orderEntity, context))
@@ -114,7 +113,7 @@ class OrderRepositoryImpl implements OrderRepository {
     OrderEvent createOrderEvent(OrderEvent event) {
         assert (event != null && event.order != null)
         LOGGER.info('name=Create_Order_Event, event: {},{},{},{},{}',
-                event.flowType, event.order.value, event.action, event.status, event.trackingUuid)
+                event.flowName, event.order.value, event.action, event.status, event.trackingUuid)
         def entity = modelMapper.toOrderEventEntity(event, new MappingContext())
         entity.eventId = idGenerator.nextId(entity.orderId)
         orderEventDao.create(entity)
@@ -150,6 +149,11 @@ class OrderRepositoryImpl implements OrderRepository {
     }
 
     @Override
+    OrderItem getOrderItem(Long orderItemId) {
+        return modelMapper.toOrderItemModel(orderItemDao.read(orderItemId), new MappingContext())
+    }
+
+    @Override
     List<Discount> getDiscounts(Long orderId) {
         List<Discount> discounts = []
         MappingContext context = new MappingContext()
@@ -172,8 +176,12 @@ class OrderRepositoryImpl implements OrderRepository {
     Order updateOrder(Order order, boolean updateOnlyOrder) {
         // Validations
         // TODO Log error and throw exception
-        if (order == null) { return null }
-        if (order.id == null) { return null }
+        if (order == null) {
+            return null
+        }
+        if (order.id == null) {
+            return null
+        }
         def oldEntity = orderDao.read(order.id.value)
         if (oldEntity == null) {
             throw new IllegalArgumentException('name=Order_Not_Found')
@@ -184,7 +192,7 @@ class OrderRepositoryImpl implements OrderRepository {
         orderEntity.createdTime = oldEntity.createdTime
         orderEntity.createdBy = oldEntity.createdBy
         orderDao.update(orderEntity)
-        fillDateInfo(order, orderEntity)
+        Utils.fillDateInfo(order, orderEntity)
 
         if (!updateOnlyOrder) {
             saveOrderItems(order.id, order.orderItems)
@@ -195,20 +203,9 @@ class OrderRepositoryImpl implements OrderRepository {
     }
 
     @Override
-    Order getOrderByTrackingUuid(UUID trackingUuid) {
-        def orderEvents = orderEventDao.readByTrackingUuid(trackingUuid)
-        if (CollectionUtils.isEmpty(orderEvents)) {
-            return null
-        }
-        // assert all the order events are linked to the same order
-        def orderEntity = orderDao.read(orderEvents[0].orderId)
-        return modelMapper.toOrderModel(orderEntity, new MappingContext())
-    }
-
-    @Override
-    List<OrderEvent> getOrderEvents(Long orderId) {
+    List<OrderEvent> getOrderEvents(Long orderId, PageParam pageParam) {
         List<OrderEvent> events = []
-        orderEventDao.readByOrderId(orderId).each { OrderEventEntity entity ->
+        orderEventDao.readByOrderId(orderId, pageParam?.start, pageParam?.count).each { OrderEventEntity entity ->
             OrderEvent event = modelMapper.toOrderEventModel(entity, new MappingContext())
             events << event
         }
@@ -217,6 +214,16 @@ class OrderRepositoryImpl implements OrderRepository {
                     orderEventsNumThreshHold, events.size())
         }
         return events
+    }
+
+    @Override
+    List<PreorderInfo> getPreorderInfo(Long orderItemId) {
+        List<PreorderInfo> preorderInfoList = []
+        MappingContext context = new MappingContext()
+        orderItemPreorderInfoDao.readByOrderItemId(orderItemId).each { OrderItemPreorderInfoEntity entity ->
+            preorderInfoList << modelMapper.toPreOrderInfoModel(entity, context)
+        }
+        return preorderInfoList
     }
 
     void saveOrderItems(OrderId orderId, List<OrderItem> orderItems) {
@@ -356,7 +363,7 @@ class OrderRepositoryImpl implements OrderRepository {
             entity.createdBy = oldEntity.createdBy
             orderItemDao.update(entity)
         }
-        fillDateInfo(orderItem, entity)
+        Utils.fillDateInfo(orderItem, entity)
     }
 
     void saveDiscount(Discount discount, boolean isCreate) {
@@ -373,7 +380,7 @@ class OrderRepositoryImpl implements OrderRepository {
             entity.createdBy = oldEntity.createdBy
             discountDao.update(entity)
         }
-        fillDateInfo(discount, entity)
+        Utils.fillDateInfo(discount, entity)
     }
 
     void savePaymentInstrument(OrderId orderId, PaymentInstrumentId paymentInstrumentId) {
@@ -385,12 +392,5 @@ class OrderRepositoryImpl implements OrderRepository {
         orderPaymentInfoEntity.paymentInstrumentType = 'CREDIT_CAR' // todo may not need to save this field in db
         orderPaymentInfoEntity.orderPaymentId = idGenerator.nextId(orderId.value)
         orderPaymentInfoDao.create(orderPaymentInfoEntity)
-    }
-
-    void fillDateInfo (BaseModelWithDate baseModelWithDate, CommonDbEntityWithDate commonDbEntityWithDate) {
-        baseModelWithDate.createdBy = commonDbEntityWithDate.createdBy
-        baseModelWithDate.createdTime = commonDbEntityWithDate.createdTime
-        baseModelWithDate.updatedBy = commonDbEntityWithDate.updatedBy
-        baseModelWithDate.updatedTime = commonDbEntityWithDate.updatedTime
     }
 }

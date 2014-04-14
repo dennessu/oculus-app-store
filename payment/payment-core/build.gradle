@@ -6,7 +6,8 @@ dependencies {
     compile project(":payment-clientproxy")
 
 	compile 'com.braintreepayments.gateway:braintree-java:2.22.1'
-	
+    compile 'com.paypal.sdk:merchantsdk:2.5.106'
+
 	testCompile(libraries.spring_test)
     testCompile(libraries.common_configuration_data)
 }

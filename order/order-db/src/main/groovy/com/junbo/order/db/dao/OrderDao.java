@@ -9,12 +9,10 @@ package com.junbo.order.db.dao;
 import com.junbo.order.db.entity.OrderEntity;
 
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Created by linyi on 14-2-7.
  */
 public interface OrderDao extends BaseDao<OrderEntity> {
-    List<OrderEntity> readByUserId(final Long userId);
-    List<OrderEntity> readByTrackingUuid(final UUID trackingUuid);
+    List<OrderEntity> readByUserId(final Long userId,  Boolean tentative, Integer start, Integer count);
 }

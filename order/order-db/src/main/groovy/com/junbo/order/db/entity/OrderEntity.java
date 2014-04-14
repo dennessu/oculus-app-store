@@ -19,7 +19,6 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.UUID;
 
 /**
  * Created by chriszhu on 1/24/14.
@@ -29,13 +28,12 @@ import java.util.UUID;
 public class OrderEntity extends CommonDbEntityWithDate {
     private Long orderId;
     private Long userId;
-    private UUID trackingUuid;
     private OrderStatus orderStatusId;
     private Boolean tentative;
-    private Long originalOrderId;
     private OrderType orderTypeId;
     private String currency;
     private String country;
+    private String locale;
     private Long shippingAddressId;
     private Long shippingMethodId;
 
@@ -46,8 +44,6 @@ public class OrderEntity extends CommonDbEntityWithDate {
     private BigDecimal totalDiscount;
     private BigDecimal totalShippingFee;
     private BigDecimal totalShippingFeeDiscount;
-    private BigDecimal totalPreorderAmount;
-    private BigDecimal totalPreorderTax;
     private Date honorUntilTime;
     private Date honoredTime;
     // end of ratingInfo
@@ -72,24 +68,6 @@ public class OrderEntity extends CommonDbEntityWithDate {
         this.userId = userId;
     }
 
-    @Column(name = "TRACKING_UUID")
-    @Type(type = "pg-uuid")
-    @NotNull(message = ValidationMessages.MISSING_VALUE)
-    public UUID getTrackingUuid() {
-        return trackingUuid;
-    }
-
-    public void setTrackingUuid(UUID trackingUuid) {
-        this.trackingUuid = trackingUuid;
-    }
-
-    @Column(name = "ORIGINAL_ORDER_ID")
-    public Long getOriginalOrderId() {
-        return originalOrderId;
-    }
-    public void setOriginalOrderId(Long originalOrderId) {
-        this.originalOrderId = originalOrderId;
-    }
 
     @Column(name = "ORDER_TYPE_ID")
     @NotNull(message = ValidationMessages.MISSING_VALUE)
@@ -214,24 +192,6 @@ public class OrderEntity extends CommonDbEntityWithDate {
         this.totalShippingFeeDiscount = totalShippingFeeDiscount;
     }
 
-    @Column(name = "TOTAL_PREORDER_AMOUNT")
-    public BigDecimal getTotalPreorderAmount() {
-        return totalPreorderAmount;
-    }
-
-    public void setTotalPreorderAmount(BigDecimal totalPreorderAmount) {
-        this.totalPreorderAmount = totalPreorderAmount;
-    }
-
-    @Column(name = "TOTAL_PREORDER_TAX")
-    public BigDecimal getTotalPreorderTax() {
-        return totalPreorderTax;
-    }
-
-    public void setTotalPreorderTax(BigDecimal totalPreorderTax) {
-        this.totalPreorderTax = totalPreorderTax;
-    }
-
     @Column(name = "HONOR_UNTIL_TIME")
     public Date getHonorUntilTime() {
         return honorUntilTime;
@@ -248,5 +208,15 @@ public class OrderEntity extends CommonDbEntityWithDate {
 
     public void setHonoredTime(Date honoredTime) {
         this.honoredTime = honoredTime;
+    }
+
+    @Column(name = "LOCALE")
+    @NotNull(message = ValidationMessages.MISSING_VALUE)
+    public String getLocale() {
+        return locale;
+    }
+
+    public void setLocale(String locale) {
+        this.locale = locale;
     }
 }

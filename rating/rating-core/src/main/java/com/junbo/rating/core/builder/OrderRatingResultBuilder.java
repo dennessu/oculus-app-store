@@ -41,8 +41,7 @@ public class OrderRatingResultBuilder {
             item.setOriginalTotalPrice(entry.getOriginalAmount().multiple(entry.getQuantity()).getValue());
             item.setTotalDiscountAmount(entry.getDiscountAmount().multiple(entry.getQuantity()).getValue());
             item.setFinalTotalAmount(item.getOriginalTotalPrice().subtract(item.getTotalDiscountAmount()));
-            item.setPromotions(new HashSet<Long>());
-            item.getPromotions().addAll(entry.getAppliedPromotion());
+            item.setPromotions(entry.getAppliedPromotion());
             result.getLineItems().add(item);
         }
 

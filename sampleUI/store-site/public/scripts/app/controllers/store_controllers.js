@@ -14,6 +14,10 @@ var StoreControllers = {
 
         actions:{
             AddToCart: function(){
+
+                if($("#BtnAddToCart").hasClass('load')) return;
+                $("#BtnAddToCart").addClass('load');
+
                 var _self = this;
                 console.log("[DetailController:AddToCart]");
                 var currentId = _self.get('model').get('id');
@@ -46,7 +50,7 @@ var StoreControllers = {
                         qty: defaultCount
                     }]};
 
-                    provider.Add(Utils.GenerateRequestModel(data), function(resultData){
+                    provider.AddCartItem(Utils.GenerateRequestModel(data), function(resultData){
                         var resultModel = resultData.data;
                         if (resultModel.status == 200) {
                             console.log("[DetailController:AddToCartHandler] Success");
@@ -57,6 +61,7 @@ var StoreControllers = {
                         } else {
                             console.log("[DetailController:AddToCartHandler] Failed!");
                             _self.set("errMessage", Utils.GetErrorMessage(resultModel));
+                            $("#BtnAddToCart").removeClass('load');
 
                             //TODO: ?
                         }
@@ -72,11 +77,13 @@ var StoreControllers = {
 
             var subtotal = 0;
             this.forEach(function(item, index, enumerable){
-                subtotal += item.get("subTotal");
+                if(item.get("selected") == true) {
+                    subtotal += item.get("subTotal");
+                }
             });
-            return subtotal;
+            return Utils.FormatNumber(subtotal, 2, ",", 3);
 
-        }.property("@each.qty", "@each.subTotal"),
+        }.property("@each.qty", "@each.subTotal", "@each.selected"),
 
         totalCount: function(){
             return this.getEach("qty").reduce(function(previousValue, item, index, enumerable){
@@ -84,9 +91,52 @@ var StoreControllers = {
             });
         }.property("@each.qty"),
 
+        statusChange: function(){
+            var _self = this;
+            var cartItmes = new Array();
+
+            this.forEach(function(item, index, enumerable){
+                cartItmes.push({
+                    product_id: item.get("product_id"),
+                    selected: item.get("selected"),
+                    qty: item.get("qty")
+                });
+            });
+
+            var data = {"cart_items": cartItmes};
+
+            var provider = new CartProvider();
+            provider.UpdateCartItem(Utils.GenerateRequestModel(data), function(resultData){
+                var resultModel = resultData.data;
+                if (resultModel.status == 200) {
+                    console.log("[CartItemController:Change Status] Success");
+                    _self.set("errMessage", null);
+                } else {
+                    console.log("[CartItemController:Change Status] Failed!");
+                    _self.set("errMessage", Utils.GetErrorMessage(resultModel));
+                }
+            });
+        }.property("@each.selected"),
+
         actions: {
             Checkout: function(){
+
+                if($("#BtnCheckout").hasClass('load')) return;
+                $("#BtnCheckout").addClass('load');
+
                 var _self = this;
+                var hasSelected = false;
+                _self.get("model").forEach(function(item){
+                    if(item.get("selected") == true){
+                        hasSelected = true;
+                    }
+                });
+                if(!hasSelected){
+                    alert("Please choose an items!");
+                    $("#BtnCheckout").removeClass('load');
+                    return;
+                }
+
                 if(App.AuthManager.isAuthenticated()){
                     console.log("[CartController:CheckOut]");
 
@@ -99,6 +149,16 @@ var StoreControllers = {
 
                             // set order id to cookie
                             Utils.Cookies.Set(AppConfig.CookiesName.OrderId, order.self.id);
+                            // clear shipping method and shipping address cookies
+                            Utils.Cookies.Remove(AppConfig.CookiesName.ShippingMethodId);
+                            Utils.Cookies.Remove(AppConfig.CookiesName.ShippingId);
+
+
+                            _self.get("model").forEach(function(item){
+                                item.deleteRecord();
+                                item.save();
+                            });
+
 
                             var allDigital = true;
                             for(var i = 0; i < order.orderItems.length; ++i){
@@ -114,16 +174,17 @@ var StoreControllers = {
 
                         }else{
                             console.log("[CartController:Checkout] Post order failed!");
+                            $("#BtnCheckout").removeClass('load');
                             // TODO: do something
                         }
                     });
                 }else{
                     Utils.Cookies.Set(AppConfig.CookiesName.BeforeRoute, "cart");
-                    location.href = AppConfig.LoginUrl;
+                    location.href = AppConfig.Runtime.LoginUrl;
+                    return;
                 }
             }
         }
-
     }),
 
     CartItemController: Ember.ObjectController.extend({
@@ -138,7 +199,7 @@ var StoreControllers = {
             var subTotal = (count > 0 ? count : 1) * this.get("product.price");
             this.set("model.subTotal", subTotal);
 
-            return subTotal;
+            return Utils.FormatNumber(subTotal, 2, ",", 3);
         }.property('model.qty', 'product.price'),
 
         changeQty: function(){
@@ -150,35 +211,8 @@ var StoreControllers = {
             }
         }.observes('model.qty'),
 
-
-        changeStatus: function(){
-            var _self = this;
-            console.log("[Change Status]:", _self.get("model.selected"));
-
-            var data = {"cart_items": [{
-                product_id: _self.get("model.product_id"),
-                selected: _self.get("model.selected"),
-                qty: _self.get("model.qty")
-            }]};
-
-            var provider = new CartProvider();
-            provider.Update(Utils.GenerateRequestModel(data), function(resultData){
-                var resultModel = resultData.data;
-                if (resultModel.status == 200) {
-                    console.log("[CartItemController:Change Status] Success");
-                    _self.set("errMessage", null);
-                } else {
-                    console.log("[CartItemController:Change Status] Failed!");
-                    _self.set("errMessage", Utils.GetErrorMessage(resultModel));
-
-                    //TODO: ?
-                }
-            });
-        }.observes('selected'),
-
-
         actions: {
-            Change: function(value){
+            ChangeCount: function(value){
                 var _self = this;
 
                 if(value != undefined && !isNaN(value) && value > 0){
@@ -191,7 +225,7 @@ var StoreControllers = {
                     }]};
 
                     var provider = new CartProvider();
-                    provider.Update(Utils.GenerateRequestModel(data), function(resultData){
+                    provider.UpdateCartItem(Utils.GenerateRequestModel(data), function(resultData){
                         var resultModel = resultData.data;
                         if (resultModel.status == 200) {
                             console.log("[CartItemController:change] Success");
@@ -218,15 +252,15 @@ var StoreControllers = {
                 }]};
 
                 var provider = new CartProvider();
-                provider.Remove(Utils.GenerateRequestModel(data), function(resultData){
+                provider.RemoveCartItem(Utils.GenerateRequestModel(data), function(resultData){
                     var resultModel = resultData.data;
                     if (resultModel.status == 200) {
                         console.log("[CartItemController:removeItem] Success");
-                        _self.set("errMessage", null);
+
+                        item.deleteRecord();
+                        item.save();
                     } else {
                         console.log("[CartItemController:removeItem] Failed!");
-                        _self.set("errMessage", Utils.GetErrorMessage(resultModel));
-
                         //TODO: ?
                     }
                 });
@@ -247,18 +281,32 @@ var StoreControllers = {
             this.get("content.products").forEach(function(item){
                 result+= item.subTotal;
             });
-            return result
+            return Utils.FormatNumber(result, 2, ",", 3);
+        }.property("content.products"),
+
+        total: function(){
+            //console.log("Sum Total", this.get("content.totalAmount"), " ", this.get("content.totalTax"));
+            return parseFloat(this.get("content.totalAmount")) + parseFloat(this.get("content.tax"));
         }.property("content.products"),
 
         actions:{
             Purchase: function(){
+
+                if($("#BtnPurchase").hasClass('load')) return;
+                $("#BtnPurchase").addClass('load');
+
                 var _self = this;
 
                 var cartProvider = new CartProvider();
                 cartProvider.PurchaseOrder(Utils.GenerateRequestModel(null), function(resultData){
                     if(resultData.data.status == 200){
+                        try {
+                            _self.get('store').unloadAll(App.CartItem);
+                        }catch(e){}
+
                         _self.transitionToRouteAnimated("thanks", {main: "slideOverLeft"});
                     } else{
+                        $("#BtnPurchase").removeClass('load');
                         // TODO: Show Error
                     }
                 });

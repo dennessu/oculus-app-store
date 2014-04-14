@@ -8,52 +8,55 @@ package com.junbo.cart.spec.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.cart.common.validate.Group;
-import com.junbo.cart.spec.model.item.CouponItem;
 import com.junbo.cart.spec.model.item.OfferItem;
 import com.junbo.common.id.CartId;
 import com.junbo.common.id.UserId;
+import com.junbo.common.model.BaseResource;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.Date;
 import java.util.List;
 
 /**
  * Created by fzhang@wan-san.com on 14-1-17.
  */
-public class Cart {
+public class Cart extends BaseResource {
 
+    @ApiModelProperty(required = true, position = 1, value = "[Readonly] The shopping cart ID.")
     @JsonProperty("self")
     @NotNull(groups = Group.CartMerge.class)
     private CartId id;
 
+    @ApiModelProperty(required = true, position = 2, value = "[Readonly] The user of the shopping cart.")
     @JsonProperty("user")
     @NotNull(groups = Group.CartMerge.class)
     private UserId user;
 
+    @JsonIgnore
     private String clientId;
 
     @JsonIgnore
     private Boolean userLoggedIn;
 
+    @ApiModelProperty(required = true, position = 3, value =
+            "The name of the shopping cart. " +
+            "The shopping cart name is unique per user. " +
+            "The string length is no longer than 80 characters.")
     @NotNull(groups = Group.CartCreate.class)
     @NotEmpty(groups = Group.CartCreate.class)
     @Size(min=1, max=80, groups = Group.CartCreate.class)
     private String cartName;
 
-    private Long resourceAge;
-
-    private Date createdTime;
-
-    private Date updatedTime;
-
+    @ApiModelProperty(required = true, position = 4, value = "The shopping cart items.")
     @Valid
     private List<OfferItem> offers;
 
+    @ApiModelProperty(required = true, position = 5, value = "The coupon codes in the shopping cart.")
     @Valid
-    private List<CouponItem> coupons;
+    private List<String> couponCodes;
 
     public CartId getId() {
         return id;
@@ -71,7 +74,6 @@ public class Cart {
         this.user = user;
     }
 
-    @JsonIgnore
     public String getClientId() {
         return clientId;
     }
@@ -96,30 +98,6 @@ public class Cart {
         this.cartName = cartName;
     }
 
-    public Long getResourceAge() {
-        return resourceAge;
-    }
-
-    public void setResourceAge(Long resourceAge) {
-        this.resourceAge = resourceAge;
-    }
-
-    public Date getCreatedTime() {
-        return createdTime;
-    }
-
-    public void setCreatedTime(Date createdTime) {
-        this.createdTime = createdTime;
-    }
-
-    public Date getUpdatedTime() {
-        return updatedTime;
-    }
-
-    public void setUpdatedTime(Date updatedTime) {
-        this.updatedTime = updatedTime;
-    }
-
     public List<OfferItem> getOffers() {
         return offers;
     }
@@ -128,11 +106,11 @@ public class Cart {
         this.offers = offers;
     }
 
-    public List<CouponItem> getCoupons() {
-        return coupons;
+    public List<String> getCouponCodes() {
+        return couponCodes;
     }
 
-    public void setCoupons(List<CouponItem> coupons) {
-        this.coupons = coupons;
+    public void setCouponCodes(List<String> couponCodes) {
+        this.couponCodes = couponCodes;
     }
 }

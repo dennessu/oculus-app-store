@@ -10,7 +10,6 @@ import com.junbo.common.id.TokenOrderId;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.token.common.CommonUtil;
 import com.junbo.token.core.TokenService;
-import com.junbo.token.common.exception.AppClientExceptions;
 import com.junbo.token.spec.model.*;
 import com.junbo.token.spec.resource.TokenResource;
 import org.slf4j.Logger;
@@ -53,17 +52,13 @@ public class TokenResourceImpl implements TokenResource{
     }
 
     @Override
-    public Promise<TokenItem> consumeToken(String tokenString) {
-        return tokenService.consumeToken(tokenString);
+    public Promise<TokenItem> consumeToken(String tokenString, TokenConsumption consumption) {
+        return tokenService.consumeToken(tokenString, consumption);
     }
 
     @Override
     public Promise<TokenItem> updateToken(String tokenString, TokenItem token) {
-        //TODO: compare hash later
-        if(tokenString.equalsIgnoreCase(token.getHashValue().toString())){
-            throw AppClientExceptions.INSTANCE.invalidToken(tokenString).exception();
-        }
-        return tokenService.updateToken(token);
+        return tokenService.updateToken(tokenString, token);
     }
 
     @Override

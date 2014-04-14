@@ -64,6 +64,10 @@
         <property name="defaultRememberMeTokenExpiration" value="${oauth.core.rememberMeToken.default.expiration}"/>
     </bean>
 
+    <bean id="grantTokenByClientCredentials" class="com.junbo.oauth.core.action.GrantTokenByClientCredentials">
+        <property name="tokenService" ref="tokenService"/>
+    </bean>
+
     <bean id="grantTokenByCode" class="com.junbo.oauth.core.action.GrantTokenByCode">
         <property name="tokenService" ref="tokenService"/>
         <property name="authorizationCodeRepository" ref="authorizationCodeRepository"/>

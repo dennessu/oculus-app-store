@@ -56,18 +56,19 @@ class WalletServiceTest extends AbstractTransactionalTestNGSpringContextTests {
     @Test
     public void testUpdate() {
         Wallet wallet = walletService.add(buildAWallet())
-        wallet.status = com.junbo.ewallet.db.entity.def.Status.LOCKED.toString()
+        wallet.status = com.junbo.ewallet.spec.def.Status.LOCKED.toString()
         Wallet updated = walletService.update(wallet.walletId, wallet)
-        Assert.assertEquals(updated.status, com.junbo.ewallet.db.entity.def.Status.LOCKED.toString())
+        Assert.assertEquals(updated.status, com.junbo.ewallet.spec.def.Status.LOCKED.toString())
     }
 
     @Test
     public void testCreditAndDebit() {
         Wallet wallet = walletService.add(buildAWallet())
         CreditRequest creditRequest = buildACreditRequest()
-        walletService.credit(wallet.walletId, creditRequest)
-        creditRequest.type = com.junbo.ewallet.db.entity.def.WalletLotType.CASH.toString()
-        wallet = walletService.credit(wallet.walletId, creditRequest)
+        creditRequest.setWalletId(wallet.walletId)
+        walletService.credit(creditRequest)
+        creditRequest.type = com.junbo.ewallet.spec.def.WalletLotType.CASH.toString()
+        wallet = walletService.credit(creditRequest)
         Assert.assertEquals(wallet.balance, new BigDecimal(20))
         DebitRequest debitRequest = buildADebitRequest()
         wallet = walletService.debit(wallet.walletId, debitRequest)
@@ -78,17 +79,17 @@ class WalletServiceTest extends AbstractTransactionalTestNGSpringContextTests {
     public void testExpiredCredit() {
         Wallet wallet = walletService.add(buildAWallet())
         CreditRequest creditRequest = buildACreditRequest()
+        creditRequest.setWalletId(wallet.walletId)
         creditRequest.expirationDate = new Date(100000)
         creditRequest.amount = new BigDecimal(100)
-        walletService.credit(wallet.walletId, creditRequest)
-        walletService.debit(wallet.walletId, buildADebitRequest())
+        walletService.credit(creditRequest)
     }
 
     @Test(expectedExceptions = [WebApplicationException])
     public void testNotEnoughMoney() {
         Wallet wallet = walletService.add(buildAWallet())
         CreditRequest creditRequest = buildACreditRequest()
-        walletService.credit(wallet.walletId, creditRequest)
+        walletService.credit(creditRequest)
         DebitRequest debitRequest = buildADebitRequest()
         walletService.debit(wallet.walletId, debitRequest)
     }
@@ -97,27 +98,28 @@ class WalletServiceTest extends AbstractTransactionalTestNGSpringContextTests {
     public void testGetTransactions() {
         Wallet wallet = walletService.add(buildAWallet())
         CreditRequest creditRequest = buildACreditRequest()
-        walletService.credit(wallet.walletId, creditRequest)
-        creditRequest.type = com.junbo.ewallet.db.entity.def.WalletLotType.CASH.toString()
-        walletService.credit(wallet.walletId, creditRequest)
+        creditRequest.setWalletId(wallet.walletId)
+        walletService.credit(creditRequest)
+        creditRequest.type = com.junbo.ewallet.spec.def.WalletLotType.CASH.toString()
+        walletService.credit(creditRequest)
         DebitRequest debitRequest = buildADebitRequest()
         walletService.debit(wallet.walletId, debitRequest)
-        List<Transaction> transactionList = walletService.getTransactions(wallet.walletId)
+        List<Transaction> transactionList = walletService.getTransactions(wallet.walletId).transactions
         Assert.assertEquals(transactionList.size(), 3)
     }
 
     private Wallet buildAWallet() {
         Wallet wallet = new Wallet()
         wallet.setUserId(idGenerator.nextId())
-        wallet.setType(com.junbo.ewallet.db.entity.def.WalletType.SV.toString())
-        wallet.setCurrency(com.junbo.ewallet.db.entity.def.Currency.USD.toString())
+        wallet.setType(com.junbo.ewallet.spec.def.WalletType.STORED_VALUE.toString())
+        wallet.setCurrency(com.junbo.ewallet.spec.def.Currency.USD.toString())
         wallet.setBalance(BigDecimal.ZERO)
         return wallet
     }
 
     private CreditRequest buildACreditRequest(){
         CreditRequest creditRequest = new CreditRequest()
-        creditRequest.setType(com.junbo.ewallet.db.entity.def.WalletLotType.PROMOTION.toString())
+        creditRequest.setType(com.junbo.ewallet.spec.def.WalletLotType.PROMOTION.toString())
         creditRequest.setOfferId(idGenerator.nextId())
         creditRequest.setAmount(new BigDecimal(10))
         return creditRequest

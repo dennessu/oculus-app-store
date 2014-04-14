@@ -12,6 +12,14 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class AuthorizeContext {
-    Set<String> claims = []
-    Map<String, Object> context
+    static final ThreadLocal<Set<String>> RIGHTS = new ThreadLocal<>()
+
+    static Boolean authorizeEnabled
+
+    static Boolean hasRight(String right) {
+        if (authorizeEnabled) {
+            return RIGHTS.get().contains(right)
+        }
+        return true
+    }
 }

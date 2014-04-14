@@ -18,6 +18,7 @@ import com.junbo.common.id.BalanceId
 import com.junbo.common.id.OrderId
 import com.junbo.identity.spec.model.user.User
 import com.junbo.langur.core.promise.Promise
+import com.junbo.payment.spec.enums.PIType
 import com.junbo.payment.spec.model.PaymentInstrument
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
@@ -55,6 +56,15 @@ class BalanceServiceImpl implements BalanceService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BalanceServiceImpl)
 
+    private static final Set<String> SUPPORT_ASYNC_CHARGE_PI_TYPE
+
+    static {
+        Set<String> supportAsyncChargePiType = [] as Set
+        supportAsyncChargePiType << PIType.CREDITCARD.name()
+
+        SUPPORT_ASYNC_CHARGE_PI_TYPE = Collections.unmodifiableSet(supportAsyncChargePiType)
+    }
+
     @Override
     Promise<Balance> addBalance(Balance balance) {
 
@@ -77,12 +87,18 @@ class BalanceServiceImpl implements BalanceService {
 
                     // set the balance status to INIT
                     taxedBalance.setStatus(BalanceStatus.INIT.name())
+                    if (taxedBalance.isAsyncCharge == null) {
+                        taxedBalance.isAsyncCharge = false
+                    }
 
                     Balance savedBalance = balanceRepository.saveBalance(taxedBalance)
 
-                    return transactionService.processBalance(savedBalance).then {
-                        Balance resultBalance = balanceRepository.updateBalance(savedBalance)
-                        return Promise.pure(resultBalance)
+                    if (savedBalance.isAsyncCharge) {
+                        LOGGER.info('name=Async_Charge_Balance. balance id: ' + savedBalance.balanceId.value)
+                        return Promise.pure(savedBalance)
+                    }
+                    return transactionService.processBalance(savedBalance).then { Balance returnedBalance ->
+                        return Promise.pure(balanceRepository.updateBalance(returnedBalance))
                     }
                 }
             }
@@ -144,6 +160,29 @@ class BalanceServiceImpl implements BalanceService {
     }
 
     @Override
+    Promise<Balance> processAsyncBalance(Balance balance) {
+
+        if (balance.balanceId == null) {
+            throw AppErrors.INSTANCE.fieldMissingValue('balanceId').exception()
+        }
+        Balance savedBalance = balanceRepository.getBalance(balance.balanceId.value)
+        if (savedBalance == null) {
+            throw AppErrors.INSTANCE.balanceNotFound(balance.balanceId.value.toString()).exception()
+        }
+        if (savedBalance.status != BalanceStatus.INIT.name()) {
+            throw AppErrors.INSTANCE.invalidBalanceStatus(savedBalance.status).exception()
+        }
+        if (savedBalance.isAsyncCharge != true) {
+            throw AppErrors.INSTANCE.notAsyncChargeBalance(balance.balanceId.value.toString()).exception()
+        }
+
+
+        return transactionService.processBalance(savedBalance).then { Balance returnedBalance ->
+            return Promise.pure(balanceRepository.updateBalance(returnedBalance))
+        }
+    }
+
+    @Override
     Promise<Balance> getBalance(BalanceId balanceId) {
         if (balanceId == null) {
             throw AppErrors.INSTANCE.fieldMissingValue('balanceId').exception()
@@ -197,6 +236,10 @@ class BalanceServiceImpl implements BalanceService {
             LOGGER.error('name=Error_Get_PaymentInstrument. pi id: ' + balance.piId.value, throwable)
             throw AppErrors.INSTANCE.piNotFound(balance.piId.value.toString()).exception()
         }.then { PaymentInstrument pi ->
+            if (!SUPPORT_ASYNC_CHARGE_PI_TYPE.contains(pi.type)) {
+                LOGGER.info('name=Not_Support_Async_Charge. pi type: ' + pi.type)
+                balance.isAsyncCharge = false
+            }
             //todo: more validation for the PI
             return Promise.pure(null)
         }

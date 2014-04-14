@@ -22,7 +22,7 @@ import java.text.SimpleDateFormat
 @TypeChecked
 class FacadeBuilder {
 
-    public static final String ORDER_NUMBER = 'ORDERNUMBER'
+    public static final String ORDER_NUMBER = 'ORDERNUMBER:OrderId'
     public static final String ORDER_DATE = 'ORDERDATE'
     public static final String NAME = 'NAME'
     public static final String OFFER_NAME = 'OFFERNAME'
@@ -37,8 +37,8 @@ class FacadeBuilder {
         request.userId = order.user.value
         request.orderId = order.id.value
         request.trackingGuid = UUID.randomUUID()
-        request.shippingMethodId = order?.shippingMethodId
-        request.shippingAddressId = order?.shippingAddressId?.value
+        request.shippingMethodId = order?.shippingMethod
+        request.shippingAddressId = order?.shippingAddress?.value
         request.items = []
         order.orderItems?.each { OrderItem item ->
             request.items << buildFulfilmentItem(item)
@@ -68,7 +68,7 @@ class FacadeBuilder {
         request.currency = order.currency
         request.userId = order.user?.value
         request.country = order.country
-        request.shippingMethodId = order.shippingMethodId
+        request.shippingMethodId = order.shippingMethod
         List<OrderRatingItem> ratingItems = []
         order.orderItems?.each { OrderItem item ->
             OrderRatingItem ratingItem = new OrderRatingItem()

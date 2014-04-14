@@ -1,5 +1,7 @@
 var IdentityProvider = require('store-data-provider').Identity;
+var EmailsProvider = require('store-data-provider').Emails;
 var IdentityModels = require('store-model').Identity;
+var EmailsModels = require('store-model').Emails;
 var DomainModels = require('../../models/domain');
 var PasswordIntensity = require('../../utils/password_intensity');
 
@@ -11,7 +13,7 @@ module.exports = function(data, cb){
     var pi = new PasswordIntensity();
 
     var userModel = new IdentityModels.UserModel();
-    userModel.userName = body.username;
+    userModel.userName = body.email;
     userModel.password = body.password;
     //userModel.passwordStrength = pi.GetIntensity(body.password);
     userModel.status = "ACTIVE";
@@ -27,8 +29,9 @@ module.exports = function(data, cb){
     profileModel.locale = "en_" + body.country;
 
     var dataProvider = new IdentityProvider(process.AppConfig.Identity_API_Host, process.AppConfig.Identity_API_Port);
+    var mailProvider = new EmailsProvider(process.AppConfig.Emails_API_Host, process.AppConfig.Emails_API_Port);
 
-    dataProvider.PostCreateAccount(userModel, function(resultData){
+    dataProvider.PostUser(userModel, function(resultData){
         var responseModel = new DomainModels.ResponseModel();
         var resultModel = new DomainModels.ResultModel();
         var settingArray = new Array();
@@ -37,8 +40,15 @@ module.exports = function(data, cb){
             var resultUser = JSON.parse(resultData.Data);
             profileModel.user = resultUser.self;
 
-            dataProvider.PostCreateProfiles(profileModel.user.id, profileModel, function(result){
+            dataProvider.PostProfile(profileModel.user.id, profileModel, function(result){
                 if (result.StatusCode == 200) {
+
+                    var welcomeModel = new EmailsModels.WelcomeModel();
+                    welcomeModel.recipient = userModel.userName;
+                    welcomeModel.properties.accountname = userModel.userName;
+                    mailProvider.Send(welcomeModel, function(result){
+
+                    });
 
                     if (process.AppConfig.Feature.Captcha) { // can't ship captcha
                         resultModel.status = DomainModels.ResultStatusEnum.Normal;
@@ -53,7 +63,7 @@ module.exports = function(data, cb){
                         if (typeof(redirectUrl) != "undefined" && redirectUrl != null && redirectUrl != "") {
                             redirectModel.url = redirectUrl;
                         } else {
-                            redirectModel.url = "/my";
+                            redirectModel.url = process.AppConfig.Runtime.LoginUrl;
                         }
 
                         resultModel.status = DomainModels.ResultStatusEnum.Redirect;

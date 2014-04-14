@@ -6,98 +6,98 @@
 
 package com.junbo.identity.data.mapper;
 
+import com.junbo.identity.data.entity.device.DeviceEntity;
+import com.junbo.identity.data.entity.domaindata.SecurityQuestionEntity;
+import com.junbo.identity.data.entity.group.GroupEntity;
+import com.junbo.identity.data.entity.user.*;
+import com.junbo.identity.spec.model.domaindata.SecurityQuestion;
+import com.junbo.identity.spec.model.users.UserPassword;
+import com.junbo.identity.spec.model.users.UserPin;
+import com.junbo.identity.spec.v1.model.*;
 import com.junbo.oom.core.Mapper;
 import com.junbo.oom.core.Mapping;
 import com.junbo.oom.core.MappingContext;
 import com.junbo.oom.core.Mappings;
-import com.junbo.identity.data.entity.app.AppEntity;
-import com.junbo.identity.data.entity.password.PasswordRuleEntity;
-import com.junbo.identity.data.entity.user.*;
-import com.junbo.identity.spec.model.app.App;
-import com.junbo.identity.spec.model.password.PasswordRule;
-import com.junbo.identity.spec.model.user.*;
 
 /**
- * Model Mapper for wrap entity to model, vice versa.
+ * Model Mapper for wrap entity to list, vice versa.
  */
 @Mapper(uses = {
         CommonMapper.class
 })
 public interface ModelMapper {
-    @Mappings({
-            @Mapping(source = "createdTime", target = "createdTime", excluded = true, bidirectional = false),
-            @Mapping(source = "updatedTime", target = "updatedTime", excluded = true, bidirectional = false),
-            @Mapping(source = "status", target = "status", explicitMethod = "toUserStatus")
-    })
-    UserEntity toUserEntity(User user, MappingContext context);
+    Group toGroup(GroupEntity entity, MappingContext context);
+    GroupEntity toGroup(Group entity, MappingContext context);
 
     @Mappings({
-            @Mapping(source = "password", excluded = true, bidirectional = false),
-            @Mapping(source = "status", target = "status", explicitMethod = "toUserStatus")
+            @Mapping(source = "strength", target = "strength", explicitMethod = "toUserPasswordStrength",
+                    bidirectional = false),
     })
+    UserPassword toUserPassword(UserPasswordEntity entity, MappingContext context);
+    @Mappings({
+            @Mapping(source = "strength", target = "strength", explicitMethod = "toUserPasswordStrength")
+    })
+    UserPasswordEntity toUserPassword(UserPassword entity, MappingContext context);
+
+    UserPin toUserPin(UserPinEntity entity, MappingContext context);
+    UserPinEntity toUserPin(UserPin entity, MappingContext context);
+
+    SecurityQuestion toSecurityQuestion(SecurityQuestionEntity entity, MappingContext context);
+    SecurityQuestionEntity toSecurityQuestion(SecurityQuestion entity, MappingContext context);
+
+    UserEntity toUser(User user, MappingContext context);
     User toUser(UserEntity userEntity, MappingContext context);
 
-    @Mappings({
-            @Mapping(source = "createdTime", target = "createdTime", excluded = true, bidirectional = false),
-            @Mapping(source = "updatedTime", target = "updatedTime", excluded = true, bidirectional = false),
-            @Mapping(source = "dateOfBirth", target = "dob", excluded = false, bidirectional = false),
-            @Mapping(source = "type", target = "type", explicitMethod = "toUserProfileType")
-    })
-    UserProfileEntity toUserProfileEntity(UserProfile userProfile, MappingContext context);
+    UserDevice toUserDevice(UserDeviceEntity entity, MappingContext context);
+    UserDeviceEntity toUserDevice(UserDevice entity, MappingContext context);
 
-    @Mappings({
-            @Mapping(source = "dob", target = "dateOfBirth", excluded = false, bidirectional = false),
-            @Mapping(source = "type", target = "type", explicitMethod = "toUserProfileType")
-    })
-    UserProfile toUserProfile(UserProfileEntity userProfileEntity, MappingContext context);
+    UserAuthenticator toUserAuthenticator(UserAuthenticatorEntity entity, MappingContext context);
+    UserAuthenticatorEntity toUserAuthenticator(UserAuthenticator userFederation, MappingContext context);
 
-    AppEntity toAppEntity(App app, MappingContext context);
+    UserEmail toUserEmail(UserEmailEntity entity, MappingContext context);
+    UserEmailEntity toUserEmail(UserEmail entity, MappingContext context);
 
-    App toApp(AppEntity appEntity, MappingContext context);
+    UserGroup toUserGroup(UserGroupEntity entity, MappingContext context);
+    UserGroupEntity toUserGroup(UserGroup entity, MappingContext context);
 
-    UserDeviceProfile toUserDeviceProfile(UserDeviceProfileEntity entity, MappingContext context);
+    UserCredentialVerifyAttempt toUserCredentialVerifyAttempt(
+            UserCredentialVerifyAttemptEntity entity, MappingContext context);
+    UserCredentialVerifyAttemptEntity toUserCredentialVerifyAttempt(
+            UserCredentialVerifyAttempt entity, MappingContext context);
 
-    UserDeviceProfileEntity toUserDeviceProfile(UserDeviceProfile entity, MappingContext context);
+    UserOptin toUserOptin(UserOptinEntity entity, MappingContext context);
+    UserOptinEntity toUserOptin(UserOptin entity, MappingContext context);
 
-    UserFederation toUserFederation(UserFederationEntity entity, MappingContext context);
+    UserPhoneNumber toUserPhoneNumber(UserPhoneNumberEntity entity, MappingContext context);
+    UserPhoneNumberEntity toUserPhoneNumber(UserPhoneNumber entity, MappingContext context);
 
-    UserFederationEntity toUserFederation(UserFederation userFederation, MappingContext context);
+    UserSecurityQuestion toUserSecurityQuestion(UserSecurityQuestionEntity entity, MappingContext context);
+    UserSecurityQuestionEntity toUserSecurityQuestion(UserSecurityQuestion entity, MappingContext context);
 
-    UserOptIn toUserOptIn(UserOptInEntity entity, MappingContext context);
+    UserTosAgreement toUserTos(UserTosAgreementEntity entity, MappingContext context);
+    UserTosAgreementEntity toUserTos(UserTosAgreement entity, MappingContext context);
 
-    UserOptInEntity toUserOptIn(UserOptIn entity, MappingContext context);
+    UserName toUserName(UserNameEntity entity, MappingContext context);
+    UserNameEntity toUserName(UserName entity, MappingContext context);
 
-    @Mappings({
-            @Mapping(source = "tosAcceptanceUrl", target = "tos")
-    })
-    UserTosAcceptance toUserTosAcceptance(UserTosAcceptanceEntity entity, MappingContext context);
+    UserSecurityQuestionVerifyAttempt toUserSecurityQuestionAttempt(UserSecurityQuestionAttemptEntity entity,
+                                                              MappingContext context);
+    UserSecurityQuestionAttemptEntity toUserSecurityQuestionAttempt(UserSecurityQuestionVerifyAttempt entity,
+                                                              MappingContext context);
 
-    @Mappings({
-            @Mapping(source = "tos", target = "tosAcceptanceUrl")
-    })
-    UserTosAcceptanceEntity toUserTosAcceptance(UserTosAcceptance entity, MappingContext context);
+    Device toDevice(DeviceEntity entity, MappingContext context);
+    DeviceEntity toDevice(Device entity, MappingContext context);
 
-    @Mappings({
-            @Mapping(source = "allowedCharacterSet", target = "allowedCharacterSet", excluded = false,
-                    bidirectional = false, explicitMethod = "jsonToListString"),
-            @Mapping(source = "notAllowedCharacterSet", target = "notAllowedCharacterSet", excluded = false,
-                    bidirectional = false, explicitMethod = "jsonToListString"),
-            @Mapping(source = "passwordRuleDetails", target = "passwordRuleDetails", excluded = false,
-                    bidirectional = false),
-            @Mapping(source = "passwordStrength", target = "passwordStrength",
-                    explicitMethod = "toUserPasswordStrength")
-    })
-    PasswordRule toPasswordRule(PasswordRuleEntity entity, MappingContext context);
+    Tos toTos(TosEntity entity, MappingContext context);
+    TosEntity toTos(Tos entity, MappingContext context);
 
-    @Mappings({
-            @Mapping(source = "allowedCharacterSet", target = "allowedCharacterSet", excluded = false,
-                    bidirectional = false, explicitMethod = "listStringToJson"),
-            @Mapping(source = "notAllowedCharacterSet", target = "notAllowedCharacterSet", excluded = false,
-                    bidirectional = false, explicitMethod = "listStringToJson"),
-            @Mapping(source = "passwordRuleDetails", target = "passwordRuleDetails", excluded = false,
-                    bidirectional = false),
-            @Mapping(source = "passwordStrength", target = "passwordStrength",
-                    explicitMethod = "toUserPasswordStrength")
-    })
-    PasswordRuleEntity toPasswordRule(PasswordRule passwordRule, MappingContext context);
+
+    UserPassword credentialToPassword(UserCredential userCredential, MappingContext context);
+    UserCredential passwordToCredential(UserPassword password, MappingContext context);
+
+    UserPin credentialToPin(UserCredential userCredential, MappingContext context);
+    UserCredential pinToCredential(UserPin userPin, MappingContext context);
+
+    UserPii toUserPii(UserPiiEntity entity, MappingContext context);
+    UserPiiEntity toUserPii(UserPii entity, MappingContext context);
 }

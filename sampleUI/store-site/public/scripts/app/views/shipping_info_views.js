@@ -1,7 +1,10 @@
 
 var ShippingInfoViews = {
     LayoutView: Ember.View.extend({
-        template: Ember.TEMPLATES[AppConfig.Templates.ShippingInfo.Layout]
+        template: Ember.TEMPLATES[AppConfig.Templates.ShippingInfo.Layout],
+        didInsertElement: function(){
+            $("form").validate();
+        }
     }),
     IndexView: Ember.View.extend({
         template: Ember.TEMPLATES[AppConfig.Templates.ShippingInfo.Index],

@@ -1,15 +1,13 @@
 package com.junbo.cart.test
 
 import com.junbo.cart.spec.model.Cart
-import com.junbo.cart.spec.model.item.CouponItem
 import com.junbo.cart.spec.model.item.OfferItem
 import com.junbo.cart.test.client.CartClient
 import com.junbo.cart.test.client.IdentityClient
 import com.junbo.cart.test.util.Generator
 import com.junbo.cart.test.validate.CartValidator
-import com.junbo.cart.test.validate.CouponValidator
+
 import com.junbo.cart.test.validate.OfferValidator
-import com.junbo.common.id.CouponId
 import com.junbo.common.id.OfferId
 import org.springframework.beans.factory.annotation.Autowired
 import org.testng.annotations.Test
@@ -52,7 +50,7 @@ class CartTest extends TestBase {
         def resultOffer = cartUserA.offers.find { return it.offer == offerB.offer }
         CartValidator.fromResult(cartUserA).offerNumber(2).resourceAge(2)
         OfferValidator.fromResult(resultOffer).
-                quantity(offerB.quantity).selected(true).updatedTime(resultOffer.updatedTime)
+                quantity(offerB.quantity).selected(true)
 
         // change quantity
         offer(cartUserA, offerB).quantity = offer(cartUserA, offerB).quantity * 2
@@ -80,44 +78,33 @@ class CartTest extends TestBase {
         OfferValidator.fromResult(offer(cartUserA, offerB)).quantity(quantity)
 
         // add coupon cA by update
-        def couponA = generator.couponItem()
-        cartUserA.coupons << couponA
+        def couponA = generator.couponCode()
+        cartUserA.couponCodes << couponA
         cartUserA = cartClient.updateCart(userA.id, cartUserA.id, cartUserA)
         CartValidator.fromResult(cartUserA).resourceAge(7).couponNumber(1)
-        CouponValidator.fromResult(cartUserA.coupons[0]).coupon(couponA.coupon)
+        assert cartUserA.couponCodes[0] == couponA
 
         // add coupon cB by update
-        def couponB = generator.couponItem()
-        cartUserA.coupons << couponB
+        def couponB = generator.couponCode()
+        cartUserA.couponCodes << couponB
         cartUserA = cartClient.updateCart(userA.id, cartUserA.id, cartUserA)
         CartValidator.fromResult(cartUserA).resourceAge(8).couponNumber(2)
-        CouponValidator.fromResult(coupon(cartUserA, couponB)).coupon(couponB.coupon)
+        assert couponB == coupon(cartUserA, couponB)
 
         // remove by update
-        cartUserA.coupons = [couponA]
+        cartUserA.couponCodes = [couponA]
         cartUserA = cartClient.updateCart(userA.id, cartUserA.id, cartUserA)
         CartValidator.fromResult(cartUserA).resourceAge(9).couponNumber(1)
-        CouponValidator.fromResult(cartUserA.coupons[0]).coupon(couponA.coupon)
+        assert cartUserA.couponCodes[0] == couponA
 
         // create cartUserB and update items
         def userB = identityClient.randomUser()
         def cartUserB = cartClient.getPrimaryCart(userB.id)
         def offerC = generator.offerItem()
         cartUserB.offers << offerC
-        def couponC = generator.couponItem()
-        cartUserB.coupons << couponC
+        def couponC = generator.couponCode()
+        cartUserB.couponCodes << couponC
         cartUserB = cartClient.updateCart(userB.id, cartUserB.id, cartUserB)
-
-        // merge from cartUserB to cartUserA
-        cartUserA = cartClient.mergeCart(userA.id, cartUserA.id, cartUserB)
-        CartValidator.fromResult(cartUserA).couponNumber(2).offerNumber(3)
-        OfferValidator.fromResult(offer(cartUserA, offerA)).selected(false)
-        OfferValidator.fromResult(offer(cartUserA, offerB)).selected(false)
-        OfferValidator.fromResult(offer(cartUserA, offerC)).selected(true)
-
-        cartUserB = cartClient.getPrimaryCart(userB.id)
-        CartValidator.fromResult(cartUserB).couponNumber(0).offerNumber(0).resourceAge(2)
-
     }
 
     static private  OfferItem offer(Cart cart, OfferId offerId) {
@@ -130,15 +117,9 @@ class CartTest extends TestBase {
         return offer(cart, offerItem.offer)
     }
 
-    static private CouponItem coupon(Cart cart, CouponItem couponItem) {
-        return cart.coupons.find {
-            return it.coupon == couponItem.coupon
-        }
-    }
-
-    static private CouponItem coupon(Cart cart, CouponId couponId) {
-        return cart.coupons.find {
-            return it.coupon == couponId
+    static private String coupon(Cart cart, String couponCode) {
+        return cart.couponCodes.find {
+            return it == couponCode
         }
     }
 }

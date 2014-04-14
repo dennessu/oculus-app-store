@@ -14,7 +14,7 @@
 
     <bean id="userService" class="com.junbo.oauth.core.service.impl.UserServiceImpl">
         <property name="tokenService" ref="tokenService"/>
-        <property name="userProfileResource" ref="identityUserProfileClient"/>
+        <property name="userCredentialVerifyAttemptResource" ref="identityUserCredentialVerifyAttemptClient"/>
         <property name="userResource" ref="identityUserClient"/>
     </bean>
 
@@ -28,6 +28,11 @@
     <bean id="scopeService" class="com.junbo.oauth.core.service.impl.ScopeServiceImpl">
         <property name="tokenService" ref="tokenService"/>
         <property name="scopeRepository" ref="scopeRepository"/>
+    </bean>
+
+    <bean id="apiService" class="com.junbo.oauth.core.service.impl.ApiServiceImpl">
+        <property name="apiDefinitionRepository" ref="apiDefinitionRepository"/>
+        <property name="tokenService" ref="tokenService"/>
     </bean>
 
 </beans>

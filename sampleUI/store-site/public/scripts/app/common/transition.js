@@ -41,13 +41,15 @@ var Transition = {
             for (var i = 0; i < offers.length; ++i) {
                 var item = offers[i];
 
-                resultList.push({
-                    "id": item.self.id,
-                    "name": item.name,
-                    "price": item.prices.US.amount,
-                    "picture": item.properties.mainImage,
-                    "description": item.localeProperties.DEFAULT.description
-                });
+                try {
+                    resultList.push({
+                        "id": item.self.id,
+                        "name": item.name,
+                        "price": item.prices.US.amount,
+                        "picture": item.properties.mainImage,
+                        "description": item.properties.longDescription
+                    });
+                }catch(e){}
             }
 
             result = {"Products": resultList};
@@ -55,13 +57,15 @@ var Transition = {
             // get offers by id
             var item = data;
 
-            result = {"Product": {
-                "id": item.self.id,
-                "name": item.name,
-                "price": item.prices.US.amount,
-                "picture": item.properties.mainImage,
-                "description": item.localeProperties.DEFAULT.description
-            }};
+            try {
+                result = {"Product": {
+                    "id": item.self.id,
+                    "name": item.name,
+                    "price": item.prices.US.amount,
+                    "picture": item.properties.mainImage,
+                    "description": item.properties.longDescription
+                }};
+            }catch(e){}
         }
 
         return result;

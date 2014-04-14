@@ -7,6 +7,7 @@ package com.junbo.oom.processor.test;
 
 import com.junbo.oom.processor.MapperTestBase;
 import com.junbo.oom.processor.WithClasses;
+import com.junbo.oom.processor.mapper.SelfMapper;
 import com.junbo.oom.processor.mapper.SimpleMapper;
 import com.junbo.oom.processor.mapper.SimpleMapper2;
 import org.testng.annotations.Test;
@@ -16,11 +17,13 @@ import org.testng.annotations.Test;
  */
 @WithClasses({
         SimpleMapper.class,
-        SimpleMapper2.class
+        SimpleMapper2.class,
+        SelfMapper.class
 })
 public class CompileTest extends MapperTestBase {
 
     @Test
     public void testCompile() {
     }
+
 }

@@ -5,6 +5,7 @@
  */
 package com.junbo.order.spec.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -17,28 +18,26 @@ import com.junbo.common.jackson.annotation.ShippingMethodId;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Created by chriszhu on 2/7/14.
  */
 @JsonPropertyOrder(value = {
-        "id", "user", "trackingUuid", "type", "status", "country", "currency",
-        "tentative", "resourceAge", "originalOrder", "ratingInfo", "shippingMethodId",
-        "shippingAddressId", "paymentInstruments", "refundOrders", "discounts", "orderItems"
+        "id", "user", "type", "status", "country", "currency",
+        "tentative", "resourceAge", "originalOrder", "ratingInfo", "shippingMethod",
+        "shippingAddress", "paymentInstruments", "refundOrders", "discounts", "orderItems"
 })
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Order extends BaseModelWithDate {
     @JsonProperty("self")
     private OrderId id;
     private UserId user;
-    private UUID trackingUuid;
     private String type;
     private String status;
     private String country;
     private String currency;
+    private String locale;
     private Boolean tentative;
-    private OrderId originalOrder;
 
     // expand ratingInfo to simplify oom
     private BigDecimal totalAmount;
@@ -47,20 +46,19 @@ public class Order extends BaseModelWithDate {
     private BigDecimal totalDiscount;
     private BigDecimal totalShippingFee;
     private BigDecimal totalShippingFeeDiscount;
-    private BigDecimal totalPreorderAmount;
-    private BigDecimal totalPreorderTax;
+    @JsonIgnore
     private Date honorUntilTime;
+    @JsonIgnore
     private Date honoredTime;
     // end of ratingInfo
 
     // expand shippingInfo to simplify oom
     @ShippingMethodId
-    private Long shippingMethodId;
-    private ShippingAddressId shippingAddressId;
+    private Long shippingMethod;
+    private ShippingAddressId shippingAddress;
     // end of shippingInfo
 
     private List<PaymentInstrumentId> paymentInstruments;
-    private List<OrderId> refundOrders;
     private List<Discount> discounts;
     private List<OrderItem> orderItems;
 
@@ -78,14 +76,6 @@ public class Order extends BaseModelWithDate {
 
     public void setUser(UserId user) {
         this.user = user;
-    }
-
-    public UUID getTrackingUuid() {
-        return trackingUuid;
-    }
-
-    public void setTrackingUuid(UUID trackingUuid) {
-        this.trackingUuid = trackingUuid;
     }
 
     public String getType() {
@@ -126,14 +116,6 @@ public class Order extends BaseModelWithDate {
 
     public void setTentative(Boolean tentative) {
         this.tentative = tentative;
-    }
-
-    public OrderId getOriginalOrder() {
-        return originalOrder;
-    }
-
-    public void setOriginalOrder(OrderId originalOrder) {
-        this.originalOrder = originalOrder;
     }
 
     public BigDecimal getTotalAmount() {
@@ -184,22 +166,6 @@ public class Order extends BaseModelWithDate {
         this.totalShippingFeeDiscount = totalShippingFeeDiscount;
     }
 
-    public BigDecimal getTotalPreorderAmount() {
-        return totalPreorderAmount;
-    }
-
-    public void setTotalPreorderAmount(BigDecimal totalPreorderAmount) {
-        this.totalPreorderAmount = totalPreorderAmount;
-    }
-
-    public BigDecimal getTotalPreorderTax() {
-        return totalPreorderTax;
-    }
-
-    public void setTotalPreorderTax(BigDecimal totalPreorderTax) {
-        this.totalPreorderTax = totalPreorderTax;
-    }
-
     public Date getHonorUntilTime() {
         return honorUntilTime;
     }
@@ -216,20 +182,20 @@ public class Order extends BaseModelWithDate {
         this.honoredTime = honoredTime;
     }
 
-    public Long getShippingMethodId() {
-        return shippingMethodId;
+    public Long getShippingMethod() {
+        return shippingMethod;
     }
 
-    public void setShippingMethodId(Long shippingMethodId) {
-        this.shippingMethodId = shippingMethodId;
+    public void setShippingMethod(Long shippingMethod) {
+        this.shippingMethod = shippingMethod;
     }
 
-    public ShippingAddressId getShippingAddressId() {
-        return shippingAddressId;
+    public ShippingAddressId getShippingAddress() {
+        return shippingAddress;
     }
 
-    public void setShippingAddressId(ShippingAddressId shippingAddressId) {
-        this.shippingAddressId = shippingAddressId;
+    public void setShippingAddress(ShippingAddressId shippingAddress) {
+        this.shippingAddress = shippingAddress;
     }
 
     public List<PaymentInstrumentId> getPaymentInstruments() {
@@ -238,14 +204,6 @@ public class Order extends BaseModelWithDate {
 
     public void setPaymentInstruments(List<PaymentInstrumentId> paymentInstruments) {
         this.paymentInstruments = paymentInstruments;
-    }
-
-    public List<OrderId> getRefundOrders() {
-        return refundOrders;
-    }
-
-    public void setRefundOrders(List<OrderId> refundOrders) {
-        this.refundOrders = refundOrders;
     }
 
     public List<Discount> getDiscounts() {
@@ -262,5 +220,13 @@ public class Order extends BaseModelWithDate {
 
     public void setOrderItems(List<OrderItem> orderItems) {
         this.orderItems = orderItems;
+    }
+
+    public String getLocale() {
+        return locale;
+    }
+
+    public void setLocale(String locale) {
+        this.locale = locale;
     }
 }

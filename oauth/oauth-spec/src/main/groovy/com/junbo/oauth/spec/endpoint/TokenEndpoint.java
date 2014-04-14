@@ -11,13 +11,7 @@ import com.junbo.oauth.spec.model.AccessTokenResponse;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 
@@ -33,7 +27,18 @@ public interface TokenEndpoint {
 
     @ApiOperation("Exchange for access token")
     @POST
-    Promise<AccessTokenResponse> postToken(@Context HttpHeaders httpHeaders,
-                                           MultivaluedMap<String, String> formParams,
-                                           @Context ContainerRequestContext request);
+    Promise<AccessTokenResponse> postToken(MultivaluedMap<String, String> formParams);
+
+    @POST
+    @Path("/explicit")
+    Promise<AccessTokenResponse> postToken(@FormParam("client_id") String clientId,
+                                           @FormParam("client_secret") String clientSecret,
+                                           @FormParam("grant_type") String grantType,
+                                           @FormParam("code") String code,
+                                           @FormParam("scope") String scope,
+                                           @FormParam("redirect_uri") String redirectUri,
+                                           @FormParam("username") String username,
+                                           @FormParam("password") String password,
+                                           @FormParam("refresh_token") String refreshToken,
+                                           @FormParam("nonce") String nonce);
 }

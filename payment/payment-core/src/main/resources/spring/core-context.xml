@@ -21,10 +21,14 @@
         <property name="merchantId" value="${payment.provider.braintree.merchantid}"/>
         <property name="publicKey" value="${payment.provider.braintree.publickey}"/>
         <property name="privateKey" value="${payment.provider.braintree.privatekey}"/>
+        <property name="companyName" value="${payment.provider.braintree.companyname}"/>
     </bean>
 
     <bean id="brainTreeRestProviderService" class="com.junbo.payment.core.provider.braintree.BrainTreeRestProviderServiceImpl">
         <property name="brainTreeResource" ref="brainTreeClient"/>
+    </bean>
+
+    <bean id="walletProviderService" class="com.junbo.payment.core.provider.ewallet.EWalletProviderServiceImpl">
     </bean>
 
     <bean id="providerRoutingService" class="com.junbo.payment.core.provider.impl.ProviderRoutingServiceImpl"/>
@@ -34,6 +38,7 @@
         <property name="registry">
             <util:map id="handlerRegistryMap">
                 <entry key="BrainTree" value-ref="brainTreeRestProviderService"/>
+                <entry key="Wallet" value-ref="walletProviderService"/>
             </util:map>
         </property>
     </bean>

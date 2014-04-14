@@ -7,7 +7,7 @@
 package com.junbo.billing.db.dao;
 
 import com.junbo.billing.db.BaseDao;
-import com.junbo.billing.db.balance.BalanceEntity;
+import com.junbo.billing.db.entity.BalanceEntity;
 
 import java.util.List;
 import java.util.UUID;
@@ -17,4 +17,5 @@ import java.util.UUID;
  */
 public interface BalanceEntityDao extends BaseDao<BalanceEntity, Long> {
     List<BalanceEntity> getByTrackingUuid(UUID trackingUuid);
+    List<BalanceEntity> getAsyncChargeInitBalances(Integer count);
 }

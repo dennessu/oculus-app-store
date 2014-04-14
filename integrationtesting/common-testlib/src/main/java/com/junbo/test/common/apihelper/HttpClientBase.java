@@ -104,29 +104,34 @@ public abstract class HttpClientBase {
                 Future future = asyncClient.prepareRequest(req).execute();
                 NettyResponse nettyResponse = (NettyResponse) future.get();
 
-                logger.logInfo(String.format("http response code: %s", nettyResponse.getStatusCode()));
+                logger.LogResponse(nettyResponse);
                 if (expectedResponseCode != 0) {
                     Assert.assertEquals(expectedResponseCode, nettyResponse.getStatusCode());
                 }
-
-                logger.LogResponse(nettyResponse);
 
                 return nettyResponse.getResponseBody();
             }
             case GET: {
                 //append URL paras for http get method
                 if (httpParameters != null && !httpParameters.isEmpty()) {
-                    restUrl.concat("?");
+                    restUrl = restUrl.concat("?");
                     for (String key : httpParameters.keySet()) {
-                        restUrl.concat(String.format("&%s=%s", key, httpParameters.get(key)));
+                        if (key.length() > 2 && key.substring(0,2).equalsIgnoreCase("id")) {
+                            restUrl = restUrl.concat(String.format("%s=%s", "id", httpParameters.get(key)));
+                        }
+                        else {
+                            restUrl = restUrl.concat(String.format("%s=%s", key, httpParameters.get(key)));
+                        }
+                        restUrl = restUrl.concat("&");
                     }
+                    //Remove the last & character
+                    restUrl = restUrl.substring(0, restUrl.length() - 1);
                 }
 
                 Request req = new RequestBuilder("GET")
                         .setUrl(restUrl)
                         .setHeaders(getHeader())
                         .build();
-
 
                 logger.LogRequest(req);
 
@@ -148,23 +153,35 @@ public abstract class HttpClientBase {
                     nettyResponse = (NettyResponse) future.get();
                 }
 
-                logger.logInfo(String.format("http response code: %s", nettyResponse.getStatusCode()));
-
+                logger.LogResponse(nettyResponse);
                 if (expectedResponseCode != 0) {
                     Assert.assertEquals(expectedResponseCode, nettyResponse.getStatusCode());
                 }
 
+                return nettyResponse.getResponseBody();
+            }
+            case DELETE: {
+                Request req = new RequestBuilder(httpMethod.getHttpMethod())
+                        .setUrl(restUrl)
+                        .setHeaders(getHeader())
+                        .build();
+
+                logger.LogRequest(req);
+
+                Future future = asyncClient.prepareRequest(req).execute();
+                NettyResponse nettyResponse = (NettyResponse) future.get();
+
                 logger.LogResponse(nettyResponse);
+                if (expectedResponseCode != 0) {
+                    Assert.assertEquals(expectedResponseCode, nettyResponse.getStatusCode());
+                }
 
                 return nettyResponse.getResponseBody();
             }
-            case DELETE:
-                //TODO
             case OPTIONS:
                 //TODO
             default:
                 throw new TestException(String.format("Unsupported http method found: %s", httpMethod.getHttpMethod()));
-
         }
     }
 

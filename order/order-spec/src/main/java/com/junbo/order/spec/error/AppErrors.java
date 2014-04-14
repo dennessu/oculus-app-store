@@ -117,9 +117,13 @@ public interface AppErrors {
             description = "Billing connection error")
     AppError billingConnectionError();
 
-    @ErrorDef(httpStatusCode = 404, code = BillingErrorCode.BALANCE_NOT_FOUND,
+    @ErrorDef(httpStatusCode = 500, code = BillingErrorCode.BALANCE_NOT_FOUND,
             description = "Balance not found")
     AppError balanceNotFound();
+
+    @ErrorDef(httpStatusCode = 409, code = BillingErrorCode.BILLING_CHARGE_FAILED,
+            description = "Billing charge failed")
+    AppError billingChargeFailed();
 
     @ErrorDef(httpStatusCode = 404, code = ErrorCode.ORDER_EVENT_NOT_FOUND,
             description = "Order event not found")
@@ -136,4 +140,8 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 500, code = FulfillmentErrorCode.FULFILLMENT_CONNECTION_ERROR,
             description = "Fulfilment connection error")
     AppError fulfilmentConnectionError(AppError[] causes);
+
+    @ErrorDef(httpStatusCode = 404, code = ErrorCode.SUBLEDGER_NOT_FOUND,
+            description = "SubledgerNotFound")
+    AppError subledgerNotFound();
 }

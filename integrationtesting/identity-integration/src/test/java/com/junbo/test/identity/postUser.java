@@ -17,19 +17,21 @@ import static org.testng.AssertJUnit.*;
  */
 public class postUser {
 
-    @BeforeTest
+    @BeforeMethod
     public void setup() {
         HttpclientHelper.CreateHttpClient();
     }
 
-    @AfterTest
+    @AfterMethod
     public void dispose() throws Exception {
         HttpclientHelper.CloseHttpClient();
     }
 
     @Test(groups = "bvt")
     public void postUser() throws Exception {
+        Identity.StartLoggingAPISample(Identity.MessageDefaultPostUser);
         User newUser = Identity.DefaultPostUser();
+        Identity.StartLoggingAPISample(Identity.MessageGetUserByUserId);
         User storedUser = Identity.GetUserByUserId(newUser.getId());
         assertEquals("validate user name is correct",
                 newUser.getUserName(), storedUser.getUserName());

@@ -6,10 +6,9 @@
 package com.junbo.test.buyerscenario;
 
 import com.junbo.cart.spec.model.Cart;
-import com.junbo.cart.spec.model.item.CouponItem;
 import com.junbo.cart.spec.model.item.OfferItem;
-import com.junbo.common.id.CouponId;
 import com.junbo.common.id.OfferId;
+import com.junbo.test.common.Utility.TestClass;
 import com.junbo.test.common.apihelper.cart.CartService;
 import com.junbo.test.common.apihelper.cart.impl.CartServiceImpl;
 import com.junbo.test.common.apihelper.identity.UserService;
@@ -29,7 +28,7 @@ import java.util.*;
 /**
  * Created by jiefeng on 14-3-19.
  */
-public class CartManager {
+public class CartManager extends TestClass {
 
     private LogHelper logger = new LogHelper(CartManager.class);
 
@@ -38,8 +37,8 @@ public class CartManager {
     private OfferId testOffer2 = new OfferId(100002L);
     private OfferId testOffer3 = new OfferId(100003L);
 
-    private CouponId testCoupon1 = new CouponId(200001L);
-    private CouponId testCoupon2 = new CouponId(200002L);
+    private String testCoupon1 = new String("200001L");
+    private String testCoupon2 = new String("200002L");
 
     @Property(
             priority = Priority.BVT,
@@ -68,7 +67,7 @@ public class CartManager {
         Cart primaryCart = Master.getInstance().getCart(primaryCartId);
         Assert.assertNotNull(primaryCart, "No Primary cart respond!");
         Assert.assertEquals(primaryCart.getOffers().size(), 0);
-        Assert.assertEquals(primaryCart.getCoupons().size(), 0);
+        Assert.assertEquals(primaryCart.getCouponCodes().size(), 0);
         Assert.assertTrue(primaryCart.getCartName().contains("primary"), "Primary cart name should include primary");
 
         //add a few offers and couples to primary cart and put cart
@@ -88,7 +87,7 @@ public class CartManager {
 
         //check two both items returned
         Assert.assertEquals(updatedCart.getOffers().size(), 2);
-        Assert.assertEquals(updatedCart.getCoupons().size(), 2);
+        Assert.assertEquals(updatedCart.getCouponCodes().size(), 2);
         //check item quantity was returned correctly
         Assert.assertTrue(checkOfferQuantity(updatedCart, testOffer1, 3L));
         Assert.assertTrue(checkOfferQuantity(updatedCart, testOffer2, 2L));
@@ -107,7 +106,7 @@ public class CartManager {
 
         //check updated items returned correctly
         Assert.assertEquals(updatedCart2.getOffers().size(), 2);
-        Assert.assertEquals(updatedCart2.getCoupons().size(), 1);
+        Assert.assertEquals(updatedCart2.getCouponCodes().size(), 1);
 
         //check item quantity was updated correctly
         Assert.assertTrue(checkOfferQuantity(updatedCart, testOffer1, 2L));
@@ -168,7 +167,7 @@ public class CartManager {
         String mergedCartId = cs.getCartPrimary(user1);
         Cart mergedCart = Master.getInstance().getCart(mergedCartId);
         Assert.assertEquals(mergedCart.getOffers().size(), 3);
-        Assert.assertEquals(mergedCart.getCoupons().size(), 2);
+        Assert.assertEquals(mergedCart.getCouponCodes().size(), 2);
 
         //check item quantity was updated correctly
         Assert.assertTrue(checkOfferQuantity(mergedCart, testOffer1, 5L));
@@ -209,26 +208,24 @@ public class CartManager {
         }
     }
 
-    private void addCouponInCart(Cart cart, CouponId couponId) {
-        List<CouponItem> curCoupons = cart.getCoupons();
+    private void addCouponInCart(Cart cart, String couponId) {
+        List<String> curCoupons = cart.getCouponCodes();
         if (curCoupons == null) {
-            curCoupons = new ArrayList<CouponItem>();
-            cart.setCoupons(curCoupons);
+            curCoupons = new ArrayList<>();
+            cart.setCouponCodes(curCoupons);
         }
 
-        CouponItem couponItem = new CouponItem();
-        couponItem.setCoupon(couponId);
-        curCoupons.add(couponItem);
+        curCoupons.add(couponId);
     }
 
-    private void removeCouponInCart(Cart cart, CouponId couponId) {
-        List<CouponItem> curCoupons = cart.getCoupons();
+    private void removeCouponInCart(Cart cart, String couponId) {
+        List<String> curCoupons = cart.getCouponCodes();
         if (curCoupons == null) {
             return;
         }
 
-        for (CouponItem ci : curCoupons) {
-            if (ci.getCoupon().equals(couponId)) {
+        for (String ci : curCoupons) {
+            if (ci.equals(couponId)) {
                 curCoupons.remove(ci);
                 break;
             }

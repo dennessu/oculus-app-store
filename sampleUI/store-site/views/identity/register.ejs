@@ -5,11 +5,7 @@
     <p class="error">{{errMessage}}</p>
     {{/if}}
     <dl>
-        <dt>Username</dt>
-        <dd>{{input type="text" class="{required:true,maxlength:20}" name="RUsername" id="RUsername" value=content.username}}</dd>
-    </dl>
-    <dl>
-        <dt>Email Address</dt>
+        <dt>Email</dt>
         <dd>{{input type="email" class="{required:true,email:true}" name="REmail" id="REmail" value=content.email}}</dd>
     </dl>
     <dl>
@@ -34,14 +30,14 @@
     </dl>
     <dl>
         <dt>Country of Residence</dt>
-        <dd>{{view Ember.Select content=countries optionValuePath="content.v" optionLabelPath="content.t" value=country id="RCountry" name="RCountry" class="{required:true}"}}</dd>
+        <dd>{{view Ember.Select content=countries optionValuePath="content.v" optionLabelPath="content.t" value=country id="RCountry" name="RCountry" class="{required:true, ValidEmpty:true}"}}</dd>
     </dl>
     <dl class="agreement">
-        <dd><label>{{input type="checkbox" id="RSsAgree" name="RIsAgree" checked=content.isAgree}}<span>I have read and agree to Store Terms of Service and Privacy Policy.</span></label></dd>
+        <dd><label>{{input type="checkbox" id="RIsAgree" name="RIsAgree" class="{required:true}" checked=content.isAgree}}<span>I have read and agree to Store Terms of Service and Privacy Policy.</span></label></dd>
         <dd><label>{{input type="checkbox" id="RIsReceive" name="RIsReceive" checked=content.isReceive}}<span>I would like to receive totally sweet promotions, news, and offers form Store.</span></label></dd>
     </dl>
     <div class="actions">
-        <button type="submit" class="btn btn-primary">Continue</button>
+        <button id="BtnRegister" type="submit" class="btn btn-primary">Continue</button>
         <button type="button" class="btn btn-cancel" {{action "Cancel"}}>Cancel</button>
     </div>
 </form>

@@ -81,12 +81,11 @@ class OrderPayInTest extends AbstractTestNGSpringContextTests {
         def offer = serviceFacade.getOfferByName('Oculus VR')
         order.user = user.id
         order.with {
-            trackingUuid = UUID.randomUUID()
             type = 'PAY_IN'
             country = 'US'
             currency = 'USD'
             tentative = true
-            shippingAddressId = address.addressId
+            shippingAddress = address.addressId
             paymentInstruments = [
                     new PaymentInstrumentId(paymentInstrument.id.paymentInstrumentId)
             ]

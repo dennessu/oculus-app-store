@@ -4,7 +4,19 @@
        xsi:schemaLocation="
        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
+    <bean id="commonAsyncHttpClient" class="com.ning.http.client.AsyncHttpClient" />
+
+    <bean id="commonPathParamTranscoder" class="com.junbo.common.json.IdPathParamTranscoder"/>
+
+    <bean id="commonQueryParamTranscoder" class="com.junbo.common.json.QueryParamTranscoderImpl"/>
+
+    <bean id="commonTranscoder" class="com.junbo.common.json.JsonMessageTranscoder"/>
 
     <bean id="oculus40IdShuffle" class="com.junbo.common.shuffle.Oculus40Id" />
     <bean id="oculus48IdShuffle" class="com.junbo.common.shuffle.Oculus48Id" />
+
+    <bean id="cloudantClient" class="com.junbo.common.cloudant.CloudantClient" abstract="true">
+        <property name="asyncHttpClient" ref="commonAsyncHttpClient"/>
+        <property name="cloudantDBUri" value="${identity.cloudant.url}" />
+    </bean>
 </beans>

@@ -126,14 +126,4 @@ public final class CommonUtil {
             }
         }
     }
-
-    //TODO:
-    public static String encrypt(String text){
-        return text;
-    }
-
-    //TODO:
-    public static String decrypt(String text){
-        return text;
-    }
 }
