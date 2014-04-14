@@ -23,7 +23,7 @@
 
     </bean>
 
-   <!-- SessonFactory for Hibernate -->
+   <!-- SessionFactory for Hibernate -->
     <bean id="ewalletSessionFactory" class="com.junbo.sharding.hibernate.LocalSessionFactoryWithListenerBean">
         <property name="jtaTransactionManager" ref="transactionManager"/>
         <property name="hibernateProperties">
