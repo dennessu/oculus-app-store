@@ -1,8 +1,8 @@
-var ResultModel = require('./result_model');
-var Configs = require('./config');
-var Utils = require('./utils');
-var RestClient = require('./rest_client');
+/**
+ * Created by Haiwei on 2014/4/14.
+ */
 
+var Configs = AppConfig.Rests;
 var DataProvider = {};
 
 DataProvider._BuildUrl = function(url, isFullPath, namespace, argsObj){
@@ -74,6 +74,18 @@ DataProvider._Exec = function(provider, propertyName, args){
     options["port"] = provider.Port;
     options["path"] = pathUrl;
 
+    var httpUrl = "";
+    if(options.port == 80){
+        httpUrl = Utils.Format("http://{1}{2}", options["host"], options["path"]);
+    }else{
+        httpUrl = Utils.Format("http://{1}:{2}{3}", options["host"], options["port"], options["path"]);
+    }
+    options["url"] = httpUrl;
+
+    if(typeof(argsObj["options"]) != "undefined"){
+        options = Utils.FillObject(options, argsObj.options, 1);
+    }
+
     if(typeof(argsObj['cb']) == "undefined" || argsObj['cb'] == null)
         throw "Can't configuration the callback function, please verify the config and arguments";
 
@@ -108,5 +120,3 @@ for (var s in Configs) {
         })(DataProvider[s], api);
     }
 }
-
-module.exports = DataProvider;

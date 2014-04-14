@@ -1,23 +1,6 @@
 var AppConfig = function () {};
 
-AppConfig.DataModelMapTable = {
-    "Ember.App.Product": {
-        Provider: "CatalogProvider",
-        Method: "GetProducts"
-    },
-    "Ember.App.CartItem": {
-        Provider: "CartProvider",
-        Method: "GetCart"
-    },
-    "Ember.App.ShippingInfo": {
-        Provider: "BillingProvider",
-        Method: "GetShippingInfos"
-    },
-    "Ember.App.CreditCard": {
-        Provider: "PaymentProvider",
-        Method: "GetPayments"
-    }
-};
+
 
 AppConfig.Init = function(){
     console.log("AppConfig.Init");
