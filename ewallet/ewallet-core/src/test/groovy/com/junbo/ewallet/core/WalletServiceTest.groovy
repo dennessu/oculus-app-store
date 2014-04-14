@@ -1,5 +1,4 @@
 package com.junbo.ewallet.core
-
 import com.junbo.ewallet.service.WalletService
 import com.junbo.ewallet.spec.model.CreditRequest
 import com.junbo.ewallet.spec.model.DebitRequest
@@ -10,14 +9,15 @@ import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests
+import org.springframework.test.context.TestExecutionListeners
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests
 import org.springframework.test.context.transaction.TransactionConfiguration
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener
+import org.springframework.transaction.annotation.Transactional
 import org.testng.Assert
 import org.testng.annotations.Test
 
-import javax.sql.DataSource
 import javax.ws.rs.WebApplicationException
-
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
@@ -30,14 +30,9 @@ import javax.ws.rs.WebApplicationException
 @ContextConfiguration(locations = ['classpath:spring/context-test.xml'])
 @TransactionConfiguration(defaultRollback = true)
 @CompileStatic
-class WalletServiceTest extends AbstractTransactionalTestNGSpringContextTests {
-    @Override
-    @Autowired
-    @Qualifier('ewalletDataSource')
-    public void setDataSource(DataSource dataSource) {
-        super.setDataSource(dataSource)
-    }
-
+@TestExecutionListeners(TransactionalTestExecutionListener.class)
+@Transactional("transactionManager")
+class WalletServiceTest extends AbstractTestNGSpringContextTests {
     @Autowired
     @Qualifier('oculus48IdGenerator')
     protected IdGenerator idGenerator
