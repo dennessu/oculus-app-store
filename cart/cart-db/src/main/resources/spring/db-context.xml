@@ -4,7 +4,8 @@
        xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
-    <import resource="classpath*:spring/transaction.xml" />
+    <import resource="classpath*:spring/transaction.xml"/>
+    <import resource="classpath*:spring/sharding-context.xml"/>
 
     <!-- Config service -->
     <bean id="configService" class="com.junbo.configuration.impl.ConfigServiceImpl" />
@@ -29,40 +30,46 @@
         <property name="dataMapper" ref="dataMapper"/>
     </bean>
 
-    <bean id="cartDataSource" class="bitronix.tm.resource.jdbc.PoolingDataSource"
-          init-method="init" destroy-method="close">
-        <property name="uniqueName" value="jdbc/cart_ds1"/>
-        <property name="className" value="org.postgresql.xa.PGXADataSource"/>
-        <property name="minPoolSize" value="${cart.db.minConnectionsPerPartition}"/>
-        <property name="maxPoolSize" value="${cart.db.maxConnectionsPerPartition}"/>
+    <bean id="cartDataSource" class="com.junbo.sharding.hibernate.ShardMultiTenantConnectionProviderFactoryBean">
+        <property name="jdbcUrls" value="${cart.db.url}"/>
+
+        <property name="uniqueName" value="jdbc/cart"/>
+        <property name="className" value="${cart.db.driverClassName}"/>
+        <property name="minPoolSize" value="${cart.db.minPoolSize}"/>
+        <property name="maxPoolSize" value="${cart.db.maxPoolSize}"/>
         <property name="driverProperties">
             <props>
-                <prop key="url">${cart.db.url}</prop>
                 <prop key="user">${cart.db.username}</prop>
                 <prop key="password">${cart.db.password}</prop>
             </props>
         </property>
     </bean>
 
-    <!-- SessonFactory for Hibernate -->
-    <bean id="cartSessionFactory"
-          class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
-        <property name="dataSource" ref="cartDataSource"/>
-        <property name="packagesToScan" value="com.junbo.cart.db.entity" />
+    <bean id="cartSessionFactory" class="com.junbo.sharding.hibernate.LocalSessionFactoryWithListenerBean">
         <property name="jtaTransactionManager" ref="transactionManager"/>
         <property name="hibernateProperties">
-            <props>
-                <prop key="hibernate.dialect">${cart.hibernate.dialect}</prop>
-                <prop key="hibernate.max_fetch_depth">${cart.hibernate.max_fetch_depth}</prop>
-                <prop key="hibernate.jdbc.fetch_size">${cart.hibernate.jdbc.fetch_size}</prop>
-                <prop key="hibernate.jdbc.batch_size">${cart.hibernate.jdbc.batch_size}</prop>
-                <prop key="hibernate.show_sql">${cart.hibernate.show_sql}</prop>
-            </props>
+            <map>
+                <entry key="hibernate.dialect" value="${sharding.hibernate.dialect}"/>
+                <entry key="hibernate.max_fetch_depth" value="${sharding.hibernate.max_fetch_depth}"/>
+                <entry key="hibernate.jdbc.fetch_size" value="${sharding.hibernate.jdbc.fetch_size}"/>
+                <entry key="hibernate.jdbc.batch_size" value="${sharding.hibernate.jdbc.batch_size}"/>
+                <entry key="hibernate.show_sql" value="${sharding.hibernate.show_sql}"/>
+
+                <entry key="hibernate.multiTenancy" value="SCHEMA"/>
+                <entry key="hibernate.current_session_context_class" value="com.junbo.sharding.hibernate.MultiTenantJTASessionContext"/>
+                <entry key="hibernate.tenant_identifier_resolver" value="com.junbo.sharding.hibernate.ShardCurrentTenantIdentifierResolver"/>
+                <entry key="hibernate.multi_tenant_connection_provider" value-ref="cartDataSource"/>
+                <entry key="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
+            </map>
         </property>
+
+        <property name="packagesToScan" value="com.junbo.cart.db.entity"/>
     </bean>
 
     <bean id="abstractDao" class="com.junbo.cart.db.dao.impl.AbstractDao" abstract="true">
         <property name="sessionFactory" ref="cartSessionFactory"/>
+        <property name="shardAlgorithm" ref="userShardAlgorithm"/>
+        <property name="idGenerator" ref="oculus48IdGenerator"/>
     </bean>
 
     <bean id="cartDao" class="com.junbo.cart.db.dao.impl.CartDaoImpl" parent="abstractDao">
