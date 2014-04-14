@@ -39,7 +39,8 @@ public class OfferRevision extends BaseRevisionModel {
     private Price price;
 
     private Restriction restrictions;
-    private List<OfferEntry> subOffers;
+    @OfferId
+    private List<Long> subOffers;
     private List<ItemEntry> items = new ArrayList<>();
     private List<String> eligibleCountries;
     private Map<String, Event> events;
@@ -85,11 +86,11 @@ public class OfferRevision extends BaseRevisionModel {
         this.restrictions = restrictions;
     }
 
-    public List<OfferEntry> getSubOffers() {
+    public List<Long> getSubOffers() {
         return subOffers;
     }
 
-    public void setSubOffers(List<OfferEntry> subOffers) {
+    public void setSubOffers(List<Long> subOffers) {
         this.subOffers = subOffers;
     }
 

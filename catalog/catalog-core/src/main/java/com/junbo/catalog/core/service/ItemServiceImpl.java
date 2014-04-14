@@ -131,10 +131,10 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
             }
         }
 
-        if (revision.getDisplayName()==null || CollectionUtils.isEmpty(revision.getDisplayName().getLocales())) {
+        if (revision.getName()==null || CollectionUtils.isEmpty(revision.getName().getLocales())) {
             throw AppErrors.INSTANCE.missingField("displayName").exception();
         }
-        if (StringUtils.isEmpty(revision.getDisplayName().locale(LocalizableProperty.DEFAULT))) {
+        if (StringUtils.isEmpty(revision.getName().locale(LocalizableProperty.DEFAULT))) {
             throw AppErrors.INSTANCE.validation("displayName should have value for 'DEFAULT' locale.").exception();
         }
 
