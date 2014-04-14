@@ -12,5 +12,6 @@ package com.junbo.payment.spec.enums;
 public enum PIType {
     CREDITCARD,
     DIRECTDEBIT,
-    WALLET
+    WALLET,
+    PAYPAL
 }

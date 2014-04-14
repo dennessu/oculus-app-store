@@ -9,6 +9,8 @@ package com.junbo.payment.db.dao;
 import java.io.Serializable;
 import java.util.List;
 
+import com.junbo.sharding.ShardAlgorithm;
+import com.junbo.sharding.hibernate.ShardScope;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,16 +24,26 @@ import org.springframework.beans.factory.annotation.Qualifier;
 @SuppressWarnings("unchecked")
 public class GenericDAOImpl<T, ID extends Serializable> {
     @Autowired
+    @Qualifier("userShardAlgorithm")
+    private ShardAlgorithm shardAlgorithm;
+    @Autowired
     @Qualifier("paymentSessionFactory")
-    private SessionFactory sessionFactory;
+    protected SessionFactory sessionFactory;
     private Class<T> persistentClass;
 
     public GenericDAOImpl(Class<T> persistentClass) {
         this.persistentClass = persistentClass;
     }
 
-    protected Session currentSession() {
-        return sessionFactory.getCurrentSession();
+    //TODO: move all the configuration data to config DB and remove the generic DAO here
+    private Session currentSession() {
+        Object key = 0;
+        ShardScope shardScope = new ShardScope(shardAlgorithm.shardId(key));
+        try {
+            return sessionFactory.getCurrentSession();
+        } finally {
+            shardScope.close();
+        }
     }
 
     public T get(ID id) {

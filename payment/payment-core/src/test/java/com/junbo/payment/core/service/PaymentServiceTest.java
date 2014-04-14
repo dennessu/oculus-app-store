@@ -22,21 +22,7 @@ import java.math.BigDecimal;
 import java.util.concurrent.ExecutionException;
 
 public class PaymentServiceTest extends BaseTest {
-    private final Long userId = 123L;
     private final String BILLING_REF_ID = "123";
-    @Autowired
-    private PlatformTransactionManager transactionManager;
-    @Autowired
-    public void setPiService(@Qualifier("mockPaymentInstrumentService")PaymentInstrumentService piService) {
-        this.piService = piService;
-    }
-    @Autowired
-    public void setPaymentService(@Qualifier("mockPaymentService")PaymentTransactionService paymentService) {
-        this.paymentService = paymentService;
-    }
-
-    private PaymentInstrumentService piService;
-    private PaymentTransactionService paymentService;
 
     @Test
     public void testAddPI() throws ExecutionException, InterruptedException {
@@ -69,26 +55,9 @@ public class PaymentServiceTest extends BaseTest {
         Assert.assertEquals(resultUpdate.getAddress().getPostalCode(), "123");
     }
 
-    //commit addPI since there is standalone commit in payment transaction, so that PI is available fir them
-    private PaymentInstrument addPI(){
-        final PaymentInstrument request = buildPIRequest();
-        AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager);
-        template.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRES_NEW);
-        return template.execute(new TransactionCallback<PaymentInstrument>() {
-            public PaymentInstrument doInTransaction(TransactionStatus txnStatus) {
-                try {
-                    return piService.add(request).wrapped().get();
-                } catch (InterruptedException e) {
-                    return null;
-                } catch (ExecutionException e) {
-                    return null;
-                }
-            }
-        });
-    }
     @Test
     public void testAuthSettleAndReverse() throws ExecutionException, InterruptedException {
-        PaymentInstrument request = addPI();
+        PaymentInstrument request = addPI(buildPIRequest());
         PaymentTransaction payment = buildPaymentTransaction(request);
         PaymentTransaction result = paymentService.authorize(payment).wrapped().get();
         payment.setTrackingUuid(generateUUID());
@@ -103,7 +72,7 @@ public class PaymentServiceTest extends BaseTest {
 
     @Test
     public void testAuthAndReverse() throws ExecutionException, InterruptedException {
-        PaymentInstrument request = addPI();
+        PaymentInstrument request = addPI(buildPIRequest());
         PaymentTransaction payment = buildPaymentTransaction(request);
         PaymentTransaction result = paymentService.authorize(payment).wrapped().get();
         payment.setChargeInfo(null);
@@ -115,7 +84,7 @@ public class PaymentServiceTest extends BaseTest {
 
     @Test
     public void testChargeAndReverse() throws ExecutionException, InterruptedException {
-        PaymentInstrument request = addPI();
+        PaymentInstrument request = addPI(buildPIRequest());
         PaymentTransaction payment = buildPaymentTransaction(request);
         PaymentTransaction result = paymentService.charge(payment).wrapped().get();
         Assert.assertEquals(result.getExternalToken(), MockPaymentProviderServiceImpl.chargeExternalToken);
@@ -152,36 +121,6 @@ public class PaymentServiceTest extends BaseTest {
         PaymentTransaction result = paymentService.charge(payment).wrapped().get();
         Assert.assertEquals(result.getStatus(), PaymentStatus.SETTLEMENT_SUBMITTED.toString());
         Assert.assertNotNull(result.getExternalToken());
-    }
-
-    private PaymentInstrument buildBasePIRequest(){
-        PaymentInstrument request = new PaymentInstrument();
-        request.setId(new PIId(userId, null));
-        request.setTrackingUuid(generateUUID());
-        request.setAccountName("ut");
-        request.setIsValidated(true);
-        request.setAccountNum("4111111111111111");
-        request.setAddress(new Address() {
-            {
-                setAddressLine1("3rd street");
-                setCity("LA");
-                setCountry("US");
-                setPostalCode("12345");
-            }
-        });
-        request.setPhoneNum("12344555");
-        return request;
-    }
-    private PaymentInstrument buildPIRequest() {
-        PaymentInstrument request = buildBasePIRequest();
-        request.setType(PIType.CREDITCARD.toString());
-        request.setCreditCardRequest(new CreditCardRequest(){
-            {
-                setEncryptedCvmCode("111");
-                setExpireDate("2025-11");
-            }
-        });
-        return request;
     }
 
     private PaymentInstrument buildWalletPIRequest() {

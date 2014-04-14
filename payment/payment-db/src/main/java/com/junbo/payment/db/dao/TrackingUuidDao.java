@@ -23,7 +23,7 @@ public class TrackingUuidDao extends CommonDataDAOImpl<TrackingUuidEntity, Long>
     }
 
     public List<TrackingUuidEntity> getByTrackingUuid(Long userId, UUID trackingUuid){
-        Criteria criteria = currentSession().createCriteria(TrackingUuidEntity.class);
+        Criteria criteria = currentSession(userId).createCriteria(TrackingUuidEntity.class);
         criteria.add(Restrictions.eq("userId", userId));
         criteria.add(Restrictions.eq("trackingUuid", trackingUuid));
         criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
