@@ -2,7 +2,7 @@ package com.junbo.email.clientproxy.mock
 
 import com.junbo.common.id.UserId
 import com.junbo.email.clientproxy.IdentityFacade
-import com.junbo.identity.spec.model.user.User
+import com.junbo.identity.spec.v1.model.User
 import com.junbo.langur.core.promise.Promise
 
 /**
@@ -13,9 +13,8 @@ class MockIdentityFacadeImpl implements IdentityFacade {
     Promise<User> getUser(Long userId) {
         User user = new User()
         user.setId(new UserId(userId))
-        user.setUserName('fake_user')
-        user.setPassword('fake_password')
-        user.setStatus('ACTIVE')
+        user.setActive(true)
+        user.setLocale('en_US')
         return Promise.pure(user)
     }
 }

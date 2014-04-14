@@ -6,17 +6,14 @@
 package com.junbo.email.clientproxy.impl
 
 import com.junbo.common.id.UserId
-import com.junbo.common.json.IdPathParamTranscoder
-import com.junbo.common.json.JsonMessageTranscoder
-import com.junbo.common.json.QueryParamTranscoderImpl
 import com.junbo.email.clientproxy.IdentityFacade
-import com.junbo.identity.spec.model.user.User
-import com.junbo.identity.spec.resource.proxy.UserResourceClientProxy
+import com.junbo.identity.spec.v1.model.User
+import com.junbo.identity.spec.v1.option.model.UserGetOptions
+import com.junbo.identity.spec.v1.resource.UserResource
 import com.junbo.langur.core.promise.Promise
-import com.ning.http.client.AsyncHttpClient
-import com.ning.http.client.AsyncHttpClientConfigBean
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Autowired
+
+import javax.annotation.Resource
 
 /**
  * Impl of IdentityFacade.
@@ -24,23 +21,10 @@ import org.springframework.beans.factory.annotation.Autowired
 @CompileStatic
 class IdentityFacadeImpl implements IdentityFacade {
 
-    @Autowired
-    private final AsyncHttpClient asyncHttpClient
-
-    private String url
-
-    void setUrl(String url) {
-        this.url = url
-    }
-
-    IdentityFacadeImpl() {
-        if (asyncHttpClient == null) {
-            asyncHttpClient = new AsyncHttpClient(new AsyncHttpClientConfigBean())
-        }
-    }
+    @Resource(name = 'emailIdentityUserClient')
+    private UserResource userResource
 
     Promise<User> getUser(Long userId) {
-        new UserResourceClientProxy(asyncHttpClient, new JsonMessageTranscoder(),
-                new IdPathParamTranscoder(), new QueryParamTranscoderImpl(), url).getUser(new UserId(userId))
+        userResource.get(new UserId(userId), new UserGetOptions())
     }
 }

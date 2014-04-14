@@ -10,10 +10,12 @@
      <tx:annotation-driven/>
 
     <!-- proxy -->
-    <bean id="asyncHttpClient" class="com.ning.http.client.AsyncHttpClient" />
-
-    <bean id="emailIdentityFacade" class="com.junbo.email.clientproxy.impl.IdentityFacadeImpl">
-        <property name="url" value="${email.client.identity.url}"/>
+    <bean id="emailIdentityUserClient" class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy">
+        <constructor-arg name="client" ref="commonAsyncHttpClient"/>
+        <constructor-arg name="transcoder" ref="commonTranscoder"/>
+        <constructor-arg name="pathParamTranscoder" ref="commonPathParamTranscoder"/>
+        <constructor-arg name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
+        <constructor-arg name="target" value="${email.client.identity.url}"/>
     </bean>
     <bean id="emailProvider" class="com.junbo.email.clientproxy.impl.MandrillProviderImpl"/>
     <bean id="MandrillConfiguration" class="com.junbo.email.clientproxy.impl.mandrill.MandrillConfiguration">
