@@ -38,7 +38,7 @@ import javax.ws.rs.ext.Provider
 class AuthenticatorResourceImpl implements AuthenticatorResource {
 
     @Autowired
-    @Qualifier("userAuthenticatorRepository")
+    @Qualifier('userAuthenticatorRepository')
     private UserAuthenticatorRepository userAuthenticatorRepository
 
     @Autowired
