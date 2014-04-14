@@ -12,9 +12,11 @@ import com.junbo.catalog.db.mapper.OfferRevisionMapper;
 import com.junbo.catalog.spec.error.AppErrors;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.catalog.spec.model.offer.OfferRevisionsGetOptions;
+import com.junbo.common.id.OfferId;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -34,6 +36,22 @@ public class OfferRevisionRepository implements BaseRevisionRepository<OfferRevi
 
     public List<OfferRevision> getRevisions(OfferRevisionsGetOptions options) {
         List<OfferRevisionEntity> revisionEntities = offerRevisionDao.getRevisions(options);
+        List<OfferRevision> revisions = new ArrayList<>();
+        for (OfferRevisionEntity revisionEntity : revisionEntities) {
+            revisions.add(OfferRevisionMapper.toModel(revisionEntity));
+        }
+
+        return revisions;
+    }
+
+    public List<OfferRevision> getRevisions(List<OfferId> offerIds, Date timestamp) {
+        List<OfferRevisionEntity> revisionEntities = new ArrayList<>();
+        for (OfferId offerId : offerIds) {
+            OfferRevisionEntity revisionEntity = offerRevisionDao.getRevision(offerId.getValue(), timestamp);
+            if (revisionEntity != null) {
+                revisionEntities.add(revisionEntity);
+            }
+        }
         List<OfferRevision> revisions = new ArrayList<>();
         for (OfferRevisionEntity revisionEntity : revisionEntities) {
             revisions.add(OfferRevisionMapper.toModel(revisionEntity));
