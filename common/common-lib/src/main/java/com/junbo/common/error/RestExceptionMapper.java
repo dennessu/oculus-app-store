@@ -5,12 +5,10 @@
  */
 package com.junbo.common.error;
 
-import com.fasterxml.jackson.databind.JsonMappingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
@@ -25,21 +23,24 @@ public class RestExceptionMapper implements ExceptionMapper<Exception> {
 
     @Override
     public Response toResponse(Exception exception) {
+
+        LOGGER.error("Log unhandled exception", exception);
+
         if (exception instanceof WebApplicationException) {
             return ((WebApplicationException) exception).getResponse();
         }
 
-        if (exception instanceof JsonMappingException) {
-            Error error = new Error("invalid_json", exception.getMessage(), null, null);
-            return Response.status(Response.Status.BAD_REQUEST).entity(error).type(MediaType.APPLICATION_JSON).build();
-        }
+        return ERRORS.internalServerError().exception().getResponse();
+    }
 
-        LOGGER.error("Log unhandled exception", exception);
+    public static final Errors ERRORS = ErrorProxy.newProxyInstance(Errors.class);
 
-        Error error = new Error(Response.Status.INTERNAL_SERVER_ERROR.getReasonPhrase(), null,
-                Response.Status.INTERNAL_SERVER_ERROR.getReasonPhrase(), null);
+    /**
+     * Created by kg on 7/4/14.
+     */
+    public interface Errors {
 
-        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(error)
-                .type(MediaType.APPLICATION_JSON).build();
+        @ErrorDef(httpStatusCode = 500, code = "20001", description = "Internal Server Error")
+        AppError internalServerError();
     }
 }

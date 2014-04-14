@@ -46,7 +46,7 @@ public class WalletDaoTest extends BaseTest {
     private WalletEntity buildAWallet() {
         WalletEntity walletEntity = new WalletEntity();
         walletEntity.setUserId(idGenerator.nextId());
-        walletEntity.setType(WalletType.SV);
+        walletEntity.setType(WalletType.STORED_VALUE);
         walletEntity.setStatus(Status.ACTIVE);
         walletEntity.setCurrency(Currency.USD.toString());
         walletEntity.setBalance(BigDecimal.ZERO);

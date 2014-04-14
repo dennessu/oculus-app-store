@@ -38,4 +38,8 @@
         <property name="timeLimitMinutes" value="${billing.jobs.asynccharge.timeLimitMinutes}" />
         <property name="transactionManager" ref="transactionManager" />
     </bean>
+
+    <bean id="billingFacade" class="com.junbo.billing.jobs.BillingFacadeImpl">
+        <property name="url" value="${billing.client.billing.url}"/>
+    </bean>
 </beans>

@@ -7,7 +7,6 @@ package com.junbo.test.buyerscenario;
 
 import com.junbo.billing.spec.model.ShippingAddress;
 import com.junbo.cart.spec.model.Cart;
-import com.junbo.cart.spec.model.item.CouponItem;
 import com.junbo.cart.spec.model.item.OfferItem;
 import com.junbo.common.id.OfferId;
 import com.junbo.common.id.PaymentInstrumentId;
@@ -97,7 +96,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider{
         String primaryCartId = cartClient.getCartPrimary(uid);
         Cart primaryCart = Master.getInstance().getCart(primaryCartId);
         List<OfferItem> offerItemList = new ArrayList<>();
-        List<CouponItem> couponItemList = new ArrayList<>();
+        List<String> couponItemList = new ArrayList<>();
         for (int i = 0; i < offers.size(); i++) {
             OfferItem offerItem = new OfferItem();
             offerItem.setQuantity(RandomFactory.getRandomLong(1L, 5L));
@@ -109,7 +108,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider{
             offerItemList.add(offerItem);
         }
         primaryCart.setOffers(offerItemList);
-        primaryCart.setCoupons(couponItemList);
+        primaryCart.setCouponCodes(couponItemList);
 
         Master.getInstance().addCart(primaryCartId, primaryCart);
         return cartClient.updateCart(uid, primaryCartId, primaryCart);

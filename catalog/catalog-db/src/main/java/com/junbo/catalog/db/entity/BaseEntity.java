@@ -23,10 +23,20 @@ import java.util.Date;
 @MappedSuperclass
 @TypeDefs(@TypeDef(name="date-type", typeClass=DateUserType.class))
 public abstract class BaseEntity implements Serializable {
+    private boolean deleted;
     private Date createdTime;
     private String createdBy;
     private Date updatedTime;
     private String updatedBy;
+
+    @Column(name = "deleted")
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
 
     @Column(name = "created_time")
     @Type(type = "date-type")

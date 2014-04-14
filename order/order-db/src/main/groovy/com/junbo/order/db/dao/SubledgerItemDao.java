@@ -7,9 +7,14 @@
 package com.junbo.order.db.dao;
 
 import com.junbo.order.db.entity.SubledgerItemEntity;
+import com.junbo.order.db.entity.enums.SubledgerItemStatus;
+import com.junbo.order.spec.model.SubledgerItem;
+
+import java.util.List;
 
 /**
  * Created by linyi on 14-2-7.
  */
 public interface SubledgerItemDao extends BaseDao<SubledgerItemEntity> {
+    List<SubledgerItem> getByStatus(SubledgerItemStatus status, int start, int count);
 }

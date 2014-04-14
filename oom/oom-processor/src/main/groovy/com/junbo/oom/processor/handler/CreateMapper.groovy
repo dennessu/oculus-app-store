@@ -54,9 +54,10 @@ class CreateMapper implements MapperHandler {
                     mappingMethod.sourceParameter.type,
                     mappingMethod.returnType,
                     new MappingMethodRefModel(
-                            declaringMapper:declaringMapper,
-                            name:mappingMethod.name,
-                            hasContextParameter:mappingMethod.contextParameter != null
+                            declaringMapper: declaringMapper,
+                            name: mappingMethod.name,
+                            hasAlternativeSourceParameter: mappingMethod.alternativeSourceParameter != null,
+                            hasContextParameter: mappingMethod.contextParameter != null
                     )
             )
 

@@ -12,8 +12,8 @@ import com.junbo.common.util.Identifiable;
  * Enum for WalletType.
  */
 public enum WalletType implements Identifiable<Integer> {
-    SV(1),
-    VC(2);
+    STORED_VALUE(1),
+    VIRTUAL_CURRENCY(2);
 
     private Integer id;
 

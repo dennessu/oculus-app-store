@@ -5,7 +5,6 @@
  */
 package com.junbo.order.spec.model;
 
-import com.junbo.common.id.OfferId;
 import com.junbo.common.id.UserId;
 
 import javax.ws.rs.QueryParam;
@@ -27,14 +26,6 @@ public class SubledgerParam {
 
     @QueryParam("toDate")
     private Date toDate;
-
-    private OfferId offerId;
-
-    private String country;
-
-    private String currency;
-
-    private Boolean toDateInclusive;
 
     public UserId getSellerId() {
         return sellerId;
@@ -66,37 +57,5 @@ public class SubledgerParam {
 
     public void setToDate(Date toDate) {
         this.toDate = toDate;
-    }
-
-    public OfferId getOfferId() {
-        return offerId;
-    }
-
-    public void setOfferId(OfferId offerId) {
-        this.offerId = offerId;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public String getCurrency() {
-        return currency;
-    }
-
-    public void setCurrency(String currency) {
-        this.currency = currency;
-    }
-
-    public Boolean getToDateInclusive() {
-        return toDateInclusive;
-    }
-
-    public void setToDateInclusive(Boolean toDateInclusive) {
-        this.toDateInclusive = toDateInclusive;
     }
 }

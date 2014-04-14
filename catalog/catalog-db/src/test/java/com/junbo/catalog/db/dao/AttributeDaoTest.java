@@ -26,8 +26,9 @@ public class AttributeDaoTest extends BaseTest {
     private AttributeEntity buildAttributeEntity() {
         AttributeEntity entity = new AttributeEntity();
         entity.setId(generateId());
-        entity.setName("test");
+        entity.setName("{\"locales\":{\"DEFAULT\":\"test\"}}");
         entity.setType("Color");
+        entity.setPayload("{}");
 
         return entity;
     }

@@ -36,6 +36,7 @@ public class Order extends BaseModelWithDate {
     private String status;
     private String country;
     private String currency;
+    private String locale;
     private Boolean tentative;
 
     // expand ratingInfo to simplify oom
@@ -219,5 +220,13 @@ public class Order extends BaseModelWithDate {
 
     public void setOrderItems(List<OrderItem> orderItems) {
         this.orderItems = orderItems;
+    }
+
+    public String getLocale() {
+        return locale;
+    }
+
+    public void setLocale(String locale) {
+        this.locale = locale;
     }
 }

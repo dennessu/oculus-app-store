@@ -11,7 +11,6 @@ import com.junbo.cart.core.validation.Validation
 import com.junbo.cart.spec.error.AppErrors
 import com.junbo.cart.spec.model.Cart
 import com.junbo.cart.spec.model.item.CartItem
-import com.junbo.cart.spec.model.item.CouponItem
 import com.junbo.cart.spec.model.item.OfferItem
 import com.junbo.common.id.CartId
 import com.junbo.common.id.CartItemId
@@ -55,7 +54,7 @@ class CartServiceImpl implements CartService {
             cart.clientId = clientId
             cart.user = userId
             cart.userLoggedIn = true // todo : set from user
-            processCartForAddOrUpdate(cart, null)
+            processCartForAddOrUpdate(cart)
             cartPersistService.saveNewCart(cart)
             return Promise.pure(cart)
         }
@@ -109,7 +108,7 @@ class CartServiceImpl implements CartService {
         return getCart(userId, cartId).then {
             Cart oldCart = (Cart) it
             validation.validateCartUpdate(cart, oldCart)
-            processCartForAddOrUpdate(cart, oldCart)
+            processCartForAddOrUpdate(cart)
             cart.id = cartId
             cart.cartName = oldCart.cartName
             cart.user = oldCart.user
@@ -136,12 +135,9 @@ class CartServiceImpl implements CartService {
                 cart.offers.each {
                     ((CartItem) it).id = null
                 }
-                cart.coupons.each {
-                    ((CartItem) it).id = null
-                }
-                addCartItems(destCart, cart.offers, cart.coupons)
+                addCartItems(destCart, cart.offers, cart.couponCodes)
                 cart.offers = Collections.EMPTY_LIST
-                cart.coupons = Collections.EMPTY_LIST
+                cart.couponCodes = Collections.EMPTY_LIST
                 cartPersistService.updateCart(cart)
                 cartPersistService.updateCart(destCart)
                 return destCart
@@ -194,29 +190,6 @@ class CartServiceImpl implements CartService {
         }
     }
 
-    @Override
-    Promise<Cart> addCouponItem(UserId userId, CartId cartId, CouponItem couponItem) {
-        validation.validateCouponAdd(couponItem)
-        return getCart(userId, cartId).then {
-            Cart cart = (Cart) it
-            addCartItems(cart, [], [couponItem])
-            cartPersistService.updateCart(cart)
-            return Promise.pure(cart)
-        }
-    }
-
-    @Override
-    Promise<Cart> deleteCouponItem(UserId userId, CartId cartId, CartItemId couponItemId) {
-        return getCart(userId, cartId).then {
-            Cart cart = (Cart) it
-            if (lookupAndRemoveItem((List<CartItem>) cart.coupons, couponItemId) == null) {
-                throw AppErrors.INSTANCE.cartItemNotFound().exception()
-            }
-            cartPersistService.updateCart(cart)
-            return Promise.pure(null)
-        }
-    }
-
     private List<OfferItem> mergeOffers(List<OfferItem> offers) {
         Map<OfferId, OfferItem> offersMap = new HashMap<OfferId, OfferItem>()
         offers.each {
@@ -235,31 +208,23 @@ class CartServiceImpl implements CartService {
         return removeZeroQuantityOffer(new ArrayList<OfferItem>(offersMap.values()))
     }
 
-    private static List<CouponItem> mergeCoupons(List<CouponItem> coupons) {
-        Map<String, CouponItem> couponsMap = new HashMap<String, CouponItem>()
-        coupons.each {
-            CouponItem e = (CouponItem) it
-            CouponItem current = couponsMap[e.couponCode]
-            if (current == null) {
-                couponsMap[e.couponCode] = e
-            } else {
-                if (current.id == null && e.id != null) {
-                    current.id = e.id
-                }
-            }
+    private static List<String> mergeCoupons(List<String> couponCodes) {
+        Set<String> couponCodesSet = [] as SortedSet
+        couponCodes.each { String couponCode ->
+            couponCodesSet.add(couponCode)
         }
-        return new ArrayList<CouponItem>(couponsMap.values())
+        return new ArrayList<String>(couponCodesSet)
     }
 
-    private void addCartItems(Cart cart, List<OfferItem> offers, List<CouponItem> coupons) {
+    private void addCartItems(Cart cart, List<OfferItem> offers, List<String> couponCodes) {
         if (offers != null) {
             cart.offers.addAll(offers)
         }
         cart.offers = mergeOffers(cart.offers)
-        if (coupons != null) {
-            cart.coupons.addAll(coupons)
+        if (couponCodes != null) {
+            cart.couponCodes.addAll(couponCodes)
         }
-        cart.coupons = mergeCoupons(cart.coupons)
+        cart.couponCodes = mergeCoupons(cart.couponCodes)
     }
 
     private static List<OfferItem> removeZeroQuantityOffer(List<OfferItem> offers) {
@@ -286,31 +251,11 @@ class CartServiceImpl implements CartService {
         return null
     }
 
-    private Cart processCartForAddOrUpdate(Cart cart, Cart oldCart) {
-        setCartItemId((List<CartItem>) cart.offers,
-                (List<CartItem>) (oldCart == null ? null : oldCart.offers))
-        setCartItemId((List<CartItem>) cart.coupons,
-                (List<CartItem>) (oldCart == null ? null : oldCart.coupons))
-
+    private Cart processCartForAddOrUpdate(Cart cart) {
         cart.offers = mergeOffers(cart.offers)
-        cart.coupons = mergeCoupons(cart.coupons)
         removeZeroQuantityOffer(cart.offers)
+        cart.couponCodes = mergeCoupons(cart.couponCodes)
         return cart
-    }
-
-    private static void setCartItemId(List<CartItem> itemsUpdate, List<CartItem> itemsExists) {
-        def existId = [] as Set
-        if (itemsExists != null) {
-            itemsExists.each {
-                existId << ((CartItem) it).id
-            }
-        }
-        itemsUpdate.each {
-            CartItem item = (CartItem) it
-            if (item.id != null && !existId.contains(item.id)) {
-                item.id = null
-            }
-        }
     }
 }
 

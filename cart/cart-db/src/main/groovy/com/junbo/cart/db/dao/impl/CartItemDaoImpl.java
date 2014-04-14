@@ -13,6 +13,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.Assert;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -37,6 +38,18 @@ public class CartItemDaoImpl<T extends CartItemEntity> extends AbstractDao imple
             Assert.isTrue(item.getClass() == entityClass);
         }
         getSession().merge(item);
+    }
+
+    @Override
+    public boolean markDelete(long id, Date time) {
+        T entity = get(id);
+        if (entity != null && entity.getStatus() != ItemStatus.DELETED) {
+            entity.setUpdatedTime(time);
+            entity.setStatus(ItemStatus.DELETED);
+            update(entity);
+            return true;
+        }
+        return false;
     }
 
     @Override

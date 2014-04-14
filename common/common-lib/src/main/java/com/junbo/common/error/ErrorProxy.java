@@ -8,7 +8,6 @@ package com.junbo.common.error;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.List;
 /**
@@ -46,7 +45,7 @@ public class ErrorProxy implements InvocationHandler {
             message = errorDef.description();
         }
         else {
-            message = MessageFormat.format(errorDef.description(), args);
+            message = formatMessage(errorDef.description(), args);
         }
 
         final String field;
@@ -57,7 +56,7 @@ public class ErrorProxy implements InvocationHandler {
             field = errorDef.field();
         }
         else {
-            field = MessageFormat.format(errorDef.field(), args);
+            field = formatMessage(errorDef.field(), args);
         }
 
         final List<AppError> causes;
@@ -105,5 +104,19 @@ public class ErrorProxy implements InvocationHandler {
                 return new AppErrorException(this);
             }
         };
+    }
+
+    private String formatMessage(String pattern, Object[] args) {
+        if (pattern == null) {
+            return null;
+        }
+
+        int index = 0;
+        for (Object arg : args) {
+            pattern = pattern.replace("{"+index+"}", arg.toString());
+            index++;
+        }
+
+        return pattern;
     }
 }
