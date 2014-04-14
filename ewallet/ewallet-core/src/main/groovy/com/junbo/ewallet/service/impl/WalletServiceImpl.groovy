@@ -182,8 +182,8 @@ class WalletServiceImpl implements WalletService {
 
     @Override
     @Transactional
-    Wallet getByTrackingUuid(UUID trackingUuid) {
-        return walletRepo.getByTrackingUuid(trackingUuid)
+    Wallet getByTrackingUuid(Long shardMasterId, UUID trackingUuid) {
+        return walletRepo.getByTrackingUuid(shardMasterId, trackingUuid)
     }
 
     private void checkUserId(Long userId) {

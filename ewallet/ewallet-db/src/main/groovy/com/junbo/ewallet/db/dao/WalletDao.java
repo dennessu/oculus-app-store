@@ -21,7 +21,7 @@ public interface WalletDao {
 
     WalletEntity insert(WalletEntity walletEntity);
 
-    WalletEntity getByTrackingUuid(UUID uuid);
+    WalletEntity getByTrackingUuid(Long shardMasterId, UUID uuid);
 
     WalletEntity get(Long userId, WalletType type, String currency);
 }
