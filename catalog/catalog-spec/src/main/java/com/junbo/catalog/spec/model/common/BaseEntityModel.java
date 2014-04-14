@@ -6,6 +6,8 @@
 
 package com.junbo.catalog.spec.model.common;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.validation.constraints.NotNull;
 
 /**
@@ -15,7 +17,10 @@ public abstract class BaseEntityModel extends BaseModel {
     @NotNull
     private LocalizableProperty name;
 
+    @JsonProperty("isCurated")
     private Boolean curated;
+
+    private Integer rev;
 
     public LocalizableProperty getName() {
         return name;
@@ -35,4 +40,12 @@ public abstract class BaseEntityModel extends BaseModel {
 
     public abstract Long getCurrentRevisionId();
     public abstract void setCurrentRevisionId(Long currentRevisionId);
+
+    public Integer getRev() {
+        return rev;
+    }
+
+    public void setRev(Integer rev) {
+        this.rev = rev;
+    }
 }
