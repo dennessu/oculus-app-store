@@ -110,8 +110,8 @@ class UserSecurityQuestionAttemptValidatorImpl implements UserSecurityQuestionAt
                     throw AppErrors.INSTANCE.userSecurityQuestionNotFound().exception()
                 }
 
-                if (CipherHelper.hashPassword(attempt.value, userSecurityQuestion.answerSalt)
-                        == userSecurityQuestion.answerHash) {
+                if (CipherHelper.generateCipherHashV1(attempt.value, userSecurityQuestion.answerSalt,
+                        userSecurityQuestion.answerPepper) == userSecurityQuestion.answerHash) {
                     attempt.setSucceeded(true)
                 }
                 else {
