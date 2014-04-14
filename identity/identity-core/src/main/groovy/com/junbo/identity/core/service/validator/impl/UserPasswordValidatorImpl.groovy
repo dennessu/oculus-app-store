@@ -21,6 +21,7 @@ import org.springframework.util.StringUtils
  */
 @CompileStatic
 class UserPasswordValidatorImpl implements UserPasswordValidator {
+    private static final Integer SALT_LENGTH = 20
 
     private UserRepository userRepository
 
@@ -85,9 +86,11 @@ class UserPasswordValidatorImpl implements UserPasswordValidator {
             throw AppErrors.INSTANCE.fieldInvalid('active').exception()
         }
 
-        userPassword.setPasswordSalt(UUID.randomUUID().toString())
+        userPassword.setPasswordSalt(CipherHelper.generateCipherRandomStr(SALT_LENGTH))
+        userPassword.setPasswordPepper(CipherHelper.generateCipherRandomStr(SALT_LENGTH))
         userPassword.setStrength(CipherHelper.calcPwdStrength(userPassword.value))
-        userPassword.setPasswordHash(CipherHelper.hashPassword(userPassword.value, userPassword.passwordSalt))
+        userPassword.setPasswordHash(CipherHelper.generateCipherHashV1(userPassword.value,
+                userPassword.passwordSalt, userPassword.passwordPepper))
         userPassword.setUserId(userId)
         userPassword.setActive(true)
 
@@ -116,8 +119,8 @@ class UserPasswordValidatorImpl implements UserPasswordValidator {
                 throw AppErrors.INSTANCE.userPasswordIncorrect().exception()
             }
 
-            if (CipherHelper.hashPassword(decryptPassword, userPasswordList.get(0).passwordSalt)
-                    != userPasswordList.get(0).passwordHash) {
+            if (CipherHelper.generateCipherHashV1(decryptPassword, userPasswordList.get(0).passwordSalt,
+                    userPasswordList.get(0).passwordPepper) != userPasswordList.get(0).passwordHash) {
                 throw AppErrors.INSTANCE.userPasswordIncorrect().exception()
             }
             return Promise.pure(null)

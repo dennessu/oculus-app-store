@@ -144,4 +144,12 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 404, code = ErrorCode.SUBLEDGER_NOT_FOUND,
             description = "SubledgerNotFound")
     AppError subledgerNotFound();
+
+    @ErrorDef(httpStatusCode = 400, code = ErrorCode.INVALID_SETTLED_ORDER_UPDATE,
+            description = "Invalid settled order update")
+    AppError invalidSettledOrderUpdate();
+
+    @ErrorDef(httpStatusCode = 412, code = ErrorCode.EVENT_NOT_SUPPORTED,
+            description = "Event(action:{0}, status:{1}) is not supported")
+    AppError eventNotSupported(String action, String status);
 }

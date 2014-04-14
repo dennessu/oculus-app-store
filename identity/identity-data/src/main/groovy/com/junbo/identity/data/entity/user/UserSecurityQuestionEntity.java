@@ -50,6 +50,14 @@ public class UserSecurityQuestionEntity extends ResourceMetaEntity {
         this.answerSalt = answerSalt;
     }
 
+    public String getAnswerPepper() {
+        return answerPepper;
+    }
+
+    public void setAnswerPepper(String answerPepper) {
+        this.answerPepper = answerPepper;
+    }
+
     public String getAnswerHash() {
         return answerHash;
     }
@@ -70,6 +78,9 @@ public class UserSecurityQuestionEntity extends ResourceMetaEntity {
 
     @Column(name = "answer_salt")
     private String answerSalt;
+
+    @Column(name = "answer_pepper")
+    private String answerPepper;
 
     @Column(name = "answer_hash")
     private String answerHash;

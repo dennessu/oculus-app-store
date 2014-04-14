@@ -13,7 +13,7 @@ import org.hibernate.Session;
  */
 public interface CartDao {
 
-    Session getSession();
+    Session getSession(Object key);
 
     void insert(CartEntity cartEntity);
 

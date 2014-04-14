@@ -17,7 +17,5 @@ interface AuthorizeCallback<T> {
 
     void setTokenInfo(TokenInfo tokenInfo)
 
-    AuthorizeCallback<T> initialize(Map<String, Object> context)
-
     T postFilter()
 }
