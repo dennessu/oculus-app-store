@@ -1,4 +1,6 @@
 package com.junbo.order.rest.resource
+
+import com.junbo.order.spec.error.AppErrors
 import com.junbo.common.id.OrderId
 import com.junbo.common.model.Results
 import com.junbo.langur.core.promise.Promise
@@ -22,6 +24,9 @@ import org.springframework.stereotype.Component
 
 import javax.annotation.Resource
 import javax.ws.rs.container.ContainerRequestContext
+import javax.ws.rs.core.Context
+import javax.ws.rs.core.HttpHeaders
+
 /**
  * Created by chriszhu on 3/12/14.
  */
@@ -39,8 +44,7 @@ class OrderEventResourceImpl implements OrderEventResource {
     @Resource
     OrderService orderService
 
-    @Qualifier('orderValidator')
-    @Autowired
+    @Resource
     OrderValidator orderValidator
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OrderEventResourceImpl)
@@ -55,15 +59,9 @@ class OrderEventResourceImpl implements OrderEventResource {
     }
 
     @Override
-    Promise<OrderEvent> createOrderEvent(OrderEvent orderEvent) {
+    Promise<OrderEvent> createOrderEvent(OrderEvent orderEvent, @Context HttpHeaders headers) {
         orderValidator.notNull(orderEvent, 'orderEvent').notNull(orderEvent.trackingUuid, 'trackingUuid')
                 .notNull(orderEvent.order, 'orderId')
-        def persistedOrderEvent = orderEventService.getOrderEventByTrackingUuid(orderEvent.trackingUuid,
-                orderEvent.order.value)
-        if (persistedOrderEvent != null) {
-            LOGGER.info('name=Order_Event_Same_TrackingUuid_Existed')
-            return Promise.pure(persistedOrderEvent)
-        }
         if (orderEvent.action == OrderActionType.FULFILL.name() && orderEvent.status == OrderStatus.COMPLETED.name()) {
             return orderService.completeChargeOrder(
                     orderEvent.order.value, new ApiContext(requestContext.headers)).then {
@@ -71,6 +69,6 @@ class OrderEventResourceImpl implements OrderEventResource {
             }
         }
 
-        return Promise.pure(orderEventService.createOrderEvent(orderEvent))
+        throw AppErrors.INSTANCE.eventNotSupported(orderEvent.action, orderEvent.status).exception()
     }
 }

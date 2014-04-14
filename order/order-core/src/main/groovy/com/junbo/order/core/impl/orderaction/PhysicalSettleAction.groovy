@@ -62,7 +62,7 @@ class PhysicalSettleAction extends BaseOrderEventAwareAction {
                 }
                 CoreBuilder.buildPartialChargeBalance(context.orderServiceContext.order,
                         BalanceType.DEBIT, taxedBalance)
-                // TODO: put balance when BALANCE is ready
+                // TODO: put balance when BILLING is ready
                 return Promise.pure(null)
             }
         }

@@ -8,9 +8,8 @@ import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.clientproxy.model.OrderOffer
+import com.junbo.order.core.impl.common.CoreUtils
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
-import com.junbo.order.db.entity.enums.ItemType
-import com.junbo.order.spec.model.OrderItem
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.apache.commons.collections.CollectionUtils
@@ -54,10 +53,7 @@ class SendEmailAction implements Action {
                 LOGGER.error('name=SendEmail_Action_Fail_On_Fetch_User', ex)
                 return Promise.pure(null)
             }.then { User u ->
-                Boolean isPhysical = order.orderItems.any { OrderItem orderItem ->
-                    orderItem.type?.toUpperCase() == ItemType.PHYSICAL.name()
-                }
-                if (isPhysical) {
+                if (CoreUtils.hasPhysicalOffer(order)) {
                     // TODO: send partial charge email
                     return Promise.pure(null)
                 }

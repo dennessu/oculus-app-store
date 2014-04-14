@@ -199,7 +199,7 @@ class OrderServiceImpl implements OrderService {
                 Map<String, Object> requestScope = [:]
                 def orderActionContext = new OrderActionContext()
                 orderActionContext.orderServiceContext = orderServiceContext
-                orderActionContext.trackingUuid = order.trackingUuid
+                orderActionContext.trackingUuid = UUID.randomUUID()
                 requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object) orderActionContext)
                 executeFlow(flowName, orderServiceContext, requestScope)
             }.syncThen {

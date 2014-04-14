@@ -46,22 +46,6 @@ class OrderEventServiceImpl implements OrderEventService {
 
     @Override
     @Transactional
-    OrderEvent getOrderEventByTrackingUuid(UUID trackingUuid, Long orderId) {
-        if (trackingUuid == null) {
-            return null
-        }
-        def orderEvent = orderRepository.getOrderEventByTrackingUuid(trackingUuid)
-        if (orderEvent != null) {
-            if (orderEvent.order.value != orderId) {
-                LOGGER.error('name=Dup_Tracking_Uuid_Different_Order')
-                throw AppErrors.INSTANCE.orderEventDuplicateTrackingGuid(0L, trackingUuid).exception()
-            }
-        }
-        return  orderEvent
-    }
-
-    @Override
-    @Transactional
     OrderEvent createOrderEvent(OrderEvent orderEvent) {
         LOGGER.info('name=Create_Order_Event. orderId: {}', orderEvent.order.value)
 

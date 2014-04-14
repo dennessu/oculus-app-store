@@ -1,4 +1,6 @@
 package com.junbo.order.rest.resource
+
+import com.junbo.order.spec.error.AppErrors
 import com.junbo.common.id.OrderId
 import com.junbo.common.id.UserId
 import com.junbo.common.model.Results
@@ -94,8 +96,8 @@ class OrderResourceImpl implements OrderResource {
                     oldOrder.shippingAddress = order.shippingAddress
                     return orderService.updateNonTentativeOrder(oldOrder,  new ApiContext(requestContext.headers))
                 }
-                LOGGER.info('name=Update_Not_Allow')
-                return Promise.pure(oldOrder)
+                LOGGER.error('name=Update_Not_Allow')
+                throw AppErrors.INSTANCE.invalidSettledOrderUpdate().exception()
             }
         }
     }
