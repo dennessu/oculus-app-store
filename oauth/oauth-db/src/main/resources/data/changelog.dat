@@ -58,10 +58,10 @@ api	user_get	{
            "precondition": "owner",
            "rights": ["read"]
        }, {
-           "precondition": "group('guest')",
+           "precondition": "guest",
            "rights": ["read"]
        }, {
-           "precondition": "role('admin')",
+           "precondition": "admin",
            "rights": ["read"]
        }]
    }
@@ -69,44 +69,15 @@ api	user_get	{
 
 api	item_get	{
    "scopes": {
-       "catalog": [
-           {
-               "precondition": "owner",
-               "rights": [
-                   "read"
-               ]
-           },
-           {
-               "precondition": "group('guest')",
-               "rights": [
-                   "read"
-               ]
-           },
-           {
-               "precondition": "role('admin')",
-               "rights": [
-                   "read"
-               ]
-           }
-       ]
-   }
-}
-
-api	item_create	{
-   "scopes": {
-        "catalog.write": [
-            {
-                "precondition": "owner",
-                "rights": [
-                    "create"
-                ]
-            },
-            {
-                "precondition": "group('csr')",
-                "rights": [
-                    "create"
-                ]
-            }
-        ]
+       "catalog": [{
+           "precondition": "owner",
+           "rights": ["read"]
+       }, {
+           "precondition": "guest",
+           "rights": ["read"]
+       }, {
+           "precondition": "admin",
+           "rights": ["read"]
+       }]
    }
 }
