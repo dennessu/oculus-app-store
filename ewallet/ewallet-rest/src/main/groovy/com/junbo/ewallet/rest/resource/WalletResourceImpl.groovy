@@ -5,18 +5,15 @@
  */
 
 package com.junbo.ewallet.rest.resource
-
 import com.junbo.common.id.WalletId
 import com.junbo.ewallet.service.WalletService
 import com.junbo.ewallet.spec.model.CreditRequest
 import com.junbo.ewallet.spec.model.DebitRequest
-import com.junbo.ewallet.spec.model.Transaction
 import com.junbo.ewallet.spec.model.Wallet
 import com.junbo.ewallet.spec.resource.WalletResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
-
 /**
  * WalletResource Impl.
  */
@@ -33,7 +30,7 @@ class WalletResourceImpl implements WalletResource {
 
     @Override
     Promise<Wallet> postWallet(Wallet wallet) {
-        Wallet existed = getByTrackingUuid(wallet.trackingUuid)
+        Wallet existed = getByTrackingUuid(wallet.userId, wallet.trackingUuid)
         if (existed != null) {
             return Promise.pure(existed)
         }
@@ -43,7 +40,7 @@ class WalletResourceImpl implements WalletResource {
 
     @Override
     Promise<Wallet> updateWallet(WalletId walletId, Wallet wallet) {
-        Wallet existed = getByTrackingUuid(wallet.trackingUuid)
+        Wallet existed = getByTrackingUuid(wallet.userId, wallet.trackingUuid)
         if (existed != null) {
             return Promise.pure(existed)
         }
@@ -52,18 +49,18 @@ class WalletResourceImpl implements WalletResource {
     }
 
     @Override
-    Promise<Wallet> credit(WalletId walletId, CreditRequest creditRequest) {
-        Wallet existed = getByTrackingUuid(creditRequest.trackingUuid)
+    Promise<Wallet> credit(CreditRequest creditRequest) {
+        Wallet existed = getByTrackingUuid(creditRequest.userId, creditRequest.trackingUuid)
         if (existed != null) {
             return Promise.pure(existed)
         }
-        Wallet result = walletService.credit(walletId.value, creditRequest)
+        Wallet result = walletService.credit(creditRequest)
         return Promise.pure(result)
     }
 
     @Override
     Promise<Wallet> debit(WalletId walletId, DebitRequest debitRequest) {
-        Wallet existed = getByTrackingUuid(debitRequest.trackingUuid)
+        Wallet existed = getByTrackingUuid(walletId.value, debitRequest.trackingUuid)
         if (existed != null) {
             return Promise.pure(existed)
         }
@@ -73,16 +70,13 @@ class WalletResourceImpl implements WalletResource {
 
     @Override
     Promise<Wallet> getTransactions(WalletId walletId) {
-        Wallet result = walletService.get(walletId.value)
-        List<Transaction> transactions = walletService.getTransactions(walletId.value)
-        result.transactions = transactions
-        return Promise.pure(result)
+        return Promise.pure(walletService.getTransactions(walletId.value))
     }
 
-    private Wallet getByTrackingUuid(UUID trackingUuid) {
+    private Wallet getByTrackingUuid(Long shardMasterId, UUID trackingUuid) {
         if (trackingUuid == null) {
             return null
         }
-        return walletService.getByTrackingUuid(trackingUuid)
+        return walletService.getByTrackingUuid(shardMasterId, trackingUuid)
     }
 }

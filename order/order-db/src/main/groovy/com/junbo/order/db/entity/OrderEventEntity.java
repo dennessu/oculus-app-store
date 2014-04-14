@@ -29,7 +29,7 @@ public class OrderEventEntity extends CommonEventEntity {
     private EventStatus statusId;
     private UUID trackingUuid;
     private UUID eventTrackingUuid;
-    private String flowType;
+    private String flowName;
 
     @Column(name = "ORDER_ID")
     @NotNull (message = ValidationMessages.MISSING_VALUE)
@@ -84,11 +84,11 @@ public class OrderEventEntity extends CommonEventEntity {
     }
 
     @Column (name = "FLOW_NAME")
-    public String getFlowType() {
-        return flowType;
+    public String getFlowName() {
+        return flowName;
     }
 
-    public void setFlowType(String flowType) {
-        this.flowType = flowType;
+    public void setFlowName(String flowName) {
+        this.flowName = flowName;
     }
 }

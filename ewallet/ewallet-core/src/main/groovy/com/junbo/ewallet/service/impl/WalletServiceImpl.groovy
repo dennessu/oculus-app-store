@@ -1,11 +1,11 @@
 package com.junbo.ewallet.service.impl
 
 import com.junbo.ewallet.db.entity.def.NotEnoughMoneyException
-import com.junbo.ewallet.db.entity.def.Status
-import com.junbo.ewallet.db.entity.def.WalletLotType
-import com.junbo.ewallet.db.entity.def.WalletType
 import com.junbo.ewallet.db.repo.WalletRepository
 import com.junbo.ewallet.service.WalletService
+import com.junbo.ewallet.spec.def.Status
+import com.junbo.ewallet.spec.def.WalletLotType
+import com.junbo.ewallet.spec.def.WalletType
 import com.junbo.ewallet.spec.error.AppErrors
 import com.junbo.ewallet.spec.model.CreditRequest
 import com.junbo.ewallet.spec.model.DebitRequest
@@ -57,7 +57,7 @@ class WalletServiceImpl implements WalletService {
 
         if (wallet.type == null) {
             throw AppErrors.INSTANCE.missingField('type').exception()
-        } else if (wallet.type.equalsIgnoreCase(WalletType.SV.toString()) && wallet.currency == null) {
+        } else if (wallet.type.equalsIgnoreCase(WalletType.STORED_VALUE.toString()) && wallet.currency == null) {
             throw AppErrors.INSTANCE.missingField('currency').exception()
         }
 
@@ -100,17 +100,31 @@ class WalletServiceImpl implements WalletService {
 
     @Override
     @Transactional
-    Wallet credit(Long walletId, CreditRequest creditRequest) {
+    Wallet credit(CreditRequest creditRequest) {
         if (creditRequest.type == null) {
             creditRequest.type = WalletLotType.CASH.toString()
         }
 
         validateAmount(creditRequest.amount)
+        validateExpirationDate(creditRequest.expirationDate)
 
-        Wallet wallet = get(walletId)
-        if (wallet.status.equalsIgnoreCase(Status.LOCKED.toString())) {
-            throw AppErrors.INSTANCE.locked(walletId).exception()
+        def wallet
+        if (creditRequest.walletId != null) {
+            wallet = walletRepo.get(creditRequest.walletId)
+        } else if (creditRequest.userId != null && creditRequest.currency != null) {
+            wallet = walletRepo.get(creditRequest.userId, creditRequest.type, creditRequest.currency)
+        } else {
+            throw AppErrors.INSTANCE.common('wallet or user and currency should not be null').exception()
         }
+
+        if (wallet == null) {
+            throw AppErrors.INSTANCE.common('wallet not found').exception()
+        }
+        checkUserId(wallet.userId)
+        if (wallet.status.equalsIgnoreCase(Status.LOCKED.toString())) {
+            throw AppErrors.INSTANCE.locked(wallet.walletId).exception()
+        }
+
         Wallet result = walletRepo.credit(wallet, creditRequest)
         return result
     }
@@ -146,17 +160,30 @@ class WalletServiceImpl implements WalletService {
         }
     }
 
+    private void validateExpirationDate(Date expirationDate) {
+        if (expirationDate != null) {
+            Date now = new Date()
+            if (expirationDate.before(now)) {
+                throw AppErrors.INSTANCE.fieldNotCorrect(
+                        'expirationDate', 'expirationDate should not be before now.')
+                        .exception()
+            }
+        }
+    }
+
     @Override
     @Transactional
-    List<Transaction> getTransactions(Long walletId) {
-        List<Transaction> result = walletRepo.getTransactions(walletId)
+    Wallet getTransactions(Long walletId) {
+        Wallet result = get(walletId)
+        List<Transaction> transactions = walletRepo.getTransactions(walletId)
+        result.transactions = transactions
         return result
     }
 
     @Override
     @Transactional
-    Wallet getByTrackingUuid(UUID trackingUuid) {
-        return walletRepo.getByTrackingUuid(trackingUuid)
+    Wallet getByTrackingUuid(Long shardMasterId, UUID trackingUuid) {
+        return walletRepo.getByTrackingUuid(shardMasterId, trackingUuid)
     }
 
     private void checkUserId(Long userId) {

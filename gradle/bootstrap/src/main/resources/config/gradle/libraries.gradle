@@ -4,7 +4,7 @@ ext {
     junboVersion = '0.0.1-SNAPSHOT'
     jerseyVersion = '2.5.1'
     springVersion = '4.0.2.RELEASE'
-    swaggerVersion = '1.3.2-JUNBO'
+    swaggerVersion = '1.3.2-J-SNAPSHOT'
     jacksonVersion = '2.2.3'
     slf4jVersion = '1.7.6'
     logbackVersion = '1.1.1'
@@ -48,7 +48,7 @@ ext {
         // javax
         rs_api:                 'javax.ws.rs:javax.ws.rs-api:2.0',
         servlet_api:            'javax.servlet:javax.servlet-api:3.1.0',
-        persistence_api:        'javax.persistence:persistence-api:1.0.2',
+        persistence_api:        'org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.0.Final',
         validation_api:         'javax.validation:validation-api:1.1.0.Final',
         el_api:                 'javax.el:javax.el-api:2.2.4',
         el:                     'org.glassfish.web:javax.el:2.2.4',
@@ -60,9 +60,9 @@ ext {
         jackson_annotations:    "com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}",
 
         // hibernate
-        hibernate_core:              'org.hibernate:hibernate-core:4.1.7.Final',
-        hibernate_entitymanager:     'org.hibernate:hibernate-entitymanager:4.1.7.Final',
-        hibernate_annotation:        'org.hibernate.common:hibernate-commons-annotations:4.0.1.Final',
+        hibernate_core:              'org.hibernate:hibernate-core:4.3.4.Final',
+        hibernate_entitymanager:     'org.hibernate:hibernate-entitymanager:4.3.4.Final',
+        hibernate_annotation:        'org.hibernate.common:hibernate-commons-annotations:4.0.4.Final',
         hibernate_validator:         'org.hibernate:hibernate-validator:5.0.2.Final',
 
         // postgresql
@@ -95,7 +95,7 @@ ext {
         freemarker:             'org.freemarker:freemarker:2.3.20',
 
         // groovy
-        groovy:                 'org.codehaus.groovy:groovy-all:2.2.0',
+        groovy:                 'org.codehaus.groovy:groovy-all:2.2.2',
 
         //hickory
         hickory:                'com.jolira:hickory:1.0.0',
@@ -119,16 +119,20 @@ ext {
         common_lang:            'commons-lang:commons-lang:2.5',
         common_io:              'commons-io:commons-io:2.4',
         json_path:              'com.jayway.jsonpath:json-path:0.9.1',
-        fastjson:               'com.alibaba:fastjson:1.1.15',
+        fastjson:               'com.alibaba:fastjson:1.1.39',
         common_collection:      'commons-collections:commons-collections:3.2.1',
-            
+
         spy_memcached:          'net.spy:spymemcached:2.10.4',
         easy_mock:              'org.easymock:easymock:3.2',
 
         btm:                    'com.junbo.btm:btm:3.0.0-SNAPSHOT', // switch to org.codehaus.btm if release version available
-            
+
         //****** common.junbo.test ******
-        common_testlib:         "com.junbo.test:common-testlib:${junboVersion}",            
+        common_testlib:         "com.junbo.test:common-testlib:${junboVersion}",
+
+        querydsl_apt:           'com.mysema.querydsl:querydsl-apt:3.3.2',
+        querydsl_jpa:           'com.mysema.querydsl:querydsl-jpa:3.3.2',
+        querydsl_collections:   'com.mysema.querydsl:querydsl-collections:3.3.2',
 
         //****** common test lib dependencies ******
         apache_commons_lang:    'org.apache.commons:commons-lang3:3.1',

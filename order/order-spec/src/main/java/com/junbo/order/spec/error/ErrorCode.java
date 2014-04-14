@@ -28,6 +28,8 @@ public class ErrorCode {
 
     public static final String UNEXPECTED_ERROR = "10006";
 
+    public static final String INVALID_SETTLED_ORDER_UPDATE = "10007";
+
     // order error starts from 20000
     public static final String ORDER_NOT_FOUND = "20000";
 
@@ -41,6 +43,10 @@ public class ErrorCode {
 
     public static final String ORDER_NOT_TENTATIVE = "20005";
 
-    public static final String DUPLICATE_TRACKING_GUID = "20006";
+    public static final String EVENT_NOT_SUPPORTED = "20006";
+
+    // subledger error starts from 20000
+    public static final String SUBLEDGER_NOT_FOUND = "20200";
+
 
 }

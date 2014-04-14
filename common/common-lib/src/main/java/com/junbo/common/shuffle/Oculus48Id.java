@@ -24,6 +24,8 @@ public class Oculus48Id {
     public static final String OCULUS48_ID_DEFAULT_FILL_FIELD = "0";
     private static DualHashBidiMap oculus48ShuffleMap;
 
+    private static final Long MAGIC_NUMBER = 0x6B54FFB0BC9FL;
+
     static
     {
        // shuffle mapping is:
@@ -77,10 +79,12 @@ public class Oculus48Id {
            Map.Entry pair = (Map.Entry)it.next();
            shuffledValue += (shufflePart & (0x1L << (int)pair.getKey())) == 0 ? 0 : (0x1L << (int)pair.getValue());
        }
-       return nonShufflePart + (shuffledValue << OCULUS48_SHUFFLE_OFFSET);
+       Long value = nonShufflePart + (shuffledValue << OCULUS48_SHUFFLE_OFFSET);
+       return value ^ MAGIC_NUMBER;
    }
 
-   public static Long unShuffle(Long id) {
+   public static Long unShuffle(Long value) {
+       Long id = value ^ MAGIC_NUMBER;
        Long shuffledPart = (id >> OCULUS48_SHUFFLE_OFFSET) & OCULUS48_MASK_BITS;
        Long nonShuffledPart = (id) & (~(OCULUS48_MASK_BITS << OCULUS48_SHUFFLE_OFFSET));
        Long unShuffleValue = 0L;

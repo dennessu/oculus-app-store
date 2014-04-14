@@ -11,16 +11,20 @@ var StoreRoutes = {
             if(App.AuthManager.isAuthenticated()){
                 console.log("[ApplicationRoute] Authenticated");
 
-                var provider = new CartProvider();
-                provider.MergeCart(Utils.GenerateRequestModel(null), function(resultData){
-                    var resultModel = resultData.data;
-                    if (resultModel.status == 200) {
-                        console.log("[ApplicationRoute:Init] Merge Car Success");
+                var provider = new EntitlementProvider();
+                provider.GetEntitlements(Utils.GenerateRequestModel(null), function(resultData){
+                    if(resultData.data.status == 200){
+                        var items = JSON.parse(resultData.data.data).results;
 
-                        Utils.Cookies.Remove(AppConfig.CookiesName.AnonymousUserId);
-                        Utils.Cookies.Remove(AppConfig.CookiesName.AnonymousCartId);
-                    } else {
-                        console.log("[ApplicationRoute:Init] Merge Car Failed!");
+                        console.log("[ApplicationRoute] dev items length: ", items.length);
+                        if(items.length <= 0){
+                            Utils.Cookies.Set(AppConfig.CookiesName.IsDev, false);
+                        }else{
+                            Utils.Cookies.Set(AppConfig.CookiesName.IsDev, true);
+                        }
+                    }else{
+                        // TODO: Error
+                        Utils.Cookies.Set(AppConfig.CookiesName.IsDev, false);
                     }
                 });
             }else{
@@ -39,17 +43,29 @@ var StoreRoutes = {
             }
         },
         beforeModel: function(){
-
-        },
-        afterModel: function(){
+            var _self = this;
             if(App.AuthManager.isAuthenticated()){
-                // to before route
-                var beforeRoute = Utils.Cookies.Get(AppConfig.CookiesName.BeforeRoute);
-                if(!Ember.isEmpty(beforeRoute)){
-                    console.log("[ApplicationRoute] After Model: transitionTo ", beforeRoute);
-                    Utils.Cookies.Remove(AppConfig.CookiesName.BeforeRoute);
-                    this.transitionTo(beforeRoute);
-                }
+                var provider = new CartProvider();
+                provider.MergeCart(Utils.GenerateRequestModel(null), function(resultData){
+                    var resultModel = resultData.data;
+                    if (resultModel.status == 200) {
+                        console.log("[ApplicationRoute:Init] Merge Car Success");
+
+                        Utils.Cookies.Remove(AppConfig.CookiesName.AnonymousUserId);
+                        Utils.Cookies.Remove(AppConfig.CookiesName.AnonymousCartId);
+                    } else {
+                        console.log("[ApplicationRoute:Init] Merge Car Failed!");
+                    }
+
+                    // redirect to before route
+                    var beforeRoute = Utils.Cookies.Get(AppConfig.CookiesName.BeforeRoute);
+                    if(!Ember.isEmpty(beforeRoute)){
+                        console.log("[ApplicationRoute] After Model: transitionTo ", beforeRoute);
+                        Utils.Cookies.Remove(AppConfig.CookiesName.BeforeRoute);
+                        _self.transitionTo(beforeRoute);
+                        return;
+                    }
+                });
             }
         },
         actions: {
@@ -123,7 +139,7 @@ var StoreRoutes = {
                             if (resultData.data.status == 200) {
                                 controller.set("content.shippingAddress", JSON.parse(resultData.data.data));
                             } else {
-
+                                controller.set("content.shippingAddress", null);
                             }
                         });
                     }

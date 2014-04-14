@@ -15,10 +15,7 @@ import com.junbo.billing.db.mapper.ModelMapper;
 import com.junbo.sharding.IdGeneratorFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created by xmchen on 14-2-19.
@@ -109,12 +106,6 @@ public class BalanceRepositoryImpl implements BalanceRepository {
         orderBalanceLinkEntity.setCreatedBy("Billing");
         orderBalanceLinkEntityDao.insert(orderBalanceLinkEntity);
 
-        balanceEntityDao.flush();
-        balanceItemEntityDao.flush();
-        taxItemEntityDao.flush();
-        discountItemEntityDao.flush();
-        orderBalanceLinkEntityDao.flush();
-
         // create balance event
         saveBalanceEventEntity(balanceEntity);
 
@@ -198,12 +189,23 @@ public class BalanceRepositoryImpl implements BalanceRepository {
             }
         }
 
-        balanceEntityDao.flush();
-
         // create balance event
         saveBalanceEventEntity(savedEntity);
 
         return getBalance(balanceEntity.getBalanceId());
+    }
+
+    @Override
+    public List<BalanceId>  fetchAsyncChargeBalanceIds(Integer count) {
+        List<BalanceEntity> balanceEntities = balanceEntityDao.getAsyncChargeInitBalances(count);
+        List<BalanceId> ids = new ArrayList<>();
+        if(balanceEntities != null) {
+            for(BalanceEntity entity : balanceEntities) {
+                BalanceId id = new BalanceId(entity.getBalanceId());
+                ids.add(id);
+            }
+        }
+        return ids;
     }
 
     @Override
@@ -232,6 +234,5 @@ public class BalanceRepositoryImpl implements BalanceRepository {
         balanceEventEntity.setStatusId(balanceEntity.getStatusId());
         balanceEventEntity.setEventDate(new Date());
         balanceEventEntityDao.insert(balanceEventEntity);
-        balanceEventEntityDao.flush();
     }
 }

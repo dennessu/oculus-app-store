@@ -16,7 +16,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import com.junbo.payment.db.entity.GenericEntity;
-import com.junbo.payment.spec.enums.PIStatus;
 import com.junbo.payment.spec.enums.PIType;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -50,11 +49,14 @@ public class PaymentInstrumentEntity extends GenericEntity {
     @Column(name = "account_number")
     private String accountNum;
 
+    @Column(name = "revision")
+    private Integer rev;
+
     @Column(name = "address_id")
     private Long addressId;
 
-    @Column(name = "phone_id")
-    private Long phoneId;
+    @Column(name = "phone_num")
+    private String phoneNum;
 
     @Column(name = "email")
     private String email;
@@ -62,15 +64,15 @@ public class PaymentInstrumentEntity extends GenericEntity {
     @Column(name = "relation_to_holder")
     private String relationToHolder;
 
-    @Column(name = "status_id")
-    private PIStatus status;
+    @Column(name = "active")
+    private Boolean isActive;
+
+    @Column(name = "deleted")
+    private Boolean isDeleted;
 
     @Column(name = "last_validated_time")
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastValidatedTime;
-
-    @Column(name = "is_default")
-    private String isDefault;
 
     public Long getId() {
         return id;
@@ -125,6 +127,14 @@ public class PaymentInstrumentEntity extends GenericEntity {
         this.accountNum = accountNum;
     }
 
+    public Integer getRev() {
+        return rev;
+    }
+
+    public void setRev(Integer rev) {
+        this.rev = rev;
+    }
+
     public Long getAddressId() {
         return addressId;
     }
@@ -133,12 +143,12 @@ public class PaymentInstrumentEntity extends GenericEntity {
         this.addressId = addressId;
     }
 
-    public Long getPhoneId() {
-        return phoneId;
+    public String getPhoneNum() {
+        return phoneNum;
     }
 
-    public void setPhoneId(Long phoneId) {
-        this.phoneId = phoneId;
+    public void setPhoneNum(String phoneNum) {
+        this.phoneNum = phoneNum;
     }
 
     public String getRelationToHolder() {
@@ -157,12 +167,20 @@ public class PaymentInstrumentEntity extends GenericEntity {
         this.email = email;
     }
 
-    public PIStatus getStatus() {
-        return status;
+    public Boolean getIsActive() {
+        return isActive;
     }
 
-    public void setStatus(PIStatus status) {
-        this.status = status;
+    public void setIsActive(Boolean isActive) {
+        this.isActive = isActive;
+    }
+
+    public Boolean isDeleted() {
+        return isDeleted == null ? false : isDeleted;
+    }
+
+    public void setDeleted(Boolean isDeleted) {
+        this.isDeleted = isDeleted;
     }
 
     public Date getLastValidatedTime() {
@@ -171,14 +189,6 @@ public class PaymentInstrumentEntity extends GenericEntity {
 
     public void setLastValidatedTime(Date lastValidatedTime) {
         this.lastValidatedTime = lastValidatedTime;
-    }
-
-    public String getIsDefault() {
-        return isDefault;
-    }
-
-    public void setIsDefault(String isDefault) {
-        this.isDefault = isDefault;
     }
 
     public String toString() {

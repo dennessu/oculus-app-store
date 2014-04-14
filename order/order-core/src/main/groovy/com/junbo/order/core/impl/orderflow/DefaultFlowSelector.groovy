@@ -41,18 +41,22 @@ class DefaultFlowSelector implements FlowSelector {
     OrderServiceContextBuilder orderServiceContextBuilder
 
     @Override
-    Promise<FlowType> select(OrderServiceContext context, OrderServiceOperation operation) throws AppErrorException {
+    Promise<String> select(OrderServiceContext context, OrderServiceOperation operation) throws AppErrorException {
         assert(context != null && operation != null)
         switch (operation) {
             case OrderServiceOperation.CREATE:
             case OrderServiceOperation.SETTLE_TENTATIVE:
                 return selectSettleOrderFlow(context)
             case OrderServiceOperation.CREATE_TENTATIVE:
-                return Promise.pure(FlowType.RATE_ORDER)
+                return Promise.pure(FlowType.RATE_ORDER.name())
             case OrderServiceOperation.UPDATE_TENTATIVE:
-                return Promise.pure(FlowType.UPDATE_TENTATIVE)
+                return Promise.pure(FlowType.UPDATE_TENTATIVE.name())
+            case OrderServiceOperation.UPDATE_NON_TENTATIVE:
+                return Promise.pure(FlowType.UPDATE_NON_TENTATIVE.name())
             case OrderServiceOperation.GET:
-                return Promise.pure(FlowType.GET_ORDER)
+                return Promise.pure(FlowType.GET_ORDER.name())
+            case OrderServiceOperation.COMPLETE_CHARGE:
+                return Promise.pure(FlowType.COMPLETE_CHARGE.name())
             default:
                 LOGGER.error('name=Order_Action_Not_Supported, action: {0}', operation.toString())
                 throw AppErrors.INSTANCE.orderActionNotSupported(
@@ -60,7 +64,7 @@ class DefaultFlowSelector implements FlowSelector {
         }
     }
 
-    private Promise<FlowType> selectSettleOrderFlow(OrderServiceContext expOrder) throws AppErrorException {
+    private Promise<String> selectSettleOrderFlow(OrderServiceContext expOrder) throws AppErrorException {
         def type = expOrder?.order?.type
         assert (type != null)
         switch (type) {
@@ -72,12 +76,12 @@ class DefaultFlowSelector implements FlowSelector {
         }
     }
 
-    private Promise<FlowType> selectPayInFlow(OrderServiceContext context) throws AppErrorException {
+    private Promise<String> selectPayInFlow(OrderServiceContext context) throws AppErrorException {
 
         assert(context != null && context.order != null)
 
         if (CollectionUtils.isEmpty(context.order.paymentInstruments)) {
-            return Promise.pure(FlowType.FREE_SETTLE)
+            return Promise.pure(FlowType.FREE_SETTLE.name())
         }
         // select order flow per payment info and product item info
         orderServiceContextBuilder.getPaymentInstruments(context).then { List<PaymentInstrument> pis ->
@@ -90,8 +94,8 @@ class DefaultFlowSelector implements FlowSelector {
                     Boolean isPhysical = context.order.orderItems.any { OrderItem orderItem ->
                         orderItem.type?.toUpperCase() == ItemType.PHYSICAL.name()
                     }
-                    return isPhysical ? Promise.pure(FlowType.AUTH_SETTLE) :
-                            Promise.pure(FlowType.IMMEDIATE_SETTLE)
+                    return isPhysical ? Promise.pure(FlowType.PHYSICAL_SETTLE.name()) :
+                            Promise.pure(FlowType.IMMEDIATE_SETTLE.name())
                 default:
                     LOGGER.error('name=Payment_Instrument_Type_Not_Supported, action: {}', pis[0]?.type)
                     throw AppErrors.INSTANCE.piTypeNotSupported(

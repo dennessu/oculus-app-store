@@ -1,9 +1,12 @@
 gradle/bootstrap
-oom
 langur
 common
+oom
+identity/identity-spec
+#oauth/oauth-spec
+#authorization
 identity
-oauth
+#oauth
 catalog
 entitlement
 rating

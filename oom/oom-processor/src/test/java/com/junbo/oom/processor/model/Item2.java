@@ -39,4 +39,14 @@ public class Item2 extends BaseItem<Long> {
     public void setTarget1(String target1) {
         this.target1 = target1;
     }
+
+    private Item1 item1;
+
+    public Item1 getItem1() {
+        return item1;
+    }
+
+    public void setItem1(Item1 item1) {
+        this.item1 = item1;
+    }
 }

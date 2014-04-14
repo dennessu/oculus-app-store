@@ -10,8 +10,7 @@
         <sql><![CDATA[
             create table item_draft (
               item_id                 bigint            not null,
-              revision                bigint            not null,
-              type                    bigint            not null,
+              type                    varchar(64)       not null,
               item_name               varchar(64)       not null,
               status                  varchar(64)       not null,
               owner_id                bigint            not null,
@@ -28,8 +27,7 @@
             create table item (
               id                      bigint            not null,
               item_id                 bigint            not null,
-              revision                bigint            not null,
-              type                    bigint            not null,
+              type                    varchar(64)       not null,
               item_name               varchar(64)       not null,
               status                  varchar(64)       not null,
               owner_id                bigint            not null,
@@ -45,7 +43,6 @@
 
             create table offer_draft (
               offer_id                bigint            not null,
-              revision                bigint            not null,
               offer_name              varchar(64)       not null,
               status                  varchar(64)       not null,
               owner_id                bigint            not null,
@@ -62,7 +59,6 @@
             create table offer (
               id                      bigint            not null,
               offer_id                bigint            not null,
-              revision                bigint            not null,
               offer_name              varchar(64)       not null,
               status                  varchar(64)       not null,
               owner_id                bigint            not null,
@@ -87,6 +83,18 @@
 
               primary key (id)
             );
+
+            create table price_tiers (
+              id                      bigint            not null,
+              name                    varchar(64)       not null,
+              payload                 json              not null,
+              created_by              varchar(64)       not null,
+              created_time            timestamp         not null,
+              updated_by              varchar(64)       default null,
+              updated_time            timestamp         default null,
+
+              primary key (id)
+            );
                 ]]>
         </sql>
     </changeSet>
@@ -94,7 +102,6 @@
         <sql><![CDATA[
             create table promotion_draft (
             promotion_id            bigint            not null,
-            revision                bigint            not null,
             promotion_name          varchar(64)       not null,
             type                    varchar(64)       not null,
             status                  varchar(64)       not null,
@@ -113,7 +120,6 @@
             create table promotion (
             id                      bigint            not null,
             promotion_id            bigint            not null,
-            revision                bigint            not null,
             promotion_name          varchar(64)       not null,
             type                    varchar(64)       not null,
             status                  varchar(64)       not null,
@@ -128,6 +134,36 @@
             
             primary key (id)
             );
+        ]]>
+        </sql>
+    </changeSet>
+    <changeSet id="3" author='nanxin' context="PREDEPLOY">
+        <sql><![CDATA[
+            create table entitlement_definition(
+              entitlement_definition_id       bigint       not null,
+              developer_id                    bigint       not null,
+              rev                             int          not null,
+              in_app_context                  json default null,
+              type                            smallint     not null,
+              entitlement_group               varchar(64)  default null,
+              tag                             varchar(64)  not null,
+              consumable                      boolean      not null,
+              created_by                      varchar(32)  not null,
+              updated_by                      varchar(32)  default null,
+              created_time                    timestamp    not null,
+              updated_time                    timestamp    default null,
+              tracking_uuid                   uuid         UNIQUE,
+              primary key (entitlement_definition_id)
+            );
+            CREATE OR REPLACE FUNCTION json_val_arr(_j json)
+            RETURNS text[] AS
+            $$
+             SELECT array_agg(text(elem))
+             FROM json_array_elements(_j) AS x(elem)
+            $$
+            LANGUAGE sql IMMUTABLE;
+            CREATE INDEX entitlement_definition_in_app_context_gin_idx ON entitlement_definition
+            USING GIN (json_val_arr(in_app_context));
         ]]>
         </sql>
     </changeSet>

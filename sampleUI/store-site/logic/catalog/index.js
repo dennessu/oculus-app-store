@@ -4,7 +4,7 @@ var CatalogDataProvider = require('store-data-provider').Catalog;
 var DomainModels = require('../../models/domain');
 var Utils = require('../../utils/utils');
 
-exports.Products = function (data, cb) {
+exports.GetProducts = function (data, cb) {
     var body = data.data;
     var cookies = data.cookies;
     var query = data.query;
@@ -46,17 +46,13 @@ exports.Products = function (data, cb) {
     }
 };
 
-exports.GetDownloadLinksByOfferId = function(data, callback){
+exports.GetDownloadLinks = function(data, callback){
     var body = data.data;
     var cookies = data.cookies;
     var query = data.query;
     var offerId = body["productId"];
     var itemsCount = 0;
     var itemsIndex = 0;
-
-    // get offer
-    // get offer items
-    // get
 
     var callBackResult = new Array(); //{name: "", link: ""}
     var emitter = new Emitter();
@@ -68,6 +64,7 @@ exports.GetDownloadLinksByOfferId = function(data, callback){
               if(offer["results"] != undefined && offer["results"].length > 0){
                   itemsCount = offer.results.length;
                   offer.results.forEach(function(item){
+
                       dataProvider.GetItemById(item.itemId.id, function(itemResult){
                           if(itemResult.StatusCode == 200){
                               var itemObj = JSON.parse(itemResult.Data);

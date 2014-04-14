@@ -10,7 +10,7 @@ var app = angular.module('catalog', [
   'catalog.controllers'
 ]);
 
-app.config(['$routeProvider', function($routeProvider) {
+app.config(['$routeProvider', '$httpProvider', function($routeProvider, $httpProvider) {
   $routeProvider.when('/offers/creation', {templateUrl: 'views/offer/offer-creation.html', controller: 'OfferCreationCtrl'});
   $routeProvider.when('/offers', {templateUrl: 'views/offer/offer-list.html', controller: 'OfferListCtrl'});
   //$routeProvider.when('/offers/review', {templateUrl: 'views/offer/offer-list.html', controller: 'OfferReviewListCtrl'});
@@ -28,5 +28,6 @@ app.config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/attributes', {templateUrl: '../views/attribute/attribute-list.html', controller: 'AttributeListCtrl'});
   $routeProvider.when('/attributes/:id', {templateUrl: '../views/attribute/attribute-detail.html', controller: 'AttributeDetailCtrl'});
 
-    $routeProvider.otherwise({redirectTo: '/offers'});
+  $routeProvider.when('/login', {templateUrl: 'views/auth/login.html', controller: 'LoginCtrl'});
+  $routeProvider.otherwise({redirectTo: '/login'});
 }]);

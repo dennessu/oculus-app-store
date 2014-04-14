@@ -38,6 +38,6 @@ public class IdSerializer extends JsonSerializer<Id> {
 
     protected String getHref(Id value) {
         // TODO: get the href template from config service and key as Id subType class
-        return "https://xxx.xxx.xxx";
+        return "http://api.oculusvr.com/v1";
     }
 }

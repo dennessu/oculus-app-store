@@ -30,9 +30,4 @@ class OfferValidator {
         assert selected == result.selected
         return this
     }
-
-    OfferValidator updatedTime (Date updatedTime) {
-        assert updatedTime == result.updatedTime
-        return this
-    }
 }

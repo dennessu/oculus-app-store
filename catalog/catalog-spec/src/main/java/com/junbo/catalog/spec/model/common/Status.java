@@ -6,16 +6,22 @@
 
 package com.junbo.catalog.spec.model.common;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Entity status.
  */
 public final class Status {
-    public static final String DESIGN = "Design";
-    public static final String PENDING_REVIEW = "PendingReview";
-    public static final String RELEASED = "Released";
-    public static final String REJECTED = "Rejected";
-    public static final String REMOVED = "Removed";
-    public static final String DELETED = "Deleted";
+    public static final String DRAFT = "DRAFT";
+    public static final String PENDING_REVIEW = "PENDING_REVIEW";
+    public static final String APPROVED = "APPROVED";
+    public static final String REJECTED = "REJECTED";
+
+    public static final Set<String> ALL_STATUSES =
+            Collections.unmodifiableSet(new HashSet<>(Arrays.asList(DRAFT, PENDING_REVIEW, APPROVED, REJECTED)));
 
     private Status(){ }
 }

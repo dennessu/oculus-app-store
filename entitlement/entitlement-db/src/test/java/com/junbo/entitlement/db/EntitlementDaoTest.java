@@ -8,9 +8,9 @@ package com.junbo.entitlement.db;
 
 import com.junbo.common.id.UserId;
 import com.junbo.entitlement.common.lib.EntitlementContext;
-import com.junbo.entitlement.db.entity.def.EntitlementStatus;
-import com.junbo.entitlement.db.entity.def.EntitlementType;
 import com.junbo.entitlement.db.repository.EntitlementRepository;
+import com.junbo.entitlement.spec.def.EntitlementStatus;
+import com.junbo.entitlement.spec.def.EntitlementType;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.model.EntitlementSearchParam;
 import com.junbo.entitlement.spec.model.PageMetadata;
@@ -18,12 +18,14 @@ import com.junbo.sharding.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import org.springframework.transaction.annotation.Transactional;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import javax.sql.DataSource;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -34,19 +36,14 @@ import java.util.Random;
  */
 @ContextConfiguration(locations = {"classpath:spring/context-test.xml"})
 @TransactionConfiguration(defaultRollback = true)
-public class EntitlementDaoTest extends AbstractTransactionalTestNGSpringContextTests {
+@TestExecutionListeners(TransactionalTestExecutionListener.class)
+@Transactional("transactionManager")
+public class EntitlementDaoTest extends AbstractTestNGSpringContextTests {
     @Autowired
     @Qualifier("oculus48IdGenerator")
     private IdGenerator idGenerator;
     @Autowired
     private EntitlementRepository entitlementRepository;
-
-    @Override
-    @Autowired
-    @Qualifier("entitlementDataSource")
-    public void setDataSource(DataSource dataSource) {
-        super.setDataSource(dataSource);
-    }
 
     @Test
     public void testInsert() {

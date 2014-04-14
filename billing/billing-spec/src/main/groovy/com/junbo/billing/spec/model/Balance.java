@@ -36,8 +36,10 @@ public class Balance {
     private String currency;
     private String country;
     private Date dueDate;
+    private Boolean isAsyncCharge;
     private ShippingAddressId shippingAddressId;
     private BalanceId originalBalanceId;
+    private Boolean skipTaxCalculation;
 
     private List<BalanceItem> balanceItems;
 
@@ -200,4 +202,19 @@ public class Balance {
         this.taxStatus = taxStatus;
     }
 
+    public Boolean getIsAsyncCharge() {
+        return isAsyncCharge;
+    }
+
+    public void setIsAsyncCharge(Boolean isAsyncCharge) {
+        this.isAsyncCharge = isAsyncCharge;
+    }
+
+    public Boolean getSkipTaxCalculation() {
+        return skipTaxCalculation;
+    }
+
+    public void setSkipTaxCalculation(Boolean skipTaxCalculation) {
+        this.skipTaxCalculation = skipTaxCalculation;
+    }
 }

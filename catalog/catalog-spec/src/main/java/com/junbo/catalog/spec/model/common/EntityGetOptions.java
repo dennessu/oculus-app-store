@@ -20,14 +20,14 @@ public class EntityGetOptions {
 
     public static EntityGetOptions getDefault() {
         EntityGetOptions options = new EntityGetOptions();
-        options.setStatus(Status.RELEASED);
+        options.setStatus(Status.APPROVED);
 
         return options;
     }
 
     public static EntityGetOptions getDraft() {
         EntityGetOptions options = new EntityGetOptions();
-        options.setStatus(Status.DESIGN);
+        options.setStatus(Status.DRAFT);
 
         return options;
     }

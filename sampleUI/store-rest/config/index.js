@@ -4,11 +4,19 @@ module.exports = {
         /* [POST]  Authenticate ----------------------------------------------------------- */
         PostAuthenticate: {
             Method: 'POST',
-            Path: '/rest/Authenticate',
-            ResponseItem: 'Succeed',
+            Path: '/rest/oauth2/authorize',
+            ResponseItem: 'SucceedCSR',
             Items: {
 
                 'Succeed': {
+                    statusCode: 302,
+                    headers: {
+                        location: 'http://localhost:3100/callback/login?code=1234'
+                    },
+                    data: ""
+                },
+
+                'SucceedCSR': {
                     statusCode: 302,
                     headers: {
                         location: 'http://localhost:3000/callback/login?code=1234'
@@ -33,7 +41,7 @@ module.exports = {
 
         PostToken: {
             Method: 'POST',
-            Path: '/rest/token',
+            Path: '/rest/oauth2/token',
             ResponseItem: 'Succeed',
             Items: {
 
@@ -57,7 +65,7 @@ module.exports = {
 
         GetTokenInfo: {
             Method: 'GET',
-            Path: '/rest/tokeninfo',
+            Path: '/rest/oauth2/tokeninfo',
             ResponseItem: 'Succeed',
             Items: {
 
@@ -65,7 +73,10 @@ module.exports = {
                     statusCode: 200,
                     headers: null,
                     data: {
-                        "user_id": "728917210477568936",
+                        "sub": {
+                            id:"728917210477568936",
+                            href: "#"
+                        },
                         "expire_in": 3252,
                         "scopes": "identity openid",
                         "client_id": "client"
@@ -242,7 +253,7 @@ module.exports = {
                     statusCode: 200,
                     headers: null,
                     data: {
-                        items: [
+                        results: [
                             {
                                 "user": {
                                     "href": "https://xxx.xxx.xxx",
@@ -282,7 +293,7 @@ module.exports = {
                     statusCode: 200,
                     headers: null,
                     data: {
-                        items: [
+                        results: [
                             {
                                 "revision": 1,
                                 "name": "3D Parking 1",
@@ -903,7 +914,7 @@ module.exports = {
                     headers: null,
                     data:
                         {
-                            items: [
+                            results: [
                                 {
                                     "self": {
                                         "href": "https://xxx.xxx.xxx",
@@ -1480,7 +1491,7 @@ module.exports = {
                     statusCode: 200,
                     headers: null,
                     data:{
-                        items:[
+                        results:[
                             {
                                 "self": {
                                     "href": "http://api.wan-san.com/v1/payment-instrument-types/CREDITCARD",
@@ -1730,7 +1741,7 @@ module.exports = {
                     statusCode: 200,
                     headers: null,
                     data:{
-                        "items": [
+                        "results": [
                             {
                                 "self": {
                                     "href": "http://api.wan-san.com/v1/entitlements/00200B050000",
@@ -1764,7 +1775,7 @@ module.exports = {
                     statusCode: 200,
                     headers: null,
                     data:{
-                        "items": [],
+                        "results": [],
                         "next": {
                             "href": "END"
                         }

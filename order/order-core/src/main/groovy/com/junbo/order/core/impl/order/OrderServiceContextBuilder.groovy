@@ -8,6 +8,7 @@ package com.junbo.order.core.impl.order
 
 import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.ShippingAddress
+import com.junbo.common.id.OfferId
 import com.junbo.common.id.PaymentInstrumentId
 import com.junbo.identity.spec.model.user.User
 import com.junbo.langur.core.promise.Promise
@@ -95,7 +96,7 @@ class OrderServiceContextBuilder {
     }
 
     Promise<ShippingAddress> getShippingAddress(OrderServiceContext context) {
-        if (context == null || context.order == null || context.order.shippingAddressId == null) {
+        if (context == null || context.order == null || context.order.shippingAddress == null) {
             return Promise.pure(null)
         }
 
@@ -107,11 +108,11 @@ class OrderServiceContextBuilder {
 
     Promise<ShippingAddress> refreshShippingAddress(OrderServiceContext context) {
 
-        if (context == null || context.order == null || context.order.shippingAddressId == null) {
+        if (context == null || context.order == null || context.order.shippingAddress == null) {
             return Promise.pure(null)
         }
         return facadeContainer.billingFacade.getShippingAddress(
-                context.order.user.value, context.order.shippingAddressId.value).syncThen { ShippingAddress sa ->
+                context.order.user.value, context.order.shippingAddress.value).syncThen { ShippingAddress sa ->
             context.shippingAddress = sa
             return sa
         }
@@ -144,7 +145,11 @@ class OrderServiceContextBuilder {
                 offers << of
             }
         }.syncThen {
-            context.offers = offers
+            def offerMap = new HashMap<OfferId, OrderOffer>()
+            offers?.each { OrderOffer offer ->
+                offerMap.put(new OfferId(offer.catalogOffer.id), offer)
+            }
+            context.offers = offerMap
             return offers
         }
     }

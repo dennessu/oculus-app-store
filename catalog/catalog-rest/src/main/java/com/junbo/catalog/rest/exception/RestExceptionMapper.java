@@ -6,6 +6,8 @@
 
 package com.junbo.catalog.rest.exception;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import com.junbo.catalog.spec.error.AppErrors;
@@ -30,7 +32,14 @@ public class RestExceptionMapper implements ExceptionMapper<Exception> {
         } else if (e instanceof InvalidFormatException) {    //field invalid format exception
             return AppErrors.INSTANCE.fieldNotCorrect(
                     ((InvalidFormatException) e).getPathReference(), e.getMessage()).exception().getResponse();
-        } else {    //other exceptions
+        } else if (e instanceof JsonParseException) {
+            return AppErrors.INSTANCE.invalidJson(e.getMessage()).exception().getResponse();
+        } else if (e instanceof JsonMappingException) {
+           return AppErrors.INSTANCE.fieldNotCorrect(((JsonMappingException) e).getPathReference(), e.getMessage())
+                   .exception().getResponse();
+        }
+        //other exceptions
+        else {
             return AppErrors.INSTANCE.unCaught(e.getMessage()).exception().getResponse();
         }
     }

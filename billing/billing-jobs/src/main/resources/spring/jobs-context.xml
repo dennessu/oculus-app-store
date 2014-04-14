@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:component-scan base-package="com.junbo.billing.db.*"/>
+
+    <!-- Billing Scheduler -->
+    <bean id="billingSchedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="schedulerName" value="billingScheduler" />
+        <property name="autoStartup" value="${billing.jobs.scheduler.start}" />
+        <property name="triggers">
+            <list>
+                <ref bean="billingAsyncChargeJobTrigger"/>
+            </list>
+        </property>
+        <property name="applicationContextSchedulerContextKey" value="applicationContext" />
+    </bean>
+
+    <!-- Billing Balance Process Job Trigger -->
+    <bean id="billingAsyncChargeJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean" >
+        <property name="jobDetail" ref="billingAsyncChargeJobDetail" />
+        <property name="cronExpression" value="${billing.jobs.asynccharge.cronexpression}" />
+    </bean>
+
+    <!-- Billing Balance Process Job -->
+    <bean id="billingAsyncChargeJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="billingAsyncChargeJob" />
+        <property name="targetMethod" value="execute" />
+    </bean>
+
+    <bean id="billingAsyncChargeJob" class="com.junbo.billing.jobs.AsyncChargeJob" />
+
+    <bean id="asyncChargeProcessor" class="com.junbo.billing.jobs.AsyncChargeProcessor">
+        <property name="concurrentCount" value="${billing.jobs.asynccharge.concurrentCount}" />
+        <property name="processCount" value="${billing.jobs.asynccharge.processCount}" />
+        <property name="timeLimitMinutes" value="${billing.jobs.asynccharge.timeLimitMinutes}" />
+        <property name="transactionManager" ref="transactionManager" />
+    </bean>
+
+    <bean id="billingFacade" class="com.junbo.billing.jobs.BillingFacadeImpl">
+        <property name="url" value="${billing.client.billing.url}"/>
+    </bean>
+</beans>

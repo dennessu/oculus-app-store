@@ -5,20 +5,20 @@
  */
 package com.junbo.cart.db.mapper
 
-import com.junbo.oom.core.MappingContext
+import com.junbo.cart.db.dao.DaoTestBase
 import com.junbo.cart.db.util.Generator
+import com.junbo.oom.core.MappingContext
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests
+import org.springframework.beans.factory.annotation.Qualifier
 import org.testng.annotations.Test
 
 /**
  * Created by fzhang@wan-san.com on 14-2-15.
  */
-@ContextConfiguration(locations = ['/context-test.xml'])
-class CartMapperTest extends AbstractTestNGSpringContextTests {
+class CartMapperTest extends DaoTestBase {
 
     @Autowired
+    @Qualifier('dataMapper')
     private CartMapper cartMapper
 
     def generator = new Generator()
@@ -60,20 +60,8 @@ class CartMapperTest extends AbstractTestNGSpringContextTests {
         assert model.selected == entity.selected
         assert model.quantity == entity.quantity
         assert model.offer.value == entity.offerId
-        assert model.createdTime == entity.createdTime
-        assert model.updatedTime == entity.updatedTime
     }
 
-    @Test
-    void testToCouponItemModel() {
-        def entity = generator.couponItemEntity()
-        def model = cartMapper.toCouponItemModel(entity, context)
-
-        assert model.id.value == entity.cartItemId
-        assert model.coupon.value.toString() == entity.couponCode
-        assert model.createdTime == entity.createdTime
-        assert model.updatedTime == entity.updatedTime
-    }
 }
 
 

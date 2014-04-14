@@ -7,11 +7,12 @@
 package com.junbo.catalog.core;
 
 import com.junbo.catalog.spec.model.promotion.Promotion;
+import com.junbo.catalog.spec.model.promotion.PromotionRevision;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Promotion service definition.
  */
 @Transactional
-public interface PromotionService extends BaseService<Promotion> {
+public interface PromotionService extends BaseRevisionedService<Promotion, PromotionRevision> {
 }

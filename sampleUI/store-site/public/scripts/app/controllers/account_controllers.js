@@ -14,6 +14,9 @@ var AccountControllers = {
         },
         actions:{
             SaveChanges: function(){
+                if($("#BtnSaveSetting").hasClass('load')) return;
+                $("#BtnSaveSetting").addClass('load');
+
                 var _self = this;
                 // save profile
                 var profileData = {firstName: _self.get("content.firstName"), lastName: _self.get("content.lastName")};
@@ -31,9 +34,12 @@ var AccountControllers = {
                             });
                         }
                         console.log("[EditInfoController: SaveChanges] success");
+
+                        _self.transitionToRoute("account.index");
                     }else{
                         //TODO: Error
                         console.log("[EditInfoController: SaveChanges] Failed");
+                        $("#BtnSaveSetting").removeClass('load');
                     }
                 });
             },
@@ -49,6 +55,10 @@ var AccountControllers = {
         },
         actions:{
             SaveChanges: function(){
+
+                if($("#BtnSavePassword").hasClass('load')) return;
+                $("#BtnSavePassword").addClass('load');
+
                 var _self = this;
                 var provider = new IdentityProvider();
                 provider.RestPassword(Utils.GenerateRequestModel({password: _self.get("content.password")}), function(resultData){
@@ -60,6 +70,7 @@ var AccountControllers = {
                         // TODO: Error
                         console.log("[EditPasswordController:SaveChanges] failed!");
                         _self.set("errMessage", "Please try again later!");
+                        $("#BtnSavePassword").removeClass('load');
                     }
                 });
 
@@ -230,7 +241,7 @@ var AccountControllers = {
             encryptedCvmCode: "",
             addressLine1: "",
             city: "",
-            state: "CA",
+            state: "",
             country: "",
             postalCode: "",
             phoneType: "home",
@@ -242,6 +253,10 @@ var AccountControllers = {
         },
         actions: {
             Continue: function () {
+
+                if($("#BtnPayment").hasClass('load')) return;
+                $("#BtnPayment").addClass('load');
+
                 var _self = this;
                 var model = _self.get("content");
 
@@ -254,6 +269,7 @@ var AccountControllers = {
                         _self.transitionToRoute("account.payment");
                     }else{
                         _self.set("errMessage", "Please try again later!");
+                        $("#BtnPayment").removeClass('load');
                     }
                 });
             },
@@ -280,7 +296,7 @@ var AccountControllers = {
                         _self.set("errMessage", null);
                         $("#DelDialog").hide();
                         var provider = new BillingProvider();
-                        provider.ShippingInfo(Utils.GenerateRequestModel(null), function(result){
+                        provider.GetShippingInfos(Utils.GenerateRequestModel(null), function(result){
                             if(result.data.status == 200){
                                 var shippings = JSON.parse(result.data.data).results;
                                 _self.set("content.shippings", shippings);
@@ -328,6 +344,10 @@ var AccountControllers = {
 
         actions: {
             Continue: function(){
+
+                if($("#BtnShippingAddress").hasClass('load')) return;
+                $("#BtnShippingAddress").addClass('load');
+
                 var _self = this;
 
                 var dataProvider = new BillingProvider();
@@ -337,6 +357,7 @@ var AccountControllers = {
                         _self.transitionToRoute('account.shipping');
                     }else{
                         _self.set("errMessage", "Please try again later!");
+                        $("#BtnShippingAddress").removeClass('load');
                     }
                 });
             },

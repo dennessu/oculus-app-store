@@ -14,7 +14,6 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Created by LinYi on 2/11/14.
@@ -91,17 +90,5 @@ public class OrderDaoTest extends BaseTest {
         int totalSize = orderDao.readByUserId(userId, null, null, null).size();
         Assert.assertTrue(orderDao.readByUserId(userId, true, null, null).size() < totalSize);
         Assert.assertTrue(orderDao.readByUserId(userId, false, null, null).size() < totalSize);
-    }
-
-    @Test
-    public void testReadByUuid() {
-        OrderEntity orderEntity = TestHelper.generateOrder();
-        UUID trackingUuid = orderEntity.getTrackingUuid();
-        List<OrderEntity> resultBefore = orderDao.readByTrackingUuid(trackingUuid);
-        orderDao.create(orderEntity);
-        orderDao.flush();
-        List<OrderEntity> resultAfter = orderDao.readByTrackingUuid(trackingUuid);
-
-        Assert.assertEquals(resultAfter.size(), resultBefore.size() + 1, "Result size should increase.");
     }
 }

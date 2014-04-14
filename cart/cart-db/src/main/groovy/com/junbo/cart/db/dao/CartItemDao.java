@@ -9,6 +9,7 @@ import com.junbo.cart.db.entity.CartItemEntity;
 import com.junbo.cart.db.entity.ItemStatus;
 import org.hibernate.Session;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -17,11 +18,13 @@ import java.util.List;
  */
 public interface CartItemDao<T extends CartItemEntity> {
 
-    Session getSession();
+    Session getSession(Object key);
 
     void insert(T item);
 
     void update(T item);
+
+    boolean markDelete(long id, Date time);
 
     T get(long id);
 

@@ -10,6 +10,7 @@ import com.junbo.oom.processor.model.MappingMethodModel
 import com.junbo.oom.processor.model.MappingMethodRefModel
 import com.junbo.oom.processor.source.MappingMethodInfo
 import groovy.transform.CompileStatic
+
 /**
  * Java doc.
  */
@@ -31,21 +32,23 @@ class MapMappingMethodProcessor implements MappingMethodProcessor {
         def sourceValueType = mappingMethodInfo.sourceParameter.type.typeParameters[1]
         def targetValueType = mappingMethodInfo.returnType.typeParameters[1]
 
+        def hasAlternativeSourceParameter = mappingMethodInfo.alternativeSourceParameter != null
         def contextParameter = mappingMethodInfo.contextParameter
 
         MappingMethodRefModel keyMappingMethod = MappingMethodProcessorUtil.getOrCreateMappingMethodRef(
-                sourceKeyType, targetKeyType, contextParameter, processorContext)
+                sourceKeyType, targetKeyType, false, contextParameter, processorContext)
 
         MappingMethodRefModel valueMappingMethod = MappingMethodProcessorUtil.getOrCreateMappingMethodRef(
-                sourceValueType, targetValueType, contextParameter, processorContext)
+                sourceValueType, targetValueType, hasAlternativeSourceParameter, contextParameter, processorContext)
 
         return new MapMappingMethodModel(
-                name:mappingMethodInfo.name,
-                sourceParameter:mappingMethodInfo.sourceParameter,
-                contextParameter:mappingMethodInfo.contextParameter,
-                returnType:mappingMethodInfo.returnType,
-                keyMappingMethod:keyMappingMethod,
-                valueMappingMethod:valueMappingMethod)
+                name: mappingMethodInfo.name,
+                sourceParameter: mappingMethodInfo.sourceParameter,
+                alternativeSourceParameter: mappingMethodInfo.alternativeSourceParameter,
+                contextParameter: mappingMethodInfo.contextParameter,
+                returnType: mappingMethodInfo.returnType,
+                keyMappingMethod: keyMappingMethod,
+                valueMappingMethod: valueMappingMethod)
     }
 
     final int sequenceNumber = 20

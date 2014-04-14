@@ -10,8 +10,8 @@ import com.junbo.entitlement.db.dao.EntitlementDao;
 import com.junbo.entitlement.db.dao.EntitlementHistoryDao;
 import com.junbo.entitlement.db.entity.EntitlementEntity;
 import com.junbo.entitlement.db.entity.EntitlementHistoryEntity;
-import com.junbo.entitlement.db.entity.def.EntitlementStatus;
 import com.junbo.entitlement.db.mapper.EntitlementMapper;
+import com.junbo.entitlement.spec.def.EntitlementStatus;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.model.EntitlementSearchParam;
 import com.junbo.entitlement.spec.model.PageMetadata;
@@ -67,7 +67,7 @@ public class EntitlementRepository {
         entitlementDao.update(entitlementEntity);
     }
 
-    public Entitlement getByTrackingUuid(UUID trackingUuid) {
-        return entitlementMapper.toEntitlement(entitlementDao.getByTrackingUuid(trackingUuid));
+    public Entitlement getByTrackingUuid(Long shardMasterId, UUID trackingUuid) {
+        return entitlementMapper.toEntitlement(entitlementDao.getByTrackingUuid(shardMasterId, trackingUuid));
     }
 }

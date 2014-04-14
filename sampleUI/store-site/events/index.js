@@ -25,23 +25,24 @@ module.exports = function(io){
 
         var APIs = process.AppConfig.APIs;
         for(var s in APIs){
-            var server = APIs[s];
-
             for(var e in APIs[s]){
                 if(e.toLowerCase() == "config") continue;
+                var eventName = APIs[s].Config.namespace + APIs[s][e].path;
 
-                var eventName = server.Config.namespace + server[e].path;
+                (function(sock, eventStr, func){
 
-                console.log("Register Event: ", eventName);
+                    sock.on(eventStr, function (data, fn) {
+                        console.log("Event Path: ", eventStr);
 
-                socket.on(eventName, function (data, fn) {
-                    var address = socket.handshake.address;
-                    data.query.ip = address.address;
+                        var address = sock.handshake.address;
+                        data.query.ip = address.address;
 
-                    Events[s][e](data, function(data){
-                        fn(data);
+                        func(data, function(data){
+                            fn(data);
+                        });
                     });
-                });
+                })(socket, eventName, Events[s][e]);
+
             }
         }
     });

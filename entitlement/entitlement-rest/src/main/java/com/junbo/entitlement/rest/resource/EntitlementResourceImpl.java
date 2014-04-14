@@ -33,14 +33,14 @@ public class EntitlementResourceImpl implements EntitlementResource {
 
     @Override
     public Promise<Entitlement> postEntitlement(Entitlement entitlement) {
-        Entitlement existing = getByTrackingUuid(entitlement.getTrackingUuid());
+        Entitlement existing = getByTrackingUuid(entitlement.getUserId(), entitlement.getTrackingUuid());
         return Promise.pure(existing != null ? existing :
                 entitlementService.addEntitlement(entitlement));
     }
 
     @Override
     public Promise<Entitlement> updateEntitlement(EntitlementId entitlementId, Entitlement entitlement) {
-        Entitlement existing = getByTrackingUuid(entitlement.getTrackingUuid());
+        Entitlement existing = getByTrackingUuid(entitlementId.getValue(), entitlement.getTrackingUuid());
         return Promise.pure(existing != null ? existing :
                 entitlementService.updateEntitlement(entitlementId.getValue(), entitlement));
     }
@@ -53,15 +53,16 @@ public class EntitlementResourceImpl implements EntitlementResource {
 
     @Override
     public Promise<Entitlement> transferEntitlement(EntitlementTransfer entitlementTransfer) {
-        Entitlement existing = getByTrackingUuid(entitlementTransfer.getTrackingUuid());
+        Entitlement existing = getByTrackingUuid(entitlementTransfer.getTargetUserId(),
+                entitlementTransfer.getTrackingUuid());
         return Promise.pure(existing != null ? existing :
                 entitlementService.transferEntitlement(entitlementTransfer));
     }
 
-    private Entitlement getByTrackingUuid(UUID trackingUuid) {
+    private Entitlement getByTrackingUuid(Long shardMasterId, UUID trackingUuid) {
         if (trackingUuid != null) {
             Entitlement existingEntitlement
-                    = entitlementService.getByTrackingUuid(trackingUuid);
+                    = entitlementService.getByTrackingUuid(shardMasterId, trackingUuid);
             return existingEntitlement;
         }
         return null;

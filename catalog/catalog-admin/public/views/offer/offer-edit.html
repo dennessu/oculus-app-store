@@ -11,10 +11,10 @@ Required (*)
             <span class="help-inline" ng-show="submitted && form.name.$error.required">Required</span>
         </td>
     </tr>
-    <tr>
+    <!--tr>
         <td>Developer *</td>
         <td><input type="text" class="form-control required" ng-model="offer.developer.id" ng-change="updateDeveloper()" required /></td>
-    </tr>
+    </tr-->
     <tr>
         <td>Category</td>
         <td>
@@ -55,7 +55,7 @@ Required (*)
                     <b>Select an item to add</b>
                     <table class="table table-hover">
                         <tr><td>Item Id</td><td>Item Name</td><td></td></tr>
-                        <tr ng-repeat="item in items" ng-click="addItem(item)">
+                        <tr ng-repeat="item in items | filter: user_id" ng-click="addItem(item)">
                             <td>{{ item.self.id }}</td>
                             <td>{{ item.name }}</td>
                             <td class="select">+</td>

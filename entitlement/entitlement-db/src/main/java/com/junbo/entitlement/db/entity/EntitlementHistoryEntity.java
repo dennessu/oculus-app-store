@@ -6,12 +6,19 @@
 
 package com.junbo.entitlement.db.entity;
 
-import com.junbo.entitlement.db.entity.def.*;
+import com.junbo.entitlement.db.entity.def.IdentifiableType;
+import com.junbo.entitlement.db.entity.def.ListJsonUserType;
+import com.junbo.entitlement.db.entity.def.Shardable;
+import com.junbo.entitlement.spec.def.EntitlementStatus;
+import com.junbo.entitlement.spec.def.EntitlementType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.Date;
 import java.util.List;
 

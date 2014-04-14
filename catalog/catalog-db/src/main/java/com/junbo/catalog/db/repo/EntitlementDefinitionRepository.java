@@ -6,8 +6,8 @@
 
 package com.junbo.catalog.db.repo;
 
-import com.junbo.catalog.db.convertor.EntitlementDefinitionConverter;
 import com.junbo.catalog.db.dao.EntitlementDefinitionDao;
+import com.junbo.catalog.db.mapper.EntitlementDefinitionMapper;
 import com.junbo.catalog.spec.model.common.PageableGetOptions;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementType;
@@ -23,30 +23,29 @@ import java.util.UUID;
 public class EntitlementDefinitionRepository {
     @Autowired
     private EntitlementDefinitionDao entitlementDefinitionDao;
-    @Autowired
-    private EntitlementDefinitionConverter definitionConverter;
 
     public EntitlementDefinition get(Long entitlementDefinitionId) {
-        return definitionConverter.toEntitlementDefinition(
+        return EntitlementDefinitionMapper.toEntitlementDefinition(
                 entitlementDefinitionDao.get(entitlementDefinitionId));
     }
 
     public Long create(EntitlementDefinition entitlementDefinition) {
         return entitlementDefinitionDao.create(
-                definitionConverter.toEntitlementDefinitionEntity(entitlementDefinition));
+                EntitlementDefinitionMapper.toEntitlementDefinitionEntity(entitlementDefinition));
     }
 
     public List<EntitlementDefinition> getByParams(Long developerId, String clientId,
                                                    String group, String tag,
                                                    String type, PageableGetOptions pageMetadata) {
-        return definitionConverter.toEntitlementDefinitionList(
-                entitlementDefinitionDao.getByParams(developerId, clientId, group, tag,
+
+        return EntitlementDefinitionMapper.toEntitlementDefinitionList(
+                entitlementDefinitionDao.getByParams(developerId,clientId, group, tag,
                         StringUtils.isEmpty(type) ? null : EntitlementType.valueOf(type),
                         pageMetadata == null ? new PageableGetOptions() : pageMetadata));
     }
 
     public EntitlementDefinition getByTrackingUuid(UUID trackingUuid) {
-        return definitionConverter.toEntitlementDefinition(
+        return EntitlementDefinitionMapper.toEntitlementDefinition(
                 entitlementDefinitionDao.getByTrackingUuid(trackingUuid));
     }
 }

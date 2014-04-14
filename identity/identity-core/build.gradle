@@ -3,4 +3,10 @@ apply plugin: 'groovy'
 dependencies {
     compile project(':identity-common')
     compile project(':identity-data')
+
+    processor (libraries.oom_processor)
+}
+
+ext {
+    processorClass = 'com.junbo.oom.processor.MappingProcessor'
 }

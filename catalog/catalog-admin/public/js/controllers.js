@@ -1,7 +1,7 @@
 'use strict';
 
 /* Controllers */
-var app = angular.module('catalog.controllers', ['ui.bootstrap', 'checklist-model']);
+var app = angular.module('catalog.controllers', ['ui.bootstrap', 'checklist-model', 'ngCookies']);
 
 // Clear browser cache (in development mode)
 //
@@ -12,13 +12,15 @@ app.run(function ($rootScope, $templateCache) {
   });
 });
 
-app.controller('OfferListCtrl', ['$scope', 'OffersFactory', '$routeParams',
-  function($scope, OffersFactory, $routeParams) {
+app.controller('OfferListCtrl', ['$scope', 'OffersFactory', '$routeParams', '$cookies',
+  function($scope, OffersFactory, $routeParams, $cookies) {
   	  $scope.offers = OffersFactory.query($routeParams);
+      $scope.user_id=$cookies.user_id;
+      $scope.email=$cookies.email;
   }]);
 
-app.controller('OfferCreationCtrl', ['$scope', 'OffersFactory', 'MetaFactory', '$location',
-    function($scope, OffersFactory, MetaFactory, $location) {
+app.controller('OfferCreationCtrl', ['$scope', 'OffersFactory', 'MetaFactory', 'AuthFactory', '$location','$cookies',
+    function($scope, OffersFactory, MetaFactory, AuthFactory, $location, $cookies) {
         $scope.createOffer = function () {
             $scope.submitted = true;
             OffersFactory.create($scope.offer, function(offer){
@@ -31,9 +33,11 @@ app.controller('OfferCreationCtrl', ['$scope', 'OffersFactory', 'MetaFactory', '
         };
 
         $scope.offerMetaDefinitions = MetaFactory.offerMeta;
+        $scope.user_id = $cookies.user_id;
 
         var init = function() {
             $scope.offer = {};
+            $scope.offer.developer = {"href": "http://localhost:3000/api/users/" + $scope.user_id, "id":$scope.user_id };
             $scope.offer.items = [];
             $scope.offer.categories = [];
             $scope.offer.properties = {};
@@ -45,6 +49,7 @@ app.controller('OfferCreationCtrl', ['$scope', 'OffersFactory', 'MetaFactory', '
             });
             $scope.offer.eligibleCountries = [];
             $scope.selectedItems = {};
+            //$scope.offer.developer = AuthFactory.query().sub;
         };
 
         init();
@@ -70,13 +75,6 @@ app.controller('OfferEditCtrl',
                 $scope.offer.items.splice(i, 1);
             };
 
-            $scope.saveItems = function() {
-                $scope.offer.items = [];
-                Object.keys( $scope.selectedItems ).forEach(function( key ) {
-                    console.log(key);
-                    $scope.offer.items.push($scope.selectedItems[key].self);
-                });
-            };
             $scope.removePrice = function(countryCode) {
                 delete $scope.offer.prices[countryCode];
             };
@@ -241,8 +239,8 @@ app.controller('OfferDetailCtrl', ['$scope', 'OfferFactory', 'ItemFactory', 'Met
 
     }]);
 
-app.controller('ItemListCtrl', ['$scope', 'ItemsFactory', '$routeParams', '$location',
-    function($scope, ItemsFactory, $routeParams, $location) {
+app.controller('ItemListCtrl', ['$scope', 'ItemsFactory', '$routeParams', '$location', '$cookies',
+    function($scope, ItemsFactory, $routeParams, $location, $cookies) {
         $scope.createItem = function () {
             ItemsFactory.create($scope.item, function(item){
                 $location.path('/items/' + item.self.id);
@@ -251,11 +249,12 @@ app.controller('ItemListCtrl', ['$scope', 'ItemsFactory', '$routeParams', '$loca
         $scope.cancel = function () {
             $location.path('/items');
         };
+        $scope.user_id=$cookies.user_id;
         $scope.items = ItemsFactory.query($routeParams);
     }]);
 
-app.controller('ItemCreationCtrl', ['$scope', 'MetaFactory', 'ItemsFactory', '$location',
-    function($scope, MetaFactory, ItemsFactory, $location) {
+app.controller('ItemCreationCtrl', ['$scope', 'MetaFactory', 'ItemsFactory', 'AuthFactory', '$location', '$cookies',
+    function($scope, MetaFactory, ItemsFactory, AuthFactory, $location, $cookies) {
         $scope.createItem = function () {
             ItemsFactory.create($scope.item, function(item){
                 $location.path('/items/' + item.self.id);
@@ -268,18 +267,23 @@ app.controller('ItemCreationCtrl', ['$scope', 'MetaFactory', 'ItemsFactory', '$l
 
         $scope.metaDefinitions = MetaFactory.itemMeta;
 
+        $scope.user_id = $cookies.user_id;
         var init = function() {
             $scope.item = {};
             $scope.item.properties = {};
+            $scope.item.developer = {"href": "http://localhost:3000/api/users/" + $scope.user_id, "id":$scope.user_id };
+
             Object.keys($scope.metaDefinitions).forEach(function(key) {
                 $scope.item.properties[key] = "";
                 if ($scope.metaDefinitions[key].controlType == "MULTI_SELECT") {
                     $scope.item.properties[key] = [];
                 }
             });
+            //$location.path('<a href="http://10.0.1.137:8082/oauth2/authorize?client_id=catalog-admin&response_type=code&redirect_uri=http://localhost:3000/auth/&scope=identity%20catalog');
         };
 
         init();
+        //$scope.item.developer = AuthFactory.query().sub;
     }]);
 
 app.controller('ItemEditCtrl', ['$scope', 'ItemsFactory', 'MetaFactory', '$routeParams', '$location',
@@ -392,4 +396,55 @@ app.controller('AttributeDetailCtrl', ['$scope', 'AttributeFactory', '$routePara
         };
 
         $scope.attribute = AttributeFactory.query($routeParams);
+    }]);
+
+app.controller('LoginCtrl', ['$scope', '$routeParams', '$http', '$cookieStore', '$cookies', '$window',
+    function($scope, $routeParams, $http, $cookieStore, $cookies, $window) {
+        $scope.Login = function() {
+            //$window.alert("Hello");
+            //$window.location.href = "http://www.baidu.com";
+            //$window.location.href = "http://10.0.1.137:8082/oauth2/authorize?client_id=catalog-admin&response_type=code&redirect_uri=http://localhost:3000/auth/&scope=identity%20catalog";
+            $window.location.href = "http://api.oculusvr-demo.com:8081/rest/oauth2/authorize?client_id=catalog-admin&response_type=token%20id_token&redirect_uri=http://localhost:3000/auth/&scope=identity%20catalog%20openid&nonce=123";
+        }
+
+        $scope.Logout = function () {
+            //$cookies.user_id = undefined;
+            //$cookies.access_token = undefined;
+
+            $cookieStore.remove("user_id");
+            $cookieStore.remove("access_token");
+
+            $scope.user_id=undefined;
+            $scope.access_token=null;
+
+            var logoutUrl = "http://api.oculusvr-demo.com:8081/rest/oauth2/end-session?id_token_hint=";// + id_token;
+
+            $window.location.href = logoutUrl;
+        };
+
+        $scope.user_id=$cookies.user_id;//$cookieStore.get("user_id");
+        $scope.access_token=$cookies.access_token;//$cookieStore.get("access_token");
+    }]);
+
+app.controller('DeveloperInfoCtrl', ['$scope', '$routeParams', '$http', '$cookieStore', '$cookies', '$window',
+    function($scope, $routeParams, $http, $cookieStore, $cookies, $window) {
+
+        $scope.Logout = function () {
+            //$cookies.user_id = undefined;
+            //$cookies.access_token = undefined;
+
+            $cookieStore.remove("user_id");
+            $cookieStore.remove("access_token");
+            $cookieStore.remove("email");
+
+            $scope.user_id=undefined;
+            $scope.access_token=null;
+
+            var logoutUrl = "http://api.oculusvr-demo.com:8081/rest/oauth2/end-session?post_logout_redirect_uri=http://localhost:3000/&id_token_hint=" + $cookies.id_token;
+
+            $window.location.href = logoutUrl;
+        };
+
+        $scope.user_id=$cookies.user_id;//$cookieStore.get("user_id");
+        $scope.email=$cookies.email;//$cookieStore.get("access_token");
     }]);

@@ -1,10 +1,9 @@
 package com.junbo.cart.core.validation
 
 import com.junbo.cart.spec.model.Cart
-import com.junbo.cart.spec.model.item.CouponItem
 import com.junbo.cart.spec.model.item.OfferItem
 import com.junbo.common.id.UserId
-import com.junbo.identity.spec.model.user.User
+import com.junbo.identity.spec.v1.model.User
 
 /**
  * Created by fzhang@wan-san.com on 14-1-23.
@@ -24,6 +23,4 @@ interface Validation {
     Validation validateOfferAdd(OfferItem offerItem)
 
     Validation validateOfferUpdate(OfferItem offerItem)
-
-    Validation validateCouponAdd(CouponItem couponItem)
 }

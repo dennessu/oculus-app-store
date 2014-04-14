@@ -18,10 +18,10 @@ import org.testng.annotations.Test;
 import java.util.List;
 
 /**
- @author Jason
+  * @author Jason
   * Time: 3/7/2014
   * For holding test cases of User portal
- */
+*/
 public class UserPortal extends TestClass {
 
     private LogHelper logger = new LogHelper(UserPortal.class);
@@ -46,48 +46,14 @@ public class UserPortal extends TestClass {
         String userPostId = us.PostUser();
 
         Assert.assertNotNull(Master.getInstance().getUser(userPostId));
-        Assert.assertNotNull(Master.getInstance().getUser(userPostId).getUserName());
+        Assert.assertNotNull(Master.getInstance().getUser(userPostId).getUsername());
 
         //Get the user with ID
         userPostId = us.GetUserByUserId(userPostId);
         Assert.assertNotNull(userPostId, "Can't get user by user ID");
 
         //Get the user with userName
-        List<String> userGetList = us.GetUserByUserName(Master.getInstance().getUser(userPostId).getUserName());
+        List<String> userGetList = us.GetUserByUserName(Master.getInstance().getUser(userPostId).getUsername());
         Assert.assertNotNull(userGetList, "Can't get user by user Name");
-    }
-
-    @Property(
-            priority = Priority.BVT,
-            features = "BuyerScenario",
-            component = Component.Identity,
-            owner = "JasonFu",
-            status = Status.Incomplete,
-            description = "Test user registration",
-            steps = {
-                    "Just call Post http://localhost:8080/rest/users, no need to call OAuth"
-            }
-    )
-    @Test
-    public void testUserRegistration() throws Exception {
-
-    }
-
-    @Property(
-            priority = Priority.BVT,
-            features = "BuyerScenario",
-            component = Component.Identity,
-            owner = "JasonFu",
-            status = Status.Incomplete,
-            description = "Test user Login without captcha, twofactor, securityquestions and tos",
-            steps = {
-                    "1. ",
-                    "2. ",
-                    "3. "
-            }
-    )
-    @Test
-    public void testUserLogin() throws Exception {
-
     }
 }

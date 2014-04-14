@@ -58,7 +58,7 @@ class ApiDefinitionRepositoryImpl implements ApiDefinitionRepository {
 
         return new ApiDefinitionEntity(
                 id: api.apiName,
-                authorizePolicies: api.authorizePolicies,
+                scopes: api.scopes,
                 revision: api.revision
         )
     }
@@ -70,7 +70,7 @@ class ApiDefinitionRepositoryImpl implements ApiDefinitionRepository {
 
         return new ApiDefinition(
                 apiName: entity.id,
-                authorizePolicies: entity.authorizePolicies,
+                scopes: entity.scopes,
                 revision: entity.revision
         )
     }

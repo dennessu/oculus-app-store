@@ -74,4 +74,8 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 400, code = ErrorCode.INVALID_PAYMENT_ID,
             description ="Payment with id {0} invalid")
     AppError invalidPaymentId(String id);
+
+    @ErrorDef(httpStatusCode = 400, code = ErrorCode.NOT_ASYNC_CHARGE_BALANCE,
+            description ="The balance {0} is not an async charge balance")
+    AppError notAsyncChargeBalance(String id);
 }

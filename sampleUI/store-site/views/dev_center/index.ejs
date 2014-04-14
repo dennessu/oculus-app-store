@@ -5,15 +5,22 @@
         <h1>Welcome</h1>
 
         <div id="ConfirmDialog" class="alert">
-            <h3>Register as a Developer</h3>
-            <p>Create a developer account for you.</p>
+            <form {{action "DialogYes" on="submit"}}>
+            <h3>Developer sign up</h3>
+            <p>Create cool Rift Apps.</p>
             {{#if errMessage}}
             <span class="error">{{errMessage}}</span>
             {{/if}}
+            <dl class="agreement">
+                <dd><label>{{input type="checkbox" id="IsAgree" name="IsAgree" class="{required:true}"}}<span>I'd like to receive news and updates via email from Oculus.</span></label></dd>
+                <dd><label>{{input type="checkbox" id="IsReceive" name="IsReceive" class="{required:true}"}}<span>I have read and agree to the Oculus VR, Inc. <a href="https://developer.oculusvr.com/terms" target="_blank">Terms of Use</a> and <a href="https://developer.oculusvr.com/license" target="_blank">SDK Software License</a>.</span></label></dd>
+                <dd><label>{{input type="checkbox" id="IsAge" name="IsAge" class="{required:true}"}}<span>I certify that I'm 13 years or older.</span></label></dd>
+            </dl>
             <div>
                 <button class="btn btn-cancel" {{action DialogNo}}>Cancel</button>
-                <button class="btn btn-primary" {{action DialogYes}}>Register Now</button>
+                <button id="BtnSignUp" class="btn btn-primary" type="submit">Become a Developer Now</button>
             </div>
+            </form>
         </div>
 
     </div>

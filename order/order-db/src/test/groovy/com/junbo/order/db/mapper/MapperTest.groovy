@@ -121,8 +121,7 @@ class MapperTest extends BaseTest {
         assert returnedOrderBillingEventEntity.status == orderBillingEventEntity.status
     }
 
-    // TODO Fix this case
-    @Test(enabled = false)
+    @Test(enabled = true)
     void testPreorderInfoEventMapper() {
         MappingContext context = new MappingContext()
 
@@ -164,7 +163,7 @@ class MapperTest extends BaseTest {
         SubledgerEntity returnedSubledgerEntity = modelMapper.toSubledgerEntity(subledger, context)
         assert subledger != null : 'Fail to map subledger entity to model.'
         assert returnedSubledgerEntity != null : 'Fail to map subledger model to entity.'
-        assert subledger.payoutAmount == subledgerEntity.totalAmount : 'The amount should not be different.'
+        assert subledger.totalAmount == subledgerEntity.totalAmount : 'The amount should not be different.'
     }
 
     @Test(enabled = true)

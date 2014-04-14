@@ -468,7 +468,7 @@ SwaggerResource.prototype.addOperations = function(resource_path, ops, consumes,
         }
       }
       o.nickname = this.sanitize(o.nickname);
-      op = new SwaggerOperation(o.nickname, resource_path, method, o.parameters, o.summary, o.notes, type, responseMessages, this, consumes, produces, o.authorizations);
+      op = new SwaggerOperation(o.nickname, resource_path, method, o.parameters, o.summary, o.notes, type, responseMessages, this, consumes, produces, o.authorizations, o.samples);
       this.operations[op.nickname] = op;
       output.push(this.operationsArray.push(op));
     }
@@ -654,7 +654,7 @@ SwaggerModelProperty.prototype.toString = function() {
   return str;
 };
 
-var SwaggerOperation = function(nickname, path, method, parameters, summary, notes, type, responseMessages, resource, consumes, produces, authorizations) {
+var SwaggerOperation = function(nickname, path, method, parameters, summary, notes, type, responseMessages, resource, consumes, produces, authorizations, samples) {
   var _this = this;
 
   var errors = [];
@@ -670,6 +670,7 @@ var SwaggerOperation = function(nickname, path, method, parameters, summary, not
   this.consumes = consumes;
   this.produces = produces;
   this.authorizations = authorizations;
+  this.samples = samples;
   this["do"] = __bind(this["do"], this);
 
   if (errors.length > 0)

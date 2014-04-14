@@ -47,7 +47,7 @@ var Transition = {
                         "name": item.name,
                         "price": item.prices.US.amount,
                         "picture": item.properties.mainImage,
-                        "description": item.localeProperties.DEFAULT.description
+                        "description": item.properties.longDescription
                     });
                 }catch(e){}
             }
@@ -63,7 +63,7 @@ var Transition = {
                     "name": item.name,
                     "price": item.prices.US.amount,
                     "picture": item.properties.mainImage,
-                    "description": item.localeProperties.DEFAULT.description
+                    "description": item.properties.longDescription
                 }};
             }catch(e){}
         }

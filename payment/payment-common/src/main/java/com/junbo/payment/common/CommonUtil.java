@@ -54,6 +54,9 @@ public final class CommonUtil {
     }
 
     public static boolean toBool(String value){
+        if(value == null){
+            return false;
+        }
         return value.equalsIgnoreCase("Yes") || value.equalsIgnoreCase("True");
     }
 

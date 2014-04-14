@@ -7,7 +7,7 @@
 package com.junbo.ewallet.db.dao.hibernate;
 
 import com.junbo.ewallet.db.dao.TransactionDao;
-import com.junbo.ewallet.db.entity.hibernate.TransactionEntity;
+import com.junbo.ewallet.db.entity.TransactionEntity;
 import org.hibernate.Query;
 
 import java.util.List;
@@ -19,7 +19,7 @@ public class TransactionDaoImpl extends TransactionBaseDao<TransactionEntity> im
     @Override
     public List<TransactionEntity> getByWalletId(Long walletId) {
         String queryString = "from TransactionEntity where walletId = (:walletId)";
-        Query q = currentSession().createQuery(queryString).setLong("walletId", walletId);
+        Query q = currentSession(walletId).createQuery(queryString).setLong("walletId", walletId);
         return q.list();
     }
 }

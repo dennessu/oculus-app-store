@@ -9,7 +9,7 @@ package com.junbo.entitlement.core.service;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
 import com.junbo.entitlement.clientproxy.catalog.EntitlementDefinitionFacade;
 import com.junbo.entitlement.common.lib.EntitlementContext;
-import com.junbo.entitlement.db.entity.def.EntitlementStatus;
+import com.junbo.entitlement.spec.def.EntitlementStatus;
 import com.junbo.entitlement.spec.error.AppErrors;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.model.EntitlementTransfer;

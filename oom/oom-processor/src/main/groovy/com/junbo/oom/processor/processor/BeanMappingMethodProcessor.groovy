@@ -4,6 +4,7 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.oom.processor.processor
+
 import com.junbo.oom.processor.factory.PropertyUtil
 import com.junbo.oom.processor.model.BeanMappingMethodModel
 import com.junbo.oom.processor.model.MappingMethodModel
@@ -11,6 +12,7 @@ import com.junbo.oom.processor.model.PropertyMappingModel
 import com.junbo.oom.processor.source.MappingMethodInfo
 import com.junbo.oom.processor.source.MappingPropertyInfo
 import groovy.transform.CompileStatic
+
 /**
  * Java doc.
  */
@@ -30,6 +32,7 @@ class BeanMappingMethodProcessor implements MappingMethodProcessor {
 
         def sourceType = mappingMethodInfo.sourceParameter.type
         def targetType = mappingMethodInfo.returnType
+        def hasAlternativeSourceParameter = mappingMethodInfo.alternativeSourceParameter != null
         def contextParameter = mappingMethodInfo.contextParameter
 
         def sourceGetters = PropertyUtil.getGetters(sourceType, processingEnv)
@@ -48,9 +51,9 @@ class BeanMappingMethodProcessor implements MappingMethodProcessor {
                     def targetProperty = propertyFactory.getProperty(targetType, mappingPropertyInfo.target)
 
                     propertyMappings.add(new PropertyMappingModel(
-                            sourceProperty:sourceProperty,
-                            targetProperty:targetProperty,
-                            explicitMethodName:mappingPropertyInfo.explicitMethodName))
+                            sourceProperty: sourceProperty,
+                            targetProperty: targetProperty,
+                            explicitMethodName: mappingPropertyInfo.explicitMethodName))
                 }
         }
 
@@ -59,8 +62,8 @@ class BeanMappingMethodProcessor implements MappingMethodProcessor {
             def targetProperty = propertyFactory.getProperty(targetType, propertyName)
 
             propertyMappings.add(new PropertyMappingModel(
-                    sourceProperty:sourceProperty,
-                    targetProperty:targetProperty))
+                    sourceProperty: sourceProperty,
+                    targetProperty: targetProperty))
         }
 
         propertyMappings.each { PropertyMappingModel propertyMapping ->
@@ -69,15 +72,17 @@ class BeanMappingMethodProcessor implements MappingMethodProcessor {
             def explicitMethodName = propertyMapping.explicitMethodName
 
             propertyMapping.mappingMethodRef = MappingMethodProcessorUtil.getOrCreateMappingMethodRef(
-                    sourceProperty.type, targetProperty.type, contextParameter, processorContext, explicitMethodName)
+                    sourceProperty.type, targetProperty.type,
+                    hasAlternativeSourceParameter, contextParameter, processorContext, explicitMethodName)
         }
 
         return new BeanMappingMethodModel(
-                name:mappingMethodInfo.name,
-                sourceParameter:mappingMethodInfo.sourceParameter,
-                contextParameter:mappingMethodInfo.contextParameter,
-                returnType:mappingMethodInfo.returnType,
-                propertyMappings:propertyMappings)
+                name: mappingMethodInfo.name,
+                sourceParameter: mappingMethodInfo.sourceParameter,
+                alternativeSourceParameter: mappingMethodInfo.alternativeSourceParameter,
+                contextParameter: mappingMethodInfo.contextParameter,
+                returnType: mappingMethodInfo.returnType,
+                propertyMappings: propertyMappings)
     }
 
     final int sequenceNumber = 30

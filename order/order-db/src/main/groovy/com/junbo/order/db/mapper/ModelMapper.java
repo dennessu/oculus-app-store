@@ -29,8 +29,9 @@ public interface ModelMapper {
             @Mapping(source = "type", target = "orderTypeId", excluded = false, bidirectional = false),
             @Mapping(source = "status", target = "orderStatusId", excluded = false, bidirectional = false),
             @Mapping(source = "user", target = "userId", excluded = false, bidirectional = false),
-            @Mapping(source = "originalOrder", target = "originalOrderId", excluded = false, bidirectional = false),
-            @Mapping(source = "id", target = "orderId", excluded = false, bidirectional = false)
+            @Mapping(source = "id", target = "orderId", excluded = false, bidirectional = false),
+            @Mapping(source = "shippingAddress", target = "shippingAddressId", excluded = false, bidirectional = false),
+            @Mapping(source = "shippingMethod", target = "shippingMethodId", excluded = false, bidirectional = false)
     })
     OrderEntity toOrderEntity(Order order, MappingContext context);
 
@@ -38,8 +39,9 @@ public interface ModelMapper {
             @Mapping(source = "orderTypeId", target = "type", excluded = false, bidirectional = false),
             @Mapping(source = "orderStatusId", target = "status", excluded = false, bidirectional = false),
             @Mapping(source = "userId", target = "user", excluded = false, bidirectional = false),
-            @Mapping(source = "originalOrderId", target = "originalOrder", excluded = false, bidirectional = false),
-            @Mapping(source = "orderId", target = "id", excluded = false, bidirectional = false)
+            @Mapping(source = "orderId", target = "id", excluded = false, bidirectional = false),
+            @Mapping(source = "shippingAddressId", target = "shippingAddress", excluded = false, bidirectional = false),
+            @Mapping(source = "shippingMethodId", target = "shippingMethod", excluded = false, bidirectional = false)
     })
     Order toOrderModel(OrderEntity orderEntity, MappingContext context);
 
@@ -102,9 +104,24 @@ public interface ModelMapper {
 
     BillingEvent toOrderBillingEventModel(OrderBillingEventEntity orderBillingEventEntity,
                                              MappingContext context);
-
+    @Mappings({
+            @Mapping(source = "orderItemPreorderInfoId", target = "preorderInfoId",
+                    excluded = false, bidirectional = false),
+            @Mapping(source = "billingDate", target = "billingTime", excluded = false, bidirectional = false),
+            @Mapping(source = "preNotificationDate", target = "preNotificationTime",
+                    excluded = false, bidirectional = false),
+            @Mapping(source = "releaseDate", target = "releaseTime", excluded = false, bidirectional = false),
+    })
     PreorderInfo toPreOrderInfoModel(OrderItemPreorderInfoEntity orderItemPreorderInfoEntity, MappingContext context);
 
+    @Mappings({
+            @Mapping(source = "preorderInfoId", target = "orderItemPreorderInfoId",
+                    excluded = false, bidirectional = false),
+            @Mapping(source = "billingTime", target = "billingDate", excluded = false, bidirectional = false),
+            @Mapping(source = "preNotificationTime", target = "preNotificationDate",
+                    excluded = false, bidirectional = false),
+            @Mapping(source = "releaseTime", target = "releaseDate", excluded = false, bidirectional = false),
+    })
     OrderItemPreorderInfoEntity toOrderItemPreorderInfoEntity(PreorderInfo preorderInfo, MappingContext context);
 
     @Mappings({
@@ -126,14 +143,12 @@ public interface ModelMapper {
                                                                MappingContext context);
 
     @Mappings({
-            @Mapping(source = "currencyId", target = "currency", excluded = false, bidirectional = false),
-            @Mapping(source = "totalAmount", target = "payoutAmount", excluded = false, bidirectional = false)
+            @Mapping(source = "totalAmount", target = "totalAmount", excluded = false, bidirectional = false)
     })
     Subledger toSubledgerModel(SubledgerEntity subledgerEntity, MappingContext context);
 
     @Mappings({
-            @Mapping(source = "currency", target = "currencyId", excluded = false, bidirectional = false),
-            @Mapping(source = "payoutAmount", target = "totalAmount", excluded = false, bidirectional = false)
+            @Mapping(source = "totalAmount", target = "totalAmount", excluded = false, bidirectional = false)
     })
     SubledgerEntity toSubledgerEntity(Subledger subledger, MappingContext context);
 

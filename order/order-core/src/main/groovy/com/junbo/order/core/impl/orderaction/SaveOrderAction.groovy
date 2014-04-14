@@ -42,7 +42,6 @@ class SaveOrderAction extends BaseOrderEventAwareAction {
         order.status = OrderStatusBuilder.buildOrderStatus(order,
                 order.id == null ? (List<OrderEvent>)[] : repo.getOrderEvents(order.id.value, null))
         // Save Order
-        // Fetch Preorder Info from catalog
         builder.getOffers(context.orderServiceContext).syncThen { List<OrderOffer> ofs ->
             def orderWithId = newOrder ? repo.createOrder(context.orderServiceContext.order) :
                     repo.updateOrder(order, updateOnlyOrder)
