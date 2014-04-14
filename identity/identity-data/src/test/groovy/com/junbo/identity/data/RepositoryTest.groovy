@@ -170,6 +170,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         UserPassword userPassword = new UserPassword()
         userPassword.setUserId(new UserId(userId))
         userPassword.setPasswordSalt(UUID.randomUUID().toString())
+        userPassword.setPasswordPepper(UUID.randomUUID().toString())
         userPassword.setPasswordHash(UUID.randomUUID().toString())
         userPassword.setStrength(UserPasswordStrength.WEAK.toString())
         userPassword.setActive(true)
@@ -202,6 +203,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userPIN.setUserId(new UserId(userId))
         userPIN.setPinHash(UUID.randomUUID().toString())
         userPIN.setPinSalt(UUID.randomUUID().toString())
+        userPIN.setPinPepper(UUID.randomUUID().toString())
         userPIN.setActive(true)
         userPIN.setChangeAtNextLogin(false)
         userPIN.setExpiresBy(new Date())
@@ -363,6 +365,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userSecurityQuestion.setSecurityQuestion('whosyourdaddy')
         userSecurityQuestion.setAnswerHash(UUID.randomUUID().toString())
         userSecurityQuestion.setAnswerSalt(UUID.randomUUID().toString())
+        userSecurityQuestion.setAnswerPepper(UUID.randomUUID().toString())
         userSecurityQuestion.setCreatedBy('lixia')
         userSecurityQuestion.setCreatedTime(new Date())
 
@@ -437,7 +440,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
     @Test
     public void test() {
         String userName = 'liangfuxia'
-        String password = '#Bugsfor$4'
+        String password = '#Bugsfor$'
 
         String original = userName + ':' + password
         String encode = Base64.encodeAsString(original)
