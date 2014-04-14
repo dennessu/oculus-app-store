@@ -197,4 +197,21 @@
                 ]]>
         </sql>
     </changeSet>
+
+    <changeSet id="4" author='xmchen' context="PREDEPLOY">
+        <sql><![CDATA[
+			CREATE TABLE balance_item_event (
+				event_id BIGINT NOT NULL,
+				balance_item_id BIGINT NOT NULL,
+				action_type_id SMALLINT NOT NULL,
+				amount DECIMAL NOT NULL,
+				tax_amount DECIMAL NOT NULL,
+				discount_amount DECIMAL NOT NULL,
+				event_date TIMESTAMP NOT NULL,
+				PRIMARY KEY(event_id)
+			);
+			CREATE INDEX balance_item_event_balance_item_id_idx ON balance_item_event (balance_item_id);
+                ]]>
+        </sql>
+    </changeSet>
 </databaseChangeLog>

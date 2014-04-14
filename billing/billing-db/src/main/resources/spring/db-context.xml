@@ -8,19 +8,21 @@
     <context:component-scan base-package="com.junbo.oom.core.builtin"/>
     <context:component-scan base-package="com.junbo.billing.db"/>
 
+    <import resource="classpath*:spring/transaction.xml"/>
+    <import resource="classpath*:spring/sharding-context.xml"/>
+
     <context:annotation-config />
     <tx:annotation-driven />
 
     <!--Data source has the database information -->
-    <bean id="billingDataSource" class="bitronix.tm.resource.jdbc.PoolingDataSource"
-          init-method="init" destroy-method="close">
+    <bean id="billingDataSource" class="com.junbo.sharding.hibernate.ShardMultiTenantConnectionProviderFactoryBean">
+        <property name="jdbcUrls" value="${billing.db.jdbcUrls}"/>
         <property name="uniqueName" value="jdbc/billing"/>
-        <property name="className" value="org.postgresql.xa.PGXADataSource"/>
+        <property name="className" value="${billing.db.driverClassName}"/>
         <property name="minPoolSize" value="${billing.db.minConnectionsPerPartition}"/>
         <property name="maxPoolSize" value="${billing.db.maxConnectionsPerPartition}"/>
         <property name="driverProperties">
             <props>
-                <prop key="url">${billing.db.url}</prop>
                 <prop key="user">${billing.db.username}</prop>
                 <prop key="password">${billing.db.password}</prop>
             </props>
@@ -28,30 +30,37 @@
     </bean>
 
     <!-- SessonFactory for Hibernate -->
-    <bean id="billingSessionFactory"
-          class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
-        <property name="dataSource" ref="billingDataSource"/>
-        <property name="packagesToScan" value="com.junbo.billing.db.*" />
+    <bean id="billingSessionFactory" class="com.junbo.sharding.hibernate.LocalSessionFactoryWithListenerBean">
         <property name="jtaTransactionManager" ref="transactionManager"/>
         <property name="hibernateProperties">
-            <props>
-                <prop key="hibernate.dialect">${billing.hibernate.dialect}</prop>
-                <prop key="hibernate.max_fetch_depth">${billing.hibernate.max_fetch_depth}</prop>
-                <prop key="hibernate.jdbc.fetch_size">${billing.hibernate.jdbc.fetch_size}</prop>
-                <prop key="hibernate.jdbc.batch_size">${billing.hibernate.jdbc.batch_size}</prop>
-                <prop key="hibernate.show_sql">${billing.hibernate.show_sql}</prop>
-            </props>
+            <map>
+                <entry key="hibernate.dialect" value="${sharding.hibernate.dialect}"/>
+                <entry key="hibernate.max_fetch_depth" value="${sharding.hibernate.max_fetch_depth}"/>
+                <entry key="hibernate.jdbc.fetch_size" value="${sharding.hibernate.jdbc.fetch_size}"/>
+                <entry key="hibernate.jdbc.batch_size" value="${sharding.hibernate.jdbc.batch_size}"/>
+                <entry key="hibernate.show_sql" value="${sharding.hibernate.show_sql}"/>
+
+                <entry key="hibernate.multiTenancy" value="SCHEMA"/>
+                <entry key="hibernate.current_session_context_class" value="com.junbo.sharding.hibernate.MultiTenantJTASessionContext"/>
+                <entry key="hibernate.tenant_identifier_resolver" value="com.junbo.sharding.hibernate.ShardCurrentTenantIdentifierResolver"/>
+                <entry key="hibernate.multi_tenant_connection_provider" value-ref="billingDataSource"/>
+                <entry key="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
+            </map>
         </property>
+
+        <property name="packagesToScan" value="com.junbo.billing.db.*" />
     </bean>
 
     <!-- Dao -->
-    <bean id="billingBaseDao"
-          class="com.junbo.billing.db.BaseDaoImpl" abstract="true">
+    <bean id="billingBaseDao" class="com.junbo.billing.db.BaseDao" abstract="true">
+        <property name="sessionFactory" ref="billingSessionFactory"/>
+        <property name="shardAlgorithm" ref="userShardAlgorithm"/>
+        <property name="viewQueryFactory" ref="defaultViewQueryFactory"/>
+        <property name="idGenerator" ref="oculus48IdGenerator"/>
     </bean>
 
     <bean id="shippingAddressEntityDao"
           class="com.junbo.billing.db.dao.impl.ShippingAddressEntityDaoImpl" parent="billingBaseDao">
-        <property name="entityType" value="com.junbo.billing.db.entity.ShippingAddressEntity"/>
     </bean>
 
     <bean id="currencyEntityDao"

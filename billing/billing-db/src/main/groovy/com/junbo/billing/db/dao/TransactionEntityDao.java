@@ -6,7 +6,6 @@
 
 package com.junbo.billing.db.dao;
 
-import com.junbo.billing.db.BaseDao;
 import com.junbo.billing.db.entity.TransactionEntity;
 
 import java.util.List;
@@ -14,6 +13,9 @@ import java.util.List;
 /**
  * Created by xmchen on 14-1-21.
  */
-public interface TransactionEntityDao extends BaseDao<TransactionEntity, Long> {
+public interface TransactionEntityDao {
+    TransactionEntity get(Long transactionId);
+    TransactionEntity save(TransactionEntity transaction);
+    TransactionEntity update(TransactionEntity transaction);
     List<TransactionEntity> findByBalanceId(Long balanceId);
 }

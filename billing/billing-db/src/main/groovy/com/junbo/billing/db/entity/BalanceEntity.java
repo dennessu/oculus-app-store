@@ -8,6 +8,7 @@ package com.junbo.billing.db.entity;
 
 import com.junbo.billing.db.BaseEntity;
 import com.junbo.billing.db.EntityValidationCode;
+import com.junbo.common.util.Identifiable;
 import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -23,7 +24,7 @@ import java.util.UUID;
  */
 @Entity
 @Table(name = "balance")
-public class BalanceEntity extends BaseEntity {
+public class BalanceEntity extends BaseEntity implements Identifiable<Long> {
     private Long balanceId;
     private UUID trackingUuid;
     private Long userId;
@@ -232,4 +233,8 @@ public class BalanceEntity extends BaseEntity {
         this.originalBalanceId = originalBalanceId;
     }
 
+    @Override
+    public Long getId() {
+        return balanceId;
+    }
 }

@@ -7,36 +7,87 @@
 package com.junbo.billing.db.dao.impl;
 
 
-import com.junbo.billing.db.BaseDaoImpl;
+import com.junbo.billing.db.BaseDao;
 import com.junbo.billing.db.entity.BalanceEntity;
 import com.junbo.billing.db.dao.BalanceEntityDao;
 import com.junbo.billing.spec.enums.BalanceStatus;
+import com.junbo.sharding.view.DefaultViewQuery;
+import com.junbo.sharding.view.ViewQuery;
+import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.Criteria;
+import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 /**
  * Created by xmchen on 14-1-21.
  */
-public class BalanceEntityDaoImpl extends BaseDaoImpl<BalanceEntity, Long>
-        implements BalanceEntityDao {
+public class BalanceEntityDaoImpl extends BaseDao implements BalanceEntityDao {
+    @Override
+    public BalanceEntity get(Long balanceId) {
+        return (BalanceEntity)currentSession(balanceId).get(BalanceEntity.class, balanceId);
+    }
+
+    @Override
+    public BalanceEntity save(BalanceEntity balance) {
+
+        balance.setBalanceId(idGenerator.nextId(balance.getUserId()));
+
+        Session session = currentSession(balance.getBalanceId());
+        session.save(balance);
+        session.flush();
+        return get(balance.getBalanceId());
+    }
+
+    @Override
+    public BalanceEntity update(BalanceEntity balance) {
+
+        Session session = currentSession(balance.getBalanceId());
+        session.merge(balance);
+        session.flush();
+
+        return get(balance.getBalanceId());
+    }
+
     @Override
     public List<BalanceEntity> getByTrackingUuid(UUID trackingUuid) {
 
-        Criteria criteria = currentSession().createCriteria(BalanceEntity.class).
-                add(Restrictions.eq("trackingUuid", trackingUuid));
-        return criteria.list();
+        BalanceEntity example = new BalanceEntity();
+        example.setTrackingUuid(trackingUuid);
+
+        ViewQuery<Long> viewQuery = viewQueryFactory.from(example);
+        if (viewQuery != null) {
+            List<Long> balanceIds = viewQuery.list();
+
+            List<BalanceEntity> balanceEntities = new ArrayList<>();
+            for (Long id : balanceIds) {
+                balanceEntities.add(get(id));
+            }
+        }
+
+        return null;
     }
 
     @Override
     public List<BalanceEntity> getAsyncChargeInitBalances(Integer count) {
-        Criteria criteria = currentSession().createCriteria(BalanceEntity.class);
-        criteria.add(Restrictions.eq("isAsyncCharge", true));
-        criteria.add(Restrictions.eq("statusId", BalanceStatus.INIT.getId()));
-        criteria.addOrder(Order.asc("createdTime")).setMaxResults(count);
-        return criteria.list();
+        BalanceEntity example = new BalanceEntity();
+        example.setIsAsyncCharge(true);
+        example.setStatusId(BalanceStatus.INIT.getId());
+
+        ViewQuery<Long> viewQuery = viewQueryFactory.from(example);
+        if (viewQuery != null) {
+            List<Long> balanceIds = viewQuery.list();
+
+            List<BalanceEntity> balanceEntities = new ArrayList<>();
+            for (Long id : balanceIds) {
+                balanceEntities.add(get(id));
+            }
+        }
+
+        return null;
     }
 }

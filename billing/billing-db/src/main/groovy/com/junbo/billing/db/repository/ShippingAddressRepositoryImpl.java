@@ -6,13 +6,11 @@
 
 package com.junbo.billing.db.repository;
 
-import com.junbo.common.id.ShippingAddressId;
 import com.junbo.oom.core.MappingContext;
 import com.junbo.billing.db.entity.ShippingAddressEntity;
 import com.junbo.billing.db.dao.ShippingAddressEntityDao;
 import com.junbo.billing.db.mapper.ModelMapper;
 import com.junbo.billing.spec.model.ShippingAddress;
-import com.junbo.sharding.IdGeneratorFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -30,21 +28,17 @@ public class ShippingAddressRepositoryImpl implements ShippingAddressRepository 
     @Autowired
     private ModelMapper modelMapper;
 
-    @Autowired
-    private IdGeneratorFacade idGenerator;
 
     @Override
     public ShippingAddress saveShippingAddress(ShippingAddress address) {
 
         ShippingAddressEntity sae = modelMapper.toShippingAddressEntity(address, new MappingContext());
 
-        sae.setAddressId(idGenerator.nextId(ShippingAddressId.class, sae.getUserId()));
-
         sae.setCreatedBy("BILLING");
         sae.setCreatedTime(new Date());
         sae.setRequestorId("GOD");
 
-        shippingAddressEntityDao.insert(sae);
+        shippingAddressEntityDao.save(sae);
 
         return getShippingAddress(sae.getAddressId());
     }
@@ -53,7 +47,7 @@ public class ShippingAddressRepositoryImpl implements ShippingAddressRepository 
     public List<ShippingAddress> getShippingAddresses(Long userId) {
 
         List<ShippingAddressEntity> entities = shippingAddressEntityDao.findByUserId(userId);
-        List<ShippingAddress> addresses = new ArrayList<ShippingAddress>();
+        List<ShippingAddress> addresses = new ArrayList<>();
 
         if(entities != null && entities.size() > 0) {
             for(ShippingAddressEntity entity : entities) {
