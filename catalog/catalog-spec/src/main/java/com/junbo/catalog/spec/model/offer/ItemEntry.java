@@ -6,6 +6,7 @@
 
 package com.junbo.catalog.spec.model.offer;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.jackson.annotation.ItemId;
 
 /**
@@ -13,6 +14,7 @@ import com.junbo.common.jackson.annotation.ItemId;
  */
 public class ItemEntry {
     @ItemId
+    @JsonProperty("item")
     private Long itemId;
     private Long sku;
     private Integer quantity;

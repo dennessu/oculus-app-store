@@ -6,9 +6,6 @@
 package com.junbo.oauth.core.service.impl
 
 import com.junbo.common.id.UserId
-import com.junbo.identity.spec.model.users.User
-import com.junbo.identity.spec.options.entity.UserGetOptions
-import com.junbo.identity.spec.resource.UserResource
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
 import com.junbo.identity.spec.v1.option.model.UserGetOptions
@@ -55,13 +52,13 @@ class UserServiceImpl implements UserService {
 
     @Override
     Promise<UserCredentialVerifyAttempt> authenticateUser(String username, String password,
-                                                          String clientId, String ipAddress) {
+                                                          String clientId, String ipAddress, String userAgent) {
         UserCredentialVerifyAttempt loginAttempt = new UserCredentialVerifyAttempt(
                 type: 'password',
                 value: new String(Base64.encodeBase64("$username:$password".bytes)),
                 clientId: clientId,
                 ipAddress: ipAddress,
-                userAgent: "testAgent",
+                userAgent: userAgent
         )
 
         return userCredentialVerifyAttemptResource.create(loginAttempt)
@@ -90,12 +87,9 @@ class UserServiceImpl implements UserService {
         UserInfo userInfo = new UserInfo(
                 sub: user.id.toString(),
                 email: user.username,
-
-                /*
-                givenName: user.name.firstName,
-                middleName: user.name.middleName,
-                familyName: user.name.lastName
-                */
+//                givenName: user.name.firstName,
+//                middleName: user.name.middleName,
+//                familyName: user.name.lastName
         )
 
         return userInfo
