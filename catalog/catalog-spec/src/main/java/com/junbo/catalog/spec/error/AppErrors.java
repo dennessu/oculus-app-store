@@ -46,4 +46,7 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 500, code = "10009", description = "UnCaught Exception. {0}")
     AppError unCaught(String msg);
+
+    @ErrorDef(httpStatusCode = 409, code = "10010", description = "Access Denied")
+    AppError accessDenied();
 }
