@@ -36,7 +36,7 @@ import javax.ws.rs.ext.Provider
 class UserCredentialVerifyAttemptResourceImpl implements UserCredentialVerifyAttemptResource {
 
     @Autowired
-    @Qualifier("userCredentialVerifyAttemptRepository")
+    @Qualifier('userCredentialVerifyAttemptRepository')
     private UserCredentialVerifyAttemptRepository userLoginAttemptRepository
 
     @Autowired
