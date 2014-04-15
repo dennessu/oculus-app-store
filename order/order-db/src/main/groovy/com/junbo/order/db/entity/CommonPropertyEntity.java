@@ -16,7 +16,7 @@ import javax.validation.constraints.NotNull;
 /**
  * Created by chriszhu on 1/27/14.
  */
-public class CommonPropertyEntity extends CommonDbEntityWithDate {
+public abstract class CommonPropertyEntity extends CommonDbEntityWithDate {
     private Long propertyId;
     private Short propertyType;
     private String propertyValue;

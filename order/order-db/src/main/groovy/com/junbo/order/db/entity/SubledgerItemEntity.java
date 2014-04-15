@@ -6,15 +6,13 @@
 
 package com.junbo.order.db.entity;
 
+import com.junbo.common.util.Identifiable;
 import com.junbo.order.db.ValidationMessages;
 import com.junbo.order.db.entity.enums.SubledgerItemAction;
 import com.junbo.order.db.entity.enums.SubledgerItemStatus;
 import org.hibernate.annotations.Type;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
@@ -23,7 +21,7 @@ import java.math.BigDecimal;
  */
 @Entity
 @Table(name = "SUBLEDGER_ITEM")
-public class SubledgerItemEntity extends CommonDbEntityWithDate{
+public class SubledgerItemEntity extends CommonDbEntityWithDate implements Identifiable<Long> {
 
     private Long subledgerItemId;
     private Long originalSubledgerItemId;
@@ -114,5 +112,21 @@ public class SubledgerItemEntity extends CommonDbEntityWithDate{
 
     public void setStatus(SubledgerItemStatus status) {
         this.status = status;
+    }
+
+    @Override
+    @Transient
+    public Long getShardId() {
+        return orderItemId;
+    }
+
+    @Override
+    @Transient
+    public Long getId() {
+        return subledgerItemId;
+    }
+
+    public void setId(Long id) {
+        subledgerItemId = id;
     }
 }

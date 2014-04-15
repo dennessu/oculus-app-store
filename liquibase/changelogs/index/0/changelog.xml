@@ -136,6 +136,19 @@
 			);
 			
 			create index idx_user_optin_type_ref on user_optin_type_ref(key, value);
+			
+			create table subledger_item_status
+            (
+              key character varying(255) NOT NULL,
+              value bigint NOT NULL,
+              created_by character varying(255) NOT NULL,
+              created_time time without time zone NOT NULL,
+              modified_by character varying(255) NOT NULL,
+              modified_time time without time zone NOT NULL,
+              deleted boolean NOT NULL
+            );
+            
+            create index idx_subledger_item_status on subledger_item_status(key, value);
         ]]></sql>
     </changeSet>
 
