@@ -4,7 +4,7 @@ import com.junbo.common.id.OfferId
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
-import com.junbo.order.clientproxy.model.OrderOffer
+import com.junbo.order.clientproxy.model.OrderOfferRevision
 import com.junbo.order.core.SubledgerService
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
 import com.junbo.order.core.impl.subledger.SubledgerHelper
@@ -50,12 +50,12 @@ class CreateSubledgerItemAction extends BaseOrderEventAwareAction {
         return null
     }
 
-    private SubledgerItem buildSubledgerItem(Order order, OrderItem orderItem, OrderOffer offer) {
+    private SubledgerItem buildSubledgerItem(Order order, OrderItem orderItem, OrderOfferRevision offer) {
         // todo handle refund subledger item logic
         def subledgerItem = new SubledgerItem(
                 totalAmount: order.isTaxInclusive ? orderItem.totalAmount - orderItem.totalTax : orderItem.totalAmount,
                 orderItemId: orderItem.orderItemId,
-                offerId: new OfferId(offer.catalogOffer.id),
+                offerId: new OfferId(offer.catalogOfferRevision.offerId),
                 subledgerItemAction: SubledgerItemAction.CHARGE
         )
         return subledgerItem

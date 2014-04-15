@@ -15,8 +15,8 @@ import com.junbo.entitlement.spec.model.PageMetadata
 import com.junbo.entitlement.spec.resource.EntitlementResource
 import com.junbo.fulfilment.spec.model.FulfilmentRequest
 import com.junbo.fulfilment.spec.resource.FulfilmentResource
-import com.junbo.identity.spec.model.user.User
-import com.junbo.identity.spec.resource.UserResource
+import com.junbo.identity.spec.v1.model.User
+import com.junbo.identity.spec.v1.resource.UserResource
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.resource.OrderResource
 import com.junbo.payment.spec.model.Address
