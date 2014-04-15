@@ -22,7 +22,7 @@ public class OrderItemPreorderInfoDaoImpl
         extends BaseDaoImpl<OrderItemPreorderInfoEntity> implements OrderItemPreorderInfoDao {
     @Override
     public List<OrderItemPreorderInfoEntity> readByOrderItemId(final Long orderItemId) {
-        Criteria criteria = this.getSession().createCriteria(OrderItemPreorderInfoEntity.class);
+        Criteria criteria = this.getSession(orderItemId).createCriteria(OrderItemPreorderInfoEntity.class);
         criteria.add(Restrictions.eq("orderItemId", orderItemId));
         return criteria.list();
     }

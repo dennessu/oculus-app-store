@@ -22,6 +22,7 @@ import groovy.transform.TypeChecked
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
 /**
  * Created by chriszhu on 2/18/14.
@@ -59,6 +60,7 @@ class OrderRepositoryImpl implements OrderRepository {
     @Autowired
     IdGeneratorFacade idGeneratorFacade
     @Autowired
+    @Qualifier('oculus48IdGenerator')
     IdGenerator idGenerator
 
     int orderEventsNumThreshHold = 200

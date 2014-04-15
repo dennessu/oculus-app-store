@@ -6,11 +6,15 @@
 
 package com.junbo.order.db;
 
+import com.junbo.common.id.OrderId;
+import com.junbo.common.id.OrderItemId;
+import com.junbo.common.id.UserId;
 import com.junbo.order.db.common.TestHelper;
 import com.junbo.order.db.dao.OrderItemDao;
 import com.junbo.order.db.entity.OrderItemEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.List;
@@ -26,8 +30,9 @@ public class OrderItemDaoTest extends BaseTest {
     @Test
     public void testCreateAndRead() {
         OrderItemEntity orderItemEntity = TestHelper.generateOrderItem();
+        orderItemEntity.setOrderId(idGenerator.nextId(OrderId.class));
+        orderItemEntity.setOrderItemId(idGenerator.nextId(OrderItemId.class, orderItemEntity.getOrderId()));
         Long orderItemId = orderItemDao.create(orderItemEntity);
-        orderItemDao.flush();
 
         OrderItemEntity returnedEntity = orderItemDao.read(orderItemId);
         Assert.assertNotNull(returnedEntity, "Fail to create or read entity.");
@@ -38,10 +43,10 @@ public class OrderItemDaoTest extends BaseTest {
     @Test
     public void testUpdate() {
         OrderItemEntity orderItemEntity = TestHelper.generateOrderItem();
+        orderItemEntity.setOrderId(idGenerator.nextId(OrderId.class));
+        orderItemEntity.setOrderItemId(idGenerator.nextId(OrderItemId.class, orderItemEntity.getOrderId()));
         Long orderItemId = orderItemDao.create(orderItemEntity);
-        orderItemDao.flush();
         orderItemDao.update(orderItemEntity);
-        orderItemDao.flush();
 
         OrderItemEntity returnedEntity = orderItemDao.read(orderItemId);
         Assert.assertNotNull(returnedEntity, "Fail to create or read entity.");
@@ -50,10 +55,11 @@ public class OrderItemDaoTest extends BaseTest {
     @Test
     public void testReadByOrderId() {
         OrderItemEntity orderItemEntity = TestHelper.generateOrderItem();
+        orderItemEntity.setOrderId(idGenerator.nextId(OrderId.class));
+        orderItemEntity.setOrderItemId(idGenerator.nextId(OrderItemId.class, orderItemEntity.getOrderId()));
         Long orderId = orderItemEntity.getOrderId();
         List<OrderItemEntity> resultBefore = orderItemDao.readByOrderId(orderId);
         orderItemDao.create(orderItemEntity);
-        orderItemDao.flush();
         List<OrderItemEntity> resultAfter = orderItemDao.readByOrderId(orderId);
         Assert.assertEquals(resultAfter.size(), resultBefore.size() + 1, "Result size should increase.");
     }
@@ -61,10 +67,11 @@ public class OrderItemDaoTest extends BaseTest {
     @Test
     public void testMarkDelete() {
         OrderItemEntity orderItemEntity = TestHelper.generateOrderItem();
+        orderItemEntity.setOrderId(idGenerator.nextId(OrderId.class));
+        orderItemEntity.setOrderItemId(idGenerator.nextId(OrderItemId.class, orderItemEntity.getOrderId()));
         Long orderId = orderItemEntity.getOrderId();
         List<OrderItemEntity> resultBefore = orderItemDao.readByOrderId(orderId);
         orderItemDao.create(orderItemEntity);
-        orderItemDao.flush();
         orderItemDao.markDelete(orderItemEntity.getOrderItemId());
         List<OrderItemEntity> resultAfter = orderItemDao.readByOrderId(orderId);
         Assert.assertEquals(resultAfter.size(), resultBefore.size(), "Result size should not increase.");

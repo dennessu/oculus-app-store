@@ -40,7 +40,7 @@ class FulfillmentActionTest extends BaseTest{
     @Test(enabled = true)
     void testExecuteFulfillmentPending() {
         def order = TestBuilder.buildOrderRequest()
-        order.id = new OrderId(TestBuilder.generateLong())
+        order.id = new OrderId(idGenerator.nextId(OrderId))
         def fulfilmentResult = TestBuilder.buildFulfilmentRequest(order)
         fulfilmentResult.items << TestBuilder.buildFulfilmentItem(FulfilmentStatus.SUCCEED)
         fulfilmentResult.items << TestBuilder.buildFulfilmentItem(FulfilmentStatus.PENDING)
@@ -80,7 +80,7 @@ class FulfillmentActionTest extends BaseTest{
     @Rollback
     void testExecuteFulfillmentError() {
         def order = TestBuilder.buildOrderRequest()
-        order.id = new OrderId(TestBuilder.generateLong())
+        order.id = new OrderId(idGenerator.nextId(OrderId))
         EasyMock.expect(fulfillmentAction.facadeContainer.fulfillmentFacade.postFulfillment(EasyMock.same(order))).andReturn(
                 Promise.throwing(new IllegalArgumentException())
         )

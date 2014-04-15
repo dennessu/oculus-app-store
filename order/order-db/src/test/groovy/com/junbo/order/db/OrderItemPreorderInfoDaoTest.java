@@ -25,7 +25,6 @@ public class OrderItemPreorderInfoDaoTest extends BaseTest {
         OrderItemPreorderInfoEntity orderItemPreorderInfoEntity =
                 TestHelper.generateOrderItemPreorderInfoEntity();
         Long id = orderItemPreorderInfoDao.create(orderItemPreorderInfoEntity);
-        orderItemPreorderInfoDao.flush();
         OrderItemPreorderInfoEntity returnedEntity = orderItemPreorderInfoDao.read(id);
 
         Assert.assertNotNull(returnedEntity, "Fail to create or read entity.");
@@ -39,10 +38,8 @@ public class OrderItemPreorderInfoDaoTest extends BaseTest {
         OrderItemPreorderInfoEntity orderItemPreorderInfoEntity =
                 TestHelper.generateOrderItemPreorderInfoEntity();
         Long id = orderItemPreorderInfoDao.create(orderItemPreorderInfoEntity);
-        orderItemPreorderInfoDao.flush();
         orderItemPreorderInfoEntity.setUpdatedBy("ANOTHER");
         orderItemPreorderInfoDao.update(orderItemPreorderInfoEntity);
-        orderItemPreorderInfoDao.flush();
         OrderItemPreorderInfoEntity returnedEntity = orderItemPreorderInfoDao.read(id);
 
         Assert.assertNotNull(returnedEntity, "Fail to create or read entity.");

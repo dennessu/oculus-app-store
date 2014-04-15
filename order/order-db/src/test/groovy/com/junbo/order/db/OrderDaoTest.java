@@ -6,9 +6,13 @@
 
 package com.junbo.order.db;
 
+import com.junbo.common.id.OrderId;
+import com.junbo.common.id.UserId;
 import com.junbo.order.db.common.TestHelper;
 import com.junbo.order.db.dao.OrderDao;
 import com.junbo.order.db.entity.OrderEntity;
+import com.junbo.sharding.IdGenerator;
+import com.junbo.sharding.IdGeneratorFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -22,11 +26,15 @@ public class OrderDaoTest extends BaseTest {
     @Autowired
     private OrderDao orderDao;
 
+    @Autowired
+    protected IdGeneratorFacade idGenerator;
+
     @Test
     public void testCreateAndRead() {
         OrderEntity orderEntity = TestHelper.generateOrder();
+        orderEntity.setUserId(idGenerator.nextId(UserId.class));
+        orderEntity.setOrderId(idGenerator.nextId(OrderId.class, orderEntity.getUserId()));
         Long id = orderDao.create(orderEntity);
-        orderDao.flush();
         OrderEntity returnedEntity = orderDao.read(id);
 
         Assert.assertNotNull(returnedEntity, "Fail to create or read entity.");
@@ -37,11 +45,11 @@ public class OrderDaoTest extends BaseTest {
     @Test
     public void testUpdate() {
         OrderEntity orderEntity = TestHelper.generateOrder();
+        orderEntity.setUserId(idGenerator.nextId(UserId.class));
+        orderEntity.setOrderId(idGenerator.nextId(OrderId.class, orderEntity.getUserId()));
         Long id = orderDao.create(orderEntity);
-        orderDao.flush();
         orderEntity.setCountry("CN");
         orderDao.update(orderEntity);
-        orderDao.flush();
 
         OrderEntity returnedEntity = orderDao.read(id);
 
@@ -52,22 +60,23 @@ public class OrderDaoTest extends BaseTest {
     @Test
     public void testReadByUserId() {
         OrderEntity orderEntity = TestHelper.generateOrder();
+        orderEntity.setUserId(idGenerator.nextId(UserId.class));
+        orderEntity.setOrderId(idGenerator.nextId(OrderId.class, orderEntity.getUserId()));
         Long userId = orderEntity.getUserId();
         List<OrderEntity> resultBefore = orderDao.readByUserId(userId, null, null, null);
         orderDao.create(orderEntity);
-        orderDao.flush();
         List<OrderEntity> resultAfter = orderDao.readByUserId(userId, null, null, null);
         Assert.assertEquals(resultAfter.size(), resultBefore.size() + 1, "Result size should increase.");
     }
 
     @Test
     public void testReadByUserIdWithPage() {
-        Long userId = TestHelper.generateId();
+        Long userId = idGenerator.nextId(UserId.class);
         for (int i = 0;i < 3;++i) {
             OrderEntity entity = TestHelper.generateOrder();
+            entity.setOrderId(idGenerator.nextId(OrderId.class, userId));
             entity.setUserId(userId);
             orderDao.create(entity);
-            orderDao.flush();
         }
         Assert.assertEquals(orderDao.readByUserId(userId, null, null, null).size(), 3);
         Assert.assertEquals(orderDao.readByUserId(userId, null, 1, 2).size(), 2);
@@ -85,7 +94,6 @@ public class OrderDaoTest extends BaseTest {
             entity.setUserId(userId);
             orderDao.create(entity);
             entity.setTentative((i % 2) == 0);
-            orderDao.flush();
         }
         int totalSize = orderDao.readByUserId(userId, null, null, null).size();
         Assert.assertTrue(orderDao.readByUserId(userId, true, null, null).size() < totalSize);
