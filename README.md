@@ -9,7 +9,7 @@ The following guide is for setting up windows as the development and testing env
 1. Add the path of java (for example, `C:\Program Files\Java\jdk1.7.0_51\bin`) to the system `PATH` and put it before `%SystemRoot%\system32`
 1. To verify, type the following command in windows command line.
 
-    ```
+    ```bash
     where java
     ```
 
@@ -22,7 +22,7 @@ The following guide is for setting up windows as the development and testing env
 1. Open pgAdmin3, try to connect localhost and check "Store Password".
 1. Verify `psql.exe` won't ask for password by running the following command in your command line.
 
-    ```
+    ```bat
     psql.exe -lt postgres postgres
     ```
 
@@ -45,13 +45,13 @@ The following guide is for setting up windows as the development and testing env
 1. Restart PostgreSQL using the following commands (assume the installation path is `C:\Program Files\PostgreSQL\9.3`):
     1. Open an elevated command line window.
 
-        ```
+        ```bat
         powershell Start-Process cmd.exe -Verb RunAs
         ```
 
     1. Type the following command.
 
-        ```
+        ```bat
         net stop postgresql-9.3
         net start postgresql-9.3
         ```
@@ -69,9 +69,13 @@ The following guide is for setting up windows as the development and testing env
     - `openssh`
 
     If you forgot to install any package above, you can run `setup-x86.exe` or `setup-x86_64.exe` again to add them.
+    Note: Do *NOT* install the following packages:
+    - ~~postgresql~~
+    - ~~python~~
+
 1. Set the eol mode for cygwin by running the following command in cygwin terminal
 
-    ```
+    ```bash
     git config --global core.eol native
     ```
 
@@ -99,7 +103,7 @@ The following guide is for setting up windows as the development and testing env
 1. Add `C:\gradle\bin` to system `PATH`.
 1. Verify gradle is available in command by running the following command in your command line.
 
-    ```
+    ```bash
     gradle --version
     ```
 
@@ -109,13 +113,13 @@ The following guide is for setting up windows as the development and testing env
 `aws-artifactory` is a shared artifactory server used by the development team. The code always uses the name `aws-artifactory` to access it. Run the following command to map IP address to the name.
 1. Open an elevated command line window.
 
-    ```
+    ```bat
     powershell Start-Process cmd.exe -Verb RunAs
     ```
 
 1. Type the following command.
 
-    ```
+    ```bat
     echo 54.254.249.206 aws-artifactory >> C:\Windows\System32\drivers\etc\hosts
     ```
         
@@ -128,7 +132,7 @@ The following guide is for setting up OS X as the development and testing enviro
 #### Install [Home Brew](http://brew.sh)
 1. Open Terminal and run the following commands:
 
-```
+```bash
 xcode-select --install
 ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"
 ```
@@ -146,13 +150,13 @@ Note: If you don't want to change the coreutils preference, you can create anoth
 #### Install Necessary Packages
 1. Open Terminal and run the following command:
 
-```
+```bash
 brew install coreutils gradle wget openssl
 ```
 
 1. Verify gradle is available in command by running the following command in your command line.
 
-    ```
+    ```bash
     gradle --version
     ```
 
@@ -181,7 +185,7 @@ brew install coreutils gradle wget openssl
 1. Change the `postgresql.conf` to increase the max connections and transactions for unit tests.
     - Open `data\postgresql.conf` from the PostgreSQL installation path.
 
-        ```
+        ```bash
         sudo -u postgres vim /Library/PostgreSQL/9.3/data/postgresql.conf
         ```
         
@@ -199,7 +203,7 @@ brew install coreutils gradle wget openssl
 
 1. Restart PostgreSQL using the following commands.
 
-    ```
+    ```bash
     sudo -u postgres /Library/PostgreSQL/9.3/bin/pg_ctl -D /Library/PostgreSQL/9.3/data -m fast restart
     ```
 
@@ -212,7 +216,7 @@ brew install coreutils gradle wget openssl
 1. Open pgAdmin3, try to connect localhost and check "Store Password" if asked.
 1. Verify `psql` won't ask for password by running the following command in your command line.
 
-    ```
+    ```bash
     psql -lt postgres postgres
     ```
 
@@ -222,7 +226,7 @@ brew install coreutils gradle wget openssl
 
 1. Open Terminal and run the following commands:
 
-    ```
+    ```bash
     brew install couchdb
     ```
 
@@ -230,7 +234,7 @@ brew install coreutils gradle wget openssl
 
 1. Configure CouchDB to run as a daemon and start CouchDB
 
-    ```
+    ```bash
     sudo launchctl load /usr/local/Library/LaunchDaemons/org.apache.couchdb.plist
     sudo launchctl start org.apache.couchdb
     ```
@@ -241,7 +245,7 @@ brew install coreutils gradle wget openssl
 #### Add aws-artifactory to hosts
 `aws-artifactory` is a shared artifactory server used by the development team. The code always uses the name `aws-artifactory` to access it. Run the following command to map IP address to the name.
 
-```
+```bash
 sudo echo 54.254.249.206 aws-artifactory >> /etc/hosts
 ```
 
@@ -259,7 +263,7 @@ In windows, do the following steps in cygwin terminal. For OS X and Linux, open 
 1. Setup the ssh key according to the [github guide](https://help.github.com/articles/generating-ssh-keys).
 1. After setup the ssh key, enter the following comands to clone the branch.
 
-    ```
+    ```bash
     cd ~
     mkdir owp-main
     git clone git@github.com:junbo/main.git owp-main
@@ -267,7 +271,7 @@ In windows, do the following steps in cygwin terminal. For OS X and Linux, open 
 
 1. Trust aws-artifactory server cert.
 
-    ```
+    ```bash
     cd ~/owp-main/bootstrap/setup
     keytool -import -alias aws-artifactory -keystore $JAVA_HOME/jre/lib/security/cacerts -file ./aws-artifactory.cer -trustcacerts
     ```
@@ -282,7 +286,7 @@ changeit
 
 1. Run the build using the following commands.
 
-    ```
+    ```bash
     cd ~/owp-main
     ./fullcycle.sh
     ```
@@ -292,14 +296,14 @@ changeit
 ### Partial Build
 If you want to build only one component (for example, identity), run the following commands:
 
-```
+```bash
 cd ~/owp-main/identity
 gradle clean build install
 ```
 
 If you want to run the build without unittests, run the following commands:
 
-```
+```bash
 cd ~/owp-main/identity
 gradle clean build install -x test
 ```
@@ -307,7 +311,7 @@ gradle clean build install -x test
 ### Run the servers
 After the build, run the servers using the following command:
 
-```
+```bash
 cd ~/owp-main/bootstrap
 gradle installApp distTar
 pushd catalog-bundle/build/install/catalog-bundle
@@ -322,7 +326,6 @@ popd
 pushd docs-bundle/build/install/docs-bundle
 ./startup.sh
 popd
-
 ```
 
 After the steps, the serices are available at different ports on the development machine.
@@ -337,7 +340,7 @@ Note: In integration and production environment, a hardware load balancer will b
 ### Run the integration test cases
 After the servers are running, you can run test cases using the following command:
 
-```
+```bash
 cd ~/owp-main/integrationtesting
 gradle build
 ```
