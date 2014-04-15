@@ -30,45 +30,33 @@
             <wf:on-render>
                 <wf:action ref="registerView"/>
             </wf:on-render>
-            <wf:transition on="next" to="REGISTER_USER"/>
-            <wf:transition on="cancel" to="CANCEL_VIEW"/>
-        </wf:view-state>
-
-        <wf:action-state id="REGISTER_USER">
-            <wf:action ref="validateConsent"/>
-            <wf:transition on="consentRequired" to="REDIRECT_TO_CONSENT"/>
-            <wf:transition on="*" to="END"/>
-        </wf:action-state>
-
-        <wf:view-state id="REDIRECT_TO_CONSENT">
-            <wf:on-entry>
-                <wf:action ref="redirectToConsent"/>
-            </wf:on-entry>
-            <wf:transition on="*" to="CONSENT_VIEW"/>
-        </wf:view-state>
-
-        <wf:view-state id="CONSENT_VIEW">
-            <wf:on-entry>
-                <wf:action ref="consentView"/>
-            </wf:on-entry>
-            <wf:transition on="next" to="CONSENT_SUCCESS">
-                <wf:action ref="saveConsent"/>
+            <wf:transition on="next" to="REGISTER_USER">
+                <wf:action ref="validateRegister"/>
             </wf:transition>
             <wf:transition on="cancel" to="CANCEL_VIEW"/>
         </wf:view-state>
 
-        <wf:view-state id="CONSENT_SUCCESS">
+        <wf:action-state id="REGISTER_USER">
+            <wf:action ref="createUser"/>
+            <wf:action ref="createUserCredential"/>
+            <wf:action ref="createUserPii"/>
+            <wf:transition on="error" to="REGISTER_VIEW"/>
+            <wf:transition on="*" to="REGISTER_SUCCESS"/>
+        </wf:action-state>
+
+        <wf:view-state id="REGISTER_SUCCESS">
             <wf:on-render>
                 <wf:action ref="redirectToAuth"/>
             </wf:on-render>
-            <wf:transition on="*" to="END"/>
+            <wf:transition on="*" to="END">
+                <wf:action ref="saveLoginState"/>
+            </wf:transition>
         </wf:view-state>
 
         <wf:end-state id="END">
             <wf:on-entry>
                 <wf:action ref="grantAuthorizationCode"/>
                 <wf:action ref="grantImplicitAccessToken"/>
-                <wf:action ref="grantRememberMeToken"/>
                 <wf:action ref="grantIdToken"/>
                 <wf:action ref="redirectToClient"/>
                 <wf:action ref="redirect"/>
@@ -94,4 +82,18 @@
     </bean>
 
     <bean id="registerView" class="com.junbo.oauth.core.view.RegisterView"/>
+
+    <bean id="createUser" class="com.junbo.oauth.core.action.CreateUser">
+        <property name="userResource" ref="userResource"/>
+    </bean>
+
+    <bean id="createUserCredential" class="com.junbo.oauth.core.action.CreateUserCredential">
+        <property name="userCredentialResource" ref="userCredentialResource"/>
+    </bean>
+
+    <bean id="createUserPii" class="com.junbo.oauth.core.action.CreateUserPii">
+        <property name="userPiiResource" ref="userPiiResource"/>
+    </bean>
+
+    <bean id="validateRegister" class="com.junbo.oauth.core.action.ValidateRegister"/>
 </beans>

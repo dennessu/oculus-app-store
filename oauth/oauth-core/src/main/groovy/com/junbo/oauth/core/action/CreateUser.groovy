@@ -13,11 +13,9 @@ import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
-import com.junbo.oauth.core.exception.AppExceptions
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
-import org.springframework.util.StringUtils
 
 /**
  * CreateUser.
@@ -38,16 +36,7 @@ class CreateUser implements Action {
 
         String username = parameterMap.getFirst(OAuthParameters.USERNAME)
 
-        if (StringUtils.isEmpty(username)) {
-            contextWrapper.errors.add(AppExceptions.INSTANCE.missingUsername().error())
-            return Promise.pure(new ActionResult('error'))
-        }
-
         String nickname = parameterMap.getFirst(OAuthParameters.NICK_NAME)
-        if (StringUtils.isEmpty(nickname)) {
-            contextWrapper.errors.add(AppExceptions.INSTANCE.missingNickName().error())
-            return Promise.pure(new ActionResult('error'))
-        }
 
         User user = new User(
                 username: username,

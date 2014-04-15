@@ -44,6 +44,8 @@ class ActionContextWrapper {
     public static final String USER = 'user'
     public static final String USER_CREDENTIAL = 'user_credential'
     public static final String USER_PII = 'user_pii'
+    public static final String DOB = 'dob'
+    public static final String GENDER = 'gender'
 
     @Delegate
     private final ActionContext actionContext
@@ -254,5 +256,21 @@ class ActionContextWrapper {
 
     void setUserPii(UserPii userPii) {
         actionContext.requestScope[USER_PII] = userPii
+    }
+
+    Date getDob() {
+        return (Date) actionContext.requestScope[DOB]
+    }
+
+    void setDob(Date dob) {
+        actionContext.requestScope[DOB] = dob
+    }
+
+    Gender getGender() {
+        return (Gender) actionContext.requestScope[GENDER]
+    }
+
+    void setGender(Gender gender) {
+        actionContext.requestScope[GENDER] = gender
     }
 }
