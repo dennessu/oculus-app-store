@@ -5,27 +5,28 @@
  */
 package com.junbo.fulfilment.clientproxy.impl;
 
-import com.junbo.catalog.spec.model.common.EntityGetOptions;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
-import com.junbo.catalog.spec.model.offer.Action;
-import com.junbo.catalog.spec.model.offer.Event;
-import com.junbo.catalog.spec.model.offer.ItemEntry;
-import com.junbo.catalog.spec.model.offer.OfferEntry;
+import com.junbo.catalog.spec.model.offer.*;
 import com.junbo.catalog.spec.resource.EntitlementDefinitionResource;
-import com.junbo.catalog.spec.resource.OfferResource;
+import com.junbo.catalog.spec.resource.ItemRevisionResource;
+import com.junbo.catalog.spec.resource.OfferRevisionResource;
 import com.junbo.common.id.EntitlementDefinitionId;
 import com.junbo.common.id.OfferId;
+import com.junbo.common.model.Results;
 import com.junbo.fulfilment.clientproxy.CatalogGateway;
 import com.junbo.fulfilment.common.collection.SevereMap;
 import com.junbo.fulfilment.common.util.Constant;
 import com.junbo.fulfilment.common.util.Utils;
 import com.junbo.fulfilment.spec.error.AppErrors;
 import com.junbo.fulfilment.spec.fusion.*;
+import com.junbo.fulfilment.spec.fusion.Offer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.util.CollectionUtils;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,14 +35,16 @@ import java.util.Map;
  */
 public class CatalogGatewayImpl implements CatalogGateway {
     private static final String PURCHASE_EVENT = "PURCHASE";
-    private static final String OFFER_RELEASED_STATUS = "RELEASED";
-    private static final Long OFFER_TIMESTAMP_NOT_SPECIFIED = null;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CatalogGatewayImpl.class);
 
     @Autowired
-    @Qualifier("offerClient")
-    private OfferResource offerResource;
+    @Qualifier("offerRevisionClient")
+    private OfferRevisionResource offerRevisionResource;
+
+    @Autowired
+    @Qualifier("itemRevisionClient")
+    private ItemRevisionResource itemRevisionResource;
 
     @Autowired
     @Qualifier("entitlementDefClient")
@@ -53,37 +56,31 @@ public class CatalogGatewayImpl implements CatalogGateway {
     }
 
     @Override
-    public Offer getOffer(Long offerId) {
-        return wash(retrieve(offerId, OFFER_TIMESTAMP_NOT_SPECIFIED));
-    }
-
-
-    @Override
     public ShippingMethod getShippingMethod(Long shippingMethodId) {
         return new ShippingMethod();
     }
 
-    protected com.junbo.catalog.spec.model.offer.Offer retrieve(Long offerId, Long timestamp) {
+    protected OfferRevision retrieve(Long offerId, Long timestamp) {
         try {
-            EntityGetOptions options = EntityGetOptions.getDefault();
-            options.setStatus(OFFER_RELEASED_STATUS);
+            OfferRevisionsGetOptions options = new OfferRevisionsGetOptions();
+            options.setOfferIds(Arrays.asList(new OfferId(offerId)));
+            //options.setTimestamp();
 
-            com.junbo.catalog.spec.model.offer.Offer offer =
-                    offerResource.getOffer(new OfferId(offerId), options).wrapped().get();
+            Results<OfferRevision> revisions = offerRevisionResource.getOfferRevisions(options).wrapped().get();
 
-            if (offer == null) {
+            if (revisions == null || CollectionUtils.isEmpty(revisions.getItems())) {
                 LOGGER.error("Offer [" + offerId + "] with timestamp [" + timestamp + "] does not exist");
                 throw AppErrors.INSTANCE.notFound("Offer", offerId).exception();
             }
 
-            return offer;
+            return revisions.getItems().get(Constant.UNIQUE_RESULT);
         } catch (Exception e) {
             LOGGER.error("Error occurred during calling [Catalog] component.", e);
             throw AppErrors.INSTANCE.gatewayFailure("catalog").exception();
         }
     }
 
-    protected Offer wash(com.junbo.catalog.spec.model.offer.Offer offer) {
+    protected Offer wash(OfferRevision offerRevision) {
         Offer result = new com.junbo.fulfilment.spec.fusion.Offer();
 
         // fill offer base info
