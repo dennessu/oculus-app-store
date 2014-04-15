@@ -28,7 +28,7 @@ import javax.ws.rs.core.MediaType;
 public interface UserCredentialResource {
     @ApiOperation("Change current credential")
     @POST
-    @Path("/changeCredential")
+    @Path("/change-credential")
     Promise<UserCredential> create(@PathParam("userId") UserId userId,
                                    UserCredential userCredential);
 
