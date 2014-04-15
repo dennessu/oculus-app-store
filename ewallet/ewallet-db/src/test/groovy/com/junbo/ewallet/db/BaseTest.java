@@ -9,24 +9,20 @@ import com.junbo.sharding.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
-
-import javax.sql.DataSource;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * base test for db.
  */
 @ContextConfiguration(locations = {"classpath:spring/context-test.xml"})
 @TransactionConfiguration(defaultRollback = true)
-public class BaseTest extends AbstractTransactionalTestNGSpringContextTests {
-    @Override
-    @Autowired
-    @Qualifier("ewalletDataSource")
-    public void setDataSource(DataSource dataSource) {
-        super.setDataSource(dataSource);
-    }
-
+@TestExecutionListeners(TransactionalTestExecutionListener.class)
+@Transactional("transactionManager")
+public class BaseTest extends AbstractTestNGSpringContextTests {
     @Autowired
     @Qualifier("oculus48IdGenerator")
     protected IdGenerator idGenerator;

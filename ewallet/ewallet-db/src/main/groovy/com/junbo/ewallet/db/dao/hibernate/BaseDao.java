@@ -8,6 +8,8 @@ package com.junbo.ewallet.db.dao.hibernate;
 
 import com.junbo.ewallet.db.entity.Entity;
 import com.junbo.sharding.IdGenerator;
+import com.junbo.sharding.ShardAlgorithm;
+import com.junbo.sharding.hibernate.ShardScope;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,15 +29,23 @@ public class BaseDao<T extends Entity> {
     @Autowired
     @Qualifier("oculus48IdGenerator")
     private IdGenerator idGenerator;
+    @Autowired
+    @Qualifier("userShardAlgorithm")
+    private ShardAlgorithm shardAlgorithm;
 
     private Class<T> entityType;
 
-    protected Session currentSession() {
-        return sessionFactory.getCurrentSession();
+    protected Session currentSession(Object key) {
+        ShardScope shardScope = new ShardScope(shardAlgorithm.shardId(key));
+        try {
+            return sessionFactory.getCurrentSession();
+        } finally {
+            shardScope.close();
+        }
     }
 
     public T get(Long id) {
-        return (T) currentSession().get(entityType, id);
+        return (T) currentSession(id).get(entityType, id);
     }
 
     public T insert(T t) {
@@ -45,17 +55,17 @@ public class BaseDao<T extends Entity> {
         t.setCreatedTime(now);
         t.setModifiedBy("DEFAULT");   //TODO
         t.setModifiedTime(now);
-        return get((Long) currentSession().save(t));
+        return get((Long) currentSession(t.getShardMasterId()).save(t));
     }
 
     public T update(T t) {
-        T existed = (T) currentSession().get(entityType, t.getId());
+        T existed = (T) currentSession(t.getShardMasterId()).get(entityType, t.getId());
         t.setCreatedTime(existed.getCreatedTime());
         t.setCreatedBy(existed.getCreatedBy());
         Date now = new Date();
         t.setModifiedBy("DEFAULT"); //TODO
         t.setModifiedTime(now);
-        return (T) currentSession().merge(t);
+        return (T) currentSession(t.getShardMasterId()).merge(t);
     }
 
     protected Long generateId(Long shardId) {

@@ -1,5 +1,5 @@
 var C = require('../config');
-var Utils = require('./Utils');
+var Utils = require('./utils');
 
 module.exports = function (app) {
 

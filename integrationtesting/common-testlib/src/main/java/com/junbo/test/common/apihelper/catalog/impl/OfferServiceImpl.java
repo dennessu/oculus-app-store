@@ -5,6 +5,7 @@
  */
 package com.junbo.test.common.apihelper.catalog.impl;
 
+import com.junbo.catalog.spec.model.common.LocalizableProperty;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.offer.ItemEntry;
 import com.junbo.catalog.spec.model.offer.Offer;
@@ -65,7 +66,7 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         String responseBody = restApiCall(HTTPMethod.GET, url, null, expectedResponseCode, httpPara);
         Offer offerGet = new JsonMessageTranscoder().decode(new TypeReference<Offer>() {},
                 responseBody);
-        String offerRtnId = IdConverter.idLongToHexString(OfferId.class, offerGet.getId());
+        String offerRtnId = IdConverter.idLongToHexString(OfferId.class, offerGet.getOfferId());
         Master.getInstance().addOffer(offerRtnId, offerGet);
 
         return offerRtnId;
@@ -82,7 +83,7 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
                 responseBody);
         List<String> listOfferId = new ArrayList<>();
         for (Offer offer : offerGet.getItems()){
-            String offerRtnId = IdConverter.idLongToHexString(OfferId.class, offer.getId());
+            String offerRtnId = IdConverter.idLongToHexString(OfferId.class, offer.getOfferId());
             Master.getInstance().addOffer(offerRtnId, offer);
             listOfferId.add(offerRtnId);
         }
@@ -103,15 +104,15 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         String defaultItemId = itemService.postDefaultItem(itemType);
         //Release the item
         Item item =  Master.getInstance().getItem(defaultItemId);
-        item.setStatus(EnumHelper.CatalogEntityStatus.RELEASED.getEntityStatus());
+        item.setCurated(true);
         itemService.updateItem(item);
 
         ItemEntry itemEntry = new ItemEntry();
         List<ItemEntry> itemEntities = new ArrayList<>();
-        itemEntry.setItemId(item.getId());
+        itemEntry.setItemId(item.getItemId());
         itemEntry.setQuantity(1);
         itemEntities.add(itemEntry);
-        offerForPost.setItems(itemEntities);
+        //offerForPost.setItems(itemEntities);
         offerForPost.setOwnerId(item.getOwnerId());
 
         return offerForPost;
@@ -126,7 +127,7 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         String responseBody = restApiCall(HTTPMethod.POST, catalogServerURL, offer, expectedResponseCode);
         Offer offerPost = new JsonMessageTranscoder().decode(new TypeReference<Offer>() {},
                 responseBody);
-        String offerRtnId = IdConverter.idLongToHexString(OfferId.class, offerPost.getId());
+        String offerRtnId = IdConverter.idLongToHexString(OfferId.class, offerPost.getOfferId());
         Master.getInstance().addOffer(offerRtnId, offerPost);
 
         return offerRtnId;
@@ -138,11 +139,11 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
 
     public String updateOffer(Offer offer, int expectedResponseCode) throws Exception {
 
-        String putUrl = catalogServerURL + "/" + IdConverter.idLongToHexString(OfferId.class, offer.getId());
+        String putUrl = catalogServerURL + "/" + IdConverter.idLongToHexString(OfferId.class, offer.getOfferId());
         String responseBody = restApiCall(HTTPMethod.PUT, putUrl, offer, expectedResponseCode);
         Offer offerPut = new JsonMessageTranscoder().decode(new TypeReference<Offer>() {},
                 responseBody);
-        String offerRtnId = IdConverter.idLongToHexString(OfferId.class, offerPut.getId());
+        String offerRtnId = IdConverter.idLongToHexString(OfferId.class, offerPut.getOfferId());
         Master.getInstance().addOffer(offerRtnId, offerPut);
 
         return offerRtnId;
@@ -181,10 +182,10 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
                     Offer offer = this.preparePredefinedOffer(strLine[0], strLine[1], strLine[2], strLine[3]);
                     String offerId = this.postOffer(offer);
                     //Release the offer
-                Offer offerRtn = Master.getInstance().getOffer(offerId);
-                offerRtn.setStatus(EnumHelper.CatalogEntityStatus.RELEASED.getEntityStatus());
-                this.updateOffer(offerRtn);
-            }
+                    Offer offerRtn = Master.getInstance().getOffer(offerId);
+                    offerRtn.setCurated(true);
+                    this.updateOffer(offerRtn);
+                }
             }
         } catch (IOException e) {
             throw e;
@@ -225,13 +226,15 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
 
         if (itemId == null) {
             Item item = itemService.prepareItemEntity(itemName);
-            item.setName(itemName);
+            LocalizableProperty itemLocalProperty = new LocalizableProperty();
+            itemLocalProperty.set("en_US", itemName);
+            item.setName(itemLocalProperty);
             item.setType(offerType);
             item.setOwnerId(IdConverter.hexStringToId(UserId.class, userId));
 
             itemId = itemService.postItem(item);
             item = Master.getInstance().getItem(itemId);
-            item.setStatus(EnumHelper.CatalogEntityStatus.RELEASED.getEntityStatus());
+            item.setCurated(true);
             itemService.updateItem(item);
         }
 
@@ -240,7 +243,7 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         itemEntry.setItemId(IdConverter.hexStringToId(ItemId.class, itemId));
         itemEntry.setQuantity(1);
         itemEntities.add(itemEntry);
-        offerForPost.setItems(itemEntities);
+        //offerForPost.setItems(itemEntities);
         offerForPost.setOwnerId(IdConverter.hexStringToId(UserId.class, userId));
 
         return offerForPost;

@@ -27,7 +27,7 @@ public interface EntitlementDao {
     List<EntitlementEntity> getBySearchParam(EntitlementSearchParam entitlementSearchParam,
                                              PageMetadata pageMetadata);
 
-    EntitlementEntity getByTrackingUuid(UUID trackingUuid);
+    EntitlementEntity getByTrackingUuid(Long shardMasterId, UUID trackingUuid);
 
     EntitlementEntity getExistingManagedEntitlement(Long userId, Long definitionId);
 

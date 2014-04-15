@@ -30,7 +30,7 @@ class WalletResourceImpl implements WalletResource {
 
     @Override
     Promise<Wallet> postWallet(Wallet wallet) {
-        Wallet existed = getByTrackingUuid(wallet.trackingUuid)
+        Wallet existed = getByTrackingUuid(wallet.userId, wallet.trackingUuid)
         if (existed != null) {
             return Promise.pure(existed)
         }
@@ -40,7 +40,7 @@ class WalletResourceImpl implements WalletResource {
 
     @Override
     Promise<Wallet> updateWallet(WalletId walletId, Wallet wallet) {
-        Wallet existed = getByTrackingUuid(wallet.trackingUuid)
+        Wallet existed = getByTrackingUuid(wallet.userId, wallet.trackingUuid)
         if (existed != null) {
             return Promise.pure(existed)
         }
@@ -50,7 +50,7 @@ class WalletResourceImpl implements WalletResource {
 
     @Override
     Promise<Wallet> credit(CreditRequest creditRequest) {
-        Wallet existed = getByTrackingUuid(creditRequest.trackingUuid)
+        Wallet existed = getByTrackingUuid(creditRequest.userId, creditRequest.trackingUuid)
         if (existed != null) {
             return Promise.pure(existed)
         }
@@ -60,7 +60,7 @@ class WalletResourceImpl implements WalletResource {
 
     @Override
     Promise<Wallet> debit(WalletId walletId, DebitRequest debitRequest) {
-        Wallet existed = getByTrackingUuid(debitRequest.trackingUuid)
+        Wallet existed = getByTrackingUuid(walletId.value, debitRequest.trackingUuid)
         if (existed != null) {
             return Promise.pure(existed)
         }
@@ -73,10 +73,10 @@ class WalletResourceImpl implements WalletResource {
         return Promise.pure(walletService.getTransactions(walletId.value))
     }
 
-    private Wallet getByTrackingUuid(UUID trackingUuid) {
+    private Wallet getByTrackingUuid(Long shardMasterId, UUID trackingUuid) {
         if (trackingUuid == null) {
             return null
         }
-        return walletService.getByTrackingUuid(trackingUuid)
+        return walletService.getByTrackingUuid(shardMasterId, trackingUuid)
     }
 }

@@ -5,6 +5,7 @@
  */
 package com.junbo.test.common.apihelper.catalog.impl;
 
+import com.junbo.catalog.spec.model.common.LocalizableProperty;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.common.id.UserId;
 import com.junbo.common.model.Results;
@@ -54,7 +55,7 @@ public class ItemServiceImpl extends HttpClientBase implements ItemService {
         String responseBody = restApiCall(HTTPMethod.GET, url, null, expectedResponseCode, httpPara);
         Item itemGet = new JsonMessageTranscoder().decode(new TypeReference<Item>() {},
                 responseBody);
-        String itemRtnId = IdConverter.idLongToHexString(ItemId.class, itemGet.getId());
+        String itemRtnId = IdConverter.idLongToHexString(ItemId.class, itemGet.getItemId());
         Master.getInstance().addItem(itemRtnId, itemGet);
 
         return itemRtnId;
@@ -71,7 +72,7 @@ public class ItemServiceImpl extends HttpClientBase implements ItemService {
                 responseBody);
         List<String> listItemId = new ArrayList<>();
         for (Item item : itemGet.getItems()){
-            String itemRtnId = IdConverter.idLongToHexString(ItemId.class, item.getId());
+            String itemRtnId = IdConverter.idLongToHexString(ItemId.class, item.getItemId());
             Master.getInstance().addItem(itemRtnId, item);
             listItemId.add(itemRtnId);
         }
@@ -84,7 +85,9 @@ public class ItemServiceImpl extends HttpClientBase implements ItemService {
         String strItem = this.readFileContent(fileName);
         Item itemForPost = new JsonMessageTranscoder().decode(new TypeReference<Item>() {},
                 strItem.toString());
-        itemForPost.setName("testItem_" + RandomFactory.getRandomStringOfAlphabetOrNumeric(10));
+        LocalizableProperty itemName = new LocalizableProperty();
+        itemName.set("en_US", "testItem_" + RandomFactory.getRandomStringOfAlphabetOrNumeric(10));
+        itemForPost.setName(itemName);
         UserService us = UserServiceImpl.instance();
         String developerId = us.PostUser();
         itemForPost.setOwnerId(IdConverter.hexStringToId(UserId.class, developerId));
@@ -109,7 +112,7 @@ public class ItemServiceImpl extends HttpClientBase implements ItemService {
         String responseBody = restApiCall(HTTPMethod.POST, catalogServerURL, item, expectedResponseCode);
         Item itemPost = new JsonMessageTranscoder().decode(new TypeReference<Item>() {},
                 responseBody);
-        String itemRtnId = IdConverter.idLongToHexString(ItemId.class, itemPost.getId());
+        String itemRtnId = IdConverter.idLongToHexString(ItemId.class, itemPost.getItemId());
         Master.getInstance().addItem(itemRtnId, itemPost);
 
         return itemRtnId;
@@ -121,11 +124,11 @@ public class ItemServiceImpl extends HttpClientBase implements ItemService {
 
     public String updateItem(Item item, int expectedResponseCode) throws Exception {
 
-        String putUrl = catalogServerURL + "/" + IdConverter.idLongToHexString(ItemId.class, item.getId());
+        String putUrl = catalogServerURL + "/" + IdConverter.idLongToHexString(ItemId.class, item.getItemId());
         String responseBody = restApiCall(HTTPMethod.PUT, putUrl, item, expectedResponseCode);
         Item itemPut = new JsonMessageTranscoder().decode(new TypeReference<Item>() {},
                 responseBody);
-        String itemRtnId = IdConverter.idLongToHexString(ItemId.class, itemPut.getId());
+        String itemRtnId = IdConverter.idLongToHexString(ItemId.class, itemPut.getItemId());
         Master.getInstance().addItem(itemRtnId, itemPut);
 
         return itemRtnId;

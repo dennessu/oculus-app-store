@@ -4,7 +4,6 @@ var Configs = {
 
     // async client config
     CookiesTimeout: 600 * 60 * 1000,
-    Google_Captcha_PublicKey: "6LeKhO4SAAAAAL53gitVTB5ddevC59wE-6usFCnT",
     CookiesName: {
         Code: "code",
         AccessToken: "access_token",
@@ -40,7 +39,6 @@ var Configs = {
         CatalogManageOffersUrl: "http://catalog.oculusvr-demo.com:8081"
     },
     Runtime: {
-        SocketAddress: "",
         LoginCallbackUrl: "{1}/callback/login",
         RegisterCallbackUrl: "{1}/callback/register",
         LogoutCallbackUrl: "{1}/callback/logout",
@@ -81,78 +79,6 @@ var Configs = {
         {name: "United States of America", value: "US"},
     ],
 
-    APIs: {
-        Identity: {
-            Config: {
-                namespace: "/api/identity/"
-            },
-            Login: { path: "post_login" },
-            Captcha: { path: "captcha" },
-            PostTFA: { path: "post_tfa" },
-            Register: { path: "register" },
-            PostPIN: { path: "post_pin" },
-            GetAnonymousUser: { path: "get_anonymous_user" },
-            GetPayinProfiles: { path: "get_payin_profiles" },
-            PutProfile: { path: "put_profile" },
-            RestPassword: { path: "rest_password" },
-            GetOptIns: {path: "get_opt_ins"},
-            PostOptIns: {path: "post_opt_ins"}
-        },
-        Catalog: {
-            Config: {
-                namespace: "/api/catalog/"
-            },
-            GetProducts: { path: "products" },
-            GetDownloadLinks: { path: "get_download_links" }
-        },
-
-        Cart: {
-            Config: {
-                namespace: "/api/cart/"
-            },
-            GetCart: { path: "get_cart" },
-            AddCartItem: { path: "add_cart_item" },
-            RemoveCartItem: { path: "remove_cart_item" },
-            UpdateCartItem: { path: "update_cart_item" },
-            MergeCart: { path: "merge_cart" },
-            PostOrder: { path: "post_order" },
-            GetOrderById: { path: "get_order_by_id" },
-            GetOrders: { path: "get_order_by_user" },
-            PutOrder: { path: "put_order" },
-            PurchaseOrder: { path: "purchase_order" }
-        },
-        Billing: {
-            Config: {
-                namespace: "/api/billing/"
-            },
-            GetShippingInfos: {path: "get_shipping_infos"},
-            GetShippingInfoById: {path: "get_shipping_info_by_id"},
-            PostShippingInfo: {path: "post_shipping_info"},
-            DeleteShippingInfo: {path: "delete_shipping_info"}
-        },
-        Payment: {
-            Config: {
-                namespace: "/api/payment/"
-            },
-            GetPayments: {path: "get_payments" },
-            GetPaymentById: {path: "get_payment_by_id"},
-            PostPayment: {path: "post_payment"},
-            DeletePayment: {path: "delete_payment"}
-        },
-        Entitlement: {
-            Config: {
-                namespace: "/api/entitlement/"
-            },
-            GetEntitlements: {path: "get_entitlements"},
-            PostEntitlement: {path: "post_entitlement"}
-        }
-    },
-
-    // only on server
-    Google_Captcha_Hostname: "www.google.com",
-    Google_Captcha_VerifyUrl: "/recaptcha/api/verify",
-    Google_Captcha_PrivateKey: "6LeKhO4SAAAAACP5W0NoL7YV9dZAs3-5Z-T4Dl5i",
-
     // API Data field and other site post filed
     FieldNames: {
         AccessToken: "access_token",
@@ -164,7 +90,680 @@ var Configs = {
         ProfileFirstname: "firstName",
         ProfileLastname: "lastName"
     },
-    SaveQueryStringArray: ["cid", "event", "id_token", "access_token", "redirect_url"]
+    SaveQueryStringArray: ["cid", "event", "id_token", "access_token", "redirect_url"],
+
+    Rests: {
+        Identity: {
+            Config: {
+                name: "Idtntity",
+                namespace: "/rest"
+            },
+
+            PostAuthorize: {
+                Rules:{},
+                Options: {
+                    path: "/oauth2/authorize",
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    }
+                },
+                Arguments: {
+                    options: 0,
+                    data: 1,
+                    cb: 2
+                }
+            },
+
+            GetTokenInfo: {
+                Rules:{},
+                Options: {
+                    path: "/oauth2/tokeninfo?access_token={accessToken}",
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                },
+                Arguments: {
+                    accessToken: 0,
+                    options: 1,
+                    cb: 2
+                }
+            },
+
+            PostTokenInfoByCode: {
+                Rules:{},
+                Options: {
+                    path: "/oauth2/token",
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    }
+                },
+                Arguments: {
+                    options: 0,
+                    data: 1,
+                    cb: 2
+                }
+            },
+
+            GetUserById: {
+                Rules:{},
+                Options: {
+                    path: "/users/{userId}",
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                },
+                Arguments: {
+                    userId: 0,
+                    options: 1,
+                    cb: 2
+                }
+            },
+
+            PostUser: {
+                Rules:{},
+                Options: {
+                    path: "/users",
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                },
+                Arguments: {
+                    options: 0,
+                    data: 1,
+                    cb: 2
+                }
+            },
+
+            PutUser: {
+                Rules:{},
+                Options: {
+                    path: "/users/{userId}",
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                },
+                Arguments: {
+                    userId: 0,
+                    options: 1,
+                    data: 2,
+                    cb: 3
+                }
+            },
+
+            PostRestPassword: {
+                Rules:{},
+                Options: {
+                    path: "/users/{userId}/reset-password?newPassword={newPassword}",
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                },
+                Arguments: {
+                    userId: 0,
+                    newPassword: 1,
+                    options: 2,
+                    cb: 3
+                }
+            },
+
+            PostProfile: {
+                Rules:{},
+                Options: {
+                    path: "/users/{userId}/profiles",
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                },
+                Arguments: {
+                    userId: 0,
+                    options: 1,
+                    data: 2,
+                    cb: 3
+                }
+            },
+
+            PutProfile: {
+                Rules:{},
+                Options: {
+                    path: "/users/{userId}/profiles/{profileId}",
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                },
+                Arguments: {
+                    userId: 0,
+                    profileId: 1,
+                    options: 2,
+                    data: 3,
+                    cb: 4
+                }
+            },
+
+            GetPayinProfilesByUserId: {
+                Rules:{},
+                Options: {
+                    path: "/users/{userId}/profiles?type=PAYIN",
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                },
+                Arguments: {
+                    userId: 0,
+                    options: 1,
+                    cb: 2
+                }
+            },
+
+            GetOptInsByUserId:{
+                Rules:{},
+                Options: {
+                    path: "/users/{userId}/opt-ins",
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                },
+                Arguments: {
+                    userId: 0,
+                    options: 1,
+                    cb: 2
+                }
+            },
+
+            PostOptIns: {
+                Rules:{},
+                Options: {
+                    path: "/users/{userId}/opt-ins",
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                },
+                Arguments: {
+                    userId: 0,
+                    options: 1,
+                    data: 2,
+                    cb: 3
+                }
+            }
+        },
+
+        Billing:{
+            Config: {
+                name: "Billing",
+                namespace: "/rest"
+            },
+
+            GetShippingInfosByUserId:{
+                Rules:{},
+                Options: {
+                    path: "/users/{userId}/ship-to-info",
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                },
+                Arguments: {
+                    userId: 0,
+                    options: 1,
+                    cb: 2
+                }
+            },
+
+            GetShippingInfoById:{
+                Rules:{},
+                Options: {
+                    path: "/users/{userId}/ship-to-info/{shippingId}",
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                },
+                Arguments: {
+                    userId: 0,
+                    shippingId: 1,
+                    options: 2,
+                    cb: 3
+                }
+            },
+
+            PostShippingInfo:{
+                Rules:{},
+                Options: {
+                    path: "/users/{userId}/ship-to-info",
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                },
+                Arguments: {
+                    userId: 0,
+                    options: 1,
+                    data: 2,
+                    cb: 3
+                }
+            },
+
+            PutShippingInfo:{
+                Rules:{},
+                Options: {
+                    path: "/users/{userId}/ship-to-info/{shippingId}",
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                },
+                Arguments: {
+                    userId: 0,
+                    shippingId: 1,
+                    options: 2,
+                    data: 3,
+                    cb: 4
+                }
+            },
+
+            DeleteShippingInfo:{
+                Rules:{},
+                Options: {
+                    path: "/users/{userId}/ship-to-info/{shippingId}",
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                },
+                Arguments: {
+                    userId: 0,
+                    shippingId: 1,
+                    options: 2,
+                    cb: 3
+                }
+            }
+        },
+
+        Catalog:{
+            Config: {
+                name: "Catalog",
+                namespace: "/rest"
+            },
+
+            GetOffers: {
+                Rules:{},
+                Options: {
+                    path: "/offers?status=Released",
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                },
+                Arguments: {
+                    options: 0,
+                    cb: 1
+                }
+            },
+
+            GetOfferById: {
+                Rules:{},
+                Options: {
+                    path: "/offers/{offerId}",
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                },
+                Arguments: {
+                    offerId: 0,
+                    options: 1,
+                    cb: 2
+                }
+            },
+
+            GetItemById: {
+                Rules:{},
+                Options: {
+                    path: "/items/{itemId}",
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                },
+                Arguments: {
+                    itemId: 0,
+                    options: 1,
+                    cb: 2
+                }
+            }
+        },
+
+        Emails:{
+            Config: {
+                name: "Emails",
+                namespace: "/rest"
+            },
+
+            Send: {
+                Rules:{},
+                Options: {
+                    path: "/emails",
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                },
+                Arguments: {
+                    options: 0,
+                    data: 1,
+                    cb: 2
+                }
+            }
+        },
+
+        Entitlements: {
+            Config: {
+                name: "Entitlements",
+                namespace: "/rest"
+            },
+
+            GetEntitlementsByUserId: {
+                Rules:{},
+                Options: {
+                    path: "/users/{userId}/entitlements",
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                },
+                Arguments: {
+                    userId: 0,
+                    options: 1,
+                    cb: 2
+                }
+            },
+
+            PostEntitlement: {
+                Rules:{},
+                Options: {
+                    path: "/entitlements",
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                },
+                Arguments: {
+                    options: 0,
+                    data: 1,
+                    cb: 2
+                }
+            }
+        },
+
+        Cart: {
+            Config: {
+                name: "Cart",
+                namespace: "/rest"
+            },
+
+            GetPrimaryCartByUserId: {
+                Rules:{},
+                Options: {
+                    path: "/users/{userId}/carts/primary",
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                },
+                Arguments: {
+                    userId: 0,
+                    options: 1,
+                    cb: 2
+                }
+            },
+
+            GetCartByUrl: {
+                Rules:{
+                    is_full_path: true
+                },
+                Options: {
+                    path: "{url}",
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                },
+                Arguments: {
+                    url: 0,
+                    options: 1,
+                    cb: 2
+                }
+            },
+
+            GetCartById: {
+                Rules:{},
+                Options: {
+                    path: "/users/{userId}/carts/{cartId}",
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                },
+                Arguments: {
+                    userId: 0,
+                    cartId: 1,
+                    options: 2,
+                    cb: 3
+                }
+            },
+
+            PutCart: {
+                Rules:{},
+                Options: {
+                    path: "/users/{userId}/carts/{cartId}",
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                },
+                Arguments: {
+                    userId: 0,
+                    cartId: 1,
+                    options: 2,
+                    data: 3,
+                    cb: 4
+                }
+            },
+
+            PostMergeCart: {
+                Rules:{},
+                Options: {
+                    path: "/users/{userId}/carts/{cartId}/merge",
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                },
+                Arguments: {
+                    userId: 0,
+                    cartId: 1,
+                    options: 2,
+                    data: 3,
+                    cb: 4
+                }
+            }
+        },
+
+        Order: {
+            Config: {
+                name: "Order",
+                namespace: "/rest"
+            },
+
+            GetOrdersByUserId: {
+                Rules:{},
+                Options: {
+                    path: "/orders?userId={userId}",
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                },
+                Arguments: {
+                    userId: 0,
+                    options: 1,
+                    cb: 2
+                }
+            },
+
+            GetOrderById: {
+                Rules:{},
+                Options: {
+                    path: "/orders/{orderId}",
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                },
+                Arguments: {
+                    orderId: 0,
+                    options: 1,
+                    cb: 2
+                }
+            },
+
+            PostOrder:  {
+                Rules:{},
+                Options: {
+                    path: "/orders",
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                },
+                Arguments: {
+                    options: 0,
+                    data: 1,
+                    cb: 2
+                }
+            },
+
+            PutOrder: {
+                Rules:{},
+                Options: {
+                    path: "/orders/{orderId}",
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                },
+                Arguments: {
+                    orderId: 0,
+                    options: 1,
+                    data: 2,
+                    cb: 3
+                }
+            }
+        },
+
+        Payment: {
+            Config: {
+                name: "Payment",
+                namespace: "/rest"
+            },
+
+            GetPaymentInstrumentsByUserId: {
+                Rules:{},
+                Options: {
+                    path: "/users/{userId}/payment-instruments",
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                },
+                Arguments: {
+                    userId: 0,
+                    options: 1,
+                    cb: 2
+                }
+            },
+
+            GetPaymentInstrumentById: {
+                Rules:{},
+                Options: {
+                    path: "/users/{userId}/payment-instruments/{paymentId}",
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                },
+                Arguments: {
+                    userId: 0,
+                    paymentId: 1,
+                    options: 2,
+                    cb: 3
+                }
+            },
+
+            PostPaymentInstrument: {
+                Rules:{},
+                Options: {
+                    path: "/users/{userId}/payment-instruments",
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                },
+                Arguments: {
+                    userId: 0,
+                    options: 1,
+                    data: 2,
+                    cb: 3
+                }
+            },
+
+            PutPaymentInstrument: {
+                Rules:{},
+                Options: {
+                    path: "/users/{userId}/payment-instruments/{paymentId}",
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                },
+                Arguments: {
+                    userId: 0,
+                    paymentId: 1,
+                    options: 2,
+                    data: 3,
+                    cb: 4
+                }
+            },
+
+            DeltePaymentInstrument: {
+                Rules:{},
+                Options: {
+                    path: "/users/{userId}/payment-instruments/{paymentId}",
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                },
+                Arguments: {
+                    userId: 0,
+                    paymentId: 1,
+                    options: 2,
+                    cb: 3
+                }
+            }
+        }
+    }
 };
 
 module.exports = Configs;
