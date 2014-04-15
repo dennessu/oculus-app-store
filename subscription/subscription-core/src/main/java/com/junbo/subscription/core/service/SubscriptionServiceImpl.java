@@ -9,7 +9,8 @@ package com.junbo.subscription.core.service;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.offer.ItemEntry;
 import com.junbo.catalog.spec.model.offer.Offer;
-import com.junbo.catalog.spec.model.offer.Price;
+import com.junbo.catalog.spec.model.offer.OfferRevision;
+import com.junbo.catalog.spec.model.common.Price;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.subscription.clientproxy.CatalogGateway;
 import com.junbo.subscription.clientproxy.EntitlementGateway;
@@ -88,7 +89,8 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         }
 
         Offer subsOffer = catalogGateway.getOffer(offerId);
-        List<ItemEntry> itemEntryList= subsOffer.getItems();
+        OfferRevision subsOfferRev = catalogGateway.getOfferRev(subsOffer.getCurrentRevisionId());
+        List<ItemEntry> itemEntryList= subsOfferRev.getItems();
         Item subsItem = catalogGateway.getItem(itemEntryList.get(0).getItemId());
 
         if (subsItem.getType() != SUBSCRIPTION) {
@@ -96,7 +98,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         }
 
         //check if free subs? if not, throw exception now and will call billing later.
-        if (!isFreeSubscrption(subsOffer)){
+        if (!isFreeSubscrption(subsOfferRev)){
             throw SubscriptionExceptions.INSTANCE.subscriptionTypeError().exception();
         }
 
@@ -109,10 +111,10 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         subs.setSubsEndDate(instance.getTime());
     }
 
-    private boolean isFreeSubscrption(Offer offer) {
+    private boolean isFreeSubscrption(OfferRevision offerRev) {
 
-        Map<String, Price> priceMap = offer.getPrices();
-        if(!offer.getPriceType().equals("Free")){
+        Price price = offerRev.getPrice();
+        if(!price.getPriceType().equals(Price.FREE)){
             return false;
         }
         return true;
