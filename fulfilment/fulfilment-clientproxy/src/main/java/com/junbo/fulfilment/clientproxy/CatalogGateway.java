@@ -14,7 +14,5 @@ import com.junbo.fulfilment.spec.fusion.ShippingMethod;
 public interface CatalogGateway {
     Offer getOffer(Long offerId, Long timestamp);
 
-    Offer getOffer(Long offerId);
-
     ShippingMethod getShippingMethod(Long shippingMethodId);
 }
