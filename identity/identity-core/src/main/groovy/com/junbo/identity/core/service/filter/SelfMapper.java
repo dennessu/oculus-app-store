@@ -106,4 +106,8 @@ public interface SelfMapper {
     UserPii filterUserPii(UserPii userPii, MappingContext context);
 
     UserPii mergeUserPii(UserPii source, UserPii base, MappingContext context);
+
+    Address filterAddress(Address address, MappingContext context);
+
+    Address mergeAddress(Address source, Address base, MappingContext context);
 }

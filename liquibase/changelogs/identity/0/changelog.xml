@@ -356,6 +356,30 @@
 				
 				primary key (id)
 			);
+
+			create table address (
+				id bigint not null,
+				
+				user_id bigint not null,
+				street VARCHAR(512),
+				street1 VARCHAR(512),
+				street2 VARCHAR(512),
+				city VARCHAR(128),
+				state VARCHAR(128),
+				postal_code VARCHAR(64),
+				country_code CHAR(2) not null,
+				first_name VARCHAR(256),
+				last_name VARCHAR(256),
+				phone_number VARCHAR(128),
+				
+				version bigint not null,
+				created_time timestamp,
+				created_by varchar(255),
+				modified_time timestamp,
+				modified_by varchar(255),
+				
+				primary key (id)
+			);
         ]]></sql>
     </changeSet>
 
