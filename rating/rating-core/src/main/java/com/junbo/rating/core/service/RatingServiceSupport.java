@@ -32,7 +32,7 @@ public abstract class RatingServiceSupport implements RatingService{
 
     protected void fillOffer(RatingContext context) {
         for (RatableItem item : context.getItems()) {
-            item.setOffer(catalogGateway.getOffer(item.getOfferId()));
+            item.setOffer(catalogGateway.getOffer(item.getOfferId(), context.getTimestamp()));
         }
     }
 
