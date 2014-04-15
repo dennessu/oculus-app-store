@@ -1,4 +1,4 @@
-#!python
+#!/usr/bin/python
 
 import sys
 import os
@@ -9,8 +9,8 @@ from collections import OrderedDict
 
 def main():
     # Enforce python version
-    if sys.version_info[0] != 2:
-        error("The script only works in python 2.x")
+    if sys.version_info[0] != 2 or sys.version_info[1] < 7:
+        error("The script only works in python 2.x where x >= 7")
 
     # Enforce to current directory
     currentDir = os.path.dirname(sys.argv[0])
