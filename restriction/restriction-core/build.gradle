@@ -1,0 +1,9 @@
+apply plugin: 'groovy'
+
+dependencies {
+    compile project(':restriction-clientproxy')
+    compile project(':restriction-spec')
+    compile project(':restriction-common')
+
+    testCompile (libraries.spring_test)
+}

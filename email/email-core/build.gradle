@@ -5,4 +5,6 @@ dependencies {
     compile project(':email-db')
     compile project(':email-spec')
     compile project(':email-common')
+
+    testCompile (libraries.spring_test)
 }

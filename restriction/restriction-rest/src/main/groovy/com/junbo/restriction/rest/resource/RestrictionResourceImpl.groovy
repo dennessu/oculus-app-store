@@ -1,0 +1,19 @@
+package com.junbo.restriction.rest.resource
+
+import com.junbo.langur.core.promise.Promise
+import com.junbo.restriction.core.RestrictionService
+import com.junbo.restriction.spec.model.AgeCheck
+import com.junbo.restriction.spec.resource.RestrictionResource
+import org.springframework.beans.factory.annotation.Autowired
+
+/**
+ * Impl of RestrictionResource.
+ */
+class RestrictionResourceImpl implements RestrictionResource {
+    @Autowired
+    private RestrictionService restrictionService
+
+    Promise<AgeCheck> getAgeCheck(AgeCheck ageCheck) {
+        return restrictionService.getAgeCheck(ageCheck)
+    }
+}
