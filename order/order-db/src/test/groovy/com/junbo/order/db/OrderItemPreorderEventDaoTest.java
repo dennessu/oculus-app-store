@@ -27,7 +27,6 @@ public class OrderItemPreorderEventDaoTest extends BaseTest {
     public void testCreateAndRead() {
         OrderItemPreorderEventEntity orderItemPreorderEventEntity = generateOrderItemPreorderEventEntity();
         Long id = orderItemPreorderEventDao.create(orderItemPreorderEventEntity);
-        orderItemPreorderEventDao.flush();
         OrderItemPreorderEventEntity returnedEntity = orderItemPreorderEventDao.read(id);
 
         Assert.assertNotNull(returnedEntity, "Fail to create or read entity.");
@@ -39,10 +38,8 @@ public class OrderItemPreorderEventDaoTest extends BaseTest {
     public void testUpdate() {
         OrderItemPreorderEventEntity orderItemPreorderEventEntity = generateOrderItemPreorderEventEntity();
         Long id = orderItemPreorderEventDao.create(orderItemPreorderEventEntity);
-        orderItemPreorderEventDao.flush();
         orderItemPreorderEventEntity.setAction(PreorderAction.CHARGE);
         orderItemPreorderEventDao.update(orderItemPreorderEventEntity);
-        orderItemPreorderEventDao.flush();
         OrderItemPreorderEventEntity returnedEntity = orderItemPreorderEventDao.read(id);
 
         Assert.assertNotNull(returnedEntity, "Fail to create or read entity.");

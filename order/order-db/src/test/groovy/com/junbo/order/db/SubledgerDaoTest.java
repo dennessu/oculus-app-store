@@ -27,7 +27,6 @@ public class SubledgerDaoTest extends BaseTest {
     public void testCreateAndRead() {
         SubledgerEntity orderPaymentInfoEntity = TestHelper.generateSubledgerEntity();
         Long id = subledgerDao.create(orderPaymentInfoEntity);
-        subledgerDao.flush();
         SubledgerEntity returnedEntity = subledgerDao.read(id);
 
         Assert.assertNotNull(returnedEntity, "Fail to create or read entity.");
@@ -39,10 +38,8 @@ public class SubledgerDaoTest extends BaseTest {
     public void testUpdate() {
         SubledgerEntity orderPaymentInfoEntity = TestHelper.generateSubledgerEntity();
         Long id = subledgerDao.create(orderPaymentInfoEntity);
-        subledgerDao.flush();
         orderPaymentInfoEntity.setUpdatedBy("ANOTHER");
         subledgerDao.update(orderPaymentInfoEntity);
-        subledgerDao.flush();
         SubledgerEntity returnedEntity = subledgerDao.read(id);
 
         Assert.assertNotNull(returnedEntity, "Fail to create or read entity.");
@@ -55,7 +52,6 @@ public class SubledgerDaoTest extends BaseTest {
         SubledgerEntity entity = TestHelper.generateSubledgerEntity();
         entity.setPayoutStatus(PayoutStatus.PENDING);
         subledgerDao.create(entity);
-        subledgerDao.flush();
 
         Assert.assertEquals(subledgerDao.getBySellerId(entity.getSellerId(),
                 PayoutStatus.PENDING, entity.getStartTime(),
@@ -84,7 +80,6 @@ public class SubledgerDaoTest extends BaseTest {
         SubledgerEntity entity = TestHelper.generateSubledgerEntity();
         entity.setPayoutStatus(PayoutStatus.PENDING);
         subledgerDao.create(entity);
-        subledgerDao.flush();
 
         Assert.assertNotNull(subledgerDao.find(entity.getSellerId(),
                 PayoutStatus.PENDING, entity.getStartTime(), entity.getProductItemId(), entity.getCountry(),

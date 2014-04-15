@@ -26,7 +26,6 @@ public class OrderPaymentInfoDaoTest extends BaseTest {
     public void testCreateAndRead() {
         OrderPaymentInfoEntity orderPaymentInfoEntity = generateOrderPaymentInfoEntity();
         Long id = orderPaymentInfoDao.create(orderPaymentInfoEntity);
-        orderPaymentInfoDao.flush();
         OrderPaymentInfoEntity returnedEntity = orderPaymentInfoDao.read(id);
 
         Assert.assertNotNull(returnedEntity, "Fail to create or read entity.");
@@ -38,10 +37,8 @@ public class OrderPaymentInfoDaoTest extends BaseTest {
     public void testUpdate() {
         OrderPaymentInfoEntity orderPaymentInfoEntity = generateOrderPaymentInfoEntity();
         Long id = orderPaymentInfoDao.create(orderPaymentInfoEntity);
-        orderPaymentInfoDao.flush();
         orderPaymentInfoEntity.setUpdatedBy("ANOTHER");
         orderPaymentInfoDao.update(orderPaymentInfoEntity);
-        orderPaymentInfoDao.flush();
         OrderPaymentInfoEntity returnedEntity = orderPaymentInfoDao.read(id);
 
         Assert.assertNotNull(returnedEntity, "Fail to create or read entity.");
@@ -55,7 +52,6 @@ public class OrderPaymentInfoDaoTest extends BaseTest {
         Long orderId = orderPaymentInfoEntity.getOrderId();
         List<OrderPaymentInfoEntity> resultBefore = orderPaymentInfoDao.readByOrderId(orderId);
         orderPaymentInfoDao.create(orderPaymentInfoEntity);
-        orderPaymentInfoDao.flush();
         List<OrderPaymentInfoEntity> resultAfter = orderPaymentInfoDao.readByOrderId(orderId);
 
         Assert.assertEquals(resultAfter.size(), resultBefore.size() + 1, "Result size should increase.");
@@ -67,7 +63,6 @@ public class OrderPaymentInfoDaoTest extends BaseTest {
         Long paymentInfoId = orderPaymentInfoEntity.getOrderPaymentId();
         List<OrderPaymentInfoEntity> resultBefore = orderPaymentInfoDao.readByOrderId(paymentInfoId);
         orderPaymentInfoDao.create(orderPaymentInfoEntity);
-        orderPaymentInfoDao.flush();
         List<OrderPaymentInfoEntity> resultAfter = orderPaymentInfoDao.readByOrderId(paymentInfoId);
 
         Assert.assertEquals(resultAfter.size(), resultBefore.size() + 1, "Result size should increase.");

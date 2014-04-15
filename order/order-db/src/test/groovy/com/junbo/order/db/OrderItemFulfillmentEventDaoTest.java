@@ -28,7 +28,6 @@ public class OrderItemFulfillmentEventDaoTest extends BaseTest {
         OrderItemFulfillmentEventEntity orderItemFulfillmentEventEntity =
                 TestHelper.generateOrderItemFulfillmentEventEntity();
         Long id = orderItemFulfillmentEventDao.create(orderItemFulfillmentEventEntity);
-        orderItemFulfillmentEventDao.flush();
         OrderItemFulfillmentEventEntity returnedEntity = orderItemFulfillmentEventDao.read(id);
 
         Assert.assertNotNull(returnedEntity, "Fail to create or read entity.");
@@ -41,10 +40,8 @@ public class OrderItemFulfillmentEventDaoTest extends BaseTest {
         OrderItemFulfillmentEventEntity orderItemFulfillmentEventEntity =
                 TestHelper.generateOrderItemFulfillmentEventEntity();
         Long id = orderItemFulfillmentEventDao.create(orderItemFulfillmentEventEntity);
-        orderItemFulfillmentEventDao.flush();
         orderItemFulfillmentEventEntity.setAction(FulfillmentAction.FULFILL);
         orderItemFulfillmentEventDao.update(orderItemFulfillmentEventEntity);
-        orderItemFulfillmentEventDao.flush();
         OrderItemFulfillmentEventEntity returnedEntity = orderItemFulfillmentEventDao.read(id);
 
         Assert.assertNotNull(returnedEntity, "Fail to create or read entity.");
@@ -60,7 +57,6 @@ public class OrderItemFulfillmentEventDaoTest extends BaseTest {
         List<OrderItemFulfillmentEventEntity> resultBefore =
                 orderItemFulfillmentEventDao.readByOrderItemId(orderId, orderItemId);
         orderItemFulfillmentEventDao.create(fulfillmentEventEntity);
-        orderItemFulfillmentEventDao.flush();
         List<OrderItemFulfillmentEventEntity> resultAfter =
                 orderItemFulfillmentEventDao.readByOrderItemId(orderId, orderItemId);
 
