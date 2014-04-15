@@ -2,6 +2,7 @@ package com.junbo.langur.core.webflow.executor
 
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.FlowException
+import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionList
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.langur.core.webflow.definition.TransitionDef
@@ -67,15 +68,19 @@ class ViewStateExecutor implements StateExecutor {
             transitionDef.on == null || transitionDef.on == '*' || trigger == transitionDef.on
         }
 
-        if (transitionDef == null) {
+        if (transitionDef == null && !trigger.empty) { // for empty trigger, just re-render the page.
             throw new FlowException("no transition found for event $trigger")
         }
 
         def actionContext = context.newActionContext()
+        Iterator<Action> iter = transitionDef == null ? null : transitionDef.actions.iterator()
 
-        def iter = transitionDef.actions.iterator()
         Closure process = null
         process = {
+            if (iter == null) {
+                return Promise.pure(false)
+            }
+
             if (!iter.hasNext()) {
                 return Promise.pure(true)
             }

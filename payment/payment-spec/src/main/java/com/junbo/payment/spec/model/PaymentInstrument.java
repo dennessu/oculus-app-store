@@ -9,9 +9,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.jackson.annotation.PaymentInstrumentId;
 import com.junbo.common.jackson.annotation.PaymentInstrumentTypeId;
+import com.junbo.common.jackson.annotation.UserId;
 import com.junbo.payment.common.InnerFilter;
 
+import javax.validation.constraints.NotNull;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -20,7 +24,13 @@ import java.util.UUID;
 public class PaymentInstrument {
     @PaymentInstrumentId
     @JsonProperty("self")
-    private PIId id;
+    private Long id;
+    @UserId
+    @JsonIgnore
+    private Long userId;
+    @NotNull
+    @UserId
+    private List<Long> admins;
     @JsonIgnore
     private UUID trackingUuid;
     private boolean isValidated;
@@ -32,20 +42,43 @@ public class PaymentInstrument {
     private Integer rev;
     private Address address;
     private String phoneNum;
+    @JsonIgnore
     private String email;
+    @JsonIgnore
     private String relationToHolder;
     @InnerFilter
     private CreditCardRequest creditCardRequest;
     private WalletRequest walletRequest;
     //response:
+    @JsonIgnore
     private Boolean isActive;
 
-    public PIId getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(PIId id) {
+    public void setId(Long id) {
         this.id = id;
+    }
+
+    @JsonIgnore
+    public Long getUserId() {
+        return userId;
+    }
+
+    @JsonIgnore
+    public void setUserId(Long userId) {
+        this.userId = userId;
+        this.setAdmins(Arrays.asList(userId));
+    }
+
+    public List<Long> getAdmins() {
+        return admins;
+    }
+
+    public void setAdmins(List<Long> admins) {
+        this.admins = admins;
+        this.userId = admins.get(0);
     }
 
     public UUID getTrackingUuid() {

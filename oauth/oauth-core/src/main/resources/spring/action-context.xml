@@ -21,9 +21,6 @@
         <property name="clientRepository" ref="clientRepository"/>
     </bean>
 
-    <bean id="authenticateUser" class="com.junbo.oauth.core.action.AuthenticateUser">
-        <property name="userService" ref="userService"/>
-    </bean>
 
     <bean id="buildRedirectUri" class="com.junbo.oauth.core.action.BuildRedirectUri"/>
 
@@ -81,17 +78,9 @@
         <property name="tokenService" ref="tokenService"/>
     </bean>
 
-    <bean id="loadIdTokenHint" class="com.junbo.oauth.core.action.LoadIdTokenHint">
-        <property name="tokenService" ref="tokenService"/>
-    </bean>
 
-    <bean id="loadLoginState" class="com.junbo.oauth.core.action.LoadLoginState">
-        <property name="loginStateRepository" ref="loginStateRepository"/>
-    </bean>
 
-    <bean id="loadRememberMeToken" class="com.junbo.oauth.core.action.LoadRememberMeToken">
-        <property name="rememberMeTokenRepository" ref="rememberMeTokenRepository"/>
-    </bean>
+    <bean id="validateGrantType" class="com.junbo.oauth.core.action.ValidateGrantType"/>
 
     <bean id="logout" class="com.junbo.oauth.core.action.Logout">
         <property name="loginStateRepository" ref="loginStateRepository"/>
@@ -103,43 +92,8 @@
 
     <bean id="redirect" class="com.junbo.oauth.core.action.Redirect"/>
 
-    <bean id="saveConsent" class="com.junbo.oauth.core.action.SaveConsent">
-        <property name="consentRepository" ref="consentRepository"/>
-    </bean>
 
-    <bean id="saveLoginState" class="com.junbo.oauth.core.action.SaveLoginState">
-        <property name="loginStateRepository" ref="loginStateRepository"/>
-    </bean>
 
-    <bean id="validateClient" class="com.junbo.oauth.core.action.ValidateClient">
-        <property name="clientRepository" ref="clientRepository"/>
-    </bean>
 
-    <bean id="validateConsent" class="com.junbo.oauth.core.action.ValidateConsent">
-        <property name="consentRepository" ref="consentRepository"/>
-        <property name="consentUri" value="${oauth.core.portal.consentUri}"/>
-    </bean>
-
-    <bean id="validateDisplay" class="com.junbo.oauth.core.action.ValidateDisplay">
-        <property name="defaultDisplay" value="PAGE"/>
-    </bean>
-
-    <bean id="validateGrantType" class="com.junbo.oauth.core.action.ValidateGrantType"/>
-
-    <bean id="validateLoginState" class="com.junbo.oauth.core.action.ValidateLoginState">
-        <property name="loginUri" value="${oauth.core.portal.loginUri}"/>
-    </bean>
-
-    <bean id="validateMaxAge" class="com.junbo.oauth.core.action.ValidateMaxAge"/>
-
-    <bean id="validateNonce" class="com.junbo.oauth.core.action.ValidateNonce"/>
-
-    <bean id="validatePrompt" class="com.junbo.oauth.core.action.ValidatePrompt"/>
-
-    <bean id="validateRedirectUri" class="com.junbo.oauth.core.action.ValidateRedirectUri"/>
-
-    <bean id="validateResponseType" class="com.junbo.oauth.core.action.ValidateResponseType"/>
-
-    <bean id="validateScope" class="com.junbo.oauth.core.action.ValidateScope"/>
 
 </beans>
