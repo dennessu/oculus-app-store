@@ -8,12 +8,14 @@ package com.junbo.catalog.rest.resource;
 
 import com.junbo.catalog.core.PromotionService;
 import com.junbo.catalog.spec.model.promotion.PromotionRevision;
+import com.junbo.catalog.spec.model.promotion.PromotionRevisionsGetOptions;
 import com.junbo.catalog.spec.resource.PromotionRevisionResource;
-import com.junbo.common.id.PromotionId;
 import com.junbo.common.id.PromotionRevisionId;
 import com.junbo.common.model.Results;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 /**
  * Promotion revision resource implementation.
@@ -23,8 +25,11 @@ public class PromotionRevisionResourceImpl implements PromotionRevisionResource 
     private PromotionService promotionService;
 
     @Override
-    public Promise<Results<PromotionRevision>> getPromotionRevisions(PromotionId promotionId) {
-        return null;
+    public Promise<Results<PromotionRevision>> getPromotionRevisions(PromotionRevisionsGetOptions options) {
+        List<PromotionRevision> revisions = promotionService.getRevisions(options);
+        Results<PromotionRevision> results = new Results<>();
+        results.setItems(revisions);
+        return Promise.pure(results);
     }
 
     @Override

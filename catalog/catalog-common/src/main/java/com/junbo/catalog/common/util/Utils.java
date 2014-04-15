@@ -9,6 +9,7 @@ package com.junbo.catalog.common.util;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -24,6 +25,14 @@ public class Utils {
 
     public static Long currentTimestamp() {
         return System.currentTimeMillis();
+    }
+
+    public static Date maxDate() {
+        return new Date(253373469595309L);
+    }
+
+    public static Date minDate() {
+        return new Date(0);
     }
 
     public static String toJson(Object input) {
