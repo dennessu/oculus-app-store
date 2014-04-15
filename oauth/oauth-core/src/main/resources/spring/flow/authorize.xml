@@ -6,7 +6,8 @@
        http://www.junbo.com/schema/webflow http://www.junbo.com/schema/webflow-config/webflow.xsd">
 
     <wf:flow id="authorizeFlow">
-        <wf:action-state id="validation">
+
+        <wf:action-state id="START">
             <wf:action ref="validateClient"/>
             <wf:action ref="validateScope"/>
             <wf:action ref="validateRedirectUri"/>
@@ -15,71 +16,178 @@
             <wf:action ref="validatePrompt"/>
             <wf:action ref="validateMaxAge"/>
             <wf:action ref="validateNonce"/>
-            <wf:transition on="*" to="loadLoginState"/>
+            <wf:transition on="*" to="CHECK_LOGIN"/>
         </wf:action-state>
 
-        <wf:action-state id="loadLoginState">
+        <wf:action-state id="CHECK_LOGIN">
             <wf:action ref="loadIdTokenHint"/>
             <wf:action ref="loadLoginState"/>
             <wf:action ref="loadRememberMeToken"/>
-            <wf:transition on="*" to="validateLoginStateAction"/>
-        </wf:action-state>
-
-        <wf:action-state id="validateLoginStateAction">
             <wf:action ref="validateLoginState"/>
-            <wf:action ref="saveLoginState"/>
-            <wf:transition on="redirectLogin" to="redirectToLogin"/>
-            <wf:transition on="*" to="validateConsent"/>
+            <wf:transition on="loginRequired" to="REDIRECT_TO_LOGIN"/>
+            <wf:transition on="*" to="CHECK_CONSENT"/>
         </wf:action-state>
 
-        <wf:action-state id="validateConsent">
-            <wf:action ref="validateConsent"/>
-            <wf:transition on="redirectToConsent" to="redirectToConsent"/>
-            <wf:transition on="*" to="grantAuthorizationCodeAction"/>
-        </wf:action-state>
-
-        <wf:action-state id="grantAuthorizationCodeAction">
-            <wf:action ref="grantAuthorizationCode"/>
-            <wf:action ref="grantImplicitAccessToken"/>
-            <wf:action ref="grantRememberMeToken"/>
-            <wf:action ref="grantIdToken"/>
-            <wf:action ref="buildRedirectUri"/>
-            <wf:transition on="*" to="endRedirect"/>
-        </wf:action-state>
-
-        <wf:view-state id="redirectToLogin">
+        <wf:view-state id="REDIRECT_TO_LOGIN">
             <wf:on-render>
-                <wf:action ref="redirect"/>
+                <wf:action ref="redirectToLogin"/>
             </wf:on-render>
-            <wf:transition on="login" to="redirectToAuth">
+            <wf:transition on="*" to="LOGIN_VIEW"/>
+        </wf:view-state>
+
+        <wf:view-state id="LOGIN_VIEW">
+            <wf:on-render>
+                <wf:action ref="loginView"/>
+            </wf:on-render>
+            <wf:transition on="next" to="LOGIN_SUCCESS">
                 <wf:action ref="authenticateUser"/>
             </wf:transition>
+            <wf:transition on="cancel" to="CANCEL_VIEW"/>
         </wf:view-state>
 
-        <wf:view-state id="redirectToConsent">
+        <wf:view-state id="LOGIN_SUCCESS">
+            <wf:on-render>
+                <wf:action ref="redirectToAuth"/>
+            </wf:on-render>
+            <wf:transition on="*" to="CHECK_CONSENT">
+                <wf:action ref="saveLoginState"/>
+            </wf:transition>
+        </wf:view-state>
+
+        <wf:action-state id="CHECK_CONSENT">
+            <wf:action ref="validateConsent"/>
+            <wf:transition on="consentRequired" to="REDIRECT_TO_CONSENT"/>
+            <wf:transition on="*" to="END"/>
+        </wf:action-state>
+
+        <wf:view-state id="REDIRECT_TO_CONSENT">
             <wf:on-entry>
-                <wf:action ref="redirect"/>
+                <wf:action ref="redirectToConsent"/>
             </wf:on-entry>
-            <wf:transition on="consentSuccess" to="grantAuthorizationCodeAction">
+            <wf:transition on="*" to="CONSENT_VIEW"/>
+        </wf:view-state>
+
+        <wf:view-state id="CONSENT_VIEW">
+            <wf:on-entry>
+                <wf:action ref="consentView"/>
+            </wf:on-entry>
+            <wf:transition on="next" to="CONSENT_SUCCESS">
                 <wf:action ref="saveConsent"/>
             </wf:transition>
-            <wf:transition on="consentFail" to="endRedirect">
-                <wf:action ref="consentError"/>
-            </wf:transition>
+            <wf:transition on="cancel" to="CANCEL_VIEW"/>
         </wf:view-state>
 
-        <wf:view-state id="redirectToAuth">
+        <wf:view-state id="CONSENT_SUCCESS">
             <wf:on-render>
-                <wf:action ref="redirect"/>
+                <wf:action ref="redirectToAuth"/>
             </wf:on-render>
-            <wf:transition on="loginSuccess" to="validateLoginStateAction"/>
+            <wf:transition on="*" to="END"/>
         </wf:view-state>
 
-        <wf:end-state id="endRedirect">
+        <wf:end-state id="END">
             <wf:on-entry>
-                <wf:action ref="redirect"/>
+                <wf:action ref="grantAuthorizationCode"/>
+                <wf:action ref="grantImplicitAccessToken"/>
+                <wf:action ref="grantRememberMeToken"/>
+                <wf:action ref="grantIdToken"/>
+                <wf:action ref="redirectToClient"/>
+            </wf:on-entry>
+        </wf:end-state>
+
+        <wf:view-state id="CANCEL_VIEW">
+            <wf:on-render>
+                <wf:action ref="redirectToAuth"/>
+            </wf:on-render>
+            <wf:transition on="*" to="ACCESS_DENIED"/>
+        </wf:view-state>
+
+        <wf:end-state id="ACCESS_DENIED">
+            <wf:on-entry>
+                <wf:action ref="accessDenied"/>
             </wf:on-entry>
         </wf:end-state>
     </wf:flow>
+
+    <!-- actions -->
+    <bean id="validateClient" class="com.junbo.oauth.core.action.ValidateClient">
+        <property name="clientRepository" ref="clientRepository"/>
+    </bean>
+
+    <bean id="validateScope" class="com.junbo.oauth.core.action.ValidateScope"/>
+
+    <bean id="validateRedirectUri" class="com.junbo.oauth.core.action.ValidateRedirectUri"/>
+
+    <bean id="validateResponseType" class="com.junbo.oauth.core.action.ValidateResponseType"/>
+
+    <bean id="validateDisplay" class="com.junbo.oauth.core.action.ValidateDisplay">
+        <property name="defaultDisplay" value="PAGE"/>
+    </bean>
+
+    <bean id="validatePrompt" class="com.junbo.oauth.core.action.ValidatePrompt"/>
+
+    <bean id="validateMaxAge" class="com.junbo.oauth.core.action.ValidateMaxAge"/>
+
+    <bean id="validateNonce" class="com.junbo.oauth.core.action.ValidateNonce"/>
+
+
+    <bean id="loadIdTokenHint" class="com.junbo.oauth.core.action.LoadIdTokenHint">
+        <property name="tokenService" ref="tokenService"/>
+    </bean>
+
+    <bean id="loadLoginState" class="com.junbo.oauth.core.action.LoadLoginState">
+        <property name="loginStateRepository" ref="loginStateRepository"/>
+    </bean>
+
+    <bean id="loadRememberMeToken" class="com.junbo.oauth.core.action.LoadRememberMeToken">
+        <property name="rememberMeTokenRepository" ref="rememberMeTokenRepository"/>
+    </bean>
+
+    <bean id="validateLoginState" class="com.junbo.oauth.core.action.ValidateLoginState">
+    </bean>
+
+    <bean id="redirectToLogin" class="com.junbo.oauth.core.view.RedirectToPage">
+        <property name="pageUrl" value="${oauth.core.portal.loginUri}"/>
+    </bean>
+
+    <bean id="loginView" class="com.junbo.oauth.core.view.LoginView">
+    </bean>
+
+    <bean id="authenticateUser" class="com.junbo.oauth.core.action.AuthenticateUser">
+        <property name="userService" ref="userService"/>
+    </bean>
+
+    <bean id="redirectToAuth" class="com.junbo.oauth.core.view.RedirectToAuthView">
+        <property name="authorizeUrl" value="${oauth.core.portal.authorizeUri}"/>
+    </bean>
+
+    <bean id="saveLoginState" class="com.junbo.oauth.core.action.SaveLoginState">
+        <property name="loginStateRepository" ref="loginStateRepository"/>
+    </bean>
+
+
+    <bean id="validateConsent" class="com.junbo.oauth.core.action.ValidateConsent">
+        <property name="consentRepository" ref="consentRepository"/>
+        <property name="consentUri" value="${oauth.core.portal.consentUri}"/>
+    </bean>
+
+    <bean id="redirectToConsent" class="com.junbo.oauth.core.view.RedirectToPage">
+        <property name="pageUrl" value="${oauth.core.portal.consentUri}"/>
+    </bean>
+
+    <bean id="consentView" class="com.junbo.oauth.core.view.ConsentView">
+    </bean>
+
+    <bean id="saveConsent" class="com.junbo.oauth.core.action.SaveConsent">
+        <property name="consentRepository" ref="consentRepository"/>
+    </bean>
+
+
+    <bean id="redirectToClient" class="com.junbo.oauth.core.view.RedirectToClient">
+    </bean>
+
+
+    <bean id="accessDenied" class="com.junbo.oauth.core.view.RedirectToClientError">
+        <property name="errorMessage" value="access_denied"/>
+    </bean>
 
 </beans>
