@@ -9,6 +9,7 @@ package com.junbo.common.id;
 /**
  * Created by minhao on 2/13/14.
  */
+@IdResourcePath("/fulfilments/{0}")
 public class FulfilmentId extends Id {
 
     public FulfilmentId() {}

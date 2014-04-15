@@ -8,6 +8,7 @@ package com.junbo.common.id;
 /**
  * Created by liangfu on 3/14/14.
  */
+@IdResourcePath("/authenticators/{0}")
 public class UserAuthenticatorId extends Id {
     public UserAuthenticatorId() {}
     public UserAuthenticatorId(long value) {
