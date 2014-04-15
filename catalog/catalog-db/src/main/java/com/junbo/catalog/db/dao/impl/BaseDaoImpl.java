@@ -69,13 +69,14 @@ public abstract class BaseDaoImpl<T extends BaseEntity> implements BaseDao<T> {
     protected T findBy(Action<Criteria> filter) {
         Criteria criteria = currentSession().createCriteria(entityType);
         filter.apply(criteria);
-
+        criteria.add(Restrictions.ne("deleted", Boolean.TRUE));
         return (T) criteria.uniqueResult();
     }
 
     protected List<T> findAllBy(Action<Criteria> filter) {
         Criteria criteria = currentSession().createCriteria(entityType);
         filter.apply(criteria);
+        criteria.add(Restrictions.ne("deleted", Boolean.TRUE));
         return criteria.list();
     }
 

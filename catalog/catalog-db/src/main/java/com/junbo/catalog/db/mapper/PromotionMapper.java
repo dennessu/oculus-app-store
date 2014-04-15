@@ -33,6 +33,8 @@ public class PromotionMapper {
         entity.setOwnerId(model.getOwnerId());
         entity.setType(model.getType());
         entity.setCurrentRevisionId(model.getCurrentRevisionId());
+        entity.setStartDate(model.getStartDate()==null?Utils.minDate():model.getStartDate());
+        entity.setEndDate(model.getEndDate()==null?Utils.maxDate():model.getEndDate());
         entity.setPayload(Utils.toJsonWithType(model));
     }
 
@@ -46,6 +48,8 @@ public class PromotionMapper {
         model.setCurated(entity.isCurated());
         model.setCurrentRevisionId(entity.getCurrentRevisionId());
         model.setOwnerId(entity.getOwnerId());
+        model.setStartDate(entity.getStartDate());
+        model.setEndDate(entity.getEndDate());
         model.setCreatedBy(entity.getCreatedBy());
         model.setCreatedTime(entity.getCreatedTime());
         model.setUpdatedBy(entity.getUpdatedBy());

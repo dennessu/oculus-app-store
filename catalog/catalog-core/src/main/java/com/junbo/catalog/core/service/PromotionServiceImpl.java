@@ -12,7 +12,11 @@ import com.junbo.catalog.db.repo.PromotionRevisionRepository;
 import com.junbo.catalog.spec.error.AppErrors;
 import com.junbo.catalog.spec.model.promotion.Promotion;
 import com.junbo.catalog.spec.model.promotion.PromotionRevision;
+import com.junbo.catalog.spec.model.promotion.PromotionRevisionsGetOptions;
+import com.junbo.catalog.spec.model.promotion.PromotionsGetOptions;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 /**
  * Promotion service implementation.
@@ -53,6 +57,16 @@ public class PromotionServiceImpl extends BaseRevisionedServiceImpl<Promotion, P
         validateRevision(revision);
 
         return super.updateRevision(revisionId, revision);
+    }
+
+    @Override
+    public List<Promotion> getEffectivePromotions(PromotionsGetOptions options) {
+        return promotionRepo.getEffectivePromotions(options);
+    }
+
+    @Override
+    public List<PromotionRevision> getRevisions(PromotionRevisionsGetOptions options) {
+        return promotionRevisionRepo.getRevisions(options);
     }
 
     @Override

@@ -13,6 +13,7 @@ import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.*;
+import java.util.Date;
 
 /**
  * Promotion DB entity.
@@ -27,6 +28,8 @@ public class PromotionEntity extends BaseEntity {
     private boolean curated;
     private Long currentRevisionId;
     private Long ownerId;
+    private Date startDate;
+    private Date endDate;
     private String payload;
 
     @Id
@@ -40,6 +43,7 @@ public class PromotionEntity extends BaseEntity {
     }
 
     @Column(name = "promotion_name")
+    @Type(type = "json-string")
     public String getName() {
         return name;
     }
@@ -82,6 +86,24 @@ public class PromotionEntity extends BaseEntity {
 
     public void setOwnerId(Long ownerId) {
         this.ownerId = ownerId;
+    }
+
+    @Column(name = "start_date")
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    @Column(name = "end_date")
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
     }
 
     @Column(name = "payload")
