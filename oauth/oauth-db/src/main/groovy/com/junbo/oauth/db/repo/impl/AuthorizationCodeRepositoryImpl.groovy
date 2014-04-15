@@ -44,7 +44,9 @@ class AuthorizationCodeRepositoryImpl implements AuthorizationCodeRepository {
     @Override
     AuthorizationCode getAndRemove(String code) {
         AuthorizationCodeEntity entity = authorizationCodeDAO.get(code)
-        authorizationCodeDAO.delete(entity)
+        if (entity != null) {
+            authorizationCodeDAO.delete(entity)
+        }
         return wrap(entity)
     }
 
