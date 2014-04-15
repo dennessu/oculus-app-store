@@ -9,7 +9,6 @@ package com.junbo.catalog.common.util;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 
-import java.util.Calendar;
 import java.util.Date;
 
 /**
