@@ -15,7 +15,6 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.util.StringUtils;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -38,7 +37,7 @@ public class OfferRevisionDaoImpl extends BaseDaoImpl<OfferRevisionEntity> imple
         });
     }
 
-    public OfferRevisionEntity getRevision(final Long offerId, final Date timestamp) {
+    public OfferRevisionEntity getRevision(final Long offerId, final Long timestamp) {
         return findBy(new Action<Criteria>() {
             @Override
             public void apply(Criteria criteria) {
