@@ -25,6 +25,6 @@ import java.lang.annotation.RetentionPolicy;
 @JacksonAnnotationsInside
 @JsonSerialize(using = ResourceIdSerializer.class, include = JsonSerialize.Inclusion.NON_NULL)
 @JsonDeserialize(using = ResourceIdDeserializer.class)
-@ResourcePath("/Subscriptions")
+@ResourcePath("/subscriptions")
 public @interface SubscriptionId {
 }

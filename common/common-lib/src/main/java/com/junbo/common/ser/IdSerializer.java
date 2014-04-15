@@ -18,12 +18,15 @@ import com.junbo.common.util.IdFormatter;
 import org.springframework.core.annotation.AnnotationUtils;
 
 import java.io.IOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by minhao on 2/14/14.
  */
 public class IdSerializer extends JsonSerializer<Id> {
-    protected static final String SELF_HREF_PREFIX = "http://api.oculusvr.com/v1";
+    private static final String SELF_HREF_PREFIX = "http://api.oculusvr.com/v1";
+    private static Logger logger = LoggerFactory.getLogger(IdSerializer.class);
 
     @Override
     public void serialize(Id value, JsonGenerator jgen, SerializerProvider provider)
@@ -31,9 +34,13 @@ public class IdSerializer extends JsonSerializer<Id> {
         ObjectMapper mapper = new ObjectMapper();
 
         IdResourcePath pathAnno = AnnotationUtils.findAnnotation(value.getClass(), IdResourcePath.class);
+        if (pathAnno == null) {
+            logger.warn("IdResourcePath annotation missing on class: [" + value.getClass().getCanonicalName()+"]");
+        }
+
         Link ref = new Link();
         if (value != null) {
-            ref.setHref(getHref(value, pathAnno == null ? "" : pathAnno.value()));
+            ref.setHref(getHref(value, pathAnno == null ? "/resources/{0}" : pathAnno.value()));
             ref.setId(IdFormatter.encodeId(value));
         }
 

@@ -9,6 +9,7 @@ package com.junbo.common.id;
 /**
  * Java doc for OrderItemId.
  */
+@IdResourcePath("/order-items/{0}")
 public class OrderItemId extends Id {
 
     public OrderItemId() {}
