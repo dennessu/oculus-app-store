@@ -20,7 +20,7 @@ import java.util.UUID;
 /**
  * Entitlement Model.
  */
-@JsonPropertyOrder(value = {"entitlementId", "rev", "userId", "inAppContext", "status", "statusReason",
+@JsonPropertyOrder(value = {"entitlementId", "rev", "userId", "inAppContext", "isActive", "isBanned",
         "entitlementDefinitionId", "type", "group", "tag", "grantTime", "expirationTime", "useCount"})
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Entitlement{
@@ -32,10 +32,10 @@ public class Entitlement{
     @UserId
     @JsonProperty("user")
     private Long userId;
+    private Boolean isActive;
+    private Boolean isBanned;
     private List<String> inAppContext;
     private String type;
-    private String status;
-    private String statusReason;
     @EntitlementDefinitionId
     @JsonProperty("entitlementDefinition")
     private Long entitlementDefinitionId;
@@ -75,22 +75,6 @@ public class Entitlement{
 
     public void setUserId(Long userId) {
         this.userId = userId;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getStatusReason() {
-        return statusReason;
-    }
-
-    public void setStatusReason(String statusReason) {
-        this.statusReason = statusReason;
     }
 
     public Long getEntitlementDefinitionId() {
@@ -155,5 +139,21 @@ public class Entitlement{
 
     public void setInAppContext(List<String> inAppContext) {
         this.inAppContext = inAppContext;
+    }
+
+    public Boolean getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(Boolean isActive) {
+        this.isActive = isActive;
+    }
+
+    public Boolean getIsBanned() {
+        return isBanned;
+    }
+
+    public void setIsBanned(Boolean isBanned) {
+        this.isBanned = isBanned;
     }
 }

@@ -23,8 +23,10 @@ public class EntitlementSearchParam {
     private String clientId;
     @QueryParam("type")
     private String type;
-    @QueryParam("status")
-    private String status;
+    @QueryParam("isActive")
+    private Boolean isActive;
+    @QueryParam("isBanned")
+    private Boolean isBanned;
 
     @QueryParam("groups")
     private Set<String> groups;
@@ -79,12 +81,20 @@ public class EntitlementSearchParam {
         this.type = type;
     }
 
-    public String getStatus() {
-        return status;
+    public Boolean getIsActive() {
+        return isActive;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setIsActive(Boolean isActive) {
+        this.isActive = isActive;
+    }
+
+    public Boolean getIsBanned() {
+        return isBanned;
+    }
+
+    public void setIsBanned(Boolean isBanned) {
+        this.isBanned = isBanned;
     }
 
     public Set<String> getGroups() {
@@ -151,7 +161,8 @@ public class EntitlementSearchParam {
         private UserId userId;
         private String clientId;
         private String type;
-        private String status;
+        private Boolean isActive;
+        private Boolean isBanned;
 
         private Set<String> groups;
         private Set<String> tags;
@@ -173,8 +184,13 @@ public class EntitlementSearchParam {
             return this;
         }
 
-        public Builder status(String val) {
-            status = val;
+        public Builder isActive(Boolean val) {
+            isActive = val;
+            return this;
+        }
+
+        public Builder isBanned(Boolean val) {
+            isBanned = val;
             return this;
         }
 
@@ -232,7 +248,8 @@ public class EntitlementSearchParam {
         userId = builder.userId;
         clientId = builder.clientId;
         type = builder.type;
-        status = builder.status;
+        isActive = builder.isActive;
+        isBanned = builder.isBanned;
         definitionIds = builder.definitionIds;
         groups = builder.groups;
         tags = builder.tags;

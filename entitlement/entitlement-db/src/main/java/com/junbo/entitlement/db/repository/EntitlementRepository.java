@@ -11,7 +11,6 @@ import com.junbo.entitlement.db.dao.EntitlementHistoryDao;
 import com.junbo.entitlement.db.entity.EntitlementEntity;
 import com.junbo.entitlement.db.entity.EntitlementHistoryEntity;
 import com.junbo.entitlement.db.mapper.EntitlementMapper;
-import com.junbo.entitlement.spec.def.EntitlementStatus;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.model.EntitlementSearchParam;
 import com.junbo.entitlement.spec.model.PageMetadata;
@@ -59,10 +58,9 @@ public class EntitlementRepository {
                         searchParam, pageMetadata == null ? new PageMetadata() : pageMetadata));
     }
 
-    public void delete(Entitlement entitlement, String reason) {
+    public void delete(Entitlement entitlement) {
         EntitlementEntity entitlementEntity = entitlementMapper.toEntitlementEntity(entitlement);
-        entitlementEntity.setStatus(EntitlementStatus.DELETED);
-        entitlementEntity.setStatusReason(reason);
+        entitlementEntity.setIsDeleted(true);
         entitlementHistoryDao.insert(new EntitlementHistoryEntity(DELETE, entitlementEntity));
         entitlementDao.update(entitlementEntity);
     }

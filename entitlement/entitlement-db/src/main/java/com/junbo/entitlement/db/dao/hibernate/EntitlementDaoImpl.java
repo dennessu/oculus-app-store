@@ -12,7 +12,6 @@ import com.junbo.entitlement.common.lib.CommonUtils;
 import com.junbo.entitlement.common.lib.EntitlementContext;
 import com.junbo.entitlement.db.dao.EntitlementDao;
 import com.junbo.entitlement.db.entity.EntitlementEntity;
-import com.junbo.entitlement.spec.def.EntitlementStatus;
 import com.junbo.entitlement.spec.def.EntitlementType;
 import com.junbo.entitlement.spec.model.EntitlementSearchParam;
 import com.junbo.entitlement.spec.model.PageMetadata;
@@ -35,6 +34,7 @@ public class EntitlementDaoImpl extends BaseDao<EntitlementEntity> implements En
         params.put("userId", entitlementSearchParam.getUserId().getValue());
 
         addSearchParam(entitlementSearchParam, queryStringBuilder, params);
+        queryStringBuilder.append(" and is_deleted is null");
         Query q = currentSession(entitlementSearchParam.getUserId().getValue()).createSQLQuery(
                 queryStringBuilder.toString()).addEntity(EntitlementEntity.class);
         q = addPageMeta(addParams(q, params), pageMetadata);
@@ -49,33 +49,24 @@ public class EntitlementDaoImpl extends BaseDao<EntitlementEntity> implements En
                     entitlementSearchParam.getClientId() +
                     "\\\"\"}'\\:\\:text[] <@ (json_val_arr(in_app_context))");
         }
-        if (entitlementSearchParam.getStatus() != null) {
+        if (entitlementSearchParam.getIsBanned() != null) {
+            addSingleParam("is_banned", "isBanned",
+                    entitlementSearchParam.getIsBanned(), "=", queryStringBuilder, params);
+        }
+        if (!Boolean.TRUE.equals(entitlementSearchParam.getIsBanned())) {
             Date now = EntitlementContext.current().getNow();
-            EntitlementStatus status = EntitlementStatus.valueOf(entitlementSearchParam.getStatus());
-            if (EntitlementStatus.LIFECYCLE_NOT_MANAGED_STATUS.contains(status)) {
-                queryStringBuilder.append(" and status = (:status)");
-                params.put("status", status.getId());
-            } else if (status.equals(EntitlementStatus.ACTIVE)) {
+            if (Boolean.FALSE.equals(entitlementSearchParam.getIsActive())) {
+                queryStringBuilder.append(" and ( grant_time >= (:now)" +
+                        " or expiration_time <= (:now)" +
+                        " or use_count = 0 )");
+            } else {
                 queryStringBuilder.append(
                         " and ( use_count is null or use_count > 0 )" +
                                 " and ( grant_time <= (:now)" +
                                 " and ( expiration_time is null or expiration_time >= (:now) ))");
-                params.put("now", now);
-            } else if (status.equals(EntitlementStatus.PENDING)) {
-                queryStringBuilder.append(
-                        " and grant_time >= (:now)");
-                params.put("now", now);
-            } else if (status.equals(EntitlementStatus.DISABLED)) {
-                queryStringBuilder.append(
-                        "and ( use_count < 1" +
-                                " or expiration_time <= (:now) )");
-                params.put("now", now);
             }
-        } else {
-            //default not to search DELETED and BANNED Entitlement
-            queryStringBuilder.append(" and status >= 0");
+            params.put("now", now);
         }
-
         addCollectionParam("entitlement_group", "groups",
                 entitlementSearchParam.getGroups(), queryStringBuilder, params);
         addCollectionParam("tag", "tags", entitlementSearchParam.getTags(), queryStringBuilder, params);
@@ -118,7 +109,7 @@ public class EntitlementDaoImpl extends BaseDao<EntitlementEntity> implements En
 
     @Override
     public EntitlementEntity getByTrackingUuid(Long shardMasterId, UUID trackingUuid) {
-        String queryString = "from EntitlementEntity where trackingUuid = (:trackingUuid)";
+        String queryString = "from EntitlementEntity where trackingUuid = (:trackingUuid) and isDeleted = null";
         Query q = currentSession(shardMasterId).createQuery(queryString).setParameter("trackingUuid", trackingUuid);
         return (EntitlementEntity) q.uniqueResult();
     }

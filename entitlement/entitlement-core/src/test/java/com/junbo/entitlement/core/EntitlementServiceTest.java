@@ -8,9 +8,7 @@ package com.junbo.entitlement.core;
 
 import com.junbo.common.error.AppErrorException;
 import com.junbo.common.id.UserId;
-import com.junbo.entitlement.common.def.EntitlementStatusReason;
 import com.junbo.entitlement.common.lib.EntitlementContext;
-import com.junbo.entitlement.spec.def.EntitlementStatus;
 import com.junbo.entitlement.spec.def.EntitlementType;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.model.EntitlementSearchParam;
@@ -28,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import javax.ws.rs.WebApplicationException;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -67,7 +66,7 @@ public class EntitlementServiceTest extends AbstractTestNGSpringContextTests {
         Entitlement entitlement = buildAnEntitlement();
         entitlement.setExpirationTime(new Date(System.currentTimeMillis() - 1 * 24 * 3600 * 1000));
         Entitlement addedEntitlement = entitlementService.addEntitlement(entitlement);
-        Assert.assertEquals(addedEntitlement.getStatus(), EntitlementStatus.DISABLED.toString());
+        Assert.assertEquals(addedEntitlement.getIsActive(), Boolean.FALSE);
     }
 
     @Test
@@ -77,17 +76,20 @@ public class EntitlementServiceTest extends AbstractTestNGSpringContextTests {
         addedEntitlement.setUseCount(1);
         Entitlement updatedEntitlement = entitlementService.updateEntitlement(
                 addedEntitlement.getEntitlementId(), addedEntitlement);
-        Assert.assertEquals(updatedEntitlement.getUseCount(), (Integer)1);
+        Assert.assertEquals(updatedEntitlement.getUseCount(), (Integer) 1);
     }
 
     @Test
     public void testDeleteEntitlement() {
         Entitlement entitlement = buildAnEntitlement();
         Entitlement addedEntitlement = entitlementService.addEntitlement(entitlement);
-        entitlementService.deleteEntitlement(addedEntitlement.getEntitlementId(), "TEST");
-        Entitlement deletedEntitlement = entitlementService.getEntitlement(addedEntitlement.getEntitlementId());
-        Assert.assertEquals(deletedEntitlement.getStatus(), EntitlementStatus.DELETED.toString());
-        Assert.assertEquals(deletedEntitlement.getStatusReason(), "TEST");
+        entitlementService.deleteEntitlement(addedEntitlement.getEntitlementId());
+        try {
+            entitlementService.getEntitlement(addedEntitlement.getEntitlementId());
+        } catch (WebApplicationException e) {
+            Assert.assertEquals(e.getResponse().getStatus(), 404);
+        }
+
     }
 
     @Test
@@ -107,7 +109,7 @@ public class EntitlementServiceTest extends AbstractTestNGSpringContextTests {
         EntitlementSearchParam searchParam = new EntitlementSearchParam();
         searchParam.setUserId(new UserId(userId));
         searchParam.setClientId(userId.toString());
-        searchParam.setStatus(EntitlementStatus.ACTIVE.toString());
+        searchParam.setIsActive(true);
         List<Entitlement> entitlements = entitlementService.searchEntitlement(searchParam, new PageMetadata());
 
         Assert.assertEquals(entitlements.size(), 0);
@@ -121,9 +123,11 @@ public class EntitlementServiceTest extends AbstractTestNGSpringContextTests {
         transfer.setTargetUserId(idGenerator.nextId());
         transfer.setEntitlementId(addedEntitlement.getEntitlementId());
         Entitlement newEntitlement = entitlementService.transferEntitlement(transfer);
-        Entitlement oldEntitlement = entitlementService.getEntitlement(addedEntitlement.getEntitlementId());
-        Assert.assertEquals(oldEntitlement.getStatus(), EntitlementStatus.DELETED.toString());
-        Assert.assertEquals(oldEntitlement.getStatusReason(), EntitlementStatusReason.TRANSFERRED);
+        try {
+            entitlementService.getEntitlement(addedEntitlement.getEntitlementId());
+        } catch (WebApplicationException e) {
+            Assert.assertEquals(e.getResponse().getStatus(), 404);
+        }
         Assert.assertEquals(newEntitlement.getUserId(), transfer.getTargetUserId());
     }
 
@@ -133,7 +137,6 @@ public class EntitlementServiceTest extends AbstractTestNGSpringContextTests {
         entitlement.setUserId(idGenerator.nextId());
         entitlement.setGrantTime(new Date(114, 0, 22));
         entitlement.setExpirationTime(new Date(114, 0, 28));
-
         entitlement.setEntitlementDefinitionId(idGenerator.nextId());
         entitlement.setGroup("TEST");
         entitlement.setTag("TEST");

@@ -9,7 +9,6 @@ package com.junbo.entitlement.db.entity;
 import com.junbo.entitlement.db.entity.def.IdentifiableType;
 import com.junbo.entitlement.db.entity.def.ListJsonUserType;
 import com.junbo.entitlement.db.entity.def.Shardable;
-import com.junbo.entitlement.spec.def.EntitlementStatus;
 import com.junbo.entitlement.spec.def.EntitlementType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
@@ -29,9 +28,6 @@ import java.util.List;
 @Table(name = "entitlement_history")
 @TypeDefs(@TypeDef(name="json-string", typeClass=ListJsonUserType.class))
 public class EntitlementHistoryEntity implements Shardable {
-    public static final String CREATE_ACTION = "CREATE";
-    public static final String UPDATE_ACTION = "UPDATE";
-
     private Long entitlementHistoryId;
     private String action;
     private Long entitlementId;
@@ -42,11 +38,11 @@ public class EntitlementHistoryEntity implements Shardable {
     private String tag;
     private EntitlementType type;
     private Long entitlementDefinitionId;
-    private EntitlementStatus status;
-    private String statusReason;
+    private Boolean isBanned;
     private Date grantTime;
     private Date expirationTime;
     private Integer useCount;
+    private Boolean isDeleted;
     private Date createdTime;
     private String createdBy;
     private Date modifiedTime;
@@ -65,12 +61,12 @@ public class EntitlementHistoryEntity implements Shardable {
         this.tag = entitlementEntity.getTag();
         this.type = entitlementEntity.getType();
         this.userId = entitlementEntity.getUserId();
-        this.status = entitlementEntity.getStatus();
-        this.statusReason = entitlementEntity.getStatusReason();
+        this.isBanned = entitlementEntity.getIsBanned();
         this.entitlementDefinitionId = entitlementEntity.getEntitlementDefinitionId();
         this.grantTime = entitlementEntity.getGrantTime();
         this.expirationTime = entitlementEntity.getExpirationTime();
         this.useCount = entitlementEntity.getUseCount();
+        this.isDeleted = entitlementEntity.getIsDeleted();
         this.setCreatedBy(entitlementEntity.getCreatedBy());
         this.setCreatedTime(entitlementEntity.getCreatedTime());
         this.setModifiedBy(entitlementEntity.getModifiedBy());
@@ -132,23 +128,13 @@ public class EntitlementHistoryEntity implements Shardable {
         this.entitlementDefinitionId = entitlementDefinitionId;
     }
 
-    @Column(name = "status")
-    @Type(type = IdentifiableType.TYPE)
-    public EntitlementStatus getStatus() {
-        return status;
+    @Column(name = "is_banned")
+    public Boolean getIsBanned() {
+        return isBanned;
     }
 
-    public void setStatus(EntitlementStatus status) {
-        this.status = status;
-    }
-
-    @Column(name = "status_reason")
-    public String getStatusReason() {
-        return statusReason;
-    }
-
-    public void setStatusReason(String statusReason) {
-        this.statusReason = statusReason;
+    public void setIsBanned(Boolean isBanned) {
+        this.isBanned = isBanned;
     }
 
     @Column(name = "grant_time")
@@ -250,6 +236,15 @@ public class EntitlementHistoryEntity implements Shardable {
 
     public void setType(EntitlementType type) {
         this.type = type;
+    }
+
+    @Column(name = "is_deleted")
+    public Boolean getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(Boolean isDeleted) {
+        this.isDeleted = isDeleted;
     }
 
     @Transient

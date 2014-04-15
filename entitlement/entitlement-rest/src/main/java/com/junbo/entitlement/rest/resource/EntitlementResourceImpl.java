@@ -7,7 +7,6 @@
 package com.junbo.entitlement.rest.resource;
 
 import com.junbo.common.id.EntitlementId;
-import com.junbo.entitlement.common.def.EntitlementStatusReason;
 import com.junbo.entitlement.core.EntitlementService;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.model.EntitlementTransfer;
@@ -47,7 +46,7 @@ public class EntitlementResourceImpl implements EntitlementResource {
 
     @Override
     public Promise<Response> deleteEntitlement(EntitlementId entitlementId) {
-        entitlementService.deleteEntitlement(entitlementId.getValue(), EntitlementStatusReason.DELETED);
+        entitlementService.deleteEntitlement(entitlementId.getValue());
         return Promise.pure(Response.status(204).build());
     }
 

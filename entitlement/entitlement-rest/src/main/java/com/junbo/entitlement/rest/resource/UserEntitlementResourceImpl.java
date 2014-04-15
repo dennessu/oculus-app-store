@@ -65,8 +65,11 @@ public class UserEntitlementResourceImpl implements UserEntitlementResource {
         if (!StringUtils.isEmpty(searchParam.getType())) {
             builder = builder.queryParam("type", searchParam.getType());
         }
-        if (!StringUtils.isEmpty(searchParam.getStatus())) {
-            builder = builder.queryParam("status", searchParam.getStatus());
+        if (searchParam.getIsActive() != null) {
+            builder = builder.queryParam("isActive", searchParam.getIsActive());
+        }
+        if (searchParam.getIsBanned() != null) {
+            builder = builder.queryParam("isBanned", searchParam.getIsBanned());
         }
         if (!CollectionUtils.isEmpty(searchParam.getGroups())) {
             for (String group : searchParam.getGroups()) {

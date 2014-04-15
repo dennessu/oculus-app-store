@@ -9,7 +9,6 @@ package com.junbo.entitlement.db;
 import com.junbo.common.id.UserId;
 import com.junbo.entitlement.common.lib.EntitlementContext;
 import com.junbo.entitlement.db.repository.EntitlementRepository;
-import com.junbo.entitlement.spec.def.EntitlementStatus;
 import com.junbo.entitlement.spec.def.EntitlementType;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.model.EntitlementSearchParam;
@@ -38,7 +37,7 @@ import java.util.Random;
 @TransactionConfiguration(defaultRollback = true)
 @TestExecutionListeners(TransactionalTestExecutionListener.class)
 @Transactional("transactionManager")
-public class EntitlementDaoTest extends AbstractTestNGSpringContextTests {
+public class EntitlementRepoTest extends AbstractTestNGSpringContextTests {
     @Autowired
     @Qualifier("oculus48IdGenerator")
     private IdGenerator idGenerator;
@@ -56,11 +55,10 @@ public class EntitlementDaoTest extends AbstractTestNGSpringContextTests {
     public void testUpdate() {
         Entitlement entitlement = buildAnEntitlement();
         Entitlement updatedEntitlement = entitlementRepository.insert(entitlement);
-        updatedEntitlement.setStatus("BANNED");
-        updatedEntitlement.setStatusReason("CHEAT");
+        updatedEntitlement.setIsBanned(true);
         updatedEntitlement = entitlementRepository.update(updatedEntitlement);
-        Assert.assertEquals(updatedEntitlement.getStatus(), EntitlementStatus.BANNED.toString());
-        Assert.assertEquals(updatedEntitlement.getStatusReason(), "CHEAT");
+        Assert.assertEquals(updatedEntitlement.getIsBanned(), Boolean.TRUE);
+        Assert.assertEquals(updatedEntitlement.getIsActive(), Boolean.FALSE);
     }
 
     @Test
@@ -77,6 +75,7 @@ public class EntitlementDaoTest extends AbstractTestNGSpringContextTests {
         EntitlementSearchParam searchParam = new EntitlementSearchParam();
         searchParam.setUserId(new UserId(userId));
         searchParam.setClientId(ownerId);
+        searchParam.setIsActive(false);
 
         PageMetadata pageMetadata = new PageMetadata();
         pageMetadata.setStart(0);
@@ -120,7 +119,7 @@ public class EntitlementDaoTest extends AbstractTestNGSpringContextTests {
         }
 
         EntitlementSearchParam searchParam = new EntitlementSearchParam.Builder(new UserId(userId))
-                .clientId(ownerId).status(EntitlementStatus.ACTIVE.toString()).build();
+                .clientId(ownerId).isActive(true).build();
 
         PageMetadata pageMetadata = new PageMetadata();
         pageMetadata.setStart(0);
@@ -129,19 +128,18 @@ public class EntitlementDaoTest extends AbstractTestNGSpringContextTests {
         List<Entitlement> list1 = entitlementRepository.getBySearchParam(searchParam, pageMetadata);
         Assert.assertEquals(list1.size(), 0);
 
-        searchParam.setStatus(EntitlementStatus.DISABLED.toString());
+        searchParam.setIsActive(false);
         List<Entitlement> list2 = entitlementRepository.getBySearchParam(searchParam, pageMetadata);
         Assert.assertEquals(list2.size(), 48);
 
         EntitlementContext.current().setNow(new Date(114, 0, 25));
-        searchParam.setStatus(EntitlementStatus.ACTIVE.toString());
+        searchParam.setIsActive(true);
         List<Entitlement> list3 = entitlementRepository.getBySearchParam(searchParam, pageMetadata);
         Assert.assertEquals(list3.size(), 48);
 
-        EntitlementContext.current().setNow(new Date(114, 0, 1));
-        searchParam.setStatus(EntitlementStatus.PENDING.toString());
+        searchParam.setIsBanned(true);
         List<Entitlement> list4 = entitlementRepository.getBySearchParam(searchParam, pageMetadata);
-        Assert.assertEquals(list4.size(), 48);
+        Assert.assertEquals(list4.size(), 0);
     }
 
     private Entitlement buildAnEntitlement() {
@@ -151,13 +149,13 @@ public class EntitlementDaoTest extends AbstractTestNGSpringContextTests {
         entitlement.setUserId(idGenerator.nextId());
         entitlement.setGrantTime(new Date(114, 0, 22));
         entitlement.setExpirationTime(new Date(114, 0, 28));
+        entitlement.setIsBanned(false);
 
         entitlement.setEntitlementDefinitionId(idGenerator.nextId());
         entitlement.setGroup("TEST");
         entitlement.setTag("TEST");
         entitlement.setType(EntitlementType.DEFAULT.toString());
         entitlement.setInAppContext(Collections.singletonList(String.valueOf(idGenerator.nextId())));
-        entitlement.setStatus(EntitlementStatus.ACTIVE.toString());
         return entitlement;
     }
 }

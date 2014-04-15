@@ -6,7 +6,6 @@
 
 package com.junbo.entitlement.core.service;
 
-import com.junbo.entitlement.common.def.EntitlementStatusReason;
 import com.junbo.entitlement.common.lib.CloneUtils;
 import com.junbo.entitlement.core.EntitlementService;
 import com.junbo.entitlement.db.repository.EntitlementRepository;
@@ -66,13 +65,13 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
 
     @Override
     @Transactional
-    public void deleteEntitlement(Long entitlementId, String reason) {
+    public void deleteEntitlement(Long entitlementId) {
         Entitlement existingEntitlement = entitlementRepository.get(entitlementId);
         if (existingEntitlement == null) {
             throw AppErrors.INSTANCE.notFound("entitlement", entitlementId).exception();
         }
         checkUser(existingEntitlement.getUserId());
-        entitlementRepository.delete(existingEntitlement, reason);
+        entitlementRepository.delete(existingEntitlement);
     }
 
     @Override
@@ -101,12 +100,10 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
         validateTransfer(entitlementTransfer, existingEntitlement);
 
         Entitlement newEntitlement = CloneUtils.clone(existingEntitlement);
-        deleteEntitlement(entitlementTransfer.getEntitlementId(),
-                EntitlementStatusReason.TRANSFERRED);
+        deleteEntitlement(entitlementTransfer.getEntitlementId());
         LOGGER.info("Entitlement [{}] is deleted for transferring.", existingEntitlement.getEntitlementId());
         newEntitlement.setTrackingUuid(entitlementTransfer.getTrackingUuid());
         newEntitlement.setEntitlementId(null);
-        newEntitlement.setStatus(null);
         newEntitlement.setUserId(entitlementTransfer.getTargetUserId());
         return entitlementRepository.insert(newEntitlement);
     }

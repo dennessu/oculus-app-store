@@ -7,10 +7,9 @@
 package com.junbo.entitlement.db.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.junbo.entitlement.spec.def.EntitlementStatus;
-import com.junbo.entitlement.spec.def.EntitlementType;
 import com.junbo.entitlement.db.entity.def.IdentifiableType;
 import com.junbo.entitlement.db.entity.def.ListJsonUserType;
+import com.junbo.entitlement.spec.def.EntitlementType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
@@ -30,8 +29,7 @@ public class EntitlementEntity extends Entity {
     private Integer rev;
     private Long userId;
     private List<String> inAppContext;
-    private EntitlementStatus status;
-    private String statusReason;
+    private Boolean isBanned;
     private Long entitlementDefinitionId;
     private EntitlementType type;
     private String group;
@@ -69,25 +67,6 @@ public class EntitlementEntity extends Entity {
         this.userId = userId;
     }
 
-    @Column(name = "status")
-    @Type(type = IdentifiableType.TYPE)
-    public EntitlementStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(EntitlementStatus status) {
-        this.status = status;
-    }
-
-    @Column(name = "status_reason")
-    public String getStatusReason() {
-        return statusReason;
-    }
-
-    public void setStatusReason(String statusReason) {
-        this.statusReason = statusReason;
-    }
-
     @Column(name = "entitlement_definition_id")
     public Long getEntitlementDefinitionId() {
         return entitlementDefinitionId;
@@ -122,6 +101,15 @@ public class EntitlementEntity extends Entity {
 
     public void setUseCount(Integer useCount) {
         this.useCount = useCount;
+    }
+
+    @Column(name = "is_banned")
+    public Boolean getIsBanned() {
+        return isBanned;
+    }
+
+    public void setIsBanned(Boolean isBanned) {
+        this.isBanned = isBanned;
     }
 
     @Column(name = "in_app_context")

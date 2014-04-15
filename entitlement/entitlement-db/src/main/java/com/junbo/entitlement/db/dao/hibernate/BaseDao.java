@@ -64,7 +64,8 @@ public class BaseDao<T extends Entity> {
     }
 
     public T get(Long id) {
-        return (T) currentSession(id).get(entityType, id);
+        T result = (T) currentSession(id).get(entityType, id);
+        return Boolean.TRUE.equals(result.getIsDeleted()) ? null : result;
     }
 
     public T update(T t) {

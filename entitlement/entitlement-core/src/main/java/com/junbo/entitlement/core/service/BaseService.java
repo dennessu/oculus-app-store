@@ -9,7 +9,6 @@ package com.junbo.entitlement.core.service;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
 import com.junbo.entitlement.clientproxy.catalog.EntitlementDefinitionFacade;
 import com.junbo.entitlement.common.lib.EntitlementContext;
-import com.junbo.entitlement.spec.def.EntitlementStatus;
 import com.junbo.entitlement.spec.error.AppErrors;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.model.EntitlementTransfer;
@@ -41,6 +40,9 @@ public class BaseService {
         if (entitlement.getTag() == null) {
             entitlement.setTag("");
         }
+        if (entitlement.getIsBanned() == null) {
+            entitlement.setIsBanned(false);
+        }
         if (entitlement.getGrantTime() == null) {
             entitlement.setGrantTime(EntitlementContext.current().getNow());
         }
@@ -64,6 +66,7 @@ public class BaseService {
         existingEntitlement.setUseCount(entitlement.getUseCount());
         existingEntitlement.setExpirationTime(entitlement.getExpirationTime());
         existingEntitlement.setRev(entitlement.getRev());
+        existingEntitlement.setIsBanned(entitlement.getIsBanned());
     }
 
     protected void validateCreate(Entitlement entitlement) {
@@ -75,9 +78,9 @@ public class BaseService {
                     .exception();
         }
         checkInAppContext(entitlement.getInAppContext());
-        if (entitlement.getStatus() != null) {
-            throw AppErrors.INSTANCE.fieldNotCorrect("status",
-                    "status can not be set").exception();
+        if (Boolean.TRUE.equals(entitlement.getIsBanned())) {
+            throw AppErrors.INSTANCE.fieldNotCorrect("isBanned",
+                    "isBanned can not be true when created").exception();
         }
         validateNotNull(entitlement.getType(), "type");
         validateNotNull(entitlement.getGrantTime(), "grantTime");
@@ -123,12 +126,10 @@ public class BaseService {
         }
         checkUser(existingEntitlement.getUserId());
         checktargetUser(transfer.getTargetUserId());
-        if (EntitlementStatus.NOT_TRANSFERABLE.contains(existingEntitlement.getStatus())) {
+        if (existingEntitlement.getIsBanned()) {
             LOGGER.error("Entitlement [{}] can not be transferred.", existingEntitlement.getEntitlementId());
             throw AppErrors.INSTANCE.notTransferable(existingEntitlement.getEntitlementId(),
-                    "Entitlement with status " +
-                            existingEntitlement.getStatus() +
-                            " can not be transferred")
+                    "Banned entitlement can not be transferred.")
                     .exception();
         }
     }
