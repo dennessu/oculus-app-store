@@ -55,15 +55,15 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
     private OfferServiceImpl() {
     }
 
-    public String getOffer(String offerId, HashMap<String, String> httpPara) throws Exception {
-        return getOffer(offerId, httpPara, 200);
+    public String getOffer(String offerId) throws Exception {
+        return getOffer(offerId, 200);
     }
 
-    public String getOffer(String offerId, HashMap<String, String> httpPara, int expectedResponseCode)
+    public String getOffer(String offerId, int expectedResponseCode)
             throws Exception {
 
         String url = catalogServerURL + "/" + offerId;
-        String responseBody = restApiCall(HTTPMethod.GET, url, null, expectedResponseCode, httpPara);
+        String responseBody = restApiCall(HTTPMethod.GET, url, null, expectedResponseCode);
         Offer offerGet = new JsonMessageTranscoder().decode(new TypeReference<Offer>() {},
                 responseBody);
         String offerRtnId = IdConverter.idLongToHexString(OfferId.class, offerGet.getOfferId());
@@ -162,11 +162,13 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
     }
 
     private void loadAllOffers() throws Exception {
-        this.getOffer(null);
+        HashMap<String, String> paraMap = new HashMap<>();
+        this.getOffer(paraMap);
     }
 
     private void loadAllItems() throws Exception {
-        itemService.getItem(null);
+        HashMap<String, String> paraMap = new HashMap<>();
+        itemService.getItem(paraMap);
     }
 
     private void postPredefinedOffer() throws Exception {

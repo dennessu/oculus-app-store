@@ -9,7 +9,7 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.common.FacadeBuilder
 import com.junbo.order.clientproxy.rating.RatingFacade
 import com.junbo.order.spec.model.Order
-import com.junbo.rating.spec.model.request.OrderRatingRequest
+import com.junbo.rating.spec.model.request.RatingRequest
 import com.junbo.rating.spec.resource.RatingResource
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
@@ -28,8 +28,8 @@ class RatingFacadeImpl implements RatingFacade {
     RatingResource ratingResource
 
     @Override
-    Promise<OrderRatingRequest> rateOrder(Order order) {
-        OrderRatingRequest request = FacadeBuilder.buildOrderRatingRequest(order)
-        return ratingResource.orderRating(request)
+    Promise<RatingRequest> rateOrder(Order order) {
+        RatingRequest request = FacadeBuilder.buildRatingRequest(order)
+        return ratingResource.priceRating(request)
     }
 }

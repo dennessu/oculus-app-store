@@ -9,7 +9,6 @@ package com.junbo.catalog.db.dao;
 import com.junbo.catalog.db.entity.ItemRevisionEntity;
 import com.junbo.catalog.spec.model.item.ItemRevisionsGetOptions;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -17,5 +16,5 @@ import java.util.List;
  */
 public interface ItemRevisionDao extends BaseDao<ItemRevisionEntity> {
     List<ItemRevisionEntity> getRevisions(ItemRevisionsGetOptions options);
-    ItemRevisionEntity getRevision(Long itemId, Date timestamp);
+    ItemRevisionEntity getRevision(Long itemId, Long timestamp);
 }

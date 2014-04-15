@@ -7,7 +7,7 @@
 package com.junbo.order.clientproxy.catalog;
 
 import com.junbo.langur.core.promise.Promise;
-import com.junbo.order.clientproxy.model.OrderOffer;
+import com.junbo.order.clientproxy.model.OrderOfferRevision;
 
 import java.util.Date;
 
@@ -16,7 +16,7 @@ import java.util.Date;
  */
 public interface CatalogFacade {
 
-    Promise<OrderOffer> getOffer(Long offerId);
+    Promise<OrderOfferRevision> getOfferRevision(Long offerId);
 
-    Promise<OrderOffer> getOffer(Long offerId, Date honoredTime);
+    Promise<OrderOfferRevision> getOfferRevision(Long offerId, Date honoredTime);
 }

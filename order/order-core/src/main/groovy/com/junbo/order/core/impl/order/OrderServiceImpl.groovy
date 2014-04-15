@@ -5,16 +5,19 @@
  */
 
 package com.junbo.order.core.impl.order
+
 import com.junbo.common.error.AppErrorException
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.executor.FlowExecutor
 import com.junbo.order.clientproxy.FacadeContainer
-import com.junbo.order.clientproxy.model.OrderOffer
+import com.junbo.order.clientproxy.model.OrderOfferRevision
 import com.junbo.order.core.FlowSelector
 import com.junbo.order.core.OrderService
 import com.junbo.order.core.OrderServiceOperation
+import com.junbo.order.core.impl.common.CoreUtils
+import com.junbo.order.core.impl.common.OrderValidator
+import com.junbo.order.core.impl.common.TransactionHelper
 import com.junbo.order.core.impl.internal.OrderInternalService
-import com.junbo.order.core.impl.common.*
 import com.junbo.order.core.impl.orderaction.ActionUtils
 import com.junbo.order.core.impl.orderaction.context.OrderActionContext
 import com.junbo.order.db.repo.OrderRepository
@@ -244,7 +247,7 @@ class OrderServiceImpl implements OrderService {
 
     private Promise<Object> prepareOrder(Order order) {
         Promise.each(order.orderItems.iterator()) { OrderItem item -> // get item type from catalog
-            facadeContainer.catalogFacade.getOffer(item.offer.value).syncThen { OrderOffer offer ->
+            facadeContainer.catalogFacade.getOfferRevision(item.offer.value).syncThen { OrderOfferRevision offer ->
                 if (offer == null) {
                     throw AppErrors.INSTANCE.offerNotFound(item.offer.value?.toString()).exception()
                 }

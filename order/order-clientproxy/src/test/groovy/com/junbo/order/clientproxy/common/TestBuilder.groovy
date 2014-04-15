@@ -5,7 +5,7 @@ import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.common.id.OrderId
 import com.junbo.common.id.PaymentInstrumentId
 import com.junbo.common.id.UserId
-import com.junbo.identity.spec.model.user.User
+import com.junbo.identity.spec.v1.model.User
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 
@@ -46,9 +46,7 @@ class TestBuilder {
         def userId = new UserId()
         userId.value = generateLong()
         user.setId(userId)
-        user.setUserName('fake_user')
-        user.setPassword('fake_password')
-        user.setStatus('ACTIVE')
+        user.setUsername('fake_user')
         return user
     }
 

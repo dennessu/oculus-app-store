@@ -86,6 +86,22 @@
         <constructor-arg name="target" value="${clientproxy.catalog.url}"/>
     </bean>
 
+    <bean id="order.offerRevisionClient" class="com.junbo.catalog.spec.resource.proxy.OfferRevisionResourceClientProxy">
+        <constructor-arg name="client" ref="asyncHttpClient"/>
+        <constructor-arg name="transcoder" ref="transcoder"/>
+        <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
+        <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder"/>
+        <constructor-arg name="target" value="${order.client.catalog.url}"/>
+    </bean>
+
+    <bean id="order.offerItemRevisionClient" class="com.junbo.catalog.spec.resource.proxy.ItemRevisionResourceClientProxy">
+        <constructor-arg name="client" ref="asyncHttpClient"/>
+        <constructor-arg name="transcoder" ref="transcoder"/>
+        <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
+        <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder"/>
+        <constructor-arg name="target" value="${order.client.catalog.url}"/>
+    </bean>
+
     <bean id="order.fulfilmentClient" class="com.junbo.fulfilment.spec.resource.proxy.FulfilmentResourceClientProxy">
         <constructor-arg name="client" ref="asyncHttpClient"/>
         <constructor-arg name="transcoder" ref="transcoder"/>

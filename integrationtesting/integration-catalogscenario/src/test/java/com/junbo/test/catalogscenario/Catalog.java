@@ -6,6 +6,7 @@
 package com.junbo.test.catalogscenario;
 
 import com.junbo.catalog.spec.model.attribute.Attribute;
+import com.junbo.catalog.spec.model.common.LocalizableProperty;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.test.common.Utility.TestClass;
 import com.junbo.catalog.spec.model.item.Item;
@@ -60,7 +61,9 @@ public class Catalog extends TestClass {
 
         ///Post an attribute and verify it got posted
         Attribute attribute = new Attribute();
-        attribute.setName("testAttribute_" + RandomFactory.getRandomStringOfAlphabetOrNumeric(10));
+        LocalizableProperty attributeName = new LocalizableProperty();
+        attributeName.set("en_US", RandomFactory.getRandomStringOfAlphabet(10));
+        attribute.setName(attributeName);
         attribute.setType(EnumHelper.CatalogAttributeType.getRandom());
         logger.LogSample("Post an attribute");
         String attributeId = attributeServiceAPI.postAttribute(attribute);
@@ -117,14 +120,14 @@ public class Catalog extends TestClass {
 
         //Post a Digital item
         item = itemServiceAPI.prepareItemEntity(defaultItemFileName);
-        item.setType(EnumHelper.CatalogItemType.APP.getItemType());
+        item.setType(EnumHelper.CatalogItemType.DIGITAL.getItemType());
         logger.LogSample("Post a digital(app) item");
         itemId = itemServiceAPI.postItem(item);
         Assert.assertNotNull(Master.getInstance().getItem(itemId));
 
         //Get the item by its id(other conditions in paraMap are empty)
         logger.LogSample("Get the item by its Id");
-        String itemGetId = itemServiceAPI.getItem(itemId, null);
+        String itemGetId = itemServiceAPI.getItem(itemId);
         Assert.assertNotNull(Master.getInstance().getItem(itemGetId));
 
         //Get the item(s) by some conditions: by status firstly
@@ -143,7 +146,8 @@ public class Catalog extends TestClass {
         //Get all items without any search condition
         logger.LogSample("Get all items(without any search condition)");
         itemResultList.clear();
-        itemResultList = itemServiceAPI.getItem(null);
+        paraMap.clear();
+        itemResultList = itemServiceAPI.getItem(paraMap);
         Assert.assertNotNull(itemResultList);
 
         //Update item to released
@@ -182,14 +186,14 @@ public class Catalog extends TestClass {
         Assert.assertNotNull(Master.getInstance().getOffer(offerId));
 
         //Post a Digital offer
-        offer = offerServiceAPI.prepareOfferEntity(defaultOfferFileName, EnumHelper.CatalogItemType.APP);
+        offer = offerServiceAPI.prepareOfferEntity(defaultOfferFileName, EnumHelper.CatalogItemType.DIGITAL);
         logger.LogSample("Post a digital(app) offer");
         offerId = offerServiceAPI.postOffer(offer);
         Assert.assertNotNull(Master.getInstance().getOffer(offerId));
 
         //Get the offer by its id(other conditions in paraMap are empty)
         logger.LogSample("Get the offer by its id");
-        String offerGetId = offerServiceAPI.getOffer(offerId, null);
+        String offerGetId = offerServiceAPI.getOffer(offerId);
         Assert.assertNotNull(Master.getInstance().getOffer(offerGetId));
 
         //Get the offer(s) by some conditions: by status firstly
@@ -208,7 +212,8 @@ public class Catalog extends TestClass {
         //Get all offers without any search condition
         logger.LogSample("Get all offers without any search conditions");
         offerResultList.clear();
-        offerResultList = offerServiceAPI.getOffer(null);
+        paraMap.clear();
+        offerResultList = offerServiceAPI.getOffer(paraMap);
         Assert.assertNotNull(offerResultList);
 
         //Update offer to released
