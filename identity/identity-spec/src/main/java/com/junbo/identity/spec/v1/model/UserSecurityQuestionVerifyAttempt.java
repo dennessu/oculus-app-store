@@ -12,6 +12,7 @@ import com.junbo.common.id.UserSecurityQuestionVerifyAttemptId;
 import com.junbo.common.id.UserSecurityQuestionId;
 import com.junbo.common.util.Identifiable;
 import com.junbo.identity.spec.model.users.ResourceMeta;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
  * Created by liangfu on 4/3/14.
@@ -22,21 +23,28 @@ public class UserSecurityQuestionVerifyAttempt extends ResourceMeta
     @JsonIgnore
     private UserSecurityQuestionVerifyAttemptId id;
 
+    @ApiModelProperty(position = 1, required = true, value = "User security question resource.")
     @JsonProperty("userSecurityQuestion")
     private UserSecurityQuestionId userSecurityQuestionId;
 
+    @ApiModelProperty(position = 2, required = true, value = "User resource.")
     @JsonProperty("user")
     private UserId userId;
 
+    @ApiModelProperty(position = 3, required = true, value = "User security question answer.")
     private String value;
 
+    @ApiModelProperty(position = 4, required = true, value = "The ip address of the verify attempt caller.")
     private String ipAddress;
 
+    @ApiModelProperty(position = 5, required = true, value = "The user agent of the verify attempt caller.")
     private String userAgent;
 
+    @ApiModelProperty(position = 6, required = true, value = "The client id of the verify attempt caller.")
     private String clientId;
 
     // read only
+    @ApiModelProperty(position = 7, required = false, value = "Whether the attempt is success.")
     private Boolean succeeded;
 
     public UserSecurityQuestionVerifyAttemptId getId() {

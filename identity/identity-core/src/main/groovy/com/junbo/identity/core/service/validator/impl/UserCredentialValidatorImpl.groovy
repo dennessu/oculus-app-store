@@ -74,10 +74,8 @@ class UserCredentialValidatorImpl implements UserCredentialValidator {
 
         if (userCredential.type == 'password') {
             return userPasswordValidator.validateForOldPassword(userId, userCredential.oldValue).then {
-                String decoded = Base64.decodeAsString(userCredential.value)
-                String[] split = decoded.split(':')
                 UserPassword userPassword = modelMapper.credentialToPassword(userCredential, new MappingContext())
-                userPassword.value = split[1]
+                userPassword.value = Base64.decodeAsString(userCredential.value)
                 if (userPassword == null) {
                     throw new IllegalArgumentException('mapping to password exception')
                 }
@@ -87,10 +85,8 @@ class UserCredentialValidatorImpl implements UserCredentialValidator {
             }
         } else if (userCredential.type == 'pin') {
             return userPinValidator.validateForOldPassword(userId, userCredential.oldValue).then {
-                String decoded = Base64.decodeAsString(userCredential.value)
-                String[] split = decoded.split(':')
                 UserPin userPin = modelMapper.credentialToPin(userCredential, new MappingContext())
-                userPin.value = split[1]
+                userPin.value = Base64.decodeAsString(userCredential.value)
                 if (userPin == null) {
                     throw new IllegalArgumentException('mapping to pin exception')
                 }
