@@ -9,7 +9,6 @@ import groovy.transform.TypeChecked
 import org.testng.annotations.Test
 
 import javax.annotation.Resource
-
 /**
  * Created by LinYi on 14-2-25.
  */
@@ -21,18 +20,18 @@ class IdentityFacadeTest extends BaseTest {
 
     @Test
     void testGetUser() {
-        def user = TestBuilder.buildUser()
-        def createUserPromise = identityFacade.createUser(user)
+        User user = TestBuilder.buildUser()
+        Promise createUserPromise = identityFacade.createUser(user)
 
         createUserPromise?.then(new Promise.Func<User, Promise>() {
             @Override
             Promise apply(User createdUser) {
                 assert (createdUser != null)
-                def getUserPromise = identityFacade.getUser(user.id.value)
+                def getUserPromise = identityFacade.getUser(user.getId().getValue())
                 getUserPromise?.then(new Promise.Func<User, Promise>() {
                     @Override
                     Promise apply(User returnedUser) {
-                        assert (user.id.value == returnedUser.id.value)
+                        assert (user.getId().getValue() == returnedUser.getId().value)
                     }
                 } )
             }

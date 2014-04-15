@@ -30,7 +30,7 @@
     <bean id="transcoder" class="com.junbo.common.json.JsonMessageTranscoder"/>
     <bean id="queryParamTranscoder" class="com.junbo.common.json.QueryParamTranscoderImpl"/>
 
-    <bean id="order.identityUserClient" class="com.junbo.identity.spec.resource.proxy.UserResourceClientProxy">
+    <bean id="order.identityUserClient" class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy">
         <constructor-arg name="client" ref="asyncHttpClient"/>
         <constructor-arg name="transcoder" ref="transcoder"/>
         <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
