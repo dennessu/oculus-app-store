@@ -5,11 +5,14 @@
  */
 package com.junbo.subscription.db.entity;
 
+import org.hibernate.annotations.Type;
+
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import java.util.Date;
+import java.util.UUID;
 
 
 /**
@@ -19,6 +22,8 @@ import java.util.Date;
 @Table(name = "subscription")
 public class SubscriptionEntity extends Entity {
     private Long subscriptionId;
+
+    private UUID trackingUuid;
     private Long userId;
     private Long piId;
     private SubscriptionStatus statusId;
@@ -38,6 +43,13 @@ public class SubscriptionEntity extends Entity {
     public void setSubscriptionId(Long subscriptionId) {
         this.subscriptionId = subscriptionId;
     }
+
+    @Column(name = "tracking_uuid")
+    @Type(type = "pg-uuid")
+    public UUID getTrackingUuid() { return trackingUuid; }
+
+    public void setTrackingUuid(UUID trackingUuid) { this.trackingUuid = trackingUuid; }
+
 
     @Column(name = "user_id")
     public Long getUserId() {
