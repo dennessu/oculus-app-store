@@ -77,7 +77,7 @@
     </bean>
 
     <bean id="mockCatalogFacade" class="com.junbo.order.clientproxy.catalog.impl.CatalogFacadeImpl">
-        <property name="offerResource" ref="mockCatalogResource"/>
+        <property name="offerRevisionResource" ref="mockCatalogResource"/>
     </bean>
 
     <bean id="mockCachedCatalogFacade" class="com.junbo.order.clientproxy.catalog.impl.CachedCatalogFacadeImpl">

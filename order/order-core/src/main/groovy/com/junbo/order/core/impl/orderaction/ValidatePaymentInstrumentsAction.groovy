@@ -39,7 +39,7 @@ class ValidatePaymentInstrumentsAction implements com.junbo.langur.core.webflow.
                 LOGGER.info('name=Validate_Payment_Instrument_Not_Found')
                 return null
             }
-            def invalidPi = pis.find { PaymentInstrument pi -> !pi.isActive}
+            def invalidPi = pis.find { PaymentInstrument pi -> !pi.isActive }
             if (invalidPi != null) {
                 throw AppErrors.INSTANCE.paymentInstrumentStatusInvalid(invalidPi.id.toString()).exception()
             }
