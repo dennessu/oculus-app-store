@@ -19,6 +19,8 @@ class UriUtil {
     private final static Logger LOGGER = LoggerFactory.getLogger(UriUtil)
 
     static boolean match(String uri, String uriTemplate) {
+
+        // todo: this doesn't work. more strict validation needed.
         if (uriTemplate.contains('*')) {
             String redirectUriPattern = uriTemplate.replace('.', '\\.').replace('?', '\\?')
                     .replace('*', '.*').concat('.*')

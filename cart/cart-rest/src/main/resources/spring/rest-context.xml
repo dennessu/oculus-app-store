@@ -40,12 +40,12 @@
         <property name="userResource" ref="userResourceClientProxy"/>
     </bean>
 
-    <bean id="userResourceClientProxy" class="com.junbo.identity.spec.resource.proxy.UserResourceClientProxy">
+    <bean id="userResourceClientProxy" class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy">
         <constructor-arg name="client" ref="httpClient"/>
         <constructor-arg name="transcoder" ref="transcoder"/>
         <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
         <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder"/>
-        <constructor-arg value="${cart.client.identity.url}"/>
+        <constructor-arg value="${clientproxy.identity.url}"/>
     </bean>
 
     <bean id="mockUserClient" class="com.junbo.cart.core.client.impl.MockUserClientImpl">

@@ -20,9 +20,9 @@ import javax.ws.rs.core.MediaType;
 /**
  * Created by liangfu on 4/3/14.
  */
-@Api(value = "securityQuestionAttempts")
+@Api(value = "users")
 @RestResource
-@Path("/users/{userId}/security-question-attempts")
+@Path("/users/{userId}/security-question-verify-attempts")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 public interface UserSecurityQuestionVerifyAttemptResource {

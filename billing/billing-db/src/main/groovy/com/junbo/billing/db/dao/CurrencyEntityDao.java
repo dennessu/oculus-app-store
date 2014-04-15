@@ -6,7 +6,6 @@
 
 package com.junbo.billing.db.dao;
 
-import com.junbo.billing.db.BaseDao;
 import com.junbo.billing.db.entity.CurrencyEntity;
 
 import java.util.List;
@@ -14,7 +13,9 @@ import java.util.List;
 /**
  * Created by xmchen on 14-2-13.
  */
-public interface CurrencyEntityDao extends BaseDao<CurrencyEntity, String> {
+public interface CurrencyEntityDao {
+
+    CurrencyEntity load(String name);
 
     List<CurrencyEntity> loadAll();
 

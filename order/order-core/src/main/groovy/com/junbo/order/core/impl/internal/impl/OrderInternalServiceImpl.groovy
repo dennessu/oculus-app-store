@@ -13,7 +13,7 @@ import com.junbo.order.core.impl.internal.OrderInternalService
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.*
-import com.junbo.rating.spec.model.request.OrderRatingRequest
+import com.junbo.rating.spec.model.request.RatingRequest
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.apache.commons.collections.CollectionUtils
@@ -51,7 +51,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
             LOGGER.error('name=Order_Rating_Error', throwable)
             // TODO parse the rating error
             throw AppErrors.INSTANCE.ratingConnectionError().exception()
-        }.then { OrderRatingRequest ratingResult ->
+        }.then { RatingRequest ratingResult ->
             // todo handle rating violation
             if (ratingResult == null) {
                 // TODO: log order charge action error?

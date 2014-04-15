@@ -6,7 +6,6 @@
 
 package com.junbo.billing.db.dao;
 
-import com.junbo.billing.db.BaseDao;
 import com.junbo.billing.db.entity.TaxItemEntity;
 
 import java.util.List;
@@ -14,6 +13,9 @@ import java.util.List;
 /**
  * Created by xmchen on 14-1-21.
  */
-public interface TaxItemEntityDao extends BaseDao<TaxItemEntity, Long> {
+public interface TaxItemEntityDao {
+    TaxItemEntity get(Long taxItemId);
+    TaxItemEntity save(TaxItemEntity taxItem);
+    TaxItemEntity update(TaxItemEntity taxItem);
     List<TaxItemEntity> findByBalanceItemId(Long balanceItemId);
 }

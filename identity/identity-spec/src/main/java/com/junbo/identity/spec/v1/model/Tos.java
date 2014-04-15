@@ -9,19 +9,24 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.TosId;
 import com.junbo.common.util.Identifiable;
 import com.junbo.identity.spec.model.users.ResourceMeta;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
  * Created by liangfu on 4/3/14.
  */
 public class Tos extends ResourceMeta implements Identifiable<TosId> {
 
+    @ApiModelProperty(position = 1, required = true, value = "The id of the tos resource.")
     @JsonProperty("self")
     private TosId id;
 
+    @ApiModelProperty(position = 2, required = true, value = "The locale of the tos resource.")
     private String locale;
 
+    @ApiModelProperty(position = 3, required = true, value = "The title of the tos resource.")
     private String title;
 
+    @ApiModelProperty(position = 4, required = true, value = "The content of the tos resource.")
     private String content;
 
     @Override

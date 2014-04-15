@@ -1,6 +1,6 @@
 package com.junbo.order.clientproxy
 
-import com.junbo.identity.spec.model.user.User
+import com.junbo.identity.spec.v1.model.User
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.common.TestBuilder
 import com.junbo.order.clientproxy.identity.IdentityFacade

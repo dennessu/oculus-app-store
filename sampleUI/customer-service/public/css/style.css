@@ -157,10 +157,26 @@ a:hover {
 .panel-list .item:hover .btns {
   display: block;
 }
+.form-group label {
+  font-weight: bold;
+  color: #999;
+}
+.form-group label.error {
+  font-weight: normal;
+  color: #F00;
+  line-height: 22px;
+}
 /* Layout */
 .sidebar {
   position: fixed;
 }
 .user-info dl dt {
   color: #898f9c;
+}
+.lookup {
+  padding-top: 30px;
+}
+.lookup .panel-csr {
+  float: none;
+  margin: 0 auto;
 }

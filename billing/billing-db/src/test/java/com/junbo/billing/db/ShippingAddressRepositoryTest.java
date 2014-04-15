@@ -24,7 +24,7 @@ public class ShippingAddressRepositoryTest extends BaseTest {
 
     @Test
     public void testInsertGet() {
-        Long userId = generateId();
+        Long userId = generateUserId();
 
         ShippingAddress shippingAddress = buildShippingAddress(userId);
         shippingAddress = shippingAddressRepository.saveShippingAddress(shippingAddress);
@@ -39,7 +39,7 @@ public class ShippingAddressRepositoryTest extends BaseTest {
 
     @Test
     public void testFindByUserId() {
-        Long userId = generateId();
+        Long userId = generateUserId();
         ShippingAddress shippingAddress = buildShippingAddress(userId);
         shippingAddress = shippingAddressRepository.saveShippingAddress(shippingAddress);
 
@@ -53,7 +53,7 @@ public class ShippingAddressRepositoryTest extends BaseTest {
 
     @Test
     public void testSoftDelete() {
-        Long userId = generateId();
+        Long userId = generateUserId();
         ShippingAddress shippingAddress = buildShippingAddress(userId);
         shippingAddress = shippingAddressRepository.saveShippingAddress(shippingAddress);
 

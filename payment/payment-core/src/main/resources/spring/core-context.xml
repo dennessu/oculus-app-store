@@ -31,6 +31,9 @@
     <bean id="walletProviderService" class="com.junbo.payment.core.provider.ewallet.EWalletProviderServiceImpl">
     </bean>
 
+    <bean id="paypalProviderService" class="com.junbo.payment.core.provider.paypal.PayPalProviderServiceImpl">
+    </bean>
+
     <bean id="providerRoutingService" class="com.junbo.payment.core.provider.impl.ProviderRoutingServiceImpl"/>
 
     <!-- regiester brainTreeRestProviderService for async and brainTreePaymentProviderService for sync call -->

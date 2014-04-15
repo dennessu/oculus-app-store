@@ -7,10 +7,12 @@ var RestClient = function(){};
 RestClient.prototype.Request = function(options, data, cb){
 
     var async = true;
+    var cache = false;
     var headers = {};
     var contentType = "application/x-www-form-urlencoded";
 
     if(typeof(options["async"]) != "undefined") async = options["async"];
+    if(typeof(options["cache"]) != "undefined") cache = options["cache"];
     if(typeof(options["headers"]) != "undefined"){
         headers = options["headers"];
 
@@ -24,17 +26,18 @@ RestClient.prototype.Request = function(options, data, cb){
         url: options["url"],
         type: options["method"],
         async: async,
-        cache: false,
+        cache: cache,
         headers: headers,
         contentType: contentType,
         data: data
     });
+    console.log("Request Options: ", options);
 
     $.ajax({
         url: options["url"],
         type: options["method"],
         async: async,
-        cache: false,
+        cache: cache,
         headers: headers,
         contentType: contentType,
         data: data,

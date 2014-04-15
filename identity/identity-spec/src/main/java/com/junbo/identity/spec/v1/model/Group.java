@@ -9,17 +9,21 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.GroupId;
 import com.junbo.common.util.Identifiable;
 import com.junbo.identity.spec.model.users.ResourceMeta;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
  * Created by liangfu on 4/3/14.
  */
 public class Group extends ResourceMeta implements Identifiable<GroupId> {
 
+    @ApiModelProperty(position = 1, required = true, value = "The id of the group resource.")
     @JsonProperty("self")
     private GroupId id;
 
+    @ApiModelProperty(position = 2, required = true, value = "The name of the group resource.")
     private String name;
 
+    @ApiModelProperty(position = 3, required = false, value = "The status of the group.")
     private Boolean active;
 
     @Override

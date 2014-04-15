@@ -17,8 +17,8 @@ import com.junbo.order.spec.model.Discount
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderEvent
 import com.junbo.order.spec.model.OrderItem
-import com.junbo.rating.spec.model.request.OrderRatingItem
-import com.junbo.rating.spec.model.request.OrderRatingRequest
+import com.junbo.rating.spec.model.request.RatingItem
+import com.junbo.rating.spec.model.request.RatingRequest
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.apache.commons.collections.CollectionUtils
@@ -136,7 +136,7 @@ class CoreBuilder {
         return balanceItem
     }
 
-    static void fillRatingInfo(Order order, OrderRatingRequest ratingRequest) {
+    static void fillRatingInfo(Order order, RatingRequest ratingRequest) {
         order.totalAmount = ratingRequest.orderBenefit.finalAmount
         order.totalDiscount = ratingRequest.orderBenefit.discountAmount
         order.totalShippingFee = ratingRequest.shippingBenefit.shippingFee
@@ -159,7 +159,7 @@ class CoreBuilder {
             discount.coupon = couponCode
         }
 
-        ratingRequest.lineItems?.each { OrderRatingItem ri ->
+        ratingRequest.lineItems?.each { RatingItem ri ->
             if (!CollectionUtils.isEmpty(ri.promotions)) {
                 def d = buildDiscount(ri)
                 d.ownerOrderItem = order.orderItems.find { OrderItem oi ->
@@ -172,7 +172,7 @@ class CoreBuilder {
         order.isTaxInclusive = order.isTaxInclusive ?: false
     }
 
-    static Discount buildDiscount(OrderRatingItem ri) {
+    static Discount buildDiscount(RatingItem ri) {
         def discount = new Discount()
         discount.discountAmount = ri.totalDiscountAmount
         discount.discountType = DiscountType.OFFER_DISCOUNT
@@ -184,8 +184,8 @@ class CoreBuilder {
     }
 
 
-    static OrderItem buildItemRatingInfo(OrderItem item, OrderRatingRequest ratingRequest) {
-        OrderRatingItem ratingItem = ratingRequest.lineItems?.find { OrderRatingItem i ->
+    static OrderItem buildItemRatingInfo(OrderItem item, RatingRequest ratingRequest) {
+        RatingItem ratingItem = ratingRequest.lineItems?.find { RatingItem i ->
             item.offer.value == i.offerId
         }
         if (ratingItem == null) {

@@ -27,6 +27,4 @@ public interface BalanceRepository {
     Balance updateBalance(Balance balance);
 
     List<BalanceId> fetchAsyncChargeBalanceIds(Integer count);
-
-    List<Balance> getBalancesByOrderItemId(List<Long> orderItemIds);
 }

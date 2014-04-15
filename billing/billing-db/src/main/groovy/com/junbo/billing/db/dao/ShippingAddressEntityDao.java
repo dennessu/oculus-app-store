@@ -6,7 +6,6 @@
 
 package com.junbo.billing.db.dao;
 
-import com.junbo.billing.db.BaseDao;
 import com.junbo.billing.db.entity.ShippingAddressEntity;
 
 import java.util.List;
@@ -14,7 +13,14 @@ import java.util.List;
 /**
  * Created by xmchen on 14-1-20.
  */
-public interface ShippingAddressEntityDao extends BaseDao<ShippingAddressEntity, Long> {
+public interface ShippingAddressEntityDao {
+
+    ShippingAddressEntity get(Long shippingAddressId);
+
+    ShippingAddressEntity save(ShippingAddressEntity shippingAddress);
+
+    ShippingAddressEntity update(ShippingAddressEntity shippingAddress);
+
     List<ShippingAddressEntity> findByUserId(Long userId);
 
     void softDelete(Long addressId);

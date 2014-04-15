@@ -5,36 +5,47 @@
  */
 package com.junbo.identity.spec.v1.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.UserId;
 import com.junbo.common.util.Identifiable;
 import com.junbo.identity.spec.model.users.ResourceMeta;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
  * Created by liangfu on 4/3/14.
  */
 public class User extends ResourceMeta implements Identifiable<UserId> {
+    @ApiModelProperty(position = 1, required = true, value = "The id of user resource.")
     @JsonProperty("self")
     private UserId id;
 
+    @ApiModelProperty(position = 2, required = true, value = "The username of the user.")
     // username can be null
     private String username;
 
-    // type should only support anonymousUser/user
+    @ApiModelProperty(position = 3, required = true, value = "The user type, it must be anonymousUser or user.")
     private String type;
 
+    @ApiModelProperty(position = 4, required = false, value = "The preferred language of the user.")
     private String preferredLanguage;
 
+    @ApiModelProperty(position = 5, required = false, value = "The locale of the user.")
     private String locale;
 
+    @ApiModelProperty(position = 6, required = false, value = "The timezone of the user.")
     private String timezone;
 
+    @ApiModelProperty(position = 7, required = false, value = "Whether the user is active.")
     private Boolean active;
 
+    @ApiModelProperty(position = 8, required = false, value = "The nick name of the user.")
     private String nickName;
 
+    @ApiModelProperty(position = 9, required = false, value = "The currency of the user.")
     private String currency;
 
+    @JsonIgnore
     private String canonicalUsername;
 
     @Override
