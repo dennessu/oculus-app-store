@@ -8,9 +8,7 @@ package com.junbo.common.jackson.annotation;
 import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.junbo.common.jackson.deserializer.CompoundIdDeserializer;
 import com.junbo.common.jackson.deserializer.ResourceIdDeserializer;
-import com.junbo.common.jackson.serializer.CompoundIdSerializer;
 import com.junbo.common.jackson.serializer.ResourceIdSerializer;
 
 import java.lang.annotation.Inherited;
