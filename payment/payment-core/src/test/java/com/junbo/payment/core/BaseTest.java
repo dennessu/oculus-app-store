@@ -80,7 +80,7 @@ public abstract class BaseTest extends AbstractTestNGSpringContextTests {
 
     public PaymentInstrument buildBasePIRequest(){
         PaymentInstrument request = new PaymentInstrument();
-        request.setId(new PIId(userId, null));
+        request.setUserId(userId);
         request.setTrackingUuid(generateUUID());
         request.setAccountName("ut");
         request.setIsValidated(true);

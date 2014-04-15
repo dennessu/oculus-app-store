@@ -142,16 +142,6 @@
         <property name="persistentClass" value="com.junbo.payment.db.entity.payment.PaymentProviderEntity"/>
     </bean>
 
-    <bean id="currencyTypeDao"
-          class="com.junbo.payment.db.dao.CurrencyTypeDao" parent="genericDao">
-        <property name="persistentClass" value="com.junbo.payment.db.entity.CurrencyTypeEntity"/>
-    </bean>
-
-    <bean id="countryTypeDao"
-          class="com.junbo.payment.db.dao.CountryTypeDao" parent="genericDao">
-        <property name="persistentClass" value="com.junbo.payment.db.entity.CountryTypeEntity"/>
-    </bean>
-
     <bean id="paymentInstrumentTypeDao"
           class="com.junbo.payment.db.dao.PaymentInstrumentTypeDao" parent="genericDao">
         <property name="persistentClass" value="com.junbo.payment.db.entity.PaymentInstrumentTypeEntity"/>
@@ -180,16 +170,6 @@
     <bean id="paymentProviderRepository"
           class="com.junbo.payment.db.repository.PaymentProviderRepository" parent="domainDataRepository">
         <property name="dao" ref="paymentProviderDao"/>
-    </bean>
-
-    <bean id="countryTypeRepository"
-          class="com.junbo.payment.db.repository.CountryTypeRepository" parent="domainDataRepository">
-        <property name="dao" ref="countryTypeDao"/>
-    </bean>
-
-    <bean id="currencyTypeRepository"
-          class="com.junbo.payment.db.repository.CurrencyTypeRepository" parent="domainDataRepository">
-        <property name="dao" ref="currencyTypeDao"/>
     </bean>
 
     <bean id="piTypeRepository"

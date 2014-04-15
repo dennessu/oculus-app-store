@@ -53,7 +53,7 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
     public Promise<PaymentInstrument> add(final PaymentInstrument request) {
         validateRequest(request);
         if(request.getTrackingUuid() != null){
-            TrackingUuid result = trackingUuidRepository.getByTrackUuid(request.getId().getUserId(),
+            TrackingUuid result = trackingUuidRepository.getByTrackUuid(request.getUserId(),
                     request.getTrackingUuid());
             if(result != null && result.getApi().equals(PaymentAPI.AddPI)){
                 return Promise.pure(CommonUtil.parseJson(result.getResponse(), PaymentInstrument.class));
@@ -94,8 +94,8 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
     }
 
     @Override
-    public void delete(Long userId, final Long paymentInstrumentId) {
-        getById(userId, paymentInstrumentId);
+    public void delete(final Long paymentInstrumentId) {
+        getById(paymentInstrumentId);
         paymentInstrumentRepository.delete(paymentInstrumentId);
     }
 
@@ -105,12 +105,12 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
         if(request.getRev() == null){
             throw AppClientExceptions.INSTANCE.missingRevision().exception();
         }
-        PaymentInstrument piTarget = getById(request.getId().getUserId(), request.getId().getPaymentInstrumentId());
+        PaymentInstrument piTarget = getById(request.getId());
         if(request.getRev() != piTarget.getRev()){
             throw AppClientExceptions.INSTANCE.invalidRevision().exception();
         }
         //Validate the info:
-        if(!piTarget.getId().getUserId().equals(request.getId().getUserId())
+        if(!piTarget.getUserId().equals(request.getUserId())
                 || !piTarget.getType().equals(request.getType())
                 || !piTarget.getAccountNum().equals(request.getAccountNum())){
             throw AppClientExceptions.INSTANCE.invalidPaymentInstrumentId(request.getId().toString()).exception();
@@ -119,20 +119,20 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
             request.getAddress().setId(piTarget.getAddress().getId());
         }
         if(request.getType().equals(PIType.CREDITCARD.toString())){
-            request.getCreditCardRequest().setId(request.getId().getPaymentInstrumentId());
+            request.getCreditCardRequest().setId(request.getId());
         }
         paymentInstrumentRepository.update(request);
     }
 
     @Override
-    public PaymentInstrument getById(Long userId, Long paymentInstrumentId) {
+    public PaymentInstrument getById(Long paymentInstrumentId) {
         PaymentInstrument result = paymentInstrumentRepository.getByPIId(paymentInstrumentId);
         if(result == null){
             throw AppClientExceptions.INSTANCE.resourceNotFound("payment_instrument").exception();
         }
-        if(userId != null && !userId.equals(result.getId().getUserId())){
-            throw AppClientExceptions.INSTANCE.resourceNotFound("payment_instrument").exception();
-        }
+        //if(userId != null && !userId.equals(result.getUserId())){
+        //    throw AppClientExceptions.INSTANCE.resourceNotFound("payment_instrument").exception();
+        //}
         return result;
     }
 
@@ -176,15 +176,15 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
         }
         TrackingUuid trackingUuid = new TrackingUuid();
         trackingUuid.setTrackingUuid(request.getTrackingUuid());
-        trackingUuid.setPaymentInstrumentId(request.getId().getPaymentInstrumentId());
+        trackingUuid.setPaymentInstrumentId(request.getId());
         trackingUuid.setApi(api);
-        trackingUuid.setUserId(request.getId().getUserId());
+        trackingUuid.setUserId(request.getUserId());
         trackingUuid.setResponse(CommonUtil.toJson(request, null));
         trackingUuidRepository.saveTrackingUuid(trackingUuid);
     }
 
     private void validateRequest(PaymentInstrument request){
-        if(request.getId().getUserId() == null){
+        if(request.getUserId() == null){
             throw AppClientExceptions.INSTANCE.missingUserId().exception();
         }
         if(CommonUtil.isNullOrEmpty(request.getType())){
