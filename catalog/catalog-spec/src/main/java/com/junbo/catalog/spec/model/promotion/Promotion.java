@@ -31,9 +31,7 @@ public class Promotion extends BaseEntityModel {
     @JsonProperty("publisher")
     private Long ownerId;
 
-    //@JsonIgnore
     private Date startDate;
-    //@JsonIgnore
     private Date endDate;
 
     public Long getPromotionId() {
