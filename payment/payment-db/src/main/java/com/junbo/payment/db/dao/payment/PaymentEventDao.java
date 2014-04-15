@@ -22,7 +22,7 @@ public class PaymentEventDao extends CommonDataDAOImpl<PaymentEventEntity, Long>
     }
 
     public List<PaymentEventEntity> getByPaymentId(final Long paymentId) {
-        Criteria criteria = currentSession().createCriteria(PaymentEventEntity.class);
+        Criteria criteria = currentSession(paymentId).createCriteria(PaymentEventEntity.class);
         criteria.add(Restrictions.eq("paymentId", paymentId));
         criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         return criteria.list();
