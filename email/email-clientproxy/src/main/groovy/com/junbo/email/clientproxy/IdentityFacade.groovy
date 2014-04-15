@@ -6,7 +6,7 @@
 package com.junbo.email.clientproxy
 
 import com.junbo.langur.core.promise.Promise
-import com.junbo.identity.spec.model.user.User
+import com.junbo.identity.spec.v1.model.User
 /**
  * Interface of Identity Facade.
  */

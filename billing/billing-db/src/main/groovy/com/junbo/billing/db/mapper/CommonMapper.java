@@ -101,10 +101,6 @@ public class CommonMapper {
         return id == null ? null : id.getValue();
     }
 
-    public Long toBillingAddressIdLong(BillingAddressId id) {
-        return id == null ? null : id.getValue();
-    }
-
     public Long toPaymentInstrumentIdLong(PaymentInstrumentId id) {
         return id == null ? null : id.getValue();
     }
@@ -127,10 +123,6 @@ public class CommonMapper {
 
     public ShippingAddressId toShippingAddressId(Long id) {
         return id == null ? null : new ShippingAddressId(id);
-    }
-
-    public BillingAddressId toBillingAddressId(Long id) {
-        return id == null ? null : new BillingAddressId(id);
     }
 
     public PaymentInstrumentId toPaymentInstrumentId(Long id) {

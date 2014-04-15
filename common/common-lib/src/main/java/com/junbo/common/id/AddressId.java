@@ -7,13 +7,13 @@
 package com.junbo.common.id;
 
 /**
- * Java doc for sellerId.
+ * Created by xmchen on 14-4-15.
  */
-public class SellerId extends Id {
+public class AddressId extends Id {
 
-    public SellerId() {}
+    public AddressId() {}
 
-    public SellerId(long value) {
+    public AddressId(Long value) {
         super(value);
     }
 }

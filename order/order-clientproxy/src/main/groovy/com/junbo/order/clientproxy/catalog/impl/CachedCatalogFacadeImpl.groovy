@@ -52,7 +52,8 @@ class CachedCatalogFacadeImpl implements CatalogFacade {
                     LOGGER.info('name=Offer_Missing_In_Cache. offerId: {}', offerId)
                 } else {
                     def or = (OrderOfferRevision) element.objectValue
-                    LOGGER.info('name=Offer_Load_From_Cache. offerId: {}, revisionId: {}', offerId, or.catalogOfferRevision.revisionId)
+                    LOGGER.info('name=Offer_Load_From_Cache. offerId: {}, revisionId: {}',
+                            offerId, or.catalogOfferRevision.revisionId)
                     return Promise.pure(or)
                 }
             }
@@ -66,7 +67,8 @@ class CachedCatalogFacadeImpl implements CatalogFacade {
         }.syncThen { OrderOfferRevision or ->
             Element newElement = new Element(offerId.toString(), or)
             if (cache != null) {
-                LOGGER.info('name=Offer_Cached. offerId: {}, revisionId: {}', offerId, or.catalogOfferRevision.revisionId)
+                LOGGER.info('name=Offer_Cached. offerId: {}, revisionId: {}',
+                        offerId, or.catalogOfferRevision.revisionId)
                 cache.put(newElement)
             }
             return or

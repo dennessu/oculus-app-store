@@ -100,4 +100,7 @@ public interface ModelMapper {
 
     UserPii toUserPii(UserPiiEntity entity, MappingContext context);
     UserPiiEntity toUserPii(UserPii entity, MappingContext context);
+
+    Address toAddress(AddressEntity entity, MappingContext context);
+    AddressEntity toAddress(Address entity, MappingContext context);
 }

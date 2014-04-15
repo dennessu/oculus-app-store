@@ -9,6 +9,7 @@ package com.junbo.common.id;
 /**
  * Created by minhao on 2/13/14.
  */
+@IdResourcePath("/opt-ins/{0}")
 public class UserOptinId extends Id {
 
     public UserOptinId() {}

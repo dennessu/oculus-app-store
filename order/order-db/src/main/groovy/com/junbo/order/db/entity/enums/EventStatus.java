@@ -21,7 +21,6 @@ public enum EventStatus implements Identifiable<Short> {
     private EventStatus(int id) {
         this.id = (short) id;
     }
-
     private Short id;
 
     @Override
