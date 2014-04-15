@@ -15,6 +15,8 @@ import com.junbo.common.model.Results;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
+
 /**
  * Promotion resource implementation.
  */
@@ -24,7 +26,10 @@ public class PromotionResourceImpl implements PromotionResource{
 
     @Override
     public Promise<Results<Promotion>> getPromotions(PromotionsGetOptions options) {
-        return null;
+        List<Promotion> promotions = promotionService.getEffectivePromotions(options);
+        Results<Promotion> results = new Results<>();
+        results.setItems(promotions);
+        return Promise.pure(results);
     }
 
     @Override

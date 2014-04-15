@@ -21,7 +21,7 @@ import javax.ws.rs.core.MediaType;
 /**
  * Created by liangfu on 4/3/14.
  */
-@Api(value = "optins")
+@Api(value = "opt-ins")
 @RestResource
 @Path("/opt-ins")
 @Produces({MediaType.APPLICATION_JSON})

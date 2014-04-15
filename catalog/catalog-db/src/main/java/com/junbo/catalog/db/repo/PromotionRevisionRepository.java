@@ -10,7 +10,11 @@ import com.junbo.catalog.db.entity.PromotionRevisionEntity;
 import com.junbo.catalog.db.mapper.PromotionRevisionMapper;
 import com.junbo.catalog.spec.error.AppErrors;
 import com.junbo.catalog.spec.model.promotion.PromotionRevision;
+import com.junbo.catalog.spec.model.promotion.PromotionRevisionsGetOptions;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Offer revision repository.
@@ -25,6 +29,16 @@ public class PromotionRevisionRepository implements BaseRevisionRepository<Promo
 
     public PromotionRevision get(Long revisionId) {
         return PromotionRevisionMapper.toModel(promotionRevisionDao.get(revisionId));
+    }
+
+    public List<PromotionRevision> getRevisions(PromotionRevisionsGetOptions options) {
+        List<PromotionRevisionEntity> revisionEntities = promotionRevisionDao.getRevisions(options);
+        List<PromotionRevision> revisions = new ArrayList<>();
+        for (PromotionRevisionEntity revisionEntity : revisionEntities) {
+            revisions.add(PromotionRevisionMapper.toModel(revisionEntity));
+        }
+
+        return revisions;
     }
 
     @Override

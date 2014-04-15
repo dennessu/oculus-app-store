@@ -37,6 +37,7 @@ class ActionContextWrapper {
     public static final String REMEMBER_ME_TOKEN = 'remember_me_token'
     public static final String TOKEN_INFO = 'token_info'
     public static final String CONSENT = 'consent'
+    public static final String ERRORS = 'errors'
 
     @Delegate
     private final ActionContext actionContext
@@ -212,5 +213,16 @@ class ActionContextWrapper {
 
     void setConsent(Consent consent) {
         actionContext.flowScope[CONSENT] = consent
+    }
+
+    List<com.junbo.common.error.Error> getErrors() {
+        if (actionContext.flashScope[ERRORS] == null) {
+            actionContext.flashScope[ERRORS] = new ArrayList<com.junbo.common.error.Error>()
+        }
+        return (List<com.junbo.common.error.Error>) actionContext.flashScope[ERRORS]
+    }
+
+    void setErrors(List<com.junbo.common.error.Error> errors) {
+        actionContext.flashScope[ERRORS] = errors
     }
 }

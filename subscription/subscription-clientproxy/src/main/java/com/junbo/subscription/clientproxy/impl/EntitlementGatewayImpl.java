@@ -27,12 +27,12 @@ public class EntitlementGatewayImpl implements EntitlementGateway {
     private EntitlementResource entitlementResource;
 
     @Override
-    public String grant(Entitlement entitlement) {
+    public Long grantEntitlement(Entitlement entitlement) {
         try {
             entitlement.setTrackingUuid(UUID.randomUUID());
 
             Entitlement result = entitlementResource.postEntitlement(entitlement).wrapped().get();
-            return result.getEntitlementId().toString();
+            return result.getEntitlementId();
         } catch (Exception e) {
             LOGGER.error("Error occurred during calling [Entitlement] component.", e);
             throw SubscriptionExceptions.INSTANCE.gatewayFailure("entitlement").exception();

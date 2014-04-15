@@ -234,4 +234,7 @@ interface AppExceptions {
 
     @ErrorDef(httpStatusCode = 400, code = '20054', description = 'The input name and entity name do not match')
     AppError mismatchEntityName()
+
+    @ErrorDef(httpStatusCode = 400, code = '20055', description = 'cid is invalid', field = 'cid')
+    AppError invalidCid()
 }

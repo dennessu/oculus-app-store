@@ -72,7 +72,7 @@ class AuthorizeEndpointImpl implements AuthorizeEndpoint {
 
         // Parse the conversation id and event.
         String conversationId = uriInfo.queryParameters.getFirst(OAuthParameters.CONVERSATION_ID)
-        String event = uriInfo.queryParameters.getFirst(OAuthParameters.EVENT)
+        String event = uriInfo.queryParameters.getFirst(OAuthParameters.EVENT) ?: ''
 
         // if the conversation id is empty, start a new conversation in the flowExecutor.
         if (StringUtils.isEmpty(conversationId)) {
@@ -102,7 +102,7 @@ class AuthorizeEndpointImpl implements AuthorizeEndpoint {
 
         // Parse the conversation id and event.
         String conversationId = formParams.getFirst(OAuthParameters.CONVERSATION_ID)
-        String event = formParams.getFirst(OAuthParameters.EVENT)
+        String event = formParams.getFirst(OAuthParameters.EVENT) ?: ''
 
         // The post authorize flow will always be in one on-going conversation, conversation id should not be empty.
         if (StringUtils.isEmpty(conversationId)) {

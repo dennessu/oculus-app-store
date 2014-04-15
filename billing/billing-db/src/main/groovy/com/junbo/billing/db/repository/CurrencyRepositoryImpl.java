@@ -29,7 +29,7 @@ public class CurrencyRepositoryImpl implements CurrencyRepository {
 
     @Override
     public Currency getCurrency(String name) {
-        CurrencyEntity entity = currencyEntityDao.get(name);
+        CurrencyEntity entity = currencyEntityDao.load(name);
         if(entity != null) {
             return modelMapper.toCurrency(entity, new MappingContext());
         }
@@ -42,7 +42,7 @@ public class CurrencyRepositoryImpl implements CurrencyRepository {
     public List<Currency> getCurrencies() {
 
         List<CurrencyEntity> entities = currencyEntityDao.loadAll();
-        List<Currency> currencies = new ArrayList<Currency>();
+        List<Currency> currencies = new ArrayList<>();
         for(CurrencyEntity entity : entities) {
             Currency currency = modelMapper.toCurrency(entity, new MappingContext());
             currencies.add(currency);

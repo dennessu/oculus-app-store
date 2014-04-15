@@ -8,7 +8,7 @@ package com.junbo.billing.clientproxy.mock
 
 import com.junbo.billing.clientproxy.IdentityFacade
 import com.junbo.common.id.UserId
-import com.junbo.identity.spec.model.user.User
+import com.junbo.identity.spec.v1.model.User
 import com.junbo.langur.core.promise.Promise
 
 /**

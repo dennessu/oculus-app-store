@@ -7,7 +7,7 @@
 package com.junbo.catalog.spec.resource;
 
 import com.junbo.catalog.spec.model.promotion.PromotionRevision;
-import com.junbo.common.id.PromotionId;
+import com.junbo.catalog.spec.model.promotion.PromotionRevisionsGetOptions;
 import com.junbo.common.id.PromotionRevisionId;
 import com.junbo.common.model.Results;
 import com.junbo.langur.core.RestResource;
@@ -30,7 +30,7 @@ public interface PromotionRevisionResource {
     @ApiOperation("Get or search promotion revisions")
     @GET
     @Path("/")
-    Promise<Results<PromotionRevision>> getPromotionRevisions(@QueryParam("offerId") PromotionId promotionId);
+    Promise<Results<PromotionRevision>> getPromotionRevisions(PromotionRevisionsGetOptions options);
 
     @ApiOperation("Get an promotion revision")
     @GET

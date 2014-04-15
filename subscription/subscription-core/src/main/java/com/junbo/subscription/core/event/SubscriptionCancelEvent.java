@@ -13,7 +13,7 @@ import com.junbo.subscription.spec.model.Subscription;
  */
 public class SubscriptionCancelEvent implements SubscriptionEvent {
     @Override
-    public Subscription excute(Subscription subscription){
+    public Subscription execute(Subscription subscription){
         return  subscription;
     }
 }
