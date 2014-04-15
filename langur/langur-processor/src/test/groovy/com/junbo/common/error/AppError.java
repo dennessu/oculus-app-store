@@ -17,5 +17,7 @@ public interface AppError {
     List<AppError> getCauses();
 
     AppErrorException exception();
+
+    Error error();
 }
 

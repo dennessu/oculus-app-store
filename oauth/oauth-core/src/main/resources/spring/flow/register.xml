@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:wf="http://www.junbo.com/schema/webflow"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.junbo.com/schema/webflow http://www.junbo.com/schema/webflow-config/webflow.xsd">
+
+    <wf:flow id="registerFlow">
+
+        <wf:action-state id="START">
+            <wf:action ref="validateClient"/>
+            <wf:action ref="validateScope"/>
+            <wf:action ref="validateRedirectUri"/>
+            <wf:action ref="validateResponseType"/>
+            <wf:action ref="validateDisplay"/>
+            <wf:action ref="validatePrompt"/>
+            <wf:action ref="validateMaxAge"/>
+            <wf:action ref="validateNonce"/>
+            <wf:transition on="*" to="REDIRECT_TO_REGISTER"/>
+        </wf:action-state>
+
+        <wf:view-state id="REDIRECT_TO_REGISTER">
+            <wf:on-render>
+                <wf:action ref="redirectToRegister"/>
+            </wf:on-render>
+            <wf:transition on="*" to="REGISTER_VIEW"/>
+        </wf:view-state>
+
+        <wf:view-state id="REGISTER_VIEW">
+            <wf:on-render>
+                <wf:action ref="registerView"/>
+            </wf:on-render>
+            <wf:transition on="next" to="REGISTER_USER"/>
+            <wf:transition on="cancel" to="CANCEL_VIEW"/>
+        </wf:view-state>
+
+        <wf:action-state id="REGISTER_USER">
+            <wf:action ref="validateConsent"/>
+            <wf:transition on="consentRequired" to="REDIRECT_TO_CONSENT"/>
+            <wf:transition on="*" to="END"/>
+        </wf:action-state>
+
+        <wf:view-state id="REDIRECT_TO_CONSENT">
+            <wf:on-entry>
+                <wf:action ref="redirectToConsent"/>
+            </wf:on-entry>
+            <wf:transition on="*" to="CONSENT_VIEW"/>
+        </wf:view-state>
+
+        <wf:view-state id="CONSENT_VIEW">
+            <wf:on-entry>
+                <wf:action ref="consentView"/>
+            </wf:on-entry>
+            <wf:transition on="next" to="CONSENT_SUCCESS">
+                <wf:action ref="saveConsent"/>
+            </wf:transition>
+            <wf:transition on="cancel" to="CANCEL_VIEW"/>
+        </wf:view-state>
+
+        <wf:view-state id="CONSENT_SUCCESS">
+            <wf:on-render>
+                <wf:action ref="redirectToAuth"/>
+            </wf:on-render>
+            <wf:transition on="*" to="END"/>
+        </wf:view-state>
+
+        <wf:end-state id="END">
+            <wf:on-entry>
+                <wf:action ref="grantAuthorizationCode"/>
+                <wf:action ref="grantImplicitAccessToken"/>
+                <wf:action ref="grantRememberMeToken"/>
+                <wf:action ref="grantIdToken"/>
+                <wf:action ref="redirectToClient"/>
+                <wf:action ref="redirect"/>
+            </wf:on-entry>
+        </wf:end-state>
+
+        <wf:view-state id="CANCEL_VIEW">
+            <wf:on-render>
+                <wf:action ref="redirectToAuth"/>
+            </wf:on-render>
+            <wf:transition on="*" to="ACCESS_DENIED"/>
+        </wf:view-state>
+
+        <wf:end-state id="ACCESS_DENIED">
+            <wf:on-entry>
+                <wf:action ref="accessDenied"/>
+            </wf:on-entry>
+        </wf:end-state>
+    </wf:flow>
+
+    <bean id="redirectToRegister" class="com.junbo.oauth.core.view.RedirectToPage">
+        <property name="pageUrl" value="${oauth.core.portal.registerUri}"/>
+    </bean>
+
+    <bean id="registerView" class="com.junbo.oauth.core.view.RegisterView"/>
+</beans>

@@ -237,4 +237,7 @@ interface AppExceptions {
 
     @ErrorDef(httpStatusCode = 400, code = '20055', description = 'cid is invalid', field = 'cid')
     AppError invalidCid()
+
+    @ErrorDef(httpStatusCode = 400, code = '20056', description = 'The nickname is missing', field = 'nickname')
+    AppError missingNickName()
 }

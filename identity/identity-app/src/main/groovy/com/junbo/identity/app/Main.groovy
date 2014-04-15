@@ -49,7 +49,7 @@ class Main {
         resourceConfig.register(ObjectMapperProvider)
         resourceConfig.register(EntityListener)
 
-        def uri = URI.create('http://0.0.0.0:8080/v1')
+        def uri = URI.create('http://0.0.0.0:8081/v1')
         GrizzlyHttpServerFactory.createHttpServer(uri, resourceConfig)
     }
 

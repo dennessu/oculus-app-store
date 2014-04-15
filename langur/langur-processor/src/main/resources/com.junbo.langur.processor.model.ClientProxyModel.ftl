@@ -98,6 +98,11 @@ public class ${className} implements ${interfaceType} {
             public AppErrorException exception() {
                 return new AppErrorException(this);
             }
+
+            @Override
+            public Error error() {
+                return error;
+            }
         };
     }
 }
