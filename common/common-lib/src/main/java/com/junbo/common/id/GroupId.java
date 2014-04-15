@@ -8,6 +8,7 @@ package com.junbo.common.id;
 /**
  * Created by liangfu on 3/13/14.
  */
+@IdResourcePath("/groups/{0}")
 public class GroupId extends Id {
     public GroupId(){
 
