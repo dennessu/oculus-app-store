@@ -38,7 +38,7 @@ class Main {
         resourceConfig.packages('com.junbo.entitlement.spec.resource.adapter')
         resourceConfig.property('contextConfigLocation', 'classpath*:/spring/*.xml')
 
-        def uri = URI.create('http://localhost:8092/rest')
+        def uri = URI.create('http://localhost:8082/v1')
         return GrizzlyHttpServerFactory.createHttpServer(uri, resourceConfig)
     }
 
