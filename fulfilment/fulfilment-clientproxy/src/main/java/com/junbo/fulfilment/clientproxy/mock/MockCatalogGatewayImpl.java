@@ -5,12 +5,16 @@
  */
 package com.junbo.fulfilment.clientproxy.mock;
 
-import com.junbo.catalog.spec.model.offer.*;
+import com.junbo.catalog.spec.model.offer.Action;
+import com.junbo.catalog.spec.model.offer.Event;
+import com.junbo.catalog.spec.model.offer.ItemEntry;
+import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.fulfilment.clientproxy.impl.CatalogGatewayImpl;
 import com.junbo.fulfilment.common.util.Constant;
 import com.junbo.fulfilment.spec.fusion.ShippingMethod;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,7 +22,7 @@ import java.util.Map;
  * MockCatalogGatewayImpl.
  */
 public class MockCatalogGatewayImpl extends CatalogGatewayImpl {
-    private Map<Long, Offer> mockOffers = new HashMap();
+    private Map<Long, OfferRevision> mockOffers = new HashMap();
 
     {
         mockOffers.put(100L, getOffer100());
@@ -28,8 +32,8 @@ public class MockCatalogGatewayImpl extends CatalogGatewayImpl {
     }
 
     @Override
-    protected Offer retrieve(Long offerId, Long timestamp) {
-        Offer mockOffer = mockOffers.get(offerId);
+    protected OfferRevision retrieveOfferRevision(Long offerId, Long timestamp) {
+        OfferRevision mockOffer = mockOffers.get(offerId);
         if (mockOffer == null) {
             throw new RuntimeException("offer [" + offerId + "] not prepared in mock");
         }
@@ -48,22 +52,11 @@ public class MockCatalogGatewayImpl extends CatalogGatewayImpl {
      * - GRANT_ENTITLEMENT
      * - DELIVER_PHYSICAL_GOODS
      */
-    private Offer getOffer100() {
-        Offer offer = new Offer();
-        offer.setId(100L);
-        offer.setName("offer100");
+    private OfferRevision getOffer100() {
+        OfferRevision offer = new OfferRevision();
+        offer.setOfferId(100L);
 
-        offer.setSubOffers(new ArrayList<OfferEntry>() {{
-            add(new OfferEntry() {{
-                setOfferId(200L);
-                setQuantity(2);
-            }});
-
-            add(new OfferEntry() {{
-                setOfferId(300L);
-                setQuantity(3);
-            }});
-        }});
+        offer.setSubOffers(Arrays.asList(200L, 300L));
 
         offer.setItems(new ArrayList<ItemEntry>() {{
             add(new ItemEntry() {{
@@ -78,8 +71,8 @@ public class MockCatalogGatewayImpl extends CatalogGatewayImpl {
             }});
         }});
 
-        offer.setEvents(new ArrayList<Event>() {{
-            add(new Event() {{
+        offer.setEvents(new HashMap<String, Event>() {{
+            put(Constant.EVENT_PURCHASE.toUpperCase(), new Event() {{
                 setName(Constant.EVENT_PURCHASE);
                 setActions(new ArrayList<Action>() {{
                     add(new Action() {{
@@ -105,10 +98,9 @@ public class MockCatalogGatewayImpl extends CatalogGatewayImpl {
      * fulfilment actions contains:
      * - GRANT_ENTITLEMENT
      */
-    private Offer getOffer200() {
-        Offer offer = new Offer();
-        offer.setId(200L);
-        offer.setName("offer200");
+    private OfferRevision getOffer200() {
+        OfferRevision offer = new OfferRevision();
+        offer.setOfferId(200L);
 
         offer.setItems(new ArrayList<ItemEntry>() {{
             add(new ItemEntry() {{
@@ -118,8 +110,8 @@ public class MockCatalogGatewayImpl extends CatalogGatewayImpl {
             }});
         }});
 
-        offer.setEvents(new ArrayList<Event>() {{
-            add(new Event() {{
+        offer.setEvents(new HashMap<String, Event>() {{
+            put(Constant.EVENT_PURCHASE.toLowerCase(), new Event() {{
                 setName(Constant.EVENT_PURCHASE);
                 setActions(new ArrayList<Action>() {{
                     add(new Action() {{
@@ -143,17 +135,11 @@ public class MockCatalogGatewayImpl extends CatalogGatewayImpl {
      * fulfilment actions contains:
      * - DELIVER_PHYSICAL_GOODS
      */
-    private Offer getOffer300() {
-        Offer offer = new Offer();
-        offer.setId(300L);
-        offer.setName("offer300");
+    private OfferRevision getOffer300() {
+        OfferRevision offer = new OfferRevision();
+        offer.setOfferId(300L);
 
-        offer.setSubOffers(new ArrayList<OfferEntry>() {{
-            add(new OfferEntry() {{
-                setOfferId(400L);
-                setQuantity(10000);
-            }});
-        }});
+        offer.setSubOffers(Arrays.asList(400L));
 
         offer.setItems(new ArrayList<ItemEntry>() {{
             add(new ItemEntry() {{
@@ -163,8 +149,8 @@ public class MockCatalogGatewayImpl extends CatalogGatewayImpl {
             }});
         }});
 
-        offer.setEvents(new ArrayList<Event>() {{
-            add(new Event() {{
+        offer.setEvents(new HashMap<String, Event>() {{
+            put(Constant.EVENT_PURCHASE.toLowerCase(), new Event() {{
                 setName(Constant.EVENT_PURCHASE);
                 setActions(new ArrayList<Action>() {{
                     add(new Action() {{
@@ -184,10 +170,9 @@ public class MockCatalogGatewayImpl extends CatalogGatewayImpl {
      * fulfilment actions contains:
      * - DELIVER_PHYSICAL_GOODS
      */
-    private Offer getOffer400() {
-        Offer offer = new Offer();
-        offer.setId(400L);
-        offer.setName("offer400");
+    private OfferRevision getOffer400() {
+        OfferRevision offer = new OfferRevision();
+        offer.setOfferId(400L);
 
         offer.setItems(new ArrayList<ItemEntry>() {{
             add(new ItemEntry() {{
@@ -197,8 +182,8 @@ public class MockCatalogGatewayImpl extends CatalogGatewayImpl {
             }});
         }});
 
-        offer.setEvents(new ArrayList<Event>() {{
-            add(new Event() {{
+        offer.setEvents(new HashMap<String, Event>() {{
+            put(Constant.EVENT_PURCHASE.toLowerCase(), new Event() {{
                 setName(Constant.EVENT_PURCHASE);
                 setActions(new ArrayList<Action>() {{
                     add(new Action() {{

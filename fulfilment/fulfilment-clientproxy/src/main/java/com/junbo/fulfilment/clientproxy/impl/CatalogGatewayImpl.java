@@ -6,17 +6,19 @@
 package com.junbo.fulfilment.clientproxy.impl;
 
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
+import com.junbo.catalog.spec.model.item.ItemRevision;
+import com.junbo.catalog.spec.model.item.ItemRevisionsGetOptions;
 import com.junbo.catalog.spec.model.offer.*;
 import com.junbo.catalog.spec.resource.EntitlementDefinitionResource;
 import com.junbo.catalog.spec.resource.ItemRevisionResource;
 import com.junbo.catalog.spec.resource.OfferRevisionResource;
 import com.junbo.common.id.EntitlementDefinitionId;
+import com.junbo.common.id.ItemId;
 import com.junbo.common.id.OfferId;
 import com.junbo.common.model.Results;
 import com.junbo.fulfilment.clientproxy.CatalogGateway;
 import com.junbo.fulfilment.common.collection.SevereMap;
 import com.junbo.fulfilment.common.util.Constant;
-import com.junbo.fulfilment.common.util.Utils;
 import com.junbo.fulfilment.spec.error.AppErrors;
 import com.junbo.fulfilment.spec.fusion.*;
 import com.junbo.fulfilment.spec.fusion.Offer;
@@ -52,7 +54,7 @@ public class CatalogGatewayImpl implements CatalogGateway {
 
     @Override
     public Offer getOffer(Long offerId, Long timestamp) {
-        return wash(retrieve(offerId, timestamp));
+        return wash(retrieveOfferRevision(offerId, timestamp), timestamp);
     }
 
     @Override
@@ -60,11 +62,11 @@ public class CatalogGatewayImpl implements CatalogGateway {
         return new ShippingMethod();
     }
 
-    protected OfferRevision retrieve(Long offerId, Long timestamp) {
+    protected OfferRevision retrieveOfferRevision(Long offerId, Long timestamp) {
         try {
             OfferRevisionsGetOptions options = new OfferRevisionsGetOptions();
             options.setOfferIds(Arrays.asList(new OfferId(offerId)));
-            //options.setTimestamp();
+            options.setTimestamp(timestamp);
 
             Results<OfferRevision> revisions = offerRevisionResource.getOfferRevisions(options).wrapped().get();
 
@@ -80,51 +82,65 @@ public class CatalogGatewayImpl implements CatalogGateway {
         }
     }
 
-    protected Offer wash(OfferRevision offerRevision) {
-        Offer result = new com.junbo.fulfilment.spec.fusion.Offer();
+    protected ItemRevision retrieveItemRevision(Long itemId, Long timestamp) {
+        try {
+            ItemRevisionsGetOptions options = new ItemRevisionsGetOptions();
+            options.setItemIds(Arrays.asList(new ItemId(itemId)));
+            options.setTimestamp(timestamp);
+
+            Results<ItemRevision> revisions = itemRevisionResource.getItemRevisions(options).wrapped().get();
+
+            if (revisions == null || CollectionUtils.isEmpty(revisions.getItems())) {
+                LOGGER.error("Item [" + itemId + "] with timestamp [" + timestamp + "] does not exist");
+                throw AppErrors.INSTANCE.notFound("Item", itemId).exception();
+            }
+
+            return revisions.getItems().get(Constant.UNIQUE_RESULT);
+        } catch (Exception e) {
+            LOGGER.error("Error occurred during calling [Catalog] component.", e);
+            throw AppErrors.INSTANCE.gatewayFailure("catalog").exception();
+        }
+    }
+
+    protected Offer wash(OfferRevision offerRevision, Long timestamp) {
+        Offer result = new Offer();
 
         // fill offer base info
-        result.setOfferId(offer.getId());
+        result.setOfferId(offerRevision.getOfferId());
 
         // fill sub offers info
-        if (offer.getSubOffers() != null) {
-            for (OfferEntry entry : offer.getSubOffers()) {
+        if (offerRevision.getSubOffers() != null) {
+            for (Long subOfferId : offerRevision.getSubOffers()) {
                 LinkedEntry subOffer = new LinkedEntry();
 
                 subOffer.setEntityType(CatalogEntityType.OFFER);
-                subOffer.setId(entry.getOfferId());
-                subOffer.setQuantity(entry.getQuantity());
+                subOffer.setId(subOfferId);
+                subOffer.setQuantity(1);
 
                 result.addSubOffer(subOffer);
             }
         }
 
         // fill items info
-        if (offer.getItems() != null) {
-            for (ItemEntry entry : offer.getItems()) {
+        if (offerRevision.getItems() != null) {
+            for (ItemEntry entry : offerRevision.getItems()) {
                 LinkedEntry item = new LinkedEntry();
 
                 item.setEntityType(CatalogEntityType.ITEM);
                 item.setId(entry.getItemId());
                 item.setQuantity(entry.getQuantity());
-                item.setSku(entry.getSku());
+                //item.setSku(retrieveItemRevision(entry.getItemId(), timestamp).getSku());
 
                 result.addItem(item);
             }
         }
 
         // fill fulfilment actions
-        if (offer.getEvents() != null) {
-            for (Event event : offer.getEvents()) {
-                if (!Utils.equals(PURCHASE_EVENT, event.getName())) {
-                    continue;
-                }
+        if (offerRevision.getEvents() != null) {
+            Event purchaseEvent = offerRevision.getEvents().get(Constant.EVENT_PURCHASE.toLowerCase());
 
-                if (event.getActions() == null) {
-                    continue;
-                }
-
-                for (Action action : event.getActions()) {
+            if (purchaseEvent != null && purchaseEvent.getActions() != null) {
+                for (Action action : purchaseEvent.getActions()) {
                     OfferAction offerAction = new OfferAction();
                     offerAction.setType(action.getType());
 
