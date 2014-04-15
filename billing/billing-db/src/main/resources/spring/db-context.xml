@@ -49,59 +49,45 @@
         </property>
 
         <property name="packagesToScan" value="com.junbo.billing.db.*" />
+        <property name="postInsertEventListeners" ref="billingEntityListener" />
+        <property name="postUpdateEventListeners" ref="billingEntityListener" />
+        <property name="postDeleteEventListeners" ref="billingEntityListener" />
     </bean>
 
     <!-- Dao -->
     <bean id="billingBaseDao" class="com.junbo.billing.db.BaseDao" abstract="true">
         <property name="sessionFactory" ref="billingSessionFactory"/>
         <property name="shardAlgorithm" ref="userShardAlgorithm"/>
-        <property name="viewQueryFactory" ref="defaultViewQueryFactory"/>
+        <property name="viewQueryFactory" ref="billingViewQueryFactory"/>
         <property name="idGenerator" ref="oculus48IdGenerator"/>
     </bean>
 
     <bean id="shippingAddressEntityDao"
-          class="com.junbo.billing.db.dao.impl.ShippingAddressEntityDaoImpl" parent="billingBaseDao">
-    </bean>
+          class="com.junbo.billing.db.dao.impl.ShippingAddressEntityDaoImpl" parent="billingBaseDao" />
 
     <bean id="currencyEntityDao"
-          class="com.junbo.billing.db.dao.impl.CurrencyEntityDaoImpl" parent="billingBaseDao">
-        <property name="entityType" value="com.junbo.billing.db.entity.CurrencyEntity"/>
-    </bean>
+          class="com.junbo.billing.db.dao.impl.CurrencyEntityDaoImpl" parent="billingBaseDao" />
 
     <bean id="balanceEntityDao"
-          class="com.junbo.billing.db.dao.impl.BalanceEntityDaoImpl" parent="billingBaseDao">
-        <property name="entityType" value="com.junbo.billing.db.entity.BalanceEntity"/>
-    </bean>
+          class="com.junbo.billing.db.dao.impl.BalanceEntityDaoImpl" parent="billingBaseDao" />
 
     <bean id="balanceEventEntityDao"
-          class="com.junbo.billing.db.dao.impl.BalanceEventEntityDaoImpl" parent="billingBaseDao">
-        <property name="entityType" value="com.junbo.billing.db.entity.BalanceEventEntity"/>
-    </bean>
+          class="com.junbo.billing.db.dao.impl.BalanceEventEntityDaoImpl" parent="billingBaseDao" />
 
     <bean id="balanceItemEntityDao"
-          class="com.junbo.billing.db.dao.impl.BalanceItemEntityDaoImpl" parent="billingBaseDao">
-        <property name="entityType" value="com.junbo.billing.db.entity.BalanceItemEntity"/>
-    </bean>
+          class="com.junbo.billing.db.dao.impl.BalanceItemEntityDaoImpl" parent="billingBaseDao" />
 
     <bean id="discountItemEntityDao"
-          class="com.junbo.billing.db.dao.impl.DiscountItemEntityDaoImpl" parent="billingBaseDao">
-        <property name="entityType" value="com.junbo.billing.db.entity.DiscountItemEntity"/>
-    </bean>
+          class="com.junbo.billing.db.dao.impl.DiscountItemEntityDaoImpl" parent="billingBaseDao" />
 
     <bean id="taxItemEntityDao"
-          class="com.junbo.billing.db.dao.impl.TaxItemEntityDaoImpl" parent="billingBaseDao">
-        <property name="entityType" value="com.junbo.billing.db.entity.TaxItemEntity"/>
-    </bean>
+          class="com.junbo.billing.db.dao.impl.TaxItemEntityDaoImpl" parent="billingBaseDao" />
 
     <bean id="orderBalanceLinkEntityDao"
-          class="com.junbo.billing.db.dao.impl.OrderBalanceLinkEntityDaoImpl" parent="billingBaseDao">
-        <property name="entityType" value="com.junbo.billing.db.entity.OrderBalanceLinkEntity"/>
-    </bean>
+          class="com.junbo.billing.db.dao.impl.OrderBalanceLinkEntityDaoImpl" parent="billingBaseDao" />
 
     <bean id="transactionEntityDao"
-          class="com.junbo.billing.db.dao.impl.TransactionEntityDaoImpl" parent="billingBaseDao">
-        <property name="entityType" value="com.junbo.billing.db.entity.TransactionEntity"/>
-    </bean>
+          class="com.junbo.billing.db.dao.impl.TransactionEntityDaoImpl" parent="billingBaseDao" />
 
     <!--Mapper-->
     <bean class="com.junbo.billing.db.mapper.CommonMapper" />
@@ -112,4 +98,65 @@
     <bean id="balanceRepository" class="com.junbo.billing.db.repository.BalanceRepositoryImpl"/>
     <bean id="currencyRepository" class="com.junbo.billing.db.repository.CurrencyRepositoryImpl"/>
     <bean id="transactionRepository" class="com.junbo.billing.db.repository.TransactionRepositoryImpl"/>
+
+    <!--INDEX VIEW-->
+    <bean id="billingEntityViewRepository" class="com.junbo.sharding.view.DefaultEntityViewRepository">
+        <property name="entityViews">
+            <list>
+                <bean class="com.junbo.billing.db.view.BalanceAsyncChargeStatusView" />
+                <bean class="com.junbo.billing.db.view.BalanceTrackingUuidView" />
+            </list>
+        </property>
+    </bean>
+
+    <bean id="billingMultimapDAO" class="com.junbo.sharding.view.DefaultMultimapDAO">
+        <property name="sessionFactory" ref="billingIndexSessionFactory" />
+        <property name="shardAlgorithm" ref="externalShardAlgorithm" />
+    </bean>
+
+    <bean id="billingEntityListener" class="com.junbo.sharding.view.EntityListener">
+        <property name="entityViewRepository" ref="billingEntityViewRepository" />
+        <property name="multimapDAO" ref="billingMultimapDAO" />
+    </bean>
+
+    <bean id="billingViewQueryFactory" class="com.junbo.sharding.view.DefaultViewQueryFactory">
+        <property name="entityViewRepository" ref="billingEntityViewRepository" />
+        <property name="multimapDAO" ref="billingMultimapDAO" />
+    </bean>
+
+
+    <bean id="billingIndexDataSource" class="com.junbo.sharding.hibernate.ShardMultiTenantConnectionProviderFactoryBean">
+        <property name="jdbcUrls" value="${index.db.jdbcUrls}"/>
+
+        <property name="uniqueName" value="jdbc/billing_index"/>
+        <property name="className" value="${index.db.driverClassName}"/>
+        <property name="minPoolSize" value="${index.db.minPoolSize}"/>
+        <property name="maxPoolSize" value="${index.db.maxPoolSize}"/>
+        <property name="driverProperties">
+            <props>
+                <prop key="user">${index.db.username}</prop>
+                <prop key="password">${index.db.password}</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="billingIndexSessionFactory" class="com.junbo.sharding.hibernate.LocalSessionFactoryWithListenerBean">
+        <property name="jtaTransactionManager" ref="transactionManager"/>
+        <property name="hibernateProperties">
+            <map>
+                <entry key="hibernate.dialect" value="${sharding.hibernate.dialect}"/>
+                <entry key="hibernate.max_fetch_depth" value="${sharding.hibernate.max_fetch_depth}"/>
+                <entry key="hibernate.jdbc.fetch_size" value="${sharding.hibernate.jdbc.fetch_size}"/>
+                <entry key="hibernate.jdbc.batch_size" value="${sharding.hibernate.jdbc.batch_size}"/>
+                <entry key="hibernate.show_sql" value="${sharding.hibernate.show_sql}"/>
+
+                <entry key="hibernate.multiTenancy" value="SCHEMA"/>
+                <entry key="hibernate.current_session_context_class" value="com.junbo.sharding.hibernate.MultiTenantJTASessionContext"/>
+                <entry key="hibernate.tenant_identifier_resolver" value="com.junbo.sharding.hibernate.ShardCurrentTenantIdentifierResolver"/>
+                <entry key="hibernate.multi_tenant_connection_provider" value-ref="billingIndexDataSource"/>
+                <entry key="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
+            </map>
+        </property>
+    </bean>
+
 </beans>

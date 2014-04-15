@@ -237,4 +237,8 @@ public class BalanceEntity extends BaseEntity implements Identifiable<Long> {
     public Long getId() {
         return balanceId;
     }
+
+    public void setId(Long id) {
+        balanceId = id;
+    }
 }

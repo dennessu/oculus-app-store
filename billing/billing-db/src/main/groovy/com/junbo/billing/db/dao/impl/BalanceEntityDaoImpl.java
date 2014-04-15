@@ -11,13 +11,8 @@ import com.junbo.billing.db.BaseDao;
 import com.junbo.billing.db.entity.BalanceEntity;
 import com.junbo.billing.db.dao.BalanceEntityDao;
 import com.junbo.billing.spec.enums.BalanceStatus;
-import com.junbo.sharding.view.DefaultViewQuery;
 import com.junbo.sharding.view.ViewQuery;
-import org.apache.commons.collections.CollectionUtils;
-import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
 
 import java.util.ArrayList;
 import java.util.List;
