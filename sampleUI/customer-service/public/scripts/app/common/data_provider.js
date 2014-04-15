@@ -83,7 +83,7 @@ DataProvider._Exec = function(provider, propertyName, args){
     options["url"] = httpUrl;
 
     if(typeof(argsObj["options"]) != "undefined"){
-        options = Utils.FillObject(options, argsObj.options, 1);
+        options = Utils.FillObject(options, argsObj.options, 0);
     }
 
     if(typeof(argsObj['cb']) == "undefined" || argsObj['cb'] == null)
