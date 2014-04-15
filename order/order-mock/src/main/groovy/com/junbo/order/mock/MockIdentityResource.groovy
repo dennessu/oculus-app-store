@@ -36,17 +36,17 @@ class MockIdentityResource implements UserResource {
     }
 
     @Override
-    Promise<User> put(@PathParam("userId") UserId userId, User user) {
+    Promise<User> put(@PathParam('userId') UserId userId, User user) {
         return null
     }
 
     @Override
-    Promise<User> patch(@PathParam("userId") UserId userId, User user) {
+    Promise<User> patch(@PathParam('userId') UserId userId, User user) {
         return null
     }
 
     @Override
-    Promise<User> get(@PathParam("userId") UserId userId, @BeanParam UserGetOptions getOptions) {
+    Promise<User> get(@PathParam('userId') UserId userId, @BeanParam UserGetOptions getOptions) {
         return generateUser()
     }
 
