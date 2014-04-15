@@ -10,8 +10,9 @@ import com.junbo.common.id.UserId
 import com.junbo.common.json.IdPathParamTranscoder
 import com.junbo.common.json.JsonMessageTranscoder
 import com.junbo.common.json.QueryParamTranscoderImpl
-import com.junbo.identity.spec.model.user.User
-import com.junbo.identity.spec.resource.proxy.UserResourceClientProxy
+import com.junbo.identity.spec.v1.model.User
+import com.junbo.identity.spec.v1.option.model.UserGetOptions
+import com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy
 import com.junbo.langur.core.promise.Promise
 import com.junbo.billing.clientproxy.IdentityFacade
 import com.ning.http.client.AsyncHttpClient
@@ -43,6 +44,7 @@ class IdentityFacadeImpl implements IdentityFacade {
     @Override
     Promise<User> getUser(Long userId) {
         return new UserResourceClientProxy(asyncHttpClient, new JsonMessageTranscoder(),
-                new IdPathParamTranscoder(), new QueryParamTranscoderImpl(), url).getUser(new UserId(userId))
+                new IdPathParamTranscoder(), new QueryParamTranscoderImpl(), url).get(
+                new UserId(userId), new UserGetOptions())
     }
 }

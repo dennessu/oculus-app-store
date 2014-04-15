@@ -6,6 +6,9 @@
 
 package com.junbo.billing.db;
 
+import com.junbo.common.id.UserId;
+import com.junbo.sharding.IdGeneratorFacade;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
@@ -18,14 +21,11 @@ import java.util.UUID;
 @TransactionConfiguration(defaultRollback = false)
 public abstract class BaseTest extends AbstractTransactionalTestNGSpringContextTests {
 
-    protected long generateId() {
-        try {
-            Thread.sleep(10);
-        } catch (InterruptedException e) {
-            //ignore
-        }
+    @Autowired
+    protected IdGeneratorFacade idGeneratorFacade;
 
-        return System.currentTimeMillis();
+    protected long generateUserId() {
+        return idGeneratorFacade.nextId(UserId.class);
     }
 
     protected UUID generateUUID() {
