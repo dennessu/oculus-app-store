@@ -42,7 +42,7 @@ public class TestPutItem {
     @Test
     public void testPutItem() throws Exception {
 
-        String defaultItemId = itemService.postDefaultItem(EnumHelper.CatalogItemType.APP);
+        String defaultItemId = itemService.postDefaultItem(EnumHelper.CatalogItemType.DIGITAL);
         Item defaultItem = Master.getInstance().getItem(defaultItemId);
 
     }
