@@ -8,7 +8,7 @@ package com.junbo.rating.spec.model.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.jackson.annotation.OfferId;
-import com.junbo.common.jackson.annotation.PromotionId;
+import com.junbo.common.jackson.annotation.PromotionRevisionId;
 import com.junbo.common.jackson.annotation.ShippingMethodId;
 
 import javax.validation.constraints.Null;
@@ -18,9 +18,9 @@ import java.util.Set;
 /**
  * Created by lizwu on 2/12/14.
  */
-public class OrderRatingItem {
+public class RatingItem {
     @OfferId
-    @JsonProperty("Offer")
+    @JsonProperty("offer")
     private Long offerId;
 
     private int quantity;
@@ -38,11 +38,11 @@ public class OrderRatingItem {
     private BigDecimal totalDiscountAmount;
 
     @Null
-    @PromotionId
+    @PromotionRevisionId
     private Set<Long> promotions;
 
     @ShippingMethodId
-    @JsonProperty("ShippingMethod")
+    @JsonProperty("shippingMethod")
     private Long shippingMethodId;
 
     public Long getOfferId() {

@@ -62,11 +62,10 @@ var AuthManager = Ember.Object.extend({
     apiKeyObserver: function () {
         if (Ember.isEmpty(this.get('AuthKey'))) {
             Utils.Cookies.Remove(AppConfig.CookiesName.AccessToken);
+            Utils.Cookies.Remove(AppConfig.CookiesName.IdToken);
             Utils.Cookies.Remove(AppConfig.CookiesName.UserId);
-            Utils.Cookies.Remove(AppConfig.CookiesName.CartId);
-            Utils.Cookies.Remove(AppConfig.CookiesName.AnonymousUserId);
-            Utils.Cookies.Remove(AppConfig.CookiesName.AnonymousCartId);
             Utils.Cookies.Remove(AppConfig.CookiesName.Username);
+            Utils.Cookies.Remove(AppConfig.CookiesName.CustomerId);
         } else {
             Utils.Cookies.Set(AppConfig.CookiesName.AccessToken, this.get('AuthKey.access_token'));
             Utils.Cookies.Set(AppConfig.CookiesName.UserId, this.get('AuthKey.user_id'));

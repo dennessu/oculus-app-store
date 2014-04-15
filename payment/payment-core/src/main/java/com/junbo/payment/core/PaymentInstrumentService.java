@@ -22,11 +22,11 @@ public interface PaymentInstrumentService {
     @Transactional
     Promise<PaymentInstrument> add(PaymentInstrument request);
     @Transactional
-    void delete(Long userId, Long paymentInstrumentId);
+    void delete(Long paymentInstrumentId);
     @Transactional
     void update(PaymentInstrument request);
     @Transactional(readOnly = true)
-    PaymentInstrument getById(Long userId, Long paymentInstrumentId);
+    PaymentInstrument getById(Long paymentInstrumentId);
     @Transactional(readOnly = true)
     List<PaymentInstrument> getByUserId(Long userId);
     @Transactional(readOnly = true)

@@ -28,7 +28,7 @@ public class MapperConfigurator implements ContextResolver<ObjectMapper> {
                 new ResourceAwareDeserializationContext());
         mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
 
-        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        //mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 

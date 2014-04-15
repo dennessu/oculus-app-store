@@ -6,8 +6,10 @@
 package com.junbo.subscription.db.dao;
 
 import com.junbo.subscription.db.entity.SubscriptionEntity;
-import org.hibernate.Query;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -15,10 +17,12 @@ import java.util.UUID;
  */
 public class SubscriptionDao extends BaseDao<SubscriptionEntity> {
 
-    public SubscriptionEntity getByTrackingUuid(UUID trackingUuid) {
-        String queryString = "from Subscription where trackingUuid = (:trackingUuid)";
-        Query q = currentSession().createQuery(queryString).setParameter("trackingUuid", trackingUuid);
-        return (SubscriptionEntity) q.uniqueResult();
+    public List<SubscriptionEntity> getByTrackingUuid(Long userId, UUID trackingUuid) {
+        Criteria criteria = currentSession().createCriteria(SubscriptionEntity.class);
+        criteria.add(Restrictions.eq("userId", userId));
+        criteria.add(Restrictions.eq("trackingUuid", trackingUuid));
+        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+        return criteria.list();
     }
 
 }

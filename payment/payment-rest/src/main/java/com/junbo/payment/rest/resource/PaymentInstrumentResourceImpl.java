@@ -33,10 +33,9 @@ public class PaymentInstrumentResourceImpl implements PaymentInstrumentResource 
     private PaymentInstrumentService piService;
 
     @Override
-    public Promise<PaymentInstrument> postPaymentInstrument(UserId userId, PaymentInstrument request) {
+    public Promise<PaymentInstrument> postPaymentInstrument(PaymentInstrument request) {
         CommonUtil.preValidation(request);
-        request.setId(new PIId(userId.getValue(), null));
-
+        //request.setId(new PIId(userId.getValue(), null));
         return piService.add(request).then(new Promise.Func<PaymentInstrument, Promise<PaymentInstrument>>() {
             @Override
             public Promise<PaymentInstrument> apply(PaymentInstrument paymentInstrument) {
@@ -47,26 +46,26 @@ public class PaymentInstrumentResourceImpl implements PaymentInstrumentResource 
     }
 
     @Override
-    public Promise<PaymentInstrument> getById(UserId userId, PaymentInstrumentId paymentInstrumentId) {
-        PaymentInstrument result = piService.getById(userId.getValue(), paymentInstrumentId.getValue());
+    public Promise<PaymentInstrument> getById(PaymentInstrumentId paymentInstrumentId) {
+        PaymentInstrument result = piService.getById(paymentInstrumentId.getValue());
         return Promise.pure(result);
     }
 
     @Override
-    public Promise<Response> delete(UserId userId, PaymentInstrumentId paymentInstrumentId) {
-        piService.delete(userId.getValue(), paymentInstrumentId.getValue());
+    public Promise<Response> delete(PaymentInstrumentId paymentInstrumentId) {
+        piService.delete(paymentInstrumentId.getValue());
         return Promise.pure(Response.status(204).build());
     }
 
     @Override
-    public Promise<PaymentInstrument> update(UserId userId, PaymentInstrumentId paymentInstrumentId,
+    public Promise<PaymentInstrument> update(PaymentInstrumentId paymentInstrumentId,
                                              PaymentInstrument request) {
-        if(!paymentInstrumentId.getValue().equals(request.getId().getPaymentInstrumentId())){
+        if(!paymentInstrumentId.getValue().equals(request.getId())){
             throw AppClientExceptions.INSTANCE.invalidPaymentInstrumentId(request.getId().toString()).exception();
         }
-        if(!userId.getValue().equals(request.getId().getUserId())){
-            throw AppClientExceptions.INSTANCE.invalidUserId(request.getId().toString()).exception();
-        }
+        //if(!userId.getValue().equals(request.getUserId())){
+        //    throw AppClientExceptions.INSTANCE.invalidUserId(request.getId().toString()).exception();
+        //}
 
         piService.update(request);
         return Promise.pure(request);
