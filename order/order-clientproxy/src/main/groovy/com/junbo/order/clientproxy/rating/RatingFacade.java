@@ -8,12 +8,12 @@ package com.junbo.order.clientproxy.rating;
 
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.order.spec.model.Order;
-import com.junbo.rating.spec.model.request.OrderRatingRequest;
+import com.junbo.rating.spec.model.request.RatingRequest;
 
 /**
  * Interface for rating facade.
  */
 public interface RatingFacade {
 
-    Promise<OrderRatingRequest> rateOrder(Order order);
+    Promise<RatingRequest> rateOrder(Order order);
 }

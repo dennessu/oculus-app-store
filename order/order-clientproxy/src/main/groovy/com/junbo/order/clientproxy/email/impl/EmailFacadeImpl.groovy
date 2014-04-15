@@ -1,9 +1,9 @@
 package com.junbo.order.clientproxy.email.impl
 
-import com.junbo.catalog.spec.model.offer.Offer
+import com.junbo.catalog.spec.model.offer.OfferRevision
 import com.junbo.email.spec.model.Email
 import com.junbo.email.spec.resource.EmailResource
-import com.junbo.identity.spec.model.user.User
+import com.junbo.identity.spec.v1.model.User
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.common.FacadeBuilder
 import com.junbo.order.clientproxy.email.EmailFacade
@@ -14,6 +14,7 @@ import org.apache.commons.collections.CollectionUtils
 import org.springframework.stereotype.Component
 
 import javax.annotation.Resource
+
 /**
  * Created by LinYi on 14-3-14.
  */
@@ -26,7 +27,7 @@ class EmailFacadeImpl implements EmailFacade {
 
 
     @Override
-    Promise<Email> sendOrderConfirmationEMail(Order order, User user, List<Offer> offers) {
+    Promise<Email> sendOrderConfirmationEMail(Order order, User user, List<OfferRevision> offers) {
         if (order == null || user == null || CollectionUtils.isEmpty(offers)) {
             return Promise.pure(null)
         }
