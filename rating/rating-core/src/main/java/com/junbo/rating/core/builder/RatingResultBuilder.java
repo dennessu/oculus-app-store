@@ -8,10 +8,7 @@ package com.junbo.rating.core.builder;
 
 import com.junbo.rating.core.context.RatingContext;
 import com.junbo.rating.spec.model.RatingResultEntry;
-import com.junbo.rating.spec.model.request.OrderBenefit;
-import com.junbo.rating.spec.model.request.OrderRatingItem;
-import com.junbo.rating.spec.model.request.OrderRatingRequest;
-import com.junbo.rating.spec.model.request.ShippingBenefit;
+import com.junbo.rating.spec.model.request.*;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
@@ -19,21 +16,17 @@ import java.util.HashSet;
 /**
  * Created by lizwu on 2/26/14.
  */
-public class OrderRatingResultBuilder {
+public class RatingResultBuilder {
 
-    private OrderRatingResultBuilder() {
-    }
-
-    public static OrderRatingRequest build(RatingContext context) {
-        OrderRatingRequest result = new OrderRatingRequest();
+    public static RatingRequest buildForOrder(RatingContext context) {
+        RatingRequest result = new RatingRequest();
         result.setUserId(context.getUserId());
-        result.setCountry(context.getCountry());
         result.setCurrency(context.getCurrency().getCode());
-        result.setLineItems(new HashSet<OrderRatingItem>());
+        result.setLineItems(new HashSet<RatingItem>());
 
         //build offer level results
         for (RatingResultEntry entry : context.getEntries()) {
-            OrderRatingItem item = new OrderRatingItem();
+            RatingItem item = new RatingItem();
             item.setOfferId(entry.getOfferId());
             item.setQuantity(entry.getQuantity());
             item.setShippingMethodId(entry.getShippingMethodId());
@@ -61,5 +54,29 @@ public class OrderRatingResultBuilder {
         result.setShippingBenefit(shippingBenefit);
 
         return result;
+    }
+
+    public static RatingRequest buildForOffers(RatingContext context) {
+        RatingRequest result = new RatingRequest();
+        result.setUserId(context.getUserId());
+        result.setCurrency(context.getCurrency().getCode());
+        result.setLineItems(new HashSet<RatingItem>());
+        for (RatingResultEntry entry : context.getEntries()) {
+            RatingItem item = new RatingItem();
+            item.setOfferId(entry.getOfferId());
+            item.setQuantity(1);
+            item.setOriginalUnitPrice(entry.getOriginalAmount().getValue());
+            item.setOriginalTotalPrice(item.getOriginalUnitPrice());
+            item.setTotalDiscountAmount(entry.getDiscountAmount().getValue());
+            item.setFinalTotalAmount(item.getOriginalTotalPrice().subtract(item.getTotalDiscountAmount()));
+            item.setPromotions(entry.getAppliedPromotion());
+            result.getLineItems().add(item);
+        }
+
+        return result;
+    }
+
+
+    private RatingResultBuilder() {
     }
 }

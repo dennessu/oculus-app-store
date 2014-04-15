@@ -15,22 +15,22 @@ import javax.ws.rs.core.MediaType;
 
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
-import com.junbo.rating.spec.model.request.OrderRatingRequest;
+import com.junbo.rating.spec.model.request.RatingRequest;
 import com.junbo.rating.spec.model.request.OfferRatingRequest;
 
 /**
  * Created by lizwu on 1/28/14.
  */
-@Path("/rating")
+@Path("/price-rating")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 @RestResource
 public interface RatingResource {
     @POST
-    @Path("/offers")
-    Promise<OfferRatingRequest> offerRating(@Valid OfferRatingRequest request);
+    @Path("/")
+    Promise<RatingRequest> priceRating(@Valid RatingRequest request);
 
     @POST
-    @Path("/order")
-    Promise<OrderRatingRequest> orderRating(@Valid OrderRatingRequest request);
+    @Path("/offers")
+    Promise<OfferRatingRequest> offerRating(@Valid OfferRatingRequest request);
 }
