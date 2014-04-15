@@ -39,6 +39,6 @@ class SaveLoginState implements Action {
         loginStateRepository.saveOrUpdate(loginState)
 
         CookieUtil.setCookie(OAuthParameters.LOGIN_STATE, loginState.id, -1, context)
-        return Promise.pure(null)
+        return Promise.pure(new ActionResult('success'))
     }
 }
