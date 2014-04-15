@@ -11,7 +11,11 @@ import com.junbo.catalog.db.entity.PromotionEntity;
 import com.junbo.catalog.db.mapper.PromotionMapper;
 import com.junbo.catalog.spec.error.AppErrors;
 import com.junbo.catalog.spec.model.promotion.Promotion;
+import com.junbo.catalog.spec.model.promotion.PromotionsGetOptions;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Promotion repository.
@@ -28,6 +32,16 @@ public class PromotionRepository implements BaseEntityRepository<Promotion> {
     @Override
     public Promotion get(Long promotionId) {
         return PromotionMapper.toModel(promotionDao.get(promotionId));
+    }
+
+    public List<Promotion> getEffectivePromotions(PromotionsGetOptions options) {
+        List<PromotionEntity> promotionEntities = promotionDao.getEffectivePromotions(options);
+        List<Promotion> promotions = new ArrayList<>();
+        for (PromotionEntity offerEntity : promotionEntities) {
+            promotions.add(PromotionMapper.toModel(offerEntity));
+        }
+
+        return promotions;
     }
 
     @Override

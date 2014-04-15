@@ -5,10 +5,9 @@ import com.junbo.cart.core.service.CartPersistService
 import com.junbo.cart.core.service.impl.CartServiceImpl
 import com.junbo.cart.spec.error.AppErrors
 import com.junbo.cart.spec.model.Cart
-
 import com.junbo.cart.spec.model.item.OfferItem
 import com.junbo.common.id.UserId
-import com.junbo.identity.spec.model.user.User
+import com.junbo.identity.spec.v1.model.User
 import groovy.transform.CompileStatic
 import org.hibernate.validator.HibernateValidator
 import org.springframework.util.StringUtils
@@ -53,7 +52,7 @@ class ValidationImpl implements Validation {
         if (user == null) {
             throw AppErrors.INSTANCE.userNotFound().exception()
         }
-        if (user.status != 'ACTIVE') {
+        if (Boolean.TRUE != user.active) {
             throw AppErrors.INSTANCE.userStatusInvalid().exception()
         }
         return this

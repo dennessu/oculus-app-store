@@ -13,6 +13,7 @@ import com.junbo.catalog.db.repo.ItemRevisionRepository;
 import com.junbo.catalog.spec.error.AppErrors;
 import com.junbo.catalog.spec.model.common.ExtensibleProperties;
 import com.junbo.catalog.spec.model.common.LocalizableProperty;
+import com.junbo.catalog.spec.model.common.Status;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementType;
 import com.junbo.catalog.spec.model.item.*;
@@ -61,7 +62,16 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
 
     @Override
     public List<ItemRevision> getRevisions(ItemRevisionsGetOptions options) {
+        if (options.getTimestamp()!=null) {
+            if (CollectionUtils.isEmpty(options.getItemIds())) {
+                throw AppErrors.INSTANCE.validation("itemId must be specified when timestamp is present.").exception();
+            }
+
+            return itemRevisionRepo.getRevisions(options.getItemIds(), options.getTimestamp());
+
+        } else {
         return itemRevisionRepo.getRevisions(options);
+        }
     }
 
     @Override
@@ -108,6 +118,14 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
         if (item.getEntitlementDefId() != null) {
             throw AppErrors.INSTANCE.unnecessaryField("entitlementDefinition").exception();
         }
+
+        if (item.getCurrentRevisionId() != null) {
+            ItemRevision revision = itemRevisionRepo.get(item.getCurrentRevisionId());
+            checkEntityNotNull(item.getCurrentRevisionId(), revision, "item-revision");
+            if (!Status.APPROVED.equals(revision.getStatus())) {
+                throw AppErrors.INSTANCE.validation("Cannot set current revision to unapproved revision").exception();
+            }
+        }
     }
 
     private void validateRevision(ItemRevision revision) {
@@ -131,10 +149,10 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
             }
         }
 
-        if (revision.getDisplayName()==null || CollectionUtils.isEmpty(revision.getDisplayName().getLocales())) {
+        if (revision.getName()==null || CollectionUtils.isEmpty(revision.getName().getLocales())) {
             throw AppErrors.INSTANCE.missingField("displayName").exception();
         }
-        if (StringUtils.isEmpty(revision.getDisplayName().locale(LocalizableProperty.DEFAULT))) {
+        if (StringUtils.isEmpty(revision.getName().locale(LocalizableProperty.DEFAULT))) {
             throw AppErrors.INSTANCE.validation("displayName should have value for 'DEFAULT' locale.").exception();
         }
 

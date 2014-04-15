@@ -19,7 +19,7 @@ public class TransactionDaoImpl extends TransactionBaseDao<TransactionEntity> im
     @Override
     public List<TransactionEntity> getByWalletId(Long walletId) {
         String queryString = "from TransactionEntity where walletId = (:walletId)";
-        Query q = currentSession().createQuery(queryString).setLong("walletId", walletId);
+        Query q = currentSession(walletId).createQuery(queryString).setLong("walletId", walletId);
         return q.list();
     }
 }

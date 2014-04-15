@@ -17,32 +17,32 @@
 
     <tx:annotation-driven transaction-manager="transactionManager"/>
 
-    <bean id="baseDAO" class="com.junbo.identity.data.dao.impl.BaseDAO" abstract="true">
+    <bean id="identityBaseDAO" class="com.junbo.identity.data.dao.impl.BaseDAO" abstract="true">
         <property name="sessionFactory" ref="identitySessionFactory"/>
         <property name="shardAlgorithm" ref="userShardAlgorithm"/>
         <property name="viewQueryFactory" ref="defaultViewQueryFactory"/>
         <property name="idGenerator" ref="oculus48IdGenerator"/>
     </bean>
-    <bean id="userDAO" class="com.junbo.identity.data.dao.impl.UserDAOImpl" parent="baseDAO" />
-    <bean id="groupDAO" class="com.junbo.identity.data.dao.impl.GroupDAOImpl" parent="baseDAO" />
-    <bean id="userAuthenticatorDAO" class="com.junbo.identity.data.dao.impl.UserAuthenticatorDAOImpl" parent="baseDAO" />
-    <bean id="userDeviceDAO" class="com.junbo.identity.data.dao.impl.UserDeviceDAOImpl" parent="baseDAO" />
-    <bean id="userEmailDAO" class="com.junbo.identity.data.dao.impl.UserEmailDAOImpl" parent="baseDAO" />
-    <bean id="userGroupDAO" class="com.junbo.identity.data.dao.impl.UserGroupDAOImpl" parent="baseDAO" />
-    <bean id="userCredentialVerifyAttemptDAO" class="com.junbo.identity.data.dao.impl.UserCredentialVerifyAttemptDAOImpl" parent="baseDAO" />
-    <bean id="userOptinDAO" class="com.junbo.identity.data.dao.impl.UserOptinDAOImpl" parent="baseDAO" />
-    <bean id="userPasswordDAO" class="com.junbo.identity.data.dao.impl.UserPasswordDAOImpl" parent="baseDAO" />
-    <bean id="userPhoneNumberDAO" class="com.junbo.identity.data.dao.impl.UserPhoneNumberDAOImpl" parent="baseDAO" />
-    <bean id="userPinDAO" class="com.junbo.identity.data.dao.impl.UserPinDAOImpl" parent="baseDAO" />
-    <bean id="userSecurityQuestionDAO" class="com.junbo.identity.data.dao.impl.UserSecurityQuestionDAOImpl" parent="baseDAO" />
-    <bean id="userTosDAO" class="com.junbo.identity.data.dao.impl.UserTosDAOImpl" parent="baseDAO" />
-    <bean id="userNameDAO" class="com.junbo.identity.data.dao.impl.UserNameDAOImpl" parent="baseDAO" />
-    <bean id="userSecurityQuestionAttemptDAO" class="com.junbo.identity.data.dao.impl.UserSecurityQuestionAttemptDAOImpl" parent="baseDAO" />
-    <bean id="deviceDAO" class="com.junbo.identity.data.dao.impl.DeviceDAOImpl" parent="baseDAO" />
-    <bean id="tosDAO" class="com.junbo.identity.data.dao.impl.TosDAOImpl" parent="baseDAO" />
-    <bean id="roleDAO" class="com.junbo.identity.data.dao.impl.RoleDAOImpl" parent="baseDAO"/>
-    <bean id="roleAssignmentDAO" class="com.junbo.identity.data.dao.impl.RoleAssignmentDAOImpl" parent="baseDAO"/>
-    <bean id="userPiiDAO" class="com.junbo.identity.data.dao.impl.UserPiiDAOImpl" parent="baseDAO" />
+    <bean id="userDAO" class="com.junbo.identity.data.dao.impl.UserDAOImpl" parent="identityBaseDAO" />
+    <bean id="groupDAO" class="com.junbo.identity.data.dao.impl.GroupDAOImpl" parent="identityBaseDAO" />
+    <bean id="userAuthenticatorDAO" class="com.junbo.identity.data.dao.impl.UserAuthenticatorDAOImpl" parent="identityBaseDAO" />
+    <bean id="userDeviceDAO" class="com.junbo.identity.data.dao.impl.UserDeviceDAOImpl" parent="identityBaseDAO" />
+    <bean id="userEmailDAO" class="com.junbo.identity.data.dao.impl.UserEmailDAOImpl" parent="identityBaseDAO" />
+    <bean id="userGroupDAO" class="com.junbo.identity.data.dao.impl.UserGroupDAOImpl" parent="identityBaseDAO" />
+    <bean id="userCredentialVerifyAttemptDAO" class="com.junbo.identity.data.dao.impl.UserCredentialVerifyAttemptDAOImpl" parent="identityBaseDAO" />
+    <bean id="userOptinDAO" class="com.junbo.identity.data.dao.impl.UserOptinDAOImpl" parent="identityBaseDAO" />
+    <bean id="userPasswordDAO" class="com.junbo.identity.data.dao.impl.UserPasswordDAOImpl" parent="identityBaseDAO" />
+    <bean id="userPhoneNumberDAO" class="com.junbo.identity.data.dao.impl.UserPhoneNumberDAOImpl" parent="identityBaseDAO" />
+    <bean id="userPinDAO" class="com.junbo.identity.data.dao.impl.UserPinDAOImpl" parent="identityBaseDAO" />
+    <bean id="userSecurityQuestionDAO" class="com.junbo.identity.data.dao.impl.UserSecurityQuestionDAOImpl" parent="identityBaseDAO" />
+    <bean id="userTosDAO" class="com.junbo.identity.data.dao.impl.UserTosDAOImpl" parent="identityBaseDAO" />
+    <bean id="userNameDAO" class="com.junbo.identity.data.dao.impl.UserNameDAOImpl" parent="identityBaseDAO" />
+    <bean id="userSecurityQuestionAttemptDAO" class="com.junbo.identity.data.dao.impl.UserSecurityQuestionAttemptDAOImpl" parent="identityBaseDAO" />
+    <bean id="deviceDAO" class="com.junbo.identity.data.dao.impl.DeviceDAOImpl" parent="identityBaseDAO" />
+    <bean id="tosDAO" class="com.junbo.identity.data.dao.impl.TosDAOImpl" parent="identityBaseDAO" />
+    <bean id="roleDAO" class="com.junbo.identity.data.dao.impl.RoleDAOImpl" parent="identityBaseDAO"/>
+    <bean id="roleAssignmentDAO" class="com.junbo.identity.data.dao.impl.RoleAssignmentDAOImpl" parent="identityBaseDAO"/>
+    <bean id="userPiiDAO" class="com.junbo.identity.data.dao.impl.UserPiiDAOImpl" parent="identityBaseDAO" />
 
     <bean id="groupRepository" class="com.junbo.identity.data.repository.impl.GroupRepositoryImpl" />
     <bean id="userAuthenticatorRepository" class="com.junbo.identity.data.repository.impl.UserAuthenticatorRepositoryImpl" />

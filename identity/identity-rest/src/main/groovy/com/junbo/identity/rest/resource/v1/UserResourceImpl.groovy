@@ -16,6 +16,7 @@ import com.junbo.identity.spec.v1.resource.UserResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
@@ -37,6 +38,7 @@ class UserResourceImpl implements UserResource {
     private Created201Marker created201Marker
 
     @Autowired
+    @Qualifier('userRepository')
     private UserRepository userRepository
 
     @Autowired

@@ -28,8 +28,10 @@ public class ItemRevisionMapper {
     public static void fillDBEntity(ItemRevision model, ItemRevisionEntity entity) {
         entity.setRevisionId(model.getRevisionId());
         entity.setItemId(model.getItemId());
+        entity.setType(model.getType());
         entity.setStatus(model.getStatus());
         entity.setOwnerId(model.getOwnerId());
+        entity.setTimestamp(model.getTimestamp());
         entity.setPayload(Utils.toJson(model));
     }
 
@@ -42,7 +44,8 @@ public class ItemRevisionMapper {
         model.setStatus(entity.getStatus());
         model.setOwnerId(entity.getOwnerId());
         model.setRevisionId(entity.getRevisionId());
-
+        model.setType(entity.getType());
+        model.setTimestamp(entity.getTimestamp());
         model.setCreatedBy(entity.getCreatedBy());
         model.setCreatedTime(entity.getCreatedTime());
         model.setUpdatedBy(entity.getUpdatedBy());

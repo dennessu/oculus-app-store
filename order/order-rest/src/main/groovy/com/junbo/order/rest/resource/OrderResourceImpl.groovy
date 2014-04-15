@@ -1,4 +1,6 @@
 package com.junbo.order.rest.resource
+
+import com.junbo.order.spec.error.AppErrors
 import com.junbo.common.id.OrderId
 import com.junbo.common.id.UserId
 import com.junbo.common.model.Results
@@ -89,9 +91,20 @@ class OrderResourceImpl implements OrderResource {
                 }
             } else { // order already settle
                 LOGGER.info('name=Update_Non_Tentative_offer')
-                Promise.pure(oldOrder) // todo implement update on settled order
+                // update shipping address after settlement
+                if (allowModification(oldOrder, order)) {
+                    oldOrder.shippingAddress = order.shippingAddress
+                    return orderService.updateNonTentativeOrder(oldOrder,  new ApiContext(requestContext.headers))
+                }
+                LOGGER.error('name=Update_Not_Allow')
+                throw AppErrors.INSTANCE.invalidSettledOrderUpdate().exception()
             }
         }
+    }
+
+    boolean allowModification(Order oldOrder, Order order) {
+        // TODO: check the modification is allowed
+        return oldOrder.shippingAddress.value != order.shippingAddress.value
     }
 
     @Override

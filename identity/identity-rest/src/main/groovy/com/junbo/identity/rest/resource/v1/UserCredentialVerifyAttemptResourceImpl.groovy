@@ -14,6 +14,7 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.transaction.AsyncTransactionTemplate
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 import org.springframework.transaction.PlatformTransactionManager
@@ -35,6 +36,7 @@ import javax.ws.rs.ext.Provider
 class UserCredentialVerifyAttemptResourceImpl implements UserCredentialVerifyAttemptResource {
 
     @Autowired
+    @Qualifier('userCredentialVerifyAttemptRepository')
     private UserCredentialVerifyAttemptRepository userLoginAttemptRepository
 
     @Autowired

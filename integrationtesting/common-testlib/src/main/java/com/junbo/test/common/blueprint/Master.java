@@ -11,7 +11,7 @@ import com.junbo.cart.spec.model.Cart;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.entitlement.spec.model.Entitlement;
-import com.junbo.identity.spec.model.user.User;
+import com.junbo.identity.spec.v1.model.User;
 import com.junbo.order.spec.model.Order;
 import com.junbo.catalog.spec.model.attribute.Attribute;
 import com.junbo.payment.spec.model.PaymentInstrument;

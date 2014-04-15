@@ -30,5 +30,5 @@ public interface EntitlementService {
 
     Entitlement transferEntitlement(EntitlementTransfer entitlementTransfer);
 
-    Entitlement getByTrackingUuid(UUID trackingUuid);
+    Entitlement getByTrackingUuid(Long shardMasterId, UUID trackingUuid);
 }

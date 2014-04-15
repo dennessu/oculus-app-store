@@ -50,7 +50,7 @@ class UserDeviceDAOImpl extends BaseDAO implements UserDeviceDAO {
         Criteria criteria = currentSession(userId).createCriteria(UserDeviceEntity)
         criteria.add(Restrictions.eq('userId', getOption.userId.value))
         if (getOption.deviceId != null) {
-            criteria.add(Restrictions.eq('deviceId', getOption.deviceId))
+            criteria.add(Restrictions.eq('deviceId', getOption.deviceId.value))
         }
         criteria.addOrder(Order.asc('id'))
         if (getOption.limit != null) {

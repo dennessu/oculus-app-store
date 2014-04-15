@@ -1,7 +1,14 @@
 
 /*
-    Arguments:
-        Reserved Keywords: data, cb
+ Rules:{
+    is_full_path: true  //When rest api return 302 in location url
+ }
+
+ Arguments: {
+    data: 0,   //Reserved Keywords
+    cb: 1      //Reserved Keywords
+ }
+
 */
 
 module.exports = {
@@ -13,7 +20,6 @@ module.exports = {
 
         PostAuthorize: {
             Rules:{
-              is_full_path: false
             },
             Options: {
                 path: "/oauth2/authorize",
@@ -30,7 +36,6 @@ module.exports = {
 
         GetTokenInfo: {
             Rules:{
-                is_full_path: false
             },
             Options: {
                 path: "/oauth2/tokeninfo?access_token={accessToken}",
@@ -47,7 +52,6 @@ module.exports = {
 
         PostTokenInfoByCode: {
             Rules:{
-                is_full_path: false
             },
             Options: {
                 path: "/oauth2/token",
@@ -64,7 +68,6 @@ module.exports = {
 
         GetUserById: {
             Rules:{
-                is_full_path: false
             },
             Options: {
                 path: "/users/{userId}",
@@ -81,7 +84,6 @@ module.exports = {
 
         PostUser: {
             Rules:{
-                is_full_path: false
             },
             Options: {
                 path: "/users",
@@ -98,7 +100,6 @@ module.exports = {
 
         PutUser: {
             Rules:{
-                is_full_path: false
             },
             Options: {
                 path: "/users/{userId}",
@@ -116,7 +117,6 @@ module.exports = {
 
         PostRestPassword: {
             Rules:{
-                is_full_path: false
             },
             Options: {
                 path: "/users/{userId}/reset-password?newPassword={newPassword}",
@@ -134,7 +134,6 @@ module.exports = {
 
         PostProfile: {
             Rules:{
-                is_full_path: false
             },
             Options: {
                 path: "/users/{userId}/profiles",
@@ -152,7 +151,6 @@ module.exports = {
 
         PutProfile: {
             Rules:{
-                is_full_path: false
             },
             Options: {
                 path: "/users/{userId}/profiles/{profileId}",
@@ -171,7 +169,6 @@ module.exports = {
 
         GetPayinProfilesByUserId: {
             Rules:{
-                is_full_path: false
             },
             Options: {
                 path: "/users/{userId}/profiles?type=PAYIN",
@@ -188,7 +185,6 @@ module.exports = {
 
         GetOptInsByUserId:{
             Rules:{
-                is_full_path: false
             },
             Options: {
                 path: "/users/{userId}/opt-ins",
@@ -205,7 +201,7 @@ module.exports = {
 
         PostOptIns: {
             Rules:{
-                is_full_path: false
+                
             },
             Options: {
                 path: "/users/{userId}/opt-ins",
@@ -230,7 +226,7 @@ module.exports = {
 
         GetShippingInfosByUserId:{
             Rules:{
-                is_full_path: false
+                
             },
             Options: {
                 path: "/users/{userId}/ship-to-info",
@@ -247,7 +243,7 @@ module.exports = {
 
         GetShippingInfoById:{
             Rules:{
-                is_full_path: false
+                
             },
             Options: {
                 path: "/users/{userId}/ship-to-info/{shippingId}",
@@ -265,7 +261,7 @@ module.exports = {
 
         PostShippingInfo:{
             Rules:{
-                is_full_path: false
+                
             },
             Options: {
                 path: "/users/{userId}/ship-to-info",
@@ -283,7 +279,7 @@ module.exports = {
 
         PutShippingInfo:{
             Rules:{
-                is_full_path: false
+                
             },
             Options: {
                 path: "/users/{userId}/ship-to-info/{shippingId}",
@@ -302,7 +298,7 @@ module.exports = {
 
         DeleteShippingInfo:{
             Rules:{
-                is_full_path: false
+                
             },
             Options: {
                 path: "/users/{userId}/ship-to-info/{shippingId}",
@@ -327,7 +323,7 @@ module.exports = {
 
         GetOffers: {
             Rules:{
-                is_full_path: false
+                
             },
             Options: {
                 path: "/offers?status=Released",
@@ -343,7 +339,7 @@ module.exports = {
 
         GetOfferById: {
             Rules:{
-                is_full_path: false
+                
             },
             Options: {
                 path: "/offers/{offerId}",
@@ -360,7 +356,7 @@ module.exports = {
 
         GetItemById: {
             Rules:{
-                is_full_path: false
+                
             },
             Options: {
                 path: "/items/{itemId}",
@@ -384,7 +380,7 @@ module.exports = {
 
         Send: {
             Rules:{
-                is_full_path: false
+                
             },
             Options: {
                 path: "/emails",
@@ -408,7 +404,7 @@ module.exports = {
 
         GetEntitlementsByUserId: {
             Rules:{
-                is_full_path: false
+                
             },
             Options: {
                 path: "/users/{userId}/entitlements",
@@ -425,7 +421,7 @@ module.exports = {
 
         PostEntitlement: {
             Rules:{
-                is_full_path: false
+                
             },
             Options: {
                 path: "/entitlements",
@@ -449,7 +445,7 @@ module.exports = {
 
         GetPrimaryCartByUserId: {
             Rules:{
-                is_full_path: false
+                
             },
             Options: {
                 path: "/users/{userId}/carts/primary",
@@ -483,7 +479,7 @@ module.exports = {
 
         GetCartById: {
             Rules:{
-                is_full_path: false
+                
             },
             Options: {
                 path: "/users/{userId}/carts/{cartId}",
@@ -501,7 +497,7 @@ module.exports = {
 
         PutCart: {
             Rules:{
-                is_full_path: false
+                
             },
             Options: {
                 path: "/users/{userId}/carts/{cartId}",
@@ -520,7 +516,7 @@ module.exports = {
 
         PostMergeCart: {
             Rules:{
-                is_full_path: false
+                
             },
             Options: {
                 path: "/users/{userId}/carts/{cartId}/merge",
@@ -546,7 +542,7 @@ module.exports = {
 
         GetOrdersByUserId: {
             Rules:{
-                is_full_path: false
+                
             },
             Options: {
                 path: "/orders?userId={userId}",
@@ -563,7 +559,7 @@ module.exports = {
 
         GetOrderById: {
             Rules:{
-                is_full_path: false
+                
             },
             Options: {
                 path: "/orders/{orderId}",
@@ -580,7 +576,7 @@ module.exports = {
 
         PostOrder:  {
             Rules:{
-                is_full_path: false
+                
             },
             Options: {
                 path: "/orders",
@@ -597,7 +593,7 @@ module.exports = {
 
         PutOrder: {
             Rules:{
-                is_full_path: false
+                
             },
             Options: {
                 path: "/orders/{orderId}",
@@ -622,7 +618,7 @@ module.exports = {
 
         GetPaymentInstrumentsByUserId: {
             Rules:{
-                is_full_path: false
+                
             },
             Options: {
                 path: "/users/{userId}/payment-instruments",
@@ -639,7 +635,7 @@ module.exports = {
 
         GetPaymentInstrumentById: {
             Rules:{
-                is_full_path: false
+                
             },
             Options: {
                 path: "/users/{userId}/payment-instruments/{paymentId}",
@@ -657,7 +653,7 @@ module.exports = {
 
         PostPaymentInstrument: {
             Rules:{
-                is_full_path: false
+                
             },
             Options: {
                 path: "/users/{userId}/payment-instruments",
@@ -675,7 +671,7 @@ module.exports = {
 
         PutPaymentInstrument: {
             Rules:{
-                is_full_path: false
+                
             },
             Options: {
                 path: "/users/{userId}/payment-instruments/{paymentId}",
@@ -694,7 +690,7 @@ module.exports = {
 
         DeltePaymentInstrument: {
             Rules:{
-                is_full_path: false
+                
             },
             Options: {
                 path: "/users/{userId}/payment-instruments/{paymentId}",

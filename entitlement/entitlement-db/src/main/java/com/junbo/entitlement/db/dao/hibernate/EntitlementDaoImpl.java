@@ -36,7 +36,7 @@ public class EntitlementDaoImpl extends BaseDao<EntitlementEntity> implements En
         params.put("userId", entitlementSearchParam.getUserId().getValue());
 
         addSearchParam(entitlementSearchParam, queryStringBuilder, params);
-        Query q = currentSession().createSQLQuery(
+        Query q = currentSession(entitlementSearchParam.getUserId().getValue()).createSQLQuery(
                 queryStringBuilder.toString()).addEntity(EntitlementEntity.class);
         q = addPageMeta(addParams(q, params), pageMetadata);
         return q.list();
@@ -135,9 +135,9 @@ public class EntitlementDaoImpl extends BaseDao<EntitlementEntity> implements En
 
 
     @Override
-    public EntitlementEntity getByTrackingUuid(UUID trackingUuid) {
+    public EntitlementEntity getByTrackingUuid(Long shardMasterId, UUID trackingUuid) {
         String queryString = "from EntitlementEntity where trackingUuid = (:trackingUuid)";
-        Query q = currentSession().createQuery(queryString).setParameter("trackingUuid", trackingUuid);
+        Query q = currentSession(shardMasterId).createQuery(queryString).setParameter("trackingUuid", trackingUuid);
         return (EntitlementEntity) q.uniqueResult();
     }
 
@@ -148,7 +148,7 @@ public class EntitlementDaoImpl extends BaseDao<EntitlementEntity> implements En
                 " and entitlementDefinitionId = (:definitionId)" +
                 " and status >= 0" +
                 " and managedLifecycle = true";
-        Query q = currentSession().createQuery(queryString)
+        Query q = currentSession(userId).createQuery(queryString)
                 .setLong("userId", userId)
                 .setLong("definitionId", definitionId);
         return (EntitlementEntity) q.uniqueResult();
@@ -165,7 +165,7 @@ public class EntitlementDaoImpl extends BaseDao<EntitlementEntity> implements En
                 " and tag = (:tag)" +
                 " and status >= 0" +
                 " and managedLifecycle = true";
-        Query q = currentSession().createQuery(queryString)
+        Query q = currentSession(userId).createQuery(queryString)
                 .setLong("userId", userId)
                 .setLong("developerId", developerId)
                 .setInteger("type", type.getId())

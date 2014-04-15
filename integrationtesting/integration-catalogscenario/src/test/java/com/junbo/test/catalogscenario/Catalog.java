@@ -149,9 +149,9 @@ public class Catalog extends TestClass {
         //Update item to released
         logger.LogSample("Release an item)");
         item = Master.getInstance().getItem(itemId);
-        item.setStatus(EnumHelper.CatalogEntityStatus.RELEASED.getEntityStatus());
+        item.setCurated(true);
         itemId = itemServiceAPI.updateItem(item);
-        Assert.assertEquals(Master.getInstance().getItem(itemId).getStatus(), "Released");
+        Assert.assertEquals(Master.getInstance().getItem(itemId).getCurated().toString().toLowerCase(), "true");
 }
 
     @Property(
@@ -214,9 +214,9 @@ public class Catalog extends TestClass {
         //Update offer to released
         logger.LogSample("Release an offer");
         Offer offerGet = Master.getInstance().getOffer(offerId);
-        offerGet.setStatus(EnumHelper.CatalogEntityStatus.RELEASED.getEntityStatus());
+        offerGet.setCurated(true);
         offerId = offerServiceAPI.updateOffer(offerGet);
-        Assert.assertEquals(Master.getInstance().getOffer(offerId).getStatus(), "Released");
+        Assert.assertEquals(Master.getInstance().getOffer(offerId).getCurated().toString().toLowerCase(), "true");
     }
 
     @Property(

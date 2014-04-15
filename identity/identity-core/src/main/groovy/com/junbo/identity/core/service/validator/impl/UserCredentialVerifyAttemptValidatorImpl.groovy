@@ -128,11 +128,10 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                         throw AppErrors.INSTANCE.userPasswordIncorrect().exception()
                     }
 
-                    if (CipherHelper.hashPassword(split[1], userPasswordList.get(0).passwordSalt)
-                            == userPasswordList.get(0).passwordHash) {
+                    if (CipherHelper.generateCipherHashV1(split[1], userPasswordList.get(0).passwordSalt,
+                                userPasswordList.get(0).passwordPepper) == userPasswordList.get(0).passwordHash) {
                         userLoginAttempt.setSucceeded(true)
-                    }
-                    else {
+                    } else {
                         userLoginAttempt.setSucceeded(false)
                     }
                 }
@@ -146,11 +145,10 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                         throw AppErrors.INSTANCE.userPinIncorrect().exception()
                     }
 
-                    if (CipherHelper.hashPassword(split[1], userPinList.get(0).pinSalt)
-                            == userPinList.get(0).pinHash) {
+                    if (CipherHelper.generateCipherHashV1(split[1], userPinList.get(0).pinSalt,
+                            userPinList.get(0).pinPepper) == userPinList.get(0).pinHash) {
                         userLoginAttempt.setSucceeded(true)
-                    }
-                    else {
+                    } else {
                         userLoginAttempt.setSucceeded(false)
                     }
                 }

@@ -18,6 +18,7 @@ import com.junbo.payment.db.mapper.*;
 import com.junbo.payment.db.repository.MerchantAccountRepository;
 import com.junbo.payment.spec.enums.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -45,23 +46,28 @@ public class PaymentDaoTest extends BaseTest {
     @Autowired
     private TrackingUuidDao trackingUuidDao;
 
-    private static final Long userId = 123l;
-
     @Test
-    public void testCreate() {        
+    @Transactional
+    public void testCreate() {
+        Long addressId = generateShardId(userId);
         AddressEntity address = buildAddressRequest();
+        address.setId(addressId);
         addressDao.save(address);
         PaymentInstrumentEntity entity = buildRequest(address, userId);
+        entity.setId(addressId);
         piDao.save(entity);
 
         Assert.assertNotNull(entity.getId(), "Entity id should not be null.");
     }
 
     @Test
-    public void testGet() {        
+    public void testGet() {
+        Long addressId = generateShardId(userId);
         AddressEntity address = buildAddressRequest();
+        address.setId(addressId);
         addressDao.save(address);
         PaymentInstrumentEntity entity = buildRequest(address, userId);
+        entity.setId(addressId);
         Long piId = piDao.save(entity);
         PaymentInstrumentEntity getEntity = piDao.get(piId);
         Assert.assertNotNull(getEntity);
@@ -70,12 +76,16 @@ public class PaymentDaoTest extends BaseTest {
 
     @Test
     public void testGetByUser() {
-        Long user = generateId();        
+        Long user = generateShardId(userId);
+        Long addressId = generateShardId(user);
         AddressEntity address = buildAddressRequest();
+        address.setId(addressId);
         addressDao.save(address);
         PaymentInstrumentEntity entity1 = buildRequest(address, user);
+        entity1.setId(addressId);
         Long piId1 = piDao.save(entity1);
         PaymentInstrumentEntity entity2 = buildRequest(address, user);
+        entity1.setId(addressId);
         Long piId2 = piDao.save(entity2);
         List<PaymentInstrumentEntity> getEntities = piDao.getByUserId(user);
         Assert.assertNotNull(getEntities);
@@ -84,15 +94,20 @@ public class PaymentDaoTest extends BaseTest {
 
     @Test
     public void testCreatePayment() {
+        Long addressId = generateShardId(userId);
         AddressEntity address = buildAddressRequest();
+        address.setId(addressId);
         addressDao.save(address);
         PaymentInstrumentEntity entity = buildRequest(address, userId);
+        entity.setId(addressId);
         piDao.save(entity);
 
         PaymentEntity payment = buildPaymentRequest(entity);
+        payment.setId(addressId);
         paymentDao.save(payment);
 
         PaymentEventEntity eventEntity = getPaymentEventEntity(payment);
+        eventEntity.setPaymentId(addressId);
         paymentEventDao.save(eventEntity);
 
         Assert.assertNotNull(payment.getId(), "Entity id should not be null.");
@@ -100,17 +115,23 @@ public class PaymentDaoTest extends BaseTest {
 
     @Test
     public void testGetPayment() {
+        Long addressId = generateShardId(userId);
         AddressEntity address = buildAddressRequest();
+        address.setId(addressId);
         addressDao.save(address);
         PaymentInstrumentEntity entity = buildRequest(address, userId);
+        entity.setId(addressId);
         piDao.save(entity);
 
         PaymentEntity payment = buildPaymentRequest(entity);
+        payment.setId(addressId);
         paymentDao.save(payment);
 
         PaymentEventEntity eventEntity1 = getPaymentEventEntity(payment);
+        eventEntity1.setPaymentId(addressId);
         paymentEventDao.save(eventEntity1);
         PaymentEventEntity eventEntity2 = getPaymentEventEntity(payment);
+        eventEntity2.setPaymentId(addressId);
         paymentEventDao.save(eventEntity2);
 
         PaymentEntity result = paymentDao.get(payment.getId());
@@ -130,7 +151,6 @@ public class PaymentDaoTest extends BaseTest {
 
     protected AddressEntity buildAddressRequest(){
         AddressEntity entity = new AddressEntity();
-        entity.setId(generateId());
         entity.setCountry("US");
         entity.setCreatedTime(new Date());
         entity.setAddressLine1("3rd street");
@@ -140,10 +160,10 @@ public class PaymentDaoTest extends BaseTest {
 
     protected PaymentInstrumentEntity buildRequest(AddressEntity address, Long userId) {
         PaymentInstrumentEntity entity = new PaymentInstrumentEntity();
-        entity.setId(generateId());
         entity.setAccountName("David");
         entity.setAddressId(address.getId());
-        entity.setStatus(PIStatus.ACTIVE);
+        entity.setIsActive(true);
+        entity.setRev(1);
         entity.setType(PIType.CREDITCARD);
         entity.setUserId(userId);
         entity.setUpdatedBy("ut");
@@ -154,8 +174,7 @@ public class PaymentDaoTest extends BaseTest {
 
     protected PaymentEntity buildPaymentRequest(PaymentInstrumentEntity pi){
         PaymentEntity entity = new PaymentEntity();
-        entity.setId(generateId());
-        entity.setUserId(generateId());
+        entity.setUserId(userId);
         entity.setCreatedBy("ut");
         entity.setCurrency("USD");
         entity.setCountryCode("US");
@@ -172,7 +191,6 @@ public class PaymentDaoTest extends BaseTest {
     protected PaymentEventEntity getPaymentEventEntity(PaymentEntity payment) {
         PaymentEventEntity eventEntity = new PaymentEventEntity();
         eventEntity.setPaymentId(payment.getId());
-        eventEntity.setId(generateId());
         eventEntity.setType(PaymentEventType.AUTH_CREATE);
         eventEntity.setStatus(PaymentStatus.AUTH_CREATED);
         eventEntity.setCurrency("USD");
@@ -200,11 +218,7 @@ public class PaymentDaoTest extends BaseTest {
     protected TrackingUuidEntity buildTrackingUuidRequest(){
         TrackingUuidEntity entity = new TrackingUuidEntity();
         entity.setApi(PaymentAPI.AddPI);
-        entity.setId(generateId());
-        entity.setPaymentId(generateId());
-        entity.setPaymentInstrumentId(generateId());
         entity.setTrackingUuid(generateUUID());
-        entity.setUserId(generateId());
         return entity;
     }
 }

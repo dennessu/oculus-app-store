@@ -3,12 +3,6 @@
        xmlns="http://www.springframework.org/schema/beans"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="transcoder" class="com.junbo.common.json.JsonMessageTranscoder"/>
-
-    <bean id="pathParamTranscoder" class="com.junbo.common.json.IdPathParamTranscoder"/>
-
-    <bean id="queryParamTranscoder" class="com.junbo.common.json.QueryParamTranscoderImpl"/>
-
     <bean id="identityUserClient" class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy">
         <constructor-arg name="client" ref="commonAsyncHttpClient"/>
         <constructor-arg name="target" value="${oauth.clientproxy.identity.url}"/>

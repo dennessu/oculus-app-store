@@ -18,7 +18,7 @@ import java.util.List;
  */
 public interface CartItemDao<T extends CartItemEntity> {
 
-    Session getSession();
+    Session getSession(Object key);
 
     void insert(T item);
 

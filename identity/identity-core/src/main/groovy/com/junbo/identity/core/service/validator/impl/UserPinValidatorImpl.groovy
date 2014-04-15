@@ -21,6 +21,7 @@ import org.springframework.util.StringUtils
  */
 @CompileStatic
 class UserPinValidatorImpl implements UserPinValidator {
+    private static final Integer SALT_LENGTH = 20
 
     private UserRepository userRepository
 
@@ -88,8 +89,9 @@ class UserPinValidatorImpl implements UserPinValidator {
             throw AppErrors.INSTANCE.fieldInvalid('active').exception()
         }
 
-        userPin.setPinSalt(UUID.randomUUID().toString())
-        userPin.setPinHash(CipherHelper.hashPassword(userPin.value, userPin.pinSalt))
+        userPin.setPinSalt(CipherHelper.generateCipherRandomStr(SALT_LENGTH))
+        userPin.setPinPepper(CipherHelper.generateCipherRandomStr(SALT_LENGTH))
+        userPin.setPinHash(CipherHelper.generateCipherHashV1(userPin.value, userPin.pinSalt, userPin.pinPepper))
         userPin.setUserId(userId)
         userPin.setActive(true)
 
@@ -106,10 +108,7 @@ class UserPinValidatorImpl implements UserPinValidator {
             return Promise.pure(null)
         }
 
-        String decoded = Base64.decodeAsString(oldPassword)
-        String[] split = decoded.split(':')
-        String decryptPassword = split[1]
-
+        String decryptPassword = Base64.decodeAsString(oldPassword)
         userPinRepository.search(new UserPinListOptions(
                 userId: userId,
                 active: true
@@ -118,7 +117,8 @@ class UserPinValidatorImpl implements UserPinValidator {
                 throw AppErrors.INSTANCE.userPinIncorrect().exception()
             }
 
-            if (CipherHelper.hashPassword(decryptPassword, userPinList.get(0).pinSalt) != userPinList.get(0).pinHash) {
+            if (CipherHelper.generateCipherHashV1(decryptPassword, userPinList.get(0).pinSalt,
+                    userPinList.get(0).pinPepper) != userPinList.get(0).pinHash) {
                 throw AppErrors.INSTANCE.userPinIncorrect().exception()
             }
             return Promise.pure(null)

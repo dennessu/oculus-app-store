@@ -23,6 +23,12 @@
 
     <bean id="physicalSettleAction" class="com.junbo.order.core.impl.orderaction.PhysicalSettleAction">
         <property name="orderActionType" value="PARTIAL_CHARGE"/>
+        <property name="completeCharge" value="false"/>
+    </bean>
+
+    <bean id="completeCharge_physicalSettleAction" class="com.junbo.order.core.impl.orderaction.PhysicalSettleAction">
+        <property name="orderActionType" value="CHARGE"/>
+        <property name="completeCharge" value="true"/>
     </bean>
 
     <bean id="fulfillmentAction" class="com.junbo.order.core.impl.orderaction.FulfillmentAction">

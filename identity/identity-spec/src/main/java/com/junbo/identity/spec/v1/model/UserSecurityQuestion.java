@@ -11,22 +11,29 @@ import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserSecurityQuestionId;
 import com.junbo.common.util.Identifiable;
 import com.junbo.identity.spec.model.users.ResourceMeta;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
  * Created by liangfu on 4/3/14.
  */
 public class UserSecurityQuestion extends ResourceMeta implements Identifiable<UserSecurityQuestionId> {
 
+    @ApiModelProperty(position = 1, required = true, value = "The id of user security question resource.")
     @JsonProperty("self")
     private UserSecurityQuestionId id;
 
+    @ApiModelProperty(position = 2, required = true, value = "The security question.")
     private String securityQuestion;
 
     // This is the write only field
+    @ApiModelProperty(position = 3, required = true, value = "The security question answer.")
     private String answer;
 
     @JsonIgnore
     private String answerSalt;
+
+    @JsonIgnore
+    private String answerPepper;
 
     @JsonIgnore
     private String answerHash;
@@ -70,6 +77,15 @@ public class UserSecurityQuestion extends ResourceMeta implements Identifiable<U
     public void setAnswerSalt(String answerSalt) {
         this.answerSalt = answerSalt;
         support.setPropertyAssigned("answerSalt");
+    }
+
+    public String getAnswerPepper() {
+        return answerPepper;
+    }
+
+    public void setAnswerPepper(String answerPepper) {
+        this.answerPepper = answerPepper;
+        support.setPropertyAssigned("answerPepper");
     }
 
     public String getAnswerHash() {

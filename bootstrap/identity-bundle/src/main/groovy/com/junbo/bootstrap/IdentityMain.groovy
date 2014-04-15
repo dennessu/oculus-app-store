@@ -7,10 +7,12 @@ package com.junbo.bootstrap
 
 import com.junbo.common.error.RestExceptionMapper
 import com.junbo.common.id.provider.IdTypeFromStringProvider
+import com.junbo.common.json.InvalidJsonReaderInterceptor
 import com.junbo.common.json.JacksonFeature
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.configuration.ConfigResource
-import com.junbo.identity.spec.filter.ResultListInterceptor
+import com.junbo.identity.spec.filter.ResultsInterceptor
+import com.junbo.sharding.view.EntityListener
 import groovy.transform.CompileStatic
 import org.glassfish.grizzly.http.server.HttpServer
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory
@@ -34,18 +36,16 @@ class IdentityMain {
         resourceConfig.property('contextConfigLocation', 'classpath*:/spring/**/*.xml')
 
         // packages
-        resourceConfig.packages('com.junbo.identity.spec.resource.adapter')
+        resourceConfig.packages('com.junbo.identity.spec.v1.resource.adapter')
         resourceConfig.packages('com.junbo.oauth.spec.endpoint.adapter')
 
-        // Id type feature
         resourceConfig.register(IdTypeFromStringProvider)
-
         resourceConfig.register(RestExceptionMapper)
+        resourceConfig.register(ResultsInterceptor)
+        resourceConfig.register(InvalidJsonReaderInterceptor)
+        resourceConfig.register(EntityListener)
 
-        // filters
-        resourceConfig.register(ResultListInterceptor)
-
-        def uri = URI.create('http://0.0.0.0:8081/rest')
+        def uri = URI.create('http://0.0.0.0:8081/v1')
         return GrizzlyHttpServerFactory.createHttpServer(uri, resourceConfig)
     }
 

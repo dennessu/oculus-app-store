@@ -23,7 +23,7 @@ import javax.ws.rs.core.MediaType;
  */
 @Api("carts")
 @ApiErrors(value = ApiErrors.class, errors = { "userNotFound", "userStatusInvalid" })
-@Path("users")
+@Path("/users/{userId}/carts")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 @RestResource
@@ -32,29 +32,27 @@ public interface CartResource {
     @ApiOperation("Create a cart")
     @ApiErrors(errors = { "cartAlreadyExists", "fieldInvalid" })
     @POST
-    @Path("/{userId}/carts")
     Promise<Cart> addCart(@PathParam("userId") UserId userId, Cart cart);
 
     @ApiOperation("Get a cart")
     @ApiErrors(errors = "cartNotFound")
     @GET
-    @Path("/{userId}/carts/{cartId}")
+    @Path("/{cartId}")
     Promise<Cart> getCart(@PathParam("userId") UserId userId, @PathParam("cartId") CartId cartId);
 
     @ApiOperation("Get the primary cart")
     @GET
-    @Path("/{userId}/carts/primary")
+    @Path("/primary")
     Promise<Cart> getCartPrimary(@PathParam("userId") UserId userId);
 
     @ApiOperation("Get cart by name")
     @GET
-    @Path("/{userId}/carts")
     Promise<Results<Cart>> getCartByName(@PathParam("userId") UserId userId, @QueryParam("cartName") String cartName);
 
     @ApiOperation("Update a cart")
     @ApiErrors(errors = { "cartNotFound", "fieldInvalid" })
     @PUT
-    @Path("/{userId}/carts/{cartId}")
+    @Path("/{cartId}")
     Promise<Cart> updateCart(@PathParam("userId") UserId userId,
                                       @PathParam("cartId") CartId cartId, Cart cart);
 }

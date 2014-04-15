@@ -31,9 +31,9 @@ public interface OrderEventResource {
 
     @ApiOperation("Get order events")
     @GET
-    Promise<Results<OrderEvent>> getOrderEvents(@QueryParam("orderId") OrderId orderId, @BeanParam PageParam pageParam,
-                                             @Context HttpHeaders headers);
+    Promise<Results<OrderEvent>> getOrderEvents(@QueryParam("orderId") OrderId orderId, @BeanParam PageParam pageParam);
 
+    @ApiOperation("Create an order event")
     @POST
     Promise<OrderEvent> createOrderEvent(OrderEvent orderEvent,
                                          @Context HttpHeaders headers);

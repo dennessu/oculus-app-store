@@ -16,6 +16,7 @@ import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.item.ItemType;
 import com.junbo.catalog.spec.model.offer.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,7 +57,16 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
 
     @Override
     public List<OfferRevision> getRevisions(OfferRevisionsGetOptions options) {
-        return offerRevisionRepo.getRevisions(options);
+        if (options.getTimestamp()!=null) {
+            if (CollectionUtils.isEmpty(options.getOfferIds())) {
+                throw AppErrors.INSTANCE.validation("offerId must be specified when timestamp is present.").exception();
+            }
+
+            return offerRevisionRepo.getRevisions(options.getOfferIds(), options.getTimestamp());
+
+        } else {
+            return offerRevisionRepo.getRevisions(options);
+        }
     }
 
     @Override
@@ -101,6 +111,13 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     private void validateOffer(Offer offer) {
         checkFieldNotNull(offer.getName(), "name");
         checkFieldNotNull(offer.getOwnerId(), "publisher");
+        if (offer.getCurrentRevisionId() != null) {
+            OfferRevision revision = offerRevisionRepo.get(offer.getCurrentRevisionId());
+            checkEntityNotNull(offer.getCurrentRevisionId(), revision, "offer-revision");
+            if (!Status.APPROVED.equals(revision.getStatus())) {
+                throw AppErrors.INSTANCE.validation("Cannot set current revision to unapproved revision").exception();
+            }
+        }
     }
 
     private void validateRevision(OfferRevision revision) {
@@ -108,6 +125,9 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
         checkFieldNotNull(revision.getOfferId(), "offer");
         checkFieldNotNull(revision.getPrice(), "price");
         checkPrice(revision.getPrice());
+
+        Offer offer = offerRepo.get(revision.getOfferId());
+        checkEntityNotNull(revision.getOfferId(), offer, "offer");
 
         if (!Status.ALL_STATUSES.contains(revision.getStatus())) {
             throw AppErrors.INSTANCE.fieldNotCorrect("status", "Valid statuses: " + Status.ALL_STATUSES).exception();
