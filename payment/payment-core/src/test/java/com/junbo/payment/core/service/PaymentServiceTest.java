@@ -32,7 +32,7 @@ public class PaymentServiceTest extends BaseTest {
         Assert.assertNotNull(result);
         Assert.assertEquals(result.getCreditCardRequest().getType(), CreditCardType.VISA.toString());
         Assert.assertEquals(result.getCreditCardRequest().getExternalToken(), MockPaymentProviderServiceImpl.piExternalToken);
-        PaymentInstrument getResult = piService.getById(result.getId().getUserId(), result.getId().getPaymentInstrumentId());
+        PaymentInstrument getResult = piService.getById(result.getId());
         Assert.assertEquals(getResult.getAccountName(), result.getAccountName());
        }
 
@@ -40,7 +40,7 @@ public class PaymentServiceTest extends BaseTest {
     public void testRemovePI() throws ExecutionException, InterruptedException {
         PaymentInstrument request = buildPIRequest();
         PaymentInstrument result = piService.add(request).wrapped().get();
-        piService.delete(userId, result.getId().getPaymentInstrumentId());
+        piService.delete(result.getId());
     }
 
     @Test
@@ -50,7 +50,7 @@ public class PaymentServiceTest extends BaseTest {
         result.setIsActive(false);
         result.getAddress().setPostalCode("123");
         piService.update(result);
-        PaymentInstrument resultUpdate = piService.getById(userId, result.getId().getPaymentInstrumentId());
+        PaymentInstrument resultUpdate = piService.getById(result.getId());
         Assert.assertEquals(resultUpdate.getIsActive(), Boolean.FALSE);
         Assert.assertEquals(resultUpdate.getAddress().getPostalCode(), "123");
     }
@@ -138,7 +138,7 @@ public class PaymentServiceTest extends BaseTest {
     private PaymentTransaction buildPaymentTransaction(final PaymentInstrument pi){
         PaymentTransaction payment = new PaymentTransaction();
         payment.setTrackingUuid(generateUUID());
-        payment.setUserId(pi.getId().getUserId());
+        payment.setUserId(pi.getUserId());
         payment.setBillingRefId(BILLING_REF_ID);
         payment.setChargeInfo(new ChargeInfo() {
             {

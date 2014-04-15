@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 
 public class PaymentClientProxyTest extends BaseTest {
@@ -22,40 +23,18 @@ public class PaymentClientProxyTest extends BaseTest {
     @Autowired
     private PaymentTransactionResourceClientProxy paymentClient;
 
-    @Test(enabled = false)
+    @Test(enabled = true)
     public void addPIAndAuthSettle() throws ExecutionException, InterruptedException {
-        final UserId userId = new UserId(generateLong());
-        PaymentInstrument pi = new PaymentInstrument(){
-            {
-                setAccountName("ut");
-                setAccountNum("4111111111111111");
-                setIsValidated(false);
-                setType("CREDITCARD");
-                setTrackingUuid(generateUUID());
-                setAddress(new Address() {
-                    {
-                        setAddressLine1("3rd street");
-                        setPostalCode("12345");
-                        setCountry("US");
-                    }
-                });
-                setCreditCardRequest(new CreditCardRequest(){
-                    {
-                        setExpireDate("2025-12");
-                        setEncryptedCvmCode("111");
-                    }
-                });
-            }
-        };
+        final UserId userId = new UserId(getLongId());
+        PaymentInstrument pi = getPaymentInstrument();
 
-        final PaymentInstrument result = piClient.postPaymentInstrument(userId, pi).wrapped().get();
+        final PaymentInstrument result = piClient.postPaymentInstrument(pi).wrapped().get();
         Assert.assertNotNull(result.getCreditCardRequest().getExternalToken());
         Assert.assertNotNull(result.getId());
-        final PaymentInstrument getResult = piClient.getById(userId, new PaymentInstrumentId(result.getId()
-                .getPaymentInstrumentId())).wrapped().get();
+        final PaymentInstrument getResult = piClient.getById(new PaymentInstrumentId(result.getId())).wrapped().get();
         Assert.assertEquals(result.getCreditCardRequest().getExternalToken(), getResult.getCreditCardRequest().getExternalToken());
-        Assert.assertEquals(result.getId().getUserId(), result.getId().getUserId());
-        Assert.assertEquals(result.getId().getPaymentInstrumentId(), result.getId().getPaymentInstrumentId());
+        Assert.assertEquals(result.getUserId(), getResult.getUserId());
+        Assert.assertEquals(result.getId(), getResult.getId());
         PaymentTransaction trx = new PaymentTransaction(){
             {
                 setTrackingUuid(generateUUID());
@@ -74,8 +53,7 @@ public class PaymentClientProxyTest extends BaseTest {
         Assert.assertNotNull(paymentResult.getExternalToken());
         Assert.assertEquals(paymentResult.getStatus().toUpperCase(), PaymentStatus.AUTHORIZED.toString());
         PaymentTransaction getAuth = paymentClient.getPayment(paymentResult.getId()).wrapped().get();
-        Assert.assertEquals(getAuth.getPaymentInstrumentId().getPaymentInstrumentId(), paymentResult.getPaymentInstrumentId().getPaymentInstrumentId());
-        Assert.assertEquals(getAuth.getPaymentInstrumentId().getUserId(), paymentResult.getPaymentInstrumentId().getUserId());
+        Assert.assertEquals(getAuth.getPaymentInstrumentId(), paymentResult.getPaymentInstrumentId());
         Assert.assertEquals(getAuth.getExternalToken(), paymentResult.getExternalToken());
         Assert.assertEquals(getAuth.getStatus().toUpperCase(), PaymentStatus.AUTHORIZED.toString());
         PaymentTransaction captureTrx = new PaymentTransaction(){
@@ -90,33 +68,38 @@ public class PaymentClientProxyTest extends BaseTest {
 
     }
 
-    @Test(enabled = false)
-    public void addPIAndAuthPartialSettle() throws ExecutionException, InterruptedException {
-        final UserId userId = new UserId(generateLong());
-        PaymentInstrument pi = new PaymentInstrument(){
-            {
-                setAccountName("ut");
-                setAccountNum("4111111111111111");
-                setIsValidated(false);
-                setType("CREDITCARD");
-                setTrackingUuid(generateUUID());
-                setAddress(new Address() {
-                    {
-                        setAddressLine1("3rd street");
-                        setPostalCode("12345");
-                        setCountry("US");
-                    }
-                });
-                setCreditCardRequest(new CreditCardRequest(){
-                    {
-                        setExpireDate("2025-12");
-                        setEncryptedCvmCode("111");
-                    }
-                });
-            }
-        };
+    private PaymentInstrument getPaymentInstrument() {
+        return new PaymentInstrument(){
+                {
+                    setAccountName("ut");
+                    setAccountNum("4111111111111111");
+                    setIsValidated(false);
+                    setType("CREDITCARD");
+                    setTrackingUuid(generateUUID());
+                    setAdmins(Arrays.asList(getLongId()));
+                    setAddress(new Address() {
+                        {
+                            setAddressLine1("3rd street");
+                            setPostalCode("12345");
+                            setCountry("US");
+                        }
+                    });
+                    setCreditCardRequest(new CreditCardRequest(){
+                        {
+                            setExpireDate("2025-12");
+                            setEncryptedCvmCode("111");
+                        }
+                    });
+                }
+            };
+    }
 
-        final PaymentInstrument result = piClient.postPaymentInstrument(userId, pi).wrapped().get();
+    @Test(enabled = true)
+    public void addPIAndAuthPartialSettle() throws ExecutionException, InterruptedException {
+        final UserId userId = new UserId(getLongId());
+        PaymentInstrument pi = getPaymentInstrument();
+
+        final PaymentInstrument result = piClient.postPaymentInstrument(pi).wrapped().get();
         Assert.assertNotNull(result.getCreditCardRequest().getExternalToken());
         Assert.assertNotNull(result.getId());
         PaymentTransaction trx = new PaymentTransaction(){
@@ -153,33 +136,12 @@ public class PaymentClientProxyTest extends BaseTest {
         Assert.assertEquals(captureResult.getStatus().toUpperCase(), PaymentStatus.SETTLEMENT_SUBMITTED.toString());
     }
 
-    @Test(enabled = false)
+    @Test(enabled = true)
     public void addPIAndAuthReverse() throws ExecutionException, InterruptedException {
-        final UserId userId = new UserId(generateLong());
-        PaymentInstrument pi = new PaymentInstrument(){
-            {
-                setAccountName("ut");
-                setAccountNum("4111111111111111");
-                setIsValidated(false);
-                setType("CREDITCARD");
-                setTrackingUuid(generateUUID());
-                setAddress(new Address() {
-                    {
-                        setAddressLine1("3rd street");
-                        setPostalCode("12345");
-                        setCountry("US");
-                    }
-                });
-                setCreditCardRequest(new CreditCardRequest(){
-                    {
-                        setExpireDate("2025-12");
-                        setEncryptedCvmCode("111");
-                    }
-                });
-            }
-        };
+        final UserId userId = new UserId(getLongId());
+        PaymentInstrument pi = getPaymentInstrument();
 
-        final PaymentInstrument result = piClient.postPaymentInstrument(userId, pi).wrapped().get();
+        final PaymentInstrument result = piClient.postPaymentInstrument(pi).wrapped().get();
         Assert.assertNotNull(result.getCreditCardRequest().getExternalToken());
         Assert.assertNotNull(result.getId());
         PaymentTransaction trx = new PaymentTransaction(){
@@ -210,33 +172,12 @@ public class PaymentClientProxyTest extends BaseTest {
         Assert.assertEquals(captureResult.getStatus().toUpperCase(), PaymentStatus.REVERSED.toString());
     }
 
-    @Test(enabled = false)
+    @Test(enabled = true)
     public void addPIAndChargeReverse() throws ExecutionException, InterruptedException {
-        final UserId userId = new UserId(generateLong());
-        PaymentInstrument pi = new PaymentInstrument(){
-            {
-                setAccountName("ut");
-                setAccountNum("4111111111111111");
-                setIsValidated(false);
-                setType("CREDITCARD");
-                setTrackingUuid(generateUUID());
-                setAddress(new Address() {
-                    {
-                        setAddressLine1("3rd street");
-                        setPostalCode("12345");
-                        setCountry("US");
-                    }
-                });
-                setCreditCardRequest(new CreditCardRequest(){
-                    {
-                        setExpireDate("2025-12");
-                        setEncryptedCvmCode("111");
-                    }
-                });
-            }
-        };
+        final UserId userId = new UserId(getLongId());
+        PaymentInstrument pi = getPaymentInstrument();
 
-        final PaymentInstrument result = piClient.postPaymentInstrument(userId, pi).wrapped().get();
+        final PaymentInstrument result = piClient.postPaymentInstrument(pi).wrapped().get();
         Assert.assertNotNull(result.getCreditCardRequest().getExternalToken());
         Assert.assertNotNull(result.getId());
         PaymentTransaction trx = new PaymentTransaction(){
@@ -269,31 +210,10 @@ public class PaymentClientProxyTest extends BaseTest {
 
     @Test(enabled = false)
     public void addPIAndAuthFailed() throws ExecutionException, InterruptedException {
-        final UserId userId = new UserId(generateLong());
-        PaymentInstrument pi = new PaymentInstrument(){
-            {
-                setAccountName("ut");
-                setAccountNum("4111111111111111");
-                setIsValidated(false);
-                setType("CREDITCARD");
-                setTrackingUuid(generateUUID());
-                setAddress(new Address() {
-                    {
-                        setAddressLine1("3rd street");
-                        setPostalCode("12345");
-                        setCountry("US");
-                    }
-                });
-                setCreditCardRequest(new CreditCardRequest(){
-                    {
-                        setExpireDate("2025-12");
-                        setEncryptedCvmCode("111");
-                    }
-                });
-            }
-        };
+        final UserId userId = new UserId(getLongId());
+        PaymentInstrument pi = getPaymentInstrument();
 
-        final PaymentInstrument result = piClient.postPaymentInstrument(userId, pi).wrapped().get();
+        final PaymentInstrument result = piClient.postPaymentInstrument(pi).wrapped().get();
         Assert.assertNotNull(result.getCreditCardRequest().getExternalToken());
         Assert.assertNotNull(result.getId());
         PaymentTransaction trx = new PaymentTransaction(){
@@ -321,31 +241,10 @@ public class PaymentClientProxyTest extends BaseTest {
 
     @Test(enabled = false)
     public void addPIAndAuthCaptureFailed() throws ExecutionException, InterruptedException {
-        final UserId userId = new UserId(generateLong());
-        PaymentInstrument pi = new PaymentInstrument(){
-            {
-                setAccountName("ut");
-                setAccountNum("4111111111111111");
-                setIsValidated(false);
-                setType("CREDITCARD");
-                setTrackingUuid(generateUUID());
-                setAddress(new Address() {
-                    {
-                        setAddressLine1("3rd street");
-                        setPostalCode("12345");
-                        setCountry("US");
-                    }
-                });
-                setCreditCardRequest(new CreditCardRequest(){
-                    {
-                        setExpireDate("2025-12");
-                        setEncryptedCvmCode("111");
-                    }
-                });
-            }
-        };
+        final UserId userId = new UserId(getLongId());
+        PaymentInstrument pi = getPaymentInstrument();
 
-        final PaymentInstrument result = piClient.postPaymentInstrument(userId, pi).wrapped().get();
+        final PaymentInstrument result = piClient.postPaymentInstrument(pi).wrapped().get();
         Assert.assertNotNull(result.getCreditCardRequest().getExternalToken());
         Assert.assertNotNull(result.getId());
         PaymentTransaction trx = new PaymentTransaction(){
@@ -397,31 +296,10 @@ public class PaymentClientProxyTest extends BaseTest {
 
     @Test(enabled = false)
     public void addPIAndAuthReverseFailed() throws ExecutionException, InterruptedException {
-        final UserId userId = new UserId(generateLong());
-        PaymentInstrument pi = new PaymentInstrument(){
-            {
-                setAccountName("ut");
-                setAccountNum("4111111111111111");
-                setIsValidated(false);
-                setType("CREDITCARD");
-                setTrackingUuid(generateUUID());
-                setAddress(new Address() {
-                    {
-                        setAddressLine1("3rd street");
-                        setPostalCode("12345");
-                        setCountry("US");
-                    }
-                });
-                setCreditCardRequest(new CreditCardRequest(){
-                    {
-                        setExpireDate("2025-12");
-                        setEncryptedCvmCode("111");
-                    }
-                });
-            }
-        };
+        final UserId userId = new UserId(getLongId());
+        PaymentInstrument pi = getPaymentInstrument();
 
-        final PaymentInstrument result = piClient.postPaymentInstrument(userId, pi).wrapped().get();
+        final PaymentInstrument result = piClient.postPaymentInstrument(pi).wrapped().get();
         Assert.assertNotNull(result.getCreditCardRequest().getExternalToken());
         Assert.assertNotNull(result.getId());
         PaymentTransaction trx = new PaymentTransaction(){

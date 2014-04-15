@@ -32,8 +32,8 @@ public class PaymentMapperExtension {
             return null;
         }
         PaymentInstrumentEntity entity = paymentMapperImpl.toPIEntityRaw(piRequest, new MappingContext());
-        entity.setUserId(piRequest.getId().getUserId());
-        entity.setId(piRequest.getId().getPaymentInstrumentId());
+        //entity.setUserId(piRequest.getId().getUserId());
+        //entity.setId(piRequest.getId().getPaymentInstrumentId());
         return entity;
     }
 
@@ -42,7 +42,7 @@ public class PaymentMapperExtension {
             return null;
         }
         PaymentInstrument pi = paymentMapperImpl.toPaymentInstrumentRaw(piEntity, new MappingContext());
-        pi.setId(new PIId(piEntity.getUserId(), piEntity.getId()));
+        //pi.setId(new PIId(piEntity.getUserId(), piEntity.getId()));
         return pi;
     }
 
@@ -74,7 +74,7 @@ public class PaymentMapperExtension {
             return null;
         }
         PaymentEntity payment = paymentMapperImpl.toPaymentEntityRaw(request, new MappingContext());
-        payment.setPaymentInstrumentId(request.getPaymentInstrumentId().getPaymentInstrumentId());
+        payment.setPaymentInstrumentId(request.getPaymentInstrumentId());
         payment.setCurrency(request.getChargeInfo().getCurrency());
         payment.setNetAmount(request.getChargeInfo().getAmount());
         payment.setCountryCode(request.getChargeInfo().getCountry());
@@ -89,7 +89,6 @@ public class PaymentMapperExtension {
             return null;
         }
         PaymentTransaction request = paymentMapperImpl.toPaymentRaw(paymentEntity, new MappingContext());
-        request.setPaymentInstrumentId(new PIId(null, paymentEntity.getPaymentInstrumentId()));
         ChargeInfo chargeInfo = new ChargeInfo();
         chargeInfo.setAmount(paymentEntity.getNetAmount());
         chargeInfo.setBusinessDescriptor(paymentEntity.getBusinessDescriptor());
