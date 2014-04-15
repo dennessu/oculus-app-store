@@ -111,6 +111,7 @@ The following guide is for setting up windows as the development and testing env
 
 #### Add aws-artifactory to hosts
 `aws-artifactory` is a shared artifactory server used by the development team. The code always uses the name `aws-artifactory` to access it. Run the following command to map IP address to the name.
+
 1. Open an elevated command line window.
 
     ```bat
@@ -132,27 +133,27 @@ The following guide is for setting up OS X as the development and testing enviro
 #### Install [Home Brew](http://brew.sh)
 1. Open Terminal and run the following commands:
 
-```bash
-xcode-select --install
-ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"
-```
+    ```bash
+    xcode-select --install
+    ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"
+    ```
 
 1. Prefer gnubin by adding the following lines to `~/.bash_profile`
 
-```bash
-# Prefer gnubin
-export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
-export MANPATH="/usr/local/opt/coreutils/libexec/gnuman:$MANPATH"
-```
+    ```bash
+    # Prefer gnubin
+    export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
+    export MANPATH="/usr/local/opt/coreutils/libexec/gnuman:$MANPATH"
+    ```
 
 Note: If you don't want to change the coreutils preference, you can create another script and always run before building this branch. We are trying to use Python to reduce the dependency on bash.
 
 #### Install Necessary Packages
 1. Open Terminal and run the following command:
 
-```bash
-brew install coreutils gradle wget openssl
-```
+    ```bash
+    brew install coreutils gradle wget openssl
+    ```
 
 1. Verify gradle is available in command by running the following command in your command line.
 
@@ -284,14 +285,14 @@ changeit
 
 ### Full Build
 
-1. Run the build using the following commands.
+Run the full build using the following commands.
 
-    ```bash
-    cd ~/owp-main
-    ./fullcycle.sh
-    ```
+```bash
+cd ~/owp-main
+./fullcycle.sh
+```
 
-    The command should finish without error. The fullcycle.sh includes the unit tests.
+The command should finish without error. The fullcycle.sh includes the unit tests.
 
 ### Partial Build
 If you want to build only one component (for example, identity), run the following commands:
