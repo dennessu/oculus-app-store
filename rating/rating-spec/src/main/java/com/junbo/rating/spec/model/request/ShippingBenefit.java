@@ -6,14 +6,15 @@
 
 package com.junbo.rating.spec.model.request;
 
-import com.junbo.common.jackson.annotation.PromotionId;
+import com.junbo.common.jackson.annotation.PromotionRevisionId;
+
 import java.math.BigDecimal;
 
 /**
  * Created by lizwu on 2/24/14.
  */
 public class ShippingBenefit {
-    @PromotionId
+    @PromotionRevisionId
     private Long promotion;
     private BigDecimal shippingFee;
 

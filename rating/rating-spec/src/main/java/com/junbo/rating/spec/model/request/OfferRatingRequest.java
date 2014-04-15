@@ -16,7 +16,7 @@ import java.util.Set;
  */
 public class OfferRatingRequest {
     @UserId
-    @JsonProperty("User")
+    @JsonProperty("user")
     private Long userId;
     private String country;
     private String currency;

@@ -7,32 +7,39 @@
 package com.junbo.rating.spec.fusion;
 
 import java.math.BigDecimal;
+import java.util.*;
 
 /**
  * Created by lizwu on 2/12/14.
  */
 public class Price {
-    private BigDecimal price;
-    private String currency;
+    public static final String FREE = "FREE";
+    public static final String TIERED = "TIERED";
+    public static final String CUSTOM = "CUSTOM";
+    public static final Set<String> ALL_TYPES =
+            Collections.unmodifiableSet(new HashSet<>(Arrays.asList(FREE, TIERED, CUSTOM)));
 
-    public Price(BigDecimal price, String currency) {
-        this.price = price;
-        this.currency = currency;
+    private String priceType;
+    private Map<String, BigDecimal> prices;
+
+    public Price(String priceType, Map<String, BigDecimal> prices) {
+        this.priceType = priceType;
+        this.prices = prices;
     }
 
-    public BigDecimal getPrice() {
-        return price;
+    public String getPriceType() {
+        return priceType;
     }
 
-    public void setPrice(BigDecimal price) {
-        this.price = price;
+    public void setPriceType(String priceType) {
+        this.priceType = priceType;
     }
 
-    public String getCurrency() {
-        return currency;
+    public Map<String, BigDecimal> getPrices() {
+        return prices;
     }
 
-    public void setCurrency(String currency) {
-        this.currency = currency;
+    public void setPrices(Map<String, BigDecimal> prices) {
+        this.prices = prices;
     }
 }
