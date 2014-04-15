@@ -8,6 +8,7 @@ package com.junbo.subscription.clientproxy;
 
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.offer.Offer;
+import com.junbo.catalog.spec.model.offer.OfferRevision;
 
 /**
  * CatalogGateway.
@@ -16,6 +17,8 @@ public interface CatalogGateway {
     Offer getOffer(Long offerId, Long timestamp);
 
     Offer getOffer(Long offerId);
+
+    OfferRevision getOfferRev(Long offerRevId);
 
     Item getItem(Long itemID);
 

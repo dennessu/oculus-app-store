@@ -31,6 +31,8 @@
         {{/if}}
 
         <div class="panel-list">
+
+            {{#each list itemController="PaymentItem"}}
             <div class="item">
                 <div class="btns">
                     <ul class="nav navbar-nav navbar-right">
@@ -45,9 +47,14 @@
                     </ul>
                 </div>
 
-                <h4>VISA 1111 <label>Primary</label></h4>
-                <label><span>Exp: </span>2016/05</label>
+                <h4>{{creditCardRequest.creditCardType}} {{cardNumberLast}}
+                    {{#if isPrimary}}
+                    <label>Primary</label>
+                    {{/if}}
+                </h4>
+                <label><span>Exp: </span>{{creditCardRequest.expireDate}}</label>
             </div>
+            {{/each}}
 
         </div>
     </div>

@@ -11,7 +11,6 @@ import com.junbo.payment.db.dao.payment.PaymentEventDao;
 import com.junbo.payment.db.dao.paymentinstrument.PaymentInstrumentDao;
 import com.junbo.payment.db.entity.payment.PaymentEntity;
 import com.junbo.payment.db.entity.payment.PaymentEventEntity;
-import com.junbo.payment.db.entity.paymentinstrument.PaymentInstrumentEntity;
 import com.junbo.payment.db.mapper.PaymentMapperExtension;
 import com.junbo.payment.spec.enums.PaymentStatus;
 import com.junbo.payment.spec.model.PaymentEvent;
@@ -43,9 +42,9 @@ public class PaymentRepository {
 
     public PaymentTransaction getByPaymentId(Long paymentId){
         PaymentEntity entity = paymentDao.get(paymentId);
-        PaymentInstrumentEntity pi = piDao.get(entity.getPaymentInstrumentId());
+        //PaymentInstrumentEntity pi = piDao.get(entity.getPaymentInstrumentId());
         PaymentTransaction transaction = paymentMapperExtension.toPayment(entity);
-        transaction.getPaymentInstrumentId().setUserId(pi.getUserId());
+        //transaction.getPaymentInstrumentId().setUserId(pi.getUserId());
         return transaction;
     }
 

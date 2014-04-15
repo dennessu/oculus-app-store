@@ -6,7 +6,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-
+    <!-->
     <changeSet id="1" author='WenhongZhu' context="PREDEPLOY">
         <sql>
         <![CDATA[
@@ -28,7 +28,7 @@
         ]]>
         </sql>
     </changeSet>
-
+    -->
     <changeSet id="3" author='WenhongZhu' context="PREDEPLOY">
         <sql>
         <![CDATA[
@@ -159,7 +159,7 @@
         </sql>
     </changeSet>
 
-
+    <!--
     <changeSet id="10" author='WenhongZhu' context="PREDEPLOY">
         <sql>
         <![CDATA[
@@ -180,6 +180,7 @@
         ]]>
         </sql>
     </changeSet>
+    -->
 
     <changeSet id="11" author='WenhongZhu' context="PREDEPLOY">
         <sql>

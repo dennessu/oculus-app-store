@@ -10,22 +10,27 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.jackson.annotation.ShippingMethodId;
 import com.junbo.common.jackson.annotation.UserId;
 
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
  * Created by lizwu on 2/12/14.
  */
-public class OrderRatingRequest {
+public class RatingRequest {
+    @NotNull
+    private Boolean isReadyToBuy;
+
     @UserId
-    @JsonProperty("User")
+    @JsonProperty("user")
     private Long userId;
     private String country;
     private String currency;
 
-    private Set<String> couponCodes;
+    private Set<String> couponCodes = new HashSet<>();
 
-    private Set<OrderRatingItem> lineItems;
+    private Set<RatingItem> lineItems;
 
     @ShippingMethodId
     @JsonProperty("defaultShippingMethod")
@@ -36,6 +41,14 @@ public class OrderRatingRequest {
 
     @Null
     private ShippingBenefit shippingBenefit;
+
+    public Boolean isReadyToBuy() {
+        return isReadyToBuy;
+    }
+
+    public void setIsReadyToBuy(Boolean isReadyToBuy) {
+        this.isReadyToBuy = isReadyToBuy;
+    }
 
     public Long getUserId() {
         return userId;
@@ -69,11 +82,11 @@ public class OrderRatingRequest {
         this.couponCodes = couponCodes;
     }
 
-    public Set<OrderRatingItem> getLineItems() {
+    public Set<RatingItem> getLineItems() {
         return lineItems;
     }
 
-    public void setLineItems(Set<OrderRatingItem> lineItems) {
+    public void setLineItems(Set<RatingItem> lineItems) {
         this.lineItems = lineItems;
     }
 

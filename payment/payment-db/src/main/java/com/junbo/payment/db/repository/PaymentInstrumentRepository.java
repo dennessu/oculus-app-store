@@ -61,7 +61,7 @@ public class PaymentInstrumentRepository {
             ccPiEntity.setLastBillingDate(new Date());
             ccPaymentInstrumentDao.save(ccPiEntity);
         }
-        request.setId(new PIId(piEntity.getUserId(), piId));
+        request.setId(piId);
     }
 
     public void delete(Long paymentInstrumentId){

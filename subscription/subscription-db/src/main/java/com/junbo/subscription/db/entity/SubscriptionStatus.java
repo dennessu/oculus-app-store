@@ -9,6 +9,7 @@ package com.junbo.subscription.db.entity;
  * Subscription Status.
  */
 public enum SubscriptionStatus {
+    CREATED,
     ENABLED,
     EXPIRED,
     CANCELLED,

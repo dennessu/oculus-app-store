@@ -13,6 +13,7 @@ import com.junbo.subscription.db.entity.SubscriptionEntity;
 import com.junbo.subscription.db.entity.SubscriptionStatus;
 import com.junbo.subscription.db.repository.SubscriptionRepository;
 import com.junbo.subscription.spec.model.Subscription;
+import com.junbo.subscription.spec.model.SubscriptionEntitlement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
@@ -25,6 +26,7 @@ import org.testng.annotations.Test;
 import javax.sql.DataSource;
 import java.util.Date;
 import java.util.Random;
+import java.util.UUID;
 
 /**
  * Subscription dao test.
@@ -63,9 +65,11 @@ public class SubscriptionDaoTest extends AbstractTransactionalTestNGSpringContex
         Assert.assertEquals(insertedSubscription.getUserId(), subscription.getUserId());
     }
 
+
     private Subscription buildSubscription() {
         Subscription subscription = new Subscription();
 
+        subscription.setTrackingUuid(UUID.randomUUID());
         subscription.setUserId(idGenerator.nextId());
         subscription.setPaymentMethodId(new Random().nextLong());
         subscription.setOfferId(idGenerator.nextId());
@@ -76,9 +80,11 @@ public class SubscriptionDaoTest extends AbstractTransactionalTestNGSpringContex
         return subscription;
     }
 
+
     private SubscriptionEntity buildSubscriptionEntity() {
         SubscriptionEntity entity = new SubscriptionEntity();
 
+        entity.setTrackingUuid(UUID.randomUUID());
         entity.setUserId(idGenerator.nextId());
         entity.setPiId(new Random().nextLong());
         entity.setItemId("FreeSubsOffer");

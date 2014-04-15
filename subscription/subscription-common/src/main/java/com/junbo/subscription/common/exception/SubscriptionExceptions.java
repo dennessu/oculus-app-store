@@ -21,8 +21,12 @@ public interface SubscriptionExceptions {
             field = "tracking_uuid")
     AppError missingTrackingUuid();
 
+    @ErrorDef(httpStatusCode = 400, code = "40002", description = "The offer id is missing.")
+    AppError missingOfferId();
 
-    @ErrorDef(httpStatusCode = 500, code = "50001", description = "this is not a subscrption offer")
+
+    @ErrorDef(httpStatusCode = 500, code = "50001", description = "this is not a subscrption offer: {0}",
+            field = "offer_id")
     AppError subscriptionTypeError();
 
     @ErrorDef(httpStatusCode = 500, code = "50002", description = "Exception occurred during calling [{0}] component.")
