@@ -72,7 +72,7 @@ public class PromotionServiceImpl extends BaseRevisionedServiceImpl<Promotion, P
             existingPromotion.setStartDate(revision.getStartDate());
             existingPromotion.setEndDate(revision.getEndDate());
             getEntityRepo().update(existingPromotion);
-            revision.setTimestamp(Utils.now());
+            revision.setTimestamp(Utils.currentTimestamp());
         }
         promotionRevisionRepo.update(revision);
         return promotionRevisionRepo.get(revisionId);

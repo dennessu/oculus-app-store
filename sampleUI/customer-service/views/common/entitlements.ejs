@@ -36,6 +36,8 @@
         </div>
 
         <div class="panel-list">
+
+            {{#each list}}
             <div class="item">
                 <div class="btns">
                     <ul class="nav navbar-nav navbar-right">
@@ -48,14 +50,15 @@
                     </ul>
                 </div>
 
-                <h4>DEVELOPER</h4>
-                <label><span>Status: </span>ACTIVE</label>
-                <label><span>Group: </span></label>
-                <label><span>Tag: </span></label>
-                <label><span>Consumable: </span></label>
-                <label><span>Lifecycle: </span></label>
-                <label><span>Grant Time: </span>2014-03-25 08:47:46</label>
+                <h4>{{type}}</h4>
+                <label><span>Status: </span>{{status}}</label>
+                <label><span>Group: </span>{{group}}</label>
+                <label><span>Tag: </span>{{tag}}</label>
+                <label><span>Consumable: </span>{{consumable}}</label>
+                <label><span>Lifecycle: </span>{{managedLifecycle}}</label>
+                <label><span>Grant Time: </span>{{grantTime}}</label>
             </div>
+            {{/each}}
         </div>
     </div>
 </div>

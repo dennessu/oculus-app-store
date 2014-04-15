@@ -18,8 +18,8 @@ import java.util.List;
  */
 public interface OfferService {
 
-    String getOffer(String offerId, HashMap<String, String> httpPara) throws Exception;
-    String getOffer(String offerId, HashMap<String, String> httpPara, int expectedResponseCode) throws Exception;
+    String getOffer(String offerId) throws Exception;
+    String getOffer(String offerId, int expectedResponseCode) throws Exception;
 
     List<String> getOffer(HashMap<String, String> httpPara) throws Exception;
     List<String> getOffer(HashMap<String, String> httpPara, int expectedResponseCode) throws Exception;

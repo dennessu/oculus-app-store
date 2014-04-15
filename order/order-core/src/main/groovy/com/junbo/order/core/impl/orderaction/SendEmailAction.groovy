@@ -1,13 +1,13 @@
 package com.junbo.order.core.impl.orderaction
 
 import com.junbo.email.spec.model.Email
-import com.junbo.identity.spec.model.user.User
+import com.junbo.identity.spec.v1.model.User
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.clientproxy.FacadeContainer
-import com.junbo.order.clientproxy.model.OrderOffer
+import com.junbo.order.clientproxy.model.OrderOfferRevision
 import com.junbo.order.core.impl.common.CoreUtils
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
 import groovy.transform.CompileStatic
@@ -44,9 +44,9 @@ class SendEmailAction implements Action {
         return orderServiceContextBuilder.getOffers(context.orderServiceContext).recover { Throwable ex ->
             LOGGER.error('name=SendEmail_Action_Fail_On_Fetch_Offer', ex)
             return Promise.pure(null)
-        }.then { List<OrderOffer> ofs ->
+        }.then { List<OrderOfferRevision> ofs ->
             if (!CollectionUtils.isEmpty(ofs)) {
-                ofs.each { OrderOffer offer -> catalogOffers.add(offer.catalogOffer)
+                ofs.each { OrderOfferRevision offer -> catalogOffers.add(offer.catalogOfferRevision)
                 }
             }
             return orderServiceContextBuilder.getUser(context.orderServiceContext).recover { Throwable ex ->

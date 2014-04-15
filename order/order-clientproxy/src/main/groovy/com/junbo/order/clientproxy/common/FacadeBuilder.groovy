@@ -1,20 +1,19 @@
 package com.junbo.order.clientproxy.common
-
-import com.junbo.catalog.spec.model.offer.Offer
+import com.junbo.catalog.spec.model.offer.OfferRevision
+import com.junbo.common.id.UserId
 import com.junbo.email.spec.model.Email
 import com.junbo.fulfilment.spec.model.FulfilmentItem
 import com.junbo.fulfilment.spec.model.FulfilmentRequest
-import com.junbo.identity.spec.model.user.User
+import com.junbo.identity.spec.v1.model.User
 import com.junbo.order.spec.model.Discount
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderItem
-import com.junbo.rating.spec.model.request.OrderRatingItem
-import com.junbo.rating.spec.model.request.OrderRatingRequest
+import com.junbo.rating.spec.model.request.RatingItem
+import com.junbo.rating.spec.model.request.RatingRequest
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 
 import java.text.SimpleDateFormat
-
 /**
  * Created by LinYi on 14-3-4.
  */
@@ -55,8 +54,8 @@ class FacadeBuilder {
         return item
     }
 
-    static OrderRatingRequest buildOrderRatingRequest(Order order) {
-        OrderRatingRequest request = new OrderRatingRequest()
+    static RatingRequest buildRatingRequest(Order order) {
+        RatingRequest request = new RatingRequest()
         request.country = order.country
         List<String> coupons = []
         order.discounts?.each { Discount d ->
@@ -69,30 +68,30 @@ class FacadeBuilder {
         request.userId = order.user?.value
         request.country = order.country
         request.shippingMethodId = order.shippingMethod
-        List<OrderRatingItem> ratingItems = []
+        List<RatingItem> ratingItems = []
         order.orderItems?.each { OrderItem item ->
-            OrderRatingItem ratingItem = new OrderRatingItem()
+            RatingItem ratingItem = new RatingItem()
             ratingItem.offerId = item.offer.value
             ratingItem.quantity = item.quantity
             ratingItems.add(ratingItem)
         }
-        request.lineItems = ((OrderRatingItem[])ratingItems.toArray()) as Set
+        request.lineItems = ((RatingItem[])ratingItems.toArray()) as Set
         return request
     }
 
-    static Email buildOrderConfirmationEmail(Order order, User user, List<Offer> offers) {
+    static Email buildOrderConfirmationEmail(Order order, User user, List<OfferRevision> offers) {
         Email email = new Email()
-        email.userId = user.id
+        email.userId = (UserId)(user.id)
         email.source = 'SilkCloud'
         email.action = 'OrderConfirmation'
         email.locale = 'en_US'
         // TODO: update email address as IDENTITY component
-        email.recipient = user.userName
+        email.recipient = user.username
         Map<String, String> properties = [:]
         properties.put(ORDER_NUMBER, order.id.value.toString())
         Date now = new Date()
         properties.put(ORDER_DATE, new SimpleDateFormat('yyyy-MM-dd', Locale.US).format(now))
-        properties.put(NAME, user.userName)
+        properties.put(NAME, user.username)
         properties.put(SUBTOTAL, order.totalAmount?.toString())
         properties.put(TAX, BigDecimal.ZERO.toString())
         def grandTotal = order.totalAmount
@@ -101,10 +100,11 @@ class FacadeBuilder {
             properties.put(TAX, order.totalTax.toString())
         }
         properties.put(GRAND_TOTAL, grandTotal.toString())
-        offers.eachWithIndex { Offer offer, int index ->
-            properties.put(OFFER_NAME + index, offer.name)
+        offers.eachWithIndex { OfferRevision offer, int index ->
+            // TODO update the l10n logic per catalog change
+            properties.put(OFFER_NAME + index, offer.name.locales['en_US'])
             order.orderItems.each { OrderItem item ->
-                if (item.offer.value == offer.id) {
+                if (item.offer.value == offer.offerId) {
                     properties.put(QUANTITY + index, item.quantity.toString())
                     properties.put(PRICE + index, (item.quantity * item.unitPrice).toString())
                 }

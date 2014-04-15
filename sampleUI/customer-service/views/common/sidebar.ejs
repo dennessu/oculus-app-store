@@ -7,22 +7,22 @@
         </ul>
     </div>
     <div class="panel-body">
+        {{#if isLoading}}
+        <div class="panel-loading"></div>
+        {{/if}}
+
         <div class="user-info">
             <dl>
                 <dt>Username:</dt>
-                <dd>TomSlick</dd>
+                <dd>{{user.userName}}</dd>
             </dl>
             <dl>
                 <dt>Email:</dt>
-                <dd>TomSlick@SilkCloud.com</dd>
+                <dd>{{user.userName}}</dd>
             </dl>
             <dl>
                 <dt>Status:</dt>
-                <dd>ACTIVE</dd>
-            </dl>
-            <dl>
-                <dt>Created Time:</dt>
-                <dd>2014-02-27 09:15:26</dd>
+                <dd>{{user.status}}</dd>
             </dl>
         </div>
     </div>
