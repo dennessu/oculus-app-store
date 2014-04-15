@@ -17,6 +17,7 @@ import com.junbo.catalog.spec.resource.OfferResource
 import com.junbo.catalog.spec.resource.OfferRevisionResource
 import com.junbo.common.id.ItemId
 import com.junbo.common.id.OfferId
+import com.junbo.common.model.Results
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.catalog.CatalogFacade
 import com.junbo.order.clientproxy.model.OrderOfferItemRevision
@@ -64,7 +65,8 @@ class CatalogFacadeImpl implements CatalogFacade {
         )
         return offerRevisionResource.getOfferRevisions(entityGetOption).syncRecover {
             // TODO add logger and exception
-        }.then { List<OfferRevision> ors ->
+        }.then { Results<OfferRevision> result ->
+            List<OfferRevision> ors = result?.items
             if (CollectionUtils.isEmpty(ors)) {
                 LOGGER.info('name=Can_Not_Get_OfferRevision. offerId: {}, timestamp: {}', offerId, honoredTime)
                 return Promise.pure(null)
