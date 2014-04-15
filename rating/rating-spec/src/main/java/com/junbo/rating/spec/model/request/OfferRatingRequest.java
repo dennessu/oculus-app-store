@@ -18,10 +18,10 @@ public class OfferRatingRequest {
     @UserId
     @JsonProperty("user")
     private Long userId;
-    private String country;
     private String currency;
 
     private Set<OfferRatingItem> offers;
+    private Long timestamp;
 
     public Long getUserId() {
         return userId;
@@ -29,14 +29,6 @@ public class OfferRatingRequest {
 
     public void setUserId(Long userId) {
         this.userId = userId;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
     }
 
     public String getCurrency() {
@@ -53,5 +45,13 @@ public class OfferRatingRequest {
 
     public void setOffers(Set<OfferRatingItem> offers) {
         this.offers = offers;
+    }
+
+    public Long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Long timestamp) {
+        this.timestamp = timestamp;
     }
 }

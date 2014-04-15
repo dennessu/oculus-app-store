@@ -27,7 +27,6 @@ public class OrderDiscountInfoDaoTest extends BaseTest {
     public void testCreateAndRead() {
         OrderDiscountInfoEntity orderDiscountInfoEntity = TestHelper.generateOrderDiscountInfoEntity();
         Long id = orderDiscountInfoDao.create(orderDiscountInfoEntity);
-        orderDiscountInfoDao.flush();
         OrderDiscountInfoEntity returnedEntity = orderDiscountInfoDao.read(id);
 
         Assert.assertNotNull(returnedEntity, "Fail to create or read entity.");
@@ -39,11 +38,9 @@ public class OrderDiscountInfoDaoTest extends BaseTest {
     public void testUpdate() {
         OrderDiscountInfoEntity orderDiscountInfoEntity = TestHelper.generateOrderDiscountInfoEntity();
         Long id = orderDiscountInfoDao.create(orderDiscountInfoEntity);
-        orderDiscountInfoDao.flush();
         BigDecimal newDiscountRate = orderDiscountInfoEntity.getDiscountRate().add(BigDecimal.ONE);
         orderDiscountInfoEntity.setDiscountRate(newDiscountRate);
         orderDiscountInfoDao.update(orderDiscountInfoEntity);
-        orderDiscountInfoDao.flush();
         OrderDiscountInfoEntity returnedEntity = orderDiscountInfoDao.read(id);
 
         Assert.assertNotNull(returnedEntity, "Fail to create or read entity.");
@@ -57,7 +54,6 @@ public class OrderDiscountInfoDaoTest extends BaseTest {
         Long orderId = entity.getOrderId();
         List<OrderDiscountInfoEntity> resultBefore = orderDiscountInfoDao.readByOrderId(orderId);
         orderDiscountInfoDao.create(entity);
-        orderDiscountInfoDao.flush();
         List<OrderDiscountInfoEntity> resultAfter = orderDiscountInfoDao.readByOrderId(orderId);
 
         Assert.assertEquals(resultAfter.size(), resultBefore.size() + 1, "Result size should increase.");
@@ -69,7 +65,6 @@ public class OrderDiscountInfoDaoTest extends BaseTest {
         Long orderId = entity.getOrderId();
         List<OrderDiscountInfoEntity> resultBefore = orderDiscountInfoDao.readByOrderId(orderId);
         orderDiscountInfoDao.create(entity);
-        orderDiscountInfoDao.flush();
         List<OrderDiscountInfoEntity> resultAfter = orderDiscountInfoDao.readByOrderId(orderId);
         Assert.assertEquals(resultAfter.size(), resultBefore.size() + 1, "Result size should increase.");
         orderDiscountInfoDao.markDelete(entity.getDiscountInfoId());

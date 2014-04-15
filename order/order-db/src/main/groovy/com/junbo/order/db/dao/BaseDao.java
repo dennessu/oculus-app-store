@@ -17,11 +17,9 @@ public interface BaseDao<T extends CommonDbEntityWithDate> {
 
     Long create(T t);
 
-    T read(long id);
+    T read(Long id);
 
     void update(T t);
 
-    void flush();
-
-    void markDelete(long id);
+    void markDelete(Long id);
 }

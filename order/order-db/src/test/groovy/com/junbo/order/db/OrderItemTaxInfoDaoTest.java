@@ -27,7 +27,6 @@ public class OrderItemTaxInfoDaoTest extends BaseTest {
     public void testCreateAndRead() {
         OrderItemTaxInfoEntity orderItemTaxInfoEntity = generateOrderItemTaxInfoEntity();
         Long id = orderItemTaxInfoDao.create(orderItemTaxInfoEntity);
-        orderItemTaxInfoDao.flush();
         OrderItemTaxInfoEntity returnedEntity = orderItemTaxInfoDao.read(id);
 
         Assert.assertNotNull(returnedEntity, "Fail to create or read entity.");
@@ -39,10 +38,8 @@ public class OrderItemTaxInfoDaoTest extends BaseTest {
     public void testUpdate() {
         OrderItemTaxInfoEntity orderItemTaxInfoEntity = generateOrderItemTaxInfoEntity();
         Long id = orderItemTaxInfoDao.create(orderItemTaxInfoEntity);
-        orderItemTaxInfoDao.flush();
         orderItemTaxInfoEntity.setUpdatedBy("ANOTHER");
         orderItemTaxInfoDao.update(orderItemTaxInfoEntity);
-        orderItemTaxInfoDao.flush();
         OrderItemTaxInfoEntity returnedEntity = orderItemTaxInfoDao.read(id);
 
         Assert.assertNotNull(returnedEntity, "Fail to create or read entity.");

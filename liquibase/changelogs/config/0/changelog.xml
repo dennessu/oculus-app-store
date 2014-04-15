@@ -37,4 +37,33 @@
         ]]>
         </sql>
     </changeSet>
+
+    <changeSet id="2" author="weijiang" context="PREDEPLOY">
+        <sql><![CDATA[
+            create table email_template(
+                id bigint not null,
+                name varchar(128) not null,
+                provider_name varchar(256),
+                provider_index varchar(256),
+                list_of_variables varchar(4000),
+                subject varchar(256),
+                from_address varchar(256),
+                from_name varchar(256),
+
+                created_by varchar(32),
+                created_time timestamp,
+                modified_by varchar(32),
+                modified_time timestamp,
+
+                primary key(id)
+            );
+
+            create index email_template_name_idx on  email_template (name);
+
+            insert into email_template(id,name,provider_name,list_of_variables) values(0,'SilkCloud.OrderConfirmation.en_US','mandrill.com','["ordernumber","orderdate","name","offername","qty","price","subtotal","tax","grandtotal"]');
+            insert into email_template(id,name,provider_name,list_of_variables) values(1,'Oculus.Welcome.en_US','mandrill.com','["accountname"]');
+            insert into email_template(id,name,provider_name,list_of_variables) values(2,'Oculus.ActiveDevAccount.en_US','mandrill.com','["devname","publishername"]');
+        ]]>
+        </sql>
+    </changeSet>
 </databaseChangeLog>

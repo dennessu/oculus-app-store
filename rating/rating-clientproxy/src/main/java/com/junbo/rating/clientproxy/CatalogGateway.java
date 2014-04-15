@@ -18,7 +18,7 @@ import java.util.List;
  */
 public interface CatalogGateway {
     Item getItem(Long itemId);
-    RatingOffer getOffer(Long offerId);
+    RatingOffer getOffer(Long offerId, Long timestamp);
     List<PromotionRevision> getPromotions();
     ShippingMethod getShippingMethod(Long shippingMethodId);
 }

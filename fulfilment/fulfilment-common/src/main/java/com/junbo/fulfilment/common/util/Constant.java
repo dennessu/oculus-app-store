@@ -11,6 +11,9 @@ package com.junbo.fulfilment.common.util;
 public final class Constant {
     public static final String SYSTEM_INTERNAL = "system internal";
 
+    // constant number
+    public static final int UNIQUE_RESULT = 0;
+
     // entitlement definition
     public static final String ENTITLEMENT_DEF_ID = "ENTITLEMENT_DEF_ID";
     public static final String ENTITLEMENT_TAG = "ENTITLEMENT_TAG";

@@ -12,10 +12,7 @@ import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -184,5 +181,11 @@ public class OrderItemEntity extends CommonDbEntityDeletable {
 
     public void setHonoredTime(Date honoredTime) {
         this.honoredTime = honoredTime;
+    }
+
+    @Override
+    @Transient
+    public Long getShardId() {
+        return orderId;
     }
 }

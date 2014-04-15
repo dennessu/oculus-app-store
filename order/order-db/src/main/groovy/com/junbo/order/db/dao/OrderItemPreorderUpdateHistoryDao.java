@@ -17,6 +17,4 @@ public interface OrderItemPreorderUpdateHistoryDao {
     OrderItemPreorderUpdateHistoryEntity read(long id);
 
     void update(OrderItemPreorderUpdateHistoryEntity t);
-
-    void flush();
 }

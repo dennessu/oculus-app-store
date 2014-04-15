@@ -12,10 +12,7 @@ import com.junbo.order.db.entity.enums.OrderType;
 import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.Length;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -218,5 +215,11 @@ public class OrderEntity extends CommonDbEntityWithDate {
 
     public void setLocale(String locale) {
         this.locale = locale;
+    }
+
+    @Override
+    @Transient
+    public Long getShardId() {
+        return userId;
     }
 }

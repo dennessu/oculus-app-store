@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns="http://www.springframework.org/schema/beans"
        xmlns:wf="http://www.junbo.com/schema/webflow"
+       xmlns="http://www.springframework.org/schema/beans"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.junbo.com/schema/webflow http://www.junbo.com/schema/webflow-config/webflow.xsd">
 
@@ -91,6 +91,7 @@
                 <wf:action ref="grantRememberMeToken"/>
                 <wf:action ref="grantIdToken"/>
                 <wf:action ref="redirectToClient"/>
+                <wf:action ref="redirect"/>
             </wf:on-entry>
         </wf:end-state>
 
@@ -156,9 +157,7 @@
         <property name="userService" ref="userService"/>
     </bean>
 
-    <bean id="redirectToAuth" class="com.junbo.oauth.core.view.RedirectToAuthView">
-        <property name="authorizeUrl" value="${oauth.core.portal.authorizeUri}"/>
-    </bean>
+    <bean id="redirectToAuth" class="com.junbo.oauth.core.view.RedirectToAuthView"/>
 
     <bean id="saveLoginState" class="com.junbo.oauth.core.action.SaveLoginState">
         <property name="loginStateRepository" ref="loginStateRepository"/>

@@ -10,7 +10,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
 import javax.validation.constraints.NotNull;
-import java.util.Date;
 
 /**
  * Base entity revision model.

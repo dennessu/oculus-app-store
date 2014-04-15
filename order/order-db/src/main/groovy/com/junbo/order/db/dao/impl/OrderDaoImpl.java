@@ -24,7 +24,7 @@ public class OrderDaoImpl extends BaseDaoImpl<OrderEntity> implements OrderDao {
     @SuppressWarnings("unchecked")
     public List<OrderEntity> readByUserId(final Long userId, Boolean tentative,
                                           Integer start, Integer count) {
-        Criteria criteria = this.getSession().createCriteria(OrderEntity.class);
+        Criteria criteria = this.getSession(userId).createCriteria(OrderEntity.class);
 
         criteria.add(Restrictions.eq("userId", userId));
         if (tentative != null) {
