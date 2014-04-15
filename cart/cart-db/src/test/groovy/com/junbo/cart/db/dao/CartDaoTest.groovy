@@ -6,8 +6,11 @@
 package com.junbo.cart.db.dao
 
 import com.junbo.cart.db.entity.CartEntity
+import com.junbo.common.id.CartId
+import com.junbo.common.id.UserId
 import org.springframework.beans.factory.annotation.Autowired
 import org.testng.Assert
+import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 
 /**
@@ -18,11 +21,21 @@ class CartDaoTest  extends DaoTestBase {
     @Autowired
     private CartDao cartDao
 
+    private long userId
+
+    @BeforeMethod
+    void setup() {
+        userId = idGenerator.nextId(UserId)
+    }
+
     @Test
     void testCartInsert() {
         CartEntity cartEntity = testGenerator.cartEntity()
+        cartEntity.userId = userId
+        cartEntity.id = idGenerator.nextId(CartId, userId)
+
         cartDao.insert(cartEntity)
-        cartDao.session.flush()
+        cartDao.getSession(cartEntity.userId).flush()
         Assert.assertSame(cartDao.get(cartEntity.id), cartEntity)
         Assert.assertSame(cartDao.get(cartEntity.clientId, cartEntity.cartName, cartEntity.userId),
              cartEntity)
@@ -32,8 +45,11 @@ class CartDaoTest  extends DaoTestBase {
     void testCartUpdate() {
         // insert
         CartEntity cartEntity = testGenerator.cartEntity()
+        cartEntity.userId = userId
+        cartEntity.id = idGenerator.nextId(CartId, userId)
+
         cartDao.insert(cartEntity)
-        cartDao.session.flush()
+        cartDao.getSession(cartEntity.userId).flush()
         def oldClientId = cartEntity.clientId
         def oldCartName = cartEntity.cartName
         def oldUserId = cartEntity.userId
@@ -42,8 +58,9 @@ class CartDaoTest  extends DaoTestBase {
         CartEntity updatedEntity = testGenerator.cartEntity()
         updatedEntity.resourceAge = cartEntity.resourceAge
         updatedEntity.id = cartEntity.id
+        updatedEntity.userId = cartEntity.userId
         cartDao.update(updatedEntity)
-        cartDao.session.flush()
+        cartDao.getSession(cartEntity.userId).flush()
 
         Assert.assertSame(cartDao.get(updatedEntity.clientId, updatedEntity.cartName, updatedEntity.userId),
                 cartEntity)
@@ -61,8 +78,11 @@ class CartDaoTest  extends DaoTestBase {
     @Test
     void testCartGetById() {
         CartEntity cartEntity = testGenerator.cartEntity()
+        cartEntity.userId = userId
+        cartEntity.id = idGenerator.nextId(CartId, userId)
+
         cartDao.insert(cartEntity)
-        cartDao.session.flush()
+        cartDao.getSession(cartEntity.userId).flush()
         Assert.assertSame(cartDao.get(cartEntity.id), cartEntity)
         assert cartDao.get(-1) == null
     }
@@ -70,8 +90,11 @@ class CartDaoTest  extends DaoTestBase {
     @Test
     void testCartGetByUser() {
         CartEntity cartEntity = testGenerator.cartEntity()
+        cartEntity.userId = userId
+        cartEntity.id = idGenerator.nextId(CartId, userId)
+
         cartDao.insert(cartEntity)
-        cartDao.session.flush()
+        cartDao.getSession(cartEntity.userId).flush()
         Assert.assertSame(cartDao.get(cartEntity.id), cartEntity)
         Assert.assertSame(cartDao.get(cartEntity.clientId, cartEntity.cartName, cartEntity.userId),
                 cartEntity)

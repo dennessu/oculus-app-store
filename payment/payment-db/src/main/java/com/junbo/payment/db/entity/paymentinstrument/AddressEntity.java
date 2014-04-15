@@ -63,7 +63,7 @@ public class AddressEntity extends GenericEntity {
 
     @Override
     public Long getShardMasterId() {
-        return null;
+        return id;
     }
 
     public String getUnitNumber() {

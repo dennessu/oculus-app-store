@@ -58,13 +58,17 @@ DataProvider._Exec = function(provider, propertyName, args){
     var params = Utils.Clone(provider.SelfConfigItem[propertyName].Arguments);
     var options = Utils.Clone(provider.SelfConfigItem[propertyName].Options);
 
+    var isFullPath = false;
+    if(typeof(provider.SelfConfigItem[propertyName].Rules.is_full_path) != "undefined"){
+        isFullPath = provider.SelfConfigItem[propertyName].Rules.is_full_path;
+    }
+    var namespace = "";
+    if(typeof(provider.SelfConfigItem.Config.namespace) != "undefined"){
+        namespace = provider.SelfConfigItem.Config.namespace;
+    }
+
     var argsObj = DataProvider._BuildArgumentsObject(params, args);
-    var pathUrl = DataProvider._BuildUrl(
-                                            options["path"],
-                                            provider.SelfConfigItem[propertyName].Rules.is_full_path,
-                                            provider.SelfConfigItem.Config.namespace,
-                                            argsObj
-                                         );
+    var pathUrl = DataProvider._BuildUrl(options["path"], isFullPath, namespace, argsObj);
 
     options["host"] = provider.Host;
     options["port"] = provider.Port;

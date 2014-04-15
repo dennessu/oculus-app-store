@@ -141,8 +141,8 @@ public class WalletRepository {
         return mapper.toTransactions(results);
     }
 
-    public Wallet getByTrackingUuid(UUID uuid) {
-        return mapper.toWallet(walletDao.getByTrackingUuid(uuid));
+    public Wallet getByTrackingUuid(Long shardMasterId, UUID uuid) {
+        return mapper.toWallet(walletDao.getByTrackingUuid(shardMasterId, uuid));
     }
 
     private WalletLotEntity buildWalletLot(Long walletId, CreditRequest creditRequest) {

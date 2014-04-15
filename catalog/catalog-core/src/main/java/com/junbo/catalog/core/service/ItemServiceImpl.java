@@ -62,7 +62,16 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
 
     @Override
     public List<ItemRevision> getRevisions(ItemRevisionsGetOptions options) {
+        if (options.getTimestamp()!=null) {
+            if (CollectionUtils.isEmpty(options.getItemIds())) {
+                throw AppErrors.INSTANCE.validation("itemId must be specified when timestamp is present.").exception();
+            }
+
+            return itemRevisionRepo.getRevisions(options.getItemIds(), options.getTimestamp());
+
+        } else {
         return itemRevisionRepo.getRevisions(options);
+        }
     }
 
     @Override

@@ -16,17 +16,19 @@ import com.junbo.common.id.CartId
 import com.junbo.common.id.CartItemId
 import com.junbo.common.id.OfferId
 import com.junbo.common.id.UserId
-import com.junbo.identity.spec.model.user.User
+import com.junbo.identity.spec.v1.model.User
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.util.CollectionUtils
+import org.springframework.util.StringUtils
+
 /**
  * Created by fzhang@wan-san.com on 14-2-14.
  */
 @CompileStatic
 class CartServiceImpl implements CartService {
 
-    public final static String CART_NAME_PRIMARY = '__primary'
+    public final static String CART_NAME_PRIMARY = 'primary'
 
     private Validation validation
 
@@ -48,8 +50,7 @@ class CartServiceImpl implements CartService {
 
     @Override
     Promise<Cart> addCart(Cart cart, String clientId, UserId userId) {
-        return identityClient.getUser(userId).then {
-            User user = (User) it
+        return identityClient.getUser(userId).then { User user ->
             validation.validateUser(user).validateCartAdd(clientId, userId, cart)
             cart.clientId = clientId
             cart.user = userId
@@ -75,6 +76,12 @@ class CartServiceImpl implements CartService {
 
     @Override
     Promise<Cart> getCartByName(String clientId, String cartName, UserId userId) {
+        if (StringUtils.isEmpty(cartName)) {
+            throw AppErrors.INSTANCE.fieldInvalid('cartName', 'value could not be empty').exception()
+        }
+        if (cartName == CART_NAME_PRIMARY) {
+            return getCartPrimary(clientId, userId)
+        }
         return identityClient.getUser(userId).then {
             validation.validateUser((User) it)
             Cart cart = cartPersistService.getCart(clientId, cartName, userId, true)

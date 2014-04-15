@@ -10,7 +10,7 @@ import com.junbo.cart.spec.model.Cart;
 import com.junbo.cart.spec.model.item.OfferItem;
 import com.junbo.common.id.OfferId;
 import com.junbo.common.id.PaymentInstrumentId;
-import com.junbo.identity.spec.model.user.User;
+import com.junbo.identity.spec.v1.model.User;
 import com.junbo.order.spec.model.OrderItem;
 import com.junbo.payment.spec.model.Address;
 import com.junbo.payment.spec.model.CreditCardRequest;
@@ -68,9 +68,9 @@ public class BuyerTestDataProvider extends BaseTestDataProvider{
 
     public String createUser(String email, String password, UserStatus status) throws Exception {
         User userToPost = new User();
-        userToPost.setUserName(email);
-        userToPost.setPassword(password);
-        userToPost.setStatus(status.getStatus());
+        //userToPost.setUserName(email);
+        //userToPost.setPassword(password);
+        //userToPost.setStatus(status.getStatus());
         logger.LogSample("Create a new user");
         return identityClient.PostUser(userToPost);
     }

@@ -6,27 +6,26 @@
 package com.junbo.cart.db.dao;
 
 import com.junbo.cart.db.util.Generator;
+import com.junbo.sharding.IdGeneratorFacade;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
-
-import javax.sql.DataSource;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by fzhang@wan-san.com on 14-1-21.
  */
-@ContextConfiguration(locations = {
-        "/context-dao-test.xml"})
-public class DaoTestBase extends AbstractTransactionalTestNGSpringContextTests {
+@ContextConfiguration(locations = {"classpath:context-dao-test.xml"})
+@TestExecutionListeners(TransactionalTestExecutionListener.class)
+@Transactional("transactionManager")
+public class DaoTestBase extends AbstractTestNGSpringContextTests {
 
-    protected Generator testGenerator = new Generator();
-
-    @Override
     @Autowired
-    @Qualifier("cartDataSource")
-    public void setDataSource(DataSource dataSource) {
-        super.setDataSource(dataSource);
-    }
+    protected Generator testGenerator;
+
+    @Autowired
+    protected IdGeneratorFacade idGenerator;
 
 }

@@ -6,7 +6,7 @@
 package com.junbo.cart.core.client;
 
 import com.junbo.common.id.UserId;
-import com.junbo.identity.spec.model.user.User;
+import com.junbo.identity.spec.v1.model.User;
 import com.junbo.langur.core.promise.Promise;
 
 /**

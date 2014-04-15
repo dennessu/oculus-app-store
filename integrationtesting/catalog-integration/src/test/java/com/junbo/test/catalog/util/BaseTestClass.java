@@ -20,7 +20,7 @@ public class BaseTestClass extends TestClass {
 
     protected String releaseItem(Item item) throws Exception {
         ItemService itemService = ItemServiceImpl.instance();
-        item.setStatus(EnumHelper.CatalogEntityStatus.RELEASED.getEntityStatus());
+        item.setCurated(true);
         return itemService.updateItem(item);
     }
 }

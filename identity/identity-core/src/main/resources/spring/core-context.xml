@@ -129,6 +129,7 @@
 
         <property name="writablePropertiesForCreate">
             <list>
+                <value>userId</value>
                 <value>type</value>
                 <value>value</value>
             </list>
@@ -377,6 +378,7 @@
         <property name="writablePropertiesForCreate">
             <list>
                 <value>securityQuestion</value>
+                <value>userId</value>
                 <value>answer</value>
             </list>
         </property>
@@ -384,6 +386,7 @@
         <property name="writablePropertiesForUpdate">
             <list>
                 <value>id</value>
+                <value>userId</value>
                 <value>securityQuestion</value>
                 <value>answer</value>
                 <value>resourceAge</value>

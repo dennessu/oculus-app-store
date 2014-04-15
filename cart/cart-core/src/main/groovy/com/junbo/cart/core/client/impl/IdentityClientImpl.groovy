@@ -7,8 +7,9 @@ package com.junbo.cart.core.client.impl
 import com.junbo.cart.core.client.IdentityClient
 import com.junbo.cart.spec.error.AppErrors
 import com.junbo.common.id.UserId
-import com.junbo.identity.spec.model.user.User
-import com.junbo.identity.spec.resource.UserResource
+import com.junbo.identity.spec.v1.model.User
+import com.junbo.identity.spec.v1.option.model.UserGetOptions
+import com.junbo.identity.spec.v1.resource.UserResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
@@ -22,6 +23,8 @@ class IdentityClientImpl implements IdentityClient {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(IdentityClientImpl)
 
+    private static final String USER_PROPERTIES = 'active'
+
     private UserResource userResource
 
     void setIdentityUrl(String identityUrl) {
@@ -34,7 +37,8 @@ class IdentityClientImpl implements IdentityClient {
 
     @Override
     Promise<User> getUser(UserId userId) {
-        return userResource.getUser(userId).syncRecover { Throwable throwable ->
+        def option = new UserGetOptions(properties: USER_PROPERTIES)
+        return userResource.get(userId, option).syncRecover { Throwable throwable ->
             LOGGER.error('name=Cart_GetUser_Error', throwable)
         }.syncThen { User user ->
             if (user == null) {

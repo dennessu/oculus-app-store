@@ -4,6 +4,9 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.cart.db.dao
+
+import com.junbo.common.id.CartId
+import com.junbo.common.id.CartItemId
 import org.testng.Assert
 import org.testng.annotations.Test
 
@@ -19,8 +22,13 @@ class CartCouponDaoTest extends DaoTestBase {
     @Test
     void testInsertCoupon() {
         def entity = testGenerator.couponItemEntity()
+        entity.with {
+            cartId = idGenerator.nextId(CartId)
+            cartItemId = idGenerator.nextId(CartItemId, cartId)
+        }
+
         dao.insert(entity)
-        dao.session.flush()
+        dao.getSession(entity.cartItemId).flush()
         Assert.assertSame(dao.get(entity.cartItemId), entity)
     }
 
@@ -28,14 +36,19 @@ class CartCouponDaoTest extends DaoTestBase {
     void testUpdateCoupon() {
         // insert
         def entity = testGenerator.couponItemEntity()
+        entity.with {
+            cartId = idGenerator.nextId(CartId)
+            cartItemId = idGenerator.nextId(CartItemId, cartId)
+        }
         dao.insert(entity)
-        dao.session.flush()
+        dao.getSession(entity.cartItemId).flush()
 
         // update
         def updatedEntity = testGenerator.couponItemEntity()
         updatedEntity.cartItemId = entity.cartItemId
+        updatedEntity.cartId = entity.cartId
         dao.update(updatedEntity)
-        dao.session.flush()
+        dao.getSession(entity.cartItemId).flush()
 
         assert updatedEntity.cartItemId == entity.cartItemId
         assert updatedEntity.couponCode == entity.couponCode

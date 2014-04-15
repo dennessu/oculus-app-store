@@ -14,7 +14,7 @@ public class PaymentRepoTest extends BaseTest {
     @Autowired
     private PaymentInstrumentRepository piRepo;
 
-    private static final Long userId = 123l;
+    private static final Long userId = 1493188608L;
 
     @Test
     public void testRepo() {
