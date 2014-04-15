@@ -11,10 +11,7 @@ import com.junbo.order.db.entity.enums.PayoutStatus;
 import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.Length;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -147,5 +144,11 @@ public class SubledgerEntity extends CommonDbEntityWithDate {
 
     public void setProperty(String property) {
         this.property = property;
+    }
+
+    @Override
+    @Transient
+    public Long getShardId() {
+        return sellerId;
     }
 }

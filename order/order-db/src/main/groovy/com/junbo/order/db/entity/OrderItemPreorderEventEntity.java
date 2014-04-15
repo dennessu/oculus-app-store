@@ -14,6 +14,7 @@ import org.hibernate.annotations.Type;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -56,5 +57,11 @@ public class OrderItemPreorderEventEntity extends CommonEventEntity {
 
     public void setStatus(EventStatus status) {
         this.status = status;
+    }
+
+    @Override
+    @Transient
+    public Long getShardId() {
+        return orderItemId;
     }
 }

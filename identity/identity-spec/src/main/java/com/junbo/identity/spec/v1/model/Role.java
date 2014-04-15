@@ -9,20 +9,26 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.RoleId;
 import com.junbo.common.util.Identifiable;
 import com.junbo.identity.spec.model.users.ResourceMeta;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
  * Role.
  */
 public class Role extends ResourceMeta implements Identifiable<RoleId> {
+    @ApiModelProperty(position = 1, required = true, value = "The id of the role resource.")
     @JsonProperty("self")
     private RoleId id;
 
+    @ApiModelProperty(position = 2, required = true, value = "The name of the role resource.")
     private String name;
 
+    @ApiModelProperty(position = 3, required = true, value = "The resource Type.")
     private String resourceType;
 
+    @ApiModelProperty(position = 4, required = true, value = "The resource Id.")
     private Long resourceId;
 
+    @ApiModelProperty(position = 5, required = false, value = "Sub resource type.")
     private String subResourceType;
 
     @Override

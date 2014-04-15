@@ -22,7 +22,7 @@ import javax.ws.rs.core.MediaType;
 /**
  * Created by liangfu on 4/3/14.
  */
-@Api(value = "securityQuestions")
+@Api(value = "users")
 @RestResource
 @Path("/users/{userId}/security-questions")
 @Produces({MediaType.APPLICATION_JSON})

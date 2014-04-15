@@ -1,11 +1,9 @@
 package com.junbo.order.core.impl.orderaction
-
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
 import com.junbo.order.spec.error.AppErrors
-import com.junbo.payment.spec.enums.PIStatus
 import com.junbo.payment.spec.model.PaymentInstrument
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
@@ -41,7 +39,7 @@ class ValidatePaymentInstrumentsAction implements com.junbo.langur.core.webflow.
                 LOGGER.info('name=Validate_Payment_Instrument_Not_Found')
                 return null
             }
-            def invalidPi = pis.find { PaymentInstrument pi -> pi.status != PIStatus.ACTIVE.toString() }
+            def invalidPi = pis.find { PaymentInstrument pi -> !pi.isActive}
             if (invalidPi != null) {
                 throw AppErrors.INSTANCE.paymentInstrumentStatusInvalid(invalidPi.id.toString()).exception()
             }

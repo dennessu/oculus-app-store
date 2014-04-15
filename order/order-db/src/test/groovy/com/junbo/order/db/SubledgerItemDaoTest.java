@@ -24,7 +24,6 @@ public class SubledgerItemDaoTest extends BaseTest {
     public void testCreateAndRead() {
         SubledgerItemEntity subledgerItemEntity = TestHelper.generateSubledgerItemEntity();
         Long id = subledgerItemDao.create(subledgerItemEntity);
-        subledgerItemDao.flush();
         SubledgerItemEntity returnedEntity = subledgerItemDao.read(id);
 
         Assert.assertNotNull(returnedEntity, "Fail to create or read entity.");
@@ -36,10 +35,8 @@ public class SubledgerItemDaoTest extends BaseTest {
     public void testUpdate() {
         SubledgerItemEntity subledgerItemEntity = TestHelper.generateSubledgerItemEntity();
         Long id = subledgerItemDao.create(subledgerItemEntity);
-        subledgerItemDao.flush();
         subledgerItemEntity.setUpdatedBy("ANOTHER");
         subledgerItemDao.update(subledgerItemEntity);
-        subledgerItemDao.flush();
         SubledgerItemEntity returnedEntity = subledgerItemDao.read(id);
 
         Assert.assertNotNull(returnedEntity, "Fail to create or read entity.");
@@ -50,8 +47,8 @@ public class SubledgerItemDaoTest extends BaseTest {
     @Test
     public void testGetByStatus() {
         SubledgerItemEntity subledgerItemEntity = TestHelper.generateSubledgerItemEntity();
+        int sizeBeforeCreate = subledgerItemDao.getByStatus(subledgerItemEntity.getStatus(), 0, 1).size();
         subledgerItemDao.create(subledgerItemEntity);
-        subledgerItemDao.flush();
-        Assert.assertEquals(subledgerItemDao.getByStatus(subledgerItemEntity.getStatus(), 0, 1).size(), 1);
+        Assert.assertEquals(subledgerItemDao.getByStatus(subledgerItemEntity.getStatus(), 0, 1).size(), sizeBeforeCreate + 1);
     }
 }

@@ -7,9 +7,13 @@
 package com.junbo.catalog.db.dao;
 
 import com.junbo.catalog.db.entity.PromotionEntity;
+import com.junbo.catalog.spec.model.promotion.PromotionsGetOptions;
+
+import java.util.List;
 
 /**
  * Promotion DAO definition.
  */
 public interface PromotionDao extends BaseDao<PromotionEntity> {
+    List<PromotionEntity> getEffectivePromotions(PromotionsGetOptions options);
 }

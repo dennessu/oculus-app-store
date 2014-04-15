@@ -6,7 +6,6 @@
 
 package com.junbo.billing.db.dao;
 
-import com.junbo.billing.db.BaseDao;
 import com.junbo.billing.db.entity.OrderBalanceLinkEntity;
 
 import java.util.List;
@@ -14,6 +13,9 @@ import java.util.List;
 /**
  * Created by xmchen on 14-1-21.
  */
-public interface OrderBalanceLinkEntityDao extends BaseDao<OrderBalanceLinkEntity, Long> {
+public interface OrderBalanceLinkEntityDao {
+    OrderBalanceLinkEntity get(Long orderBalanceLinkId);
+    OrderBalanceLinkEntity save(OrderBalanceLinkEntity orderBalanceLink);
+    OrderBalanceLinkEntity update(OrderBalanceLinkEntity orderBalanceLink);
     List<OrderBalanceLinkEntity> findByOrderId(Long orderId);
 }

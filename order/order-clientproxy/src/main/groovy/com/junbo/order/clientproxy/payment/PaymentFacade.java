@@ -6,7 +6,6 @@
 
 package com.junbo.order.clientproxy.payment;
 
-import com.junbo.common.id.UserId;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.spec.model.PaymentInstrument;
 
@@ -14,5 +13,5 @@ import com.junbo.payment.spec.model.PaymentInstrument;
  * Created by chriszhu on 2/11/14.
  */
 public interface PaymentFacade {
-    Promise<PaymentInstrument> getPaymentInstrument(UserId userId, Long paymentInstrumentId);
+    Promise<PaymentInstrument> getPaymentInstrument(Long paymentInstrumentId);
 }

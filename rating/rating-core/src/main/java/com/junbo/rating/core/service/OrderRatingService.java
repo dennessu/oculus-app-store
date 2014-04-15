@@ -8,15 +8,13 @@ package com.junbo.rating.core.service;
 
 import com.junbo.catalog.spec.model.domaindata.ShippingMethod;
 import com.junbo.catalog.spec.model.item.Item;
-import com.junbo.catalog.spec.model.promotion.Promotion;
+import com.junbo.catalog.spec.model.promotion.PromotionRevision;
 import com.junbo.catalog.spec.model.promotion.PromotionType;
-import com.junbo.rating.core.builder.OrderRatingResultBuilder;
 import com.junbo.rating.core.context.RatingContext;
 import com.junbo.rating.spec.error.AppErrors;
 import com.junbo.rating.spec.fusion.LinkedEntry;
 import com.junbo.rating.spec.fusion.RatingOffer;
 import com.junbo.rating.spec.model.*;
-import com.junbo.rating.spec.model.request.OrderRatingRequest;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -29,9 +27,8 @@ import java.util.Set;
  */
 public class OrderRatingService extends RatingServiceSupport{
 
-    public OrderRatingRequest orderRating(RatingContext context) {
+    public void orderRating(RatingContext context) {
         rate(context);
-        return OrderRatingResultBuilder.build(context);
     }
 
     @Override
@@ -52,17 +49,16 @@ public class OrderRatingService extends RatingServiceSupport{
     }
 
     private void findBestPrice(RatingContext context) {
-        Map<Long, Set<Promotion>> candidates = context.getCandidates();
-        String country = context.getCountry();
+        Map<Long, Set<PromotionRevision>> candidates = context.getCandidates();
         Currency currency = context.getCurrency();
 
         //TODO: this logic will be changed after adding new kinds of offer level promotions
         for (RatableItem item : context.getItems()) {
             Long offerId = item.getOfferId();
-            Set<Promotion> promotions = candidates.get(offerId) == null?
-                    new HashSet<Promotion>() : candidates.get(offerId);
+            Set<PromotionRevision> promotions = candidates.get(offerId) == null?
+                    new HashSet<PromotionRevision>() : candidates.get(offerId);
 
-            Money originalPrice = getPrice(item.getOffer(), country, currency.getCode());
+            Money originalPrice = getPrice(item.getOffer(), currency.getCode());
             if (originalPrice == Money.NOT_FOUND) {
                 throw AppErrors.INSTANCE.priceNotFound(item.getOfferId().toString()).exception();
             }
@@ -75,7 +71,7 @@ public class OrderRatingService extends RatingServiceSupport{
             entry.setShippingMethodId(item.getShippingMethodId());
             entry.setOriginalAmount(originalPrice);
             entry.setAppliedPromotion(new HashSet<Long>());
-            for (Promotion promotion : promotions) {
+            for (PromotionRevision promotion : promotions) {
                 if (promotion.getBenefit() == null) {
                     continue;
                 }
@@ -83,7 +79,7 @@ public class OrderRatingService extends RatingServiceSupport{
                 Money currentBenefit = applyBenefit(originalPrice, promotion.getBenefit());
                 if (currentBenefit.greaterThan(bestBenefit)) {
                     bestBenefit = currentBenefit;
-                    entry.getAppliedPromotion().add(promotion.getId());
+                    entry.getAppliedPromotion().add(promotion.getRevisionId());
                 }
             }
             bestBenefit.rounding(currency.getDigits());
@@ -107,10 +103,10 @@ public class OrderRatingService extends RatingServiceSupport{
 
         Money bestBenefit = new Money(BigDecimal.ZERO, context.getCurrency().getCode());
 
-        Set<Promotion> candidates = context.getRules().get(PromotionType.ORDER_PROMOTION) == null?
-                new HashSet<Promotion>() : context.getRules().get(PromotionType.ORDER_PROMOTION);
+        Set<PromotionRevision> candidates = context.getRules().get(PromotionType.ORDER_PROMOTION) == null?
+                new HashSet<PromotionRevision>() : context.getRules().get(PromotionType.ORDER_PROMOTION);
 
-        for (Promotion promotion : candidates) {
+        for (PromotionRevision promotion : candidates) {
             //not benefit configured
             if (promotion.getBenefit() == null) {
                 continue;
@@ -124,7 +120,7 @@ public class OrderRatingService extends RatingServiceSupport{
             Money currentBenefit = applyBenefit(totalAmount, promotion.getBenefit());
             if (currentBenefit.greaterThan(bestBenefit)) {
                 bestBenefit = currentBenefit;
-                result.setAppliedPromotion(promotion.getId());
+                result.setAppliedPromotion(promotion.getRevisionId());
             }
         }
         bestBenefit.rounding(context.getCurrency().getDigits());
@@ -134,7 +130,7 @@ public class OrderRatingService extends RatingServiceSupport{
 
     private void calculateShippingFee(RatingContext context) {
         BigDecimal shippingFee = BigDecimal.ZERO;
-        Map<Long, Integer> shippingDetail = new HashMap<Long, Integer>();
+        Map<Long, Integer> shippingDetail = new HashMap<>();
 
         for (RatableItem item : context.getItems()) {
             if (item.getShippingMethodId() == null) {
@@ -144,7 +140,8 @@ public class OrderRatingService extends RatingServiceSupport{
                 shippingDetail.put(item.getShippingMethodId(), 0);
             }
             shippingDetail.put(item.getShippingMethodId(),
-                    shippingDetail.get(item.getShippingMethodId()) + getQuantity(item.getOffer(), item.getQuantity()));
+                    shippingDetail.get(item.getShippingMethodId())
+                            + getQuantity(item.getOffer(), context.getTimestamp()) * item.getQuantity());
         }
 
         for (Long shippingMethodId : shippingDetail.keySet()) {
@@ -168,7 +165,7 @@ public class OrderRatingService extends RatingServiceSupport{
         context.setShippingResult(result);
     }
 
-    private int getQuantity(RatingOffer ratingOffer, int quantity) {
+    private int getQuantity(RatingOffer ratingOffer, Long timestamp) {
         int result = 0;
 
         for (LinkedEntry entry : ratingOffer.getItems()) {
@@ -179,10 +176,10 @@ public class OrderRatingService extends RatingServiceSupport{
         }
 
         for (LinkedEntry entry : ratingOffer.getSubOffers()) {
-            RatingOffer offer = catalogGateway.getOffer(entry.getEntryId());
-            result += getQuantity(offer, entry.getQuantity());
+            RatingOffer offer = catalogGateway.getOffer(entry.getEntryId(), timestamp);
+            result += getQuantity(offer, timestamp);
         }
 
-        return quantity * result;
+        return result;
     }
 }

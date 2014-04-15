@@ -20,21 +20,21 @@ import javax.ws.rs.core.MediaType;
 /**
  * Created by liangfu on 4/3/14.
  */
-@Api(value = "userCredential")
+@Api(value = "users")
 @RestResource
-@Path("/users/{userId}")
+@Path("/users")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 public interface UserCredentialResource {
     @ApiOperation("Change current credential")
     @POST
-    @Path("/change-credential")
+    @Path("/{userId}/change-credential")
     Promise<UserCredential> create(@PathParam("userId") UserId userId,
                                    UserCredential userCredential);
 
     @ApiOperation("Search credential history")
     @GET
-    @Path("/credentials")
+    @Path("/{userId}/credentials")
     Promise<Results<UserCredential>> list(@PathParam("userId") UserId userId,
                                           @BeanParam UserCredentialListOptions listOptions);
 }

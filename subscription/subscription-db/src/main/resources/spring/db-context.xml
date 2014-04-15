@@ -88,8 +88,13 @@
           class="com.junbo.subscription.db.dao.SubscriptionEventActionDao" parent="baseDao">
         <property name="classType" value="com.junbo.subscription.db.entity.SubscriptionEventActionEntity"/>
     </bean>
+    <bean id="subscriptionEntitlementDao"
+          class="com.junbo.subscription.db.dao.SubscriptionEntitlementDao" parent="baseDao">
+        <property name="classType" value="com.junbo.subscription.db.entity.SubscriptionEntitlementEntiy"/>
+    </bean>
 
     <bean id="subscriptionRepository" class="com.junbo.subscription.db.repository.SubscriptionRepository"></bean>
     <bean id="subscriptionEventRepository" class="com.junbo.subscription.db.repository.SubscriptionEventRepository"></bean>
     <bean id="subscriptionEventActionRepository" class="com.junbo.subscription.db.repository.SubscriptionEventActionRepository"></bean>
+    <bean id="subscriptionEntitlementRepository" class="com.junbo.subscription.db.repository.SubscriptionEntitlementRepository"></bean>
 </beans>

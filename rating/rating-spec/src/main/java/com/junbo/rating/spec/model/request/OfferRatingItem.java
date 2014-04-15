@@ -8,7 +8,7 @@ package com.junbo.rating.spec.model.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.jackson.annotation.OfferId;
-import com.junbo.common.jackson.annotation.PromotionId;
+import com.junbo.common.jackson.annotation.PromotionRevisionId;
 
 import javax.validation.constraints.Null;
 import java.math.BigDecimal;
@@ -19,7 +19,7 @@ import java.util.Set;
  */
 public class OfferRatingItem {
     @OfferId
-    @JsonProperty("Offer")
+    @JsonProperty("offer")
     private Long offerId;
 
     @Null
@@ -32,7 +32,7 @@ public class OfferRatingItem {
     private BigDecimal finalAmount;
 
     @Null
-    @PromotionId
+    @PromotionRevisionId
     private Set<Long> promotions;
 
     public Long getOfferId() {

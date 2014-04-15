@@ -19,6 +19,4 @@ public interface BaseEventDao<T extends CommonEventEntity> {
     T read(long id);
 
     void update(T t);
-
-    void flush();
 }

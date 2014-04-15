@@ -16,7 +16,7 @@ import com.junbo.billing.spec.error.AppErrors
 import com.junbo.billing.spec.model.*
 import com.junbo.common.id.BalanceId
 import com.junbo.common.id.OrderId
-import com.junbo.identity.spec.model.user.User
+import com.junbo.identity.spec.v1.model.User
 import com.junbo.langur.core.promise.Promise
 import com.junbo.payment.spec.enums.PIType
 import com.junbo.payment.spec.model.PaymentInstrument
@@ -219,10 +219,10 @@ class BalanceServiceImpl implements BalanceService {
                 LOGGER.error('name=Error_Get_User. Get null for the user id: {0}', userId)
                 throw AppErrors.INSTANCE.userNotFound(userId.toString()).exception()
             }
-            if (user.status != 'ACTIVE') {
+            /*if (user.status != 'ACTIVE') {
                 LOGGER.error('name=Error_Get_User. User not active with id: {0}', userId)
                 throw AppErrors.INSTANCE.userStatusInvalid(userId.toString()).exception()
-            }
+            }*/
             return Promise.pure(null)
         }
     }

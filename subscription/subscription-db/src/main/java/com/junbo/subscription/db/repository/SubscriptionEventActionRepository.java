@@ -15,4 +15,5 @@ public class SubscriptionEventActionRepository {
     @Autowired
     private SubscriptionEventActionDao subscriptionEventActionDao;
 
+
 }

@@ -19,7 +19,7 @@ module.exports = {
                 'SucceedCSR': {
                     statusCode: 302,
                     headers: {
-                        location: 'http://localhost:3000/callback/login?code=1234'
+                        location: 'http://csr.oculusvr-demo.com:3000/callback/login?code=1234'
                     },
                     data: ""
                 },
@@ -179,23 +179,27 @@ module.exports = {
                     statusCode: 200,
                     headers: null,
                     data: {
-                        "createdTime": "2014-02-28T07:44:32Z",
-                        "resourceAge": 0,
-                        "type": "PAYIN",
-                        "region": "en_US",
-                        "firstName": "tom",
-                        "middleName": "",
-                        "lastName": "slick",
-                        "dateOfBirth": "2010-02-24T09:45:27Z",
-                        "locale": "en_US",
-                        "self": {
-                            "href": "https://xxx.xxx.xxx",
-                            "id": "728917210477570936"
-                        },
-                        "user": {
-                            "href": "https://xxx.xxx.xxx",
-                            "id": "728917210477568936"
-                        }
+                        results:[
+                            {
+                                "createdTime": "2014-02-28T07:44:32Z",
+                                "resourceAge": 0,
+                                "type": "PAYIN",
+                                "region": "en_US",
+                                "firstName": "tom",
+                                "middleName": "",
+                                "lastName": "slick",
+                                "dateOfBirth": "2010-02-24T09:45:27Z",
+                                "locale": "en_US",
+                                "self": {
+                                    "href": "https://xxx.xxx.xxx",
+                                    "id": "728917210477570936"
+                                },
+                                "user": {
+                                    "href": "https://xxx.xxx.xxx",
+                                    "id": "728917210477568936"
+                                }
+                            }
+                        ]
                     }
                 },
 
@@ -779,46 +783,47 @@ module.exports = {
                 'Succeed': {
                     statusCode: 200,
                     headers: null,
-                    data: [
-                        {
-                            "self": {
-                                "href": "http://api.wan-san.com/ship-to-info/70953532335535",
-                                "id": "11"
-                            },
-                            "user": {
-                                "href": "http://api.wan-san.com/users/12345",
-                                "id": "12345"
-                            },
-                            "street": "NO. 1001 Twin Dophin Dr",
-                            "city": "Redwood City",
-                            "state": "CA",
-                            "postalCode": "96045",
-                            "country": "US",
-                            "firstName": "Steve 11",
-                            "lastName": "Smith",
-                            "phoneNumber": "207-655-2345"
-                        },
+                    data:{
+                            results: [
+                                {
+                                    "self": {
+                                        "href": "http://api.wan-san.com/ship-to-info/70953532335535",
+                                        "id": "11"
+                                    },
+                                    "user": {
+                                        "href": "http://api.wan-san.com/users/12345",
+                                        "id": "12345"
+                                    },
+                                    "street": "NO. 1001 Twin Dophin Dr",
+                                    "city": "Redwood City",
+                                    "state": "CA",
+                                    "postalCode": "96045",
+                                    "country": "US",
+                                    "firstName": "Steve 11",
+                                    "lastName": "Smith",
+                                    "phoneNumber": "207-655-2345"
+                                },
 
-                        {
-                            "self": {
-                                "href": "http://api.wan-san.com/ship-to-info/70953532335535",
-                                "id": "22"
-                            },
-                            "user": {
-                                "href": "http://api.wan-san.com/users/12345",
-                                "id": "12345"
-                            },
-                            "street": "NO. 1002 Twin Dophin Dr",
-                            "city": "Redwood City",
-                            "state": "CA",
-                            "postalCode": "96045",
-                            "country": "US",
-                            "firstName": "Steve 22",
-                            "lastName": "Smith",
-                            "phoneNumber": "207-655-2345"
+                                {
+                                    "self": {
+                                        "href": "http://api.wan-san.com/ship-to-info/70953532335535",
+                                        "id": "22"
+                                    },
+                                    "user": {
+                                        "href": "http://api.wan-san.com/users/12345",
+                                        "id": "12345"
+                                    },
+                                    "street": "NO. 1002 Twin Dophin Dr",
+                                    "city": "Redwood City",
+                                    "state": "CA",
+                                    "postalCode": "96045",
+                                    "country": "US",
+                                    "firstName": "Steve 22",
+                                    "lastName": "Smith",
+                                    "phoneNumber": "207-655-2345"
+                                }
+                            ]
                         }
-                    ]
-
                 },
 
                 'Failed': {
@@ -1531,7 +1536,7 @@ module.exports = {
                                 "accountName": "Tom 2 Slick",
                                 "accountNum": "4111111111155555",
                                 "isValidated": "false",
-                                "isDefault": "true",
+                                "isDefault": "false",
                                 "type": {
                                     "href": "http://api.wan-san.com/v1/payment-instrument-types/CREDITCARD",
                                     "id": "CREDITCARD"
@@ -1735,7 +1740,7 @@ module.exports = {
         GetEntitlements: {
             Method: 'GET',
             Path: '/rest/users/:userId/entitlements', //'/rest/users/:userId/payment-instruments/search',
-            ResponseItem: 'SucceedNotExists',
+            ResponseItem: 'Succeed',
             Items: {
                 'Succeed': {
                     statusCode: 200,
@@ -1757,6 +1762,29 @@ module.exports = {
                                 },
                                 "status": "ACTIVE",
                                 "type": "DEVELOPER",
+                                "group": "",
+                                "tag": "",
+                                "grantTime": "2014-03-25T08:47:46Z",
+                                "consumable": false,
+                                "useCount": 0,
+                                "managedLifecycle": true
+                            },
+
+                            {
+                                "self": {
+                                    "href": "http://api.wan-san.com/v1/entitlements/00200B050000",
+                                    "id": "2222"
+                                },
+                                "user": {
+                                    "href": "http://api.wan-san.com/v1/users/000001234444",
+                                    "id": "2222"
+                                },
+                                "developer": {
+                                    "href": "http://api.wan-san.com/v1/users/000000001234",
+                                    "id": "222"
+                                },
+                                "status": "ACTIVE",
+                                "type": "Download",
                                 "group": "",
                                 "tag": "",
                                 "grantTime": "2014-03-25T08:47:46Z",

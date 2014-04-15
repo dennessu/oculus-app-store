@@ -23,7 +23,7 @@ public class OrderEventDaoImpl extends BaseDaoImpl<OrderEventEntity> implements 
 
     @SuppressWarnings("unchecked")
     public List<OrderEventEntity> readByOrderId(final Long orderId, Integer start, Integer count) {
-        Criteria criteria = this.getSession().createCriteria(OrderEventEntity.class);
+        Criteria criteria = this.getSession(orderId).createCriteria(OrderEventEntity.class);
         criteria.add(Restrictions.eq("orderId", orderId));
 
         if (start != null) {

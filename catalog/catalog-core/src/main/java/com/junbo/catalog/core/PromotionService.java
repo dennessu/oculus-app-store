@@ -8,11 +8,17 @@ package com.junbo.catalog.core;
 
 import com.junbo.catalog.spec.model.promotion.Promotion;
 import com.junbo.catalog.spec.model.promotion.PromotionRevision;
+import com.junbo.catalog.spec.model.promotion.PromotionRevisionsGetOptions;
+import com.junbo.catalog.spec.model.promotion.PromotionsGetOptions;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * Promotion service definition.
  */
 @Transactional
 public interface PromotionService extends BaseRevisionedService<Promotion, PromotionRevision> {
+    List<Promotion> getEffectivePromotions(PromotionsGetOptions options);
+    List<PromotionRevision> getRevisions(PromotionRevisionsGetOptions options);
 }

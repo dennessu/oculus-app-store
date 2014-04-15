@@ -10,10 +10,10 @@ import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.ShippingAddress
 import com.junbo.common.id.OfferId
 import com.junbo.common.id.PaymentInstrumentId
-import com.junbo.identity.spec.model.user.User
+import com.junbo.identity.spec.v1.model.User
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.FacadeContainer
-import com.junbo.order.clientproxy.model.OrderOffer
+import com.junbo.order.clientproxy.model.OrderOfferRevision
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.OrderItem
@@ -60,7 +60,7 @@ class OrderServiceContextBuilder {
         List<PaymentInstrument> pis = []
         return Promise.each(piids.iterator()) { PaymentInstrumentId piid ->
             facadeContainer.paymentFacade.
-                    getPaymentInstrument(context.order.user, piid.value).syncRecover { Throwable throwable ->
+                    getPaymentInstrument(piid.value).syncRecover { Throwable throwable ->
                 LOGGER.error('name=Order_GetPaymentInstrument_Error', throwable)
                 // TODO read the payment error
                 throw AppErrors.INSTANCE.paymentConnectionError().exception()
@@ -133,21 +133,21 @@ class OrderServiceContextBuilder {
         }
     }
 
-    Promise<List<OrderOffer>> getOffers(OrderServiceContext context) {
+    Promise<List<OrderOfferRevision>> getOffers(OrderServiceContext context) {
 
         if (context == null || context.order == null || CollectionUtils.isEmpty(context.order.orderItems)) {
             return Promise.pure(Collections.emptyList())
         }
 
-        List<OrderOffer> offers = []
+        List<OrderOfferRevision> offers = []
         return Promise.each(context.order.orderItems.iterator()) { OrderItem oi ->
-            facadeContainer.catalogFacade.getOffer(oi.offer.value).syncThen { OrderOffer of ->
+            facadeContainer.catalogFacade.getOfferRevision(oi.offer.value).syncThen { OrderOfferRevision of ->
                 offers << of
             }
         }.syncThen {
-            def offerMap = new HashMap<OfferId, OrderOffer>()
-            offers?.each { OrderOffer offer ->
-                offerMap.put(new OfferId(offer.catalogOffer.id), offer)
+            def offerMap = new HashMap<OfferId, OrderOfferRevision>()
+            offers?.each { OrderOfferRevision offer ->
+                offerMap.put(new OfferId(offer.catalogOfferRevision.offerId), offer)
             }
             context.offers = offerMap
             return offers
