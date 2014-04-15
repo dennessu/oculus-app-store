@@ -5,20 +5,20 @@
  */
 package com.junbo.cart.db.mapper
 
-import com.junbo.oom.core.MappingContext
+import com.junbo.cart.db.dao.DaoTestBase
 import com.junbo.cart.db.util.Generator
+import com.junbo.oom.core.MappingContext
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests
+import org.springframework.beans.factory.annotation.Qualifier
 import org.testng.annotations.Test
 
 /**
  * Created by fzhang@wan-san.com on 14-2-15.
  */
-@ContextConfiguration(locations = ['/context-test.xml'])
-class CartMapperTest extends AbstractTestNGSpringContextTests {
+class CartMapperTest extends DaoTestBase {
 
     @Autowired
+    @Qualifier('dataMapper')
     private CartMapper cartMapper
 
     def generator = new Generator()

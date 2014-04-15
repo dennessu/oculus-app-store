@@ -6,6 +6,8 @@
 package com.junbo.cart.db.dao
 
 import com.junbo.cart.db.entity.ItemStatus
+import com.junbo.common.id.CartId
+import com.junbo.common.id.CartItemId
 import org.testng.Assert
 import org.testng.annotations.Test
 
@@ -22,8 +24,13 @@ class CartOfferDaoTest extends DaoTestBase {
     @Test
     void testInsertOffer() {
         def entity = testGenerator.offerItemEntity()
+        entity.with {
+            cartId = idGenerator.nextId(CartId)
+            cartItemId = idGenerator.nextId(CartItemId, cartId)
+        }
+
         dao.insert(entity)
-        dao.session.flush()
+        dao.getSession(entity.cartItemId).flush()
         Assert.assertSame(dao.get(entity.cartItemId), entity)
     }
 
@@ -31,14 +38,20 @@ class CartOfferDaoTest extends DaoTestBase {
     void testUpdateOffer() {
         // insert
         def entity = testGenerator.offerItemEntity()
+        entity.with {
+            cartId = idGenerator.nextId(CartId)
+            cartItemId = idGenerator.nextId(CartItemId, cartId)
+        }
+
         dao.insert(entity)
-        dao.session.flush()
+        dao.getSession(entity.cartItemId).flush()
 
         // update
         def updatedEntity = testGenerator.offerItemEntity()
         updatedEntity.cartItemId = entity.cartItemId
+        updatedEntity.cartId = entity.cartId
         dao.update(updatedEntity)
-        dao.session.flush()
+        dao.getSession(entity.cartItemId).flush()
 
         assert updatedEntity.cartItemId == entity.cartItemId
         assert updatedEntity.quantity == entity.quantity
@@ -52,15 +65,16 @@ class CartOfferDaoTest extends DaoTestBase {
 
     @Test
     void testGetItems() {
-        long cartId = System.currentTimeMillis()
+        long cartId = idGenerator.nextId(CartId)
         def status = [ItemStatus.OPEN, ItemStatus.DELETED, ItemStatus.DELETED, ItemStatus.OPEN, ItemStatus.OPEN]
         // insert
         status.each {
             def entity = testGenerator.offerItemEntity()
             entity.cartId = cartId
+            entity.cartItemId = idGenerator.nextId(CartItemId, cartId)
             entity.status = it
             dao.insert(entity)
-            dao.session.flush()
+            dao.getSession(entity.cartItemId).flush()
         }
 
         assert dao.getItems(cartId, ItemStatus.DELETED).size() == 2

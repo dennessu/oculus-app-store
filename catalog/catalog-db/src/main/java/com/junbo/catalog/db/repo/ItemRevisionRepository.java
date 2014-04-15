@@ -12,9 +12,11 @@ import com.junbo.catalog.db.mapper.ItemRevisionMapper;
 import com.junbo.catalog.spec.error.AppErrors;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.catalog.spec.model.item.ItemRevisionsGetOptions;
+import com.junbo.common.id.ItemId;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -34,6 +36,22 @@ public class ItemRevisionRepository implements BaseRevisionRepository<ItemRevisi
 
     public List<ItemRevision> getRevisions(ItemRevisionsGetOptions options) {
         List<ItemRevisionEntity> revisionEntities = itemRevisionDao.getRevisions(options);
+        List<ItemRevision> revisions = new ArrayList<>();
+        for (ItemRevisionEntity revisionEntity : revisionEntities) {
+            revisions.add(ItemRevisionMapper.toModel(revisionEntity));
+        }
+
+        return revisions;
+    }
+
+    public List<ItemRevision> getRevisions(List<ItemId> itemIds, Date timestamp) {
+        List<ItemRevisionEntity> revisionEntities = new ArrayList<>();
+        for (ItemId itemId : itemIds) {
+            ItemRevisionEntity revisionEntity = itemRevisionDao.getRevision(itemId.getValue(), timestamp);
+            if (revisionEntity != null) {
+                revisionEntities.add(revisionEntity);
+            }
+        }
         List<ItemRevision> revisions = new ArrayList<>();
         for (ItemRevisionEntity revisionEntity : revisionEntities) {
             revisions.add(ItemRevisionMapper.toModel(revisionEntity));

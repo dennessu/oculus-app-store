@@ -95,9 +95,10 @@ class UserSecurityQuestionValidatorImpl implements UserSecurityQuestionValidator
                     }
                 }
                 userSecurityQuestion.setUserId(userId)
-                userSecurityQuestion.setAnswerSalt(UUID.randomUUID().toString())
-                userSecurityQuestion.setAnswerHash(
-                        CipherHelper.hashPassword(userSecurityQuestion.answer, userSecurityQuestion.answerSalt))
+                userSecurityQuestion.setAnswerSalt(CipherHelper.generateCipherRandomStr(20))
+                userSecurityQuestion.setAnswerPepper(CipherHelper.generateCipherRandomStr(20))
+                userSecurityQuestion.setAnswerHash(CipherHelper.generateCipherHashV1(
+                      userSecurityQuestion.answer, userSecurityQuestion.answerSalt, userSecurityQuestion.answerPepper))
                 return Promise.pure(null)
         }
     }
@@ -150,6 +151,8 @@ class UserSecurityQuestionValidatorImpl implements UserSecurityQuestionValidator
                     return Promise.pure(null)
                 }
             }
+
+            return Promise.pure(null)
         }
     }
 

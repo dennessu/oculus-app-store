@@ -8,37 +8,41 @@
     <context:component-scan base-package="com.junbo.ewallet.db"/>
 
     <!-- DataSource -->
-    <bean id="ewalletDataSource" class="bitronix.tm.resource.jdbc.PoolingDataSource"
-          init-method="init" destroy-method="close">
-        <property name="uniqueName" value="jdbc/ewallet_ds1"/>
-        <property name="className" value="org.postgresql.xa.PGXADataSource"/>
-        <property name="minPoolSize" value="${ewallet.db.minConnectionsPerPartition}"/>
-        <property name="maxPoolSize" value="${ewallet.db.maxConnectionsPerPartition}"/>
+    <bean id="ewalletDataSource" class="com.junbo.sharding.hibernate.ShardMultiTenantConnectionProviderFactoryBean">
+        <property name="jdbcUrls" value="${ewallet.db.jdbcUrls}"/>
+        <property name="uniqueName" value="jdbc/ewallet"/>
+        <property name="className" value="${ewallet.db.driverClassName}"/>
+        <property name="minPoolSize" value="${ewallet.db.minPoolSize}"/>
+        <property name="maxPoolSize" value="${ewallet.db.maxPoolSize}"/>
         <property name="driverProperties">
             <props>
-                <prop key="url">${ewallet.db.url}</prop>
                 <prop key="user">${ewallet.db.username}</prop>
                 <prop key="password">${ewallet.db.password}</prop>
             </props>
         </property>
+
     </bean>
 
-    <!-- SessonFactory for Hibernate -->
-    <bean id="ewalletSessionFactory"
-          class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
-        <property name="dataSource" ref="ewalletDataSource"/>
-        <property name="packagesToScan" value="com.junbo.ewallet.db.entity"/>
+   <!-- SessionFactory for Hibernate -->
+    <bean id="ewalletSessionFactory" class="com.junbo.sharding.hibernate.LocalSessionFactoryWithListenerBean">
         <property name="jtaTransactionManager" ref="transactionManager"/>
         <property name="hibernateProperties">
-            <props>
-                <prop key="hibernate.dialect">${ewallet.hibernate.dialect}</prop>
-                <prop key="hibernate.max_fetch_depth">${ewallet.hibernate.max_fetch_depth}</prop>
-                <prop key="hibernate.jdbc.fetch_size">${ewallet.hibernate.fetch_size}</prop>
-                <prop key="hibernate.jdbc.batch_size">${ewallet.hibernate.batch_size}</prop>
-                <prop key="hibernate.show_sql">${ewallet.hibernate.show_sql}</prop>
-            </props>
+            <map>
+                <entry key="hibernate.dialect" value="${sharding.hibernate.dialect}"/>
+                <entry key="hibernate.max_fetch_depth" value="${sharding.hibernate.max_fetch_depth}"/>
+                <entry key="hibernate.jdbc.fetch_size" value="${sharding.hibernate.jdbc.fetch_size}"/>
+                <entry key="hibernate.jdbc.batch_size" value="${sharding.hibernate.jdbc.batch_size}"/>
+                <entry key="hibernate.show_sql" value="${sharding.hibernate.show_sql}"/>
+                <entry key="hibernate.multiTenancy" value="SCHEMA"/>
+                <entry key="hibernate.current_session_context_class" value="com.junbo.sharding.hibernate.MultiTenantJTASessionContext"/>
+                <entry key="hibernate.tenant_identifier_resolver" value="com.junbo.sharding.hibernate.ShardCurrentTenantIdentifierResolver"/>
+                <entry key="hibernate.multi_tenant_connection_provider" value-ref="ewalletDataSource"/>
+                <entry key="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
+            </map>
         </property>
+        <property name="packagesToScan" value="com.junbo.ewallet.db.entity"/>
     </bean>
+
 
     <tx:annotation-driven/>
 

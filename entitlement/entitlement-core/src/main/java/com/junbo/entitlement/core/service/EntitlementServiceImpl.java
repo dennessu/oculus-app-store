@@ -107,13 +107,13 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
         newEntitlement.setTrackingUuid(entitlementTransfer.getTrackingUuid());
         newEntitlement.setEntitlementId(null);
         newEntitlement.setUserId(entitlementTransfer.getTargetUserId());
-        return addEntitlement(newEntitlement);
+        return entitlementRepository.insert(newEntitlement);
     }
 
     @Override
     @Transactional
-    public Entitlement getByTrackingUuid(UUID trackingUuid) {
-        return entitlementRepository.getByTrackingUuid(trackingUuid);
+    public Entitlement getByTrackingUuid(Long shardMasterId, UUID trackingUuid) {
+        return entitlementRepository.getByTrackingUuid(shardMasterId, trackingUuid);
     }
 
     private Entitlement merge(Entitlement entitlement) {

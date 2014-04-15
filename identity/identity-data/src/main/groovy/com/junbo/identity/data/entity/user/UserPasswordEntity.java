@@ -48,6 +48,14 @@ public class UserPasswordEntity extends ResourceMetaEntity {
         this.passwordSalt = passwordSalt;
     }
 
+    public String getPasswordPepper() {
+        return passwordPepper;
+    }
+
+    public void setPasswordPepper(String passwordPepper) {
+        this.passwordPepper = passwordPepper;
+    }
+
     public Short getStrength() {
         return strength;
     }
@@ -89,6 +97,8 @@ public class UserPasswordEntity extends ResourceMetaEntity {
     private String passwordHash;
     @Column(name = "password_salt")
     private String passwordSalt;
+    @Column(name = "password_pepper")
+    private String passwordPepper;
     @Column(name = "password_strength")
     private Short strength;
     @Column(name = "active")
