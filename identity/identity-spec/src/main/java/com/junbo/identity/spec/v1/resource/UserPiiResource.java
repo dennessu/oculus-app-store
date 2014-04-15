@@ -21,9 +21,9 @@ import javax.ws.rs.core.MediaType;
 /**
  * Created by liangfu on 4/3/14.
  */
-@Api(value = "piis")
+@Api(value = "pii")
 @RestResource
-@Path("/piis")
+@Path("/pii")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 public interface UserPiiResource {

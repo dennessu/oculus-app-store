@@ -11,6 +11,7 @@ import com.junbo.common.id.UserCredentialId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.util.Identifiable;
 import com.junbo.identity.spec.model.users.ResourceMeta;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
 
@@ -22,17 +23,23 @@ public class UserCredential extends ResourceMeta implements Identifiable<UserCre
     @JsonIgnore
     private UserCredentialId id;
 
+    @ApiModelProperty(position = 1, required = true, value = "The user resource for the credential.")
     @JsonProperty("user")
     private UserId userId;
 
+    @ApiModelProperty(position = 2, required = false, value = "The old password, it must be base64 encoded.")
     private String oldValue;
 
+    @ApiModelProperty(position = 3, required = true, value = "The new password, it must be base64 encoded.")
     private String value;
 
+    @ApiModelProperty(position = 4, required = true, value = "Credential type, it must be password or pin.")
     private String type;
 
+    @ApiModelProperty(position = 5, required = false, value = "Credential expire time.")
     private Date expiresBy;
 
+    @ApiModelProperty(position = 6, required = false, value = "Whether need to change credential next login.")
     private Boolean changeAtNextLogin;
 
     @Override

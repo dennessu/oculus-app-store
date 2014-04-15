@@ -19,9 +19,9 @@ import javax.ws.rs.core.MediaType;
 /**
  * Created by liangfu on 4/3/14.
  */
-@Api("loginAttempts")
+@Api("credential-verify-attempts")
 @RestResource
-@Path("/login-attempts")
+@Path("/credential-verify-attempts")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 public interface UserCredentialVerifyAttemptResource {

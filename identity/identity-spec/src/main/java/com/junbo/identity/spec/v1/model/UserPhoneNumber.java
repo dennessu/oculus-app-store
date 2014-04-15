@@ -7,13 +7,16 @@ package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.junbo.common.id.UserPiiId;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
  * Created by kg on 3/12/14.
  */
 public class UserPhoneNumber {
+    @ApiModelProperty(position = 1, required = true, value = "User phone number.")
     private String value;
 
+    @ApiModelProperty(position = 2, required = true, value = "Whether user phone number is verified.")
     private Boolean verified;
 
     @JsonIgnore
