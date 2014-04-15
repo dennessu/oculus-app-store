@@ -18,7 +18,7 @@ public class EntitlementGatewayTest extends BaseTest {
     @Autowired
     private EntitlementGateway gateway;
 
-    @Test(enabled = false)
+    @Test(enabled = true)
     public void testBVT() {
         Entitlement entitlement = new Entitlement();
         entitlement.setUserId(12345L);

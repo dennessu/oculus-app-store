@@ -130,7 +130,7 @@ public class OrderRatingService extends RatingServiceSupport{
 
     private void calculateShippingFee(RatingContext context) {
         BigDecimal shippingFee = BigDecimal.ZERO;
-        Map<Long, Integer> shippingDetail = new HashMap<Long, Integer>();
+        Map<Long, Integer> shippingDetail = new HashMap<>();
 
         for (RatableItem item : context.getItems()) {
             if (item.getShippingMethodId() == null) {
@@ -140,7 +140,8 @@ public class OrderRatingService extends RatingServiceSupport{
                 shippingDetail.put(item.getShippingMethodId(), 0);
             }
             shippingDetail.put(item.getShippingMethodId(),
-                    shippingDetail.get(item.getShippingMethodId()) + getQuantity(item.getOffer()) * item.getQuantity());
+                    shippingDetail.get(item.getShippingMethodId())
+                            + getQuantity(item.getOffer(), context.getTimestamp()) * item.getQuantity());
         }
 
         for (Long shippingMethodId : shippingDetail.keySet()) {
@@ -164,7 +165,7 @@ public class OrderRatingService extends RatingServiceSupport{
         context.setShippingResult(result);
     }
 
-    private int getQuantity(RatingOffer ratingOffer) {
+    private int getQuantity(RatingOffer ratingOffer, Long timestamp) {
         int result = 0;
 
         for (LinkedEntry entry : ratingOffer.getItems()) {
@@ -175,8 +176,8 @@ public class OrderRatingService extends RatingServiceSupport{
         }
 
         for (LinkedEntry entry : ratingOffer.getSubOffers()) {
-            RatingOffer offer = catalogGateway.getOffer(entry.getEntryId());
-            result += getQuantity(offer);
+            RatingOffer offer = catalogGateway.getOffer(entry.getEntryId(), timestamp);
+            result += getQuantity(offer, timestamp);
         }
 
         return result;

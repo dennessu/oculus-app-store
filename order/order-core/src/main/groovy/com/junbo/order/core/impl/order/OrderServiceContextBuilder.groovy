@@ -60,7 +60,7 @@ class OrderServiceContextBuilder {
         List<PaymentInstrument> pis = []
         return Promise.each(piids.iterator()) { PaymentInstrumentId piid ->
             facadeContainer.paymentFacade.
-                    getPaymentInstrument(context.order.user, piid.value).syncRecover { Throwable throwable ->
+                    getPaymentInstrument(piid.value).syncRecover { Throwable throwable ->
                 LOGGER.error('name=Order_GetPaymentInstrument_Error', throwable)
                 // TODO read the payment error
                 throw AppErrors.INSTANCE.paymentConnectionError().exception()

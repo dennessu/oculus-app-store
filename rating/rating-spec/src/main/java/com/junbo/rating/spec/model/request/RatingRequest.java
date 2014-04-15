@@ -31,6 +31,7 @@ public class RatingRequest {
     private Set<String> couponCodes = new HashSet<>();
 
     private Set<RatingItem> lineItems;
+    private Long timestamp;
 
     @ShippingMethodId
     @JsonProperty("defaultShippingMethod")
@@ -88,6 +89,14 @@ public class RatingRequest {
 
     public void setLineItems(Set<RatingItem> lineItems) {
         this.lineItems = lineItems;
+    }
+
+    public Long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Long timestamp) {
+        this.timestamp = timestamp;
     }
 
     public Long getShippingMethodId() {

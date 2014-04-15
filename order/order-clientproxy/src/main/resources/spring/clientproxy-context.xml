@@ -35,7 +35,7 @@
         <constructor-arg name="transcoder" ref="transcoder"/>
         <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
         <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder"/>
-        <constructor-arg name="target" value="${order.client.identity.url}"/>
+        <constructor-arg name="target" value="${clientproxy.identity.url}"/>
     </bean>
 
     <bean id="order.billingBalanceClient" class="com.junbo.billing.spec.resource.proxy.BalanceResourceClientProxy">
@@ -43,7 +43,7 @@
         <constructor-arg name="transcoder" ref="transcoder"/>
         <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
         <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder"/>
-        <constructor-arg name="target" value="${order.client.billing.url}"/>
+        <constructor-arg name="target" value="${clientproxy.billing.url}"/>
     </bean>
 
     <bean id="order.billingShippingAddressClient" class="com.junbo.billing.spec.resource.proxy.ShippingAddressResourceClientProxy">
@@ -51,7 +51,7 @@
         <constructor-arg name="transcoder" ref="transcoder"/>
         <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
         <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder"/>
-        <constructor-arg name="target" value="${order.client.billing.url}"/>
+        <constructor-arg name="target" value="${clientproxy.billing.url}"/>
     </bean>
 
     <bean id="order.billingCurrencyClient" class="com.junbo.billing.spec.resource.proxy.CurrencyResourceClientProxy">
@@ -59,7 +59,7 @@
         <constructor-arg name="transcoder" ref="transcoder"/>
         <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
         <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder"/>
-        <constructor-arg name="target" value="${order.client.billing.url}"/>
+        <constructor-arg name="target" value="${clientproxy.billing.url}"/>
     </bean>
 
     <bean id="order.ratingClient" class="com.junbo.rating.spec.resource.proxy.RatingResourceClientProxy">
@@ -67,7 +67,7 @@
         <constructor-arg name="transcoder" ref="transcoder"/>
         <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
         <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder"/>
-        <constructor-arg name="target" value="${order.client.rating.url}"/>
+        <constructor-arg name="target" value="${clientproxy.rating.url}"/>
     </bean>
 
     <bean id="order.offerClient" class="com.junbo.catalog.spec.resource.proxy.OfferResourceClientProxy">
@@ -75,7 +75,7 @@
         <constructor-arg name="transcoder" ref="transcoder"/>
         <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
         <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder"/>
-        <constructor-arg name="target" value="${order.client.catalog.url}"/>
+        <constructor-arg name="target" value="${clientproxy.catalog.url}"/>
     </bean>
 
     <bean id="order.offerItemClient" class="com.junbo.catalog.spec.resource.proxy.ItemResourceClientProxy">
@@ -83,7 +83,7 @@
         <constructor-arg name="transcoder" ref="transcoder"/>
         <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
         <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder"/>
-        <constructor-arg name="target" value="${order.client.catalog.url}"/>
+        <constructor-arg name="target" value="${clientproxy.catalog.url}"/>
     </bean>
 
     <bean id="order.offerRevisionClient" class="com.junbo.catalog.spec.resource.proxy.OfferRevisionResourceClientProxy">
@@ -107,7 +107,7 @@
         <constructor-arg name="transcoder" ref="transcoder"/>
         <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
         <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder"/>
-        <constructor-arg name="target" value="${order.client.fulfilment.url}"/>
+        <constructor-arg name="target" value="${clientproxy.fulfilment.url}"/>
     </bean>
 
     <bean id="order.paymentInstrumentClient" class="com.junbo.payment.spec.resource.proxy.PaymentInstrumentResourceClientProxy">
@@ -115,7 +115,7 @@
         <constructor-arg name="transcoder" ref="transcoder"/>
         <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
         <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder"/>
-        <constructor-arg name="target" value="${order.client.payment.url}"/>
+        <constructor-arg name="target" value="${clientproxy.payment.url}"/>
     </bean>
 
     <bean id="order.emailClient" class="com.junbo.email.spec.resource.proxy.EmailResourceClientProxy">
@@ -123,7 +123,7 @@
         <constructor-arg name="transcoder" ref="transcoder"/>
         <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
         <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder"/>
-        <constructor-arg name="target" value="${order.client.email.url}"/>
+        <constructor-arg name="target" value="${clientproxy.email.url}"/>
     </bean>
 
     <!-- cache -->

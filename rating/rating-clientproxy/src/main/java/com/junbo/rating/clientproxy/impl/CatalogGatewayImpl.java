@@ -11,6 +11,7 @@ import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.offer.ItemEntry;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
+import com.junbo.catalog.spec.model.offer.OfferRevisionsGetOptions;
 import com.junbo.catalog.spec.model.pricetier.PriceTier;
 import com.junbo.catalog.spec.model.promotion.Promotion;
 import com.junbo.catalog.spec.model.promotion.PromotionRevision;
@@ -29,10 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Catalog gateway.
@@ -69,7 +67,7 @@ public class CatalogGatewayImpl implements CatalogGateway{
     }
 
     @Override
-    public RatingOffer getOffer(Long offerId) {
+    public RatingOffer getOffer(Long offerId, Long timestamp) {
         Offer offer;
         try {
             offer = offerResource.getOffer(new OfferId(offerId)).wrapped().get();
@@ -85,10 +83,12 @@ public class CatalogGatewayImpl implements CatalogGateway{
         }
 
         OfferRevision offerRevision;
+        OfferRevisionsGetOptions options = new OfferRevisionsGetOptions();
+        options.setOfferIds(Arrays.asList(new OfferId(offerId)));
+        options.setTimestamp(timestamp);
         try {
-            //TODO modify this logic later after timestamp is ready in catalog
-            offerRevision = offerRevisionResource.getOfferRevision(
-                    new OfferRevisionId(offer.getCurrentRevisionId())).wrapped().get();
+
+            offerRevision = offerRevisionResource.getOfferRevisions(options).wrapped().get().getItems().get(0);
         } catch (Exception e) {
             throw AppErrors.INSTANCE.catalogGatewayError().exception();
         }
