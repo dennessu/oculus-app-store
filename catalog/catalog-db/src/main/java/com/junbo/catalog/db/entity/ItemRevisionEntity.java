@@ -12,7 +12,6 @@ import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.*;
-import java.util.Date;
 
 /**
  * Item DB entity.
@@ -26,7 +25,7 @@ public class ItemRevisionEntity extends BaseEntity {
     private String type;
     private Long ownerId;
     private String status;
-    private Date timestamp;
+    private Long timestamp;
     private String payload;
 
     @Id
@@ -76,11 +75,11 @@ public class ItemRevisionEntity extends BaseEntity {
     }
 
     @Column(name = "timestamp")
-    public Date getTimestamp() {
+    public Long getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Date timestamp) {
+    public void setTimestamp(Long timestamp) {
         this.timestamp = timestamp;
     }
 
