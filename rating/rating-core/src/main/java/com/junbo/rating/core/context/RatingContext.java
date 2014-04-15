@@ -6,7 +6,7 @@
 
 package com.junbo.rating.core.context;
 
-import com.junbo.catalog.spec.model.promotion.Promotion;
+import com.junbo.catalog.spec.model.promotion.PromotionRevision;
 import com.junbo.catalog.spec.model.promotion.PromotionType;
 import com.junbo.rating.spec.error.AppErrors;
 import com.junbo.rating.spec.model.*;
@@ -23,12 +23,11 @@ import java.util.*;
  */
 public class RatingContext {
     private Long userId;
-    private String country;
     private Currency currency;
     private Map<String, String> couponCodes;
     private Set<RatableItem> items;
-    private Map<Long, Set<Promotion>> candidates;
-    private Map<PromotionType, Set<Promotion>> rules;
+    private Map<Long, Set<PromotionRevision>> candidates;
+    private Map<PromotionType, Set<PromotionRevision>> rules;
 
     private RatableItem currentItem;
 
@@ -42,14 +41,13 @@ public class RatingContext {
     public RatingContext() {
         items = new HashSet<RatableItem>();
         couponCodes = new HashMap<String, String>();
-        candidates = new HashMap<Long, Set<Promotion>>();
-        rules = new HashMap<PromotionType, Set<Promotion>>();
+        candidates = new HashMap<Long, Set<PromotionRevision>>();
+        rules = new HashMap<PromotionType, Set<PromotionRevision>>();
         entries = new HashSet<RatingResultEntry>();
     }
 
     public void fromRequest(OfferRatingRequest request) {
         this.userId = request.getUserId();
-        this.country = request.getCountry();
 
         Currency currency = Currency.findByCode(request.getCurrency());
         if (currency == null) {
@@ -67,7 +65,6 @@ public class RatingContext {
 
     public void fromRequest(RatingRequest request) {
         this.userId = request.getUserId();
-        this.country = request.getCountry();
 
         Currency currency = Currency.findByCode(request.getCurrency());
         if (currency == null) {
@@ -103,14 +100,6 @@ public class RatingContext {
         this.userId = userId;
     }
 
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
     public Currency getCurrency() {
         return currency;
     }
@@ -135,19 +124,19 @@ public class RatingContext {
         this.items = items;
     }
 
-    public Map<Long, Set<Promotion>> getCandidates() {
+    public Map<Long, Set<PromotionRevision>> getCandidates() {
         return candidates;
     }
 
-    public void setCandidates(Map<Long, Set<Promotion>> candidates) {
+    public void setCandidates(Map<Long, Set<PromotionRevision>> candidates) {
         this.candidates = candidates;
     }
 
-    public Map<PromotionType, Set<Promotion>> getRules() {
+    public Map<PromotionType, Set<PromotionRevision>> getRules() {
         return rules;
     }
 
-    public void setRules(Map<PromotionType, Set<Promotion>> rules) {
+    public void setRules(Map<PromotionType, Set<PromotionRevision>> rules) {
         this.rules = rules;
     }
 

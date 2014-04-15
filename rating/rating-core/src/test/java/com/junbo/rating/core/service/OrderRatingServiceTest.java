@@ -31,7 +31,6 @@ public class OrderRatingServiceTest extends BaseTest {
     public void testGeneral() {
         RatingContext context = new RatingContext();
         context.setUserId(generateId());
-        context.setCountry("US");
         context.setCurrency(Currency.findByCode("USD"));
         RatableItem item = new RatableItem();
         item.setOfferId(100L);
@@ -61,6 +60,6 @@ public class OrderRatingServiceTest extends BaseTest {
         Assert.assertEquals(result.getOrderBenefit().getDiscountAmount(), new BigDecimal("5.00"));
         Assert.assertEquals(result.getOrderBenefit().getFinalAmount(), new BigDecimal("28.95"));
 
-        Assert.assertEquals(result.getShippingBenefit().getShippingFee(), new BigDecimal("20.80"));
+        Assert.assertEquals(result.getShippingBenefit().getShippingFee(), new BigDecimal("16.00"));
     }
 }

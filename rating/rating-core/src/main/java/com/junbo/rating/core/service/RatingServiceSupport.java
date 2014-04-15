@@ -6,10 +6,7 @@
 
 package com.junbo.rating.core.service;
 
-import com.junbo.catalog.spec.model.promotion.Benefit;
-import com.junbo.catalog.spec.model.promotion.Criterion;
-import com.junbo.catalog.spec.model.promotion.Promotion;
-import com.junbo.catalog.spec.model.promotion.PromotionType;
+import com.junbo.catalog.spec.model.promotion.*;
 import com.junbo.rating.clientproxy.CatalogGateway;
 import com.junbo.rating.common.util.Func;
 import com.junbo.rating.common.util.Utils;
@@ -22,6 +19,7 @@ import com.junbo.rating.spec.model.RatableItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -38,16 +36,16 @@ public abstract class RatingServiceSupport implements RatingService{
         }
     }
 
-    protected Map<PromotionType, Set<Promotion>> getPromotionRulesByTypes(PromotionType... types) {
-        Map<PromotionType, Set<Promotion>> result = new HashMap<PromotionType, Set<Promotion>>();
+    protected Map<PromotionType, Set<PromotionRevision>> getPromotionRulesByTypes(PromotionType... types) {
+        Map<PromotionType, Set<PromotionRevision>> result = new HashMap<>();
 
         //call catalog to get all currently effective promotions
-        List<Promotion> promotions = catalogGateway.getPromotions();
+        List<PromotionRevision> promotions = catalogGateway.getPromotions();
 
-        for (Promotion promotion : promotions) {
+        for (PromotionRevision promotion : promotions) {
             if (Arrays.asList(types).contains(promotion.getType())) {
                 if (!result.containsKey(promotion.getType())) {
-                    result.put(promotion.getType(), new HashSet<Promotion>());
+                    result.put(promotion.getType(), new HashSet<PromotionRevision>());
                 }
                 //sort criteria for each promotion
                 Collections.sort(promotion.getCriteria(), new Comparator<Criterion>() {
@@ -64,28 +62,28 @@ public abstract class RatingServiceSupport implements RatingService{
     }
 
     protected void filterByCurrency(final RatingContext context) {
-        discardRule(context, new Func<Promotion, Boolean>() {
+        discardRule(context, new Func<PromotionRevision, Boolean>() {
             @Override
-            public Boolean execute(Promotion promotion) {
+            public Boolean execute(PromotionRevision promotion) {
                 return promotion.getCurrency().equalsIgnoreCase(context.getCurrency().getCode());
             }
         });
     }
 
     protected void filterByEffectiveDate(RatingContext context) {
-        discardRule(context, new Func<Promotion, Boolean>() {
+        discardRule(context, new Func<PromotionRevision, Boolean>() {
             @Override
-            public Boolean execute(Promotion promotion) {
+            public Boolean execute(PromotionRevision promotion) {
                 return promotion.isEffective(Utils.now());
             }
         });
     }
 
-    private void discardRule(RatingContext context, Func<Promotion, Boolean> predicate) {
-        for (Set<Promotion> entry : context.getRules().values()) {
-            Iterator<Promotion> iterator = entry.iterator();
+    private void discardRule(RatingContext context, Func<PromotionRevision, Boolean> predicate) {
+        for (Set<PromotionRevision> entry : context.getRules().values()) {
+            Iterator<PromotionRevision> iterator = entry.iterator();
             while (iterator.hasNext()) {
-                Promotion rule = iterator.next();
+                PromotionRevision rule = iterator.next();
 
                 // discard candidate that doesn't match criteria
                 if (!predicate.execute(rule)) {
@@ -105,14 +103,14 @@ public abstract class RatingServiceSupport implements RatingService{
 
 
 
-    private Set<Promotion> filterByCriteria(RatingContext context) {
-        Set<Promotion> promotions = context.getRules().get(PromotionType.OFFER_PROMOTION);
+    private Set<PromotionRevision> filterByCriteria(RatingContext context) {
+        Set<PromotionRevision> promotions = context.getRules().get(PromotionType.OFFER_PROMOTION);
         if (promotions == null) {
-            return Collections.<Promotion>emptySet();
+            return Collections.<PromotionRevision>emptySet();
         }
 
-        Set<Promotion> candidates = new HashSet<Promotion>();
-        for (Promotion promotion : promotions) {
+        Set<PromotionRevision> candidates = new HashSet<>();
+        for (PromotionRevision promotion : promotions) {
             if (validatePromotion(promotion, context)) {
                 candidates.add(promotion);
             }
@@ -121,7 +119,7 @@ public abstract class RatingServiceSupport implements RatingService{
         return candidates;
     }
 
-    protected boolean validatePromotion(Promotion promotion, RatingContext context) {
+    protected boolean validatePromotion(PromotionRevision promotion, RatingContext context) {
         for (Criterion criterion : promotion.getCriteria()) {
             if (!HandlerRegister.isSatisfied(criterion, context)) {
                 return false;
@@ -131,17 +129,21 @@ public abstract class RatingServiceSupport implements RatingService{
         return true;
     }
 
-    protected Money getPrice(RatingOffer offer, String country, String currency) {
-        Map<String, Price> priceMap = offer.getPrices();
-        if (!priceMap.containsKey(country)) {
+    protected Money getPrice(RatingOffer offer, String currency) {
+        Price price = offer.getPrice();
+        if (price == null) {
             return Money.NOT_FOUND;
         }
 
-        Price price = priceMap.get(country);
-        if (currency.equalsIgnoreCase(price.getCurrency())) {
-            return new Money(price.getPrice(), price.getCurrency());
+        if (price.getPriceType().equalsIgnoreCase(Price.FREE)) {
+            return new Money(BigDecimal.ZERO, currency);
         }
-        return Money.NOT_FOUND;
+
+        Map<String, BigDecimal> prices = price.getPrices();
+        if (!prices.containsKey(currency)) {
+            return Money.NOT_FOUND;
+        }
+        return new Money(prices.get(currency), currency);
     }
 
     protected Money applyBenefit(Money original, Benefit benefit) {

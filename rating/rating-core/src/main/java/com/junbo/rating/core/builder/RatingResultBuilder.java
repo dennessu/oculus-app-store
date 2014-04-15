@@ -21,7 +21,6 @@ public class RatingResultBuilder {
     public static RatingRequest buildForOrder(RatingContext context) {
         RatingRequest result = new RatingRequest();
         result.setUserId(context.getUserId());
-        result.setCountry(context.getCountry());
         result.setCurrency(context.getCurrency().getCode());
         result.setLineItems(new HashSet<RatingItem>());
 
@@ -60,7 +59,6 @@ public class RatingResultBuilder {
     public static RatingRequest buildForOffers(RatingContext context) {
         RatingRequest result = new RatingRequest();
         result.setUserId(context.getUserId());
-        result.setCountry(context.getCountry());
         result.setCurrency(context.getCurrency().getCode());
         result.setLineItems(new HashSet<RatingItem>());
         for (RatingResultEntry entry : context.getEntries()) {

@@ -6,7 +6,7 @@
 
 package com.junbo.rating.core.service;
 
-import com.junbo.catalog.spec.model.promotion.Promotion;
+import com.junbo.catalog.spec.model.promotion.PromotionRevision;
 import com.junbo.catalog.spec.model.promotion.PromotionType;
 import com.junbo.rating.core.context.RatingContext;
 import com.junbo.rating.spec.error.AppErrors;
@@ -44,16 +44,15 @@ public class OfferRatingService extends RatingServiceSupport{
     }
 
     private void findBestPrice(RatingContext context) {
-        Map<Long, Set<Promotion>> candidates = context.getCandidates();
-        String country = context.getCountry();
+        Map<Long, Set<PromotionRevision>> candidates = context.getCandidates();
         Currency currency = context.getCurrency();
 
         for (RatableItem item : context.getItems()) {
             Long offerId = item.getOfferId();
-            Set<Promotion> promotions = candidates.get(offerId) == null?
-                    new HashSet<Promotion>() : candidates.get(offerId);
+            Set<PromotionRevision> promotions = candidates.get(offerId) == null?
+                    new HashSet<PromotionRevision>() : candidates.get(offerId);
 
-            Money originalPrice = getPrice(item.getOffer(), country, currency.getCode());
+            Money originalPrice = getPrice(item.getOffer(), currency.getCode());
             if (originalPrice == Money.NOT_FOUND) {
                 throw AppErrors.INSTANCE.priceNotFound(item.getOfferId().toString()).exception();
             }
@@ -64,7 +63,7 @@ public class OfferRatingService extends RatingServiceSupport{
             entry.setOfferId(item.getOfferId());
             entry.setOriginalAmount(originalPrice);
             entry.setAppliedPromotion(new HashSet<Long>());
-            for (Promotion promotion : promotions) {
+            for (PromotionRevision promotion : promotions) {
                 if (promotion.getBenefit() == null) {
                     continue;
                 }
@@ -72,7 +71,7 @@ public class OfferRatingService extends RatingServiceSupport{
                 Money currentBenefit = applyBenefit(originalPrice, promotion.getBenefit());
                 if (currentBenefit.greaterThan(bestBenefit)) {
                     bestBenefit = currentBenefit;
-                    entry.getAppliedPromotion().add(promotion.getId());
+                    entry.getAppliedPromotion().add(promotion.getRevisionId());
                 }
             }
             bestBenefit.rounding(currency.getDigits());
