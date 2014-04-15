@@ -8,8 +8,6 @@ package com.junbo.catalog.core.service;
 
 import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.core.PromotionService;
-import com.junbo.catalog.db.entity.PromotionEntity;
-import com.junbo.catalog.db.entity.PromotionRevisionEntity;
 import com.junbo.catalog.db.repo.PromotionRepository;
 import com.junbo.catalog.db.repo.PromotionRevisionRepository;
 import com.junbo.catalog.spec.error.AppErrors;
