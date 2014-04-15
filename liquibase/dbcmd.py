@@ -41,6 +41,7 @@ def readParams():
         printUsage()
     
     # Optional params
+    command = None
     if len(sys.argv) > 0:
         command = sys.argv.pop(0)
     
@@ -63,7 +64,8 @@ def readParams():
     
     if command is None:
         # Prompt for user input
-        inputParam.command = readInput("Input the liquibase command: ")
+        printValidCommands()
+        command = readInput("Input the liquibase command: ")
     
     command = command.lower()
     if command not in set(["status", "update", "updatesql", "validate", "create", "drop"]):
@@ -245,8 +247,9 @@ def splitRange(param):
     return sorted(result)
 
 def readInput(message):
-    info(message)
-    return raw_input()
+    sys.stdout.write(message)
+    sys.stdout.flush()
+    return sys.stdin.readline().strip()
 
 def info(message):
     print message
