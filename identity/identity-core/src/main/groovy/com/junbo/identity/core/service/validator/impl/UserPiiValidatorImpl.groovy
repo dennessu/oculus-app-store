@@ -66,6 +66,24 @@ class UserPiiValidatorImpl implements UserPiiValidator {
         return Promise.pure(null)
     }
 
+    Promise<Void> checkEmailForCreate(UserPii userPii) {
+        if (userPii.emails != null) {
+            userPii.emails.each { Map.Entry entry ->
+                UserEmail userEmail = (UserEmail) entry.value
+
+                userPiiRepository.search(new UserPiiListOptions(
+                        email: userEmail.value
+                )).then { List<UserPii> userPiiList ->
+                    if (!CollectionUtils.isEmpty(userPiiList)) {
+                        throw AppErrors.INSTANCE.fieldDuplicate('email').exception()
+                    }
+                }
+            }
+        }
+
+        return Promise.pure(null)
+    }
+
     @Override
     Promise<Void> validateForCreate(UserPii userPii) {
         return checkBasicUserPiiInfo(userPii).then {
@@ -73,21 +91,15 @@ class UserPiiValidatorImpl implements UserPiiValidator {
                 throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
             }
 
-            if (userPii.emails != null) {
-                userPii.emails.each { Map.Entry entry ->
-                    UserEmail userEmail = (UserEmail) entry.value
-
-                    userPiiRepository.search(new UserPiiListOptions(
-                            email: userEmail.value
-                    )).then { List<UserPii> userPiiList ->
-                        if (!CollectionUtils.isEmpty(userPiiList)) {
-                            throw AppErrors.INSTANCE.fieldDuplicate('email').exception()
-                        }
-                    }
+            return userPiiRepository.search(new UserPiiListOptions(
+                    userId: userPii.userId
+            )).then { List<UserPii> existing ->
+                if (!CollectionUtils.isEmpty(existing)) {
+                    throw AppErrors.INSTANCE.fieldDuplicate('userId').exception()
                 }
-            }
 
-            return Promise.pure(null)
+                return checkEmailForCreate(userPii)
+            }
         }
     }
 
@@ -137,7 +149,7 @@ class UserPiiValidatorImpl implements UserPiiValidator {
 
     private Promise<Object> checkAddressBook(UserPii userPii) {
         if (userPii.addressBook != null) {
-            Promise.each (userPii.addressBook.iterator(), new Promise.Func<AddressId, Promise<Object>>() {
+            return Promise.each (userPii.addressBook.iterator(), new Promise.Func<AddressId, Promise<Object>>() {
                 @Override
                 Promise<Object> apply(AddressId addressId) {
                     return addressValidator.validateForGet(addressId).then { Address address ->

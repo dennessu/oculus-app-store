@@ -7,6 +7,7 @@
 package com.junbo.common.id;
 
 import java.io.Serializable;
+import java.util.Properties;
 
 /**
  * generic identifier class.
@@ -15,6 +16,8 @@ import java.io.Serializable;
 public abstract class Id extends Object implements Serializable {
 
     private Long value;
+
+    protected Properties properties;
 
     // default ctor needed for Class.newInstance in deserializer
     public Id() {
@@ -30,6 +33,10 @@ public abstract class Id extends Object implements Serializable {
 
     public void setValue(Long value) {
         this.value = value;
+    }
+
+    public Properties getProperties() {
+        return this.properties;
     }
 
     @Override
