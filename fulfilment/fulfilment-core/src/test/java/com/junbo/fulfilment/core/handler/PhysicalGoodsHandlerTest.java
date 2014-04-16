@@ -30,12 +30,12 @@ public class PhysicalGoodsHandlerTest extends BaseTest {
                     add(new LinkedEntry() {{
                         setId(10000L);
                         setQuantity(quantity1);
-                        setSku(11111L);
+                        setSku("11111");
                     }});
                     add(new LinkedEntry() {{
                         setId(20000L);
                         setQuantity(quantity2);
-                        setSku(22222L);
+                        setSku("22222");
                     }});
                 }});
             }});

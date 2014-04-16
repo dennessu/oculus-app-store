@@ -1,9 +1,13 @@
 package com.junbo.fulfilment.clientproxy;
 
+import com.junbo.catalog.spec.model.common.LocalizableProperty;
+import com.junbo.catalog.spec.model.common.Price;
+import com.junbo.catalog.spec.model.common.Status;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
 import com.junbo.catalog.spec.model.offer.Action;
 import com.junbo.catalog.spec.model.offer.Event;
 import com.junbo.catalog.spec.model.offer.Offer;
+import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.common.id.FulfilmentId;
 import com.junbo.common.id.OrderId;
 import com.junbo.fulfilment.common.util.Constant;
@@ -20,6 +24,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
@@ -167,26 +172,42 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
         final Long entitlementDefId = prepareEntitlementDef();
 
         Offer offer = new Offer();
-        offer.setName("TEST_OFFER");
         offer.setOwnerId(getRandomLong());
 
-        offer.setEvents(new ArrayList<Event>() {{
-            add(new Event() {{
+        LocalizableProperty name = new LocalizableProperty();
+        name.set("en_US", "test_offer_name");
+        offer.setName(name);
+        Long offerId = megaGateway.createOffer(offer);
+        junit.framework.Assert.assertNotNull(offerId);
+
+        OfferRevision offerRevision = new OfferRevision();
+        offerRevision.setOfferId(offerId);
+        offerRevision.setOwnerId(12345L);
+        offerRevision.setStatus(Status.DRAFT);
+
+        Price price = new Price();
+        price.setPriceType(Price.FREE);
+        offerRevision.setPrice(price);
+        offerRevision.setEvents(new HashMap<String, Event>() {{
+            put(Constant.EVENT_PURCHASE.toLowerCase(), new Event() {{
                 setName(Constant.EVENT_PURCHASE);
                 setActions(new ArrayList<Action>() {{
                     add(new Action() {{
-                        setEntitlementDefId(entitlementDefId);
                         setType(Constant.ACTION_GRANT_ENTITLEMENT);
+                        setProperties(new HashMap<String, Object>() {{
+                            put(Constant.ENTITLEMENT_DEF_ID, "12345");
+                        }});
                     }});
                 }});
             }});
         }});
 
-        Long offerId = megaGateway.createOffer(offer);
+        Long offerRevisionId = megaGateway.createOfferRevision(offerRevision);
+        junit.framework.Assert.assertNotNull(offerRevisionId);
 
-        offer.setId(offerId);
-        offer.setStatus("RELEASED");
-        megaGateway.updateOffer(offer);
+        OfferRevision retrievedRevision = megaGateway.getOfferRevision(offerRevisionId);
+        retrievedRevision.setStatus(Status.APPROVED);
+        megaGateway.updateOfferRevision(retrievedRevision);
 
         return offerId;
     }

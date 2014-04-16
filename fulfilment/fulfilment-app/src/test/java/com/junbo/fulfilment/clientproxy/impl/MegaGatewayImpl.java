@@ -53,6 +53,15 @@ public class MegaGatewayImpl implements MegaGateway {
     }
 
     @Override
+    public OfferRevision getOfferRevision(Long offerRevisionId) {
+        try {
+            return offerRevisionResource.getOfferRevision(new OfferRevisionId(offerRevisionId)).wrapped().get();
+        } catch (Exception e) {
+            throw new RuntimeException("Error occurred during calling [Catalog] component service.", e);
+        }
+    }
+
+    @Override
     public Long updateOfferRevision(OfferRevision offerRevision) {
         try {
             return offerRevisionResource.updateOfferRevision(
