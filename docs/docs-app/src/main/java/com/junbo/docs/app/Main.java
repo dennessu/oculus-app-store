@@ -50,7 +50,7 @@ public class Main {
         beanConfig.setDescription("Oculus Commerce and Identity API Documentations");
         beanConfig.setTitle("Oculus Commerce and Identity API");
         beanConfig.setVersion("0.0.1-SNAPSHOT");
-        beanConfig.setBasePath("http://api.oculusvr-demo.com:8081/v1/");
+        beanConfig.setBasePath("http://api.oculusvr-demo.com:8081/v1");
         beanConfig.setScan(true);
 
         // jersey container
