@@ -16,6 +16,7 @@ import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.ws.rs.BeanParam;
+import javax.ws.rs.core.Response;
 import java.util.List;
 
 /**
@@ -46,5 +47,11 @@ public class OfferResourceImpl implements OfferResource {
     @Override
     public Promise<Offer> update(OfferId offerId, Offer offer) {
         return Promise.pure(offerService.updateEntity(offerId.getValue(), offer));
+    }
+
+    @Override
+    public Promise<Response> delete(OfferId offerId) {
+        offerService.deleteEntity(offerId.getValue());
+        return Promise.pure(Response.status(204).build());
     }
 }

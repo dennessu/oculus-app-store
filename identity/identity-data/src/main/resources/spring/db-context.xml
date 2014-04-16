@@ -102,41 +102,6 @@
         <property name="multimapDAO" ref="multimapDAO" />
     </bean>
 
-
-    <bean id="indexDataSource" class="com.junbo.sharding.hibernate.ShardMultiTenantConnectionProviderFactoryBean">
-        <property name="jdbcUrls" value="${index.db.jdbcUrls}"/>
-
-        <property name="uniqueName" value="jdbc/index"/>
-        <property name="className" value="${index.db.driverClassName}"/>
-        <property name="minPoolSize" value="${index.db.minPoolSize}"/>
-        <property name="maxPoolSize" value="${index.db.maxPoolSize}"/>
-        <property name="driverProperties">
-            <props>
-                <prop key="user">${index.db.username}</prop>
-                <prop key="password">${index.db.password}</prop>
-            </props>
-        </property>
-    </bean>
-
-    <bean id="indexSessionFactory" class="com.junbo.sharding.hibernate.LocalSessionFactoryWithListenerBean">
-        <property name="jtaTransactionManager" ref="transactionManager"/>
-        <property name="hibernateProperties">
-            <map>
-                <entry key="hibernate.dialect" value="${sharding.hibernate.dialect}"/>
-                <entry key="hibernate.max_fetch_depth" value="${sharding.hibernate.max_fetch_depth}"/>
-                <entry key="hibernate.jdbc.fetch_size" value="${sharding.hibernate.jdbc.fetch_size}"/>
-                <entry key="hibernate.jdbc.batch_size" value="${sharding.hibernate.jdbc.batch_size}"/>
-                <entry key="hibernate.show_sql" value="${sharding.hibernate.show_sql}"/>
-
-                <entry key="hibernate.multiTenancy" value="SCHEMA"/>
-                <entry key="hibernate.current_session_context_class" value="com.junbo.sharding.hibernate.MultiTenantJTASessionContext"/>
-                <entry key="hibernate.tenant_identifier_resolver" value="com.junbo.sharding.hibernate.ShardCurrentTenantIdentifierResolver"/>
-                <entry key="hibernate.multi_tenant_connection_provider" value-ref="indexDataSource"/>
-                <entry key="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
-            </map>
-        </property>
-    </bean>
-
     <bean id="identityDataSource" class="com.junbo.sharding.hibernate.ShardMultiTenantConnectionProviderFactoryBean">
         <property name="jdbcUrls" value="${identity.db.jdbcUrls}"/>
 

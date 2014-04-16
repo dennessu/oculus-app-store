@@ -65,9 +65,9 @@ public class WalletRepoTest extends BaseTest {
         Wallet wallet = walletRepo.create(buildAWallet());
         CreditRequest creditRequest = buildACreditRequest();
         creditRequest.setAmount(new BigDecimal(10));
-        creditRequest.setType(WalletLotType.CASH.toString());
+        creditRequest.setCreditType(WalletLotType.CASH.toString());
         walletRepo.credit(wallet, creditRequest);
-        creditRequest.setType(WalletLotType.PROMOTION.toString());
+        creditRequest.setCreditType(WalletLotType.PROMOTION.toString());
         creditRequest.setExpirationDate(new Date(new Date().getTime() - 2000));
         walletRepo.credit(wallet, creditRequest);
 
@@ -104,7 +104,7 @@ public class WalletRepoTest extends BaseTest {
 
     private CreditRequest buildACreditRequest() {
         CreditRequest creditRequest = new CreditRequest();
-        creditRequest.setType(WalletLotType.PROMOTION.toString());
+        creditRequest.setCreditType(WalletLotType.PROMOTION.toString());
         creditRequest.setOfferId(idGenerator.nextId());
         creditRequest.setAmount(new BigDecimal(10));
         return creditRequest;

@@ -6,6 +6,8 @@
 
 package com.junbo.order.db;
 
+import com.junbo.common.id.SubledgerId;
+import com.junbo.common.id.SubledgerItemId;
 import com.junbo.order.db.common.TestHelper;
 import com.junbo.order.db.dao.SubledgerItemDao;
 import com.junbo.order.db.entity.SubledgerItemEntity;
@@ -22,33 +24,39 @@ public class SubledgerItemDaoTest extends BaseTest {
 
     @Test
     public void testCreateAndRead() {
-        SubledgerItemEntity subledgerItemEntity = TestHelper.generateSubledgerItemEntity();
-        Long id = subledgerItemDao.create(subledgerItemEntity);
+        SubledgerItemEntity entity = TestHelper.generateSubledgerItemEntity();
+        entity.setSubledgerId(idGenerator.nextId(SubledgerId.class));
+        entity.setSubledgerItemId(idGenerator.nextId(SubledgerItemId.class, entity.getSubledgerId()));
+        Long id = subledgerItemDao.create(entity);
         SubledgerItemEntity returnedEntity = subledgerItemDao.read(id);
 
         Assert.assertNotNull(returnedEntity, "Fail to create or read entity.");
-        Assert.assertEquals(returnedEntity.getSubledgerItemId(), subledgerItemEntity.getSubledgerItemId(),
+        Assert.assertEquals(returnedEntity.getSubledgerItemId(), entity.getSubledgerItemId(),
                 "The subledger item Id should not be different.");
     }
 
     @Test
     public void testUpdate() {
-        SubledgerItemEntity subledgerItemEntity = TestHelper.generateSubledgerItemEntity();
-        Long id = subledgerItemDao.create(subledgerItemEntity);
-        subledgerItemEntity.setUpdatedBy("ANOTHER");
-        subledgerItemDao.update(subledgerItemEntity);
+        SubledgerItemEntity entity = TestHelper.generateSubledgerItemEntity();
+        entity.setSubledgerId(idGenerator.nextId(SubledgerId.class));
+        entity.setSubledgerItemId(idGenerator.nextId(SubledgerItemId.class, entity.getSubledgerId()));
+        Long id = subledgerItemDao.create(entity);
+        entity.setUpdatedBy("ANOTHER");
+        subledgerItemDao.update(entity);
         SubledgerItemEntity returnedEntity = subledgerItemDao.read(id);
 
         Assert.assertNotNull(returnedEntity, "Fail to create or read entity.");
-        Assert.assertEquals(returnedEntity.getUpdatedBy(), subledgerItemEntity.getUpdatedBy(),
+        Assert.assertEquals(returnedEntity.getUpdatedBy(), entity.getUpdatedBy(),
                 "The UpdatedBy field should not be different.");
     }
 
     @Test
     public void testGetByStatus() {
-        SubledgerItemEntity subledgerItemEntity = TestHelper.generateSubledgerItemEntity();
-        int sizeBeforeCreate = subledgerItemDao.getByStatus(subledgerItemEntity.getStatus(), 0, 1).size();
-        subledgerItemDao.create(subledgerItemEntity);
-        Assert.assertEquals(subledgerItemDao.getByStatus(subledgerItemEntity.getStatus(), 0, 1).size(), sizeBeforeCreate + 1);
+        SubledgerItemEntity entity = TestHelper.generateSubledgerItemEntity();
+        entity.setSubledgerId(idGenerator.nextId(SubledgerId.class));
+        entity.setSubledgerItemId(idGenerator.nextId(SubledgerItemId.class, entity.getSubledgerId()));
+        int sizeBeforeCreate = subledgerItemDao.getByStatus(entity.getStatus(), 0, 1).size();
+        subledgerItemDao.create(entity);
+        Assert.assertEquals(subledgerItemDao.getByStatus(entity.getStatus(), 0, 1).size(), sizeBeforeCreate + 1);
     }
 }

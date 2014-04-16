@@ -92,6 +92,6 @@ public class OrderItemTaxInfoEntity extends CommonDbEntityWithDate {
     @Override
     @Transient
     public Long getShardId() {
-        return orderItemId;
+        return orderItemTaxInfoId;
     }
 }

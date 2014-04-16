@@ -17,6 +17,7 @@ import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  * Promotion resource definition.
@@ -49,9 +50,8 @@ public interface PromotionResource {
     Promise<Promotion> update(@PathParam("promotionId") PromotionId promotionId, Promotion promotion);
 
 
-    /*@ApiOperation("Delete a promotion")
+    @ApiOperation("Delete a promotion")
     @DELETE
     @Path("/{promotionId}")
     Promise<Response> delete(@PathParam("promotionId") PromotionId promotionId);
-    */
 }
