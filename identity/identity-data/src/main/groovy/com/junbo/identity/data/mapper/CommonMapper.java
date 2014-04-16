@@ -333,4 +333,18 @@ public class CommonMapper {
         }
         return id.getValue();
     }
+
+    public AddressId toAddressId(Long id) {
+        if (id == null) {
+            return null;
+        }
+        return new AddressId(id);
+    }
+
+    public Long toAddressId(AddressId id) {
+        if (id == null) {
+            return null;
+        }
+        return id.getValue();
+    }
 }

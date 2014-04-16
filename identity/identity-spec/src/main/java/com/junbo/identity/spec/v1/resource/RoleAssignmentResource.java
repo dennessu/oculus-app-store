@@ -21,7 +21,7 @@ import javax.ws.rs.core.MediaType;
 /**
  * RoleAssignmentResource.
  */
-@Api("roleAssignments")
+@Api("role-assignments")
 @RestResource
 @Path("/role-assignments")
 @Produces({MediaType.APPLICATION_JSON})

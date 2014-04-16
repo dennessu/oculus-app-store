@@ -35,7 +35,7 @@ public class MockCatalogGatewayImpl implements CatalogGateway{
         put(201L, genPhysicalItem());
     }};
 
-    Map<Long, Promotion> mockPromotions = new HashMap<Long, Promotion>() {{
+    Map<Long, PromotionRevision> mockPromotions = new HashMap<Long, PromotionRevision>() {{
         put(300L, genOfferPro());
         put(301L, genOfferProWithExEntitlement());
         put(302L, genOrderPromotion());
@@ -48,13 +48,13 @@ public class MockCatalogGatewayImpl implements CatalogGateway{
     }
 
     @Override
-    public RatingOffer getOffer(Long offerId) {
+    public RatingOffer getOffer(Long offerId, Long timestamp) {
         return mockOffers.get(offerId);
     }
 
     @Override
-    public List<Promotion> getPromotions() {
-        return new ArrayList<Promotion>(mockPromotions.values());
+    public List<PromotionRevision> getPromotions() {
+        return new ArrayList<>(mockPromotions.values());
     }
 
     @Override
@@ -70,13 +70,11 @@ public class MockCatalogGatewayImpl implements CatalogGateway{
 
 
     private RatingOffer genOffer100() {
-        final Price price = new Price(new BigDecimal("9.99"), "USD");
-
         return new RatingOffer() {{
             setId(100L);
-            setPrices(new HashMap<String, Price>() {{
-                put("US", price);
-            }});
+            setPrice(new Price(Price.CUSTOM, new HashMap<String, BigDecimal>() {{
+                put("USD", new BigDecimal("9.99"));
+            }}));
             setCategories(new ArrayList<Long>());
             setItems(new ArrayList<LinkedEntry>() {{
                 add(new LinkedEntry() {{
@@ -94,13 +92,11 @@ public class MockCatalogGatewayImpl implements CatalogGateway{
     }
 
     private RatingOffer genOffer102() {
-        final Price price = new Price(new BigDecimal("9.99"), "USD");
-
         return new RatingOffer() {{
             setId(102L);
-            setPrices(new HashMap<String, Price>() {{
-                put("US", price);
-            }});
+            setPrice(new Price(Price.CUSTOM, new HashMap<String, BigDecimal>() {{
+                put("USD", new BigDecimal("9.99"));
+            }}));
             setCategories(new ArrayList<Long>());
             setItems(new ArrayList<LinkedEntry>() {{
                 add(new LinkedEntry() {{
@@ -113,20 +109,17 @@ public class MockCatalogGatewayImpl implements CatalogGateway{
                 add(new LinkedEntry() {{
                     setEntryId(100L);
                     setType(EntryType.OFFER);
-                    setQuantity(2);
                 }});
             }});
         }};
     }
 
     private RatingOffer genOffer109() {
-        final Price price = new Price(new BigDecimal("9.99"), "USD");
-
         return new RatingOffer() {{
             setId(109L);
-            setPrices(new HashMap<String, Price>() {{
-                put("US", price);
-            }});
+            setPrice(new Price(Price.CUSTOM, new HashMap<String, BigDecimal>() {{
+                put("USD", new BigDecimal("9.99"));
+            }}));
             setCategories(new ArrayList<Long>());
             setSubOffers(new ArrayList<LinkedEntry>() {{
                 add(new LinkedEntry() {{
@@ -145,25 +138,25 @@ public class MockCatalogGatewayImpl implements CatalogGateway{
 
     private Item genDigitalItem() {
         return new Item() {{
-            setId(200L);
+            setItemId(200L);
             setType("DIGITAL");
         }};
     }
 
     private Item genPhysicalItem() {
         return new Item() {{
-            setId(201L);
+            setItemId(201L);
             setType("PHYSICAL");
         }};
     }
 
-    private Promotion genOfferPro() {
+    private PromotionRevision genOfferPro() {
         final Benefit benefit = new Benefit();
         benefit.setType(BenefitType.FIXED_PRICE);
         benefit.setValue(new BigDecimal("1.99"));
 
-        return new Promotion() {{
-            setId(System.currentTimeMillis());
+        return new PromotionRevision() {{
+            setRevisionId(System.currentTimeMillis());
             setType(PromotionType.OFFER_PROMOTION);
             setCurrency("USD");
             setStartDate(generateDate("2014-01-01 00:00:00"));
@@ -181,13 +174,13 @@ public class MockCatalogGatewayImpl implements CatalogGateway{
         }};
     }
 
-    private Promotion genOfferProWithExEntitlement() {
+    private PromotionRevision genOfferProWithExEntitlement() {
         final Benefit benefit = new Benefit();
         benefit.setType(BenefitType.FIXED_PRICE);
         benefit.setValue(new BigDecimal("0.99"));
 
-        return new Promotion() {{
-            setId(System.currentTimeMillis());
+        return new PromotionRevision() {{
+            setRevisionId(System.currentTimeMillis());
             setType(PromotionType.OFFER_PROMOTION);
             setCurrency("USD");
             setStartDate(generateDate("2014-01-01 00:00:00"));
@@ -198,7 +191,6 @@ public class MockCatalogGatewayImpl implements CatalogGateway{
                     setPredicate(Predicate.EXCLUDE_ENTITLEMENT);
                     setEntitlements(new ArrayList<Entitlement>() {{
                         add(new Entitlement() {{
-                            setId(System.currentTimeMillis());
                             setGroup("XXX");
                             setTag("YYY");
                         }});
@@ -215,13 +207,13 @@ public class MockCatalogGatewayImpl implements CatalogGateway{
         }};
     }
 
-    private Promotion genOrderPromotion() {
+    private PromotionRevision genOrderPromotion() {
         final Benefit benefit = new Benefit();
         benefit.setType(BenefitType.FLAT_DISCOUNT);
         benefit.setValue(new BigDecimal("5.00"));
 
-        return new Promotion() {{
-            setId(System.currentTimeMillis());
+        return new PromotionRevision() {{
+            setRevisionId(System.currentTimeMillis());
             setType(PromotionType.ORDER_PROMOTION);
             setCurrency("USD");
             setStartDate(generateDate("2014-01-01 00:00:00"));
@@ -232,7 +224,6 @@ public class MockCatalogGatewayImpl implements CatalogGateway{
                     setPredicate(Predicate.INCLUDE_ENTITLEMENT);
                     setEntitlements(new ArrayList<Entitlement>() {{
                         add(new Entitlement() {{
-                            setId(System.currentTimeMillis());
                             setGroup("XXX");
                             setTag("YYY");
                         }});

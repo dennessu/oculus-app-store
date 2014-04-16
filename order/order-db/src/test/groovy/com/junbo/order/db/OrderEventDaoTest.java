@@ -28,7 +28,6 @@ public class OrderEventDaoTest extends BaseTest {
     public void testCreateAndRead() {
         OrderEventEntity orderEventEntity = TestHelper.generateOrderEventEntity();
         Long id = orderEventDao.create(orderEventEntity);
-        orderEventDao.flush();
         OrderEventEntity returnedEntity = orderEventDao.read(id);
 
         Assert.assertNotNull(returnedEntity, "Fail to create or read entity.");
@@ -40,10 +39,8 @@ public class OrderEventDaoTest extends BaseTest {
     public void testUpdate() {
         OrderEventEntity orderEventEntity = TestHelper.generateOrderEventEntity();
         Long id = orderEventDao.create(orderEventEntity);
-        orderEventDao.flush();
         orderEventEntity.setActionId(OrderActionType.CHARGE);
         orderEventDao.update(orderEventEntity);
-        orderEventDao.flush();
         OrderEventEntity returnedEntity = orderEventDao.read(id);
 
         Assert.assertNotNull(returnedEntity, "Fail to create or read entity.");
@@ -57,7 +54,6 @@ public class OrderEventDaoTest extends BaseTest {
         Long orderId = entity.getOrderId();
         List<OrderEventEntity> resultBefore = orderEventDao.readByOrderId(orderId, null, null);
         orderEventDao.create(entity);
-        orderEventDao.flush();
         List<OrderEventEntity> resultAfter = orderEventDao.readByOrderId(orderId, null, null);
 
         Assert.assertEquals(resultAfter.size(), resultBefore.size() + 1, "Result size should increase.");
@@ -73,7 +69,6 @@ public class OrderEventDaoTest extends BaseTest {
             OrderEventEntity entity = TestHelper.generateOrderEventEntity();
             entity.setOrderId(orderId);
             orderEventDao.create(entity);
-            orderEventDao.flush();
         }
 
         Assert.assertEquals(orderEventDao.readByOrderId(orderId, null, null).size(), 3);

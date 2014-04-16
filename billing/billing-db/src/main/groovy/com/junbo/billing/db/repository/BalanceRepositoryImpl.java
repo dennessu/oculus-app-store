@@ -8,11 +8,10 @@ package com.junbo.billing.db.repository;
 
 import com.junbo.billing.db.entity.*;
 import com.junbo.billing.spec.model.*;
-import com.junbo.common.id.*;
+import com.junbo.common.id.BalanceId;
 import com.junbo.oom.core.MappingContext;
 import com.junbo.billing.db.dao.*;
 import com.junbo.billing.db.mapper.ModelMapper;
-import com.junbo.sharding.IdGeneratorFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
@@ -46,48 +45,40 @@ public class BalanceRepositoryImpl implements BalanceRepository {
     @Autowired
     private ModelMapper modelMapper;
 
-    @Autowired
-    private IdGeneratorFacade idGenerator;
-
     @Override
     public Balance saveBalance(Balance balance) {
 
         BalanceEntity balanceEntity = modelMapper.toBalanceEntity(balance, new MappingContext());
 
-        balanceEntity.setBalanceId(idGenerator.nextId(BalanceId.class, balanceEntity.getUserId()));
         balanceEntity.setRequestorId("GOD");
         balanceEntity.setCreatedBy("Billing");
         balanceEntity.setCreatedTime(new Date());
-        balanceEntityDao.insert(balanceEntity);
+        balanceEntityDao.save(balanceEntity);
 
         for(BalanceItem item : balance.getBalanceItems()) {
             BalanceItemEntity balanceItemEntity = modelMapper.toBalanceItemEntity(item, new MappingContext());
 
-            balanceItemEntity.setBalanceItemId(idGenerator.nextId(Id.class, balanceEntity.getUserId()));
             balanceItemEntity.setBalanceId(balanceEntity.getBalanceId());
             balanceItemEntity.setCreatedTime(new Date());
             balanceItemEntity.setCreatedBy("Billing");
-            balanceItemEntityDao.insert(balanceItemEntity);
+            balanceItemEntityDao.save(balanceItemEntity);
 
             for(TaxItem tax : item.getTaxItems()) {
                 TaxItemEntity taxItemEntity = modelMapper.toTaxItemEntity(tax, new MappingContext());
 
-                taxItemEntity.setTaxItemId(idGenerator.nextId(Id.class, balanceEntity.getUserId()));
                 taxItemEntity.setBalanceItemId(balanceItemEntity.getBalanceItemId());
                 taxItemEntity.setCreatedTime(new Date());
                 taxItemEntity.setCreatedBy("Billing");
-                taxItemEntityDao.insert(taxItemEntity);
+                taxItemEntityDao.save(taxItemEntity);
             }
             for(DiscountItem discount : item.getDiscountItems()) {
                 DiscountItemEntity discountItemEntity =
                         modelMapper.toDiscountItemEntity(discount, new MappingContext());
 
-                discountItemEntity.setDiscountItemId(
-                        idGenerator.nextId(Id.class, balanceEntity.getUserId()));
                 discountItemEntity.setBalanceItemId(balanceItemEntity.getBalanceItemId());
                 discountItemEntity.setCreatedTime(new Date());
                 discountItemEntity.setCreatedBy("Billing");
-                discountItemEntityDao.insert(discountItemEntity);
+                discountItemEntityDao.save(discountItemEntity);
             }
         }
 
@@ -99,12 +90,11 @@ public class BalanceRepositoryImpl implements BalanceRepository {
         // persist the order balance link
         OrderBalanceLinkEntity orderBalanceLinkEntity = new OrderBalanceLinkEntity();
 
-        orderBalanceLinkEntity.setLinkId(idGenerator.nextId(Id.class, balanceEntity.getUserId()));
         orderBalanceLinkEntity.setBalanceId(balanceEntity.getBalanceId());
         orderBalanceLinkEntity.setOrderId(balance.getOrderId().getValue());
         orderBalanceLinkEntity.setCreatedTime(new Date());
         orderBalanceLinkEntity.setCreatedBy("Billing");
-        orderBalanceLinkEntityDao.insert(orderBalanceLinkEntity);
+        orderBalanceLinkEntityDao.save(orderBalanceLinkEntity);
 
         // create balance event
         saveBalanceEventEntity(balanceEntity);
@@ -208,31 +198,13 @@ public class BalanceRepositoryImpl implements BalanceRepository {
         return ids;
     }
 
-    @Override
-    public List<Balance> getBalancesByOrderItemId(List<Long> orderItemIds) {
-        List<Balance> balances = new ArrayList<>();
-        List<Long> balanceIds = new ArrayList<>();
-
-        List<BalanceItemEntity> balanceItemEntities = balanceItemEntityDao.findByOrderItemId(orderItemIds);
-        for (BalanceItemEntity balanceItemEntity : balanceItemEntities) {
-            if (!balanceIds.contains(balanceItemEntity.getBalanceId())) {
-                Balance balance = getBalance(balanceItemEntity.getBalanceId());
-                balances.add(balance);
-                balanceIds.add(balanceItemEntity.getBalanceId());
-            }
-        }
-
-        return balances;
-    }
-
     private void saveBalanceEventEntity(BalanceEntity balanceEntity) {
         // create balance event
         BalanceEventEntity balanceEventEntity = new BalanceEventEntity();
-        balanceEventEntity.setEventId(idGenerator.nextId(Id.class, balanceEntity.getBalanceId()));
         balanceEventEntity.setBalanceId(balanceEntity.getBalanceId());
         balanceEventEntity.setActionTypeId(balanceEntity.getTypeId());
         balanceEventEntity.setStatusId(balanceEntity.getStatusId());
         balanceEventEntity.setEventDate(new Date());
-        balanceEventEntityDao.insert(balanceEventEntity);
+        balanceEventEntityDao.save(balanceEventEntity);
     }
 }

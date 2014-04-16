@@ -6,15 +6,15 @@
 
 package com.junbo.rating.core.context;
 
-import com.junbo.catalog.spec.model.promotion.Promotion;
+import com.junbo.catalog.spec.model.promotion.PromotionRevision;
 import com.junbo.catalog.spec.model.promotion.PromotionType;
 import com.junbo.rating.spec.error.AppErrors;
 import com.junbo.rating.spec.model.*;
 import com.junbo.rating.spec.model.Currency;
 import com.junbo.rating.spec.model.request.OfferRatingItem;
 import com.junbo.rating.spec.model.request.OfferRatingRequest;
-import com.junbo.rating.spec.model.request.OrderRatingItem;
-import com.junbo.rating.spec.model.request.OrderRatingRequest;
+import com.junbo.rating.spec.model.request.RatingItem;
+import com.junbo.rating.spec.model.request.RatingRequest;
 
 import java.util.*;
 
@@ -23,12 +23,12 @@ import java.util.*;
  */
 public class RatingContext {
     private Long userId;
-    private String country;
     private Currency currency;
     private Map<String, String> couponCodes;
     private Set<RatableItem> items;
-    private Map<Long, Set<Promotion>> candidates;
-    private Map<PromotionType, Set<Promotion>> rules;
+    private Long timestamp;
+    private Map<Long, Set<PromotionRevision>> candidates;
+    private Map<PromotionType, Set<PromotionRevision>> rules;
 
     private RatableItem currentItem;
 
@@ -42,14 +42,14 @@ public class RatingContext {
     public RatingContext() {
         items = new HashSet<RatableItem>();
         couponCodes = new HashMap<String, String>();
-        candidates = new HashMap<Long, Set<Promotion>>();
-        rules = new HashMap<PromotionType, Set<Promotion>>();
+        candidates = new HashMap<Long, Set<PromotionRevision>>();
+        rules = new HashMap<PromotionType, Set<PromotionRevision>>();
         entries = new HashSet<RatingResultEntry>();
     }
 
     public void fromRequest(OfferRatingRequest request) {
         this.userId = request.getUserId();
-        this.country = request.getCountry();
+        this.timestamp = request.getTimestamp();
 
         Currency currency = Currency.findByCode(request.getCurrency());
         if (currency == null) {
@@ -65,9 +65,9 @@ public class RatingContext {
         }
     }
 
-    public void fromRequest(OrderRatingRequest request) {
+    public void fromRequest(RatingRequest request) {
         this.userId = request.getUserId();
-        this.country = request.getCountry();
+        this.timestamp = request.getTimestamp();
 
         Currency currency = Currency.findByCode(request.getCurrency());
         if (currency == null) {
@@ -80,13 +80,17 @@ public class RatingContext {
             couponCodes.put(coupon, null);
         }
 
-        for (OrderRatingItem orderRatingItem : request.getLineItems()) {
+        for (RatingItem ratingItem : request.getLineItems()) {
             RatableItem item = new RatableItem();
-            item.setOfferId(orderRatingItem.getOfferId());
-            item.setQuantity(orderRatingItem.getQuantity());
-            item.setShippingMethodId(
-                    orderRatingItem.getShippingMethodId() == null ?
-                            request.getShippingMethodId() : orderRatingItem.getShippingMethodId());
+            item.setOfferId(ratingItem.getOfferId());
+
+            if (request.isReadyToBuy()) {
+                item.setQuantity(ratingItem.getQuantity());
+                item.setShippingMethodId(
+                        ratingItem.getShippingMethodId() == null ?
+                                request.getShippingMethodId() : ratingItem.getShippingMethodId());
+            }
+
             items.add(item);
         }
     }
@@ -97,14 +101,6 @@ public class RatingContext {
 
     public void setUserId(Long userId) {
         this.userId = userId;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
     }
 
     public Currency getCurrency() {
@@ -131,19 +127,27 @@ public class RatingContext {
         this.items = items;
     }
 
-    public Map<Long, Set<Promotion>> getCandidates() {
+    public Long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Long timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public Map<Long, Set<PromotionRevision>> getCandidates() {
         return candidates;
     }
 
-    public void setCandidates(Map<Long, Set<Promotion>> candidates) {
+    public void setCandidates(Map<Long, Set<PromotionRevision>> candidates) {
         this.candidates = candidates;
     }
 
-    public Map<PromotionType, Set<Promotion>> getRules() {
+    public Map<PromotionType, Set<PromotionRevision>> getRules() {
         return rules;
     }
 
-    public void setRules(Map<PromotionType, Set<Promotion>> rules) {
+    public void setRules(Map<PromotionType, Set<PromotionRevision>> rules) {
         this.rules = rules;
     }
 

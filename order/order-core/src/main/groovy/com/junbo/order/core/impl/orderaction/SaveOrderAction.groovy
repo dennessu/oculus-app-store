@@ -1,8 +1,9 @@
 package com.junbo.order.core.impl.orderaction
+
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
-import com.junbo.order.clientproxy.model.OrderOffer
+import com.junbo.order.clientproxy.model.OrderOfferRevision
 import com.junbo.order.core.annotation.OrderEventAwareAfter
 import com.junbo.order.core.annotation.OrderEventAwareBefore
 import com.junbo.order.core.impl.common.CoreBuilder
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 
 import javax.annotation.Resource
+
 /**
  * Created by chriszhu on 2/18/14.
  */
@@ -42,7 +44,7 @@ class SaveOrderAction extends BaseOrderEventAwareAction {
         order.status = OrderStatusBuilder.buildOrderStatus(order,
                 order.id == null ? (List<OrderEvent>)[] : repo.getOrderEvents(order.id.value, null))
         // Save Order
-        builder.getOffers(context.orderServiceContext).syncThen { List<OrderOffer> ofs ->
+        builder.getOffers(context.orderServiceContext).syncThen { List<OrderOfferRevision> ofs ->
             def orderWithId = newOrder ? repo.createOrder(context.orderServiceContext.order) :
                     repo.updateOrder(order, updateOnlyOrder)
             order = orderWithId

@@ -25,7 +25,7 @@ import javax.ws.rs.core.Response;
  * payment instrument resource interface.
  */
 @Api("payment-instruments")
-@Path("/users/{userId}/payment-instruments")
+@Path("/")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 @RestResource
@@ -33,29 +33,28 @@ public interface PaymentInstrumentResource {
 
     @ApiOperation("Create a payment instrument")
     @POST
-    Promise<PaymentInstrument> postPaymentInstrument(@PathParam("userId")UserId userId, PaymentInstrument request);
+    @Path("payment-instruments")
+    Promise<PaymentInstrument> postPaymentInstrument(PaymentInstrument request);
 
     @ApiOperation("Get a payment instrument")
     @GET
-    @Path("/{paymentInstrumentId}")
-    Promise<PaymentInstrument> getById(@PathParam("userId")UserId userId,
-            @PathParam("paymentInstrumentId") PaymentInstrumentId paymentInstrumentId);
+    @Path("payment-instruments/{paymentInstrumentId}")
+    Promise<PaymentInstrument> getById(@PathParam("paymentInstrumentId") PaymentInstrumentId paymentInstrumentId);
 
     @ApiOperation("Delete a payment instrument")
     @DELETE
-    @Path("/{paymentInstrumentId}")
-    Promise<Response> delete(@PathParam("userId")UserId userId,
-            @PathParam("paymentInstrumentId") PaymentInstrumentId paymentInstrumentId);
+    @Path("payment-instruments/{paymentInstrumentId}")
+    Promise<Response> delete(@PathParam("paymentInstrumentId") PaymentInstrumentId paymentInstrumentId);
 
     @ApiOperation("Put a payment instrument")
     @PUT
-    @Path("/{paymentInstrumentId}")
-    Promise<PaymentInstrument> update(@PathParam("userId")UserId userId,
-            @PathParam("paymentInstrumentId") PaymentInstrumentId paymentInstrumentId,
+    @Path("payment-instruments/{paymentInstrumentId}")
+    Promise<PaymentInstrument> update(@PathParam("paymentInstrumentId") PaymentInstrumentId paymentInstrumentId,
                                              PaymentInstrument request);
 
     @ApiOperation("Search a payment instrument")
     @GET
+    @Path("/users/{userId}/payment-instruments")
     Promise<Results<PaymentInstrument>> searchPaymentInstrument(
             @PathParam("userId")UserId userId,
             @BeanParam PaymentInstrumentSearchParam searchParam,

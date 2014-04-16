@@ -17,6 +17,16 @@
         </property>
     </bean>
 
+    <bean id="userValidator" class="com.junbo.identity.core.service.validator.impl.UserValidatorImpl">
+        <property name="userRepository" ref="userRepository" />
+        <property name="currencyValidator" ref="currencyValidator" />
+        <property name="localeValidator" ref="localeValidator" />
+        <property name="nickNameValidator" ref="nickNameValidator" />
+        <property name="normalizeService" ref="normalizeService" />
+        <property name="timezoneValidator" ref="timezoneValidator" />
+        <property name="usernameValidator" ref="usernameValidator" />
+    </bean>
+
     <bean id="nameValidator" class="com.junbo.identity.core.service.validator.impl.NameValidatorImpl">
         <property name="firstNameMinLength" value="1"/>
         <property name="firstNameMaxLength" value="30"/>
@@ -306,6 +316,11 @@
         <property name="userEmailValidator" ref="userEmailValidator" />
         <property name="userPhoneNumberValidator" ref="userPhoneNumberValidator" />
         <property name="userPiiRepository" ref="userPiiRepository" />
+        <property name="userRepository" ref="userRepository" />
+    </bean>
+
+    <bean id="addressValidator" class="com.junbo.identity.core.service.validator.impl.AddressValidatorImpl">
+        <property name="addressRepository" ref="addressRepository" />
         <property name="userRepository" ref="userRepository" />
     </bean>
 

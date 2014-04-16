@@ -21,7 +21,7 @@ public class PaymentInstrumentDao extends CommonDataDAOImpl<PaymentInstrumentEnt
     }
 
     public List<PaymentInstrumentEntity> getByUserId(final Long userId) {
-        Criteria criteria = currentSession().createCriteria(PaymentInstrumentEntity.class);
+        Criteria criteria = currentSession(userId).createCriteria(PaymentInstrumentEntity.class);
         criteria.add(Restrictions.eq("userId", userId));
         criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         return criteria.list();

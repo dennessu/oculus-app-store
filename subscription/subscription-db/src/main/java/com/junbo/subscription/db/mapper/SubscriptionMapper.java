@@ -7,6 +7,7 @@ package com.junbo.subscription.db.mapper;
 
 import com.junbo.subscription.db.entity.*;
 import com.junbo.subscription.spec.model.Subscription;
+import com.junbo.subscription.spec.model.SubscriptionEntitlement;
 import com.junbo.subscription.spec.model.SubscriptionEvent;
 import com.junbo.subscription.spec.model.SubscriptionEventAction;
 import org.springframework.stereotype.Component;
@@ -26,17 +27,27 @@ public class SubscriptionMapper {
         }
         Subscription subscription = new Subscription();
         subscription.setSubscriptionId(subscriptionEntity.getSubscriptionId());
+        subscription.setTrackingUuid(subscriptionEntity.getTrackingUuid());
         subscription.setUserId(subscriptionEntity.getUserId());
-        subscription.setStatus(subscriptionEntity.getStatusId().toString()); //subscriptionEntity.getStatusId()
+        subscription.setOfferId(Long.getLong(subscriptionEntity.getItemId()));
+        subscription.setStatus(subscriptionEntity.getStatusId().toString());
+        subscription.setSubsStartDate(subscriptionEntity.getSubsStartDate());
+        subscription.setSubsEndDate(subscriptionEntity.getSubsEndDate());
+        subscription.setAnniversaryDay(subscriptionEntity.getAnniversaryDay());
+
         return subscription;
     }
 
     public SubscriptionEntity toSubscriptionEntity(Subscription subscription) {
         SubscriptionEntity subscriptionEntity = new SubscriptionEntity();
         subscriptionEntity.setSubscriptionId(subscription.getSubscriptionId());
+        subscriptionEntity.setTrackingUuid(subscription.getTrackingUuid());
         subscriptionEntity.setUserId(subscription.getUserId());
         subscriptionEntity.setItemId(subscription.getOfferId().toString());
         subscriptionEntity.setStatusId(SubscriptionStatus.valueOf(subscription.getStatus()));
+        subscriptionEntity.setSubsStartDate(subscription.getSubsStartDate());
+        subscriptionEntity.setSubsEndDate(subscription.getSubsEndDate());
+        subscriptionEntity.setAnniversaryDay(subscription.getAnniversaryDay());
         return subscriptionEntity;
     }
 
@@ -97,6 +108,25 @@ public class SubscriptionMapper {
         actionEntity.setRequest(action.getRequest());
         actionEntity.setResponse(action.getResponse());
         return actionEntity;
+    }
+
+    public SubscriptionEntitlement toSubsEntitlement(SubscriptionEntitlementEntiy subsEntEntiy) {
+        if (subsEntEntiy == null){
+            return null;
+        }
+        SubscriptionEntitlement entitlement = new SubscriptionEntitlement();
+        entitlement.setSubscriptionId(subsEntEntiy.getSubscriptionId());
+        entitlement.setEntitlementId(subsEntEntiy.getEntitlementId());
+        entitlement.setEntitlementStatus(subsEntEntiy.getEntitlementStatus());
+        return entitlement;
+    }
+
+    public SubscriptionEntitlementEntiy toSubsEntitlementEntity(SubscriptionEntitlement entitlement) {
+        SubscriptionEntitlementEntiy entiy = new SubscriptionEntitlementEntiy();
+        entiy.setSubscriptionId(entitlement.getSubscriptionId());
+        entiy.setEntitlementId(entitlement.getEntitlementId());
+        entiy.setEntitlementStatus(entitlement.getEntitlementStatus());
+        return entiy;
     }
 
 }

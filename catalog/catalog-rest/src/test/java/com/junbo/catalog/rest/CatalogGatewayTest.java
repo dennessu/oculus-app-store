@@ -5,18 +5,14 @@
  */
 package com.junbo.catalog.rest;
 
-import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.catalog.spec.model.offer.OfferRevisionsGetOptions;
 import com.junbo.catalog.spec.resource.OfferResource;
 import com.junbo.catalog.spec.resource.OfferRevisionResource;
-import com.junbo.common.id.OfferId;
 import com.junbo.common.model.Results;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.testng.annotations.Test;
-
-import java.util.Arrays;
 
 /**
  * CatalogGatewayTest.
@@ -29,7 +25,7 @@ public class CatalogGatewayTest extends BaseTest {
     @Qualifier("offerRevisionClient")
     private OfferRevisionResource offerRevisionResource;
 
-    //@Test
+    @Test(enabled = false)
     public void testCreate() throws Exception {
         OfferRevisionsGetOptions options = new OfferRevisionsGetOptions();
         //options.setOfferIds(Arrays.asList(new OfferId(503332864L)));
@@ -37,7 +33,7 @@ public class CatalogGatewayTest extends BaseTest {
         Results<OfferRevision> revisionResults = offerRevisionResource.getOfferRevisions(options).wrapped().get();
         System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++");
         System.out.println(revisionResults.getItems().size());
-        for (OfferRevision revision : revisionResults.getItems()){
+        for (OfferRevision revision : revisionResults.getItems()) {
             System.out.println(revision.getOfferId());
             System.out.println(revision.getRevisionId());
             System.out.println(revision.getName());

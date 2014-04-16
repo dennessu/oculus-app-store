@@ -3,18 +3,36 @@
        xmlns="http://www.springframework.org/schema/beans"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="identityUserClient" class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy">
+    <bean id="userResource" class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy">
         <constructor-arg name="client" ref="commonAsyncHttpClient"/>
-        <constructor-arg name="target" value="${oauth.clientproxy.identity.url}"/>
+        <constructor-arg name="target" value="${clientproxy.identity.url}"/>
         <constructor-arg name="transcoder" ref="commonTranscoder"/>
         <constructor-arg name="pathParamTranscoder" ref="commonPathParamTranscoder"/>
         <constructor-arg name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
     </bean>
 
-    <bean id="identityUserCredentialVerifyAttemptClient"
+    <bean id="userCredentialVerifyAttemptResource"
           class="com.junbo.identity.spec.v1.resource.proxy.UserCredentialVerifyAttemptResourceClientProxy">
         <constructor-arg name="client" ref="commonAsyncHttpClient"/>
-        <constructor-arg name="target" value="${oauth.clientproxy.identity.url}"/>
+        <constructor-arg name="target" value="${clientproxy.identity.url}"/>
+        <constructor-arg name="transcoder" ref="commonTranscoder"/>
+        <constructor-arg name="pathParamTranscoder" ref="commonPathParamTranscoder"/>
+        <constructor-arg name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
+    </bean>
+
+    <bean id="userCredentialResource"
+          class="com.junbo.identity.spec.v1.resource.proxy.UserCredentialResourceClientProxy">
+        <constructor-arg name="client" ref="commonAsyncHttpClient"/>
+        <constructor-arg name="target" value="${clientproxy.identity.url}"/>
+        <constructor-arg name="transcoder" ref="commonTranscoder"/>
+        <constructor-arg name="pathParamTranscoder" ref="commonPathParamTranscoder"/>
+        <constructor-arg name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
+    </bean>
+
+    <bean id="userPiiResource"
+          class="com.junbo.identity.spec.v1.resource.proxy.UserPiiResourceClientProxy">
+        <constructor-arg name="client" ref="commonAsyncHttpClient"/>
+        <constructor-arg name="target" value="${clientproxy.identity.url}"/>
         <constructor-arg name="transcoder" ref="commonTranscoder"/>
         <constructor-arg name="pathParamTranscoder" ref="commonPathParamTranscoder"/>
         <constructor-arg name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>

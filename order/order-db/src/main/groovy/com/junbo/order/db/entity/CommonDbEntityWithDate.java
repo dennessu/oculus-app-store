@@ -21,7 +21,7 @@ import java.util.Date;
  */
 
 @MappedSuperclass
-public class CommonDbEntityWithDate implements Serializable {
+public abstract class CommonDbEntityWithDate implements Serializable, Shardable {
     protected Date createdTime;
     protected String createdBy;
     protected Date updatedTime;
@@ -75,4 +75,5 @@ public class CommonDbEntityWithDate implements Serializable {
 //    public void setRev(Integer resourceAge) {
 //        this.resourceAge = resourceAge;
 //    }
+
 }

@@ -21,7 +21,7 @@ import javax.ws.rs.core.MediaType;
 /**
  * Created by liangfu on 4/3/14.
  */
-@Api(value = "userDevicePairs")
+@Api(value = "user-device-pairs")
 @RestResource
 @Path("/user-device-pairs")
 @Produces({MediaType.APPLICATION_JSON})

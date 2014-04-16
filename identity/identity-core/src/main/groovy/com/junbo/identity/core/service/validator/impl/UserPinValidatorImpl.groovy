@@ -108,10 +108,7 @@ class UserPinValidatorImpl implements UserPinValidator {
             return Promise.pure(null)
         }
 
-        String decoded = Base64.decodeAsString(oldPassword)
-        String[] split = decoded.split(':')
-        String decryptPassword = split[1]
-
+        String decryptPassword = Base64.decodeAsString(oldPassword)
         userPinRepository.search(new UserPinListOptions(
                 userId: userId,
                 active: true

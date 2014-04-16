@@ -7,6 +7,7 @@ package com.junbo.fulfilment.clientproxy;
 
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
 import com.junbo.catalog.spec.model.offer.Offer;
+import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.entitlement.spec.model.Entitlement;
 
 /**
@@ -15,7 +16,11 @@ import com.junbo.entitlement.spec.model.Entitlement;
 public interface MegaGateway {
     Long createOffer(Offer offer);
 
-    Long updateOffer(Offer offer);
+    Long createOfferRevision(OfferRevision offerRevision);
+
+    OfferRevision getOfferRevision(Long offerRevisionId);
+
+    Long updateOfferRevision(OfferRevision offer);
 
     Entitlement getEntitlement(Long entitlementId);
 

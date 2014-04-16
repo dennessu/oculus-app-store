@@ -7,35 +7,26 @@ import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
+import org.springframework.beans.factory.annotation.Required
 
 /**
  * Created by kg on 3/17/14.
  */
-@Component
 @CompileStatic
 class UserValidatorImpl implements UserValidator {
 
-    @Autowired
     private UserRepository userRepository
 
-    @Autowired
     private UsernameValidator usernameValidator
 
-    @Autowired
     private LocaleValidator localeValidator
 
-    @Autowired
     private CurrencyValidator currencyValidator
 
-    @Autowired
     private TimezoneValidator timezoneValidator
 
-    @Autowired
     private NickNameValidator nickNameValidator
 
-    @Autowired
     private NormalizeService normalizeService
 
     @Override
@@ -148,5 +139,40 @@ class UserValidatorImpl implements UserValidator {
         if (user.nickName != null) {
             nickNameValidator.validateNickName(user.nickName)
         }
+    }
+
+    @Required
+    void setUserRepository(UserRepository userRepository) {
+        this.userRepository = userRepository
+    }
+
+    @Required
+    void setUsernameValidator(UsernameValidator usernameValidator) {
+        this.usernameValidator = usernameValidator
+    }
+
+    @Required
+    void setLocaleValidator(LocaleValidator localeValidator) {
+        this.localeValidator = localeValidator
+    }
+
+    @Required
+    void setCurrencyValidator(CurrencyValidator currencyValidator) {
+        this.currencyValidator = currencyValidator
+    }
+
+    @Required
+    void setTimezoneValidator(TimezoneValidator timezoneValidator) {
+        this.timezoneValidator = timezoneValidator
+    }
+
+    @Required
+    void setNickNameValidator(NickNameValidator nickNameValidator) {
+        this.nickNameValidator = nickNameValidator
+    }
+
+    @Required
+    void setNormalizeService(NormalizeService normalizeService) {
+        this.normalizeService = normalizeService
     }
 }

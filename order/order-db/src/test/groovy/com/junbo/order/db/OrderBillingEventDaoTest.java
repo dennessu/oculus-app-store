@@ -27,7 +27,6 @@ public class OrderBillingEventDaoTest extends BaseTest {
     public void testCreateAndRead() {
         OrderBillingEventEntity orderBillingEventEntity = generateOrderBillingEventEntity();
         Long id = orderBillingEventDao.create(orderBillingEventEntity);
-        orderBillingEventDao.flush();
         OrderBillingEventEntity returnedEntity = orderBillingEventDao.read(id);
 
         Assert.assertNotNull(returnedEntity, "Fail to create or read entity.");
@@ -39,10 +38,8 @@ public class OrderBillingEventDaoTest extends BaseTest {
     public void testUpdate() {
         OrderBillingEventEntity orderBillingEventEntity = generateOrderBillingEventEntity();
         Long id = orderBillingEventDao.create(orderBillingEventEntity);
-        orderBillingEventDao.flush();
         orderBillingEventEntity.setAction(BillingAction.CHARGE);
         orderBillingEventDao.update(orderBillingEventEntity);
-        orderBillingEventDao.flush();
         OrderBillingEventEntity returnedEntity = orderBillingEventDao.read(id);
 
         Assert.assertNotNull(returnedEntity, "Fail to create or read entity.");

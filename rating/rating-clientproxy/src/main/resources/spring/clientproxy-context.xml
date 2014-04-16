@@ -59,7 +59,50 @@
         </constructor-arg>
     </bean>
 
+    <bean id="ratingOfferRevisionClient" class="com.junbo.catalog.spec.resource.proxy.OfferRevisionResourceClientProxy">
+        <constructor-arg name="client" ref="asyncHttpClient"/>
+        <constructor-arg name="target" value="${clientproxy.catalog.url}"/>
+        <constructor-arg name="transcoder">
+            <bean class="com.junbo.common.json.JsonMessageTranscoder"/>
+        </constructor-arg>
+        <constructor-arg name="pathParamTranscoder">
+            <bean class="com.junbo.common.json.IdPathParamTranscoder" />
+        </constructor-arg>
+        <constructor-arg name="queryParamTranscoder">
+            <bean class="com.junbo.common.json.QueryParamTranscoderImpl" />
+        </constructor-arg>
+    </bean>
+
+
+    <bean id="priceTierClient" class="com.junbo.catalog.spec.resource.proxy.PriceTierResourceClientProxy">
+        <constructor-arg name="client" ref="asyncHttpClient"/>
+        <constructor-arg name="target" value="${clientproxy.catalog.url}"/>
+        <constructor-arg name="transcoder">
+            <bean class="com.junbo.common.json.JsonMessageTranscoder"/>
+        </constructor-arg>
+        <constructor-arg name="pathParamTranscoder">
+            <bean class="com.junbo.common.json.IdPathParamTranscoder" />
+        </constructor-arg>
+        <constructor-arg name="queryParamTranscoder">
+            <bean class="com.junbo.common.json.QueryParamTranscoderImpl" />
+        </constructor-arg>
+    </bean>
+
     <bean id="promotionClient" class="com.junbo.catalog.spec.resource.proxy.PromotionResourceClientProxy">
+        <constructor-arg name="client" ref="asyncHttpClient"/>
+        <constructor-arg name="target" value="${clientproxy.catalog.url}"/>
+        <constructor-arg name="transcoder">
+            <bean class="com.junbo.common.json.JsonMessageTranscoder"/>
+        </constructor-arg>
+        <constructor-arg name="pathParamTranscoder">
+            <bean class="com.junbo.common.json.IdPathParamTranscoder" />
+        </constructor-arg>
+        <constructor-arg name="queryParamTranscoder">
+            <bean class="com.junbo.common.json.QueryParamTranscoderImpl" />
+        </constructor-arg>
+    </bean>
+
+    <bean id="promotionRevisionClient" class="com.junbo.catalog.spec.resource.proxy.PromotionRevisionResourceClientProxy">
         <constructor-arg name="client" ref="asyncHttpClient"/>
         <constructor-arg name="target" value="${clientproxy.catalog.url}"/>
         <constructor-arg name="transcoder">

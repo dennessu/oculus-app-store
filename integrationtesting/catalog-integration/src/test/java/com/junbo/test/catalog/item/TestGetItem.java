@@ -47,111 +47,20 @@ public class TestGetItem extends BaseTestClass {
     @Test
     public void testGetAnItemById() throws Exception {
 
-        String itemId = itemService.postDefaultItem(EnumHelper.CatalogItemType.APP);
+        String itemId = itemService.postDefaultItem(EnumHelper.CatalogItemType.DIGITAL);
 
         //Just get the item by Id, check its status
-        verifyValidScenarios(itemId, null, EnumHelper.CatalogEntityStatus.DESIGN);
+        verifyValidScenarios(itemId, EnumHelper.CatalogEntityStatus.DESIGN);
 
         String invalidId = "000000000";
-        verifyInvalidScenarios(invalidId, null);
+        verifyInvalidScenarios(invalidId);
 
         //Release the item and then try to get the item
         Item item = Master.getInstance().getItem(itemId);
         itemId = releaseItem(item);
 
-        verifyValidScenarios(itemId, null, EnumHelper.CatalogEntityStatus.RELEASED);
-        verifyInvalidScenarios(invalidId, null);
-    }
-
-    @Property(
-            priority = Priority.Dailies,
-            features = "CatalogIntegration",
-            component = Component.Catalog,
-            owner = "JasonFu",
-            status = Status.Enable,
-            description = "Test Get an Item by itemId and status(valid, invalid scenarios)",
-            steps = {
-                    "1. Prepare an item",
-                    "2. Get the item by Id and status",
-                    "3. Verify not able to get the item by invalid status",
-                    "4. Release the item",
-                    "5. Get the item by Id and status, verify the behavior is successful"
-            }
-    )
-    @Test
-    public void testGetAnItemByIdStatus() throws Exception {
-
-        String itemId = itemService.postDefaultItem(EnumHelper.CatalogItemType.APP);
-
-        HashMap<String, String> paraMap = new HashMap();
-        paraMap.put("status", EnumHelper.CatalogEntityStatus.DESIGN.getEntityStatus());
-
-        //Get the item by Id and status, the status is design currently
-        verifyValidScenarios(itemId, paraMap, EnumHelper.CatalogEntityStatus.DESIGN);
-
-        //Invalid scenarios
-        //Set the searching parameter status to 'Deleted'
-        paraMap.put("status", EnumHelper.CatalogEntityStatus.PENDING_REVIEW.getEntityStatus());
-        verifyInvalidScenarios(itemId, paraMap);
-
-        //Set the status to an invalid string
-        paraMap.put("status", "invalidStatus");
-        verifyInvalidScenarios(itemId, paraMap);
-
-        //Release the item
-        Item item = Master.getInstance().getItem(itemId);
-        releaseItem(item);
-
-        //Get the item by Id and status, the status is released now
-        paraMap.put("status", EnumHelper.CatalogEntityStatus.RELEASED.getEntityStatus());
-        verifyValidScenarios(itemId, paraMap, EnumHelper.CatalogEntityStatus.RELEASED);
-
-        //Invalid scenarios
-        //Set the searching parameter status to 'Deleted'
-        paraMap.put("status", EnumHelper.CatalogEntityStatus.DELETED.getEntityStatus());
-        verifyInvalidScenarios(itemId, paraMap);
-
-        //Set the status to an invalid string
-        paraMap.put("status", "invalidStatus");
-        verifyInvalidScenarios(itemId, paraMap);
-    }
-
-    @Property(
-            priority = Priority.Dailies,
-            features = "CatalogIntegration",
-            component = Component.Catalog,
-            owner = "JasonFu",
-            status = Status.Enable,
-            description = "Test Get an Item by itemId, status(valid, invalid scenarios)",
-            steps = {
-                    "1. Prepare an item and release it",
-                    "2. Get the item by Id, status and timestamp, verify the behavior is successful",
-                    "3. Verify not able to get the item by invalid timestamp"
-            }
-    )
-    @Test
-    public void testGetAnItemByIdStatusTimeStamp() throws Exception {
-
-        //Prepare an item and release it, as timestamp only works for released items
-        String itemId = itemService.postDefaultItem(EnumHelper.CatalogItemType.APP);
-        Item item = Master.getInstance().getItem(itemId);
-        releaseItem(item);
-
-        HashMap<String, String> paraMap = new HashMap();
-        paraMap.put("status", EnumHelper.CatalogEntityStatus.RELEASED.getEntityStatus());
-
-        Long currentTime = Calendar.getInstance().getTimeInMillis();
-        paraMap.put("timestamp", currentTime.toString());
-
-        //Get the item by Id, status and timestamp, the status is design currently
-        verifyValidScenarios(itemId, paraMap, EnumHelper.CatalogEntityStatus.RELEASED);
-
-        //set timestamp to yesterday
-        Calendar calendar = new GregorianCalendar();
-        calendar.add(Calendar.DAY_OF_MONTH, -1);
-        currentTime = calendar.getTimeInMillis();
-        paraMap.put("timestamp", currentTime.toString());
-        verifyInvalidScenarios(itemId, paraMap);
+        verifyValidScenarios(itemId, EnumHelper.CatalogEntityStatus.RELEASED);
+        verifyInvalidScenarios(invalidId);
     }
 
     @Property(
@@ -172,9 +81,9 @@ public class TestGetItem extends BaseTestClass {
     public void testGetItemsByIds() throws Exception {
 
         //prepare 3 items for later use
-        String itemId1 = itemService.postDefaultItem(EnumHelper.CatalogItemType.APP);
+        String itemId1 = itemService.postDefaultItem(EnumHelper.CatalogItemType.DIGITAL);
         String itemId2 = itemService.postDefaultItem(EnumHelper.CatalogItemType.PHYSICAL);
-        String itemId3 = itemService.postDefaultItem(EnumHelper.CatalogItemType.APP);
+        String itemId3 = itemService.postDefaultItem(EnumHelper.CatalogItemType.EWALLET);
 
         //Search the 3 items by their Ids, verify only return the 3 items
         verifyItemsValidScenarios(null, null, itemId1, itemId2, itemId3);
@@ -232,9 +141,9 @@ public class TestGetItem extends BaseTestClass {
     public void testGetItemsByIdsStatusTimeStamp() throws Exception {
 
         //prepare 3 items for later use
-        String itemId1 = itemService.postDefaultItem(EnumHelper.CatalogItemType.APP);
+        String itemId1 = itemService.postDefaultItem(EnumHelper.CatalogItemType.DIGITAL);
         String itemId2 = itemService.postDefaultItem(EnumHelper.CatalogItemType.PHYSICAL);
-        String itemId3 = itemService.postDefaultItem(EnumHelper.CatalogItemType.APP);
+        String itemId3 = itemService.postDefaultItem(EnumHelper.CatalogItemType.EWALLET);
 
         //Release the 3 items
         releaseItem(Master.getInstance().getItem(itemId1));
@@ -256,16 +165,15 @@ public class TestGetItem extends BaseTestClass {
         verifyItemsInvalidScenarios(paraMap);
     }
 
-    private void verifyValidScenarios(String itemId, HashMap<String, String> paraMap,
-                                      EnumHelper.CatalogEntityStatus expectedStatus) throws Exception {
-        String itemRtnId = itemService.getItem(itemId, paraMap);
+    private void verifyValidScenarios(String itemId, EnumHelper.CatalogEntityStatus expectedStatus) throws Exception {
+        String itemRtnId = itemService.getItem(itemId);
         Assert.assertNotNull("Can't get items", itemRtnId);
         Assert.assertEquals(expectedStatus.getEntityStatus(), Master.getInstance().getItem(itemRtnId).getCurated());
     }
 
-    private void verifyInvalidScenarios(String itemId, HashMap<String, String> paraMap) throws Exception {
+    private void verifyInvalidScenarios(String itemId) throws Exception {
         try {
-            itemService.getItem(itemId, paraMap, 404);
+            itemService.getItem(itemId, 404);
             Assert.fail("Shouldn't get items with wrong id, status or timestamp");
         }
         catch (Exception e) {

@@ -63,13 +63,13 @@ public class FulfilmentActionRepositoryTest extends BaseTest {
         LinkedEntry item1 = new LinkedEntry();
         item1.setEntityType(CatalogEntityType.ITEM);
         item1.setId(100L);
-        item1.setSku(111L);
+        item1.setSku("111");
         item1.setQuantity(100000);
 
         LinkedEntry item2 = new LinkedEntry();
         item2.setEntityType(CatalogEntityType.ITEM);
         item2.setId(200L);
-        item2.setSku(222L);
+        item2.setSku("222");
         item2.setQuantity(200000);
 
         items.add(item1);

@@ -63,7 +63,7 @@ public class CreditCardPaymentInstrumentEntity extends GenericEntity {
 
     @Override
     public Long getShardMasterId() {
-        return null;
+        return id;
     }
 
     public CreditCardType getType() {

@@ -146,4 +146,7 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 404, code = "2000037", description = "User Pii {0} not found.", field = "{0}")
     AppError userPiiNotFound(UserPiiId userPiiId);
+
+    @ErrorDef(httpStatusCode = 409, code = "2000038", description = "Address {0} not found.", field = "{0}")
+    AppError addressNotFound(AddressId addressId);
 }

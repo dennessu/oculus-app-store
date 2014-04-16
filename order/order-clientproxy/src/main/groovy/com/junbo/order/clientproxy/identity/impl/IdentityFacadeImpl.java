@@ -7,8 +7,8 @@
 package com.junbo.order.clientproxy.identity.impl;
 
 import com.junbo.common.id.UserId;
-import com.junbo.identity.spec.model.user.User;
-import com.junbo.identity.spec.resource.UserResource;
+import com.junbo.identity.spec.v1.model.User;
+import com.junbo.identity.spec.v1.resource.UserResource;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.order.clientproxy.identity.IdentityFacade;
 import org.springframework.stereotype.Component;
@@ -29,7 +29,7 @@ public class IdentityFacadeImpl implements IdentityFacade {
 
     @Override
     public Promise<User> getUser(Long userId) {
-        return userResource.getUser(new UserId(userId));
+        return userResource.get(new UserId(userId), null);
     }
 
     @Override
@@ -37,7 +37,7 @@ public class IdentityFacadeImpl implements IdentityFacade {
         Promise<User> userPromise = null;
 
         try {
-            userPromise = userResource.postUser(user);
+            userPromise = userResource.create(user);
         }
         catch (Exception e) {
             e.printStackTrace();

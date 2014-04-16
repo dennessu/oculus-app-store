@@ -14,13 +14,13 @@ public class PaymentRepoTest extends BaseTest {
     @Autowired
     private PaymentInstrumentRepository piRepo;
 
-    private static final Long userId = 123l;
+    private static final Long userId = 1493188608L;
 
     @Test
     public void testRepo() {
         PaymentInstrument pi = buildPIRequest();
         piRepo.save(pi);
-        PaymentInstrument result = piRepo.getByPIId(pi.getId().getPaymentInstrumentId());
+        PaymentInstrument result = piRepo.getByPIId(pi.getId());
         Assert.assertEquals(pi.getAccountName(), result.getAccountName());
         Assert.assertEquals(pi.getAccountNum(), result.getAccountNum());
         Assert.assertEquals(pi.getAddress().getAddressLine1(), result.getAddress().getAddressLine1());
@@ -28,7 +28,7 @@ public class PaymentRepoTest extends BaseTest {
 
     private PaymentInstrument buildPIRequest(){
         PaymentInstrument pi = new PaymentInstrument();
-        pi.setId(new PIId(userId, null));
+        pi.setUserId(userId);
         pi.setType(PIType.CREDITCARD.toString());
         pi.setAccountName("David");
         pi.setAccountNum("1111");
