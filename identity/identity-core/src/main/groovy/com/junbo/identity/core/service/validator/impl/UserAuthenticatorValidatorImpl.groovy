@@ -83,21 +83,22 @@ class UserAuthenticatorValidatorImpl implements UserAuthenticatorValidator {
 
     @Override
     Promise<Void> validateForCreate(UserAuthenticator userAuthenticator) {
-        basicCheckUserAuthenticator(userAuthenticator)
-        if (userAuthenticator.id != null) {
-            throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
-        }
-
-        return userAuthenticatorRepository.search(new AuthenticatorListOptions(
-                userId: userAuthenticator.userId,
-                type: userAuthenticator.type,
-                value: userAuthenticator.value
-        )).then { List<UserAuthenticator> existing ->
-            if (existing != null && existing.size() != 0) {
-                throw AppErrors.INSTANCE.fieldDuplicate('value').exception()
+        return basicCheckUserAuthenticator(userAuthenticator).then {
+            if (userAuthenticator.id != null) {
+                throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
             }
 
-            return Promise.pure(null)
+            return userAuthenticatorRepository.search(new AuthenticatorListOptions(
+                    userId: userAuthenticator.userId,
+                    type: userAuthenticator.type,
+                    value: userAuthenticator.value
+            )).then { List<UserAuthenticator> existing ->
+                if (existing != null && existing.size() != 0) {
+                    throw AppErrors.INSTANCE.fieldDuplicate('value').exception()
+                }
+
+                return Promise.pure(null)
+            }
         }
     }
 
@@ -105,8 +106,8 @@ class UserAuthenticatorValidatorImpl implements UserAuthenticatorValidator {
     Promise<Void> validateForUpdate(UserAuthenticatorId userAuthenticatorId, UserAuthenticator authenticator,
                                     UserAuthenticator oldAuthenticator) {
         validateForGet(userAuthenticatorId).then {
-            basicCheckUserAuthenticator(authenticator)
-
+            return basicCheckUserAuthenticator(authenticator)
+        }.then {
             if (authenticator.id == null) {
                 throw new IllegalArgumentException('id is null')
             }
@@ -136,10 +137,12 @@ class UserAuthenticatorValidatorImpl implements UserAuthenticatorValidator {
                 }
                 return Promise.pure(null)
             }
+
+            return Promise.pure(null)
         }
     }
 
-    private void basicCheckUserAuthenticator(UserAuthenticator userAuthenticator) {
+    private Promise<Void> basicCheckUserAuthenticator(UserAuthenticator userAuthenticator) {
         if (userAuthenticator == null) {
             throw new IllegalArgumentException('userAuthenticator is null')
         }
@@ -148,7 +151,7 @@ class UserAuthenticatorValidatorImpl implements UserAuthenticatorValidator {
             throw AppErrors.INSTANCE.fieldRequired('userId').exception()
         }
 
-        userRepository.get(userAuthenticator.userId).then { User user ->
+        return userRepository.get(userAuthenticator.userId).then { User user ->
             if (user == null) {
                 throw AppErrors.INSTANCE.userNotFound(userAuthenticator.userId).exception()
             }
@@ -156,18 +159,20 @@ class UserAuthenticatorValidatorImpl implements UserAuthenticatorValidator {
             if (user.active == false || user.active == false) {
                 throw AppErrors.INSTANCE.userInInvalidStatus(userAuthenticator.userId).exception()
             }
-        }
 
-        if (userAuthenticator.value == null) {
-            throw AppErrors.INSTANCE.fieldRequired('value').exception()
-        }
+            if (userAuthenticator.value == null) {
+                throw AppErrors.INSTANCE.fieldRequired('value').exception()
+            }
 
-        if (userAuthenticator.type == null) {
-            throw AppErrors.INSTANCE.fieldRequired('type').exception()
-        }
+            if (userAuthenticator.type == null) {
+                throw AppErrors.INSTANCE.fieldRequired('type').exception()
+            }
 
-        if (!(userAuthenticator.type in allowedTypes)) {
-            throw AppErrors.INSTANCE.fieldInvalid('type', allowedTypes.join(',')).exception()
+            if (!(userAuthenticator.type in allowedTypes)) {
+                throw AppErrors.INSTANCE.fieldInvalid('type', allowedTypes.join(',')).exception()
+            }
+
+            return Promise.pure(null)
         }
     }
 }

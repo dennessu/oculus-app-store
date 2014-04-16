@@ -19,7 +19,7 @@ import java.util.UUID;
 public class BalanceTrackingUuidView implements EntityView<Long, BalanceEntity, UUID> {
     @Override
     public String getName() {
-        return "balance_trackingUuid";
+        return "balance_tracking_uuid";
     }
 
     @Override

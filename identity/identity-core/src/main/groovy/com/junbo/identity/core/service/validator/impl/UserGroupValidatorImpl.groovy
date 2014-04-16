@@ -63,21 +63,21 @@ class UserGroupValidatorImpl implements UserGroupValidator {
     @Override
     Promise<Void> validateForCreate(UserGroup userGroup) {
 
-        checkBasicUserGroupInfo(userGroup)
-
-        if (userGroup.id != null) {
-            throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
-        }
-
-        return userGroupRepository.search(new UserGroupListOptions(
-                userId: userGroup.userId,
-                groupId: userGroup.groupId
-        )).then { List<UserGroup> existing ->
-            if (!CollectionUtils.isEmpty(existing)) {
-                throw AppErrors.INSTANCE.fieldDuplicate('groupId').exception()
+        checkBasicUserGroupInfo(userGroup).then {
+            if (userGroup.id != null) {
+                throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
             }
 
-            return Promise.pure(null)
+            return userGroupRepository.search(new UserGroupListOptions(
+                    userId: userGroup.userId,
+                    groupId: userGroup.groupId
+            )).then { List<UserGroup> existing ->
+                if (!CollectionUtils.isEmpty(existing)) {
+                    throw AppErrors.INSTANCE.fieldDuplicate('groupId').exception()
+                }
+
+                return Promise.pure(null)
+            }
         }
     }
 
@@ -85,8 +85,8 @@ class UserGroupValidatorImpl implements UserGroupValidator {
     Promise<Void> validateForUpdate(UserGroupId userGroupId, UserGroup userGroup, UserGroup oldUserGroup) {
 
         return validateForGet(userGroupId).then {
-            checkBasicUserGroupInfo(userGroup)
-
+            return checkBasicUserGroupInfo(userGroup)
+        }.then {
             if (userGroup.id == null) {
                 throw new IllegalArgumentException('id is null')
             }
@@ -115,7 +115,7 @@ class UserGroupValidatorImpl implements UserGroupValidator {
         }
     }
 
-    private void checkBasicUserGroupInfo(UserGroup userGroup) {
+    private Promise<Void> checkBasicUserGroupInfo(UserGroup userGroup) {
         if (userGroup == null) {
             throw new IllegalArgumentException('userGroup is null')
         }
@@ -128,7 +128,7 @@ class UserGroupValidatorImpl implements UserGroupValidator {
             throw AppErrors.INSTANCE.fieldRequired('userId').exception()
         }
 
-        userRepository.get(userGroup.userId).then { User existingUser ->
+        return userRepository.get(userGroup.userId).then { User existingUser ->
             if (existingUser == null) {
                 throw AppErrors.INSTANCE.userNotFound(userGroup.userId).exception()
             }
@@ -137,18 +137,20 @@ class UserGroupValidatorImpl implements UserGroupValidator {
                 throw AppErrors.INSTANCE.userInInvalidStatus(userGroup.userId).exception()
             }
 
-            groupRepository.get(userGroup.groupId).then { Group existingGroup ->
+            return groupRepository.get(userGroup.groupId).then { Group existingGroup ->
                 if (existingGroup == null) {
                     throw AppErrors.INSTANCE.groupNotFound(userGroup.groupId).exception()
                 }
 
-                userGroupRepository.search(new UserGroupListOptions(
+                return userGroupRepository.search(new UserGroupListOptions(
                         userId: userGroup.userId,
                         groupId: userGroup.groupId
                 )).then { List<UserGroup> existingUserDeviceList ->
                     if (!CollectionUtils.isEmpty(existingUserDeviceList)) {
                         throw AppErrors.INSTANCE.fieldInvalid('groupId').exception()
                     }
+
+                    return Promise.pure(null)
                 }
             }
         }

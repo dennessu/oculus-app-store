@@ -83,14 +83,15 @@ public class CatalogGatewayImpl implements CatalogGateway{
         }
 
         OfferRevision offerRevision;
-        OfferRevisionsGetOptions options = new OfferRevisionsGetOptions();
-        options.setOfferIds(Arrays.asList(new OfferId(offerId)));
-        options.setTimestamp(timestamp);
-        try {
-
-            offerRevision = offerRevisionResource.getOfferRevisions(options).wrapped().get().getItems().get(0);
-        } catch (Exception e) {
-            throw AppErrors.INSTANCE.catalogGatewayError().exception();
+        if (timestamp == null) {
+            try {
+                offerRevision = offerRevisionResource.getOfferRevision(
+                        new OfferRevisionId(offer.getCurrentRevisionId())).wrapped().get();
+            } catch (Exception e) {
+                throw AppErrors.INSTANCE.catalogGatewayError().exception();
+            }
+        } else {
+            offerRevision = getOfferRevisionByTimestamp(offerId, timestamp);
         }
 
         Map<String, BigDecimal> prices = new HashMap<>();
@@ -110,7 +111,6 @@ public class CatalogGatewayImpl implements CatalogGateway{
                 break;
         }
         result.setPrice(new Price(offerRevision.getPrice().getPriceType(), prices));
-
 
         if (offerRevision.getItems() != null) {
             for (ItemEntry entry : offerRevision.getItems()) {
@@ -160,6 +160,10 @@ public class CatalogGatewayImpl implements CatalogGateway{
             }
         }
 
+        if (revisionIds.isEmpty()) {
+            return results;
+        }
+
         PromotionRevisionsGetOptions revisionOptions = new PromotionRevisionsGetOptions();
         revisionOptions.setRevisionIds(revisionIds);
         try {
@@ -174,5 +178,23 @@ public class CatalogGatewayImpl implements CatalogGateway{
     @Override
     public ShippingMethod getShippingMethod(Long shippingMethodId) {
         return null;
+    }
+
+    private OfferRevision getOfferRevisionByTimestamp(Long offerId, Long timestamp) {
+        List<OfferRevision> revisions;
+        OfferRevisionsGetOptions options = new OfferRevisionsGetOptions();
+        options.setOfferIds(Arrays.asList(new OfferId(offerId)));
+        options.setTimestamp(timestamp);
+        try {
+            revisions = offerRevisionResource.getOfferRevisions(options).wrapped().get().getItems();
+        } catch (Exception e) {
+            throw AppErrors.INSTANCE.catalogGatewayError().exception();
+        }
+
+        if (revisions.isEmpty()) {
+            throw AppErrors.INSTANCE.offerRevisionNotFound(offerId.toString()).exception();
+        }
+
+        return revisions.get(Constants.UNIQUE);
     }
 }

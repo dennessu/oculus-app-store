@@ -35,6 +35,6 @@ public class SubledgerEventEntity extends CommonEventEntity{
     @Override
     @Transient
     public Long getShardId() {
-        return subledgerId;
+        return getEventId();
     }
 }

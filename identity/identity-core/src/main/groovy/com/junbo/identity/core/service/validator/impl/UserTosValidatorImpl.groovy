@@ -77,24 +77,25 @@ class UserTosValidatorImpl implements UserTosValidator {
         if (userId == null) {
             throw new IllegalArgumentException('userId is null')
         }
-        checkBasicUserTosInfo(userTos)
+
         if (userTos.id != null) {
             throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
         }
         if (userTos.userId != null && userTos.userId != userId) {
             throw AppErrors.INSTANCE.fieldInvalid('userId', userTos.userId.toString()).exception()
         }
+        return checkBasicUserTosInfo(userTos).then {
+            return userTosRepository.search(new UserTosAgreementListOptions(
+                    userId: userId,
+                    tosId: userTos.tosId
+            )).then { List<UserTosAgreement> existing ->
+                if (!CollectionUtils.isEmpty(existing)) {
+                    throw AppErrors.INSTANCE.fieldDuplicate('tosId').exception()
+                }
 
-        return userTosRepository.search(new UserTosAgreementListOptions(
-                userId: userId,
-                tosId: userTos.tosId
-        )).then { List<UserTosAgreement> existing ->
-            if (!CollectionUtils.isEmpty(existing)) {
-                throw AppErrors.INSTANCE.fieldDuplicate('tosId').exception()
+                userTos.setUserId(userId)
+                return Promise.pure(null)
             }
-
-            userTos.setUserId(userId)
-            return Promise.pure(null)
         }
     }
 
@@ -106,8 +107,8 @@ class UserTosValidatorImpl implements UserTosValidator {
         }
 
         return validateForGet(userId, userTosId).then {
-            checkBasicUserTosInfo(userTos)
-
+            return checkBasicUserTosInfo(userTos)
+        }.then {
             if (userTos.id == null) {
                 throw new IllegalArgumentException('id is null')
             }
@@ -137,7 +138,7 @@ class UserTosValidatorImpl implements UserTosValidator {
         }
     }
 
-    private void checkBasicUserTosInfo(UserTosAgreement userTos) {
+    private Promise<Void> checkBasicUserTosInfo(UserTosAgreement userTos) {
         if (userTos == null) {
             throw new IllegalArgumentException('userTos is null')
         }
@@ -146,10 +147,12 @@ class UserTosValidatorImpl implements UserTosValidator {
             throw AppErrors.INSTANCE.fieldRequired('tosId').exception()
         }
 
-        tosRepository.get(userTos.tosId).then { Tos tos ->
+        return tosRepository.get(userTos.tosId).then { Tos tos ->
             if (tos == null) {
                 throw AppErrors.INSTANCE.tosNotFound(userTos.tosId).exception()
             }
+
+            return Promise.pure(null)
         }
     }
 

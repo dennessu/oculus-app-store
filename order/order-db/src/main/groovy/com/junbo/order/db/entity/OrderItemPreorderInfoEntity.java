@@ -78,6 +78,6 @@ public class OrderItemPreorderInfoEntity extends CommonDbEntityWithDate{
     @Override
     @Transient
     public Long getShardId() {
-        return orderItemId;
+        return orderItemPreorderInfoId;
     }
 }

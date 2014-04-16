@@ -80,7 +80,7 @@ class GroupValidatorImpl implements GroupValidator {
             throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
         }
 
-        groupRepository.searchByName(group.name).then { Group existing ->
+        return groupRepository.searchByName(group.name).then { Group existing ->
             if (existing != null) {
                 throw AppErrors.INSTANCE.fieldDuplicate('name').exception()
             }

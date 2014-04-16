@@ -60,20 +60,21 @@ class UserOptinValidatorImpl implements UserOptinValidator {
 
     @Override
     Promise<Void> validateForCreate(UserOptin userOptin) {
-        checkBasicUserOptinInfo(userOptin)
-        if (userOptin.id != null) {
-            throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
-        }
-
-        return userOptinRepository.search(new UserOptinListOptions(
-                userId: userOptin.userId,
-                type: userOptin.type
-        )).then { List<UserOptin> existing ->
-            if (!CollectionUtils.isEmpty(existing)) {
-                throw AppErrors.INSTANCE.fieldDuplicate('type').exception()
+        checkBasicUserOptinInfo(userOptin).then {
+            if (userOptin.id != null) {
+                throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
             }
 
-            return Promise.pure(null)
+            return userOptinRepository.search(new UserOptinListOptions(
+                    userId: userOptin.userId,
+                    type: userOptin.type
+            )).then { List<UserOptin> existing ->
+                if (!CollectionUtils.isEmpty(existing)) {
+                    throw AppErrors.INSTANCE.fieldDuplicate('type').exception()
+                }
+
+                return Promise.pure(null)
+            }
         }
     }
 
@@ -81,8 +82,6 @@ class UserOptinValidatorImpl implements UserOptinValidator {
     Promise<Void> validateForUpdate(UserOptinId userOptinId, UserOptin userOptin, UserOptin oldUserOptin) {
 
         return validateForGet(userOptinId).then { UserOptin existingUserOptin ->
-            checkBasicUserOptinInfo(userOptin)
-
             if (existingUserOptin.userId != userOptin.userId) {
                 throw AppErrors.INSTANCE.fieldInvalid('userId').exception()
             }
@@ -91,6 +90,8 @@ class UserOptinValidatorImpl implements UserOptinValidator {
                 throw AppErrors.INSTANCE.fieldInvalid('userId').exception()
             }
 
+            return checkBasicUserOptinInfo(userOptin)
+        }.then {
             if (userOptin.id == null) {
                 throw new IllegalArgumentException('id is null')
             }
@@ -135,7 +136,7 @@ class UserOptinValidatorImpl implements UserOptinValidator {
         this.allowedTypes = allowedTypes
     }
 
-    private void checkBasicUserOptinInfo(UserOptin userOptin) {
+    private Promise<Void> checkBasicUserOptinInfo(UserOptin userOptin) {
         if (userOptin == null) {
             throw new IllegalArgumentException('userOptin is null')
         }
@@ -152,7 +153,7 @@ class UserOptinValidatorImpl implements UserOptinValidator {
             throw AppErrors.INSTANCE.fieldRequired('userId').exception()
         }
 
-        userRepository.get(userOptin.userId).then { User existingUser ->
+        return userRepository.get(userOptin.userId).then { User existingUser ->
             if (existingUser == null) {
                 throw AppErrors.INSTANCE.userNotFound(userOptin.userId).exception()
             }
@@ -160,6 +161,7 @@ class UserOptinValidatorImpl implements UserOptinValidator {
             if (existingUser.active == null || existingUser.active == false) {
                 throw AppErrors.INSTANCE.userInInvalidStatus(userOptin.userId).exception()
             }
+            return Promise.pure(null)
         }
     }
 }

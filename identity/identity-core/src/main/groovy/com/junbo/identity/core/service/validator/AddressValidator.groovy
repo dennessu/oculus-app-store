@@ -8,6 +8,6 @@ import com.junbo.langur.core.promise.Promise
  * Created by xmchen on 14-4-15.
  */
 interface AddressValidator {
-    Promise<Void> validateForGet(AddressId addressId)
+    Promise<Address> validateForGet(AddressId addressId)
     Promise<Void> validateForCreate(Address address)
 }
