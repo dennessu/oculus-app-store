@@ -40,11 +40,11 @@ public class RatingContext {
     //TODO: violations
 
     public RatingContext() {
-        items = new HashSet<RatableItem>();
-        couponCodes = new HashMap<String, String>();
-        candidates = new HashMap<Long, Set<PromotionRevision>>();
-        rules = new HashMap<PromotionType, Set<PromotionRevision>>();
-        entries = new HashSet<RatingResultEntry>();
+        items = new HashSet<>();
+        couponCodes = new HashMap<>();
+        candidates = new HashMap<>();
+        rules = new HashMap<>();
+        entries = new HashSet<>();
     }
 
     public void fromRequest(OfferRatingRequest request) {
@@ -84,7 +84,7 @@ public class RatingContext {
             RatableItem item = new RatableItem();
             item.setOfferId(ratingItem.getOfferId());
 
-            if (request.isReadyToBuy()) {
+            if (request.getIncludeCrossOfferPromos()) {
                 item.setQuantity(ratingItem.getQuantity());
                 item.setShippingMethodId(
                         ratingItem.getShippingMethodId() == null ?
