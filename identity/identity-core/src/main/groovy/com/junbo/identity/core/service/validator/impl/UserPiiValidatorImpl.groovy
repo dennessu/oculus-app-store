@@ -66,6 +66,24 @@ class UserPiiValidatorImpl implements UserPiiValidator {
         return Promise.pure(null)
     }
 
+    Promise<Void> checkEmailForCreate(UserPii userPii) {
+        if (userPii.emails != null) {
+            userPii.emails.each { Map.Entry entry ->
+                UserEmail userEmail = (UserEmail) entry.value
+
+                userPiiRepository.search(new UserPiiListOptions(
+                        email: userEmail.value
+                )).then { List<UserPii> userPiiList ->
+                    if (!CollectionUtils.isEmpty(userPiiList)) {
+                        throw AppErrors.INSTANCE.fieldDuplicate('email').exception()
+                    }
+                }
+            }
+        }
+
+        return Promise.pure(null)
+    }
+
     @Override
     Promise<Void> validateForCreate(UserPii userPii) {
         return checkBasicUserPiiInfo(userPii).then {
@@ -80,21 +98,7 @@ class UserPiiValidatorImpl implements UserPiiValidator {
                     throw AppErrors.INSTANCE.fieldDuplicate('userId').exception()
                 }
 
-                if (userPii.emails != null) {
-                    userPii.emails.each { Map.Entry entry ->
-                        UserEmail userEmail = (UserEmail) entry.value
-
-                        userPiiRepository.search(new UserPiiListOptions(
-                                email: userEmail.value
-                        )).then { List<UserPii> userPiiList ->
-                            if (!CollectionUtils.isEmpty(userPiiList)) {
-                                throw AppErrors.INSTANCE.fieldDuplicate('email').exception()
-                            }
-                        }
-                    }
-                }
-
-                return Promise.pure(null)
+                return checkEmailForCreate(userPii)
             }
         }
     }
