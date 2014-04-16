@@ -25,7 +25,6 @@ public class RatingRequest {
     @UserId
     @JsonProperty("user")
     private Long userId;
-    private String country;
     private String currency;
 
     private Set<String> couponCodes = new HashSet<>();
@@ -57,14 +56,6 @@ public class RatingRequest {
 
     public void setUserId(Long userId) {
         this.userId = userId;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
     }
 
     public String getCurrency() {

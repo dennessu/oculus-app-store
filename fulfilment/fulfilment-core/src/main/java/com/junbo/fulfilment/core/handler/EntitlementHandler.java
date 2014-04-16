@@ -47,6 +47,7 @@ public class EntitlementHandler extends HandlerSupport implements FulfilmentHand
         entitlement.setOfferId(context.getItems().get(action.getFulfilmentId()).getOfferId());
 
         // fetch from entitlement definition
+        entitlement.setUseCount(action.getCopyCount());
         entitlement.setType((String) prop.get(Constant.ENTITLEMENT_TYPE));
         entitlement.setTag((String) prop.get(Constant.ENTITLEMENT_TAG));
         entitlement.setGroup((String) prop.get(Constant.ENTITLEMENT_GROUP));

@@ -27,35 +27,36 @@ public class AttributeRepository {
         AttributeEntity entity = new AttributeEntity();
         entity.setName(Utils.toJson(attribute.getName()));
         entity.setType(attribute.getType());
+        entity.setPayload(Utils.toJson(attribute));
         return attributeDao.create(entity);
     }
 
     public Attribute get(Long id) {
         AttributeEntity entity = attributeDao.get(id);
-        Attribute attribute = new Attribute();
-        attribute.setId(entity.getId());
-        attribute.setName(Utils.fromJson(entity.getName(), LocalizableProperty.class));
-        attribute.setType(entity.getType());
-        return attribute;
+        return toModel(entity);
     }
 
     public List<Attribute> getAttributes(int start, int size, String attributeType) {
         List<AttributeEntity> attributeEntities = attributeDao.getAttributes(start, size, attributeType);
         List<Attribute> attributes = new ArrayList<>();
         for (AttributeEntity attributeEntity : attributeEntities) {
-            Attribute attribute = new Attribute();
-            // TODO: extract these to a mapper
-            attribute.setId(attributeEntity.getId());
-            attribute.setName(Utils.fromJson(attributeEntity.getName(), LocalizableProperty.class));
-            attribute.setType(attributeEntity.getType());
-            attribute.setCreatedBy(attributeEntity.getCreatedBy());
-            attribute.setCreatedTime(attributeEntity.getCreatedTime());
-            attribute.setUpdatedBy(attributeEntity.getUpdatedBy());
-            attribute.setUpdatedTime(attributeEntity.getUpdatedTime());
-
-            attributes.add(attribute);
+            attributes.add(toModel(attributeEntity));
         }
 
         return attributes;
+    }
+
+    private Attribute toModel(AttributeEntity dbEntity) {
+        // TODO: extract these to a mapper
+        Attribute attribute = Utils.fromJson(dbEntity.getPayload(), Attribute.class);
+        attribute.setId(dbEntity.getId());
+        attribute.setName(Utils.fromJson(dbEntity.getName(), LocalizableProperty.class));
+        attribute.setType(dbEntity.getType());
+        attribute.setCreatedBy(dbEntity.getCreatedBy());
+        attribute.setCreatedTime(dbEntity.getCreatedTime());
+        attribute.setUpdatedBy(dbEntity.getUpdatedBy());
+        attribute.setUpdatedTime(dbEntity.getUpdatedTime());
+
+        return attribute;
     }
 }

@@ -6,6 +6,7 @@
 
 package com.junbo.order.db;
 
+import com.junbo.common.id.OrderEventId;
 import com.junbo.order.db.dao.SubledgerItemPayinEventDao;
 import com.junbo.order.db.entity.SubledgerItemPayinEventEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,25 +22,27 @@ public class SubledgerItemPayinEventDaoTest extends BaseTest {
 
     @Test(enabled = false)
     public void testCreateAndRead() {
-        SubledgerItemPayinEventEntity subledgerItemPayinEventEntity = generateSubledgerItemPayinEventEntity();
-        Long id = subledgerItemPayinEventDao.create(subledgerItemPayinEventEntity);
+        SubledgerItemPayinEventEntity entity = generateSubledgerItemPayinEventEntity();
+        entity.setEventId(idGenerator.nextId(OrderEventId.class));
+        Long id = subledgerItemPayinEventDao.create(entity);
         SubledgerItemPayinEventEntity returnedEntity = subledgerItemPayinEventDao.read(id);
 
         Assert.assertNotNull(returnedEntity, "Fail to create or read entity.");
-        Assert.assertEquals(returnedEntity.getEventId(), subledgerItemPayinEventEntity.getEventId(),
+        Assert.assertEquals(returnedEntity.getEventId(), entity.getEventId(),
                 "The event Id should not be different.");
     }
 
     @Test(enabled = false)
     public void testUpdate() {
-        SubledgerItemPayinEventEntity subledgerItemPayinEventEntity = generateSubledgerItemPayinEventEntity();
-        Long id = subledgerItemPayinEventDao.create(subledgerItemPayinEventEntity);
-        //subledgerItemPayinEventEntity.setAction(OrderAction.CHARGE);
-        subledgerItemPayinEventDao.update(subledgerItemPayinEventEntity);
+        SubledgerItemPayinEventEntity entity = generateSubledgerItemPayinEventEntity();
+        entity.setEventId(idGenerator.nextId(OrderEventId.class));
+        Long id = subledgerItemPayinEventDao.create(entity);
+        //entity.setAction(OrderAction.CHARGE);
+        subledgerItemPayinEventDao.update(entity);
         SubledgerItemPayinEventEntity returnedEntity = subledgerItemPayinEventDao.read(id);
 
         Assert.assertNotNull(returnedEntity, "Fail to create or read entity.");
-        //Assert.assertEquals(returnedEntity.getAction(), subledgerItemPayinEventEntity.getAction(),
+        //Assert.assertEquals(returnedEntity.getAction(), entity.getAction(),
         // "The action Id should not be different.");
     }
 

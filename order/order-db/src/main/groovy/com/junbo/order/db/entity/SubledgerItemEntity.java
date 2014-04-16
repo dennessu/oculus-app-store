@@ -117,7 +117,7 @@ public class SubledgerItemEntity extends CommonDbEntityWithDate implements Ident
     @Override
     @Transient
     public Long getShardId() {
-        return orderItemId;
+        return subledgerItemId;
     }
 
     @Override

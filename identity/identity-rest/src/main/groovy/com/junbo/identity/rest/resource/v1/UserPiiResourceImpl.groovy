@@ -119,12 +119,12 @@ class UserPiiResourceImpl implements UserPiiResource {
 
             userPii = userPiiFilter.filterForPut(userPii, oldUserPii)
 
-            userPiiValidator.validateForUpdate(userPiiId, userPii, oldUserPii).then {
-                userPiiRepository.update(userPii).then { UserPii newUserPii ->
-                    newUserPii = userPiiFilter.filterForGet(newUserPii, null)
-                    return Promise.pure(newUserPii)
-                }
-            }
+            return userPiiValidator.validateForUpdate(userPiiId, userPii, oldUserPii)
+        }.then {
+            return userPiiRepository.update(userPii)
+        }.then { UserPii newUserPii ->
+            newUserPii = userPiiFilter.filterForGet(newUserPii, null)
+            return Promise.pure(newUserPii)
         }
     }
 

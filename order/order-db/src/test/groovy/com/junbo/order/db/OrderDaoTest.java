@@ -88,9 +88,10 @@ public class OrderDaoTest extends BaseTest {
 
     @Test
     public void testReadByUserIdOnlyTentative() {
-        Long userId = TestHelper.generateId();
+        Long userId = idGenerator.nextId(UserId.class);
         for (int i = 0;i < 2;++i) {
             OrderEntity entity = TestHelper.generateOrder();
+            entity.setOrderId(idGenerator.nextId(OrderId.class, userId));
             entity.setUserId(userId);
             orderDao.create(entity);
             entity.setTentative((i % 2) == 0);
