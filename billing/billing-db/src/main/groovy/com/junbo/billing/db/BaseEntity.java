@@ -20,13 +20,18 @@ import java.util.Date;
  */
 @MappedSuperclass
 public class BaseEntity implements Serializable {
+    @Column(name = "created_date")
     protected Date createdTime;
+
+    @Column(name = "created_by")
     protected String createdBy;
+
+    @Column(name = "modified_date")
     protected Date modifiedTime;
+
+    @Column(name = "modified_by")
     protected String modifiedBy;
 
-    @Column(name = "created_date")
-    @NotNull(message = EntityValidationCode.MISSING_VALUE)
     public Date getCreatedTime() {
         return createdTime;
     }
@@ -34,9 +39,6 @@ public class BaseEntity implements Serializable {
         this.createdTime = createdTime;
     }
 
-    @Column(name = "created_by")
-    @NotEmpty(message = EntityValidationCode.MISSING_VALUE)
-    @Length(max=64, message= EntityValidationCode.TOO_LONG)
     public String getCreatedBy() {
         return createdBy;
     }
@@ -44,7 +46,6 @@ public class BaseEntity implements Serializable {
         this.createdBy = createdBy;
     }
 
-    @Column(name = "modified_date")
     public Date getModifiedTime() {
         return modifiedTime;
     }
@@ -52,8 +53,6 @@ public class BaseEntity implements Serializable {
         this.modifiedTime = modifiedTime;
     }
 
-    @Column(name = "modified_by")
-    @Length(max=64, message= EntityValidationCode.TOO_LONG)
     public String getModifiedBy() {
         return modifiedBy;
     }

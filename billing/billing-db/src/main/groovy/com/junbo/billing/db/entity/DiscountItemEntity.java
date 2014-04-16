@@ -7,7 +7,6 @@
 package com.junbo.billing.db.entity;
 
 import com.junbo.billing.db.BaseEntity;
-import com.junbo.billing.db.EntityValidationCode;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -22,13 +21,19 @@ import java.math.BigDecimal;
 @Entity
 @Table(name = "discount_item")
 public class DiscountItemEntity extends BaseEntity {
-    private Long discountItemId;
-    private Long balanceItemId;
-    private BigDecimal discountAmount;
-    private BigDecimal discountRate;
-
     @Id
     @Column(name = "discount_item_id")
+    private Long discountItemId;
+
+    @Column(name = "balance_item_id")
+    private Long balanceItemId;
+
+    @Column(name = "discount_amount")
+    private BigDecimal discountAmount;
+
+    @Column(name = "discount_rate")
+    private BigDecimal discountRate;
+
     public Long getDiscountItemId() {
         return discountItemId;
     }
@@ -36,8 +41,6 @@ public class DiscountItemEntity extends BaseEntity {
         this.discountItemId = discountItemId;
     }
 
-    @Column(name = "balance_item_id")
-    @NotNull(message = EntityValidationCode.MISSING_VALUE)
     public Long getBalanceItemId() {
         return balanceItemId;
     }
@@ -45,8 +48,6 @@ public class DiscountItemEntity extends BaseEntity {
         this.balanceItemId = balanceItemId;
     }
 
-    @Column(name = "discount_amount")
-    @NotNull(message = EntityValidationCode.MISSING_VALUE)
     public BigDecimal getDiscountAmount() {
         return discountAmount;
     }
@@ -54,7 +55,6 @@ public class DiscountItemEntity extends BaseEntity {
         this.discountAmount = discountAmount;
     }
 
-    @Column(name = "discount_rate")
     public BigDecimal getDiscountRate() {
         return discountRate;
     }
