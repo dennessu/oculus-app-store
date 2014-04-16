@@ -5,7 +5,7 @@
  */
 package com.junbo.test.oauth;
 
-import com.junbo.identity.spec.model.user.User;
+import com.junbo.identity.spec.v1.model.User;
 import com.junbo.oauth.spec.model.TokenInfo;
 import com.junbo.test.common.HttpclientHelper;
 import com.junbo.test.identity.Identity;
@@ -34,7 +34,7 @@ public class authorizeUser {
         Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
         String cid = Oauth.GetLoginCid();
         Oauth.StartLoggingAPISample(Oauth.MessageGetAuthCodeByCidAndUserName);
-        String authCode = Oauth.GetAuthCode(cid, user.getUserName());
+        String authCode = Oauth.GetAuthCode(cid, user.getUsername());
         Oauth.StartLoggingAPISample(Oauth.MessageGetAccessTokenByAuthCode);
         String accessToken = Oauth.GetAccessToken(authCode);
         Oauth.StartLoggingAPISample(Oauth.MessageGetTokenInfoByAccessToken);
@@ -42,21 +42,21 @@ public class authorizeUser {
         assertEquals("validate token->client is correct", Oauth.DefaultClientId, tokenInfo.getClientId());
         assertEquals("validate token->scopes is correct", Oauth.DefaultClientScopes, tokenInfo.getScopes());
         User storedUser = Identity.GetUserByUserId(tokenInfo.getSub());
-        assertEquals("validate token->binded user is correct", user.getUserName(), storedUser.getUserName());
+        assertEquals("validate token->binded user is correct", user.getUsername(), storedUser.getUsername());
     }
 
     @Test(groups = "bvt")
     public void userSSO() throws Exception {
         User user = Identity.DefaultPostUser();
         String cid = Oauth.GetLoginCid();
-        String loginState = Oauth.GetLoginState(cid, user.getUserName());
+        String loginState = Oauth.GetLoginState(cid, user.getUsername());
         String authCode = Oauth.SSO2GetAuthCode(loginState);
         String accessToken = Oauth.GetAccessToken(authCode);
         TokenInfo tokenInfo = Oauth.GetTokenInfo(accessToken);
         assertEquals("validate token->client is correct", Oauth.DefaultClientId, tokenInfo.getClientId());
         assertEquals("validate token->scopes is correct", Oauth.DefaultClientScopes, tokenInfo.getScopes());
         User storedUser = Identity.GetUserByUserId(tokenInfo.getSub());
-        assertEquals("validate token->binded user is correct", user.getUserName(), storedUser.getUserName());
+        assertEquals("validate token->binded user is correct", user.getUsername(), storedUser.getUsername());
     }
 
 }
