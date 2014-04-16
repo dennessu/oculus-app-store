@@ -108,7 +108,7 @@ class UserPasswordValidatorImpl implements UserPasswordValidator {
         }
 
         String decryptPassword = Base64.decodeAsString(oldPassword)
-        userPasswordRepository.search(new UserPasswordListOptions(
+        return userPasswordRepository.search(new UserPasswordListOptions(
                 userId: userId,
                 active: true
         )).then { List<UserPassword> userPasswordList ->
