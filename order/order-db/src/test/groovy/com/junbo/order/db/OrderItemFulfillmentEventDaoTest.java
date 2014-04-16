@@ -48,18 +48,4 @@ public class OrderItemFulfillmentEventDaoTest extends BaseTest {
         Assert.assertEquals(returnedEntity.getAction(), orderItemFulfillmentEventEntity.getAction(),
                 "The action Id should not be different.");
     }
-
-    @Test
-    public void testReadByOrderItemId() {
-        OrderItemFulfillmentEventEntity fulfillmentEventEntity = TestHelper.generateOrderItemFulfillmentEventEntity();
-        Long orderId = fulfillmentEventEntity.getOrderId();
-        Long orderItemId = fulfillmentEventEntity.getOrderItemId();
-        List<OrderItemFulfillmentEventEntity> resultBefore =
-                orderItemFulfillmentEventDao.readByOrderItemId(orderId, orderItemId);
-        orderItemFulfillmentEventDao.create(fulfillmentEventEntity);
-        List<OrderItemFulfillmentEventEntity> resultAfter =
-                orderItemFulfillmentEventDao.readByOrderItemId(orderId, orderItemId);
-
-        Assert.assertEquals(resultAfter.size(), resultBefore.size() + 1, "Result size should increase.");
-    }
 }

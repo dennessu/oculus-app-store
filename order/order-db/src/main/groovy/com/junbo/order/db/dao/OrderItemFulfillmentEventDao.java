@@ -8,11 +8,8 @@ package com.junbo.order.db.dao;
 
 import com.junbo.order.db.entity.OrderItemFulfillmentEventEntity;
 
-import java.util.List;
-
 /**
  * Created by linyi on 14-2-7.
  */
 public interface OrderItemFulfillmentEventDao extends BaseDao<OrderItemFulfillmentEventEntity> {
-    List<OrderItemFulfillmentEventEntity> readByOrderItemId(final Long orderId, final Long orderItemId);
 }
