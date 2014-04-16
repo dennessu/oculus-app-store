@@ -18,8 +18,8 @@ import java.util.List;
  */
 public interface ItemService {
 
-    String getItem(String itemId, HashMap<String, String> httpPara) throws Exception;
-    String getItem(String itemId, HashMap<String, String> httpPara, int expectedResponseCode) throws Exception;
+    String getItem(String itemId) throws Exception;
+    String getItem(String itemId, int expectedResponseCode) throws Exception;
 
     List<String> getItem(HashMap<String, String> httpPara) throws Exception;
     List<String> getItem(HashMap<String, String> httpPara, int expectedResponseCode) throws Exception;

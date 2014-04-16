@@ -40,7 +40,7 @@ class CatalogMain {
         // packages
         resourceConfig.packages('com.junbo.catalog.spec.resource.adapter')
 
-        def uri = URI.create('http://0.0.0.0:8083/rest')
+        def uri = URI.create('http://0.0.0.0:8083/v1')
         return GrizzlyHttpServerFactory.createHttpServer(uri, resourceConfig)
     }
 

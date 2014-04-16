@@ -9,7 +9,7 @@ import com.junbo.email.db.repo.EmailTemplateRepository;
 import com.junbo.email.spec.error.AppErrors;
 import com.junbo.email.spec.model.Email;
 import com.junbo.email.spec.model.Model;
-import com.junbo.identity.spec.model.user.User;
+import com.junbo.identity.spec.v1.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -27,7 +27,7 @@ public class CommonValidator {
         if(user == null) {
             throw AppErrors.INSTANCE.invalidUserId(userId.toString()).exception();
         }
-        if(!user.getStatus().equals("ACTIVE")) {
+        if(!user.getActive()) {
             throw AppErrors.INSTANCE.invalidUserStatus(userId.toString()).exception();
         }
     }

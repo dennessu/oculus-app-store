@@ -8,6 +8,7 @@ package com.junbo.common.error;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 /**
@@ -102,6 +103,17 @@ public class ErrorProxy implements InvocationHandler {
             @Override
             public AppErrorException exception() {
                 return new AppErrorException(this);
+            }
+
+            @Override
+            public Error error() {
+                List<Error> causeErrors = new ArrayList<Error>();
+                if (causes != null) {
+                    for (AppError cause : causes) {
+                        causeErrors.add(cause.error());
+                    }
+                }
+                return new Error(code, message, field, causeErrors);
             }
         };
     }

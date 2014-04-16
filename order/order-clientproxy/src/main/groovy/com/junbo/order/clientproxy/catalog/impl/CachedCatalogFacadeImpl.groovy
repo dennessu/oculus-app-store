@@ -1,8 +1,7 @@
 package com.junbo.order.clientproxy.catalog.impl
-
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.catalog.CatalogFacade
-import com.junbo.order.clientproxy.model.OrderOffer
+import com.junbo.order.clientproxy.model.OrderOfferRevision
 import com.junbo.order.spec.error.AppErrors
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
@@ -22,7 +21,8 @@ import org.springframework.cache.ehcache.EhCacheCacheManager
 @TypeChecked
 class CachedCatalogFacadeImpl implements CatalogFacade {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(CachedCatalogFacadeImpl)
+    private static final Logger LOGGER = LoggerFactory.getLogger(CachedCatalogFacadeImpl)
+
 
     @Autowired
     @Qualifier('orderCatalogFacade')
@@ -35,7 +35,7 @@ class CachedCatalogFacadeImpl implements CatalogFacade {
     }
 
     @Override
-    Promise<OrderOffer> getOffer(Long offerId) {
+    Promise<OrderOfferRevision> getOfferRevision(Long offerId) {
 
         assert (offerId != null)
 
@@ -51,29 +51,32 @@ class CachedCatalogFacadeImpl implements CatalogFacade {
                 if (element == null) {
                     LOGGER.info('name=Offer_Missing_In_Cache. offerId: {}', offerId)
                 } else {
-                    LOGGER.info('name=Offer_Load_From_Cache. offerId: {}', offerId)
-                    return Promise.pure((OrderOffer) element.objectValue)
+                    def or = (OrderOfferRevision) element.objectValue
+                    LOGGER.info('name=Offer_Load_From_Cache. offerId: {}, revisionId: {}',
+                            offerId, or.catalogOfferRevision.revisionId)
+                    return Promise.pure(or)
                 }
             }
         }
 
         LOGGER.info('name=Offer_Load_Without_Cache. offerId: {}', offerId)
-        def offerPromise = catalogFacade.getOffer(offerId)
+        def offerPromise = catalogFacade.getOfferRevision(offerId)
         return offerPromise.syncRecover { Throwable throwable ->
             LOGGER.error('name=Offer_Not_Found. offerId: {}', offerId, throwable)
             throw AppErrors.INSTANCE.offerNotFound(offerId.toString()).exception()
-        }.syncThen { OrderOffer offer ->
-            Element newElement = new Element(offerId.toString(), offer)
+        }.syncThen { OrderOfferRevision or ->
+            Element newElement = new Element(offerId.toString(), or)
             if (cache != null) {
-                LOGGER.info('name=Offer_Cached. offerId: {}', offerId)
+                LOGGER.info('name=Offer_Cached. offerId: {}, revisionId: {}',
+                        offerId, or.catalogOfferRevision.revisionId)
                 cache.put(newElement)
             }
-            return offer
+            return or
         }
     }
 
     @Override
-    Promise<OrderOffer> getOffer(Long offerId, Date honoredTime) {
-        return catalogFacade.getOffer(offerId, honoredTime)
+    Promise<OrderOfferRevision> getOfferRevision(Long offerId, Date honoredTime) {
+        return catalogFacade.getOfferRevision(offerId, honoredTime)
     }
 }

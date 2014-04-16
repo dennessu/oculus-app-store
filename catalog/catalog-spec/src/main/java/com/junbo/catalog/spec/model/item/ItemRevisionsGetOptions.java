@@ -11,7 +11,6 @@ import com.junbo.common.id.ItemId;
 import com.junbo.common.id.ItemRevisionId;
 
 import javax.ws.rs.QueryParam;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -27,7 +26,7 @@ public class ItemRevisionsGetOptions extends PageableGetOptions {
     @QueryParam("status")
     private String status;
     @QueryParam("timestamp")
-    private Date timestamp;
+    private Long timestamp;
 
     public List<ItemId> getItemIds() {
         return itemIds;
@@ -61,11 +60,11 @@ public class ItemRevisionsGetOptions extends PageableGetOptions {
         this.status = status;
     }
 
-    public Date getTimestamp() {
+    public Long getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Date timestamp) {
+    public void setTimestamp(Long timestamp) {
         this.timestamp = timestamp;
     }
 }

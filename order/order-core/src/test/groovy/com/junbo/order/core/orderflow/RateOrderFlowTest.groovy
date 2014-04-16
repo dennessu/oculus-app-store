@@ -1,4 +1,6 @@
 package com.junbo.order.core.orderflow
+
+import com.junbo.common.id.UserId
 import com.junbo.langur.core.webflow.executor.FlowExecutor
 import com.junbo.order.core.BaseTest
 import com.junbo.order.core.OrderService
@@ -27,7 +29,7 @@ class RateOrderFlowTest extends BaseTest{
     @Test(enabled = true)
     void testFlowExecute() {
         def order = TestBuilder.buildOrderRequest()
-
+        order.user = new UserId(idGenerator.nextId(UserId.class))
         Map<String, Object> requestScope = [:]
         requestScope.put(ActionUtils.REQUEST_FLOW_NAME, (Object) 'MOCK_RATE_ORDER')
         def orderActionContext = new OrderActionContext()

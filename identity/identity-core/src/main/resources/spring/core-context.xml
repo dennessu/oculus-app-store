@@ -679,4 +679,57 @@
             </list>
         </property>
     </bean>
+
+    <bean id="addressFilter" class="com.junbo.identity.core.service.filter.AddressFilter">
+        <property name="readableProperties">
+            <list>
+                <value>id</value>
+                <value>userId</value>
+                <value>street</value>
+                <value>street1</value>
+                <value>street2</value>
+                <value>city</value>
+                <value>state</value>
+                <value>postalCode</value>
+                <value>country</value>
+                <value>firstName</value>
+                <value>lastName</value>
+                <value>phoneNumber</value>
+                <value>resourceAge</value>
+                <value>createdTime</value>
+                <value>updatedTime</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForCreate">
+            <list>
+                <value>userId</value>
+                <value>street</value>
+                <value>street1</value>
+                <value>street2</value>
+                <value>city</value>
+                <value>state</value>
+                <value>postalCode</value>
+                <value>country</value>
+                <value>firstName</value>
+                <value>lastName</value>
+                <value>phoneNumber</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForUpdate">
+            <list>
+                <value>street</value>
+                <value>street1</value>
+                <value>street2</value>
+                <value>city</value>
+                <value>state</value>
+                <value>postalCode</value>
+                <value>country</value>
+                <value>firstName</value>
+                <value>lastName</value>
+                <value>phoneNumber</value>
+            </list>
+        </property>
+    </bean>
 </beans>

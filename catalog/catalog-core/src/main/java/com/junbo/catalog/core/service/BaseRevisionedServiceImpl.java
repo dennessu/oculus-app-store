@@ -89,7 +89,7 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
             existingEntity.setCurated(Boolean.TRUE);
             existingEntity.setCurrentRevisionId(revisionId);
             getEntityRepo().update(existingEntity);
-            revision.setTimestamp(Utils.now());
+            revision.setTimestamp(Utils.currentTimestamp());
         }
         getRevisionRepo().update(revision);
         return getRevisionRepo().get(revisionId);

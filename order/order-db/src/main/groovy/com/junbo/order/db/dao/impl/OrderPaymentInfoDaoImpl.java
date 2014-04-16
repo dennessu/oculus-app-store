@@ -21,7 +21,7 @@ import java.util.List;
 public class OrderPaymentInfoDaoImpl extends BaseDaoImpl<OrderPaymentInfoEntity> implements OrderPaymentInfoDao {
     @Override
     public List<OrderPaymentInfoEntity> readByOrderId(Long orderId) {
-        Criteria criteria = this.getSession().createCriteria(OrderPaymentInfoEntity.class);
+        Criteria criteria = this.getSession(orderId).createCriteria(OrderPaymentInfoEntity.class);
         criteria.add(Restrictions.eq("orderId", orderId));
         criteria.add(Restrictions.eq("deleted", false));
         return criteria.list();

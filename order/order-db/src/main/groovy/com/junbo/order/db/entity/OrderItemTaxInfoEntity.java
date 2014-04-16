@@ -10,10 +10,7 @@ import com.junbo.order.db.ValidationMessages;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
@@ -90,5 +87,11 @@ public class OrderItemTaxInfoEntity extends CommonDbEntityWithDate {
 
     public void setTaxCode(String taxCode) {
         this.taxCode = taxCode;
+    }
+
+    @Override
+    @Transient
+    public Long getShardId() {
+        return orderItemId;
     }
 }

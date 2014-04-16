@@ -368,6 +368,7 @@
         </sql>
     </changeSet>
 
+    <!--
     <changeSet id="18" author='WenhongZhu' context="PREDEPLOY">
         <sql>
         <![CDATA[
@@ -606,6 +607,7 @@
         ]]>
         </sql>
     </changeSet>
+    -->
 
     <changeSet id="19" author='WenhongZhu' context="PREDEPLOY">
         <sql>
@@ -623,6 +625,7 @@
         </sql>
     </changeSet>
 
+    <!--
     <changeSet id="20" author='WenhongZhu' context="PREDEPLOY">
         <sql>
         <![CDATA[
@@ -739,6 +742,7 @@
         ]]>
         </sql>
     </changeSet>
+    -->
 
     <changeSet id="21" author='WenhongZhu' context="PREDEPLOY">
         <sql>

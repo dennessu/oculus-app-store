@@ -12,6 +12,8 @@
     <!-- resource implementation -->
     <bean id="defaultSecurityQuestionResource" class="com.junbo.identity.rest.resource.SecurityQuestionResourceImpl" scope="prototype" />
 
+    <bean id="defaultAddressResource" class="com.junbo.identity.rest.resource.v1.AddressResourceImpl" scope="prototype" />
+
     <bean id="defaultAuthenticatorResource" class="com.junbo.identity.rest.resource.v1.AuthenticatorResourceImpl" scope="prototype" />
     <bean id="defaultDeviceResource" class="com.junbo.identity.rest.resource.v1.DeviceResourceImpl" scope="prototype" />
     <bean id="defaultGroupResource" class="com.junbo.identity.rest.resource.v1.GroupResourceImpl" scope="prototype" />
