@@ -56,7 +56,6 @@ class FacadeBuilder {
 
     static RatingRequest buildRatingRequest(Order order) {
         RatingRequest request = new RatingRequest()
-        request.country = order.country
         List<String> coupons = []
         order.discounts?.each { Discount d ->
             if (!d.coupon?.isEmpty()) {
@@ -66,8 +65,9 @@ class FacadeBuilder {
         request.couponCodes = ((String[])coupons?.toArray()) as Set
         request.currency = order.currency
         request.userId = order.user?.value
-        request.country = order.country
         request.shippingMethodId = order.shippingMethod
+        request.timestamp = order.honoredTime.time
+        request.includeCrossOfferPromos = true
         List<RatingItem> ratingItems = []
         order.orderItems?.each { OrderItem item ->
             RatingItem ratingItem = new RatingItem()

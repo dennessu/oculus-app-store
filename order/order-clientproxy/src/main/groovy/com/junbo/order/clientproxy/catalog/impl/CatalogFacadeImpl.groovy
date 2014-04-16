@@ -22,6 +22,7 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.catalog.CatalogFacade
 import com.junbo.order.clientproxy.model.OrderOfferItemRevision
 import com.junbo.order.clientproxy.model.OrderOfferRevision
+import com.junbo.order.spec.error.AppErrors
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.apache.commons.collections.CollectionUtils
@@ -84,9 +85,13 @@ class CatalogFacadeImpl implements CatalogFacade {
                     orderOfferItemRevisions: []
             )
             Promise.each(or.items?.iterator()) { ItemEntry ie ->
-                getOfferItemRevision(ie.itemId, honoredTime).syncRecover {
+                getOfferItemRevision(ie.itemId, honoredTime).syncRecover { Throwable ex ->
+                    LOGGER.error('name=Failed_To_Get_Offer_Item_Revision. itemId: {}, timestamp: {}',
+                            ie.itemId, honoredTime, ex)
+                    throw AppErrors.INSTANCE.catalogConnectionError().exception()
                     // TODO add logger and exception
                 }.syncThen { OrderOfferItemRevision ir ->
+                    assert(ir != null)
                     orderOfferRevision.orderOfferItemRevisions.add(ir)
                 }
             }.syncThen {
@@ -100,9 +105,12 @@ class CatalogFacadeImpl implements CatalogFacade {
                 timestamp: honoredTime.time,
                 itemIds: [new ItemId(itemId)]
         )
-        return itemRevisionResource.getItemRevisions(entityGetOption).syncRecover {
-            // TODO add logger and exception
-        }.then { List<ItemRevision> irs ->
+        return itemRevisionResource.getItemRevisions(entityGetOption).syncRecover { Throwable ex ->
+            LOGGER.error('name=Failed_To_Get_Item_Revision. itemId: {}, timestamp: {}',
+                    itemId, honoredTime, ex)
+            throw AppErrors.INSTANCE.catalogConnectionError().exception()
+        }.then { Results<ItemRevision> results ->
+            List<ItemRevision> irs = results?.items
             if (CollectionUtils.isEmpty(irs)) {
                 LOGGER.info('name=Can_Not_Get_ItemRevision. itemId: {}, timestamp: {}', itemId, honoredTime)
                 return Promise.pure(null)

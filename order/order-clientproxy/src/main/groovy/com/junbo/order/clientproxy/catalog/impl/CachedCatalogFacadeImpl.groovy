@@ -65,6 +65,10 @@ class CachedCatalogFacadeImpl implements CatalogFacade {
             LOGGER.error('name=Offer_Not_Found. offerId: {}', offerId, throwable)
             throw AppErrors.INSTANCE.offerNotFound(offerId.toString()).exception()
         }.syncThen { OrderOfferRevision or ->
+            if (or == null) {
+                LOGGER.error('name=Offer_Null. offerId: {}', offerId)
+                throw AppErrors.INSTANCE.offerNotFound(offerId.toString()).exception()
+            }
             Element newElement = new Element(offerId.toString(), or)
             if (cache != null) {
                 LOGGER.info('name=Offer_Cached. offerId: {}, revisionId: {}',
