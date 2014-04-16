@@ -32,7 +32,7 @@ class AddressValidatorImpl implements AddressValidator {
     }
 
     @Override
-    Promise<Void> validateForGet(AddressId addressId) {
+    Promise<Address> validateForGet(AddressId addressId) {
 
         if (addressId == null) {
             throw AppErrors.INSTANCE.parameterRequired('addressId').exception()
@@ -50,15 +50,16 @@ class AddressValidatorImpl implements AddressValidator {
     @Override
     Promise<Void> validateForCreate(Address address) {
 
-        checkBasicAddressInfo(address)
-        if (address.id != null) {
-            throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
-        }
+        return checkBasicAddressInfo(address).then {
+            if (address.id != null) {
+                throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
+            }
 
-        return Promise.pure(null)
+            return Promise.pure(null)
+        }
     }
 
-    private void checkBasicAddressInfo(Address address) {
+    private Promise<Void> checkBasicAddressInfo(Address address) {
         if (address == null) {
             throw new IllegalArgumentException('address is null')
         }
@@ -83,7 +84,7 @@ class AddressValidatorImpl implements AddressValidator {
             throw AppErrors.INSTANCE.fieldTooShort('country').exception()
         }
 
-        userRepository.get(address.userId).then { User existingUser ->
+        return userRepository.get(address.userId).then { User existingUser ->
             if (existingUser == null) {
                 throw AppErrors.INSTANCE.userNotFound(address.userId).exception()
             }
@@ -91,6 +92,7 @@ class AddressValidatorImpl implements AddressValidator {
             if (existingUser.active == null || existingUser.active == false) {
                 throw AppErrors.INSTANCE.userInInvalidStatus(address.userId).exception()
             }
+            return Promise.pure(null)
         }
     }
 }
