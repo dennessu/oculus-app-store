@@ -12,6 +12,7 @@ class UserSecurityQuestionAttemptFilter  extends ResourceFilterImpl<UserSecurity
     @Override
     protected UserSecurityQuestionVerifyAttempt filter(UserSecurityQuestionVerifyAttempt attempt,
                                                        MappingContext context) {
+        attempt.id.properties.put("userId", attempt.userId.toString())
         return selfMapper.filterUserSecurityQuestionAttempt(attempt, context)
     }
 

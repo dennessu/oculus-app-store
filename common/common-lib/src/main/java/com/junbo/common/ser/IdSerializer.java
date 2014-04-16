@@ -15,11 +15,13 @@ import com.junbo.common.id.Id;
 import com.junbo.common.id.IdResourcePath;
 import com.junbo.common.model.Link;
 import com.junbo.common.util.IdFormatter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.AnnotationUtils;
 
 import java.io.IOException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * Created by minhao on 2/14/14.
@@ -48,10 +50,12 @@ public class IdSerializer extends JsonSerializer<Id> {
     }
 
     protected String getHref(Id value, String path) {
-        return this.formatMessage(SELF_HREF_PREFIX + path, new String[]{IdFormatter.encodeId(value)});
+        String href = this.formatIndexPlaceHolder(SELF_HREF_PREFIX + path, new String[]{IdFormatter.encodeId(value)});
+        href = this.formatPropertyPlaceHolder(href, value.getProperties());
+        return href;
     }
 
-    private String formatMessage(String pattern, Object[] args) {
+    private String formatIndexPlaceHolder(String pattern, Object[] args) {
         if (pattern == null) {
             return null;
         }
@@ -61,6 +65,25 @@ public class IdSerializer extends JsonSerializer<Id> {
             pattern = pattern.replace("{"+index+"}", arg.toString());
             index++;
         }
+        return pattern;
+    }
+
+    private String formatPropertyPlaceHolder(String pattern, Properties properties) {
+        if (pattern == null) {
+            return null;
+        }
+
+        if (properties == null || properties.size() == 0) {
+            return pattern;
+        }
+
+        for (Map.Entry<Object, Object> entry : properties.entrySet()) {
+            String key = (String)entry.getKey();
+            String value = (String)entry.getValue();
+
+            pattern = pattern.replace("{"+key+"}", value);
+        }
+
         return pattern;
     }
 }
