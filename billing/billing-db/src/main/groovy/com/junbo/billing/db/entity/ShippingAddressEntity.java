@@ -7,15 +7,11 @@
 package com.junbo.billing.db.entity;
 
 import com.junbo.billing.db.BaseEntity;
-import com.junbo.billing.db.EntityValidationCode;
-import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 /**
  * Created by xmchen on 14-1-20.
@@ -23,27 +19,61 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name = "shipping_address")
 public class ShippingAddressEntity extends BaseEntity {
-    private Long addressId;
-    private Long userId;
-    private String street;
-    private String street1;
-    private String street2;
-    private String city;
-    private String state;
-    private String postalCode;
-    private String country;
-    private String companyName;
-    private String firstName;
-    private String middleName;
-    private String lastName;
-    private String phoneNumber;
-    private String description;
-    private Boolean deleted = false;
-    private String requestorId;
-    private String onbehalfofRequestorId;
-
     @Id
     @Column(name = "shipping_address_id")
+    private Long addressId;
+
+    @Column(name = "user_id")
+    private Long userId;
+
+    @Column(name = "street")
+    private String street;
+
+    @Column(name = "street1")
+    private String street1;
+
+    @Column(name = "street2")
+    private String street2;
+
+    @Column(name = "city")
+    private String city;
+
+    @Column(name = "state")
+    private String state;
+
+    @Column(name = "postal_code")
+    private String postalCode;
+
+    @Column(name = "country_code")
+    private String country;
+
+    @Column(name = "company_name")
+    private String companyName;
+
+    @Column(name = "first_name")
+    private String firstName;
+
+    @Column(name = "middle_name")
+    private String middleName;
+
+    @Column(name = "last_name")
+    private String lastName;
+
+    @Column(name = "phone_number")
+    private String phoneNumber;
+
+    @Column(name = "description")
+    private String description;
+
+    @Column(name = "deleted")
+    private Boolean deleted = false;
+
+    @Column(name = "requestor_id")
+    private String requestorId;
+
+    @Column(name = "onbehalfof_requestor_id")
+    private String onbehalfofRequestorId;
+
     public Long getAddressId() {
         return addressId;
     }
@@ -51,8 +81,6 @@ public class ShippingAddressEntity extends BaseEntity {
         this.addressId = addressId;
     }
 
-    @Column(name = "user_id")
-    @NotNull(message = EntityValidationCode.MISSING_VALUE)
     public Long getUserId() {
         return userId;
     }
@@ -60,9 +88,6 @@ public class ShippingAddressEntity extends BaseEntity {
         this.userId = userId;
     }
 
-    @Column(name = "street")
-    @NotEmpty(message = EntityValidationCode.MISSING_VALUE)
-    @Length(max = 512, message = EntityValidationCode.TOO_LONG)
     public String getStreet() {
         return street;
     }
@@ -70,8 +95,6 @@ public class ShippingAddressEntity extends BaseEntity {
         this.street = street;
     }
 
-    @Column(name = "street1")
-    @Length(max = 512, message = EntityValidationCode.TOO_LONG)
     public String getStreet1() {
         return street1;
     }
@@ -79,8 +102,6 @@ public class ShippingAddressEntity extends BaseEntity {
         this.street1 = street1;
     }
 
-    @Column(name = "street2")
-    @Length(max = 512, message = EntityValidationCode.TOO_LONG)
     public String getStreet2() {
         return street2;
     }
@@ -88,9 +109,6 @@ public class ShippingAddressEntity extends BaseEntity {
         this.street2 = street2;
     }
 
-    @Column(name = "city")
-    @NotEmpty(message = EntityValidationCode.MISSING_VALUE)
-    @Length(max = 128, message = EntityValidationCode.TOO_LONG)
     public String getCity() {
         return city;
     }
@@ -98,8 +116,6 @@ public class ShippingAddressEntity extends BaseEntity {
         this.city = city;
     }
 
-    @Column(name = "state")
-    @Length(max = 128, message = EntityValidationCode.TOO_LONG)
     public String getState() {
         return state;
     }
@@ -107,9 +123,6 @@ public class ShippingAddressEntity extends BaseEntity {
         this.state = state;
     }
 
-    @Column(name = "postal_code")
-    @NotEmpty(message = EntityValidationCode.MISSING_VALUE)
-    @Length(max = 64, message = EntityValidationCode.TOO_LONG)
     public String getPostalCode() {
         return postalCode;
     }
@@ -117,9 +130,6 @@ public class ShippingAddressEntity extends BaseEntity {
         this.postalCode = postalCode;
     }
 
-    @Column(name = "country_code")
-    @NotEmpty(message = EntityValidationCode.MISSING_VALUE)
-    @Length(max = 2, message = EntityValidationCode.TOO_LONG)
     public String getCountry() {
         return country;
     }
@@ -127,8 +137,6 @@ public class ShippingAddressEntity extends BaseEntity {
         this.country = country;
     }
 
-    @Column(name = "company_name")
-    @Length(max = 256, message = EntityValidationCode.TOO_LONG)
     public String getCompanyName() {
         return companyName;
     }
@@ -136,8 +144,6 @@ public class ShippingAddressEntity extends BaseEntity {
         this.companyName = companyName;
     }
 
-    @Column(name = "first_name")
-    @Length(max = 256, message = EntityValidationCode.TOO_LONG)
     public String getFirstName() {
         return firstName;
     }
@@ -145,8 +151,6 @@ public class ShippingAddressEntity extends BaseEntity {
         this.firstName = firstName;
     }
 
-    @Column(name = "middle_name")
-    @Length(max = 256, message = EntityValidationCode.TOO_LONG)
     public String getMiddleName() {
         return middleName;
     }
@@ -154,8 +158,6 @@ public class ShippingAddressEntity extends BaseEntity {
         this.middleName = middleName;
     }
 
-    @Column(name = "last_name")
-    @Length(max = 256, message = EntityValidationCode.TOO_LONG)
     public String getLastName() {
         return lastName;
     }
@@ -163,8 +165,6 @@ public class ShippingAddressEntity extends BaseEntity {
         this.lastName = lastName;
     }
 
-    @Column(name = "phone_number")
-    @Length(max = 128, message = EntityValidationCode.TOO_LONG)
     public String getPhoneNumber() {
         return phoneNumber;
     }
@@ -172,8 +172,6 @@ public class ShippingAddressEntity extends BaseEntity {
         this.phoneNumber = phoneNumber;
     }
 
-    @Column(name = "description")
-    @Length(max = 256, message = EntityValidationCode.TOO_LONG)
     public String getDescription() {
         return description;
     }
@@ -181,7 +179,6 @@ public class ShippingAddressEntity extends BaseEntity {
         this.description = description;
     }
 
-    @Column(name = "deleted")
     public Boolean getDeleted() {
         return deleted;
     }
@@ -189,9 +186,6 @@ public class ShippingAddressEntity extends BaseEntity {
         this.deleted = deleted;
     }
 
-    @Column(name = "requestor_id")
-    @NotEmpty(message = EntityValidationCode.MISSING_VALUE)
-    @Length(max=64, message= EntityValidationCode.TOO_LONG)
     public String getRequestorId() {
         return requestorId;
     }
@@ -199,8 +193,6 @@ public class ShippingAddressEntity extends BaseEntity {
         this.requestorId = requestorId;
     }
 
-    @Column(name = "onbehalfof_requestor_id")
-    @Length(max=64, message= EntityValidationCode.TOO_LONG)
     public String getOnbehalfofRequestorId() {
         return onbehalfofRequestorId;
     }
