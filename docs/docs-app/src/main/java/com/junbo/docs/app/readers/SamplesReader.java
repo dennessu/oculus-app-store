@@ -36,7 +36,7 @@ import java.util.regex.Pattern;
  * The reader to load samples.
  */
 public class SamplesReader {
-    private Logger logger = LoggerFactory.getLogger(JaxrsApiReader.class);
+    private Logger logger = LoggerFactory.getLogger(SamplesReader.class);
     private DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
     private DocumentBuilder dBuilder = getDocumentBuilder();
     private Map<String, List<Sample>> samples = readJarSamples();
