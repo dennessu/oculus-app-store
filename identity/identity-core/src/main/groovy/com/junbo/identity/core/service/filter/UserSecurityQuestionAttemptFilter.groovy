@@ -1,5 +1,6 @@
 package com.junbo.identity.core.service.filter
 
+import com.junbo.common.id.UserSecurityQuestionVerifyAttemptId
 import com.junbo.identity.spec.v1.model.UserSecurityQuestionVerifyAttempt
 import com.junbo.oom.core.MappingContext
 import groovy.transform.CompileStatic
@@ -12,8 +13,12 @@ class UserSecurityQuestionAttemptFilter  extends ResourceFilterImpl<UserSecurity
     @Override
     protected UserSecurityQuestionVerifyAttempt filter(UserSecurityQuestionVerifyAttempt attempt,
                                                        MappingContext context) {
-        attempt.id.properties.put('userId', attempt.userId.toString())
-        return selfMapper.filterUserSecurityQuestionAttempt(attempt, context)
+
+        UserSecurityQuestionVerifyAttempt result = selfMapper.filterUserSecurityQuestionAttempt(attempt, context)
+        if (attempt.userId != null) {
+            ((UserSecurityQuestionVerifyAttemptId)(result.id)).resourcePathPlaceHolder.put('userId', attempt.userId)
+        }
+        return result
     }
 
     @Override
