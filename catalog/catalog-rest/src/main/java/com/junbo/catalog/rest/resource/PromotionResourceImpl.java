@@ -15,6 +15,7 @@ import com.junbo.common.model.Results;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.ws.rs.core.Response;
 import java.util.List;
 
 /**
@@ -45,5 +46,11 @@ public class PromotionResourceImpl implements PromotionResource{
     @Override
     public Promise<Promotion> update(PromotionId promotionId, Promotion promotion) {
         return Promise.pure(promotionService.updateEntity(promotionId.getValue(), promotion));
+    }
+
+    @Override
+    public Promise<Response> delete(PromotionId promotionId) {
+        promotionService.deleteEntity(promotionId.getValue());
+        return Promise.pure(Response.status(204).build());
     }
 }
