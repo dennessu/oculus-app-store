@@ -6,6 +6,8 @@
 
 package com.junbo.order.core;
 
+import com.junbo.sharding.IdGeneratorFacade;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
@@ -25,6 +27,9 @@ public abstract class BaseTest extends AbstractTransactionalTestNGSpringContextT
      *
      * @param dataSource
      */
+    @Autowired
+    protected IdGeneratorFacade idGenerator;
+
     @Override
     @Qualifier("orderDataSource")
     public void setDataSource(DataSource dataSource) {

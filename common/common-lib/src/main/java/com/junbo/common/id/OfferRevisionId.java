@@ -9,6 +9,7 @@ package com.junbo.common.id;
 /**
  * Offer revision id.
  */
+@IdResourcePath("/offers-revisions/{0}")
 public class OfferRevisionId extends Id {
     public OfferRevisionId(){
 

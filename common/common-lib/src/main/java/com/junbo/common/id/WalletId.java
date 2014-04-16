@@ -9,6 +9,7 @@ package com.junbo.common.id;
 /**
  * Created by liangfu on 3/7/14.
  */
+@IdResourcePath("/wallets/{0}")
 public class WalletId extends Id {
 
     public WalletId() {}

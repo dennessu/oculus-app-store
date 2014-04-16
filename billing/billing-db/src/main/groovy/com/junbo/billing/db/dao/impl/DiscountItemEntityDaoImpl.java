@@ -6,10 +6,11 @@
 
 package com.junbo.billing.db.dao.impl;
 
-import com.junbo.billing.db.BaseDaoImpl;
+import com.junbo.billing.db.BaseDao;
 import com.junbo.billing.db.entity.DiscountItemEntity;
 import com.junbo.billing.db.dao.DiscountItemEntityDao;
 import org.hibernate.Criteria;
+import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 
 import java.util.List;
@@ -18,10 +19,34 @@ import java.util.List;
  * Created by xmchen on 14-1-21.
  */
 @SuppressWarnings("unchecked")
-public class DiscountItemEntityDaoImpl extends BaseDaoImpl<DiscountItemEntity, Long>
-        implements DiscountItemEntityDao {
+public class DiscountItemEntityDaoImpl extends BaseDao implements DiscountItemEntityDao {
+    @Override
+    public DiscountItemEntity get(Long discountItemId) {
+        return (DiscountItemEntity)currentSession(discountItemId).get(DiscountItemEntity.class, discountItemId);
+    }
+
+    @Override
+    public DiscountItemEntity save(DiscountItemEntity discountItem) {
+        discountItem.setDiscountItemId(idGenerator.nextId(discountItem.getBalanceItemId()));
+
+        Session session = currentSession(discountItem.getDiscountItemId());
+        session.save(discountItem);
+        session.flush();
+        return get(discountItem.getDiscountItemId());
+    }
+
+    @Override
+    public DiscountItemEntity update(DiscountItemEntity discountItem) {
+
+        Session session = currentSession(discountItem.getDiscountItemId());
+        session.merge(discountItem);
+        session.flush();
+
+        return get(discountItem.getDiscountItemId());
+    }
+
     public List<DiscountItemEntity> findByBalanceItemId(Long balanceItemId) {
-        Criteria criteria = currentSession().createCriteria(DiscountItemEntity.class).
+        Criteria criteria = currentSession(balanceItemId).createCriteria(DiscountItemEntity.class).
                 add(Restrictions.eq("balanceItemId", balanceItemId));
         return criteria.list();
     }

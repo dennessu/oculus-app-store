@@ -14,6 +14,7 @@ import java.util.Locale;
  * Created by haomin on 14-4-9.
  */
 public class Utils {
+    private Utils() { }
     public static Method tryObtainGetterMethod(Class<?> clazz, final String propertyName) {
         Assert.notNull(propertyName);
         Assert.isTrue(propertyName.length() > 1);

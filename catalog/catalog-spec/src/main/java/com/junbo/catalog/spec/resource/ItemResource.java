@@ -5,7 +5,6 @@
  */
 package com.junbo.catalog.spec.resource;
 
-import com.junbo.catalog.spec.model.common.EntityGetOptions;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.item.ItemsGetOptions;
 import com.junbo.common.id.ItemId;
@@ -36,7 +35,7 @@ public interface ItemResource {
     @ApiOperation("Get an item")
     @GET
     @Path("/{itemId}")
-    Promise<Item> getItem(@PathParam("itemId") ItemId itemId, @BeanParam EntityGetOptions options);
+    Promise<Item> getItem(@PathParam("itemId") ItemId itemId);
 
     @ApiOperation("Create an item")
     @POST

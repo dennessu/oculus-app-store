@@ -31,6 +31,8 @@
         {{/if}}
 
         <div class="panel-list">
+
+            {{#each list}}
             <div class="item">
                 <div class="btns">
                     <ul class="nav navbar-nav navbar-right">
@@ -45,13 +47,14 @@
                     </ul>
                 </div>
 
-                <h4>Tom Slick</h4>
-                <label><span>Street: </span>street</label>
-                <label><span>City: </span>city</label>
-                <label><span>State: </span>state</label>
-                <label><span>Postal Code: </span>postalCode</label>
-                <label><span>Phone Number: </span>phoneNumber</label>
+                <h4>{{firstName}} {{lastName}}</h4>
+                <label><span>Street: </span>{{street}}</label>
+                <label><span>City: </span>{{city}}</label>
+                <label><span>State: </span>{{state}}</label>
+                <label><span>Postal Code: </span>{{postalCode}}</label>
+                <label><span>Phone Number: </span>{{phoneNumber}}</label>
             </div>
+            {{/each}}
         </div>
     </div>
 </div>

@@ -7,5 +7,4 @@ dependencies {
     compile (libraries.freemarker)
     testCompile (libraries.spring_beans)
     testCompile (libraries.spring_context)
-    testCompile (libraries.common_lib)
 }

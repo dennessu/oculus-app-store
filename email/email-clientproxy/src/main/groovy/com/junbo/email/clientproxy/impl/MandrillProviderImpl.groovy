@@ -43,7 +43,7 @@ class MandrillProviderImpl implements EmailProvider {
     private MandrillConfiguration configuration
 
     @Autowired
-    final AsyncHttpClient asyncHttpClient
+    private final AsyncHttpClient asyncHttpClient
 
     MandrillProviderImpl() {
         if (asyncHttpClient == null) {

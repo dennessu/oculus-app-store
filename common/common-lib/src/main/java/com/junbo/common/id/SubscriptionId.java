@@ -9,6 +9,7 @@ package com.junbo.common.id;
 /**
  * Created by liangfuxia on 3/7/14.
  */
+@IdResourcePath("/subscriptions/{0}")
 public class SubscriptionId extends Id {
 
     public SubscriptionId() {}

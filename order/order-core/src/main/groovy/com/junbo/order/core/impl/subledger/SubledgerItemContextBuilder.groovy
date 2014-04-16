@@ -1,8 +1,9 @@
 package com.junbo.order.core.impl.subledger
+
 import com.junbo.common.id.OfferId
 import com.junbo.common.id.UserId
 import com.junbo.order.clientproxy.catalog.CatalogFacade
-import com.junbo.order.clientproxy.model.OrderOffer
+import com.junbo.order.clientproxy.model.OrderOfferRevision
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.SubledgerItem
@@ -20,10 +21,10 @@ class SubledgerItemContextBuilder {
 
     CatalogFacade catalogFacade
 
-    SubledgerItemContext buildContext(OrderOffer offer, String country, String currency, Date createdTime) {
+    SubledgerItemContext buildContext(OrderOfferRevision offer, String country, String currency, Date createdTime) {
         return new SubledgerItemContext(
-            sellerId : new UserId(offer.catalogOffer.ownerId),
-            offerId : new OfferId(offer.catalogOffer.id),
+            sellerId : new UserId(offer.catalogOfferRevision.ownerId),
+            offerId : new OfferId(offer.catalogOfferRevision.offerId),
             currency : currency,
             country : country,
             createdTime : createdTime
@@ -41,7 +42,7 @@ class SubledgerItemContextBuilder {
             throw AppErrors.INSTANCE.orderNotFound().exception()
         }
 
-        def offer = catalogFacade.getOffer(subledgerItem.offerId.value).wrapped().get()
+        def offer = catalogFacade.getOfferRevision(subledgerItem.offerId.value).wrapped().get()
         return buildContext(offer, order.country, order.currency, subledgerItem.createdTime)
     }
 }

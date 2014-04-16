@@ -49,11 +49,18 @@ The following guide is for setting up windows as the development and testing env
         powershell Start-Process cmd.exe -Verb RunAs
         ```
 
-    1. Type the following command.
+    1. Type the following commands if you installed postgresql x86.
 
         ```bat
         net stop postgresql-9.3
         net start postgresql-9.3
+        ```
+
+        Or the following commands if you installed postgresql x64.
+
+        ```bat
+        net stop postgresql-x64-9.3
+        net start postgresql-x64-9.3
         ```
         
 #### Install CouchDB
@@ -262,6 +269,12 @@ Install [PyCharm Community Edition](http://www.jetbrains.com/pycharm/features/ed
 In windows, do the following steps in cygwin terminal. For OS X and Linux, open the terminal and do the following steps. Remember to open a new terminal to make sure edits to `~/.bash_profile` took effect.
 
 1. Setup the ssh key according to the [github guide](https://help.github.com/articles/generating-ssh-keys).
+    If you meet the error "Could not open a connection to your authentication agent", try running the following command and try again.
+
+    ```bash
+    ssh-agent bash --login –i
+    ```
+
 1. After setup the ssh key, enter the following comands to clone the branch.
 
     ```bash

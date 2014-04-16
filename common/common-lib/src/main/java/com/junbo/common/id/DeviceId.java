@@ -8,6 +8,7 @@ package com.junbo.common.id;
 /**
  * Created by liangfu on 4/3/14.
  */
+@IdResourcePath("/devices/{0}")
 public class DeviceId extends Id {
     public DeviceId(){
     }

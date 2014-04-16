@@ -9,6 +9,7 @@ package com.junbo.common.id;
 /**
  * AttributeId.
  */
+@IdResourcePath("/attributes/{0}")
 public class AttributeId extends Id {
 
     public AttributeId() {}

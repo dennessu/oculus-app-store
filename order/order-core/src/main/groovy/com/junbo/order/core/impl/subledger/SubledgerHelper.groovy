@@ -1,6 +1,7 @@
 package com.junbo.order.core.impl.subledger
+
 import com.google.common.math.IntMath
-import com.junbo.order.clientproxy.model.OrderOffer
+import com.junbo.order.clientproxy.model.OrderOfferRevision
 import com.junbo.order.db.entity.enums.PayoutStatus
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.db.repo.SubledgerRepository
@@ -9,6 +10,7 @@ import com.junbo.order.spec.model.SubledgerItem
 import groovy.transform.CompileStatic
 
 import java.math.RoundingMode
+
 /**
  * Created by fzhang on 4/10/2014.
  */
@@ -54,7 +56,7 @@ class SubledgerHelper {
         return getMatchingSubledgerByContext(subledgerItemContextBuilder.buildContext(subledgerItem))
     }
 
-    Subledger getMatchingSubledger(OrderOffer offer, String country, String currency, Date createdTime) {
+    Subledger getMatchingSubledger(OrderOfferRevision offer, String country, String currency, Date createdTime) {
         return getMatchingSubledgerByContext(
                 subledgerItemContextBuilder.buildContext(offer, country, currency, createdTime))
     }

@@ -255,22 +255,6 @@ public class CommonMapper {
         return itemType.toString();
     }
 
-    public Long fromDiscountIdToLong(DiscountId discountId) {
-        if (discountId == null) {
-            return null;
-        }
-
-        return discountId.getValue();
-    }
-
-    public DiscountId fromLongToDiscountId(Long discountId) {
-        if (discountId == null) {
-            return null;
-        }
-
-        return new DiscountId(discountId);
-    }
-
     public FulfillmentEventId fromLongToFulfillmentEventId(Long fulfillmentEventId) {
         if (fulfillmentEventId == null) {
             return null;
@@ -285,38 +269,6 @@ public class CommonMapper {
         }
 
         return fulfillmentEventId.getValue();
-    }
-
-    public SellerId fromLongToSellerId(Long sellerId) {
-        if (sellerId == null) {
-            return null;
-        }
-
-        return new SellerId(sellerId);
-    }
-
-    public Long fromSellerIdToLong(SellerId sellerId) {
-        if (sellerId == null) {
-            return null;
-        }
-
-        return sellerId.getValue();
-    }
-
-    public SellerTaxProfileId fromLongToSellerTaxProfileId(Long sellerTaxProfileId) {
-        if (sellerTaxProfileId == null) {
-            return null;
-        }
-
-        return new SellerTaxProfileId(sellerTaxProfileId);
-    }
-
-    public Long fromSellerTaxProfileIdToLong(SellerTaxProfileId sellerTaxProfileId) {
-        if (sellerTaxProfileId == null) {
-            return null;
-        }
-
-        return sellerTaxProfileId.getValue();
     }
 
     public SubledgerId fromLongToSubledgerId(Long subledgerId) {

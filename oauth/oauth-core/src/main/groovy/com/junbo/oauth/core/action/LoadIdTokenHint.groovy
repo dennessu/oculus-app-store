@@ -43,6 +43,7 @@ class LoadIdTokenHint implements Action {
 
         Assert.notNull(client, 'client is null')
 
+        // todo: duplicate in ValidateNonce?
         String nonce = parameterMap.getFirst(OAuthParameters.NONCE)
 
         if (StringUtils.hasText(nonce)) {
@@ -64,6 +65,7 @@ class LoadIdTokenHint implements Action {
             throw AppExceptions.INSTANCE.invalidIdTokenIssuer().exception()
         }
 
+        // todo: this isn't correct.
         if (!idToken.aud.contains(client.clientId)) {
             throw AppExceptions.INSTANCE.invalidIdTokenAudience(client.clientId).exception()
         }

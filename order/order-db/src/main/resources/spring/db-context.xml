@@ -7,36 +7,105 @@
 
     <context:component-scan base-package="com.junbo.oom.core.builtin"/>
     <context:component-scan base-package="com.junbo.order.db"/>
+    <import resource="classpath*:spring/transaction.xml"/>
+    <import resource="classpath*:spring/sharding-context.xml"/>
 
-    <bean id="orderDataSource" class="bitronix.tm.resource.jdbc.PoolingDataSource"
-          init-method="init" destroy-method="close">
-        <property name="uniqueName" value="jdbc/order_ds1"/>
-        <property name="className" value="org.postgresql.xa.PGXADataSource"/>
-        <property name="minPoolSize" value="${order.db.minConnectionsPerPartition}"/>
-        <property name="maxPoolSize" value="${order.db.maxConnectionsPerPartition}"/>
+    <bean id="orderDataSource" class="com.junbo.sharding.hibernate.ShardMultiTenantConnectionProviderFactoryBean">
+        <property name="jdbcUrls" value="${order.db.jdbcUrls}"/>
+
+        <property name="uniqueName" value="jdbc/order"/>
+        <property name="className" value="${order.db.driverClassName}"/>
+        <property name="minPoolSize" value="${order.db.minPoolSize}"/>
+        <property name="maxPoolSize" value="${order.db.maxPoolSize}"/>
         <property name="driverProperties">
             <props>
-                <prop key="url">${order.db.url}</prop>
                 <prop key="user">${order.db.username}</prop>
                 <prop key="password">${order.db.password}</prop>
             </props>
         </property>
     </bean>
 
+
     <!-- SessonFactory for Hibernate -->
-    <bean id="orderSessionFactory"
-          class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
-        <property name="dataSource" ref="orderDataSource"/>
-        <property name="packagesToScan" value="com.junbo.order.db.entity" />
+    <bean id="orderSessionFactory" class="com.junbo.sharding.hibernate.LocalSessionFactoryWithListenerBean">
         <property name="jtaTransactionManager" ref="transactionManager"/>
         <property name="hibernateProperties">
+            <map>
+                <entry key="hibernate.dialect" value="${sharding.hibernate.dialect}"/>
+                <entry key="hibernate.max_fetch_depth" value="${sharding.hibernate.max_fetch_depth}"/>
+                <entry key="hibernate.jdbc.fetch_size" value="${sharding.hibernate.jdbc.fetch_size}"/>
+                <entry key="hibernate.jdbc.batch_size" value="${sharding.hibernate.jdbc.batch_size}"/>
+                <entry key="hibernate.show_sql" value="${sharding.hibernate.show_sql}"/>
+
+                <entry key="hibernate.multiTenancy" value="SCHEMA"/>
+                <entry key="hibernate.current_session_context_class" value="com.junbo.sharding.hibernate.MultiTenantJTASessionContext"/>
+                <entry key="hibernate.tenant_identifier_resolver" value="com.junbo.sharding.hibernate.ShardCurrentTenantIdentifierResolver"/>
+                <entry key="hibernate.multi_tenant_connection_provider" value-ref="orderDataSource"/>
+                <entry key="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
+            </map>
+        </property>
+        <property name="packagesToScan" value="com.junbo.order.db.entity"/>
+        <property name="postInsertEventListeners" ref="orderEntityListener" />
+        <property name="postUpdateEventListeners" ref="orderEntityListener" />
+        <property name="postDeleteEventListeners" ref="orderEntityListener" />
+    </bean>
+
+    <!-- Index View -->
+    <bean id="orderEntityViewRepository" class="com.junbo.sharding.view.DefaultEntityViewRepository">
+        <property name="entityViews">
+            <list>
+                <bean class="com.junbo.order.db.view.SubledgerItemStatusView" />
+            </list>
+        </property>
+    </bean>
+
+    <bean id="orderMultimapDAO" class="com.junbo.sharding.view.DefaultMultimapDAO">
+        <property name="sessionFactory" ref="orderIndexSessionFactory" />
+        <property name="shardAlgorithm" ref="externalShardAlgorithm" />
+    </bean>
+
+    <bean id="orderEntityListener" class="com.junbo.sharding.view.EntityListener">
+        <property name="entityViewRepository" ref="orderEntityViewRepository" />
+        <property name="multimapDAO" ref="orderMultimapDAO" />
+    </bean>
+
+    <bean id="orderViewQueryFactory" class="com.junbo.sharding.view.DefaultViewQueryFactory">
+        <property name="entityViewRepository" ref="orderEntityViewRepository" />
+        <property name="multimapDAO" ref="orderMultimapDAO" />
+    </bean>
+
+
+    <bean id="orderIndexDataSource" class="com.junbo.sharding.hibernate.ShardMultiTenantConnectionProviderFactoryBean">
+        <property name="jdbcUrls" value="${index.db.jdbcUrls}"/>
+
+        <property name="uniqueName" value="jdbc/index"/>
+        <property name="className" value="${index.db.driverClassName}"/>
+        <property name="minPoolSize" value="${index.db.minPoolSize}"/>
+        <property name="maxPoolSize" value="${index.db.maxPoolSize}"/>
+        <property name="driverProperties">
             <props>
-                <prop key="hibernate.dialect">${order.hibernate.dialect}</prop>
-                <prop key="hibernate.max_fetch_depth">${order.hibernate.max_fetch_depth}</prop>
-                <prop key="hibernate.jdbc.fetch_size">${order.hibernate.jdbc.fetch_size}</prop>
-                <prop key="hibernate.jdbc.batch_size">${order.hibernate.jdbc.batch_size}</prop>
-                <prop key="hibernate.show_sql">${order.hibernate.show_sql}</prop>
+                <prop key="user">${index.db.username}</prop>
+                <prop key="password">${index.db.password}</prop>
             </props>
+        </property>
+    </bean>
+
+    <bean id="orderIndexSessionFactory" class="com.junbo.sharding.hibernate.LocalSessionFactoryWithListenerBean">
+        <property name="jtaTransactionManager" ref="transactionManager"/>
+        <property name="hibernateProperties">
+            <map>
+                <entry key="hibernate.dialect" value="${sharding.hibernate.dialect}"/>
+                <entry key="hibernate.max_fetch_depth" value="${sharding.hibernate.max_fetch_depth}"/>
+                <entry key="hibernate.jdbc.fetch_size" value="${sharding.hibernate.jdbc.fetch_size}"/>
+                <entry key="hibernate.jdbc.batch_size" value="${sharding.hibernate.jdbc.batch_size}"/>
+                <entry key="hibernate.show_sql" value="${sharding.hibernate.show_sql}"/>
+
+                <entry key="hibernate.multiTenancy" value="SCHEMA"/>
+                <entry key="hibernate.current_session_context_class" value="com.junbo.sharding.hibernate.MultiTenantJTASessionContext"/>
+                <entry key="hibernate.tenant_identifier_resolver" value="com.junbo.sharding.hibernate.ShardCurrentTenantIdentifierResolver"/>
+                <entry key="hibernate.multi_tenant_connection_provider" value-ref="orderIndexDataSource"/>
+                <entry key="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
+            </map>
         </property>
     </bean>
 </beans>

@@ -30,5 +30,7 @@ dependencies {
     compile ('com.junbo.authorization:authorization-lib:0.0.1-SNAPSHOT')
     compile ('com.junbo.identity:identity-spec:0.0.1-SNAPSHOT')
 
+    testCompile (libraries.spring_test)
+
     processor (libraries.langur_processor)
 }

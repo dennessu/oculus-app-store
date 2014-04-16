@@ -23,7 +23,6 @@ public class SubledgerItemPayinEventDaoTest extends BaseTest {
     public void testCreateAndRead() {
         SubledgerItemPayinEventEntity subledgerItemPayinEventEntity = generateSubledgerItemPayinEventEntity();
         Long id = subledgerItemPayinEventDao.create(subledgerItemPayinEventEntity);
-        subledgerItemPayinEventDao.flush();
         SubledgerItemPayinEventEntity returnedEntity = subledgerItemPayinEventDao.read(id);
 
         Assert.assertNotNull(returnedEntity, "Fail to create or read entity.");
@@ -35,10 +34,8 @@ public class SubledgerItemPayinEventDaoTest extends BaseTest {
     public void testUpdate() {
         SubledgerItemPayinEventEntity subledgerItemPayinEventEntity = generateSubledgerItemPayinEventEntity();
         Long id = subledgerItemPayinEventDao.create(subledgerItemPayinEventEntity);
-        subledgerItemPayinEventDao.flush();
         //subledgerItemPayinEventEntity.setAction(OrderAction.CHARGE);
         subledgerItemPayinEventDao.update(subledgerItemPayinEventEntity);
-        subledgerItemPayinEventDao.flush();
         SubledgerItemPayinEventEntity returnedEntity = subledgerItemPayinEventDao.read(id);
 
         Assert.assertNotNull(returnedEntity, "Fail to create or read entity.");

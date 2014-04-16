@@ -9,6 +9,7 @@ package com.junbo.common.id;
 /**
  * string type token set id.
  */
+@IdResourcePath("/token-sets/{0}")
 public class TokenSetId extends Id {
     public TokenSetId(){
 

@@ -49,7 +49,7 @@ public class EWalletProviderServiceImpl extends AbstractPaymentProviderService {
     @Override
     public Promise<PaymentInstrument> add(final PaymentInstrument request) {
         Wallet wallet = new Wallet();
-        wallet.setUserId(request.getId().getUserId());
+        wallet.setUserId(request.getUserId());
         wallet.setCurrency(request.getWalletRequest().getCurrency());
         wallet.setType(request.getWalletRequest().getType());
         return walletClient.postWallet(wallet).recover(new Promise.Func<Throwable, Promise<Wallet>>() {

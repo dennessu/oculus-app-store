@@ -147,9 +147,6 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 404, code = "2000037", description = "User Pii {0} not found.", field = "{0}")
     AppError userPiiNotFound(UserPiiId userPiiId);
 
-    @ErrorDef(httpStatusCode = 409, code = "2000038", description = "SQL update error: {0}.")
-    AppError sqlOperationError(String message);
-
-    @ErrorDef(httpStatusCode = 500, code = "5000000", description = "Internal server error: {0}.")
-    AppError internalServerError(String message);
+    @ErrorDef(httpStatusCode = 409, code = "2000038", description = "Address {0} not found.", field = "{0}")
+    AppError addressNotFound(AddressId addressId);
 }

@@ -5,13 +5,10 @@
  */
 package com.junbo.email.db.repo;
 
-import com.junbo.common.id.EmailId;
 import com.junbo.email.db.dao.EmailTemplateDao;
 import com.junbo.email.db.entity.EmailTemplateEntity;
-import com.junbo.email.db.mapper.EmailMapper;
 import com.junbo.email.spec.model.EmailTemplate;
 import com.junbo.email.spec.model.Paging;
-import com.junbo.sharding.IdGeneratorFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,19 +22,13 @@ import java.util.Map;
  */
 @Component
 @Transactional
-public class EmailTemplateRepository {
+public class EmailTemplateRepository extends EmailBaseRepository {
     @Autowired
     private EmailTemplateDao emailTemplateDao;
 
-    @Autowired
-    private EmailMapper emailMapper;
-
-    @Autowired
-    private IdGeneratorFacade idGenerator;
-
     public Long saveEmailTemplate(EmailTemplate template){
         EmailTemplateEntity entity = emailMapper.toEmailTemplateEntity(template);
-        entity.setId(idGenerator.nextId(EmailId.class));
+        entity.setId(idGenerator.nextIdByShardId(0));
         entity.setCreatedBy("internal system");
         entity.setCreatedTime(new Date());
 

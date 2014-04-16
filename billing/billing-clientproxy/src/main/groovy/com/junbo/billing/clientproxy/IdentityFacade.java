@@ -6,7 +6,7 @@
 
 package com.junbo.billing.clientproxy;
 
-import com.junbo.identity.spec.model.user.User;
+import com.junbo.identity.spec.v1.model.User;
 import com.junbo.langur.core.promise.Promise;
 
 /**

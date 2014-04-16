@@ -40,6 +40,6 @@
     </bean>
 
     <bean id="billingFacade" class="com.junbo.billing.jobs.BillingFacadeImpl">
-        <property name="url" value="${billing.client.billing.url}"/>
+        <property name="url" value="${clientproxy.billing.url}"/>
     </bean>
 </beans>

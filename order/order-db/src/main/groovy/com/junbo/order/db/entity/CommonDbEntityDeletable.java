@@ -12,7 +12,7 @@ import javax.persistence.MappedSuperclass;
  * Created by fzhang on 14-3-11.
  */
 @MappedSuperclass
-public class CommonDbEntityDeletable extends CommonDbEntityWithDate {
+public abstract class CommonDbEntityDeletable extends CommonDbEntityWithDate {
 
     private boolean deleted;
 
