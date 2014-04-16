@@ -24,7 +24,7 @@ public class DBHelper {
     }
 
     /**
-     * Enum for password Strength.
+     * Enum for database name.
      *
      * @author Yunlongzhao
      */

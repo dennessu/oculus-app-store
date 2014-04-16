@@ -59,7 +59,7 @@ public class PaymentServiceImpl extends HttpClientBase implements PaymentService
                 }, responseBody);
 
         paymentInstrumentId = IdConverter.idLongToHexString(
-                PaymentInstrumentId.class, paymentInstrumentResult.getId().getPaymentInstrumentId());
+                PaymentInstrumentId.class, paymentInstrumentResult.getId().longValue());
         Master.getInstance().addPaymentInstrument(paymentInstrumentId, paymentInstrumentResult);
 
         return paymentInstrumentId;
@@ -84,7 +84,7 @@ public class PaymentServiceImpl extends HttpClientBase implements PaymentService
 
         for (PaymentInstrument paymentInstrumentResult : paymentInstrumentResults.getItems()) {
             String paymentInstrumentId = IdConverter.idLongToHexString(
-                    PaymentInstrumentId.class, paymentInstrumentResult.getId().getPaymentInstrumentId());
+                    PaymentInstrumentId.class, paymentInstrumentResult.getId().longValue());
             paymentInstrumentList.add(paymentInstrumentId);
             Master.getInstance().addPaymentInstrument(paymentInstrumentId, paymentInstrumentResult);
         }
@@ -103,7 +103,7 @@ public class PaymentServiceImpl extends HttpClientBase implements PaymentService
                 }, responseBody);
 
         String paymentInstrumentId = IdConverter.idLongToHexString(
-                PaymentInstrumentId.class, paymentInstrumentResult.getId().getPaymentInstrumentId());
+                PaymentInstrumentId.class, paymentInstrumentResult.getId().longValue());
         Master.getInstance().addPaymentInstrument(paymentInstrumentId, paymentInstrumentResult);
 
         return paymentInstrumentId;
@@ -127,7 +127,7 @@ public class PaymentServiceImpl extends HttpClientBase implements PaymentService
                 }, responseBody);
 
         String paymentInstrumentId = IdConverter.idLongToHexString(
-                PaymentInstrumentId.class, paymentInstrumentResult.getId().getPaymentInstrumentId());
+                PaymentInstrumentId.class, paymentInstrumentResult.getId().longValue());
         Master.getInstance().addPaymentInstrument(paymentInstrumentId, paymentInstrumentResult);
 
         return paymentInstrumentId;
