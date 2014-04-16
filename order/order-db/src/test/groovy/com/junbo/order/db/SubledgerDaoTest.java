@@ -6,6 +6,7 @@
 
 package com.junbo.order.db;
 
+import com.junbo.common.id.SubledgerId;
 import com.junbo.order.db.common.TestHelper;
 import com.junbo.order.db.dao.SubledgerDao;
 import com.junbo.order.db.entity.SubledgerEntity;
@@ -25,31 +26,35 @@ public class SubledgerDaoTest extends BaseTest {
 
     @Test
     public void testCreateAndRead() {
-        SubledgerEntity orderPaymentInfoEntity = TestHelper.generateSubledgerEntity();
-        Long id = subledgerDao.create(orderPaymentInfoEntity);
+        SubledgerEntity entity = TestHelper.generateSubledgerEntity();
+        entity.setSubledgerId(idGenerator.nextId(SubledgerId.class));
+        Long id = subledgerDao.create(entity);
         SubledgerEntity returnedEntity = subledgerDao.read(id);
 
         Assert.assertNotNull(returnedEntity, "Fail to create or read entity.");
-        Assert.assertEquals(returnedEntity.getSubledgerId(), orderPaymentInfoEntity.getSubledgerId(),
+        Assert.assertEquals(returnedEntity.getSubledgerId(), entity.getSubledgerId(),
                 "The subledger Id should not be different.");
     }
 
     @Test
     public void testUpdate() {
-        SubledgerEntity orderPaymentInfoEntity = TestHelper.generateSubledgerEntity();
-        Long id = subledgerDao.create(orderPaymentInfoEntity);
-        orderPaymentInfoEntity.setUpdatedBy("ANOTHER");
-        subledgerDao.update(orderPaymentInfoEntity);
+        SubledgerEntity entity = TestHelper.generateSubledgerEntity();
+        entity.setSubledgerId(idGenerator.nextId(SubledgerId.class));
+        Long id = subledgerDao.create(entity);
+        entity.setUpdatedBy("ANOTHER");
+        subledgerDao.update(entity);
         SubledgerEntity returnedEntity = subledgerDao.read(id);
 
         Assert.assertNotNull(returnedEntity, "Fail to create or read entity.");
-        Assert.assertEquals(returnedEntity.getUpdatedBy(), orderPaymentInfoEntity.getUpdatedBy(),
+        Assert.assertEquals(returnedEntity.getUpdatedBy(), entity.getUpdatedBy(),
                 "The updatedBy should not be different.");
     }
 
     @Test
     public void testGetBySellorId() {
         SubledgerEntity entity = TestHelper.generateSubledgerEntity();
+        entity.setSubledgerId(idGenerator.nextId(SubledgerId.class));
+        entity.setSellerId(entity.getSubledgerId());
         entity.setPayoutStatus(PayoutStatus.PENDING);
         subledgerDao.create(entity);
 
@@ -78,6 +83,8 @@ public class SubledgerDaoTest extends BaseTest {
     @Test
     public void testFind() {
         SubledgerEntity entity = TestHelper.generateSubledgerEntity();
+        entity.setSubledgerId(idGenerator.nextId(SubledgerId.class));
+        entity.setSellerId(entity.getSubledgerId());
         entity.setPayoutStatus(PayoutStatus.PENDING);
         subledgerDao.create(entity);
 

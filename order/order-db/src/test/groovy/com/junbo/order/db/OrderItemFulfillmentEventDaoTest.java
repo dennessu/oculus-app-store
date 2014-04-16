@@ -6,6 +6,8 @@
 
 package com.junbo.order.db;
 
+import com.junbo.common.id.FulfillmentEventId;
+import com.junbo.common.id.OrderEventId;
 import com.junbo.order.db.common.TestHelper;
 import com.junbo.order.db.dao.OrderItemFulfillmentEventDao;
 import com.junbo.order.db.entity.OrderItemFulfillmentEventEntity;
@@ -25,27 +27,27 @@ public class OrderItemFulfillmentEventDaoTest extends BaseTest {
 
     @Test
     public void testCreateAndRead() {
-        OrderItemFulfillmentEventEntity orderItemFulfillmentEventEntity =
-                TestHelper.generateOrderItemFulfillmentEventEntity();
-        Long id = orderItemFulfillmentEventDao.create(orderItemFulfillmentEventEntity);
+        OrderItemFulfillmentEventEntity entity = TestHelper.generateOrderItemFulfillmentEventEntity();
+        entity.setEventId(idGenerator.nextId(OrderEventId.class));
+        Long id = orderItemFulfillmentEventDao.create(entity);
         OrderItemFulfillmentEventEntity returnedEntity = orderItemFulfillmentEventDao.read(id);
 
         Assert.assertNotNull(returnedEntity, "Fail to create or read entity.");
-        Assert.assertEquals(returnedEntity.getEventId(), orderItemFulfillmentEventEntity.getEventId(),
+        Assert.assertEquals(returnedEntity.getEventId(), entity.getEventId(),
                 "The event Id should not be different.");
     }
 
     @Test
     public void testUpdate() {
-        OrderItemFulfillmentEventEntity orderItemFulfillmentEventEntity =
-                TestHelper.generateOrderItemFulfillmentEventEntity();
-        Long id = orderItemFulfillmentEventDao.create(orderItemFulfillmentEventEntity);
-        orderItemFulfillmentEventEntity.setAction(FulfillmentAction.FULFILL);
-        orderItemFulfillmentEventDao.update(orderItemFulfillmentEventEntity);
+        OrderItemFulfillmentEventEntity entity = TestHelper.generateOrderItemFulfillmentEventEntity();
+        entity.setEventId(idGenerator.nextId(OrderEventId.class));
+        Long id = orderItemFulfillmentEventDao.create(entity);
+        entity.setAction(FulfillmentAction.FULFILL);
+        orderItemFulfillmentEventDao.update(entity);
         OrderItemFulfillmentEventEntity returnedEntity = orderItemFulfillmentEventDao.read(id);
 
         Assert.assertNotNull(returnedEntity, "Fail to create or read entity.");
-        Assert.assertEquals(returnedEntity.getAction(), orderItemFulfillmentEventEntity.getAction(),
+        Assert.assertEquals(returnedEntity.getAction(), entity.getAction(),
                 "The action Id should not be different.");
     }
 }

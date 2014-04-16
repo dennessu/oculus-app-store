@@ -6,8 +6,10 @@
 
 package com.junbo.order.db;
 
+import com.junbo.common.id.OrderEventId;
 import com.junbo.order.db.dao.SubledgerEventDao;
 import com.junbo.order.db.entity.SubledgerEventEntity;
+import com.junbo.order.spec.model.OrderEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -21,25 +23,27 @@ public class SubledgerEventDaoTest extends BaseTest {
 
     @Test(enabled = false)
     public void testCreateAndRead() {
-        SubledgerEventEntity subledgerEventEntity = generateSubledgerEventEntity();
-        Long id = subledgerEventDao.create(subledgerEventEntity);
+        SubledgerEventEntity entity = generateSubledgerEventEntity();
+        entity.setEventId(idGenerator.nextId(OrderEventId.class));
+        Long id = subledgerEventDao.create(entity);
         SubledgerEventEntity returnedEntity = subledgerEventDao.read(id);
 
         Assert.assertNotNull(returnedEntity, "Fail to create or read entity.");
-        Assert.assertEquals(returnedEntity.getEventId(), subledgerEventEntity.getEventId(),
+        Assert.assertEquals(returnedEntity.getEventId(), entity.getEventId(),
                 "The event Id should not be different.");
     }
 
     @Test(enabled = false)
     public void testUpdate() {
-        SubledgerEventEntity subledgerEventEntity = generateSubledgerEventEntity();
-        Long id = subledgerEventDao.create(subledgerEventEntity);
-        //subledgerEventEntity.setAction(OrderAction.CHARGE);
-        subledgerEventDao.update(subledgerEventEntity);
+        SubledgerEventEntity entity = generateSubledgerEventEntity();
+        entity.setEventId(idGenerator.nextId(OrderEventId.class));
+        Long id = subledgerEventDao.create(entity);
+        //entity.setAction(OrderAction.CHARGE);
+        subledgerEventDao.update(entity);
         SubledgerEventEntity returnedEntity = subledgerEventDao.read(id);
 
         Assert.assertNotNull(returnedEntity, "Fail to create or read entity.");
-        Assert.assertEquals(returnedEntity.getEventId(), subledgerEventEntity.getEventId(),
+        Assert.assertEquals(returnedEntity.getEventId(), entity.getEventId(),
                 "The action Id should not be different.");
     }
 

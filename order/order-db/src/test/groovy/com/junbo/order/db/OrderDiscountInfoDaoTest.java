@@ -6,6 +6,8 @@
 
 package com.junbo.order.db;
 
+import com.junbo.common.id.OrderId;
+import com.junbo.common.id.OrderItemId;
 import com.junbo.order.db.common.TestHelper;
 import com.junbo.order.db.dao.OrderDiscountInfoDao;
 import com.junbo.order.db.entity.OrderDiscountInfoEntity;
@@ -51,7 +53,9 @@ public class OrderDiscountInfoDaoTest extends BaseTest {
     @Test
     public void testReadByOrderId() {
         OrderDiscountInfoEntity entity = TestHelper.generateOrderDiscountInfoEntity();
-        Long orderId = entity.getOrderId();
+        Long orderId = idGenerator.nextId(OrderId.class);
+        entity.setOrderId(orderId);
+        entity.setDiscountInfoId(idGenerator.nextId(OrderItemId.class, orderId));
         List<OrderDiscountInfoEntity> resultBefore = orderDiscountInfoDao.readByOrderId(orderId);
         orderDiscountInfoDao.create(entity);
         List<OrderDiscountInfoEntity> resultAfter = orderDiscountInfoDao.readByOrderId(orderId);
@@ -62,7 +66,9 @@ public class OrderDiscountInfoDaoTest extends BaseTest {
     @Test
     public void testMarkDelete() {
         OrderDiscountInfoEntity entity = TestHelper.generateOrderDiscountInfoEntity();
-        Long orderId = entity.getOrderId();
+        Long orderId = idGenerator.nextId(OrderId.class);
+        entity.setOrderId(orderId);
+        entity.setDiscountInfoId(idGenerator.nextId(OrderItemId.class, orderId));
         List<OrderDiscountInfoEntity> resultBefore = orderDiscountInfoDao.readByOrderId(orderId);
         orderDiscountInfoDao.create(entity);
         List<OrderDiscountInfoEntity> resultAfter = orderDiscountInfoDao.readByOrderId(orderId);

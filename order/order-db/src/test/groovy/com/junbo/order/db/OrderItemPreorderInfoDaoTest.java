@@ -6,6 +6,7 @@
 
 package com.junbo.order.db;
 
+import com.junbo.common.id.PreorderId;
 import com.junbo.order.db.common.TestHelper;
 import com.junbo.order.db.dao.OrderItemPreorderInfoDao;
 import com.junbo.order.db.entity.OrderItemPreorderInfoEntity;
@@ -22,28 +23,28 @@ public class OrderItemPreorderInfoDaoTest extends BaseTest {
 
     @Test
     public void testCreateAndRead() {
-        OrderItemPreorderInfoEntity orderItemPreorderInfoEntity =
-                TestHelper.generateOrderItemPreorderInfoEntity();
-        Long id = orderItemPreorderInfoDao.create(orderItemPreorderInfoEntity);
+        OrderItemPreorderInfoEntity entity = TestHelper.generateOrderItemPreorderInfoEntity();
+        entity.setOrderItemPreorderInfoId(idGenerator.nextId(PreorderId.class));
+        Long id = orderItemPreorderInfoDao.create(entity);
         OrderItemPreorderInfoEntity returnedEntity = orderItemPreorderInfoDao.read(id);
 
         Assert.assertNotNull(returnedEntity, "Fail to create or read entity.");
         Assert.assertEquals(returnedEntity.getOrderItemPreorderInfoId(),
-                orderItemPreorderInfoEntity.getOrderItemPreorderInfoId(),
+                entity.getOrderItemPreorderInfoId(),
                 "The preorder info Id should not be different.");
     }
 
     @Test
     public void testUpdate() {
-        OrderItemPreorderInfoEntity orderItemPreorderInfoEntity =
-                TestHelper.generateOrderItemPreorderInfoEntity();
-        Long id = orderItemPreorderInfoDao.create(orderItemPreorderInfoEntity);
-        orderItemPreorderInfoEntity.setUpdatedBy("ANOTHER");
-        orderItemPreorderInfoDao.update(orderItemPreorderInfoEntity);
+        OrderItemPreorderInfoEntity entity = TestHelper.generateOrderItemPreorderInfoEntity();
+        entity.setOrderItemPreorderInfoId(idGenerator.nextId(PreorderId.class));
+        Long id = orderItemPreorderInfoDao.create(entity);
+        entity.setUpdatedBy("ANOTHER");
+        orderItemPreorderInfoDao.update(entity);
         OrderItemPreorderInfoEntity returnedEntity = orderItemPreorderInfoDao.read(id);
 
         Assert.assertNotNull(returnedEntity, "Fail to create or read entity.");
-        Assert.assertEquals(returnedEntity.getUpdatedBy(), orderItemPreorderInfoEntity.getUpdatedBy(),
+        Assert.assertEquals(returnedEntity.getUpdatedBy(), entity.getUpdatedBy(),
                 "The updatedBy should not be different.");
     }
 }

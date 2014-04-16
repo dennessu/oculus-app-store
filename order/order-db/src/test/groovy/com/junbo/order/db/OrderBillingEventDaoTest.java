@@ -6,6 +6,8 @@
 
 package com.junbo.order.db;
 
+import com.junbo.common.id.OrderEventId;
+import com.junbo.order.db.common.TestHelper;
 import com.junbo.order.db.dao.OrderBillingEventDao;
 import com.junbo.order.db.entity.OrderBillingEventEntity;
 import com.junbo.order.db.entity.enums.BillingAction;
@@ -25,7 +27,8 @@ public class OrderBillingEventDaoTest extends BaseTest {
 
     @Test
     public void testCreateAndRead() {
-        OrderBillingEventEntity orderBillingEventEntity = generateOrderBillingEventEntity();
+        OrderBillingEventEntity orderBillingEventEntity = TestHelper.generateOrderBillingEventEntity();
+        orderBillingEventEntity.setOrderId(idGenerator.nextId(OrderEventId.class));
         Long id = orderBillingEventDao.create(orderBillingEventEntity);
         OrderBillingEventEntity returnedEntity = orderBillingEventDao.read(id);
 
@@ -36,7 +39,8 @@ public class OrderBillingEventDaoTest extends BaseTest {
 
     @Test
     public void testUpdate() {
-        OrderBillingEventEntity orderBillingEventEntity = generateOrderBillingEventEntity();
+        OrderBillingEventEntity orderBillingEventEntity = TestHelper.generateOrderBillingEventEntity();
+        orderBillingEventEntity.setOrderId(idGenerator.nextId(OrderEventId.class));
         Long id = orderBillingEventDao.create(orderBillingEventEntity);
         orderBillingEventEntity.setAction(BillingAction.CHARGE);
         orderBillingEventDao.update(orderBillingEventEntity);
@@ -45,16 +49,5 @@ public class OrderBillingEventDaoTest extends BaseTest {
         Assert.assertNotNull(returnedEntity, "Fail to create or read entity.");
         Assert.assertEquals(returnedEntity.getAction(), orderBillingEventEntity.getAction(),
                 "The action Id should not be different.");
-    }
-
-    private OrderBillingEventEntity generateOrderBillingEventEntity() {
-        OrderBillingEventEntity entity = new OrderBillingEventEntity();
-        Random rand = new Random();
-        entity.setEventId(generateId());
-        entity.setAction(BillingAction.CHARGE);
-        entity.setStatus(EventStatus.COMPLETED);
-        entity.setOrderId(generateLong());
-        entity.setBalanceId("TEST_BALANCE_ID");
-        return entity;
     }
 }
