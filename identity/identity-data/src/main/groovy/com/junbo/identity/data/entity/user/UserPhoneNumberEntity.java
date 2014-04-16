@@ -5,8 +5,6 @@
  */
 package com.junbo.identity.data.entity.user;
 
-import com.junbo.identity.data.entity.common.ResourceMetaEntity;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -17,7 +15,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "user_phone_number")
-public class UserPhoneNumberEntity extends ResourceMetaEntity {
+public class UserPhoneNumberEntity {
     public Long getId() {
         return id;
     }
