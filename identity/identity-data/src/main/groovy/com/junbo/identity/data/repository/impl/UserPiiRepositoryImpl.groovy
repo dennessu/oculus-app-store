@@ -1,9 +1,12 @@
 package com.junbo.identity.data.repository.impl
 
+import com.junbo.common.id.AddressId
 import com.junbo.common.id.UserPiiId
+import com.junbo.identity.data.dao.UserAddressDAO
 import com.junbo.identity.data.dao.UserEmailDAO
 import com.junbo.identity.data.dao.UserPhoneNumberDAO
 import com.junbo.identity.data.dao.UserPiiDAO
+import com.junbo.identity.data.entity.user.UserAddressEntity
 import com.junbo.identity.data.entity.user.UserEmailEntity
 import com.junbo.identity.data.entity.user.UserPhoneNumberEntity
 import com.junbo.identity.data.entity.user.UserPiiEntity
@@ -39,6 +42,9 @@ class UserPiiRepositoryImpl implements UserPiiRepository {
     @Autowired
     private UserEmailDAO userEmailDAO
 
+    @Autowired
+    private UserAddressDAO userAddressDAO
+
     @Override
     Promise<UserPii> create(UserPii userPii) {
         UserPiiEntity entity = modelMapper.toUserPii(userPii, new MappingContext())
@@ -72,6 +78,16 @@ class UserPiiRepositoryImpl implements UserPiiRepository {
                             modelMapper.toUserPhoneNumber(userPhoneNumber, new MappingContext())
                     userPhoneNumberDAO.save(userPhoneNumberEntity)
                 }
+            }
+        }
+
+        if (userPii.addressBook != null) {
+            userPii.addressBook.each { AddressId addressId ->
+                UserAddressEntity userAddressEntity = new UserAddressEntity()
+                userAddressEntity.addressId = addressId.value
+                userAddressEntity.userPiiId = (Long)entity.id
+
+                userAddressDAO.save(userAddressEntity)
             }
         }
 
@@ -121,6 +137,16 @@ class UserPiiRepositoryImpl implements UserPiiRepository {
             }
         }
 
+        List<UserAddressEntity> userAddressEntities = userAddressDAO.search(userPiiId.value)
+        if (!CollectionUtils.isEmpty(userAddressEntities)) {
+            userPii.addressBook = new ArrayList<>()
+            userAddressEntities.each { UserAddressEntity userAddressEntity ->
+                if (userAddressEntity != null) {
+                    userPii.addressBook.add(new AddressId(userAddressEntity.id))
+                }
+            }
+        }
+
         return Promise.pure(userPii)
     }
 
@@ -142,6 +168,13 @@ class UserPiiRepositoryImpl implements UserPiiRepository {
         if (!CollectionUtils.isEmpty(userPhoneNumberEntities)) {
             userPhoneNumberEntities.each { UserPhoneNumberEntity userPhoneNumberEntity ->
                 userPhoneNumberDAO.delete((Long)userPhoneNumberEntity.id)
+            }
+        }
+
+        List<UserAddressEntity> userAddressEntities = userAddressDAO.search(userPiiId.value)
+        if (!CollectionUtils.isEmpty(userAddressEntities)) {
+            userAddressEntities.each { UserAddressEntity userAddressEntity ->
+                userAddressDAO.delete((Long)userAddressEntity.id)
             }
         }
 

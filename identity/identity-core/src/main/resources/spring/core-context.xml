@@ -645,6 +645,7 @@
                 <value>displayName</value>
                 <value>emails</value>
                 <value>phoneNumbers</value>
+                <value>addressBook</value>
                 <value>resourceAge</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
@@ -661,6 +662,7 @@
                 <value>displayName</value>
                 <value>emails</value>
                 <value>phoneNumbers</value>
+                <value>addressBook</value>
             </list>
         </property>
 
@@ -675,6 +677,7 @@
                 <value>displayName</value>
                 <value>emails</value>
                 <value>phoneNumbers</value>
+                <value>addressBook</value>
                 <value>resourceAge</value>
             </list>
         </property>
