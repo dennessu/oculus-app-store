@@ -29,7 +29,6 @@ import javax.ws.rs.core.MediaType;
 public interface UserPiiResource {
     @ApiOperation("Create user's pii information")
     @POST
-    @Path("/")
     Promise<UserPii> create(UserPii userPii);
 
     @ApiOperation("Get user's pii information")
@@ -57,6 +56,5 @@ public interface UserPiiResource {
 
     @ApiOperation("Se")
     @GET
-    @Path("/")
     Promise<Results<UserPii>> list(@BeanParam UserPiiListOptions listOptions);
 }
