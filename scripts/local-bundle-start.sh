@@ -3,12 +3,8 @@ source "$(git rev-parse --show-toplevel)/scripts/common.sh"; # this comment is n
 
 bundleName=$1
 
-if [[ -z $ONEBOX_IP ]]; then 
-    echo ERROR: ONEBOX_IP environment variable not set.
-    exit 1
-fi
-if [[ -z $ONEBOX_USER ]]; then
-    echo ERROR: ONEBOX_USER environment variable not set.
+if [[ -z $bundleName ]]; then
+    echo ERROR: bundleName not specified
     exit 1
 fi
 
