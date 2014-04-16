@@ -26,7 +26,10 @@ import com.junbo.ewallet.spec.model.Wallet;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * repo of wallet.
@@ -98,7 +101,6 @@ public class WalletRepository {
 
     private void debit(final WalletEntity wallet,
                        final List<WalletLotEntity> lots, BigDecimal sum, Long transactionId) {
-        BigDecimal availableAmount = BigDecimal.ZERO;
         Collections.sort(lots, new Comparator<WalletLotEntity>() {
             @Override
             public int compare(WalletLotEntity o1, WalletLotEntity o2) {
@@ -108,7 +110,6 @@ public class WalletRepository {
         for (int i = 0; i < lots.size(); i++) {
             WalletLotEntity lot = lots.get(i);
             BigDecimal remaining = lot.getRemainingAmount();
-            availableAmount = availableAmount.add(remaining);
             if (sum.compareTo(remaining) <= 0) {
                 lot.setRemainingAmount(remaining.subtract(sum));
                 walletLotDao.update(lot);
@@ -124,11 +125,10 @@ public class WalletRepository {
         }
 
         if (sum.compareTo(BigDecimal.ZERO) > 0) {
-            final BigDecimal remainingAmount = availableAmount;
             transactionSupport.executeInNewTransaction(new Callback() {
                 @Override
                 public void apply() {
-                    wallet.setBalance(remainingAmount);
+                    wallet.setBalance(walletLotDao.getValidAmount(wallet.getId()));
                     walletDao.update(wallet);
                 }
             });
@@ -148,7 +148,7 @@ public class WalletRepository {
     private WalletLotEntity buildWalletLot(Long walletId, CreditRequest creditRequest) {
         WalletLotEntity lotEntity = new WalletLotEntity();
         lotEntity.setWalletId(walletId);
-        lotEntity.setType(WalletLotType.valueOf(creditRequest.getType()));
+        lotEntity.setType(WalletLotType.valueOf(creditRequest.getCreditType()));
         lotEntity.setTotalAmount(creditRequest.getAmount());
         lotEntity.setRemainingAmount(creditRequest.getAmount());
         lotEntity.setExpirationDate(creditRequest.getExpirationDate());
@@ -181,8 +181,6 @@ public class WalletRepository {
         lotTransaction.setWalletId(lotEntity.getWalletId());
         lotTransaction.setWalletLotId(lotEntity.getId());
         lotTransaction.setAmount(amount);
-        lotTransaction.setCreatedBy("DEFAULT");  //TODO
-        lotTransaction.setCreatedTime(new Date());
         return lotTransaction;
     }
 
@@ -193,8 +191,6 @@ public class WalletRepository {
         lotTransaction.setWalletId(lotEntity.getWalletId());
         lotTransaction.setWalletLotId(lotEntity.getId());
         lotTransaction.setAmount(lotEntity.getRemainingAmount());
-        lotTransaction.setCreatedBy("DEFAULT");  //TODO
-        lotTransaction.setCreatedTime(new Date());
         return lotTransaction;
     }
 }
