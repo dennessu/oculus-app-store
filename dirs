@@ -3,10 +3,10 @@ langur
 common
 oom
 identity/identity-spec
-#oauth/oauth-spec
-#authorization
+oauth/oauth-spec
+authorization
 identity
-#oauth
+oauth
 catalog
 entitlement
 rating
