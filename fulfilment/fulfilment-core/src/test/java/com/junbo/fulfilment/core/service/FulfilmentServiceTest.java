@@ -53,7 +53,7 @@ public class FulfilmentServiceTest extends BaseTest {
         FulfilmentRequest request = new FulfilmentRequest();
         request.setRequester("SYSTEM");
         request.setTrackingGuid(generateUUID().toString());
-        request.setUserId(generateLong());
+        request.setUserId(generatedUserId());
         request.setOrderId(generateLong());
 
         request.setItems(new ArrayList() {{

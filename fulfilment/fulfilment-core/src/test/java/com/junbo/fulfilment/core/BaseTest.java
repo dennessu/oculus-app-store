@@ -19,6 +19,10 @@ public abstract class BaseTest extends AbstractTransactionalTestNGSpringContextT
         super.setDataSource(dataSource);
     }
 
+    protected long generatedUserId() {
+        return 1493188608L;
+    }
+
     protected long generateLong() {
         return System.currentTimeMillis();
     }
