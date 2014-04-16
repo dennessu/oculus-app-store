@@ -46,7 +46,7 @@ public class OrderPaymentInfoDaoTest extends BaseTest {
                 "The updatedBy should not be different.");
     }
 
-    @Test
+    @Test(enabled = false)
     public void testReadByOrderId() {
         OrderPaymentInfoEntity orderPaymentInfoEntity = generateOrderPaymentInfoEntity();
         Long orderId = orderPaymentInfoEntity.getOrderId();
@@ -57,7 +57,7 @@ public class OrderPaymentInfoDaoTest extends BaseTest {
         Assert.assertEquals(resultAfter.size(), resultBefore.size() + 1, "Result size should increase.");
     }
 
-    @Test
+    @Test(enabled = false)
     public void testMarkDelete() {
         OrderPaymentInfoEntity orderPaymentInfoEntity = generateOrderPaymentInfoEntity();
         Long paymentInfoId = orderPaymentInfoEntity.getOrderPaymentId();

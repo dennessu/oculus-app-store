@@ -22,28 +22,26 @@ public class OrderItemPreorderUpdateHistoryDaoTest extends BaseTest {
 
     @Test
     public void testCreateAndRead() {
-        OrderItemPreorderUpdateHistoryEntity orderItemPreorderUpdateHistoryEntity =
-                TestHelper.generateOrderItemPreorderUpdateHistoryEntity();
-        Long id = orderItemPreorderUpdateHistoryDao.create(orderItemPreorderUpdateHistoryEntity);
+        OrderItemPreorderUpdateHistoryEntity entity = TestHelper.generateOrderItemPreorderUpdateHistoryEntity();
+        Long id = orderItemPreorderUpdateHistoryDao.create(entity);
         OrderItemPreorderUpdateHistoryEntity returnedEntity = orderItemPreorderUpdateHistoryDao.read(id);
 
         Assert.assertNotNull(returnedEntity, "Fail to create or read entity.");
         Assert.assertEquals(returnedEntity.getOrderItemPreorderUpdateHistoryId(),
-                orderItemPreorderUpdateHistoryEntity.getOrderItemPreorderUpdateHistoryId(),
+                entity.getOrderItemPreorderUpdateHistoryId(),
                 "The update history Id should not be different.");
     }
 
     @Test
     public void testUpdate() {
-        OrderItemPreorderUpdateHistoryEntity orderItemPreorderUpdateHistoryEntity =
-                TestHelper.generateOrderItemPreorderUpdateHistoryEntity();
-        Long id = orderItemPreorderUpdateHistoryDao.create(orderItemPreorderUpdateHistoryEntity);
-        orderItemPreorderUpdateHistoryEntity.setUpdatedBy("ANOTHER");
-        orderItemPreorderUpdateHistoryDao.update(orderItemPreorderUpdateHistoryEntity);
+        OrderItemPreorderUpdateHistoryEntity entity = TestHelper.generateOrderItemPreorderUpdateHistoryEntity();
+        Long id = orderItemPreorderUpdateHistoryDao.create(entity);
+        entity.setUpdatedBy("ANOTHER");
+        orderItemPreorderUpdateHistoryDao.update(entity);
         OrderItemPreorderUpdateHistoryEntity returnedEntity = orderItemPreorderUpdateHistoryDao.read(id);
 
         Assert.assertNotNull(returnedEntity, "Fail to create or read entity.");
-        Assert.assertEquals(returnedEntity.getUpdatedBy(), orderItemPreorderUpdateHistoryEntity.getUpdatedBy(),
+        Assert.assertEquals(returnedEntity.getUpdatedBy(), entity.getUpdatedBy(),
                 "The updatedBy should not be different.");
     }
 }

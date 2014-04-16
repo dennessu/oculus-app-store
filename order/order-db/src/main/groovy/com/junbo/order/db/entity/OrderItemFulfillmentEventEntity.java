@@ -100,6 +100,6 @@ public class OrderItemFulfillmentEventEntity extends CommonEventEntity{
     @Override
     @Transient
     public Long getShardId() {
-        return orderItemId;
+        return getEventId();
     }
 }

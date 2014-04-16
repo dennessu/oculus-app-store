@@ -6,6 +6,7 @@
 
 package com.junbo.order.db;
 
+import com.junbo.common.id.OrderEventId;
 import com.junbo.order.db.dao.OrderItemPreorderEventDao;
 import com.junbo.order.db.entity.OrderItemPreorderEventEntity;
 import com.junbo.order.db.entity.enums.EventStatus;
@@ -25,25 +26,27 @@ public class OrderItemPreorderEventDaoTest extends BaseTest {
 
     @Test
     public void testCreateAndRead() {
-        OrderItemPreorderEventEntity orderItemPreorderEventEntity = generateOrderItemPreorderEventEntity();
-        Long id = orderItemPreorderEventDao.create(orderItemPreorderEventEntity);
+        OrderItemPreorderEventEntity entity = generateOrderItemPreorderEventEntity();
+        entity.setEventId(idGenerator.nextId(OrderEventId.class));
+        Long id = orderItemPreorderEventDao.create(entity);
         OrderItemPreorderEventEntity returnedEntity = orderItemPreorderEventDao.read(id);
 
         Assert.assertNotNull(returnedEntity, "Fail to create or read entity.");
-        Assert.assertEquals(returnedEntity.getEventId(), orderItemPreorderEventEntity.getEventId(),
+        Assert.assertEquals(returnedEntity.getEventId(), entity.getEventId(),
                 "The event Id should not be different.");
     }
 
     @Test
     public void testUpdate() {
-        OrderItemPreorderEventEntity orderItemPreorderEventEntity = generateOrderItemPreorderEventEntity();
-        Long id = orderItemPreorderEventDao.create(orderItemPreorderEventEntity);
-        orderItemPreorderEventEntity.setAction(PreorderAction.CHARGE);
-        orderItemPreorderEventDao.update(orderItemPreorderEventEntity);
+        OrderItemPreorderEventEntity entity = generateOrderItemPreorderEventEntity();
+        entity.setEventId(idGenerator.nextId(OrderEventId.class));
+        Long id = orderItemPreorderEventDao.create(entity);
+        entity.setAction(PreorderAction.CHARGE);
+        orderItemPreorderEventDao.update(entity);
         OrderItemPreorderEventEntity returnedEntity = orderItemPreorderEventDao.read(id);
 
         Assert.assertNotNull(returnedEntity, "Fail to create or read entity.");
-        Assert.assertEquals(returnedEntity.getAction(), orderItemPreorderEventEntity.getAction(),
+        Assert.assertEquals(returnedEntity.getAction(), entity.getAction(),
                 "The action Id should not be different.");
     }
 
