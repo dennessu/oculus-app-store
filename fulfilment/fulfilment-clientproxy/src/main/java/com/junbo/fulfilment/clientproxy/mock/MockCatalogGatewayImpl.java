@@ -70,7 +70,7 @@ public class MockCatalogGatewayImpl extends CatalogGatewayImpl {
         }});
 
         offer.setEvents(new HashMap<String, Event>() {{
-            put(Constant.EVENT_PURCHASE.toUpperCase(), new Event() {{
+            put(Constant.EVENT_PURCHASE.toLowerCase(), new Event() {{
                 setName(Constant.EVENT_PURCHASE);
                 setActions(new ArrayList<Action>() {{
                     add(new Action() {{
