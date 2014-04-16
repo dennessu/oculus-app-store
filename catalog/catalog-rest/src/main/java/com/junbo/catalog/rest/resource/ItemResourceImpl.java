@@ -20,6 +20,7 @@ import com.junbo.common.model.Results;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.ws.rs.core.Response;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -82,5 +83,11 @@ public class ItemResourceImpl implements ItemResource {
     @Override
     public Promise<Item> create(Item item) {
         return Promise.pure(itemService.createEntity(item));
+    }
+
+    @Override
+    public Promise<Response> delete(ItemId itemId) {
+        itemService.deleteEntity(itemId.getValue());
+        return Promise.pure(Response.status(204).build());
     }
 }
