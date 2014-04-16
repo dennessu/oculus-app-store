@@ -74,7 +74,6 @@ public class MockCatalogGatewayImpl extends CatalogGatewayImpl {
             add(new ItemEntry() {{
                 setItemId(456L);
                 setQuantity(1);
-                setSku(null);
             }});
         }});
 
