@@ -8,6 +8,7 @@ package com.junbo.common.id;
 /**
  * RoleId.
  */
+@IdResourcePath("/roles/{0}")
 public class RoleId extends Id {
     public RoleId() {
 

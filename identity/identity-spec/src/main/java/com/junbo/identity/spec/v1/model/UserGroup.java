@@ -11,18 +11,22 @@ import com.junbo.common.id.UserGroupId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.util.Identifiable;
 import com.junbo.identity.spec.model.users.ResourceMeta;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
  * Created by liangfu on 4/3/14.
  */
 public class UserGroup extends ResourceMeta implements Identifiable<UserGroupId> {
 
+    @ApiModelProperty(position = 1, required = true, value = "The id of the user group membership resource.")
     @JsonProperty("self")
     private UserGroupId id;
 
+    @ApiModelProperty(position = 2, required = true, value = "The user resource.")
     @JsonProperty("user")
     private UserId userId;
 
+    @ApiModelProperty(position = 3, required = true, value = "The group resource.")
     @JsonProperty("group")
     private GroupId groupId;
 

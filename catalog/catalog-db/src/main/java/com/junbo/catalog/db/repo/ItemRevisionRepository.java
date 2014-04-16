@@ -16,7 +16,6 @@ import com.junbo.common.id.ItemId;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -44,7 +43,7 @@ public class ItemRevisionRepository implements BaseRevisionRepository<ItemRevisi
         return revisions;
     }
 
-    public List<ItemRevision> getRevisions(List<ItemId> itemIds, Date timestamp) {
+    public List<ItemRevision> getRevisions(List<ItemId> itemIds, Long timestamp) {
         List<ItemRevisionEntity> revisionEntities = new ArrayList<>();
         for (ItemId itemId : itemIds) {
             ItemRevisionEntity revisionEntity = itemRevisionDao.getRevision(itemId.getValue(), timestamp);

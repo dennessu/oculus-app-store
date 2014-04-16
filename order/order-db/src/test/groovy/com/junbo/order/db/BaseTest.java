@@ -6,10 +6,15 @@
 
 package com.junbo.order.db;
 
+import com.junbo.sharding.IdGeneratorFacade;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
 import java.util.UUID;
@@ -19,7 +24,11 @@ import java.util.UUID;
  */
 @ContextConfiguration(locations = {"classpath:spring/context-test.xml"})
 @TransactionConfiguration(defaultRollback = true)
-public abstract class BaseTest extends AbstractTransactionalTestNGSpringContextTests {
+@TestExecutionListeners(TransactionalTestExecutionListener.class)
+@Transactional("transactionManager")
+public abstract class BaseTest extends AbstractTestNGSpringContextTests {
+    @Autowired
+    protected IdGeneratorFacade idGenerator;
     /**
      * <p>Simple entity id generator.</p>
      *
@@ -42,17 +51,5 @@ public abstract class BaseTest extends AbstractTransactionalTestNGSpringContextT
 
     protected long generateLong() {
         return System.currentTimeMillis();
-    }
-
-    /**
-     * Set the {@code DataSource}, typically provided via Dependency Injection.
-     * <p>This method also instantiates the {@link #jdbcTemplate} instance variable.
-     *
-     * @param dataSource
-     */
-    @Override
-    @Qualifier("orderDataSource")
-    public void setDataSource(DataSource dataSource) {
-        super.setDataSource(dataSource);
     }
 }

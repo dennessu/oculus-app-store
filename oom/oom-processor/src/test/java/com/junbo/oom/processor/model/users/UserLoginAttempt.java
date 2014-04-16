@@ -5,16 +5,16 @@
  */
 package com.junbo.oom.processor.model.users;
 
+import com.junbo.common.id.UserCredentialVerifyAttemptId;
 import com.junbo.common.id.UserId;
-import com.junbo.common.id.UserLoginAttemptId;
 import com.junbo.common.util.Identifiable;
 
 /**
  * Created by kg on 3/10/14.
  */
-public class UserLoginAttempt extends ResourceMeta implements Identifiable<UserLoginAttemptId> {
+public class UserLoginAttempt extends ResourceMeta implements Identifiable<UserCredentialVerifyAttemptId> {
 
-    private UserLoginAttemptId id;
+    private UserCredentialVerifyAttemptId id;
 
     // password or pin
     private String type;
@@ -33,11 +33,11 @@ public class UserLoginAttempt extends ResourceMeta implements Identifiable<UserL
 
     private UserId userId;
 
-    public UserLoginAttemptId getId() {
+    public UserCredentialVerifyAttemptId getId() {
         return id;
     }
 
-    public void setId(UserLoginAttemptId id) {
+    public void setId(UserCredentialVerifyAttemptId id) {
         this.id = id;
     }
 

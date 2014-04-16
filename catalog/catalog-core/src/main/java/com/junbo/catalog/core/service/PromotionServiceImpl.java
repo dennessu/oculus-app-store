@@ -6,13 +6,19 @@
 
 package com.junbo.catalog.core.service;
 
+import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.core.PromotionService;
 import com.junbo.catalog.db.repo.PromotionRepository;
 import com.junbo.catalog.db.repo.PromotionRevisionRepository;
 import com.junbo.catalog.spec.error.AppErrors;
+import com.junbo.catalog.spec.model.common.Status;
 import com.junbo.catalog.spec.model.promotion.Promotion;
 import com.junbo.catalog.spec.model.promotion.PromotionRevision;
+import com.junbo.catalog.spec.model.promotion.PromotionRevisionsGetOptions;
+import com.junbo.catalog.spec.model.promotion.PromotionsGetOptions;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 /**
  * Promotion service implementation.
@@ -52,7 +58,34 @@ public class PromotionServiceImpl extends BaseRevisionedServiceImpl<Promotion, P
         validateId(revisionId, revision.getRevisionId());
         validateRevision(revision);
 
-        return super.updateRevision(revisionId, revision);
+        PromotionRevision existingRevision = promotionRevisionRepo.get(revisionId);
+        if (Status.APPROVED.equals(existingRevision.getStatus())) {
+            throw AppErrors.INSTANCE.validation("Cannot update a revision after it's approved.").exception();
+        }
+        checkEntityNotNull(revisionId, existingRevision, "promotion-revision");
+
+        if (Status.APPROVED.equals(revision.getStatus())) {
+            Promotion existingPromotion = promotionRepo.get(revision.getEntityId());
+            checkEntityNotNull(revision.getEntityId(), existingPromotion, getEntityType());
+            existingPromotion.setCurated(Boolean.TRUE);
+            existingPromotion.setCurrentRevisionId(revisionId);
+            existingPromotion.setStartDate(revision.getStartDate());
+            existingPromotion.setEndDate(revision.getEndDate());
+            getEntityRepo().update(existingPromotion);
+            revision.setTimestamp(Utils.currentTimestamp());
+        }
+        promotionRevisionRepo.update(revision);
+        return promotionRevisionRepo.get(revisionId);
+    }
+
+    @Override
+    public List<Promotion> getEffectivePromotions(PromotionsGetOptions options) {
+        return promotionRepo.getEffectivePromotions(options);
+    }
+
+    @Override
+    public List<PromotionRevision> getRevisions(PromotionRevisionsGetOptions options) {
+        return promotionRevisionRepo.getRevisions(options);
     }
 
     @Override

@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component
 class MockRatingResource extends BaseMock implements RatingResource {
 
     @Override
-    Promise<OrderRatingRequest> orderRating(OrderRatingRequest request) {
+    Promise<RatingRequest> priceRating(RatingRequest request) {
         request.orderBenefit = new OrderBenefit()
         BigDecimal ten = BigDecimal.valueOf(10.00D)
         BigDecimal fifty = BigDecimal.valueOf(50.00D)
@@ -26,7 +26,7 @@ class MockRatingResource extends BaseMock implements RatingResource {
         request.orderBenefit.promotion = generateLong()
         request.shippingBenefit = new ShippingBenefit()
         request.shippingBenefit.shippingFee = ten
-        request.lineItems?.each { OrderRatingItem item ->
+        request.lineItems?.each { RatingItem item ->
             item.finalTotalAmount = fifty
             item.totalDiscountAmount = ten
             item.originalUnitPrice = sixty

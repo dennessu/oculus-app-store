@@ -11,5 +11,5 @@ import com.junbo.entitlement.spec.model.Entitlement;
  * Created by Administrator on 14-3-27.
  */
 public interface EntitlementGateway {
-    String grant(Entitlement entitlement);
+    Long grantEntitlement(Entitlement entitlement);
 }

@@ -452,8 +452,7 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService{
         if(request.getPaymentInstrumentId() == null){
             throw AppClientExceptions.INSTANCE.missingPaymentInstrumentId().exception();
         }
-        PaymentInstrument pi = paymentInstrumentService.getById(null,
-                request.getPaymentInstrumentId().getPaymentInstrumentId());
+        PaymentInstrument pi = paymentInstrumentService.getById(request.getPaymentInstrumentId());
         if(pi == null){
             throw AppClientExceptions.INSTANCE.invalidPaymentInstrumentId(
                     request.getPaymentInstrumentId().toString()).exception();

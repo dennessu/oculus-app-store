@@ -9,6 +9,9 @@ package com.junbo.order.db.dao.impl;
 import com.junbo.order.db.dao.BaseDao;
 import com.junbo.order.db.entity.CommonDbEntityDeletable;
 import com.junbo.order.db.entity.CommonDbEntityWithDate;
+import com.junbo.sharding.ShardAlgorithm;
+import com.junbo.sharding.hibernate.ShardScope;
+import com.junbo.sharding.view.ViewQueryFactory;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +33,14 @@ public class BaseDaoImpl<T extends CommonDbEntityWithDate> implements BaseDao<T>
     @Qualifier("orderSessionFactory")
     private SessionFactory sessionFactory;
 
+    @Autowired
+    @Qualifier("userShardAlgorithm")
+    private ShardAlgorithm shardAlgorithm;
+
+    @Autowired
+    @Qualifier("orderViewQueryFactory")
+    protected ViewQueryFactory viewQueryFactory;
+
     private Class<T> entityType;
 
     BaseDaoImpl() {
@@ -42,8 +53,13 @@ public class BaseDaoImpl<T extends CommonDbEntityWithDate> implements BaseDao<T>
         }
     }
 
-    protected Session getSession() {
-        return sessionFactory.getCurrentSession();
+    protected Session getSession(Object key) {
+        ShardScope shardScope = new ShardScope(shardAlgorithm.shardId(key));
+        try {
+            return sessionFactory.getCurrentSession();
+        } finally {
+            shardScope.close();
+        }
     }
 
     public Long create(T t) {
@@ -57,25 +73,26 @@ public class BaseDaoImpl<T extends CommonDbEntityWithDate> implements BaseDao<T>
         if(t instanceof CommonDbEntityDeletable) {
             ((CommonDbEntityDeletable) t).setDeleted(false);
         }
-        return (Long) this.getSession().save(t);
+        Session session = this.getSession(t.getShardId());
+        Long id = (Long) session.save(t);
+        session.flush();
+        return id;
     }
 
-    public T read(long id) {
-        return (T) this.getSession().get(entityType, id);
+    public T read(Long id) {
+        return (T) this.getSession(id).get(entityType, id);
     }
 
     public void update(T t) {
         t.setUpdatedBy("dev");
         Date now = new Date();
         t.setUpdatedTime(now);
-        this.getSession().merge(t);
+        Session session = this.getSession(t.getShardId());
+        session.merge(t);
+        session.flush();
     }
 
-    public void flush() {
-        this.getSession().flush();
-    }
-
-    public void markDelete(long id) {
+    public void markDelete(Long id) {
         if (!CommonDbEntityDeletable.class.isAssignableFrom(entityType)) {
             throw new UnsupportedOperationException(
                     String.format("name=MarkDelete_Not_Supported, type=%s", entityType.getCanonicalName()));
@@ -84,13 +101,5 @@ public class BaseDaoImpl<T extends CommonDbEntityWithDate> implements BaseDao<T>
         if(entity != null && !entity.isDeleted()) {
             entity.setDeleted(true);
         }
-    }
-
-    public Class<T> getEntityType() {
-        return entityType;
-    }
-
-    public void setEntityType(Class<T> entityType) {
-        this.entityType = entityType;
     }
 }

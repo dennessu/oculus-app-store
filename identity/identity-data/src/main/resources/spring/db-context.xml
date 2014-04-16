@@ -43,6 +43,8 @@
     <bean id="roleDAO" class="com.junbo.identity.data.dao.impl.RoleDAOImpl" parent="identityBaseDAO"/>
     <bean id="roleAssignmentDAO" class="com.junbo.identity.data.dao.impl.RoleAssignmentDAOImpl" parent="identityBaseDAO"/>
     <bean id="userPiiDAO" class="com.junbo.identity.data.dao.impl.UserPiiDAOImpl" parent="identityBaseDAO" />
+    <bean id="addressDAO" class="com.junbo.identity.data.dao.impl.AddressDAOImpl" parent="identityBaseDAO" />
+    <bean id="userAddressDAO" class="com.junbo.identity.data.dao.impl.UserAddressDAOImpl" parent="identityBaseDAO" />
 
     <bean id="groupRepository" class="com.junbo.identity.data.repository.impl.GroupRepositoryImpl" />
     <bean id="userAuthenticatorRepository" class="com.junbo.identity.data.repository.impl.UserAuthenticatorRepositoryImpl" />
@@ -66,6 +68,7 @@
         <property name="roleAssignmentDAO" ref="roleAssignmentDAO"/>
     </bean>
     <bean id="userPiiRepository" class="com.junbo.identity.data.repository.impl.UserPiiRepositoryImpl" />
+    <bean id="addressRepository" class="com.junbo.identity.data.repository.impl.AddressRepositoryImpl" />
     
     <bean id="defaultEntityViewRepository" class="com.junbo.sharding.view.DefaultEntityViewRepository">
         <property name="entityViews">

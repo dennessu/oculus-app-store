@@ -6,7 +6,6 @@
 
 package com.junbo.payment.rest.jackson;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
@@ -28,7 +27,7 @@ public class MapperConfigurator implements ContextResolver<ObjectMapper> {
                 new ResourceAwareDeserializationContext());
         mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
 
-        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        //mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 

@@ -8,6 +8,8 @@ package com.junbo.order.db.dao.impl;
 
 import com.junbo.order.db.dao.BaseEventDao;
 import com.junbo.order.db.entity.CommonEventEntity;
+import com.junbo.sharding.ShardAlgorithm;
+import com.junbo.sharding.hibernate.ShardScope;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,10 @@ public class BaseEventDaoImpl<T extends CommonEventEntity> implements BaseEventD
     @Qualifier("orderSessionFactory")
     private SessionFactory sessionFactory;
 
+    @Autowired
+    @Qualifier("userShardAlgorithm")
+    private ShardAlgorithm shardAlgorithm;
+
     private Class<T> entityType;
 
     BaseEventDaoImpl() {
@@ -40,24 +46,30 @@ public class BaseEventDaoImpl<T extends CommonEventEntity> implements BaseEventD
         }
     }
 
-    protected Session getSession() {
-        return sessionFactory.getCurrentSession();
+    protected Session getSession(Object key) {
+        ShardScope shardScope = new ShardScope(shardAlgorithm.shardId(key));
+        try {
+            return sessionFactory.getCurrentSession();
+        } finally {
+            shardScope.close();
+        }
     }
 
     public Long create(T t) {
-        return (Long) this.getSession().save(t);
+        Session session = this.getSession(t.getShardId());
+        Long id = (Long) session.save(t);
+        session.flush();
+        return id;
     }
 
     public T read(long id) {
-        return (T) this.getSession().get(entityType, id);
+        return (T) this.getSession(id).get(entityType, id);
     }
 
     public void update(T t) {
-        this.getSession().update(t);
-    }
-
-    public void flush() {
-        this.getSession().flush();
+        Session session = this.getSession(t.getShardId());
+        session.merge(t);
+        session.flush();
     }
 
     public Class<T> getEntityType() {

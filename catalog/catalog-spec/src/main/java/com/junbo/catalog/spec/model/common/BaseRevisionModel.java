@@ -10,7 +10,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
 import javax.validation.constraints.NotNull;
-import java.util.Date;
 
 /**
  * Base entity revision model.
@@ -19,7 +18,8 @@ public abstract class BaseRevisionModel extends BaseModel {
     //(Design, PendingReview, Rejected) => (Released, Deleted)
     private String status;
 
-    private Date timestamp;
+    @JsonIgnore
+    private Long timestamp;
 
     @NotNull
     private LocalizableProperty name;
@@ -33,11 +33,11 @@ public abstract class BaseRevisionModel extends BaseModel {
         return status;
     }
 
-    public Date getTimestamp() {
+    public Long getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Date timestamp) {
+    public void setTimestamp(Long timestamp) {
         this.timestamp = timestamp;
     }
 

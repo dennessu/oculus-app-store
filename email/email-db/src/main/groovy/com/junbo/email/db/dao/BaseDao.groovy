@@ -20,5 +20,5 @@ interface BaseDao<T extends BaseEntity> {
 
     void delete(T entity)
     
-    void flush()
+    void flush(Long id)
 }

@@ -7,7 +7,6 @@ package com.junbo.order.spec.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.OfferId;
-import com.junbo.common.id.SellerTaxProfileId;
 import com.junbo.common.id.SubledgerId;
 import com.junbo.common.id.UserId;
 
@@ -21,7 +20,6 @@ public class Subledger extends BaseModelWithDate {
     @JsonProperty("self")
     private SubledgerId subledgerId;
     private UserId sellerId;
-    private SellerTaxProfileId sellerTaxProfileId;
     private OfferId offerId;
     private String payoutStatus;
     private Date startTime;
@@ -45,14 +43,6 @@ public class Subledger extends BaseModelWithDate {
 
     public void setSellerId(UserId sellerId) {
         this.sellerId = sellerId;
-    }
-
-    public SellerTaxProfileId getSellerTaxProfileId() {
-        return sellerTaxProfileId;
-    }
-
-    public void setSellerTaxProfileId(SellerTaxProfileId sellerTaxProfileId) {
-        this.sellerTaxProfileId = sellerTaxProfileId;
     }
 
     public OfferId getOfferId() {

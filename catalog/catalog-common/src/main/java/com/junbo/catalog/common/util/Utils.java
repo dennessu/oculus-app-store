@@ -26,6 +26,14 @@ public class Utils {
         return System.currentTimeMillis();
     }
 
+    public static Date maxDate() {
+        return new Date(253373469595309L);
+    }
+
+    public static Date minDate() {
+        return new Date(0);
+    }
+
     public static String toJson(Object input) {
         return JSON.toJSONString(input);
     }

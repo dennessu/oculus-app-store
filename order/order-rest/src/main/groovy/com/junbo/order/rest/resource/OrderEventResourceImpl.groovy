@@ -1,5 +1,6 @@
 package com.junbo.order.rest.resource
 
+import com.junbo.common.id.OrderEventId
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.common.id.OrderId
 import com.junbo.common.model.Results
@@ -22,6 +23,7 @@ import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 
 import javax.annotation.Resource
+import javax.ws.rs.PathParam
 import javax.ws.rs.container.ContainerRequestContext
 import javax.ws.rs.core.Context
 import javax.ws.rs.core.HttpHeaders
@@ -70,5 +72,10 @@ class OrderEventResourceImpl implements OrderEventResource {
 
         LOGGER.error('name=Event_Not_Support. action: {}, status:{}', orderEvent.action, orderEvent.status)
         throw AppErrors.INSTANCE.eventNotSupported(orderEvent.action, orderEvent.status).exception()
+    }
+
+    @Override
+    Promise<OrderEvent> getOrderEvent(@PathParam('orderEventId') OrderEventId orderEventId) {
+        return null
     }
 }

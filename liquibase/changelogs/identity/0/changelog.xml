@@ -32,8 +32,8 @@
 				password_strength smallint not null,
 				
 				active boolean not null,
-				change_at_next_login boolean not null,
-				expires_by timestamp not null,
+				change_at_next_login boolean,
+				expires_by timestamp,
 				
 				version bigint not null,
 				created_by varchar(32) not null,
@@ -52,8 +52,8 @@
 				pin_pepper text not null,
 				
 				active boolean not null,
-				change_at_next_login boolean not null,
-				expires_by timestamp not null,
+				change_at_next_login boolean,
+				expires_by timestamp,
 				
 				version bigint not null,
 				created_by varchar(32) not null,
@@ -96,18 +96,12 @@
 			
 			create table user_email (
               id bigint not null,
-			  version bigint not null,
               user_pii_id bigint not null,
 			  
 			  value varchar(255) not null,
 			  type varchar(255) not null,
 			  is_verified boolean not null,
               
-              created_by varchar(32) not null,
-              created_time timestamp not null,
-			  modified_by varchar(32),
-			  modified_time timestamp,
-
               primary key (id)
             );
 			
@@ -175,18 +169,11 @@
 			
 			create table user_phone_number (
               id bigint not null,
-              
-			  version bigint not null,
+             
 			  user_pii_id bigint not null,
-
 		      type varchar(255) not null,
               value varchar(255) not null,
 			  is_verified boolean not null,
-
-              created_by varchar(32) not null,
-              created_time timestamp not null,
-              modified_by varchar(32),
-              modified_time timestamp,
 
               primary key (id)
             );
@@ -198,13 +185,13 @@
 
 			  user_name varchar(255) not null,
 			  canonical_username varchar(255) not null,
-			  nick_name varchar(255) not null,
-			  preferred_language varchar(255) not null,
-			  locale varchar(255) not null,
-			  time_zone varchar(255) not null,
+			  nick_name varchar(255),
+			  preferred_language varchar(255),
+			  locale varchar(255),
+			  time_zone varchar(255),
 			  is_active boolean not null,
 			  type varchar(255) not null,
-			  currency varchar(10) not null,
+			  currency varchar(10),
 			  
               created_by varchar(32) not null,
               created_time timestamp not null,
@@ -220,10 +207,10 @@
 			  user_id bigint not null,
 
 		      first_name varchar(255) not null,
-			  middle_name varchar(255) not null,
+			  middle_name varchar(255),
 			  last_name varchar(255) not null,
-			  honorific_prefix varchar(255) not null,
-			  honorific_suffix varchar(255) not null,
+			  honorific_prefix varchar(255),
+			  honorific_suffix varchar(255),
 
               primary key (id)
             );
@@ -345,7 +332,7 @@
 				
 				user_id bigint not null,
 				display_name_type integer not null,
-				gender varchar(32) not null,
+				gender varchar(32),
 				birthday timestamp,
 				
 				version bigint not null,
@@ -356,6 +343,38 @@
 				
 				primary key (id)
 			);
+
+			create table address (
+				id bigint not null,
+				
+				user_id bigint not null,
+				street VARCHAR(512),
+				street1 VARCHAR(512),
+				street2 VARCHAR(512),
+				city VARCHAR(128),
+				state VARCHAR(128),
+				postal_code VARCHAR(64),
+				country_code CHAR(2) not null,
+				first_name VARCHAR(256),
+				last_name VARCHAR(256),
+				phone_number VARCHAR(128),
+				
+				version bigint not null,
+				created_time timestamp,
+				created_by varchar(255),
+				modified_time timestamp,
+				modified_by varchar(255),
+				
+				primary key (id)
+			);
+			
+			create table user_address (
+				id bigint not null,
+				user_pii_id bigint not null,
+				address_id bigint not null,
+				
+				primary key (id)
+			)
         ]]></sql>
     </changeSet>
 

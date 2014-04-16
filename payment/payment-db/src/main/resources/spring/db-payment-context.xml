@@ -7,6 +7,7 @@
 
     <import resource="classpath*:spring/common-context.xml"/>
     <import resource="classpath*:spring/sharding-context.xml"/>
+    <import resource="classpath*:spring/transaction.xml"/>
 
     <context:component-scan base-package="com.junbo.oom.core.builtin"/>
     <context:component-scan base-package="com.junbo.payment.db"/>
@@ -14,15 +15,14 @@
     <tx:annotation-driven />
 
     <!--Data source has the database information -->
-    <bean id="paymentDataSource" class="bitronix.tm.resource.jdbc.PoolingDataSource"
-          init-method="init" destroy-method="close">
+    <bean id="paymentDataSource" class="com.junbo.sharding.hibernate.ShardMultiTenantConnectionProviderFactoryBean">
+        <property name="jdbcUrls" value="${payment.db.jdbcUrls}"/>
         <property name="uniqueName" value="jdbc/payment"/>
         <property name="className" value="org.postgresql.xa.PGXADataSource"/>
         <property name="minPoolSize" value="${payment.db.minConnectionsPerPartition}"/>
         <property name="maxPoolSize" value="${payment.db.maxConnectionsPerPartition}"/>
         <property name="driverProperties">
             <props>
-                <prop key="url">${payment.db.url}</prop>
                 <prop key="user">${payment.db.username}</prop>
                 <prop key="password">${payment.db.password}</prop>
             </props>
@@ -44,17 +44,22 @@
         -->
     <!-- SessonFactory for Hibernate -->
     <bean id="paymentSessionFactory"
-          class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
-        <property name="dataSource" ref="paymentDataSource"/>
+          class="com.junbo.sharding.hibernate.LocalSessionFactoryWithListenerBean">
         <property name="jtaTransactionManager" ref="transactionManager"/>
         <property name="hibernateProperties">
-            <props>
-                <prop key="hibernate.dialect">${payment.hibernate.dialect}</prop>
-                <prop key="hibernate.max_fetch_depth">${payment.hibernate.max_fetch_depth}</prop>
-                <prop key="hibernate.jdbc.fetch_size">${payment.hibernate.jdbc.fetch_size}</prop>
-                <prop key="hibernate.jdbc.batch_size">${payment.hibernate.jdbc.batch_size}</prop>
-                <prop key="hibernate.show_sql">${payment.hibernate.show_sql}</prop>
-            </props>
+            <map>
+                <entry key="hibernate.dialect" value="${payment.hibernate.dialect}"/>
+                <entry key="hibernate.max_fetch_depth" value="${payment.hibernate.max_fetch_depth}"/>
+                <entry key="hibernate.jdbc.fetch_size" value="${payment.hibernate.jdbc.fetch_size}"/>
+                <entry key="hibernate.jdbc.batch_size" value="${payment.hibernate.jdbc.batch_size}"/>
+                <entry key="hibernate.show_sql" value="${payment.hibernate.show_sql}"/>
+
+                <entry key="hibernate.multiTenancy" value="SCHEMA"/>
+                <entry key="hibernate.current_session_context_class" value="com.junbo.sharding.hibernate.MultiTenantJTASessionContext"/>
+                <entry key="hibernate.tenant_identifier_resolver" value="com.junbo.sharding.hibernate.ShardCurrentTenantIdentifierResolver"/>
+                <entry key="hibernate.multi_tenant_connection_provider" value-ref="paymentDataSource"/>
+                <entry key="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
+            </map>
         </property>
         <property name="packagesToScan">
             <list>
@@ -137,16 +142,6 @@
         <property name="persistentClass" value="com.junbo.payment.db.entity.payment.PaymentProviderEntity"/>
     </bean>
 
-    <bean id="currencyTypeDao"
-          class="com.junbo.payment.db.dao.CurrencyTypeDao" parent="genericDao">
-        <property name="persistentClass" value="com.junbo.payment.db.entity.CurrencyTypeEntity"/>
-    </bean>
-
-    <bean id="countryTypeDao"
-          class="com.junbo.payment.db.dao.CountryTypeDao" parent="genericDao">
-        <property name="persistentClass" value="com.junbo.payment.db.entity.CountryTypeEntity"/>
-    </bean>
-
     <bean id="paymentInstrumentTypeDao"
           class="com.junbo.payment.db.dao.PaymentInstrumentTypeDao" parent="genericDao">
         <property name="persistentClass" value="com.junbo.payment.db.entity.PaymentInstrumentTypeEntity"/>
@@ -175,16 +170,6 @@
     <bean id="paymentProviderRepository"
           class="com.junbo.payment.db.repository.PaymentProviderRepository" parent="domainDataRepository">
         <property name="dao" ref="paymentProviderDao"/>
-    </bean>
-
-    <bean id="countryTypeRepository"
-          class="com.junbo.payment.db.repository.CountryTypeRepository" parent="domainDataRepository">
-        <property name="dao" ref="countryTypeDao"/>
-    </bean>
-
-    <bean id="currencyTypeRepository"
-          class="com.junbo.payment.db.repository.CurrencyTypeRepository" parent="domainDataRepository">
-        <property name="dao" ref="currencyTypeDao"/>
     </bean>
 
     <bean id="piTypeRepository"

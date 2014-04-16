@@ -10,18 +10,23 @@ import com.junbo.common.id.RoleAssignmentId;
 import com.junbo.common.id.RoleId;
 import com.junbo.common.util.Identifiable;
 import com.junbo.identity.spec.model.users.ResourceMeta;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
  * RoleAssignment.
  */
 public class RoleAssignment extends ResourceMeta implements Identifiable<RoleAssignmentId> {
+    @ApiModelProperty(position = 1, required = true, value = "The id of the role assignment resource.")
     @JsonProperty("self")
     private RoleAssignmentId id;
 
+    @ApiModelProperty(position = 2, required = true, value = "The role resource.")
     private RoleId roleId;
 
+    @ApiModelProperty(position = 3, required = true, value = "Assignee type.")
     private String assigneeType;
 
+    @ApiModelProperty(position = 4, required = true, value = "Assignee id.")
     private Long assigneeId;
 
     @Override

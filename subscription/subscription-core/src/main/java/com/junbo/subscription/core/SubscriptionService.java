@@ -16,9 +16,9 @@ import java.util.UUID;
  */
 @Transactional
 public interface SubscriptionService {
-    Subscription getsubscription(Long subscriptionId);
+    Subscription getSubscription(Long subscriptionId);
 
-    Subscription addsubscription(Subscription subscription);
+    Subscription addSubscription(Subscription subscription);
 
-    Subscription getSubsByTrackingUuid(UUID trackingUuid);
+    Subscription getSubsByTrackingUuid(Long userId, UUID trackingUuid);
 }

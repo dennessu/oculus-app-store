@@ -5,13 +5,15 @@
  */
 package com.junbo.subscription.clientproxy.impl;
 
-import com.junbo.catalog.spec.model.common.EntityGetOptions;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.offer.Offer;
+import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.catalog.spec.resource.ItemResource;
 import com.junbo.catalog.spec.resource.OfferResource;
+import com.junbo.catalog.spec.resource.OfferRevisionResource;
 import com.junbo.common.id.ItemId;
 import com.junbo.common.id.OfferId;
+import com.junbo.common.id.OfferRevisionId;
 import com.junbo.subscription.clientproxy.CatalogGateway;
 
 import com.junbo.subscription.common.exception.ResourceNotFoundException;
@@ -29,6 +31,10 @@ public class CatalogGatewayImpl implements CatalogGateway {
     private OfferResource offerResource;
 
     @Autowired
+    @Qualifier("offerRevClient")
+    private OfferRevisionResource offerRevResource;
+
+    @Autowired
     @Qualifier("itemClient")
     private ItemResource itemResource;
 
@@ -43,6 +49,11 @@ public class CatalogGatewayImpl implements CatalogGateway {
     }
 
     @Override
+    public OfferRevision getOfferRev(Long offerRevId) {
+        return retrieveOfferRev(offerRevId);
+    }
+
+    @Override
     public Item getItem(Long itemId) {
         return retrieveItem(itemId);
     }
@@ -51,7 +62,7 @@ public class CatalogGatewayImpl implements CatalogGateway {
         try {
             // TODO
             com.junbo.catalog.spec.model.offer.Offer offer =
-                    offerResource.getOffer(new OfferId(offerId), EntityGetOptions.getDefault()).wrapped().get();
+                    offerResource.getOffer(new OfferId(offerId)).wrapped().get();
 
             if (offer == null) {
                 throw new ResourceNotFoundException(
@@ -64,11 +75,28 @@ public class CatalogGatewayImpl implements CatalogGateway {
         }
     }
 
+    protected OfferRevision retrieveOfferRev(Long offerRevId) {
+        try {
+            // TODO
+            OfferRevision offerRev =
+                    offerRevResource.getOfferRevision(new OfferRevisionId(offerRevId)).wrapped().get();
+
+            if (offerRev == null) {
+                throw new ResourceNotFoundException(
+                        "Offer Rev [" + offerRevId + "]  does not exist");
+            }
+
+            return offerRev;
+        } catch (Exception e) {
+            throw new ResourceNotFoundException("Error occurred during calling [Catalog] component service.", e);
+        }
+    }
+
     protected Item retrieveItem(Long itemId) {
         try {
             // TODO
             Item item =
-                    itemResource.getItem(new ItemId(itemId), EntityGetOptions.getDefault()).wrapped().get();
+                    itemResource.getItem(new ItemId(itemId)).wrapped().get();
 
             if (item == null) {
                 throw new ResourceNotFoundException(

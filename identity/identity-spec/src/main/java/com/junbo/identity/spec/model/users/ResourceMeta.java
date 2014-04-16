@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.junbo.common.json.PropertyAssignedAware;
 import com.junbo.common.json.PropertyAssignedAwareSupport;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
 
@@ -22,10 +23,13 @@ public abstract class ResourceMeta implements PropertyAssignedAware {
 
     protected final PropertyAssignedAwareSupport support = new PropertyAssignedAwareSupport();
 
+    @ApiModelProperty(position = 1000, required = true, value = "The resource version.")
     private Integer resourceAge;
 
+    @ApiModelProperty(position = 1001, required = false, value = "The created time of the resource.")
     private Date createdTime;
 
+    @ApiModelProperty(position = 1002, required = false, value = "The lastest updated time of the resource.")
     private Date updatedTime;
 
     @JsonIgnore

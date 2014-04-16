@@ -45,14 +45,14 @@ public class ItemServiceImpl extends HttpClientBase implements ItemService {
     private ItemServiceImpl() {
     }
 
-    public String getItem(String itemId, HashMap<String, String> httpPara) throws Exception {
-        return getItem(itemId, httpPara, 200);
+    public String getItem(String itemId) throws Exception {
+        return getItem(itemId, 200);
     }
 
-    public String getItem(String itemId, HashMap<String, String> httpPara, int expectedResponseCode) throws Exception {
+    public String getItem(String itemId, int expectedResponseCode) throws Exception {
 
         String url = catalogServerURL + "/" + itemId;
-        String responseBody = restApiCall(HTTPMethod.GET, url, null, expectedResponseCode, httpPara);
+        String responseBody = restApiCall(HTTPMethod.GET, url, null, expectedResponseCode);
         Item itemGet = new JsonMessageTranscoder().decode(new TypeReference<Item>() {},
                 responseBody);
         String itemRtnId = IdConverter.idLongToHexString(ItemId.class, itemGet.getItemId());

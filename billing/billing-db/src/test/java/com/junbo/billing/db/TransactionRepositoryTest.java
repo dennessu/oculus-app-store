@@ -27,7 +27,7 @@ public class TransactionRepositoryTest extends BaseTest {
 
     @Test
     public void testSaveGet() {
-        Long balanceId = generateId();
+        Long balanceId = idGeneratorFacade.nextId(BalanceId.class, generateUserId());
         Transaction transaction = generateTransaction(balanceId);
         transaction = transactionRepository.saveTransaction(transaction);
         Transaction returned = transactionRepository.getTransaction(transaction.getTransactionId().getValue());
@@ -40,7 +40,7 @@ public class TransactionRepositoryTest extends BaseTest {
     private Transaction generateTransaction(Long balanceId) {
         Transaction transaction = new Transaction();
         transaction.setBalanceId(new BalanceId(balanceId));
-        transaction.setPiId(new PaymentInstrumentId(generateId()));
+        transaction.setPiId(new PaymentInstrumentId(idGeneratorFacade.nextId(PaymentInstrumentId.class, balanceId)));
         transaction.setCurrency("USD");
         transaction.setAmount(new BigDecimal("12.34"));
         transaction.setPaymentRefId("1234567890");

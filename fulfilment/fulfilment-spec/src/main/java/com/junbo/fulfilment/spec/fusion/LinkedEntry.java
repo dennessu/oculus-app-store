@@ -12,7 +12,7 @@ public class LinkedEntry {
     private CatalogEntityType entityType;
     private Long id;
     private Integer quantity;
-    private Long sku;
+    private String sku;
 
     public CatalogEntityType getEntityType() {
         return entityType;
@@ -30,11 +30,11 @@ public class LinkedEntry {
         this.id = id;
     }
 
-    public Long getSku() {
+    public String getSku() {
         return sku;
     }
 
-    public void setSku(Long sku) {
+    public void setSku(String sku) {
         this.sku = sku;
     }
 

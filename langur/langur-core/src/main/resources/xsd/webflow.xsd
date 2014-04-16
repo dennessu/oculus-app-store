@@ -1,119 +1,47 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <xsd:schema xmlns="http://www.junbo.com/schema/webflow"
             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:beans="http://www.springframework.org/schema/beans"
+            xmlns:tool="http://www.springframework.org/schema/tool"
             targetNamespace="http://www.junbo.com/schema/webflow"
             elementFormDefault="qualified">
 
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+    <xsd:import namespace="http://www.springframework.org/schema/beans"/>
+    <xsd:import namespace="http://www.springframework.org/schema/tool"/>
 
     <!-- Top level element -->
     <xsd:element name="flow">
         <xsd:complexType>
-            <xsd:sequence>
-                <xsd:element name="on-start" minOccurs="0">
-                    <xsd:complexType>
-                        <xsd:group ref="actionTypes" maxOccurs="unbounded"/>
-                    </xsd:complexType>
-                </xsd:element>
-                <xsd:choice minOccurs="0" maxOccurs="unbounded">
-                    <xsd:element name="action-state">
-                        <xsd:complexType>
-                            <xsd:sequence minOccurs="0">
-                                <xsd:element name="on-entry" minOccurs="0">
-                                    <xsd:complexType>
-                                        <xsd:group ref="actionTypes" maxOccurs="unbounded"/>
-                                    </xsd:complexType>
-                                </xsd:element>
-                                <xsd:group ref="actionTypes" minOccurs="0" maxOccurs="unbounded"/>
-                                <xsd:element name="transition" type="transition" minOccurs="0" maxOccurs="unbounded">
-                                </xsd:element>
-                                <xsd:element name="on-exit" minOccurs="0">
-                                    <xsd:complexType>
-                                        <xsd:group ref="actionTypes" maxOccurs="unbounded"/>
-                                    </xsd:complexType>
-                                </xsd:element>
-                            </xsd:sequence>
-                            <xsd:attribute name="id" type="xsd:ID" use="required">
-                            </xsd:attribute>
-                        </xsd:complexType>
-                    </xsd:element>
-                    <xsd:element name="view-state">
-                        <xsd:complexType>
-                            <xsd:sequence>
-                                <xsd:element name="on-entry" minOccurs="0">
-                                    <xsd:complexType>
-                                        <xsd:group ref="actionTypes" maxOccurs="unbounded"/>
-                                    </xsd:complexType>
-                                </xsd:element>
-                                <xsd:element name="on-render" minOccurs="0">
-                                    <xsd:complexType>
-                                        <xsd:group ref="actionTypes" maxOccurs="unbounded"/>
-                                    </xsd:complexType>
-                                </xsd:element>
-                                <xsd:element name="transition" type="transition" minOccurs="0" maxOccurs="unbounded">
-                                </xsd:element>
-                                <xsd:element name="on-exit" minOccurs="0">
-                                    <xsd:complexType>
-                                        <xsd:group ref="actionTypes" maxOccurs="unbounded"/>
-                                    </xsd:complexType>
-                                </xsd:element>
-                            </xsd:sequence>
-                            <xsd:attribute name="id" type="xsd:ID" use="required">
-                            </xsd:attribute>
-                            <xsd:attribute name="view" type="xsd:string">
-                            </xsd:attribute>
-                            <xsd:attribute name="model" type="xsd:string">
-                            </xsd:attribute>
-                        </xsd:complexType>
-                    </xsd:element>
-                    <xsd:element name="subflow-state">
-                        <xsd:complexType>
-                            <xsd:sequence minOccurs="0">
-                                <xsd:element name="on-entry" minOccurs="0">
-                                    <xsd:complexType>
-                                        <xsd:group ref="actionTypes" maxOccurs="unbounded"/>
-                                    </xsd:complexType>
-                                </xsd:element>
-                                <xsd:element name="transition" type="transition" minOccurs="0" maxOccurs="unbounded">
-                                </xsd:element>
-                                <xsd:element name="on-exit" minOccurs="0">
-                                    <xsd:complexType>
-                                        <xsd:group ref="actionTypes" maxOccurs="unbounded"/>
-                                    </xsd:complexType>
-                                </xsd:element>
-                            </xsd:sequence>
-                            <xsd:attribute name="id" type="xsd:ID" use="required">
-                            </xsd:attribute>
-                            <xsd:attribute name="subflow" type="xsd:string">
-                            </xsd:attribute>
-                        </xsd:complexType>
-                    </xsd:element>
-                    <xsd:element name="end-state">
-                        <xsd:complexType>
-                            <xsd:sequence>
-                                <xsd:element name="on-entry" minOccurs="0">
-                                    <xsd:complexType>
-                                        <xsd:group ref="actionTypes" maxOccurs="unbounded"/>
-                                    </xsd:complexType>
-                                </xsd:element>
-                            </xsd:sequence>
-                            <xsd:attribute name="id" type="xsd:ID" use="required">
-                            </xsd:attribute>
-                            <xsd:attribute name="view" type="xsd:string">
-                            </xsd:attribute>
-                            <xsd:attribute name="model" type="xsd:string">
-                            </xsd:attribute>
-                        </xsd:complexType>
-                    </xsd:element>
-                </xsd:choice>
-                <xsd:element name="on-end" minOccurs="0">
-                    <xsd:complexType>
-                        <xsd:group ref="actionTypes" maxOccurs="unbounded"/>
-                    </xsd:complexType>
-                </xsd:element>
-            </xsd:sequence>
-            <xsd:attribute name="id" type="xsd:ID" use="required">
-            </xsd:attribute>
+            <xsd:complexContent>
+                <xsd:extension base="beans:identifiedType">
+                    <xsd:annotation>
+                        <xsd:appinfo>
+                            <tool:annotation>
+                                <tool:exports type="com.junbo.langur.core.webflow.definition.FlowDef"/>
+                            </tool:annotation>
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                    <xsd:sequence>
+                        <xsd:element name="on-start" minOccurs="0">
+                            <xsd:complexType>
+                                <xsd:group ref="actionTypes" maxOccurs="unbounded"/>
+                            </xsd:complexType>
+                        </xsd:element>
+                        <xsd:choice minOccurs="0" maxOccurs="unbounded">
+                            <xsd:element name="action-state" type="actionStateType"/>
+                            <xsd:element name="view-state" type="viewStateType"/>
+                            <xsd:element name="subflow-state" type="subflowStateType"/>
+                            <xsd:element name="end-state" type="endStateType"/>
+                        </xsd:choice>
+                        <xsd:element name="on-end" minOccurs="0">
+                            <xsd:complexType>
+                                <xsd:group ref="actionTypes" maxOccurs="unbounded"/>
+                            </xsd:complexType>
+                        </xsd:element>
+                    </xsd:sequence>
+                </xsd:extension>
+            </xsd:complexContent>
         </xsd:complexType>
     </xsd:element>
 
@@ -122,6 +50,13 @@
             <xsd:element name="action">
                 <xsd:complexType>
                     <xsd:attribute name="ref" type="xsd:string" use="required">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <tool:annotation kind="ref">
+                                    <tool:expected-type type="java:com.junbo.langur.core.webflow.action.Action"/>
+                                </tool:annotation>
+                            </xsd:appinfo>
+                        </xsd:annotation>
                     </xsd:attribute>
                 </xsd:complexType>
             </xsd:element>
@@ -134,7 +69,120 @@
         </xsd:sequence>
         <xsd:attribute name="on" type="xsd:string">
         </xsd:attribute>
-        <xsd:attribute name="to" type="xsd:IDREF" use="optional">
+        <xsd:attribute name="to" type="xsd:IDREF" use="optional"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="actionStateType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <tool:annotation>
+                    <tool:exports type="com.junbo.langur.core.webflow.definition.ActionStateDef"/>
+                </tool:annotation>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:sequence minOccurs="0">
+            <xsd:element name="on-entry" minOccurs="0">
+                <xsd:complexType>
+                    <xsd:group ref="actionTypes" maxOccurs="unbounded"/>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:group ref="actionTypes" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="transition" type="transition" minOccurs="0" maxOccurs="unbounded">
+            </xsd:element>
+            <xsd:element name="on-exit" minOccurs="0">
+                <xsd:complexType>
+                    <xsd:group ref="actionTypes" maxOccurs="unbounded"/>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="id" type="xsd:ID" use="required">
         </xsd:attribute>
     </xsd:complexType>
+
+    <xsd:complexType name="viewStateType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <tool:annotation>
+                    <tool:exports type="com.junbo.langur.core.webflow.definition.ViewStateDef"/>
+                </tool:annotation>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="on-entry" minOccurs="0">
+                <xsd:complexType>
+                    <xsd:group ref="actionTypes" maxOccurs="unbounded"/>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="on-render" minOccurs="0">
+                <xsd:complexType>
+                    <xsd:group ref="actionTypes" maxOccurs="unbounded"/>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="transition" type="transition" minOccurs="0" maxOccurs="unbounded">
+            </xsd:element>
+            <xsd:element name="on-exit" minOccurs="0">
+                <xsd:complexType>
+                    <xsd:group ref="actionTypes" maxOccurs="unbounded"/>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="id" type="xsd:ID" use="required">
+        </xsd:attribute>
+        <xsd:attribute name="view" type="xsd:string">
+        </xsd:attribute>
+        <xsd:attribute name="model" type="xsd:string">
+        </xsd:attribute>
+    </xsd:complexType>
+
+    <xsd:complexType name="subflowStateType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <tool:annotation>
+                    <tool:exports type="com.junbo.langur.core.webflow.definition.SubflowStateDef"/>
+                </tool:annotation>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:sequence minOccurs="0">
+            <xsd:element name="on-entry" minOccurs="0">
+                <xsd:complexType>
+                    <xsd:group ref="actionTypes" maxOccurs="unbounded"/>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="transition" type="transition" minOccurs="0" maxOccurs="unbounded">
+            </xsd:element>
+            <xsd:element name="on-exit" minOccurs="0">
+                <xsd:complexType>
+                    <xsd:group ref="actionTypes" maxOccurs="unbounded"/>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="id" type="xsd:ID" use="required">
+        </xsd:attribute>
+        <xsd:attribute name="subflow" type="xsd:string">
+        </xsd:attribute>
+    </xsd:complexType>
+
+    <xsd:complexType name="endStateType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <tool:annotation>
+                    <tool:exports type="com.junbo.langur.core.webflow.definition.EndStateDef"/>
+                </tool:annotation>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="on-entry" minOccurs="0">
+                <xsd:complexType>
+                    <xsd:group ref="actionTypes" maxOccurs="unbounded"/>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="id" type="xsd:ID" use="required">
+        </xsd:attribute>
+        <xsd:attribute name="view" type="xsd:string">
+        </xsd:attribute>
+        <xsd:attribute name="model" type="xsd:string">
+        </xsd:attribute>
+    </xsd:complexType>
+
 </xsd:schema>

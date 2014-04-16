@@ -1,0 +1,49 @@
+[
+    {
+        "country":"GB",
+        "ratings":[
+            {
+                "name":"gameRatingPEGI",
+                "level":{
+                    "12+":"12",
+                    "16+":"16",
+                    "18+":"18"
+                }
+            }
+        ]
+    },
+    {
+        "country":"AU",
+        "ratings":[
+            {
+                "name":"gameRatingCOB",
+                "level":{
+                    "MA 15+ - Not suitable <15":"15",
+                    "R18+ not suitable <18":"18"
+                }
+            }
+        ]
+    },
+    {
+        "country":"TW",
+        "ratings":[
+            {
+                "name":"gameRatingTWAR",
+                "level":{
+                    "限制級":"18"
+                }
+            }
+        ]
+    },
+    {
+    	"country":"DE",
+    	"ratings":[
+    		{
+    			"name":"gameRatingUSK",
+    			"level":{
+    				"keine Jugendfreigabe":"18"
+    			}
+    		}
+    	]
+    }
+]

@@ -26,7 +26,7 @@ public class PaymentTransaction {
     private Long userId;
     @PaymentInstrumentId
     @JsonProperty("paymentInstrument")
-    private PIId paymentInstrumentId;
+    private Long paymentInstrumentId;
     private String billingRefId;
     private ChargeInfo chargeInfo;
     private WebPaymentInfo webPaymentInfo;
@@ -63,11 +63,11 @@ public class PaymentTransaction {
         this.userId = userId;
     }
 
-    public PIId getPaymentInstrumentId() {
+    public Long getPaymentInstrumentId() {
         return paymentInstrumentId;
     }
 
-    public void setPaymentInstrumentId(PIId paymentInstrumentId) {
+    public void setPaymentInstrumentId(Long paymentInstrumentId) {
         this.paymentInstrumentId = paymentInstrumentId;
     }
 

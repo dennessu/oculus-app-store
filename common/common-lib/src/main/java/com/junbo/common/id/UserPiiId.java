@@ -8,6 +8,7 @@ package com.junbo.common.id;
 /**
  * Created by liangfu on 4/3/14.
  */
+@IdResourcePath("/pii/{0}")
 public class UserPiiId extends Id {
     public UserPiiId() {}
     public UserPiiId(long value) {

@@ -2,11 +2,20 @@
 <html>
 <head lang="en">
   <meta charset="UTF-8">
-  <title></title>
+  <title><%= title %></title>
+  <script type="text/javascript" src="/scripts/libs/jquery-1.10.2.min.js"></script>
+  <script type="text/javascript" src="/scripts/app/common/utils.js"></script>
+  <script type="text/javascript" src="/scripts/app/common/config.js"></script>
 </head>
 <body>
 <script>
-    window.parent.location.href = "/";
+    var type = "<%= action%>";
+    if(type == "login") {
+        var code = Utils.QueryString.Get(AppConfig.QueryStrings.Code);
+        Utils.Cookies.Set(AppConfig.CookiesName.Code, code);
+
+        window.parent.location.href = "/";
+    }
 </script>
 </body>
 </html>

@@ -16,7 +16,6 @@ public class ItemEntry {
     @ItemId
     @JsonProperty("item")
     private Long itemId;
-    private Long sku;
     private Integer quantity;
 
     public Long getItemId() {
@@ -25,14 +24,6 @@ public class ItemEntry {
 
     public void setItemId(Long itemId) {
         this.itemId = itemId;
-    }
-
-    public Long getSku() {
-        return sku;
-    }
-
-    public void setSku(Long sku) {
-        this.sku = sku;
     }
 
     public Integer getQuantity() {

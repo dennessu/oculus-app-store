@@ -11,6 +11,7 @@ import com.junbo.order.db.ValidationMessages;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -30,5 +31,11 @@ public class SubledgerItemPayinEventEntity extends CommonEventEntity {
 
     public void setSubledgerItemId(Long subledgerItemId) {
         this.subledgerItemId = subledgerItemId;
+    }
+
+    @Override
+    @Transient
+    public Long getShardId() {
+        return subledgerItemId;
     }
 }

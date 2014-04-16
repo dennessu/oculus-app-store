@@ -87,8 +87,8 @@ public class EnumHelper {
      */
     public enum CatalogItemType {
         PHYSICAL("PHYSICAL"),
-        APP("APP"),
-        IAP("IAP");
+        DIGITAL("DIGITAL"),
+        EWALLET("EWALLET");
 
         private String itemType;
 

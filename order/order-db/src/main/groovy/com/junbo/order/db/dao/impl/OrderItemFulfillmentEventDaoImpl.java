@@ -22,7 +22,7 @@ public class OrderItemFulfillmentEventDaoImpl extends BaseDaoImpl<OrderItemFulfi
         implements OrderItemFulfillmentEventDao {
     @Override
     public List<OrderItemFulfillmentEventEntity> readByOrderItemId(Long orderId, Long orderItemId) {
-        Criteria criteria = this.getSession().createCriteria(OrderItemFulfillmentEventEntity.class);
+        Criteria criteria = this.getSession(orderItemId).createCriteria(OrderItemFulfillmentEventEntity.class);
         criteria.add(Restrictions.eq("orderId", orderId));
         criteria.add(Restrictions.eq("orderItemId", orderItemId));
         return criteria.list();

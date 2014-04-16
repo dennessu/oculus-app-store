@@ -8,10 +8,7 @@ package com.junbo.order.db.entity;
 
 import com.junbo.order.db.ValidationMessages;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
@@ -76,5 +73,11 @@ public class OrderItemPreorderInfoEntity extends CommonDbEntityWithDate{
 
     public void setReleaseDate(Date releaseDate) {
         this.releaseDate = releaseDate;
+    }
+
+    @Override
+    @Transient
+    public Long getShardId() {
+        return orderItemId;
     }
 }
