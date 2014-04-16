@@ -109,6 +109,6 @@ public class OrderDiscountInfoEntity extends CommonDbEntityDeletable {
     @Override
     @Transient
     public Long getShardId() {
-        return orderId;
+        return discountInfoId;
     }
 }

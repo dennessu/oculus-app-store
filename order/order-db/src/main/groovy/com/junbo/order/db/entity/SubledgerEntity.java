@@ -149,6 +149,6 @@ public class SubledgerEntity extends CommonDbEntityWithDate {
     @Override
     @Transient
     public Long getShardId() {
-        return sellerId;
+        return subledgerId;
     }
 }

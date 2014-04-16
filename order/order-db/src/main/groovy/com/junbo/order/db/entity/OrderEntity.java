@@ -220,6 +220,6 @@ public class OrderEntity extends CommonDbEntityWithDate {
     @Override
     @Transient
     public Long getShardId() {
-        return userId;
+        return orderId;
     }
 }
