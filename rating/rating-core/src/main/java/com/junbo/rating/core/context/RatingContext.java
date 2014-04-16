@@ -31,11 +31,11 @@ public class RatingContext {
     private Map<PromotionType, Set<PromotionRevision>> rules;
 
     private RatableItem currentItem;
-
     private Set<RatingResultEntry> entries;
 
     private OrderResultEntry orderResult;
 
+    private Long defaultShippingMethod;
     private ShippingResultEntry shippingResult;
     //TODO: violations
 
@@ -68,6 +68,7 @@ public class RatingContext {
     public void fromRequest(RatingRequest request) {
         this.userId = request.getUserId();
         this.timestamp = request.getTimestamp();
+        this.defaultShippingMethod = request.getShippingMethodId();
 
         Currency currency = Currency.findByCode(request.getCurrency());
         if (currency == null) {
@@ -86,9 +87,7 @@ public class RatingContext {
 
             if (request.getIncludeCrossOfferPromos()) {
                 item.setQuantity(ratingItem.getQuantity());
-                item.setShippingMethodId(
-                        ratingItem.getShippingMethodId() == null ?
-                                request.getShippingMethodId() : ratingItem.getShippingMethodId());
+                item.setShippingMethodId(ratingItem.getShippingMethodId());
             }
 
             items.add(item);
@@ -173,6 +172,14 @@ public class RatingContext {
 
     public void setOrderResult(OrderResultEntry orderResult) {
         this.orderResult = orderResult;
+    }
+
+    public Long getDefaultShippingMethod() {
+        return defaultShippingMethod;
+    }
+
+    public void setDefaultShippingMethod(Long defaultShippingMethod) {
+        this.defaultShippingMethod = defaultShippingMethod;
     }
 
     public ShippingResultEntry getShippingResult() {

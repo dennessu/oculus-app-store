@@ -25,7 +25,6 @@ import javax.ws.rs.core.MediaType;
 @Consumes({MediaType.APPLICATION_JSON})
 public interface SecurityQuestionResource {
     @POST
-    @Path("/")
     Promise<SecurityQuestion> create(SecurityQuestion securityQuestion);
 
     @PUT
@@ -44,6 +43,5 @@ public interface SecurityQuestionResource {
                                   @BeanParam SecurityQuestionGetOptions getOptions);
 
     @GET
-    @Path("/")
     Promise<Results<SecurityQuestion>> list(@BeanParam SecurityQuestionListOptions listOptions);
 }

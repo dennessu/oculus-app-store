@@ -17,7 +17,7 @@ public abstract class Id extends Object implements Serializable {
 
     private Long value;
 
-    protected Properties properties;
+    protected Properties resourcePathPlaceHolder;
 
     // default ctor needed for Class.newInstance in deserializer
     public Id() {
@@ -35,8 +35,12 @@ public abstract class Id extends Object implements Serializable {
         this.value = value;
     }
 
-    public Properties getProperties() {
-        return this.properties;
+    public Properties getResourcePathPlaceHolder() {
+        if (resourcePathPlaceHolder == null) {
+            resourcePathPlaceHolder = new Properties();
+        }
+
+        return resourcePathPlaceHolder;
     }
 
     @Override

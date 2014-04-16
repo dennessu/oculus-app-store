@@ -29,13 +29,11 @@ public interface UserSecurityQuestionVerifyAttemptResource {
 
     @ApiOperation("Create one security question attempt")
     @POST
-    @Path("/")
     Promise<UserSecurityQuestionVerifyAttempt> create(@PathParam("userId") UserId userId,
                                                 UserSecurityQuestionVerifyAttempt userSecurityQuestionAttempt);
 
     @ApiOperation("Search security question attempt history")
     @GET
-    @Path("/")
     Promise<Results<UserSecurityQuestionVerifyAttempt>> list(@PathParam("userId") UserId userId,
                                                    @BeanParam UserSecurityQuestionAttemptListOptions listOptions);
 }

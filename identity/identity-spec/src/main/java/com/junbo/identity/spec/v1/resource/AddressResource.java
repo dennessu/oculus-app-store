@@ -28,7 +28,6 @@ public interface AddressResource {
 
     @ApiOperation("Create an address for a user")
     @POST
-    @Path("/")
     Promise<Address> create(Address address);
 
     @ApiOperation("Get an address")

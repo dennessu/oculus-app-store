@@ -30,7 +30,6 @@ public interface GroupResource {
 
     @ApiOperation("Create a group")
     @POST
-    @Path("/")
     Promise<Group> create(Group group);
 
     @ApiOperation("Update a group")
@@ -50,6 +49,5 @@ public interface GroupResource {
 
     @ApiOperation("Search groups")
     @GET
-    @Path("/")
     Promise<Results<Group>> list(@BeanParam GroupListOptions listOptions);
 }

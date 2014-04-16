@@ -11,7 +11,6 @@ import com.junbo.sharding.view.EntityView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Created by xmchen on 14-4-14.
