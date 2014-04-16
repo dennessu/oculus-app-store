@@ -160,6 +160,10 @@ public class CatalogGatewayImpl implements CatalogGateway{
             }
         }
 
+        if (revisionIds.isEmpty()) {
+            return results;
+        }
+
         PromotionRevisionsGetOptions revisionOptions = new PromotionRevisionsGetOptions();
         revisionOptions.setRevisionIds(revisionIds);
         try {
