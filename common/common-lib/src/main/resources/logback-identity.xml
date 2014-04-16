@@ -7,7 +7,7 @@
         <target>System.out</target>
         <encoder>
             <pattern>
-                %d{MM/dd/yyyy HH:mm:ss.SSS}: [%thread] %-5level %logger - %msg%n
+                %d{MM/dd/yyyy HH:mm:ss.SSS}: [%thread] [SEQID:%X{SEQID}] %-5level %logger - %msg%n
             </pattern>
         </encoder>
     </appender>
@@ -20,7 +20,7 @@
         </rollingPolicy>
         <encoder>
             <pattern>
-                %d{MM/dd/yyyy HH:mm:ss.SSS}: [%thread] %-5level %logger - %msg%n
+                %d{MM/dd/yyyy HH:mm:ss.SSS}: [%thread] [SEQID:%X{SEQID}] %-5level %logger - %msg%n
             </pattern>
         </encoder>
     </appender>
@@ -42,7 +42,7 @@
         </rollingPolicy>
         <encoder>
             <pattern>
-                %d{MM/dd/yyyy HH:mm:ss.SSS}: [%thread] %-5level %logger{72} - %msg%n
+                %d{MM/dd/yyyy HH:mm:ss.SSS}: [%thread] [SEQID:%X{SEQID}] %-5level %logger{72} - %msg%n
             </pattern>
         </encoder>
     </appender>
