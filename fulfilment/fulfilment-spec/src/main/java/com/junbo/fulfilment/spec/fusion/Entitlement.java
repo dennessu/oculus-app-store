@@ -20,6 +20,7 @@ public class Entitlement {
     private Long offerId;
     private Long entitlementDefinitionId;
     private Long developerId;
+    private Integer useCount;
 
     public Long getUserId() {
         return userId;
@@ -91,5 +92,13 @@ public class Entitlement {
 
     public void setDeveloperId(Long developerId) {
         this.developerId = developerId;
+    }
+
+    public Integer getUseCount() {
+        return useCount;
+    }
+
+    public void setUseCount(Integer useCount) {
+        this.useCount = useCount;
     }
 }

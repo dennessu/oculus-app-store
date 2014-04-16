@@ -17,7 +17,9 @@ import com.junbo.fulfilment.spec.model.FulfilmentItem;
 import com.junbo.fulfilment.spec.model.FulfilmentRequest;
 import com.junbo.fulfilment.spec.resource.FulfilmentResource;
 import com.junbo.langur.core.client.ClientResponseException;
+import com.junbo.sharding.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
@@ -34,7 +36,12 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
     protected MegaGateway megaGateway;
 
     @Autowired
+    @Qualifier("fulfilmentClient")
     private FulfilmentResource fulfilmentResource;
+
+    @Autowired
+    @Qualifier("oculus48IdGenerator")
+    private IdGenerator idGenerator;
 
     @Test(enabled = false)
     public void testBVT() {
@@ -194,9 +201,7 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
                 setActions(new ArrayList<Action>() {{
                     add(new Action() {{
                         setType(Constant.ACTION_GRANT_ENTITLEMENT);
-                        setProperties(new HashMap<String, Object>() {{
-                            put(Constant.ENTITLEMENT_DEF_ID, "12345");
-                        }});
+                        setEntitlementDefId(entitlementDefId);
                     }});
                 }});
             }});
@@ -213,12 +218,6 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
     }
 
     private Long getRandomLong() {
-        try {
-            Thread.sleep(10);
-        } catch (InterruptedException e) {
-            //ignore
-        }
-
-        return System.currentTimeMillis();
+        return idGenerator.nextId();
     }
 }

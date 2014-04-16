@@ -64,28 +64,29 @@ class UserDeviceValidatorImpl implements UserDeviceValidator {
     @Override
     Promise<Void> validateForCreate(UserDevice userDevice) {
 
-        checkBasicUserDeviceInfo(userDevice)
-        if (userDevice.id != null) {
-            throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
-        }
-
-        return userDeviceRepository.search(new UserDeviceListOptions(
-                userId: userDevice.userId,
-                deviceId: userDevice.deviceId
-        )).then { List<UserDevice> existing ->
-            if (!CollectionUtils.isEmpty(existing)) {
-                throw AppErrors.INSTANCE.fieldDuplicate('deviceId').exception()
+        checkBasicUserDeviceInfo(userDevice).then {
+            if (userDevice.id != null) {
+                throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
             }
 
-            return Promise.pure(null)
+            return userDeviceRepository.search(new UserDeviceListOptions(
+                    userId: userDevice.userId,
+                    deviceId: userDevice.deviceId
+            )).then { List<UserDevice> existing ->
+                if (!CollectionUtils.isEmpty(existing)) {
+                    throw AppErrors.INSTANCE.fieldDuplicate('deviceId').exception()
+                }
+
+                return Promise.pure(null)
+            }
         }
     }
 
     @Override
     Promise<Void> validateForUpdate(UserDeviceId userDeviceId, UserDevice userDevice, UserDevice oldUserDevice) {
-        validateForGet(userDeviceId).then {
-            checkBasicUserDeviceInfo(userDevice)
-
+        return validateForGet(userDeviceId).then {
+            return checkBasicUserDeviceInfo(userDevice)
+        }.then {
             if (userDevice.id == null) {
                 throw new IllegalArgumentException('id is null')
             }
@@ -115,7 +116,7 @@ class UserDeviceValidatorImpl implements UserDeviceValidator {
         }
     }
 
-    private void checkBasicUserDeviceInfo(UserDevice userDevice) {
+    private Promise<Void> checkBasicUserDeviceInfo(UserDevice userDevice) {
         if (userDevice == null) {
             throw new IllegalArgumentException('userDevice is null')
         }
@@ -137,18 +138,20 @@ class UserDeviceValidatorImpl implements UserDeviceValidator {
                 throw AppErrors.INSTANCE.userInInvalidStatus(userDevice.userId).exception()
             }
 
-            deviceRepository.get(userDevice.deviceId).then { Device existingDevice ->
+            return deviceRepository.get(userDevice.deviceId).then { Device existingDevice ->
                 if (existingDevice == null) {
                     throw AppErrors.INSTANCE.deviceNotFound(userDevice.deviceId).exception()
                 }
 
-                userDeviceRepository.search(new UserDeviceListOptions(
+                return userDeviceRepository.search(new UserDeviceListOptions(
                         userId: userDevice.userId,
                         deviceId: userDevice.deviceId
                 )).then { List<UserDevice> existingUserDeviceList ->
                     if (!CollectionUtils.isEmpty(existingUserDeviceList)) {
                         throw AppErrors.INSTANCE.fieldInvalid('deviceId').exception()
                     }
+
+                    return Promise.pure(null)
                 }
             }
         }

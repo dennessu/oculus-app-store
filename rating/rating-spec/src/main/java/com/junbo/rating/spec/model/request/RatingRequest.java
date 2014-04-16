@@ -20,12 +20,11 @@ import java.util.Set;
  */
 public class RatingRequest {
     @NotNull
-    private Boolean isReadyToBuy;
+    private Boolean includeCrossOfferPromos;
 
     @UserId
     @JsonProperty("user")
     private Long userId;
-    private String country;
     private String currency;
 
     private Set<String> couponCodes = new HashSet<>();
@@ -43,12 +42,12 @@ public class RatingRequest {
     @Null
     private ShippingBenefit shippingBenefit;
 
-    public Boolean isReadyToBuy() {
-        return isReadyToBuy;
+    public Boolean getIncludeCrossOfferPromos() {
+        return includeCrossOfferPromos;
     }
 
-    public void setIsReadyToBuy(Boolean isReadyToBuy) {
-        this.isReadyToBuy = isReadyToBuy;
+    public void setIncludeCrossOfferPromos(Boolean includeCrossOfferPromos) {
+        this.includeCrossOfferPromos = includeCrossOfferPromos;
     }
 
     public Long getUserId() {
@@ -57,14 +56,6 @@ public class RatingRequest {
 
     public void setUserId(Long userId) {
         this.userId = userId;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
     }
 
     public String getCurrency() {

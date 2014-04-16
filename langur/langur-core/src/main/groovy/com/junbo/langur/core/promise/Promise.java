@@ -147,28 +147,43 @@ public final class Promise<T> {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> Promise<Object> each(final Iterator<T> iterator, final Closure closure) {
-        return each(iterator, new Func<T, Promise<Object>>() {
+    public static <T> Promise<Void> each(final Iterator<T> iterator, final Closure<Promise> closure) {
+        return each(iterator, new Func<T, Promise>() {
             @Override
-            public Promise<Object> apply(T t) {
-                return (Promise<Object>) closure.call(t);
+            public Promise apply(T t) {
+                return closure.call(t);
             }
         });
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> Promise<Object> each(final Iterator<T> iterator, final Func<? super T, Promise<Object>> func) {
-        Promise<Object> lastPromise = Promise.pure(null);
+    public static <T> Promise<Void> each(final Iterator<T> iterator, final Func<? super T, Promise> func) {
+        Promise lastPromise = Promise.pure(null);
         while (iterator != null && iterator.hasNext()) {
             final T e = iterator.next();
-            lastPromise = lastPromise.then(new Func<Object, Promise<Object>>() {
+            lastPromise = lastPromise.then(new Func<Object, Promise>() {
                 @Override
-                public Promise<Object> apply(Object obj) {
+                public Promise apply(Object obj) {
                     return func.apply(e);
                 }
             });
         }
-        return lastPromise;
+        return lastPromise.syncThen(new Func<Object, Void>() {
+            @Override
+            public Void apply(Object o) {
+                return null;
+            }
+        });
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> Promise<Void> each(final Iterable<T> iterable, final Closure<Promise> closure) {
+        return each(iterable == null ? null : iterable.iterator(), closure);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> Promise<Void> each(final Iterable<T> iterable, final Func<? super T, Promise> func) {
+        return each(iterable == null ? null : iterable.iterator(), func);
     }
 
     public Promise<T> recover(final Func<Throwable, Promise<T>> func) {
