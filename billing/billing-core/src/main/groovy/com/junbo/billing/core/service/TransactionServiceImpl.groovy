@@ -18,7 +18,6 @@ import com.junbo.billing.spec.model.Transaction
 import com.junbo.langur.core.promise.Promise
 import com.junbo.payment.spec.enums.PaymentStatus
 import com.junbo.payment.spec.model.ChargeInfo
-import com.junbo.payment.spec.model.PIId
 import com.junbo.payment.spec.model.PaymentTransaction
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
@@ -197,13 +196,10 @@ class TransactionServiceImpl implements TransactionService {
 
     private PaymentTransaction generatePaymentTransaction(Balance balance) {
         def paymentTransaction = new PaymentTransaction()
-        PIId piid = new PIId()
-        piid.userId = balance.userId.value
-        piid.paymentInstrumentId = balance.piId.value
 
         paymentTransaction.setTrackingUuid(UUID.randomUUID())
         paymentTransaction.setUserId(balance.userId.value)
-        paymentTransaction.setPaymentInstrumentId(piid)
+        paymentTransaction.setPaymentInstrumentId(balance.piId.value)
         paymentTransaction.setBillingRefId(balance.balanceId.toString())
 
         def chargeInfo = new ChargeInfo()

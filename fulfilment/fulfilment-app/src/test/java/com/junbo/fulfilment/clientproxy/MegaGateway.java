@@ -18,6 +18,8 @@ public interface MegaGateway {
 
     Long createOfferRevision(OfferRevision offerRevision);
 
+    OfferRevision getOfferRevision(Long offerRevisionId);
+
     Long updateOfferRevision(OfferRevision offer);
 
     Entitlement getEntitlement(Long entitlementId);
