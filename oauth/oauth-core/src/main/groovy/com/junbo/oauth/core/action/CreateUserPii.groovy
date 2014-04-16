@@ -80,7 +80,7 @@ class CreateUserPii implements Action {
             )
 
             contextWrapper.loginState = loginState
-            return Promise.pure(null)
+            return Promise.pure(new ActionResult('success'))
         }
     }
 }

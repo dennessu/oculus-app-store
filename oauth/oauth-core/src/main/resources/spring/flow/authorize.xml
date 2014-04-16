@@ -32,8 +32,7 @@
             <wf:on-render>
                 <wf:action ref="redirectToLogin"/>
             </wf:on-render>
-            <wf:transition on="login" to="LOGIN_VIEW"/>
-            <wf:transition on="register" to="REGISTER_VIEW"/>
+            <wf:transition on="*" to="LOGIN_VIEW"/>
         </wf:view-state>
 
         <wf:view-state id="LOGIN_VIEW">
@@ -43,6 +42,7 @@
             <wf:transition on="next" to="LOGIN_SUCCESS">
                 <wf:action ref="authenticateUserAuthorize"/>
             </wf:transition>
+            <wf:transition on="register" to="REGISTER_VIEW"/>
             <wf:transition on="cancel" to="CANCEL_VIEW"/>
         </wf:view-state>
 
@@ -59,19 +59,14 @@
             <wf:on-render>
                 <wf:action ref="registerView"/>
             </wf:on-render>
-            <wf:transition on="next" to="REGISTER_USER">
+            <wf:transition on="next" to="REGISTER_SUCCESS">
                 <wf:action ref="validateRegister"/>
+                <wf:action ref="createUser"/>
+                <wf:action ref="createUserCredential"/>
+                <wf:action ref="createUserPii"/>
             </wf:transition>
             <wf:transition on="cancel" to="CANCEL_VIEW"/>
         </wf:view-state>
-
-        <wf:action-state id="REGISTER_USER">
-            <wf:action ref="createUser"/>
-            <wf:action ref="createUserCredential"/>
-            <wf:action ref="createUserPii"/>
-            <wf:transition on="error" to="REGISTER_VIEW"/>
-            <wf:transition on="*" to="REGISTER_SUCCESS"/>
-        </wf:action-state>
 
         <wf:view-state id="REGISTER_SUCCESS">
             <wf:on-render>
@@ -119,7 +114,6 @@
                 <wf:action ref="grantRememberMeToken"/>
                 <wf:action ref="grantIdToken"/>
                 <wf:action ref="redirectToClient"/>
-                <wf:action ref="redirect"/>
             </wf:on-entry>
         </wf:end-state>
 

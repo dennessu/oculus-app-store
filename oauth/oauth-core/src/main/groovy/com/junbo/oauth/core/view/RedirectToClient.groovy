@@ -17,6 +17,8 @@ import groovy.transform.CompileStatic
 import org.springframework.util.StringUtils
 import org.springframework.web.util.UriComponentsBuilder
 
+import javax.ws.rs.core.Response
+
 /**
  * RedirectToClient.
  */
@@ -79,7 +81,9 @@ class RedirectToClient implements Action {
             }
         }
 
-        contextWrapper.redirectUriBuilder = uriBuilder
+        contextWrapper.responseBuilder = Response.status(Response.Status.FOUND)
+                .location(uriBuilder.build().toUri())
+
         return Promise.pure(null)
     }
 }

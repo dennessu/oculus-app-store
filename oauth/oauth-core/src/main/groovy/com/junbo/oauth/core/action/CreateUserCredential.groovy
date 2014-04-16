@@ -65,11 +65,11 @@ class CreateUserCredential implements Action {
             return Promise.pure(null)
         }.then { UserCredential newUserCredential ->
             if (newUserCredential == null) {
-                return Promise.pure('error')
+                return Promise.pure(new ActionResult('error'))
             }
 
             contextWrapper.userCredential = newUserCredential
-            return Promise.pure(null)
+            return Promise.pure(new ActionResult('success'))
         }
     }
 }
