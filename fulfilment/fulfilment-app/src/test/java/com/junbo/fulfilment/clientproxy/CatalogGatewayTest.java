@@ -27,7 +27,7 @@ public class CatalogGatewayTest extends BaseTest {
     @Autowired
     private CatalogGateway gateway;
 
-    @Test(enabled = false)
+    @Test(enabled = true)
     public void testBVT() {
         Offer offer = new Offer();
         offer.setOwnerId(123L);

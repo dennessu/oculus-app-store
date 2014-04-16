@@ -62,12 +62,10 @@ public class MockCatalogGatewayImpl extends CatalogGatewayImpl {
             add(new ItemEntry() {{
                 setItemId(10000L);
                 setQuantity(888);
-                setSku(11111L);
             }});
             add(new ItemEntry() {{
                 setItemId(20000L);
                 setQuantity(999);
-                setSku(22222L);
             }});
         }});
 
@@ -106,7 +104,6 @@ public class MockCatalogGatewayImpl extends CatalogGatewayImpl {
             add(new ItemEntry() {{
                 setItemId(30000L);
                 setQuantity(1);
-                setSku(null);
             }});
         }});
 
@@ -145,7 +142,6 @@ public class MockCatalogGatewayImpl extends CatalogGatewayImpl {
             add(new ItemEntry() {{
                 setItemId(40000L);
                 setQuantity(77);
-                setSku(44444L);
             }});
         }});
 
@@ -178,7 +174,6 @@ public class MockCatalogGatewayImpl extends CatalogGatewayImpl {
             add(new ItemEntry() {{
                 setItemId(50000L);
                 setQuantity(9);
-                setSku(55555L);
             }});
         }});
 
