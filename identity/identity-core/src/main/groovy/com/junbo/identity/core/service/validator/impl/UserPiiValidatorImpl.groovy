@@ -149,7 +149,7 @@ class UserPiiValidatorImpl implements UserPiiValidator {
 
     private Promise<Object> checkAddressBook(UserPii userPii) {
         if (userPii.addressBook != null) {
-            Promise.each (userPii.addressBook.iterator(), new Promise.Func<AddressId, Promise<Object>>() {
+            return Promise.each (userPii.addressBook.iterator(), new Promise.Func<AddressId, Promise<Object>>() {
                 @Override
                 Promise<Object> apply(AddressId addressId) {
                     return addressValidator.validateForGet(addressId).then { Address address ->
