@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns="http://www.springframework.org/schema/beans"
        xmlns:wf="http://www.junbo.com/schema/webflow"
+       xmlns="http://www.springframework.org/schema/beans"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.junbo.com/schema/webflow http://www.junbo.com/schema/webflow-config/webflow.xsd">
 
@@ -23,7 +23,7 @@
 
         <wf:action-state id="passwordBranch">
             <wf:action ref="validateScope"/>
-            <wf:action ref="authenticateUser"/>
+            <wf:action ref="authenticateUserToken"/>
             <wf:action ref="grantTokenByPassword"/>
             <wf:transition on="grantRefreshToken" to="grantRefreshToken"/>
         </wf:action-state>
@@ -51,5 +51,10 @@
             </wf:on-entry>
         </wf:end-state>
     </wf:flow>
+
+    <bean id="authenticateUserToken" class="com.junbo.oauth.core.action.AuthenticateUser">
+        <property name="userService" ref="userService"/>
+        <property name="rethrowException" value="true"/>
+    </bean>
 
 </beans>

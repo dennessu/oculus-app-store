@@ -55,14 +55,21 @@ class CreateUserCredential implements Action {
                 type: 'password'
         )
 
-        try {
-            userCredentialResource.create((UserId) user.id, userCredential).then { UserCredential newUserCredential ->
-                contextWrapper.userCredential = newUserCredential
-                return Promise.pure(null)
+        userCredentialResource.create((UserId) user.id, userCredential).recover { Throwable throwable ->
+            if (throwable instanceof AppErrorException) {
+                contextWrapper.errors.add(((AppErrorException) throwable).error.error())
+            } else {
+                contextWrapper.errors.add(AppExceptions.INSTANCE.errorCallingIdentity().error())
             }
-        } catch (AppErrorException e) {
-            contextWrapper.errors.add(e.error.error())
-            return Promise.pure(new ActionResult('error'))
+
+            return Promise.pure(null)
+        }.then { UserCredential newUserCredential ->
+            if (newUserCredential == null) {
+                return Promise.pure('error')
+            }
+
+            contextWrapper.userCredential = newUserCredential
+            return Promise.pure(null)
         }
     }
 }

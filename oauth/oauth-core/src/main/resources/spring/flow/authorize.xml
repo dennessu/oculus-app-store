@@ -32,7 +32,8 @@
             <wf:on-render>
                 <wf:action ref="redirectToLogin"/>
             </wf:on-render>
-            <wf:transition on="*" to="LOGIN_VIEW"/>
+            <wf:transition on="login" to="LOGIN_VIEW"/>
+            <wf:transition on="register" to="REGISTER_VIEW"/>
         </wf:view-state>
 
         <wf:view-state id="LOGIN_VIEW">
@@ -40,12 +41,39 @@
                 <wf:action ref="loginView"/>
             </wf:on-render>
             <wf:transition on="next" to="LOGIN_SUCCESS">
-                <wf:action ref="authenticateUser"/>
+                <wf:action ref="authenticateUserAuthorize"/>
             </wf:transition>
             <wf:transition on="cancel" to="CANCEL_VIEW"/>
         </wf:view-state>
 
         <wf:view-state id="LOGIN_SUCCESS">
+            <wf:on-render>
+                <wf:action ref="redirectToAuth"/>
+            </wf:on-render>
+            <wf:transition on="*" to="CHECK_CONSENT">
+                <wf:action ref="saveLoginState"/>
+            </wf:transition>
+        </wf:view-state>
+
+        <wf:view-state id="REGISTER_VIEW">
+            <wf:on-render>
+                <wf:action ref="registerView"/>
+            </wf:on-render>
+            <wf:transition on="next" to="REGISTER_USER">
+                <wf:action ref="validateRegister"/>
+            </wf:transition>
+            <wf:transition on="cancel" to="CANCEL_VIEW"/>
+        </wf:view-state>
+
+        <wf:action-state id="REGISTER_USER">
+            <wf:action ref="createUser"/>
+            <wf:action ref="createUserCredential"/>
+            <wf:action ref="createUserPii"/>
+            <wf:transition on="error" to="REGISTER_VIEW"/>
+            <wf:transition on="*" to="REGISTER_SUCCESS"/>
+        </wf:action-state>
+
+        <wf:view-state id="REGISTER_SUCCESS">
             <wf:on-render>
                 <wf:action ref="redirectToAuth"/>
             </wf:on-render>
@@ -130,7 +158,6 @@
 
     <bean id="validateNonce" class="com.junbo.oauth.core.action.ValidateNonce"/>
 
-
     <bean id="loadIdTokenHint" class="com.junbo.oauth.core.action.LoadIdTokenHint">
         <property name="tokenService" ref="tokenService"/>
     </bean>
@@ -153,8 +180,9 @@
     <bean id="loginView" class="com.junbo.oauth.core.view.LoginView">
     </bean>
 
-    <bean id="authenticateUser" class="com.junbo.oauth.core.action.AuthenticateUser">
+    <bean id="authenticateUserAuthorize" class="com.junbo.oauth.core.action.AuthenticateUser">
         <property name="userService" ref="userService"/>
+        <property name="rethrowException" value="false"/>
     </bean>
 
     <bean id="redirectToAuth" class="com.junbo.oauth.core.view.RedirectToAuthView"/>
@@ -162,7 +190,6 @@
     <bean id="saveLoginState" class="com.junbo.oauth.core.action.SaveLoginState">
         <property name="loginStateRepository" ref="loginStateRepository"/>
     </bean>
-
 
     <bean id="validateConsent" class="com.junbo.oauth.core.action.ValidateConsent">
         <property name="consentRepository" ref="consentRepository"/>
@@ -184,9 +211,27 @@
     <bean id="redirectToClient" class="com.junbo.oauth.core.view.RedirectToClient">
     </bean>
 
-
     <bean id="accessDenied" class="com.junbo.oauth.core.view.RedirectToClientError">
         <property name="errorMessage" value="access_denied"/>
     </bean>
 
+    <bean id="redirectToRegister" class="com.junbo.oauth.core.view.RedirectToPage">
+        <property name="pageUrl" value="${oauth.core.portal.registerUri}"/>
+    </bean>
+
+    <bean id="registerView" class="com.junbo.oauth.core.view.RegisterView"/>
+
+    <bean id="createUser" class="com.junbo.oauth.core.action.CreateUser">
+        <property name="userResource" ref="userResource"/>
+    </bean>
+
+    <bean id="createUserCredential" class="com.junbo.oauth.core.action.CreateUserCredential">
+        <property name="userCredentialResource" ref="userCredentialResource"/>
+    </bean>
+
+    <bean id="createUserPii" class="com.junbo.oauth.core.action.CreateUserPii">
+        <property name="userPiiResource" ref="userPiiResource"/>
+    </bean>
+
+    <bean id="validateRegister" class="com.junbo.oauth.core.action.ValidateRegister"/>
 </beans>

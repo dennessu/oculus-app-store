@@ -25,7 +25,7 @@ class RegisterView extends AbstractView {
                 model: [
                         'clientId': contextWrapper.client.clientId
                 ] as Map<String, Object>,
-                errors: contextWrapper.errors
+                errors: contextWrapper.errors.unique(new ErrorComparator()).asList()
         )
 
         return Promise.pure(model)
