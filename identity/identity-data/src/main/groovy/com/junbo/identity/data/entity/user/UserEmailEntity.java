@@ -6,7 +6,6 @@
 package com.junbo.identity.data.entity.user;
 
 import com.junbo.common.util.Identifiable;
-import com.junbo.identity.data.entity.common.ResourceMetaEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,7 +17,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "user_email")
-public class UserEmailEntity extends ResourceMetaEntity implements Identifiable<Long> {
+public class UserEmailEntity implements Identifiable<Long> {
     @Id
     @Column(name = "id")
     private Long id;

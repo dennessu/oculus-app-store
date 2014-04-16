@@ -1,5 +1,6 @@
 package com.junbo.identity.core.service.validator.impl
 
+import com.junbo.common.id.AddressId
 import com.junbo.common.id.UserPiiId
 import com.junbo.identity.core.service.validator.*
 import com.junbo.identity.data.repository.UserPiiRepository
@@ -29,6 +30,7 @@ class UserPiiValidatorImpl implements UserPiiValidator {
     private UserPhoneNumberValidator userPhoneNumberValidator
     private BirthdayValidator birthdayValidator
     private DisplayNameValidator displayNameValidator
+    private AddressValidator addressValidator
 
     private List<String> allowedGenders
 
@@ -169,6 +171,12 @@ class UserPiiValidatorImpl implements UserPiiValidator {
             }
         }
 
+        if (userPii.addressBook != null) {
+            userPii.addressBook.each { AddressId addressId ->
+                addressValidator.validateForGet(addressId)
+            }
+        }
+
         if (userPii.userId == null) {
             throw AppErrors.INSTANCE.fieldRequired('userId').exception()
         }
@@ -222,6 +230,11 @@ class UserPiiValidatorImpl implements UserPiiValidator {
     @Required
     void setDisplayNameValidator(DisplayNameValidator displayNameValidator) {
         this.displayNameValidator = displayNameValidator
+    }
+
+    @Required
+    void setAddressValidator(AddressValidator addressValidator) {
+        this.addressValidator = addressValidator
     }
 
     @Required

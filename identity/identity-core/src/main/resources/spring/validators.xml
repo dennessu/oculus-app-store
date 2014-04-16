@@ -317,6 +317,7 @@
         <property name="userPhoneNumberValidator" ref="userPhoneNumberValidator" />
         <property name="userPiiRepository" ref="userPiiRepository" />
         <property name="userRepository" ref="userRepository" />
+        <property name="addressValidator" ref="addressValidator" />
     </bean>
 
     <bean id="addressValidator" class="com.junbo.identity.core.service.validator.impl.AddressValidatorImpl">
