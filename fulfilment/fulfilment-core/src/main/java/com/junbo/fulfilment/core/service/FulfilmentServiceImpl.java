@@ -246,7 +246,7 @@ public class FulfilmentServiceImpl extends TransactionSupport implements Fulfilm
 
         // expand sub offers
         for (LinkedEntry entry : offer.getSubOffers()) {
-            Offer subOffer = catalogGateway.getOffer(entry.getId());
+            Offer subOffer = catalogGateway.getOffer(entry.getId(), fulfilmentItem.getTimestamp());
             _distill(subOffer, copyCount * entry.getQuantity(), fulfilmentItem);
         }
     }
