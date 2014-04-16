@@ -29,7 +29,7 @@ public class CatalogGatewayTest extends BaseTest {
     @Qualifier("offerRevisionClient")
     private OfferRevisionResource offerRevisionResource;
 
-    @Test
+    //@Test
     public void testCreate() throws Exception {
         OfferRevisionsGetOptions options = new OfferRevisionsGetOptions();
         //options.setOfferIds(Arrays.asList(new OfferId(503332864L)));
