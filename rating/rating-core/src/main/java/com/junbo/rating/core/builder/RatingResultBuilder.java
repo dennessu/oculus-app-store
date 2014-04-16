@@ -23,6 +23,7 @@ public class RatingResultBuilder {
         result.setUserId(context.getUserId());
         result.setCurrency(context.getCurrency().getCode());
         result.setLineItems(new HashSet<RatingItem>());
+        result.setShippingMethodId(context.getDefaultShippingMethod());
 
         //build offer level results
         for (RatingResultEntry entry : context.getEntries()) {
