@@ -43,7 +43,7 @@ public class Subscription {
 
     private String source;
 
-    private String anniversaryDay;
+    private Integer anniversaryDay;
 
     public Subscription() {
     }
@@ -106,7 +106,7 @@ public class Subscription {
         return subscriptionId;
     }
 
-    public String getAnniversaryDay() { return anniversaryDay; }
+    public Integer getAnniversaryDay() { return anniversaryDay; }
 
-    public void setAnniversaryDay(String anniversaryDay) { this.anniversaryDay = anniversaryDay; }
+    public void setAnniversaryDay(Integer anniversaryDay) { this.anniversaryDay = anniversaryDay; }
 }

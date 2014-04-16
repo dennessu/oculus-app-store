@@ -1,8 +1,11 @@
 package com.junbo.order.db.repo
 
 import com.junbo.common.id.OfferId
+import com.junbo.common.id.OrderId
+import com.junbo.common.id.OrderItemId
 import com.junbo.common.id.PaymentInstrumentId
 import com.junbo.common.id.ShippingAddressId
+import com.junbo.common.id.UserId
 import com.junbo.oom.core.MappingContext
 import com.junbo.order.db.BaseTest
 import com.junbo.order.db.common.TestHelper
@@ -35,6 +38,7 @@ class OrderRepositoryTest extends BaseTest {
     void testUpdateOrder() {
         def order = createOrder()
         orderRepository.createOrder(order)
+
         verifyByRead(order)
 
         // add order item, discount, paymentId
@@ -118,7 +122,9 @@ class OrderRepositoryTest extends BaseTest {
     }
 
     private Order createOrder() {
-        def order = modelMapper.toOrderModel(TestHelper.generateOrder(), new MappingContext())
+        def orderEntity = TestHelper.generateOrder()
+        orderEntity.setUserId(idGenerator.nextId(UserId.class));
+        def order = modelMapper.toOrderModel(orderEntity, new MappingContext())
         order.id = null
         order.orderItems = [ createOrderItem(), createOrderItem()]
         order.discounts = [

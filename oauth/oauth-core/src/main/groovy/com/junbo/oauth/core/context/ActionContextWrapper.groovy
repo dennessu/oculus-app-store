@@ -5,6 +5,9 @@
  */
 package com.junbo.oauth.core.context
 
+import com.junbo.identity.spec.v1.model.User
+import com.junbo.identity.spec.v1.model.UserCredential
+import com.junbo.identity.spec.v1.model.UserPii
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.oauth.spec.model.*
 import groovy.transform.CompileStatic
@@ -38,6 +41,11 @@ class ActionContextWrapper {
     public static final String TOKEN_INFO = 'token_info'
     public static final String CONSENT = 'consent'
     public static final String ERRORS = 'errors'
+    public static final String USER = 'user'
+    public static final String USER_CREDENTIAL = 'user_credential'
+    public static final String USER_PII = 'user_pii'
+    public static final String DOB = 'dob'
+    public static final String GENDER = 'gender'
 
     @Delegate
     private final ActionContext actionContext
@@ -224,5 +232,45 @@ class ActionContextWrapper {
 
     void setErrors(List<com.junbo.common.error.Error> errors) {
         actionContext.flashScope[ERRORS] = errors
+    }
+
+    User getUser() {
+        return (User) actionContext.requestScope[USER]
+    }
+
+    void setUser(User user) {
+        actionContext.requestScope[USER] = user
+    }
+
+    UserCredential getUserCredential() {
+        return (UserCredential) actionContext.requestScope[USER_CREDENTIAL]
+    }
+
+    void setUserCredential(UserCredential userCredential) {
+        actionContext.requestScope[USER_CREDENTIAL] = userCredential
+    }
+
+    UserPii getUserPii() {
+        return (UserPii) actionContext.requestScope[USER_PII]
+    }
+
+    void setUserPii(UserPii userPii) {
+        actionContext.requestScope[USER_PII] = userPii
+    }
+
+    Date getDob() {
+        return (Date) actionContext.requestScope[DOB]
+    }
+
+    void setDob(Date dob) {
+        actionContext.requestScope[DOB] = dob
+    }
+
+    Gender getGender() {
+        return (Gender) actionContext.requestScope[GENDER]
+    }
+
+    void setGender(Gender gender) {
+        actionContext.requestScope[GENDER] = gender
     }
 }

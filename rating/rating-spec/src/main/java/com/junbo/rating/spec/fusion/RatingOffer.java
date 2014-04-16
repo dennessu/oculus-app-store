@@ -14,14 +14,13 @@ import java.util.*;
 public class RatingOffer {
     private Long id;
 
-    private Map<String, Price> prices;
+    private Price price;
     private List<Long> categories;
 
     private List<LinkedEntry> items;
     private List<LinkedEntry> subOffers;
 
     public RatingOffer() {
-        prices = new HashMap<>();
         categories = new ArrayList<>();
         items = new ArrayList<>();
         subOffers = new ArrayList<>();
@@ -35,12 +34,12 @@ public class RatingOffer {
         this.id = id;
     }
 
-    public Map<String, Price> getPrices() {
-        return prices;
+    public Price getPrice() {
+        return price;
     }
 
-    public void setPrices(Map<String, Price> prices) {
-        this.prices = prices;
+    public void setPrice(Price price) {
+        this.price = price;
     }
 
     public List<Long> getCategories() {

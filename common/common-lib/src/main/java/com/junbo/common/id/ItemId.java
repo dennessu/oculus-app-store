@@ -9,6 +9,7 @@ package com.junbo.common.id;
 /**
  * Created by liangfu on 3/9/14.
  */
+@IdResourcePath("/items/{0}")
 public class ItemId extends Id {
     public ItemId(){
 

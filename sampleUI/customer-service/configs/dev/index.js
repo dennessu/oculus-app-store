@@ -1,7 +1,7 @@
 module.exports = {
 
     RunProcessNumber: 2, // useful for cluster launch
-    Localhost: "localhost",
+    Localhost: "csr.oculusvr-demo.com",
     ListenOnPort: 3000,
 
     Identity_API_Host: "127.0.0.1",

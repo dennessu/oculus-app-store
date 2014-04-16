@@ -10,10 +10,7 @@ import com.junbo.order.db.ValidationMessages;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -70,5 +67,11 @@ public class OrderPaymentInfoEntity extends CommonDbEntityDeletable {
 
     public void setPaymentInstrumentType(String paymentInstrumentType) {
         this.paymentInstrumentType = paymentInstrumentType;
+    }
+
+    @Override
+    @Transient
+    public Long getShardId() {
+        return orderId;
     }
 }

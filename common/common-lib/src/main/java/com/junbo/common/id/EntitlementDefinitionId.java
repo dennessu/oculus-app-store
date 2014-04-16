@@ -9,6 +9,7 @@ package com.junbo.common.id;
 /**
  * Java doc.
  */
+@IdResourcePath("/entitlement-definitions/{0}")
 public class EntitlementDefinitionId extends Id {
 
     public EntitlementDefinitionId() {}

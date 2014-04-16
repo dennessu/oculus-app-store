@@ -11,6 +11,7 @@ dependencies {
     compile (libraries.common_lib)
 
     compile 'com.junbo.identity:identity-spec:0.0.1-SNAPSHOT'
+    testCompile (libraries.spring_test)
 
     processor (libraries.langur_processor)
     processor (libraries.log4j)

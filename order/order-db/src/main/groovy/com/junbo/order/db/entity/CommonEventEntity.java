@@ -14,7 +14,7 @@ import javax.persistence.MappedSuperclass;
  * Created by chriszhu on 1/27/14.
  */
 @MappedSuperclass
-public class CommonEventEntity extends CommonDbEntityWithDate {
+public abstract class CommonEventEntity extends CommonDbEntityWithDate {
     private Long eventId;
 
     @Id

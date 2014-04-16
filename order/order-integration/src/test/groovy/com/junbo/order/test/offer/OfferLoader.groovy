@@ -1,7 +1,8 @@
 package com.junbo.order.test.offer
 
 import com.junbo.catalog.spec.model.item.Item
-import com.junbo.catalog.spec.model.offer.*
+import com.junbo.catalog.spec.model.offer.ItemEntry
+import com.junbo.catalog.spec.model.offer.Offer
 import com.junbo.common.id.ItemId
 import com.junbo.common.id.OfferId
 import com.junbo.order.test.ServiceFacade
@@ -11,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.ApplicationContext
 import org.springframework.context.support.ClassPathXmlApplicationContext
 import org.springframework.stereotype.Component
-
 /**
  * Created by fzhang on 14-3-19.
  */
@@ -35,87 +35,87 @@ class OfferLoader {
 
     void loadOffers() {
         def owner = serviceFacade.postUser().id
-        createOffer(
-            new Offer(
-                    name: '3D Parking Simulator',
-                    ownerId: owner.value,
-                    categories: [123],
-                    prices: [US:new Price(amount: 9.99, currency: 'USD')],
-                    subOffers: [],
-                    events: [],
-                    localeProperties: [
-                        DEFAULT: [
-                            description: '3D Parking Simulator is a VR driving simulator specialized for parking.'
-                        ]
-                    ],
-                    properties: [
-                        mainImage: 'the img url'
-                    ]
-            ),
-            [
-                    new Item(
-                        name: 'Angry Bird',
-                        type: 'APP',
-                        status: 'Design',
-                        ownerId: owner.value,
-                        skus:[],
-                        properties: [
-                            gameModes: 'Single-Player',
-                            platforms: 'Mac, Windows, Linux',
-                            minSystemRequirements: 'Windows 7 or later (64 bit)',
-                            description: '3D Parking Simulator is a VR driving simulator specialized for parking..'
-                        ]
-
-                    )
-            ]
-        )
-
-        createOffer(
-                new Offer(
-                        name: 'Oculus VR',
-                        ownerId: owner.value,
-                        status: 'Design',
-                        categories: [123],
-                        prices: [US:new Price(amount: 229.99, currency: 'USD')],
-                        subOffers: [],
-                        events: [
-                                new Event
-                                (
-                                        name: 'PURCHASE',
-                                        actions: [
-                                                new Action (
-                                                        type: 'DELIVER_PHYSICAL_GOODS',
-                                                        properties: [
-                                                                tag: 'item001_ANGRY.BIRD_ONLINE_ACCESS',
-                                                                group: 'Angry Bird',
-                                                                type: 'ONLINE_ACCESS',
-                                                                duration: '3Month'
-                                                        ]
-                                                )
-                                        ]
-                                )
-                        ],
-                        localeProperties: [
-                                DEFAULT: [
-                                        description: '3D Parking Simulator is a VR driving simulator specialized for parking.'
-                                ]
-                        ],
-                        properties: [
-                                mainImage: 'the img url'
-                        ]
-                ),
-                [
-                        new Item(
-                                name: 'Oculus VR',
-                                type: 'PHYSICAL',
-                                status: 'Design',
-                                ownerId: owner.value,
-                                skus:[],
-                                properties: [:]
-
-                        )
-                ]
-        )
+//        createOffer(
+//            new OfferRevision(
+//                    name: new LocalizableProperty().set('name', '3D Parking Simulator'),
+//                    ownerId: owner.value,
+//                    //categories: [123],
+//                    price: new Price(amount: 9.99, currency: 'USD'),
+//                    subOffers: [],
+//                    events: [],
+//                    localeProperties: [
+//                        DEFAULT: [
+//                            description: '3D Parking Simulator is a VR driving simulator specialized for parking.'
+//                        ]
+//                    ],
+//                    properties: [
+//                        mainImage: 'the img url'
+//                    ]
+//            ),
+//            [
+//                    new Item(
+//                        name: 'Angry Bird',
+//                        type: 'APP',
+//                        status: 'Design',
+//                        ownerId: owner.value,
+//                        skus:[],
+//                        properties: [
+//                            gameModes: 'Single-Player',
+//                            platforms: 'Mac, Windows, Linux',
+//                            minSystemRequirements: 'Windows 7 or later (64 bit)',
+//                            description: '3D Parking Simulator is a VR driving simulator specialized for parking..'
+//                        ]
+//
+//                    )
+//            ]
+//        )
+//
+//        createOffer(
+//                new Offer(
+//                        name: 'Oculus VR',
+//                        ownerId: owner.value,
+//                        status: 'Design',
+//                        categories: [123],
+//                        prices: [US:new Price(amount: 229.99, currency: 'USD')],
+//                        subOffers: [],
+//                        events: [
+//                                new Event
+//                                (
+//                                        name: 'PURCHASE',
+//                                        actions: [
+//                                                new Action (
+//                                                        type: 'DELIVER_PHYSICAL_GOODS',
+//                                                        properties: [
+//                                                                tag: 'item001_ANGRY.BIRD_ONLINE_ACCESS',
+//                                                                group: 'Angry Bird',
+//                                                                type: 'ONLINE_ACCESS',
+//                                                                duration: '3Month'
+//                                                        ]
+//                                                )
+//                                        ]
+//                                )
+//                        ],
+//                        localeProperties: [
+//                                DEFAULT: [
+//                                        description: '3D Parking Simulator is a VR driving simulator specialized for parking.'
+//                                ]
+//                        ],
+//                        properties: [
+//                                mainImage: 'the img url'
+//                        ]
+//                ),
+//                [
+//                        new Item(
+//                                name: 'Oculus VR',
+//                                type: 'PHYSICAL',
+//                                status: 'Design',
+//                                ownerId: owner.value,
+//                                skus:[],
+//                                properties: [:]
+//
+//                        )
+//                ]
+//        )
     }
 
     Offer createOffer(Offer offer, List<Item> items) {

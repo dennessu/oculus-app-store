@@ -1,5 +1,5 @@
 package com.junbo.order.core.impl.orderaction
-import com.junbo.identity.spec.model.user.User
+import com.junbo.identity.spec.v1.model.User
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
@@ -39,7 +39,7 @@ class ValidateUserAction implements Action {
                 throw AppErrors.INSTANCE.userNotFound(
                         context?.orderServiceContext?.order?.user?.value?.toString()).exception()
             }
-            if (user.status != 'ACTIVE') {
+            if (!user.active) {
                 LOGGER.info('name=Validate_User_Invalid')
                 throw AppErrors.INSTANCE.userStatusInvalid().exception()
             }

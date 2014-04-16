@@ -9,8 +9,10 @@ import org.glassfish.jersey.server.monitoring.ApplicationEvent;
 import org.glassfish.jersey.server.monitoring.ApplicationEventListener;
 import org.glassfish.jersey.server.monitoring.RequestEvent;
 import org.glassfish.jersey.server.monitoring.RequestEventListener;
+import com.junbo.configuration.ConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.container.CompletionCallback;
@@ -24,6 +26,9 @@ import javax.ws.rs.ext.Provider;
 @Provider
 public class RestExceptionMapper implements ExceptionMapper<Exception>, ApplicationEventListener {
 
+    @Autowired
+    private ConfigService configService;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(RestExceptionMapper.class);
 
     @Override
@@ -33,6 +38,9 @@ public class RestExceptionMapper implements ExceptionMapper<Exception>, Applicat
             return ((WebApplicationException) exception).getResponse();
         }
 
+        if ("true".equalsIgnoreCase(configService.getConfigValue("common.conf.debugMode"))) {
+            return ERRORS.internalServerError(exception.getMessage(), exception).exception().getResponse();
+        }
         return ERRORS.internalServerError().exception().getResponse();
     }
 
@@ -59,7 +67,10 @@ public class RestExceptionMapper implements ExceptionMapper<Exception>, Applicat
      */
     public interface Errors {
 
-        @ErrorDef(httpStatusCode = 500, code = "20001", description = "Internal Server Error")
+        @ErrorDef(httpStatusCode = 500, code = "20001", description = "Internal Server Error : {0}. Exception : {1}.")
+        AppError internalServerError(String message, Exception e);
+
+        @ErrorDef(httpStatusCode = 500, code = "20001", description = "Internal Server Error.")
         AppError internalServerError();
     }
 }

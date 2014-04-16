@@ -9,6 +9,7 @@ package com.junbo.common.id;
 /**
  * Java doc for subledgerId.
  */
+@IdResourcePath("/subledgers/{0}")
 public class SubledgerId extends Id {
 
     public SubledgerId() {}

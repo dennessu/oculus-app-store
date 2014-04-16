@@ -197,6 +197,22 @@ var Utils = {
         }
     },
 
+    QueryString: {
+        GetArray: function () {
+            var result = location.search.match(new RegExp("[\?\&][^\?\&]+=[^\?\&]+", "g"));
+            if (result == null) return [];
+            for (var i = 0; i < result.length; i++) {
+                result[i] = result[i].substring(1);
+            }
+            return result;
+        },
+        Get: function (name) {
+            var result = location.search.match(new RegExp("[\?\&]" + name + "=([^\&]+)", "i"));
+            if (result == null || result.length < 1) return null;
+            return result[1];
+        }
+    },
+
     SettingHandler: function(settingModels){
         if(settingModels !== undefined && settingModels != null && settingModels != ""){
             for(var i  = 0; i < settingModels.length; ++i){

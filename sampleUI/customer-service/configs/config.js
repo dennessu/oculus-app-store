@@ -14,14 +14,7 @@ var Configs = {
 
         UserId: "user_id",
         Username: "username",
-        CartId: "cart_id",
-        ShippingId: "shipping_id",
-        ShippingMethodId: "shipping_method_id",
-        PaymentId: "payment_id",
-        OrderId: "order_id",
-
-        IsDev: "is_dev",
-        BeforeRoute: "before_route"
+        CustomerId: "customer_id"
     },
     QueryStrings: {
         Code: "code",
@@ -88,7 +81,9 @@ var Configs = {
 
         TokenInfoUser: "sub",
         ProfileFirstname: "firstName",
-        ProfileLastname: "lastName"
+        ProfileLastname: "lastName",
+
+        Results: "results"
     },
     SaveQueryStringArray: ["cid", "event", "id_token", "access_token", "redirect_url"],
 

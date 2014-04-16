@@ -9,6 +9,7 @@ package com.junbo.common.id;
 /**
  * PriceTierId.
  */
+@IdResourcePath("/price-tiers/{0}")
 public class PriceTierId extends Id {
 
     public PriceTierId() {}

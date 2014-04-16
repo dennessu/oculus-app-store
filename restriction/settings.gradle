@@ -1,0 +1,9 @@
+include 'restriction-spec'
+
+include 'restriction-common'
+include 'restriction-core'
+include 'restriction-rest'
+
+include 'restriction-clientproxy'
+
+include 'restriction-app'

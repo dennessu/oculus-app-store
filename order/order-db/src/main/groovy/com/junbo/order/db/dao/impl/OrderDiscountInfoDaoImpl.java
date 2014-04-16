@@ -20,7 +20,7 @@ import java.util.List;
 @Repository("orderDiscountDao")
 public class OrderDiscountInfoDaoImpl extends BaseDaoImpl<OrderDiscountInfoEntity> implements OrderDiscountInfoDao {
     public List<OrderDiscountInfoEntity> readByOrderId(final Long orderId) {
-        Criteria criteria = this.getSession().createCriteria(OrderDiscountInfoEntity.class);
+        Criteria criteria = this.getSession(orderId).createCriteria(OrderDiscountInfoEntity.class);
         criteria.add(Restrictions.eq("orderId", orderId));
         criteria.add(Restrictions.eq("deleted", false));
         return criteria.list();

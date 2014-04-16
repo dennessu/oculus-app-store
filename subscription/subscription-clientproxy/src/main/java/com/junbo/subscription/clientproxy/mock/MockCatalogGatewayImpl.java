@@ -6,9 +6,11 @@
 
 package com.junbo.subscription.clientproxy.mock;
 
+import com.junbo.catalog.spec.model.common.Price;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.offer.ItemEntry;
 import com.junbo.catalog.spec.model.offer.Offer;
+import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.subscription.clientproxy.impl.CatalogGatewayImpl;
 
 import java.util.ArrayList;
@@ -27,6 +29,16 @@ public class MockCatalogGatewayImpl extends CatalogGatewayImpl {
 
         return mockOffer;
     }
+    @Override
+    protected OfferRevision retrieveOfferRev(Long offerRevId){
+        OfferRevision mockOfferRev = getSubsOfferRev();
+        if (mockOfferRev == null) {
+            throw new RuntimeException("offer [" + mockOfferRev + "] not prepared in mock");
+        }
+
+        return mockOfferRev;
+    }
+
 
     @Override
     protected Item retrieveItem(Long itemId){
@@ -40,11 +52,25 @@ public class MockCatalogGatewayImpl extends CatalogGatewayImpl {
 
     private Offer getSubsOffer() {
         Offer offer = new Offer();
-        offer.setId(1L);
-        offer.setName("Subs Offer");
-        offer.setPriceType("Free");
+        offer.setOfferId(1L);
+        //offer.setName("Subs Offer");
+        //offer.setPriceType("Free");
 
-        offer.setItems(new ArrayList<ItemEntry>() {{
+        offer.setCurrentRevisionId(2L);
+
+        return offer;
+    }
+
+    private OfferRevision getSubsOfferRev() {
+        OfferRevision offerRev = new OfferRevision();
+        offerRev.setOfferId(1L);
+        offerRev.setRevisionId(2L);
+        //offerRev.setName("Subs Offer");
+        Price price = new Price();
+        price.setPriceType(Price.FREE);
+        offerRev.setPrice(price);
+
+        offerRev.setItems(new ArrayList<ItemEntry>() {{
             add(new ItemEntry() {{
                 setItemId(456L);
                 setQuantity(1);
@@ -52,12 +78,12 @@ public class MockCatalogGatewayImpl extends CatalogGatewayImpl {
             }});
         }});
 
-        return offer;
+        return offerRev;
     }
 
     private Item getSubsItem() {
         return new Item() {{
-            setId(456L);
+            setItemId(456L);
             setType("SUBSCRIPTION");
         }};
     }

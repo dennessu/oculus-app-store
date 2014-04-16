@@ -16,6 +16,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
@@ -94,5 +95,11 @@ public class OrderItemFulfillmentEventEntity extends CommonEventEntity{
 
     public void setStatus(EventStatus statusId) {
         this.status = statusId;
+    }
+
+    @Override
+    @Transient
+    public Long getShardId() {
+        return orderItemId;
     }
 }

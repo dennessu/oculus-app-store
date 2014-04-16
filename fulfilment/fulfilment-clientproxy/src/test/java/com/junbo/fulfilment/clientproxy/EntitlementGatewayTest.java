@@ -21,7 +21,7 @@ public class EntitlementGatewayTest extends BaseTest {
     @Test(enabled = false)
     public void testBVT() {
         Entitlement entitlement = new Entitlement();
-        entitlement.setUserId(12345L);
+        entitlement.setUserId(33570816L);
         entitlement.setOfferId(99999L);
         entitlement.setGrantDate(Utils.now());
         entitlement.setGroup("TEST_GROUP");
