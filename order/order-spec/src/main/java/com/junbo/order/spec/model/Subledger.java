@@ -20,7 +20,6 @@ public class Subledger extends BaseModelWithDate {
     @JsonProperty("self")
     private SubledgerId subledgerId;
     private UserId sellerId;
-    private Long sellerTaxProfileId;
     private OfferId offerId;
     private String payoutStatus;
     private Date startTime;
@@ -44,14 +43,6 @@ public class Subledger extends BaseModelWithDate {
 
     public void setSellerId(UserId sellerId) {
         this.sellerId = sellerId;
-    }
-
-    public Long getSellerTaxProfileId() {
-        return sellerTaxProfileId;
-    }
-
-    public void setSellerTaxProfileId(Long sellerTaxProfileId) {
-        this.sellerTaxProfileId = sellerTaxProfileId;
     }
 
     public OfferId getOfferId() {

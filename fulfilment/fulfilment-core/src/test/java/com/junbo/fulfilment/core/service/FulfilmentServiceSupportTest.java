@@ -11,7 +11,6 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 public class FulfilmentServiceSupportTest extends BaseTest {
     @Autowired
@@ -64,7 +63,7 @@ public class FulfilmentServiceSupportTest extends BaseTest {
         FulfilmentRequest request = new FulfilmentRequest();
         request.setRequester("SYSTEM");
         request.setTrackingGuid(generateUUID().toString());
-        request.setUserId(generateLong());
+        request.setUserId(generatedUserId());
         request.setOrderId(generateLong());
 
         request.setItems(new ArrayList() {{
