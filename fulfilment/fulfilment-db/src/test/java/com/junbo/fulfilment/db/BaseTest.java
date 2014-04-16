@@ -1,5 +1,6 @@
 package com.junbo.fulfilment.db;
 
+import com.junbo.sharding.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
@@ -12,6 +13,10 @@ import java.util.UUID;
 @ContextConfiguration(locations = {"classpath:spring/context-test.xml"})
 @TransactionConfiguration(defaultRollback = true)
 public abstract class BaseTest extends AbstractTransactionalTestNGSpringContextTests {
+    @Autowired
+    @Qualifier("oculus48IdGenerator")
+    private IdGenerator idGenerator;
+
     @Override
     @Autowired
     @Qualifier("fulfilmentDataSource")
@@ -24,6 +29,6 @@ public abstract class BaseTest extends AbstractTransactionalTestNGSpringContextT
     }
 
     protected long generateLong() {
-        return System.currentTimeMillis();
+        return idGenerator.nextId();
     }
 }
