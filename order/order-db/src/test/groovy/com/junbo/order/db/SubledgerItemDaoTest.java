@@ -55,8 +55,8 @@ public class SubledgerItemDaoTest extends BaseTest {
         SubledgerItemEntity entity = TestHelper.generateSubledgerItemEntity();
         entity.setSubledgerId(idGenerator.nextId(SubledgerId.class));
         entity.setSubledgerItemId(idGenerator.nextId(SubledgerItemId.class, entity.getSubledgerId()));
-        int sizeBeforeCreate = subledgerItemDao.getByStatus(entity.getStatus(), 0, 1).size();
+        int sizeBeforeCreate = subledgerItemDao.getByStatus(entity.getId(), entity.getStatus(), 0, 1).size();
         subledgerItemDao.create(entity);
-        Assert.assertEquals(subledgerItemDao.getByStatus(entity.getStatus(), 0, 1).size(), sizeBeforeCreate + 1);
+        Assert.assertEquals(subledgerItemDao.getByStatus(entity.getId(), entity.getStatus(), 0, 1).size(), sizeBeforeCreate + 1);
     }
 }

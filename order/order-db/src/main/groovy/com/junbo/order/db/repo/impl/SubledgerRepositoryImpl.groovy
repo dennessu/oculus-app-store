@@ -104,7 +104,7 @@ class SubledgerRepositoryImpl implements SubledgerRepository {
     @Override
     List<SubledgerItem> getSubledgerItem(String status, PageParam pageParam) {
         List<SubledgerItem> result = []
-        subledgerItemDao.getByStatus(
+        subledgerItemDao.getByStatus(0, // todo iterate all the shard
                 SubledgerItemStatus.valueOf(status),
                 pageParam.start, pageParam.count).each { SubledgerItemEntity entity ->
             result << modelMapper.toSubledgerItemModel(entity, new MappingContext())
