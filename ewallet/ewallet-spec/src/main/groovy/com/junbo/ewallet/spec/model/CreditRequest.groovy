@@ -27,6 +27,7 @@ class CreditRequest {
     @JsonProperty('offer')
     Long offerId
     BigDecimal amount
-    String type
+    String creditType
+    String walletType
     Date expirationDate
 }
