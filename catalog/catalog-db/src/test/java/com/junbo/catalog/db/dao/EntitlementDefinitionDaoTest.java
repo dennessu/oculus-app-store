@@ -7,7 +7,6 @@ package com.junbo.catalog.db.dao;
 
 import com.junbo.catalog.db.BaseTest;
 import com.junbo.catalog.db.entity.EntitlementDefinitionEntity;
-import com.junbo.catalog.spec.model.entitlementdef.EntitlementType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -26,7 +25,6 @@ public class EntitlementDefinitionDaoTest extends BaseTest {
         Assert.assertNotNull(createdDefinition);
     }
 
-
     private EntitlementDefinitionEntity buildADefinitionEntity() {
         EntitlementDefinitionEntity definitionEntity = new EntitlementDefinitionEntity();
         definitionEntity.setDeveloperId(generateId());
@@ -34,7 +32,6 @@ public class EntitlementDefinitionDaoTest extends BaseTest {
         definitionEntity.setGroup("TEST");
         definitionEntity.setConsumable(true);
         definitionEntity.setInAppContext(Collections.singletonList(String.valueOf(generateId())));
-        definitionEntity.setType(EntitlementType.DEFAULT);
         return definitionEntity;
     }
 }

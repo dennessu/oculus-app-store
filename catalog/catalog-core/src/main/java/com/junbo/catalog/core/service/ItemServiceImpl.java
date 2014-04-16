@@ -15,7 +15,6 @@ import com.junbo.catalog.spec.model.common.ExtensibleProperties;
 import com.junbo.catalog.spec.model.common.LocalizableProperty;
 import com.junbo.catalog.spec.model.common.Status;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
-import com.junbo.catalog.spec.model.entitlementdef.EntitlementType;
 import com.junbo.catalog.spec.model.item.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
@@ -26,7 +25,7 @@ import java.util.List;
 /**
  * Item service implementation.
  */
-public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevision> implements ItemService {
+public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevision> implements ItemService {
     @Autowired
     private ItemRepository itemRepo;
     @Autowired
@@ -62,7 +61,7 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
 
     @Override
     public List<ItemRevision> getRevisions(ItemRevisionsGetOptions options) {
-        if (options.getTimestamp()!=null) {
+        if (options.getTimestamp() != null) {
             if (CollectionUtils.isEmpty(options.getItemIds())) {
                 throw AppErrors.INSTANCE.validation("itemId must be specified when timestamp is present.").exception();
             }
@@ -70,7 +69,7 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
             return itemRevisionRepo.getRevisions(options.getItemIds(), options.getTimestamp());
 
         } else {
-        return itemRevisionRepo.getRevisions(options);
+            return itemRevisionRepo.getRevisions(options);
         }
     }
 
@@ -99,7 +98,7 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
             EntitlementDefinition entitlementDef = new EntitlementDefinition();
             entitlementDef.setDeveloperId(item.getOwnerId());
             entitlementDef.setGroup(item.getItemId().toString());
-            entitlementDef.setType(EntitlementType.DOWNLOAD.name());
+            entitlementDef.setType("DOWNLOAD");
             entitlementDef.setTag(item.getItemId().toString());
             Long entitlementDefId = entitlementDefService.createEntitlementDefinition(entitlementDef);
             item.setEntitlementDefId(entitlementDefId);
@@ -149,14 +148,14 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
             }
         }
 
-        if (revision.getName()==null || CollectionUtils.isEmpty(revision.getName().getLocales())) {
+        if (revision.getName() == null || CollectionUtils.isEmpty(revision.getName().getLocales())) {
             throw AppErrors.INSTANCE.missingField("displayName").exception();
         }
         if (StringUtils.isEmpty(revision.getName().locale(LocalizableProperty.DEFAULT))) {
             throw AppErrors.INSTANCE.validation("displayName should have value for 'DEFAULT' locale.").exception();
         }
 
-        if (revision.getMsrp()!=null) {
+        if (revision.getMsrp() != null) {
             checkPrice(revision.getMsrp());
         }
     }

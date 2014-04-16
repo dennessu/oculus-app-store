@@ -9,6 +9,7 @@ package com.junbo.catalog.core;
 
 import com.junbo.catalog.spec.model.common.PageableGetOptions;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
+import com.junbo.catalog.spec.model.entitlementdef.EntitlementType;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -25,6 +26,8 @@ public interface EntitlementDefinitionService {
                                                           String type, PageableGetOptions pageMetadata);
 
     Long createEntitlementDefinition(EntitlementDefinition entitlementDefinition);
+
+    EntitlementType getEntitlementType(String name);
 
     EntitlementDefinition getByTrackingUuid(UUID trackingUuid);
 }

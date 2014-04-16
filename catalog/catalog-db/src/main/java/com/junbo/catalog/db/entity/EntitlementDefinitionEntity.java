@@ -7,7 +7,6 @@
 package com.junbo.catalog.db.entity;
 
 import com.junbo.catalog.db.dao.ListJsonUserType;
-import com.junbo.catalog.spec.model.entitlementdef.EntitlementType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
@@ -26,7 +25,7 @@ public class EntitlementDefinitionEntity extends BaseEntity {
     private Long entitlementDefinitionId;
     private Integer rev;
     private Long developerId;
-    private EntitlementType type;
+    private String type;
     private String group;
     private String tag;
     private Boolean consumable;
@@ -73,11 +72,11 @@ public class EntitlementDefinitionEntity extends BaseEntity {
     }
 
     @Column(name = "type")
-    public EntitlementType getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(EntitlementType type) {
+    public void setType(String type) {
         this.type = type;
     }
 
