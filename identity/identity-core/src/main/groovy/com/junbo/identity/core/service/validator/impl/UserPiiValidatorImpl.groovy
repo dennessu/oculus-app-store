@@ -73,21 +73,29 @@ class UserPiiValidatorImpl implements UserPiiValidator {
                 throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
             }
 
-            if (userPii.emails != null) {
-                userPii.emails.each { Map.Entry entry ->
-                    UserEmail userEmail = (UserEmail) entry.value
+            return userPiiRepository.search(new UserPiiListOptions(
+                    userId: userPii.userId
+            )).then { List<UserPii> existing ->
+                if (!CollectionUtils.isEmpty(existing)) {
+                    throw AppErrors.INSTANCE.fieldDuplicate('userId').exception()
+                }
 
-                    userPiiRepository.search(new UserPiiListOptions(
-                            email: userEmail.value
-                    )).then { List<UserPii> userPiiList ->
-                        if (!CollectionUtils.isEmpty(userPiiList)) {
-                            throw AppErrors.INSTANCE.fieldDuplicate('email').exception()
+                if (userPii.emails != null) {
+                    userPii.emails.each { Map.Entry entry ->
+                        UserEmail userEmail = (UserEmail) entry.value
+
+                        userPiiRepository.search(new UserPiiListOptions(
+                                email: userEmail.value
+                        )).then { List<UserPii> userPiiList ->
+                            if (!CollectionUtils.isEmpty(userPiiList)) {
+                                throw AppErrors.INSTANCE.fieldDuplicate('email').exception()
+                            }
                         }
                     }
                 }
-            }
 
-            return Promise.pure(null)
+                return Promise.pure(null)
+            }
         }
     }
 
