@@ -13,7 +13,7 @@ class UserSecurityQuestionFilter extends ResourceFilterImpl<UserSecurityQuestion
     @Override
     protected UserSecurityQuestion filter(UserSecurityQuestion user, MappingContext context) {
         // set userId value to generate correct href
-        user.id.properties.put("userId", user.userId.toString())
+        user.id.properties.put('userId', user.userId.toString())
         return selfMapper.filterUserSecurityQuestion(user, context)
     }
 

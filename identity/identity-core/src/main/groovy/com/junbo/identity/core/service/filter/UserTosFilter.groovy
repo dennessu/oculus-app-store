@@ -10,7 +10,7 @@ import groovy.transform.CompileStatic
 class UserTosFilter extends ResourceFilterImpl<UserTosAgreement> {
     @Override
     protected UserTosAgreement filter(UserTosAgreement userTos, MappingContext context) {
-        userTos.id.properties.put("userId", userTos.userId.toString())
+        userTos.id.properties.put('userId', userTos.userId.toString())
         return selfMapper.filterUserTos(userTos, context)
     }
 
