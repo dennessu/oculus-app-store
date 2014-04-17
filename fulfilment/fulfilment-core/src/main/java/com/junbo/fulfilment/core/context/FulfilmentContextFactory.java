@@ -5,7 +5,6 @@
  */
 package com.junbo.fulfilment.core.context;
 
-import com.junbo.fulfilment.common.util.Utils;
 import com.junbo.fulfilment.spec.constant.FulfilmentActionType;
 
 /**
@@ -19,12 +18,16 @@ public final class FulfilmentContextFactory {
     public static <T extends FulfilmentContext> T create(String actionType) {
         FulfilmentContext context = null;
 
-        if (Utils.equals(FulfilmentActionType.GRANT_ENTITLEMENT, actionType)) {
-            context = new EntitlementContext();
-        } else if (Utils.equals(FulfilmentActionType.DELIVER_PHYSICAL_GOODS, actionType)) {
-            context = new PhysicalGoodsContext();
-        } else if (Utils.equals(FulfilmentActionType.CREDIT_WALLET, actionType)) {
-            context = new WalletContext();
+        switch (actionType) {
+            case FulfilmentActionType.GRANT_ENTITLEMENT:
+                context = new EntitlementContext();
+                break;
+            case FulfilmentActionType.DELIVER_PHYSICAL_GOODS:
+                context = new PhysicalGoodsContext();
+                break;
+            case FulfilmentActionType.CREDIT_WALLET:
+                context = new WalletContext();
+                break;
         }
 
         return (T) context;
