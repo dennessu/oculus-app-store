@@ -36,8 +36,6 @@ import java.util.Map;
  * CatalogGatewayImpl.
  */
 public class CatalogGatewayImpl implements CatalogGateway {
-    private static final String PURCHASE_EVENT = "PURCHASE";
-
     private static final Logger LOGGER = LoggerFactory.getLogger(CatalogGatewayImpl.class);
 
     @Autowired

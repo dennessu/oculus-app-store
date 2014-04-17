@@ -6,7 +6,6 @@
 package com.junbo.fulfilment.core.handler;
 
 import com.junbo.fulfilment.common.collection.Counter;
-import com.junbo.fulfilment.core.FulfilmentHandler;
 import com.junbo.fulfilment.core.context.PhysicalGoodsContext;
 import com.junbo.fulfilment.spec.fusion.LinkedEntry;
 import com.junbo.fulfilment.spec.fusion.ShippingAddress;
@@ -16,7 +15,7 @@ import com.junbo.fulfilment.spec.model.FulfilmentAction;
 /**
  * PhysicalGoodsHandler.
  */
-public class PhysicalGoodsHandler extends HandlerSupport implements FulfilmentHandler<PhysicalGoodsContext> {
+public class PhysicalGoodsHandler extends HandlerSupport<PhysicalGoodsContext> {
     @Override
     public void process(PhysicalGoodsContext context) {
         ShippingAddress shippingAddress = billingGateway.getShippingAddress(context.getUserId(),
