@@ -19,7 +19,7 @@ public abstract class BaseResource {
     @ApiModelProperty(position = 1000, required = true,
             value = "[Readonly] The revision of the resource. Used for optimistic locking.")
     @JsonProperty("rev")
-    private Long resourceAge;
+    private String resourceAge;
 
     @ApiModelProperty(position = 1001, required = true,
             value = "[Readonly] The created datetime of the resource.")
@@ -41,11 +41,11 @@ public abstract class BaseResource {
     @JsonIgnore
     private String updatedBy;
 
-    public Long getResourceAge() {
+    public String getResourceAge() {
         return resourceAge;
     }
 
-    public void setResourceAge(Long resourceAge) {
+    public void setResourceAge(String resourceAge) {
         this.resourceAge = resourceAge;
     }
 
