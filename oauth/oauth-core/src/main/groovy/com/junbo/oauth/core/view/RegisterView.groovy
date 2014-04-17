@@ -10,12 +10,20 @@ import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.model.ViewModel
 import groovy.transform.CompileStatic
+import org.springframework.beans.factory.annotation.Required
 
 /**
  * RegisterView.
  */
 @CompileStatic
 class RegisterView extends AbstractView {
+    private String recaptchaPublicKey
+
+    @Required
+    void setRecaptchaPublicKey(String recaptchaPublicKey) {
+        this.recaptchaPublicKey = recaptchaPublicKey
+    }
+
     @Override
     protected Promise<ViewModel> buildViewModel(ActionContext context) {
         def contextWrapper = new ActionContextWrapper(context)
@@ -23,7 +31,9 @@ class RegisterView extends AbstractView {
         def model = new ViewModel(
                 view: 'register',
                 model: [
-                        'clientId': contextWrapper.client.clientId
+                        'clientId'          : contextWrapper.client.clientId,
+                        'captchaRequired'   : true,
+                        'recaptchaPublicKey': recaptchaPublicKey
                 ] as Map<String, Object>,
                 errors: contextWrapper.errors.unique(new ErrorComparator()).asList()
         )

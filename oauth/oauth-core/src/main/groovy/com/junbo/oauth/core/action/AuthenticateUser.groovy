@@ -87,17 +87,26 @@ class AuthenticateUser implements Action {
 
         String clientId = client.clientId
         String userAgent = headerMap.getFirst('user-agent')
+        String remoteAddress = contextWrapper.remoteAddress
 
-        userService.authenticateUser(username, password, clientId, '1.1.1.1', userAgent).recover { Throwable e ->
+        // HACK
+        // TODO: wait for identity response of captcha required
+        boolean captchaRequired = true
+
+        userService.authenticateUser(username, password, clientId, remoteAddress, userAgent).recover { Throwable e ->
             if (e instanceof AppErrorException) {
                 AppErrorException appError = (AppErrorException) e
                 // Exception happened while calling the identity service.
                 switch (appError.error.httpStatusCode) {
-                // For response of NOT_FOUND or UNAUTHORIZED, then it suggests that
+                // For response of NOT_FOUND or UNAUTHORIZED, it suggests that
                 // either the username does not exists, or the password is invalid.
                     case HttpStatus.NOT_FOUND.value():
                     case HttpStatus.UNAUTHORIZED.value():
                         handleAppError(contextWrapper, AppExceptions.INSTANCE.invalidCredential())
+                        break
+                // For response of FORBIDDEN, it suggests that captcha is required for user login.
+                    case HttpStatus.FORBIDDEN.value():
+                        // TODO: wait for identity response of captcha required
                         break
                 // For response of INTERNAL_SERVER_ERROR, it suggests that server error happened within the identity
                 // service, throw internal server error exception to the user.
@@ -116,6 +125,12 @@ class AuthenticateUser implements Action {
             if (loginAttempt == null || !loginAttempt.succeeded) {
                 handleAppError(contextWrapper, AppExceptions.INSTANCE.invalidCredential())
                 return Promise.pure(new ActionResult('error'))
+            }
+
+            // TODO: wait for identity response of captcha required
+            if (captchaRequired && !contextWrapper.captchaSucceed) {
+                contextWrapper.captchaRequired = true
+                return Promise.pure(new ActionResult('captchaRequired'))
             }
 
             // Create the LoginState and save it in the ActionContext

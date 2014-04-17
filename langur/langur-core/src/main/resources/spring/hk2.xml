@@ -32,4 +32,6 @@
 
     <bean id="org.glassfish.jersey.server.internal.process.RespondingContext"
           class="org.glassfish.jersey.server.internal.process.RespondingContext" scope="hk2"/>
+
+    <bean id="org.glassfish.grizzly.http.server.Request" class="org.glassfish.grizzly.http.server.Request" scope="hk2"/>
 </beans>

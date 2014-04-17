@@ -259,4 +259,20 @@ interface AppExceptions {
     @ErrorDef(httpStatusCode = 400, code = '20062',
             description = 'The date of birth is invalid. Valid date format: YYYY-MM-DD', field = 'dob')
     AppError invalidDob()
+
+    @ErrorDef(httpStatusCode = 400, code = '20063',
+            description = 'The recaptcha_challenge_field is missing', field = 'recaptcha_challenge_field')
+    AppError missingRecaptchaChallengeField()
+
+    @ErrorDef(httpStatusCode = 400, code = '20064',
+            description = 'The recaptcha_response_field is missing', field = 'recaptcha_response_field')
+    AppError missingRecaptchaResponseField()
+
+    @ErrorDef(httpStatusCode = 500, code = '20065',
+            description = 'Error happened when calling recaptcha server', field = 'recaptcha')
+    AppError errorCallingRecaptcha()
+
+    @ErrorDef(httpStatusCode = 400, code = '20066',
+            description = 'Invalid recaptcha, error message: {0}', field = 'recaptcha')
+    AppError invalidRecaptcha(String message)
 }

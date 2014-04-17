@@ -40,6 +40,7 @@
                 <wf:action ref="loginView"/>
             </wf:on-render>
             <wf:transition on="next" to="LOGIN_SUCCESS">
+                <wf:action ref="validateCaptcha"/>
                 <wf:action ref="authenticateUserAuthorize"/>
             </wf:transition>
             <wf:transition on="register" to="REGISTER_VIEW"/>
@@ -61,6 +62,7 @@
             </wf:on-render>
             <wf:transition on="next" to="REGISTER_SUCCESS">
                 <wf:action ref="validateRegister"/>
+                <wf:action ref="validateCaptcha"/>
                 <wf:action ref="createUser"/>
                 <wf:action ref="createUserCredential"/>
                 <wf:action ref="createUserPii"/>
@@ -172,6 +174,7 @@
     </bean>
 
     <bean id="loginView" class="com.junbo.oauth.core.view.LoginView">
+        <property name="recaptchaPublicKey" value="${oauth.core.recaptcha.public.key}"/>
     </bean>
 
     <bean id="authenticateUserAuthorize" class="com.junbo.oauth.core.action.AuthenticateUser">
@@ -213,7 +216,9 @@
         <property name="pageUrl" value="${oauth.core.portal.registerUri}"/>
     </bean>
 
-    <bean id="registerView" class="com.junbo.oauth.core.view.RegisterView"/>
+    <bean id="registerView" class="com.junbo.oauth.core.view.RegisterView">
+        <property name="recaptchaPublicKey" value="${oauth.core.recaptcha.public.key}"/>
+    </bean>
 
     <bean id="createUser" class="com.junbo.oauth.core.action.CreateUser">
         <property name="userResource" ref="userResource"/>
@@ -228,4 +233,12 @@
     </bean>
 
     <bean id="validateRegister" class="com.junbo.oauth.core.action.ValidateRegister"/>
+
+    <bean id="validateCaptcha" class="com.junbo.oauth.core.action.ValidateCaptcha">
+        <property name="enabled" value="${oauth.core.recaptcha.enabled}"/>
+        <property name="recaptchaPublicKey" value="${oauth.core.recaptcha.public.key}"/>
+        <property name="recaptchaPrivateKey" value="${oauth.core.recaptcha.private.key}"/>
+        <property name="recaptchaVerifyEndpoint" value="${oauth.core.recaptcha.verify.endpoint}"/>
+        <property name="asyncHttpClient" ref="commonAsyncHttpClient"/>
+    </bean>
 </beans>
