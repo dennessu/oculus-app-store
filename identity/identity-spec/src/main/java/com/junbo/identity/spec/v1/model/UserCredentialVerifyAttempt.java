@@ -34,13 +34,13 @@ public class UserCredentialVerifyAttempt extends ResourceMeta implements Identif
             value = "The credential require string, must be base64 encode of username:password")
     private String value;
 
-    @ApiModelProperty(position = 4, required = true, value = "The client ip of the verify attempt caller.")
+    @ApiModelProperty(position = 4, required = false, value = "The client ip of the verify attempt caller.")
     private String ipAddress;
 
-    @ApiModelProperty(position = 5, required = true, value = "The user agent of the verify attempt caller.")
+    @ApiModelProperty(position = 5, required = false, value = "The user agent of the verify attempt caller.")
     private String userAgent;
 
-    @ApiModelProperty(position = 6, required = true, value = "The client id of the verify attempt caller.")
+    @ApiModelProperty(position = 6, required = false, value = "The client id of the verify attempt caller.")
     private String clientId;
 
     // read only
