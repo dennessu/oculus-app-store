@@ -96,7 +96,7 @@ public class PaymentServiceImpl extends HttpClientBase implements PaymentService
     public String postPaymentInstrumentToUser(String uid, PaymentInstrument paymentInstrument,
                                               int expectedResponseCode) throws Exception {
         String responseBody = restApiCall(HTTPMethod.POST, paymentInstrumentUrl
-                + "users/" + uid + "/payment-instruments", paymentInstrument, expectedResponseCode);
+               + "payment-instruments", paymentInstrument, expectedResponseCode);
 
         PaymentInstrument paymentInstrumentResult = new JsonMessageTranscoder().decode(
                 new TypeReference<PaymentInstrument>() {

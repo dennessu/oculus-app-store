@@ -86,11 +86,10 @@ class UserPasswordValidatorImpl implements UserPasswordValidator {
             throw AppErrors.INSTANCE.fieldInvalid('active').exception()
         }
 
-        userPassword.setPasswordSalt(CipherHelper.generateCipherRandomStr(SALT_LENGTH))
-        userPassword.setPasswordPepper(CipherHelper.generateCipherRandomStr(SALT_LENGTH))
+        String salt = CipherHelper.generateCipherRandomStr(SALT_LENGTH)
+        String pepper = CipherHelper.generateCipherRandomStr(SALT_LENGTH)
         userPassword.setStrength(CipherHelper.calcPwdStrength(userPassword.value))
-        userPassword.setPasswordHash(CipherHelper.generateCipherHashV1(userPassword.value,
-                userPassword.passwordSalt, userPassword.passwordPepper))
+        userPassword.setPasswordHash(CipherHelper.generateCipherHashV1(userPassword.value, salt, pepper))
         userPassword.setUserId(userId)
         userPassword.setActive(true)
 
@@ -116,8 +115,16 @@ class UserPasswordValidatorImpl implements UserPasswordValidator {
                 throw AppErrors.INSTANCE.userPasswordIncorrect().exception()
             }
 
-            if (CipherHelper.generateCipherHashV1(decryptPassword, userPasswordList.get(0).passwordSalt,
-                    userPasswordList.get(0).passwordPepper) != userPasswordList.get(0).passwordHash) {
+            String[] hashInfo = userPasswordList.get(0).passwordHash.split(CipherHelper.COLON)
+            if (hashInfo.length != 4) {
+                throw AppErrors.INSTANCE.userPinIncorrect().exception()
+            }
+
+            String salt = hashInfo[1]
+            String pepper = hashInfo[2]
+
+            if (CipherHelper.generateCipherHashV1(decryptPassword, salt, pepper)
+                    != userPasswordList.get(0).passwordHash) {
                 throw AppErrors.INSTANCE.userPasswordIncorrect().exception()
             }
             return Promise.pure(null)

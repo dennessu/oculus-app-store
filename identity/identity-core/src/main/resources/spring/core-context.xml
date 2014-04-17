@@ -37,7 +37,6 @@
                 <value>canonicalUsername</value>
                 <value>locale</value>
                 <value>timezone</value>
-                <value>currency</value>
                 <value>type</value>
             </list>
         </property>
@@ -51,7 +50,6 @@
                 <value>preferredLanguage</value>
                 <value>locale</value>
                 <value>timezone</value>
-                <value>currency</value>
                 <value>resourceAge</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>

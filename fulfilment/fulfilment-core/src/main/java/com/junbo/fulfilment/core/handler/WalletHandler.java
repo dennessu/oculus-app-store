@@ -5,15 +5,15 @@
  */
 package com.junbo.fulfilment.core.handler;
 
-import com.junbo.fulfilment.core.FulfilmentHandler;
 import com.junbo.fulfilment.core.context.WalletContext;
+import com.junbo.fulfilment.spec.model.FulfilmentAction;
 
 /**
  * WalletHandler.
  */
-public class WalletHandler extends HandlerSupport implements FulfilmentHandler<WalletContext> {
+public class WalletHandler extends HandlerSupport<WalletContext> {
     @Override
-    public void process(WalletContext context) {
-
+    protected String handle(WalletContext context, FulfilmentAction action) {
+        return "";
     }
 }
