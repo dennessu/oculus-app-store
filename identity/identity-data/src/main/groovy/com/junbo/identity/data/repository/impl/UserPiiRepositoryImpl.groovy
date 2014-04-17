@@ -4,10 +4,12 @@ import com.junbo.common.id.AddressId
 import com.junbo.common.id.UserPiiId
 import com.junbo.identity.data.dao.UserAddressDAO
 import com.junbo.identity.data.dao.UserEmailDAO
+import com.junbo.identity.data.dao.UserNameDAO
 import com.junbo.identity.data.dao.UserPhoneNumberDAO
 import com.junbo.identity.data.dao.UserPiiDAO
 import com.junbo.identity.data.entity.user.UserAddressEntity
 import com.junbo.identity.data.entity.user.UserEmailEntity
+import com.junbo.identity.data.entity.user.UserNameEntity
 import com.junbo.identity.data.entity.user.UserPhoneNumberEntity
 import com.junbo.identity.data.entity.user.UserPiiEntity
 import com.junbo.identity.data.mapper.ModelMapper
@@ -45,59 +47,25 @@ class UserPiiRepositoryImpl implements UserPiiRepository {
     @Autowired
     private UserAddressDAO userAddressDAO
 
+    @Autowired
+    private UserNameDAO userNameDAO
+
     @Override
     Promise<UserPii> create(UserPii userPii) {
         UserPiiEntity entity = modelMapper.toUserPii(userPii, new MappingContext())
         entity = userPiiDAO.save(entity)
-
-        if (userPii.emails != null) {
-            userPii.emails.each { Map.Entry entry ->
-                if (entry != null) {
-                    String type = (String)entry.key
-                    UserEmail userEmail = (UserEmail)entry.value
-
-                    userEmail.setUserPiiId(new UserPiiId((Long)entity.id))
-                    userEmail.setType(type)
-
-                    UserEmailEntity userEmailEntity = modelMapper.toUserEmail(userEmail, new MappingContext())
-                    userEmailDAO.save(userEmailEntity)
-                }
-            }
-        }
-
-        if (userPii.phoneNumbers != null) {
-            userPii.phoneNumbers.each { Map.Entry entry ->
-                if (entry != null) {
-                    String type = (String)entry.key
-                    UserPhoneNumber userPhoneNumber = (UserPhoneNumber)entry.value
-
-                    userPhoneNumber.setUserPiiId(new UserPiiId((Long)entity.id))
-                    userPhoneNumber.setType(type)
-
-                    UserPhoneNumberEntity userPhoneNumberEntity =
-                            modelMapper.toUserPhoneNumber(userPhoneNumber, new MappingContext())
-                    userPhoneNumberDAO.save(userPhoneNumberEntity)
-                }
-            }
-        }
-
-        if (userPii.addressBook != null) {
-            userPii.addressBook.each { AddressId addressId ->
-                UserAddressEntity userAddressEntity = new UserAddressEntity()
-                userAddressEntity.addressId = addressId.value
-                userAddressEntity.userPiiId = (Long)entity.id
-
-                userAddressDAO.save(userAddressEntity)
-            }
-        }
-
+        createPiiSubInfo(userPii)
         return get(new UserPiiId((Long)entity.id))
     }
 
     @Override
     Promise<UserPii> update(UserPii userPii) {
-        delete((UserPiiId)userPii.id)
-        create(userPii)
+        UserPiiEntity userPiiEntity = modelMapper.toUserPii(userPii, new MappingContext())
+        userPiiDAO.update(userPiiEntity)
+        deletePiiSubInfo((UserPiiId)userPii.id)
+        createPiiSubInfo(userPii)
+
+        return get((UserPiiId)userPii.id)
     }
 
     @Override
@@ -107,6 +75,9 @@ class UserPiiRepositoryImpl implements UserPiiRepository {
         if (userPii == null) {
             return Promise.pure(null)
         }
+
+        UserNameEntity userNameEntity = userNameDAO.findByUserPiiId(userPiiId.value)
+        userPii.name = modelMapper.toUserName(userNameEntity, new MappingContext())
 
         List<UserEmailEntity> userEmailEntities = userEmailDAO.search(userPiiId.value, new UserEmailListOptions(
                 userPiiId: userPiiId
@@ -152,13 +123,73 @@ class UserPiiRepositoryImpl implements UserPiiRepository {
 
     @Override
     Promise<Void> delete(UserPiiId userPiiId) {
+        deletePiiSubInfo(userPiiId)
+        userPiiDAO.delete(userPiiId.value)
+        return Promise.pure(null)
+    }
+
+    private void createPiiSubInfo(UserPii userPii) {
+        if (userPii.name != null) {
+            UserNameEntity userNameEntity = modelMapper.toUserName(userPii.name, new MappingContext())
+            userNameEntity.setUserPiiId(((UserPiiId)userPii.id).value)
+            userNameDAO.create(userNameEntity)
+        }
+
+        if (userPii.emails != null) {
+            userPii.emails.each { Map.Entry entry ->
+                if (entry != null) {
+                    String type = (String)entry.key
+                    UserEmail userEmail = (UserEmail)entry.value
+
+                    userEmail.setUserPiiId(new UserPiiId(((UserPiiId)userPii.id).value))
+                    userEmail.setType(type)
+
+                    UserEmailEntity userEmailEntity = modelMapper.toUserEmail(userEmail, new MappingContext())
+                    userEmailDAO.create(userEmailEntity)
+                }
+            }
+        }
+
+        if (userPii.phoneNumbers != null) {
+            userPii.phoneNumbers.each { Map.Entry entry ->
+                if (entry != null) {
+                    String type = (String)entry.key
+                    UserPhoneNumber userPhoneNumber = (UserPhoneNumber)entry.value
+
+                    userPhoneNumber.setUserPiiId((UserPiiId)userPii.id)
+                    userPhoneNumber.setType(type)
+
+                    UserPhoneNumberEntity userPhoneNumberEntity =
+                            modelMapper.toUserPhoneNumber(userPhoneNumber, new MappingContext())
+                    userPhoneNumberDAO.save(userPhoneNumberEntity)
+                }
+            }
+        }
+
+        if (userPii.addressBook != null) {
+            userPii.addressBook.each { AddressId addressId ->
+                UserAddressEntity userAddressEntity = new UserAddressEntity()
+                userAddressEntity.addressId = addressId.value
+                userAddressEntity.userPiiId = ((UserPiiId)userPii.id).value
+
+                userAddressDAO.save(userAddressEntity)
+            }
+        }
+    }
+
+    private void deletePiiSubInfo(UserPiiId userPiiId) {
+        UserNameEntity userNameEntity = userNameDAO.findByUserPiiId(userPiiId.value)
+        if (userNameEntity != null) {
+            userNameDAO.delete(userNameEntity.id)
+        }
+
         List<UserEmailEntity> userEmailEntities = userEmailDAO.search(userPiiId.value, new UserEmailListOptions(
                 userPiiId: userPiiId
         ))
         if (!CollectionUtils.isEmpty(userEmailEntities)) {
-           userEmailEntities.each { UserEmailEntity userEmailEntity ->
-               userEmailDAO.delete((Long)userEmailEntity.id)
-           }
+            userEmailEntities.each { UserEmailEntity userEmailEntity ->
+                userEmailDAO.delete((Long)userEmailEntity.id)
+            }
         }
 
         List<UserPhoneNumberEntity> userPhoneNumberEntities =
@@ -177,10 +208,6 @@ class UserPiiRepositoryImpl implements UserPiiRepository {
                 userAddressDAO.delete((Long)userAddressEntity.id)
             }
         }
-
-        userPiiDAO.delete(userPiiId.value)
-
-        return Promise.pure(null)
     }
 
     @Override

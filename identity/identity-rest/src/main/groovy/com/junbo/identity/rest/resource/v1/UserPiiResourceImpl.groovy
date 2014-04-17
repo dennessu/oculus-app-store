@@ -53,10 +53,12 @@ class UserPiiResourceImpl implements UserPiiResource {
 
         userPiiValidator.validateForCreate(userPii).then {
             userPiiRepository.create(userPii).then { UserPii newUserPii ->
-                created201Marker.mark((Id)newUserPii.id)
+                return userPiiValidator.validateForGet((UserPiiId)newUserPii.id).then { UserPii newCreated ->
+                    created201Marker.mark((Id)newCreated.id)
 
-                newUserPii = userPiiFilter.filterForGet(newUserPii, null)
-                return Promise.pure(newUserPii)
+                    newUserPii = userPiiFilter.filterForGet(newCreated, null)
+                    return Promise.pure(newCreated)
+                }
             }
         }
     }
@@ -69,7 +71,7 @@ class UserPiiResourceImpl implements UserPiiResource {
 
         userPiiValidator.validateForGet(userPiiId).then { UserPii newUserPii ->
             newUserPii = userPiiFilter.filterForGet(newUserPii,
-                    getOptions.properties?.split(',') as List<String>)
+                getOptions.properties?.split(',') as List<String>)
 
             return Promise.pure(newUserPii)
         }
@@ -85,7 +87,7 @@ class UserPiiResourceImpl implements UserPiiResource {
             throw new IllegalArgumentException('userPii is null')
         }
 
-        return userPiiRepository.get(userPiiId).then { UserPii oldUserPii ->
+        return userPiiValidator.validateForGet(userPiiId).then { UserPii oldUserPii ->
             if (oldUserPii == null) {
                 throw AppErrors.INSTANCE.userPiiNotFound(userPiiId).exception()
             }
@@ -95,8 +97,11 @@ class UserPiiResourceImpl implements UserPiiResource {
             userPiiValidator.validateForUpdate(userPiiId, userPii, oldUserPii).then {
 
                 userPiiRepository.update(userPii).then { UserPii newUserPii ->
-                    newUserPii = userPiiFilter.filterForGet(newUserPii, null)
-                    return Promise.pure(newUserPii)
+                    return userPiiValidator.validateForGet((UserPiiId)newUserPii.id).then { UserPii newCreated ->
+
+                        newCreated = userPiiFilter.filterForGet(newCreated, null)
+                        return Promise.pure(newCreated)
+                    }
                 }
             }
         }
@@ -112,7 +117,7 @@ class UserPiiResourceImpl implements UserPiiResource {
             throw new IllegalArgumentException('userPii is null')
         }
 
-        return userPiiRepository.get(userPiiId).then { UserPii oldUserPii ->
+        return userPiiValidator.validateForGet(userPiiId).then { UserPii oldUserPii ->
             if (oldUserPii == null) {
                 throw AppErrors.INSTANCE.userPiiNotFound(userPiiId).exception()
             }
@@ -123,8 +128,10 @@ class UserPiiResourceImpl implements UserPiiResource {
         }.then {
             return userPiiRepository.update(userPii)
         }.then { UserPii newUserPii ->
-            newUserPii = userPiiFilter.filterForGet(newUserPii, null)
-            return Promise.pure(newUserPii)
+            return userPiiValidator.validateForGet((UserPiiId)newUserPii.id).then { UserPii newCreated ->
+                newCreated = userPiiFilter.filterForGet(newCreated, null)
+                return Promise.pure(newCreated)
+            }
         }
     }
 
