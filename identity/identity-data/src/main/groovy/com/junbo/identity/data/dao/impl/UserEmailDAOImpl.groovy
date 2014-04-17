@@ -65,7 +65,7 @@ class UserEmailDAOImpl extends BaseDAO implements UserEmailDAO {
     }
 
     @Override
-    UserEmailEntity save(UserEmailEntity entity) {
+    UserEmailEntity create(UserEmailEntity entity) {
         entity.id = idGenerator.nextId(entity.userPiiId)
         Session session = currentSession(entity.id)
         session.save(entity)
