@@ -24,6 +24,7 @@ public class Group extends ResourceMeta implements Identifiable<GroupId> {
     private String name;
 
     @ApiModelProperty(position = 3, required = false, value = "The status of the group.")
+    @JsonProperty("isActive")
     private Boolean active;
 
     @Override
@@ -53,5 +54,6 @@ public class Group extends ResourceMeta implements Identifiable<GroupId> {
     public void setActive(Boolean active) {
         this.active = active;
         support.setPropertyAssigned("active");
+        support.setPropertyAssigned("isActive");
     }
 }

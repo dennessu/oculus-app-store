@@ -34,7 +34,7 @@ public class UserCredentialVerifyAttempt extends ResourceMeta implements Identif
             value = "The credential require string, must be base64 encode of username:password")
     private String value;
 
-    @ApiModelProperty(position = 4, required = true, value = "The client id of the verify attempt caller.")
+    @ApiModelProperty(position = 4, required = true, value = "The client ip of the verify attempt caller.")
     private String ipAddress;
 
     @ApiModelProperty(position = 5, required = true, value = "The user agent of the verify attempt caller.")
@@ -45,6 +45,7 @@ public class UserCredentialVerifyAttempt extends ResourceMeta implements Identif
 
     // read only
     @ApiModelProperty(position = 7, required = false, value = "Whether the verify attempt is succeed.")
+    @JsonProperty("isSuccess")
     private Boolean succeeded;
 
     public UserCredentialVerifyAttemptId getId() {
@@ -118,5 +119,6 @@ public class UserCredentialVerifyAttempt extends ResourceMeta implements Identif
     public void setSucceeded(Boolean succeeded) {
         this.succeeded = succeeded;
         support.setPropertyAssigned("succeeded");
+        support.setPropertyAssigned("isSuccess");
     }
 }
