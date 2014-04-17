@@ -28,6 +28,7 @@ public class ErrorProxy implements InvocationHandler {
             return method.invoke(proxy, args);
         }
 
+        final String methodName = method.getName();
         final int httpStatusCode = errorDef.httpStatusCode();
 
         final String code;
@@ -75,6 +76,7 @@ public class ErrorProxy implements InvocationHandler {
         }
 
         return new AppError() {
+
             @Override
             public int getHttpStatusCode() {
                 return httpStatusCode;
@@ -115,6 +117,17 @@ public class ErrorProxy implements InvocationHandler {
                 }
                 return new Error(code, message, field, causeErrors);
             }
+
+            @Override
+            public String toString() {
+                return methodName +
+                        " { httpStatusCode=" + httpStatusCode +
+                        ", code=" + code +
+                        ", message=" + message +
+                        ", field=" + field +
+                        ", httpStatusCode=" + httpStatusCode +
+                        ", causes=" + causes + " }";
+            }
         };
     }
 
@@ -125,10 +138,12 @@ public class ErrorProxy implements InvocationHandler {
 
         int index = 0;
         for (Object arg : args) {
-            pattern = pattern.replace("{"+index+"}", arg.toString());
+            pattern = pattern.replace("{"+index+"}", arg == null ? "null" : arg.toString());
             index++;
         }
 
         return pattern;
     }
+
+
 }
