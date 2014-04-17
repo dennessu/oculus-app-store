@@ -23,8 +23,8 @@ public class OfferRevisionsGetOptions extends PageableGetOptions {
     private List<OfferRevisionId> revisionIds;
     @QueryParam("status")
     private String status;
-    @QueryParam("timestamp")
-    private Long timestamp;
+    //@QueryParam("timestamp")
+   // private Long timestamp;
 
     public List<OfferId> getOfferIds() {
         return offerIds;
@@ -50,11 +50,12 @@ public class OfferRevisionsGetOptions extends PageableGetOptions {
         this.status = status;
     }
 
-    public Long getTimestamp() {
+   /* public Long getTimestamp() {
         return timestamp;
     }
 
     public void setTimestamp(Long timestamp) {
         this.timestamp = timestamp;
     }
+    */
 }

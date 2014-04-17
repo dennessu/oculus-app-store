@@ -7,6 +7,7 @@
 package com.junbo.catalog.spec.model.common;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.NotNull;
 
@@ -15,18 +16,22 @@ import javax.validation.constraints.NotNull;
  */
 public abstract class BaseEntityModel extends BaseModel {
     @NotNull
-    private LocalizableProperty name;
+    @ApiModelProperty(position = 10, required = true, value = "Friendly identifier")
+    @JsonProperty("friendlyIdentifier")
+    private String name;
 
+    @ApiModelProperty(position = 11, required = true, value = "Curated")
     @JsonProperty("isCurated")
     private Boolean curated;
 
-    private Integer rev;
+    @ApiModelProperty(position = 1003, required = true, value = "[Client Immutable] rev")
+    private String rev;
 
-    public LocalizableProperty getName() {
+    public String getName() {
         return name;
     }
 
-    public void setName(LocalizableProperty name) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -41,11 +46,11 @@ public abstract class BaseEntityModel extends BaseModel {
     public abstract Long getCurrentRevisionId();
     public abstract void setCurrentRevisionId(Long currentRevisionId);
 
-    public Integer getRev() {
+    public String getRev() {
         return rev;
     }
 
-    public void setRev(Integer rev) {
+    public void setRev(String rev) {
         this.rev = rev;
     }
 }

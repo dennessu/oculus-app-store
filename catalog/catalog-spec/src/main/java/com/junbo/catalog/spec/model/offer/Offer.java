@@ -8,10 +8,8 @@ package com.junbo.catalog.spec.model.offer;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.catalog.spec.model.common.BaseEntityModel;
-import com.junbo.common.jackson.annotation.AttributeId;
-import com.junbo.common.jackson.annotation.OfferId;
-import com.junbo.common.jackson.annotation.OfferRevisionId;
-import com.junbo.common.jackson.annotation.UserId;
+import com.junbo.common.jackson.annotation.*;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.List;
 
@@ -21,17 +19,26 @@ import java.util.List;
 public class Offer extends BaseEntityModel {
     @OfferId
     @JsonProperty("self")
+    @ApiModelProperty(position = 1, required = true, value = "[Client Immutable] The id of offer resource.")
     private Long offerId;
 
     @OfferRevisionId
     @JsonProperty("currentRevision")
+    @ApiModelProperty(position = 20, required = true, value = "The id of current revision.")
     private Long currentRevisionId;
 
     @UserId
     @JsonProperty("publisher")
+    @ApiModelProperty(position = 21, required = true, value = "Publisher of the offer.")
     private Long ownerId;
 
+    @ItemId
+    @JsonProperty("iapItem")
+    @ApiModelProperty(position = 22, required = false, value = "The item in which the IAP offer will be sold.")
+    private Long iapItemId;
+
     @AttributeId
+    @ApiModelProperty(position = 23, required = true, value = "Categories of the offer.")
     private List<Long> categories;
 
     public Long getOfferId() {
@@ -56,6 +63,14 @@ public class Offer extends BaseEntityModel {
 
     public void setOwnerId(Long ownerId) {
         this.ownerId = ownerId;
+    }
+
+    public Long getIapItemId() {
+        return iapItemId;
+    }
+
+    public void setIapItemId(Long iapItemId) {
+        this.iapItemId = iapItemId;
     }
 
     public List<Long> getCategories() {

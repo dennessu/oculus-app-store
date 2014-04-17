@@ -7,27 +7,23 @@
 package com.junbo.catalog.spec.model.common;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
-
-import javax.validation.constraints.NotNull;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
  * Base entity revision model.
  */
 public abstract class BaseRevisionModel extends BaseModel {
-    //(Design, PendingReview, Rejected) => (Released, Deleted)
+    @ApiModelProperty(position = 10, required = true, value = "Status of the item revision")
     private String status;
 
     @JsonIgnore
     private Long timestamp;
 
-    @NotNull
-    private LocalizableProperty name;
+    @ApiModelProperty(position = 1001, required = true, value = "[Client Immutable] rev")
+    private String rev;
 
-    private Integer rev;
-
-    @JsonUnwrapped
-    private ExtensibleProperties properties;
+    //@JsonUnwrapped
+    //private ExtensibleProperties properties;
 
     public String getStatus() {
         return status;
@@ -45,28 +41,12 @@ public abstract class BaseRevisionModel extends BaseModel {
         this.status = status;
     }
 
-    public LocalizableProperty getName() {
-        return name;
-    }
-
-    public void setName(LocalizableProperty name) {
-        this.name = name;
-    }
-
-    public Integer getRev() {
+    public String getRev() {
         return rev;
     }
 
-    public void setRev(Integer rev) {
+    public void setRev(String rev) {
         this.rev = rev;
-    }
-
-    public ExtensibleProperties getProperties() {
-        return properties;
-    }
-
-    public void setProperties(ExtensibleProperties properties) {
-        this.properties = properties;
     }
 
     @JsonIgnore
