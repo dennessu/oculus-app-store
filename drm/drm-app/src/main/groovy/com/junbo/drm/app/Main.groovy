@@ -9,12 +9,12 @@ import org.glassfish.jersey.server.ResourceConfig
  */
 class Main {
     static HttpServer startServer() {
-        def resourceConfig = new ResourceConfig();
+        def resourceConfig = new ResourceConfig()
 
 //        resourceConfig.packages("com.junbo.catalog.spec.resource.adapter")
-        resourceConfig.property("contextConfigLocation", "classpath*:/spring/*.xml")
+        resourceConfig.property('contextConfigLocation', 'classpath*:/spring/*.xml')
 
-        def uri = URI.create("http://localhost:8080/rest")
+        def uri = URI.create('http://localhost:8080/rest')
         return GrizzlyHttpServerFactory.createHttpServer(uri)
     }
 
@@ -22,7 +22,7 @@ class Main {
 
         def server = startServer()
 
-        System.out.println("started\nHit enter to stop it...")
+        //LOGGER.info('Server Started.')
         System.in.read()
 
         server.shutdown()

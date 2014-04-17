@@ -135,9 +135,9 @@
               user_id bigint not null,
 			  
 			  type varchar(255) not null,
-			  ip_address varchar(255) not null,
-			  user_agent varchar(255) not null,
-			  client_id varchar(255) not null,
+			  ip_address varchar(255),
+			  user_agent varchar(255),
+			  client_id varchar(255),
 			  succeeded boolean not null,
 			  
               created_by varchar(32) not null,
@@ -187,7 +187,6 @@
 			  time_zone varchar(255),
 			  is_active boolean not null,
 			  type varchar(255) not null,
-			  currency varchar(10),
 			  
               created_by varchar(32) not null,
               created_time timestamp not null,
@@ -246,9 +245,9 @@
 			  id bigint not null,
 			  user_id bigint not null,
 			  user_security_question_id bigint not null,
-			  ip_address varchar(255) not null,
-			  user_agent varchar(255) not null,
-			  client_id varchar(255) not null,
+			  ip_address varchar(255),
+			  user_agent varchar(255),
+			  client_id varchar(255),
 			  succeeded boolean not null,
 			  
 			  version bigint not null,

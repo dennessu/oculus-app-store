@@ -5,6 +5,7 @@
  */
 package com.junbo.fulfilment.clientproxy;
 
+import com.junbo.fulfilment.spec.fusion.Item;
 import com.junbo.fulfilment.spec.fusion.Offer;
 import com.junbo.fulfilment.spec.fusion.ShippingMethod;
 
@@ -13,6 +14,8 @@ import com.junbo.fulfilment.spec.fusion.ShippingMethod;
  */
 public interface CatalogGateway {
     Offer getOffer(Long offerId, Long timestamp);
+
+    Item getItem(Long itemId, Long timestamp);
 
     ShippingMethod getShippingMethod(Long shippingMethodId);
 }

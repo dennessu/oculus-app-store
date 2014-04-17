@@ -78,7 +78,9 @@ public class BillingTestDataProvider extends BaseTestDataProvider {
                 address.setState(creditCardInfo.getAddress().getState());
                 address.setCountry(creditCardInfo.getAddress().getCountry());
                 address.setPostalCode(creditCardInfo.getAddress().getPostalCode());
-
+                ArrayList<Long> admins = new ArrayList<>();
+                admins.add(IdConverter.hexStringToId(UserId.class,uid));
+                paymentInstrument.setAdmins(admins);
                 paymentInstrument.setAccountName(creditCardInfo.getAccountName());
                 paymentInstrument.setAccountNum(creditCardInfo.getAccountNum());
                 //paymentInstrument.setAccountNum(creditCardInfo.getAccountNum());
@@ -124,6 +126,7 @@ public class BillingTestDataProvider extends BaseTestDataProvider {
         order.setOrderItems(orderItemList);
         order.setTentative(true);
         order.setType("PAY_IN");
+        order.setLocale("en_US");
         return orderClient.postOrder(order);
     }
 

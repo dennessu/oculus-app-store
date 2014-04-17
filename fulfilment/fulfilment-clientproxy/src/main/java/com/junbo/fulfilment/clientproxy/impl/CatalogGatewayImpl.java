@@ -36,8 +36,6 @@ import java.util.Map;
  * CatalogGatewayImpl.
  */
 public class CatalogGatewayImpl implements CatalogGateway {
-    private static final String PURCHASE_EVENT = "PURCHASE";
-
     private static final Logger LOGGER = LoggerFactory.getLogger(CatalogGatewayImpl.class);
 
     @Autowired
@@ -54,7 +52,12 @@ public class CatalogGatewayImpl implements CatalogGateway {
 
     @Override
     public Offer getOffer(Long offerId, Long timestamp) {
-        return wash(retrieveOfferRevision(offerId, timestamp), timestamp);
+        return wash(retrieveOfferRevision(offerId, timestamp));
+    }
+
+    @Override
+    public Item getItem(Long itemId, Long timestamp) {
+        return wash(retrieveItemRevision(itemId, timestamp));
     }
 
     @Override
@@ -102,7 +105,7 @@ public class CatalogGatewayImpl implements CatalogGateway {
         }
     }
 
-    protected Offer wash(OfferRevision offerRevision, Long timestamp) {
+    protected Offer wash(OfferRevision offerRevision) {
         Offer result = new Offer();
 
         // fill offer base info
@@ -129,7 +132,6 @@ public class CatalogGatewayImpl implements CatalogGateway {
                 item.setEntityType(CatalogEntityType.ITEM);
                 item.setId(entry.getItemId());
                 item.setQuantity(entry.getQuantity());
-                //item.setSku(retrieveItemRevision(entry.getItemId(), timestamp).getSku());
 
                 result.addItem(item);
             }
@@ -156,6 +158,14 @@ public class CatalogGatewayImpl implements CatalogGateway {
         }
 
         return result;
+    }
+
+    protected Item wash(ItemRevision itemRevision) {
+        Item item = new Item();
+        item.setItemId(itemRevision.getItemId());
+        item.setSku(itemRevision.getSku());
+
+        return item;
     }
 
     protected Map<String, Object> getEntitlementDef(Action action) {

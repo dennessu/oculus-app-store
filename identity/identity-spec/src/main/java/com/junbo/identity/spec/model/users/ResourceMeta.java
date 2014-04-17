@@ -8,6 +8,7 @@ package com.junbo.identity.spec.model.users;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.json.PropertyAssignedAware;
 import com.junbo.common.json.PropertyAssignedAwareSupport;
 import com.wordnik.swagger.annotations.ApiModelProperty;
@@ -24,12 +25,13 @@ public abstract class ResourceMeta implements PropertyAssignedAware {
     protected final PropertyAssignedAwareSupport support = new PropertyAssignedAwareSupport();
 
     @ApiModelProperty(position = 1000, required = true, value = "The resource version.")
-    private Integer resourceAge;
+    @JsonProperty("rev")
+    private String resourceAge;
 
-    @ApiModelProperty(position = 1001, required = false, value = "The created time of the resource.")
+    @JsonIgnore
     private Date createdTime;
 
-    @ApiModelProperty(position = 1002, required = false, value = "The lastest updated time of the resource.")
+    @JsonIgnore
     private Date updatedTime;
 
     @JsonIgnore
@@ -60,13 +62,14 @@ public abstract class ResourceMeta implements PropertyAssignedAware {
         this._rev = rev;
     }
 
-    public Integer getResourceAge() {
+    public String getResourceAge() {
         return resourceAge;
     }
 
-    public void setResourceAge(Integer resourceAge) {
+    public void setResourceAge(String resourceAge) {
         this.resourceAge = resourceAge;
         support.setPropertyAssigned("resourceAge");
+        support.setPropertyAssigned("rev");
     }
 
     public Date getCreatedTime() {
