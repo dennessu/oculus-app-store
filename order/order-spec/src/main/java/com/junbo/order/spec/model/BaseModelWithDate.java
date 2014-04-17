@@ -6,6 +6,7 @@
 package com.junbo.order.spec.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
 
@@ -13,6 +14,7 @@ import java.util.Date;
  * Created by LinYi on 2/10/14.
  */
 public class BaseModelWithDate {
+    @JsonIgnore
     private Date createdTime;
     @JsonIgnore
     private String createdBy;
@@ -20,7 +22,9 @@ public class BaseModelWithDate {
     private Date updatedTime;
     @JsonIgnore
     private String updatedBy;
-    private Integer rev;
+    @ApiModelProperty(position = 1000, required = true,
+            value = "[Client Immutable] The revision of the resource. Used for optimistic locking.")
+    private String rev;
 
     public Date getCreatedTime() {
         return createdTime;
@@ -54,11 +58,11 @@ public class BaseModelWithDate {
         this.updatedBy = updatedBy;
     }
 
-    public Integer getRev() {
+    public String getRev() {
         return rev;
     }
 
-    public void setRev(Integer rev) {
+    public void setRev(String rev) {
         this.rev = rev;
     }
 }

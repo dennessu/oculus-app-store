@@ -88,12 +88,4 @@ public class SubledgerItem extends BaseModelWithDate {
     public void setStatus(String status) {
         this.status = status;
     }
-
-    public Integer getRev() {
-        return resourceAge;
-    }
-
-    public void setRev(Integer resourceAge) {
-        this.resourceAge = resourceAge;
-    }
 }

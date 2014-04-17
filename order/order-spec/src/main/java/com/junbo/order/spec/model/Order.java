@@ -10,10 +10,11 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.junbo.common.id.OrderId;
-import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.common.id.ShippingAddressId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.jackson.annotation.ShippingMethodId;
+import com.junbo.common.model.Link;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -24,43 +25,94 @@ import java.util.List;
  */
 @JsonPropertyOrder(value = {
         "id", "user", "type", "status", "country", "currency",
-        "tentative", "resourceAge", "originalOrder", "ratingInfo", "shippingMethod",
+        "tentative", "resourceAge", "ratingInfo", "shippingMethod",
         "shippingAddress", "paymentInstruments", "refundOrders", "discounts", "orderItems"
 })
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Order extends BaseModelWithDate {
+    @ApiModelProperty(required = true, position = 10, value = "[Client Immutable] The order id.")
     @JsonProperty("self")
     private OrderId id;
+
+    @ApiModelProperty(required = true, position = 20, value = "The user id.")
     private UserId user;
+
+    @JsonIgnore
     private String type;
-    private String status;
-    private String country;
-    private String currency;
-    private String locale;
+
+    @ApiModelProperty(required = true, position = 30, value = "Whether it's a tentative order.")
     private Boolean tentative;
 
+    @ApiModelProperty(required = true, position = 40, value = "[Client Immutable] The Order Status. " +
+            "The state diagram is here: https://www.lucidchart.com/documents/edit/4bf4b274-532a-b700-bdd9-6da00a009107",
+            allowableValues = "OPEN, PENDING_CHARGE, PENDING_FULFILL, CHARGED, FULFILLED, " +
+                    "COMPLETED, FAILED, CANCELED, REFUNDED, PREORDERED, ERROR")
+    private String status;
+
+    @ApiModelProperty(required = true, position = 50, value = "The order purchased country.")
+    @JsonProperty("countryOfPurchase")
+    private String country;
+
+    @ApiModelProperty(required = true, position = 60, value = "The order currency.")
+    private String currency;
+
+    @ApiModelProperty(required = true, position = 70, value = "The order locale.")
+    private String locale;
+
     // expand ratingInfo to simplify oom
+    @ApiModelProperty(required = true, position = 80, value = "[Client Immutable] The order total amount.")
     private BigDecimal totalAmount;
+
+    @ApiModelProperty(required = true, position = 90, value = "[Client Immutable] The order total tax.")
     private BigDecimal totalTax;
+
+    @JsonProperty("isTaxIncluded")
+    @ApiModelProperty(required = true, position = 100, value = "[Client Immutable] Whether the tax " +
+            "is included in the total amount.")
     private Boolean isTaxInclusive;
+
+    @ApiModelProperty(required = true, position = 105, value = "[Client Immutable] Whether the tax is exempted. ")
+    private Boolean isTaxExempted;
+
+    @ApiModelProperty(required = true, position = 110, value = "[Client Immutable] The order total discount amount.")
     private BigDecimal totalDiscount;
+
+    @ApiModelProperty(required = true, position = 120, value = "[Client Immutable] The order total shipping fee.")
+
     private BigDecimal totalShippingFee;
+    @ApiModelProperty(required = true, position = 130, value = "[Client Immutable] The order total shipping " +
+            "fee discount amount.")
     private BigDecimal totalShippingFeeDiscount;
+
     @JsonIgnore
     private Date honorUntilTime;
+
     @JsonIgnore
     private Date honoredTime;
     // end of ratingInfo
 
     // expand shippingInfo to simplify oom
     @ShippingMethodId
+    @ApiModelProperty(required = true, position = 75, value = "The shipping method. Required for physical goods. " +
+            "It might be null if there is no shipping method at this time.")
     private Long shippingMethod;
+    @ApiModelProperty(required = true, position = 76, value = "The shipping address. Required for physical goods. " +
+            "It might be null if there is no shipping address at this time.")
     private ShippingAddressId shippingAddress;
     // end of shippingInfo
 
-    private List<PaymentInstrumentId> paymentInstruments;
+    @ApiModelProperty(required = true, position = 150, value = "The payment instruments. " +
+            "Required if the order is not free. " +
+            "It might be empty if there is no payment instruments at this time.")
+    private List<PaymentInfo> paymentInfos;
+    @ApiModelProperty(required = true, position = 160, value = "The discounts. " +
+            "It might be empty if there is no discounts at this time.")
     private List<Discount> discounts;
+    @ApiModelProperty(required = true, position = 140, value = "The order items. ")
     private List<OrderItem> orderItems;
+
+    @ApiModelProperty(required = true, position = 170, value = "[Client Immutable]]The link to the order events. ")
+    private Link orderEventsLink;
 
     public OrderId getId() {
         return id;
@@ -198,12 +250,12 @@ public class Order extends BaseModelWithDate {
         this.shippingAddress = shippingAddress;
     }
 
-    public List<PaymentInstrumentId> getPaymentInstruments() {
-        return paymentInstruments;
+    public List<PaymentInfo> getPaymentInfos() {
+        return paymentInfos;
     }
 
-    public void setPaymentInstruments(List<PaymentInstrumentId> paymentInstruments) {
-        this.paymentInstruments = paymentInstruments;
+    public void setPaymentInfos(List<PaymentInfo> paymentInfos) {
+        this.paymentInfos = paymentInfos;
     }
 
     public List<Discount> getDiscounts() {
@@ -228,5 +280,21 @@ public class Order extends BaseModelWithDate {
 
     public void setLocale(String locale) {
         this.locale = locale;
+    }
+
+    public Link getOrderEventsLink() {
+        return orderEventsLink;
+    }
+
+    public void setOrderEventsLink(Link orderEventsLink) {
+        this.orderEventsLink = orderEventsLink;
+    }
+
+    public Boolean getIsTaxExempted() {
+        return isTaxExempted;
+    }
+
+    public void setIsTaxExempted(Boolean isTaxExempted) {
+        this.isTaxExempted = isTaxExempted;
     }
 }

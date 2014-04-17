@@ -6,9 +6,11 @@
 package com.junbo.order.spec.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.OrderId;
 import com.junbo.common.id.OrderItemId;
 import com.junbo.common.id.PromotionId;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.math.BigDecimal;
 
@@ -22,11 +24,24 @@ public class Discount extends BaseModelWithDate {
     private OrderId orderId;
     @JsonIgnore
     private OrderItemId orderItemId;
+
+    @ApiModelProperty(required = true, position = 20, value = "[Client Immutable] The discount type. ",
+            allowableValues = "OFFER_DISCOUNT, ORDER_DISCOUNT, SHIPPING_FEE_DISCOUNT. ")
     private String type;
+
+    @ApiModelProperty(required = true, position = 30, value = "[Client Immutable] The discount amount.")
     private BigDecimal discountAmount;
+
+    @ApiModelProperty(required = true, position = 40, value = "[Client Immutable] The discount percentage.")
+    @JsonProperty("discountPercentage")
     private BigDecimal discountRate;
+
+    @ApiModelProperty(required = true, position = 50, value = "[Client Immutable] The discount linked promotion.")
     private PromotionId promotion;
+
+    @ApiModelProperty(required = false, position = 10, value = "The coupon linked discount.")
     private String coupon;
+
     @JsonIgnore
     private OrderItem ownerOrderItem;
 

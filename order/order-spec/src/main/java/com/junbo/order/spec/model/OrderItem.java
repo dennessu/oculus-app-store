@@ -7,12 +7,14 @@ package com.junbo.order.spec.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.junbo.common.id.OfferId;
 import com.junbo.common.id.OrderId;
 import com.junbo.common.id.OrderItemId;
 import com.junbo.common.id.ShippingAddressId;
 import com.junbo.common.jackson.annotation.ShippingMethodId;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -32,26 +34,46 @@ public class OrderItem extends BaseModelWithDate {
     private OrderItemId orderItemId;
     @JsonIgnore
     private OrderId orderId;
+    @JsonIgnore
     private String type;
+
+    @ApiModelProperty(required = true, position = 10, value = "The offer.")
     private OfferId offer;
+
+    @ApiModelProperty(required = true, position = 20, value = "The quantity of the offer.")
     private Integer quantity;
+
+    @JsonIgnore
     private ShippingAddressId shippingAddress;
+
+    @JsonIgnore
     @ShippingMethodId
     private Long shippingMethod;
 
     // expand ratingInfo to simplify oom
+    @ApiModelProperty(required = true, position = 30, value = "[Client Immutable] The unit price of the offer.")
     private BigDecimal unitPrice;
+
+    // expand ratingInfo to simplify oom
+    @ApiModelProperty(required = true, position = 40, value = "[Client Immutable] The offer total amount.")
     private BigDecimal totalAmount;
+
+    @ApiModelProperty(required = true, position = 50, value = "[Client Immutable] The offer total tax.")
     private BigDecimal totalTax;
-    private Boolean isTaxExempted;
+
+    @ApiModelProperty(required = true, position = 60, value = "[Client Immutable] The offer total discount amount.")
     private BigDecimal totalDiscount;
+
     @JsonIgnore
     private Date honorUntilTime;
     @JsonIgnore
     private Date honoredTime;
     // end of ratingInfo
 
+    @JsonIgnore
     private PreorderInfo preorderInfo;
+
+    @JsonProperty("futureExpansion")
     private String properties;
 
     public OrderItemId getOrderItemId() {
@@ -132,14 +154,6 @@ public class OrderItem extends BaseModelWithDate {
 
     public void setTotalTax(BigDecimal totalTax) {
         this.totalTax = totalTax;
-    }
-
-    public Boolean getIsTaxExempted() {
-        return isTaxExempted;
-    }
-
-    public void setIsTaxExempted(Boolean isTaxExempted) {
-        this.isTaxExempted = isTaxExempted;
     }
 
     public BigDecimal getTotalDiscount() {

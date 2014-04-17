@@ -113,12 +113,4 @@ public class Subledger extends BaseModelWithDate {
     public void setTotalAmount(BigDecimal totalAmount) {
         this.totalAmount = totalAmount;
     }
-
-    public Integer getRev() {
-        return resourceAge;
-    }
-
-    public void setRev(Integer resourceAge) {
-        this.resourceAge = resourceAge;
-    }
 }
