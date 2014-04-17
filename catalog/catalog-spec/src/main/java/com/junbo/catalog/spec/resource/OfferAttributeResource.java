@@ -44,6 +44,12 @@ public interface OfferAttributeResource {
     @Path("/")
     Promise<OfferAttribute> createOfferAttribute(OfferAttribute attribute);
 
+    @ApiOperation("Put an item attribute")
+    @PUT
+    @Path("/{attributeId}")
+    Promise<OfferAttribute> update(@PathParam("attributeId") OfferAttributeId attributeId, OfferAttribute attribute);
+
+
     @ApiOperation("Delete an offer attribute")
     @DELETE
     @Path("/{attributeId}")

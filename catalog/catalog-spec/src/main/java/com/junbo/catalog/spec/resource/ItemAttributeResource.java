@@ -44,6 +44,11 @@ public interface ItemAttributeResource {
     @Path("/")
     Promise<ItemAttribute> createItemAttribute(ItemAttribute attribute);
 
+    @ApiOperation("Put an item attribute")
+    @PUT
+    @Path("/{attributeId}")
+    Promise<ItemAttribute> update(@PathParam("attributeId") ItemAttributeId attributeId, ItemAttribute attribute);
+
     @ApiOperation("Delete an item attribute")
     @DELETE
     @Path("/{attributeId}")
