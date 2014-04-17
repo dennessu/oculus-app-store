@@ -7,12 +7,8 @@
 package com.junbo.billing.db.entity;
 
 import com.junbo.billing.db.BaseEntity;
-import com.junbo.billing.db.EntityValidationCode;
-import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 /**
@@ -21,17 +17,31 @@ import java.math.BigDecimal;
 @Entity
 @Table(name = "billing_transaction")
 public class TransactionEntity extends BaseEntity {
-    private Long transactionId;
-    private Long piId;
-    private Long balanceId;
-    private Short typeId;
-    private String paymentRefId;
-    private BigDecimal amount;
-    private String currency;
-    private Short statusId;
-
     @Id
     @Column(name = "transaction_id")
+    private Long transactionId;
+
+    @Column(name = "pi_id")
+    private Long piId;
+
+    @Column(name = "balance_id")
+    private Long balanceId;
+
+    @Column(name = "type_id")
+    private Short typeId;
+
+    @Column(name = "payment_ref_id")
+    private String paymentRefId;
+
+    @Column(name = "amount")
+    private BigDecimal amount;
+
+    @Column(name = "currency")
+    private String currency;
+
+    @Column(name = "status_id")
+    private Short statusId;
+
     public Long getTransactionId() {
         return transactionId;
     }
@@ -39,8 +49,6 @@ public class TransactionEntity extends BaseEntity {
         this.transactionId = transactionId;
     }
 
-    @Column(name = "balance_id")
-    @NotNull(message = EntityValidationCode.MISSING_VALUE)
     public Long getBalanceId() {
         return balanceId;
     }
@@ -48,8 +56,6 @@ public class TransactionEntity extends BaseEntity {
         this.balanceId = balanceId;
     }
 
-    @Column(name = "pi_id")
-    @NotNull(message = EntityValidationCode.MISSING_VALUE)
     public Long getPiId() {
         return piId;
     }
@@ -57,8 +63,6 @@ public class TransactionEntity extends BaseEntity {
         this.piId = piId;
     }
 
-    @Column(name = "type_id")
-    @NotNull(message = EntityValidationCode.MISSING_VALUE)
     public Short getTypeId() {
         return typeId;
     }
@@ -66,7 +70,6 @@ public class TransactionEntity extends BaseEntity {
         this.typeId = typeId;
     }
 
-    @Column(name = "payment_ref_id")
     public String getPaymentRefId() {
         return paymentRefId;
     }
@@ -74,8 +77,6 @@ public class TransactionEntity extends BaseEntity {
         this.paymentRefId = paymentRefId;
     }
 
-    @Column(name = "amount")
-    @NotNull(message = EntityValidationCode.MISSING_VALUE)
     public BigDecimal getAmount() {
         return amount;
     }
@@ -83,9 +84,6 @@ public class TransactionEntity extends BaseEntity {
         this.amount = amount;
     }
 
-    @Column(name = "currency")
-    @NotEmpty(message = EntityValidationCode.MISSING_VALUE)
-    @Length(max = 3, message = EntityValidationCode.TOO_LONG)
     public String getCurrency() {
         return currency;
     }
@@ -93,8 +91,6 @@ public class TransactionEntity extends BaseEntity {
         this.currency = currency;
     }
 
-    @Column(name = "status_id")
-    @NotNull(message = EntityValidationCode.MISSING_VALUE)
     public Short getStatusId() {
         return statusId;
     }

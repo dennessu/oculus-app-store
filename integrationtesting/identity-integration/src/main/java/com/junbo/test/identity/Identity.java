@@ -7,12 +7,11 @@ package com.junbo.test.identity;
 
 import com.junbo.common.id.UserId;
 import com.junbo.common.util.IdFormatter;
-import com.junbo.identity.spec.model.user.User;
+import com.junbo.identity.spec.v1.model.User;
 import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.GsonHelper;
 import com.junbo.test.common.HttpclientHelper;
 import com.junbo.test.common.RandomHelper;
-
 
 /**
  * @author dw
@@ -30,9 +29,8 @@ public class Identity {
     public static User DefaultPostUser() throws Exception {
         String userName = RandomHelper.randomAlphabetic(15);
         User user = new User();
-        user.setUserName(userName);
-        user.setPassword(DefaultUserPwd);
-        user.setStatus(DefaultUserStatus);
+        user.setUsername(userName);
+        user.setType("user");
         User posted = (User) HttpclientHelper.SimpleJsonPost(DefaultIdentityURI,
                 GsonHelper.GsonSerializer(user),
                 User.class);
@@ -40,8 +38,8 @@ public class Identity {
     }
 
     public static User GetUserByUserId(UserId userId) throws Exception {
-        User got = (User) HttpclientHelper.SimpleGet(DefaultIdentityURI + "/" +
-                IdFormatter.encodeId(userId), User.class);
+        User got = (User) HttpclientHelper.SimpleGet(DefaultIdentityURI + "/"
+                + IdFormatter.encodeId(userId), User.class);
         return got;
     }
 

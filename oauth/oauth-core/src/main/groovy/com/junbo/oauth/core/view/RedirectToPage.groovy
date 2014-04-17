@@ -37,9 +37,9 @@ class RedirectToPage implements Action {
         def uriBuilder = UriComponentsBuilder.fromHttpUrl(pageUrl)
         uriBuilder.queryParam(OAuthParameters.CONVERSATION_ID, context.conversationId)
 
-        def responseBuilder = Response.status(Response.Status.FOUND).location(uriBuilder.build().toUri())
+        contextWrapper.responseBuilder = Response.status(Response.Status.FOUND)
+                .location(uriBuilder.build().toUri())
 
-        contextWrapper.responseBuilder = responseBuilder
         return Promise.pure(null)
     }
 }

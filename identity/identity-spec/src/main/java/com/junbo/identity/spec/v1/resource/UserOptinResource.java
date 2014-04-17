@@ -29,7 +29,6 @@ import javax.ws.rs.core.MediaType;
 public interface UserOptinResource {
     @ApiOperation("Create one user optin")
     @POST
-    @Path("/")
     Promise<UserOptin> create(UserOptin userOptin);
 
     @ApiOperation("Get one user optin")
@@ -57,6 +56,5 @@ public interface UserOptinResource {
 
     @ApiOperation("Search user optins")
     @GET
-    @Path("/")
     Promise<Results<UserOptin>> list(@BeanParam UserOptinListOptions listOptions);
 }

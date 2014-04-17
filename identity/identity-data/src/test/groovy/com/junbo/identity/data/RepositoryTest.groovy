@@ -439,7 +439,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void test() {
-        String userName = 'liangfuxia'
+        String userName = 'liangfuxia23'
         String password = '#Bugsfor$'
 
         String original = userName + ':' + password

@@ -6,6 +6,7 @@
 package com.junbo.oauth.app
 
 import com.junbo.common.error.RestExceptionMapper
+import com.junbo.common.filter.SequenceIdFilter
 import com.junbo.common.json.InvalidJsonReaderInterceptor
 import com.junbo.common.json.JacksonFeature
 import com.junbo.common.json.ObjectMapperProvider
@@ -45,6 +46,7 @@ class Main {
         resourceConfig.register(InvalidJsonReaderInterceptor)
         resourceConfig.register(RestExceptionMapper)
         resourceConfig.register(ConversationNotFoundExceptionMapper)
+        resourceConfig.register(SequenceIdFilter)
 
 
         def uri = URI.create('http://0.0.0.0:8082/')

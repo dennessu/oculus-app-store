@@ -54,3 +54,12 @@ function psqlh {
 function psqlh_d {
     psqlh postgres "$@"
 }
+
+# Get root dir of current git working copy
+function rootdir {
+    echo "$(git rev-parse --show-toplevel)"
+}
+function root {
+    cd `rootdir`
+}
+
