@@ -10,6 +10,7 @@ import com.junbo.common.id.Id;
 import com.junbo.langur.core.promise.Promise;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.core.util.ClassWrapper;
+import com.wordnik.swagger.jersey.JerseyApiReader;
 import com.wordnik.swagger.model.Operation;
 import org.glassfish.hk2.utilities.reflection.ReflectionHelper;
 
@@ -21,7 +22,7 @@ import java.lang.reflect.Type;
 /**
  * The hook to change API parameter types when reading API.
  */
-public class JaxrsApiReader extends com.wordnik.swagger.jaxrs.reader.DefaultJaxrsApiReader {
+public class OculusApiReader extends JerseyApiReader {
     private SamplesReader samplesReader = new SamplesReader();
 
     @Override

@@ -133,15 +133,21 @@ public class OrderRatingService extends RatingServiceSupport{
         Map<Long, Integer> shippingDetail = new HashMap<>();
 
         for (RatableItem item : context.getItems()) {
-            if (item.getShippingMethodId() == null) {
+            int quantity = getQuantity(item.getOffer(), context.getTimestamp()) * item.getQuantity();
+            if (quantity == 0) {
                 continue;
             }
-            if (!shippingDetail.containsKey(item.getShippingMethodId())) {
-                shippingDetail.put(item.getShippingMethodId(), 0);
+
+            Long shippingMethodId = item.getShippingMethodId() == null?
+                    context.getDefaultShippingMethod() : item.getShippingMethodId();
+            if (shippingMethodId == null) {
+                throw AppErrors.INSTANCE.missingShippingMethod(item.getOfferId().toString()).exception();
             }
-            shippingDetail.put(item.getShippingMethodId(),
-                    shippingDetail.get(item.getShippingMethodId())
-                            + getQuantity(item.getOffer(), context.getTimestamp()) * item.getQuantity());
+
+            if (!shippingDetail.containsKey(shippingMethodId)) {
+                shippingDetail.put(shippingMethodId, 0);
+            }
+            shippingDetail.put(shippingMethodId, shippingDetail.get(shippingMethodId) + quantity);
         }
 
         for (Long shippingMethodId : shippingDetail.keySet()) {

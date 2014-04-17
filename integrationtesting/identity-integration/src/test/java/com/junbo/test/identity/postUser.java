@@ -5,7 +5,7 @@
  */
 package com.junbo.test.identity;
 
-import com.junbo.identity.spec.model.user.User;
+import com.junbo.identity.spec.v1.model.User;
 
 import com.junbo.test.common.HttpclientHelper;
 import org.testng.annotations.*;
@@ -34,7 +34,7 @@ public class postUser {
         Identity.StartLoggingAPISample(Identity.MessageGetUserByUserId);
         User storedUser = Identity.GetUserByUserId(newUser.getId());
         assertEquals("validate user name is correct",
-                newUser.getUserName(), storedUser.getUserName());
+                newUser.getUsername(), storedUser.getUsername());
         assertEquals("validate user created time is correct",
                 newUser.getCreatedTime(), storedUser.getCreatedTime());
     }

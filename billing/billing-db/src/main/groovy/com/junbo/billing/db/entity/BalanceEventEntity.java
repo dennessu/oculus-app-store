@@ -7,12 +7,10 @@
 package com.junbo.billing.db.entity;
 
 import com.junbo.billing.db.BaseEventEntity;
-import com.junbo.billing.db.EntityValidationCode;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 /**
  * Created by xmchen on 14-1-24.
@@ -20,10 +18,9 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name = "balance_event")
 public class BalanceEventEntity extends BaseEventEntity {
+    @Column(name = "balance_id")
     private Long balanceId;
 
-    @Column(name = "balance_id")
-    @NotNull(message = EntityValidationCode.MISSING_VALUE)
     public Long getBalanceId() {
         return balanceId;
     }
