@@ -107,11 +107,11 @@ public class EnumHelper {
      * @author Jason
      */
     public enum CatalogEntityStatus {
-        DESIGN("Design"),
-        PENDING_REVIEW("PendingReview"),
-        RELEASED("Released"),
-        REJECTED("Rejected"),
-        DELETED("Deleted");
+        DRAFT("DRAFT"),
+        PENDING_REVIEW("PENDING_REVIEW"),
+        REJECTED("REJECTED"),
+        DELETED("DELETED"),
+        APPROVED("APPROVED");
 
         private String entityStatus;
 
