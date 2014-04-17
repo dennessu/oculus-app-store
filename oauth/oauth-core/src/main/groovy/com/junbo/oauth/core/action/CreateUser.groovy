@@ -55,11 +55,11 @@ class CreateUser implements Action {
             return Promise.pure(null)
         }.then { User newUser ->
             if (newUser == null) {
-                return Promise.pure('error')
+                return Promise.pure(new ActionResult('error'))
             }
 
             contextWrapper.user = newUser
-            return Promise.pure(null)
+            return Promise.pure(new ActionResult('success'))
         }
     }
 }
