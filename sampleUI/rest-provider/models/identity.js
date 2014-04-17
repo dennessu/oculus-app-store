@@ -38,8 +38,16 @@ var OptInModel = function(){
     this.type = "";
 };
 
-exports.UserModel = UserModel;
-exports.ProfileModel = ProfileModel;
-exports.AuthorizeModel = AuthorizeModel;
-exports.CodeModel = CodeModel;
-exports.OptInModel = OptInModel;
+if(typeof(window) != "undefined"){
+    Module.Load(window, "Models.Identity.UserModel", UserModel);
+    Module.Load(window, "Models.Identity.ProfileModel", ProfileModel);
+    Module.Load(window, "Models.Identity.AuthorizeModel", AuthorizeModel);
+    Module.Load(window, "Models.Identity.CodeModel", CodeModel);
+    Module.Load(window, "Models.Identity.OptInModel", OptInModel);
+}else{
+    exports.UserModel = UserModel;
+    exports.ProfileModel = ProfileModel;
+    exports.AuthorizeModel = AuthorizeModel;
+    exports.CodeModel = CodeModel;
+    exports.OptInModel = OptInModel;
+}

@@ -15,4 +15,8 @@ var EntitlementModel = function(){
     this.type = "developer";
 };
 
-exports.EntitlementModel = EntitlementModel;
+if(typeof(window) != "undefined"){
+    Module.Load(window, "Models.Entitlement.EntitlementModel", EntitlementModel);
+}else{
+    exports.EntitlementModel = EntitlementModel;
+}
