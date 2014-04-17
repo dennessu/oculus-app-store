@@ -10,6 +10,7 @@ import com.junbo.common.id.provider.IdTypeFromStringProvider
 import com.junbo.common.json.InvalidJsonReaderInterceptor
 import com.junbo.common.json.JacksonFeature
 import com.junbo.common.json.ObjectMapperProvider
+import com.junbo.common.provider.ResponseFilter
 import com.junbo.configuration.ConfigResource
 import com.junbo.identity.spec.filter.ResultsInterceptor
 import com.junbo.sharding.view.EntityListener
@@ -44,6 +45,7 @@ class IdentityMain {
         resourceConfig.register(ResultsInterceptor)
         resourceConfig.register(InvalidJsonReaderInterceptor)
         resourceConfig.register(EntityListener)
+        resourceConfig.register(ResponseFilter)
 
         def uri = URI.create('http://0.0.0.0:8081/v1')
         return GrizzlyHttpServerFactory.createHttpServer(uri, resourceConfig)
