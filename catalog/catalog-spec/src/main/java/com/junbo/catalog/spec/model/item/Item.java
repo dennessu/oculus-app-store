@@ -9,10 +9,8 @@ package com.junbo.catalog.spec.model.item;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.catalog.spec.model.common.BaseEntityModel;
-import com.junbo.common.jackson.annotation.AttributeId;
-import com.junbo.common.jackson.annotation.ItemId;
-import com.junbo.common.jackson.annotation.ItemRevisionId;
-import com.junbo.common.jackson.annotation.UserId;
+import com.junbo.catalog.spec.model.common.Link;
+import com.junbo.common.jackson.annotation.*;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.List;
@@ -34,16 +32,19 @@ public class Item extends BaseEntityModel {
     @ApiModelProperty(position = 20, required = true, value = "The id of current revision")
     private Long currentRevisionId;
 
+    @ApiModelProperty(position = 21, required = true, value = "Item revisions")
+    private Link revisions;
+
     @UserId
     @JsonProperty("developer")
-    @ApiModelProperty(position = 21, required = true, value = "Developer of the item")
+    @ApiModelProperty(position = 22, required = true, value = "Developer of the item")
     private Long ownerId;
 
-    @AttributeId
-    @ApiModelProperty(position = 22, required = true, value = "Genres")
+    @ItemAttributeId
+    @ApiModelProperty(position = 23, required = true, value = "Genres")
     private List<Long> genres;
 
-    @ApiModelProperty(position = 23, required = true, value = "Sku")
+    @ApiModelProperty(position = 24, required = true, value = "Sku")
     private String sku;
 
     @JsonIgnore
@@ -63,6 +64,14 @@ public class Item extends BaseEntityModel {
 
     public void setCurrentRevisionId(Long currentRevisionId) {
         this.currentRevisionId = currentRevisionId;
+    }
+
+    public Link getRevisions() {
+        return revisions;
+    }
+
+    public void setRevisions(Link revisions) {
+        this.revisions = revisions;
     }
 
     public Long getOwnerId() {

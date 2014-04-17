@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.catalog.spec.model.common.BaseRevisionModel;
 import com.junbo.catalog.spec.model.common.Price;
-import com.junbo.common.id.GameRatingId;
+import com.junbo.common.id.AgeRatingId;
 import com.junbo.common.jackson.annotation.ItemRevisionId;
 import com.junbo.common.jackson.annotation.OfferId;
 import com.junbo.common.jackson.annotation.UserId;
@@ -69,7 +69,7 @@ public class ItemRevision extends BaseRevisionModel {
     @ApiModelProperty(position = 32, required = false, value = "Community forum link of the item revision resource")
     private String communityForumLink;
     @ApiModelProperty(position = 33, required = true, value = "Age ratings for the item revision resource")
-    private Map<String, GameRatingId> ratings;
+    private Map<String, AgeRatingId> ageRatings;
     @ApiModelProperty(position = 34, required = true, value = "E-wallet currency type")
     private String ewalletCurrencyType;
     @ApiModelProperty(position = 35, required = true, value = "E-wallet currency")
@@ -200,12 +200,12 @@ public class ItemRevision extends BaseRevisionModel {
         this.communityForumLink = communityForumLink;
     }
 
-    public Map<String, GameRatingId> getRatings() {
-        return ratings;
+    public Map<String, AgeRatingId> getAgeRatings() {
+        return ageRatings;
     }
 
-    public void setRatings(Map<String, GameRatingId> ratings) {
-        this.ratings = ratings;
+    public void setAgeRatings(Map<String, AgeRatingId> ageRatings) {
+        this.ageRatings = ageRatings;
     }
 
     public String getEwalletCurrencyType() {

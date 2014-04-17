@@ -17,6 +17,7 @@ import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  * Price tier resource.
@@ -42,4 +43,9 @@ public interface PriceTierResource {
     @POST
     @Path("/")
     Promise<PriceTier> createPriceTier(PriceTier attribute);
+
+    @ApiOperation("Delete an price tier")
+    @DELETE
+    @Path("/{tierId}")
+    Promise<Response> delete(@PathParam("tierId") PriceTierId tierId);
 }

@@ -6,13 +6,19 @@
 
 package com.junbo.catalog.spec.model.offer;
 
+import com.wordnik.swagger.annotations.ApiModelProperty;
+
 /**
  * Locale properties for offer revision.
  */
 public class OfferRevisionLocaleProperties {
+    @ApiModelProperty(position = 1, required = true, value = "offer revision name")
     String name;
+    @ApiModelProperty(position = 2, required = true, value = "revision notes")
     String revisionNotes;
+    @ApiModelProperty(position = 3, required = true, value = "long description")
     String longDescription;
+    @ApiModelProperty(position = 4, required = true, value = "short description")
     String shortDescription;
 
     public String getShortDescription() {

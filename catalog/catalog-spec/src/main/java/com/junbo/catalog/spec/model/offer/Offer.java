@@ -8,6 +8,7 @@ package com.junbo.catalog.spec.model.offer;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.catalog.spec.model.common.BaseEntityModel;
+import com.junbo.catalog.spec.model.common.Link;
 import com.junbo.common.jackson.annotation.*;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
@@ -27,18 +28,21 @@ public class Offer extends BaseEntityModel {
     @ApiModelProperty(position = 20, required = true, value = "The id of current revision.")
     private Long currentRevisionId;
 
+    @ApiModelProperty(position = 21, required = true, value = "Offer revisions")
+    private Link revisions;
+
     @UserId
     @JsonProperty("publisher")
-    @ApiModelProperty(position = 21, required = true, value = "Publisher of the offer.")
+    @ApiModelProperty(position = 22, required = true, value = "Publisher of the offer.")
     private Long ownerId;
 
     @ItemId
     @JsonProperty("iapItem")
-    @ApiModelProperty(position = 22, required = false, value = "The item in which the IAP offer will be sold.")
+    @ApiModelProperty(position = 23, required = false, value = "The item in which the IAP offer will be sold.")
     private Long iapItemId;
 
     @AttributeId
-    @ApiModelProperty(position = 23, required = true, value = "Categories of the offer.")
+    @ApiModelProperty(position = 24, required = true, value = "Categories of the offer.")
     private List<Long> categories;
 
     public Long getOfferId() {
@@ -55,6 +59,14 @@ public class Offer extends BaseEntityModel {
 
     public void setCurrentRevisionId(Long currentRevisionId) {
         this.currentRevisionId = currentRevisionId;
+    }
+
+    public Link getRevisions() {
+        return revisions;
+    }
+
+    public void setRevisions(Link revisions) {
+        this.revisions = revisions;
     }
 
     public Long getOwnerId() {

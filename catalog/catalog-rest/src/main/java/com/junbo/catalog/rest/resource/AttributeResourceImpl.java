@@ -9,7 +9,6 @@ package com.junbo.catalog.rest.resource;
 import com.junbo.catalog.core.AttributeService;
 import com.junbo.catalog.spec.model.attribute.Attribute;
 import com.junbo.catalog.spec.model.attribute.AttributesGetOptions;
-import com.junbo.catalog.spec.resource.AttributeResource;
 import com.junbo.common.id.AttributeId;
 import com.junbo.common.model.Results;
 import com.junbo.langur.core.promise.Promise;

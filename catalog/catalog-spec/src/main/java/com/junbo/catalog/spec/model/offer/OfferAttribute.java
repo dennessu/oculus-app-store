@@ -4,31 +4,29 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.catalog.spec.model.pricetier;
+package com.junbo.catalog.spec.model.offer;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
 import com.junbo.catalog.spec.model.common.BaseModel;
-import com.junbo.common.jackson.annotation.AttributeId;
+import com.junbo.common.jackson.annotation.OfferAttributeId;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.NotNull;
-import java.math.BigDecimal;
 import java.util.Map;
 
 /**
- * PriceTier.
+ * Offer Attribute.
  */
-public class PriceTier extends BaseModel {
-    @AttributeId
+public class OfferAttribute extends BaseModel {
+    @OfferAttributeId
     @JsonProperty("self")
-    @ApiModelProperty(position = 1, required = true, value = "Price tier id")
+    @ApiModelProperty(position = 1, required = true, value = "Attribute id")
     private Long id;
     @NotNull
-    @ApiModelProperty(position = 2, required = true, value = "Prices")
-    private Map<String, BigDecimal> prices;
-    @NotNull
-    @ApiModelProperty(position = 3, required = true, value = "Locale properties")
+    @ApiModelProperty(position = 2, required = true, value = "Attribute type")
+    private String type;
+    @ApiModelProperty(position = 3, required = true, value = "locale properties")
     private Map<String, SimpleLocaleProperties> locales;
 
     public Long getId() {
@@ -39,12 +37,12 @@ public class PriceTier extends BaseModel {
         this.id = id;
     }
 
-    public Map<String, BigDecimal> getPrices() {
-        return prices;
+    public String getType() {
+        return type;
     }
 
-    public void setPrices(Map<String, BigDecimal> prices) {
-        this.prices = prices;
+    public void setType(String type) {
+        this.type = type;
     }
 
     public Map<String, SimpleLocaleProperties> getLocales() {

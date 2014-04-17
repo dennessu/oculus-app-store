@@ -6,26 +6,43 @@
 
 package com.junbo.catalog.spec.model.item;
 
+import com.wordnik.swagger.annotations.ApiModelProperty;
+
 import java.util.List;
 
 /**
  * Locale properties for item revision.
  */
 public class ItemRevisionLocaleProperties {
+    @ApiModelProperty(position = 1, required = true, value = "item revision name")
     String name;
+    @ApiModelProperty(position = 2, required = true, value = "game modes")
     String gameModes;
+    @ApiModelProperty(position = 3, required = true, value = "revision notes")
     String revisionNotes;
+    @ApiModelProperty(position = 4, required = true, value = "long description")
     String longDescription;
+    @ApiModelProperty(position = 5, required = true, value = "short description")
     String shortDescription;
+    @ApiModelProperty(position = 6, required = true, value = "minimum system requirements")
     String minimumSystemRequirements;
+    @ApiModelProperty(position = 7, required = true, value = "recommended system requirements")
     String recommendedSystemRequirements;
+    @ApiModelProperty(position = 8, required = true, value = "legal information")
     String legalInformation;
+    @ApiModelProperty(position = 9, required = true, value = "supported input devices")
     List<String> supportedInputDevices;
+    @ApiModelProperty(position = 10, required = true, value = "platforms")
     List<String> platforms;
+    @ApiModelProperty(position = 11, required = true, value = "credits")
     String credits;
+    @ApiModelProperty(position = 12, required = true, value = "copyright")
     String copyright;
+    @ApiModelProperty(position = 13, required = true, value = "known bugs")
     String knownBugs;
+    @ApiModelProperty(position = 14, required = true, value = "color")
     String color;
+    @ApiModelProperty(position = 15, required = true, value = "size")
     String size;
 
     public String getName() {

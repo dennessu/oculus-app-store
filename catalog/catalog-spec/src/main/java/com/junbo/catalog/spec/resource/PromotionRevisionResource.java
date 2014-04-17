@@ -12,8 +12,6 @@ import com.junbo.common.id.PromotionRevisionId;
 import com.junbo.common.model.Results;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
-import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -21,28 +19,28 @@ import javax.ws.rs.core.MediaType;
 /**
  * Promotion revisions resource definition.
  */
-@Api("promotion-revisions")
+//@Api("promotion-revisions")
 @Path("promotion-revisions")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 @RestResource
 public interface PromotionRevisionResource {
-    @ApiOperation("Get or search promotion revisions")
+    //@ApiOperation("Get or search promotion revisions")
     @GET
     @Path("/")
     Promise<Results<PromotionRevision>> getPromotionRevisions(PromotionRevisionsGetOptions options);
 
-    @ApiOperation("Get an promotion revision")
+    //@ApiOperation("Get an promotion revision")
     @GET
     @Path("/{revisionId}")
     Promise<PromotionRevision> getPromotionRevision(@PathParam("revisionId") PromotionRevisionId revisionId);
 
-    @ApiOperation("Create an promotion revision")
+    //@ApiOperation("Create an promotion revision")
     @POST
     @Path("/")
     Promise<PromotionRevision> createPromotionRevision(PromotionRevision promotionRevision);
 
-    @ApiOperation("Put an promotion revision")
+    //@ApiOperation("Put an promotion revision")
     @PUT
     @Path("/{revisionId}")
     Promise<PromotionRevision> updatePromotionRevision(@PathParam("revisionId") PromotionRevisionId revisionId,
