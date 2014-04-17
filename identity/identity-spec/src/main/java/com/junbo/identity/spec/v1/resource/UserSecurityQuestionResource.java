@@ -30,7 +30,6 @@ import javax.ws.rs.core.MediaType;
 public interface UserSecurityQuestionResource {
     @ApiOperation("Create one user security question")
     @POST
-    @Path("/")
     Promise<UserSecurityQuestion> create(@PathParam("userId") UserId userId,
                                          UserSecurityQuestion userSecurityQuestion);
 
@@ -63,7 +62,6 @@ public interface UserSecurityQuestionResource {
 
     @ApiOperation("Search user security questions")
     @GET
-    @Path("/")
     Promise<Results<UserSecurityQuestion>> list(@PathParam("userId") UserId userId,
             @BeanParam UserSecurityQuestionListOptions listOptions);
 }

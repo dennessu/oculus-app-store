@@ -5,6 +5,7 @@
  */
 package com.junbo.oauth.core.action
 
+import com.junbo.common.error.AppError
 import com.junbo.common.error.AppErrorException
 import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
 import com.junbo.langur.core.promise.Promise
@@ -39,9 +40,19 @@ class AuthenticateUser implements Action {
      */
     private UserService userService
 
+    /**
+     * How to handle the exception, rethrow it or return 200 response of exception
+     */
+    private boolean rethrowException
+
     @Required
     void setUserService(UserService userService) {
         this.userService = userService
+    }
+
+    @Required
+    void setRethrowException(boolean rethrowException) {
+        this.rethrowException = rethrowException
     }
 
     /**
@@ -63,53 +74,73 @@ class AuthenticateUser implements Action {
         String password = parameterMap.getFirst(OAuthParameters.PASSWORD)
 
         if (!StringUtils.hasText(username)) {
-            throw AppExceptions.INSTANCE.missingUsername().exception()
+            handleAppError(contextWrapper, AppExceptions.INSTANCE.missingUsername())
         }
 
         if (!StringUtils.hasText(password)) {
-            throw AppExceptions.INSTANCE.missingPassword().exception()
+            handleAppError(contextWrapper, AppExceptions.INSTANCE.missingPassword())
         }
 
-        // Authenticate the user will the username and password.
-        try {
-            userService.authenticateUser(username, password, client.clientId, '1.1.1.1',
-                    headerMap.getFirst('user-agent'))
-                    .then { UserCredentialVerifyAttempt loginAttempt ->
-                if (loginAttempt == null || !loginAttempt.succeeded) {
-                    throw AppExceptions.INSTANCE.invalidCredential().exception()
-                }
-
-                // Create the LoginState and save it in the ActionContext
-                def loginState = new LoginState(
-                        userId: loginAttempt.userId.value,
-                        lastAuthDate: new Date()
-                )
-
-                contextWrapper.loginState = loginState
-
-                // Check if the remember me token is needed.
-                String rememberMe = parameterMap.getFirst(OAuthParameters.REMEMBER_ME)
-                if ('TRUE'.equalsIgnoreCase(rememberMe)) {
-                    contextWrapper.needRememberMe = true
-                }
-
-                return Promise.pure(new ActionResult('success'))
-            }
-        } catch (AppErrorException e) {
-            // Exception happened while calling the identity service.
-            switch (e.error.httpStatusCode) {
-            // For response of NOT_FOUND or UNAUTHORIZED, then it suggests that either the username does not exists,
-            // or the password is invalid.
-                case HttpStatus.NOT_FOUND:
-                case HttpStatus.UNAUTHORIZED:
-                    throw AppExceptions.INSTANCE.invalidCredential().exception()
-            // For response of INTERNAL_SERVER_ERROR, it suggests that server error happened within the identity
-            // service, throw internal server error exception to the user.
-                case HttpStatus.INTERNAL_SERVER_ERROR:
-                default:
-                    LOGGER.error('Error calling the identity service.', e)
-                    throw AppExceptions.INSTANCE.errorCallingIdentity().exception()
-            }
+        if (!contextWrapper.errors.isEmpty()) {
+            return Promise.pure(new ActionResult('error'))
         }
+
+        String clientId = client.clientId
+        String userAgent = headerMap.getFirst('user-agent')
+
+        userService.authenticateUser(username, password, clientId, '1.1.1.1', userAgent).recover { Throwable e ->
+            if (e instanceof AppErrorException) {
+                AppErrorException appError = (AppErrorException) e
+                // Exception happened while calling the identity service.
+                switch (appError.error.httpStatusCode) {
+                // For response of NOT_FOUND or UNAUTHORIZED, then it suggests that
+                // either the username does not exists, or the password is invalid.
+                    case HttpStatus.NOT_FOUND.value():
+                    case HttpStatus.UNAUTHORIZED.value():
+                        handleAppError(contextWrapper, AppExceptions.INSTANCE.invalidCredential())
+                        break
+                // For response of INTERNAL_SERVER_ERROR, it suggests that server error happened within the identity
+                // service, throw internal server error exception to the user.
+                    case HttpStatus.INTERNAL_SERVER_ERROR.value():
+                    default:
+                        LOGGER.error('Error calling the identity service.', e)
+                        handleAppError(contextWrapper, AppExceptions.INSTANCE.errorCallingIdentity())
+                        break
+                }
+            } else {
+                handleAppError(contextWrapper, AppExceptions.INSTANCE.errorCallingIdentity())
+            }
+
+            return Promise.pure(null)
+        }.then { UserCredentialVerifyAttempt loginAttempt ->
+            if (loginAttempt == null || !loginAttempt.succeeded) {
+                handleAppError(contextWrapper, AppExceptions.INSTANCE.invalidCredential())
+                return Promise.pure(new ActionResult('error'))
+            }
+
+            // Create the LoginState and save it in the ActionContext
+            def loginState = new LoginState(
+                    userId: loginAttempt.userId.value,
+                    lastAuthDate: new Date()
+            )
+
+            contextWrapper.loginState = loginState
+
+            // Check if the remember me token is needed.
+            String rememberMe = parameterMap.getFirst(OAuthParameters.REMEMBER_ME)
+            if ('TRUE'.equalsIgnoreCase(rememberMe)) {
+                contextWrapper.needRememberMe = true
+            }
+
+            return Promise.pure(new ActionResult('success'))
+        }
+    }
+
+    private void handleAppError(ActionContextWrapper contextWrapper, AppError appError) {
+        if (rethrowException) {
+            throw appError.exception()
+        }
+
+        contextWrapper.errors.add(appError.error())
     }
 }

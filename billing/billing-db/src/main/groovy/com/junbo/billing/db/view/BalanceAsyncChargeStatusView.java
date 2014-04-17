@@ -18,7 +18,7 @@ import java.util.List;
 public class BalanceAsyncChargeStatusView implements EntityView<Long, BalanceEntity, String> {
     @Override
     public String getName() {
-        return "balance_asyncChargeStatus";
+        return "balance_async_charge_status";
     }
 
     @Override

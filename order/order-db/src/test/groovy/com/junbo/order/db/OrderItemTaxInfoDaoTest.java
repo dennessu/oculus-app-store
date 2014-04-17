@@ -6,6 +6,7 @@
 
 package com.junbo.order.db;
 
+import com.junbo.common.id.OrderItemId;
 import com.junbo.order.db.dao.OrderItemTaxInfoDao;
 import com.junbo.order.db.entity.OrderItemTaxInfoEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,25 +26,27 @@ public class OrderItemTaxInfoDaoTest extends BaseTest {
 
     @Test
     public void testCreateAndRead() {
-        OrderItemTaxInfoEntity orderItemTaxInfoEntity = generateOrderItemTaxInfoEntity();
-        Long id = orderItemTaxInfoDao.create(orderItemTaxInfoEntity);
+        OrderItemTaxInfoEntity entity = generateOrderItemTaxInfoEntity();
+        entity.setOrderItemId(idGenerator.nextId(OrderItemId.class));
+        Long id = orderItemTaxInfoDao.create(entity);
         OrderItemTaxInfoEntity returnedEntity = orderItemTaxInfoDao.read(id);
 
         Assert.assertNotNull(returnedEntity, "Fail to create or read entity.");
-        Assert.assertEquals(returnedEntity.getOrderItemTaxInfoId(), orderItemTaxInfoEntity.getOrderItemTaxInfoId(),
+        Assert.assertEquals(returnedEntity.getOrderItemTaxInfoId(), entity.getOrderItemTaxInfoId(),
                 "The tax info Id should not be different.");
     }
 
     @Test
     public void testUpdate() {
-        OrderItemTaxInfoEntity orderItemTaxInfoEntity = generateOrderItemTaxInfoEntity();
-        Long id = orderItemTaxInfoDao.create(orderItemTaxInfoEntity);
-        orderItemTaxInfoEntity.setUpdatedBy("ANOTHER");
-        orderItemTaxInfoDao.update(orderItemTaxInfoEntity);
+        OrderItemTaxInfoEntity entity = generateOrderItemTaxInfoEntity();
+        entity.setOrderItemId(idGenerator.nextId(OrderItemId.class));
+        Long id = orderItemTaxInfoDao.create(entity);
+        entity.setUpdatedBy("ANOTHER");
+        orderItemTaxInfoDao.update(entity);
         OrderItemTaxInfoEntity returnedEntity = orderItemTaxInfoDao.read(id);
 
         Assert.assertNotNull(returnedEntity, "Fail to create or read entity.");
-        Assert.assertEquals(returnedEntity.getUpdatedBy(), orderItemTaxInfoEntity.getUpdatedBy(),
+        Assert.assertEquals(returnedEntity.getUpdatedBy(), entity.getUpdatedBy(),
                 "The UpdatedBy field should not be different.");
     }
 

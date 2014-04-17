@@ -167,4 +167,18 @@ public class BillingTestDataProvider extends BaseTestDataProvider {
         return dbHelper.executeScalar(sqlStr, DBHelper.DBName.ORDER);
     }
 
+    public String updateOrderTentative(String orderId, boolean isTentative) throws Exception {
+        Order order = Master.getInstance().getOrder(orderClient.getOrderByOrderId(orderId));
+        order.setTentative(isTentative);
+        return orderClient.updateOrder(order);
+    }
+
+    public String getBalanceByOrderId(String uid, String orderId) throws Exception {
+        return balanceClient.getBalanceByOrderId(uid, orderId);
+    }
+
+    public String getBalanceByBalanceId(String uid, String balanceId) throws Exception{
+        return balanceClient.getBalanceByBalanceId(uid, balanceId);
+    }
+
 }

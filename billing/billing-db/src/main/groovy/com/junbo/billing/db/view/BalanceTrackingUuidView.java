@@ -11,15 +11,14 @@ import com.junbo.sharding.view.EntityView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Created by xmchen on 14-4-14.
  */
-public class BalanceTrackingUuidView implements EntityView<Long, BalanceEntity, UUID> {
+public class BalanceTrackingUuidView implements EntityView<Long, BalanceEntity, String> {
     @Override
     public String getName() {
-        return "balance_trackingUuid";
+        return "balance_tracking_uuid";
     }
 
     @Override
@@ -33,8 +32,8 @@ public class BalanceTrackingUuidView implements EntityView<Long, BalanceEntity, 
     }
 
     @Override
-    public Class<UUID> getKeyType() {
-        return UUID.class;
+    public Class<String> getKeyType() {
+        return String.class;
     }
 
     @Override
@@ -47,13 +46,13 @@ public class BalanceTrackingUuidView implements EntityView<Long, BalanceEntity, 
     }
 
     @Override
-    public List<UUID> mapEntity(BalanceEntity entity) {
+    public List<String> mapEntity(BalanceEntity entity) {
         if (entity == null) {
             throw new IllegalArgumentException("entity is null");
         }
 
-        List<UUID> result = new ArrayList<>();
-        result.add(entity.getTrackingUuid());
+        List<String> result = new ArrayList<>();
+        result.add(entity.getTrackingUuid().toString());
         return result;
     }
 }

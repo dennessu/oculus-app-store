@@ -1,5 +1,6 @@
 package com.junbo.identity.core.service.filter
 
+import com.junbo.common.id.UserTosAgreementId
 import com.junbo.identity.spec.v1.model.UserTosAgreement
 import com.junbo.oom.core.MappingContext
 import groovy.transform.CompileStatic
@@ -10,7 +11,11 @@ import groovy.transform.CompileStatic
 class UserTosFilter extends ResourceFilterImpl<UserTosAgreement> {
     @Override
     protected UserTosAgreement filter(UserTosAgreement userTos, MappingContext context) {
-        return selfMapper.filterUserTos(userTos, context)
+        UserTosAgreement result = selfMapper.filterUserTos(userTos, context)
+        if (userTos.userId != null) {
+            ((UserTosAgreementId)(result.id)).resourcePathPlaceHolder.put('userId', userTos.userId)
+        }
+        return result
     }
 
     @Override

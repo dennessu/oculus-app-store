@@ -49,8 +49,4 @@
         <property name="apiService" ref="apiService"/>
     </bean>
 
-    <bean id="defaultRegisterEndpoint" class="com.junbo.oauth.api.endpoint.RegisterEndpointImpl">
-        <property name="flowExecutor" ref="flowExecutor"/>
-        <property name="registerFlow" value="registerFlow"/>
-    </bean>
 </beans>

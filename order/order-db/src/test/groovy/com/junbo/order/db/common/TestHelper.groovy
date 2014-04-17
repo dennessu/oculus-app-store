@@ -187,7 +187,6 @@ class TestHelper {
         def rand = new SecureRandom()
         entity.setSubledgerId(generateId())
         entity.setSellerId(generateLong())
-        entity.setSellerTaxProfileId(generateLong())
         entity.setCurrency(RandomStringUtils.randomAlphabetic(3))
         entity.setTotalAmount(BigDecimal.valueOf(rand.nextInt(RAND_INT_MAX)))
         entity.setCreatedTime(new Date())

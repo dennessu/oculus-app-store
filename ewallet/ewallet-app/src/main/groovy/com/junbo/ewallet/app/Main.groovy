@@ -32,10 +32,9 @@ class Main {
         resourceConfig.packages('com.junbo.ewallet.spec.resource.adapter')
         resourceConfig.property('contextConfigLocation', 'classpath*:/spring/*.xml')
 
-        resourceConfig.property(ServerProperties.BV_SEND_ERROR_IN_RESPONSE, true)
         resourceConfig.property(ServerProperties.TRACING, 'ALL')
 
-        def uri = URI.create('http://0.0.0.0:8080/rest')
+        def uri = URI.create('http://0.0.0.0:8082/v1')
         return GrizzlyHttpServerFactory.createHttpServer(uri, resourceConfig)
     }
 

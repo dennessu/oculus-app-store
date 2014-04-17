@@ -6,8 +6,8 @@
 
 package com.junbo.docs.app;
 
-import com.junbo.docs.app.readers.JaxrsApiReader;
 import com.junbo.docs.app.readers.ModelReader;
+import com.junbo.docs.app.readers.OculusApiReader;
 import com.wordnik.swagger.jaxrs.config.BeanConfig;
 import com.wordnik.swagger.reader.ClassReaders;
 import com.wordnik.swagger.reader.ModelReaders;
@@ -27,7 +27,8 @@ import java.net.URI;
  */
 public class Main {
 
-    private static final int SERVER_PORT = 8079;
+    //private static final int SERVER_PORT = 0xd0c;   // 3340
+    private static final int SERVER_PORT = 8079;   // 3340
 
     private Main() { }
 
@@ -43,14 +44,14 @@ public class Main {
         BeanConfig beanConfig = new BeanConfig();
 
         ModelReaders.setReader(new ModelReader());
-        ClassReaders.setReader(new JaxrsApiReader());
+        ClassReaders.setReader(new OculusApiReader());
 
         beanConfig.setResourcePackage("com.junbo");
 
         beanConfig.setDescription("Oculus Commerce and Identity API Documentations");
         beanConfig.setTitle("Oculus Commerce and Identity API");
         beanConfig.setVersion("0.0.1-SNAPSHOT");
-        beanConfig.setBasePath("http://api.oculusvr-demo.com:8081/v1/");
+        beanConfig.setBasePath("http://api.oculusvr-demo.com:8081/v1");
         beanConfig.setScan(true);
 
         // jersey container

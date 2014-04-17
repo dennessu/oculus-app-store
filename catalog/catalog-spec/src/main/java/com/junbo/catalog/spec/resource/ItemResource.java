@@ -16,6 +16,7 @@ import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  * Item resource definition.
@@ -47,10 +48,9 @@ public interface ItemResource {
     @Path("/{itemId}")
     Promise<Item> update(@PathParam("itemId") ItemId itemId, Item item);
 
-    /*@ApiOperation("Delete an item")
+    @ApiOperation("Delete an item")
     @DELETE
     @Path("/{itemId}")
     Promise<Response> delete(@PathParam("itemId") ItemId itemId);
-    */
 }
 

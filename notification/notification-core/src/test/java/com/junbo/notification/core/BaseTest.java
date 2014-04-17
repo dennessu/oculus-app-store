@@ -32,7 +32,7 @@ public class BaseTest extends AbstractTestNGSpringContextTests {
     @BeforeClass
     public void setUp() throws Exception {
         broker = new BrokerService();
-        broker.setTransportConnectorURIs(new String[]{"tcp://0.0.0.0:61616"});
+        broker.setTransportConnectorURIs(new String[]{brokerUrl});
         broker.start(true);
     }
 

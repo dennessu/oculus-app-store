@@ -36,4 +36,12 @@ abstract class AbstractView implements Action {
             return Promise.pure(null)
         }
     }
+
+    protected static class ErrorComparator implements Comparator<com.junbo.common.error.Error> {
+
+        @Override
+        int compare(com.junbo.common.error.Error o1, com.junbo.common.error.Error o2) {
+            return o1.code <=> o2.code
+        }
+    }
 }

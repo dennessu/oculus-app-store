@@ -68,7 +68,7 @@ class TaxServiceImpl implements TaxService {
 
         Long userId = balance.userId.value
         Long piId = balance.piId.value
-        return paymentFacade.getPaymentInstrument(userId, piId).recover { Throwable throwable ->
+        return paymentFacade.getPaymentInstrument(piId).recover { Throwable throwable ->
             LOGGER.error('name=Error_Get_PaymentInstrument. pi id: ' + balance.piId.value, throwable)
             throw AppErrors.INSTANCE.piNotFound(piId.toString()).exception()
         }.then { PaymentInstrument pi ->

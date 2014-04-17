@@ -62,6 +62,6 @@ public class OrderItemPreorderEventEntity extends CommonEventEntity {
     @Override
     @Transient
     public Long getShardId() {
-        return orderItemId;
+        return getEventId();
     }
 }

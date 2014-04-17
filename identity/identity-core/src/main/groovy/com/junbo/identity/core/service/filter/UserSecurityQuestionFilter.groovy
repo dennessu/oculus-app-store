@@ -1,5 +1,6 @@
 package com.junbo.identity.core.service.filter
 
+import com.junbo.common.id.UserSecurityQuestionId
 import com.junbo.identity.spec.v1.model.UserSecurityQuestion
 import com.junbo.oom.core.MappingContext
 import groovy.transform.CompileStatic
@@ -12,7 +13,12 @@ class UserSecurityQuestionFilter extends ResourceFilterImpl<UserSecurityQuestion
 
     @Override
     protected UserSecurityQuestion filter(UserSecurityQuestion user, MappingContext context) {
-        return selfMapper.filterUserSecurityQuestion(user, context)
+        UserSecurityQuestion result = selfMapper.filterUserSecurityQuestion(user, context)
+        // set userId value to generate correct href
+        if (user.userId != null) {
+            ((UserSecurityQuestionId)(result.id)).resourcePathPlaceHolder.put('userId', user.userId)
+        }
+        return result
     }
 
     @Override

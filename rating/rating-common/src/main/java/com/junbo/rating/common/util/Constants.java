@@ -12,6 +12,7 @@ public class Constants {
     public static final Integer DEFAULT_PAGE_START = 0;
     public static final Integer DEFAULT_PAGE_SIZE = 20;
     public static final String ENTITLEMENT_SEPARATOR = "#";
+    public static final int UNIQUE = 0;
 
     private Constants() {
     }

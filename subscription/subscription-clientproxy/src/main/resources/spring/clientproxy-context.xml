@@ -9,15 +9,15 @@
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
     <import resource="classpath*:spring/common-context.xml"/>
 
-    <context:component-scan base-package="com.junbo.subscription.core"/>
+    <context:component-scan base-package="com.junbo.subscription.clientproxy"/>
     <tx:annotation-driven/>
 
-    <!--
-    <bean id="catalogGateway" class="com.junbo.subscription.clientproxy.impl.CatalogGatewayImpl"/>
-    <bean id="entitlementGateway" class="com.junbo.subscription.clientproxy.impl.EntitlementGatewayImpl"/>
-    -->
 
     <!-- fusion mock (will be removed in the future)-->
+    <!--bean id="catalogGateway" class="com.junbo.subscription.clientproxy.impl.CatalogGatewayImpl"/>
+    <bean id="entitlementGateway" class="com.junbo.subscription.clientproxy.impl.EntitlementGatewayImpl"/-->
+
+
     <bean id="catalogGateway" class="com.junbo.subscription.clientproxy.mock.MockCatalogGatewayImpl"/>
     <bean id="entitlementGateway" class="com.junbo.subscription.clientproxy.mock.MockEntitlementGatewayImpl"/>
 

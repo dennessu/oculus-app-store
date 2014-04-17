@@ -101,8 +101,8 @@ class WalletServiceImpl implements WalletService {
     @Override
     @Transactional
     Wallet credit(CreditRequest creditRequest) {
-        if (creditRequest.type == null) {
-            creditRequest.type = WalletLotType.CASH.toString()
+        if (creditRequest.creditType == null) {
+            creditRequest.creditType = WalletLotType.CASH.toString()
         }
 
         validateAmount(creditRequest.amount)
@@ -111,10 +111,12 @@ class WalletServiceImpl implements WalletService {
         def wallet
         if (creditRequest.walletId != null) {
             wallet = walletRepo.get(creditRequest.walletId)
-        } else if (creditRequest.userId != null && creditRequest.currency != null) {
-            wallet = walletRepo.get(creditRequest.userId, creditRequest.type, creditRequest.currency)
+        } else if (creditRequest.userId != null &&
+                creditRequest.currency != null &&
+                creditRequest.walletType != null) {
+            wallet = walletRepo.get(creditRequest.userId, creditRequest.walletType, creditRequest.currency)
         } else {
-            throw AppErrors.INSTANCE.common('wallet or user and currency should not be null').exception()
+            throw AppErrors.INSTANCE.common('wallet or user, currency and walletType should not be null').exception()
         }
 
         if (wallet == null) {

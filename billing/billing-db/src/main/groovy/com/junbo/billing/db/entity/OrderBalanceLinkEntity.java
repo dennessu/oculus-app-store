@@ -7,13 +7,11 @@
 package com.junbo.billing.db.entity;
 
 import com.junbo.billing.db.BaseEntity;
-import com.junbo.billing.db.EntityValidationCode;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 /**
  * Created by xmchen on 14-1-17.
@@ -21,12 +19,16 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name = "order_balance_link")
 public class OrderBalanceLinkEntity extends BaseEntity {
-    private Long linkId;
-    private Long orderId;
-    private Long balanceId;
-
     @Id
     @Column(name = "order_balance_link_id")
+    private Long linkId;
+
+    @Column(name = "order_id")
+    private Long orderId;
+
+    @Column(name = "balance_id")
+    private Long balanceId;
+
     public Long getLinkId() {
         return linkId;
     }
@@ -34,8 +36,6 @@ public class OrderBalanceLinkEntity extends BaseEntity {
         this.linkId = linkId;
     }
 
-    @Column(name = "order_id")
-    @NotNull(message = EntityValidationCode.MISSING_VALUE)
     public Long getOrderId() {
         return orderId;
     }
@@ -43,8 +43,6 @@ public class OrderBalanceLinkEntity extends BaseEntity {
         this.orderId = orderId;
     }
 
-    @Column(name = "balance_id")
-    @NotNull(message = EntityValidationCode.MISSING_VALUE)
     public Long getBalanceId() {
         return balanceId;
     }

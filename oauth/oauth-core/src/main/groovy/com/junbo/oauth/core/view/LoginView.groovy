@@ -27,7 +27,7 @@ class LoginView extends AbstractView {
                         'clientId': contextWrapper.client.clientId,
                         'userId'  : contextWrapper.loginState?.userId
                 ] as Map<String, Object>,
-                errors: contextWrapper.errors
+                errors: contextWrapper.errors.unique(new ErrorComparator()).asList()
         )
 
         return Promise.pure(model)

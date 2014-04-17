@@ -7,14 +7,10 @@
 package com.junbo.billing.db.entity;
 
 import com.junbo.billing.db.BaseEntity;
-import com.junbo.billing.db.EntityValidationCode;
 import com.junbo.common.util.Identifiable;
 import org.hibernate.annotations.Type;
-import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.UUID;
@@ -25,30 +21,71 @@ import java.util.UUID;
 @Entity
 @Table(name = "balance")
 public class BalanceEntity extends BaseEntity implements Identifiable<Long> {
-    private Long balanceId;
-    private UUID trackingUuid;
-    private Long userId;
-    private Long piId;
-    private Short typeId;
-    private BigDecimal totalAmount;
-    private BigDecimal taxAmount;
-    private Boolean taxIncluded;
-    private BigDecimal discountAmount;
-    private Short taxStatusId;
-    private String currency;
-    private String country;
-    private Short statusId;
-    private Date dueDate;
-    private Boolean isAsyncCharge = false;
-    private Long shippingAddressId;
-    private Long originalBalanceId;
-    private Integer retryCount = 0;
-    private Integer declineCount = 0;
-    private String requestorId;
-    private String onbehalfofRequestorId;
-
     @Id
     @Column(name = "balance_id")
+    private Long balanceId;
+
+    @Column(name = "tracking_uuid")
+    @Type(type = "pg-uuid")
+    private UUID trackingUuid;
+
+    @Column(name = "user_id")
+    private Long userId;
+
+    @Column(name = "pi_id")
+    private Long piId;
+
+    @Column(name = "balance_type_id")
+    private Short typeId;
+
+    @Column(name = "total_amount")
+    private BigDecimal totalAmount;
+
+    @Column(name = "tax_amount")
+    private BigDecimal taxAmount;
+
+    @Column(name = "tax_included")
+    private Boolean taxIncluded;
+
+    @Column(name = "discount_amount")
+    private BigDecimal discountAmount;
+
+    @Column(name = "tax_status_id")
+    private Short taxStatusId;
+
+    @Column(name = "currency")
+    private String currency;
+
+    @Column(name = "country_code")
+    private String country;
+
+    @Column(name = "status_id")
+    private Short statusId;
+
+    @Column(name = "due_date")
+    private Date dueDate;
+
+    @Column(name = "is_async_charge")
+    private Boolean isAsyncCharge;
+
+    @Column(name = "shipping_address_id")
+    private Long shippingAddressId;
+
+    @Column(name = "original_balance_id")
+    private Long originalBalanceId;
+
+    @Column(name = "retry_count")
+    private Integer retryCount = 0;
+
+    @Column(name = "decline_count")
+    private Integer declineCount = 0;
+
+    @Column(name = "requestor_id")
+    private String requestorId;
+
+    @Column(name = "onbehalfof_requestor_id")
+    private String onbehalfofRequestorId;
+
     public Long getBalanceId() {
         return balanceId;
     }
@@ -56,9 +93,6 @@ public class BalanceEntity extends BaseEntity implements Identifiable<Long> {
         this.balanceId = balanceId;
     }
 
-    @Column(name = "tracking_uuid")
-    @Type(type = "pg-uuid")
-    @NotNull(message = EntityValidationCode.MISSING_VALUE)
     public UUID getTrackingUuid() {
         return trackingUuid;
     }
@@ -66,8 +100,6 @@ public class BalanceEntity extends BaseEntity implements Identifiable<Long> {
         this.trackingUuid = trackingUuid;
     }
 
-    @Column(name = "user_id")
-    @NotNull(message = EntityValidationCode.MISSING_VALUE)
     public Long getUserId() {
         return userId;
     }
@@ -75,8 +107,6 @@ public class BalanceEntity extends BaseEntity implements Identifiable<Long> {
         this.userId = userId;
     }
 
-    @Column(name = "pi_id")
-    @NotNull(message = EntityValidationCode.MISSING_VALUE)
     public Long getPiId() {
         return piId;
     }
@@ -84,8 +114,6 @@ public class BalanceEntity extends BaseEntity implements Identifiable<Long> {
         this.piId = piId;
     }
 
-    @Column(name = "total_amount")
-    @NotNull(message = EntityValidationCode.MISSING_VALUE)
     public BigDecimal getTotalAmount() {
         return totalAmount;
     }
@@ -93,8 +121,6 @@ public class BalanceEntity extends BaseEntity implements Identifiable<Long> {
         this.totalAmount = totalAmount;
     }
 
-    @Column(name = "tax_amount")
-    @NotNull(message = EntityValidationCode.MISSING_VALUE)
     public BigDecimal getTaxAmount() {
         return taxAmount;
     }
@@ -102,7 +128,6 @@ public class BalanceEntity extends BaseEntity implements Identifiable<Long> {
         this.taxAmount = taxAmount;
     }
 
-    @Column(name = "tax_included")
     public Boolean getTaxIncluded() {
         return taxIncluded;
     }
@@ -110,8 +135,6 @@ public class BalanceEntity extends BaseEntity implements Identifiable<Long> {
         this.taxIncluded = taxIncluded;
     }
 
-    @Column(name = "discount_amount")
-    @NotNull(message = EntityValidationCode.MISSING_VALUE)
     public BigDecimal getDiscountAmount() {
         return discountAmount;
     }
@@ -119,7 +142,6 @@ public class BalanceEntity extends BaseEntity implements Identifiable<Long> {
         this.discountAmount = discountAmount;
     }
 
-    @Column(name = "tax_status_id")
     public Short getTaxStatusId() {
         return taxStatusId;
     }
@@ -127,9 +149,6 @@ public class BalanceEntity extends BaseEntity implements Identifiable<Long> {
         this.taxStatusId = taxStatusId;
     }
 
-    @Column(name = "currency")
-    @NotEmpty(message = EntityValidationCode.MISSING_VALUE)
-    @Length(max = 3, message = EntityValidationCode.TOO_LONG)
     public String getCurrency() {
         return currency;
     }
@@ -137,9 +156,6 @@ public class BalanceEntity extends BaseEntity implements Identifiable<Long> {
         this.currency = currency;
     }
 
-    @Column(name = "country_code")
-    @NotEmpty(message = EntityValidationCode.MISSING_VALUE)
-    @Length(max = 2, message = EntityValidationCode.TOO_LONG)
     public String getCountry() {
         return country;
     }
@@ -147,8 +163,6 @@ public class BalanceEntity extends BaseEntity implements Identifiable<Long> {
         this.country = country;
     }
 
-    @Column(name = "status_id")
-    @NotNull(message = EntityValidationCode.MISSING_VALUE)
     public Short getStatusId() {
         return statusId;
     }
@@ -156,7 +170,6 @@ public class BalanceEntity extends BaseEntity implements Identifiable<Long> {
         this.statusId = statusId;
     }
 
-    @Column(name = "due_date")
     public Date getDueDate() {
         return dueDate;
     }
@@ -164,8 +177,6 @@ public class BalanceEntity extends BaseEntity implements Identifiable<Long> {
         this.dueDate = dueDate;
     }
 
-    @Column(name = "is_async_charge")
-    @NotNull(message = EntityValidationCode.MISSING_VALUE)
     public Boolean getIsAsyncCharge() {
         return isAsyncCharge;
     }
@@ -173,7 +184,6 @@ public class BalanceEntity extends BaseEntity implements Identifiable<Long> {
         this.isAsyncCharge = isAsyncCharge;
     }
 
-    @Column(name = "retry_count")
     public Integer getRetryCount() {
         return retryCount;
     }
@@ -181,7 +191,6 @@ public class BalanceEntity extends BaseEntity implements Identifiable<Long> {
         this.retryCount = retryCount;
     }
 
-    @Column(name = "decline_count")
     public Integer getDeclineCount() {
         return declineCount;
     }
@@ -189,9 +198,6 @@ public class BalanceEntity extends BaseEntity implements Identifiable<Long> {
         this.declineCount = declineCount;
     }
 
-    @Column(name = "requestor_id")
-    @NotEmpty(message = EntityValidationCode.MISSING_VALUE)
-    @Length(max=64, message= EntityValidationCode.TOO_LONG)
     public String getRequestorId() {
         return requestorId;
     }
@@ -199,8 +205,6 @@ public class BalanceEntity extends BaseEntity implements Identifiable<Long> {
         this.requestorId = requestorId;
     }
 
-    @Column(name = "onbehalfof_requestor_id")
-    @Length(max=64, message= EntityValidationCode.TOO_LONG)
     public String getOnbehalfofRequestorId() {
         return onbehalfofRequestorId;
     }
@@ -208,8 +212,6 @@ public class BalanceEntity extends BaseEntity implements Identifiable<Long> {
         this.onbehalfofRequestorId = onbehalfofRequestorId;
     }
 
-    @Column(name = "balance_type_id")
-    @NotNull(message = EntityValidationCode.MISSING_VALUE)
     public Short getTypeId() {
         return typeId;
     }
@@ -217,7 +219,6 @@ public class BalanceEntity extends BaseEntity implements Identifiable<Long> {
         this.typeId = typeId;
     }
 
-    @Column(name = "shipping_address_id")
     public Long getShippingAddressId() {
         return shippingAddressId;
     }
@@ -225,7 +226,6 @@ public class BalanceEntity extends BaseEntity implements Identifiable<Long> {
         this.shippingAddressId = shippingAddressId;
     }
 
-    @Column(name = "original_balance_id")
     public Long getOriginalBalanceId() {
         return originalBalanceId;
     }
@@ -237,7 +237,6 @@ public class BalanceEntity extends BaseEntity implements Identifiable<Long> {
     public Long getId() {
         return balanceId;
     }
-
     public void setId(Long id) {
         balanceId = id;
     }

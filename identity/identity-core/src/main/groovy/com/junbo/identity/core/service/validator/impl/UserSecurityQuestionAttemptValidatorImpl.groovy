@@ -91,39 +91,39 @@ class UserSecurityQuestionAttemptValidatorImpl implements UserSecurityQuestionAt
             throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
         }
 
-        return userRepository.get(userId).then { User user ->
+        return checkBasicUserSecurityQuestionAttemptInfo(attempt).then {
+            userRepository.get(userId).then { User user ->
 
-            if (user == null) {
-                throw AppErrors.INSTANCE.userNotFound(userId).exception()
-            }
-
-            checkBasicUserSecurityQuestionAttemptInfo(attempt)
-
-            if (attempt.userId != null && attempt.userId != userId) {
-                throw AppErrors.INSTANCE.fieldInvalid('userId', attempt.userId.toString()).exception()
-            }
-            attempt.setUserId((UserId)user.id)
-
-            userSecurityQuestionRepository.get(attempt.userSecurityQuestionId).
-                    then { UserSecurityQuestion userSecurityQuestion ->
-                if (userSecurityQuestion == null) {
-                    throw AppErrors.INSTANCE.userSecurityQuestionNotFound().exception()
+                if (user == null) {
+                    throw AppErrors.INSTANCE.userNotFound(userId).exception()
                 }
 
-                if (CipherHelper.generateCipherHashV1(attempt.value, userSecurityQuestion.answerSalt,
-                        userSecurityQuestion.answerPepper) == userSecurityQuestion.answerHash) {
-                    attempt.setSucceeded(true)
+                if (attempt.userId != null && attempt.userId != userId) {
+                    throw AppErrors.INSTANCE.fieldInvalid('userId', attempt.userId.toString()).exception()
                 }
-                else {
-                    attempt.setSucceeded(false)
-                }
+                attempt.setUserId((UserId)user.id)
 
-                return Promise.pure(null)
+                userSecurityQuestionRepository.get(attempt.userSecurityQuestionId).
+                        then { UserSecurityQuestion userSecurityQuestion ->
+                            if (userSecurityQuestion == null) {
+                                throw AppErrors.INSTANCE.userSecurityQuestionNotFound().exception()
+                            }
+
+                            if (CipherHelper.generateCipherHashV1(attempt.value, userSecurityQuestion.answerSalt,
+                                    userSecurityQuestion.answerPepper) == userSecurityQuestion.answerHash) {
+                                attempt.setSucceeded(true)
+                            }
+                            else {
+                                attempt.setSucceeded(false)
+                            }
+
+                            return Promise.pure(null)
+                        }
             }
         }
     }
 
-    private void checkBasicUserSecurityQuestionAttemptInfo(UserSecurityQuestionVerifyAttempt attempt) {
+    private Promise<Void> checkBasicUserSecurityQuestionAttemptInfo(UserSecurityQuestionVerifyAttempt attempt) {
         if (attempt == null) {
             throw new IllegalArgumentException('userSecurityQuestionAttempt is null')
         }
@@ -171,11 +171,13 @@ class UserSecurityQuestionAttemptValidatorImpl implements UserSecurityQuestionAt
             throw AppErrors.INSTANCE.fieldRequired('userSecurityQuestionId').exception()
         }
 
-        userSecurityQuestionRepository.get(attempt.userSecurityQuestionId).then {
+        return userSecurityQuestionRepository.get(attempt.userSecurityQuestionId).then {
             UserSecurityQuestion userSecurityQuestion ->
                 if (userSecurityQuestion == null) {
                     throw AppErrors.INSTANCE.userSecurityQuestionNotFound(attempt.userSecurityQuestionId).exception()
                 }
+
+                return Promise.pure(null)
         }
     }
 

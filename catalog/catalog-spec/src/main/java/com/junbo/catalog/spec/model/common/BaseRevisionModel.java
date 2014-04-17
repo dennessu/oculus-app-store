@@ -18,6 +18,7 @@ public abstract class BaseRevisionModel extends BaseModel {
     //(Design, PendingReview, Rejected) => (Released, Deleted)
     private String status;
 
+    @JsonIgnore
     private Long timestamp;
 
     @NotNull

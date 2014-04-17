@@ -74,6 +74,6 @@ public class OrderBillingEventEntity extends CommonEventEntity{
     @Override
     @Transient
     public Long getShardId() {
-        return orderId;
+        return getEventId();
     }
 }

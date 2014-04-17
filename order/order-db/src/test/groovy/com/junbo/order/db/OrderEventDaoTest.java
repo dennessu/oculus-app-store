@@ -6,6 +6,8 @@
 
 package com.junbo.order.db;
 
+import com.junbo.common.id.OrderEventId;
+import com.junbo.common.id.OrderId;
 import com.junbo.order.db.common.TestHelper;
 import com.junbo.order.db.dao.OrderEventDao;
 import com.junbo.order.db.entity.OrderEventEntity;
@@ -27,6 +29,8 @@ public class OrderEventDaoTest extends BaseTest {
     @Test
     public void testCreateAndRead() {
         OrderEventEntity orderEventEntity = TestHelper.generateOrderEventEntity();
+        orderEventEntity.setOrderId(idGenerator.nextId(OrderId.class));
+        orderEventEntity.setEventId(idGenerator.nextId(OrderEventId.class, orderEventEntity.getOrderId()));
         Long id = orderEventDao.create(orderEventEntity);
         OrderEventEntity returnedEntity = orderEventDao.read(id);
 
@@ -38,6 +42,8 @@ public class OrderEventDaoTest extends BaseTest {
     @Test
     public void testUpdate() {
         OrderEventEntity orderEventEntity = TestHelper.generateOrderEventEntity();
+        orderEventEntity.setOrderId(idGenerator.nextId(OrderId.class));
+        orderEventEntity.setEventId(idGenerator.nextId(OrderEventId.class, orderEventEntity.getOrderId()));
         Long id = orderEventDao.create(orderEventEntity);
         orderEventEntity.setActionId(OrderActionType.CHARGE);
         orderEventDao.update(orderEventEntity);
@@ -51,6 +57,8 @@ public class OrderEventDaoTest extends BaseTest {
     @Test
     public void testReadByOrderId() {
         OrderEventEntity entity = TestHelper.generateOrderEventEntity();
+        entity.setOrderId(idGenerator.nextId(OrderId.class));
+        entity.setEventId(idGenerator.nextId(OrderEventId.class, entity.getOrderId()));
         Long orderId = entity.getOrderId();
         List<OrderEventEntity> resultBefore = orderEventDao.readByOrderId(orderId, null, null);
         orderEventDao.create(entity);
@@ -64,10 +72,11 @@ public class OrderEventDaoTest extends BaseTest {
 
     @Test
     public void testReadByOrderIdWithPage() {
-        Long orderId = TestHelper.generateId();
+        Long orderId = idGenerator.nextId(OrderId.class);
         for (int i = 0;i < 3;++i) {
             OrderEventEntity entity = TestHelper.generateOrderEventEntity();
             entity.setOrderId(orderId);
+            entity.setEventId(idGenerator.nextId(OrderEventId.class, orderId));
             orderEventDao.create(entity);
         }
 

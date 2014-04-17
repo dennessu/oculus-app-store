@@ -5,6 +5,7 @@
  */
 package com.junbo.order.spec.resource;
 
+import com.junbo.common.id.OrderEventId;
 import com.junbo.common.id.OrderId;
 import com.junbo.common.model.Results;
 import com.junbo.langur.core.RestResource;
@@ -23,7 +24,7 @@ import javax.ws.rs.core.MediaType;
  * Created by chriszhu on 3/12/14.
  */
 @Api("order-events")
-@Path("order-events")
+@Path("/order-events")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 @RestResource
@@ -32,6 +33,11 @@ public interface OrderEventResource {
     @ApiOperation("Get order events")
     @GET
     Promise<Results<OrderEvent>> getOrderEvents(@QueryParam("orderId") OrderId orderId, @BeanParam PageParam pageParam);
+
+    @ApiOperation("Get order event by id")
+    @Path("/{orderEventId}")
+    @GET
+    Promise<OrderEvent> getOrderEvent(@PathParam("orderEventId") OrderEventId orderEventId);
 
     @ApiOperation("Create an order event")
     @POST

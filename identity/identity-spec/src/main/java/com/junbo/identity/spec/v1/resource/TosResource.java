@@ -30,7 +30,6 @@ public interface TosResource {
 
     @ApiOperation("Create a tos")
     @POST
-    @Path("/")
     Promise<Tos> create(Tos tos);
 
     @ApiOperation("Get a tos info")
@@ -40,6 +39,5 @@ public interface TosResource {
 
     @ApiOperation("Search tos info")
     @GET
-    @Path("/")
     Promise<Results<Tos>> list(@BeanParam TosListOptions listOptions);
 }

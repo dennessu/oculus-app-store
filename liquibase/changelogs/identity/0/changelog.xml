@@ -96,18 +96,12 @@
 			
 			create table user_email (
               id bigint not null,
-			  version bigint not null,
               user_pii_id bigint not null,
 			  
 			  value varchar(255) not null,
 			  type varchar(255) not null,
 			  is_verified boolean not null,
               
-              created_by varchar(32) not null,
-              created_time timestamp not null,
-			  modified_by varchar(32),
-			  modified_time timestamp,
-
               primary key (id)
             );
 			
@@ -175,18 +169,11 @@
 			
 			create table user_phone_number (
               id bigint not null,
-              
-			  version bigint not null,
+             
 			  user_pii_id bigint not null,
-
 		      type varchar(255) not null,
               value varchar(255) not null,
 			  is_verified boolean not null,
-
-              created_by varchar(32) not null,
-              created_time timestamp not null,
-              modified_by varchar(32),
-              modified_time timestamp,
 
               primary key (id)
             );
@@ -380,6 +367,14 @@
 				
 				primary key (id)
 			);
+			
+			create table user_address (
+				id bigint not null,
+				user_pii_id bigint not null,
+				address_id bigint not null,
+				
+				primary key (id)
+			)
         ]]></sql>
     </changeSet>
 

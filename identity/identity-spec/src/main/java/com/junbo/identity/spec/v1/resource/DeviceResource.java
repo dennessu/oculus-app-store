@@ -30,7 +30,6 @@ public interface DeviceResource {
 
     @ApiOperation("Create a device info")
     @POST
-    @Path("/")
     Promise<Device> create(Device device);
 
     @ApiOperation("Update a device info")
@@ -50,6 +49,5 @@ public interface DeviceResource {
 
     @ApiOperation("Search device info")
     @GET
-    @Path("/")
     Promise<Results<Device>> list(@BeanParam DeviceListOptions listOptions);
 }

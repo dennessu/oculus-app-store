@@ -30,7 +30,6 @@ public interface AuthenticatorResource {
 
     @ApiOperation("Create an user authenticator")
     @POST
-    @Path("/")
     Promise<UserAuthenticator> create(UserAuthenticator userAuthenticator);
 
     @ApiOperation("Update an existing user authenticator")
@@ -53,7 +52,6 @@ public interface AuthenticatorResource {
 
     @ApiOperation("Search user authenticator")
     @GET
-    @Path("/")
     Promise<Results<UserAuthenticator>> list(@BeanParam AuthenticatorListOptions listOptions);
 }
 
