@@ -50,7 +50,7 @@ public class TestGetItem extends BaseTestClass {
         String itemId = itemService.postDefaultItem(EnumHelper.CatalogItemType.DIGITAL);
 
         //Just get the item by Id, check its status
-        verifyValidScenarios(itemId, EnumHelper.CatalogEntityStatus.DESIGN);
+        verifyValidScenarios(itemId, EnumHelper.CatalogEntityStatus.DRAFT);
 
         String invalidId = "000000000";
         verifyInvalidScenarios(invalidId);
@@ -59,7 +59,7 @@ public class TestGetItem extends BaseTestClass {
         Item item = Master.getInstance().getItem(itemId);
         itemId = releaseItem(item);
 
-        verifyValidScenarios(itemId, EnumHelper.CatalogEntityStatus.RELEASED);
+        verifyValidScenarios(itemId, EnumHelper.CatalogEntityStatus.APPROVED);
         verifyInvalidScenarios(invalidId);
     }
 
@@ -151,7 +151,7 @@ public class TestGetItem extends BaseTestClass {
         releaseItem(Master.getInstance().getItem(itemId3));
 
         //Verify the 3 items
-        String status = EnumHelper.CatalogEntityStatus.RELEASED.getEntityStatus();
+        String status = EnumHelper.CatalogEntityStatus.APPROVED.getEntityStatus();
         Long currentTime = Calendar.getInstance().getTimeInMillis();
         verifyItemsValidScenarios(status, currentTime.toString(), itemId1, itemId2, itemId3);
 

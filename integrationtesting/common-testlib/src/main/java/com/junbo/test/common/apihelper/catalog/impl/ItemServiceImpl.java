@@ -19,7 +19,6 @@ import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.*;
 
-import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -82,7 +81,7 @@ public class ItemServiceImpl extends HttpClientBase implements ItemService {
 
     public Item prepareItemEntity(String fileName) throws Exception {
 
-        String strItem = this.readFileContent(fileName);
+        String strItem = readFileContent(String.format("testItems/%s.json", fileName));
         Item itemForPost = new JsonMessageTranscoder().decode(new TypeReference<Item>() {},
                 strItem.toString());
         LocalizableProperty itemName = new LocalizableProperty();
@@ -134,29 +133,4 @@ public class ItemServiceImpl extends HttpClientBase implements ItemService {
         return itemRtnId;
     }
 
-    private String readFileContent(String fileName) throws Exception {
-
-        String resourceLocation = String.format("testItems/%s.json", fileName);
-        InputStream inStream = ClassLoader.getSystemResourceAsStream(resourceLocation);
-        BufferedReader br = new BufferedReader(new InputStreamReader(inStream));
-
-        StringBuilder strItem = new StringBuilder();
-        try {
-            String sCurrentLine;
-            while ((sCurrentLine = br.readLine()) != null) {
-                strItem.append(sCurrentLine + "\n");
-            }
-        } catch (IOException e) {
-            throw e;
-        } finally {
-            if (br != null){
-                br.close();
-            }
-            if (inStream != null) {
-                inStream.close();
-            }
-        }
-
-        return strItem.toString();
-    }
 }
