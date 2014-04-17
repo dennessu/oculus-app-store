@@ -11,6 +11,7 @@ import com.junbo.common.id.provider.IdTypeFromStringProvider
 import com.junbo.common.json.InvalidJsonReaderInterceptor
 import com.junbo.common.json.JacksonFeature
 import com.junbo.common.json.ObjectMapperProvider
+import com.junbo.common.provider.ResponseFilter
 import com.junbo.identity.spec.filter.ResultsInterceptor
 import com.junbo.sharding.view.EntityListener
 import org.glassfish.grizzly.http.server.HttpServer
@@ -48,6 +49,7 @@ class Main {
         resourceConfig.register(RestExceptionMapper)
         resourceConfig.register(ObjectMapperProvider)
         resourceConfig.register(EntityListener)
+        resourceConfig.register(ResponseFilter)
 
         def uri = URI.create('http://0.0.0.0:8081/v1')
         GrizzlyHttpServerFactory.createHttpServer(uri, resourceConfig)
