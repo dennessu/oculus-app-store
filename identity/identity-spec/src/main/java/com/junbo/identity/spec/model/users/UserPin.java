@@ -36,10 +36,6 @@ public class UserPin extends ResourceMeta implements Identifiable<UserPinId> {
 
     // Won't return field
     @JsonIgnore
-    private String pinSalt;
-    @JsonIgnore
-    private String pinPepper;
-    @JsonIgnore
     private String pinHash;
 
     public UserPinId getId() {
@@ -88,15 +84,6 @@ public class UserPin extends ResourceMeta implements Identifiable<UserPinId> {
         support.setPropertyAssigned("changeAtNextLogin");
     }
 
-    public String getPinSalt() {
-        return pinSalt;
-    }
-
-    public void setPinSalt(String pinSalt) {
-        this.pinSalt = pinSalt;
-        support.setPropertyAssigned("pinSalt");
-    }
-
     public String getPinHash() {
         return pinHash;
     }
@@ -104,15 +91,6 @@ public class UserPin extends ResourceMeta implements Identifiable<UserPinId> {
     public void setPinHash(String pinHash) {
         this.pinHash = pinHash;
         support.setPropertyAssigned("pinHash");
-    }
-
-    public String getPinPepper() {
-        return pinPepper;
-    }
-
-    public void setPinPepper(String pinPepper) {
-        this.pinPepper = pinPepper;
-        support.setPropertyAssigned("pinPepper");
     }
 
     public UserId getUserId() {

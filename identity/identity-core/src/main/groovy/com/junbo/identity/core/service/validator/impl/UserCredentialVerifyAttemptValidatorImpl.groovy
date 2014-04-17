@@ -128,8 +128,16 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                         throw AppErrors.INSTANCE.userPasswordIncorrect().exception()
                     }
 
-                    if (CipherHelper.generateCipherHashV1(split[1], userPasswordList.get(0).passwordSalt,
-                                userPasswordList.get(0).passwordPepper) == userPasswordList.get(0).passwordHash) {
+                    String[] hashInfo = userPasswordList.get(0).passwordHash.split(CipherHelper.COLON)
+                    if (hashInfo.length != 4) {
+                        throw AppErrors.INSTANCE.userPasswordIncorrect().exception()
+                    }
+
+                    String salt = hashInfo[1]
+                    String pepper = hashInfo[2]
+
+                    if (CipherHelper.generateCipherHashV1(split[1], salt, pepper)
+                            == userPasswordList.get(0).passwordHash) {
                         userLoginAttempt.setSucceeded(true)
                     } else {
                         userLoginAttempt.setSucceeded(false)
@@ -145,8 +153,15 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                         throw AppErrors.INSTANCE.userPinIncorrect().exception()
                     }
 
-                    if (CipherHelper.generateCipherHashV1(split[1], userPinList.get(0).pinSalt,
-                            userPinList.get(0).pinPepper) == userPinList.get(0).pinHash) {
+                    String[] hashInfo = userPinList.get(0).pinHash.split(CipherHelper.COLON)
+                    if (hashInfo.length != 4) {
+                        throw AppErrors.INSTANCE.userPinIncorrect().exception()
+                    }
+
+                    String salt = hashInfo[1]
+                    String pepper = hashInfo[2]
+
+                    if (CipherHelper.generateCipherHashV1(split[1], salt, pepper) == userPinList.get(0).pinHash) {
                         userLoginAttempt.setSucceeded(true)
                     } else {
                         userLoginAttempt.setSucceeded(false)
