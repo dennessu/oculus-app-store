@@ -46,7 +46,15 @@ class UserPiiValidatorImpl implements UserPiiValidator {
                 throw AppErrors.INSTANCE.userPiiNotFound(userPiiId).exception()
             }
 
-            return Promise.pure(userPii)
+            return userRepository.get(userPii.userId).then { User user ->
+                if (user == null) {
+                    throw AppErrors.INSTANCE.userNotFound(userPii.userId).exception()
+                }
+
+                userPii.displayName = displayNameValidator.getDisplayName(user, userPii)
+
+                return Promise.pure(userPii)
+            }
         }
     }
 

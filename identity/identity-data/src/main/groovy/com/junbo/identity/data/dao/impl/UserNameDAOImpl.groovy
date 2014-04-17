@@ -24,7 +24,7 @@ class UserNameDAOImpl extends BaseDAO implements UserNameDAO {
 
     @Override
     UserNameEntity create(UserNameEntity entity) {
-        entity.id = idGenerator.nextId(entity.userId)
+        entity.id = idGenerator.nextId(entity.userPiiId)
 
         Session session = currentSession(entity.id)
         session.save(entity)
@@ -50,9 +50,9 @@ class UserNameDAOImpl extends BaseDAO implements UserNameDAO {
     }
 
     @Override
-    UserNameEntity findByUserId(Long userId) {
-        Criteria criteria = currentSession(userId).createCriteria(UserNameEntity)
-        criteria.add(Restrictions.eq('userId', userId))
+    UserNameEntity findByUserPiiId(Long userPiiId) {
+        Criteria criteria = currentSession(userPiiId).createCriteria(UserNameEntity)
+        criteria.add(Restrictions.eq('userPiiId', userPiiId))
 
         return criteria.list() == null ? null : (UserNameEntity)criteria.list().get(0)
     }
