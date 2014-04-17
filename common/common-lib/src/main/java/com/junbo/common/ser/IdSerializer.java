@@ -51,7 +51,7 @@ public class IdSerializer extends JsonSerializer<Id> {
 
     protected String getHref(Id value, String path) {
         String href = this.formatIndexPlaceHolder(SELF_HREF_PREFIX + path, new String[]{IdFormatter.encodeId(value)});
-        href = this.formatPropertyPlaceHolder(href, value.getProperties());
+        href = this.formatPropertyPlaceHolder(href, value.getResourcePathPlaceHolder());
         return href;
     }
 
@@ -79,9 +79,17 @@ public class IdSerializer extends JsonSerializer<Id> {
 
         for (Map.Entry<Object, Object> entry : properties.entrySet()) {
             String key = (String)entry.getKey();
-            String value = (String)entry.getValue();
+            Object value = entry.getValue();
+            String encodedValue;
 
-            pattern = pattern.replace("{"+key+"}", value);
+            if (value instanceof Id) {
+                encodedValue = IdFormatter.encodeId((Id)value);
+            }
+            else {
+                encodedValue = value.toString();
+            }
+
+            pattern = pattern.replace("{"+key+"}", encodedValue);
         }
 
         return pattern;

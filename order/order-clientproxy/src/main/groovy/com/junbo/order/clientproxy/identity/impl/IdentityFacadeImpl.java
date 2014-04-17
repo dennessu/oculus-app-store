@@ -8,6 +8,7 @@ package com.junbo.order.clientproxy.identity.impl;
 
 import com.junbo.common.id.UserId;
 import com.junbo.identity.spec.v1.model.User;
+import com.junbo.identity.spec.v1.option.model.UserGetOptions;
 import com.junbo.identity.spec.v1.resource.UserResource;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.order.clientproxy.identity.IdentityFacade;
@@ -29,7 +30,8 @@ public class IdentityFacadeImpl implements IdentityFacade {
 
     @Override
     public Promise<User> getUser(Long userId) {
-        return userResource.get(new UserId(userId), null);
+        UserGetOptions options = new UserGetOptions();
+        return userResource.get(new UserId(userId), options);
     }
 
     @Override

@@ -28,7 +28,7 @@ class ConsentView extends AbstractView {
                         'userId'  : contextWrapper.loginState.userId,
                         'scopes'  : contextWrapper.oauthInfo.scopes
                 ] as Map<String, Object>,
-                errors: contextWrapper.errors
+                errors: contextWrapper.errors.unique(new ErrorComparator()).asList()
         )
 
         return Promise.pure(model)

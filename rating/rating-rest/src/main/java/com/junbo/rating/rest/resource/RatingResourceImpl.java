@@ -32,13 +32,13 @@ public class RatingResourceImpl implements RatingResource{
         RatingContext context = new RatingContext();
         context.fromRequest(request);
 
-        if(request.isReadyToBuy()) {
+        if(request.getIncludeCrossOfferPromos()) {
             orderRatingService.rate(context);
         } else {
             offerRatingService.rate(context);
         }
 
-        RatingRequest response = request.isReadyToBuy()?
+        RatingRequest response = request.getIncludeCrossOfferPromos()?
                 RatingResultBuilder.buildForOrder(context) :  RatingResultBuilder.buildForOffers(context);
         return Promise.pure(response);
     }

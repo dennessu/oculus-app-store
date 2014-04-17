@@ -21,11 +21,11 @@ import java.util.ArrayList;
 /**
  * Created by Yunlong on 4/8/14.
  */
-public class BillingTesting extends BaseTestClass{
-      private LogHelper logHelper = new LogHelper(BillingTesting.class);
+public class BillingTesting extends BaseTestClass {
+    private LogHelper logHelper = new LogHelper(BillingTesting.class);
 
-      private Country country = Country.DEFAULT;
-      private Currency currency = Currency.DEFAULT;
+    private Country country = Country.DEFAULT;
+    private Currency currency = Currency.DEFAULT;
 
 
     @Property(
@@ -52,12 +52,83 @@ public class BillingTesting extends BaseTestClass{
         CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(country);
         String creditCardId = testDataProvider.postPaymentInstrument(randomUid, creditCardInfo);
 
-        String orderId= testDataProvider.postOrder(randomUid,country,currency,creditCardId, null,offerList);
+        String orderId = testDataProvider.postOrder(randomUid, country, currency, creditCardId, null, offerList);
 
-        String balanceId = testDataProvider.postBalanceByOrderId(randomUid,orderId);
+        String balanceId = testDataProvider.postBalanceByOrderId(randomUid, orderId);
 
         //TODO Validate response
     }
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "GET /balances?orderId=",
+            component = Component.Billing,
+            owner = "Yunlongzhao",
+            status = Status.Enable,
+            description = "Get balance by order Id",
+            steps = {
+                    "1. Prepare an order",
+                    "2. Update order tentative to false",
+                    "3, Get balance by order Id",
+                    "4, Validation: response"
+            }
+    )
+    @Test
+    public void testGetBalanceByOrderId() throws Exception {
+        ArrayList<String> offerList = new ArrayList<>();
+        offerList.add(offer_digital_normal1);
+        offerList.add(offer_digital_normal2);
+
+        String randomUid = testDataProvider.CreateUser();
+
+        CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(country);
+        String creditCardId = testDataProvider.postPaymentInstrument(randomUid, creditCardInfo);
+
+        String orderId = testDataProvider.postOrder(randomUid, country, currency, creditCardId, null, offerList);
+
+        orderId = testDataProvider.updateOrderTentative(orderId, false);
+
+        String balanceId = testDataProvider.getBalanceByOrderId(randomUid, orderId);
+
+        //TODO Validate response
+    }
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "GET /balances/balanceId",
+            component = Component.Billing,
+            owner = "Yunlongzhao",
+            status = Status.Enable,
+            description = "Get balance by order Id",
+            steps = {
+                    "1. Prepare an order",
+                    "2. Update order tentative to false",
+                    "3, Get balance by order Id",
+                    "4, Validation: response"
+            }
+    )
+    @Test
+    public void testGetBalanceByBalanceId() throws Exception {
+        ArrayList<String> offerList = new ArrayList<>();
+        offerList.add(offer_digital_normal1);
+        offerList.add(offer_digital_normal2);
+
+        String randomUid = testDataProvider.CreateUser();
+
+        CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(country);
+        String creditCardId = testDataProvider.postPaymentInstrument(randomUid, creditCardInfo);
+
+        String orderId = testDataProvider.postOrder(randomUid, country, currency, creditCardId, null, offerList);
+
+        String balanceId = testDataProvider.postBalanceByOrderId(randomUid, orderId);
+
+        balanceId = testDataProvider.getBalanceByBalanceId(randomUid, orderId);
+
+        //TODO Validate response
+    }
+
+
+
 
 
 }

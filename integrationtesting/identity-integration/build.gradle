@@ -31,9 +31,10 @@ repositories {
 
 dependencies {
 
-    compile project(':common-testlib')
+    //compile project(':common-testlib')
     compile 'com.junbo.identity:identity-spec:0.0.1-SNAPSHOT'
-    //compile(libraries.common_testlib)
+    compile(libraries.common_lib)
+    compile(libraries.common_testlib)
 
     testCompile(libraries.junit)
     testCompile(libraries.testng)

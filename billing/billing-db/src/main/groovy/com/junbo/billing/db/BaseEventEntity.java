@@ -9,7 +9,6 @@ package com.junbo.billing.db;
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -18,13 +17,20 @@ import java.util.Date;
  */
 @MappedSuperclass
 public class BaseEventEntity implements Serializable {
-    private Long eventId;
-    private Short actionTypeId;
-    private Short statusId;
-    private Date eventDate;
 
     @Id
     @Column(name = "event_id")
+    private Long eventId;
+
+    @Column(name = "action_type_id")
+    private Short actionTypeId;
+
+    @Column(name = "status_id")
+    private Short statusId;
+
+    @Column(name = "event_date")
+    private Date eventDate;
+
     public Long getEventId() {
         return eventId;
     }
@@ -32,8 +38,6 @@ public class BaseEventEntity implements Serializable {
         this.eventId = eventId;
     }
 
-    @Column(name = "action_type_id")
-    @NotNull(message = EntityValidationCode.MISSING_VALUE)
     public Short getActionTypeId() {
         return actionTypeId;
     }
@@ -41,8 +45,6 @@ public class BaseEventEntity implements Serializable {
         this.actionTypeId = actionTypeId;
     }
 
-    @Column(name = "status_id")
-    @NotNull(message = EntityValidationCode.MISSING_VALUE)
     public Short getStatusId() {
         return statusId;
     }
@@ -50,8 +52,6 @@ public class BaseEventEntity implements Serializable {
         this.statusId = statusId;
     }
 
-    @Column(name = "event_date")
-    @NotNull(message = EntityValidationCode.MISSING_VALUE)
     public Date getEventDate() {
         return eventDate;
     }

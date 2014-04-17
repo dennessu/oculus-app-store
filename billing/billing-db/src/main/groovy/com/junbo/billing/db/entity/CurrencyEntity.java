@@ -18,20 +18,40 @@ import java.io.Serializable;
 @Entity
 @Table(name = "currency")
 public class CurrencyEntity implements Serializable {
-    private String name;
-    private String numericCode;
-    private Integer baseUnits;
-    private String decimalPattern;
-    private Double maxBalance;
-    private Double spendingLimit;
-    private Double preauthAmount;
-    private Double paypalPreauthAmount;
-    private String symbol;
-    private String orientation;
-    private String description;
-
     @Id
     @Column(name = "currency_name", nullable = false)
+    private String name;
+
+    @Column(name = "currency_code", nullable = false)
+    private String numericCode;
+
+    @Column(name = "base_units", nullable = false)
+    private Integer baseUnits;
+
+    @Column(name = "decimal_pattern", nullable = false)
+    private String decimalPattern;
+
+    @Column(name = "max_balance", nullable = false)
+    private Double maxBalance;
+
+    @Column(name = "spending_limit", nullable = false)
+    private Double spendingLimit;
+
+    @Column(name = "preauth_amount", nullable = false)
+    private Double preauthAmount;
+
+    @Column(name = "paypal_preauth_amount", nullable = false)
+    private Double paypalPreauthAmount;
+
+    @Column(name = "symbol", nullable = false)
+    private String symbol;
+
+    @Column(name = "orientation", nullable = false)
+    private String orientation;
+
+    @Column(name = "description")
+    private String description;
+
     public String getName() {
         return name;
     }
@@ -39,7 +59,6 @@ public class CurrencyEntity implements Serializable {
         this.name = name;
     }
 
-    @Column(name = "currency_code", nullable = false)
     public String getNumericCode() {
         return numericCode;
     }
@@ -47,7 +66,6 @@ public class CurrencyEntity implements Serializable {
         this.numericCode = numericCode;
     }
 
-    @Column(name = "base_units", nullable = false)
     public Integer getBaseUnits() {
         return baseUnits;
     }
@@ -55,7 +73,6 @@ public class CurrencyEntity implements Serializable {
         this.baseUnits = baseUnits;
     }
 
-    @Column(name = "decimal_pattern", nullable = false)
     public String getDecimalPattern() {
         return decimalPattern;
     }
@@ -63,7 +80,6 @@ public class CurrencyEntity implements Serializable {
         this.decimalPattern = decimalPattern;
     }
 
-    @Column(name = "max_balance", nullable = false)
     public Double getMaxBalance() {
         return maxBalance;
     }
@@ -71,7 +87,6 @@ public class CurrencyEntity implements Serializable {
         this.maxBalance = maxBalance;
     }
 
-    @Column(name = "spending_limit", nullable = false)
     public Double getSpendingLimit() {
         return spendingLimit;
     }
@@ -79,7 +94,6 @@ public class CurrencyEntity implements Serializable {
         this.spendingLimit = spendingLimit;
     }
 
-    @Column(name = "preauth_amount", nullable = false)
     public Double getPreauthAmount() {
         return preauthAmount;
     }
@@ -87,7 +101,6 @@ public class CurrencyEntity implements Serializable {
         this.preauthAmount = preauthAmount;
     }
 
-    @Column(name = "paypal_preauth_amount", nullable = false)
     public Double getPaypalPreauthAmount() {
         return paypalPreauthAmount;
     }
@@ -95,7 +108,6 @@ public class CurrencyEntity implements Serializable {
         this.paypalPreauthAmount = paypalPreauthAmount;
     }
 
-    @Column(name = "symbol", nullable = false)
     public String getSymbol() {
         return symbol;
     }
@@ -103,7 +115,6 @@ public class CurrencyEntity implements Serializable {
         this.symbol = symbol;
     }
 
-    @Column(name = "orientation", nullable = false)
     public String getOrientation() {
         return orientation;
     }
@@ -111,7 +122,6 @@ public class CurrencyEntity implements Serializable {
         this.orientation = orientation;
     }
 
-    @Column(name = "description")
     public String getDescription() {
         return description;
     }

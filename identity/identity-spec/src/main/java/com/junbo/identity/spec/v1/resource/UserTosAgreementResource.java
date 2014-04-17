@@ -30,7 +30,6 @@ import javax.ws.rs.core.MediaType;
 public interface UserTosAgreementResource {
     @ApiOperation("Create one user tos agreement")
     @POST
-    @Path("/")
     Promise<UserTosAgreement> create(@PathParam("userId") UserId userId, UserTosAgreement userTosAgreement);
 
     @ApiOperation("Get one user tos agreement")
@@ -62,7 +61,6 @@ public interface UserTosAgreementResource {
 
     @ApiOperation("Search user tos agreements")
     @GET
-    @Path("/")
     Promise<Results<UserTosAgreement>> list(@PathParam("userId") UserId userId,
                                             @BeanParam UserTosAgreementListOptions listOptions);
 }

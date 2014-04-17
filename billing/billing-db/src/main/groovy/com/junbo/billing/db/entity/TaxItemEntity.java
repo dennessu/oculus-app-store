@@ -7,10 +7,8 @@
 package com.junbo.billing.db.entity;
 
 import com.junbo.billing.db.BaseEntity;
-import com.junbo.billing.db.EntityValidationCode;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 /**
@@ -19,14 +17,22 @@ import java.math.BigDecimal;
 @Entity
 @Table(name = "tax_item")
 public class TaxItemEntity extends BaseEntity {
-    private Long taxItemId;
-    private Long balanceItemId;
-    private Short taxAuthorityId;
-    private BigDecimal taxAmount;
-    private BigDecimal taxRate;
-
     @Id
     @Column(name = "tax_item_id")
+    private Long taxItemId;
+
+    @Column(name = "balance_item_id")
+    private Long balanceItemId;
+
+    @Column(name = "tax_authority_id")
+    private Short taxAuthorityId;
+
+    @Column(name = "tax_amount")
+    private BigDecimal taxAmount;
+
+    @Column(name = "tax_rate")
+    private BigDecimal taxRate;
+
     public Long getTaxItemId() {
         return taxItemId;
     }
@@ -34,8 +40,6 @@ public class TaxItemEntity extends BaseEntity {
         this.taxItemId = taxItemId;
     }
 
-    @Column(name = "balance_item_id")
-    @NotNull(message = EntityValidationCode.MISSING_VALUE)
     public Long getBalanceItemId() {
         return balanceItemId;
     }
@@ -43,8 +47,6 @@ public class TaxItemEntity extends BaseEntity {
         this.balanceItemId = balanceItemId;
     }
 
-    @Column(name = "tax_authority_id")
-    @NotNull(message = EntityValidationCode.MISSING_VALUE)
     public Short getTaxAuthorityId() {
         return taxAuthorityId;
     }
@@ -52,8 +54,6 @@ public class TaxItemEntity extends BaseEntity {
         this.taxAuthorityId = taxAuthorityId;
     }
 
-    @Column(name = "tax_amount")
-    @NotNull(message = EntityValidationCode.MISSING_VALUE)
     public BigDecimal getTaxAmount() {
         return taxAmount;
     }
@@ -61,7 +61,6 @@ public class TaxItemEntity extends BaseEntity {
         this.taxAmount = taxAmount;
     }
 
-    @Column(name = "tax_rate")
     public BigDecimal getTaxRate() {
         return taxRate;
     }

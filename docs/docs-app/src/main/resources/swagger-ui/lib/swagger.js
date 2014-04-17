@@ -178,9 +178,13 @@ SwaggerApi.prototype.buildFromSpec = function(response) {
   } else {
     this.basePath = this.url;
   }
+  this.basePath = this.basePath.replace(/\/$/, "")
   if (isApi) {
     var newName = response.resourcePath.replace(/\//g, '');
     this.resourcePath = response.resourcePath;
+    if (!/^\//.test(this.resourcePath)) {
+        this.resourcePath = "/" + this.resourcePath;
+    }
     res = new SwaggerResource(response, this);
     this.apis[newName] = res;
     this.apisArray.push(res);
@@ -578,7 +582,7 @@ var SwaggerModelProperty = function(name, obj) {
   this.dataType = obj.type || obj.dataType || obj["$ref"];
   if (obj.patternProperties) {
     var mapValueType = obj.patternProperties[".*"];
-    this.dataType = "object (properties: " + inflections.singularize(name) + ", value: " + (mapValueType.type || mapValueType["$ref"]) + ")"
+    this.dataType = "map[string, " + (mapValueType.type || mapValueType["$ref"]) + "]"
   }
   this.isCollection = this.dataType && (this.dataType.toLowerCase() === 'array' || this.dataType.toLowerCase() === 'list' || this.dataType.toLowerCase() === 'set');
   this.descr = obj.description;

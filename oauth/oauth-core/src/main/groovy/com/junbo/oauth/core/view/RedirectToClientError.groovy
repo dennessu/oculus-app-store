@@ -15,6 +15,8 @@ import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.web.util.UriComponentsBuilder
 
+import javax.ws.rs.core.Response
+
 /**
  * RedirectToPage.
  */
@@ -36,7 +38,9 @@ class RedirectToClientError implements Action {
         def uriBuilder = UriComponentsBuilder.fromHttpUrl(oauthInfo.redirectUri)
         uriBuilder.queryParam(OAuthParameters.ERROR, errorMessage)
 
-        contextWrapper.redirectUriBuilder = uriBuilder
+        contextWrapper.responseBuilder = Response.status(Response.Status.FOUND)
+                .location(uriBuilder.build().toUri())
+
         return Promise.pure(null)
     }
 }

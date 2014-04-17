@@ -24,6 +24,7 @@
 
     <bean id="mockCatalogFacade" class="com.junbo.order.clientproxy.catalog.impl.CatalogFacadeImpl">
         <property name="offerRevisionResource" ref="mockCatalogResource"/>
+        <property name="itemRevisionResource" ref="mockItemRevisionResource"></property>
     </bean>
 
 </beans>

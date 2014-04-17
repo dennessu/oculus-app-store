@@ -29,7 +29,6 @@ import javax.ws.rs.core.MediaType;
 public interface UserGroupMembershipResource {
     @ApiOperation("Create one user group membership")
     @POST
-    @Path("/")
     Promise<UserGroup> create(UserGroup userGroup);
 
     @ApiOperation("Get one user group membership")
@@ -57,6 +56,5 @@ public interface UserGroupMembershipResource {
 
     @ApiOperation("search user group memberships")
     @GET
-    @Path("/")
     Promise<Results<UserGroup>> list(@BeanParam UserGroupListOptions listOptions);
 }

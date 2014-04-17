@@ -20,7 +20,7 @@ import java.util.Set;
  */
 public class RatingRequest {
     @NotNull
-    private Boolean isReadyToBuy;
+    private Boolean includeCrossOfferPromos;
 
     @UserId
     @JsonProperty("user")
@@ -42,12 +42,12 @@ public class RatingRequest {
     @Null
     private ShippingBenefit shippingBenefit;
 
-    public Boolean isReadyToBuy() {
-        return isReadyToBuy;
+    public Boolean getIncludeCrossOfferPromos() {
+        return includeCrossOfferPromos;
     }
 
-    public void setIsReadyToBuy(Boolean isReadyToBuy) {
-        this.isReadyToBuy = isReadyToBuy;
+    public void setIncludeCrossOfferPromos(Boolean includeCrossOfferPromos) {
+        this.includeCrossOfferPromos = includeCrossOfferPromos;
     }
 
     public Long getUserId() {

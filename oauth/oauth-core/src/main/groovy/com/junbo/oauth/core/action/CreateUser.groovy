@@ -13,6 +13,7 @@ import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
+import com.junbo.oauth.core.exception.AppExceptions
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
@@ -44,14 +45,21 @@ class CreateUser implements Action {
                 type: 'user'
         )
 
-        try {
-            userResource.create(user).then { User newUser ->
-                contextWrapper.user = newUser
-                return Promise.pure(null)
+        userResource.create(user).recover { Throwable throwable ->
+            if (throwable instanceof AppErrorException) {
+                contextWrapper.errors.add(((AppErrorException) throwable).error.error())
+            } else {
+                contextWrapper.errors.add(AppExceptions.INSTANCE.errorCallingIdentity().error())
             }
-        } catch (AppErrorException e) {
-            contextWrapper.errors.add(e.error.error())
-            return Promise.pure(new ActionResult('error'))
+
+            return Promise.pure(null)
+        }.then { User newUser ->
+            if (newUser == null) {
+                return Promise.pure(new ActionResult('error'))
+            }
+
+            contextWrapper.user = newUser
+            return Promise.pure(new ActionResult('success'))
         }
     }
 }

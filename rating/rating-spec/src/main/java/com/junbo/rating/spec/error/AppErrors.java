@@ -33,4 +33,11 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 500, code = "10005", description = "Error occurred during calling Entitlement service.")
     AppError entitlementGatewayError();
 
+    @ErrorDef(httpStatusCode = 404, code = "10006",
+            description = "No approved offerRevision is found for Offer: {0}", field = "offer_id")
+    AppError offerRevisionNotFound(String offerId);
+
+    @ErrorDef(httpStatusCode = 404, code = "10007",
+            description = "Missing shipping method for Offer: {0}", field = "offer_id")
+    AppError missingShippingMethod(String offerId);
 }

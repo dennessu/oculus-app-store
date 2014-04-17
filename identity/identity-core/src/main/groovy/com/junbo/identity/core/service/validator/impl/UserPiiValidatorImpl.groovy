@@ -86,6 +86,11 @@ class UserPiiValidatorImpl implements UserPiiValidator {
 
     @Override
     Promise<Void> validateForCreate(UserPii userPii) {
+
+        if (userPii.displayNameType != null) {
+            throw AppErrors.INSTANCE.fieldNotWritable('displayNameType').exception()
+        }
+
         return checkBasicUserPiiInfo(userPii).then {
             if (userPii.id != null) {
                 throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
@@ -219,10 +224,6 @@ class UserPiiValidatorImpl implements UserPiiValidator {
                 }
                 if (existingUser.active == null || existingUser.active == false) {
                     throw AppErrors.INSTANCE.userInInvalidStatus(userPii.userId).exception()
-                }
-
-                if (userPii.displayNameType != null) {
-                    throw AppErrors.INSTANCE.fieldNotWritable('displayNameType').exception()
                 }
 
                 userPii.displayNameType = displayNameValidator.getDisplayNameType(existingUser, userPii)

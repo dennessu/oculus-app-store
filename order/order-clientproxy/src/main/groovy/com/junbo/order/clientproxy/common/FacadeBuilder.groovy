@@ -66,6 +66,8 @@ class FacadeBuilder {
         request.currency = order.currency
         request.userId = order.user?.value
         request.shippingMethodId = order.shippingMethod
+        request.timestamp = order.honoredTime.time
+        request.includeCrossOfferPromos = true
         List<RatingItem> ratingItems = []
         order.orderItems?.each { OrderItem item ->
             RatingItem ratingItem = new RatingItem()
@@ -100,7 +102,7 @@ class FacadeBuilder {
         properties.put(GRAND_TOTAL, grandTotal.toString())
         offers.eachWithIndex { OfferRevision offer, int index ->
             // TODO update the l10n logic per catalog change
-            properties.put(OFFER_NAME + index, offer.name.locales['en_US'])
+            properties.put(OFFER_NAME + index, offer.name.locales['DEFAULT'])
             order.orderItems.each { OrderItem item ->
                 if (item.offer.value == offer.offerId) {
                     properties.put(QUANTITY + index, item.quantity.toString())

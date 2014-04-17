@@ -62,6 +62,7 @@ public class BalanceEntityDaoImpl extends BaseDao implements BalanceEntityDao {
             for (Long id : balanceIds) {
                 balanceEntities.add(get(id));
             }
+            return balanceEntities;
         }
 
         return null;
@@ -81,6 +82,7 @@ public class BalanceEntityDaoImpl extends BaseDao implements BalanceEntityDao {
             for (Long id : balanceIds) {
                 balanceEntities.add(get(id));
             }
+            return balanceEntities;
         }
 
         return null;

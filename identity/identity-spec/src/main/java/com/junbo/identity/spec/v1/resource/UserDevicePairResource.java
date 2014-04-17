@@ -29,7 +29,6 @@ import javax.ws.rs.core.MediaType;
 public interface UserDevicePairResource {
     @ApiOperation("Create one user device pair")
     @POST
-    @Path("/")
     Promise<UserDevice> create(UserDevice userDevice);
 
     @ApiOperation("Get one user device pair")
@@ -57,6 +56,5 @@ public interface UserDevicePairResource {
 
     @ApiOperation("Search user device pairs")
     @GET
-    @Path("/")
     Promise<Results<UserDevice>> list(@BeanParam UserDeviceListOptions listOptions);
 }

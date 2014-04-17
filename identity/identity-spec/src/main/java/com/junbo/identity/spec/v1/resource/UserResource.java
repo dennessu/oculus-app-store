@@ -29,7 +29,6 @@ import javax.ws.rs.core.MediaType;
 public interface UserResource {
     @ApiOperation("Create one user")
     @POST
-    @Path("/")
     Promise<User> create(User user);
 
     @ApiOperation("Update one user")
@@ -49,7 +48,6 @@ public interface UserResource {
 
     @ApiOperation("Search users")
     @GET
-    @Path("/")
     Promise<Results<User>> list(@BeanParam UserListOptions listOptions);
 }
 
