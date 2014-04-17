@@ -441,7 +441,6 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
     public void testUserRepository() throws Exception {
         User user = new User()
         user.setActive(true)
-        user.setCurrency('USD')
         user.setLocale('en_US')
         def random = UUID.randomUUID().toString()
         user.setNickName(random)

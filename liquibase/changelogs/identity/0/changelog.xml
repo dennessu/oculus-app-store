@@ -187,7 +187,6 @@
 			  time_zone varchar(255),
 			  is_active boolean not null,
 			  type varchar(255) not null,
-			  currency varchar(10),
 			  
               created_by varchar(32) not null,
               created_time timestamp not null,

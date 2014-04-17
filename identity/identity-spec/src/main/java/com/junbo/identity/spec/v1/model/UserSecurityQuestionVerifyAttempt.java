@@ -45,6 +45,7 @@ public class UserSecurityQuestionVerifyAttempt extends ResourceMeta
 
     // read only
     @ApiModelProperty(position = 7, required = false, value = "Whether the attempt is success.")
+    @JsonProperty("isSuccess")
     private Boolean succeeded;
 
     public UserSecurityQuestionVerifyAttemptId getId() {
@@ -119,5 +120,6 @@ public class UserSecurityQuestionVerifyAttempt extends ResourceMeta
     public void setSucceeded(Boolean succeeded) {
         this.succeeded = succeeded;
         support.setPropertyAssigned("succeeded");
+        support.setPropertyAssigned("isSuccess");
     }
 }
