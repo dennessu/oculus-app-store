@@ -61,7 +61,6 @@ public class EmailMapper {
         entity.setPriority(email.getPriority());
         entity.setStatus(toEmailStatus(email.getStatus()));
         entity.setRecipients(Utils.toJson(email.getRecipients()));
-        entity.setStatus(toEmailStatus(email.getStatus()));
         entity.setStatusReason(email.getStatusReason());
         entity.setSentDate(email.getSentDate());
         entity.setRetryCount(email.getRetryCount());
@@ -168,7 +167,7 @@ public class EmailMapper {
     }
 
     private String fromEmailStatus(Short id) {
-        if ( id == null) {
+        if (id == null) {
             return null;
         }
         return EnumRegistry.resolve(id, EmailStatus.class).toString();

@@ -10,6 +10,8 @@ import com.junbo.email.db.repo.EmailScheduleRepository
 import com.junbo.email.spec.error.AppErrors
 import com.junbo.email.spec.model.Email
 import com.junbo.email.spec.model.EmailTemplate
+import com.junbo.identity.spec.v1.model.User
+import com.junbo.identity.spec.v1.model.UserPii
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -23,12 +25,11 @@ class EmailValidatorImpl extends CommonValidator implements EmailValidator {
     private EmailScheduleRepository emailScheduleRepository
 
     void validateCreate(Email email) {
+        this.validateEmailId(email)
         super.validateCommonField(email)
         super.validateProhibitedFields(email)
         super.validateScheduleTime(email, false)
         super.validateAuditDate(email)
-        //TODO:need to remove it when integration with identity
-        //validateReplacements(email)
     }
 
     void validateUpdate(Email email) {
@@ -37,27 +38,18 @@ class EmailValidatorImpl extends CommonValidator implements EmailValidator {
         super.validateScheduleTime(email, true)
         super.validateAuditDate(email)
         validateExistEmailSchedule(email.id.value)
-        //TODO:need to remove it when integration with identity
-        validateReplacements(email)
     }
 
     void validateDelete(Long id) {
         if (id == null) {
-            throw AppErrors.INSTANCE.invalidEmailId('id').exception()
+            throw AppErrors.INSTANCE.invalidEmailId('').exception()
         }
         if (emailScheduleRepository.getEmailSchedule(id) == null) {
-            throw AppErrors.INSTANCE.emailScheduleNotFound(id.toString()).exception()
+            throw AppErrors.INSTANCE.emailScheduleNotFound('').exception()
         }
     }
 
-    private void validateExistEmailSchedule(Long id) {
-        Email email = emailScheduleRepository.getEmailSchedule(id)
-        if (email == null) {
-            throw AppErrors.INSTANCE.emailScheduleNotFound(id.toString()).exception()
-        }
-    }
-
-    public void validateReplacements(Email email) {
+    void validateReplacements(Email email) {
         String templateName = "${email.source}.${email.action}.${email.locale}"
 
         EmailTemplate template = emailTemplateRepository.getEmailTemplateByName(templateName)
@@ -65,8 +57,8 @@ class EmailValidatorImpl extends CommonValidator implements EmailValidator {
         if (template == null) {
             throw AppErrors.INSTANCE.templateNotFound(templateName).exception()
         }
-        if (template.listOfVariables != null && email.properties == null) {
-            throw AppErrors.INSTANCE.invalidProperty('properties').exception()
+        if (template.listOfVariables != null && email.replacements == null) {
+            throw AppErrors.INSTANCE.invalidProperty('replacements').exception()
         }
         if (template.listOfVariables != null) {
             List<String> variables = toLowerCase(template.listOfVariables)
@@ -78,11 +70,32 @@ class EmailValidatorImpl extends CommonValidator implements EmailValidator {
         }
     }
 
+    void validateUser(User user) {
+        super.validateUser(user)
+    }
+
+    void validateUserPii(UserPii userPii) {
+        super.validateUserPii(userPii)
+    }
+
+    private void validateExistEmailSchedule(Long id) {
+        Email email = emailScheduleRepository.getEmailSchedule(id)
+        if (email == null) {
+            throw AppErrors.INSTANCE.emailScheduleNotFound('').exception()
+        }
+    }
+
     private List<String> toLowerCase(List<String> properties) {
         List<String> list = new ArrayList<>()
         for (String property: properties) {
             list.add(property.toLowerCase())
         }
         return list
+    }
+
+    private void validateEmailId(Email email) {
+        if (email.id != null) {
+            throw AppErrors.INSTANCE.invalidEmailId('').exception()
+        }
     }
 }

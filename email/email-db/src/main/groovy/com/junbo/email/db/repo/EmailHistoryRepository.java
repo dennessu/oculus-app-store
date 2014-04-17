@@ -10,7 +10,6 @@ import com.junbo.email.db.entity.EmailHistoryEntity;
 import com.junbo.email.spec.model.Email;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
@@ -18,7 +17,6 @@ import java.util.Date;
  * Repository of EmailHistory.
  */
 @Component
-@Transactional
 public class EmailHistoryRepository extends EmailBaseRepository {
     @Autowired
     private EmailHistoryDao emailHistoryDao;
