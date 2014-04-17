@@ -18,6 +18,19 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "user_security_question")
 public class UserSecurityQuestionEntity extends ResourceMetaEntity {
+    @Id
+    @Column(name = "id")
+    private Long id;
+
+    @Column(name = "user_id")
+    private Long userId;
+
+    @Column(name = "security_question")
+    private String securityQuestion;
+
+    @Column(name = "answer_hash")
+    private String answerHash;
+
     public Long getId() {
         return id;
     }
@@ -42,22 +55,6 @@ public class UserSecurityQuestionEntity extends ResourceMetaEntity {
         this.securityQuestion = securityQuestion;
     }
 
-    public String getAnswerSalt() {
-        return answerSalt;
-    }
-
-    public void setAnswerSalt(String answerSalt) {
-        this.answerSalt = answerSalt;
-    }
-
-    public String getAnswerPepper() {
-        return answerPepper;
-    }
-
-    public void setAnswerPepper(String answerPepper) {
-        this.answerPepper = answerPepper;
-    }
-
     public String getAnswerHash() {
         return answerHash;
     }
@@ -65,23 +62,4 @@ public class UserSecurityQuestionEntity extends ResourceMetaEntity {
     public void setAnswerHash(String answerHash) {
         this.answerHash = answerHash;
     }
-
-    @Id
-    @Column(name = "id")
-    private Long id;
-
-    @Column(name = "user_id")
-    private Long userId;
-
-    @Column(name = "security_question")
-    private String securityQuestion;
-
-    @Column(name = "answer_salt")
-    private String answerSalt;
-
-    @Column(name = "answer_pepper")
-    private String answerPepper;
-
-    @Column(name = "answer_hash")
-    private String answerHash;
 }

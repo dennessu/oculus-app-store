@@ -30,12 +30,6 @@ public class UserSecurityQuestion extends ResourceMeta implements Identifiable<U
     private String answer;
 
     @JsonIgnore
-    private String answerSalt;
-
-    @JsonIgnore
-    private String answerPepper;
-
-    @JsonIgnore
     private String answerHash;
 
     @JsonIgnore
@@ -68,24 +62,6 @@ public class UserSecurityQuestion extends ResourceMeta implements Identifiable<U
     public void setAnswer(String answer) {
         this.answer = answer;
         support.setPropertyAssigned("answer");
-    }
-
-    public String getAnswerSalt() {
-        return answerSalt;
-    }
-
-    public void setAnswerSalt(String answerSalt) {
-        this.answerSalt = answerSalt;
-        support.setPropertyAssigned("answerSalt");
-    }
-
-    public String getAnswerPepper() {
-        return answerPepper;
-    }
-
-    public void setAnswerPepper(String answerPepper) {
-        this.answerPepper = answerPepper;
-        support.setPropertyAssigned("answerPepper");
     }
 
     public String getAnswerHash() {

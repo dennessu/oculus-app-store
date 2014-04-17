@@ -27,8 +27,6 @@
 				id bigint not null,
 				user_id bigint not null,
 				password_hash text not null,
-				password_salt text not null,
-				password_pepper text not null,
 				password_strength smallint not null,
 				
 				active boolean not null,
@@ -48,8 +46,6 @@
 				id bigint not null,
 				user_id bigint not null,
 				pin_hash text not null,
-				pin_salt text not null,
-				pin_pepper text not null,
 				
 				active boolean not null,
 				change_at_next_login boolean,
@@ -222,8 +218,6 @@
 			  user_id bigint not null,
 
 		      security_question text not null,
-			  answer_salt text not null,
-			  answer_pepper text not null,
 			  answer_hash text not null,
 
               created_by varchar(32) not null,

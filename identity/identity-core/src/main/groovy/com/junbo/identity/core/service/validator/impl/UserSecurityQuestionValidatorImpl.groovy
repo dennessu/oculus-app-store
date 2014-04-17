@@ -22,6 +22,8 @@ import org.springframework.beans.factory.annotation.Required
 @CompileStatic
 class UserSecurityQuestionValidatorImpl implements UserSecurityQuestionValidator {
 
+    private static final Integer SALT_LENGTH = 20
+
     private UserRepository userRepository
     private UserSecurityQuestionRepository userSecurityQuestionRepository
     private SecurityQuestionRepository securityQuestionRepository
@@ -95,10 +97,10 @@ class UserSecurityQuestionValidatorImpl implements UserSecurityQuestionValidator
                     }
                 }
                 userSecurityQuestion.setUserId(userId)
-                userSecurityQuestion.setAnswerSalt(CipherHelper.generateCipherRandomStr(20))
-                userSecurityQuestion.setAnswerPepper(CipherHelper.generateCipherRandomStr(20))
+                String salt = CipherHelper.generateCipherRandomStr(SALT_LENGTH)
+                String pepper = CipherHelper.generateCipherRandomStr(SALT_LENGTH)
                 userSecurityQuestion.setAnswerHash(CipherHelper.generateCipherHashV1(
-                      userSecurityQuestion.answer, userSecurityQuestion.answerSalt, userSecurityQuestion.answerPepper))
+                        userSecurityQuestion.answer, salt, pepper))
                 return Promise.pure(null)
         }
     }
