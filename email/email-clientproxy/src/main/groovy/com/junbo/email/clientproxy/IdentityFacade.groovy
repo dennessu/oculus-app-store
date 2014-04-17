@@ -5,6 +5,7 @@
  */
 package com.junbo.email.clientproxy
 
+import com.junbo.identity.spec.v1.model.UserPii
 import com.junbo.langur.core.promise.Promise
 import com.junbo.identity.spec.v1.model.User
 /**
@@ -12,4 +13,6 @@ import com.junbo.identity.spec.v1.model.User
  */
 interface IdentityFacade {
     Promise<User> getUser(Long userId)
+
+    Promise<UserPii> getUserPii(Long userId)
 }

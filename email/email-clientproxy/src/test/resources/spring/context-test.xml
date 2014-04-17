@@ -6,5 +6,5 @@
 
     <import resource="classpath*:spring/*-context.xml"/>
 
-    <bean id="mockIdentityFacade" class="com.junbo.email.clientproxy.mock.MockIdentityFacadeImpl"/>
+    <!--<bean id="mockIdentityFacade" class="com.junbo.email.clientproxy.mock.MockIdentityFacadeImpl"/>-->
 </beans>

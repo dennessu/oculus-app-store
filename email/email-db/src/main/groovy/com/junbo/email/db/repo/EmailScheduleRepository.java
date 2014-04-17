@@ -55,10 +55,10 @@ public class EmailScheduleRepository extends EmailBaseRepository {
         if(updateEntity.getPriority()!=null) {
             savedEntity.setPriority(updateEntity.getPriority());
         }
-        if(updateEntity.getRecipient()!=null) {
-            savedEntity.setRecipient(updateEntity.getRecipient());
+        if(updateEntity.getRecipients()!=null) {
+            savedEntity.setRecipients(updateEntity.getRecipients());
         }
-        savedEntity.setScheduleDate(updateEntity.getScheduleDate());
+        savedEntity.setScheduleTime(updateEntity.getScheduleTime());
         savedEntity.setSource(updateEntity.getSource());
         savedEntity.setAction(updateEntity.getAction());
         savedEntity.setLocale(updateEntity.getLocale());
