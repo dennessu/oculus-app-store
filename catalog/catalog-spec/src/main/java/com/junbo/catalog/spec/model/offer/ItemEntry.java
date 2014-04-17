@@ -18,7 +18,7 @@ public class ItemEntry {
     @JsonProperty("item")
     @ApiModelProperty(position = 1, required = true, value = "item")
     private Long itemId;
-    @ApiModelProperty(position = 1, required = true, value = "item quantity")
+    @ApiModelProperty(position = 2, required = true, value = "item quantity")
     private Integer quantity;
 
     public Long getItemId() {
