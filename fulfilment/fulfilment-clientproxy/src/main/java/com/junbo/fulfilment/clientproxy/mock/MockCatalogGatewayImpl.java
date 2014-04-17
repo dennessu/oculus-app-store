@@ -5,6 +5,7 @@
  */
 package com.junbo.fulfilment.clientproxy.mock;
 
+import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.catalog.spec.model.offer.Action;
 import com.junbo.catalog.spec.model.offer.Event;
 import com.junbo.catalog.spec.model.offer.ItemEntry;
@@ -39,6 +40,14 @@ public class MockCatalogGatewayImpl extends CatalogGatewayImpl {
         }
 
         return mockOffer;
+    }
+
+    @Override
+    protected ItemRevision retrieveItemRevision(Long offerId, Long timestamp) {
+        ItemRevision mockItem = new ItemRevision();
+        mockItem.setSku("TEST_SKU");
+
+        return mockItem;
     }
 
     /**
