@@ -239,6 +239,11 @@ public class FulfilmentServiceImpl extends TransactionSupport implements Fulfilm
 
             if (Utils.equals(FulfilmentActionType.DELIVER_PHYSICAL_GOODS, action.getType())) {
                 fulfilmentAction.setItems(offer.getItems());
+
+                // physical need sku info on item
+                for (LinkedEntry entry : fulfilmentAction.getItems()) {
+                    entry.setTimestamp(fulfilmentItem.getTimestamp());
+                }
             }
 
             fulfilmentItem.addFulfilmentAction(fulfilmentAction);
