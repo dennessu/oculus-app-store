@@ -146,33 +146,30 @@ class UserSecurityQuestionAttemptValidatorImpl implements UserSecurityQuestionAt
             throw AppErrors.INSTANCE.fieldTooShort('value', valueMinLength).exception()
         }
 
-        if (attempt.clientId == null) {
-            throw AppErrors.INSTANCE.fieldRequired('clientId').exception()
-        }
-        if (attempt.clientId.size() > clientIdMaxLength) {
-            throw AppErrors.INSTANCE.fieldTooLong('clientId', clientIdMaxLength).exception()
-        }
-        if (attempt.clientId.size() < clientIdMinLength) {
-            throw AppErrors.INSTANCE.fieldTooShort('clientId', clientIdMinLength).exception()
-        }
-
-        if (attempt.ipAddress == null) {
-            throw AppErrors.INSTANCE.fieldRequired('ipAddress').exception()
-        }
-        if (!allowedIPPatterns.any {
-            Pattern pattern -> pattern.matcher(attempt.ipAddress).matches()
-        }) {
-            throw AppErrors.INSTANCE.fieldInvalid('ipAddresss').exception()
+        if (attempt.clientId != null) {
+            if (attempt.clientId.size() > clientIdMaxLength) {
+                throw AppErrors.INSTANCE.fieldTooLong('clientId', clientIdMaxLength).exception()
+            }
+            if (attempt.clientId.size() < clientIdMinLength) {
+                throw AppErrors.INSTANCE.fieldTooShort('clientId', clientIdMinLength).exception()
+            }
         }
 
-        if (attempt.userAgent == null) {
-            throw AppErrors.INSTANCE.fieldRequired('userAgent').exception()
+        if (attempt.ipAddress != null) {
+            if (!allowedIPPatterns.any {
+                Pattern pattern -> pattern.matcher(attempt.ipAddress).matches()
+            }) {
+                throw AppErrors.INSTANCE.fieldInvalid('ipAddress').exception()
+            }
         }
-        if (attempt.userAgent.size() > userAgentMaxLength) {
-            throw AppErrors.INSTANCE.fieldTooLong('userAgent', userAgentMaxLength).exception()
-        }
-        if (attempt.userAgent.size() < userAgentMinLength) {
-            throw AppErrors.INSTANCE.fieldTooShort('userAgent', userAgentMinLength).exception()
+
+        if (attempt.userAgent != null) {
+            if (attempt.userAgent.size() > userAgentMaxLength) {
+                throw AppErrors.INSTANCE.fieldTooLong('userAgent', userAgentMaxLength).exception()
+            }
+            if (attempt.userAgent.size() < userAgentMinLength) {
+                throw AppErrors.INSTANCE.fieldTooShort('userAgent', userAgentMinLength).exception()
+            }
         }
 
         if (attempt.userSecurityQuestionId == null) {
