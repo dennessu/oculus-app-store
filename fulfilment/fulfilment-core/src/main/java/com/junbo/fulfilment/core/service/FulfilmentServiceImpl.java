@@ -237,13 +237,10 @@ public class FulfilmentServiceImpl extends TransactionSupport implements Fulfilm
             fulfilmentAction.setProperties(action.getProperties());
             fulfilmentAction.setCopyCount(copyCount);
 
-            if (Utils.equals(FulfilmentActionType.DELIVER_PHYSICAL_GOODS, action.getType())) {
-                fulfilmentAction.setItems(offer.getItems());
-
-                // physical need sku info on item
-                for (LinkedEntry entry : fulfilmentAction.getItems()) {
-                    entry.setTimestamp(fulfilmentItem.getTimestamp());
-                }
+            // copy items to fulfilment action
+            fulfilmentAction.setItems(offer.getItems());
+            for (LinkedEntry entry : fulfilmentAction.getItems()) {
+                entry.setTimestamp(fulfilmentItem.getTimestamp());
             }
 
             fulfilmentItem.addFulfilmentAction(fulfilmentAction);

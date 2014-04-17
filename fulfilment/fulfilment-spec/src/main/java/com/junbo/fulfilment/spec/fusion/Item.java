@@ -5,12 +5,18 @@
  */
 package com.junbo.fulfilment.spec.fusion;
 
+import java.math.BigDecimal;
+
 /**
  * Item.
  */
 public class Item {
     private Long itemId;
     private String sku;
+
+    private String ewalletCurrencyType;
+    private BigDecimal ewalletAmount;
+    private String ewalletCurrency;
 
     public Long getItemId() {
         return itemId;
@@ -26,5 +32,29 @@ public class Item {
 
     public void setSku(String sku) {
         this.sku = sku;
+    }
+
+    public String getEwalletCurrencyType() {
+        return ewalletCurrencyType;
+    }
+
+    public void setEwalletCurrencyType(String ewalletCurrencyType) {
+        this.ewalletCurrencyType = ewalletCurrencyType;
+    }
+
+    public BigDecimal getEwalletAmount() {
+        return ewalletAmount;
+    }
+
+    public void setEwalletAmount(BigDecimal ewalletAmount) {
+        this.ewalletAmount = ewalletAmount;
+    }
+
+    public String getEwalletCurrency() {
+        return ewalletCurrency;
+    }
+
+    public void setEwalletCurrency(String ewalletCurrency) {
+        this.ewalletCurrency = ewalletCurrency;
     }
 }

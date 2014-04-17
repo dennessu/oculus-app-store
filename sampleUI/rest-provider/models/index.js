@@ -1,3 +1,4 @@
+/* Only use Node.js */
 
 var Identity         = require('./identity');
 var Cart             = require('./cart');

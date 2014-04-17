@@ -41,8 +41,8 @@ public interface AppErrors {
             description = "Order action {0} is not supported")
     AppError orderTypeNotSupported(String type);
 
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.ORDER_ACTION_NOT_SUPPORTED,
-            description = "Order type {0} is not supported")
+    @ErrorDef(httpStatusCode = 500, code = ErrorCode.ORDER_ACTION_NOT_SUPPORTED,
+            description = "Order action {0} is not supported")
     AppError orderActionNotSupported(String action);
 
     @ErrorDef(httpStatusCode = 404, code = ErrorCode.ORDER_ITEM_NOT_FOUND,

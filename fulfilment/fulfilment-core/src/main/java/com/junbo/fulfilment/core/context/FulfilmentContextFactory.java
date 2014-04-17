@@ -28,6 +28,8 @@ public final class FulfilmentContextFactory {
             case FulfilmentActionType.CREDIT_WALLET:
                 context = new WalletContext();
                 break;
+            default:
+                break;
         }
 
         return (T) context;
