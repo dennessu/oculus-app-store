@@ -29,6 +29,6 @@ public abstract class BaseTest extends AbstractTransactionalTestNGSpringContextT
     }
 
     protected long generateLong() {
-        return idGenerator.nextId();
+        return idGenerator.nextId(0);
     }
 }
