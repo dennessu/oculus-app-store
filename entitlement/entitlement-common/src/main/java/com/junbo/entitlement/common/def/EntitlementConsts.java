@@ -6,6 +6,9 @@
 
 package com.junbo.entitlement.common.def;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 /**
  * Consts for entitlement.
  */
@@ -18,6 +21,5 @@ public class EntitlementConsts {
     public static final int DEFAULT_PAGE_NUMBER = 0;
     public static final String NEXT_END = "END";
 
-    public static final String DEFAULT_GROUP = "DEFAULT";
-    public static final String DEFAULT_TAG = "DEFAULT";
+    public static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 }

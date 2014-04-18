@@ -14,6 +14,7 @@ dependencies {
     compile 'com.junbo.entitlement:entitlement-spec:0.0.1-SNAPSHOT'
     compile 'com.junbo.catalog:catalog-spec:0.0.1-SNAPSHOT'
     compile 'com.junbo.billing:billing-spec:0.0.1-SNAPSHOT'
+    compile 'com.junbo.ewallet:ewallet-spec:0.0.1-SNAPSHOT'
 
     testCompile (libraries.spring_test)
 

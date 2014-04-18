@@ -1,5 +1,4 @@
-var ResultModel = require('./result_model');
-var Configs = require('./config');
+var Configs = require('./../configs/config');
 var Utils = require('./utils');
 var RestClient = require('./rest_client');
 

@@ -45,7 +45,6 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         user.setNickName(RandomFactory.getRandomStringOfAlphabet(10));
         user.setType("user");
         user.setCanonicalUsername(RandomFactory.getRandomStringOfAlphabet(10));
-        user.setCurrency("USD");
         user.setLocale("en_US");
         user.setPreferredLanguage("en_US");
 

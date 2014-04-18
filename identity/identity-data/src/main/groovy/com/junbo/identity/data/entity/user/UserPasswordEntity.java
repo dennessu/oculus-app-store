@@ -16,6 +16,29 @@ import java.util.Date;
 @Entity
 @Table(name = "user_password")
 public class UserPasswordEntity extends ResourceMetaEntity {
+    @Id
+    @Column(name = "id")
+    private Long id;
+
+    @Column(name = "user_id")
+    private Long userId;
+
+    @Column(name = "password_hash")
+    private String passwordHash;
+
+    @Column(name = "password_strength")
+    private Short strength;
+
+    @Column(name = "active")
+    private Boolean active;
+
+    @Column(name = "change_at_next_login")
+    private Boolean changeAtNextLogin;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "expires_by")
+    private Date expiresBy;
+
     public Long getId() {
         return id;
     }
@@ -38,22 +61,6 @@ public class UserPasswordEntity extends ResourceMetaEntity {
 
     public void setPasswordHash(String passwordHash) {
         this.passwordHash = passwordHash;
-    }
-
-    public String getPasswordSalt() {
-        return passwordSalt;
-    }
-
-    public void setPasswordSalt(String passwordSalt) {
-        this.passwordSalt = passwordSalt;
-    }
-
-    public String getPasswordPepper() {
-        return passwordPepper;
-    }
-
-    public void setPasswordPepper(String passwordPepper) {
-        this.passwordPepper = passwordPepper;
     }
 
     public Short getStrength() {
@@ -87,25 +94,4 @@ public class UserPasswordEntity extends ResourceMetaEntity {
     public void setExpiresBy(Date expiresBy) {
         this.expiresBy = expiresBy;
     }
-
-    @Id
-    @Column(name = "id")
-    private Long id;
-    @Column(name = "user_id")
-    private Long userId;
-    @Column(name = "password_hash")
-    private String passwordHash;
-    @Column(name = "password_salt")
-    private String passwordSalt;
-    @Column(name = "password_pepper")
-    private String passwordPepper;
-    @Column(name = "password_strength")
-    private Short strength;
-    @Column(name = "active")
-    private Boolean active;
-    @Column(name = "change_at_next_login")
-    private Boolean changeAtNextLogin;
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "expires_by")
-    private Date expiresBy;
 }

@@ -27,5 +27,10 @@ var CartModel = function(){
         this.coupons = new Array()
 };
 
-exports.OfferItemModel = OfferItemModel;
-exports.CartModel = CartModel;
+if(typeof(window) != "undefined"){
+    Module.Load(window, "Models.Cart.OfferItemModel", OfferItemModel);
+    Module.Load(window, "Models.Cart.CartModel", CartModel);
+}else{
+    exports.OfferItemModel = OfferItemModel;
+    exports.CartModel = CartModel;
+}

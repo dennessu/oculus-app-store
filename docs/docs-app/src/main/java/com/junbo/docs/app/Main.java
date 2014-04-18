@@ -27,7 +27,8 @@ import java.net.URI;
  */
 public class Main {
 
-    private static final int SERVER_PORT = 8079;
+    //private static final int SERVER_PORT = 0xd0c;   // 3340
+    private static final int SERVER_PORT = 8079;   // 3340
 
     private Main() { }
 

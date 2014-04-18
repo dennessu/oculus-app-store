@@ -11,13 +11,14 @@ import com.junbo.common.id.UserId;
 import com.junbo.common.id.EmailId;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
  * Email model.
  */
-@JsonPropertyOrder(value = {"self","user","source","action","locale","type","recipient","status","statusReason",
-        "retryCount","priority","sentDate","isResend","scheduleDate","properties","createdTime","modifiedTime"})
+@JsonPropertyOrder(value = {"self","user","source","action","locale","type","recipients","status","statusReason",
+        "retryCount","priority","sentTime","isResend","scheduleTime","replacements","createdTime","modifiedTime"})
 public class Email extends Model{
     @JsonProperty("self")
     private EmailId id;
@@ -31,9 +32,7 @@ public class Email extends Model{
 
     private String locale;
 
-    private String type;
-
-    private String recipient;
+    private List<String> recipients;
 
     private String status;
 
@@ -43,13 +42,13 @@ public class Email extends Model{
 
     private Integer priority;
 
-    private Date sentDate;
+    private Date sentTime;
 
     private Boolean isResend;
 
-    private Date scheduleDate;
+    private Date scheduleTime;
 
-    private Map<String,String> properties;
+    private Map<String,String> replacements;
 
     public EmailId getId() {
         return id;
@@ -91,20 +90,12 @@ public class Email extends Model{
         this.locale = locale;
     }
 
-    public String getType() {
-        return type;
+    public List<String> getRecipients() {
+        return recipients;
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getRecipient() {
-        return recipient;
-    }
-
-    public void setRecipient(String recipient) {
-        this.recipient = recipient;
+    public void setRecipients(List<String> recipients) {
+        this.recipients = recipients;
     }
 
     public String getStatus() {
@@ -139,12 +130,12 @@ public class Email extends Model{
         this.priority = priority;
     }
 
-    public Date getSentDate() {
-        return sentDate;
+    public Date getSentTime() {
+        return sentTime;
     }
 
-    public void setSentDate(Date sentDate) {
-        this.sentDate = sentDate;
+    public void setSentTime(Date sentTime) {
+        this.sentTime = sentTime;
     }
 
     public Boolean getIsResend() {
@@ -155,19 +146,19 @@ public class Email extends Model{
         this.isResend = isResend;
     }
 
-    public Date getScheduleDate() {
-        return scheduleDate;
+    public Date getScheduleTime() {
+        return scheduleTime;
     }
 
-    public void setScheduleDate(Date scheduleDate) {
-        this.scheduleDate = scheduleDate;
+    public void setScheduleTime(Date scheduleTime) {
+        this.scheduleTime = scheduleTime;
     }
 
-    public Map<String, String> getProperties() {
-        return properties;
+    public Map<String, String> getReplacements() {
+        return replacements;
     }
 
-    public void setProperties(Map<String, String> properties) {
-        this.properties = properties;
+    public void setReplacements(Map<String, String> replacements) {
+        this.replacements = replacements;
     }
 }

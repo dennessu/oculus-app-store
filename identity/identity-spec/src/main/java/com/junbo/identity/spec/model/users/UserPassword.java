@@ -36,11 +36,7 @@ public class UserPassword extends ResourceMeta implements Identifiable<UserPassw
 
     // Won't return field
     @JsonIgnore
-    private String passwordSalt;
-    @JsonIgnore
     private String passwordHash;
-    @JsonIgnore
-    private String passwordPepper;
 
     public UserPasswordId getId() {
         return id;
@@ -97,15 +93,6 @@ public class UserPassword extends ResourceMeta implements Identifiable<UserPassw
         support.setPropertyAssigned("changeAtNextLogin");
     }
 
-    public String getPasswordSalt() {
-        return passwordSalt;
-    }
-
-    public void setPasswordSalt(String passwordSalt) {
-        this.passwordSalt = passwordSalt;
-        support.setPropertyAssigned("passwordSalt");
-    }
-
     public String getPasswordHash() {
         return passwordHash;
     }
@@ -122,14 +109,5 @@ public class UserPassword extends ResourceMeta implements Identifiable<UserPassw
     public void setUserId(UserId userId) {
         this.userId = userId;
         support.setPropertyAssigned("userId");
-    }
-
-    public String getPasswordPepper() {
-        return passwordPepper;
-    }
-
-    public void setPasswordPepper(String passwordPepper) {
-        this.passwordPepper = passwordPepper;
-        support.setPropertyAssigned("passwordPepper");
     }
 }

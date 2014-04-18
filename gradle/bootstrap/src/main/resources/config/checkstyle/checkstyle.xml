@@ -43,7 +43,7 @@
             <property name="allowInSwitchCase" value="true" />
             <property name="severity" value="warning" />
         </module>
-        <module name="NeedBraces" />
+        <!--module name="NeedBraces" /-->
         <module name="LeftCurly">
             <property name="option" value="eol" />
         </module>
@@ -122,9 +122,9 @@
             <!-- Some classes in o.h.metamodel on master do this -->
             <property name="severity" value="warning" />
         </module>
-        <module name="TrailingComment">
+        <!--module name="TrailingComment">
             <property name="severity" value="warning" />
-        </module>
+        </module-->
 
 
         <!--
@@ -203,7 +203,7 @@
         <!-- Checks for Size Violations.                    -->
         <!-- See http://checkstyle.sf.net/config_sizes.html -->
         <module name="LineLength">
-            <property name="max" value="120"/>
+            <property name="max" value="180"/>
             <property name="ignorePattern" value="@version|@see|@todo|TODO"/>
         </module>
         <module name="MethodLength"/>

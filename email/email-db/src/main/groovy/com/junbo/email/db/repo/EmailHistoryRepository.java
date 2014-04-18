@@ -10,8 +10,8 @@ import com.junbo.email.db.entity.EmailHistoryEntity;
 import com.junbo.email.spec.model.Email;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
+import javax.transaction.Transactional;
 import java.util.Date;
 
 /**
@@ -29,7 +29,7 @@ public class EmailHistoryRepository extends EmailBaseRepository {
         savedEntity.setStatus(entity.getStatus());
         savedEntity.setStatusReason(entity.getStatusReason());
         savedEntity.setRetryCount(entity.getRetryCount());
-        savedEntity.setSentDate(entity.getSentDate());
+        savedEntity.setSentTime(entity.getSentTime());
         savedEntity.setIsResend(entity.getIsResend());
         savedEntity.setUpdatedTime(new Date());
         savedEntity.setUpdatedBy("internal system");

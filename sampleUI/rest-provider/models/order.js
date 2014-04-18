@@ -28,5 +28,10 @@ var OrderItemModel = function(){
     this.quantity = 1;
 };
 
-exports.OrderModel = OrderModel;
-exports.OrderItemModel = OrderItemModel;
+if(typeof(window) != "undefined"){
+    Module.Load(window, "Models.Order.OrderModel", OrderModel);
+    Module.Load(window, "Models.Order.OrderItemModel", OrderItemModel);
+}else{
+    exports.OrderModel = OrderModel;
+    exports.OrderItemModel = OrderItemModel;
+}

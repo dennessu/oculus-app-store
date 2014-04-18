@@ -1,0 +1,62 @@
+{
+    "type": "DIGITAL",
+    "item": {"href": "https://api.oculusvr.com/v1/items/000001B58000", "id": "000001B58000"},
+    "developer": {"href": "https://api.oculusvr.com/v1/users/1234", "id": "1234"},
+    "status": "DRAFT",
+    "name": {
+        "DEFAULT":"Angry Bird",
+        "en_US":"Angry Bird",
+        "zh_CN":"愤怒的小鸟"
+    },
+    "artwork": "main image address",
+    "revisionNotes": {
+        "DEFAULT":"fix some bugs",
+        "en_US":"fix some bugs"
+    },
+    "description": {
+        "DEFAULT":"descriptions",
+        "en_US":"descriptions"
+    },
+    "digitalProperties":{
+        "version": "1.0.0",
+        "minimumSystemRequirements": {
+            "DEFAULT":"minimumSystemRequirements",
+            "en_US":"minimumSystemRequirements"
+        },
+        "recommendedSystemRequirements":  {
+            "DEFAULT":"recommendedSystemRequirements",
+            "en_US":"recommendedSystemRequirements"
+        },
+        "gameModes": "SinglePlayer",
+        "supportedInputDevices": ["Keyboard", "Mouse"],
+        "platforms": ["Mac", "PC", "Linux"],
+        "rollupPackageName": "Used to uniquely identify the item (app), used mainly for android",
+        "legalInformation": {
+            "DEFAULT":"legalInformation",
+            "en_US":"legalInformation"
+        },
+        "credits": {
+            "DEFAULT":"credits",
+            "en_US":"credits"
+        },
+        "copyright": {
+            "DEFAULT":"copyright",
+            "en_US":"copyright"
+        },
+        "knownBugs": {
+            "DEFAULT":"knownBugs",
+            "en_US":"knownBugs"
+        },
+        "rating": {"href": "https://api.oculusvr.com/v1/ratings/223", "id": "223"},
+        "downloadLink": "download address for the app binary"
+    },
+    "physicalProperties": {},
+    "ewalletProperties": {},
+    "website": "the external website for the item",
+    "supportEmail": "support email",
+    "images":["http://image1.address","http://image2.address"],
+    "videos":["http://video1.address","http://video2.address"],
+    "manualDocument": "the pdf address",
+    "communityForumLink": "community forum link",
+    "rev": 1
+}

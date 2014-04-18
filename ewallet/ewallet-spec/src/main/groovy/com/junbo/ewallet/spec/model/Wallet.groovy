@@ -16,7 +16,7 @@ import groovy.transform.CompileStatic
  * Wallet Entity.
  */
 @CompileStatic
-@JsonPropertyOrder(['walletId', 'userId', 'type', 'currency', 'balance', 'status', 'transactions'])
+@JsonPropertyOrder(['walletId', 'userId', 'type', 'currency', 'balance', 'status'])
 @JsonInclude(JsonInclude.Include.NON_NULL)
 class Wallet {
     @WalletId
@@ -30,5 +30,4 @@ class Wallet {
     String status
     String currency
     BigDecimal balance
-    List<Transaction> transactions
 }

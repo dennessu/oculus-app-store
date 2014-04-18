@@ -13,6 +13,7 @@ public class LinkedEntry {
     private Long id;
     private Integer quantity;
     private String sku;
+    private Long timestamp;
 
     public CatalogEntityType getEntityType() {
         return entityType;
@@ -44,5 +45,13 @@ public class LinkedEntry {
 
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
+    }
+
+    public Long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Long timestamp) {
+        this.timestamp = timestamp;
     }
 }

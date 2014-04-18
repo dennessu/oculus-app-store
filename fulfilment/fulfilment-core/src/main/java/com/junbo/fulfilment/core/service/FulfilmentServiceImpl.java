@@ -57,7 +57,7 @@ public class FulfilmentServiceImpl extends TransactionSupport implements Fulfilm
     @Transactional
     public FulfilmentRequest fulfill(FulfilmentRequest request) {
         // check tracking GUID
-        Long requestId = fulfilmentRequestRepo.existTrackingGuid(request.getTrackingGuid());
+        Long requestId = fulfilmentRequestRepo.existTrackingGuid(request.getUserId(), request.getTrackingGuid());
         if (requestId != null) {
             return retrieveRequest(requestId);
         }
@@ -237,8 +237,10 @@ public class FulfilmentServiceImpl extends TransactionSupport implements Fulfilm
             fulfilmentAction.setProperties(action.getProperties());
             fulfilmentAction.setCopyCount(copyCount);
 
-            if (Utils.equals(FulfilmentActionType.DELIVER_PHYSICAL_GOODS, action.getType())) {
-                fulfilmentAction.setItems(offer.getItems());
+            // copy items to fulfilment action
+            fulfilmentAction.setItems(offer.getItems());
+            for (LinkedEntry entry : fulfilmentAction.getItems()) {
+                entry.setTimestamp(fulfilmentItem.getTimestamp());
             }
 
             fulfilmentItem.addFulfilmentAction(fulfilmentAction);

@@ -34,17 +34,18 @@ public class UserSecurityQuestionVerifyAttempt extends ResourceMeta
     @ApiModelProperty(position = 3, required = true, value = "User security question answer.")
     private String value;
 
-    @ApiModelProperty(position = 4, required = true, value = "The ip address of the verify attempt caller.")
+    @ApiModelProperty(position = 4, required = false, value = "The ip address of the verify attempt caller.")
     private String ipAddress;
 
-    @ApiModelProperty(position = 5, required = true, value = "The user agent of the verify attempt caller.")
+    @ApiModelProperty(position = 5, required = false, value = "The user agent of the verify attempt caller.")
     private String userAgent;
 
-    @ApiModelProperty(position = 6, required = true, value = "The client id of the verify attempt caller.")
+    @ApiModelProperty(position = 6, required = false, value = "The client id of the verify attempt caller.")
     private String clientId;
 
     // read only
     @ApiModelProperty(position = 7, required = false, value = "Whether the attempt is success.")
+    @JsonProperty("isSuccess")
     private Boolean succeeded;
 
     public UserSecurityQuestionVerifyAttemptId getId() {
@@ -119,5 +120,6 @@ public class UserSecurityQuestionVerifyAttempt extends ResourceMeta
     public void setSucceeded(Boolean succeeded) {
         this.succeeded = succeeded;
         support.setPropertyAssigned("succeeded");
+        support.setPropertyAssigned("isSuccess");
     }
 }

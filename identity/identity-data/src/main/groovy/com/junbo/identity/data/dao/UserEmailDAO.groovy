@@ -14,7 +14,7 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 interface UserEmailDAO {
-    UserEmailEntity save(UserEmailEntity entity)
+    UserEmailEntity create(UserEmailEntity entity)
 
     UserEmailEntity update(UserEmailEntity entity)
 

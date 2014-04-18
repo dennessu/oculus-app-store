@@ -12,7 +12,6 @@ var WelcomeModel = function(){
         "accountname": ""
     };
 };
-
 var DevAccountModel = function(){
     this.source = "Oculus";
     this.action = "ActiveDevAccount";
@@ -25,5 +24,10 @@ var DevAccountModel = function(){
     };
 };
 
-exports.WelcomeModel = WelcomeModel;
-exports.DevAccountModel = DevAccountModel;
+if(typeof(window) != "undefined"){
+    Module.Load(window, "Models.Email.WelcomeModel", WelcomeModel);
+    Module.Load(window, "Models.Email.DevAccountModel", DevAccountModel);
+}else{
+    exports.WelcomeModel = WelcomeModel;
+    exports.DevAccountModel = DevAccountModel;
+}

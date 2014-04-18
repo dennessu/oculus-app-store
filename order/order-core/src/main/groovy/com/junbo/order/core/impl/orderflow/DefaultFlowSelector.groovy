@@ -49,6 +49,9 @@ class DefaultFlowSelector implements FlowSelector {
         switch (operation) {
             case OrderServiceOperation.CREATE:
             case OrderServiceOperation.SETTLE_TENTATIVE:
+                if (CoreUtils.isFreeOrder(context.order)) {
+                    return Promise.pure(FlowType.FREE_SETTLE.name())
+                }
                 return selectSettleOrderFlow(context)
             case OrderServiceOperation.CREATE_TENTATIVE:
                 return Promise.pure(FlowType.RATE_ORDER.name())

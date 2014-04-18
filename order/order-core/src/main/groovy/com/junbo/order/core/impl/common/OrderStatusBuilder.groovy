@@ -40,6 +40,8 @@ class OrderStatusBuilder {
 
         if (isOrderFulfilled(orderEvents) && isOrderCharged(orderEvents)) { return OrderStatus.COMPLETED }
 
+        if (isOrderFulfilled(orderEvents) && CoreUtils.isFreeOrder(order)) { return OrderStatus.COMPLETED }
+
         if (isOrderFulfilled(orderEvents)) { return OrderStatus.FULFILLED }
 
         if (isOrderPendingFulfill(orderEvents)) { return OrderStatus.PENDING_FULFILL }
