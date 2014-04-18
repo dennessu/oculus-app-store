@@ -9,6 +9,7 @@ package com.junbo.ewallet.db.dao;
 import com.junbo.ewallet.db.entity.TransactionEntity;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Interface of TransactionDao.
@@ -19,4 +20,6 @@ public interface TransactionDao {
     TransactionEntity insert(TransactionEntity transactionEntity);
 
     List<TransactionEntity> getByWalletId(Long walletId);
+
+    TransactionEntity getByTrackingUuid(Long shardMasterId, UUID uuid);
 }
