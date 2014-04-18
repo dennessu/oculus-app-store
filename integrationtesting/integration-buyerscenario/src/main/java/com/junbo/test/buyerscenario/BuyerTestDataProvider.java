@@ -149,6 +149,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider{
 
         ArrayList<Long> admins = new ArrayList<>();
         admins.add(IdConverter.hexStringToId(UserId.class,uid));
+        paymentInstrument.setAdmins(admins);
         paymentInstrument.setAccountName(creditCardInfo.getAccountName());
         paymentInstrument.setAccountNum(creditCardInfo.getAccountNum());
         //paymentInstrument.setAccountNum(creditCardInfo.getAccountNum());
