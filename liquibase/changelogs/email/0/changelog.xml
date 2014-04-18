@@ -21,7 +21,7 @@
                 status_reason varchar(256),
                 retry_count smallint,
                 priority smallint,
-                sent_date date,
+                sent_time timestamp,
                 is_resend boolean,
 
                 created_by varchar(32),
@@ -43,7 +43,7 @@
                 payload varchar(4000),
                 recipients varchar(512),
                 priority smallint,
-                schedule_time date,
+                schedule_time timestamp,
 
                 created_by varchar(32),
                 created_time timestamp,

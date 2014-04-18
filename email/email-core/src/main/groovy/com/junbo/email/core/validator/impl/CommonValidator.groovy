@@ -63,8 +63,8 @@ class CommonValidator {
         if (email.statusReason != null) {
             throw AppErrors.INSTANCE.unnecessaryField('statusReason').exception()
         }
-        if (email.sentDate != null) {
-            throw AppErrors.INSTANCE.unnecessaryField('sentDate').exception()
+        if (email.sentTime != null) {
+            throw AppErrors.INSTANCE.unnecessaryField('sentTime').exception()
         }
         if (email.retryCount != null) {
             throw AppErrors.INSTANCE.unnecessaryField('retryCount').exception()

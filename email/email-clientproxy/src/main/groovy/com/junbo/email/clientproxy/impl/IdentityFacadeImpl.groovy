@@ -29,11 +29,15 @@ class IdentityFacadeImpl implements IdentityFacade {
     @Resource(name = 'emailIdentityUserClient')
     private UserResource userResource
 
-    @Resource(name='emailIdenityUserPiiClient')
+    @Resource(name='emailIdentityUserPiiClient')
     private UserPiiResource userPiiResource
 
     Promise<User> getUser(Long userId) {
-        userResource.get(new UserId(userId), new UserGetOptions())
+        userResource.get(new UserId(userId), new UserGetOptions()).recover {
+            throw AppErrors.INSTANCE.invalidUserId('').exception()
+        }.then {
+            return Promise.pure(it)
+        }
     }
 
     Promise<UserPii>  getUserPii(Long userId) {
@@ -43,10 +47,10 @@ class IdentityFacadeImpl implements IdentityFacade {
             throw AppErrors.INSTANCE.invalidUserId('').exception()
         }.then {
             def userPii = it as Results<UserPii>
-            if (userPii != null) {
-                return userPii.items.get(0)
+            if (userPii?.items?.size() != 0) {
+                return Promise.pure(userPii.items.get(0))
             }
-            return null
+            return Promise.pure(null)
         }
     }
 }

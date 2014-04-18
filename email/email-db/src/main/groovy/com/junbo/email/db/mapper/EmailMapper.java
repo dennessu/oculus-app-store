@@ -30,7 +30,7 @@ public class EmailMapper {
             return null;
         }
         Email email =Utils.toObject(entity.getPayload(),Email.class);
-        email.setSentDate(entity.getSentDate());
+        email.setSentTime(entity.getSentTime());
         email.setId(new EmailId(entity.getId()));
         email.setPriority(entity.getPriority());
         email.setRetryCount(entity.getRetryCount());
@@ -62,7 +62,7 @@ public class EmailMapper {
         entity.setStatus(toEmailStatus(email.getStatus()));
         entity.setRecipients(Utils.toJson(email.getRecipients()));
         entity.setStatusReason(email.getStatusReason());
-        entity.setSentDate(email.getSentDate());
+        entity.setSentTime(email.getSentTime());
         entity.setRetryCount(email.getRetryCount());
         entity.setIsResend(email.getIsResend());
 

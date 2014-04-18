@@ -11,12 +11,14 @@ import com.junbo.email.spec.model.Email;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.transaction.Transactional;
 import java.util.Date;
 
 /**
  * Repository of EmailHistory.
  */
 @Component
+@Transactional
 public class EmailHistoryRepository extends EmailBaseRepository {
     @Autowired
     private EmailHistoryDao emailHistoryDao;
@@ -27,7 +29,7 @@ public class EmailHistoryRepository extends EmailBaseRepository {
         savedEntity.setStatus(entity.getStatus());
         savedEntity.setStatusReason(entity.getStatusReason());
         savedEntity.setRetryCount(entity.getRetryCount());
-        savedEntity.setSentDate(entity.getSentDate());
+        savedEntity.setSentTime(entity.getSentTime());
         savedEntity.setIsResend(entity.getIsResend());
         savedEntity.setUpdatedTime(new Date());
         savedEntity.setUpdatedBy("internal system");

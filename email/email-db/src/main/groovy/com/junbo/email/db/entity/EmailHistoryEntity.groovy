@@ -50,8 +50,8 @@ class EmailHistoryEntity extends BaseEntity {
     @Column(name = 'priority')
     private Integer priority
 
-    @Column(name = 'sent_date')
-    private Date sentDate
+    @Column(name = 'sent_time')
+    private Date sentTime
 
     @Column(name = 'is_resend')
     private Boolean isResend
@@ -144,12 +144,12 @@ class EmailHistoryEntity extends BaseEntity {
         this.priority = priority
     }
 
-    Date getSentDate() {
-        return sentDate
+    Date getSentTime() {
+        return sentTime
     }
 
-    void setSentDate(Date sentDate) {
-        this.sentDate = sentDate
+    void setSentTime(Date sentTime) {
+        this.sentTime = sentTime
     }
 
     Boolean getIsResend() {

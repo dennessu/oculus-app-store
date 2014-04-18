@@ -32,6 +32,7 @@
         <property name="key" value="${email.client.mandrill.key}"/>
     </bean>
 
+    <bean id="identityFacade" class="com.junbo.email.clientproxy.impl.IdentityFacadeImpl"/>
     <bean id="mockIdentityFacade" class="com.junbo.email.clientproxy.mock.MockIdentityFacadeImpl"/>
 
 </beans>

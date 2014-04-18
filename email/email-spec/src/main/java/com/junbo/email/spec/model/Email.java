@@ -18,7 +18,7 @@ import java.util.Map;
  * Email model.
  */
 @JsonPropertyOrder(value = {"self","user","source","action","locale","type","recipients","status","statusReason",
-        "retryCount","priority","sentDate","isResend","scheduleTime","replacements","createdTime","modifiedTime"})
+        "retryCount","priority","sentTime","isResend","scheduleTime","replacements","createdTime","modifiedTime"})
 public class Email extends Model{
     @JsonProperty("self")
     private EmailId id;
@@ -42,7 +42,7 @@ public class Email extends Model{
 
     private Integer priority;
 
-    private Date sentDate;
+    private Date sentTime;
 
     private Boolean isResend;
 
@@ -130,12 +130,12 @@ public class Email extends Model{
         this.priority = priority;
     }
 
-    public Date getSentDate() {
-        return sentDate;
+    public Date getSentTime() {
+        return sentTime;
     }
 
-    public void setSentDate(Date sentDate) {
-        this.sentDate = sentDate;
+    public void setSentTime(Date sentTime) {
+        this.sentTime = sentTime;
     }
 
     public Boolean getIsResend() {
