@@ -10,11 +10,11 @@
     <tx:annotation-driven/>
 
     <!-- payment method serivce -->
-    <bean id="paymentInstrumentService" class="com.junbo.payment.core.impl.PaymentInstrumentServiceImpl">
-    </bean>
+    <bean id="paymentInstrumentService" class="com.junbo.payment.core.impl.PaymentInstrumentServiceImpl"></bean>
 
-    <bean id="paymentService" class="com.junbo.payment.core.impl.PaymentTransactionServiceImpl">
-    </bean>
+    <bean id="paymentService" class="com.junbo.payment.core.impl.PaymentTransactionServiceImpl"></bean>
+
+    <bean id="paymentCallbackService" class="com.junbo.payment.core.impl.PaymentCallbackServiceImpl"></bean>
 
     <bean id="brainTreePaymentProviderService" class="com.junbo.payment.core.provider.braintree.BrainTreePaymentProviderServiceImpl">
         <property name="environment" value="${payment.provider.braintree.environment}"/>
@@ -42,6 +42,7 @@
             <util:map id="handlerRegistryMap">
                 <entry key="BrainTree" value-ref="brainTreeRestProviderService"/>
                 <entry key="Wallet" value-ref="walletProviderService"/>
+                <entry key="PayPal" value-ref="paypalProviderService"/>
             </util:map>
         </property>
     </bean>
