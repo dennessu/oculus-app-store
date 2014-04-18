@@ -1,5 +1,10 @@
 #!/bin/sh
 source "$(git rev-parse --show-toplevel)/scripts/common.sh"; # this comment is needed, see common.sh for detail
 
-./setupdb.sh
-./build.sh clean build install
+python ./scripts/couchdbcmd.py dropall --yes
+pushd liquibase
+./dropdb.sh
+./createdb.sh
+./updatedb.sh
+popd
+
