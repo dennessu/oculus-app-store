@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired
  * Implementation for UserDeviceDAO.
  */
 @CompileStatic
-class UserDeviceRepositoryImpl implements UserDeviceRepository {
+class UserDeviceRepositorySqlImpl implements UserDeviceRepository {
     @Autowired
     private UserDeviceDAO userDeviceDAO
 

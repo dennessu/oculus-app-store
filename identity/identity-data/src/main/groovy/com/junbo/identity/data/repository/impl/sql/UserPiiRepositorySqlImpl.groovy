@@ -30,7 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired
  * Created by liangfu on 4/10/14.
  */
 @CompileStatic
-class UserPiiRepositoryImpl implements UserPiiRepository {
+class UserPiiRepositorySqlImpl implements UserPiiRepository {
 
     @Autowired
     private ModelMapper modelMapper

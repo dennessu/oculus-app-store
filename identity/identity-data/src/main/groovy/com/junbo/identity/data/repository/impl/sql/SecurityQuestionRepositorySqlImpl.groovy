@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired
  * Created by liangfu on 3/16/14.
  */
 @CompileStatic
-class SecurityQuestionRepositoryImpl implements SecurityQuestionRepository {
+class SecurityQuestionRepositorySqlImpl implements SecurityQuestionRepository {
     @Autowired
     private SecurityQuestionDAO securityQuestionDAO
 

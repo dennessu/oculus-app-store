@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired
  * Created by liangfu on 3/17/14.
  */
 @CompileStatic
-class UserGroupRepositoryImpl implements UserGroupRepository {
+class UserGroupRepositorySqlImpl implements UserGroupRepository {
     @Autowired
     private UserGroupDAO userGroupDAO
 

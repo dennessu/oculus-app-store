@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired
  * Created by liangfu on 3/16/14.
  */
 @CompileStatic
-class UserPasswordRepositoryImpl implements UserPasswordRepository {
+class UserPasswordRepositorySqlImpl implements UserPasswordRepository {
     @Autowired
     private UserPasswordDAO userPasswordDAO
 

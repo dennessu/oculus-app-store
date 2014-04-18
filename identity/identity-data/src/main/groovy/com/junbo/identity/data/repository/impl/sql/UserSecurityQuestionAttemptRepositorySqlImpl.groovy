@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired
  * Created by liangfu on 3/25/14.
  */
 @CompileStatic
-class UserSecurityQuestionAttemptRepositoryImpl implements UserSecurityQuestionAttemptRepository {
+class UserSecurityQuestionAttemptRepositorySqlImpl implements UserSecurityQuestionAttemptRepository {
 
     @Autowired
     private UserSecurityQuestionAttemptDAO userSecurityQuestionAttemptDAO
