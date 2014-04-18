@@ -54,7 +54,7 @@ class UserPiiRepositoryImpl implements UserPiiRepository {
     Promise<UserPii> create(UserPii userPii) {
         UserPiiEntity entity = modelMapper.toUserPii(userPii, new MappingContext())
         entity = userPiiDAO.save(entity)
-        createPiiSubInfo(userPii)
+        fulfilPiiSubInfo(userPii)
         return get(new UserPiiId((Long)entity.id))
     }
 
@@ -63,7 +63,7 @@ class UserPiiRepositoryImpl implements UserPiiRepository {
         UserPiiEntity userPiiEntity = modelMapper.toUserPii(userPii, new MappingContext())
         userPiiDAO.update(userPiiEntity)
         deletePiiSubInfo((UserPiiId)userPii.id)
-        createPiiSubInfo(userPii)
+        fulfilPiiSubInfo(userPii)
 
         return get((UserPiiId)userPii.id)
     }
@@ -128,7 +128,7 @@ class UserPiiRepositoryImpl implements UserPiiRepository {
         return Promise.pure(null)
     }
 
-    private void createPiiSubInfo(UserPii userPii) {
+    private void fulfilPiiSubInfo(UserPii userPii) {
         if (userPii.name != null) {
             UserNameEntity userNameEntity = modelMapper.toUserName(userPii.name, new MappingContext())
             userNameEntity.setUserPiiId(((UserPiiId)userPii.id).value)
