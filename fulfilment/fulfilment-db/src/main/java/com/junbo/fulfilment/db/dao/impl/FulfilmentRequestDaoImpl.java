@@ -17,8 +17,8 @@ import java.util.UUID;
  * FulfilmentRequestDaoImpl.
  */
 public class FulfilmentRequestDaoImpl extends BaseDaoImpl<FulfilmentRequestEntity> implements FulfilmentRequestDao {
-    public FulfilmentRequestEntity findByTrackingGuid(final String trackingGuid) {
-        return findBy(new Action<Criteria>() {
+    public FulfilmentRequestEntity findByTrackingGuid(Long userId, final String trackingGuid) {
+        return findBy(userId, new Action<Criteria>() {
             public void apply(Criteria criteria) {
                 criteria.add(Restrictions.eq("trackingGuid", UUID.fromString(trackingGuid)));
             }
@@ -27,7 +27,7 @@ public class FulfilmentRequestDaoImpl extends BaseDaoImpl<FulfilmentRequestEntit
 
     @Override
     public FulfilmentRequestEntity findByOrderId(final Long billingOrderId) {
-        return findBy(new Action<Criteria>() {
+        return findBy(billingOrderId, new Action<Criteria>() {
             public void apply(Criteria criteria) {
                 criteria.add(Restrictions.eq("orderId", billingOrderId));
             }

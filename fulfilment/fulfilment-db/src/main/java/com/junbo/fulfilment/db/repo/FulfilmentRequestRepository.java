@@ -32,8 +32,8 @@ public class FulfilmentRequestRepository {
         return entity == null ? null : entity.getId();
     }
 
-    public Long existTrackingGuid(String trackingGuid) {
-        FulfilmentRequestEntity entity = fulfilmentRequestDao.findByTrackingGuid(trackingGuid);
+    public Long existTrackingGuid(Long userId, String trackingGuid) {
+        FulfilmentRequestEntity entity = fulfilmentRequestDao.findByTrackingGuid(userId, trackingGuid);
         return entity == null ? null : entity.getId();
     }
 }
