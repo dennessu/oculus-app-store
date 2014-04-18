@@ -20,7 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired
  * Created by xiali_000 on 4/8/2014.
  */
 @CompileStatic
-class DeviceRepositoryImpl implements DeviceRepository {
+class DeviceRepositorySqlImpl implements DeviceRepository {
 
     @Autowired
     private DeviceDAO deviceDAO

@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired
  * Implementation for UserOptinDAO.
  */
 @CompileStatic
-class UserOptinRepositoryImpl implements UserOptinRepository {
+class UserOptinRepositorySqlImpl implements UserOptinRepository {
     @Autowired
     private UserOptinDAO userOptinDAO
 

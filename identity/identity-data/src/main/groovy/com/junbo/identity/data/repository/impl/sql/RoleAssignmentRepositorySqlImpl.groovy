@@ -16,10 +16,10 @@ import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 
 /**
- * RoleAssignmentRepositoryImpl.
+ * RoleAssignmentRepositorySqlImpl.
  */
 @CompileStatic
-class RoleAssignmentRepositoryImpl implements RoleAssignmentRepository {
+class RoleAssignmentRepositorySqlImpl implements RoleAssignmentRepository {
     private RoleAssignmentDAO roleAssignmentDAO
 
     @Required

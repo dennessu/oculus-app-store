@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired
  * Created by liangfu on 4/9/14.
  */
 @CompileStatic
-class TosRepositoryImpl implements TosRepository {
+class TosRepositorySqlImpl implements TosRepository {
 
     // todo:    Liangfu:    In fact here we don't want any db, we just want to use cdn to store tos
     // So we just implement the simplest case here
