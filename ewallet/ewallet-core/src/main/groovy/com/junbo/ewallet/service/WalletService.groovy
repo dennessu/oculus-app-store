@@ -1,6 +1,7 @@
 package com.junbo.ewallet.service
 import com.junbo.ewallet.spec.model.CreditRequest
 import com.junbo.ewallet.spec.model.DebitRequest
+import com.junbo.ewallet.spec.model.Transaction
 import com.junbo.ewallet.spec.model.Wallet
 import groovy.transform.CompileStatic
 /*
@@ -20,11 +21,13 @@ interface WalletService {
 
     Wallet update(Long walletId, Wallet wallet)
 
-    Wallet credit(CreditRequest creditRequest)
+    Transaction credit(CreditRequest creditRequest)
 
-    Wallet debit(Long walletId, DebitRequest debitRequest)
+    Transaction debit(Long walletId, DebitRequest debitRequest)
 
-    Wallet getTransactions(Long walletId)
+    List<Transaction> getTransactions(Long walletId)
 
-    Wallet getByTrackingUuid(Long shardMasterId, UUID trackingUuid)
+    Wallet getWalletByTrackingUuid(Long shardMasterId, UUID trackingUuid)
+
+    Transaction getTransactionByTrackingUuid(Long shardMasterId, UUID trackingUuid)
 }

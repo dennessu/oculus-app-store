@@ -11,5 +11,6 @@
     <bean id="defaultPaymentTransactionResource" class="com.junbo.payment.rest.resource.PaymentTransactionResourceImpl" scope="prototype"/>
     <bean id="defaultBrainTreeResource" class="com.junbo.payment.rest.resource.BrainTreeResourceImpl" scope="prototype"/>
     <bean id="defaultPaymentInstrumentTypeResource" class="com.junbo.payment.rest.resource.PaymentInstrumentTypeResourceImpl" scope="prototype"/>
+    <bean id="defaultPaymentCallbackResource" class="com.junbo.payment.rest.resource.PaymentCallbackResourceImpl" scope="prototype"/>
 
 </beans>

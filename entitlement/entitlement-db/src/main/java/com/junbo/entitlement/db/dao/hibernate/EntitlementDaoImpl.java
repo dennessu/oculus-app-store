@@ -8,6 +8,7 @@ package com.junbo.entitlement.db.dao.hibernate;
 
 import com.junbo.common.id.EntitlementDefinitionId;
 import com.junbo.common.id.OfferId;
+import com.junbo.entitlement.common.def.EntitlementConsts;
 import com.junbo.entitlement.common.def.Function;
 import com.junbo.entitlement.common.lib.CommonUtils;
 import com.junbo.entitlement.common.lib.EntitlementContext;
@@ -19,7 +20,9 @@ import com.junbo.entitlement.spec.model.EntitlementSearchParam;
 import com.junbo.entitlement.spec.model.PageMetadata;
 import org.hibernate.Query;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
+import java.text.ParseException;
 import java.util.*;
 
 /**
@@ -35,7 +38,11 @@ public class EntitlementDaoImpl extends BaseDao<EntitlementEntity> implements En
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("userId", entitlementSearchParam.getUserId().getValue());
 
-        addSearchParam(entitlementSearchParam, queryStringBuilder, params);
+        try {
+            addSearchParam(entitlementSearchParam, queryStringBuilder, params);
+        } catch (ParseException e) {
+            //just ignore. This is checked in service layer.
+        }
         Query q = currentSession(entitlementSearchParam.getUserId().getValue()).createSQLQuery(
                 queryStringBuilder.toString()).addEntity(EntitlementEntity.class);
         q = addPageMeta(addParams(q, params), pageMetadata);
@@ -44,7 +51,7 @@ public class EntitlementDaoImpl extends BaseDao<EntitlementEntity> implements En
 
     private void addSearchParam(EntitlementSearchParam entitlementSearchParam,
                                 StringBuilder queryStringBuilder,
-                                Map<String, Object> params) {
+                                Map<String, Object> params) throws ParseException {
         if (CommonUtils.isNotNull(entitlementSearchParam.getDeveloperId())) {
             addSingleParam("developer_id", "developerId",
                     entitlementSearchParam.getDeveloperId().getValue(),
@@ -112,25 +119,31 @@ public class EntitlementDaoImpl extends BaseDao<EntitlementEntity> implements En
                             }),
                     queryStringBuilder, params);
         }
-        addSingleParam("grant_time", "startGrantTime",
-                entitlementSearchParam.getStartGrantTime(),
-                ">=", queryStringBuilder, params);
-        if (CommonUtils.isNotNull(entitlementSearchParam.getEndGrantTime())) {
+        if (!StringUtils.isEmpty(entitlementSearchParam.getStartGrantTime())) {
+            addSingleParam("grant_time", "startGrantTime",
+                    EntitlementConsts.DATE_FORMAT.parse(entitlementSearchParam.getStartGrantTime()),
+                    ">=", queryStringBuilder, params);
+        }
+        if (!StringUtils.isEmpty(entitlementSearchParam.getEndGrantTime())) {
             addSingleParam("grant_time", "endGrantTime",
-                    new Date(entitlementSearchParam.getEndGrantTime().getTime() + 1 * 24 * 3600 * 1000),
+                    EntitlementConsts.DATE_FORMAT.parse(entitlementSearchParam.getEndGrantTime()),
                     "<=", queryStringBuilder, params);
         }
-        addSingleParam("expiration_time", "startExpirationTime",
-                entitlementSearchParam.getStartExpirationTime(),
-                ">=", queryStringBuilder, params);
-        if (CommonUtils.isNotNull(entitlementSearchParam.getEndExpirationTime())) {
+        if (!StringUtils.isEmpty(entitlementSearchParam.getStartExpirationTime())) {
+            addSingleParam("expiration_time", "startExpirationTime",
+                    EntitlementConsts.DATE_FORMAT.parse(entitlementSearchParam.getStartExpirationTime()),
+                    ">=", queryStringBuilder, params);
+        }
+        if (!StringUtils.isEmpty(entitlementSearchParam.getEndExpirationTime())) {
             addSingleParam("expiration_time", "endExpirationTime",
-                    new Date(entitlementSearchParam.getEndExpirationTime().getTime() + 1 * 24 * 3600 * 1000),
+                    EntitlementConsts.DATE_FORMAT.parse(entitlementSearchParam.getEndExpirationTime()),
                     "<=", queryStringBuilder, params);
         }
-        addSingleParam("modified_time", "lastModifiedTime",
-                entitlementSearchParam.getLastModifiedTime(),
-                ">=", queryStringBuilder, params);
+        if (!StringUtils.isEmpty(entitlementSearchParam.getLastModifiedTime())) {
+            addSingleParam("modified_time", "lastModifiedTime",
+                    EntitlementConsts.DATE_FORMAT.parse(entitlementSearchParam.getLastModifiedTime()),
+                    ">=", queryStringBuilder, params);
+        }
     }
 
 

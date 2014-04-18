@@ -107,8 +107,8 @@ public class BillingTesting extends BaseTestClass {
                     "4, Validation: response"
             }
     )
-    @Test
-    public void testGetBalanceByBalanceId() throws Exception {
+      @Test
+      public void testGetBalanceByBalanceId() throws Exception {
         ArrayList<String> offerList = new ArrayList<>();
         offerList.add(offer_digital_normal1);
         offerList.add(offer_digital_normal2);
@@ -126,6 +126,32 @@ public class BillingTesting extends BaseTestClass {
 
         //TODO Validate response
     }
+
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "POST /user/userid/ship-to-info",
+            component = Component.Billing,
+            owner = "Yunlongzhao",
+            status = Status.Enable,
+            description = "post shipping address",
+            steps = {
+                    "1. Create a user",
+                    "2. Post shipping address to user",
+                    "3, Validation: response"
+            }
+    )
+    @Test
+    public void testPostShippingAddress() throws Exception {
+        String randomUid = testDataProvider.CreateUser();
+
+        //TODO Validate response
+    }
+
+
+
+
+
 
 
 
