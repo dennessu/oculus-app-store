@@ -46,29 +46,29 @@
     <bean id="addressDAO" class="com.junbo.identity.data.dao.impl.AddressDAOImpl" parent="identityBaseDAO" />
     <bean id="userAddressDAO" class="com.junbo.identity.data.dao.impl.UserAddressDAOImpl" parent="identityBaseDAO" />
 
-    <bean id="groupRepository" class="com.junbo.identity.data.repository.impl.GroupRepositoryImpl" />
-    <bean id="userAuthenticatorRepository" class="com.junbo.identity.data.repository.impl.UserAuthenticatorRepositoryImpl" />
-    <bean id="userDeviceRepository" class="com.junbo.identity.data.repository.impl.UserDeviceRepositoryImpl" />
-    <bean id="userGroupRepository" class="com.junbo.identity.data.repository.impl.UserGroupRepositoryImpl" />
-    <bean id="userCredentialVerifyAttemptRepository" class="com.junbo.identity.data.repository.impl.UserCredentialVerifyAttemptRepositoryImpl" />
-    <bean id="userOptinRepository" class="com.junbo.identity.data.repository.impl.UserOptinRepositoryImpl" />
-    <bean id="userPasswordRepository" class="com.junbo.identity.data.repository.impl.UserPasswordRepositoryImpl" />
-    <bean id="userPinRepository" class="com.junbo.identity.data.repository.impl.UserPinRepositoryImpl" />
-    <bean id="userRepository" class="com.junbo.identity.data.repository.impl.UserRepositoryImpl" />
-    <bean id="userSecurityQuestionRepository" class="com.junbo.identity.data.repository.impl.UserSecurityQuestionRepositoryImpl" />
-    <bean id="userTosRepository" class="com.junbo.identity.data.repository.impl.UserTosRepositoryImpl" />
-    <bean id="securityQuestionRepository" class="com.junbo.identity.data.repository.impl.SecurityQuestionRepositoryImpl"/>
-    <bean id="userSecurityQuestionAttemptRepository" class="com.junbo.identity.data.repository.impl.UserSecurityQuestionAttemptRepositoryImpl" />
-    <bean id="deviceRepository" class="com.junbo.identity.data.repository.impl.DeviceRepositoryImpl" />
-    <bean id="tosRepository" class="com.junbo.identity.data.repository.impl.TosRepositoryImpl" />
-    <bean id="roleRepository" class="com.junbo.identity.data.repository.impl.RoleRepositoryImpl">
+    <bean id="groupRepository" class="com.junbo.identity.data.repository.impl.sql.GroupRepositoryImpl" />
+    <bean id="userAuthenticatorRepository" class="com.junbo.identity.data.repository.impl.sql.UserAuthenticatorRepositoryImpl" />
+    <bean id="userDeviceRepository" class="com.junbo.identity.data.repository.impl.sql.UserDeviceRepositoryImpl" />
+    <bean id="userGroupRepository" class="com.junbo.identity.data.repository.impl.sql.UserGroupRepositoryImpl" />
+    <bean id="userCredentialVerifyAttemptRepository" class="com.junbo.identity.data.repository.impl.sql.UserCredentialVerifyAttemptRepositoryImpl" />
+    <bean id="userOptinRepository" class="com.junbo.identity.data.repository.impl.sql.UserOptinRepositoryImpl" />
+    <bean id="userPasswordRepository" class="com.junbo.identity.data.repository.impl.sql.UserPasswordRepositoryImpl" />
+    <bean id="userPinRepository" class="com.junbo.identity.data.repository.impl.sql.UserPinRepositoryImpl" />
+    <bean id="userRepository" class="com.junbo.identity.data.repository.impl.sql.UserRepositoryImpl" />
+    <bean id="userSecurityQuestionRepository" class="com.junbo.identity.data.repository.impl.sql.UserSecurityQuestionRepositoryImpl" />
+    <bean id="userTosRepository" class="com.junbo.identity.data.repository.impl.sql.UserTosRepositoryImpl" />
+    <bean id="securityQuestionRepository" class="com.junbo.identity.data.repository.impl.sql.SecurityQuestionRepositoryImpl"/>
+    <bean id="userSecurityQuestionAttemptRepository" class="com.junbo.identity.data.repository.impl.sql.UserSecurityQuestionAttemptRepositoryImpl" />
+    <bean id="deviceRepository" class="com.junbo.identity.data.repository.impl.sql.DeviceRepositoryImpl" />
+    <bean id="tosRepository" class="com.junbo.identity.data.repository.impl.sql.TosRepositoryImpl" />
+    <bean id="roleRepository" class="com.junbo.identity.data.repository.impl.sql.RoleRepositoryImpl">
         <property name="roleDAO" ref="roleDAO"/>
     </bean>
-    <bean id="roleAssignmentRepository" class="com.junbo.identity.data.repository.impl.RoleAssignmentRepositoryImpl">
+    <bean id="roleAssignmentRepository" class="com.junbo.identity.data.repository.impl.sql.RoleAssignmentRepositoryImpl">
         <property name="roleAssignmentDAO" ref="roleAssignmentDAO"/>
     </bean>
-    <bean id="userPiiRepository" class="com.junbo.identity.data.repository.impl.UserPiiRepositoryImpl" />
-    <bean id="addressRepository" class="com.junbo.identity.data.repository.impl.AddressRepositoryImpl" />
+    <bean id="userPiiRepository" class="com.junbo.identity.data.repository.impl.sql.UserPiiRepositoryImpl" />
+    <bean id="addressRepository" class="com.junbo.identity.data.repository.impl.sql.AddressRepositoryImpl" />
     
     <bean id="defaultEntityViewRepository" class="com.junbo.sharding.view.DefaultEntityViewRepository">
         <property name="entityViews">
