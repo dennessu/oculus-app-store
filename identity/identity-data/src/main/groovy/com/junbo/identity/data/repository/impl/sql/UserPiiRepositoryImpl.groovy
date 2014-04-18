@@ -1,4 +1,4 @@
-package com.junbo.identity.data.repository.impl
+package com.junbo.identity.data.repository.impl.sql
 
 import com.junbo.common.id.AddressId
 import com.junbo.common.id.UserPiiId
