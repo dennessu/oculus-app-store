@@ -14,7 +14,6 @@ public class Item {
     private Long itemId;
     private String sku;
 
-    private String ewalletCurrencyType;
     private BigDecimal ewalletAmount;
     private String ewalletCurrency;
 
@@ -32,14 +31,6 @@ public class Item {
 
     public void setSku(String sku) {
         this.sku = sku;
-    }
-
-    public String getEwalletCurrencyType() {
-        return ewalletCurrencyType;
-    }
-
-    public void setEwalletCurrencyType(String ewalletCurrencyType) {
-        this.ewalletCurrencyType = ewalletCurrencyType;
     }
 
     public BigDecimal getEwalletAmount() {
