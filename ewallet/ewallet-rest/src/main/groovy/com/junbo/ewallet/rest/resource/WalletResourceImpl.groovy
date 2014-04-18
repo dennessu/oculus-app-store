@@ -5,15 +5,19 @@
  */
 
 package com.junbo.ewallet.rest.resource
+
 import com.junbo.common.id.WalletId
+import com.junbo.common.model.Results
 import com.junbo.ewallet.service.WalletService
 import com.junbo.ewallet.spec.model.CreditRequest
 import com.junbo.ewallet.spec.model.DebitRequest
+import com.junbo.ewallet.spec.model.Transaction
 import com.junbo.ewallet.spec.model.Wallet
 import com.junbo.ewallet.spec.resource.WalletResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
+
 /**
  * WalletResource Impl.
  */
@@ -49,34 +53,44 @@ class WalletResourceImpl implements WalletResource {
     }
 
     @Override
-    Promise<Wallet> credit(CreditRequest creditRequest) {
-        Wallet existed = getByTrackingUuid(creditRequest.userId, creditRequest.trackingUuid)
+    Promise<Transaction> credit(CreditRequest creditRequest) {
+        Transaction existed = getTransactionByTrackingUuid(creditRequest.userId, creditRequest.trackingUuid)
         if (existed != null) {
             return Promise.pure(existed)
         }
-        Wallet result = walletService.credit(creditRequest)
+        Transaction result = walletService.credit(creditRequest)
         return Promise.pure(result)
     }
 
     @Override
-    Promise<Wallet> debit(WalletId walletId, DebitRequest debitRequest) {
-        Wallet existed = getByTrackingUuid(walletId.value, debitRequest.trackingUuid)
+    Promise<Transaction> debit(WalletId walletId, DebitRequest debitRequest) {
+        Transaction existed = getTransactionByTrackingUuid(walletId.value, debitRequest.trackingUuid)
         if (existed != null) {
             return Promise.pure(existed)
         }
-        Wallet result = walletService.debit(walletId.value, debitRequest)
+        Transaction result = walletService.debit(walletId.value, debitRequest)
         return Promise.pure(result)
     }
 
     @Override
-    Promise<Wallet> getTransactions(WalletId walletId) {
-        return Promise.pure(walletService.getTransactions(walletId.value))
+    Promise<Results<Transaction>> getTransactions(WalletId walletId) {
+        List<Transaction> transactions = walletService.getTransactions(walletId.value)
+        Results<Transaction> results = new Results<>()
+        results.setItems(transactions)
+        return Promise.pure(results)
     }
 
     private Wallet getByTrackingUuid(Long shardMasterId, UUID trackingUuid) {
         if (trackingUuid == null) {
             return null
         }
-        return walletService.getByTrackingUuid(shardMasterId, trackingUuid)
+        return walletService.getWalletByTrackingUuid(shardMasterId, trackingUuid)
+    }
+
+    private Transaction getTransactionByTrackingUuid(Long shardMasterId, UUID trackingUuid) {
+        if (trackingUuid == null) {
+            return null
+        }
+        return walletService.getTransactionByTrackingUuid(shardMasterId, trackingUuid)
     }
 }

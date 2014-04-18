@@ -17,5 +17,5 @@ interface UserNameDAO {
     UserNameEntity create(UserNameEntity entity)
     UserNameEntity update(UserNameEntity entity)
     void delete(Long id)
-    UserNameEntity findByUserId(Long userId)
+    UserNameEntity findByUserPiiId(Long userPiiId)
 }

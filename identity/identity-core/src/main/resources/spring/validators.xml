@@ -64,8 +64,40 @@
     <bean id="timezoneValidator" class="com.junbo.identity.core.service.validator.impl.TimezoneValidatorImpl">
         <property name="validTimezones">
             <list>
-                <value>Asia/Shanghai</value>
-                <value>America/Los_Angeles</value>
+                <value>UTC-12:00</value>
+                <value>UTC-11:00</value>
+                <value>UTC-10:00</value>
+                <value>UTC-09:00</value>
+                <value>UTC-08:00</value>
+                <value>UTC-07:00</value>
+                <value>UTC-06:00</value>
+                <value>UTC-05:00</value>
+                <value>UTC-04:30</value>
+                <value>UTC-04:00</value>
+                <value>UTC-03:30</value>
+                <value>UTC-03:00</value>
+                <value>UTC-02:00</value>
+                <value>UTC-01:00</value>
+                <value>UTC</value>
+                <value>UTC+01:00</value>
+                <value>UTC+02:00</value>
+                <value>UTC+03:00</value>
+                <value>UTC+03:30</value>
+                <value>UTC+04:00</value>
+                <value>UTC+04:30</value>
+                <value>UTC+05:00</value>
+                <value>UTC+05:30</value>
+                <value>UTC+05:45</value>
+                <value>UTC+06:00</value>
+                <value>UTC+06:30</value>
+                <value>UTC+07:00</value>
+                <value>UTC+08:00</value>
+                <value>UTC+09:00</value>
+                <value>UTC+09:30</value>
+                <value>UTC+10:00</value>
+                <value>UTC+11:00</value>
+                <value>UTC+12:00</value>
+                <value>UTC+13:00</value>
             </list>
         </property>
         <property name="defaultTimezone" value="America/Los_Angeles"/>

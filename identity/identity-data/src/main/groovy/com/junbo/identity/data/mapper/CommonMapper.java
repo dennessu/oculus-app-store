@@ -347,4 +347,18 @@ public class CommonMapper {
         }
         return id.getValue();
     }
+
+    Integer toInteger(String value) {
+        if(StringUtils.isEmpty(value)) {
+            return null;
+        }
+        return Integer.parseInt(value);
+    }
+
+    String toString(Integer value) {
+        if (value == null) {
+            return null;
+        }
+        return value.toString();
+    }
 }

@@ -5,8 +5,12 @@
  */
 package com.junbo.fulfilment.clientproxy;
 
+import com.junbo.ewallet.spec.model.CreditRequest;
+import com.junbo.ewallet.spec.model.Transaction;
+
 /**
  * WalletGateway.
  */
 public interface WalletGateway {
+    Transaction credit(CreditRequest request);
 }

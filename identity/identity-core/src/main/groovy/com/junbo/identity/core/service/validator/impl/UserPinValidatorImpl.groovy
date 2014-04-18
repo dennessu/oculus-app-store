@@ -89,9 +89,9 @@ class UserPinValidatorImpl implements UserPinValidator {
             throw AppErrors.INSTANCE.fieldInvalid('active').exception()
         }
 
-        userPin.setPinSalt(CipherHelper.generateCipherRandomStr(SALT_LENGTH))
-        userPin.setPinPepper(CipherHelper.generateCipherRandomStr(SALT_LENGTH))
-        userPin.setPinHash(CipherHelper.generateCipherHashV1(userPin.value, userPin.pinSalt, userPin.pinPepper))
+        String salt = CipherHelper.generateCipherRandomStr(SALT_LENGTH)
+        String pepper = CipherHelper.generateCipherRandomStr(SALT_LENGTH)
+        userPin.setPinHash(CipherHelper.generateCipherHashV1(userPin.value, salt, pepper))
         userPin.setUserId(userId)
         userPin.setActive(true)
 
@@ -117,8 +117,14 @@ class UserPinValidatorImpl implements UserPinValidator {
                 throw AppErrors.INSTANCE.userPinIncorrect().exception()
             }
 
-            if (CipherHelper.generateCipherHashV1(decryptPassword, userPinList.get(0).pinSalt,
-                    userPinList.get(0).pinPepper) != userPinList.get(0).pinHash) {
+            String[] hashInfo = userPinList.get(0).pinHash.split(CipherHelper.COLON)
+            if (hashInfo.length != 4) {
+                throw AppErrors.INSTANCE.userPinIncorrect().exception()
+            }
+            String salt = hashInfo[1]
+            String pepper = hashInfo[2]
+
+            if (CipherHelper.generateCipherHashV1(decryptPassword, salt, pepper) != userPinList.get(0).pinHash) {
                 throw AppErrors.INSTANCE.userPinIncorrect().exception()
             }
             return Promise.pure(null)

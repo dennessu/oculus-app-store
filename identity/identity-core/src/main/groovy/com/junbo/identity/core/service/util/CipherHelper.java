@@ -44,7 +44,7 @@ public class CipherHelper {
     // private final static String ALPHA_PATTEN = "[A-Za-z]";
     private static final String NUMBER_PATTEN = "[0-9]";
     private static final String SPECIAL_CHARACTER_PATTEN =  "[`~!@#$%^&*()+=|{}\\':;\\',//[//].<>/\" +\n?]";
-    private static final String COLON = ":";
+    public static final String COLON = ":";
 
     /**
      * Generates hash string from plain-text password, with either the existing salt and pepper for verification

@@ -44,9 +44,6 @@ public class UserEntity extends ResourceMetaEntity implements Identifiable<Long>
     @Column(name = "nick_name")
     private String nickName;
 
-    @Column(name = "currency")
-    private String currency;
-
     @Column(name = "canonical_username")
     private String canonicalUsername;
 
@@ -113,14 +110,6 @@ public class UserEntity extends ResourceMetaEntity implements Identifiable<Long>
 
     public void setNickName(String nickName) {
         this.nickName = nickName;
-    }
-
-    public String getCurrency() {
-        return currency;
-    }
-
-    public void setCurrency(String currency) {
-        this.currency = currency;
     }
 
     public String getCanonicalUsername() {

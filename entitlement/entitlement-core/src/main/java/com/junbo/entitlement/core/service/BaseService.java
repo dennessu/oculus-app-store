@@ -9,6 +9,7 @@ package com.junbo.entitlement.core.service;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementType;
 import com.junbo.entitlement.clientproxy.catalog.EntitlementDefinitionFacade;
+import com.junbo.entitlement.common.def.EntitlementConsts;
 import com.junbo.entitlement.common.lib.EntitlementContext;
 import com.junbo.entitlement.spec.def.EntitlementStatus;
 import com.junbo.entitlement.spec.error.AppErrors;
@@ -17,7 +18,9 @@ import com.junbo.entitlement.spec.model.EntitlementTransfer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 
+import java.text.ParseException;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -230,5 +233,16 @@ public class BaseService {
     protected void CheckDeveloper(Long developerId) {
         validateNotNull(developerId, "developer");
         //TODO: check clientId
+    }
+
+    protected void checkDateFormat(String date) {
+        if (!StringUtils.isEmpty(date)) {
+            try {
+                EntitlementConsts.DATE_FORMAT.parse(date);
+            } catch (ParseException e) {
+                throw AppErrors.INSTANCE.
+                        common("date should be in yyyy-MM-ddTHH:mm:ssZ format").exception();
+            }
+        }
     }
 }

@@ -118,7 +118,6 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
     public void testUserRepository() throws Exception {
         User user = new User()
         user.setActive(true)
-        user.setCurrency('USD')
         user.setLocale('en_US')
         user.setNickName(UUID.randomUUID().toString())
         user.setPreferredLanguage(UUID.randomUUID().toString())
@@ -169,8 +168,6 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
     public void testUserPasswordRepository() {
         UserPassword userPassword = new UserPassword()
         userPassword.setUserId(new UserId(userId))
-        userPassword.setPasswordSalt(UUID.randomUUID().toString())
-        userPassword.setPasswordPepper(UUID.randomUUID().toString())
         userPassword.setPasswordHash(UUID.randomUUID().toString())
         userPassword.setStrength(UserPasswordStrength.WEAK.toString())
         userPassword.setActive(true)
@@ -202,8 +199,6 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         UserPin userPIN = new UserPin()
         userPIN.setUserId(new UserId(userId))
         userPIN.setPinHash(UUID.randomUUID().toString())
-        userPIN.setPinSalt(UUID.randomUUID().toString())
-        userPIN.setPinPepper(UUID.randomUUID().toString())
         userPIN.setActive(true)
         userPIN.setChangeAtNextLogin(false)
         userPIN.setExpiresBy(new Date())
@@ -364,8 +359,6 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userSecurityQuestion.setUserId(new UserId(userId))
         userSecurityQuestion.setSecurityQuestion('whosyourdaddy')
         userSecurityQuestion.setAnswerHash(UUID.randomUUID().toString())
-        userSecurityQuestion.setAnswerSalt(UUID.randomUUID().toString())
-        userSecurityQuestion.setAnswerPepper(UUID.randomUUID().toString())
         userSecurityQuestion.setCreatedBy('lixia')
         userSecurityQuestion.setCreatedTime(new Date())
 
@@ -376,11 +369,11 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         Assert.assertEquals(userSecurityQuestion.getAnswerHash(), newUserSecurityQuestion.getAnswerHash())
 
         String value = UUID.randomUUID().toString()
-        newUserSecurityQuestion.setAnswerSalt(value)
+        newUserSecurityQuestion.setAnswerHash(value)
         userSecurityQuestionRepository.update(newUserSecurityQuestion)
 
         newUserSecurityQuestion = userSecurityQuestionRepository.get(userSecurityQuestion.getId()).wrapped().get()
-        Assert.assertEquals(newUserSecurityQuestion.getAnswerSalt(), value)
+        Assert.assertEquals(newUserSecurityQuestion.getAnswerHash(), value)
 
         List<UserSecurityQuestion> securityQuestions = userSecurityQuestionRepository.
                 search(new UserSecurityQuestionListOptions(userId: new UserId(userId))).wrapped().get()

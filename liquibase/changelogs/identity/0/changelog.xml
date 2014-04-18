@@ -27,8 +27,6 @@
 				id bigint not null,
 				user_id bigint not null,
 				password_hash text not null,
-				password_salt text not null,
-				password_pepper text not null,
 				password_strength smallint not null,
 				
 				active boolean not null,
@@ -48,8 +46,6 @@
 				id bigint not null,
 				user_id bigint not null,
 				pin_hash text not null,
-				pin_salt text not null,
-				pin_pepper text not null,
 				
 				active boolean not null,
 				change_at_next_login boolean,
@@ -139,9 +135,9 @@
               user_id bigint not null,
 			  
 			  type varchar(255) not null,
-			  ip_address varchar(255) not null,
-			  user_agent varchar(255) not null,
-			  client_id varchar(255) not null,
+			  ip_address varchar(255),
+			  user_agent varchar(255),
+			  client_id varchar(255),
 			  succeeded boolean not null,
 			  
               created_by varchar(32) not null,
@@ -191,7 +187,6 @@
 			  time_zone varchar(255),
 			  is_active boolean not null,
 			  type varchar(255) not null,
-			  currency varchar(10),
 			  
               created_by varchar(32) not null,
               created_time timestamp not null,
@@ -204,7 +199,7 @@
 			create table user_name (
               id bigint not null,
 
-			  user_id bigint not null,
+			  user_pii_id bigint not null,
 
 		      first_name varchar(255) not null,
 			  middle_name varchar(255),
@@ -222,8 +217,6 @@
 			  user_id bigint not null,
 
 		      security_question text not null,
-			  answer_salt text not null,
-			  answer_pepper text not null,
 			  answer_hash text not null,
 
               created_by varchar(32) not null,
@@ -252,9 +245,9 @@
 			  id bigint not null,
 			  user_id bigint not null,
 			  user_security_question_id bigint not null,
-			  ip_address varchar(255) not null,
-			  user_agent varchar(255) not null,
-			  client_id varchar(255) not null,
+			  ip_address varchar(255),
+			  user_agent varchar(255),
+			  client_id varchar(255),
 			  succeeded boolean not null,
 			  
 			  version bigint not null,

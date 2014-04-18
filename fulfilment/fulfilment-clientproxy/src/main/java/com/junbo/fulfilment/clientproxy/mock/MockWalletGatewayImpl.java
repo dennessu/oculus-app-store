@@ -5,11 +5,19 @@
  */
 package com.junbo.fulfilment.clientproxy.mock;
 
+import com.junbo.ewallet.spec.model.CreditRequest;
+import com.junbo.ewallet.spec.model.Transaction;
 import com.junbo.fulfilment.clientproxy.WalletGateway;
 
 /**
  * MockWalletGatewayImpl.
  */
 public class MockWalletGatewayImpl implements WalletGateway {
+    @Override
+    public Transaction credit(CreditRequest request) {
+        Transaction trx = new Transaction();
+        trx.setTransactionId(System.currentTimeMillis());
 
+        return trx;
+    }
 }

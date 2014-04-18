@@ -120,14 +120,6 @@ class UserValidatorImpl implements UserValidator {
             user.locale = localeValidator.defaultLocale
         }
 
-        if (user.currency != null) {
-            if (!currencyValidator.isValid(user.currency)) {
-                throw AppErrors.INSTANCE.fieldInvalid('currency').exception()
-            }
-        } else {
-            user.currency = currencyValidator.default
-        }
-
         if (user.timezone != null) {
             if (!timezoneValidator.isValidTimezone(user.timezone)) {
                 throw AppErrors.INSTANCE.fieldInvalid('timezone').exception()

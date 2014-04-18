@@ -152,21 +152,21 @@ class OrderInternalServiceImpl implements OrderInternalService {
         order.setPaymentInstruments(orderRepository.getPaymentInstrumentIds(order.id.value))
         // discount
         order.setDiscounts(orderRepository.getDiscounts(order.id.value))
-        refreshOrderStatus(order)
-        return order
+        return refreshOrderStatus(order)
     }
 
     @Override
-    void refreshOrderStatus(Order order) {
+    Order refreshOrderStatus(Order order) {
         transactionHelper.executeInTransaction {
             def oldOrder = orderRepository.getOrder(order.id.value)
-            def status = OrderStatusBuilder.buildOrderStatus(oldOrder,
+            order.status = OrderStatusBuilder.buildOrderStatus(oldOrder,
                     orderRepository.getOrderEvents(order.id.value, null))
-            if (status != oldOrder.status) {
-                oldOrder.status = status
+            if (order.status != oldOrder.status) {
+                oldOrder.status = order.status
                 orderRepository.updateOrder(oldOrder, true)
             }
         }
+        return order
     }
 
     @Override

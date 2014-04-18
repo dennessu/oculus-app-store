@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonPropertyOrder
 import com.junbo.common.jackson.annotation.OfferId
+import com.junbo.common.jackson.annotation.WalletId
 import groovy.transform.CompileStatic
 
 /**
@@ -20,6 +21,8 @@ import groovy.transform.CompileStatic
 @JsonInclude(JsonInclude.Include.NON_NULL)
 class Transaction {
     Long transactionId
+    @WalletId
+    Long walletId
     String type
     BigDecimal amount
     @OfferId
