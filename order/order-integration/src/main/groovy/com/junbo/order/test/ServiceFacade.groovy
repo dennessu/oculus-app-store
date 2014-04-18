@@ -6,7 +6,9 @@ import com.junbo.billing.spec.resource.ShippingAddressResource
 import com.junbo.catalog.spec.model.offer.Offer
 import com.junbo.catalog.spec.model.offer.OffersGetOptions
 import com.junbo.catalog.spec.resource.ItemResource
+import com.junbo.catalog.spec.resource.ItemRevisionResource
 import com.junbo.catalog.spec.resource.OfferResource
+import com.junbo.catalog.spec.resource.OfferRevisionResource
 import com.junbo.common.id.OrderId
 import com.junbo.common.id.UserId
 import com.junbo.entitlement.spec.model.Entitlement
@@ -46,6 +48,12 @@ class ServiceFacade {
 
     @Autowired
     ItemResource itemResource
+
+    @Autowired
+    OfferRevisionResource offerRevisionResource
+
+    @Autowired
+    ItemRevisionResource itemRevisionResource
 
     @Autowired
     BalanceResource balanceResource
