@@ -11,9 +11,11 @@ package com.junbo.email.spec.error;
 public class ErrorCode {
     private ErrorCode() {}
 
-    public static final String INVALID_EMAIL_ID ="INVALID_EMAIL_ID";
+    public static final String INVALID_EMAIL_ID = "INVALID_EMAIL_ID";
 
-    public static final String USER_NOT_FOUND ="USER_NOT_FOUND";
+    public static final String USER_NOT_FOUND = "USER_NOT_FOUND";
+
+    public static final String USER_EMAIL_NOT_FOUND = "USER_EMAIL_NOT_FOUND";
 
     public static final String INVALID_USER_STATUS = "INVALID_USER_STATUS";
 

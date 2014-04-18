@@ -264,7 +264,7 @@ public class Master {
         for (Map.Entry<String, Offer> entry : offers.entrySet()) {
             String key = entry.getKey();
             Offer offer = entry.getValue();
-            if (offer.getName().equals(offerName)) {
+            if (offer.getName().getLocales().containsValue(offerName)) {
                 return key;
             }
         }
@@ -276,7 +276,7 @@ public class Master {
         for (Map.Entry<String, Item> entry : items.entrySet()) {
             String key = entry.getKey();
             Item item = entry.getValue();
-            if (item.getName().equals(itemName)) {
+            if (item.getName().getLocales().containsValue(itemName)) {
                 return key;
             }
         }
