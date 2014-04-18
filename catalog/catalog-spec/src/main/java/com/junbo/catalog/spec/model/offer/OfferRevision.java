@@ -8,9 +8,7 @@ package com.junbo.catalog.spec.model.offer;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.junbo.catalog.spec.model.common.BaseRevisionModel;
-import com.junbo.catalog.spec.model.common.Interval;
-import com.junbo.catalog.spec.model.common.Price;
+import com.junbo.catalog.spec.model.common.*;
 import com.junbo.common.jackson.annotation.OfferId;
 import com.junbo.common.jackson.annotation.OfferRevisionId;
 import com.junbo.common.jackson.annotation.UserId;
@@ -52,16 +50,13 @@ public class OfferRevision extends BaseRevisionModel {
     @ApiModelProperty(position = 26, required = true, value = "Eligible countries")
     private List<String> eligibleCountries;
     @ApiModelProperty(position = 27, required = true, value = "Event actions")
-    private Map<String, Event> events;
+    private Map<String, List<Action>> eventActions;
     //private TypedProperties<Interval> startEndTime;
 
-    // the dirty part
-    // I believe these should be in a dynamic property bag, controlled by meta-data and driven by business requirements
-    // but I have to do this per request
     @ApiModelProperty(position = 28, required = true, value = "Images to describe the offer revision resource")
-    private List<String> images;
+    private Images images;
     @ApiModelProperty(position = 29, required = true, value = "Videos to describe the offer revision resource")
-    private List<String> videos;
+    private List<Video> videos;
 
     @ApiModelProperty(position = 30, required = true, value = "Start end time for the offer revision resource")
     private Map<String, Interval> startEndTime;
@@ -132,28 +127,28 @@ public class OfferRevision extends BaseRevisionModel {
         this.eligibleCountries = eligibleCountries;
     }
 
-    public Map<String, Event> getEvents() {
-        return events;
+    public Map<String, List<Action>> getEventActions() {
+        return eventActions;
     }
 
-    public void setEvents(Map<String, Event> events) {
-        this.events = events;
+    public void setEventActions(Map<String, List<Action>> eventActions) {
+        this.eventActions = eventActions;
     }
 
-    public List<String> getVideos() {
-        return videos;
-    }
-
-    public void setVideos(List<String> videos) {
-        this.videos = videos;
-    }
-
-    public List<String> getImages() {
+    public Images getImages() {
         return images;
     }
 
-    public void setImages(List<String> images) {
+    public void setImages(Images images) {
         this.images = images;
+    }
+
+    public List<Video> getVideos() {
+        return videos;
+    }
+
+    public void setVideos(List<Video> videos) {
+        this.videos = videos;
     }
 
     public Map<String, Interval> getStartEndTime() {

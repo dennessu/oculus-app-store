@@ -47,12 +47,8 @@ public class Item extends BaseEntityModel {
     private String rollupPackageName;
 
     @ApiModelProperty(position = 24, required = true,
-            value = "Used to uniquely identify the item (app), used mainly for android")
+            value = "Used to identify the item (app), used mainly for android")
     private String packageName;
-
-    @ApiModelProperty(position = 24, required = true, value = "The platform name, for digital goods only",
-            allowableValues = "PC, MAC, LINUX, ANDROID")
-    private List<String> platforms;
 
     @ItemAttributeId
     @ApiModelProperty(position = 25, required = true, value = "Genres")
@@ -118,14 +114,6 @@ public class Item extends BaseEntityModel {
 
     public void setPackageName(String packageName) {
         this.packageName = packageName;
-    }
-
-    public List<String> getPlatforms() {
-        return platforms;
-    }
-
-    public void setPlatforms(List<String> platforms) {
-        this.platforms = platforms;
     }
 
     public List<Long> getGenres() {

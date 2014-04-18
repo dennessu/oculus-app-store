@@ -16,8 +16,6 @@ import java.util.List;
 public class ItemRevisionLocaleProperties {
     @ApiModelProperty(position = 1, required = true, value = "item revision name")
     String name;
-    @ApiModelProperty(position = 2, required = true, value = "game modes")
-    String gameModes;
     @ApiModelProperty(position = 3, required = true, value = "revision notes")
     String revisionNotes;
     @ApiModelProperty(position = 4, required = true, value = "long description")
@@ -30,8 +28,6 @@ public class ItemRevisionLocaleProperties {
     String recommendedSystemRequirements;
     @ApiModelProperty(position = 8, required = true, value = "legal information")
     String legalInformation;
-    @ApiModelProperty(position = 9, required = true, value = "supported input devices")
-    List<String> supportedInputDevices;
     @ApiModelProperty(position = 11, required = true, value = "credits")
     String credits;
     @ApiModelProperty(position = 12, required = true, value = "copyright")
@@ -49,14 +45,6 @@ public class ItemRevisionLocaleProperties {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getGameModes() {
-        return gameModes;
-    }
-
-    public void setGameModes(String gameModes) {
-        this.gameModes = gameModes;
     }
 
     public String getRevisionNotes() {
@@ -105,14 +93,6 @@ public class ItemRevisionLocaleProperties {
 
     public void setLegalInformation(String legalInformation) {
         this.legalInformation = legalInformation;
-    }
-
-    public List<String> getSupportedInputDevices() {
-        return supportedInputDevices;
-    }
-
-    public void setSupportedInputDevices(List<String> supportedInputDevices) {
-        this.supportedInputDevices = supportedInputDevices;
     }
 
     public String getCredits() {
