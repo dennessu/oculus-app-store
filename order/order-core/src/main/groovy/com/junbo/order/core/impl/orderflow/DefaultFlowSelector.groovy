@@ -100,6 +100,8 @@ class DefaultFlowSelector implements FlowSelector {
                     }
                     return isPhysical ? Promise.pure(FlowType.PHYSICAL_SETTLE.name()) :
                             Promise.pure(FlowType.IMMEDIATE_SETTLE.name())
+                case PIType.WALLET.name():
+                    return Promise.pure(FlowType.IMMEDIATE_SETTLE.name())
                 default:
                     LOGGER.error('name=Payment_Instrument_Type_Not_Supported, action: {}', pis[0]?.type)
                     throw AppErrors.INSTANCE.piTypeNotSupported(
