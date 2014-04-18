@@ -7,17 +7,19 @@ package com.junbo.test.catalogscenario;
 
 import com.junbo.catalog.spec.model.attribute.Attribute;
 import com.junbo.catalog.spec.model.common.LocalizableProperty;
+import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.catalog.spec.model.offer.Offer;
+import com.junbo.catalog.spec.model.offer.OfferRevision;
+import com.junbo.common.id.ItemId;
+import com.junbo.common.id.ItemRevisionId;
+import com.junbo.common.id.OfferId;
 import com.junbo.test.common.Utility.TestClass;
 import com.junbo.catalog.spec.model.item.Item;
-import com.junbo.test.common.apihelper.catalog.AttributeService;
-import com.junbo.test.common.apihelper.catalog.ItemService;
-import com.junbo.test.common.apihelper.catalog.OfferService;
-import com.junbo.test.common.apihelper.catalog.impl.AttributeServiceImpl;
-import com.junbo.test.common.apihelper.catalog.impl.ItemServiceImpl;
-import com.junbo.test.common.apihelper.catalog.impl.OfferServiceImpl;
+import com.junbo.test.common.apihelper.catalog.*;
+import com.junbo.test.common.apihelper.catalog.impl.*;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.EnumHelper;
+import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.test.common.property.*;
@@ -37,7 +39,9 @@ public class Catalog extends TestClass {
 
     private LogHelper logger = new LogHelper(Catalog.class);
     private final String defaultItemFileName = "defaultItem";
+    private final String defaultItemRevisionFileName = "defaultItemRevision";
     private final String defaultOfferFileName = "defaultOffer";
+    private final String defaultOfferRevisionFileName = "defaultOfferRevision";
 
     @Property(
             priority = Priority.BVT,
@@ -110,6 +114,7 @@ public class Catalog extends TestClass {
 
         HashMap<String, String> paraMap = new HashMap();
         ItemService itemServiceAPI = ItemServiceImpl.instance();
+        ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
 
         //Post a Physical item
         Item item = itemServiceAPI.prepareItemEntity(defaultItemFileName);
@@ -125,22 +130,15 @@ public class Catalog extends TestClass {
         itemId = itemServiceAPI.postItem(item);
         Assert.assertNotNull(Master.getInstance().getItem(itemId));
 
-        //Get the item by its id(other conditions in paraMap are empty)
+        //Get the item by its id
         logger.LogSample("Get the item by its Id");
         String itemGetId = itemServiceAPI.getItem(itemId);
         Assert.assertNotNull(Master.getInstance().getItem(itemGetId));
 
-        //Get the item(s) by some conditions: by status firstly
-        logger.LogSample("Get item(s) only by status");
-        paraMap.put("status", EnumHelper.CatalogEntityStatus.DESIGN.getEntityStatus());
-        List<String> itemResultList = itemServiceAPI.getItem(paraMap);
-        Assert.assertNotNull(itemResultList);
-
         //Get item by id and status
-        logger.LogSample("Get item(s) by id and status");
+        logger.LogSample("Get item(s) by id");
         paraMap.put("id", itemGetId);
-        itemResultList.clear();
-        itemResultList = itemServiceAPI.getItem(paraMap);
+        List<String> itemResultList = itemServiceAPI.getItem(paraMap);
         Assert.assertNotNull(itemResultList);
 
         //Get all items without any search condition
@@ -150,12 +148,21 @@ public class Catalog extends TestClass {
         itemResultList = itemServiceAPI.getItem(paraMap);
         Assert.assertNotNull(itemResultList);
 
-        //Update item to released
-        logger.LogSample("Release an item)");
-        item = Master.getInstance().getItem(itemId);
-        item.setCurated(true);
-        itemId = itemServiceAPI.updateItem(item);
-        Assert.assertEquals(Master.getInstance().getItem(itemId).getCurated().toString().toLowerCase(), "true");
+        //Attach item revision to the item
+        ItemRevision itemRevision = itemRevisionService.prepareItemRevisionEntity(defaultItemRevisionFileName, EnumHelper.CatalogItemType.DIGITAL);
+        itemRevision.setItemId(IdConverter.hexStringToId(ItemId.class, itemId));
+        itemRevision.setType(item.getType());
+        itemRevision.setOwnerId(item.getOwnerId());
+        String itemRevisionId = itemRevisionService.postItemRevision(itemRevision);
+
+        //Approve the item revision
+        itemRevision = Master.getInstance().getItemRevision(itemRevisionId);
+        itemRevision.setStatus(EnumHelper.CatalogEntityStatus.APPROVED.getEntityStatus());
+        itemRevisionService.updateItemRevision(itemRevision);
+
+        //The item curated should be true now
+        itemServiceAPI.getItem(itemId);
+        Assert.assertEquals(Master.getInstance().getItem(itemId).getCurated(), Boolean.TRUE);
 }
 
     @Property(
@@ -178,6 +185,7 @@ public class Catalog extends TestClass {
 
         HashMap<String, String> paraMap = new HashMap();
         OfferService offerServiceAPI = OfferServiceImpl.instance();
+        OfferRevisionService offerRevisionServiceAPI = OfferRevisionServiceImpl.instance();
 
         //Post a Physical offer
         Offer offer = offerServiceAPI.prepareOfferEntity(defaultOfferFileName, EnumHelper.CatalogItemType.PHYSICAL);
@@ -191,14 +199,14 @@ public class Catalog extends TestClass {
         offerId = offerServiceAPI.postOffer(offer);
         Assert.assertNotNull(Master.getInstance().getOffer(offerId));
 
-        //Get the offer by its id(other conditions in paraMap are empty)
+        //Get the offer by its id
         logger.LogSample("Get the offer by its id");
         String offerGetId = offerServiceAPI.getOffer(offerId);
         Assert.assertNotNull(Master.getInstance().getOffer(offerGetId));
 
-        //Get the offer(s) by some conditions: by status firstly
-        logger.LogSample("Get the offer just by status");
-        paraMap.put("status", EnumHelper.CatalogEntityStatus.DESIGN.getEntityStatus());
+        //Get the offer(s) by some conditions: by curated firstly
+        logger.LogSample("Get the offer just by curated");
+        paraMap.put("curated", EnumHelper.CatalogEntityStatus.DRAFT.getEntityStatus());
         List<String> offerResultList = offerServiceAPI.getOffer(paraMap);
         Assert.assertNotNull(offerResultList);
 
@@ -216,12 +224,21 @@ public class Catalog extends TestClass {
         offerResultList = offerServiceAPI.getOffer(paraMap);
         Assert.assertNotNull(offerResultList);
 
-        //Update offer to released
-        logger.LogSample("Release an offer");
-        Offer offerGet = Master.getInstance().getOffer(offerId);
-        offerGet.setCurated(true);
-        offerId = offerServiceAPI.updateOffer(offerGet);
-        Assert.assertEquals(Master.getInstance().getOffer(offerId).getCurated().toString().toLowerCase(), "true");
+        //Attach offer revision to the offer
+        OfferRevision offerRevision = offerRevisionServiceAPI.prepareOfferRevisionEntity(defaultOfferRevisionFileName, EnumHelper.CatalogItemType.DIGITAL);
+        offerRevision.setOfferId(IdConverter.hexStringToId(OfferId.class, offerId));
+        offerRevision.setOwnerId(offer.getOwnerId());
+        String offerRevisionId = offerRevisionServiceAPI.postOfferRevision(offerRevision);
+
+        //Approve the offer revision
+        offerRevision = Master.getInstance().getOfferRevision(offerRevisionId);
+        offerRevision.setStatus(EnumHelper.CatalogEntityStatus.APPROVED.getEntityStatus());
+        offerRevisionServiceAPI.updateOfferRevision(offerRevision);
+
+        //The offer curated should be true now
+        offerServiceAPI.getOffer(offerId);
+        Assert.assertEquals(Master.getInstance().getOffer(offerId).getCurated(), Boolean.TRUE);
+
     }
 
     @Property(

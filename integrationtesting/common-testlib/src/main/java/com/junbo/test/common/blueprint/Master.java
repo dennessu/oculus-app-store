@@ -8,8 +8,10 @@ package com.junbo.test.common.blueprint;
 import com.junbo.billing.spec.model.Balance;
 import com.junbo.billing.spec.model.ShippingAddress;
 import com.junbo.cart.spec.model.Cart;
+import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.item.Item;
+import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.identity.spec.v1.model.User;
 import com.junbo.order.spec.model.Order;
@@ -39,8 +41,10 @@ public class Master {
 
     private Map<String, User> users;
     private Map<String, Cart> carts;
-    private Map<String, Offer> offers;
     private Map<String, Item> items;
+    private Map<String, Offer> offers;
+    private Map<String, ItemRevision> itemRevisions;
+    private Map<String, OfferRevision> offerRevisions;
     private Map<String, Order> orders;
     private Map<String, ShippingAddress> shippingAddresses;
     private Map<String, Attribute> attributes;
@@ -51,8 +55,10 @@ public class Master {
     public void initializeMaster() {
         this.initializeUsers();
         this.initializeCarts();
-        this.initializeOffers();
         this.initializeItems();
+        this.initializeItemRevisions();
+        this.initializeOffers();
+        this.initializeOfferRevisions();
         this.initializeOrders();
         this.initializeAttributes();
         this.initializeEntitlements();
@@ -75,6 +81,21 @@ public class Master {
         this.carts.clear();
     }
 
+
+    public void initializeItems() {
+        if (this.items == null) {
+            this.items = new HashMap<>();
+        }
+        this.items.clear();
+    }
+
+    public void initializeItemRevisions() {
+        if (this.itemRevisions == null) {
+            this.itemRevisions = new HashMap<>();
+        }
+        this.itemRevisions.clear();
+    }
+
     public void initializeOffers() {
         if (this.offers == null) {
             this.offers = new HashMap<>();
@@ -82,11 +103,11 @@ public class Master {
         this.offers.clear();
     }
 
-    public void initializeItems() {
-        if (this.items == null) {
-            this.items = new HashMap<>();
+    public void initializeOfferRevisions() {
+        if (this.offerRevisions == null) {
+            this.offerRevisions = new HashMap<>();
         }
-        this.items.clear();
+        this.offerRevisions.clear();
     }
 
     public void initializeOrders() {
@@ -145,6 +166,20 @@ public class Master {
         this.carts.put(cartId, cart);
     }
 
+    public void addItem(String itemId, Item item) {
+        if (this.items.containsKey(itemId)) {
+            this.items.remove(itemId);
+        }
+        this.items.put(itemId, item);
+    }
+
+    public void addItemRevision(String itemRevisionId, ItemRevision itemRevision) {
+        if (this.itemRevisions.containsKey(itemRevisionId)) {
+            this.itemRevisions.remove(itemRevisionId);
+        }
+        this.itemRevisions.put(itemRevisionId, itemRevision);
+    }
+
     public void addOffer(String offerId, Offer offer) {
         if (this.offers.containsKey(offerId)) {
             this.offers.remove(offerId);
@@ -152,11 +187,11 @@ public class Master {
         this.offers.put(offerId, offer);
     }
 
-    public void addItem(String itemId, Item item) {
-        if (this.items.containsKey(itemId)) {
-            this.items.remove(itemId);
+    public void addOfferRevision(String offerRevisionId, OfferRevision offerRevision) {
+        if (this.offerRevisions.containsKey(offerRevisionId)) {
+            this.offerRevisions.remove(offerRevisionId);
         }
-        this.items.put(itemId, item);
+        this.offerRevisions.put(offerRevisionId, offerRevision);
     }
 
     public void addOrder(String orderId, Order order) {
@@ -208,8 +243,20 @@ public class Master {
         return this.users.get(userId);
     }
 
+    public Item getItem(String itemId) {
+        return this.items.get(itemId);
+    }
+
+    public ItemRevision getItemRevision(String itemRevisionId) {
+        return this.itemRevisions.get(itemRevisionId);
+    }
+
     public Offer getOffer(String offerId) {
         return this.offers.get(offerId);
+    }
+
+    public OfferRevision getOfferRevision(String offerRevisionId) {
+        return this.offerRevisions.get(offerRevisionId);
     }
 
     public String getOfferIdByName(String offerName) {
@@ -238,10 +285,6 @@ public class Master {
 
     public Cart getCart(String cartId) {
         return this.carts.get(cartId);
-    }
-
-    public Item getItem(String itemId) {
-        return this.items.get(itemId);
     }
 
     public Order getOrder(String orderId) {
