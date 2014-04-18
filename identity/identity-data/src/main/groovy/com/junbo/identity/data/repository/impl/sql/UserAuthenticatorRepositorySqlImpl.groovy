@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.identity.data.repository.impl
+package com.junbo.identity.data.repository.impl.sql
 
 import com.junbo.common.id.UserAuthenticatorId
 import com.junbo.identity.data.dao.UserAuthenticatorDAO
@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired
  * Implementation for UserAuthenticatorDAO.
  */
 @CompileStatic
-class UserAuthenticatorRepositoryImpl implements UserAuthenticatorRepository {
+class UserAuthenticatorRepositorySqlImpl implements UserAuthenticatorRepository {
     @Autowired
     private UserAuthenticatorDAO authenticatorDAO
 

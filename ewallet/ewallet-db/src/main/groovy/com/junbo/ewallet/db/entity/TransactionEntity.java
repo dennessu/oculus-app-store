@@ -14,6 +14,7 @@ import javax.persistence.Column;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import java.math.BigDecimal;
+import java.util.UUID;
 
 /**
  * Entity of Transaction.
@@ -21,10 +22,21 @@ import java.math.BigDecimal;
 @javax.persistence.Entity
 @Table(name = "transaction")
 public class TransactionEntity extends EntityWithCreated {
+    private UUID trackingUuid;
     private Long walletId;
     private TransactionType type;
     private BigDecimal amount;
     private Long offerId;
+
+    @Column(name = "tracking_uuid")
+    @Type(type = "pg-uuid")
+    public UUID getTrackingUuid() {
+        return trackingUuid;
+    }
+
+    public void setTrackingUuid(UUID trackingUuid) {
+        this.trackingUuid = trackingUuid;
+    }
 
     @Column(name = "ewallet_id")
     public Long getWalletId() {

@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.identity.data.repository.impl
+package com.junbo.identity.data.repository.impl.sql
 
 import com.junbo.common.id.UserCredentialVerifyAttemptId
 import com.junbo.identity.data.dao.UserCredentialVerifyAttemptDAO
@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired
  * Created by liangfu on 3/17/14.
  */
 @CompileStatic
-class UserCredentialVerifyAttemptRepositoryImpl implements UserCredentialVerifyAttemptRepository {
+class UserCredentialVerifyAttemptRepositorySqlImpl implements UserCredentialVerifyAttemptRepository {
     @Autowired
     private UserCredentialVerifyAttemptDAO credentialVerifyAttemptDAO
 

@@ -1,4 +1,4 @@
-package com.junbo.identity.data.repository.impl
+package com.junbo.identity.data.repository.impl.sql
 
 import com.junbo.common.id.AddressId
 import com.junbo.identity.data.dao.AddressDAO
@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired
 /**
  * Created by xmchen on 14-4-15.
  */
-class AddressRepositoryImpl implements AddressRepository {
+class AddressRepositorySqlImpl implements AddressRepository {
 
     @Autowired
     private AddressDAO addressDAO

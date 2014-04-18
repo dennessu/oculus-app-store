@@ -99,7 +99,7 @@ ruleset {
         AbstractClassWithPublicConstructor
         // AbstractClassWithoutAbstractMethod
         BooleanMethodReturnsNull
-        BuilderMethodWithSideEffects
+        // BuilderMethodWithSideEffects
         CloneableWithoutClone
         CloseWithoutCloseable
         CompareToWithoutComparable

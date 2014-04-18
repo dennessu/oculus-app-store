@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.identity.data.repository.impl
+package com.junbo.identity.data.repository.impl.sql
 
 import com.junbo.common.id.RoleId
 import com.junbo.identity.data.dao.RoleDAO
@@ -15,10 +15,10 @@ import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 
 /**
- * RoleRepositoryImpl.
+ * RoleRepositorySqlImpl.
  */
 @CompileStatic
-class RoleRepositoryImpl implements RoleRepository {
+class RoleRepositorySqlImpl implements RoleRepository {
     private RoleDAO roleDAO
 
     @Required

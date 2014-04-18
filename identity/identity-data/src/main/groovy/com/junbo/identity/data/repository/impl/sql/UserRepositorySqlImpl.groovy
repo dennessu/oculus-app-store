@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.identity.data.repository.impl
+package com.junbo.identity.data.repository.impl.sql
 
 import com.junbo.common.id.UserId
 import com.junbo.identity.data.dao.UserDAO
@@ -21,7 +21,7 @@ import org.springframework.util.StringUtils
  * Implementation for User DAO..
  */
 @CompileStatic
-class UserRepositoryImpl implements UserRepository {
+class UserRepositorySqlImpl implements UserRepository {
     @Autowired
     private ModelMapper modelMapper
 

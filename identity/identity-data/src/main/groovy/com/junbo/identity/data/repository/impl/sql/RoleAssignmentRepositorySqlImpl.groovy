@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.identity.data.repository.impl
+package com.junbo.identity.data.repository.impl.sql
 
 import com.junbo.common.id.RoleAssignmentId
 import com.junbo.common.id.RoleId
@@ -16,10 +16,10 @@ import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 
 /**
- * RoleAssignmentRepositoryImpl.
+ * RoleAssignmentRepositorySqlImpl.
  */
 @CompileStatic
-class RoleAssignmentRepositoryImpl implements RoleAssignmentRepository {
+class RoleAssignmentRepositorySqlImpl implements RoleAssignmentRepository {
     private RoleAssignmentDAO roleAssignmentDAO
 
     @Required

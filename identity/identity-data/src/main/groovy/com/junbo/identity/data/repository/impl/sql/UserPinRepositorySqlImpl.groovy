@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.identity.data.repository.impl
+package com.junbo.identity.data.repository.impl.sql
 
 import com.junbo.common.id.UserPinId
 import com.junbo.identity.data.dao.UserPinDAO
@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired
  * Created by liangfu on 3/16/14.
  */
 @CompileStatic
-class UserPinRepositoryImpl implements UserPinRepository {
+class UserPinRepositorySqlImpl implements UserPinRepository {
     @Autowired
     private UserPinDAO userPinDAO
 

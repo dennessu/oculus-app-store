@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.identity.data.repository.impl
+package com.junbo.identity.data.repository.impl.sql
 
 import com.junbo.common.id.TosId
 import com.junbo.identity.data.dao.TosDAO
@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired
  * Created by liangfu on 4/9/14.
  */
 @CompileStatic
-class TosRepositoryImpl implements TosRepository {
+class TosRepositorySqlImpl implements TosRepository {
 
     // todo:    Liangfu:    In fact here we don't want any db, we just want to use cdn to store tos
     // So we just implement the simplest case here

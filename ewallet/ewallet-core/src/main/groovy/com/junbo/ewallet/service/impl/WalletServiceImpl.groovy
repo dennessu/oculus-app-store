@@ -1,6 +1,7 @@
 package com.junbo.ewallet.service.impl
 
 import com.junbo.ewallet.db.entity.def.NotEnoughMoneyException
+import com.junbo.ewallet.db.repo.TransactionRepository
 import com.junbo.ewallet.db.repo.WalletRepository
 import com.junbo.ewallet.service.WalletService
 import com.junbo.ewallet.spec.def.Status
@@ -14,7 +15,6 @@ import com.junbo.ewallet.spec.model.Wallet
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.util.CollectionUtils
 
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
@@ -29,6 +29,8 @@ import org.springframework.util.CollectionUtils
 class WalletServiceImpl implements WalletService {
     @Autowired
     private WalletRepository walletRepo
+    @Autowired
+    private TransactionRepository transactionRepo
 
     @Override
     @Transactional
@@ -55,6 +57,12 @@ class WalletServiceImpl implements WalletService {
         }
         wallet.status = Status.ACTIVE.toString()
 
+        if (wallet.type != null &&
+                !wallet.type.equalsIgnoreCase(WalletType.STORED_VALUE.toString())) {
+            throw AppErrors.INSTANCE.fieldNotCorrect('type', 'only STORED_VALUE supported').exception()
+        }
+        wallet.type = WalletType.STORED_VALUE.toString()
+
         if (wallet.type == null) {
             throw AppErrors.INSTANCE.missingField('type').exception()
         } else if (wallet.type.equalsIgnoreCase(WalletType.STORED_VALUE.toString()) && wallet.currency == null) {
@@ -65,10 +73,6 @@ class WalletServiceImpl implements WalletService {
             wallet.balance = BigDecimal.ZERO
         } else if (!wallet.balance == BigDecimal.ZERO) {
             throw AppErrors.INSTANCE.fieldNotCorrect('balance', 'balance should be 0.').exception()
-        }
-
-        if (!CollectionUtils.isEmpty(wallet.transactions)) {
-            throw AppErrors.INSTANCE.unnecessaryField('transactions').exception()
         }
 
         Wallet existed = walletRepo.get(wallet.userId, wallet.type, wallet.currency)
@@ -100,9 +104,12 @@ class WalletServiceImpl implements WalletService {
 
     @Override
     @Transactional
-    Wallet credit(CreditRequest creditRequest) {
+    Transaction credit(CreditRequest creditRequest) {
         if (creditRequest.creditType == null) {
             creditRequest.creditType = WalletLotType.CASH.toString()
+        }
+        if (!creditRequest.creditType.equalsIgnoreCase(WalletLotType.CASH.toString())) {
+            throw AppErrors.INSTANCE.fieldNotCorrect('creditType', 'ony CASH supported').exception()
         }
 
         validateAmount(creditRequest.amount)
@@ -127,13 +134,13 @@ class WalletServiceImpl implements WalletService {
             throw AppErrors.INSTANCE.locked(wallet.walletId).exception()
         }
 
-        Wallet result = walletRepo.credit(wallet, creditRequest)
+        Transaction result = walletRepo.credit(wallet, creditRequest)
         return result
     }
 
     @Override
     @Transactional
-    Wallet debit(Long walletId, DebitRequest debitRequest) {
+    Transaction debit(Long walletId, DebitRequest debitRequest) {
         validateAmount(debitRequest.amount)
 
         Wallet wallet = get(walletId)
@@ -144,7 +151,7 @@ class WalletServiceImpl implements WalletService {
             throw AppErrors.INSTANCE.notEnoughMoney(walletId).exception()
         }
 
-        Wallet result
+        Transaction result
         try {
             result = walletRepo.debit(wallet, debitRequest)
         } catch (NotEnoughMoneyException e) {
@@ -175,17 +182,21 @@ class WalletServiceImpl implements WalletService {
 
     @Override
     @Transactional
-    Wallet getTransactions(Long walletId) {
-        Wallet result = get(walletId)
-        List<Transaction> transactions = walletRepo.getTransactions(walletId)
-        result.transactions = transactions
-        return result
+    List<Transaction> getTransactions(Long walletId) {
+        List<Transaction> transactions = transactionRepo.getTransactions(walletId)
+        return transactions
     }
 
     @Override
     @Transactional
-    Wallet getByTrackingUuid(Long shardMasterId, UUID trackingUuid) {
+    Wallet getWalletByTrackingUuid(Long shardMasterId, UUID trackingUuid) {
         return walletRepo.getByTrackingUuid(shardMasterId, trackingUuid)
+    }
+
+    @Override
+    @Transactional
+    Transaction getTransactionByTrackingUuid(Long shardMasterId, UUID trackingUuid) {
+        return transactionRepo.getByTrackingUuid(shardMasterId, trackingUuid)
     }
 
     private void checkUserId(Long userId) {

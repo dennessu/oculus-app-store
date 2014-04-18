@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.identity.data.repository.impl
+package com.junbo.identity.data.repository.impl.sql
 
 import com.junbo.common.id.UserDeviceId
 import com.junbo.identity.data.dao.UserDeviceDAO
@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired
  * Implementation for UserDeviceDAO.
  */
 @CompileStatic
-class UserDeviceRepositoryImpl implements UserDeviceRepository {
+class UserDeviceRepositorySqlImpl implements UserDeviceRepository {
     @Autowired
     private UserDeviceDAO userDeviceDAO
 

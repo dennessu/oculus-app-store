@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.identity.data.repository.impl
+package com.junbo.identity.data.repository.impl.sql
 
 import com.junbo.common.id.DeviceId
 import com.junbo.identity.data.dao.DeviceDAO
@@ -20,7 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired
  * Created by xiali_000 on 4/8/2014.
  */
 @CompileStatic
-class DeviceRepositoryImpl implements DeviceRepository {
+class DeviceRepositorySqlImpl implements DeviceRepository {
 
     @Autowired
     private DeviceDAO deviceDAO

@@ -4,7 +4,7 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.identity.data.repository.impl
+package com.junbo.identity.data.repository.impl.sql
 
 import com.junbo.common.id.GroupId
 import com.junbo.identity.data.dao.GroupDAO
@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired
  * Created by liangfu on 3/14/14.
  */
 @CompileStatic
-class GroupRepositoryImpl implements GroupRepository {
+class GroupRepositorySqlImpl implements GroupRepository {
     @Autowired
     private GroupDAO groupDAO
 

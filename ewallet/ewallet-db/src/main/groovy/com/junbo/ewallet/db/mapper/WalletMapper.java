@@ -58,6 +58,7 @@ public class WalletMapper {
     public Transaction toTransaction(TransactionEntity transactionEntity) {
         Transaction transaction = new Transaction();
         transaction.setTransactionId(transactionEntity.getId());
+        transaction.setWalletId(transactionEntity.getWalletId());
         transaction.setType(transactionEntity.getType().toString());
         transaction.setAmount(transactionEntity.getAmount());
         transaction.setType(transactionEntity.getType().toString());

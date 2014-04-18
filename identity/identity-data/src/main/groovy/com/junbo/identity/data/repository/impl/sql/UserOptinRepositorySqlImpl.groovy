@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.identity.data.repository.impl
+package com.junbo.identity.data.repository.impl.sql
 
 import com.junbo.common.id.UserOptinId
 import com.junbo.identity.data.dao.UserOptinDAO
@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired
  * Implementation for UserOptinDAO.
  */
 @CompileStatic
-class UserOptinRepositoryImpl implements UserOptinRepository {
+class UserOptinRepositorySqlImpl implements UserOptinRepository {
     @Autowired
     private UserOptinDAO userOptinDAO
 

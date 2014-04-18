@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.identity.data.repository.impl
+package com.junbo.identity.data.repository.impl.sql
 
 import com.junbo.common.id.UserSecurityQuestionVerifyAttemptId
 import com.junbo.identity.data.dao.UserSecurityQuestionAttemptDAO
@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired
  * Created by liangfu on 3/25/14.
  */
 @CompileStatic
-class UserSecurityQuestionAttemptRepositoryImpl implements UserSecurityQuestionAttemptRepository {
+class UserSecurityQuestionAttemptRepositorySqlImpl implements UserSecurityQuestionAttemptRepository {
 
     @Autowired
     private UserSecurityQuestionAttemptDAO userSecurityQuestionAttemptDAO

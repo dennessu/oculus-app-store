@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.identity.data.repository.impl
+package com.junbo.identity.data.repository.impl.sql
 
 import com.junbo.common.id.UserTosAgreementId
 import com.junbo.identity.data.dao.UserTosDAO
@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired
  * Implementation for User Tos Acceptance DAO interface.
  */
 @CompileStatic
-class UserTosRepositoryImpl implements UserTosRepository {
+class UserTosRepositorySqlImpl implements UserTosRepository {
     @Autowired
     private UserTosDAO userTosDAO
 
