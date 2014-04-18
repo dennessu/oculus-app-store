@@ -11,6 +11,8 @@ import com.junbo.fulfilment.common.util.Utils;
 import com.junbo.fulfilment.db.dao.BaseDao;
 import com.junbo.fulfilment.db.entity.BaseEntity;
 import com.junbo.sharding.IdGenerator;
+import com.junbo.sharding.ShardAlgorithm;
+import com.junbo.sharding.hibernate.ShardScope;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -26,6 +28,10 @@ import java.util.List;
  */
 public abstract class BaseDaoImpl<T extends BaseEntity> implements BaseDao<T> {
     @Autowired
+    @Qualifier("userShardAlgorithm")
+    private ShardAlgorithm shardAlgorithm;
+
+    @Autowired
     @Qualifier("fulfilmentSessionFactory")
     private SessionFactory sessionFactory;
 
@@ -35,8 +41,13 @@ public abstract class BaseDaoImpl<T extends BaseEntity> implements BaseDao<T> {
 
     private Class<T> entityType;
 
-    protected Session currentSession() {
-        return sessionFactory.getCurrentSession();
+    public Session currentSession(Object key) {
+        ShardScope shardScope = new ShardScope(shardAlgorithm.shardId(key));
+        try {
+            return sessionFactory.getCurrentSession();
+        } finally {
+            shardScope.close();
+        }
     }
 
     public Long create(T entity) {
@@ -45,18 +56,18 @@ public abstract class BaseDaoImpl<T extends BaseEntity> implements BaseDao<T> {
         entity.setCreatedTime(Utils.now());
         entity.setCreatedBy(Constant.SYSTEM_INTERNAL);
 
-        return (Long) currentSession().save(entity);
+        return (Long) currentSession(entity.getShardMasterId()).save(entity);
     }
 
     public T get(Long id) {
-        return (T) currentSession().get(entityType, id);
+        return (T) currentSession(id).get(entityType, id);
     }
 
     public Long update(T entity) {
         entity.setUpdatedTime(Utils.now());
         entity.setUpdatedBy(Constant.SYSTEM_INTERNAL);
 
-        currentSession().update(entity);
+        currentSession(entity.getShardMasterId()).update(entity);
         return entity.getId();
     }
 
@@ -64,19 +75,15 @@ public abstract class BaseDaoImpl<T extends BaseEntity> implements BaseDao<T> {
         return get(id) != null;
     }
 
-    public void flush() {
-        currentSession().flush();
-    }
-
-    protected T findBy(Action<Criteria> filter) {
-        Criteria criteria = currentSession().createCriteria(entityType);
+    protected T findBy(Long shardKey, Action<Criteria> filter) {
+        Criteria criteria = currentSession(shardKey).createCriteria(entityType);
         filter.apply(criteria);
 
         return (T) criteria.uniqueResult();
     }
 
-    protected List<T> findAllBy(Action<Criteria> filter) {
-        Criteria criteria = currentSession().createCriteria(entityType);
+    protected List<T> findAllBy(Long shardKey, Action<Criteria> filter) {
+        Criteria criteria = currentSession(shardKey).createCriteria(entityType);
         filter.apply(criteria);
 
         return criteria.list();

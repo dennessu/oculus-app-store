@@ -20,13 +20,15 @@ public interface PaymentTransactionService {
     @Transactional
     Promise<PaymentTransaction> capture(Long paymentId, PaymentTransaction request);
     @Transactional
+    Promise<PaymentTransaction> confirm(Long paymentId, PaymentTransaction request);
+    @Transactional
     Promise<PaymentTransaction> charge(PaymentTransaction request);
     @Transactional
     Promise<PaymentTransaction> reverse(Long paymentId, PaymentTransaction request);
     @Transactional
     Promise<PaymentTransaction> refund(Long paymentId, PaymentTransaction request);
     @Transactional(readOnly = true)
-    PaymentTransaction getById(Long paymentId);
+    Promise<PaymentTransaction> getById(Long paymentId);
     @Transactional(readOnly = true)
     Promise<PaymentTransaction> getProviderTransaction(Long paymentId);
     @Transactional

@@ -1,4 +1,5 @@
 #! /bin/sh
+source "$(git rev-parse --show-toplevel)/scripts/common.sh"; # this comment is needed, see common.sh for detail
 
 if [ ! -n "${LIQUIBASE_HOME+x}" ]; then
   # echo "Liquibase Home is not set."

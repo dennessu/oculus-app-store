@@ -3,6 +3,8 @@ package com.junbo.email.clientproxy.mock
 import com.junbo.common.id.UserId
 import com.junbo.email.clientproxy.IdentityFacade
 import com.junbo.identity.spec.v1.model.User
+import com.junbo.identity.spec.v1.model.UserEmail
+import com.junbo.identity.spec.v1.model.UserPii
 import com.junbo.langur.core.promise.Promise
 
 /**
@@ -16,5 +18,14 @@ class MockIdentityFacadeImpl implements IdentityFacade {
         user.setActive(true)
         user.setLocale('en_US')
         return Promise.pure(user)
+    }
+
+    Promise<UserPii> getUserPii(Long userId) {
+        def userPii = new UserPii()
+        userPii.userId = new UserId(userId)
+        def userEmail =new UserEmail()
+        userEmail.value = 'weijiang@silkcloud.com'
+        userPii.emails = ['silkcloud.com': userEmail] as Map
+        return Promise.pure(userPii)
     }
 }

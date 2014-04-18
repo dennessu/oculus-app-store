@@ -9,6 +9,7 @@ package com.junbo.payment.core.provider.braintree;
 import com.braintreegateway.*;
 import com.braintreegateway.exceptions.DownForMaintenanceException;
 import com.junbo.langur.core.promise.Promise;
+import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.common.exception.AppClientExceptions;
 import com.junbo.payment.common.exception.AppServerExceptions;
 import com.junbo.payment.core.provider.AbstractPaymentProviderService;
@@ -69,6 +70,9 @@ public class BrainTreePaymentProviderServiceImpl extends AbstractPaymentProvider
     @Override
     public void cloneTransactionResult(PaymentTransaction source, PaymentTransaction target) {
         target.setExternalToken(source.getExternalToken());
+        if(!CommonUtil.isNullOrEmpty(source.getStatus())){
+            target.setStatus(source.getStatus());
+        }
     }
 
     @Override
@@ -150,6 +154,7 @@ public class BrainTreePaymentProviderServiceImpl extends AbstractPaymentProvider
         }
         if(result.isSuccess()){
             paymentRequest.setExternalToken(result.getTarget().getId());
+            paymentRequest.setStatus(PaymentStatus.AUTHORIZED.toString());
         }else{
             handleProviderError(result);
         }
@@ -172,6 +177,7 @@ public class BrainTreePaymentProviderServiceImpl extends AbstractPaymentProvider
         }
         if (result.isSuccess()) {
             // transaction successfully submitted for settlement
+            request.setStatus(PaymentStatus.SETTLEMENT_SUBMITTED.toString());
         } else {
             handleProviderError(result);
         }
@@ -194,6 +200,7 @@ public class BrainTreePaymentProviderServiceImpl extends AbstractPaymentProvider
         }
         if(result.isSuccess()){
             paymentRequest.setExternalToken(result.getTarget().getId());
+            paymentRequest.setStatus(PaymentStatus.SETTLEMENT_SUBMITTED.toString());
         }else{
             handleProviderError(result);
         }
@@ -279,7 +286,7 @@ public class BrainTreePaymentProviderServiceImpl extends AbstractPaymentProvider
             handleProviderException(ex, "Search", "token", token);
         }
         if(transaction == null){
-            return null;
+            return Promise.pure(null);
         }
         PaymentTransaction result = new PaymentTransaction();
         result.setStatus(PaymentUtil.mapBraintreePaymentStatus(PaymentStatus.BrainTreeStatus.valueOf(

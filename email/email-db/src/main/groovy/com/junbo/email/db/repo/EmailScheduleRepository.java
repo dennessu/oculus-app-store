@@ -10,8 +10,8 @@ import com.junbo.email.db.entity.EmailScheduleEntity;
 import com.junbo.email.spec.model.Email;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
+import javax.transaction.Transactional;
 import java.util.Date;
 
 /**
@@ -25,7 +25,7 @@ public class EmailScheduleRepository extends EmailBaseRepository {
 
     public Email saveEmailSchedule(Email email) {
         EmailScheduleEntity entity = emailMapper.toEmailScheduleEntity(email);
-        entity.setId(idGenerator.nextId());
+        entity.setId(this.getId(entity.getUserId()));
         entity.setCreatedTime(new Date());
         entity.setCreatedBy("internal system");
         Long id = emailScheduleDao.save(entity);
@@ -55,13 +55,20 @@ public class EmailScheduleRepository extends EmailBaseRepository {
         if(updateEntity.getPriority()!=null) {
             savedEntity.setPriority(updateEntity.getPriority());
         }
-        if(updateEntity.getRecipient()!=null) {
-            savedEntity.setRecipient(updateEntity.getRecipient());
+        if(updateEntity.getRecipients()!=null) {
+            savedEntity.setRecipients(updateEntity.getRecipients());
         }
-        savedEntity.setScheduleDate(updateEntity.getScheduleDate());
+        savedEntity.setScheduleTime(updateEntity.getScheduleTime());
         savedEntity.setSource(updateEntity.getSource());
         savedEntity.setAction(updateEntity.getAction());
         savedEntity.setLocale(updateEntity.getLocale());
         savedEntity.setPayload(updateEntity.getPayload());
+    }
+
+    private Long getId(Long userId) {
+        if(userId != null) {
+            return idGenerator.nextId(userId);
+        }
+        return idGenerator.nextId();
     }
 }

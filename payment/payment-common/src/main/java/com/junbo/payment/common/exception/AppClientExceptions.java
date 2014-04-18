@@ -124,4 +124,8 @@ public interface AppClientExceptions {
     @ErrorDef(httpStatusCode = 400, code = "40025",
             description = "The revision number is invalid", field = "revision")
     AppError invalidRevision();
+
+    @ErrorDef(httpStatusCode = 400, code = "40026",
+            description = "The property field {0} is invalid", field = "property")
+    AppError invalidPropertyField(String fieldName);
 }

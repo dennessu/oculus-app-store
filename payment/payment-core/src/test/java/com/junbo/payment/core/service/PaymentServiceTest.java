@@ -66,7 +66,7 @@ public class PaymentServiceTest extends BaseTest {
         payment.setTrackingUuid(generateUUID());
         payment.setChargeInfo(null);
         paymentService.reverse(result.getId(), payment);
-        PaymentTransaction getResult = paymentService.getById(result.getId());
+        PaymentTransaction getResult = paymentService.getById(result.getId()).wrapped().get();
         Assert.assertEquals(getResult.getStatus().toString(), PaymentStatus.REVERSED.toString());
     }
 
@@ -77,7 +77,7 @@ public class PaymentServiceTest extends BaseTest {
         PaymentTransaction result = paymentService.authorize(payment).wrapped().get();
         payment.setChargeInfo(null);
         paymentService.reverse(result.getId(), payment);
-        PaymentTransaction getResult = paymentService.getById(result.getId());
+        PaymentTransaction getResult = paymentService.getById(result.getId()).wrapped().get();
         Assert.assertEquals(result.getExternalToken(), MockPaymentProviderServiceImpl.authExternalToken);
         Assert.assertEquals(getResult.getStatus().toString(), PaymentStatus.REVERSED.toString());
     }
@@ -91,7 +91,7 @@ public class PaymentServiceTest extends BaseTest {
         Assert.assertEquals(result.getStatus().toString(), PaymentStatus.SETTLEMENT_SUBMITTED.toString());
         payment.setChargeInfo(null);
         paymentService.reverse(result.getId(), payment);
-        PaymentTransaction getResult = paymentService.getById(result.getId());
+        PaymentTransaction getResult = paymentService.getById(result.getId()).wrapped().get();
         Assert.assertEquals(result.getExternalToken(), MockPaymentProviderServiceImpl.chargeExternalToken);
         Assert.assertEquals(getResult.getStatus().toString(), PaymentStatus.REVERSED.toString());
     }
@@ -119,12 +119,13 @@ public class PaymentServiceTest extends BaseTest {
         PaymentInstrument pi = addWallet();
         PaymentTransaction payment = buildPaymentTransaction(pi);
         PaymentTransaction result = paymentService.charge(payment).wrapped().get();
-        Assert.assertEquals(result.getStatus(), PaymentStatus.SETTLEMENT_SUBMITTED.toString());
+        Assert.assertEquals(result.getStatus(), PaymentStatus.SETTLED.toString());
         Assert.assertNotNull(result.getExternalToken());
     }
 
     private PaymentInstrument buildWalletPIRequest() {
         PaymentInstrument request = buildBasePIRequest();
+        request.setAccountNum(null);
         request.setType(PIType.WALLET.toString());
         request.setWalletRequest(new WalletRequest() {
             {

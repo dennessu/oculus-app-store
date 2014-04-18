@@ -41,7 +41,7 @@ class BrainTreeMain {
         resourceConfig.packages("com.junbo.payment.rest.resource")
         resourceConfig.property("contextConfigLocation", "classpath*:/spring/*.xml")
         */
-        def uri = URI.create('http://localhost:8082/rest')
+        def uri = URI.create('http://localhost:8082/v1')
         return GrizzlyHttpServerFactory.createHttpServer(uri, resourceConfig)
     }
 
