@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired
  * Implementation for User Tos Acceptance DAO interface.
  */
 @CompileStatic
-class UserTosRepositoryImpl implements UserTosRepository {
+class UserTosRepositorySqlImpl implements UserTosRepository {
     @Autowired
     private UserTosDAO userTosDAO
 

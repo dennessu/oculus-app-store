@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired
  * Created by liangfu on 3/16/14.
  */
 @CompileStatic
-class UserPinRepositoryImpl implements UserPinRepository {
+class UserPinRepositorySqlImpl implements UserPinRepository {
     @Autowired
     private UserPinDAO userPinDAO
 

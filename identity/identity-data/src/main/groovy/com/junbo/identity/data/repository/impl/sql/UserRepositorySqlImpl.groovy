@@ -21,7 +21,7 @@ import org.springframework.util.StringUtils
  * Implementation for User DAO..
  */
 @CompileStatic
-class UserRepositoryImpl implements UserRepository {
+class UserRepositorySqlImpl implements UserRepository {
     @Autowired
     private ModelMapper modelMapper
 

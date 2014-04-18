@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired
 /**
  * Created by xmchen on 14-4-15.
  */
-class AddressRepositoryImpl implements AddressRepository {
+class AddressRepositorySqlImpl implements AddressRepository {
 
     @Autowired
     private AddressDAO addressDAO

@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired
  * Created by liangfu on 3/14/14.
  */
 @CompileStatic
-class GroupRepositoryImpl implements GroupRepository {
+class GroupRepositorySqlImpl implements GroupRepository {
     @Autowired
     private GroupDAO groupDAO
 

@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired
  * Implementation for UserAuthenticatorDAO.
  */
 @CompileStatic
-class UserAuthenticatorRepositoryImpl implements UserAuthenticatorRepository {
+class UserAuthenticatorRepositorySqlImpl implements UserAuthenticatorRepository {
     @Autowired
     private UserAuthenticatorDAO authenticatorDAO
 

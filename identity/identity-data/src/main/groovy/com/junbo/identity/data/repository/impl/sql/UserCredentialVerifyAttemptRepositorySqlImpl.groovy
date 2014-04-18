@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired
  * Created by liangfu on 3/17/14.
  */
 @CompileStatic
-class UserCredentialVerifyAttemptRepositoryImpl implements UserCredentialVerifyAttemptRepository {
+class UserCredentialVerifyAttemptRepositorySqlImpl implements UserCredentialVerifyAttemptRepository {
     @Autowired
     private UserCredentialVerifyAttemptDAO credentialVerifyAttemptDAO
 
