@@ -168,7 +168,6 @@ public class CatalogGatewayImpl implements CatalogGateway {
         //TODO
         item.setEwalletAmount(null);
         item.setEwalletCurrency(null);
-        item.setEwalletCurrencyType(null);
 
         return item;
     }

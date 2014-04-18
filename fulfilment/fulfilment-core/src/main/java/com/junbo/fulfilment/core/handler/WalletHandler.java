@@ -16,6 +16,7 @@ import com.junbo.fulfilment.spec.model.FulfilmentAction;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * WalletHandler.
@@ -30,9 +31,9 @@ public class WalletHandler extends HandlerSupport<WalletContext> {
 
             CreditRequest request = new CreditRequest();
 
+            request.setTrackingUuid(UUID.randomUUID());
             request.setUserId(context.getUserId());
             request.setAmount(item.getEwalletAmount());
-            request.setCreditType(item.getEwalletCurrencyType());
             request.setCurrency(item.getEwalletCurrency());
 
             Wallet wallet = walletGateway.credit(request);
