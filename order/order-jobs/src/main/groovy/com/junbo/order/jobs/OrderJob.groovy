@@ -5,51 +5,83 @@
  */
 
 package com.junbo.order.jobs
-
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.PageParam
-import com.junbo.order.spec.resource.proxy.OrderEventResourceClientProxy
+import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor
 
+import java.util.concurrent.Callable
+import java.util.concurrent.Future
+import java.util.concurrent.atomic.AtomicInteger
 /**
  * Created by xmchen on 14-4-2.
  */
+@CompileStatic
 class OrderJob {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OrderJob)
 
-
-    OrderEventResourceClientProxy orderEventResourceClientProxy
-
     OrderRepository orderRepository
 
-    int orderProcessNumLimitPerTurn
+    int orderProcessNumLimit
 
     int pageSizePerShard
 
+    int numOfFuturesToTrack
+
     List<String> statusToProcess
 
-    protected void execute() {
-        LOGGER.info("Starting order job")
+    ThreadPoolTaskExecutor  threadPoolTaskExecutor
 
-        def numProcessed = 0
-        while (numProcessed < orderProcessNumLimitPerTurn) {
+    OrderProcessor orderProcessor
 
-            def orders = readOrders()
-            orders.each {
+    void execute() {
+        LOGGER.info('name=OrderProcessJobStart')
+        def start = System.currentTimeMillis()
+        def numProcessed = 0, numSuccess = new AtomicInteger(), numFail = new AtomicInteger()
+        List<Future> futures = [] as LinkedList<Future>
 
+        while (numProcessed < orderProcessNumLimit) {
+            def orders = readOrdersForProcess()
+            if (orders.isEmpty()) {
+                break
             }
-            orderProcessNumLimitPerTurn + orders.size()
+
+            orders.each { Order order ->
+                def future = threadPoolTaskExecutor.submit(new Callable<Void>() {
+                    @Override
+                    Void call() throws Exception {
+                        def result = orderProcessor.process(order)
+                        if (result.success) {
+                            numSuccess.andIncrement
+                        } else {
+                            numFail.andIncrement
+                        }
+                        return null
+                    }
+                } )
+                appendFuture(futures, future)
+            }
+
+            numProcessed += orders.size()
         }
 
-        LOGGER.info("Order job finished")
+        // wait all task to finish
+        futures.each { Future future ->
+            future.get()
+        }
+
+        LOGGER.info('name=OrderProcessJobEnd, numOfOrder={}, numSuccess={}, numFail={}, latency={}ms',
+            numProcessed, numSuccess, numFail, System.currentTimeMillis() - start)
+        assert numProcessed == numSuccess.get() + numFail.get()
     }
 
-    private List<Order> readOrders() {
+    private List<Order> readOrdersForProcess() {
         List<Order> ordersAllShard = []
-        allShards.each { Long shardKey ->
+        allShards.each { Integer shardKey ->
             def orders = orderRepository.getOrdersByStatus(shardKey, statusToProcess, true, new PageParam(
                     start: 0, count: pageSizePerShard
             ))
@@ -58,7 +90,7 @@ class OrderJob {
         return shuffle(ordersAllShard)
     }
 
-    private List<Order> shuffle(List<Order> orders) {
+    private static List<Order> shuffle(List<Order> orders) {
         // shuffle the orders so it is not order by shard
         Map<String, Order> map = new HashMap<>()
         orders.each { Order order ->
@@ -67,7 +99,18 @@ class OrderJob {
         return new ArrayList<Order>(map.values())
     }
 
-    private Long[] getAllShards() {
-        return null
+    private List<Integer> getAllShards() {
+        return [0, 1]
+    }
+
+    private void appendFuture(List<Future> futures, Future future) {
+        futures.add(future)
+        if (futures.size() >= 2 * numOfFuturesToTrack) {
+            Iterator<Future> iterator = futures.iterator()
+            for (int i = 0; i < numOfFuturesToTrack; ++i) {
+                iterator.next().get()
+                iterator.remove()
+            }
+        }
     }
 }
