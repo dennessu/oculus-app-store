@@ -47,6 +47,16 @@ class UserSecurityQuestionAttemptRepositorySqlImpl implements UserSecurityQuesti
     }
 
     @Override
+    Promise<UserSecurityQuestionVerifyAttempt> update(UserSecurityQuestionVerifyAttempt model) {
+        throw new IllegalStateException('update user sec question attempt not support')
+    }
+
+    @Override
+    Promise<Void> delete(UserSecurityQuestionVerifyAttemptId id) {
+        throw new IllegalStateException('delete user sec question attempt not support')
+    }
+
+    @Override
     Promise<List<UserSecurityQuestionVerifyAttempt>> search(UserSecurityQuestionAttemptListOptions getOption) {
         List<UserSecurityQuestionAttemptEntity> entities =
                 userSecurityQuestionAttemptDAO.search(getOption.userId.value, getOption)

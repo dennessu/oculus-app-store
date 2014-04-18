@@ -47,6 +47,11 @@ class RoleAssignmentRepositorySqlImpl implements RoleAssignmentRepository {
     }
 
     @Override
+    Promise<Void> delete(RoleAssignmentId id) {
+        throw new IllegalStateException('delete role assignment not support')
+    }
+
+    @Override
     Promise<RoleAssignment> findByRoleIdAssignee(RoleId roleId, String assigneeType, Long assigneeId) {
         return Promise.pure(wrap(roleAssignmentDAO.findByRoleIdAssignee(roleId.value, assigneeType, assigneeId)))
     }

@@ -7,7 +7,6 @@ package com.junbo.identity.data
 
 import com.junbo.common.id.DeviceId
 import com.junbo.common.id.GroupId
-import com.junbo.common.id.SecurityQuestionId
 import com.junbo.common.id.TosId
 import com.junbo.common.id.UserDeviceId
 import com.junbo.common.id.UserId
@@ -16,7 +15,6 @@ import com.junbo.identity.data.identifiable.UserPasswordStrength
 import com.junbo.identity.data.repository.*
 import com.junbo.identity.spec.model.users.UserPassword
 import com.junbo.identity.spec.model.users.*
-import com.junbo.identity.spec.options.list.*
 import com.junbo.identity.spec.v1.model.Device
 import com.junbo.identity.spec.v1.model.Group
 import com.junbo.identity.spec.v1.model.User

@@ -14,15 +14,6 @@ import groovy.transform.CompileStatic
  * User DAO is used to fetch/update/delete/get user data from the database
  */
 @CompileStatic
-interface UserRepository {
-
-    Promise<User> create(User user)
-
-    Promise<User> update(User user)
-
-    Promise<User> get(UserId userId)
-
-    Promise<Void> delete(UserId userId)
-
+interface UserRepository extends IdentityBaseRepository<User, UserId> {
     Promise<User> getUserByCanonicalUsername(String canonicalUsername)
 }

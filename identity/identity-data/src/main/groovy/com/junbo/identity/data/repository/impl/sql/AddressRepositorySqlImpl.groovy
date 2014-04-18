@@ -40,4 +40,14 @@ class AddressRepositorySqlImpl implements AddressRepository {
 
         return get(new AddressId((Long)entity.id))
     }
+
+    @Override
+    Promise<Address> update(Address model) {
+        throw new IllegalStateException('update address not support')
+    }
+
+    @Override
+    Promise<Void> delete(AddressId id) {
+        throw new IllegalStateException('delete address not support')
+    }
 }

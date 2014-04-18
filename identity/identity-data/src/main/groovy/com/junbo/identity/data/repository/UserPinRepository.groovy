@@ -15,15 +15,6 @@ import groovy.transform.CompileStatic
  */
 
 @CompileStatic
-interface UserPinRepository {
-
-    Promise<UserPin> create(UserPin entity)
-
-    Promise<UserPin> update(UserPin entity)
-
-    Promise<UserPin> get(UserPinId id)
-
+interface UserPinRepository extends IdentityBaseRepository<UserPin, UserPinId> {
     Promise<List<UserPin>> search(UserPinListOptions getOption)
-
-    Promise<Void> delete(UserPinId id)
 }
