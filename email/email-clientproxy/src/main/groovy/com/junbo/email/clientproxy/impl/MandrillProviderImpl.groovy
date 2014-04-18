@@ -86,7 +86,7 @@ class MandrillProviderImpl implements EmailProvider {
             switch (mandrillResponse.status) {
                 case SendStatus.SENT.status:
                     returnEmail.status = EmailStatus.SUCCEED.toString()
-                    returnEmail.sentDate = new Date()
+                    returnEmail.sentTime = new Date()
                     break
                 case SendStatus.REJECTED.status:
                     returnEmail.status = EmailStatus.FAILED.toString()
@@ -115,19 +115,21 @@ class MandrillProviderImpl implements EmailProvider {
         def request = new MandrillRequest()
         request.key = configuration.key
         def toList = []
-        def to = new To()
-        to.type = TO_TYPE
-        to.email = email.recipient
-        toList << to
+        email.recipients.each {
+            def to = new To()
+            to.type = TO_TYPE
+            to.email = it
+            toList << to
+        }
 
         Message message = new Message()
         message.toList = toList
-        if (email.properties != null) {
+        if (email.replacements != null) {
             def properties = []
-            email.properties.keySet().each {
+            email.replacements.keySet().each {
                 def map = [:]
                 map.put(VARS_NAME, it)
-                map.put(VARS_CONTENT, email.properties.get(it))
+                map.put(VARS_CONTENT, email.replacements.get(it))
                 properties << map
             }
             message.properties = properties
@@ -146,9 +148,9 @@ class MandrillProviderImpl implements EmailProvider {
     }
 
     static void encoder(Email email) {
-        if (email.properties != null) {
+        if (email.replacements != null) {
             def properties = [:]
-            email.properties.each {
+            email.replacements.each {
                 def value = it.value
                 def split = it.key.split(':')
                 def key = split.first()
@@ -171,7 +173,7 @@ class MandrillProviderImpl implements EmailProvider {
                 }
                 properties.put(key, value)
             }
-            email.properties = properties
+            email.replacements = properties
         }
     }
 }

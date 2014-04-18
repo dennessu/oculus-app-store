@@ -74,10 +74,8 @@ class ServiceFacade {
 
     User postUser() {
         User user = new User()
-        user.userName = RandomStringUtils.randomAlphabetic(10) + '@wan-san.com'
-        user.password = '123456!@bcd'
-        user.status = 'ACTIVE'
-        return userResource.postUser(user).wrapped().get()
+        user.username = RandomStringUtils.randomAlphabetic(10)
+        return userResource.create(user).wrapped().get()
     }
 
     PaymentInstrument postCreditCardPaymentInstrument(User user) {

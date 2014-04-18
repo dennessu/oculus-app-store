@@ -12,6 +12,7 @@ import com.junbo.common.id.PaymentInstrumentId
 import com.junbo.oom.core.MappingContext
 import com.junbo.order.db.dao.*
 import com.junbo.order.db.entity.*
+import com.junbo.order.db.entity.enums.OrderStatus
 import com.junbo.order.db.mapper.ModelMapper
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.model.*
@@ -101,14 +102,19 @@ class OrderRepositoryImpl implements OrderRepository {
 
     @Override
     List<Order> getOrdersByUserId(Long userId, OrderQueryParam orderQueryParam, PageParam pageParam) {
-        List<Order> orders = []
-        List<OrderEntity> orderEntities = orderDao.readByUserId(userId,
-                orderQueryParam.tentative, pageParam?.start, pageParam?.count)
-        MappingContext context = new MappingContext()
-        orderEntities.each { OrderEntity orderEntity ->
-            orders.add(modelMapper.toOrderModel(orderEntity, context))
+        return orderDao.readByUserId(userId,
+                orderQueryParam.tentative, pageParam?.start, pageParam?.count).collect { OrderEntity entity ->
+            modelMapper.toOrderModel(entity, new MappingContext())
         }
-        return orders
+    }
+
+    @Override
+    List<Order> getOrdersByStatus(Object shardKey, List<String> statusList,
+                                  boolean updatedByAscending, PageParam pageParam) {
+        return orderDao.readByStatus(shardKey, statusList.collect { String status -> OrderStatus.valueOf(status) },
+                updatedByAscending, pageParam?.start, pageParam?.count).collect { OrderEntity entity ->
+            modelMapper.toOrderModel(entity, new MappingContext())
+        }
     }
 
     @Override
@@ -395,4 +401,5 @@ class OrderRepositoryImpl implements OrderRepository {
         orderPaymentInfoEntity.orderPaymentId = idGenerator.nextId(orderId.value)
         orderPaymentInfoDao.create(orderPaymentInfoEntity)
     }
+
 }

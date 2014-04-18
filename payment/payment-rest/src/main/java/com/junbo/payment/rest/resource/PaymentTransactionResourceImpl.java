@@ -33,6 +33,12 @@ public class PaymentTransactionResourceImpl implements PaymentTransactionResourc
     }
 
     @Override
+    public Promise<PaymentTransaction> postPaymentConfirm(Long paymentId, PaymentTransaction request) {
+        CommonUtil.preValidation(request);
+        return paymentService.confirm(paymentId, request);
+    }
+
+    @Override
     public Promise<PaymentTransaction> postPaymentCharge(PaymentTransaction request) {
         CommonUtil.preValidation(request);
         return paymentService.charge(request);
@@ -45,8 +51,7 @@ public class PaymentTransactionResourceImpl implements PaymentTransactionResourc
 
     @Override
     public Promise<PaymentTransaction> getPayment(Long paymentId) {
-        PaymentTransaction result = paymentService.getById(paymentId);
-        return Promise.pure(result);
+        return paymentService.getById(paymentId);
     }
 
     @Override

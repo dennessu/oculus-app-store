@@ -20,6 +20,4 @@ public interface BaseDao<T extends BaseEntity> {
     Long update(T t);
 
     Boolean exists(Long id);
-
-    void flush();
 }

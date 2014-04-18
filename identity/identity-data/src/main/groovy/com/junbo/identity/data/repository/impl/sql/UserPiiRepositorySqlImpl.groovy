@@ -1,6 +1,7 @@
 package com.junbo.identity.data.repository.impl.sql
 
 import com.junbo.common.id.AddressId
+import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPiiId
 import com.junbo.identity.data.dao.UserAddressDAO
 import com.junbo.identity.data.dao.UserEmailDAO
@@ -54,6 +55,7 @@ class UserPiiRepositorySqlImpl implements UserPiiRepository {
     Promise<UserPii> create(UserPii userPii) {
         UserPiiEntity entity = modelMapper.toUserPii(userPii, new MappingContext())
         entity = userPiiDAO.save(entity)
+        userPii.id = new UserPiiId((Long)entity.id)
         fulfilPiiSubInfo(userPii)
         return get(new UserPiiId((Long)entity.id))
     }
@@ -61,6 +63,7 @@ class UserPiiRepositorySqlImpl implements UserPiiRepository {
     @Override
     Promise<UserPii> update(UserPii userPii) {
         UserPiiEntity userPiiEntity = modelMapper.toUserPii(userPii, new MappingContext())
+        userPiiEntity.setUpdatedTime(new Date())
         userPiiDAO.update(userPiiEntity)
         deletePiiSubInfo((UserPiiId)userPii.id)
         fulfilPiiSubInfo(userPii)

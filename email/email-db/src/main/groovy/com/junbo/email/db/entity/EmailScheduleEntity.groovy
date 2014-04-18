@@ -35,14 +35,14 @@ class EmailScheduleEntity extends BaseEntity {
     @Column(name = 'payload')
     private String payload
 
-    @Column(name = 'recipient')
-    private String recipient
+    @Column(name = 'recipients')
+    private String recipients
 
     @Column(name = 'priority')
     private Integer priority
 
-    @Column(name = 'schedule_date')
-    private Date scheduleDate
+    @Column(name = 'schedule_Time')
+    private Date scheduleTime
 
     Long getId() {
         return id
@@ -92,12 +92,12 @@ class EmailScheduleEntity extends BaseEntity {
         this.payload = payload
     }
 
-    String getRecipient() {
-        return recipient
+    String getRecipients() {
+        return recipients
     }
 
-    void setRecipient(String recipient) {
-        this.recipient = recipient
+    void setRecipients(String recipients) {
+        this.recipients = recipients
     }
 
     Integer getPriority() {
@@ -108,11 +108,11 @@ class EmailScheduleEntity extends BaseEntity {
         this.priority = priority
     }
 
-    Date getScheduleDate() {
-        return scheduleDate
+    Date getScheduleTime() {
+        return scheduleTime
     }
 
-    void setScheduleDate(Date scheduleDate) {
-        this.scheduleDate = scheduleDate
+    void setScheduleTime(Date scheduleTime) {
+        this.scheduleTime = scheduleTime
     }
 }
