@@ -10,7 +10,6 @@ import com.junbo.common.id.UserId;
 import com.junbo.entitlement.common.def.EntitlementConsts;
 import com.junbo.entitlement.common.lib.EntitlementContext;
 import com.junbo.entitlement.db.repository.EntitlementRepository;
-import com.junbo.entitlement.spec.def.EntitlementType;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.model.EntitlementSearchParam;
 import com.junbo.entitlement.spec.model.PageMetadata;
@@ -26,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -49,7 +47,7 @@ public class EntitlementRepoTest extends AbstractTestNGSpringContextTests {
     public void testInsert() {
         Entitlement entitlement = buildAnEntitlement();
         Entitlement insertedEntitlement = entitlementRepository.insert(entitlement);
-        Assert.assertEquals(insertedEntitlement.getGroup(), entitlement.getGroup());
+        Assert.assertEquals(insertedEntitlement.getUseCount(), entitlement.getUseCount());
     }
 
     @Test
@@ -65,17 +63,14 @@ public class EntitlementRepoTest extends AbstractTestNGSpringContextTests {
     @Test
     public void testSearch() {
         Long userId = idGenerator.nextId();
-        String ownerId = String.valueOf(idGenerator.nextId());
         for (int i = 0; i < 48; i++) {
             Entitlement entitlementEntity = buildAnEntitlement();
             entitlementEntity.setUserId(userId);
-            entitlementEntity.setInAppContext(Collections.singletonList(ownerId));
             entitlementRepository.insert(entitlementEntity);
         }
 
         EntitlementSearchParam searchParam = new EntitlementSearchParam();
         searchParam.setUserId(new UserId(userId));
-        searchParam.setClientId(ownerId);
         searchParam.setIsActive(false);
 
         PageMetadata pageMetadata = new PageMetadata();
@@ -96,9 +91,6 @@ public class EntitlementRepoTest extends AbstractTestNGSpringContextTests {
         List<Entitlement> list3 = entitlementRepository.getBySearchParam(searchParam, pageMetadata);
         Assert.assertEquals(list3.size(), 48);
 
-        searchParam.setGroups(Collections.singleton("TEST"));
-        searchParam.setType(EntitlementType.DEFAULT.toString());
-        searchParam.setTags(Collections.singleton("TEST"));
         List<Entitlement> list4 = entitlementRepository.getBySearchParam(searchParam, pageMetadata);
         Assert.assertEquals(list4.size(), 48);
 
@@ -115,12 +107,11 @@ public class EntitlementRepoTest extends AbstractTestNGSpringContextTests {
         for (int i = 0; i < 48; i++) {
             Entitlement entitlement = buildAnEntitlement();
             entitlement.setUserId(userId);
-            entitlement.setInAppContext(Collections.singletonList(ownerId));
             entitlementRepository.insert(entitlement);
         }
 
         EntitlementSearchParam searchParam = new EntitlementSearchParam.Builder(new UserId(userId))
-                .clientId(ownerId).isActive(true).build();
+                .isActive(true).build();
 
         PageMetadata pageMetadata = new PageMetadata();
         pageMetadata.setStart(0);
@@ -153,10 +144,6 @@ public class EntitlementRepoTest extends AbstractTestNGSpringContextTests {
         entitlement.setIsBanned(false);
 
         entitlement.setEntitlementDefinitionId(idGenerator.nextId());
-        entitlement.setGroup("TEST");
-        entitlement.setTag("TEST");
-        entitlement.setType(EntitlementType.DEFAULT.toString());
-        entitlement.setInAppContext(Collections.singletonList(String.valueOf(idGenerator.nextId())));
         return entitlement;
     }
 }

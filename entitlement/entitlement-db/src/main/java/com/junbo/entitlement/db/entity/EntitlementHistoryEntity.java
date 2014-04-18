@@ -6,37 +6,25 @@
 
 package com.junbo.entitlement.db.entity;
 
-import com.junbo.entitlement.db.entity.def.IdentifiableType;
-import com.junbo.entitlement.db.entity.def.ListJsonUserType;
 import com.junbo.entitlement.db.entity.def.Shardable;
-import com.junbo.entitlement.spec.def.EntitlementType;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import java.util.Date;
-import java.util.List;
 
 /**
  * EntitlementHistory Entity.
  */
 @javax.persistence.Entity
 @Table(name = "entitlement_history")
-@TypeDefs(@TypeDef(name="json-string", typeClass=ListJsonUserType.class))
 public class EntitlementHistoryEntity implements Shardable {
     private Long entitlementHistoryId;
     private String action;
     private Long entitlementId;
     private Integer rev;
     private Long userId;
-    private List<String> inAppContext;
-    private String group;
-    private String tag;
-    private EntitlementType type;
     private Long entitlementDefinitionId;
     private Boolean isBanned;
     private Date grantTime;
@@ -56,10 +44,6 @@ public class EntitlementHistoryEntity implements Shardable {
         this.entitlementId = entitlementEntity.getEntitlementId();
         this.rev = entitlementEntity.getRev();
         this.entitlementDefinitionId = entitlementEntity.getEntitlementDefinitionId();
-        this.inAppContext = entitlementEntity.getInAppContext();
-        this.group = entitlementEntity.getGroup();
-        this.tag = entitlementEntity.getTag();
-        this.type = entitlementEntity.getType();
         this.userId = entitlementEntity.getUserId();
         this.isBanned = entitlementEntity.getIsBanned();
         this.entitlementDefinitionId = entitlementEntity.getEntitlementDefinitionId();
@@ -198,44 +182,6 @@ public class EntitlementHistoryEntity implements Shardable {
 
     public void setModifiedBy(String modifiedBy) {
         this.modifiedBy = modifiedBy;
-    }
-
-    @Column(name = "in_app_context")
-    @Type(type = "json-string")
-    public List<String> getInAppContext() {
-        return inAppContext;
-    }
-
-    public void setInAppContext(List<String> inAppContext) {
-        this.inAppContext = inAppContext;
-    }
-
-    @Column(name = "entitlement_group")
-    public String getGroup() {
-        return group;
-    }
-
-    public void setGroup(String group) {
-        this.group = group;
-    }
-
-    @Column(name = "tag")
-    public String getTag() {
-        return tag;
-    }
-
-    public void setTag(String tag) {
-        this.tag = tag;
-    }
-
-    @Column(name = "type")
-    @Type(type = IdentifiableType.TYPE)
-    public EntitlementType getType() {
-        return type;
-    }
-
-    public void setType(EntitlementType type) {
-        this.type = type;
     }
 
     @Column(name = "is_deleted")

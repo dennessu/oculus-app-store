@@ -18,19 +18,11 @@ import java.util.Set;
 public class EntitlementSearchParam {
     @QueryParam("userId")
     private UserId userId;
-    @QueryParam("clientId")
-    private String clientId;
-    @QueryParam("type")
-    private String type;
     @QueryParam("isActive")
     private Boolean isActive;
     @QueryParam("isBanned")
     private Boolean isBanned;
 
-    @QueryParam("groups")
-    private Set<String> groups;
-    @QueryParam("tags")
-    private Set<String> tags;
     @QueryParam("definitionIds")
     private Set<EntitlementDefinitionId> definitionIds;
 
@@ -56,13 +48,6 @@ public class EntitlementSearchParam {
         this.userId = userId;
     }
 
-    public String getClientId() {
-        return clientId;
-    }
-
-    public void setClientId(String ownerId) {
-        this.clientId = ownerId;
-    }
 
     public Set<EntitlementDefinitionId> getDefinitionIds() {
         return definitionIds;
@@ -70,14 +55,6 @@ public class EntitlementSearchParam {
 
     public void setDefinitionIds(Set<EntitlementDefinitionId> definitionIds) {
         this.definitionIds = definitionIds;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public Boolean getIsActive() {
@@ -94,22 +71,6 @@ public class EntitlementSearchParam {
 
     public void setIsBanned(Boolean isBanned) {
         this.isBanned = isBanned;
-    }
-
-    public Set<String> getGroups() {
-        return groups;
-    }
-
-    public void setGroups(Set<String> groups) {
-        this.groups = groups;
-    }
-
-    public Set<String> getTags() {
-        return tags;
-    }
-
-    public void setTags(Set<String> tags) {
-        this.tags = tags;
     }
 
     public String getStartGrantTime() {
@@ -158,13 +119,9 @@ public class EntitlementSearchParam {
      */
     public static class Builder {
         private UserId userId;
-        private String clientId;
-        private String type;
         private Boolean isActive;
         private Boolean isBanned;
 
-        private Set<String> groups;
-        private Set<String> tags;
         private Set<EntitlementDefinitionId> definitionIds;
 
         private String startGrantTime;
@@ -178,11 +135,6 @@ public class EntitlementSearchParam {
             this.userId = userId;
         }
 
-        public Builder type(String val) {
-            type = val;
-            return this;
-        }
-
         public Builder isActive(Boolean val) {
             isActive = val;
             return this;
@@ -190,16 +142,6 @@ public class EntitlementSearchParam {
 
         public Builder isBanned(Boolean val) {
             isBanned = val;
-            return this;
-        }
-
-        public Builder groups(Set<String> val) {
-            groups = val;
-            return this;
-        }
-
-        public Builder tags(Set<String> val) {
-            tags = val;
             return this;
         }
 
@@ -228,11 +170,6 @@ public class EntitlementSearchParam {
             return this;
         }
 
-        public Builder clientId(String val){
-            clientId = val;
-            return this;
-        }
-
         public Builder definitionIds(Set<EntitlementDefinitionId> val) {
             definitionIds = val;
             return this;
@@ -245,13 +182,9 @@ public class EntitlementSearchParam {
 
     private EntitlementSearchParam(Builder builder) {
         userId = builder.userId;
-        clientId = builder.clientId;
-        type = builder.type;
         isActive = builder.isActive;
         isBanned = builder.isBanned;
         definitionIds = builder.definitionIds;
-        groups = builder.groups;
-        tags = builder.tags;
         startGrantTime = builder.startGrantTime;
         endGrantTime = builder.endGrantTime;
         startExpirationTime = builder.startExpirationTime;

@@ -6,6 +6,7 @@
 
 package com.junbo.entitlement.spec.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -14,16 +15,16 @@ import com.junbo.common.jackson.annotation.EntitlementId;
 import com.junbo.common.jackson.annotation.UserId;
 
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 /**
  * Entitlement Model.
  */
-@JsonPropertyOrder(value = {"entitlementId", "rev", "userId", "inAppContext", "isActive", "isBanned",
-        "entitlementDefinitionId", "type", "group", "tag", "grantTime", "expirationTime", "useCount"})
+@JsonPropertyOrder(value = {"entitlementId", "rev", "userId", "isActive", "isBanned",
+        "entitlementDefinitionId", "grantTime", "expirationTime", "useCount"})
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Entitlement{
+    @JsonIgnore
     private UUID trackingUuid;
     @JsonProperty("self")
     @EntitlementId
@@ -33,16 +34,13 @@ public class Entitlement{
     @JsonProperty("user")
     private Long userId;
     private Boolean isActive;
+    @JsonProperty("isSuspended")
     private Boolean isBanned;
-    private List<String> inAppContext;
-    private String type;
     @EntitlementDefinitionId
     @JsonProperty("entitlementDefinition")
     private Long entitlementDefinitionId;
     private Date grantTime;
     private Date expirationTime;
-    private String group;
-    private String tag;
     private Integer useCount;
 
     public UUID getTrackingUuid() {
@@ -107,38 +105,6 @@ public class Entitlement{
 
     public void setUseCount(Integer useCount) {
         this.useCount = useCount;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getGroup() {
-        return group;
-    }
-
-    public void setGroup(String group) {
-        this.group = group;
-    }
-
-    public String getTag() {
-        return tag;
-    }
-
-    public void setTag(String tag) {
-        this.tag = tag;
-    }
-
-    public List<String> getInAppContext() {
-        return inAppContext;
-    }
-
-    public void setInAppContext(List<String> inAppContext) {
-        this.inAppContext = inAppContext;
     }
 
     public Boolean getIsActive() {

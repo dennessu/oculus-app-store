@@ -8,7 +8,6 @@ package com.junbo.entitlement.db.mapper;
 
 import com.junbo.entitlement.common.lib.EntitlementContext;
 import com.junbo.entitlement.db.entity.EntitlementEntity;
-import com.junbo.entitlement.spec.def.EntitlementType;
 import com.junbo.entitlement.spec.model.Entitlement;
 import org.springframework.stereotype.Component;
 
@@ -29,10 +28,6 @@ public class EntitlementMapper {
         entitlement.setEntitlementId(entitlementEntity.getEntitlementId());
         entitlement.setRev(entitlementEntity.getRev());
         entitlement.setUserId(entitlementEntity.getUserId());
-        entitlement.setType(entitlementEntity.getType().toString());
-        entitlement.setGroup(entitlementEntity.getGroup());
-        entitlement.setTag(entitlementEntity.getTag());
-        entitlement.setInAppContext(entitlementEntity.getInAppContext());
         entitlement.setEntitlementDefinitionId(entitlementEntity.getEntitlementDefinitionId());
         entitlement.setIsActive(isActive(entitlementEntity));
         entitlement.setIsBanned(entitlementEntity.getIsBanned());
@@ -49,10 +44,6 @@ public class EntitlementMapper {
         entitlementEntity.setRev(entitlement.getRev());
         entitlementEntity.setEntitlementDefinitionId(
                 entitlement.getEntitlementDefinitionId());
-        entitlementEntity.setInAppContext(entitlement.getInAppContext());
-        entitlementEntity.setType(EntitlementType.valueOf(entitlement.getType().toUpperCase()));
-        entitlementEntity.setGroup(entitlement.getGroup());
-        entitlementEntity.setTag(entitlement.getTag());
         entitlementEntity.setUserId(entitlement.getUserId());
         entitlementEntity.setIsBanned(entitlement.getIsBanned());
         entitlementEntity.setGrantTime(entitlement.getGrantTime());

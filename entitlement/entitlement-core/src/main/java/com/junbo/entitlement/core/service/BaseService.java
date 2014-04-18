@@ -6,7 +6,6 @@
 
 package com.junbo.entitlement.core.service;
 
-import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
 import com.junbo.entitlement.clientproxy.catalog.EntitlementDefinitionFacade;
 import com.junbo.entitlement.common.def.EntitlementConsts;
 import com.junbo.entitlement.common.lib.EntitlementContext;
@@ -16,11 +15,9 @@ import com.junbo.entitlement.spec.model.EntitlementTransfer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.text.ParseException;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -33,36 +30,12 @@ public class BaseService {
     private EntitlementDefinitionFacade definitionFacade;
 
     protected void fillCreate(Entitlement entitlement) {
-        if (CollectionUtils.isEmpty(entitlement.getInAppContext())
-                && entitlement.getEntitlementDefinitionId() != null) {
-            fillDefinition(entitlement);
-        }
-        if (entitlement.getGroup() == null) {
-            entitlement.setGroup("");
-        }
-        if (entitlement.getTag() == null) {
-            entitlement.setTag("");
-        }
         if (entitlement.getIsBanned() == null) {
             entitlement.setIsBanned(false);
         }
         if (entitlement.getGrantTime() == null) {
             entitlement.setGrantTime(EntitlementContext.current().getNow());
         }
-    }
-
-    private void fillDefinition(Entitlement entitlement) {
-        EntitlementDefinition definition = definitionFacade.getDefinition(entitlement.getEntitlementDefinitionId());
-        if (definition == null) {
-            throw AppErrors.INSTANCE.fieldNotCorrect(
-                    "entitlementDefinition", "EntitlementDefinition [" +
-                    entitlement.getEntitlementDefinitionId() +
-                    "] not found.").exception();
-        }
-        entitlement.setType(definition.getType());
-        entitlement.setGroup(definition.getGroup());
-        entitlement.setTag(definition.getTag());
-        entitlement.setInAppContext(Collections.singletonList(definition.getDeveloperId().toString()));
     }
 
     protected void fillUpdate(Entitlement entitlement, Entitlement existingEntitlement) {
@@ -73,22 +46,12 @@ public class BaseService {
     }
 
     protected void validateCreate(Entitlement entitlement) {
-        checkUser(entitlement.getUserId());
-        if (CollectionUtils.isEmpty(entitlement.getInAppContext())
-                && entitlement.getEntitlementDefinitionId() == null) {
-            throw AppErrors.INSTANCE.common(
-                    "One of developer and entitlementDefinition should not be null.")
-                    .exception();
-        }
-        checkInAppContext(entitlement.getInAppContext());
+        checkOauth(entitlement);
         if (Boolean.TRUE.equals(entitlement.getIsBanned())) {
             throw AppErrors.INSTANCE.fieldNotCorrect("isBanned",
                     "isBanned can not be true when created").exception();
         }
-        validateNotNull(entitlement.getType(), "type");
         validateNotNull(entitlement.getGrantTime(), "grantTime");
-        validateNotNull(entitlement.getGroup(), "group");
-        validateNotNull(entitlement.getTag(), "tag");
         if (entitlement.getUseCount() != null && entitlement.getUseCount() < 1) {
             throw AppErrors.INSTANCE.fieldNotCorrect("useCount", "useCount should not be negative").exception();
         }
@@ -106,15 +69,10 @@ public class BaseService {
     }
 
     protected void validateUpdate(Entitlement entitlement, Entitlement existingEntitlement) {
-        checkUser(existingEntitlement.getUserId());
-        checkInAppContext(existingEntitlement.getInAppContext());
+        checkOauth(existingEntitlement);
         validateEquals(existingEntitlement.getUserId(), entitlement.getUserId(), "user");
-        validateEquals(existingEntitlement.getInAppContext(), entitlement.getInAppContext(), "inAppContext");
         validateEquals(existingEntitlement.getEntitlementDefinitionId(),
                 entitlement.getEntitlementDefinitionId(), "definition");
-        validateEquals(existingEntitlement.getType(), entitlement.getType(), "type");
-        validateEquals(existingEntitlement.getGroup(), entitlement.getGroup(), "group");
-        validateEquals(existingEntitlement.getTag(), entitlement.getTag(), "tag");
         validateEquals(existingEntitlement.getGrantTime(), entitlement.getGrantTime(), "grantTime");
         if (entitlement.getUseCount() != null && entitlement.getUseCount() < 1) {
             throw AppErrors.INSTANCE.fieldNotCorrect("useCount", "useCount should not be negative").exception();
@@ -128,7 +86,7 @@ public class BaseService {
             throw AppErrors.INSTANCE.notFound("entitlement", transfer.getEntitlementId()).exception();
         }
         checkUser(existingEntitlement.getUserId());
-        checktargetUser(transfer.getTargetUserId());
+        checkTargetUser(transfer.getTargetUserId());
         if (existingEntitlement.getIsBanned()) {
             LOGGER.error("Entitlement [{}] can not be transferred.", existingEntitlement.getEntitlementId());
             throw AppErrors.INSTANCE.notTransferable(existingEntitlement.getEntitlementId(),
@@ -180,12 +138,16 @@ public class BaseService {
         //TODO: check userId
     }
 
-    protected void checktargetUser(Long userId) {
+    protected void checkTargetUser(Long userId) {
         validateNotNull(userId, "targetUser");
     }
 
     protected void checkInAppContext(List<String> clientIds) {
         //TODO: check clientId
+    }
+
+    protected void checkOauth(Entitlement entitlement) {
+
     }
 
     protected void checkDateFormat(String date) {

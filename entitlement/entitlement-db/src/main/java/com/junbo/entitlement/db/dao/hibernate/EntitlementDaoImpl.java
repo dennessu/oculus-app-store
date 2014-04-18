@@ -13,7 +13,6 @@ import com.junbo.entitlement.common.lib.CommonUtils;
 import com.junbo.entitlement.common.lib.EntitlementContext;
 import com.junbo.entitlement.db.dao.EntitlementDao;
 import com.junbo.entitlement.db.entity.EntitlementEntity;
-import com.junbo.entitlement.spec.def.EntitlementType;
 import com.junbo.entitlement.spec.model.EntitlementSearchParam;
 import com.junbo.entitlement.spec.model.PageMetadata;
 import org.hibernate.Query;
@@ -50,11 +49,6 @@ public class EntitlementDaoImpl extends BaseDao<EntitlementEntity> implements En
     private void addSearchParam(EntitlementSearchParam entitlementSearchParam,
                                 StringBuilder queryStringBuilder,
                                 Map<String, Object> params) throws ParseException {
-        if (CommonUtils.isNotNull(entitlementSearchParam.getClientId())) {
-            queryStringBuilder.append(" and '{\"\\\"" +
-                    entitlementSearchParam.getClientId() +
-                    "\\\"\"}'\\:\\:text[] <@ (json_val_arr(in_app_context))");
-        }
         if (entitlementSearchParam.getIsBanned() != null) {
             addSingleParam("is_banned", "isBanned",
                     entitlementSearchParam.getIsBanned(), "=", queryStringBuilder, params);
@@ -73,9 +67,6 @@ public class EntitlementDaoImpl extends BaseDao<EntitlementEntity> implements En
             }
             params.put("now", now);
         }
-        addCollectionParam("entitlement_group", "groups",
-                entitlementSearchParam.getGroups(), queryStringBuilder, params);
-        addCollectionParam("tag", "tags", entitlementSearchParam.getTags(), queryStringBuilder, params);
         if (!CollectionUtils.isEmpty(entitlementSearchParam.getDefinitionIds())) {
             addCollectionParam("entitlement_definition_id", "definitionIds",
                     CommonUtils.select(entitlementSearchParam.getDefinitionIds(),
@@ -86,11 +77,6 @@ public class EntitlementDaoImpl extends BaseDao<EntitlementEntity> implements En
                                 }
                             }),
                     queryStringBuilder, params);
-        }
-        if (CommonUtils.isNotNull(entitlementSearchParam.getType())) {
-            addSingleParam("type", "type",
-                    EntitlementType.valueOf(entitlementSearchParam.getType()).getId(),
-                    "=", queryStringBuilder, params);
         }
         if (!StringUtils.isEmpty(entitlementSearchParam.getStartGrantTime())) {
             addSingleParam("grant_time", "startGrantTime",

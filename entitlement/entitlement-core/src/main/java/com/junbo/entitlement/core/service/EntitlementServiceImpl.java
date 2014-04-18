@@ -18,9 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -79,12 +77,8 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     public List<Entitlement> searchEntitlement(EntitlementSearchParam entitlementSearchParam,
                                                PageMetadata pageMetadata) {
         validateNotNull(entitlementSearchParam.getUserId(), "user");
-        if (StringUtils.isEmpty(entitlementSearchParam.getClientId())) {
-            //TODO: check if clientId is admin
-        } else {
-            checkInAppContext(Collections.singletonList(entitlementSearchParam.getClientId()));
-        }
         checkUser(entitlementSearchParam.getUserId().getValue());
+        checkInAppContext(null); //TODO:
         checkSearchDateFormat(entitlementSearchParam);
         List<Entitlement> entitlementEntities = entitlementRepository.getBySearchParam(
                 entitlementSearchParam, pageMetadata);

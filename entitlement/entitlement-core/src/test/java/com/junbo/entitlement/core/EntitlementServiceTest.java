@@ -9,7 +9,6 @@ package com.junbo.entitlement.core;
 import com.junbo.common.error.AppErrorException;
 import com.junbo.common.id.UserId;
 import com.junbo.entitlement.common.lib.EntitlementContext;
-import com.junbo.entitlement.spec.def.EntitlementType;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.model.EntitlementSearchParam;
 import com.junbo.entitlement.spec.model.EntitlementTransfer;
@@ -27,7 +26,6 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.WebApplicationException;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -49,7 +47,7 @@ public class EntitlementServiceTest extends AbstractTestNGSpringContextTests {
     public void testAddEntitlement() {
         Entitlement entitlement = buildAnEntitlement();
         Entitlement addedEntitlement = entitlementService.addEntitlement(entitlement);
-        Assert.assertEquals(addedEntitlement.getTag(), entitlement.getTag());
+        Assert.assertEquals(addedEntitlement.getUseCount(), entitlement.getUseCount());
     }
 
     @Test(expectedExceptions = AppErrorException.class)
@@ -108,7 +106,6 @@ public class EntitlementServiceTest extends AbstractTestNGSpringContextTests {
 
         EntitlementSearchParam searchParam = new EntitlementSearchParam();
         searchParam.setUserId(new UserId(userId));
-        searchParam.setClientId(userId.toString());
         searchParam.setIsActive(true);
         List<Entitlement> entitlements = entitlementService.searchEntitlement(searchParam, new PageMetadata());
 
@@ -138,10 +135,6 @@ public class EntitlementServiceTest extends AbstractTestNGSpringContextTests {
         entitlement.setGrantTime(new Date(114, 0, 22));
         entitlement.setExpirationTime(new Date(114, 0, 28));
         entitlement.setEntitlementDefinitionId(idGenerator.nextId());
-        entitlement.setGroup("TEST");
-        entitlement.setTag("TEST");
-        entitlement.setType(EntitlementType.DEFAULT.toString());
-        entitlement.setInAppContext(Collections.singletonList(String.valueOf(idGenerator.nextId())));
         return entitlement;
     }
 }
