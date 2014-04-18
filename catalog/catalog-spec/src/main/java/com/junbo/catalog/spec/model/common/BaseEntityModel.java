@@ -15,25 +15,17 @@ import javax.validation.constraints.NotNull;
  * Base entity model.
  */
 public abstract class BaseEntityModel extends BaseModel {
-    @NotNull
+   /* @NotNull
     @ApiModelProperty(position = 10, required = true, value = "Friendly identifier")
     @JsonProperty("friendlyIdentifier")
     private String name;
-
+*/
     @ApiModelProperty(position = 11, required = true, value = "Curated")
     @JsonProperty("isCurated")
     private Boolean curated;
 
     @ApiModelProperty(position = 1003, required = true, value = "[Client Immutable] rev")
     private String rev;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public Boolean getCurated() {
         return curated;

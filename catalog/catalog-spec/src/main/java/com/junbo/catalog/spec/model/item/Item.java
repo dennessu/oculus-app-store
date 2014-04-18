@@ -24,7 +24,8 @@ public class Item extends BaseEntityModel {
     @ApiModelProperty(position = 1, required = true, value = "[Client Immutable] The id of item resource")
     private Long itemId;
 
-    @ApiModelProperty(position = 2, required = true, value = "Item type")
+    @ApiModelProperty(position = 2, required = true, value = "Item type",
+            allowableValues = "PHYSICAL, DIGITAL, WALLET, SUBSCRIPTION")
     private String type;
 
     @ItemRevisionId
@@ -40,11 +41,24 @@ public class Item extends BaseEntityModel {
     @ApiModelProperty(position = 22, required = true, value = "Developer of the item")
     private Long ownerId;
 
+    @ApiModelProperty(position = 23, required = true,
+            value = "An ID that helps to group like items. ex. TEAM_FORTRESS, this rollup ID would be applied to" +
+                    "all items that are team fortress (PC, MAC, LINUX, etc)")
+    private String rollupPackageName;
+
+    @ApiModelProperty(position = 24, required = true,
+            value = "Used to uniquely identify the item (app), used mainly for android")
+    private String packageName;
+
+    @ApiModelProperty(position = 24, required = true, value = "The platform name, for digital goods only",
+            allowableValues = "PC, MAC, LINUX, ANDROID")
+    private List<String> platforms;
+
     @ItemAttributeId
-    @ApiModelProperty(position = 23, required = true, value = "Genres")
+    @ApiModelProperty(position = 25, required = true, value = "Genres")
     private List<Long> genres;
 
-    @ApiModelProperty(position = 24, required = true, value = "Sku")
+    @ApiModelProperty(position = 26, required = true, value = "Sku")
     private String sku;
 
     @JsonIgnore
@@ -88,6 +102,30 @@ public class Item extends BaseEntityModel {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getRollupPackageName() {
+        return rollupPackageName;
+    }
+
+    public void setRollupPackageName(String rollupPackageName) {
+        this.rollupPackageName = rollupPackageName;
+    }
+
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
+    }
+
+    public List<String> getPlatforms() {
+        return platforms;
+    }
+
+    public void setPlatforms(List<String> platforms) {
+        this.platforms = platforms;
     }
 
     public List<Long> getGenres() {

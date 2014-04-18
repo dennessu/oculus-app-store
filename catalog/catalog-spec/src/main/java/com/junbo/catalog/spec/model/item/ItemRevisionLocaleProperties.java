@@ -32,8 +32,6 @@ public class ItemRevisionLocaleProperties {
     String legalInformation;
     @ApiModelProperty(position = 9, required = true, value = "supported input devices")
     List<String> supportedInputDevices;
-    @ApiModelProperty(position = 10, required = true, value = "platforms")
-    List<String> platforms;
     @ApiModelProperty(position = 11, required = true, value = "credits")
     String credits;
     @ApiModelProperty(position = 12, required = true, value = "copyright")
@@ -115,14 +113,6 @@ public class ItemRevisionLocaleProperties {
 
     public void setSupportedInputDevices(List<String> supportedInputDevices) {
         this.supportedInputDevices = supportedInputDevices;
-    }
-
-    public List<String> getPlatforms() {
-        return platforms;
-    }
-
-    public void setPlatforms(List<String> platforms) {
-        this.platforms = platforms;
     }
 
     public String getCredits() {

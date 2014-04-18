@@ -29,7 +29,8 @@ public class ItemRevision extends BaseRevisionModel {
     @ApiModelProperty(position = 1, required = true, value = "[Client Immutable] The id of item revision resource")
     private Long revisionId;
 
-    @ApiModelProperty(position = 2, required = true, value = "Item type")
+    @ApiModelProperty(position = 2, required = true, value = "Item type",
+            allowableValues = "PHYSICAL, DIGITAL, WALLET, SUBSCRIPTION")
     private String type;
 
     @UserId
@@ -70,12 +71,13 @@ public class ItemRevision extends BaseRevisionModel {
     private String communityForumLink;
     @ApiModelProperty(position = 33, required = true, value = "Age ratings for the item revision resource")
     private Map<String, AgeRatingId> ageRatings;
-    @ApiModelProperty(position = 34, required = true, value = "E-wallet currency type")
-    private String ewalletCurrencyType;
-    @ApiModelProperty(position = 35, required = true, value = "E-wallet currency")
-    private String ewalletCurrency;
-    @ApiModelProperty(position = 36, required = true, value = "E-wallet amount")
-    private String ewalletAmount;
+    @ApiModelProperty(position = 34, required = true, value = "Wallet currency type",
+            allowableValues = "REAL_CURRENCY, VIRTUAL_CURRENCY")
+    private String walletCurrencyType;
+    @ApiModelProperty(position = 35, required = true, value = "Wallet currency")
+    private String walletCurrency;
+    @ApiModelProperty(position = 36, required = true, value = "Wallet amount")
+    private String walletAmount;
 
     @ApiModelProperty(position = 37, required = true, value = "Locale properties of the item revision")
     private Map<String, ItemRevisionLocaleProperties> locales;
@@ -208,28 +210,28 @@ public class ItemRevision extends BaseRevisionModel {
         this.ageRatings = ageRatings;
     }
 
-    public String getEwalletCurrencyType() {
-        return ewalletCurrencyType;
+    public String getWalletCurrencyType() {
+        return walletCurrencyType;
     }
 
-    public void setEwalletCurrencyType(String ewalletCurrencyType) {
-        this.ewalletCurrencyType = ewalletCurrencyType;
+    public void setWalletCurrencyType(String walletCurrencyType) {
+        this.walletCurrencyType = walletCurrencyType;
     }
 
-    public String getEwalletCurrency() {
-        return ewalletCurrency;
+    public String getWalletCurrency() {
+        return walletCurrency;
     }
 
-    public void setEwalletCurrency(String ewalletCurrency) {
-        this.ewalletCurrency = ewalletCurrency;
+    public void setWalletCurrency(String walletCurrency) {
+        this.walletCurrency = walletCurrency;
     }
 
-    public String getEwalletAmount() {
-        return ewalletAmount;
+    public String getWalletAmount() {
+        return walletAmount;
     }
 
-    public void setEwalletAmount(String ewalletAmount) {
-        this.ewalletAmount = ewalletAmount;
+    public void setWalletAmount(String walletAmount) {
+        this.walletAmount = walletAmount;
     }
 
     public Map<String, ItemRevisionLocaleProperties> getLocales() {

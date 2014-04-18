@@ -37,11 +37,11 @@ public class Offer extends BaseEntityModel {
     private Long ownerId;
 
     @ItemId
-    @JsonProperty("iapItem")
+    @JsonProperty("soldWithinItem")
     @ApiModelProperty(position = 23, required = false, value = "The item in which the IAP offer will be sold.")
     private Long iapItemId;
 
-    @AttributeId
+    @OfferAttributeId
     @ApiModelProperty(position = 24, required = true, value = "Categories of the offer.")
     private List<Long> categories;
 

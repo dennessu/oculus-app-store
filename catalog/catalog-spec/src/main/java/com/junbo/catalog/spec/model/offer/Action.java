@@ -18,7 +18,8 @@ import java.util.Map;
  * Action containing information for events.
  */
 public class Action {
-    @ApiModelProperty(position = 1, required = true, value = "action type")
+    @ApiModelProperty(position = 1, required = true, value = "action type",
+            allowableValues = "GRANT_ENTITLEMENT, DELIVER_PHYSICAL_GOODS, CREDIT_WALLET")
     private String type;
     @EntitlementDefinitionId
     @JsonProperty("entitlementDefinition")
