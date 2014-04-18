@@ -7,6 +7,7 @@
 package com.junbo.entitlement.db;
 
 import com.junbo.common.id.UserId;
+import com.junbo.entitlement.common.def.EntitlementConsts;
 import com.junbo.entitlement.common.lib.EntitlementContext;
 import com.junbo.entitlement.db.repository.EntitlementRepository;
 import com.junbo.entitlement.spec.def.EntitlementStatus;
@@ -91,8 +92,8 @@ public class EntitlementDaoTest extends AbstractTestNGSpringContextTests {
 
         pageMetadata.setStart(0);
         pageMetadata.setCount(100);
-        searchParam.setStartGrantTime(new Date(114, 0, 22));
-        searchParam.setEndGrantTime(new Date(114, 0, 22));
+        searchParam.setStartGrantTime(EntitlementConsts.DATE_FORMAT.format(new Date(114, 0, 22)));
+        searchParam.setEndGrantTime(EntitlementConsts.DATE_FORMAT.format(new Date(114, 0, 22)));
         List<Entitlement> list3 = entitlementRepository.getBySearchParam(searchParam, pageMetadata);
         Assert.assertEquals(list3.size(), 48);
 
@@ -102,8 +103,8 @@ public class EntitlementDaoTest extends AbstractTestNGSpringContextTests {
         List<Entitlement> list4 = entitlementRepository.getBySearchParam(searchParam, pageMetadata);
         Assert.assertEquals(list4.size(), 48);
 
-        searchParam.setStartGrantTime(new Date(114, 0, 23));
-        searchParam.setEndGrantTime(new Date(114, 0, 24));
+        searchParam.setStartGrantTime(EntitlementConsts.DATE_FORMAT.format(new Date(114, 0, 23)));
+        searchParam.setEndGrantTime(EntitlementConsts.DATE_FORMAT.format(new Date(114, 0, 24)));
         List<Entitlement> list5 = entitlementRepository.getBySearchParam(searchParam, pageMetadata);
         Assert.assertEquals(list5.size(), 0);
     }
