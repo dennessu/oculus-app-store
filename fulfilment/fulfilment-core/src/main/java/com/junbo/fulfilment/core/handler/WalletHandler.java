@@ -6,8 +6,7 @@
 package com.junbo.fulfilment.core.handler;
 
 import com.junbo.ewallet.spec.model.CreditRequest;
-import com.junbo.ewallet.spec.model.Wallet;
-import com.junbo.fulfilment.common.util.Constant;
+import com.junbo.ewallet.spec.model.Transaction;
 import com.junbo.fulfilment.core.context.WalletContext;
 import com.junbo.fulfilment.spec.fusion.Item;
 import com.junbo.fulfilment.spec.fusion.LinkedEntry;
@@ -36,8 +35,8 @@ public class WalletHandler extends HandlerSupport<WalletContext> {
             request.setAmount(item.getEwalletAmount());
             request.setCurrency(item.getEwalletCurrency());
 
-            Wallet wallet = walletGateway.credit(request);
-            success.add(wallet.getTransactions().get(Constant.UNIQUE_RESULT).getTransactionId());
+            Transaction transaction = walletGateway.credit(request);
+            success.add(transaction.getTransactionId());
         }
 
         return Arrays.toString(success.toArray());
