@@ -16,6 +16,26 @@ import java.util.Date;
 @Entity
 @Table(name = "user_pin")
 public class UserPinEntity extends ResourceMetaEntity {
+    @Id
+    @Column(name = "id")
+    private Long id;
+
+    @Column(name = "user_id")
+    private Long userId;
+
+    @Column(name = "pin_hash")
+    private String pinHash;
+
+    @Column(name = "active")
+    private Boolean active;
+
+    @Column(name = "change_at_next_login")
+    private Boolean changeAtNextLogin;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "expires_by")
+    private Date expiresBy;
+
     public Long getId() {
         return id;
     }
@@ -38,22 +58,6 @@ public class UserPinEntity extends ResourceMetaEntity {
 
     public void setPinHash(String pinHash) {
         this.pinHash = pinHash;
-    }
-
-    public String getPinSalt() {
-        return pinSalt;
-    }
-
-    public void setPinSalt(String pinSalt) {
-        this.pinSalt = pinSalt;
-    }
-
-    public String getPinPepper() {
-        return pinPepper;
-    }
-
-    public void setPinPepper(String pinPepper) {
-        this.pinPepper = pinPepper;
     }
 
     public Boolean getActive() {
@@ -79,23 +83,4 @@ public class UserPinEntity extends ResourceMetaEntity {
     public void setExpiresBy(Date expiresBy) {
         this.expiresBy = expiresBy;
     }
-
-    @Id
-    @Column(name = "id")
-    private Long id;
-    @Column(name = "user_id")
-    private Long userId;
-    @Column(name = "pin_hash")
-    private String pinHash;
-    @Column(name = "pin_salt")
-    private String pinSalt;
-    @Column(name = "pin_pepper")
-    private String pinPepper;
-    @Column(name = "active")
-    private Boolean active;
-    @Column(name = "change_at_next_login")
-    private Boolean changeAtNextLogin;
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "expires_by")
-    private Date expiresBy;
 }

@@ -128,8 +128,16 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                         throw AppErrors.INSTANCE.userPasswordIncorrect().exception()
                     }
 
-                    if (CipherHelper.generateCipherHashV1(split[1], userPasswordList.get(0).passwordSalt,
-                                userPasswordList.get(0).passwordPepper) == userPasswordList.get(0).passwordHash) {
+                    String[] hashInfo = userPasswordList.get(0).passwordHash.split(CipherHelper.COLON)
+                    if (hashInfo.length != 4) {
+                        throw AppErrors.INSTANCE.userPasswordIncorrect().exception()
+                    }
+
+                    String salt = hashInfo[1]
+                    String pepper = hashInfo[2]
+
+                    if (CipherHelper.generateCipherHashV1(split[1], salt, pepper)
+                            == userPasswordList.get(0).passwordHash) {
                         userLoginAttempt.setSucceeded(true)
                     } else {
                         userLoginAttempt.setSucceeded(false)
@@ -145,8 +153,15 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                         throw AppErrors.INSTANCE.userPinIncorrect().exception()
                     }
 
-                    if (CipherHelper.generateCipherHashV1(split[1], userPinList.get(0).pinSalt,
-                            userPinList.get(0).pinPepper) == userPinList.get(0).pinHash) {
+                    String[] hashInfo = userPinList.get(0).pinHash.split(CipherHelper.COLON)
+                    if (hashInfo.length != 4) {
+                        throw AppErrors.INSTANCE.userPinIncorrect().exception()
+                    }
+
+                    String salt = hashInfo[1]
+                    String pepper = hashInfo[2]
+
+                    if (CipherHelper.generateCipherHashV1(split[1], salt, pepper) == userPinList.get(0).pinHash) {
                         userLoginAttempt.setSucceeded(true)
                     } else {
                         userLoginAttempt.setSucceeded(false)
@@ -163,26 +178,22 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
             throw new IllegalArgumentException('userLoginAttempt is null')
         }
 
-        if (userLoginAttempt.clientId == null) {
-            throw AppErrors.INSTANCE.fieldRequired('clientId').exception()
+        if (userLoginAttempt.clientId != null) {
+            if (userLoginAttempt.clientId.length() > clientIdMaxLength) {
+                throw AppErrors.INSTANCE.fieldTooLong('clientId', clientIdMaxLength).exception()
+            }
+
+            if (userLoginAttempt.clientId.length() < clientIdMinLength) {
+                throw AppErrors.INSTANCE.fieldTooShort('clientId', clientIdMinLength).exception()
+            }
         }
 
-        if (userLoginAttempt.clientId.length() > clientIdMaxLength) {
-            throw AppErrors.INSTANCE.fieldTooLong('clientId', clientIdMaxLength).exception()
-        }
-
-        if (userLoginAttempt.clientId.length() < clientIdMinLength) {
-            throw AppErrors.INSTANCE.fieldTooShort('clientId', clientIdMinLength).exception()
-        }
-
-        if (userLoginAttempt.ipAddress == null) {
-            throw AppErrors.INSTANCE.fieldRequired('ipAddress').exception()
-        }
-
-        if (!allowedIpAddressPatterns.any {
-                    Pattern pattern -> pattern.matcher(userLoginAttempt.ipAddress).matches()
-                }) {
-            throw AppErrors.INSTANCE.fieldInvalid('ipAddress').exception()
+        if (userLoginAttempt.ipAddress != null) {
+            if (!allowedIpAddressPatterns.any {
+                        Pattern pattern -> pattern.matcher(userLoginAttempt.ipAddress).matches()
+                    }) {
+                throw AppErrors.INSTANCE.fieldInvalid('ipAddress').exception()
+            }
         }
 
         if (userLoginAttempt.type == null) {
@@ -193,16 +204,14 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
             throw AppErrors.INSTANCE.fieldInvalid('type', allowedTypes.join(',')).exception()
         }
 
-        if (userLoginAttempt.userAgent == null) {
-            throw AppErrors.INSTANCE.fieldRequired('userAgent').exception()
-        }
+        if (userLoginAttempt.userAgent != null) {
+            if (userLoginAttempt.userAgent.length() > userAgentMaxLength) {
+                throw AppErrors.INSTANCE.fieldTooLong('userAgent', userAgentMaxLength).exception()
+            }
 
-        if (userLoginAttempt.userAgent.length() > userAgentMaxLength) {
-            throw AppErrors.INSTANCE.fieldTooLong('userAgent', userAgentMaxLength).exception()
-        }
-
-        if (userLoginAttempt.userAgent.length() < userAgentMinLength) {
-            throw AppErrors.INSTANCE.fieldTooShort('userAgent', userAgentMinLength).exception()
+            if (userLoginAttempt.userAgent.length() < userAgentMinLength) {
+                throw AppErrors.INSTANCE.fieldTooShort('userAgent', userAgentMinLength).exception()
+            }
         }
 
         if (userLoginAttempt.value == null) {

@@ -11,6 +11,7 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.order.core.FlowSelector
 import com.junbo.order.core.FlowType
 import com.junbo.order.core.OrderServiceOperation
+import com.junbo.order.core.impl.common.CoreUtils
 import com.junbo.order.core.impl.order.OrderServiceContext
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
 import com.junbo.order.db.entity.enums.ItemType
@@ -46,6 +47,9 @@ class DefaultFlowSelector implements FlowSelector {
         switch (operation) {
             case OrderServiceOperation.CREATE:
             case OrderServiceOperation.SETTLE_TENTATIVE:
+                if (CoreUtils.isFreeOrder(context.order)) {
+                    return Promise.pure(FlowType.FREE_SETTLE.name())
+                }
                 return selectSettleOrderFlow(context)
             case OrderServiceOperation.CREATE_TENTATIVE:
                 return Promise.pure(FlowType.RATE_ORDER.name())

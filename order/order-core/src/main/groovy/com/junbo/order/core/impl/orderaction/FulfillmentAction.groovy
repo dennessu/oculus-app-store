@@ -61,6 +61,7 @@ class  FulfillmentAction extends BaseOrderEventAwareAction {
         }.syncThen { FulfilmentRequest fulfilmentResult ->
             EventStatus orderEventStatus = EventStatus.COMPLETED
 
+            // TODO: fulfillment status for physical goods
             fulfilmentResult.items.each { FulfilmentItem fulfilmentItem ->
                 def fulfillmentEvent = toFulfillmentEvent(fulfilmentResult, fulfilmentItem)
                 def fulfillmentEventStatus = EventStatus.valueOf(fulfillmentEvent.status)

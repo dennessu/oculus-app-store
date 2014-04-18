@@ -15,6 +15,10 @@ import com.ning.http.client.RequestBuilder;
 import com.ning.http.client.providers.netty.NettyResponse;
 import junit.framework.Assert;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.concurrent.Future;
 
@@ -183,6 +187,31 @@ public abstract class HttpClientBase {
             default:
                 throw new TestException(String.format("Unsupported http method found: %s", httpMethod.getHttpMethod()));
         }
+    }
+
+    protected String readFileContent(String resourceLocation) throws Exception {
+
+        InputStream inStream = ClassLoader.getSystemResourceAsStream(resourceLocation);
+        BufferedReader br = new BufferedReader(new InputStreamReader(inStream));
+
+        StringBuilder strItem = new StringBuilder();
+        try {
+            String sCurrentLine;
+            while ((sCurrentLine = br.readLine()) != null) {
+                strItem.append(sCurrentLine + "\n");
+            }
+        } catch (IOException e) {
+            throw e;
+        } finally {
+            if (br != null){
+                br.close();
+            }
+            if (inStream != null) {
+                inStream.close();
+            }
+        }
+
+        return strItem.toString();
     }
 
 }

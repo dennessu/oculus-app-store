@@ -33,17 +33,16 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
     @ApiModelProperty(position = 5, required = false, value = "The locale of the user.")
     private String locale;
 
-    @ApiModelProperty(position = 6, required = false, value = "The timezone of the user.")
+    @ApiModelProperty(position = 6, required = false,
+            value = "The timezone of the user, must be the format as UTC+08:00.")
     private String timezone;
 
     @ApiModelProperty(position = 7, required = false, value = "Whether the user is active.")
+    @JsonProperty("isActive")
     private Boolean active;
 
     @ApiModelProperty(position = 8, required = false, value = "The nick name of the user.")
     private String nickName;
-
-    @ApiModelProperty(position = 9, required = false, value = "The currency of the user.")
-    private String currency;
 
     @JsonIgnore
     private String canonicalUsername;
@@ -111,6 +110,7 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
     public void setActive(Boolean active) {
         this.active = active;
         support.setPropertyAssigned("active");
+        support.setPropertyAssigned("isActive");
     }
 
     public String getNickName() {
@@ -120,15 +120,6 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
     public void setNickName(String nickName) {
         this.nickName = nickName;
         support.setPropertyAssigned("nickName");
-    }
-
-    public String getCurrency() {
-        return currency;
-    }
-
-    public void setCurrency(String currency) {
-        this.currency = currency;
-        support.setPropertyAssigned("currency");
     }
 
     public String getCanonicalUsername() {

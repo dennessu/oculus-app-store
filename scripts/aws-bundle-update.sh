@@ -3,6 +3,10 @@ source "$(git rev-parse --show-toplevel)/scripts/common.sh"; # this comment is n
 
 bundleName=$1
 
+if [[ -z $bundleName ]]; then
+    echo ERROR: bundleName not specified
+    exit 1
+fi
 if [[ -z $ONEBOX_IP ]]; then 
     echo ERROR: ONEBOX_IP environment variable not set.
     exit 1
@@ -11,19 +15,30 @@ if [[ -z $ONEBOX_USER ]]; then
     echo ERROR: ONEBOX_USER environment variable not set.
     exit 1
 fi
+if [[ -z $ONEBOX_PATH ]]; then
+    ONEBOX_PATH=/opt
+fi
 
 oneboxAddress=$ONEBOX_USER@$ONEBOX_IP
 
-pushd `rootdir`/bootstrap/$bundleName-bundle
+pushd `rootdir`
+./scripts/build-bundle.sh $bundleName
+popd
 
+pushd `rootdir`/bootstrap/$bundleName-bundle
 bundlePath=build/distributions/$bundleName-bundle-0.0.1-SNAPSHOT.tar.gz
-if [[ ! -f $bundlePath ]]; then
+if [[ -f build/distributions/$bundleName-bundle-0.0.1-SNAPSHOT.tar ]]; then
+    if [[ -f $bundlePath ]]; then 
+        rm $bundlePath
+    fi
     gzip build/distributions/$bundleName-bundle-0.0.1-SNAPSHOT.tar
 fi
-scp $bundlePath $oneboxAddress:/opt
+
+oneboxPath=$ONEBOX_PATH
+scp $bundlePath $oneboxAddress:$oneboxPath
 ssh $oneboxAddress << ENDSSH
 ps aux | grep '$bundleName-bundle' | grep -v grep | awk '{print \$2}' | xargs kill
-cd /opt
+cd $oneboxPath
 tar zxfv $bundleName-bundle-0.0.1-SNAPSHOT.tar.gz
 cd $bundleName-bundle-0.0.1-SNAPSHOT
 ./startup.sh

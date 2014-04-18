@@ -21,8 +21,7 @@ public class AppErrorException extends WebApplicationException {
     }
 
     public AppErrorException(AppError error) {
-        super(Response.status(error.getHttpStatusCode()).entity(new Error(error.getCode(),
-                error.getDescription(), error.getField(), null)).
+        super(error.toString(), Response.status(error.getHttpStatusCode()).entity(error.error()).
                 type(MediaType.APPLICATION_JSON_TYPE).build());
 
         this.error = error;

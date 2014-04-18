@@ -16,6 +16,28 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "user_name")
 public class UserNameEntity {
+    @Id
+    @Column(name = "id")
+    private Long id;
+
+    @Column(name = "user_pii_id")
+    private Long userPiiId;
+
+    @Column(name = "first_name")
+    private String firstName;
+
+    @Column(name = "middle_name")
+    private String middleName;
+
+    @Column(name = "last_name")
+    private String lastName;
+
+    @Column(name = "honorific_prefix")
+    private String honorificPrefix;
+
+    @Column(name = "honorific_suffix")
+    private String honorificSuffix;
+
     public Long getId() {
         return id;
     }
@@ -24,12 +46,12 @@ public class UserNameEntity {
         this.id = id;
     }
 
-    public Long getUserId() {
-        return userId;
+    public Long getUserPiiId() {
+        return userPiiId;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setUserPiiId(Long userPiiId) {
+        this.userPiiId = userPiiId;
     }
 
     public String getFirstName() {
@@ -71,20 +93,4 @@ public class UserNameEntity {
     public void setHonorificSuffix(String honorificSuffix) {
         this.honorificSuffix = honorificSuffix;
     }
-
-    @Id
-    @Column(name = "id")
-    private Long id;
-    @Column(name = "user_id")
-    private Long userId;
-    @Column(name = "first_name")
-    private String firstName;
-    @Column(name = "middle_name")
-    private String middleName;
-    @Column(name = "last_name")
-    private String lastName;
-    @Column(name = "honorific_prefix")
-    private String honorificPrefix;
-    @Column(name = "honorific_suffix")
-    private String honorificSuffix;
 }
