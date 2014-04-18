@@ -6,6 +6,7 @@
 package com.junbo.test.buyerscenario;
 
 //import com.junbo.cart.spec.model.item.OfferItem;
+
 import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.common.id.ShippingAddressId;
 import com.junbo.common.id.UserId;
@@ -96,9 +97,12 @@ public class BuyerValidationHelper extends BaseValidationHelper {
 
     public void validateEmailHistory(String uid, String orderId) throws Exception {
         String id = IdConverter.hexStringToId(UserId.class, uid).toString();
-        String sql = String.format("select payload from email_history where user_id=\'%s\'", id);
+        String sql = String.format("select payload from shard_0.email_history where user_id=\'%s\'", id);
         String resultString = dbHelper.executeScalar(sql, DBHelper.DBName.EMAIL);
-
+        if (resultString.isEmpty() || resultString == null) {
+            sql = String.format("select payload from shard_1.email_history where user_id=\'%s\'", id);
+            resultString = dbHelper.executeScalar(sql, DBHelper.DBName.EMAIL);
+        }
         verifyEqual(resultString.indexOf("OrderConfirmation") >= 0, true, "Verify email type");
         verifyEqual(resultString.indexOf(orderId) >= 0, true, "verify order Id");
         verifyEqual(resultString.indexOf("SUCCEED") >= 0, true, "Verify email sent status");
