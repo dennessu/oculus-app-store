@@ -28,9 +28,9 @@ public class ItemAttribute extends BaseModel {
     private String type;
     @ItemAttributeId
     @JsonProperty("parent")
-    @ApiModelProperty(position = 1, required = false, value = "Parent id")
+    @ApiModelProperty(position = 3, required = false, value = "Parent id")
     private Long parentId;
-    @ApiModelProperty(position = 3, required = true, value = "Locale properties")
+    @ApiModelProperty(position = 4, required = true, value = "Locale properties")
     private Map<String, SimpleLocaleProperties> locales;
 
     public Long getId() {

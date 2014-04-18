@@ -8,9 +8,7 @@ package com.junbo.catalog.spec.model.item;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.junbo.catalog.spec.model.common.BaseRevisionModel;
-import com.junbo.catalog.spec.model.common.Price;
-import com.junbo.common.id.AgeRatingId;
+import com.junbo.catalog.spec.model.common.*;
 import com.junbo.common.jackson.annotation.ItemRevisionId;
 import com.junbo.common.jackson.annotation.OfferId;
 import com.junbo.common.jackson.annotation.UserId;
@@ -46,11 +44,6 @@ public class ItemRevision extends BaseRevisionModel {
     @ApiModelProperty(position = 22, required = true, value = "msrp")
     private Price msrp;
 
-    // the dirty part
-    // I believe these should be in a dynamic property bag, controlled by meta-data and driven by business requirements
-    // but I have to do this per request
-    @ApiModelProperty(position = 23, required = true, value = "Artwork")
-    private String artwork;
     @ApiModelProperty(position = 24, required = true, value = "Item version")
     private String version;
     @ApiModelProperty(position = 25, required = true, value = "Download Link")
@@ -62,15 +55,18 @@ public class ItemRevision extends BaseRevisionModel {
     @ApiModelProperty(position = 28, required = false, value = "Support phone")
     private String supportPhone;
     @ApiModelProperty(position = 29, required = false, value = "Images to describe the item revision resource")
-    private List<String> images;
+    private Images images;
     @ApiModelProperty(position = 30, required = false, value = "Videos to describe the item revision resource")
-    private List<String> videos;
+    private List<Video> videos;
     @ApiModelProperty(position = 31, required = false, value = "Manual document for the item revision resource")
     private String manualDocument;
     @ApiModelProperty(position = 32, required = false, value = "Community forum link of the item revision resource")
     private String communityForumLink;
-    @ApiModelProperty(position = 33, required = true, value = "Age ratings for the item revision resource")
-    private Map<String, AgeRatingId> ageRatings;
+    //@ApiModelProperty(position = 33, required = true, value = "Age ratings for the item revision resource")
+    //private Map<String, AgeRatingId> ageRatings;
+    @ApiModelProperty(position = 33, required = true,
+            value = "The content rating given to the item by a specific board (ESRB, PEGI)")
+    private List<AgeRating> ageRatings;
     @ApiModelProperty(position = 34, required = true, value = "Wallet currency type",
             allowableValues = "REAL_CURRENCY, VIRTUAL_CURRENCY")
     private String walletCurrencyType;
@@ -122,14 +118,6 @@ public class ItemRevision extends BaseRevisionModel {
         this.msrp = msrp;
     }
 
-    public String getArtwork() {
-        return artwork;
-    }
-
-    public void setArtwork(String artwork) {
-        this.artwork = artwork;
-    }
-
     public String getVersion() {
         return version;
     }
@@ -170,20 +158,20 @@ public class ItemRevision extends BaseRevisionModel {
         this.supportPhone = supportPhone;
     }
 
-    public List<String> getImages() {
-        return images;
-    }
-
-    public void setImages(List<String> images) {
-        this.images = images;
-    }
-
-    public List<String> getVideos() {
+    public List<Video> getVideos() {
         return videos;
     }
 
-    public void setVideos(List<String> videos) {
+    public void setVideos(List<Video> videos) {
         this.videos = videos;
+    }
+
+    public Images getImages() {
+        return images;
+    }
+
+    public void setImages(Images images) {
+        this.images = images;
     }
 
     public String getManualDocument() {
@@ -202,11 +190,11 @@ public class ItemRevision extends BaseRevisionModel {
         this.communityForumLink = communityForumLink;
     }
 
-    public Map<String, AgeRatingId> getAgeRatings() {
+    public List<AgeRating> getAgeRatings() {
         return ageRatings;
     }
 
-    public void setAgeRatings(Map<String, AgeRatingId> ageRatings) {
+    public void setAgeRatings(List<AgeRating> ageRatings) {
         this.ageRatings = ageRatings;
     }
 

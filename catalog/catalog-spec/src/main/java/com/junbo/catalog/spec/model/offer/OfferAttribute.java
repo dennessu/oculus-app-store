@@ -28,9 +28,9 @@ public class OfferAttribute extends BaseModel {
     private String type;
     @OfferAttributeId
     @JsonProperty("parent")
-    @ApiModelProperty(position = 1, required = true, value = "Parent id")
+    @ApiModelProperty(position = 3, required = true, value = "Parent id")
     private Long parentId;
-    @ApiModelProperty(position = 3, required = false, value = "locale properties")
+    @ApiModelProperty(position = 4, required = false, value = "locale properties")
     private Map<String, SimpleLocaleProperties> locales;
 
     public Long getId() {

@@ -9,8 +9,6 @@ package com.junbo.catalog.spec.model.common;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
-import javax.validation.constraints.NotNull;
-
 /**
  * Base entity model.
  */
