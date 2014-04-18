@@ -14,6 +14,7 @@ public class WebPaymentInfo {
     private String cancelURL;
     private String payerId;
     private String token;
+    private String redirectURL;
 
     public String getReturnURL() {
         return returnURL;
@@ -47,4 +48,11 @@ public class WebPaymentInfo {
         this.token = token;
     }
 
+    public String getRedirectURL() {
+        return redirectURL;
+    }
+
+    public void setRedirectURL(String redirectURL) {
+        this.redirectURL = redirectURL;
+    }
 }

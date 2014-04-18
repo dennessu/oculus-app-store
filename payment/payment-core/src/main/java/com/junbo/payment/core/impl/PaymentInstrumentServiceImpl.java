@@ -61,6 +61,9 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
         }
         final PaymentProviderService provider = providerRoutingService.getPaymentProvider(
                 PaymentUtil.getPIType(request.getType()));
+        if(provider == null){
+            throw AppServerExceptions.INSTANCE.providerNotFound("request.getType()").exception();
+        }
         //call provider and set result
         return provider.add(request).recover(new Promise.Func<Throwable, Promise<PaymentInstrument>>() {
             @Override
