@@ -49,8 +49,6 @@ public class FulfilmentDaoTest extends BaseTest {
         entity2.setRequestId(requestId);
         dao.create(entity2);
 
-        dao.flush();
-
         List<FulfilmentEntity> results = dao.findByRequestId(requestId);
         Assert.assertEquals(results.size(), 2, "Result size should match.");
     }
