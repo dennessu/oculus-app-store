@@ -13,6 +13,8 @@ public class BillingEvent extends BaseEventModel {
 
     private String balanceId;
 
+    private Long orderId;
+
     public String getBalanceId() {
         return balanceId;
     }
