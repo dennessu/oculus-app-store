@@ -20,7 +20,7 @@ public class EntitlementSearchParam {
     private UserId userId;
     @QueryParam("isActive")
     private Boolean isActive;
-    @QueryParam("isBanned")
+    @QueryParam("isSuspended")
     private Boolean isBanned;
 
     @QueryParam("definitionIds")
