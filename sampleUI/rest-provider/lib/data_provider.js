@@ -1,6 +1,17 @@
-var Configs = require('./../configs/config');
-var Utils = require('./utils');
-var RestClient = require('./rest_client');
+var Configs         = null;
+var Utils           = null;
+var RestClient      = null;
+
+if(typeof(window) != "undefined"){
+    Utils = window.Lib.Utils;
+    RestClient = window.Lib.RestClient;
+    Configs = window.AppConfig.RestConfigs;
+}else{
+    Utils = require('./utils');
+    RestClient = require('./rest_client');
+    Configs = require('../configs/config').RestConfigs;
+}
+
 
 var DataProvider = {};
 
@@ -73,6 +84,18 @@ DataProvider._Exec = function(provider, propertyName, args){
     options["port"] = provider.Port;
     options["path"] = pathUrl;
 
+    var httpUrl = "";
+    if(options.port == 80){
+        httpUrl = Utils.Format("http://{1}{2}", options["host"], options["path"]);
+    }else{
+        httpUrl = Utils.Format("http://{1}:{2}{3}", options["host"], options["port"], options["path"]);
+    }
+    options["url"] = httpUrl;
+
+    if(typeof(argsObj["options"]) != "undefined"){
+        options = Utils.FillObject(options, argsObj.options, 0);
+    }
+
     if(typeof(argsObj['cb']) == "undefined" || argsObj['cb'] == null)
         throw "Can't configuration the callback function, please verify the config and arguments";
 
@@ -108,4 +131,8 @@ for (var s in Configs) {
     }
 }
 
-module.exports = DataProvider;
+if(typeof(window) != "undefined"){
+    Module.Load(window, "Lib.DataProvider", DataProvider);
+}else{
+    module.exports = DataProvider;
+}
