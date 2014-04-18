@@ -8,8 +8,6 @@ package com.junbo.catalog.spec.model.item;
 
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
-import java.util.List;
-
 /**
  * Locale properties for item revision.
  */
