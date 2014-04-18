@@ -68,35 +68,34 @@ public class WalletRepository {
         return mapper.toWallet(result);
     }
 
-    public Wallet credit(Wallet wallet, CreditRequest creditRequest) {
+    public Transaction credit(Wallet wallet, CreditRequest creditRequest) {
         wallet.setBalance(wallet.getBalance().add(creditRequest.getAmount()));
-        wallet.setTrackingUuid(creditRequest.getTrackingUuid());
-        Wallet result = mapper.toWallet(walletDao.update(mapper.toWalletEntity(wallet)));
+        walletDao.update(mapper.toWalletEntity(wallet));
 
         TransactionEntity transaction =
-                transactionDao.insert(buildCreditTransaction(wallet.getWalletId(), creditRequest));
-        result.setTransactions(Collections.singletonList(mapper.toTransaction(transaction)));
+                transactionDao.insert(buildCreditTransaction(
+                        wallet.getTrackingUuid(), wallet.getWalletId(), creditRequest));
 
         WalletLotEntity lotEntity = walletLotDao.insert(buildWalletLot(wallet.getWalletId(), creditRequest));
         lotTransactionDao.insert(buildCreditLotTransaction(lotEntity, transaction.getId()));
 
-        return result;
+        return mapper.toTransaction(transaction);
     }
 
-    public Wallet debit(Wallet wallet, DebitRequest debitRequest) {
+    public Transaction debit(Wallet wallet, DebitRequest debitRequest) {
         wallet.setBalance(wallet.getBalance().subtract(debitRequest.getAmount()));
         wallet.setTrackingUuid(debitRequest.getTrackingUuid());
         WalletEntity resultEntity = mapper.toWalletEntity(wallet);
-        Wallet result = mapper.toWallet(walletDao.update(resultEntity));
+        walletDao.update(resultEntity);
 
         TransactionEntity transaction =
-                transactionDao.insert(buildDebitTransaction(wallet.getWalletId(), debitRequest));
-        result.setTransactions(Collections.singletonList(mapper.toTransaction(transaction)));
+                transactionDao.insert(buildDebitTransaction(
+                        wallet.getTrackingUuid(), wallet.getWalletId(), debitRequest));
 
         List<WalletLotEntity> lots = walletLotDao.getValidLot(wallet.getWalletId());
         debit(resultEntity, lots, debitRequest.getAmount(), transaction.getId());
 
-        return result;
+        return mapper.toTransaction(transaction);
     }
 
     private void debit(final WalletEntity wallet,
@@ -136,11 +135,6 @@ public class WalletRepository {
         }
     }
 
-    public List<Transaction> getTransactions(Long walletId) {
-        List<TransactionEntity> results = transactionDao.getByWalletId(walletId);
-        return mapper.toTransactions(results);
-    }
-
     public Wallet getByTrackingUuid(Long shardMasterId, UUID uuid) {
         return mapper.toWallet(walletDao.getByTrackingUuid(shardMasterId, uuid));
     }
@@ -155,8 +149,9 @@ public class WalletRepository {
         return lotEntity;
     }
 
-    private TransactionEntity buildCreditTransaction(Long walletId, CreditRequest creditRequest) {
+    private TransactionEntity buildCreditTransaction(UUID trackingUuid, Long walletId, CreditRequest creditRequest) {
         TransactionEntity transactionEntity = new TransactionEntity();
+        transactionEntity.setTrackingUuid(trackingUuid);
         transactionEntity.setWalletId(walletId);
         transactionEntity.setAmount(creditRequest.getAmount());
         transactionEntity.setOfferId(creditRequest.getOfferId());
@@ -164,8 +159,9 @@ public class WalletRepository {
         return transactionEntity;
     }
 
-    private TransactionEntity buildDebitTransaction(Long walletId, DebitRequest debitRequest) {
+    private TransactionEntity buildDebitTransaction(UUID trackingUuid, Long walletId, DebitRequest debitRequest) {
         TransactionEntity transactionEntity = new TransactionEntity();
+        transactionEntity.setTrackingUuid(trackingUuid);
         transactionEntity.setWalletId(walletId);
         transactionEntity.setAmount(debitRequest.getAmount());
         transactionEntity.setOfferId(debitRequest.getOfferId());
