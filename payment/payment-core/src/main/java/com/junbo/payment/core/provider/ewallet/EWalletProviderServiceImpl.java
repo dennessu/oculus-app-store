@@ -8,6 +8,7 @@ package com.junbo.payment.core.provider.ewallet;
 
 import com.junbo.common.id.WalletId;
 import com.junbo.ewallet.spec.model.DebitRequest;
+import com.junbo.ewallet.spec.model.Transaction;
 import com.junbo.ewallet.spec.model.Wallet;
 import com.junbo.ewallet.spec.resource.WalletResource;
 import com.junbo.langur.core.promise.Promise;
@@ -31,6 +32,7 @@ public class EWalletProviderServiceImpl extends AbstractPaymentProviderService {
     private static final Logger LOGGER = LoggerFactory.getLogger(EWalletProviderServiceImpl.class);
     @Autowired
     private WalletResource walletClient;
+
     @Override
     public String getProviderName() {
         return PROVIDER_NAME;
@@ -90,24 +92,24 @@ public class EWalletProviderServiceImpl extends AbstractPaymentProviderService {
         DebitRequest debitRequest = new DebitRequest();
         debitRequest.setAmount(paymentRequest.getChargeInfo().getAmount());
         return walletClient.debit(new WalletId(Long.parseLong(pi.getAccountNum())), debitRequest).
-                recover(new Promise.Func<Throwable, Promise<Wallet>>() {
+                recover(new Promise.Func<Throwable, Promise<Transaction>>() {
                     @Override
-                    public Promise<Wallet> apply(Throwable throwable) {
+                    public Promise<Transaction> apply(Throwable throwable) {
                         ProxyExceptionResponse proxyResponse = new ProxyExceptionResponse(throwable);
                         LOGGER.error("charge declined by " + getProviderName() +
                                 "; error detail: " + proxyResponse.getBody());
                         throw AppServerExceptions.INSTANCE.providerProcessError(
                                 PROVIDER_NAME, proxyResponse.getBody()).exception();
                     }
-                }).then(new Promise.Func<Wallet, Promise<PaymentTransaction>>() {
+                }).then(new Promise.Func<Transaction, Promise<PaymentTransaction>>() {
             @Override
-            public Promise<PaymentTransaction> apply(Wallet wallet) {
-                if(wallet.getTransactions() == null || wallet.getTransactions().isEmpty() ||
-                        wallet.getTransactions().get(0).getTransactionId() == null){
+            public Promise<PaymentTransaction> apply(Transaction transaction) {
+                if (transaction == null ||
+                        transaction.getTransactionId() == null) {
                     throw AppServerExceptions.INSTANCE.providerProcessError(
                             PROVIDER_NAME, "No transaction happens").exception();
                 }
-                paymentRequest.setExternalToken(wallet.getTransactions().get(0).getTransactionId().toString());
+                paymentRequest.setExternalToken(transaction.getTransactionId().toString());
                 return Promise.pure(paymentRequest);
             }
         });
