@@ -8,6 +8,7 @@ import groovy.transform.CompileStatic
 @CompileStatic
 enum PersistentMode {
     CLOUDANT_READ_WRITE,
+    SQL_READ_WRITE,
     CLOUDANT_READ_DUAL_WRITE_CLOUDANT_PRIMARY,
     CLOUDANT_READ_DUAL_WRITE_SQL_PRIMARY
 }

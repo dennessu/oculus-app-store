@@ -7,6 +7,8 @@ package com.junbo.order.db.entity.enums;
 
 import com.junbo.common.util.Identifiable;
 
+import javax.ws.rs.NotSupportedException;
+
 /**
  * Created by fzhang on 4/2/2014.
  */
@@ -25,4 +27,11 @@ public enum SubledgerItemAction implements Identifiable<Short> {
     public Short getId() {
         return id;
     }
+
+    @Override
+    public void setId(Short id) {
+        throw new NotSupportedException("enum SubledgerItemAction not settable");
+    }
+
+
 }

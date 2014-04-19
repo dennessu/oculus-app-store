@@ -13,6 +13,8 @@ import com.junbo.sharding.IdGenerator;
 import com.junbo.sharding.ShardAlgorithm;
 import org.springframework.beans.factory.annotation.Required;
 
+import java.lang.reflect.ParameterizedType;
+
 /**
  * IdentityBaseRepositoryImpl.
  * @param <ID>
@@ -21,6 +23,12 @@ import org.springframework.beans.factory.annotation.Required;
  */
 public abstract class IdentityBaseRepositoryImpl<ID extends Id, M extends Identifiable<ID>,
                     R extends IdentityBaseRepository<M, ID>> implements IdentityBaseRepository<M, ID> {
+    private R cloudantRepo;
+    private R sqlRepo;
+    private PersistentMode mode;
+    private ShardAlgorithm shardAlgorithm;
+    private IdGenerator idGenerator;
+
     @Required
     public void setMode(PersistentMode mode) {
         this.mode = mode;
@@ -47,12 +55,29 @@ public abstract class IdentityBaseRepositoryImpl<ID extends Id, M extends Identi
     }
 
     public Promise<M> get(ID id) {
-        // ALWAYS READ FROM CLOUDANT
-        return this.cloudantRepo.get(id);
+        if (mode.equals(PersistentMode.SQL_READ_WRITE)) {
+            return this.sqlRepo.get(id);
+        }
+        else {
+            // OTHERWISE READ FROM CLOUDANT
+            return this.cloudantRepo.get(id);
+        }
     }
 
     public Promise<M> create(M model) {
-        if (mode.equals(PersistentMode.CLOUDANT_READ_WRITE)) {
+        Class idClazz = (Class)((ParameterizedType)this.getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+        ID id = null;
+        try {
+            id = (ID) idClazz.getDeclaredConstructor(Long.class)
+                    .newInstance(idGenerator.nextIdByShardId(shardAlgorithm.shardId()));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        model.setId(id);
+        if (mode.equals(PersistentMode.SQL_READ_WRITE)) {
+            this.sqlRepo.create(model);
+        }
+        else if (mode.equals(PersistentMode.CLOUDANT_READ_WRITE)) {
             this.cloudantRepo.create(model);
         }
         else if (mode.equals(PersistentMode.CLOUDANT_READ_DUAL_WRITE_CLOUDANT_PRIMARY)) {
@@ -77,10 +102,4 @@ public abstract class IdentityBaseRepositoryImpl<ID extends Id, M extends Identi
 
         return Promise.pure(null);
     }
-
-    private R cloudantRepo;
-    private R sqlRepo;
-    private PersistentMode mode;
-    private ShardAlgorithm shardAlgorithm;
-    private IdGenerator idGenerator;
 }

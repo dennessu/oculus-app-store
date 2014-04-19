@@ -10,4 +10,5 @@ interface IdentityBaseRepository<T, K> {
     Promise<T> update(T model)
     Promise<T> get(K id)
     Promise<Void> delete(K id)
+    //Promise<Void> markDeleted(K id)
 }

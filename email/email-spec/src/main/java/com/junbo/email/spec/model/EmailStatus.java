@@ -7,6 +7,8 @@ package com.junbo.email.spec.model;
 
 import com.junbo.common.util.Identifiable;
 
+import javax.ws.rs.NotSupportedException;
+
 /**
  * Email Status.
  */
@@ -25,4 +27,10 @@ public enum EmailStatus implements Identifiable<Short> {
     public Short getId() {
         return id;
     }
+
+    @Override
+    public void setId(Short id) {
+        throw new NotSupportedException("enum EmailStatus not settable");
+    }
+
 }
