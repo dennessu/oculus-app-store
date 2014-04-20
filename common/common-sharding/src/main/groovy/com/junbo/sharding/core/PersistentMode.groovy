@@ -1,4 +1,4 @@
-package com.junbo.identity.data.repository.impl
+package com.junbo.sharding.core
 
 import groovy.transform.CompileStatic
 

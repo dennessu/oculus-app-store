@@ -52,15 +52,27 @@ abstract class CloudantClient<T> implements  InitializingBean {
         def id = Utils.tryObtainGetterMethod(entityClass, 'id')
         def cloudantId = Utils.tryObtainGetterMethod(entityClass, '_id')
         def cloudantRev = Utils.tryObtainGetterMethod(entityClass, '_rev')
-        if (id == null || cloudantId == null || cloudantRev == null) {
+
+        def resourceAge = Utils.tryObtainGetterMethod(entityClass, 'resourceAge')
+        def createdTime = Utils.tryObtainGetterMethod(entityClass, 'createdTime')
+        def updatedTime = Utils.tryObtainGetterMethod(entityClass, 'updatedTime')
+        def createdBy = Utils.tryObtainGetterMethod(entityClass, 'createdBy')
+        def updatedBy = Utils.tryObtainGetterMethod(entityClass, 'updatedBy')
+
+        if (id == null || cloudantId == null || cloudantRev == null || resourceAge == null || createdTime == null
+        || updatedTime == null || createdBy == null || updatedBy == null) {
             throw new CloudantException("Failed to init cloudant client with entityClass: $entityClass, " +
-                    'one of properties[id, _id, _rev] not found')
+           'some of properties[id, _id, _rev, resourceAge, createdTime, updatedTime, createdBy, updatedby] not found')
         }
     }
 
     T cloudantPost(T entity) {
         entity._id = entity.id.toString()
         entity._rev = ''
+        entity.createdTime = new Date()
+        entity.createdBy = 'todo-cloudant'
+        entity.resourceAge = '0'
+
         def response = executeRequest(HttpMethod.POST, '', [:], entity, true)
         if (response.statusCode != HttpStatus.CREATED.value()) {
             CloudantError cloudantError = JsonMarshaller.unmarshall(response.responseBody, CloudantError)
@@ -100,6 +112,10 @@ abstract class CloudantClient<T> implements  InitializingBean {
         def cloudantDoc = getCloudantDocument(entity.id.toString())
         entity._id = entity.id.toString()
         entity._rev = cloudantDoc._rev
+        entity.updatedTime = new Date()
+        entity.updatedBy = 'todo-cloudant'
+        entity.resourceAge = ((String)entity._rev).split('-')[0]
+
         def response = executeRequest(HttpMethod.PUT, entity.id.toString(), [:], entity, true)
 
         if (response.statusCode != HttpStatus.CREATED.value()) {
@@ -135,7 +151,6 @@ abstract class CloudantClient<T> implements  InitializingBean {
 
     List<T> cloudantGetAll() {
         def response = executeRequest(HttpMethod.GET, '_all_docs', [:], null)
-
         if (response.statusCode != HttpStatus.OK.value()) {
             CloudantError cloudantError = JsonMarshaller.unmarshall(response.responseBody, CloudantError)
 
@@ -184,7 +199,6 @@ abstract class CloudantClient<T> implements  InitializingBean {
 
     private T getCloudantDocument(String id) {
         def response = executeRequest(HttpMethod.GET, id, [:], null)
-
         if (response.statusCode != HttpStatus.OK.value()) {
             return null
         }
