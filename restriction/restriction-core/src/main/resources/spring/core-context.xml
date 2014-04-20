@@ -6,7 +6,21 @@
     <context:component-scan base-package="com.junbo.restriction.core"/>
     <context:component-scan base-package="com.junbo.restriction.clientproxy.*"/>
 
-    <bean id="restrictionService" class="com.junbo.restriction.core.service.RestrictionServiceImpl"/>
+    <bean id="baseVerifier" class="com.junbo.restriction.core.verifier.impl.BaseVerifier" abstract="true"/>
+    <bean id="commonVerifier" class="com.junbo.restriction.core.verifier.impl.CommonVerifierImpl" parent="baseVerifier"/>
+    <bean id="gsaVerifier" class="com.junbo.restriction.core.verifier.impl.GSAVerifierImpl" parent="baseVerifier"/>
+
+    <bean id="restrictionService" class="com.junbo.restriction.core.service.RestrictionServiceImpl">
+        <!--<property name="enabled" value="${restriction.age.check.enabled}"/>-->
+        <property name="enabled" value="true"/>
+        <property name="verifiers">
+            <list>
+                <ref bean="gsaVerifier"/>
+                <ref bean="commonVerifier"/>
+            </list>
+        </property>
+    </bean>
+
     <bean id="restrictionValidator" class="com.junbo.restriction.core.validator.impl.RestrictionValidatorImpl"/>
     <bean id="restrictionConfiguration" class="com.junbo.restriction.core.configuration.RestrictionConfiguration">
         <constructor-arg value="classpath:/data/restriction.dat"/>

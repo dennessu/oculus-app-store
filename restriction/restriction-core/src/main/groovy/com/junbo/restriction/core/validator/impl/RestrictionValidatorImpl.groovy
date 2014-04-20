@@ -15,7 +15,7 @@ import com.junbo.restriction.spec.model.AgeCheck
 class RestrictionValidatorImpl implements RestrictionValidator {
     void validate(AgeCheck ageCheck) {
         if (ageCheck == null) {
-            throw AppErrors.INSTANCE.invalidPayload().exception()
+            throw AppErrors.INSTANCE.invalidQueryParameter().exception()
         }
         if (ageCheck.status != null) {
             throw AppErrors.INSTANCE.unnecessaryField(ageCheck.status).exception()

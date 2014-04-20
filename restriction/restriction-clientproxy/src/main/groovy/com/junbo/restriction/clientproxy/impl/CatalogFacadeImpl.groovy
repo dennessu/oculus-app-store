@@ -31,29 +31,19 @@ class CatalogFacadeImpl implements CatalogFacade {
         this.offerResource = offerResource
     }
 
-    Promise<List<Offer>> getOffers(List<Long> offerIds) {
-        OffersGetOptions options = OffersGetOptions.default
+    Promise<List<Offer>> getOffers(List<OfferId> offerIds) {
+        OffersGetOptions options = new OffersGetOptions()
         options.setSize(Integer.MAX_VALUE)
-        options.setOfferIds(getOfferIds(offerIds))
+        options.setOfferIds(offerIds)
         offerResource.getOffers(options).recover {
             LOGGER.error('Failed to get offer')
-            throw AppErrors.INSTANCE.offerFailed.exception()
-        }.then {
-            if (it == null) {
+            throw AppErrors.INSTANCE.getOfferFailed().exception()
+        }.then { Results<Offer> offers ->
+            if (offers == null || offers?.items == null) {
                 LOGGER.error('Offer not found')
-                throw AppErrors.INSTANCE.offerFailed.exception()
+                throw AppErrors.INSTANCE.getOfferFailed().exception()
             }
-            else {
-                return ((Results<Offer>)it).items
-            }
+            return offers.items
         }
-    }
-
-    private List<OfferId> getOfferIds(List<Long> offerIds) {
-        def retOfferIds = []
-        offerIds.each {
-            retOfferIds.add(new OfferId(it))
-        }
-        return  retOfferIds
     }
 }

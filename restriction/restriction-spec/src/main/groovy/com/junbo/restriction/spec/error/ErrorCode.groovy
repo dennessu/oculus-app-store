@@ -13,6 +13,8 @@ class ErrorCode {
 
     public static final String USER_NOT_FOUND = 'USER_NOT_FOUND'
 
+    public static final String USER_PII_NOT_FOUND = 'USER_PII_NOT_FOUND'
+
     public static final String INVALID_USER_STATUS = 'INVALID_USER_STATUS'
 
     public static final String UNNECESSARY_FILED = 'UNNECESSARY_FILED'
@@ -21,7 +23,7 @@ class ErrorCode {
 
     public static final String MISSING_FIELD_VALUE = 'MISSING_FIELD_VALUE'
 
-    public static final String PAYLOAD_IS_NULL = 'PAYLOAD_IS_NULL'
+    public static final String QUERY_PARAMETER_IS_NULL = 'QUERY_PARAMETER_IS_NULL'
 
     public static final String GET_OFFER_FAILED = 'GET_OFFER_FAILED'
 
