@@ -29,4 +29,6 @@ class ErrorCode {
 
     public static final String GET_USER_FAILED = 'GET_USER_FAILED'
 
+    public static final String INVALID_DATE_FORMAT = 'INVALID_DATE_FORMAT'
+
 }

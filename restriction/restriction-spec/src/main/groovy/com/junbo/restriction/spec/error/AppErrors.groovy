@@ -42,6 +42,10 @@ interface AppErrors {
             description ='The query parameter is null')
     AppError invalidQueryParameter()
 
+    @ErrorDef(httpStatusCode = 400, code = ErrorCode.INVALID_DATE_FORMAT,
+            description ='The date should be in yyyy-MM-ddTHH:mm:ssZ format')
+    AppError invalidDateFormat()
+
     @ErrorDef(httpStatusCode = 500, code = ErrorCode.GET_OFFER_FAILED,
             description ='Failed to get offer info')
     AppError getOfferFailed()
