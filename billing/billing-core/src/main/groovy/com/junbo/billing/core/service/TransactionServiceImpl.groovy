@@ -23,7 +23,6 @@ import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.transaction.annotation.Transactional
 
 /**
@@ -36,7 +35,6 @@ class TransactionServiceImpl implements TransactionService {
     TransactionRepository transactionRepository
 
     @Autowired
-    @Qualifier(value='billingPaymentFacade')
     PaymentFacade paymentFacade
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TransactionServiceImpl)
@@ -96,7 +94,7 @@ class TransactionServiceImpl implements TransactionService {
             if (pt.status == PaymentStatus.SETTLEMENT_SUBMITTED.name()) {
                 newTransaction.setStatus(TransactionStatus.SUCCESS.name())
                 balance.setStatus(BalanceStatus.AWAITING_PAYMENT.name())
-            } else if (pt.status == PaymentStatus.SETTLEMENT_SUBMIT_DECLINED) {
+            } else if (pt.status == PaymentStatus.SETTLEMENT_SUBMIT_DECLINED.name()) {
                 newTransaction.setStatus(TransactionStatus.DECLINE.name())
                 balance.setStatus(BalanceStatus.FAILED.name())
             } else {
