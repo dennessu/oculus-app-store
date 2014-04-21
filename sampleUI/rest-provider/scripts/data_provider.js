@@ -132,7 +132,7 @@ for (var s in Configs) {
 }
 
 if(typeof(window) != "undefined"){
-    Module.Load(window, "Lib.DataProvider", DataProvider);
+    Module.Load(window, "DataProvider", DataProvider);
 }else{
     module.exports = DataProvider;
 }

@@ -11,7 +11,7 @@
         ProdConfig = window.Config.Prod;
         Configs = window.AppConfig;
     }else{
-        Utils = require('../lib/utils');
+        Utils = require('../scripts/utils');
         DevConfig = require('./dev');
         ProdConfig = require('./prod');
         Configs = require('./config');
@@ -26,24 +26,36 @@
             GlobalConfig = Utils.FillObject(Configs, DevConfig, 0);
         }
 
-        // Configuration Runtime Items
-        var localhost = Utils.Format("http://{1}:{2}", GlobalConfig.Localhost, GlobalConfig.ListenOnPort);
-        if(GlobalConfig.ListenOnPort == 80){
-            localhost = Utils.Format("http://{1}", GlobalConfig.Localhost);
-        }
-        GlobalConfig.Runtime.SocketAddress = localhost;
-        GlobalConfig.Runtime.LoginCallbackUrl = Utils.Format(GlobalConfig.Runtime.LoginCallbackUrl, localhost);
-        GlobalConfig.Runtime.RegisterCallbackUrl = Utils.Format(GlobalConfig.Runtime.RegisterCallbackUrl, localhost);
-        GlobalConfig.Runtime.LogoutCallbackUrl = Utils.Format(GlobalConfig.Runtime.LogoutCallbackUrl, localhost);
-        GlobalConfig.Runtime.LoginUrl = Utils.Format(GlobalConfig.Runtime.LoginUrl, GlobalConfig.OauthHost, GlobalConfig.Runtime.LoginCallbackUrl);
-        GlobalConfig.Runtime.LogoutUrl = Utils.Format(GlobalConfig.Runtime.LogoutUrl, GlobalConfig.OauthHost);
-        GlobalConfig.Runtime.RegisterUrl = Utils.Format(GlobalConfig.Runtime.RegisterUrl, localhost, GlobalConfig.Runtime.RegisterCallbackUrl);
-
         if(typeof(window) != "undefined"){
             Module.Load(this, "AppConfig", GlobalConfig);
         }else{
             global.AppConfig = GlobalConfig;
         }
+    };
+
+    Configuration.InitRuntime = function(){
+
+        var runConfig = global.AppConfig;
+
+        // Configuration Runtime Items
+        var localhost = Utils.Format.StringFormat("http://{1}:{2}", runConfig.Localhost, runConfig.ListenOnPort);
+        if(runConfig.ListenOnPort == 80){
+            localhost = Utils.Format.StringFormat("http://{1}", runConfig.Localhost);
+        }
+        runConfig.Runtime.SocketAddress = localhost;
+        runConfig.Runtime.LoginCallbackUrl = Utils.Format.StringFormat(runConfig.Runtime.LoginCallbackUrl, localhost);
+        runConfig.Runtime.RegisterCallbackUrl = Utils.Format.StringFormat(runConfig.Runtime.RegisterCallbackUrl, localhost);
+        runConfig.Runtime.LogoutCallbackUrl = Utils.Format.StringFormat(runConfig.Runtime.LogoutCallbackUrl, localhost);
+        runConfig.Runtime.LoginUrl = Utils.Format.StringFormat(runConfig.Runtime.LoginUrl, runConfig.OauthHost, runConfig.Runtime.LoginCallbackUrl);
+        runConfig.Runtime.LogoutUrl = Utils.Format.StringFormat(runConfig.Runtime.LogoutUrl, runConfig.OauthHost);
+        runConfig.Runtime.RegisterUrl = Utils.Format.StringFormat(runConfig.Runtime.RegisterUrl, localhost, runConfig.Runtime.RegisterCallbackUrl);
+    };
+
+    //[node]
+    Configuration.GetClientConfigs = function(){
+        var clientConfig = require('./client_config');
+
+        return Utils.FillObject(clientConfig, global.AppConfig, 1);
     };
 
     if(typeof(window) != "undefined"){
