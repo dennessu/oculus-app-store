@@ -52,7 +52,7 @@ class OrderStatusBuilder {
 
         if (isOrderPreordered(orderEvents)) { return OrderStatus.PREORDERED }
 
-        if (isOrderPartialCharged(orderEvents)) { return OrderStatus.PARTIAL_CHARGED }
+        if (isOrderPartialCharged(orderEvents)) { return OrderStatus.PENDING_FULFILL }
 
         return OrderStatus.OPEN
     }
