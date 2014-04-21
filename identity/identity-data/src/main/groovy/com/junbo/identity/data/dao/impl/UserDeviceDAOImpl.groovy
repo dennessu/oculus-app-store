@@ -23,8 +23,9 @@ class UserDeviceDAOImpl extends BaseDAO implements UserDeviceDAO {
 
     @Override
     UserDeviceEntity save(UserDeviceEntity entity) {
-        entity.id = idGenerator.nextId(entity.userId)
-
+        if (entity.id == null) {
+            entity.id = idGenerator.nextId(entity.userId)
+        }
         Session session = currentSession(entity.id)
         session.save(entity)
         session.flush()

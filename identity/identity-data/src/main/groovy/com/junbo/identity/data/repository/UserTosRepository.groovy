@@ -9,6 +9,7 @@ import com.junbo.common.id.UserTosAgreementId
 import com.junbo.identity.spec.v1.model.UserTosAgreement
 import com.junbo.identity.spec.v1.option.list.UserTosAgreementListOptions
 import com.junbo.langur.core.promise.Promise
+import com.junbo.sharding.core.annotations.ReadMethod
 import groovy.transform.CompileStatic
 
 /**
@@ -16,5 +17,6 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 interface UserTosRepository extends IdentityBaseRepository<UserTosAgreement, UserTosAgreementId> {
+    @ReadMethod
     Promise<List<UserTosAgreement>> search(UserTosAgreementListOptions getOption)
 }

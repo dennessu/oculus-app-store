@@ -17,9 +17,9 @@ class AddressDAOImpl extends BaseDAO implements AddressDAO {
 
     @Override
     AddressEntity create(AddressEntity address) {
-
-        address.id = idGenerator.nextId(address.userId)
-
+        if (address.id == null) {
+            address.id = idGenerator.nextId(address.userId)
+        }
         Session session = currentSession(address.id)
         session.save(address)
         session.flush()

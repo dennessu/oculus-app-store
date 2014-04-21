@@ -36,7 +36,9 @@ class UserDeviceRepositoryCloudantImpl extends CloudantClient<UserDevice> implem
 
     @Override
     Promise<UserDevice> create(UserDevice entity) {
-        entity.id = new UserDeviceId(idGenerator.nextId(entity.userId.value))
+        if (entity.id == null) {
+            entity.id = new UserDeviceId(idGenerator.nextId(entity.userId.value))
+        }
         super.cloudantPost(entity)
         return get((UserDeviceId)entity.id)
     }

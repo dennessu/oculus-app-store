@@ -9,6 +9,7 @@ import com.junbo.common.id.UserGroupId
 import com.junbo.identity.spec.v1.model.UserGroup
 import com.junbo.identity.spec.v1.option.list.UserGroupListOptions
 import com.junbo.langur.core.promise.Promise
+import com.junbo.sharding.core.annotations.ReadMethod
 import groovy.transform.CompileStatic
 
 /**
@@ -16,5 +17,6 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 interface UserGroupRepository extends IdentityBaseRepository<UserGroup, UserGroupId> {
+    @ReadMethod
     Promise<List<UserGroup>> search(UserGroupListOptions getOption)
 }

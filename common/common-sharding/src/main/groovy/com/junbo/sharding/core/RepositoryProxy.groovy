@@ -97,11 +97,13 @@ class RepositoryProxy implements InvocationHandler {
                 return method.invoke(this.readRepository, args)
             }
             else if (annotation instanceof WriteMethod) {
-                return ((Promise<Void>)method.invoke(this.primaryWriteRepository, args)).then {
+                return ((Promise<?>) method.invoke(this.primaryWriteRepository, args)).then { Object result ->
                     if (this.secondaryWriteRepository != null) {
-                        return ((Promise<Void>)method.invoke(this.secondaryWriteRepository, args)).then {
-                            return Promise.pure(null)
+                        return ((Promise<?>) method.invoke(this.secondaryWriteRepository, args)).then {
+                            return Promise.pure(result)
                         }
+                    } else {
+                        return Promise.pure(result)
                     }
                 }
             }

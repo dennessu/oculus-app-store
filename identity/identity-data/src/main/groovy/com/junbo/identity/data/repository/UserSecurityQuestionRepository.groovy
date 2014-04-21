@@ -9,6 +9,7 @@ import com.junbo.common.id.UserSecurityQuestionId
 import com.junbo.identity.spec.v1.model.UserSecurityQuestion
 import com.junbo.identity.spec.v1.option.list.UserSecurityQuestionListOptions
 import com.junbo.langur.core.promise.Promise
+import com.junbo.sharding.core.annotations.ReadMethod
 import groovy.transform.CompileStatic
 
 /**
@@ -16,5 +17,6 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 interface UserSecurityQuestionRepository extends IdentityBaseRepository<UserSecurityQuestion, UserSecurityQuestionId> {
+    @ReadMethod
     Promise<List<UserSecurityQuestion>> search(UserSecurityQuestionListOptions getOption)
 }
