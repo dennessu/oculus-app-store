@@ -8,7 +8,6 @@ import com.junbo.identity.data.repository.SecurityQuestionRepository
 import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.data.repository.UserSecurityQuestionRepository
 import com.junbo.identity.spec.error.AppErrors
-import com.junbo.identity.spec.model.domaindata.SecurityQuestion
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserSecurityQuestion
 import com.junbo.identity.spec.v1.option.list.UserSecurityQuestionListOptions

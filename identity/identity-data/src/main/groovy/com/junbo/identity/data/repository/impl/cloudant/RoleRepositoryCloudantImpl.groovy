@@ -51,6 +51,11 @@ class RoleRepositoryCloudantImpl extends CloudantClient<Role> implements RoleRep
     }
 
     @Override
+    Promise<Void> delete(RoleId id) {
+        throw new IllegalStateException('delete role not support')
+    }
+
+    @Override
     Promise<Role> findByRoleName(String roleName, String resourceType, Long resourceId, String subResourceType) {
         return null
     }

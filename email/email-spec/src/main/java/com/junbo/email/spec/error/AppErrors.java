@@ -24,6 +24,10 @@ public interface AppErrors {
             description ="User with id {0} not found")
     AppError invalidUserId(String userId);
 
+    @ErrorDef(httpStatusCode = 404, code = ErrorCode.USER_EMAIL_NOT_FOUND,
+            description ="User email address not found")
+    AppError emptyUserEmail();
+
     @ErrorDef(httpStatusCode = 400, code = ErrorCode.INVALID_USER_STATUS,
             description ="User status is invalid with id {0}")
     AppError invalidUserStatus(String userId);

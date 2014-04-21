@@ -9,6 +9,7 @@ import com.junbo.common.error.RestExceptionMapper
 import com.junbo.common.id.provider.IdTypeFromStringProvider
 import com.junbo.common.json.JacksonFeature
 import com.junbo.common.json.ObjectMapperProvider
+import com.junbo.common.provider.ResponseFilter
 import com.junbo.configuration.ConfigResource
 import groovy.transform.CompileStatic
 import org.glassfish.grizzly.http.server.HttpServer
@@ -36,6 +37,9 @@ class CatalogMain {
         resourceConfig.register(IdTypeFromStringProvider)
 
         resourceConfig.register(RestExceptionMapper)
+
+        // enable CROS
+        resourceConfig.register(ResponseFilter)
 
         // packages
         resourceConfig.packages('com.junbo.catalog.spec.resource.adapter')

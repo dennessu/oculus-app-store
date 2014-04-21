@@ -6,8 +6,10 @@
 package com.junbo.ewallet.rest
 
 import com.junbo.common.id.WalletId
+import com.junbo.common.model.Results
 import com.junbo.ewallet.spec.model.CreditRequest
 import com.junbo.ewallet.spec.model.DebitRequest
+import com.junbo.ewallet.spec.model.Transaction
 import com.junbo.ewallet.spec.model.Wallet
 import com.junbo.ewallet.spec.resource.proxy.WalletResourceClientProxy
 import com.junbo.sharding.IdGenerator
@@ -48,17 +50,20 @@ public class WalletClientProxyTest extends AbstractTestNGSpringContextTests {
     @Test(enabled = false)
     public void testCreditAndDebitAndGetTransactions() {
         Wallet wallet = buildAWallet()
-        clientProxy.postWallet(wallet).wrapped().get()
+        wallet = clientProxy.postWallet(wallet).wrapped().get()
         def creditRequest = buildACreditRequest()
         creditRequest.setUserId(wallet.userId)
-        wallet = clientProxy.credit(creditRequest).wrapped().get()
+        clientProxy.credit(creditRequest).wrapped().get()
+        wallet = clientProxy.getWallet(new WalletId(wallet.walletId)).wrapped().get()
         Assert.assertEquals(wallet.balance, new BigDecimal(10))
-        wallet = clientProxy.credit(buildACreditRequest(wallet.walletId)).wrapped().get()
+        clientProxy.credit(buildACreditRequest(wallet.walletId)).wrapped().get()
+        wallet = clientProxy.getWallet(new WalletId(wallet.walletId)).wrapped().get()
         Assert.assertEquals(wallet.balance, new BigDecimal(20))
-        wallet = clientProxy.debit(new WalletId(wallet.walletId), buildADebitRequest()).wrapped().get()
+        clientProxy.debit(new WalletId(wallet.walletId), buildADebitRequest()).wrapped().get()
+        wallet = clientProxy.getWallet(new WalletId(wallet.walletId)).wrapped().get()
         Assert.assertEquals(wallet.balance, BigDecimal.ZERO)
-        wallet = clientProxy.getTransactions(new WalletId(wallet.walletId)).wrapped().get()
-        Assert.assertEquals(wallet.transactions.size(), 3)
+        Results<Transaction> transactionResults = clientProxy.getTransactions(new WalletId(wallet.walletId)).wrapped().get()
+        Assert.assertEquals(transactionResults.items.size(), 3)
     }
 
     private Wallet buildAWallet() {
@@ -71,7 +76,7 @@ public class WalletClientProxyTest extends AbstractTestNGSpringContextTests {
 
     private CreditRequest buildACreditRequest() {
         CreditRequest creditRequest = new CreditRequest()
-        creditRequest.setCreditType(com.junbo.ewallet.spec.def.WalletLotType.PROMOTION.toString())
+        creditRequest.setCreditType(com.junbo.ewallet.spec.def.WalletLotType.CASH.toString())
         creditRequest.setWalletType(com.junbo.ewallet.spec.def.WalletType.STORED_VALUE.toString())
         creditRequest.setAmount(new BigDecimal(10))
         creditRequest.setCurrency(com.junbo.ewallet.spec.def.Currency.USD.toString())
@@ -80,7 +85,7 @@ public class WalletClientProxyTest extends AbstractTestNGSpringContextTests {
 
     private CreditRequest buildACreditRequest(Long walletId) {
         CreditRequest creditRequest = new CreditRequest()
-        creditRequest.setCreditType(com.junbo.ewallet.spec.def.WalletLotType.PROMOTION.toString())
+        creditRequest.setCreditType(com.junbo.ewallet.spec.def.WalletLotType.CASH.toString())
         creditRequest.setAmount(new BigDecimal(10))
         creditRequest.setWalletId(walletId)
         return creditRequest

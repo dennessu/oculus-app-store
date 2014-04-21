@@ -47,6 +47,16 @@ class UserSecurityQuestionAttemptRepositoryCloudantImpl extends CloudantClient<U
     }
 
     @Override
+    Promise<UserSecurityQuestionVerifyAttempt> update(UserSecurityQuestionVerifyAttempt model) {
+        throw new IllegalStateException('update user security question attempt not support')
+    }
+
+    @Override
+    Promise<Void> delete(UserSecurityQuestionVerifyAttemptId id) {
+        throw new IllegalStateException('delete user security question attempt not support')
+    }
+
+    @Override
     Promise<List<UserSecurityQuestionVerifyAttempt>> search(UserSecurityQuestionAttemptListOptions getOption) {
         def list = super.queryView('by_user_id', getOption.userId.value.toString(),
                 getOption.limit, getOption.offset, false)

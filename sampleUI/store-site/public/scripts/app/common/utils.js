@@ -82,8 +82,7 @@ var Utils = {
         return null;
     },
 
-    FormatNumber: function (number, fix, fh, jg)
-    {
+    FormatNumber: function (number, fix, fh, jg){
         var fix = arguments[1] ? arguments[1] : 2;
         var fh = arguments[2] ? arguments[2] : ',';
         var jg = arguments[3] ? arguments[3] : 3;

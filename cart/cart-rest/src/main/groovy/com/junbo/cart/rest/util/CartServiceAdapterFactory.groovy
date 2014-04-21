@@ -33,10 +33,9 @@ class CartServiceAdapterFactory {
         Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
             assert Promise.isAssignableFrom(method.returnType)
             return ((Promise) method.invoke(cartService, args)).syncThen { Cart cart ->
-                // todo set user id
-                // if (cart != null) {
-                //    cart.id.properties['userId'] = cart.user
-                // }
+                if (cart != null) {
+                    cart.id.resourcePathPlaceHolder['userId'] = cart.user
+                }
                 return cart
             }
         }

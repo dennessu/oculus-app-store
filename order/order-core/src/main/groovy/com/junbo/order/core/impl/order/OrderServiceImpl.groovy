@@ -84,11 +84,11 @@ class OrderServiceImpl implements OrderService {
         }.syncRecover { Throwable throwable ->
             error = throwable
         }.syncThen {
-            orderInternalService.refreshOrderStatus(orderServiceContext.order)
+            def result = orderInternalService.refreshOrderStatus(orderServiceContext.order)
             if (error != null) {
                 throw error
             }
-            return orderServiceContext.order
+            return result
         }
     }
 

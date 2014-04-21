@@ -1,4 +1,6 @@
 
 var DataProvider = require('./lib/data_provider');
+var Models = require('./models');
 
-module.exports = DataProvider;
+exports.DataProvider = DataProvider;
+exports.Models = Models;

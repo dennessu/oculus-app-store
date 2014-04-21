@@ -17,7 +17,7 @@ class CartValidator {
     }
 
     CartValidator resourceAge(Long resourceAge) {
-        assert resourceAge == result.resourceAge
+        assert resourceAge.toString() == result.resourceAge
         return this
     }
 

@@ -18,7 +18,7 @@ import java.util.List;
  */
 public class FulfilmentDaoImpl extends BaseDaoImpl<FulfilmentEntity> implements FulfilmentDao {
     public List<FulfilmentEntity> findByRequestId(final Long requestId) {
-        return findAllBy(new Action<Criteria>() {
+        return findAllBy(requestId, new Action<Criteria>() {
             public void apply(Criteria criteria) {
                 criteria.add(Restrictions.eq("requestId", requestId));
             }

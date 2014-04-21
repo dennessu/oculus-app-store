@@ -36,8 +36,6 @@ import java.util.Map;
  * CatalogGatewayImpl.
  */
 public class CatalogGatewayImpl implements CatalogGateway {
-    private static final String PURCHASE_EVENT = "PURCHASE";
-
     private static final Logger LOGGER = LoggerFactory.getLogger(CatalogGatewayImpl.class);
 
     @Autowired
@@ -166,6 +164,10 @@ public class CatalogGatewayImpl implements CatalogGateway {
         Item item = new Item();
         item.setItemId(itemRevision.getItemId());
         item.setSku(itemRevision.getSku());
+
+        //TODO
+        item.setEwalletAmount(null);
+        item.setEwalletCurrency(null);
 
         return item;
     }

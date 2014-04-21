@@ -32,6 +32,11 @@ public interface PaymentTransactionResource {
                                                           PaymentTransaction request);
 
     @POST
+    @Path("/{paymentId}/confirm")
+    Promise<PaymentTransaction> postPaymentConfirm(@PathParam("paymentId") Long paymentId,
+                                               PaymentTransaction request);
+
+    @POST
     @Path("/charge")
     Promise<PaymentTransaction> postPaymentCharge(PaymentTransaction request);
 

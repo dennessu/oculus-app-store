@@ -1,10 +1,18 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
+ */
 package com.junbo.drm.db.dao;
 
 import com.junbo.drm.db.Entity;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
+/**
+ * drm.
+ * @param <T> entity
+ */
 public class BaseDao<T extends Entity> {
     private SessionFactory sessionFactory;
 

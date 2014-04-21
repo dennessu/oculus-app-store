@@ -86,9 +86,18 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
             CheckDeveloper(entitlementSearchParam.getDeveloperId().getValue());
         }
         checkUser(entitlementSearchParam.getUserId().getValue());
+        checkSearchDateFormat(entitlementSearchParam);
         List<Entitlement> entitlementEntities = entitlementRepository.getBySearchParam(
                 entitlementSearchParam, pageMetadata);
         return entitlementEntities;
+    }
+
+    private void checkSearchDateFormat(EntitlementSearchParam entitlementSearchParam) {
+        checkDateFormat(entitlementSearchParam.getStartGrantTime());
+        checkDateFormat(entitlementSearchParam.getEndGrantTime());
+        checkDateFormat(entitlementSearchParam.getStartExpirationTime());
+        checkDateFormat(entitlementSearchParam.getEndExpirationTime());
+        checkDateFormat(entitlementSearchParam.getLastModifiedTime());
     }
 
     @Override

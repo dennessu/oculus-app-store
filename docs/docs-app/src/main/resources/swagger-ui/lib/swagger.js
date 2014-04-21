@@ -583,6 +583,7 @@ var SwaggerModelProperty = function(name, obj) {
   if (obj.patternProperties) {
     var mapValueType = obj.patternProperties[".*"];
     this.dataType = "map[string, " + (mapValueType.type || mapValueType["$ref"]) + "]"
+    this.isMap = true
   }
   this.isCollection = this.dataType && (this.dataType.toLowerCase() === 'array' || this.dataType.toLowerCase() === 'list' || this.dataType.toLowerCase() === 'set');
   this.descr = obj.description;
@@ -595,7 +596,16 @@ var SwaggerModelProperty = function(name, obj) {
       this.refDataType = obj.items.$ref;
     }
   }
-  this.dataTypeWithRef = this.refDataType != null ? (this.dataType + '[' + this.refDataType + ']') : this.dataType;
+  if (obj.patternProperties != null) {
+    if (obj.patternProperties[".*"].type != null) {
+      this.refDataType = obj.patternProperties[".*"].type;
+    }
+    if (obj.patternProperties[".*"].$ref != null) {
+      this.refDataType = obj.patternProperties[".*"].$ref;
+    }
+  }
+  this.dataTypeWithRef = (this.refDataType != null && !this.isMap)
+        ? (this.dataType + '[' + this.refDataType + ']') : this.dataType;
   if (obj.allowableValues != null) {
     this.valueType = obj.allowableValues.valueType;
     this.values = obj.allowableValues.values;

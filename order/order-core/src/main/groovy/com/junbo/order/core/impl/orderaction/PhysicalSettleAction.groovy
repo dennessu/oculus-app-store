@@ -1,6 +1,5 @@
 package com.junbo.order.core.impl.orderaction
 
-import com.junbo.billing.spec.enums.BalanceStatus
 import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.model.Balance
 import com.junbo.langur.core.promise.Promise
@@ -12,10 +11,10 @@ import com.junbo.order.core.annotation.OrderEventAwareBefore
 import com.junbo.order.core.impl.common.BillingEventBuilder
 import com.junbo.order.core.impl.common.CoreBuilder
 import com.junbo.order.core.impl.common.CoreUtils
+import com.junbo.order.core.impl.internal.OrderInternalService
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.error.AppErrors
-import com.junbo.order.spec.model.Order
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.slf4j.Logger
@@ -23,7 +22,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.transaction.annotation.Transactional
-
 /**
  * Settle Action for Physical Goods.
  */
@@ -37,6 +35,8 @@ class PhysicalSettleAction extends BaseOrderEventAwareAction {
     OrderRepository orderRepository
     @Autowired
     OrderServiceContextBuilder orderServiceContextBuilder
+    @Autowired
+    OrderInternalService orderInternalService
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PhysicalSettleAction)
 
@@ -66,6 +66,7 @@ class PhysicalSettleAction extends BaseOrderEventAwareAction {
                 return Promise.pure(null)
             }
         }
+        orderInternalService.markSettlement(context.orderServiceContext.order)
         // partial charge, post a 50$ balance
         Balance balance = CoreBuilder.buildPartialChargeBalance(context.orderServiceContext.order,
                 BalanceType.DEBIT, null)

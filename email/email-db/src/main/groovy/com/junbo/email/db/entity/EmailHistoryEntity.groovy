@@ -29,14 +29,11 @@ class EmailHistoryEntity extends BaseEntity {
     @Column(name='action')
     private String action
 
-    @Column(name = 'type')
-    private Short type
-
     @Column(name='payload')
     private String payload
 
-    @Column(name='recipient')
-    private String recipient
+    @Column(name='recipients')
+    private String recipients
 
     @Column(name='locale')
     private String locale
@@ -53,8 +50,8 @@ class EmailHistoryEntity extends BaseEntity {
     @Column(name = 'priority')
     private Integer priority
 
-    @Column(name = 'sent_date')
-    private Date sentDate
+    @Column(name = 'sent_time')
+    private Date sentTime
 
     @Column(name = 'is_resend')
     private Boolean isResend
@@ -91,14 +88,6 @@ class EmailHistoryEntity extends BaseEntity {
         this.action = action
     }
 
-    Short getType() {
-        return type
-    }
-
-    void setType(Short type) {
-        this.type = type
-    }
-
     String getPayload() {
         return payload
     }
@@ -107,12 +96,12 @@ class EmailHistoryEntity extends BaseEntity {
         this.payload = payload
     }
 
-    String getRecipient() {
-        return recipient
+    String getRecipients() {
+        return recipients
     }
 
-    void setRecipient(String recipient) {
-        this.recipient = recipient
+    void setRecipients(String recipients) {
+        this.recipients = recipients
     }
 
     String getLocale() {
@@ -155,12 +144,12 @@ class EmailHistoryEntity extends BaseEntity {
         this.priority = priority
     }
 
-    Date getSentDate() {
-        return sentDate
+    Date getSentTime() {
+        return sentTime
     }
 
-    void setSentDate(Date sentDate) {
-        this.sentDate = sentDate
+    void setSentTime(Date sentTime) {
+        this.sentTime = sentTime
     }
 
     Boolean getIsResend() {

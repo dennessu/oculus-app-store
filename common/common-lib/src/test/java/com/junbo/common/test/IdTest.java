@@ -44,4 +44,17 @@ public class IdTest {
 
         }
     }
+
+    @Test
+    public void decode() throws Exception {
+        Long decodeUserId = (IdFormatter.decodeId(UserId.class, "6B54FDB4BC9F"));
+        System.out.println("decoded UserId:" + decodeUserId);
+    }
+
+    @Test
+    public void encode() throws Exception {
+        UserId userId = new UserId(453345280L);
+        String encodedUserId = IdFormatter.encodeId(userId);
+        System.out.println("encode UserId:" + encodedUserId);
+    }
 }

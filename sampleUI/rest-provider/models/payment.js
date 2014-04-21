@@ -29,4 +29,8 @@ var CreditCardModel = function(){
     this.trackingUuid = ""; //"f48d6fae-adec-43d0-a865-00a0c91e6bf7"
 };
 
-exports.CreditCardModel = CreditCardModel;
+if(typeof(window) != "undefined"){
+    Module.Load(window, "Models.Payment.CreditCardModel", CreditCardModel);
+}else{
+    exports.CreditCardModel = CreditCardModel;
+}

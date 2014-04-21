@@ -8,6 +8,8 @@ package com.junbo.common.util;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import javax.ws.rs.NotSupportedException;
+
 /**
  * Enum registry test.
  */
@@ -63,6 +65,11 @@ enum FulfilmentStatus implements Identifiable<Integer> {
     @Override
     public Integer getId() {
         return id;
+    }
+
+    @Override
+    public void setId(Integer id) {
+        throw new NotSupportedException("enum FulfilmentStatus not settable");
     }
 }
 

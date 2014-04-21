@@ -8,6 +8,8 @@ package com.junbo.ewallet.spec.def;
 
 import com.junbo.common.util.Identifiable;
 
+import javax.ws.rs.NotSupportedException;
+
 /**
  * Enum for WalletType.
  */
@@ -25,4 +27,10 @@ public enum WalletType implements Identifiable<Integer> {
     public Integer getId() {
         return id;
     }
+
+    @Override
+    public void setId(Integer id) {
+        throw new NotSupportedException("enum WalletType not settable");
+    }
+
 }

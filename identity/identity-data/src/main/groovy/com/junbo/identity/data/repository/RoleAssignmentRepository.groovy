@@ -15,12 +15,6 @@ import groovy.transform.CompileStatic
  * RoleAssignmentRepository.
  */
 @CompileStatic
-interface RoleAssignmentRepository {
-    Promise<RoleAssignment> create(RoleAssignment roleAssignment)
-
-    Promise<RoleAssignment> get(RoleAssignmentId id)
-
-    Promise<RoleAssignment> update(RoleAssignment roleAssignment)
-
+interface RoleAssignmentRepository extends IdentityBaseRepository<RoleAssignment, RoleAssignmentId> {
     Promise<RoleAssignment> findByRoleIdAssignee(RoleId roleId, String assigneeType, Long assigneeId)
 }

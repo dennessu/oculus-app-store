@@ -48,6 +48,11 @@ class DeviceRepositoryCloudantImpl extends CloudantClient<Device> implements Dev
     }
 
     @Override
+    Promise<Void> delete(DeviceId id) {
+        throw new IllegalStateException('delete device not support')
+    }
+
+    @Override
     Promise<Device> searchByExternalRef(String externalRef) {
         def list = super.queryView('by_external_ref', externalRef)
         return list.size() > 0 ? Promise.pure(list[0]) : Promise.pure(null)

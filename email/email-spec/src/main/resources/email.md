@@ -71,7 +71,7 @@ The general email will be create if "scheduleDate" is not specified. otherwise, 
 			"statusReason":null,
 			"retryCount":0,
 			"isResend":false,
-			"sentDate":"2014-02-01",
+			"sentTime":"2014-02-01",
 			"scheduleDate":null,
 			"properties":{
 				"name1":"value1",
@@ -111,7 +111,7 @@ Retrieve the email object with all its details by id.
 			"statusReason":null,
 			"retryCount":0,
 			"isResend":false,
-			"sentDate":"2014-02-01",
+			"sentTime":"2014-02-01",
 			"scheduleDate":null,
 			"properties":{
 				"name1":"value1",

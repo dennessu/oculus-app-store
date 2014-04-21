@@ -1,3 +1,8 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
+ */
 package com.junbo.drm.db;
 
 import javax.persistence.Column;
@@ -5,6 +10,9 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 import java.util.Date;
 
+/**
+ * drm.
+ */
 @MappedSuperclass
 public abstract class Entity {
     private Date createdDate;

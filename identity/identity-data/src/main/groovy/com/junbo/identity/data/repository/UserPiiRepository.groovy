@@ -10,14 +10,6 @@ import groovy.transform.CompileStatic
  * Created by liangfu on 4/10/14.
  */
 @CompileStatic
-interface UserPiiRepository {
-    Promise<UserPii> create(UserPii userPii)
-
-    Promise<UserPii> update(UserPii userPii)
-
-    Promise<UserPii> get(UserPiiId userPiiId)
-
-    Promise<Void> delete(UserPiiId userPiiId)
-
+interface UserPiiRepository extends IdentityBaseRepository<UserPii, UserPiiId> {
     Promise<List<UserPii>> search(UserPiiListOptions options)
 }

@@ -7,6 +7,8 @@ package com.junbo.identity.data.identifiable
 
 import com.junbo.common.util.Identifiable
 
+import javax.ws.rs.NotSupportedException
+
 /**
  * User status enum
  */
@@ -25,5 +27,10 @@ enum UserStatus implements Identifiable<Short> {
     @Override
     Short getId() {
         return id
+    }
+
+    @Override
+    void setId(Short id) {
+        throw new NotSupportedException('enum UserStatus not settable')
     }
 }

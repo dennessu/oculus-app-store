@@ -7,17 +7,20 @@ package com.junbo.test.common.apihelper.catalog.impl;
 
 import com.junbo.catalog.spec.model.common.LocalizableProperty;
 import com.junbo.catalog.spec.model.item.Item;
+import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.catalog.spec.model.offer.ItemEntry;
 import com.junbo.catalog.spec.model.offer.Offer;
+import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.common.id.ItemId;
 import com.junbo.common.id.OfferId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.common.model.Results;
-import com.junbo.identity.spec.v1.model.User;
 import com.junbo.langur.core.client.TypeReference;
 import com.junbo.test.common.apihelper.HttpClientBase;
+import com.junbo.test.common.apihelper.catalog.ItemRevisionService;
 import com.junbo.test.common.apihelper.catalog.ItemService;
+import com.junbo.test.common.apihelper.catalog.OfferRevisionService;
 import com.junbo.test.common.apihelper.catalog.OfferService;
 import com.junbo.test.common.apihelper.identity.UserService;
 import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
@@ -38,6 +41,8 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
 
     private final String catalogServerURL = RestUrl.getRestUrl(RestUrl.ComponentName.CATALOG) + "offers";
     private final String defaultOfferFileName = "defaultOffer";
+    private final String defaultItemRevisionFileName = "defaultItemRevision";
+    private final String defaultOfferRevisionFileName = "defaultOfferRevision";
     private LogHelper logger = new LogHelper(OfferServiceImpl.class);
     private static OfferService instance;
     private boolean offerLoaded;
@@ -92,29 +97,14 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
     }
 
     public String postDefaultOffer(EnumHelper.CatalogItemType itemType) throws Exception {
-
         Offer offerForPost = prepareOfferEntity(defaultOfferFileName, itemType);
         return postOffer(offerForPost);
     }
 
     public Offer prepareOfferEntity(String fileName, EnumHelper.CatalogItemType itemType) throws Exception {
-
-        String strOfferContent = readFileContent(fileName);
+        String strOfferContent = readFileContent(String.format("testOffers/%s.json", fileName));
         Offer offerForPost = new JsonMessageTranscoder().decode(new TypeReference<Offer>() {}, strOfferContent);
-        String defaultItemId = itemService.postDefaultItem(itemType);
-        //Release the item
-        Item item =  Master.getInstance().getItem(defaultItemId);
-        item.setCurated(true);
-        itemService.updateItem(item);
-
-        ItemEntry itemEntry = new ItemEntry();
-        List<ItemEntry> itemEntities = new ArrayList<>();
-        itemEntry.setItemId(item.getItemId());
-        itemEntry.setQuantity(1);
-        itemEntities.add(itemEntry);
-        //offerForPost.setItems(itemEntities);
-        offerForPost.setOwnerId(item.getOwnerId());
-
+        offerForPost.setOwnerId(IdConverter.hexStringToId(UserId.class, getUserId()));
         return offerForPost;
     }
 
@@ -181,12 +171,7 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
                 logger.logInfo(sCurrentLine);
                 String[] strLine = sCurrentLine.split(",");
                 if (Master.getInstance().getOfferIdByName(strLine[0]) == null) {
-                    Offer offer = this.preparePredefinedOffer(strLine[0], strLine[1], strLine[2], strLine[3]);
-                    String offerId = this.postOffer(offer);
-                    //Release the offer
-                    Offer offerRtn = Master.getInstance().getOffer(offerId);
-                    offerRtn.setCurated(true);
-                    this.updateOffer(offerRtn);
+                    preparePredefinedOffer(strLine[0], strLine[1], strLine[2], strLine[3]);
                 }
             }
         } catch (IOException e) {
@@ -201,80 +186,92 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         }
     }
 
-    private Offer preparePredefinedOffer(String offerName, String itemName, String userName, String offerType)
+    private void preparePredefinedOffer(String offerName, String itemName, String userName, String offerType)
             throws  Exception {
 
-        String strOfferContent = readFileContent(offerName);
-        Offer offerForPost = new JsonMessageTranscoder().decode(new TypeReference<Offer>() {}, strOfferContent);
-
         String itemId = Master.getInstance().getItemIdByName(itemName);
+        Item item = Master.getInstance().getItem(itemId);
         List<String> userIdList = userService.GetUserByUserName(userName);
         String userId;
 
         if (userIdList == null || userIdList.isEmpty()) {
-            User user = new User();
-            user.setUsername(userName);
-            user.setNickName(RandomFactory.getRandomStringOfAlphabet(10));
-            user.setType("user");
-            user.setCanonicalUsername(RandomFactory.getRandomStringOfAlphabet(10));
-            user.setCurrency("USD");
-            user.setLocale("en_US");
-            user.setPreferredLanguage("en_US");
-            userId = userService.PostUser(user);
+            userId = getUserId();
         }
         else {
             userId = userIdList.get(0);
         }
 
         if (itemId == null) {
-            Item item = itemService.prepareItemEntity(itemName);
-            LocalizableProperty itemLocalProperty = new LocalizableProperty();
-            itemLocalProperty.set("en_US", itemName);
-            item.setName(itemLocalProperty);
-            item.setType(offerType);
-            item.setOwnerId(IdConverter.hexStringToId(UserId.class, userId));
-
-            itemId = itemService.postItem(item);
-            item = Master.getInstance().getItem(itemId);
-            item.setCurated(true);
-            itemService.updateItem(item);
+            item = prepareItem(userId, itemName, offerType);
         }
 
+        //Post offer
+        String strOfferContent = readFileContent(String.format("testOffers/%s.json", offerName));
+        Offer offerForPost = new JsonMessageTranscoder().decode(new TypeReference<Offer>() {}, strOfferContent);
+        offerForPost.setOwnerId(IdConverter.hexStringToId(UserId.class, userId));
+        String offerId = this.postOffer(offerForPost);
+
+        //Post offer revision
+        String strOfferRevisionContent = readFileContent(String.format("testOfferRevisions/%s.json",
+                defaultOfferRevisionFileName));
+        OfferRevision offerRevisionForPost = new JsonMessageTranscoder().decode(
+                new TypeReference<OfferRevision>() {}, strOfferRevisionContent);
+
+        //Set random name
+        LocalizableProperty offerRevisionName = new LocalizableProperty();
+        String value = "testOfferRevision_" + RandomFactory.getRandomStringOfAlphabetOrNumeric(10);
+        offerRevisionName.set("DEFAULT", value);
+        offerRevisionName.set("en_US", value);
+        offerRevisionForPost.setName(offerRevisionName);
+
+        //Add item related info
         ItemEntry itemEntry = new ItemEntry();
         List<ItemEntry> itemEntities = new ArrayList<>();
-        itemEntry.setItemId(IdConverter.hexStringToId(ItemId.class, itemId));
+        itemEntry.setItemId(item.getItemId());
         itemEntry.setQuantity(1);
         itemEntities.add(itemEntry);
-        //offerForPost.setItems(itemEntities);
-        offerForPost.setOwnerId(IdConverter.hexStringToId(UserId.class, userId));
+        offerRevisionForPost.setItems(itemEntities);
+        offerRevisionForPost.setOwnerId(IdConverter.hexStringToId(UserId.class, userId));
 
-        return offerForPost;
+        //Add offer related info
+        offerRevisionForPost.setOfferId(IdConverter.hexStringToId(OfferId.class, offerId));
+
+        //Post offer revision and update its status to 'Approved'
+        OfferRevisionService offerRevisionService = OfferRevisionServiceImpl.instance();
+        String offerRevisionId = offerRevisionService.postOfferRevision(offerRevisionForPost);
+        OfferRevision offerRevisionGet = Master.getInstance().getOfferRevision(offerRevisionId);
+        offerRevisionGet.setStatus(EnumHelper.CatalogEntityStatus.APPROVED.getEntityStatus());
+        offerRevisionService.updateOfferRevision(offerRevisionGet);
     }
 
-    private String readFileContent(String fileName) throws Exception {
-
-        String resourceLocation = String.format("testOffers/%s.json", fileName);
-        InputStream inStream = ClassLoader.getSystemResourceAsStream(resourceLocation);
-        BufferedReader br = new BufferedReader(new InputStreamReader(inStream));
-
-        StringBuilder strOffer = new StringBuilder();
-        try {
-            String sCurrentLine;
-            while ((sCurrentLine = br.readLine()) != null) {
-                strOffer.append(sCurrentLine + "\n");
-            }
-        } catch (IOException e) {
-            throw e;
-        } finally {
-            if (br != null){
-                br.close();
-            }
-            if (inStream != null) {
-                inStream.close();
-            }
-        }
-
-        return strOffer.toString();
+    private String getUserId() throws Exception {
+        UserService us = UserServiceImpl.instance();
+        return us.PostUser();
     }
 
+    private Item prepareItem(String ownerId, String fileName, String itemType) throws Exception {
+
+        ItemService itemService = ItemServiceImpl.instance();
+        ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
+
+        Item item = itemService.prepareItemEntity(fileName);
+        item.setOwnerId(IdConverter.hexStringToId(UserId.class, ownerId));
+        String itemId = itemService.postItem(item);
+
+        //Attach item revision to the item
+        ItemRevision itemRevision = itemRevisionService.prepareItemRevisionEntity(defaultItemRevisionFileName,
+                EnumHelper.CatalogItemType.valueOf(itemType));
+        itemRevision.setItemId(IdConverter.hexStringToId(ItemId.class, itemId));
+        itemRevision.setType(itemType);
+        itemRevision.setOwnerId(item.getOwnerId());
+        String itemRevisionId = itemRevisionService.postItemRevision(itemRevision);
+
+        //Approve the item revision
+        itemRevision = Master.getInstance().getItemRevision(itemRevisionId);
+        itemRevision.setStatus(EnumHelper.CatalogEntityStatus.APPROVED.getEntityStatus());
+        itemRevisionService.updateItemRevision(itemRevision);
+
+        String itemGetId = itemService.getItem(itemId);
+        return Master.getInstance().getItem(itemGetId);
+    }
 }

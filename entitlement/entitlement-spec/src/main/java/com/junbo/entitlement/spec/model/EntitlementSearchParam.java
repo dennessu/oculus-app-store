@@ -11,7 +11,6 @@ import com.junbo.common.id.OfferId;
 import com.junbo.common.id.UserId;
 
 import javax.ws.rs.QueryParam;
-import java.util.Date;
 import java.util.Set;
 
 /**
@@ -37,15 +36,15 @@ public class EntitlementSearchParam {
     private Set<EntitlementDefinitionId> definitionIds;
 
     @QueryParam("startGrantTime")
-    private Date startGrantTime;
+    private String startGrantTime;
     @QueryParam("endGrantTime")
-    private Date endGrantTime;
+    private String endGrantTime;
     @QueryParam("startExpirationTime")
-    private Date startExpirationTime;
+    private String startExpirationTime;
     @QueryParam("endExpirationTime")
-    private Date endExpirationTime;
+    private String endExpirationTime;
     @QueryParam("lastModifiedTime")
-    private Date lastModifiedTime;
+    private String lastModifiedTime;
 
     public EntitlementSearchParam() {
     }
@@ -114,43 +113,43 @@ public class EntitlementSearchParam {
         this.tags = tags;
     }
 
-    public Date getStartGrantTime() {
+    public String getStartGrantTime() {
         return startGrantTime;
     }
 
-    public void setStartGrantTime(Date startGrantTime) {
+    public void setStartGrantTime(String startGrantTime) {
         this.startGrantTime = startGrantTime;
     }
 
-    public Date getEndGrantTime() {
+    public String getEndGrantTime() {
         return endGrantTime;
     }
 
-    public void setEndGrantTime(Date endGrantTime) {
+    public void setEndGrantTime(String endGrantTime) {
         this.endGrantTime = endGrantTime;
     }
 
-    public Date getStartExpirationTime() {
+    public String getStartExpirationTime() {
         return startExpirationTime;
     }
 
-    public void setStartExpirationTime(Date startExpirationTime) {
+    public void setStartExpirationTime(String startExpirationTime) {
         this.startExpirationTime = startExpirationTime;
     }
 
-    public Date getEndExpirationTime() {
+    public String getEndExpirationTime() {
         return endExpirationTime;
     }
 
-    public void setEndExpirationTime(Date endExpirationTime) {
+    public void setEndExpirationTime(String endExpirationTime) {
         this.endExpirationTime = endExpirationTime;
     }
 
-    public Date getLastModifiedTime() {
+    public String getLastModifiedTime() {
         return lastModifiedTime;
     }
 
-    public void setLastModifiedTime(Date lastModifiedTime) {
+    public void setLastModifiedTime(String lastModifiedTime) {
         this.lastModifiedTime = lastModifiedTime;
     }
 
@@ -169,12 +168,12 @@ public class EntitlementSearchParam {
         private Set<String> tags;
         private Set<EntitlementDefinitionId> definitionIds;
 
-        private Date startGrantTime;
-        private Date endGrantTime;
-        private Date startExpirationTime;
-        private Date endExpirationTime;
+        private String startGrantTime;
+        private String endGrantTime;
+        private String startExpirationTime;
+        private String endExpirationTime;
 
-        private Date lastModifiedTime;
+        private String lastModifiedTime;
 
         public Builder(UserId userId, UserId developerId) {
             this.userId = userId;
@@ -206,27 +205,27 @@ public class EntitlementSearchParam {
             return this;
         }
 
-        public Builder startGrantTime(Date val) {
+        public Builder startGrantTime(String val) {
             startGrantTime = val;
             return this;
         }
 
-        public Builder endGrantTime(Date val) {
+        public Builder endGrantTime(String val) {
             endGrantTime = val;
             return this;
         }
 
-        public Builder startExpirationTime(Date val) {
+        public Builder startExpirationTime(String val) {
             startExpirationTime = val;
             return this;
         }
 
-        public Builder endExpirationTime(Date val) {
+        public Builder endExpirationTime(String val) {
             endExpirationTime = val;
             return this;
         }
 
-        public Builder lastModifiedTime(Date val) {
+        public Builder lastModifiedTime(String val) {
             lastModifiedTime = val;
             return this;
         }

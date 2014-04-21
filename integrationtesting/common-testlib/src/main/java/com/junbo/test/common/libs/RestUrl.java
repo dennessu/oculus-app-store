@@ -53,7 +53,7 @@ public final class RestUrl {
                 ConfigPropertiesHelper.instance().getProperty(componentName.getComponentName() + ".host") +
                 ":" +
                 ConfigPropertiesHelper.instance().getProperty(componentName.getComponentName() + ".port") +
-                "/rest/";
+                "/v1/";
     }
 
 

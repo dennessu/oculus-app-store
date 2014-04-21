@@ -1,7 +1,12 @@
 
-module.exports = function(){
-  this.StatusCode = 404; // response status code
-  this.Headers = ""; // response headers
-  this.Data = ""; // response data
-  this.Error = "";
+var ResultModel = function(){
+  this.status = 404; // response status code
+  this.headers = ""; // response headers(Use node)
+  this.data = ""; // response data
 };
+
+if(typeof(window) != "undefined"){
+    Module.Load(window, "Lib.ResultModel", ResultModel);
+}else{
+    module.exports = ResultModel;
+}

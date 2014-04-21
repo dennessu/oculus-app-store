@@ -1,19 +1,8 @@
-task createWrapper(type: Wrapper) {
-    gradleVersion = '1.10'
-}
+apply plugin: 'bootstrap'
 
-subprojects {
-    apply plugin: 'idea'
-    apply plugin: 'maven'
-
-    group = 'com.junbo.drm'
-    version = property("${project.name}-version")
-
+buildscript {
     repositories {
         mavenLocal()
-        mavenCentral()
-        jcenter()
-
         maven {
             credentials {
                 username "${artifactory_user}"
@@ -22,98 +11,9 @@ subprojects {
 
             url "${artifactory_contextUrl}/repo"
         }
-
     }
 
-    uploadArchives {
-        repositories {
-            mavenDeployer {
-                repository(url: "${artifactory_contextUrl}/libs-release-local") {
-                    authentication(userName: "${artifactory_user}", password: "${artifactory_password}")
-                }
-
-                snapshotRepository(url: "${artifactory_contextUrl}/libs-snapshot-local") {
-                    authentication(userName: "${artifactory_user}", password: "${artifactory_password}")
-                }
-            }
-        }
-    }
-
-    configurations {
-        processor
-    }
-
-    ext {
-        processorClass = null
-    }
-
-    plugins.withType(JavaPlugin) {
-        sourceCompatibility = 1.7
-        targetCompatibility = 1.7
-
-        dependencies {
-            testCompile 'org.testng:testng:6.8.7'
-        }
-
-        compileJava.doFirst {
-            def generated = file "$buildDir/generated-src"
-            generated.mkdirs()
-
-            compileJava.options.compilerArgs.addAll '-s', generated.path
-
-            if (!configurations.processor.empty) {
-                compileJava.options.compilerArgs.addAll '-processorpath', configurations.processor.asPath
-            }
-
-            if (processorClass) {
-                compileJava.options.compilerArgs.addAll '-processor', processorClass
-            }
-        }
-
-        task sourcesJar(type: Jar) {
-            classifier = 'sources'
-            from sourceSets.main.allSource, "$buildDir/generated-src"
-        }
-
-        artifacts {
-            archives sourcesJar
-        }
-
-        test {
-            useTestNG()
-        }
-    }
-
-    plugins.withType(GroovyPlugin) {
-        dependencies {
-            compile 'org.codehaus.groovy:groovy-all:2.2.1'
-        }
-
-        compileGroovy.doFirst {
-            def generated = file "$buildDir/generated-src"
-            generated.mkdirs()
-
-            compileGroovy.options.compilerArgs.addAll '-s', generated.path
-
-            if (!configurations.processor.empty) {
-                compileGroovy.options.compilerArgs.addAll '-processorpath', configurations.processor.asPath
-            }
-
-            if (processorClass) {
-                compileGroovy.options.compilerArgs.addAll '-processor', processorClass
-            }
-        }
-    }
-
-    idea {
-        module {
-            excludeDirs -= file("$buildDir")
-            sourceDirs += file("$buildDir/generated-src")
-
-            sourceDirs += file('src/main/java')
-            sourceDirs += file('src/main/groovy')
-            sourceDirs += file('src/main/resources')
-            sourceDirs += file('src/main/webapp')
-        }
+    dependencies {
+        classpath 'com.junbo.gradle:bootstrap:0.0.1-SNAPSHOT'
     }
 }

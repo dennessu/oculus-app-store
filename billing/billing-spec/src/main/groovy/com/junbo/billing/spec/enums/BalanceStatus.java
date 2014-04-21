@@ -8,6 +8,8 @@ package com.junbo.billing.spec.enums;
 
 import com.junbo.common.util.Identifiable;
 
+import javax.ws.rs.NotSupportedException;
+
 /**
  * Created by xmchen on 14-2-24.
  */
@@ -24,7 +26,7 @@ public enum BalanceStatus implements Identifiable<Short> {
     CANCELLED((short)1000),
     ERROR((short)-1);
 
-    private final Short id;
+    private Short id;
 
     BalanceStatus(Short id) {
         this.id = id;
@@ -33,5 +35,10 @@ public enum BalanceStatus implements Identifiable<Short> {
     @Override
     public Short getId() {
         return id;
+    }
+
+    @Override
+    public void setId(Short id) {
+        throw new NotSupportedException("enum BalanceStatus not settable");
     }
 }

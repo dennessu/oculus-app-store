@@ -11,6 +11,7 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.order.core.FlowSelector
 import com.junbo.order.core.FlowType
 import com.junbo.order.core.OrderServiceOperation
+import com.junbo.order.core.impl.common.CoreUtils
 import com.junbo.order.core.impl.order.OrderServiceContext
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
 import com.junbo.order.db.entity.enums.ItemType
@@ -46,6 +47,9 @@ class DefaultFlowSelector implements FlowSelector {
         switch (operation) {
             case OrderServiceOperation.CREATE:
             case OrderServiceOperation.SETTLE_TENTATIVE:
+                if (CoreUtils.isFreeOrder(context.order)) {
+                    return Promise.pure(FlowType.FREE_SETTLE.name())
+                }
                 return selectSettleOrderFlow(context)
             case OrderServiceOperation.CREATE_TENTATIVE:
                 return Promise.pure(FlowType.RATE_ORDER.name())
@@ -96,6 +100,8 @@ class DefaultFlowSelector implements FlowSelector {
                     }
                     return isPhysical ? Promise.pure(FlowType.PHYSICAL_SETTLE.name()) :
                             Promise.pure(FlowType.IMMEDIATE_SETTLE.name())
+                case PIType.WALLET.name():
+                    return Promise.pure(FlowType.IMMEDIATE_SETTLE.name())
                 default:
                     LOGGER.error('name=Payment_Instrument_Type_Not_Supported, action: {}', pis[0]?.type)
                     throw AppErrors.INSTANCE.piTypeNotSupported(
