@@ -25,9 +25,6 @@ public class BaseEventEntity implements Serializable {
     @Column(name = "action_type_id")
     private Short actionTypeId;
 
-    @Column(name = "status_id")
-    private Short statusId;
-
     @Column(name = "event_date")
     private Date eventDate;
 
@@ -43,13 +40,6 @@ public class BaseEventEntity implements Serializable {
     }
     public void setActionTypeId(Short actionTypeId) {
         this.actionTypeId = actionTypeId;
-    }
-
-    public Short getStatusId() {
-        return statusId;
-    }
-    public void setStatusId(Short statusId) {
-        this.statusId = statusId;
     }
 
     public Date getEventDate() {

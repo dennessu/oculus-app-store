@@ -77,6 +77,9 @@
     <bean id="balanceItemEntityDao"
           class="com.junbo.billing.db.dao.impl.BalanceItemEntityDaoImpl" parent="billingBaseDao" />
 
+    <bean id="balanceItemEventEntityDao"
+          class="com.junbo.billing.db.dao.impl.BalanceItemEventEntityDaoImpl" parent="billingBaseDao" />
+
     <bean id="discountItemEntityDao"
           class="com.junbo.billing.db.dao.impl.DiscountItemEntityDaoImpl" parent="billingBaseDao" />
 

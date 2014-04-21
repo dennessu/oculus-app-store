@@ -7,6 +7,7 @@
 package com.junbo.billing.core.service;
 
 import com.junbo.billing.spec.model.Balance;
+import com.junbo.billing.spec.model.BalanceItem;
 import com.junbo.common.id.BalanceId;
 import com.junbo.common.id.OrderId;
 import com.junbo.langur.core.promise.Promise;
@@ -29,4 +30,8 @@ public interface BalanceService {
     Promise<Balance> getBalance(BalanceId balanceId);
 
     Promise<List<Balance>> getBalances(OrderId orderId);
+
+    Promise<Balance> putBalance(Balance balance);
+
+    Promise<Balance> adjustItems(Balance balance);
 }

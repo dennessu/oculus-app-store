@@ -46,7 +46,7 @@ class TransactionServiceImpl implements TransactionService {
         switch (balanceType) {
             case BalanceType.DEBIT:
                 return charge(balance)
-            case BalanceType.DELAY_DEBIT:
+            case BalanceType.MANUAL_CAPTURE:
                 return authorize(balance)
             default:
                 throw AppErrors.INSTANCE.invalidBalanceType(balance.type).exception()
