@@ -39,7 +39,7 @@ public class EntitlementDaoImpl extends BaseDao<EntitlementEntity> implements En
         } catch (ParseException e) {
             //just ignore. This is checked in service layer.
         }
-        queryStringBuilder.append(" and is_deleted is null");
+        queryStringBuilder.append(" and is_deleted = false");
         Query q = currentSession(entitlementSearchParam.getUserId().getValue()).createSQLQuery(
                 queryStringBuilder.toString()).addEntity(EntitlementEntity.class);
         q = addPageMeta(addParams(q, params), pageMetadata);
@@ -112,7 +112,7 @@ public class EntitlementDaoImpl extends BaseDao<EntitlementEntity> implements En
 
     @Override
     public EntitlementEntity getByTrackingUuid(Long shardMasterId, UUID trackingUuid) {
-        String queryString = "from EntitlementEntity where trackingUuid = (:trackingUuid) and isDeleted = null";
+        String queryString = "from EntitlementEntity where trackingUuid = (:trackingUuid) and isDeleted = false";
         Query q = currentSession(shardMasterId).createQuery(queryString).setParameter("trackingUuid", trackingUuid);
         return (EntitlementEntity) q.uniqueResult();
     }

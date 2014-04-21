@@ -56,6 +56,7 @@ public class BaseDao<T extends Entity> {
     public T insert(T t) {
         t.setId(generateId(t.getShardMasterId()));
         Date now = EntitlementContext.current().getNow();
+        t.setIsDeleted(false);
         t.setCreatedBy("DEFAULT");  //TODO
         t.setCreatedTime(now);
         t.setModifiedBy("DEFAULT"); //TODO
@@ -65,7 +66,7 @@ public class BaseDao<T extends Entity> {
 
     public T get(Long id) {
         T result = (T) currentSession(id).get(entityType, id);
-        return Boolean.TRUE.equals(result.getIsDeleted()) ? null : result;
+        return (result == null || result.getIsDeleted()) ? null : result;
     }
 
     public T update(T t) {

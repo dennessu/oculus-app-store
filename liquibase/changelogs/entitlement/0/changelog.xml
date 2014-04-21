@@ -22,7 +22,7 @@
               created_time timestamp not null,
               modified_time timestamp not null,
               tracking_uuid uuid UNIQUE,
-              is_deleted boolean default null,
+              is_deleted boolean default false,
               primary key (entitlement_id)
             );
             create table entitlement_history (
