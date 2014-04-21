@@ -44,6 +44,7 @@ public interface EntitlementDefinitionResource {
             @QueryParam("type") String type,
             @QueryParam("group") String group,
             @QueryParam("tag") String tag,
+            @QueryParam("isConsumable") Boolean isConsumable,
             @BeanParam PageableGetOptions pageMetadata);
 
     @ApiOperation("Create an entitlement definitions")

@@ -39,10 +39,10 @@ public class EntitlementDefinitionServiceImpl implements EntitlementDefinitionSe
 
     @Override
     public List<EntitlementDefinition> getEntitlementDefinitions(Long developerId, String clientId,
-                                                                 String group, String tag,
-                                                                 String type, PageableGetOptions pageMetadata) {
+                                                                 String group, String tag, String type,
+                                                                 Boolean isConsumable, PageableGetOptions pageMetadata) {
         checkDeveloper(developerId);
-        return entitlementDefinitionRepository.getByParams(developerId, clientId, group, tag, type, pageMetadata);
+        return entitlementDefinitionRepository.getByParams(developerId, clientId, group, tag, type, isConsumable, pageMetadata);
     }
 
     @Override

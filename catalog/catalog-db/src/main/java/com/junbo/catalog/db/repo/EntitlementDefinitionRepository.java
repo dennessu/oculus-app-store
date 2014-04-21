@@ -43,20 +43,21 @@ public class EntitlementDefinitionRepository {
 
     public void delete(EntitlementDefinition entitlementDefinition) {
         EntitlementDefinitionEntity entitlementDefinitionEntity =
-               EntitlementDefinitionMapper.toEntitlementDefinitionEntity(entitlementDefinition);
+                EntitlementDefinitionMapper.toEntitlementDefinitionEntity(entitlementDefinition);
         entitlementDefinitionEntity.setDeleted(true);
         entitlementDefinitionDao.update(entitlementDefinitionEntity);
     }
 
 
     public List<EntitlementDefinition> getByParams(Long developerId, String clientId,
-                                                   String group, String tag,
-                                                   String type, PageableGetOptions pageMetadata) {
+                                                   String group, String tag, String type,
+                                                   Boolean isConsumable, PageableGetOptions pageMetadata) {
 
         return EntitlementDefinitionMapper.toEntitlementDefinitionList(
-                entitlementDefinitionDao.getByParams(developerId,clientId, group, tag,
+                entitlementDefinitionDao.getByParams(developerId, clientId, group, tag,
                         StringUtils.isEmpty(type) ? null : EntitlementType.valueOf(type),
-                        pageMetadata == null ? new PageableGetOptions() : pageMetadata));
+                        isConsumable,
+                        pageMetadata == null ? new PageableGetOptions().ensurePagingValid() : pageMetadata));
     }
 
     public EntitlementDefinition getByTrackingUuid(UUID trackingUuid) {

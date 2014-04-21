@@ -43,11 +43,11 @@ public class EntitlementDefinitionResourceImpl implements EntitlementDefinitionR
     @Override
     public Promise<Results<EntitlementDefinition>> getEntitlementDefinitions(
             UserId developerId, String clientId, String type,
-            String group, String tag, PageableGetOptions pageMetadata) {
+            String group, String tag, Boolean isConsumable, PageableGetOptions pageMetadata) {
         pageMetadata.ensurePagingValid();
         List<EntitlementDefinition> entitlementDefinitions =
                 entitlementDefinitionService.getEntitlementDefinitions(
-                        developerId.getValue(), clientId, group, tag, type, pageMetadata);
+                        developerId.getValue(), clientId, group, tag, type, isConsumable, pageMetadata);
         Results<EntitlementDefinition> result = new Results<EntitlementDefinition>();
         result.setItems(entitlementDefinitions);
         result.setNext(buildNextUrl(developerId.getValue(), clientId, type, group, tag, pageMetadata));

@@ -27,7 +27,7 @@ public class EntitlementDefinitionDaoImpl extends BaseDaoImpl<EntitlementDefinit
         implements EntitlementDefinitionDao {
     @Override
     public List<EntitlementDefinitionEntity> getByParams(Long developerId, String clientId, String group, String tag,
-                                                         EntitlementType type, PageableGetOptions pageableGetOptions) {
+                                                         EntitlementType type, Boolean isConsumable, PageableGetOptions pageableGetOptions) {
         StringBuilder queryString = new StringBuilder("select * from entitlement_definition" +
                 " where developer_id = (:developerId)");
         Map<String, Object> params = new HashMap<String, Object>();
@@ -49,6 +49,10 @@ public class EntitlementDefinitionDaoImpl extends BaseDaoImpl<EntitlementDefinit
         if (!StringUtils.isEmpty(tag)) {
             queryString.append(" and tag = (:tag)");
             params.put("tag", tag);
+        }
+        if (isConsumable != null) {
+            queryString.append(" and consumable = (:isConsumable)");
+            params.put("isConsumable", isConsumable);
         }
 
         queryString.append(" and deleted = false");

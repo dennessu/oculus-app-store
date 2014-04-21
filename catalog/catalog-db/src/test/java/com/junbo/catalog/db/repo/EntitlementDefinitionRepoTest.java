@@ -31,7 +31,7 @@ public class EntitlementDefinitionRepoTest extends BaseTest {
     public void testSearch(){
         EntitlementDefinition definition = buildADefinition();
         definitionRepository.create(definition);
-        List<EntitlementDefinition> definitions = definitionRepository.getByParams(definition.getDeveloperId(), definition.getInAppContext().get(0), null, null, null, new PageableGetOptions().ensurePagingValid());
+        List<EntitlementDefinition> definitions = definitionRepository.getByParams(definition.getDeveloperId(), definition.getInAppContext().get(0), null, null, null, true, new PageableGetOptions().ensurePagingValid());
         Assert.assertEquals(definitions.size(), 1);
     }
 
