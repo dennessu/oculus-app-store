@@ -6,10 +6,7 @@
 package com.junbo.order.spec.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.junbo.common.id.OfferId;
-import com.junbo.common.id.OrderItemId;
-import com.junbo.common.id.SubledgerId;
-import com.junbo.common.id.SubledgerItemId;
+import com.junbo.common.id.*;
 
 import java.math.BigDecimal;
 
@@ -23,7 +20,7 @@ public class SubledgerItem extends BaseModelWithDate {
     private SubledgerItemId originalSubledgerItemId;
     private BigDecimal totalAmount;
     private OrderItemId orderItemId;
-    private OfferId offerId;
+    private OfferRevisionId offerRevisionId;
     private String subledgerItemAction;
     private String status;
     private Integer resourceAge;
@@ -68,12 +65,12 @@ public class SubledgerItem extends BaseModelWithDate {
         this.orderItemId = orderItemId;
     }
 
-    public OfferId getOfferId() {
-        return offerId;
+    public OfferRevisionId getOfferRevisionId() {
+        return offerRevisionId;
     }
 
-    public void setOfferId(OfferId offerId) {
-        this.offerId = offerId;
+    public void setOfferRevisionId(OfferRevisionId offerRevisionId) {
+        this.offerRevisionId = offerRevisionId;
     }
 
     public String getSubledgerItemAction() {
