@@ -207,7 +207,7 @@
         </sql>
     </changeSet>
 
-    <changeSet id="4" author='xmchen' context="PREDEPLOY">
+    <changeSet id="5" author='xmchen' context="PREDEPLOY">
         <sql><![CDATA[
 			CREATE TABLE balance_item_event (
 				event_id BIGINT NOT NULL,
