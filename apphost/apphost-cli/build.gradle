@@ -1,0 +1,10 @@
+apply plugin: 'groovy'
+
+dependencies {
+    compile project(':apphost-core')
+
+    runtime "com.junbo.identity:identity-app:${junboVersion}"
+    runtime "com.junbo.oauth:oauth-app:${junboVersion}"
+
+    runtime (libraries.common_configuration_data)
+}

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="httpServer" class="com.junbo.apphost.core.GrizzlyHttpServerBean">
+        <property name="uri">
+            <value type="java.net.URI">http://0.0.0.0:8080/v1</value>
+        </property>
+        <property name="componentClasses">
+            <list>
+                <value type="java.lang.Class">com.junbo.common.json.JacksonFeature</value>
+                <value type="java.lang.Class">com.junbo.common.json.ObjectMapperProvider</value>
+                <value type="java.lang.Class">com.junbo.common.json.InvalidJsonReaderInterceptor</value>
+                <value type="java.lang.Class">com.junbo.common.error.RestExceptionMapper</value>
+                <value type="java.lang.Class">com.junbo.common.id.provider.IdTypeFromStringProvider</value>
+                <value type="java.lang.Class">com.junbo.identity.spec.filter.ResultsInterceptor</value>
+                <value type="java.lang.Class">com.junbo.common.provider.ResponseFilter</value>
+            </list>
+        </property>
+    </bean>
+
+</beans>

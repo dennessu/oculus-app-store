@@ -168,6 +168,15 @@ class BootstrapPlugin implements Plugin<Project> {
                 tasks.withType(Checkstyle) {
                     it.dependsOn 'unzipCheckstyleConfigFile'
                 }
+
+                jar {
+                    manifest {
+                        attributes (
+                                'Implementation-Title': "${subProject.name}",
+                                'Implementation-Version': "${subProject.version}"
+                        )
+                    }
+                }
             }
 
             plugins.withType(GroovyPlugin) {

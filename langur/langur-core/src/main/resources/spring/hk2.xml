@@ -3,7 +3,7 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="serviceLocator" class="com.junbo.langur.core.hk2.ServiceLocatorComponentProvider"
+    <!--bean id="serviceLocator" class="com.junbo.langur.core.hk2.ServiceLocatorComponentProvider"
           factory-method="getServiceLocator"/>
 
     <bean class="org.springframework.beans.factory.config.CustomScopeConfigurer">
@@ -31,5 +31,5 @@
           class="javax.ws.rs.container.ContainerRequestContext" scope="hk2"/>
 
     <bean id="org.glassfish.jersey.server.internal.process.RespondingContext"
-          class="org.glassfish.jersey.server.internal.process.RespondingContext" scope="hk2"/>
+          class="org.glassfish.jersey.server.internal.process.RespondingContext" scope="hk2"/-->
 </beans>
