@@ -22,9 +22,9 @@ class UserDAOImpl extends BaseDAO implements UserDAO {
         if (user == null) {
             throw new IllegalArgumentException('user is null')
         }
-
-        user.id = idGenerator.nextIdByShardId(shardAlgorithm.shardId())
-
+        if (user.id == null) {
+            user.id = idGenerator.nextIdByShardId(shardAlgorithm.shardId())
+        }
         Session session = currentSession(user.id)
         session.save(user)
         session.flush()

@@ -36,7 +36,9 @@ class GroupRepositoryCloudantImpl extends CloudantClient<Group> implements Group
 
     @Override
     Promise<Group> create(Group group) {
-        group.id = new GroupId(idGenerator.nextIdByShardId(shardAlgorithm.shardId()))
+        if (group.id == null) {
+            group.id = new GroupId(idGenerator.nextIdByShardId(shardAlgorithm.shardId()))
+        }
         super.cloudantPost(group)
         return get((GroupId)group.id)
     }

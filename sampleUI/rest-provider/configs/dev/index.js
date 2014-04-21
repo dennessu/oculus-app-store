@@ -3,7 +3,9 @@
         env: "development",
         RunProcessNumber: 2, // useful for cluster launch
         Localhost: "csr.oculusvr-demo.com",
-        ListenOnPort: 3000,
+        ListenOnPort: 3500,
+
+        ProviderHost: "http://provider.oculusvr-demo.com:3500",
 
         Identity_API_Host: "127.0.0.1",
         Identity_API_Port: 8000,

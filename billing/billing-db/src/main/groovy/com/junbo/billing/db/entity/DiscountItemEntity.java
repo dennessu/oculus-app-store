@@ -33,6 +33,9 @@ public class DiscountItemEntity extends BaseEntity {
     @Column(name = "discount_rate")
     private BigDecimal discountRate;
 
+    @Column(name = "deleted")
+    private Boolean isDeleted = false;
+
     public Long getDiscountItemId() {
         return discountItemId;
     }
@@ -61,4 +64,10 @@ public class DiscountItemEntity extends BaseEntity {
         this.discountRate = discountRate;
     }
 
+    public Boolean getIsDeleted() {
+        return isDeleted;
+    }
+    public void setIsDeleted(Boolean isDeleted) {
+        this.isDeleted = isDeleted;
+    }
 }

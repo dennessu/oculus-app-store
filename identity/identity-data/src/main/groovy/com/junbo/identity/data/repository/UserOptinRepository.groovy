@@ -9,6 +9,7 @@ import com.junbo.common.id.UserOptinId
 import com.junbo.identity.spec.v1.model.UserOptin
 import com.junbo.identity.spec.v1.option.list.UserOptinListOptions
 import com.junbo.langur.core.promise.Promise
+import com.junbo.sharding.core.annotations.ReadMethod
 import groovy.transform.CompileStatic
 
 /**
@@ -16,5 +17,6 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 interface UserOptinRepository extends IdentityBaseRepository<UserOptin, UserOptinId> {
+    @ReadMethod
     Promise<List<UserOptin>> search(UserOptinListOptions getOption)
 }

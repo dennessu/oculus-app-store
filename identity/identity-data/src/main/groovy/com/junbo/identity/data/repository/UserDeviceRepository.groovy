@@ -9,6 +9,7 @@ import com.junbo.common.id.UserDeviceId
 import com.junbo.identity.spec.v1.model.UserDevice
 import com.junbo.identity.spec.v1.option.list.UserDeviceListOptions
 import com.junbo.langur.core.promise.Promise
+import com.junbo.sharding.core.annotations.ReadMethod
 import groovy.transform.CompileStatic
 
 /**
@@ -16,5 +17,6 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 interface UserDeviceRepository extends IdentityBaseRepository<UserDevice, UserDeviceId> {
+    @ReadMethod
     Promise<List<UserDevice>> search(UserDeviceListOptions getOption)
 }

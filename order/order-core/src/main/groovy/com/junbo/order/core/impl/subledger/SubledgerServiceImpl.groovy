@@ -64,10 +64,10 @@ class SubledgerServiceImpl implements SubledgerService {
     SubledgerItem createSubledgerItem(SubledgerItem subledgerItem) {
         orderValidator.notNull(subledgerItem.totalAmount, 'totalAmount')
         orderValidator.notNull(subledgerItem.orderItemId, 'orderItemId')
-        orderValidator.notNull(subledgerItem.offerId, 'offerId')
+        orderValidator.notNull(subledgerItem.offerRevisionId, 'offerRevisionId')
         orderValidator.notNull(subledgerItem.subledgerItemAction, 'subledgerItemAction').
                 validEnumString(subledgerItem.subledgerItemAction, 'subledgerItemAction', SubledgerItemAction)
-        orderValidator.validEnumString(subledgerItem.status, 'payoutStatus', SubledgerItemStatus)
+        orderValidator.validEnumString(subledgerItem.status, 'status', SubledgerItemStatus)
 
         return subledgerRepository.createSubledgerItem(subledgerItem)
     }

@@ -2,8 +2,19 @@
  * Created by Haiwei on 2014/4/17.
  */
 
-var Config = require('../configs');
+var path = require("path");
+var fs = require("fs");
 
-Config.Init('Prod');
+var str = "/test/test.js";
+var str2 = "/test/config";
 
-console.log(global.AppConfig);
+var reg = /[.](js|gif|bmg)$/
+
+//console.log(reg.test(str));
+
+//console.log(path.normalize(str));
+
+//console.log(fs.realpathSync("/test/test.js"));
+
+console.log(fs.existsSync("./test/index.html"));
+

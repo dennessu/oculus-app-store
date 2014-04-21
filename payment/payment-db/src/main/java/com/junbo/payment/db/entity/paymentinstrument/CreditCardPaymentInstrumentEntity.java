@@ -38,9 +38,6 @@ public class CreditCardPaymentInstrumentEntity extends GenericEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastBillingDate;
 
-    @Column(name = "external_token")
-    private String externalToken;
-
     @Column(name = "prepaid")
     private String prepaid;
 
@@ -88,14 +85,6 @@ public class CreditCardPaymentInstrumentEntity extends GenericEntity {
 
     public void setLastBillingDate(Date lastBillingDate) {
         this.lastBillingDate = lastBillingDate;
-    }
-
-    public String getExternalToken() {
-        return externalToken;
-    }
-
-    public void setExternalToken(String externalToken) {
-        this.externalToken = externalToken;
     }
 
     public String getPrepaid() {

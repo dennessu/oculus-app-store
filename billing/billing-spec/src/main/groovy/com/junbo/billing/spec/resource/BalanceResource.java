@@ -46,4 +46,7 @@ public interface BalanceResource {
 
     @GET
     Promise<Results<Balance>> getBalances(@QueryParam("orderId") OrderId orderId);
+
+    @PUT
+    Promise<Balance> putBalance(Balance balance);
 }

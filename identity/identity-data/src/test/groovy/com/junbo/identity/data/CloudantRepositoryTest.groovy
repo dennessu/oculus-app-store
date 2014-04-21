@@ -15,6 +15,7 @@ import com.junbo.identity.data.identifiable.UserPasswordStrength
 import com.junbo.identity.data.repository.*
 import com.junbo.identity.spec.model.users.UserPassword
 import com.junbo.identity.spec.model.users.UserPin
+import com.junbo.identity.spec.v1.model.Address
 import com.junbo.identity.spec.v1.model.Device
 import com.junbo.identity.spec.v1.model.Group
 import com.junbo.identity.spec.v1.model.Tos
@@ -65,6 +66,10 @@ import org.testng.annotations.Test
 public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
     // This is the fake value to meet current requirement.
     private final long userId = 1493188608L
+
+    @Autowired
+    @Qualifier('cloudantAddressRepository')
+    private AddressRepository addressRepository
 
     @Autowired
     @Qualifier('cloudantDeviceRepository')
@@ -162,6 +167,19 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
 
         device = deviceRepository.searchByExternalRef(device.externalRef).wrapped().get()
         assert device.description == newDescription
+    }
+
+    @Test(enabled = true)
+    public void testAddressRepository() {
+        Address address = new Address()
+        address.city = 'shanghai'
+        address.country = 'CN'
+        address.postalCode = '201102'
+        address.userId = new UserId(userId)
+        address = addressRepository.create(address).wrapped().get()
+
+        Address newAddress = addressRepository.get(address.id).wrapped().get()
+        Assert.assertEquals(address.city, newAddress.city)
     }
 
     @Test

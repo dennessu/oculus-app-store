@@ -15,8 +15,7 @@ import javax.ws.rs.NotSupportedException;
  */
 public enum BalanceType implements Identifiable<Short> {
     DEBIT((short)1),
-    DELAY_DEBIT((short)2),
-    MANUAL_CAPTURE((short)3),
+    MANUAL_CAPTURE((short)2),
     CREDIT((short)4),
     REFUND((short)8);
 

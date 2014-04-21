@@ -1,5 +1,8 @@
 package com.junbo.order.core.impl.common
 
+import com.junbo.billing.spec.enums.BalanceStatus
+import com.junbo.billing.spec.enums.BalanceType
+import com.junbo.billing.spec.model.Balance
 import com.junbo.common.error.AppError
 import com.junbo.common.error.AppErrorException
 import com.junbo.order.clientproxy.model.OrderOfferItemRevision
@@ -46,6 +49,18 @@ class CoreUtils {
         }
         if (order.orderItems.any { OrderItem oi ->
             oi.type == ItemType.PHYSICAL.toString()
+        }) {
+            return true
+        }
+        return false
+    }
+
+    static Boolean isChargeCompleted (List<Balance> balances) {
+        if (CollectionUtils.isEmpty(balances)) {
+            return false
+        }
+        if (balances.any { Balance balance ->
+            balance.status == BalanceStatus.COMPLETED.name() && balance.type == BalanceType.DEBIT.name()
         }) {
             return true
         }

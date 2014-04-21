@@ -22,8 +22,9 @@ import org.hibernate.criterion.Restrictions
 class UserAuthenticatorDAOImpl extends BaseDAO implements UserAuthenticatorDAO {
     @Override
     UserAuthenticatorEntity save(UserAuthenticatorEntity entity) {
-        entity.id = idGenerator.nextId(entity.userId)
-
+        if (entity.id == null) {
+            entity.id = idGenerator.nextId(entity.userId)
+        }
         Session session = currentSession(entity.id)
         session.save(entity)
         session.flush()

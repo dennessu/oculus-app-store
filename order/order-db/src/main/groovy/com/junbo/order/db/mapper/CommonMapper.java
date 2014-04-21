@@ -359,6 +359,22 @@ public class CommonMapper {
         return offerId.getValue().toString();
     }
 
+    public OfferRevisionId fromStringToOfferRevisionId(String offerRevisionId) {
+        if (offerRevisionId == null) {
+            return null;
+        }
+
+        return new OfferRevisionId(Long.parseLong(offerRevisionId));
+    }
+
+    public String fromOfferRevisionIdToString(OfferRevisionId offerRevisionId) {
+        if (offerRevisionId == null) {
+            return null;
+        }
+
+        return offerRevisionId.getValue().toString();
+    }
+
     public PromotionId fromStringToPromotionId(String promotionId) {
         if (promotionId == null) {
             return null;

@@ -6,7 +6,7 @@ var ResultModel = function(){
 };
 
 if(typeof(window) != "undefined"){
-    Module.Load(window, "Lib.ResultModel", ResultModel);
+    Module.Load(window, "ResultModel", ResultModel);
 }else{
     module.exports = ResultModel;
 }

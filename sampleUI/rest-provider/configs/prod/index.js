@@ -5,6 +5,8 @@
         Localhost: "store.oculusvr-demo.com",
         ListenOnPort: 80,
 
+        ProviderHost: "http://provider.oculusvr-demo.com",
+
         Identity_API_Host: "api.oculusvr-demo.com",
         Identity_API_Port: 8081,
 

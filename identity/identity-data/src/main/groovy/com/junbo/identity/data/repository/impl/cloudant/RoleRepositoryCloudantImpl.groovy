@@ -34,7 +34,9 @@ class RoleRepositoryCloudantImpl extends CloudantClient<Role> implements RoleRep
 
     @Override
     Promise<Role> create(Role role) {
-        role.id = new RoleId(idGenerator.nextIdByShardId(shardAlgorithm.shardId()))
+        if (role.id == null) {
+            role.id = new RoleId(idGenerator.nextIdByShardId(shardAlgorithm.shardId()))
+        }
         super.cloudantPost(role)
         return get((RoleId)role.id)
     }

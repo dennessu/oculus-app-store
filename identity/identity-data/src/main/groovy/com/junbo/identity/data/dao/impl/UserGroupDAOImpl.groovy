@@ -22,8 +22,9 @@ import org.springframework.util.CollectionUtils
 class UserGroupDAOImpl extends BaseDAO implements UserGroupDAO {
     @Override
     UserGroupEntity save(UserGroupEntity entity) {
-        entity.id = idGenerator.nextId(entity.userId)
-
+        if (entity.id == null) {
+            entity.id = idGenerator.nextId(entity.userId)
+        }
         Session session = currentSession(entity.id)
         session.save(entity)
         session.flush()

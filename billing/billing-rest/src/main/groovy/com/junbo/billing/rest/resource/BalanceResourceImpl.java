@@ -64,4 +64,9 @@ public class BalanceResourceImpl implements BalanceResource {
             }
         });
     }
+
+    @Override
+    public Promise<Balance> putBalance(Balance balance) {
+        return balanceService.putBalance(balance);
+    }
 }

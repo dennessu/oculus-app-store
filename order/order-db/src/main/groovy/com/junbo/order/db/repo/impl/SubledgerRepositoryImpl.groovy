@@ -21,10 +21,13 @@ import com.junbo.sharding.IdGenerator
 import com.junbo.sharding.IdGeneratorFacade
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Component
+
 /**
  * Created by fzhang on 4/11/2014.
  */
 @CompileStatic
+@Component('subledgerRepository')
 class SubledgerRepositoryImpl implements SubledgerRepository {
 
     @Autowired
@@ -102,9 +105,9 @@ class SubledgerRepositoryImpl implements SubledgerRepository {
     }
 
     @Override
-    List<SubledgerItem> getSubledgerItem(String status, PageParam pageParam) {
+    List<SubledgerItem> getSubledgerItem(Object shardKey, String status, PageParam pageParam) {
         List<SubledgerItem> result = []
-        subledgerItemDao.getByStatus(0, // todo iterate all the shard
+        subledgerItemDao.getByStatus(shardKey,
                 SubledgerItemStatus.valueOf(status),
                 pageParam.start, pageParam.count).each { SubledgerItemEntity entity ->
             result << modelMapper.toSubledgerItemModel(entity, new MappingContext())

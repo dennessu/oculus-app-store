@@ -48,7 +48,7 @@ class AvalaraFacadeImpl implements TaxFacade {
     @Resource(name = 'avalaraConfiguration')
     AvalaraConfiguration configuration
 
-    @Resource(name = 'asyncHttpClient')
+    @Resource(name = 'billingAsyncHttpClient')
     AsyncHttpClient asyncHttpClient
 
     @Resource(name = 'transcoder')

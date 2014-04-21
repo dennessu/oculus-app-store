@@ -47,7 +47,7 @@ class AuthSettleAction extends BaseOrderEventAwareAction {
     Promise<ActionResult> execute(ActionContext actionContext) {
         def context = ActionUtils.getOrderActionContext(actionContext)
         orderInternalService.markSettlement(context.orderServiceContext.order)
-        Balance balance = CoreBuilder.buildBalance(context.orderServiceContext.order, BalanceType.DELAY_DEBIT)
+        Balance balance = CoreBuilder.buildBalance(context.orderServiceContext.order, BalanceType.CREDIT)
         Promise promise = facadeContainer.billingFacade.createBalance(balance)
         promise.syncRecover { Throwable throwable ->
             LOGGER.error('name=Order_AuthSettle_Error', throwable)

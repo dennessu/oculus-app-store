@@ -31,7 +31,7 @@ public class BrainTreeRestProviderServiceImpl extends AbstractPaymentProviderSer
     @Override
     public void clonePIResult(PaymentInstrument source, PaymentInstrument target) {
         target.setAccountNum(source.getAccountNum());
-        target.getCreditCardRequest().setExternalToken(source.getCreditCardRequest().getExternalToken());
+        target.setExternalToken(source.getExternalToken());
         target.getCreditCardRequest().setType(source.getCreditCardRequest().getType());
         target.getCreditCardRequest().setCommercial(source.getCreditCardRequest().getCommercial());
         target.getCreditCardRequest().setDebit(source.getCreditCardRequest().getDebit());
@@ -54,12 +54,12 @@ public class BrainTreeRestProviderServiceImpl extends AbstractPaymentProviderSer
 
     @Override
     public Promise<Response> delete(PaymentInstrument pi) {
-        return brainTreeResource.deletePaymentInstrument(pi.getCreditCardRequest().getExternalToken());
+        return brainTreeResource.deletePaymentInstrument(pi.getExternalToken());
     }
 
     @Override
     public Promise<PaymentTransaction> authorize(PaymentInstrument pi, PaymentTransaction paymentRequest) {
-        return brainTreeResource.postAuthorization(pi.getCreditCardRequest().getExternalToken(), paymentRequest);
+        return brainTreeResource.postAuthorization(pi.getExternalToken(), paymentRequest);
     }
 
     @Override
@@ -69,7 +69,7 @@ public class BrainTreeRestProviderServiceImpl extends AbstractPaymentProviderSer
 
     @Override
     public Promise<PaymentTransaction> charge(PaymentInstrument pi, PaymentTransaction paymentRequest) {
-        return brainTreeResource.postCharge(pi.getCreditCardRequest().getExternalToken(), paymentRequest);
+        return brainTreeResource.postCharge(pi.getExternalToken(), paymentRequest);
     }
 
     @Override
