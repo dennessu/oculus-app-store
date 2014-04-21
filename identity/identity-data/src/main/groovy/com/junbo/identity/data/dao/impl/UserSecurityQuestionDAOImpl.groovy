@@ -20,7 +20,9 @@ import org.hibernate.criterion.Restrictions
 class UserSecurityQuestionDAOImpl extends BaseDAO implements UserSecurityQuestionDAO {
     @Override
     UserSecurityQuestionEntity save(UserSecurityQuestionEntity entity) {
-        entity.id = idGenerator.nextId(entity.userId)
+        if (entity.id == null) {
+            entity.id = idGenerator.nextId(entity.userId)
+        }
         Session session = currentSession(entity.id)
         session.save(entity)
         session.flush()

@@ -25,8 +25,8 @@ class BalanceServiceTest extends BaseTest {
     BalanceService balanceService
 
     @Test
-    void testDelayDebitBalance() {
-        Balance balance = generateBalance(BalanceType.DELAY_DEBIT)
+    void testManualCaptureBalance() {
+        Balance balance = generateBalance(BalanceType.MANUAL_CAPTURE)
         balance = balanceService.addBalance(balance)?.wrapped().get()
 
         assert balance != null
@@ -65,7 +65,7 @@ class BalanceServiceTest extends BaseTest {
 
     @Test
     void testCaptureBalance() {
-        Balance balance = generateBalance(BalanceType.DELAY_DEBIT)
+        Balance balance = generateBalance(BalanceType.MANUAL_CAPTURE)
         balance = balanceService.addBalance(balance)?.wrapped().get()
 
         assert balance != null

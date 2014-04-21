@@ -36,7 +36,9 @@ class UserSecurityQuestionRepositoryCloudantImpl extends CloudantClient<UserSecu
 
     @Override
     Promise<UserSecurityQuestion> create(UserSecurityQuestion entity) {
-        entity.id = new UserSecurityQuestionId(idGenerator.nextId(entity.userId.value))
+        if (entity.id == null) {
+            entity.id = new UserSecurityQuestionId(idGenerator.nextId(entity.userId.value))
+        }
         super.cloudantPost(entity)
         return get((UserSecurityQuestionId)entity.id)
     }

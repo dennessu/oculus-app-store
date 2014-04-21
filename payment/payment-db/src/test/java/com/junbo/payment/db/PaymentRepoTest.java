@@ -44,11 +44,11 @@ public class PaymentRepoTest extends BaseTest {
         pi.setCreditCardRequest(new CreditCardRequest(){
             {
                 setExpireDate("2025-10-12");
-                setExternalToken("123");
                 setType(CreditCardType.VISA.toString());
                 setLastBillingDate(new Date());
             }
         });
+        pi.setExternalToken("123");
         return pi;
     }
 }

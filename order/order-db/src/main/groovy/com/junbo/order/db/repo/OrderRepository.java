@@ -22,6 +22,9 @@ public interface OrderRepository {
 
     List<Order> getOrdersByUserId(Long userId, OrderQueryParam orderQueryParam, PageParam pageParam);
 
+    List<Order> getOrdersByStatus(Object shardKey, List<String> statusList,
+                                  boolean updatedByAscending, PageParam pageParam);
+
     OrderEvent createOrderEvent(OrderEvent event);
 
     FulfillmentEvent createFulfillmentEvent(Long orderId, FulfillmentEvent event);

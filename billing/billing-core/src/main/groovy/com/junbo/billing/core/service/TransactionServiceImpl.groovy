@@ -46,7 +46,7 @@ class TransactionServiceImpl implements TransactionService {
         switch (balanceType) {
             case BalanceType.DEBIT:
                 return charge(balance)
-            case BalanceType.DELAY_DEBIT:
+            case BalanceType.MANUAL_CAPTURE:
                 return authorize(balance)
             default:
                 throw AppErrors.INSTANCE.invalidBalanceType(balance.type).exception()
@@ -94,7 +94,7 @@ class TransactionServiceImpl implements TransactionService {
             if (pt.status == PaymentStatus.SETTLEMENT_SUBMITTED.name()) {
                 newTransaction.setStatus(TransactionStatus.SUCCESS.name())
                 balance.setStatus(BalanceStatus.AWAITING_PAYMENT.name())
-            } else if (pt.status == PaymentStatus.SETTLEMENT_DECLINED) {
+            } else if (pt.status == PaymentStatus.SETTLEMENT_SUBMIT_DECLINED.name()) {
                 newTransaction.setStatus(TransactionStatus.DECLINE.name())
                 balance.setStatus(BalanceStatus.FAILED.name())
             } else {
@@ -136,7 +136,7 @@ class TransactionServiceImpl implements TransactionService {
                     transaction.setStatus(TransactionStatus.SUCCESS.name())
                     balance.setStatus(BalanceStatus.AWAITING_PAYMENT.name())
                     break
-                case PaymentStatus.SETTLEMENT_DECLINED:
+                case PaymentStatus.SETTLEMENT_SUBMIT_DECLINED:
                     transaction.setStatus(TransactionStatus.DECLINE.name())
                     balance.setStatus(BalanceStatus.FAILED.name())
                     break

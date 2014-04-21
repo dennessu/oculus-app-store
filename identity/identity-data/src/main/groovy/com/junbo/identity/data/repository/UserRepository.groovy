@@ -8,21 +8,14 @@ package com.junbo.identity.data.repository
 import com.junbo.common.id.UserId
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.langur.core.promise.Promise
+import com.junbo.sharding.core.annotations.ReadMethod
 import groovy.transform.CompileStatic
 
 /**
  * User DAO is used to fetch/update/delete/get user data from the database
  */
 @CompileStatic
-interface UserRepository {
-
-    Promise<User> create(User user)
-
-    Promise<User> update(User user)
-
-    Promise<User> get(UserId userId)
-
-    Promise<Void> delete(UserId userId)
-
+interface UserRepository extends IdentityBaseRepository<User, UserId> {
+    @ReadMethod
     Promise<User> getUserByCanonicalUsername(String canonicalUsername)
 }

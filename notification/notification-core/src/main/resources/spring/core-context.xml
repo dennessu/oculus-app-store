@@ -56,6 +56,10 @@
         <constructor-arg value="OFFER_QUEUE"/>
     </bean>
 
+    <bean id="billingAsyncChargeQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="BILLING_ASYNC_CHARGE_QUEUE"/>
+    </bean>
+
     <!-- JMS template -->
     <bean id="emailJmsTemplate" class="org.springframework.jms.core.JmsTemplate" parent="baseJmsTemplate">
         <property name="defaultDestination" ref="emailQueue"/>
@@ -63,5 +67,9 @@
 
     <bean id="offerJmsTemplate" class="org.springframework.jms.core.JmsTemplate" parent="baseJmsTemplate">
         <property name="defaultDestination" ref="offerQueue"/>
+    </bean>
+
+    <bean id="billingAsyncChargeJmsTemplate" class="org.springframework.jms.core.JmsTemplate" parent="baseJmsTemplate">
+        <property name="defaultDestination" ref="billingAsyncChargeQueue"/>
     </bean>
 </beans>

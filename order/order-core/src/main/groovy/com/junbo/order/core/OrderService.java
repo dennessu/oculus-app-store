@@ -28,13 +28,9 @@ public interface OrderService {
 
     Promise<List<Order>> getOrdersByUserId(Long userId, OrderQueryParam orderQueryParam, PageParam pageParam);
 
-    Promise<OrderEvent> updateOrderBillingStatus(OrderEvent event);
-
-    Promise<OrderEvent> updateOrderFulfillmentStatus(OrderEvent event);
+    Promise<OrderEvent> updateOrderByOrderEvent(OrderEvent event);
 
     Promise<Order> updateTentativeOrder(Order order, ApiContext context);
 
     Promise<Order> updateNonTentativeOrder(Order order, ApiContext context);
-
-    Promise<Order> completeChargeOrder(Long orderId, ApiContext context);
 }

@@ -4,6 +4,8 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
+    <context:component-scan base-package="com.junbo.order.jobs"/>
+
     <!-- Order Scheduler -->
     <bean id="orderSchedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
         <property name="schedulerName" value="orderScheduler" />
@@ -11,6 +13,7 @@
         <property name="triggers">
             <list>
                 <ref bean="orderJobTrigger"/>
+                <ref bean="subledgerJobTrigger"/>
             </list>
         </property>
         <property name="applicationContextSchedulerContextKey" value="applicationContext" />
@@ -26,8 +29,41 @@
     <bean id="orderJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
         <property name="targetObject" ref="orderJob" />
         <property name="targetMethod" value="execute" />
+        <property name="concurrent" value="false"/>
     </bean>
 
-    <bean id="orderJob" class="com.junbo.order.jobs.OrderJob" />
+    <!-- Subledger Job & Trigger-->
+    <bean id="subledgerJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean" >
+        <property name="jobDetail" ref="subledgerJobDetail" />
+        <property name="cronExpression" value="${order.jobs.subledger.cronexpression}" />
+    </bean>
+
+    <bean id="subledgerJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="subledgerAggregator" />
+        <property name="targetMethod" value="aggregateSubledger" />
+        <property name="concurrent" value="false"/>
+    </bean>
+
+    <bean id="orderJob" class="com.junbo.order.jobs.OrderJob" >
+        <property name="threadPoolTaskExecutor" ref="orderJobAsyncTaskExecutor"/>
+        <property name="orderRepository" ref="orderRepository"/>
+        <property name="statusToProcess">
+            <list>
+                <value>PENDING_CHARGE</value>
+            </list>
+        </property>
+        <property name="numOfFuturesToTrack" value="10000"/>
+        <property name="pageSizePerShard" value="${order.jobs.pagesize}"/>
+        <property name="orderProcessNumLimit" value="${order.jobs.order.process.limit}"/>
+    </bean>
+
+    <bean id="orderJobAsyncTaskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+        <property name="corePoolSize" value="${order.jobs.order.process.poolsize}" />
+        <property name="maxPoolSize" value="${order.jobs.order.process.poolsize}" />
+        <property name="queueCapacity" value="1000" />
+        <property name="rejectedExecutionHandler">
+            <bean class="java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy"/>
+        </property>
+    </bean>
 
 </beans>

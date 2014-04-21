@@ -50,6 +50,10 @@
 				balance_id BIGINT NOT NULL,
 				action_type_id SMALLINT NOT NULL,
 				status_id SMALLINT NOT NULL,
+				total_amount DECIMAL NOT NULL,
+				tax_amount DECIMAL NOT NULL,
+				discount_amount DECIMAL NOT NULL,
+				shipping_address_id BIGINT,
 				event_date TIMESTAMP NOT NULL,
 				PRIMARY KEY(event_id)
 			);
@@ -58,6 +62,7 @@
 			CREATE TABLE balance_item (
 				balance_item_id BIGINT NOT NULL,
 				balance_id BIGINT NOT NULL,
+				order_id BIGINT NOT NULL,
 				order_item_id BIGINT NOT NULL,
 				amount DECIMAL NOT NULL,
 				tax_amount DECIMAL NOT NULL,
@@ -94,6 +99,7 @@
 				tax_authority_id SMALLINT NOT NULL,
 				tax_amount DECIMAL NOT NULL,
 				tax_rate DECIMAL,
+				deleted BOOLEAN NOT NULL DEFAULT(FALSE),
 				created_date TIMESTAMP NOT NULL,
 				created_by VARCHAR(64) NOT NULL,
 				modified_date TIMESTAMP,
@@ -101,12 +107,14 @@
 				PRIMARY KEY(tax_item_id)
 			);
 			CREATE INDEX tax_item_balance_item_id_idx ON tax_item (balance_item_id);
+			CREATE INDEX tax_item_balance_deleted_idx ON tax_item (deleted);
 
 			CREATE TABLE discount_item (
 				discount_item_id BIGINT NOT NULL,
 				balance_item_id BIGINT NOT NULL,
 				discount_amount DECIMAL NOT NULL,
 				discount_rate DECIMAL,
+				deleted BOOLEAN NOT NULL DEFAULT(FALSE),
 				created_date TIMESTAMP NOT NULL,
 				created_by VARCHAR(64) NOT NULL,
 				modified_date TIMESTAMP,
@@ -114,6 +122,7 @@
 				PRIMARY KEY(discount_item_id)
 			);
 			CREATE INDEX discount_item_balance_item_id_idx ON discount_item (balance_item_id);
+			CREATE INDEX discount_item_deleted_idx ON discount_item (deleted);
                 ]]>
         </sql>
     </changeSet>

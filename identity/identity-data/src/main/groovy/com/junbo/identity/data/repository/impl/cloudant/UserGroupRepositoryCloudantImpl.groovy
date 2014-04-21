@@ -35,7 +35,9 @@ class UserGroupRepositoryCloudantImpl extends CloudantClient<UserGroup> implemen
 
     @Override
     Promise<UserGroup> create(UserGroup entity) {
-        entity.id = new UserGroupId(idGenerator.nextId(entity.userId.value))
+        if (entity.id == null) {
+            entity.id = new UserGroupId(idGenerator.nextId(entity.userId.value))
+        }
         super.cloudantPost(entity)
         return get((UserGroupId)entity.id)
     }

@@ -8,18 +8,14 @@ package com.junbo.identity.data.repository
 import com.junbo.common.id.RoleId
 import com.junbo.identity.spec.v1.model.Role
 import com.junbo.langur.core.promise.Promise
+import com.junbo.sharding.core.annotations.ReadMethod
 import groovy.transform.CompileStatic
 
 /**
  * RoleRepository.
  */
 @CompileStatic
-interface RoleRepository {
-    Promise<Role> create(Role role)
-
-    Promise<Role> get(RoleId roleId)
-
-    Promise<Role> update(Role role)
-
+interface RoleRepository extends IdentityBaseRepository<Role, RoleId> {
+    @ReadMethod
     Promise<Role> findByRoleName(String roleName, String resourceType, Long resourceId, String subResourceType)
 }

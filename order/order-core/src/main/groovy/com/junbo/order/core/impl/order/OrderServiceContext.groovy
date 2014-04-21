@@ -12,6 +12,7 @@ import com.junbo.common.id.OfferId
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.order.clientproxy.model.OrderOfferRevision
 import com.junbo.order.spec.model.Order
+import com.junbo.order.spec.model.OrderEvent
 import com.junbo.payment.spec.model.PaymentInstrument
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
@@ -32,8 +33,15 @@ class OrderServiceContext {
     List<PaymentInstrument> paymentInstruments
     List<Balance> balances
     ShippingAddress shippingAddress
-    Map<OfferId, OrderOfferRevision> offers
-    List<Order> orders
+    /**
+     * Offers in order in map structure
+     */
+    Map<OfferId, OrderOfferRevision> offersMap
+    /**
+     * Offers in order in list structure with the same sequence of order items
+     */
+    List<OrderOfferRevision> offers
+    OrderEvent orderEvent
 
     OrderServiceContext(Order o) {
         order = o

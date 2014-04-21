@@ -19,5 +19,6 @@ public enum OrderServiceOperation {
     CANCEL,
     ADJUST,
     COMPLETE_CHARGE,
-    UPDATE_NON_TENTATIVE
+    UPDATE_NON_TENTATIVE,
+    HANDLE_EVENT
 }

@@ -154,6 +154,15 @@ public class Balance {
         balanceItems.add(balanceItem);
     }
 
+    public BalanceItem getBalanceItem(Long balanceItemId) {
+        for (BalanceItem item : balanceItems) {
+            if (item.getBalanceItemId() == balanceItemId) {
+                return item;
+            }
+        }
+        return null;
+    }
+
     public BalanceId getOriginalBalanceId() {
         return originalBalanceId;
     }

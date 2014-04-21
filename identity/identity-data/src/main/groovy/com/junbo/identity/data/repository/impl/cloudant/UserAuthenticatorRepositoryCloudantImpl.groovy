@@ -33,7 +33,9 @@ class UserAuthenticatorRepositoryCloudantImpl extends CloudantClient<UserAuthent
 
     @Override
     Promise<UserAuthenticator> create(UserAuthenticator authenticator) {
-        authenticator.id = new UserAuthenticatorId(idGenerator.nextId(authenticator.userId.value))
+        if (authenticator.id == null) {
+            authenticator.id = new UserAuthenticatorId(idGenerator.nextId(authenticator.userId.value))
+        }
         super.cloudantPost(authenticator)
         return get((UserAuthenticatorId)authenticator.id)
     }

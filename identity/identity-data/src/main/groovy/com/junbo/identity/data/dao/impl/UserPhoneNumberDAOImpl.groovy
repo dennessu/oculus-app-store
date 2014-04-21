@@ -21,8 +21,9 @@ import org.springframework.util.StringUtils
 class UserPhoneNumberDAOImpl extends BaseDAO implements UserPhoneNumberDAO {
     @Override
     UserPhoneNumberEntity save(UserPhoneNumberEntity entity) {
-        entity.id = idGenerator.nextId(entity.userPiiId)
-
+        if (entity.id == null) {
+            entity.id = idGenerator.nextId(entity.userPiiId)
+        }
         Session session = currentSession(entity.id)
         session.save(entity)
         session.flush()

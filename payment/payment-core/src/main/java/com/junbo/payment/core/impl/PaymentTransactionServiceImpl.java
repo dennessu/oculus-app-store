@@ -263,7 +263,7 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
     }
 
     @Override
-    public Promise<PaymentTransaction> getById(Long paymentId) {
+    public Promise<PaymentTransaction> getUpdatedTransaction(Long paymentId) {
         final PaymentTransaction result = paymentRepository.getByPaymentId(paymentId);
         if(result == null){
             throw AppClientExceptions.INSTANCE.resourceNotFound("payment_transaction").exception();

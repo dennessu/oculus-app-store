@@ -6,7 +6,6 @@
 package com.junbo.order.spec.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.FulfillmentEventId;
 import com.junbo.common.id.OrderItemId;
 
@@ -16,7 +15,7 @@ import java.util.UUID;
  * Created by LinYi on 2/10/14.
  */
 public class FulfillmentEvent extends BaseEventModel {
-    @JsonProperty("self")
+    @JsonIgnore
     private FulfillmentEventId id;
     @JsonIgnore
     private OrderItemId orderItem;

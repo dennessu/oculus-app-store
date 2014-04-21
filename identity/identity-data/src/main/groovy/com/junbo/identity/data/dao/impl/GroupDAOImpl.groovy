@@ -25,8 +25,9 @@ class GroupDAOImpl extends BaseDAO implements GroupDAO {
 
     @Override
     GroupEntity save(GroupEntity group) {
-        group.id = idGenerator.nextIdByShardId(shardAlgorithm.shardId())
-
+        if (group.id == null) {
+            group.id = idGenerator.nextIdByShardId(shardAlgorithm.shardId())
+        }
         Session session = currentSession(group.id)
         session.save(group)
         session.flush()

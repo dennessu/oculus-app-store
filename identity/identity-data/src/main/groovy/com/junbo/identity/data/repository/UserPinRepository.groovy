@@ -8,6 +8,7 @@ import com.junbo.common.id.UserPinId
 import com.junbo.identity.spec.model.users.UserPin
 import com.junbo.identity.spec.v1.option.list.UserPinListOptions
 import com.junbo.langur.core.promise.Promise
+import com.junbo.sharding.core.annotations.ReadMethod
 import groovy.transform.CompileStatic
 
 /**
@@ -15,15 +16,7 @@ import groovy.transform.CompileStatic
  */
 
 @CompileStatic
-interface UserPinRepository {
-
-    Promise<UserPin> create(UserPin entity)
-
-    Promise<UserPin> update(UserPin entity)
-
-    Promise<UserPin> get(UserPinId id)
-
+interface UserPinRepository extends IdentityBaseRepository<UserPin, UserPinId> {
+    @ReadMethod
     Promise<List<UserPin>> search(UserPinListOptions getOption)
-
-    Promise<Void> delete(UserPinId id)
 }

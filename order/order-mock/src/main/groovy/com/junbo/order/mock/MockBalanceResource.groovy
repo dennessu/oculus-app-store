@@ -58,6 +58,16 @@ class MockBalanceResource extends BaseMock implements BalanceResource {
     }
 
     @Override
+    Promise<Balance> putBalance(Balance balance) {
+        return null
+    }
+
+    @Override
+    Promise<Balance> adjustItems(Balance balance) {
+        return null
+    }
+
+    @Override
     Promise<Balance> captureBalance(Balance balance) {
         return null
     }

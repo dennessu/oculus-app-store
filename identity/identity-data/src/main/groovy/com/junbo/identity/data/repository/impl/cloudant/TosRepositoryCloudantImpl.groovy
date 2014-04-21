@@ -37,7 +37,9 @@ class TosRepositoryCloudantImpl extends CloudantClient<Tos> implements TosReposi
 
     @Override
     Promise<Tos> create(Tos tos) {
-        tos.id = new TosId(idGenerator.nextIdByShardId(shardAlgorithm.shardId()))
+        if (tos.id == null) {
+            tos.id = new TosId(idGenerator.nextIdByShardId(shardAlgorithm.shardId()))
+        }
         super.cloudantPost(tos)
         return get((TosId)tos.id)
     }
@@ -46,6 +48,11 @@ class TosRepositoryCloudantImpl extends CloudantClient<Tos> implements TosReposi
     Promise<Void> delete(TosId tosId) {
         super.cloudantDelete(tosId.value)
         return Promise.pure(null)
+    }
+
+    @Override
+    Promise<Tos> update(Tos model) {
+        throw new IllegalStateException('update tos not support')
     }
 
     @Override

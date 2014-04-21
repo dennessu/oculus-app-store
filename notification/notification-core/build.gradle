@@ -18,10 +18,12 @@ dependencies {
     compile(libraries.jul_to_slf4j)
     compile(libraries.jcl_over_slf4j)
     compile(libraries.slf4j_api)
-    compile 'org.slf4j:slf4j-simple:1.7.6'
 
     compile 'org.springframework:spring-jms:4.0.2.RELEASE'
-    compile 'org.apache.activemq:activemq-all:5.7.0'
+    compile ('org.apache.activemq:activemq-all:5.7.0') {
+        exclude group: 'org.slf4j'
+        exclude group: 'log4j'
+    }
     compile 'org.apache.xbean:xbean-spring:3.16'
     compile 'javax:javaee-api:7.0'
 

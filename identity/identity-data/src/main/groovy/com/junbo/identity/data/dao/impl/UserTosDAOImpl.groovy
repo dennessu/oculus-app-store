@@ -22,7 +22,9 @@ import org.springframework.util.StringUtils
 class UserTosDAOImpl extends BaseDAO implements UserTosDAO {
     @Override
     UserTosAgreementEntity save(UserTosAgreementEntity entity) {
-        entity.id = idGenerator.nextId(entity.userId)
+        if (entity.id == null) {
+            entity.id = idGenerator.nextId(entity.userId)
+        }
         Session session = currentSession(entity.id)
         session.save(entity)
         session.flush()

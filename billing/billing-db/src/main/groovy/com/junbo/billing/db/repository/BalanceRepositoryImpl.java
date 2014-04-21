@@ -6,7 +6,9 @@
 
 package com.junbo.billing.db.repository;
 
+import com.junbo.billing.db.dao.impl.BalanceItemEventEntityDaoImpl;
 import com.junbo.billing.db.entity.*;
+import com.junbo.billing.spec.enums.EventActionType;
 import com.junbo.billing.spec.model.*;
 import com.junbo.common.id.BalanceId;
 import com.junbo.oom.core.MappingContext;
@@ -43,6 +45,9 @@ public class BalanceRepositoryImpl implements BalanceRepository {
     private BalanceEventEntityDao balanceEventEntityDao;
 
     @Autowired
+    private BalanceItemEventEntityDaoImpl balanceItemEventEntityDao;
+
+    @Autowired
     private ModelMapper modelMapper;
 
     @Override
@@ -62,6 +67,7 @@ public class BalanceRepositoryImpl implements BalanceRepository {
             balanceItemEntity.setCreatedTime(new Date());
             balanceItemEntity.setCreatedBy("Billing");
             balanceItemEntityDao.save(balanceItemEntity);
+            saveBalanceItemEventEntity(balanceItemEntity, EventActionType.CREATE);
 
             for(TaxItem tax : item.getTaxItems()) {
                 TaxItemEntity taxItemEntity = modelMapper.toTaxItemEntity(tax, new MappingContext());
@@ -97,7 +103,7 @@ public class BalanceRepositoryImpl implements BalanceRepository {
         orderBalanceLinkEntityDao.save(orderBalanceLinkEntity);
 
         // create balance event
-        saveBalanceEventEntity(balanceEntity);
+        saveBalanceEventEntity(balanceEntity, EventActionType.CREATE);
 
         return getBalance(balanceEntity.getBalanceId());
     }
@@ -159,12 +165,13 @@ public class BalanceRepositoryImpl implements BalanceRepository {
     }
 
     @Override
-    public Balance updateBalance(Balance balance) {
+    public Balance updateBalance(Balance balance, EventActionType eventActionType) {
         BalanceEntity balanceEntity = modelMapper.toBalanceEntity(balance, new MappingContext());
         BalanceEntity savedEntity = balanceEntityDao.get(balanceEntity.getBalanceId());
 
         savedEntity.setTypeId(balanceEntity.getTypeId());
         savedEntity.setStatusId(balanceEntity.getStatusId());
+        savedEntity.setShippingAddressId(balanceEntity.getShippingAddressId());
         savedEntity.setModifiedTime(new Date());
         savedEntity.setModifiedBy("BILLING");
         balanceEntityDao.update(savedEntity);
@@ -180,13 +187,13 @@ public class BalanceRepositoryImpl implements BalanceRepository {
         }
 
         // create balance event
-        saveBalanceEventEntity(savedEntity);
+        saveBalanceEventEntity(savedEntity, eventActionType);
 
         return getBalance(balanceEntity.getBalanceId());
     }
 
     @Override
-    public List<BalanceId>  fetchAsyncChargeBalanceIds(Integer count) {
+    public List<BalanceId> fetchAsyncChargeBalanceIds(Integer count) {
         List<BalanceEntity> balanceEntities = balanceEntityDao.getAsyncChargeInitBalances(count);
         List<BalanceId> ids = new ArrayList<>();
         if(balanceEntities != null) {
@@ -198,13 +205,27 @@ public class BalanceRepositoryImpl implements BalanceRepository {
         return ids;
     }
 
-    private void saveBalanceEventEntity(BalanceEntity balanceEntity) {
+    private void saveBalanceEventEntity(BalanceEntity balanceEntity, EventActionType eventActionType) {
         // create balance event
         BalanceEventEntity balanceEventEntity = new BalanceEventEntity();
         balanceEventEntity.setBalanceId(balanceEntity.getBalanceId());
-        balanceEventEntity.setActionTypeId(balanceEntity.getTypeId());
+        balanceEventEntity.setActionTypeId(eventActionType.getId());
         balanceEventEntity.setStatusId(balanceEntity.getStatusId());
+        balanceEventEntity.setTotalAmount(balanceEntity.getTotalAmount());
+        balanceEventEntity.setTaxAmount(balanceEntity.getTaxAmount());
+        balanceEventEntity.setDiscountAmount(balanceEntity.getDiscountAmount());
         balanceEventEntity.setEventDate(new Date());
         balanceEventEntityDao.save(balanceEventEntity);
+    }
+
+    private void saveBalanceItemEventEntity(BalanceItemEntity balanceItemEntity, EventActionType eventActionType) {
+        BalanceItemEventEntity balanceItemEventEntity = new BalanceItemEventEntity();
+        balanceItemEventEntity.setBalanceItemId(balanceItemEntity.getBalanceItemId());
+        balanceItemEventEntity.setAmount(balanceItemEntity.getAmount());
+        balanceItemEventEntity.setTaxAmount(balanceItemEntity.getTaxAmount());
+        balanceItemEventEntity.setDiscountAmount(balanceItemEntity.getDiscountAmount());
+        balanceItemEventEntity.setActionTypeId(eventActionType.getId());
+        balanceItemEventEntity.setEventDate(new Date());
+
     }
 }

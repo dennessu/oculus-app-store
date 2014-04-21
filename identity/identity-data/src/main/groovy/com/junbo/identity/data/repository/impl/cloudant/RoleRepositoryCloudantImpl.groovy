@@ -34,7 +34,9 @@ class RoleRepositoryCloudantImpl extends CloudantClient<Role> implements RoleRep
 
     @Override
     Promise<Role> create(Role role) {
-        role.id = new RoleId(idGenerator.nextIdByShardId(shardAlgorithm.shardId()))
+        if (role.id == null) {
+            role.id = new RoleId(idGenerator.nextIdByShardId(shardAlgorithm.shardId()))
+        }
         super.cloudantPost(role)
         return get((RoleId)role.id)
     }
@@ -48,6 +50,11 @@ class RoleRepositoryCloudantImpl extends CloudantClient<Role> implements RoleRep
     Promise<Role> update(Role role) {
         super.cloudantPut(role)
         return get((RoleId)role.id)
+    }
+
+    @Override
+    Promise<Void> delete(RoleId id) {
+        throw new IllegalStateException('delete role not support')
     }
 
     @Override

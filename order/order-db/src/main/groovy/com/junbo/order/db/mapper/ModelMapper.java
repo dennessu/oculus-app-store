@@ -152,8 +152,14 @@ public interface ModelMapper {
     })
     SubledgerEntity toSubledgerEntity(Subledger subledger, MappingContext context);
 
+    @Mappings({
+            @Mapping(source = "productItemId", target = "offerRevisionId", excluded = false, bidirectional = false)
+    })
     SubledgerItem toSubledgerItemModel(SubledgerItemEntity subledgerItemEntity, MappingContext context);
 
+    @Mappings({
+            @Mapping(source = "offerRevisionId", target = "productItemId", excluded = false, bidirectional = false)
+    })
     SubledgerItemEntity toSubledgerItemEntity(SubledgerItem subledgerItem, MappingContext context);
 }
 
