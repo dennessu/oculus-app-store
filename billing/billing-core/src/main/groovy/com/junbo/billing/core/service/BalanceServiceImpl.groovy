@@ -393,9 +393,9 @@ class BalanceServiceImpl implements BalanceService {
                 throw AppErrors.INSTANCE.balanceItemNotFound(item.balanceItemId.toString()).exception()
             }
             savedItem.setAmount(item.amount)
-            savedItem.getDiscountItems().clear()
+            savedItem.discountItems.clear()
             if (item.discountItems) {
-                savedItem.getDiscountItems().addAll(item.discountItems)
+                savedItem.discountItems.addAll(item.discountItems)
             }
         }
         return taxService.calculateTax(savedBalance).then { Balance taxedBalance ->
