@@ -28,7 +28,7 @@ class CommonVerifierImpl extends BaseVerifier implements Verifier {
     }
 
     boolean isMatch() {
-        return super.getCountries(TYPE).any{String countries ->
+        return super.getCountries(TYPE).any { String countries ->
             countries.equalsIgnoreCase(this.country)
         }
     }
@@ -43,8 +43,8 @@ class CommonVerifierImpl extends BaseVerifier implements Verifier {
             }
         }
         else if (ageCheck.userId != null) {
-            return identityFacade.getUserPii(ageCheck.userId.value).then {UserPii userPii ->
-                if(userPii?.birthday != null) {
+            return identityFacade.getUserPii(ageCheck.userId.value).then { UserPii userPii ->
+                if (userPii?.birthday != null) {
                     def userAge = super.calculateAge(userPii.birthday)
                     return catalogFacade.getOffers(ageCheck.offerIds).then { List<Offer> offers ->
                         def maxRatingAge = super.getMaxRatingAge(offers)
@@ -52,12 +52,10 @@ class CommonVerifierImpl extends BaseVerifier implements Verifier {
                         return Promise.pure(ageCheck)
                     }
                 }
-                else {
-                    return catalogFacade.getOffers(ageCheck.offerIds).then { List<Offer> offers ->
-                        def maxRatingAge = super.getMaxRatingAge(offers)
-                        ageCheck.setStatus(maxRatingAge > 0 ? Status.BLOCKED : Status.PASSED)
-                        return Promise.pure(ageCheck)
-                    }
+                return catalogFacade.getOffers(ageCheck.offerIds).then { List<Offer> offers ->
+                    def maxRatingAge = super.getMaxRatingAge(offers)
+                    ageCheck.setStatus(maxRatingAge > 0 ? Status.BLOCKED : Status.PASSED)
+                    return Promise.pure(ageCheck)
                 }
             }
         }

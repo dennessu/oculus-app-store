@@ -25,8 +25,9 @@ class MockIdentityFacadeImpl implements IdentityFacade {
     Promise<UserPii> getUserPii(Long userId) {
         UserPii userPii = new UserPii()
         def calendar = Calendar.instance
-        calendar.set(1994,0,12)
-        userPii.birthday = calendar.getTime()
+        calendar.set(1994, 0, 12)
+        userPii.birthday = calendar.time
+        userPii.userId = new UserId(userId)
         return Promise.pure(userPii)
     }
 }

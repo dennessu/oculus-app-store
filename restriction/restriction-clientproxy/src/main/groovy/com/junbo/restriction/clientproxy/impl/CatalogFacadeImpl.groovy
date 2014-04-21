@@ -37,11 +37,11 @@ class CatalogFacadeImpl implements CatalogFacade {
         options.setOfferIds(offerIds)
         offerResource.getOffers(options).recover {
             LOGGER.error('Failed to get offer')
-            throw AppErrors.INSTANCE.getOfferFailed().exception()
+            throw AppErrors.INSTANCE.fetchOfferFailed().exception()
         }.then { Results<Offer> offers ->
             if (offers == null || offers?.items == null) {
                 LOGGER.error('Offer not found')
-                throw AppErrors.INSTANCE.getOfferFailed().exception()
+                throw AppErrors.INSTANCE.fetchOfferFailed().exception()
             }
             return offers.items
         }

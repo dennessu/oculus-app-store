@@ -15,7 +15,7 @@ import com.junbo.restriction.spec.model.Status
  * Created by Wei on 4/19/14.
  */
 class GSAVerifierImpl extends BaseVerifier implements Verifier {
-    private final String TIME_ZONE_OF_CET = 'CET'
+    private final static String TIME_ZONE_OF_CET = 'CET'
     private final static String TYPE = 'GSA'
 
     private String country
@@ -29,7 +29,7 @@ class GSAVerifierImpl extends BaseVerifier implements Verifier {
     }
 
     boolean isMatch() {
-        return super.getCountries(TYPE).any {String countries ->
+        return super.getCountries(TYPE).any { String countries ->
                 countries.equalsIgnoreCase(this.country)
             }
     }
@@ -41,11 +41,11 @@ class GSAVerifierImpl extends BaseVerifier implements Verifier {
         }
         return catalogFacade.getOffers(ageCheck.offerIds).then { List<Offer> offers ->
             def maxRatingAge = super.getMaxRatingAge(offers)
-            if (maxRatingAge >= 18 && ageCheck.dob == null) {
-                ageCheck.setStatus(Status.BLOCKED)
-            }
-            else if (maxRatingAge < 18) {
+            if (maxRatingAge < 18 ) {
                 ageCheck.setStatus(Status.PASSED)
+            }
+            else if (ageCheck.dob == null) {
+                    ageCheck.setStatus(Status.BLOCKED)
             }
             else {
                 def userAge = super.calculateAge(ageCheck.dob)

@@ -19,18 +19,16 @@ import java.text.ParseException
 class DateParamConverterProvider implements ParamConverterProvider {
 
     @Override
-    public <T> ParamConverter<T> getConverter(Class<T> type, Type genericType, Annotation[] annotations) {
-        if (type.equals(Date)) {
+    <T> ParamConverter<T> getConverter(Class<T> type, Type genericType, Annotation[] annotations) {
+        if (type == Date) {
             return (ParamConverter<T>) new DateParamConverter()
-        } else {
-            return null
         }
-
+        return null
     }
 
     private static class DateParamConverter implements ParamConverter<Date> {
         @Override
-        public Date fromString(String value) throws Exception {
+        Date fromString(String value) throws Exception {
             if (!StringUtils.isEmpty(value)) {
                 try {
                     return new ISO8601DateFormat().parse(value)
@@ -44,7 +42,7 @@ class DateParamConverterProvider implements ParamConverterProvider {
         }
 
         @Override
-        public String toString(Date value) {
+        String toString(Date value) {
             return value.toString()
         }
 

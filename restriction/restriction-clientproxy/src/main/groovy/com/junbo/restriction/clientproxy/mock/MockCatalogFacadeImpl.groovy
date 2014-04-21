@@ -16,6 +16,7 @@ import com.junbo.restriction.clientproxy.CatalogFacade
 class MockCatalogFacadeImpl implements CatalogFacade {
     Promise<List<Offer>> getOffers(List<OfferId> offerIds) {
         Offer offer = new Offer()
+        offer.offerId = offerIds.first().value
         return Promise.pure([offer] as List)
     }
 }

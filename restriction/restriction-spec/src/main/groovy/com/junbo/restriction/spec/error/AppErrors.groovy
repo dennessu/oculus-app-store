@@ -48,9 +48,9 @@ interface AppErrors {
 
     @ErrorDef(httpStatusCode = 500, code = ErrorCode.GET_OFFER_FAILED,
             description ='Failed to get offer info')
-    AppError getOfferFailed()
+    AppError fetchOfferFailed()
 
     @ErrorDef(httpStatusCode = 500, code = ErrorCode.GET_USER_FAILED,
             description ='Failed to get user')
-    AppError getUserFailed()
+    AppError fetchUserFailed()
 }

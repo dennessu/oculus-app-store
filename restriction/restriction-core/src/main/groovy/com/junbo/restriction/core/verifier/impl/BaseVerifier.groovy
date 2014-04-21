@@ -33,9 +33,8 @@ abstract class BaseVerifier {
     abstract String getCountry()
 
     protected Restriction getRestriction() {
-        def country = getCountry()
         configuration.restrictions.find { Restriction restriction ->
-            restriction.country.equalsIgnoreCase(country)
+            restriction.country.equalsIgnoreCase(this.country)
         }
     }
 
@@ -57,7 +56,7 @@ abstract class BaseVerifier {
         int birthDay = birth.get(Calendar.DAY_OF_YEAR)
 
         int age = currentYear - birthYear
-        if(currentDay <= birthDay) {
+        if (currentDay <= birthDay) {
             age--
         }
         return age
@@ -66,6 +65,6 @@ abstract class BaseVerifier {
     protected int getMaxRatingAge(List<Offer> offers) {
         // TODO: need to implement the logic later
         def defaultRatingAge = 0
-        return defaultRatingAge + 18
+        return offers == null ? defaultRatingAge : defaultRatingAge + 18
     }
 }
