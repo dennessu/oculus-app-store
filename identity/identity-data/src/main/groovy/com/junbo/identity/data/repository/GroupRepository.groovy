@@ -12,9 +12,6 @@ import com.junbo.langur.core.promise.Promise
 /**
  * Created by liangfu on 3/14/14.
  */
-interface GroupRepository {
-    Promise<Group> get(GroupId groupId)
-    Promise<Group> create(Group group)
-    Promise<Group> update(Group group)
+interface GroupRepository extends IdentityBaseRepository<Group, GroupId> {
     Promise<Group> searchByName(String name)
 }

@@ -11,15 +11,6 @@ import com.junbo.langur.core.promise.Promise
 /**
  * Created by liangfu on 3/16/14.
  */
-interface SecurityQuestionRepository {
-
-    Promise<SecurityQuestion> create(SecurityQuestion entity)
-
-    Promise<SecurityQuestion> update(SecurityQuestion entity)
-
-    Promise<SecurityQuestion> get(SecurityQuestionId id)
-
-    Promise<Void> delete(SecurityQuestionId id)
-
+interface SecurityQuestionRepository extends IdentityBaseRepository<SecurityQuestion, SecurityQuestionId> {
     Promise<List<SecurityQuestion>> search(SecurityQuestionListOptions getOption)
 }

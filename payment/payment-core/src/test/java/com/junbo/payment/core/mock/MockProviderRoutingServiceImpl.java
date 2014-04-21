@@ -2,6 +2,7 @@ package com.junbo.payment.core.mock;
 
 import com.junbo.payment.core.provider.PaymentProviderService;
 import com.junbo.payment.core.provider.ProviderRoutingService;
+import com.junbo.payment.core.provider.paypal.PayPalProviderServiceImpl;
 import com.junbo.payment.spec.enums.PIType;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -11,6 +12,8 @@ public class MockProviderRoutingServiceImpl implements ProviderRoutingService {
     private MockPaymentProviderServiceImpl mockPaymentProviderService;
     @Autowired
     private MockWalletServiceImpl mockWalletService;
+    @Autowired
+    private PayPalProviderServiceImpl paypalProviderService;
 
     @Override
     public PaymentProviderService getPaymentProvider(PIType piType) {
@@ -18,6 +21,8 @@ public class MockProviderRoutingServiceImpl implements ProviderRoutingService {
             return mockPaymentProviderService;
         } else if(piType.equals(PIType.WALLET)){
             return mockWalletService;
+        }else if(piType.equals(PIType.PAYPAL)){
+            return paypalProviderService;
         }
         return null;
     }

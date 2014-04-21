@@ -55,6 +55,11 @@ class DeviceRepositorySqlImpl implements DeviceRepository {
     }
 
     @Override
+    Promise<Void> delete(DeviceId id) {
+        throw new IllegalStateException('delete device not support')
+    }
+
+    @Override
     Promise<Device> searchByExternalRef(String externalRef) {
         DeviceEntity entity = deviceDAO.findIdByExternalRef(externalRef)
         if (entity == null) {

@@ -8,6 +8,8 @@ package com.junbo.ewallet.db.entity.def;
 
 import com.junbo.common.util.Identifiable;
 
+import javax.ws.rs.NotSupportedException;
+
 /**
  * enum for TransactionType.
  */
@@ -25,4 +27,10 @@ public enum TransactionType implements Identifiable<Integer> {
     public Integer getId() {
         return id;
     }
+
+    @Override
+    public void setId(Integer id) {
+        throw new NotSupportedException("enum TransactionType not settable");
+    }
+
 }

@@ -27,6 +27,9 @@ public class BalanceItemEntity extends BaseEntity {
     @Column(name = "balance_id")
     private Long balanceId;
 
+    @Column(name = "orde_id")
+    private Long orderId;
+
     @Column(name = "order_item_id")
     private Long orderItemId;
 
@@ -109,5 +112,13 @@ public class BalanceItemEntity extends BaseEntity {
     }
     public void setOriginalBalanceItemId(Long originalBalanceItemId) {
         this.originalBalanceItemId = originalBalanceItemId;
+    }
+
+    public Long getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(Long orderId) {
+        this.orderId = orderId;
     }
 }

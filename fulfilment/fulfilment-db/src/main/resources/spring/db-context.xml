@@ -14,32 +14,14 @@
     <context:component-scan base-package="com.junbo.fulfilment.db"/>
 
     <!-- fulfilment dataSource -->
-    <!--<bean id="fulfilmentDataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
-        <property name="driverClass" value="${fulfilment.db.driverClassName}"/>
-        <property name="jdbcUrl" value="${fulfilment.db.url}"/>
-        <property name="username" value="${fulfilment.db.username}"/>
-        <property name="password" value="${fulfilment.db.password}"/>
-        <property name="maxConnectionsPerPartition" value="${fulfilment.db.maxConnectionsPerPartition}"/>
-        <property name="minConnectionsPerPartition" value="${fulfilment.db.minConnectionsPerPartition}"/>
-        <property name="partitionCount" value="${fulfilment.db.partitionCount}"/>
-        <property name="acquireIncrement" value="${fulfilment.db.acquireIncrement}"/>
-        <property name="statementsCacheSize" value="${fulfilment.db.statementsCacheSize}"/>
-        <property name="releaseHelperThreads" value="${fulfilment.db.releaseHelperThreads}"/>
-    </bean>-->
-
-    <bean id="fulfilmentDataSource" class="bitronix.tm.resource.jdbc.PoolingDataSource"
-          init-method="init" destroy-method="close">
-        <property name="uniqueName" value="jdbc/fulfilment_ds1"/>
+    <bean id="fulfilmentDataSource" class="com.junbo.sharding.hibernate.ShardMultiTenantConnectionProviderFactoryBean">
+        <property name="jdbcUrls" value="${fulfilment.db.jdbcUrls}"/>
+        <property name="uniqueName" value="jdbc/fulfilment"/>
         <property name="className" value="org.postgresql.xa.PGXADataSource"/>
         <property name="minPoolSize" value="${fulfilment.db.minConnectionsPerPartition}"/>
         <property name="maxPoolSize" value="${fulfilment.db.maxConnectionsPerPartition}"/>
-
-        <property name="useTmJoin" value="true"/>
-        <property name="allowLocalTransactions" value="true"/>
-
         <property name="driverProperties">
             <props>
-                <prop key="url">${fulfilment.db.url}</prop>
                 <prop key="user">${fulfilment.db.username}</prop>
                 <prop key="password">${fulfilment.db.password}</prop>
             </props>
@@ -47,34 +29,25 @@
     </bean>
 
     <!-- SessonFactory for Hibernate -->
-    <!--<bean id="sessionFactory"
-          class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
-        <property name="dataSource" ref="fulfilmentDataSource"/>
-        <property name="packagesToScan" value="com.junbo.fulfilment.db.entity"/>
-        <property name="hibernateProperties">
-            <props>
-                <prop key="hibernate.dialect">${fulfilment.hibernate.dialect}</prop>
-                <prop key="hibernate.max_fetch_depth">${fulfilment.hibernate.max_fetch_depth}</prop>
-                <prop key="hibernate.jdbc.fetch_size">${fulfilment.hibernate.fetch_size}</prop>
-                <prop key="hibernate.jdbc.batch_size">${fulfilment.hibernate.batch_size}</prop>
-                <prop key="hibernate.show_sql">${fulfilment.hibernate.show_sql}</prop>
-            </props>
-        </property>
-    </bean>-->
     <bean id="fulfilmentSessionFactory"
-          class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
-        <property name="dataSource" ref="fulfilmentDataSource"/>
-        <property name="packagesToScan" value="com.junbo.fulfilment.db.entity"/>
+          class="com.junbo.sharding.hibernate.LocalSessionFactoryWithListenerBean">
         <property name="jtaTransactionManager" ref="transactionManager"/>
         <property name="hibernateProperties">
-            <props>
-                <prop key="hibernate.dialect">${fulfilment.hibernate.dialect}</prop>
-                <prop key="hibernate.max_fetch_depth">${fulfilment.hibernate.max_fetch_depth}</prop>
-                <prop key="hibernate.jdbc.fetch_size">${fulfilment.hibernate.fetch_size}</prop>
-                <prop key="hibernate.jdbc.batch_size">${fulfilment.hibernate.batch_size}</prop>
-                <prop key="hibernate.show_sql">${fulfilment.hibernate.show_sql}</prop>
-            </props>
+            <map>
+                <entry key="hibernate.dialect" value="${payment.hibernate.dialect}"/>
+                <entry key="hibernate.max_fetch_depth" value="${payment.hibernate.max_fetch_depth}"/>
+                <entry key="hibernate.jdbc.fetch_size" value="${payment.hibernate.jdbc.fetch_size}"/>
+                <entry key="hibernate.jdbc.batch_size" value="${payment.hibernate.jdbc.batch_size}"/>
+                <entry key="hibernate.show_sql" value="${payment.hibernate.show_sql}"/>
+
+                <entry key="hibernate.multiTenancy" value="SCHEMA"/>
+                <entry key="hibernate.current_session_context_class" value="com.junbo.sharding.hibernate.MultiTenantJTASessionContext"/>
+                <entry key="hibernate.tenant_identifier_resolver" value="com.junbo.sharding.hibernate.ShardCurrentTenantIdentifierResolver"/>
+                <entry key="hibernate.multi_tenant_connection_provider" value-ref="fulfilmentDataSource"/>
+                <entry key="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
+            </map>
         </property>
+        <property name="packagesToScan" value="com.junbo.fulfilment.db.entity"/>
     </bean>
 
     <!-- Transaction Manager -->

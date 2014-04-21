@@ -7,14 +7,19 @@
 package com.junbo.payment.core.provider.paypal;
 
 import com.junbo.langur.core.promise.Promise;
+import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.common.exception.AppServerExceptions;
 import com.junbo.payment.core.provider.AbstractPaymentProviderService;
 import com.junbo.payment.core.util.PaymentUtil;
+import com.junbo.payment.spec.enums.PaymentStatus;
 import com.junbo.payment.spec.model.Item;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentTransaction;
+import com.junbo.payment.spec.model.WebPaymentInfo;
 import com.paypal.exception.*;
 import com.paypal.sdk.exceptions.OAuthException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.xml.sax.SAXException;
 import urn.ebay.api.PayPalAPI.*;
@@ -33,10 +38,13 @@ import java.util.Map;
  * PayPal .
  */
 public class PayPalProviderServiceImpl extends AbstractPaymentProviderService implements InitializingBean {
+    private static final Logger LOGGER = LoggerFactory.getLogger(PayPalProviderServiceImpl.class);
     private static final String PROVIDER_NAME = "PayPal";
     private static final String API_VERSION = "104.0";
     private static final PaymentActionCodeType ACTION = PaymentActionCodeType.fromValue("Sale");
     private static PayPalAPIInterfaceServiceService service;
+    private static final String REDIRECT_URL =
+            "https://www.sandbox.paypal.com/cgi-bin/webscr?cmd=_express-checkout&token=";
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -60,12 +68,21 @@ public class PayPalProviderServiceImpl extends AbstractPaymentProviderService im
 
     @Override
     public void cloneTransactionResult(PaymentTransaction source, PaymentTransaction target) {
-        target.setBillingRefId(source.getExternalToken());
+        if(source.getWebPaymentInfo() != null){
+            if(target.getWebPaymentInfo() == null){
+                target.setWebPaymentInfo(new WebPaymentInfo());
+            }
+            target.getWebPaymentInfo().setToken(source.getWebPaymentInfo().getToken());
+            target.getWebPaymentInfo().setRedirectURL(source.getWebPaymentInfo().getRedirectURL());
+        }
+        if(!CommonUtil.isNullOrEmpty(source.getStatus())){
+            target.setStatus(source.getStatus());
+        }
     }
 
     @Override
     public Promise<PaymentInstrument> add(PaymentInstrument request) {
-        return null;
+        return Promise.pure(request);
     }
 
     @Override
@@ -88,18 +105,20 @@ public class PayPalProviderServiceImpl extends AbstractPaymentProviderService im
         CurrencyCodeType currency = CurrencyCodeType.fromValue(paymentRequest.getChargeInfo().getCurrency());
         PaymentDetailsType paymentDetails = new PaymentDetailsType();
         paymentDetails.setPaymentAction(ACTION);
-        List<PaymentDetailsItemType> lineItems = new ArrayList<PaymentDetailsItemType>();
-        for(Item item : paymentRequest.getChargeInfo().getItems()){
-            PaymentDetailsItemType payPalItem = new PaymentDetailsItemType();
-            BasicAmountType amt = new BasicAmountType();
-            amt.setCurrencyID(currency);
-            amt.setValue(item.getAmount());
-            payPalItem.setQuantity(item.getQuantity());
-            payPalItem.setName(item.getName());
-            payPalItem.setAmount(amt);
-            lineItems.add(payPalItem);
+        if(paymentRequest.getChargeInfo().getItems() != null){
+            List<PaymentDetailsItemType> lineItems = new ArrayList<PaymentDetailsItemType>();
+            for(Item item : paymentRequest.getChargeInfo().getItems()){
+                PaymentDetailsItemType payPalItem = new PaymentDetailsItemType();
+                BasicAmountType amt = new BasicAmountType();
+                amt.setCurrencyID(currency);
+                amt.setValue(item.getAmount());
+                payPalItem.setQuantity(item.getQuantity());
+                payPalItem.setName(item.getName());
+                payPalItem.setAmount(amt);
+                lineItems.add(payPalItem);
+            }
+            paymentDetails.setPaymentDetailsItem(lineItems);
         }
-        paymentDetails.setPaymentDetailsItem(lineItems);
         BasicAmountType orderTotal = new BasicAmountType();
         orderTotal.setCurrencyID(currency);
         orderTotal.setValue(paymentRequest.getChargeInfo().getAmount().toString());
@@ -122,9 +141,15 @@ public class PayPalProviderServiceImpl extends AbstractPaymentProviderService im
         SetExpressCheckoutResponseType setExpressCheckoutResponse = null;
         try {
             setExpressCheckoutResponse = service.setExpressCheckout(setExpressCheckoutReq);
-            paymentRequest.setExternalToken(setExpressCheckoutResponse.getToken());
         } catch (Exception ex){
             handleException(ex);
+        }
+        if(isSuccessAck(setExpressCheckoutResponse.getAck())){
+            paymentRequest.getWebPaymentInfo().setToken(setExpressCheckoutResponse.getToken());
+            paymentRequest.getWebPaymentInfo().setRedirectURL(REDIRECT_URL + setExpressCheckoutResponse.getToken());
+            paymentRequest.setStatus(PaymentStatus.UNCONFIRMED.toString());
+        }else{
+            handleErrorResponse(setExpressCheckoutResponse);
         }
         return Promise.pure(paymentRequest);
     }
@@ -159,9 +184,25 @@ public class PayPalProviderServiceImpl extends AbstractPaymentProviderService im
             handleException(ex);
         }
         PaymentTransaction transaction = new PaymentTransaction();
-        transaction.setStatus(PaymentUtil.mapPayPalPaymentStatus(
-                responseType.getGetExpressCheckoutDetailsResponseDetails().getCheckoutStatus()).toString());
+        if(isSuccessAck(responseType.getAck())){
+            transaction.setStatus(PaymentUtil.mapPayPalPaymentStatus(responseType
+                    .getGetExpressCheckoutDetailsResponseDetails().getCheckoutStatus()).toString());
+        }else{
+            handleErrorResponse(responseType);
+        }
         return Promise.pure(transaction);
+    }
+
+    private Promise<PaymentTransaction> handleErrorResponse(AbstractResponseType responseType) {
+        StringBuffer sb = new StringBuffer();
+        if(responseType.getErrors() != null){
+            for(ErrorType error : responseType.getErrors()){
+                sb.append(error.getLongMessage() + "&");
+            }
+        }
+        LOGGER.error("paypal get error ack:" + responseType.getAck());
+        LOGGER.error("paypal get error message:" + sb.toString());
+        throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, sb.toString()).exception();
     }
 
     @Override
@@ -178,8 +219,8 @@ public class PayPalProviderServiceImpl extends AbstractPaymentProviderService im
 
         DoExpressCheckoutPaymentRequestDetailsType doExpressCheckoutPaymentRequestDetails =
                 new DoExpressCheckoutPaymentRequestDetailsType();
-        doExpressCheckoutPaymentRequestDetails.setToken("EC-5KT838080T2886727");
-        doExpressCheckoutPaymentRequestDetails.setPayerID("CCZA9BJT9NKTS");
+        doExpressCheckoutPaymentRequestDetails.setToken(paymentRequest.getWebPaymentInfo().getToken());
+        doExpressCheckoutPaymentRequestDetails.setPayerID(paymentRequest.getWebPaymentInfo().getPayerId());
         doExpressCheckoutPaymentRequestDetails.setPaymentDetails(paymentDetails);
 
         DoExpressCheckoutPaymentRequestType doExpressCheckoutPaymentRequest =
@@ -188,39 +229,49 @@ public class PayPalProviderServiceImpl extends AbstractPaymentProviderService im
 
         DoExpressCheckoutPaymentReq doExpressCheckoutPaymentReq = new DoExpressCheckoutPaymentReq();
         doExpressCheckoutPaymentReq.setDoExpressCheckoutPaymentRequest(doExpressCheckoutPaymentRequest);
-
+        DoExpressCheckoutPaymentResponseType doExpressCheckoutPaymentResponse = null;
         try {
-            DoExpressCheckoutPaymentResponseType doExpressCheckoutPaymentResponse =
-                    service.doExpressCheckoutPayment(doExpressCheckoutPaymentReq);
+            doExpressCheckoutPaymentResponse = service.doExpressCheckoutPayment(doExpressCheckoutPaymentReq);
         } catch (Exception ex){
             handleException(ex);
+        }
+        if(isSuccessAck(doExpressCheckoutPaymentResponse.getAck())){
+            //TODO: add transaction result
+            paymentRequest.setStatus(PaymentStatus.SETTLED.toString());
+        }else{
+            handleErrorResponse(doExpressCheckoutPaymentResponse);
         }
         return Promise.pure(paymentRequest);
     }
 
+    //TODO: need to handle specific exceptions with more details
     private void handleException(Exception e){
         if(e instanceof SSLConfigurationException) {
-            e.printStackTrace();
+            LOGGER.error(e.toString());
         } else if (e instanceof InvalidCredentialException) {
-            e.printStackTrace();
+            LOGGER.error(e.toString());
         } else if (e instanceof IOException) {
-            e.printStackTrace();
+            LOGGER.error(e.toString());
         } else if (e instanceof HttpErrorException) {
-            e.printStackTrace();
+            LOGGER.error(e.toString());
         } else if (e instanceof InvalidResponseDataException) {
-            e.printStackTrace();
+            LOGGER.error(e.toString());
         } else if (e instanceof ClientActionRequiredException) {
-            e.printStackTrace();
+            LOGGER.error(e.toString());
         } else if (e instanceof MissingCredentialException) {
-            e.printStackTrace();
+            LOGGER.error(e.toString());
         } else if (e instanceof InterruptedException) {
-            e.printStackTrace();
+            LOGGER.error(e.toString());
         } else if (e instanceof OAuthException) {
-            e.printStackTrace();
+            LOGGER.error(e.toString());
         } else if (e instanceof ParserConfigurationException) {
-            e.printStackTrace();
+            LOGGER.error(e.toString());
         } else if (e instanceof SAXException) {
-            e.printStackTrace();
+            LOGGER.error(e.toString());
         }
+    }
+
+    private boolean isSuccessAck(AckCodeType ack){
+        return ack.equals(AckCodeType.SUCCESS) || ack.equals(AckCodeType.SUCCESSWITHWARNING);
     }
 }

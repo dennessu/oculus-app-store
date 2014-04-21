@@ -19,6 +19,7 @@ import com.ning.http.client.AsyncHttpClient
 import com.ning.http.client.AsyncHttpClientConfigBean
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
 
 /**
  * Created by xmchen on 14-2-20.
@@ -27,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired
 class IdentityFacadeImpl implements IdentityFacade {
 
     @Autowired
+    @Qualifier(value='billingAsyncHttpClient')
     private final AsyncHttpClient asyncHttpClient
 
     private String url

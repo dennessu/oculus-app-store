@@ -53,6 +53,10 @@ class GroupRepositoryCloudantImpl extends CloudantClient<Group> implements Group
         return list.size() > 0 ? Promise.pure(list[0]) : Promise.pure(null)
     }
 
+    @Override
+    Promise<Void> delete(GroupId id) {
+        throw new IllegalStateException('delete group not support')
+    }
     protected CloudantViews views = new CloudantViews(
             views: [
                     'by_name': new CloudantViews.CloudantView(

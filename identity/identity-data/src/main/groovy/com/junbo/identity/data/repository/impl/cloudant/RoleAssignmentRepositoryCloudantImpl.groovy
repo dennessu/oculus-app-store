@@ -56,6 +56,10 @@ class RoleAssignmentRepositoryCloudantImpl extends CloudantClient<RoleAssignment
         return null
     }
 
+    @Override
+    Promise<Void> delete(RoleAssignmentId id) {
+        throw new IllegalStateException('delete role assignment not support')
+    }
     protected CloudantViews views = new CloudantViews(
             views: [
                     'by_role_id_assignee': new CloudantViews.CloudantView(

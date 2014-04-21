@@ -14,9 +14,6 @@ import groovy.transform.CompileStatic
  * Created by xiali_000 on 4/8/2014.
  */
 @CompileStatic
-interface DeviceRepository {
-    Promise<Device> get(DeviceId groupId)
-    Promise<Device> create(Device device)
-    Promise<Device> update(Device device)
+interface DeviceRepository extends IdentityBaseRepository<Device, DeviceId> {
     Promise<Device> searchByExternalRef(String externalRef)
 }

@@ -86,7 +86,7 @@ class FacadeBuilder {
         email.action = 'OrderConfirmation'
         email.locale = 'en_US'
         // TODO: update email address as IDENTITY component
-        email.recipient = user.username
+        email.recipients = [user.username]
         Map<String, String> properties = [:]
         properties.put(ORDER_NUMBER, order.id.value.toString())
         Date now = new Date()

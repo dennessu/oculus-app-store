@@ -9,6 +9,8 @@ package com.junbo.ewallet.spec.def;
 
 import com.junbo.common.util.Identifiable;
 
+import javax.ws.rs.NotSupportedException;
+
 /**
  * The currencies (ISO 4217). Reference: <a href="http://en.wikipedia.org/wiki/ISO_4217">Wikipedia ISO 4217</a>.
  */
@@ -224,6 +226,11 @@ public enum Currency implements Identifiable<Integer> {
     @Override
     public Integer getId(){
         return numeric;
+    }
+
+    @Override
+    public void setId(Integer id) {
+        throw new NotSupportedException("enum Currency not settable");
     }
 
     /**

@@ -142,6 +142,11 @@
         <property name="persistentClass" value="com.junbo.payment.db.entity.payment.PaymentProviderEntity"/>
     </bean>
 
+    <bean id="paymentPropertyDao"
+          class="com.junbo.payment.db.dao.payment.PaymentPropertyDao" parent="genericDao">
+        <property name="persistentClass" value="com.junbo.payment.db.entity.payment.PaymentPropertyEntity"/>
+    </bean>
+
     <bean id="paymentInstrumentTypeDao"
           class="com.junbo.payment.db.dao.PaymentInstrumentTypeDao" parent="genericDao">
         <property name="persistentClass" value="com.junbo.payment.db.entity.PaymentInstrumentTypeEntity"/>

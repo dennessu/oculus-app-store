@@ -15,14 +15,6 @@ import groovy.transform.CompileStatic
  * Created by liangfu on 3/17/14.
  */
 @CompileStatic
-interface UserGroupRepository {
-    Promise<UserGroup> create(UserGroup entity)
-
-    Promise<UserGroup> update(UserGroup entity)
-
-    Promise<UserGroup> get(UserGroupId id)
-
+interface UserGroupRepository extends IdentityBaseRepository<UserGroup, UserGroupId> {
     Promise<List<UserGroup>> search(UserGroupListOptions getOption)
-
-    Promise<Void> delete(UserGroupId id)
 }

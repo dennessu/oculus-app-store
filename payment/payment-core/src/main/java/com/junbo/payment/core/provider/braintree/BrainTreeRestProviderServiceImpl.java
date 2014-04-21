@@ -7,6 +7,7 @@
 package com.junbo.payment.core.provider.braintree;
 
 import com.junbo.langur.core.promise.Promise;
+import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.core.provider.AbstractPaymentProviderService;
 import com.junbo.payment.spec.internal.BrainTreeResource;
 import com.junbo.payment.spec.model.PaymentInstrument;
@@ -41,6 +42,9 @@ public class BrainTreeRestProviderServiceImpl extends AbstractPaymentProviderSer
     @Override
     public void cloneTransactionResult(PaymentTransaction source, PaymentTransaction target) {
         target.setExternalToken(source.getExternalToken());
+        if(!CommonUtil.isNullOrEmpty(source.getStatus())){
+            target.setStatus(source.getStatus());
+        }
     }
 
     @Override
@@ -85,7 +89,7 @@ public class BrainTreeRestProviderServiceImpl extends AbstractPaymentProviderSer
 
     @Override
     public Promise<PaymentTransaction> getByTransactionToken(String token) {
-        return null;
+        return Promise.pure(null);
     }
 
     public void setBrainTreeResource(BrainTreeResource brainTreeResource) {

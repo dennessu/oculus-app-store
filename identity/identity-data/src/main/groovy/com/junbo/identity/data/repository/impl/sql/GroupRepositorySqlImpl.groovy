@@ -52,6 +52,11 @@ class GroupRepositorySqlImpl implements GroupRepository {
     }
 
     @Override
+    Promise<Void> delete(GroupId id) {
+        throw new IllegalStateException('delete group not support')
+    }
+
+    @Override
     Promise<Group> searchByName(String name) {
         GroupEntity groupEntity = groupDAO.findIdByName(name)
         if (groupEntity == null) {

@@ -19,7 +19,7 @@ import java.util.List;
 public class FulfilmentActionDaoImpl extends BaseDaoImpl<FulfilmentActionEntity> implements FulfilmentActionDao {
     @Override
     public List<FulfilmentActionEntity> findByFulfilmentId(final Long fulfilmentId) {
-        return findAllBy(new Action<Criteria>() {
+        return findAllBy(fulfilmentId, new Action<Criteria>() {
             public void apply(Criteria criteria) {
                 criteria.add(Restrictions.eq("fulfilmentId", fulfilmentId));
             }

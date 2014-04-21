@@ -14,12 +14,6 @@ import groovy.transform.CompileStatic
  * RoleRepository.
  */
 @CompileStatic
-interface RoleRepository {
-    Promise<Role> create(Role role)
-
-    Promise<Role> get(RoleId roleId)
-
-    Promise<Role> update(Role role)
-
+interface RoleRepository extends IdentityBaseRepository<Role, RoleId> {
     Promise<Role> findByRoleName(String roleName, String resourceType, Long resourceId, String subResourceType)
 }
