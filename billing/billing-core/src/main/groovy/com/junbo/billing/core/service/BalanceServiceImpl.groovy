@@ -11,6 +11,7 @@ import com.junbo.billing.clientproxy.PaymentFacade
 import com.junbo.billing.db.repository.BalanceRepository
 import com.junbo.billing.spec.enums.BalanceStatus
 import com.junbo.billing.spec.enums.BalanceType
+import com.junbo.billing.spec.enums.EventActionType
 import com.junbo.billing.spec.enums.TaxStatus
 import com.junbo.billing.spec.error.AppErrors
 import com.junbo.billing.spec.model.*
@@ -79,7 +80,7 @@ class BalanceServiceImpl implements BalanceService {
                 validateBalanceType(balance)
                 validateCurrency(balance)
                 validateCountry(balance)
-                validateBalanceItem(balance)
+                validateBalance(balance)
 
                 return taxService.calculateTax(balance).then { Balance taxedBalance ->
                     computeTotal(taxedBalance)
@@ -98,7 +99,7 @@ class BalanceServiceImpl implements BalanceService {
                         return Promise.pure(savedBalance)
                     }
                     return transactionService.processBalance(savedBalance).then { Balance returnedBalance ->
-                        return Promise.pure(balanceRepository.updateBalance(returnedBalance))
+                        return Promise.pure(balanceRepository.updateBalance(returnedBalance, EventActionType.CHARGE))
                     }
                 }
             }
@@ -113,7 +114,7 @@ class BalanceServiceImpl implements BalanceService {
                 validateBalanceType(balance)
                 validateCurrency(balance)
                 validateCountry(balance)
-                validateBalanceItem(balance)
+                validateBalance(balance)
 
                 return taxService.calculateTax(balance).then { Balance taxedBalance ->
                     computeTotal(taxedBalance)
@@ -153,8 +154,7 @@ class BalanceServiceImpl implements BalanceService {
 
         return transactionService.captureBalance(savedBalance, balance.totalAmount).then {
             //persist the balance entity
-            savedBalance.setType(BalanceType.MANUAL_CAPTURE.name())
-            Balance resultBalance = balanceRepository.updateBalance(savedBalance)
+            Balance resultBalance = balanceRepository.updateBalance(savedBalance, EventActionType.CAPTURE)
             return Promise.pure(resultBalance)
         }
     }
@@ -176,9 +176,8 @@ class BalanceServiceImpl implements BalanceService {
             throw AppErrors.INSTANCE.notAsyncChargeBalance(balance.balanceId.value.toString()).exception()
         }
 
-
         return transactionService.processBalance(savedBalance).then { Balance returnedBalance ->
-            return Promise.pure(balanceRepository.updateBalance(returnedBalance))
+            return Promise.pure(balanceRepository.updateBalance(returnedBalance, EventActionType.ASYNC_CHARGE))
         }
     }
 
@@ -205,6 +204,24 @@ class BalanceServiceImpl implements BalanceService {
         return balanceRepository.getBalanceByUuid(uuid)
     }
 
+    @Override
+    Promise<Balance> putBalance(Balance balance) {
+
+        if (balance.balanceId == null) {
+            throw AppErrors.INSTANCE.fieldMissingValue('balanceId').exception()
+        }
+        if (balance.shippingAddressId == null) {
+            throw AppErrors.INSTANCE.fieldMissingValue('shippingAddressId').exception()
+        }
+        Balance savedBalance = balanceRepository.getBalance(balance.balanceId.value)
+        if (savedBalance == null) {
+            throw AppErrors.INSTANCE.balanceNotFound(balance.balanceId.value.toString()).exception()
+        }
+        savedBalance.setShippingAddressId(balance.shippingAddressId)
+        Balance resultBalance = balanceRepository.updateBalance(savedBalance, EventActionType.ADDRESS_CHANGE)
+        return Promise.pure(resultBalance)
+    }
+
     private Promise<Void> validateUser(Balance balance) {
         if (balance.userId == null) {
             throw AppErrors.INSTANCE.fieldMissingValue('userId').exception()
@@ -219,10 +236,10 @@ class BalanceServiceImpl implements BalanceService {
                 LOGGER.error('name=Error_Get_User. Get null for the user id: {0}', userId)
                 throw AppErrors.INSTANCE.userNotFound(userId.toString()).exception()
             }
-            /*if (user.status != 'ACTIVE') {
+            if (user.active == null || !user.active) {
                 LOGGER.error('name=Error_Get_User. User not active with id: {0}', userId)
                 throw AppErrors.INSTANCE.userStatusInvalid(userId.toString()).exception()
-            }*/
+            }
             return Promise.pure(null)
         }
     }
@@ -274,11 +291,24 @@ class BalanceServiceImpl implements BalanceService {
         }
     }
 
-    private void validateBalanceItem(Balance balance) {
+    private void validateBalance(Balance balance) {
+        if (balance.orderId == null) {
+            throw AppErrors.INSTANCE.fieldMissingValue('orderId').exception()
+        }
         if (balance.balanceItems == null || balance.balanceItems.size() == 0) {
             throw AppErrors.INSTANCE.fieldMissingValue('balanceItems').exception()
         }
-        //todo: more validation for balance items
+        balance.balanceItems.each { BalanceItem balanceItem ->
+            if (balanceItem.orderItemId == null) {
+                throw AppErrors.INSTANCE.fieldMissingValue('balanceItem.orderItemId').exception()
+            }
+            if (balanceItem.orderId == null) {
+                balanceItem.orderId = balance.orderId
+            }
+            if (balanceItem.amount == null) {
+                throw AppErrors.INSTANCE.fieldMissingValue('balanceItem.amount').exception()
+            }
+        }
     }
 
     private void validateBalanceTotal(Balance balance) {
@@ -333,4 +363,32 @@ class BalanceServiceImpl implements BalanceService {
         balance.setTotalAmount(amount)
     }
 
+    @Override
+    Promise<Balance> adjustItems(Balance balance) {
+
+        if (balance.balanceId == null) {
+            throw AppErrors.INSTANCE.fieldMissingValue('balanceId').exception()
+        }
+        if (balance.balanceItems == null || balance.balanceItems.size() == 0) {
+            throw AppErrors.INSTANCE.fieldMissingValue('balanceItems').exception()
+        }
+
+        Balance savedBalance = balanceRepository.getBalance(balance.balanceId.value)
+        if (savedBalance == null) {
+            throw AppErrors.INSTANCE.balanceNotFound(balance.balanceId.value.toString()).exception()
+        }
+
+        balance.balanceItems.each { BalanceItem item ->
+            if (item.balanceItemId == null) {
+                throw AppErrors.INSTANCE.fieldMissingValue('balanceItems.balanceItemId').exception()
+            }
+            BalanceItem savedItem = savedBalance.getBalanceItem(item.balanceItemId)
+            if (savedItem == null) {
+                throw AppErrors.INSTANCE.balanceItemNotFound(item.balanceItemId.toString()).exception()
+            }
+
+        }
+
+        return Promise.pure(balance)
+    }
 }

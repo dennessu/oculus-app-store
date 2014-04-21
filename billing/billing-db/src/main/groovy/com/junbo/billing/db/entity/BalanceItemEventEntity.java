@@ -14,19 +14,17 @@ import javax.persistence.Table;
 import java.math.BigDecimal;
 
 /**
- * Created by xmchen on 14-1-24.
+ * Created by xmchen on 14-4-17.
  */
 @Entity
-@Table(name = "balance_event")
-public class BalanceEventEntity extends BaseEventEntity {
-    @Column(name = "balance_id")
-    private Long balanceId;
+@Table(name = "balance_item_event")
+public class BalanceItemEventEntity extends BaseEventEntity {
 
-    @Column(name = "status_id")
-    private Short statusId;
+    @Column(name = "balance_item_id")
+    private Long balanceItemId;
 
-    @Column(name = "total_amount")
-    private BigDecimal totalAmount;
+    @Column(name = "amount")
+    private BigDecimal amount;
 
     @Column(name = "tax_amount")
     private BigDecimal taxAmount;
@@ -34,30 +32,26 @@ public class BalanceEventEntity extends BaseEventEntity {
     @Column(name = "discount_amount")
     private BigDecimal discountAmount;
 
-    public Long getBalanceId() {
-        return balanceId;
-    }
-    public void setBalanceId(Long balanceId) {
-        this.balanceId = balanceId;
+    public Long getBalanceItemId() {
+        return balanceItemId;
     }
 
-    public Short getStatusId() {
-        return statusId;
-    }
-    public void setStatusId(Short statusId) {
-        this.statusId = statusId;
+    public void setBalanceItemId(Long balanceItemId) {
+        this.balanceItemId = balanceItemId;
     }
 
-    public BigDecimal getTotalAmount() {
-        return totalAmount;
+    public BigDecimal getAmount() {
+        return amount;
     }
-    public void setTotalAmount(BigDecimal totalAmount) {
-        this.totalAmount = totalAmount;
+
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
     }
 
     public BigDecimal getTaxAmount() {
         return taxAmount;
     }
+
     public void setTaxAmount(BigDecimal taxAmount) {
         this.taxAmount = taxAmount;
     }
@@ -65,6 +59,7 @@ public class BalanceEventEntity extends BaseEventEntity {
     public BigDecimal getDiscountAmount() {
         return discountAmount;
     }
+
     public void setDiscountAmount(BigDecimal discountAmount) {
         this.discountAmount = discountAmount;
     }

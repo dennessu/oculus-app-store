@@ -9,17 +9,21 @@ package com.junbo.billing.spec.enums;
 import com.junbo.common.util.Identifiable;
 
 /**
- * Created by xmchen on 14-2-27.
+ * Created by xmchen on 14-4-17.
  */
-public enum BalanceType implements Identifiable<Short> {
-    DEBIT((short)1),
-    MANUAL_CAPTURE((short)2),
-    CREDIT((short)4),
-    REFUND((short)8);
+public enum EventActionType implements Identifiable<Short> {
+    CREATE((short)0),
+
+    CHARGE((short)10),
+    ASYNC_CHARGE((short)11),
+    CAPTURE((short)12),
+    ADDRESS_CHANGE((short)13),
+
+    ADJUSTMENT((short)20);
 
     private final Short id;
 
-    BalanceType(Short id) {
+    EventActionType(Short id) {
         this.id = id;
     }
 

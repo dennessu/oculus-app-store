@@ -6,6 +6,7 @@
 
 package com.junbo.billing.db.repository;
 
+import com.junbo.billing.spec.enums.EventActionType;
 import com.junbo.billing.spec.model.Balance;
 import com.junbo.common.id.BalanceId;
 
@@ -24,7 +25,7 @@ public interface BalanceRepository {
 
     Balance getBalanceByUuid(UUID uuid);
 
-    Balance updateBalance(Balance balance);
+    Balance updateBalance(Balance balance, EventActionType eventActionType);
 
     List<BalanceId> fetchAsyncChargeBalanceIds(Integer count);
 }

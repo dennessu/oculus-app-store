@@ -37,6 +37,8 @@ public class ErrorCode {
 
     public static final String BALANCE_NOT_FOUND = "BALANCE_NOT_FOUND";
 
+    public static final String BALANCE_ITEM_NOT_FOUND = "BALANCE_ITEM_NOT_FOUND";
+
     public static final String BILLING_TRANSACTION_NOT_FOUND = "BILLING_TRANSACTION_NOT_FOUND";
 
     public static final String INVALID_PAYMENT_ID = "INVALID_PAYMENT_ID";
