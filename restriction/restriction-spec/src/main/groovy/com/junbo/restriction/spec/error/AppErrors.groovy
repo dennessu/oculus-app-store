@@ -18,6 +18,10 @@ interface AppErrors {
             description ='User not found')
     AppError invalidUser()
 
+    @ErrorDef(httpStatusCode = 404, code = ErrorCode.USER_PII_NOT_FOUND,
+            description ='User information not found')
+    AppError invalidUserPii()
+
     @ErrorDef(httpStatusCode = 400, code = ErrorCode.INVALID_USER_STATUS,
             description ='User status is invalid')
     AppError invalidUserStatus()
@@ -34,15 +38,19 @@ interface AppErrors {
             description ='Field {0} is missing')
     AppError missingField(String field)
 
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.PAYLOAD_IS_NULL,
-            description ='The payload is null')
-    AppError invalidPayload()
+    @ErrorDef(httpStatusCode = 400, code = ErrorCode.QUERY_PARAMETER_IS_NULL,
+            description ='The query parameter is null')
+    AppError invalidQueryParameter()
+
+    @ErrorDef(httpStatusCode = 400, code = ErrorCode.INVALID_DATE_FORMAT,
+            description ='The date should be in yyyy-MM-ddTHH:mm:ssZ format')
+    AppError invalidDateFormat()
 
     @ErrorDef(httpStatusCode = 500, code = ErrorCode.GET_OFFER_FAILED,
             description ='Failed to get offer info')
-    AppError getOfferFailed()
+    AppError fetchOfferFailed()
 
     @ErrorDef(httpStatusCode = 500, code = ErrorCode.GET_USER_FAILED,
             description ='Failed to get user')
-    AppError getUserFailed()
+    AppError fetchUserFailed()
 }

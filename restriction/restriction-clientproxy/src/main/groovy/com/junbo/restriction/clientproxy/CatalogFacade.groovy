@@ -6,11 +6,12 @@
 package com.junbo.restriction.clientproxy
 
 import com.junbo.catalog.spec.model.offer.Offer
+import com.junbo.common.id.OfferId
 import com.junbo.langur.core.promise.Promise
 /**
  * Interface of Catalog Facade.
  */
 interface CatalogFacade {
-    Promise<List<Offer>> getOffers(List<Long> offerIds)
+    Promise<List<Offer>> getOffers(List<OfferId> offerIds)
 
 }
