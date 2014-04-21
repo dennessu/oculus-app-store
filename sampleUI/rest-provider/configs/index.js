@@ -1,38 +1,54 @@
-var Utils = require('../utils/utils');
-var GlobalConfig = require('./config');
+(function(){
+    var Utils = null;
+    var DevConfig = null;
+    var ProdConfig = null;
+    var Configs = null;
+    var GlobalConfig = null;
 
-var Configuration = function(){};
-
-Configuration.Init = function(args){
-    var envConfig = null;
-
-    if(args.length > 2 && args[2].toLowerCase() == 'prod'){
-        console.log('Application environment is Production.');
-        envConfig = require('./prod');
-
-        process.env.NAME = "production";
+    if(typeof(window) != "undefined"){
+        Utils = window.Lib.Utils;
+        DevConfig = window.Config.Dev;
+        ProdConfig = window.Config.Prod;
+        Configs = window.AppConfig;
     }else{
-        console.log('Application environment is Development.');
-        envConfig = require('./dev');
-
-        process.env.NAME = "development";
+        Utils = require('../lib/utils');
+        DevConfig = require('./dev');
+        ProdConfig = require('./prod');
+        Configs = require('./config');
     }
 
-    process.env.PORT = envConfig.ListenOnPort;
-    global.Config = Utils.FillObject(GlobalConfig, envConfig, 0);
+    var Configuration = function(){};
+    Configuration.Init = function(env){
 
-    // Configuration Runtime Items
-    var localhost = Utils.Format("http://{1}:{2}", global.Config.Localhost, global.Config.ListenOnPort);
-    if(global.Config.ListenOnPort == 80){
-        localhost = Utils.Format("http://{1}", global.Config.Localhost);
+        if(env.toLowerCase() == 'prod'){
+            GlobalConfig = Utils.FillObject(Configs, ProdConfig, 0);
+        }else{
+            GlobalConfig = Utils.FillObject(Configs, DevConfig, 0);
+        }
+
+        // Configuration Runtime Items
+        var localhost = Utils.Format("http://{1}:{2}", GlobalConfig.Localhost, GlobalConfig.ListenOnPort);
+        if(GlobalConfig.ListenOnPort == 80){
+            localhost = Utils.Format("http://{1}", GlobalConfig.Localhost);
+        }
+        GlobalConfig.Runtime.SocketAddress = localhost;
+        GlobalConfig.Runtime.LoginCallbackUrl = Utils.Format(GlobalConfig.Runtime.LoginCallbackUrl, localhost);
+        GlobalConfig.Runtime.RegisterCallbackUrl = Utils.Format(GlobalConfig.Runtime.RegisterCallbackUrl, localhost);
+        GlobalConfig.Runtime.LogoutCallbackUrl = Utils.Format(GlobalConfig.Runtime.LogoutCallbackUrl, localhost);
+        GlobalConfig.Runtime.LoginUrl = Utils.Format(GlobalConfig.Runtime.LoginUrl, GlobalConfig.OauthHost, GlobalConfig.Runtime.LoginCallbackUrl);
+        GlobalConfig.Runtime.LogoutUrl = Utils.Format(GlobalConfig.Runtime.LogoutUrl, GlobalConfig.OauthHost);
+        GlobalConfig.Runtime.RegisterUrl = Utils.Format(GlobalConfig.Runtime.RegisterUrl, localhost, GlobalConfig.Runtime.RegisterCallbackUrl);
+
+        if(typeof(window) != "undefined"){
+            Module.Load(this, "AppConfig", GlobalConfig);
+        }else{
+            global.AppConfig = GlobalConfig;
+        }
+    };
+
+    if(typeof(window) != "undefined"){
+        Module.Load(this, "Configuration", Configuration);
+    }else{
+        module.exports = Configuration;
     }
-    global.Config.Runtime.SocketAddress = localhost;
-    global.Config.Runtime.LoginCallbackUrl = Utils.Format(global.Config.Runtime.LoginCallbackUrl, localhost);
-    global.Config.Runtime.RegisterCallbackUrl = Utils.Format(global.Config.Runtime.RegisterCallbackUrl, localhost);
-    global.Config.Runtime.LogoutCallbackUrl = Utils.Format(global.Config.Runtime.LogoutCallbackUrl, localhost);
-    global.Config.Runtime.LoginUrl = Utils.Format(global.Config.Runtime.LoginUrl, global.Config.OauthHost, global.Config.Runtime.LoginCallbackUrl);
-    global.Config.Runtime.LogoutUrl = Utils.Format(global.Config.Runtime.LogoutUrl, global.Config.OauthHost);
-    global.Config.Runtime.RegisterUrl = Utils.Format(global.Config.Runtime.RegisterUrl, localhost, global.Config.Runtime.RegisterCallbackUrl);
-};
-
-module.exports = Configuration;
+}).call(this);

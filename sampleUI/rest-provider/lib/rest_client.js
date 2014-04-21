@@ -1,8 +1,9 @@
+/* Only use Node */
 
 var http = require("http");
 var QueryString = require("querystring");
 var Utils = require('./utils');
-var APIResultModel = require("./result_model");
+var ResultModel = require("./result_model");
 
 var RestClient = function(){};
 
@@ -91,15 +92,15 @@ RestClient.prototype.Request = function(options, data, cb){
 };
 
 RestClient.CallBack = function(res, data, cb){
-  var result = new APIResultModel();
+  var result = new ResultModel();
   if(res != null){
-    result.StatusCode = res.statusCode;
-    result.Headers = res.headers;
+    result.status = res.statusCode;
+    result.headers = res.headers;
   }else{
-    result.StatusCode = -1;
-    result.Headers = null;
+    result.status = -1;
+    result.headers = null;
   }
-  result.Data = data;
+  result.data = data;
 
   cb(result);
 };

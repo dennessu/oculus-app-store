@@ -15,15 +15,6 @@ import groovy.transform.CompileStatic
  * User OptIn DAO is used to fetch/update/delete/get user OptIn data(such as sports, news) from the database
  */
 @CompileStatic
-interface UserOptinRepository {
-
-    Promise<UserOptin> create(UserOptin entity)
-
-    Promise<UserOptin> update(UserOptin entity)
-
-    Promise<UserOptin> get(UserOptinId id)
-
+interface UserOptinRepository extends IdentityBaseRepository<UserOptin, UserOptinId> {
     Promise<List<UserOptin>> search(UserOptinListOptions getOption)
-
-    Promise<Void> delete(UserOptinId id)
 }

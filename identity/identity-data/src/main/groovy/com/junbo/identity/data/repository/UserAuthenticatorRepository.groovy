@@ -16,15 +16,6 @@ import groovy.transform.CompileStatic
  * federation data(such as google account, facebook account) from the database
  */
 @CompileStatic
-interface UserAuthenticatorRepository {
-
-    Promise<UserAuthenticator> create(UserAuthenticator entity)
-
-    Promise<UserAuthenticator> update(UserAuthenticator entity)
-
-    Promise<UserAuthenticator> get(UserAuthenticatorId id)
-
+interface UserAuthenticatorRepository extends IdentityBaseRepository<UserAuthenticator, UserAuthenticatorId> {
     Promise<List<UserAuthenticator>> search(AuthenticatorListOptions getOption)
-
-    Promise<Void> delete(UserAuthenticatorId id)
 }

@@ -7,6 +7,8 @@ package com.junbo.identity.data.identifiable
 
 import com.junbo.common.util.Identifiable
 
+import javax.ws.rs.NotSupportedException
+
 /**
  * User password strength. Please refer to http://en.wikipedia.org/wiki/Password_strength
  */
@@ -24,5 +26,10 @@ enum UserPasswordStrength implements Identifiable<Short> {
     @Override
     Short getId() {
         return id
+    }
+
+    @Override
+    void setId(Short id) {
+        throw new NotSupportedException('enum UserPasswordStrength not settable')
     }
 }

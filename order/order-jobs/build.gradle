@@ -4,5 +4,10 @@ dependencies {
     compile project(":order-spec")
     compile project(":order-core")
     compile 'org.quartz-scheduler:quartz:2.2.1'
-    compile project(":order-core")
+
+    testCompile (libraries.spring_test)
+    testCompile (libraries.common_lang)
+    testRuntime (libraries.el_api)
+    testRuntime (libraries.el)
+    testCompile (libraries.easy_mock)
 }

@@ -15,11 +15,7 @@ import groovy.transform.CompileStatic
  * Created by liangfu on 3/25/14.
  */
 @CompileStatic
-interface UserSecurityQuestionAttemptRepository {
-
-    Promise<UserSecurityQuestionVerifyAttempt> create(UserSecurityQuestionVerifyAttempt entity)
-
-    Promise<UserSecurityQuestionVerifyAttempt> get(UserSecurityQuestionVerifyAttemptId id)
-
+interface UserSecurityQuestionAttemptRepository
+        extends IdentityBaseRepository<UserSecurityQuestionVerifyAttempt, UserSecurityQuestionVerifyAttemptId> {
     Promise<List<UserSecurityQuestionVerifyAttempt>> search(UserSecurityQuestionAttemptListOptions getOption)
 }

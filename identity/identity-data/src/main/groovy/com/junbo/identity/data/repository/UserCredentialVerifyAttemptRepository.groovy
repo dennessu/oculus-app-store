@@ -15,14 +15,7 @@ import groovy.transform.CompileStatic
  * Created by liangfu on 3/17/14.
  */
 @CompileStatic
-interface UserCredentialVerifyAttemptRepository {
-    Promise<UserCredentialVerifyAttempt> create(UserCredentialVerifyAttempt entity)
-
-    Promise<UserCredentialVerifyAttempt> update(UserCredentialVerifyAttempt entity)
-
-    Promise<UserCredentialVerifyAttempt> get(UserCredentialVerifyAttemptId id)
-
+interface UserCredentialVerifyAttemptRepository
+        extends IdentityBaseRepository<UserCredentialVerifyAttempt, UserCredentialVerifyAttemptId> {
     Promise<List<UserCredentialVerifyAttempt>> search(UserCredentialAttemptListOptions getOption)
-
-    Promise<Void> delete(UserCredentialVerifyAttemptId id)
 }
