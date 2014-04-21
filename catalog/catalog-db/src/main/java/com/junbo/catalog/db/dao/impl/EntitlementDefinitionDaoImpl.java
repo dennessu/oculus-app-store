@@ -6,6 +6,8 @@
 
 package com.junbo.catalog.db.dao.impl;
 
+import com.junbo.catalog.common.util.Constants;
+import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.db.dao.EntitlementDefinitionDao;
 import com.junbo.catalog.db.entity.EntitlementDefinitionEntity;
 import com.junbo.catalog.spec.model.common.PageableGetOptions;
@@ -49,6 +51,8 @@ public class EntitlementDefinitionDaoImpl extends BaseDaoImpl<EntitlementDefinit
             params.put("tag", tag);
         }
 
+        queryString.append(" and deleted = false");
+
         Query q = currentSession().createSQLQuery(queryString.toString()).addEntity(this.getEntityType());
         for (Map.Entry<String, Object> entry : params.entrySet()) {
             q.setParameter(entry.getKey(), entry.getValue());
@@ -63,5 +67,17 @@ public class EntitlementDefinitionDaoImpl extends BaseDaoImpl<EntitlementDefinit
         String queryString = "from EntitlementDefinitionEntity where trackingUuid = (:trackingUuid)";
         Query q = currentSession().createQuery(queryString).setParameter("trackingUuid", trackingUuid);
         return (EntitlementDefinitionEntity) q.uniqueResult();
+    }
+
+    @Override
+    public Long update(EntitlementDefinitionEntity entity) {
+        EntitlementDefinitionEntity existed = (EntitlementDefinitionEntity)
+                currentSession().load(EntitlementDefinitionEntity.class, entity.getId());
+        entity.setCreatedTime(existed.getCreatedTime());
+        entity.setCreatedBy(existed.getCreatedBy());
+        entity.setUpdatedBy(Constants.SYSTEM_INTERNAL); //TODO
+        entity.setUpdatedTime(Utils.now());
+        currentSession().merge(entity);
+        return entity.getId();
     }
 }

@@ -25,5 +25,7 @@ public interface EntitlementDefinitionDao {
                                                   String group, String tag,
                                                   EntitlementType type, PageableGetOptions pageableGetOptions);
 
+    Long update(EntitlementDefinitionEntity entitlementDefinition);
+
     EntitlementDefinitionEntity getByTrackingUuid(UUID trackingUuid);
 }

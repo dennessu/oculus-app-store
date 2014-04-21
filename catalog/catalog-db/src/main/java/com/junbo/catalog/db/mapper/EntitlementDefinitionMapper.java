@@ -10,6 +10,7 @@ import com.junbo.catalog.db.entity.EntitlementDefinitionEntity;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementType;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +20,8 @@ import java.util.List;
  */
 @Component
 public class EntitlementDefinitionMapper {
-    private EntitlementDefinitionMapper(){}
+    private EntitlementDefinitionMapper() {
+    }
 
     public static EntitlementDefinition toEntitlementDefinition(
             EntitlementDefinitionEntity entitlementDefinitionEntity) {
@@ -32,7 +34,10 @@ public class EntitlementDefinitionMapper {
         entitlementDefinition.setDeveloperId(entitlementDefinitionEntity.getDeveloperId());
         entitlementDefinition.setRev(entitlementDefinitionEntity.getRev());
         entitlementDefinition.setInAppContext(entitlementDefinitionEntity.getInAppContext());
-        entitlementDefinition.setType(entitlementDefinitionEntity.getType().toString());
+        entitlementDefinition.setType(
+                entitlementDefinitionEntity.getType() == null ?
+                        null :
+                        entitlementDefinitionEntity.getType().toString());
         entitlementDefinition.setGroup(entitlementDefinitionEntity.getGroup());
         entitlementDefinition.setTag(entitlementDefinitionEntity.getTag());
         entitlementDefinition.setConsumable(entitlementDefinitionEntity.getConsumable());
@@ -48,7 +53,11 @@ public class EntitlementDefinitionMapper {
         entitlementDefinitionEntity.setRev(entitlementDefinition.getRev());
         entitlementDefinitionEntity.setInAppContext(entitlementDefinition.getInAppContext());
         entitlementDefinitionEntity.setDeveloperId(entitlementDefinition.getDeveloperId());
-        entitlementDefinitionEntity.setType(EntitlementType.valueOf(entitlementDefinition.getType()));
+        entitlementDefinitionEntity.setType(
+                StringUtils.isEmpty(entitlementDefinition.getType()) ?
+                        null :
+                        EntitlementType.valueOf(entitlementDefinition.getType())
+        );
         entitlementDefinitionEntity.setGroup(entitlementDefinition.getGroup());
         entitlementDefinitionEntity.setTag(entitlementDefinition.getTag());
         entitlementDefinitionEntity.setConsumable(entitlementDefinition.getConsumable());

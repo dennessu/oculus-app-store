@@ -78,7 +78,6 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
                                                PageMetadata pageMetadata) {
         validateNotNull(entitlementSearchParam.getUserId(), "user");
         checkUser(entitlementSearchParam.getUserId().getValue());
-        checkInAppContext(null); //TODO:
         checkSearchDateFormat(entitlementSearchParam);
         List<Entitlement> entitlementEntities = entitlementRepository.getBySearchParam(
                 entitlementSearchParam, pageMetadata);

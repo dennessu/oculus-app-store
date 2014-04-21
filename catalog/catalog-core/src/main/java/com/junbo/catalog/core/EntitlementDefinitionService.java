@@ -26,5 +26,11 @@ public interface EntitlementDefinitionService {
 
     Long createEntitlementDefinition(EntitlementDefinition entitlementDefinition);
 
+    Long updateEntitlementDefinition(Long entitlementDefinitionId,
+                                     EntitlementDefinition entitlementDefinition);
+
+    void deleteEntitlement(Long entitlementDefinitionId);
+
+
     EntitlementDefinition getByTrackingUuid(UUID trackingUuid);
 }

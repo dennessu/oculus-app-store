@@ -30,6 +30,7 @@ import java.util.UUID;
         "consumable"
 })
 public class EntitlementDefinition {
+    @JsonIgnore
     private UUID trackingUuid;
     @JsonProperty("self")
     @EntitlementDefinitionId
@@ -47,12 +48,10 @@ public class EntitlementDefinition {
     @JsonProperty("isConsumable")
     private Boolean consumable;
 
-    @JsonIgnore
     public UUID getTrackingUuid() {
         return trackingUuid;
     }
 
-    @JsonProperty
     public void setTrackingUuid(UUID trackingUuid) {
         this.trackingUuid = trackingUuid;
     }

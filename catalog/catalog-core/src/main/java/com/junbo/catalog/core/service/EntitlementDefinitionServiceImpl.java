@@ -14,6 +14,7 @@ import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -46,14 +47,13 @@ public class EntitlementDefinitionServiceImpl implements EntitlementDefinitionSe
 
     @Override
     public Long createEntitlementDefinition(EntitlementDefinition entitlementDefinition) {
-        validateNotNull(entitlementDefinition.getType(), "type");
-        if(entitlementDefinition.getGroup() == null){
+        if (entitlementDefinition.getGroup() == null) {
             entitlementDefinition.setGroup("");
         }
-        if(entitlementDefinition.getTag() == null){
+        if (entitlementDefinition.getTag() == null) {
             entitlementDefinition.setTag("");
         }
-        if(entitlementDefinition.getConsumable() == null){
+        if (entitlementDefinition.getConsumable() == null) {
             entitlementDefinition.setConsumable(false);
         }
         checkDeveloper(entitlementDefinition.getDeveloperId());
@@ -62,6 +62,55 @@ public class EntitlementDefinitionServiceImpl implements EntitlementDefinitionSe
     }
 
     private void checkInAppContext(List<String> inAppContext) {
+    }
+
+    @Override
+    @Transactional
+    public Long updateEntitlementDefinition(Long entitlementDefinitionId,
+                                            EntitlementDefinition entitlementDefinition) {
+        if (entitlementDefinition.getEntitlementDefId() == null) {
+            throw AppErrors.INSTANCE.missingField("id").exception();
+        }
+        if (!entitlementDefinitionId.equals(entitlementDefinition.getEntitlementDefId())) {
+            throw AppErrors.INSTANCE.fieldNotMatch("id", entitlementDefinition.getEntitlementDefId(),
+                    entitlementDefinitionId).exception();
+        }
+
+        EntitlementDefinition existingEntitlementDefinition =
+                entitlementDefinitionRepository.get(entitlementDefinitionId);
+        if (existingEntitlementDefinition == null) {
+            throw AppErrors.INSTANCE.notFound("entitlementDefinition", entitlementDefinitionId).exception();
+        }
+
+        checkDeveloper(existingEntitlementDefinition.getDeveloperId());
+        checkInAppContext(entitlementDefinition.getInAppContext());
+
+        if (!existingEntitlementDefinition.getDeveloperId().equals(entitlementDefinition.getDeveloperId())) {
+            throw AppErrors.INSTANCE.fieldNotMatch("developer",
+                    entitlementDefinition.getDeveloperId(),
+                    existingEntitlementDefinition.getDeveloperId())
+                    .exception();
+        }
+
+        existingEntitlementDefinition.setTag(entitlementDefinition.getTag());
+        existingEntitlementDefinition.setGroup(entitlementDefinition.getGroup());
+        existingEntitlementDefinition.setType(entitlementDefinition.getType());
+        existingEntitlementDefinition.setConsumable(entitlementDefinition.getConsumable());
+        existingEntitlementDefinition.setInAppContext(entitlementDefinition.getInAppContext());
+
+        return entitlementDefinitionRepository.update(existingEntitlementDefinition);
+    }
+
+    @Override
+    @Transactional
+    public void deleteEntitlement(Long entitlementDefinitionId) {
+        EntitlementDefinition existingEntitlementDefinition =
+                entitlementDefinitionRepository.get(entitlementDefinitionId);
+        if (existingEntitlementDefinition == null) {
+            throw AppErrors.INSTANCE.notFound("entitlementDefinition", entitlementDefinitionId).exception();
+        }
+        checkDeveloper(existingEntitlementDefinition.getDeveloperId());
+        entitlementDefinitionRepository.delete(existingEntitlementDefinition);
     }
 
     @Override

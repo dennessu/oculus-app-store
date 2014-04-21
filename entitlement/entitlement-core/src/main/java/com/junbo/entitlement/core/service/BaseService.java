@@ -19,7 +19,6 @@ import org.springframework.util.StringUtils;
 
 import java.text.ParseException;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Base service.
@@ -48,8 +47,8 @@ public class BaseService {
     protected void validateCreate(Entitlement entitlement) {
         checkOauth(entitlement);
         if (Boolean.TRUE.equals(entitlement.getIsBanned())) {
-            throw AppErrors.INSTANCE.fieldNotCorrect("isBanned",
-                    "isBanned can not be true when created").exception();
+            throw AppErrors.INSTANCE.fieldNotCorrect("isSuspended",
+                    "isSuspended can not be true when created").exception();
         }
         validateNotNull(entitlement.getGrantTime(), "grantTime");
         if (entitlement.getUseCount() != null && entitlement.getUseCount() < 1) {
@@ -140,10 +139,6 @@ public class BaseService {
 
     protected void checkTargetUser(Long userId) {
         validateNotNull(userId, "targetUser");
-    }
-
-    protected void checkInAppContext(List<String> clientIds) {
-        //TODO: check clientId
     }
 
     protected void checkOauth(Entitlement entitlement) {
