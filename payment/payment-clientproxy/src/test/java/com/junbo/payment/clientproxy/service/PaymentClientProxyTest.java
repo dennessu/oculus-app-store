@@ -283,10 +283,10 @@ public class PaymentClientProxyTest extends BaseTest {
         }catch (Exception ex){
             Assert.assertNull(captureResult);
             PaymentTransaction revertResult = paymentClient.getPayment(paymentResult.getId()).wrapped().get();
-            Assert.assertEquals(revertResult.getStatus().toUpperCase(), PaymentStatus.SETTLEMENT_DECLINED.toString());
+            Assert.assertEquals(revertResult.getStatus().toUpperCase(), PaymentStatus.SETTLEMENT_SUBMIT_DECLINED.toString());
             for(PaymentEvent event : revertResult.getPaymentEvents()){
                 if(event.getType().equalsIgnoreCase(PaymentEventType.SUBMIT_SETTLE.toString())
-                        && event.getStatus().equalsIgnoreCase(PaymentStatus.SETTLEMENT_DECLINED.toString())){
+                        && event.getStatus().equalsIgnoreCase(PaymentStatus.SETTLEMENT_SUBMIT_DECLINED.toString())){
                     return;
                 }
             }

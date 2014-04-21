@@ -10,7 +10,8 @@
                     "18+":"18"
                 }
             }
-        ]
+        ],
+        "type":"COMMON"
     },
     {
         "country":"AU",
@@ -22,7 +23,8 @@
                     "R18+ not suitable <18":"18"
                 }
             }
-        ]
+        ],
+        "type":"COMMON"
     },
     {
         "country":"TW",
@@ -33,7 +35,8 @@
                     "限制級":"18"
                 }
             }
-        ]
+        ],
+        "type":"COMMON"
     },
     {
     	"country":"DE",
@@ -44,6 +47,7 @@
     				"keine Jugendfreigabe":"18"
     			}
     		}
-    	]
+    	],
+        "type":"GSA"
     }
 ]

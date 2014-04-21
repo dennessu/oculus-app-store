@@ -50,6 +50,10 @@
 				balance_id BIGINT NOT NULL,
 				action_type_id SMALLINT NOT NULL,
 				status_id SMALLINT NOT NULL,
+				total_amount DECIMAL NOT NULL,
+				tax_amount DECIMAL NOT NULL,
+				discount_amount DECIMAL NOT NULL,
+				shipping_address_id BIGINT,
 				event_date TIMESTAMP NOT NULL,
 				PRIMARY KEY(event_id)
 			);
@@ -58,6 +62,7 @@
 			CREATE TABLE balance_item (
 				balance_item_id BIGINT NOT NULL,
 				balance_id BIGINT NOT NULL,
+				order_id BIGINT NOT NULL,
 				order_item_id BIGINT NOT NULL,
 				amount DECIMAL NOT NULL,
 				tax_amount DECIMAL NOT NULL,

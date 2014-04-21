@@ -15,7 +15,7 @@ import com.junbo.common.error.*;
 public interface AppErrors {
     AppErrors INSTANCE = ErrorProxy.newProxyInstance(AppErrors.class);
 
-    @ErrorDef(httpStatusCode = 404, code = ErrorCode.SHIPPING_ADDRESS_NOT_FOUND,
+    @ErrorDef(httpStatusCode = 400, code = ErrorCode.SHIPPING_ADDRESS_NOT_FOUND,
             description = "Shipping address with id {0} not found")
     AppError shippingAddressNotFound(String id);
 
@@ -23,7 +23,7 @@ public interface AppErrors {
             description = "Shipping address with id {1} not belong to the user {0}")
     AppError userShippingAddressNotMatch(String userId, String addressId);
 
-    @ErrorDef(httpStatusCode = 404, code = ErrorCode.USER_NOT_FOUND,
+    @ErrorDef(httpStatusCode = 400, code = ErrorCode.USER_NOT_FOUND,
             description ="User with id {0} not found")
     AppError userNotFound(String id);
 
@@ -35,11 +35,11 @@ public interface AppErrors {
             description ="Field {0} has missing value")
     AppError fieldMissingValue(String field);
 
-    @ErrorDef(httpStatusCode = 404, code = ErrorCode.CURRENCY_NOT_FOUND,
+    @ErrorDef(httpStatusCode = 400, code = ErrorCode.CURRENCY_NOT_FOUND,
             description ="Currency with name {0} not found")
     AppError currencyNotFound(String name);
 
-    @ErrorDef(httpStatusCode = 404, code = ErrorCode.PAYMENT_INSTRUMENT_NOT_FOUND,
+    @ErrorDef(httpStatusCode = 400, code = ErrorCode.PAYMENT_INSTRUMENT_NOT_FOUND,
             description ="PI with id {0} not found")
     AppError piNotFound(String id);
 
@@ -55,19 +55,19 @@ public interface AppErrors {
             description ="Balance total amount {0} invalid")
     AppError invalidBalanceTotal(String total);
 
-    @ErrorDef(httpStatusCode = 404, code = ErrorCode.TAX_CALCULATION_ERROR,
+    @ErrorDef(httpStatusCode = 400, code = ErrorCode.TAX_CALCULATION_ERROR,
             description ="Fail to calculate tax, reason: {0}")
     AppError taxCalculationError(String reason);
 
-    @ErrorDef(httpStatusCode = 404, code = ErrorCode.ADDRESS_VALIDATION_ERROR,
+    @ErrorDef(httpStatusCode = 400, code = ErrorCode.ADDRESS_VALIDATION_ERROR,
             description ="Fail to validate address, reason: {0}")
     AppError addressValidationError(String reason);
 
-    @ErrorDef(httpStatusCode = 404, code = ErrorCode.BALANCE_NOT_FOUND,
+    @ErrorDef(httpStatusCode = 400, code = ErrorCode.BALANCE_NOT_FOUND,
             description ="Balance with id {0} not found")
     AppError balanceNotFound(String id);
 
-    @ErrorDef(httpStatusCode = 404, code = ErrorCode.BILLING_TRANSACTION_NOT_FOUND,
+    @ErrorDef(httpStatusCode = 400, code = ErrorCode.BILLING_TRANSACTION_NOT_FOUND,
             description ="billing transaction in balance with id {0} not found")
     AppError transactionNotFound(String id);
 
@@ -78,4 +78,8 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 400, code = ErrorCode.NOT_ASYNC_CHARGE_BALANCE,
             description ="The balance {0} is not an async charge balance")
     AppError notAsyncChargeBalance(String id);
+
+    @ErrorDef(httpStatusCode = 400, code = ErrorCode.BALANCE_ITEM_NOT_FOUND,
+            description ="The balance item {0} is not found")
+    AppError balanceItemNotFound(String id);
 }

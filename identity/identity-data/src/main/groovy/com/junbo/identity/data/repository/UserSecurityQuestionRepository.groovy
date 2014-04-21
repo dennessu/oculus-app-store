@@ -15,14 +15,6 @@ import groovy.transform.CompileStatic
  * Created by liangfu on 3/17/14.
  */
 @CompileStatic
-interface UserSecurityQuestionRepository {
-    Promise<UserSecurityQuestion> create(UserSecurityQuestion entity)
-
-    Promise<UserSecurityQuestion> update(UserSecurityQuestion entity)
-
-    Promise<UserSecurityQuestion> get(UserSecurityQuestionId id)
-
+interface UserSecurityQuestionRepository extends IdentityBaseRepository<UserSecurityQuestion, UserSecurityQuestionId> {
     Promise<List<UserSecurityQuestion>> search(UserSecurityQuestionListOptions getOption)
-
-    Promise<Void> delete(UserSecurityQuestionId id)
 }

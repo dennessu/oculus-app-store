@@ -46,11 +46,11 @@ public final class PaymentUtil {
     }
 
     private enum PayPalStatus{
-        PAYMENT_ACTION_NOT_INITIATED,
-        PAYMENT_ACTION_FAILED,
-        PAYMENT_ACTION_IN_PROGRESS,
-        PAYMENT_COMPLETED,
-        PAYMENT_ACTION_COMPLETED
+        PaymentActionNotInitiated,
+        PaymentActionFailed,
+        PaymentActionInProgress,
+        PaymentCompleted,
+        PaymentActionCompleted
     }
 
     public static PaymentStatus mapBraintreePaymentStatus(PaymentStatus.BrainTreeStatus brainTreeStatus){
@@ -75,15 +75,15 @@ public final class PaymentUtil {
     }
 
     public static PaymentStatus mapPayPalPaymentStatus(String checkoutStatus){
-        if(checkoutStatus.equalsIgnoreCase(PayPalStatus.PAYMENT_ACTION_NOT_INITIATED.toString())){
+        if(checkoutStatus.equalsIgnoreCase(PayPalStatus.PaymentActionNotInitiated.toString())){
             return PaymentStatus.UNCONFIRMED;
-        }else if(checkoutStatus.equalsIgnoreCase(PayPalStatus.PAYMENT_ACTION_COMPLETED.toString())
-                || checkoutStatus.equalsIgnoreCase(PayPalStatus.PAYMENT_COMPLETED.toString())){
+        }else if(checkoutStatus.equalsIgnoreCase(PayPalStatus.PaymentActionCompleted.toString())
+                || checkoutStatus.equalsIgnoreCase(PayPalStatus.PaymentCompleted.toString())){
             return PaymentStatus.SETTLED;
-        }else if(checkoutStatus.equalsIgnoreCase(PayPalStatus.PAYMENT_ACTION_IN_PROGRESS.toString())){
+        }else if(checkoutStatus.equalsIgnoreCase(PayPalStatus.PaymentActionInProgress.toString())){
             return PaymentStatus.SETTLING;
-        }else if(checkoutStatus.equalsIgnoreCase(PayPalStatus.PAYMENT_ACTION_FAILED.toString())){
-            return PaymentStatus.SETTLEMENT_DECLINED;
+        }else if(checkoutStatus.equalsIgnoreCase(PayPalStatus.PaymentActionFailed.toString())){
+            return PaymentStatus.SETTLE_DECLINED;
         }else{
             return PaymentStatus.UNRECOGNIZED;
         }

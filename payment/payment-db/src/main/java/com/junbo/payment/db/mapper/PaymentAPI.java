@@ -15,6 +15,7 @@ public enum PaymentAPI {
     UpdatePI,
     Auth,
     Capture,
+    Confirm,
     Charge,
     Reverse,
     Refund

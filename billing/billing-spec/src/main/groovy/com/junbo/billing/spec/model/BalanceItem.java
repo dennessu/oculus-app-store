@@ -6,6 +6,7 @@
 
 package com.junbo.billing.spec.model;
 
+import com.junbo.common.id.OrderId;
 import com.junbo.common.id.OrderItemId;
 
 import java.math.BigDecimal;
@@ -17,6 +18,7 @@ import java.util.List;
  */
 public class BalanceItem {
     private Long balanceItemId;
+    private OrderId orderId;
     private OrderItemId orderItemId;
     private BigDecimal amount;
     private BigDecimal taxAmount;
@@ -111,5 +113,13 @@ public class BalanceItem {
 
     public void setOriginalBalanceItemId(Long originalBalanceItemId) {
         this.originalBalanceItemId = originalBalanceItemId;
+    }
+
+    public OrderId getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(OrderId orderId) {
+        this.orderId = orderId;
     }
 }

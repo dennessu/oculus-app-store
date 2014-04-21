@@ -8,6 +8,8 @@ package com.junbo.ewallet.spec.def;
 
 import com.junbo.common.util.Identifiable;
 
+import javax.ws.rs.NotSupportedException;
+
 /**
  * Enum for status.
  */
@@ -26,4 +28,10 @@ public enum Status implements Identifiable<Integer> {
     public Integer getId() {
         return id;
     }
+
+    @Override
+    public void setId(Integer id) {
+        throw new NotSupportedException("enum Status not settable");
+    }
+
 }

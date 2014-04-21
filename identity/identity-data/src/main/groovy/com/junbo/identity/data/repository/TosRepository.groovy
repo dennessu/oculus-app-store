@@ -15,9 +15,6 @@ import groovy.transform.CompileStatic
  * Created by liangfu on 4/9/14.
  */
 @CompileStatic
-interface TosRepository {
-    Promise<Tos> get(TosId tosId)
-    Promise<Tos> create(Tos tos)
-    Promise<Void> delete(TosId tosId)
+interface TosRepository extends IdentityBaseRepository<Tos, TosId> {
     Promise<List<Tos>> search(TosListOptions options)
 }

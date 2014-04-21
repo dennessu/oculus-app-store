@@ -23,8 +23,11 @@ public class ProviderRoutingServiceImpl implements ProviderRoutingService{
             return PaymentProviderRegistry.getPaymentProviderService(PaymentProvider.BrainTree);
         }else if(piType.equals(PIType.WALLET)){
             return PaymentProviderRegistry.getPaymentProviderService(PaymentProvider.Wallet);
+        }else if(piType.equals(PIType.PAYPAL)){
+            return PaymentProviderRegistry.getPaymentProviderService(PaymentProvider.PayPal);
         }
         else{
+            //TODO: find some default PI
             return null;
         }
     }

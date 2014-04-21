@@ -7,6 +7,8 @@ package com.junbo.order.db.entity.enums;
 
 import com.junbo.common.util.Identifiable;
 
+import javax.ws.rs.NotSupportedException;
+
 /**
  * Created by chriszhu on 2/25/14.
  */
@@ -27,4 +29,10 @@ public enum PreorderAction implements Identifiable<Short> {
     public Short getId() {
         return id;
     }
+
+    @Override
+    public void setId(Short id) {
+        throw new NotSupportedException("enum PreorderAction not settable");
+    }
+
 }

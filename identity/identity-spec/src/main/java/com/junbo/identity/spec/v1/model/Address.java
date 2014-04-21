@@ -9,13 +9,14 @@ package com.junbo.identity.spec.v1.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.AddressId;
 import com.junbo.common.id.UserId;
+import com.junbo.common.util.Identifiable;
 import com.junbo.identity.spec.model.users.ResourceMeta;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
  * Created by xmchen on 14-4-15.
  */
-public class Address extends ResourceMeta {
+public class Address extends ResourceMeta implements Identifiable<AddressId> {
 
     @ApiModelProperty(position = 1, required = true, value = "The id of address resource.")
     @JsonProperty("self")

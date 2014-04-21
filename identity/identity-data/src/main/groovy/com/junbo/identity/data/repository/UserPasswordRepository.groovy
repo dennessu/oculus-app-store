@@ -14,14 +14,6 @@ import groovy.transform.CompileStatic
  * Created by liangfu on 3/16/14.
  */
 @CompileStatic
-interface UserPasswordRepository {
-    Promise<UserPassword> create(UserPassword entity)
-
-    Promise<UserPassword> update(UserPassword entity)
-
-    Promise<UserPassword> get(UserPasswordId id)
-
+interface UserPasswordRepository extends IdentityBaseRepository<UserPassword, UserPasswordId> {
     Promise<List<UserPassword>> search(UserPasswordListOptions getOption)
-
-    Promise<Void> delete(UserPasswordId id)
 }

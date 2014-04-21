@@ -46,6 +46,10 @@ class RoleRepositorySqlImpl implements RoleRepository {
         return Promise.pure(wrap(roleDAO.get((Long) entity.id)))
     }
 
+    @Override
+    Promise<Void> delete(RoleId id) {
+        throw new IllegalStateException('delete role not support')
+    }
 
     @Override
     Promise<Role> findByRoleName(String roleName, String resourceType,

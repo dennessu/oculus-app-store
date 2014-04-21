@@ -46,4 +46,11 @@ public interface BalanceResource {
 
     @GET
     Promise<Results<Balance>> getBalances(@QueryParam("orderId") OrderId orderId);
+
+    @PUT
+    Promise<Balance> putBalance(Balance balance);
+
+    @POST
+    @Path("/items-adjustment")
+    Promise<Balance> adjustItems(Balance balance);
 }

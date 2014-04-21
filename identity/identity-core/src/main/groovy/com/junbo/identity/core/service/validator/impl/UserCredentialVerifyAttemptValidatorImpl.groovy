@@ -119,6 +119,9 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
 
             userLoginAttempt.setUserId((UserId)user.id)
 
+            def hasLen = 4
+            def saltIndex = 1
+            def pepperIndex = 2
             if (userLoginAttempt.type == 'password') {
                 userPasswordRepository.search(new UserPasswordListOptions(
                         userId: (UserId)user.id,
@@ -129,12 +132,12 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                     }
 
                     String[] hashInfo = userPasswordList.get(0).passwordHash.split(CipherHelper.COLON)
-                    if (hashInfo.length != 4) {
+                    if (hashInfo.length != hasLen) {
                         throw AppErrors.INSTANCE.userPasswordIncorrect().exception()
                     }
 
-                    String salt = hashInfo[1]
-                    String pepper = hashInfo[2]
+                    String salt = hashInfo[saltIndex]
+                    String pepper = hashInfo[pepperIndex]
 
                     if (CipherHelper.generateCipherHashV1(split[1], salt, pepper)
                             == userPasswordList.get(0).passwordHash) {
@@ -154,12 +157,12 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                     }
 
                     String[] hashInfo = userPinList.get(0).pinHash.split(CipherHelper.COLON)
-                    if (hashInfo.length != 4) {
+                    if (hashInfo.length != hasLen) {
                         throw AppErrors.INSTANCE.userPinIncorrect().exception()
                     }
 
-                    String salt = hashInfo[1]
-                    String pepper = hashInfo[2]
+                    String salt = hashInfo[saltIndex]
+                    String pepper = hashInfo[pepperIndex]
 
                     if (CipherHelper.generateCipherHashV1(split[1], salt, pepper) == userPinList.get(0).pinHash) {
                         userLoginAttempt.setSucceeded(true)

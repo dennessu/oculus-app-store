@@ -12,9 +12,11 @@ import com.junbo.ewallet.spec.model.Transaction;
 import com.junbo.ewallet.spec.model.Wallet;
 import com.junbo.ewallet.spec.resource.WalletResource;
 import com.junbo.langur.core.promise.Promise;
+import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.common.exception.AppServerExceptions;
 import com.junbo.payment.core.provider.AbstractPaymentProviderService;
 import com.junbo.payment.core.util.ProxyExceptionResponse;
+import com.junbo.payment.spec.enums.PaymentStatus;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentTransaction;
 import org.slf4j.Logger;
@@ -46,6 +48,9 @@ public class EWalletProviderServiceImpl extends AbstractPaymentProviderService {
     @Override
     public void cloneTransactionResult(PaymentTransaction source, PaymentTransaction target) {
         target.setExternalToken(source.getExternalToken());
+        if(!CommonUtil.isNullOrEmpty(source.getStatus())){
+            target.setStatus(source.getStatus());
+        }
     }
 
     @Override
@@ -110,6 +115,7 @@ public class EWalletProviderServiceImpl extends AbstractPaymentProviderService {
                             PROVIDER_NAME, "No transaction happens").exception();
                 }
                 paymentRequest.setExternalToken(transaction.getTransactionId().toString());
+                paymentRequest.setStatus(PaymentStatus.SETTLED.toString());
                 return Promise.pure(paymentRequest);
             }
         });

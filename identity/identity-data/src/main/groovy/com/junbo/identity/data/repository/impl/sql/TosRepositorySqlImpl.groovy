@@ -57,6 +57,11 @@ class TosRepositorySqlImpl implements TosRepository {
     }
 
     @Override
+    Promise<Tos> update(Tos model) {
+        throw new IllegalStateException('update tos not support')
+    }
+
+    @Override
     Promise<List<Tos>> search(TosListOptions options) {
         List<TosEntity> entities = tosDAO.search(options)
 

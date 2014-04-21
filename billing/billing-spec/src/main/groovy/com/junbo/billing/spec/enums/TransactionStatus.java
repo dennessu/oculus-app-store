@@ -8,6 +8,8 @@ package com.junbo.billing.spec.enums;
 
 import com.junbo.common.util.Identifiable;
 
+import javax.ws.rs.NotSupportedException;
+
 /**
  * Created by xmchen on 14-3-5.
  */
@@ -27,5 +29,10 @@ public enum TransactionStatus implements Identifiable<Short> {
     @Override
     public Short getId() {
         return id;
+    }
+
+    @Override
+    public void setId(Short id) {
+        throw new NotSupportedException("enum TransactionStatus not settable");
     }
 }

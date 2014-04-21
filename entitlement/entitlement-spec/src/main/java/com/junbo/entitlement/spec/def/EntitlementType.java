@@ -8,6 +8,8 @@ package com.junbo.entitlement.spec.def;
 
 import com.junbo.common.util.Identifiable;
 
+import javax.ws.rs.NotSupportedException;
+
 /**
  * EntitlementType enum.
  */
@@ -24,4 +26,11 @@ public enum EntitlementType implements Identifiable<Integer> {
     public Integer getId() {
         return id;
     }
+
+    @Override
+    public void setId(Integer id) {
+        throw new NotSupportedException("enum EntitlementType not settable");
+    }
+
+
 }

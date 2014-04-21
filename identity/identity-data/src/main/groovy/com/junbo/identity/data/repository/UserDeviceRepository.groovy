@@ -15,15 +15,6 @@ import groovy.transform.CompileStatic
  * User Device Profile DAO is used to fetch/update/delete/get user device profile data from the database
  */
 @CompileStatic
-interface UserDeviceRepository {
-
-    Promise<UserDevice> create(UserDevice entity)
-
-    Promise<UserDevice> update(UserDevice entity)
-
-    Promise<UserDevice> get(UserDeviceId id)
-
+interface UserDeviceRepository extends IdentityBaseRepository<UserDevice, UserDeviceId> {
     Promise<List<UserDevice>> search(UserDeviceListOptions getOption)
-
-    Promise<Void> delete(UserDeviceId id)
 }

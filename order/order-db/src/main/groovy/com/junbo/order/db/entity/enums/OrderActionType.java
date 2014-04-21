@@ -7,6 +7,8 @@ package com.junbo.order.db.entity.enums;
 
 import com.junbo.common.util.Identifiable;
 
+import javax.ws.rs.NotSupportedException;
+
 /**
  * Created by LinYi on 2/10/14.
  */
@@ -33,4 +35,10 @@ public enum OrderActionType implements Identifiable<Short> {
     public Short getId() {
         return id;
     }
+
+    @Override
+    public void setId(Short id) {
+        throw new NotSupportedException("enum OrderActionType not settable");
+    }
+
 }

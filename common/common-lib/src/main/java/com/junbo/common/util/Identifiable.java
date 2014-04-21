@@ -11,4 +11,5 @@ package com.junbo.common.util;
  */
 public interface Identifiable<T> {
     T getId();
+    void setId(T id);
 }
