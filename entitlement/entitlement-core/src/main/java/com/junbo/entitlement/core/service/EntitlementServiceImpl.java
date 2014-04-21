@@ -69,7 +69,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
             throw AppErrors.INSTANCE.notFound("entitlement", entitlementId).exception();
         }
         checkUser(existingEntitlement.getUserId());
-        entitlementRepository.delete(existingEntitlement);
+        entitlementRepository.delete(entitlementId);
     }
 
     @Override

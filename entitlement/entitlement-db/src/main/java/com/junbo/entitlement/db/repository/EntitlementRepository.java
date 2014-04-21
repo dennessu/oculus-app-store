@@ -58,8 +58,8 @@ public class EntitlementRepository {
                         searchParam, pageMetadata == null ? new PageMetadata() : pageMetadata));
     }
 
-    public void delete(Entitlement entitlement) {
-        EntitlementEntity entitlementEntity = entitlementMapper.toEntitlementEntity(entitlement);
+    public void delete(Long entitlementId) {
+        EntitlementEntity entitlementEntity = entitlementDao.get(entitlementId);
         entitlementEntity.setIsDeleted(true);
         entitlementHistoryDao.insert(new EntitlementHistoryEntity(DELETE, entitlementEntity));
         entitlementDao.update(entitlementEntity);
