@@ -33,16 +33,20 @@ public class Offer extends BaseEntityModel {
 
     @UserId
     @JsonProperty("publisher")
-    @ApiModelProperty(position = 22, required = true, value = "Publisher of the offer.")
+    @ApiModelProperty(position = 22, required = true, value = "Publisher of the offer")
     private Long ownerId;
+
+    @ApiModelProperty(position = 23, required = true, value = "Whether the offer is published")
+    @JsonProperty("isPublished")
+    private Boolean active;
 
     @ItemId
     @JsonProperty("soldWithinItem")
-    @ApiModelProperty(position = 23, required = false, value = "The item in which the IAP offer will be sold.")
+    @ApiModelProperty(position = 24, required = false, value = "The item in which the IAP offer will be sold.")
     private Long iapItemId;
 
     @OfferAttributeId
-    @ApiModelProperty(position = 24, required = true, value = "Categories of the offer.")
+    @ApiModelProperty(position = 25, required = true, value = "Categories of the offer.")
     private List<Long> categories;
 
     public Long getOfferId() {
@@ -75,6 +79,14 @@ public class Offer extends BaseEntityModel {
 
     public void setOwnerId(Long ownerId) {
         this.ownerId = ownerId;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 
     public Long getIapItemId() {

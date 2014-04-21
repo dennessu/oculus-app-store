@@ -6,7 +6,6 @@
 
 package com.junbo.catalog.spec.model.common;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
@@ -18,20 +17,12 @@ public abstract class BaseEntityModel extends BaseModel {
     @JsonProperty("friendlyIdentifier")
     private String name;
 */
-    @ApiModelProperty(position = 11, required = true, value = "Curated")
-    @JsonProperty("isCurated")
-    private Boolean curated;
+    //@ApiModelProperty(position = 11, required = true, value = "Curated")
+   // @JsonProperty("isCurated")
+   // private Boolean curated;
 
     @ApiModelProperty(position = 1003, required = true, value = "[Client Immutable] rev")
     private String rev;
-
-    public Boolean getCurated() {
-        return curated;
-    }
-
-    public void setCurated(Boolean curated) {
-        this.curated = curated;
-    }
 
     public abstract Long getCurrentRevisionId();
     public abstract void setCurrentRevisionId(Long currentRevisionId);
