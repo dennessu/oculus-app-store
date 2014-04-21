@@ -25,6 +25,11 @@ public class EntitlementCriterionHandler implements CriterionHandler<Entitlement
 
     @Override
     public boolean validate(EntitlementCriterion criterion, RatingContext context) {
+        //anonymous user
+        if(context.getUserId() == null){
+            return false;
+        }
+
         Set<String> groups = new HashSet<>();
 
         for (Entitlement entitlement : criterion.getEntitlements()) {
