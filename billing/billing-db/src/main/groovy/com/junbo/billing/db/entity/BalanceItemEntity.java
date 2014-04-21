@@ -27,7 +27,7 @@ public class BalanceItemEntity extends BaseEntity {
     @Column(name = "balance_id")
     private Long balanceId;
 
-    @Column(name = "orde_id")
+    @Column(name = "order_id")
     private Long orderId;
 
     @Column(name = "order_item_id")
